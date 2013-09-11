@@ -1,0 +1,101 @@
+﻿Build started 20/01/2013 17:22:06.
+     1>Project "F:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\msvc\gtest_main.vcxproj" on node 4 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "protobuf/Debug\gtest_main\gtest_main.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /I.. /I..\include /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _LIB /D _MBCS /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"protobuf/Debug\gtest_main\\" /Fd"protobuf/Debug\gtest_main\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt ..\src\gtest_main.cc
+         gtest_main.cc
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(745): error C3855: 'std::tr1::tuple_element': template parameter '_Idx' is incompatible with the declaration
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(757): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(757): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(757): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(761): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(761): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(761): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(769): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(769): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(769): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(773): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(773): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(773): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(781): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(781): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(781): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(785): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(785): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(785): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(793): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(793): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(793): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(797): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(797): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(797): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(805): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(805): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(805): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(809): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(809): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(809): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(817): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(817): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(817): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(821): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(821): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(821): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(829): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(829): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(829): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(833): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(833): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(833): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(841): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(841): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(841): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(845): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(845): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(845): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(853): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(853): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(853): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(857): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(857): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(857): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(865): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(865): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(865): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(869): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(869): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(869): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(876): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(876): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(876): error C2065: 'type' : undeclared identifier
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(882): error C2039: 'type' : is not a member of 'std::tr1::tuple_element'
+                 f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(742) : see declaration of 'std::tr1::tuple_element'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(882): error C2146: syntax error : missing ',' before identifier 'type'
+     1>f:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\include\gtest\internal\gtest-tuple.h(882): error C2065: 'type' : undeclared identifier
+     1>Done Building Project "F:\sourcepython\src\thirdparty\protobuf\protobuf-2.3.0\gtest\msvc\gtest_main.vcxproj" (build target(s)) -- FAILED.
+
+Build FAILED.
+
+Time Elapsed 00:00:01.19
