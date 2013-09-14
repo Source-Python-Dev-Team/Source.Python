@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from tick_c import get_tick_listener_manager
+from listener_c import get_tick_listener_manager
 from core import AutoUnload
 from loggers import _SPLogger
 from public import public
