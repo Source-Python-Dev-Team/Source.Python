@@ -23,32 +23,21 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _sp_ADDON_H
-#define _sp_ADDON_H
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Includes
-//---------------------------------------------------------------------------------
-#include "core/sp_python.h"
-#include "utllinkedlist.h"
-#include "igameevents.h"
+//-----------------------------------------------------------------------------
+#include "tick_listeners_wrap.h"
 
-//---------------------------------------------------------------------------------
-// Addon manager.
-//---------------------------------------------------------------------------------
-class CAddonManager
+//-----------------------------------------------------------------------------
+// Static singletons.
+//-----------------------------------------------------------------------------
+static CTickListenerManager s_TickListenerManager;
+
+//-----------------------------------------------------------------------------
+// TickListenerManager accessor.
+//-----------------------------------------------------------------------------
+CTickListenerManager* get_tick_listener_manager()
 {
-	public:
-		CAddonManager( void );
-		~CAddonManager( void );
-
-		void GameFrame();
-        void NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
-};
-
-//---------------------------------------------------------------------------------
-// Static singleton.
-//---------------------------------------------------------------------------------
-extern CAddonManager g_AddonManager;
-
-#endif // _sp_ADDON_H
+	return &s_TickListenerManager;
+}

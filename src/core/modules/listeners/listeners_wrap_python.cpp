@@ -27,65 +27,75 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "ticklisteners_wrap.h"
-#include "utility/call_python.h"
+#include "modules/export_main.h"
+#include "tick_listeners_wrap.h"
+#include "networkid_validated_listeners_wrap.h"
 
 //-----------------------------------------------------------------------------
-// Static singletons.
+// Functions that expose tick listener functionality to us.
 //-----------------------------------------------------------------------------
-static CTickListenerManager s_TickListenerManager;
+void export_tick_listener();
+void export_networkid_validated_listener();
 
 //-----------------------------------------------------------------------------
-// TickListenerManager accessor.
+// Exposes the tick_c module.
 //-----------------------------------------------------------------------------
-CTickListenerManager* get_tick_listener_manager()
+DECLARE_SP_MODULE(listener_c)
 {
-	return &s_TickListenerManager;
+	export_tick_listener();
+    export_networkid_validated_listener();
 }
 
 //-----------------------------------------------------------------------------
-// Adds a callable to the end of the CTickListenerManager vector.
+// Exposes CTickListenerManager
 //-----------------------------------------------------------------------------
-void CTickListenerManager::register_listener(PyObject* pCallable)
+void export_tick_listener()
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
+	BOOST_ABSTRACT_CLASS(CTickListenerManager)
 
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
-	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
-	}
+		CLASS_METHOD(CTickListenerManager,
+			register_listener,
+			"Adds the given callable to the end of the tick listener vector.",
+			args("pCallable")
+		)
+
+		CLASS_METHOD(CTickListenerManager,
+			unregister_listener,
+			"Removes the given callable from the tick listener vector.",
+			args("pCallable")
+		)
+
+	BOOST_END_CLASS()
+
+	BOOST_FUNCTION(get_tick_listener_manager,
+		"Returns the CTickListListenerManager instance",
+		reference_existing_object_policy()
+	);
 }
 
 //-----------------------------------------------------------------------------
-// Removes all instances of a callable from the CTickListenerManager vector.
+// Exposes CNetworkIDValidatedListenerManager
 //-----------------------------------------------------------------------------
-void CTickListenerManager::unregister_listener(PyObject* pCallable)
+void export_networkid_validated_listener()
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
+	BOOST_ABSTRACT_CLASS(CNetworkIDValidatedListenerManager)
 
-	// Remove the callback from the ServerCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
-}
+		CLASS_METHOD(CNetworkIDValidatedListenerManager,
+			register_listener,
+			"Adds the given callable to the end of the network ID validated listener vector.",
+			args("pCallable")
+		)
 
-//-----------------------------------------------------------------------------
-// Calls all registered tick listeners.
-//-----------------------------------------------------------------------------
-void CTickListenerManager::call_tick_listeners()
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
+		CLASS_METHOD(CNetworkIDValidatedListenerManager,
+			unregister_listener,
+			"Removes the given callable from the network ID validated listener vector.",
+			args("pCallable")
+		)
 
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
+	BOOST_END_CLASS()
 
-			// Call the callable
-			CALL_PY_FUNC(pCallable);
-
-		END_BOOST_PY_NORET()
-	}
+	BOOST_FUNCTION(get_networkid_validated_listener_manager,
+		"Returns the CNetworkIDValidatedListenerManager instance",
+		reference_existing_object_policy()
+	);
 }

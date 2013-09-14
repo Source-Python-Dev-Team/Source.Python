@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2013 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,48 +24,24 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _NETWORKID_VALIDATED_LISTENER_MANAGER_H
+#define _NETWORKID_VALIDATED_LISTENER_MANAGER_H
+
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
-#include "ticklisteners_wrap.h"
+#include "listenermanager.h"
+#include "utility/call_python.h"
 
 //-----------------------------------------------------------------------------
-// Functions that expose tick listener functionality to us.
+// CNetworkIDValidatedListenerManager class
 //-----------------------------------------------------------------------------
-void export_ticklistener();
-
-//-----------------------------------------------------------------------------
-// Exposes the tick_c module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(tick_c)
+class CNetworkIDValidatedListenerManager: public CListenerManager
 {
-	export_ticklistener();
-}
+public:
+	void call_listeners( const char *pszUserName, const char *pszNetworkID );
+};
 
-//-----------------------------------------------------------------------------
-// Exposes CTickListenerManager
-//-----------------------------------------------------------------------------
-void export_ticklistener()
-{
-	BOOST_ABSTRACT_CLASS(CTickListenerManager)
+CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager();
 
-		CLASS_METHOD(CTickListenerManager,
-			register_listener,
-			"Adds the given callable to the end of the tick listener vector.",
-			args("pCallable")
-		)
-
-		CLASS_METHOD(CTickListenerManager,
-			unregister_listener,
-			"Removes the given callable from the tick listener vector.",
-			args("pCallable")
-		)
-
-	BOOST_END_CLASS()
-
-	BOOST_FUNCTION(get_tick_listener_manager,
-		"Returns the CTickListListenerManager instance",
-		reference_existing_object_policy()
-	);
-}
+#endif // _NETWORKID_VALIDATED_LISTENER_MANAGER_H

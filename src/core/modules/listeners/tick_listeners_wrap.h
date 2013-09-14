@@ -23,32 +23,23 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _TICKLISTENER_MANAGER_H
-#define _TICKLISTENER_MANAGER_H
+
+#ifndef _TICK_LISTENER_MANAGER_H
+#define _TICK_LISTENER_MANAGER_H
+
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
-#include "utility/sp_util.h"
-#include "utility/wrap_macros.h"
+#include "listenermanager.h"
 
 //-----------------------------------------------------------------------------
 // CTickListenerManager class
 //-----------------------------------------------------------------------------
-class CTickListenerManager
+class CTickListenerManager: public CListenerManager
 {
-public:
-
-	void register_listener(PyObject* pCallable);
-	void unregister_listener(PyObject* pCallable);
-
-	void call_tick_listeners();
-
-private:
-	CUtlVector<object> m_vecCallables;
 };
 
 CTickListenerManager* get_tick_listener_manager();
 
-#endif // _TICKLISTENER_MANAGER_H
+#endif // _TICK_LISTENER_MANAGER_H

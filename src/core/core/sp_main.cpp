@@ -357,6 +357,7 @@ PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntit
 //---------------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
+    g_AddonManager.NetworkIDValidated(pszUserName, pszNetworkID);
 	return PLUGIN_CONTINUE;
 }
 
