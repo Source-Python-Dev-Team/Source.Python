@@ -11,7 +11,7 @@ from configobj import ConfigObj
 from player_c import CPlayerGenerator
 from core import GameEngine
 from core import GAME_NAME
-from paths import DATA_PATH
+from paths import SP_DATA_PATH
 from public import public
 #   Filters
 from filters.iterator import _IterObject
@@ -33,7 +33,7 @@ from players.helpers import userid_from_playerinfo
 # =============================================================================
 # Get the team's file for the current game
 _game_teams = ConfigObj(
-    DATA_PATH.joinpath('players', 'teams', GAME_NAME + '.ini'), unrepr=True)
+    SP_DATA_PATH.joinpath('players', 'teams', GAME_NAME + '.ini'), unrepr=True)
 
 
 # =============================================================================

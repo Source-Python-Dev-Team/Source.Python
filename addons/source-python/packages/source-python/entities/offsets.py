@@ -13,7 +13,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from core import GAME_NAME
-from paths import DATA_PATH
+from paths import SP_DATA_PATH
 
 
 # =============================================================================
@@ -27,7 +27,7 @@ __all__ = []
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the base "offsets" path
-_basepath = DATA_PATH.joinpath('offsets')
+_basepath = SP_DATA_PATH.joinpath('offsets')
 
 
 # =============================================================================

@@ -9,7 +9,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from core import GAME_NAME
-from paths import DATA_PATH
+from paths import SP_DATA_PATH
 #   DynCall
 from dyncall.signature import Signature
 
@@ -18,7 +18,7 @@ from dyncall.signature import Signature
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the game's ini file's path
-_inipath = DATA_PATH.joinpath('dyncall', GAME_NAME)
+_inipath = SP_DATA_PATH.joinpath('dyncall', GAME_NAME)
 
 
 # =============================================================================

@@ -9,7 +9,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from core import GAME_NAME
-from paths import DATA_PATH
+from paths import SP_DATA_PATH
 from public import public
 
 
@@ -17,7 +17,7 @@ from public import public
 # >> GLOBAL VARIABLES
 # =============================================================================
 _entity_values = ConfigObj(
-    DATA_PATH.joinpath('entities', GAME_NAME + '.ini'), unrepr=True)
+    SP_DATA_PATH.joinpath('entities', GAME_NAME + '.ini'), unrepr=True)
 
 
 # =============================================================================
