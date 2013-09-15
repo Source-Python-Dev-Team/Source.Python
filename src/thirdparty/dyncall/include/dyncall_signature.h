@@ -40,7 +40,7 @@
 typedef char DCsigchar;
 
 #define DC_SIGCHAR_VOID         'v'
-#define DC_SIGCHAR_BOOL         'B'
+#define DC_SIGCHAR_BOOL         'b'
 #define DC_SIGCHAR_CHAR         'c'
 #define DC_SIGCHAR_UCHAR        'C'
 #define DC_SIGCHAR_SHORT        's'

@@ -62,8 +62,10 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${DYNCALLSDK_LIB}/libdyncall_s.lib
     ${DYNCALLSDK_LIB}/libdyncallback_s.lib
     ${DYNCALLSDK_LIB}/libdynload_s.lib
-    ${DYNDETOURSSDK_LIB}/DynDetours.lib
-    ${DYNDETOURSSDK_LIB}/AsmJit.lib
+    optimized ${DYNAMICHOOKSSDK_LIB}/AsmJit.lib
+    optimized ${DYNAMICHOOKSSDK_LIB}/DynamicHooks.lib
+    debug ${DYNAMICHOOKSSDK_LIB}/AsmJit_d.lib
+    debug ${DYNAMICHOOKSSDK_LIB}/DynamicHooks_d.lib
 )
 
 # CSGO Engine adds in interfaces.lib
@@ -77,8 +79,8 @@ Endif()
 # ------------------------------------------------------------------
 # Debug link libraries
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG 
-    debug ${PYTHONSDK_LIB}/python33_d.lib 
+Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
+    debug ${PYTHONSDK_LIB}/python33_d.lib
     debug ${BOOSTSDK_LIB}/libboost_python-vc100-mt-gyd-1_53.lib
 )
 
@@ -92,8 +94,8 @@ Endif()
 # ------------------------------------------------------------------
 # Release link libraries
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE 
-    optimized ${PYTHONSDK_LIB}/python33.lib 
+Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
+    optimized ${PYTHONSDK_LIB}/python33.lib
     optimized ${BOOSTSDK_LIB}/libboost_python-vc100-mt-1_53.lib
 )
 

@@ -29,9 +29,12 @@
 
 #include <malloc.h>
 #include "memalloc.h"
-#include "utility/wrap_macros.h"
-#include "hook_types.h"
 #include "dyncall.h"
+
+#include "utility/wrap_macros.h"
+#include "DynamicHooks.h"
+using namespace DynamicHooks;
+
 #include "boost/python.hpp"
 using namespace boost::python;
 
@@ -86,18 +89,23 @@ inline void UTIL_Dealloc(void* ptr)
 //-----------------------------------------------------------------------------
 // Convention enum
 //-----------------------------------------------------------------------------
-enum Convention
+inline int GetDynCallConvention(Convention_t eConv)
 {
-	_CONV_CDECL = DC_CALL_C_DEFAULT,
-#ifdef _WIN32
-	_CONV_STDCALL = DC_CALL_C_X86_WIN32_STD,
-	_CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_MS,
-	_CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_MS
-#else
-	_CONV_FASTCALL = DC_CALL_C_X86_WIN32_FAST_GNU,
-	_CONV_THISCALL = DC_CALL_C_X86_WIN32_THIS_GNU
-#endif
-};
+	switch (eConv)
+	{
+		case CONV_CDECL: return DC_CALL_C_DEFAULT;
+		case CONV_THISCALL:
+			#ifdef _WIN32
+				return DC_CALL_C_X86_WIN32_THIS_MS;
+			#else
+				return DC_CALL_C_X86_WIN32_THIS_GNU;
+			#endif
+		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
+	}
+
+	// TODO: Throw exception
+	return 0;
+}
 
 //-----------------------------------------------------------------------------
 // CPointer class
@@ -145,43 +153,43 @@ public:
 	void                realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
 	void                dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
-	CFunction*          make_function(Convention eConv, char* szParams);
+	CFunction*          make_function(Convention_t eConv, char* szParams);
 
-	void reset_vm();
-	void set_mode(int iMode);
+	void                reset_vm();
+	void                set_mode(int iMode);
 
-	void set_arg_bool(bool value);
-	void set_arg_char(char value);
-	void set_arg_uchar(unsigned char value);
-	void set_arg_short(short value);
-	void set_arg_ushort(unsigned short value);
-	void set_arg_int(int value);
-	void set_arg_uint(unsigned int value);
-	void set_arg_long(long value);
-	void set_arg_ulong(unsigned long value);
-	void set_arg_long_long(long long value);
-	void set_arg_ulong_long(unsigned long long value);
-	void set_arg_float(float value);
-	void set_arg_double(double value);
-	void set_arg_pointer(object value);
-	void set_arg_string(char* value);
+	void                set_arg_bool(bool value);
+	void                set_arg_char(char value);
+	void                set_arg_uchar(unsigned char value);
+	void                set_arg_short(short value);
+	void                set_arg_ushort(unsigned short value);
+	void                set_arg_int(int value);
+	void                set_arg_uint(unsigned int value);
+	void                set_arg_long(long value);
+	void                set_arg_ulong(unsigned long value);
+	void                set_arg_long_long(long long value);
+	void                set_arg_ulong_long(unsigned long long value);
+	void                set_arg_float(float value);
+	void                set_arg_double(double value);
+	void                set_arg_pointer(object value);
+	void                set_arg_string(char* value);
 
-	void				call_void();
-	bool				call_bool();
-	char				call_char();
-	unsigned char		call_uchar();
-	short				call_short();
-	unsigned short		call_ushort();
-	int					call_int();
-	unsigned int		call_uint();
-	long				call_long();
-	unsigned long		call_ulong();
-	long long			call_long_long();
-	unsigned long long	call_ulong_long();
-	float				call_float();
-	double				call_double();
-	CPointer*			call_pointer();
-	const char*			call_string();
+	void                call_void();
+	bool                call_bool();
+	char                call_char();
+	unsigned char       call_uchar();
+	short               call_short();
+	unsigned short      call_ushort();
+	int                 call_int();
+	unsigned int        call_uint();
+	long                call_long();
+	unsigned long       call_ulong();
+	long long           call_long_long();
+	unsigned long long  call_ulong_long();
+	float               call_float();
+	double              call_double();
+	CPointer*           call_pointer();
+	const char*         call_string();
 
 protected:
 	unsigned long m_ulAddr;
@@ -190,13 +198,13 @@ protected:
 class CFunction: public CPointer
 {
 public:
-	CFunction(unsigned long ulAddr, Convention eConv, char* szParams);
+	CFunction(unsigned long ulAddr, Convention_t eConv, char* szParams);
     
 	object __call__(object args);
 	object call_trampoline(object args);
 	
-	void hook(eHookType eType, PyObject* pCallable);
-	void unhook(eHookType eType, PyObject* pCallable);
+	void add_hook(DynamicHooks::HookType_t eType, PyObject* pCallable);
+	void remove_hook(DynamicHooks::HookType_t eType, PyObject* pCallable);
     
 	void add_pre_hook(PyObject* pCallable);
 	void add_post_hook(PyObject* pCallable);
@@ -205,8 +213,8 @@ public:
 	void remove_post_hook(PyObject* pCallable);
     
 private:
-	std::string m_szParams;
-	Convention  m_eConv;
+	char*         m_szParams;
+	Convention_t  m_eConv;
 };
 
 int get_error();

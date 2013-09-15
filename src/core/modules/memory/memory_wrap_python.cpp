@@ -34,13 +34,10 @@
 
 #include "dyncall.h"
 
-#include "hook_types.h"
-#include "detour_class.h"
-
 void export_binaryfile();
 void export_memtools();
 void export_dyncall();
-void export_dyndetours();
+void export_dynamichooks();
 
 //-----------------------------------------------------------------------------
 // Exposes the memory_c module.
@@ -50,7 +47,7 @@ DECLARE_SP_MODULE(memory_c)
 	export_binaryfile();
 	export_memtools();
 	export_dyncall();
-	export_dyndetours();
+	export_dynamichooks();
 }
 
 //-----------------------------------------------------------------------------
@@ -629,7 +626,7 @@ void export_memtools()
 		manage_new_object_policy()
 	);
 
-	BOOST_INHERITED_CLASS_CONSTRUCTOR(CFunction, CPointer, unsigned long, Convention, char*)
+	BOOST_INHERITED_CLASS_CONSTRUCTOR(CFunction, CPointer, unsigned long, Convention_t, char*)
 
 		CLASS_METHOD_VARIADIC(CFunction,
 			__call__,
@@ -639,6 +636,18 @@ void export_memtools()
 		CLASS_METHOD_VARIADIC(CFunction,
 			call_trampoline,
 			"Calls the trampoline function dynamically."
+		)
+
+		CLASS_METHOD(CFunction,
+			add_hook,
+			"Adds a hook callback.",
+			args("hook_type", "callback")
+		)
+
+		CLASS_METHOD(CFunction,
+			remove_hook,
+			"Removes a hook callback.",
+			args("hook_type", "callback")
 		)
 
 		CLASS_METHOD(CFunction,
@@ -672,13 +681,10 @@ void export_memtools()
 //-----------------------------------------------------------------------------
 void export_dyncall()
 {
-	BOOST_ENUM(Convention)
-		ENUM_VALUE("CDECL", _CONV_CDECL)
-	#ifdef _WIN32
-		ENUM_VALUE("STDCALL", _CONV_STDCALL)
-	#endif
-		ENUM_VALUE("FASTCALL", _CONV_FASTCALL)
-		ENUM_VALUE("THISCALL", _CONV_THISCALL)
+	enum_<Convention_t>("Convention")
+		ENUM_VALUE("CDECL", CONV_CDECL)
+		ENUM_VALUE("STDCALL", CONV_STDCALL)
+		ENUM_VALUE("THISCALL", CONV_THISCALL)
 	BOOST_END_CLASS()
 
 	// Other constants that are very useful.
@@ -690,9 +696,9 @@ void export_dyncall()
 	);
 }
 
-void export_dyndetours()
+void export_dynamichooks()
 {
-	BOOST_CLASS_CONSTRUCTOR(CStackData, CDetour*)
+	BOOST_CLASS_CONSTRUCTOR(CStackData, CHook*)
 
 		// Special methods
 		CLASS_METHOD_SPECIAL(CStackData,
@@ -714,30 +720,6 @@ void export_dyndetours()
 				manage_new_object_policy()
 			),
 			"Stack pointer register."
-		)
-
-		.add_property("ecx",
-			make_function(
-				&CStackData::get_ecx,
-				manage_new_object_policy()
-			),
-			"Counter register."
-		)
-
-		.add_property("ebp",
-			make_function(
-				&CStackData::get_ebp,
-				manage_new_object_policy()
-			),
-			"Base pointer register."
-		)
-
-		.add_property("edx",
-			make_function(
-				&CStackData::get_edx,
-				manage_new_object_policy()
-			),
-			"Data register."
 		)
 
 	BOOST_END_CLASS()

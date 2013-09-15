@@ -33,17 +33,16 @@
 #include "dyncall.h"
 #include "dyncall_signature.h"
 
-#include "detour_class.h"
-#include "detourman_class.h"
 #include "memory_hooks.h"
-#include "dd_utils.h"
-
 #include "memory_tools.h"
 #include "utility/wrap_macros.h"
 #include "utility/sp_util.h"
 
 
 DCCallVM* g_pCallVM = dcNewCallVM(4096);
+extern std::map<CHook *, std::map<DynamicHooks::HookType_t, std::list<PyObject *> > > g_mapCallbacks;
+
+CHookManager* g_pHookMngr = new CHookManager;
 
 //-----------------------------------------------------------------------------
 // CPointer class
@@ -128,7 +127,7 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
 	return new CPointer((unsigned long) vtable[iIndex]);
 }
 
-CFunction* CPointer::make_function(Convention eConv, char* szParams)
+CFunction* CPointer::make_function(Convention_t eConv, char* szParams)
 {
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
@@ -306,7 +305,7 @@ const char* CPointer::call_string()
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
-CFunction::CFunction(unsigned long ulAddr, Convention eConv, char* szParams)
+CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, char* szParams)
 {
 	m_ulAddr = ulAddr;
 	m_eConv = eConv;
@@ -319,8 +318,8 @@ object CFunction::__call__(object args)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	dcReset(g_pCallVM);
-	dcMode(g_pCallVM, m_eConv);
-	char* ptr = (char *) m_szParams.data();
+	dcMode(g_pCallVM, GetDynCallConvention(m_eConv));
+	char* ptr = (char *) m_szParams;
 	int pos = 0;
 	char ch;
 	while ((ch = *ptr) != '\0' && ch != ')')
@@ -388,64 +387,53 @@ object CFunction::call_trampoline(object args)
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	CDetour* pDetour = g_DetourManager.Find_Detour((void *) m_ulAddr);
-	if (!pDetour)
+	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
+	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	return CFunction((unsigned long) pDetour->GetTrampoline(), m_eConv, (char *) m_szParams.data()).__call__(args);
+	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_szParams).__call__(args);
 }
 
-void CFunction::hook(eHookType eType, PyObject* pCallable)
+void CFunction::add_hook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 {
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	CDetour* pDetour = g_DetourManager.Add_Detour((void*) m_ulAddr, m_szParams.data(), (eCallConv) m_eConv);
-	if (!pDetour)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to hook function.")
-
-	ICallbackManager* mngr = pDetour->GetManager("Python", eType);
-	if (!mngr)
-	{
-		mngr = new CCallbackManager;
-		pDetour->AddManager(mngr, eType);
-	}
-
-	mngr->Add((void *) pCallable, eType);
+	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, m_szParams);
+	pHook->AddCallback(eType, (void *) &SP_HookHandler);
+	g_mapCallbacks[pHook][eType].push_back(pCallable);
 }
 
-void CFunction::unhook(eHookType eType, PyObject* pCallable)
+void CFunction::remove_hook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 {
 	if (!is_valid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
-
-	CDetour* pDetour = g_DetourManager.Find_Detour((void *) m_ulAddr);
-	if (!pDetour)
+		
+	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
+	if (!pHook)
 		return;
 
-	ICallbackManager* mngr = pDetour->GetManager("Python", eType);
-	if (mngr)
-		mngr->Remove((void *) pCallable, eType);
+	g_mapCallbacks[pHook][eType].remove(pCallable);
 }
 
 void CFunction::add_pre_hook(PyObject* pCallable)
 {
-	hook(TYPE_PRE, pCallable);
+	add_hook(HOOKTYPE_PRE, pCallable);
 }
 
 void CFunction::add_post_hook(PyObject* pCallable)
 {
-	hook(TYPE_POST, pCallable);
+	add_hook(HOOKTYPE_POST, pCallable);
 }
 
 void CFunction::remove_pre_hook(PyObject* pCallable)
 {
-	unhook(TYPE_PRE, pCallable);
+	remove_hook(HOOKTYPE_PRE, pCallable);
 }
 
 void CFunction::remove_post_hook(PyObject* pCallable)
 {
-	unhook(TYPE_POST, pCallable);
+	remove_hook(HOOKTYPE_POST, pCallable);
 }
 
 //-----------------------------------------------------------------------------

@@ -41,8 +41,6 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${DYNCALLSDK_LIB}/libdyncall_s.a
     ${DYNCALLSDK_LIB}/libdyncallback_s.a
     ${DYNCALLSDK_LIB}/libdynload_s.a
-    ${DYNDETOURSSDK_LIB}/libDynDetours.a
-    ${DYNDETOURSSDK_LIB}/libAsmJit.a
 )
 
 # ------------------------------------------------------------------
@@ -74,7 +72,7 @@ EndIf()
 # Linux compiler flags.
 # ------------------------------------------------------------------
 Set(CMAKE_CXX_FLAGS "-D_LINUX -DPOSIX -DLINUX -Dstricmp=strcasecmp -D_stricmp=strcasecmp")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp") 
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrcmpi=strcasecmp -Wall -Wno-uninitialized -Wno-switch -Wno-unused")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -DCOMPILER_GCC -fno-strict-aliasing -std=c++0x")
@@ -96,11 +94,15 @@ EndIf()
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
     ${PYTHONSDK_LIB}/libpython3.3m.a
     ${BOOSTSDK_LIB}/libboost_python.a
-    ${PYTHONSDK_LIB}/libpython3.3m.so.1.0    
+    ${PYTHONSDK_LIB}/libpython3.3m.so.1.0
+    ${DYNAMICHOOKSSDK_LIB}/libAsmJit.a
+    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
 )
 
 Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
     ${PYTHONSDK_LIB}/libpython3.3dm.a
     ${BOOSTSDK_LIB}/libboost_python_d.a
     ${PYTHONSDK_LIB}/libpython3.3dm.so.1.0
+    ${DYNAMICHOOKSSDK_LIB}/libAsmJit_d.a
+    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks_d.a
 )

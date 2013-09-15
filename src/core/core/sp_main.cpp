@@ -52,6 +52,9 @@
 #include "edict.h"
 #include "convar.h"
 
+#include "DynamicHooks.h"
+extern DynamicHooks::CHookManager* g_pHookMngr;
+
 //---------------------------------------------------------------------------------
 // Disable warnings.
 //---------------------------------------------------------------------------------
@@ -241,6 +244,8 @@ void CSourcePython::Unload( void )
 	DisconnectTier2Libraries( );
 	DisconnectTier1Libraries( );
 #endif
+
+	g_pHookMngr->UnhookAllFunctions();
 }
 
 //---------------------------------------------------------------------------------
