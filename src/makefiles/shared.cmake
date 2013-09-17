@@ -84,8 +84,3 @@ Add_Definitions(
 # The project.
 # ------------------------------------------------------------------
 Project(source-python C CXX)
-
-# ------------------------------------------------------------------
-# Get rid of the library prefix for all distributions.
-# ------------------------------------------------------------------
-# Set(CMAKE_SHARED_LIBRARY_PREFIX "")
