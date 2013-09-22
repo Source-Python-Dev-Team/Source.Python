@@ -16,20 +16,18 @@ class CListenerManager
 public:
 
 	enum types {
-		INT=0,
-		BOOL, // Only used in ClientConnect
+		BOOL,
+		INT,
 		CONST_CHAR_PTR,
-		CHAR_PTR, // Only used in ClientConnect
-		EDICT_T_PTR,
+		EDICT_T_PTR
 	};
 
 	struct Param {
 		int type;
 		const char* name; // For naming in the dict
 		union {
-			int int_value;
 			bool bool_value;
-			char* char_ptr;
+			int int_value;
 			const char* const_char_ptr;
 			edict_t* edict_t_ptr;
 		};
@@ -39,9 +37,6 @@ public:
 	void unregister_listener(PyObject* pCallable);
 
 	void call_listeners(int argc, ...);
-	/*void call_listeners();
-    // A lot of listener just pass an entity pointer
-    void call_listeners( edict_t *pEntity );*/
 
 protected:
 	CUtlVector<object> m_vecCallables;

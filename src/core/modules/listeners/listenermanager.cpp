@@ -53,17 +53,14 @@ void CListenerManager::call_listeners(int argc, ...)
 		    Param p = va_arg(varargs, Param);
 			switch (p.type)
 			{
-				case CListenerManager::INT:
-					dReturn[p.name] = p.int_value;
-					break;
 				case CListenerManager::BOOL:
 					dReturn[p.name] = p.bool_value;
 					break;
+				case CListenerManager::INT:
+					dReturn[p.name] = p.int_value;
+					break;
 				case CListenerManager::CONST_CHAR_PTR:
 					dReturn[p.name] = p.const_char_ptr;
-					break;
-				case CListenerManager::CHAR_PTR:
-					dReturn[p.name] = p.char_ptr;
 					break;
 				case CListenerManager::EDICT_T_PTR:
 					dReturn[p.name] = CEdict(p.edict_t_ptr);
@@ -100,37 +97,3 @@ void CListenerManager::call_listeners(int argc, ...)
 		}
 	}
 }
-
-/*
-void CListenerManager::call_listeners()
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-void CListenerManager::call_listeners( edict_t *pEntity )
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pEntity);
-
-		END_BOOST_PY_NORET()
-	}
-}
-*/

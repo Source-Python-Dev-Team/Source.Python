@@ -206,40 +206,50 @@ void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 //---------------------------------------------------------------------------------
 // Calls client connect listeners.
 //---------------------------------------------------------------------------------
-void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
+void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, 
+	const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
 	// Wrap the parameters
 	CListenerManager::Param p1, p2, p3, p4, p5, p6;
 	
-	p1.name="is_allowed_to_connect"; 
-	p1.type=CListenerManager::BOOL; 
-	p1.bool_value=bAllowConnect;
+	p1.name="edict"; 
+	p1.type=CListenerManager::EDICT_T_PTR; 
+	p1.edict_t_ptr=pEntity;
 
-	p2.name="edict"; 
-	p2.type=CListenerManager::EDICT_T_PTR; 
-	p2.edict_t_ptr=pEntity;
+	p2.name="playername"; 
+	p2.type=CListenerManager::CONST_CHAR_PTR; 
+	p2.const_char_ptr=pszName;
 
-	p3.name="playername"; 
+	p3.name="network_address"; 
 	p3.type=CListenerManager::CONST_CHAR_PTR; 
-	p3.const_char_ptr=pszName;
+	p3.const_char_ptr=pszAddress;
 
-	p4.name="network_address"; 
-	p4.type=CListenerManager::CONST_CHAR_PTR; 
-	p4.const_char_ptr=pszAddress;
+	p4.name="max_reject_len"; 
+	p4.type=CListenerManager::INT; 
+	p4.int_value=maxrejectlen;
 
-	// Is this an int? Maybe just convert and remove unnused CHAR_PTR
+	// Must be casted in order to avoid crash
+	// TODO: Maybe in the future this can done properly, so people can reject the 
+	// connection from python, but for now it's read-only
+	const char* reject_copy = reject;
 	p5.name="reject"; 
-	p5.type=CListenerManager::CHAR_PTR; 
-	p5.char_ptr=reject;
+	p5.type=CListenerManager::CONST_CHAR_PTR; 
+	p5.const_char_ptr=reject_copy;
 
-	p6.name="max_recject_len"; 
-	p6.type=CListenerManager::INT; 
-	p6.int_value=maxrejectlen;
+	p6.name="is_allowed_to_connect"; 
+	p6.type=CListenerManager::BOOL; 
+	p6.bool_value=&bAllowConnect;
+	
 	// Dispatch all LevelInit listeners
 	get_client_connect_listener_manager()->call_listeners(6, p1, p2, p3, p4, p5, p6);
 }
 
-void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
+//---------------------------------------------------------------------------------
+// Calls on query cvar value finished listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, 
+	edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, 
+	const char *pCvarValue )
 {
 	// Wrap the parameters
 	CListenerManager::Param p1, p2, p3, p4, p5;
@@ -253,9 +263,9 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 	p2.type=CListenerManager::EDICT_T_PTR; 
 	p2.edict_t_ptr=pPlayerEntity;
 
-	p3.name="edict"; 
-	p3.type=CListenerManager::EDICT_T_PTR; 
-	p3.edict_t_ptr=pPlayerEntity;
+	p3.name="cookie_status"; 
+	p3.type=CListenerManager::INT; 
+	p3.int_value=static_cast<int>(eStatus);
 
 	p4.name="cvar_name"; 
 	p4.type=CListenerManager::CONST_CHAR_PTR; 
@@ -298,16 +308,16 @@ void CAddonManager::OnEdictAllocated( edict_t *edict )
 void CAddonManager::OnEdictFreed( const edict_t *edict )
 {
 	// Wrap the parameters
-	/*CListenerManager::Param p1;
-	
-	TODO: Const edict
+	CListenerManager::Param p1;
 
 	p1.name="edict"; 
 	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr=edict;
-	// Dispatch all LevelInit listeners
-	get_on_edict_freed_listener_manager()->call_listeners(1, p1);*/
+	// This might not be a good idea, who knows :P
+	p1.edict_t_ptr=const_cast<edict_t*>(edict);
 
-	get_on_edict_freed_listener_manager()->call_listeners(0);
+	// Dispatch all LevelInit listeners
+	get_on_edict_freed_listener_manager()->call_listeners(1, p1);
+
+	//get_on_edict_freed_listener_manager()->call_listeners(0);
 }
 #endif

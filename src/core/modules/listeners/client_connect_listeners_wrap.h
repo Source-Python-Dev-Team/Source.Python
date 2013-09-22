@@ -40,6 +40,10 @@ class CClientConnectListenerManager: public CListenerManager
 {
 };
 
+//-----------------------------------------------------------------------------
+// ClientConnectListenerManager accessor.
+//-----------------------------------------------------------------------------
+
 CClientConnectListenerManager* get_client_connect_listener_manager();
 
 #endif // _CLIENT_CONNECT_LISTENER_MANAGER_H
