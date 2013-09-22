@@ -38,7 +38,6 @@
 //-----------------------------------------------------------------------------
 class CLevelInitListenerManager: public CListenerManager
 {
-	void call_listeners( char const *pMapName );
 };
 
 CLevelInitListenerManager* get_level_init_listener_manager();

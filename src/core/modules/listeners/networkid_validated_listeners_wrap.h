@@ -38,8 +38,6 @@
 //-----------------------------------------------------------------------------
 class CNetworkIDValidatedListenerManager: public CListenerManager
 {
-public:
-	void call_listeners( const char *pszUserName, const char *pszNetworkID );
 };
 
 CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager();

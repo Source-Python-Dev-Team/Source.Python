@@ -38,7 +38,6 @@
 //-----------------------------------------------------------------------------
 class CClientPutInServerListenerManager: public CListenerManager
 {
-	void call_listeners( edict_t *pEntity, char const *playername );
 };
 
 CClientPutInServerListenerManager* get_client_put_in_server_listener_manager();

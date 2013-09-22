@@ -36,27 +36,6 @@
 static COnQueryCvarValueFinishedListenerManager s_OnQueryCvarValueFinishedListenerManager;
 
 //-----------------------------------------------------------------------------
-// Overload for passing the arguments
-//-----------------------------------------------------------------------------
-void COnQueryCvarValueFinishedListenerManager::call_listeners( 
-    QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
-	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
 // OnQueryCvarValueFinishedListenerManager accessor.
 //-----------------------------------------------------------------------------
 COnQueryCvarValueFinishedListenerManager* get_on_query_cvar_value_finished_listener_manager()

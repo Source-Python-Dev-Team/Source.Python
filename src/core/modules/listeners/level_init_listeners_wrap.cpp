@@ -36,25 +36,6 @@
 static CLevelInitListenerManager s_LevelInitListenerManager;
 
 //-----------------------------------------------------------------------------
-// Overload for passing the arguments
-//-----------------------------------------------------------------------------
-void CLevelInitListenerManager::call_listeners( char const *pMapName )
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pMapName);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
 // LevelInitListenerManager accessor.
 //-----------------------------------------------------------------------------
 CLevelInitListenerManager* get_level_init_listener_manager()

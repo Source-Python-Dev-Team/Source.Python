@@ -36,25 +36,6 @@
 static CClientPutInServerListenerManager s_ClientPutInServerListenerManager;
 
 //-----------------------------------------------------------------------------
-// Overload for passing the arguments
-//-----------------------------------------------------------------------------
-void CClientPutInServerListenerManager::call_listeners( edict_t *pEntity, char const *playername )
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pEntity, playername);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
 // ClientPutInServerkListenerManager accessor.
 //-----------------------------------------------------------------------------
 CClientPutInServerListenerManager* get_client_put_in_server_listener_manager()

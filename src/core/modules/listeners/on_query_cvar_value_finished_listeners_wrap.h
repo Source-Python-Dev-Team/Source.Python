@@ -40,8 +40,6 @@
 //-----------------------------------------------------------------------------
 class COnQueryCvarValueFinishedListenerManager: public CListenerManager
 {
-    void call_listeners( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
-	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
 };
 
 COnQueryCvarValueFinishedListenerManager* get_on_query_cvar_value_finished_listener_manager();

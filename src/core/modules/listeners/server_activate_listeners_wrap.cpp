@@ -36,25 +36,6 @@
 static CServerActivateListenerManager s_ServerActivateListenerManager;
 
 //-----------------------------------------------------------------------------
-// Overload for passing the arguments
-//-----------------------------------------------------------------------------
-void CServerActivateListenerManager::call_listeners( edict_t *pEdictList, int edictCount, int clientMax )
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pEdictList, edictCount, clientMax );
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
 // ServerActivateListenerManager accessor.
 //-----------------------------------------------------------------------------
 CServerActivateListenerManager* get_server_activate_listener_manager()

@@ -36,25 +36,6 @@
 static CNetworkIDValidatedListenerManager s_NetworkIDValidatedListenerManager;
 
 //-----------------------------------------------------------------------------
-// Overload for passing the arguments
-//-----------------------------------------------------------------------------
-void CNetworkIDValidatedListenerManager::call_listeners( const char *pszUserName, const char *pszNetworkID )
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pszUserName, pszNetworkID);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
 // CNetworkIDValidatedListenerManager accessor.
 //-----------------------------------------------------------------------------
 CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager()

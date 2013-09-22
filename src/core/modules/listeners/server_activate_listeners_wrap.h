@@ -39,7 +39,6 @@
 //-----------------------------------------------------------------------------
 class CServerActivateListenerManager: public CListenerManager
 {
-    void call_listeners( edict_t *pEdictList, int edictCount, int clientMax );
 };
 
 CServerActivateListenerManager* get_server_activate_listener_manager();

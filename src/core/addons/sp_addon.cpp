@@ -67,7 +67,7 @@ CAddonManager::~CAddonManager( void )
 void CAddonManager::GameFrame()
 {
 	// Dispatch all tick listeners
-	get_tick_listener_manager()->call_listeners();
+	get_tick_listener_manager()->call_listeners(0);
 }
 
 //---------------------------------------------------------------------------------
@@ -75,6 +75,10 @@ void CAddonManager::GameFrame()
 //---------------------------------------------------------------------------------
 void CAddonManager::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
+	// Wrap the parameters
+	CListenerManager::Param p1, p2;
+	p1.name="pszUserName"; p1.type=CListenerManager::CHAR; p1.char_ptr = pszUserName;
+	p2.name="pszNetworkID"; p2.type=CListenerManager::CHAR; p2.char_ptr = pszNetworkID;
 	// Dispatch all NetwordIDValidatedListeners
-	get_networkid_validated_listener_manager()->call_listeners(pszUserName, pszNetworkID);
+	get_networkid_validated_listener_manager()->call_listeners(2, p1, p2);
 }
