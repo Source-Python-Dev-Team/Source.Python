@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2013 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -27,37 +27,17 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "networkid_validated_listeners_wrap.h"
-#include "utility/call_python.h"
+#include "on_edict_freed_listeners_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Static singletons.
 //-----------------------------------------------------------------------------
-static CNetworkIDValidatedListenerManager s_NetworkIDValidatedListenerManager;
+static COnEdictFreedListenerManager s_OnEdictFreedListenerManager;
 
 //-----------------------------------------------------------------------------
-// Overload for passing the arguments
+// OnEdictFreedListenerManager accessor.
 //-----------------------------------------------------------------------------
-void CNetworkIDValidatedListenerManager::call_listeners( const char *pszUserName, const char *pszNetworkID )
+COnEdictFreedListenerManager* get_on_edict_freed_listener_manager()
 {
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pszUserName, pszNetworkID);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
-// CNetworkIDValidatedListenerManager accessor.
-//-----------------------------------------------------------------------------
-CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager()
-{
-	return &s_NetworkIDValidatedListenerManager;
+	return &s_OnEdictFreedListenerManager;
 }

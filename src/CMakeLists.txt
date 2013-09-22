@@ -249,16 +249,41 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 # Listener module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LISTENERS_MODULE_HEADERS
+    core/modules/listeners/listeners.h
     core/modules/listeners/listenermanager.h
-    core/modules/listeners/tick_listeners_wrap.h
+    # Listeners
+    core/modules/listeners/client_active_listeners_wrap.h
+    core/modules/listeners/client_disconnect_listeners_wrap.h
+    core/modules/listeners/client_fully_connect_listeners_wrap.h
+    core/modules/listeners/client_put_in_server_listeners_wrap.h
+    core/modules/listeners/client_settings_changed_listeners_wrap.h
+    core/modules/listeners/level_init_listeners_wrap.h
+    core/modules/listeners/level_shutdown_listeners_wrap.h
     core/modules/listeners/networkid_validated_listeners_wrap.h
+    core/modules/listeners/on_edict_allocated_listeners_wrap.h
+    core/modules/listeners/on_edict_freed_listeners_wrap.h
+    core/modules/listeners/on_query_cvar_value_finished_listeners_wrap.h
+    core/modules/listeners/server_activate_listeners_wrap.h
+    core/modules/listeners/tick_listeners_wrap.h
 )
 
 Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
     core/modules/listeners/listenermanager.cpp
-    core/modules/listeners/tick_listeners_wrap.cpp
-    core/modules/listeners/networkid_validated_listeners_wrap.cpp
     core/modules/listeners/listeners_wrap_python.cpp
+    # Listeners
+    core/modules/listeners/client_active_listeners_wrap.cpp
+    core/modules/listeners/client_disconnect_listeners_wrap.cpp
+    core/modules/listeners/client_fully_connect_listeners_wrap.cpp
+    core/modules/listeners/client_put_in_server_listeners_wrap.cpp
+    core/modules/listeners/client_settings_changed_listeners_wrap.cpp
+    core/modules/listeners/level_init_listeners_wrap.cpp
+    core/modules/listeners/level_shutdown_listeners_wrap.cpp
+    core/modules/listeners/networkid_validated_listeners_wrap.cpp
+    core/modules/listeners/on_edict_allocated_listeners_wrap.cpp
+    core/modules/listeners/on_edict_freed_listeners_wrap.cpp
+    core/modules/listeners/on_query_cvar_value_finished_listeners_wrap.cpp
+    core/modules/listeners/server_activate_listeners_wrap.cpp
+    core/modules/listeners/tick_listeners_wrap.cpp
 )
 
 # ------------------------------------------------------------------

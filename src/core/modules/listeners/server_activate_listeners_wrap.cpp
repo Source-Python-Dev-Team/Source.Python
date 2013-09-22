@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2013 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -27,18 +27,18 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "networkid_validated_listeners_wrap.h"
+#include "server_activate_listeners_wrap.h"
 #include "utility/call_python.h"
 
 //-----------------------------------------------------------------------------
 // Static singletons.
 //-----------------------------------------------------------------------------
-static CNetworkIDValidatedListenerManager s_NetworkIDValidatedListenerManager;
+static CServerActivateListenerManager s_ServerActivateListenerManager;
 
 //-----------------------------------------------------------------------------
 // Overload for passing the arguments
 //-----------------------------------------------------------------------------
-void CNetworkIDValidatedListenerManager::call_listeners( const char *pszUserName, const char *pszNetworkID )
+void CServerActivateListenerManager::call_listeners( edict_t *pEdictList, int edictCount, int clientMax )
 {
 	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
@@ -48,16 +48,16 @@ void CNetworkIDValidatedListenerManager::call_listeners( const char *pszUserName
 			PyObject* pCallable = m_vecCallables[i].ptr();
 
 			// Call the callable
-			CALL_PY_FUNC(pCallable, pszUserName, pszNetworkID);
+			CALL_PY_FUNC(pCallable, pEdictList, edictCount, clientMax );
 
 		END_BOOST_PY_NORET()
 	}
 }
 
 //-----------------------------------------------------------------------------
-// CNetworkIDValidatedListenerManager accessor.
+// ServerActivateListenerManager accessor.
 //-----------------------------------------------------------------------------
-CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager()
+CServerActivateListenerManager* get_server_activate_listener_manager()
 {
-	return &s_NetworkIDValidatedListenerManager;
+	return &s_ServerActivateListenerManager;
 }

@@ -3,6 +3,7 @@
 //-----------------------------------------------------------------------------
 #include "listenermanager.h"
 #include "utility/call_python.h"
+#include "boost/python.hpp"
 
 //-----------------------------------------------------------------------------
 // Adds a callable to the end of the CListenerManager vector.
@@ -37,6 +38,28 @@ void CListenerManager::unregister_listener(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 // FSS No C++11 suport? In neither, VS2010 and VS2012?
 // template<typename... Types> void CListenerManager::call_listeners(typename... args)
+/* Other idea:
+typedef struct  {
+  int type;
+  union {
+    int int_value;
+    double double_value;
+    ...
+  };
+} Param;
+
+	boost::python::list lReturn = boost::python::list();
+
+	va_list varargs;
+
+	va_start(varargs, argc);
+	for (int i = 0; i < argc; i++)
+	{
+		lReturn.append<Param>(va_arg(varargs, Param));
+	}
+	va_end;
+*/
+
 void CListenerManager::call_listeners()
 {
 	for(int i = 0; i < m_vecCallables.Count(); i++)
@@ -48,6 +71,22 @@ void CListenerManager::call_listeners()
 
 			// Call the callable
 			CALL_PY_FUNC(pCallable);
+
+		END_BOOST_PY_NORET()
+	}
+}
+
+void CListenerManager::call_listeners( edict_t *pEntity )
+{
+	for(int i = 0; i < m_vecCallables.Count(); i++)
+	{
+		BEGIN_BOOST_PY()
+
+			// Get the PyObject instance of the callable
+			PyObject* pCallable = m_vecCallables[i].ptr();
+
+			// Call the callable
+			CALL_PY_FUNC(pCallable, pEntity);
 
 		END_BOOST_PY_NORET()
 	}

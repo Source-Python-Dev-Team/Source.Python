@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2013 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,40 +24,24 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _SERVER_ACTIVATE_LISTENER_MANAGER_H
+#define _SERVER_ACTIVATE_LISTENER_MANAGER_H
+
+
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "networkid_validated_listeners_wrap.h"
-#include "utility/call_python.h"
+#include "listenermanager.h"
+#include "edict.h"
 
 //-----------------------------------------------------------------------------
-// Static singletons.
+// CServerActivateListenerManager class
 //-----------------------------------------------------------------------------
-static CNetworkIDValidatedListenerManager s_NetworkIDValidatedListenerManager;
-
-//-----------------------------------------------------------------------------
-// Overload for passing the arguments
-//-----------------------------------------------------------------------------
-void CNetworkIDValidatedListenerManager::call_listeners( const char *pszUserName, const char *pszNetworkID )
+class CServerActivateListenerManager: public CListenerManager
 {
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
+    void call_listeners( edict_t *pEdictList, int edictCount, int clientMax );
+};
 
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
+CServerActivateListenerManager* get_server_activate_listener_manager();
 
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pszUserName, pszNetworkID);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
-// CNetworkIDValidatedListenerManager accessor.
-//-----------------------------------------------------------------------------
-CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager()
-{
-	return &s_NetworkIDValidatedListenerManager;
-}
+#endif // _SERVER_ACTIVATE_LISTENER_MANAGER_H

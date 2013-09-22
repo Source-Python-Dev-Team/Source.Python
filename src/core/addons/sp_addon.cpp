@@ -33,8 +33,7 @@
 #include "filesystem.h"
 #include "core/sp_gamedir.h"
 #include "utility/wrap_macros.h"
-#include "modules/listeners/tick_listeners_wrap.h"
-#include "modules/listeners/networkid_validated_listeners_wrap.h"
+#include "modules/listeners/listeners.h"
 
 //---------------------------------------------------------------------------------
 // External variables
@@ -72,7 +71,7 @@ void CAddonManager::GameFrame()
 }
 
 //---------------------------------------------------------------------------------
-// Calls tick listener.
+// Calls network id validated listeners.
 //---------------------------------------------------------------------------------
 void CAddonManager::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {

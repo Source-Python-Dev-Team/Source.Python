@@ -27,37 +27,19 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "networkid_validated_listeners_wrap.h"
-#include "utility/call_python.h"
 
-//-----------------------------------------------------------------------------
-// Static singletons.
-//-----------------------------------------------------------------------------
-static CNetworkIDValidatedListenerManager s_NetworkIDValidatedListenerManager;
+#include "modules/listeners/client_active_listeners_wrap.h"
+#include "modules/listeners/client_disconnect_listeners_wrap.h"
+#include "modules/listeners/client_fully_connect_listeners_wrap.h"
+#include "modules/listeners/client_put_in_server_listeners_wrap.h"
+#include "modules/listeners/client_settings_changed_listeners_wrap.h"
+#include "modules/listeners/level_init_listeners_wrap.h"
+#include "modules/listeners/level_shutdown_listeners_wrap.h"
+#include "modules/listeners/networkid_validated_listeners_wrap.h"
+#include "modules/listeners/on_edict_allocated_listeners_wrap.h"
+#include "modules/listeners/on_edict_freed_listeners_wrap.h"
+#include "modules/listeners/on_query_cvar_value_finished_listeners_wrap.h"
+#include "modules/listeners/server_activate_listeners_wrap.h"
+#include "modules/listeners/tick_listeners_wrap.h"
 
-//-----------------------------------------------------------------------------
-// Overload for passing the arguments
-//-----------------------------------------------------------------------------
-void CNetworkIDValidatedListenerManager::call_listeners( const char *pszUserName, const char *pszNetworkID )
-{
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable
-			CALL_PY_FUNC(pCallable, pszUserName, pszNetworkID);
-
-		END_BOOST_PY_NORET()
-	}
-}
-
-//-----------------------------------------------------------------------------
-// CNetworkIDValidatedListenerManager accessor.
-//-----------------------------------------------------------------------------
-CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager()
-{
-	return &s_NetworkIDValidatedListenerManager;
-}
+// Meta Includer
