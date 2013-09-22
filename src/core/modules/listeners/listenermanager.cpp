@@ -53,13 +53,19 @@ void CListenerManager::call_listeners(int argc, ...)
 		    Param p = va_arg(varargs, Param);
 			switch (p.type)
 			{
-				case CListenerManager::INTEGER:
+				case CListenerManager::INT:
 					dReturn[p.name] = p.int_value;
 					break;
-				case CListenerManager::CHAR:
+				case CListenerManager::BOOL:
+					dReturn[p.name] = p.bool_value;
+					break;
+				case CListenerManager::CONST_CHAR_PTR:
+					dReturn[p.name] = p.const_char_ptr;
+					break;
+				case CListenerManager::CHAR_PTR:
 					dReturn[p.name] = p.char_ptr;
 					break;
-				case CListenerManager::EDICT_T:
+				case CListenerManager::EDICT_T_PTR:
 					dReturn[p.name] = CEdict(p.edict_t_ptr);
 			}
 		}

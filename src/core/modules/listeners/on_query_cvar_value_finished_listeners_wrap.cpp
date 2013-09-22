@@ -28,7 +28,6 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "on_query_cvar_value_finished_listeners_wrap.h"
-#include "utility/call_python.h"
 
 //-----------------------------------------------------------------------------
 // Static singletons.

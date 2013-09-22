@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2013 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,20 +24,22 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _CLIENT_CONNECT_LISTENER_MANAGER_H
+#define _CLIENT_CONNECT_LISTENER_MANAGER_H
+
+
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "networkid_validated_listeners_wrap.h"
+#include "listenermanager.h"
 
 //-----------------------------------------------------------------------------
-// Static singletons.
+// CClientConnectListenerManager class
 //-----------------------------------------------------------------------------
-static CNetworkIDValidatedListenerManager s_NetworkIDValidatedListenerManager;
-
-//-----------------------------------------------------------------------------
-// CNetworkIDValidatedListenerManager accessor.
-//-----------------------------------------------------------------------------
-CNetworkIDValidatedListenerManager* get_networkid_validated_listener_manager()
+class CClientConnectListenerManager: public CListenerManager
 {
-	return &s_NetworkIDValidatedListenerManager;
-}
+};
+
+CClientConnectListenerManager* get_client_connect_listener_manager();
+
+#endif // _CLIENT_CONNECT_LISTENER_MANAGER_H

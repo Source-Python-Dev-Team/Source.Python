@@ -28,7 +28,9 @@
 // Includes
 //-----------------------------------------------------------------------------
 
+// Meta Includer
 #include "modules/listeners/client_active_listeners_wrap.h"
+#include "modules/listeners/client_connect_listeners_wrap.h"
 #include "modules/listeners/client_disconnect_listeners_wrap.h"
 #include "modules/listeners/client_fully_connect_listeners_wrap.h"
 #include "modules/listeners/client_put_in_server_listeners_wrap.h"
@@ -41,5 +43,3 @@
 #include "modules/listeners/on_query_cvar_value_finished_listeners_wrap.h"
 #include "modules/listeners/server_activate_listeners_wrap.h"
 #include "modules/listeners/tick_listeners_wrap.h"
-
-// Meta Includer

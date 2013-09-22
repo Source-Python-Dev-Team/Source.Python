@@ -16,9 +16,11 @@ class CListenerManager
 public:
 
 	enum types {
-		INTEGER=0,
-		CHAR,
-		EDICT_T
+		INT=0,
+		BOOL, // Only used in ClientConnect
+		CONST_CHAR_PTR,
+		CHAR_PTR, // Only used in ClientConnect
+		EDICT_T_PTR,
 	};
 
 	struct Param {
@@ -26,7 +28,9 @@ public:
 		const char* name; // For naming in the dict
 		union {
 			int int_value;
-			const char* char_ptr;
+			bool bool_value;
+			char* char_ptr;
+			const char* const_char_ptr;
 			edict_t* edict_t_ptr;
 		};
 	};

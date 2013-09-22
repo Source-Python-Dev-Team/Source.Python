@@ -31,7 +31,6 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "listenermanager.h"
-#include "utility/call_python.h"
 
 //-----------------------------------------------------------------------------
 // CNetworkIDValidatedListenerManager class

@@ -79,6 +79,18 @@ void export_listener_managers()
 	);
 
 	//-------------------------------------------------------------------------
+	// Exposes CClientConnectListenerManager
+	//-------------------------------------------------------------------------
+	BOOST_ABSTRACT_CLASS_INHERITED(CClientConnectListenerManager, CListenerManager)
+
+	BOOST_END_CLASS()
+
+	BOOST_FUNCTION(get_client_connect_listener_manager,
+		"Returns the CClientConnectListenerManager instance",
+		reference_existing_object_policy()
+	);
+
+	//-------------------------------------------------------------------------
 	// Exposes CClientDisconnectListenerManager
 	//-------------------------------------------------------------------------
 	BOOST_ABSTRACT_CLASS_INHERITED(CClientDisconnectListenerManager, CListenerManager)

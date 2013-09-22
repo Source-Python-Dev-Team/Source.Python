@@ -32,8 +32,6 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "listenermanager.h"
-#include "edict.h"
-#include "engine/iserverplugin.h"
 
 //-----------------------------------------------------------------------------
 // COnQueryCvarValueFinishedListenerManager class

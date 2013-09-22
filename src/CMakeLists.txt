@@ -253,6 +253,7 @@ Set(SOURCEPYTHON_LISTENERS_MODULE_HEADERS
     core/modules/listeners/listenermanager.h
     # Listeners
     core/modules/listeners/client_active_listeners_wrap.h
+    core/modules/listeners/client_connect_listeners_wrap.h
     core/modules/listeners/client_disconnect_listeners_wrap.h
     core/modules/listeners/client_fully_connect_listeners_wrap.h
     core/modules/listeners/client_put_in_server_listeners_wrap.h
@@ -272,6 +273,7 @@ Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
     core/modules/listeners/listeners_wrap_python.cpp
     # Listeners
     core/modules/listeners/client_active_listeners_wrap.cpp
+    core/modules/listeners/client_connect_listeners_wrap.cpp
     core/modules/listeners/client_disconnect_listeners_wrap.cpp
     core/modules/listeners/client_fully_connect_listeners_wrap.cpp
     core/modules/listeners/client_put_in_server_listeners_wrap.cpp

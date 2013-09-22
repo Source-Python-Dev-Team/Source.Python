@@ -28,7 +28,6 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "server_activate_listeners_wrap.h"
-#include "utility/call_python.h"
 
 //-----------------------------------------------------------------------------
 // Static singletons.
