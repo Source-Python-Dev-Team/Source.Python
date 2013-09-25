@@ -5,7 +5,20 @@
 #include "utility/call_python.h"
 #include "boost/python.hpp"
 #include "modules/entities/entities_wrap.h"
-#include <stdarg.h> // For va_list, va_end etc
+
+//-----------------------------------------------------------------------------
+// Macros
+//-----------------------------------------------------------------------------
+
+#define BEGIN_CALL_LISTENER() \
+	for(int i = 0; i < m_vecCallables.Count(); i++) \
+	{ \
+		BEGIN_BOOST_PY() \
+			PyObject* pCallable = m_vecCallables[i].ptr(); \
+
+#define END_CALL_LISTENER( ... ) \
+	    END_BOOST_PY_NORET() \
+	} 
 
 //-----------------------------------------------------------------------------
 // Adds a callable to the end of the CListenerManager vector.
@@ -39,61 +52,84 @@ void CListenerManager::unregister_listener(PyObject* pCallable)
 // Calls all registered listeners.
 //-----------------------------------------------------------------------------
 
-void CListenerManager::call_listeners(int argc, ...)
+void CListenerManager::call_listeners()
 {
-	if (argc > 0)
-	{
-		boost::python::dict dReturn = boost::python::dict();
+	BEGIN_CALL_LISTENER()
+		CALL_PY_FUNC(pCallable);
+	END_CALL_LISTENER()
+}
 
-		va_list varargs;
+void CListenerManager::call_listeners( edict_t *pEntity )
+{
+	CEdict *entity = new CEdict(pEntity); 
 
-		va_start(varargs, argc);
-		for (int i = 0; i < argc; i++)
-		{
-		    Param p = va_arg(varargs, Param);
-			switch (p.type)
-			{
-				case CListenerManager::BOOL:
-					dReturn[p.name] = p.bool_value;
-					break;
-				case CListenerManager::INT:
-					dReturn[p.name] = p.int_value;
-					break;
-				case CListenerManager::CONST_CHAR_PTR:
-					dReturn[p.name] = p.const_char_ptr;
-					break;
-				case CListenerManager::EDICT_T_PTR:
-					dReturn[p.name] = CEdict(p.edict_t_ptr);
-			}
-		}
-		va_end(varargs);
+	BEGIN_CALL_LISTENER()
+		// Call the callable
+		CALL_PY_FUNC(pCallable, entity);
+	END_CALL_LISTENER()
+}
 
-		for(int i = 0; i < m_vecCallables.Count(); i++)
-		{
-			BEGIN_BOOST_PY()
+// LevelIinit
+void CListenerManager::call_listeners(char const *pMapName)
+{
+	BEGIN_CALL_LISTENER()
+		// Call the callable
+		CALL_PY_FUNC(pCallable, pMapName);
+	END_CALL_LISTENER()
+}
 
-				// Get the PyObject instance of the callable
-				PyObject* pCallable = m_vecCallables[i].ptr();
+// ClientFullyConnect
+void CListenerManager::call_listeners( edict_t *pEntity, const char *playername )
+{
+	CEdict *entity = new CEdict(pEntity); 
 
-				// Call the callable
-				CALL_PY_FUNC(pCallable, dReturn);
+	BEGIN_CALL_LISTENER()
+		// Call the callable
+		CALL_PY_FUNC(pCallable, entity, playername);
+	END_CALL_LISTENER()
+}
 
-			END_BOOST_PY_NORET()
-		}
-	}
-	else // For speed reasons (i.e. ticklistener) this sperate, so it doesn't create dictionary objects if no parameters are passed
-	{
-		for(int i = 0; i < m_vecCallables.Count(); i++)
-		{
-			BEGIN_BOOST_PY()
+// NetworkID
+void CListenerManager::call_listeners(const char *pszUserName, const char *pszNetworkID)
+{
+	BEGIN_CALL_LISTENER()
+		// Call the callable
+		CALL_PY_FUNC(pCallable, pszUserName, pszNetworkID);
+	END_CALL_LISTENER()
+}
 
-				// Get the PyObject instance of the callable
-				PyObject* pCallable = m_vecCallables[i].ptr();
+// ServerActivate
+void CListenerManager::call_listeners(edict_t *pEdictList, int edictCount, int clientMax)
+{
+	// TODO? Edictlist
+	CEdict *entity = new CEdict(pEdictList); 
 
-				// Call the callable
-				CALL_PY_FUNC(pCallable);
+	BEGIN_CALL_LISTENER()
+		CALL_PY_FUNC(pCallable, entity, edictCount, clientMax);
+	END_CALL_LISTENER()
+}
+// ClientConnect
+void CListenerManager::call_listeners(bool *bAllowConnect, edict_t *pEntity, 
+	const char *pszName, const char *pszAddress, char *reject, 
+	int maxrejectlen)
+{
+	bool bAllowConnect_safe = &bAllowConnect;
+	CEdict *entity = new CEdict(pEntity); 
+	const char *reject_safe = reject;
 
-			END_BOOST_PY_NORET()
-		}
-	}
+	BEGIN_CALL_LISTENER()
+		CALL_PY_FUNC(pCallable, bAllowConnect_safe, entity, pszName, pszAddress, reject_safe, maxrejectlen);
+	END_CALL_LISTENER()
+}
+// OnQueryCvarValueFinished
+void CListenerManager::call_listeners(QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, 
+	EQueryCvarValueStatus eStatus, const char *pCvarName, 
+	const char *pCvarValue)
+{
+	int cookie = (int)iCookie;
+	CEdict *entity = new CEdict(pPlayerEntity);
+
+	BEGIN_CALL_LISTENER()
+		CALL_PY_FUNC(pCallable, cookie, entity, eStatus, pCvarName, pCvarValue);
+	END_CALL_LISTENER()
 }

@@ -67,170 +67,76 @@ void export_listener_managers()
 	BOOST_END_CLASS()
 
 	//-------------------------------------------------------------------------
-	// Exposes CClientActiveListenerManager
+	// Expose the getter functions
 	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CClientActiveListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_client_active_listener_manager,
-		"Returns the CClientActiveListenerManager instance",
+		"Returns the clientactive listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CClientConnectListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CClientConnectListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_client_connect_listener_manager,
-		"Returns the CClientConnectListenerManager instance",
+		"Returns the clientconnect listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CClientDisconnectListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CClientDisconnectListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_client_disconnect_listener_manager,
-		"Returns the CClientDisconnectListenerManager instance",
+		"Returns the clientdisconnect listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CClientFullyConnectListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CClientFullyConnectListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_client_fully_connect_listener_manager,
-		"Returns the CClientFullyConnectListenerManager instance",
+		"Returns the clientfullyconnect listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CClientPutInServerListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CClientPutInServerListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_client_put_in_server_listener_manager,
-		"Returns the CClientPutInServerListenerManager instance",
+		"Returns the clientputinserver listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CClientSettingsChangedListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CClientSettingsChangedListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_client_settings_changed_listener_manager,
-		"Returns the CClientSettingsChangedListenerManager instance",
+		"Returns the clientsettingschanged listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CLevelInitListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CLevelInitListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_level_init_listener_manager,
-		"Returns the CLevelInitListenerManager instance",
+		"Returns the levelinit listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CLevelShutdownListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CLevelShutdownListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_level_shutdown_listener_manager,
-		"Returns the CLevelShutdownListenerManager instance",
+		"Returns the levelshutdown listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CNetworkidValidatedListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CNetworkIDValidatedListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_networkid_validated_listener_manager,
-		"Returns the CNetworkidValidatedListenerManager instance",
+		"Returns the networkidvalidated listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes COnEdictAllocatedListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(COnEdictAllocatedListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_on_edict_allocated_listener_manager,
-		"Returns the COnEdictAllocatedListenerManager instance",
+		"Returns the onedictallocated listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes COnEdictFreedListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(COnEdictFreedListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_on_edict_freed_listener_manager,
-		"Returns the COnEdictFreedListenerManager instance",
+		"Returns the onedictfreed listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes COnQueryCvarValueFinishedListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(COnQueryCvarValueFinishedListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_on_query_cvar_value_finished_listener_manager,
-		"Returns the COnQueryCvarValueFinishedListenerManager instance",
+		"Returns the onquerycvarvaluefinished listener instance",
 		reference_existing_object_policy()
 	);
-
-	//-------------------------------------------------------------------------
-	// Exposes CServerActivateListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CServerActivateListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
 
 	BOOST_FUNCTION(get_server_activate_listener_manager,
-		"Returns the CServerActivateListenerManager instance",
+		"Returns the serveractivate listener instance",
 		reference_existing_object_policy()
 	);
 
-	//-------------------------------------------------------------------------
-	// Exposes CTickListenerManager
-	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS_INHERITED(CTickListenerManager, CListenerManager)
-
-	BOOST_END_CLASS()
-
 	BOOST_FUNCTION(get_tick_listener_manager,
-		"Returns the CTickListenerManager instance",
+		"Returns the tick listener instance",
 		reference_existing_object_policy()
 	);
 }

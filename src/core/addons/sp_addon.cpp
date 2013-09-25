@@ -67,7 +67,7 @@ CAddonManager::~CAddonManager( void )
 void CAddonManager::GameFrame()
 {
 	// Dispatch all tick listeners
-	get_tick_listener_manager()->call_listeners(0);
+	get_tick_listener_manager()->call_listeners();
 }
 
 //---------------------------------------------------------------------------------
@@ -75,18 +75,8 @@ void CAddonManager::GameFrame()
 //---------------------------------------------------------------------------------
 void CAddonManager::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1, p2;
-	
-	p1.name="playername"; 
-	p1.type=CListenerManager::CONST_CHAR_PTR; 
-	p1.const_char_ptr = pszUserName;
-	
-	p2.name="networkid"; 
-	p2.type=CListenerManager::CONST_CHAR_PTR;
-	p2.const_char_ptr = pszNetworkID;
 	// Dispatch all NetwordIDValidatedListeners
-	get_networkid_validated_listener_manager()->call_listeners(2, p1, p2);
+	get_networkid_validated_listener_manager()->call_listeners(pszUserName, pszNetworkID);
 }
 
 
@@ -95,14 +85,8 @@ void CAddonManager::NetworkIDValidated( const char *pszUserName, const char *psz
 //---------------------------------------------------------------------------------
 void CAddonManager::LevelInit( char const *pMapName )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1;
-	
-	p1.name="mapname"; 
-	p1.type=CListenerManager::CONST_CHAR_PTR; 
-	p1.const_char_ptr= pMapName;
 	// Dispatch all LevelInit listeners
-	get_level_init_listener_manager()->call_listeners(1, p1);
+	get_level_init_listener_manager()->call_listeners(pMapName);
 }
 
 //---------------------------------------------------------------------------------
@@ -111,22 +95,8 @@ void CAddonManager::LevelInit( char const *pMapName )
 // TODO: will not work if this is really a list
 void CAddonManager::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1, p2, p3;
-	
-	p1.name="edictlist"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr= pEdictList;
-
-	p2.name="edict_count"; 
-	p2.type=CListenerManager::INT; 
-	p2.int_value=edictCount;
-
-	p3.name="max_clients"; 
-	p3.type=CListenerManager::INT; 
-	p3.int_value=clientMax;
 	// Dispatch all LevelInit listeners
-	get_server_activate_listener_manager()->call_listeners(3, p1, p2, p3);
+	get_server_activate_listener_manager()->call_listeners(pEdictList, edictCount, clientMax);
 }
 
 //---------------------------------------------------------------------------------
@@ -135,7 +105,7 @@ void CAddonManager::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 void CAddonManager::LevelShutdown( void )
 {
     // Dispatch all tick listeners
-	get_level_shutdown_listener_manager()->call_listeners(0);
+	get_level_shutdown_listener_manager()->call_listeners();
 }
 
 
@@ -144,14 +114,8 @@ void CAddonManager::LevelShutdown( void )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientActive( edict_t *pEntity )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1;
-	
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr= pEntity;
 	// Dispatch all LevelInit listeners
-	get_client_active_listener_manager()->call_listeners(1, p1);
+	get_client_active_listener_manager()->call_listeners(pEntity);
 }
 
 //---------------------------------------------------------------------------------
@@ -159,14 +123,8 @@ void CAddonManager::ClientActive( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientDisconnect( edict_t *pEntity )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1;
-	
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr= pEntity;
 	// Dispatch all LevelInit listeners
-	get_client_disconnect_listener_manager()->call_listeners(1, p1);
+	get_client_disconnect_listener_manager()->call_listeners(pEntity);
 }
 
 //---------------------------------------------------------------------------------
@@ -174,18 +132,8 @@ void CAddonManager::ClientDisconnect( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1, p2;
-	
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr= pEntity;
-
-	p2.name="playername"; 
-	p2.type=CListenerManager::CONST_CHAR_PTR; 
-	p2.const_char_ptr= playername;
 	// Dispatch all LevelInit listeners
-	get_client_put_in_server_listener_manager()->call_listeners(2, p1, p2);
+	get_client_put_in_server_listener_manager()->call_listeners(pEntity, playername);
 }
 
 //---------------------------------------------------------------------------------
@@ -193,14 +141,8 @@ void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername 
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1;
-	
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr= pEdict;
 	// Dispatch all LevelInit listeners
-	get_client_settings_changed_listener_manager()->call_listeners(1, p1);
+	get_client_settings_changed_listener_manager()->call_listeners(pEdict);
 }
 
 //---------------------------------------------------------------------------------
@@ -209,39 +151,8 @@ void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, 
 	const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1, p2, p3, p4, p5, p6;
-	
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr=pEntity;
-
-	p2.name="playername"; 
-	p2.type=CListenerManager::CONST_CHAR_PTR; 
-	p2.const_char_ptr=pszName;
-
-	p3.name="network_address"; 
-	p3.type=CListenerManager::CONST_CHAR_PTR; 
-	p3.const_char_ptr=pszAddress;
-
-	p4.name="max_reject_len"; 
-	p4.type=CListenerManager::INT; 
-	p4.int_value=maxrejectlen;
-
-	// Must be casted in order to avoid crash
-	// TODO: Maybe in the future this can done properly, so people can reject the 
-	// connection from python, but for now it's read-only
-	const char* reject_copy = reject;
-	p5.name="reject"; 
-	p5.type=CListenerManager::CONST_CHAR_PTR; 
-	p5.const_char_ptr=reject_copy;
-
-	p6.name="is_allowed_to_connect"; 
-	p6.type=CListenerManager::BOOL; 
-	p6.bool_value=&bAllowConnect;
-	
 	// Dispatch all LevelInit listeners
-	get_client_connect_listener_manager()->call_listeners(6, p1, p2, p3, p4, p5, p6);
+	get_client_connect_listener_manager()->call_listeners(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
 }
 
 //---------------------------------------------------------------------------------
@@ -251,31 +162,9 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 	edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, 
 	const char *pCvarValue )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1, p2, p3, p4, p5;
-	
-	p1.name="cookie_id"; 
-	p1.type=CListenerManager::INT;
-	// iCookie is just an int
-	p1.int_value=(int)iCookie;
 
-	p2.name="edict"; 
-	p2.type=CListenerManager::EDICT_T_PTR; 
-	p2.edict_t_ptr=pPlayerEntity;
-
-	p3.name="cookie_status"; 
-	p3.type=CListenerManager::INT; 
-	p3.int_value=static_cast<int>(eStatus);
-
-	p4.name="cvar_name"; 
-	p4.type=CListenerManager::CONST_CHAR_PTR; 
-	p4.const_char_ptr=pCvarName;
-
-	p5.name="cvar_value"; 
-	p5.type=CListenerManager::CONST_CHAR_PTR; 
-	p5.const_char_ptr=pCvarValue;
 	// Dispatch all LevelInit listeners
-	get_client_fully_connect_listener_manager()->call_listeners(5, p1, p2, p3, p4, p5);
+	get_client_fully_connect_listener_manager()->call_listeners(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
 }
 //
 // 
@@ -283,41 +172,19 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 #if(SOURCE_ENGINE >= 3)
 void CAddonManager::ClientFullyConnect( edict_t *pEntity )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1;
-	
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr=pEntity;
 	// Dispatch all LevelInit listeners
-	get_client_fully_connect_listener_manager()->call_listeners(1, p1);
+	get_client_fully_connect_listener_manager()->call_listeners(pEntity);
 }
 
 void CAddonManager::OnEdictAllocated( edict_t *edict )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1;
-	
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	p1.edict_t_ptr=edict;
 	// Dispatch all LevelInit listeners
-	get_on_edict_allocated_listener_manager()->call_listeners(1, p1);
+	get_on_edict_allocated_listener_manager()->call_listeners(edict);
 }
 
 void CAddonManager::OnEdictFreed( const edict_t *edict )
 {
-	// Wrap the parameters
-	CListenerManager::Param p1;
-
-	p1.name="edict"; 
-	p1.type=CListenerManager::EDICT_T_PTR; 
-	// This might not be a good idea, who knows :P
-	p1.edict_t_ptr=const_cast<edict_t*>(edict);
-
 	// Dispatch all LevelInit listeners
-	get_on_edict_freed_listener_manager()->call_listeners(1, p1);
-
-	//get_on_edict_freed_listener_manager()->call_listeners(0);
+	get_on_edict_freed_listener_manager()->call_listeners(const_cast<edict_t*>(edict));
 }
 #endif
