@@ -26,6 +26,8 @@ from commands.server import ServerCommand
 from tick.delays import TickDelays
 #   Translations
 from translations.strings import LangStrings
+#   Paths
+from paths import SP_DATA_PATH
 
 
 # =============================================================================
@@ -341,7 +343,7 @@ def _print_credits():
 
     # Get the credits information
     groups = ConfigObj(
-        DATA_PATH.joinpath('credits.ini'), encoding='unicode_escape')
+        SP_DATA_PATH.joinpath('credits.ini'), encoding='unicode_escape')
 
     # Loop through all groups in the credits
     for group in groups:

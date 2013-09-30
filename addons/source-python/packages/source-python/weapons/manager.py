@@ -10,7 +10,7 @@ from configobj import ConfigObj
 # Source.Python Imports
 from core import GAME_NAME
 from cvars import ServerVar
-from paths import DATA_PATH
+from paths import SP_DATA_PATH
 from public import public
 #   Weapons
 from weapons.default import NoWeaponManager
@@ -20,7 +20,7 @@ from weapons.default import NoWeaponManager
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the game's ini path
-_gamepath = DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
+_gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 
 
 # =============================================================================

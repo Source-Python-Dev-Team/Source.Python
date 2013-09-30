@@ -1,1 +1,3 @@
-cmake -DGAME=ob-valve
+mkdir Build
+cd Build
+cmake .. -DGAME=ob-valve

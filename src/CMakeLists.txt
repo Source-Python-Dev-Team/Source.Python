@@ -404,6 +404,12 @@ Add_Library(source-python SHARED
 )
 
 # ------------------------------------------------------------------
+# Remove prefixes for core and source-python
+# ------------------------------------------------------------------
+Set_Target_Properties(core PROPERTIES PREFIX "")
+Set_Target_Properties(source-python PROPERTIES PREFIX "")
+
+# ------------------------------------------------------------------
 # Include the base makefile.
 # ------------------------------------------------------------------
 If(WIN32)
