@@ -181,7 +181,7 @@ int CPlayerInfo::get_max_health() const
 
 CEdict* CPlayerInfo::get_edict() const
 {
-	return new CEdict(m_edict_ptr->get_edict());
+	return m_edict_ptr;
 }
 
 //-----------------------------------------------------------------------------
