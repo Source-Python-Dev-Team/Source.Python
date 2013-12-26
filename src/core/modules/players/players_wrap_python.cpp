@@ -182,7 +182,7 @@ void export_playerinfo()
 		CLASS_METHOD(CPlayerInfo,
 			get_edict,
 			"Returns the player's CEdict instance.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
 	BOOST_END_CLASS()
