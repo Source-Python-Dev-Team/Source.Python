@@ -18,6 +18,8 @@ from re import VERBOSE
 #   Configobj
 from configobj import ConfigObj
 from configobj import Section
+#   Path
+from path import Path
 
 # Source.Python Imports
 from paths import TRANSLATION_PATH
@@ -43,18 +45,12 @@ _double_escaped_pattern = re_compile(
 class LangStrings(dict):
     '''Dictionary class used to store all strings for a plugin'''
 
-    def __init__(self, *file_path, encoding='utf_8'):
+    def __init__(self, infile, encoding='utf_8'):
         '''Adds all strings as TranslationStrings
             instances and fixes double escaped strings'''
 
-        # Set file_path to a list, so that .ini can be added to the last element
-        file_path = list(file_path)
-
-        # Add .ini to the last element
-        file_path[~0] += '.ini'
-
         # Get the path to the given file
-        self._mainfile = TRANSLATION_PATH.joinpath(*file_path)
+        self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
 
         # Does the file exist?
         if not self._mainfile.isfile():
@@ -71,7 +67,7 @@ class LangStrings(dict):
         main_strings = ConfigObj(self._mainfile, encoding=encoding)
 
         # Does the server specific file exist?
-        if not self._serverfile.isfile() and file_path[0] != '_core':
+        if not self._serverfile.isfile() and not infile.startswith('_core/'):
 
             # Create the server specific file
             self._create_server_file()

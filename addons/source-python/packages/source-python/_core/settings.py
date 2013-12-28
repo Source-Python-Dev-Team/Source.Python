@@ -179,5 +179,44 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         self['LOG_SETTINGS'].comments['areas'] = ['\n\n'] + _core_strings[
             'log_areas'].get_string(self._language).splitlines()
 
+    def _check_user_settings(self):
+        '''Adds user settings if they are missing'''
+
+        # Are there any user settings in the file?
+        if not 'USER_SETTINGS' in self:
+
+            # Add the user settings
+            self['USER_SETTINGS'] = {}
+
+        # Is there a private say commands setting?
+        if not 'private_say_commands' in self['USER_SETTINGS']:
+
+            # Add the private say commands setting
+            self['USER_SETTINGS']['private_say_commands'] = ''
+
+        # Set the private say commands comments
+        self['USER_SETTINGS'].comments['private_say_commands'] = _core_strings[
+            'private_say_commands'].get_string(self._language).splitlines()
+
+        # Is there a public say commands setting?
+        if not 'public_say_commands' in self['USER_SETTINGS']:
+
+            # Add the public say commands setting
+            self['USER_SETTINGS']['public_say_commands'] = ''
+
+        # Set the public say commands comments
+        self['USER_SETTINGS'].comments['public_say_commands'] = _core_strings[
+            'public_say_commands'].get_string(self._language).splitlines()
+
+        # Is there a client commands setting?
+        if not 'client_commands' in self['USER_SETTINGS']:
+
+            # Add the client commands setting
+            self['USER_SETTINGS']['client_commands'] = ''
+
+        # Set the client commands comments
+        self['USER_SETTINGS'].comments['client_commands'] = _core_strings[
+            'client_commands'].get_string(self._language).splitlines()
+
 # Get the _CoreSettings instance
 _CoreSettingsInstance = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))
