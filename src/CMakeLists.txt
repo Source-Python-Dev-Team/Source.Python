@@ -246,15 +246,17 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Tick Listener module
+# Listener module
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS
-    core/modules/ticklisteners/ticklisteners_wrap.h
+Set(SOURCEPYTHON_LISTENERS_MODULE_HEADERS
+    core/modules/listeners/listeners.h
+    core/modules/listeners/listenermanager.h
 )
 
-Set(SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES
-    core/modules/ticklisteners/ticklisteners_wrap.cpp
-    core/modules/ticklisteners/ticklisteners_wrap_python.cpp
+Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
+    core/modules/listeners/listeners.cpp
+    core/modules/listeners/listenermanager.cpp
+    core/modules/listeners/listeners_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -322,8 +324,8 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
     ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS}
-    ${SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES}
+    ${SOURCEPYTHON_LISTENERS_MODULE_HEADERS}
+    ${SOURCEPYTHON_LISTENERS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS}
     ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES}
@@ -354,7 +356,7 @@ Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_
 Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Vecmath"                FILES ${SOURCEPYTHON_VECMATH_MODULE_HEADERS})
@@ -373,7 +375,7 @@ Source_Group("Source Files\\Module\\Event"	                FILES ${SOURCEPYTHON_
 Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\TickListeners"          FILES ${SOURCEPYTHON_TICKLISTENER_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Vecmath"                FILES ${SOURCEPYTHON_VECMATH_MODULE_SOURCES})

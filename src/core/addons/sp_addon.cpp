@@ -33,7 +33,7 @@
 #include "filesystem.h"
 #include "core/sp_gamedir.h"
 #include "utility/wrap_macros.h"
-#include "modules/ticklisteners/ticklisteners_wrap.h"
+#include "modules/listeners/listeners.h"
 
 //---------------------------------------------------------------------------------
 // External variables
@@ -67,5 +67,124 @@ CAddonManager::~CAddonManager( void )
 void CAddonManager::GameFrame()
 {
 	// Dispatch all tick listeners
-	get_tick_listener_manager()->call_tick_listeners();
+	get_tick_listener_manager()->call_listeners();
 }
+
+//---------------------------------------------------------------------------------
+// Calls network id validated listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
+{
+	// Dispatch all NetwordIDValidatedListeners
+	get_networkid_validated_listener_manager()->call_listeners(pszUserName, pszNetworkID);
+}
+
+
+//---------------------------------------------------------------------------------
+// Calls level init listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::LevelInit( char const *pMapName )
+{
+	// Dispatch all LevelInit listeners
+	get_level_init_listener_manager()->call_listeners(pMapName);
+}
+
+//---------------------------------------------------------------------------------
+// Calls server activate listeners.
+//---------------------------------------------------------------------------------
+// TODO: will not work if this is really a list
+void CAddonManager::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
+{
+	// Dispatch all LevelInit listeners
+	get_server_activate_listener_manager()->call_listeners(pEdictList, edictCount, clientMax);
+}
+
+//---------------------------------------------------------------------------------
+// Calls level shutdown listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::LevelShutdown( void )
+{
+    // Dispatch all tick listeners
+	get_level_shutdown_listener_manager()->call_listeners();
+}
+
+
+//---------------------------------------------------------------------------------
+// Calls client active listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::ClientActive( edict_t *pEntity )
+{
+	// Dispatch all LevelInit listeners
+	get_client_active_listener_manager()->call_listeners(pEntity);
+}
+
+//---------------------------------------------------------------------------------
+// Calls client disconnect listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::ClientDisconnect( edict_t *pEntity )
+{
+	// Dispatch all LevelInit listeners
+	get_client_disconnect_listener_manager()->call_listeners(pEntity);
+}
+
+//---------------------------------------------------------------------------------
+// Calls client put in server listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername )
+{
+	// Dispatch all LevelInit listeners
+	get_client_put_in_server_listener_manager()->call_listeners(pEntity, playername);
+}
+
+//---------------------------------------------------------------------------------
+// Calls client settings changed listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
+{
+	// Dispatch all LevelInit listeners
+	get_client_settings_changed_listener_manager()->call_listeners(pEdict);
+}
+
+//---------------------------------------------------------------------------------
+// Calls client connect listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, 
+	const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
+{
+	// Dispatch all LevelInit listeners
+	get_client_connect_listener_manager()->call_listeners(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
+}
+
+//---------------------------------------------------------------------------------
+// Calls on query cvar value finished listeners.
+//---------------------------------------------------------------------------------
+void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, 
+	edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, 
+	const char *pCvarValue )
+{
+
+	// Dispatch all LevelInit listeners
+	get_client_fully_connect_listener_manager()->call_listeners(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
+}
+//
+// 
+//
+#if(SOURCE_ENGINE >= 3)
+void CAddonManager::ClientFullyConnect( edict_t *pEntity )
+{
+	// Dispatch all LevelInit listeners
+	get_client_fully_connect_listener_manager()->call_listeners(pEntity);
+}
+
+void CAddonManager::OnEdictAllocated( edict_t *edict )
+{
+	// Dispatch all LevelInit listeners
+	get_on_edict_allocated_listener_manager()->call_listeners(edict);
+}
+
+void CAddonManager::OnEdictFreed( const edict_t *edict )
+{
+	// Dispatch all LevelInit listeners
+	get_on_edict_freed_listener_manager()->call_listeners(const_cast<edict_t*>(edict));
+}
+#endif
