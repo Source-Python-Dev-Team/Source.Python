@@ -275,7 +275,7 @@ const char *CSourcePython::GetPluginDescription( void )
 //---------------------------------------------------------------------------------
 void CSourcePython::LevelInit( char const *pMapName )
 {
-
+	g_AddonManager.LevelInit(pMapName);
 }
 
 //---------------------------------------------------------------------------------
@@ -284,6 +284,7 @@ void CSourcePython::LevelInit( char const *pMapName )
 //---------------------------------------------------------------------------------
 void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
+	g_AddonManager.ServerActivate(pEdictList, edictCount, clientMax);
 }
 
 //---------------------------------------------------------------------------------
@@ -299,6 +300,7 @@ void CSourcePython::GameFrame( bool simulating )
 //---------------------------------------------------------------------------------
 void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
+	g_AddonManager.LevelShutdown();
 }
 
 //---------------------------------------------------------------------------------
@@ -306,6 +308,7 @@ void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple ti
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientActive( edict_t *pEntity )
 {
+	g_AddonManager.ClientActive(pEntity);
 }
 
 //---------------------------------------------------------------------------------
@@ -313,6 +316,7 @@ void CSourcePython::ClientActive( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientDisconnect( edict_t *pEntity )
 {
+	g_AddonManager.ClientDisconnect(pEntity);
 }
 
 //---------------------------------------------------------------------------------
@@ -320,6 +324,7 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
+	g_AddonManager.ClientPutInServer(pEntity, playername);
 }
 
 //---------------------------------------------------------------------------------
@@ -346,7 +351,7 @@ void ClientPrint( edict_t *pEdict, char *format, ... )
 //---------------------------------------------------------------------------------
 void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 {
-
+	g_AddonManager.ClientSettingsChanged(pEdict);
 }
 
 //---------------------------------------------------------------------------------
@@ -354,6 +359,7 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 //---------------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
+	g_AddonManager.ClientConnect(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
 	return PLUGIN_CONTINUE;
 }
 
@@ -362,6 +368,7 @@ PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntit
 //---------------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
+    g_AddonManager.NetworkIDValidated(pszUserName, pszNetworkID);
 	return PLUGIN_CONTINUE;
 }
 
@@ -371,6 +378,7 @@ PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const 
 void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
+	g_AddonManager.OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
 	DevMsg(0, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
 }
 
@@ -407,16 +415,16 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
 #if(SOURCE_ENGINE >= 3)
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
-
+	g_AddonManager.ClientFullyConnect(pEntity);
 }
 
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
-
+	g_AddonManager.OnEdictAllocated(edict);
 }
 
 void CSourcePython::OnEdictFreed( const edict_t *edict )
 {
-
+	g_AddonManager.OnEdictFreed(edict);
 }
 #endif
