@@ -1,4 +1,4 @@
-# ../addons/info.py
+# ../plugins/info.py
 
 # =============================================================================
 # >> IMPORTS
@@ -15,8 +15,8 @@ from public import public
 # >> CLASSES
 # =============================================================================
 @public
-class AddonInfo(OrderedDict):
-    '''Stores information for an addon'''
+class PluginInfo(OrderedDict):
+    '''Stores information for a plugin'''
 
     def __getattr__(self, attribute):
         '''Redirects to __getitem__'''
@@ -39,7 +39,7 @@ class AddonInfo(OrderedDict):
 
             # Re-call __setattr__
             # This is done to fix an issue with OrderedDict.__init__
-            super(AddonInfo, self).__setattr__(attribute, value)
+            super(PluginInfo, self).__setattr__(attribute, value)
 
             # No need to go further
             return

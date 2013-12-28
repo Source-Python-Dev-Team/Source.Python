@@ -20,7 +20,7 @@ class _LanguageManager(ConfigObj):
     '''Dictionary class used to store languages and their shortnames'''
 
     # en should always be used as the "fallback",
-    # since most addons will have English values
+    # since most plugins will have English values
     fallback = 'en'
 
     # Set the default language to en by default

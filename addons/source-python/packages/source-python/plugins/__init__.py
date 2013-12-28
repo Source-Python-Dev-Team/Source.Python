@@ -1,10 +1,12 @@
-# ../addons/__init__.py
+# ../plugins/__init__.py
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
 from loggers import _SPLogger
+#   Translations
+from translations.strings import LangStrings
 
 
 # =============================================================================
@@ -17,5 +19,8 @@ __all__ = []
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the sp.addons logger
-AddonLogger = _SPLogger.addons
+# Get the plugin strings
+_plugin_strings = LangStrings('_core/plugin_strings')
+
+# Get the sp.plugins logger
+PluginsLogger = _SPLogger.plugins

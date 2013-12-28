@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python imports
-from paths import ADDON_PATH as _ADDON_PATH
+from paths import SP_PACKAGES_PATH as _SP_PACKAGES_PATH
 from paths import CFG_PATH as _CFG_PATH
 
 
@@ -12,7 +12,7 @@ from paths import CFG_PATH as _CFG_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the path to the auth providers
-AUTH_PROVIDER_PATH = _ADDON_PATH.joinpath(
+AUTH_PROVIDER_PATH = _SP_PACKAGES_PATH.joinpath(
     'packages', 'source-python', 'auth', 'providers')
 
 # Store the path to the auth configurations

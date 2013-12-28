@@ -90,7 +90,7 @@ LanguageManager._register_default_language(
 # =============================================================================
 # >> INITIALIZE SP COMMAND
 # =============================================================================
-from _core.commands import _SPCommandsInstance
+from _core.command import SPSubCommandManager
 
 
 # =============================================================================
@@ -103,4 +103,34 @@ auth_providers = _CoreSettingsInstance['AUTH_SETTINGS']['providers'].split()
 if auth_providers:
 
     # Load the auth providers
-    _SPCommandsInstance.call_command('auth', ['load'] + auth_providers)
+    SPSubCommandManager.call_command('auth', ['load'] + auth_providers)
+
+
+# =============================================================================
+# >> USER_SETTINGS SETUP
+# =============================================================================
+from settings.menu import _SettingsMenuInstance
+
+# Are there any private user settings say commands?
+if _CoreSettingsInstance['USER_SETTINGS']['private_say_commands']:
+
+    # Register the private user settings say commands
+    SayCommandManager.register_commands(
+        _CoreSettingsInstance['USER_SETTINGS']['private_say_commands'
+        ].split(','), _SettingsMenuInstance._private_command)
+
+# Are there any public user settings say commands?
+if _CoreSettingsInstance['USER_SETTINGS']['public_say_commands']:
+
+    # Register the public user settings say commands
+    SayCommandManager.register_commands(
+        _CoreSettingsInstance['USER_SETTINGS']['public_say_commands'
+        ].split(','), _SettingsMenuInstance._send_menu)
+
+# Are there any client user settings commands?
+if _CoreSettingsInstance['USER_SETTINGS']['client_commands']:
+
+    # Register the client user settings commands
+    ClientCommandManager.register_commands(
+        _CoreSettingsInstance['USER_SETTINGS']['client_commands'
+        ].split(','), _SettingsMenuInstance._send_menu)

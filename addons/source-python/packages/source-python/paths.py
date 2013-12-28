@@ -15,10 +15,22 @@ from path import Path
 GAME_PATH = Path(Path(__file__).rsplit('addons', 1)[0])
 
 # Get the base path to ../addons/source-python
-ADDON_PATH = GAME_PATH.joinpath('addons', 'source-python')
+BASE_PATH = GAME_PATH.joinpath('addons', 'source-python')
 
 # Get the plugin's base path
-PLUGIN_PATH = ADDON_PATH.joinpath('plugins')
+PLUGIN_PATH = BASE_PATH.joinpath('plugins')
+
+# Get the packages path
+PACKAGES_PATH = BASE_PATH.joinpath('packages')
+
+# Get the SP base package path
+SP_PACKAGES_PATH = PACKAGES_PATH.joinpath('source-python')
+
+# Get the Custom packages path
+CUSTOM_PACKAGES_PATH = PACKAGES_PATH.joinpath('custom')
+
+# Get the site-packages path
+SITE_PACKAGES_PATH = PACKAGES_PATH.joinpath('site-packages')
 
 # Get the cfg's base path
 CFG_PATH = GAME_PATH.joinpath('cfg', 'source-python')
@@ -37,7 +49,7 @@ EVENT_PATH = GAME_PATH.joinpath('resource', 'source-python', 'events')
 SOUND_PATH = GAME_PATH.joinpath('sound', 'source-python')
 
 # Get the base path to the data
-_DATA_PATH = ADDON_PATH.joinpath('data')
+_DATA_PATH = BASE_PATH.joinpath('data')
 
 # Get the SP base data path
 SP_DATA_PATH = _DATA_PATH.joinpath('source-python')
