@@ -43,14 +43,14 @@ class SubCommandManager(OrderedDict, AutoUnload):
 
         # Does the class have a proper manager object assigned?
         if not (hasattr(self, 'manager') and
-            isinstance(self.manager, PluginManager)):
+                isinstance(self.manager, PluginManager)):
 
             # If not, raise an error
             raise PluginManagerError(PluginManagerError.__doc__)
 
         # Does the class have a proper instance class assigned?
         if not (hasattr(self, 'instance') and
-            issubclass(self.instance, LoadedPlugin)):
+                issubclass(self.instance, LoadedPlugin)):
 
             # If not, raise an error
             raise PluginInstanceError(PluginInstanceError.__doc__)
@@ -120,7 +120,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
                 # Print a message about the invalid sub-command
                 message = self.prefix + _plugin_strings[
                     'Invalid Command'].get_string(
-                        command=self.command, subcommand=command)
+                    command=self.command, subcommand=command)
 
             # Was no sub-command given?
             else:
@@ -150,8 +150,9 @@ class SubCommandManager(OrderedDict, AutoUnload):
 
                 # Print a message about the invalid number of arguments given
                 self.logger.log_message(
-                    self.prefix + _plugin_strings['Invalid Arguments'
-                    ].get_string(command=self.command, subcommand=command) +
+                    self.prefix + _plugin_strings[
+                        'Invalid Arguments'].get_string(
+                        command=self.command, subcommand=command) +
                     ' '.join(self[command].args))
 
                 # No need to go further
@@ -166,9 +167,10 @@ class SubCommandManager(OrderedDict, AutoUnload):
                     # Print a message about the invalid
                     # number of arguments given
                     self.logger.log_message(
-                        self.prefix + _plugin_strings['Invalid Arguments'
-                        ].get_string(command=self.command, subcommand=command
-                        ) + ' '.join(self[command].args))
+                        self.prefix + _plugin_strings[
+                            'Invalid Arguments'].get_string(
+                            command=self.command, subcommand=command) +
+                        ' '.join(self[command].args))
 
                     # No need to go further
                     return

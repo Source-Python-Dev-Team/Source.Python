@@ -38,7 +38,7 @@ class _SettingsType(object):
             # Raise an error
             raise ValueError(
                 'Given value must be of "{0}" type, not "{1}"'.format(
-                cls._type.__name__, type(default).__name__))
+                    cls._type.__name__, type(default).__name__))
 
         # Get the new object instance
         self = object.__new__(cls)

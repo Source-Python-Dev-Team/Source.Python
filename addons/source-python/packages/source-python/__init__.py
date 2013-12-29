@@ -115,22 +115,22 @@ from settings.menu import _SettingsMenuInstance
 if _CoreSettingsInstance['USER_SETTINGS']['private_say_commands']:
 
     # Register the private user settings say commands
-    SayCommandManager.register_commands(
-        _CoreSettingsInstance['USER_SETTINGS']['private_say_commands'
-        ].split(','), _SettingsMenuInstance._private_command)
+    SayCommandManager.register_commands(_CoreSettingsInstance[
+        'USER_SETTINGS']['private_say_commands'].split(
+        ','), _SettingsMenuInstance._private_command)
 
 # Are there any public user settings say commands?
 if _CoreSettingsInstance['USER_SETTINGS']['public_say_commands']:
 
     # Register the public user settings say commands
-    SayCommandManager.register_commands(
-        _CoreSettingsInstance['USER_SETTINGS']['public_say_commands'
-        ].split(','), _SettingsMenuInstance._send_menu)
+    SayCommandManager.register_commands(_CoreSettingsInstance[
+        'USER_SETTINGS']['public_say_commands'].split(
+        ','), _SettingsMenuInstance._send_menu)
 
 # Are there any client user settings commands?
 if _CoreSettingsInstance['USER_SETTINGS']['client_commands']:
 
     # Register the client user settings commands
-    ClientCommandManager.register_commands(
-        _CoreSettingsInstance['USER_SETTINGS']['client_commands'
-        ].split(','), _SettingsMenuInstance._send_menu)
+    ClientCommandManager.register_commands(_CoreSettingsInstance[
+        'USER_SETTINGS']['client_commands'].split(
+        ','), _SettingsMenuInstance._send_menu)

@@ -53,7 +53,8 @@ class LoadedPlugin(object):
 
             # Print a message that the plugin's main file was not found
             self.logger.log_message(self.prefix + _plugin_strings[
-                'No Module'].get_string(plugin=plugin_name,
+                'No Module'].get_string(
+                plugin=plugin_name,
                 file=file_path.replace(GAME_PATH, '').replace('\\', '/')))
 
             # Raise an error so that the plugin

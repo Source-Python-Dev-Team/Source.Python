@@ -119,7 +119,8 @@ class _SPSubCommandManager(SubCommandManager):
         '''Executes a command after the given delay.'''
 
         # Add the delay
-        TickDelays.delay(float(args[0]),
+        TickDelays.delay(
+            float(args[0]),
             GameEngine.server_command, ' '.join(args[1:]) + '\n')
 
     @staticmethod
