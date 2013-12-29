@@ -45,7 +45,7 @@ class _AuthCommands(OrderedDict):
                 'Missing Command'].get_string() + '\n'
 
             # Print the auth help text
-            self._print_auth_help(message)
+            self.print_auth_help(message)
 
             # No need to go further
             return
@@ -61,7 +61,7 @@ class _AuthCommands(OrderedDict):
                 'Invalid Sub-Command'].get_string(command=command) + '\n'
 
             # Print the auth help text
-            self._print_auth_help(message)
+            self.print_auth_help(message)
 
             # No need to go further
             return
@@ -78,7 +78,7 @@ class _AuthCommands(OrderedDict):
         # Execute the command
         self[command]()
 
-    def _print_auth_help(self, message=''):
+    def print_auth_help(self, message=''):
         '''Prints all "sp auth" sub-commands.'''
 
         # Get header messages
@@ -86,14 +86,14 @@ class _AuthCommands(OrderedDict):
             'Help'].get_string() + 'sp auth <command> [arguments]\n' + '=' * 78
 
         # Print all "sp auth" sub-commands
-        self._print_help(header, '=' * 78)
+        self.print_help(header, '=' * 78)
 
-    def _print_help(self, pretext='', posttext=''):
+    def print_help(self, pretext='', posttext=''):
         '''Prints all "sp auth" sub-commands'''
         AuthCommandsLogger.log_message(
-            pretext + '\n' + self._get_help_text() + '\n' + posttext)
+            pretext + '\n' + self.get_help_text() + '\n' + posttext)
 
-    def _get_help_text(self):
+    def get_help_text(self):
         '''Returns the help text for auth commands'''
 
         # Store the base message
@@ -206,4 +206,4 @@ _AuthCommandsInstance['reload'].args = ['[provider]', '[provider]',  '...']
 
 # Add all printing commands to the dictionary
 _AuthCommandsInstance['list'] = _print_auth_providers
-_AuthCommandsInstance['help'] = _AuthCommandsInstance._print_auth_help
+_AuthCommandsInstance['help'] = _AuthCommandsInstance.print_auth_help
