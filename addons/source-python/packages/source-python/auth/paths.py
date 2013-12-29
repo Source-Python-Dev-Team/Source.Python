@@ -12,8 +12,7 @@ from paths import CFG_PATH as _CFG_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the path to the auth providers
-AUTH_PROVIDER_PATH = _SP_PACKAGES_PATH.joinpath(
-    'packages', 'source-python', 'auth', 'providers')
+AUTH_PROVIDER_PATH = _SP_PACKAGES_PATH.joinpath('auth', 'providers')
 
 # Store the path to the auth configurations
 AUTH_CFG_PATH = _CFG_PATH.joinpath('auth_providers')

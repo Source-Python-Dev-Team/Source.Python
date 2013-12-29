@@ -34,7 +34,7 @@ class _PlayerSettingsDictionary(defaultdict):
         if _STORAGE_PATH.isfile():
 
             # Open/close the settings database
-            with _STORAGE_PATH.open('rb') as _user_settings:
+            with _STORAGE_PATH.open('r') as _user_settings:
 
                 # Load the database into the dictionary
                 super(_PlayerSettingsDictionary, self).__init__(
@@ -49,11 +49,13 @@ class _PlayerSettingsDictionary(defaultdict):
     def server_spawn(self, game_event):
         '''Stores the dictionary to the database on map change'''
 
+        """
         # Open/close the settings database as write
-        with _STORAGE_PATH.open('wb') as _user_settings:
+        with _STORAGE_PATH.open('w') as _user_settings:
 
             # Dump the dictionary to the database file
             pickle.dump(self, _user_settings)
+        """
 
 # Get the _PlayerSettingsDictionary instance
 _PlayerSettingsStorage = _PlayerSettingsDictionary(dict)
