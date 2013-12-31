@@ -249,12 +249,10 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 # Listener module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LISTENERS_MODULE_HEADERS
-    core/modules/listeners/listeners.h
     core/modules/listeners/listenermanager.h
 )
 
 Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
-    core/modules/listeners/listeners.cpp
     core/modules/listeners/listenermanager.cpp
     core/modules/listeners/listeners_wrap_python.cpp
 )

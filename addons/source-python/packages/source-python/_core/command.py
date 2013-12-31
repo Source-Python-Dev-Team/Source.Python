@@ -127,8 +127,7 @@ class _SPSubCommandManager(SubCommandManager):
     def print_version():
         '''Displays Source.Python version information.'''
 
-    @staticmethod
-    def print_credits():
+    def print_credits(self):
         '''Lists all credits for Source.Python.'''
 
         # Get header messages
@@ -156,7 +155,7 @@ class _SPSubCommandManager(SubCommandManager):
             message += '\n'
 
         # Print the message
-        _CoreCommandsLogger.log_message(message + '=' * 61 + '\n\n')
+        self.logger.log_message(message + '=' * 61 + '\n\n')
 
 SPSubCommandManager = _SPSubCommandManager('sp', 'Source.Python base command.')
 

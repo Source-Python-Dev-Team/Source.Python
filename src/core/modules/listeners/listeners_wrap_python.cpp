@@ -28,8 +28,8 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "listeners.h"
 #include "utility/wrap_macros.h"
+#include "listenermanager.h"
 
 //-----------------------------------------------------------------------------
 // Functions that expose tick listener functionality to us.
@@ -37,7 +37,7 @@
 void export_listener_managers();
 
 //-----------------------------------------------------------------------------
-// Exposes the tick_c module.
+// Exposes the listener_c module.
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(listener_c)
 {
@@ -49,27 +49,25 @@ void export_listener_managers()
     //-------------------------------------------------------------------------
 	// Exposes CListenerManager
 	//-------------------------------------------------------------------------
-	// This is the base class all other listener managers inherit from
 	BOOST_ABSTRACT_CLASS(CListenerManager)
 
 		CLASS_METHOD(CListenerManager,
 			register_listener,
-			"Adds the given callable to the end of the listener vector.",
-			args("pCallable")
+			"Registers a callable object. If it was already registered it will be ignored.",
+			args("callable")
 		)
 
 		CLASS_METHOD(CListenerManager,
 			unregister_listener,
-			"Removes the given callable from the listener vector.",
-			args("pCallable")
+			"Removes a callable object. If it was not registered nothing will happen.",
+			args("callable")
 		)
 
 	BOOST_END_CLASS()
 
 	//-------------------------------------------------------------------------
-	// Expose the getter functions
+	// Expose the accessor functions
 	//-------------------------------------------------------------------------
-
 	BOOST_FUNCTION(get_client_active_listener_manager,
 		"Returns the clientactive listener instance",
 		reference_existing_object_policy()
