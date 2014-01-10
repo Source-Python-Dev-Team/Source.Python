@@ -74,6 +74,12 @@ class SubCommandManager(OrderedDict, AutoUnload):
             # If not, assign the base logger
             self.logger = PluginCommandLogger
 
+        # Does the object have a translations value set?
+        if not hasattr(self, 'translations'):
+
+            # If not, set the default translations
+            self.translations = _plugin_strings
+
         # Register the server command
         ServerCommandManager.register_commands(
             self.command, self.call_command, description, 0)
@@ -118,15 +124,14 @@ class SubCommandManager(OrderedDict, AutoUnload):
             if command:
 
                 # Print a message about the invalid sub-command
-                message = self.prefix + _plugin_strings[
-                    'Invalid Command'].get_string(
-                    command=self.command, subcommand=command)
+                message = self.prefix + self.translations[
+                    'Invalid Command'].get_string(subcommand=command)
 
             # Was no sub-command given?
             else:
 
                 # Print a message about the missing sub-command
-                message = self.prefix + _plugin_strings[
+                message = self.prefix + self.translations[
                     'No Command'].get_string(command=self.command)
 
             # Print the help text for the console command
@@ -150,7 +155,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
 
                 # Print a message about the invalid number of arguments given
                 self.logger.log_message(
-                    self.prefix + _plugin_strings[
+                    self.prefix + self.translations[
                         'Invalid Arguments'].get_string(
                         command=self.command, subcommand=command) +
                     ' '.join(self[command].args))
@@ -167,7 +172,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
                     # Print a message about the invalid
                     # number of arguments given
                     self.logger.log_message(
-                        self.prefix + _plugin_strings[
+                        self.prefix + self.translations[
                             'Invalid Arguments'].get_string(
                             command=self.command, subcommand=command) +
                         ' '.join(self[command].args))
@@ -197,7 +202,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
         '''Prints all sub-commands for the console command'''
 
         # Add a header message
-        message += '\n' + self.prefix + _plugin_strings[
+        message += '\n' + self.prefix + self.translations[
             'Help'].get_string(command=self.command) + '\n' + '=' * 78
 
         # Loop through all registered sub-commands
@@ -235,7 +240,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
         if plugin_name in self.manager:
 
             # Send a message that the plugin is already loaded
-            self.logger.log_message(self.prefix + _plugin_strings[
+            self.logger.log_message(self.prefix + self.translations[
                 'Already Loaded'].get_string(plugin=plugin_name))
 
             # No need to go further
@@ -248,14 +253,14 @@ class SubCommandManager(OrderedDict, AutoUnload):
         if plugin is None:
 
             # Send a message that the plugin was not loaded
-            self.logger.log_message(self.prefix + _plugin_strings[
+            self.logger.log_message(self.prefix + self.translations[
                 'Unable to Load'].get_string(plugin=plugin_name))
 
             # No need to go further
             return
 
         # Send a message that the plugin was loaded
-        self.logger.log_message(self.prefix + _plugin_strings[
+        self.logger.log_message(self.prefix + self.translations[
             'Successful Load'].get_string(plugin=plugin_name))
 
     # Set the method's required arguments
@@ -268,7 +273,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
         if not plugin_name in self.manager:
 
             # Send a message that the plugin is not loaded
-            self.logger.log_message(self.prefix + _plugin_strings[
+            self.logger.log_message(self.prefix + self.translations[
                 'Not Loaded'].get_string(plugin=plugin_name))
 
             # No need to go further
@@ -278,7 +283,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
         del self.manager[plugin_name]
 
         # Send a message that the plugin was unloaded
-        self.logger.log_message(self.prefix + _plugin_strings[
+        self.logger.log_message(self.prefix + self.translations[
             'Successful Unload'].get_string(plugin=plugin_name))
 
     # Set the method's required arguments
@@ -300,7 +305,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
         '''Prints all currently loaded plugins'''
 
         # Get the header message
-        message = self.prefix + _plugin_strings[
+        message = self.prefix + self.translations[
             'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n\t'
 
         # Add all loaded plugins to the message
