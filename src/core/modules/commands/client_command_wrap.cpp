@@ -105,9 +105,6 @@ void unregister_client_command_filter(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 {
-	// Get the CEdict instance of the player
-	CEdict* pEdict = new CEdict(pEntity);
-
 	// Get the IPlayerInfo instance of the player
 	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEntity);
 

@@ -92,8 +92,7 @@ void CAddonManager::LevelInit( char const *pMapName )
 // TODO: will not work if this is really a list
 void CAddonManager::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
-	CEdict edict = CEdict(pEdictList);
-	CALL_LISTENERS(ServerActivate, edict, edictCount, clientMax);
+	CALL_LISTENERS(ServerActivate, pEdictList, edictCount, clientMax);
 }
 
 //---------------------------------------------------------------------------------
@@ -109,8 +108,7 @@ void CAddonManager::LevelShutdown( void )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientActive( edict_t *pEntity )
 {
-	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(ClientActive, edict);
+	CALL_LISTENERS(ClientActive, pEntity);
 }
 
 //---------------------------------------------------------------------------------
@@ -118,8 +116,7 @@ void CAddonManager::ClientActive( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientDisconnect( edict_t *pEntity )
 {
-	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(ClientDisconnect, edict);
+	CALL_LISTENERS(ClientDisconnect, pEntity);
 }
 
 //---------------------------------------------------------------------------------
@@ -127,8 +124,7 @@ void CAddonManager::ClientDisconnect( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
-	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(ClientPutInServer, edict, playername);
+	CALL_LISTENERS(ClientPutInServer, pEntity, playername);
 }
 
 //---------------------------------------------------------------------------------
@@ -136,8 +132,7 @@ void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername 
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 {
-	CEdict edict = CEdict(pEdict);
-	CALL_LISTENERS(ClientSettingsChanged, edict);
+	CALL_LISTENERS(ClientSettingsChanged, pEdict);
 }
 
 //---------------------------------------------------------------------------------
@@ -146,8 +141,7 @@ void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, 
 	const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(ClientConnect, *bAllowConnect, edict, pszName, pszAddress, reject, maxrejectlen);
+	CALL_LISTENERS(ClientConnect, *bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
 }
 
 //---------------------------------------------------------------------------------
@@ -157,8 +151,7 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 	edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, 
 	const char *pCvarValue )
 {
-	CEdict edict = CEdict(pPlayerEntity);
-	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, edict, eStatus, pCvarName, pCvarValue);
+	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
 }
 //
 // 
@@ -166,19 +159,16 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 #if(SOURCE_ENGINE >= 3)
 void CAddonManager::ClientFullyConnect( edict_t *pEntity )
 {
-	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(ClientFullyConnect, edict);
+	CALL_LISTENERS(ClientFullyConnect, pEntity);
 }
 
 void CAddonManager::OnEdictAllocated( edict_t *edict )
 {
-	CEdict the_edict = CEdict(edict);
-	CALL_LISTENERS(OnEdictAllocated, the_edict);
+	CALL_LISTENERS(OnEdictAllocated, edict);
 }
 
 void CAddonManager::OnEdictFreed( const edict_t *edict )
 {
-	CEdict the_edict = CEdict((edict_t* ) edict);
-	CALL_LISTENERS(OnEdictFreed, the_edict);
+	CALL_LISTENERS(OnEdictFreed, edict);
 }
 #endif

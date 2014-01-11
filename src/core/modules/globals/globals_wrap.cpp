@@ -172,7 +172,7 @@ int CGlobals::get_server_count()
 	return s_GlobalServerImplementation.get_server_count();
 }
 
-CEdict* CGlobals::get_edicts()
+edict_t* CGlobals::get_edicts()
 {
 	return s_GlobalServerImplementation.get_edicts();
 }

@@ -36,7 +36,7 @@
 // CEntityGenerator Constructor.
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator( PyObject* self ):
-	IPythonGenerator<CEdict>(self),
+	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(0),
 	m_szClassName(NULL),
 	m_uiClassNameLen(0),
@@ -48,7 +48,7 @@ CEntityGenerator::CEntityGenerator( PyObject* self ):
 // CEntityGenerator Copy-Constructor.
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs ):
-	IPythonGenerator<CEdict>(self),
+	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(rhs.m_iEntityIndex),
 	m_uiClassNameLen(rhs.m_uiClassNameLen),
 	m_bExactMatch(rhs.m_bExactMatch)
@@ -60,7 +60,7 @@ CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs 
 // CEntityGenerator Constructor (takes a filter string).
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
-	IPythonGenerator<CEdict>(self),
+	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(0),
 	m_uiClassNameLen(strlen(szClassName)),
 	m_bExactMatch(false)
@@ -72,7 +72,7 @@ CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
 // CEntityGenerator Constructor (takes a filter string and a boolean flag).
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName, bool bExactMatch):
-	IPythonGenerator<CEdict>(self),
+	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(0),
 	m_uiClassNameLen(strlen(szClassName)),
 	m_bExactMatch(bExactMatch)
@@ -89,12 +89,11 @@ CEntityGenerator::~CEntityGenerator()
 }
 
 // ----------------------------------------------------------------------------
-// Returns the next valid CEdict instance.
+// Returns the next valid edict_t instance.
 // ----------------------------------------------------------------------------
-CEdict* CEntityGenerator::getNext()
+edict_t* CEntityGenerator::getNext()
 {
 	edict_t* pEdict = NULL;
-	CEdict* pCEdict = NULL;
 	while(m_iEntityIndex < gpGlobals->maxEntities)
 	{
 		m_iEntityIndex++;
@@ -116,8 +115,7 @@ CEdict* CEntityGenerator::getNext()
 		}
 		if (pEdict)
 		{
-			pCEdict = new CEdict(pEdict);
-			return pCEdict;
+			return pEdict;
 		}
 	}
     return NULL;

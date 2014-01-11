@@ -73,6 +73,13 @@ using namespace boost::python;
 #define XSTRINGIFY(s) STRINGIFY(s)
 #define STRINGIFY(s) #s
 
+
+//---------------------------------------------------------------------------------
+// This method returns you the given overloaded method
+//---------------------------------------------------------------------------------
+#define GET_METHOD(return_type, class_name, method, ...) \
+	static_cast< return_type(class_name::*)( ##__VA_ARGS__ ) >(&class_name::method)
+
 //---------------------------------------------------------------------------------
 // Use this to begin wrapping an enumeration.
 //---------------------------------------------------------------------------------

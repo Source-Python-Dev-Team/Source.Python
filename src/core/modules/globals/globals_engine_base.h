@@ -53,5 +53,5 @@ public:
 	virtual int get_server_count();
 
 	// Default functionality - return NULL
-	virtual CEdict* get_edicts();
+	virtual edict_t* get_edicts();
 };

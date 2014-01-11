@@ -27,18 +27,17 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+#include "edict.h"
+
 #include "entities_generator_wrap.h"
 #include "entities_wrap.h"
-#include "modules/export_main.h"
 #include "utility/sp_util.h"
-
-//-----------------------------------------------------------------------------
-// Namespaces to use.
-//-----------------------------------------------------------------------------
+#include "modules/export_main.h"
 using namespace boost::python;
 
+
 //-----------------------------------------------------------------------------
-// Exposer functions.
+// Entity module definition.
 //-----------------------------------------------------------------------------
 void export_base_entity_handle();
 void export_handle_entity();
@@ -48,9 +47,6 @@ void export_server_networkable();
 void export_edict();
 void export_entity_generator();
 
-//-----------------------------------------------------------------------------
-// Entity module definition.
-//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(entity_c)
 {
 	export_base_entity_handle();
@@ -67,27 +63,53 @@ DECLARE_SP_MODULE(entity_c)
 //-----------------------------------------------------------------------------
 void export_base_entity_handle()
 {
-	BOOST_CLASS_CONSTRUCTOR(CBaseEntityHandle, int)
-		
-		CLASS_CONSTRUCTOR(CBaseHandle)
+	// TODO: Renamed it to CBaseHandle
+	class_<CBaseHandle>("CBaseEntityHandle")
+		.def(init<CBaseHandle&>())
+		.def(init<unsigned long>())
+		.def(init<int, int>())
 
-		CLASS_METHOD(CBaseEntityHandle,
-			is_valid
+		.def("init",
+			&CBaseHandle::Init,
+			args("entry", "serial_number")
 		)
 
-		CLASS_METHOD(CBaseEntityHandle,
-			get_entry_index
+		.def("term",
+			&CBaseHandle::Term
 		)
 
-		CLASS_METHOD(CBaseEntityHandle,
-			get_serial_number
+		.def("is_valid",
+			&CBaseHandle::IsValid,
+			"Returns whether the handle has been initted with any values."
 		)
 
-		CLASS_METHOD(CBaseEntityHandle,
-			to_int
+		.def("get_entry_index",
+			&CBaseHandle::GetEntryIndex
 		)
 
-	BOOST_END_CLASS()
+		.def("get_serial_number",
+			&CBaseHandle::GetSerialNumber
+		)
+
+		.def("to_int",
+			&CBaseHandle::ToInt
+		)
+
+		.def("__int__",
+			&CBaseHandle::ToInt
+		)
+
+		.def(self != self)
+		.def(self == self)
+		.def(self < self)
+
+		.def("set",
+			&CBaseHandle::Set,
+			args("entity"),
+			"Assigns a value to the handle.",
+			reference_existing_object_policy()
+		)
+	;
 }
 
 //-----------------------------------------------------------------------------
@@ -95,14 +117,18 @@ void export_base_entity_handle()
 //-----------------------------------------------------------------------------
 void export_handle_entity()
 {
-	BOOST_ABSTRACT_CLASS(CHandleEntity)
-		
-		CLASS_METHOD(CHandleEntity,
-			get_ref_ehandle,
-			manage_new_object_policy()
+	// TODO: Rename it to IHandleEntity
+	class_<IHandleEntity, boost::noncopyable>("CHandleEntity", no_init)
+		.def("set_ref_ehandle",
+			&IHandleEntity::SetRefEHandle,
+			args("handle")
 		)
 
-	BOOST_END_CLASS()
+		.def("get_ref_ehandle",
+			&IHandleEntity::GetRefEHandle,
+			reference_existing_object_policy()
+		)
+	;
 }
 
 //-----------------------------------------------------------------------------
@@ -110,27 +136,31 @@ void export_handle_entity()
 //-----------------------------------------------------------------------------
 void export_server_unknown()
 {
-	BOOST_ABSTRACT_CLASS(CServerUnknown)
+	// TODO: Rename it to IServerUnknown
+	class_< IServerUnknown, bases<IHandleEntity>, boost::noncopyable >("CServerUnknown", no_init)
+		.def("get_collideable",
+			&IServerUnknown::GetCollideable,
+			"Returns the ICollideable object for this entity.",
+			reference_existing_object_policy()
+		)
 
-		/*CLASS_METHOD(CServerUnknown,
-			get_collideable,
-			"Returns the ICollideable object for this entity."
-		)*/
-
-		CLASS_METHOD(CServerUnknown,
-			get_networkable,
+		.def("get_networkable",
+			&IServerUnknown::GetNetworkable,
 			"Returns the CServerNetworkable object for this entity.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CServerUnknown,
-			get_base_entity,
-			"Returns the CBasEntity object for this entity."
+		/*
+		.def("get_base_entity",
+			&IServerUnknown::GetBaseEntity,
+			"Returns the CBasEntity object for this entity.",
+			reference_existing_object_policy()
 		)
+		*/
+	;
 
-	BOOST_END_CLASS()
-
-	BOOST_FUNCTION(index_of_pointer,
+	def("index_of_pointer",
+		index_of_pointer,
 		"Returns the index of the given BaseEntity pointer"
 	);
 }
@@ -140,25 +170,23 @@ void export_server_unknown()
 //-----------------------------------------------------------------------------
 void export_server_entity()
 {
-	BOOST_ABSTRACT_CLASS(CServerEntity)
-		
-		CLASS_METHOD(CServerEntity,
-			get_model_index,
+	// TODO: Rename it to IServerEntity
+	class_< IServerEntity, bases<IServerUnknown>, boost::noncopyable >("CServerEntity", no_init)
+		.def("get_model_index",
+			&IServerEntity::GetModelIndex,
 			"Returns the model index for this entity."
 		)
 
-		CLASS_METHOD(CServerEntity,
-			set_model_index,
-			"Sets the model of this entity.",
-			args("model_index")
-		)
-
-		CLASS_METHOD(CServerEntity,
-			get_model_name,
+		.def("get_model_name",
+			&IServerEntity::GetModelName,
 			"Returns the name of the model this entity is using."
 		)
 
-	BOOST_END_CLASS()
+		.def("set_model_index",
+			&IServerEntity::SetModelIndex,
+			"Sets the model of this entity."
+		)
+	;
 }
 
 //-----------------------------------------------------------------------------
@@ -166,139 +194,186 @@ void export_server_entity()
 //-----------------------------------------------------------------------------
 void export_server_networkable()
 {
-	BOOST_ABSTRACT_CLASS(CServerNetworkable)
-
-		CLASS_METHOD(CServerNetworkable,
-			get_entity_handle,
+	// TODO: Rename it to IServerNetworkable
+	class_< IServerNetworkable, boost::noncopyable >("CServerNetworkable", no_init)
+		.def("get_entity_handle",
+			&IServerNetworkable::GetEntityHandle,
 			"Returns the CHandleEntity instance of this entity.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CServerNetworkable,
-			get_edict,
-			"Returns the CEdict instance of this entity.",
-			manage_new_object_policy()
+		.def("get_server_class",
+			&IServerNetworkable::GetServerClass,
+			"Returns the ServerClass instance of this entity.",
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CServerNetworkable,
-			get_class_name,
+		.def("get_edict",
+			&IServerNetworkable::GetEdict,
+			"Returns the edict_t instance of this entity.",
+			reference_existing_object_policy()
+		)
+
+		.def("get_class_name",
+			&IServerNetworkable::GetClassName,
 			"Returns the class name of this entity."
 		)
 
-	BOOST_END_CLASS()
+		.def("release",
+			&IServerNetworkable::Release
+		)
+
+		.def("area_num",
+			&IServerNetworkable::AreaNum
+		)
+
+		/*
+		.def("get_base_networkable",
+			&IServerNetworkable::GetBaseNetworkable,
+			reference_existing_object_policy()
+		)
+
+		.def("get_base_entity",
+			&IServerNetworkable::GetBaseEntity,
+			reference_existing_object_policy()
+		)
+		*/
+
+		.def("get_pvs_info",
+			&IServerNetworkable::GetPVSInfo,
+			"Returns the current visible data.",
+			reference_existing_object_policy()
+		)
+	;
 }
 
 //-----------------------------------------------------------------------------
-// Exports CEdict.
+// Exports edict_t.
 //-----------------------------------------------------------------------------
 void export_edict()
 {
-	BOOST_CLASS_CONSTRUCTOR(CEdict, int)
-
-		CLASS_CONSTRUCTOR(const char*, optional<bool>)
-
-		CLASS_METHOD(CEdict,
-			area_num
+	class_< CBaseEdict >("CBaseEdict")
+		.def("get_server_entity",
+			GET_METHOD(IServerEntity*, CBaseEdict, GetIServerEntity),
+			"Returns its IServerEntity instance.",
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEdict,
-			get_class_name,
-			"Returns a string containing the class name of this entity."
+		.def("get_networkable",
+			&CBaseEdict::GetNetworkable,
+			"Returns its IServerNetworkable instance.",
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEdict,
-			is_free,
-			"Returns True if the edict instance is occupied by a valid entity."
+		.def("get_unknown",
+			&CBaseEdict::GetUnknown,
+			"Returns its IServerUnknown instance.",
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEdict,
-			set_free,
-			"Sets the entity as free (not-valid)."
+		.def("set_edict",
+			&CBaseEdict::SetEdict,
+			"Set when initting an entity. If it's only a networkable, this is false.",
+			args("unknown", "full_edict")
 		)
 
-		CLASS_METHOD(CEdict,
-			clear_free,
-			"Clears the entity free flag."
-		)	
-
-		CLASS_METHOD(CEdict,
-			is_valid,
-			"Returns true if this CEdict object has a valid edict."
+		.def("area_num",
+			&CBaseEdict::AreaNum
 		)
 
-		CLASS_METHOD(CEdict,
-			get_index,
-			"Returns the index of this entity."
+		.def("get_class_name",
+			&CBaseEdict::GetClassName,
+			"Returns the edict's class name."
 		)
 
-		CLASS_METHOD(CEdict,
-			get_networkable,
-			"Returns the CServerNetworkable instance for this entity.",
-			manage_new_object_policy()
+		.def("is_free",
+			&CBaseEdict::IsFree
 		)
 
-		CLASS_METHOD(CEdict,
-			get_unknown,
-			"Returns the CServerUnknown instance for this entity.",
-			manage_new_object_policy()
+		.def("set_free",
+			&CBaseEdict::SetFree
 		)
 
-		CLASS_METHOD(CEdict,
-			get_server_entity,
-			"Returns the CServerEntity instance for this entity.",
-			manage_new_object_policy()
+		.def("clear_free",
+			&CBaseEdict::ClearFree
 		)
 
-		CLASS_METHOD(CEdict,
-			get_prop_int,
-			"Returns an integer value based on the given sendprop name.",
-			args("prop_name")
+		.def("has_state_changed",
+			&CBaseEdict::HasStateChanged
 		)
 
-		CLASS_METHOD(CEdict,
-			get_prop_float,
-			"Returns a float value based on the given sendprop name.",
-			args("prop_name")
+		.def("clear_state_changed",
+			&CBaseEdict::ClearStateChanged
 		)
 
-		CLASS_METHOD(CEdict,
-			get_prop_string,
-			"Returns a string value based on the given sendprop name.",
-			args("prop_name")
+		.def("state_changed",
+			GET_METHOD(void, CBaseEdict, StateChanged)
 		)
 
-		CLASS_METHOD(CEdict,
-			get_prop_vector,
-			"Returns a vector value based on the given sendprop name.",
-			args("prop_name"),
-			manage_new_object_policy()
+		/*
+		.def("state_changed",
+			static_cast< void(CBaseEdict::*)(unsigned short) >(&CBaseEdict::StateChanged),
+			args("offset")
+		)
+		*/
+
+		.def("clear_transmit_state",
+			&CBaseEdict::ClearTransmitState
 		)
 
-		CLASS_METHOD(CEdict,
-			set_prop_int,
-			"Sets the given sendprop to the given integer value.",
-			args("prop_name", "iValue")
+		.def("set_change_info",
+			&CBaseEdict::SetChangeInfo,
+			args("info")
 		)
 
-		CLASS_METHOD(CEdict,
-			set_prop_float,
-			"Sets the given sendprop to the given float value.",
-			args("prop_name", "flValue")
+		.def("set_change_info_serial_number",
+			&CBaseEdict::SetChangeInfoSerialNumber,
+			args("serial_number")
 		)
 
-		CLASS_METHOD(CEdict,
-			set_prop_string,
-			"Sets the given sendprop to the given string value.",
-			args("prop_name", "szValue")
+		.def("get_change_info",
+			&CBaseEdict::GetChangeInfo
 		)
 
-		CLASS_METHOD(CEdict,
-			set_prop_vector,
-			"Sets the given sendprop to the given vector value.",
-			args("prop_name", "vecValue")
+		.def("get_change_info_serial_number",
+			&CBaseEdict::GetChangeInfoSerialNumber
 		)
 
-	BOOST_END_CLASS()
+		.def("get_change_accessor",
+			GET_METHOD(IChangeInfoAccessor*, CBaseEdict, GetChangeAccessor),
+			reference_existing_object_policy()
+		)
+
+		// Class attributes
+		.def_readwrite("state_flags",
+			&CBaseEdict::m_fStateFlags
+		)
+
+		.def_readwrite("serial_number",
+			&CBaseEdict::m_NetworkSerialNumber
+		)
+
+		.def_readwrite("index",
+			&CBaseEdict::m_iIndex
+		)
+
+		.def_readwrite("networkable",
+			&CBaseEdict::m_pNetworkable
+		)
+	;
+
+	class_< edict_t, bases<CBaseEdict> >("CEdict")
+		.def("get_collidable",
+			&edict_t::GetCollideable,
+			"Returns its ICollideable instance.",
+			reference_existing_object_policy()
+		)
+
+		.def_readwrite("free_time",
+			&edict_t::freetime,
+			"The server timestampe at which the edict was freed."
+		)
+	;
 }
 
 //-----------------------------------------------------------------------------

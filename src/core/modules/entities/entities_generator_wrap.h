@@ -36,12 +36,12 @@
 // ----------------------------------------------------------------------------
 // Forward declaration.
 // ----------------------------------------------------------------------------
-class CEdict;
+struct edict_t;
 
 // ----------------------------------------------------------------------------
 // Declare the generator class.
 // ----------------------------------------------------------------------------
-class CEntityGenerator: public IPythonGenerator<CEdict>
+class CEntityGenerator: public IPythonGenerator<edict_t>
 {
 public:
 	CEntityGenerator(PyObject* self);
@@ -51,7 +51,7 @@ public:
 	virtual ~CEntityGenerator();
 
 protected:
-	virtual CEdict* getNext();
+	virtual edict_t* getNext();
 
 private:
 	int m_iEntityIndex;

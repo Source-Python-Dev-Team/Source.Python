@@ -47,7 +47,7 @@ int CGlobalServerImplementationBase::get_server_count()
 	return 0;
 }
 
-CEdict* CGlobalServerImplementationBase::get_edicts()
+edict_t* CGlobalServerImplementationBase::get_edicts()
 {
 	return NULL;
 }

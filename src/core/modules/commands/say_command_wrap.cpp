@@ -217,11 +217,8 @@ void SayConCommand::Dispatch( const CCommand &command )
 	// Get the index of the player that used the command
 	int iIndex = GetCommandIndex();
 
-	// Get the CEdict instance of the player
-	CEdict* pEdict = new CEdict(iIndex);
-
 	// Get the IPlayerInfo instance of the player
-	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict->get_edict());
+	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(PEntityOfEntIndex(iIndex));
 
 	// Get whether the command was say or say_team
 	bool bTeamOnly = command.Arg(0) == "say_team";

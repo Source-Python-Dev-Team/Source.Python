@@ -75,7 +75,7 @@ public:
 	int				  get_max_entities();
 	const char*		  get_map_group_name();
 	int				  get_server_count();
-	CEdict*			  get_edicts();
+	edict_t*			  get_edicts();
 };
 
 //-----------------------------------------------------------------------------
