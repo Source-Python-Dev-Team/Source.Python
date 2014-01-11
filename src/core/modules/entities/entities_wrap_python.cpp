@@ -369,6 +369,19 @@ void export_edict()
 			reference_existing_object_policy()
 		)
 
+		.def("get_prop",
+			&CEdictExt::GetProp,
+			"Returns the value of a network property.",
+			args("prop_name")
+		)
+
+		.def("set_prop",
+			&CEdictExt::SetProp,
+			"Set the a network property to the given value.",
+			args("prop_name", "value")
+		)
+
+		// Class attributes
 		.def_readwrite("free_time",
 			&edict_t::freetime,
 			"The server timestampe at which the edict was freed."

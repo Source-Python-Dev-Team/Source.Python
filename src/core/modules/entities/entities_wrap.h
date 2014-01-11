@@ -38,23 +38,12 @@
 //---------------------------------------------------------------------------------
 // edict_t extension
 //---------------------------------------------------------------------------------
-/*
-class edict_tExt
+class CEdictExt
 {
 public:
-	int         GetPropInt( const char* prop_name );
-	float       GetPropFloat( const char* prop_name );
-	const char* GetPropString( const char* prop_name );
-	Vector*     GetPropVector( const char* prop_name );
-	object      GetProp( const char* prop_name );
-
-	void        SetPropInt( const char* prop_name, int iValue );
-	void        SetPropFloat( const char* prop_name, float flValue );
-	void        SetPropString( const char* prop_name, const char* szValue );
-	void        SetPropVector( const char* prop_name, Vector* vecValue );
-	void        SetProp( const char* prop_name, object value);
+	static object GetProp( edict_t* pEdict, const char* prop_name );
+	static void   SetProp( edict_t* pEdict, const char* prop_name, object value);
 };
-*/
 
 //---------------------------------------------------------------------------------
 // Custom SendProp wrapper.
@@ -64,17 +53,37 @@ class CSendProp
 public:
 	CSendProp( edict_t* edict, const char* prop_name );
 
-	SendPropType	get_type();
+	SendPropType GetType();
 
-	void			set_int( int value );
-	void			set_float( float value );
-	void			set_string( const char* value );
-	void			set_vector( CVector* pVec );
+	template<class T>
+	T Get()
+	{ return *(T *) ((char *) m_base_entity + m_prop_offset); }
 
-	int				get_int();
-	float			get_float();
-	const char*		get_string();
-	CVector*		get_vector();
+	object Get();
+
+	template<class T>
+	void Set(T value)
+	{
+		*(T *)((char *) m_base_entity + m_prop_offset) = value;
+		
+		// Force a network update.
+		m_edict->StateChanged();
+	}
+
+	template<>
+	void Set(const char* szValue)
+	{
+		// Get the address of the string buffer.
+		char* data_buffer = (char *)((char *)m_base_entity + m_prop_offset);
+
+		// Write the string to the buffer.
+		V_strncpy(data_buffer, szValue, DT_MAX_STRING_BUFFERSIZE);
+		
+		// Force a network update.
+		m_edict->StateChanged();
+	}
+
+	void Set(object value);
 
 private:
 	// Offset from the beginning of the network table that

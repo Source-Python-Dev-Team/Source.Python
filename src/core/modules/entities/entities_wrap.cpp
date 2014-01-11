@@ -60,6 +60,20 @@ SendPropMap g_SendPropMap;
 
 
 //-----------------------------------------------------------------------------
+// edict_t extension
+//-----------------------------------------------------------------------------
+object CEdictExt::GetProp( edict_t* pEdict, const char* prop_name )
+{
+	return CSendProp(pEdict, prop_name).Get();
+}
+
+void CEdictExt::SetProp( edict_t* pEdict, const char* prop_name, object value)
+{
+	CSendProp(pEdict, prop_name).Set(value);
+}
+
+
+//-----------------------------------------------------------------------------
 // CSendProp code.
 //-----------------------------------------------------------------------------
 CSendProp::CSendProp( edict_t* edict, const char* prop_name )
@@ -172,120 +186,27 @@ CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 	}
 }
 
-void CSendProp::set_int( int iValue )
+void CSendProp::Set( object value )
 {
-	// Is the property of "integer" type?
-	if( m_send_prop->GetType() == DPT_Int )
+	switch(m_send_prop->GetType())
 	{
-		// Set the value.
-		*(int *)((char *)m_base_entity + m_prop_offset) = iValue;
-
-		// Force a network update.
-		m_edict->StateChanged();
+		case DPT_Int: Set<int>(extract<int>(value)); break;
+		case DPT_Float: Set<float>(extract<float>(value)); break;
+		case DPT_String: Set<const char *>(extract<const char *>(value)); break;
+		case DPT_Vector: Set<Vector>(extract<Vector>(value)); break;
 	}
-	else
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an integer.");
-	}
+	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown property type.");
 }
 
-void CSendProp::set_float( float flValue )
+object CSendProp::Get()
 {
-	// Is the property of "float" type?
-	if( m_send_prop->GetType() == DPT_Float )
+	switch(m_send_prop->GetType())
 	{
-		// Set the value.
-		*(float *)((char *)m_base_entity + m_prop_offset) = flValue;
-
-		// Force a network update.
-		m_edict->StateChanged();
+		case DPT_Int: return object(Get<int>());
+		case DPT_Float: return object(Get<float>());
+		case DPT_String: return object(Get<const char *>());
+		case DPT_Vector: return object(Get<Vector>());
 	}
-	else
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.");
-	}
-}
-
-void CSendProp::set_string( const char* szValue )
-{
-	// Is the property of "string" type?
-	if( m_send_prop->GetType() == DPT_String )
-	{
-		// Get the address of the string buffer.
-		char* data_buffer = (char *)((char *)m_base_entity + m_prop_offset);
-
-		// Write the string to the buffer.
-		V_strncpy(data_buffer, szValue, DT_MAX_STRING_BUFFERSIZE);
-
-		// Force a network update.
-		m_edict->StateChanged();
-	}
-	else
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.");
-	}
-}
-
-void CSendProp::set_vector( CVector* vecValue )
-{
-	// Is the property of "vector" type?
-	if( m_send_prop->GetType() == DPT_Vector )
-	{
-		*(Vector *)((char *)m_base_entity + m_prop_offset) = *(Vector *) vecValue;
-		
-		// Force a network update.
-		m_edict->StateChanged();
-	}
-	else
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.");
-	}
-}
-
-int CSendProp::get_int()
-{
-	// Is the property of "integer" type?
-	if( m_send_prop->GetType() == DPT_Int )
-	{
-		return *(int *)((char *)m_base_entity + m_prop_offset);
-	}
-
-	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an integer.");
-	return NULL;
-}
-
-float CSendProp::get_float()
-{
-	// Is the property of "float" type?
-	if( m_send_prop->GetType() == DPT_Float )
-	{
-		return *(float *)((char *)m_base_entity + m_prop_offset);
-	}
-
-	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.");
-	return NULL;
-}
-
-const char* CSendProp::get_string()
-{
-	// Is the property of "string" type?
-	if( m_send_prop->GetType() == DPT_String )
-	{
-		return (const char *)((char *)m_base_entity + m_prop_offset);
-	}
-
-	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.");
-	return NULL;
-}
-
-CVector* CSendProp::get_vector()
-{
-	// Is the property of "vector" type?
-	if( m_send_prop->GetType() == DPT_Vector )
-	{
-		return new CVector(*(Vector *) ((char *)m_base_entity + m_prop_offset));
-	}
-
-	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.");
-	return NULL;
+	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown property type.");
+	return object(); // Just to disable a warning...
 }
