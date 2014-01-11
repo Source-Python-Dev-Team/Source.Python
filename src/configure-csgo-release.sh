@@ -1,3 +1,3 @@
-mkdir Build
+mkdir Build 
 cd Build
 cmake .. -DGAME=csgo
