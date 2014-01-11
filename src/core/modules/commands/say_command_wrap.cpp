@@ -220,8 +220,8 @@ void SayConCommand::Dispatch( const CCommand &command )
 	// Get the CEdict instance of the player
 	CEdict* pEdict = new CEdict(iIndex);
 
-	// Get the CPlayerInfo instance of the player
-	CPlayerInfo* pPlayerInfo = new CPlayerInfo(pEdict);
+	// Get the IPlayerInfo instance of the player
+	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict->get_edict());
 
 	// Get whether the command was say or say_team
 	bool bTeamOnly = command.Arg(0) == "say_team";
@@ -337,7 +337,7 @@ void CSayCommandManager::remove_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Dispatches the say command.
 //-----------------------------------------------------------------------------
-CommandReturn CSayCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand )
+CommandReturn CSayCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand )
 {
 	// Loop through all callables registered for the CSayCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)

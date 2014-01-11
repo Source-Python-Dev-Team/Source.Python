@@ -67,7 +67,7 @@ CAddonManager::~CAddonManager( void )
 //---------------------------------------------------------------------------------
 void CAddonManager::GameFrame()
 {
-	CALL_LISTENERS(get_tick_listener_manager());
+	CALL_LISTENERS(Tick);
 }
 
 //---------------------------------------------------------------------------------
@@ -75,7 +75,7 @@ void CAddonManager::GameFrame()
 //---------------------------------------------------------------------------------
 void CAddonManager::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
-	CALL_LISTENERS(get_networkid_validated_listener_manager(), pszUserName, pszNetworkID);
+	CALL_LISTENERS(NetworkidValidated, pszUserName, pszNetworkID);
 }
 
 //---------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ void CAddonManager::NetworkIDValidated( const char *pszUserName, const char *psz
 //---------------------------------------------------------------------------------
 void CAddonManager::LevelInit( char const *pMapName )
 {
-	CALL_LISTENERS(get_level_init_listener_manager(), pMapName);
+	CALL_LISTENERS(LevelInit, pMapName);
 }
 
 //---------------------------------------------------------------------------------
@@ -93,7 +93,7 @@ void CAddonManager::LevelInit( char const *pMapName )
 void CAddonManager::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
 	CEdict edict = CEdict(pEdictList);
-	CALL_LISTENERS(get_server_activate_listener_manager(), edict, edictCount, clientMax);
+	CALL_LISTENERS(ServerActivate, edict, edictCount, clientMax);
 }
 
 //---------------------------------------------------------------------------------
@@ -101,7 +101,7 @@ void CAddonManager::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 //---------------------------------------------------------------------------------
 void CAddonManager::LevelShutdown( void )
 {
-	CALL_LISTENERS(get_level_shutdown_listener_manager());
+	CALL_LISTENERS(LevelShutdown);
 }
 
 //---------------------------------------------------------------------------------
@@ -110,7 +110,7 @@ void CAddonManager::LevelShutdown( void )
 void CAddonManager::ClientActive( edict_t *pEntity )
 {
 	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(get_client_active_listener_manager(), edict);
+	CALL_LISTENERS(ClientActive, edict);
 }
 
 //---------------------------------------------------------------------------------
@@ -119,7 +119,7 @@ void CAddonManager::ClientActive( edict_t *pEntity )
 void CAddonManager::ClientDisconnect( edict_t *pEntity )
 {
 	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(get_client_disconnect_listener_manager(), edict);
+	CALL_LISTENERS(ClientDisconnect, edict);
 }
 
 //---------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ void CAddonManager::ClientDisconnect( edict_t *pEntity )
 void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
 	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(get_client_put_in_server_listener_manager(), edict, playername);
+	CALL_LISTENERS(ClientPutInServer, edict, playername);
 }
 
 //---------------------------------------------------------------------------------
@@ -137,7 +137,7 @@ void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername 
 void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 {
 	CEdict edict = CEdict(pEdict);
-	CALL_LISTENERS(get_client_settings_changed_listener_manager(), edict);
+	CALL_LISTENERS(ClientSettingsChanged, edict);
 }
 
 //---------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity,
 	const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
 	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(get_client_connect_listener_manager(), *bAllowConnect, edict, pszName, pszAddress, reject, maxrejectlen);
+	CALL_LISTENERS(ClientConnect, *bAllowConnect, edict, pszName, pszAddress, reject, maxrejectlen);
 }
 
 //---------------------------------------------------------------------------------
@@ -158,7 +158,7 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 	const char *pCvarValue )
 {
 	CEdict edict = CEdict(pPlayerEntity);
-	CALL_LISTENERS(get_on_query_cvar_value_finished_listener_manager(), (int) iCookie, edict, eStatus, pCvarName, pCvarValue);
+	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, edict, eStatus, pCvarName, pCvarValue);
 }
 //
 // 
@@ -167,18 +167,18 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 void CAddonManager::ClientFullyConnect( edict_t *pEntity )
 {
 	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(get_client_fully_connect_listener_manager(), edict);
+	CALL_LISTENERS(ClientFullyConnect, edict);
 }
 
 void CAddonManager::OnEdictAllocated( edict_t *edict )
 {
 	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(get_on_edict_allocated_listener_manager(), edict);
+	CALL_LISTENERS(OnEdictAllocated, edict);
 }
 
 void CAddonManager::OnEdictFreed( const edict_t *edict )
 {
 	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(get_on_edict_freed_listener_manager(), edict);
+	CALL_LISTENERS(OnEdictFreed, edict);
 }
 #endif

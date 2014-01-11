@@ -108,8 +108,8 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 	// Get the CEdict instance of the player
 	CEdict* pEdict = new CEdict(pEntity);
 
-	// Get the CPlayerInfo instance of the player
-	CPlayerInfo* pPlayerInfo = new CPlayerInfo(pEdict);
+	// Get the IPlayerInfo instance of the player
+	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEntity);
 
 	// Get the CICommand instance of the CCommand
 	CICommand* ccommand = new CICommand(&command);
@@ -209,7 +209,7 @@ void CClientCommandManager::remove_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Calls all callables for the command when it is called on the client.
 //-----------------------------------------------------------------------------
-CommandReturn CClientCommandManager::Dispatch( CPlayerInfo* pPlayerInfo, CICommand* ccommand )
+CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, CICommand* ccommand )
 {
 	// Loop through all callables registered for the CClientCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)

@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -27,7 +27,6 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-
 // Required to fix compilation errors after including cdll_int.h
 #if defined( _WIN32 )
 #include <Windows.h>
@@ -42,768 +41,722 @@
 #include "iachievementmgr.h"
 #include "client_textmessage.h"
 #include "steam/steamclientpublic.h"
-#include "eiface_wrap.h"
+#include "inetchannelinfo.h"
+#include "eiface.h"
 
-//---------------------------------------------------------------------------------
-// Namespaces to use
-//---------------------------------------------------------------------------------
-using namespace boost::python;
+#include ENGINE_INCLUDE_PATH(eiface_wrap_python.h)
 
-//---------------------------------------------------------------------------------
-// Static singletons.
-//---------------------------------------------------------------------------------
-static CEngineServer s_EngineServer;
 
-//---------------------------------------------------------------------------------
-// Engine accessor.
-//---------------------------------------------------------------------------------
-CEngineServer* get_engine_interface()
-{
-	return &s_EngineServer;
-}
-
-//---------------------------------------------------------------------------------
-// Exposer functions.
-//---------------------------------------------------------------------------------
-void export_engine_interface();
-
-//---------------------------------------------------------------------------------
-// Method overloads
-//---------------------------------------------------------------------------------
-DECLARE_CLASS_METHOD_OVERLOAD(CEngineServer, precache_model,			1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CEngineServer, precache_sentence_file,	1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CEngineServer, precache_decal,			1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CEngineServer, precache_generic,			1, 2);
+extern IVEngineServer* engine;
 
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
 //---------------------------------------------------------------------------------
+void export_engine_interface();
+
 DECLARE_SP_MODULE(engine_c)
 {
 	export_engine_interface();
 }
 
+
 //---------------------------------------------------------------------------------
 // Exposes IVEngineServer.
 //---------------------------------------------------------------------------------
+class IVEngineServerExt
+{
+public:
+	void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand)
+	{
+		pEngine->ClientCommand(pEdict, szCommand);
+	}
+	
+	void Con_NPrintf(IVEngineServer* pEngine, int pos, const char* fmt)
+	{
+		pEngine->Con_NPrintf(pos, fmt);
+	}
+
+	void Con_NXPrintf(IVEngineServer* pEngine, const struct con_nprint_s* info, const char* fmt)
+	{
+		pEngine->Con_NXPrintf(info, fmt);
+	}
+};
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_model_overload, PrecacheModel, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sentence_file_overload, PrecacheSentenceFile, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_decal_overload, PrecacheDecal, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_generic_overload, PrecacheGeneric, 1, 2);
+
 void export_engine_interface()
 {
-	// ----------------------------------------------------------
-	// Engine accessor.
-	// ----------------------------------------------------------
-	BOOST_FUNCTION(get_engine_interface,
-		"Returns the engine interface.",
-		reference_existing_object_policy()
-	);
+	// engine server interface accesor
+	def("get_engine_interface", make_getter(&engine, reference_existing_object_policy()));
 
-	// ----------------------------------------------------------
-	// The engine interface.
-	// ----------------------------------------------------------
-	BOOST_ABSTRACT_CLASS( CEngineServer )
+	// Maybe we should create a new module called "interfaces" and then expose the objects
+	// as the following:
+	// scope().attr("engine") = ref(engine);
 
-		CLASS_METHOD(CEngineServer,
-			change_level,
+
+	// Call engine specific implementation function
+	IVEngineServer_Visitor(
+
+	// TODO: Expose as IVEngineServer instead of CEngineServer?
+	class_<IVEngineServer, boost::noncopyable>("CEngineServer", no_init)
+		.def("change_level",
+			&IVEngineServer::ChangeLevel,
 			"Tells the engine to change the level. If s2 is None, the engine will execute a \
 			changelevel command. If s2 is a valid map, the engine will execute a changelevel2 \
 			command",
 			args("s1", "s2")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_map_valid,
+		.def("is_map_valid",
+			&IVEngineServer::IsMapValid,
 			"Returns true if filename refers to a valid map.",
 			args("filename")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_dedicated_server,
+		.def("is_dedicated_server",
+			&IVEngineServer::IsDedicatedServer,
 			"Returns true if the engine is running in dedicated mode."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_in_edit_mode,
+		.def("is_in_edit_mode",
+			&IVEngineServer::IsInEditMode,
 			"Returns false if the engine is not in hammer editing mode."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_launch_options,
-			"Get arbitrary launch options",
-			reference_existing_object_policy()
+		.def("precache_model",
+			&IVEngineServer::PrecacheModel,
+			precache_model_overload(
+				"Precaches a model and returns an integer containing its index.",
+				args("s", "preload")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CEngineServer,
-			precache_model,
-			"Precaches a model and returns an integer containing its index.",
-			args("s", "preload")
+		.def("precache_decal",
+			&IVEngineServer::PrecacheDecal,
+			precache_decal_overload(
+				"Precaches a decal file and returns an integer containing its index.",
+				args("s", "preload")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CEngineServer,
-			precache_sentence_file,
-			"Precaches a sentence file and returns an integer containing its index.",
-			args("s", "preload")
+		.def("precache_generic",
+			&IVEngineServer::PrecacheGeneric,
+			precache_generic_overload(
+				"Precaches a generic asset file and returns an integer containing its index.",
+				args("s", "preload")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CEngineServer,
-			precache_decal,
-			"Precaches a decal file and returns an integer containing its index.",
-			args("name", "preload")
-		)
-
-		CLASS_METHOD_OVERLOAD(CEngineServer,
-			precache_generic,
-			"Precaches a generic asset file and returns an integer containing its index.",
-			args("s", "preload")
-		)
-
-		CLASS_METHOD(CEngineServer,
-			is_model_precached,
+		.def("is_model_precached",
+			&IVEngineServer::IsModelPrecached,
 			"Returns true if the given model is precached.",
 			args("s")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_decal_precached,
+		.def("is_decal_precached",
+			&IVEngineServer::IsDecalPrecached,
 			"Returns true if the given decal is precached.",
 			args("s")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_generic_precached,
+		.def("is_generic_precached",
+			&IVEngineServer::IsGenericPrecached,
 			"Returns true if the given generic asset is precached.",
 			args("s")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_cluster_for_origin,
+		.def("get_cluster_for_origin",
+			&IVEngineServer::GetClusterForOrigin,
 			"Returns the cluster number for the specified position.",
 			args("origin")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_pvs_for_cluster,
+		.def("get_cluster_for_origin",
+			&IVEngineServer::GetPVSForCluster,
 			"Gets the PVS bits for a specified cluster and copies the bits into outputpvs.",
 			args("cluster", "outputpvslength", "outputpvs")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			check_origin_in_pvs,
+		.def("check_origin_in_pvs",
+			&IVEngineServer::CheckOriginInPVS,
 			"Check whether the specified origin is inside the PVS",
 			args("org", "checkpvs", "checkpvssize")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			check_box_in_pvs,
+		.def("check_box_in_pvs",
+			&IVEngineServer::CheckBoxInPVS,
 			"Checks whether the specified worldspace bounding box is inside the specified PVS",
 			args("mins", "maxs", "checkpvs", "checkpvssize")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_player_userid,
+		.def("get_player_userid",
+			&IVEngineServer::GetPlayerUserId,
 			"Returns the server assigned userid for this player. Returns -1 if the edict could not \
 			be found.",
-			args("playerInstance")
+			args("player_instance")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_player_network_id_string,
+		.def("get_player_network_id_string",
+			&IVEngineServer::GetPlayerNetworkIDString,
 			"Returns the player's network id as a string.",
-			args("playerInstance")
+			args("player_instance")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_userid_in_use,
-			"Returns true if the userid given is in use.",
-			args("userID")
-		)
-
-		CLASS_METHOD(CEngineServer,
-			get_loading_progress_for_userid,
-			"Returns percentage complete a player is while loading.",
-			args("userID")
-		)
-
-		CLASS_METHOD(CEngineServer,
-			get_entity_count,
+		.def("get_entity_count",
+			&IVEngineServer::GetEntityCount,
 			"Returns the number of used edict slots."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_player_net_info,
+		.def("get_player_net_info",
+			&IVEngineServer::GetPlayerNetInfo,
 			"Returns stats info interface for a client netchannel.",
-			args("playerIndex"),
+			args("player_index"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			create_edict,
-			"Creates an edict. If iForceEdictIndex is not -1, then it return the edict with that index.",
-			args("iForceEdictIndex"),
+		.def("create_edict",
+			&IVEngineServer::CreateEdict,
+			"Creates an edict. If <force_edict_index> is not -1, then it return the edict with that index.",
+			args("force_edict_index"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			remove_edict,
+		.def("remove_edict",
+			&IVEngineServer::RemoveEdict,
 			"Remove the specified edict and place back into the free edict list.",
-			args("edictInstance")
+			args("edict_instance")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			emit_ambient_sound,
+		.def("emit_ambient_sound",
+			&IVEngineServer::EmitAmbientSound,
 			"Emits an ambient sound associated with the specified entity",
-			args("entindex", "pos", "samp", "vol", "soundlevel", "fFlags", "pitch", "delay")
+			args("entindex", "pos", "samp", "vol", "soundlevel", "flags", "pitch", "delay")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			fade_client_volume,
+		.def("fade_client_volume",
+			&IVEngineServer::FadeClientVolume,
 			"Fade out the client's volume level toward silence (or fadePercent)",
-			args("pEdict", "fadePercent", "fadeOutSeconds", "holdTime", "fadeInSeconds")
+			args("edict", "fade_percent", "fade_out_seconds", "hold_time", "fade_in_seconds")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			sentence_group_pick,
-			args("groupIndex", "name", "nameBufLen")
+		.def("sentence_group_pick",
+			&IVEngineServer::SentenceGroupPick,
+			args("group_index", "name", "name_buf_len")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			sentence_group_pick_sequential,
-			args("groupIndex", "name", "nameBufLen", "sentenceIndex", "reset")
+		.def("sentence_group_pick_sequential",
+			&IVEngineServer::SentenceGroupPickSequential,
+			args("group_index", "name", "name_buf_len", "sentence_index", "reset")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			sentence_index_from_name,
-			args("pSentenceName")
+		.def("sentence_index_from_name",
+			&IVEngineServer::SentenceIndexFromName,
+			args("sentence_name")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			sentence_name_from_index,
-			args("sentenceIndex")
+		.def("sentence_name_from_index",
+			&IVEngineServer::SentenceNameFromIndex,
+			args("sentence_index")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			sentence_group_index_from_name,
-			args("pGroupName")
+		.def("sentence_group_index_from_name",
+			&IVEngineServer::SentenceGroupIndexFromName,
+			args("group_name")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			sentence_group_name_from_index,
-			args("groupIndex")
+		.def("sentence_group_name_from_index",
+			&IVEngineServer::SentenceGroupNameFromIndex,
+			args("group_index")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			sentence_length,
-			args("sentenceIndex")
+		.def("sentence_length",
+			&IVEngineServer::SentenceLength,
+			args("sentence_index")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			server_command,
+		.def("server_command",
+			&IVEngineServer::ServerCommand,
 			"Issues a command to the command parser as if it was typed at the server console.",
 			args("command")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			server_execute,
-			"Executes any commands currently in the command parser immediately (instead of once per frame).",
-			args("command")
+		.def("server_execute",
+			&IVEngineServer::ServerExecute,
+			"Executes any commands currently in the command parser immediately (instead of once per frame)."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			client_command,
+		.def("client_command",
+			&IVEngineServerExt::ClientCommand,
 			"Runs a command on the client.",
-			args("pEdict", "szCmd")
+			args("edict", "command")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			light_style,
+		.def("light_style",
+			&IVEngineServer::LightStyle,
 			"Set the lightstyle to the specified value and network the change to any connected clients.",
 			args("style", "val")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			static_decal,
+		.def("static_decal",
+			&IVEngineServer::StaticDecal,
 			"Project a static decal onto the specified entity / model (for level placed decals in the .bsp)",
-			args("originInEntitySpace", "decalIndex", "entityIndex", "modelIndex", "bLowPriority")
+			args("origin_in_entity_space", "decal_index", "entity_index", "model_index", "low_priority")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			message_determine_multicast_recipients,
+		.def("message_determine_multicast_recipients",
+			&IVEngineServer::Message_DetermineMulticastRecipients,
 			"Given the current PVS (or PAS), determine which players should hear/recieve the message.",
-			args("usePas", "origin", "playerBits")
+			args("use_pas", "origin", "player_bits")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			entity_message_begin,
+		.def("entity_message_begin",
+			&IVEngineServer::EntityMessageBegin,
 			"Begin a message from a server side entity to its client side counterpart (func_breakable glass, e.g.)",
-			args("ent_index", "ent_class", "bReliable"),
+			args("ent_index", "ent_class", "reliable"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			send_user_message,
-			"Sends a user message off to the intended recipients.",
-			args("msg")
+		.def("message_end",
+			&IVEngineServer::MessageEnd,
+			"Finish the Entity or UserMessage and dispatch to network layer"
 		)
 
-// 		CLASS_METHOD(CEngineServer,
-// 			message_end
-// 		)
-// 
-// 		CLASS_METHOD(CEngineServer,
-// 			send_user_message
-// 		)
-		
-		CLASS_METHOD(CEngineServer,
-			client_printf,
+		.def("client_printf",
+			&IVEngineServer::ClientPrintf,
 			"Prints szMsg to the client's console.",
-			args("pEdict", "szMsg")
+			args("edict", "message")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			con_nprintf,
+		.def("con_nprintf",
+			&IVEngineServerExt::Con_NPrintf,
 			"LISTEN SERVER ONLY: Prints a string to the notification area of the screen.",
-			args("pos", "szString")
+			args("pos", "string")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			con_nxprintf,
+		.def("con_nxprintf",
+			&IVEngineServerExt::Con_NXPrintf,
 			"LISTEN SERVER ONLY: Same as con_nprintf but allows you to specify additional information.",
-			args("info", "szString")
+			args("info", "string")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			set_view,
+		.def("set_view",
+			&IVEngineServer::SetView,
 			"Change a specified player's \"view entity\"",
-			args("pClient", "pViewent")
+			args("client", "view_entity")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			crosshair_angle,
+		.def("crosshair_angle",
+			&IVEngineServer::CrosshairAngle,
 			"Sets the player's crosshair angle",
-			args("pClient", "pitch", "yaw")
-		)
-		
-		CLASS_METHOD(CEngineServer,
-			get_game_dir,
-			"Returns the path to the MOD's game directory.",
-			args("maxLength")
+			args("client", "pitch", "yaw")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			compare_file_time,
+		.def("get_game_dir",
+			&IVEngineServer::GetGameDir,
+			"Returns the path to the MOD's game directory.",
+			args("max_length")
+		)
+
+		.def("compare_file_time",
+			&IVEngineServer::CompareFileTime,
 			args("filename1", "filename2", "icompare")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			lock_network_string_tables,
+		.def("lock_network_string_tables",
+			&IVEngineServer::LockNetworkStringTables,
 			"Locks/unlocks the network string tables.",
-			args("bLock")
+			args("lock")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			create_fake_client,
+		.def("create_fake_client",
+			&IVEngineServer::CreateFakeClient,
 			"Creates a bot with the given name. Returns NULL if this call fails.",
 			args("netname"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_client_convar_value,
+		.def("get_client_convar_value",
+			&IVEngineServer::GetClientConVarValue,
 			"Get a convar keyvalue for specified client.",
-			args("clientIndex", "name")
+			args("client_index", "name")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			parse_file,
+		.def("parse_file",
+			&IVEngineServer::ParseFile,
 			"Parse a token from a file",
 			args("data", "token", "maxlen")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			copy_file,
+		.def("copy_file",
+			&IVEngineServer::CopyFile,
 			"Copies a file. Returns true if the operation succeeded.",
 			args("source", "destination")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			reset_pvs,
+		.def("reset_pvs",
+			&IVEngineServer::ResetPVS,
 			"Resets the potentially visible set. pvssize is the size in bytes of the buffer pointed to by pvs.",
 			args("pvs", "pvssize")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			add_origin_to_pvs,
+		.def("add_origin_to_pvs",
+			&IVEngineServer::AddOriginToPVS,
 			"Merge the pvs bits into the current accumulated pvs based on the specified origin.",
 			args("origin")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			set_area_portal_state,
+		.def("set_area_portal_state",
+			&IVEngineServer::SetAreaPortalState,
 			"Marks a specified area portal as open or closed.",
-			args("portalNumber", "isOpen")
+			args("portal_number", "is_open")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			playback_temp_entity,
+		.def("playback_temp_entity",
+			&IVEngineServer::PlaybackTempEntity,
 			"Queue a temp entity for transmission",
-			args("filter", "delay", "pSender", "pST", "classID")
+			args("filter", "delay", "sender", "st", "class_id")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			check_head_node_visible,
+		.def("check_head_node_visible",
+			&IVEngineServer::CheckHeadnodeVisible,
 			"Given a node number and the specified PVS, return with the node is in the PVS.",
 			args("nodenum", "pvs", "vissize")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			check_areas_connected,
+		.def("check_areas_connected",
+			&IVEngineServer::CheckAreasConnected,
 			"Using area bits, check whether area 1 flows into area 2 and vice versa (depends on portal state)",
 			args("area1", "area2")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_area,
+		.def("get_area",
+			&IVEngineServer::GetArea,
 			"Given an origin, determine which area index the origin is within.",
 			args("origin")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_area_bits,
+		.def("get_area",
+			&IVEngineServer::GetAreaBits,
 			"Get area portal bit set.",
 			args("area", "bits", "buflen")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_area_portal_plane,
+		.def("get_area_portal_plane",
+			&IVEngineServer::GetAreaPortalPlane,
 			"Given a view origin and a portal key, fill in the plane that leads out of this area.",
-			args("vViewOrigin", "portalKey", "pPlane")
+			args("view_origin", "portal_key", "plane")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			load_game_state,
+		.def("load_game_state",
+			&IVEngineServer::LoadGameState,
 			"Save/Restore wrapper - FIXME: At some point we should move this to its own interface.",
-			args("pMapName", "bCreatePlayers")
+			args("mapname", "create_players")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			load_adjacent_ents,
-			args("pOldLevel", "pLandmarkName")
+		.def("load_adjacent_ents",
+			&IVEngineServer::LoadAdjacentEnts,
+			args("old_level", "landmark_name")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_map_entities_string,
+		.def("get_map_entities_string",
+			&IVEngineServer::GetMapEntitiesString,
 			"Get the pristine map entity lump string."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			text_message_get,
+		.def("text_message_get",
+			&IVEngineServer::TextMessageGet,
 			"Text message system -- lookup the text message of the specified name",
-			args("pName"),
+			args("name"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			log_print,
+		.def("log_print",
+			&IVEngineServer::LogPrint,
 			"Print a message to the server log file.",
 			args("msg")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_log_enabled,
-			"Returns true if server side logging is enabled."
-		)
-
-		CLASS_METHOD(CEngineServer,
-			build_entity_cluster_list,
+		.def("build_entity_cluster_list",
+			&IVEngineServer::BuildEntityClusterList,
 			"Builds PVS information for an entity.",
-			args("pEdict", "pPVSInfo")
+			args("edict", "pvs_info")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			solid_moved,
+		.def("solid_moved",
+			&IVEngineServer::SolidMoved,
 			"A solid entity moved, update spatial partition.",
-			args("pSolidEnt", "pSolidCollide", "pPrevAbsOrigin", "bTestSurroundingBoundsOnly")
+			args("solid_ent", "solid_collide", "prev_abs_origin", "test_surrounding_bounds_only")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			trigger_moved,
+		.def("trigger_moved",
+			&IVEngineServer::TriggerMoved,
 			"A trigger entity moved, update the spatial partition",
-			args("pTriggerEnt", "testSurroundingBoundsOnly")
+			args("trigger_ent", "test_surrounding_bounds_only")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			create_spatial_partition,
+		.def("create_spatial_partition",
+			&IVEngineServer::CreateSpatialPartition,
 			"Create a custom spatial partition",
 			args("worldmin", "worldmax"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			destroy_spatial_partition,
+		.def("destroy_spatial_partition",
+			&IVEngineServer::DestroySpatialPartition,
 			"Destroy a custom spatial partition",
-			args("pPartition")
+			args("partition")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			draw_map_to_scratch_pad,
+		.def("draw_map_to_scratch_pad",
+			&IVEngineServer::DrawMapToScratchPad,
 			"Draw the brush geometry in the map into the scratch pad.",
-			args("pPad", "iFlags")
+			args("pad", "flags")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_entity_transmit_bits_for_client,
+		.def("get_entity_transmit_bits_for_client",
+			&IVEngineServer::GetEntityTransmitBitsForClient,
 			"This returns which entities, to the server's knowledge the client currently knows about.",
-			args("iClientIndex"),
+			args("client_index"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_paused,
+		.def("is_paused",
+			&IVEngineServer::IsPaused,
 			"Returns true if the game is paused"
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_timescale,
-			"Returns the game timescale multiplied by host_timescale."
-		)
-
-		CLASS_METHOD(CEngineServer,
-			force_exact_file,
+		.def("force_exact_file",
+			&IVEngineServer::ForceExactFile,
 			"Marks the filename for consistency checking. this should be called after precaching the file.",
 			args("file")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			force_model_bounds,
+		.def("force_model_bounds",
+			&IVEngineServer::ForceModelBounds,
 			"Marks a precached model as having a maximum bounding size on the client.",
 			args("s", "mins", "maxs")
 		)
-			
-		CLASS_METHOD(CEngineServer,
-			clear_save_dir_after_client_load
+
+		.def("clear_save_dir_after_client_load",
+			&IVEngineServer::ClearSaveDirAfterClientLoad
 		)
 
-		CLASS_METHOD(CEngineServer,
-			set_fake_client_convar_value,
+		.def("set_fake_client_convar_value",
+			&IVEngineServer::SetFakeClientConVarValue,
 			"Sets a USERINFO client ConVar for a fakeclient.",
-			args("pEntity", "cvar", "value")
+			args("entity", "cvar", "value")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			force_simple_material,
+		.def("force_simple_material",
+			&IVEngineServer::ForceSimpleMaterial,
 			"Marks the material (vmt file) for consistency checking.",
 			args("s")
 		)
-			
-		CLASS_METHOD(CEngineServer,
-			set_area_portal_states,
+
+		.def("set_area_portal_states",
+			&IVEngineServer::SetAreaPortalStates,
 			"Mark some area portals as open/closed.",
-			args("portalNumbers", "isOpen", "nPortals")
+			args("portal_numbers", "is_open", "portals")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			notify_edict_flags_change,
+		.def("notify_edict_flags_change",
+			&IVEngineServer::NotifyEdictFlagsChange,
 			"Called when relevant edict state flags change.",
-			args("iEdict")
+			args("edict")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_prev_check_transmit_info,
+		.def("get_prev_check_transmit_info",
+			&IVEngineServer::GetPrevCheckTransmitInfo,
 			args("pPlayerEdict"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_shared_edict_change_info,
+		.def("get_shared_edict_change_info",
+			&IVEngineServer::GetSharedEdictChangeInfo,
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			allow_immediate_edict_reuse,
+		.def("allow_immediate_edict_reuse",
+			&IVEngineServer::AllowImmediateEdictReuse,
 			"Tells the engine we can immediately re-use all the edict indices."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_internal_build,
+		.def("is_internal_build",
+			&IVEngineServer::IsInternalBuild,
 			"Returns true if the engine is an internal build."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_change_accessor,
-			args("pEdict"),
+		.def("get_change_accessor",
+			&IVEngineServer::GetChangeAccessor,
+			args("edict"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			clean_up_entity_cluster_list,
+		.def("clean_up_entity_cluster_list",
+			&IVEngineServer::CleanUpEntityClusterList,
 			"Cleans up the cluster list.",
-			args("pPVSInfo")
+			args("pvs_info")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			set_achievement_mgr,
+		.def("set_achievement_mgr",
+			&IVEngineServer::SetAchievementMgr,
 			"Sets the achievement manager."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_achievement_mgr,
+		.def("get_achievement_mgr",
+			&IVEngineServer::GetAchievementMgr,
 			"Returns the current achievement manager.",
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_app_id,
+		.def("get_app_id",
+			&IVEngineServer::GetAppID,
 			"Returns the game's appid."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_low_violence,
+		.def("is_low_violence",
+			&IVEngineServer::IsLowViolence,
 			"Returns true if the game is in low-violence mode."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_any_client_low_violence,
-			"Returns true if a low-violence client is playing."
-		)
-
-		CLASS_METHOD(CEngineServer,
-			start_query_cvar_value,
+		.def("start_query_cvar_value",
+			&IVEngineServer::StartQueryCvarValue,
 			"Returns the value of a cvar on the client."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			insert_server_command,
+		.def("insert_server_command",
+			&IVEngineServer::InsertServerCommand,
 			"Inserts a command into the server's command buffer."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_player_info,
+		.def("get_player_info",
+			&IVEngineServer::GetPlayerInfo,
 			"Fill in the player info structure for the specified player.",
 			args("ent_num", "pinfo")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_client_fully_authenticated,
+		.def("is_client_fully_authenticated",
+			&IVEngineServer::IsClientFullyAuthenticated,
 			"Returns true if this client has been fully authenticated by Steam.",
 			args("pEdict")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			set_dedicated_server_benchmark_mode,
+		.def("set_dedicated_server_benchmark_mode",
+			&IVEngineServer::SetDedicatedServerBenchmarkMode,
 			"Makes the host run 1 tick per frame.",
-			args("bBenchmarkMode")
+			args("benchmark_mode")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			is_split_screen_player,
+		.def("is_split_screen_player",
+			&IVEngineServer::SetDedicatedServerBenchmarkMode,
 			args("ent_num")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_split_screen_player_attach_to_edict,
-			args("ent_num"),
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(CEngineServer,
-			get_num_split_screen_users_attached_to_edict,
-			args("ent_num")
-		)
-
-		CLASS_METHOD(CEngineServer,
-			get_split_screen_player_for_edict,
-			args("ent_num", "nSlot"),
-			reference_existing_object_policy()
-		)
-
-		CLASS_METHOD(CEngineServer,
-			get_cluster_count,
+		.def("get_cluster_count",
+			&IVEngineServer::GetClusterCount,
 			"Returns total number of clusters."
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_all_cluster_bounds,
-			"Gets a list of all clusters and bounds.",
-			args("pBBoxList", "maxBBox")
-		)
-
-		CLASS_METHOD(CEngineServer,
-			is_creating_reslist
-		)
-
-		CLASS_METHOD(CEngineServer,
-			pause,
-			"Pauses the game.",
-			args("bPause", "bForce")
-		)
-
-		CLASS_METHOD(CEngineServer,
-			set_timescale,
-			"Sets simulation timescale.",
-			args("flTimescale")
-		)
-
 		/*
-		CLASS_METHOD(CEngineServer,
-			set_gamestats_data,
-			"Sets the gamestats data container.",
-			args("pGamestatsData")
+		TODO: Create a wrapper that requires a list or tuple with bbox_t elements
+		.def("get_all_cluster_bounds",
+			&IVEngineServer::GetAllClusterBounds,
+			"Gets a list of all clusters and bounds.",
+			args("bbox_list", "max_bbox")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			get_gamestats_data,
+		TODO: Patch SDK, so we can access CGameStatsData
+		.def("set_gamestats_data",
+			&IVEngineServer::SetGamestatsData,
+			"Sets the gamestats data container.",
+			args("gamestats_data")
+		)
+		
+		.def("get_gamestats_data",
+			&IVEngineServer::GetGamestatsData,
 			"Returns the gamestats data container.",
 			reference_existing_object_policy()
-		) 
+		)
 		*/
 
-		CLASS_METHOD(CEngineServer,
-			get_client_steamid,
+		.def("get_client_steamid",
+			&IVEngineServer::GetClientSteamID,
 			"Returns the SteamID of the specified player. Returns NULL if the player isn't authenticated.",
-			args("pPlayerEdict"),
+			args("client"),
 			reference_existing_object_policy()
 		)
-	
-		CLASS_METHOD(CEngineServer,
-			get_game_server_steamid,
+
+		.def("get_game_server_steamid",
+			&IVEngineServer::GetGameServerSteamID,
 			"Returns the SteamID of the game server.",
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			host_validate_session,
-			"Validates the session."
+		.def("get_game_server_steamid",
+			&IVEngineServer::GetGameServerSteamID,
+			"Returns the SteamID of the game server.",
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CEngineServer,
-			client_command_key_values,
+		.def("client_command_key_values",
+			&IVEngineServer::ClientCommandKeyValues,
 			"Sends a client command keyvalues which are deleted inside this function.",
-			args("pEdict", "pCommand")
+			args("edict", "key_calues")
 		)
 
-		CLASS_METHOD(CEngineServer,
-			set_no_clip_enabled,
-			"Enables / Disables noclip.",
-			args("bEnabled")
-		)
+		// OB specific methods
+		.NOT_IMPLEMENTED("index_of_edict")
+		.NOT_IMPLEMENTED("edict_of_index")
+		.NOT_IMPLEMENTED("user_message_begin")
+		.NOT_IMPLEMENTED("get_time")
+		.NOT_IMPLEMENTED("multiplayer_end_game")
+		.NOT_IMPLEMENTED("change_team")
+		.NOT_IMPLEMENTED("create_fake_client_ex")
+		.NOT_IMPLEMENTED("get_server_version")
+		.NOT_IMPLEMENTED("get_replay")
 
-		CLASS_METHOD(CEngineServer,
-			get_latency_for_choreo_sounds,
-			"Returns latency for choreo sounds."
-		)
+		// CS:GO specific methods
+		.NOT_IMPLEMENTED("get_launch_options")
+		.NOT_IMPLEMENTED("is_userid_in_use")
+		.NOT_IMPLEMENTED("get_loading_process_for_userid")
+		.NOT_IMPLEMENTED("send_user_message")
+		.NOT_IMPLEMENTED("is_log_enabled")
+		.NOT_IMPLEMENTED("get_timescale")
+		.NOT_IMPLEMENTED("is_level_main_menu_background")
+		.NOT_IMPLEMENTED("is_any_client_low_violence")
+		.NOT_IMPLEMENTED("is_split_screen_player")
+		.NOT_IMPLEMENTED("get_split_screen_player_for_edict")
+		.NOT_IMPLEMENTED("is_override_load_game_ent_on")
+		.NOT_IMPLEMENTED("force_flush_entity")
+		.NOT_IMPLEMENTED("get_single_player_shared_memory_space")
+		.NOT_IMPLEMENTED("alloc_level_static_data")
+		.NOT_IMPLEMENTED("is_creating_reslist")
+		.NOT_IMPLEMENTED("get_replayis_creating_xbox_reslist")
+		.NOT_IMPLEMENTED("is_dedicated_server_for_xbox")
+		.NOT_IMPLEMENTED("is_dedicated_server_for_ps3")
+		.NOT_IMPLEMENTED("pause")
+		.NOT_IMPLEMENTED("set_timescale")
+		.NOT_IMPLEMENTED("host_validated_session")
+		.NOT_IMPLEMENTED("refresh_screen_if_necessary")
+		.NOT_IMPLEMENTED("has_paint_map")
+		.NOT_IMPLEMENTED("sphere_paint_surface")
+		.NOT_IMPLEMENTED("sphere_trace_paint_surface")
+		.NOT_IMPLEMENTED("remove_all_paint")
+		.NOT_IMPLEMENTED("paint_all_surfaces")
+		.NOT_IMPLEMENTED("get_client_xuid")
+		.NOT_IMPLEMENTED("is_active_app")
+		.NOT_IMPLEMENTED("set_noclip_enabled")
+		.NOT_IMPLEMENTED("get_paint_map_data_rle")
+		.NOT_IMPLEMENTED("load_paint_map_data_rle")
+		.NOT_IMPLEMENTED("send_paint_map_data_to_client")
+		.NOT_IMPLEMENTED("get_latency_for_choreo_sounds")
+		.NOT_IMPLEMENTED("get_client_cross_play_platform")
+		.NOT_IMPLEMENTED("ensure_instance_baseline")
+		.NOT_IMPLEMENTED("reserve_server_for_queued_game")
+		.NOT_IMPLEMENTED("get_engine_hltv_info")
 
-		CLASS_METHOD(CEngineServer,
-			get_client_cross_play_platform,
-			args("client_index")
-		)
-	
-		CLASS_METHOD(CEngineServer,
-			ensure_instance_baseline,
-			args("ent_num")
-		)
-
-		CLASS_METHOD(CEngineServer,
-			reserver_server_for_queued_game,
-			args("szReservationPayload")
-		)
-
-	BOOST_END_CLASS()
+	); // IVEngineServer_Visitor
 }

@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,4 +24,7 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "eiface_engine_implementation.h"
+template<class T>
+void IVEngineServer_Visitor(T cls)
+{
+}

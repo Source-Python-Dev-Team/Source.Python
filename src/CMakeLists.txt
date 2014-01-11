@@ -135,15 +135,10 @@ Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
 # Engine module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
-	core/modules/engine/eiface_wrap.h
-    core/modules/engine/eiface_engine_base.h
-    core/modules/engine/engine${SOURCE_ENGINE}/eiface_engine_implementation.h
+    core/modules/engine/engine${SOURCE_ENGINE}/eiface_wrap_python.h
 )
 
 Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
-    core/modules/engine/eiface_wrap.cpp
-    core/modules/engine/eiface_engine_base.cpp
-    core/modules/engine/engine${SOURCE_ENGINE}/eiface_engine_implementation.cpp
     core/modules/engine/eiface_wrap_python.cpp
 )
 
@@ -235,12 +230,10 @@ Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
 # Players module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
-    core/modules/players/players_wrap.h
     core/modules/players/players_generator_wrap.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
-    core/modules/players/players_wrap.cpp
     core/modules/players/players_wrap_python.cpp
     core/modules/players/players_generator_wrap.cpp
 )

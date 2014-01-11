@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,22 +24,60 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//---------------------------------------------------------------------------------
-// Includes
-//---------------------------------------------------------------------------------
 #include "eiface.h"
 
-#include "../eiface_engine_base.h"
-
-//---------------------------------------------------------------------------------
-// Global externs we need.
-//---------------------------------------------------------------------------------
-extern IVEngineServer * engine;
-
-//---------------------------------------------------------------------------------
-// Purpose: Source Engine 2 Specific engine implementation calls
-//---------------------------------------------------------------------------------
-class CEngineServerImplementation : public CEngineServerImplementationBase
+template<class T>
+void IVEngineServer_Visitor(T cls)
 {
-public:
-};
+	cls
+		.def("index_of_edict",
+			&IVEngineServer::IndexOfEdict,
+			"Returns the edict's index",
+			args("edict")
+		)
+
+		.def("edict_of_index",
+			&IVEngineServer::PEntityOfEntIndex,
+			"Returns the corresponding edict for the given index.",
+			args("index"),
+			reference_existing_object_policy()
+		)
+
+		.def("user_message_begin",
+			&IVEngineServer::UserMessageBegin,
+			"Begins a user message from the server to the client .dll.",
+			args("filter", "message_type"),
+			reference_existing_object_policy()
+		)
+
+		.def("get_time",
+			&IVEngineServer::Time,
+			"Returns a high precision timer for doing profiling work"
+		)
+
+		.def("multiplayer_end_game",
+			&IVEngineServer::MultiplayerEndGame,
+			"Matchmaking"
+		)
+
+		.def("change_team",
+			&IVEngineServer::ChangeTeam
+		)
+
+		.def("create_fake_client_ex",
+			&IVEngineServer::CreateFakeClientEx,
+			reference_existing_object_policy()
+		)
+
+		.def("get_server_version",
+			&IVEngineServer::GetServerVersion
+		)
+
+		/*
+		TODO: void*
+		.def("get_replay",
+			&IVEngineServer::GetReplay
+		)
+		*/
+	;
+}

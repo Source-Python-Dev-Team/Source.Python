@@ -221,6 +221,20 @@ using namespace boost::python;
 	.add_property(propertyname, &classname::fget, &classname::fset, docstring)
 
 //---------------------------------------------------------------------------------
+// Use this macro to define a function or class method that raises a
+// NotImplementedError. This is quite hacky, but saves a lot work!
+//---------------------------------------------------------------------------------
+#define NOT_IMPLEMENTED(name) \
+	def( \
+		name, \
+		eval( \
+			"lambda *args, **kw: exec('raise NotImplementedError(\"Not implemented on this engine.\")')", \
+			import("__main__").attr("__dict__") \
+		), \
+		"\nNot implemented on this engine.\n" \
+	)
+
+//---------------------------------------------------------------------------------
 // Use this macro to expose a variadic function.
 //---------------------------------------------------------------------------------
 #define BOOST_VARIADIC_FUNCTION(name, function, ...) \

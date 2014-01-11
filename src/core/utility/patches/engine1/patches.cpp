@@ -33,3 +33,8 @@
 #ifndef PATCH_CONVAR_H_GET_FLAGS
 #error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
 #endif
+
+#include "eiface.h"
+#ifndef PATCH_EIFACE_H_BBOX_T
+#error "Implement struct bbox_t in public/eiface.h"
+#endif

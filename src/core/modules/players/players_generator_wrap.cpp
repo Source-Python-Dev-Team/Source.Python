@@ -28,7 +28,6 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include "players_generator_wrap.h"
-#include "players_wrap.h"
 #include "utility/sp_util.h"
 #include "game/server/iplayerinfo.h"
 #include "boost/python/iterator.hpp"
@@ -42,7 +41,7 @@ extern IPlayerInfoManager* playerinfomanager;
 // CPlayerGenerator Constructor.
 // ----------------------------------------------------------------------------
 CPlayerGenerator::CPlayerGenerator( PyObject* self ):
-	IPythonGenerator<CPlayerInfo>(self),
+	IPythonGenerator<IPlayerInfo>(self),
 	m_iEntityIndex(0)
 {
 }
@@ -51,7 +50,7 @@ CPlayerGenerator::CPlayerGenerator( PyObject* self ):
 // CPlayerGenerator Copy-Constructor.
 // ----------------------------------------------------------------------------
 CPlayerGenerator::CPlayerGenerator( PyObject* self, const CPlayerGenerator& rhs ):
-	IPythonGenerator<CPlayerInfo>(self),
+	IPythonGenerator<IPlayerInfo>(self),
 	m_iEntityIndex(rhs.m_iEntityIndex)
 {
 }
@@ -64,20 +63,18 @@ CPlayerGenerator::~CPlayerGenerator()
 }
 
 // ----------------------------------------------------------------------------
-// Returns the next valid CPlayerInfo instance.
+// Returns the next valid IPlayerInfo instance.
 // ----------------------------------------------------------------------------
-CPlayerInfo* CPlayerGenerator::getNext()
+IPlayerInfo* CPlayerGenerator::getNext()
 {
-	IPlayerInfo* pIPlayerInfo = NULL;
-	CPlayerInfo* pPlayerInfo = NULL;
+	IPlayerInfo* pPlayerInfo = NULL;
 	while(m_iEntityIndex < gpGlobals->maxClients)
 	{
 		m_iEntityIndex++;
 		edict_t* pEdict = PEntityOfEntIndex(m_iEntityIndex);
-		pIPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
-		if ( pIPlayerInfo )
+		pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
+		if ( pPlayerInfo )
 		{
-			pPlayerInfo = new CPlayerInfo(pIPlayerInfo);
 			return pPlayerInfo;
 		}
 	}

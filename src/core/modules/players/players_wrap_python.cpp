@@ -28,9 +28,12 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include "players_generator_wrap.h"
-#include "players_wrap.h"
 #include "modules/entities/entities_wrap.h"
 #include "modules/export_main.h"
+
+#include "public/game/server/iplayerinfo.h"
+#include "inetchannelinfo.h"
+
 
 // ----------------------------------------------------------------------------
 // Namespaces to use.
@@ -59,150 +62,139 @@ DECLARE_SP_MODULE(player_c)
 // ----------------------------------------------------------------------------
 void export_playerinfo()
 {
-	BOOST_CLASS_CONSTRUCTOR(CPlayerInfo, int)
-
-		CLASS_CONSTRUCTOR(CEdict*)
-
-		CLASS_METHOD(CPlayerInfo,
-			get_name,
+	// TODO: Expose as IPlayerInfo instead of CPlayerInfo?
+	class_<IPlayerInfo, boost::noncopyable>("CPlayerInfo", no_init)
+		.def("get_name",
+			&IPlayerInfo::GetName,
 			"Returns the player's name"
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_userid,
+		.def("get_userid",
+			&IPlayerInfo::GetUserID,
 			"Returns the player's userid."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_networkid_string,
+		.def("get_networkid_string",
+			&IPlayerInfo::GetNetworkIDString,
 			"Returns the player's SteamID."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_team_index,
+		.def("get_team_index",
+			&IPlayerInfo::GetTeamIndex,
 			"Returns the player's team number."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			change_team,
+		.def("change_team",
+			&IPlayerInfo::ChangeTeam,
 			"Moves the player to the given team.",
-			args("iTeamNum")
+			args("team_number")
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_frag_count,
+		.def("get_frag_count",
+			&IPlayerInfo::GetFragCount,
 			"Returns the player's frag count."
 		)
-
-		CLASS_METHOD(CPlayerInfo,
-			get_death_count,
+		
+		.def("get_death_count",
+			&IPlayerInfo::GetDeathCount,
 			"Returns the player's death count."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			is_connected,
+		.def("is_connected",
+			&IPlayerInfo::IsConnected,
 			"Returns whether the player is connected."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_armor_value,
+		.def("get_armor_value",
+			&IPlayerInfo::GetArmorValue,
 			"Returns the player's armor value."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			is_hltv,
+		.def("is_hltv",
+			&IPlayerInfo::IsHLTV,
 			"Returns whether the player is HLTV."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			is_player,
+		.def("is_player",
+			&IPlayerInfo::IsPlayer,
 			"Returns whether the player is a client."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			is_fake_client,
+		.def("is_fake_client",
+			&IPlayerInfo::IsFakeClient,
 			"Returns whether the player is a fake client."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			is_dead,
+		.def("is_dead",
+			&IPlayerInfo::IsDead,
 			"Returns whether the player is dead."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			is_in_a_vehicle,
+		.def("is_in_a_vehicle",
+			&IPlayerInfo::IsInAVehicle,
 			"Returns whether the player is in a vehicle."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			is_observer,
+		.def("is_observer",
+			&IPlayerInfo::IsObserver,
 			"Returns whether the player is an observer."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_abs_origin,
+		.def("get_abs_origin",
+			&IPlayerInfo::GetAbsOrigin,
 			"Returns the player's origin Vector instance."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_abs_angles,
+		.def("get_abs_angles",
+			&IPlayerInfo::GetAbsAngles,
 			"Returns the player's angle QAngle instance."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_player_mins,
+		.def("get_player_mins",
+			&IPlayerInfo::GetPlayerMins,
 			"Returns the player's min Vector instance."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_player_maxs,
+		.def("get_player_maxs",
+			&IPlayerInfo::GetPlayerMaxs,
 			"Returns the player's max Vector instance."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_weapon_name,
+		.def("get_weapon_name",
+			&IPlayerInfo::GetWeaponName,
 			"Returns the name of the weapon the player is carrying."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_model_name,
+		.def("get_model_name",
+			&IPlayerInfo::GetModelName,
 			"Returns the name of the player's model."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_health,
+		.def("get_health",
+			&IPlayerInfo::GetHealth,
 			"Returns the player's health."
 		)
 
-		CLASS_METHOD(CPlayerInfo,
-			get_max_health,
+		.def("get_max_health",
+			&IPlayerInfo::GetMaxHealth,
 			"Returns the player's maximum health."
 		)
-
-		CLASS_METHOD(CPlayerInfo,
-			get_edict,
-			"Returns the player's CEdict instance.",
-			reference_existing_object_policy()
-		)
-
-	BOOST_END_CLASS()
+	;
 }
 
 void export_netinfo()
 {
-	BOOST_ABSTRACT_CLASS(CNetChannelInfo)
-
-		CLASS_METHOD(CNetChannelInfo,
-			get_address,
+	class_<INetChannelInfo, boost::noncopyable>("CNetChannelInfo", no_init)
+		.def("get_address",
+			&INetChannelInfo::GetAddress,
 			"Returns the net address of the player."
 		)
 
-		CLASS_METHOD(CNetChannelInfo,
-			get_time_connected,
+		.def("get_time_connected",
+			&INetChannelInfo::GetTimeConnected,
 			"Returns the amount of time the player has been connected."
 		)
-
-	BOOST_END_CLASS()
+	;
 }
 
 void export_player_generator()

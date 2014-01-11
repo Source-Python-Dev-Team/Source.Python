@@ -36,12 +36,12 @@
 // ----------------------------------------------------------------------------
 // Forward declaration.
 // ----------------------------------------------------------------------------
-class CPlayerInfo;
+class IPlayerInfo;
 
 // ----------------------------------------------------------------------------
 // Declare the generator class.
 // ----------------------------------------------------------------------------
-class CPlayerGenerator: public IPythonGenerator<CPlayerInfo>
+class CPlayerGenerator: public IPythonGenerator<IPlayerInfo>
 {
 public:
 	CPlayerGenerator(PyObject* self);
@@ -49,7 +49,7 @@ public:
 	virtual ~CPlayerGenerator();
 
 protected:
-	virtual CPlayerInfo* getNext();
+	virtual IPlayerInfo* getNext();
 
 private:
 	int m_iEntityIndex;

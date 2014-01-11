@@ -35,7 +35,6 @@
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
 #include "modules/entities/entities_wrap.h"
-#include "modules/players/players_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Say ConCommand instance class.
@@ -82,7 +81,7 @@ public:
 	void add_callback(PyObject* pCallable);
 	void remove_callback(PyObject* pCallable);
 
-	CommandReturn Dispatch(CPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand);
+	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand);
 
 private:
 	const char* m_Name;
