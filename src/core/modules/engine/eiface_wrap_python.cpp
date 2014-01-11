@@ -92,6 +92,7 @@ void export_engine_interface()
 	// engine server interface accesor
 	def("get_engine_interface", make_getter(&engine, reference_existing_object_policy()));
 
+	// TODO
 	// Maybe we should create a new module called "interfaces" and then expose the objects
 	// as the following:
 	// scope().attr("engine") = ref(engine);
@@ -729,7 +730,7 @@ void export_engine_interface()
 		.NOT_IMPLEMENTED("is_any_client_low_violence")
 		.NOT_IMPLEMENTED("is_split_screen_player")
 		.NOT_IMPLEMENTED("get_split_screen_player_for_edict")
-		.NOT_IMPLEMENTED("is_override_load_game_ent_on")
+		.NOT_IMPLEMENTED("is_override_load_game_ents_on")
 		.NOT_IMPLEMENTED("force_flush_entity")
 		.NOT_IMPLEMENTED("get_single_player_shared_memory_space")
 		.NOT_IMPLEMENTED("alloc_level_static_data")

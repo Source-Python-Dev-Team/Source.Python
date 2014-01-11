@@ -24,81 +24,221 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#include "eiface.h"
+#include "ispsharedmemory.h"
+#include "usermessage/usermessage.h"
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_single_player_shared_memory_space_overload, GetSinglePlayerSharedMemorySpace, 1, 2);
+
 template<class T>
 void IVEngineServer_Visitor(T cls)
 {
-	/*
-    CS:GO:
-    // get arbitrary launch options
-    virtual KeyValues* GetLaunchOptions( void ) = 0;
-    virtual bool                IsUserIDInUse( int userID ) = 0;        // TERROR: used for transitioning
-    virtual int                        GetLoadingProgressForUserID( int userID ) = 0;        // TERROR: used for transitioning
-    virtual void                SendUserMessage( IRecipientFilter &filter, int message, const google::protobuf::Message &msg );
-    virtual bool                IsLogEnabled() = 0;
-    // What is the game timescale multiplied with the host_timescale?
-    virtual float GetTimescale( void ) const = 0;
-    // Is the engine running a background map?
-    virtual bool                IsLevelMainMenuBackground( void ) = 0;
-    virtual bool IsAnyClientLowViolence() = 0;
-    virtual bool IsSplitScreenPlayer( int ent_num ) = 0;
-    virtual edict_t *GetSplitScreenPlayerAttachToEdict( int ent_num ) = 0;
-    virtual int        GetNumSplitScreenUsersAttachedToEdict( int ent_num ) = 0;
-    virtual edict_t *GetSplitScreenPlayerForEdict( int ent_num, int nSlot ) = 0;
+	cls
+		.def("get_launch_options",
+			&IVEngineServer::GetLaunchOptions,
+			"Returns abitrary launch options",
+			reference_existing_object_policy()
+		)
 
-    // Used by Foundry to hook into the loadgame process and override the entities that are getting loaded.
-    virtual bool IsOverrideLoadGameEntsOn() = 0;
+		.def("is_userid_in_use",
+			&IVEngineServer::IsUserIDInUse,
+			"Returns whether the user ID is in use.",
+			args("userid")
+		)
 
-    // Used by Foundry when it changes an entity (and possibly its class) but preserves its serial number.
-    virtual void ForceFlushEntity( int iEntity ) = 0;
+		.def("get_loading_process_for_userid",
+			&IVEngineServer::GetLoadingProgressForUserID,
+			args("userid")
+		)
 
-    //Finds or Creates a shared memory space, the returned pointer will automatically be AddRef()ed
-    virtual ISPSharedMemory *GetSinglePlayerSharedMemorySpace( const char *szName, int ent_num = MAX_EDICTS ) = 0;
+		.def("send_user_message",
+			&IVEngineServer::SendUserMessage,
+			args("filter", "message_type", "message")
+		)
 
-    // Allocate hunk memory
-    virtual void *AllocLevelStaticData( size_t bytes ) = 0;
-    virtual bool IsCreatingReslist() = 0;
-    virtual bool IsCreatingXboxReslist() = 0;
-    virtual bool IsDedicatedServerForXbox() = 0;
-    virtual bool IsDedicatedServerForPS3() = 0;
+		.def("is_log_enabled",
+			&IVEngineServer::IsLogEnabled,
+			"Returns whether logging is enabled."
+		)
 
-    virtual void Pause( bool bPause, bool bForce = false ) = 0;
+		.def("get_timescale",
+			&IVEngineServer::GetTimescale
+		)
 
-    virtual void SetTimescale( float flTimescale ) = 0;
-    // Validate session
-    virtual void HostValidateSession() = 0;
+		.def("is_level_main_menu_background",
+			&IVEngineServer::IsLevelMainMenuBackground,
+			"Returns whether the engine is running a background map."
+		)
 
-    // Update the 360 pacifier/spinner
-    virtual void RefreshScreenIfNecessary() = 0;
+		.def("is_any_client_low_violence",
+			&IVEngineServer::IsAnyClientLowViolence,
+			args("ent_num")
+		)
 
-    // Tells the engine to allocate paint surfaces
-    virtual bool HasPaintmap() = 0;
+		.def("is_split_screen_player",
+			&IVEngineServer::IsSplitScreenPlayer,
+			args("ent_num")
+		)
 
-    // Calls ShootPaintSphere
-    virtual bool SpherePaintSurface( const model_t *pModel, const Vector &, unsigned char, float, float ) = 0;
+		.def("get_split_screen_player_attack_to_edict",
+			&IVEngineServer::GetSplitScreenPlayerAttachToEdict,
+			args("ent_num"),
+			reference_existing_object_policy()
+		)
 
-    virtual void SphereTracePaintSurface( const model_t *pModel, const Vector &, const Vector &, float, CUtlVector<unsigned char> & ) = 0;
+		.def("get_num_split_screen_users_attached_to_edict",
+			&IVEngineServer::GetNumSplitScreenUsersAttachedToEdict,
+			args("ent_num")
+		)
 
-    virtual void RemoveAllPaint() = 0;
+		.def("get_split_screen_player_for_edict",
+			&IVEngineServer::GetSplitScreenPlayerForEdict,
+			args("ent_num", "slot"),
+			reference_existing_object_policy()
+		)
 
-    virtual void PaintAllSurfaces( unsigned char ) = 0;
-    virtual void RemovePaint( const model_t *pModel ) = 0;
-    virtual uint64 GetClientXUID( edict_t *pPlayerEdict ) = 0;
-    virtual bool IsActiveApp() = 0;
+		.def("is_override_load_game_ents_on",
+			&IVEngineServer::IsOverrideLoadGameEntsOn
+		)
 
-    virtual void SetNoClipEnabled( bool bEnabled ) = 0;
+		.def("force_flush_entity",
+			&IVEngineServer::ForceFlushEntity,
+			args("entity")
+		)
 
-    virtual void GetPaintmapDataRLE( CUtlVector<unsigned int> &mapdata ) = 0;
-    virtual void LoadPaintmapDataRLE( CUtlVector<unsigned int> &mapdata ) = 0;
-    virtual void SendPaintmapDataToClient( edict_t *pEdict ) = 0;
+		.def("get_single_player_shared_memory_space",
+			&IVEngineServer::GetSinglePlayerSharedMemorySpace,
+			get_single_player_shared_memory_space_overload(
+				"Finds or creates a shared memory_space.",
+				args("name", "ent_num")
+			)[reference_existing_object_policy()]
+		)
 
-    virtual float GetLatencyForChoreoSounds() = 0;
+		/*
+		// TODO: void*
+		.def("alloc_level_specific_data",
+			&IVEngineServer::AllocLevelStaticData,
+			"Allocates hunk memory.",
+			args("bytes"),
+			reference_existing_object_policy()
+		)
+		*/
 
-    virtual CrossPlayPlatform_t GetClientCrossPlayPlatform( int ent_num ) = 0;
+		.def("is_creating_reslist",
+			&IVEngineServer::IsCreatingReslist
+		)
 
-    virtual void EnsureInstanceBaseline( int ent_num ) = 0;
+		.def("is_creating_xbox_reslist",
+			&IVEngineServer::IsCreatingXboxReslist
+		)
 
-    virtual bool ReserveServerForQueuedGame( const char *szReservationPayload ) = 0;
+		.def("is_dedicated_server_for_xbox",
+			&IVEngineServer::IsDedicatedServerForXbox
+		)
 
-    virtual bool GetEngineHltvInfo( CEngineHltvInfo_t &out ) = 0;
-    */
+		.def("is_dedicated_server_for_ps3",
+			&IVEngineServer::IsDedicatedServerForPS3
+		)
+
+		.def("pause",
+			&IVEngineServer::Pause,
+			args("pause", "force")
+		)
+
+		.def("set_timescale",
+			&IVEngineServer::SetTimescale,
+			args("timescale")
+		)
+
+		.def("host_validated_session",
+			&IVEngineServer::HostValidateSession,
+			"Validates session."
+		)
+
+		.def("refresh_screen_if_necessary",
+			&IVEngineServer::RefreshScreenIfNecessary,
+			"Update the 360 pacifier/spinner."
+		)
+
+		.def("has_paint_map",
+			&IVEngineServer::HasPaintmap,
+			"Tells the engine to allocate paint surfaces."
+		)
+
+		.def("sphere_paint_surface",
+			&IVEngineServer::SpherePaintSurface,
+			args("model", "vector", "uchar", "float", "float")
+		)
+
+		.def("sphere_trace_paint_surface",
+			&IVEngineServer::SphereTracePaintSurface,
+			args("model", "vector", "vector", "float", "CUtlVector<unsigned char>")
+		)
+
+		.def("remove_all_paint",
+			&IVEngineServer::RemoveAllPaint
+		)
+
+		.def("paint_all_surfaces",
+			&IVEngineServer::PaintAllSurfaces,
+			args("uchar")
+		)
+
+		.def("remove_paint",
+			&IVEngineServer::RemovePaint,
+			args("model")
+		)
+
+		.def("get_client_xuid",
+			&IVEngineServer::GetClientXUID,
+			args("edict")
+		)
+
+		.def("is_active_app",
+			&IVEngineServer::IsActiveApp
+		)
+
+		.def("set_noclip_enabled",
+			&IVEngineServer::SetNoClipEnabled
+		)
+
+		.def("get_paint_map_data_rle",
+			&IVEngineServer::GetPaintmapDataRLE,
+			args("mapdata")
+		)
+
+		.def("load_paint_map_data_rle",
+			&IVEngineServer::LoadPaintmapDataRLE,
+			args("mapdata")
+		)
+
+		.def("send_paint_map_data_to_client",
+			&IVEngineServer::SendPaintmapDataToClient,
+			args("edict")
+		)
+
+		.def("get_latency_for_choreo_sounds",
+			&IVEngineServer::GetLatencyForChoreoSounds
+		)
+
+		.def("get_client_cross_player_platform",
+			&IVEngineServer::GetClientCrossPlayPlatform,
+			args("ent_num")
+		)
+
+		.def("ensure_instance_baseline",
+			&IVEngineServer::EnsureInstanceBaseline,
+			args("ent_num")
+		)
+
+		.def("reserve_server_for_queued_game",
+			&IVEngineServer::ReserveServerForQueuedGame,
+			args("reservation_payload")
+		)
+
+		.def("get_engine_hltv_info",
+			&IVEngineServer::GetEngineHltvInfo,
+			args("out")
+		)
+	;
 }

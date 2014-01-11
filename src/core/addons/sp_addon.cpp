@@ -172,13 +172,13 @@ void CAddonManager::ClientFullyConnect( edict_t *pEntity )
 
 void CAddonManager::OnEdictAllocated( edict_t *edict )
 {
-	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(OnEdictAllocated, edict);
+	CEdict the_edict = CEdict(edict);
+	CALL_LISTENERS(OnEdictAllocated, the_edict);
 }
 
 void CAddonManager::OnEdictFreed( const edict_t *edict )
 {
-	CEdict edict = CEdict(pEntity);
-	CALL_LISTENERS(OnEdictFreed, edict);
+	CEdict the_edict = CEdict((edict_t* ) edict);
+	CALL_LISTENERS(OnEdictFreed, the_edict);
 }
 #endif
