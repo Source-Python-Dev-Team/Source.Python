@@ -23,10 +23,6 @@ from entities.properties import Properties
 class BaseEntity(object):
     '''Class used to interact directly with entities'''
 
-    index = 0
-    edict = 0
-    _entities = None
-
     def __new__(cls, index, *entities):
         '''Override the __new__ class method to verify the given index
             is of the correct entity type and add the index attribute'''
@@ -45,8 +41,8 @@ class BaseEntity(object):
         self = object.__new__(cls)
 
         # Set the entity's base attributes
-        self.index = index
-        self.edict = edict
+        self._index = index
+        self._edict = edict
         self._entities = frozenset(list(entities) + ['entity'])
 
         # Return the instance
@@ -63,13 +59,6 @@ class BaseEntity(object):
 
                 # Return the instance's value for the given attribute
                 return getattr(instance, attr)
-
-        # Is this an inherited class and does
-        # the inheriting class have the property?
-        if self.__class__ != BaseEntity and hasattr(self.__class__, attr):
-
-            # Get the attribute
-            return getattr(self.__class__, attr).fget(self)
 
         # Is the attribute a property of this entity?
         if attr in self.properties:
@@ -162,23 +151,25 @@ class BaseEntity(object):
     def __setattr__(self, attr, value):
         '''Finds if the attribute is value and sets its value'''
 
-        # Does the class have the given attribute?
-        if hasattr(self.__class__, attr):
+        # Is the given attribute private?
+        if attr.startswith('_'):
 
-            # Is this an inherited class?
-            if self.__class__ != BaseEntity:
+            # Get the name of the private attribute
+            name = attr[1:]
 
-                # Get the attribute and set its value
-                getattr(self.__class__, attr).fset(self, value)
+            # Is the attribute a property?
+            if (name in dir(self) and isinstance(
+                    getattr(self.__class__, name), property)):
+
+                # Set the private attribute's value
+                super(BaseEntity, self).__setattr__(attr, value)
 
                 # No need to go further
                 return
 
-            # Set the attribute
-            object.__setattr__(self, attr, value)
-
-            # No need to go further
-            return
+            # If not a property, do not allow the private attribute
+            raise ValueError(
+                'Invalid private attribute "{0}" given.'.format(attr))
 
         # Loop through all instances
         # (used to set using edict/IPlayerInfo attributes)
@@ -328,6 +319,21 @@ class BaseEntity(object):
     color = property(get_color, set_color)
 
     @property
+    def index(self):
+        '''Returns the entity's index'''
+        return self._index
+
+    @property
+    def edict(self):
+        '''Returns the entity's edict instance'''
+        return self._edict
+
+    @property
+    def entities(self):
+        '''Returns the set of entity names to use for the instance'''
+        return self._entities
+
+    @property
     def instances(self):
         '''Yields the entity's edict instance'''
         yield self.edict
@@ -356,19 +362,19 @@ class BaseEntity(object):
     @property
     def properties(self):
         '''Returns all properties for all entities'''
-        return Properties.get_entity_properties(self._entities)
+        return Properties.get_entity_properties(self.entities)
 
     @property
     def keyvalues(self):
         '''Returns all keyvalues for all entities'''
-        return KeyValues.get_entity_keyvalues(self._entities)
+        return KeyValues.get_entity_keyvalues(self.entities)
 
     @property
     def offsets(self):
         '''Returns all offsets for all entities'''
-        return Offsets.get_entity_offsets(self._entities)
+        return Offsets.get_entity_offsets(self.entities)
 
     @property
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
-        return Functions.get_entity_functions(self._entities)
+        return Functions.get_entity_functions(self.entities)

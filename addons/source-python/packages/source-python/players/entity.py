@@ -22,14 +22,12 @@ from players.weapons import _PlayerWeapons
 class PlayerEntity(BaseEntity, _PlayerWeapons):
     '''Class used to interact directly with players'''
 
-    info = None
-
     def __init__(self, index):
         '''Override the __init__ method to set the
             "entities" attribute and set the PlayerInfo'''
 
         # Set the player's info attribute
-        self.info = CPlayerInfo(self.edict)
+        self._info = CPlayerInfo(self.edict)
 
         # Is the IPlayerInfo instance valid?
         if self.info is None:
@@ -39,6 +37,11 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
 
         # Set the entities attribute
         self._entities = frozenset(['entity', 'player'])
+
+    @property
+    def info(self):
+        '''Returns the player's IPlayerInfo instance'''
+        return self._info
 
     @property
     def instances(self):
