@@ -123,11 +123,9 @@ Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
 # Cvar module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CVAR_MODULE_HEADERS
-    core/modules/cvar/cvar_wrap.h
 )
 
 Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
-    core/modules/cvar/cvar_wrap.cpp
     core/modules/cvar/cvar_wrap_python.cpp
 )
 

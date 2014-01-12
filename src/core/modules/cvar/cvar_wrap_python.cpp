@@ -27,38 +27,30 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "cvar_wrap.h"
+#include "icvar.h"
+#include "convar.h"
 #include "modules/export_main.h"
 
-//-----------------------------------------------------------------------------
-// Static singletons.
-//-----------------------------------------------------------------------------
-static CCvar s_ServerCvar;
 
 //-----------------------------------------------------------------------------
-// CCvar accessor.
+// External variables
 //-----------------------------------------------------------------------------
-CCvar* get_cvar_interface()
-{
-	return &s_ServerCvar;
-}
+extern ICvar* g_pCVar;
 
-//-----------------------------------------------------------------------------
-// Exposer functions.
-//-----------------------------------------------------------------------------
-void export_cvar_interface();
-void export_convar();
-void export_concommandbase();
-void export_flags();
 
 //-----------------------------------------------------------------------------
 // Exposes the cvar module.
 //-----------------------------------------------------------------------------
+void export_cvar_interface();
+void export_concommandbase();
+void export_convar();
+void export_flags();
+
 DECLARE_SP_MODULE(cvar_c)
 {
 	export_cvar_interface();
-	export_convar();
 	export_concommandbase();
+	export_convar();
 	export_flags();
 }
 
@@ -67,164 +59,36 @@ DECLARE_SP_MODULE(cvar_c)
 //-----------------------------------------------------------------------------
 void export_cvar_interface()
 {
-	BOOST_ABSTRACT_CLASS( CCvar )
+	def("get_cvar_interface", make_getter(&g_pCVar, reference_existing_object_policy()));
 
-		CLASS_METHOD(CCvar,
-			register_con_command,
-			"Registers a console command",
-			args("pCommandBase")
+	// TODO: Rename it?
+	class_<ICvar, boost::noncopyable>("CCvar", no_init)
+		.def("register_con_command",
+			&ICvar::RegisterConCommand,
+			"Registers a console command.",
+			args("con_command")
 		)
 
-		CLASS_METHOD(CCvar,
-			unregister_con_command,
-			"Unregisters a console command",
-			args("pCommandBase")
+		.def("unregister_con_command",
+			&ICvar::UnregisterConCommand,
+			"Unregisters a console command.",
+			args("con_command")
 		)
 
-		CLASS_METHOD(CCvar,
-			find_command_base,
+		.def("find_command_base",
+			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char*),
 			"Returns a CConCommandBase instance for the given command, if it exists",
 			args("szName"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CCvar,
-			find_var,
+		.def("find_var",
+			GET_METHOD(ConVar*, ICvar, FindVar, const char *),
 			"Returns a CConVar instance for the given cvar, if it exists",
 			args("szName"),
 			reference_existing_object_policy()
 		)
-
-	BOOST_END_CLASS()
-}
-
-//-----------------------------------------------------------------------------
-// Exposes the CConVar interface.
-//-----------------------------------------------------------------------------
-void export_convar()
-{
-	BOOST_CLASS_CONSTRUCTOR(CConVar, const char *)
-
-		CLASS_CONSTRUCTOR(const char *, const char *, int)
-
-		CLASS_CONSTRUCTOR(const char *, const char *, int, const char *)
-
-		CLASS_CONSTRUCTOR(const char *, const char *, int, const char *,
-			bool, float, bool, float)
-
-		CLASS_METHOD(CConVar,
-			get_help_text,
-			"Returns the help text for the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_name,
-			"Returns the name of the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			is_flag_set,
-			"Returns whether the given flag is set or not",
-			args("iFlag")
-		)
-
-		CLASS_METHOD(CConVar,
-			add_flags,
-			"Adds the given flags to the ConVar",
-			args("iFlags")
-		)
-
-		CLASS_METHOD(CConVar,
-			remove_flags,
-			"Removes the given flags from the ConVar",
-			args("iFlags")
-		)
-
-		CLASS_METHOD(CConVar,
-			get_flags,
-			"Returns all flags for the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			is_command,
-			"Returns whether the ConVar is a command"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_float,
-			"Returns the float value of the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_int,
-			"Returns the integer value of the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_bool,
-			"Returns the boolean value of the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_string,
-			"Returns the string value of the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			set_float,
-			"Sets the ConVar to the given float value",
-			args("flValue")
-		)
-
-		CLASS_METHOD(CConVar,
-			set_int,
-			"Sets the ConVar to the given integer value",
-			args("iValue")
-		)
-
-		CLASS_METHOD(CConVar,
-			set_bool,
-			"Sets the ConVar to the given boolean value",
-			args("bValue")
-		)
-
-		CLASS_METHOD(CConVar,
-			set_string,
-			"Sets the ConVar to the given string value",
-			args("szValue")
-		)
-
-		CLASS_METHOD(CConVar,
-			revert,
-			"Reverts the ConVar back to its original value"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_default,
-			"Returns the original value of the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			has_min,
-			"Returns whether the ConVar has a min value"
-		)
-
-		CLASS_METHOD(CConVar,
-			has_max,
-			"Returns whether the ConVar has a max value"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_min_value,
-			"Returns the minimum float value for the ConVar"
-		)
-
-		CLASS_METHOD(CConVar,
-			get_max_value,
-			"Returns the maximum float value for the ConVar"
-		)
-
-	BOOST_END_CLASS()
+	;
 }
 
 //-----------------------------------------------------------------------------
@@ -232,52 +96,251 @@ void export_convar()
 //-----------------------------------------------------------------------------
 void export_concommandbase()
 {
-	BOOST_CLASS_CONSTRUCTOR(CConCommandBase, const char *, const char *, int)
+	// TODO: rename?
+	class_<ConCommandBase>("CConCommandBase")
+		.def(init< const char*, optional< const char*, int> >())
 
-		CLASS_METHOD(CConCommandBase,
-			is_command,
-			"Returns whether the command is actually a command"
+		.def("is_command",
+			&ConCommandBase::IsCommand,
+			"Returns whether it's a command."
 		)
 
-		CLASS_METHOD(CConCommandBase,
-			is_registered,
-			"Returns whether the command is registered"
+		.def("is_flag_set",
+			&ConCommandBase::IsFlagSet,
+			"Returns whether the given flag is set or not.",
+			args("flag")
 		)
 
-		CLASS_METHOD(CConCommandBase,
-			is_flag_set,
-			"Returns whether the given flag is set for the command",
-			args("iFlag")
+		.def("add_flags",
+			&ConCommandBase::AddFlags,
+			"Adds the given flags to the ConVar.",
+			args("flag")
 		)
 
-		CLASS_METHOD(CConCommandBase,
-			add_flags,
-			"Adds the given flags to the command",
-			args("iFlags")
+		.def("remove_flags",
+			&ConCommandBase::RemoveFlags,
+			"Removes the given flags from the ConVar.",
+			args("flag")
+		)
+		
+		.def("get_flags",
+			&ConCommandBase::GetFlags,
+			"Returns its flags."
+		)
+		
+		.def("get_name",
+			&ConCommandBase::GetName,
+			"Returns its name."
 		)
 
-		CLASS_METHOD(CConCommandBase,
-			remove_flags,
-			"Removes the given flags from the command",
-			args("iFlags")
+		.def("get_help_text",
+			&ConCommandBase::GetHelpText,
+			"Returns the help text."
 		)
 
-		CLASS_METHOD(CConCommandBase,
-			get_flags,
-			"Returns all flags for the command"
+		.def("get_next",
+			GET_METHOD(ConCommandBase*, ConCommandBase, GetNext),
+			"Returns the next ConCommandBase instance.",
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CConCommandBase,
-			get_name,
-			"Returns the command's name"
+		.def("set_next",
+			&ConCommandBase::SetNext,
+			"Sets the next ConCommandBase instance."
 		)
 
-		CLASS_METHOD(CConCommandBase,
-			get_help_text,
-			"Returns the help text for the command"
+		.def("is_registered",
+			&ConCommandBase::IsRegistered,
+			"Returns wheter the ConCommandBase instance is registered."
 		)
 
-	BOOST_END_CLASS()
+		.def("get_dll_identifier",
+			&ConCommandBase::GetDLLIdentifier,
+			"Returns the DLL identifier."
+		)
+	;
+
+	class_<IConVar, boost::noncopyable>("IConVar", no_init)
+		.def("set_string",
+			GET_METHOD(void, IConVar, SetValue, const char*),
+			args("value")
+		)
+
+		.def("set_float",
+			GET_METHOD(void, IConVar, SetValue, float),
+			args("value")
+		)
+
+		.def("set_int",
+			GET_METHOD(void, IConVar, SetValue, int),
+			args("value")
+		)
+
+		.def("set",
+			GET_METHOD(void, IConVar, SetValue, const char*),
+			args("value")
+		)
+
+		.def("set",
+			GET_METHOD(void, IConVar, SetValue, float),
+			args("value")
+		)
+
+		.def("set",
+			GET_METHOD(void, IConVar, SetValue, int),
+			args("value")
+		)
+
+		.def("get_name",
+			&IConVar::GetName,
+			"Returns its name."
+		)
+
+		.def("is_flag_set",
+			&IConVar::IsFlagSet,
+			"Returns whether the given flag is set."
+		)
+	;
+}
+
+//-----------------------------------------------------------------------------
+// Exposes the CConVar interface.
+//-----------------------------------------------------------------------------
+class ConVarExt
+{
+public:
+	static ConVar* CreateConVar( const char *pName )
+	{
+		return new ConVar(pName, "");
+	}
+
+	static bool HasMin(ConVar* pConVar)
+	{
+		float fMin;
+		return pConVar->GetMin(fMin);
+	}
+
+	static bool HasMax(ConVar* pConVar)
+	{
+		float fMax;
+		return pConVar->GetMax(fMax);
+	}
+
+	static float GetMin(ConVar* pConVar)
+	{
+		float fMin;
+		pConVar->GetMin(fMin);
+		return fMin;
+	}
+
+	static bool GetMax(ConVar* pConVar)
+	{
+		float fMax;
+		pConVar->GetMax(fMax);
+		return fMax;
+	}
+
+	static void SetValue(ConVar* pConVar, bool bValue)
+	{
+		pConVar->SetValue(bValue);
+	}
+};
+
+void export_convar()
+{
+	// TODO: Rename it?
+	class_<ConVar, bases<ConCommandBase, IConVar> >("CConVar", init<const char *, const char *, optional< int > >())
+		.def(init<const char *, const char *, int, const char *>())
+		.def(init<const char *, const char *, int, const char *, bool, float, bool , float>())
+		.def("__init__", make_constructor(&ConVarExt::CreateConVar))
+
+		.def("get_float",
+			&ConVar::GetFloat,
+			"Returns the value as a float."
+		)
+
+		.def("__float__",
+			&ConVar::GetFloat,
+			"Returns the value as a float."
+		)
+
+		.def("get_int",
+			&ConVar::GetInt,
+			"Returns the value as an int."
+		)
+
+		.def("__int__",
+			&ConVar::GetInt,
+			"Returns the value as an int."
+		)
+
+		.def("get_bool",
+			&ConVar::GetBool,
+			"Returns the value as a bool."
+		)
+
+		.def("__bool__",
+			&ConVar::GetBool,
+			"Returns the value as a bool."
+		)
+
+		.def("get_string",
+			&ConVar::GetString,
+			"Returns the value as a string."
+		)
+
+		.def("__str__",
+			&ConVar::GetString,
+			"Returns the value as a string."
+		)
+
+		.def("get",
+			&ConVar::GetString,
+			"Returns the value as a string."
+		)
+
+		.def("revert",
+			&ConVar::Revert,
+			"Resets to default value."
+		)
+
+		.def("get_default",
+			&ConVar::GetDefault,
+			"Returns the default value."
+		)
+
+		.def("has_min",
+			&ConVarExt::HasMin,
+			"Returns wether the ConVar has a minimum value."
+		)
+
+		.def("has_max",
+			&ConVarExt::HasMax,
+			"Returns wether the ConVar has a maximum value."
+		)
+
+		.def("get_min",
+			&ConVarExt::GetMin,
+			"Returns the minimum value."
+		)
+
+		.def("get_max",
+			&ConVarExt::GetMax,
+			"Returns the maximum value."
+		)
+
+		.def("set",
+			&ConVarExt::SetValue,
+			"Sets a bool value.",
+			args("value")
+		)
+
+		.def("se_bool",
+			&ConVarExt::SetValue,
+			"Sets a bool value.",
+			args("value")
+		)
+	;
 }
 
 void export_flags()

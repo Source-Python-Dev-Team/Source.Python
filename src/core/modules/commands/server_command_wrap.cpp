@@ -32,7 +32,6 @@
 #include "utility/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
-#include "modules/cvar/cvar_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Externs.

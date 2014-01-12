@@ -75,10 +75,16 @@ using namespace boost::python;
 
 
 //---------------------------------------------------------------------------------
-// This method returns you the given overloaded method
+// This macro returns the given overloaded method
 //---------------------------------------------------------------------------------
 #define GET_METHOD(return_type, class_name, method, ...) \
 	static_cast< return_type(class_name::*)( ##__VA_ARGS__ ) >(&class_name::method)
+
+//---------------------------------------------------------------------------------
+// This macro returns the given overloaded function
+//---------------------------------------------------------------------------------
+#define GET_FUNCTION(return_type, function, ...) \
+	static_cast< return_type(*)( ##__VA_ARGS__ ) >(&function)
 
 //---------------------------------------------------------------------------------
 // Use this to begin wrapping an enumeration.

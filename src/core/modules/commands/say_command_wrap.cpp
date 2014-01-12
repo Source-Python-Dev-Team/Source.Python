@@ -37,7 +37,6 @@
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
 #include "core/sp_main.h"
-#include "modules/cvar/cvar_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Global say command mapping.
