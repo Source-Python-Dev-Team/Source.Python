@@ -118,7 +118,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 			PyObject* pCallable = s_ClientCommandFilters.m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, pPlayerInfo, boost::ref(command));
+			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), boost::ref(command));
 
 			// Does the Client Command Filter want to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
@@ -141,7 +141,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 		CClientCommandManager* pCClientCommandManager = commandMapIter->second;
 
 		// Does the command need to be blocked?
-		if( !pCClientCommandManager->Dispatch(pPlayerInfo, boost::ref(command)))
+		if( !pCClientCommandManager->Dispatch(pPlayerInfo, command))
 		{
 			// Block the command
 			return PLUGIN_STOP;
@@ -215,7 +215,7 @@ CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, const C
 			PyObject* pCallable = m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, pPlayerInfo, boost::ref(command));
+			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), boost::ref(command));
 
 			// Does the callable wish to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
