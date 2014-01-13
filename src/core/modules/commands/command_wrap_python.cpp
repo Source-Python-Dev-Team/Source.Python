@@ -37,16 +37,20 @@
 //-----------------------------------------------------------------------------
 // Externs.
 //-----------------------------------------------------------------------------
-extern CClientCommandManager* get_client_command(const char* szName);
-extern CServerCommandManager* get_server_command(const char* szName,
+extern CClientCommandManager* GetClientCommand(const char* szName);
+extern CServerCommandManager* GetServerCommand(const char* szName,
 	const char* szHelpText = 0, int iFlags = 0);
-extern CSayCommandManager* get_say_command(const char* szName);
-extern void register_client_command_filter(PyObject* pCallable);
-extern void unregister_client_command_filter(PyObject* pCallable);
-extern void register_say_filter(PyObject* pCallable);
-extern void unregister_say_filter(PyObject* pCallable);
+extern CSayCommandManager* GetSayCommand(const char* szName);
+
+extern void RegisterClientCommandFilter(PyObject* pCallable);
+extern void UnregisterClientCommandFilter(PyObject* pCallable);
+
+extern void RegisterSayFilter(PyObject* pCallable);
+extern void UnregisterSayFilter(PyObject* pCallable);
+
 extern void InitServerCommands();
 extern void ClearAllServerCommands();
+
 extern void RegisterSayCommands();
 extern void UnregisterSayCommands();
 
@@ -75,21 +79,13 @@ void ClearAllCommands()
 }
 
 //-----------------------------------------------------------------------------
-// Exposer functions.
+// Exposes the command module.
 //-----------------------------------------------------------------------------
 void export_command();
 void export_server_command();
 void export_client_command();
 void export_say_command();
 
-//-----------------------------------------------------------------------------
-// Overloads.
-//-----------------------------------------------------------------------------
-BOOST_PYTHON_FUNCTION_OVERLOADS( get_server_command_overloads, get_server_command, 1, 3)
-
-//-----------------------------------------------------------------------------
-// Exposes the command module.
-//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(command_c)
 {
 	export_command();
@@ -106,59 +102,74 @@ void export_command()
 	enum_<CommandReturn>("CommandReturn")
 		.value("CONTINUE", CONTINUE)
 		.value("BLOCK", BLOCK)
-		;
+	;
 
-	BOOST_CLASS(CICommand)
-
-		CLASS_METHOD(CICommand,
-			get_arg_count,
+	// TODO:Rename it?
+	class_<CCommand>("CICommand")
+		.def("get_arg_count",
+			&CCommand::ArgC,
 			"Returns the number of arguments in the command"
 		)
 
-		CLASS_METHOD(CICommand,
-			get_arg_string,
+		.def("get_arg_string",
+			&CCommand::ArgS,
 			"Returns the argument string for the command (does not include the command itself)"
 		)
 
-		CLASS_METHOD(CICommand,
-			get_command_string,
+		.def("get_command_string",
+			&CCommand::GetCommandString,
 			"Returns the entire command string"
 		)
 
-		CLASS_METHOD(CICommand,
-			get_arg,
-			"Gets the value of the argument at the given index",
-			args("iIndex")
+		.def("__str__",
+			&CCommand::GetCommandString,
+			"Returns the entire command string"
 		)
 
-	BOOST_END_CLASS()
+		.def("__getitem__",
+			&CCommand::operator[],
+			"Gets the value of the argument at the given index",
+			args("index")
+		)
+
+		.def("get_arg",
+			&CCommand::operator[],
+			"Gets the value of the argument at the given index",
+			args("index")
+		)
+
+		.def("get_max_command_length",
+			&CCommand::MaxCommandLength
+		)
+		.staticmethod("get_max_command_length")
+	;
 }
 
 //-----------------------------------------------------------------------------
 // Exposes the Server Command interface.
 //-----------------------------------------------------------------------------
+BOOST_PYTHON_FUNCTION_OVERLOADS( get_server_command_overloads, GetServerCommand, 1, 3)
+
 void export_server_command()
 {
-	BOOST_ABSTRACT_CLASS(CServerCommandManager)
-
-		CLASS_METHOD(CServerCommandManager,
-			add_callback,
+	class_<CServerCommandManager, boost::noncopyable>("CServerCommandManager", no_init)
+		.def("add_callback",
+			&CServerCommandManager::AddCallback,
 			"Adds a callback to the server command's list.",
-			args("pCallable")
+			args("callable")
 		)
 
-		CLASS_METHOD(CServerCommandManager,
-			remove_callback,
+		.def("remove_callback",
+			&CServerCommandManager::RemoveCallback,
 			"Removes a callback from the server command's list.",
-			args("pCallable")
+			args("callable")
 		)
-
-	BOOST_END_CLASS()
+	;
 
 	def("get_server_command",
-		get_server_command,
+		GetServerCommand,
 		get_server_command_overloads("Gets the CServerCommandManager instance using just the name or also the helptext and/or flags",
-			args("szName", "szHelpText", "iFlags")
+			args("name", "help_text", "flags")
 		)[reference_existing_object_policy()]
 	);
 }
@@ -168,36 +179,37 @@ void export_server_command()
 //-----------------------------------------------------------------------------
 void export_client_command()
 {
-	BOOST_ABSTRACT_CLASS(CClientCommandManager)
-
-		CLASS_METHOD(CClientCommandManager,
-			add_callback,
+	class_<CClientCommandManager, boost::noncopyable>("CClientCommandManager", no_init)
+		.def("add_callback",
+			&CClientCommandManager::AddCallback,
 			"Adds a callback to the client command's list.",
-			args("pCallable")
+			args("callable")
 		)
 
-		CLASS_METHOD(CClientCommandManager,
-			remove_callback,
+		.def("remove_callback",
+			&CClientCommandManager::RemoveCallback,
 			"Removes a callback from the client command's list.",
-			args("pCallable")
+			args("callable")
 		)
+	;
 
-	BOOST_END_CLASS()
-
-	BOOST_FUNCTION(get_client_command,
+	def("get_client_command",
+		GetClientCommand,
 		"Returns the CClientCommandManager instance for the given command",
-		args("szName"),
+		args("name"),
 		reference_existing_object_policy()
 	);
 
-	BOOST_FUNCTION(register_client_command_filter,
+	def("register_client_command_filter",
+		RegisterClientCommandFilter,
 		"Registers a callable to be called when clients use commands.",
-		args("pCallable")
+		args("callable")
 	);
 
-	BOOST_FUNCTION(unregister_client_command_filter,
+	def("unregister_client_command_filter",
+		UnregisterClientCommandFilter,
 		"Unregisters a client command filter.",
-		args("pCallable")
+		args("callable")
 	);
 }
 
@@ -206,35 +218,36 @@ void export_client_command()
 //-----------------------------------------------------------------------------
 void export_say_command()
 {
-	BOOST_ABSTRACT_CLASS(CSayCommandManager)
-
-		CLASS_METHOD(CSayCommandManager,
-			add_callback,
+	class_<CSayCommandManager, boost::noncopyable>("CSayCommandManager", no_init)
+		.def("add_callback",
+			&CSayCommandManager::AddCallback,
 			"Adds a callback to the say command's list.",
-			args("pCallable")
+			args("callable")
 		)
 
-		CLASS_METHOD(CSayCommandManager,
-			remove_callback,
+		.def("remove_callback",
+			&CSayCommandManager::RemoveCallback,
 			"Removes a callback from the say command's list.",
-			args("pCallable")
+			args("callable")
 		)
+	;
 
-	BOOST_END_CLASS()
-
-	BOOST_FUNCTION(get_say_command,
+	def("get_say_command",
+		GetSayCommand,
 		"Returns the CSayCommandManager instance for the given command",
-		args("szName"),
+		args("name"),
 		reference_existing_object_policy()
 	);
 
-	BOOST_FUNCTION(register_say_filter,
+	def("register_say_filter",
+		RegisterSayFilter,
 		"Registers a callable to be called when clients use the say commands (say, say_team).",
-		args("pCallable")
+		args("callable")
 	);
 
-	BOOST_FUNCTION(unregister_say_filter,
+	def("unregister_say_filter",
+		UnregisterSayFilter,
 		"Unregisters a say filter.",
-		args("pCallable")
+		args("callable")
 	);
 }

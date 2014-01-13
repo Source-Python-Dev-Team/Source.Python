@@ -47,7 +47,7 @@ public:
 	virtual void Init();
 
 protected:
-	void Dispatch( const CCommand &command );
+	void Dispatch( const CCommand& command );
 
 private:
 	SayConCommand(ConCommand* pConCommand, const char* szName, const char* szHelpText, int iFlags);
@@ -78,10 +78,10 @@ public:
 	CSayCommandManager(const char* szName);
 	~CSayCommandManager();
 
-	void add_callback(PyObject* pCallable);
-	void remove_callback(PyObject* pCallable);
+	void AddCallback(PyObject* pCallable);
+	void RemoveCallback(PyObject* pCallable);
 
-	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, bool bTeamOnly, CICommand* ccommand);
+	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, bool bTeamOnly, const CCommand& ccommand);
 
 private:
 	const char* m_Name;

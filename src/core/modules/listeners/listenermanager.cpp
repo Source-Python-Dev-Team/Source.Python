@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------------
 // Adds a callable to the end of the CListenerManager vector.
 //-----------------------------------------------------------------------------
-void CListenerManager::register_listener(PyObject* pCallable)
+void CListenerManager::RegisterListener(PyObject* pCallable)
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -23,7 +23,7 @@ void CListenerManager::register_listener(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 // Removes all instances of a callable from the CListenerManager vector.
 //-----------------------------------------------------------------------------
-void CListenerManager::unregister_listener(PyObject* pCallable)
+void CListenerManager::UnregisterListener(PyObject* pCallable)
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));

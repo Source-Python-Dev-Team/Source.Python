@@ -73,7 +73,7 @@ ServerCommandMap g_ServerCommandMap;
 //-----------------------------------------------------------------------------
 // Returns a CServerCommandManager for the given command name.
 //-----------------------------------------------------------------------------
-CServerCommandManager* get_server_command(const char* szName,
+CServerCommandManager* GetServerCommand(const char* szName,
 	const char* szHelpText = 0, int iFlags = 0)
 {
 	// Find if the given name is a registered server command
@@ -179,7 +179,7 @@ void CServerCommandManager::Init()
 //-----------------------------------------------------------------------------
 // Adds a callable to a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
-void CServerCommandManager::add_callback( PyObject* pCallable )
+void CServerCommandManager::AddCallback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -195,7 +195,7 @@ void CServerCommandManager::add_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Removes a callable from a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
-void CServerCommandManager::remove_callback( PyObject* pCallable )
+void CServerCommandManager::RemoveCallback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -214,11 +214,8 @@ void CServerCommandManager::remove_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Calls all callables for the command when it is called on the server.
 //-----------------------------------------------------------------------------
-void CServerCommandManager::Dispatch( const CCommand &command )
+void CServerCommandManager::Dispatch( const CCommand& command )
 {
-	// Get the CICommand instance for the CCommand instance
-	CICommand* ccommand = new CICommand(&command);
-
 	// Loop through all registered callbacks for the command
 	// (use equals also to know when to call the old callback)
 	for(int i = 0; i <= m_vecCallables.Count(); i++)
@@ -234,10 +231,10 @@ void CServerCommandManager::Dispatch( const CCommand &command )
 				PyObject* pCallable = m_vecCallables[i].ptr();
 
 				// Call the callable and store its return value
-				object returnValue = CALL_PY_FUNC(pCallable, ccommand);
+				object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command));
 
 				// Does the callable wish to block the command?
-				if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
+				if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
 				{
 					// Block the command
 					break;

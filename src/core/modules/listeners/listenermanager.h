@@ -36,8 +36,8 @@
 class CListenerManager
 {
 public:
-	void register_listener(PyObject* pCallable);
-	void unregister_listener(PyObject* pCallable);
+	void RegisterListener(PyObject* pCallable);
+	void UnregisterListener(PyObject* pCallable);
 
 public:
 	CUtlVector<object> m_vecCallables;

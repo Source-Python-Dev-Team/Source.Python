@@ -45,11 +45,11 @@ public:
 	~CServerCommandManager();
 	virtual void Init();
 
-	void add_callback(PyObject* pCallable);
-	void remove_callback(PyObject* pCallable);
+	void AddCallback(PyObject* pCallable);
+	void RemoveCallback(PyObject* pCallable);
 
 protected:
-	void Dispatch(const CCommand &command);
+	void Dispatch( const CCommand& command);
 
 private:
 	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);

@@ -113,7 +113,6 @@ Set(SOURCEPYTHON_COMMAND_MODULE_HEADERS
 
 Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
     core/modules/commands/client_command_wrap.cpp
-    core/modules/commands/command_wrap.cpp
     core/modules/commands/command_wrap_python.cpp
     core/modules/commands/say_command_wrap.cpp
     core/modules/commands/server_command_wrap.cpp

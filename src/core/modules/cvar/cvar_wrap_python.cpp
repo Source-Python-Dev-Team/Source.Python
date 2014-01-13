@@ -176,21 +176,6 @@ void export_concommandbase()
 			args("value")
 		)
 
-		.def("set",
-			GET_METHOD(void, IConVar, SetValue, const char*),
-			args("value")
-		)
-
-		.def("set",
-			GET_METHOD(void, IConVar, SetValue, float),
-			args("value")
-		)
-
-		.def("set",
-			GET_METHOD(void, IConVar, SetValue, int),
-			args("value")
-		)
-
 		.def("get_name",
 			&IConVar::GetName,
 			"Returns its name."
@@ -294,11 +279,6 @@ void export_convar()
 			"Returns the value as a string."
 		)
 
-		.def("get",
-			&ConVar::GetString,
-			"Returns the value as a string."
-		)
-
 		.def("revert",
 			&ConVar::Revert,
 			"Resets to default value."
@@ -329,13 +309,7 @@ void export_convar()
 			"Returns the maximum value."
 		)
 
-		.def("set",
-			&ConVarExt::SetValue,
-			"Sets a bool value.",
-			args("value")
-		)
-
-		.def("se_bool",
+		.def("set_bool",
 			&ConVarExt::SetValue,
 			"Sets a bool value.",
 			args("value")
@@ -345,27 +319,25 @@ void export_convar()
 
 void export_flags()
 {
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_NONE", FCVAR_NONE);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_UNREGISTERED", FCVAR_UNREGISTERED);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_DEVELOPMENTONLY", FCVAR_DEVELOPMENTONLY);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_GAMEDLL", FCVAR_GAMEDLL);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_CLIENTDLL", FCVAR_CLIENTDLL);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_HIDDEN", FCVAR_HIDDEN);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_PROTECTED", FCVAR_PROTECTED);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_SPONLY", FCVAR_SPONLY);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_ARCHIVE", FCVAR_ARCHIVE);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_NOTIFY", FCVAR_NOTIFY);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_USERINFO", FCVAR_USERINFO);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_PRINTABLEONLY", FCVAR_PRINTABLEONLY);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_UNLOGGED", FCVAR_UNLOGGED);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_NEVER_AS_STRING", FCVAR_NEVER_AS_STRING);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_REPLICATED", FCVAR_REPLICATED);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_CHEAT", FCVAR_CHEAT);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_DEMO", FCVAR_DEMO);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_DONTRECORD", FCVAR_DONTRECORD);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_NOT_CONNECTED", FCVAR_NOT_CONNECTED);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_ARCHIVE_XBOX", FCVAR_ARCHIVE_XBOX);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_SERVER_CAN_EXECUTE", FCVAR_SERVER_CAN_EXECUTE);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_SERVER_CANNOT_QUERY", FCVAR_SERVER_CANNOT_QUERY);
-	BOOST_GLOBAL_ATTRIBUTE("FCVAR_CLIENTCMD_CAN_EXECUTE", FCVAR_CLIENTCMD_CAN_EXECUTE);
+	scope().attr("FCVAR_NONE")                  = FCVAR_NONE;
+	scope().attr("FCVAR_UNREGISTERED")          = FCVAR_UNREGISTERED;
+	scope().attr("FCVAR_DEVELOPMENTONLY")       = FCVAR_DEVELOPMENTONLY;
+	scope().attr("FCVAR_GAMEDLL")               = FCVAR_GAMEDLL;
+	scope().attr("FCVAR_CLIENTDLL")             = FCVAR_CLIENTDLL;
+	scope().attr("FCVAR_PROTECTED")             = FCVAR_PROTECTED;
+	scope().attr("FCVAR_ARCHIVE")               = FCVAR_ARCHIVE;
+	scope().attr("FCVAR_NOTIFY")                = FCVAR_NOTIFY;
+	scope().attr("FCVAR_USERINFO")              = FCVAR_USERINFO;
+	scope().attr("FCVAR_PRINTABLEONLY")         = FCVAR_PRINTABLEONLY;
+	scope().attr("FCVAR_UNLOGGED")              = FCVAR_UNLOGGED;
+	scope().attr("FCVAR_NEVER_AS_STRING")       = FCVAR_NEVER_AS_STRING;
+	scope().attr("FCVAR_REPLICATED")            = FCVAR_REPLICATED;
+	scope().attr("FCVAR_CHEAT")                 = FCVAR_CHEAT;
+	scope().attr("FCVAR_DEMO")                  = FCVAR_DEMO;
+	scope().attr("FCVAR_DONTRECORD")            = FCVAR_DONTRECORD;
+	scope().attr("FCVAR_NOT_CONNECTED")         = FCVAR_NOT_CONNECTED;
+	scope().attr("FCVAR_ARCHIVE_XBOX")          = FCVAR_ARCHIVE_XBOX;
+	scope().attr("FCVAR_SERVER_CAN_EXECUTE")    = FCVAR_SERVER_CAN_EXECUTE;
+	scope().attr("FCVAR_SERVER_CANNOT_QUERY")   = FCVAR_SERVER_CANNOT_QUERY;
+	scope().attr("FCVAR_CLIENTCMD_CAN_EXECUTE") = FCVAR_CLIENTCMD_CAN_EXECUTE;
 }

@@ -49,21 +49,19 @@ void export_listener_managers()
     //-------------------------------------------------------------------------
 	// Exposes CListenerManager
 	//-------------------------------------------------------------------------
-	BOOST_ABSTRACT_CLASS(CListenerManager)
-
-		CLASS_METHOD(CListenerManager,
-			register_listener,
+	class_<CListenerManager, boost::noncopyable>("CListenerManager", no_init)
+		.def("register_listener",
+			&CListenerManager::RegisterListener,
 			"Registers a callable object. If it was already registered it will be ignored.",
 			args("callable")
 		)
 
-		CLASS_METHOD(CListenerManager,
-			unregister_listener,
+		.def("register_listener",
+			&CListenerManager::UnregisterListener,
 			"Removes a callable object. If it was not registered nothing will happen.",
 			args("callable")
 		)
-
-	BOOST_END_CLASS()
+	;
 
 	//-------------------------------------------------------------------------
 	// Expose the accessor functions

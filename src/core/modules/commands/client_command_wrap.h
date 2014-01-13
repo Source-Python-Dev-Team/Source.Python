@@ -48,10 +48,10 @@ public:
 	CClientCommandManager(const char* szName);
 	~CClientCommandManager();
 
-	void add_callback(PyObject* pCallable);
-	void remove_callback(PyObject* pCallable);
+	void AddCallback(PyObject* pCallable);
+	void RemoveCallback(PyObject* pCallable);
 
-	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, CICommand* ccommand);
+	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, const CCommand& ccommand);
 
 private:
 	CUtlVector<object> m_vecCallables;

@@ -36,6 +36,7 @@
 #include "utility/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
+#include "modules/listeners/listenermanager.h"
 
 //-----------------------------------------------------------------------------
 // Global Client command mapping.
@@ -46,12 +47,12 @@ ClientCommandMap g_ClientCommandMap;
 //-----------------------------------------------------------------------------
 // Static singletons.
 //-----------------------------------------------------------------------------
-static BaseFilters s_ClientCommandFilters;
+static CListenerManager s_ClientCommandFilters;
 
 //-----------------------------------------------------------------------------
 // Returns a CClientCommandManager for the given command name.
 //-----------------------------------------------------------------------------
-CClientCommandManager* get_client_command(const char* szName)
+CClientCommandManager* GetClientCommand(const char* szName)
 {
 	// Find if the given name is a registered client command
 	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szName);
@@ -87,17 +88,17 @@ void RemoveCClientCommandManager(const char* szName)
 //-----------------------------------------------------------------------------
 // Register function for client command filter.
 //-----------------------------------------------------------------------------
-void register_client_command_filter(PyObject* pCallable)
+void RegisterClientCommandFilter(PyObject* pCallable)
 {
-	s_ClientCommandFilters.register_filter(pCallable);
+	s_ClientCommandFilters.RegisterListener(pCallable);
 }
 
 //-----------------------------------------------------------------------------
 // Unregister function for client command filter.
 //-----------------------------------------------------------------------------
-void unregister_client_command_filter(PyObject* pCallable)
+void UnregisterClientCommandFilter(PyObject* pCallable)
 {
-	s_ClientCommandFilters.unregister_filter(pCallable);
+	s_ClientCommandFilters.UnregisterListener(pCallable);
 }
 
 //-----------------------------------------------------------------------------
@@ -108,9 +109,6 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 	// Get the IPlayerInfo instance of the player
 	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEntity);
 
-	// Get the CICommand instance of the CCommand
-	CICommand* ccommand = new CICommand(&command);
-
 	// Loop through all registered Client Command Filters
 	for(int i = 0; i < s_ClientCommandFilters.m_vecCallables.Count(); i++)
 	{
@@ -120,7 +118,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 			PyObject* pCallable = s_ClientCommandFilters.m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, pPlayerInfo, ccommand);
+			object returnValue = CALL_PY_FUNC(pCallable, pPlayerInfo, boost::ref(command));
 
 			// Does the Client Command Filter want to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
@@ -143,7 +141,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 		CClientCommandManager* pCClientCommandManager = commandMapIter->second;
 
 		// Does the command need to be blocked?
-		if( !pCClientCommandManager->Dispatch(pPlayerInfo, ccommand))
+		if( !pCClientCommandManager->Dispatch(pPlayerInfo, boost::ref(command)))
 		{
 			// Block the command
 			return PLUGIN_STOP;
@@ -171,7 +169,7 @@ CClientCommandManager::~CClientCommandManager()
 //-----------------------------------------------------------------------------
 // Adds a callable to a CClientCommandManager instance.
 //-----------------------------------------------------------------------------
-void CClientCommandManager::add_callback( PyObject* pCallable )
+void CClientCommandManager::AddCallback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -187,7 +185,7 @@ void CClientCommandManager::add_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Removes a callable from a CClientCommandManager instance.
 //-----------------------------------------------------------------------------
-void CClientCommandManager::remove_callback( PyObject* pCallable )
+void CClientCommandManager::RemoveCallback( PyObject* pCallable )
 {
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
@@ -206,7 +204,7 @@ void CClientCommandManager::remove_callback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Calls all callables for the command when it is called on the client.
 //-----------------------------------------------------------------------------
-CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, CICommand* ccommand )
+CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, const CCommand& command )
 {
 	// Loop through all callables registered for the CClientCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)
@@ -217,10 +215,10 @@ CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, CIComma
 			PyObject* pCallable = m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, pPlayerInfo, ccommand);
+			object returnValue = CALL_PY_FUNC(pCallable, pPlayerInfo, boost::ref(command));
 
 			// Does the callable wish to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
+			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
 			{
 				// Block the command
 				return BLOCK;
