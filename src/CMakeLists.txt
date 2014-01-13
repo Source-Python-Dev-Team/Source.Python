@@ -170,11 +170,9 @@ Set(SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES
 # Event module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EVENT_MODULE_HEADERS
-    core/modules/events/events_wrap.h
 )
 
 Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
-    core/modules/events/events_wrap.cpp
     core/modules/events/events_wrap_python.cpp
 )
 

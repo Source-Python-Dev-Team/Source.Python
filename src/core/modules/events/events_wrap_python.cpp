@@ -27,33 +27,36 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "modules/export_main.h"
 #include "igameevents.h"
+#include "modules/export_main.h"
 
 //---------------------------------------------------------------------------------
-// Includes
+// This is the IGameEventListener2 callback class. It allows python to subclass
+// IGameEventListener2 then pass an instance of that to CGameEventManager.
 //---------------------------------------------------------------------------------
-#include "events_wrap.h"
+class CGameEventListener2: public IGameEventListener2, public wrapper<IGameEventListener2>
+{
+public:
+	virtual void FireGameEvent(IGameEvent* pEvent)
+	{
+		BEGIN_BOOST_PY()
+			get_override("fire_game_event")(ptr(pEvent));
+		END_BOOST_PY()
+	}
+};
 
 //---------------------------------------------------------------------------------
-// Method overloads.
+// Externals
 //---------------------------------------------------------------------------------
-DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, is_empty, 0, 1)
-DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_bool, 0, 2)
-DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_int, 0, 2)
-DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_float, 0, 2)
-DECLARE_CLASS_METHOD_OVERLOAD(CGameEvent, get_string, 0, 2)
+extern IGameEventManager2* gameeventmanager;
 
 //---------------------------------------------------------------------------------
-// Functions that expose event functionality to us.
+// Exposes the Game Event module.
 //---------------------------------------------------------------------------------
 void export_igameevent();
 void export_igameeventlistener();
 void export_igameeventmanager();
 
-//---------------------------------------------------------------------------------
-// Exposes the Game Event module.
-//---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(event_c)
 {
 	export_igameevent();
@@ -64,76 +67,98 @@ DECLARE_SP_MODULE(event_c)
 //---------------------------------------------------------------------------------
 // Exposes IGameEvent.
 //---------------------------------------------------------------------------------
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_bool_overload, GetBool, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 1, 2);
+
 void export_igameevent()
 {
-	BOOST_CLASS_CONSTRUCTOR(CGameEvent, const char*, bool)
-
-		CLASS_METHOD(CGameEvent,
-			get_name,
+	// TODO: rename?
+	class_<IGameEvent, boost::noncopyable>("CGameEvent", no_init)
+		.def("get_name",
+			&IGameEvent::GetName,
 			"Returns the event name."
 		)
 
-		CLASS_METHOD(CGameEvent,
-			is_reliable,
+		.def("is_reliable",
+			&IGameEvent::IsReliable,
 			"Returns true if the event handled reliably."
 		)
 
-		CLASS_METHOD(CGameEvent,
-			is_local,
+		.def("is_local",
+			&IGameEvent::IsLocal,
 			"Returns true if the event never networked."
 		)
 
-		CLASS_METHOD_OVERLOAD(CGameEvent,
-			is_empty,
+		.def("is_empty",
+			&IGameEvent::IsEmpty,
 			"Returns true if the given key exists.",
-			args("keyName")
+			args("key_name")
 		)
 
-		CLASS_METHOD_OVERLOAD(CGameEvent,
-			get_bool,
-			args("keyName", "defaultValue")
+		.def("get_bool",
+			&IGameEvent::GetBool,
+			get_bool_overload(
+				args("key_name", "default_value"),
+				"Returns the value of the key name as a bool."
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CGameEvent,
-			get_int,
-			args("keyName", "defaultValue")
+		.def("get_int",
+			&IGameEvent::GetInt,
+			get_int_overload(
+				args("key_name", "default_value"),
+				"Returns the value of the key name as an int."
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CGameEvent,
-			get_float,
-			args("keyName", "defaultValue")
+		.def("get_float",
+			&IGameEvent::GetFloat,
+			get_float_overload(
+				args("key_name", "default_value"),
+				"Returns the value of the key name as a float."
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CGameEvent,
-			get_string,
-			args("keyName", "defaultValue")
+		.def("get_string",
+			&IGameEvent::GetString,
+			get_string_overload(
+				args("key_name", "default_value"),
+				"Returns the value of the key name as a string."
+			)
 		)
 
-		CLASS_METHOD(CGameEvent,
-			set_bool,
-			args("keyName", "value")
+		.def("set_bool",
+			&IGameEvent::SetBool,
+			"Sets the given key name.",
+			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CGameEvent,
-			set_int,
-			args("keyName", "value")
+		.def("set_int",
+			&IGameEvent::SetInt,
+			"Sets the given key name.",
+			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CGameEvent,
-			set_float,
-			args("keyName", "value")
+		.def("set_float",
+			&IGameEvent::SetFloat,
+			"Sets the given key name.",
+			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CGameEvent,
-			set_string,
-			args("keyName", "value")
+		.def("set_string",
+			&IGameEvent::SetString,
+			"Sets the given key name.",
+			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CGameEvent,
-			fire_event,
-			"Fires this event."
+		.def("set_string",
+			&IGameEvent::SetString,
+			"Sets the given key name.",
+			args("key_name", "value")
 		)
-	BOOST_END_CLASS()
+	;
 }
 
 //---------------------------------------------------------------------------------
@@ -141,101 +166,97 @@ void export_igameevent()
 //---------------------------------------------------------------------------------
 void export_igameeventlistener()
 {
-	BOOST_CLASS_NOCOPY(CGameEventListener)
-
-		CLASS_METHOD_PURE_VIRTUAL(CGameEventListener,
-			fire_game_event,
-			"Fires off a game event. NOTE: You must override this!",
-			args("game_event")
+	// TODO: Rename?	
+	class_<CGameEventListener2, boost::noncopyable>("CGameEventListener", no_init)
+		.def("fire_game_event",
+			pure_virtual(&CGameEventListener2::FireGameEvent),
+			"Fires the given game event."
 		)
 
-		CLASS_METHOD_PURE_VIRTUAL(CGameEventListener,
-			get_event_debug_id,
-			"Returns debug ID for the event listener."
-		)
-
-	BOOST_END_CLASS()
+		.NOT_IMPLEMENTED("get_event_debug_id")
+	;
 }
 
 //---------------------------------------------------------------------------------
 // Exposes the game event manager.
 //---------------------------------------------------------------------------------
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(fire_event_overload, FireEvent, 1, 2);
+
 void export_igameeventmanager()
 {
-	BOOST_ABSTRACT_CLASS(CGameEventManager)
-
-		CLASS_METHOD(CGameEventManager,
-			load_events_from_file,
+	class_<IGameEventManager2, boost::noncopyable>("CGameEventManager", no_init)
+		.def("load_events_from_file",
+			&IGameEventManager2::LoadEventsFromFile,
 			"Loads game event descriptions from a file eg resource/gameevents.res",
 			args("filename")
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			reset,
+		.def("reset",
+			&IGameEventManager2::Reset,
 			"Removes all and anything."
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			add_listener,
+		.def("add_listener",
+			&IGameEventManager2::AddListener,
 			"Adds a listener for a particular event. Returns true on success.",
 			args("listener", "event_name")
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			find_listener,
+		.def("find_listener",
+			&IGameEventManager2::FindListener,
 			"Returns true if the given listener is listening to the given event.",
 			args("listener", "event_name")
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			remove_listener,
+		.def("remove_listener",
+			&IGameEventManager2::RemoveListener,
 			"Stops a listener from receiving event notifications.",
 			args("listener")
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			create_event,
-			"Creates an event by name but doesn't fire it. Returns NULL if the event\
-			is not known or no listener is registered for it. Setting should_force to\
-			True forces the creation of the event even if no listener for it is active.",
-			args("event_name", "bForce"),
-			reference_existing_object_policy()
+		.def("create_event",
+			&IGameEventManager2::CreateEvent,
+			create_event_overload(
+				"Creates an event by name but doesn't fire it. Returns NULL if the event\
+				 is not known or no listener is registered for it. Setting should_force to\
+				 True forces the creation of the event even if no listener for it is active.",
+				args("event_name", "bForce")
+			)[reference_existing_object_policy()]
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			fire_event,
-			"Fires a server event created by create_event. If dont_broadcast is set\
-			to False (which it is by default), the event is not sent to clients.\
-			Returns true if the event is fired off successfully.",
-			args("game_event", "dont_broadcast")
+		.def("fire_event",
+			&IGameEventManager2::FireEvent,
+			fire_event_overload(
+				"Fires a server event created by create_event. If dont_broadcast is set\
+				 to False (which it is by default), the event is not sent to clients.\
+				 Returns true if the event is fired off successfully.",
+				args("game_event", "dont_broadcast")
+			)
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			fire_event_client_side,
+		.def("fire_event_client_side",
+			&IGameEventManager2::FireEventClientSide,
 			"Fires an event for the local client only. This should only be used by\
-			client code!",
+			 client code!",
 			args("game_event")
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			duplicate_event,
+		.def("duplicate_event",
+			&IGameEventManager2::DuplicateEvent,
 			"Creates a new copy of the given CGameEvent instance. This must be freed\
-			by free_event later.",
+			 by free_event later.",
 			args("game_event"),
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CGameEventManager,
-			free_event,
+		.def("free_event",
+			&IGameEventManager2::FreeEvent,
 			"If an event is created but not fired, it must be freed. This method will\
-			do that for you.",
+			 do that for you.",
 			args("game_event")
 		)
+	;
 
-	BOOST_END_CLASS()
-
-	BOOST_FUNCTION(get_game_event_manager,
-		"Returns the CGameEventManager singleton.",
-		reference_existing_object_policy()
-	);
+	def("get_game_event_manager", make_getter(&gameeventmanager, reference_existing_object_policy()));
 }
