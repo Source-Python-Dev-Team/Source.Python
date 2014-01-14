@@ -32,7 +32,6 @@
 #include "edict.h"
 #include "server_class.h"
 #include <cstdint>
-#include "modules/vecmath/vecmath_wrap.h"
 
 
 //---------------------------------------------------------------------------------
@@ -41,15 +40,15 @@
 class CEdictExt
 {
 public:
-	int         GetPropInt( edict_t* pEdict, const char* prop_name );
-	float       GetPropFloat( edict_t* pEdict, const char* prop_name );
-	const char* GetPropString( edict_t* pEdict, const char* prop_name );
-	Vector      GetPropVector( edict_t* pEdict, const char* prop_name );
+	static int         GetPropInt( edict_t* pEdict, const char* prop_name );
+	static float       GetPropFloat( edict_t* pEdict, const char* prop_name );
+	static const char* GetPropString( edict_t* pEdict, const char* prop_name );
+	static Vector      GetPropVector( edict_t* pEdict, const char* prop_name );
 
-	void        SetPropInt( edict_t* pEdict, const char* prop_name, int iValue );
-	void        SetPropFloat( edict_t* pEdict, const char* prop_name, float flValue );
-	void        SetPropString( edict_t* pEdict, const char* prop_name, const char* szValue );
-	void        SetPropVector( edict_t* pEdict, const char* prop_name, Vector vecValue );
+	static void        SetPropInt( edict_t* pEdict, const char* prop_name, int iValue );
+	static void        SetPropFloat( edict_t* pEdict, const char* prop_name, float flValue );
+	static void        SetPropString( edict_t* pEdict, const char* prop_name, const char* szValue );
+	static void        SetPropVector( edict_t* pEdict, const char* prop_name, Vector vecValue );
 };
 
 //---------------------------------------------------------------------------------

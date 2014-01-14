@@ -388,7 +388,7 @@ void export_edict()
 		)
 
 		.def("get_prop_vector",
-			&CEdictExt::GetPropFloat,
+			&CEdictExt::GetPropVector,
 			"Returns the value of a network property as a vector.",
 			args("prop_name")
 		)

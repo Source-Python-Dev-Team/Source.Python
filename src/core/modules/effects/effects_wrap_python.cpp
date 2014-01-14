@@ -32,7 +32,6 @@
 #include <stddef.h>
 #include "wchartypes.h"
 #include "string_t.h"
-#include "../vecmath/vecmath_wrap.h"
 #include "shake.h"
 #include "IEffects.h"
 #include "utility/wrap_macros.h"
