@@ -30,14 +30,7 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-// These includes are really important. Be careful if you try to change the
-// order or remove an include!
-#include <stddef.h>
-#include "wchartypes.h"
-#include "string_t.h"
-#include "../vecmath/vecmath_wrap.h"
-#include "shake.h"
-#include "IEffects.h"
+
 
 
 //-----------------------------------------------------------------------------

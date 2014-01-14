@@ -24,101 +24,160 @@
 * Development Team grants this exception to all derivative works.
 */
 
-
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+// These includes are really important. Be careful if you try to change the
+// order or remove an include!
+#include <stddef.h>
+#include "wchartypes.h"
+#include "string_t.h"
+#include "../vecmath/vecmath_wrap.h"
+#include "shake.h"
+#include "IEffects.h"
+#include "utility/wrap_macros.h"
 #include "modules/export_main.h"
-#include "effects_wrap.h"
 
-void export_effects();
+
+//-----------------------------------------------------------------------------
+// Externals
+//-----------------------------------------------------------------------------
+extern IEffects* effects;
+
+// This is required to fix a linker error
+IPredictionSystem* IPredictionSystem::g_pPredictionSystems = NULL;
 
 //-----------------------------------------------------------------------------
 // Exposes the effects_c module.
 //-----------------------------------------------------------------------------
+void export_effects();
+
 DECLARE_SP_MODULE(effects_c)
 {
 	export_effects();
 }
 
-DECLARE_CLASS_METHOD_OVERLOAD(CEffects, sparks, 1, 4);
-DECLARE_CLASS_METHOD_OVERLOAD(CEffects, energy_splash, 2, 3);
+//-----------------------------------------------------------------------------
+// Expose effects
+//-----------------------------------------------------------------------------
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(sparks_overload, Sparks, 1, 4)
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(energy_splash_overload, EnergySplash, 2, 3)
 
 void export_effects()
 {
-	BOOST_ABSTRACT_CLASS(CEffects)
+	// TODO: Rename?
+	class_<IPredictionSystem>("IPredictionSystem")
+		.def("get_next",
+			&IPredictionSystem::GetNext,
+			"Returns the next prediction system.",
+			reference_existing_object_policy()
+		)
+
+		.def("set_suppress_event",
+			&IPredictionSystem::SetSuppressEvent
+		)
+
+		.def("set_suppress_host",
+			&IPredictionSystem::SetSuppressHost
+		)
 		
-		CLASS_METHOD(CEffects,
-			beam,
+		/*
+		TODO: CBaseEntity
+		.def("get_suppress_host",
+			&IPredictionSystem::GetSuppressHost,
+			reference_existing_object_policy()
+		)
+		*/
+
+		.def("can_predict",
+			&IPredictionSystem::CanPredict
+		)
+
+		.def_readwrite("prediction_systems",
+			&IPredictionSystem::g_pPredictionSystems
+		)
+
+		.def("suppress_events",
+			&IPredictionSystem::SuppressEvents
+		)
+		.staticmethod("suppress_events")
+
+		.def("suppress_host_events",
+			&IPredictionSystem::SuppressHostEvents
+		)
+		.staticmethod("suppress_host_events")
+	;
+
+	// TODO: Rename?
+	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("CEffects", no_init)
+		.def("beam",
+			&IEffects::Beam,
 			"Creates a beam particle effect.",
-			args("vecStart", "vecEnd", "iModelIndex", "iHaloIndex", "frameStart", "frameRate", "fLife", "width", "endWidth", "fadeLength", "noise", "red", "green", "blue", "brightness", "speed")
+			args("start_vec", "end_vec", "model_index", "halo_index", "start_frame", "frame_rate", "life", "width", "end_width", "fade_length", "noise", "red", "green", "blue", "brightness", "speed")
 		)
 		
-		CLASS_METHOD(CEffects,
-			smoke,
+		.def("smoke",
+			&IEffects::Smoke,
 			"Creates a smoke effect.",
-			args("vecOrigin", "iModelIndex", "fScale", "fFrameRate")
+			args("origin", "model_index", "scale", "frame_rate")
 		)
 		
-		CLASS_METHOD_OVERLOAD(CEffects,
-			sparks,
-			"Creates a sparks effect.",
-			args("vecOrigin", "iMagnitude", "iTrailLength", "vecDirection")
+		.def("sparks",
+			&IEffects::Sparks,
+			sparks_overload(
+				"Creates a sparks effect.",
+				args("origin", "magnitude", "trail_length", "direction")
+			)
 		)
 		
-		CLASS_METHOD(CEffects,
-			dust,
+		.def("dust",
+			&IEffects::Dust,
 			"Creates a dust effect.",
-			args("vecOrigin", "vecDirection", "fSize", "fSpeed")
+			args("origin", "direction", "size", "speed")
 		)
 		
-		CLASS_METHOD(CEffects,
-			muzzle_flash,
+		.def("muzzle_flash",
+			&IEffects::MuzzleFlash,
 			"Creates a muzzle flash effect.",
-			args("vecOrigin", "vecAngles", "fScale", "iType")
+			args("origin", "angles", "scale", "type")
 		)
 		
-		CLASS_METHOD(CEffects,
-			metal_sparks,
+		.def("metal_sparks",
+			&IEffects::MetalSparks,
 			"Creates a muzzle flash effect.",
-			args("vecOrigin", "vecDirection")
+			args("origin", "direction")
 		)
 
-		CLASS_METHOD_OVERLOAD(CEffects,
-			energy_splash,
-			"Creates a metal sparks effect.",
-			args("vecOrigin", "vecDirection", "bExplosive")
+		.def("energy_splash",
+			&IEffects::EnergySplash,
+			energy_splash_overload(
+				"Creates a metal sparks effect.",
+				args("origin", "direction", "explosive")
+			)
 		)
 
-		CLASS_METHOD(CEffects,
-			ricochet,
+		.def("ricochet",
+			&IEffects::Ricochet,
 			"Creates a ricochet effect.",
-			args("vecOrigin", "vecDirection")
+			args("origin", "direction")
 		)
 		
-		CLASS_METHOD(CEffects,
-			ricochet,
-			"Creates a ricochet.",
-			args("vecOrigin", "vecDirection")
-		)
-		
-		CLASS_METHOD(CEffects,
-			get_time,
+		.def("get_time",
+			&IEffects::Time,
 			"Returns the current time."
 		)
 		
-		CLASS_METHOD(CEffects,
-			is_server,
+		.def("is_server",
+			&IEffects::IsServer,
 			"Returns True if this is a server."
 		)
 		
-		CLASS_METHOD(CEffects,
-			suppress_effects_sounds,
+		.def("suppress_effects_sounds",
+			&IEffects::SuppressEffectsSounds,
 			"Set to True to suppress effect sounds.",
-			args("bSuppress")
+			args("suppress")
 		)
+	;
 
-	BOOST_END_CLASS()
-
-	BOOST_FUNCTION(get_effects, reference_existing_object_policy());
+	def("get_effects_interface", make_getter(&effects, reference_existing_object_policy()));
 }
