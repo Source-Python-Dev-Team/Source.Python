@@ -62,14 +62,76 @@ SendPropMap g_SendPropMap;
 //-----------------------------------------------------------------------------
 // edict_t extension
 //-----------------------------------------------------------------------------
-object CEdictExt::GetProp( edict_t* pEdict, const char* prop_name )
+int CEdictExt::GetPropInt( edict_t* pEdict, const char* prop_name )
 {
-	return CSendProp(pEdict, prop_name).Get();
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_Int)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an int.");
+
+		return prop.Get<int>();
 }
 
-void CEdictExt::SetProp( edict_t* pEdict, const char* prop_name, object value)
+float CEdictExt::GetPropFloat( edict_t* pEdict, const char* prop_name )
 {
-	CSendProp(pEdict, prop_name).Set(value);
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_Float)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.");
+
+		return prop.Get<float>();
+}
+
+const char* CEdictExt::GetPropString( edict_t* pEdict, const char* prop_name )
+{
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_String)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.");
+
+		return prop.Get<const char *>();
+}
+
+Vector CEdictExt::GetPropVector( edict_t* pEdict, const char* prop_name )
+{
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_Vector)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.");
+
+		return prop.Get<Vector>();
+}
+
+void CEdictExt::SetPropInt( edict_t* pEdict, const char* prop_name, int iValue )
+{
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_Int)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an int.");
+
+		prop.Set<int>(iValue);
+}
+
+void CEdictExt::SetPropFloat( edict_t* pEdict, const char* prop_name, float flValue )
+{
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_Float)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.");
+
+		prop.Set<float>(flValue);
+}
+
+void CEdictExt::SetPropString( edict_t* pEdict, const char* prop_name, const char* szValue )
+{
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_String)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.");
+
+		prop.Set<const char *>(szValue);
+}
+
+void CEdictExt::SetPropVector( edict_t* pEdict, const char* prop_name, Vector vecValue )
+{
+        CSendProp prop = CSendProp(pEdict, prop_name);
+		if (prop.GetType() != DPT_Vector)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.");
+
+		prop.Set<Vector>(vecValue);
 }
 
 
@@ -186,27 +248,7 @@ CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 	}
 }
 
-void CSendProp::Set( object value )
+inline SendPropType CSendProp::GetType()
 {
-	switch(m_send_prop->GetType())
-	{
-		case DPT_Int: Set<int>(extract<int>(value)); break;
-		case DPT_Float: Set<float>(extract<float>(value)); break;
-		case DPT_String: Set<const char *>(extract<const char *>(value)); break;
-		case DPT_Vector: Set<Vector>(extract<Vector>(value)); break;
-	}
-	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown property type.");
-}
-
-object CSendProp::Get()
-{
-	switch(m_send_prop->GetType())
-	{
-		case DPT_Int: return object(Get<int>());
-		case DPT_Float: return object(Get<float>());
-		case DPT_String: return object(Get<const char *>());
-		case DPT_Vector: return object(Get<Vector>());
-	}
-	BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown property type.");
-	return object(); // Just to disable a warning...
+	return m_send_prop->GetType();
 }

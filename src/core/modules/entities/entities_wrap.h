@@ -41,8 +41,15 @@
 class CEdictExt
 {
 public:
-	static object GetProp( edict_t* pEdict, const char* prop_name );
-	static void   SetProp( edict_t* pEdict, const char* prop_name, object value);
+	int         GetPropInt( edict_t* pEdict, const char* prop_name );
+	float       GetPropFloat( edict_t* pEdict, const char* prop_name );
+	const char* GetPropString( edict_t* pEdict, const char* prop_name );
+	Vector      GetPropVector( edict_t* pEdict, const char* prop_name );
+
+	void        SetPropInt( edict_t* pEdict, const char* prop_name, int iValue );
+	void        SetPropFloat( edict_t* pEdict, const char* prop_name, float flValue );
+	void        SetPropString( edict_t* pEdict, const char* prop_name, const char* szValue );
+	void        SetPropVector( edict_t* pEdict, const char* prop_name, Vector vecValue );
 };
 
 //---------------------------------------------------------------------------------
@@ -58,8 +65,6 @@ public:
 	template<class T>
 	T Get()
 	{ return *(T *) ((char *) m_base_entity + m_prop_offset); }
-
-	object Get();
 
 	template<class T>
 	void Set(T value)
@@ -82,8 +87,6 @@ public:
 		// Force a network update.
 		m_edict->StateChanged();
 	}
-
-	void Set(object value);
 
 private:
 	// Offset from the beginning of the network table that
