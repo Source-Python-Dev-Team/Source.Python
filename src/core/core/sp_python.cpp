@@ -52,6 +52,8 @@ CPythonManager g_PythonManager;
 //---------------------------------------------------------------------------------
 // PyMODINIT_FUNC PyInit_sp( void );
 
+void InitConverters();
+
 //---------------------------------------------------------------------------------
 // Adds a path to sys.path (relative to g_GamePaths.GetSPDir()).
 //---------------------------------------------------------------------------------
@@ -117,6 +119,9 @@ bool CPythonManager::Initialize( void )
 	// And of course, the plugins directory for script imports.
 	AddToSysPath("/plugins");
 
+	// Initialize all converters
+	InitConverters();
+
 	// Initialize all submodules
 	modulsp_init();
 
@@ -139,4 +144,25 @@ bool CPythonManager::Initialize( void )
 bool CPythonManager::Shutdown( void )
 {
 	return true;
+}
+
+
+//---------------------------------------------------------------------------------
+// Converters
+//---------------------------------------------------------------------------------
+struct string_t_to_python_str
+{
+	static PyObject* convert(string_t const& s)
+	{
+		return incref(object(s.ToCStr()).ptr());
+	}
+};
+
+
+//---------------------------------------------------------------------------------
+// Initializes all converters
+//---------------------------------------------------------------------------------
+void InitConverters()
+{
+	to_python_converter< string_t, string_t_to_python_str >();
 }

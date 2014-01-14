@@ -144,11 +144,6 @@ void export_concommandbase()
 			reference_existing_object_policy()
 		)
 
-		.def("set_next",
-			&ConCommandBase::SetNext,
-			"Sets the next ConCommandBase instance."
-		)
-
 		.def("is_registered",
 			&ConCommandBase::IsRegistered,
 			"Returns wheter the ConCommandBase instance is registered."

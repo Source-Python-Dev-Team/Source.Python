@@ -47,7 +47,7 @@ DECLARE_SP_MODULE(mathlib_c)
 class VectorExt
 {
 public:
-	static void SetItem(Vector* pVec, int iIndex, float fValue)
+	static void SetItem(Vector pVec, int iIndex, float fValue)
 	{
 		pVec[iIndex] = fValue;
 	}

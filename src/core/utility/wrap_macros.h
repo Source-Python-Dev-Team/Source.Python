@@ -237,15 +237,21 @@ using namespace boost::python;
 // Use this macro to define a function or class method that raises a
 // NotImplementedError. This is quite hacky, but saves a lot work!
 //---------------------------------------------------------------------------------
+#define NOT_IMPLEMENTED_RAW() \
+	eval( \
+		"lambda *args, **kw: exec('raise NotImplementedError(\"Not implemented on this engine.\")')", \
+		import("__main__").attr("__dict__") \
+	)
+
 #define NOT_IMPLEMENTED(name) \
 	def( \
 		name, \
-		eval( \
-			"lambda *args, **kw: exec('raise NotImplementedError(\"Not implemented on this engine.\")')", \
-			import("__main__").attr("__dict__") \
-		), \
+		NOT_IMPLEMENTED_RAW(), \
 		"\nNot implemented on this engine.\n" \
 	)
+
+#define NOT_IMPLEMENTED_ATTR(name) \
+	add_property(name, NOT_IMPLEMENTED_RAW(), NOT_IMPLEMENTED_RAW(), "\nNot implemented on this engine.\n")
 
 //---------------------------------------------------------------------------------
 // Use this macro to expose a variadic function.

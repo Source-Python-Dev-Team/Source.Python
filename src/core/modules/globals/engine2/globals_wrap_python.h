@@ -24,30 +24,12 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//-----------------------------------------------------------------------------
-// Includes
-//-----------------------------------------------------------------------------
-#include "globals_engine_implementation.h"
-
-//-----------------------------------------------------------------------------
-// Methods
-//-----------------------------------------------------------------------------
-bool CGlobalServerImplementation::is_remote_client()
+template<class T>
+void GlobalsBase_Visitor(T cls)
 {
-	return gpGlobals->IsRemoteClient();
 }
 
-const char* CGlobalServerImplementation::get_map_group_name()
+template<class T>
+void Globals_Visitor(T cls)
 {
-	return gpGlobals->mapGroupName.ToCStr();
-}
-
-int CGlobalServerImplementation::get_server_count()
-{
-	return gpGlobals->serverCount;
-}
-
-CEdict* CGlobalServerImplementation::get_edicts()
-{
-	return new CEdict(gpGlobals->pEdicts);
 }

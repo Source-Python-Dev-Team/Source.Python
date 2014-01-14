@@ -196,15 +196,10 @@ Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
 # Globals module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_GLOBALS_MODULE_HEADERS
-    core/modules/globals/globals_wrap.h
-    core/modules/globals/globals_engine_base.h
-    core/modules/globals/engine${SOURCE_ENGINE}/globals_engine_implementation.h
+    core/modules/globals/engine${SOURCE_ENGINE}/globals_wrap_python.h
 )
 
 Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
-    core/modules/globals/globals_wrap.cpp
-    core/modules/globals/globals_engine_base.cpp
-    core/modules/globals/engine${SOURCE_ENGINE}/globals_engine_implementation.cpp
     core/modules/globals/globals_wrap_python.cpp
 )
 

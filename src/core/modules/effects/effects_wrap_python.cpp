@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 // These includes are really important. Be careful if you try to change the
 // order or remove an include!
+#include "mathlib/vector.h"
 #include <stddef.h>
 #include "wchartypes.h"
 #include "string_t.h"
