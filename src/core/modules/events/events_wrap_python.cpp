@@ -30,6 +30,10 @@
 #include "igameevents.h"
 #include "modules/export_main.h"
 
+#ifndef EVENT_DEBUG_ID_INIT
+	#define EVENT_DEBUG_ID_INIT 42
+#endif
+
 //---------------------------------------------------------------------------------
 // This is the IGameEventListener2 callback class. It allows python to subclass
 // IGameEventListener2 then pass an instance of that to CGameEventManager.
@@ -42,6 +46,11 @@ public:
 		BEGIN_BOOST_PY()
 			get_override("fire_game_event")(ptr(pEvent));
 		END_BOOST_PY()
+	}
+
+	virtual int GetEventDebugID()
+	{
+		return EVENT_DEBUG_ID_INIT;
 	}
 };
 
@@ -173,7 +182,9 @@ void export_igameeventlistener()
 			"Fires the given game event."
 		)
 
-		.NOT_IMPLEMENTED("get_event_debug_id")
+		.def("get_event_debug_id",
+			&CGameEventListener2::GetEventDebugID
+		)
 	;
 }
 

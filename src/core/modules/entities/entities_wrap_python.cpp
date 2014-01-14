@@ -353,9 +353,12 @@ void export_edict()
 			&CBaseEdict::m_NetworkSerialNumber
 		)
 
+		/*
+		// TODO: Missing on CS:GO
 		.def_readwrite("index",
 			&CBaseEdict::m_iIndex
 		)
+		*/
 
 		.def_readwrite("networkable",
 			&CBaseEdict::m_pNetworkable
@@ -418,10 +421,13 @@ void export_edict()
 		)
 
 		// Class attributes
+		/*
+		// TODO: Missing on CS:GO
 		.def_readwrite("free_time",
 			&edict_t::freetime,
 			"The server timestampe at which the edict was freed."
 		)
+		*/
 	;
 }
 

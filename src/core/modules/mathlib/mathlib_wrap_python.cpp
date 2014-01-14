@@ -60,7 +60,8 @@ void export_vector()
 	// TODO: Rename
 	class_<Vector>("CVector")
 		.def(init<float, float, float>())
-		.def(init<float>())
+		// TODO: Missing on CS:GO
+		//.def(init<float>())
 
 		// Members
 		.def_readwrite("x",
