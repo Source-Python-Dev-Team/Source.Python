@@ -167,7 +167,7 @@ void export_igameevent()
 void export_igameeventlistener()
 {
 	// TODO: Rename?	
-	class_<CGameEventListener2, boost::noncopyable>("CGameEventListener", no_init)
+	class_<CGameEventListener2, boost::noncopyable>("CGameEventListener")
 		.def("fire_game_event",
 			pure_virtual(&CGameEventListener2::FireGameEvent),
 			"Fires the given game event."
@@ -200,7 +200,7 @@ void export_igameeventmanager()
 		.def("add_listener",
 			&IGameEventManager2::AddListener,
 			"Adds a listener for a particular event. Returns true on success.",
-			args("listener", "event_name")
+			args("listener", "event_name", "server_side")
 		)
 
 		.def("find_listener",

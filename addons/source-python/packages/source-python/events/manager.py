@@ -36,7 +36,7 @@ class _EventRegistry(dict):
         listener = self[event] = _EventListener(event)
 
         # Add the listener to the GameEventManager
-        GameEventManager.add_listener(listener.listener, event)
+        GameEventManager.add_listener(listener.listener, event, True)
 
         # Return the instance
         return listener

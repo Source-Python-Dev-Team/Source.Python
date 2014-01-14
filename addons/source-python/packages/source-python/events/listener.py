@@ -26,6 +26,10 @@ EventsListenerLogger = _SPLogger.events.listener
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+# TODO: This is just a temp fix!
+class CGameEventListener(CGameEventListener):
+    def fire_game_event(self, event): pass
+
 class _EventListener(list):
     '''Stores callbacks for the given event'''
 
