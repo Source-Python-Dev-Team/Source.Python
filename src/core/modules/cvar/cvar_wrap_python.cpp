@@ -229,11 +229,11 @@ public:
 void export_convar()
 {
 	// TODO: Rename it?
-	class_<ConVar, bases<ConCommandBase, IConVar> >("CConVar", init<const char *, const char *, optional< int > >())
+	class_<ConVar, bases<ConCommandBase, IConVar>, boost::noncopyable >("CConVar", init<const char *, const char *, optional< int > >())
 		.def(init<const char *, const char *, int, const char *>())
 		.def(init<const char *, const char *, int, const char *, bool, float, bool , float>())
 		.def("__init__", make_constructor(&ConVarExt::CreateConVar))
-
+		
 		.def("get_float",
 			&ConVar::GetFloat,
 			"Returns the value as a float."
