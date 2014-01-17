@@ -27,33 +27,20 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "keyvalues_wrap.h"
+#include "KeyValues.h"
+#include "filesystem.h"
 #include "modules/export_main.h"
 
 //---------------------------------------------------------------------------------
-// Namespaces to use.
+// Externals
 //---------------------------------------------------------------------------------
-using namespace boost::python;
-
-//---------------------------------------------------------------------------------
-// Class method overloads.
-//---------------------------------------------------------------------------------
-DECLARE_CLASS_METHOD_OVERLOAD(CKeyValues, find_key, 1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CKeyValues, get_int, 1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CKeyValues, get_uint64, 1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CKeyValues, get_float, 1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CKeyValues, get_string, 1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CKeyValues, get_bool, 1, 2);
-DECLARE_CLASS_METHOD_OVERLOAD(CKeyValues, is_empty, 0, 1);
-
-//---------------------------------------------------------------------------------
-// Exposer functions.
-//---------------------------------------------------------------------------------
-extern void export_keyvalues();
+extern IFileSystem* filesystem;
 
 //---------------------------------------------------------------------------------
 // Keyvalues module definition.
 //---------------------------------------------------------------------------------
+void export_keyvalues();
+
 DECLARE_SP_MODULE(keyvalues_c)
 {
 	export_keyvalues();
@@ -62,180 +49,236 @@ DECLARE_SP_MODULE(keyvalues_c)
 //---------------------------------------------------------------------------------
 // Exposes KeyValues functionality.
 //---------------------------------------------------------------------------------
+class KeyValuesExt
+{
+public:
+	static bool GetBool(KeyValues* pKeyValues, const char * szName = NULL, bool bDefault = false)
+	{
+		return pKeyValues->GetInt(szName, bDefault);
+	}
+
+	static void SetBool(KeyValues* pKeyValues, const char * szName, bool bValue)
+	{
+		pKeyValues->SetInt(szName, bValue);
+	}
+};
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(load_from_file_overload, LoadFromFile, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(save_to_file_overload, SaveToFile, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(find_key_overload, FindKey, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 0, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uint64_overload, GetInt, 0, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 0, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 0, 2);
+BOOST_PYTHON_FUNCTION_OVERLOADS(get_bool_overload, KeyValuesExt::GetBool, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_empty_overload, IsEmpty, 0, 1);
+
+
 void export_keyvalues()
 {
-	BOOST_CLASS_CONSTRUCTOR( CKeyValues, const char* )
-		
-		CLASS_METHOD(CKeyValues,
-			get_name,
+	// TODO: rename
+	// TODO: Add constructors. There are two possibilities:
+	// 1. Patch SDK and make destructor public. Then deleteThis() isn't required anymore
+	// 2. Create functions which construct a new object
+	class_<KeyValues, boost::noncopyable>("CKeyValues", no_init)//init<const char *>())
+		/*
+		.def(init<const char *, const char *, const char *>())
+		.def(init<const char *, const char *, int>())
+		.def(init<const char *, const char *, const char *, const char *, const char *>())
+		.def(init<const char *, const char *, int, const char *, int>())
+		*/
+		.def("delete",
+			&KeyValues::deleteThis,
+			"Ensures that KeyValues object is deleted from correct heap"
+		)
+
+		.def("get_name",
+			&KeyValues::GetName,
 			"Returns the name of the keyvalues object."
 		)
 
-		CLASS_METHOD(CKeyValues,
-			set_name,
+		.def("set_name", 
+			&KeyValues::SetName,
 			"Sets the name of the keyvalues object.",
 			args("name")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			get_name_symbol,
-			"Gets the name as a unique integer."
+		.def("get_name_symbol",
+			&KeyValues::GetNameSymbol,
+			"Gets the name as a unique integer.",
+			args("key_symbol")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			uses_escape_sequences,
+		.def("uses_escape_sequences",
+			&KeyValues::UsesEscapeSequences,
 			"Sets whether or not this keyvalues object uses escape sequences.",
 			args("uses_escape_sequences")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			load_from_file,
-			"Loads KeyValues data from a file into this CKeyValues instance.",
-			args("file_name")
+		.def("load_from_file",
+			&KeyValues::LoadFromFile,
+			load_from_file_overload(
+				"Loads KeyValues data from a file into this CKeyValues instance.",
+				args("filesystem", "resource_name", "path_id")
+			)
+		)
+		
+		.def("save_to_file",
+			&KeyValues::SaveToFile,
+			save_to_file_overload(
+				args("filesystem", "resource_name", "path_id"),
+				"Saves the data in this CKeyValues instance to the given file path."
+			)
 		)
 
-		CLASS_METHOD(CKeyValues,
-			save_to_file,
-			"Saves the data in this CKeyValues instance to the given file path.",
-			args("file_name")
+		.def("find_key",
+			GET_METHOD(KeyValues *, KeyValues, FindKey, const char *, bool),
+			find_key_overload(
+				"Finds a KeyValue. Creates it if create_key is set.",
+				args("key_name", "create_key")
+			)[reference_existing_object_policy()]
 		)
-
-		CLASS_METHOD_OVERLOAD_RET(CKeyValues,
-			find_key,
-			"Finds a KeyValue. Creates it if create_key is set.",
-			args("key_name", "create_key"),
-			manage_new_object_policy()
-		)
-
-		CLASS_METHOD(CKeyValues,
-			find_key_by_symbol,
+			
+		.def("find_key_by_symbol",
+			static_cast< KeyValues* (KeyValues::*)( int ) const >(&KeyValues::FindKey),
 			"Finds a subkey by an integer identifier.",
 			args("key"),
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
-
-		CLASS_METHOD(CKeyValues,
-			create_new_key,
+		
+		.def("create_new_key",
+			&KeyValues::CreateNewKey,
 			"Creates a new child key with an autogenerated name. The name is guaranteed to be\
 			an integer, of value 1 higher than the highest other integer key name.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
-
-		CLASS_METHOD(CKeyValues,
-			add_sub_key,
+		
+		.def("add_sub_key",
+			&KeyValues::AddSubKey,
 			"Adds a sub key. Make sure the subkey isn't a child of some other KeyValues.",
 			args("sub_key")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			remove_sub_key,
+		.def("remove_sub_key",
+			&KeyValues::RemoveSubKey,
 			"Removes a subkey from the list. DOES NOT DELETE IT!",
 			args("sub_key")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			get_first_sub_key,
+		.def("get_first_sub_key",
+			&KeyValues::GetFirstSubKey,
 			"Returns the first subkey in the list. Will iterate over the keys AND the\
 			values.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CKeyValues,
-			get_next_key,
+		.def("get_next_key",
+			&KeyValues::GetNextKey,
 			"Returns the next subkey. Will iterate the keys AND the values.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CKeyValues,
-			get_first_true_sub_key,
+		.def("get_first_true_sub_key",
+			&KeyValues::GetFirstTrueSubKey,
 			"Returns the first subkey (both key and value).",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CKeyValues,
-			get_next_true_sub_key,
+		.def("get_next_true_sub_key",
+			&KeyValues::GetNextTrueSubKey,
 			"Returns the next subkey (both key and value).",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CKeyValues,
-			get_first_value,
+		.def("get_first_value",
+			&KeyValues::GetFirstValue,
 			"Returns the first value in the tree.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CKeyValues,
-			get_next_value,
+		.def("get_next_value",
+			&KeyValues::GetNextValue,
 			"Returns the next value in the tree.",
-			manage_new_object_policy()
+			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD_OVERLOAD(CKeyValues,
-			get_int,
-			"Returns the integer value for the given key name.",
-			args("key_name", "default_value")
+		.def("get_int",
+			GET_METHOD(int, KeyValues, GetInt, const char *, int),
+			get_int_overload(
+				"Returns the integer value for the given key name.",
+				args("key_name", "default_value")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CKeyValues,
-			get_uint64,
-			"Gets the 64-bit integer value for the given key name.",
-			args("key_name", "default_value")
+		.def("get_uint64",
+			&KeyValues::GetUint64,
+			get_uint64_overload(
+				"Gets the 64-bit integer value for the given key name.",
+				args("key_name", "default_value")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CKeyValues,
-			get_float,
-			"Returns the floating point value for the given key name.",
-			args("key_name", "default_value")
+		.def("get_float",
+			GET_METHOD(float, KeyValues, GetFloat, const char *, float),
+			get_float_overload(
+				"Returns the floating point value for the given key name.",
+				args("key_name", "default_value")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CKeyValues,
-			get_string,
-			"Returns the string value for the given key name.",
-			args("key_name", "default_value")
+		.def("get_string",
+			GET_METHOD(const char *, KeyValues, GetString, const char *, const char *),
+			get_string_overload(
+				"Returns the string value for the given key name.",
+				args("key_name", "default_value")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CKeyValues,
-			get_bool,
-			"Returns the boolean value for the given key name.",
-			args("key_name", "default_value")
+		.def("get_bool",
+			&KeyValuesExt::GetBool,
+			get_bool_overload(
+				"Returns the boolean value for the given key name.",
+				args("key_name", "default_value")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CKeyValues,
-			is_empty,
-			"Returns true if this key or the given key is empty.",
-			args("key_name")
+		.def("is_empty",
+			GET_METHOD(bool, KeyValues, IsEmpty, const char *),
+			is_empty_overload(
+				"Returns true if this key or the given key is empty.",
+				args("key_name")
+			)
 		)
-		
-		CLASS_METHOD(CKeyValues,
-			set_string,
+
+		.def("set_string",
+			&KeyValues::SetString,
 			"Sets the given key's string value.",
 			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			set_int,
+		.def("set_int",
+			&KeyValues::SetInt,
 			"Sets the given key's integer value.",
 			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			set_uint64,
+		.def("set_uint64",
+			&KeyValues::SetUint64,
 			"Sets the given key's 64-bit integer value.",
 			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			set_float,
+		.def("set_float",
+			&KeyValues::SetFloat,
 			"Sets the given key's floating point value.",
 			args("key_name", "value")
 		)
 
-		CLASS_METHOD(CKeyValues,
-			set_bool,
+		.def("set_bool",
+			&KeyValuesExt::SetBool,
 			"Sets the given key's boolean value.",
 			args("key_name", "value")
 		)
-
-	BOOST_END_CLASS()
+	;
 }
 

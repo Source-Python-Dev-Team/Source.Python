@@ -28,6 +28,7 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
+#include "edict.h"
 #include ENGINE_INCLUDE_PATH(globals_wrap_python.h)
 
 

@@ -207,11 +207,9 @@ Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
 # Keyvalues module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_KEYVALUES_MODULE_HEADERS
-    core/modules/keyvalues/keyvalues_wrap.h
 )
 
 Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
-    core/modules/keyvalues/keyvalues_wrap.cpp
     core/modules/keyvalues/keyvalues_wrap_python.cpp
     ${SOURCESDK}/tier1/KeyValues.cpp
 )
