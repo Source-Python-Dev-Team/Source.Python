@@ -89,10 +89,13 @@ void CAddonManager::LevelInit( char const *pMapName )
 //---------------------------------------------------------------------------------
 // Calls server activate listeners.
 //---------------------------------------------------------------------------------
-// TODO: will not work if this is really a list
 void CAddonManager::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
-	CALL_LISTENERS(ServerActivate, pEdictList, edictCount, clientMax);
+	list edicts;
+	for(int i=0; i < edictCount; i++)
+		edicts.append(pEdictList[i]);
+	
+	CALL_LISTENERS(ServerActivate, edicts, edictCount, clientMax);
 }
 
 //---------------------------------------------------------------------------------

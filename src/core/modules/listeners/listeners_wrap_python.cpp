@@ -31,14 +31,28 @@
 #include "utility/wrap_macros.h"
 #include "listenermanager.h"
 
-//-----------------------------------------------------------------------------
-// Functions that expose tick listener functionality to us.
-//-----------------------------------------------------------------------------
-void export_listener_managers();
+
+// Create manager accessor functions
+DEFINE_MANAGER_ACCESSOR(ClientActive)
+DEFINE_MANAGER_ACCESSOR(ClientConnect)
+DEFINE_MANAGER_ACCESSOR(ClientDisconnect)
+DEFINE_MANAGER_ACCESSOR(ClientFullyConnect)
+DEFINE_MANAGER_ACCESSOR(ClientPutInServer)
+DEFINE_MANAGER_ACCESSOR(ClientSettingsChanged)
+DEFINE_MANAGER_ACCESSOR(LevelInit)
+DEFINE_MANAGER_ACCESSOR(LevelShutdown)
+DEFINE_MANAGER_ACCESSOR(NetworkidValidated)
+DEFINE_MANAGER_ACCESSOR(OnEdictAllocated)
+DEFINE_MANAGER_ACCESSOR(OnEdictFreed)
+DEFINE_MANAGER_ACCESSOR(OnQueryCvarValueFinished)
+DEFINE_MANAGER_ACCESSOR(ServerActivate)
+DEFINE_MANAGER_ACCESSOR(Tick)
 
 //-----------------------------------------------------------------------------
 // Exposes the listener_c module.
 //-----------------------------------------------------------------------------
+void export_listener_managers();
+
 DECLARE_SP_MODULE(listener_c)
 {
 	export_listener_managers();
@@ -56,7 +70,7 @@ void export_listener_managers()
 			args("callable")
 		)
 
-		.def("register_listener",
+		.def("unregister_listener",
 			&CListenerManager::UnregisterListener,
 			"Removes a callable object. If it was not registered nothing will happen.",
 			args("callable")
