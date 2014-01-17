@@ -51,6 +51,11 @@ public:
 	{
 		pVec[iIndex] = fValue;
 	}
+
+	static Vector* CreateNullVector()
+	{
+		return new Vector(0, 0, 0);
+	}
 };
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_zero_overload, IsZero, 0, 1)
@@ -58,10 +63,8 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_zero_overload, IsZero, 0, 1)
 void export_vector()
 {
 	// TODO: Rename
-	class_<Vector>("CVector")
-		.def(init<float, float, float>())
-		// TODO: Missing on CS:GO
-		//.def(init<float>())
+	class_<Vector>("CVector", init<float, float, float>())
+		.def("__init__", make_constructor(&VectorExt::CreateNullVector))
 
 		// Members
 		.def_readwrite("x",
