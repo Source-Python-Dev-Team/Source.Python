@@ -199,7 +199,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
         self[command]()
 
     def print_help(self, message=''):
-        '''Prints all sub-commands for the console command'''
+        '''Prints all sub-commands for the console command.'''
 
         # Add a header message
         message += '\n' + self.prefix + self.translations[
@@ -234,7 +234,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
         self.logger.log_message(message + '\n' + '=' * 78)
 
     def load_plugin(self, plugin_name):
-        '''Loads a plugin by name'''
+        '''Loads a plugin by name.'''
 
         # Is the plugin already loaded?
         if plugin_name in self.manager:
@@ -267,7 +267,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
     load_plugin.args = ['<plugin>']
 
     def unload_plugin(self, plugin_name):
-        '''Unloads a plugin by name'''
+        '''Unloads a plugin by name.'''
 
         # Is the plugin loaded?
         if not plugin_name in self.manager:
@@ -290,7 +290,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
     unload_plugin.args = ['<plugin>']
 
     def reload_plugin(self, plugin_name):
-        '''Reloads a plugin by name'''
+        '''Reloads a plugin by name.'''
 
         # Unload the plugin
         self.unload_plugin(plugin_name)
@@ -302,7 +302,7 @@ class SubCommandManager(OrderedDict, AutoUnload):
     reload_plugin.args = ['<plugin>']
 
     def print_plugins(self):
-        '''Prints all currently loaded plugins'''
+        '''Prints all currently loaded plugins.'''
 
         # Get the header message
         message = self.prefix + self.translations[
