@@ -121,11 +121,6 @@ void export_command()
 			"Returns the entire command string"
 		)
 
-		.def("__str__",
-			&CCommand::GetCommandString,
-			"Returns the entire command string"
-		)
-
 		.def("__getitem__",
 			&CCommand::operator[],
 			"Gets the value of the argument at the given index",

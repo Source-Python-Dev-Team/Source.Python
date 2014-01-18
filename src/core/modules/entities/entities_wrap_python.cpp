@@ -95,10 +95,6 @@ void export_base_entity_handle()
 			&CBaseHandle::ToInt
 		)
 
-		.def("__int__",
-			&CBaseHandle::ToInt
-		)
-
 		.def(self != self)
 		.def(self == self)
 		.def(self < self)

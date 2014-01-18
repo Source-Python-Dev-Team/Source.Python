@@ -239,17 +239,7 @@ void export_convar()
 			"Returns the value as a float."
 		)
 
-		.def("__float__",
-			&ConVar::GetFloat,
-			"Returns the value as a float."
-		)
-
 		.def("get_int",
-			&ConVar::GetInt,
-			"Returns the value as an int."
-		)
-
-		.def("__int__",
 			&ConVar::GetInt,
 			"Returns the value as an int."
 		)
@@ -259,17 +249,7 @@ void export_convar()
 			"Returns the value as a bool."
 		)
 
-		.def("__bool__",
-			&ConVar::GetBool,
-			"Returns the value as a bool."
-		)
-
 		.def("get_string",
-			&ConVar::GetString,
-			"Returns the value as a string."
-		)
-
-		.def("__str__",
 			&ConVar::GetString,
 			"Returns the value as a string."
 		)
