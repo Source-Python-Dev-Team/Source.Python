@@ -97,6 +97,18 @@ DECLARE_SP_MODULE(command_c)
 //-----------------------------------------------------------------------------
 // Exposes the CICommand interface.
 //-----------------------------------------------------------------------------
+class CCommandExt
+{
+public:
+	static const char* GetArg(CCommand command, unsigned int iIndex)
+	{
+		if ((int) iIndex >= command.ArgC())
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
+
+		return command[iIndex];
+	}
+};
+
 void export_command()
 {
 	enum_<CommandReturn>("CommandReturn")
@@ -122,13 +134,13 @@ void export_command()
 		)
 
 		.def("__getitem__",
-			&CCommand::operator[],
+			&CCommandExt::GetArg,
 			"Gets the value of the argument at the given index",
 			args("index")
 		)
 
 		.def("get_arg",
-			&CCommand::operator[],
+			&CCommandExt::GetArg,
 			"Gets the value of the argument at the given index",
 			args("index")
 		)

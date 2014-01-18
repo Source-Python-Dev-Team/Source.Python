@@ -61,10 +61,18 @@ public:
 	{
 		pKeyValues->SetInt(szName, bValue);
 	}
+
+	static bool LoadFromFile(KeyValues* pKeyValues, const char * szFile)
+	{
+		return pKeyValues->LoadFromFile(filesystem, szFile);
+	}
+
+	static bool SaveToFile(KeyValues* pKeyValues, const char * szFile)
+	{
+		return pKeyValues->SaveToFile(filesystem, szFile);
+	}
 };
 
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(load_from_file_overload, LoadFromFile, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(save_to_file_overload, SaveToFile, 2, 3);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(find_key_overload, FindKey, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uint64_overload, GetUint64, 0, 2);
@@ -117,19 +125,15 @@ void export_keyvalues()
 		)
 
 		.def("load_from_file",
-			&KeyValues::LoadFromFile,
-			load_from_file_overload(
-				"Loads KeyValues data from a file into this CKeyValues instance.",
-				args("filesystem", "resource_name", "path_id")
-			)
+			&KeyValuesExt::LoadFromFile,
+			"Loads KeyValues data from a file into this CKeyValues instance.",
+			args("file_name")
 		)
 		
 		.def("save_to_file",
-			&KeyValues::SaveToFile,
-			save_to_file_overload(
-				args("filesystem", "resource_name", "path_id"),
-				"Saves the data in this CKeyValues instance to the given file path."
-			)
+			&KeyValuesExt::SaveToFile,
+			args("file_name"),
+			"Saves the data in this CKeyValues instance to the given file path."
 		)
 
 		.def("find_key",
