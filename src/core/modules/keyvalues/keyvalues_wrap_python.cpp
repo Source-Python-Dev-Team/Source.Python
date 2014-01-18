@@ -67,7 +67,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(load_from_file_overload, LoadFromFile, 2,
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(save_to_file_overload, SaveToFile, 2, 3);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(find_key_overload, FindKey, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 0, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uint64_overload, GetInt, 0, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uint64_overload, GetUint64, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 0, 2);
 BOOST_PYTHON_FUNCTION_OVERLOADS(get_bool_overload, KeyValuesExt::GetBool, 2, 3);
@@ -87,6 +87,7 @@ void export_keyvalues()
 		.def(init<const char *, const char *, const char *, const char *, const char *>())
 		.def(init<const char *, const char *, int, const char *, int>())
 		*/
+
 		.def("delete",
 			&KeyValues::deleteThis,
 			"Ensures that KeyValues object is deleted from correct heap"
@@ -211,7 +212,7 @@ void export_keyvalues()
 		)
 
 		.def("get_uint64",
-			&KeyValues::GetUint64,
+			GET_METHOD(uint64, KeyValues, GetUint64, const char *, uint64),
 			get_uint64_overload(
 				"Gets the 64-bit integer value for the given key name.",
 				args("key_name", "default_value")
