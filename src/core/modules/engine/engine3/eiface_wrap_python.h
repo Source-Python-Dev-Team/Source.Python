@@ -26,7 +26,7 @@
 
 #include "eiface.h"
 #include "ispsharedmemory.h"
-#include "usermessage/usermessage.h"
+#include "../usermessage/usermessage.h"
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_single_player_shared_memory_space_overload, GetSinglePlayerSharedMemorySpace, 1, 2);
 
@@ -164,7 +164,7 @@ void IVEngineServer_Visitor(T cls)
 			&IVEngineServer::HasPaintmap,
 			"Tells the engine to allocate paint surfaces."
 		)
-
+		/*
 		.def("sphere_paint_surface",
 			&IVEngineServer::SpherePaintSurface,
 			args("model", "vector", "uchar", "float", "float")
@@ -174,6 +174,7 @@ void IVEngineServer_Visitor(T cls)
 			&IVEngineServer::SphereTracePaintSurface,
 			args("model", "vector", "vector", "float", "CUtlVector<unsigned char>")
 		)
+		*/
 
 		.def("remove_all_paint",
 			&IVEngineServer::RemoveAllPaint
@@ -184,10 +185,12 @@ void IVEngineServer_Visitor(T cls)
 			args("uchar")
 		)
 
+		/*
 		.def("remove_paint",
 			&IVEngineServer::RemovePaint,
 			args("model")
 		)
+		*/
 
 		.def("get_client_xuid",
 			&IVEngineServer::GetClientXUID,
@@ -235,10 +238,12 @@ void IVEngineServer_Visitor(T cls)
 			&IVEngineServer::ReserveServerForQueuedGame,
 			args("reservation_payload")
 		)
-
+		
+		/*
 		.def("get_engine_hltv_info",
 			&IVEngineServer::GetEngineHltvInfo,
 			args("out")
 		)
+		*/
 	;
 }
