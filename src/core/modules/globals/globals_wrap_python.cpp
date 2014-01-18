@@ -132,10 +132,6 @@ void export_globals()
             "Network protocol."
 		)
 
-		.def_readwrite("saved_data",
-			&CGlobalVarsBase::pSaveData
-		)
-
 		.NOT_IMPLEMENTED("is_remote_client")
 	);
 

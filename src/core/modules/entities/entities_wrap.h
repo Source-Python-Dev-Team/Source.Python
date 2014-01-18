@@ -74,19 +74,6 @@ public:
 		m_edict->StateChanged();
 	}
 
-	template<>
-	void Set(const char* szValue)
-	{
-		// Get the address of the string buffer.
-		char* data_buffer = (char *)((char *)m_base_entity + m_prop_offset);
-
-		// Write the string to the buffer.
-		V_strncpy(data_buffer, szValue, DT_MAX_STRING_BUFFERSIZE);
-		
-		// Force a network update.
-		m_edict->StateChanged();
-	}
-
 private:
 	// Offset from the beginning of the network table that
 	// this prop is located at.
@@ -101,5 +88,19 @@ private:
 	// The actual send prop object.
 	SendProp*		m_send_prop;
 };
+
+// GCC doesn't allow inline template specialization...
+template<>
+inline void CSendProp::Set(const char* szValue)
+{
+	// Get the address of the string buffer.
+	char* data_buffer = (char *)((char *)m_base_entity + m_prop_offset);
+
+	// Write the string to the buffer.
+	V_strncpy(data_buffer, szValue, DT_MAX_STRING_BUFFERSIZE);
+	
+	// Force a network update.
+	m_edict->StateChanged();
+}
 
 #endif

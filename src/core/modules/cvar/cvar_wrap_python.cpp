@@ -76,16 +76,16 @@ void export_cvar_interface()
 		)
 
 		.def("find_command_base",
-			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char*),
+			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char *),
 			"Returns a CConCommandBase instance for the given command, if it exists",
-			args("szName"),
+			args("name"),
 			reference_existing_object_policy()
 		)
 
 		.def("find_var",
 			GET_METHOD(ConVar*, ICvar, FindVar, const char *),
 			"Returns a CConVar instance for the given cvar, if it exists",
-			args("szName"),
+			args("name"),
 			reference_existing_object_policy()
 		)
 	;

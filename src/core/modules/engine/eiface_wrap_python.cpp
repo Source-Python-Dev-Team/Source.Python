@@ -34,6 +34,7 @@
 
 #include "modules/export_main.h"
 #include "dt_send.h"
+#include "irecipientfilter.h"
 #include "server_class.h"
 #include "iscratchpad3d.h"
 #include "cdll_int.h"
