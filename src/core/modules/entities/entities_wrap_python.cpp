@@ -416,6 +416,36 @@ void export_edict()
 			args("prop_name", "value")
 		)
 
+		.def("get_key_value",
+			&CEdictExt::GetKeyValue,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
+		.def("set_key_value_int",
+			&CEdictExt::SetKeyValue<int>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
+		.def("set_key_value_float",
+			&CEdictExt::SetKeyValue<float>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
+		.def("set_key_value_string",
+			&CEdictExt::SetKeyValue<const char *>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
+		.def("set_key_value_vector",
+			&CEdictExt::SetKeyValue<Vector>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
 		// Class attributes
 		/*
 		// TODO: Missing on CS:GO

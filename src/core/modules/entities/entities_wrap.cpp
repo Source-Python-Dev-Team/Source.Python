@@ -134,6 +134,13 @@ void CEdictExt::SetPropVector( edict_t* pEdict, const char* prop_name, Vector ve
 	prop.Set<Vector>(vecValue);
 }
 
+const char* CEdictExt::GetKeyValue(edict_t* pEdict, const char* szName)
+{
+	char szResult[1024];
+	CBaseEntity* pEntity = pEdict->GetUnknown()->GetBaseEntity();
+	servertools->GetKeyValue(pEntity, szName, szResult, 1024);
+	return szResult;
+}
 
 //-----------------------------------------------------------------------------
 // CSendProp code.

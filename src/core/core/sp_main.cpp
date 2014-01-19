@@ -137,7 +137,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
 	{IEFFECTS_INTERFACE_VERSION, (void **)&effects},
 	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
-#if( SOURCE_ENGINE >= 2 )
+#if( SOURCE_ENGINE >= 1 )
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
 #endif
 	{NULL, NULL}
