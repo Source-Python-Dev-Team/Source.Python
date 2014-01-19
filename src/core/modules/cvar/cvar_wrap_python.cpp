@@ -189,9 +189,28 @@ void export_concommandbase()
 class ConVarExt
 {
 public:
-	static ConVar* CreateConVar( const char *pName )
+	static ConVar* Get1(const char* szName)
 	{
-		return new ConVar(pName, "");
+		return Get2(szName, NULL, 0);
+	}
+
+	static ConVar* Get2(const char* szName, const char* szDefaultValue, int flags)
+	{
+		return Get3(szName, szDefaultValue, flags, NULL);
+	}
+
+	static ConVar* Get3(const char* szName, const char* szDefaultValue, int flags,
+		const char* szHelpString)
+	{
+		return Get4(szName, szDefaultValue, flags, szHelpString, false, 0, false, 0);
+	}
+
+	static ConVar* Get4(const char* szName, const char* szDefaultValue, int flags,
+		const char* szHelpString, bool bMin, float fMin, bool bMax, float fMax)
+	{
+		ConVar* pConVar = g_pCVar->FindVar(szName);
+		return pConVar ? pConVar : new ConVar(szName, szDefaultValue, flags,
+			strdup(szHelpString), bMin, fMin, bMax, fMax);
 	}
 
 	static bool HasMin(ConVar* pConVar)
@@ -229,10 +248,31 @@ public:
 void export_convar()
 {
 	// TODO: Rename it?
-	class_<ConVar, bases<ConCommandBase, IConVar>, boost::noncopyable >("CConVar", init<const char *, const char *, optional< int > >())
-		.def(init<const char *, const char *, int, const char *>())
-		.def(init<const char *, const char *, int, const char *, bool, float, bool , float>())
-		.def("__init__", make_constructor(&ConVarExt::CreateConVar))
+	class_<ConVar, bases<ConCommandBase, IConVar>, boost::noncopyable >("CConVar", no_init)
+		.def("get",
+			&ConVarExt::Get1,
+			"Creates a new server variable. If it already exists, the existing one will be returned.",
+			reference_existing_object_policy()
+		)
+
+		.def("get",
+			&ConVarExt::Get2,
+			"Creates a new server variable. If it already exists, the existing one will be returned.",
+			reference_existing_object_policy()
+		)
+
+		.def("get",
+			&ConVarExt::Get3,
+			"Creates a new server variable. If it already exists, the existing one will be returned.",
+			reference_existing_object_policy()
+		)
+
+		.def("get",
+			&ConVarExt::Get4,
+			"Creates a new server variable. If it already exists, the existing one will be returned.",
+			reference_existing_object_policy()
+		)
+		.staticmethod("get")
 		
 		.def("get_float",
 			&ConVar::GetFloat,
