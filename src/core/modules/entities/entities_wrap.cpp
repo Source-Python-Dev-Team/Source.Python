@@ -139,6 +139,11 @@ const char* CEdictExt::GetKeyValue(edict_t* pEdict, const char* szName)
 	char szResult[1024];
 	CBaseEntity* pEntity = pEdict->GetUnknown()->GetBaseEntity();
 	servertools->GetKeyValue(pEntity, szName, szResult, 1024);
+
+	// Fix for field name "model". I think a string_t object is copied to szResult.
+	if (strcmp(szName, "model") == 0)
+		return *(char **) szResult;
+
 	return szResult;
 }
 
