@@ -243,9 +243,9 @@ class LogManager(_LogInstance):
         return self._areas.get_int()
 
 # Set the core ConVars
-_level = CConVar.get(
+_level = CConVar(
     'sp_logging_level', '0', 0, 'The Source.Python base logging level')
-_areas = CConVar.get(
+_areas = CConVar(
     'sp_logging_areas', '1', 0, 'The Source.Python base logging areas')
 
 # Get the Source.Python main LogManager instance

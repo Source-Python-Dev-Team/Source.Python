@@ -48,21 +48,21 @@ try:
     from _core.settings import _CoreSettingsInstance
 
     # Set the logging level
-    CConVar.get('sp_logging_level').set_int(
+    CConVar('sp_logging_level').set_int(
         int(_CoreSettingsInstance['LOG_SETTINGS']['level']))
 
     # Set the logging areas
-    CConVar.get('sp_logging_areas').set_int(
+    CConVar('sp_logging_areas').set_int(
         int(_CoreSettingsInstance['LOG_SETTINGS']['areas']))
 
 # Was an exception raised?
 except (ValueError, ConfigObjError):
 
     # Set the logging level to max (5)
-    CConVar.get('sp_logging_level').set_int(5)
+    CConVar('sp_logging_level').set_int(5)
 
     # Set the logging area to include console, SP logs, and main log
-    CConVar.get('sp_logging_areas').set_int(7)
+    CConVar('sp_logging_areas').set_int(7)
 
     # Import the _SPLogger
     from loggers import _SPLogger

@@ -189,28 +189,38 @@ void export_concommandbase()
 class ConVarExt
 {
 public:
-	static ConVar* Get1(const char* szName)
+	static ConVar* New1(PyObject* cls, const char* szName)
 	{
-		return Get2(szName, NULL, 0);
+		return New2(cls, szName, NULL, 0);
 	}
 
-	static ConVar* Get2(const char* szName, const char* szDefaultValue, int flags)
+	static ConVar* New2(PyObject* cls, const char* szName, const char* szDefaultValue, int flags)
 	{
-		return Get3(szName, szDefaultValue, flags, NULL);
+		return New3(cls, szName, szDefaultValue, flags, NULL);
 	}
 
-	static ConVar* Get3(const char* szName, const char* szDefaultValue, int flags,
+	static ConVar* New3(PyObject* cls, const char* szName, const char* szDefaultValue, int flags,
 		const char* szHelpString)
 	{
-		return Get4(szName, szDefaultValue, flags, szHelpString, false, 0, false, 0);
+		return New4(cls, szName, szDefaultValue, flags, szHelpString, false, 0, false, 0);
 	}
 
-	static ConVar* Get4(const char* szName, const char* szDefaultValue, int flags,
+	static ConVar* New4(PyObject* cls, const char* szName, const char* szDefaultValue, int flags,
 		const char* szHelpString, bool bMin, float fMin, bool bMax, float fMax)
 	{
 		ConVar* pConVar = g_pCVar->FindVar(szName);
 		return pConVar ? pConVar : new ConVar(szName, szDefaultValue, flags,
 			strdup(szHelpString), bMin, fMin, bMax, fMax);
+	}
+
+	static object __init__(tuple args, dict kw)
+	{
+		// This method accepts unlimited arguments and keywords, because
+		// I don't want to write a method for each constructor.
+
+		// We cannot use a "void" function here, because raw_function()
+		// requires the method to return an object.
+		return object();
 	}
 
 	static bool HasMin(ConVar* pConVar)
@@ -249,30 +259,33 @@ void export_convar()
 {
 	// TODO: Rename it?
 	class_<ConVar, bases<ConCommandBase, IConVar>, boost::noncopyable >("CConVar", no_init)
-		.def("get",
-			&ConVarExt::Get1,
+		// We have to overload __init__. Otherwise we would get an error because of "no_init"
+		.def("__init__", raw_function(&ConVarExt::__init__))
+
+		// Add constructors
+		.def("__new__",
+			&ConVarExt::New1,
 			"Creates a new server variable. If it already exists, the existing one will be returned.",
 			reference_existing_object_policy()
 		)
 
-		.def("get",
-			&ConVarExt::Get2,
+		.def("__new__",
+			&ConVarExt::New2,
 			"Creates a new server variable. If it already exists, the existing one will be returned.",
 			reference_existing_object_policy()
 		)
 
-		.def("get",
-			&ConVarExt::Get3,
+		.def("__new__",
+			&ConVarExt::New3,
 			"Creates a new server variable. If it already exists, the existing one will be returned.",
 			reference_existing_object_policy()
 		)
 
-		.def("get",
-			&ConVarExt::Get4,
+		.def("__new__",
+			&ConVarExt::New4,
 			"Creates a new server variable. If it already exists, the existing one will be returned.",
 			reference_existing_object_policy()
 		)
-		.staticmethod("get")
 		
 		.def("get_float",
 			&ConVar::GetFloat,
