@@ -9,7 +9,6 @@
 #pragma once
 #endif
 
-#include "edict.h"
 #include "mathlib/vector.h"
 
 // helper class for user commands
