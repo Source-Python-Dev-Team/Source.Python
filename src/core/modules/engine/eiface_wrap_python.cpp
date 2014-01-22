@@ -90,15 +90,6 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_generic_overload, PrecacheGeneri
 
 void export_engine_interface()
 {
-	// engine server interface accesor
-	def("get_engine_interface", make_getter(&engine, reference_existing_object_policy()));
-
-	// TODO
-	// Maybe we should create a new module called "interfaces" and then expose the objects
-	// as the following:
-	// scope().attr("engine") = ref(engine);
-
-
 	// Call engine specific implementation function
 	IVEngineServer_Visitor(
 
@@ -761,4 +752,6 @@ void export_engine_interface()
 		.NOT_IMPLEMENTED("get_engine_hltv_info")
 
 	); // IVEngineServer_Visitor
+
+	scope().attr("engine") = object(ptr(engine));
 }

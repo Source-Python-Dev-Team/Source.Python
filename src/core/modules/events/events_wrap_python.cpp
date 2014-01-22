@@ -269,5 +269,5 @@ void export_igameeventmanager()
 		)
 	;
 
-	def("get_game_event_manager", make_getter(&gameeventmanager, reference_existing_object_policy()));
+	scope().attr("game_event_manager") = object(ptr(gameeventmanager));
 }

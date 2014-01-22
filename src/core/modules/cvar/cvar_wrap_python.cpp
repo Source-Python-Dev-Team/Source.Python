@@ -59,8 +59,6 @@ DECLARE_SP_MODULE(cvar_c)
 //-----------------------------------------------------------------------------
 void export_cvar_interface()
 {
-	def("get_cvar_interface", make_getter(&g_pCVar, reference_existing_object_policy()));
-
 	// TODO: Rename it?
 	class_<ICvar, boost::noncopyable>("CCvar", no_init)
 		.def("register_con_command",
@@ -89,6 +87,8 @@ void export_cvar_interface()
 			reference_existing_object_policy()
 		)
 	;
+
+	scope().attr("cvar") = object(ptr(g_pCVar));
 }
 
 //-----------------------------------------------------------------------------

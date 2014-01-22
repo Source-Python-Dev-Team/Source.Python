@@ -182,5 +182,5 @@ void export_effects()
 		)
 	;
 
-	def("get_effects_interface", make_getter(&effects, reference_existing_object_policy()));
+	scope().attr("effects") = object(ptr(effects));
 }

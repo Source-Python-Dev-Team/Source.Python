@@ -189,5 +189,5 @@ void export_globals()
 		.NOT_IMPLEMENTED_ATTR("edicts")
 	);
 
-	def("get_globals", make_getter(&gpGlobals, reference_existing_object_policy()));
+	scope().attr("globals") = object(ptr(gpGlobals));
 }

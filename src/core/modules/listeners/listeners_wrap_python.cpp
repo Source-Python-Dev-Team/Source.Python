@@ -80,87 +80,24 @@ void export_listener_managers()
 	//-------------------------------------------------------------------------
 	// Expose the accessor functions
 	//-------------------------------------------------------------------------
-	def("get_client_active_listener_manager",
-		&GetClientActiveListenerManager,
-		"Returns the clientactive listener instance",
-		reference_existing_object_policy()
-	);
+	scope().attr("client_active_listener_manager") = object(ptr(GetClientActiveListenerManager()));
+	scope().attr("client_connect_listener_manager") = object(ptr(GetClientConnectListenerManager()));
+	scope().attr("client_disconnect_listener_manager") = object(ptr(GetClientDisconnectListenerManager()));
+	scope().attr("client_fully_connect_listener_manager") = object(ptr(GetClientFullyConnectListenerManager()));
+	scope().attr("client_put_in_server_listener_manager") = object(ptr(GetClientPutInServerListenerManager()));
+	scope().attr("client_settings_changed_listener_manager") = object(ptr(GetClientSettingsChangedListenerManager()));
 	
-	def("get_client_connect_listener_manager",
-		&GetClientConnectListenerManager,
-		"Returns the clientconnect listener instance",
-		reference_existing_object_policy()
-	);
+	scope().attr("level_init_listener_manager") = object(ptr(GetLevelInitListenerManager()));
+	scope().attr("level_shutdown_listener_manager") = object(ptr(GetLevelShutdownListenerManager()));
+	
+	scope().attr("networkid_validated_listener_manager") = object(ptr(GetNetworkidValidatedListenerManager()));
+	
+	scope().attr("on_edict_allocated_listener_manager") = object(ptr(GetOnEdictAllocatedListenerManager()));
+	scope().attr("on_edict_freed_listener_manager") = object(ptr(GetOnEdictFreedListenerManager()));
+	
+	scope().attr("on_query_cvar_value_finished_listener_manager") = object(ptr(GetOnQueryCvarValueFinishedListenerManager()));
+	
+	scope().attr("server_activate_listener_manager") = object(ptr(GetServerActivateListenerManager()));
 
-	def("get_client_disconnect_listener_manager",
-		&GetClientDisconnectListenerManager,
-		"Returns the clientdisconnect listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_client_fully_connect_listener_manager",
-		&GetClientFullyConnectListenerManager,
-		"Returns the clientfullyconnect listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_client_put_in_server_listener_manager",
-		&GetClientPutInServerListenerManager,
-		"Returns the clientputinserver listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_client_settings_changed_listener_manager",
-		&GetClientSettingsChangedListenerManager,
-		"Returns the clientsettingschanged listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_level_init_listener_manager",
-		&GetLevelInitListenerManager,
-		"Returns the levelinit listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_level_shutdown_listener_manager",
-		&GetLevelShutdownListenerManager,
-		"Returns the levelshutdown listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_networkid_validated_listener_manager",
-		&GetNetworkidValidatedListenerManager,
-		"Returns the networkidvalidated listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_on_edict_allocated_listener_manager",
-		&GetOnEdictAllocatedListenerManager,
-		"Returns the onedictallocated listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_on_edict_freed_listener_manager",
-		&GetOnEdictFreedListenerManager,
-		"Returns the onedictfreed listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_on_query_cvar_value_finished_listener_manager",
-		&GetOnQueryCvarValueFinishedListenerManager,
-		"Returns the onquerycvarvaluefinished listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_server_activate_listener_manager",
-		&GetServerActivateListenerManager,
-		"Returns the serveractivate listener instance",
-		reference_existing_object_policy()
-	);
-
-	def("get_tick_listener_manager",
-		&GetTickListenerManager,
-		"Returns the tick listener instance",
-		reference_existing_object_policy()
-	);
+	scope().attr("tick_listener_manager") = object(ptr(GetTickListenerManager()));
 }
