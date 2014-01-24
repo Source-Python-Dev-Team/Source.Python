@@ -12,11 +12,11 @@
 //-----------------------------------------------------------------------------
 // Macros
 //-----------------------------------------------------------------------------
-// This creates a static manager and an inline function that returns a pointer
-// to the manager. Must be used in a *.cpp file!
+// This creates a static manager and a function that returns a pointer to the
+// manager. Must be used in a *.cpp file!
 #define DEFINE_MANAGER_ACCESSOR(name) \
 	static CListenerManager s_##name; \
-	inline CListenerManager* Get##name##ListenerManager() \
+	CListenerManager* Get##name##ListenerManager() \
 	{ return &s_##name; }
 
 // Calls all listeners of the given manager

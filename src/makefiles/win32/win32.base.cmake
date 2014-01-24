@@ -62,10 +62,8 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${DYNCALLSDK_LIB}/libdyncall_s.lib
     ${DYNCALLSDK_LIB}/libdyncallback_s.lib
     ${DYNCALLSDK_LIB}/libdynload_s.lib
-    optimized ${DYNAMICHOOKSSDK_LIB}/AsmJit.lib
-    optimized ${DYNAMICHOOKSSDK_LIB}/DynamicHooks.lib
-    debug ${DYNAMICHOOKSSDK_LIB}/AsmJit_d.lib
-    debug ${DYNAMICHOOKSSDK_LIB}/DynamicHooks_d.lib
+    optimized ${ASMJITSDK_LIB}/AsmJit.lib
+    debug ${ASMJITSDK_LIB}/AsmJit_d.lib
 )
 
 # CSGO Engine adds in interfaces.lib

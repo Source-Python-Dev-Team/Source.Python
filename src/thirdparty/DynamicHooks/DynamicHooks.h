@@ -206,6 +206,9 @@ public:
 	// Contains the original return address
 	void* m_pRetAddr;
 
+	// New return address
+	void* m_pNewRetAddr;
+
 
 	// Parameter struct
 	Param_t* m_pParams;

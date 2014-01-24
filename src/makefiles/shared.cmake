@@ -46,11 +46,16 @@ Set(PROTOBUF		${THIRDPARTY_DIR}/protobuf/protobuf-2.3.0)
 Set(PROTOBUF_INCLUDE	${PROTOBUF}/src)
 
 # ------------------------------------------------------------------
+# AsmJit specific.
+# ------------------------------------------------------------------
+Set(ASMJITSDK         ${THIRDPARTY_DIR}/AsmJit)
+Set(ASMJITSDK_INCLUDE ${ASMJITSDK}/include)
+Set(ASMJITSDK_LIB     ${ASMJITSDK}/lib)
+
+# ------------------------------------------------------------------
 # DynamicHooks specific.
 # ------------------------------------------------------------------
-Set(DYNAMICHOOKSSDK         ${THIRDPARTY_DIR}/DynamicHooks)
-Set(DYNAMICHOOKSSDK_INCLUDE ${DYNAMICHOOKSSDK}/include)
-Set(DYNAMICHOOKSSDK_LIB     ${DYNAMICHOOKSSDK}/lib)
+Set(DYNAMICHOOKSSDK ${THIRDPARTY_DIR}/DynamicHooks)
 
 # ------------------------------------------------------------------
 # Include directories
@@ -67,7 +72,8 @@ Include_Directories(
     ${DYNCALLSDK_INCLUDE}
     ${BOOSTSDK_INCLUDE}
     ${PROTOBUF_INCLUDE}
-    ${DYNAMICHOOKSSDK_INCLUDE}
+    ${ASMJITSDK_INCLUDE}
+    ${DYNAMICHOOKSSDK}
     ${CMAKE_CURRENT_SOURCE_DIR}/core # Hack but required.
 )
 

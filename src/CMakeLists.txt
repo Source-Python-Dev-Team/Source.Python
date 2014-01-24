@@ -252,6 +252,9 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
     core/modules/memory/memory_tools.cpp
     core/modules/memory/memory_hooks.cpp
     core/modules/memory/memory_wrap_python.cpp
+    thirdparty/DynamicHooks/asm.cpp
+    thirdparty/DynamicHooks/utilities.cpp
+    thirdparty/DynamicHooks/DynamicHooks.cpp
 )
 
 # ------------------------------------------------------------------
