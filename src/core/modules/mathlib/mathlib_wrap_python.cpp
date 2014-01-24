@@ -62,8 +62,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_zero_overload, IsZero, 0, 1)
 
 void export_vector()
 {
-	// TODO: Rename
-	class_<Vector>("CVector", init<float, float, float>())
+	class_<Vector>("Vector", init<float, float, float>())
 		.def("__init__", make_constructor(&VectorExt::CreateNullVector))
 
 		// Members

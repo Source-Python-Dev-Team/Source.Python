@@ -85,39 +85,39 @@ class _Team(object):
         # Store the team number
         self.team = team
 
-    def _player_is_on_team(self, CPlayerInfo):
+    def _player_is_on_team(self, PlayerInfo):
         '''Returns whether the player is on the team'''
 
         # Return whether the player is on the team
-        return CPlayerInfo.get_team_index() == self.team
+        return PlayerInfo.get_team_index() == self.team
 
 
 # =============================================================================
 # >> FILTER FUNCTIONS
 # =============================================================================
-def _is_player(CPlayerInfo):
+def _is_player(PlayerInfo):
     '''Always returns True, since this is a player'''
     return True
 
 
-def _player_is_bot(CPlayerInfo):
+def _player_is_bot(PlayerInfo):
     '''Returns whether a player is a bot'''
-    return CPlayerInfo.is_fake_client()
+    return PlayerInfo.is_fake_client()
 
 
-def _player_is_human(CPlayerInfo):
+def _player_is_human(PlayerInfo):
     '''Returns whether the player is a human'''
-    return CPlayerInfo.is_player()
+    return PlayerInfo.is_player()
 
 
-def _player_is_alive(CPlayerInfo):
+def _player_is_alive(PlayerInfo):
     '''Returns whether the player is alive'''
-    return not CPlayerInfo.is_dead()
+    return not PlayerInfo.is_dead()
 
 
-def _player_is_dead(CPlayerInfo):
+def _player_is_dead(PlayerInfo):
     '''Returns whether the player is dead'''
-    return CPlayerInfo.is_dead()
+    return PlayerInfo.is_dead()
 
 # Register the filter functions
 PlayerIterManager.register_filter('all', _is_player)
@@ -156,70 +156,70 @@ for number, team in enumerate(('un', 'spec', 't', 'ct')):
 # =============================================================================
 # >> RETURN TYPE FUNCTIONS
 # =============================================================================
-def _return_playerinfo(CPlayerInfo):
-    '''Returns the player's CPlayerInfo instance'''
-    return CPlayerInfo
+def _return_playerinfo(PlayerInfo):
+    '''Returns the player's PlayerInfo instance'''
+    return PlayerInfo
 
 
-def _return_player(CPlayerInfo):
+def _return_player(PlayerInfo):
     '''Returns the player's PlayerEntity instance'''
-    return PlayerEntity(index_from_playerinfo(CPlayerInfo))
+    return PlayerEntity(index_from_playerinfo(PlayerInfo))
 
 
-def _return_name(CPlayerInfo):
+def _return_name(PlayerInfo):
     '''Returns the player's name'''
-    return CPlayerInfo.get_name()
+    return PlayerInfo.get_name()
 
 
-def _return_steamid(CPlayerInfo):
+def _return_steamid(PlayerInfo):
     '''Returns the player's SteamID'''
-    return CPlayerInfo.get_networkid_string()
+    return PlayerInfo.get_networkid_string()
 
 
-def _return_location(CPlayerInfo):
+def _return_location(PlayerInfo):
     '''Returns the player's location Vector'''
-    return CPlayerInfo.get_abs_origin()
+    return PlayerInfo.get_abs_origin()
 
 
-def _return_kills(CPlayerInfo):
+def _return_kills(PlayerInfo):
     '''Returns the player's kill count'''
-    return CPlayerInfo.get_frag_count()
+    return PlayerInfo.get_frag_count()
 
 
-def _return_deaths(CPlayerInfo):
+def _return_deaths(PlayerInfo):
     '''Returns the player's death count'''
-    return CPlayerInfo.get_death_count()
+    return PlayerInfo.get_death_count()
 
 
-def _return_model(CPlayerInfo):
+def _return_model(PlayerInfo):
     '''Returns the player's model'''
-    return CPlayerInfo.get_model_name()
+    return PlayerInfo.get_model_name()
 
 
-def _return_health(CPlayerInfo):
+def _return_health(PlayerInfo):
     '''Returns the player's health value'''
-    return CPlayerInfo.get_health()
+    return PlayerInfo.get_health()
 
 
-def _return_armor(CPlayerInfo):
+def _return_armor(PlayerInfo):
     '''Returns the player's armov value'''
-    return CPlayerInfo.get_armor_value()
+    return PlayerInfo.get_armor_value()
 
 
-def _return_weapon(CPlayerInfo):
+def _return_weapon(PlayerInfo):
     '''Returns the player's currently held weapon'''
-    return CPlayerInfo.get_weapon_name()
+    return PlayerInfo.get_weapon_name()
 
 
-def _return_language(CPlayerInfo):
+def _return_language(PlayerInfo):
     '''Returns the player's language'''
     return GameEngine.get_client_convar_value(
-        index_from_playerinfo(CPlayerInfo), 'cl_language')
+        index_from_playerinfo(PlayerInfo), 'cl_language')
 
 
-def _return_team(CPlayerInfo):
+def _return_team(PlayerInfo):
     '''Returns the player's team'''
-    return CPlayerInfo.get_team_index()
+    return PlayerInfo.get_team_index()
 
 # Register the return type functions
 PlayerIterManager.register_return_type('index', index_from_playerinfo)

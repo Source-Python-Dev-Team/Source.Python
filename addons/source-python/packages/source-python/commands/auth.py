@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from player_c import CPlayerInfo
+from player_c import PlayerInfo
 from excepthooks import ExceptHooks
 #   Auth
 from auth.manager import AuthManager

@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from event_c import get_game_event_manager
+from event_c import GameEventManager
 from loggers import _SPLogger
 from public import public
 #   Events
@@ -14,9 +14,6 @@ from events.listener import _EventListener
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the CGameEventManager instance
-GameEventManager = get_game_event_manager()
-
 # Get the sp.events.manager logger
 EventsManagerLogger = _SPLogger.events.manager
 

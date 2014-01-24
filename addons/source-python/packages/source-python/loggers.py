@@ -16,7 +16,7 @@ from logging import addLevelName
 from logging import getLogger
 
 # Source.Python Imports
-from cvar_c import CConVar
+from cvar_c import ConVar
 from core import GameEngine
 from core import echo_console
 from paths import LOG_PATH
@@ -243,9 +243,9 @@ class LogManager(_LogInstance):
         return self._areas.get_int()
 
 # Set the core ConVars
-_level = CConVar(
+_level = ConVar(
     'sp_logging_level', '0', 0, 'The Source.Python base logging level')
-_areas = CConVar(
+_areas = ConVar(
     'sp_logging_areas', '1', 0, 'The Source.Python base logging areas')
 
 # Get the Source.Python main LogManager instance

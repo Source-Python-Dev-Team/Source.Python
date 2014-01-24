@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 #from Source import Binutils
-from entity_c import CEdict
+from entity_c import Edict
 from public import public
 #   Entities
 #from entities.functions import Functions
@@ -28,7 +28,7 @@ class BaseEntity(object):
             is of the correct entity type and add the index attribute'''
 
         # Get the given indexes edict
-        edict = CEdict(index)
+        edict = Edict(index)
 
         # Is the edict valid?
         if edict.is_free() or not edict.is_valid():
@@ -340,7 +340,7 @@ class BaseEntity(object):
 
     @property
     def basehandle(self):
-        '''Returns the entity's CBaseEntityHandle instance'''
+        '''Returns the entity's BaseEntityHandle instance'''
         return self.edict.get_networkable(
             ).get_entity_handle().get_ref_ehandle()
 

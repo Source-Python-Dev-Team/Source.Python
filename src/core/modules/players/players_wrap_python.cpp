@@ -62,8 +62,7 @@ DECLARE_SP_MODULE(player_c)
 // ----------------------------------------------------------------------------
 void export_playerinfo()
 {
-	// TODO: Expose as IPlayerInfo instead of CPlayerInfo?
-	class_<IPlayerInfo, boost::noncopyable>("CPlayerInfo", no_init)
+	class_<IPlayerInfo, boost::noncopyable>("PlayerInfo", no_init)
 		.def("get_name",
 			&IPlayerInfo::GetName,
 			"Returns the player's name"
@@ -184,7 +183,7 @@ void export_playerinfo()
 
 void export_netinfo()
 {
-	class_<INetChannelInfo, boost::noncopyable>("CNetChannelInfo", no_init)
+	class_<INetChannelInfo, boost::noncopyable>("NetChannelInfo", no_init)
 		.def("get_address",
 			&INetChannelInfo::GetAddress,
 			"Returns the net address of the player."

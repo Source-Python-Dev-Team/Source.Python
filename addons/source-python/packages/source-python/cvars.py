@@ -12,7 +12,7 @@ from public import public
 # >> CLASSES
 # =============================================================================
 @public
-class ServerVar(cvar_c.CConVar):
+class ServerVar(cvar_c.ConVar):
     '''ConVar wrapper to provide easy access to cvars.'''
 
     def __init__(

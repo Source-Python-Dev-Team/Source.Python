@@ -93,8 +93,7 @@ void export_engine_interface()
 	// Call engine specific implementation function
 	IVEngineServer_Visitor(
 
-	// TODO: Expose as IVEngineServer instead of CEngineServer?
-	class_<IVEngineServer, boost::noncopyable>("CEngineServer", no_init)
+	class_<IVEngineServer, boost::noncopyable>("EngineServer", no_init)
 		.def("change_level",
 			&IVEngineServer::ChangeLevel,
 			"Tells the engine to change the level. If s2 is None, the engine will execute a \
@@ -753,5 +752,5 @@ void export_engine_interface()
 
 	); // IVEngineServer_Visitor
 
-	scope().attr("engine") = object(ptr(engine));
+	scope().attr("GameEngine") = object(ptr(engine));
 }

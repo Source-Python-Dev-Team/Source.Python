@@ -55,12 +55,11 @@ DECLARE_SP_MODULE(cvar_c)
 }
 
 //-----------------------------------------------------------------------------
-// Exposes the CCvar interface.
+// Exposes the Cvar interface.
 //-----------------------------------------------------------------------------
 void export_cvar_interface()
 {
-	// TODO: Rename it?
-	class_<ICvar, boost::noncopyable>("CCvar", no_init)
+	class_<ICvar, boost::noncopyable>("Cvar", no_init)
 		.def("register_con_command",
 			&ICvar::RegisterConCommand,
 			"Registers a console command.",
@@ -75,29 +74,28 @@ void export_cvar_interface()
 
 		.def("find_command_base",
 			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char *),
-			"Returns a CConCommandBase instance for the given command, if it exists",
+			"Returns a ConCommandBase instance for the given command, if it exists",
 			args("name"),
 			reference_existing_object_policy()
 		)
 
 		.def("find_var",
 			GET_METHOD(ConVar*, ICvar, FindVar, const char *),
-			"Returns a CConVar instance for the given cvar, if it exists",
+			"Returns a ConVar instance for the given cvar, if it exists",
 			args("name"),
 			reference_existing_object_policy()
 		)
 	;
 
-	scope().attr("cvar") = object(ptr(g_pCVar));
+	scope().attr("Cvar") = object(ptr(g_pCVar));
 }
 
 //-----------------------------------------------------------------------------
-// Exposes the CConCommandBase interface.
+// Exposes the ConCommandBase interface.
 //-----------------------------------------------------------------------------
 void export_concommandbase()
 {
-	// TODO: rename?
-	class_<ConCommandBase>("CConCommandBase")
+	class_<ConCommandBase>("ConCommandBase")
 		.def(init< const char*, optional< const char*, int> >())
 
 		.def("is_command",
@@ -155,6 +153,7 @@ void export_concommandbase()
 		)
 	;
 
+	// TODO: Rename or move to ConVar
 	class_<IConVar, boost::noncopyable>("IConVar", no_init)
 		.def("set_string",
 			GET_METHOD(void, IConVar, SetValue, const char*),
@@ -257,8 +256,7 @@ public:
 
 void export_convar()
 {
-	// TODO: Rename it?
-	class_<ConVar, bases<ConCommandBase, IConVar>, boost::noncopyable >("CConVar", no_init)
+	class_<ConVar, bases<ConCommandBase, IConVar>, boost::noncopyable >("ConVar", no_init)
 		// We have to overload __init__. Otherwise we would get an error because of "no_init"
 		.def("__init__", raw_function(&ConVarExt::__init__))
 

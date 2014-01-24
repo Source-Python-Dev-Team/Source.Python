@@ -84,11 +84,10 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_empty_overload, IsEmpty, 0, 1);
 
 void export_keyvalues()
 {
-	// TODO: rename
 	// TODO: Add constructors. There are two possibilities:
 	// 1. Patch SDK and make destructor public. Then deleteThis() isn't required anymore
 	// 2. Create functions which construct a new object
-	class_<KeyValues, boost::noncopyable>("CKeyValues", no_init)//init<const char *>())
+	class_<KeyValues, boost::noncopyable>("KeyValues", no_init)//init<const char *>())
 		/*
 		.def(init<const char *, const char *, const char *>())
 		.def(init<const char *, const char *, int>())
@@ -126,14 +125,14 @@ void export_keyvalues()
 
 		.def("load_from_file",
 			&KeyValuesExt::LoadFromFile,
-			"Loads KeyValues data from a file into this CKeyValues instance.",
+			"Loads KeyValues data from a file into this KeyValues instance.",
 			args("file_name")
 		)
 		
 		.def("save_to_file",
 			&KeyValuesExt::SaveToFile,
 			args("file_name"),
-			"Saves the data in this CKeyValues instance to the given file path."
+			"Saves the data in this KeyValues instance to the given file path."
 		)
 
 		.def("find_key",

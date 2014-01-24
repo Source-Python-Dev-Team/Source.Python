@@ -63,8 +63,7 @@ DECLARE_SP_MODULE(entity_c)
 //-----------------------------------------------------------------------------
 void export_base_entity_handle()
 {
-	// TODO: Renamed it to CBaseHandle
-	class_<CBaseHandle>("CBaseEntityHandle")
+	class_<CBaseHandle>("BaseEntityHandle")
 		.def(init<CBaseHandle&>())
 		.def(init<unsigned long>())
 		.def(init<int, int>())
@@ -113,8 +112,7 @@ void export_base_entity_handle()
 //-----------------------------------------------------------------------------
 void export_handle_entity()
 {
-	// TODO: Rename it to IHandleEntity
-	class_<IHandleEntity, boost::noncopyable>("CHandleEntity", no_init)
+	class_<IHandleEntity, boost::noncopyable>("HandleEntity", no_init)
 		.def("set_ref_ehandle",
 			&IHandleEntity::SetRefEHandle,
 			args("handle")
@@ -132,17 +130,16 @@ void export_handle_entity()
 //-----------------------------------------------------------------------------
 void export_server_unknown()
 {
-	// TODO: Rename it to IServerUnknown
-	class_< IServerUnknown, bases<IHandleEntity>, boost::noncopyable >("CServerUnknown", no_init)
+	class_< IServerUnknown, bases<IHandleEntity>, boost::noncopyable >("ServerUnknown", no_init)
 		.def("get_collideable",
 			&IServerUnknown::GetCollideable,
-			"Returns the ICollideable object for this entity.",
+			"Returns the Collideable object for this entity.",
 			reference_existing_object_policy()
 		)
 
 		.def("get_networkable",
 			&IServerUnknown::GetNetworkable,
-			"Returns the CServerNetworkable object for this entity.",
+			"Returns the ServerNetworkable object for this entity.",
 			reference_existing_object_policy()
 		)
 
@@ -166,8 +163,7 @@ void export_server_unknown()
 //-----------------------------------------------------------------------------
 void export_server_entity()
 {
-	// TODO: Rename it to IServerEntity
-	class_< IServerEntity, bases<IServerUnknown>, boost::noncopyable >("CServerEntity", no_init)
+	class_< IServerEntity, bases<IServerUnknown>, boost::noncopyable >("ServerEntity", no_init)
 		.def("get_model_index",
 			&IServerEntity::GetModelIndex,
 			"Returns the model index for this entity."
@@ -190,11 +186,10 @@ void export_server_entity()
 //-----------------------------------------------------------------------------
 void export_server_networkable()
 {
-	// TODO: Rename it to IServerNetworkable
-	class_< IServerNetworkable, boost::noncopyable >("CServerNetworkable", no_init)
+	class_< IServerNetworkable, boost::noncopyable >("ServerNetworkable", no_init)
 		.def("get_entity_handle",
 			&IServerNetworkable::GetEntityHandle,
-			"Returns the CHandleEntity instance of this entity.",
+			"Returns the HandleEntity instance of this entity.",
 			reference_existing_object_policy()
 		)
 
@@ -248,22 +243,22 @@ void export_server_networkable()
 //-----------------------------------------------------------------------------
 void export_edict()
 {
-	class_< CBaseEdict >("CBaseEdict")
+	class_< CBaseEdict >("BaseEdict")
 		.def("get_server_entity",
 			GET_METHOD(IServerEntity*, CBaseEdict, GetIServerEntity),
-			"Returns its IServerEntity instance.",
+			"Returns its ServerEntity instance.",
 			reference_existing_object_policy()
 		)
 
 		.def("get_networkable",
 			&CBaseEdict::GetNetworkable,
-			"Returns its IServerNetworkable instance.",
+			"Returns its ServerNetworkable instance.",
 			reference_existing_object_policy()
 		)
 
 		.def("get_unknown",
 			&CBaseEdict::GetUnknown,
-			"Returns its IServerUnknown instance.",
+			"Returns its ServerUnknown instance.",
 			reference_existing_object_policy()
 		)
 
@@ -361,10 +356,10 @@ void export_edict()
 		)
 	;
 
-	class_< edict_t, bases<CBaseEdict> >("CEdict")
+	class_< edict_t, bases<CBaseEdict> >("Edict")
 		.def("get_collidable",
 			&edict_t::GetCollideable,
-			"Returns its ICollideable instance.",
+			"Returns its Collideable instance.",
 			reference_existing_object_policy()
 		)
 
@@ -462,6 +457,7 @@ void export_edict()
 //-----------------------------------------------------------------------------
 void export_entity_generator()
 {
+	// TODO: Rename
 	BOOST_GENERATOR_CLASS(CEntityGenerator)
 		CLASS_CONSTRUCTOR(const char*)
 		CLASS_CONSTRUCTOR(const char*, bool)

@@ -8,7 +8,7 @@
 from os import sep
 
 # Source.Python Imports
-from engine_c import get_engine_interface
+from engine_c import GameEngine
 from paths import GAME_PATH
 from public import public
 
@@ -25,9 +25,6 @@ __all__ = ['GAME_NAME', 'GameEngine']
 # =============================================================================
 # Get the specific game for the server
 GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
-
-# Get the Engine's instance
-GameEngine = get_engine_interface()
 
 
 # =============================================================================

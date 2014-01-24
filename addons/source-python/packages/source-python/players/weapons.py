@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from entity_c import CEdict
+from entity_c import Edict
 from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity
@@ -372,7 +372,7 @@ class _PlayerWeapons(_GameWeapons):
                 continue
 
             # Get the weapon's edict
-            edict = CEdict(index)
+            edict = Edict(index)
 
             # Get the weapon's classname
             weapon_class = edict.get_class_name()
@@ -404,7 +404,7 @@ class _PlayerWeapons(_GameWeapons):
         # Get the handle of the player's active weapon
         handle = self.active_weapon
 
-        # Get the weapon's CBaseHandle instance
+        # Get the weapon's BaseHandle instance
         index = index_from_inthandle(handle)
 
         # Was no index found?
@@ -423,7 +423,7 @@ class _PlayerWeapons(_GameWeapons):
         # Get the handle of the player's active weapon
         handle = self.active_weapon
 
-        # Get the weapon's CBaseHandle instance
+        # Get the weapon's BaseHandle instance
         index = index_from_inthandle(handle)
 
         # Was no index found?

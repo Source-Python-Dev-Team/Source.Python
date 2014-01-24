@@ -61,9 +61,9 @@ DECLARE_SP_MODULE(listener_c)
 void export_listener_managers() 
 {
     //-------------------------------------------------------------------------
-	// Exposes CListenerManager
+	// Exposes ListenerManager
 	//-------------------------------------------------------------------------
-	class_<CListenerManager, boost::noncopyable>("CListenerManager", no_init)
+	class_<CListenerManager, boost::noncopyable>("ListenerManager", no_init)
 		.def("register_listener",
 			&CListenerManager::RegisterListener,
 			"Registers a callable object. If it was already registered it will be ignored.",
@@ -80,24 +80,24 @@ void export_listener_managers()
 	//-------------------------------------------------------------------------
 	// Expose the accessor functions
 	//-------------------------------------------------------------------------
-	scope().attr("client_active_listener_manager") = object(ptr(GetClientActiveListenerManager()));
-	scope().attr("client_connect_listener_manager") = object(ptr(GetClientConnectListenerManager()));
-	scope().attr("client_disconnect_listener_manager") = object(ptr(GetClientDisconnectListenerManager()));
-	scope().attr("client_fully_connect_listener_manager") = object(ptr(GetClientFullyConnectListenerManager()));
-	scope().attr("client_put_in_server_listener_manager") = object(ptr(GetClientPutInServerListenerManager()));
-	scope().attr("client_settings_changed_listener_manager") = object(ptr(GetClientSettingsChangedListenerManager()));
+	scope().attr("ClientActiveListenerManager") = object(ptr(GetClientActiveListenerManager()));
+	scope().attr("ClientConnectListenerManager") = object(ptr(GetClientConnectListenerManager()));
+	scope().attr("ClientDisconnectListenerManager") = object(ptr(GetClientDisconnectListenerManager()));
+	scope().attr("ClientFullyConnectListenerManager") = object(ptr(GetClientFullyConnectListenerManager()));
+	scope().attr("ClientPutInServerListenerManager") = object(ptr(GetClientPutInServerListenerManager()));
+	scope().attr("ClientSettingsChangedListenerManager") = object(ptr(GetClientSettingsChangedListenerManager()));
 	
-	scope().attr("level_init_listener_manager") = object(ptr(GetLevelInitListenerManager()));
-	scope().attr("level_shutdown_listener_manager") = object(ptr(GetLevelShutdownListenerManager()));
+	scope().attr("LevelInitListenerManager") = object(ptr(GetLevelInitListenerManager()));
+	scope().attr("LevelShutdownListenerManager") = object(ptr(GetLevelShutdownListenerManager()));
 	
-	scope().attr("networkid_validated_listener_manager") = object(ptr(GetNetworkidValidatedListenerManager()));
+	scope().attr("NetworkidValidatedListenerManager") = object(ptr(GetNetworkidValidatedListenerManager()));
 	
-	scope().attr("on_edict_allocated_listener_manager") = object(ptr(GetOnEdictAllocatedListenerManager()));
-	scope().attr("on_edict_freed_listener_manager") = object(ptr(GetOnEdictFreedListenerManager()));
+	scope().attr("OnEdictAllocatedListenerManager") = object(ptr(GetOnEdictAllocatedListenerManager()));
+	scope().attr("OnEdictFreedListenerManager") = object(ptr(GetOnEdictFreedListenerManager()));
 	
-	scope().attr("on_query_cvar_value_finished_listener_manager") = object(ptr(GetOnQueryCvarValueFinishedListenerManager()));
+	scope().attr("OnQueryCvarValueFinishedListenerManager") = object(ptr(GetOnQueryCvarValueFinishedListenerManager()));
 	
-	scope().attr("server_activate_listener_manager") = object(ptr(GetServerActivateListenerManager()));
+	scope().attr("ServerActivateListenerManager") = object(ptr(GetServerActivateListenerManager()));
 
-	scope().attr("tick_listener_manager") = object(ptr(GetTickListenerManager()));
+	scope().attr("TickListenerManager") = object(ptr(GetTickListenerManager()));
 }

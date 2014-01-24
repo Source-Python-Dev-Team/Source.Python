@@ -4,8 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from entity_c import CBaseEntityHandle
-from entity_c import CEdict
+from entity_c import BaseEntityHandle
+from entity_c import Edict
 from entity_c import index_of_pointer
 from public import public
 
@@ -40,7 +40,7 @@ def index_from_pointer(pointer):
 @public
 def edict_from_index(index):
     '''Returns an edict from the given index'''
-    return CEdict(index)
+    return Edict(index)
 
 
 @public
@@ -76,7 +76,7 @@ def basehandle_from_edict(edict):
 @public
 def basehandle_from_inthandle(ihandle):
     '''Returns a BaseHandle instance from the given handle in int form'''
-    return CBaseEntityHandle(ihandle)
+    return BaseEntityHandle(ihandle)
 
 
 @public

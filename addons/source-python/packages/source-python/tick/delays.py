@@ -8,7 +8,7 @@
 import time
 
 # Source.Python Imports
-from listener_c import get_tick_listener_manager
+from listener_c import TickListenerManager
 from excepthooks import ExceptHooks
 from public import public
 #   Tick
@@ -18,9 +18,6 @@ from tick import TickLogger
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the CTickListenerManager instance
-TickListenerManager = get_tick_listener_manager()
-
 # Get the sp.tick.delays logger
 TickDelaysLogger = TickLogger.delays
 

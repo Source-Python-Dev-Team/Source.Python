@@ -51,8 +51,7 @@ DECLARE_SP_MODULE(globals_c)
 
 void export_maploadtype_t()
 {
-	// TODO: Rename
-	enum_<MapLoadType_t>("MapLoadType_t")
+	enum_<MapLoadType_t>("MapLoadType")
 		.value("NewGame", MapLoad_NewGame)
 		.value("LoadGame", MapLoad_LoadGame)
 		.value("Transition", MapLoad_Transition)
@@ -62,10 +61,9 @@ void export_maploadtype_t()
 
 void export_globals()
 {
-	// TODO: Rename
 	GlobalsBase_Visitor(
 
-	class_<CGlobalVarsBase>("CGlobalVarsBase", init<bool>())
+	class_<CGlobalVarsBase>("GlobalVarsBase", init<bool>())
 		.def("is_client",
 			&CGlobalVarsBase::IsClient,
 			"Returns True if the game is a client."
@@ -135,10 +133,9 @@ void export_globals()
 		.NOT_IMPLEMENTED("is_remote_client")
 	);
 
-	// TODO: Rename
 	Globals_Visitor(
 
-	class_< CGlobalVars, bases< CGlobalVarsBase> >("CGlobals", init<bool>())
+	class_< CGlobalVars, bases< CGlobalVarsBase> >("GlobalVars", init<bool>())
 		.add_property("map_name",
 			make_getter(&CGlobalVars::mapname, return_value_policy<return_by_value>()),
             "Current map name."
@@ -186,8 +183,10 @@ void export_globals()
 		
 		.NOT_IMPLEMENTED_ATTR("map_group_name")
 		.NOT_IMPLEMENTED_ATTR("server_count")
+
+		// TODO: Return a list of edicts or remove it.
 		.NOT_IMPLEMENTED_ATTR("edicts")
 	);
 
-	scope().attr("globals") = object(ptr(gpGlobals));
+	scope().attr("Globals") = object(ptr(gpGlobals));
 }

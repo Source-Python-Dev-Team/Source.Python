@@ -116,8 +116,7 @@ void export_command()
 		.value("BLOCK", BLOCK)
 	;
 
-	// TODO:Rename it?
-	class_<CCommand>("CICommand")
+	class_<CCommand>("Command")
 		.def("get_arg_count",
 			&CCommand::ArgC,
 			"Returns the number of arguments in the command"
@@ -159,7 +158,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( get_server_command_overloads, GetServerCommand,
 
 void export_server_command()
 {
-	class_<CServerCommandManager, boost::noncopyable>("CServerCommandManager", no_init)
+	// TODO: Rename
+	class_<CServerCommandManager, boost::noncopyable>("ServerCommandManager", no_init)
 		.def("add_callback",
 			&CServerCommandManager::AddCallback,
 			"Adds a callback to the server command's list.",
@@ -175,7 +175,7 @@ void export_server_command()
 
 	def("get_server_command",
 		GetServerCommand,
-		get_server_command_overloads("Gets the CServerCommandManager instance using just the name or also the helptext and/or flags",
+		get_server_command_overloads("Gets the ServerCommandManager instance using just the name or also the helptext and/or flags",
 			args("name", "help_text", "flags")
 		)[reference_existing_object_policy()]
 	);
@@ -186,7 +186,8 @@ void export_server_command()
 //-----------------------------------------------------------------------------
 void export_client_command()
 {
-	class_<CClientCommandManager, boost::noncopyable>("CClientCommandManager", no_init)
+	// TODO: Rename
+	class_<CClientCommandManager, boost::noncopyable>("ClientCommandManager", no_init)
 		.def("add_callback",
 			&CClientCommandManager::AddCallback,
 			"Adds a callback to the client command's list.",
@@ -202,7 +203,7 @@ void export_client_command()
 
 	def("get_client_command",
 		GetClientCommand,
-		"Returns the CClientCommandManager instance for the given command",
+		"Returns the ClientCommandManager instance for the given command",
 		args("name"),
 		reference_existing_object_policy()
 	);
@@ -225,7 +226,8 @@ void export_client_command()
 //-----------------------------------------------------------------------------
 void export_say_command()
 {
-	class_<CSayCommandManager, boost::noncopyable>("CSayCommandManager", no_init)
+	// TODO: Rename
+	class_<CSayCommandManager, boost::noncopyable>("SayCommandManager", no_init)
 		.def("add_callback",
 			&CSayCommandManager::AddCallback,
 			"Adds a callback to the say command's list.",
@@ -241,7 +243,7 @@ void export_say_command()
 
 	def("get_say_command",
 		GetSayCommand,
-		"Returns the CSayCommandManager instance for the given command",
+		"Returns the SayCommandManager instance for the given command",
 		args("name"),
 		reference_existing_object_policy()
 	);

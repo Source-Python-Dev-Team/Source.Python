@@ -65,8 +65,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(energy_splash_overload, EnergySplash, 2, 
 
 void export_effects()
 {
-	// TODO: Rename?
-	class_<IPredictionSystem>("IPredictionSystem")
+	class_<IPredictionSystem>("PredictionSystem")
 		.def("get_next",
 			&IPredictionSystem::GetNext,
 			"Returns the next prediction system.",
@@ -111,8 +110,7 @@ void export_effects()
 		*/
 	;
 
-	// TODO: Rename?
-	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("CEffects", no_init)
+	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("Effects", no_init)
 		.def("beam",
 			&IEffects::Beam,
 			"Creates a beam particle effect.",
@@ -182,5 +180,5 @@ void export_effects()
 		)
 	;
 
-	scope().attr("effects") = object(ptr(effects));
+	scope().attr("Effects") = object(ptr(effects));
 }

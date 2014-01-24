@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from player_c import CPlayerGenerator
-from player_c import CPlayerInfo
+from player_c import PlayerInfo
 from core import GameEngine
 from public import public
 #   Entities
@@ -128,7 +128,7 @@ def playerinfo_from_index(index):
 @public
 def playerinfo_from_edict(edict):
     '''Returns an IPlayerInfo instance from the given edict'''
-    return CPlayerInfo(edict)
+    return PlayerInfo(edict)
 
 
 @public
@@ -152,7 +152,7 @@ def playerinfo_from_pointer(pointer):
 @public
 def playerinfo_from_userid(userid):
     '''Returns an IPlayerInfo instance from the given userid'''
-    return CPlayerInfo(userid)
+    return PlayerInfo(userid)
 
 
 # =============================================================================

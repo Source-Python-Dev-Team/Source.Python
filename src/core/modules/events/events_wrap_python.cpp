@@ -83,8 +83,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 1, 2);
 
 void export_igameevent()
 {
-	// TODO: rename?
-	class_<IGameEvent, boost::noncopyable>("CGameEvent", no_init)
+	class_<IGameEvent, boost::noncopyable>("GameEvent", no_init)
 		.def("get_name",
 			&IGameEvent::GetName,
 			"Returns the event name."
@@ -175,8 +174,7 @@ void export_igameevent()
 //---------------------------------------------------------------------------------
 void export_igameeventlistener()
 {
-	// TODO: Rename?	
-	class_<CGameEventListener2, boost::noncopyable>("CGameEventListener")
+	class_<CGameEventListener2, boost::noncopyable>("GameEventListener")
 		.def("fire_game_event",
 			pure_virtual(&CGameEventListener2::FireGameEvent),
 			"Fires the given game event."
@@ -196,7 +194,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(fire_event_overload, FireEvent, 1, 2);
 
 void export_igameeventmanager()
 {
-	class_<IGameEventManager2, boost::noncopyable>("CGameEventManager", no_init)
+	class_<IGameEventManager2, boost::noncopyable>("GameEventManager", no_init)
 		.def("load_events_from_file",
 			&IGameEventManager2::LoadEventsFromFile,
 			"Loads game event descriptions from a file eg resource/gameevents.res",
@@ -269,5 +267,5 @@ void export_igameeventmanager()
 		)
 	;
 
-	scope().attr("game_event_manager") = object(ptr(gameeventmanager));
+	scope().attr("GameEventManager") = object(ptr(gameeventmanager));
 }
