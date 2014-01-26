@@ -18,6 +18,7 @@ from events.manager import EventRegistry
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the path to the user settings database file
 _STORAGE_PATH = SP_DATA_PATH.joinpath('settings', 'users.db')
 
 
@@ -30,32 +31,41 @@ class _PlayerSettingsDictionary(defaultdict):
     def __init__(self, default_factory):
         '''Loads all values from the database into the dictionary'''
 
+        # Call the super class' __init__ to initialize the defaultdict
+        super(_PlayerSettingsDictionary, self).__init__(default_factory)
+
         # Has the database previously been saved?
-        if _STORAGE_PATH.isfile():
+        if not _STORAGE_PATH.isfile():
 
-            # Open/close the settings database
-            with _STORAGE_PATH.open('r') as _user_settings:
+            # No need to go further
+            return
 
-                # Load the database into the dictionary
-                super(_PlayerSettingsDictionary, self).__init__(
-                    pickle.load(_user_settings))
+        # Open/close the settings database
+        with _STORAGE_PATH.open('rb') as _user_settings:
 
-        # Has the database never been saved?
-        else:
+            # Get the stored settings
+            _settings = pickle.load(_user_settings)
 
-            # Call the super class' __init__ to initialize the defaultdict
-            super(_PlayerSettingsDictionary, self).__init__(default_factory)
+            # Loop through all stored settings
+            for key, value in _settings.items():
+
+                # Store the setting
+                self[key] = value
 
     def server_spawn(self, game_event):
         '''Stores the dictionary to the database on map change'''
 
-        """
+        # Are there any values stored in the dictionary?
+        if not self:
+
+            # If not, no need to go further
+            return
+
         # Open/close the settings database as write
-        with _STORAGE_PATH.open('w') as _user_settings:
+        with _STORAGE_PATH.open('wb') as _user_settings:
 
             # Dump the dictionary to the database file
             pickle.dump(self, _user_settings)
-        """
 
 # Get the _PlayerSettingsDictionary instance
 _PlayerSettingsStorage = _PlayerSettingsDictionary(dict)

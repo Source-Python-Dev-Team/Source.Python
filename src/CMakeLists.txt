@@ -129,6 +129,22 @@ Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Conversions module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS
+    core/modules/conversions/conversions_wrap.h
+)
+
+Set(SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES
+    core/modules/conversions/conversions_wrap_python.cpp
+)
+
+Set(SOURCEPYTHON_CONVERSIONS_MODULE_FILES
+    ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS}
+    ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES}
+)
+
+# ------------------------------------------------------------------
 # Engine module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
@@ -287,6 +303,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_CVAR_MODULE_HEADERS}
     ${SOURCEPYTHON_CVAR_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS}
+    ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES}
+
 	${SOURCEPYTHON_ENGINE_MODULE_FILES}
     ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_FILES}
     
@@ -328,6 +347,7 @@ Source_Group("Header Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_
 Source_Group("Header Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 Source_Group("Header Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Cvar"	                FILES ${SOURCEPYTHON_CVAR_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Event"	                FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
@@ -346,6 +366,7 @@ Source_Group("Source Files\\Util"   		                FILES ${SOURCEPYTHON_UTIL_
 Source_Group("Source Files\\Generic"		                FILES ${SOURCEPYTHON_GENERIC_SOURCES})
 Source_Group("Source Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvar"	                FILES ${SOURCEPYTHON_CVAR_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine"	                FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine\\Usermessages"	FILES ${SOURCEPYTHON_ENGINE_USERMESSAGE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine\\Usermessages\\${GAME}"	FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})

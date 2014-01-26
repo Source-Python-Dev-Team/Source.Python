@@ -60,6 +60,14 @@ SendPropMap g_SendPropMap;
 
 
 //-----------------------------------------------------------------------------
+// IServerUnknown extension
+//-----------------------------------------------------------------------------
+unsigned long IServerUnknownExt::GetBaseEntity( IServerUnknown* unknown )
+{
+	return (unsigned long)(unknown->GetBaseEntity());
+}
+
+//-----------------------------------------------------------------------------
 // edict_t extension
 //-----------------------------------------------------------------------------
 int CEdictExt::GetPropInt( edict_t* pEdict, const char* prop_name )

@@ -143,19 +143,11 @@ void export_server_unknown()
 			reference_existing_object_policy()
 		)
 
-		/*
 		.def("get_base_entity",
-			&IServerUnknown::GetBaseEntity,
-			"Returns the CBasEntity object for this entity.",
-			reference_existing_object_policy()
+			&IServerUnknownExt::GetBaseEntity,
+			"Returns the CBasEntity pointer for this entity."
 		)
-		*/
 	;
-
-	def("index_of_pointer",
-		index_of_pointer,
-		"Returns the index of the given BaseEntity pointer"
-	);
 }
 
 //-----------------------------------------------------------------------------

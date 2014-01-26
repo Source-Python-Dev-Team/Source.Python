@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from player_c import PlayerInfo
+from conversions_c import playerinfo_from_index
 from core import GameEngine
 from public import public
 #   Entities
@@ -22,12 +22,15 @@ from players.weapons import _PlayerWeapons
 class PlayerEntity(BaseEntity, _PlayerWeapons):
     '''Class used to interact directly with players'''
 
-    def __init__(self, index):
-        '''Override the __init__ method to set the
+    def __new__(cls, index):
+        '''Override the __new__ method to set the
             "entities" attribute and set the PlayerInfo'''
 
+        # Get the "self" object using the super class' __new__
+        self = super(PlayerEntity, cls).__new__(cls, index)
+
         # Set the player's info attribute
-        self._info = PlayerInfo(self.edict)
+        self._info = playerinfo_from_index(self.index)
 
         # Is the IPlayerInfo instance valid?
         if self.info is None:
@@ -37,6 +40,9 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
 
         # Set the entities attribute
         self._entities = frozenset(['entity', 'player'])
+
+        # Return the instance
+        return self
 
     @property
     def info(self):

@@ -205,7 +205,7 @@ inline unsigned int IndexOfIntHandle(int iHandle)
 //---------------------------------------------------------------------------------
 // Returns the index of a pointer
 //---------------------------------------------------------------------------------
-inline unsigned int index_of_pointer(object oPtr)
+inline unsigned int IndexOfPointer(object oPtr)
 {
 	unsigned long ulPointer = ExtractPyPtr(oPtr);
 	IServerUnknown *pUnknown = (IServerUnknown *) ulPointer;
