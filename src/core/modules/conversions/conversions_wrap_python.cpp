@@ -46,223 +46,229 @@ DECLARE_SP_MODULE(conversions_c)
 void export_functions()
 {
 	def("index_from_edict",
-		index_from_edict,
+		IndexFromEdict,
 		"Returns the index of the given Edict"
 	);
 
 	def("index_from_basehandle",
-		index_from_basehandle,
+		IndexFromBaseHandle,
 		"Returns the index of the given BaseEntityHandle"
 	);
 
 	def("index_from_inthandle",
-		index_from_inthandle,
+		IndexFromIntHandle,
 		"Returns the index of the given integer handle"
 	);
 
 	def("index_from_pointer",
-		index_from_pointer,
+		IndexFromPointer,
 		"Returns the index of the given BaseEntity pointer"
 	);
 
 	def("index_from_userid",
-		index_from_userid,
+		IndexFromUserid,
 		"Returns the index of the given userid"
 	);
 
 	def("index_from_playerinfo",
-		index_from_playerinfo,
+		IndexFromPlayerInfo,
 		"Returns the index of the given PlayerInfo"
 	);
 
 	def("edict_from_index",
-		edict_from_index,
+		EdictFromIndex,
 		"Returns the Edict of the given index",
 		reference_existing_object_policy()
 	);
 
 	def("edict_from_basehandle",
-		edict_from_basehandle,
+		EdictFromBaseHandle,
 		"Returns the Edict of the given BaseEntityHandle",
 		reference_existing_object_policy()
 	);
 
 	def("edict_from_inthandle",
-		edict_from_inthandle,
+		EdictFromIntHandle,
 		"Returns the Edict of the given integer handle",
 		reference_existing_object_policy()
 	);
 
 	def("edict_from_pointer",
-		edict_from_pointer,
+		EdictFromPointer,
 		"Returns the Edict of the given BaseEntity pointer",
 		reference_existing_object_policy()
 	);
 
 	def("edict_from_userid",
-		edict_from_userid,
+		EdictFromUserid,
 		"Returns the Edict of the given userid",
 		reference_existing_object_policy()
 	);
 
 	def("edict_from_playerinfo",
-		edict_from_playerinfo,
+		EdictFromPlayerInfo,
 		"Returns the Edict of the given PlayerInfo",
 		reference_existing_object_policy()
 	);
 
 	def("basehandle_from_index",
-		basehandle_from_index,
+		BaseHandleFromIndex,
 		"Returns the BaseEntityHandle of the given index"
 	);
 
 	def("basehandle_from_edict",
-		basehandle_from_edict,
+		BaseHandleFromEdict,
 		"Returns the BaseEntityHandle of the given Edict"
 	);
 
 	def("basehandle_from_inthandle",
-		basehandle_from_inthandle,
+		BaseHandleFromIntHandle,
 		"Returns the BaseEntityHandle of the given integer handle"
 	);
 
 	def("basehandle_from_pointer",
-		basehandle_from_pointer,
+		BaseHandleFromPointer,
 		"Returns the BaseEntityHandle of the given BaseEntity pointer"
 	);
 
 	def("basehandle_from_userid",
-		basehandle_from_userid,
+		BaseHandleFromUserid,
 		"Returns the BaseEntityHandle of the given userid"
 	);
 
 	def("basehandle_from_playerinfo",
-		basehandle_from_playerinfo,
+		BaseHandleFromPlayerInfo,
 		"Returns the BaseEntityHandle of the given PlayerInfo"
 	);
 
 	def("inthandle_from_index",
-		inthandle_from_index,
+		IntHandleFromIndex,
 		"Returns the integer handle of the given index"
 	);
 
 	def("inthandle_from_edict",
-		inthandle_from_edict,
+		IntHandleFromEdict,
 		"Returns the integer handle of the given Edict"
 	);
 
 	def("inthandle_from_basehandle",
-		inthandle_from_basehandle,
+		IntHandleFromBaseHandle,
 		"Returns the integer handle of the given BaseEntityHandle"
 	);
 
 	def("inthandle_from_pointer",
-		inthandle_from_pointer,
+		IntHandleFromPointer,
 		"Returns the integer handle of the given BaseEntity pointer"
 	);
 
 	def("inthandle_from_userid",
-		inthandle_from_userid,
+		IntHandleFromUserid,
 		"Returns the integer handle of the given userid"
 	);
 
 	def("inthandle_from_playerinfo",
-		inthandle_from_playerinfo,
+		IntHandleFromPlayerInfo,
 		"Returns the integer handle of the given PlayerInfo"
 	);
 
 	def("pointer_from_index",
-		pointer_from_index,
-		"Returns the BaseEntity pointer of the given index"
+		PointerFromIndex,
+		"Returns the BaseEntity pointer of the given index",
+		reference_existing_object_policy()
 	);
 
 	def("pointer_from_edict",
-		pointer_from_edict,
-		"Returns the BaseEntity pointer of the given Edict"
+		PointerFromEdict,
+		"Returns the BaseEntity pointer of the given Edict",
+		reference_existing_object_policy()
 	);
 
 	def("pointer_from_basehandle",
-		pointer_from_basehandle,
-		"Returns the BaseEntity pointer of the given BaseEntityHandle"
+		PointerFromBaseHandle,
+		"Returns the BaseEntity pointer of the given BaseEntityHandle",
+		reference_existing_object_policy()
 	);
 
 	def("pointer_from_inthandle",
-		pointer_from_inthandle,
-		"Returns the BaseEntity pointer of the given integer handle"
+		PointerFromIntHandle,
+		"Returns the BaseEntity pointer of the given integer handle",
+		reference_existing_object_policy()
 	);
 
 	def("pointer_from_userid",
-		pointer_from_userid,
-		"Returns the BaseEntity pointer of the given userid"
+		PointerFromUserid,
+		"Returns the BaseEntity pointer of the given userid",
+		reference_existing_object_policy()
 	);
 
 	def("pointer_from_playerinfo",
-		pointer_from_playerinfo,
-		"Returns the BaseEntity pointer of the given PlayerInfo"
+		PointerFromPlayerInfo,
+		"Returns the BaseEntity pointer of the given PlayerInfo",
+		reference_existing_object_policy()
 	);
 
 	def("userid_from_index",
-		userid_from_index,
+		UseridFromIndex,
 		"Returns the userid of the given index"
 	);
 
 	def("userid_from_edict",
-		userid_from_edict,
+		UseridFromEdict,
 		"Returns the userid of the given Edict"
 	);
 
 	def("userid_from_basehandle",
-		userid_from_basehandle,
+		UseridFromBaseHandle,
 		"Returns the userid of the given BaseEntityHandle"
 	);
 
 	def("userid_from_inthandle",
-		userid_from_inthandle,
+		UseridFromIntHandle,
 		"Returns the userid of the given integer handle"
 	);
 
 	def("userid_from_pointer",
-		userid_from_pointer,
+		UseridFromPointer,
 		"Returns the userid of the given BaseEntity pointer"
 	);
 
 	def("userid_from_playerinfo",
-		userid_from_playerinfo,
+		UseridFromPlayerInfo,
 		"Returns the userid of the given PlayerInfo"
 	);
 
 	def("playerinfo_from_index",
-		playerinfo_from_index,
+		PlayerInfoFromIndex,
 		"Returns the PlayerInfo of the given index",
 		reference_existing_object_policy()
 	);
 
 	def("playerinfo_from_edict",
-		playerinfo_from_edict,
+		PlayerInfoFromEdict,
 		"Returns the PlayerInfo of the given Edict",
 		reference_existing_object_policy()
 	);
 
 	def("playerinfo_from_basehandle",
-		playerinfo_from_basehandle,
+		PlayerInfoFromBaseHandle,
 		"Returns the PlayerInfo of the given BaseEntityHandle",
 		reference_existing_object_policy()
 	);
 
 	def("playerinfo_from_inthandle",
-		playerinfo_from_inthandle,
+		PlayerInfoFromIntHandle,
 		"Returns the PlayerInfo of the given integer handle",
 		reference_existing_object_policy()
 	);
 
 	def("playerinfo_from_pointer",
-		playerinfo_from_pointer,
+		PlayerInfoFromPointer,
 		"Returns the PlayerInfo of the given BaseEntity pointer",
 		reference_existing_object_policy()
 	);
 
 	def("playerinfo_from_userid",
-		playerinfo_from_userid,
+		PlayerInfoFromUserid,
 		"Returns the PlayerInfo of the given userid",
 		reference_existing_object_policy()
 	);

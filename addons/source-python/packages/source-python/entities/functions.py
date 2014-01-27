@@ -3,15 +3,11 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site Package Imports
-#   ConfigObj
-from configobj import ConfigObj
-
 # Source.Python Imports
-from core import GAME_NAME
-from paths import SP_DATA_PATH
 #   DynCall
 from dyncall.dictionary import SignatureDictionary
+#   Entities
+from entities.attributes import EntityAttributes
 
 
 # =============================================================================
@@ -22,46 +18,8 @@ __all__ = []
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Store the base "functions" path
-_basepath = SP_DATA_PATH.joinpath('functions')
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
-class _Functions(dict):
-    '''Dictionary that stores all entities with their functions'''
-
-    def __missing__(self, item):
-        '''Called the first time an entity is added to the dictionary'''
-
-        # Get all functions for the given entity
-        value = self[item] = _get_all_entity_functions(item)
-
-        # Return the functions
-        return value
-
-    def get_entity_functions(self, args):
-        '''Returns all functions for the given entities'''
-
-        # Create an empty dictionary
-        values = dict()
-
-        # Loop through all given entities
-        for arg in args:
-
-            # Add the entities to the dictionary
-            values.update(self[arg])
-
-        # Return all functions for the given entities
-        return values
-
-# Get the _Functions instance
-Functions = _Functions()
-
-
 class _FunctionInstance(object):
     '''Class used to store a function to be called with
         the entity's pointer as the first argument'''
@@ -108,32 +66,12 @@ class _FunctionInstance(object):
         self.current_pointer = None
 
 
-# =============================================================================
-# >> FUNCTIONS
-# =============================================================================
-def _get_all_entity_functions(entity):
-    '''Retrieves all functions for the given entity'''
+class _EntityFunctions(EntityAttributes):
+    '''Dictionary that stores all entities with their functions'''
 
-    # Create an empty dictionary to pass
-    game_functions = {}
+    type = 'functions'
+    unrepr = True
+    instance = _FunctionInstance
 
-    # Get the path to the entity's function file
-    inifile = _basepath.join(entity, GAME_NAME + '.ini')
-
-    # Does the file exist?
-    if not inifile.isfile():
-
-        # Return the empty dictionary
-        return game_functions
-
-    # Get the file's contents
-    ini = ConfigObj(inifile, unrepr=True)
-
-    # Loop through all items in the file
-    for key in ini:
-
-        # Add the item to the dictionary
-        game_functions[key] = _FunctionInstance(ini[key])
-
-    # Return the dictionary
-    return game_functions
+# Get the _EntityFunctions instance
+EntityFunctions = _EntityFunctions()

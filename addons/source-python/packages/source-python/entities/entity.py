@@ -8,10 +8,10 @@
 from conversions_c import edict_from_index
 from public import public
 #   Entities
-#from entities.functions import Functions
-from entities.keyvalues import KeyValues
-from entities.offsets import Offsets
-from entities.properties import Properties
+#from entities.functions import EntityFunctions
+from entities.keyvalues import EntityKeyValues
+from entities.offsets import EntityOffsets
+from entities.properties import EntityProperties
 #from entities.specials import _EntitySpecials
 
 
@@ -328,19 +328,19 @@ class BaseEntity(object):
     @property
     def properties(self):
         '''Returns all properties for all entities'''
-        return Properties.get_entity_properties(self.entities)
+        return EntityProperties.get_game_attributes(self.entities)
 
     @property
     def keyvalues(self):
         '''Returns all keyvalues for all entities'''
-        return KeyValues.get_entity_keyvalues(self.entities)
+        return EntityKeyValues.get_game_attributes(self.entities)
 
     @property
     def offsets(self):
         '''Returns all offsets for all entities'''
-        return Offsets.get_entity_offsets(self.entities)
+        return EntityOffsets.get_game_attributes(self.entities)
 
     @property
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
-        return Functions.get_entity_functions(self.entities)
+        return EntityFunctions.get_game_attributes(self.entities)
