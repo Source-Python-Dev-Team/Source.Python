@@ -8,7 +8,7 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from player_c import CPlayerGenerator
+from player_c import PlayerGenerator
 from core import GameEngine
 from core import GAME_NAME
 from paths import SP_DATA_PATH
@@ -54,7 +54,7 @@ class PlayerIter(_IterObject):
     manager = PlayerIterManager
 
     # Store the base iterator
-    iterator = staticmethod(CPlayerGenerator)
+    iterator = staticmethod(PlayerGenerator)
 
 
 # =============================================================================

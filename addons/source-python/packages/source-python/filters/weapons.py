@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from entity_c import CEntityGenerator
+from entity_c import EntityGenerator
 from public import public
 #   Entities
 from entities.entity import BaseEntity
@@ -41,7 +41,7 @@ class WeaponEdictIter(_IterObject):
         '''Iterates over only weapon entities'''
 
         # Loop through all entities on the server
-        for edict in CEntityGenerator():
+        for edict in EntityGenerator():
 
             # Is the entity a weapon?
             if edict.get_class_name() in WeaponManager:

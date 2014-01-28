@@ -445,12 +445,12 @@ void export_edict()
 }
 
 //-----------------------------------------------------------------------------
-// Exports CEntityGenerator.
+// Exports EntityGenerator.
 //-----------------------------------------------------------------------------
 void export_entity_generator()
 {
 	// TODO: Rename
-	BOOST_GENERATOR_CLASS(CEntityGenerator)
+	BOOST_GENERATOR_CLASS(EntityGenerator)
 		CLASS_CONSTRUCTOR(const char*)
 		CLASS_CONSTRUCTOR(const char*, bool)
 	BOOST_END_CLASS()

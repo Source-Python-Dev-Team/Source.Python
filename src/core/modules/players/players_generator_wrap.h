@@ -41,12 +41,12 @@ class IPlayerInfo;
 // ----------------------------------------------------------------------------
 // Declare the generator class.
 // ----------------------------------------------------------------------------
-class CPlayerGenerator: public IPythonGenerator<IPlayerInfo>
+class PlayerGenerator: public IPythonGenerator<IPlayerInfo>
 {
 public:
-	CPlayerGenerator(PyObject* self);
-	CPlayerGenerator(PyObject* self, const CPlayerGenerator& rhs);
-	virtual ~CPlayerGenerator();
+	PlayerGenerator(PyObject* self);
+	PlayerGenerator(PyObject* self, const PlayerGenerator& rhs);
+	virtual ~PlayerGenerator();
 
 protected:
 	virtual IPlayerInfo* getNext();
@@ -55,6 +55,6 @@ private:
 	int m_iEntityIndex;
 };
 
-BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CPlayerGenerator)
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(PlayerGenerator)
 
 #endif

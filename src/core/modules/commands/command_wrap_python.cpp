@@ -159,7 +159,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( get_server_command_overloads, GetServerCommand,
 void export_server_command()
 {
 	// TODO: Rename
-	class_<CServerCommandManager, boost::noncopyable>("ServerCommandManager", no_init)
+	class_<CServerCommandManager, boost::noncopyable>("ServerCommandDispatcher", no_init)
 		.def("add_callback",
 			&CServerCommandManager::AddCallback,
 			"Adds a callback to the server command's list.",
@@ -175,7 +175,7 @@ void export_server_command()
 
 	def("get_server_command",
 		GetServerCommand,
-		get_server_command_overloads("Gets the ServerCommandManager instance using just the name or also the helptext and/or flags",
+		get_server_command_overloads("Gets the ServerCommandDispatcher instance using just the name or also the helptext and/or flags",
 			args("name", "help_text", "flags")
 		)[reference_existing_object_policy()]
 	);
@@ -187,7 +187,7 @@ void export_server_command()
 void export_client_command()
 {
 	// TODO: Rename
-	class_<CClientCommandManager, boost::noncopyable>("ClientCommandManager", no_init)
+	class_<CClientCommandManager, boost::noncopyable>("ClientCommandDispatcher", no_init)
 		.def("add_callback",
 			&CClientCommandManager::AddCallback,
 			"Adds a callback to the client command's list.",
@@ -203,7 +203,7 @@ void export_client_command()
 
 	def("get_client_command",
 		GetClientCommand,
-		"Returns the ClientCommandManager instance for the given command",
+		"Returns the ClientCommandDispatcher instance for the given command",
 		args("name"),
 		reference_existing_object_policy()
 	);
@@ -227,7 +227,7 @@ void export_client_command()
 void export_say_command()
 {
 	// TODO: Rename
-	class_<CSayCommandManager, boost::noncopyable>("SayCommandManager", no_init)
+	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
 		.def("add_callback",
 			&CSayCommandManager::AddCallback,
 			"Adds a callback to the say command's list.",
@@ -243,7 +243,7 @@ void export_say_command()
 
 	def("get_say_command",
 		GetSayCommand,
-		"Returns the SayCommandManager instance for the given command",
+		"Returns the SayCommandDispatcher instance for the given command",
 		args("name"),
 		reference_existing_object_policy()
 	);

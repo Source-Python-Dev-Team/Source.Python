@@ -198,6 +198,6 @@ void export_netinfo()
 
 void export_player_generator()
 {
-	BOOST_GENERATOR_CLASS(CPlayerGenerator)
+	BOOST_GENERATOR_CLASS(PlayerGenerator)
 	BOOST_END_CLASS()
 }
