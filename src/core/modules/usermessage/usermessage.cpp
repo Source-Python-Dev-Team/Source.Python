@@ -26,7 +26,7 @@
 
 #include "usermessage.h"
 
-CUserMessage::CUserMessage(const CMRecipientFilter &recipient_filter, const char *message_name ) :
+CUserMessage::CUserMessage(const MRecipientFilter &recipient_filter, const char *message_name ) :
 	CUserMessageImplementation(recipient_filter, message_name),
 	m_sent(false)
 {
@@ -61,7 +61,7 @@ const int CUserMessage::get_message_index() const
 	return m_message_index;
 }
 
-const CMRecipientFilter & CUserMessage::get_recipient_filter() const
+const MRecipientFilter & CUserMessage::get_recipient_filter() const
 {
 	return m_recipient_filter;
 }

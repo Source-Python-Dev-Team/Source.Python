@@ -62,7 +62,7 @@ void export_usermessage_interface()
 	// ----------------------------------------------------------
 	// The Usermessage interface.
 	// ----------------------------------------------------------
-	BOOST_CLASS_CONSTRUCTOR( CUserMessage, const CMRecipientFilter &, const char * )
+	BOOST_CLASS_CONSTRUCTOR( CUserMessage, const MRecipientFilter &, const char * )
 
 		CLASS_METHOD(CUserMessage,
 			send_message,

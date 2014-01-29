@@ -28,78 +28,69 @@
 */
 
 #include "modules/export_main.h"
-#include "mrecipientfilter_wrap.h"
-
-//---------------------------------------------------------------------------------
-// Namespaces to use
-//---------------------------------------------------------------------------------
-using namespace boost::python;
-
-//---------------------------------------------------------------------------------
-// Exposer functions.
-//---------------------------------------------------------------------------------
-void export_mrecipientfilter_interface();
+#include "mrecipientfilter.h"
 
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
 //---------------------------------------------------------------------------------
+void export_mrecipientfilter();
+
 DECLARE_SP_MODULE(recipientfilter_c)
 {
-	export_mrecipientfilter_interface();
+	export_mrecipientfilter();
 }
 
-void export_mrecipientfilter_interface()
+void export_mrecipientfilter()
 {
-	BOOST_CLASS_NOCOPY( CMRecipientFilter )
-
-		CLASS_METHOD(CMRecipientFilter,
-			is_reliable,
+	// TODO: Rename class
+	class_<MRecipientFilter, boost::noncopyable>("CMRecipientFilter")
+		.def("is_reliable",
+			&MRecipientFilter::IsReliable,
 			"Whether this recipient filter will be network reliable (sent in-order)"
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			is_init_message,
+		.def("is_init_message",
+			&MRecipientFilter::IsInitMessage,
 			"Whether the message has been initialised?"
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			get_recipient_count,
+		.def("get_recipient_count",
+			&MRecipientFilter::GetRecipientCount,
 			"Obtain the amount of clients in this filter"
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			get_recipient_index,
+		.def("get_recipient_index",
+			&MRecipientFilter::GetRecipientIndex,
 			"Obtains the player index at the slot in the filter",
 			args("slot")
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			add_all_players,
+		.def("add_all_players",
+			&MRecipientFilter::AddAllPlayers,
 			"Adds all the players on the server to the filter"
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			add_recipient,
+		.def("add_recipient",
+			&MRecipientFilter::AddRecipient,
 			"Adds the index of the player to the filter",
 			args("iPlayer")
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			remove_all_players,
+		.def("remove_all_players",
+			&MRecipientFilter::RemoveAllPlayers,
 			"Removes all the players on the server from the filter"
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			remove_recipient,
+		.def("remove_recipient",
+			&MRecipientFilter::RemoveRecipient,
 			"Removes the index of the player from the filter",
 			args("iPlayer")
 		)
 
-		CLASS_METHOD(CMRecipientFilter,
-			has_recipient,
+		.def("has_recipient",
+			&MRecipientFilter::HasRecipient,
 			"Returns true if the given index is in the recipient, false otherwise.",
 			args("iPlayer")
 		)
-		
-	BOOST_END_CLASS()
+	;
 }

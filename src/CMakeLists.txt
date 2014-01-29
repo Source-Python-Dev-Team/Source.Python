@@ -261,12 +261,10 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_HEADERS
     core/modules/recipientfilters/mrecipientfilter.h
-    core/modules/recipientfilters/mrecipientfilter_wrap.h
 )
 
 Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES
     core/modules/recipientfilters/mrecipientfilter.cpp
-    core/modules/recipientfilters/mrecipientfilter_wrap.cpp
     core/modules/recipientfilters/mrecipientfilter_wrap_python.cpp
 )
 

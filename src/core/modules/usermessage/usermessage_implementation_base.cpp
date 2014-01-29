@@ -26,7 +26,7 @@
 
 #include "usermessage_implementation_base.h"
 
-IUsermessageImplementationBase::IUsermessageImplementationBase(const CMRecipientFilter &recipient_filter, const char *message_name ) :
+IUsermessageImplementationBase::IUsermessageImplementationBase(const MRecipientFilter &recipient_filter, const char *message_name ) :
 	m_recipient_filter(recipient_filter),
 	m_message_name(message_name),
 	m_message_index(-1)

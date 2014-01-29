@@ -36,7 +36,7 @@ extern IServerGameDLL *servergamedll;
 class CUserMessageImplementation : public IUsermessageImplementationBase
 {
 public:
-	CUserMessageImplementation(const CMRecipientFilter &recipient_filter, const char *message_name);
+	CUserMessageImplementation(const MRecipientFilter &recipient_filter, const char *message_name);
 
 	// Pure-virtual methods which must be inherited and overwritten in the inherited
 	// classes

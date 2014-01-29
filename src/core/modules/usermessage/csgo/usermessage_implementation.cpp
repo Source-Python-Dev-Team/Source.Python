@@ -30,7 +30,7 @@
 #include "public/game/shared/csgo/protobuf/cstrike15_usermessages.pb.h"
 #include "public/game/shared/csgo/protobuf/cstrike15_usermessage_helpers.h"
 
-CUserMessageImplementation::CUserMessageImplementation( const CMRecipientFilter &recipient_filter, const char *message_name ) :
+CUserMessageImplementation::CUserMessageImplementation( const MRecipientFilter &recipient_filter, const char *message_name ) :
 	IUsermessageImplementationBase(recipient_filter, message_name),
 	m_message(NULL)
 {
@@ -50,7 +50,7 @@ void CUserMessageImplementation::send_message_internal()
 {
 	if (m_message != NULL  && m_message_index != -1)
 	{
-		engine->SendUserMessage(const_cast<CMRecipientFilter&>(m_recipient_filter), m_message_index, *m_message);
+		engine->SendUserMessage(const_cast<MRecipientFilter&>(m_recipient_filter), m_message_index, *m_message);
 	}
 	else
 	{

@@ -29,7 +29,7 @@
 
 #include "irecipientfilter.h"
 #include "eiface.h"
-#include "modules/recipientfilters/mrecipientfilter_wrap.h"
+#include "modules/recipientfilters/mrecipientfilter.h"
 
 extern IVEngineServer* engine;
 
@@ -40,7 +40,7 @@ extern IVEngineServer* engine;
 abstract_class IUsermessageImplementationBase
 {
 public:
-	IUsermessageImplementationBase(const CMRecipientFilter &recipient_filter, const char *message_name);
+	IUsermessageImplementationBase(const MRecipientFilter &recipient_filter, const char *message_name);
 	// Inline virtual destructor -- ensures all usermessages calls the right destructor
 	virtual ~IUsermessageImplementationBase() {}
 
@@ -63,7 +63,7 @@ protected:
 
 protected:
 	const char *m_message_name;
-	const CMRecipientFilter &m_recipient_filter;
+	const MRecipientFilter &m_recipient_filter;
 	int m_message_index;
 };
 

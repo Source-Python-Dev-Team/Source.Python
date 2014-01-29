@@ -36,14 +36,14 @@
 class CUserMessage : public CUserMessageImplementation
 {
 public:
-	CUserMessage(const CMRecipientFilter &recipient_filter, const char *message_name);
+	CUserMessage(const MRecipientFilter &recipient_filter, const char *message_name);
 	~CUserMessage();
 
 	virtual void send_message();
 
 	const char *get_message_name() const;
 	const int get_message_index() const;
-	const CMRecipientFilter &get_recipient_filter() const;
+	const MRecipientFilter &get_recipient_filter() const;
 	bool has_been_sent() const;
 
 	// Virtual function call override (calls to base class)
