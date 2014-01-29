@@ -26,7 +26,7 @@
 
 #include "eiface.h"
 #include "ispsharedmemory.h"
-#include "../usermessage/usermessage.h"
+#include "modules/usermessage/usermessage.h"
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_single_player_shared_memory_space_overload, GetSinglePlayerSharedMemorySpace, 1, 2);
 

@@ -43,7 +43,7 @@
 #include "shake.h"
 #include "game/shared/IEffects.h"
 #include "engine/IEngineSound.h"
-#include "sp_util.h"
+#include "utility/sp_util.h"
 
 extern IVEngineServer		*engine;
 extern IPlayerInfoManager	*playerinfomanager;

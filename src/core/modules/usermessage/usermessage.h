@@ -29,7 +29,7 @@
 
 #include "irecipientfilter.h"
 
-#include "../../../utility/wrap_macros.h"
+#include "utility/wrap_macros.h"
 
 #include GAME_INCLUDE_PATH(usermessage_implementation.h)
 
