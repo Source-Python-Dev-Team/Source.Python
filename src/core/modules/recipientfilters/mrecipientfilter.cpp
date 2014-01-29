@@ -43,7 +43,7 @@
 #include "shake.h"
 #include "game/shared/IEffects.h"
 #include "engine/IEngineSound.h"
-#include "utility/sp_util.h"
+#include "modules/conversions/conversions_wrap.h"
 
 extern IVEngineServer		*engine;
 extern IPlayerInfoManager	*playerinfomanager;
@@ -90,7 +90,7 @@ void MRecipientFilter::AddAllPlayers()
 
 	for(int i = 1; i <= gpGlobals->maxClients; i++)
 	{
-		edict_t *pPlayer = PEntityOfEntIndex(i);
+		edict_t *pPlayer = EdictFromIndex(i);
 
 		// Skip invalid entities.
 		if( !pPlayer || pPlayer->IsFree() ) {
@@ -114,7 +114,7 @@ void MRecipientFilter::AddRecipient(int iPlayer)
 		return;
 
 	// Make sure the player is valid
-	edict_t* pPlayer = PEntityOfEntIndex(iPlayer);
+	edict_t* pPlayer = EdictFromIndex(iPlayer);
 	if(!pPlayer || pPlayer->IsFree())
 		return;
 

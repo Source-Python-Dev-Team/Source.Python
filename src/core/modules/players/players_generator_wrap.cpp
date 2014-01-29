@@ -31,6 +31,7 @@
 #include "utility/sp_util.h"
 #include "game/server/iplayerinfo.h"
 #include "boost/python/iterator.hpp"
+#include "modules/conversions/conversions_wrap.h"
 
 // ----------------------------------------------------------------------------
 // External variables.
@@ -71,7 +72,7 @@ IPlayerInfo* PlayerGenerator::getNext()
 	while(m_iEntityIndex < gpGlobals->maxClients)
 	{
 		m_iEntityIndex++;
-		edict_t* pEdict = PEntityOfEntIndex(m_iEntityIndex);
+		edict_t* pEdict = EdictFromIndex(m_iEntityIndex);
 		pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
 		if ( pPlayerInfo )
 		{

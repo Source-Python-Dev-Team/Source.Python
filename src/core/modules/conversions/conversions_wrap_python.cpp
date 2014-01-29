@@ -174,37 +174,37 @@ void export_functions()
 	def("pointer_from_index",
 		PointerFromIndex,
 		"Returns the BaseEntity pointer of the given index",
-		reference_existing_object_policy()
+		manage_new_object_policy()
 	);
 
 	def("pointer_from_edict",
 		PointerFromEdict,
 		"Returns the BaseEntity pointer of the given Edict",
-		reference_existing_object_policy()
+		manage_new_object_policy()
 	);
 
 	def("pointer_from_basehandle",
 		PointerFromBaseHandle,
 		"Returns the BaseEntity pointer of the given BaseEntityHandle",
-		reference_existing_object_policy()
+		manage_new_object_policy()
 	);
 
 	def("pointer_from_inthandle",
 		PointerFromIntHandle,
 		"Returns the BaseEntity pointer of the given integer handle",
-		reference_existing_object_policy()
+		manage_new_object_policy()
 	);
 
 	def("pointer_from_userid",
 		PointerFromUserid,
 		"Returns the BaseEntity pointer of the given userid",
-		reference_existing_object_policy()
+		manage_new_object_policy()
 	);
 
 	def("pointer_from_playerinfo",
 		PointerFromPlayerInfo,
 		"Returns the BaseEntity pointer of the given PlayerInfo",
-		reference_existing_object_policy()
+		manage_new_object_policy()
 	);
 
 	def("userid_from_index",

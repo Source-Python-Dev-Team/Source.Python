@@ -23,6 +23,7 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
+
 #ifndef _CONVERSIONS_WRAP_H
 #define _CONVERSIONS_WRAP_H
 
@@ -31,15 +32,35 @@
 //-----------------------------------------------------------------------------
 #include "edict.h"
 #include "basehandle.h"
+#include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
 #include "modules/memory/memory_tools.h"
-#include "utility/sp_util.h"
+
+
+// Externals
+extern IVEngineServer* engine;
+extern CGlobalVars*	   gpGlobals;
+extern IPlayerInfoManager* playerinfomanager;
+
+extern unsigned long ExtractPyPtr(object obj);
+
+// Forward declarations
+edict_t* EdictFromIndex( unsigned int iEntIndex );
+edict_t* EdictFromUserid( unsigned int userid );
+edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo );
+
+IPlayerInfo* PlayerInfoFromIndex( unsigned int index );
+IPlayerInfo* PlayerInfoFromUserid( unsigned int userid );
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-inline unsigned int IndexFromEdict( edict_t* edict )
+inline unsigned int IndexFromEdict( edict_t* pEdict )
 {
-	return IndexOfEdict(edict);
+#if( SOURCE_ENGINE >= 2 )
+	return (unsigned int) (pEdict - gpGlobals->pEdicts);
+#else
+	return (unsigned int) engine->IndexOfEdict(pEdict);
+#endif
 }
 
 inline unsigned int IndexFromBaseHandle( CBaseHandle* basehandle )
@@ -47,63 +68,119 @@ inline unsigned int IndexFromBaseHandle( CBaseHandle* basehandle )
 	return basehandle->GetEntryIndex();
 }
 
-inline unsigned int IndexFromIntHandle( int inthandle )
+inline unsigned int IndexFromIntHandle( int iHandle )
 {
-	return IndexOfIntHandle(inthandle);
+	CBaseHandle hHandle(iHandle);
+	unsigned int iIndex = hHandle.GetEntryIndex();
+	edict_t *pEntity = EdictFromIndex(iIndex);
+	if (!pEntity || pEntity->IsFree())
+	{
+		return NULL;
+	}
+	IServerNetworkable *pNetworkable = pEntity->GetNetworkable();
+	IHandleEntity *pEnt = pNetworkable->GetEntityHandle();
+	if (!pEnt)
+	{
+		return NULL;
+	}
+	const CBaseHandle hTestHandle = pEnt->GetRefEHandle();
+	if (!hTestHandle.IsValid())
+	{
+		return NULL;
+	}
+	if (hHandle.GetSerialNumber() != hTestHandle.GetSerialNumber())
+	{
+		return NULL;
+	}
+	return iIndex;
 }
 
-inline unsigned int IndexFromPointer( object pointer )
+inline unsigned int IndexFromPointer( object oPtr )
 {
-	return IndexOfPointer(pointer);
+	unsigned long ulPointer = ExtractPyPtr(oPtr);
+	IServerUnknown *pUnknown = (IServerUnknown *) ulPointer;
+	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
+	if (!pNetworkable)
+	{
+		return NULL;
+	}
+	edict_t* pEdict = pNetworkable->GetEdict();
+	if (!pEdict)
+	{
+		return NULL;
+	}
+	return IndexFromEdict(pEdict);
 }
 
 inline unsigned int IndexFromUserid( unsigned int userid )
 {
-	return IndexOfUserid(userid);
+	edict_t* pEdict = EdictFromUserid(userid);
+	return pEdict ? IndexFromEdict(pEdict) : NULL;
 }
 
 inline unsigned int IndexFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return IndexOfEdict(EdictOfPlayer(playerinfo));
+	return IndexFromEdict(EdictFromPlayerInfo(playerinfo));
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
-inline edict_t* EdictFromIndex( unsigned int index )
+inline edict_t* EdictFromIndex( unsigned int iEntIndex )
 {
-	return PEntityOfEntIndex(index);
+#if( SOURCE_ENGINE >= 2 )
+	if(iEntIndex < (unsigned int) gpGlobals->maxEntities)
+	{
+		return (edict_t *) (gpGlobals->pEdicts + iEntIndex);
+	}
+
+	return NULL;
+#else
+	return engine->PEntityOfEntIndex(iEntIndex);
+#endif
 }
 
 inline edict_t* EdictFromBaseHandle( CBaseHandle* basehandle )
 {
-	return PEntityOfEntIndex(basehandle->GetEntryIndex());
+	return EdictFromIndex(basehandle->GetEntryIndex());
 }
 
 inline edict_t* EdictFromIntHandle( int inthandle )
 {
-	return PEntityOfEntIndex(IndexOfIntHandle(inthandle));
+	return EdictFromIndex(IndexFromIntHandle(inthandle));
 }
 
 inline edict_t* EdictFromPointer( object pointer )
 {
-	return PEntityOfEntIndex(IndexOfPointer(pointer));
+	return EdictFromIndex(IndexFromPointer(pointer));
 }
 
 inline edict_t* EdictFromUserid( unsigned int userid )
 {
-	return EdictOfPlayer(PlayerOfUserid(userid));
+	edict_t* pEdict;
+	for(int i=1; i <= gpGlobals->maxClients; ++i)
+	{
+		pEdict = EdictFromIndex(i);
+		if (pEdict && !pEdict->IsFree() &&
+			strcmp(pEdict->GetClassName(), "player") == 0 &&
+			engine->GetPlayerUserId(pEdict) == userid)
+		{
+			return pEdict;
+		}
+	}
+
+	return NULL;
 }
 
 inline edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return EdictOfPlayer(playerinfo);
+	return playerinfo ? EdictFromUserid(playerinfo->GetUserID()) : NULL;
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 inline const CBaseHandle BaseHandleFromIndex( unsigned int index )
 {
-	return PEntityOfEntIndex(index)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	return EdictFromIndex(index)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
 }
 
 inline const CBaseHandle BaseHandleFromEdict( edict_t* edict )
@@ -118,24 +195,24 @@ inline const CBaseHandle BaseHandleFromIntHandle( int inthandle )
 
 inline const CBaseHandle BaseHandleFromPointer( object pointer )
 {
-	return PEntityOfEntIndex(IndexOfPointer(pointer))->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	return EdictFromIndex(IndexFromPointer(pointer))->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
 }
 
 inline const CBaseHandle BaseHandleFromUserid( unsigned int userid )
 {
-	return EdictOfUserid(userid)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	return EdictFromUserid(userid)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
 }
 
 inline const CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return EdictOfPlayer(playerinfo)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	return EdictFromPlayerInfo(playerinfo)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 inline int IntHandleFromIndex( unsigned int index )
 {
-	return PEntityOfEntIndex(index)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	return EdictFromIndex(index)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
 }
 
 inline int IntHandleFromEdict( edict_t* edict )
@@ -150,76 +227,76 @@ inline int IntHandleFromBaseHandle( CBaseHandle* basehandle )
 
 inline int IntHandleFromPointer( object pointer )
 {
-	return PEntityOfEntIndex(IndexOfPointer(pointer))->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	return EdictFromIndex(IndexFromPointer(pointer))->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
 }
 
 inline int IntHandleFromUserid( unsigned int userid )
 {
-	return EdictOfUserid(userid)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	return EdictFromUserid(userid)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
 }
 
 inline int IntHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return EdictOfPlayer(playerinfo)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	return EdictFromPlayerInfo(playerinfo)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 inline CPointer* PointerFromIndex( unsigned int index )
 {
-	return new CPointer((unsigned int)(PEntityOfEntIndex(index)->GetNetworkable()->GetBaseEntity()));
+	return new CPointer((unsigned long)(EdictFromIndex(index)->GetNetworkable()->GetBaseEntity()));
 }
 
 inline CPointer* PointerFromEdict( edict_t* edict )
 {
-	return new CPointer((unsigned int)(edict->GetNetworkable()->GetBaseEntity()));
+	return new CPointer((unsigned long)(edict->GetNetworkable()->GetBaseEntity()));
 }
 
 inline CPointer* PointerFromBaseHandle( CBaseHandle* basehandle )
 {
-	return new CPointer((unsigned int)(PEntityOfEntIndex(basehandle->GetEntryIndex())->GetNetworkable()->GetBaseEntity()));
+	return new CPointer((unsigned long)(EdictFromIndex(basehandle->GetEntryIndex())->GetNetworkable()->GetBaseEntity()));
 }
 
 inline CPointer* PointerFromIntHandle( int inthandle )
 {
-	return new CPointer((unsigned int)(PEntityOfEntIndex(IndexOfIntHandle(inthandle))->GetNetworkable()->GetBaseEntity()));
+	return new CPointer((unsigned long)(EdictFromIndex(IndexFromIntHandle(inthandle))->GetNetworkable()->GetBaseEntity()));
 }
 
 inline CPointer* PointerFromUserid( unsigned int userid )
 {
-	return new CPointer((unsigned int)(EdictOfPlayer(PlayerOfUserid(userid))->GetNetworkable()->GetBaseEntity()));
+	return new CPointer((unsigned long)(EdictFromPlayerInfo(PlayerInfoFromUserid(userid))->GetNetworkable()->GetBaseEntity()));
 }
 
 inline CPointer* PointerFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return new CPointer((unsigned int)(EdictOfPlayer(playerinfo)->GetNetworkable()->GetBaseEntity()));
+	return new CPointer((unsigned long)(EdictFromPlayerInfo(playerinfo)->GetNetworkable()->GetBaseEntity()));
 }
 
 //-----------------------------------------------------------------------------
 //-----------------------------------------------------------------------------
 inline unsigned int UseridFromIndex( unsigned int index )
 {
-	return PlayerOfIndex(index)->GetUserID();
+	return PlayerInfoFromIndex(index)->GetUserID();
 }
 
 inline unsigned int UseridFromEdict( edict_t* edict )
 {
-	return PlayerOfIndex(IndexOfEdict(edict))->GetUserID();
+	return PlayerInfoFromIndex(IndexFromEdict(edict))->GetUserID();
 }
 
 inline unsigned int UseridFromBaseHandle( CBaseHandle* basehandle )
 {
-	return PlayerOfIndex(basehandle->GetEntryIndex())->GetUserID();
+	return PlayerInfoFromIndex(basehandle->GetEntryIndex())->GetUserID();
 }
 
 inline unsigned int UseridFromIntHandle( int inthandle )
 {
-	return PlayerOfIndex(IndexOfIntHandle(inthandle))->GetUserID();
+	return PlayerInfoFromIndex(IndexFromIntHandle(inthandle))->GetUserID();
 }
 
 inline unsigned int UseridFromPointer( object pointer )
 {
-	return PlayerOfIndex(IndexOfPointer(pointer))->GetUserID();
+	return PlayerInfoFromIndex(IndexFromPointer(pointer))->GetUserID();
 }
 
 inline unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo )
@@ -231,32 +308,45 @@ inline unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo )
 //-----------------------------------------------------------------------------
 inline IPlayerInfo* PlayerInfoFromIndex( unsigned int index )
 {
-	return PlayerOfIndex(index);
+	if (index < 1 || index > (unsigned int) gpGlobals->maxClients)
+	{
+		return NULL;
+	}
+
+	edict_t* pEdict = EdictFromIndex(index);
+	if (pEdict && !pEdict->IsFree() &&
+		strcmp(pEdict->GetClassName(), "player") == 0)
+	{
+		return playerinfomanager->GetPlayerInfo(pEdict);
+	}
+
+	return NULL;
 }
 
 inline IPlayerInfo* PlayerInfoFromEdict( edict_t* edict )
 {
-	return PlayerOfIndex(IndexOfEdict(edict));
+	return PlayerInfoFromIndex(IndexFromEdict(edict));
 }
 
 inline IPlayerInfo* PlayerInfoFromBaseHandle( CBaseHandle* basehandle )
 {
-	return PlayerOfIndex(basehandle->GetEntryIndex());
+	return PlayerInfoFromIndex(basehandle->GetEntryIndex());
 }
 
 inline IPlayerInfo* PlayerInfoFromIntHandle( int inthandle )
 {
-	return PlayerOfIndex(IndexOfIntHandle(inthandle));
+	return PlayerInfoFromIndex(IndexFromIntHandle(inthandle));
 }
 
 inline IPlayerInfo* PlayerInfoFromPointer( object pointer )
 {
-	return PlayerOfIndex(IndexOfPointer(pointer));
+	return PlayerInfoFromIndex(IndexFromPointer(pointer));
 }
 
 inline IPlayerInfo* PlayerInfoFromUserid( unsigned int userid )
 {
-	return PlayerOfUserid(userid);
+	edict_t* pEdict = EdictFromUserid(userid);
+	return pEdict ? playerinfomanager->GetPlayerInfo(pEdict) : NULL;
 }
 
 #endif // _CONVERSIONS_WRAP_H

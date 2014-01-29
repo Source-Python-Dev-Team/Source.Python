@@ -31,6 +31,7 @@
 #include "entities_wrap.h"
 #include "utility/sp_util.h"
 #include "boost/python/iterator.hpp"
+#include "modules/conversions/conversions_wrap.h"
 
 // ----------------------------------------------------------------------------
 // EntityGenerator Constructor.
@@ -97,7 +98,7 @@ edict_t* EntityGenerator::getNext()
 	while(m_iEntityIndex < gpGlobals->maxEntities)
 	{
 		m_iEntityIndex++;
-		pEdict = PEntityOfEntIndex(m_iEntityIndex);
+		pEdict = EdictFromIndex(m_iEntityIndex);
 		if (!pEdict || pEdict->IsFree() || !strlen(pEdict->GetClassName()))
 		{
 			pEdict = NULL;

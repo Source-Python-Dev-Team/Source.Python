@@ -38,6 +38,7 @@
 #include "boost/shared_array.hpp"
 #include "core/sp_main.h"
 #include "modules/listeners/listenermanager.h"
+#include "modules/conversions/conversions_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Global say command mapping.
@@ -222,7 +223,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 	int iIndex = GetCommandIndex();
 	
 	// Get the IPlayerInfo instance of the player
-	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(PEntityOfEntIndex(iIndex));
+	IPlayerInfo* pPlayerInfo = PlayerInfoFromIndex(iIndex);
 	
 	// Get whether the command was say or say_team
 	bool bTeamOnly = strcmp(command.Arg(0), "say_team") == 0;
