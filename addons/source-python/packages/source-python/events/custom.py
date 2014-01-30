@@ -8,7 +8,7 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from event_c import GameEvent
+from event_c import GameEventManager
 from public import public
 #   Events
 from events import EventsLogger
@@ -96,7 +96,7 @@ class CustomEvent(metaclass=_EventMeta):
         '''Fires the event with the stored variable values'''
 
         # Get the event's instance
-        event = GameEvent(self.name, True)
+        event = GameEventManager.create_event(self.name, True)
 
         # Loop through the event's variables
         for variable in self._odict:
@@ -106,7 +106,7 @@ class CustomEvent(metaclass=_EventMeta):
                 variable, getattr(self, '_' + variable))
 
         # Fire the event
-        event.fire_event()
+        GameEventManager.fire_event(event)
 
     def reset(self):
         '''Resets all event variable values to their default values'''
