@@ -445,13 +445,23 @@ void export_edict()
 }
 
 //-----------------------------------------------------------------------------
-// Exports EntityGenerator.
+// Exports CEntityGenerator.
 //-----------------------------------------------------------------------------
 void export_entity_generator()
 {
-	// TODO: Rename
-	BOOST_GENERATOR_CLASS(EntityGenerator)
-		CLASS_CONSTRUCTOR(const char*)
-		CLASS_CONSTRUCTOR(const char*, bool)
-	BOOST_END_CLASS()
+	class_<CEntityGenerator>("EntityGenerator")
+		.def(init<const char*>())
+		.def(init<const char*, bool>())
+
+		.def("__iter__",
+			&CEntityGenerator::iter,
+			"Returns the iterable object."
+		)
+
+		.def("__next__",
+			&CEntityGenerator::next,
+			"Returns the next valid instance.",
+			reference_existing_object_policy()
+		)
+	;
 }

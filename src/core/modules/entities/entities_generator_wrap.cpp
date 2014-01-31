@@ -34,9 +34,9 @@
 #include "modules/conversions/conversions_wrap.h"
 
 // ----------------------------------------------------------------------------
-// EntityGenerator Constructor.
+// CEntityGenerator Constructor.
 // ----------------------------------------------------------------------------
-EntityGenerator::EntityGenerator( PyObject* self ):
+CEntityGenerator::CEntityGenerator( PyObject* self ):
 	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(0),
 	m_szClassName(NULL),
@@ -46,9 +46,9 @@ EntityGenerator::EntityGenerator( PyObject* self ):
 }
 
 // ----------------------------------------------------------------------------
-// EntityGenerator Copy-Constructor.
+// CEntityGenerator Copy-Constructor.
 // ----------------------------------------------------------------------------
-EntityGenerator::EntityGenerator( PyObject* self, const EntityGenerator& rhs ):
+CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs ):
 	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(rhs.m_iEntityIndex),
 	m_uiClassNameLen(rhs.m_uiClassNameLen),
@@ -58,9 +58,9 @@ EntityGenerator::EntityGenerator( PyObject* self, const EntityGenerator& rhs ):
 }
 
 // ----------------------------------------------------------------------------
-// EntityGenerator Constructor (takes a filter string).
+// CEntityGenerator Constructor (takes a filter string).
 // ----------------------------------------------------------------------------
-EntityGenerator::EntityGenerator(PyObject* self, const char* szClassName):
+CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
 	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(0),
 	m_uiClassNameLen(strlen(szClassName)),
@@ -70,9 +70,9 @@ EntityGenerator::EntityGenerator(PyObject* self, const char* szClassName):
 }
 
 // ----------------------------------------------------------------------------
-// EntityGenerator Constructor (takes a filter string and a boolean flag).
+// CEntityGenerator Constructor (takes a filter string and a boolean flag).
 // ----------------------------------------------------------------------------
-EntityGenerator::EntityGenerator(PyObject* self, const char* szClassName, bool bExactMatch):
+CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName, bool bExactMatch):
 	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(0),
 	m_uiClassNameLen(strlen(szClassName)),
@@ -82,9 +82,9 @@ EntityGenerator::EntityGenerator(PyObject* self, const char* szClassName, bool b
 }
 
 // ----------------------------------------------------------------------------
-// EntityGenerator Destructor.
+// CEntityGenerator Destructor.
 // ----------------------------------------------------------------------------
-EntityGenerator::~EntityGenerator()
+CEntityGenerator::~CEntityGenerator()
 {
 	delete[] m_szClassName;
 }
@@ -92,7 +92,7 @@ EntityGenerator::~EntityGenerator()
 // ----------------------------------------------------------------------------
 // Returns the next valid edict_t instance.
 // ----------------------------------------------------------------------------
-edict_t* EntityGenerator::getNext()
+edict_t* CEntityGenerator::getNext()
 {
 	edict_t* pEdict = NULL;
 	while(m_iEntityIndex < gpGlobals->maxEntities)
@@ -125,7 +125,7 @@ edict_t* EntityGenerator::getNext()
 //---------------------------------------------------------------------------------
 // Private function, creates a copy of the class name string.
 //---------------------------------------------------------------------------------
-void EntityGenerator::makeStringCopy(const char* szClassName, unsigned int uiClassNameLen)
+void CEntityGenerator::makeStringCopy(const char* szClassName, unsigned int uiClassNameLen)
 {
 	if (uiClassNameLen > 0)
 	{

@@ -158,7 +158,6 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( get_server_command_overloads, GetServerCommand,
 
 void export_server_command()
 {
-	// TODO: Rename
 	class_<CServerCommandManager, boost::noncopyable>("ServerCommandDispatcher", no_init)
 		.def("add_callback",
 			&CServerCommandManager::AddCallback,
@@ -186,7 +185,6 @@ void export_server_command()
 //-----------------------------------------------------------------------------
 void export_client_command()
 {
-	// TODO: Rename
 	class_<CClientCommandManager, boost::noncopyable>("ClientCommandDispatcher", no_init)
 		.def("add_callback",
 			&CClientCommandManager::AddCallback,
@@ -226,7 +224,6 @@ void export_client_command()
 //-----------------------------------------------------------------------------
 void export_say_command()
 {
-	// TODO: Rename
 	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
 		.def("add_callback",
 			&CSayCommandManager::AddCallback,

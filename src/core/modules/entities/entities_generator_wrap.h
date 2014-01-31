@@ -41,14 +41,14 @@ struct edict_t;
 // ----------------------------------------------------------------------------
 // Declare the generator class.
 // ----------------------------------------------------------------------------
-class EntityGenerator: public IPythonGenerator<edict_t>
+class CEntityGenerator: public IPythonGenerator<edict_t>
 {
 public:
-	EntityGenerator(PyObject* self);
-	EntityGenerator(PyObject* self, const EntityGenerator& rhs);
-	EntityGenerator(PyObject* self, const char* szClassName);
-	EntityGenerator(PyObject* self, const char* szClassName, bool exactMatch);
-	virtual ~EntityGenerator();
+	CEntityGenerator(PyObject* self);
+	CEntityGenerator(PyObject* self, const CEntityGenerator& rhs);
+	CEntityGenerator(PyObject* self, const char* szClassName);
+	CEntityGenerator(PyObject* self, const char* szClassName, bool exactMatch);
+	virtual ~CEntityGenerator();
 
 protected:
 	virtual edict_t* getNext();
@@ -61,6 +61,6 @@ private:
 	bool m_bExactMatch;
 };
 
-BOOST_SPECIALIZE_HAS_BACK_REFERENCE(EntityGenerator)
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CEntityGenerator)
 
 #endif
