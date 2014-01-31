@@ -61,4 +61,20 @@ inline unsigned long ExtractPyPtr(object obj)
 	return extract<unsigned long>(obj);
 }
 
+//---------------------------------------------------------------------------------
+// Helper template methods for __getitem__ and __setitem__
+//---------------------------------------------------------------------------------
+template<class T, class U>
+U GetItemIndexer(const T* self, const int i)
+{
+	return (*self)[i];
+}
+
+template<class T, class U>
+void SetItemIndexer(T* self, const int i, const U& value)
+{
+	(*self)[i] = value;
+}
+
+
 #endif

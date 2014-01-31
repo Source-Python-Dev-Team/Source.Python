@@ -29,16 +29,24 @@
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
 #include "mathlib/vector.h"
+#include "mathlib/mathlib.h"
+#include "utility/sp_util.h"
 
 
 //-----------------------------------------------------------------------------
 // Exposes the mathlib_c module.
 //-----------------------------------------------------------------------------
 void export_vector();
+void export_qangle();
+void export_quaternion();
+void export_cplane_t();
 
 DECLARE_SP_MODULE(mathlib_c)
 {
 	export_vector();
+	export_qangle();
+	export_quaternion();
+	export_cplane_t();
 }
 
 //-----------------------------------------------------------------------------
@@ -47,11 +55,6 @@ DECLARE_SP_MODULE(mathlib_c)
 class VectorExt
 {
 public:
-	static void SetItem(Vector pVec, int iIndex, float fValue)
-	{
-		pVec[iIndex] = fValue;
-	}
-
 	static Vector* CreateNullVector()
 	{
 		return new Vector(0, 0, 0);
@@ -98,7 +101,7 @@ void export_vector()
 		)
 
 		.def("__setitem__",
-			&VectorExt::SetItem
+			&SetItemIndexer<Vector, float>
 		)
 
 		.def("as_vector_2D",
@@ -223,6 +226,203 @@ void export_vector()
 		.def("max",
 			&Vector::Max,
 			"Returns a new vector containing the biggest values of both vectors."
+		)
+	;
+}
+
+//-----------------------------------------------------------------------------
+// Exposes QAngle
+//-----------------------------------------------------------------------------
+void export_qangle()
+{
+	// TODO: Documentation
+	class_<QAngle>("QAngle")
+		.def(init<float, float, float>())
+
+		.def_readwrite("x",
+			&QAngle::x
+		)
+
+		.def_readwrite("y",
+			&QAngle::y
+		)
+		
+		.def_readwrite("z",
+			&QAngle::z
+		)
+
+		.def("init",
+			&QAngle::Init,
+			"Initializes the QAngle instance with the given values.",
+			args("x", "y", "z")
+		)
+
+		.def("random",
+			&QAngle::Random
+		)
+
+		.def("is_valid",
+			&QAngle::IsValid
+		)
+
+		.def("invalidate",
+			&QAngle::Invalidate
+		)
+
+		.def("__getitem__",
+			static_cast< float(QAngle::*)( int ) const >(&QAngle::operator[])
+		)
+
+		.def("__setitem__",
+			SetItemIndexer<QAngle, float>
+		)
+
+		.def(self == self)
+		.def(self != self)
+		
+		.def(self += self)
+		.def(self -= self)
+		.def(self *= other<float>())
+		.def(self /= other<float>())
+
+		.def("get_length",
+			&QAngle::Length
+		)
+
+		.def("get_length_sqr",
+			&QAngle::LengthSqr
+		)
+
+		.def(self + self)
+		.def(self - self)
+		.def(self * other<float>())
+		.def(self / other<float>())
+	;
+}
+
+//-----------------------------------------------------------------------------
+// Exposes Quaternion
+//-----------------------------------------------------------------------------
+void export_quaternion()
+{
+	// TODO: Documentation
+	class_<Quaternion>("Quaternion")
+		.def(init<float, float, float, float>())
+		.def(init<RadianEuler>())
+
+		.def("init",
+			&Quaternion::Init
+		)
+
+		.def("is_valid",
+			&Quaternion::IsValid
+		)
+
+		.def("invalidate",
+			&Quaternion::Invalidate
+		)
+
+		.def(self == self)
+		.def(self != self)
+
+		.def("__getitem__",
+			static_cast< float(Quaternion::*)( int ) const >(&Quaternion::operator[])
+		)
+
+		.def("__setitem__",
+			&SetItemIndexer<Quaternion, float>
+		)
+
+		.def_readwrite("x",
+			&Quaternion::x
+		)
+
+		.def_readwrite("y",
+			&Quaternion::y
+		)
+
+		.def_readwrite("z",
+			&Quaternion::z
+		)
+
+		.def_readwrite("w",
+			&Quaternion::w
+		)
+	;
+}
+
+//-----------------------------------------------------------------------------
+// Exposes cplane_t
+//-----------------------------------------------------------------------------
+void export_cplane_t()
+{
+	// TODO: Documentation
+	class_<cplane_t>("cplane")
+		.def_readwrite("normal",
+			&cplane_t::normal
+		)
+
+		.def_readwrite("dist",
+			&cplane_t::dist
+		)
+
+		.def_readwrite("type",
+			&cplane_t::type
+		)
+
+		.def_readwrite("signbits",
+			&cplane_t::signbits
+		)
+
+		// TODO: byte	pad[2];
+	;
+}
+
+//-----------------------------------------------------------------------------
+// Exposes RadianEuler
+//-----------------------------------------------------------------------------
+void export_radian_euler()
+{
+	// TODO: Documentation
+	class_<RadianEuler>("RadianEuler")
+		.def(init<float, float, float>())
+		.def(init<Quaternion>())
+		.def(init<QAngle>())
+
+		.def("init",
+			&RadianEuler::Init
+		)
+
+		.def("to_qangle",
+			&RadianEuler::ToQAngle
+		)
+
+		.def("is_valid",
+			&RadianEuler::IsValid
+		)
+
+		.def("invalidate",
+			&RadianEuler::Invalidate
+		)
+
+		.def("__getitem__",
+			static_cast< float(RadianEuler::*)( int ) const >(&RadianEuler::operator[])
+		)
+
+		.def("__setitem__",
+			&SetItemIndexer<RadianEuler, float>
+		)
+
+		.def_readwrite("x",
+			&RadianEuler::x
+		)
+
+		.def_readwrite("y",
+			&RadianEuler::y
+		)
+
+		.def_readwrite("z",
+			&RadianEuler::z
 		)
 	;
 }
