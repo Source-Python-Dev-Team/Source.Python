@@ -97,6 +97,16 @@ Set(SOURCEPYTHON_GENERIC_FILES
 )
 
 # ------------------------------------------------------------------
+# Bot module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_BOT_MODULE_HEADERS
+)
+
+Set(SOURCEPYTHON_BOT_MODULE_SOURCES
+    core/modules/bot/bot_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # Command module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_COMMAND_MODULE_HEADERS
@@ -288,6 +298,9 @@ Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
+    ${SOURCEPYTHON_BOT_MODULE_HEADERS}
+    ${SOURCEPYTHON_BOT_MODULE_SOURCES}
+    
     ${SOURCEPYTHON_COMMAND_MODULE_HEADERS}
     ${SOURCEPYTHON_COMMAND_MODULE_SOURCES}
 
@@ -343,6 +356,7 @@ Source_Group("Header Files\\Addons"                         FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
+Source_Group("Header Files\\Module\\Bot"                    FILES ${SOURCEPYTHON_BOT_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Cvar"                   FILES ${SOURCEPYTHON_CVAR_MODULE_HEADERS})
@@ -363,6 +377,7 @@ Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Source Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
+Source_Group("Source Files\\Module\\Bot"                    FILES ${SOURCEPYTHON_BOT_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvar"                   FILES ${SOURCEPYTHON_CVAR_MODULE_SOURCES})
