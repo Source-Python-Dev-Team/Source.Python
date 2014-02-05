@@ -198,6 +198,16 @@ void export_netinfo()
 
 void export_player_generator()
 {
-	BOOST_GENERATOR_CLASS(PlayerGenerator)
-	BOOST_END_CLASS()
+	class_<CPlayerGenerator>("PlayerGenerator")
+		.def("__iter__",
+			&CPlayerGenerator::iter,
+			"Returns the iterable object."
+		)
+
+		.def("__next__",
+			&CPlayerGenerator::next,
+			"Returns the next valid instance.",
+			reference_existing_object_policy()
+		)
+	;
 }

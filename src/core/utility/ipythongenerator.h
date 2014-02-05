@@ -107,23 +107,4 @@ T* IPythonGenerator<T>::next()
 	return pValue;
 }
 
-//---------------------------------------------------------------------------------
-// Use this macro with classes inheriting from IPythonGenerator to automatically
-// bind the magic methods for __iter__() and __next__().
-// You should still use BOOST_CLASS_END() to end the class definition.
-//---------------------------------------------------------------------------------
-#define BOOST_GENERATOR_CLASS( classname ) \
-	BOOST_CLASS(classname) \
-		CLASS_METHOD_SPECIAL(classname, \
-			"__iter__", \
-			iter, \
-			"Returns the iterable object." \
-		) \
-		CLASS_METHOD_SPECIAL(classname, \
-			"__next__", \
-			next, \
-			"Returns the next valid instance.", \
-			reference_existing_object_policy() \
-		)
-
 #endif // _PYTHON_GENERATOR_H
