@@ -63,6 +63,12 @@ class PluginManager(OrderedDict):
             # Get the plugin's instance
             instance = self.instance(plugin_name, self.base_import)
 
+            # Does the plugin have a load function?
+            if 'load' in instance.globals:
+
+                # Call the plugin's load function
+                instance.globals['load']()
+
         # Was the file not found?
         # We use this check because we already printed the error to console
         except PluginFileNotFoundError:
