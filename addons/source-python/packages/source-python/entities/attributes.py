@@ -50,7 +50,7 @@ class EntityAttributes(dict):
         # Loop through all given entities
         for arg in args:
 
-            # Add teh entities to the dictionary
+            # Add the entities to the dictionary
             values.update(self[arg])
 
         # Return all attributes for the given entities

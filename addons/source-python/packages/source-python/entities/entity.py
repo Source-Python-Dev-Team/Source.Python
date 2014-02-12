@@ -4,8 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#from Source import Binutils
 from conversions_c import edict_from_index
+from memory_c import CPointer
 from public import public
 #   Entities
 #from entities.functions import EntityFunctions
@@ -94,18 +94,18 @@ class BaseEntity(object):
     def _get_property(self, item):
         '''Gets the value of the given property'''
 
-        # Get the property's type
-        prop_type = self.properties[item].type
+        # Get the property so that we don't have to make multiple calls
+        prop = self.properties[item]
 
         # Get the property's value
-        value = getattr(self.edict, 'get_prop_{0}'.format(
-            prop_type))(self.properties[item].prop)
+        value = getattr(
+            self.edict, 'get_prop_{0}'.format(prop.type))(prop.prop)
 
         # Is the property a True/False property?
-        if 'True' in self.properties[item]:
+        if 'True' in prop:
 
             # Return if the current value equals the "True" value
-            return value == self.properties[item]['True']
+            return value == prop['True']
 
         # Return the value of the property
         return value
@@ -113,36 +113,36 @@ class BaseEntity(object):
     def _get_keyvalue(self, item):
         '''Gets the value of the given keyvalue'''
 
-        # Get the keyvalue's type
-        kv_type = self.keyvalues[item].type
-
         # Return the value of the given keyvalue
-        return getattr(self.edict, 'get_keyvalue_{0}'.format(kv_type))(item)
+        return getattr(
+            self.edict, 'get_keyvalue_{0}'.format(self.keyvalues[item]))(item)
 
     def _get_offset(self, item):
         '''Gets the value of the given offset'''
 
-        # Get the offset's type
-        offset_type = self.offsets[item].type
+        # Get the offset so that we don't have to make multiple calls
+        offset = self.offsets[item]
 
         # Get the CPointer instance for the entity
         pointer = CPointer(self.pointer)
 
         # Return the value of the offset
-        return getattr(pointer, 'get_{0}'.format(
-            offset_type))(self.offsets[item].offset)
+        return getattr(pointer, 'get_{0}'.format(offset.type))(offset.offset)
 
     def _get_function(self, item):
         '''Calls a dynamic function'''
 
+        # Get the function so that we don't have to make multiple calls
+        function = self.functions[item]
+
         # Does the entity's pointer need to be added to the arguments?
-        if self.functions[item].pointer_index != -1:
+        if function.pointer_index != -1:
 
             # Set the entity's pointer as the current one
-            self.functions[item].current_pointer = self.pointer
+            function.current_pointer = self.pointer
 
         # Return the pre call function method
-        return self.functions[item]._pre_call_function
+        return function._pre_call_function
 
     def __setattr__(self, attr, value):
         '''Finds if the attribute is value and sets its value'''
@@ -194,40 +194,36 @@ class BaseEntity(object):
     def _set_property(self, item, value):
         '''Sets the value of the given propery'''
 
-        # Get the property's type
-        prop_type = self.properties[item].type
+        # Get the property so that we don't have to make multiple calls
+        prop = self.properties[item]
 
         # Is the property a True/False property?
-        if 'True' in self.properties[item]:
+        if 'True' in prop:
 
             # Get the exact value to set the property to
-            value = self.properties[item][str(value)]
+            value = prop[str(value)]
 
         # Set the property's value
-        getattr(prop, 'set_prop_{0}'.format(
-            prop_type))(self.properties[item].prop, value)
+        getattr(self.edict, 'set_prop_{0}'.format(prop.type))(prop.prop, value)
 
     def _set_keyvalue(self, item, value):
         '''Sets the value of the given keyvalue'''
 
-        # Get the keyvalue's type
-        kv_type = self.keyvalues[item]
-
         # Set the keyvalue's value
-        getattr(self.edict, 'set_keyvalue_{0}'.format(kv_type))(item, value)
+        getattr(self.edict, 'set_keyvalue_{0}'.format(
+            self.keyvalues[item]))(item, value)
 
     def _set_offset(self, item, value):
         '''Sets the value of the given offset'''
 
-        # Get the offset's type
-        offset_type = self.offsets[item].type
+        # Get the offset so that we don't have to make multiple calls
+        offset = self.offsets[item]
 
         # Get the CPointer instance for the entity
         pointer = CPointer(self.pointer)
 
         # Set the offset's value
-        getattr(pointer, 'set_{0}'.format(
-            offset_type))(self.offsets[item].offset, value)
+        getattr(pointer, 'set_{0}'.format(offset.type))(offset.offset, value)
 
     def get_color(self):
         '''Returns a 4 part tuple (RGBA) for the entity's color'''
