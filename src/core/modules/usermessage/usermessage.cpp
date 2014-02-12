@@ -24,8 +24,22 @@
 * Development Team grants this exception to all derivative works.
 */
 
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
 #include "usermessage.h"
+#include "public/engine/iserverplugin.h"
+#include "core/sp_main.h"
 
+//-----------------------------------------------------------------------------
+// Externals.
+//-----------------------------------------------------------------------------
+extern IServerPluginHelpers *helpers;
+extern IServerPluginCallbacks *pPlugin;
+
+//-----------------------------------------------------------------------------
+// CUserMessage implementation.
+//-----------------------------------------------------------------------------
 CUserMessage::CUserMessage(const MRecipientFilter &recipient_filter, const char *message_name ) :
 	CUserMessageImplementation(recipient_filter, message_name),
 	m_sent(false)
@@ -104,4 +118,12 @@ void CUserMessage::set_buffer( const char *field_name, void *buffer, unsigned in
 void CUserMessage::set_string( const char *field_name, const char *field_value, int index/*=-1*/ )
 {
 	CUserMessageImplementation::set_string(field_name, field_value, index);
+}
+
+//-----------------------------------------------------------------------------
+// Functions.
+//-----------------------------------------------------------------------------
+void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data )
+{
+	helpers->CreateMessage(pEdict, type, data, pPlugin);
 }

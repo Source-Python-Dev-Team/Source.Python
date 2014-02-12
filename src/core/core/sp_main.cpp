@@ -100,6 +100,7 @@ extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &com
 //---------------------------------------------------------------------------------
 CSourcePython g_SourcePythonPlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSourcePython, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_SourcePythonPlugin );
+IServerPluginCallbacks *pPlugin;
 
 //---------------------------------------------------------------------------------
 // Helper console variable to tell scripters what engine version we are running
@@ -195,6 +196,8 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	ConnectTier1Libraries( &interfaceFactory, 1 );
 	ConnectTier2Libraries( &interfaceFactory, 2 );
 #endif
+
+	pPlugin = this;
 
 	// Get all engine interfaces.
 	if( !GetInterfaces(gEngineInterfaces, interfaceFactory) ) {

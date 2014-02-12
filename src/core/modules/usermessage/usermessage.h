@@ -27,12 +27,17 @@
 #ifndef _USERMESSAGE_H_
 #define _USERMESSAGE_H_
 
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
 #include "irecipientfilter.h"
-
 #include "utility/wrap_macros.h"
-
 #include GAME_INCLUDE_PATH(usermessage_implementation.h)
+#include "public/engine/iserverplugin.h"
 
+//-----------------------------------------------------------------------------
+// CUserMessage.
+//-----------------------------------------------------------------------------
 class CUserMessage : public CUserMessageImplementation
 {
 public:
@@ -64,4 +69,9 @@ private:
 	bool m_sent;
 };
 
-#endif
+//-----------------------------------------------------------------------------
+// Functions.
+//-----------------------------------------------------------------------------
+void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
+
+#endif // _USERMESSAGE_H_

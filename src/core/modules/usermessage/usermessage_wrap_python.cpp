@@ -24,22 +24,27 @@
 * Development Team grants this exception to all derivative works.
 */
 
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
 #include "modules/export_main.h"
 #include "usermessage.h"
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Namespaces to use
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 using namespace boost::python;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Exposer functions.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void export_usermessage_interface();
+void export_message_functions();
+void export_dialog_enum();
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Method overloads
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_char,	2, 3);
 DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_byte,	2, 3);
 DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_short,	2, 3);
@@ -49,12 +54,14 @@ DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_bool,	2, 3);
 DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_string,	2, 3);
 DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_buffer,	3, 4);
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Exposes the engine module.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(usermessage_c)
 {
 	export_usermessage_interface();
+	export_message_functions();
+	export_dialog_enum();
 }
 
 void export_usermessage_interface()
@@ -138,5 +145,24 @@ void export_usermessage_interface()
 			args("field_name", "field_value", "index")
 		)
 
+	BOOST_END_CLASS()
+}
+
+void export_message_functions()
+{
+	def("create_message",
+		CreateMessage,
+		"Creates an onscreen menu with various option buttons"
+	);
+}
+
+void export_dialog_enum()
+{
+	enum_<DIALOG_TYPE>("DialogType")
+		ENUM_VALUE("MSG", DIALOG_MSG)
+		ENUM_VALUE("MENU", DIALOG_MENU)
+		ENUM_VALUE("TEXT", DIALOG_TEXT)
+		ENUM_VALUE("ENTRY", DIALOG_ENTRY)
+		ENUM_VALUE("ASKCONNECT", DIALOG_ASKCONNECT)
 	BOOST_END_CLASS()
 }
