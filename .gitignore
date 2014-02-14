@@ -34,3 +34,5 @@ src/cmake_install.cmake
 src/Makefile
 src/lib*
 src/Build/*
+src/sdks/*
+!src/sdks/readme.txt
