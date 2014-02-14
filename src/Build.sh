@@ -5,11 +5,11 @@ if [ ! -d $PWD/Build ]; then
 fi
 cd Build
 make clean
-echo "Build in Debug mode?"
-select yn in "Yes" "No"; do
-    case $yn in
-        Yes ) cmake .. -DGAME=$name -DCMAKE_BUILD_TYPE=Debug; break;;
-        No ) cmake .. -DGAME=$name; break;;
+echo "Select the build type: "
+select rd in "Release" "Debug"; do
+    case $rd in
+        Release ) cmake .. -DGAME=$name; break;;
+        Debug ) cmake .. -DGAME=$name -DCMAKE_BUILD_TYPE=Debug; break;;
     esac
 done
 make
