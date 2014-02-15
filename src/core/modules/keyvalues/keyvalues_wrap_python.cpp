@@ -84,21 +84,11 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_empty_overload, IsEmpty, 0, 1);
 
 void export_keyvalues()
 {
-	// TODO: Add constructors. There are two possibilities:
-	// 1. Patch SDK and make destructor public. Then deleteThis() isn't required anymore
-	// 2. Create functions which construct a new object
-	class_<KeyValues, boost::noncopyable>("KeyValues", no_init)//init<const char *>())
-		/*
+	class_<KeyValues, boost::noncopyable>("KeyValues",init<const char *>())
 		.def(init<const char *, const char *, const char *>())
 		.def(init<const char *, const char *, int>())
 		.def(init<const char *, const char *, const char *, const char *, const char *>())
 		.def(init<const char *, const char *, int, const char *, int>())
-		*/
-
-		.def("delete",
-			&KeyValues::deleteThis,
-			"Ensures that KeyValues object is deleted from correct heap"
-		)
 
 		.def("get_name",
 			&KeyValues::GetName,

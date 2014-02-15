@@ -38,3 +38,8 @@
 #ifndef PATCH_EIFACE_H_BBOX_T
 #error "Implement struct bbox_t in public/eiface.h"
 #endif
+
+#include "KeyValues.h"
+#ifndef PATCH_KEYVALUES_DESTRUCTOR
+#error "Make KeyValues::~KeyValues() public."
+#endif

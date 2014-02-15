@@ -281,8 +281,11 @@ public:
 private:
 	KeyValues( KeyValues& );	// prevent copy constructor being used
 
+#define PATCH_KEYVALUES_DESTRUCTOR
+public:
 	// prevent delete being called except through deleteThis()
 	~KeyValues();
+private:
 
 	KeyValues* CreateKey( const char *keyName );
 	
