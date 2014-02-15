@@ -28,7 +28,9 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
+#include "utility/sp_util.h"
 #include "usermessage.h"
+#include "Color.h"
 
 //-----------------------------------------------------------------------------
 // Namespaces to use
@@ -41,6 +43,7 @@ using namespace boost::python;
 void export_usermessage_interface();
 void export_message_functions();
 void export_dialog_enum();
+void export_color();
 
 //-----------------------------------------------------------------------------
 // Method overloads
@@ -62,6 +65,7 @@ DECLARE_SP_MODULE(usermessage_c)
 	export_usermessage_interface();
 	export_message_functions();
 	export_dialog_enum();
+	export_color();
 }
 
 void export_usermessage_interface()
@@ -144,8 +148,7 @@ void export_usermessage_interface()
 			"Sets a field parameter to the specified value.",
 			args("field_name", "field_value", "index")
 		)
-
-	BOOST_END_CLASS()
+	;
 }
 
 void export_message_functions()
@@ -159,10 +162,65 @@ void export_message_functions()
 void export_dialog_enum()
 {
 	enum_<DIALOG_TYPE>("DialogType")
-		ENUM_VALUE("MSG", DIALOG_MSG)
-		ENUM_VALUE("MENU", DIALOG_MENU)
-		ENUM_VALUE("TEXT", DIALOG_TEXT)
-		ENUM_VALUE("ENTRY", DIALOG_ENTRY)
-		ENUM_VALUE("ASKCONNECT", DIALOG_ASKCONNECT)
-	BOOST_END_CLASS()
+		.value("MSG", DIALOG_MSG)
+		.value("MENU", DIALOG_MENU)
+		.value("TEXT", DIALOG_TEXT)
+		.value("ENTRY", DIALOG_ENTRY)
+		.value("ASKCONNECT", DIALOG_ASKCONNECT)
+	;
+}
+
+//---------------------------------------------------------------------------------
+// Exposes the Color class
+//---------------------------------------------------------------------------------
+class ColorExt
+{
+public:
+	static tuple GetColor(Color* pColor)
+	{
+		list color;
+		int r, g, b, a;
+		pColor->GetColor(r, g, b, a);
+		color.append(r);
+		color.append(g);
+		color.append(b);
+		color.append(a);
+		return tuple(color);
+	}
+};
+
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_color_overload, SetColor, 3, 4);
+
+void export_color()
+{
+	class_<Color>("Color")
+		.def(init<int, int, int>())
+		.def(init<int, int, int, int>())
+
+		.def("set_color",
+			&Color::SetColor,
+			set_color_overload(
+				"Sets the color in a RGB(A) format (0-255).",
+				args("r", "g", "b", "a")
+			)
+		)
+
+		.def("get_color",
+			&ColorExt::GetColor,
+			"Returns the color as a tuple containing the RGBA values."
+		)
+
+		.def("__getitem__",
+			&GetItemIndexer<Color, unsigned char>,
+			"Returns the color at the given index (0-3)."
+		)
+
+		.def("__setitem__",
+			&SetItemIndexer<Color, unsigned char>,
+			"Sets the color at the given index (0-3)."
+		)
+
+		.def(self == self)
+		.def(self != self)
+	;
 }
