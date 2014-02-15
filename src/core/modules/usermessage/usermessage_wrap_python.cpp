@@ -197,27 +197,14 @@ void export_color()
 		.def(init<int, int, int>())
 		.def(init<int, int, int, int>())
 
-		.def("set_color",
-			&Color::SetColor,
-			set_color_overload(
-				"Sets the color in a RGB(A) format (0-255).",
-				args("r", "g", "b", "a")
-			)
-		)
-
-		.def("get_color",
-			&ColorExt::GetColor,
-			"Returns the color as a tuple containing the RGBA values."
-		)
-
 		.def("__getitem__",
-			&GetItemIndexer<Color, unsigned char>,
-			"Returns the color at the given index (0-3)."
+			&GetItemIndexer<Color, unsigned char, 0, 3>,
+			"Returns the color at the given index."
 		)
 
 		.def("__setitem__",
-			&SetItemIndexer<Color, unsigned char>,
-			"Sets the color at the given index (0-3)."
+			&SetItemIndexer<Color, unsigned char, 0, 3>,
+			"Sets the color at the given index."
 		)
 
 		.def(self == self)

@@ -64,10 +64,28 @@ inline unsigned long ExtractPyPtr(object obj)
 //---------------------------------------------------------------------------------
 // Helper template methods for __getitem__ and __setitem__
 //---------------------------------------------------------------------------------
+template<class cls, class return_type, int iMin, int iMax>
+return_type GetItemIndexer(cls* self, int iIndex)
+{
+	if ((iIndex < iMin) || (iIndex > iMax))
+		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
+		
+	return (*self)[iIndex];
+}
+
 template<class T, class U>
 U GetItemIndexer(const T* self, const int i)
 {
 	return (*self)[i];
+}
+
+template<class cls, class value_type, int iMin, int iMax>
+void SetItemIndexer(cls* self, int iIndex, value_type value)
+{
+	if ((iIndex < iMin) || (iIndex > iMax))
+		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
+		
+	(*self)[iIndex] = value;
 }
 
 template<class T, class U>
