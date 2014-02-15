@@ -170,27 +170,6 @@ void export_dialog_enum()
 	;
 }
 
-//---------------------------------------------------------------------------------
-// Exposes the Color class
-//---------------------------------------------------------------------------------
-class ColorExt
-{
-public:
-	static tuple GetColor(Color* pColor)
-	{
-		list color;
-		int r, g, b, a;
-		pColor->GetColor(r, g, b, a);
-		color.append(r);
-		color.append(g);
-		color.append(b);
-		color.append(a);
-		return tuple(color);
-	}
-};
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_color_overload, SetColor, 3, 4);
-
 void export_color()
 {
 	class_<Color>("Color")
