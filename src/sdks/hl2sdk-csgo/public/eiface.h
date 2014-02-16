@@ -208,6 +208,7 @@ public:
 	// Finish the EntityMessage and dispatch to network layer
 	virtual void		MessageEnd( void ) = 0;
 	
+#define PATCH_SEND_USER_MESSAGE
 	virtual void		SendUserMessage( IRecipientFilter &filter, int message, const google::protobuf::Message &msg ) = 0;
 
 	// Print szMsg to the client console.

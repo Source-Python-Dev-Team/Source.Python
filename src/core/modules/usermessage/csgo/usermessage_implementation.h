@@ -29,8 +29,8 @@
 
 #include "../usermessage_implementation_base.h"
 
-#include "common/protobuf-2.3.0/src/google/protobuf/message.h"
-#include "common/protobuf-2.3.0/src/google/protobuf/descriptor.h"
+#include "google/protobuf/message.h"
+#include "google/protobuf/descriptor.h"
 
 class CUserMessageImplementation : public IUsermessageImplementationBase
 {

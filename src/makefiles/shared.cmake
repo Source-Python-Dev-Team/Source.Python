@@ -40,12 +40,6 @@ Set(DYNCALLSDK_INCLUDE   ${DYNCALLSDK}/include)
 Set(DYNCALLSDK_LIB       ${DYNCALLSDK}/lib)
 
 # ------------------------------------------------------------------
-# Protobuf specific.
-# ------------------------------------------------------------------
-Set(PROTOBUF		${THIRDPARTY_DIR}/protobuf/protobuf-2.3.0)
-Set(PROTOBUF_INCLUDE	${PROTOBUF}/src)
-
-# ------------------------------------------------------------------
 # AsmJit specific.
 # ------------------------------------------------------------------
 Set(ASMJITSDK         ${THIRDPARTY_DIR}/AsmJit)
@@ -63,6 +57,7 @@ Set(DYNAMICHOOKSSDK ${THIRDPARTY_DIR}/DynamicHooks)
 Include_Directories(
     ${SOURCESDK}
     ${SOURCESDK}/common
+    ${SOURCESDK}/common/protobuf-2.3.0/src
     ${SOURCESDK}/game/shared
     ${SOURCESDK}/game/server
     ${SOURCESDK}/public
@@ -71,7 +66,6 @@ Include_Directories(
     ${SOURCESDK}/public/engine/protobuf
     ${DYNCALLSDK_INCLUDE}
     ${BOOSTSDK_INCLUDE}
-    ${PROTOBUF_INCLUDE}
     ${ASMJITSDK_INCLUDE}
     ${DYNAMICHOOKSSDK}
     ${CMAKE_CURRENT_SOURCE_DIR}/core # Hack but required.
