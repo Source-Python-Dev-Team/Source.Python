@@ -71,6 +71,14 @@ public:
 	{
 		return pKeyValues->SaveToFile(filesystem, szFile);
 	}
+
+	static Color GetColor(KeyValues* pKeyValues, const char* szKeyName, const Color &defaultColor = Color())
+	{
+		if (!pKeyValues->FindKey(szKeyName))
+			return defaultColor;
+
+		return pKeyValues->GetColor(szKeyName);
+	}
 };
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(find_key_overload, FindKey, 1, 2);
@@ -78,27 +86,18 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uint64_overload, GetUint64, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 0, 2);
+BOOST_PYTHON_FUNCTION_OVERLOADS(get_color_overload, KeyValuesExt::GetColor, 2, 3);
 BOOST_PYTHON_FUNCTION_OVERLOADS(get_bool_overload, KeyValuesExt::GetBool, 2, 3);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_empty_overload, IsEmpty, 0, 1);
 
 
 void export_keyvalues()
 {
-	// TODO: Add constructors. There are two possibilities:
-	// 1. Patch SDK and make destructor public. Then deleteThis() isn't required anymore
-	// 2. Create functions which construct a new object
-	class_<KeyValues, boost::noncopyable>("KeyValues", no_init)//init<const char *>())
-		/*
+	class_<KeyValues, boost::noncopyable>("KeyValues",init<const char *>())
 		.def(init<const char *, const char *, const char *>())
 		.def(init<const char *, const char *, int>())
 		.def(init<const char *, const char *, const char *, const char *, const char *>())
 		.def(init<const char *, const char *, int, const char *, int>())
-		*/
-
-		.def("delete",
-			&KeyValues::deleteThis,
-			"Ensures that KeyValues object is deleted from correct heap"
-		)
 
 		.def("get_name",
 			&KeyValues::GetName,
@@ -238,6 +237,14 @@ void export_keyvalues()
 			)
 		)
 
+		.def("get_color",
+			&KeyValuesExt::GetColor,
+			get_color_overload(
+				"Returns the color value of the given key name.",
+				args("key_name", "default_value")
+			)
+		)
+
 		.def("get_bool",
 			&KeyValuesExt::GetBool,
 			get_bool_overload(
@@ -275,6 +282,12 @@ void export_keyvalues()
 		.def("set_float",
 			&KeyValues::SetFloat,
 			"Sets the given key's floating point value.",
+			args("key_name", "value")
+		)
+
+		.def("set_color",
+			&KeyValues::SetColor,
+			"Sets the given key's color value.",
 			args("key_name", "value")
 		)
 

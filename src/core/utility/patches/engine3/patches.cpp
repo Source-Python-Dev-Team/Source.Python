@@ -23,3 +23,13 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
+
+#include "KeyValues.h"
+#ifndef PATCH_KEYVALUES_DESTRUCTOR
+#error "Make KeyValues::~KeyValues() public."
+#endif
+
+#include "eiface.h"
+#ifndef PATCH_SEND_USER_MESSAGE
+#error "Make IVEngineServer::SendUserMessage pure virtual."
+#endif

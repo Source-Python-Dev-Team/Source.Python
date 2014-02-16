@@ -97,11 +97,11 @@ void export_vector()
 		)
 
 		.def("__getitem__",
-			static_cast< float(Vector::*)( int ) const >(&Vector::operator[])
+			&GetItemIndexer<Vector, float, 0, 2>
 		)
 
 		.def("__setitem__",
-			&SetItemIndexer<Vector, float>
+			&SetItemIndexer<Vector, float, 0, 2>
 		)
 
 		.def("as_vector_2D",
@@ -270,11 +270,11 @@ void export_qangle()
 		)
 
 		.def("__getitem__",
-			static_cast< float(QAngle::*)( int ) const >(&QAngle::operator[])
+			&GetItemIndexer<QAngle, float, 0, 2>
 		)
 
 		.def("__setitem__",
-			SetItemIndexer<QAngle, float>
+			&SetItemIndexer<QAngle, float, 0, 2>
 		)
 
 		.def(self == self)
@@ -326,11 +326,11 @@ void export_quaternion()
 		.def(self != self)
 
 		.def("__getitem__",
-			static_cast< float(Quaternion::*)( int ) const >(&Quaternion::operator[])
+			&GetItemIndexer<Quaternion, float, 0, 3>
 		)
 
 		.def("__setitem__",
-			&SetItemIndexer<Quaternion, float>
+			&SetItemIndexer<Quaternion, float, 0, 3>
 		)
 
 		.def_readwrite("x",
@@ -406,11 +406,11 @@ void export_radian_euler()
 		)
 
 		.def("__getitem__",
-			static_cast< float(RadianEuler::*)( int ) const >(&RadianEuler::operator[])
+			&GetItemIndexer<RadianEuler, float, 0, 2>
 		)
 
 		.def("__setitem__",
-			&SetItemIndexer<RadianEuler, float>
+			&SetItemIndexer<RadianEuler, float, 0, 2>
 		)
 
 		.def_readwrite("x",

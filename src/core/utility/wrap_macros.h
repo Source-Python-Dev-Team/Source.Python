@@ -87,117 +87,11 @@ using namespace boost::python;
 	static_cast< return_type(*)( __VA_ARGS__ ) >(&function)
 
 //---------------------------------------------------------------------------------
-// Use this to begin wrapping an enumeration.
-//---------------------------------------------------------------------------------
-#define BOOST_ENUM( enumname ) \
-	enum_<enumname>(XSTRINGIFY(enumname))
-
-//---------------------------------------------------------------------------------
-// Use this to wrap an enum value.
-//---------------------------------------------------------------------------------
-#define ENUM_VALUE( name, val ) \
-	.value(name, val)
-
-//---------------------------------------------------------------------------------
-// Use this to begin wrapping an abstract class.
-//---------------------------------------------------------------------------------
-#define BOOST_ABSTRACT_CLASS( classname ) \
-	class_<classname, boost::noncopyable>(XSTRINGIFY(classname), no_init)
-
-//---------------------------------------------------------------------------------
-// Use this to begin wrapping an abstract class that inherits.
-//---------------------------------------------------------------------------------
-#define BOOST_ABSTRACT_CLASS_INHERITED( classname, baseclass ) \
-	class_<classname, bases<baseclass>, boost::noncopyable>(XSTRINGIFY(classname), no_init)
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a class that inherits a base class.
-//---------------------------------------------------------------------------------
-#define BOOST_INHERITED_CLASS( classname, baseclass ) \
-	class_<classname, bases<baseclass> >(XSTRINGIFY(classname))
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a class that inherits a base class and has a non-default
-// constructor
-//---------------------------------------------------------------------------------
-#define BOOST_INHERITED_CLASS_CONSTRUCTOR( classname, baseclass, ... ) \
-	class_<classname, bases<baseclass> >(XSTRINGIFY(classname), init< __VA_ARGS__ >())
-
-//---------------------------------------------------------------------------------
-// Use this to wrap an inherited class that shouldn't be copied.
-//---------------------------------------------------------------------------------
-#define BOOST_INHERITED_CLASS_NOCOPY( classname, baseclass, ... ) \
-	class_<classname, bases<baseclass>, boost::noncopyable>(XSTRINGIFY(classname), ##__VA_ARGS__)
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a regular class.
-//---------------------------------------------------------------------------------
-#define BOOST_CLASS( classname ) \
-	class_<classname>(XSTRINGIFY(classname))
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a class with a non-default constructor.
-//---------------------------------------------------------------------------------
-#define BOOST_CLASS_CONSTRUCTOR( classname, ... ) \
-	class_<classname>(XSTRINGIFY(classname), init< __VA_ARGS__ >())
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a class that should be instantiatable from python, but
-// should never be copied.
-//---------------------------------------------------------------------------------
-#define BOOST_CLASS_NOCOPY( classname ) \
-	class_<classname, boost::noncopyable>(XSTRINGIFY(classname))
-
-//---------------------------------------------------------------------------------
-// This finishes off a boost -> python object wrapping.
-//---------------------------------------------------------------------------------
-#define BOOST_END_CLASS() \
-	;
-
-//---------------------------------------------------------------------------------
 // Use this to wrap a method. Variable arg is for any return value policies
 // you might have. Since we're in the namespace, we have access to the class.
 //---------------------------------------------------------------------------------
 #define CLASS_METHOD( classname, methodname, ... ) \
 	.def(XSTRINGIFY(methodname), &classname::methodname, ##__VA_ARGS__ )
-
-//---------------------------------------------------------------------------------
-// Use this to wrap pure virtual functions.
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD_PURE_VIRTUAL( classname, methodname, ... ) \
-	.def(XSTRINGIFY(methodname), pure_virtual(&classname::methodname), ##__VA_ARGS__ )
-
-//---------------------------------------------------------------------------------
-// Use this macro to bind class functions to "special" functions in python such
-// as __eq__ or __len__.
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD_SPECIAL( classname, pymethod, methodname, ... ) \
-	.def(pymethod, &classname::methodname, ##__VA_ARGS__)
-
-//---------------------------------------------------------------------------------
-// Use this for class methods that you've had to typedef out (because they were
-// overloaded etc etc).
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD_TYPEDEF( methodname, function, ... ) \
-	.def(XSTRINGIFY(methodname), function, ##__VA_ARGS__ )
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a writable class member.
-//---------------------------------------------------------------------------------
-#define CLASS_MEMBER( classname, varname, ... ) \
-	.def_readwrite(XSTRINGIFY(varname), &classname::varname, ##__VA_ARGS__ )
-
-//---------------------------------------------------------------------------------
-// Use this to add a constructor to a class.
-//---------------------------------------------------------------------------------
-#define CLASS_CONSTRUCTOR( ... )	  \
-	.def(init< __VA_ARGS__ >())
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a method that returns an interface.
-//---------------------------------------------------------------------------------
-#define BOOST_FUNCTION( function, ... ) \
-	def(XSTRINGIFY(function), &function, ##__VA_ARGS__ )
 
 //---------------------------------------------------------------------------------
 // Use this macro to generate function overloads for classes that have methods
@@ -222,18 +116,6 @@ using namespace boost::python;
 		 classname##_##methodname( args, docstring )[retpol])
 
 //---------------------------------------------------------------------------------
-// Use this macro for read only properties
-//---------------------------------------------------------------------------------
-#define CLASS_PROPERTY_READ_ONLY( classname, propertyname, fget, docstring) \
-	.add_property(propertyname, &classname::fget, docstring)
-
-//---------------------------------------------------------------------------------
-// Use this macro for read- and writeable properties
-//---------------------------------------------------------------------------------
-#define CLASS_PROPERTY_READWRITE( classname, propertyname, fget, fset, docstring) \
-	.add_property(propertyname, &classname::fget, &classname::fset, docstring)
-
-//---------------------------------------------------------------------------------
 // Use this macro to define a function or class method that raises a
 // NotImplementedError. This is quite hacky, but saves a lot work!
 //---------------------------------------------------------------------------------
@@ -254,13 +136,6 @@ using namespace boost::python;
 	add_property(name, NOT_IMPLEMENTED_RAW(), NOT_IMPLEMENTED_RAW(), "\nNot implemented on this engine.\n")
 
 //---------------------------------------------------------------------------------
-// Use this macro to expose a variadic function.
-//---------------------------------------------------------------------------------
-#define BOOST_VARIADIC_FUNCTION(name, function, ...) \
-	def("__" name, &function, ##__VA_ARGS__); \
-	exec("def " name "(*args): __" name "(args)", scope().attr("__dict__"))
-
-//---------------------------------------------------------------------------------
 // Use this macro to expose a variadic class method. Don't forget to call
 // DEFINE_CLASS_METHOD_VARIADIC after that.
 //---------------------------------------------------------------------------------
@@ -272,12 +147,6 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define DEFINE_CLASS_METHOD_VARIADIC(classname, method) \
 	scope().attr(#classname).attr(#method) = eval("lambda self, *args: self.__" #method "(args)")
-
-//---------------------------------------------------------------------------------
-// Use this macro to define a global attribute
-//---------------------------------------------------------------------------------
-#define BOOST_GLOBAL_ATTRIBUTE( attrName, attrValue ) \
-	scope().attr(attrName) = attrValue;
 
 //---------------------------------------------------------------------------------
 // Use this macro to raise a Python exception.

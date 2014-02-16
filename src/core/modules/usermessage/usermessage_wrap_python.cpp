@@ -28,124 +28,133 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "usermessage.h"
-
-//-----------------------------------------------------------------------------
-// Namespaces to use
-//-----------------------------------------------------------------------------
 using namespace boost::python;
 
-//-----------------------------------------------------------------------------
-// Exposer functions.
-//-----------------------------------------------------------------------------
-void export_usermessage_interface();
-void export_message_functions();
-void export_dialog_enum();
-
-//-----------------------------------------------------------------------------
-// Method overloads
-//-----------------------------------------------------------------------------
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_char,	2, 3);
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_byte,	2, 3);
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_short,	2, 3);
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_long,	2, 3);
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_float,	2, 3);
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_bool,	2, 3);
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_string,	2, 3);
-DECLARE_CLASS_METHOD_OVERLOAD(CUserMessage, set_buffer,	3, 4);
+#include "utility/sp_util.h"
+#include "usermessage.h"
+#include "Color.h"
 
 //-----------------------------------------------------------------------------
 // Exposes the engine module.
 //-----------------------------------------------------------------------------
+void export_usermessage_interface();
+void export_message_functions();
+void export_dialog_enum();
+void export_color();
+
 DECLARE_SP_MODULE(usermessage_c)
 {
 	export_usermessage_interface();
 	export_message_functions();
 	export_dialog_enum();
+	export_color();
 }
+
+//-----------------------------------------------------------------------------
+// Exposes the UserMessage class
+//-----------------------------------------------------------------------------
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_char_overload, set_char, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_byte_overload, set_byte, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_short_overload, set_short, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_long_overload, set_long, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_float_overload, set_float, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_bool_overload, set_bool, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_overload, set_string, 2, 3);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_buffer_overload, set_buffer, 3, 4);
 
 void export_usermessage_interface()
 {
-	// ----------------------------------------------------------
-	// The Usermessage interface.
-	// ----------------------------------------------------------
-	BOOST_CLASS_CONSTRUCTOR( CUserMessage, const MRecipientFilter &, const char * )
-
-		CLASS_METHOD(CUserMessage,
-			send_message,
+	class_<CUserMessage>("UserMessage", init<const MRecipientFilter &, const char *>())
+		.def("send_message",
+			&CUserMessage::send_message,
 			"Sends the usermessage to the client recipients."
 		)
 
-		CLASS_METHOD(CUserMessage,
-			get_message_name,
+		.def("get_message_name",
+			&CUserMessage::get_message_name,
 			"Retrieves the string name of the message."
 		)
 
-		CLASS_METHOD(CUserMessage,
-			get_message_index,
+		.def("get_message_index",
+			&CUserMessage::get_message_index,
 			"Retrieves the integer index of the message. -1 means the message is not valid."
 		)
 
-		CLASS_METHOD(CUserMessage,
-			get_recipient_filter,
+		.def("get_recipient_filter",
+			&CUserMessage::get_recipient_filter,
 			"Retrieves the clients this message will be sent to.",
 			reference_existing_object_policy()
 		)
 
-		CLASS_METHOD(CUserMessage,
-			has_been_sent,
+		.def("has_been_sent",
+			&CUserMessage::has_been_sent,
 			"Whether the message has been sent to the clients."
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_char,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_char",
+			&CUserMessage::set_char,
+			set_char_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_byte,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_byte",
+			&CUserMessage::set_byte,
+			set_byte_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_short,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_short",
+			&CUserMessage::set_short,
+			set_short_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_long,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_long",
+			&CUserMessage::set_long,
+			set_long_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_float,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_float",
+			&CUserMessage::set_float,
+			set_float_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_bool,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_bool",
+			&CUserMessage::set_bool,
+			set_bool_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_buffer,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_buffer",
+			&CUserMessage::set_buffer,
+			set_buffer_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
 
-		CLASS_METHOD_OVERLOAD(CUserMessage,
-			set_string,
-			"Sets a field parameter to the specified value.",
-			args("field_name", "field_value", "index")
+		.def("set_string",
+			&CUserMessage::set_string,
+			set_string_overload(
+				"Sets a field parameter to the specified value.",
+				args("field_name", "field_value", "index")
+			)
 		)
-
-	BOOST_END_CLASS()
+	;
 }
 
 void export_message_functions()
@@ -159,10 +168,31 @@ void export_message_functions()
 void export_dialog_enum()
 {
 	enum_<DIALOG_TYPE>("DialogType")
-		ENUM_VALUE("MSG", DIALOG_MSG)
-		ENUM_VALUE("MENU", DIALOG_MENU)
-		ENUM_VALUE("TEXT", DIALOG_TEXT)
-		ENUM_VALUE("ENTRY", DIALOG_ENTRY)
-		ENUM_VALUE("ASKCONNECT", DIALOG_ASKCONNECT)
-	BOOST_END_CLASS()
+		.value("MSG", DIALOG_MSG)
+		.value("MENU", DIALOG_MENU)
+		.value("TEXT", DIALOG_TEXT)
+		.value("ENTRY", DIALOG_ENTRY)
+		.value("ASKCONNECT", DIALOG_ASKCONNECT)
+	;
+}
+
+void export_color()
+{
+	class_<Color>("Color")
+		.def(init<int, int, int>())
+		.def(init<int, int, int, int>())
+
+		.def("__getitem__",
+			&GetItemIndexer<Color, unsigned char, 0, 3>,
+			"Returns the color at the given index."
+		)
+
+		.def("__setitem__",
+			&SetItemIndexer<Color, unsigned char, 0, 3>,
+			"Sets the color at the given index."
+		)
+
+		.def(self == self)
+		.def(self != self)
+	;
 }

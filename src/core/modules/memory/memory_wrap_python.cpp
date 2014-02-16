@@ -58,7 +58,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(find_binary_overload, find_binary, 1, 2);
 
 void export_binaryfile()
 {
-	BOOST_ABSTRACT_CLASS(CBinaryFile)
+	class_<CBinaryFile, boost::noncopyable>("CBinaryFile", no_init)
 
 		// Class methods
 		CLASS_METHOD(CBinaryFile,
@@ -76,36 +76,31 @@ void export_binaryfile()
 		)
 
 		// Special methods
-		CLASS_METHOD_SPECIAL(CBinaryFile,
-			"__getattr__",
-			find_address,
+		.def("__getattr__",
+			&CBinaryFile::find_address,
 			"Returns the address of a signature or symbol found in memory.",
 			args("identifier"),
 			manage_new_object_policy()
 		)
 
-		CLASS_METHOD_SPECIAL(CBinaryFile,
-			"__getitem__",
-			find_address,
+		.def("__getitem__",
+			&CBinaryFile::find_address,
 			"Returns the address of a signature or symbol found in memory.",
 			args("identifier"),
 			manage_new_object_policy()
 		)
-
+	
 		// Properties
-		CLASS_PROPERTY_READ_ONLY(CBinaryFile,
-			"addr",
-			get_address,
+		.add_property("addr",
+			&CBinaryFile::get_address,
 			"Returns the base address of this binary."
 		)
 
-		CLASS_PROPERTY_READ_ONLY(CBinaryFile,
-			"size",
-			get_size,
+		.add_property("size",
+			&CBinaryFile::get_size,
 			"Returns the size of this binary."
 		)
-
-	BOOST_END_CLASS()
+	;
 
 	def("find_binary",
 		&find_binary,
@@ -158,7 +153,7 @@ DECLARE_CLASS_METHOD_OVERLOAD(CPointer, set_string, 1, 4);
 
 void export_memtools()
 {
-	BOOST_CLASS_CONSTRUCTOR(CPointer, optional<unsigned long>)
+	class_<CPointer>("CPointer", init< optional<unsigned long> >())
 
 		// Class methods
 		CLASS_METHOD_OVERLOAD_RET(CPointer,
@@ -579,54 +574,48 @@ void export_memtools()
 		 )
 
 		// Special methods
-		CLASS_METHOD_SPECIAL(CPointer,
-			"__int__",
-			get_address,
+		.def("__int__",
+			&CPointer::get_address,
 			"Returns the address of this memory block."
 		)
 
-		CLASS_METHOD_SPECIAL(CPointer,
-			"__bool__",
-			is_valid,
+		.def("__bool__",
+			&CPointer::is_valid,
 			"Returns True if the address is not NULL."
 		)
 
-		CLASS_METHOD_SPECIAL(CPointer,
-			"__add__",
-			add,
+		.def("__add__",
+			&CPointer::add,
 			"Adds a value to the base address.",
 			manage_new_object_policy()
 		)
 
-		CLASS_METHOD_SPECIAL(CPointer,
-			"__sub__",
-			sub,
+		.def("__sub__",
+			&CPointer::sub,
 			"Subtracts a value from the base address.",
 			manage_new_object_policy()
 		)
 
 		// Properties
-		CLASS_PROPERTY_READ_ONLY(CPointer,
-			"addr",
-			get_address,
+		.add_property("addr",
+			&CPointer::get_address,
 			"Returns the address of this memory block."
 		)
 
-		CLASS_PROPERTY_READ_ONLY(CPointer,
-			"size",
-			get_size,
+		.add_property("size",
+			&CPointer::get_size,
 			"Returns the size of this memory block."
 		)
+	;
 
-	BOOST_END_CLASS()
-
-	BOOST_FUNCTION(alloc,
+	def("alloc",
+		alloc,
 		"Allocates a memory block.",
 		args("iSize"),
 		manage_new_object_policy()
 	);
 
-	BOOST_INHERITED_CLASS_CONSTRUCTOR(CFunction, CPointer, unsigned long, Convention_t, char*)
+	class_<CFunction, bases<CPointer> >("CFunction", init<unsigned long, Convention_t, char*>())
 
 		CLASS_METHOD_VARIADIC(CFunction,
 			__call__,
@@ -669,8 +658,7 @@ void export_memtools()
 			remove_post_hook,
 			"Removes a post-hook callback."
 		)
-
-	BOOST_END_CLASS()
+	;
 	
 	DEFINE_CLASS_METHOD_VARIADIC(CFunction, __call__);
 	DEFINE_CLASS_METHOD_VARIADIC(CFunction, call_trampoline);
@@ -682,34 +670,33 @@ void export_memtools()
 void export_dyncall()
 {
 	enum_<Convention_t>("Convention")
-		ENUM_VALUE("CDECL", CONV_CDECL)
-		ENUM_VALUE("STDCALL", CONV_STDCALL)
-		ENUM_VALUE("THISCALL", CONV_THISCALL)
-	BOOST_END_CLASS()
+		.value("CDECL", CONV_CDECL)
+		.value("STDCALL", CONV_STDCALL)
+		.value("THISCALL", CONV_THISCALL)
+	;
 
 	// Other constants that are very useful.
-	BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_NONE",             DC_ERROR_NONE);
-	BOOST_GLOBAL_ATTRIBUTE("DC_ERROR_UNSUPPORTED_MODE", DC_ERROR_UNSUPPORTED_MODE);
+	scope().attr("DC_ERROR_NONE") = DC_ERROR_NONE;
+	scope().attr("DC_ERROR_UNSUPPORTED_MODE") = DC_ERROR_UNSUPPORTED_MODE;
 
-	BOOST_FUNCTION(get_error,
+	def("get_error",
+		get_error,
 		"Returns the last DynCall error ID."
 	);
 }
 
 void export_dynamichooks()
 {
-	BOOST_CLASS_CONSTRUCTOR(CStackData, CHook*)
+	class_<CStackData>("CStackData", init<CHook*>())
 
 		// Special methods
-		CLASS_METHOD_SPECIAL(CStackData,
-			"__getitem__",
-			get_item,
+		.def("__getitem__",
+			&CStackData::get_item,
 			"Returns the argument at the specified index."
 		)
 
-		CLASS_METHOD_SPECIAL(CStackData,
-			"__setitem__",
-			set_item,
+		.def("__setitem__",
+			&CStackData::set_item,
 			"Sets the argument at the specified index."
 		)
 
@@ -721,6 +708,5 @@ void export_dynamichooks()
 			),
 			"Stack pointer register."
 		)
-
-	BOOST_END_CLASS()
+	;
 }
