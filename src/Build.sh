@@ -11,9 +11,10 @@ ChooseBuildType () {
 
     # Print a menu for build type
     echo "Select the build type:"
-    echo.
+    echo ""
     echo -e "\t1) Release"
     echo -e "\t2) Debug"
+    echo ""
 
     # Request a choice in build type
     read choice
@@ -37,13 +38,13 @@ ChooseBuildType () {
 ChooseSDK () {
 
     echo "Choose the SDK you wish to build against:"
-    echo.
+    echo ""
 
     # Store a base counting variable
     num=0
 
     # Loop through all sdks currently downloaded
-    for directory in $(find $SDKDIR/* -type d -maxdepth 0)
+    for directory in $(find $SDKDIR/* -maxdepth 0 -type d)
     do
 
         # Increment the counter
@@ -60,7 +61,7 @@ ChooseSDK () {
         echo -e "\t$num) $name"
     done
 
-    echo.
+    echo ""
 
     # Request a choice of sdk
     read choice
@@ -80,18 +81,19 @@ ChooseSDK () {
         name=option_$choice
         name=${!name}
 
-        # Navigate to the Build directory (create it if it does not exist)
-        if [ ! -d $PWD/Build ]; then
-            mkdir $PWD/Build
-        fi
-        cd Build
-
         # Get the build type
         ChooseBuildType $name
 
     fi
 
+    # Navigate to the Build directory (create it if it does not exist)
+    if [ ! -d $PWD/Build ]; then
+        mkdir $PWD/Build
+    fi
+    cd Build
+
     # Build the binaries
+    make clean
     make
 }
 

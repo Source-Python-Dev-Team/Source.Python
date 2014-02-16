@@ -8,13 +8,13 @@ SDKDIR=$STARTDIR/makefiles/sdk
 ChooseSDK () {
 
     echo "Choose the SDK you wish to download:"
-    echo.
+    echo ""
 
     # Store a base counting variable
     num=0
 
     # Loop through all sdks supported by the plugin
-    for filepath in $(find $SDKDIR -type f -maxdepth 1)
+    for filepath in $(find $SDKDIR -maxdepth 1 -type f)
     do
 
         # Increment the counter
@@ -31,7 +31,7 @@ ChooseSDK () {
         echo -e "\t$num) $file"
     done
 
-    echo.
+    echo ""
 
     # Request a choice of sdk
     read choice
