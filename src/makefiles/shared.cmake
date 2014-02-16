@@ -14,7 +14,7 @@ Set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING
 
 # ------------------------------------------------------------------
 # Setup include paths.
-# Note that ${GAME} here is passed on the command line.
+# Note that ${SDK} here is passed on the command line.
 # ------------------------------------------------------------------
 Set(SOURCESDK_DIR        ${CMAKE_CURRENT_SOURCE_DIR}/sdks)
 Set(THIRDPARTY_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
@@ -22,7 +22,7 @@ Set(THIRDPARTY_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
 # ------------------------------------------------------------------
 # SDK Directories.
 # ------------------------------------------------------------------
-Set(SOURCESDK            ${SOURCESDK_DIR}/hl2sdk-${GAME})
+Set(SOURCESDK            ${SOURCESDK_DIR}/hl2sdk-${SDK})
 Set(SOURCESDK_LIB        ${SOURCESDK}/lib)
 
 # ------------------------------------------------------------------

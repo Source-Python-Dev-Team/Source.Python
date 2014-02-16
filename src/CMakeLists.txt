@@ -6,7 +6,7 @@ CMake_Minimum_Required(VERSION 2.8)
 # ------------------------------------------------------------------
 # Makefile includes.
 # ------------------------------------------------------------------
-include("makefiles/game/${GAME}.cmake")
+include("makefiles/sdk/${SDK}.cmake")
 include("makefiles/shared.cmake")
 
 # ------------------------------------------------------------------
@@ -393,7 +393,7 @@ Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\RecipientFilters"       FILES ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Usermessages"           FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Usermessages\\${GAME}"  FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
+Source_Group("Source Files\\Module\\Usermessages\\${SDK}"  FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 

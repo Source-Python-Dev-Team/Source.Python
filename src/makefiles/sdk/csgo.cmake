@@ -9,4 +9,4 @@
 Set(SOURCE_ENGINE 3)
 Set(SOURCE_GAME "csgo")
 
-include("makefiles/game/${GAME}.usermessages.cmake")
+include("makefiles/sdk/${SDK}/usermessages.cmake")
