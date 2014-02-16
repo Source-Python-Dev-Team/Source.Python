@@ -28,8 +28,8 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include <vector>
-#include "entities_props.h"
-#include "entities_wrap.h"
+#include "entity_props.h"
+#include "entity_wrap.h"
 #include "dt_common.h"
 #include "utility/sp_util.h"
 #include "edict.h"

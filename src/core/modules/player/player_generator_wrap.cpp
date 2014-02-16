@@ -27,7 +27,7 @@
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
-#include "players_generator_wrap.h"
+#include "player_generator_wrap.h"
 #include "utility/sp_util.h"
 #include "game/server/iplayerinfo.h"
 #include "boost/python/iterator.hpp"

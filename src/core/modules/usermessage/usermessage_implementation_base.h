@@ -29,7 +29,7 @@
 
 #include "irecipientfilter.h"
 #include "eiface.h"
-#include "modules/recipientfilters/mrecipientfilter.h"
+#include "modules/recipientfilter/mrecipientfilter.h"
 
 extern IVEngineServer* engine;
 

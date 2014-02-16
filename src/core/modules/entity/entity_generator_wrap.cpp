@@ -27,8 +27,8 @@
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
-#include "entities_generator_wrap.h"
-#include "entities_wrap.h"
+#include "entity_generator_wrap.h"
+#include "entity_wrap.h"
 #include "utility/sp_util.h"
 #include "boost/python/iterator.hpp"
 #include "modules/conversions/conversions_wrap.h"

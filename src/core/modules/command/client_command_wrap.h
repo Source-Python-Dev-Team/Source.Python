@@ -37,7 +37,7 @@
 #include "edict.h"
 #include "convar.h"
 #include "command_wrap.h"
-#include "modules/entities/entities_wrap.h"
+#include "modules/entity/entity_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Client Command Manager class.

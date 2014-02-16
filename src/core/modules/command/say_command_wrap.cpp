@@ -37,7 +37,7 @@
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
 #include "core/sp_main.h"
-#include "modules/listeners/listenermanager.h"
+#include "modules/listener/listenermanager.h"
 #include "modules/conversions/conversions_wrap.h"
 
 //-----------------------------------------------------------------------------

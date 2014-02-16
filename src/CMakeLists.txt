@@ -110,17 +110,17 @@ Set(SOURCEPYTHON_BOT_MODULE_SOURCES
 # Command module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_COMMAND_MODULE_HEADERS
-    core/modules/commands/client_command_wrap.h
-    core/modules/commands/command_wrap.h
-    core/modules/commands/say_command_wrap.h
-    core/modules/commands/server_command_wrap.h
+    core/modules/command/client_command_wrap.h
+    core/modules/command/command_wrap.h
+    core/modules/command/say_command_wrap.h
+    core/modules/command/server_command_wrap.h
 )
 
 Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
-    core/modules/commands/client_command_wrap.cpp
-    core/modules/commands/command_wrap_python.cpp
-    core/modules/commands/say_command_wrap.cpp
-    core/modules/commands/server_command_wrap.cpp
+    core/modules/command/client_command_wrap.cpp
+    core/modules/command/command_wrap_python.cpp
+    core/modules/command/say_command_wrap.cpp
+    core/modules/command/server_command_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -166,19 +166,19 @@ Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Entities module
+# Entity module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENTITY_MODULE_HEADERS
-    core/modules/entities/entities_wrap.h
-    core/modules/entities/entities_props.h
-    core/modules/entities/entities_generator_wrap.h
+    core/modules/entity/entity_wrap.h
+    core/modules/entity/entity_props.h
+    core/modules/entity/entity_generator_wrap.h
 )
 
 Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
-    core/modules/entities/entities_props.cpp
-    core/modules/entities/entities_wrap.cpp
-    core/modules/entities/entities_wrap_python.cpp
-    core/modules/entities/entities_generator_wrap.cpp
+    core/modules/entity/entity_props.cpp
+    core/modules/entity/entity_wrap.cpp
+    core/modules/entity/entity_wrap_python.cpp
+    core/modules/entity/entity_generator_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -188,7 +188,7 @@ Set(SOURCEPYTHON_EVENT_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
-    core/modules/events/events_wrap_python.cpp
+    core/modules/event/event_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -217,12 +217,12 @@ Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
 # Listener module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LISTENERS_MODULE_HEADERS
-    core/modules/listeners/listenermanager.h
+    core/modules/listener/listenermanager.h
 )
 
 Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
-    core/modules/listeners/listenermanager.cpp
-    core/modules/listeners/listeners_wrap_python.cpp
+    core/modules/listener/listenermanager.cpp
+    core/modules/listener/listener_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -258,24 +258,24 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
 # Players module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
-    core/modules/players/players_generator_wrap.h
+    core/modules/player/player_generator_wrap.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
-    core/modules/players/players_wrap_python.cpp
-    core/modules/players/players_generator_wrap.cpp
+    core/modules/player/player_wrap_python.cpp
+    core/modules/player/player_generator_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # RecipientFilter module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_HEADERS
-    core/modules/recipientfilters/mrecipientfilter.h
+    core/modules/recipientfilter/mrecipientfilter.h
 )
 
 Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES
-    core/modules/recipientfilters/mrecipientfilter.cpp
-    core/modules/recipientfilters/mrecipientfilter_wrap_python.cpp
+    core/modules/recipientfilter/mrecipientfilter.cpp
+    core/modules/recipientfilter/recipientfilter_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------

@@ -32,11 +32,11 @@
 #include "edict.h"
 #include "convar.h"
 #include "engine/iserverplugin.h"
-#include "modules/entities/entities_wrap.h"
+#include "modules/entity/entity_wrap.h"
 #include "utility/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
-#include "modules/listeners/listenermanager.h"
+#include "modules/listener/listenermanager.h"
 
 //-----------------------------------------------------------------------------
 // Global Client command mapping.

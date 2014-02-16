@@ -27,8 +27,8 @@
 // ----------------------------------------------------------------------------
 // Includes
 // ----------------------------------------------------------------------------
-#include "players_generator_wrap.h"
-#include "modules/entities/entities_wrap.h"
+#include "player_generator_wrap.h"
+#include "modules/entity/entity_wrap.h"
 #include "modules/export_main.h"
 
 #include "public/game/server/iplayerinfo.h"

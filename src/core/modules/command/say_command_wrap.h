@@ -34,7 +34,7 @@
 #include "command_wrap.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
-#include "modules/entities/entities_wrap.h"
+#include "modules/entity/entity_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Say ConCommand instance class.
