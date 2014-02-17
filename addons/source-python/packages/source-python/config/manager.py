@@ -10,7 +10,7 @@ from collections import defaultdict
 from textwrap import TextWrapper
 
 # Source.Python Imports
-from core import GameEngine
+from engine_c import EngineServer
 from excepthooks import ExceptHooks
 from paths import CFG_PATH
 from public import public
@@ -386,7 +386,7 @@ class ConfigManager(object):
 
     def execute(self):
         '''Executes the config file'''
-        GameEngine.server_command(
+        EngineServer.server_command(
             'exec source-python/{0}\n'.format(self.filepath))
 
     def _parse_old_file(self):

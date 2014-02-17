@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from conversions_c import playerinfo_from_index
-from core import GameEngine
+from engine_c import EngineServer
 from public import public
 #   Entities
 from entities.entity import BaseEntity
@@ -78,7 +78,7 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     @property
     def language(self):
         '''Returns the player's language'''
-        return GameEngine.get_client_convar_value(self.index, 'cl_language')
+        return EngineServer.get_client_convar_value(self.index, 'cl_language')
 
     @property
     def uniqueid(self):

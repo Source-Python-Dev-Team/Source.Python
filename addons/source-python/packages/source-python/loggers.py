@@ -17,7 +17,7 @@ from logging import getLogger
 
 # Source.Python Imports
 from cvar_c import ConVar
-from core import GameEngine
+from engine_c import EngineServer
 from core import echo_console
 from paths import LOG_PATH
 from public import public
@@ -143,7 +143,7 @@ class _LogInstance(dict):
             message = self.formatter.format(record)
 
             # Print to the main log
-            GameEngine.log_print(message + '\n')
+            EngineServer.log_print(message + '\n')
 
         # Print to the console?
         if CONSOLE & areas:

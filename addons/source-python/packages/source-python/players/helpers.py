@@ -5,6 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from conversions_c import *
+from engine_c import EngineServer
 from public import public
 
 
@@ -102,7 +103,7 @@ def address_from_playerinfo(player):
     index = index_from_playerinfo(player)
 
     # Get the player's NetInfo instance
-    netinfo = GameEngine.get_player_net_info(index)
+    netinfo = EngineServer.get_player_net_info(index)
 
     # Return the player's IP Address
     return netinfo.get_address()

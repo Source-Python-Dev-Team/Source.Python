@@ -5,8 +5,8 @@
 # =============================================================================
 # Source.Python Imports
 from Source import Misc
+from engine_c import EngineServer
 from core import AutoUnload
-from core import GameEngine
 from public import public
 #   Events
 from events.manager import EventRegistry
@@ -67,13 +67,13 @@ class _DownloadablesList(list):
         '''Add the given file to the downloadables table'''
 
         # Lock the network string tables
-        locked = GameEngine.lock_network_string_tables(False)
+        locked = EngineServer.lock_network_string_tables(False)
 
         # Add the given file
         self.download_table.AddString(True, item)
 
         # Reset the lock status
-        GameEngine.lock_network_string_tables(locked)
+        EngineServer.lock_network_string_tables(locked)
 
     def server_spawn(self, GameEvent):
         '''Adds all items stored as downloadables to the stringtable'''

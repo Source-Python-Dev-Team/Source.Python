@@ -8,7 +8,7 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from core import GameEngine
+from engine_c import EngineServer
 #   Players
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
@@ -73,7 +73,7 @@ class _SettingsType(object):
         convar = self.prefix + self.name.lower().replace(' ', '_')
 
         # Get the client's convar value
-        value = GameEngine.get_client_convar_value(index, convar)
+        value = EngineServer.get_client_convar_value(index, convar)
 
         # Use try/except to typecast the value
         try:

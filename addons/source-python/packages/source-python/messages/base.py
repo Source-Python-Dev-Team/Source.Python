@@ -17,11 +17,11 @@ from imp import load_source
 from path import path
 
 # Source.Python Imports
+from engine_c import EngineServer
 from core import echo_console
-from core import GameEngine
 from excepthooks import ExceptHooks
 #   UserMessage
-from usermessage_c import CUserMessage
+from usermessage_c import UserMessage
 #   Filters
 from filters.recipients import RecipientFilter
 #   Translations
@@ -442,8 +442,8 @@ class BaseMessage(dict):
     def _send_message(self, recipient, **kwargs):
         '''Send the message to the given recipient filter'''
 
-        # Get a CUserMessage instance
-        usermsg = CUserMessage(recipient, self._message_name)
+        # Get a UserMessage instance
+        usermsg = UserMessage(recipient, self._message_name)
 
         # Loop through all required parameters
         for parameter_name in self._required_parameters:
@@ -550,7 +550,7 @@ class BaseMessage(dict):
             for index in recipient:
 
                 # Add the current index
-                languages[GameEngine.get_client_convar_value(index,
+                languages[EngineServer.get_client_convar_value(index,
                     'cl_language')].add(index)
 
             # Loop through all languages

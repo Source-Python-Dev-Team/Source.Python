@@ -8,8 +8,8 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
+from engine_c import EngineServer
 from _core import _CoreLogger
-from core import GameEngine
 from paths import SP_DATA_PATH
 #   Plugins
 from plugins import _plugin_strings
@@ -121,7 +121,7 @@ class _SPSubCommandManager(SubCommandManager):
         # Add the delay
         TickDelays.delay(
             float(args[0]),
-            GameEngine.server_command, ' '.join(args[1:]) + '\n')
+            EngineServer.server_command, ' '.join(args[1:]) + '\n')
 
     @staticmethod
     def print_version():

@@ -36,15 +36,18 @@
 #include "public/game/server/iplayerinfo.h"
 #include "modules/memory/memory_tools.h"
 
-
+//-----------------------------------------------------------------------------
 // Externals
+//-----------------------------------------------------------------------------
 extern IVEngineServer* engine;
 extern CGlobalVars*	   gpGlobals;
 extern IPlayerInfoManager* playerinfomanager;
 
 extern unsigned long ExtractPyPtr(object obj);
 
+//-----------------------------------------------------------------------------
 // Forward declarations
+//-----------------------------------------------------------------------------
 edict_t* EdictFromIndex( unsigned int iEntIndex );
 edict_t* EdictFromUserid( unsigned int userid );
 edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo );
@@ -53,6 +56,7 @@ IPlayerInfo* PlayerInfoFromIndex( unsigned int index );
 IPlayerInfo* PlayerInfoFromUserid( unsigned int userid );
 
 //-----------------------------------------------------------------------------
+// Functions that return an entity's index.
 //-----------------------------------------------------------------------------
 inline unsigned int IndexFromEdict( edict_t* pEdict )
 {
@@ -124,6 +128,7 @@ inline unsigned int IndexFromPlayerInfo( IPlayerInfo* playerinfo )
 }
 
 //-----------------------------------------------------------------------------
+// Functions that return an entity's edict_t instance.
 //-----------------------------------------------------------------------------
 inline edict_t* EdictFromIndex( unsigned int iEntIndex )
 {
@@ -177,6 +182,7 @@ inline edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo )
 }
 
 //-----------------------------------------------------------------------------
+// Functions that return an entity's CBaseHandle instance.
 //-----------------------------------------------------------------------------
 inline const CBaseHandle BaseHandleFromIndex( unsigned int index )
 {
@@ -209,6 +215,7 @@ inline const CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 }
 
 //-----------------------------------------------------------------------------
+// Functions that return an entity's integer handle.
 //-----------------------------------------------------------------------------
 inline int IntHandleFromIndex( unsigned int index )
 {
@@ -241,6 +248,7 @@ inline int IntHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 }
 
 //-----------------------------------------------------------------------------
+// Functions that return an entity's CPointer instance.
 //-----------------------------------------------------------------------------
 inline CPointer* PointerFromIndex( unsigned int index )
 {
@@ -273,6 +281,7 @@ inline CPointer* PointerFromPlayerInfo( IPlayerInfo* playerinfo )
 }
 
 //-----------------------------------------------------------------------------
+// Functions that return an player's userid.
 //-----------------------------------------------------------------------------
 inline unsigned int UseridFromIndex( unsigned int index )
 {
@@ -305,6 +314,7 @@ inline unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo )
 }
 
 //-----------------------------------------------------------------------------
+// Functions that return an player's IPlayerInfo instance.
 //-----------------------------------------------------------------------------
 inline IPlayerInfo* PlayerInfoFromIndex( unsigned int index )
 {

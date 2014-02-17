@@ -27,12 +27,15 @@
 * https://developer.valvesoftware.com/wiki/Ingame_menu_for_server_plugins_(CS:S_only)
 */
 
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
 #include "modules/export_main.h"
 #include "mrecipientfilter.h"
 
-//---------------------------------------------------------------------------------
-// Exposes the engine module.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// Exposes the recipientfilter_c module.
+//-----------------------------------------------------------------------------
 void export_mrecipientfilter();
 
 DECLARE_SP_MODULE(recipientfilter_c)
@@ -40,10 +43,13 @@ DECLARE_SP_MODULE(recipientfilter_c)
 	export_mrecipientfilter();
 }
 
+//-----------------------------------------------------------------------------
+// Expose MRecipientFilter
+//-----------------------------------------------------------------------------
 void export_mrecipientfilter()
 {
 	// TODO: Rename class
-	class_<MRecipientFilter, boost::noncopyable>("RecipientFilter")
+	class_<MRecipientFilter, boost::noncopyable>("CMRecipientFilter")
 		.def("is_reliable",
 			&MRecipientFilter::IsReliable,
 			"Whether this recipient filter will be network reliable (sent in-order)"

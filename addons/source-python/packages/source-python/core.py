@@ -8,7 +8,7 @@
 from os import sep
 
 # Source.Python Imports
-from engine_c import GameEngine
+from engine_c import EngineServer as GameEngine
 from paths import GAME_PATH
 from public import public
 

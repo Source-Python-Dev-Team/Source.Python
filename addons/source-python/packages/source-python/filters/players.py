@@ -8,8 +8,8 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
+from engine_c import EngineServer
 from player_c import PlayerGenerator
-from core import GameEngine
 from core import GAME_NAME
 from paths import SP_DATA_PATH
 from public import public
@@ -213,7 +213,7 @@ def _return_weapon(PlayerInfo):
 
 def _return_language(PlayerInfo):
     '''Returns the player's language'''
-    return GameEngine.get_client_convar_value(
+    return EngineServer.get_client_convar_value(
         index_from_playerinfo(PlayerInfo), 'cl_language')
 
 
