@@ -45,7 +45,7 @@
 #include "inetchannelinfo.h"
 #include "eiface.h"
 
-#include ENGINE_INCLUDE_PATH(eiface_wrap_python.h)
+#include ENGINE_INCLUDE_PATH(engine_wrap_python.h)
 
 
 extern IVEngineServer* engine;
@@ -93,7 +93,7 @@ void export_engine_interface()
 	// Call engine specific implementation function
 	IVEngineServer_Visitor(
 
-	class_<IVEngineServer, boost::noncopyable>("EngineServer", no_init)
+	class_<IVEngineServer, boost::noncopyable>("_EngineServer", no_init)
 		.def("change_level",
 			&IVEngineServer::ChangeLevel,
 			"Tells the engine to change the level. If s2 is None, the engine will execute a \
@@ -752,5 +752,5 @@ void export_engine_interface()
 
 	); // IVEngineServer_Visitor
 
-	scope().attr("GameEngine") = object(ptr(engine));
+	scope().attr("EngineServer") = object(ptr(engine));
 }

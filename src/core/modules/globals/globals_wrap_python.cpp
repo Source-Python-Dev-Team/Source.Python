@@ -63,7 +63,7 @@ void export_globals()
 {
 	GlobalsBase_Visitor(
 
-	class_<CGlobalVarsBase>("GlobalVarsBase", init<bool>())
+	class_<CGlobalVarsBase>("_GlobalVarsBase", init<bool>())
 		.def("is_client",
 			&CGlobalVarsBase::IsClient,
 			"Returns True if the game is a client."
@@ -135,7 +135,7 @@ void export_globals()
 
 	Globals_Visitor(
 
-	class_< CGlobalVars, bases< CGlobalVarsBase> >("GlobalVars", init<bool>())
+	class_< CGlobalVars, bases< CGlobalVarsBase> >("_GlobalVars", init<bool>())
 		.add_property("map_name",
 			make_getter(&CGlobalVars::mapname, return_value_policy<return_by_value>()),
             "Current map name."
@@ -188,5 +188,5 @@ void export_globals()
 		.NOT_IMPLEMENTED_ATTR("edicts")
 	);
 
-	scope().attr("Globals") = object(ptr(gpGlobals));
+	scope().attr("GlobalVars") = object(ptr(gpGlobals));
 }

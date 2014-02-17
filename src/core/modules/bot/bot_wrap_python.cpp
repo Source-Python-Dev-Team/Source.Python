@@ -53,7 +53,7 @@ DECLARE_SP_MODULE(bot_c)
 
 void export_botmanager()
 {
-	class_<IBotManager, boost::noncopyable>("BotManager", no_init)
+	class_<IBotManager, boost::noncopyable>("_BotManager", no_init)
 		.def("get_bot_controller",
 			&IBotManager::GetBotController,
 			"Returns the BotController object for the given bot edict.",

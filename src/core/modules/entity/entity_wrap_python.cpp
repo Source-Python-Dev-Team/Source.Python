@@ -235,7 +235,7 @@ void export_server_networkable()
 //-----------------------------------------------------------------------------
 void export_edict()
 {
-	class_< CBaseEdict >("BaseEdict")
+	class_< CBaseEdict >("_BaseEdict")
 		.def("get_server_entity",
 			GET_METHOD(IServerEntity*, CBaseEdict, GetIServerEntity),
 			"Returns its ServerEntity instance.",

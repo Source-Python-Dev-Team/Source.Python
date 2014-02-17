@@ -43,7 +43,7 @@ DECLARE_SP_MODULE(recipientfilter_c)
 void export_mrecipientfilter()
 {
 	// TODO: Rename class
-	class_<MRecipientFilter, boost::noncopyable>("CMRecipientFilter")
+	class_<MRecipientFilter, boost::noncopyable>("RecipientFilter")
 		.def("is_reliable",
 			&MRecipientFilter::IsReliable,
 			"Whether this recipient filter will be network reliable (sent in-order)"

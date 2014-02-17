@@ -158,11 +158,11 @@ Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
 # Engine module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
-    core/modules/engine/engine${SOURCE_ENGINE}/eiface_wrap_python.h
+    core/modules/engine/engine${SOURCE_ENGINE}/engine_wrap_python.h
 )
 
 Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
-    core/modules/engine/eiface_wrap_python.cpp
+    core/modules/engine/engine_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------

@@ -24,9 +24,9 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Includes
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #include "igameevents.h"
 #include "modules/export_main.h"
 
@@ -34,10 +34,10 @@
 	#define EVENT_DEBUG_ID_INIT 42
 #endif
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // This is the IGameEventListener2 callback class. It allows python to subclass
 // IGameEventListener2 then pass an instance of that to CGameEventManager.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 class CGameEventListener2: public IGameEventListener2, public wrapper<IGameEventListener2>
 {
 public:
@@ -54,14 +54,14 @@ public:
 	}
 };
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Externals
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 extern IGameEventManager2* gameeventmanager;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Exposes the Game Event module.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void export_igameevent();
 void export_igameeventlistener();
 void export_igameeventmanager();
@@ -73,9 +73,9 @@ DECLARE_SP_MODULE(event_c)
 	export_igameeventmanager();
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Exposes IGameEvent.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_bool_overload, GetBool, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 1, 2);
@@ -169,9 +169,9 @@ void export_igameevent()
 	;
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Exposes the game event listener.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void export_igameeventlistener()
 {
 	class_<CGameEventListener2, boost::noncopyable>("GameEventListener")
@@ -186,15 +186,15 @@ void export_igameeventlistener()
 	;
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Exposes the game event manager.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(fire_event_overload, FireEvent, 1, 2);
 
 void export_igameeventmanager()
 {
-	class_<IGameEventManager2, boost::noncopyable>("GameEventManager", no_init)
+	class_<IGameEventManager2, boost::noncopyable>("_GameEventManager", no_init)
 		.def("load_events_from_file",
 			&IGameEventManager2::LoadEventsFromFile,
 			"Loads game event descriptions from a file eg resource/gameevents.res",

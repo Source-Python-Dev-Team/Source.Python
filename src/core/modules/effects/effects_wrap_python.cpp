@@ -110,7 +110,7 @@ void export_effects()
 		*/
 	;
 
-	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("Effects", no_init)
+	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("_Effects", no_init)
 		.def("beam",
 			&IEffects::Beam,
 			"Creates a beam particle effect.",

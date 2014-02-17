@@ -59,7 +59,7 @@ DECLARE_SP_MODULE(cvar_c)
 //-----------------------------------------------------------------------------
 void export_cvar_interface()
 {
-	class_<ICvar, boost::noncopyable>("Cvar", no_init)
+	class_<ICvar, boost::noncopyable>("_Cvar", no_init)
 		.def("register_con_command",
 			&ICvar::RegisterConCommand,
 			"Registers a console command.",
@@ -154,7 +154,7 @@ void export_concommandbase()
 	;
 
 	// TODO: Rename or move to ConVar
-	class_<IConVar, boost::noncopyable>("IConVar", no_init)
+	class_<IConVar, boost::noncopyable>("_IConVar", no_init)
 		.def("set_string",
 			GET_METHOD(void, IConVar, SetValue, const char*),
 			args("value")

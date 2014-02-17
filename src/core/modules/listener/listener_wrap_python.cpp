@@ -63,7 +63,7 @@ void export_listener_managers()
     //-------------------------------------------------------------------------
 	// Exposes ListenerManager
 	//-------------------------------------------------------------------------
-	class_<CListenerManager, boost::noncopyable>("ListenerManager", no_init)
+	class_<CListenerManager, boost::noncopyable>("_ListenerManager", no_init)
 		.def("register_listener",
 			&CListenerManager::RegisterListener,
 			"Registers a callable object. If it was already registered it will be ignored.",
