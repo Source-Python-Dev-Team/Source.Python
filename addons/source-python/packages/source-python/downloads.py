@@ -82,7 +82,7 @@ class _DownloadablesList(list):
         # Reset the lock status
         EngineServer.lock_network_string_tables(locked)
 
-    def server_spawn(self, GameEvent):
+    def server_spawn(self, game_event):
         '''Adds all items stored as downloadables to the stringtable'''
 
         # Refresh the downloadables table instance

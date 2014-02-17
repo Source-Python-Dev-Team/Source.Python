@@ -48,9 +48,9 @@ class Event(AutoUnload):
         # Register the event
         EventRegistry.register_for_event(self.callback.__name__, self.callback)
 
-    def __call__(self, GameEvent):
+    def __call__(self, game_event):
         '''Calls the Event callback with the GameEvent instance'''
-        return self.callback(GameEvent)
+        return self.callback(game_event)
 
     def _unload_instance(self):
         '''Unregisters the event'''
