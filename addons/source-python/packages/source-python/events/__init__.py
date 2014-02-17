@@ -6,9 +6,17 @@
 # Source.Python Imports
 from core import AutoUnload
 from loggers import _SPLogger
-from public import public
 #   Events
 from events.manager import EventRegistry
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'Event',
+]
 
 
 # =============================================================================
@@ -21,7 +29,6 @@ EventsLogger = _SPLogger.events
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class Event(AutoUnload):
     '''Event decorator class'''
 

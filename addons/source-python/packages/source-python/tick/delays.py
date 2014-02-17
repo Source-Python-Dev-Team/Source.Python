@@ -10,9 +10,17 @@ import time
 # Source.Python Imports
 from listener_c import TickListenerManager
 from excepthooks import ExceptHooks
-from public import public
 #   Tick
 from tick import TickLogger
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'TickDelays',
+]
 
 
 # =============================================================================
@@ -79,7 +87,6 @@ class _Times(list):
             item()
 
 
-@public
 class _TickDelays(dict):
     '''Class used to store delays to be called by a tick listener'''
 

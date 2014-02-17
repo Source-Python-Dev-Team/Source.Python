@@ -12,11 +12,19 @@ import sys
 # Source.Python Imports
 from core import AutoUnload
 from excepthooks import ExceptHooks
-from public import public
 #   Plugins
 from plugins import PluginsLogger
 from plugins import _plugin_strings
 from plugins.errors import PluginFileNotFoundError
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'PluginManager',
+]
 
 
 # =============================================================================
@@ -29,7 +37,6 @@ PluginsManagerLogger = PluginsLogger.manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class PluginManager(OrderedDict):
     '''Stores plugins and their instances'''
 

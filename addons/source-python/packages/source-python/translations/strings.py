@@ -24,9 +24,18 @@ from path import Path
 # Source.Python Imports
 from paths import TRANSLATION_PATH
 from paths import GAME_PATH
-from public import public
 #   Translations
 from translations.manager import LanguageManager
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'LangStrings',
+    'TranslationStrings',
+]
 
 
 # =============================================================================
@@ -41,7 +50,6 @@ _double_escaped_pattern = re_compile(
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class LangStrings(dict):
     '''Dictionary class used to store all strings for a plugin'''
 
@@ -214,7 +222,6 @@ class LangStrings(dict):
         return given_string
 
 
-@public
 class TranslationStrings(dict):
     '''Dictionary used to store and get language
         strings for a particular string'''

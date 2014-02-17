@@ -9,6 +9,29 @@ from path import Path
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'BASE_PATH',
+    'CFG_PATH',
+    'CUSTOM_DATA_PATH',
+    'CUSTOM_PACKAGES_PATH',
+    'EVENT_PATH',
+    'GAME_PATH',
+    'LOG_PATH',
+    'PACKAGES_PATH',
+    'PLUGIN_DATA_PATH',
+    'PLUGIN_PATH',
+    'SITE_PACKAGES_PATH',
+    'SOUND_PATH',
+    'SP_DATA_PATH',
+    'SP_PACKAGES_PATH',
+    'TRANSLATION_PATH',
+]
+
+
+# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the game's base path
@@ -59,6 +82,3 @@ CUSTOM_DATA_PATH = _DATA_PATH.joinpath('custom')
 
 # Get the plugin specific data path
 PLUGIN_DATA_PATH = _DATA_PATH.joinpath('plugins')
-
-# Add all paths to __all__
-__all__ = [x for x in globals() if x.isupper() and not x.startswith('_')]

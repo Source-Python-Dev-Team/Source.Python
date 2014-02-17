@@ -6,9 +6,17 @@
 # Source.Python Imports
 from event_c import GameEventManager
 from loggers import _SPLogger
-from public import public
 #   Events
 from events.listener import _EventListener
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'EventRegistry',
+]
 
 
 # =============================================================================
@@ -21,7 +29,6 @@ EventsManagerLogger = _SPLogger.events.manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class _EventRegistry(dict):
     '''Dictionary object used to hold Event names with all registered callbacks
     '''

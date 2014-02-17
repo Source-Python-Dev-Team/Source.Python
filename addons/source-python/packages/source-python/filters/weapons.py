@@ -5,7 +5,6 @@
 # =============================================================================
 # Source.Python Imports
 from entity_c import EntityGenerator
-from public import public
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import basehandle_from_edict
@@ -20,21 +19,30 @@ from weapons.manager import WeaponManager
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'WeaponClassIter',
+    'WeaponEdictIter',
+]
+
+
+# =============================================================================
 # >> WEAPON EDICT ITER CLASSES
 # =============================================================================
 class _WeaponEdictIterManager(_BaseFilterManager):
     '''Filter management class specifically for weapon iterating'''
 
 # Get the _WeaponIterManager instance
-WeaponEdictIterManager = _WeaponEdictIterManager()
+_WeaponEdictIterManagerInstance = _WeaponEdictIterManager()
 
 
-@public
 class WeaponEdictIter(_IterObject):
     '''Weapon iterate class'''
 
     # Store the manager for the weapon iterator
-    manager = WeaponEdictIterManager
+    manager = _WeaponEdictIterManagerInstance
 
     @staticmethod
     def iterator():
@@ -57,15 +65,14 @@ class _WeaponClassIterManager(_BaseFilterManager):
     '''Filter management class specifically for weapon tag iterating'''
 
 # Get the _WeaponClassIterManager instance
-WeaponClassIterManager = _WeaponClassIterManager()
+_WeaponClassIterManagerInstance = _WeaponClassIterManager()
 
 
-@public
 class WeaponClassIter(_IterObject):
     '''Weapon tag iterate class'''
 
     # Store the manager for the weapon tag iterator
-    manager = WeaponClassIterManager
+    manager = _WeaponClassIterManagerInstance
 
     def __init__(self, is_filters=[], not_filters=[], return_types='weapon'):
         '''Overwrite the __init__ method to re-call main __init__
@@ -90,7 +97,7 @@ class WeaponClassIter(_IterObject):
 # =============================================================================
 # >> WEAPON TAG CLASSES
 # =============================================================================
-class _WeaponTags(dict):
+class __WeaponTagsInstance(dict):
     '''Class used to store weapon tags for the current game'''
 
     def __missing__(self, item):
@@ -102,8 +109,8 @@ class _WeaponTags(dict):
         # Return the instance
         return instance
 
-# Get the _WeaponTags instance
-WeaponTags = _WeaponTags()
+# Get the __WeaponTagsInstance instance
+_WeaponTagsInstance = __WeaponTagsInstance()
 
 
 class _Tag(object):
@@ -128,16 +135,16 @@ class _Tag(object):
 # Loop through all tags for the current game
 for tag in WeaponManager.tags:
 
-    # Get the WeaponTags instance for the current tag
-    instance = WeaponTags[tag]
+    # Get the _WeaponTagsInstance instance for the current tag
+    _instance = _WeaponTagsInstance[tag]
 
-    # Register the tag's filter for WeaponEdictIterManager
-    WeaponEdictIterManager.register_filter(
-        tag, instance._edict_weapon_contains_tag)
+    # Register the tag's filter for _WeaponEdictIterManagerInstance
+    _WeaponEdictIterManagerInstance.register_filter(
+        tag, _instance._edict_weapon_contains_tag)
 
-    # Register the tag's filter for WeaponClassIterManager
-    WeaponClassIterManager.register_filter(
-        tag, instance._class_weapon_contains_tag)
+    # Register the tag's filter for _WeaponClassIterManagerInstance
+    _WeaponClassIterManagerInstance.register_filter(
+        tag, _instance._class_weapon_contains_tag)
 
 
 # =============================================================================
@@ -153,13 +160,16 @@ def _return_instance(edict):
     return BaseEntity(index_from_edict(edict), 'weapon')
 
 # Register the return type functions
-WeaponEdictIterManager.register_return_type('index', index_from_edict)
-WeaponEdictIterManager.register_return_type(
+_WeaponEdictIterManagerInstance.register_return_type('index', index_from_edict)
+_WeaponEdictIterManagerInstance.register_return_type(
     'basehandle', basehandle_from_edict)
-WeaponEdictIterManager.register_return_type('inthandle', inthandle_from_edict)
-WeaponEdictIterManager.register_return_type('pointer', pointer_from_edict)
-WeaponEdictIterManager.register_return_type('edict', _return_edict)
-WeaponEdictIterManager.register_return_type('weapon', _return_instance)
+_WeaponEdictIterManagerInstance.register_return_type(
+    'inthandle', inthandle_from_edict)
+_WeaponEdictIterManagerInstance.register_return_type(
+    'pointer', pointer_from_edict)
+_WeaponEdictIterManagerInstance.register_return_type('edict', _return_edict)
+_WeaponEdictIterManagerInstance.register_return_type(
+    'weapon', _return_instance)
 
 
 # =============================================================================
@@ -205,11 +215,15 @@ def _return_tags(weapon):
     return weapon.tags
 
 # Register the return type functions
-WeaponClassIterManager.register_return_type('weapon', _return_weapon)
-WeaponClassIterManager.register_return_type('classname', _return_classname)
-WeaponClassIterManager.register_return_type('basename', _return_basename)
-WeaponClassIterManager.register_return_type('slot', _return_slot)
-WeaponClassIterManager.register_return_type('maxammo', _return_maxammo)
-WeaponClassIterManager.register_return_type('ammoprop', _return_ammoprop)
-WeaponClassIterManager.register_return_type('clip', _return_clip)
-WeaponClassIterManager.register_return_type('tags', _return_tags)
+_WeaponClassIterManagerInstance.register_return_type('weapon', _return_weapon)
+_WeaponClassIterManagerInstance.register_return_type(
+    'classname', _return_classname)
+_WeaponClassIterManagerInstance.register_return_type(
+    'basename', _return_basename)
+_WeaponClassIterManagerInstance.register_return_type('slot', _return_slot)
+_WeaponClassIterManagerInstance.register_return_type(
+    'maxammo', _return_maxammo)
+_WeaponClassIterManagerInstance.register_return_type(
+    'ammoprop', _return_ammoprop)
+_WeaponClassIterManagerInstance.register_return_type('clip', _return_clip)
+_WeaponClassIterManagerInstance.register_return_type('tags', _return_tags)

@@ -12,5 +12,8 @@ from commands.server.manager import ServerCommandManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all imported classes to all
-__all__ = list(globals())
+# Add all the global variables to __all__
+__all__ = [
+    'ServerCommand',
+    'ServerCommandManager',
+]

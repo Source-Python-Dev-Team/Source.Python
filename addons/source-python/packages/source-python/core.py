@@ -8,16 +8,20 @@
 from os import sep
 
 # Source.Python Imports
-from engine_c import EngineServer as GameEngine
+from engine_c import EngineServer
 from paths import GAME_PATH
-from public import public
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 # Add all the global variables to __all__
-__all__ = ['GAME_NAME', 'GameEngine']
+__all__ = [
+    'AutoUnload',
+    'GAME_NAME',
+    'GameEngine',
+    'echo_console',
+]
 
 
 # =============================================================================
@@ -26,11 +30,13 @@ __all__ = ['GAME_NAME', 'GameEngine']
 # Get the specific game for the server
 GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
 
+# Set GameEngine variable
+GameEngine = EngineServer
+
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class AutoUnload(object):
     '''
         Class used to auto unload specific instances.
@@ -43,7 +49,6 @@ class AutoUnload(object):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-@public
 def echo_console(text):
     '''echos a message to the server's console'''
 
@@ -51,5 +56,5 @@ def echo_console(text):
     for line in text.split('\n'):
 
         # Echo the message
-        GameEngine.server_command(
+        EngineServer.server_command(
             'echo "{0}"\n'.format(line.replace('"', "'")))

@@ -20,7 +20,15 @@ from cvar_c import ConVar
 from engine_c import EngineServer
 from core import echo_console
 from paths import LOG_PATH
-from public import public
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'LogManager',
+]
 
 
 # =============================================================================
@@ -205,7 +213,6 @@ class _LogInstance(dict):
         return self._logger
 
 
-@public
 class LogManager(_LogInstance):
     '''Main log class used as a root to create children instances'''
 

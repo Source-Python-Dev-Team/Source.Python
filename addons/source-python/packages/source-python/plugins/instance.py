@@ -10,11 +10,19 @@ from importlib import import_module
 # Source.Python Imports
 from paths import GAME_PATH
 from paths import PLUGIN_PATH
-from public import public
 #   Plugins
 from plugins import PluginsLogger
 from plugins import _plugin_strings
 from plugins.errors import PluginFileNotFoundError
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'LoadedPlugin',
+]
 
 
 # =============================================================================
@@ -27,7 +35,6 @@ PluginsInstanceLogger = PluginsLogger.instance
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class LoadedPlugin(object):
     '''Stores a plugin's instance'''
 
@@ -59,8 +66,9 @@ class LoadedPlugin(object):
 
             # Print a message that the plugin's main file was not found
             self.logger.log_message(self.prefix + self.translations[
-                'No Module'].get_string(plugin=plugin_name,
-                file=file_path.replace(GAME_PATH, '').replace('\\', '/')))
+                'No Module'].get_string(
+                plugin=plugin_name, file=file_path.replace(
+                    GAME_PATH, '').replace('\\', '/')))
 
             # Raise an error so that the plugin
             # is not added to the PluginManager

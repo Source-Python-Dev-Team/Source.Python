@@ -8,12 +8,20 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from public import public
 #   Settings
 from settings.types import _SettingsType
 from settings.types import _FloatSetting
 from settings.types import _IntegerSetting
 from settings.types import _StringSetting
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'PlayerSettings',
+]
 
 
 # =============================================================================
@@ -127,7 +135,6 @@ class _SettingsDictionary(OrderedDict):
         return self[name]
 
 
-@public
 class PlayerSettings(_SettingsDictionary):
     '''Class used to register user settings'''
 

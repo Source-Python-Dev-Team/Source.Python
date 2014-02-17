@@ -1,30 +1,31 @@
 # ../plugins/errors.py
 
 # =============================================================================
-# >> IMPORTS
+# >> ALL DECLARATION
 # =============================================================================
-# Source.Python Imports
-from public import public
+# Add all the global variables to __all__
+__all__ = [
+    'PluginFileNotFoundError',
+    'PluginInstanceError',
+    'PluginManagerError',
+]
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
-class PluginFileNotFoundError(Exception):
+class PluginFileNotFoundError(FileNotFoundError):
     '''Plugin file not found.'''
 
 
-@public
-class PluginInstanceError(Exception):
+class PluginInstanceError(TypeError):
     '''Improper plugin instance class assigned.'''
 
 PluginInstanceError.__doc__ += (
     '  Class must be inherited from plugins.instance.LoadedPlugin')
 
 
-@public
-class PluginManagerError(Exception):
+class PluginManagerError(TypeError):
     '''Improper plugin manager assigned.'''
 
 PluginManagerError.__doc__ += (

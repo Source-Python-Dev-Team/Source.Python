@@ -4,7 +4,6 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python imports
-from public import public
 #   Auth
 from auth import AuthLogger
 from auth.paths import AUTH_PROVIDER_PATH
@@ -12,6 +11,15 @@ from auth.paths import AUTH_PROVIDER_PATH
 from players.helpers import uniqueid_from_playerinfo
 #   Translations
 from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'AuthManager',
+]
 
 
 # =============================================================================
@@ -27,7 +35,6 @@ AuthManagerLogger = AuthLogger.manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class _AuthManager(dict):
     '''Class used to store loaded auth providers
         and check if a player is authorized'''

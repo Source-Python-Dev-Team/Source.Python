@@ -7,15 +7,22 @@
 from command_c import get_client_command
 from command_c import register_client_command_filter
 from command_c import unregister_client_command_filter
-from public import public
 #   Commands
 from commands.player import _PlayerCommandManager
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'ClientCommandManager',
+]
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class _ClientCommandManager(_PlayerCommandManager):
     '''Manager class used to register client
         commands and client command filters'''

@@ -9,12 +9,20 @@ from collections import OrderedDict
 
 # Source.Python Imports
 from paths import EVENT_PATH
-from public import public
 #   Events
 from events import EventsLogger
 from events.custom import CustomEvent
 from events.manager import GameEventManager
 from events.variable import _EventVariable
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'ResourceFile',
+]
 
 
 # =============================================================================
@@ -27,7 +35,6 @@ EventsResourceLogger = EventsLogger.resource
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class ResourceFile(OrderedDict):
     '''Class used to write and load custom event .res files'''
 

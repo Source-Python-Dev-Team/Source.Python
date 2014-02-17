@@ -6,7 +6,6 @@
 # Source.Python Imports
 from conversions_c import edict_from_index
 from memory_c import CPointer
-from public import public
 #   Entities
 #from entities.functions import EntityFunctions
 from entities.keyvalues import EntityKeyValues
@@ -16,10 +15,18 @@ from entities.properties import EntityProperties
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'BaseEntity',
+]
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 #class BaseEntity(_EntitySpecials):
-@public
 class BaseEntity(object):
     '''Class used to interact directly with entities'''
 

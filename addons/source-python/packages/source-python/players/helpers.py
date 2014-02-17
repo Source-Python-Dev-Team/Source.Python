@@ -6,19 +6,65 @@
 # Source.Python Imports
 from conversions_c import *
 from engine_c import EngineServer
-from public import public
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [x for x in globals() if not x.startswith('__')]
+__all__ = [
+    'address_from_playerinfo',
+    'basehandle_from_edict',
+    'basehandle_from_index',
+    'basehandle_from_inthandle',
+    'basehandle_from_playerinfo',
+    'basehandle_from_pointer',
+    'basehandle_from_userid',
+    'edict_from_basehandle',
+    'edict_from_index',
+    'edict_from_inthandle',
+    'edict_from_playerinfo',
+    'edict_from_pointer',
+    'edict_from_userid',
+    'index_from_basehandle',
+    'index_from_edict',
+    'index_from_inthandle',
+    'index_from_name',
+    'index_from_playerinfo',
+    'index_from_pointer',
+    'index_from_steamid',
+    'index_from_uniqueid',
+    'index_from_userid',
+    'inthandle_from_basehandle',
+    'inthandle_from_edict',
+    'inthandle_from_index',
+    'inthandle_from_playerinfo',
+    'inthandle_from_pointer',
+    'inthandle_from_userid',
+    'playerinfo_from_basehandle',
+    'playerinfo_from_edict',
+    'playerinfo_from_index',
+    'playerinfo_from_inthandle',
+    'playerinfo_from_pointer',
+    'playerinfo_from_userid',
+    'pointer_from_basehandle',
+    'pointer_from_edict',
+    'pointer_from_index',
+    'pointer_from_inthandle',
+    'pointer_from_playerinfo',
+    'pointer_from_userid',
+    'uniqueid_from_playerinfo',
+    'userid_from_basehandle',
+    'userid_from_edict',
+    'userid_from_index',
+    'userid_from_inthandle',
+    'userid_from_playerinfo',
+    'userid_from_pointer',
+]
 
 
 # =============================================================================
 # >> OTHER HELPER FUNCTIONS
 # =============================================================================
-@public
 def index_from_steamid(steamid):
     '''Returns an index from the given SteamID'''
 
@@ -35,7 +81,6 @@ def index_from_steamid(steamid):
     raise ValueError('Invalid SteamID "{0}"'.format(steamid))
 
 
-@public
 def index_from_uniqueid(uniqueid):
     '''Returns an index from the given UniqueID'''
 
@@ -52,7 +97,6 @@ def index_from_uniqueid(uniqueid):
     raise ValueError('Invalid UniqueID "{0}"'.format(uniqueid))
 
 
-@public
 def index_from_name(name):
     '''Returns an index from the given player name'''
 
@@ -69,7 +113,6 @@ def index_from_name(name):
     raise ValueError('Invalid name "{0}"'.format(name))
 
 
-@public
 def uniqueid_from_playerinfo(player):
     '''Returns the UniqueID for the given player'''
 
@@ -95,7 +138,6 @@ def uniqueid_from_playerinfo(player):
     return steamid
 
 
-@public
 def address_from_playerinfo(player):
     '''Returns the IP address for the given player'''
 

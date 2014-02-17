@@ -5,13 +5,20 @@
 # ============================================================================
 # Source.Python Imports
 from recipientfilter_c import CMRecipientFilter
-from public import public
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'RecipientFilter',
+]
 
 
 # ============================================================================
 # >> CLASSES
 # ============================================================================
-@public
 class RecipientFilter(CMRecipientFilter):
     '''Class used to improve the ease of use of a CMRecipientFilter instance'''
 

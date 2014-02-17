@@ -14,9 +14,17 @@ from traceback import format_exception
 # Source.Python Imports
 from loggers import _SPLogger
 from paths import GAME_PATH
-from public import public
 #   Translations
 from translations.strings import LangStrings
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'ExceptHooks',
+]
 
 
 # =============================================================================
@@ -31,7 +39,6 @@ ExceptHooksLogger = _SPLogger.excepthooks
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class _ExceptHooks(list):
     '''List class that stores callbacks to be called on an exception'''
 

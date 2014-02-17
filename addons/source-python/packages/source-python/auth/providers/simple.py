@@ -13,10 +13,17 @@ from auth.paths import AUTH_CFG_PATH
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Set all to an empty list
+__all__ = []
+
+
+# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the path to the simple.txt file
-SIMPLE_FILE_PATH = AUTH_CFG_PATH.joinpath('simple.txt')
+_SIMPLE_FILE_PATH = AUTH_CFG_PATH.joinpath('simple.txt')
 
 
 # =============================================================================
@@ -31,7 +38,7 @@ class _SimpleAuth(set):
         '''
 
         # Open the simple auth config file
-        with SIMPLE_FILE_PATH.open() as auth_file:
+        with _SIMPLE_FILE_PATH.open() as auth_file:
 
             # Loop through each line in the file
             for line in auth_file.readlines():
@@ -58,9 +65,9 @@ class _SimpleAuth(set):
         return False
 
 # Get the _SimpleAuth instance
-SimpleAuth = _SimpleAuth()
+_SimpleAuthInstance = _SimpleAuth()
 
-is_player_authorized = SimpleAuth.is_player_authorized
+is_player_authorized = _SimpleAuthInstance.is_player_authorized
 
 
 # =============================================================================
@@ -70,11 +77,11 @@ def load():
     '''Loads the provider by getting all uniqueids that are authorized'''
 
     # Parse the simple auth file
-    SimpleAuth._parse_admins()
+    _SimpleAuthInstance._parse_admins()
 
 
 def unload():
     '''Unloads the provider by clearing the set'''
 
     # Clear the set
-    SimpleAuth.clear()
+    _SimpleAuthInstance.clear()

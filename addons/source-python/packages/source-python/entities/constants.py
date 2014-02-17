@@ -10,7 +10,16 @@ from configobj import ConfigObj
 # Source.Python Imports
 from core import GAME_NAME
 from paths import SP_DATA_PATH
-from public import public
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'DamageOffsets',
+    'DamageTypes',
+]
 
 
 # =============================================================================
@@ -43,7 +52,6 @@ class _ConstantBase(dict):
         return
 
 
-@public
 class _DamageTypes(_ConstantBase):
     '''Class used to easily get damage type values by name'''
 
@@ -64,7 +72,6 @@ class _DamageTypes(_ConstantBase):
 DamageTypes = _DamageTypes()
 
 
-@public
 class _DamageOffsets(_ConstantBase):
     '''Class used to retrieve offset values for CBaseEntity::TakeDamage'''
 

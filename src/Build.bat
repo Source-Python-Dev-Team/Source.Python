@@ -34,7 +34,7 @@ for /l %%a in (1, 1, %num%) do (
     set option_%%a=!option_%%a:~7!
 
     :: Print the option to the console
-    echo 	(%%a^^^) !option_%%a!
+    echo 	%%a^^^) !option_%%a!
 )
 
 echo.

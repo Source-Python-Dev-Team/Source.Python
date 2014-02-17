@@ -6,7 +6,6 @@
 # Source.Python Imports
 from conversions_c import playerinfo_from_index
 from engine_c import EngineServer
-from public import public
 #   Entities
 from entities.entity import BaseEntity
 #   Players
@@ -16,9 +15,17 @@ from players.weapons import _PlayerWeapons
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'PlayerEntity',
+]
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class PlayerEntity(BaseEntity, _PlayerWeapons):
     '''Class used to interact directly with players'''
 

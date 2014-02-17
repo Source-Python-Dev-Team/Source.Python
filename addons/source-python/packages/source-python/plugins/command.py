@@ -9,7 +9,6 @@ from collections import OrderedDict
 
 # Source.Python Imports
 from core import AutoUnload
-from public import public
 #   Commands
 from commands.server import ServerCommandManager
 #   Plugins
@@ -22,6 +21,15 @@ from plugins.manager import PluginManager
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'SubCommandManager',
+]
+
+
+# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.plugins.command logger
@@ -31,7 +39,6 @@ PluginCommandLogger = PluginsLogger.command
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class SubCommandManager(OrderedDict, AutoUnload):
     '''Class used for executing sub-commands for the given console command'''
 

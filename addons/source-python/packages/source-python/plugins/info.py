@@ -7,14 +7,19 @@
 #   Collections
 from collections import OrderedDict
 
-# Source.Python Imports
-from public import public
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'PluginInfo',
+]
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class PluginInfo(OrderedDict):
     '''Stores information for a plugin'''
 

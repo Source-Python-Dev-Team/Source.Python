@@ -8,6 +8,15 @@ import sys
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'public',
+]
+
+
+# =============================================================================
 # >> FUNCTIONS
 # =============================================================================
 def public(public_object):
@@ -29,6 +38,3 @@ def public(public_object):
 
     # Return the object
     return public_object
-
-# Add public to __all__
-public(public)

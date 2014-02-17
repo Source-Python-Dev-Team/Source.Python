@@ -4,16 +4,23 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from public import public
 #   Commands
 from commands.command import _BaseCommand
 from commands.say.manager import SayCommandManager
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'SayCommand',
+]
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class SayCommand(_BaseCommand):
     '''Decorator class used to register a say command'''
 

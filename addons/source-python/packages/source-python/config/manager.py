@@ -13,7 +13,6 @@ from textwrap import TextWrapper
 from engine_c import EngineServer
 from excepthooks import ExceptHooks
 from paths import CFG_PATH
-from public import public
 #   Config
 from config.cvar import _CvarManager
 from config.section import _SectionManager
@@ -21,6 +20,15 @@ from config.command import _CommandManager
 #   Translations
 from translations.strings import LangStrings
 from translations.strings import TranslationStrings
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'ConfigManager',
+]
 
 
 # =============================================================================
@@ -33,7 +41,6 @@ _config_strings = LangStrings('_core/config_strings')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class ConfigManager(object):
     '''Config Management class used to create a config file'''
 

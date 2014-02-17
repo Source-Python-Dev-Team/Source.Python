@@ -13,5 +13,9 @@ from commands.client.manager import ClientCommandManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all imported classes to all
-__all__ = list(globals())
+# Add all the global variables to __all__
+__all__ = [
+    'ClientCommand',
+    'ClientCommandFilter',
+    'ClientCommandManager',
+]

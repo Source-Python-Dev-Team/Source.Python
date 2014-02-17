@@ -9,13 +9,20 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from paths import SP_DATA_PATH
-from public import public
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'LanguageManager',
+]
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class _LanguageManager(ConfigObj):
     '''Dictionary class used to store languages and their shortnames'''
 

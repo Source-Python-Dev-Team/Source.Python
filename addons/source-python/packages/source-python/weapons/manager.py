@@ -11,9 +11,17 @@ from configobj import ConfigObj
 from core import GAME_NAME
 from cvars import ServerVar
 from paths import SP_DATA_PATH
-from public import public
 #   Weapons
 from weapons.default import NoWeaponManager
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'WeaponManager',
+]
 
 
 # =============================================================================
@@ -26,7 +34,6 @@ _gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class _WeaponManager(dict):
     '''Dictionary class to store basic weapon information'''
 
@@ -198,7 +205,7 @@ class _Weapon(object):
             return self._maxammo
 
         # Get the cvar value of the maxammo
-        return ServerVar(self._maxammo).GetInt()
+        return ServerVar(self._maxammo).get_int()
 
     @property
     def ammoprop(self):

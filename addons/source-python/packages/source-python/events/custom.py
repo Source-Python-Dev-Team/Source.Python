@@ -9,9 +9,17 @@ from collections import OrderedDict
 
 # Source.Python Imports
 from event_c import GameEventManager
-from public import public
 #   Events
 from events import EventsLogger
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'CustomEvent',
+]
 
 
 # =============================================================================
@@ -54,7 +62,6 @@ class _EventMeta(type):
         return cls
 
 
-@public
 class CustomEvent(metaclass=_EventMeta):
     '''Class inherited to create custom events'''
 

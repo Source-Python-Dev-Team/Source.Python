@@ -9,10 +9,19 @@ import time
 
 # Source.Python Imports
 from core import AutoUnload
-from public import public
 #   Tick
 from tick import TickLogger
 from tick.delays import TickDelays
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'Repeat',
+    'RepeatStatus',
+]
 
 
 # =============================================================================
@@ -25,13 +34,11 @@ TickRepeatLogger = TickLogger.repeat
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
-class Status(object):
-    '''Class used to store Status values'''
+class RepeatStatus(object):
+    '''Class used to store RepeatStatus values'''
     STOPPED, RUNNING, PAUSED = range(1, 4)
 
 
-@public
 class Repeat(AutoUnload):
     '''Class used to create and call repeats'''
 
@@ -53,7 +60,7 @@ class Repeat(AutoUnload):
         self._limit = 0
         self._count = 0
         self._adjusted = 0
-        self._status = Status.STOPPED
+        self._status = RepeatStatus.STOPPED
 
     def start(self, interval, limit):
         '''Starts the repeat loop'''
@@ -63,20 +70,20 @@ class Repeat(AutoUnload):
             'Repeat.start: <{0}> <{1}>'.format(interval, limit))
 
         # Is the repeat already running?
-        if self._status == Status.RUNNING:
+        if self._status == RepeatStatus.RUNNING:
 
             # Log the status
-            TickRepeatLogger.log_info('Repeat.start - Status.RUNNING')
+            TickRepeatLogger.log_info('Repeat.start - RepeatStatus.RUNNING')
 
             # Do not start the repeat
             return
 
         # Log starting the repeat
         TickRepeatLogger.log_info(
-            'Repeat.start - !Status.RUNNING - Starting Repeat')
+            'Repeat.start - !RepeatStatus.RUNNING - Starting Repeat')
 
         # Set the status to running
-        self._status = Status.RUNNING
+        self._status = RepeatStatus.RUNNING
 
         # Set the given attributes
         self._interval = interval
@@ -96,20 +103,20 @@ class Repeat(AutoUnload):
         TickRepeatLogger.log_info('Repeat.stop')
 
         # Is the repeat running?
-        if self._status != Status.RUNNING:
+        if self._status != RepeatStatus.RUNNING:
 
             # Log the status
-            TickRepeatLogger.log_info('Repeat.stop - !Status.RUNNING')
+            TickRepeatLogger.log_info('Repeat.stop - !RepeatStatus.RUNNING')
 
             # No need to stop it
             return
 
         # Log stopping the repeat
         TickRepeatLogger.log_info(
-            'Repeat.stop - Status.RUNNING - Stopping Repeat')
+            'Repeat.stop - RepeatStatus.RUNNING - Stopping Repeat')
 
         # Set the status to stopped
-        self._status = Status.STOPPED
+        self._status = RepeatStatus.STOPPED
 
         # Cancel the delay
         TickDelays.cancel_delay(self._delay)
@@ -133,20 +140,20 @@ class Repeat(AutoUnload):
         TickRepeatLogger.log_info('Repeat.pause')
 
         # Is the repeat running?
-        if self._status != Status.RUNNING:
+        if self._status != RepeatStatus.RUNNING:
 
             # Log the status
-            TickRepeatLogger.log_info('Repeat.pause - !Status.RUNNING')
+            TickRepeatLogger.log_info('Repeat.pause - !RepeatStatus.RUNNING')
 
             # No need to pause
             return
 
         # Log pausing the repeat
         TickRepeatLogger.log_info(
-            'Repeat.pause - Status.RUNNING - Pausing Repeat')
+            'Repeat.pause - RepeatStatus.RUNNING - Pausing Repeat')
 
         # Set the status to paused
-        self._status = Status.PAUSED
+        self._status = RepeatStatus.PAUSED
 
         # Set the remaining time in the current loop
         self._loop_time = self._delay.exec_time - time.time()
@@ -161,17 +168,17 @@ class Repeat(AutoUnload):
         TickRepeatLogger.log_info('Repeat.resume')
 
         # Is the repeat paused?
-        if self._status != Status.PAUSED:
+        if self._status != RepeatStatus.PAUSED:
 
             # Log the status
-            TickRepeatLogger.log_info('Repeat.resume - !Status.PAUSED')
+            TickRepeatLogger.log_info('Repeat.resume - !RepeatStatus.PAUSED')
 
             # Do not resume
             return
 
         # Log resuming the repeat
         TickRepeatLogger.log_info(
-            'Repeat.resume - Status.PAUSED - Resuming Repeat')
+            'Repeat.resume - RepeatStatus.PAUSED - Resuming Repeat')
 
         # Start the delay
         self._delay = TickDelays.delay(self._loop_time, self._execute)
@@ -207,7 +214,8 @@ class Repeat(AutoUnload):
         self._adjusted -= adjustment
 
         # Are no more loops to be made?
-        if self.remaining and self._limit and self.status == Status.RUNNING:
+        if (self.remaining and self._limit and
+                self.status == RepeatStatus.RUNNING):
 
             # Log the reduce-stopping message
             TickRepeatLogger.log_info(
@@ -251,7 +259,7 @@ class Repeat(AutoUnload):
             TickRepeatLogger.log_info('Repeat._execute - Stopping the loop')
 
             # Set the status to stopped
-            self._status = Status.STOPPED
+            self._status = RepeatStatus.STOPPED
 
         # Call the repeat's callback
         self.callback(*self.args, **self.kwargs)

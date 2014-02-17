@@ -4,16 +4,23 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from public import public
 #   Commands
 from commands.filter import _BaseFilter
 from commands.client.manager import ClientCommandManager
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'ClientCommandFilter',
+]
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class ClientCommandFilter(_BaseFilter):
     '''Class used to register a client command filter'''
 

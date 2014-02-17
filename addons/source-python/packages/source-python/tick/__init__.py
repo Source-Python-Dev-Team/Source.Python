@@ -7,7 +7,15 @@
 from listener_c import TickListenerManager
 from core import AutoUnload
 from loggers import _SPLogger
-from public import public
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'Tick',
+]
 
 
 # =============================================================================
@@ -20,7 +28,6 @@ TickLogger = _SPLogger.tick
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class Tick(AutoUnload):
     '''Decorator class used to register/unregister a tick listener'''
 

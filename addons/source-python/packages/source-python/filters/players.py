@@ -12,7 +12,6 @@ from engine_c import EngineServer
 from player_c import PlayerGenerator
 from core import GAME_NAME
 from paths import SP_DATA_PATH
-from public import public
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
@@ -26,6 +25,15 @@ from players.helpers import inthandle_from_playerinfo
 from players.helpers import pointer_from_playerinfo
 from players.helpers import uniqueid_from_playerinfo
 from players.helpers import userid_from_playerinfo
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'PlayerIter',
+]
 
 
 # =============================================================================
@@ -43,15 +51,14 @@ class _PlayerIterManager(_BaseFilterManager):
     '''Filter management class specifically for player iterating'''
 
 # Get the _PlayerIterManager instance
-PlayerIterManager = _PlayerIterManager()
+_PlayerIterManagerInstance = _PlayerIterManager()
 
 
-@public
 class PlayerIter(_IterObject):
     '''Player iterate class'''
 
     # Store the manager for the player iterator
-    manager = PlayerIterManager
+    manager = _PlayerIterManagerInstance
 
     # Store the base iterator
     iterator = staticmethod(PlayerGenerator)
@@ -120,11 +127,11 @@ def _player_is_dead(PlayerInfo):
     return PlayerInfo.is_dead()
 
 # Register the filter functions
-PlayerIterManager.register_filter('all', _is_player)
-PlayerIterManager.register_filter('bot', _player_is_bot)
-PlayerIterManager.register_filter('human', _player_is_human)
-PlayerIterManager.register_filter('alive', _player_is_alive)
-PlayerIterManager.register_filter('dead', _player_is_dead)
+_PlayerIterManagerInstance.register_filter('all', _is_player)
+_PlayerIterManagerInstance.register_filter('bot', _player_is_bot)
+_PlayerIterManagerInstance.register_filter('human', _player_is_human)
+_PlayerIterManagerInstance.register_filter('alive', _player_is_alive)
+_PlayerIterManagerInstance.register_filter('dead', _player_is_dead)
 
 # Loop through all teams in the game's team file
 for team in _game_teams:
@@ -133,7 +140,7 @@ for team in _game_teams:
     _PlayerTeamsInstance[team] = _game_teams[team]
 
     # Register the filter
-    PlayerIterManager.register_filter(
+    _PlayerIterManagerInstance.register_filter(
         team, _PlayerTeamsInstance[team]._player_is_on_team)
 
 # Loop through all base team names
@@ -149,7 +156,7 @@ for number, team in enumerate(('un', 'spec', 't', 'ct')):
     _PlayerTeamsInstance[team] = number
 
     # Register the filter
-    PlayerIterManager.register_filter(
+    _PlayerIterManagerInstance.register_filter(
         team, _PlayerTeamsInstance[team]._player_is_on_team)
 
 
@@ -222,25 +229,30 @@ def _return_team(PlayerInfo):
     return PlayerInfo.get_team_index()
 
 # Register the return type functions
-PlayerIterManager.register_return_type('index', index_from_playerinfo)
-PlayerIterManager.register_return_type('edict', edict_from_playerinfo)
-PlayerIterManager.register_return_type(
+_PlayerIterManagerInstance.register_return_type('index', index_from_playerinfo)
+_PlayerIterManagerInstance.register_return_type('edict', edict_from_playerinfo)
+_PlayerIterManagerInstance.register_return_type(
     'basehandle', basehandle_from_playerinfo)
-PlayerIterManager.register_return_type('inthandle', inthandle_from_playerinfo)
-PlayerIterManager.register_return_type('pointer', pointer_from_playerinfo)
-PlayerIterManager.register_return_type('userid', userid_from_playerinfo)
-PlayerIterManager.register_return_type('uniqueid', uniqueid_from_playerinfo)
-PlayerIterManager.register_return_type('address', address_from_playerinfo)
-PlayerIterManager.register_return_type('info', _return_playerinfo)
-PlayerIterManager.register_return_type('player', _return_player)
-PlayerIterManager.register_return_type('name', _return_name)
-PlayerIterManager.register_return_type('steamid', _return_steamid)
-PlayerIterManager.register_return_type('location', _return_location)
-PlayerIterManager.register_return_type('kills', _return_kills)
-PlayerIterManager.register_return_type('deaths', _return_deaths)
-PlayerIterManager.register_return_type('model', _return_model)
-PlayerIterManager.register_return_type('health', _return_health)
-PlayerIterManager.register_return_type('armor', _return_armor)
-PlayerIterManager.register_return_type('weapon', _return_weapon)
-PlayerIterManager.register_return_type('language', _return_language)
-PlayerIterManager.register_return_type('team', _return_team)
+_PlayerIterManagerInstance.register_return_type(
+    'inthandle', inthandle_from_playerinfo)
+_PlayerIterManagerInstance.register_return_type(
+    'pointer', pointer_from_playerinfo)
+_PlayerIterManagerInstance.register_return_type(
+    'userid', userid_from_playerinfo)
+_PlayerIterManagerInstance.register_return_type(
+    'uniqueid', uniqueid_from_playerinfo)
+_PlayerIterManagerInstance.register_return_type(
+    'address', address_from_playerinfo)
+_PlayerIterManagerInstance.register_return_type('info', _return_playerinfo)
+_PlayerIterManagerInstance.register_return_type('player', _return_player)
+_PlayerIterManagerInstance.register_return_type('name', _return_name)
+_PlayerIterManagerInstance.register_return_type('steamid', _return_steamid)
+_PlayerIterManagerInstance.register_return_type('location', _return_location)
+_PlayerIterManagerInstance.register_return_type('kills', _return_kills)
+_PlayerIterManagerInstance.register_return_type('deaths', _return_deaths)
+_PlayerIterManagerInstance.register_return_type('model', _return_model)
+_PlayerIterManagerInstance.register_return_type('health', _return_health)
+_PlayerIterManagerInstance.register_return_type('armor', _return_armor)
+_PlayerIterManagerInstance.register_return_type('weapon', _return_weapon)
+_PlayerIterManagerInstance.register_return_type('language', _return_language)
+_PlayerIterManagerInstance.register_return_type('team', _return_team)

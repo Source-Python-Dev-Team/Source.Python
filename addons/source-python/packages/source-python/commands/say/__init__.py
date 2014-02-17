@@ -13,5 +13,9 @@ from commands.say.manager import SayCommandManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all imported classes to all
-__all__ = list(globals())
+# Add all the global variables to __all__
+__all__ = [
+    'SayCommand',
+    'SayCommandManager',
+    'SayFilter',
+]

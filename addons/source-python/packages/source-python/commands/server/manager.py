@@ -5,15 +5,22 @@
 # =============================================================================
 # Source.Python Imports
 from command_c import get_server_command
-from public import public
 #   Commands
 from commands.manager import _BaseCommandManager
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# Add all the global variables to __all__
+__all__ = [
+    'ServerCommandManager',
+]
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-@public
 class _ServerCommandManager(_BaseCommandManager):
     '''Manager class used to register server commands'''
 
