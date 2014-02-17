@@ -12,8 +12,11 @@ setlocal EnableDelayedExpansion
 :: Store a base counting variable
 set /a num=0
 
+:: Set the start directory for later reference
+set STARTDIR="%CD%"
+
 :: Loop through all downloaded SDKs
-for /d %%d in (%CD%\sdks\*) do (
+for /d %%d in (%STARTDIR%\sdks\*) do (
 
     :: Increment the counter
     set /a num+=1
@@ -46,7 +49,7 @@ if %choice% gtr %num% goto start
 echo you chose !option_%choice%!
 
 :: Navigate to the Build directory (create it if it does not exist)
-if not exist %CD%\Build mkdir Build
+if not exist %STARTDIR%\Build mkdir Build
 cd Build
 
 :: Create the make files for the selected SDK

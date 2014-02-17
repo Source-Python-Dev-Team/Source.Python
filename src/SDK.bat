@@ -13,7 +13,7 @@ setlocal EnableDelayedExpansion
 set /a num=0
 
 :: Set the start directory for later reference
-set STARTDIR=%CD%
+set STARTDIR="%CD%"
 
 :: Loop through all sdks supported by the plugin
 for %%f in (%STARTDIR%\makefiles\sdk\*.*) do (
