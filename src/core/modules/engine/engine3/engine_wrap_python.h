@@ -27,6 +27,7 @@
 #include "eiface.h"
 #include "ispsharedmemory.h"
 #include "modules/usermessage/usermessage.h"
+#include "engine/IEngineSound.h"
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_single_player_shared_memory_space_overload, GetSinglePlayerSharedMemorySpace, 1, 2);
 
@@ -245,5 +246,30 @@ void IVEngineServer_Visitor(T cls)
 			args("out")
 		)
 		*/
+	;
+}
+
+inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
+		float flVolume, float flAttenuation, int iFlags = 0, int iPitch = PITCH_NORM, const Vector *pOrigin = NULL, const Vector *pDirection = NULL,
+		tuple origins = tuple(), bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1)
+{
+	CUtlVector< Vector >* pUtlVecOrigins = NULL;
+	for(int i=0; i < len(origins); i++)
+	{
+		pUtlVecOrigins->AddToTail(extract<Vector>(origins[i]));
+	}
+
+	pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, -1, pSample, flVolume, flAttenuation, 0, iFlags, iPitch, pOrigin, pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
+}
+
+template<class T>
+void IEngineSound_Visitor(T cls)
+{
+	cls
+		.def("is_looping_sound",
+			&IEngineSound::IsLoopingSound,
+			args("sample"),
+			"Returns True if the given sample is looping."
+		)
 	;
 }

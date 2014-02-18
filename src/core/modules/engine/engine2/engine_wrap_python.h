@@ -28,3 +28,8 @@ template<class T>
 void IVEngineServer_Visitor(T cls)
 {
 }
+
+template<class T>
+void IEngineSound_Visitor(T cls)
+{
+}

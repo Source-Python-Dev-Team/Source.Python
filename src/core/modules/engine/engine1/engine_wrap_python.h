@@ -25,24 +25,12 @@
 */
 
 #include "eiface.h"
+#include "engine/IEngineSound.h"
 
 template<class T>
 void IVEngineServer_Visitor(T cls)
 {
 	cls
-		.def("index_of_edict",
-			&IVEngineServer::IndexOfEdict,
-			"Returns the edict's index",
-			args("edict")
-		)
-
-		.def("edict_of_index",
-			&IVEngineServer::PEntityOfEntIndex,
-			"Returns the corresponding edict for the given index.",
-			args("index"),
-			reference_existing_object_policy()
-		)
-
 		.def("user_message_begin",
 			&IVEngineServer::UserMessageBegin,
 			"Begins a user message from the server to the client .dll.",
@@ -80,4 +68,22 @@ void IVEngineServer_Visitor(T cls)
 		)
 		*/
 	;
+}
+
+inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
+		float flVolume, float flAttenuation, int iFlags = 0, int iPitch = PITCH_NORM, const Vector *pOrigin = NULL, const Vector *pDirection = NULL,
+		tuple origins = tuple(), bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1)
+{
+	CUtlVector< Vector >* pUtlVecOrigins = NULL;
+	for(int i=0; i < len(origins); i++)
+	{
+		pUtlVecOrigins->AddToTail(extract<Vector>(origins[i]));
+	}
+
+	pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, 0, pOrigin, pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
+}
+
+template<class T>
+void IEngineSound_Visitor(T cls)
+{
 }

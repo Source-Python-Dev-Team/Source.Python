@@ -44,20 +44,24 @@
 #include "steam/steamclientpublic.h"
 #include "inetchannelinfo.h"
 #include "eiface.h"
+#include "engine/IEngineSound.h"
 
 #include ENGINE_INCLUDE_PATH(engine_wrap_python.h)
 
 
 extern IVEngineServer* engine;
+extern IEngineSound* enginesound;
 
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
 //---------------------------------------------------------------------------------
 void export_engine_interface();
+void export_engine_sound();
 
 DECLARE_SP_MODULE(engine_c)
 {
 	export_engine_interface();
+	export_engine_sound();
 }
 
 
@@ -700,8 +704,6 @@ void export_engine_interface()
 		)
 
 		// OB specific methods
-		.NOT_IMPLEMENTED("index_of_edict")
-		.NOT_IMPLEMENTED("edict_of_index")
 		.NOT_IMPLEMENTED("user_message_begin")
 		.NOT_IMPLEMENTED("get_time")
 		.NOT_IMPLEMENTED("multiplayer_end_game")
@@ -753,4 +755,127 @@ void export_engine_interface()
 	); // IVEngineServer_Visitor
 
 	scope().attr("EngineServer") = object(ptr(engine));
+}
+
+
+//---------------------------------------------------------------------------------
+// Exposes IEngineSound.
+//---------------------------------------------------------------------------------
+// Overloads
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sound_overload, PrecacheSound, 1, 3);
+BOOST_PYTHON_FUNCTION_OVERLOADS(emit_sound_overload, IEngineSound_EmitSound, 7, 15);
+
+void export_engine_sound()
+{
+	// Call engine specific implementation function
+	IEngineSound_Visitor(
+
+	class_<IEngineSound, boost::noncopyable>("_EngineSound", no_init)
+
+		.def("precache_sound",
+			&IEngineSound::PrecacheSound,
+			precache_sound_overload(
+				args("sample", "preload", "is_ui_sound"),
+				"Precaches a particular sample."
+			)
+		)
+
+		.def("is_sound_precached",
+			&IEngineSound::IsSoundPrecached,
+			args("sample"),
+			"Returns True if the given sound is precached."
+		)
+
+		.def("prefetch_sound",
+			&IEngineSound::PrefetchSound,
+			args("sample"),
+			"Prefetches a sample."
+		)
+
+		.def("get_sound_duration",
+			&IEngineSound::GetSoundDuration,
+			args("sample"),
+			"Returns the sound duration."
+		)
+
+		.def("emit_sound",
+			&IEngineSound_EmitSound,
+			emit_sound_overload(
+				args("filter", "entity_index", "channel", "sample", "volume", "attenuation", "flags", "pitch", "origin", "direction", "origins", "update_positions", "sound_time", "speaker_entity"),
+				"Emits a sound from an entity."
+			)
+		)
+
+		// TODO: Can we use IVEngineServer::SentenceNameFromIndex() and then call IEngineSound::EmitSound()?
+		.NOT_IMPLEMENTED("emit_sentence_by_index")
+
+		.def("stop_sound",
+			&IEngineSound::StopSound,
+			args("entity_index", "channel", "sample"),
+			"Stops a sound from being emitted from an entity."
+		)
+
+		// TODO: StopAllSounds, SetRoomType, SetPlayerDSP. Are they really just client only?
+
+		.def("get_dist_gain_from_sound_level",
+			&IEngineSound::GetDistGainFromSoundLevel,
+			args("sound_level", "distance"),
+			"Returns the distance gain value from a sound level"
+		)
+
+		// Only available for CS:GO
+		.NOT_IMPLEMENTED("is_looping_sound")
+
+	); // IEngineSound_Visitor
+
+	scope().attr("EngineSound") = object(ptr(enginesound));
+
+	// Channels
+	enum_<int>("Channels")
+		.value("REPLACE", CHAN_REPLACE)
+		.value("AUTO", CHAN_AUTO)
+		.value("WEAPON", CHAN_WEAPON)
+		.value("VOICE", CHAN_VOICE)
+		.value("ITEM", CHAN_ITEM)
+		.value("BODY", CHAN_BODY)
+		.value("STREAM", CHAN_STREAM)
+		.value("STATIC", CHAN_STATIC)
+		.value("VOICE_BASE", CHAN_VOICE_BASE)
+		.value("USER_BASE", CHAN_USER_BASE)
+	;
+
+	// Common volume values
+	scope().attr("VOL_NORM") = VOL_NORM;
+
+	// Common attenuation values
+	scope().attr("ATTN_NONE") = ATTN_NONE;
+	scope().attr("ATTN_NORM") = ATTN_NORM;
+	scope().attr("ATTN_IDLE") = ATTN_IDLE;
+	scope().attr("ATTN_STATIC") = ATTN_STATIC;
+	scope().attr("ATTN_RICOCHET") = ATTN_RICOCHET;
+	scope().attr("ATTN_GUNFIRE") = ATTN_GUNFIRE;
+	scope().attr("MAX_ATTENUATION") = MAX_ATTENUATION;
+
+	// Flags for iFlags fields
+	enum_<SoundFlags_t>("SoundFlags")
+		.value("NOFLAGS", SND_NOFLAGS)
+		.value("CHANGE_VOL", SND_CHANGE_VOL)
+		.value("CHANGE_PITCH", SND_CHANGE_PITCH)
+		.value("STOP", SND_STOP)
+		.value("SPAWNING", SND_SPAWNING)
+		.value("DELAY", SND_DELAY)
+		.value("STOP_LOOPING", SND_STOP_LOOPING)
+		.value("SPEAKER", SND_SPEAKER)
+		.value("SHOULDPAUSE", SND_SHOULDPAUSE)
+		.value("IGNORE_PHONEMES", SND_IGNORE_PHONEMES)
+		.value("IGNORE_NAME", SND_IGNORE_NAME)
+	;
+
+	// Common pitch values
+	scope().attr("PITCH_NORM") = PITCH_NORM;
+	scope().attr("PITCH_LOW") = PITCH_LOW;
+	scope().attr("PITCH_HIGH") = PITCH_HIGH;
+
+	scope().attr("SOUND_FROM_LOCAL_PLAYER") = SOUND_FROM_LOCAL_PLAYER;
+	scope().attr("SOUND_FROM_WORLD") = SOUND_FROM_WORLD;
 }

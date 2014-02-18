@@ -48,29 +48,31 @@ DECLARE_SP_MODULE(recipientfilter_c)
 //-----------------------------------------------------------------------------
 void export_mrecipientfilter()
 {
-	// TODO: Rename class
-	class_<MRecipientFilter, boost::noncopyable>("CMRecipientFilter")
+	class_<IRecipientFilter, boost::noncopyable>("_RecipientFilter", no_init)
 		.def("is_reliable",
-			&MRecipientFilter::IsReliable,
+			&IRecipientFilter::IsReliable,
 			"Whether this recipient filter will be network reliable (sent in-order)"
 		)
 
 		.def("is_init_message",
-			&MRecipientFilter::IsInitMessage,
+			&IRecipientFilter::IsInitMessage,
 			"Whether the message has been initialised?"
 		)
 
 		.def("get_recipient_count",
-			&MRecipientFilter::GetRecipientCount,
+			&IRecipientFilter::GetRecipientCount,
 			"Obtain the amount of clients in this filter"
 		)
 
 		.def("get_recipient_index",
-			&MRecipientFilter::GetRecipientIndex,
+			&IRecipientFilter::GetRecipientIndex,
 			"Obtains the player index at the slot in the filter",
 			args("slot")
 		)
+	;
 
+	// TODO: Rename class
+	class_<MRecipientFilter, bases<IRecipientFilter>, boost::noncopyable >("CMRecipientFilter")
 		.def("add_all_players",
 			&MRecipientFilter::AddAllPlayers,
 			"Adds all the players on the server to the filter"
