@@ -33,6 +33,8 @@
 #endif
 
 #include "modules/export_main.h"
+#include "modules/conversions/conversions_wrap.h"
+
 #include "dt_send.h"
 #include "irecipientfilter.h"
 #include "server_class.h"
@@ -45,23 +47,28 @@
 #include "inetchannelinfo.h"
 #include "eiface.h"
 #include "engine/IEngineSound.h"
+#include "engine/IEngineTrace.h"
 
 #include ENGINE_INCLUDE_PATH(engine_wrap_python.h)
 
 
 extern IVEngineServer* engine;
 extern IEngineSound* enginesound;
+extern IEngineTrace* enginetrace;
+extern CGlobalVars* gpGlobals;
 
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
 //---------------------------------------------------------------------------------
-void export_engine_interface();
+void export_engine_server();
 void export_engine_sound();
+void export_engine_trace();
 
 DECLARE_SP_MODULE(engine_c)
 {
-	export_engine_interface();
+	export_engine_server();
 	export_engine_sound();
+	export_engine_trace();
 }
 
 
@@ -92,7 +99,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sentence_file_overload, Precache
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_decal_overload, PrecacheDecal, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_generic_overload, PrecacheGeneric, 1, 2);
 
-void export_engine_interface()
+void export_engine_server()
 {
 	// Call engine specific implementation function
 	IVEngineServer_Visitor(
@@ -878,4 +885,387 @@ void export_engine_sound()
 
 	scope().attr("SOUND_FROM_LOCAL_PLAYER") = SOUND_FROM_LOCAL_PLAYER;
 	scope().attr("SOUND_FROM_WORLD") = SOUND_FROM_WORLD;
+}
+
+//---------------------------------------------------------------------------------
+// Exposes IEngineTrace.
+//---------------------------------------------------------------------------------
+class ITraceFilterWrap: public ITraceFilter, public wrapper<ITraceFilter>
+{
+public:
+	virtual bool ShouldHitEntity(IHandleEntity* pEntity, int mask)
+	{ return get_override("should_hit_entity")(ptr(pEntity), mask); }
+
+	virtual TraceType_t	GetTraceType() const
+	{ return get_override("get_trace_type")(); }
+};
+
+
+class IEntityEnumeratorWrap: public IEntityEnumerator, public wrapper<IEntityEnumerator>
+{
+public:
+	virtual bool EnumEntity(IHandleEntity* pEntity)
+	{ return get_override("enum_entity")(ptr(pEntity)); }
+};
+
+
+class IEngineTraceExt
+{
+public:
+	static list GetPointContents(IEngineTrace* pEngineTrace, const Vector& vec)
+	{
+		IHandleEntity** ppEntities = new IHandleEntity*[gpGlobals->maxEntities];
+		memset(ppEntities, NULL, sizeof(IHandleEntity*) * gpGlobals->maxEntities);
+
+		int iMask = ::GetPointContents(vec, ppEntities);
+
+		list entities;
+		for(int i=0; i < gpGlobals->maxEntities; i++)
+		{
+			if(ppEntities[i])
+			{
+				entities.append(ptr(ppEntities[i]));
+			}
+		}
+
+		delete ppEntities;
+		list result;
+		result.append(iMask);
+		result.append(entities);
+
+		return result;
+	}
+};
+
+
+class CGameTraceExt
+{
+public:
+	static IServerEntity* GetEntity(CGameTrace* pTrace)
+	{
+		return (IServerEntity *) pTrace->m_pEnt;
+	}
+};
+
+
+class Ray_tExt
+{
+public:
+	static Ray_t* CreateRay1(Vector vec1, Vector vec2)
+	{
+		Ray_t* pRay = new Ray_t;
+		pRay->Init(vec1, vec2);
+		return pRay;
+	}
+
+	static Ray_t* CreateRay2(Vector vec1, Vector vec2, Vector vec3, Vector vec4)
+	{
+		Ray_t* pRay = new Ray_t;
+		pRay->Init(vec1, vec2, vec3, vec4);
+		return pRay;
+	}
+};
+
+
+CBaseEntity* GetWorldEntity()
+{
+	return EdictFromIndex(0)->GetNetworkable()->GetBaseEntity();
+}
+
+
+// These two functions are not implemented in the SDK
+bool CGameTrace::DidHitWorld() const
+{
+	return GetWorldEntity() == m_pEnt;
+}
+
+int CGameTrace::GetEntityIndex() const
+{
+	// TODO: Use a more efficient way
+	return m_pEnt ? IndexFromPointer(object(CPointer((unsigned long) m_pEnt))) : -1;
+}
+
+
+void export_engine_trace()
+{
+	// Since Ray_t has members of the type AlignedVector that uses ALIGN16, we have
+	// to declare this class as noncopyable.
+	class_<Ray_t, boost::noncopyable>("Ray", no_init)
+		.def("__init__", make_constructor(&Ray_tExt::CreateRay1))
+		.def("__init__", make_constructor(&Ray_tExt::CreateRay2))
+	;
+
+	class_<IEngineTrace, boost::noncopyable>("_EngineTrace", no_init)
+		.def("get_point_contents",
+			&IEngineTraceExt::GetPointContents,
+			"Returns the contents mask and the entities at the given position.",
+			args("position")
+		)
+
+		.def("get_point_contents_of_collidable",
+			&IEngineTrace::GetPointContents_Collideable,
+			"Returns the content mask, but only tests the given entity.",
+			args("entity", "position")
+		)
+
+		.def("clip_ray_to_entity",
+			&IEngineTrace::ClipRayToEntity,
+			"Traces a ray against a particular entity.",
+			args("ray", "mask", "entity", "trace")
+		)
+
+		.def("clip_ray_to_collidable",
+			&IEngineTrace::ClipRayToCollideable,
+			"Traces a ray against a particular entity.",
+			args("ray", "mask", "entity", "trace")
+		)
+
+		.def("trace_ray",
+			&IEngineTrace::TraceRay,
+			"A version that simply accepts a ray (can work as a traceline or tracehull).",
+			args("ray", "mask", "filter", "trace")
+		)
+
+		.def("enumerate_entities",
+			GET_METHOD(void, IEngineTrace, EnumerateEntities, const Ray_t&, bool, IEntityEnumerator*),
+			"Enumerates over all entities along a ray.",
+			args("ray", "triggers", "enumerator")
+		)
+
+		.def("enumerate_entities_in_box",
+			GET_METHOD(void, IEngineTrace, EnumerateEntities, const Vector&, const Vector&, IEntityEnumerator*),
+			"Enumerates over all entities within a box.",
+			args("mins", "maxs", "enumerator")
+		)
+
+		.def("get_collideable",
+			&IEngineTrace::GetCollideable,
+			"Convert a handle entity to a collideable.",
+			args("entity"),
+			reference_existing_object_policy()
+		)
+
+		.def("is_point_outside_of_world",
+			&IEngineTrace::PointOutsideWorld,
+			"Tests a point to see if it's outside any playable area.",
+			args("position")
+		)
+
+		.def("sweep_collideable",
+			&IEngineTrace::SweepCollideable,
+			"Sweeps a collideable through the world.",
+			args("collideable", "start", "end", "angles", "mask", "filter", "trace")
+		)
+
+		/*
+		//finds brushes in an AABB, prone to some false positives
+		virtual void GetBrushesInAABB( const Vector &vMins, const Vector &vMaxs, CUtlVector<int> *pOutput, int iContentsMask = 0xFFFFFFFF ) = 0;
+
+		//retrieve brush planes and contents, returns true if data is being returned in the output pointers, false if the brush doesn't exist
+		virtual bool GetBrushInfo( int iBrush, CUtlVector<Vector4D> *pPlanesOut, int *pContentsOut ) = 0;
+		*/
+	;
+
+	scope().attr("EngineTrace") = object(ptr(enginetrace));
+
+	class_<CBaseTrace, boost::noncopyable>("BaseTrace")
+		.def_readwrite("start_position",
+			&CBaseTrace::startpos
+		)
+
+		.def_readwrite("end_position",
+			&CBaseTrace::endpos
+		)
+
+		.def_readwrite("plane",
+			&CBaseTrace::plane
+		)
+
+		.def_readwrite("fraction",
+			&CBaseTrace::fraction
+		)
+
+		.def_readwrite("contents",
+			&CBaseTrace::contents
+		)
+
+		.def_readwrite("displacement_flags",
+			&CBaseTrace::dispFlags
+		)
+
+		.def_readwrite("all_solid",
+			&CBaseTrace::allsolid
+		)
+
+		.def_readwrite("start_solid",
+			&CBaseTrace::startsolid
+		)
+	;
+	
+	scope().attr("DISPSURF_FLAG_SURFACE") = DISPSURF_FLAG_SURFACE;
+	scope().attr("DISPSURF_FLAG_WALKABLE") = DISPSURF_FLAG_WALKABLE;
+	scope().attr("DISPSURF_FLAG_BUILDABLE") = DISPSURF_FLAG_BUILDABLE;
+	scope().attr("DISPSURF_FLAG_SURFPROP1") = DISPSURF_FLAG_SURFPROP1;
+	scope().attr("DISPSURF_FLAG_SURFPROP2") = DISPSURF_FLAG_SURFPROP2;
+
+	class_<CGameTrace, bases<CBaseTrace>, boost::noncopyable>("GameTrace")
+		.def("did_hit_world",
+			&CGameTrace::DidHitWorld,
+			"Returns True if the ray hit the world entity."
+		)
+
+		.def("did_hit",
+			&CGameTrace::DidHit,
+			"Returns true if there was any kind of impact at all"
+		)
+
+		.def("get_entity_index",
+			&CGameTrace::GetEntityIndex,
+			"Returns the index of the entity that was hit."
+		)
+
+		.def("get_entity",
+			&CGameTraceExt::GetEntity,
+			"Returns the entity instance that was hit.",
+			reference_existing_object_policy()
+		)
+
+		.def_readwrite("fraction_left_solid",
+			&CGameTrace::fractionleftsolid
+		)
+
+		.def_readwrite("surface",
+			&CGameTrace::surface
+		)
+
+		.def_readwrite("hitgroup",
+			&CGameTrace::hitgroup
+		)
+
+		.def_readwrite("physicsbone",
+			&CGameTrace::physicsbone
+		)
+
+		.def_readwrite("hitbox",
+			&CGameTrace::hitbox
+		)
+	;
+
+	class_<csurface_t>("Surface")
+		.def_readwrite("name",
+			&csurface_t::name
+		)
+
+		.def_readwrite("surface_props",
+			&csurface_t::surfaceProps
+		)
+
+		.def_readwrite("flags",
+			&csurface_t::flags
+		)
+	;
+
+	// Trace filter baseclass
+	class_<ITraceFilterWrap, boost::noncopyable>("TraceFilter")
+		.def("should_hit_entity",
+			pure_virtual(&ITraceFilterWrap::ShouldHitEntity),
+			"Returns True if the a should hit the entity."
+		)
+
+		.def("get_trace_type",
+			pure_virtual(&ITraceFilterWrap::GetTraceType),
+			"Returns the trace type."
+		)
+	;
+
+	// Enumerator baseclass
+	class_<IEntityEnumeratorWrap, boost::noncopyable>("EntityEnumerator")
+		.def("enum_entity",
+			&IEntityEnumeratorWrap::EnumEntity,
+			"Gets called with each handle."
+		)
+	;
+
+	// Trace types
+	enum_<TraceType_t>("TraceType")
+		.value("EVERYTHING", TRACE_EVERYTHING)
+		.value("WORLD_ONLY", TRACE_WORLD_ONLY)
+		.value("ENTITIES_ONLY", TRACE_ENTITIES_ONLY)
+		.value("EVERYTHING_FILTER_PROPS", TRACE_EVERYTHING_FILTER_PROPS)
+	;
+
+	// Content flags
+	scope().attr("CONTENTS_EMPTY") = CONTENTS_EMPTY;
+	scope().attr("CONTENTS_SOLID") = CONTENTS_SOLID;
+	scope().attr("CONTENTS_WINDOW") = CONTENTS_WINDOW;
+	scope().attr("CONTENTS_AUX") = CONTENTS_AUX;
+	scope().attr("CONTENTS_GRATE") = CONTENTS_GRATE;
+	scope().attr("CONTENTS_SLIME") = CONTENTS_SLIME;
+	scope().attr("CONTENTS_WATER") = CONTENTS_WATER;
+	scope().attr("CONTENTS_BLOCKLOS") = CONTENTS_BLOCKLOS;
+	scope().attr("CONTENTS_OPAQUE") = CONTENTS_OPAQUE;
+	scope().attr("LAST_VISIBLE_CONTENTS") = LAST_VISIBLE_CONTENTS;
+	scope().attr("ALL_VISIBLE_CONTENTS") = ALL_VISIBLE_CONTENTS;
+	scope().attr("CONTENTS_TESTFOGVOLUME") = CONTENTS_TESTFOGVOLUME;
+	scope().attr("CONTENTS_UNUSED") = CONTENTS_UNUSED;
+	scope().attr("CONTENTS_TEAM1") = CONTENTS_TEAM1;
+	scope().attr("CONTENTS_TEAM2") = CONTENTS_TEAM2;
+	scope().attr("CONTENTS_IGNORE_NODRAW_OPAQUE") = CONTENTS_IGNORE_NODRAW_OPAQUE;
+	scope().attr("CONTENTS_MOVEABLE") = CONTENTS_MOVEABLE;
+	scope().attr("CONTENTS_AREAPORTAL") = CONTENTS_AREAPORTAL;
+	scope().attr("CONTENTS_PLAYERCLIP") = CONTENTS_PLAYERCLIP;
+	scope().attr("CONTENTS_MONSTERCLIP") = CONTENTS_MONSTERCLIP;
+	scope().attr("CONTENTS_CURRENT_0") = CONTENTS_CURRENT_0;
+	scope().attr("CONTENTS_CURRENT_90") = CONTENTS_CURRENT_90;
+	scope().attr("CONTENTS_CURRENT_180") = CONTENTS_CURRENT_180;
+	scope().attr("CONTENTS_CURRENT_270") = CONTENTS_CURRENT_270;
+	scope().attr("CONTENTS_CURRENT_UP") = CONTENTS_CURRENT_UP;
+	scope().attr("CONTENTS_CURRENT_DOWN") = CONTENTS_CURRENT_DOWN;
+	scope().attr("CONTENTS_ORIGIN") = CONTENTS_ORIGIN;
+	scope().attr("CONTENTS_MONSTER") = CONTENTS_MONSTER;
+	scope().attr("CONTENTS_DEBRIS") = CONTENTS_DEBRIS;
+	scope().attr("CONTENTS_DETAIL") = CONTENTS_DETAIL;
+	scope().attr("CONTENTS_TRANSLUCENT") = CONTENTS_TRANSLUCENT;
+	scope().attr("CONTENTS_LADDER") = CONTENTS_LADDER;
+	scope().attr("CONTENTS_HITBOX") = CONTENTS_HITBOX;
+
+	// Masks
+	scope().attr("MASK_ALL") = MASK_ALL;
+	scope().attr("MASK_SOLID") = MASK_SOLID;
+	scope().attr("MASK_PLAYERSOLID") = MASK_PLAYERSOLID;
+	scope().attr("MASK_NPCSOLID") = MASK_NPCSOLID;
+	scope().attr("MASK_WATER") = MASK_WATER;
+	scope().attr("MASK_OPAQUE") = MASK_OPAQUE;
+	scope().attr("MASK_OPAQUE_AND_NPCS") = MASK_OPAQUE_AND_NPCS;
+	scope().attr("MASK_BLOCKLOS") = MASK_BLOCKLOS;
+	scope().attr("MASK_BLOCKLOS_AND_NPCS") = MASK_BLOCKLOS_AND_NPCS;
+	scope().attr("MASK_VISIBLE") = MASK_VISIBLE;
+	scope().attr("MASK_VISIBLE_AND_NPCS") = MASK_VISIBLE_AND_NPCS;
+	scope().attr("MASK_SHOT") = MASK_SHOT;
+	scope().attr("MASK_SHOT_HULL") = MASK_SHOT_HULL;
+	scope().attr("MASK_SHOT_PORTAL") = MASK_SHOT_PORTAL;
+	scope().attr("MASK_SOLID_BRUSHONLY") = MASK_SOLID_BRUSHONLY;
+	scope().attr("MASK_PLAYERSOLID_BRUSHONLY") = MASK_PLAYERSOLID_BRUSHONLY;
+	scope().attr("MASK_NPCWORLDSTATIC") = MASK_NPCWORLDSTATIC;
+	scope().attr("MASK_SPLITAREAPORTAL") = MASK_SPLITAREAPORTAL;
+	scope().attr("MASK_CURRENT") = MASK_CURRENT;
+	scope().attr("MASK_DEADSOLID") = MASK_DEADSOLID;
+	
+	// Surface flags
+	scope().attr("SURF_LIGHT") = SURF_LIGHT;
+	scope().attr("SURF_SKY2D") = SURF_SKY2D;
+	scope().attr("SURF_SKY") = SURF_SKY;
+	scope().attr("SURF_WARP") = SURF_WARP;
+	scope().attr("SURF_TRANS") = SURF_TRANS;
+	scope().attr("SURF_NOPORTAL") = SURF_NOPORTAL;
+	scope().attr("SURF_TRIGGER") = SURF_TRIGGER;
+	scope().attr("SURF_NODRAW") = SURF_NODRAW;
+	scope().attr("SURF_HINT") = SURF_HINT;
+	scope().attr("SURF_SKIP") = SURF_SKIP;
+	scope().attr("SURF_NOLIGHT") = SURF_NOLIGHT;
+	scope().attr("SURF_BUMPLIGHT") = SURF_BUMPLIGHT;
+	scope().attr("SURF_NOSHADOWS") = SURF_NOSHADOWS;
+	scope().attr("SURF_NODECALS") = SURF_NODECALS;
+	scope().attr("SURF_NOCHOP") = SURF_NOCHOP;
+	scope().attr("SURF_HITBOX") = SURF_HITBOX;
 }

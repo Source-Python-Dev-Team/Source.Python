@@ -24,9 +24,22 @@
 * Development Team grants this exception to all derivative works.
 */
 
+//---------------------------------------------------------------------------------
+// Includes
+//---------------------------------------------------------------------------------
 #include "eiface.h"
 #include "engine/IEngineSound.h"
+#include "engine/IEngineTrace.h"
 
+
+// Externals
+extern IEngineTrace* enginetrace;
+
+
+//---------------------------------------------------------------------------------
+// IVEngineServer
+//---------------------------------------------------------------------------------
+// Visitor function
 template<class T>
 void IVEngineServer_Visitor(T cls)
 {
@@ -70,11 +83,15 @@ void IVEngineServer_Visitor(T cls)
 	;
 }
 
+
+//---------------------------------------------------------------------------------
+// IEngineSound
+//---------------------------------------------------------------------------------
 inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
 		float flVolume, float flAttenuation, int iFlags = 0, int iPitch = PITCH_NORM, const Vector *pOrigin = NULL, const Vector *pDirection = NULL,
 		tuple origins = tuple(), bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1)
 {
-	CUtlVector< Vector > pUtlVecOrigins = NULL;
+	CUtlVector< Vector > pUtlVecOrigins;
 	for(int i=0; i < len(origins); i++)
 	{
 		pUtlVecOrigins.AddToTail(extract<Vector>(origins[i]));
@@ -83,7 +100,17 @@ inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter&
 	pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, 0, pOrigin, pDirection, &pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
 }
 
+// Visitor function
 template<class T>
 void IEngineSound_Visitor(T cls)
 {
+}
+
+
+//---------------------------------------------------------------------------------
+// IEngineTrace
+//---------------------------------------------------------------------------------
+inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
+{
+	return enginetrace->GetPointContents(vecAbsPosition, ppEntity);
 }
