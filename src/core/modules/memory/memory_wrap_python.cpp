@@ -31,6 +31,7 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "memory_hooks.h"
+#include "memory_callback.h"
 
 #include "dyncall.h"
 
@@ -42,6 +43,7 @@ void export_binaryfile();
 void export_memtools();
 void export_dyncall();
 void export_dynamichooks();
+void export_callbacks();
 
 DECLARE_SP_MODULE(memory_c)
 {
@@ -49,6 +51,7 @@ DECLARE_SP_MODULE(memory_c)
 	export_memtools();
 	export_dyncall();
 	export_dynamichooks();
+	export_callbacks();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,7 +137,7 @@ void export_binaryfile()
 		) \
 	)
 	
-// get_<type> methods
+// get_<type> overloads
 OVERLOAD_GET_TYPE(bool, bool)
 OVERLOAD_GET_TYPE(char, char)
 OVERLOAD_GET_TYPE(uchar, unsigned char)
@@ -153,7 +156,7 @@ OVERLOAD_GET_TYPE(string_ptr, const char*)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ptr_overload, GetPtr, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_array_overload, GetStringArray, 0, 1)
 	
-// set_<type> methods
+// set_<type> overloads
 OVERLOAD_SET_TYPE(bool, bool)
 OVERLOAD_SET_TYPE(char, char)
 OVERLOAD_SET_TYPE(uchar, unsigned char)
@@ -168,12 +171,11 @@ OVERLOAD_SET_TYPE(ulong_long, unsigned long long)
 OVERLOAD_SET_TYPE(float, float)
 OVERLOAD_SET_TYPE(double, double)
 
-// set_<type> methods
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ptr_overload, SetPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_ptr_overload, SetStringPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_array_overload, SetStringArray, 1, 2)
 
-// Overloads
+// Other overloads
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_virtual_func_overload, GetVirtualFunc, 1, 2)
 
 void export_memtools()
@@ -250,7 +252,7 @@ void export_memtools()
 			)
 		)
 
-		// Class methods
+		// Other methods
 		.def("get_virtual_func",
 			&CPointer::GetVirtualFunc,
 			get_virtual_func_overload(
@@ -272,7 +274,7 @@ void export_memtools()
 
 		.def("make_function",
 			&CPointer::MakeFunction,
-			"Creates a new CFunction instance.",
+			"Creates a new Function instance.",
 			args("convention", "parameters"),
 			manage_new_object_policy()
 		)
@@ -353,14 +355,13 @@ void export_memtools()
 	);
 
 	class_<CFunction, bases<CPointer> >("Function", init<unsigned long, Convention_t, char*>())
-
-		CLASS_METHOD_VARIADIC(CFunction,
-			__call__,
+		.def("__call__",
+			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
 		)
 
-		CLASS_METHOD_VARIADIC(CFunction,
-			call_trampoline,
+		.def("call_trampoline",
+			raw_method(&CFunction::CallTrampoline),
 			"Calls the trampoline function dynamically."
 		)
 
@@ -405,9 +406,6 @@ void export_memtools()
 			&CFunction::m_eConv
 		)
 	;
-	
-	DEFINE_CLASS_METHOD_VARIADIC(CFunction, __call__);
-	DEFINE_CLASS_METHOD_VARIADIC(CFunction, call_trampoline);
 }
 
 //-----------------------------------------------------------------------------
@@ -433,26 +431,37 @@ void export_dyncall()
 
 void export_dynamichooks()
 {
-	class_<CStackData>("CStackData", init<CHook*>())
-
+	class_<CStackData>("StackData", init<CHook*>())
 		// Special methods
 		.def("__getitem__",
-			&CStackData::get_item,
+			&CStackData::GetItem,
 			"Returns the argument at the specified index."
 		)
 
 		.def("__setitem__",
-			&CStackData::set_item,
+			&CStackData::SetItem,
 			"Sets the argument at the specified index."
 		)
 
 		// Properties
 		.add_property("esp",
-			make_function(
-				&CStackData::get_esp,
-				manage_new_object_policy()
-			),
+			&CStackData::GetESP,
 			"Stack pointer register."
 		)
 	;
+}
+
+void export_callbacks()
+{
+    class_< CCallback, bases< CFunction > >("Callback", init< object, Convention_t, char * >())
+        .def("free",
+            &CCallback::Free,
+            "Frees the callback. Don't use dealloc()!"
+        )
+
+        .def_readwrite("callback",
+            &CCallback::m_oCallback,
+            "The Python function that gets called by the C++ callback"
+        )
+    ;
 }

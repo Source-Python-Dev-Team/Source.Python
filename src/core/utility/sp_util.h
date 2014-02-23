@@ -103,4 +103,4 @@ void SetItemIndexer(T* self, const int i, const U& value)
 }
 
 
-#endif
+#endif // _SP_UTIL_H

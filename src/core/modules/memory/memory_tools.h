@@ -40,7 +40,7 @@ using namespace boost::python;
 
 
 //-----------------------------------------------------------------------------
-//
+// Memory functions
 //-----------------------------------------------------------------------------
 inline size_t UTIL_GetMemSize(void* ptr)
 {
@@ -203,17 +203,17 @@ class CFunction: public CPointer
 public:
 	CFunction(unsigned long ulAddr, Convention_t eConv, char* szParams);
     
-	object __call__(object args);
-	object call_trampoline(object args);
+	object Call(boost::python::tuple args, dict kw);
+	object CallTrampoline(boost::python::tuple args, dict kw);
 	
-	void AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
+	PyObject* AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
 	void RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
     
-	void AddPreHook(PyObject* pCallable)
-	{ AddHook(HOOKTYPE_PRE, pCallable); }
+	PyObject* AddPreHook(PyObject* pCallable)
+	{ return AddHook(HOOKTYPE_PRE, pCallable); }
 
-	void AddPostHook(PyObject* pCallable)
-	{ AddHook(HOOKTYPE_POST, pCallable); }
+	PyObject* AddPostHook(PyObject* pCallable)
+	{ return AddHook(HOOKTYPE_POST, pCallable); }
     
 	void RemovePreHook(PyObject* pCallable)
 	{ RemoveHook(HOOKTYPE_PRE, pCallable); }

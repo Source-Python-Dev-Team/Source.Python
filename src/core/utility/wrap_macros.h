@@ -82,6 +82,16 @@ using namespace boost::python;
 #define GET_FUNCTION(return_type, function, ...) \
 	static_cast< return_type(*)( __VA_ARGS__ ) >(&function)
 
+
+//---------------------------------------------------------------------------------
+// Use this template to create variadic class methods
+//---------------------------------------------------------------------------------
+template<class T>
+object raw_method(T method)
+{
+	return eval("lambda method: lambda *args, **kw: method(args[0], args[1:], kw)")(make_function(method));
+}
+
 //---------------------------------------------------------------------------------
 // Use this macro to define a function or class method that raises a
 // NotImplementedError. This is quite hacky, but saves a lot work!
@@ -101,19 +111,6 @@ using namespace boost::python;
 
 #define NOT_IMPLEMENTED_ATTR(name) \
 	add_property(name, NOT_IMPLEMENTED_RAW(), NOT_IMPLEMENTED_RAW(), "\nNot implemented on this engine.\n")
-
-//---------------------------------------------------------------------------------
-// Use this macro to expose a variadic class method. Don't forget to call
-// DEFINE_CLASS_METHOD_VARIADIC after that.
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD_VARIADIC(classname, method, ...) \
-	.def("__" #method, &classname::method, ##__VA_ARGS__)
-
-//---------------------------------------------------------------------------------
-// Use this macro to define a variadic class method.
-//---------------------------------------------------------------------------------
-#define DEFINE_CLASS_METHOD_VARIADIC(classname, method) \
-	scope().attr(#classname).attr(#method) = eval("lambda self, *args: self.__" #method "(args)")
 
 //---------------------------------------------------------------------------------
 // Use this macro to raise a Python exception.

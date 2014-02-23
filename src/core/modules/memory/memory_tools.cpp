@@ -200,7 +200,7 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, char* szParams)
 	m_szParams = strdup(szParams);
 }
 
-object CFunction::__call__(object args)
+object CFunction::Call(tuple args, dict kw)
 {	
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
@@ -270,7 +270,7 @@ object CFunction::__call__(object args)
 	return object();
 }
 
-object CFunction::call_trampoline(object args)
+object CFunction::CallTrampoline(tuple args, dict kw)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
@@ -279,10 +279,10 @@ object CFunction::call_trampoline(object args)
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_szParams).__call__(args);
+	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_szParams).Call(args, kw);
 }
 
-void CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+PyObject* CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
@@ -290,6 +290,7 @@ void CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, m_szParams);
 	pHook->AddCallback(eType, (void *) &SP_HookHandler);
 	g_mapCallbacks[pHook][eType].push_back(pCallable);
+	return pCallable;
 }
 
 void CFunction::RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable)

@@ -137,7 +137,7 @@ CStackData::CStackData(CHook* pHook)
 	m_pHook = pHook;
 }
 
-object CStackData::get_item(unsigned int iIndex)
+object CStackData::GetItem(unsigned int iIndex)
 {
 	if (iIndex >= (unsigned int) m_pHook->GetArgumentCount())
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
@@ -170,7 +170,7 @@ object CStackData::get_item(unsigned int iIndex)
 	return retval;
 }
 
-void CStackData::set_item(unsigned int iIndex, object value)
+void CStackData::SetItem(unsigned int iIndex, object value)
 {
 	if (iIndex >= (unsigned int) m_pHook->GetArgumentCount())
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
@@ -196,9 +196,4 @@ void CStackData::set_item(unsigned int iIndex, object value)
 		case SIGCHAR_STRING:    SetArgument<const char *>(m_pHook, iIndex, value); break;
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
 	}
-}
-
-CPointer* CStackData::get_esp()
-{
-	return new CPointer((unsigned long) m_pHook->m_pESP);
 }
