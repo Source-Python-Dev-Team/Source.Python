@@ -187,12 +187,14 @@ public:
 
 	bool                IsValid() { return m_ulAddr != 0; }
 
-	CPointer*           GetVirtualFunc(int iIndex, bool bPlatformCheck = true);
+	CPointer*           GetVirtualFunc(int iIndex);
 
 	void                Realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
 	void                Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
 	CFunction*          MakeFunction(Convention_t eConv, char* szParams);
+	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, char* szParams);
+
 
 public:
 	unsigned long m_ulAddr;

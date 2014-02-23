@@ -165,15 +165,10 @@ void CPointer::Move(object oDest, unsigned long ulNumBytes)
 	memmove((void *) ulDest, (void *) m_ulAddr, ulNumBytes);
 }
 
-CPointer* CPointer::GetVirtualFunc(int iIndex, bool bPlatformCheck /* = true */)
+CPointer* CPointer::GetVirtualFunc(int iIndex)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-#ifdef __linux__
-	if (bPlatformCheck)
-		iIndex++;
-#endif
 
 	void** vtable = *(void ***) m_ulAddr;
 	if (!vtable)
@@ -188,6 +183,11 @@ CFunction* CPointer::MakeFunction(Convention_t eConv, char* szParams)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
 	return new CFunction(m_ulAddr, eConv, szParams);
+}
+
+CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, char* szParams)
+{
+	return GetVirtualFunc(iIndex)->MakeFunction(eConv, szParams);
 }
 
 //-----------------------------------------------------------------------------

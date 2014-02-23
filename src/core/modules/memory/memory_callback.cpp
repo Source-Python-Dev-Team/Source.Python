@@ -39,11 +39,15 @@ using namespace DynamicHooks;
 
 
 // ============================================================================
-// >> CLASSES
+// >> MACROS
 // ============================================================================
 #define GET_CALLBACK_CALLER(type) \
 	GET_FUNCTION(type, CallbackCaller<type>, CCallback*, unsigned long, unsigned long)
 
+
+// ============================================================================
+// >> CLASSES
+// ============================================================================
 CCallback::CCallback(object oCallback, Convention_t eConv, char* szParams)
     : CFunction(NULL, eConv, szParams)
 {

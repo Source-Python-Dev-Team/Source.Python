@@ -175,9 +175,6 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ptr_overload, SetPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_ptr_overload, SetStringPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_array_overload, SetStringArray, 1, 2)
 
-// Other overloads
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_virtual_func_overload, GetVirtualFunc, 1, 2)
-
 void export_memtools()
 {
 	class_<CPointer>("Pointer", init< optional<unsigned long> >())
@@ -255,10 +252,23 @@ void export_memtools()
 		// Other methods
 		.def("get_virtual_func",
 			&CPointer::GetVirtualFunc,
-			get_virtual_func_overload(
-				"Returns the address (as a CPointer instance) of a virtual function at the given index.",
-				args("index", "platform_check")
-			)[manage_new_object_policy()]
+			"Returns the address (as a CPointer instance) of a virtual function at the given index.",
+			args("index"),
+			manage_new_object_policy()
+		)
+
+		.def("make_function",
+			&CPointer::MakeFunction,
+			"Creates a new Function instance.",
+			args("convention", "parameters"),
+			manage_new_object_policy()
+		)
+
+		.def("make_virtual_function",
+			&CPointer::MakeVirtualFunction,
+			"Creates a new Function instance.",
+			args("index", "convention", "parameters"),
+			manage_new_object_policy()
 		)
 
 		.def("realloc",
@@ -270,13 +280,6 @@ void export_memtools()
 		.def("dealloc",
 			&CPointer::Dealloc,
 			"Deallocates a memory block."
-		)
-
-		.def("make_function",
-			&CPointer::MakeFunction,
-			"Creates a new Function instance.",
-			args("convention", "parameters"),
-			manage_new_object_policy()
 		)
 
 		 .def("get_size",
