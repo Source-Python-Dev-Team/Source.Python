@@ -147,12 +147,15 @@ Param_t* CCallback::GetArgument(int iIndex)
     return temp;
 }
 
-void CCallback::Free()
+void CCallback::Dealloc()
 {
-    // TODO: Figure out how to use std::free() on the generated code, so we can
-	// use Dealloc().
     MemoryManager::getGlobal()->free((void *) m_ulAddr);
     m_ulAddr = 0;
+}
+
+void CCallback::Realloc(int iSize)
+{
+	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "This function is not implemented for callbacks.")
 }
 
 

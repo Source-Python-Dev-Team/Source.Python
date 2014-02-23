@@ -457,11 +457,6 @@ void export_dynamichooks()
 void export_callbacks()
 {
     class_< CCallback, bases< CFunction > >("Callback", init< object, Convention_t, char * >())
-        .def("free",
-            &CCallback::Free,
-            "Frees the callback. Don't use dealloc()!"
-        )
-
         .def_readwrite("callback",
             &CCallback::m_oCallback,
             "The Python function that gets called by the C++ callback"

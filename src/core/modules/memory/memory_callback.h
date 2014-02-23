@@ -73,7 +73,9 @@ public:
     int      GetPopSize();
     int      GetArgumentCount();
     Param_t* GetArgument(int iIndex);
-    void     Free();
+
+	virtual void Dealloc();
+	virtual void Realloc(int iSize);
 
 public:
     // For variadic functions
