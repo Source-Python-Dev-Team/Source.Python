@@ -53,13 +53,21 @@ inline bool CheckClassname(object obj, char* name)
 //---------------------------------------------------------------------------------
 inline unsigned long ExtractPyPtr(object obj)
 {
-	if (CheckClassname(obj, "CPointer"))
+	// Try to get an unsigned long at first
+	try
 	{
-		CPointer* pPtr = extract<CPointer *>(obj);
-		return pPtr->get_address();
+		return extract<unsigned long>(obj);
 	}
-	return extract<unsigned long>(obj);
+	catch(...)
+	{
+		PyErr_Clear();
+	}
+
+	// If that fails, try to extract a CPointer representation
+	CPointer* pPtr = extract<CPointer *>(obj);
+	return pPtr->m_ulAddr;
 }
+
 
 //---------------------------------------------------------------------------------
 // Helper template methods for __getitem__ and __setitem__

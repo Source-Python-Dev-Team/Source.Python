@@ -52,67 +52,122 @@ CPointer::CPointer(unsigned long ulAddr /* = 0 */)
 	m_ulAddr = ulAddr;
 }
 
-CPointer* CPointer::add(int iValue)
+void CPointer::SetStringPtr(char* szText, int iOffset /* = 0 */)
 {
-	return new CPointer(m_ulAddr + iValue);
-}
-
-CPointer* CPointer::sub(int iValue)
-{
-	return add(-iValue);
-}
-
-const char * CPointer::get_string(int iOffset /* = 0 */, bool bIsPtr /* = true */)
-{
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-	if (bIsPtr)
-		return get<char *>(iOffset);
-
-	return (char *) (m_ulAddr + iOffset);
+	strcpy(*(char **) (m_ulAddr + iOffset), szText);
 }
 
-void CPointer::set_string(char* szText, int iSize /* = 0 */, int iOffset /* = 0 */, bool bIsPtr /* = true */)
+const char * CPointer::GetStringArray(int iOffset /* = 0 */)
 {
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-	if (!iSize)
-	{
-		iSize = UTIL_GetMemSize((void *) (m_ulAddr + iOffset));
-		if(!iSize)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve size of address.")
-	}
-
-	if ((int ) strlen(szText) > iSize)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String exceeds size of memory block.")
-
-	if (bIsPtr)
-		set<char *>(szText, iOffset);
-	else
-		strcpy((char *) (m_ulAddr + iOffset), szText);
+	return (const char *) m_ulAddr + iOffset;
 }
 
-CPointer* CPointer::get_ptr(int iOffset /* = 0 */)
+void CPointer::SetStringArray(char* szText, int iOffset /* = 0 */)
 {
-	if (!is_valid())
+	if (!IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+
+	strcpy((char *) (m_ulAddr + iOffset), szText);
+}
+
+CPointer* CPointer::GetPtr(int iOffset /* = 0 */)
+{
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
 	return new CPointer(*(unsigned long *) (m_ulAddr + iOffset));
 }
 
-void CPointer::set_ptr(CPointer* ptr, int iOffset /* = 0 */)
+void CPointer::SetPtr(CPointer* ptr, int iOffset /* = 0 */)
 {
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-	*(unsigned long *) m_ulAddr = ptr->get_address();
+	*(unsigned long *) m_ulAddr = ptr->m_ulAddr;
 }
 
-CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true */)
+int CPointer::Compare(object oOther, unsigned long ulNum)
 {
-	if (!is_valid())
+	unsigned long ulOther = ExtractPyPtr(oOther);
+	if (!m_ulAddr || !ulOther)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
+
+	return memcmp((void *) m_ulAddr, (void *) ulOther, ulNum);
+}
+
+bool CPointer::IsOverlapping(object oOther, unsigned long ulNumBytes)
+{
+	unsigned long ulOther = ExtractPyPtr(oOther);
+	if (m_ulAddr <= ulOther)
+		return m_ulAddr + ulNumBytes > ulOther;
+       
+	return ulOther + ulNumBytes > m_ulAddr;
+}
+
+CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
+{
+	if (!m_ulAddr)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+
+	unsigned long iByteLen = len(oBytes);
+	if (ulNumBytes < iByteLen)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Search range is too small.")
+
+	unsigned char* base  = (unsigned char *) m_ulAddr;
+	unsigned char* end   = (unsigned char *) (m_ulAddr + ulNumBytes - (iByteLen - 1));
+	unsigned char* bytes = NULL;
+	PyArg_Parse(oBytes.ptr(), "y", &bytes);
+
+	while (base < end)
+	{
+		unsigned long i = 0;
+		for(; i < iByteLen; i++)
+		{
+			if (base[i] == '\x2A')
+				continue;
+
+			if (bytes[i] != base[i])
+				break;
+		}
+
+		if (i == iByteLen)
+			return new CPointer((unsigned long) base);
+
+		base++;
+	}
+	return NULL;
+}
+
+void CPointer::Copy(object oDest, unsigned long ulNumBytes)
+{
+	unsigned long ulDest = ExtractPyPtr(oDest);
+	if (!m_ulAddr || ulDest)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
+
+	if (IsOverlapping(oDest, ulNumBytes))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointers are overlapping!")
+
+	memcpy((void *) ulDest, (void *) m_ulAddr, ulNumBytes);
+}
+
+void CPointer::Move(object oDest, unsigned long ulNumBytes)
+{
+	unsigned long ulDest = ExtractPyPtr(oDest);
+	if (!m_ulAddr || ulDest == 0)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
+
+	memmove((void *) ulDest, (void *) m_ulAddr, ulNumBytes);
+}
+
+CPointer* CPointer::GetVirtualFunc(int iIndex, bool bPlatformCheck /* = true */)
+{
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
 #ifdef __linux__
@@ -127,179 +182,12 @@ CPointer* CPointer::get_virtual_func(int iIndex, bool bPlatformCheck /* = true *
 	return new CPointer((unsigned long) vtable[iIndex]);
 }
 
-CFunction* CPointer::make_function(Convention_t eConv, char* szParams)
+CFunction* CPointer::MakeFunction(Convention_t eConv, char* szParams)
 {
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
 	return new CFunction(m_ulAddr, eConv, szParams);
-}
-
-// DynCall
-void CPointer::reset_vm()
-{
-	dcReset(g_pCallVM);
-}
-
-void CPointer::set_mode(int iMode)
-{
-	dcMode(g_pCallVM, iMode);
-}
-
-void CPointer::set_arg_bool(bool value)
-{
-	dcArgBool(g_pCallVM, value);
-}
-
-void CPointer::set_arg_char(char value)
-{
-	dcArgChar(g_pCallVM, value);
-}
-
-void CPointer::set_arg_uchar(unsigned char value)
-{
-	dcArgChar(g_pCallVM, value);
-}
-
-void CPointer::set_arg_short(short value)
-{
-	dcArgShort(g_pCallVM, value);
-}
-
-void CPointer::set_arg_ushort(unsigned short value)
-{
-	dcArgShort(g_pCallVM, value);
-}
-
-void CPointer::set_arg_int(int value)
-{
-	dcArgInt(g_pCallVM, value);
-}
-
-void CPointer::set_arg_uint(unsigned int value)
-{
-	dcArgInt(g_pCallVM, value);
-}
-
-void CPointer::set_arg_long(long value)
-{
-	dcArgLong(g_pCallVM, value);
-}
-
-void CPointer::set_arg_ulong(unsigned long value)
-{
-	dcArgLong(g_pCallVM, value);
-}
-
-void CPointer::set_arg_long_long(long long value)
-{
-	dcArgLongLong(g_pCallVM, value);
-}
-
-void CPointer::set_arg_ulong_long(unsigned long long value)
-{
-	dcArgLongLong(g_pCallVM, value);
-}
-
-void CPointer::set_arg_float(float value)
-{
-	dcArgFloat(g_pCallVM, value);
-}
-
-void CPointer::set_arg_double(double value)
-{
-	dcArgDouble(g_pCallVM, value);
-}
-
-void CPointer::set_arg_pointer(object value)
-{
-	unsigned long ptr = ExtractPyPtr(value);
-	dcArgPointer(g_pCallVM, ptr);
-}
-
-void CPointer::set_arg_string(char* value)
-{
-	dcArgPointer(g_pCallVM, (unsigned long) value);
-}
-
-void CPointer::call_void()
-{
-	dcCallVoid(g_pCallVM, m_ulAddr);
-}
-
-bool CPointer::call_bool()
-{
-	return dcCallBool(g_pCallVM, m_ulAddr);
-}
-
-char CPointer::call_char()
-{
-	return dcCallChar(g_pCallVM, m_ulAddr);
-}
-
-unsigned char CPointer::call_uchar()
-{
-	return dcCallChar(g_pCallVM, m_ulAddr);
-}
-
-short CPointer::call_short()
-{
-	return dcCallShort(g_pCallVM, m_ulAddr);
-}
-
-unsigned short CPointer::call_ushort()
-{
-	return dcCallShort(g_pCallVM, m_ulAddr);
-}
-
-int CPointer::call_int()
-{
-	return dcCallInt(g_pCallVM, m_ulAddr);
-}
-
-unsigned int CPointer::call_uint()
-{
-	return dcCallInt(g_pCallVM, m_ulAddr);
-}
-
-long CPointer::call_long()
-{
-	return dcCallLong(g_pCallVM, m_ulAddr);
-}
-
-unsigned long CPointer::call_ulong()
-{
-	return dcCallLong(g_pCallVM, m_ulAddr);
-}
-
-long long CPointer::call_long_long()
-{
-	return dcCallLongLong(g_pCallVM, m_ulAddr);
-}
-
-unsigned long long CPointer::call_ulong_long()
-{
-	return dcCallLongLong(g_pCallVM, m_ulAddr);
-}
-
-float CPointer::call_float()
-{
-	return dcCallFloat(g_pCallVM, m_ulAddr);
-}
-
-double CPointer::call_double()
-{
-	return dcCallDouble(g_pCallVM, m_ulAddr);
-}
-
-CPointer* CPointer::call_pointer()
-{
-	return new CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
-}
-
-const char* CPointer::call_string()
-{
-	return (const char *) dcCallPointer(g_pCallVM, m_ulAddr);
 }
 
 //-----------------------------------------------------------------------------
@@ -309,12 +197,12 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, char* szParams)
 {
 	m_ulAddr = ulAddr;
 	m_eConv = eConv;
-	m_szParams = szParams;
+	m_szParams = strdup(szParams);
 }
 
 object CFunction::__call__(object args)
 {	
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	dcReset(g_pCallVM);
@@ -384,7 +272,7 @@ object CFunction::__call__(object args)
 
 object CFunction::call_trampoline(object args)
 {
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
@@ -394,9 +282,9 @@ object CFunction::call_trampoline(object args)
 	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_szParams).__call__(args);
 }
 
-void CFunction::add_hook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+void CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 {
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, m_szParams);
@@ -404,9 +292,9 @@ void CFunction::add_hook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 	g_mapCallbacks[pHook][eType].push_back(pCallable);
 }
 
-void CFunction::remove_hook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+void CFunction::RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 {
-	if (!is_valid())
+	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 		
 	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
@@ -416,35 +304,15 @@ void CFunction::remove_hook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 	g_mapCallbacks[pHook][eType].remove(pCallable);
 }
 
-void CFunction::add_pre_hook(PyObject* pCallable)
-{
-	add_hook(HOOKTYPE_PRE, pCallable);
-}
-
-void CFunction::add_post_hook(PyObject* pCallable)
-{
-	add_hook(HOOKTYPE_POST, pCallable);
-}
-
-void CFunction::remove_pre_hook(PyObject* pCallable)
-{
-	remove_hook(HOOKTYPE_PRE, pCallable);
-}
-
-void CFunction::remove_post_hook(PyObject* pCallable)
-{
-	remove_hook(HOOKTYPE_POST, pCallable);
-}
-
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
-int get_error()
+int GetError()
 {
 	return dcGetError(g_pCallVM);
 }
 
-CPointer* alloc(int iSize)
+CPointer* Alloc(int iSize)
 {
 	return new CPointer((unsigned long) UTIL_Alloc(iSize));
 }

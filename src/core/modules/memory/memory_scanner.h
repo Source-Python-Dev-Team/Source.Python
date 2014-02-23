@@ -46,15 +46,12 @@ class CBinaryFile
 public:
 	CBinaryFile(unsigned long ulAddr, unsigned long ulSize);
 
-	CPointer* find_signature(object oSignature);
-	CPointer* find_symbol(char* szSymbol);
-	CPointer* find_pointer(object oIdentifier, int iOffset);
-	CPointer* find_address(object oIdentifier);
+	CPointer* FindSignature(object oSignature);
+	CPointer* FindSymbol(char* szSymbol);
+	CPointer* FindPointer(object oIdentifier, int iOffset);
+	CPointer* FindAddress(object oIdentifier);
 
-	unsigned long get_address() { return m_ulAddr; }
-	unsigned long get_size() { return m_ulSize; }
-
-private:
+public:
 	unsigned long          m_ulAddr;
 	unsigned long          m_ulSize;
 	std::list<Signature_t> m_Signatures;
@@ -64,7 +61,7 @@ private:
 class CBinaryManager
 {
 public:
-	CBinaryFile* find_binary(char* szPath, bool bSrvCheck = true);
+	CBinaryFile* FindBinary(char* szPath, bool bSrvCheck = true);
 
 private:
 	std::list<CBinaryFile*> m_Binaries;
@@ -72,6 +69,6 @@ private:
 
 static CBinaryManager* s_pBinaryManager = new CBinaryManager();
 
-CBinaryFile* find_binary(char* szPath, bool bSrvCheck = true);
+CBinaryFile* FindBinary(char* szPath, bool bSrvCheck = true);
 
 #endif // _MEMORY_SCANNER_H

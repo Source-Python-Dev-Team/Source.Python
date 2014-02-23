@@ -30,16 +30,12 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "boost/python.hpp"
-
-//---------------------------------------------------------------------------------
-// Namespaces
-//---------------------------------------------------------------------------------
 using namespace boost::python;
+
 
 //---------------------------------------------------------------------------------
 // Define checks
 //---------------------------------------------------------------------------------
-
 #if !defined(SOURCE_ENGINE)
 #error("SOURCE_ENGINE define must be globally defined, did we forget?");
 #endif
@@ -47,6 +43,7 @@ using namespace boost::python;
 #if !defined(SOURCE_GAME)
 #error("SOURCE_GAME define must be globally defined, did we forget?");
 #endif
+
 
 //---------------------------------------------------------------------------------
 // Surround boost python statements with this macro in order to handle exceptions.
@@ -73,7 +70,6 @@ using namespace boost::python;
 #define XSTRINGIFY(s) STRINGIFY(s)
 #define STRINGIFY(s) #s
 
-
 //---------------------------------------------------------------------------------
 // This macro returns the given overloaded method
 //---------------------------------------------------------------------------------
@@ -85,35 +81,6 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #define GET_FUNCTION(return_type, function, ...) \
 	static_cast< return_type(*)( __VA_ARGS__ ) >(&function)
-
-//---------------------------------------------------------------------------------
-// Use this to wrap a method. Variable arg is for any return value policies
-// you might have. Since we're in the namespace, we have access to the class.
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD( classname, methodname, ... ) \
-	.def(XSTRINGIFY(methodname), &classname::methodname, ##__VA_ARGS__ )
-
-//---------------------------------------------------------------------------------
-// Use this macro to generate function overloads for classes that have methods
-// with default parameters.
-//---------------------------------------------------------------------------------
-#define DECLARE_CLASS_METHOD_OVERLOAD( classname, method, minargs, maxargs ) \
-	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(classname##_##method, method, minargs, maxargs)
-
-//---------------------------------------------------------------------------------
-// Use this macro inside a BOOST_*_CLASS block to create a class method with an
-// overload. Make sure you have DECLARE_CLASS_METHOD_OVERLOAD'd the overload
-// first!
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD_OVERLOAD( classname, methodname, ... ) \
-	.def(XSTRINGIFY(methodname), &classname::methodname, classname##_##methodname( __VA_ARGS__ ))
-
-//---------------------------------------------------------------------------------
-// Use this macro for boost class overloads that have a return policy.
-//---------------------------------------------------------------------------------
-#define CLASS_METHOD_OVERLOAD_RET( classname, methodname, docstring, args, retpol ) \
-	.def(XSTRINGIFY(methodname), &classname::methodname, \
-		 classname##_##methodname( args, docstring )[retpol])
 
 //---------------------------------------------------------------------------------
 // Use this macro to define a function or class method that raises a
@@ -170,7 +137,6 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 // These macros allow us to includ engine / game specific files
 //---------------------------------------------------------------------------------
-
 // Has to be a C++ macro so we can use another define
 // directly after the call to concatenate the objects
 #define GET_ENGINE_VALUE() engine

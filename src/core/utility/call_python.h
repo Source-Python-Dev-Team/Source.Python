@@ -45,7 +45,12 @@ using namespace boost::python;
 // boost::python::object retval = CALL_PY_FUNC(PyObject*, ...);
 // ----------------------------------------------------------------------------
 #define CALL_PY_FUNC(pCallable, ...) \
-	PyObject_HasAttrString(pCallable, "__self__") ? boost::python::call_method<object>(PyObject_GetAttrString(pCallable, "__self__"), extract<const char*>(PyObject_GetAttrString(pCallable, "__name__")), ##__VA_ARGS__) : call<object>(pCallable, ##__VA_ARGS__)
+	PyObject_HasAttrString(pCallable, "__self__") ? \
+		boost::python::call_method<object>( \
+			PyObject_GetAttrString(pCallable, "__self__"), \
+			extract<const char*>(PyObject_GetAttrString(pCallable, "__name__")), \
+			##__VA_ARGS__ \
+		) : call<object>(pCallable, ##__VA_ARGS__)
 
 
 // ----------------------------------------------------------------------------

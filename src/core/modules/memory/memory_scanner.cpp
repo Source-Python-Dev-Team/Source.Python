@@ -52,7 +52,7 @@ CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long ulSize)
 	m_ulSize = ulSize;
 }
 
-CPointer* CBinaryFile::find_signature(object oSignature)
+CPointer* CBinaryFile::FindSignature(object oSignature)
 {
 	// This is required because there's no straight way to get a string from a python
 	// object from boost (without using the stl).
@@ -101,7 +101,7 @@ CPointer* CBinaryFile::find_signature(object oSignature)
 	return new CPointer();
 }
 
-CPointer* CBinaryFile::find_symbol(char* szSymbol)
+CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 {
 #ifdef _WIN32
 	return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulAddr, szSymbol));
@@ -207,24 +207,24 @@ CPointer* CBinaryFile::find_symbol(char* szSymbol)
 	return new CPointer((unsigned long) sym_addr);
 
 #else
-#error "BinaryFile::find_symbol() is not implemented on this OS"
+#error "BinaryFile::FindSymbol() is not implemented on this OS"
 #endif
 }
 
-CPointer* CBinaryFile::find_pointer(object oIdentifier, int iOffset)
+CPointer* CBinaryFile::FindPointer(object oIdentifier, int iOffset)
 {
-	CPointer* ptr = find_address(oIdentifier);
-	return ptr->is_valid() ? ptr->get_ptr(iOffset) : ptr;
+	CPointer* ptr = FindAddress(oIdentifier);
+	return ptr->IsValid() ? ptr->GetPtr(iOffset) : ptr;
 }
 
-CPointer* CBinaryFile::find_address(object oIdentifier)
+CPointer* CBinaryFile::FindAddress(object oIdentifier)
 {
 #ifdef _WIN32
 	if(CheckClassname(oIdentifier, "bytes"))
-		return find_signature(oIdentifier);
+		return FindSignature(oIdentifier);
 #endif
 	
-	return find_symbol(extract<char*>(oIdentifier));
+	return FindSymbol(extract<char*>(oIdentifier));
 }
 
 //-----------------------------------------------------------------------------
@@ -241,7 +241,7 @@ bool str_ends_with(const char *szString, const char *szSuffix)
 	return strncmp(szString + stringlen - suffixlen, szSuffix, suffixlen) == 0;
 }
 
-CBinaryFile* CBinaryManager::find_binary(char* szPath, bool bSrvCheck /* = true */)
+CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true */)
 {
 	std::string szBinaryPath = szPath;
 #ifdef __linux__
@@ -266,7 +266,7 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath, bool bSrvCheck /* = true 
 	for (std::list<CBinaryFile *>::iterator iter=m_Binaries.begin(); iter != m_Binaries.end(); iter++)
 	{
 		CBinaryFile* binary = *iter;
-		if (binary->get_address() == ulAddr)
+		if (binary->m_ulAddr == ulAddr)
 		{
 			// We don't need to open it several times
 			dlFreeLibrary((DLLib *) ulAddr);
@@ -292,7 +292,7 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath, bool bSrvCheck /* = true 
 	ulSize = buf.st_size;
 
 #else
-#error "BinaryManager::find_binary() is not implemented on this OS"
+#error "BinaryManager::FindBinary() is not implemented on this OS"
 #endif
 
 	// Create a new Binary object and add it to the list
@@ -304,7 +304,7 @@ CBinaryFile* CBinaryManager::find_binary(char* szPath, bool bSrvCheck /* = true 
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
-CBinaryFile* find_binary(char* szPath, bool bSrvCheck /* = true */)
+CBinaryFile* FindBinary(char* szPath, bool bSrvCheck /* = true */)
 {
-	return s_pBinaryManager->find_binary(szPath, bSrvCheck);
+	return s_pBinaryManager->FindBinary(szPath, bSrvCheck);
 }

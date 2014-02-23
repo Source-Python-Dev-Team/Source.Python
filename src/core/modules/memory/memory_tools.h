@@ -117,81 +117,84 @@ class CPointer
 public:
 	CPointer(unsigned long ulAddr = 0);
 
+	operator unsigned long() const { return m_ulAddr; }
+
+	// Implement some operators
 	template<class T>
-	T get(int iOffset = 0)
+	const CPointer operator+(T const& rhs)
+	{ return CPointer(m_ulAddr + rhs); }
+
+	template<class T>
+	const CPointer operator-(T const& rhs)
+	{ return CPointer(m_ulAddr - rhs); }
+
+	template<class T>
+	const CPointer operator+=(T const& rhs)
+	{ m_ulAddr += rhs; return *this; }
+
+	template<class T>
+	const CPointer operator-=(T const& rhs)
+	{ m_ulAddr -= rhs; return *this; }
+
+	bool operator!()
+	{ return !m_ulAddr; }
+
+	template<class T>
+	bool operator==(T const& rhs)
+	{ return m_ulAddr == rhs; }
+
+	template<class T>
+	bool operator!=(T const& rhs)
+	{ return m_ulAddr != rhs; }
+
+
+	template<class T>
+	T Get(int iOffset = 0)
 	{
-		if (!is_valid())
+		if (!IsValid())
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
 		return *(T *) (m_ulAddr + iOffset);
 	}
 
 	template<class T>
-	void set(T value, int iOffset = 0)
+	void Set(T value, int iOffset = 0)
 	{
-		if (!is_valid())
+		if (!IsValid())
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
 		unsigned long newAddr = m_ulAddr + iOffset;
 		*(T *) newAddr = value;
 	}
+	
+	void                SetStringPtr(char* szText, int iOffset = 0);
 
-	const char *        get_string(int iOffset = 0, bool bIsPtr = true);
-	void                set_string(char* szText, int iSize = 0, int iOffset = 0, bool bIsPtr = true);
-	CPointer*           get_ptr(int iOffset = 0);
-	void                set_ptr(CPointer* ptr, int iOffset = 0);
+	const char *        GetStringArray(int iOffset = 0);
+	void                SetStringArray(char* szText, int iOffset = 0);
 
-	unsigned long       get_size() { return UTIL_GetMemSize((void *) m_ulAddr); }
-	unsigned long       get_address() { return m_ulAddr; }
+	CPointer*           GetPtr(int iOffset = 0);
+	void                SetPtr(CPointer* ptr, int iOffset = 0);
 
-	CPointer*           add(int iValue);
-	CPointer*           sub(int iValue);
-	bool                is_valid() { return m_ulAddr ? true: false; }
+	bool                IsOverlapping(object oOther, unsigned long ulNumBytes);
+	CPointer*           SearchBytes(object oBytes, unsigned long ulNumBytes);
 
-	CPointer*           get_virtual_func(int iIndex, bool bPlatformCheck = true);
+	int                 Compare(object oOther, unsigned long ulNum);
+	void                Copy(object oDest, unsigned long ulNumBytes);
+	void                Move(object oDest, unsigned long ulNumBytes);
 
-	void                realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
-	void                dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
-	CFunction*          make_function(Convention_t eConv, char* szParams);
+	unsigned long       GetSize() { return UTIL_GetMemSize((void *) m_ulAddr); }
 
-	void                reset_vm();
-	void                set_mode(int iMode);
+	bool                IsValid() { return m_ulAddr != 0; }
 
-	void                set_arg_bool(bool value);
-	void                set_arg_char(char value);
-	void                set_arg_uchar(unsigned char value);
-	void                set_arg_short(short value);
-	void                set_arg_ushort(unsigned short value);
-	void                set_arg_int(int value);
-	void                set_arg_uint(unsigned int value);
-	void                set_arg_long(long value);
-	void                set_arg_ulong(unsigned long value);
-	void                set_arg_long_long(long long value);
-	void                set_arg_ulong_long(unsigned long long value);
-	void                set_arg_float(float value);
-	void                set_arg_double(double value);
-	void                set_arg_pointer(object value);
-	void                set_arg_string(char* value);
+	CPointer*           GetVirtualFunc(int iIndex, bool bPlatformCheck = true);
 
-	void                call_void();
-	bool                call_bool();
-	char                call_char();
-	unsigned char       call_uchar();
-	short               call_short();
-	unsigned short      call_ushort();
-	int                 call_int();
-	unsigned int        call_uint();
-	long                call_long();
-	unsigned long       call_ulong();
-	long long           call_long_long();
-	unsigned long long  call_ulong_long();
-	float               call_float();
-	double              call_double();
-	CPointer*           call_pointer();
-	const char*         call_string();
+	void                Realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
+	void                Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
-protected:
+	CFunction*          MakeFunction(Convention_t eConv, char* szParams);
+
+public:
 	unsigned long m_ulAddr;
 };
 
@@ -203,21 +206,27 @@ public:
 	object __call__(object args);
 	object call_trampoline(object args);
 	
-	void add_hook(DynamicHooks::HookType_t eType, PyObject* pCallable);
-	void remove_hook(DynamicHooks::HookType_t eType, PyObject* pCallable);
+	void AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
+	void RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
     
-	void add_pre_hook(PyObject* pCallable);
-	void add_post_hook(PyObject* pCallable);
+	void AddPreHook(PyObject* pCallable)
+	{ AddHook(HOOKTYPE_PRE, pCallable); }
+
+	void AddPostHook(PyObject* pCallable)
+	{ AddHook(HOOKTYPE_POST, pCallable); }
     
-	void remove_pre_hook(PyObject* pCallable);
-	void remove_post_hook(PyObject* pCallable);
+	void RemovePreHook(PyObject* pCallable)
+	{ RemoveHook(HOOKTYPE_PRE, pCallable); }
+
+	void RemovePostHook(PyObject* pCallable)
+	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
     
-private:
+public:
 	char*         m_szParams;
 	Convention_t  m_eConv;
 };
 
-int get_error();
-CPointer* alloc(int iSize);
+int GetError();
+CPointer* Alloc(int iSize);
 
 #endif // _MEMORY_TOOLS_H
