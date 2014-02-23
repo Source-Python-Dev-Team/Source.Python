@@ -42,7 +42,7 @@ using namespace DynamicHooks;
 // >> MACROS
 // ============================================================================
 #define GET_CALLBACK_CALLER(type) \
-	GET_FUNCTION(type, CallbackCaller<type>, CCallback*, unsigned long, unsigned long)
+	(void *) GET_FUNCTION(type, CallbackCaller<type>, CCallback*, unsigned long, unsigned long)
 
 
 // ============================================================================
