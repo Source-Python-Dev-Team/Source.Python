@@ -111,12 +111,27 @@ void export_binaryfile()
 //-----------------------------------------------------------------------------
 // Exposes CPointer
 //-----------------------------------------------------------------------------
-// These two macros ease the exposing part of get_<type> methods
 #define OVERLOAD_GET_TYPE(name, type) \
 	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_##name##_overload, CPointer::Get<type>, 0, 1)
 
+#define OVERLOAD_SET_TYPE(name, type) \
+	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_##name##_overload, CPointer::Set<type>, 1, 2)
+
+#define OVERLOAD_GET_SET_TYPE(name, type) \
+	OVERLOAD_GET_TYPE(name, type) \
+	OVERLOAD_SET_TYPE(name, type)
+
+#define EXPOSE_SET_TYPE(name, type) \
+	.def("set_" XSTRINGIFY(name), \
+		&CPointer::Set<type>, \
+		set_##name##_overload( \
+			args("value", "offset"), \
+			"Sets the value at the given memory location." \
+		) \
+	)
+
 #define EXPOSE_GET_TYPE(name, type) \
-	def("get_" XSTRINGIFY(name), \
+	.def("get_" XSTRINGIFY(name), \
 		&CPointer::Get<type>, \
 		get_##name##_overload( \
 			args("offset"), \
@@ -124,75 +139,74 @@ void export_binaryfile()
 		) \
 	)
 
-// These two macros ease the exposing part of set_<type> methods
-#define OVERLOAD_SET_TYPE(name, type) \
-	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_##name##_overload, CPointer::Set<type>, 1, 2)
-
-#define EXPOSE_SET_TYPE(name, type) \
-	def("set_" XSTRINGIFY(name), \
-		&CPointer::Set<type>, \
-		set_##name##_overload( \
-			args("value", "offset"), \
-			"Sets the value at the given memory location." \
-		) \
-	)
+#define EXPOSE_GET_SET_TYPE(name, type) \
+	EXPOSE_SET_TYPE(name, type) \
+	EXPOSE_GET_TYPE(name, type)
 	
+// get/set_<type> overloads
+OVERLOAD_GET_SET_TYPE(bool, bool)
+OVERLOAD_GET_SET_TYPE(char, char)
+OVERLOAD_GET_SET_TYPE(uchar, unsigned char)
+OVERLOAD_GET_SET_TYPE(short, short)
+OVERLOAD_GET_SET_TYPE(ushort, unsigned short)
+OVERLOAD_GET_SET_TYPE(int, int)
+OVERLOAD_GET_SET_TYPE(uint, unsigned int)
+OVERLOAD_GET_SET_TYPE(long, long)
+OVERLOAD_GET_SET_TYPE(ulong, unsigned long)
+OVERLOAD_GET_SET_TYPE(long_long, long long)
+OVERLOAD_GET_SET_TYPE(ulong_long, unsigned long long)
+OVERLOAD_GET_SET_TYPE(float, float)
+OVERLOAD_GET_SET_TYPE(double, double)
+
 // get_<type> overloads
-OVERLOAD_GET_TYPE(bool, bool)
-OVERLOAD_GET_TYPE(char, char)
-OVERLOAD_GET_TYPE(uchar, unsigned char)
-OVERLOAD_GET_TYPE(short, short)
-OVERLOAD_GET_TYPE(ushort, unsigned short)
-OVERLOAD_GET_TYPE(int, int)
-OVERLOAD_GET_TYPE(uint, unsigned int)
-OVERLOAD_GET_TYPE(long, long)
-OVERLOAD_GET_TYPE(ulong, unsigned long)
-OVERLOAD_GET_TYPE(long_long, long long)
-OVERLOAD_GET_TYPE(ulong_long, unsigned long long)
-OVERLOAD_GET_TYPE(float, float)
-OVERLOAD_GET_TYPE(double, double)
 OVERLOAD_GET_TYPE(string_ptr, const char*)
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ptr_overload, GetPtr, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_array_overload, GetStringArray, 0, 1)
 	
 // set_<type> overloads
-OVERLOAD_SET_TYPE(bool, bool)
-OVERLOAD_SET_TYPE(char, char)
-OVERLOAD_SET_TYPE(uchar, unsigned char)
-OVERLOAD_SET_TYPE(short, short)
-OVERLOAD_SET_TYPE(ushort, unsigned short)
-OVERLOAD_SET_TYPE(int, int)
-OVERLOAD_SET_TYPE(uint, unsigned int)
-OVERLOAD_SET_TYPE(long, long)
-OVERLOAD_SET_TYPE(ulong, unsigned long)
-OVERLOAD_SET_TYPE(long_long, long long)
-OVERLOAD_SET_TYPE(ulong_long, unsigned long long)
-OVERLOAD_SET_TYPE(float, float)
-OVERLOAD_SET_TYPE(double, double)
-
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ptr_overload, SetPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_ptr_overload, SetStringPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_array_overload, SetStringArray, 1, 2)
 
+// These three macros ease the exposing part of DynCall
+#define EXPOSE_DC_SET(pyname, cppname) \
+	.def("set_arg_" XSTRINGIFY(pyname), \
+		&CPointer::SetArg##cppname, \
+		args("value"), \
+		"Adds a new parameter to the virtual machine." \
+	)
+
+#define EXPOSE_DC_CALL(pyname, cppname) \
+	.def("call_" XSTRINGIFY(pyname), \
+		&CPointer::Call##cppname, \
+		"Calls the virtual machine." \
+	)
+
+#define EXPOSE_DC(pyname, cppname) \
+	EXPOSE_DC_SET(pyname, cppname) \
+	EXPOSE_DC_CALL(pyname, cppname)
+
 void export_memtools()
 {
 	class_<CPointer>("Pointer", init< optional<unsigned long> >())
+		// get/set_<type> methods
+		EXPOSE_GET_SET_TYPE(bool, bool)
+		EXPOSE_GET_SET_TYPE(char, char)
+		EXPOSE_GET_SET_TYPE(uchar, unsigned char)
+		EXPOSE_GET_SET_TYPE(short, short)
+		EXPOSE_GET_SET_TYPE(ushort, unsigned short)
+		EXPOSE_GET_SET_TYPE(int, int)
+		EXPOSE_GET_SET_TYPE(uint, unsigned int)
+		EXPOSE_GET_SET_TYPE(long, long)
+		EXPOSE_GET_SET_TYPE(ulong, unsigned long)
+		EXPOSE_GET_SET_TYPE(long_long, long long)
+		EXPOSE_GET_SET_TYPE(ulong_long, unsigned long long)
+		EXPOSE_GET_SET_TYPE(float, float)
+		EXPOSE_GET_SET_TYPE(double, double)
+
 		// get_<type> methods
-		.EXPOSE_GET_TYPE(bool, bool)
-		.EXPOSE_GET_TYPE(char, char)
-		.EXPOSE_GET_TYPE(uchar, unsigned char)
-		.EXPOSE_GET_TYPE(short, short)
-		.EXPOSE_GET_TYPE(ushort, unsigned short)
-		.EXPOSE_GET_TYPE(int, int)
-		.EXPOSE_GET_TYPE(uint, unsigned int)
-		.EXPOSE_GET_TYPE(long, long)
-		.EXPOSE_GET_TYPE(ulong, unsigned long)
-		.EXPOSE_GET_TYPE(long_long, long long)
-		.EXPOSE_GET_TYPE(ulong_long, unsigned long long)
-		.EXPOSE_GET_TYPE(float, float)
-		.EXPOSE_GET_TYPE(double, double)
-		.EXPOSE_GET_TYPE(string_ptr, const char*)
+		EXPOSE_GET_TYPE(string_ptr, const char*)
 
 		.def("get_ptr",
 			&CPointer::GetPtr,
@@ -211,20 +225,6 @@ void export_memtools()
 		)
 		
 		// set_<type> methods
-		.EXPOSE_SET_TYPE(bool, bool)
-		.EXPOSE_SET_TYPE(char, char)
-		.EXPOSE_SET_TYPE(uchar, unsigned char)
-		.EXPOSE_SET_TYPE(short, short)
-		.EXPOSE_SET_TYPE(ushort, unsigned short)
-		.EXPOSE_SET_TYPE(int, int)
-		.EXPOSE_SET_TYPE(uint, unsigned int)
-		.EXPOSE_SET_TYPE(long, long)
-		.EXPOSE_SET_TYPE(ulong, unsigned long)
-		.EXPOSE_SET_TYPE(long_long, long long)
-		.EXPOSE_SET_TYPE(ulong_long, unsigned long long)
-		.EXPOSE_SET_TYPE(float, float)
-		.EXPOSE_SET_TYPE(double, double)
-		
 		.def("set_ptr",
 			&CPointer::SetPtr,
 			set_ptr_overload(
@@ -249,10 +249,37 @@ void export_memtools()
 			)
 		)
 
+		// DynCall methods
+		.def("reset_vm",
+			&CPointer::ResetVM,
+			"Resets the virtual machine."
+		)
+
+		.def("set_mode",
+			&CPointer::SetMode,
+			"Sets the calling convention.",
+			args("convention")
+		)
+
+		EXPOSE_DC_CALL(void, Void)
+		EXPOSE_DC(bool, Bool)
+		EXPOSE_DC(char, Char)
+		EXPOSE_DC(uchar, UChar)
+		EXPOSE_DC(short, Short)
+		EXPOSE_DC(ushort, UShort)
+		EXPOSE_DC(int, Int)
+		EXPOSE_DC(uint, UInt)
+		EXPOSE_DC(long, Long)
+		EXPOSE_DC(ulong, ULong)
+		EXPOSE_DC(float, Float)
+		EXPOSE_DC(double, Double)
+		EXPOSE_DC(pointer, Pointer)
+		EXPOSE_DC(string, String)
+
 		// Other methods
 		.def("get_virtual_func",
 			&CPointer::GetVirtualFunc,
-			"Returns the address (as a CPointer instance) of a virtual function at the given index.",
+			"Returns the address (as a Pointer instance) of a virtual function at the given index.",
 			args("index"),
 			manage_new_object_policy()
 		)
