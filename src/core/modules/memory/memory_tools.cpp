@@ -304,16 +304,3 @@ void CFunction::RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 
 	g_mapCallbacks[pHook][eType].remove(pCallable);
 }
-
-//-----------------------------------------------------------------------------
-// Functions
-//-----------------------------------------------------------------------------
-int GetError()
-{
-	return dcGetError(g_pCallVM);
-}
-
-CPointer* Alloc(int iSize)
-{
-	return new CPointer((unsigned long) UTIL_Alloc(iSize));
-}

@@ -248,6 +248,7 @@ public:
 	unsigned long m_ulAddr;
 };
 
+
 class CFunction: public CPointer
 {
 public:
@@ -276,7 +277,36 @@ public:
 	Convention_t  m_eConv;
 };
 
-int GetError();
-CPointer* Alloc(int iSize);
+
+class Wrap
+{
+public:
+	template<class T>
+	static T* WrapIt(object ptr)
+	{
+		unsigned long ulPtr = ExtractPyPtr(ptr);
+		return (T *) ulPtr;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
+inline int GetError()
+{
+	return dcGetError(g_pCallVM);
+}
+
+inline CPointer Alloc(int iSize)
+{
+	return CPointer((unsigned long) UTIL_Alloc(iSize));
+}
+
+template<class T>
+CPointer GetAddress(T* ptr)
+{
+	return CPointer((unsigned long) ptr);
+}
 
 #endif // _MEMORY_TOOLS_H

@@ -44,6 +44,7 @@ void export_memtools();
 void export_dyncall();
 void export_dynamichooks();
 void export_callbacks();
+void export_get_address();
 
 DECLARE_SP_MODULE(memory_c)
 {
@@ -52,6 +53,7 @@ DECLARE_SP_MODULE(memory_c)
 	export_dyncall();
 	export_dynamichooks();
 	export_callbacks();
+	export_get_address();
 }
 
 //-----------------------------------------------------------------------------
@@ -109,7 +111,7 @@ void export_binaryfile()
 
 
 //-----------------------------------------------------------------------------
-// Exposes CPointer
+// Exposes CPointer and CFunction
 //-----------------------------------------------------------------------------
 #define OVERLOAD_GET_TYPE(name, type) \
 	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_##name##_overload, CPointer::Get<type>, 0, 1)
@@ -380,8 +382,7 @@ void export_memtools()
 	def("alloc",
 		Alloc,
 		"Allocates a memory block.",
-		args("size"),
-		manage_new_object_policy()
+		args("size")
 	);
 
 	class_<CFunction, bases<CPointer> >("Function", init<unsigned long, Convention_t, char*>())
@@ -481,6 +482,9 @@ void export_dynamichooks()
 	;
 }
 
+//-----------------------------------------------------------------------------
+// Exposes CCallback
+//-----------------------------------------------------------------------------
 void export_callbacks()
 {
     class_< CCallback, bases< CFunction > >("Callback", init< object, Convention_t, char * >())
@@ -489,4 +493,44 @@ void export_callbacks()
             "The Python function that gets called by the C++ callback"
         )
     ;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exposes wrap/get_address functionality
+//-----------------------------------------------------------------------------
+// Use this macro to add the ability to get the address of an object
+#define GET_ADDRESS(type) \
+	def("get_address", \
+		&GetAddress<type>, \
+		"Returns the memory address of the given object.", \
+		args("object") \
+	);
+
+// Use this macro if the Python name of the type is different to the C++ name
+#define WRAP_ADDRESS0(type, pyname) \
+	.def(XSTRINGIFY(pyname), \
+		&Wrap::WrapIt<type>, \
+		"Wraps the given address.", \
+		args("pointer"), \
+		reference_existing_object_policy() \
+	).staticmethod(XSTRINGIFY(pyname))
+
+// Use this macro if the Python and C++ name of the type are the same
+#define WRAP_ADDRESS1(type) \
+	WRAP_ADDRESS0(type, type)
+
+void export_get_address()
+{
+	// get_address()
+	GET_ADDRESS(Vector)
+	GET_ADDRESS(QAngle)
+
+	// wrap.<type>()
+	class_<Wrap>("wrap", no_init)
+
+		WRAP_ADDRESS1(Vector)
+		WRAP_ADDRESS1(QAngle)
+
+	;
 }
