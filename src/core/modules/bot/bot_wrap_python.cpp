@@ -57,12 +57,14 @@ void export_botmanager()
 		.def("get_bot_controller",
 			&IBotManager::GetBotController,
 			"Returns the BotController object for the given bot edict.",
+			args("edict"),
 			reference_existing_object_policy()
 		)
 
 		.def("create_bot",
 			&IBotManager::CreateBot,
 			"Creates a new bot and spawns it into the server.",
+			args("bot_name"),
 			reference_existing_object_policy()
 		)
 	;
@@ -75,17 +77,20 @@ void export_botcontroller()
 	class_<IBotController, boost::noncopyable>("BotController", no_init)
 		.def("set_abs_origin",
 			&IBotController::SetAbsOrigin,
-			"Sets the bot's absolute origin."
+			"Sets the bot's absolute origin.",
+			args("vec")
 		)
 
 		.def("set_abs_angles",
 			&IBotController::SetAbsAngles,
-			"Sets the bot's absolute angles."
+			"Sets the bot's absolute angles.",
+			args("ang")
 		)
 
 		.def("set_local_origin",
 			&IBotController::SetLocalOrigin,
-			"Sets the bot's local origin."
+			"Sets the bot's local origin.",
+			args("origin")
 		)
 
 		.def("get_local_origin",
@@ -95,7 +100,8 @@ void export_botcontroller()
 
 		.def("set_local_angles",
 			&IBotController::SetLocalAngles,
-			"Sets the bot's local angles."
+			"Sets the bot's local angles.",
+			args("angles")
 		)
 
 		.def("get_local_angles",
@@ -105,22 +111,26 @@ void export_botcontroller()
 
 		.def("remove_all_items",
 			&IBotController::RemoveAllItems,
-			"Removes all items the bot is wearing."
+			"Removes all items the bot is wearing.",
+			args("bsuit")
 		)
 
 		.def("set_active_weapon",
 			&IBotController::SetActiveWeapon,
-			"Gives the bot a weapon."
+			"Gives the bot a weapon.",
+			args("weapon_name")
 		)
 
 		.def("is_eflag_set",
 			&IBotController::IsEFlagSet,
-			"Returns whether the given effect flag is set."
+			"Returns whether the given effect flag is set.",
+			args("eflag")
 		)
 
 		.def("run_player_move",
 			&IBotController::RunPlayerMove,
-			"Fires a virtual move command to the bot."
+			"Fires a virtual move command to the bot.",
+			args("cmd")
 		)
 	;
 }

@@ -168,7 +168,8 @@ void export_server_entity()
 
 		.def("set_model_index",
 			&IServerEntity::SetModelIndex,
-			"Sets the model of this entity."
+			"Sets the model of this entity.",
+			args("index")
 		)
 	;
 }

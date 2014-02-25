@@ -73,7 +73,9 @@ void export_effects()
 		)
 
 		.def("set_suppress_event",
-			&IPredictionSystem::SetSuppressEvent
+			&IPredictionSystem::SetSuppressEvent,
+			"Set the SuppressEvent state.",
+			args("state")
 		)
 
 		/*

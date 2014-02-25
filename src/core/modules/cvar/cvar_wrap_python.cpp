@@ -208,7 +208,7 @@ public:
 		const char* szHelpString, bool bMin, float fMin, bool bMax, float fMax)
 	{
 		ConVar* pConVar = g_pCVar->FindVar(szName);
-		return pConVar ? pConVar : new ConVar(szName, szDefaultValue, flags,
+		return pConVar ? pConVar : new ConVar(strdup(szName), szDefaultValue, flags,
 			strdup(szHelpString), bMin, fMin, bMax, fMax);
 	}
 

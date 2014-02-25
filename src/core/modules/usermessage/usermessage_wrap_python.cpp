@@ -161,7 +161,8 @@ void export_message_functions()
 {
 	def("create_message",
 		CreateMessage,
-		"Creates an onscreen menu with various option buttons"
+		"Creates an onscreen menu with various option buttons",
+		args("edict", "message_type", "data")
 	);
 }
 

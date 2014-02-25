@@ -177,7 +177,8 @@ void export_igameeventlistener()
 	class_<CGameEventListener2, boost::noncopyable>("GameEventListener")
 		.def("fire_game_event",
 			pure_virtual(&CGameEventListener2::FireGameEvent),
-			"Fires the given game event."
+			"Fires the given game event.",
+			args("event")
 		)
 
 		.def("get_event_debug_id",

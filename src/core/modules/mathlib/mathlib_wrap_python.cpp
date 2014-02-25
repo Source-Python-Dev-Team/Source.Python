@@ -83,7 +83,8 @@ void export_vector()
 
 		// Methods
 		.def("init",
-			&Vector::Init
+			&Vector::Init,
+			args("x", "y", "z")
 		)
 
 		.def("is_valid",
@@ -160,11 +161,13 @@ void export_vector()
 		)
 
 		.def("is_length_greater_than",
-			&Vector::IsLengthGreaterThan
+			&Vector::IsLengthGreaterThan,
+			args("value")
 		)
 
 		.def("is_length_less_than",
-			&Vector::IsLengthLessThan
+			&Vector::IsLengthLessThan,
+			args("value")
 		)
 
 		.def("is_within_box",
@@ -193,7 +196,8 @@ void export_vector()
 
 		.def("dot",
 			&Vector::Dot,
-			"Returns the dot product."
+			"Returns the dot product.",
+			args("other")
 		)
 
 		.def("get_length_2D",
@@ -215,17 +219,20 @@ void export_vector()
 
 		.def("cross",
 			&Vector::Cross,
-			"Returns the cross product between two vectors."
+			"Returns the cross product between two vectors.",
+			args("other")
 		)
 
 		.def("min",
 			&Vector::Min,
-			"Returns a new vector containing the lowest values of both vectors."
+			"Returns a new vector containing the lowest values of both vectors.",
+			args("other")
 		)
 
 		.def("max",
 			&Vector::Max,
-			"Returns a new vector containing the biggest values of both vectors."
+			"Returns a new vector containing the biggest values of both vectors.",
+			args("other")
 		)
 	;
 }
@@ -258,7 +265,8 @@ void export_qangle()
 		)
 
 		.def("random",
-			&QAngle::Random
+			&QAngle::Random,
+			args("min_val", "max_val")
 		)
 
 		.def("is_valid",
@@ -311,7 +319,8 @@ void export_quaternion()
 		.def(init<RadianEuler>())
 
 		.def("init",
-			&Quaternion::Init
+			&Quaternion::Init,
+			args("x", "y", "z", "w")
 		)
 
 		.def("is_valid",

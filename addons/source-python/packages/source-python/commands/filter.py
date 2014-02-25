@@ -33,6 +33,10 @@ class _BaseFilter(AutoUnload):
         # Store the callback
         self.callback = callback
 
+        # Set the instance module so that the filter
+        # can be unregistered properly on unload
+        self.__module__ = self.callback.__module__
+
         # Register the filter
         self._manager_class.register_filter(self.callback)
 

@@ -177,7 +177,7 @@ void export_engine_server()
 			args("origin")
 		)
 
-		.def("get_cluster_for_origin",
+		.def("get_pvs_for_cluster",
 			&IVEngineServer::GetPVSForCluster,
 			"Gets the PVS bits for a specified cluster and copies the bits into outputpvs.",
 			args("cluster", "outputpvslength", "outputpvs")
@@ -627,12 +627,14 @@ void export_engine_server()
 
 		.def("start_query_cvar_value",
 			&IVEngineServer::StartQueryCvarValue,
-			"Returns the value of a cvar on the client."
+			"Returns the value of a cvar on the client.",
+			args("edict", "cvar_name")
 		)
 
 		.def("insert_server_command",
 			&IVEngineServer::InsertServerCommand,
-			"Inserts a command into the server's command buffer."
+			"Inserts a command into the server's command buffer.",
+			args("command_string")
 		)
 
 		.def("get_player_info",
@@ -707,7 +709,7 @@ void export_engine_server()
 		.def("client_command_key_values",
 			&IVEngineServer::ClientCommandKeyValues,
 			"Sends a client command keyvalues which are deleted inside this function.",
-			args("edict", "key_calues")
+			args("edict", "key_values")
 		)
 
 		// OB specific methods

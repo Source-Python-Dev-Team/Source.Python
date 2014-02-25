@@ -217,7 +217,8 @@ void IVEngineServer_Visitor(T cls)
 		)
 
 		.def("set_noclip_enabled",
-			&IVEngineServer::SetNoClipEnabled
+			&IVEngineServer::SetNoClipEnabled,
+			args("enabled")
 		)
 
 		.def("get_paint_map_data_rle",
