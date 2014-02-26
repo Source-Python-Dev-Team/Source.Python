@@ -171,24 +171,6 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ptr_overload, SetPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_ptr_overload, SetStringPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_array_overload, SetStringArray, 1, 2)
 
-// These three macros ease the exposing part of DynCall
-#define EXPOSE_DC_SET(pyname, cppname) \
-	.def("set_arg_" XSTRINGIFY(pyname), \
-		&CPointer::SetArg##cppname, \
-		args("value"), \
-		"Adds a new parameter to the virtual machine." \
-	)
-
-#define EXPOSE_DC_CALL(pyname, cppname) \
-	.def("call_" XSTRINGIFY(pyname), \
-		&CPointer::Call##cppname, \
-		"Calls the virtual machine." \
-	)
-
-#define EXPOSE_DC(pyname, cppname) \
-	EXPOSE_DC_SET(pyname, cppname) \
-	EXPOSE_DC_CALL(pyname, cppname)
-
 void export_memtools()
 {
 	class_<CPointer>("Pointer", init< optional<unsigned long> >())
@@ -250,33 +232,6 @@ void export_memtools()
 				args("value", "offset")
 			)
 		)
-
-		// DynCall methods
-		.def("reset_vm",
-			&CPointer::ResetVM,
-			"Resets the virtual machine."
-		)
-
-		.def("set_mode",
-			&CPointer::SetMode,
-			"Sets the calling convention.",
-			args("convention")
-		)
-
-		EXPOSE_DC_CALL(void, Void)
-		EXPOSE_DC(bool, Bool)
-		EXPOSE_DC(char, Char)
-		EXPOSE_DC(uchar, UChar)
-		EXPOSE_DC(short, Short)
-		EXPOSE_DC(ushort, UShort)
-		EXPOSE_DC(int, Int)
-		EXPOSE_DC(uint, UInt)
-		EXPOSE_DC(long, Long)
-		EXPOSE_DC(ulong, ULong)
-		EXPOSE_DC(float, Float)
-		EXPOSE_DC(double, Double)
-		EXPOSE_DC(pointer, Pointer)
-		EXPOSE_DC(string, String)
 
 		// Other methods
 		.def("get_virtual_func",
@@ -497,7 +452,7 @@ void export_callbacks()
 
 
 //-----------------------------------------------------------------------------
-// Exposes wrap/get_address functionality
+// Exposes wrap/get_address/TYPE_SIZES functionality
 //-----------------------------------------------------------------------------
 // Use this macro to add the ability to get the address of an object
 #define GET_ADDRESS(type) \
@@ -507,30 +462,36 @@ void export_callbacks()
 		args("object") \
 	);
 
-// Use this macro if the Python name of the type is different to the C++ name
-#define WRAP_ADDRESS0(type, pyname) \
-	.def(XSTRINGIFY(pyname), \
+// Use this macro to add the ability to get the size of an object
+#define ADD_SIZE(type) \
+	scope().attr("TYPE_SIZES")[XSTRINGIFY(type)] = sizeof(type);
+
+// Use this macro to add the ability to wrap a pointer using an exposed class
+#define WRAP_POINTER(type) \
+	cls.def(XSTRINGIFY(type), \
 		&Wrap::WrapIt<type>, \
 		"Wraps the given address.", \
 		args("pointer"), \
 		reference_existing_object_policy() \
-	).staticmethod(XSTRINGIFY(pyname))
+	).staticmethod(XSTRINGIFY(type));
 
-// Use this macro if the Python and C++ name of the type are the same
-#define WRAP_ADDRESS1(type) \
-	WRAP_ADDRESS0(type, type)
+// Use this macro to call the three macros all at once
+#define ADD_ALL(type) \
+	GET_ADDRESS(type) \
+	WRAP_POINTER(type) \
+	ADD_SIZE(type)
 
 void export_get_address()
 {
-	// get_address()
-	GET_ADDRESS(Vector)
-	GET_ADDRESS(QAngle)
+	// Don't remove this! It's required for the WRAP_POINTER and ADD_SIZE macro.
+	scope().attr("TYPE_SIZES") = dict();
+	class_<Wrap> cls = class_<Wrap>("wrap", no_init);
 
-	// wrap.<type>()
-	class_<Wrap>("wrap", no_init)
-
-		WRAP_ADDRESS1(Vector)
-		WRAP_ADDRESS1(QAngle)
-
-	;
+	// Add all classes here...
+	// mathlib_c
+	ADD_ALL(Vector)
+	ADD_ALL(QAngle)
+	ADD_ALL(Quaternion)
+	ADD_ALL(cplane_t)
+	ADD_ALL(RadianEuler)
 }

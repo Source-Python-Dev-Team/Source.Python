@@ -199,51 +199,6 @@ public:
 	CFunction*          MakeFunction(Convention_t eConv, char* szParams);
 	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, char* szParams);
 
-	// DynCall
-	inline void ResetVM()
-	{ dcReset(g_pCallVM); }
-
-	inline void SetMode(int iMode)
-	{ dcMode(g_pCallVM, iMode); }
-
-	// A macro to shorten the implementation
-#define IMPLEMENT_DC(type, fname, dcname) \
-	inline void SetArg##fname(type value) \
-	{ dcArg##dcname(g_pCallVM, value); } \
-	\
-	inline type Call##fname() \
-	{ return dcCall##dcname(g_pCallVM, m_ulAddr); }
-	
-	IMPLEMENT_DC(bool, Bool, Bool)
-	IMPLEMENT_DC(char, Char, Char)
-	IMPLEMENT_DC(unsigned char, UChar, Char)
-	IMPLEMENT_DC(short, Short, Short)
-	IMPLEMENT_DC(unsigned short, UShort, Short)
-	IMPLEMENT_DC(int, Int, Int)
-	IMPLEMENT_DC(unsigned int, UInt, Int)
-	IMPLEMENT_DC(long, Long, Long)
-	IMPLEMENT_DC(unsigned long, ULong, Long)
-	IMPLEMENT_DC(float, Float, Float)
-	IMPLEMENT_DC(double, Double, Double)
-
-	inline void CallVoid()
-	{ dcCallVoid(g_pCallVM, m_ulAddr); }
-
-	inline void SetArgPointer(object value)
-	{
-		unsigned long ptr = ExtractPyPtr(value);
-		dcArgPointer(g_pCallVM, ptr);
-	}
-
-	inline CPointer CallPointer()
-	{ return CPointer(dcCallPointer(g_pCallVM, m_ulAddr)); }
-
-	inline void SetArgString(const char* value)
-	{ dcArgPointer(g_pCallVM, (unsigned long) value); }
-
-	const char* CallString()
-	{ return (const char *) dcCallPointer(g_pCallVM, m_ulAddr); }
-
 public:
 	unsigned long m_ulAddr;
 };

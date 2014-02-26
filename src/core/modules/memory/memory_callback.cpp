@@ -29,6 +29,7 @@
 // ============================================================================
 #include "memory_callback.h"
 #include "utility/wrap_macros.h"
+#include "utility/call_python.h"
 
 #include "AsmJit.h"
 using namespace AsmJit;
@@ -206,6 +207,8 @@ object CallCallback(CCallback* pCallback, unsigned long ulEBP, unsigned long ulE
         return eval("lambda func, args: func(*args)")(pCallback->m_oCallback, arg_list);
 
     END_BOOST_PY_NORET()
+
+	PythonLog(0, "An exception occured while calling the Python callback. The server will now crash!");
 
     // Throw an exception. We will crash now :(
     throw;
