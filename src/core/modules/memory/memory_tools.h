@@ -30,6 +30,7 @@
 #include <malloc.h>
 #include "memalloc.h"
 #include "dyncall.h"
+#include "dyncall_signature.h"
 
 #include "utility/wrap_macros.h"
 #include "DynamicHooks.h"
@@ -110,6 +111,45 @@ inline int GetDynCallConvention(Convention_t eConv)
 	// TODO: Throw exception
 	return 0;
 }
+
+enum Argument_t
+{
+	ARG_BOOL = DC_SIGCHAR_BOOL,
+	ARG_CHAR = DC_SIGCHAR_CHAR,
+	ARG_UCHAR = DC_SIGCHAR_UCHAR,
+	ARG_SHORT = DC_SIGCHAR_SHORT,
+	ARG_USHORT = DC_SIGCHAR_USHORT,
+	ARG_INT = DC_SIGCHAR_INT,
+	ARG_UINT = DC_SIGCHAR_UINT,
+	ARG_LONG = DC_SIGCHAR_LONG,
+	ARG_ULONG = DC_SIGCHAR_ULONG,
+	ARG_LONGLONG = DC_SIGCHAR_LONGLONG,
+	ARG_ULONGLONG = DC_SIGCHAR_ULONGLONG,
+	ARG_FLOAT = DC_SIGCHAR_FLOAT,
+	ARG_DOUBLE = DC_SIGCHAR_DOUBLE,
+	ARG_POINTER = DC_SIGCHAR_POINTER,
+	ARG_STRING = DC_SIGCHAR_STRING
+};
+
+enum ReturnType_t
+{
+	RET_VOID = DC_SIGCHAR_VOID,
+	RET_BOOL = DC_SIGCHAR_BOOL,
+	RET_CHAR = DC_SIGCHAR_CHAR,
+	RET_UCHAR = DC_SIGCHAR_UCHAR,
+	RET_SHORT = DC_SIGCHAR_SHORT,
+	RET_USHORT = DC_SIGCHAR_USHORT,
+	RET_INT = DC_SIGCHAR_INT,
+	RET_UINT = DC_SIGCHAR_UINT,
+	RET_LONG = DC_SIGCHAR_LONG,
+	RET_ULONG = DC_SIGCHAR_ULONG,
+	RET_LONGLONG = DC_SIGCHAR_LONGLONG,
+	RET_ULONGLONG = DC_SIGCHAR_ULONGLONG,
+	RET_FLOAT = DC_SIGCHAR_FLOAT,
+	RET_DOUBLE = DC_SIGCHAR_DOUBLE,
+	RET_POINTER = DC_SIGCHAR_POINTER,
+	RET_STRING = DC_SIGCHAR_STRING
+};
 
 //-----------------------------------------------------------------------------
 // CPointer class
@@ -196,8 +236,8 @@ public:
 	virtual void        Realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
 	virtual void        Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
-	CFunction*          MakeFunction(Convention_t eConv, char* szParams);
-	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, char* szParams);
+	CFunction*          MakeFunction(Convention_t eConv, boost::python::tuple args, ReturnType_t return_type);
+	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, boost::python::tuple args, ReturnType_t return_type);
 
 public:
 	unsigned long m_ulAddr;
@@ -207,18 +247,18 @@ public:
 class CFunction: public CPointer
 {
 public:
-	CFunction(unsigned long ulAddr, Convention_t eConv, char* szParams);
+	CFunction(unsigned long ulAddr, Convention_t eConv, boost::python::tuple args, ReturnType_t return_type);
     
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
 	
-	PyObject* AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
+	handle<> AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
 	void RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
     
-	PyObject* AddPreHook(PyObject* pCallable)
+	handle<> AddPreHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_PRE, pCallable); }
 
-	PyObject* AddPostHook(PyObject* pCallable)
+	handle<> AddPostHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_POST, pCallable); }
     
 	void RemovePreHook(PyObject* pCallable)
@@ -228,8 +268,9 @@ public:
 	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
     
 public:
-	char*         m_szParams;
-	Convention_t  m_eConv;
+	boost::python::tuple	m_Args;
+	ReturnType_t			m_ReturnType;
+	Convention_t			m_eConv;
 };
 
 

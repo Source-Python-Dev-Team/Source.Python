@@ -31,7 +31,6 @@
 #include <string>
 
 #include "dyncall.h"
-#include "dyncall_signature.h"
 
 #include "memory_hooks.h"
 #include "memory_tools.h"
@@ -177,49 +176,47 @@ CPointer* CPointer::GetVirtualFunc(int iIndex)
 	return new CPointer((unsigned long) vtable[iIndex]);
 }
 
-CFunction* CPointer::MakeFunction(Convention_t eConv, char* szParams)
+CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, ReturnType_t return_type)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-	return new CFunction(m_ulAddr, eConv, szParams);
+	return new CFunction(m_ulAddr, eConv, args, return_type);
 }
 
-CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, char* szParams)
+CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple args, ReturnType_t return_type)
 {
-	return GetVirtualFunc(iIndex)->MakeFunction(eConv, szParams);
+	return GetVirtualFunc(iIndex)->MakeFunction(eConv, args, return_type);
 }
 
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
-CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, char* szParams)
+CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, tuple args, ReturnType_t return_type)
 {
 	m_ulAddr = ulAddr;
 	m_eConv = eConv;
-	m_szParams = strdup(szParams);
+	m_Args = args;
+	m_ReturnType = return_type;
 }
 
 object CFunction::Call(tuple args, dict kw)
-{	
+{
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
+	if (len(args) != len(m_Args))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Number of passed arguments is not equal to the required number.")
+
+	// Reset VM and set the calling convention
 	dcReset(g_pCallVM);
 	dcMode(g_pCallVM, GetDynCallConvention(m_eConv));
-	char* ptr = (char *) m_szParams;
-	int pos = 0;
-	char ch;
-	while ((ch = *ptr) != '\0' && ch != ')')
-	{
-		if (ch == DC_SIGCHAR_VOID)
-		{
-			ptr++;
-			break;
-		}
 
-		object arg = args[pos];
-		switch(ch)
+	// Loop through all passed arguments and add them to the VM
+	for(int i=0; i < len(args); i++)
+	{
+		object arg = args[i];
+		switch(extract<Argument_t>(m_Args[i]))
 		{
 			case DC_SIGCHAR_BOOL:      dcArgBool(g_pCallVM, extract<bool>(arg)); break;
 			case DC_SIGCHAR_CHAR:      dcArgChar(g_pCallVM, extract<char>(arg)); break;
@@ -236,20 +233,14 @@ object CFunction::Call(tuple args, dict kw)
 			case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DC_SIGCHAR_POINTER:   dcArgPointer(g_pCallVM, ExtractPyPtr(arg)); break;
 			case DC_SIGCHAR_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
-			default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown parameter type.")
+			default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown argument type.")
 		}
-		pos++; ptr++;
 	}
 
-	if (pos != len(args))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String parameter count does not equal with length of tuple.")
-
-	if (ch == '\0')
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "String parameter has no return type.")
-
-	switch(*++ptr)
+	// Call the function
+	switch(m_ReturnType)
 	{
-		case DC_SIGCHAR_VOID: dcCallVoid(g_pCallVM, m_ulAddr); break;
+		case DC_SIGCHAR_VOID:      dcCallVoid(g_pCallVM, m_ulAddr); break;
 		case DC_SIGCHAR_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
 		case DC_SIGCHAR_CHAR:      return object(dcCallChar(g_pCallVM, m_ulAddr));
 		case DC_SIGCHAR_UCHAR:     return object((unsigned char) dcCallChar(g_pCallVM, m_ulAddr));
@@ -279,18 +270,29 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_szParams).Call(args, kw);
+	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_Args, m_ReturnType).Call(args, kw);
 }
 
-PyObject* CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, m_szParams);
+	// Generate the argument string
+	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, m_ReturnType));
+	puts(szParams);
+
+	// Hook the function
+	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, strdup(szParams));
+
+	// Add the hook handler. If it's already added, it won't be added twice
 	pHook->AddCallback(eType, (void *) &SP_HookHandler);
+
+	// Add the callback to our map
 	g_mapCallbacks[pHook][eType].push_back(pCallable);
-	return pCallable;
+
+	// Return the callback, so we can use this method as a decorator
+	return handle<>(borrowed(pCallable));
 }
 
 void CFunction::RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable)

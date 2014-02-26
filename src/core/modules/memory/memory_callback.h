@@ -67,21 +67,16 @@ inline void* CallbackCaller(CCallback* pCallback, unsigned long ulEBP, unsigned 
 class CCallback: public CFunction
 {
 public:
-    CCallback(object oCallback, Convention_t eConv, char* szParams);
-    ~CCallback();
+    CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type);
 
-    int      GetPopSize();
-    int      GetArgumentCount();
-    Param_t* GetArgument(int iIndex);
+    int          GetPopSize();
+    int          GetArgumentOffset(int iIndex);
 
 	virtual void Dealloc();
 	virtual void Realloc(int iSize);
 
 public:
-    // For variadic functions
-    object        m_oCallback;
-    Param_t*      m_pParams;
-    Param_t*      m_pRetParam;
+    object m_oCallback;
 };
 
 #endif // _MEMORY_CALLBACK_H

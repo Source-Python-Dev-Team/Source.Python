@@ -244,14 +244,14 @@ void export_memtools()
 		.def("make_function",
 			&CPointer::MakeFunction,
 			"Creates a new Function instance.",
-			args("convention", "parameters"),
+			args("convention", "arguments", "return_type"),
 			manage_new_object_policy()
 		)
 
 		.def("make_virtual_function",
 			&CPointer::MakeVirtualFunction,
 			"Creates a new Function instance.",
-			args("index", "convention", "parameters"),
+			args("index", "convention", "arguments", "return_type"),
 			manage_new_object_policy()
 		)
 
@@ -340,7 +340,7 @@ void export_memtools()
 		args("size")
 	);
 
-	class_<CFunction, bases<CPointer> >("Function", init<unsigned long, Convention_t, char*>())
+	class_<CFunction, bases<CPointer> >("Function", init<unsigned long, Convention_t, tuple, ReturnType_t>())
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
@@ -384,8 +384,12 @@ void export_memtools()
 		)
 
 		// Attributes
-		.def_readwrite("parameters",
-			&CFunction::m_szParams
+		.def_readwrite("arguments",
+			&CFunction::m_Args
+		)
+
+		.def_readwrite("return_type",
+			&CFunction::m_ReturnType
 		)
 
 		.def_readwrite("convention",
@@ -399,6 +403,40 @@ void export_memtools()
 //-----------------------------------------------------------------------------
 void export_dyncall()
 {
+	enum_<Argument_t>("Argument")
+		.value("BOOL", ARG_BOOL)
+		.value("CHAR", ARG_CHAR)
+		.value("UCHAR", ARG_UCHAR)
+		.value("SHORT", ARG_SHORT)
+		.value("USHORT", ARG_USHORT)
+		.value("INT", ARG_INT)
+		.value("UINT", ARG_UINT)
+		.value("LONG", ARG_LONG)
+		.value("ULONG", ARG_ULONG)
+		.value("LONGLONG", ARG_LONGLONG)
+		.value("FLOAT", ARG_FLOAT)
+		.value("DOUBLE", ARG_DOUBLE)
+		.value("POINTER", ARG_POINTER)
+		.value("STRING", ARG_STRING)
+	;
+	enum_<ReturnType_t>("Return")
+		.value("VOID", RET_VOID)
+		.value("BOOL", RET_BOOL)
+		.value("CHAR", RET_CHAR)
+		.value("UCHAR", RET_UCHAR)
+		.value("SHORT", RET_SHORT)
+		.value("USHORT", RET_USHORT)
+		.value("INT", RET_INT)
+		.value("UINT", RET_UINT)
+		.value("LONG", RET_LONG)
+		.value("ULONG", RET_ULONG)
+		.value("LONGLONG", RET_LONGLONG)
+		.value("FLOAT", RET_FLOAT)
+		.value("DOUBLE", RET_DOUBLE)
+		.value("POINTER", RET_POINTER)
+		.value("STRING", RET_STRING)
+	;
+
 	enum_<Convention_t>("Convention")
 		.value("CDECL", CONV_CDECL)
 		.value("STDCALL", CONV_STDCALL)
@@ -442,7 +480,7 @@ void export_dynamichooks()
 //-----------------------------------------------------------------------------
 void export_callbacks()
 {
-    class_< CCallback, bases< CFunction > >("Callback", init< object, Convention_t, char * >())
+    class_< CCallback, bases< CFunction > >("Callback", init< object, Convention_t, tuple, ReturnType_t >())
         .def_readwrite("callback",
             &CCallback::m_oCallback,
             "The Python function that gets called by the C++ callback"

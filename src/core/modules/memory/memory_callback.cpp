@@ -49,20 +49,14 @@ using namespace DynamicHooks;
 // ============================================================================
 // >> CLASSES
 // ============================================================================
-CCallback::CCallback(object oCallback, Convention_t eConv, char* szParams)
-    : CFunction(NULL, eConv, szParams)
+CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type)
+    : CFunction(NULL, eConv, args, return_type)
 {
-    m_eConv = eConv;
     m_oCallback = oCallback;
-
-    // Parse the parameter string
-    m_pParams = new Param_t;
-    m_pRetParam = new Param_t;
-    ParseParams(eConv, szParams, m_pParams, m_pRetParam);
 
     // Find the proper callback caller function
     void* pCallCallbackFunc = NULL;
-    switch(m_pRetParam->m_cParam)
+    switch(return_type)
     {
         case SIGCHAR_VOID:      pCallCallbackFunc = GET_CALLBACK_CALLER(void); break;
         case SIGCHAR_BOOL:      pCallCallbackFunc = GET_CALLBACK_CALLER(bool); break;
@@ -107,45 +101,51 @@ CCallback::CCallback(object oCallback, Convention_t eConv, char* szParams)
     m_ulAddr = (unsigned long) a.make();
 }
 
-CCallback::~CCallback()
-{
-    delete m_pParams;
-    delete m_pRetParam;
-}
-
 int CCallback::GetPopSize()
 {
+	/*
+	Who cleans up the stack?
+
+	Linux: Always the caller
+
+	Windows:
+		CDECL: Caller
+		STDCALL + THISCALL: Callee 
+	*/
+
 #ifdef _WIN32
-    if (m_eConv == CONV_THISCALL || m_eConv == CONV_STDCALL)
-    {
-        Param_t* pParam = GetArgument(GetArgumentCount() - 1);
-        return pParam->m_iOffset + pParam->m_iSize;
-    }
+	if (m_eConv == CONV_CDECL)
+		return 0;
+
+	int i = 0;
+
+	// Skip the this pointer. It's passed in an own register (ECX)
+    if (m_eConv == CONV_THISCALL)
+		i++;
+
+	int size = 0;
+	for(; i < len(m_Args); i++)
+		size += GetTypeSize(extract<Argument_t>(m_Args[i]));
+
+	return size;
 #endif
     return 0;
 }
 
-int CCallback::GetArgumentCount()
+int CCallback::GetArgumentOffset(int iIndex)
 {
-    int count = 0;
-    Param_t* temp = m_pParams;
-    while(temp)
-    {
-        count++;
-        temp = temp->m_pNext;
-    }
-        return count - 1;
-}
+	int offset = 8;
+	for(int i=0; i <= iIndex; i++)
+	{
+		offset += GetTypeSize(extract<Argument_t>(m_Args[i]));
+	}
 
-Param_t* CCallback::GetArgument(int iIndex)
-{
-    Param_t* temp = m_pParams;
-    while(temp && iIndex > 0)
-    {
-        iIndex--;
-        temp = temp->m_pNext;
-    }
-    return temp;
+	// Subtract the this pointer on Windows
+#ifdef _WIN32
+	offset -= sizeof(void *);
+#endif
+
+	return offset;
 }
 
 void CCallback::Dealloc()
@@ -171,18 +171,18 @@ T GetArgument(CCallback* pCallback, unsigned long ulEBP, unsigned long ulECX, in
         return *(T *) &ulECX;
 #endif
 
-    return *(T *) (ulEBP + pCallback->GetArgument(iIndex)->m_iOffset + 8);
+    return *(T *) (ulEBP + pCallback->GetArgumentOffset(iIndex));
 }
 
 object CallCallback(CCallback* pCallback, unsigned long ulEBP, unsigned long ulECX)
 {
+	// TODO: Make this crash proof
     BEGIN_BOOST_PY()
-
         list arg_list;
-        for(int i=0; i < pCallback->GetArgumentCount(); i++)
+        for(int i=0; i < len(pCallback->m_Args); i++)
         {
             object val;
-            switch(pCallback->GetArgument(i)->m_cParam)
+			switch(extract<Argument_t>(pCallback->m_Args[i]))
             {
                 case SIGCHAR_BOOL:      val = object(GetArgument<bool>(pCallback, ulEBP, ulECX, i)); break;
                 case SIGCHAR_CHAR:      val = object(GetArgument<char>(pCallback, ulEBP, ulECX, i)); break;
@@ -199,7 +199,7 @@ object CallCallback(CCallback* pCallback, unsigned long ulEBP, unsigned long ulE
                 case SIGCHAR_DOUBLE:    val = object(GetArgument<double>(pCallback, ulEBP, ulECX, i)); break;
                 case SIGCHAR_POINTER:   val = object(CPointer(GetArgument<unsigned long>(pCallback, ulEBP, ulECX, i))); break;
                 case SIGCHAR_STRING:    val = object(GetArgument<const char*>(pCallback, ulEBP, ulECX, i)); break;
-                default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type."); break;
+                default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown argument type."); break;
             }
             arg_list.append(val);
         }
