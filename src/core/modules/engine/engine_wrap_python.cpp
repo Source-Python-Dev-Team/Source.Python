@@ -914,7 +914,7 @@ public:
 class IEngineTraceExt
 {
 public:
-	static list GetPointContents(IEngineTrace* pEngineTrace, const Vector& vec)
+	static tuple GetPointContents(IEngineTrace* pEngineTrace, const Vector& vec)
 	{
 		IHandleEntity** ppEntities = new IHandleEntity*[gpGlobals->maxEntities];
 		memset(ppEntities, NULL, sizeof(IHandleEntity*) * gpGlobals->maxEntities);
@@ -929,13 +929,8 @@ public:
 				entities.append(ptr(ppEntities[i]));
 			}
 		}
-
 		delete ppEntities;
-		list result;
-		result.append(iMask);
-		result.append(entities);
-
-		return result;
+		return make_tuple(iMask, entities);
 	}
 };
 

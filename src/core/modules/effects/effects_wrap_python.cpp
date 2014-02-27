@@ -77,19 +77,6 @@ void export_effects()
 			"Set the SuppressEvent state.",
 			args("state")
 		)
-
-		/*
-		TODO: CBaseEntity
-		.def("set_suppress_host",
-			&IPredictionSystem::SetSuppressHost
-		)
-		
-		TODO: CBaseEntity
-		.def("get_suppress_host",
-			&IPredictionSystem::GetSuppressHost,
-			reference_existing_object_policy()
-		)
-		*/
 		
 		.def("can_predict",
 			&IPredictionSystem::CanPredict
@@ -103,13 +90,6 @@ void export_effects()
 			&IPredictionSystem::SuppressEvents
 		)
 		.staticmethod("suppress_events")
-
-		/*
-		.def("suppress_host_events",
-			&IPredictionSystem::SuppressHostEvents
-		)
-		.staticmethod("suppress_host_events")
-		*/
 	;
 
 	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("_Effects", no_init)

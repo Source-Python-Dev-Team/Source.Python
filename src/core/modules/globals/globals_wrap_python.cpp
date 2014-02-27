@@ -183,9 +183,6 @@ void export_globals()
 		
 		.NOT_IMPLEMENTED_ATTR("map_group_name")
 		.NOT_IMPLEMENTED_ATTR("server_count")
-
-		// TODO: Return a list of edicts or remove it.
-		.NOT_IMPLEMENTED_ATTR("edicts")
 	);
 
 	scope().attr("GlobalVars") = object(ptr(gpGlobals));

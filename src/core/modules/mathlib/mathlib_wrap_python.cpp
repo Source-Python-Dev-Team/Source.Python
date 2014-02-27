@@ -242,7 +242,6 @@ void export_vector()
 //-----------------------------------------------------------------------------
 void export_qangle()
 {
-	// TODO: Documentation
 	class_<QAngle>("QAngle")
 		.def(init<float, float, float>())
 
@@ -258,31 +257,30 @@ void export_qangle()
 			&QAngle::z
 		)
 
-		.def("init",
-			&QAngle::Init,
-			"Initializes the QAngle instance with the given values.",
-			args("x", "y", "z")
-		)
-
 		.def("random",
 			&QAngle::Random,
-			args("min_val", "max_val")
+			args("min_val", "max_val"),
+			"Generates some random values between <min_val> and <max_val>."
 		)
 
 		.def("is_valid",
-			&QAngle::IsValid
+			&QAngle::IsValid,
+			"Returns True if the angle is valid."
 		)
 
 		.def("invalidate",
-			&QAngle::Invalidate
+			&QAngle::Invalidate,
+			"Invalidates the angle."
 		)
 
 		.def("__getitem__",
-			&GetItemIndexer<QAngle, float, 0, 2>
+			&GetItemIndexer<QAngle, float, 0, 2>,
+			"Returns the value at the given index."
 		)
 
 		.def("__setitem__",
-			&SetItemIndexer<QAngle, float, 0, 2>
+			&SetItemIndexer<QAngle, float, 0, 2>,
+			"Sets the value at the given index."
 		)
 
 		.def(self == self)
@@ -294,11 +292,13 @@ void export_qangle()
 		.def(self /= other<float>())
 
 		.def("get_length",
-			&QAngle::Length
+			&QAngle::Length,
+			"Returns the length of the angle."
 		)
 
 		.def("get_length_sqr",
-			&QAngle::LengthSqr
+			&QAngle::LengthSqr,
+			"Returns the square of the angle's length."
 		)
 
 		.def(self + self)
@@ -313,33 +313,31 @@ void export_qangle()
 //-----------------------------------------------------------------------------
 void export_quaternion()
 {
-	// TODO: Documentation
 	class_<Quaternion>("Quaternion")
 		.def(init<float, float, float, float>())
 		.def(init<RadianEuler>())
 
-		.def("init",
-			&Quaternion::Init,
-			args("x", "y", "z", "w")
-		)
-
 		.def("is_valid",
-			&Quaternion::IsValid
+			&Quaternion::IsValid,
+			"Returns True if all values are valid."
 		)
 
 		.def("invalidate",
-			&Quaternion::Invalidate
+			&Quaternion::Invalidate,
+			"Invalidates all values."
 		)
 
 		.def(self == self)
 		.def(self != self)
 
 		.def("__getitem__",
-			&GetItemIndexer<Quaternion, float, 0, 3>
+			&GetItemIndexer<Quaternion, float, 0, 3>,
+			"Returns the value at the given index."
 		)
 
 		.def("__setitem__",
-			&SetItemIndexer<Quaternion, float, 0, 3>
+			&SetItemIndexer<Quaternion, float, 0, 3>,
+			"Sets the value at the given index."
 		)
 
 		.def_readwrite("x",
@@ -382,8 +380,6 @@ void export_cplane_t()
 		.def_readwrite("signbits",
 			&cplane_t::signbits
 		)
-
-		// TODO: byte	pad[2];
 	;
 }
 
@@ -392,34 +388,34 @@ void export_cplane_t()
 //-----------------------------------------------------------------------------
 void export_radian_euler()
 {
-	// TODO: Documentation
 	class_<RadianEuler>("RadianEuler")
 		.def(init<float, float, float>())
 		.def(init<Quaternion>())
 		.def(init<QAngle>())
 
-		.def("init",
-			&RadianEuler::Init
-		)
-
 		.def("to_qangle",
-			&RadianEuler::ToQAngle
+			&RadianEuler::ToQAngle,
+			"Converts the instance to a QAngle instance."
 		)
 
 		.def("is_valid",
-			&RadianEuler::IsValid
+			&RadianEuler::IsValid,
+			"Returns True if all values are valid."
 		)
 
 		.def("invalidate",
-			&RadianEuler::Invalidate
+			&RadianEuler::Invalidate,
+			"Invalidates all values."
 		)
 
 		.def("__getitem__",
-			&GetItemIndexer<RadianEuler, float, 0, 2>
+			&GetItemIndexer<RadianEuler, float, 0, 2>,
+			"Returns the value at the given index."
 		)
 
 		.def("__setitem__",
-			&SetItemIndexer<RadianEuler, float, 0, 2>
+			&SetItemIndexer<RadianEuler, float, 0, 2>,
+			"Sets the value at the given index."
 		)
 
 		.def_readwrite("x",

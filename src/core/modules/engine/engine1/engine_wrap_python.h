@@ -73,13 +73,6 @@ void IVEngineServer_Visitor(T cls)
 		.def("get_server_version",
 			&IVEngineServer::GetServerVersion
 		)
-
-		/*
-		TODO: void*
-		.def("get_replay",
-			&IVEngineServer::GetReplay
-		)
-		*/
 	;
 }
 
