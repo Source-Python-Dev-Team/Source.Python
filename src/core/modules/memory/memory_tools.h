@@ -42,7 +42,7 @@ using namespace boost::python;
 
 // Externals
 extern DCCallVM* g_pCallVM;
-extern unsigned long ExtractPyPtr(object obj);
+
 
 //-----------------------------------------------------------------------------
 // Memory functions
@@ -242,6 +242,27 @@ public:
 public:
 	unsigned long m_ulAddr;
 };
+
+
+//---------------------------------------------------------------------------------
+// Converts a Python CPointer object or an integer to an unsigned long.
+//---------------------------------------------------------------------------------
+inline unsigned long ExtractPyPtr(object obj)
+{
+	// Try to get an unsigned long at first
+	try
+	{
+		return extract<unsigned long>(obj);
+	}
+	catch(...)
+	{
+		PyErr_Clear();
+	}
+
+	// If that fails, try to extract a CPointer representation
+	CPointer* pPtr = extract<CPointer *>(obj);
+	return pPtr->m_ulAddr;
+}
 
 
 class CFunction: public CPointer

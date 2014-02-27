@@ -32,7 +32,10 @@
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
 #include "basehandle.h"
-#include "modules/memory/memory_tools.h"
+
+#include "utility/wrap_macros.h"
+#include "boost/python.hpp"
+using namespace boost::python;
 
 // Externals
 extern IVEngineServer* engine;
@@ -41,31 +44,11 @@ extern IPlayerInfoManager* playerinfomanager;
 
 
 //---------------------------------------------------------------------------------
-// Returns True if the class name equals the given string.
+// Returns True if the class name of the given object equals the given string.
 //---------------------------------------------------------------------------------
 inline bool CheckClassname(object obj, char* name)
 {
 	return strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), name) == 0;
-}
-
-//---------------------------------------------------------------------------------
-// Converts a Python CPointer object or an integer to an unsigned long.
-//---------------------------------------------------------------------------------
-inline unsigned long ExtractPyPtr(object obj)
-{
-	// Try to get an unsigned long at first
-	try
-	{
-		return extract<unsigned long>(obj);
-	}
-	catch(...)
-	{
-		PyErr_Clear();
-	}
-
-	// If that fails, try to extract a CPointer representation
-	CPointer* pPtr = extract<CPointer *>(obj);
-	return pPtr->m_ulAddr;
 }
 
 
