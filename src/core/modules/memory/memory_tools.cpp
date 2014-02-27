@@ -280,7 +280,6 @@ handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 
 	// Generate the argument string
 	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, m_ReturnType));
-	puts(szParams);
 
 	// Hook the function
 	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, strdup(szParams));

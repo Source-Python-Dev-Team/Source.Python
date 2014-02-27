@@ -76,7 +76,7 @@ CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnTyp
         case SIGCHAR_STRING:    pCallCallbackFunc = GET_CALLBACK_CALLER(char *); break;
         default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown return type.");
     }
-
+    
     // Generate the function
     Assembler a;
 
@@ -134,7 +134,7 @@ int CCallback::GetPopSize()
 
 int CCallback::GetArgumentOffset(int iIndex)
 {
-	int offset = 8;
+	int offset = 4;
 	for(int i=0; i <= iIndex; i++)
 	{
 		offset += GetTypeSize(extract<Argument_t>(m_Args[i]));
@@ -142,7 +142,8 @@ int CCallback::GetArgumentOffset(int iIndex)
 
 	// Subtract the this pointer on Windows
 #ifdef _WIN32
-	offset -= sizeof(void *);
+    if (m_eConv == CONV_THISCALL)
+        offset -= sizeof(void *);
 #endif
 
 	return offset;
