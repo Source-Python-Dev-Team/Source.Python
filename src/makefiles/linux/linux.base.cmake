@@ -96,6 +96,7 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
     ${BOOSTSDK_LIB}/libboost_python.a
     ${PYTHONSDK_LIB}/libpython3.3m.so.1.0
     ${ASMJITSDK_LIB}/libAsmJit.a
+    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
 )
 
 Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
@@ -103,4 +104,5 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
     ${BOOSTSDK_LIB}/libboost_python_d.a
     ${PYTHONSDK_LIB}/libpython3.3dm.so.1.0
     ${ASMJITSDK_LIB}/libAsmJit_d.a
+    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
 )

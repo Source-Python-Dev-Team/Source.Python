@@ -49,7 +49,9 @@ Set(ASMJITSDK_LIB     ${ASMJITSDK}/lib)
 # ------------------------------------------------------------------
 # DynamicHooks specific.
 # ------------------------------------------------------------------
-Set(DYNAMICHOOKSSDK ${THIRDPARTY_DIR}/DynamicHooks)
+Set(DYNAMICHOOKSSDK           ${THIRDPARTY_DIR}/DynamicHooks)
+Set(DYNAMICHOOKSSDK_INCLUDE   ${DYNAMICHOOKSSDK}/include)
+Set(DYNAMICHOOKSSDK_LIB       ${DYNAMICHOOKSSDK}/lib)
 
 # ------------------------------------------------------------------
 # Include directories
@@ -67,7 +69,7 @@ Include_Directories(
     ${DYNCALLSDK_INCLUDE}
     ${BOOSTSDK_INCLUDE}
     ${ASMJITSDK_INCLUDE}
-    ${DYNAMICHOOKSSDK}
+    ${DYNAMICHOOKSSDK_INCLUDE}
     ${CMAKE_CURRENT_SOURCE_DIR}/core # Hack but required.
 )
 
