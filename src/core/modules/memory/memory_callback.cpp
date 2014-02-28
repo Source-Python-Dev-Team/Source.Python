@@ -134,8 +134,11 @@ int CCallback::GetPopSize()
 
 int CCallback::GetArgumentOffset(int iIndex)
 {
-	int offset = 4;
-	for(int i=0; i <= iIndex; i++)
+	int offset = 8;
+	if (iIndex == 0)
+		return offset;
+
+	for(int i=0; i <= iIndex - 1; i++)
 	{
 		offset += GetTypeSize(extract<Argument_t>(m_Args[i]));
 	}
