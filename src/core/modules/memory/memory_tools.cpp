@@ -36,6 +36,7 @@
 #include "memory_tools.h"
 #include "utility/wrap_macros.h"
 #include "utility/sp_util.h"
+#include "utility/call_python.h"
 
 
 DCCallVM* g_pCallVM = dcNewCallVM(4096);
@@ -46,9 +47,19 @@ CHookManager* g_pHookMngr = new CHookManager;
 //-----------------------------------------------------------------------------
 // CPointer class
 //-----------------------------------------------------------------------------
-CPointer::CPointer(unsigned long ulAddr /* = 0 */)
+CPointer::CPointer(unsigned long ulAddr /* = 0 */, bool bAutoDealloc /* false */)
 {
 	m_ulAddr = ulAddr;
+	m_bAutoDealloc = bAutoDealloc;
+}
+
+CPointer::~CPointer()
+{
+	if (m_bAutoDealloc)
+	{
+		PythonLog(4, "[SP] Automatically deallocating pointer at %u.", m_ulAddr);
+		Dealloc();
+	}
 }
 
 void CPointer::SetStringPtr(char* szText, int iOffset /* = 0 */)
@@ -83,12 +94,13 @@ CPointer* CPointer::GetPtr(int iOffset /* = 0 */)
 	return new CPointer(*(unsigned long *) (m_ulAddr + iOffset));
 }
 
-void CPointer::SetPtr(CPointer* ptr, int iOffset /* = 0 */)
+void CPointer::SetPtr(object ptr, int iOffset /* = 0 */)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-	*(unsigned long *) m_ulAddr = ptr->m_ulAddr;
+		
+	unsigned long ulAddr = ExtractPyPtr(ptr);
+	*(unsigned long *) m_ulAddr = m_ulAddr;
 }
 
 int CPointer::Compare(object oOther, unsigned long ulNum)
@@ -193,8 +205,8 @@ CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple a
 // CFunction class
 //-----------------------------------------------------------------------------
 CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, tuple args, ReturnType_t return_type)
+	: CPointer(ulAddr)
 {
-	m_ulAddr = ulAddr;
 	m_eConv = eConv;
 	m_Args = args;
 	m_ReturnType = return_type;
@@ -254,7 +266,7 @@ object CFunction::Call(tuple args, dict kw)
 		case DC_SIGCHAR_ULONGLONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
 		case DC_SIGCHAR_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
 		case DC_SIGCHAR_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_POINTER:   return object(CPointer(dcCallPointer(g_pCallVM, m_ulAddr)));
+		case DC_SIGCHAR_POINTER:   return object(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
 		case DC_SIGCHAR_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
 	}

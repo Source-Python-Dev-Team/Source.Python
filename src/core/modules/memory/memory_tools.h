@@ -159,26 +159,27 @@ class CFunction;
 class CPointer
 {
 public:
-	CPointer(unsigned long ulAddr = 0);
+	CPointer(unsigned long ulAddr = 0, bool bAutoDealloc = false);
+	virtual ~CPointer();
 
 	operator unsigned long() const { return m_ulAddr; }
 
 	// Implement some operators
 	template<class T>
-	const CPointer operator+(T const& rhs)
-	{ return CPointer(m_ulAddr + rhs); }
+	const CPointer* operator+(T const& rhs)
+	{ return new CPointer(m_ulAddr + rhs); }
 
 	template<class T>
-	const CPointer operator-(T const& rhs)
-	{ return CPointer(m_ulAddr - rhs); }
+	const CPointer* operator-(T const& rhs)
+	{ return new CPointer(m_ulAddr - rhs); }
 
 	template<class T>
-	const CPointer operator+=(T const& rhs)
-	{ m_ulAddr += rhs; return *this; }
+	const CPointer* operator+=(T const& rhs)
+	{ m_ulAddr += rhs; return this; }
 
 	template<class T>
-	const CPointer operator-=(T const& rhs)
-	{ m_ulAddr -= rhs; return *this; }
+	const CPointer* operator-=(T const& rhs)
+	{ m_ulAddr -= rhs; return this; }
 
 	bool operator!()
 	{ return !m_ulAddr; }
@@ -217,7 +218,7 @@ public:
 	void                SetStringArray(char* szText, int iOffset = 0);
 
 	CPointer*           GetPtr(int iOffset = 0);
-	void                SetPtr(CPointer* ptr, int iOffset = 0);
+	void                SetPtr(object ptr, int iOffset = 0);
 
 	bool                IsOverlapping(object oOther, unsigned long ulNumBytes);
 	CPointer*           SearchBytes(object oBytes, unsigned long ulNumBytes);
@@ -241,6 +242,7 @@ public:
 
 public:
 	unsigned long m_ulAddr;
+	bool          m_bAutoDealloc;
 };
 
 
@@ -315,15 +317,15 @@ inline int GetError()
 	return dcGetError(g_pCallVM);
 }
 
-inline CPointer Alloc(int iSize)
+inline CPointer* Alloc(int iSize, bool bAutoDealloc = false)
 {
-	return CPointer((unsigned long) UTIL_Alloc(iSize));
+	return new CPointer((unsigned long) UTIL_Alloc(iSize), bAutoDealloc);
 }
 
 template<class T>
-CPointer GetAddress(T* ptr)
+CPointer* GetPointer(T* ptr)
 {
-	return CPointer((unsigned long) ptr);
+	return new CPointer((unsigned long) ptr);
 }
 
 #endif // _MEMORY_TOOLS_H

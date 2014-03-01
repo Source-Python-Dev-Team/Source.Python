@@ -22,11 +22,11 @@ class CStackData
 public:
 	CStackData(CHook* pHook);
 
-	object   GetItem(unsigned int iIndex);
-	void     SetItem(unsigned int iIndex, object value);
+	object    GetItem(unsigned int iIndex);
+	void      SetItem(unsigned int iIndex, object value);
 
-	CPointer GetESP()
-	{ return CPointer((unsigned long) m_pHook->m_pESP); }
+	CPointer* GetESP()
+	{ return new CPointer((unsigned long) m_pHook->m_pESP); }
 
 protected:
 	CHook*                m_pHook;

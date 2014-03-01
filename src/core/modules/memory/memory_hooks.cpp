@@ -78,7 +78,7 @@ bool SP_HookHandler(DynamicHooks::HookType_t eHookType, CHook* pHook)
 			case SIGCHAR_ULONGLONG:	retval = GetReturnValue<unsigned long long>(pHook); break;
 			case SIGCHAR_FLOAT:		retval = GetReturnValue<float>(pHook); break;
 			case SIGCHAR_DOUBLE:	retval = GetReturnValue<double>(pHook); break;
-			case SIGCHAR_POINTER:	retval = object(CPointer(pHook->GetReturnValue<unsigned long>())); break;
+			case SIGCHAR_POINTER:	retval = object(ptr(new CPointer(pHook->GetReturnValue<unsigned long>()))); break;
 			case SIGCHAR_STRING:	retval = GetReturnValue<const char *>(pHook); break;
 			default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.");
 		}
@@ -162,7 +162,7 @@ object CStackData::GetItem(unsigned int iIndex)
 		case SIGCHAR_ULONGLONG: retval = GetArgument<unsigned long long>(m_pHook, iIndex); break;
 		case SIGCHAR_FLOAT:     retval = GetArgument<float>(m_pHook, iIndex); break;
 		case SIGCHAR_DOUBLE:    retval = GetArgument<double>(m_pHook, iIndex); break;
-		case SIGCHAR_POINTER:   retval = object(CPointer(m_pHook->GetArgument<unsigned long>(iIndex))); break;
+		case SIGCHAR_POINTER:   retval = object(ptr(new CPointer(m_pHook->GetArgument<unsigned long>(iIndex)))); break;
 		case SIGCHAR_STRING:    retval = GetArgument<const char *>(m_pHook, iIndex); break;
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
 	}

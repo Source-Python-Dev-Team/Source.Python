@@ -56,8 +56,23 @@ using namespace boost::python;
 // ----------------------------------------------------------------------------
 // Python Logging functions
 // ----------------------------------------------------------------------------
-inline void PythonLog( const char* szLevel, const char* szMessage )
+/*
+    (-1) message (should always be printed)
+    (0)  critical
+    (1)  exception
+    (2)  warning
+    (3)  info
+    (4)  debug
+*/
+inline void PythonLog( const char* szLevel, const char* szFormat, ... )
 {
+	// Format the message
+	char szMessage[2048];
+	va_list args;
+	va_start(args, szFormat);
+	vsprintf(szMessage, szFormat, args);
+	va_end(args);
+
 	// Get the std::string instance of szMessage
 	std::string szMethod = szLevel;
 
@@ -70,7 +85,7 @@ inline void PythonLog( const char* szLevel, const char* szMessage )
 		object oLogModule = import("loggers");
 
 		// Get the SPLogger instance
-		object oLogger = oLogModule.attr("SPLogger");
+		object oLogger = oLogModule.attr("_SPLogger");
 
 		// Get the PyObject instance of the SPLogger
 		PyObject* poLogger = oLogger.ptr();
@@ -81,15 +96,22 @@ inline void PythonLog( const char* szLevel, const char* szMessage )
 	END_BOOST_PY()
 }
 
-inline void PythonLog( int iLevel, const char* szMessage )
+inline void PythonLog( int iLevel, const char* szFormat, ... )
 {
+	// Format the message
+	char szMessage[2048];
+	va_list args;
+	va_start(args, szFormat);
+	vsprintf(szMessage, szFormat, args);
+	va_end(args);
+
 	BEGIN_BOOST_PY()
 
 		// Import the loggers module
 		object oLogModule = import("loggers");
 
 		// Get the SPLogger instance
-		object oLogger = oLogModule.attr("SPLogger");
+		object oLogger = oLogModule.attr("_SPLogger");
 
 		// Get the PyObject instance of the SPLogger
 		PyObject* poLogger = oLogger.ptr();

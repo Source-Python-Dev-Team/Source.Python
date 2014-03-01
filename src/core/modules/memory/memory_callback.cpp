@@ -53,6 +53,7 @@ CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnTyp
     : CFunction(NULL, eConv, args, return_type)
 {
     m_oCallback = oCallback;
+	m_bAutoDealloc = true;
 
     // Find the proper callback caller function
     void* pCallCallbackFunc = NULL;
@@ -99,6 +100,18 @@ CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnTyp
     a.ret(imm(GetPopSize()));
 
     m_ulAddr = (unsigned long) a.make();
+}
+
+CCallback::~CCallback()
+{	
+	if (m_bAutoDealloc)
+	{
+		PythonLog(4, "[SP] Automatically deallocating callback at %u.", m_ulAddr);
+		Dealloc();
+
+		// This prevents ~CPointer from calling CPointer::Dealloc() again
+		m_bAutoDealloc = false;
+	}
 }
 
 int CCallback::GetPopSize()
@@ -201,18 +214,18 @@ object CallCallback(CCallback* pCallback, unsigned long ulEBP, unsigned long ulE
                 case SIGCHAR_ULONGLONG: val = object(GetArgument<unsigned long long>(pCallback, ulEBP, ulECX, i)); break;
                 case SIGCHAR_FLOAT:     val = object(GetArgument<float>(pCallback, ulEBP, ulECX, i)); break;
                 case SIGCHAR_DOUBLE:    val = object(GetArgument<double>(pCallback, ulEBP, ulECX, i)); break;
-                case SIGCHAR_POINTER:   val = object(CPointer(GetArgument<unsigned long>(pCallback, ulEBP, ulECX, i))); break;
+                case SIGCHAR_POINTER:   val = object(ptr(new CPointer(GetArgument<unsigned long>(pCallback, ulEBP, ulECX, i)))); break;
                 case SIGCHAR_STRING:    val = object(GetArgument<const char*>(pCallback, ulEBP, ulECX, i)); break;
                 default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown argument type."); break;
             }
             arg_list.append(val);
         }
-        arg_list.append(CPointer((unsigned long) ulEBP));
+        arg_list.append(ptr(new CPointer((unsigned long) ulEBP)));
         return eval("lambda func, args: func(*args)")(pCallback->m_oCallback, arg_list);
 
     END_BOOST_PY_NORET()
 
-	PythonLog(0, "An exception occured while calling the Python callback. The server will now crash!");
+	PythonLog(0, "[SP] An exception occured while calling the Python callback. The server will now crash!");
 
     // Throw an exception. We will crash now :(
     throw;

@@ -68,6 +68,7 @@ class CCallback: public CFunction
 {
 public:
     CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type);
+	virtual ~CCallback();
 
     int          GetPopSize();
     int          GetArgumentOffset(int iIndex);

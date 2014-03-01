@@ -171,9 +171,12 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ptr_overload, SetPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_ptr_overload, SetStringPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_array_overload, SetStringArray, 1, 2)
 
+
+BOOST_PYTHON_FUNCTION_OVERLOADS(alloc_overload, Alloc, 1, 2)
+
 void export_memtools()
 {
-	class_<CPointer>("Pointer", init< optional<unsigned long> >())
+	class_<CPointer, boost::noncopyable>("Pointer", init< optional<unsigned long, bool> >())
 		// get/set_<type> methods
 		EXPOSE_GET_SET_TYPE(bool, bool)
 		EXPOSE_GET_SET_TYPE(char, char)
@@ -332,15 +335,21 @@ void export_memtools()
 		.def_readwrite("address", 
 			&CPointer::m_ulAddr
 		)
+
+		.def_readwrite("auto_dealloc",
+			&CPointer::m_bAutoDealloc
+		)
 	;
 
 	def("alloc",
 		Alloc,
-		"Allocates a memory block.",
-		args("size")
+		alloc_overload(
+			"Allocates a memory block.",
+			args("size", "auto_dealloc")
+		)[manage_new_object_policy()]
 	);
 
-	class_<CFunction, bases<CPointer> >("Function", init<unsigned long, Convention_t, tuple, ReturnType_t>())
+	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, Convention_t, tuple, ReturnType_t>())
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
@@ -469,7 +478,7 @@ void export_dynamichooks()
 
 		// Properties
 		.add_property("esp",
-			&CStackData::GetESP,
+			make_function(&CStackData::GetESP, manage_new_object_policy()),
 			"Stack pointer register."
 		)
 	;
@@ -480,7 +489,7 @@ void export_dynamichooks()
 //-----------------------------------------------------------------------------
 void export_callbacks()
 {
-    class_< CCallback, bases< CFunction > >("Callback", init< object, Convention_t, tuple, ReturnType_t >())
+	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, ReturnType_t >())
         .def_readwrite("callback",
             &CCallback::m_oCallback,
             "The Python function that gets called by the C++ callback"
@@ -490,14 +499,15 @@ void export_callbacks()
 
 
 //-----------------------------------------------------------------------------
-// Exposes wrap/get_address/TYPE_SIZES functionality
+// Exposes wrap/get_pointer/TYPE_SIZES functionality
 //-----------------------------------------------------------------------------
 // Use this macro to add the ability to get the address of an object
-#define GET_ADDRESS(type) \
-	def("get_address", \
-		&GetAddress<type>, \
+#define GET_POINTER(type) \
+	def("get_pointer", \
+		&GetPointer<type>, \
 		"Returns the memory address of the given object.", \
-		args("object") \
+		args("object"), \
+		manage_new_object_policy() \
 	);
 
 // Use this macro to add the ability to get the size of an object
@@ -515,7 +525,7 @@ void export_callbacks()
 
 // Use this macro to call the three macros all at once
 #define ADD_ALL(type) \
-	GET_ADDRESS(type) \
+	GET_POINTER(type) \
 	WRAP_POINTER(type) \
 	ADD_SIZE(type)
 
