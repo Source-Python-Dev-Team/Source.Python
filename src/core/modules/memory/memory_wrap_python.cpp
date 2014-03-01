@@ -319,17 +319,21 @@ void export_memtools()
 
         .def(self += int())
         .def(self += self)
+		
+        .def("__add__", &CPointer::operator+<unsigned long>, manage_new_object_policy())
+        .def("__add__", &CPointer::operator+<CPointer>, manage_new_object_policy())
 
-        .def(self + int())
-        .def(self + self)
-        .def(int() + self)
+        .def("__radd__", &CPointer::operator+<unsigned long>, manage_new_object_policy())
+        .def("__radd__", &CPointer::operator+<CPointer>, manage_new_object_policy())
 
         .def(self -= int())
         .def(self -= self)
+		
+        .def("__sub__", &CPointer::operator-<unsigned long>, manage_new_object_policy())
+        .def("__sub__", &CPointer::operator-<CPointer>, manage_new_object_policy())
 
-        .def(self - int())
-        .def(self - self)
-        .def(int() - self)
+        .def("__rsub__", &CPointer::operator-<unsigned long>, manage_new_object_policy())
+        .def("__rsub__", &CPointer::operator-<CPointer>, manage_new_object_policy())
 
 		// Attributes
 		.def_readwrite("address", 
