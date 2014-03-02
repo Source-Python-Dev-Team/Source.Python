@@ -57,7 +57,8 @@ inline void CallbackCaller(CCallback* pCallback, unsigned long ulEBP, unsigned l
 template<>
 inline void* CallbackCaller(CCallback* pCallback, unsigned long ulEBP, unsigned long ulECX)
 {
-    return (void *) ExtractPyPtr(CallCallback(pCallback, ulEBP, ulECX));
+	CPointer* pPtr = extract<CPointer *>(CallCallback(pCallback, ulEBP, ulECX));
+    return (void *) pPtr->m_ulAddr;
 }
 
 

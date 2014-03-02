@@ -116,8 +116,8 @@ bool SP_HookHandler(DynamicHooks::HookType_t eHookType, CHook* pHook)
 					case SIGCHAR_DOUBLE:	SetReturnValue<double>(pHook, pyretval); break;
 					case SIGCHAR_POINTER:
 					{
-						unsigned long retptr = ExtractPyPtr(pyretval);
-						pHook->SetReturnValue<unsigned long>(retptr);
+						CPointer* pPtr = extract<CPointer *>(pyretval);
+						pHook->SetReturnValue<unsigned long>(pPtr->m_ulAddr);
 					} break;
 					case SIGCHAR_STRING:		SetReturnValue<const char*>(pHook, pyretval); break;
 					default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
@@ -192,7 +192,11 @@ void CStackData::SetItem(unsigned int iIndex, object value)
 		case SIGCHAR_ULONGLONG: SetArgument<unsigned long long>(m_pHook, iIndex, value); break;
 		case SIGCHAR_FLOAT:     SetArgument<float>(m_pHook, iIndex, value); break;
 		case SIGCHAR_DOUBLE:    SetArgument<double>(m_pHook, iIndex, value); break;
-		case SIGCHAR_POINTER:   SetArgument<unsigned long>(m_pHook, iIndex, object(ExtractPyPtr(value))); break;
+		case SIGCHAR_POINTER:
+		{
+			CPointer* pPtr = extract<CPointer*>(value);
+			SetArgument<unsigned long>(m_pHook, iIndex, object(pPtr->m_ulAddr));
+		} break;
 		case SIGCHAR_STRING:    SetArgument<const char *>(m_pHook, iIndex, value); break;
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
 	}

@@ -978,8 +978,8 @@ bool CGameTrace::DidHitWorld() const
 
 int CGameTrace::GetEntityIndex() const
 {
-	// TODO: Use a more efficient way
-	return m_pEnt ? IndexFromPointer(object(ptr(new CPointer((unsigned long) m_pEnt)))) : -1;
+	CPointer ptr = CPointer((unsigned long) m_pEnt);
+	return m_pEnt ? IndexFromPointer(&ptr) : -1;
 }
 
 

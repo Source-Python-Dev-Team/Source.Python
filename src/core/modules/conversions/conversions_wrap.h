@@ -43,8 +43,6 @@ extern IVEngineServer* engine;
 extern CGlobalVars*	   gpGlobals;
 extern IPlayerInfoManager* playerinfomanager;
 
-extern unsigned long ExtractPyPtr(object obj);
-
 //-----------------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------------
@@ -99,10 +97,9 @@ inline unsigned int IndexFromIntHandle( int iHandle )
 	return iIndex;
 }
 
-inline unsigned int IndexFromPointer( object oPtr )
+inline unsigned int IndexFromPointer( CPointer* pPtr )
 {
-	unsigned long ulPointer = ExtractPyPtr(oPtr);
-	IServerUnknown *pUnknown = (IServerUnknown *) ulPointer;
+	IServerUnknown *pUnknown = (IServerUnknown *) pPtr->m_ulAddr;
 	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
 	if (!pNetworkable)
 	{
@@ -154,9 +151,9 @@ inline edict_t* EdictFromIntHandle( int inthandle )
 	return EdictFromIndex(IndexFromIntHandle(inthandle));
 }
 
-inline edict_t* EdictFromPointer( object pointer )
+inline edict_t* EdictFromPointer( CPointer* pPtr )
 {
-	return EdictFromIndex(IndexFromPointer(pointer));
+	return EdictFromIndex(IndexFromPointer(pPtr));
 }
 
 inline edict_t* EdictFromUserid( unsigned int userid )
@@ -199,9 +196,9 @@ inline const CBaseHandle BaseHandleFromIntHandle( int inthandle )
 	return CBaseHandle(inthandle);
 }
 
-inline const CBaseHandle BaseHandleFromPointer( object pointer )
+inline const CBaseHandle BaseHandleFromPointer( CPointer* pPtr )
 {
-	return EdictFromIndex(IndexFromPointer(pointer))->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	return EdictFromIndex(IndexFromPointer(pPtr))->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
 }
 
 inline const CBaseHandle BaseHandleFromUserid( unsigned int userid )
@@ -232,9 +229,9 @@ inline int IntHandleFromBaseHandle( CBaseHandle* basehandle )
 	return basehandle->ToInt();
 }
 
-inline int IntHandleFromPointer( object pointer )
+inline int IntHandleFromPointer( CPointer* pPtr )
 {
-	return EdictFromIndex(IndexFromPointer(pointer))->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	return EdictFromIndex(IndexFromPointer(pPtr))->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
 }
 
 inline int IntHandleFromUserid( unsigned int userid )
@@ -303,9 +300,9 @@ inline unsigned int UseridFromIntHandle( int inthandle )
 	return PlayerInfoFromIndex(IndexFromIntHandle(inthandle))->GetUserID();
 }
 
-inline unsigned int UseridFromPointer( object pointer )
+inline unsigned int UseridFromPointer( CPointer* pPtr )
 {
-	return PlayerInfoFromIndex(IndexFromPointer(pointer))->GetUserID();
+	return PlayerInfoFromIndex(IndexFromPointer(pPtr))->GetUserID();
 }
 
 inline unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo )
@@ -348,9 +345,9 @@ inline IPlayerInfo* PlayerInfoFromIntHandle( int inthandle )
 	return PlayerInfoFromIndex(IndexFromIntHandle(inthandle));
 }
 
-inline IPlayerInfo* PlayerInfoFromPointer( object pointer )
+inline IPlayerInfo* PlayerInfoFromPointer( CPointer* pPtr )
 {
-	return PlayerInfoFromIndex(IndexFromPointer(pointer));
+	return PlayerInfoFromIndex(IndexFromPointer(pPtr));
 }
 
 inline IPlayerInfo* PlayerInfoFromUserid( unsigned int userid )

@@ -161,7 +161,7 @@ class CPointer
 public:
 	CPointer(unsigned long ulAddr = 0, bool bAutoDealloc = false);
 	virtual ~CPointer();
-
+	
 	operator unsigned long() const { return m_ulAddr; }
 
 	// Implement some operators
@@ -218,14 +218,14 @@ public:
 	void                SetStringArray(char* szText, int iOffset = 0);
 
 	CPointer*           GetPtr(int iOffset = 0);
-	void                SetPtr(object ptr, int iOffset = 0);
+	void                SetPtr(CPointer* pPtr, int iOffset = 0);
 
-	bool                IsOverlapping(object oOther, unsigned long ulNumBytes);
+	bool                IsOverlapping(CPointer* pOther, unsigned long ulNumBytes);
 	CPointer*           SearchBytes(object oBytes, unsigned long ulNumBytes);
 
-	int                 Compare(object oOther, unsigned long ulNum);
-	void                Copy(object oDest, unsigned long ulNumBytes);
-	void                Move(object oDest, unsigned long ulNumBytes);
+	int                 Compare(CPointer* pOther, unsigned long ulNum);
+	void                Copy(CPointer* pDest, unsigned long ulNumBytes);
+	void                Move(CPointer* pDest, unsigned long ulNumBytes);
 
 
 	unsigned long       GetSize() { return UTIL_GetMemSize((void *) m_ulAddr); }
@@ -249,24 +249,6 @@ public:
 //---------------------------------------------------------------------------------
 // Converts a Python CPointer object or an integer to an unsigned long.
 //---------------------------------------------------------------------------------
-inline unsigned long ExtractPyPtr(object obj)
-{
-	// Try to get an unsigned long at first
-	try
-	{
-		return extract<unsigned long>(obj);
-	}
-	catch(...)
-	{
-		PyErr_Clear();
-	}
-
-	// If that fails, try to extract a CPointer representation
-	CPointer* pPtr = extract<CPointer *>(obj);
-	return pPtr->m_ulAddr;
-}
-
-
 class CFunction: public CPointer
 {
 public:
@@ -301,10 +283,9 @@ class Wrap
 {
 public:
 	template<class T>
-	static T* WrapIt(object ptr)
+	static T* WrapIt(CPointer* pPtr)
 	{
-		unsigned long ulPtr = ExtractPyPtr(ptr);
-		return (T *) ulPtr;
+		return (T *) pPtr->m_ulAddr;
 	}
 };
 

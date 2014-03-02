@@ -94,31 +94,29 @@ CPointer* CPointer::GetPtr(int iOffset /* = 0 */)
 	return new CPointer(*(unsigned long *) (m_ulAddr + iOffset));
 }
 
-void CPointer::SetPtr(object ptr, int iOffset /* = 0 */)
+void CPointer::SetPtr(CPointer* pPtr, int iOffset /* = 0 */)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 		
-	unsigned long ulAddr = ExtractPyPtr(ptr);
-	*(unsigned long *) m_ulAddr = m_ulAddr;
+	
+	*(unsigned long *) m_ulAddr = pPtr->m_ulAddr;
 }
 
-int CPointer::Compare(object oOther, unsigned long ulNum)
+int CPointer::Compare(CPointer* pOther, unsigned long ulNum)
 {
-	unsigned long ulOther = ExtractPyPtr(oOther);
-	if (!m_ulAddr || !ulOther)
+	if (!m_ulAddr || !pOther->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
 
-	return memcmp((void *) m_ulAddr, (void *) ulOther, ulNum);
+	return memcmp((void *) m_ulAddr, (void *) pOther->m_ulAddr, ulNum);
 }
 
-bool CPointer::IsOverlapping(object oOther, unsigned long ulNumBytes)
+bool CPointer::IsOverlapping(CPointer* pOther, unsigned long ulNumBytes)
 {
-	unsigned long ulOther = ExtractPyPtr(oOther);
-	if (m_ulAddr <= ulOther)
-		return m_ulAddr + ulNumBytes > ulOther;
+	if (m_ulAddr <= pOther->m_ulAddr)
+		return m_ulAddr + ulNumBytes > pOther->m_ulAddr;
        
-	return ulOther + ulNumBytes > m_ulAddr;
+	return pOther->m_ulAddr + ulNumBytes > m_ulAddr;
 }
 
 CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
@@ -134,13 +132,15 @@ CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
 	unsigned char* end   = (unsigned char *) (m_ulAddr + ulNumBytes - (iByteLen - 1));
 	unsigned char* bytes = NULL;
 	PyArg_Parse(oBytes.ptr(), "y", &bytes);
+	if(!bytes)
+		return new CPointer();
 
 	while (base < end)
 	{
 		unsigned long i = 0;
 		for(; i < iByteLen; i++)
 		{
-			if (base[i] == '\x2A')
+			if (bytes[i] == '\x2A')
 				continue;
 
 			if (bytes[i] != base[i])
@@ -152,28 +152,26 @@ CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
 
 		base++;
 	}
-	return NULL;
+	return new CPointer();
 }
 
-void CPointer::Copy(object oDest, unsigned long ulNumBytes)
+void CPointer::Copy(CPointer* pDest, unsigned long ulNumBytes)
 {
-	unsigned long ulDest = ExtractPyPtr(oDest);
-	if (!m_ulAddr || ulDest)
+	if (!m_ulAddr || !pDest->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
 
-	if (IsOverlapping(oDest, ulNumBytes))
+	if (IsOverlapping(pDest, ulNumBytes))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointers are overlapping!")
 
-	memcpy((void *) ulDest, (void *) m_ulAddr, ulNumBytes);
+	memcpy((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
 }
 
-void CPointer::Move(object oDest, unsigned long ulNumBytes)
+void CPointer::Move(CPointer* pDest, unsigned long ulNumBytes)
 {
-	unsigned long ulDest = ExtractPyPtr(oDest);
-	if (!m_ulAddr || ulDest == 0)
+	if (!m_ulAddr || !pDest->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
 
-	memmove((void *) ulDest, (void *) m_ulAddr, ulNumBytes);
+	memmove((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
 }
 
 CPointer* CPointer::GetVirtualFunc(int iIndex)
@@ -243,7 +241,11 @@ object CFunction::Call(tuple args, dict kw)
 			case DC_SIGCHAR_ULONGLONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
 			case DC_SIGCHAR_FLOAT:     dcArgFloat(g_pCallVM, extract<float>(arg)); break;
 			case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
-			case DC_SIGCHAR_POINTER:   dcArgPointer(g_pCallVM, ExtractPyPtr(arg)); break;
+			case DC_SIGCHAR_POINTER:
+			{
+				CPointer* pPtr = extract<CPointer *>(arg);
+				dcArgPointer(g_pCallVM, pPtr->m_ulAddr);
+			} break;
 			case DC_SIGCHAR_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
 			default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown argument type.")
 		}
