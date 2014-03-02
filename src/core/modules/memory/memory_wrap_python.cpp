@@ -177,6 +177,8 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(alloc_overload, Alloc, 1, 2)
 void export_memtools()
 {
 	class_<CPointer, boost::noncopyable>("Pointer", init< optional<unsigned long, bool> >())
+		.def(init<CPointer&>())
+
 		// get/set_<type> methods
 		EXPOSE_GET_SET_TYPE(bool, bool)
 		EXPOSE_GET_SET_TYPE(char, char)
@@ -354,6 +356,8 @@ void export_memtools()
 	);
 
 	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, Convention_t, tuple, ReturnType_t>())
+		.def(init<CFunction&>())
+
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
@@ -409,6 +413,8 @@ void export_memtools()
 			&CFunction::m_eConv
 		)
 	;
+
+	scope().attr("NULL") = object(ptr(new CPointer()));
 }
 
 //-----------------------------------------------------------------------------
@@ -432,6 +438,7 @@ void export_dyncall()
 		.value("POINTER", ARG_POINTER)
 		.value("STRING", ARG_STRING)
 	;
+
 	enum_<ReturnType_t>("Return")
 		.value("VOID", RET_VOID)
 		.value("BOOL", RET_BOOL)
@@ -518,6 +525,9 @@ void export_callbacks()
 #define ADD_SIZE(type) \
 	scope().attr("TYPE_SIZES")[XSTRINGIFY(type)] = sizeof(type);
 
+#define ADD_NATIVE_TYPE_SIZE(name, type) \
+	scope().attr("TYPE_SIZES")[name] = sizeof(type);
+
 // Use this macro to add the ability to wrap a pointer using an exposed class
 #define WRAP_POINTER(type) \
 	cls.def(XSTRINGIFY(type), \
@@ -540,6 +550,23 @@ void export_get_address()
 	class_<Wrap> cls = class_<Wrap>("wrap", no_init);
 
 	// Add all classes here...
+	// Native types
+	ADD_NATIVE_TYPE_SIZE("bool", bool)
+	ADD_NATIVE_TYPE_SIZE("char", char)
+	ADD_NATIVE_TYPE_SIZE("uchar", unsigned char)
+	ADD_NATIVE_TYPE_SIZE("short", short)
+	ADD_NATIVE_TYPE_SIZE("ushort", unsigned short)
+	ADD_NATIVE_TYPE_SIZE("int", int)
+	ADD_NATIVE_TYPE_SIZE("uint", unsigned int)
+	ADD_NATIVE_TYPE_SIZE("long", long)
+	ADD_NATIVE_TYPE_SIZE("ulong", unsigned long)
+	ADD_NATIVE_TYPE_SIZE("long_long", long long)
+	ADD_NATIVE_TYPE_SIZE("ulong_long", unsigned long long)
+	ADD_NATIVE_TYPE_SIZE("float", float)
+	ADD_NATIVE_TYPE_SIZE("double", double)
+	ADD_NATIVE_TYPE_SIZE("ptr", void*)
+	ADD_NATIVE_TYPE_SIZE("string", char*)
+
 	// mathlib_c
 	ADD_ALL(Vector)
 	ADD_ALL(QAngle)
