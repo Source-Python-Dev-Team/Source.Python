@@ -68,7 +68,7 @@ inline void* CallbackCaller(CCallback* pCallback, unsigned long ulEBP, unsigned 
 class CCallback: public CFunction
 {
 public:
-    CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type);
+    CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type, bool bAutoDealloc = true);
 	virtual ~CCallback();
 
     int          GetPopSize();

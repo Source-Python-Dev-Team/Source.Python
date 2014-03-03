@@ -500,7 +500,7 @@ void export_dynamichooks()
 //-----------------------------------------------------------------------------
 void export_callbacks()
 {
-	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, ReturnType_t >())
+	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, ReturnType_t, optional<bool> >())
         .def_readwrite("callback",
             &CCallback::m_oCallback,
             "The Python function that gets called by the C++ callback"

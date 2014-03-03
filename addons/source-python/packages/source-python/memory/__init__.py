@@ -17,6 +17,12 @@ from memory_c import *
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'Type',
+    'CustomType',
+    'Array',
+    'MemberFunction',
+    'TypeManager',
+    'callback',
 ]
 
 
@@ -332,7 +338,7 @@ class TypeManager(dict):
     def instance_attribute(self, attr_type, offset, doc=None):
         '''
         Creates a wrapper for an instance attribute.
-        E.g.: Vector vec; or bool bVal;
+        E.g.: Vector vec; bool bVal;
         '''
 
         native_type = Type.is_native(attr_type)
@@ -363,7 +369,7 @@ class TypeManager(dict):
     def pointer_attribute(self, attr_type, offset, doc=None):
         '''
         Creates a wrapper for a pointer attribute.
-        E.g.: Vector* pVec; or bool* pBool;
+        E.g.: Vector* pVec; bool* pBool;
         '''
 
         native_type = Type.is_native(attr_type)
@@ -407,7 +413,7 @@ class TypeManager(dict):
     def instance_array(self, attr_type, offset, length=None, doc=None):
         '''
         Creates a wrapper for an instance array.
-        E.g.: Vector vecArray[10]; or bool boolArray[10];
+        E.g.: Vector vecArray[10]; bool boolArray[10];
         '''
 
         def fget(ptr):
@@ -424,7 +430,7 @@ class TypeManager(dict):
     def pointer_array(self, attr_type, offset, length=None, doc=None):
         '''
         Creates a wrapper for a pointer array.
-        E.g.: Vector* pVecArray; or bool* pBoolArray;
+        E.g.: Vector* pVecArray; bool* pBoolArray;
 
         Those arrrays are mostly created by the "new" statement.
         '''
@@ -440,7 +446,7 @@ class TypeManager(dict):
 
         return property(fget, fset, None, doc)
 
-    def virtual_function(self, index, args, return_type=Return.VOID, doc=None,
+    def virtual_function(self, index, args=(), return_type=Return.VOID, doc=None,
             convention=Convention.THISCALL):
         '''
         Creates a wrapper for a virtual function.
@@ -466,7 +472,7 @@ class TypeManager(dict):
 
         return property(fget, None, None, doc)
 
-    def function(self, identifier, args, return_type=Return.VOID, doc=None,
+    def function(self, identifier, args=(), return_type=Return.VOID, doc=None,
             convention=Convention.THISCALL):
         '''
         Creates a wrapper for a function.
@@ -502,4 +508,28 @@ class TypeManager(dict):
             # pointer anymore
             return MemberFunction(self, return_type, func, ptr)
 
-        return property(fget, None, None, doc)
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def callback(convention, args=(), return_type=Return.VOID):
+    '''
+    Use this decorator to create a C++ callback that calls back to the
+    decorated function.
+
+    EXAMPLE:
+
+    @callback(Convention.CDECL, (Argument.INT, Argument.INT), Return.INT)
+    def add(x, y, ebp):
+        return x + y
+
+    <add> is now a Callback instance, but you can still call it like a normal
+    Python function:
+
+    assert add(4, 6) == 10
+    '''
+
+    def wait_for_func(func):
+        return Callback(func, convention, args, return_type)
+
+    return wait_for_func

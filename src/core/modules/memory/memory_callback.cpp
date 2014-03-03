@@ -49,11 +49,11 @@ using namespace DynamicHooks;
 // ============================================================================
 // >> CLASSES
 // ============================================================================
-CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type)
+CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type, bool bAutoDealloc /* = true */)
     : CFunction(NULL, eConv, args, return_type)
 {
     m_oCallback = oCallback;
-	m_bAutoDealloc = true;
+	m_bAutoDealloc = bAutoDealloc;
 
     // Find the proper callback caller function
     void* pCallCallbackFunc = NULL;
