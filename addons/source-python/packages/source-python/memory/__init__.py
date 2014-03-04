@@ -1,10 +1,3 @@
-'''
-TODO:
-- Add arrays that contain pointers instead of instances: Vector* vecArray[10];
-  Every 4 bytes is a new pointer:
-  ptr.get_ptr(<offset to array> + (<index> * 4))
-'''
-
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -17,17 +10,11 @@ from memory_c import *
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
-    'Type',
-    'CustomType',
-    'Array',
-    'MemberFunction',
-    'TypeManager',
-    'callback',
 ]
 
 
 # =============================================================================
-# >> CLASSES
+# >> Type
 # =============================================================================
 class Type:
     BOOL         = 'bool'
@@ -56,7 +43,43 @@ class Type:
         return hasattr(Type, attr_type.upper())
 
 
-class CustomType(Pointer):
+# =============================================================================
+# >> BasePointer
+# =============================================================================
+class BasePointer(Pointer):
+    # These four operator functions are required. Otherwise we would downcast
+    # the instance to the Pointer class if we add or subtract bytes.
+    def __add__(self, other):
+        return self.__class__(int(self) + int(other))
+
+    def __radd__(self, other):
+        return self + other
+
+    def __sub__(self, other):
+        return self.__class__(int(self) - int(other))
+
+    def __rsub__(self, other):
+        return self - other
+
+    def get(self, type_name, offset=0):
+        '''
+        Returns the value at the given memory location.
+        '''
+
+        return getattr(self, 'get_' + type_name)(offset)
+
+    def set(self, type_name, value, offset=0):
+        '''
+        Sets the value at the given memory location.
+        '''
+
+        getattr(self, 'set_' + type_name)(value, offset)
+
+
+# =============================================================================
+# >> CustomType
+# =============================================================================
+class CustomType(BasePointer):
     '''
     Subclass this class if you want to create a new type. Make sure that you
     have set the metaclass attribute to a valid TypeManager instance.
@@ -121,54 +144,35 @@ class CustomType(Pointer):
                 raise ValueError('No constructor was specified, but argumen' \
                     'ts were passed.')
 
-    # These four operator functions are required. Otherwise we would downcast
-    # the instance to the Pointer class if we add or subtract bytes.
-    def __add__(self, other):
-        return self.__class__(int(self) + int(other))
 
-    def __radd__(self, other):
-        return self + other
-
-    def __sub__(self, other):
-        return self.__class__(int(self) - int(other))
-
-    def __rsub__(self, other):
-        return self - other
-
-    def get(self, type_name, offset=0):
-        '''
-        Returns the value at the given memory location.
-        '''
-
-        return getattr(self, 'get_' + type_name)(offset)
-
-    def set(self, type_name, value, offset=0):
-        '''
-        Sets the value at the given memory location.
-        '''
-
-        getattr(self, 'set_' + type_name)(value, offset)
-
-
-class Array(CustomType):
+# =============================================================================
+# >> Array
+# =============================================================================
+class Array(BasePointer):
     # Optional -- specifies the length of the array
     __length__ = None
 
     # Contains the type name of the array
     __type_name__ = None
 
-    def __init__(self, manager, attr_type, ptr, length=None):
+    # Set to True if the array contains pointers, else False
+    __is_ptr__ = None
+
+    def __init__(self, manager, is_ptr, type_name, ptr, length=None):
         '''
         Initializes the array wrapper.
 
         @param <manager>
         Contains an instance of TypeManager.
 
-        @param <attr_type>
+        @param <is_ptr>
+        Set to True if the array contains pointers, else False.
+
+        @param <type_name>
         Contains the name of the array type. E.g. 'Vector' or 'bool'.
 
         @param <ptr>
-        Contains the address of the array (the very first array entry).
+        Contains the base address of the array (the very first array entry).
 
         @param <length>
         Contains the length of the array. Setting this value allows you to
@@ -176,78 +180,73 @@ class Array(CustomType):
         '''
 
         self.__manager__   = manager
+        self.__is_ptr__    = is_ptr
+        self.__type_name__ = type_name
         self.__length__    = length
-        self.__type_name__ = attr_type
 
-        # This must be called after setting the __manager__ attribute
         super(Array, self).__init__(ptr)
 
     def __getitem__(self, index):
         '''
-        Returns the item at the given index.
+        Returns the value at the given index.
         '''
 
-        # Check length if specified
-        if self.__length__ is not None and index >= self.__length__:
-            raise IndexError('Index our of range')
-
-        if Type.is_native(self.__type_name__):
-            # Return the value at the computed offset
-            return self.get(
-                self.__type_name__,
-                index * TYPE_SIZES[self.__type_name__]
-            )
-
-        # Get the class object
-        cls = self.__manager__[self.__type_name__]
-
-        # Check size of type
-        if cls.__size__ == None:
-            raise ValueError('Array requires a size to access its values.')
-
-        # Compute offset and return the new instance
-        return cls(self + (index * cls.__size__))
+        return self.__make_attribute(index).__get__(self)
 
     def __setitem__(self, index, value):
         '''
-        Sets the item at the given index.
+        Sets the value at the given index.
         '''
 
-        # Check length if specified
+        self.__make_attribute(index).__set__(self, value)
+
+    def __make_attribute(self, index):
+        '''
+        Validates the index and returns a new property object.
+        '''
+
+        # Validate the index, so we don't access invalid memory addresses
         if self.__length__ is not None and index >= self.__length__:
-            raise IndexError('Index our of range')
+            raise IndexError('Index out of range')
 
-        # Is it a native type?
+        # Construct the proper function name
+        name = ('pointer' if self.__is_ptr__ else 'instance') + '_attribute'
+
+        # Get the function and call it
+        return getattr(self.__manager__, name)(
+            self.__type_name__,
+            self.get_offset(index)
+        )
+
+    def get_offset(self, index):
+        '''
+        Returns the offset of the given index.
+        '''
+
+        # Pointer arrays always have every 4 bytes a new pointer
+        if self.__is_ptr__:
+            return index * TYPE_SIZES[Type.POINTER]
+
+        # Every 1, 2, 4 or 8 bytes is a new value
         if Type.is_native(self.__type_name__):
-            # Set the value at the computed offset
-            self.set(
-                self.__type_name__,
-                value,
-                index * TYPE_SIZES[self.__type_name__]
-            )
+            return index * TYPE_SIZES[self.__type_name__]
 
-        # Handle custom type
-        else:
-            if not isinstance(value, Pointer):
-                raise ValueError('The value must be an instance of the Poin' \
-                    'ter class')
+        # Get the class of the custom type
+        cls = self.__manager__[self.__type_name__]
 
-            # Get the class object
-            cls = self.__manager__[self.__type_name__]
+        # To access a value, we require the proper size of a custom type
+        if cls.__size__ == None:
+            raise ValueError('Array requires a size to access its values.')
 
-            # Check size of type
-            if cls.__size__ == None:
-                raise ValueError('Array requires a size to access its value' \
-                    's.')
-
-            # Copy the whole value to the pointer
-            value.copy(self + (index * cls.__size__), cls.__size__)
+        # Every x bytes is a new instance
+        return index * cls.__size__
 
     # Arrays have another constructor and we don't want to downcast. So, we
     # have to implement these operators here again.
     def __add__(self, other):
         return self.__class__(
             self.__manager__,
+            self.__is_ptr__,
             self.__type_name__,
             int(self) + int(other),
             self.__length__
@@ -256,12 +255,16 @@ class Array(CustomType):
     def __sub__(self, other):
         return self.__class__(
             self.__manager__,
+            self.__is_ptr__,
             self.__type_name__,
             int(self) - int(other),
             self.__length__
         )
 
 
+# =============================================================================
+# >> MemberFunction
+# =============================================================================
 class MemberFunction(Function):
     '''
     Use this class to create a wrapper for member functions. It passes the
@@ -314,6 +317,9 @@ class MemberFunction(Function):
         return result
 
 
+# =============================================================================
+# >> TypeManager
+# =============================================================================
 class TypeManager(dict):
     def __call__(self, name, bases, cls_dict):
         '''
@@ -338,7 +344,10 @@ class TypeManager(dict):
     def instance_attribute(self, attr_type, offset, doc=None):
         '''
         Creates a wrapper for an instance attribute.
-        E.g.: Vector vec; bool bVal;
+
+        Examples:
+            Vector vecVal;
+            bool bVal;
         '''
 
         native_type = Type.is_native(attr_type)
@@ -369,7 +378,10 @@ class TypeManager(dict):
     def pointer_attribute(self, attr_type, offset, doc=None):
         '''
         Creates a wrapper for a pointer attribute.
-        E.g.: Vector* pVec; bool* pBool;
+
+        Examples:
+            Vector* pVec;
+            bool* pBool;
         '''
 
         native_type = Type.is_native(attr_type)
@@ -402,6 +414,8 @@ class TypeManager(dict):
                 #    classes might also have the address of it. So, changing
                 #    address in this particular class wouldn't affect the
                 #    other classes.
+                # TODO: Is that what we want? Maybe we could add a "copy"
+                #       parameter to let the user decide.
                 value.copy(ptr, self[attr_type].__size__)
 
             # Handle native type
@@ -410,36 +424,80 @@ class TypeManager(dict):
 
         return property(fget, fset, None, doc)
 
-    def instance_array(self, attr_type, offset, length=None, doc=None):
+    def static_instance_array(self, attr_type, offset, length=None, doc=None):
         '''
-        Creates a wrapper for an instance array.
-        E.g.: Vector vecArray[10]; bool boolArray[10];
+        Creates a wrapper for a static instance array.
+
+        Examples:
+            Vector vecArray[10];
+            bool boolArray[10];
         '''
 
         def fget(ptr):
-            return Array(self, attr_type, ptr + offset, length)
+            return Array(self, False, attr_type, ptr + offset, length)
 
         def fset(ptr, value):
-            # Copy every value to the array
             array = fget(ptr)
             for index, val in enumerate(value):
                 array[index] = val
 
         return property(fget, fset, None, doc)
 
-    def pointer_array(self, attr_type, offset, length=None, doc=None):
+    def dynamic_instance_array(self, attr_type, offset, length=None, doc=None):
         '''
-        Creates a wrapper for a pointer array.
-        E.g.: Vector* pVecArray; bool* pBoolArray;
+        Creates a wrapper for a dynamic instance array.
+
+        Examples:
+            Vector* pVecArray;
+            bool* pBoolArray;
 
         Those arrrays are mostly created by the "new" statement.
         '''
 
         def fget(ptr):
-            return Array(self, attr_type, ptr.get_ptr(offset), length)
+            return Array(self, False, attr_type, ptr.get_ptr(offset), length)
 
         def fset(ptr, value):
-            # Copy every value to the array
+            array = fget(ptr)
+            for index, val in enumerate(value):
+                array[index] = val
+
+        return property(fget, fset, None, doc)
+
+    def static_pointer_array(self, attr_type, offset, length=None, doc=None):
+        '''
+        Creates a wrapper for a static pointer array.
+
+        Examples:
+            Vector* pVecArray[10];
+            bool* pBoolArray[10];
+        '''
+
+        def fget(ptr):
+            return Array(self, True, attr_type, ptr + offset, length)
+
+        def fset(ptr, value):
+            array = fget(ptr)
+            for index, val in enumerate(value):
+                array[index] = val
+
+        return property(fget, fset, None, doc)
+
+    def dynamic_pointer_array(self, attr_type, offset, length=None, doc=None):
+        '''
+        Creates a wrapper for a dynamic pointer array.
+
+        Examples:
+            Vector** pVecArray;
+            bool** pBoolArray;
+
+        Those arrays are mostly created by the "new" statement.
+        '''
+
+        def fget(ptr):
+            return Array(self, True, attr_type, ptr.get_ptr(offset), length)
+
+        def fset(ptr, value):
             array = fget(ptr)
             for index, val in enumerate(value):
                 array[index] = val
