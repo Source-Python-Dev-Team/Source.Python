@@ -44,7 +44,7 @@ void export_memtools();
 void export_dyncall();
 void export_dynamichooks();
 void export_callbacks();
-void export_get_address();
+void export_sizes();
 
 DECLARE_SP_MODULE(memory_c)
 {
@@ -53,7 +53,7 @@ DECLARE_SP_MODULE(memory_c)
 	export_dyncall();
 	export_dynamichooks();
 	export_callbacks();
-	export_get_address();
+	export_sizes();
 }
 
 //-----------------------------------------------------------------------------
@@ -347,14 +347,6 @@ void export_memtools()
 		)
 	;
 
-	def("alloc",
-		Alloc,
-		alloc_overload(
-			"Allocates a memory block.",
-			args("size", "auto_dealloc")
-		)[manage_new_object_policy()]
-	);
-
 	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, Convention_t, tuple, ReturnType_t>())
 		.def(init<CFunction&>())
 
@@ -413,6 +405,30 @@ void export_memtools()
 			&CFunction::m_eConv
 		)
 	;
+	
+	def("alloc",
+		Alloc,
+		alloc_overload(
+			"Allocates a memory block.",
+			args("size", "auto_dealloc")
+		)[manage_new_object_policy()]
+	);
+
+	def("get_pointer",
+		&GetPointer,
+		args("object"),
+		"Returns the pointer of the C++ object"
+	);
+
+	def("make_object",
+		&MakeObject,
+		"Wraps a pointer using an exposed class."
+	);
+
+	def("get_size",
+		&GetSize,
+		"Returns the size of the class object or instance of its C++ class."
+	);
 
 	scope().attr("NULL") = object(ptr(new CPointer()));
 }
@@ -510,46 +526,19 @@ void export_callbacks()
 
 
 //-----------------------------------------------------------------------------
-// Exposes wrap/get_pointer/TYPE_SIZES functionality
+// Exposes TYPE_SIZES
 //-----------------------------------------------------------------------------
-// Use this macro to add the ability to get the address of an object
-#define GET_POINTER(type) \
-	def("get_pointer", \
-		&GetPointer<type>, \
-		"Returns the memory address of the given object.", \
-		args("object"), \
-		manage_new_object_policy() \
-	);
-
-// Use this macro to add the ability to get the size of an object
-#define ADD_SIZE(type) \
-	scope().attr("TYPE_SIZES")[XSTRINGIFY(type)] = sizeof(type);
-
 #define ADD_NATIVE_TYPE_SIZE(name, type) \
 	scope().attr("TYPE_SIZES")[name] = sizeof(type);
 
-// Use this macro to add the ability to wrap a pointer using an exposed class
-#define WRAP_POINTER(type) \
-	cls.def(XSTRINGIFY(type), \
-		&Wrap::WrapIt<type>, \
-		"Wraps the given address.", \
-		args("pointer"), \
-		reference_existing_object_policy() \
-	).staticmethod(XSTRINGIFY(type));
+#define ADD_SIZE(type) \
+	ADD_NATIVE_TYPE_SIZE(XSTRINGIFY(type), type)
 
-// Use this macro to call the three macros all at once
-#define ADD_ALL(type) \
-	GET_POINTER(type) \
-	WRAP_POINTER(type) \
-	ADD_SIZE(type)
-
-void export_get_address()
+void export_sizes()
 {
-	// Don't remove this! It's required for the WRAP_POINTER and ADD_SIZE macro.
+	// Don't remove this! It's required for the ADD_NATIVE_TYPE_SIZE macro.
 	scope().attr("TYPE_SIZES") = dict();
-	class_<Wrap> cls = class_<Wrap>("wrap", no_init);
 
-	// Add all classes here...
 	// Native types
 	ADD_NATIVE_TYPE_SIZE("bool", bool)
 	ADD_NATIVE_TYPE_SIZE("char", char)
@@ -566,11 +555,4 @@ void export_get_address()
 	ADD_NATIVE_TYPE_SIZE("double", double)
 	ADD_NATIVE_TYPE_SIZE("ptr", void*)
 	ADD_NATIVE_TYPE_SIZE("string", char*)
-
-	// mathlib_c
-	ADD_ALL(Vector)
-	ADD_ALL(QAngle)
-	ADD_ALL(Quaternion)
-	ADD_ALL(cplane_t)
-	ADD_ALL(RadianEuler)
 }

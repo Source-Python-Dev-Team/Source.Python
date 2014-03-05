@@ -32,6 +32,8 @@
 #include "mathlib/mathlib.h"
 #include "utility/sp_util.h"
 
+#include "modules/memory/memory_tools.h"
+
 
 //-----------------------------------------------------------------------------
 // Exposes the mathlib_c module.
@@ -234,6 +236,8 @@ void export_vector()
 			"Returns a new vector containing the biggest values of both vectors.",
 			args("other")
 		)
+
+		ADD_MEM_TOOLS(Vector)
 	;
 }
 

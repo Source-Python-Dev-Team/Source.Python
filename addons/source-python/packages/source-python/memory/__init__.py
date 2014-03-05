@@ -200,6 +200,20 @@ class Array(BasePointer):
 
         self.__make_attribute(index).__set__(self, value)
 
+    def __iter__(self):
+        '''
+        Returns a generator can iterate over the array.
+        '''
+
+        # This prevents users from iterating over the array without having
+        # __length__ specified. Otherwise the server would hang or crash.
+        if self.__length__ is None:
+            raise ValueError('Cannot iterate over the array without __lengt' \
+                'h__ being specified.')
+
+        for index in range(self.__length__):
+            yield self[index]
+
     def __make_attribute(self, index):
         '''
         Validates the index and returns a new property object.

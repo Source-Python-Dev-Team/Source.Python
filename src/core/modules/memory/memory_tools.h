@@ -44,6 +44,36 @@ using namespace boost::python;
 extern DCCallVM* g_pCallVM;
 
 
+//---------------------------------------------------------------------------------
+// Macros
+//---------------------------------------------------------------------------------
+// Use this macro to add this class to get_pointer()
+#define ADD_PTR(classname) \
+	.def("__ptr__", \
+		&__ptr__<classname>, \
+		manage_new_object_policy() \
+	)
+
+// Use this macro to add this class to make_object()
+#define ADD_OBJ(classname) \
+	.def("__obj__", \
+		&__obj__<classname>, \
+		reference_existing_object_policy() \
+	).staticmethod("__obj__")
+
+// Use this macro to add this class to get_size()
+// Note: This must be at the end of the class definition!
+#define ADD_SIZE(classname) \
+	.attr("__size__") = sizeof(classname);
+
+// Use this macro to add the class to the three functions
+// Note: This must be at the end of the class definition!
+#define ADD_MEM_TOOLS(classname) \
+	ADD_PTR(classname) \
+	ADD_OBJ(classname) \
+	ADD_SIZE(classname)
+
+
 //-----------------------------------------------------------------------------
 // Memory functions
 //-----------------------------------------------------------------------------
@@ -279,17 +309,6 @@ public:
 };
 
 
-class Wrap
-{
-public:
-	template<class T>
-	static T* WrapIt(CPointer* pPtr)
-	{
-		return (T *) pPtr->m_ulAddr;
-	}
-};
-
-
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
@@ -304,9 +323,36 @@ inline CPointer* Alloc(int iSize, bool bAutoDealloc = true)
 }
 
 template<class T>
-CPointer* GetPointer(T* ptr)
+CPointer* __ptr__(T* pThis)
 {
-	return new CPointer((unsigned long) ptr);
+	return new CPointer((unsigned long) pThis);
+}
+
+template<class T>
+T* __obj__(CPointer* pPtr)
+{
+	return (T *) pPtr->m_ulAddr;
+}
+
+inline object GetPointer(object obj)
+{
+	if (!PyObject_HasAttrString(obj.ptr(), "__ptr__"))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
+
+	return obj.attr("__ptr__")();
+}
+
+inline object MakeObject(object cls, CPointer* pPtr)
+{
+	if (!PyObject_HasAttrString(cls.ptr(), "__obj__"))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
+
+	return cls.attr("__obj__")(ptr(pPtr));
+}
+
+inline object GetSize(object cls)
+{
+	return cls.attr("__size__");
 }
 
 #endif // _MEMORY_TOOLS_H
