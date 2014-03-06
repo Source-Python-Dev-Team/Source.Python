@@ -29,8 +29,18 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+#include "eiface.h"
+#include "public/game/server/iplayerinfo.h"
+#include "basehandle.h"
 #include "utility/wrap_macros.h"
 #include "boost/python.hpp"
+
+//-----------------------------------------------------------------------------
+// Externals
+//-----------------------------------------------------------------------------
+extern IVEngineServer* engine;
+extern CGlobalVars* gpGlobals;
+extern IPlayerInfoManager* playerinfomanager;
 
 //-----------------------------------------------------------------------------
 // Namespaces to use
