@@ -26,35 +26,28 @@
 #ifndef _SP_UTIL_H
 #define _SP_UTIL_H
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Includes
-//---------------------------------------------------------------------------------
-#include "eiface.h"
-#include "public/game/server/iplayerinfo.h"
-#include "basehandle.h"
-
+//-----------------------------------------------------------------------------
 #include "utility/wrap_macros.h"
 #include "boost/python.hpp"
+
+//-----------------------------------------------------------------------------
+// Namespaces to use
+//-----------------------------------------------------------------------------
 using namespace boost::python;
 
-// Externals
-extern IVEngineServer* engine;
-extern CGlobalVars*         gpGlobals;
-extern IPlayerInfoManager* playerinfomanager;
-
-
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Returns True if the class name of the given object equals the given string.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 inline bool CheckClassname(object obj, char* name)
 {
 	return strcmp(extract<char *>(obj.attr("__class__").attr("__name__")), name) == 0;
 }
 
-
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Helper template methods for __getitem__ and __setitem__
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 template<class cls, class return_type, int iMin, int iMax>
 return_type GetItemIndexer(cls* self, int iIndex)
 {
@@ -84,6 +77,5 @@ void SetItemIndexer(T* self, const int i, const U& value)
 {
 	(*self)[i] = value;
 }
-
 
 #endif // _SP_UTIL_H

@@ -41,10 +41,12 @@ SP_LOG = 1 << 2
 SCRIPT_LOG = 1 << 3
 
 # Store the new level names
-ALWAYS = 60
+MESSAGE = 60
+EXCEPTION = ERROR
 
 # Add the new level names
-addLevelName(ALWAYS, 'MESSAGE')
+addLevelName(MESSAGE, 'MESSAGE')
+addLevelName(EXCEPTION, 'EXCEPTION')
 
 
 # =============================================================================
@@ -105,7 +107,7 @@ class _LogInstance(dict):
 
     def log_exception(self, msg, *args, **kwargs):
         '''Use to call an exception message'''
-        self._log(ERROR, msg, *args, **kwargs)
+        self._log(EXCEPTION, msg, *args, **kwargs)
 
     def log_info(self, msg, *args, **kwargs):
         '''Use to call a basic info message'''
@@ -117,7 +119,7 @@ class _LogInstance(dict):
 
     def log_message(self, msg, *args, **kwargs):
         '''Use to call a message that should always print'''
-        self._log(ALWAYS, msg, *args, **kwargs)
+        self._log(MESSAGE, msg, *args, **kwargs)
 
     def log(self, level, msg, *args, **kwargs):
         '''Use to call a message with the given logging level'''
@@ -260,3 +262,6 @@ _SPLogger = LogManager(
     'sp', _level, _areas, 'source-python',
     '%(asctime)s - %(name)s\t-\t%(levelname)s\n%(message)s',
     '%m-%d-%Y %H:%M:%S')
+
+# Set the parent logger level to allow all message types
+_SPLogger.logger.parent.level = DEBUG

@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from conversions_c import edict_from_index
-from memory_c import CPointer
+from memory_c import Pointer
 #   Entities
 #from entities.functions import EntityFunctions
 from entities.keyvalues import EntityKeyValues
@@ -130,8 +130,8 @@ class BaseEntity(object):
         # Get the offset so that we don't have to make multiple calls
         offset = self.offsets[item]
 
-        # Get the CPointer instance for the entity
-        pointer = CPointer(self.pointer)
+        # Get the Pointer instance for the entity
+        pointer = Pointer(self.pointer)
 
         # Return the value of the offset
         return getattr(pointer, 'get_{0}'.format(offset.type))(offset.offset)
@@ -226,8 +226,8 @@ class BaseEntity(object):
         # Get the offset so that we don't have to make multiple calls
         offset = self.offsets[item]
 
-        # Get the CPointer instance for the entity
-        pointer = CPointer(self.pointer)
+        # Get the Pointer instance for the entity
+        pointer = Pointer(self.pointer)
 
         # Set the offset's value
         getattr(pointer, 'set_{0}'.format(offset.type))(offset.offset, value)
