@@ -294,6 +294,16 @@ Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# StringTables module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS
+)
+
+Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
+    core/modules/stringtables/stringtables_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -345,6 +355,8 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS}
     ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES}
     ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES}
+
+	${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -371,6 +383,7 @@ Source_Group("Header Files\\Module\\Memory"                 FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\Player"                 FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\RecipientFilter"        FILES ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -393,6 +406,7 @@ Source_Group("Source Files\\Module\\Player"                 FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\RecipientFilter"        FILES ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Usermessage\\${SDK}"    FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
+Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_GAME_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 

@@ -4,8 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Misc
-from engine_c import EngineServer
+from stringtables_c import StringTables
 from core import AutoUnload
 #   Events
 from events.manager import EventRegistry
@@ -68,19 +67,13 @@ class _DownloadablesList(list):
 
     def _refresh_table_instance(self):
         '''Gets the current instance of the downloadables table'''
-        self.download_table = Misc.GetStringTables().FindTable('downloadables')
+        self.download_table = StringTables.downloadables
 
     def _add_to_download_table(self, item):
         '''Add the given file to the downloadables table'''
 
-        # Lock the network string tables
-        locked = EngineServer.lock_network_string_tables(False)
-
         # Add the given file
-        self.download_table.AddString(True, item)
-
-        # Reset the lock status
-        EngineServer.lock_network_string_tables(locked)
+        self.download_table.add_string(item, item)
 
     def server_spawn(self, game_event):
         '''Adds all items stored as downloadables to the stringtable'''
