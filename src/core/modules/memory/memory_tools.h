@@ -352,6 +352,9 @@ inline object MakeObject(object cls, CPointer* pPtr)
 
 inline object GetSize(object cls)
 {
+	if (!PyObject_HasAttrString(cls.ptr(), "__size__"))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
+
 	return cls.attr("__size__");
 }
 

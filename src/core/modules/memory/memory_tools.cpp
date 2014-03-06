@@ -130,10 +130,11 @@ CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
 
 	unsigned char* base  = (unsigned char *) m_ulAddr;
 	unsigned char* end   = (unsigned char *) (m_ulAddr + ulNumBytes - (iByteLen - 1));
+
 	unsigned char* bytes = NULL;
 	PyArg_Parse(oBytes.ptr(), "y", &bytes);
 	if(!bytes)
-		return new CPointer();
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to parse the signature.");
 
 	while (base < end)
 	{
@@ -243,6 +244,12 @@ object CFunction::Call(tuple args, dict kw)
 			case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DC_SIGCHAR_POINTER:
 			{
+				try
+				{
+					arg = GetPointer(arg);
+				}
+				catch (...) { }
+
 				CPointer* pPtr = extract<CPointer *>(arg);
 				dcArgPointer(g_pCallVM, pPtr->m_ulAddr);
 			} break;
