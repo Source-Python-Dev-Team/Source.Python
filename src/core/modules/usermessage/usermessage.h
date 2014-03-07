@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "irecipientfilter.h"
 #include "utility/wrap_macros.h"
-#include GAME_INCLUDE_PATH(usermessage_implementation.h)
+#include ENGINE_INCLUDE_PATH(usermessage_implementation.h)
 #include "public/engine/iserverplugin.h"
 
 //-----------------------------------------------------------------------------

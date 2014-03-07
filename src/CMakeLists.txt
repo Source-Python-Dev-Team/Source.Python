@@ -36,7 +36,7 @@ Set(SOURCEPYTHON_UTIL_HEADERS
 )
 
 Set(SOURCEPYTHON_UTIL_SOURCES
-    core/utility/patches/engine${SOURCE_ENGINE}/patches.cpp
+    core/utility/patches/${SOURCE_ENGINE}/patches.cpp
 )
 
 Set(SOURCEPYTHON_UTIL_FILES
@@ -158,7 +158,7 @@ Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
 # Engine module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
-    core/modules/engine/engine${SOURCE_ENGINE}/engine_wrap_python.h
+    core/modules/engine/${SOURCE_ENGINE}/engine_wrap_python.h
 )
 
 Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
@@ -195,7 +195,7 @@ Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
 # Globals module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_GLOBALS_MODULE_HEADERS
-    core/modules/globals/engine${SOURCE_ENGINE}/globals_wrap_python.h
+    core/modules/globals/${SOURCE_ENGINE}/globals_wrap_python.h
 )
 
 Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
@@ -283,14 +283,14 @@ Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES
 Set(SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS
     core/modules/usermessage/usermessage.h
     core/modules/usermessage/usermessage_implementation_base.h
-    core/modules/usermessage/${SOURCE_GAME}/usermessage_implementation.h
+    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.h
 )
 
 Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
     core/modules/usermessage/usermessage.cpp
     core/modules/usermessage/usermessage_wrap_python.cpp
     core/modules/usermessage/usermessage_implementation_base.cpp
-    core/modules/usermessage/${SOURCE_GAME}/usermessage_implementation.cpp
+    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.cpp
 )
 
 # ------------------------------------------------------------------
@@ -356,6 +356,7 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES}
     ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES}
 
+	${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
 	${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
 )
 
@@ -406,7 +407,7 @@ Source_Group("Source Files\\Module\\Player"                 FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\RecipientFilter"        FILES ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Usermessage\\${SDK}"    FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
-Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_GAME_SOURCES})
+Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
@@ -451,7 +452,6 @@ EndIf()
 Add_Definitions(
     -DSOURCE_ENGINE=${SOURCE_ENGINE}
     -DBOOST_PYTHON_MAX_ARITY=18
-    -DSOURCE_GAME=${SOURCE_GAME}
 )
 
 # ------------------------------------------------------------------

@@ -61,23 +61,13 @@ public:
 	// -------------------------------------------
 	// Orangebox.
 	// -------------------------------------------
-#if(SOURCE_ENGINE >= 1)
 	virtual PLUGIN_RESULT	ClientCommand( edict_t *pEntity, const CCommand &args );
-#else
-	virtual PLUGIN_RESULT	ClientCommand( edict_t* pEntity );
-#endif
-
-	// -------------------------------------------
-	// Left4Dead
-	// -------------------------------------------
-#if(SOURCE_ENGINE >= 2)
-	virtual int				GetEventDebugID( void ) { return EVENT_DEBUG_ID_INIT; }
-#endif
 
 	// -------------------------------------------
 	// Alien Swarm.
 	// -------------------------------------------
-#if(SOURCE_ENGINE >= 3)
+#ifdef ENGINE_CSGO
+	virtual int				GetEventDebugID( void ) { return EVENT_DEBUG_ID_INIT; }	
 	virtual void			ClientFullyConnect( edict_t *pEntity );
 	virtual void			OnEdictAllocated( edict_t *edict );
 	virtual void			OnEdictFreed( const edict_t *edict );

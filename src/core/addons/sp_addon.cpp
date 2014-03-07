@@ -159,7 +159,7 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 //
 // 
 //
-#if(SOURCE_ENGINE >= 3)
+#ifdef ENGINE_CSGO
 void CAddonManager::ClientFullyConnect( edict_t *pEntity )
 {
 	CALL_LISTENERS(ClientFullyConnect, pEntity);

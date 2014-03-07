@@ -58,10 +58,10 @@ IPlayerInfo* PlayerInfoFromUserid( unsigned int userid );
 //-----------------------------------------------------------------------------
 inline unsigned int IndexFromEdict( edict_t* pEdict )
 {
-#if( SOURCE_ENGINE >= 2 )
-	return (unsigned int) (pEdict - gpGlobals->pEdicts);
-#else
+#ifdef ENGINE_ORANGEBOX
 	return (unsigned int) engine->IndexOfEdict(pEdict);
+#else
+	return (unsigned int) (pEdict - gpGlobals->pEdicts);
 #endif
 }
 
@@ -129,15 +129,15 @@ inline unsigned int IndexFromPlayerInfo( IPlayerInfo* playerinfo )
 //-----------------------------------------------------------------------------
 inline edict_t* EdictFromIndex( unsigned int iEntIndex )
 {
-#if( SOURCE_ENGINE >= 2 )
+#ifdef ENGINE_ORANGEBOX
+	return engine->PEntityOfEntIndex(iEntIndex);
+#else
 	if(iEntIndex < (unsigned int) gpGlobals->maxEntities)
 	{
 		return (edict_t *) (gpGlobals->pEdicts + iEntIndex);
 	}
 
 	return NULL;
-#else
-	return engine->PEntityOfEntIndex(iEntIndex);
 #endif
 }
 

@@ -138,9 +138,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
 	{IEFFECTS_INTERFACE_VERSION, (void **)&effects},
 	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
-#if( SOURCE_ENGINE >= 1 )
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
-#endif
 	{NULL, NULL}
 };
 
@@ -190,7 +188,7 @@ CSourcePython::~CSourcePython()
 bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
 	// This seems to be new with
-#if( SOURCE_ENGINE >= 3 )
+#ifdef ENGINE_CSGO
 	ConnectInterfaces(&interfaceFactory, 1);
 #else
 	ConnectTier1Libraries( &interfaceFactory, 1 );
@@ -241,7 +239,7 @@ void CSourcePython::Unload( void )
 	g_PythonManager.Shutdown();
 
 	// New in CSGO...
-#if( SOURCE_ENGINE >= 3 )
+#ifdef ENGINE_CSGO
 	DisconnectInterfaces();
 #else
 	DisconnectTier2Libraries( );
@@ -399,23 +397,15 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 //---------------------------------------------------------------------------------
 // Orangebox.
 //---------------------------------------------------------------------------------
-#if(SOURCE_ENGINE >= 1)
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
 {
 	return DispatchClientCommand(pEntity, args);
 }
-#else
-PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
-{
-	//TODO
-	return PLUGIN_CONTINUE;
-}
-#endif
 
 //---------------------------------------------------------------------------------
 // Alien Swarm.
 //---------------------------------------------------------------------------------
-#if(SOURCE_ENGINE >= 3)
+#ifdef ENGINE_CSGO
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
 	g_AddonManager.ClientFullyConnect(pEntity);

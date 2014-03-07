@@ -426,11 +426,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 //---------------------------------------------------------------------------------
 // Orangebox.
 //---------------------------------------------------------------------------------
-#if(SOURCE_ENGINE >= 1)
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
-#else
-PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
-#endif
 {
 	if (m_pCorePlugin != NULL)
 	{
@@ -442,7 +438,7 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t* pEntity )
 //---------------------------------------------------------------------------------
 // Alien Swarm.
 //---------------------------------------------------------------------------------
-#if(SOURCE_ENGINE >= 3)
+#ifdef ENGINE_CSGO
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
 	if (m_pCorePlugin != NULL)

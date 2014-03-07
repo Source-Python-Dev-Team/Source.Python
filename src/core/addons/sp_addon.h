@@ -56,11 +56,11 @@ class CAddonManager
 
 		void OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
 
-		#if(SOURCE_ENGINE >= 3)
+#ifdef ENGINE_CSGO
 		void ClientFullyConnect( edict_t *pEntity );
 		void OnEdictAllocated( edict_t *edict );
 		void OnEdictFreed( const edict_t *edict );
-		#endif
+#endif
 };
 
 //---------------------------------------------------------------------------------
