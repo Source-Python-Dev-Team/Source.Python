@@ -236,6 +236,21 @@ class LogManager(_LogInstance):
         # Was a filepath given?
         if not filepath is None:
 
+            # Does the given path end with the extension?
+            if filepath.endswith('.log'):
+
+                # Remove the extension
+                filepath = filepath[:~3]
+
+            # Get the path to the log file
+            log_path = LOG_PATH.joinpath(filepath + '.log')
+
+            # Does the parent directory exist?
+            if not log_path.parent.isdir():
+
+                # Create the parent directory
+                log_path.parent.makedirs()
+
             # Create the handler an add it to the logger
             handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
             handler.setFormatter(self.formatter)

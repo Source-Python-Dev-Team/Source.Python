@@ -35,7 +35,7 @@
 // Externals.
 //-----------------------------------------------------------------------------
 extern IServerPluginHelpers *helpers;
-extern IServerPluginCallbacks *pPlugin;
+extern CSourcePython g_SourcePythonPlugin;
 
 //-----------------------------------------------------------------------------
 // CUserMessage implementation.
@@ -125,5 +125,5 @@ void CUserMessage::set_string( const char *field_name, const char *field_value, 
 //-----------------------------------------------------------------------------
 void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data )
 {
-	helpers->CreateMessage(pEdict, type, data, pPlugin);
+	helpers->CreateMessage(pEdict, type, data, &g_SourcePythonPlugin);
 }

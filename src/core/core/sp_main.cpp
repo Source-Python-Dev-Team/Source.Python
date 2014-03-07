@@ -55,9 +55,9 @@
 #include "DynamicHooks.h"
 extern DynamicHooks::CHookManager* g_pHookMngr;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Disable warnings.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #if defined(_WIN32)
 #	 pragma warning( disable : 4005 )
 #endif
@@ -65,9 +65,9 @@ extern DynamicHooks::CHookManager* g_pHookMngr;
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Interfaces from the engine
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 IVEngineServer*			engine				= NULL; // helper functions (messaging clients, loading content, making entities, running commands, etc)
 IGameEventManager2*		gameeventmanager	= NULL; // game events interface
 IPlayerInfoManager*		playerinfomanager	= NULL; // game dll interface to interact with players
@@ -83,43 +83,42 @@ IServerGameDLL*			servergamedll		= NULL;
 IServerTools*			servertools			= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // External globals
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 extern ICvar* g_pCVar;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Extern functions
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 extern void InitCommands();
 extern void ClearAllCommands();
 extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &command);
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CSourcePython g_SourcePythonPlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSourcePython, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_SourcePythonPlugin );
-IServerPluginCallbacks *pPlugin;
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Helper console variable to tell scripters what engine version we are running
 // on.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 ConVar sp_engine_ver("sp_engine_ver", XSTRINGIFY(SOURCE_ENGINE), 0, "Version of the engine SP is running on");
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Interface helper class.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 struct InterfaceHelper_t
 {
 	const char* szInterface;
 	void**		pGlobal;
 };
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // We need all of these interfaces in order to function.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 InterfaceHelper_t gEngineInterfaces[] = {
 	{INTERFACEVERSION_VENGINESERVER, (void **)&engine},
 	{INTERFACEVERSION_GAMEEVENTSMANAGER2, (void **)&gameeventmanager},
@@ -143,9 +142,9 @@ InterfaceHelper_t gGameInterfaces[] = {
 };
 
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Get all engine interfaces.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory )
 {
 	InterfaceHelper_t* pInterface = pInterfaceList;
@@ -170,9 +169,9 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 	return true;
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: constructor/destructor
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 CSourcePython::CSourcePython()
 {
 	m_iClientCommandIndex = 0;
@@ -182,9 +181,9 @@ CSourcePython::~CSourcePython()
 {
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when the plugin is loaded, load the interface we need from the engine
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
 	// This seems to be new with
@@ -194,8 +193,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	ConnectTier1Libraries( &interfaceFactory, 1 );
 	ConnectTier2Libraries( &interfaceFactory, 2 );
 #endif
-
-	pPlugin = this;
 
 	// Get all engine interfaces.
 	if( !GetInterfaces(gEngineInterfaces, interfaceFactory) ) {
@@ -227,9 +224,9 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	return true;
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when the plugin is unloaded (turned off)
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::Unload( void )
 {
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
@@ -249,88 +246,88 @@ void CSourcePython::Unload( void )
 	g_pHookMngr->UnhookAllFunctions();
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when the plugin is paused (i.e should stop running but isn't unloaded)
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::Pause( void )
 {
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when the plugin is unpaused (i.e should start executing again)
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::UnPause( void )
 {
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: the name of this plugin, returned in "plugin_print" command
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 const char *CSourcePython::GetPluginDescription( void )
 {
 	return "Source Python, (C) 2012, Source Python Team.";
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called on level start
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::LevelInit( char const *pMapName )
 {
 	g_AddonManager.LevelInit(pMapName);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called on level start, when the server is ready to accept client connections
 //		edictCount is the number of entities in the level, clientMax is the max client count
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
 	g_AddonManager.ServerActivate(pEdictList, edictCount, clientMax);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called once per server frame, do recurring work here (like checking for timeouts)
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::GameFrame( bool simulating )
 {
 	g_AddonManager.GameFrame();
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called on level end (as the server is shutting down or going to a new map)
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
 	g_AddonManager.LevelShutdown();
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when a client spawns into a server (i.e as they begin to play)
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::ClientActive( edict_t *pEntity )
 {
 	g_AddonManager.ClientActive(pEntity);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when a client leaves a server (or is timed out)
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::ClientDisconnect( edict_t *pEntity )
 {
 	g_AddonManager.ClientDisconnect(pEntity);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called on
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
 	g_AddonManager.ClientPutInServer(pEntity, playername);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called on level start
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::SetCommandClient( int index )
 {
 	m_iClientCommandIndex = index;
@@ -347,35 +344,35 @@ void ClientPrint( edict_t *pEdict, char *format, ... )
 
 	engine->ClientPrintf( pEdict, string );
 }
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called on level start
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 {
 	g_AddonManager.ClientSettingsChanged(pEdict);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when a client joins a server
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
 	g_AddonManager.ClientConnect(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
 	return PLUGIN_CONTINUE;
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when a client is authenticated
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
     g_AddonManager.NetworkIDValidated(pszUserName, pszNetworkID);
 	return PLUGIN_CONTINUE;
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when a cvar value query is finished
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
@@ -383,9 +380,9 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 	DevMsg(0, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Purpose: called when an event is fired
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 void CSourcePython::FireGameEvent( IGameEvent * event )
 {
 	const char * name = event->GetName();
@@ -394,17 +391,17 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 	//g_AddonManager.FireGameEvent(event);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Orangebox.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
 {
 	return DispatchClientCommand(pEntity, args);
 }
 
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Alien Swarm.
-//---------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 #ifdef ENGINE_CSGO
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
