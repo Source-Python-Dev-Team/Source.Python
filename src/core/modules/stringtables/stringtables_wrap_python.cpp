@@ -64,7 +64,7 @@ int AddString( INetworkStringTable *pTable, const char *string, const char *user
 	{
 		locked = engine->LockNetworkStringTables(false);
 	}
-	if (pTable->FindStringIndex(string) == INVALID_STRING_INDEX && length == -1)
+	if (user_data && pTable->FindStringIndex(string) == INVALID_STRING_INDEX && length == -1)
 	{
 		length = strlen(user_data) + 1;
 	}
