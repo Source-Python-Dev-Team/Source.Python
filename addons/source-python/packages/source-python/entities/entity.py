@@ -7,7 +7,7 @@
 from conversions_c import edict_from_index
 from memory_c import Pointer
 #   Entities
-#from entities.functions import EntityFunctions
+from entities.functions import EntityFunctions
 from entities.keyvalues import EntityKeyValues
 from entities.offsets import EntityOffsets
 from entities.properties import EntityProperties
@@ -85,15 +85,11 @@ class BaseEntity(object):
             # Return the offset's value
             return self._get_offset(attr)
 
-        '''
-
         # Is the attribute a function of this entity?
         if attr in self.functions:
 
             # Return the function
             return self._get_function(attr)
-
-        '''
 
         # If the attribute is not found, raise an error
         raise AttributeError('Attribute "{0}" not found'.format(attr))
@@ -326,7 +322,7 @@ class BaseEntity(object):
     @property
     def pointer(self):
         '''Returns the entity's pointer'''
-        return self.edict.get_unknown().get_base_entity()
+        return Pointer(self.edict.get_unknown().get_base_entity())
 
     @property
     def properties(self):

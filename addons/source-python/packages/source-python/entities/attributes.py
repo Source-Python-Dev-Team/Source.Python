@@ -6,16 +6,27 @@
 # Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
+#   Sys
+import sys
 
 # Source.Python Imports
 from core import GAME_NAME
 from paths import SP_DATA_PATH
+#   Entities
+from entities import EntitiesLogger
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = []
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the sp.entities.attributes logger
+EntitiesAttributesLogger = EntitiesLogger.attributes
 
 
 # =============================================================================
@@ -77,8 +88,30 @@ class EntityAttributes(dict):
         # Loop through all items in the file
         for key in ini:
 
-            # Add the item to the dictionary
-            game_attributes[key] = self.instance(ini[key])
+            # Use try/except in case an error occurs
+            try:
+
+                # Get the object for the current key
+                value = self.instance(ini[key])
+
+            # Was an error encountered?
+            except:
+
+                # Get the exception
+                exctype, value, trace_back = sys.exc_info()
+
+                # Log the error as a warning
+                EntitiesAttributesLogger.log_warning(
+                    'Unable to add attribute "{0}"'.format(key) +
+                    'of type "{0}" to entity type '.format(self.type) +
+                    '"{0}" due to the following:'.format(entity) +
+                    '\n\t{0}'.format(value))
+
+            # Was no error encountered?
+            else:
+
+                # Add the item to the dictionary
+                game_attributes[key] = value
 
         # Return the dictionary
         return game_attributes

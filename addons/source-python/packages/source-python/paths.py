@@ -72,13 +72,13 @@ EVENT_PATH = GAME_PATH.joinpath('resource', 'source-python', 'events')
 SOUND_PATH = GAME_PATH.joinpath('sound', 'source-python')
 
 # Get the base path to the data
-_DATA_PATH = BASE_PATH.joinpath('data')
+DATA_PATH = BASE_PATH.joinpath('data')
 
 # Get the SP base data path
-SP_DATA_PATH = _DATA_PATH.joinpath('source-python')
+SP_DATA_PATH = DATA_PATH.joinpath('source-python')
 
 # Get the Custom data base path
-CUSTOM_DATA_PATH = _DATA_PATH.joinpath('custom')
+CUSTOM_DATA_PATH = DATA_PATH.joinpath('custom')
 
 # Get the plugin specific data path
-PLUGIN_DATA_PATH = _DATA_PATH.joinpath('plugins')
+PLUGIN_DATA_PATH = DATA_PATH.joinpath('plugins')

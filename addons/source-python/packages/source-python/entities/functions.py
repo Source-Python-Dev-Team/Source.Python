@@ -4,10 +4,10 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   DynCall
-from dyncall.dictionary import SignatureDictionary
 #   Entities
 from entities.attributes import EntityAttributes
+#   Memory
+from memory.dictionary import SignatureDictionary
 
 
 # =============================================================================
@@ -60,7 +60,7 @@ class _FunctionInstance(object):
                 args[self.pointer_index:])
 
         # Call the function with the entity's pointer as the first argument
-        self.function.call_function(*args)
+        self.function(*args)
 
         # Reset the current pointer
         self.current_pointer = None
