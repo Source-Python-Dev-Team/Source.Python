@@ -49,22 +49,22 @@ extern DCCallVM* g_pCallVM;
 //---------------------------------------------------------------------------------
 // Use this macro to add this class to get_pointer()
 #define ADD_PTR(classname) \
-	.def("__ptr__", \
+	.def("_ptr", \
 		&__ptr__<classname>, \
 		manage_new_object_policy() \
 	)
 
 // Use this macro to add this class to make_object()
 #define ADD_OBJ(classname) \
-	.def("__obj__", \
+	.def("_obj", \
 		&__obj__<classname>, \
 		reference_existing_object_policy() \
-	).staticmethod("__obj__")
+	).staticmethod("_obj")
 
 // Use this macro to add this class to get_size()
 // Note: This must be at the end of the class definition!
 #define ADD_SIZE(classname) \
-	.attr("__size__") = sizeof(classname);
+	.attr("_size") = sizeof(classname);
 
 // Use this macro to add the class to the three functions
 // Note: This must be at the end of the class definition!
@@ -336,26 +336,26 @@ T* __obj__(CPointer* pPtr)
 
 inline object GetPointer(object obj)
 {
-	if (!PyObject_HasAttrString(obj.ptr(), "__ptr__"))
+	if (!PyObject_HasAttrString(obj.ptr(), "_ptr"))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
 
-	return obj.attr("__ptr__")();
+	return obj.attr("_ptr")();
 }
 
 inline object MakeObject(object cls, CPointer* pPtr)
 {
-	if (!PyObject_HasAttrString(cls.ptr(), "__obj__"))
+	if (!PyObject_HasAttrString(cls.ptr(), "_obj"))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
 
-	return cls.attr("__obj__")(ptr(pPtr));
+	return cls.attr("_obj")(ptr(pPtr));
 }
 
 inline object GetSize(object cls)
 {
-	if (!PyObject_HasAttrString(cls.ptr(), "__size__"))
+	if (!PyObject_HasAttrString(cls.ptr(), "_size"))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
 
-	return cls.attr("__size__");
+	return cls.attr("_size");
 }
 
 #endif // _MEMORY_TOOLS_H

@@ -244,11 +244,8 @@ object CFunction::Call(tuple args, dict kw)
 			case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DC_SIGCHAR_POINTER:
 			{
-				try
-				{
-					arg = GetPointer(arg);
-				}
-				catch (...) { }
+				if(PyObject_HasAttrString(arg.ptr(), "_ptr"))
+					arg = arg.attr("_ptr")();
 
 				CPointer* pPtr = extract<CPointer *>(arg);
 				dcArgPointer(g_pCallVM, pPtr->m_ulAddr);

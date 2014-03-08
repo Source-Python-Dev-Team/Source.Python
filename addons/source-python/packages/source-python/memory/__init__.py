@@ -35,12 +35,12 @@ class Type:
     STRING_ARRAY = 'string_array'
 
     @staticmethod
-    def is_native(attr_type):
+    def is_native(type_name):
         '''
         Returns True if the given type name is a native type.
         '''
 
-        return hasattr(Type, attr_type.upper())
+        return hasattr(Type, type_name.upper())
 
 
 # =============================================================================
@@ -61,20 +61,6 @@ class BasePointer(Pointer):
     def __rsub__(self, other):
         return self - other
 
-    def get(self, type_name, offset=0):
-        '''
-        Returns the value at the given memory location.
-        '''
-
-        return getattr(self, 'get_' + type_name)(offset)
-
-    def set(self, type_name, value, offset=0):
-        '''
-        Sets the value at the given memory location.
-        '''
-
-        getattr(self, 'set_' + type_name)(value, offset)
-
 
 # =============================================================================
 # >> CustomType
@@ -87,31 +73,31 @@ class CustomType(BasePointer):
 
     # This should always hold a TypeManager instance. It's set automatically
     # by the metaclass.
-    __manager__ = None
+    _manager = None
 
     # This is required if TypeManager.function() is used. It should contain
     # the path to the binary that defines this type
-    __binary__ = None
+    _binary = None
 
     # Optional -- this gets passed to BinaryFile.find_binary()
-    __srv_check__ = True
+    _srv_check = True
 
     # Optional -- specifies the size of the type
-    __size__ = None
+    _size = None
 
     # Optional -- will be called when an instance of the type is created
-    __constructor__ = None
+    _constructor = None
 
     # TODO: Implement this!
     # Optional -- will be called when an instance of the type is deleted
-    __destructor__  = None
+    _destructor  = None
 
     def __init__(self, *args, wrap=True, auto_dealloc=False):
-        # __manager__ must be an instance of TypeManager. Otherwise the type
+        # _manager must be an instance of TypeManager. Otherwise the type
         # wasn't registered by a TypeManager.
-        if not isinstance(self.__manager__, TypeManager):
-            raise ValueError('Attribute __manager__ must be an instance of ' \
-                '"TypeManager".')
+        if not isinstance(self._manager, TypeManager):
+            raise ValueError('Attribute _manager must be an instance of "Ty' \
+                'peManager".')
 
         # Do we want to wrap a pointer?
         if wrap:
@@ -125,18 +111,18 @@ class CustomType(BasePointer):
         # Obviously, we want to create a new instance
         else:
             # Was a size specified?
-            if self.__size__ == None:
-                raise ValueError('In order to create an instance __size__ i' \
-                    's required.')
+            if self._size == None:
+                raise ValueError('In order to create an instance _size is r' \
+                    'equired.')
 
             # Allocate some space
             super(CustomType, self).__init__(
-                alloc(self.__size__, auto_dealloc)
+                alloc(self._size, auto_dealloc)
             )
 
             # Optionally, call a constructor
-            if self.__constructor__ is not None:
-                self.__constructor__(*args)
+            if self._constructor is not None:
+                self._constructor(*args)
 
             # No constructor, but arguments? Hmm, the user is doing something
             # wrong
@@ -150,13 +136,13 @@ class CustomType(BasePointer):
 # =============================================================================
 class Array(BasePointer):
     # Optional -- specifies the length of the array
-    __length__ = None
+    _length = None
 
     # Contains the type name of the array
-    __type_name__ = None
+    _type_name = None
 
     # Set to True if the array contains pointers, else False
-    __is_ptr__ = None
+    _is_ptr = None
 
     def __init__(self, manager, is_ptr, type_name, ptr, length=None):
         '''
@@ -179,10 +165,10 @@ class Array(BasePointer):
         iterate over the array.
         '''
 
-        self.__manager__   = manager
-        self.__is_ptr__    = is_ptr
-        self.__type_name__ = type_name
-        self.__length__    = length
+        self._manager   = manager
+        self._is_ptr    = is_ptr
+        self._type_name = type_name
+        self._length    = length
 
         super(Array, self).__init__(ptr)
 
@@ -202,16 +188,16 @@ class Array(BasePointer):
 
     def __iter__(self):
         '''
-        Returns a generator can iterate over the array.
+        Returns a generator that can iterate over the array.
         '''
 
         # This prevents users from iterating over the array without having
-        # __length__ specified. Otherwise the server would hang or crash.
-        if self.__length__ is None:
+        # _length specified. Otherwise the server would hang or crash.
+        if self._length is None:
             raise ValueError('Cannot iterate over the array without __lengt' \
                 'h__ being specified.')
 
-        for index in range(self.__length__):
+        for index in range(self._length):
             yield self[index]
 
     def __make_attribute(self, index):
@@ -220,15 +206,15 @@ class Array(BasePointer):
         '''
 
         # Validate the index, so we don't access invalid memory addresses
-        if self.__length__ is not None and index >= self.__length__:
+        if self._length is not None and index >= self._length:
             raise IndexError('Index out of range')
 
         # Construct the proper function name
-        name = ('pointer' if self.__is_ptr__ else 'instance') + '_attribute'
+        name = ('pointer' if self._is_ptr else 'instance') + '_attribute'
 
         # Get the function and call it
-        return getattr(self.__manager__, name)(
-            self.__type_name__,
+        return getattr(self._manager, name)(
+            self._type_name,
             self.get_offset(index)
         )
 
@@ -238,41 +224,41 @@ class Array(BasePointer):
         '''
 
         # Pointer arrays always have every 4 bytes a new pointer
-        if self.__is_ptr__:
+        if self._is_ptr:
             return index * TYPE_SIZES[Type.POINTER]
 
         # Every 1, 2, 4 or 8 bytes is a new value
-        if Type.is_native(self.__type_name__):
-            return index * TYPE_SIZES[self.__type_name__]
+        if Type.is_native(self._type_name):
+            return index * TYPE_SIZES[self._type_name]
 
         # Get the class of the custom type
-        cls = self.__manager__[self.__type_name__]
+        cls = self._manager[self._type_name]
 
         # To access a value, we require the proper size of a custom type
-        if cls.__size__ == None:
+        if cls._size == None:
             raise ValueError('Array requires a size to access its values.')
 
         # Every x bytes is a new instance
-        return index * cls.__size__
+        return index * cls._size
 
     # Arrays have another constructor and we don't want to downcast. So, we
     # have to implement these operators here again.
     def __add__(self, other):
         return self.__class__(
-            self.__manager__,
-            self.__is_ptr__,
-            self.__type_name__,
+            self._manager,
+            self._is_ptr,
+            self._type_name,
             int(self) + int(other),
-            self.__length__
+            self._length
         )
 
     def __sub__(self, other):
         return self.__class__(
-            self.__manager__,
-            self.__is_ptr__,
-            self.__type_name__,
+            self._manager,
+            self._is_ptr,
+            self._type_name,
             int(self) - int(other),
-            self.__length__
+            self._length
         )
 
 
@@ -286,31 +272,31 @@ class MemberFunction(Function):
     '''
 
     # This should always hold a TypeManager instance
-    __manager__ = None
+    _manager = None
 
     # Holds the this pointer
-    __this__ = None
+    _this = None
 
     # Holds the return type name
-    __type_name__ = None
+    _type_name = None
 
     def __init__(self, manager, return_type, func, this):
         super(MemberFunction, self).__init__(func)
 
-        self.__manager__   = manager
-        self.__this__      = this
-        self.__type_name__ = return_type
+        self._manager   = manager
+        self._this      = this
+        self._type_name = return_type
 
     def __call__(self, *args):
         '''
         Calls the function dynamically.
         '''
 
-        result = super(MemberFunction, self).__call__(self.__this__, *args)
+        result = super(MemberFunction, self).__call__(self._this, *args)
 
         # Wrap the result if it's a custom type
-        if self.__type_name__ not in Return.values:
-            return self.__manager__[self.__type_name__](result)
+        if self._type_name not in Return.values:
+            return self._manager[self._type_name](result)
 
         return result
 
@@ -320,13 +306,13 @@ class MemberFunction(Function):
         '''
 
         result = super(MemberFunction, self).call_trampoline(
-            self.__this__,
+            self._this,
             *args
         )
 
         # Wrap the result if it's a custom type
-        if self.__type_name__ not in Return.values:
-            return self.__manager__[self.__type_name__](result)
+        if self._type_name not in Return.values:
+            return self._manager[self._type_name](result)
 
         return result
 
@@ -342,7 +328,7 @@ class TypeManager(dict):
 
         # Set the manager attribute. This is required, so CustomType.__init__
         # can verify that we have registered the class
-        cls_dict['__manager__'] = self
+        cls_dict['_manager'] = self
 
         # Create the class object
         cls = type(name, bases, cls_dict)
@@ -355,7 +341,7 @@ class TypeManager(dict):
         self[name] = cls
         return cls
 
-    def instance_attribute(self, attr_type, offset, doc=None):
+    def instance_attribute(self, type_name, offset, doc=None):
         '''
         Creates a wrapper for an instance attribute.
 
@@ -364,15 +350,15 @@ class TypeManager(dict):
             bool bVal;
         '''
 
-        native_type = Type.is_native(attr_type)
+        native_type = Type.is_native(type_name)
 
         def fget(ptr):
             # Handle custom type
             if not native_type:
-                return self[attr_type](ptr + offset)
+                return self[type_name](ptr + offset)
 
             # Handle native type
-            return ptr.get(attr_type, offset)
+            return getattr(ptr, 'get_' + type_name)(offset)
 
         def fset(ptr, value):
             # Handle custom type
@@ -381,15 +367,15 @@ class TypeManager(dict):
                     raise ValueError('The value must be an instance of the ' \
                         'Pointer class')
 
-                value.copy(ptr + offset, self[attr_type].__size__)
+                value.copy(ptr + offset, self[type_name]._size)
 
             # Handle native type
             else:
-                ptr.set(attr_type, value, offset)
+                getattr(ptr, 'set_' + type_name)(value, offset)
 
         return property(fget, fset, None, doc)
 
-    def pointer_attribute(self, attr_type, offset, doc=None):
+    def pointer_attribute(self, type_name, offset, doc=None):
         '''
         Creates a wrapper for a pointer attribute.
 
@@ -398,7 +384,7 @@ class TypeManager(dict):
             bool* pBool;
         '''
 
-        native_type = Type.is_native(attr_type)
+        native_type = Type.is_native(type_name)
 
         def fget(ptr):
             # Get the base address of the pointer. We are now on
@@ -407,10 +393,10 @@ class TypeManager(dict):
 
             # Handle custom type
             if not native_type:
-                return self[attr_type](ptr)
+                return self[type_name](ptr)
 
             # Handle native type
-            return ptr.get(attr_type)
+            return getattr(ptr, 'get_' + type_name)()
 
         def fset(ptr, value):
             # Get the base address of the pointer. We are now on
@@ -430,15 +416,15 @@ class TypeManager(dict):
                 #    other classes.
                 # TODO: Is that what we want? Maybe we could add a "copy"
                 #       parameter to let the user decide.
-                value.copy(ptr, self[attr_type].__size__)
+                value.copy(ptr, self[type_name]._size)
 
             # Handle native type
             else:
-                ptr.set(attr_type, value)
+                getattr(ptr, 'set_' + type_name)(value)
 
         return property(fget, fset, None, doc)
 
-    def static_instance_array(self, attr_type, offset, length=None, doc=None):
+    def static_instance_array(self, type_name, offset, length=None, doc=None):
         '''
         Creates a wrapper for a static instance array.
 
@@ -448,7 +434,7 @@ class TypeManager(dict):
         '''
 
         def fget(ptr):
-            return Array(self, False, attr_type, ptr + offset, length)
+            return Array(self, False, type_name, ptr + offset, length)
 
         def fset(ptr, value):
             array = fget(ptr)
@@ -457,7 +443,7 @@ class TypeManager(dict):
 
         return property(fget, fset, None, doc)
 
-    def dynamic_instance_array(self, attr_type, offset, length=None, doc=None):
+    def dynamic_instance_array(self, type_name, offset, length=None, doc=None):
         '''
         Creates a wrapper for a dynamic instance array.
 
@@ -469,7 +455,7 @@ class TypeManager(dict):
         '''
 
         def fget(ptr):
-            return Array(self, False, attr_type, ptr.get_ptr(offset), length)
+            return Array(self, False, type_name, ptr.get_ptr(offset), length)
 
         def fset(ptr, value):
             array = fget(ptr)
@@ -478,7 +464,7 @@ class TypeManager(dict):
 
         return property(fget, fset, None, doc)
 
-    def static_pointer_array(self, attr_type, offset, length=None, doc=None):
+    def static_pointer_array(self, type_name, offset, length=None, doc=None):
         '''
         Creates a wrapper for a static pointer array.
 
@@ -488,7 +474,7 @@ class TypeManager(dict):
         '''
 
         def fget(ptr):
-            return Array(self, True, attr_type, ptr + offset, length)
+            return Array(self, True, type_name, ptr + offset, length)
 
         def fset(ptr, value):
             array = fget(ptr)
@@ -497,7 +483,7 @@ class TypeManager(dict):
 
         return property(fget, fset, None, doc)
 
-    def dynamic_pointer_array(self, attr_type, offset, length=None, doc=None):
+    def dynamic_pointer_array(self, type_name, offset, length=None, doc=None):
         '''
         Creates a wrapper for a dynamic pointer array.
 
@@ -509,7 +495,7 @@ class TypeManager(dict):
         '''
 
         def fget(ptr):
-            return Array(self, True, attr_type, ptr.get_ptr(offset), length)
+            return Array(self, True, type_name, ptr.get_ptr(offset), length)
 
         def fset(ptr, value):
             array = fget(ptr)
@@ -518,8 +504,8 @@ class TypeManager(dict):
 
         return property(fget, fset, None, doc)
 
-    def virtual_function(self, index, args=(), return_type=Return.VOID, doc=None,
-            convention=Convention.THISCALL):
+    def virtual_function(self, index, args=(), return_type=Return.VOID,
+            doc=None, convention=Convention.THISCALL):
         '''
         Creates a wrapper for a virtual function.
         '''
@@ -563,11 +549,11 @@ class TypeManager(dict):
         args = (Argument.POINTER,) + args
 
         def fget(ptr):
-            if ptr.__binary__ is None:
-                raise ValueError('__binary__ was not specified.')
+            if ptr._binary is None:
+                raise ValueError('_binary was not specified.')
 
             # Create a binary object
-            binary = find_binary(ptr.__binary__, ptr.__srv_check__)
+            binary = find_binary(ptr._binary, ptr._srv_check)
 
             # Create the function object
             func = binary[identifier].make_function(
