@@ -164,7 +164,7 @@ class _LogInstance(dict):
         areas = self.areas
 
         # Print to main log file?
-        if MAIN_LOG & areas and EngineServer.is_log_enabled():
+        if MAIN_LOG & areas:
 
             # Is a prefix supposed to be logged?
             if not dump:
@@ -189,13 +189,10 @@ class _LogInstance(dict):
         # Print to the console?
         if CONSOLE & areas and not dump:
 
-            # Was <engine>.log_print called?
-            if not (MAIN_LOG & areas and EngineServer.is_log_enabled()):
-
-                # If not, print to the console
-                # If <engine>.log_print is called with logging being on,
-                #   the console is already echoed with the message.
-                echo_console(msg)
+            # If not, print to the console
+            # If <engine>.log_print is called with logging being on,
+            #   the console is already echoed with the message.
+            echo_console(msg)
 
         # Print to the script's log file?
         if SCRIPT_LOG & areas and self.root != _SPLogger:

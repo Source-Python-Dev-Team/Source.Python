@@ -124,19 +124,21 @@ class _SPSubCommandManager(SubCommandManager):
             float(args[0]),
             EngineServer.server_command, ' '.join(args[1:]) + '\n')
 
-    @staticmethod
-    def dump_data(dump_type):
-        ''''''
+    def dump_data(self, dump_type):
+        '''Dumps data to logs'''
 
-        # 
+        # Does the given dump type exist as a function?
         if not hasattr(dump_c, 'dump_' + dump_type):
 
-            # 
+            # If not, print message to notify of unknown dump type
             self.logger.log_message(
                 'Invalid dump_type "{0}"'.format(dump_type))
 
-        # 
+        # Call the function
         getattr(dump_c, 'dump_' + dump_type)()
+
+    # Set the methods arguments
+    dump_data.args = ['<dump_type>']
 
     @staticmethod
     def print_version():
@@ -172,6 +174,7 @@ class _SPSubCommandManager(SubCommandManager):
         # Print the message
         self.logger.log_message(message + '=' * 61 + '\n\n')
 
+# Get the _SPSubCommandManager instance
 SPSubCommandManager = _SPSubCommandManager('sp', 'Source.Python base command.')
 
 # Register the load/unload sub-commands
@@ -188,7 +191,6 @@ SPSubCommandManager['delay'].args = ['<delay>', '<command>', '[arguments]']
 
 # Register the 'dump' sub-command
 SPSubCommandManager['dump'] = SPSubCommandManager.dump_data
-SPSubCommandManager['dump'].args = ['<dump_type>']
 
 # Register all printing sub-commands
 SPSubCommandManager['list'] = SPSubCommandManager.print_plugins

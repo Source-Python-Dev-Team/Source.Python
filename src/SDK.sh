@@ -58,20 +58,55 @@ ChooseSDK () {
         fi
         cd hl2sdk-$name
 
-        # Initialize the repo in case this is the first time this sdk is being downloaded
-        hg init
+        # Does the hg command exist?
+        if hash hg>/dev/null; then
 
-        # Revert any changes.  This is done to remove any patch changes which are pulled in later.
-        hg revert --all
+            # Initialize the repo in case this is the first time this sdk is being downloaded
+            hg init
 
-        # Pull the newest changeset from alliedmods.net
-        hg pull -u https://hg.alliedmods.net/hl2sdks/hl2sdk-$name
+            # Pull in any changes
+            PullChanges $name
 
-        # Copy any patched files over if any exist for the specific sdk
-        if [ -d $STARTDIR/patches/hl2sdk-$name ]; then
-            cd $STARTDIR/patches/hl2sdk-$name
-            cp -r * $STARTDIR/sdks/hl2sdk-$name
+        # Does the command not exist?
+        else
+
+            # Print an error message
+            echo "Mercurial not found!!  Please install Mercurial."
         fi
+    fi
+}
+
+PullChanges () {
+
+    # Set the name passed
+    name=$1
+
+    # Revert any changes.  This is done to remove any patch changes which are pulled in later.
+    hg revert --all
+
+    # Pull the newest changeset from alliedmods.net
+    if hg pull -u https://hg.alliedmods.net/hl2sdks/hl2sdk-$name; then
+
+        # Move the patched files
+        MovePatches $name
+
+    else
+
+        # Print a message that an error was encountered
+        echo "hg pull encountered an error."
+
+    fi
+}
+
+MovePatches () {
+
+    # Set the name passed
+    name=$1
+
+    # Copy any patched files over if any exist for the specific sdk
+    if [ -d $STARTDIR/patches/hl2sdk-$name ]; then
+        cd $STARTDIR/patches/hl2sdk-$name
+        cp -r * $STARTDIR/sdks/hl2sdk-$name
     fi
 }
 
