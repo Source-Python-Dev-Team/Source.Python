@@ -49,7 +49,7 @@ using namespace DynamicHooks;
 // ============================================================================
 // >> CLASSES
 // ============================================================================
-CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnType_t return_type, bool bAutoDealloc /* = true */)
+CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, object return_type, bool bAutoDealloc /* = true */)
     : CFunction(NULL, eConv, args, return_type)
 {
     m_oCallback = oCallback;
@@ -57,7 +57,19 @@ CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, ReturnTyp
 
     // Find the proper callback caller function
     void* pCallCallbackFunc = NULL;
-    switch(return_type)
+
+	ReturnType_t RetType;
+	try
+	{
+		RetType = extract<ReturnType_t>(m_oReturnType);
+	}
+	catch ( ... )
+	{
+		PyErr_Clear();
+		RetType = RET_POINTER;
+	}
+
+    switch(RetType)
     {
         case SIGCHAR_VOID:      pCallCallbackFunc = GET_CALLBACK_CALLER(void); break;
         case SIGCHAR_BOOL:      pCallCallbackFunc = GET_CALLBACK_CALLER(bool); break;

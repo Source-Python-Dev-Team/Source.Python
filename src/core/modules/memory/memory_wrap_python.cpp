@@ -347,7 +347,7 @@ void export_memtools()
 		)
 	;
 
-	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, Convention_t, tuple, ReturnType_t>())
+	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, Convention_t, tuple, object>())
 		.def(init<CFunction&>())
 
 		.def("__call__",
@@ -398,7 +398,7 @@ void export_memtools()
 		)
 
 		.def_readwrite("return_type",
-			&CFunction::m_ReturnType
+			&CFunction::m_oReturnType
 		)
 
 		.def_readwrite("convention",
@@ -516,7 +516,7 @@ void export_dynamichooks()
 //-----------------------------------------------------------------------------
 void export_callbacks()
 {
-	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, ReturnType_t, optional<bool> >())
+	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, object, optional<bool> >())
         .def_readwrite("callback",
             &CCallback::m_oCallback,
             "The Python function that gets called by the C++ callback"

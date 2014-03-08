@@ -187,7 +187,7 @@ CPointer* CPointer::GetVirtualFunc(int iIndex)
 	return new CPointer((unsigned long) vtable[iIndex]);
 }
 
-CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, ReturnType_t return_type)
+CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, object return_type)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
@@ -195,7 +195,7 @@ CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, ReturnType_t r
 	return new CFunction(m_ulAddr, eConv, args, return_type);
 }
 
-CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple args, ReturnType_t return_type)
+CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple args, object return_type)
 {
 	return GetVirtualFunc(iIndex)->MakeFunction(eConv, args, return_type);
 }
@@ -203,12 +203,12 @@ CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple a
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
-CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, tuple args, ReturnType_t return_type)
+CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, tuple args, object return_type)
 	: CPointer(ulAddr)
 {
 	m_eConv = eConv;
 	m_Args = args;
-	m_ReturnType = return_type;
+	m_oReturnType = return_type;
 }
 
 object CFunction::Call(tuple args, dict kw)
@@ -255,8 +255,23 @@ object CFunction::Call(tuple args, dict kw)
 		}
 	}
 
+	ReturnType_t return_type;
+
+	// Try to get the return type
+	try
+	{
+		return_type = extract<ReturnType_t>(m_oReturnType);
+	}
+	catch( ... )
+	{
+		PyErr_Clear();
+
+		// It failed, so let's handle it as a pointer
+		return m_oReturnType(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
+	}
+
 	// Call the function
-	switch(m_ReturnType)
+	switch(return_type)
 	{
 		case DC_SIGCHAR_VOID:      dcCallVoid(g_pCallVM, m_ulAddr); break;
 		case DC_SIGCHAR_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
@@ -288,7 +303,7 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_Args, m_ReturnType).Call(args, kw);
+	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_Args, m_oReturnType).Call(args, kw);
 }
 
 handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
@@ -297,7 +312,8 @@ handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	// Generate the argument string
-	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, m_ReturnType));
+	ReturnType_t return_type = extract<ReturnType_t>(m_oReturnType);
+	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, return_type));
 
 	// Hook the function
 	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, strdup(szParams));

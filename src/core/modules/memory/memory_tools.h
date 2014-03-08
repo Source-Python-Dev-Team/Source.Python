@@ -267,8 +267,8 @@ public:
 	virtual void        Realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
 	virtual void        Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
-	CFunction*          MakeFunction(Convention_t eConv, boost::python::tuple args, ReturnType_t return_type);
-	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, boost::python::tuple args, ReturnType_t return_type);
+	CFunction*          MakeFunction(Convention_t eConv, boost::python::tuple args, object return_type);
+	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, boost::python::tuple args, object return_type);
 
 public:
 	unsigned long m_ulAddr;
@@ -282,7 +282,7 @@ public:
 class CFunction: public CPointer
 {
 public:
-	CFunction(unsigned long ulAddr, Convention_t eConv, boost::python::tuple args, ReturnType_t return_type);
+	CFunction(unsigned long ulAddr, Convention_t eConv, boost::python::tuple args, object return_type);
     
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
@@ -304,7 +304,7 @@ public:
     
 public:
 	boost::python::tuple	m_Args;
-	ReturnType_t			m_ReturnType;
+	object					m_oReturnType;
 	Convention_t			m_eConv;
 };
 

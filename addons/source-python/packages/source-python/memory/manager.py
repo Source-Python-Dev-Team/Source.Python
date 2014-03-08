@@ -342,6 +342,17 @@ class TypeManager(dict):
         self[name] = cls
         return cls
 
+    def create_converter(self, name):
+        '''
+        Creates a new converter for the given name.
+        '''
+
+        def convert(ptr):
+            if name not in self:
+                raise NameError('Unknown converter "%s"'% name)
+
+            return self[name](ptr)
+
     def create_type_from_file(self, type_name, f, base=CustomType):
         '''
         Creates and registers a new type from a file.
@@ -601,10 +612,12 @@ class TypeManager(dict):
         Creates a wrapper for a virtual function.
         '''
 
-        native_type = return_type in Return.values
-
         # Automatically add the this pointer argument
         args = (Argument.POINTER,) + args
+
+        # Create a converter, if it's not a native type
+        return_type = return_type if return_type in Return.values \
+            else self.create_converter(return_type)
 
         def fget(ptr):
             # Create the virtual function
@@ -612,7 +625,7 @@ class TypeManager(dict):
                 index,
                 convention,
                 args,
-                return_type if native_type else Return.POINTER
+                return_type
             )
 
             # Wrap it using MemberFunction, so we don't have to pass the this
@@ -634,10 +647,12 @@ class TypeManager(dict):
         Wrap a NULL pointer.
         '''
 
-        native_type = return_type in Return.values
-
         # Automatically add the this pointer argument
         args = (Argument.POINTER,) + args
+
+        # Create a converter, if it's not a native type
+        return_type = return_type if return_type in Return.values \
+            else self.create_converter(return_type)
 
         def fget(ptr):
             if ptr._binary is None:
@@ -650,7 +665,7 @@ class TypeManager(dict):
             func = binary[identifier].make_function(
                 convention,
                 args,
-                return_type if native_type else Return.POINTER
+                return_type
             )
 
             # Wrap it using MemberFunction, so we don't have to pass the this
@@ -665,16 +680,12 @@ class TypeManager(dict):
         object that will be created by this method.
         '''
 
-        native_type = return_type in Return.values
-        if not native_type:
-            raise NotImplementedError
+        # Create a converter, if it's not a native type
+        return_type = return_type if return_type in Return.values \
+            else self.create_converter(return_type)
 
         def make_function(ptr):
-            return ptr.make_function(
-                convention,
-                args,
-                return_type if native_type else Return.POINTER
-            )
+            return ptr.make_function(convention, args, return_type)
 
         return make_function
 
