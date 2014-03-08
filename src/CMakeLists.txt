@@ -145,6 +145,17 @@ Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Dump module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_DUMP_MODULE_HEADERS
+    core/modules/dump/dump_functions.h
+)
+
+Set(SOURCEPYTHON_DUMP_MODULE_SOURCES
+    core/modules/dump/dump_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # Effects module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EFFECTS_MODULE_HEADERS
@@ -319,6 +330,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_CVAR_MODULE_HEADERS}
     ${SOURCEPYTHON_CVAR_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_DUMP_MODULE_HEADERS}
+    ${SOURCEPYTHON_DUMP_MODULE_SOURCES}
+
     ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS}
     ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES}
 
@@ -372,6 +386,7 @@ Source_Group("Header Files\\Module\\Bot"                    FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Cvar"                   FILES ${SOURCEPYTHON_CVAR_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Dump"                   FILES ${SOURCEPYTHON_DUMP_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engine"                 FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Event"                  FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
@@ -394,6 +409,7 @@ Source_Group("Source Files\\Module\\Bot"                    FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvar"                   FILES ${SOURCEPYTHON_CVAR_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Dump"                   FILES ${SOURCEPYTHON_DUMP_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engine"                 FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Entity"                 FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})

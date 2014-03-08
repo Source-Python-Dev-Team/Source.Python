@@ -48,6 +48,12 @@ EXCEPTION = ERROR
 addLevelName(MESSAGE, 'MESSAGE')
 addLevelName(EXCEPTION, 'EXCEPTION')
 
+# 
+_main_log_formatter = Formatter('- %(name)s\t-\t%(levelname)s\n\t%(message)s')
+
+# 
+_clean_formatter = Formatter('%(message)s')
+
 
 # =============================================================================
 # >> CLASSES
@@ -121,6 +127,21 @@ class _LogInstance(dict):
         '''Use to call a message that should always print'''
         self._log(MESSAGE, msg, *args, **kwargs)
 
+    def log_dump(self, msg, *args, **kwargs):
+        '''Use to call a dump message'''
+
+        # Change the handler over to the clean handler,
+        # so that the text is logged without any prefix
+        self.root.logger.removeHandler(self.root._handler)
+        self.root.logger.addHandler(self.root._clean_handler)
+
+        # Log the message
+        self._log(MESSAGE, msg, *args, dump=True, **kwargs)
+
+        # Revert the handler back to the original formatting
+        self.root.logger.removeHandler(self.root._clean_handler)
+        self.root.logger.addHandler(self.root._handler)
+
     def log(self, level, msg, *args, **kwargs):
         '''Use to call a message with the given logging level'''
 
@@ -130,7 +151,7 @@ class _LogInstance(dict):
         # Call the main logging method
         self._log(level, msg, *args, **kwargs)
 
-    def _log(self, level, msg, *args, **kwargs):
+    def _log(self, level, msg, *args, dump=False, **kwargs):
         '''Main logging method'''
 
         # Does the message need logged?
@@ -143,23 +164,38 @@ class _LogInstance(dict):
         areas = self.areas
 
         # Print to main log file?
-        if MAIN_LOG & areas:
+        if MAIN_LOG & areas and EngineServer.is_log_enabled():
 
-            # Get the record
-            record = self.logger.makeRecord(
-                self.logger.name, level, '(unknown file)', 0, msg, args, None)
+            # Is a prefix supposed to be logged?
+            if not dump:
 
-            # Get the message to send
-            message = self.formatter.format(record)
+                # Create the record
+                record = self.logger.makeRecord(
+                    self.logger.name, level,
+                    '(unknown file)', 0, msg, args, None)
+
+                # Get the message to send
+                message = _main_log_formatter.format(record)
+
+            # Is the message not supposed to have a prefix?
+            else:
+
+                # Use the given message
+                message = msg
 
             # Print to the main log
             EngineServer.log_print(message + '\n')
 
         # Print to the console?
-        if CONSOLE & areas:
+        if CONSOLE & areas and not dump:
 
-            # Print to the console
-            echo_console(msg)
+            # Was <engine>.log_print called?
+            if not (MAIN_LOG & areas and EngineServer.is_log_enabled()):
+
+                # If not, print to the console
+                # If <engine>.log_print is called with logging being on,
+                #   the console is already echoed with the message.
+                echo_console(msg)
 
         # Print to the script's log file?
         if SCRIPT_LOG & areas and self.root != _SPLogger:
@@ -252,9 +288,14 @@ class LogManager(_LogInstance):
                 log_path.parent.makedirs()
 
             # Create the handler an add it to the logger
-            handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
-            handler.setFormatter(self.formatter)
-            self.logger.addHandler(handler)
+            self._handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
+            self._handler.setFormatter(self.formatter)
+            self.logger.addHandler(self._handler)
+
+            # Create a clean handler for logging without a prefix
+            self._clean_handler = FileHandler(
+                LOG_PATH.joinpath(filepath + '.log'))
+            self._clean_handler.setFormatter(_clean_formatter)
 
     @property
     def level(self):
@@ -275,7 +316,7 @@ _areas = ConVar(
 # Get the Source.Python main LogManager instance
 _SPLogger = LogManager(
     'sp', _level, _areas, 'source-python',
-    '%(asctime)s - %(name)s\t-\t%(levelname)s\n%(message)s',
+    '%(asctime)s - %(name)s\t-\t%(levelname)s\n\t%(message)s',
     '%m-%d-%Y %H:%M:%S')
 
 # Set the parent logger level to allow all message types

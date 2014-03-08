@@ -8,6 +8,7 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
+import dump_c
 from engine_c import EngineServer
 from _core import _CoreLogger
 from paths import SP_DATA_PATH
@@ -124,6 +125,20 @@ class _SPSubCommandManager(SubCommandManager):
             EngineServer.server_command, ' '.join(args[1:]) + '\n')
 
     @staticmethod
+    def dump_data(dump_type):
+        ''''''
+
+        # 
+        if not hasattr(dump_c, 'dump_' + dump_type):
+
+            # 
+            self.logger.log_message(
+                'Invalid dump_type "{0}"'.format(dump_type))
+
+        # 
+        getattr(dump_c, 'dump_' + dump_type)()
+
+    @staticmethod
     def print_version():
         '''Displays Source.Python version information.'''
 
@@ -170,6 +185,10 @@ SPSubCommandManager['auth'] = _AuthCommandsInstance
 # Register the 'delay' sub-command
 SPSubCommandManager['delay'] = SPSubCommandManager.delay_execution
 SPSubCommandManager['delay'].args = ['<delay>', '<command>', '[arguments]']
+
+# Register the 'dump' sub-command
+SPSubCommandManager['dump'] = SPSubCommandManager.dump_data
+SPSubCommandManager['dump'].args = ['<dump_type>']
 
 # Register all printing sub-commands
 SPSubCommandManager['list'] = SPSubCommandManager.print_plugins
