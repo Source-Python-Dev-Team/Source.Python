@@ -156,6 +156,15 @@ void CUserMessageImplementation::set_buffer( const char *field_name, void *buffe
 
 void CUserMessageImplementation::set_string( const char *field_name, const char *field_value, int index/*=-1*/ )
 {
+	const google::protobuf::Descriptor *descriptor = m_message->GetDescriptor();
+	if (index < 0 && descriptor)
+	{
+		const google::protobuf::FieldDescriptor *field_descriptor=descriptor->FindFieldByName(field_name);
+		if (field_descriptor && field_descriptor->label() == google::protobuf::FieldDescriptor::LABEL_REPEATED)
+		{
+			index = 0;
+		}
+	}
 	if (index == -1)
 	{
 		set_typed_value<const char *, const std::string &>(&google::protobuf::Reflection::SetString, field_name, field_value);
@@ -184,7 +193,6 @@ void CUserMessageImplementation::set_color( const char *field_name, Color field_
 	const google::protobuf::Reflection *reflection = m_message->GetReflection();
 	if (descriptor && reflection)
 	{
-		CMsgRGBA *color=NULL;
 		const google::protobuf::FieldDescriptor *field_descriptor=descriptor->FindFieldByName(field_name);
 		if (field_descriptor)
 		{
