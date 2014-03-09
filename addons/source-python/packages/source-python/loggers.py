@@ -48,10 +48,10 @@ EXCEPTION = ERROR
 addLevelName(MESSAGE, 'MESSAGE')
 addLevelName(EXCEPTION, 'EXCEPTION')
 
-# 
+# Store a formatter for use with the main log
 _main_log_formatter = Formatter('- %(name)s\t-\t%(levelname)s\n\t%(message)s')
 
-# 
+# Store a formatter for use with dumps
 _clean_formatter = Formatter('%(message)s')
 
 

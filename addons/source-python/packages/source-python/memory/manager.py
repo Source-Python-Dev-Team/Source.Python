@@ -31,21 +31,21 @@ class Type:
     a TypeManager instance.
     '''
 
-    BOOL         = 'bool'
-    CHAR         = 'char'
-    UCHAR        = 'uchar'
-    SHORT        = 'short'
-    USHORT       = 'ushort'
-    INT          = 'int'
-    UINT         = 'uint'
-    LONG         = 'long'
-    ULONG        = 'ulong'
-    LONG_LONG    = 'long_long'
-    ULONG_LONG   = 'ulong_long'
-    FLOAT        = 'float'
-    DOUBLE       = 'double'
-    POINTER      = 'ptr'
-    STRING_PTR   = 'string_ptr'
+    BOOL = 'bool'
+    CHAR = 'char'
+    UCHAR = 'uchar'
+    SHORT = 'short'
+    USHORT = 'ushort'
+    INT = 'int'
+    UINT = 'uint'
+    LONG = 'long'
+    ULONG = 'ulong'
+    LONG_LONG = 'long_long'
+    ULONG_LONG = 'ulong_long'
+    FLOAT = 'float'
+    DOUBLE = 'double'
+    POINTER = 'ptr'
+    STRING_PTR = 'string_ptr'
     STRING_ARRAY = 'string_array'
 
     @staticmethod
@@ -55,8 +55,6 @@ class Type:
         '''
 
         return hasattr(Type, type_name.upper())
-
-
 
 
 # =============================================================================
@@ -93,10 +91,10 @@ class Array(BasePointer):
         iterate over the array.
         '''
 
-        self._manager   = manager
-        self._is_ptr    = is_ptr
+        self._manager = manager
+        self._is_ptr = is_ptr
         self._type_name = type_name
-        self._length    = length
+        self._length = length
 
         super(Array, self).__init__(ptr)
 
@@ -122,8 +120,9 @@ class Array(BasePointer):
         # This prevents users from iterating over the array without having
         # _length specified. Otherwise the server would hang or crash.
         if self._length is None:
-            raise ValueError('Cannot iterate over the array without __lengt' \
-                'h__ being specified.')
+            raise ValueError(
+                'Cannot iterate over the array without ' +
+                '__length__ being specified.')
 
         for index in range(self._length):
             yield self[index]
@@ -163,7 +162,7 @@ class Array(BasePointer):
         cls = self._manager[self._type_name]
 
         # To access a value, we require the proper size of a custom type
-        if cls._size == None:
+        if cls._size is None:
             raise ValueError('Array requires a size to access its values.')
 
         # Every x bytes is a new instance
@@ -211,8 +210,8 @@ class MemberFunction(Function):
     def __init__(self, manager, return_type, func, this):
         super(MemberFunction, self).__init__(func)
 
-        self._manager   = manager
-        self._this      = this
+        self._manager = manager
+        self._this = this
         self._type_name = return_type
 
     def __call__(self, *args):
@@ -273,30 +272,30 @@ class CustomType(BasePointer):
 
     # TODO: Implement this!
     # Optional -- will be called when an instance of the type is deleted
-    _destructor  = None
+    _destructor = None
 
     def __init__(self, *args, wrap=True, auto_dealloc=False):
         # _manager must be an instance of TypeManager. Otherwise the type
         # wasn't registered by a TypeManager.
         if not isinstance(self._manager, TypeManager):
-            raise ValueError('Attribute _manager must be an instance of "Ty' \
-                'peManager".')
+            raise ValueError(
+                'Attribute _manager must be an instance of "TypeManager".')
 
         # Do we want to wrap a pointer?
         if wrap:
             # Check if only the this pointer was passed
             if len(args) != 1:
-                raise ValueError('If <wrap> is true only one argument is ac' \
-                    'cepted.')
+                raise ValueError(
+                    'If <wrap> is true only one argument is accepted.')
 
             super(CustomType, self).__init__(args[0])
 
         # Obviously, we want to create a new instance
         else:
             # Was a size specified?
-            if self._size == None:
-                raise ValueError('In order to create an instance _size is r' \
-                    'equired.')
+            if self._size is None:
+                raise ValueError(
+                    'In order to create an instance _size is required.')
 
             # Allocate some space
             super(CustomType, self).__init__(
@@ -310,8 +309,8 @@ class CustomType(BasePointer):
             # No constructor, but arguments? Hmm, the user is doing something
             # wrong
             elif args:
-                raise ValueError('No constructor was specified, but argumen' \
-                    'ts were passed.')
+                raise ValueError(
+                    'No constructor was specified, but arguments were passed.')
 
 
 # =============================================================================
@@ -336,8 +335,9 @@ class TypeManager(dict):
 
         # Check if it's a subclass of CustomType
         if not issubclass(cls, CustomType):
-            raise ValueError('Custom type "%s" has to be a subclass of "Cus' \
-                'tomType".'% name)
+            raise ValueError(
+                'Custom type "{0}" has to '.format(name) +
+                'be a subclass of "CustomType".')
 
         self[name] = cls
         return cls
@@ -349,7 +349,7 @@ class TypeManager(dict):
 
         def convert(ptr):
             if name not in self:
-                raise NameError('Unknown converter "%s"'% name)
+                raise NameError('Unknown converter "{0}"'.format(name))
 
             return self[name](ptr)
 
@@ -370,7 +370,8 @@ class TypeManager(dict):
         # Prepare general type information
         cls_dict = {
             '_binary': raw_data.get(Key.BINARY, CustomType._binary),
-            '_srv_check': Key.as_bool(raw_data.get(Key.SRV_CHECK, str(CustomType._srv_check))),
+            '_srv_check': Key.as_bool(
+                raw_data.get(Key.SRV_CHECK, str(CustomType._srv_check))),
             '_size': raw_data.get(Key.SIZE, CustomType._size)
         }
 
@@ -390,10 +391,11 @@ class TypeManager(dict):
                 cls_dict[name] = method(*data)
 
         # Prepare arrays
-        for method in (self.static_instance_array,
-                        self.dynamic_instance_array,
-                        self.static_pointer_array,
-                        self.dynamic_pointer_array):
+        for method in (
+                self.static_instance_array,
+                self.dynamic_instance_array,
+                self.static_pointer_array,
+                self.dynamic_pointer_array):
             arrays = parse_data(
                 raw_data.get(method.__name__, {}),
                 (
@@ -466,8 +468,8 @@ class TypeManager(dict):
             # Handle custom type
             if not native_type:
                 if not isinstance(value, Pointer):
-                    raise ValueError('The value must be an instance of the ' \
-                        'Pointer class')
+                    raise ValueError(
+                        'The value must be an instance of the Pointer class')
 
                 value.copy(ptr + offset, self[type_name]._size)
 
@@ -508,8 +510,8 @@ class TypeManager(dict):
             # Handle custom type
             if not native_type:
                 if not isinstance(value, Pointer):
-                    raise ValueError('The value must be an instance of the ' \
-                        'Pointer class')
+                    raise ValueError(
+                        'The value must be an instance of the Pointer class')
 
                 # Q: Why do we use copy instead of set_ptr?
                 # A: Maybe it's a shared pointer which means that other
@@ -606,7 +608,8 @@ class TypeManager(dict):
 
         return property(fget, fset, None, doc)
 
-    def virtual_function(self, index, args=(), return_type=Return.VOID,
+    def virtual_function(
+            self, index, args=(), return_type=Return.VOID,
             convention=Convention.THISCALL, doc=None):
         '''
         Creates a wrapper for a virtual function.
@@ -616,8 +619,9 @@ class TypeManager(dict):
         args = (Argument.POINTER,) + args
 
         # Create a converter, if it's not a native type
-        return_type = return_type if return_type in Return.values \
-            else self.create_converter(return_type)
+        return_type = (
+            return_type if return_type in Return.values
+            else self.create_converter(return_type))
 
         def fget(ptr):
             # Create the virtual function
@@ -634,7 +638,8 @@ class TypeManager(dict):
 
         return property(fget, None, None, doc)
 
-    def function(self, identifier, args=(), return_type=Return.VOID,
+    def function(
+            self, identifier, args=(), return_type=Return.VOID,
             convention=Convention.THISCALL, doc=None):
         '''
         Creates a wrapper for a function.
@@ -651,8 +656,9 @@ class TypeManager(dict):
         args = (Argument.POINTER,) + args
 
         # Create a converter, if it's not a native type
-        return_type = return_type if return_type in Return.values \
-            else self.create_converter(return_type)
+        return_type = (
+            return_type if return_type in Return.values
+            else self.create_converter(return_type))
 
         def fget(ptr):
             if ptr._binary is None:
@@ -672,7 +678,8 @@ class TypeManager(dict):
             # pointer anymore
             return MemberFunction(self, return_type, func, ptr)
 
-    def function_typedef(self, name, args=(), return_type=Return.VOID,
+    def function_typedef(
+            self, name, args=(), return_type=Return.VOID,
             convention=Convention.CDECL, doc=None):
         '''
         Creates a new function typedef. So, when a class has an attribute that
@@ -681,8 +688,9 @@ class TypeManager(dict):
         '''
 
         # Create a converter, if it's not a native type
-        return_type = return_type if return_type in Return.values \
-            else self.create_converter(return_type)
+        return_type = (
+            return_type if return_type in Return.values
+            else self.create_converter(return_type))
 
         def make_function(ptr):
             return ptr.make_function(convention, args, return_type)

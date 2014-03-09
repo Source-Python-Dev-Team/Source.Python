@@ -64,16 +64,16 @@ class Signature(object):
             # Raise an error
             raise ValueError('Unable to find address')
 
-        # 
+        # Get the function's arguments
         arguments = ini['arguments']
 
-        # 
+        # Is there only one argument for this function?
         if type(arguments) == str:
 
-            # 
+            # Make a tuple with the argument type
             arguments = tuple([getattr(Argument, arguments)])
 
-        # 
+        # Are there multiple arguments for this function?
         else:
 
             # Get a tuple of the arguments

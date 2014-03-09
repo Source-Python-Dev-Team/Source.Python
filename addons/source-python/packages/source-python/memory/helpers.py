@@ -46,13 +46,13 @@ class BasePointer(Pointer):
 # =============================================================================
 class Key:
     # General type information keys
-    BINARY    = 'binary'
+    BINARY = 'binary'
     SRV_CHECK = 'srv_check'
-    SIZE      = 'size'
+    SIZE = 'size'
 
     # Attribute/array kes
-    OFFSET      = 'offset'
-    TYPE_NAME   = 'type'
+    OFFSET = 'offset'
+    TYPE_NAME = 'type'
 
     # Array keys
     LENGTH = 'length'
@@ -61,10 +61,10 @@ class Key:
     INDEX = 'index'
 
     # (Virtual) function keys
-    ARGS        = 'arguments'
+    ARGS = 'arguments'
     RETURN_TYPE = 'return_type'
-    CONVENTION  = 'convention'
-    IDENTIFIER  = 'identifier'
+    CONVENTION = 'convention'
+    IDENTIFIER = 'identifier'
 
     # Shared keys
     DOC = 'doc'
@@ -84,7 +84,8 @@ class Key:
         if value == 'false':
             return False
 
-        raise ValueError('Cannot convert "%s" to a boolean value.'% value)
+        raise ValueError(
+            'Cannot convert "{0}" to a boolean value.'.format(value))
 
     @staticmethod
     def as_args_tuple(value):
@@ -92,8 +93,9 @@ class Key:
         Converts a string into a tuple containing <Argument> elements.
         '''
 
-        return tuple(Argument.values[item] \
-            for item in value.replace(' ', '').split(','))
+        return tuple(
+            Argument.values[item] for item in
+            value.replace(' ', '').split(','))
 
     @staticmethod
     def as_return_type(value):
@@ -171,7 +173,8 @@ def parse_data(raw_data, keys):
 
             # If the value is NO_DEFAULT, the key is obviously missing
             if value is NO_DEFAULT:
-                raise KeyError('Missing information for key "%s".'% key)
+                raise KeyError(
+                    'Missing information for key "{0}".'.format(key))
 
             temp_data.append(value if value is default else converter(value))
 

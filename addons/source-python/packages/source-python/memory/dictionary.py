@@ -64,8 +64,9 @@ class _SignatureDictionary(dict):
             if name in self:
 
                 # Log a warning
-                MemoryDictionaryLogger.log_warning('Shortname ' +
-                    '"{0}" already exists in the dictionary'.format(name))
+                MemoryDictionaryLogger.log_warning(
+                    'Shortname "{0}" '.format(name) +
+                    'already exists in the dictionary')
 
                 # No need to go further on this function
                 continue
