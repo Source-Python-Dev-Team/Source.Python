@@ -21,6 +21,7 @@ from engine_c import EngineServer
 from core import echo_console
 from excepthooks import ExceptHooks
 #   UserMessage
+from usermessage_c import Color
 from usermessage_c import UserMessage
 #   Filters
 from filters.recipients import RecipientFilter
@@ -33,7 +34,7 @@ from translations.strings import TranslationStrings
 # ============================================================================
 # Store the fieldtype converters
 _fieldtypes = dict(bool=bool, char=str, byte=int, short=int, long=int,
-    float=float, buffer=object, string=str)
+    float=float, buffer=object, string=str, color=Color)
 
 
 # ============================================================================
@@ -139,10 +140,15 @@ class _UserMessages(dict):
                             # Add the current parameter to the translatables
                             translatable_parameters.add(parameter_name)
 
+                        default_value = parameter_data.get('default_value', None)
+                        if default_value is None:
+                            converted_value = _fieldtypes[parameter_type]()
+                        else:
+                            converted_value = _fieldtypes[parameter_type](default_value)
+                            
                         # Store the current parameter data
                         required_parameters[parameter_name] = dict(
-                            default_value=_fieldtypes[parameter_type](
-                                parameter_data['default_value']),
+                            default_value=converted_value,
                                     type=parameter_type)
 
                     # Store more data
@@ -426,9 +432,12 @@ class BaseMessage(dict):
         # Otherwise
         else:
 
+            field_converter = _fieldtypes[parameter_data['type']]
+            if not isinstance(parameter_value, field_converter):
+                parameter_value = field_converter(parameter_value)
+                
             # Convert the given value
-            return_value = _fieldtypes[parameter_data['type']](
-                parameter_value)
+            return_value = parameter_value
 
         # Return the prepared value
         return return_value
