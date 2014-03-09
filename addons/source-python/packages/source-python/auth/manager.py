@@ -6,6 +6,7 @@
 # Source.Python imports
 #   Auth
 from auth import AuthLogger
+from auth.base import AuthBase
 from auth.paths import AUTH_PROVIDER_PATH
 #   Players
 from players.helpers import uniqueid_from_playerinfo
@@ -39,7 +40,7 @@ class _AuthManager(dict):
     '''Class used to store loaded auth providers
         and check if a player is authorized'''
 
-    def _load_auth(self, provider):
+    def load_auth(self, provider):
         '''Loads the given provider'''
 
         # Send a message that the auth provider is being loaded
@@ -69,19 +70,42 @@ class _AuthManager(dict):
             # No need to go further
             return
 
-        # Attempt to load the provider
-        self[provider] = __import__(
+        # Import the provider's module
+        module = __import__(
             'auth.providers.{0}'.format(provider), fromlist=[''])
 
-        # Call the provider's load function
-        self[provider].load()
+        # Loop through all objects in the module
+        for module_object in dir(module):
+
+            # Get the object's instance
+            instance = getattr(module, module_object)
+
+            # Is the current object a AuthBase instance?
+            if isinstance(instance, AuthBase):
+
+                # Found the instance
+                break
+
+        # Was no AuthBase instance found?
+        else:
+
+            # Raise an error that the object was not found
+            raise NotImplementedError(
+                'No AuthBase instance found in provider'
+                ' "{0}"'.format(provider))
+
+        # Attempt to call the provider's load function
+        instance.load()
+
+        # Add the provider to the dictionary
+        self[provider] = instance
 
         # Send a message that the provider was loaded
         AuthManagerLogger.log_message(
             '[SP Auth] ' + _auth_strings[
                 'Load Successful'].get_string(provider=provider))
 
-    def _unload_auth(self, provider):
+    def unload_auth(self, provider):
         '''Unloads the given provider'''
 
         # Send a message that the auth provider is being unloaded
@@ -111,7 +135,7 @@ class _AuthManager(dict):
             '[SP Auth] ' + _auth_strings[
                 'Unload Successful'].get_string(provider=provider))
 
-    def _reload_auth(self, provider):
+    def reload_auth(self, provider):
         '''Reloads the given provider'''
 
         # Unload the provider

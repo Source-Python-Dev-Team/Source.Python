@@ -9,6 +9,7 @@ import re
 
 # Source.Python Imports
 #   Auth
+from auth.base import AuthBase
 from auth.paths import AUTH_CFG_PATH
 
 
@@ -29,8 +30,16 @@ _SIMPLE_FILE_PATH = AUTH_CFG_PATH.joinpath('simple.txt')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _SimpleAuth(set):
+class _SimpleAuth(AuthBase, set):
     '''Class used to determine if a player is authorized'''
+
+    def load(self):
+        '''Called when the service is loaded'''
+        self._parse_admins()
+
+    def unload(self):
+        '''Called when the service is unloaded'''
+        self.clear()
 
     def _parse_admins(self):
         '''
@@ -65,23 +74,4 @@ class _SimpleAuth(set):
         return False
 
 # Get the _SimpleAuth instance
-_SimpleAuthInstance = _SimpleAuth()
-
-is_player_authorized = _SimpleAuthInstance.is_player_authorized
-
-
-# =============================================================================
-# >> FUNCTIONS
-# =============================================================================
-def load():
-    '''Loads the provider by getting all uniqueids that are authorized'''
-
-    # Parse the simple auth file
-    _SimpleAuthInstance._parse_admins()
-
-
-def unload():
-    '''Unloads the provider by clearing the set'''
-
-    # Clear the set
-    _SimpleAuthInstance.clear()
+SimpleAuth = _SimpleAuth()
