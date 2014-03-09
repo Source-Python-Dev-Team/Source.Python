@@ -46,6 +46,7 @@ public:
 	virtual void set_short(const char *field_name, int field_value, int index=-1);
 	virtual void set_long(const char *field_name, signed long field_value, int index=-1);
 	virtual void set_float(const char *field_name, float field_value, int index=-1);
+	virtual void set_color(const char *field_name, Color field_value, int index=-1);
 
 	// Unknown sized buffers
 	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes, int index=-1);

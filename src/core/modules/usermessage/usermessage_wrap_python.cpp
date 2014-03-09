@@ -139,6 +139,12 @@ void export_usermessage_interface()
 			)
 		)
 
+		.def("set_color",
+			&CUserMessage::set_color,
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
+		)
+		
 		.def("set_buffer",
 			&CUserMessage::set_buffer,
 			set_buffer_overload(

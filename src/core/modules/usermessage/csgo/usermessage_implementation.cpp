@@ -168,3 +168,34 @@ void CUserMessageImplementation::set_string( const char *field_name, const char 
 			field_name, field_value, "", index);
 	}
 }
+
+void SetColor( const google::protobuf::Message *message, Color field_value )
+{
+	CMsgRGBA *color = (CMsgRGBA *)message;
+	color->set_r(field_value[0]);
+	color->set_g(field_value[1]);
+	color->set_b(field_value[2]);
+	color->set_a(field_value[3]);
+}
+
+void CUserMessageImplementation::set_color( const char *field_name, Color field_value, int index/*=-1*/ )
+{
+	const google::protobuf::Descriptor *descriptor = m_message->GetDescriptor();
+	const google::protobuf::Reflection *reflection = m_message->GetReflection();
+	if (descriptor && reflection)
+	{
+		CMsgRGBA *color=NULL;
+		const google::protobuf::FieldDescriptor *field_descriptor=descriptor->FindFieldByName(field_name);
+		if (field_descriptor)
+		{
+			if (index == -1)
+			{
+				SetColor(reflection->MutableMessage(m_message, field_descriptor), field_value);
+			}
+			else
+			{
+				SetColor(reflection->MutableRepeatedMessage(m_message, field_descriptor, index), field_value);
+			}
+		}
+	}
+}

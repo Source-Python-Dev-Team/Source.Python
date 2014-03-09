@@ -72,6 +72,14 @@ void CUserMessageImplementation::set_float( const char *field_name, float field_
 	m_buffer->WriteFloat(field_value);
 }
 
+void CUserMessageImplementation::set_color( const char *field_name, Color field_value, int index/*=-1*/ )
+{
+	m_buffer->WriteByte(field_value[0]);
+	m_buffer->WriteByte(field_value[1]);
+	m_buffer->WriteByte(field_value[2]);
+	m_buffer->WriteByte(field_value[3]);
+}
+
 void CUserMessageImplementation::set_buffer( const char *field_name, void *buffer, unsigned int num_bytes, int index/*=-1*/ )
 {
 	m_buffer->WriteBytes(buffer, static_cast<int>(num_bytes));
