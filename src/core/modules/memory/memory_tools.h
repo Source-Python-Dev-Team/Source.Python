@@ -66,12 +66,18 @@ extern DCCallVM* g_pCallVM;
 #define ADD_SIZE(classname) \
 	.attr("_size") = sizeof(classname);
 
+// Use this macro to add the class to the ExposedClasses dict
+#define STORE_CLASS(classname) \
+	extern std::map<const char*, object> g_ExposedClasses; \
+	g_ExposedClasses[XSTRINGIFY(classname)] = scope().attr(XSTRINGIFY(classname));
+
 // Use this macro to add the class to the three functions
 // Note: This must be at the end of the class definition!
 #define ADD_MEM_TOOLS(classname) \
 	ADD_PTR(classname) \
 	ADD_OBJ(classname) \
-	ADD_SIZE(classname)
+	ADD_SIZE(classname) \
+	STORE_CLASS(classname)
 
 
 //-----------------------------------------------------------------------------
@@ -357,5 +363,7 @@ inline object GetSize(object cls)
 
 	return cls.attr("_size");
 }
+
+dict GetExposedClasses();
 
 #endif // _MEMORY_TOOLS_H

@@ -44,6 +44,8 @@ extern std::map<CHook *, std::map<DynamicHooks::HookType_t, std::list<PyObject *
 
 CHookManager* g_pHookMngr = new CHookManager;
 
+std::map<const char*, object> g_ExposedClasses;
+
 //-----------------------------------------------------------------------------
 // CPointer class
 //-----------------------------------------------------------------------------
@@ -338,4 +340,18 @@ void CFunction::RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 		return;
 
 	g_mapCallbacks[pHook][eType].remove(pCallable);
+}
+
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
+dict GetExposedClasses()
+{
+	dict exposed_classes = dict();
+	for(std::map<const char*, object>::iterator iter=g_ExposedClasses.begin(); iter != g_ExposedClasses.end(); ++iter)
+	{
+		exposed_classes[iter->first] = iter->second;
+	}
+	return exposed_classes;
 }

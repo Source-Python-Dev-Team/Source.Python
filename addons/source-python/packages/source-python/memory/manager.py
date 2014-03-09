@@ -13,188 +13,20 @@ from memory.helpers import *
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'Type',
-    'Array',
-    'MemberFunction',
+    'EXPOSED_CLASSES',
     'CustomType',
     'TypeManager',
-    'manager'
+    'manager',
+
+    # From memory.helpers
+    'Type'
 ]
 
 
 # =============================================================================
-# >> Array
+# >> GLOBAL VARIABLES
 # =============================================================================
-class Array(BasePointer):
-    # Optional -- specifies the length of the array
-    _length = None
-
-    # Contains the type name of the array
-    _type_name = None
-
-    # Set to True if the array contains pointers, else False
-    _is_ptr = None
-
-    def __init__(self, manager, is_ptr, type_name, ptr, length=None):
-        '''
-        Initializes the array wrapper.
-
-        @param <manager>
-        Contains an instance of TypeManager.
-
-        @param <is_ptr>
-        Set to True if the array contains pointers, else False.
-
-        @param <type_name>
-        Contains the name of the array type. E.g. 'Vector' or 'bool'.
-
-        @param <ptr>
-        Contains the base address of the array (the very first array entry).
-
-        @param <length>
-        Contains the length of the array. Setting this value allows you to
-        iterate over the array.
-        '''
-
-        self._manager = manager
-        self._is_ptr = is_ptr
-        self._type_name = type_name
-        self._length = length
-
-        super(Array, self).__init__(ptr)
-
-    def __getitem__(self, index):
-        '''
-        Returns the value at the given index.
-        '''
-
-        return self.__make_attribute(index).__get__(self)
-
-    def __setitem__(self, index, value):
-        '''
-        Sets the value at the given index.
-        '''
-
-        self.__make_attribute(index).__set__(self, value)
-
-    def __iter__(self):
-        '''
-        Returns a generator that can iterate over the array.
-        '''
-
-        # This prevents users from iterating over the array without having
-        # _length specified. Otherwise the server would hang or crash.
-        if self._length is None:
-            raise ValueError(
-                'Cannot iterate over the array without ' +
-                '__length__ being specified.')
-
-        for index in range(self._length):
-            yield self[index]
-
-    def __make_attribute(self, index):
-        '''
-        Validates the index and returns a new property object.
-        '''
-
-        # Validate the index, so we don't access invalid memory addresses
-        if self._length is not None and index >= self._length:
-            raise IndexError('Index out of range')
-
-        # Construct the proper function name
-        name = ('pointer' if self._is_ptr else 'instance') + '_attribute'
-
-        # Get the function and call it
-        return getattr(self._manager, name)(
-            self._type_name,
-            self.get_offset(index)
-        )
-
-    def get_offset(self, index):
-        '''
-        Returns the offset of the given index.
-        '''
-
-        # Pointer arrays always have every 4 bytes a new pointer
-        if self._is_ptr:
-            return index * TYPE_SIZES[Type.POINTER]
-
-        # Every 1, 2, 4 or 8 bytes is a new value
-        if Type.is_native(self._type_name):
-            return index * TYPE_SIZES[self._type_name.upper()]
-
-        # Get the class of the custom type
-        cls = self._manager[self._type_name]
-
-        # To access a value, we require the proper size of a custom type
-        if cls._size is None:
-            raise ValueError('Array requires a size to access its values.')
-
-        # Every x bytes is a new instance
-        return index * cls._size
-
-    # Arrays have another constructor and we don't want to downcast. So, we
-    # have to implement these operators here again.
-    def __add__(self, other):
-        return self.__class__(
-            self._manager,
-            self._is_ptr,
-            self._type_name,
-            int(self) + int(other),
-            self._length
-        )
-
-    def __sub__(self, other):
-        return self.__class__(
-            self._manager,
-            self._is_ptr,
-            self._type_name,
-            int(self) - int(other),
-            self._length
-        )
-
-
-# =============================================================================
-# >> MemberFunction
-# =============================================================================
-class MemberFunction(Function):
-    '''
-    Use this class to create a wrapper for member functions. It passes the
-    this pointer automatically to the wrapped function.
-    '''
-
-    # This should always hold a TypeManager instance
-    _manager = None
-
-    # Holds the this pointer
-    _this = None
-
-    # Holds the return type name
-    _type_name = None
-
-    def __init__(self, manager, return_type, func, this):
-        super(MemberFunction, self).__init__(func)
-
-        self._manager = manager
-        self._this = this
-        self._type_name = return_type
-
-    def __call__(self, *args):
-        '''
-        Calls the function dynamically.
-        '''
-
-        return super(MemberFunction, self).__call__(self._this, *args)
-
-    def call_trampoline(self, *args):
-        '''
-        Calls the trampoline dynamically.
-        '''
-
-        return super(MemberFunction, self).call_trampoline(
-            self._this,
-            *args
-        )
+EXPOSED_CLASSES = get_exposed_classes()
 
 
 # =============================================================================
@@ -228,6 +60,10 @@ class CustomType(BasePointer):
     _destructor = None
 
     def __init__(self, *args, wrap=True, auto_dealloc=False):
+        '''
+        Initializes the custom type.
+        '''
+
         # _manager must be an instance of TypeManager. Otherwise the type
         # wasn't registered by a TypeManager.
         if not isinstance(self._manager, TypeManager):
@@ -251,9 +87,8 @@ class CustomType(BasePointer):
                     'In order to create an instance _size is required.')
 
             # Allocate some space
-            super(CustomType, self).__init__(
-                alloc(self._size, auto_dealloc)
-            )
+            super(CustomType, self).__init__(alloc(self._size, False))
+            self.auto_dealloc = auto_dealloc
 
             # Optionally, call a constructor
             if self._constructor is not None:
@@ -295,18 +130,42 @@ class TypeManager(dict):
         self[name] = cls
         return cls
 
+    def convert(self, name, ptr):
+        '''
+        Converts a pointer to the given class.
+        '''
+
+        # Try to use a CustomType at first
+        if name in self:
+            return self[name](ptr)
+
+        # If that fails, try to use an exposed class
+        if name in EXPOSED_CLASSES:
+            return make_object(EXPOSED_CLASSES[name], ptr)
+
+        raise NameError('Unable to make an object of "{0}"'.format(name))
+
+    def get_class(self, name):
+        '''
+        Tries to return a custom type that matches the given name. If no
+        custom type was found, it tries to return a class that was exposed on
+        the C++ side. If that fails too, an error will be raises.
+        '''
+
+        if name in self:
+            return self[name]
+
+        if name in EXPOSED_CLASSES:
+            return EXPOSED_CLASSES[name]
+
+        raise NameError('Unknown class "{0}"'.format(name))
+
     def create_converter(self, name):
         '''
         Creates a new converter for the given name.
         '''
 
-        def convert(ptr):
-            if name not in self:
-                raise NameError('Unknown converter "{0}"'.format(name))
-
-            return self[name](ptr)
-
-        return convert
+        return lambda ptr: self.convert(name, ptr)
 
     def create_type(self, name, cls_dict, bases=(CustomType,)):
         '''
@@ -486,7 +345,7 @@ class TypeManager(dict):
         def fget(ptr):
             # Handle custom type
             if not native_type:
-                return self[type_name](ptr + offset)
+                return self.convert(type_name, ptr + offset)
 
             # Handle native type
             return getattr(ptr, 'get_' + type_name)(offset)
@@ -498,7 +357,7 @@ class TypeManager(dict):
                     raise ValueError(
                         'The value must be an instance of the Pointer class')
 
-                value.copy(ptr + offset, self[type_name]._size)
+                value.copy(ptr + offset, self.get_class(type_name)._size)
 
             # Handle native type
             else:
@@ -524,7 +383,7 @@ class TypeManager(dict):
 
             # Handle custom type
             if not native_type:
-                return self[type_name](ptr)
+                return self.convert(type_name, ptr)
 
             # Handle native type
             return getattr(ptr, 'get_' + type_name)()
@@ -547,7 +406,7 @@ class TypeManager(dict):
                 #    other classes.
                 # TODO: Is that what we want? Maybe we could add a "copy"
                 #       parameter to let the user decide.
-                value.copy(ptr, self[type_name]._size)
+                value.copy(ptr, self.get_class(type_name)._size)
 
             # Handle native type
             else:
