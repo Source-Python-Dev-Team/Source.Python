@@ -23,41 +23,6 @@ __all__ = [
 
 
 # =============================================================================
-# >> Type
-# =============================================================================
-class Type:
-    '''
-    This class is used to specify the type of an attribute or array created by
-    a TypeManager instance.
-    '''
-
-    BOOL = 'bool'
-    CHAR = 'char'
-    UCHAR = 'uchar'
-    SHORT = 'short'
-    USHORT = 'ushort'
-    INT = 'int'
-    UINT = 'uint'
-    LONG = 'long'
-    ULONG = 'ulong'
-    LONG_LONG = 'long_long'
-    ULONG_LONG = 'ulong_long'
-    FLOAT = 'float'
-    DOUBLE = 'double'
-    POINTER = 'ptr'
-    STRING_PTR = 'string_ptr'
-    STRING_ARRAY = 'string_array'
-
-    @staticmethod
-    def is_native(type_name):
-        '''
-        Returns True if the given type name is a native type.
-        '''
-
-        return hasattr(Type, type_name.upper())
-
-
-# =============================================================================
 # >> Array
 # =============================================================================
 class Array(BasePointer):
@@ -156,7 +121,7 @@ class Array(BasePointer):
 
         # Every 1, 2, 4 or 8 bytes is a new value
         if Type.is_native(self._type_name):
-            return index * TYPE_SIZES[self._type_name]
+            return index * TYPE_SIZES[self._type_name.upper()]
 
         # Get the class of the custom type
         cls = self._manager[self._type_name]
@@ -219,29 +184,17 @@ class MemberFunction(Function):
         Calls the function dynamically.
         '''
 
-        result = super(MemberFunction, self).__call__(self._this, *args)
-
-        # Wrap the result if it's a custom type
-        if self._type_name not in Return.values:
-            return self._manager[self._type_name](result)
-
-        return result
+        return super(MemberFunction, self).__call__(self._this, *args)
 
     def call_trampoline(self, *args):
         '''
         Calls the trampoline dynamically.
         '''
 
-        result = super(MemberFunction, self).call_trampoline(
+        return super(MemberFunction, self).call_trampoline(
             self._this,
             *args
         )
-
-        # Wrap the result if it's a custom type
-        if self._type_name not in Return.values:
-            return self._manager[self._type_name](result)
-
-        return result
 
 
 # =============================================================================
@@ -353,9 +306,83 @@ class TypeManager(dict):
 
             return self[name](ptr)
 
-    def create_type_from_file(self, type_name, f, base=CustomType):
+        return convert
+
+    def create_type(self, name, cls_dict, bases=(CustomType,)):
         '''
-        Creates and registers a new type from a file.
+        Creates and registers a new class.
+        '''
+
+        # This is just a wrapper for __call__
+        return self(name, bases, cls_dict)
+
+    def create_pipe(self, cls_dict):
+        '''
+        Creates a new pipe class that acts like a collection of functions.
+        '''
+
+        # Just create a container for all the functions
+        return type('Pipe', (object,), cls_dict)
+
+    def create_pipe_from_file(self, f):
+        '''
+        Creates a pipe from a file or URL.
+        '''
+
+        # Read the data
+        raw_data = ConfigObj(f)
+
+        # Try to close the file. Maybe it was an url or a file object
+        try:
+            f.close()
+        except AttributeError:
+            pass
+
+        # Prepare functions
+        funcs = parse_data(
+            raw_data,
+            (
+                (Key.BINARY, str, NO_DEFAULT),
+                (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
+                (Key.ARGS, Key.as_args_tuple, ()),
+                (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
+                (Key.CONVENTION, Key.as_convention, Convention.CDECL),
+                (Key.SRV_CHECK, Key.as_bool, True),
+                (Key.DOC, str, None)
+            )
+        )
+
+        # Create the functions
+        cls_dict = {}
+        for name, data in funcs:
+            cls_dict[name] = self.pipe_function(*data)
+
+        return self.create_pipe(cls_dict)
+
+    def pipe_function(
+            self, binary, identifier, args=(), return_type=Return.VOID,
+            convention=Convention.CDECL, srv_check=True, doc=None):
+        '''
+        Creates a simple pipe function.
+        '''
+
+        # Create a converter, if it's not a native type
+        if return_type not in Return.values:
+            return_type = self.create_converter(return_type)
+
+        # Find the binary
+        bin = find_binary(binary, srv_check)
+
+        # Find the address and make it to a function
+        func = bin[identifier].make_function(convention, args, return_type)
+
+        # Add documentation
+        func.__doc__ = doc
+        return func
+
+    def create_type_from_file(self, type_name, f, bases=(CustomType,)):
+        '''
+        Creates and registers a new type from a file or URL.
         '''
 
         # Read the data
@@ -380,7 +407,7 @@ class TypeManager(dict):
             attributes = parse_data(
                 raw_data.get(method.__name__, {}),
                 (
-                    (Key.TYPE_NAME, str, NO_DEFAULT),
+                    (Key.TYPE_NAME, Key.as_attribute_type, NO_DEFAULT),
                     (Key.OFFSET, int, NO_DEFAULT),
                     (Key.DOC, str, None)
                 )
@@ -399,7 +426,7 @@ class TypeManager(dict):
             arrays = parse_data(
                 raw_data.get(method.__name__, {}),
                 (
-                    (Key.TYPE_NAME, str, NO_DEFAULT),
+                    (Key.TYPE_NAME, Key.as_attribute_type, NO_DEFAULT),
                     (Key.OFFSET, int, NO_DEFAULT),
                     (Key.LENGTH, int, None),
                     (Key.DOC, str, None)
@@ -443,7 +470,7 @@ class TypeManager(dict):
             cls_dict[name] = function(*data)
 
         # Now create and register the type
-        return self(type_name, (base,), cls_dict)
+        return self(type_name, bases, cls_dict)
 
     def instance_attribute(self, type_name, offset, doc=None):
         '''
@@ -493,7 +520,7 @@ class TypeManager(dict):
         def fget(ptr):
             # Get the base address of the pointer. We are now on
             # "instance level"
-            ptr = ptr.get_ptr(offset)
+            ptr = ptr.get_pointer(offset)
 
             # Handle custom type
             if not native_type:
@@ -505,7 +532,7 @@ class TypeManager(dict):
         def fset(ptr, value):
             # Get the base address of the pointer. We are now on
             # "instance level"
-            ptr = ptr.get_ptr(offset)
+            ptr = ptr.get_pointer(offset)
 
             # Handle custom type
             if not native_type:
@@ -513,7 +540,7 @@ class TypeManager(dict):
                     raise ValueError(
                         'The value must be an instance of the Pointer class')
 
-                # Q: Why do we use copy instead of set_ptr?
+                # Q: Why do we use copy instead of set_pointer?
                 # A: Maybe it's a shared pointer which means that other
                 #    classes might also have the address of it. So, changing
                 #    address in this particular class wouldn't affect the
@@ -559,7 +586,8 @@ class TypeManager(dict):
         '''
 
         def fget(ptr):
-            return Array(self, False, type_name, ptr.get_ptr(offset), length)
+            return Array(
+                self, False, type_name, ptr.get_pointer(offset), length)
 
         def fset(ptr, value):
             array = fget(ptr)
@@ -599,7 +627,7 @@ class TypeManager(dict):
         '''
 
         def fget(ptr):
-            return Array(self, True, type_name, ptr.get_ptr(offset), length)
+            return Array(self, True, type_name, ptr.get_pointer(offset), length)
 
         def fset(ptr, value):
             array = fget(ptr)
@@ -619,9 +647,8 @@ class TypeManager(dict):
         args = (Argument.POINTER,) + args
 
         # Create a converter, if it's not a native type
-        return_type = (
-            return_type if return_type in Return.values
-            else self.create_converter(return_type))
+        if return_type not in Return.values:
+            return_type = self.create_converter(return_type)
 
         def fget(ptr):
             # Create the virtual function
@@ -643,40 +670,40 @@ class TypeManager(dict):
             convention=Convention.THISCALL, doc=None):
         '''
         Creates a wrapper for a function.
-
-        TODO:
-        Make functions returned by this method accessable without having a
-        this pointer. E.g. for hooking.
-
-        WORKAROUND:
-        Wrap a NULL pointer.
         '''
 
         # Automatically add the this pointer argument
         args = (Argument.POINTER,) + args
 
         # Create a converter, if it's not a native type
-        return_type = (
-            return_type if return_type in Return.values
-            else self.create_converter(return_type))
+        if return_type not in Return.values:
+            return_type = self.create_converter(return_type)
 
-        def fget(ptr):
-            if ptr._binary is None:
-                raise ValueError('_binary was not specified.')
+        class fget(object):
+            def __get__(self, obj, cls):
+                if cls._binary is None:
+                    raise ValueError('_binary was not specified.')
 
-            # Create a binary object
-            binary = find_binary(ptr._binary, ptr._srv_check)
+                # Create a binary object
+                binary = find_binary(cls._binary, cls._srv_check)
 
-            # Create the function object
-            func = binary[identifier].make_function(
-                convention,
-                args,
-                return_type
-            )
+                # Create the function object
+                func = binary[identifier].make_function(
+                    convention,
+                    args,
+                    return_type
+                )
 
-            # Wrap it using MemberFunction, so we don't have to pass the this
-            # pointer anymore
-            return MemberFunction(self, return_type, func, ptr)
+                # Called with a this pointer?
+                if obj is not None:
+                    # Wrap the function using MemberFunction, so we don't have
+                    # to pass the this pointer anymore
+                    func = MemberFunction(self, return_type, func, ptr)
+
+                func.__doc__ = doc
+                return func
+
+        return fget()
 
     def function_typedef(
             self, name, args=(), return_type=Return.VOID,
@@ -688,12 +715,13 @@ class TypeManager(dict):
         '''
 
         # Create a converter, if it's not a native type
-        return_type = (
-            return_type if return_type in Return.values
-            else self.create_converter(return_type))
+        if return_type not in Return.values:
+            return_type = self.create_converter(return_type)
 
         def make_function(ptr):
-            return ptr.make_function(convention, args, return_type)
+            func = ptr.make_function(convention, args, return_type)
+            func.__doc__ = doc
+            return func
 
         return make_function
 

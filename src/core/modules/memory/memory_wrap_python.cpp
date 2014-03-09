@@ -161,7 +161,7 @@ OVERLOAD_GET_SET_TYPE(float, float)
 OVERLOAD_GET_SET_TYPE(double, double)
 
 // get_<type> overloads
-OVERLOAD_GET_TYPE(string_ptr, const char*)
+OVERLOAD_GET_TYPE(string_pointer, const char*)
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ptr_overload, GetPtr, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_array_overload, GetStringArray, 0, 1)
@@ -195,9 +195,9 @@ void export_memtools()
 		EXPOSE_GET_SET_TYPE(double, double)
 
 		// get_<type> methods
-		EXPOSE_GET_TYPE(string_ptr, const char*)
+		EXPOSE_GET_TYPE(string_pointer, const char*)
 
-		.def("get_ptr",
+		.def("get_pointer",
 			&CPointer::GetPtr,
 			get_ptr_overload(
 				"Returns the value at the given memory location.",
@@ -214,7 +214,7 @@ void export_memtools()
 		)
 		
 		// set_<type> methods
-		.def("set_ptr",
+		.def("set_pointer",
 			&CPointer::SetPtr,
 			set_ptr_overload(
 				"Sets the value at the given memory location.",
@@ -222,7 +222,7 @@ void export_memtools()
 			)
 		)
 
-		.def("set_string_ptr",
+		.def("set_string_pointer",
 			&CPointer::SetStringPtr,
 			set_string_ptr_overload(
 				"Sets the value at the given memory location.",
@@ -540,19 +540,19 @@ void export_sizes()
 	scope().attr("TYPE_SIZES") = dict();
 
 	// Native types
-	ADD_NATIVE_TYPE_SIZE("bool", bool)
-	ADD_NATIVE_TYPE_SIZE("char", char)
-	ADD_NATIVE_TYPE_SIZE("uchar", unsigned char)
-	ADD_NATIVE_TYPE_SIZE("short", short)
-	ADD_NATIVE_TYPE_SIZE("ushort", unsigned short)
-	ADD_NATIVE_TYPE_SIZE("int", int)
-	ADD_NATIVE_TYPE_SIZE("uint", unsigned int)
-	ADD_NATIVE_TYPE_SIZE("long", long)
-	ADD_NATIVE_TYPE_SIZE("ulong", unsigned long)
-	ADD_NATIVE_TYPE_SIZE("long_long", long long)
-	ADD_NATIVE_TYPE_SIZE("ulong_long", unsigned long long)
-	ADD_NATIVE_TYPE_SIZE("float", float)
-	ADD_NATIVE_TYPE_SIZE("double", double)
-	ADD_NATIVE_TYPE_SIZE("ptr", void*)
-	ADD_NATIVE_TYPE_SIZE("string", char*)
+	ADD_NATIVE_TYPE_SIZE("BOOL", bool)
+	ADD_NATIVE_TYPE_SIZE("CHAR", char)
+	ADD_NATIVE_TYPE_SIZE("UCHAR", unsigned char)
+	ADD_NATIVE_TYPE_SIZE("SHORT", short)
+	ADD_NATIVE_TYPE_SIZE("USHORT", unsigned short)
+	ADD_NATIVE_TYPE_SIZE("INT", int)
+	ADD_NATIVE_TYPE_SIZE("UINT", unsigned int)
+	ADD_NATIVE_TYPE_SIZE("LONG", long)
+	ADD_NATIVE_TYPE_SIZE("ULONG", unsigned long)
+	ADD_NATIVE_TYPE_SIZE("LONG_LONG", long long)
+	ADD_NATIVE_TYPE_SIZE("ULONG_LONG", unsigned long long)
+	ADD_NATIVE_TYPE_SIZE("FLOAT", float)
+	ADD_NATIVE_TYPE_SIZE("DOUBLE", double)
+	ADD_NATIVE_TYPE_SIZE("POINTER", void*)
+	ADD_NATIVE_TYPE_SIZE("STRING", char*)
 }

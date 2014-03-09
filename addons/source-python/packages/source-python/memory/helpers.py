@@ -6,7 +6,7 @@ import binascii
 import os
 
 # Source.Python
-from memory_c import Pointer
+from memory_c import *
 
 
 # =============================================================================
@@ -14,6 +14,7 @@ from memory_c import Pointer
 # =============================================================================
 __all__ = [
     'BasePointer',
+    'Type',
     'Key',
     'parse_data',
     'NO_DEFAULT'
@@ -39,6 +40,41 @@ class BasePointer(Pointer):
 
     def __rsub__(self, other):
         return self - other
+
+
+# =============================================================================
+# >> Type
+# =============================================================================
+class Type:
+    '''
+    This class is used to specify the type of an attribute or array created by
+    a TypeManager instance.
+    '''
+
+    BOOL = 'bool'
+    CHAR = 'char'
+    UCHAR = 'uchar'
+    SHORT = 'short'
+    USHORT = 'ushort'
+    INT = 'int'
+    UINT = 'uint'
+    LONG = 'long'
+    ULONG = 'ulong'
+    LONG_LONG = 'long_long'
+    ULONG_LONG = 'ulong_long'
+    FLOAT = 'float'
+    DOUBLE = 'double'
+    POINTER = 'pointer'
+    STRING_POINTER = 'string_pointer'
+    STRING_ARRAY = 'string_array'
+
+    @staticmethod
+    def is_native(type_name):
+        '''
+        Returns True if the given type name is a native type.
+        '''
+
+        return hasattr(Type, type_name.upper())
 
 
 # =============================================================================
@@ -93,9 +129,10 @@ class Key:
         Converts a string into a tuple containing <Argument> elements.
         '''
 
-        return tuple(
-            Argument.values[item] for item in
-            value.replace(' ', '').split(','))
+        if isinstance(value, str):
+            return (value,)
+            
+        return tuple(Argument.names[item] for item in value)
 
     @staticmethod
     def as_return_type(value):
@@ -104,7 +141,7 @@ class Key:
         string itself will be returned.
         '''
 
-        return Return.values.get(value, value)
+        return Return.names.get(value, value)
 
     @staticmethod
     def as_identifier(value):
@@ -125,6 +162,17 @@ class Key:
         '''
 
         return Convention.values[value]
+        
+    @staticmethod
+    def as_attribute_type(value):
+        '''
+        Converts a string into a <Type> value.
+        '''
+        
+        if Type.is_native(value):
+            return getattr(Type, value)
+            
+        return value
 
 
 # =============================================================================
