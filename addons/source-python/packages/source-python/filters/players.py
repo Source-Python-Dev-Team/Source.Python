@@ -134,10 +134,10 @@ _PlayerIterManagerInstance.register_filter('alive', _player_is_alive)
 _PlayerIterManagerInstance.register_filter('dead', _player_is_dead)
 
 # Loop through all teams in the game's team file
-for team in _game_teams:
+for team in _game_teams['names']:
 
     # Add the team to the _PlayerTeamsInstance dictionary
-    _PlayerTeamsInstance[team] = _game_teams[team]
+    _PlayerTeamsInstance[team] = _game_teams['names'][team]
 
     # Register the filter
     _PlayerIterManagerInstance.register_filter(
