@@ -46,7 +46,7 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(SOURCE_ENGINE EQUAL 1)
+If(SOURCE_ENGINE MATCHES "orangebox")
     # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
@@ -58,7 +58,7 @@ If(SOURCE_ENGINE EQUAL 1)
     )
 EndIf()
 
-If(SOURCE_ENGINE EQUAL 3)
+If(SOURCE_ENGINE MATCHES "csgo")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux/interfaces_i486.a
