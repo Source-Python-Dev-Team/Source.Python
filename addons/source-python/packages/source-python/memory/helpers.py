@@ -146,7 +146,7 @@ class Key:
         Converts a string into a <Convention> object.
         '''
 
-        return Convention.values[value]
+        return Convention.names[value]
 
     @staticmethod
     def as_attribute_type(value):
