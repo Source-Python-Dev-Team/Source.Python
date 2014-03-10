@@ -246,8 +246,8 @@ class Array(BasePointer):
         # _length specified. Otherwise the server would hang or crash.
         if self._length is None:
             raise ValueError(
-                'Cannot iterate over the array without ' +
-                '__length__ being specified.')
+                'Cannot iterate over the array without _length being specif' +
+                'ied.')
 
         for index in range(self._length):
             yield self[index]

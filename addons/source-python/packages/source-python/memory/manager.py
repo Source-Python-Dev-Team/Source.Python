@@ -254,12 +254,18 @@ class TypeManager(dict):
             pass
 
         # Prepare general type information
-        cls_dict = {
-            '_binary': raw_data.get(Key.BINARY, CustomType._binary),
-            '_srv_check': Key.as_bool(
-                raw_data.get(Key.SRV_CHECK, str(CustomType._srv_check))),
-            '_size': raw_data.get(Key.SIZE, CustomType._size)
-        }
+        data = tuple(parse_data(
+            # Discard all subkeys and add the new dict to a another dict to
+            # make it work with parse_data(). Okay, this can be improved...
+            {0: dict((k, v) for k, v in raw_data.items() if not isinstance(v, dict))},
+            (
+                (Key.BINARY, str, CustomType._binary),
+                (Key.SRV_CHECK, Key.as_bool, CustomType._srv_check),
+                (Key.SIZE, int, CustomType._size)
+            )
+        ))[0][1]
+        
+        cls_dict = dict(zip(('_binary', '_src_check', '_size'), data))
 
         # Prepare pointer and instance attributes
         for method in (self.instance_attribute, self.pointer_attribute):
