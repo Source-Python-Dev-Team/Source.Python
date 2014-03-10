@@ -309,7 +309,7 @@ void export_memtools()
 		)
 
 		// Special methods
-		.def(int_(self))
+		.def("__int__", make_getter(&CPointer::m_ulAddr))
 
         .def(!self)
 
