@@ -30,6 +30,7 @@
 #include "icvar.h"
 #include "convar.h"
 #include "modules/export_main.h"
+#include "modules/memory/memory_tools.h"
 
 
 //-----------------------------------------------------------------------------
@@ -85,6 +86,8 @@ void export_cvar_interface()
 			args("name"),
 			reference_existing_object_policy()
 		)
+
+		ADD_MEM_TOOLS(ICvar, "_Cvar")
 	;
 
 	scope().attr("Cvar") = object(ptr(g_pCVar));
@@ -151,6 +154,8 @@ void export_concommandbase()
 			&ConCommandBase::GetDLLIdentifier,
 			"Returns the DLL identifier."
 		)
+
+		ADD_MEM_TOOLS(ConCommandBase, "ConCommandBase")
 	;
 
 	// TODO: Rename or move to ConVar
@@ -179,6 +184,8 @@ void export_concommandbase()
 			&IConVar::IsFlagSet,
 			"Returns whether the given flag is set."
 		)
+
+		ADD_MEM_TOOLS(IConVar, "_IConVar")
 	;
 }
 
@@ -340,6 +347,8 @@ void export_convar()
 			"Sets a bool value.",
 			args("value")
 		)
+
+		ADD_MEM_TOOLS(ConVar, "ConVar")
 	;
 }
 

@@ -28,6 +28,7 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
+#include "modules/memory/memory_tools.h"
 #include "edict.h"
 #include ENGINE_INCLUDE_PATH(globals_wrap_python.h)
 
@@ -131,7 +132,9 @@ void export_globals()
 		)
 
 		.NOT_IMPLEMENTED("is_remote_client")
-	);
+		
+	) ADD_MEM_TOOLS(CGlobalVarsBase, "_GlobalVarsBase"); // GlobalsBase_Visitor
+
 
 	Globals_Visitor(
 
@@ -183,7 +186,8 @@ void export_globals()
 		
 		.NOT_IMPLEMENTED_ATTR("map_group_name")
 		.NOT_IMPLEMENTED_ATTR("server_count")
-	);
+
+	) ADD_MEM_TOOLS(CGlobalVars, "_GlobalVars"); // Globals_Visitor
 
 	scope().attr("GlobalVars") = object(ptr(gpGlobals));
 }

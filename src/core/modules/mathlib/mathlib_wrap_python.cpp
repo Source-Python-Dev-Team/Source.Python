@@ -42,6 +42,7 @@ void export_vector();
 void export_qangle();
 void export_quaternion();
 void export_cplane_t();
+void export_radian_euler();
 
 DECLARE_SP_MODULE(mathlib_c)
 {
@@ -49,6 +50,7 @@ DECLARE_SP_MODULE(mathlib_c)
 	export_qangle();
 	export_quaternion();
 	export_cplane_t();
+	export_radian_euler();
 }
 
 //-----------------------------------------------------------------------------
@@ -237,7 +239,7 @@ void export_vector()
 			args("other")
 		)
 
-		ADD_MEM_TOOLS(Vector)
+		ADD_MEM_TOOLS(Vector, "Vector")
 	;
 }
 
@@ -309,6 +311,8 @@ void export_qangle()
 		.def(self - self)
 		.def(self * other<float>())
 		.def(self / other<float>())
+
+		ADD_MEM_TOOLS(QAngle, "QAngle")
 	;
 }
 
@@ -359,6 +363,8 @@ void export_quaternion()
 		.def_readwrite("w",
 			&Quaternion::w
 		)
+
+		ADD_MEM_TOOLS(Quaternion, "Quaternion")
 	;
 }
 
@@ -368,7 +374,7 @@ void export_quaternion()
 void export_cplane_t()
 {
 	// TODO: Documentation
-	class_<cplane_t>("cplane")
+	class_<cplane_t>("plane")
 		.def_readwrite("normal",
 			&cplane_t::normal
 		)
@@ -384,6 +390,8 @@ void export_cplane_t()
 		.def_readwrite("signbits",
 			&cplane_t::signbits
 		)
+
+		ADD_MEM_TOOLS(cplane_t, "plane")
 	;
 }
 
@@ -433,5 +441,7 @@ void export_radian_euler()
 		.def_readwrite("z",
 			&RadianEuler::z
 		)
+
+		ADD_MEM_TOOLS(RadianEuler, "RadianEuler")
 	;
 }

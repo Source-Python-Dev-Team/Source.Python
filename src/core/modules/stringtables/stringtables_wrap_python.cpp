@@ -28,6 +28,8 @@
 // Includes.
 //---------------------------------------------------------------------------------
 #include "../export_main.h"
+#include "modules/memory/memory_tools.h"
+
 #include "utility/wrap_macros.h"
 #include "networkstringtabledefs.h"
 #include "eiface.h"
@@ -242,6 +244,8 @@ void export_stringtable()
 			"Returns the length of the user data of the given string.",
 			("string")
 		)
+
+		ADD_MEM_TOOLS(INetworkStringTable, "StringTable")
 	;
 }
 
@@ -284,6 +288,8 @@ void export_stringtable_container()
 			"Allows clients to add strings to the given table.",
 			("table", "state")
 		)
+
+		ADD_MEM_TOOLS(INetworkStringTableContainer, "_StringTables")
 	;
 	
 	// Singleton.

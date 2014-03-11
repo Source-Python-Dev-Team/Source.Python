@@ -761,7 +761,7 @@ void export_engine_server()
 		.NOT_IMPLEMENTED("reserve_server_for_queued_game")
 		.NOT_IMPLEMENTED("get_engine_hltv_info")
 
-	); // IVEngineServer_Visitor
+	) ADD_MEM_TOOLS(IVEngineServer, "_EngineServer"); // IVEngineServer_Visitor
 
 	scope().attr("EngineServer") = object(ptr(engine));
 }
@@ -835,7 +835,7 @@ void export_engine_sound()
 		// Only available for CS:GO
 		.NOT_IMPLEMENTED("is_looping_sound")
 
-	); // IEngineSound_Visitor
+	) ADD_MEM_TOOLS(IEngineSound, "_EngineSound"); // IEngineSound_Visitor
 
 	scope().attr("EngineSound") = object(ptr(enginesound));
 
@@ -990,6 +990,8 @@ void export_engine_trace()
 	class_<Ray_t, boost::noncopyable>("Ray", no_init)
 		.def("__init__", make_constructor(&Ray_tExt::CreateRay1))
 		.def("__init__", make_constructor(&Ray_tExt::CreateRay2))
+
+		ADD_MEM_TOOLS(Ray_t, "Ray")
 	;
 
 	class_<IEngineTrace, boost::noncopyable>("_EngineTrace", no_init)
@@ -1061,6 +1063,8 @@ void export_engine_trace()
 		//retrieve brush planes and contents, returns true if data is being returned in the output pointers, false if the brush doesn't exist
 		virtual bool GetBrushInfo( int iBrush, CUtlVector<Vector4D> *pPlanesOut, int *pContentsOut ) = 0;
 		*/
+
+		ADD_MEM_TOOLS(IEngineTrace, "_EngineTrace")
 	;
 
 	scope().attr("EngineTrace") = object(ptr(enginetrace));
@@ -1097,6 +1101,8 @@ void export_engine_trace()
 		.def_readwrite("start_solid",
 			&CBaseTrace::startsolid
 		)
+
+		ADD_MEM_TOOLS(CBaseTrace, "BaseTrace")
 	;
 	
 	scope().attr("DISPSURF_FLAG_SURFACE") = DISPSURF_FLAG_SURFACE;
@@ -1146,6 +1152,8 @@ void export_engine_trace()
 		.def_readwrite("hitbox",
 			&CGameTrace::hitbox
 		)
+
+		ADD_MEM_TOOLS(CGameTrace, "GameTrace")
 	;
 
 	class_<csurface_t>("Surface")
@@ -1160,6 +1168,8 @@ void export_engine_trace()
 		.def_readwrite("flags",
 			&csurface_t::flags
 		)
+
+		ADD_MEM_TOOLS(csurface_t, "Surface")
 	;
 
 	// Trace filter baseclass
@@ -1173,6 +1183,8 @@ void export_engine_trace()
 			pure_virtual(&ITraceFilterWrap::GetTraceType),
 			"Returns the trace type."
 		)
+
+		ADD_MEM_TOOLS_WRAPPER(ITraceFilterWrap, ITraceFilter, "TraceFilter")
 	;
 
 	// Enumerator baseclass
@@ -1181,6 +1193,8 @@ void export_engine_trace()
 			&IEntityEnumeratorWrap::EnumEntity,
 			"Gets called with each handle."
 		)
+
+		ADD_MEM_TOOLS_WRAPPER(IEntityEnumeratorWrap, IEntityEnumerator, "EntityEnumerator")
 	;
 
 	// Trace types

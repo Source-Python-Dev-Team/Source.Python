@@ -32,6 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
 #include "mrecipientfilter.h"
+#include "modules/memory/memory_tools.h"
 
 //-----------------------------------------------------------------------------
 // Exposes the recipientfilter_c module.
@@ -69,6 +70,8 @@ void export_mrecipientfilter()
 			"Obtains the player index at the slot in the filter",
 			args("slot")
 		)
+
+		ADD_MEM_TOOLS(IRecipientFilter, "_RecipientFilter")
 	;
 
 	// TODO: Rename class
@@ -100,5 +103,7 @@ void export_mrecipientfilter()
 			"Returns true if the given index is in the recipient, false otherwise.",
 			args("iPlayer")
 		)
+
+		ADD_MEM_TOOLS(MRecipientFilter, "CMRecipientFilter")
 	;
 }

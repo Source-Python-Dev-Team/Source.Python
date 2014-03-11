@@ -30,6 +30,7 @@
 #include "player_generator_wrap.h"
 #include "modules/entity/entity_wrap.h"
 #include "modules/export_main.h"
+#include "modules/memory/memory_tools.h"
 
 #include "public/game/server/iplayerinfo.h"
 #include "inetchannelinfo.h"
@@ -178,6 +179,8 @@ void export_playerinfo()
 			&IPlayerInfo::GetMaxHealth,
 			"Returns the player's maximum health."
 		)
+
+		ADD_MEM_TOOLS(IPlayerInfo, "PlayerInfo")
 	;
 }
 
@@ -193,6 +196,8 @@ void export_netinfo()
 			&INetChannelInfo::GetTimeConnected,
 			"Returns the amount of time the player has been connected."
 		)
+
+		ADD_MEM_TOOLS(INetChannelInfo, "NetChannelInfo")
 	;
 }
 

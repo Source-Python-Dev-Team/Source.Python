@@ -30,6 +30,7 @@
 #include "KeyValues.h"
 #include "filesystem.h"
 #include "modules/export_main.h"
+#include "modules/memory/memory_tools.h"
 
 //---------------------------------------------------------------------------------
 // Externals
@@ -296,6 +297,8 @@ void export_keyvalues()
 			"Sets the given key's boolean value.",
 			args("key_name", "value")
 		)
+
+		ADD_MEM_TOOLS(KeyValues, "KeyValues")
 	;
 }
 

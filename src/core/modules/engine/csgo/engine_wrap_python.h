@@ -46,7 +46,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_single_player_shared_memory_space_ove
 
 // Visitor function
 template<class T>
-void IVEngineServer_Visitor(T cls)
+T IVEngineServer_Visitor(T cls)
 {
 	cls
 		.def("get_launch_options",
@@ -262,6 +262,8 @@ void IVEngineServer_Visitor(T cls)
 		)
 		*/
 	;
+
+	return cls;
 }
 
 
@@ -283,7 +285,7 @@ inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter&
 
 // Visitor function
 template<class T>
-void IEngineSound_Visitor(T cls)
+T IEngineSound_Visitor(T cls)
 {
 	cls
 		.def("is_looping_sound",
@@ -300,6 +302,8 @@ void IEngineSound_Visitor(T cls)
 	scope().attr("MASK_NPCFLUID") = MASK_NPCFLUID;
 	scope().attr("MASK_SHOT_BRUSHONLY") = MASK_SHOT_BRUSHONLY;
 	scope().attr("MASK_NPCWORLDSTATIC_FLUID") = MASK_NPCWORLDSTATIC_FLUID;
+
+	return cls;
 }
 
 

@@ -41,7 +41,7 @@ extern IEngineTrace* enginetrace;
 //---------------------------------------------------------------------------------
 // Visitor function
 template<class T>
-void IVEngineServer_Visitor(T cls)
+T IVEngineServer_Visitor(T cls)
 {
 	cls
 		.def("user_message_begin",
@@ -74,6 +74,8 @@ void IVEngineServer_Visitor(T cls)
 			&IVEngineServer::GetServerVersion
 		)
 	;
+
+	return cls;
 }
 
 
@@ -95,8 +97,9 @@ inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter&
 
 // Visitor function
 template<class T>
-void IEngineSound_Visitor(T cls)
+T IEngineSound_Visitor(T cls)
 {
+	return cls;
 }
 
 

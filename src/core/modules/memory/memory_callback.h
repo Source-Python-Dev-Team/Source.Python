@@ -57,7 +57,13 @@ inline void CallbackCaller(CCallback* pCallback, unsigned long ulEBP, unsigned l
 template<>
 inline void* CallbackCaller(CCallback* pCallback, unsigned long ulEBP, unsigned long ulECX)
 {
-	CPointer* pPtr = extract<CPointer *>(CallCallback(pCallback, ulEBP, ulECX));
+	object oRetVal = CallCallback(pCallback, ulEBP, ulECX);
+
+	// Can we get a pointer of it?
+	if(PyObject_HasAttrString(oRetVal.ptr(), "_ptr"))
+		oRetVal = oRetVal.attr("_ptr")();
+
+	CPointer* pPtr = extract<CPointer *>(oRetVal);
     return (void *) pPtr->m_ulAddr;
 }
 

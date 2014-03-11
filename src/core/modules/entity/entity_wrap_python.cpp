@@ -35,6 +35,8 @@
 #include "modules/export_main.h"
 using namespace boost::python;
 
+#include "modules/memory/memory_tools.h"
+
 
 //-----------------------------------------------------------------------------
 // Entity module definition.
@@ -104,6 +106,8 @@ void export_base_entity_handle()
 			"Assigns a value to the handle.",
 			reference_existing_object_policy()
 		)
+
+		ADD_MEM_TOOLS(CBaseHandle, "BaseEntityHandle")
 	;
 }
 
@@ -122,6 +126,8 @@ void export_handle_entity()
 			&IHandleEntity::GetRefEHandle,
 			reference_existing_object_policy()
 		)
+
+		ADD_MEM_TOOLS(IHandleEntity, "HandleEntity")
 	;
 }
 
@@ -147,6 +153,8 @@ void export_server_unknown()
 			&IServerUnknownExt::GetBaseEntity,
 			"Returns the CBasEntity pointer for this entity."
 		)
+
+		ADD_MEM_TOOLS(IServerUnknown, "ServerUnknown")
 	;
 }
 
@@ -171,6 +179,8 @@ void export_server_entity()
 			"Sets the model of this entity.",
 			args("index")
 		)
+
+		ADD_MEM_TOOLS(IServerEntity, "ServerEntity")
 	;
 }
 
@@ -228,6 +238,8 @@ void export_server_networkable()
 			"Returns the current visible data.",
 			reference_existing_object_policy()
 		)
+
+		ADD_MEM_TOOLS(IServerNetworkable, "ServerNetworkable")
 	;
 }
 
@@ -347,6 +359,8 @@ void export_edict()
 		.def_readwrite("networkable",
 			&CBaseEdict::m_pNetworkable
 		)
+
+		ADD_MEM_TOOLS(CBaseEdict, "_BaseEdict")
 	;
 
 	class_< edict_t, bases<CBaseEdict> >("Edict")
@@ -442,6 +456,8 @@ void export_edict()
 			"The server timestampe at which the edict was freed."
 		)
 		*/
+
+		ADD_MEM_TOOLS(edict_t, "Edict")
 	;
 }
 

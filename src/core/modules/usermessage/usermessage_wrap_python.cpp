@@ -30,6 +30,8 @@
 #include "modules/export_main.h"
 using namespace boost::python;
 
+#include "modules/memory/memory_tools.h"
+
 #include "utility/sp_util.h"
 #include "usermessage.h"
 #include "Color.h"
@@ -201,5 +203,7 @@ void export_color()
 
 		.def(self == self)
 		.def(self != self)
+
+		ADD_MEM_TOOLS(Color, "Color")
 	;
 }

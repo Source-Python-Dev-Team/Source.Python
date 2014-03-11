@@ -25,11 +25,13 @@
 */
 
 template<class T>
-void GlobalsBase_Visitor(T cls)
+T GlobalsBase_Visitor(T cls)
 {
+	return cls;
 }
 
 template<class T>
-void Globals_Visitor(T cls)
+T Globals_Visitor(T cls)
 {
+	return cls;
 }

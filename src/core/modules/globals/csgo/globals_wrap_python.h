@@ -27,30 +27,29 @@
 #include "edict.h"
 
 template<class T>
-void GlobalsBase_Visitor(T cls)
+T GlobalsBase_Visitor(T cls)
 {
 	cls
 		.def("is_remote_client",
 			&CGlobalVarsBase::IsRemoteClient
 		)
 	;
+
+	return cls;
 }
 
 template<class T>
-void Globals_Visitor(T cls)
+T Globals_Visitor(T cls)
 {
 	cls
 		.add_property("map_group_name",
 			make_getter(&CGlobalVars::mapGroupName, return_value_policy<return_by_value>())
 		)
 
-		// TODO: Is this a list?
-		.def_readonly("edicts",
-			&CGlobalVars::pEdicts
-		)
-
 		.def_readonly("server_count",
 			&CGlobalVars::serverCount
 		)
 	;
+
+	return cls;
 }

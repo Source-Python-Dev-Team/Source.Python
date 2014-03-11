@@ -30,6 +30,8 @@
 #include "modules/export_main.h"
 using namespace boost::python;
 
+#include "modules/memory/memory_tools.h"
+
 #include "edict.h"
 #include "public/game/server/iplayerinfo.h"
 
@@ -67,6 +69,8 @@ void export_botmanager()
 			args("bot_name"),
 			reference_existing_object_policy()
 		)
+
+		ADD_MEM_TOOLS(IBotManager, "_BotManager")
 	;
 
 	scope().attr("BotManager") = object(ptr(botmanager));
@@ -132,6 +136,8 @@ void export_botcontroller()
 			"Fires a virtual move command to the bot.",
 			args("cmd")
 		)
+
+		ADD_MEM_TOOLS(IBotController, "BotController")
 	;
 }
 
@@ -212,5 +218,7 @@ void export_botcmd()
 			&CBotCmd::hasbeenpredicted,
 			"Client only, tracks whether we've predicted this command at least once."
 		)
+
+		ADD_MEM_TOOLS(CBotCmd, "BotCmd")
 	;
 }

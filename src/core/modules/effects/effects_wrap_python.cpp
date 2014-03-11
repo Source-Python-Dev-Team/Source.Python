@@ -37,6 +37,7 @@
 #include "IEffects.h"
 #include "utility/wrap_macros.h"
 #include "modules/export_main.h"
+#include "modules/memory/memory_tools.h"
 
 
 //-----------------------------------------------------------------------------
@@ -90,6 +91,8 @@ void export_effects()
 			&IPredictionSystem::SuppressEvents
 		)
 		.staticmethod("suppress_events")
+
+		ADD_MEM_TOOLS(IPredictionSystem, "PredictionSystem")
 	;
 
 	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("_Effects", no_init)
@@ -160,6 +163,8 @@ void export_effects()
 			"Set to True to suppress effect sounds.",
 			args("suppress")
 		)
+
+		ADD_MEM_TOOLS(IEffects, "_Effects")
 	;
 
 	scope().attr("Effects") = object(ptr(effects));

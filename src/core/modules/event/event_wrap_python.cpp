@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "igameevents.h"
 #include "modules/export_main.h"
+#include "modules/memory/memory_tools.h"
 
 #ifndef EVENT_DEBUG_ID_INIT
 	#define EVENT_DEBUG_ID_INIT 42
@@ -166,6 +167,8 @@ void export_igameevent()
 			"Sets the given key name.",
 			args("key_name", "value")
 		)
+
+		ADD_MEM_TOOLS(IGameEvent, "GameEvent")
 	;
 }
 
@@ -184,6 +187,8 @@ void export_igameeventlistener()
 		.def("get_event_debug_id",
 			&CGameEventListener2::GetEventDebugID
 		)
+
+		ADD_MEM_TOOLS_WRAPPER(CGameEventListener2, IGameEventListener2, "GameEventListener")
 	;
 }
 
@@ -266,6 +271,8 @@ void export_igameeventmanager()
 			 do that for you.",
 			args("game_event")
 		)
+
+		ADD_MEM_TOOLS(IGameEventManager2, "_GameEventManager")
 	;
 
 	scope().attr("GameEventManager") = object(ptr(gameeventmanager));

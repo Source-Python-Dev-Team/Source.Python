@@ -33,6 +33,7 @@
 #include "say_command_wrap.h"
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
+#include "modules/memory/memory_tools.h"
 
 //-----------------------------------------------------------------------------
 // Externs.
@@ -148,6 +149,8 @@ void export_command()
 			&CCommand::MaxCommandLength
 		)
 		.staticmethod("get_max_command_length")
+
+		ADD_MEM_TOOLS(CCommand, "Command")
 	;
 }
 
