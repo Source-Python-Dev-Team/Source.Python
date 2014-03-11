@@ -418,8 +418,26 @@ void export_edict()
 			args("prop_name", "value")
 		)
 
-		.def("get_key_value",
-			&CEdictExt::GetKeyValue,
+		.def("get_key_value_string",
+			&CEdictExt::GetKeyValueString,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
+		.def("get_key_value_int",
+			&CEdictExt::GetKeyValueInt,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
+		.def("get_key_value_float",
+			&CEdictExt::GetKeyValueFloat,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
+		.def("get_key_value_vector",
+			&CEdictExt::GetKeyValueVector,
 			"Returns the value of the given field name.",
 			args("field_name")
 		)

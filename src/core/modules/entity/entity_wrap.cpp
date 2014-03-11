@@ -142,7 +142,7 @@ void CEdictExt::SetPropVector( edict_t* pEdict, const char* prop_name, Vector ve
 	prop.Set<Vector>(vecValue);
 }
 
-const char* CEdictExt::GetKeyValue(edict_t* pEdict, const char* szName)
+const char* CEdictExt::GetKeyValueString(edict_t* pEdict, const char* szName)
 {
 	char szResult[1024];
 	CBaseEntity* pEntity = pEdict->GetUnknown()->GetBaseEntity();
@@ -153,6 +153,31 @@ const char* CEdictExt::GetKeyValue(edict_t* pEdict, const char* szName)
 		return *(char **) szResult;
 
 	return szResult;
+}
+
+int CEdictExt::GetKeyValueInt(edict_t* pEdict, const char* szName)
+{
+	const char* szResult = GetKeyValueString(pEdict, szName);
+
+	// Let's handle this with Python for better error checking
+	return extract<int>(eval("lambda x: int(x)")(str(szResult)));
+}
+
+float CEdictExt::GetKeyValueFloat(edict_t* pEdict, const char* szName)
+{
+	const char* szResult = GetKeyValueString(pEdict, szName);
+
+	// Let's handle this with Python for better error checking
+	return extract<float>(eval("lambda x: float(x)")(str(szResult)));
+}
+
+Vector CEdictExt::GetKeyValueVector(edict_t* pEdict, const char* szName)
+{
+	const char* szResult = GetKeyValueString(pEdict, szName);
+
+	// Let's handle this with Python for better error checking
+	object vec = eval("lambda x: tuple(map(float, x.split(' ')))")(str(szResult));
+	return Vector(extract<float>(vec[0]), extract<float>(vec[1]), extract<float>(vec[2]));
 }
 
 //-----------------------------------------------------------------------------

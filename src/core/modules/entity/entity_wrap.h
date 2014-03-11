@@ -61,8 +61,11 @@ public:
 	static void        SetPropFloat( edict_t* pEdict, const char* prop_name, float flValue );
 	static void        SetPropString( edict_t* pEdict, const char* prop_name, const char* szValue );
 	static void        SetPropVector( edict_t* pEdict, const char* prop_name, Vector vecValue );
-
-	static const char* GetKeyValue(edict_t* pEdict, const char* szName);
+	
+	static const char* GetKeyValueString(edict_t* pEdict, const char* szName);
+	static int         GetKeyValueInt(edict_t* pEdict, const char* szName);
+	static float       GetKeyValueFloat(edict_t* pEdict, const char* szName);
+	static Vector      GetKeyValueVector(edict_t* pEdict, const char* szName);
 
 	template<class T>
 	static void        SetKeyValue(edict_t* pEdict, const char* szName, T value)
