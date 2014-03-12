@@ -5,6 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from memory_c import Function
+from memory_c import HookType
 from core import AutoUnload
 
 
