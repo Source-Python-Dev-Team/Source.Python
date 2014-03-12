@@ -479,6 +479,11 @@ void export_dyncall()
 		.value("THISCALL", CONV_THISCALL)
 	;
 
+	enum_<HookType_t>("HookType")
+		.value("PRE", HOOKTYPE_PRE)
+		.value("POST", HOOKTYPE_POST)
+	;
+
 	// Other constants that are very useful.
 	scope().attr("DC_ERROR_NONE") = DC_ERROR_NONE;
 	scope().attr("DC_ERROR_UNSUPPORTED_MODE") = DC_ERROR_UNSUPPORTED_MODE;
