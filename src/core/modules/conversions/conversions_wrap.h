@@ -46,18 +46,24 @@ extern IPlayerInfoManager* playerinfomanager;
 //-----------------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------------
+CBaseHandle BaseHandleFromEdict( edict_t* edict );
 edict_t* EdictFromIndex( unsigned int iEntIndex );
 edict_t* EdictFromUserid( unsigned int userid );
 edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo );
-
+unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo );
+int IntHandleFromBaseHandle( CBaseHandle basehandle );
+CPointer* PointerFromEdict( edict_t* edict );
 IPlayerInfo* PlayerInfoFromIndex( unsigned int index );
-IPlayerInfo* PlayerInfoFromUserid( unsigned int userid );
+IPlayerInfo* PlayerInfoFromPointer( CPointer* pPtr );
 
 //-----------------------------------------------------------------------------
 // Functions that return an entity's index.
 //-----------------------------------------------------------------------------
 inline unsigned int IndexFromEdict( edict_t* pEdict )
 {
+	if (!pEdict || pEdict->IsFree())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve index from edict.")
+
 #ifdef ENGINE_ORANGEBOX
 	return (unsigned int) engine->IndexOfEdict(pEdict);
 #else
@@ -65,62 +71,48 @@ inline unsigned int IndexFromEdict( edict_t* pEdict )
 #endif
 }
 
-inline unsigned int IndexFromBaseHandle( CBaseHandle* basehandle )
+inline unsigned int IndexFromBaseHandle( CBaseHandle basehandle )
 {
-	return basehandle->GetEntryIndex();
+	if (!basehandle.IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve index from handle.")
+
+	return basehandle.GetEntryIndex();
 }
 
 inline unsigned int IndexFromIntHandle( int iHandle )
 {
 	CBaseHandle hHandle(iHandle);
 	unsigned int iIndex = hHandle.GetEntryIndex();
-	edict_t *pEntity = EdictFromIndex(iIndex);
-	if (!pEntity || pEntity->IsFree())
-	{
-		return NULL;
-	}
-	IServerNetworkable *pNetworkable = pEntity->GetNetworkable();
-	IHandleEntity *pEnt = pNetworkable->GetEntityHandle();
-	if (!pEnt)
-	{
-		return NULL;
-	}
-	const CBaseHandle hTestHandle = pEnt->GetRefEHandle();
-	if (!hTestHandle.IsValid())
-	{
-		return NULL;
-	}
-	if (hHandle.GetSerialNumber() != hTestHandle.GetSerialNumber())
-	{
-		return NULL;
-	}
+	const CBaseHandle hTestHandle = BaseHandleFromEdict(EdictFromIndex(iIndex));
+	if (!hTestHandle.IsValid() || (hHandle.GetSerialNumber() != hTestHandle.GetSerialNumber()))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve index from int handle.")
+
 	return iIndex;
 }
 
 inline unsigned int IndexFromPointer( CPointer* pPtr )
 {
+	if (!pPtr || !pPtr->IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve index from pointer.")
+
 	IServerUnknown *pUnknown = (IServerUnknown *) pPtr->m_ulAddr;
 	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
 	if (!pNetworkable)
-	{
-		return NULL;
-	}
-	edict_t* pEdict = pNetworkable->GetEdict();
-	if (!pEdict)
-	{
-		return NULL;
-	}
-	return IndexFromEdict(pEdict);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve index from pointer.")
+
+	return IndexFromEdict(pNetworkable->GetEdict());
 }
 
 inline unsigned int IndexFromUserid( unsigned int userid )
 {
-	edict_t* pEdict = EdictFromUserid(userid);
-	return pEdict ? IndexFromEdict(pEdict) : NULL;
+	return IndexFromEdict(EdictFromUserid(userid));
 }
 
 inline unsigned int IndexFromPlayerInfo( IPlayerInfo* playerinfo )
 {
+	if (!playerinfo)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve index from playerinfo.")
+
 	return IndexFromEdict(EdictFromPlayerInfo(playerinfo));
 }
 
@@ -129,21 +121,25 @@ inline unsigned int IndexFromPlayerInfo( IPlayerInfo* playerinfo )
 //-----------------------------------------------------------------------------
 inline edict_t* EdictFromIndex( unsigned int iEntIndex )
 {
-#ifdef ENGINE_ORANGEBOX
-	return engine->PEntityOfEntIndex(iEntIndex);
-#else
 	if(iEntIndex < (unsigned int) gpGlobals->maxEntities)
 	{
+#ifdef ENGINE_ORANGEBOX
+		return engine->PEntityOfEntIndex(iEntIndex);
+#else
 		return (edict_t *) (gpGlobals->pEdicts + iEntIndex);
-	}
-
-	return NULL;
 #endif
+	}
+	
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve edict from index.")
+	return NULL; // To fix a warning
 }
 
-inline edict_t* EdictFromBaseHandle( CBaseHandle* basehandle )
+inline edict_t* EdictFromBaseHandle( CBaseHandle basehandle )
 {
-	return EdictFromIndex(basehandle->GetEntryIndex());
+	if (!basehandle.IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve edict from base handle.")
+
+	return EdictFromIndex(IndexFromBaseHandle(basehandle));
 }
 
 inline edict_t* EdictFromIntHandle( int inthandle )
@@ -153,6 +149,9 @@ inline edict_t* EdictFromIntHandle( int inthandle )
 
 inline edict_t* EdictFromPointer( CPointer* pPtr )
 {
+	if (!pPtr || !pPtr->IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve edict from pointer.")
+
 	return EdictFromIndex(IndexFromPointer(pPtr));
 }
 
@@ -169,46 +168,71 @@ inline edict_t* EdictFromUserid( unsigned int userid )
 			return pEdict;
 		}
 	}
-
-	return NULL;
+	
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve edict from userid.")
+	return NULL; // TO fix a warning
 }
 
 inline edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return playerinfo ? EdictFromUserid(playerinfo->GetUserID()) : NULL;
+	if (!playerinfo)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve edict from playerinfo.")
+
+	return EdictFromUserid(UseridFromPlayerInfo(playerinfo));
 }
 
 //-----------------------------------------------------------------------------
 // Functions that return an entity's CBaseHandle instance.
 //-----------------------------------------------------------------------------
-inline const CBaseHandle BaseHandleFromIndex( unsigned int index )
+inline CBaseHandle BaseHandleFromIndex( unsigned int index )
 {
-	return EdictFromIndex(index)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	return BaseHandleFromEdict(EdictFromIndex(index));
 }
 
-inline const CBaseHandle BaseHandleFromEdict( edict_t* edict )
+inline CBaseHandle BaseHandleFromEdict( edict_t* edict )
 {
-	return edict->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	if (!edict || edict->IsFree())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve base handle from edict.")
+
+	IServerNetworkable* pNetworkable = edict->GetNetworkable();
+	if (!pNetworkable)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve base handle from edict.")
+
+	IHandleEntity* pHandleEntity = pNetworkable->GetEntityHandle();
+	if (!pHandleEntity)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve base handle from edict.")
+
+	const CBaseHandle& handle = pHandleEntity->GetRefEHandle();
+	if (!handle.IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve base handle from edict.")
+
+	return handle;
 }
 
-inline const CBaseHandle BaseHandleFromIntHandle( int inthandle )
+inline CBaseHandle BaseHandleFromIntHandle( int inthandle )
 {
 	return CBaseHandle(inthandle);
 }
 
-inline const CBaseHandle BaseHandleFromPointer( CPointer* pPtr )
+inline CBaseHandle BaseHandleFromPointer( CPointer* pPtr )
 {
-	return EdictFromIndex(IndexFromPointer(pPtr))->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	if (!pPtr || !pPtr->IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve base handle from pointer.")
+
+	return BaseHandleFromEdict(EdictFromPointer(pPtr));
 }
 
-inline const CBaseHandle BaseHandleFromUserid( unsigned int userid )
+inline CBaseHandle BaseHandleFromUserid( unsigned int userid )
 {
-	return EdictFromUserid(userid)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	return BaseHandleFromEdict(EdictFromUserid(userid));
 }
 
-inline const CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo* playerinfo )
+inline CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return EdictFromPlayerInfo(playerinfo)->GetNetworkable()->GetEntityHandle()->GetRefEHandle();
+	if (!playerinfo)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve base handle from playerinfo.")
+
+	return BaseHandleFromEdict(EdictFromPlayerInfo(playerinfo));
 }
 
 //-----------------------------------------------------------------------------
@@ -216,32 +240,44 @@ inline const CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 //-----------------------------------------------------------------------------
 inline int IntHandleFromIndex( unsigned int index )
 {
-	return EdictFromIndex(index)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	return IntHandleFromBaseHandle(BaseHandleFromIndex(index));
 }
 
 inline int IntHandleFromEdict( edict_t* edict )
 {
-	return edict->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	if (!edict || edict->IsFree())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve int handle from edict.")
+
+	return IntHandleFromBaseHandle(BaseHandleFromEdict(edict));
 }
 
-inline int IntHandleFromBaseHandle( CBaseHandle* basehandle )
+inline int IntHandleFromBaseHandle( CBaseHandle basehandle )
 {
-	return basehandle->ToInt();
+	if (!basehandle.IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve int handle from base handle.")
+
+	return basehandle.ToInt();
 }
 
 inline int IntHandleFromPointer( CPointer* pPtr )
 {
-	return EdictFromIndex(IndexFromPointer(pPtr))->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	if (!pPtr || !pPtr->IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve int handle from pointer.")
+
+	return IntHandleFromEdict(EdictFromPointer(pPtr));
 }
 
 inline int IntHandleFromUserid( unsigned int userid )
 {
-	return EdictFromUserid(userid)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	return IntHandleFromEdict(EdictFromUserid(userid));
 }
 
 inline int IntHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return EdictFromPlayerInfo(playerinfo)->GetNetworkable()->GetEntityHandle()->GetRefEHandle().ToInt();
+	if (!playerinfo)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve int handle from playerinfo.")
+
+	return IntHandleFromEdict(EdictFromPlayerInfo(playerinfo));
 }
 
 //-----------------------------------------------------------------------------
@@ -249,32 +285,41 @@ inline int IntHandleFromPlayerInfo( IPlayerInfo* playerinfo )
 //-----------------------------------------------------------------------------
 inline CPointer* PointerFromIndex( unsigned int index )
 {
-	return new CPointer((unsigned long)(EdictFromIndex(index)->GetNetworkable()->GetBaseEntity()));
+	return PointerFromEdict(EdictFromIndex(index));
 }
 
 inline CPointer* PointerFromEdict( edict_t* edict )
 {
+	if (!edict || edict->IsFree())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve pointer from edict.")
+
 	return new CPointer((unsigned long)(edict->GetNetworkable()->GetBaseEntity()));
 }
 
-inline CPointer* PointerFromBaseHandle( CBaseHandle* basehandle )
+inline CPointer* PointerFromBaseHandle( CBaseHandle basehandle )
 {
-	return new CPointer((unsigned long)(EdictFromIndex(basehandle->GetEntryIndex())->GetNetworkable()->GetBaseEntity()));
+	if (!basehandle.IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve pointer from base handle.")
+
+	return PointerFromEdict(EdictFromBaseHandle(basehandle));
 }
 
 inline CPointer* PointerFromIntHandle( int inthandle )
 {
-	return new CPointer((unsigned long)(EdictFromIndex(IndexFromIntHandle(inthandle))->GetNetworkable()->GetBaseEntity()));
+	return PointerFromEdict(EdictFromIntHandle(inthandle));
 }
 
 inline CPointer* PointerFromUserid( unsigned int userid )
 {
-	return new CPointer((unsigned long)(EdictFromPlayerInfo(PlayerInfoFromUserid(userid))->GetNetworkable()->GetBaseEntity()));
+	return PointerFromEdict(EdictFromUserid(userid));
 }
 
 inline CPointer* PointerFromPlayerInfo( IPlayerInfo* playerinfo )
 {
-	return new CPointer((unsigned long)(EdictFromPlayerInfo(playerinfo)->GetNetworkable()->GetBaseEntity()));
+	if (!playerinfo)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve pointer from playerinfo.")
+
+	return PointerFromEdict(EdictFromPlayerInfo(playerinfo));
 }
 
 //-----------------------------------------------------------------------------
@@ -282,31 +327,43 @@ inline CPointer* PointerFromPlayerInfo( IPlayerInfo* playerinfo )
 //-----------------------------------------------------------------------------
 inline unsigned int UseridFromIndex( unsigned int index )
 {
-	return PlayerInfoFromIndex(index)->GetUserID();
+	return UseridFromPlayerInfo(PlayerInfoFromIndex(index));
 }
 
 inline unsigned int UseridFromEdict( edict_t* edict )
 {
-	return PlayerInfoFromIndex(IndexFromEdict(edict))->GetUserID();
+	if (!edict || edict->IsFree())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve userid from edict.")
+
+	return UseridFromIndex(IndexFromEdict(edict));
 }
 
-inline unsigned int UseridFromBaseHandle( CBaseHandle* basehandle )
+inline unsigned int UseridFromBaseHandle( CBaseHandle basehandle )
 {
-	return PlayerInfoFromIndex(basehandle->GetEntryIndex())->GetUserID();
+	if (!basehandle.IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve userid from base handle.")
+
+	return UseridFromIndex(IndexFromBaseHandle(basehandle));
 }
 
 inline unsigned int UseridFromIntHandle( int inthandle )
 {
-	return PlayerInfoFromIndex(IndexFromIntHandle(inthandle))->GetUserID();
+	return UseridFromBaseHandle(BaseHandleFromIntHandle(inthandle));
 }
 
 inline unsigned int UseridFromPointer( CPointer* pPtr )
 {
-	return PlayerInfoFromIndex(IndexFromPointer(pPtr))->GetUserID();
+	if (!pPtr || !pPtr->IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve userid from pointer.")
+
+	return UseridFromPlayerInfo(PlayerInfoFromPointer(pPtr));
 }
 
 inline unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo )
 {
+	if (!playerinfo)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve userid from playerinfo.")
+
 	return playerinfo->GetUserID();
 }
 
@@ -316,9 +373,7 @@ inline unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo )
 inline IPlayerInfo* PlayerInfoFromIndex( unsigned int index )
 {
 	if (index < 1 || index > (unsigned int) gpGlobals->maxClients)
-	{
-		return NULL;
-	}
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve playerinfo from index.")
 
 	edict_t* pEdict = EdictFromIndex(index);
 	if (pEdict && !pEdict->IsFree() &&
@@ -326,18 +381,25 @@ inline IPlayerInfo* PlayerInfoFromIndex( unsigned int index )
 	{
 		return playerinfomanager->GetPlayerInfo(pEdict);
 	}
-
-	return NULL;
+	
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve playerinfo from index.")
+	return NULL; // To fix a warning
 }
 
-inline IPlayerInfo* PlayerInfoFromEdict( edict_t* edict )
+inline IPlayerInfo* PlayerInfoFromEdict( edict_t* pEdict )
 {
-	return PlayerInfoFromIndex(IndexFromEdict(edict));
+	if (!pEdict || pEdict->IsFree())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve playerinfo from edict.")
+
+	return playerinfomanager->GetPlayerInfo(pEdict);
 }
 
-inline IPlayerInfo* PlayerInfoFromBaseHandle( CBaseHandle* basehandle )
+inline IPlayerInfo* PlayerInfoFromBaseHandle( CBaseHandle basehandle )
 {
-	return PlayerInfoFromIndex(basehandle->GetEntryIndex());
+	if (!basehandle.IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve playerinfo from base handle.")
+
+	return PlayerInfoFromIndex(basehandle.GetEntryIndex());
 }
 
 inline IPlayerInfo* PlayerInfoFromIntHandle( int inthandle )
@@ -347,13 +409,15 @@ inline IPlayerInfo* PlayerInfoFromIntHandle( int inthandle )
 
 inline IPlayerInfo* PlayerInfoFromPointer( CPointer* pPtr )
 {
+	if (!pPtr || !pPtr->IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve playerinfo from pointer.")
+
 	return PlayerInfoFromIndex(IndexFromPointer(pPtr));
 }
 
 inline IPlayerInfo* PlayerInfoFromUserid( unsigned int userid )
 {
-	edict_t* pEdict = EdictFromUserid(userid);
-	return pEdict ? playerinfomanager->GetPlayerInfo(pEdict) : NULL;
+	return PlayerInfoFromEdict(EdictFromUserid(userid));
 }
 
 #endif // _CONVERSIONS_WRAP_H
