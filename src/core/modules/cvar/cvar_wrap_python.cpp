@@ -195,12 +195,21 @@ void export_concommandbase()
 class ConVarExt
 {
 public:
-	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue, int flags,
-		const char* szHelpString, bool bMin, float fMin, bool bMax, float fMax )
+	static void Deleter(ConVar *pConVar)
 	{
-		ConVar *pConVar = new ConVar(strdup(szName), szDefaultValue, flags,
-			strdup(szHelpString), bMin, fMin, bMax, fMax);
-		return boost::shared_ptr<ConVar>(new ConVar(*pConVar));
+		// Do nothing...
+	}
+
+	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue, int flags,
+		const char *szHelpString, bool bMin, float fMin, bool bMax, float fMax)
+	{
+		ConVar *pConVar = g_pCVar->FindVar(szName);
+		if (!pConVar)
+		{
+			return boost::shared_ptr<ConVar>(new ConVar(strdup(szName), szDefaultValue, flags,
+				strdup(szHelpString), bMin, fMin, bMax, fMax), &Deleter);
+		}
+		return boost::shared_ptr<ConVar>(pConVar, &Deleter);
 	}
 
 	static bool HasMin(ConVar* pConVar)
@@ -237,16 +246,17 @@ public:
 
 void export_convar()
 {
-	class_<ConVar, bases<ConCommandBase, IConVar>, boost::noncopyable >("ConVar", no_init)
+	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("ConVar", no_init)
 		// We have to overload __init__. Otherwise we would get an error because of "no_init"
 		.def("__init__",
-			make_constructor( &ConVarExt::__init__,
+			make_constructor(&ConVarExt::__init__,
 				default_call_policies(),
 				("szName", arg("szDefaultValue")="", arg("flags")=0, arg("szHelpString")="", arg("bMin")=false,
 					arg("fMin")=0.0, arg("bMax")=false, arg("fMax")=0.0)
-			)
+			),
+			"Creates a new server variable. If it already exists, the existing one will be returned."
 		)
-		
+
 		.def("get_float",
 			&ConVar::GetFloat,
 			"Returns the value as a float."
