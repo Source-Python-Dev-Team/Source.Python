@@ -315,6 +315,18 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Datamap module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_DATAMAP_MODULE_HEADERS
+	core/modules/datamap/datamap_wrap.h
+	core/modules/datamap/${SOURCE_ENGINE}/datamap_wrap_python.h
+)
+
+Set(SOURCEPYTHON_DATAMAP_MODULE_SOURCES
+    core/modules/datamap/datamap_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -372,6 +384,9 @@ Set(SOURCEPYTHON_MODULE_FILES
 
 	${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
 	${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
+
+	${SOURCEPYTHON_DATAMAP_MODULE_HEADERS}
+	${SOURCEPYTHON_DATAMAP_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -400,6 +415,7 @@ Source_Group("Header Files\\Module\\Player"                 FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\RecipientFilter"        FILES ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\DataMap"                FILES ${SOURCEPYTHON_DATAMAP_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -424,6 +440,7 @@ Source_Group("Source Files\\Module\\RecipientFilter"        FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Usermessage\\${SDK}"    FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
 Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_SOURCES})
+Source_Group("Source Files\\Module\\DataMap"                FILES ${SOURCEPYTHON_MODULE_DATAMAP_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
