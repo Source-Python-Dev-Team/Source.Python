@@ -114,18 +114,6 @@ CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, object re
     m_ulAddr = (unsigned long) a.make();
 }
 
-CCallback::~CCallback()
-{	
-	if (m_bAutoDealloc)
-	{
-		PythonLog(4, "[SP] Automatically deallocating callback at %u.", m_ulAddr);
-		Dealloc();
-
-		// This prevents ~CPointer from calling CPointer::Dealloc() again
-		m_bAutoDealloc = false;
-	}
-}
-
 int CCallback::GetPopSize()
 {
 	/*

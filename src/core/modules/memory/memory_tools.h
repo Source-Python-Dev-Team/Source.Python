@@ -202,7 +202,6 @@ class CPointer
 {
 public:
 	CPointer(unsigned long ulAddr = 0, bool bAutoDealloc = false);
-	virtual ~CPointer();
 	
 	operator unsigned long() const { return m_ulAddr; }
 
@@ -281,6 +280,11 @@ public:
 
 	CFunction*          MakeFunction(Convention_t eConv, boost::python::tuple args, object return_type);
 	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, boost::python::tuple args, object return_type);
+
+	static void         CallCallback(PyObject* self, char* szCallback);
+	static void         PreDealloc(PyObject* self);
+	static void         PreRealloc(PyObject* self, int iSize);
+	static void         __del__(PyObject* self);
 
 public:
 	unsigned long m_ulAddr;

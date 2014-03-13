@@ -75,7 +75,6 @@ class CCallback: public CFunction
 {
 public:
     CCallback(object oCallback, Convention_t eConv, tuple args, object return_type, bool bAutoDealloc = true);
-	virtual ~CCallback();
 
     int          GetPopSize();
     int          GetArgumentOffset(int iIndex);

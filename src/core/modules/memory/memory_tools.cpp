@@ -55,15 +55,6 @@ CPointer::CPointer(unsigned long ulAddr /* = 0 */, bool bAutoDealloc /* false */
 	m_bAutoDealloc = bAutoDealloc;
 }
 
-CPointer::~CPointer()
-{
-	if (m_bAutoDealloc)
-	{
-		PythonLog(4, "[SP] Automatically deallocating pointer at %u.", m_ulAddr);
-		Dealloc();
-	}
-}
-
 void CPointer::SetStringPtr(char* szText, int iOffset /* = 0 */)
 {
 	if (!IsValid())
@@ -200,6 +191,47 @@ CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, object return_
 CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple args, object return_type)
 {
 	return GetVirtualFunc(iIndex)->MakeFunction(eConv, args, return_type);
+}
+
+void CPointer::CallCallback(PyObject* self, char* szCallback)
+{
+	PyObject* callback = PyObject_GetAttrString(self, szCallback);
+	if (callback && PyCallable_Check(callback))
+	{
+		if (!PyObject_HasAttrString(callback, "__self__"))
+		{
+			xdecref(PyObject_CallFunction(callback, "O", self));
+		}
+		else
+		{
+			xdecref(PyObject_CallMethod(self, szCallback, NULL));
+		}
+	}
+	xdecref(callback);
+}
+
+void CPointer::PreDealloc(PyObject* self)
+{
+	CallCallback(self, "on_dealloc");
+	CPointer* pointer = extract<CPointer *>(self);
+	pointer->Dealloc();
+}
+
+void CPointer::PreRealloc(PyObject* self, int iSize)
+{
+	CallCallback(self, "on_realloc");
+	CPointer* pointer = extract<CPointer *>(self);
+	pointer->Realloc(iSize);
+}
+ 
+void CPointer::__del__(PyObject* self)
+{
+	if (PyObject_IsTrue(PyObject_GetAttrString(self, "auto_dealloc")))
+	{
+		unsigned long ulAddr = extract<unsigned long>(PyObject_GetAttrString(self, "address"));
+		PythonLog(4, "[SP] Automatically deallocating pointer at %u.", ulAddr);
+		PreDealloc(self);
+	}
 }
 
 //-----------------------------------------------------------------------------

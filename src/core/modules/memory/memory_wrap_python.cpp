@@ -261,14 +261,18 @@ void export_memtools()
 		)
 
 		.def("realloc",
-			&CPointer::Realloc,
+			&CPointer::PreRealloc,
 			"Reallocates a memory block.",
 			args("size")
 		)
 
 		.def("dealloc",
-			&CPointer::Dealloc,
+			&CPointer::PreDealloc,
 			"Deallocates a memory block."
+		)
+
+		.def("__del__",
+			&CPointer::__del__
 		)
 
 		 .def("get_size",
