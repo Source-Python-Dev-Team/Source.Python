@@ -226,10 +226,10 @@ void CPointer::PreRealloc(PyObject* self, int iSize)
  
 void CPointer::__del__(PyObject* self)
 {
-	if (PyObject_IsTrue(PyObject_GetAttrString(self, "auto_dealloc")))
+	CPointer* ptr = extract<CPointer *>(self);
+	if (ptr->m_bAutoDealloc)
 	{
-		unsigned long ulAddr = extract<unsigned long>(PyObject_GetAttrString(self, "address"));
-		PythonLog(4, "[SP] Automatically deallocating pointer at %u.", ulAddr);
+		PythonLog(4, "[SP] Automatically deallocating pointer at %u.", ptr->m_ulAddr);
 		PreDealloc(self);
 	}
 }

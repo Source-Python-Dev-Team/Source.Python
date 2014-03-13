@@ -100,6 +100,16 @@ class CustomType(BasePointer):
                 raise ValueError(
                     'No constructor was specified, but arguments were passed.')
 
+    def on_dealloc(self):
+        '''
+        This method is automatically called, when the pointer gets
+        deallocated. It then calls the destructor if it was specified.
+        '''
+
+        # Call the destructor if it was specified
+        if self._destructor is not None:
+            self._destructor()
+
 
 # =============================================================================
 # >> TypeManager
@@ -264,7 +274,7 @@ class TypeManager(dict):
                 (Key.SIZE, int, CustomType._size)
             )
         ))[0][1]
-        
+
         cls_dict = dict(zip(('_binary', '_src_check', '_size'), data))
 
         # Prepare pointer and instance attributes
