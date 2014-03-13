@@ -118,7 +118,7 @@ class BaseEntity(object):
 
         # Return the value of the given keyvalue
         return getattr(
-            self.edict, 'get_keyvalue_{0}'.format(self.keyvalues[item]))(item)
+            self.edict, 'get_key_value_{0}'.format(self.keyvalues[item]))(item)
 
     def _get_offset(self, item):
         '''Gets the value of the given offset'''
@@ -126,11 +126,9 @@ class BaseEntity(object):
         # Get the offset so that we don't have to make multiple calls
         offset = self.offsets[item]
 
-        # Get the Pointer instance for the entity
-        pointer = Pointer(self.pointer)
-
         # Return the value of the offset
-        return getattr(pointer, 'get_{0}'.format(offset.type))(offset.offset)
+        return getattr(
+            self.pointer, 'get_{0}'.format(offset.type))(offset.offset)
 
     def _get_function(self, item):
         '''Calls a dynamic function'''
@@ -213,7 +211,7 @@ class BaseEntity(object):
         '''Sets the value of the given keyvalue'''
 
         # Set the keyvalue's value
-        getattr(self.edict, 'set_keyvalue_{0}'.format(
+        getattr(self.edict, 'set_key_value_{0}'.format(
             self.keyvalues[item]))(item, value)
 
     def _set_offset(self, item, value):
@@ -222,11 +220,9 @@ class BaseEntity(object):
         # Get the offset so that we don't have to make multiple calls
         offset = self.offsets[item]
 
-        # Get the Pointer instance for the entity
-        pointer = Pointer(self.pointer)
-
         # Set the offset's value
-        getattr(pointer, 'set_{0}'.format(offset.type))(offset.offset, value)
+        getattr(
+            self.pointer, 'set_{0}'.format(offset.type))(value, offset.offset)
 
     def get_color(self):
         '''Returns a 4 part tuple (RGBA) for the entity's color'''

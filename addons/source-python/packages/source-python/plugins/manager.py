@@ -204,5 +204,12 @@ class PluginManager(OrderedDict):
                 # Unload the object
                 instance._unload_instance()
 
+            # Is the instance's callback native to the given module?
+            if (hasattr(instance, 'callback') and
+                getattr(instance, 'callback').__module__ == module):
+
+                # Unload the object
+                instance._unload_instance()
+
         # Delete the module
         del sys.modules[module]

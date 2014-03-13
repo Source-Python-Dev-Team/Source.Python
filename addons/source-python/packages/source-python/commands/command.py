@@ -42,10 +42,6 @@ class _BaseCommand(AutoUnload):
         self._manager_class.register_commands(
             self.names, self.callback, *self.args, **self.kwargs)
 
-        # Set the instance module so that the command
-        # can be unregistered properly on unload
-        self.__module__ = self.callback.__module__
-
         # Return the object
         return self
 

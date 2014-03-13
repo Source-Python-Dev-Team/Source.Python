@@ -45,10 +45,6 @@ class Event(AutoUnload):
         # Store the callback
         self.callback = callback
 
-        # Set the instance module so that the event
-        # can be unregistered properly on unload
-        self.__module__ = self.callback.__module__
-
         # Register the event
         EventRegistry.register_for_event(self.callback.__name__, self.callback)
 

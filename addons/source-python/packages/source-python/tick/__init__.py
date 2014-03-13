@@ -50,10 +50,6 @@ class Tick(AutoUnload):
         # Store the callback
         self.callback = callback
 
-        # Set the instance module so that the listener
-        # can be unregistered properly on unload
-        self.__module__ = self.callback.__module__
-
         # Register the tick listener
         TickListenerManager.register_listener(self.callback)
 
