@@ -32,11 +32,13 @@
 #include "eiface.h"
 #include "server_class.h"
 #include "utility/call_python.h"
+#include "networkstringtabledefs.h"
 
 //-----------------------------------------------------------------------------
 // Externals
 //-----------------------------------------------------------------------------
 extern IServerGameDLL* servergamedll;
+extern INetworkStringTableContainer *networkstringtable;
 
 //-----------------------------------------------------------------------------
 // Dump Server Classes
@@ -113,5 +115,29 @@ void DumpServerClasses()
 		PythonLog("dump", "%s %d [%d properties]:", pCurrentServerClass->GetName(), pCurrentServerClass->m_InstanceBaselineIndex, iNumProps);
 		DumpServerClassProps(pTable, 1);
 		pCurrentServerClass = pCurrentServerClass->m_pNext;
+	}
+}
+
+//-----------------------------------------------------------------------------
+// Dump String Tables.
+//-----------------------------------------------------------------------------
+void DumpStringTables()
+{
+	for (int iTableIndex = 0;iTableIndex < networkstringtable->GetNumTables();iTableIndex++)
+	{
+		INetworkStringTable *pCurrentTable = networkstringtable->GetTable(iTableIndex);
+		if (pCurrentTable)
+		{
+			int iTableLength = pCurrentTable->GetNumStrings();
+			PythonLog("dump", "%s%s (Length: %i)", iTableIndex > 0 ? "\n" : "", pCurrentTable->GetTableName(), iTableLength);
+			for (int iStringIndex = 0;iStringIndex < iTableLength;iStringIndex++)
+			{
+				const char *szCurrentString = pCurrentTable->GetString(iStringIndex);
+				if (szCurrentString != "")
+				{
+					PythonLog("dump", "\t%s", szCurrentString);
+				}
+			}
+		}
 	}
 }

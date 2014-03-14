@@ -50,4 +50,9 @@ void export_dump_functions()
 		DumpServerClasses,
 		"Returns a dictionary of all server classes."
 	);
+	
+	def("dump_string_tables",
+		DumpStringTables,
+		"Returns a dictionary of all server classes."
+	);
 }
