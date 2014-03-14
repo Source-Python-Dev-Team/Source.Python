@@ -68,6 +68,10 @@ class DataMapSharedExt
 public:
 	static typedescription_t __getitem__(datamap_t pDataMap, int iIndex)
 	{
+		if (iIndex < 0 || iIndex > (pDataMap.dataNumFields - 1))
+		{
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Invalid index.");
+		}
 		return pDataMap.dataDesc[iIndex];
 	}
 };
