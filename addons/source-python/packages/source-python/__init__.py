@@ -116,6 +116,8 @@ if auth_providers:
 # =============================================================================
 # >> USER_SETTINGS SETUP
 # =============================================================================
+from commands.client import ClientCommandManager
+from commands.say import SayCommandManager
 from settings.menu import _SettingsMenuInstance
 
 # Are there any private user settings say commands?
