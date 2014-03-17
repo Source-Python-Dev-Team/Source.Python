@@ -24,46 +24,31 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _DATAMAP_ORANGEBOX_H
-#define _DATAMAP_ORANGEBOX_H
+#ifndef _DATAMAP_ORANGEBOX_WRAP_H
+#define _DATAMAP_ORANGEBOX_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "datamap_wrap.h"
+#include "datamap.h"
 
 
 //-----------------------------------------------------------------------------
-// Expose datamap_t.
+// typedescription_t extension class.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_datamap(T DataMap)
+class TypeDescriptionExt
 {
-	DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
-	DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
-	DataMap.def_readonly("packed_size", &datamap_t::packed_size);
-}
+public:
+	static int get_offset(typedescription_t pTypeDesc)
+	{
+		return pTypeDesc.fieldOffset[TD_OFFSET_NORMAL];
+	}
+	
+	static int get_packed_offset(typedescription_t pTypeDesc)
+	{
+		return pTypeDesc.fieldOffset[TD_OFFSET_PACKED];
+	}
+};
 
 
-//-----------------------------------------------------------------------------
-// Expose typedescription_t.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_type_description(T TypeDescription)
-{
-	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset)	;
-	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose fieldtype_t.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_field_types(T FieldTypes)
-{
-	// Nothing specific to OrangeBox...
-}
-
-
-#endif // _DATAMAP_ORANGEBOX_H
+#endif // _DATAMAP_ORANGEBOX_WRAP_H

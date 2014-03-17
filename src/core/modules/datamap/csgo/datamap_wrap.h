@@ -24,46 +24,31 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _DATAMAP_ORANGEBOX_H
-#define _DATAMAP_ORANGEBOX_H
+#ifndef _DATAMAP_CSGO_WRAP_H
+#define _DATAMAP_CSGO_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "datamap_wrap.h"
-
-
-//-----------------------------------------------------------------------------
-// Expose datamap_t.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_datamap(T DataMap)
-{
-	DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
-	DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
-	DataMap.def_readonly("packed_size", &datamap_t::packed_size);
-}
+#include "datamap.h"
 
 
 //-----------------------------------------------------------------------------
 // Expose typedescription_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_type_description(T TypeDescription)
+class TypeDescExt
 {
-	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset)	;
-	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
-}
+public:
+	static int get_flat_offset(typedescription_t pTypeDesc)
+	{
+		return pTypeDesc.flatOffset[TD_OFFSET_NORMAL];
+	}
+	
+	static int get_packed_offset(typedescription_t pTypeDesc)
+	{
+		return pTypeDesc.flatOffset[TD_OFFSET_PACKED];
+	}
+};
 
 
-//-----------------------------------------------------------------------------
-// Expose fieldtype_t.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_field_types(T FieldTypes)
-{
-	// Nothing specific to OrangeBox...
-}
-
-
-#endif // _DATAMAP_ORANGEBOX_H
+#endif // _DATAMAP_CSGO_WRAP_H

@@ -30,58 +30,43 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "datamap.h"
+#include "datamap_wrap.h"
+
 
 //-----------------------------------------------------------------------------
 // Expose datamap_t.
 //-----------------------------------------------------------------------------
 template<class T>
-T DataMap_Visitor(T cls)
+void export_engine_specific_datamap(T DataMap)
 {
-	cls
-		.def_readonly("packed_size", &datamap_t::m_nPackedSize)
-		
-		// TODO: Expose optimized_datamap_t...
-		.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap)
-	;
-	return cls;
+	DataMap.def_readonly("packed_size", &datamap_t::m_nPackedSize);
+
+	// TODO: Expose optimized_datamap_t...
+	DataMap.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap);
 }
+
 
 //-----------------------------------------------------------------------------
 // Expose typedescription_t.
 //-----------------------------------------------------------------------------
-class TypeDescExt
-{
-public:
-	static int get_flat_offset(typedescription_t pTypeDesc)
-	{
-		// return pTypeDesc.flatOffset[TD_OFFSET_NORMAL];
-		return NULL;
-	}
-};
-
 template<class T>
-T TypeDesc_Visitor(T cls)
+void export_engine_specific_type_description(T TypeDescription)
 {
-	cls
-		.def_readonly("offset", &typedescription_t::fieldOffset)
-		.def_readonly("flat_offset", &TypeDescExt::get_flat_offset)
-		.def_readonly("flat_group", &typedescription_t::flatGroup)
-	;
-	return cls;
+	TypeDescription.def_readonly("offset", &typedescription_t::fieldOffset);
+	TypeDescription.add_property("flat_offset", &TypeDescExt::get_flat_offset);
+	TypeDescription.add_property("packed_offset", &TypeDescExt::get_packed_offset);
+	TypeDescription.def_readonly("flat_group", &typedescription_t::flatGroup);
 }
 
 //-----------------------------------------------------------------------------
 // Expose fieldtype_t.
 //-----------------------------------------------------------------------------
 template<class T>
-T FieldTypes_Visitor(T cls)
+void export_engine_specific_field_types(T FieldTypes)
 {
-	cls
-		.value("INTEGER64", FIELD_INTEGER64)
-		.value("VECTOR4D", FIELD_VECTOR4D)
-	;
-	return cls;
+	FieldTypes.value("INTEGER64", FIELD_INTEGER64);
+	FieldTypes.value("VECTOR4D", FIELD_VECTOR4D);
 }
+
 
 #endif // _DATAMAP_CSGO_H
