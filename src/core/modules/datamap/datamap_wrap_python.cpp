@@ -244,24 +244,25 @@ void export_field_types()
 // Expose flags.
 //-----------------------------------------------------------------------------
 void export_type_description_flags()
-{	
-	scope datamap_c = scope();
+{
 	
-	// Flags...
-	datamap_c.attr("FTYPEDESC_GLOBAL") = FTYPEDESC_GLOBAL;
-	datamap_c.attr("FTYPEDESC_SAVE") = FTYPEDESC_SAVE;
-	datamap_c.attr("FTYPEDESC_KEY") = FTYPEDESC_KEY;
-	datamap_c.attr("FTYPEDESC_INPUT") = FTYPEDESC_INPUT;
-	datamap_c.attr("FTYPEDESC_OUTPUT") = FTYPEDESC_OUTPUT;
-	datamap_c.attr("FTYPEDESC_FUNCTIONTABLE") = FTYPEDESC_FUNCTIONTABLE;
-	datamap_c.attr("FTYPEDESC_PTR") = FTYPEDESC_PTR;
-	datamap_c.attr("FTYPEDESC_OVERRIDE") = FTYPEDESC_OVERRIDE;
-	datamap_c.attr("FTYPEDESC_INSENDTABLE") = FTYPEDESC_INSENDTABLE;
-	datamap_c.attr("FTYPEDESC_PRIVATE") = FTYPEDESC_PRIVATE;
-	datamap_c.attr("FTYPEDESC_NOERRORCHECK") = FTYPEDESC_NOERRORCHECK;
-	datamap_c.attr("FTYPEDESC_MODELINDEX") = FTYPEDESC_MODELINDEX;
-	datamap_c.attr("FTYPEDESC_INDEX") = FTYPEDESC_INDEX;
-	datamap_c.attr("FTYPEDESC_VIEW_OTHER_PLAYER") = FTYPEDESC_VIEW_OTHER_PLAYER;
-	datamap_c.attr("FTYPEDESC_VIEW_OWN_TEAM") = FTYPEDESC_VIEW_OWN_TEAM;
-	datamap_c.attr("FTYPEDESC_VIEW_NEVER") = FTYPEDESC_VIEW_NEVER;
+	enum_<TypeDescriptionSharedExt::Flags> TypeDescriptionFlags("TypeDescriptionFlags");
+	
+	// Values...
+	TypeDescriptionFlags.value("GLOBAL", TypeDescriptionSharedExt::GLOBAL);
+	TypeDescriptionFlags.value("SAVE", TypeDescriptionSharedExt::SAVE);
+	TypeDescriptionFlags.value("KEY", TypeDescriptionSharedExt::KEY);
+	TypeDescriptionFlags.value("INPUT", TypeDescriptionSharedExt::INPUT);
+	TypeDescriptionFlags.value("OUTPUT", TypeDescriptionSharedExt::OUTPUT);
+	TypeDescriptionFlags.value("FUNCTIONTABLE", TypeDescriptionSharedExt::FUNCTIONTABLE);
+	TypeDescriptionFlags.value("PTR", TypeDescriptionSharedExt::PTR);
+	TypeDescriptionFlags.value("OVERRIDE", TypeDescriptionSharedExt::OVERRIDE);
+	TypeDescriptionFlags.value("INSENDTABLE", TypeDescriptionSharedExt::INSENDTABLE);
+	TypeDescriptionFlags.value("PRIVATE", TypeDescriptionSharedExt::PRIVATE);
+	TypeDescriptionFlags.value("NOERRORCHECK", TypeDescriptionSharedExt::NOERRORCHECK);
+	TypeDescriptionFlags.value("MODELINDEX", TypeDescriptionSharedExt::MODELINDEX);
+	TypeDescriptionFlags.value("INDEX", TypeDescriptionSharedExt::INDEX);
+	TypeDescriptionFlags.value("VIEW_OTHER_PLAYER", TypeDescriptionSharedExt::VIEW_OTHER_PLAYER);
+	TypeDescriptionFlags.value("VIEW_OWN_TEAM", TypeDescriptionSharedExt::VIEW_OWN_TEAM);
+	TypeDescriptionFlags.value("VIEW_NEVER", TypeDescriptionSharedExt::VIEW_NEVER);
 }
