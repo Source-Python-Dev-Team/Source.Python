@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 // typedescription_t extension class.
 //-----------------------------------------------------------------------------
-class TypeDescExt
+class TypeDescriptionExt
 {
 public:
 	static int get_flat_offset(typedescription_t pTypeDesc)

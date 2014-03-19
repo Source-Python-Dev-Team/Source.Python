@@ -245,7 +245,6 @@ void export_field_types()
 //-----------------------------------------------------------------------------
 void export_type_description_flags()
 {
-	
 	enum_<TypeDescriptionSharedExt::Flags> TypeDescriptionFlags("TypeDescriptionFlags");
 	
 	// Values...

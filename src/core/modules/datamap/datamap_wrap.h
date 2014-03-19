@@ -32,6 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "modules/memory/memory_tools.h"
 #include "edict.h"
+#include "isaverestore.h"
 #include "datamap.h"
 #include "game/server/variant_t.h"
 #include "Color.h"
@@ -108,8 +109,12 @@ public:
 	
 	static CPointer *get_input(typedescription_t pTypeDesc)
 	{
-		// HACK!
-		return new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc, false);
+		if (pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE)
+		{
+			// HACK!
+			return new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc, false);
+		}
+		return NULL;
 	}
 };
 

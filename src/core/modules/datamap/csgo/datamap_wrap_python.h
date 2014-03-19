@@ -53,8 +53,8 @@ template<class T>
 void export_engine_specific_type_description(T TypeDescription)
 {
 	TypeDescription.def_readonly("offset", &typedescription_t::fieldOffset);
-	TypeDescription.add_property("flat_offset", &TypeDescExt::get_flat_offset);
-	TypeDescription.add_property("packed_offset", &TypeDescExt::get_packed_offset);
+	TypeDescription.add_property("flat_offset", &TypeDescriptionExt::get_flat_offset);
+	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset);
 	TypeDescription.def_readonly("flat_group", &typedescription_t::flatGroup);
 }
 
