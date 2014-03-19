@@ -65,7 +65,7 @@ public:
 				{
 					return &(pDataMap->dataDesc[iCurrentIndex]);
 				}
-				else if (pCurrentDataDesc.td)
+				else if (pCurrentDataDesc.fieldType == FIELD_EMBEDDED)
 				{
 					typedescription_t *pReturnValue = find(pCurrentDataDesc.td, szName);
 					if (pReturnValue)
