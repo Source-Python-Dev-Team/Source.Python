@@ -41,7 +41,7 @@ __all__ = [
 # =============================================================================
 # Get the team's file for the current game
 _game_teams = ConfigObj(
-    SP_DATA_PATH.joinpath('players', 'teams', GAME_NAME + '.ini'), unrepr=True)
+    SP_DATA_PATH.joinpath('teams', GAME_NAME + '.ini'))
 
 
 # =============================================================================
@@ -137,7 +137,7 @@ _PlayerIterManagerInstance.register_filter('dead', _player_is_dead)
 for team in _game_teams['names']:
 
     # Add the team to the _PlayerTeamsInstance dictionary
-    _PlayerTeamsInstance[team] = _game_teams['names'][team]
+    _PlayerTeamsInstance[team] = int(_game_teams['names'][team])
 
     # Register the filter
     _PlayerIterManagerInstance.register_filter(
