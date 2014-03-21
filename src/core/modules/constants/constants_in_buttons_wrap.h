@@ -24,37 +24,46 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _CONSTANTS_IN_BUTTONS_WRAP_H
+#define _CONSTANTS_IN_BUTTONS_WRAP_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
-#include "utility/wrap_macros.h"
-#include "constants_const_wrap_python.h"
-#include "constants_in_buttons_wrap_python.h"
+#include "game/shared/in_buttons.h"
 
 
 //-----------------------------------------------------------------------------
-// Forward declarations.
+// InButtons wrapper.
 //-----------------------------------------------------------------------------
-void export_source_python_constants(scope constants_c);
-
-
-//-----------------------------------------------------------------------------
-// Declare the constants_c module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(constants_c)
+enum InButtons
 {
-	scope constants_c = scope();
-	export_source_python_constants(constants_c);
-	export_const(constants_c);
-	export_in_buttons(constants_c);
-}
+	ATTACK = IN_ATTACK,
+	JUMP = IN_JUMP,
+	DUCK = IN_DUCK,
+	FORWARD = IN_FORWARD,
+	BACK = IN_BACK,
+	USE = IN_USE,
+	CANCEL = IN_CANCEL,
+	LEFT = IN_LEFT,
+	RIGHT = IN_RIGHT,
+	MOVELEFT = IN_MOVELEFT,
+	MOVERIGHT = IN_MOVERIGHT,
+	ATTACK2 = IN_ATTACK2,
+	RUN = IN_RUN,
+	RELOAD = IN_RELOAD,
+	ALT1 = IN_ALT1,
+	ALT2 = IN_ALT2,
+	SCORE = IN_SCORE,
+	SPEED = IN_SPEED,
+	WALK = IN_WALK,
+	ZOOM = IN_ZOOM,
+	WEAPON1 = IN_WEAPON1,
+	WEAPON2 = IN_WEAPON2,
+	BULLRUSH = IN_BULLRUSH,
+	GRENADE1 = IN_GRENADE1,
+	GRENADE2 = IN_GRENADE2
+};
 
 
-//-----------------------------------------------------------------------------
-// Expose Source.Python constants.
-//-----------------------------------------------------------------------------
-void export_source_python_constants(scope constants_c)
-{
-	constants_c.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
-}
+#endif // _CONSTANTS_IN_BUTTONS_WRAP_H

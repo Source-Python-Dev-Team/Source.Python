@@ -24,37 +24,51 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _CONSTANTS_IN_BUTTONS_WRAP_PYTHON_H
+#define _CONSTANTS_IN_BUTTONS_WRAP_PYTHON_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
-#include "utility/wrap_macros.h"
-#include "constants_const_wrap_python.h"
-#include "constants_in_buttons_wrap_python.h"
+#include "constants_in_buttons_wrap.h"
 
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_source_python_constants(scope constants_c);
-
-
-//-----------------------------------------------------------------------------
-// Declare the constants_c module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(constants_c)
+void export_in_buttons(scope constants_c)
 {
-	scope constants_c = scope();
-	export_source_python_constants(constants_c);
-	export_const(constants_c);
-	export_in_buttons(constants_c);
+	enum_<InButtons> InButtons("InButtons");
+	
+	// Values...
+	InButtons.value("ATTACK", ATTACK);
+	InButtons.value("JUMP", JUMP);
+	InButtons.value("DUCK", DUCK);
+	InButtons.value("FORWARD", FORWARD);
+	InButtons.value("BACK", BACK);
+	InButtons.value("USE", USE);
+	InButtons.value("CANCEL", CANCEL);
+	InButtons.value("LEFT", LEFT);
+	InButtons.value("RIGHT", RIGHT);
+	InButtons.value("MOVELEFT", MOVELEFT);
+	InButtons.value("MOVERIGHT", MOVERIGHT);
+	InButtons.value("ATTACK2", ATTACK2);
+	InButtons.value("RUN", RUN);
+	InButtons.value("RELOAD", RELOAD);
+	InButtons.value("ALT1", ALT1);
+	InButtons.value("ALT2", ALT2);
+	InButtons.value("SCORE", SCORE);
+	InButtons.value("SPEED", SPEED);
+	InButtons.value("WALK", WALK);
+	InButtons.value("ZOOM", ZOOM);
+	InButtons.value("WEAPON1", WEAPON1);
+	InButtons.value("WEAPON2", WEAPON2);
+	InButtons.value("BULLRUSH", BULLRUSH);
+	InButtons.value("GRENADE1", GRENADE1);
+	InButtons.value("GRENADE2", GRENADE2);
+	
+	// TODO: Engine specific stuff...
 }
 
 
-//-----------------------------------------------------------------------------
-// Expose Source.Python constants.
-//-----------------------------------------------------------------------------
-void export_source_python_constants(scope constants_c)
-{
-	constants_c.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
-}
+#endif // _CONSTANTS_IN_BUTTONS_WRAP_PYTHON_H

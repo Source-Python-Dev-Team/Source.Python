@@ -333,6 +333,8 @@ Set(SOURCEPYTHON_CONSTANTS_MODULE_HEADERS
 	core/modules/constants/constants_const_wrap.h
 	core/modules/constants/constants_const_wrap_python.h
 	core/modules/constants/${SOURCE_ENGINE}/constants_const_wrap_python.h
+	core/modules/constants/constants_in_buttons_wrap.h
+	core/modules/constants/constants_in_buttons_wrap_python.h
 )
 
 Set(SOURCEPYTHON_CONSTANTS_MODULE_SOURCES
