@@ -30,6 +30,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// #include "game/shared/predictioncopy.h"
 #include "datamap_wrap.h"
 
 
@@ -42,7 +43,7 @@ void export_engine_specific_datamap(T DataMap)
 	DataMap.def_readonly("packed_size", &datamap_t::m_nPackedSize);
 
 	// TODO: Expose optimized_datamap_t...
-	DataMap.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap);
+	// DataMap.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap);
 }
 
 
