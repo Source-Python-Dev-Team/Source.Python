@@ -228,14 +228,14 @@ class Array(BasePointer):
         Returns the value at the given index.
         '''
 
-        return self.__make_attribute(index).__get__(self)
+        return self._make_attribute(index).__get__(self)
 
     def __setitem__(self, index, value):
         '''
         Sets the value at the given index.
         '''
 
-        self.__make_attribute(index).__set__(self, value)
+        self._make_attribute(index).__set__(self, value)
 
     def __iter__(self):
         '''
@@ -252,7 +252,7 @@ class Array(BasePointer):
         for index in range(self._length):
             yield self[index]
 
-    def __make_attribute(self, index):
+    def _make_attribute(self, index):
         '''
         Validates the index and returns a new property object.
         '''

@@ -598,7 +598,37 @@ class TypeManager(dict):
             func.__doc__ = doc
             return func
 
+        self[name] = make_function
         return make_function
+
+    def create_function_typedefs_from_file(self, f):
+        '''
+        Creates function typedefs from a file.
+        '''
+
+        # Read the data
+        raw_data = ConfigObj(f)
+
+        # Try to close the file. Maybe it was an url or a file object
+        try:
+            f.close()
+        except AttributeError:
+            pass
+
+        # Prepare typedefs
+        typedefs = parse_data(
+            raw_data,
+            (
+                (Key.ARGS, Key.as_args_tuple, ()),
+                (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
+                (Key.CONVENTION, Key.as_convention, Convention.CDECL),
+                (Key.DOC, str, None)
+            )
+        )
+
+        # Create the typedefs
+        for name, data in typedefs:
+            self.function_typedef(name, *data)
 
 # Create a shared manager instance
 manager = TypeManager()
