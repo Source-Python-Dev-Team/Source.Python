@@ -1,8 +1,88 @@
-# Store the sdk directory for later reference
-SDKDIR=$PWD/sdks
+# Set the start directory for later reference
+STARTDIR=$PWD
 
-# Store the prefix for sdk directory names
+# Store the SDK prefix
 prefix=hl2sdk-
+
+# A place to locate all currently downloaded SDKs
+FindSDKs () {
+
+    # Store a counter
+    num=0
+
+    # Loop through all currently downloaded SDKs
+    for directory in $(find $STARTDIR/sdks/* -maxdepth 0 -type d)
+    do
+
+        # Increment the counter
+        num=$(( $num + 1))
+
+        # Get the name of the SDK
+        name=${directory##*/}
+        name=${name#$prefix}
+
+        # Store the name as the current option
+        eval option_${num}=${name}
+
+    done
+
+    # Are no SDKs currently downloaded?
+    if [ $num -eq 0 ] ; then
+        echo ""
+        echo "No SDKs are currently downloaded!"
+        echo "You will now be prompted to download an SDK."
+        echo ""
+        sh SDK.sh
+    else
+        ChooseSDK
+    fi
+
+}
+
+ChooseSDK () {
+
+    echo ""
+    echo "Choose the SDK you wish to build against:"
+    echo ""
+
+    # Loop through all the SDKs
+    for option in $(seq 1 $num)
+    do
+
+        # Get the current option
+        name=option_$option
+        name=${!name}
+
+        # Print the current option
+        echo -e "\t($option) $name"
+
+    done
+
+    echo ""
+
+    # Get the SDK chosen to be built against
+    read choice
+
+    # Was the choice invalid?
+    if ! echo $choice | egrep -q '^[0-9]+$'; then
+        ChooseSDK
+    elif [ $choice -le 0 ]; then
+        ChooseSDK
+    elif [ $choice -gt $num ]; then
+        ChooseSDK
+
+    # Was the choice valid?
+    else
+
+        # Get the SDK chosen
+        name=option_$choice
+        name=${!name}
+
+        # Show the build-type options
+        ChooseBuildType $name
+
+    fi
+}
 
 ChooseBuildType () {
 
@@ -19,82 +99,35 @@ ChooseBuildType () {
     # Request a choice in build type
     read choice
 
-    # Was "Release" chosen?
-    if [ $choice == "1" ]; then
-        cmake .. -DSDK=$name
-
-    # Was "Debug" chosen?
-    elif [ $choice == "2" ]; then
-        cmake .. -DSDK=$name -DCMAKE_BUILD_TYPE=Debug
-
-    # The choice was invalid
-    else
-        ChooseBuildType $name
-
-    fi
-}
-
-# A function to restart the process from
-ChooseSDK () {
-
-    echo "Choose the SDK you wish to build against:"
-    echo ""
-
-    # Store a base counting variable
-    num=0
-
-    # Loop through all sdks currently downloaded
-    for directory in $(find $SDKDIR/* -maxdepth 0 -type d)
-    do
-
-        # Increment the counter
-        num=$(( $num + 1))
-
-        # Get the name of the directory
-        name=${directory##*/}
-        name=${name#$prefix}
-
-        # Store the option by its number
-        eval option_${num}=${name}
-
-        # Print the current option
-        echo -e "\t$num) $name"
-    done
-
-    echo ""
-
-    # Request a choice of sdk
-    read choice
-
     # Was the choice invalid?
-    if ! echo $choice | egrep -q '^[0-9]+$'; then
-        ChooseSDK
-    elif [ $choice -le 0 ] ; then
-        ChooseSDK
-    elif [ $choice -gt $num ] ; then
-        ChooseSDK
-
-    # The choice was valid
-    else
-
-        # Get the sdk chosen
-        name=option_$choice
-        name=${!name}
-
-        # Get the build type
+    if [ ! $choice == "1" ] && [ ! $choice == "2" ]; then
         ChooseBuildType $name
+    fi
+
+    # Store the directory to build in
+    SDKDIR=$STARTDIR/Builds/$name
+
+    # Does the build directory exist?
+    if [ ! -d $SDKDIR ]; then
+        mkdir -p $SDKDIR
+    fi
+
+    # Building for "Release"?
+    if [ $choice == "1" ]; then
+        cmake . -B$SDKDIR -DSDK=$name
+
+    # Building for "Debug"?
+    else
+        cmake . -B$SDKDIR -DSDK=$name -DCMAKE_BUILD_TYPE=Debug
 
     fi
 
-    # Navigate to the Build directory (create it if it does not exist)
-    if [ ! -d $PWD/Build ]; then
-        mkdir $PWD/Build
-    fi
-    cd Build
+    # Navigate to the ../Builds/<SDK> directory
+    cd Builds/$name
 
     # Build the binaries
     make clean
     make
 }
 
-ChooseSDK
+FindSDKs
