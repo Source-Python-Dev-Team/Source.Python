@@ -342,6 +342,19 @@ Set(SOURCEPYTHON_CONSTANTS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Tools module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_TOOLS_MODULE_HEADERS
+	core/modules/tools/tools_wrap.h
+	core/modules/tools/${SOURCE_ENGINE}/tools_wrap.h
+	core/modules/tools/${SOURCE_ENGINE}/tools_wrap_python.h
+)
+
+Set(SOURCEPYTHON_TOOLS_MODULE_SOURCES
+    core/modules/tools/tools_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -405,6 +418,9 @@ Set(SOURCEPYTHON_MODULE_FILES
 	
 	${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
 	${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
+	
+	${SOURCEPYTHON_TOOLS_MODULE_HEADERS}
+	${SOURCEPYTHON_TOOLS_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -435,6 +451,7 @@ Source_Group("Header Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\DataMap"                FILES ${SOURCEPYTHON_DATAMAP_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Constants"              FILES ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_TOOLS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -461,6 +478,7 @@ Source_Group("Source Files\\Module\\Usermessage\\${SDK}"    FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_SOURCES})
 Source_Group("Source Files\\Module\\DataMap"                FILES ${SOURCEPYTHON_MODULE_DATAMAP_SOURCES})
 Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON_MODULE_CONSTANTS_SOURCES})
+Source_Group("Source Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_MODULE_TOOLS_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of 
@@ -504,7 +522,7 @@ EndIf()
 # ------------------------------------------------------------------
 Add_Definitions(
     -DSOURCE_ENGINE=${SOURCE_ENGINE}
-    -DBOOST_PYTHON_MAX_ARITY=18
+    -DBOOST_PYTHON_MAX_ARITY=32
 )
 
 # ------------------------------------------------------------------
