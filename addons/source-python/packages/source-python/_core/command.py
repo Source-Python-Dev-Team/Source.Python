@@ -133,23 +133,23 @@ class _SPSubCommandManager(SubCommandManager):
             # If not, print message to notify of unknown dump type
             self.logger.log_message(
                 'Invalid dump_type "{0}". The valid types are:'.format(
-                dump_type))
+                    dump_type))
 
             # Loop though all dump functions
             for dump in dir(dump_c):
-                
+
                 # Is the current dump not valid?
                 if not dump.startswith('dump_'):
-                    
+
                     # No need to go further
                     continue
-                    
+
                 # Print the current dump function
                 self.logger.log_message('\t{0}'.format(dump.lstrip('dump_')))
-                
+
             # No need to go further
             return
-            
+
         # Call the function
         getattr(dump_c, 'dump_' + dump_type)()
 

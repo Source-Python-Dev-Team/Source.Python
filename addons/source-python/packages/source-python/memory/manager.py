@@ -267,7 +267,8 @@ class TypeManager(dict):
         data = tuple(parse_data(
             # Discard all subkeys and add the new dict to a another dict to
             # make it work with parse_data(). Okay, this can be improved...
-            {0: dict((k, v) for k, v in raw_data.items() if not isinstance(v, dict))},
+            {0: dict((k, v) for k, v in raw_data.items() if not isinstance(
+                v, dict))},
             (
                 (Key.BINARY, str, CustomType._binary),
                 (Key.SRV_CHECK, Key.as_bool, CustomType._srv_check),
@@ -502,7 +503,8 @@ class TypeManager(dict):
         '''
 
         def fget(ptr):
-            return Array(self, True, type_name, ptr.get_pointer(offset), length)
+            return Array(
+                self, True, type_name, ptr.get_pointer(offset), length)
 
         def fset(ptr, value):
             array = fget(ptr)

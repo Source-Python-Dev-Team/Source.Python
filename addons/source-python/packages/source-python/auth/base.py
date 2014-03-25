@@ -34,17 +34,18 @@ class AuthBase(object):
         '''Base implementation of load that if called will print an error'''
         AuthBaseLogger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
-            classname=self.__class__.__name__, method='load'))
+                classname=self.__class__.__name__, method='load'))
 
     def unload(self):
         '''Base implementation of unload that if called will print an error'''
         AuthBaseLogger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
-            classname=self.__class__.__name__, method='unload'))
+                classname=self.__class__.__name__, method='unload'))
 
     def is_player_authorized(self, *args):
         '''Base implementation of is_player_authorized
             that if called will print an error'''
         AuthBaseLogger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
-            classname=self.__class__.__name__, method='is_player_authorized'))
+                classname=self.__class__.__name__,
+                method='is_player_authorized'))
