@@ -43,8 +43,3 @@
 #ifndef PATCH_KEYVALUES_DESTRUCTOR
 #error "Make KeyValues::~KeyValues() public."
 #endif
-
-#include "game/server/variant_t.h"
-#ifndef PATH_VARIANT_T_H_SET_ENTITY
-#error "Move variant_t::SetEntity's definition from the cpp file to the header."
-#endif

@@ -165,6 +165,12 @@ public:
 	}
 };
 
+void variant_t::SetEntity(CBaseEntity *pValue) 
+{ 
+	eVal = pValue;
+	fieldType = FIELD_EHANDLE; 
+}
+
 
 //-----------------------------------------------------------------------------
 // Structure passed to input handlers.
