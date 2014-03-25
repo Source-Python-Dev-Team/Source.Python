@@ -47,7 +47,9 @@ public:
 		{
 			return NULL;
 		}
-		return IndexFromPointer(&CPointer((unsigned long)pEntity));
+		
+		CPointer Entity = CPointer((unsigned long)pEntity);
+		return IndexFromPointer(&Entity);
 	}
 	
 	static void spawn_entity(IServerTools *pServerTools, unsigned int iEntityIndex)
@@ -77,4 +79,4 @@ public:
 };
 
 
-#endif _TOOLS_WRAP_H
+#endif // _TOOLS_WRAP_H
