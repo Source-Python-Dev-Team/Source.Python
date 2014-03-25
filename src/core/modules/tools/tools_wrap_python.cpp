@@ -113,7 +113,6 @@ void export_temp_entities_system(scope tools_c)
 	TempEntities.def("shatter_surface", &ITempEntsSystem::ShatterSurface);
 	TempEntities.def("glow_sprite", &ITempEntsSystem::GlowSprite);
 	TempEntities.def("foot_print_decal", &ITempEntsSystem::FootprintDecal);
-	TempEntities.def("fizz", &ITempEntsSystem::Fizz);
 	TempEntities.def("kill_player_attachments", &ITempEntsSystem::KillPlayerAttachments);
 	TempEntities.def("large_funnel", &ITempEntsSystem::LargeFunnel);
 	TempEntities.def("metal_sparks", &ITempEntsSystem::MetalSparks);
@@ -130,8 +129,10 @@ void export_temp_entities_system(scope tools_c)
 	TempEntities.def("gauss_explosion", &ITempEntsSystem::GaussExplosion);
 	TempEntities.def("physics_prop", &ITempEntsSystem::PhysicsProp);
 	TempEntities.def("trigger_temp_entity", &ITempEntsSystem::TriggerTempEntity);
-	TempEntities.def("client_projectile", &ITempEntsSystem::ClientProjectile);
 	
+	TempEntities.def("fizz", &TempEntitiesSharedExt::fizz);
+	TempEntities.def("client_projectile", &TempEntitiesSharedExt::client_projectile);
+
 	// Engine specific stuff...
 	export_engine_specific_temp_entities_system(TempEntities);
 	

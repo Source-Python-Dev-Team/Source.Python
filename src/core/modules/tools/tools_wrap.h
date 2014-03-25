@@ -57,4 +57,24 @@ public:
 };
 
 
+//-----------------------------------------------------------------------------
+// ITempEntsSystem extension class.
+//-----------------------------------------------------------------------------
+class TempEntitiesSharedExt
+{
+public:
+	static void fizz(ITempEntsSystem *pTempEntities, IRecipientFilter &filter, float delay,
+		CPointer *pEntity, int model_index, int density, int current)
+	{
+		pTempEntities->Fizz(filter, delay, (CBaseEntity *)pEntity->m_ulAddr, model_index, density, current);
+	}
+
+	static void client_projectile(ITempEntsSystem *pTempEntities, IRecipientFilter &filter, float delay,
+		const Vector* vecOrigin, const Vector *vecVelocity, int modelindex, int lifetime, CPointer *pOwner)
+	{
+		pTempEntities->ClientProjectile(filter, delay, vecOrigin, vecVelocity, modelindex, lifetime, (CBaseEntity *)pOwner->m_ulAddr);
+	}
+};
+
+
 #endif _TOOLS_WRAP_H
