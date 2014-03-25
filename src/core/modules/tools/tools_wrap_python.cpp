@@ -89,7 +89,7 @@ void export_server_tools(scope tools_c)
 //-----------------------------------------------------------------------------
 void export_temp_entities_system(scope tools_c)
 {
-	class_<ITempEntsSystem, bases<IPredictionSystem>, boost::noncopyable> TempEntities("TempEntities", no_init);
+	class_<ITempEntsSystem, boost::noncopyable> TempEntities("TempEntities", no_init);
 	
 	// Methods...
 	TempEntities.def("armor_ricochet", &ITempEntsSystem::ArmorRicochet);
