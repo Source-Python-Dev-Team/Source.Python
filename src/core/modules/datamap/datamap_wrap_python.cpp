@@ -68,12 +68,13 @@ void export_datamap()
 	class_<datamap_t, datamap_t *> DataMap("DataMap", no_init);
 
 	// Properties...
-	DataMap.def_readonly("desc", &datamap_t::dataDesc);
+	DataMap.def_readonly("description", &datamap_t::dataDesc);
 	DataMap.def_readonly("length", &datamap_t::dataNumFields);
 	DataMap.def_readonly("class_name", &datamap_t::dataClassName);
 	DataMap.def_readonly("base", &datamap_t::baseMap);
 
 	// Special methods...
+	DataMap.def("__len__", make_getter(&datamap_t::dataNumFields));
 	DataMap.def("__getitem__", &DataMapSharedExt::__getitem__);
 
 	// Engine specific stuff...
@@ -114,7 +115,7 @@ void export_type_description()
 		)
 	);
 	
-	TypeDescription.def_readonly("td", &typedescription_t::td);
+	TypeDescription.def_readonly("embedded_description", &typedescription_t::td);
 	TypeDescription.def_readonly("size_in_bytes", &typedescription_t::fieldSizeInBytes);
 	TypeDescription.def_readonly("override_field", &typedescription_t::override_field);
 	TypeDescription.def_readonly("override_count", &typedescription_t::override_count);
@@ -165,7 +166,6 @@ void export_input_data()
 //-----------------------------------------------------------------------------
 void export_variant()
 {
-	// TODO: Get/Set entity...
 	class_<variant_t, variant_t *> Variant("Variant");
 
 	// Properties...
@@ -183,7 +183,12 @@ void export_variant()
 	);
 
 	Variant.def("get_vector", &VariantSharedExt::get_vector);
-
+	
+	Variant.def("get_entity",
+		&VariantSharedExt::get_entity,
+		manage_new_object_policy()
+	);
+	
 	// Setters...
 	Variant.def("set_bool", &variant_t::SetBool);
 	Variant.def("set_string", &VariantSharedExt::set_string);
@@ -191,6 +196,7 @@ void export_variant()
 	Variant.def("set_float", &variant_t::SetFloat);
 	Variant.def("set_color", &VariantSharedExt::set_color);
 	Variant.def("set_vector", &variant_t::SetVector3D);
+	Variant.def("set_entity", &VariantSharedExt::set_entity);
 
 	// Add memory tools...
 	Variant ADD_MEM_TOOLS(variant_t, "Variant");
@@ -245,7 +251,7 @@ void export_field_types()
 //-----------------------------------------------------------------------------
 void export_type_description_flags()
 {
-	enum_<TypeDescriptionSharedExt::Flags> TypeDescriptionFlags("TypeDescriptionFlags");
+	enum_<TypeDescriptionSharedExt::TypeDescriptionFlags> TypeDescriptionFlags("TypeDescriptionFlags");
 	
 	// Values...
 	TypeDescriptionFlags.value("GLOBAL", TypeDescriptionSharedExt::GLOBAL);

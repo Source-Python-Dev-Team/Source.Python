@@ -36,6 +36,7 @@
 #include "datamap.h"
 #include "game/server/variant_t.h"
 #include "Color.h"
+#include "modules/conversions/conversions_wrap.h"
 
 
 //-----------------------------------------------------------------------------
@@ -87,7 +88,7 @@ public:
 class TypeDescriptionSharedExt
 {
 public:
-	enum Flags
+	enum TypeDescriptionFlags
 	{
 		GLOBAL = FTYPEDESC_GLOBAL,
 		SAVE = FTYPEDESC_SAVE,
@@ -109,10 +110,10 @@ public:
 	
 	static CPointer *get_input(typedescription_t pTypeDesc)
 	{
-		if (pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE)
+		if (pTypeDesc.flags & INPUT || pTypeDesc.flags & FUNCTIONTABLE)
 		{
 			// HACK!
-			return new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc, false);
+			return new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc);
 		}
 		return NULL;
 	}
@@ -151,6 +152,16 @@ public:
 		Vector pVector;
 		pVariant->Vector3D(pVector);
 		return pVector;
+	}
+	
+	static CPointer *get_entity(variant_t *pVariant)
+	{
+		return PointerFromIndex(pVariant->Entity().GetEntryIndex());
+	}
+	
+	static void set_entity(variant_t *pVariant, CPointer *pEntity)
+	{
+		pVariant->SetEntity((CBaseEntity *)pEntity->m_ulAddr);
 	}
 };
 
