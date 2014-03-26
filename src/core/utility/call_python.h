@@ -44,11 +44,18 @@ using namespace boost::python;
 // what we need to use.
 // boost::python::object retval = CALL_PY_FUNC(PyObject*, ...);
 // ----------------------------------------------------------------------------
+template<class T>
+T xdecref_and_return(T value)
+{
+	xdecref(value);
+	return value;
+}
+
 #define CALL_PY_FUNC(pCallable, ...) \
 	PyObject_HasAttrString(pCallable, "__self__") ? \
 		boost::python::call_method<object>( \
-			PyObject_GetAttrString(pCallable, "__self__"), \
-			extract<const char*>(PyObject_GetAttrString(pCallable, "__name__")), \
+			xdecref_and_return(PyObject_GetAttrString(pCallable, "__self__")), \
+			extract<const char*>(xdecref_and_return(PyObject_GetAttrString(pCallable, "__name__"))), \
 			##__VA_ARGS__ \
 		) : call<object>(pCallable, ##__VA_ARGS__)
 
