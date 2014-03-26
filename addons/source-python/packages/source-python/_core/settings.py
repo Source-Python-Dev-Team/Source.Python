@@ -163,7 +163,7 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         if not 'level' in self['LOG_SETTINGS']:
 
             # Add the logging level setting
-            self['LOG_SETTINGS']['level'] = '0'
+            self['LOG_SETTINGS']['level'] = '2'
 
         # Set the logging level comments
         self['LOG_SETTINGS'].comments['level'] = _core_strings[
