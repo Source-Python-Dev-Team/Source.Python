@@ -60,6 +60,6 @@ class PreHook(_Hook):
     hook_type = HookType.PRE
 
 
-class PostHook(AutoUnload):
+class PostHook(_Hook):
     '''Decorator class used to create post hooks that auto unload'''
     hook_type = HookType.POST
