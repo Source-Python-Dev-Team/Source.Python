@@ -119,12 +119,12 @@ def _player_is_human(PlayerInfo):
 
 def _player_is_alive(PlayerInfo):
     '''Returns whether the player is alive'''
-    return not PlayerInfo.is_dead()
+    return not _player_is_dead(PlayerInfo)
 
 
 def _player_is_dead(PlayerInfo):
     '''Returns whether the player is dead'''
-    return PlayerInfo.is_dead()
+    return edict_from_playerinfo(PlayerInfo).get_prop_int('pl.deadflag')
 
 # Register the filter functions
 _PlayerIterManagerInstance.register_filter('all', _is_player)
