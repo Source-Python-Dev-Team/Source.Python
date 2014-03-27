@@ -212,4 +212,4 @@ public:
 };
 
 
-#endif _DATAMAP_WRAP_H
+#endif // _DATAMAP_WRAP_H
