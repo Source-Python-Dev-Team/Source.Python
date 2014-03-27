@@ -179,6 +179,10 @@ void export_playerinfo()
 			&IPlayerInfo::GetMaxHealth,
 			"Returns the player's maximum health."
 		)
+		
+		.def("get_last_user_command",
+			&IPlayerInfo::GetLastUserCommand
+		)
 
 		ADD_MEM_TOOLS(IPlayerInfo, "PlayerInfo")
 	;
