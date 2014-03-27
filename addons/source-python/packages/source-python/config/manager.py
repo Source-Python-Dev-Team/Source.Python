@@ -181,7 +181,7 @@ class ConfigManager(object):
         if self.indention < 3:
 
             # Set the indention to the lowest amount
-            self.indention = 3
+            self._indention = 3
 
         # Do all directories to the file exist?
         if not self.fullpath.parent.isdir():
