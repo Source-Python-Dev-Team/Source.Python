@@ -59,7 +59,7 @@ class CustomType(BasePointer):
     # Optional -- will be called when an instance of the type is deleted
     _destructor = None
 
-    def __init__(self, *args, wrap=True, auto_dealloc=False):
+    def __init__(self, *args, wrap=False, auto_dealloc=True):
         '''
         Initializes the custom type.
         '''
@@ -99,6 +99,21 @@ class CustomType(BasePointer):
             elif args:
                 raise ValueError(
                     'No constructor was specified, but arguments were passed.')
+                    
+    def _ptr(self):
+        '''
+        Returns the pointer of the object.
+        '''
+        
+        return self
+        
+    @classmethod
+    def _obj(cls, ptr):
+        '''
+        Wraps the given pointer.
+        '''
+        
+        return cls(ptr, wrap=True)
 
     def on_dealloc(self):
         '''
