@@ -102,7 +102,7 @@ edict_t* CEntityGenerator::getNext()
 		{
 			pEdict = EdictFromIndex(m_iEntityIndex);
 		} catch ( error_already_set ) {
-			return NULL;
+			pEdict = NULL;
 		}
 		if (!pEdict || pEdict->IsFree() || !strlen(pEdict->GetClassName()))
 		{
