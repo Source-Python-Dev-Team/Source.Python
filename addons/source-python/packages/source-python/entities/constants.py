@@ -25,8 +25,8 @@ __all__ = [
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_entity_values = ConfigObj(
-    SP_DATA_PATH.joinpath('entities', GAME_NAME + '.ini'), unrepr=True)
+_entity_values = ConfigObj(SP_DATA_PATH.joinpath(
+    'entities', 'constants', GAME_NAME + '.ini'), unrepr=True)
 
 
 # =============================================================================

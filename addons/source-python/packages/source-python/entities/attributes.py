@@ -74,7 +74,8 @@ class EntityAttributes(dict):
         game_attributes = dict()
 
         # Get the path to the entity's attributes
-        inifile = SP_DATA_PATH.joinpath(self.type, entity, GAME_NAME + '.ini')
+        inifile = SP_DATA_PATH.joinpath(
+            'entities', self.type, entity, GAME_NAME + '.ini')
 
         # Does the file exist?
         if not inifile.isfile():

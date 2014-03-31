@@ -98,7 +98,12 @@ edict_t* CEntityGenerator::getNext()
 	while(m_iEntityIndex < gpGlobals->maxEntities)
 	{
 		m_iEntityIndex++;
-		pEdict = EdictFromIndex(m_iEntityIndex);
+		try
+		{
+			pEdict = EdictFromIndex(m_iEntityIndex);
+		} catch ( error_already_set ) {
+			return NULL;
+		}
 		if (!pEdict || pEdict->IsFree() || !strlen(pEdict->GetClassName()))
 		{
 			pEdict = NULL;
