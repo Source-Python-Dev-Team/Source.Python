@@ -74,13 +74,11 @@ void export_datamap()
 	DataMap.def_readonly("base", &datamap_t::baseMap);
 
 	// CS:GO properties...
-	DataMap.NOT_IMPLEMENTED_ATTR("packed_size");
 	DataMap.NOT_IMPLEMENTED_ATTR("optimized_datamap");
 
 	// OrangeBox properties...
 	DataMap.NOT_IMPLEMENTED_ATTR("chains_validated");
 	DataMap.NOT_IMPLEMENTED_ATTR("packed_offsets_computed");
-	DataMap.NOT_IMPLEMENTED_ATTR("packed_size");
 
 	// Special methods...
 	DataMap.def("__len__", make_getter(&datamap_t::dataNumFields));
