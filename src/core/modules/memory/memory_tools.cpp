@@ -195,19 +195,22 @@ CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple a
 
 void CPointer::CallCallback(PyObject* self, char* szCallback)
 {
-	PyObject* callback = PyObject_GetAttrString(self, szCallback);
-	if (callback && PyCallable_Check(callback))
+	if (PyObject_HasAttrString(self, szCallback))
 	{
-		if (!PyObject_HasAttrString(callback, "__self__"))
+		PyObject* callback = PyObject_GetAttrString(self, szCallback);
+		if (callback && PyCallable_Check(callback))
 		{
-			xdecref(PyObject_CallFunction(callback, "O", self));
+			if (!PyObject_HasAttrString(callback, "__self__"))
+			{
+				xdecref(PyObject_CallFunction(callback, "O", self));
+			}
+			else
+			{
+				xdecref(PyObject_CallMethod(self, szCallback, NULL));
+			}
 		}
-		else
-		{
-			xdecref(PyObject_CallMethod(self, szCallback, NULL));
-		}
+		xdecref(callback);
 	}
-	xdecref(callback);
 }
 
 void CPointer::PreDealloc(PyObject* self)
