@@ -30,15 +30,20 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "tools_wrap.h"
-
+#include "toolframework/itoolentity.h"
+#include "modules/conversions/conversions_wrap.h"
+#include "modules/entity/entity_wrap.h"
 
 //-----------------------------------------------------------------------------
 // IServerTools extension class.
 //-----------------------------------------------------------------------------
 class ServerToolsExt
 {
-	// Nothing specific to CSGO...
+public:
+	static void remove_entity(IServerTools *pServerTools, unsigned int iEntityIndex)
+	{
+		pServerTools->RemoveEntity(CEdictExt::GetKeyValueInt(EdictFromIndex(iEntityIndex), "hammerid"));
+	}
 };
 
 

@@ -39,7 +39,7 @@
 template<class T>
 void export_engine_specific_server_tools(T ServerTools)
 {
-	// Nothing specific to CSGO...
+	ServerTools.def("remove_entity", &ServerToolsExt::remove_entity);
 }
 
 

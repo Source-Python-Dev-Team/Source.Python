@@ -74,7 +74,6 @@ void export_server_tools(scope tools_c)
 	ServerTools.def("spawn_entity", &ServerToolsSharedExt::spawn_entity);
 
 	// OrangeBox methods...
-	ServerTools.NOT_IMPLEMENTED("remove_entity");
 	ServerTools.NOT_IMPLEMENTED("remove_entity_immediate");
 	ServerTools.NOT_IMPLEMENTED("get_temp_entities");
 
