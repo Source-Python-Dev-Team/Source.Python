@@ -126,7 +126,7 @@ void export_type_description()
 		)
 	);
 	
-	TypeDescription.def_readonly("embedded_description", &typedescription_t::td);
+	TypeDescription.def_readonly("embedded_datamap", &typedescription_t::td);
 	TypeDescription.def_readonly("size_in_bytes", &typedescription_t::fieldSizeInBytes);
 	TypeDescription.def_readonly("override_field", &typedescription_t::override_field);
 	TypeDescription.def_readonly("override_count", &typedescription_t::override_count);
