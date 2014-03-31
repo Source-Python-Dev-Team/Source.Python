@@ -109,6 +109,16 @@ object raw_method(T method)
 	add_property(name, NOT_IMPLEMENTED_RAW(), NOT_IMPLEMENTED_RAW(), "\nNot implemented on this engine.\n")
 
 //---------------------------------------------------------------------------------
+// Use this macro to default a not implemented value to None.
+//---------------------------------------------------------------------------------
+#define NOT_IMPLEMENTED_VALUE(classname, name) \
+	PyDict_SetItemString( \
+		converter::registry::query(typeid(classname))->m_class_object->tp_dict, \
+		name, \
+		object().ptr() \
+	);
+
+//---------------------------------------------------------------------------------
 // Use this macro to raise a Python exception.
 //---------------------------------------------------------------------------------
 #define BOOST_RAISE_EXCEPTION( exceptionName, exceptionString ) \
