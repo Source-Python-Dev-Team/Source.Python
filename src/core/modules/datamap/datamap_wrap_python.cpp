@@ -73,19 +73,28 @@ void export_datamap()
 	DataMap.def_readonly("class_name", &datamap_t::dataClassName);
 	DataMap.def_readonly("base", &datamap_t::baseMap);
 
+	// CS:GO properties...
+	DataMap.NOT_IMPLEMENTED_ATTR("packed_size");
+	DataMap.NOT_IMPLEMENTED_ATTR("optimized_datamap");
+
+	// OrangeBox properties...
+	DataMap.NOT_IMPLEMENTED_ATTR("chains_validated");
+	DataMap.NOT_IMPLEMENTED_ATTR("packed_offsets_computed");
+	DataMap.NOT_IMPLEMENTED_ATTR("packed_size");
+
 	// Special methods...
 	DataMap.def("__len__", make_getter(&datamap_t::dataNumFields));
 	DataMap.def("__getitem__", &DataMapSharedExt::__getitem__);
 
-	// Engine specific stuff...
-	export_engine_specific_datamap(DataMap);
-	
 	// Helper methods...
 	DataMap.def("find",
 		&DataMapSharedExt::find,
 		reference_existing_object_policy()
 	);
-	
+
+	// Engine specific stuff...
+	export_engine_specific_datamap(DataMap);
+
 	// Add memory tools...
 	DataMap ADD_MEM_TOOLS(datamap_t, "DataMap");
 }
@@ -104,6 +113,10 @@ void export_type_description()
 	TypeDescription.def_readonly("size", &typedescription_t::fieldSize);
 	TypeDescription.def_readonly("flags", &typedescription_t::flags);
 	TypeDescription.def_readonly("external_name", &typedescription_t::externalName);
+
+	// CS:GO properties...
+	TypeDescription.NOT_IMPLEMENTED_ATTR("flat_offset");
+	TypeDescription.NOT_IMPLEMENTED_ATTR("flat_group");
 
 	// TODO: Expose ISaveRestoreOps...
 	TypeDescription.def_readonly("save_restore", &typedescription_t::pSaveRestoreOps);
@@ -240,11 +253,14 @@ void export_field_types()
 	FieldTypes.value("MODELINDEX", FIELD_MODELINDEX);
 	FieldTypes.value("VECTOR2D", FIELD_VECTOR2D);
 	FieldTypes.value("TYPECOUNT", FIELD_TYPECOUNT);
-	
+
+	// CS:GO values...
+	NOT_IMPLEMENTED_VALUE(fieldtype_t, "INTEGER64");
+	NOT_IMPLEMENTED_VALUE(fieldtype_t, "VECTOR4D");
+
 	// Engine specific stuff...
 	export_engine_specific_field_types(FieldTypes);
 }
-
 
 //-----------------------------------------------------------------------------
 // Expose flags.
