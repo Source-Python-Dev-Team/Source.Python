@@ -68,17 +68,22 @@ DECLARE_SP_MODULE(tools_c)
 void export_server_tools(scope tools_c)
 {
 	class_<IServerTools, boost::noncopyable> ServerTools("_ServerTools", no_init);
-	
+
 	// Methods...
 	ServerTools.def("create_entity", &ServerToolsSharedExt::create_entity);
 	ServerTools.def("spawn_entity", &ServerToolsSharedExt::spawn_entity);
-	
+
+	// OrangeBox methods...
+	ServerTools.NOT_IMPLEMENTED("remove_entity");
+	ServerTools.NOT_IMPLEMENTED("remove_entity_immediate");
+	ServerTools.NOT_IMPLEMENTED("get_temp_entities");
+
 	// Engine specific stuff...
 	export_engine_specific_server_tools(ServerTools);
-	
+
 	// Add memory tools...
 	ServerTools ADD_MEM_TOOLS(IServerTools, "_ServerTools");
-	
+
 	// Singleton...
 	tools_c.attr("ServerTools") = object(ptr(servertools));
 }
@@ -90,7 +95,7 @@ void export_server_tools(scope tools_c)
 void export_temp_entities_system(scope tools_c)
 {
 	class_<ITempEntsSystem, boost::noncopyable> TempEntities("TempEntities", no_init);
-	
+
 	// Methods...
 	TempEntities.def("armor_ricochet", &ITempEntsSystem::ArmorRicochet);
 	TempEntities.def("beam_ent_point", &ITempEntsSystem::BeamEntPoint);
@@ -129,13 +134,16 @@ void export_temp_entities_system(scope tools_c)
 	TempEntities.def("gauss_explosion", &ITempEntsSystem::GaussExplosion);
 	TempEntities.def("physics_prop", &ITempEntsSystem::PhysicsProp);
 	TempEntities.def("trigger_temp_entity", &ITempEntsSystem::TriggerTempEntity);
-	
+
 	TempEntities.def("fizz", &TempEntitiesSharedExt::fizz);
 	TempEntities.def("client_projectile", &TempEntitiesSharedExt::client_projectile);
 
+	// OrangeBox methods...
+	TempEntities.NOT_IMPLEMENTED("dispatch_effect");
+
 	// Engine specific stuff...
 	export_engine_specific_temp_entities_system(TempEntities);
-	
+
 	// Add memory tools...
 	TempEntities ADD_MEM_TOOLS(ITempEntsSystem, "TempEntities");
 }
