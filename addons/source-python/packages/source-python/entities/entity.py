@@ -7,6 +7,8 @@
 from conversions_c import edict_from_index
 from memory_c import Pointer
 #   Entities
+from entities.datamaps import EntityDataMaps
+from entities.datamaps import NamedDataMaps
 from entities.functions import EntityFunctions
 from entities.keyvalues import EntityKeyValues
 from entities.offsets import EntityOffsets
@@ -90,6 +92,26 @@ class BaseEntity(object):
 
             # Return the function
             return self._get_function(attr)
+
+        # Is the attribute a named datamap for this entity?
+        if (attr in self.named_datamaps and
+                self.named_datamaps[attr] in self.datamaps):
+
+            # Set the pointer for the type description instance
+            self.datamaps[self.name_datamaps[
+                attr]].current_pointer = self.pointer
+
+            # Return the value
+            return self.datamaps[self.name_datamaps[attr]]._get_value()
+
+        # Is the attribute a type description for this entity?
+        if attr in self.datamaps:
+
+            # Set the pointer for the type description instance
+            self.datamaps[attr].current_pointer = self.pointer
+
+            # Return the value
+            return self.datamaps[attr]._get_value()
 
         # If the attribute is not found, raise an error
         raise AttributeError('Attribute "{0}" not found'.format(attr))
@@ -185,6 +207,27 @@ class BaseEntity(object):
 
             # Set the offset's value
             self._set_offset(attr, value)
+
+        # Is the attribute a named datamap for this entity?
+        elif (attr in self.named_datamaps and
+                self.named_datamaps[attr] in self.datamaps):
+
+            # Set the pointer for the type description instance
+            self.datamaps[self.name_datamaps[
+                attr]].current_pointer = self.pointer
+
+            # Set the value of the type description instance
+            self.datamaps[
+                self.named_datamaps[attr]]._set_value(value)
+
+        # Is the attribute a type description for this entity?
+        if attr in self.datamaps:
+
+            # Set the pointer for the type description instance
+            self.datamaps[attr].current_pointer = self.pointer
+
+            # Set the value of the type description instance
+            self.datamaps[attr]._set_value(value)
 
         # Was the attribute not found?
         else:
@@ -339,3 +382,13 @@ class BaseEntity(object):
     def functions(self):
         '''Returns all dynamic calling functions for all entities'''
         return EntityFunctions.get_game_attributes(self.entities)
+
+    @property
+    def named_datamaps(self):
+        ''''''
+        return NamedDataMaps.get_game_attributes(self.entities)
+
+    @property
+    def datamaps(self):
+        ''''''
+        return EntityDataMaps.get_data_maps(self.edict)

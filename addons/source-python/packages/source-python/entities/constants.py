@@ -6,6 +6,8 @@
 # Site Package Imports
 #   ConfigObj
 from configobj import ConfigObj
+#   OS
+from os import name as os_name
 
 # Source.Python Imports
 from core import GAME_NAME
@@ -19,6 +21,7 @@ from paths import SP_DATA_PATH
 __all__ = [
     'DamageOffsets',
     'DamageTypes',
+    'DATA_DESC_MAP_OFFSET',
 ]
 
 
@@ -27,6 +30,17 @@ __all__ = [
 # =============================================================================
 _entity_values = ConfigObj(SP_DATA_PATH.joinpath(
     'entities', 'constants', GAME_NAME + '.ini'), unrepr=True)
+
+if os_name != 'nt':
+    os_name = 'linux'
+
+
+# =============================================================================
+# >> CONSTANT VALUES
+# =============================================================================
+# Get the GetDataDescMap offset
+DATA_DESC_MAP_OFFSET = _entity_values.get(
+    'DATA_DESC_OFFSET', {}).get(os_name, None)
 
 
 # =============================================================================
