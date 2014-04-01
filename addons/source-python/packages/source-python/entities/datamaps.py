@@ -9,6 +9,7 @@ from os import name as os_name
 
 # Source.Python Imports
 from conversions_c import pointer_from_edict
+from conversions_c import edict_from_pointer
 from datamap_c import DataMap
 from datamap_c import FieldTypes
 from datamap_c import InputData
@@ -38,6 +39,13 @@ _SupportedTypes = {
     FieldTypes.FLOAT: 'float',
     FieldTypes.INTEGER: 'int',
     FieldTypes.SHORT: 'short',
+}
+
+_KeyValueTypes = {
+    FieldTypes.FLOAT: 'float',
+    FieldTypes.INTEGER: 'int',
+    FieldTypes.STRING: 'string',
+    FieldTypes.VECTOR: 'vector',
 }
 
 _InputSetTypes = {
@@ -177,6 +185,13 @@ class _DataMap(dict):
                 # Store the desc name in the dictionary as an input
                 value = self[desc.name] = _Input(desc, function)
 
+            # Is this a valid keyvalue?
+            elif (desc.flags & TypeDescriptionFlags.KEY
+                    and desc.type in _KeyValueTypes):
+
+                # Store the desc name in the dictionary as a keyvalue
+                value = self[desc.name] = _KeyValue(desc)
+
             # Is this type description supported?
             elif desc.type in _SupportedTypes:
 
@@ -257,27 +272,28 @@ class _Input(_BaseType):
     def __init__(self, desc, function):
         '''Store the type description and function instance'''
         self.desc = desc
+        self.type = self.desc.type
         self.function = function
 
     def __call__(self, value=None, caller=None, activator=None):
         '''Calls the stored function with the values given'''
 
         # Is the type not VOID but no value was given?
-        if value is None and self.desc.type != FieldTypes.VOID:
+        if value is None and self.type != FieldTypes.VOID:
             raise ValueError(
                 'Must provide a value for {0}'.format(self.desc.name))
 
         # Is the type VOID but a value was given?
-        if not value is None and self.desc.type == FieldTypes.VOID:
+        if not value is None and self.type == FieldTypes.VOID:
             raise ValueError(
                 '{0} is type Void.  Do not pass a value.'.format(
                     self.desc.name))
 
         # Is the type supported?
-        if (not self.desc.type in _InputSetTypes
-                and self.desc.type != FieldTypes.VOID):
+        if (not self.type in _InputSetTypes
+                and self.type != FieldTypes.VOID):
             raise TypeError(
-                'FieldType "{0}" is unsupported.'.format(self.desc.type))
+                'FieldType "{0}" is unsupported.'.format(self.type))
 
         # Get an InputData instance
         inputdata = InputData()
@@ -291,11 +307,11 @@ class _Input(_BaseType):
             inputdata.activator = activator
 
         # Does the function require a value?
-        if self.desc.type != FieldTypes.VOID:
+        if self.type != FieldTypes.VOID:
 
             # Set the value
             getattr(inputdata.value, 'set_{0}'.format(
-                _InputSetTypes[self.desc.type]))(value)
+                _InputSetTypes[self.type]))(value)
 
         # Call the function
         self.function(self.current_pointer, inputdata)
@@ -307,17 +323,44 @@ class _DataDesc(object):
     def __init__(self, desc):
         '''Store the type description instance'''
         self.desc = desc
+        self.get_attr = 'get_{0}'.format(_SupportedTypes[self.desc.type])
+        self.set_attr = 'set_{0}'.format(_SupportedTypes[self.desc.type])
+        self.offset = self.desc.offset
 
     def _get_value(self):
         '''Return the current value of the type
             description for the current pointer'''
-        return getattr(
-            self.current_pointer, 'get_{0}'.format(
-            _SupportedTypes[self.desc.type]))(self.desc.offset)
+        return getattr(self.current_pointer, self.get_attr)(self.offset)
 
     def _set_value(self, value):
         '''Set the value of the type description to
             the given value for the current pointer'''
-        getattr(
-            self.current_pointer, 'set_{0}'.format(
-            _SupportedTypes[self.desc.type]))(value, self.desc.offset)
+        getattr(self.current_pointer, self.set_attr)(value, self.offset)
+
+
+class _KeyValue(object):
+    '''Class used to get and set keyvalues'''
+
+    def __init__(self, desc):
+        '''Store the keyvalue's base attributes'''
+        self.name = desc.external_name
+        self.get_attr = 'get_key_value_{0}'.format(_KeyValueTypes[desc.type])
+        self.set_attr = 'set_key_value_{0}'.format(_KeyValueTypes[desc.type])
+
+    def _get_value(self):
+        '''Returns a keyvalue for the current entity'''
+
+        # Get the edict of the current pointer
+        edict = edict_from_pointer(self.current_pointer)
+
+        # Return the current value of the keyvalue
+        return getattr(edict, self.get_attr)(self.name)
+
+    def _set_value(self, value):
+        '''Sets a keyvalue for the current entity'''
+
+        # Get the edict of the current pointer
+        edict = edict_from_pointer(self.current_pointer)
+
+        # Set the value of the keyvalue
+        getattr(edict, self.set_attr)(self.name, value)

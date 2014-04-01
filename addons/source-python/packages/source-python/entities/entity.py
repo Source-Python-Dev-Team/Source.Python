@@ -10,7 +10,6 @@ from memory_c import Pointer
 from entities.datamaps import EntityDataMaps
 from entities.datamaps import NamedDataMaps
 from entities.functions import EntityFunctions
-from entities.keyvalues import EntityKeyValues
 from entities.offsets import EntityOffsets
 from entities.properties import EntityProperties
 #from entities.specials import _EntitySpecials
@@ -75,12 +74,6 @@ class BaseEntity(object):
             # Return the property's value
             return self._get_property(attr)
 
-        # Is the attribute a keyvalue of this entity?
-        if attr in self.keyvalues:
-
-            # Return the keyvalue's value
-            return self._get_keyvalue(attr)
-
         # Is the attribute an offset of this entity?
         if attr in self.offsets:
 
@@ -134,13 +127,6 @@ class BaseEntity(object):
 
         # Return the value of the property
         return value
-
-    def _get_keyvalue(self, item):
-        '''Gets the value of the given keyvalue'''
-
-        # Return the value of the given keyvalue
-        return getattr(
-            self.edict, 'get_key_value_{0}'.format(self.keyvalues[item]))(item)
 
     def _get_offset(self, item):
         '''Gets the value of the given offset'''
@@ -196,12 +182,6 @@ class BaseEntity(object):
             # Set the property's value
             self._set_property(attr, value)
 
-        # Is the attribute a keyvalue of this entity?
-        elif attr in self.keyvalues:
-
-            # Set the keyvalue's value
-            self._set_keyvalue(attr, value)
-
         # Is the attribute an offset of this entity?
         elif attr in self.offsets:
 
@@ -249,13 +229,6 @@ class BaseEntity(object):
 
         # Set the property's value
         getattr(self.edict, 'set_prop_{0}'.format(prop.type))(prop.prop, value)
-
-    def _set_keyvalue(self, item, value):
-        '''Sets the value of the given keyvalue'''
-
-        # Set the keyvalue's value
-        getattr(self.edict, 'set_key_value_{0}'.format(
-            self.keyvalues[item]))(item, value)
 
     def _set_offset(self, item, value):
         '''Sets the value of the given offset'''
@@ -367,11 +340,6 @@ class BaseEntity(object):
     def properties(self):
         '''Returns all properties for all entities'''
         return EntityProperties.get_game_attributes(self.entities)
-
-    @property
-    def keyvalues(self):
-        '''Returns all keyvalues for all entities'''
-        return EntityKeyValues.get_game_attributes(self.entities)
 
     @property
     def offsets(self):
