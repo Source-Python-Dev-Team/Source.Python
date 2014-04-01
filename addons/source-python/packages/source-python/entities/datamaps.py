@@ -92,26 +92,43 @@ class _EntityDataMaps(dict):
             # Create a DataMap object
             datamap = make_object(DataMap, function(pointer))
 
-            # Use "while" to get all datamaps for the entity
-            while datamap:
+            # Set the new server_class name to the datamap's name.
+            # This is done to fix a KeyError that occurs when the
+            # server_class is still not in the dictionary later on.
+            server_class = datamap.class_name
 
-                # Store the class name as a _DataMap dictionary object
-                self[datamap.class_name] = _DataMap(datamap)
+            # Is the current server_class value not in the dictionary?
+            if not server_class in self:
 
-                # Move up a level and store the base of the current datamap
-                self[datamap.class_name].base = datamap = datamap.base
+                # Use "while" to get all datamaps for the entity
+                while datamap:
+
+                    # Store the class name as a _DataMap dictionary object
+                    self[datamap.class_name] = _DataMap(datamap)
+
+                    # Move up a level and store the base of the current datamap
+                    self[datamap.class_name].base = datamap = datamap.base
 
         # Create a dictionary of values to return
         values = dict()
 
         # Use a "while" statement to get all values for the entity
-        while not self[server_class].base is None:
+        while server_class in self:
 
             # Add the current server_class' values to the dictionary
             values.update(self[server_class])
 
-            # Move up one level
-            server_class = self[server_class].base.class_name
+            # Use try/except in-case .base returns None
+            try:
+
+                # Move up one level
+                server_class = self[server_class].base.class_name
+
+            # Was an exception encountered?
+            except AttributeError:
+
+                # Break the while loop
+                break
 
         # Return the values
         return values
