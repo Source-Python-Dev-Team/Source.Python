@@ -36,9 +36,12 @@ __all__ = []
 _SupportedTypes = {
     FieldTypes.BOOLEAN: 'bool',
     FieldTypes.CHARACTER: 'char',
+    FieldTypes.EHANDLE: 'int',
     FieldTypes.FLOAT: 'float',
     FieldTypes.INTEGER: 'int',
     FieldTypes.SHORT: 'short',
+    FieldTypes.TICK: 'int',
+    FieldTypes.TIME: 'float',
 }
 
 _KeyValueTypes = {
