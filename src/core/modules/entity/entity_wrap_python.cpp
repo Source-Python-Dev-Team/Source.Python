@@ -365,13 +365,6 @@ void export_edict()
 			&CBaseEdict::m_NetworkSerialNumber
 		)
 
-		/*
-		// TODO: Missing on CS:GO
-		.def_readwrite("index",
-			&CBaseEdict::m_iIndex
-		)
-		*/
-
 		.def_readwrite("networkable",
 			&CBaseEdict::m_pNetworkable
 		)

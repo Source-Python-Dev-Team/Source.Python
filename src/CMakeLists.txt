@@ -47,7 +47,7 @@ Set(SOURCEPYTHON_UTIL_FILES
 # ------------------------------------------------------------------
 # Core
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_CORE_HEADERS 
+Set(SOURCEPYTHON_CORE_HEADERS
     core/core/sp_python.h
     core/core/sp_main.h
     core/core/sp_gamedir.h
@@ -124,6 +124,21 @@ Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Constants module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_CONSTANTS_MODULE_HEADERS
+	core/modules/constants/constants_const_wrap.h
+	core/modules/constants/constants_const_wrap_python.h
+	core/modules/constants/${SOURCE_ENGINE}/constants_const_wrap_python.h
+	core/modules/constants/constants_in_buttons_wrap.h
+	core/modules/constants/constants_in_buttons_wrap_python.h
+)
+
+Set(SOURCEPYTHON_CONSTANTS_MODULE_SOURCES
+    core/modules/constants/constants_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # Conversions module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS
@@ -145,6 +160,18 @@ Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Datamap module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_DATAMAP_MODULE_HEADERS
+	core/modules/datamap/datamap_wrap.h
+	core/modules/datamap/${SOURCE_ENGINE}/datamap_wrap_python.h
+)
+
+Set(SOURCEPYTHON_DATAMAP_MODULE_SOURCES
+    core/modules/datamap/datamap_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # Dump module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_DUMP_MODULE_HEADERS
@@ -159,6 +186,8 @@ Set(SOURCEPYTHON_DUMP_MODULE_SOURCES
 # Effects module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EFFECTS_MODULE_HEADERS
+	core/modules/effects/effects_wrap.h
+	core/modules/effects/${SOURCE_ENGINE}/effects_wrap_python.h
 )
 
 Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
@@ -289,22 +318,6 @@ Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Usermessage module.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS
-    core/modules/usermessage/usermessage.h
-    core/modules/usermessage/usermessage_implementation_base.h
-    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.h
-)
-
-Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
-    core/modules/usermessage/usermessage.cpp
-    core/modules/usermessage/usermessage_wrap_python.cpp
-    core/modules/usermessage/usermessage_implementation_base.cpp
-    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.cpp
-)
-
-# ------------------------------------------------------------------
 # StringTables module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS
@@ -315,30 +328,12 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Datamap module.
+# Usermessage module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_DATAMAP_MODULE_HEADERS
-	core/modules/datamap/datamap_wrap.h
-	core/modules/datamap/${SOURCE_ENGINE}/datamap_wrap_python.h
-)
-
-Set(SOURCEPYTHON_DATAMAP_MODULE_SOURCES
-    core/modules/datamap/datamap_wrap_python.cpp
-)
-
-# ------------------------------------------------------------------
-# Constants module.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_CONSTANTS_MODULE_HEADERS
-	core/modules/constants/constants_const_wrap.h
-	core/modules/constants/constants_const_wrap_python.h
-	core/modules/constants/${SOURCE_ENGINE}/constants_const_wrap_python.h
-	core/modules/constants/constants_in_buttons_wrap.h
-	core/modules/constants/constants_in_buttons_wrap_python.h
-)
-
-Set(SOURCEPYTHON_CONSTANTS_MODULE_SOURCES
-    core/modules/constants/constants_wrap_python.cpp
+Set(SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS
+    core/modules/usermessage/usermessage.h
+    core/modules/usermessage/usermessage_implementation_base.h
+    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.h
 )
 
 # ------------------------------------------------------------------
@@ -354,13 +349,20 @@ Set(SOURCEPYTHON_TOOLS_MODULE_SOURCES
     core/modules/tools/tools_wrap_python.cpp
 )
 
+Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
+    core/modules/usermessage/usermessage.cpp
+    core/modules/usermessage/usermessage_wrap_python.cpp
+    core/modules/usermessage/usermessage_implementation_base.cpp
+    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.cpp
+)
+
 # ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_BOT_MODULE_HEADERS}
     ${SOURCEPYTHON_BOT_MODULE_SOURCES}
-    
+
     ${SOURCEPYTHON_COMMAND_MODULE_HEADERS}
     ${SOURCEPYTHON_COMMAND_MODULE_SOURCES}
 
@@ -415,16 +417,16 @@ Set(SOURCEPYTHON_MODULE_FILES
 
 	${SOURCEPYTHON_DATAMAP_MODULE_HEADERS}
 	${SOURCEPYTHON_DATAMAP_MODULE_SOURCES}
-	
+
 	${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
 	${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
-	
+
 	${SOURCEPYTHON_TOOLS_MODULE_HEADERS}
 	${SOURCEPYTHON_TOOLS_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
-# Create source groups for everything to make our projects nice and 
+# Create source groups for everything to make our projects nice and
 # clean.
 # ------------------------------------------------------------------
 Source_Group("Header Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_HEADERS})
@@ -481,16 +483,16 @@ Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_MODULE_TOOLS_SOURCES})
 
 # ------------------------------------------------------------------
-# All SourcePython source files. Ideally we break out each group of 
+# All SourcePython source files. Ideally we break out each group of
 # files into their own defines (as above with SOURCEPYTHON_CORE_FILES.
 # ------------------------------------------------------------------
 
 # ------------------------------------------------------------------
-# This basically creates the SourcePython project. Certain project 
-# attributes like Target_Link_Libraries need to be declared after 
+# This basically creates the SourcePython project. Certain project
+# attributes like Target_Link_Libraries need to be declared after
 # this line.
 # ------------------------------------------------------------------
-Add_Library(core SHARED 
+Add_Library(core SHARED
     ${SOURCEPYTHON_CORE_FILES}
     ${SOURCEPYTHON_ADDON_FILES}
     ${SOURCEPYTHON_GENERIC_FILES}

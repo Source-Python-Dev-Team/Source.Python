@@ -150,7 +150,7 @@ inline int GetDynCallConvention(Convention_t eConv)
 		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
 	}
 
-	// TODO: Throw exception
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
 	return 0;
 }
 

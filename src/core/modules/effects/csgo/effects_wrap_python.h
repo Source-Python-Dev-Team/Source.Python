@@ -24,36 +24,33 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _TOOLS_WRAP_PYTHON_ORANGEBOX_H
-#define _TOOLS_WRAP_PYTHON_ORANGEBOX_H
+#ifndef _EFFECTS_WRAP_PYTHON_CSGO_H
+#define _EFFECTS_WRAP_PYTHON_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "tools_wrap.h"
+#include "game/shared/effect_dispatch_data.h"
 
 
 //-----------------------------------------------------------------------------
-// Expose IServerTools.
+// Expose CEffectData.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_engine_specific_server_tools(T ServerTools)
+void export_engine_specific_dispatch_effect_data(T DispatchEffectData)
 {
-	ServerTools.def("remove_entity", &ServerToolsExt::remove_entity);
-	ServerTools.def("remove_entity_immediate", &ServerToolsExt::remove_entity_immediate);
-	
-	ServerTools.def(
-		"get_entity_factory_dictionary",
-		&ServerToolsExt::get_entity_factory_dictionary,
-		reference_existing_object_policy()
-	);
-	
-	ServerTools.def(
-		"get_temp_entities",
-		&IServerTools::GetTempEntsSystem,
-		reference_existing_object_policy()
-	);
+	DispatchEffectData.def_readwrite("other_entity_index", &CEffectData::m_nOtherEntIndex);
 }
 
 
-#endif // _TOOLS_WRAP_PYTHON_ORANGEBOX_H
+//-----------------------------------------------------------------------------
+// Expose ITempEntsSystem.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_temp_entities_system(T TempEntities)
+{
+	// Nothing specific to CSGO...
+}
+
+
+#endif // _EFFECTS_WRAP_PYTHON_CSGO_H

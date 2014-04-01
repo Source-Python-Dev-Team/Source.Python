@@ -24,36 +24,33 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _TOOLS_WRAP_PYTHON_ORANGEBOX_H
-#define _TOOLS_WRAP_PYTHON_ORANGEBOX_H
+#ifndef _EFFECTS_WRAP_H
+#define _EFFECTS_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "tools_wrap.h"
+#include "game/shared/itempents.h"
 
 
 //-----------------------------------------------------------------------------
-// Expose IServerTools.
+// ITempEntsSystem extension class.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_server_tools(T ServerTools)
+class TempEntitiesSharedExt
 {
-	ServerTools.def("remove_entity", &ServerToolsExt::remove_entity);
-	ServerTools.def("remove_entity_immediate", &ServerToolsExt::remove_entity_immediate);
-	
-	ServerTools.def(
-		"get_entity_factory_dictionary",
-		&ServerToolsExt::get_entity_factory_dictionary,
-		reference_existing_object_policy()
-	);
-	
-	ServerTools.def(
-		"get_temp_entities",
-		&IServerTools::GetTempEntsSystem,
-		reference_existing_object_policy()
-	);
-}
+public:
+	static void fizz(ITempEntsSystem *pTempEntities, IRecipientFilter &filter, float delay,
+		CPointer *pEntity, int model_index, int density, int current)
+	{
+		pTempEntities->Fizz(filter, delay, (CBaseEntity *)pEntity->m_ulAddr, model_index, density, current);
+	}
+
+	static void client_projectile(ITempEntsSystem *pTempEntities, IRecipientFilter &filter, float delay,
+		const Vector* vecOrigin, const Vector *vecVelocity, int modelindex, int lifetime, CPointer *pOwner)
+	{
+		pTempEntities->ClientProjectile(filter, delay, vecOrigin, vecVelocity, modelindex, lifetime, (CBaseEntity *)pOwner->m_ulAddr);
+	}
+};
 
 
-#endif // _TOOLS_WRAP_PYTHON_ORANGEBOX_H
+#endif // _EFFECTS_WRAP_H
