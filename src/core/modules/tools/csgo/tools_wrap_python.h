@@ -43,24 +43,4 @@ void export_engine_specific_server_tools(T ServerTools)
 }
 
 
-//-----------------------------------------------------------------------------
-// Expose CEffectData.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_dispatch_effect_data(T DispatchEffectData)
-{
-	DispatchEffectData.def_readwrite("other_entity_index", &CEffectData::m_nOtherEntIndex);
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose ITempEntsSystem.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_temp_entities_system(T TempEntities)
-{
-	// Nothing specific to CSGO...
-}
-
-
 #endif // _TOOLS_WRAP_PYTHON_CSGO_H
