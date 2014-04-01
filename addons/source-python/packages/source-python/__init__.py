@@ -113,10 +113,6 @@ if auth_providers:
     SPSubCommandManager.call_command('auth', ['load'] + auth_providers)
 
 
-'''
-    THIS IS COMMENTED OUT DUE TO LOADING ISSUES ON LINUX.
-    ONCE THOSE ISSUES HAVE BEEN RESOLVED, THIS CAN BE UNCOMMENTED.
-
 # =============================================================================
 # >> USER_SETTINGS SETUP
 # =============================================================================
@@ -147,4 +143,3 @@ if _CoreSettingsInstance['USER_SETTINGS']['client_commands']:
     ClientCommandManager.register_commands(_CoreSettingsInstance[
         'USER_SETTINGS']['client_commands'].split(
         ','), _SettingsMenuInstance._send_menu)
-'''
