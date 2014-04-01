@@ -14,10 +14,13 @@ from datamap_c import DataMap
 from datamap_c import FieldTypes
 from datamap_c import InputData
 from datamap_c import TypeDescriptionFlags
+from mathlib_c import Vector
 from memory_c import Argument
 from memory_c import Convention
 from memory_c import Return
+from memory_c import get_pointer
 from memory_c import make_object
+from usermessage_c import Color
 #   Entities
 from entities.attributes import EntityAttributes
 from entities.constants import DATA_DESC_MAP_OFFSET
@@ -36,10 +39,16 @@ __all__ = []
 _SupportedTypes = {
     FieldTypes.BOOLEAN: 'bool',
     FieldTypes.CHARACTER: 'char',
+    FieldTypes.CLASSPTR: 'pointer',
     FieldTypes.EHANDLE: 'int',
     FieldTypes.FLOAT: 'float',
+    FieldTypes.FUNCTION: 'pointer',
     FieldTypes.INTEGER: 'int',
+    FieldTypes.MODELINDEX: 'uint',
+    FieldTypes.MODELNAME: 'string_pointer',
     FieldTypes.SHORT: 'short',
+    FieldTypes.SOUNDNAME: 'string_pointer',
+    FieldTypes.STRING: 'string_pointer',
     FieldTypes.TICK: 'int',
     FieldTypes.TIME: 'float',
 }
@@ -47,6 +56,7 @@ _SupportedTypes = {
 _KeyValueTypes = {
     FieldTypes.FLOAT: 'float',
     FieldTypes.INTEGER: 'int',
+    FieldTypes.MODELNAME: 'string',
     FieldTypes.STRING: 'string',
     FieldTypes.VECTOR: 'vector',
 }
@@ -195,6 +205,18 @@ class _DataMap(dict):
                 # Store the desc name in the dictionary as a keyvalue
                 value = self[desc.name] = _KeyValue(desc)
 
+            # Is this a color type description?
+            elif desc.type == FieldTypes.COLOR32:
+
+                # Store the desc name in the dictionary as a color
+                value = self[desc.name] = _TypeObject(desc, Color)
+
+            # Is this a vector type description?
+            elif desc.type in (FieldTypes.VECTOR, FieldTypes.POSITION_VECTOR):
+
+                # Store the desc name in the dictionary as a vector
+                value = self[desc.name] = _TypeObject(desc, Vector)
+
             # Is this type description supported?
             elif desc.type in _SupportedTypes:
 
@@ -274,8 +296,8 @@ class _Input(_BaseType):
 
     def __init__(self, desc, function):
         '''Store the type description and function instance'''
-        self.desc = desc
-        self.type = self.desc.type
+        self.name = desc.name
+        self.type = desc.type
         self.function = function
 
     def __call__(self, value=None, caller=None, activator=None):
@@ -284,13 +306,13 @@ class _Input(_BaseType):
         # Is the type not VOID but no value was given?
         if value is None and self.type != FieldTypes.VOID:
             raise ValueError(
-                'Must provide a value for {0}'.format(self.desc.name))
+                'Must provide a value for {0}'.format(self.name))
 
         # Is the type VOID but a value was given?
         if not value is None and self.type == FieldTypes.VOID:
             raise ValueError(
                 '{0} is type Void.  Do not pass a value.'.format(
-                    self.desc.name))
+                    self.name))
 
         # Is the type supported?
         if (not self.type in _InputSetTypes
@@ -325,10 +347,9 @@ class _DataDesc(object):
 
     def __init__(self, desc):
         '''Store the type description instance'''
-        self.desc = desc
-        self.get_attr = 'get_{0}'.format(_SupportedTypes[self.desc.type])
-        self.set_attr = 'set_{0}'.format(_SupportedTypes[self.desc.type])
-        self.offset = self.desc.offset
+        self.get_attr = 'get_{0}'.format(_SupportedTypes[desc.type])
+        self.set_attr = 'set_{0}'.format(_SupportedTypes[desc.type])
+        self.offset = desc.offset
 
     def _get_value(self):
         '''Return the current value of the type
@@ -367,3 +388,22 @@ class _KeyValue(object):
 
         # Set the value of the keyvalue
         getattr(edict, self.set_attr)(self.name, value)
+
+
+class _TypeObject(object):
+    '''Class used to get and set other types of objects for entities'''
+
+    def __init__(self, desc, type_object):
+        '''Store the offset and type of object'''
+        self.offset = desc.offset
+        self.type_object = type_object
+
+    def _get_value(self):
+        '''Returns the object type at the offset's address'''
+        return make_object(
+            self.type_object, self.current_pointer + self.offset)
+
+    def _set_value(self, value):
+        '''Sets the object type value at the offset's address'''
+        offset = self.current_pointer + self.offset
+        offset.set_pointer(get_pointer(value))
