@@ -48,6 +48,7 @@ extern IServerTools* servertools;
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_server_tools(scope tools_c);
+void export_dispatch_effect_data(scope tools_c);
 void export_temp_entities_system(scope tools_c);
 
 
@@ -85,6 +86,44 @@ void export_server_tools(scope tools_c)
 
 	// Singleton...
 	tools_c.attr("ServerTools") = object(ptr(servertools));
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose CEffectData.
+//-----------------------------------------------------------------------------
+void export_dispatch_effect_data(scope tools_c)
+{
+	class_<CEffectData> DispatchEffectData("DispatchEffectData");
+	
+	// Properties...
+	DispatchEffectData.def_readwrite("origin", &CEffectData::m_vOrigin);
+	DispatchEffectData.def_readwrite("start", &CEffectData::m_vStart);
+	DispatchEffectData.def_readwrite("normal", &CEffectData::m_vNormal);
+	DispatchEffectData.def_readwrite("angles", &CEffectData::m_vAngles);
+	DispatchEffectData.def_readwrite("flags", &CEffectData::m_fFlags);
+	DispatchEffectData.def_readwrite("entity_index", &CEffectData::m_nEntIndex);
+	DispatchEffectData.def_readwrite("scale", &CEffectData::m_flScale);
+	DispatchEffectData.def_readwrite("magnitude", &CEffectData::m_flMagnitude);
+	DispatchEffectData.def_readwrite("radius", &CEffectData::m_flRadius);
+	DispatchEffectData.def_readwrite("attachement_index", &CEffectData::m_nAttachmentIndex);
+	DispatchEffectData.def_readwrite("surface_prop", &CEffectData::m_nSurfaceProp);
+	DispatchEffectData.def_readwrite("material", &CEffectData::m_nMaterial);
+	DispatchEffectData.def_readwrite("damage_type", &CEffectData::m_nDamageType);
+	DispatchEffectData.def_readwrite("hitbox", &CEffectData::m_nHitBox);
+	DispatchEffectData.def_readwrite("color", &CEffectData::m_nColor);
+	
+	// CS:GO properties...
+	DispatchEffectData.NOT_IMPLEMENTED_ATTR("other_entity_index");
+	
+	// Methods...
+	DispatchEffectData.def("get_effect_name_index", &CEffectData::GetEffectNameIndex);
+	
+	// Engine specific stuff...
+	export_engine_specific_dispatch_effect_data(DispatchEffectData);
+	
+	// Add memory tools...
+	DispatchEffectData ADD_MEM_TOOLS(CEffectData, "DispatchEffect");
 }
 
 

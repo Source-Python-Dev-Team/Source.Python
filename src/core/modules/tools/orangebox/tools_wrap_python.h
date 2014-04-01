@@ -51,12 +51,21 @@ void export_engine_specific_server_tools(T ServerTools)
 
 
 //-----------------------------------------------------------------------------
+// Expose CEffectData.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_dispatch_effect_data(T DispatchEffectData)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
+//-----------------------------------------------------------------------------
 // Expose ITempEntsSystem.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_temp_entities_system(T TempEntities)
 {
-	// TODO: Expose CEffectData...
 	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
 }
 
