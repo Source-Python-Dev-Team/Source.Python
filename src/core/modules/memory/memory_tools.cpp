@@ -91,9 +91,8 @@ void CPointer::SetPtr(CPointer* pPtr, int iOffset /* = 0 */)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-		
 	
-	*(unsigned long *) m_ulAddr = pPtr->m_ulAddr;
+	*(unsigned long *) (m_ulAddr + iOffset) = pPtr->m_ulAddr;
 }
 
 int CPointer::Compare(CPointer* pOther, unsigned long ulNum)
