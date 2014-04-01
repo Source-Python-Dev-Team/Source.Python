@@ -137,11 +137,11 @@ Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
 # Constants module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CONSTANTS_MODULE_HEADERS
-	core/modules/constants/constants_const_wrap.h
-	core/modules/constants/constants_const_wrap_python.h
-	core/modules/constants/${SOURCE_ENGINE}/constants_const_wrap_python.h
-	core/modules/constants/constants_in_buttons_wrap.h
-	core/modules/constants/constants_in_buttons_wrap_python.h
+    core/modules/constants/constants_const_wrap.h
+    core/modules/constants/constants_const_wrap_python.h
+    core/modules/constants/${SOURCE_ENGINE}/constants_const_wrap_python.h
+    core/modules/constants/constants_in_buttons_wrap.h
+    core/modules/constants/constants_in_buttons_wrap_python.h
 )
 
 Set(SOURCEPYTHON_CONSTANTS_MODULE_SOURCES
@@ -173,8 +173,8 @@ Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
 # Datamap module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_DATAMAP_MODULE_HEADERS
-	core/modules/datamap/datamap_wrap.h
-	core/modules/datamap/${SOURCE_ENGINE}/datamap_wrap_python.h
+    core/modules/datamap/datamap_wrap.h
+    core/modules/datamap/${SOURCE_ENGINE}/datamap_wrap_python.h
 )
 
 Set(SOURCEPYTHON_DATAMAP_MODULE_SOURCES
@@ -196,8 +196,8 @@ Set(SOURCEPYTHON_DUMP_MODULE_SOURCES
 # Effects module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EFFECTS_MODULE_HEADERS
-	core/modules/effects/effects_wrap.h
-	core/modules/effects/${SOURCE_ENGINE}/effects_wrap_python.h
+    core/modules/effects/effects_wrap.h
+    core/modules/effects/${SOURCE_ENGINE}/effects_wrap_python.h
 )
 
 Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
@@ -357,9 +357,9 @@ Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
 # Tools module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_TOOLS_MODULE_HEADERS
-	core/modules/tools/tools_wrap.h
-	core/modules/tools/${SOURCE_ENGINE}/tools_wrap.h
-	core/modules/tools/${SOURCE_ENGINE}/tools_wrap_python.h
+    core/modules/tools/tools_wrap.h
+    core/modules/tools/${SOURCE_ENGINE}/tools_wrap.h
+    core/modules/tools/${SOURCE_ENGINE}/tools_wrap_python.h
 )
 
 Set(SOURCEPYTHON_TOOLS_MODULE_SOURCES
@@ -372,8 +372,8 @@ Set(SOURCEPYTHON_TOOLS_MODULE_SOURCES
 Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS}
     ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES}
-
-	${SOURCEPYTHON_BOT_MODULE_HEADERS}
+    
+    ${SOURCEPYTHON_BOT_MODULE_HEADERS}
     ${SOURCEPYTHON_BOT_MODULE_SOURCES}
 
     ${SOURCEPYTHON_COMMAND_MODULE_HEADERS}
@@ -425,17 +425,17 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES}
     ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES}
 
-	${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
-	${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
+    ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
+    ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
 
-	${SOURCEPYTHON_DATAMAP_MODULE_HEADERS}
-	${SOURCEPYTHON_DATAMAP_MODULE_SOURCES}
+    ${SOURCEPYTHON_DATAMAP_MODULE_HEADERS}
+    ${SOURCEPYTHON_DATAMAP_MODULE_SOURCES}
 
-	${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
-	${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
+    ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
+    ${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
 
-	${SOURCEPYTHON_TOOLS_MODULE_HEADERS}
-	${SOURCEPYTHON_TOOLS_MODULE_SOURCES}
+    ${SOURCEPYTHON_TOOLS_MODULE_HEADERS}
+    ${SOURCEPYTHON_TOOLS_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -446,7 +446,7 @@ Source_Group("Header Files\\Addons"                         FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
-Source_Group("Header Files\\Module\\BaseTypees"             FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Bot"                    FILES ${SOURCEPYTHON_BOT_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
