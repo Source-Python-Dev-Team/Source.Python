@@ -43,6 +43,12 @@ void export_engine_specific_server_tools(T ServerTools)
 	ServerTools.def("remove_entity_immediate", &ServerToolsExt::remove_entity_immediate);
 	
 	ServerTools.def(
+		"get_entity_factory_dictionary",
+		&ServerToolsExt::get_entity_factory_dictionary,
+		reference_existing_object_policy()
+	);
+	
+	ServerTools.def(
 		"get_temp_entities",
 		&IServerTools::GetTempEntsSystem,
 		reference_existing_object_policy()

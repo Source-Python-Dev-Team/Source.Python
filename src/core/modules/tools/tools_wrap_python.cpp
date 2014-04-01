@@ -50,6 +50,9 @@ extern IServerTools* servertools;
 void export_server_tools(scope tools_c);
 void export_dispatch_effect_data(scope tools_c);
 void export_temp_entities_system(scope tools_c);
+void export_entity_factory(scope tools_c);
+void export_entity_factory_dictionary_interface(scope tools_c);
+void export_entity_factory_dictionary(scope tools_c);
 
 
 //-----------------------------------------------------------------------------
@@ -60,6 +63,9 @@ DECLARE_SP_MODULE(tools_c)
 	scope tools_c = scope();
 	export_server_tools(tools_c);
 	export_temp_entities_system(tools_c);
+	export_entity_factory(tools_c);
+	export_entity_factory_dictionary_interface(tools_c);
+	export_entity_factory_dictionary(tools_c);
 }
 
 
@@ -76,6 +82,7 @@ void export_server_tools(scope tools_c)
 
 	// OrangeBox methods...
 	ServerTools.NOT_IMPLEMENTED("remove_entity_immediate");
+	ServerTools.NOT_IMPLEMENTED("get_entity_factory_dictionary");
 	ServerTools.NOT_IMPLEMENTED("get_temp_entities");
 
 	// Engine specific stuff...
@@ -184,4 +191,73 @@ void export_temp_entities_system(scope tools_c)
 
 	// Add memory tools...
 	TempEntities ADD_MEM_TOOLS(ITempEntsSystem, "TempEntities");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose IEntityFactory.
+//-----------------------------------------------------------------------------
+void export_entity_factory(scope tools_c)
+{
+	class_<IEntityFactory, boost::noncopyable> EntityFactory("EntityFactory", no_init);
+	
+	// Methods...
+	EntityFactory.def("create",
+		&IEntityFactory::Create,
+		reference_existing_object_policy()
+	);
+	
+	EntityFactory.def("destroy", &IEntityFactory::Destroy);
+	
+	// Properties...
+	EntityFactory.add_property("size", &IEntityFactory::GetEntitySize);
+	
+	// Add memory tools...
+	EntityFactory ADD_MEM_TOOLS(IEntityFactory, "EntityFactory");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose IEntityFactoryDictionary.
+//-----------------------------------------------------------------------------
+void export_entity_factory_dictionary_interface(scope tools_c)
+{
+	class_<IEntityFactoryDictionary, IEntityFactoryDictionary *,
+		boost::noncopyable> _EntityFactoryDictionary("_EntityFactoryDictionary", no_init);
+
+	// Methods...
+	_EntityFactoryDictionary.def("install_factory", &IEntityFactoryDictionary::InstallFactory);
+
+	_EntityFactoryDictionary.def("create",
+		&IEntityFactoryDictionary::Create,
+		reference_existing_object_policy()
+	);
+
+	_EntityFactoryDictionary.def("destroy", &IEntityFactoryDictionary::Destroy);
+
+	_EntityFactoryDictionary.def("find_factory",
+		&IEntityFactoryDictionary::FindFactory,
+		reference_existing_object_policy()
+	);
+
+	_EntityFactoryDictionary.def("get_cannonical_name", &IEntityFactoryDictionary::GetCannonicalName);
+
+	// Add memory tools...
+	_EntityFactoryDictionary ADD_MEM_TOOLS(IEntityFactoryDictionary, "_EntityFactoryDictionary");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose CEntityFactoryDictionary.
+//-----------------------------------------------------------------------------
+void export_entity_factory_dictionary(scope tools_c)
+{
+	class_<CEntityFactoryDictionary, CEntityFactoryDictionary *, bases<IEntityFactoryDictionary>,
+		boost::noncopyable> EntityFactoryDictionary("EntityFactoryDictionary", no_init);
+
+	// Special methods...
+	EntityFactoryDictionary.def("__getitem__",&EntityFactoryDictionarySharedExt::__getitem__);
+
+	// Add memory tools...
+	EntityFactoryDictionary ADD_MEM_TOOLS(CEntityFactoryDictionary, "EntityFactoryDictionary");
 }

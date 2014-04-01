@@ -31,6 +31,9 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "toolframework/itoolentity.h"
+#include "game/shared/shareddefs.h"
+#include "game/server/util.h"
+#include "tier1/utldict.h"
 #include "modules/conversions/conversions_wrap.h"
 
 
@@ -75,6 +78,33 @@ public:
 		const Vector* vecOrigin, const Vector *vecVelocity, int modelindex, int lifetime, CPointer *pOwner)
 	{
 		pTempEntities->ClientProjectile(filter, delay, vecOrigin, vecVelocity, modelindex, lifetime, (CBaseEntity *)pOwner->m_ulAddr);
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// Entity creation factory.
+//-----------------------------------------------------------------------------
+class CEntityFactoryDictionary : public IEntityFactoryDictionary
+{
+public:
+	CUtlDict<IEntityFactory *, unsigned short> m_Factories;
+};
+
+
+//-----------------------------------------------------------------------------
+// CEntityFactoryDictionary extension class.
+//-----------------------------------------------------------------------------
+class EntityFactoryDictionarySharedExt
+{
+public:
+	static const char *__getitem__(CEntityFactoryDictionary *pEntityFactoryDictionary, int iIndex)
+	{
+		if (!pEntityFactoryDictionary->m_Factories.IsValidIndex(iIndex))
+		{
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Invalid index.");
+		}
+		return pEntityFactoryDictionary->m_Factories.GetElementName(iIndex);
 	}
 };
 

@@ -49,6 +49,11 @@ public:
 	{
 		pServerTools->RemoveEntityImmediate((CBaseEntity *)PointerFromIndex(iEntityIndex)->m_ulAddr);
 	}
+	
+	static CEntityFactoryDictionary *get_entity_factory_dictionary(IServerTools *pServerTools)
+	{
+		return (CEntityFactoryDictionary *)pServerTools->GetEntityFactoryDictionary();
+	}
 };
 
 
