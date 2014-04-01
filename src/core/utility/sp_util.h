@@ -88,4 +88,10 @@ void SetItemIndexer(T* self, const int i, const U& value)
 	(*self)[i] = value;
 }
 
+template<class T, class U, int iIndex>
+void IndexSetter(T *pSelf, U pValue)
+{
+	(*pSelf)[iIndex] = pValue;
+}
+
 #endif // _SP_UTIL_H

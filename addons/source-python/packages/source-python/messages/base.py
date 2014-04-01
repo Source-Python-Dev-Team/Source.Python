@@ -21,7 +21,7 @@ from engine_c import EngineServer
 from core import echo_console
 from excepthooks import ExceptHooks
 #   UserMessage
-from usermessage_c import Color
+from basetypes_c import Color
 from usermessage_c import UserMessage
 #   Filters
 from filters.recipients import RecipientFilter

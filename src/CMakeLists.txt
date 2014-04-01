@@ -97,6 +97,16 @@ Set(SOURCEPYTHON_GENERIC_FILES
 )
 
 # ------------------------------------------------------------------
+# BaseTypes module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_BASETYPES_MODULE_HEADERS
+)
+
+Set(SOURCEPYTHON_BASETYPES_MODULE_SOURCES
+    core/modules/basetypes/basetypes_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # Bot module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_BOT_MODULE_HEADERS
@@ -336,6 +346,13 @@ Set(SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS
     core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.h
 )
 
+Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
+    core/modules/usermessage/usermessage.cpp
+    core/modules/usermessage/usermessage_wrap_python.cpp
+    core/modules/usermessage/usermessage_implementation_base.cpp
+    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.cpp
+)
+
 # ------------------------------------------------------------------
 # Tools module.
 # ------------------------------------------------------------------
@@ -349,18 +366,14 @@ Set(SOURCEPYTHON_TOOLS_MODULE_SOURCES
     core/modules/tools/tools_wrap_python.cpp
 )
 
-Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
-    core/modules/usermessage/usermessage.cpp
-    core/modules/usermessage/usermessage_wrap_python.cpp
-    core/modules/usermessage/usermessage_implementation_base.cpp
-    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.cpp
-)
-
 # ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
-    ${SOURCEPYTHON_BOT_MODULE_HEADERS}
+    ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS}
+    ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES}
+
+	${SOURCEPYTHON_BOT_MODULE_HEADERS}
     ${SOURCEPYTHON_BOT_MODULE_SOURCES}
 
     ${SOURCEPYTHON_COMMAND_MODULE_HEADERS}
@@ -433,6 +446,7 @@ Source_Group("Header Files\\Addons"                         FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
+Source_Group("Header Files\\Module\\BaseTypees"             FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Bot"                    FILES ${SOURCEPYTHON_BOT_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
@@ -459,6 +473,7 @@ Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Source Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
+Source_Group("Source Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Bot"                    FILES ${SOURCEPYTHON_BOT_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})

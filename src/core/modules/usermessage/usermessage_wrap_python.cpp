@@ -34,7 +34,6 @@ using namespace boost::python;
 
 #include "utility/sp_util.h"
 #include "usermessage.h"
-#include "Color.h"
 
 //-----------------------------------------------------------------------------
 // Exposes the engine module.
@@ -42,14 +41,12 @@ using namespace boost::python;
 void export_usermessage_interface();
 void export_message_functions();
 void export_dialog_enum();
-void export_color();
 
 DECLARE_SP_MODULE(usermessage_c)
 {
 	export_usermessage_interface();
 	export_message_functions();
 	export_dialog_enum();
-	export_color();
 }
 
 //-----------------------------------------------------------------------------
@@ -182,28 +179,5 @@ void export_dialog_enum()
 		.value("TEXT", DIALOG_TEXT)
 		.value("ENTRY", DIALOG_ENTRY)
 		.value("ASKCONNECT", DIALOG_ASKCONNECT)
-	;
-}
-
-void export_color()
-{
-	class_<Color>("Color")
-		.def(init<int, int, int>())
-		.def(init<int, int, int, int>())
-
-		.def("__getitem__",
-			&GetItemIndexer<Color, unsigned char, 0, 3>,
-			"Returns the color at the given index."
-		)
-
-		.def("__setitem__",
-			&SetItemIndexer<Color, unsigned char, 0, 3>,
-			"Sets the color at the given index."
-		)
-
-		.def(self == self)
-		.def(self != self)
-
-		ADD_MEM_TOOLS(Color, "Color")
 	;
 }

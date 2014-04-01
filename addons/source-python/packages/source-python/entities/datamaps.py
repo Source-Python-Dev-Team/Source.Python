@@ -20,7 +20,7 @@ from memory_c import Convention
 from memory_c import Return
 from memory_c import get_pointer
 from memory_c import make_object
-from usermessage_c import Color
+from basetypes_c import Color
 #   Entities
 from entities.attributes import EntityAttributes
 from entities.constants import DATA_DESC_MAP_OFFSET
