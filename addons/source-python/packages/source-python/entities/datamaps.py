@@ -8,6 +8,8 @@
 from os import name as os_name
 
 # Source.Python Imports
+from basetypes_c import Color
+from basetypes_c import Interval
 from conversions_c import pointer_from_edict
 from conversions_c import edict_from_pointer
 from datamap_c import DataMap
@@ -20,7 +22,6 @@ from memory_c import Convention
 from memory_c import Return
 from memory_c import get_pointer
 from memory_c import make_object
-from basetypes_c import Color
 #   Entities
 from entities.attributes import EntityAttributes
 from entities.constants import DATA_DESC_MAP_OFFSET
@@ -205,6 +206,12 @@ class _DataMap(dict):
                 # Store the desc name in the dictionary as a keyvalue
                 value = self[desc.name] = _KeyValue(desc)
 
+            # Is this a interval type description?
+            elif desc.type == FieldTypes.INTERVAL:
+
+                # Store the desc name in the dictionary as a vector
+                value = self[desc.name] = _TypeObject(desc, Interval)
+                
             # Is this a color type description?
             elif desc.type == FieldTypes.COLOR32:
 
