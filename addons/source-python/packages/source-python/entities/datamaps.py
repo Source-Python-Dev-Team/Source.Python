@@ -412,5 +412,4 @@ class _TypeObject(object):
 
     def _set_value(self, value):
         '''Sets the object type value at the offset's address'''
-        offset = self.current_pointer + self.offset
-        offset.set_pointer(get_pointer(value))
+        self.current_pointer.set_pointer(get_pointer(value), self.offset)
