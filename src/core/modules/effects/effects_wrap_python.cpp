@@ -195,7 +195,7 @@ void export_effects()
 //-----------------------------------------------------------------------------
 void export_temp_entities_system()
 {
-	class_<ITempEntsSystem, bases<IPredictionSystem>, boost::noncopyable> TempEntities("TempEntities", no_init);
+	class_<ITempEntsSystem, bases<IPredictionSystem>, boost::noncopyable> TempEntities("_TempEntities", no_init);
 
 	// Methods...
 	TempEntities.def("armor_ricochet", &ITempEntsSystem::ArmorRicochet);
@@ -246,7 +246,7 @@ void export_temp_entities_system()
 	export_engine_specific_temp_entities_system(TempEntities);
 
 	// Add memory tools...
-	TempEntities ADD_MEM_TOOLS(ITempEntsSystem, "TempEntities");
+	TempEntities ADD_MEM_TOOLS(ITempEntsSystem, "_TempEntities");
 }
 
 

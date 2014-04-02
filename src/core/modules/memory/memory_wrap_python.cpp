@@ -70,7 +70,7 @@ void export_binaryfile()
 		.def("find_pointer",
 			&CBinaryFile::FindPointer,
 			"Rips out a pointer from a function.",
-			args("signature", "offset"),
+			("signature", "offset", arg("level")=0),
 			manage_new_object_policy()
 		)
 

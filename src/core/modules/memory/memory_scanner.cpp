@@ -289,10 +289,19 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 #endif
 }
 
-CPointer* CBinaryFile::FindPointer(object oIdentifier, int iOffset)
+CPointer* CBinaryFile::FindPointer(object oIdentifier, int iOffset, unsigned int iLevel)
 {
 	CPointer* ptr = FindAddress(oIdentifier);
-	return ptr->IsValid() ? ptr->GetPtr(iOffset) : ptr;
+	if (ptr->IsValid())
+	{
+		ptr = ptr->GetPtr(iOffset);
+		while (iLevel > 0)
+		{
+			ptr = ptr->GetPtr();
+			iLevel = iLevel - 1;
+		}
+	}
+	return ptr;
 }
 
 CPointer* CBinaryFile::FindAddress(object oIdentifier)

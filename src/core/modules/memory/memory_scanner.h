@@ -50,7 +50,7 @@ public:
 
 	CPointer* FindSignature(object oSignature);
 	CPointer* FindSymbol(char* szSymbol);
-	CPointer* FindPointer(object oIdentifier, int iOffset);
+	CPointer* FindPointer(object oIdentifier, int iOffset, unsigned int iLevel);
 	CPointer* FindAddress(object oIdentifier);
 
 public:
