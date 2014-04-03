@@ -100,6 +100,9 @@ Set(SOURCEPYTHON_GENERIC_FILES
 # BaseTypes module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_BASETYPES_MODULE_HEADERS
+	core/modules/basetypes/basetypes_wrap.h
+	core/modules/basetypes/${SOURCE_ENGINE}/basetypes_wrap.h
+	core/modules/basetypes/${SOURCE_ENGINE}/basetypes_wrap_python.h
 )
 
 Set(SOURCEPYTHON_BASETYPES_MODULE_SOURCES

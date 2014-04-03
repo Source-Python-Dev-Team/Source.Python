@@ -45,7 +45,6 @@ void export_base_entity_handle();
 void export_handle_entity();
 void export_server_unknown();
 void export_server_entity();
-void export_server_class();
 void export_server_networkable();
 void export_edict();
 void export_entity_generator();
@@ -56,7 +55,6 @@ DECLARE_SP_MODULE(entity_c)
 	export_handle_entity();
 	export_server_unknown();
 	export_server_entity();
-	export_server_class();
 	export_server_networkable();
 	export_edict();
 	export_entity_generator();
@@ -184,19 +182,6 @@ void export_server_entity()
 
 		ADD_MEM_TOOLS(IServerEntity, "ServerEntity")
 	;
-}
-
-//-----------------------------------------------------------------------------
-// Exports ServerClass.
-//-----------------------------------------------------------------------------
-void export_server_class()
-{
-	class_<ServerClass>("ServerClass", no_init)
-		.def_readonly("name", &ServerClass::m_pNetworkName)
-		.def_readonly("table", &ServerClass::m_pTable)
-		.def_readonly("next", &ServerClass::m_pNext)
-		.def_readonly("id", &ServerClass::m_ClassID)
-		;
 }
 
 
