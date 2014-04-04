@@ -78,4 +78,13 @@ public:
 };
 
 
+//-----------------------------------------------------------------------------
+// SendProp destructor declaration.
+//-----------------------------------------------------------------------------
+SendProp::~SendProp()
+{
+	// Declared here to fix undefined symbol issues...
+}
+
+
 #endif // _BASETYPES_WRAP_H
