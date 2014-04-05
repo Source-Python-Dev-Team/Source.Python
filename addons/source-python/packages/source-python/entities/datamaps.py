@@ -3,10 +3,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   OS
-from os import name as os_name
-
 # Source.Python Imports
 from basetypes_c import Color
 from basetypes_c import Interval
@@ -16,6 +12,8 @@ from datamap_c import DataMap
 from datamap_c import FieldTypes
 from datamap_c import InputData
 from datamap_c import TypeDescriptionFlags
+from entity_c import Edict
+from mathlib_c import Quaternion
 from mathlib_c import Vector
 from memory_c import Argument
 from memory_c import Convention
@@ -37,7 +35,7 @@ __all__ = []
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_SupportedTypes = {
+_SupportedOffsetTypes = {
     FieldTypes.BOOLEAN: 'bool',
     FieldTypes.CHARACTER: 'char',
     FieldTypes.CLASSPTR: 'pointer',
@@ -54,21 +52,22 @@ _SupportedTypes = {
     FieldTypes.TIME: 'float',
 }
 
-_KeyValueTypes = {
-    FieldTypes.FLOAT: 'float',
-    FieldTypes.INTEGER: 'int',
-    FieldTypes.MODELNAME: 'string',
-    FieldTypes.STRING: 'string',
-    FieldTypes.VECTOR: 'vector',
-}
-
-_InputSetTypes = {
+_SupportedInputTypes = {
     FieldTypes.BOOLEAN: 'bool',
     FieldTypes.COLOR32: 'color',
     FieldTypes.FLOAT: 'float',
     FieldTypes.INTEGER: 'int',
     FieldTypes.STRING: 'string',
     FieldTypes.VECTOR: 'vector',
+}
+
+_SupportedTypeObjects = {
+    FieldTypes.COLOR32: Color,
+    FieldTypes.EDICT: Edict,
+    FieldTypes.INTERVAL: Interval,
+    FieldTypes.POSITION_VECTOR: Vector,
+    FieldTypes.QUATERNION: Quaternion,
+    FieldTypes.VECTOR: Vector,
 }
 
 
@@ -181,51 +180,27 @@ class _DataMap(dict):
                 value = self[desc.name] = _Embedded(desc.embedded_datamap)
 
             # Is this an input type description?
-            elif desc.flags & TypeDescriptionFlags.INPUT:
-
-                # Use try/except in case the Pointer is not found
-                try:
-
-                    # Get the Function instance for the INPUT
-                    function = desc.input.make_function(
-                        Convention.THISCALL,
-                        (Argument.POINTER, Argument.POINTER),
-                        Return.VOID)
-
-                # Was the Pointer not found?
-                except ValueError:
-                    continue
+            elif (desc.flags & TypeDescriptionFlags.INPUT
+                    and not desc.flags & TypeDescriptionFlags.KEY):
 
                 # Store the desc name in the dictionary as an input
-                value = self[desc.name] = _Input(desc, function)
+                value = self[desc.name] = _Input(desc)
 
-            # Is this a valid keyvalue?
-            elif (desc.flags & TypeDescriptionFlags.KEY
-                    and desc.type in _KeyValueTypes):
+            # Is this a function table type description?
+            elif desc.flags & TypeDescriptionFlags.FUNCTIONTABLE:
 
-                # Store the desc name in the dictionary as a keyvalue
-                value = self[desc.name] = _KeyValue(desc)
+                # Store the desc name in the dictionary as a function table
+                value = self[desc.name] = _FunctionTable(desc)
 
-            # Is this a interval type description?
-            elif desc.type == FieldTypes.INTERVAL:
+            # Is this a supported type object?
+            elif desc.type in _SupportedTypeObjects:
 
-                # Store the desc name in the dictionary as a vector
-                value = self[desc.name] = _TypeObject(desc, Interval)
-                
-            # Is this a color type description?
-            elif desc.type == FieldTypes.COLOR32:
-
-                # Store the desc name in the dictionary as a color
-                value = self[desc.name] = _TypeObject(desc, Color)
-
-            # Is this a vector type description?
-            elif desc.type in (FieldTypes.VECTOR, FieldTypes.POSITION_VECTOR):
-
-                # Store the desc name in the dictionary as a vector
-                value = self[desc.name] = _TypeObject(desc, Vector)
+                # Store the desc name in the dictionary as its type
+                value = self[desc.name] = _TypeObject(
+                    desc, _SupportedTypeObjects[desc.type])
 
             # Is this type description supported?
-            elif desc.type in _SupportedTypes:
+            elif desc.type in _SupportedOffsetTypes:
 
                 # Store the desc name in the dictionary as a data desc object
                 value = self[desc.name] = _DataDesc(desc)
@@ -298,14 +273,33 @@ class _Embedded(_DataMap, _BaseType):
             super(_Embedded, self).__setattr__(attr, value)
 
 
-class _Input(_BaseType):
-    '''Class used to interact with INPUT objects'''
+class _BaseFunctions(_BaseType):
+    '''Base class for all function type descriptions'''
 
-    def __init__(self, desc, function):
-        '''Store the type description and function instance'''
+    def __init__(self, desc):
+        '''Store the name, type, and function'''
         self.name = desc.name
         self.type = desc.type
-        self.function = function
+        self.function = desc.input.make_function(
+                        Convention.THISCALL, self.arguments, Return.VOID)
+
+
+class _FunctionTable(_BaseFunctions):
+    '''Class used to interact with FUNCTIONTABLE objects'''
+
+    # Set the arguments for FUNCTIONTABLEs
+    arguments = (Argument.POINTER, )
+
+    def __call__(self):
+        '''Calls the stored function'''
+        self.function(self.current_pointer)
+
+
+class _Input(_FunctionTable):
+    '''Class used to interact with INPUT objects'''
+
+    # Set the arguments for INPUTs
+    arguments = (Argument.POINTER, Argument.POINTER)
 
     def __call__(self, value=None, caller=None, activator=None):
         '''Calls the stored function with the values given'''
@@ -320,12 +314,6 @@ class _Input(_BaseType):
             raise ValueError(
                 '{0} is type Void.  Do not pass a value.'.format(
                     self.name))
-
-        # Is the type supported?
-        if (not self.type in _InputSetTypes
-                and self.type != FieldTypes.VOID):
-            raise TypeError(
-                'FieldType "{0}" is unsupported.'.format(self.type))
 
         # Get an InputData instance
         inputdata = InputData()
@@ -343,7 +331,7 @@ class _Input(_BaseType):
 
             # Set the value
             getattr(inputdata.value, 'set_{0}'.format(
-                _InputSetTypes[self.type]))(value)
+                _SupportedInputTypes[self.type]))(value)
 
         # Call the function
         self.function(self.current_pointer, inputdata)
@@ -354,8 +342,8 @@ class _DataDesc(object):
 
     def __init__(self, desc):
         '''Store the type description instance'''
-        self.get_attr = 'get_{0}'.format(_SupportedTypes[desc.type])
-        self.set_attr = 'set_{0}'.format(_SupportedTypes[desc.type])
+        self.get_attr = 'get_{0}'.format(_SupportedOffsetTypes[desc.type])
+        self.set_attr = 'set_{0}'.format(_SupportedOffsetTypes[desc.type])
         self.offset = desc.offset
 
     def _get_value(self):
@@ -367,34 +355,6 @@ class _DataDesc(object):
         '''Set the value of the type description to
             the given value for the current pointer'''
         getattr(self.current_pointer, self.set_attr)(value, self.offset)
-
-
-class _KeyValue(object):
-    '''Class used to get and set keyvalues'''
-
-    def __init__(self, desc):
-        '''Store the keyvalue's base attributes'''
-        self.name = desc.external_name
-        self.get_attr = 'get_key_value_{0}'.format(_KeyValueTypes[desc.type])
-        self.set_attr = 'set_key_value_{0}'.format(_KeyValueTypes[desc.type])
-
-    def _get_value(self):
-        '''Returns a keyvalue for the current entity'''
-
-        # Get the edict of the current pointer
-        edict = edict_from_pointer(self.current_pointer)
-
-        # Return the current value of the keyvalue
-        return getattr(edict, self.get_attr)(self.name)
-
-    def _set_value(self, value):
-        '''Sets a keyvalue for the current entity'''
-
-        # Get the edict of the current pointer
-        edict = edict_from_pointer(self.current_pointer)
-
-        # Set the value of the keyvalue
-        getattr(edict, self.set_attr)(self.name, value)
 
 
 class _TypeObject(object):
