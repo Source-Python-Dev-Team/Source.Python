@@ -99,20 +99,20 @@ class CustomType(BasePointer):
             elif args:
                 raise ValueError(
                     'No constructor was specified, but arguments were passed.')
-                    
+
     def _ptr(self):
         '''
         Returns the pointer of the object.
         '''
-        
+
         return self
-        
+
     @classmethod
     def _obj(cls, ptr):
         '''
         Wraps the given pointer.
         '''
-        
+
         return cls(ptr, wrap=True)
 
     def on_dealloc(self):
@@ -160,15 +160,7 @@ class TypeManager(dict):
         Converts a pointer to the given class.
         '''
 
-        # Try to use a CustomType at first
-        if name in self:
-            return self[name](ptr)
-
-        # If that fails, try to use an exposed class
-        if name in EXPOSED_CLASSES:
-            return make_object(EXPOSED_CLASSES[name], ptr)
-
-        raise NameError('Unable to make an object of "{0}"'.format(name))
+        return make_object(self.get_class(name), ptr)
 
     def get_class(self, name):
         '''
@@ -572,7 +564,7 @@ class TypeManager(dict):
             return_type = self.create_converter(return_type)
 
         class fget(object):
-            def __get__(self, obj, cls):
+            def __get__(fget_self, obj, cls):
                 if cls._binary is None:
                     raise ValueError('_binary was not specified.')
 
@@ -590,7 +582,7 @@ class TypeManager(dict):
                 if obj is not None:
                     # Wrap the function using MemberFunction, so we don't have
                     # to pass the this pointer anymore
-                    func = MemberFunction(self, return_type, func, ptr)
+                    func = MemberFunction(self, return_type, func, obj)
 
                 func.__doc__ = doc
                 return func
