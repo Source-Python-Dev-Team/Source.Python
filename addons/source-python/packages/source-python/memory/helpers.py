@@ -169,13 +169,13 @@ class BasePointer(Pointer):
     # TODO: Can we do that on the C++ side?
     # If yes, this class would be redundant.
     def __add__(self, other):
-        return self.__class__(int(self) + int(other))
+        return make_object(self.__class__, Pointer(int(self) + int(other)))
 
     def __radd__(self, other):
         return self + other
 
     def __sub__(self, other):
-        return self.__class__(int(self) - int(other))
+        return make_object(self.__class__, Pointer(int(self) - int(other)))
 
     def __rsub__(self, other):
         return self - other
