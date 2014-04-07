@@ -12,7 +12,7 @@ from entities.datamaps import NamedDataMaps
 from entities.functions import EntityFunctions
 from entities.offsets import EntityOffsets
 from entities.properties import EntityProperties
-#from entities.specials import _EntitySpecials
+from entities.specials import _EntitySpecials
 
 
 # =============================================================================
@@ -27,8 +27,7 @@ __all__ = [
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-#class BaseEntity(_EntitySpecials):
-class BaseEntity(object):
+class BaseEntity(_EntitySpecials):
     '''Class used to interact directly with entities'''
 
     def __new__(cls, index, *entities):

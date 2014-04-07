@@ -4,17 +4,13 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from Source import Binutils
+from memory_c import alloc
 from core import GAME_NAME
-#   DynCall
-from dyncall.dictionary import SignatureDictionary
 #   Entities
 from entities.constants import DamageOffsets
 from entities.helpers import index_from_inthandle
 #   Filters
 from filters.weapons import WeaponClassIter
-#   Weapons
-from weapons.errors import WeaponIndexError
 
 
 # =============================================================================
@@ -49,7 +45,7 @@ class _EntitySpecials(object):
         from players.entity import PlayerEntity
 
         # Is the game supported?
-        if not 'TakeDamage' in SignatureDictionary:
+        if not 'take_damage' in self.functions:
 
             # Raise an error if not supported
             raise NotImplementedError(
@@ -80,39 +76,36 @@ class _EntitySpecials(object):
                 victim.hitgroup = hitgroup
 
         # Get a memory address for CTakeDamageInfo
-        take_damage_info = Binutils.AllocateMemory(96)
+        take_damage_info = alloc(96, True)
 
         # Is the weapon a projectile?
         if weapon.classname in _projectile_weapons:
 
             # Set the hInflictor to the weapon's handle
-            Binutils.SetLocInt(
-                take_damage_info + DamageOffsets.hInflictor,
-                weapon.handle.ToInt())
+            take_damage_info.set_int(
+                weapon.inthandle, DamageOffsets.hInflictor['offset'])
 
         # Is the weapon not a projectile?
         else:
 
             # Set the hInflictor to the entity's handle
-            Binutils.SetLocInt(
-                take_damage_info + DamageOffsets.hInflictor,
-                self.handle.ToInt())
+            take_damage_info.set_int(
+                self.inthandle, DamageOffsets.hInflictor['offset'])
 
         # Set the hAttacker to the entity's handle
-        Binutils.SetLocInt(
-            take_damage_info + DamageOffsets.hAttacker, self.handle.ToInt())
+        take_damage_info.set_int(
+            self.inthandle, DamageOffsets.hAttacker['offset'])
 
         # Set the hWeapon to the weapon's handle
-        Binutils.SetLocInt(
-            take_damage_info + DamageOffsets.hWeapon, weapon.handle.ToInt())
+        take_damage_info.set_int(
+            weapon.inthandle, DamageOffsets.hWeapon['offset'])
 
         # Set the flDamage amount
-        Binutils.SetLocFloat(
-            take_damage_info + DamageOffsets.flDamage, float(damage))
+        take_damage_info.set_float(damage, DamageOffsets.flDamage['offset'])
 
         # Set the bitsDamageType value
-        Binutils.SetLocInt(
-            take_damage_info + DamageOffsets.bitsDamageType, damage_type)
+        take_damage_info.set_int(
+            damage_type, DamageOffsets.bitsDamageType['offset'])
 
         # Loop through the given keywords
         for item in kwargs:
@@ -122,13 +115,9 @@ class _EntitySpecials(object):
 
                 # Set the offset's value
                 getattr(
-                    Binutils, 'SetLoc{0}'.format(DamageOffsets[item]['type']))(
-                    take_damage_info + DamageOffsets[item]['offset'],
-                    kwargs[item])
+                    take_damage_info, 'set_{0}'.format(
+                    DamageOffsets[item]['type']))(
+                    kwargs[item], DamageOffsets[item]['offset'])
 
         # Call the function with the victim's pointer and the CTakeDamageInfo
-        SignatureDictionary['TakeDamage'].call_function(
-            victim.pointer, take_damage_info)
-
-        # Deallocate the memory used for CTakeDamageInfo
-        Binutils.DeallocatePointer(take_damage_info)
+        victim.take_damage(take_damage_info)
