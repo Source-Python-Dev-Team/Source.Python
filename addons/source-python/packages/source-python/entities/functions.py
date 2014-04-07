@@ -3,11 +3,20 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   OS
+from os import name as os_name
+
 # Source.Python Imports
+from memory_c import Convention
+from memory_c import Return
 #   Entities
 from entities.attributes import EntityAttributes
 #   Memory
-from memory.dictionary import SignatureDictionary
+from memory.helpers import Key
+from memory.helpers import NO_DEFAULT
+from memory.helpers import parse_data
+from memory.manager import manager
 
 
 # =============================================================================
@@ -15,6 +24,21 @@ from memory.dictionary import SignatureDictionary
 # =============================================================================
 # Set all to an empty list
 __all__ = []
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Store the ini data checkers
+_ini_data = (
+    (Key.BINARY, str, NO_DEFAULT),
+    (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
+    (Key.ARGS, Key.as_args_tuple, ()),
+    (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
+    (Key.CONVENTION, Key.as_convention, Convention.CDECL),
+    (Key.SRV_CHECK, Key.as_bool, True),
+    (Key.DOC, str, None)
+)
 
 
 # =============================================================================
@@ -27,21 +51,28 @@ class _FunctionInstance(object):
     def __init__(self, item):
         '''Called on initialization'''
 
-        # Get the name of the function
-        name = item['name']
+        # Create a list to store the function data
+        data = list()
 
-        # Is the given name registered in the dictionary?
-        if not name in SignatureDictionary:
+        # Loop through the data checkers
+        for key, converter, default in _ini_data:
 
-            # Raise an error
-            raise KeyError(
-                'No function "{0}" stored in SignatureDictionary'.format(name))
+            # Get the function's value for the current data
+            value = item.get(key + '_' + os_name, item.get(key, default))
 
-        # Store the function to be called
-        self.function = SignatureDictionary[name]
+            # Is the value invalid?
+            if value is NO_DEFAULT:
+                raise KeyError(
+                    'Missing information for key "{0}".'.format(key))
+
+            # Add the current value to the data list
+            data.append(value if value is default else converter(value))
+
+        # Get the Function instance
+        self.function = manager.pipe_function(*data)
 
         # Store the index to add the pointer
-        self.pointer_index = item['pointer']
+        self.pointer_index = int(item.get('pointer_index', 0))
 
         # Store the pointer as None until it is needed
         self.current_pointer = None
@@ -70,7 +101,7 @@ class _EntityFunctions(EntityAttributes):
     '''Dictionary that stores all entities with their functions'''
 
     type = 'functions'
-    unrepr = True
+    unrepr = False
     instance = _FunctionInstance
 
 # Get the _EntityFunctions instance

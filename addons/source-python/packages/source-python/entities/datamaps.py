@@ -295,7 +295,7 @@ class _FunctionTable(_BaseFunctions):
         self.function(self.current_pointer)
 
 
-class _Input(_FunctionTable):
+class _Input(_BaseFunctions):
     '''Class used to interact with INPUT objects'''
 
     # Set the arguments for INPUTs
@@ -372,4 +372,11 @@ class _TypeObject(object):
 
     def _set_value(self, value):
         '''Sets the object type value at the offset's address'''
+
+        # Is the value of the correct type?
+        if not isinstance(value, self.type_object):
+            raise ValueError('Invalid type given. Use "{0}" not "{1}"'.format(
+                self.type_object.__name__, type(value).__name__))
+
+        # Set the value
         self.current_pointer.set_pointer(get_pointer(value), self.offset)
