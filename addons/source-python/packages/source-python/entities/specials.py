@@ -4,10 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from memory_c import alloc
 from core import GAME_NAME
 #   Entities
-from entities.constants import DamageOffsets
+from entities.constants import CTakeDamageInfo
 from entities.helpers import index_from_inthandle
 #   Filters
 from filters.weapons import WeaponClassIter
@@ -45,7 +44,7 @@ class _EntitySpecials(object):
         from players.entity import PlayerEntity
 
         # Is the game supported?
-        if not 'take_damage' in self.functions:
+        if not 'take_damage' in self.functions or CTakeDamageInfo is None:
 
             # Raise an error if not supported
             raise NotImplementedError(
@@ -57,8 +56,17 @@ class _EntitySpecials(object):
             # Get the player's active weapon
             weapon_index = index_from_inthandle(self.active_weapon)
 
-        # Get the weapon's BaseEntity instance
-        weapon = BaseEntity(weapon_index)
+        # Is the weapon invalid?
+        if weapon_index is None:
+
+            # Get a _FakeWeapon instance
+            weapon = _FakeWeapon()
+
+        # Is the weapon valid?
+        else:
+
+            # Get the weapon's BaseEntity instance
+            weapon = BaseEntity(weapon_index)
 
         # Get the victim's BaseEntity instance.
         victim = BaseEntity(victim_index)
@@ -76,48 +84,46 @@ class _EntitySpecials(object):
                 victim.m_LastHitGroup = hitgroup
 
         # Get a memory address for CTakeDamageInfo
-        take_damage_info = alloc(96, True)
+        take_damage_info = CTakeDamageInfo()
 
         # Is the weapon a projectile?
         if weapon.classname in _projectile_weapons:
 
             # Set the hInflictor to the weapon's handle
-            take_damage_info.set_int(
-                weapon.inthandle, DamageOffsets.hInflictor['offset'])
+            take_damage_info.hInflictor = weapon.inthandle
 
         # Is the weapon not a projectile?
         else:
 
             # Set the hInflictor to the entity's handle
-            take_damage_info.set_int(
-                self.inthandle, DamageOffsets.hInflictor['offset'])
+            take_damage_info.hInflictor = self.inthandle
 
         # Set the hAttacker to the entity's handle
-        take_damage_info.set_int(
-            self.inthandle, DamageOffsets.hAttacker['offset'])
+        take_damage_info.hAttacker = self.inthandle
 
         # Set the hWeapon to the weapon's handle
-        take_damage_info.set_int(
-            weapon.inthandle, DamageOffsets.hWeapon['offset'])
+        take_damage_info.hWeapon = weapon.inthandle
 
         # Set the flDamage amount
-        take_damage_info.set_float(damage, DamageOffsets.flDamage['offset'])
+        take_damage_info.flDamage = damage
 
         # Set the bitsDamageType value
-        take_damage_info.set_int(
-            damage_type, DamageOffsets.bitsDamageType['offset'])
+        take_damage_info.bitsDamageType = damage_type
 
         # Loop through the given keywords
         for item in kwargs:
 
             # Is the keyword supported?
-            if item in DamageOffsets:
+            if hasattr(take_damage_info, item):
+                print('Item found: {0}'.format(item))
 
                 # Set the offset's value
-                getattr(
-                    take_damage_info, 'set_{0}'.format(
-                    DamageOffsets[item]['type']))(
-                    kwargs[item], DamageOffsets[item]['offset'])
+                getattr(take_damage_info, item, kwargs[item])
 
         # Call the function with the victim's pointer and the CTakeDamageInfo
         victim.take_damage(take_damage_info)
+
+
+class _FakeWeapon(object):
+    classname = None
+    inthandle = 0

@@ -12,6 +12,8 @@ from os import name as os_name
 # Source.Python Imports
 from core import GAME_NAME
 from paths import SP_DATA_PATH
+#   Memory
+from memory.manager import manager
 
 
 # =============================================================================
@@ -28,8 +30,13 @@ __all__ = [
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Get the path to the constant values
 _entity_values = ConfigObj(SP_DATA_PATH.joinpath(
     'entities', 'constants', GAME_NAME + '.ini'), unrepr=True)
+
+# Get the path to the game's ctakedamageinfo.ini file
+_damage_info_path = SP_DATA_PATH.joinpath(
+    'entities', 'types', GAME_NAME, 'ctakedamageinfo.ini')
 
 if os_name != 'nt':
     os_name = 'linux'
@@ -41,6 +48,17 @@ if os_name != 'nt':
 # Get the GetDataDescMap offset
 DATA_DESC_MAP_OFFSET = _entity_values.get(
     'DATA_DESC_OFFSET', {}).get(os_name, None)
+
+# Does the ctakedamageinfo.ini file exist?
+if _damage_info_path.isfile():
+
+    # Create the CTakeDamageInfo object
+    CTakeDamageInfo = manager.create_type_from_file(
+        'CTakeDamageInfo', _damage_info_path)
+
+# Does the file not exist?
+else:
+    CTakeDamageInfo = None
 
 
 # =============================================================================
@@ -84,22 +102,3 @@ class _DamageTypes(_ConstantBase):
 
 # Get the _DamageTypes instance
 DamageTypes = _DamageTypes()
-
-
-class _DamageOffsets(_ConstantBase):
-    '''Class used to retrieve offset values for CBaseEntity::TakeDamage'''
-
-    def __getattr__(self, attr):
-        '''Override __getattr__ to retrieve the value of the offset'''
-
-        # Is the attribute supported?
-        if 'damage' in _entity_values and attr in _entity_values['damage']:
-
-            # Return the offset value
-            return _entity_values['damage'][attr]
-
-        # Raise an AttributeError so that hasattr returns False
-        raise AttributeError('Offset "{0}" not found'.format(attr))
-
-# Get the _DamageOffsets instance
-DamageOffsets = _DamageOffsets()
