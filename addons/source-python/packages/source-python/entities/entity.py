@@ -151,7 +151,7 @@ class BaseEntity(object):
             function.current_pointer = self.pointer
 
         # Return the pre call function method
-        return function._pre_call_function
+        return function
 
     def __setattr__(self, attr, value):
         '''Finds if the attribute is value and sets its value'''

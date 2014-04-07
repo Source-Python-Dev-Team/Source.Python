@@ -100,38 +100,20 @@ class _Team(object):
 
 
 # =============================================================================
-# >> FILTER FUNCTIONS
+# >> FILTERS
 # =============================================================================
-def _is_player(PlayerInfo):
-    '''Always returns True, since this is a player'''
-    return True
-
-
-def _player_is_bot(PlayerInfo):
-    '''Returns whether a player is a bot'''
-    return PlayerInfo.is_fake_client()
-
-
-def _player_is_human(PlayerInfo):
-    '''Returns whether the player is a human'''
-    return PlayerInfo.is_player()
-
-
-def _player_is_alive(PlayerInfo):
-    '''Returns whether the player is alive'''
-    return not _player_is_dead(PlayerInfo)
-
-
-def _player_is_dead(PlayerInfo):
-    '''Returns whether the player is dead'''
-    return edict_from_playerinfo(PlayerInfo).get_prop_int('pl.deadflag')
-
 # Register the filter functions
-_PlayerIterManagerInstance.register_filter('all', _is_player)
-_PlayerIterManagerInstance.register_filter('bot', _player_is_bot)
-_PlayerIterManagerInstance.register_filter('human', _player_is_human)
-_PlayerIterManagerInstance.register_filter('alive', _player_is_alive)
-_PlayerIterManagerInstance.register_filter('dead', _player_is_dead)
+_PlayerIterManagerInstance.register_filter('all', lambda playerinfo: True)
+_PlayerIterManagerInstance.register_filter(
+    'bot', lambda playerinfo: playerinfo.is_fake_client())
+_PlayerIterManagerInstance.register_filter(
+    'human', lambda playerinfo: playerinfo.is_player())
+_PlayerIterManagerInstance.register_filter(
+    'alive', lambda playerinfo: not edict_from_playerinfo(
+    playerinfo).get_prop_int('pl.deadflag'))
+_PlayerIterManagerInstance.register_filter(
+    'dead', lambda playerinfo: edict_from_playerinfo(
+    playerinfo).get_prop_int('pl.deadflag'))
 
 # Loop through all teams in the game's team file
 for team in _game_teams['names']:
@@ -161,73 +143,8 @@ for number, team in enumerate(('un', 'spec', 't', 'ct')):
 
 
 # =============================================================================
-# >> RETURN TYPE FUNCTIONS
+# >> RETURN TYPES
 # =============================================================================
-def _return_playerinfo(PlayerInfo):
-    '''Returns the player's PlayerInfo instance'''
-    return PlayerInfo
-
-
-def _return_player(PlayerInfo):
-    '''Returns the player's PlayerEntity instance'''
-    return PlayerEntity(index_from_playerinfo(PlayerInfo))
-
-
-def _return_name(PlayerInfo):
-    '''Returns the player's name'''
-    return PlayerInfo.get_name()
-
-
-def _return_steamid(PlayerInfo):
-    '''Returns the player's SteamID'''
-    return PlayerInfo.get_networkid_string()
-
-
-def _return_location(PlayerInfo):
-    '''Returns the player's location Vector'''
-    return PlayerInfo.get_abs_origin()
-
-
-def _return_kills(PlayerInfo):
-    '''Returns the player's kill count'''
-    return PlayerInfo.get_frag_count()
-
-
-def _return_deaths(PlayerInfo):
-    '''Returns the player's death count'''
-    return PlayerInfo.get_death_count()
-
-
-def _return_model(PlayerInfo):
-    '''Returns the player's model'''
-    return PlayerInfo.get_model_name()
-
-
-def _return_health(PlayerInfo):
-    '''Returns the player's health value'''
-    return PlayerInfo.get_health()
-
-
-def _return_armor(PlayerInfo):
-    '''Returns the player's armov value'''
-    return PlayerInfo.get_armor_value()
-
-
-def _return_weapon(PlayerInfo):
-    '''Returns the player's currently held weapon'''
-    return PlayerInfo.get_weapon_name()
-
-
-def _return_language(PlayerInfo):
-    '''Returns the player's language'''
-    return EngineServer.get_client_convar_value(
-        index_from_playerinfo(PlayerInfo), 'cl_language')
-
-
-def _return_team(PlayerInfo):
-    '''Returns the player's team'''
-    return PlayerInfo.get_team_index()
-
 # Register the return type functions
 _PlayerIterManagerInstance.register_return_type('index', index_from_playerinfo)
 _PlayerIterManagerInstance.register_return_type('edict', edict_from_playerinfo)
@@ -243,16 +160,31 @@ _PlayerIterManagerInstance.register_return_type(
     'uniqueid', uniqueid_from_playerinfo)
 _PlayerIterManagerInstance.register_return_type(
     'address', address_from_playerinfo)
-_PlayerIterManagerInstance.register_return_type('info', _return_playerinfo)
-_PlayerIterManagerInstance.register_return_type('player', _return_player)
-_PlayerIterManagerInstance.register_return_type('name', _return_name)
-_PlayerIterManagerInstance.register_return_type('steamid', _return_steamid)
-_PlayerIterManagerInstance.register_return_type('location', _return_location)
-_PlayerIterManagerInstance.register_return_type('kills', _return_kills)
-_PlayerIterManagerInstance.register_return_type('deaths', _return_deaths)
-_PlayerIterManagerInstance.register_return_type('model', _return_model)
-_PlayerIterManagerInstance.register_return_type('health', _return_health)
-_PlayerIterManagerInstance.register_return_type('armor', _return_armor)
-_PlayerIterManagerInstance.register_return_type('weapon', _return_weapon)
-_PlayerIterManagerInstance.register_return_type('language', _return_language)
-_PlayerIterManagerInstance.register_return_type('team', _return_team)
+_PlayerIterManagerInstance.register_return_type(
+    'info', lambda playerinfo: playerinfo)
+_PlayerIterManagerInstance.register_return_type(
+    'player', lambda playerinfo: PlayerEntity(
+    index_from_playerinfo(playerinfo)))
+_PlayerIterManagerInstance.register_return_type(
+    'name', lambda playerinfo: playerinfo.get_name())
+_PlayerIterManagerInstance.register_return_type(
+    'steamid', lambda playerinfo: playerinfo.get_networkid_string())
+_PlayerIterManagerInstance.register_return_type(
+    'location', lambda playerinfo: playerinfo.get_abs_origin())
+_PlayerIterManagerInstance.register_return_type(
+    'kills', lambda playerinfo: playerinfo.get_frag_count())
+_PlayerIterManagerInstance.register_return_type(
+    'deaths', lambda playerinfo: playerinfo.get_death_count())
+_PlayerIterManagerInstance.register_return_type(
+    'model', lambda playerinfo: playerinfo.get_model_name())
+_PlayerIterManagerInstance.register_return_type(
+    'health', lambda playerinfo: playerinfo.get_health())
+_PlayerIterManagerInstance.register_return_type(
+    'armor', lambda playerinfo: playerinfo.get_armor_value())
+_PlayerIterManagerInstance.register_return_type(
+    'weapon', lambda playerinfo: playerinfo.get_weapon_name())
+_PlayerIterManagerInstance.register_return_type(
+    'language', lambda playerinfo: EngineServer.get_client_convar_value(
+    index_from_playerinfo(playerinfo), 'cl_language'))
+_PlayerIterManagerInstance.register_return_type(
+    'team', lambda playerinfo: playerinfo.get_team_index())

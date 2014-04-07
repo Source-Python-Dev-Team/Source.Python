@@ -77,7 +77,7 @@ class _FunctionInstance(object):
         # Store the pointer as None until it is needed
         self.current_pointer = None
 
-    def _pre_call_function(self, *args):
+    def __call__(self, *args):
         '''Adds the entity's pointer as the first
             argument when calling the function'''
 
