@@ -72,6 +72,12 @@ class EntityIter(_IterObject):
         '''Checks to see whether the given edict
             is one that should be iterated over'''
 
+        # Are there any class names to be checked?
+        if not self._class_names:
+
+            # Return True for all entities
+            return True
+
         # Get the edict's class name
         class_name = edict.get_class_name()
 
