@@ -10,7 +10,7 @@ from configobj import ConfigObj
 from os import name as os_name
 
 # Source.Python Imports
-from core import GAME_NAME
+from core import SOURCE_ENGINE
 from paths import SP_DATA_PATH
 #   Memory
 from memory.manager import manager
@@ -32,11 +32,11 @@ __all__ = [
 # =============================================================================
 # Get the path to the constant values
 _entity_values = ConfigObj(SP_DATA_PATH.joinpath(
-    'entities', 'constants', GAME_NAME + '.ini'), unrepr=True)
+    'entities', 'constants', SOURCE_ENGINE + '.ini'), unrepr=True)
 
 # Get the path to the game's ctakedamageinfo.ini file
 _damage_info_path = SP_DATA_PATH.joinpath(
-    'entities', 'types', GAME_NAME, 'ctakedamageinfo.ini')
+    'entities', 'types', SOURCE_ENGINE, 'ctakedamageinfo.ini')
 
 if os_name != 'nt':
     os_name = 'linux'
