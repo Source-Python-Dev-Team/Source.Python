@@ -8,6 +8,7 @@
 from os import sep
 
 # Source.Python Imports
+from constants_c import SOURCE_ENGINE
 from engine_c import EngineServer
 from paths import GAME_PATH
 
@@ -20,6 +21,7 @@ __all__ = [
     'AutoUnload',
     'GAME_NAME',
     'GameEngine',
+    'SOURCE_ENGINE',
     'echo_console',
 ]
 
