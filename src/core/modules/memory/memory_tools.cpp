@@ -55,14 +55,6 @@ CPointer::CPointer(unsigned long ulAddr /* = 0 */, bool bAutoDealloc /* false */
 	m_bAutoDealloc = bAutoDealloc;
 }
 
-void CPointer::SetStringPtr(char* szText, int iOffset /* = 0 */)
-{
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-	strcpy(*(char **) (m_ulAddr + iOffset), szText);
-}
-
 const char * CPointer::GetStringArray(int iOffset /* = 0 */)
 {
 	if (!IsValid())

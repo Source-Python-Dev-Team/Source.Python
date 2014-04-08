@@ -1,9 +1,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-from configobj import ConfigObj
-
 # Source.Python
 from memory_c import *
 from memory.helpers import *
@@ -206,13 +203,7 @@ class TypeManager(dict):
         '''
 
         # Read the data
-        raw_data = ConfigObj(f)
-
-        # Try to close the file. Maybe it was an url or a file object
-        try:
-            f.close()
-        except AttributeError:
-            pass
+        raw_data = open_ini_file(f)
 
         # Prepare functions
         funcs = parse_data(
@@ -262,13 +253,7 @@ class TypeManager(dict):
         '''
 
         # Read the data
-        raw_data = ConfigObj(f)
-
-        # Try to close the file. Maybe it was an url or a file object
-        try:
-            f.close()
-        except AttributeError:
-            pass
+        raw_data = open_ini_file(f)
 
         # Prepare general type information
         data = tuple(parse_data(
@@ -616,13 +601,7 @@ class TypeManager(dict):
         '''
 
         # Read the data
-        raw_data = ConfigObj(f)
-
-        # Try to close the file. Maybe it was an url or a file object
-        try:
-            f.close()
-        except AttributeError:
-            pass
+        raw_data = open_ini_file(f)
 
         # Prepare typedefs
         typedefs = parse_data(

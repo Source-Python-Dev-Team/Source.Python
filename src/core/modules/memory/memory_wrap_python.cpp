@@ -159,16 +159,14 @@ OVERLOAD_GET_SET_TYPE(long_long, long long)
 OVERLOAD_GET_SET_TYPE(ulong_long, unsigned long long)
 OVERLOAD_GET_SET_TYPE(float, float)
 OVERLOAD_GET_SET_TYPE(double, double)
+OVERLOAD_GET_SET_TYPE(string_pointer, const char*)
 
 // get_<type> overloads
-OVERLOAD_GET_TYPE(string_pointer, const char*)
-
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ptr_overload, GetPtr, 0, 1)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_array_overload, GetStringArray, 0, 1)
 	
 // set_<type> overloads
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ptr_overload, SetPtr, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_ptr_overload, SetStringPtr, 1, 2)
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_array_overload, SetStringArray, 1, 2)
 
 
@@ -193,10 +191,9 @@ void export_memtools()
 		EXPOSE_GET_SET_TYPE(ulong_long, unsigned long long)
 		EXPOSE_GET_SET_TYPE(float, float)
 		EXPOSE_GET_SET_TYPE(double, double)
+		EXPOSE_GET_SET_TYPE(string_pointer, const char*)
 
 		// get_<type> methods
-		EXPOSE_GET_TYPE(string_pointer, const char*)
-
 		.def("get_pointer",
 			&CPointer::GetPtr,
 			get_ptr_overload(
@@ -217,14 +214,6 @@ void export_memtools()
 		.def("set_pointer",
 			&CPointer::SetPtr,
 			set_ptr_overload(
-				"Sets the value at the given memory location.",
-				args("value", "offset")
-			)
-		)
-
-		.def("set_string_pointer",
-			&CPointer::SetStringPtr,
-			set_string_ptr_overload(
 				"Sets the value at the given memory location.",
 				args("value", "offset")
 			)
