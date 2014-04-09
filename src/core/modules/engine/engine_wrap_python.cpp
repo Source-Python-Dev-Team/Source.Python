@@ -56,6 +56,7 @@ extern IVEngineServer* engine;
 extern IEngineSound* enginesound;
 extern IEngineTrace* enginetrace;
 extern CGlobalVars* gpGlobals;
+extern IServerGameDLL* servergamedll;
 
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
@@ -63,12 +64,14 @@ extern CGlobalVars* gpGlobals;
 void export_engine_server();
 void export_engine_sound();
 void export_engine_trace();
+void export_server_game_dll();
 
 DECLARE_SP_MODULE(engine_c)
 {
 	export_engine_server();
 	export_engine_sound();
 	export_engine_trace();
+	export_server_game_dll();
 }
 
 
@@ -1279,4 +1282,23 @@ void export_engine_trace()
 	scope().attr("SURF_NODECALS") = SURF_NODECALS;
 	scope().attr("SURF_NOCHOP") = SURF_NOCHOP;
 	scope().attr("SURF_HITBOX") = SURF_HITBOX;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose IServerGameDLL.
+//-----------------------------------------------------------------------------
+void export_server_game_dll()
+{
+	class_<IServerGameDLL, boost::noncopyable> ServerGameDLL("_ServerGameDLL", no_init);
+	
+	// Methods...
+	ServerGameDLL.def(
+		"get_all_server_classes",
+		&IServerGameDLL::GetAllServerClasses,
+		reference_existing_object_policy()
+	);
+	
+	// Singleton...
+	scope().attr("ServerGameDLL") = object(ptr(servergamedll));
 }
