@@ -127,4 +127,12 @@ inline void CSendProp::Set(const char* szValue)
 	m_edict->StateChanged();
 }
 
+// GCC doesn't allow inline template specialization...
+template<>
+inline const char* CSendProp::Get()
+{
+	// Get the address of the string buffer.
+	return (const char *)((char *) m_base_entity + m_prop_offset);
+}
+
 #endif
