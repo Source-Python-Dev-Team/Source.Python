@@ -6,6 +6,8 @@
 # Python Imports
 #   OS
 from os import sep
+#   Platform
+from platform import system
 
 # Source.Python Imports
 from constants_c import SOURCE_ENGINE
@@ -21,6 +23,7 @@ __all__ = [
     'AutoUnload',
     'GAME_NAME',
     'GameEngine',
+    'PLATFORM',
     'SOURCE_ENGINE',
     'echo_console',
 ]
@@ -34,6 +37,9 @@ GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
 
 # Set GameEngine variable
 GameEngine = EngineServer
+
+# Get the platform the server is on
+PLATFORM = system().lower()
 
 
 # =============================================================================

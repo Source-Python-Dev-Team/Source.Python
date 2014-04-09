@@ -69,7 +69,10 @@ class _FunctionInstance(object):
             data.append(value if value is default else converter(value))
 
         # Get the Function instance
-        self.function = manager.pipe_function(*data)
+        function = manager.pipe_function(*data)
+
+        # Initialize the Function instance
+        super(_FunctionInstance, self).__init__(function)
 
         # Store the index to add the pointer
         self.pointer_index = int(item.get('pointer_index', 0))
@@ -78,20 +81,17 @@ class _FunctionInstance(object):
         self.current_pointer = None
 
     def __call__(self, *args):
-        '''Adds the entity's pointer as the first
+        '''Adds the entity's pointer as the <pointer_index>
             argument when calling the function'''
 
-        # Does the pointer need added?
-        if self.current_pointer:
+        # Add the pointer to the arguments
+        args = (
+            args[:self.pointer_index] +
+            (self.current_pointer, ) +
+            args[self.pointer_index:])
 
-            # Add the pointer to the arguments
-            args = (
-                args[:self.pointer_index] +
-                (self.current_pointer, ) +
-                args[self.pointer_index:])
-
-        # Call the function with the entity's pointer as the first argument
-        self.function(*args)
+        # Call the function
+        super(_FunctionInstance, self).__call__(*args)
 
         # Reset the current pointer
         self.current_pointer = None

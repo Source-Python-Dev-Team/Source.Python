@@ -13,6 +13,7 @@ from entities.functions import EntityFunctions
 from entities.offsets import EntityOffsets
 from entities.properties import EntityProperties
 from entities.specials import _EntitySpecials
+from entities.virtuals import EntityVirtualFunctions
 
 
 # =============================================================================
@@ -79,6 +80,12 @@ class BaseEntity(_EntitySpecials):
             # Return the offset's value
             return self._get_offset(attr)
 
+        # Is the attribute a virtual function?
+        if attr in self.virtuals:
+
+            # Return the virtual function
+            return self._get_virtual(attr)
+
         # Is the attribute a function of this entity?
         if attr in self.functions:
 
@@ -137,6 +144,27 @@ class BaseEntity(_EntitySpecials):
         return getattr(
             self.pointer, 'get_{0}'.format(offset.type))(offset.offset)
 
+    def _get_virtual(self, item):
+        '''Calls a virtual function'''
+
+        '''
+            Make sure to not change this to:
+
+                instance = self.virtuals[item]
+                instance.current_pointer = self.pointer
+                return instance
+
+            Doing so will break the functionality, as
+                self.virtuals[item] is set to a _VirtualFunction
+                instance the first time the current_pointer attribute is set
+        '''
+
+        # Set the entity's pointer as the current one
+        self.virtuals[item].current_pointer = self.pointer
+
+        # Return the function
+        return self.virtuals[item]
+
     def _get_function(self, item):
         '''Calls a dynamic function'''
 
@@ -149,7 +177,7 @@ class BaseEntity(_EntitySpecials):
             # Set the entity's pointer as the current one
             function.current_pointer = self.pointer
 
-        # Return the pre call function method
+        # Return the function
         return function
 
     def __setattr__(self, attr, value):
@@ -359,3 +387,8 @@ class BaseEntity(_EntitySpecials):
     def datamaps(self):
         ''''''
         return EntityDataMaps.get_data_maps(self.edict)
+
+    @property
+    def virtuals(self):
+        ''''''
+        return EntityVirtualFunctions.get_virtual_functions(self.edict)

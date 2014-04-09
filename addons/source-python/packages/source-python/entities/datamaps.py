@@ -17,6 +17,7 @@ from mathlib_c import Quaternion
 from mathlib_c import Vector
 from memory_c import Argument
 from memory_c import Convention
+from memory_c import Function
 from memory_c import Return
 from memory_c import get_pointer
 from memory_c import make_object
@@ -86,7 +87,7 @@ NamedDataMaps = _NamedDataMaps()
 
 
 class _EntityDataMaps(dict):
-    '''Dictionary that stores all datamaps by entity classname'''
+    '''Dictionary that stores all datamaps by server class name'''
 
     def get_data_maps(self, edict):
         '''Converts the given edict to its server class and returns the
@@ -273,15 +274,18 @@ class _Embedded(_DataMap, _BaseType):
             super(_Embedded, self).__setattr__(attr, value)
 
 
-class _BaseFunctions(_BaseType):
+class _BaseFunctions(Function, _BaseType):
     '''Base class for all function type descriptions'''
 
     def __init__(self, desc):
         '''Store the name, type, and function'''
         self.name = desc.name
         self.type = desc.type
-        self.function = desc.input.make_function(
+        function = desc.input.make_function(
                         Convention.THISCALL, self.arguments, Return.VOID)
+
+        # Initialize the Function instance
+        super(_BaseFunctions, self).__init__(function)
 
 
 class _FunctionTable(_BaseFunctions):
@@ -292,7 +296,7 @@ class _FunctionTable(_BaseFunctions):
 
     def __call__(self):
         '''Calls the stored function'''
-        self.function(self.current_pointer)
+        super(_FunctionTable, self).__call__(self.current_pointer)
 
 
 class _Input(_BaseFunctions):
@@ -334,7 +338,7 @@ class _Input(_BaseFunctions):
                 _SupportedInputTypes[self.type]))(value)
 
         # Call the function
-        self.function(self.current_pointer, inputdata)
+        super(_Input, self).__call__(self.current_pointer, inputdata)
 
 
 class _DataDesc(object):

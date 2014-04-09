@@ -115,7 +115,6 @@ class _EntitySpecials(object):
 
             # Is the keyword supported?
             if hasattr(take_damage_info, item):
-                print('Item found: {0}'.format(item))
 
                 # Set the offset's value
                 getattr(take_damage_info, item, kwargs[item])
