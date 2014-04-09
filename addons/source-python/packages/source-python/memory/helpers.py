@@ -119,7 +119,7 @@ class Key:
         '''
 
         if isinstance(value, str):
-            return (value,)
+            return (Argument.names[value], )
 
         return tuple(Argument.names[item] for item in value)
 
