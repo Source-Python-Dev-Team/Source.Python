@@ -5,6 +5,9 @@
 import binascii
 import os
 
+from path import path
+from configobj import ConfigObj
+
 # Source.Python
 from memory_c import *
 
@@ -19,7 +22,8 @@ __all__ = [
     'Array',
     'MemberFunction',
     'parse_data',
-    'NO_DEFAULT'
+    'NO_DEFAULT',
+    'open_ini_file'
 ]
 
 
@@ -421,3 +425,25 @@ def parse_data(raw_data, keys):
 # Use this as a default value if the key is not allowed to have a default
 # value
 NO_DEFAULT = object()
+
+def open_ini_file(f):
+    '''
+    Opens an *.ini file with ConfigObj and tries to call a close() method.
+
+    If the given file does not exist a FileNotFoundError will be raised.
+    '''
+
+    # Does the file exists?
+    if not path(f).isfile():
+        raise FileNotFoundError('No such file: {0}'.format(f))
+
+    # Read the data
+    data = ConfigObj(f)
+
+    # Try to close the file. Maybe it was an url or a file object
+    try:
+        f.close()
+    except AttributeError:
+        pass
+
+    return data

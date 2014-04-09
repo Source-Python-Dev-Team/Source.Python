@@ -252,8 +252,6 @@ public:
 		unsigned long newAddr = m_ulAddr + iOffset;
 		*(T *) newAddr = value;
 	}
-	
-	void                SetStringPtr(char* szText, int iOffset = 0);
 
 	const char *        GetStringArray(int iOffset = 0);
 	void                SetStringArray(char* szText, int iOffset = 0);
