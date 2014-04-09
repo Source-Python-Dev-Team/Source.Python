@@ -319,7 +319,7 @@ class TypeManager(dict):
 
         # Create the virtual functions
         for name, data in vfuncs:
-            cls_dict[name] = virtual_function(*data)
+            cls_dict[name] = self.virtual_function(*data)
 
         # Prepare functions
         funcs = parse_data(
@@ -335,7 +335,7 @@ class TypeManager(dict):
 
         # Create the functions
         for name, data in funcs:
-            cls_dict[name] = function(*data)
+            cls_dict[name] = self.function(*data)
 
         # Now create and register the type
         return self(type_name, bases, cls_dict)
