@@ -99,34 +99,46 @@ SendProp::~SendProp()
 class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
 {
 public:
-	CPointer *get_inflictor()
+	int get_inflictor()
 	{
-		return PointerFromIndex(m_hInflictor.GetEntryIndex());
+		if (m_hInflictor.IsValid())
+		{
+			return m_hInflictor.GetEntryIndex();
+		}
+		return -1;
 	}
 	
-	void set_inflictor(CPointer *pInflictor)
+	void set_inflictor(unsigned int iInflictor)
 	{
-		m_hInflictor = (CBaseEntity *)pInflictor->m_ulAddr;
+		m_hInflictor = BaseHandleFromIndex(iInflictor);
 	}
 	
-	CPointer *get_attacker()
+	int get_attacker()
 	{
-		return PointerFromIndex(m_hAttacker.GetEntryIndex());
+		if (m_hAttacker.IsValid())
+		{
+			return m_hAttacker.GetEntryIndex();
+		}
+		return -1;
 	}
 	
-	void set_attacker(CPointer *pAttacker)
+	void set_attacker(unsigned int iAttacker)
 	{
-		m_hAttacker = (CBaseEntity *)pAttacker->m_ulAddr;
+		m_hAttacker = BaseHandleFromIndex(iAttacker);
 	}
 	
-	CPointer *get_weapon()
+	int get_weapon()
 	{
-		return PointerFromIndex(m_hWeapon.GetEntryIndex());
+		if (m_hWeapon.IsValid())
+		{
+			return m_hWeapon.GetEntryIndex();
+		}
+		return -1;
 	}
 	
-	void set_weapon(CPointer *pWeapon)
+	void set_weapon(unsigned int iWeapon)
 	{
-		m_hWeapon = (CBaseEntity *)pWeapon->m_ulAddr;
+		m_hWeapon = BaseHandleFromIndex(iWeapon);
 	}
 	
 	void set_base_damage(float flBaseDamage)
@@ -152,34 +164,34 @@ public:
 class TakeDamageInfoSharedExt
 {
 public:
-	static CPointer *get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
+	static int get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_inflictor();
 	}
 	
-	static void set_inflictor(CTakeDamageInfo *pTakeDamageInfo, CPointer *pInflictor)
+	static void set_inflictor(CTakeDamageInfo *pTakeDamageInfo, unsigned int iInflictor)
 	{
-		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_inflictor(pInflictor);
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_inflictor(iInflictor);
 	}
 	
-	static CPointer *get_attacker(CTakeDamageInfo *pTakeDamageInfo)
+	static int get_attacker(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_attacker();
 	}
 	
-	static void set_attacker(CTakeDamageInfo *pTakeDamageInfo, CPointer *pAttacker)
+	static void set_attacker(CTakeDamageInfo *pTakeDamageInfo, unsigned int iAttacker)
 	{
-		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_attacker(pAttacker);
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_attacker(iAttacker);
 	}
 	
-	static CPointer *get_weapon(CTakeDamageInfo *pTakeDamageInfo)
+	static int get_weapon(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_weapon();
 	}
 	
-	static void set_weapon(CTakeDamageInfo *pTakeDamageInfo, CPointer *pWeapon)
+	static void set_weapon(CTakeDamageInfo *pTakeDamageInfo, unsigned int iWeapon)
 	{
-		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_weapon(pWeapon);
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_weapon(iWeapon);
 	}
 	
 	static void set_base_damage(CTakeDamageInfo *pTakeDamageInfo, float flBaseDamage)

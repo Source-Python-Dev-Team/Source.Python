@@ -317,26 +317,9 @@ void export_take_damage_info()
 		&TakeDamageInfoSharedExt::set_damaged_other_players
 	);
 
-	TakeDamageInfo.add_property("inflictor",
-		make_function(&TakeDamageInfoSharedExt::get_inflictor, 
-			reference_existing_object_policy()
-		),
-		&TakeDamageInfoSharedExt::set_inflictor
-	);
-	
-	TakeDamageInfo.add_property("attacker",
-		make_function(&TakeDamageInfoSharedExt::get_attacker,
-			reference_existing_object_policy()
-		),
-		&TakeDamageInfoSharedExt::set_attacker
-	);
-	
-	TakeDamageInfo.add_property("weapon",
-		make_function(&TakeDamageInfoSharedExt::get_weapon,
-			reference_existing_object_policy()
-		),
-		&TakeDamageInfoSharedExt::set_weapon
-	);
+	TakeDamageInfo.add_property("inflictor", &TakeDamageInfoSharedExt::get_inflictor, &TakeDamageInfoSharedExt::set_inflictor);
+	TakeDamageInfo.add_property("attacker", &TakeDamageInfoSharedExt::get_attacker, &TakeDamageInfoSharedExt::set_attacker);
+	TakeDamageInfo.add_property("weapon", &TakeDamageInfoSharedExt::get_weapon, &TakeDamageInfoSharedExt::set_weapon);
 	
 	// CS:GO properties...
 	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("radius");
