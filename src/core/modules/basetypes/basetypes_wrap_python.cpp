@@ -91,8 +91,12 @@ void export_interval()
 //-----------------------------------------------------------------------------
 void export_color()
 {
-	class_<Color, Color *> Color_("Color", init<int, int, int, optional<int>>());
-
+	class_<Color, Color *> Color_("Color");
+	
+	// Initializers...
+	Color_.def(init<int, int, int, optional<int>>());
+	
+	
 	// Properties...
 	Color_.add_property("r", &Color::r, &IndexSetter<Color, unsigned char, 0>);
 	Color_.add_property("g", &Color::g, &IndexSetter<Color, unsigned char, 1>);
