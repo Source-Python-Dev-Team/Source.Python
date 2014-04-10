@@ -32,6 +32,10 @@
 //-----------------------------------------------------------------------------
 #include "dt_send.h"
 #include "server_class.h"
+#include "game/shared/ehandle.h"
+#include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/takedamageinfo.h"
 
 
 //-----------------------------------------------------------------------------
@@ -59,7 +63,6 @@ SendProp::SendProp()
 	m_pExcludeDTName = NULL;
 	m_pParentArrayPropName = NULL;
 
-	
 	m_Type = DPT_Int;
 	m_Flags = 0;
 	m_nBits = 0;
@@ -76,6 +79,71 @@ SendProp::SendProp()
 
 	m_priority = SENDPROP_DEFAULT_PRIORITY;
 }
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo constructor declaration.
+//-----------------------------------------------------------------------------
+CTakeDamageInfo::CTakeDamageInfo()
+{
+	m_vecDamageForce = vec3_origin;
+	m_vecDamagePosition = vec3_origin;
+	m_vecReportedPosition = vec3_origin;
+	m_hInflictor = NULL;
+	m_hAttacker = NULL;
+	m_hWeapon = NULL;
+	m_flDamage = 0.0f;
+	m_flMaxDamage = 0.0f;
+	m_flBaseDamage = BASEDAMAGE_NOT_SPECIFIED;
+	m_bitsDamageType = 0;
+	m_iDamageCustom = 0;
+	m_iDamageStats = 0;
+	m_iAmmoType = -1;
+	m_flRadius = 0.0f;
+	m_iDamagedOtherPlayers = 0;
+	m_iObjectsPenetrated = 0;
+	m_uiBulletID = 0;
+	m_uiRecoilIndex = 0;
+}
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoExt: public TakeDamageInfoSharedExt
+{
+public:
+	int get_penetrated()
+	{
+		return m_iObjectsPenetrated;
+	}
+	
+	void set_penetrated(int iPenetrated)
+	{
+		m_iObjectsPenetrated = iPenetrated;
+	}
+	
+	uint32 get_bullet()
+	{
+		return m_uiBulletID;
+	}
+	
+	void set_bullet(uint32 uiBullet)
+	{
+		m_uiBulletID = uiBullet;
+	}
+	
+	uint8 get_recoil()
+	{
+		return m_uiRecoilIndex;
+	}
+	
+	void set_recoil(uint8 uiRecoil)
+	{
+		m_uiRecoilIndex = uiRecoil;
+	}
+};
+
 
 
 #endif // _BASETYPES_WRAP_CSGO_H

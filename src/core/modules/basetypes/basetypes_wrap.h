@@ -31,6 +31,12 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "dt_send.h"
+#include "game/shared/ehandle.h"
+#include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/takedamageinfo.h"
+#include "modules/memory/memory_tools.h"
+#include "modules/conversions/conversions_wrap.h"
 
 
 //-----------------------------------------------------------------------------
@@ -85,6 +91,59 @@ SendProp::~SendProp()
 {
 	// Declared here to fix undefined symbol issues...
 }
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoSharedExt: public CTakeDamageInfo
+{
+public:
+	CPointer *get_inflictor()
+	{
+		return PointerFromIndex(m_hInflictor.GetEntryIndex());
+	}
+	
+	void set_inflictor(CPointer *pInflictor)
+	{
+		m_hInflictor = (CBaseEntity *)pInflictor->m_ulAddr;
+	}
+	
+	CPointer *get_attacker()
+	{
+		return PointerFromIndex(m_hAttacker.GetEntryIndex());
+	}
+	
+	void set_attacker(CPointer *pAttacker)
+	{
+		m_hAttacker = (CBaseEntity *)pAttacker->m_ulAddr;
+	}
+	
+	CPointer *get_weapon()
+	{
+		return PointerFromIndex(m_hWeapon.GetEntryIndex());
+	}
+	
+	void set_weapon(CPointer *pWeapon)
+	{
+		m_hWeapon = (CBaseEntity *)pWeapon->m_ulAddr;
+	}
+	
+	void set_base_damage(float flBaseDamage)
+	{
+		m_flBaseDamage = flBaseDamage;
+	}
+	
+	int get_damaged_other_players()
+	{
+		return m_iDamagedOtherPlayers;
+	}
+	
+	void set_damaged_other_players(int iDamagedOtherPlayers)
+	{
+		m_iDamagedOtherPlayers = iDamagedOtherPlayers;
+	}
+};
 
 
 #endif // _BASETYPES_WRAP_H

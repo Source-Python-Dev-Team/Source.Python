@@ -31,6 +31,10 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "dt_send.h"
+#include "game/shared/ehandle.h"
+#include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/takedamageinfo.h"
 
 
 //-----------------------------------------------------------------------------
@@ -55,6 +59,47 @@ SendProp::SendProp()
 	m_nElements = 1;
 	m_ElementStride = -1;
 }
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo constructor declaration.
+//-----------------------------------------------------------------------------
+CTakeDamageInfo::CTakeDamageInfo()
+{
+	m_hInflictor = NULL;
+	m_hAttacker = NULL;
+	m_hWeapon = NULL;
+	m_flDamage = 0.0f;
+	m_flBaseDamage = BASEDAMAGE_NOT_SPECIFIED;
+	m_bitsDamageType = 0;
+	m_iDamageCustom = 0;
+	m_flMaxDamage = 0.0f;
+	m_vecDamageForce = vec3_origin;
+	m_vecDamagePosition = vec3_origin;
+	m_vecReportedPosition = vec3_origin;
+	m_iAmmoType = -1;
+	m_iDamagedOtherPlayers = 0;
+	m_iPlayerPenetrateCount = 0;
+	m_flUnknown = 0.0f;
+}
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoExt: public TakeDamageInfoSharedExt
+{
+public:
+	int get_penetrated()
+	{
+		return m_iPlayerPenetrateCount;
+	}
+	
+	void set_penetrated(int iPenetrated)
+	{
+		m_iPlayerPenetrateCount = iPenetrated;
+	}
+};
 
 
 #endif // _BASETYPES_WRAP_ORANGEBOX_H

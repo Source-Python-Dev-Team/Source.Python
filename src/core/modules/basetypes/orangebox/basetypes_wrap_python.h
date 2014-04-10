@@ -32,6 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "dt_send.h"
 #include "server_class.h"
+#include "basetypes_wrap.h"
 
 
 //-----------------------------------------------------------------------------
@@ -62,6 +63,18 @@ template<class T>
 void export_engine_specific_send_prop_types(T SendPropTypes)
 {
 	// Nothing specific to OrangeBox...
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose CTakeDamageInfo.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_take_damage_info(T TakeDamageInfo)
+{
+	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated,
+		&TakeDamageInfoExt::set_penetrated
+	);
 }
 
 

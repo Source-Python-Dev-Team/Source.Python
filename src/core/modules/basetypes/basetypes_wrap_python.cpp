@@ -51,6 +51,7 @@ void export_send_prop();
 void export_send_prop_types();
 void export_send_prop_flags();
 void export_server_class();
+void export_take_damage_info();
 
 
 //-----------------------------------------------------------------------------
@@ -65,6 +66,7 @@ DECLARE_SP_MODULE(basetypes_c)
 	export_send_prop_types();
 	export_send_prop_flags();
 	export_server_class();
+	export_take_damage_info();
 }
 
 
@@ -287,4 +289,63 @@ void export_server_class()
 	
 	// Add memory tools...
 	ServerClass_ ADD_MEM_TOOLS(ServerClass, "ServerClass");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose CTakeDamageInfo.
+//-----------------------------------------------------------------------------
+void export_take_damage_info()
+{
+	class_<CTakeDamageInfo, CTakeDamageInfo *> TakeDamageInfo("TakeDamageInfo");
+	
+	// Properties...
+	TakeDamageInfo.add_property("force", &TakeDamageInfoSharedExt::GetDamageForce, &CTakeDamageInfo::SetDamageForce);
+	TakeDamageInfo.add_property("position", &TakeDamageInfoSharedExt::GetDamagePosition, &CTakeDamageInfo::SetDamagePosition);
+	
+	TakeDamageInfo.add_property("reported_position", &TakeDamageInfoSharedExt::GetReportedPosition,
+		&CTakeDamageInfo::SetReportedPosition
+	);
+	
+	TakeDamageInfo.add_property("damage", &CTakeDamageInfo::GetDamage, &CTakeDamageInfo::SetDamage);
+	TakeDamageInfo.add_property("base_damage", &CTakeDamageInfo::GetBaseDamage, &TakeDamageInfoSharedExt::set_base_damage);
+	TakeDamageInfo.add_property("type", &CTakeDamageInfo::GetDamageType, &CTakeDamageInfo::SetDamageType);
+	TakeDamageInfo.add_property("stats", &CTakeDamageInfo::GetDamageStats, &CTakeDamageInfo::SetDamageStats);
+	TakeDamageInfo.add_property("ammo", &CTakeDamageInfo::GetAmmoType, &CTakeDamageInfo::SetAmmoType);
+	
+	TakeDamageInfo.add_property("damaged_other_players", &TakeDamageInfoSharedExt::get_damaged_other_players,
+		&TakeDamageInfoSharedExt::set_damaged_other_players
+	);
+
+	TakeDamageInfo.add_property("inflictor",
+		make_function(&TakeDamageInfoSharedExt::get_inflictor, 
+			reference_existing_object_policy()
+		),
+		&TakeDamageInfoSharedExt::set_inflictor
+	);
+	
+	TakeDamageInfo.add_property("attacker",
+		make_function(&TakeDamageInfoSharedExt::get_attacker,
+			reference_existing_object_policy()
+		),
+		&TakeDamageInfoSharedExt::set_attacker
+	);
+	
+	TakeDamageInfo.add_property("weapon",
+		make_function(&TakeDamageInfoSharedExt::get_weapon,
+			reference_existing_object_policy()
+		),
+		&TakeDamageInfoSharedExt::set_weapon
+	);
+	
+	// CS:GO properties...
+	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("radius");
+	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("bullet");
+	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("recoil");
+	
+	// Engine specific stuff...
+	export_engine_specific_take_damage_info(TakeDamageInfo);
+	
+	// Add memory tools...
+	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
 }

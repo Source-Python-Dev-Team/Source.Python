@@ -66,4 +66,17 @@ void export_engine_specific_send_prop_types(T SendPropTypes)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose CTakeDamageInfo.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_take_damage_info(T TakeDamageInfo)
+{
+	TakeDamageInfo.add_property("radius", &CTakeDamageInfo::GetRadius, &CTakeDamageInfo::SetRadius);
+	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated, &TakeDamageInfoExt::set_penetrated);
+	TakeDamageInfo.add_property("bullet", &TakeDamageInfoExt::get_bullet, &TakeDamageInfoExt::set_bullet);
+	TakeDamageInfo.add_property("recoil", &TakeDamageInfoExt::get_recoil, &TakeDamageInfoExt::set_recoil);
+}
+
+
 #endif // _BASETYPES_WRAP_PYTHON_CSGO_H
