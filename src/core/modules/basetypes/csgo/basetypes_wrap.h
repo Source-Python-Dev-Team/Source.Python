@@ -110,7 +110,7 @@ CTakeDamageInfo::CTakeDamageInfo()
 //-----------------------------------------------------------------------------
 // CTakeDamageInfo extension class.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoExt: public TakeDamageInfoSharedExt
+class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
 {
 public:
 	int get_penetrated()
@@ -144,6 +144,43 @@ public:
 	}
 };
 
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoExt
+{
+public:
+	static int get_penetrated(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_penetrated();
+	}
+	
+	static void set_penetrated(CTakeDamageInfo *pTakeDamageInfo, int iPenetrated)
+	{
+		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
+	}
+	
+	static uint32 get_bullet(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_bullet();
+	}
+	
+	static void set_bullet(CTakeDamageInfo *pTakeDamageInfo, uint32 uiBullet)
+	{
+		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_bullet(uiBullet);
+	}
+	
+	static uint8 get_recoil(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_recoil();
+	}
+	
+	static void set_recoil(CTakeDamageInfo *pTakeDamageInfo, uint8 uiRecoil)
+	{
+		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_recoil(uiRecoil);
+	}
+};
 
 
 #endif // _BASETYPES_WRAP_CSGO_H

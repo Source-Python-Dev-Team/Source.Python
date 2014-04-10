@@ -297,21 +297,21 @@ void export_server_class()
 //-----------------------------------------------------------------------------
 void export_take_damage_info()
 {
-	class_<TakeDamageInfoSharedExt, TakeDamageInfoSharedExt *> TakeDamageInfo("TakeDamageInfo");
+	class_<CTakeDamageInfo, CTakeDamageInfo *> TakeDamageInfo("TakeDamageInfo");
 	
 	// Properties...
-	TakeDamageInfo.add_property("force", &TakeDamageInfoSharedExt::GetDamageForce, &TakeDamageInfoSharedExt::SetDamageForce);
-	TakeDamageInfo.add_property("position", &TakeDamageInfoSharedExt::GetDamagePosition, &TakeDamageInfoSharedExt::SetDamagePosition);
+	TakeDamageInfo.add_property("force", &CTakeDamageInfo::GetDamageForce, &CTakeDamageInfo::SetDamageForce);
+	TakeDamageInfo.add_property("position", &CTakeDamageInfo::GetDamagePosition, &CTakeDamageInfo::SetDamagePosition);
 	
-	TakeDamageInfo.add_property("reported_position", &TakeDamageInfoSharedExt::GetReportedPosition,
-		&TakeDamageInfoSharedExt::SetReportedPosition
+	TakeDamageInfo.add_property("reported_position", &CTakeDamageInfo::GetReportedPosition,
+		&CTakeDamageInfo::SetReportedPosition
 	);
 	
-	TakeDamageInfo.add_property("damage", &TakeDamageInfoSharedExt::GetDamage, &TakeDamageInfoSharedExt::SetDamage);
-	TakeDamageInfo.add_property("base_damage", &TakeDamageInfoSharedExt::GetBaseDamage, &TakeDamageInfoSharedExt::set_base_damage);
-	TakeDamageInfo.add_property("type", &TakeDamageInfoSharedExt::GetDamageType, &TakeDamageInfoSharedExt::SetDamageType);
-	TakeDamageInfo.add_property("stats", &TakeDamageInfoSharedExt::GetDamageStats, &TakeDamageInfoSharedExt::SetDamageStats);
-	TakeDamageInfo.add_property("ammo", &TakeDamageInfoSharedExt::GetAmmoType, &TakeDamageInfoSharedExt::SetAmmoType);
+	TakeDamageInfo.add_property("damage", &CTakeDamageInfo::GetDamage, &CTakeDamageInfo::SetDamage);
+	TakeDamageInfo.add_property("base_damage", &CTakeDamageInfo::GetBaseDamage, &TakeDamageInfoSharedExt::set_base_damage);
+	TakeDamageInfo.add_property("type", &CTakeDamageInfo::GetDamageType, &CTakeDamageInfo::SetDamageType);
+	TakeDamageInfo.add_property("stats", &CTakeDamageInfo::GetDamageStats, &CTakeDamageInfo::SetDamageStats);
+	TakeDamageInfo.add_property("ammo", &CTakeDamageInfo::GetAmmoType, &CTakeDamageInfo::SetAmmoType);
 	
 	TakeDamageInfo.add_property("damaged_other_players", &TakeDamageInfoSharedExt::get_damaged_other_players,
 		&TakeDamageInfoSharedExt::set_damaged_other_players
@@ -347,5 +347,5 @@ void export_take_damage_info()
 	export_engine_specific_take_damage_info(TakeDamageInfo);
 	
 	// Add memory tools...
-	TakeDamageInfo ADD_MEM_TOOLS(TakeDamageInfoSharedExt, "TakeDamageInfo");
+	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
 }

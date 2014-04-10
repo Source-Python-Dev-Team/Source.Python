@@ -85,9 +85,9 @@ CTakeDamageInfo::CTakeDamageInfo()
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
+// CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoExt: public TakeDamageInfoSharedExt
+class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
 {
 public:
 	int get_penetrated()
@@ -98,6 +98,24 @@ public:
 	void set_penetrated(int iPenetrated)
 	{
 		m_iPlayerPenetrateCount = iPenetrated;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoExt
+{
+public:
+	static int get_penetrated(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_penetrated();
+	}
+	
+	static void set_penetrated(CTakeDamageInfo *pTakeDamageInfo, int iPenetrated)
+	{
+		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
 	}
 };
 

@@ -94,9 +94,9 @@ SendProp::~SendProp()
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
+// CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoSharedExt: public CTakeDamageInfo
+class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
 {
 public:
 	CPointer *get_inflictor()
@@ -142,6 +142,59 @@ public:
 	void set_damaged_other_players(int iDamagedOtherPlayers)
 	{
 		m_iDamagedOtherPlayers = iDamagedOtherPlayers;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoSharedExt
+{
+public:
+	static CPointer *get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_inflictor();
+	}
+	
+	static void set_inflictor(CTakeDamageInfo *pTakeDamageInfo, CPointer *pInflictor)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_inflictor(pInflictor);
+	}
+	
+	static CPointer *get_attacker(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_attacker();
+	}
+	
+	static void set_attacker(CTakeDamageInfo *pTakeDamageInfo, CPointer *pAttacker)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_attacker(pAttacker);
+	}
+	
+	static CPointer *get_weapon(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_weapon();
+	}
+	
+	static void set_weapon(CTakeDamageInfo *pTakeDamageInfo, CPointer *pWeapon)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_weapon(pWeapon);
+	}
+	
+	static void set_base_damage(CTakeDamageInfo *pTakeDamageInfo, float flBaseDamage)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_base_damage(flBaseDamage);
+	}
+	
+	static int get_damaged_other_players(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_damaged_other_players();
+	}
+	
+	static void set_damaged_other_players(CTakeDamageInfo *pTakeDamageInfo, int iDamagedOtherPlayers)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_damaged_other_players(iDamagedOtherPlayers);
 	}
 };
 
