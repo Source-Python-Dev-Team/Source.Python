@@ -75,15 +75,16 @@ class Key:
     SRV_CHECK = 'srv_check'
     SIZE = 'size'
 
-    # Attribute/array kes
     OFFSET = 'offset'
+
+    # Attribute/array keys
     TYPE_NAME = 'type'
 
     # Array keys
     LENGTH = 'length'
 
-    # Virtual function keys
-    INDEX = 'index'
+    # Pointer keys
+    LEVEL = 'level'
 
     # (Virtual) function keys
     ARGS = 'arguments'

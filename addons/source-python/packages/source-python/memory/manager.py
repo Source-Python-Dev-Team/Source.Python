@@ -131,6 +131,14 @@ class TypeManager(dict):
     The TypeManager is able to reconstruct almost every possible data type.
     '''
 
+    def __init__(self):
+        '''
+        Initializes the instance.
+        '''
+
+        # This dictionary will hold global pointer instances
+        self._global_pointers = {}
+
     def __call__(self, name, bases, cls_dict):
         '''
         Creates and registers a new class.
@@ -151,6 +159,20 @@ class TypeManager(dict):
 
         self[name] = cls
         return cls
+
+    def register_converter(self, cls):
+        '''
+        Registers a class as a converter for pointers.
+        '''
+
+        self[cls.__name__] = cls
+
+    def unregister_converter(self, cls):
+        '''
+        Unregisters a converter class.
+        '''
+
+        del self[cls.__name__]
 
     def convert(self, name, ptr):
         '''
@@ -309,7 +331,7 @@ class TypeManager(dict):
         vfuncs = parse_data(
             raw_data.get('virtual_function', {}),
             (
-                (Key.INDEX, int, NO_DEFAULT),
+                (Key.OFFSET, int, NO_DEFAULT),
                 (Key.ARGS, Key.as_args_tuple, ()),
                 (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.THISCALL),
@@ -617,6 +639,63 @@ class TypeManager(dict):
         # Create the typedefs
         for name, data in typedefs:
             self.function_typedef(name, *data)
+
+    def global_pointer(
+            self, cls, binary, identifier, offset=0, level=0, srv_check=True):
+        '''
+        Searches for a global pointer and wraps the pointer using the given
+        class.
+        '''
+
+        # Get the binary
+        bin = find_binary(binary, srv_check)
+
+        # Get the global pointer
+        ptr = bin.find_pointer(identifier, offset, level)
+
+        # Raise an error if the pointer is invalid
+        if not ptr:
+            raise ValueError('Unable to find the global pointer.')
+
+        # Wrap the pointer using the given class and save the instance
+        ptr = self._global_pointers[cls.__name__] = make_object(cls, ptr)
+        return ptr
+
+    def create_global_pointers_from_file(self, f):
+        '''
+        Creates global pointers from a file.
+        '''
+        
+        # Parse pointer data
+        pointers = parse_data(
+            open_ini_file(f),
+            (
+                (Key.BINARY, str, NO_DEFAULT),
+                (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
+                (Key.OFFSET, int, 0),
+                (Key.LEVEL, int, 0),
+                (Key.SRV_CHECK, Key.as_bool, True),
+            )
+        )
+
+        # Create the global pointer objects
+        for name, data in pointers:
+            self.global_pointer(self.get_class(name), *data)
+
+    def get_global_pointer(self, name):
+        '''
+        Returns the global pointer for the given class.
+        '''
+
+        # Allow passing class objects
+        if not isinstance(name, str):
+            name = name.__name__
+
+        # Raise an error if no global pointer was found.
+        if name not in self._global_pointers:
+            raise NameError('No global pointer found for "{0}".'.format(name))
+
+        return self._global_pointers[name]
 
 # Create a shared manager instance
 manager = TypeManager()

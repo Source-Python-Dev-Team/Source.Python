@@ -113,64 +113,23 @@ void export_binaryfile()
 //-----------------------------------------------------------------------------
 // Exposes CPointer and CFunction
 //-----------------------------------------------------------------------------
-#define OVERLOAD_GET_TYPE(name, type) \
-	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_##name##_overload, CPointer::Get<type>, 0, 1)
-
-#define OVERLOAD_SET_TYPE(name, type) \
-	BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_##name##_overload, CPointer::Set<type>, 1, 2)
-
-#define OVERLOAD_GET_SET_TYPE(name, type) \
-	OVERLOAD_GET_TYPE(name, type) \
-	OVERLOAD_SET_TYPE(name, type)
-
 #define EXPOSE_SET_TYPE(name, type) \
 	.def("set_" XSTRINGIFY(name), \
 		&CPointer::Set<type>, \
-		set_##name##_overload( \
-			args("value", "offset"), \
-			"Sets the value at the given memory location." \
-		) \
+		"Sets the value at the given memory location.", \
+		("value", arg("offset")=0) \
 	)
 
 #define EXPOSE_GET_TYPE(name, type) \
 	.def("get_" XSTRINGIFY(name), \
 		&CPointer::Get<type>, \
-		get_##name##_overload( \
-			args("offset"), \
-			"Returns the value at the given memory location." \
-		) \
+		"Returns the value at the given memory location.", \
+		(arg("offset")=0) \
 	)
 
 #define EXPOSE_GET_SET_TYPE(name, type) \
 	EXPOSE_SET_TYPE(name, type) \
 	EXPOSE_GET_TYPE(name, type)
-	
-// get/set_<type> overloads
-OVERLOAD_GET_SET_TYPE(bool, bool)
-OVERLOAD_GET_SET_TYPE(char, char)
-OVERLOAD_GET_SET_TYPE(uchar, unsigned char)
-OVERLOAD_GET_SET_TYPE(short, short)
-OVERLOAD_GET_SET_TYPE(ushort, unsigned short)
-OVERLOAD_GET_SET_TYPE(int, int)
-OVERLOAD_GET_SET_TYPE(uint, unsigned int)
-OVERLOAD_GET_SET_TYPE(long, long)
-OVERLOAD_GET_SET_TYPE(ulong, unsigned long)
-OVERLOAD_GET_SET_TYPE(long_long, long long)
-OVERLOAD_GET_SET_TYPE(ulong_long, unsigned long long)
-OVERLOAD_GET_SET_TYPE(float, float)
-OVERLOAD_GET_SET_TYPE(double, double)
-OVERLOAD_GET_SET_TYPE(string_pointer, const char*)
-
-// get_<type> overloads
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_ptr_overload, GetPtr, 0, 1)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_array_overload, GetStringArray, 0, 1)
-	
-// set_<type> overloads
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_ptr_overload, SetPtr, 1, 2)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_array_overload, SetStringArray, 1, 2)
-
-
-BOOST_PYTHON_FUNCTION_OVERLOADS(alloc_overload, Alloc, 1, 2)
 
 void export_memtools()
 {
@@ -193,38 +152,29 @@ void export_memtools()
 		EXPOSE_GET_SET_TYPE(double, double)
 		EXPOSE_GET_SET_TYPE(string_pointer, const char*)
 
-		// get_<type> methods
 		.def("get_pointer",
 			&CPointer::GetPtr,
-			get_ptr_overload(
-				"Returns the value at the given memory location.",
-				args("offset")
-				)[manage_new_object_policy()]
+			"Returns the value at the given memory location.",
+			(arg("offset")=0),
+			manage_new_object_policy()
 		)
 
 		.def("get_string_array",
 			&CPointer::GetStringArray,
-			get_string_array_overload(
-				"Returns the value at the memory location.",
-				args("offset")
-			)
+			"Returns the value at the memory location.",
+			(arg("offset")=0)
 		)
 		
-		// set_<type> methods
 		.def("set_pointer",
 			&CPointer::SetPtr,
-			set_ptr_overload(
-				"Sets the value at the given memory location.",
-				args("value", "offset")
-			)
+			"Sets the value at the given memory location.",
+			("value", arg("offset")=0)
 		)
 
 		.def("set_string_array",
 			&CPointer::SetStringArray,
-			set_string_array_overload(
-				"Sets the value at the given memory location.",
-				args("value", "offset")
-			)
+			"Sets the value at the given memory location.",
+			("value",arg( "offset")=0)
 		)
 
 		// Other methods
@@ -401,10 +351,9 @@ void export_memtools()
 	
 	def("alloc",
 		Alloc,
-		alloc_overload(
-			"Allocates a memory block.",
-			args("size", "auto_dealloc")
-		)[manage_new_object_policy()]
+		"Allocates a memory block.",
+		("size", arg("auto_dealloc")=true),
+		manage_new_object_policy()
 	);
 
 	def("get_pointer",
