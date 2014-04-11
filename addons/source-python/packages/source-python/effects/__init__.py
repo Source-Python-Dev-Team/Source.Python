@@ -11,7 +11,7 @@ from constants_c import SOURCE_ENGINE
 #   Effects
 from effects_c import *
 #   Memory
-from memory.pointers import Pointers
+from memory.manager import manager
 
 
 # =============================================================================
@@ -32,5 +32,7 @@ __all__ = [
 try:
     TempEntities = ServerTools.get_temp_entities()
 except NotImplementedError:
-    TempEntities = Pointers(SP_DATA_PATH.joinpath(
-        'effects', SOURCE_ENGINE, 'pointers.ini'))['TempEntities']
+    manager.create_global_pointers_from_file(
+        SP_DATA_PATH.joinpath('effects', SOURCE_ENGINE, 'pointers.ini'))
+
+    TempEntities = manager.get_global_pointer('_TempEntities')
