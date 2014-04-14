@@ -104,10 +104,6 @@ CTakeDamageInfo::CTakeDamageInfo()
 	m_iObjectsPenetrated = 0;
 	m_uiBulletID = 0;
 	m_uiRecoilIndex = 0;
-	
-	// Defaulted to world damage...
-	TakeDamageInfoSharedExt::set_inflictor(this, 0);
-	TakeDamageInfoSharedExt::set_attacker(this, 0);
 }
 
 

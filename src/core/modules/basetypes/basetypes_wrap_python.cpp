@@ -286,7 +286,7 @@ void export_server_class()
 	// Properties...
 	ServerClass_.def_readonly("table", &ServerClass::m_pTable);
 	ServerClass_.def_readonly("next", &ServerClass::m_pNext);
-	ServerClass_.def_readonly("id", &ServerClass::m_ClassID);
+	ServerClass_.def_readonly("class_index", &ServerClass::m_ClassID);
 	
 	// Engine specific stuff...
 	export_engine_specific_server_class(ServerClass_);
@@ -302,6 +302,9 @@ void export_server_class()
 void export_take_damage_info()
 {
 	class_<CTakeDamageInfo, CTakeDamageInfo *> TakeDamageInfo("TakeDamageInfo");
+	
+	// Initializers...
+	TakeDamageInfo.def("__init__", make_constructor(&TakeDamageInfoSharedExt::__init__));
 	
 	// Properties...
 	TakeDamageInfo.add_property("force", &CTakeDamageInfo::GetDamageForce, &CTakeDamageInfo::SetDamageForce);

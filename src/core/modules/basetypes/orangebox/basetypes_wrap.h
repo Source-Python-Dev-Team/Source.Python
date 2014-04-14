@@ -81,10 +81,6 @@ CTakeDamageInfo::CTakeDamageInfo()
 	m_iDamagedOtherPlayers = 0;
 	m_iPlayerPenetrateCount = 0;
 	m_flUnknown = 0.0f;
-	
-	// Defaulted to world damage...
-	TakeDamageInfoSharedExt::set_inflictor(this, 0);
-	TakeDamageInfoSharedExt::set_attacker(this, 0);
 }
 
 

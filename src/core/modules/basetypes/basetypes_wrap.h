@@ -164,6 +164,14 @@ public:
 class TakeDamageInfoSharedExt
 {
 public:
+	static CTakeDamageInfo *__init__()
+	{
+		CTakeDamageInfo *pTakeDamageInfo = new CTakeDamageInfo();
+		set_inflictor(pTakeDamageInfo, 0);
+		set_attacker(pTakeDamageInfo, 0);
+		return pTakeDamageInfo;
+	}
+	
 	static int get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_inflictor();
