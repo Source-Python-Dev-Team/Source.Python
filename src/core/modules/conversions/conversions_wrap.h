@@ -121,17 +121,19 @@ inline unsigned int IndexFromPlayerInfo( IPlayerInfo* playerinfo )
 //-----------------------------------------------------------------------------
 inline edict_t* EdictFromIndex( unsigned int iEntIndex )
 {
+	edict_t *pEdict = NULL;
 	if(iEntIndex < (unsigned int) gpGlobals->maxEntities)
 	{
 #ifdef ENGINE_ORANGEBOX
-		return engine->PEntityOfEntIndex(iEntIndex);
+		pEdict = engine->PEntityOfEntIndex(iEntIndex);
 #else
-		return (edict_t *) (gpGlobals->pEdicts + iEntIndex);
+		pEdict = (edict_t *) (gpGlobals->pEdicts + iEntIndex);
 #endif
 	}
-	
-	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve edict from index.")
-	return NULL; // To fix a warning
+
+	if (!pEdict || pEdict->IsFree() || !pEdict->GetUnknown())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve edict from index.")
+	return pEdict;
 }
 
 inline edict_t* EdictFromBaseHandle( CBaseHandle basehandle )
