@@ -147,22 +147,12 @@ void export_input_data()
 {
 	class_<inputdata_t, inputdata_t *> InputData("InputData");
 
-	// Properties...
-	InputData.add_property("activator",
-		make_function(
-			&InputDataSharedExt::get_activator,
-			manage_new_object_policy()
-		),
-		&InputDataSharedExt::set_activator
-	);
+	// Initializers...
+	InputData.def("__init__", make_constructor(&InputDataSharedExt::__init__));
 
-	InputData.add_property("caller",
-		make_function(
-			&InputDataSharedExt::get_caller,
-			manage_new_object_policy()
-		),
-		&InputDataSharedExt::set_caller
-	);
+	// Properties...
+	InputData.add_property("activator", &InputDataSharedExt::get_activator, &InputDataSharedExt::set_activator);
+	InputData.add_property("caller", &InputDataSharedExt::get_caller, &InputDataSharedExt::set_caller);
 
 	InputData.def_readwrite("value", &inputdata_t::value);
 	InputData.def_readwrite("output_index", &inputdata_t::nOutputID);
@@ -194,12 +184,8 @@ void export_variant()
 	);
 
 	Variant.def("get_vector", &VariantSharedExt::get_vector);
-	
-	Variant.def("get_entity",
-		&VariantSharedExt::get_entity,
-		manage_new_object_policy()
-	);
-	
+	Variant.def("get_entity", &VariantSharedExt::get_entity);
+
 	// Setters...
 	Variant.def("set_bool", &variant_t::SetBool);
 	Variant.def("set_string", &VariantSharedExt::set_string);

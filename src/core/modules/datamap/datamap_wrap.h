@@ -154,17 +154,26 @@ public:
 		return pVector;
 	}
 	
-	static CPointer *get_entity(variant_t *pVariant)
+	static int get_entity(variant_t *pVariant)
 	{
-		return PointerFromIndex(pVariant->Entity().GetEntryIndex());
+		CHandle<CBaseEntity> pHandle = pVariant->Entity();
+		if (pHandle.IsValid())
+		{
+			return pVariant->Entity().GetEntryIndex();
+		}
+		return -1;
 	}
 	
-	static void set_entity(variant_t *pVariant, CPointer *pEntity)
+	static void set_entity(variant_t *pVariant, unsigned int uiEntity)
 	{
-		pVariant->SetEntity((CBaseEntity *)pEntity->m_ulAddr);
+		pVariant->SetEntity((CBaseEntity *)PointerFromIndex(uiEntity)->m_ulAddr);
 	}
 };
 
+
+//-----------------------------------------------------------------------------
+// Declared here to fix undefined symbol issues.
+//-----------------------------------------------------------------------------
 void variant_t::SetEntity(CBaseEntity *pValue) 
 { 
 	eVal = pValue;
@@ -190,24 +199,41 @@ struct inputdata_t
 class InputDataSharedExt
 {
 public:
-	static CPointer *get_activator(inputdata_t pInputData)
+	static inputdata_t *__init__()
 	{
-		return new CPointer((unsigned long)pInputData.pActivator);
+		inputdata_t *pInputData = new inputdata_t;
+		pInputData->pActivator = NULL;
+		pInputData->pCaller = NULL;
+		pInputData->nOutputID = 0;
+		return pInputData;
 	}
 	
-	static void set_activator(inputdata_t pInputData, CPointer *pActivator)
+	static int get_activator(inputdata_t pInputData)
 	{
-		pInputData.pActivator = (CBaseEntity *)pActivator->m_ulAddr;
+		if (pInputData.pActivator)
+		{
+			return IndexFromPointer(&CPointer((unsigned long)pInputData.pActivator));
+		}
+		return -1;
 	}
 	
-	static CPointer *get_caller(inputdata_t pInputData)
+	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator)
 	{
-		return new CPointer((unsigned long)pInputData.pCaller);
+		pInputData->pActivator = (CBaseEntity *)PointerFromIndex(uiActivator)->m_ulAddr;
 	}
 	
-	static void set_caller(inputdata_t pInputData, CPointer *pCaller)
+	static int get_caller(inputdata_t pInputData)
 	{
-		pInputData.pCaller = (CBaseEntity *)pCaller->m_ulAddr;
+		if (pInputData.pCaller)
+		{
+			return IndexFromPointer(&CPointer((unsigned long)pInputData.pCaller));
+		}
+		return -1;
+	}
+	
+	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller)
+	{
+		pInputData->pCaller = (CBaseEntity *)PointerFromIndex(uiCaller)->m_ulAddr;
 	}
 };
 
