@@ -121,9 +121,9 @@ object raw_method(T method)
 //---------------------------------------------------------------------------------
 // Use this macro to raise a Python exception.
 //---------------------------------------------------------------------------------
-#define BOOST_RAISE_EXCEPTION( exceptionName, exceptionString ) \
+#define BOOST_RAISE_EXCEPTION( exceptionName, exceptionString, ... ) \
     { \
-		PyErr_SetString(exceptionName, exceptionString); \
+		PyErr_Format(exceptionName, exceptionString, __VA_ARGS__); \
 		throw_error_already_set(); \
     }
 
