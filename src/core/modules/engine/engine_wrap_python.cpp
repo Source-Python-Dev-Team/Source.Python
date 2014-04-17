@@ -48,6 +48,7 @@
 #include "eiface.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
+#include "engine/iserverplugin.h"
 
 #include ENGINE_INCLUDE_PATH(engine_wrap_python.h)
 
@@ -57,11 +58,13 @@ extern IEngineSound* enginesound;
 extern IEngineTrace* enginetrace;
 extern CGlobalVars* gpGlobals;
 extern IServerGameDLL* servergamedll;
+extern IServerPluginHelpers *helpers;
 
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
 //---------------------------------------------------------------------------------
 void export_engine_server();
+void export_query_cvar_status();
 void export_engine_sound();
 void export_engine_trace();
 void export_server_game_dll();
@@ -69,6 +72,7 @@ void export_server_game_dll();
 DECLARE_SP_MODULE(engine_c)
 {
 	export_engine_server();
+	export_query_cvar_status();
 	export_engine_sound();
 	export_engine_trace();
 	export_server_game_dll();
@@ -94,6 +98,11 @@ public:
 	void Con_NXPrintf(IVEngineServer* pEngine, const struct con_nprint_s* info, const char* fmt)
 	{
 		pEngine->Con_NXPrintf(info, fmt);
+	}
+	
+	static QueryCvarCookie_t StartQueryCvarValue(IVEngineServer* pEngine, edict_t *pEntity, const char *pName)
+	{
+		return helpers->StartQueryCvarValue(pEntity, pName);
 	}
 };
 
@@ -629,7 +638,7 @@ void export_engine_server()
 		)
 
 		.def("start_query_cvar_value",
-			&IVEngineServer::StartQueryCvarValue,
+			&IVEngineServerExt::StartQueryCvarValue,
 			"Returns the value of a cvar on the client.",
 			args("edict", "cvar_name")
 		)
@@ -767,6 +776,21 @@ void export_engine_server()
 	) ADD_MEM_TOOLS(IVEngineServer, "_EngineServer"); // IVEngineServer_Visitor
 
 	scope().attr("EngineServer") = object(ptr(engine));
+}
+
+
+//---------------------------------------------------------------------------------
+// Exposes EQueryCvarValueStatus.
+//---------------------------------------------------------------------------------
+void export_query_cvar_status()
+{
+	enum_<EQueryCvarValueStatus> QueryCvarStatus("QueryCvarStatus");
+
+	// Values...
+	QueryCvarStatus.value("SUCCESS", eQueryCvarValueStatus_ValueIntact);
+	QueryCvarStatus.value("NOT_FOUND", eQueryCvarValueStatus_CvarNotFound);
+	QueryCvarStatus.value("INVALID", eQueryCvarValueStatus_NotACvar);
+	QueryCvarStatus.value("PROTECTED", eQueryCvarValueStatus_CvarProtected);
 }
 
 

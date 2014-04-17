@@ -377,7 +377,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
 	g_AddonManager.OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
-	DevMsg(0, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
+	DevMsg(1, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
 }
 
 //-----------------------------------------------------------------------------
