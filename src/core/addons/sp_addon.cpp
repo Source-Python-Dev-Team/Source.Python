@@ -35,6 +35,7 @@
 #include "utility/wrap_macros.h"
 #include "modules/listener/listenermanager.h"
 #include "modules/entity/entity_wrap.h"
+#include "modules/conversions/conversions_wrap.h"
 
 //---------------------------------------------------------------------------------
 // External variables
@@ -111,7 +112,7 @@ void CAddonManager::LevelShutdown( void )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientActive( edict_t *pEntity )
 {
-	CALL_LISTENERS(ClientActive, pEntity);
+	CALL_LISTENERS(ClientActive, IndexFromEdict(pEntity));
 }
 
 //---------------------------------------------------------------------------------
@@ -119,7 +120,7 @@ void CAddonManager::ClientActive( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientDisconnect( edict_t *pEntity )
 {
-	CALL_LISTENERS(ClientDisconnect, pEntity);
+	CALL_LISTENERS(ClientDisconnect, IndexFromEdict(pEntity));
 }
 
 //---------------------------------------------------------------------------------
@@ -127,7 +128,7 @@ void CAddonManager::ClientDisconnect( edict_t *pEntity )
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
-	CALL_LISTENERS(ClientPutInServer, pEntity, playername);
+	CALL_LISTENERS(ClientPutInServer, IndexFromEdict(pEntity), playername);
 }
 
 //---------------------------------------------------------------------------------
@@ -135,7 +136,7 @@ void CAddonManager::ClientPutInServer( edict_t *pEntity, char const *playername 
 //---------------------------------------------------------------------------------
 void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 {
-	CALL_LISTENERS(ClientSettingsChanged, pEdict);
+	CALL_LISTENERS(ClientSettingsChanged, IndexFromEdict(pEdict));
 }
 
 //---------------------------------------------------------------------------------
@@ -144,7 +145,7 @@ void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, 
 	const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	CALL_LISTENERS(ClientConnect, *bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
+	CALL_LISTENERS(ClientConnect, *bAllowConnect, IndexFromEdict(pEntity), pszName, pszAddress, reject, maxrejectlen);
 }
 
 //---------------------------------------------------------------------------------
@@ -154,7 +155,7 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 	edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, 
 	const char *pCvarValue )
 {
-	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
+	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, IndexFromEdict(pPlayerEntity), eStatus, pCvarName, pCvarValue);
 }
 //
 // 
