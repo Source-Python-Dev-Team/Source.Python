@@ -30,288 +30,120 @@
 #include "conversions_wrap.h"
 #include "modules/export_main.h"
 
+
 //-----------------------------------------------------------------------------
-// Conversions module definition.
+// Forward declarations.
 //-----------------------------------------------------------------------------
 void export_functions();
 
+
+//-----------------------------------------------------------------------------
+// Conversions module definition.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(conversions_c)
 {
 	export_functions();
 }
+
+
+//-----------------------------------------------------------------------------
+// Helper template/macro to save some redundant typing...
+//-----------------------------------------------------------------------------
+template<typename to_type, typename from_type, to_type (*conversion_function)(from_type)>
+struct FromToConversion
+{
+	static to_type convert(from_type from_value, bool raise_exception)
+	{
+		to_type return_value = conversion_function(from_value);
+		if (!return_value && raise_exception) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Conversion failed...");
+		}
+		return return_value;
+	}
+};
+
+
+template<typename from_type, CBaseHandle (*conversion_function)(from_type)>
+struct FromToConversion<CBaseHandle, from_type, conversion_function>
+{
+	static CBaseHandle convert(from_type from_value, bool raise_exception)
+	{
+		CBaseHandle return_value = conversion_function(from_value);
+		if (!return_value.IsValid() && raise_exception) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Conversion failed...");
+		}
+		return return_value.IsValid() ? return_value : NULL;
+	}
+};
+
+
+#define EXPORT_CONVERSION_FUNCTION(to_type, to_name, from_type, from_name, ...) \
+	def(extract<const char *>(str(XSTRINGIFY(to_name##_from_##from_name)).lower().ptr()), \
+		&FromToConversion<##to_type, from_type, &to_name##From##from_name>::convert, \
+		XSTRINGIFY(Returns the to_name (of type to_type##) from the given from_name (of type from_type##).), \
+		(XSTRINGIFY(from_name), arg("raise_exception")=true), \
+		__VA_ARGS__ \
+	)
+
 
 //-----------------------------------------------------------------------------
 // Exports conversion functions.
 //-----------------------------------------------------------------------------
 void export_functions()
 {
-	def("index_from_edict",
-		IndexFromEdict,
-		"Returns the index of the given Edict",
-		args("edict")
-	);
+	// To index conversions...
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
 
-	def("index_from_basehandle",
-		IndexFromBaseHandle,
-		"Returns the index of the given BaseEntityHandle",
-		args("basehandle")
-	);
+	// To edict conversions...
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Index, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CBaseHandle, BaseHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, int, IntHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CPointer *, Pointer, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Userid, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, IPlayerInfo *, PlayerInfo, reference_existing_object_policy());
 
-	def("index_from_inthandle",
-		IndexFromIntHandle,
-		"Returns the index of the given integer handle",
-		args("inthandle")
-	);
+	// To base handle conversions...
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Userid);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, IPlayerInfo *, PlayerInfo);
 
-	def("index_from_pointer",
-		IndexFromPointer,
-		"Returns the index of the given BaseEntity pointer",
-		args("pointer")
-	);
+	// To int handle conversions...
+	EXPORT_CONVERSION_FUNCTION(int, IntHandle, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(int, IntHandle, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(int, IntHandle, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(int, IntHandle, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(int, IntHandle, unsigned int, Userid);
+	EXPORT_CONVERSION_FUNCTION(int, IntHandle, IPlayerInfo *, PlayerInfo);
 
-	def("index_from_userid",
-		IndexFromUserid,
-		"Returns the index of the given userid",
-		args("userid")
-	);
+	// To pointer conversions...
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, unsigned int, Index, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, edict_t *, Edict, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, CBaseHandle, BaseHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, int, IntHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, unsigned int, Userid, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, IPlayerInfo *, PlayerInfo, reference_existing_object_policy());
 
-	def("index_from_playerinfo",
-		IndexFromPlayerInfo,
-		"Returns the index of the given PlayerInfo",
-		args("playerinfo")
-	);
-
-	def("edict_from_index",
-		EdictFromIndex,
-		"Returns the Edict of the given index",
-		args("index"),
-		reference_existing_object_policy()
-	);
-
-	def("edict_from_basehandle",
-		EdictFromBaseHandle,
-		"Returns the Edict of the given BaseEntityHandle",
-		args("basehandle"),
-		reference_existing_object_policy()
-	);
-
-	def("edict_from_inthandle",
-		EdictFromIntHandle,
-		"Returns the Edict of the given integer handle",
-		args("inthandle"),
-		reference_existing_object_policy()
-	);
-
-	def("edict_from_pointer",
-		EdictFromPointer,
-		"Returns the Edict of the given BaseEntity pointer",
-		args("pointer"),
-		reference_existing_object_policy()
-	);
-
-	def("edict_from_userid",
-		EdictFromUserid,
-		"Returns the Edict of the given userid",
-		args("userid"),
-		reference_existing_object_policy()
-	);
-
-	def("edict_from_playerinfo",
-		EdictFromPlayerInfo,
-		"Returns the Edict of the given PlayerInfo",
-		args("playerinfo"),
-		reference_existing_object_policy()
-	);
-
-	def("basehandle_from_index",
-		BaseHandleFromIndex,
-		"Returns the BaseEntityHandle of the given index",
-		args("index")
-	);
-
-	def("basehandle_from_edict",
-		BaseHandleFromEdict,
-		"Returns the BaseEntityHandle of the given Edict",
-		args("edict")
-	);
-
-	def("basehandle_from_inthandle",
-		BaseHandleFromIntHandle,
-		"Returns the BaseEntityHandle of the given integer handle",
-		args("inthandle")
-	);
-
-	def("basehandle_from_pointer",
-		BaseHandleFromPointer,
-		"Returns the BaseEntityHandle of the given BaseEntity pointer",
-		args("pointer")
-	);
-
-	def("basehandle_from_userid",
-		BaseHandleFromUserid,
-		"Returns the BaseEntityHandle of the given userid",
-		args("userid")
-	);
-
-	def("basehandle_from_playerinfo",
-		BaseHandleFromPlayerInfo,
-		"Returns the BaseEntityHandle of the given PlayerInfo",
-		args("playerinfo")
-	);
-
-	def("inthandle_from_index",
-		IntHandleFromIndex,
-		"Returns the integer handle of the given index",
-		args("index")
-	);
-
-	def("inthandle_from_edict",
-		IntHandleFromEdict,
-		"Returns the integer handle of the given Edict",
-		args("edict")
-	);
-
-	def("inthandle_from_basehandle",
-		IntHandleFromBaseHandle,
-		"Returns the integer handle of the given BaseEntityHandle",
-		args("basehandle")
-	);
-
-	def("inthandle_from_pointer",
-		IntHandleFromPointer,
-		"Returns the integer handle of the given BaseEntity pointer",
-		args("pointer")
-	);
-
-	def("inthandle_from_userid",
-		IntHandleFromUserid,
-		"Returns the integer handle of the given userid",
-		args("userid")
-	);
-
-	def("inthandle_from_playerinfo",
-		IntHandleFromPlayerInfo,
-		"Returns the integer handle of the given PlayerInfo",
-		args("playerinfo")
-	);
-
-	def("pointer_from_index",
-		PointerFromIndex,
-		"Returns the BaseEntity pointer of the given index",
-		args("index"),
-		manage_new_object_policy()
-	);
-
-	def("pointer_from_edict",
-		PointerFromEdict,
-		"Returns the BaseEntity pointer of the given Edict",
-		args("edict"),
-		manage_new_object_policy()
-	);
-
-	def("pointer_from_basehandle",
-		PointerFromBaseHandle,
-		"Returns the BaseEntity pointer of the given BaseEntityHandle",
-		args("basehandle"),
-		manage_new_object_policy()
-	);
-
-	def("pointer_from_inthandle",
-		PointerFromIntHandle,
-		"Returns the BaseEntity pointer of the given integer handle",
-		args("inthandle"),
-		manage_new_object_policy()
-	);
-
-	def("pointer_from_userid",
-		PointerFromUserid,
-		"Returns the BaseEntity pointer of the given userid",
-		args("userid"),
-		manage_new_object_policy()
-	);
-
-	def("pointer_from_playerinfo",
-		PointerFromPlayerInfo,
-		"Returns the BaseEntity pointer of the given PlayerInfo",
-		args("playerinfo"),
-		manage_new_object_policy()
-	);
-
-	def("userid_from_index",
-		UseridFromIndex,
-		"Returns the userid of the given index",
-		args("index")
-	);
-
-	def("userid_from_edict",
-		UseridFromEdict,
-		"Returns the userid of the given Edict",
-		args("edict")
-	);
-
-	def("userid_from_basehandle",
-		UseridFromBaseHandle,
-		"Returns the userid of the given BaseEntityHandle",
-		args("basehandle")
-	);
-
-	def("userid_from_inthandle",
-		UseridFromIntHandle,
-		"Returns the userid of the given integer handle",
-		args("inthandle")
-	);
-
-	def("userid_from_pointer",
-		UseridFromPointer,
-		"Returns the userid of the given BaseEntity pointer",
-		args("pointer")
-	);
-
-	def("userid_from_playerinfo",
-		UseridFromPlayerInfo,
-		"Returns the userid of the given PlayerInfo",
-		args("playerinfo")
-	);
-
-	def("playerinfo_from_index",
-		PlayerInfoFromIndex,
-		"Returns the PlayerInfo of the given index",
-		args("index"),
-		reference_existing_object_policy()
-	);
-
-	def("playerinfo_from_edict",
-		PlayerInfoFromEdict,
-		"Returns the PlayerInfo of the given Edict",
-		args("edict"),
-		reference_existing_object_policy()
-	);
-
-	def("playerinfo_from_basehandle",
-		PlayerInfoFromBaseHandle,
-		"Returns the PlayerInfo of the given BaseEntityHandle",
-		args("basehandle"),
-		reference_existing_object_policy()
-	);
-
-	def("playerinfo_from_inthandle",
-		PlayerInfoFromIntHandle,
-		"Returns the PlayerInfo of the given integer handle",
-		args("inthandle"),
-		reference_existing_object_policy()
-	);
-
-	def("playerinfo_from_pointer",
-		PlayerInfoFromPointer,
-		"Returns the PlayerInfo of the given BaseEntity pointer",
-		args("pointer"),
-		reference_existing_object_policy()
-	);
-
-	def("playerinfo_from_userid",
-		PlayerInfoFromUserid,
-		"Returns the PlayerInfo of the given userid",
-		args("userid"),
-		reference_existing_object_policy()
-	);
+	// To userid conversions...
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, IPlayerInfo *, PlayerInfo);
+	
+	// To playerinfo conversions...
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Index, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, edict_t *, Edict, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseHandle, BaseHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, int, IntHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CPointer *, Pointer, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Userid, reference_existing_object_policy());
 }
