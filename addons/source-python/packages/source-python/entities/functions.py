@@ -9,6 +9,7 @@ from os import name as os_name
 
 # Source.Python Imports
 from memory_c import Convention
+from memory_c import Function
 from memory_c import Return
 #   Entities
 from entities.attributes import EntityAttributes
@@ -44,7 +45,7 @@ _ini_data = (
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _FunctionInstance(object):
+class _FunctionInstance(Function):
     '''Class used to store a function to be called with
         the entity's pointer as the first argument'''
 
