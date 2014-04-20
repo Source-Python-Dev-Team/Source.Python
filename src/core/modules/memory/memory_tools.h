@@ -257,7 +257,7 @@ public:
 	void                SetStringArray(char* szText, int iOffset = 0);
 
 	CPointer*           GetPtr(int iOffset = 0);
-	void                SetPtr(CPointer* pPtr, int iOffset = 0);
+	void                SetPtr(object oPtr, int iOffset = 0);
 
 	bool                IsOverlapping(CPointer* pOther, unsigned long ulNumBytes);
 	CPointer*           SearchBytes(object oBytes, unsigned long ulNumBytes);

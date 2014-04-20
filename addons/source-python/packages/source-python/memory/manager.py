@@ -52,7 +52,6 @@ class CustomType(BasePointer):
     # Optional -- will be called when an instance of the type is created
     _constructor = None
 
-    # TODO: Implement this!
     # Optional -- will be called when an instance of the type is deleted
     _destructor = None
 
@@ -420,28 +419,18 @@ class TypeManager(dict):
             return getattr(ptr, 'get_' + type_name)()
 
         def fset(ptr, value):
-            # Get the base address of the pointer. We are now on
-            # "instance level"
-            ptr = ptr.get_pointer(offset)
-
             # Handle custom type
             if not native_type:
-                if not isinstance(value, Pointer):
-                    raise ValueError(
-                        'The value must be an instance of the Pointer class')
-
-                # Q: Why do we use copy instead of set_pointer?
-                # A: Maybe it's a shared pointer which means that other
-                #    classes might also have the address of it. So, changing
-                #    address in this particular class wouldn't affect the
-                #    other classes.
-                # TODO: Is that what we want? Maybe we could add a "copy"
-                #       parameter to let the user decide.
-                value.copy(ptr, self.get_class(type_name)._size)
+                ptr.set_pointer(value)
 
             # Handle native type
             else:
-                getattr(ptr, 'set_' + type_name)(value)
+                # TODO:
+                # This requires that the space for the value is already
+                # allocated.
+                # We could allocate space for the value and use set_pointer(),
+                # but how do we know when it's not required anymore?
+                getattr(ptr.get_pointer(offset), 'set_' + type_name)(value)
 
         return property(fget, fset, None, doc)
 
@@ -665,7 +654,7 @@ class TypeManager(dict):
         '''
         Creates global pointers from a file.
         '''
-        
+
         # Parse pointer data
         pointers = parse_data(
             open_ini_file(f),

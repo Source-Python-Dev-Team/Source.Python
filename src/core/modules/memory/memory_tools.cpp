@@ -79,11 +79,15 @@ CPointer* CPointer::GetPtr(int iOffset /* = 0 */)
 	return new CPointer(*(unsigned long *) (m_ulAddr + iOffset));
 }
 
-void CPointer::SetPtr(CPointer* pPtr, int iOffset /* = 0 */)
+void CPointer::SetPtr(object oPtr, int iOffset /* = 0 */)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 	
+	if(PyObject_HasAttrString(oPtr.ptr(), "_ptr"))
+		oPtr = oPtr.attr("_ptr")();
+
+	CPointer* pPtr = extract<CPointer *>(oPtr);
 	*(unsigned long *) (m_ulAddr + iOffset) = pPtr->m_ulAddr;
 }
 
