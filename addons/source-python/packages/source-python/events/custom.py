@@ -8,7 +8,7 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from event_c import GameEventManager
+from events.manager import GameEventManager
 #   Events
 from events import EventsLogger
 

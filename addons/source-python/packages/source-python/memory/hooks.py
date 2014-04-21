@@ -4,8 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from memory_c import Function
-from memory_c import HookType
+from memory import Function
+from memory import HookType
 from core import AutoUnload
 
 

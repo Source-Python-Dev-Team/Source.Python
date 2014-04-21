@@ -40,7 +40,7 @@ void export_functions();
 //-----------------------------------------------------------------------------
 // Conversions module definition.
 //-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(conversions_c)
+DECLARE_SP_MODULE(_conversions)
 {
 	export_functions();
 }

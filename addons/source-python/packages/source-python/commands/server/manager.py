@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from command_c import get_server_command
+from commands.server import get_server_command
 #   Commands
 from commands.manager import _BaseCommandManager
 

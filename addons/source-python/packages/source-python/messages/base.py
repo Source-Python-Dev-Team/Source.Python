@@ -17,12 +17,12 @@ from imp import load_source
 from path import path
 
 # Source.Python Imports
-from engine_c import EngineServer
+from engines import EngineServer
 from core import echo_console
 from excepthooks import ExceptHooks
 #   UserMessage
-from basetypes_c import Color
-from usermessage_c import UserMessage
+from basetypes import Color
+from _messages import UserMessage
 #   Filters
 from filters.recipients import RecipientFilter
 #   Translations

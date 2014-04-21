@@ -9,7 +9,7 @@ from path import path
 from configobj import ConfigObj
 
 # Source.Python
-from memory_c import *
+from memory import *
 
 
 # =============================================================================

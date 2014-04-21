@@ -44,7 +44,7 @@ extern CGlobalVars* gpGlobals;
 void export_maploadtype_t();
 void export_globals();
 
-DECLARE_SP_MODULE(globals_c)
+DECLARE_SP_MODULE(_globals)
 {
     export_maploadtype_t();
     export_globals();

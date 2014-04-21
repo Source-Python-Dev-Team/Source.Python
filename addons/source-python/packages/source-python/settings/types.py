@@ -8,7 +8,7 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from engine_c import EngineServer
+from engines import EngineServer
 #   Players
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo

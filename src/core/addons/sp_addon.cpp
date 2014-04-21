@@ -33,8 +33,8 @@
 #include "filesystem.h"
 #include "core/sp_gamedir.h"
 #include "utility/wrap_macros.h"
-#include "modules/listener/listenermanager.h"
-#include "modules/entity/entity_wrap.h"
+#include "modules/listeners/listeners_manager.h"
+#include "modules/entities/entities_wrap.h"
 #include "modules/conversions/conversions_wrap.h"
 
 //---------------------------------------------------------------------------------

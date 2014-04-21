@@ -4,8 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from entity_c import EntityGenerator
 #   Entities
+from entities import EntityGenerator
 from entities.helpers import basehandle_from_edict
 from entities.helpers import index_from_edict
 from entities.helpers import inthandle_from_edict

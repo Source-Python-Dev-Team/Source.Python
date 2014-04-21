@@ -110,30 +110,30 @@ Set(SOURCEPYTHON_BASETYPES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Bot module.
+# Bots module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_BOT_MODULE_HEADERS
+Set(SOURCEPYTHON_BOTS_MODULE_HEADERS
 )
 
-Set(SOURCEPYTHON_BOT_MODULE_SOURCES
-    core/modules/bot/bot_wrap_python.cpp
+Set(SOURCEPYTHON_BOTS_MODULE_SOURCES
+    core/modules/bots/bots_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
-# Command module.
+# Commands module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_COMMAND_MODULE_HEADERS
-    core/modules/command/client_command_wrap.h
-    core/modules/command/command_wrap.h
-    core/modules/command/say_command_wrap.h
-    core/modules/command/server_command_wrap.h
+Set(SOURCEPYTHON_COMMANDS_MODULE_HEADERS
+    core/modules/commands/client_commands_wrap.h
+    core/modules/commands/commands_wrap.h
+    core/modules/commands/say_commands_wrap.h
+    core/modules/commands/server_commands_wrap.h
 )
 
-Set(SOURCEPYTHON_COMMAND_MODULE_SOURCES
-    core/modules/command/client_command_wrap.cpp
-    core/modules/command/command_wrap_python.cpp
-    core/modules/command/say_command_wrap.cpp
-    core/modules/command/server_command_wrap.cpp
+Set(SOURCEPYTHON_COMMANDS_MODULE_SOURCES
+    core/modules/commands/client_commands_wrap.cpp
+    core/modules/commands/commands_wrap_python.cpp
+    core/modules/commands/say_commands_wrap.cpp
+    core/modules/commands/server_commands_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -163,25 +163,25 @@ Set(SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Cvar module.
+# Cvars module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_CVAR_MODULE_HEADERS
+Set(SOURCEPYTHON_CVARS_MODULE_HEADERS
 )
 
-Set(SOURCEPYTHON_CVAR_MODULE_SOURCES
-    core/modules/cvar/cvar_wrap_python.cpp
+Set(SOURCEPYTHON_CVARS_MODULE_SOURCES
+    core/modules/cvars/cvars_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
-# Datamap module.
+# Datamaps module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_DATAMAP_MODULE_HEADERS
-    core/modules/datamap/datamap_wrap.h
-    core/modules/datamap/${SOURCE_ENGINE}/datamap_wrap_python.h
+Set(SOURCEPYTHON_DATAMAPS_MODULE_HEADERS
+    core/modules/datamaps/datamaps_wrap.h
+    core/modules/datamaps/${SOURCE_ENGINE}/datamaps_wrap_python.h
 )
 
-Set(SOURCEPYTHON_DATAMAP_MODULE_SOURCES
-    core/modules/datamap/datamap_wrap_python.cpp
+Set(SOURCEPYTHON_DATAMAPS_MODULE_SOURCES
+    core/modules/datamaps/datamaps_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -208,40 +208,40 @@ Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Engine module.
+# Engines module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_ENGINE_MODULE_HEADERS
-    core/modules/engine/${SOURCE_ENGINE}/engine_wrap_python.h
+Set(SOURCEPYTHON_ENGINES_MODULE_HEADERS
+    core/modules/engines/${SOURCE_ENGINE}/engines_wrap_python.h
 )
 
-Set(SOURCEPYTHON_ENGINE_MODULE_SOURCES
-    core/modules/engine/engine_wrap_python.cpp
-)
-
-# ------------------------------------------------------------------
-# Entity module
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_ENTITY_MODULE_HEADERS
-    core/modules/entity/entity_wrap.h
-    core/modules/entity/entity_props.h
-    core/modules/entity/entity_generator_wrap.h
-)
-
-Set(SOURCEPYTHON_ENTITY_MODULE_SOURCES
-    core/modules/entity/entity_props.cpp
-    core/modules/entity/entity_wrap.cpp
-    core/modules/entity/entity_wrap_python.cpp
-    core/modules/entity/entity_generator_wrap.cpp
+Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
+    core/modules/engines/engines_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
-# Event module.
+# Entities module
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_EVENT_MODULE_HEADERS
+Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
+    core/modules/entities/entities_wrap.h
+    core/modules/entities/entities_props.h
+    core/modules/entities/entities_generator_wrap.h
 )
 
-Set(SOURCEPYTHON_EVENT_MODULE_SOURCES
-    core/modules/event/event_wrap_python.cpp
+Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
+    core/modules/entities/entities_props.cpp
+    core/modules/entities/entities_wrap.cpp
+    core/modules/entities/entities_wrap_python.cpp
+    core/modules/entities/entities_generator_wrap.cpp
+)
+
+# ------------------------------------------------------------------
+# Events module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_EVENTS_MODULE_HEADERS
+)
+
+Set(SOURCEPYTHON_EVENTS_MODULE_SOURCES
+    core/modules/events/events_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -267,15 +267,15 @@ Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Listener module
+# Listeners module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LISTENERS_MODULE_HEADERS
-    core/modules/listener/listenermanager.h
+    core/modules/listeners/listeners_manager.h
 )
 
 Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
-    core/modules/listener/listenermanager.cpp
-    core/modules/listener/listener_wrap_python.cpp
+    core/modules/listeners/listeners_manager.cpp
+    core/modules/listeners/listeners_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -310,24 +310,24 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
 # Players module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
-    core/modules/player/player_generator_wrap.h
+    core/modules/players/players_generator_wrap.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
-    core/modules/player/player_wrap_python.cpp
-    core/modules/player/player_generator_wrap.cpp
+    core/modules/players/players_wrap_python.cpp
+    core/modules/players/players_generator_wrap.cpp
 )
 
 # ------------------------------------------------------------------
-# RecipientFilter module.
+# Recipients module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_HEADERS
-    core/modules/recipientfilter/mrecipientfilter.h
+Set(SOURCEPYTHON_RECIPIENTS_MODULE_HEADERS
+    core/modules/recipients/mrecipientfilter.h
 )
 
-Set(SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES
-    core/modules/recipientfilter/mrecipientfilter.cpp
-    core/modules/recipientfilter/recipientfilter_wrap_python.cpp
+Set(SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES
+    core/modules/recipients/mrecipientfilter.cpp
+    core/modules/recipients/recipients_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -341,19 +341,19 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Usermessage module.
+# Messages module.
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS
-    core/modules/usermessage/usermessage.h
-    core/modules/usermessage/usermessage_implementation_base.h
-    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.h
+Set(SOURCEPYTHON_MESSAGES_MODULE_HEADERS
+    core/modules/messages/messages.h
+    core/modules/messages/messages_implementation_base.h
+    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.h
 )
 
-Set(SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES
-    core/modules/usermessage/usermessage.cpp
-    core/modules/usermessage/usermessage_wrap_python.cpp
-    core/modules/usermessage/usermessage_implementation_base.cpp
-    core/modules/usermessage/${SOURCE_ENGINE}/usermessage_implementation.cpp
+Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
+    core/modules/messages/messages.cpp
+    core/modules/messages/messages_wrap_python.cpp
+    core/modules/messages/messages_implementation_base.cpp
+    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.cpp
 )
 
 # ------------------------------------------------------------------
@@ -376,17 +376,17 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS}
     ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES}
     
-    ${SOURCEPYTHON_BOT_MODULE_HEADERS}
-    ${SOURCEPYTHON_BOT_MODULE_SOURCES}
+    ${SOURCEPYTHON_BOTS_MODULE_HEADERS}
+    ${SOURCEPYTHON_BOTS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_COMMAND_MODULE_HEADERS}
-    ${SOURCEPYTHON_COMMAND_MODULE_SOURCES}
+    ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS}
+    ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS}
     ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_CVAR_MODULE_HEADERS}
-    ${SOURCEPYTHON_CVAR_MODULE_SOURCES}
+    ${SOURCEPYTHON_CVARS_MODULE_HEADERS}
+    ${SOURCEPYTHON_CVARS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_DUMP_MODULE_HEADERS}
     ${SOURCEPYTHON_DUMP_MODULE_SOURCES}
@@ -394,14 +394,14 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS}
     ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_ENGINE_MODULE_HEADERS}
-    ${SOURCEPYTHON_ENGINE_MODULE_SOURCES}
+    ${SOURCEPYTHON_ENGINES_MODULE_HEADERS}
+    ${SOURCEPYTHON_ENGINES_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_ENTITY_MODULE_HEADERS}
-    ${SOURCEPYTHON_ENTITY_MODULE_SOURCES}
+    ${SOURCEPYTHON_ENTITIES_MODULE_HEADERS}
+    ${SOURCEPYTHON_ENTITIES_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_EVENT_MODULE_HEADERS}
-    ${SOURCEPYTHON_EVENT_MODULE_SOURCES}
+    ${SOURCEPYTHON_EVENTS_MODULE_HEADERS}
+    ${SOURCEPYTHON_EVENTS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS}
     ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES}
@@ -421,18 +421,18 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
     ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_HEADERS}
-    ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES}
+    ${SOURCEPYTHON_RECIPIENTS_MODULE_HEADERS}
+    ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS}
-    ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES}
-    ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES}
+    ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS}
+    ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES}
+    ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES}
 
     ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
     ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_DATAMAP_MODULE_HEADERS}
-    ${SOURCEPYTHON_DATAMAP_MODULE_SOURCES}
+    ${SOURCEPYTHON_DATAMAPS_MODULE_HEADERS}
+    ${SOURCEPYTHON_DATAMAPS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
     ${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
@@ -450,25 +450,25 @@ Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 Source_Group("Header Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Bot"                    FILES ${SOURCEPYTHON_BOT_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Bots"                   FILES ${SOURCEPYTHON_BOTS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Cvar"                   FILES ${SOURCEPYTHON_CVAR_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Dump"                   FILES ${SOURCEPYTHON_DUMP_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Engine"                 FILES ${SOURCEPYTHON_ENGINE_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Event"                  FILES ${SOURCEPYTHON_EVENT_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Entity"                 FILES ${SOURCEPYTHON_ENTITY_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITIES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Listener"               FILES ${SOURCEPYTHON_LISTENERS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Player"                 FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\RecipientFilter"        FILES ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\DataMap"                FILES ${SOURCEPYTHON_DATAMAP_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_DATAMAPS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Constants"              FILES ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_TOOLS_MODULE_HEADERS})
 
@@ -477,26 +477,26 @@ Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
 Source_Group("Source Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Bot"                    FILES ${SOURCEPYTHON_BOT_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Command"                FILES ${SOURCEPYTHON_COMMAND_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Bots"                   FILES ${SOURCEPYTHON_BOTS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Cvar"                   FILES ${SOURCEPYTHON_CVAR_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Dump"                   FILES ${SOURCEPYTHON_DUMP_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Engine"                 FILES ${SOURCEPYTHON_ENGINE_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Entity"                 FILES ${SOURCEPYTHON_ENTITY_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Event"                  FILES ${SOURCEPYTHON_EVENT_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITIES_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Listener"               FILES ${SOURCEPYTHON_LISTENERS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Player"                 FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\RecipientFilter"        FILES ${SOURCEPYTHON_RECIPIENTFILTER_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Usermessage"            FILES ${SOURCEPYTHON_USERMESSAGE_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Usermessage\\${SDK}"    FILES ${SOURCEPYTHON_MODULE_USERMESSAGES_GAME_SOURCES})
+Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Messages\\${SDK}"       FILES ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES})
 Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_SOURCES})
-Source_Group("Source Files\\Module\\DataMap"                FILES ${SOURCEPYTHON_MODULE_DATAMAP_SOURCES})
+Source_Group("Source Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_MODULE_DATAMAPS_SOURCES})
 Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON_MODULE_CONSTANTS_SOURCES})
 Source_Group("Source Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_MODULE_TOOLS_SOURCES})
 

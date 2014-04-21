@@ -4,11 +4,11 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from conversions_c import playerinfo_from_index
-from engine_c import EngineServer
+from engines import EngineServer
 #   Entities
 from entities.entity import BaseEntity
 #   Players
+from players.helpers import playerinfo_from_index
 from players.helpers import address_from_playerinfo
 from players.helpers import uniqueid_from_playerinfo
 from players.weapons import _PlayerWeapons

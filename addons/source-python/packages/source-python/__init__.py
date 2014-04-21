@@ -33,7 +33,7 @@
 from configobj import ConfigObjError
 
 # Source.Python Imports
-from cvar_c import ConVar
+from cvars import ConVar
 #   ExceptHooks - this is done to register sys.excepthook
 from excepthooks import ExceptHooks
 

@@ -42,7 +42,7 @@ extern IFileSystem* filesystem;
 //---------------------------------------------------------------------------------
 void export_keyvalues();
 
-DECLARE_SP_MODULE(keyvalues_c)
+DECLARE_SP_MODULE(_keyvalues)
 {
 	export_keyvalues();
 }

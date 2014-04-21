@@ -46,7 +46,7 @@ void export_dynamichooks();
 void export_callbacks();
 void export_sizes();
 
-DECLARE_SP_MODULE(memory_c)
+DECLARE_SP_MODULE(_memory)
 {
 	export_binaryfile();
 	export_memtools();

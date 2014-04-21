@@ -4,6 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+from _commands import Command
+from _commands import CommandReturn
 from loggers import _SPLogger
 
 
@@ -11,7 +13,10 @@ from loggers import _SPLogger
 # >> ALL DECLARATION
 # =============================================================================
 # Set all to an empty list
-__all__ = []
+__all__ = [
+    'Command',
+    'CommandReturn'
+]
 
 
 # =============================================================================

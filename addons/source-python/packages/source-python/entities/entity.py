@@ -4,12 +4,12 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from conversions_c import edict_from_index
-from memory_c import Pointer
+from memory import Pointer
 #   Entities
 from entities.datamaps import EntityDataMaps
 from entities.datamaps import NamedDataMaps
 from entities.functions import EntityFunctions
+from entities.helpers import edict_from_index
 from entities.offsets import EntityOffsets
 from entities.properties import EntityProperties
 from entities.specials import _EntitySpecials

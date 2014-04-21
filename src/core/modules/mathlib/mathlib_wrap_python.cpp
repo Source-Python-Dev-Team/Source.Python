@@ -44,7 +44,7 @@ void export_quaternion();
 void export_cplane_t();
 void export_radian_euler();
 
-DECLARE_SP_MODULE(mathlib_c)
+DECLARE_SP_MODULE(mathlib)
 {
 	export_vector();
 	export_qangle();

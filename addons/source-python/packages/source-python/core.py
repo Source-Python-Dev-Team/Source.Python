@@ -10,8 +10,8 @@ from os import sep
 from platform import system
 
 # Source.Python Imports
-from constants_c import SOURCE_ENGINE
-from engine_c import EngineServer
+from constants import SOURCE_ENGINE
+from engines import EngineServer
 from paths import GAME_PATH
 
 

@@ -4,11 +4,12 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from conversions_c import basehandle_from_edict
-from conversions_c import index_from_edict
-from conversions_c import inthandle_from_edict
-from conversions_c import pointer_from_edict
-from entity_c import EntityGenerator
+from _entities import *
+#   Entities
+from entities.helpers import basehandle_from_edict
+from entities.helpers import index_from_edict
+from entities.helpers import inthandle_from_edict
+from entities.helpers import pointer_from_edict
 #   Filters
 from filters.registry import _ReturnTypeRegistry
 from filters.iterator import _IterObject
@@ -19,6 +20,13 @@ from filters.iterator import _IterObject
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'BaseEntityHandle',
+    'HandleEntity',
+    'ServerUnknown',
+    'ServerEntity',
+    'ServerNetworkable',
+    'Edict',
+    'EntityGenerator',
     'EntityIter',
 ]
 

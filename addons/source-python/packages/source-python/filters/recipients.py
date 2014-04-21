@@ -4,7 +4,7 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-from recipientfilter_c import CMRecipientFilter
+from _recipients import _RecipientFilter
 
 
 # =============================================================================
@@ -19,14 +19,14 @@ __all__ = [
 # ============================================================================
 # >> CLASSES
 # ============================================================================
-class RecipientFilter(CMRecipientFilter):
-    '''Class used to improve the ease of use of a CMRecipientFilter instance'''
+class RecipientFilter(_RecipientFilter):
+    '''Class used to improve the ease of use of a _RecipientFilter instance'''
 
     def __init__(self, *filters):
         '''Initialize the recipient and update its
             content matching the given filters'''
 
-        # Initialize the CMRecipientFilter
+        # Initialize the _RecipientFilter
         super(RecipientFilter, self).__init__()
 
         # Store the given filters

@@ -8,8 +8,8 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from engine_c import EngineServer
-from player_c import PlayerGenerator
+from engines import EngineServer
+from players import PlayerGenerator
 from core import GAME_NAME
 from paths import SP_DATA_PATH
 #   Filters

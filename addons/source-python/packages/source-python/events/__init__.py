@@ -5,6 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from core import AutoUnload
+from _events import GameEvent
 from loggers import _SPLogger
 #   Events
 from events.manager import EventRegistry
@@ -15,7 +16,8 @@ from events.manager import EventRegistry
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
-    'Event',
+    'GameEvent',
+    'Event'
 ]
 
 

@@ -49,7 +49,7 @@ void export_stringtable_container();
 //---------------------------------------------------------------------------------
 // Declares the stringtables_c module.
 //---------------------------------------------------------------------------------
-DECLARE_SP_MODULE(stringtables_c)
+DECLARE_SP_MODULE(stringtables)
 {
 	export_stringtable();
 	export_stringtable_container();

@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from event_c import GameEventManager
+from _events import GameEventManager
 from loggers import _SPLogger
 #   Events
 from events.listener import _EventListener
@@ -15,7 +15,8 @@ from events.listener import _EventListener
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
-    'EventRegistry',
+    'GameEventManager',
+    'EventRegistry'
 ]
 
 

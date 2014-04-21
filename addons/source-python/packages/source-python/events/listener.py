@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from event_c import GameEventListener
+from _events import GameEventListener
 from excepthooks import ExceptHooks
 from loggers import _SPLogger
 
@@ -13,7 +13,9 @@ from loggers import _SPLogger
 # >> ALL DECLARATION
 # =============================================================================
 # Set all to an empty list
-__all__ = []
+__all__ = [
+    'GameEventListener',
+]
 
 
 # =============================================================================

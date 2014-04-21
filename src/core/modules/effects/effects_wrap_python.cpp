@@ -62,7 +62,7 @@ void export_effects();
 void export_temp_entities_system();
 void export_dispatch_effect_data();
 
-DECLARE_SP_MODULE(effects_c)
+DECLARE_SP_MODULE(_effects)
 {
 	export_prediction_system();
 	export_effects();

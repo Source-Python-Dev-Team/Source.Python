@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 void export_dump_functions();
 
-DECLARE_SP_MODULE(dump_c)
+DECLARE_SP_MODULE(_dump)
 {
 	export_dump_functions();
 }

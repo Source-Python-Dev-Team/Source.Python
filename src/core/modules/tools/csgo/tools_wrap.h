@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "toolframework/itoolentity.h"
 #include "modules/conversions/conversions_wrap.h"
-#include "modules/entity/entity_wrap.h"
+#include "modules/entities/entities_wrap.h"
 
 //-----------------------------------------------------------------------------
 // IServerTools extension class.

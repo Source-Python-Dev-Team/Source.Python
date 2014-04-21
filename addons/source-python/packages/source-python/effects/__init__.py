@@ -4,12 +4,12 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-from tools_c import ServerTools
+from tools import ServerTools
 from paths import SP_DATA_PATH
 #   Constants
-from constants_c import SOURCE_ENGINE
+from constants import SOURCE_ENGINE
 #   Effects
-from effects_c import *
+from _effects import *
 #   Memory
 from memory.manager import manager
 

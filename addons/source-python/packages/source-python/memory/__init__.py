@@ -2,7 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python
-from memory_c import *
+from _memory import *
 from loggers import _SPLogger
 
 
@@ -12,7 +12,7 @@ from loggers import _SPLogger
 __all__ = [
     'callback',
 
-    # From memory_c
+    # From _memory
     'Argument',
     'BinaryFile',
     'Callback',

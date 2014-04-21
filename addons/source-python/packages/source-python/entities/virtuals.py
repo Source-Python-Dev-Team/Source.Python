@@ -8,19 +8,19 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from conversions_c import pointer_from_edict
-from datamap_c import DataMap
-from memory_c import Argument
-from memory_c import Convention
-from memory_c import Function
-from memory_c import Return
-from memory_c import make_object
 from core import GAME_NAME
 from core import PLATFORM
 from paths import SP_DATA_PATH
 #   Entities
 from entities.constants import DATA_DESC_MAP_OFFSET
+from entities.datamaps import DataMap
+from entities.helpers import pointer_from_edict
 #   Memory
+from memory import Argument
+from memory import Convention
+from memory import Function
+from memory import Return
+from memory import make_object
 from memory.helpers import Key
 from memory.helpers import NO_DEFAULT
 

@@ -4,9 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from command_c import get_say_command
-from command_c import register_say_filter
-from command_c import unregister_say_filter
+from commands.say import get_say_command
+from commands.say import register_say_filter
+from commands.say import unregister_say_filter
 #   Commands
 from commands.player import _PlayerCommandManager
 

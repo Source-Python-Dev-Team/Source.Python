@@ -57,7 +57,7 @@ void export_take_damage_info();
 //-----------------------------------------------------------------------------
 // Declare the basetypes_c module.
 //-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(basetypes_c)
+DECLARE_SP_MODULE(basetypes)
 {
 	export_interval();
 	export_color();

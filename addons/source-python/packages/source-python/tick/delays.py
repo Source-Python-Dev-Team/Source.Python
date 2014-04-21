@@ -8,7 +8,7 @@
 import time
 
 # Source.Python Imports
-from listener_c import TickListenerManager
+from listeners import TickListenerManager
 from excepthooks import ExceptHooks
 #   Tick
 from tick import TickLogger

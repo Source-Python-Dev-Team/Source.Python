@@ -4,33 +4,37 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from basetypes_c import Color
-from basetypes_c import Interval
-from conversions_c import pointer_from_edict
-from conversions_c import edict_from_pointer
-from datamap_c import DataMap
-from datamap_c import FieldTypes
-from datamap_c import InputData
-from datamap_c import TypeDescriptionFlags
-from entity_c import Edict
-from mathlib_c import Quaternion
-from mathlib_c import Vector
-from memory_c import Argument
-from memory_c import Convention
-from memory_c import Function
-from memory_c import Return
-from memory_c import get_pointer
-from memory_c import make_object
+from basetypes import Color
+from basetypes import Interval
+from _datamaps import *
+from mathlib import Quaternion
+from mathlib import Vector
+from memory import Argument
+from memory import Convention
+from memory import Function
+from memory import Return
+from memory import get_pointer
+from memory import make_object
 #   Entities
+from entities import Edict
 from entities.attributes import EntityAttributes
 from entities.constants import DATA_DESC_MAP_OFFSET
+from entities.helpers import pointer_from_edict
+from entities.helpers import edict_from_pointer
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 # Set all to an empty list
-__all__ = []
+__all__ = [
+    'DataMap',
+    'TypeDescription',
+    'InputData',
+    'Variant',
+    'FieldTypes',
+    'TypeDescriptionFlags'
+]
 
 
 # =============================================================================

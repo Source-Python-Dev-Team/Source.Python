@@ -42,7 +42,7 @@ void export_source_python_constants(scope constants_c);
 //-----------------------------------------------------------------------------
 // Declare the constants_c module.
 //-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(constants_c)
+DECLARE_SP_MODULE(constants)
 {
 	scope constants_c = scope();
 	export_source_python_constants(constants_c);

@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-import cvar_c
+from _cvars import *
 
 
 # =============================================================================
@@ -12,14 +12,63 @@ import cvar_c
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
-    'ServerVar',
+    'Cvar',
+    'ConCommandBase',
+    'ConVar',
+    'FCVAR_NONE',
+    'FCVAR_UNREGISTERED',
+    'FCVAR_DEVELOPMENTONLY',
+    'FCVAR_GAMEDLL',
+    'FCVAR_CLIENTDLL',
+    'FCVAR_PROTECTED',
+    'FCVAR_ARCHIVE',
+    'FCVAR_NOTIFY',
+    'FCVAR_USERINFO',
+    'FCVAR_PRINTABLEONLY',
+    'FCVAR_UNLOGGED',
+    'FCVAR_NEVER_AS_STRING',
+    'FCVAR_REPLICATED',
+    'FCVAR_CHEAT',
+    'FCVAR_DEMO',
+    'FCVAR_DONTRECORD',
+    'FCVAR_NOT_CONNECTED',
+    'FCVAR_ARCHIVE_XBOX',
+    'FCVAR_SERVER_CAN_EXECUTE',
+    'FCVAR_SERVER_CANNOT_QUERY',
+    'FCVAR_CLIENTCMD_CAN_EXECUTE'
+    'ConVarFlags',
+    'ServerVar'
 ]
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class ServerVar(cvar_c.ConVar):
+class ConVarFlags:
+    NONE = FCVAR_NONE
+    UNREGISTERED = FCVAR_UNREGISTERED
+    DEVELOPMENTONLY = FCVAR_DEVELOPMENTONLY
+    GAMEDLL = FCVAR_GAMEDLL
+    CLIENTDLL = FCVAR_CLIENTDLL
+    PROTECTED = FCVAR_PROTECTED
+    ARCHIVE = FCVAR_ARCHIVE
+    NOTIFY = FCVAR_NOTIFY
+    USERINFO = FCVAR_USERINFO
+    PRINTABLEONLY = FCVAR_PRINTABLEONLY
+    UNLOGGED = FCVAR_UNLOGGED
+    NEVER_AS_STRING = FCVAR_NEVER_AS_STRING
+    REPLICATED = FCVAR_REPLICATED
+    CHEAT = FCVAR_CHEAT
+    DEMO = FCVAR_DEMO
+    DONTRECORD = FCVAR_DONTRECORD
+    NOT_CONNECTED = FCVAR_NOT_CONNECTED
+    ARCHIVE_XBOX = FCVAR_ARCHIVE_XBOX
+    SERVER_CAN_EXECUTE = FCVAR_SERVER_CAN_EXECUTE
+    SERVER_CANNOT_QUERY = FCVAR_SERVER_CANNOT_QUERY
+    CLIENTCMD_CAN_EXECUTE = FCVAR_CLIENTCMD_CAN_EXECUTE
+
+
+class ServerVar(ConVar):
     '''ConVar wrapper to provide easy access to cvars.'''
 
     def __init__(
@@ -35,12 +84,14 @@ class ServerVar(cvar_c.ConVar):
     def __getattr__(self, attr):
         '''Gets the value of the given attribute'''
 
+        # Get the flag
+        flag = getattr(ConVarFlags, attr.upper(), None)
+
         # Is the attribute a flag?
-        if hasattr(cvar_c, 'FCVAR_{0}'.format(attr.upper())):
+        if not flag is None:
 
             # Return the value of the cvar's flag
-            return self.is_flag_set(
-                getattr(cvar_c, 'FCVAR_{0}'.format(attr.upper())))
+            return self.is_flag_set(flag)
 
         # If not, raise an error
         raise AttributeError(
@@ -49,8 +100,11 @@ class ServerVar(cvar_c.ConVar):
     def __setattr__(self, attr, value):
         '''Sets the value of the given attribute'''
 
+        # Get the flag
+        flag = getattr(ConVarFlags, attr.upper(), None)
+
         # Is the attribute a flag?
-        if not hasattr(cvar_c, 'FCVAR_{0}'.format(attr.upper())):
+        if flag is None:
 
             # Does the instance itself have the attribute?
             if not hasattr(self, attr):
@@ -64,9 +118,6 @@ class ServerVar(cvar_c.ConVar):
 
             # No need to go further
             return
-
-        # Get the flag
-        flag = getattr(cvar_c, 'FCVAR_{0}'.format(attr.upper()))
 
         # Is the value "True"
         if value:
@@ -82,4 +133,4 @@ class ServerVar(cvar_c.ConVar):
 
     def make_public(self):
         '''Sets the notify flag for the cvar.'''
-        self.add_flags(cvar_c.FCVAR_NOTIFY)
+        self.add_flags(ConVarFlags.NOTIFY)

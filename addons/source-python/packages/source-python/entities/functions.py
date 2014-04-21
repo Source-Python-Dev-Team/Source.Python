@@ -8,12 +8,12 @@
 from os import name as os_name
 
 # Source.Python Imports
-from memory_c import Convention
-from memory_c import Function
-from memory_c import Return
 #   Entities
 from entities.attributes import EntityAttributes
 #   Memory
+from memory import Convention
+from memory import Function
+from memory import Return
 from memory.helpers import Key
 from memory.helpers import NO_DEFAULT
 from memory.helpers import parse_data

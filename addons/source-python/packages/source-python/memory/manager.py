@@ -2,7 +2,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python
-from memory_c import *
+from memory import *
 from memory.helpers import *
 
 

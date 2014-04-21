@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from stringtables_c import StringTables
+from stringtables import StringTables
 from core import AutoUnload
 #   Events
 from events.manager import EventRegistry

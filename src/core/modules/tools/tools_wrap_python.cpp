@@ -46,30 +46,30 @@ extern IServerTools* servertools;
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_server_tools(scope tools_c);
-void export_entity_factory(scope tools_c);
-void export_entity_factory_dictionary_interface(scope tools_c);
-void export_entity_factory_dictionary(scope tools_c);
+void export_server_tools(scope tools);
+void export_entity_factory(scope tools);
+void export_entity_factory_dictionary_interface(scope tools);
+void export_entity_factory_dictionary(scope tools);
 
 
 //-----------------------------------------------------------------------------
-// Declare the tools_c module.
+// Declare the tools module.
 //-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(tools_c)
+DECLARE_SP_MODULE(tools)
 {
-	scope tools_c = scope();
+	scope tools = scope();
 
-	export_server_tools(tools_c);
-	export_entity_factory(tools_c);
-	export_entity_factory_dictionary_interface(tools_c);
-	export_entity_factory_dictionary(tools_c);
+	export_server_tools(tools);
+	export_entity_factory(tools);
+	export_entity_factory_dictionary_interface(tools);
+	export_entity_factory_dictionary(tools);
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose IServerTools.
 //-----------------------------------------------------------------------------
-void export_server_tools(scope tools_c)
+void export_server_tools(scope tools)
 {
 	class_<IServerTools, boost::noncopyable> ServerTools("_ServerTools", no_init);
 
@@ -89,14 +89,14 @@ void export_server_tools(scope tools_c)
 	ServerTools ADD_MEM_TOOLS(IServerTools, "_ServerTools");
 
 	// Singleton...
-	tools_c.attr("ServerTools") = object(ptr(servertools));
+	tools.attr("ServerTools") = object(ptr(servertools));
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose IEntityFactory.
 //-----------------------------------------------------------------------------
-void export_entity_factory(scope tools_c)
+void export_entity_factory(scope tools)
 {
 	class_<IEntityFactory, boost::noncopyable> EntityFactory("EntityFactory", no_init);
 	
@@ -119,7 +119,7 @@ void export_entity_factory(scope tools_c)
 //-----------------------------------------------------------------------------
 // Expose IEntityFactoryDictionary.
 //-----------------------------------------------------------------------------
-void export_entity_factory_dictionary_interface(scope tools_c)
+void export_entity_factory_dictionary_interface(scope tools)
 {
 	class_<IEntityFactoryDictionary, IEntityFactoryDictionary *,
 		boost::noncopyable> _EntityFactoryDictionary("_EntityFactoryDictionary", no_init);
@@ -149,7 +149,7 @@ void export_entity_factory_dictionary_interface(scope tools_c)
 //-----------------------------------------------------------------------------
 // Expose CEntityFactoryDictionary.
 //-----------------------------------------------------------------------------
-void export_entity_factory_dictionary(scope tools_c)
+void export_entity_factory_dictionary(scope tools)
 {
 	class_<CEntityFactoryDictionary, CEntityFactoryDictionary *, bases<IEntityFactoryDictionary>,
 		boost::noncopyable> EntityFactoryDictionary("EntityFactoryDictionary", no_init);

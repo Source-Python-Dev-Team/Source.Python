@@ -4,9 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from command_c import get_client_command
-from command_c import register_client_command_filter
-from command_c import unregister_client_command_filter
+from commands.client import get_client_command
+from commands.client import register_client_command_filter
+from commands.client import unregister_client_command_filter
 #   Commands
 from commands.player import _PlayerCommandManager
 

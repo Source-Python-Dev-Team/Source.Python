@@ -8,8 +8,8 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-import dump_c
-from engine_c import EngineServer
+import _dump
+from engines import EngineServer
 from _core import _CoreLogger
 from paths import SP_DATA_PATH
 #   Plugins
@@ -128,7 +128,7 @@ class _SPSubCommandManager(SubCommandManager):
         '''Dumps data to logs.'''
 
         # Does the given dump type exist as a function?
-        if not hasattr(dump_c, 'dump_' + dump_type):
+        if not hasattr(_dump, 'dump_' + dump_type):
 
             # If not, print message to notify of unknown dump type
             self.logger.log_message(
@@ -136,7 +136,7 @@ class _SPSubCommandManager(SubCommandManager):
                     dump_type))
 
             # Loop though all dump functions
-            for dump in dir(dump_c):
+            for dump in dir(_dump):
 
                 # Is the current dump not valid?
                 if not dump.startswith('dump_'):
@@ -151,7 +151,7 @@ class _SPSubCommandManager(SubCommandManager):
             return
 
         # Call the function
-        getattr(dump_c, 'dump_' + dump_type)()
+        getattr(_dump, 'dump_' + dump_type)()
 
     # Set the methods arguments
     dump_data.args = ['<dump_type>']
