@@ -83,24 +83,23 @@ void CPointer::SetPtr(object oPtr, int iOffset /* = 0 */)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-	
-	if(PyObject_HasAttrString(oPtr.ptr(), "_ptr"))
-		oPtr = oPtr.attr("_ptr")();
 
-	CPointer* pPtr = extract<CPointer *>(oPtr);
+	CPointer* pPtr = ExtractPointer(oPtr);
 	*(unsigned long *) (m_ulAddr + iOffset) = pPtr->m_ulAddr;
 }
 
-int CPointer::Compare(CPointer* pOther, unsigned long ulNum)
+int CPointer::Compare(object oOther, unsigned long ulNum)
 {
+	CPointer* pOther = ExtractPointer(oOther);
 	if (!m_ulAddr || !pOther->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
 
 	return memcmp((void *) m_ulAddr, (void *) pOther->m_ulAddr, ulNum);
 }
 
-bool CPointer::IsOverlapping(CPointer* pOther, unsigned long ulNumBytes)
+bool CPointer::IsOverlapping(object oOther, unsigned long ulNumBytes)
 {
+	CPointer* pOther = ExtractPointer(oOther);
 	if (m_ulAddr <= pOther->m_ulAddr)
 		return m_ulAddr + ulNumBytes > pOther->m_ulAddr;
        
@@ -144,19 +143,21 @@ CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
 	return new CPointer();
 }
 
-void CPointer::Copy(CPointer* pDest, unsigned long ulNumBytes)
+void CPointer::Copy(object oDest, unsigned long ulNumBytes)
 {
+	CPointer* pDest = ExtractPointer(oDest);
 	if (!m_ulAddr || !pDest->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
 
-	if (IsOverlapping(pDest, ulNumBytes))
+	if (IsOverlapping(oDest, ulNumBytes))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointers are overlapping!")
 
 	memcpy((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
 }
 
-void CPointer::Move(CPointer* pDest, unsigned long ulNumBytes)
+void CPointer::Move(object oDest, unsigned long ulNumBytes)
 {
+	CPointer* pDest = ExtractPointer(oDest);
 	if (!m_ulAddr || !pDest->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
 
@@ -276,10 +277,7 @@ object CFunction::Call(tuple args, dict kw)
 			case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DC_SIGCHAR_POINTER:
 			{
-				if(PyObject_HasAttrString(arg.ptr(), "_ptr"))
-					arg = arg.attr("_ptr")();
-
-				CPointer* pPtr = extract<CPointer *>(arg);
+				CPointer* pPtr = ExtractPointer(arg);
 				dcArgPointer(g_pCallVM, pPtr->m_ulAddr);
 			} break;
 			case DC_SIGCHAR_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;

@@ -102,24 +102,30 @@ inline size_t UTIL_GetMemSize(void* ptr)
 
 inline void* UTIL_Alloc(size_t size)
 {
+	void* pPtr = NULL;
 #ifdef _WIN32
-	return g_pMemAlloc->IndirectAlloc(size);
+	pPtr = g_pMemAlloc->IndirectAlloc(size);
 #elif defined(__linux__)
-	return malloc(size);
+	pPtr = malloc(size);
 #else
 	#error "Implement me!"
 #endif
+	memset(pPtr, 0, size);
+	return pPtr;
 }
 
 inline void* UTIL_Realloc(void* ptr, size_t size)
 {
+	void* pPtr = NULL;
 #ifdef _WIN32
-	return g_pMemAlloc->Realloc(ptr, size);
+	pPtr = g_pMemAlloc->Realloc(ptr, size);
 #elif defined(__linux__)
-	return realloc(ptr, size);
+	pPtr = realloc(ptr, size);
 #else
 	#error "Implement me!"
 #endif
+	memset(pPtr, 0, size);
+	return pPtr;
 }
 
 inline void UTIL_Dealloc(void* ptr)
@@ -259,12 +265,12 @@ public:
 	CPointer*           GetPtr(int iOffset = 0);
 	void                SetPtr(object oPtr, int iOffset = 0);
 
-	bool                IsOverlapping(CPointer* pOther, unsigned long ulNumBytes);
+	bool                IsOverlapping(object oOther, unsigned long ulNumBytes);
 	CPointer*           SearchBytes(object oBytes, unsigned long ulNumBytes);
 
-	int                 Compare(CPointer* pOther, unsigned long ulNum);
-	void                Copy(CPointer* pDest, unsigned long ulNumBytes);
-	void                Move(CPointer* pDest, unsigned long ulNumBytes);
+	int                 Compare(object oOther, unsigned long ulNum);
+	void                Copy(object oDest, unsigned long ulNumBytes);
+	void                Move(object oDest, unsigned long ulNumBytes);
 
 
 	unsigned long       GetSize() { return UTIL_GetMemSize((void *) m_ulAddr); }
@@ -326,6 +332,15 @@ public:
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
+inline CPointer* ExtractPointer(object oPtr)
+{
+	if(PyObject_HasAttrString(oPtr.ptr(), "_ptr"))
+		oPtr = oPtr.attr("_ptr")();
+
+	CPointer* pPtr = extract<CPointer *>(oPtr);
+	return pPtr;
+}
+
 inline int GetError()
 {
 	return dcGetError(g_pCallVM);

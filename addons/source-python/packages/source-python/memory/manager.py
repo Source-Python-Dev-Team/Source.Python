@@ -65,6 +65,9 @@ class CustomType(BasePointer):
         if not isinstance(self._manager, TypeManager):
             raise ValueError(
                 'Attribute _manager must be an instance of "TypeManager".')
+                
+        # This set will contain internally allocated pointers.
+        self._allocated_pointers = set()
 
         # Do we want to wrap a pointer?
         if wrap:
@@ -383,11 +386,10 @@ class TypeManager(dict):
         def fset(ptr, value):
             # Handle custom type
             if not native_type:
-                if not isinstance(value, Pointer):
-                    raise ValueError(
-                        'The value must be an instance of the Pointer class')
-
-                value.copy(ptr + offset, self.get_class(type_name)._size)
+                get_pointer(value).copy(
+                    ptr + offset,
+                    self.get_class(type_name)._size
+                )
 
             # Handle native type
             else:
@@ -425,12 +427,23 @@ class TypeManager(dict):
 
             # Handle native type
             else:
-                # TODO:
-                # This requires that the space for the value is already
-                # allocated.
-                # We could allocate space for the value and use set_pointer(),
-                # but how do we know when it's not required anymore?
-                getattr(ptr.get_pointer(offset), 'set_' + type_name)(value)
+                # Go down to "instance level"
+                instance_ptr = ptr.get_pointer(offset)
+                
+                # Is there no space allocated?
+                if not instance_ptr:
+                    # Allocate space for the value
+                    instance_ptr = alloc(TYPE_SIZES[type_name.upper()])
+                    
+                    # Add the pointer to the set, so there will be a reference
+                    # until the instance gets deleted
+                    ptr._allocated_pointers.add(instance_ptr)
+                    
+                    # Set the pointer
+                    ptr.set_pointer(instance_ptr, offset)
+                    
+                # Set the value
+                getattr(instance_ptr, 'set_' + type_name)(value)
 
         return property(fget, fset, None, doc)
 
