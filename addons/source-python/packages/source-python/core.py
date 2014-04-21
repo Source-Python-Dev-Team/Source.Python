@@ -22,7 +22,6 @@ from paths import GAME_PATH
 __all__ = [
     'AutoUnload',
     'GAME_NAME',
-    'GameEngine',
     'PLATFORM',
     'SOURCE_ENGINE',
     'echo_console',
@@ -34,9 +33,6 @@ __all__ = [
 # =============================================================================
 # Get the specific game for the server
 GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
-
-# Set GameEngine variable
-GameEngine = EngineServer
 
 # Get the platform the server is on
 PLATFORM = system().lower()
