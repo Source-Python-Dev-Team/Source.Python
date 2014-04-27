@@ -4,8 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from _entities import *
 #   Entities
+from entities import EntityGenerator
 from entities.helpers import basehandle_from_edict
 from entities.helpers import index_from_edict
 from entities.helpers import inthandle_from_edict
@@ -20,13 +20,6 @@ from filters.iterator import _IterObject
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
-    'BaseEntityHandle',
-    'HandleEntity',
-    'ServerUnknown',
-    'ServerEntity',
-    'ServerNetworkable',
-    'Edict',
-    'EntityGenerator',
     'EntityIter',
 ]
 
