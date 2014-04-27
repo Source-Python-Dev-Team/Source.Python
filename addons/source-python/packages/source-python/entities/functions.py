@@ -3,11 +3,8 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   OS
-from os import name as os_name
-
 # Source.Python Imports
+from core import PLATFORM
 #   Entities
 from entities.attributes import EntityAttributes
 #   Memory
@@ -59,7 +56,7 @@ class _FunctionInstance(Function):
         for key, converter, default in _ini_data:
 
             # Get the function's value for the current data
-            value = item.get(key + '_' + os_name, item.get(key, default))
+            value = item.get(key + '_' + PLATFORM, item.get(key, default))
 
             # Is the value invalid?
             if value is NO_DEFAULT:

@@ -6,10 +6,9 @@
 # Site Package Imports
 #   ConfigObj
 from configobj import ConfigObj
-#   OS
-from os import name as os_name
 
 # Source.Python Imports
+from core import PLATFORM
 from core import SOURCE_ENGINE
 from paths import SP_DATA_PATH
 #   Memory
@@ -38,16 +37,13 @@ _entity_values = ConfigObj(SP_DATA_PATH.joinpath(
 _damage_info_path = SP_DATA_PATH.joinpath(
     'entities', 'types', SOURCE_ENGINE, 'ctakedamageinfo.ini')
 
-if os_name != 'nt':
-    os_name = 'linux'
-
 
 # =============================================================================
 # >> CONSTANT VALUES
 # =============================================================================
 # Get the GetDataDescMap offset
 DATA_DESC_MAP_OFFSET = _entity_values.get(
-    'DATA_DESC_OFFSET', {}).get(os_name, None)
+    'DATA_DESC_OFFSET', {}).get(PLATFORM, None)
 
 # Does the ctakedamageinfo.ini file exist?
 if _damage_info_path.isfile():

@@ -3,11 +3,8 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   OS
-from os import name as os_name
-
 # Source.Python Imports
+from core import PLATFORM
 #   Entities
 from entities.attributes import EntityAttributes
 
@@ -28,7 +25,7 @@ class _OffsetInstance(object):
     def __init__(self, offset):
         '''Stores the offset and type'''
 
-        self.offset = offset.get(os_name, offset['linux'])
+        self.offset = offset.get(PLATFORM, offset['linux'])
         self.type = offset['type']
 
 

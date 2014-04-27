@@ -3,12 +3,12 @@
 # =============================================================================
 # Python
 import binascii
-import os
 
 from path import path
 from configobj import ConfigObj
 
 # Source.Python
+from core import PLATFORM
 from memory import *
 
 
@@ -412,7 +412,7 @@ def parse_data(raw_data, keys):
         for key, converter, default in keys:
             # Get the OS specific key. If that fails, fall back to the shared
             # key. If that fails too, use the default value
-            value = data.get(key + '_' + os.name, data.get(key, default))
+            value = data.get(key + '_' + PLATFORM, data.get(key, default))
 
             # If the value is NO_DEFAULT, the key is obviously missing
             if value is NO_DEFAULT:
