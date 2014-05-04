@@ -85,17 +85,17 @@ DECLARE_SP_MODULE(engines)
 class IVEngineServerExt
 {
 public:
-	void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand)
+	static void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand)
 	{
 		pEngine->ClientCommand(pEdict, szCommand);
 	}
 	
-	void Con_NPrintf(IVEngineServer* pEngine, int pos, const char* fmt)
+	static void Con_NPrintf(IVEngineServer* pEngine, int pos, const char* fmt)
 	{
 		pEngine->Con_NPrintf(pos, fmt);
 	}
 
-	void Con_NXPrintf(IVEngineServer* pEngine, const struct con_nprint_s* info, const char* fmt)
+	static void Con_NXPrintf(IVEngineServer* pEngine, const struct con_nprint_s* info, const char* fmt)
 	{
 		pEngine->Con_NXPrintf(info, fmt);
 	}
