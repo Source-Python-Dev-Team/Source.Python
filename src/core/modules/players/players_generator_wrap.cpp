@@ -73,10 +73,13 @@ IPlayerInfo* CPlayerGenerator::getNext()
 	{
 		m_iEntityIndex++;
 		edict_t* pEdict = EdictFromIndex(m_iEntityIndex);
-		pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
-		if ( pPlayerInfo )
+		if (pEdict)
 		{
-			return pPlayerInfo;
+			pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
+			if ( pPlayerInfo )
+			{
+				return pPlayerInfo;
+			}
 		}
 	}
 	return NULL;
