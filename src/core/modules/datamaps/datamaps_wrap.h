@@ -212,7 +212,7 @@ public:
 	{
 		if (pInputData.pActivator)
 		{
-			CPointer ptr = CPoiner((unsigned long)pInputData.pActivator);
+			CPointer ptr = CPointer((unsigned long)pInputData.pActivator);
 			return IndexFromPointer(&ptr);
 		}
 		return -1;
