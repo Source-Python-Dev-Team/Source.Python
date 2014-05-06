@@ -212,7 +212,8 @@ public:
 	{
 		if (pInputData.pActivator)
 		{
-			return IndexFromPointer(&CPointer((unsigned long)pInputData.pActivator));
+			CPointer ptr = CPointer((unsigned long)pInputData.pActivator);
+			return IndexFromPointer(&ptr);
 		}
 		return -1;
 	}
@@ -226,7 +227,8 @@ public:
 	{
 		if (pInputData.pCaller)
 		{
-			return IndexFromPointer(&CPointer((unsigned long)pInputData.pCaller));
+			CPointer ptr = CPointer((unsigned long)pInputData.pCaller);
+			return IndexFromPointer(&ptr);
 		}
 		return -1;
 	}
