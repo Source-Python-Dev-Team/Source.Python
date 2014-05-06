@@ -90,10 +90,10 @@ class _PlayerWeapons(_GameWeapons):
             return 0
 
         # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Return the amount of ammo the player has for the weapon
-        return self.GetPropInt(
+        return self.get_prop_int(
             WeaponManager.ammoprop + '%03d' % weapon.ammoprop)
 
     # =========================================================================
@@ -133,7 +133,7 @@ class _PlayerWeapons(_GameWeapons):
             return 0
 
         # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Return the amount of ammo in the weapon's clip
         return weapon.clip
@@ -176,10 +176,10 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Set the player's ammo value
-        self.SetPropInt(
+        self.set_prop_int(
             WeaponManager.ammoprop + '%03d' % weapon.ammoprop, value)
 
     # =========================================================================
@@ -220,7 +220,7 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Set the weapon's clip value
         weapon.clip = value
@@ -263,14 +263,14 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Get the current ammo value
-        current = self.GetPropInt(
+        current = self.get_prop_int(
             WeaponManager.ammoprop + '%03d' % weapon.ammoprop)
 
         # Add ammo to the current value
-        self.SetPropInt(
+        self.set_prop_int(
             WeaponManager.ammoprop + '%03d' % weapon.ammoprop, current + value)
 
     # =========================================================================
@@ -311,7 +311,7 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Add ammo to the weapon's clip
         weapon.clip += value
@@ -354,7 +354,8 @@ class _PlayerWeapons(_GameWeapons):
         for offset in range(64):
 
             # Get the player's current weapon at this offset
-            handle = self.GetPropInt(WeaponManager.myweapons + '%03i' % offset)
+            handle = self.get_prop_int(
+                WeaponManager.myweapons + '%03i' % offset)
 
             # Is this an invalid handle?
             if handle == -1:
@@ -372,7 +373,7 @@ class _PlayerWeapons(_GameWeapons):
                 continue
 
             # Get the weapon's edict
-            edict = Edict(index)
+            edict = BaseEntity(index)
 
             # Get the weapon's classname
             weapon_class = edict.get_class_name()
