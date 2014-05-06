@@ -277,8 +277,10 @@ object CFunction::Call(tuple args, dict kw)
 			case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DC_SIGCHAR_POINTER:
 			{
-				CPointer* pPtr = ExtractPointer(arg);
-				dcArgPointer(g_pCallVM, pPtr->m_ulAddr);
+				unsigned long ulAddr = 0;
+				if (arg.ptr() != Py_None)
+					ulAddr = ExtractPointer(arg)->m_ulAddr;
+				dcArgPointer(g_pCallVM, ulAddr);
 			} break;
 			case DC_SIGCHAR_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
 			default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown argument type.")
