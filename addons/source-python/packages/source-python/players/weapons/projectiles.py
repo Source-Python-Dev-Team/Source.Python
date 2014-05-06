@@ -10,11 +10,27 @@ class _ProjectileMeta(type):
     def __new__(mcl, name, bases, odict):
         '''Create the class and create its methods dynamically'''
 
+        # Store values to use later
+        temp = {'_classname': None, '_is_filters': None, '_not_filters': None}
+
+        # Loop through the base class attributes
+        for attribute in ('_classname', '_is_filters', '_not_filters'):
+
+            # Try to store the odict's value of
+            # the attribute and delete it from odict
+            try:
+                temp[attribute] = odict[attribute]
+                del odict[attribute]
+
+            # If the attribute is not found in odict, just leave it as None
+            except KeyError:
+                continue
+
         # Create the object
         cls = super().__new__(mcl, name, bases, odict)
 
         # Is the the baseclass that uses the metaclass?
-        if not bases:
+        if len(bases) != 1 or bases[0].__name__ != '_ProjectileBase':
 
             # Do not add any methods
             return cls
@@ -25,22 +41,30 @@ class _ProjectileMeta(type):
         # Create the iterator <weapon>_indexes method
         setattr(
             cls, '{0}_indexes'.format(method_name),
-            lambda self: self._projectile_indexes)
+            property(lambda self: cls._projectile_indexes(
+            self, temp['_classname'],
+            temp['_is_filters'], temp['_not_filters'])))
 
         # Create the get_<weapon>_indexes method
         setattr(
             cls, 'get_{0}_indexes'.format(method_name),
-            lambda self: self._get_projectile_index_list())
+            lambda self: cls._get_projectile_index_list(
+            self, temp['_classname'],
+            temp['_is_filters'], temp['_not_filters']))
 
         # Create the get_<weapon>_count method
         setattr(
             cls, 'get_{0}_count'.format(method_name),
-            lambda self: self._get_projectile_ammo())
+            lambda self: cls._get_projectile_ammo(
+            self, temp['_classname'],
+            temp['_is_filters'], temp['_not_filters']))
 
         # Create the set_<weapon>_count method
         setattr(
             cls, 'set_{0}_count'.format(method_name),
-            lambda self, value: self._set_projectile_ammo(value))
+            lambda self, value: cls._set_projectile_ammo(
+            self, value, temp['_classname'],
+            temp['_is_filters'], temp['_not_filters']))
 
         # Return the new class
         return cls
@@ -54,25 +78,21 @@ class _ProjectileBase(metaclass=_ProjectileMeta):
     _is_filters = None
     _not_filters = None
 
-    def _projectile_indexes(self):
+    def _projectile_indexes(self, classname, is_filters, not_filters):
         '''Iterates over all indexes the player owns for the projectile type'''
-        return self.weapon_indexes(
-            self._classname, self._is_filters, self._not_filters)
+        return self.weapon_indexes(classname, is_filters, not_filters)
 
-    def _get_projectile_index_list(self):
+    def _get_projectile_index_list(self, classname, is_filters, not_filters):
         '''Returns a list of indexes the player owns for the projectile type'''
-        return self.get_weapon_index_list(
-            self._classname, self._is_filters, self._not_filters)
+        return self.get_weapon_index_list(classname, is_filters, not_filters)
 
-    def _get_projectile_ammo(self):
+    def _get_projectile_ammo(self, classname, is_filters, not_filters):
         '''Returns the ammo amount the player has for the projectile type'''
-        return self._get_weapon_ammo(
-            self._classname, self._is_filters, self._not_filters)
+        return self._get_weapon_ammo(classname, is_filters, not_filters)
 
-    def _set_projectile_ammo(self, value):
+    def _set_projectile_ammo(self, value, classname, is_filters, not_filters):
         '''Sets the ammo amount of the player for the projectile type'''
-        self._set_weapon_ammo(
-            value, self._classname, self._is_filters, self._not_filters)
+        self._set_weapon_ammo(value, classname, is_filters, not_filters)
 
 
 class _HEGrenade(_ProjectileBase):
