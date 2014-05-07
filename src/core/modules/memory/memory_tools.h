@@ -363,7 +363,7 @@ T* __obj__(CPointer* pPtr)
 	return (T *) pPtr->m_ulAddr;
 }
 
-inline object GetPointer(object obj)
+inline object GetObjectPointer(object obj)
 {
 	if (!PyObject_HasAttrString(obj.ptr(), "_ptr"))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");

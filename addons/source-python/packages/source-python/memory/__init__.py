@@ -29,7 +29,7 @@ __all__ = [
     'find_binary',
     'get_error',
     'get_exposed_classes',
-    'get_pointer',
+    'get_object_pointer',
     'get_size',
     'make_object'
 ]

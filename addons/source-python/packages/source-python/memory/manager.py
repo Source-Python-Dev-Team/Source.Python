@@ -386,7 +386,7 @@ class TypeManager(dict):
         def fset(ptr, value):
             # Handle custom type
             if not native_type:
-                get_pointer(value).copy(
+                get_object_pointer(value).copy(
                     ptr + offset,
                     self.get_class(type_name)._size
                 )

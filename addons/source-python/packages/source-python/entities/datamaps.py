@@ -13,7 +13,7 @@ from memory import Argument
 from memory import Convention
 from memory import Function
 from memory import Return
-from memory import get_pointer
+from memory import get_object_pointer
 from memory import make_object
 #   Entities
 from entities import Edict

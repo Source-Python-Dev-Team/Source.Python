@@ -356,8 +356,8 @@ void export_memtools()
 		manage_new_object_policy()
 	);
 
-	def("get_pointer",
-		&GetPointer,
+	def("get_object_pointer",
+		&GetObjectPointer,
 		args("object"),
 		"Returns the pointer of the C++ object"
 	);
@@ -485,7 +485,7 @@ void export_sizes()
 {
 	def("get_exposed_classes",
 		GetExposedClasses,
-		"Returns a dictionary that contains classes which can be used with get_pointer() etc."
+		"Returns a dictionary that contains classes which can be used with get_object_pointer() etc."
 	);
 
 	// Don't remove this! It's required for the ADD_NATIVE_TYPE_SIZE macro.
