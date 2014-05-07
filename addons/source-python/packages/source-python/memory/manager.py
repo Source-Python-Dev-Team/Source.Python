@@ -1,6 +1,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   ConfigObj
+from configobj import ConfigObj
+
 # Source.Python
 from memory import *
 from memory.helpers import *
@@ -227,7 +231,7 @@ class TypeManager(dict):
         '''
 
         # Read the data
-        raw_data = open_ini_file(f)
+        raw_data = ConfigObj(f, file_error=True)
 
         # Prepare functions
         funcs = parse_data(
@@ -277,7 +281,7 @@ class TypeManager(dict):
         '''
 
         # Read the data
-        raw_data = open_ini_file(f)
+        raw_data = ConfigObj(f, file_error=True)
 
         # Prepare general type information
         data = tuple(parse_data(
@@ -625,7 +629,7 @@ class TypeManager(dict):
         '''
 
         # Read the data
-        raw_data = open_ini_file(f)
+        raw_data = ConfigObj(f, file_error=True)
 
         # Prepare typedefs
         typedefs = parse_data(
@@ -670,7 +674,7 @@ class TypeManager(dict):
 
         # Parse pointer data
         pointers = parse_data(
-            open_ini_file(f),
+            ConfigObj(f, file_error=True),
             (
                 (Key.BINARY, str, NO_DEFAULT),
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
