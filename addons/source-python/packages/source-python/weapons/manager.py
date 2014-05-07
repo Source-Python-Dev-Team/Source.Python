@@ -9,7 +9,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 from core import GAME_NAME
-from cvars import ServerVar
+from cvars import ConVar
 from paths import SP_DATA_PATH
 #   Weapons
 from weapons.default import NoWeaponManager
@@ -205,7 +205,7 @@ class _Weapon(object):
             return self._maxammo
 
         # Get the cvar value of the maxammo
-        return ServerVar(self._maxammo).get_int()
+        return ConVar(self._maxammo).get_int()
 
     @property
     def ammoprop(self):

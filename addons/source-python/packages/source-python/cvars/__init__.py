@@ -6,7 +6,7 @@
 # Source.Python Imports
 from _cvars import Cvar
 from _cvars import ConCommandBase
-from _cvars import ConVar
+from _cvars import _ConVar
 #   ConVars
 from cvars.flags import ConVarFlags
 
@@ -18,15 +18,14 @@ from cvars.flags import ConVarFlags
 __all__ = [
     'Cvar',
     'ConCommandBase',
-    'ConVar',
-    'ServerVar'
+    'ConVar'
 ]
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class ServerVar(ConVar):
+class ConVar(_ConVar):
     '''ConVar wrapper to provide easy access to cvars.'''
 
     def __init__(
@@ -34,7 +33,7 @@ class ServerVar(ConVar):
             description='', min_value=None, max_value=None):
 
         '''Called when a server-var is initilized.'''
-        super(ServerVar, self).__init__(
+        super(ConVar, self).__init__(
             name, value, flags, description,
             not min_value is None, min_value or 0.0,
             not max_value is None, max_value or 0.0)
@@ -53,7 +52,7 @@ class ServerVar(ConVar):
 
         # If not, raise an error
         raise AttributeError(
-            '"ServerVar" object has no attribute "{0}"'.format(attr))
+            '"ConVar" object has no attribute "{0}"'.format(attr))
 
     def __setattr__(self, attr, value):
         '''Sets the value of the given attribute'''
@@ -69,10 +68,10 @@ class ServerVar(ConVar):
 
                 # If not, raise an error
                 raise AttributeError(
-                    '"ServerVar" object has no attribute "{0}"'.format(attr))
+                    '"ConVar" object has no attribute "{0}"'.format(attr))
 
             # Set the attribute
-            super(ServerVar, self).__setattr__(attr, value)
+            super(ConVar, self).__setattr__(attr, value)
 
             # No need to go further
             return

@@ -246,7 +246,7 @@ public:
 
 void export_convar()
 {
-	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("ConVar", no_init)
+	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("_ConVar", no_init)
 		// We have to overload __init__. Otherwise we would get an error because of "no_init"
 		.def("__init__",
 			make_constructor(&ConVarExt::__init__,
@@ -313,7 +313,7 @@ void export_convar()
 			args("value")
 		)
 
-		ADD_MEM_TOOLS(ConVar, "ConVar")
+		ADD_MEM_TOOLS(ConVar, "_ConVar")
 	;
 }
 

@@ -4,7 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from cvars import ServerVar
+from cvars import ConVar
 #   Translations
 from translations.strings import TranslationStrings
 
@@ -38,7 +38,7 @@ class _CvarManager(dict):
         self._description = description
 
         # Get the Cvar instance
-        self._cvar = ServerVar(
+        self._cvar = ConVar(
             name, default, flags, description, min_value, max_value)
 
         # Set the attribute to show the default value
@@ -126,7 +126,7 @@ class _CvarManager(dict):
 
     @property
     def cvar(self):
-        '''Returns the cvar's ServerVar instance'''
+        '''Returns the cvar's ConVar instance'''
         return self._cvar
 
 
