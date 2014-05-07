@@ -11,7 +11,7 @@ import time
 from listeners import TickListenerManager
 from excepthooks import ExceptHooks
 #   Tick
-from tick import TickLogger
+from listeners.tick.logger import TickLogger
 
 
 # =============================================================================

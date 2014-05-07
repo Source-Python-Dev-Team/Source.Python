@@ -44,7 +44,7 @@ void export_quaternion();
 void export_cplane_t();
 void export_radian_euler();
 
-DECLARE_SP_MODULE(mathlib)
+DECLARE_SP_MODULE(_mathlib)
 {
 	export_vector();
 	export_qangle();
@@ -374,7 +374,7 @@ void export_quaternion()
 void export_cplane_t()
 {
 	// TODO: Documentation
-	class_<cplane_t>("plane")
+	class_<cplane_t>("Plane")
 		.def_readwrite("normal",
 			&cplane_t::normal
 		)
@@ -391,7 +391,7 @@ void export_cplane_t()
 			&cplane_t::signbits
 		)
 
-		ADD_MEM_TOOLS(cplane_t, "plane")
+		ADD_MEM_TOOLS(cplane_t, "Plane")
 	;
 }
 

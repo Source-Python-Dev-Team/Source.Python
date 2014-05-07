@@ -17,7 +17,7 @@ from logging import getLogger
 
 # Source.Python Imports
 from cvars import ConVar
-from engines import EngineServer
+from engines.server import EngineServer
 from core import echo_console
 from paths import LOG_PATH
 

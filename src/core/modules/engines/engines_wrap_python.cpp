@@ -69,7 +69,7 @@ void export_engine_sound();
 void export_engine_trace();
 void export_server_game_dll();
 
-DECLARE_SP_MODULE(engines)
+DECLARE_SP_MODULE(_engines)
 {
 	export_engine_server();
 	export_query_cvar_status();

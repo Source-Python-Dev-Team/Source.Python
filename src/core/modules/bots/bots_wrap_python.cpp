@@ -46,7 +46,7 @@ void export_botmanager();
 void export_botcontroller();
 void export_botcmd();
 
-DECLARE_SP_MODULE(bots)
+DECLARE_SP_MODULE(_bots)
 {
 	export_botmanager();
 	export_botcontroller();

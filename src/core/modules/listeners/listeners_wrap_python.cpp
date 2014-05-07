@@ -53,7 +53,7 @@ DEFINE_MANAGER_ACCESSOR(Tick)
 //-----------------------------------------------------------------------------
 void export_listener_managers();
 
-DECLARE_SP_MODULE(listeners)
+DECLARE_SP_MODULE(_listeners)
 {
 	export_listener_managers();
 }

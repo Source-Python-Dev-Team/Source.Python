@@ -94,7 +94,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_empty_overload, IsEmpty, 0, 1);
 
 void export_keyvalues()
 {
-	class_<KeyValues, boost::noncopyable>("KeyValues",init<const char *>())
+	class_<KeyValues, boost::noncopyable>("_KeyValues",init<const char *>())
 		.def(init<const char *, const char *, const char *>())
 		.def(init<const char *, const char *, int>())
 		.def(init<const char *, const char *, const char *, const char *, const char *>())
@@ -298,6 +298,6 @@ void export_keyvalues()
 			args("key_name", "value")
 		)
 
-		ADD_MEM_TOOLS(KeyValues, "KeyValues")
+		ADD_MEM_TOOLS(KeyValues, "_KeyValues")
 	;
 }

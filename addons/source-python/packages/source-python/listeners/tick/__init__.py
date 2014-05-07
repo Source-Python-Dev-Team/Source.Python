@@ -4,9 +4,20 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from listeners import TickListenerManager
 from core import AutoUnload
-from loggers import _SPLogger
+#   Listeners
+from listeners import TickListenerManager
+from listeners.tick.logger import TickLogger
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Listeners
+from listeners.tick.delays import TickDelays
+from listeners.tick.repeat import TickRepeat
+from listeners.tick.repeat import TickRepeatStatus
 
 
 # =============================================================================
@@ -15,14 +26,10 @@ from loggers import _SPLogger
 # Add all the global variables to __all__
 __all__ = [
     'Tick',
+    'TickDelays',
+    'TickRepeat',
+    'TickRepeatStatus'
 ]
-
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Get the sp.tick logger
-TickLogger = _SPLogger.tick
 
 
 # =============================================================================

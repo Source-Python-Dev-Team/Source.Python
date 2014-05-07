@@ -8,7 +8,7 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from engines import EngineServer
+from engines.server import EngineServer
 from players import PlayerGenerator
 from core import GAME_NAME
 from paths import SP_DATA_PATH

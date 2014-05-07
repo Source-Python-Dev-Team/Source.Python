@@ -11,8 +11,16 @@ from platform import system
 
 # Source.Python Imports
 from constants import SOURCE_ENGINE
-from engines import EngineServer
+from engines.server import EngineServer
 from paths import GAME_PATH
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Globals
+from _globals import GlobalVars
 
 
 # =============================================================================
@@ -22,9 +30,10 @@ from paths import GAME_PATH
 __all__ = [
     'AutoUnload',
     'GAME_NAME',
+    'GlobalVars',
     'PLATFORM',
     'SOURCE_ENGINE',
-    'echo_console',
+    'echo_console'
 ]
 
 

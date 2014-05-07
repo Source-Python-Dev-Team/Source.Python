@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from _conversions import *
-from engines import EngineServer
+from engines.server import EngineServer
 
 
 # =============================================================================

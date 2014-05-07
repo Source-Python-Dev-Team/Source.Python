@@ -31,28 +31,7 @@ from _cvars import FCVAR_CLIENTCMD_CAN_EXECUTE
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'FCVAR_NONE',
-    'FCVAR_UNREGISTERED',
-    'FCVAR_DEVELOPMENTONLY',
-    'FCVAR_GAMEDLL',
-    'FCVAR_CLIENTDLL',
-    'FCVAR_PROTECTED',
-    'FCVAR_ARCHIVE',
-    'FCVAR_NOTIFY',
-    'FCVAR_USERINFO',
-    'FCVAR_PRINTABLEONLY',
-    'FCVAR_UNLOGGED',
-    'FCVAR_NEVER_AS_STRING',
-    'FCVAR_REPLICATED',
-    'FCVAR_CHEAT',
-    'FCVAR_DEMO',
-    'FCVAR_DONTRECORD',
-    'FCVAR_NOT_CONNECTED',
-    'FCVAR_ARCHIVE_XBOX',
-    'FCVAR_SERVER_CAN_EXECUTE',
-    'FCVAR_SERVER_CANNOT_QUERY',
-    'FCVAR_CLIENTCMD_CAN_EXECUTE',
-    'ConVarFlags'
+    'ConVarFlags',
 ]
 
 
@@ -60,8 +39,7 @@ __all__ = [
 # >> ENUMERATORS
 # =============================================================================
 class ConVarFlags(object):
-    '''
-    ConVar's flags wrapper enumerator.
+    '''ConVar's flags wrapper enumerator.
     
     TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
     '''

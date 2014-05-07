@@ -9,7 +9,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 import _dump
-from engines import EngineServer
+from engines.server import EngineServer
 from _core import _CoreLogger
 from paths import SP_DATA_PATH
 #   Plugins
@@ -21,7 +21,7 @@ from plugins.manager import PluginManager
 #   Auth
 from auth.commands import _AuthCommandsInstance
 #   Tick
-from tick.delays import TickDelays
+from listeners.tick import TickDelays
 #   Translations
 from translations.strings import LangStrings
 
