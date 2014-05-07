@@ -483,10 +483,7 @@ void export_callbacks()
 
 void export_sizes()
 {
-	def("get_exposed_classes",
-		GetExposedClasses,
-		"Returns a dictionary that contains classes which can be used with get_object_pointer() etc."
-	);
+	scope().attr("EXPOSED_CLASSES") = g_oExposedClasses;
 
 	// Don't remove this! It's required for the ADD_NATIVE_TYPE_SIZE macro.
 	scope().attr("TYPE_SIZES") = dict();

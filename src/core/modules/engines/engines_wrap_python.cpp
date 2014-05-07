@@ -1217,7 +1217,7 @@ void export_engine_trace()
 	// Enumerator baseclass
 	class_<IEntityEnumeratorWrap, boost::noncopyable>("EntityEnumerator")
 		.def("enum_entity",
-			&IEntityEnumeratorWrap::EnumEntity,
+			pure_virtual(&IEntityEnumeratorWrap::EnumEntity),
 			"Gets called with each handle."
 		)
 

@@ -29,7 +29,7 @@ __all__ = [
 # =============================================================================
 # >> Type
 # =============================================================================
-class Type:
+class Type(object):
     '''
     This class is used to specify the type of an attribute or array created by
     a TypeManager instance.
@@ -64,7 +64,7 @@ class Type:
 # =============================================================================
 # >> Key
 # =============================================================================
-class Key:
+class Key(object):
     '''
     This class holds some constants and provides converters for parse_data().
     '''

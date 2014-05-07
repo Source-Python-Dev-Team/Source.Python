@@ -28,7 +28,7 @@ __all__ = [
     'alloc',
     'find_binary',
     'get_error',
-    'get_exposed_classes',
+    'EXPOSED_CLASSES',
     'get_object_pointer',
     'get_size',
     'make_object'

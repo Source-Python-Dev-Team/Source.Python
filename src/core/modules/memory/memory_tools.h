@@ -42,6 +42,7 @@ using namespace boost::python;
 
 // Externals
 extern DCCallVM* g_pCallVM;
+extern dict g_oExposedClasses;
 
 
 //---------------------------------------------------------------------------------
@@ -68,8 +69,8 @@ extern DCCallVM* g_pCallVM;
 
 // Use this macro to add the class to the ExposedClasses dict
 #define STORE_CLASS(classname, pyname) \
-	extern std::map<const char*, object> g_ExposedClasses; \
-	g_ExposedClasses[XSTRINGIFY(classname)] = scope().attr(pyname);
+	extern dict g_oExposedClasses; \
+	g_oExposedClasses[XSTRINGIFY(classname)] = scope().attr(pyname);
 
 // Use this macro to add the class to the three functions
 // Note: This must be at the end of the class definition!
@@ -386,7 +387,5 @@ inline object GetSize(object cls)
 
 	return cls.attr("_size");
 }
-
-dict GetExposedClasses();
 
 #endif // _MEMORY_TOOLS_H
