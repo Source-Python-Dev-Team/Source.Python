@@ -19,11 +19,11 @@ from commands.client.manager import ClientCommandManager
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'ClientCommand',
     'ClientCommandDispatcher',
+    'ClientCommandFilter',
+    'ClientCommandManager',
     'get_client_command',
     'register_client_command_filter',
     'unregister_client_command_filter',
-    'ClientCommand',
-    'ClientCommandFilter',
-    'ClientCommandManager',
 ]

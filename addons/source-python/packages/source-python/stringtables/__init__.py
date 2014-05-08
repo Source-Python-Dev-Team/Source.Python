@@ -1,4 +1,4 @@
-# ../listeners/__init__.py
+# ../stringtables/__init__.py
 
 # =============================================================================
 # >> FORWARD IMPORTS
@@ -14,5 +14,5 @@ from _stringtables import StringTables
 # =============================================================================
 __all__ = [
     'StringTable',
-    'StringTables'
+    'StringTables',
 ]

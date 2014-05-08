@@ -26,5 +26,5 @@ __all__ = [
     'SendPropTypes',
     'SendTable',
     'ServerClass',
-    'TakeDamageInfo'
+    'TakeDamageInfo',
 ]

@@ -16,5 +16,5 @@ from _bots import BotManager
 __all__ = [
     'BotCmd',
     'BotController',
-    'BotManager'
+    'BotManager',
 ]

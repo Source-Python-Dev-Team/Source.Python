@@ -16,9 +16,9 @@ from cvars.flags import ConVarFlags
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
-    'Cvar',
     'ConCommandBase',
-    'ConVar'
+    'ConVar',
+    'Cvar',
 ]
 
 

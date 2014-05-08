@@ -15,7 +15,7 @@ from loggers import _SPLogger
 # Set all to an empty list
 __all__ = [
     'Command',
-    'CommandReturn'
+    'CommandReturn',
 ]
 
 

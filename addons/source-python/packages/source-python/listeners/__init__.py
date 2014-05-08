@@ -38,5 +38,5 @@ __all__ = [
     'OnEdictFreedListenerManager',
     'OnQueryCvarValueFinishedListenerManager',
     'ServerActivateListenerManager',
-    'TickListenerManager'
+    'TickListenerManager',
 ]

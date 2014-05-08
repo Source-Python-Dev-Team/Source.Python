@@ -19,11 +19,11 @@ from commands.say.manager import SayCommandManager
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'SayCommand',
     'SayCommandDispatcher',
+    'SayCommandManager',
+    'SayFilter',
     'get_say_command',
     'register_say_filter',
     'unregister_say_filter',
-    'SayCommand',
-    'SayCommandManager',
-    'SayFilter',
 ]

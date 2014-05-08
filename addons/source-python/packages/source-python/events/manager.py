@@ -15,8 +15,8 @@ from events.listener import _EventListener
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'EventRegistry',
     'GameEventManager',
-    'EventRegistry'
 ]
 
 

@@ -1,3 +1,5 @@
+# ../memory/helpers.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -9,20 +11,26 @@ from configobj import ConfigObj
 
 # Source.Python
 from core import PLATFORM
-from memory import *
+from memory import Argument
+from memory import Convention
+from memory import Function
+from memory import Pointer
+from memory import Return
+from memory import TYPE_SIZES
+from memory import make_object
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'Type',
-    'Key',
-    'BasePointer',
     'Array',
+    'BasePointer',
+    'Key',
     'MemberFunction',
+    'NO_DEFAULT',
+    'Type',
     'parse_data',
-    'NO_DEFAULT'
 ]
 
 

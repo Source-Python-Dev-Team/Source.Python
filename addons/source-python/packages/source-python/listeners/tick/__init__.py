@@ -1,4 +1,4 @@
-# ../tick/__init__.py
+# ../listeners/tick/__init__.py
 
 # =============================================================================
 # >> IMPORTS
@@ -28,7 +28,7 @@ __all__ = [
     'Tick',
     'TickDelays',
     'TickRepeat',
-    'TickRepeatStatus'
+    'TickRepeatStatus',
 ]
 
 

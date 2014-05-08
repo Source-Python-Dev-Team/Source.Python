@@ -16,9 +16,9 @@ from _mathlib import RadianEuler
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'Vector',
+    'Plane',
     'QAngle',
     'Quaternion',
-    'Plane',
-    'RadianEuler'
+    'RadianEuler',
+    'Vector',
 ]

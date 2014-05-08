@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from memory import Function
-from memory import HookType
+from _memory import HookType
 from core import AutoUnload
 
 
@@ -14,8 +14,9 @@ from core import AutoUnload
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
-    'PreHook',
+    'HookType',
     'PostHook',
+    'PreHook',
 ]
 
 

@@ -33,7 +33,7 @@ __all__ = [
     'GlobalVars',
     'PLATFORM',
     'SOURCE_ENGINE',
-    'echo_console'
+    'echo_console',
 ]
 
 

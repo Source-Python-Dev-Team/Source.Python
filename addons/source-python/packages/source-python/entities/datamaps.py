@@ -6,7 +6,12 @@
 # Source.Python Imports
 from basetypes import Color
 from basetypes import Interval
-from _datamaps import *
+from _datamaps import DataMap
+from _datamaps import FieldTypes
+from _datamaps import InputData
+from _datamaps import TypeDescription
+from _datamaps import TypeDescriptionFlags
+from _datamaps import Variant
 from mathlib import Quaternion
 from mathlib import Vector
 from memory import Argument
@@ -29,11 +34,11 @@ from entities.helpers import edict_from_pointer
 # Set all to an empty list
 __all__ = [
     'DataMap',
-    'TypeDescription',
-    'InputData',
-    'Variant',
     'FieldTypes',
-    'TypeDescriptionFlags'
+    'InputData',
+    'TypeDescription',
+    'TypeDescriptionFlags',
+    'Variant',
 ]
 
 

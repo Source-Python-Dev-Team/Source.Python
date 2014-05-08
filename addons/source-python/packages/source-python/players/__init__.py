@@ -4,7 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from _players import *
+from _players import NetChannelInfo
+from _players import PlayerGenerator
+from _players import PlayerInfo
 from loggers import _SPLogger
 
 
@@ -13,9 +15,9 @@ from loggers import _SPLogger
 # =============================================================================
 # Set all to an empty list
 __all__ = [
-    'PlayerInfo',
     'NetChannelInfo',
-    'PlayerGenerator'
+    'PlayerGenerator',
+    'PlayerInfo',
 ]
 
 

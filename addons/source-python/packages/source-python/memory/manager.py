@@ -1,3 +1,5 @@
+# ../memory/manager.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -6,8 +8,22 @@
 from configobj import ConfigObj
 
 # Source.Python
-from memory import *
-from memory.helpers import *
+from memory import Argument
+from memory import Convention
+from memory import EXPOSED_CLASSES
+from memory import Return
+from memory import TYPE_SIZES
+from memory import alloc
+from memory import find_binary
+from memory import get_object_pointer
+from memory import make_object
+from memory.helpers import Array
+from memory.helpers import BasePointer
+from memory.helpers import Key
+from memory.helpers import MemberFunction
+from memory.helpers import NO_DEFAULT
+from memory.helpers import Type
+from memory.helpers import parse_data
 
 
 # =============================================================================
@@ -15,11 +31,9 @@ from memory.helpers import *
 # =============================================================================
 __all__ = [
     'CustomType',
+    'Type',
     'TypeManager',
     'manager',
-
-    # From memory.helpers
-    'Type'
 ]
 
 

@@ -20,9 +20,9 @@ from memory.manager import manager
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'DATA_DESC_MAP_OFFSET',
     'DamageOffsets',
     'DamageTypes',
-    'DATA_DESC_MAP_OFFSET',
 ]
 
 

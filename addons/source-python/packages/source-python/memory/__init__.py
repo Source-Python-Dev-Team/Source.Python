@@ -1,8 +1,28 @@
+# ../memory/__init__.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python
-from _memory import *
+from _memory import Argument
+from _memory import BinaryFile
+from _memory import Callback
+from _memory import Convention
+from _memory import DC_ERROR_NONE
+from _memory import DC_ERROR_UNSUPPORTED_MODE
+from _memory import EXPOSED_CLASSES
+from _memory import Function
+from _memory import NULL
+from _memory import Pointer
+from _memory import Return
+from _memory import StackData
+from _memory import TYPE_SIZES
+from _memory import alloc
+from _memory import find_binary
+from _memory import get_error
+from _memory import get_object_pointer
+from _memory import get_size
+from _memory import make_object
 from loggers import _SPLogger
 
 
@@ -10,15 +30,13 @@ from loggers import _SPLogger
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'callback',
-
-    # From _memory
     'Argument',
     'BinaryFile',
     'Callback',
     'Convention',
     'DC_ERROR_NONE',
     'DC_ERROR_UNSUPPORTED_MODE',
+    'EXPOSED_CLASSES',
     'Function',
     'NULL',
     'Pointer',
@@ -26,12 +44,12 @@ __all__ = [
     'StackData',
     'TYPE_SIZES',
     'alloc',
+    'callback',
     'find_binary',
     'get_error',
-    'EXPOSED_CLASSES',
     'get_object_pointer',
     'get_size',
-    'make_object'
+    'make_object',
 ]
 
 

@@ -16,8 +16,8 @@ from events.manager import EventRegistry
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'Event',
     'GameEvent',
-    'Event'
 ]
 
 

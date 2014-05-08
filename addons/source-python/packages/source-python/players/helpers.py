@@ -4,7 +4,48 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from _conversions import *
+from _conversions import basehandle_from_edict
+from _conversions import basehandle_from_index
+from _conversions import basehandle_from_inthandle
+from _conversions import basehandle_from_playerinfo
+from _conversions import basehandle_from_pointer
+from _conversions import basehandle_from_userid
+from _conversions import edict_from_basehandle
+from _conversions import edict_from_index
+from _conversions import edict_from_inthandle
+from _conversions import edict_from_playerinfo
+from _conversions import edict_from_pointer
+from _conversions import edict_from_userid
+from _conversions import index_from_basehandle
+from _conversions import index_from_edict
+from _conversions import index_from_inthandle
+from _conversions import index_from_playerinfo
+from _conversions import index_from_pointer
+from _conversions import index_from_userid
+from _conversions import inthandle_from_basehandle
+from _conversions import inthandle_from_edict
+from _conversions import inthandle_from_index
+from _conversions import inthandle_from_playerinfo
+from _conversions import inthandle_from_pointer
+from _conversions import inthandle_from_userid
+from _conversions import playerinfo_from_basehandle
+from _conversions import playerinfo_from_edict
+from _conversions import playerinfo_from_index
+from _conversions import playerinfo_from_inthandle
+from _conversions import playerinfo_from_pointer
+from _conversions import playerinfo_from_userid
+from _conversions import pointer_from_basehandle
+from _conversions import pointer_from_edict
+from _conversions import pointer_from_index
+from _conversions import pointer_from_inthandle
+from _conversions import pointer_from_playerinfo
+from _conversions import pointer_from_userid
+from _conversions import userid_from_basehandle
+from _conversions import userid_from_edict
+from _conversions import userid_from_index
+from _conversions import userid_from_inthandle
+from _conversions import userid_from_playerinfo
+from _conversions import userid_from_pointer
 from engines.server import EngineServer
 
 
