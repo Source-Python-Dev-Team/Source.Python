@@ -30,7 +30,8 @@ class SayText(BaseMessage):
 
             # Adding ESCSOH to the start of the message seems to fix colors
             #   passed at the begining.
-            return unicode_escape_decode(self._message_prefix)[0] + return_value
+            return unicode_escape_decode(
+                self._message_prefix)[0] + return_value
 
         # Return the prepared value
         return return_value

@@ -35,12 +35,13 @@ class ShowMenu(BaseShowMenu):
         while len(message) > MAXIMUM_LENGTH:
 
             # Send the message
-            super(ShowMenu, self)._send_message(recipient, **ChainMap(dict(
-                message=message[:MAXIMUM_LENGTH], _wait_for_more=True), kwargs))
+            super(ShowMenu, self)._send_message(
+                recipient, **ChainMap(dict(message=message[
+                    :MAXIMUM_LENGTH], _wait_for_more=True), kwargs))
 
             # Remove the text we just sent from the original message
             message = message[MAXIMUM_LENGTH:]
 
         # Send the last characters
-        super(ShowMenu, self)._send_message(recipient, **ChainMap(dict(
-            message=message), kwargs))
+        super(ShowMenu, self)._send_message(
+            recipient, **ChainMap(dict(message=message), kwargs))

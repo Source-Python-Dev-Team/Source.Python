@@ -307,6 +307,22 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Messages module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_MESSAGES_MODULE_HEADERS
+    core/modules/messages/messages.h
+    core/modules/messages/messages_implementation_base.h
+    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.h
+)
+
+Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
+    core/modules/messages/messages.cpp
+    core/modules/messages/messages_wrap_python.cpp
+    core/modules/messages/messages_implementation_base.cpp
+    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.cpp
+)
+
+# ------------------------------------------------------------------
 # Players module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
@@ -341,22 +357,6 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Messages module.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_MESSAGES_MODULE_HEADERS
-    core/modules/messages/messages.h
-    core/modules/messages/messages_implementation_base.h
-    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.h
-)
-
-Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
-    core/modules/messages/messages.cpp
-    core/modules/messages/messages_wrap_python.cpp
-    core/modules/messages/messages_implementation_base.cpp
-    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.cpp
-)
-
-# ------------------------------------------------------------------
 # Tools module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_TOOLS_MODULE_HEADERS
@@ -382,11 +382,17 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS}
     ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
+    ${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
+
     ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS}
     ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_CVARS_MODULE_HEADERS}
     ${SOURCEPYTHON_CVARS_MODULE_SOURCES}
+
+    ${SOURCEPYTHON_DATAMAPS_MODULE_HEADERS}
+    ${SOURCEPYTHON_DATAMAPS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_DUMP_MODULE_HEADERS}
     ${SOURCEPYTHON_DUMP_MODULE_SOURCES}
@@ -418,24 +424,18 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_MEMORY_MODULE_HEADERS}
     ${SOURCEPYTHON_MEMORY_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS}
+    ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES}
+    ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES}
+
     ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
     ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_RECIPIENTS_MODULE_HEADERS}
     ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS}
-    ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES}
-    ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES}
-
     ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
     ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
-
-    ${SOURCEPYTHON_DATAMAPS_MODULE_HEADERS}
-    ${SOURCEPYTHON_DATAMAPS_MODULE_SOURCES}
-
-    ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
-    ${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_TOOLS_MODULE_HEADERS}
     ${SOURCEPYTHON_TOOLS_MODULE_SOURCES}
@@ -449,27 +449,28 @@ Source_Group("Header Files\\Addons"                         FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
+
 Source_Group("Header Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Bots"                   FILES ${SOURCEPYTHON_BOTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Constants"              FILES ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_DATAMAPS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Dump"                   FILES ${SOURCEPYTHON_DUMP_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITIES_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_DATAMAPS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Constants"              FILES ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_TOOLS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
@@ -479,8 +480,10 @@ Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Bots"                   FILES ${SOURCEPYTHON_BOTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON_MODULE_CONSTANTS_SOURCES})
 Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_MODULE_DATAMAPS_SOURCES})
 Source_Group("Source Files\\Module\\Dump"                   FILES ${SOURCEPYTHON_DUMP_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_SOURCES})
@@ -491,13 +494,11 @@ Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Messages\\${SDK}"       FILES ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES})
+Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_SOURCES})
-Source_Group("Source Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_MODULE_DATAMAPS_SOURCES})
-Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON_MODULE_CONSTANTS_SOURCES})
 Source_Group("Source Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_MODULE_TOOLS_SOURCES})
 
 # ------------------------------------------------------------------

@@ -27,12 +27,12 @@ class VGUIMenu(BaseMessage):
                 return parameter_value
 
         # Return the prepared value
-        return super(VGUIMenu, self)._prepare_parameter(parameter_name,
-            parameter_value)
+        return super(VGUIMenu, self)._prepare_parameter(
+            parameter_name, parameter_value)
 
-
-    def _write_field_value(self, parameter_name, usermsg, field_type,
-        field_name, field_value, field_index=-1):
+    def _write_field_value(
+            self, parameter_name, usermsg, field_type,
+            field_name, field_value, field_index=-1):
         '''Write the given field value to the given message'''
 
        # Is the given parameter "subkeys" and the given value a dictionnary?
@@ -42,13 +42,14 @@ class VGUIMenu(BaseMessage):
             for key, value in field_value.items():
 
                 # Write the current key
-                super(VGUIMenu, self)._write_field_value(parameter_name,
-                    usermsg, field_type, field_name, (key, value),
-                        field_index)
+                super(VGUIMenu, self)._write_field_value(
+                    parameter_name, usermsg, field_type,
+                    field_name, (key, value), field_index)
 
         # Otherwise
         else:
 
             # Write the given field value
-            super(VGUIMenu, self)._write_field_value(parameter_name, usermsg,
-                field_type, field_name, field_value, field_index)
+            super(VGUIMenu, self)._write_field_value(
+                parameter_name, usermsg, field_type,
+                field_name, field_value, field_index)

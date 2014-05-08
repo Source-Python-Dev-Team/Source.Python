@@ -18,8 +18,8 @@ class Fade(BaseMessage):
         '''Prepare the given parameter value'''
 
         # Prepare the given parameter
-        return_value = super(Fade, self)._prepare_parameter(parameter_name,
-            parameter_value)
+        return_value = super(Fade, self)._prepare_parameter(
+            parameter_name, parameter_value)
 
         # Is the given parameter "duration" or "hold_time"?
         if parameter_name in ('duration', 'hold_time'):

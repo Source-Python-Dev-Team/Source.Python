@@ -42,9 +42,8 @@ class ShowMenu(BaseMessage):
                 parameter_value = validated_slots
 
         # Prepare the given value
-        return super(ShowMenu, self)._prepare_parameter(parameter_name,
-            parameter_value)
-
+        return super(ShowMenu, self)._prepare_parameter(
+            parameter_name, parameter_value)
 
     def _send_message(self, recipient, **kwargs):
         '''Send the message to the given recipient filter'''

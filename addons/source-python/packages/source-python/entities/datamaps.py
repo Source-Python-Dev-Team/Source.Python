@@ -286,7 +286,7 @@ class _BaseFunctions(Function, _BaseType):
         self.name = desc.name
         self.type = desc.type
         function = desc.input.make_function(
-                        Convention.THISCALL, self.arguments, Return.VOID)
+            Convention.THISCALL, self.arguments, Return.VOID)
 
         # Initialize the Function instance
         super(_BaseFunctions, self).__init__(function)

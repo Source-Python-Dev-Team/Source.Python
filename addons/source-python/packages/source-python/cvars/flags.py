@@ -40,7 +40,7 @@ __all__ = [
 # =============================================================================
 class ConVarFlags(object):
     '''ConVar's flags wrapper enumerator.
-    
+
     TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
     '''
     NONE = FCVAR_NONE

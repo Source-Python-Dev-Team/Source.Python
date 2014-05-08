@@ -14,8 +14,9 @@ from messages.types.vguimenu import VGUIMenu as BaseVGUIMenu
 class VGUIMenu(BaseVGUIMenu):
     '''Class used to send a VGUIMenu message'''
 
-    def _write_field_value(self, parameter_name, usermsg, field_type,
-        field_name, field_value, field_index=-1):
+    def _write_field_value(
+            self, parameter_name, usermsg, field_type,
+            field_name, field_value, field_index=-1):
         '''Write the given field value to the given message'''
 
         # Is the given parameter "subkeys"?
@@ -37,5 +38,6 @@ class VGUIMenu(BaseVGUIMenu):
             usermsg.set_byte('', length, -1)
 
         # Write the given field value
-        super(VGUIMenu, self)._write_field_value(parameter_name, usermsg,
-            field_type, field_name, field_value, field_index)
+        super(VGUIMenu, self)._write_field_value(
+            parameter_name, usermsg, field_type,
+            field_name, field_value, field_index)

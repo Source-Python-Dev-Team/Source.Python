@@ -33,7 +33,8 @@ from translations.strings import TranslationStrings
 # >> GLOBAL VARIABLES
 # ============================================================================
 # Store the fieldtype converters
-_fieldtypes = dict(bool=bool, char=str, byte=int, short=int, long=int,
+_fieldtypes = dict(
+    bool=bool, char=str, byte=int, short=int, long=int,
     float=float, buffer=object, string=str, color=Color)
 
 
@@ -68,8 +69,9 @@ class _UserMessages(dict):
             if class_data is not None:
 
                 # Import the current message class
-                message_class = getattr(load_source(message_name,
-                    base_path.joinpath(class_data[0])), class_data[1])
+                message_class = getattr(load_source(
+                    message_name, base_path.joinpath(
+                        class_data[0])), class_data[1])
 
                 # Delete the class data as we are done with it
                 del message_data['MESSAGE_CLASS']
@@ -84,8 +86,8 @@ class _UserMessages(dict):
             required_parameters = OrderedDict()
 
             # Get the required parameters
-            message_parameters = message_data.get('REQUIRED_PARAMETERS',
-                None)
+            message_parameters = message_data.get(
+                'REQUIRED_PARAMETERS', None)
 
             # Get a set to store the translatable parameters
             translatable_parameters = set()
@@ -116,17 +118,17 @@ class _UserMessages(dict):
 
                         # Loop through all required values
                         for parameter_index, parameter_type in zip(range(
-                            parameter_length), parameter_data['types']):
+                                parameter_length), parameter_data['types']):
 
                             # Convert the current value
                             default_values[parameter_index] = _fieldtypes[
                                 parameter_type](default_values[
-                                    parameter_index])
+                                parameter_index])
 
                         # Store the current parameter data
                         required_parameters[parameter_name] = dict(
                             default_values=default_values,
-                                types=parameter_data['types'])
+                            types=parameter_data['types'])
 
                     # Otherwise
                     else:
@@ -140,21 +142,23 @@ class _UserMessages(dict):
                             # Add the current parameter to the translatables
                             translatable_parameters.add(parameter_name)
 
-                        default_value = parameter_data.get('default_value', None)
+                        default_value = parameter_data.get(
+                            'default_value', None)
                         if default_value is None:
                             converted_value = _fieldtypes[parameter_type]()
                         else:
-                            converted_value = _fieldtypes[parameter_type](default_value)
-                            
+                            converted_value = _fieldtypes[
+                                parameter_type](default_value)
+
                         # Store the current parameter data
                         required_parameters[parameter_name] = dict(
                             default_value=converted_value,
-                                    type=parameter_type)
+                            type=parameter_type)
 
                     # Store more data
                     required_parameters[parameter_name].update(dict(
                         length=parameter_length,
-                            field_name=parameter_data.get('field_name', '')))
+                        field_name=parameter_data.get('field_name', '')))
 
             # Get a dictionnary to store the special parameters
             special_parameters = dict()
@@ -187,10 +191,9 @@ class _UserMessages(dict):
             # Store the current message class
             self[message_name] = type(message_name, (message_class,), dict(
                 _message_name=message_name,
-                    _required_parameters=required_parameters,
-                        _translatable_parameters=translatable_parameters,
-                            _special_parameters=special_parameters,
-                                **message_data))
+                _required_parameters=required_parameters,
+                _translatable_parameters=translatable_parameters,
+                _special_parameters=special_parameters, **message_data))
 
 
 class BaseMessage(dict):
@@ -319,7 +322,6 @@ class BaseMessage(dict):
         # Set the given tokens
         super(BaseMessage, self).__setattr__('tokens', kwargs)
 
-
     def __getattr__(self, attribute):
         '''Return the given parameter value'''
 
@@ -334,7 +336,6 @@ class BaseMessage(dict):
 
             # Return the given parameter value
             return self[attribute]
-
 
     def __setattr__(self, attribute, value):
         '''Set the given parameter value'''
@@ -367,7 +368,8 @@ class BaseMessage(dict):
             return self.tokens[item]
 
         # Raise an error
-        raise KeyError('"{0}" is not a valid "{1}" '
+        raise KeyError(
+            '"{0}" is not a valid "{1}" ' +
             'parameter.'.format(item, self._message_name))
 
     def __setitem__(self, item, value):
@@ -375,7 +377,7 @@ class BaseMessage(dict):
 
         # Is the given item a valid parameter?
         if (item in self._required_parameters or
-            item in self._special_parameters):
+                item in self._special_parameters):
 
             # Set the given parameter to the given value
             super(BaseMessage, self).__setitem__(item, value)
@@ -435,18 +437,19 @@ class BaseMessage(dict):
             field_converter = _fieldtypes[parameter_data['type']]
             if not isinstance(parameter_value, field_converter):
                 parameter_value = field_converter(parameter_value)
-                
+
             # Convert the given value
             return_value = parameter_value
 
         # Return the prepared value
         return return_value
 
-    def _write_field_value(self, parameter_name, usermsg, field_type,
-        field_name, field_value, field_index=-1):
+    def _write_field_value(
+            self, parameter_name, usermsg, field_type,
+            field_name, field_value, field_index=-1):
         '''Write the given field value to the given message'''
-        getattr(usermsg, 'set_' + field_type)(field_name, field_value,
-            field_index)
+        getattr(usermsg, 'set_' + field_type)(
+            field_name, field_value, field_index)
 
     def _send_message(self, recipient, **kwargs):
         '''Send the message to the given recipient filter'''
@@ -470,8 +473,8 @@ class BaseMessage(dict):
                 try:
 
                     # Prepare the given values
-                    parameter_values = self._prepare_parameter(parameter_name,
-                        kwargs[parameter_name])
+                    parameter_values = self._prepare_parameter(
+                        parameter_name, kwargs[parameter_name])
 
                 # I'm not really fan of this but, to prevent crashes, we need
                 #   to hook any exceptions that may occurs...
@@ -488,8 +491,8 @@ class BaseMessage(dict):
                             parameter_name))
 
                     # Use the default values
-                    parameter_values = self._prepare_parameter(parameter_name,
-                        parameter_data['default_values'])
+                    parameter_values = self._prepare_parameter(
+                        parameter_name, parameter_data['default_values'])
 
                 # Get the current parameter field name
                 field_name = parameter_data['field_name']
@@ -500,9 +503,9 @@ class BaseMessage(dict):
                         parameter_values):
 
                     # Write the current parameter
-                    self._write_field_value(parameter_name, usermsg,
-                        parameter_type, field_name, parameter_value,
-                            parameter_index)
+                    self._write_field_value(
+                        parameter_name, usermsg, parameter_type,
+                        field_name, parameter_value, parameter_index)
 
             # Otherwise
             else:
@@ -511,8 +514,8 @@ class BaseMessage(dict):
                 try:
 
                     # Prepare the current parameter
-                    parameter_value = self._prepare_parameter(parameter_name,
-                        kwargs[parameter_name])
+                    parameter_value = self._prepare_parameter(
+                        parameter_name, kwargs[parameter_name])
 
                 # I'm not really fan of this but, to prevent crashes, we need
                 #   to hook any exceptions that may occurs...
@@ -529,13 +532,13 @@ class BaseMessage(dict):
                             parameter_name))
 
                     # Use the default value
-                    parameter_value = self._prepare_parameter(parameter_name,
-                        parameter_data['default_value'])
+                    parameter_value = self._prepare_parameter(
+                        parameter_name, parameter_data['default_value'])
 
                 # Write the current parameter
-                self._write_field_value(parameter_name, usermsg,
-                    parameter_data['type'], parameter_data['field_name'],
-                        parameter_value)
+                self._write_field_value(
+                    parameter_name, usermsg, parameter_data['type'],
+                    parameter_data['field_name'], parameter_value)
 
         # Send the message
         usermsg.send_message()
@@ -559,8 +562,8 @@ class BaseMessage(dict):
             for index in recipient:
 
                 # Add the current index
-                languages[EngineServer.get_client_convar_value(index,
-                    'cl_language')].add(index)
+                languages[EngineServer.get_client_convar_value(
+                    index, 'cl_language')].add(index)
 
             # Loop through all languages
             for language, users in languages.items():
@@ -581,15 +584,16 @@ class BaseMessage(dict):
                         continue
 
                     # Translate the current parameter
-                    translated_parameters[parameter_name
-                        ] = parameter_value.get_string(language, **tokens)
+                    translated_parameters[
+                        parameter_name] = parameter_value.get_string(
+                        language, **tokens)
 
                 # Update the recipient filter
                 recipient.update(*users)
 
                 # Send the message
-                self._send_message(recipient, **ChainMap(
-                    translated_parameters, self))
+                self._send_message(
+                    recipient, **ChainMap(translated_parameters, self))
 
         # Otherwise
         else:

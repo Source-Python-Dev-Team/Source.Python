@@ -110,10 +110,10 @@ _PlayerIterManagerInstance.register_filter(
     'human', lambda playerinfo: playerinfo.is_player())
 _PlayerIterManagerInstance.register_filter(
     'alive', lambda playerinfo: not edict_from_playerinfo(
-    playerinfo).get_prop_int('pl.deadflag'))
+        playerinfo).get_prop_int('pl.deadflag'))
 _PlayerIterManagerInstance.register_filter(
     'dead', lambda playerinfo: edict_from_playerinfo(
-    playerinfo).get_prop_int('pl.deadflag'))
+        playerinfo).get_prop_int('pl.deadflag'))
 
 # Loop through all teams in the game's team file
 for team in _game_teams['names']:
@@ -164,7 +164,7 @@ _PlayerIterManagerInstance.register_return_type(
     'info', lambda playerinfo: playerinfo)
 _PlayerIterManagerInstance.register_return_type(
     'player', lambda playerinfo: PlayerEntity(
-    index_from_playerinfo(playerinfo)))
+        index_from_playerinfo(playerinfo)))
 _PlayerIterManagerInstance.register_return_type(
     'name', lambda playerinfo: playerinfo.get_name())
 _PlayerIterManagerInstance.register_return_type(
@@ -185,6 +185,6 @@ _PlayerIterManagerInstance.register_return_type(
     'weapon', lambda playerinfo: playerinfo.get_weapon_name())
 _PlayerIterManagerInstance.register_return_type(
     'language', lambda playerinfo: EngineServer.get_client_convar_value(
-    index_from_playerinfo(playerinfo), 'cl_language'))
+        index_from_playerinfo(playerinfo), 'cl_language'))
 _PlayerIterManagerInstance.register_return_type(
     'team', lambda playerinfo: playerinfo.get_team_index())

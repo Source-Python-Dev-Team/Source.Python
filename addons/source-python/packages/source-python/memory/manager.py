@@ -62,7 +62,7 @@ class CustomType(BasePointer):
         if not isinstance(self._manager, TypeManager):
             raise ValueError(
                 'Attribute _manager must be an instance of "TypeManager".')
-                
+
         # This set will contain internally allocated pointers.
         self._allocated_pointers = set()
 
@@ -426,19 +426,19 @@ class TypeManager(dict):
             else:
                 # Go down to "instance level"
                 instance_ptr = ptr.get_pointer(offset)
-                
+
                 # Is there no space allocated?
                 if not instance_ptr:
                     # Allocate space for the value
                     instance_ptr = alloc(TYPE_SIZES[type_name.upper()])
-                    
+
                     # Add the pointer to the set, so there will be a reference
                     # until the instance gets deleted
                     ptr._allocated_pointers.add(instance_ptr)
-                    
+
                     # Set the pointer
                     ptr.set_pointer(instance_ptr, offset)
-                    
+
                 # Set the value
                 getattr(instance_ptr, 'set_' + type_name)(value)
 

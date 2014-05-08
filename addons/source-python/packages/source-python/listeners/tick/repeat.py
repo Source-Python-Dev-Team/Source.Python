@@ -73,14 +73,16 @@ class TickRepeat(AutoUnload):
         if self._status == TickRepeatStatus.RUNNING:
 
             # Log the status
-            TickRepeatLogger.log_info('TickRepeat.start - TickRepeatStatus.RUNNING')
+            TickRepeatLogger.log_info(
+                'TickRepeat.start - TickRepeatStatus.RUNNING')
 
             # Do not start the repeat
             return
 
         # Log starting the repeat
         TickRepeatLogger.log_info(
-            'TickRepeat.start - !TickRepeatStatus.RUNNING - Starting TickRepeat')
+            'TickRepeat.start - !TickRepeatStatus' +
+            '.RUNNING - Starting TickRepeat')
 
         # Set the status to running
         self._status = TickRepeatStatus.RUNNING
@@ -106,7 +108,8 @@ class TickRepeat(AutoUnload):
         if self._status != TickRepeatStatus.RUNNING:
 
             # Log the status
-            TickRepeatLogger.log_info('TickRepeat.stop - !TickRepeatStatus.RUNNING')
+            TickRepeatLogger.log_info(
+                'TickRepeat.stop - !TickRepeatStatus.RUNNING')
 
             # No need to stop it
             return
@@ -143,7 +146,8 @@ class TickRepeat(AutoUnload):
         if self._status != TickRepeatStatus.RUNNING:
 
             # Log the status
-            TickRepeatLogger.log_info('TickRepeat.pause - !TickRepeatStatus.RUNNING')
+            TickRepeatLogger.log_info(
+                'TickRepeat.pause - !TickRepeatStatus.RUNNING')
 
             # No need to pause
             return
@@ -171,14 +175,16 @@ class TickRepeat(AutoUnload):
         if self._status != TickRepeatStatus.PAUSED:
 
             # Log the status
-            TickRepeatLogger.log_info('TickRepeat.resume - !TickRepeatStatus.PAUSED')
+            TickRepeatLogger.log_info(
+                'TickRepeat.resume - !TickRepeatStatus.PAUSED')
 
             # Do not resume
             return
 
         # Log resuming the repeat
         TickRepeatLogger.log_info(
-            'TickRepeat.resume - TickRepeatStatus.PAUSED - Resuming TickRepeat')
+            'TickRepeat.resume - TickRepeatStatus.' +
+            'PAUSED - Resuming TickRepeat')
 
         # Start the delay
         self._delay = TickDelays.delay(self._loop_time, self._execute)
@@ -247,7 +253,8 @@ class TickRepeat(AutoUnload):
 
                 # Log continuing the loop
                 TickRepeatLogger.log_info(
-                    'TickRepeat._execute - Remaining - {0}'.format(self.remaining))
+                    'TickRepeat._execute - Remaining - {0}'.format(
+                        self.remaining))
 
             # Call the delay again
             self._delay = TickDelays.delay(self._interval, self._execute)
@@ -256,7 +263,8 @@ class TickRepeat(AutoUnload):
         else:
 
             # Log stopping the repeat
-            TickRepeatLogger.log_info('TickRepeat._execute - Stopping the loop')
+            TickRepeatLogger.log_info(
+                'TickRepeat._execute - Stopping the loop')
 
             # Set the status to stopped
             self._status = TickRepeatStatus.STOPPED
