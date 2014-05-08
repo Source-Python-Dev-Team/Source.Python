@@ -19,7 +19,7 @@ from path import path
 # Source.Python Imports
 from engines.server import EngineServer
 from core import echo_console
-from excepthooks import ExceptHooks
+from hooks.exceptions import ExceptHooks
 #   UserMessage
 from basetypes import Color
 from _messages import UserMessage

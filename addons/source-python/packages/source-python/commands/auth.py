@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from players import PlayerInfo
-from excepthooks import ExceptHooks
+from hooks.exceptions import ExceptHooks
 #   Auth
 from auth.manager import AuthManager
 

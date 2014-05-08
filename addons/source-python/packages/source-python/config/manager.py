@@ -11,7 +11,7 @@ from textwrap import TextWrapper
 
 # Source.Python Imports
 from engines.server import EngineServer
-from excepthooks import ExceptHooks
+from hooks.exceptions import ExceptHooks
 from paths import CFG_PATH
 #   Config
 from config.cvar import _CvarManager

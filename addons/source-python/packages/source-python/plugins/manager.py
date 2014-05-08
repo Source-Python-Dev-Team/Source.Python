@@ -11,7 +11,7 @@ import sys
 
 # Source.Python Imports
 from core import AutoUnload
-from excepthooks import ExceptHooks
+from hooks.exceptions import ExceptHooks
 #   Plugins
 from plugins import PluginsLogger
 from plugins import _plugin_strings

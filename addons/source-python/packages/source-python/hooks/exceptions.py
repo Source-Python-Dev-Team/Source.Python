@@ -1,4 +1,4 @@
-# ../excepthooks.py
+# ../hooks/exceptions.py
 
 # =============================================================================
 # >> IMPORTS
@@ -12,10 +12,12 @@ import sys
 from traceback import format_exception
 
 # Source.Python Imports
-from loggers import _SPLogger
 from paths import GAME_PATH
-#   Translations
-from translations.strings import LangStrings
+#   Hooks
+from hooks import _hooks_strings
+from hooks import HooksLogger
+from hooks.base import _HookBase
+from hooks.base import _HookDecorator
 
 
 # =============================================================================
@@ -23,6 +25,7 @@ from translations.strings import LangStrings
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = [
+    'ExceptHook',
     'ExceptHooks',
 ]
 
@@ -30,35 +33,15 @@ __all__ = [
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_excepthook_strings = LangStrings('_core/excepthooks_strings')
-
-# Get the sp.excepthooks logger
-ExceptHooksLogger = _SPLogger.excepthooks
+# Get the sp.hooks.exceptions logger
+HooksExceptionsLogger = HooksLogger.exceptions
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _ExceptHooks(list):
+class _ExceptHooks(_HookBase):
     '''List class that stores callbacks to be called on an exception'''
-
-    def append(self, callback):
-        '''Hook the append method to verify the given callback is callable'''
-
-        # Is the given callback callable?
-        if not callable(callback):
-
-            # Raise an exception
-            raise ValueError('ExceptHook callbacks must be callable')
-
-        # Is the given callback already registered?
-        if callback in self:
-
-            # Raise an exception
-            raise ValueError('ExceptHook callback already registered')
-
-        # Add the callback to the list
-        super(_ExceptHooks, self).append(callback)
 
     def print_exception(
             self, exctype=None, value=None,
@@ -100,7 +83,7 @@ class _ExceptHooks(list):
         format_error.insert(-1, '')
 
         # Get the header
-        message = '\n[SP] ' + _excepthook_strings['Exception'].get_string()
+        message = '\n[SP] ' + _hooks_strings['Exception'].get_string()
 
         # Loop through each line in the exception
         for line in format_error:
@@ -120,10 +103,16 @@ class _ExceptHooks(list):
             message += '\n' + line
 
         # Print a blank line to separate the console
-        ExceptHooksLogger.log_exception(message + '\n\n')
+        HooksExceptionsLogger.log_exception(message + '\n\n')
 
 # Get the _ExceptHooks instance
 ExceptHooks = _ExceptHooks()
 
 # Set sys.excepthook to the print_exception method
 sys.excepthook = ExceptHooks.print_exception
+
+
+class ExceptHook(_HookDecorator):
+    '''Decorator class used to register/unregister
+        a function/method for hooking exceptions'''
+    _class_instance = ExceptHooks

@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from _events import GameEventListener
-from excepthooks import ExceptHooks
+from hooks.exceptions import ExceptHooks
 from loggers import _SPLogger
 
 

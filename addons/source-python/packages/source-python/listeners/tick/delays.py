@@ -9,7 +9,7 @@ import time
 
 # Source.Python Imports
 from listeners import TickListenerManager
-from excepthooks import ExceptHooks
+from hooks.exceptions import ExceptHooks
 #   Tick
 from listeners.tick.logger import TickLogger
 

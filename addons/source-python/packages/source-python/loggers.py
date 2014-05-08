@@ -4,6 +4,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Datetime
+from datetime import date
 #   Logging
 from logging import CRITICAL
 from logging import DEBUG
@@ -312,7 +314,8 @@ _areas = ConVar(
 
 # Get the Source.Python main LogManager instance
 _SPLogger = LogManager(
-    'sp', _level, _areas, 'source-python',
+    'sp', _level, _areas,
+    'source-python.{0}'.format(date.today().strftime('%m-%d-%Y')),
     '%(asctime)s - %(name)s\t-\t%(levelname)s\n\t%(message)s',
     '%m-%d-%Y %H:%M:%S')
 

@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 from commands import CommandReturn
-from excepthooks import ExceptHooks
+from hooks.exceptions import ExceptHooks
 
 
 # =============================================================================
