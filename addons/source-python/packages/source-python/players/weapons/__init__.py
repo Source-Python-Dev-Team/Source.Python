@@ -6,7 +6,6 @@
 # Source.Python Imports
 from core import GAME_NAME
 #   Entities
-from entities import Edict
 from entities.entity import BaseEntity
 from entities.helpers import index_from_inthandle
 #   Weapons
