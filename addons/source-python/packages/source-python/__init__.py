@@ -34,7 +34,7 @@ from configobj import ConfigObjError
 
 # Source.Python Imports
 from cvars import ConVar
-#   ExceptHooks - this is done to register sys.excepthook and the warnings hook
+#   Hooks - These are imported to implement the exceptions and warnings hooks
 from hooks.exceptions import ExceptHooks
 from hooks.warnings import WarningHooks
 

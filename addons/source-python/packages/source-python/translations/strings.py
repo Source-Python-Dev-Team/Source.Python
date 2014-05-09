@@ -18,8 +18,6 @@ from re import VERBOSE
 #   Configobj
 from configobj import ConfigObj
 from configobj import Section
-#   Path
-from path import Path
 
 # Source.Python Imports
 from paths import TRANSLATION_PATH

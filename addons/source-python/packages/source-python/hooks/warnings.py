@@ -77,6 +77,9 @@ WarningHooks = _WarningHooks()
 # Set warnings.showwarning to the print_warning method
 warnings.showwarning = WarningHooks.print_warning
 
+# Set warnings to only appear once (the first occurrence
+warnings.filterwarnings('once')
+
 
 class WarningHook(_HookDecorator):
     '''Decorator class used to register/unregister

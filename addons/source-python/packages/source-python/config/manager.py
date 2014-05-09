@@ -285,13 +285,24 @@ class ConfigManager(object):
                         # Remove the cvar from the old config file dictionary
                         del _old_config[section.name]
 
-                    # Does the cvar not exist in the old config file?
-                    else:
+                    # Does the cvar not exist in the old config file
+                    # and the value is a float or integer?
+                    elif isinstance(section.default, (float, int)):
 
                         # Write the cvar line using the default value
                         open_file.write(
                             ' ' * self.indention + section.name +
                             ' {0}\n\n\n'.format(section.default))
+
+                    # Does the cvar not exist in the old config file
+                    # And the value is not a float or integer?
+                    else:
+
+                        # Write the cvar line using the default
+                        # value with quotes around the value
+                        open_file.write(
+                            ' ' * self.indention + section.name +
+                            ' "{0}"\n\n\n'.format(section.default))
 
                 # Is the current section a Section?
                 elif isinstance(section, _SectionManager):
