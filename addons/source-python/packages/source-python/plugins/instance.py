@@ -78,31 +78,11 @@ class LoadedPlugin(object):
         import_name = base_import + plugin_name + '.' + plugin_name
 
         # Import the plugin
-        self._plugin = __import__(import_name)
+        self._plugin = import_module(import_name)
 
         # Set the globals value
-        self._globals = self._plugin.__dict__
-
-        # Get the import name minus the first directory
-        import_name = import_name.split('.', 1)[1]
-
-        # Use "while" statement to find the proper globals for the plugin
-        while '__path__' in self._globals:
-
-            # Try to split the import path
-            try:
-
-                # Split the path by one level
-                start, import_name = import_name.split('.', 1)
-
-            # Are we at the end of the import?
-            except ValueError:
-
-                # Set the next value to the import name
-                start = import_name
-
-            # Set the globals value to the current module
-            self._globals = self._globals[start].__dict__
+        self._globals = {
+            x: getattr(self._plugin, x) for x in dir(self._plugin)}
 
     @property
     def globals(self):
