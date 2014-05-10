@@ -187,10 +187,10 @@ class PluginManager(OrderedDict):
         '''Removes a module and unloads any AutoUnload instances'''
 
         # Loop through all items in the module
-        for y in iter(sys.modules[module].__dict__):
+        for name in dir(sys.modules[module]):
 
             # Get the item's object
-            instance = sys.modules[module].__dict__[y]
+            instance = getattr(sys.modules[module], name)
 
             # Is the object an AutoUnload instance
             if not isinstance(instance, AutoUnload):

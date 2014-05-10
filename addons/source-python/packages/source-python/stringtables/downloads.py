@@ -3,11 +3,17 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Inspect
+from inspect import stack
+
 # Source.Python Imports
-from stringtables import StringTables
 from core import AutoUnload
+from paths import PLUGIN_PATH
 #   Events
 from events.manager import EventRegistry
+#   Stringtables
+from stringtables import StringTables
 
 
 # =============================================================================
@@ -26,7 +32,21 @@ class Downloadables(AutoUnload, set):
     '''Class used to store downloadables for a script'''
 
     def __init__(self):
-        '''Add the instance to the downloadables list'''
+        '''Sets the __module__ if called by a plugin and
+            adds the instance to the downloadables list'''
+
+        # Get the file that called
+        caller = stack()[1][1]
+
+        # Is the calling file in a plugin?
+        if PLUGIN_PATH in caller:
+
+            # Set the module to the plugin's module so that
+            # _unload_instance will fire when the plugin is unloaded
+            self.__module__ = caller.replace(PLUGIN_PATH, '')[1:].replace(
+                '/', '.').replace('\\', '.').rsplit('.', 1)[0]
+
+        # Add the instance to the downloadables list
         _DownloadablesListInstance.append(self)
 
     def add(self, item):
