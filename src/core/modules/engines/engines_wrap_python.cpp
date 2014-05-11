@@ -975,14 +975,14 @@ public:
 class Ray_tExt
 {
 public:
-	static Ray_t* CreateRay1(Vector vec1, Vector vec2)
+	static Ray_t* CreateRay1(const Vector& vec1, const Vector& vec2)
 	{
 		Ray_t* pRay = new Ray_t;
 		pRay->Init(vec1, vec2);
 		return pRay;
 	}
 
-	static Ray_t* CreateRay2(Vector vec1, Vector vec2, Vector vec3, Vector vec4)
+	static Ray_t* CreateRay2(const Vector& vec1, const Vector& vec2, const Vector& vec3, const Vector& vec4)
 	{
 		Ray_t* pRay = new Ray_t;
 		pRay->Init(vec1, vec2, vec3, vec4);

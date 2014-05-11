@@ -133,7 +133,7 @@ void DumpStringTables()
 			for (int iStringIndex = 0;iStringIndex < iTableLength;iStringIndex++)
 			{
 				const char *szCurrentString = pCurrentTable->GetString(iStringIndex);
-				if (szCurrentString != "")
+				if (strcmp(szCurrentString, "") != 0)
 				{
 					PythonLog("dump", "\t%s", szCurrentString);
 				}
