@@ -42,29 +42,29 @@ class _ProjectileMeta(type):
         setattr(
             cls, '{0}_indexes'.format(method_name),
             property(lambda self: cls._projectile_indexes(
-            self, temp['_classname'],
-            temp['_is_filters'], temp['_not_filters'])))
+                self, temp['_classname'],
+                temp['_is_filters'], temp['_not_filters'])))
 
         # Create the get_<weapon>_indexes method
         setattr(
             cls, 'get_{0}_indexes'.format(method_name),
             lambda self: cls._get_projectile_index_list(
-            self, temp['_classname'],
-            temp['_is_filters'], temp['_not_filters']))
+                self, temp['_classname'],
+                temp['_is_filters'], temp['_not_filters']))
 
         # Create the get_<weapon>_count method
         setattr(
             cls, 'get_{0}_count'.format(method_name),
             lambda self: cls._get_projectile_ammo(
-            self, temp['_classname'],
-            temp['_is_filters'], temp['_not_filters']))
+                self, temp['_classname'],
+                temp['_is_filters'], temp['_not_filters']))
 
         # Create the set_<weapon>_count method
         setattr(
             cls, 'set_{0}_count'.format(method_name),
             lambda self, value: cls._set_projectile_ammo(
-            self, value, temp['_classname'],
-            temp['_is_filters'], temp['_not_filters']))
+                self, value, temp['_classname'],
+                temp['_is_filters'], temp['_not_filters']))
 
         # Return the new class
         return cls
