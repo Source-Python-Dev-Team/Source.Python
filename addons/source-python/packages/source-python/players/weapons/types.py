@@ -4,10 +4,10 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from conversions_c import index_from_edict
-from entity_c import EntityGenerator
 #   Entities
+from entities import EntityGenerator
 from entities.entity import BaseEntity
+from entities.helpers import index_from_edict
 
 
 # =============================================================================

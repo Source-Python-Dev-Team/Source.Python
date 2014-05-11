@@ -3,6 +3,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Importlib
+from importlib import import_module
+
 # Source.Python Imports
 from core import GAME_NAME
 #   Entities
@@ -26,23 +30,19 @@ __all__ = []
 try:
 
     # Get the game's file's instance
-    _game_instance = __import__(
-        'players.games.{0}'.format(GAME_NAME), fromlist=[''])
+    _game_instance = import_module('players.games.{0}'.format(GAME_NAME))
 
 # Was an ImportError encountered?
 except ImportError:
 
     # Set the game's _GameWeapons class to the basic "object" type
-    _GameWeapons = object
+    _GameWeapons = set()
 
 # Was no ImportError encountered?
 else:
 
     # Get the game's _GameWeapons class
     _GameWeapons = _game_instance._GameWeapons
-
-    # If the rest was successful, import WeaponClassIter
-    from filters.weapons import WeaponClassIter
 
 
 # =============================================================================
@@ -89,7 +89,7 @@ class _PlayerWeapons(_GameWeapons):
             return 0
 
         # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index)
+        weapon = BaseEntity(index, 'weapon')
 
         # Return the amount of ammo the player has for the weapon
         return self.get_prop_int(
@@ -132,7 +132,7 @@ class _PlayerWeapons(_GameWeapons):
             return 0
 
         # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index)
+        weapon = BaseEntity(index, 'weapon')
 
         # Return the amount of ammo in the weapon's clip
         return weapon.clip
@@ -175,7 +175,7 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        weapon = BaseEntity(index, 'weapon')
 
         # Set the player's ammo value
         self.set_prop_int(
@@ -219,7 +219,7 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        weapon = BaseEntity(index, 'weapon')
 
         # Set the weapon's clip value
         weapon.clip = value
@@ -262,7 +262,7 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        weapon = BaseEntity(index, 'weapon')
 
         # Get the current ammo value
         current = self.get_prop_int(
@@ -310,7 +310,7 @@ class _PlayerWeapons(_GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        weapon = BaseEntity(index, 'weapon')
 
         # Add ammo to the weapon's clip
         weapon.clip += value
@@ -349,12 +349,22 @@ class _PlayerWeapons(_GameWeapons):
             Iterates over all currently held weapons, and yields their indexes
         '''
 
+        # TODO: find a good way to get the length of m_hMyWeapon
         # Loop through the length of m_hMyWeapons
         for offset in range(64):
 
-            # Get the player's current weapon at this offset
-            handle = self.get_prop_int(
-                WeaponManager.myweapons + '%03i' % offset)
+            # Use try/except in case the length of m_hMyWeapons is less than 64
+            try:
+
+                # Get the player's current weapon at this offset
+                handle = self.get_prop_int(
+                    WeaponManager.myweapons + '%03i' % offset)
+
+            # Was the prop not found?
+            except ValueError:
+
+                # No need to keep looping
+                break
 
             # Is this an invalid handle?
             if handle == -1:
@@ -372,7 +382,7 @@ class _PlayerWeapons(_GameWeapons):
                 continue
 
             # Get the weapon's edict
-            edict = BaseEntity(index)
+            edict = BaseEntity(index, 'weapon')
 
             # Get the weapon's classname
             weapon_class = edict.get_class_name()
@@ -383,6 +393,9 @@ class _PlayerWeapons(_GameWeapons):
 
                 # Do not yield this index
                 continue
+
+            # Import WeaponClassIter to use its functionality
+            from filters.weapons import WeaponClassIter
 
             # Was a weapon type given and the
             # current weapon is not of that type?
@@ -415,7 +428,7 @@ class _PlayerWeapons(_GameWeapons):
                 'No active weapon found for player "{0}"'.format(self.userid))
 
         # Return the entity's color
-        return BaseEntity(index).color
+        return BaseEntity(index, 'weapon').color
 
     def set_weapon_color(self, red, green, blue, alpha=None):
         '''Sets the player's active weapon's color'''
@@ -434,4 +447,4 @@ class _PlayerWeapons(_GameWeapons):
                 'No active weapon found for player "{0}"'.format(self.userid))
 
         # Set the entity's color
-        BaseEntity(index).color = (red, green, blue, alpha)
+        BaseEntity(index, 'weapon').color = (red, green, blue, alpha)
