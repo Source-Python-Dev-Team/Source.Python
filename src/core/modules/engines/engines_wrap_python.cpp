@@ -327,18 +327,6 @@ void export_engine_server()
 			args("use_pas", "origin", "player_bits")
 		)
 
-		.def("entity_message_begin",
-			&IVEngineServer::EntityMessageBegin,
-			"Begin a message from a server side entity to its client side counterpart (func_breakable glass, e.g.)",
-			args("ent_index", "ent_class", "reliable"),
-			reference_existing_object_policy()
-		)
-
-		.def("message_end",
-			&IVEngineServer::MessageEnd,
-			"Finish the Entity or UserMessage and dispatch to network layer"
-		)
-
 		.def("client_printf",
 			&IVEngineServer::ClientPrintf,
 			"Prints szMsg to the client's console.",
@@ -375,11 +363,6 @@ void export_engine_server()
 			args("max_length")
 		)
 
-		.def("compare_file_time",
-			&IVEngineServer::CompareFileTime,
-			args("filename1", "filename2", "icompare")
-		)
-
 		.def("lock_network_string_tables",
 			&IVEngineServer::LockNetworkStringTables,
 			"Locks/unlocks the network string tables.",
@@ -397,18 +380,6 @@ void export_engine_server()
 			&IVEngineServer::GetClientConVarValue,
 			"Get a convar keyvalue for specified client.",
 			args("client_index", "name")
-		)
-
-		.def("parse_file",
-			&IVEngineServer::ParseFile,
-			"Parse a token from a file",
-			args("data", "token", "maxlen")
-		)
-
-		.def("copy_file",
-			&IVEngineServer::CopyFile,
-			"Copies a file. Returns true if the operation succeeded.",
-			args("source", "destination")
 		)
 
 		.def("reset_pvs",
@@ -453,7 +424,7 @@ void export_engine_server()
 			args("origin")
 		)
 
-		.def("get_area",
+		.def("get_area_bits",
 			&IVEngineServer::GetAreaBits,
 			"Get area portal bit set.",
 			args("area", "bits", "buflen")
@@ -658,7 +629,7 @@ void export_engine_server()
 		.def("is_client_fully_authenticated",
 			&IVEngineServer::IsClientFullyAuthenticated,
 			"Returns true if this client has been fully authenticated by Steam.",
-			args("pEdict")
+			args("edict")
 		)
 
 		.def("set_dedicated_server_benchmark_mode",
@@ -724,20 +695,21 @@ void export_engine_server()
 			args("edict", "key_values")
 		)
 
+		.def("get_server_version",
+			&IVEngineServer::GetServerVersion,
+			"Returns the version of the server."
+		)
+
 		// OB specific methods
-		.NOT_IMPLEMENTED("user_message_begin")
 		.NOT_IMPLEMENTED("get_time")
 		.NOT_IMPLEMENTED("multiplayer_end_game")
-		.NOT_IMPLEMENTED("change_team")
 		.NOT_IMPLEMENTED("create_fake_client_ex")
-		.NOT_IMPLEMENTED("get_server_version")
 		.NOT_IMPLEMENTED("get_replay")
 
 		// CS:GO specific methods
 		.NOT_IMPLEMENTED("get_launch_options")
 		.NOT_IMPLEMENTED("is_userid_in_use")
 		.NOT_IMPLEMENTED("get_loading_process_for_userid")
-		.NOT_IMPLEMENTED("send_user_message")
 		.NOT_IMPLEMENTED("is_log_enabled")
 		.NOT_IMPLEMENTED("get_timescale")
 		.NOT_IMPLEMENTED("is_level_main_menu_background")

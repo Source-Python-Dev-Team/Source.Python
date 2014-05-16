@@ -66,11 +66,6 @@ T IVEngineServer_Visitor(T cls)
 			args("userid")
 		)
 
-		.def("send_user_message",
-			&IVEngineServer::SendUserMessage,
-			args("filter", "message_type", "message")
-		)
-
 		.def("is_log_enabled",
 			&IVEngineServer::IsLogEnabled,
 			"Returns whether logging is enabled."

@@ -44,13 +44,6 @@ template<class T>
 T IVEngineServer_Visitor(T cls)
 {
 	cls
-		.def("user_message_begin",
-			&IVEngineServer::UserMessageBegin,
-			"Begins a user message from the server to the client .dll.",
-			args("filter", "message_type"),
-			reference_existing_object_policy()
-		)
-
 		.def("get_time",
 			&IVEngineServer::Time,
 			"Returns a high precision timer for doing profiling work"
@@ -61,17 +54,9 @@ T IVEngineServer_Visitor(T cls)
 			"Matchmaking"
 		)
 
-		.def("change_team",
-			&IVEngineServer::ChangeTeam
-		)
-
 		.def("create_fake_client_ex",
 			&IVEngineServer::CreateFakeClientEx,
 			reference_existing_object_policy()
-		)
-
-		.def("get_server_version",
-			&IVEngineServer::GetServerVersion
 		)
 	;
 
