@@ -344,7 +344,16 @@ handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	// Generate the argument string
-	ReturnType_t return_type = extract<ReturnType_t>(m_oReturnType);
+	ReturnType_t return_type;
+	try
+	{
+		return_type = extract<ReturnType_t>(m_oReturnType);
+	}
+	catch ( ... )
+	{
+		PyErr_Clear();
+		return_type = RET_POINTER;
+	}
 	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, return_type));
 
 	// Hook the function
