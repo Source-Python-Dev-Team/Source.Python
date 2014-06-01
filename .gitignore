@@ -20,6 +20,7 @@ turtledemo/
 unittest/
 test/
 tests/
-src/Builds/*
+src/Builds/
+src/hl2sdk/
 src/sdks/*
 !src/sdks/readme.txt
