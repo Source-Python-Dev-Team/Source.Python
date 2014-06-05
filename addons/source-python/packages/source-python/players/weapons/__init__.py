@@ -36,7 +36,7 @@ try:
 except ImportError:
 
     # Set the game's _GameWeapons class to the basic "object" type
-    _GameWeapons = set()
+    _GameWeapons = object
 
 # Was no ImportError encountered?
 else:

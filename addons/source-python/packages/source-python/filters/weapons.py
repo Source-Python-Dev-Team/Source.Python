@@ -96,7 +96,7 @@ class WeaponClassIter(_IterObject):
 # =============================================================================
 # >> WEAPON TAG CLASSES
 # =============================================================================
-class __WeaponTagsInstance(dict):
+class _WeaponTags(dict):
     '''Class used to store weapon tags for the current game'''
 
     def __missing__(self, item):
@@ -108,8 +108,8 @@ class __WeaponTagsInstance(dict):
         # Return the instance
         return instance
 
-# Get the __WeaponTagsInstance instance
-_WeaponTagsInstance = __WeaponTagsInstance()
+# Get the _WeaponTags instance
+_WeaponTagsInstance = _WeaponTags()
 
 
 class _Tag(object):
@@ -147,13 +147,8 @@ for tag in WeaponManager.tags:
 
 
 # =============================================================================
-# >> WEAPON EDICT RETURN TYPE FUNCTIONS
+# >> WEAPON EDICT RETURN TYPES
 # =============================================================================
-def _return_edict(edict):
-    '''Returns the weapon's edict'''
-    return edict
-
-
 def _return_instance(edict):
     '''Returns the weapon's BaseEntity instance'''
     from entities.entity import BaseEntity
@@ -167,63 +162,29 @@ _WeaponEdictIterManagerInstance.register_return_type(
     'inthandle', inthandle_from_edict)
 _WeaponEdictIterManagerInstance.register_return_type(
     'pointer', pointer_from_edict)
-_WeaponEdictIterManagerInstance.register_return_type('edict', _return_edict)
+_WeaponEdictIterManagerInstance.register_return_type(
+    'edict', lambda edict: edict)
 _WeaponEdictIterManagerInstance.register_return_type(
     'weapon', _return_instance)
 
 
 # =============================================================================
-# >> WEAPON CLASS RETURN TYPE FUNCTIONS
+# >> WEAPON CLASS RETURN TYPES
 # =============================================================================
-def _return_weapon(weapon):
-    '''Returns the weapon type's WeaponManager item'''
-    return weapon
-
-
-def _return_classname(weapon):
-    '''Returns the weapon type's classname'''
-    return weapon.name
-
-
-def _return_basename(weapon):
-    '''Returns the weapon type's basename'''
-    return weapon.basename
-
-
-def _return_slot(weapon):
-    '''Returns the weapon type's slot'''
-    return weapon.slot
-
-
-def _return_maxammo(weapon):
-    '''Returns the weapon type's maxammo'''
-    return weapon.maxammo
-
-
-def _return_ammoprop(weapon):
-    '''Returns the weapon type's ammoprop'''
-    return weapon.ammoprop
-
-
-def _return_clip(weapon):
-    '''Returns the weapon type's clip'''
-    return weapon.clip
-
-
-def _return_tags(weapon):
-    '''Returns the weapon type's tags'''
-    return weapon.tags
-
 # Register the return type functions
-_WeaponClassIterManagerInstance.register_return_type('weapon', _return_weapon)
 _WeaponClassIterManagerInstance.register_return_type(
-    'classname', _return_classname)
+    'weapon', lambda weapon: weapon)
 _WeaponClassIterManagerInstance.register_return_type(
-    'basename', _return_basename)
-_WeaponClassIterManagerInstance.register_return_type('slot', _return_slot)
+    'classname', lambda weapon: weapon.name)
 _WeaponClassIterManagerInstance.register_return_type(
-    'maxammo', _return_maxammo)
+    'basename', lambda weapon: weapon.basename)
 _WeaponClassIterManagerInstance.register_return_type(
-    'ammoprop', _return_ammoprop)
-_WeaponClassIterManagerInstance.register_return_type('clip', _return_clip)
-_WeaponClassIterManagerInstance.register_return_type('tags', _return_tags)
+    'slot', lambda weapon: weapon.slot)
+_WeaponClassIterManagerInstance.register_return_type(
+    'maxammo', lambda weapon: weapon.maxammo)
+_WeaponClassIterManagerInstance.register_return_type(
+    'ammoprop', lambda weapon: weapon.ammoprop)
+_WeaponClassIterManagerInstance.register_return_type(
+    'clip', lambda weapon: weapon.clip)
+_WeaponClassIterManagerInstance.register_return_type(
+    'tags', lambda weapon: weapon.tags)
