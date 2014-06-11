@@ -15,12 +15,13 @@ Set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING
 # ------------------------------------------------------------------
 # Setup include paths.
 # ------------------------------------------------------------------
+Set(SOURCESDK_DIR        ${CMAKE_CURRENT_SOURCE_DIR}/hl2sdk)
 Set(THIRDPARTY_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
 
 # ------------------------------------------------------------------
 # SDK Directories.
 # ------------------------------------------------------------------
-Set(SOURCESDK            ${CMAKE_CURRENT_SOURCE_DIR}/hl2sdk)
+Set(SOURCESDK            ${SOURCESDK_DIR}/${BRANCH})
 Set(SOURCESDK_LIB        ${SOURCESDK}/lib)
 
 # ------------------------------------------------------------------

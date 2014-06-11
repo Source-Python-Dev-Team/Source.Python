@@ -21,4 +21,5 @@ unittest/
 test/
 tests/
 src/Builds/
-src/hl2sdk/
+src/hl2sdk/*
+!src/hl2sdk/readme.txt
