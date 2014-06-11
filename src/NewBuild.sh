@@ -89,7 +89,7 @@ CloneRepo () {
 
     # If the hl2sdk directory does not exist, create the clone
     if [ ! -d $BRANCHDIR ]; then
-        mkdir $BRANCHDIR
+        mkdir -p $BRANCHDIR
         cd $BRANCHDIR
         git clone https://github.com/alliedmodders/hl2sdk.git .
     else
