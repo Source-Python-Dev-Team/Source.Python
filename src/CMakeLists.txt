@@ -6,7 +6,7 @@ CMake_Minimum_Required(VERSION 2.8)
 # ------------------------------------------------------------------
 # Makefile includes.
 # ------------------------------------------------------------------
-include("makefiles/sdk/${SDK}.cmake")
+include("makefiles/branch/${BRANCH}.cmake")
 include("makefiles/shared.cmake")
 
 # ------------------------------------------------------------------
@@ -495,7 +495,7 @@ Source_Group("Source Files\\Module\\Listeners"              FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Messages\\${SDK}"       FILES ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES})
+Source_Group("Source Files\\Module\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES})
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_SOURCES})
