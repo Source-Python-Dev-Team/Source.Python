@@ -1,7 +1,7 @@
 @echo off
 
 :: Set the start directory for later reference
-set STARTDIR="%CD%"
+set STARTDIR=%CD%
 
 :: Allow the use of delayed expansion
 setlocal EnableDelayedExpansion
@@ -20,7 +20,7 @@ setlocal EnableDelayedExpansion
     set /a num=0
 
     :: Loop through all branches supported by the plugin
-    for %%f in (%STARTDIR%\makefiles\sdk\*.*) do (
+    for %%f in (%STARTDIR%\makefiles\branch\*.*) do (
 
         :: Increment the counter
         set /a num+=1
@@ -91,7 +91,9 @@ setlocal EnableDelayedExpansion
 :MovePatches
 
     :: Copy any patched files over if any exist for the specific branch
-    if exist %STARTDIR%\patches\%branch% xcopy %STARTDIR%\patches\%branch% %STARTDIR%\hl2sdk
+    if exist %STARTDIR%\patches\%branch% xcopy %STARTDIR%\patches\%branch% %STARTDIR%\hl2sdk /y/s
+
+    if exist %STARTDIR%\patches\%branch% echo Moving files from %STARTDIR%\patches\%branch% to %STARTDIR%\hl2sdk
 
     :: Create the build files for the branch
     :CreateBuild
@@ -110,7 +112,7 @@ setlocal EnableDelayedExpansion
     if not exist %STARTDIR%\Builds\%branch% mkdir %STARTDIR%\Builds\%branch%
 
     :: Create the build files
-    cmake . -B%STARTDIR%\Builds\%branch% -G"Visual Studio 10" -DSDK=%branch%
+    cmake . -B%STARTDIR%\Builds\%branch% -G"Visual Studio 10" -DBRANCH=%branch%
 
     :: Pause to show the process is completed
     pause

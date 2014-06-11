@@ -12,7 +12,7 @@ ChooseBranch () {
     num=0
 
     # Loop through all branches supported by the plugin
-    for filepath in $(find $STARTDIR/makefiles/sdk -maxdepth 1 -type f)
+    for filepath in $(find $STARTDIR/makefiles/branch -maxdepth 1 -type f)
     do
 
         # Increment the counter
@@ -169,11 +169,11 @@ CreateBuild () {
 
     # Building for "Release"?
     if [ $choice == "1" ]; then
-        cmake . -B$BUILDDIR -DSDK=$branch
+        cmake . -B$BUILDDIR -DBRANCH=$branch
 
     # Building for "Debug"?
     else
-        cmake . -B$BUILDDIR -DSDK=$branch -DCMAKE_BUILD_TYPE=Debug
+        cmake . -B$BUILDDIR -DBRANCH=$branch -DCMAKE_BUILD_TYPE=Debug
 
     fi
 
