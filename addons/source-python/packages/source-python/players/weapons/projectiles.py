@@ -44,12 +44,14 @@ class _ProjectileMeta(type):
         # Get the weapon's name based off of the class name
         method_name = name.strip('_').lower()
 
-        # Create the iterator <weapon>_indexes method
+        # Create the iterator <weapon>_indexes method and set its docstring
         setattr(
             cls, '{0}_indexes'.format(method_name),
             property(lambda self: cls._projectile_indexes(
                 self, temp['_classname'],
-                temp['_is_filters'], temp['_not_filters'])))
+                temp['_is_filters'], temp['_not_filters']), doc='Returns ' +
+                'a generator of {0} indexes the player owns.'.format(
+                method_name)))
 
         # Create the get_<weapon>_indexes method
         setattr(
@@ -58,6 +60,12 @@ class _ProjectileMeta(type):
                 self, temp['_classname'],
                 temp['_is_filters'], temp['_not_filters']))
 
+        # Set the docstring for the method
+        getattr(
+            cls, 'get_{0}_indexes'.format(method_name)).__doc__ = (
+            'Returns a list of {0} indexes the player owns.'.format(
+            method_name))
+
         # Create the get_<weapon>_count method
         setattr(
             cls, 'get_{0}_count'.format(method_name),
@@ -65,12 +73,23 @@ class _ProjectileMeta(type):
                 self, temp['_classname'],
                 temp['_is_filters'], temp['_not_filters']))
 
+        # Set the docstring for the method
+        getattr(
+            cls, 'get_{0}_count'.format(method_name)).__doc__ = (
+            "Returns the player's {0} ammo amount.".format(method_name))
+
         # Create the set_<weapon>_count method
         setattr(
             cls, 'set_{0}_count'.format(method_name),
             lambda self, value: cls._set_projectile_ammo(
                 self, value, temp['_classname'],
                 temp['_is_filters'], temp['_not_filters']))
+
+        # Set the docstring for the method
+        getattr(
+            cls, 'set_{0}_count'.format(method_name)).__doc__ = (
+            "Sets the player's {0} ammo amount to the given value.".format(
+            method_name))
 
         # Return the new class
         return cls
