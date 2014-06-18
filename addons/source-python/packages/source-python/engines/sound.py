@@ -58,8 +58,8 @@ __all__ = [
 class Attenuations(object):
     '''Attenuation values wrapper enumerator.
 
-   TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-   '''
+    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
+    '''
     NONE = ATTN_NONE
     NORMAL = ATTN_NORM
     IDLE = ATTN_IDLE
@@ -72,8 +72,8 @@ class Attenuations(object):
 class PitchTypes(object):
     '''Pitch values wrapper enumerator.
 
-   TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-   '''
+    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
+    '''
     NORMAL = PITCH_NORM
     LOW = PITCH_LOW
     HIGH = PITCH_HIGH
