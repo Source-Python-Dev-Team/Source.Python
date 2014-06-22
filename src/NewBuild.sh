@@ -47,10 +47,10 @@ ChooseBranch () {
 
         # Get the branch chosen
         branch=option_$choice
-        branch=${!branch}
+        BRANCH=${!branch}
 
         # Show the build-type options
-        ChooseBuildType $branch
+        ChooseBuildType
 
     fi
 
@@ -60,9 +60,6 @@ ChooseBranch () {
 # A function to choose the build type
 ChooseBuildType () {
 
-    # Get the name of the branch to build agains
-    branch=$1
-
     # Print a menu for build type
     echo "Select the build type:"
     echo ""
@@ -71,15 +68,15 @@ ChooseBuildType () {
     echo ""
 
     # Request a choice in build type
-    read build_type
+    read BUILD_TYPE
 
     # Was the choice invalid?
-    if [ ! $build_type == "1" ] && [ ! $build_type == "2" ]; then
-        ChooseBuildType $branch
+    if [ ! $BUILD_TYPE == "1" ] && [ ! $BUILD_TYPE == "2" ]; then
+        ChooseBuildType
     fi
 
     # If the choice was valid, create the clone, if it doesn't exist
-    CloneRepo $branch $build_type
+    CloneRepo
 
 }
 
@@ -87,22 +84,21 @@ ChooseBuildType () {
 # A function to create the clone and checkout the selected branch
 CloneRepo () {
 
-    # Set the variables passed
-    branch=$1
-    build_type=$2
+    # Set the branch's repository directory
+    BRANCHDIR=$STARTDIR/hl2sdk/$BRANCH
 
     # If the hl2sdk directory does not exist, create the clone
-    if [ ! -d $STARTDIR/hl2sdk ]; then
-        mkdir $STARTDIR/hl2sdk
-        cd hl2sdk
+    if [ ! -d $BRANCHDIR ]; then
+        mkdir -p $BRANCHDIR
+        cd $BRANCHDIR
         git clone https://github.com/alliedmodders/hl2sdk.git .
     else
-        cd hl2sdk
+        cd $BRANCHDIR
     fi
 
     # Try to checkout the selected branch and revert all changes
-    if git checkout -f $branch; then
-        PullChanges $branch $build_type
+    if git checkout -f $BRANCH; then
+        PullChanges
     else
         echo "Unknown branch to checkout"
     fi
@@ -112,15 +108,11 @@ CloneRepo () {
 # A function to pull repo changes
 PullChanges () {
 
-    # Set the variables passed
-    branch=$1
-    build_type=$2
-
     # Pull the newest changeset from github/alliedmods/hl2sdk
     if git pull; then
 
         # Move the patched files
-        MovePatches $branch $build_type
+        MovePatches
 
     else
 
@@ -134,33 +126,28 @@ PullChanges () {
 # A function to move patched files
 MovePatches () {
 
-    # Set the variables passed
-    branch=$1
-    build_type=$2
+    # Set the branch's patch directory
+    PATCHDIR=$STARTDIR/patches/$BRANCH
 
     # Copy any patched files over if any exist for the specific branch
-    if [ -d $STARTDIR/patches/hl2sdk-$ ]; then
-        cd $STARTDIR/patches/hl2sdk-$
-        cp -r * $STARTDIR/hl2sdk
+    if [ -d $PATCHDIR ]; then
+        cd $PATCHDIR
+        cp -r * $BRANCHDIR
     fi
 
     # Create the build files for the branch
-    CreateBuild $branch $build_type
+    CreateBuild
 }
 
 
 # A function to create build files
 CreateBuild () {
 
-    # Set the variables passed
-    branch=$1
-    build_type=$2
-
     # Navigate back to the starting directory
     cd $STARTDIR
 
-    # Get the branch's build directory
-    BUILDDIR=$STARTDIR/Builds/$branch
+    # Set the branch's build directory
+    BUILDDIR=$STARTDIR/Builds/$BRANCH
 
     # Does the build directory exist (make it if not)?
     if [ ! -d $BUILDDIR ]; then
@@ -168,17 +155,17 @@ CreateBuild () {
     fi
 
     # Building for "Release"?
-    if [ $choice == "1" ]; then
-        cmake . -B$BUILDDIR -DBRANCH=$branch
+    if [ $BUILD_TYPE == "1" ]; then
+        cmake . -B$BUILDDIR -DBRANCH=$BRANCH
 
     # Building for "Debug"?
     else
-        cmake . -B$BUILDDIR -DBRANCH=$branch -DCMAKE_BUILD_TYPE=Debug
+        cmake . -B$BUILDDIR -DBRANCH=$BRANCH -DCMAKE_BUILD_TYPE=Debug
 
     fi
 
     # Navigate to the ../Builds/<Branch> directory
-    cd Builds/$branch
+    cd $BUILDDIR
 
     # Build the binaries
     make clean

@@ -6,7 +6,7 @@
 # ------------------------------------------------------------------
 # Includes.
 # ------------------------------------------------------------------
-include("makefiles/sdk/${SDK}/usermessages.cmake")
+include("makefiles/branch/${BRANCH}/usermessages.cmake")
 
 # ------------------------------------------------------------------
 # Set the engine version.

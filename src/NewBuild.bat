@@ -55,13 +55,16 @@ setlocal EnableDelayedExpansion
 :: A place to create the clone
 :CloneRepo
 
-    :: If the hl2sdk directory does not exist, create the clone
-    if not exist %STARTDIR%\hl2sdk (
-        mkdir %STARTDIR%\hl2sdk
-        cd hl2sdk
+    :: Set the branch's repository directory
+    set BRANCHDIR=%STARTDIR%\hl2sdk\%branch%
+
+    :: If the branch's repo doesn't exist, create the clone
+    if not exist %BRANCHDIR% (
+        mkdir %BRANCHDIR%
+        cd %BRANCHDIR%
         git clone https://github.com/alliedmodders/hl2sdk.git .
     ) else (
-        cd hl2sdk
+        cd %BRANCHDIR%
     )
 
     :: Checkout the selected branch and revert all changes
@@ -90,10 +93,11 @@ setlocal EnableDelayedExpansion
 :: A place to move patched files
 :MovePatches
 
-    :: Copy any patched files over if any exist for the specific branch
-    if exist %STARTDIR%\patches\%branch% xcopy %STARTDIR%\patches\%branch% %STARTDIR%\hl2sdk /y/s
+    :: Set the branch's patch directory
+    set PATCHDIR=%STARTDIR%\patches\%branch%
 
-    if exist %STARTDIR%\patches\%branch% echo Moving files from %STARTDIR%\patches\%branch% to %STARTDIR%\hl2sdk
+    :: Copy any patched files over if any exist for the specific branch
+    if exist %PATCHDIR% xcopy %PATCHDIR% %BRANCHDIR% /y/s
 
     :: Create the build files for the branch
     :CreateBuild
@@ -105,14 +109,14 @@ setlocal EnableDelayedExpansion
     :: Navigate back to the starting directory
     cd %STARTDIR%
 
-    :: Get the branch's build directory
+    :: Set the branch's build directory
     set BUILDDIR=%STARTDIR%\Builds\%branch%
 
     :: Does the build directory exist (make it if not)?
-    if not exist %STARTDIR%\Builds\%branch% mkdir %STARTDIR%\Builds\%branch%
+    if not exist %BUILDDIR% mkdir %BUILDDIR%
 
     :: Create the build files
-    cmake . -B%STARTDIR%\Builds\%branch% -G"Visual Studio 10" -DBRANCH=%branch%
+    cmake . -B%BUILDDIR% -G"Visual Studio 10" -DBRANCH=%branch%
 
     :: Pause to show the process is completed
     pause

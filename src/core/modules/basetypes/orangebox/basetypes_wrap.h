@@ -79,8 +79,9 @@ CTakeDamageInfo::CTakeDamageInfo()
 	m_vecReportedPosition = vec3_origin;
 	m_iAmmoType = -1;
 	m_iDamagedOtherPlayers = 0;
-	m_iPlayerPenetrateCount = 0;
-	m_flUnknown = 0.0f;
+	m_iPlayerPenetrationCount = 0;
+	m_flDamageBonus = 0.0f;
+	m_bForceFriendlyFire = false;
 }
 
 
@@ -92,12 +93,12 @@ class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
 public:
 	int get_penetrated()
 	{
-		return m_iPlayerPenetrateCount;
+		return m_iPlayerPenetrationCount;
 	}
 	
 	void set_penetrated(int iPenetrated)
 	{
-		m_iPlayerPenetrateCount = iPenetrated;
+		m_iPlayerPenetrationCount = iPenetrated;
 	}
 };
 
