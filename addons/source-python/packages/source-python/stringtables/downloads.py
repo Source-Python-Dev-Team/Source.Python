@@ -3,11 +3,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Inspect
-from inspect import getmodule
-from inspect import stack
-
 # Source.Python Imports
 from core import AutoUnload
 from paths import PLUGIN_PATH
@@ -33,18 +28,7 @@ class Downloadables(AutoUnload, set):
     '''Class used to store downloadables for a script'''
 
     def __init__(self):
-        '''Sets the __module__ if called by a plugin and
-            adds the instance to the downloadables list'''
-
-        # Get the file that called
-        caller = getmodule(stack()[1][0])
-
-        # Is the calling file in a plugin?
-        if PLUGIN_PATH in caller.__file__:
-
-            # Set the module to the plugin's module so that
-            # _unload_instance will fire when the plugin is unloaded
-            self.__module__ = caller.__name__
+        '''Adds the instance to the downloadables list'''
 
         # Add the instance to the downloadables list
         _DownloadablesListInstance.append(self)

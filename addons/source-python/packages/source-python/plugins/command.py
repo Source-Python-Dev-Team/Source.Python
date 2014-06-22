@@ -39,7 +39,7 @@ PluginCommandLogger = PluginsLogger.command
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SubCommandManager(OrderedDict, AutoUnload):
+class SubCommandManager(AutoUnload, OrderedDict):
     '''Class used for executing sub-commands for the given console command'''
 
     def __init__(self, command, description='', prefix=''):

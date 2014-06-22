@@ -199,17 +199,22 @@ class PluginManager(OrderedDict):
                 continue
 
             # Is the instance native to the given module?
-            if instance.__module__ == module:
+            if instance._calling_module == module:
 
-                # Unload the object
-                instance._unload_instance()
+                # Use try/except in-case the instance
+                # does not have an _unload_instance method
+                try:
 
-            # Is the instance's callback native to the given module?
-            if (hasattr(instance, 'callback') and
-                    getattr(instance, 'callback').__module__ == module):
+                    # Unload the object
+                    instance._unload_instance()
 
-                # Unload the object
-                instance._unload_instance()
+                # Was a NotImplementedError encountered?
+                except NotImplementedError:
+
+                    # Print the error to console, but allow all
+                    # other AutoUnload instances to be unloaded
+                    # and the plugin to be fully unloaded itself
+                    ExceptHooks.print_exception()
 
         # Delete the module
         del sys.modules[module]

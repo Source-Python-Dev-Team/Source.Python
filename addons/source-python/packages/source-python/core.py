@@ -4,10 +4,15 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Inspect
+from inspect import getmodule
+from inspect import stack
 #   OS
 from os import sep
 #   Platform
 from platform import system
+#   Sys
+import sys
 
 # Source.Python Imports
 from constants import SOURCE_ENGINE
@@ -55,8 +60,33 @@ class AutoUnload(object):
         Class used to auto unload specific instances.
 
         Each class which inherits this one
-        should have a _unload_instance method.
+            should have an _unload_instance method.
     '''
+
+    def __new__(cls, *args, **kwargs):
+        '''Overwrite __new__ to store the calling module'''
+
+        # Get the class instance
+        self = super(AutoUnload, cls).__new__(cls)
+
+        # Get the calling module
+        caller = getmodule(stack()[1][0])
+
+        # Set the _calling_module attribute for the instance
+        self._calling_module = caller.__name__
+
+        # Return the instance
+        return self
+
+    def _unload_instance(self):
+        '''Base _unload_instance method that, if
+            called, raises a NotImplementedError'''
+        raise NotImplementedError(
+            'Class "{0}" from file "{1}" does not '.format(
+                self.__class__.__name__, sys.modules[
+                    self.__class__.__module__].__file__.split(
+                    'plugins', 1)[1][1:]) +
+            'have its own implementation of an _unload_instance method.')
 
 
 # =============================================================================

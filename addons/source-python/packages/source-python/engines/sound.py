@@ -3,11 +3,6 @@
 # =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
-# Python Imports
-#   Inspect
-from inspect import getmodule
-from inspect import stack
-
 # Source.Python Imports
 from core import AutoUnload
 #   Engines
@@ -94,16 +89,6 @@ class Sound(AutoUnload):
             sound_time=0.0, speaker_entity=-1, download=False):
         '''Store all the given attributes and set the module for unloading'''
 
-        # Get the file that called
-        caller = getmodule(stack()[1][0])
-
-        # Is the calling file in a plugin?
-        if PLUGIN_PATH in caller.__file__:
-
-            # Set the module to the plugin's module so that
-            # _unload_instance will fire when the plugin is unloaded
-            self.__module__ = caller.__name__
-
         # Set sample as a private attribute, since it should never change
         self._sample = sample
 
@@ -124,16 +109,6 @@ class Sound(AutoUnload):
 
         # Should the sample be downloaded by clients?
         if download:
-
-            # Get the file that called
-            caller = getmodule(stack()[1][0])
-
-            # Is the calling file in a plugin?
-            if PLUGIN_PATH in caller.__file__:
-
-                # Set the module to the plugin's module so that
-                # _unload_instance will fire when the plugin is unloaded
-                self.__module__ = caller.__name__
 
             # Add the sample to Downloadables
             self._downloads = Downloadables()
