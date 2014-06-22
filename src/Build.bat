@@ -1,7 +1,7 @@
 @echo off
 
 :: Set the start directory for later reference
-set STARTDIR=%CD%
+set STARTDIR="%CD%"
 
 :: Allow the use of delayed expansion
 setlocal EnableDelayedExpansion
