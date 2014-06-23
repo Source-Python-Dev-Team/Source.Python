@@ -107,7 +107,7 @@ _PlayerIterManagerInstance.register_filter('all', lambda playerinfo: True)
 _PlayerIterManagerInstance.register_filter(
     'bot', lambda playerinfo: playerinfo.is_fake_client())
 _PlayerIterManagerInstance.register_filter(
-    'human', lambda playerinfo: playerinfo.is_player())
+    'human', lambda playerinfo: not playerinfo.is_fake_client())
 _PlayerIterManagerInstance.register_filter(
     'alive', lambda playerinfo: not edict_from_playerinfo(
         playerinfo).get_prop_int('pl.deadflag'))
