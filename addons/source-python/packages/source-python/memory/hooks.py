@@ -4,9 +4,11 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from memory import Function
-from _memory import HookType
+#   Core
 from core import AutoUnload
+#   Memory
+from _memory import HookType
+from memory import Function
 
 
 # =============================================================================

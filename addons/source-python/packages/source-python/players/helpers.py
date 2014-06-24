@@ -4,6 +4,17 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Engines
+from engines.server import EngineServer
+#   Players
+from players import PlayerGenerator
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Conversions
 from _conversions import basehandle_from_edict
 from _conversions import basehandle_from_index
 from _conversions import basehandle_from_inthandle
@@ -46,8 +57,6 @@ from _conversions import userid_from_index
 from _conversions import userid_from_inthandle
 from _conversions import userid_from_playerinfo
 from _conversions import userid_from_pointer
-from engines.server import EngineServer
-from players import PlayerGenerator
 
 
 # =============================================================================

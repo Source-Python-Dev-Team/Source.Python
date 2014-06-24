@@ -6,6 +6,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Commands
+from _commands import SayCommandDispatcher
 from _commands import get_say_command
 from _commands import register_say_filter
 from _commands import unregister_say_filter
@@ -20,6 +21,7 @@ from commands.say.manager import SayCommandManager
 # Add all the global variables to __all__
 __all__ = [
     'SayCommand',
+    'SayCommandDispatcher',
     'SayCommandManager',
     'SayFilter',
     'get_say_command',

@@ -8,6 +8,7 @@
 from importlib import import_module
 
 # Source.Python Imports
+#   Core
 from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity

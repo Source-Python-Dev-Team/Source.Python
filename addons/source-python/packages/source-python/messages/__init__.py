@@ -4,11 +4,14 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
+#   Core
 from core import GAME_NAME
+#   Loggers
 from loggers import _SPLogger
-from paths import SP_DATA_PATH
 #   Messages
 from messages.base import _UserMessages
+#   Paths
+from paths import SP_DATA_PATH
 
 
 # =============================================================================

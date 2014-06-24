@@ -18,9 +18,13 @@ from logging import addLevelName
 from logging import getLogger
 
 # Source.Python Imports
-from cvars import ConVar
-from engines.server import EngineServer
+#   Core
 from core import echo_console
+#   Cvars
+from cvars import ConVar
+#   Engines
+from engines.server import EngineServer
+#   Paths
 from paths import LOG_PATH
 
 

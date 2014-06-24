@@ -10,7 +10,9 @@ from collections import OrderedDict
 import sys
 
 # Source.Python Imports
+#   Core
 from core import AutoUnload
+#   Hooks
 from hooks.exceptions import ExceptHooks
 #   Plugins
 from plugins import PluginsLogger

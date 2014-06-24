@@ -8,9 +8,10 @@
 from sqlite3 import connect
 
 # Source.Python Imports
-from paths import SP_DATA_PATH
 #   Events
 from events.manager import EventRegistry
+#   Paths
+from paths import SP_DATA_PATH
 
 
 # =============================================================================

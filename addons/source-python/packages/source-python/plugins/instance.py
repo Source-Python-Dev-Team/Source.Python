@@ -8,6 +8,7 @@
 from importlib import import_module
 
 # Source.Python Imports
+#   Paths
 from paths import GAME_PATH
 from paths import PLUGIN_PATH
 #   Plugins

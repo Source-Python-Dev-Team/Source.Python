@@ -15,8 +15,9 @@ from platform import system
 import sys
 
 # Source.Python Imports
-from constants import SOURCE_ENGINE
+#   Engines
 from engines.server import EngineServer
+#   Paths
 from paths import GAME_PATH
 
 
@@ -24,6 +25,8 @@ from paths import GAME_PATH
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Constants
+from constants import SOURCE_ENGINE
 #   Globals
 from _globals import GlobalVars
 

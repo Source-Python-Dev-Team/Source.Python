@@ -19,14 +19,18 @@ from configobj import Section
 from path import Path
 
 # Source.Python Imports
-from engines.server import EngineServer
-from core import echo_console
-from hooks.exceptions import ExceptHooks
-#   UserMessage
+#   Basetypes
 from basetypes import Color
-from _messages import UserMessage
+#   Core
+from core import echo_console
+#   Engines
+from engines.server import EngineServer
 #   Filters
 from filters.recipients import RecipientFilter
+#   Hooks
+from hooks.exceptions import ExceptHooks
+#   Messages
+from _messages import UserMessage
 #   Translations
 from translations.strings import TranslationStrings
 

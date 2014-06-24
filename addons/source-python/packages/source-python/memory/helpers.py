@@ -4,10 +4,13 @@
 # >> IMPORTS
 # =============================================================================
 # Python
+#   Binascii
 import binascii
 
 # Source.Python
+#   Core
 from core import PLATFORM
+#   Memory
 from memory import Argument
 from memory import Convention
 from memory import Function

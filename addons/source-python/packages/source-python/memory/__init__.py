@@ -4,6 +4,15 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python
+#   Loggers
+from loggers import _SPLogger
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python
+#   memory
 from _memory import Argument
 from _memory import BinaryFile
 from _memory import Callback
@@ -23,7 +32,6 @@ from _memory import get_error
 from _memory import get_object_pointer
 from _memory import get_size
 from _memory import make_object
-from loggers import _SPLogger
 
 
 # =============================================================================

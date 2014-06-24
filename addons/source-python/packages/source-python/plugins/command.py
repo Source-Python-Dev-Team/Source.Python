@@ -8,9 +8,10 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from core import AutoUnload
 #   Commands
 from commands.server import ServerCommandManager
+#   Core
+from core import AutoUnload
 #   Plugins
 from plugins import PluginsLogger
 from plugins import _plugin_strings

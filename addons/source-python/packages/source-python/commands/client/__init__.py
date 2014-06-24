@@ -6,6 +6,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Commands
+from _commands import ClientCommandDispatcher
 from _commands import get_client_command
 from _commands import register_client_command_filter
 from _commands import unregister_client_command_filter
@@ -20,6 +21,7 @@ from commands.client.manager import ClientCommandManager
 # Add all the global variables to __all__
 __all__ = [
     'ClientCommand',
+    'ClientCommandDispatcher',
     'ClientCommandFilter',
     'ClientCommandManager',
     'get_client_command',
