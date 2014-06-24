@@ -3,16 +3,18 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site Package Imports
+# Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
 
 # Source.Python Imports
+#   Core
 from core import PLATFORM
 from core import SOURCE_ENGINE
-from paths import SP_DATA_PATH
 #   Memory
 from memory.manager import manager
+#   Paths
+from paths import SP_DATA_PATH
 
 
 # =============================================================================
@@ -21,7 +23,6 @@ from memory.manager import manager
 # Add all the global variables to __all__
 __all__ = [
     'DATA_DESC_MAP_OFFSET',
-    'DamageOffsets',
     'DamageTypes',
 ]
 

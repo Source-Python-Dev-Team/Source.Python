@@ -3,18 +3,21 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site Package Imports
+# Python Imports
 #   Collections
 from collections import OrderedDict
+
+# Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
 
 # Source.Python Imports
 from _core import _CoreLogger
-from paths import GAME_PATH
-from paths import CFG_PATH
 #   Auth
 from auth.paths import AUTH_PROVIDER_PATH
+#   Paths
+from paths import GAME_PATH
+from paths import CFG_PATH
 #   Translations
 from translations.strings import LangStrings
 

@@ -4,11 +4,18 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Cvars
+from _cvars import _ConVar
+from cvars.flags import ConVarFlags
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Cvars
 from _cvars import Cvar
 from _cvars import ConCommandBase
-from _cvars import _ConVar
-#   ConVars
-from cvars.flags import ConVarFlags
 
 
 # =============================================================================

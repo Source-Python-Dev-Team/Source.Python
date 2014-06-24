@@ -4,16 +4,24 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-from tools import ServerTools
-from paths import SP_DATA_PATH
 #   Constants
 from constants import SOURCE_ENGINE
+#   Memory
+from memory.manager import manager
+#   Paths
+from paths import SP_DATA_PATH
+#   Tools
+from tools import ServerTools
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
 #   Effects
 from _effects import DispatchEffectData
 from _effects import Effects
 from _effects import PredictionSystem
-#   Memory
-from memory.manager import manager
 
 
 # =============================================================================

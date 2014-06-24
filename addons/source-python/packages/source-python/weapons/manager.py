@@ -3,13 +3,16 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site Package Imports
+# Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
 
 # Source.Python Imports
+#   Core
 from core import GAME_NAME
+#   Cvars
 from cvars import ConVar
+#   Paths
 from paths import SP_DATA_PATH
 #   Weapons
 from weapons.default import NoWeaponManager

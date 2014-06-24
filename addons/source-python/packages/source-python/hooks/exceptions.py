@@ -12,12 +12,13 @@ import sys
 from traceback import format_exception
 
 # Source.Python Imports
-from paths import GAME_PATH
 #   Hooks
 from hooks import _hooks_strings
 from hooks import HooksLogger
 from hooks.base import _HookBase
 from hooks.base import _HookDecorator
+#   Paths
+from paths import GAME_PATH
 
 
 # =============================================================================

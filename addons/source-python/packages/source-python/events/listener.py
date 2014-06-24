@@ -4,9 +4,18 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from _events import GameEventListener
+#   Hooks
 from hooks.exceptions import ExceptHooks
+#   Loggers
 from loggers import _SPLogger
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Events
+from _events import GameEventListener
 
 
 # =============================================================================

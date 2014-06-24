@@ -4,11 +4,11 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Commands
+from commands.player import _PlayerCommandManager
 from commands.say import get_say_command
 from commands.say import register_say_filter
 from commands.say import unregister_say_filter
-#   Commands
-from commands.player import _PlayerCommandManager
 
 
 # =============================================================================

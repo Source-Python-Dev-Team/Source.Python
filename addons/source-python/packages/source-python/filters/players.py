@@ -3,19 +3,22 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site Package Imports
+# Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
 
 # Source.Python Imports
-from engines.server import EngineServer
-from players import PlayerGenerator
+#   Core
 from core import GAME_NAME
-from paths import SP_DATA_PATH
+#   Engines
+from engines.server import EngineServer
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
+#   Paths
+from paths import SP_DATA_PATH
 #   Players
+from players import PlayerGenerator
 from players.entity import PlayerEntity
 from players.helpers import address_from_playerinfo
 from players.helpers import basehandle_from_playerinfo

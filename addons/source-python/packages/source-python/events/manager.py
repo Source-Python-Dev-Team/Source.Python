@@ -4,10 +4,18 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from _events import GameEventManager
-from loggers import _SPLogger
 #   Events
 from events.listener import _EventListener
+#   Loggers
+from loggers import _SPLogger
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Events
+from _events import GameEventManager
 
 
 # =============================================================================

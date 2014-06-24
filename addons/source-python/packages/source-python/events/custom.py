@@ -8,9 +8,9 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from events.manager import GameEventManager
 #   Events
 from events import EventsLogger
+from events.manager import GameEventManager
 
 
 # =============================================================================

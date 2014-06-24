@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Cvars
 from cvars import ConVar
 #   Translations
 from translations.strings import TranslationStrings

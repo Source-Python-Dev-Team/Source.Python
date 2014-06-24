@@ -3,11 +3,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site Package Imports
+# Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
 
 # Source.Python Imports
+#   Paths
 from paths import SP_DATA_PATH
 
 

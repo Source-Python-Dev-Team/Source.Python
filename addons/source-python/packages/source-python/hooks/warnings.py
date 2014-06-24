@@ -4,18 +4,20 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Linecache
 import linecache
 #   Warnings
 import warnings
 
 # Source.Python Imports
-from paths import GAME_PATH
 #   Hooks
 from hooks import _hooks_strings
 from hooks import HooksLogger
 from hooks.base import _HookBase
 from hooks.base import _HookDecorator
 from hooks.exceptions import ExceptHooks
+#   Paths
+from paths import GAME_PATH
 
 
 # =============================================================================

@@ -3,11 +3,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
 
 # Source.Python
+#   Memory
 from memory import Argument
 from memory import Convention
 from memory import EXPOSED_CLASSES

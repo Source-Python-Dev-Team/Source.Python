@@ -29,10 +29,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
+# Site-Package Imports
+#   Configobj
 from configobj import ConfigObjError
 
 # Source.Python Imports
+#   Cvars
 from cvars import ConVar
 #   Hooks - These are imported to implement the exceptions and warnings hooks
 from hooks.exceptions import ExceptHooks

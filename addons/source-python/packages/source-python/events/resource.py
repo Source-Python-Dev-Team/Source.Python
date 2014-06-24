@@ -8,12 +8,13 @@
 from collections import OrderedDict
 
 # Source.Python Imports
-from paths import EVENT_PATH
 #   Events
 from events import EventsLogger
 from events.custom import CustomEvent
 from events.manager import GameEventManager
 from events.variable import _EventVariable
+#   Paths
+from paths import EVENT_PATH
 
 
 # =============================================================================

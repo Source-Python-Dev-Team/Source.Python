@@ -47,6 +47,7 @@ from _conversions import userid_from_inthandle
 from _conversions import userid_from_playerinfo
 from _conversions import userid_from_pointer
 from engines.server import EngineServer
+from players import PlayerGenerator
 
 
 # =============================================================================
@@ -110,13 +111,13 @@ def index_from_steamid(steamid):
     '''Returns an index from the given SteamID'''
 
     # Loop through all players on the server
-    for player in CPlayerGenerator():
+    for playerinfo in PlayerGenerator():
 
         # Is the current player's SteamID the same as the one given?
-        if player.get_networkid_string() == steamid:
+        if playerinfo.get_networkid_string() == steamid:
 
             # Return the index of the current player
-            return index_from_playerinfo(player)
+            return index_from_playerinfo(playerinfo)
 
     # If no player found with a matching SteamID, raise an error
     raise ValueError('Invalid SteamID "{0}"'.format(steamid))
@@ -126,13 +127,13 @@ def index_from_uniqueid(uniqueid):
     '''Returns an index from the given UniqueID'''
 
     # Loop through all players on the server
-    for player in CPlayerGenerator():
+    for playerinfo in PlayerGenerator():
 
         # Is the current player's UniqueID the same as the one given?
-        if uniqueid_from_playerinfo(player) == uniqueid:
+        if uniqueid_from_playerinfo(playerinfo) == uniqueid:
 
             # Return the index of the current player
-            return index_from_playerinfo(player)
+            return index_from_playerinfo(playerinfo)
 
     # If no player found with a matching UniqueID, raise an error
     raise ValueError('Invalid UniqueID "{0}"'.format(uniqueid))
@@ -142,35 +143,35 @@ def index_from_name(name):
     '''Returns an index from the given player name'''
 
     # Loop through all players on the server
-    for player in CPlayerGenerator():
+    for playerinfo in PlayerGenerator():
 
         # Is the current player's name the same as the one given?
-        if player.get_name() == name:
+        if playerinfo.get_name() == name:
 
             # Return the index of the current player
-            return index_from_playerinfo(player)
+            return index_from_playerinfo(playerinfo)
 
     # If no player found with a matching name, raise an error
     raise ValueError('Invalid name "{0}"'.format(name))
 
 
-def uniqueid_from_playerinfo(player):
+def uniqueid_from_playerinfo(playerinfo):
     '''Returns the UniqueID for the given player'''
 
     # Is the player a Bot?
-    if player.is_fake_client():
+    if playerinfo.is_fake_client():
 
         # Return the bot's UniqueID
-        return 'BOT_{0}'.format(player.get_name())
+        return 'BOT_{0}'.format(playerinfo.get_name())
 
     # Get the player's SteamID
-    steamid = player.get_networkid_string()
+    steamid = playerinfo.get_networkid_string()
 
     # Is this a Lan SteamID?
     if 'LAN' in steamid:
 
         # Get the player's IP address
-        address = address_from_player(player)
+        address = address_from_player(playerinfo)
 
         # Return the Lan player's ID
         return 'LAN_{0}'.format('_'.join(address.split(':')[0].split('.')))
@@ -179,11 +180,18 @@ def uniqueid_from_playerinfo(player):
     return steamid
 
 
-def address_from_playerinfo(player):
+def address_from_playerinfo(playerinfo):
     '''Returns the IP address for the given player'''
 
+    # Is the player a bot?
+    if playerinfo.is_fake_player():
+
+        # Return a base value, since using
+        # <netinfo>.get_address() crashes with bots
+        return '0'
+
     # Get the player's index
-    index = index_from_playerinfo(player)
+    index = index_from_playerinfo(playerinfo)
 
     # Get the player's NetInfo instance
     netinfo = EngineServer.get_player_net_info(index)

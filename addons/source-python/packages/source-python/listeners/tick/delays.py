@@ -8,10 +8,11 @@
 import time
 
 # Source.Python Imports
-from listeners import TickListenerManager
+#   Hooks
 from hooks.exceptions import ExceptHooks
-#   Tick
-from listeners.tick.logger import TickLogger
+#   Listeners
+from listeners import TickListenerManager
+from listeners import ListenersLogger
 
 
 # =============================================================================
@@ -27,7 +28,7 @@ __all__ = [
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.tick.delays logger
-TickDelaysLogger = TickLogger.delays
+ListenersTickDelaysLogger = ListenersLogger.tick.delays
 
 
 # =============================================================================
@@ -41,7 +42,7 @@ class _Delay(object):
         '''Called when an instance is instantiated'''
 
         # Log the init message
-        TickDelaysLogger.log_info(
+        ListenersTickDelaysLogger.log_info(
             '_Delay.__init__ <{0}> <{1}> <{2}> <{3}>'.format(
                 seconds, callback, args, kwargs))
 
@@ -57,7 +58,7 @@ class _Delay(object):
         '''Calls the delay with the proper arguments and keywords'''
 
         # Log the call message
-        TickDelaysLogger.log_info(
+        ListenersTickDelaysLogger.log_info(
             '_Delay.__call__ - Try to call - <{0}> <{1}> <{2}>'.format(
                 self.callback, self.args, self.kwargs))
 
@@ -100,13 +101,15 @@ class _TickDelays(dict):
         '''Called when first adding a time to the dictionary'''
 
         # Log the missing message
-        TickDelaysLogger.log_info('TickDelays.__missing__ <{0}>'.format(item))
+        ListenersTickDelaysLogger.log_info(
+            'TickDelays.__missing__ <{0}>'.format(item))
 
         # Is the tick listener registered?
         if not self:
 
             # Log the tick listener registration message
-            TickDelaysLogger.log_info('TickDelays - Registering Tick Listener')
+            ListenersTickDelaysLogger.log_info(
+                'TickDelays - Registering Tick Listener')
 
             # Register the tick listener
             TickListenerManager.register_listener(self._tick)
@@ -137,13 +140,14 @@ class _TickDelays(dict):
             remove the time from the ordered list'''
 
         # Log the delitem message
-        TickDelaysLogger.log_info('TickDelays.__delitem__ <{0}>'.format(item))
+        ListenersTickDelaysLogger.log_info(
+            'TickDelays.__delitem__ <{0}>'.format(item))
 
         # Is the item in the dictionary?
         if not item in self:
 
             # Log the not in self message
-            TickDelaysLogger.log_info(
+            ListenersTickDelaysLogger.log_info(
                 'TickDelays.__delitem__ - Item not in dictionary')
 
             # If not, simply return
@@ -192,7 +196,7 @@ class _TickDelays(dict):
         if not self:
 
             # Log the tick listener unregistering message
-            TickDelaysLogger.log_info(
+            ListenersTickDelaysLogger.log_info(
                 'TickDelays._tick - Unregistering Tick Listener')
 
             # Unregister the tick listener
@@ -202,7 +206,7 @@ class _TickDelays(dict):
         '''Method used to cancel a delay'''
 
         # Log the canceling message
-        TickDelaysLogger.log_info(
+        ListenersTickDelaysLogger.log_info(
             'TickDelays.cancel_delay <{0}>'.format(delay_object))
 
         # Is the given argument a _Delay object?
@@ -219,7 +223,7 @@ class _TickDelays(dict):
             raise KeyError('Object is no longer registered.')
 
         # Log the removing from list message
-        TickDelaysLogger.log_info(
+        ListenersTickDelaysLogger.log_info(
             'TickDelays.cancel_delay - Removing from '
             '<{0}>'.format(delay_object.exec_time))
 
@@ -230,7 +234,7 @@ class _TickDelays(dict):
         if not self[delay_object.exec_time]:
 
             # Log the deletion of the time from the dictionary message
-            TickDelaysLogger.log_info(
+            ListenersTickDelaysLogger.log_info(
                 'TickDelays.cancel_delay - Removing <{0}> '
                 'from dictionary'.format(delay_object.exec_time))
 
@@ -241,7 +245,7 @@ class _TickDelays(dict):
         if not self:
 
             # Log the tick listener unregistering message
-            TickDelaysLogger.log_info(
+            ListenersTickDelaysLogger.log_info(
                 'TickDelays.cancel_delay - Unregistering Tick Listener')
 
             # Unregister the listener

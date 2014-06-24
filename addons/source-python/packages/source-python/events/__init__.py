@@ -4,11 +4,20 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Core
 from core import AutoUnload
-from _events import GameEvent
-from loggers import _SPLogger
 #   Events
 from events.manager import EventRegistry
+#   Loggers
+from loggers import _SPLogger
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Events
+from _events import GameEvent
 
 
 # =============================================================================

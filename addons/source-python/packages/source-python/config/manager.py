@@ -10,13 +10,16 @@ from collections import defaultdict
 from textwrap import TextWrapper
 
 # Source.Python Imports
-from engines.server import EngineServer
-from hooks.exceptions import ExceptHooks
-from paths import CFG_PATH
 #   Config
 from config.cvar import _CvarManager
 from config.section import _SectionManager
 from config.command import _CommandManager
+#   Engines
+from engines.server import EngineServer
+#   Hooks
+from hooks.exceptions import ExceptHooks
+#   Paths
+from paths import CFG_PATH
 #   Translations
 from translations.strings import LangStrings
 from translations.strings import TranslationStrings

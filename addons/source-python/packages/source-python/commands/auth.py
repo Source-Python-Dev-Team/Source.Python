@@ -4,10 +4,12 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from players import PlayerInfo
-from hooks.exceptions import ExceptHooks
 #   Auth
 from auth.manager import AuthManager
+#   Hooks
+from hooks.exceptions import ExceptHooks
+#   Players
+from players import PlayerInfo
 
 
 # =============================================================================

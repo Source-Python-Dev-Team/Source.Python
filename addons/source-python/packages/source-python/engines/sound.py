@@ -1,10 +1,25 @@
 # ../engines/sound.py
 
 # =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Core
+from core import AutoUnload
+#   Filters
+from filters.recipients import RecipientFilter
+#   Mathlib
+from mathlib import NULL_VECTOR
+#   Paths
+from paths import PLUGIN_PATH
+#   Stringtables
+from stringtables.downloads import Downloadables
+
+
+# =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
-from core import AutoUnload
 #   Engines
 from _engines import EngineSound
 from _engines import Channels
@@ -22,14 +37,6 @@ from _engines import PITCH_LOW
 from _engines import PITCH_HIGH
 from _engines import SOUND_FROM_LOCAL_PLAYER
 from _engines import SOUND_FROM_WORLD
-#   Filters
-from filters.recipients import RecipientFilter
-#   Mathlib
-from mathlib import NULL_VECTOR
-#   Paths
-from paths import PLUGIN_PATH
-#   Stringtables
-from stringtables.downloads import Downloadables
 
 
 # =============================================================================

@@ -3,7 +3,8 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Source.Python imports
+# Source.Python Imports
+#   Paths
 from paths import SP_PACKAGES_PATH
 from paths import CFG_PATH
 

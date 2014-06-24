@@ -14,12 +14,13 @@ from string import Template
 from re import compile as re_compile
 from re import VERBOSE
 
-# Site Package Imports
+# Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
 from configobj import Section
 
 # Source.Python Imports
+#   Paths
 from paths import TRANSLATION_PATH
 from paths import GAME_PATH
 #   Translations

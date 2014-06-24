@@ -4,6 +4,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Core
 from core import GAME_NAME
 #   Entities
 from entities.constants import CTakeDamageInfo

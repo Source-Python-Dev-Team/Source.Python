@@ -8,13 +8,15 @@
 from collections import ChainMap
 from collections import defaultdict
 from collections import OrderedDict
+#   Imports
+from imp import load_source
+
+# Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
 from configobj import Section
-#   Imports
-from imp import load_source
 #   Path
-from path import path
+from path import Path
 
 # Source.Python Imports
 from engines.server import EngineServer
@@ -64,7 +66,7 @@ class _UserMessages(dict):
             parsed_messages.merge(ConfigObj(file_path))
 
         # Get the ../messages/types/ base path
-        base_path = path(__file__).parent.joinpath('types')
+        base_path = Path(__file__).parent.joinpath('types')
 
         # Loop through all messages
         for message_name, message_data in parsed_messages.items():

@@ -4,7 +4,9 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Commands
 from commands import CommandReturn
+#   Hooks
 from hooks.exceptions import ExceptHooks
 
 

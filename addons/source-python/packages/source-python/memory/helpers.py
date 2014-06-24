@@ -6,9 +6,6 @@
 # Python
 import binascii
 
-from path import path
-from configobj import ConfigObj
-
 # Source.Python
 from core import PLATFORM
 from memory import Argument

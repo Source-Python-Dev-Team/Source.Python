@@ -1,9 +1,10 @@
 # ../cvars/flags.py
 
 # =============================================================================
-# >> IMPORTS
+# >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Cvars
 from _cvars import FCVAR_NONE
 from _cvars import FCVAR_UNREGISTERED
 from _cvars import FCVAR_DEVELOPMENTONLY

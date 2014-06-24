@@ -1,9 +1,10 @@
 # ../entities/helpers.py
 
 # =============================================================================
-# >> IMPORTS
+# >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Conversions
 from _conversions import basehandle_from_edict
 from _conversions import basehandle_from_index
 from _conversions import basehandle_from_inthandle

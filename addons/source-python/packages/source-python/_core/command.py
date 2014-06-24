@@ -3,14 +3,19 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Site Package Imports
+# Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
 
 # Source.Python Imports
-import _dump
-from engines.server import EngineServer
 from _core import _CoreLogger
+#   Auth
+from auth.commands import _AuthCommandsInstance
+#   Dump
+import _dump
+#   Engines
+from engines.server import EngineServer
+#   Paths
 from paths import SP_DATA_PATH
 #   Plugins
 from plugins import _plugin_strings
@@ -18,8 +23,6 @@ from plugins.command import SubCommandManager
 from plugins.info import PluginInfo
 from plugins.instance import LoadedPlugin
 from plugins.manager import PluginManager
-#   Auth
-from auth.commands import _AuthCommandsInstance
 #   Tick
 from listeners.tick import TickDelays
 #   Translations
