@@ -89,13 +89,34 @@ void export_interval()
 //-----------------------------------------------------------------------------
 // Expose Color.
 //-----------------------------------------------------------------------------
+class ColorExt
+{
+public:
+	static Color WithAlpha(const Color& color, unsigned char a)
+	{
+		return Color(color.r(), color.g(), color.b(), a);
+	}
+
+	static str GetHexString(const Color& color)
+	{
+		char buffer[10];
+		if (color.a() == 255)
+			sprintf(buffer, "\x07%02X%02X%02X", color.r(), color.g(), color.b());
+		else
+			sprintf(buffer, "\x08%02X%02X%02X%02X", color.r(), color.g(), color.b(), color.a());
+
+		return str(buffer);
+	}
+};
+
 void export_color()
 {
-	class_<Color, Color *> Color_("Color");
-	
-	// Initializers...
-	Color_.def(init<int, int, int, optional<int>>());
-	
+	class_<Color, Color *> Color_(
+		"Color",
+		init<unsigned char, unsigned char, unsigned char, unsigned char>(
+			(arg("r")=0, arg("g")=0, arg("b")=0, arg("a")=255)
+		)
+	);
 	
 	// Properties...
 	Color_.add_property("r", &Color::r, &IndexSetter<Color, unsigned char, 0>);
@@ -103,9 +124,21 @@ void export_color()
 	Color_.add_property("b", &Color::b, &IndexSetter<Color, unsigned char, 2>);
 	Color_.add_property("a", &Color::a, &IndexSetter<Color, unsigned char, 3>);
 
+	// Methods
+	Color_.def(
+			"with_alpha",
+			ColorExt::WithAlpha,
+			"Returns a copy of the color with a new alpha value."
+	);
+
 	// Special methods...
 	Color_.def("__getitem__", &GetItemIndexer<Color, unsigned char, 0, 3>);
 	Color_.def("__setitem__", &SetItemIndexer<Color, unsigned char, 0, 3>);
+	Color_.def(
+		"__str__",
+		&ColorExt::GetHexString,
+		"Returns the color as a hex string."
+	);
 
 	// Operators...
 	Color_.def(self == self);
