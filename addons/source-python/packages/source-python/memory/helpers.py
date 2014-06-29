@@ -297,6 +297,9 @@ class Array(BasePointer):
 
         # Get the class of the custom type
         cls = self._manager.get_class(self._type_name)
+        
+        if cls is None:
+            raise NameError('Unknown class "{0}".'.format(self._type_name))
 
         # To access a value, we require the proper size of a custom type
         if cls._size is None:

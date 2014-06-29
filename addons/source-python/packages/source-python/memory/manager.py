@@ -78,8 +78,17 @@ class CustomType(BasePointer):
             raise ValueError(
                 'Attribute _manager must be an instance of "TypeManager".')
 
+        # Make sure the _manager attribute wasn't set manually
+        if self.__class__.__name__ not in self._manager:
+            raise TypeError(
+                'Custom type was not registered at a type manager.')
+
         # This set will contain internally allocated pointers.
         self._allocated_pointers = set()
+
+        # This dict will hold pointers, so they don't deallocate if
+        # auto_dealloc was set. {<offset>: <pointer>}
+        self._pointer_values = {}
 
         # Do we want to wrap a pointer?
         if wrap:
@@ -151,7 +160,13 @@ class TypeManager(dict):
         '''
 
         # This dictionary will hold global pointer instances
-        self._global_pointers = {}
+        self.global_pointers = {}
+
+        # Stores converters
+        self.converters = {}
+
+        # Stores function typedefs
+        self.function_typedefs = {}
 
     def __call__(self, name, bases, cls_dict):
         '''
@@ -174,41 +189,57 @@ class TypeManager(dict):
         self[name] = cls
         return cls
 
-    def register_converter(self, cls):
+    def register_converter(self, name, obj):
         '''
-        Registers a class as a converter for pointers.
+        Registers a callable object as a converter for pointers which are
+        returned by a function or property.
+
+        The callable object should only accept a pointer as an argument.
         '''
 
-        self[cls.__name__] = cls
+        # Make sure we can call the object
+        if not callable(obj):
+            raise ValueError('Object is not callable.')
 
-    def unregister_converter(self, cls):
+        self.converters[name] = obj
+
+    def unregister_converter(self, name):
         '''
-        Unregisters a converter class.
+        Unregisters a converter.
         '''
 
-        del self[cls.__name__]
+        self.converters.pop(name, None)
 
     def convert(self, name, ptr):
         '''
-        Converts a pointer to the given class.
+        Tries to convert a pointer in the following order:
+
+        Attempts to convert the pointer...
+        1. to a custom type
+        2. to a exposed type
+        3. to a function typedef
+        4. by using a converter
         '''
 
-        return make_object(self.get_class(name), ptr)
+        cls = self.get_class(name)
+        if cls is not None:
+            # Use the class to convert the pointer
+            return make_object(cls, ptr)
 
-    def get_class(self, name):
-        '''
-        Tries to return a custom type that matches the given name. If no
-        custom type was found, it tries to return a class that was exposed on
-        the C++ side. If that fails too, an error will be raises.
-        '''
+        # No class was found. Maybe we have luck with a function typedef
+        converter = self.function_typedefs.get(name, None)
 
-        if name in self:
-            return self[name]
+        # Is there no function typedef?
+        if converter is None:
+            converter = self.converters.get(name, None)
 
-        if name in EXPOSED_CLASSES:
-            return EXPOSED_CLASSES[name]
+            # Is there no converter?
+            if converter is None:
+                raise NameError('No class, function typedef or converter fo' \
+                    'und for "{0}".'.format(name))
 
-        raise NameError('Unknown class "{0}"'.format(name))
+        # Yay, we found a converter or function typedef!
+        return converter(ptr)
 
     def create_converter(self, name):
         '''
@@ -216,6 +247,15 @@ class TypeManager(dict):
         '''
 
         return lambda ptr: self.convert(name, ptr)
+
+    def get_class(self, name):
+        '''
+        Tries to return a custom type that matches the given name. If no
+        custom type was found, it tries to return a class that was exposed on
+        the C++ side. If that fails too, None will be returned.
+        '''
+
+        return self.get(name, None) or EXPOSED_CLASSES.get(name, None)
 
     def create_type(self, name, cls_dict, bases=(CustomType,)):
         '''
@@ -238,12 +278,9 @@ class TypeManager(dict):
         Creates a pipe from a file or URL.
         '''
 
-        # Read the data
-        raw_data = ConfigObj(f, file_error=True)
-
         # Prepare functions
         funcs = parse_data(
-            raw_data,
+            ConfigObj(f, file_error=True),
             (
                 (Key.BINARY, str, NO_DEFAULT),
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
@@ -398,9 +435,13 @@ class TypeManager(dict):
         def fset(ptr, value):
             # Handle custom type
             if not native_type:
+                cls = self.get_class(type_name)
+                if cls is None:
+                    raise NameError('Unknown class "{0}".'.format(type_name))
+
                 get_object_pointer(value).copy(
                     ptr + offset,
-                    self.get_class(type_name)._size
+                    cls._size
                 )
 
             # Handle native type
@@ -436,6 +477,10 @@ class TypeManager(dict):
             # Handle custom type
             if not native_type:
                 ptr.set_pointer(value)
+
+                # Make sure the value will not deallocate as long as it is
+                # part of this object
+                ptr._pointer_values[offset] = value
 
             # Handle native type
             else:
@@ -628,7 +673,7 @@ class TypeManager(dict):
             func.__doc__ = doc
             return func
 
-        self[name] = make_function
+        self.function_typedefs[name] = make_function
         return make_function
 
     def create_function_typedefs_from_file(self, f):
@@ -672,7 +717,7 @@ class TypeManager(dict):
             raise ValueError('Unable to find the global pointer.')
 
         # Wrap the pointer using the given class and save the instance
-        ptr = self._global_pointers[cls.__name__] = make_object(cls, ptr)
+        ptr = self.global_pointers[cls.__name__] = make_object(cls, ptr)
         return ptr
 
     def create_global_pointers_from_file(self, f):
@@ -694,7 +739,11 @@ class TypeManager(dict):
 
         # Create the global pointer objects
         for name, data in pointers:
-            self.global_pointer(self.get_class(name), *data)
+            cls = self.get_class(name)
+            if cls is None:
+                raise NameError('Unknown class "{0}".'.format(name))
+
+            self.global_pointer(cls, *data)
 
     def get_global_pointer(self, name):
         '''
@@ -706,10 +755,10 @@ class TypeManager(dict):
             name = name.__name__
 
         # Raise an error if no global pointer was found.
-        if name not in self._global_pointers:
+        if name not in self.global_pointers:
             raise NameError('No global pointer found for "{0}".'.format(name))
 
-        return self._global_pointers[name]
+        return self.global_pointers[name]
 
 # Create a shared manager instance
 manager = TypeManager()

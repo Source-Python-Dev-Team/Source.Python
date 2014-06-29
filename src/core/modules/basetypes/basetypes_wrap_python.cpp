@@ -126,9 +126,9 @@ void export_color()
 
 	// Methods
 	Color_.def(
-			"with_alpha",
-			ColorExt::WithAlpha,
-			"Returns a copy of the color with a new alpha value."
+		"with_alpha",
+		ColorExt::WithAlpha,
+		"Returns a copy of the color with a new alpha value."
 	);
 
 	// Special methods...

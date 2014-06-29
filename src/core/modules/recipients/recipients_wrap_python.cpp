@@ -74,7 +74,6 @@ void export_mrecipientfilter()
 		ADD_MEM_TOOLS(IRecipientFilter, "_IRecipientFilter")
 	;
 
-	// TODO: Rename class
 	class_<MRecipientFilter, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
 		.def("add_all_players",
 			&MRecipientFilter::AddAllPlayers,
