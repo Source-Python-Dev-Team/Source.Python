@@ -342,11 +342,6 @@ inline CPointer* ExtractPointer(object oPtr)
 	return pPtr;
 }
 
-inline int GetError()
-{
-	return dcGetError(g_pCallVM);
-}
-
 inline CPointer* Alloc(int iSize, bool bAutoDealloc = true)
 {
 	return new CPointer((unsigned long) UTIL_Alloc(iSize), bAutoDealloc);

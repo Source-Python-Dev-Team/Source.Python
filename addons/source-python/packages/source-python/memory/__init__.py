@@ -54,7 +54,6 @@ __all__ = [
     'alloc',
     'callback',
     'find_binary',
-    'get_error',
     'get_object_pointer',
     'get_size',
     'make_object',

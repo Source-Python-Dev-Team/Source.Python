@@ -425,15 +425,6 @@ void export_dyncall()
 		.value("PRE", HOOKTYPE_PRE)
 		.value("POST", HOOKTYPE_POST)
 	;
-
-	// Other constants that are very useful.
-	scope().attr("DC_ERROR_NONE") = DC_ERROR_NONE;
-	scope().attr("DC_ERROR_UNSUPPORTED_MODE") = DC_ERROR_UNSUPPORTED_MODE;
-
-	def("get_error",
-		GetError,
-		"Returns the last DynCall error ID."
-	);
 }
 
 void export_dynamichooks()
