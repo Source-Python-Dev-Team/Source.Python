@@ -8,11 +8,15 @@
 from importlib import import_module
 
 # Source.Python Imports
+#   Basetypes
+from basetypes import SendPropTypes
 #   Core
 from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import index_from_inthandle
+#   Engines
+from engines.server import ServerGameDLL
 #   Weapons
 from weapons.manager import WeaponManager
 
@@ -350,22 +354,12 @@ class _PlayerWeapons(_GameWeapons):
             Iterates over all currently held weapons, and yields their indexes
         '''
 
-        # TODO: find a good way to get the length of m_hMyWeapon
         # Loop through the length of m_hMyWeapons
-        for offset in range(64):
+        for offset in range(_weapon_prop_length):
 
-            # Use try/except in case the length of m_hMyWeapons is less than 64
-            try:
-
-                # Get the player's current weapon at this offset
-                handle = self.get_prop_int(
-                    WeaponManager.myweapons + '%03i' % offset)
-
-            # Was the prop not found?
-            except ValueError:
-
-                # No need to keep looping
-                break
+            # Get the player's current weapon at this offset
+            handle = self.get_prop_int(
+                WeaponManager.myweapons + '%03i' % offset)
 
             # Is this an invalid handle?
             if handle == -1:
@@ -449,3 +443,46 @@ class _PlayerWeapons(_GameWeapons):
 
         # Set the entity's color
         BaseEntity(index, 'weapon').color = (red, green, blue, alpha)
+
+
+# =============================================================================
+# >> HELPER FUNCTIONS
+# =============================================================================
+def _find_weapon_prop_length(table):
+    '''Loops through a prop table to find the myweapons property length'''
+
+    # Loop through the props in the table
+    for offset in range(len(table)):
+
+        # Get the prop
+        item = table[offset]
+
+        # Is this the m_hMyWeapons prop?
+        if item.name == WeaponManager.myweapons[:~0]:
+
+            # If so, return the length of the prop table
+            return len(item.data_table)
+
+        # Is the current prop a table?
+        if item.type == SendPropTypes.DATATABLE:
+
+            # Loop through the table
+            _find_weapon_prop_length(item.data_table)
+
+# Get the first ServerClass object
+_current_class = ServerGameDLL.get_all_server_classes()
+
+# Use "while" to loop through all ServerClass objects
+while _current_class:
+
+    # Loop through the ServerClass' props
+    _weapon_prop_length = _find_weapon_prop_length(_current_class.table)
+
+    # Was m_hMyWeapons found?
+    if not _weapon_prop_length is None:
+
+        # No need to continue looping
+        break
+
+    # Move to the next ServerClass
+    _current_class = _current_class.next

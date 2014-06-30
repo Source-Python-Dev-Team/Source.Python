@@ -17,8 +17,6 @@ from _memory import Argument
 from _memory import BinaryFile
 from _memory import Callback
 from _memory import Convention
-from _memory import DC_ERROR_NONE
-from _memory import DC_ERROR_UNSUPPORTED_MODE
 from _memory import EXPOSED_CLASSES
 from _memory import Function
 from _memory import NULL
@@ -28,7 +26,6 @@ from _memory import StackData
 from _memory import TYPE_SIZES
 from _memory import alloc
 from _memory import find_binary
-from _memory import get_error
 from _memory import get_object_pointer
 from _memory import get_size
 from _memory import make_object
@@ -42,8 +39,6 @@ __all__ = [
     'BinaryFile',
     'Callback',
     'Convention',
-    'DC_ERROR_NONE',
-    'DC_ERROR_UNSUPPORTED_MODE',
     'EXPOSED_CLASSES',
     'Function',
     'NULL',
