@@ -22,8 +22,6 @@ from logging import getLogger
 from core import echo_console
 #   Cvars
 from cvars import ConVar
-#   Engines
-from engines.server import EngineServer
 #   Paths
 from paths import LOG_PATH
 
@@ -171,6 +169,10 @@ class _LogInstance(dict):
 
         # Print to main log file?
         if MAIN_LOG & areas:
+
+            # Import EngineServer
+            # This is done here to fix an ImportError
+            from engines.server import EngineServer
 
             # Is a prefix supposed to be logged?
             if not dump:

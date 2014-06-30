@@ -15,8 +15,6 @@ from platform import system
 import sys
 
 # Source.Python Imports
-#   Engines
-from engines.server import EngineServer
 #   Paths
 from paths import GAME_PATH
 
@@ -99,6 +97,10 @@ class AutoUnload(object):
 # =============================================================================
 def echo_console(text):
     '''echos a message to the server's console'''
+
+    # Import EngineServer
+    # This is done here to fix an ImportError
+    from engines.server import EngineServer
 
     # Loop through each line in the text
     for line in text.split('\n'):
