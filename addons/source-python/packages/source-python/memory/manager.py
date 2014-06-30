@@ -235,8 +235,9 @@ class TypeManager(dict):
 
             # Is there no converter?
             if converter is None:
-                raise NameError('No class, function typedef or converter fo' \
-                    'und for "{0}".'.format(name))
+                raise NameError(
+                    'No class, function typedef or ' +
+                    'converter found for "{0}".'.format(name))
 
         # Yay, we found a converter or function typedef!
         return converter(ptr)
