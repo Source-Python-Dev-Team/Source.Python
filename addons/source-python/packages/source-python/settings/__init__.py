@@ -1,4 +1,4 @@
-# ../commands/__init__.py
+# ../settings/__init__.py
 
 # =============================================================================
 # >> IMPORTS
@@ -9,26 +9,14 @@ from loggers import _SPLogger
 
 
 # =============================================================================
-# >> FORWARD IMPORTS
-# =============================================================================
-# Source.Python Imports
-#   Commands
-from _commands import Command
-from _commands import CommandReturn
-
-
-# =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'Command',
-    'CommandReturn',
-]
+# Set all to an empty list
+__all__ = []
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the sp.commands logger
-CommandsLogger = _SPLogger.commands
+# Get the sp.settings logger
+SettingsLogger = _SPLogger.settings

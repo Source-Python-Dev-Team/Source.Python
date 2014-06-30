@@ -6,6 +6,8 @@
 # Source.Python Imports
 #   Core
 from core import AutoUnload
+#   Engines
+from engines import EnginesLogger
 #   Filters
 from filters.recipients import RecipientFilter
 #   Mathlib
@@ -42,6 +44,7 @@ from _engines import SOUND_FROM_WORLD
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
+# Add all the global variables to __all__
 __all__ = [
     'Attenuations',
     'Channels',
@@ -52,6 +55,13 @@ __all__ = [
     'SoundFlags',
     'VOL_NORM',
 ]
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the sp.engines.sound logger
+EnginesSoundLogger = EnginesLogger.sound
 
 
 # =============================================================================

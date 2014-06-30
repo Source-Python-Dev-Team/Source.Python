@@ -29,6 +29,7 @@ from paths import GAME_PATH
 from constants import SOURCE_ENGINE
 #   Globals
 from _globals import GlobalVars
+from _globals import MapLoadType
 
 
 # =============================================================================
@@ -39,6 +40,7 @@ __all__ = [
     'AutoUnload',
     'GAME_NAME',
     'GlobalVars',
+    'MapLoadType',
     'PLATFORM',
     'SOURCE_ENGINE',
     'echo_console',
