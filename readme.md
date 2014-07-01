@@ -34,5 +34,5 @@ Source.Python is an open-source project that uses boost::python to allow scripte
 
 
 ## Useful links
-* [Source.Python Forums](http://www.sourcepython.com/forums.php)
+* [Source.Python Forums](http://www.sourcepython.com/forum.php)
 * [Source.Python Wiki](http://wiki.sourcepython.com)
