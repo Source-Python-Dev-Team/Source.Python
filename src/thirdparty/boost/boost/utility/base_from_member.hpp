@@ -96,7 +96,7 @@ struct is_related
 
 // Contributed by Daryle Walker, based on a work-around by Luc Danton
 
-#ifndef BOOST_NO_VARIADIC_TEMPLATES
+#ifndef BOOST_NO_CXX11_VARIADIC_TEMPLATES
 template<typename ...T>
 struct enable_if_unrelated
     : public ::boost::enable_if_c<true>
@@ -126,9 +126,9 @@ class base_from_member
 protected:
     MemberType  member;
 
-#if !defined(BOOST_NO_RVALUE_REFERENCES) && \
-    !defined(BOOST_NO_VARIADIC_TEMPLATES) && \
-    !defined(BOOST_NO_FUNCTION_TEMPLATE_DEFAULT_ARGS) && \
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && \
+    !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
+    !defined(BOOST_NO_CXX11_FUNCTION_TEMPLATE_DEFAULT_ARGS) && \
     !(defined(__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ < 4))
     template <typename ...T, typename EnableIf = typename
      ::boost::detail::enable_if_unrelated<base_from_member, T...>::type>

@@ -8,7 +8,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: discard_block.hpp 78512 2012-05-19 13:39:30Z steven_watanabe $
+ * $Id: discard_block.hpp 81442 2012-11-20 19:44:24Z marshall $
  *
  * Revision history
  *  2001-03-02  created
@@ -62,7 +62,7 @@ public:
     /** Constructs a new \discard_block_engine with a copy of rng. */
     explicit discard_block_engine(const base_type & rng) : _rng(rng), _n(0) { }
 
-#ifndef BOOST_NO_RVALUE_REFERENCES
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     /** Constructs a new \discard_block_engine with rng. */
     explicit discard_block_engine(base_type && rng) : _rng(rng), _n(0) { }
 #endif

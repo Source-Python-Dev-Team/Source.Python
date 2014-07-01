@@ -8,9 +8,10 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: mersenne_twister.hpp 81001 2012-10-16 21:33:16Z steven_watanabe $
+ * $Id: mersenne_twister.hpp 86321 2013-10-15 14:08:57Z mgaunard $
  *
  * Revision history
+ *  2013-10-14  fixed some warnings with Wshadow (mgaunard)
  *  2001-02-18  moved to individual header files
  */
 
@@ -40,7 +41,7 @@ namespace random {
  *  "Mersenne Twister: A 623-dimensionally equidistributed uniform
  *  pseudo-random number generator", Makoto Matsumoto and Takuji Nishimura,
  *  ACM Transactions on Modeling and Computer Simulation: Special Issue on
- *  Uniform Random Number Generation, Vol. 8, No. 1, January 1998, pp. 3-30. 
+ *  Uniform Random Number Generation, Vol. 8, No. 1, January 1998, pp. 3-30.
  *  @endblockquote
  *
  * @xmlnote
@@ -51,7 +52,7 @@ namespace random {
  *
  * The seeding from an integer was changed in April 2005 to address a
  * <a href="http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html">weakness</a>.
- * 
+ *
  * The quality of the generator crucially depends on the choice of the
  * parameters.  User code should employ one of the sensibly parameterized
  * generators such as \mt19937 instead.
@@ -83,7 +84,7 @@ public:
     BOOST_STATIC_CONSTANT(std::size_t, tempering_l = l);
     BOOST_STATIC_CONSTANT(UIntType, initialization_multiplier = f);
     BOOST_STATIC_CONSTANT(UIntType, default_seed = 5489u);
-  
+
     // backwards compatibility
     BOOST_STATIC_CONSTANT(UIntType, parameter_a = a);
     BOOST_STATIC_CONSTANT(std::size_t, output_u = u);
@@ -92,7 +93,7 @@ public:
     BOOST_STATIC_CONSTANT(std::size_t, output_t = t);
     BOOST_STATIC_CONSTANT(UIntType, output_c = c);
     BOOST_STATIC_CONSTANT(std::size_t, output_l = l);
-    
+
     // old Boost.Random concept requirements
     BOOST_STATIC_CONSTANT(bool, has_fixed_range = false);
 
@@ -136,7 +137,7 @@ public:
      */
     BOOST_RANDOM_DETAIL_ARITHMETIC_SEED(mersenne_twister_engine, UIntType, value)
     {
-        // New seeding algorithm from 
+        // New seeding algorithm from
         // http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html
         // In the previous versions, MSBs of the seed affected only MSBs of the
         // state x[].
@@ -150,7 +151,7 @@ public:
 
         normalize_state();
     }
-    
+
     /**
      * Seeds a mersenne_twister_engine using values produced by seq.generate().
      */
@@ -171,14 +172,14 @@ public:
 
         normalize_state();
     }
-  
+
     /** Returns the smallest value that the generator can produce. */
     static result_type min BOOST_PREVENT_MACRO_SUBSTITUTION ()
     { return 0; }
     /** Returns the largest value that the generator can produce. */
     static result_type max BOOST_PREVENT_MACRO_SUBSTITUTION ()
     { return boost::low_bits_mask_t<w>::sig_bits; }
-    
+
     /** Produces the next value of the generator. */
     result_type operator()();
 
@@ -213,7 +214,7 @@ public:
         mt.print(os);
         return os;
     }
-    
+
     /** Reads a mersenne_twister_engine from a @c std::istream */
     template<class CharT, class Traits>
     friend std::basic_istream<CharT,Traits>&
@@ -234,19 +235,19 @@ public:
      * Returns true if the two generators are in the same state,
      * and will thus produce identical sequences.
      */
-    friend bool operator==(const mersenne_twister_engine& x,
-                           const mersenne_twister_engine& y)
+    friend bool operator==(const mersenne_twister_engine& x_,
+                           const mersenne_twister_engine& y_)
     {
-        if(x.i < y.i) return x.equal_imp(y);
-        else return y.equal_imp(x);
+        if(x_.i < y_.i) return x_.equal_imp(y_);
+        else return y_.equal_imp(x_);
     }
-    
+
     /**
      * Returns true if the two generators are in different states.
      */
-    friend bool operator!=(const mersenne_twister_engine& x,
-                           const mersenne_twister_engine& y)
-    { return !(x == y); }
+    friend bool operator!=(const mersenne_twister_engine& x_,
+                           const mersenne_twister_engine& y_)
+    { return !(x_ == y_); }
 
 private:
     /// \cond show_private
@@ -373,7 +374,7 @@ private:
     //   x[0]  ... x[k] x[k+1] ... x[n-1]   represents
     //  x(i-k) ... x(i) x(i+1) ... x(i-k+n-1)
 
-    UIntType x[n]; 
+    UIntType x[n];
     std::size_t i;
 };
 
@@ -487,7 +488,7 @@ mersenne_twister_engine<UIntType,w,n,m,r,a,u,d,s,b,t,c,l,f>::operator()()
  *  uniform pseudo-random number generator", Makoto Matsumoto
  *  and Takuji Nishimura, ACM Transactions on Modeling and
  *  Computer Simulation: Special Issue on Uniform Random Number
- *  Generation, Vol. 8, No. 1, January 1998, pp. 3-30. 
+ *  Generation, Vol. 8, No. 1, January 1998, pp. 3-30.
  *  @endblockquote
  */
 typedef mersenne_twister_engine<uint32_t,32,351,175,19,0xccab8ee7,
@@ -501,7 +502,7 @@ typedef mersenne_twister_engine<uint32_t,32,351,175,19,0xccab8ee7,
  *  uniform pseudo-random number generator", Makoto Matsumoto
  *  and Takuji Nishimura, ACM Transactions on Modeling and
  *  Computer Simulation: Special Issue on Uniform Random Number
- *  Generation, Vol. 8, No. 1, January 1998, pp. 3-30. 
+ *  Generation, Vol. 8, No. 1, January 1998, pp. 3-30.
  *  @endblockquote
  */
 typedef mersenne_twister_engine<uint32_t,32,624,397,31,0x9908b0df,

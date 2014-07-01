@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: begin_end_impl.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: begin_end_impl.hpp 85945 2013-09-26 09:46:46Z skelly $
+// $Date: 2013-09-26 05:46:46 -0400 (Thu, 26 Sep 2013) $
+// $Revision: 85945 $
 
 #include <boost/mpl/begin_end_fwd.hpp>
 #include <boost/mpl/sequence_tag_fwd.hpp>
@@ -21,7 +21,6 @@
 #include <boost/mpl/aux_/has_begin.hpp>
 #include <boost/mpl/aux_/na.hpp>
 #include <boost/mpl/aux_/traits_lambda_spec.hpp>
-#include <boost/mpl/aux_/config/eti.hpp>
 
 namespace boost { namespace mpl {
 

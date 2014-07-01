@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: empty_base.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: empty_base.hpp 85956 2013-09-26 13:05:50Z skelly $
+// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
+// $Revision: 85956 $
 
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/aux_/config/msvc.hpp>
@@ -34,18 +34,12 @@ template< typename T >
 struct is_empty_base
     : false_
 {
-#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-    using false_::value;
-#endif
 };
 
 template<>
 struct is_empty_base<empty_base>
     : true_
 {
-#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-    using true_::value;
-#endif
 };
 
 }}

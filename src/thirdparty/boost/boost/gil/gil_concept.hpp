@@ -32,6 +32,14 @@
 #include <boost/mpl/size.hpp>
 
 namespace boost { namespace gil {
+
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) 
+#pragma warning(push) 
+#pragma warning(disable:4510) //default constructor could not be generated
+#pragma warning(disable:4512) //assignment operator could not be generated
+#pragma warning(disable:4610) //can never be instantiated - user defined constructor required
+#endif
+
 template <typename T> struct channel_traits;
 template <typename P> struct is_pixel;
 template <typename dstT, typename srcT>
@@ -272,8 +280,7 @@ struct PointNDConcept {
         LT lt=axis_value<N-1>(point);
         axis_value<N-1>(point)=lt;
     
-        value_type v=point[0];  ignore_unused_variable_warning(v);
-        point[0]=point[0];
+//        value_type v=point[0];  ignore_unused_variable_warning(v);
     }
     P point;
 };
@@ -456,11 +463,12 @@ namespace detail {
     template <typename T>
     struct ChannelIsMutableConcept {
         void constraints() {
-            c=c;
+            c1=c2;
             using std::swap;
-            swap(c,c);
+            swap(c1,c2);
         }
-        T c;
+        T c1;
+        T c2;
     };
 }
 
@@ -951,8 +959,10 @@ struct MutableHomogeneousPixelConcept {
     void constraints() {
         gil_function_requires<HomogeneousPixelConcept<P> >();
         gil_function_requires<MutableHomogeneousColorBaseConcept<P> >();
-        p[0]=p[0];
+        p[0]=v;
+        v=p[0];
     }
+    typename P::template element_type<P>::type v;
     P p;
 };
 
@@ -2180,6 +2190,10 @@ struct ImageConcept {
     }
     Img img;
 };
+
+#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) 
+#pragma warning(pop) 
+#endif 
 
 
 } }  // namespace boost::gil

@@ -878,7 +878,7 @@ namespace boost
           typename BackInsertionSequence::const_reference
               r = cc.back();
           ignore_unused_variable_warning(r);
-      };
+      }
       S c;
       typename S::value_type t;
   };

@@ -12,7 +12,7 @@
 #ifndef BOOST_PTR_CONTAINER_PTR_SEQUENCE_ADAPTER_HPP
 #define BOOST_PTR_CONTAINER_PTR_SEQUENCE_ADAPTER_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -662,7 +662,7 @@ namespace ptr_container_detail
             
         }
 
-        void range_check_impl( iterator first, iterator last, 
+        void range_check_impl( iterator, iterator, 
                                std::bidirectional_iterator_tag )
         { /* do nothing */ }
 

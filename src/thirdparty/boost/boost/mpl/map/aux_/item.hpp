@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: item.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: item.hpp 86245 2013-10-11 23:17:48Z skelly $
+// $Date: 2013-10-11 19:17:48 -0400 (Fri, 11 Oct 2013) $
+// $Revision: 86245 $
 
 #include <boost/mpl/void.hpp>
 #include <boost/mpl/pair.hpp>
@@ -73,28 +73,10 @@ struct m_mask
 #else // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 
 
-#   if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template< long n, typename Key, typename T, typename Base >
 struct m_item;
 
-#   else
-
-template< long n >
-struct m_item_impl
-{
-    template< typename Key, typename T, typename Base >
-    struct result_;
-};
-
-template< long n, typename Key, typename T, typename Base >
-struct m_item
-    : m_item_impl<n>::result_<Key,T,Base>
-{
-};
-
-
-#   endif
 
 
 template< typename Key, typename T, typename Base >

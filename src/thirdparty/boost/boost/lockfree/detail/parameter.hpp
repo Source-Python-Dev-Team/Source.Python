@@ -10,7 +10,6 @@
 #define BOOST_LOCKFREE_DETAIL_PARAMETER_HPP
 
 #include <boost/lockfree/policies.hpp>
-#include <boost/integer_traits.hpp>
 
 namespace boost {
 namespace lockfree {
@@ -33,7 +32,7 @@ struct extract_capacity
 
     typedef typename mpl::if_c<has_capacity,
                                typename has_arg<bound_args, tag::capacity>::type,
-                               mpl::size_t< boost::integer_traits<size_t>::const_max >
+                               mpl::size_t< 0 >
                               >::type capacity_t;
 
     static const std::size_t capacity = capacity_t::value;

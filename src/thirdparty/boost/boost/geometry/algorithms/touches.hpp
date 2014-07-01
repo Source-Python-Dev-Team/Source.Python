@@ -3,6 +3,7 @@
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
+// Copyright (c) 2013 Adam Wulkiewicz, Lodz, Poland.
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -18,8 +19,9 @@
 #include <deque>
 
 #include <boost/geometry/geometries/concepts/check.hpp>
+#include <boost/geometry/algorithms/detail/for_each_range.hpp>
+#include <boost/geometry/algorithms/detail/overlay/overlay.hpp>
 #include <boost/geometry/algorithms/detail/overlay/self_turn_points.hpp>
-#include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
 #include <boost/geometry/algorithms/disjoint.hpp>
 #include <boost/geometry/algorithms/intersects.hpp>
 #include <boost/geometry/algorithms/num_geometries.hpp>
@@ -28,6 +30,7 @@
 namespace boost { namespace geometry
 {
 
+#ifndef DOXYGEN_NO_DETAIL
 namespace detail { namespace touches 
 {
 
@@ -81,7 +84,42 @@ inline bool has_only_turns(Turns const& turns)
     return has_touch;
 }
 
+template<typename Geometry>
+struct check_each_ring_for_within
+{
+    bool has_within;
+    Geometry const& m_geometry;
+
+    inline check_each_ring_for_within(Geometry const& g)
+        : has_within(false)
+        , m_geometry(g)
+    {}
+
+    template <typename Range>
+    inline void apply(Range const& range)
+    {
+        typename geometry::point_type<Range>::type p;
+        geometry::point_on_border(p, range);
+        if (geometry::within(p, m_geometry))
+        {
+            has_within = true;
+        }
+    }
+};
+
+
+template <typename FirstGeometry, typename SecondGeometry>
+inline bool rings_containing(FirstGeometry const& geometry1,
+                SecondGeometry const& geometry2)
+{
+    check_each_ring_for_within<FirstGeometry> checker(geometry1);
+    geometry::detail::for_each_range(geometry2, checker);
+    return checker.has_within;
+}
+
+
 }}
+#endif // DOXYGEN_NO_DETAIL
 
 /*!
 \brief \brief_check{has at least one touching point (self-tangency)}
@@ -164,13 +202,14 @@ inline bool touches(Geometry1 const& geometry1, Geometry2 const& geometry2)
     detail::get_turns::no_interrupt_policy policy;
     boost::geometry::get_turns
             <
-                false, false,
+                detail::overlay::do_reverse<geometry::point_order<Geometry1>::value>::value,
+                detail::overlay::do_reverse<geometry::point_order<Geometry2>::value>::value,
                 detail::overlay::assign_null_policy
             >(geometry1, geometry2, turns, policy);
 
     return detail::touches::has_only_turns(turns)
-        && ! geometry::detail::disjoint::rings_containing(geometry1, geometry2)
-        && ! geometry::detail::disjoint::rings_containing(geometry2, geometry1)
+        && ! geometry::detail::touches::rings_containing(geometry1, geometry2)
+        && ! geometry::detail::touches::rings_containing(geometry2, geometry1)
         ;
 }
 

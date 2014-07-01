@@ -48,7 +48,7 @@ namespace boost
       }
       void set_duration_style(duration_style style)
       {
-        duration_style_ == style;
+        duration_style_ = style;
       }
 
     protected:

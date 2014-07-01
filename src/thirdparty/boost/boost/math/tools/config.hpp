@@ -22,7 +22,6 @@
 #endif
 
 #include <boost/math/tools/user.hpp>
-#include <boost/math/special_functions/detail/round_fwd.hpp>
 
 #if (defined(__CYGWIN__) || defined(__FreeBSD__) || defined(__NetBSD__) \
    || (defined(__hppa) && !defined(__OpenBSD__)) || (defined(__NO_LONG_DOUBLE_MATH) && (DBL_MANT_DIG != LDBL_MANT_DIG))) \
@@ -99,13 +98,18 @@
 #  define BOOST_MATH_USE_C99
 #endif
 
+#if defined(_LIBCPP_VERSION) && !defined(_MSC_VER)
+#  define BOOST_MATH_USE_C99
+#endif
+
 #if defined(__CYGWIN__) || defined(__HP_aCC) || defined(BOOST_INTEL) \
   || defined(BOOST_NO_NATIVE_LONG_DOUBLE_FP_CLASSIFY) \
-  || (defined(__GNUC__) && !defined(BOOST_MATH_USE_C99))
+  || (defined(__GNUC__) && !defined(BOOST_MATH_USE_C99))\
+  || defined(BOOST_MATH_NO_LONG_DOUBLE_MATH_FUNCTIONS)
 #  define BOOST_MATH_NO_NATIVE_LONG_DOUBLE_FP_CLASSIFY
 #endif
 
-#if defined(BOOST_NO_EXPLICIT_FUNCTION_TEMPLATE_ARGUMENTS) || BOOST_WORKAROUND(__SUNPRO_CC, <= 0x590)
+#if BOOST_WORKAROUND(__SUNPRO_CC, <= 0x590)
 
 #  include "boost/type.hpp"
 #  include "boost/non_type.hpp"
@@ -139,7 +143,7 @@
 #  define BOOST_MATH_APPEND_EXPLICIT_TEMPLATE_NON_TYPE_SPEC(t, v)
 
 
-#endif // defined BOOST_NO_EXPLICIT_FUNCTION_TEMPLATE_ARGUMENTS
+#endif // __SUNPRO_CC
 
 #if (defined(__SUNPRO_CC) || defined(__hppa) || defined(__GNUC__)) && !defined(BOOST_MATH_SMALL_CONSTANT)
 // Sun's compiler emits a hard error if a constant underflows,
@@ -203,6 +207,22 @@
 #ifndef BOOST_MATH_INT_VALUE_SUFFIX
 #  define BOOST_MATH_INT_VALUE_SUFFIX(RV, SUF) RV##SUF
 #endif
+//
+// Test whether to support __float128:
+//
+#if defined(_GLIBCXX_USE_FLOAT128) && defined(BOOST_GCC) && !defined(__STRICT_ANSI__)
+//
+// Only enable this when the compiler really is GCC as clang and probably 
+// intel too don't support __float128 yet :-(
+//
+#  define BOOST_MATH_USE_FLOAT128
+#endif
+//
+// Check for WinCE with no iostream support:
+//
+#if defined(_WIN32_WCE) && !defined(__SGI_STL_PORT)
+#  define BOOST_MATH_NO_LEXICAL_CAST
+#endif
 
 //
 // Helper macro for controlling the FP behaviour:
@@ -213,7 +233,7 @@
 //
 // Helper macro for using statements:
 //
-#define BOOST_MATH_STD_USING \
+#define BOOST_MATH_STD_USING_CORE \
    using std::abs;\
    using std::acos;\
    using std::cos;\
@@ -236,15 +256,9 @@
    using std::ceil;\
    using std::floor;\
    using std::log10;\
-   using std::sqrt;\
-   using boost::math::round;\
-   using boost::math::iround;\
-   using boost::math::lround;\
-   using boost::math::trunc;\
-   using boost::math::itrunc;\
-   using boost::math::ltrunc;\
-   using boost::math::modf;
+   using std::sqrt;
 
+#define BOOST_MATH_STD_USING BOOST_MATH_STD_USING_CORE
 
 namespace boost{ namespace math{
 namespace tools
@@ -271,7 +285,19 @@ void suppress_unused_variable_warning(const T&)
 
 }} // namespace boost namespace math
 
-#if ((defined(__linux__) && !defined(__UCLIBC__)) || defined(__QNX__) || defined(__IBMCPP__)) && !defined(BOOST_NO_FENV_H)
+#ifdef __GLIBC_PREREQ
+#  if __GLIBC_PREREQ(2,14)
+#     define BOOST_MATH_HAVE_FIXED_GLIBC
+#  endif
+#endif
+
+#if ((defined(__linux__) && !defined(__UCLIBC__) && !defined(BOOST_MATH_HAVE_FIXED_GLIBC)) || defined(__QNX__) || defined(__IBMCPP__)) && !defined(BOOST_NO_FENV_H)
+//
+// This code was introduced in response to this glibc bug: http://sourceware.org/bugzilla/show_bug.cgi?id=2445
+// Basically powl and expl can return garbage when the result is small and certain exception flags are set
+// on entrance to these functions.  This appears to have been fixed in Glibc 2.14 (May 2011).
+// Much more information in this message thread: https://groups.google.com/forum/#!topic/boost-list/ZT99wtIFlb4
+//
 
    #include <boost/detail/fenv.hpp>
 
@@ -314,12 +340,20 @@ namespace boost{ namespace math{
 #endif
 
 #ifdef BOOST_MATH_INSTRUMENT
-#define BOOST_MATH_INSTRUMENT_CODE(x) \
-   std::cout << std::setprecision(35) << __FILE__ << ":" << __LINE__ << " " << x << std::endl;
-#define BOOST_MATH_INSTRUMENT_VARIABLE(name) BOOST_MATH_INSTRUMENT_CODE(BOOST_STRINGIZE(name) << " = " << name)
+
+#  include <iostream>
+#  include <iomanip>
+#  include <typeinfo>
+
+#  define BOOST_MATH_INSTRUMENT_CODE(x) \
+      std::cout << std::setprecision(35) << __FILE__ << ":" << __LINE__ << " " << x << std::endl;
+#  define BOOST_MATH_INSTRUMENT_VARIABLE(name) BOOST_MATH_INSTRUMENT_CODE(BOOST_STRINGIZE(name) << " = " << name)
+
 #else
-#define BOOST_MATH_INSTRUMENT_CODE(x)
-#define BOOST_MATH_INSTRUMENT_VARIABLE(name)
+
+#  define BOOST_MATH_INSTRUMENT_CODE(x)
+#  define BOOST_MATH_INSTRUMENT_VARIABLE(name)
+
 #endif
 
 #endif // BOOST_MATH_TOOLS_CONFIG_HPP

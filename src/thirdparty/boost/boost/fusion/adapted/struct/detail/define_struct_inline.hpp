@@ -36,7 +36,7 @@
 // an alternate implementation for these metafunctions is used that does not 
 // require such specializations. The alternate implementation takes longer
 // to compile so its use is restricted to the offending compilers.
-// For MSVC, the bug was was reported at https://connect.microsoft.com/VisualStudio/feedback/details/757891/c-compiler-error-involving-partial-specializations-of-nested-templates
+// For MSVC, the bug was reported at https://connect.microsoft.com/VisualStudio/feedback/details/757891/c-compiler-error-involving-partial-specializations-of-nested-templates
 // For GCC, 4.4 and earlier are no longer maintained so there is no need
 // to report a bug.
 #if defined(BOOST_MSVC) || (defined(__GNUC__) && (__GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ <= 4)))

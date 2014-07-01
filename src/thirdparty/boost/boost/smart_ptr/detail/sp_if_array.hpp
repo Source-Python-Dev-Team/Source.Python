@@ -14,15 +14,13 @@
 namespace boost {
     namespace detail {
         template<typename T> 
-        struct sp_if_array {
-        };
+        struct sp_if_array;
         template<typename T>
         struct sp_if_array<T[]> {
             typedef boost::shared_ptr<T[]> type;
         };
         template<typename T>
-        struct sp_if_size_array {
-        };
+        struct sp_if_size_array;
         template<typename T, std::size_t N>
         struct sp_if_size_array<T[N]> {
             typedef boost::shared_ptr<T[N]> type;

@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: or.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: or.hpp 86682 2013-11-13 17:38:31Z eldiener $
+// $Date: 2013-11-13 12:38:31 -0500 (Wed, 13 Nov 2013) $
+// $Revision: 86682 $
 
 #include <boost/mpl/aux_/config/use_preprocessed.hpp>
 
@@ -29,7 +29,7 @@
 // 'or' and 'and' macros, see http://tinyurl.com/3et69; 'defined(or)'
 // has to be checked in a separate condition, otherwise GCC complains 
 // about 'or' being an alternative token
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && !defined(__clang__)
 #ifndef __GCCXML__
 #if defined(or)
 #   pragma push_macro("or")
@@ -42,7 +42,7 @@
 #   define BOOST_MPL_PREPROCESSED_HEADER or.hpp
 #   include <boost/mpl/aux_/include_preprocessed.hpp>
 
-#if defined(_MSC_VER) 
+#if defined(_MSC_VER) && !defined(__clang__)
 #ifndef __GCCXML__
 #if defined(or)
 #   pragma pop_macro("or")

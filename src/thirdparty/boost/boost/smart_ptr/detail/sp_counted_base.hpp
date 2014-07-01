@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -38,11 +38,11 @@
 #elif defined( __GNUC__ ) && ( defined( __i386__ ) || defined( __x86_64__ ) ) && !defined(__PATHSCALE__)
 # include <boost/smart_ptr/detail/sp_counted_base_gcc_x86.hpp>
 
-#elif defined( __GNUC__ ) && defined( __ia64__ ) && !defined( __INTEL_COMPILER ) && !defined(__PATHSCALE__)
-# include <boost/smart_ptr/detail/sp_counted_base_gcc_ia64.hpp>
-
 #elif defined(__HP_aCC) && defined(__ia64)
 # include <boost/smart_ptr/detail/sp_counted_base_acc_ia64.hpp>
+
+#elif defined( __GNUC__ ) && defined( __ia64__ ) && !defined( __INTEL_COMPILER ) && !defined(__PATHSCALE__)
+# include <boost/smart_ptr/detail/sp_counted_base_gcc_ia64.hpp>
 
 #elif defined( __IBMCPP__ ) && defined( __powerpc )
 # include <boost/smart_ptr/detail/sp_counted_base_vacpp_ppc.hpp>

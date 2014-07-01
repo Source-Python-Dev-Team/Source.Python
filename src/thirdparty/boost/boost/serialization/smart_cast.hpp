@@ -2,7 +2,7 @@
 #define BOOST_SERIALIZATION_SMART_CAST_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -55,6 +55,8 @@
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/not.hpp>
 #include <boost/mpl/identity.hpp>
+
+#include <boost/serialization/throw_exception.hpp>
 
 namespace boost {
 namespace serialization {
@@ -159,7 +161,7 @@ namespace smart_cast_impl {
                 static T cast(U * u){
                     T tmp = dynamic_cast< T >(u);
                     #ifndef NDEBUG
-                        if ( tmp == 0 ) throw std::bad_cast();
+                        if ( tmp == 0 ) throw_exception(std::bad_cast());
                     #endif
                     return tmp;
                 }
@@ -201,7 +203,7 @@ namespace smart_cast_impl {
             static T cast(U * u){
                 T tmp = dynamic_cast< T >(u);
                 #ifndef NDEBUG
-                    if ( tmp == 0 ) throw std::bad_cast();
+                    if ( tmp == 0 ) throw_exception(std::bad_cast());
                 #endif
                 return tmp;
             }

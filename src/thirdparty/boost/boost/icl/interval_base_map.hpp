@@ -215,14 +215,7 @@ public:
         BOOST_CONCEPT_ASSERT((EqualComparableConcept<CodomainT>));
     }
 
-    /** Copy assignment operator */
-    interval_base_map& operator = (const interval_base_map& src) 
-    { 
-        this->_map = src._map;
-        return *this; 
-    }
-
-#   ifndef BOOST_NO_RVALUE_REFERENCES
+#   ifndef BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
     //==========================================================================
     //= Move semantics
     //==========================================================================
@@ -237,14 +230,23 @@ public:
     }
 
     /** Move assignment operator */
-    interval_base_map& operator = (interval_base_map&& src) 
-    { 
+    interval_base_map& operator = (interval_base_map src) 
+    {                           //call by value sice 'src' is a "sink value" 
         this->_map = boost::move(src._map);
         return *this; 
     }
 
     //==========================================================================
-#   endif // BOOST_NO_RVALUE_REFERENCES
+#   else 
+
+    /** Copy assignment operator */
+    interval_base_map& operator = (const interval_base_map& src) 
+    { 
+        this->_map = src._map;
+        return *this; 
+    }
+
+#   endif // BOOST_ICL_NO_CXX11_RVALUE_REFERENCES
 
     /** swap the content of containers */
     void swap(interval_base_map& object) { _map.swap(object._map); }

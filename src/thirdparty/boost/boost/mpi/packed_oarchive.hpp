@@ -19,6 +19,7 @@
 #define BOOST_MPI_PACKED_OARCHIVE_HPP
 
 #include <boost/mpi/datatype.hpp>
+#include <boost/archive/basic_archive.hpp>
 #include <boost/archive/detail/auto_link_archive.hpp>
 #include <boost/archive/detail/common_oarchive.hpp>
 #include <boost/archive/shared_ptr_helper.hpp>
@@ -124,6 +125,15 @@ public:
       * this->This() << s;
   }
 
+  void save_override(archive::class_id_type & t, int version){
+    const boost::int_least16_t x = t;
+    * this->This() << x;
+  }
+
+  void save_override(archive::version_type & t, int version){
+    const boost::int_least8_t x = t;
+    * this->This() << x;
+  }
 private:
   /// An internal buffer to be used when the user does not supply his
   /// own buffer.

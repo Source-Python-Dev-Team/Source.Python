@@ -20,6 +20,7 @@
 #include <boost/geometry/algorithms/perimeter.hpp>
 
 #include <boost/geometry/multi/core/tags.hpp>
+#include <boost/geometry/multi/geometries/concepts/check.hpp>
 
 #include <boost/geometry/multi/algorithms/detail/multi_sum.hpp>
 #include <boost/geometry/multi/algorithms/num_points.hpp>
@@ -34,7 +35,7 @@ template <typename MultiPolygon>
 struct perimeter<MultiPolygon, multi_polygon_tag> : detail::multi_sum
 {
     template <typename Strategy>
-    static inline typename default_length_result<MultiPolygon>::type
+    static inline typename resolve_variant::perimeter<MultiPolygon>::result_type
     apply(MultiPolygon const& multi, Strategy const& strategy)
     {
         return multi_sum::apply

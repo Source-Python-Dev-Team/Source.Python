@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland
- * $Date: 2011-03-31 09:32:46 -0400 (Thu, 31 Mar 2011) $
+ * $Date: 2013-06-19 11:36:32 -0400 (Wed, 19 Jun 2013) $
  */
 
 #include <sstream>
@@ -50,7 +50,8 @@ gather_month_strings(const std::locale& locale, bool short_strings=true)
     //grab the needed strings by using the locale to
     //output each month
     const charT* p_outfmt = outfmt.c_str(), *p_outfmt_end = p_outfmt + outfmt.size();
-    tm tm_value = {};
+    tm tm_value;
+    memset(&tm_value, 0, sizeof(tm_value));
     for (int m=0; m < 12; m++) {
       tm_value.tm_mon = m;
       stringstream_type ss;
@@ -103,7 +104,8 @@ gather_weekday_strings(const std::locale& locale, bool short_strings=true)
     //grab the needed strings by using the locale to
     //output each month / weekday
     const charT* p_outfmt = outfmt.c_str(), *p_outfmt_end = p_outfmt + outfmt.size();
-    tm tm_value = {};
+    tm tm_value;
+    memset(&tm_value, 0, sizeof(tm_value));
     for (int i=0; i < 7; i++) {
       tm_value.tm_wday = i;
       stringstream_type ss;

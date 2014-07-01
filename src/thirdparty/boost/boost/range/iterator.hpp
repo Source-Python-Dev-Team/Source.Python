@@ -11,7 +11,7 @@
 #ifndef BOOST_RANGE_ITERATOR_HPP
 #define BOOST_RANGE_ITERATOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -66,7 +66,5 @@ namespace boost
     };
     
 } // namespace boost
-
-//#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 #endif

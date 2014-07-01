@@ -1,13 +1,13 @@
 // Boost.Polygon library segment_data.hpp header file
 
-//          Copyright 2008 Intel Corporation.
-//          Copyright Simonson Lucanus 2008-2012.
-//          Copyright Andrii Sydorchuk 2012-2012.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// Copyright (c) Intel Corporation 2008.
+// Copyright (c) 2008-2012 Simonson Lucanus.
+// Copyright (c) 2012-2012 Andrii Sydorchuk.
 
 // See http://www.boost.org for updates, documentation, and revision history.
+// Use, modification and distribution is subject to the Boost Software License,
+// Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_POLYGON_SEGMENT_DATA_HPP
 #define BOOST_POLYGON_SEGMENT_DATA_HPP
@@ -24,7 +24,11 @@ class segment_data {
   typedef T coordinate_type;
   typedef point_data<T> point_type;
 
-  segment_data() : points_() {}
+  segment_data()
+#ifndef BOOST_POLYGON_MSVC
+    : points_()
+#endif
+  {}
 
   segment_data(const point_type& low, const point_type& high) {
     points_[LOW] = low;
@@ -39,6 +43,12 @@ class segment_data {
   segment_data& operator=(const segment_data& that) {
     points_[0] = that.points_[0];
     points_[1] = that.points_[1];
+    return *this;
+  }
+
+  template <typename SegmentType>
+  segment_data& operator=(const SegmentType& that) {
+    assign(*this, that);
     return *this;
   }
 

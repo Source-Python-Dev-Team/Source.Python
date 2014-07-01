@@ -10,21 +10,19 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: is_placeholder.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: is_placeholder.hpp 86245 2013-10-11 23:17:48Z skelly $
+// $Date: 2013-10-11 19:17:48 -0400 (Fri, 11 Oct 2013) $
+// $Revision: 86245 $
 
 #include <boost/mpl/arg_fwd.hpp>
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/aux_/yes_no.hpp>
 #include <boost/mpl/aux_/type_wrapper.hpp>
-#include <boost/mpl/aux_/nttp_decl.hpp>
 #include <boost/mpl/aux_/config/ctps.hpp>
 #include <boost/mpl/aux_/config/static_constant.hpp>
 
 namespace boost { namespace mpl {
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template< typename T >
 struct is_placeholder
@@ -32,35 +30,12 @@ struct is_placeholder
 {
 };
 
-template< BOOST_MPL_AUX_NTTP_DECL(int, N) >
+template< int N >
 struct is_placeholder< arg<N> >
     : bool_<true>
 {
 };
 
-#else
-
-namespace aux {
-
-aux::no_tag is_placeholder_helper(...);
-
-template< BOOST_MPL_AUX_NTTP_DECL(int, N) >
-aux::yes_tag is_placeholder_helper(aux::type_wrapper< arg<N> >*);
-
-} // namespace aux
-
-template< typename T >
-struct is_placeholder
-{
-    static aux::type_wrapper<T>* get();
-    BOOST_STATIC_CONSTANT(bool, value = 
-          sizeof(aux::is_placeholder_helper(get())) == sizeof(aux::yes_tag)
-        );
-    
-    typedef bool_<value> type;
-};
-
-#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 }}
 

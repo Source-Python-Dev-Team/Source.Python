@@ -1,11 +1,11 @@
 
-//  (C) Copyright Edward Diener 2011
+//  (C) Copyright Edward Diener 2011,2012,2013
 //  Use, modification and distribution are subject to the Boost Software License,
 //  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt).
 
-#if !defined(TTI_DETAIL_PTMF_HPP)
-#define TTI_DETAIL_PTMF_HPP
+#if !defined(BOOST_TTI_DETAIL_PTMF_HPP)
+#define BOOST_TTI_DETAIL_PTMF_HPP
 
 #include <boost/config.hpp>
 #include <boost/mpl/push_front.hpp>
@@ -19,19 +19,28 @@ namespace boost
       {
       template
         <
-        class T,
-        class R,
-        class FS,
-        class TAG
+        class BOOST_TTI_DETAIL_TP_T,
+        class BOOST_TTI_DETAIL_TP_R,
+        class BOOST_TTI_DETAIL_TP_FS,
+        class BOOST_TTI_DETAIL_TP_TAG
         >
       struct ptmf_seq
         {
-        typedef typename boost::mpl::push_front<FS,T>::type tfs1;
-        typedef typename boost::mpl::push_front<tfs1,R>::type tfs2;
-        typedef typename boost::function_types::member_function_pointer<tfs2,TAG>::type type;
+        typedef typename
+        boost::function_types::member_function_pointer
+          <
+          typename
+          boost::mpl::push_front
+            <
+            typename
+            boost::mpl::push_front<BOOST_TTI_DETAIL_TP_FS,BOOST_TTI_DETAIL_TP_T>::type,
+            BOOST_TTI_DETAIL_TP_R
+            >::type,
+          BOOST_TTI_DETAIL_TP_TAG
+          >::type type;
         };
       }
     }
   }
   
-#endif // TTI_DETAIL_PTMF_HPP
+#endif // BOOST_TTI_DETAIL_PTMF_HPP

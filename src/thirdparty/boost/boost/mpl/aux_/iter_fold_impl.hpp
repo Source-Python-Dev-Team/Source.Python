@@ -10,18 +10,14 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: iter_fold_impl.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: iter_fold_impl.hpp 86243 2013-10-11 23:13:10Z skelly $
+// $Date: 2013-10-11 19:13:10 -0400 (Fri, 11 Oct 2013) $
+// $Revision: 86243 $
 
 #if !defined(BOOST_MPL_PREPROCESSING_MODE)
 #   include <boost/mpl/next_prior.hpp>
 #   include <boost/mpl/apply.hpp>
 #   include <boost/mpl/aux_/config/ctps.hpp>
-#   if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
-#       include <boost/mpl/if.hpp>
-#       include <boost/type_traits/is_same.hpp>
-#   endif
 #endif
 
 #include <boost/mpl/aux_/config/use_preprocessed.hpp>

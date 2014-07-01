@@ -128,7 +128,7 @@ const    boost::intmax_t ratio<N, D>::den;
 
 //----------------------------------------------------------------------------//
 //                                                                            //
-//                20.6.2 Arithmetic on ratio types [ratio.arithmetic]                   //
+//                20.6.2 Arithmetic on ratio types [ratio.arithmetic]         //
 //                                                                            //
 //----------------------------------------------------------------------------//
 
@@ -158,7 +158,7 @@ struct ratio_divide
 
 //----------------------------------------------------------------------------//
 //                                                                            //
-//                20.6.3 Comparasion of ratio types [ratio.comparison]                   //
+//                20.6.3 Comparision of ratio types [ratio.comparison]        //
 //                                                                            //
 //----------------------------------------------------------------------------//
 
@@ -204,6 +204,12 @@ struct ratio_gcd :
 {
 };
 
+    //----------------------------------------------------------------------------//
+    //                                                                            //
+    //                More arithmetic on ratio types [ratio.arithmetic]           //
+    //                                                                            //
+    //----------------------------------------------------------------------------//
+
 #ifdef BOOST_RATIO_EXTENSIONS
 template <class R>
 struct ratio_negate
@@ -226,6 +232,24 @@ struct ratio_lcm :
         mpl::gcd_c<boost::intmax_t, R1::den, R2::den>::value>::type
 {
 };
+
+template<typename R, int p>
+struct ratio_power :
+  ratio_multiply<
+    typename ratio_power<R, p%2>::type,
+    typename ratio_power<typename ratio_multiply<R, R>::type, p/2>::type
+  >::type
+{};
+
+template<typename R>
+struct ratio_power<R, 0> : ratio<1>::type {};
+
+template<typename R>
+struct ratio_power<R, 1> : R {};
+
+template<typename R>
+struct ratio_power<R, -1> : ratio_divide<ratio<1>, R>::type {};
+
 #endif
 }  // namespace boost
 

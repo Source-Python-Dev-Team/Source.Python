@@ -70,9 +70,8 @@ namespace detail {
     } // -mk_str(..) 
 
 
-#if BOOST_WORKAROUND( BOOST_MSVC, <= 1300) || \
-    BOOST_WORKAROUND(__DECCXX_VER, BOOST_TESTED_AT(60590042))
-// MSVC needs to be tricked to disambiguate this simple overload..
+#if BOOST_WORKAROUND(__DECCXX_VER, BOOST_TESTED_AT(60590042))
+// __DECCXX needs to be tricked to disambiguate this simple overload..
 // the trick is in "boost/format/msvc_disambiguater.hpp"
   
     template< class Ch, class Tr, class T> inline
@@ -115,7 +114,7 @@ namespace detail {
         os << x ;
     }
 #endif
-#endif  // -msvc workaround
+#endif  // -__DECCXX workaround
 
     template< class Ch, class Tr, class T>
     void call_put_head(BOOST_IO_STD basic_ostream<Ch, Tr> & os, const void* x) {

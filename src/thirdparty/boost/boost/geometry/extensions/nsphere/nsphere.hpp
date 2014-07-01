@@ -32,6 +32,26 @@
 #include <boost/geometry/extensions/nsphere/algorithms/clear.hpp>
 #include <boost/geometry/extensions/nsphere/algorithms/envelope.hpp>
 #include <boost/geometry/extensions/nsphere/algorithms/num_points.hpp>
+#include <boost/geometry/extensions/nsphere/algorithms/disjoint.hpp>
+#include <boost/geometry/extensions/nsphere/strategies/cartesian/nsphere_in_box.hpp>
+#include <boost/geometry/extensions/nsphere/strategies/cartesian/point_in_nsphere.hpp>
 #include <boost/geometry/extensions/nsphere/algorithms/within.hpp>
+#include <boost/geometry/extensions/nsphere/algorithms/covered_by.hpp>
+#include <boost/geometry/extensions/nsphere/algorithms/expand.hpp>
+#include <boost/geometry/extensions/nsphere/algorithms/equals.hpp>
+#include <boost/geometry/extensions/nsphere/algorithms/centroid.hpp>
+
+#include <boost/geometry/extensions/nsphere/index/indexable.hpp>
+#include <boost/geometry/extensions/nsphere/index/detail/algorithms/content.hpp>
+#include <boost/geometry/extensions/nsphere/index/detail/algorithms/is_valid.hpp>
+#include <boost/geometry/extensions/nsphere/index/detail/algorithms/margin.hpp>
+#include <boost/geometry/extensions/nsphere/index/detail/algorithms/comparable_distance_near.hpp>
+#include <boost/geometry/extensions/nsphere/index/detail/algorithms/bounds.hpp>
+
+#include <boost/geometry/index/detail/exception.hpp> // needed by the following
+#include <boost/geometry/index/detail/rtree/options.hpp> // needed by the following
+#include <boost/geometry/index/detail/translator.hpp> // needed by the following
+#include <boost/geometry/extensions/nsphere/index/detail/rtree/linear/redistribute_elements.hpp>
+#include <boost/geometry/extensions/nsphere/index/detail/rtree/rstar/redistribute_elements.hpp>
 
 #endif // BOOST_GEOMETRY_EXTENSIONS_NSPHERE_HPP

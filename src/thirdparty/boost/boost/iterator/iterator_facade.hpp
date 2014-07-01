@@ -67,18 +67,6 @@ namespace boost
       , class Return
     >
     struct enable_if_interoperable
-#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-    {
-        typedef typename mpl::if_<
-            mpl::or_<
-                is_convertible<Facade1, Facade2>
-              , is_convertible<Facade2, Facade1>
-            >
-          , Return
-          , int[3]
-        >::type type;
-    };
-#else
       : ::boost::iterators::enable_if<
            mpl::or_<
                is_convertible<Facade1, Facade2>
@@ -87,7 +75,6 @@ namespace boost
          , Return
         >
     {};
-#endif
 
     //
     // Generates associated types for an iterator_facade with the
@@ -114,10 +101,7 @@ namespace boost
           , add_pointer<value_type>
         >::type pointer;
 
-# if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)                          \
-    && (BOOST_WORKAROUND(_STLPORT_VERSION, BOOST_TESTED_AT(0x452))              \
-        || BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, BOOST_TESTED_AT(310)))     \
-    || BOOST_WORKAROUND(BOOST_RWSTD_VER, BOOST_TESTED_AT(0x20101))              \
+# if BOOST_WORKAROUND(BOOST_RWSTD_VER, BOOST_TESTED_AT(0x20101))              \
     || BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, <= 310)
 
         // To interoperate with some broken library/compiler
@@ -217,33 +201,6 @@ namespace boost
         Iterator stored_iterator;
     };
 
-# ifdef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-
-    template <class Reference, class Value>
-    struct is_non_proxy_reference_impl
-    {
-        static Reference r;
-
-        template <class R>
-        static typename mpl::if_<
-            is_convertible<
-                R const volatile*
-              , Value const volatile*
-            >
-          , char[1]
-          , char[2]
-        >::type& helper(R const&);
-
-        BOOST_STATIC_CONSTANT(bool, value = sizeof(helper(r)) == 1);
-    };
-
-    template <class Reference, class Value>
-    struct is_non_proxy_reference
-      : mpl::bool_<
-            is_non_proxy_reference_impl<Reference, Value>::value
-        >
-    {};
-# else
     template <class Reference, class Value>
     struct is_non_proxy_reference
       : is_convertible<
@@ -252,7 +209,6 @@ namespace boost
           , Value const volatile*
         >
     {};
-# endif
 
     // A metafunction to choose the result type of postfix ++
     //
@@ -327,15 +283,6 @@ namespace boost
         }
     };
 
-# if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-    // Deal with ETI
-    template<>
-    struct operator_arrow_dispatch<int>
-    {
-        typedef int result_type;
-    };
-# endif
-
     struct choose_difference_type
     {
         template <class I1, class I2>
@@ -343,12 +290,6 @@ namespace boost
           :
 # ifdef BOOST_NO_ONE_WAY_ITERATOR_INTEROP
           iterator_difference<I1>
-# elif BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-          mpl::if_<
-              is_convertible<I2,I1>
-            , typename I1::difference_type
-            , typename I2::difference_type
-          >
 # else
           mpl::eval_if<
               is_convertible<I2,I1>
@@ -592,17 +533,6 @@ namespace boost
           return this->derived();
       }
 
-# if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-      typename boost::detail::postfix_increment_result<Derived,Value,Reference,CategoryOrTraversal>::type
-      operator++(int)
-      {
-          typename boost::detail::postfix_increment_result<Derived,Value,Reference,CategoryOrTraversal>::type
-          tmp(this->derived());
-          ++*this;
-          return tmp;
-      }
-# endif
-
       Derived& operator--()
       {
           iterator_core_access::decrement(this->derived());
@@ -633,21 +563,8 @@ namespace boost
           Derived result(this->derived());
           return result -= x;
       }
-
-# if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-      // There appears to be a bug which trashes the data of classes
-      // derived from iterator_facade when they are assigned unless we
-      // define this assignment operator.  This bug is only revealed
-      // (so far) in STLPort debug mode, but it's clearly a codegen
-      // problem so we apply the workaround for all MSVC6.
-      iterator_facade& operator=(iterator_facade const&)
-      {
-          return *this;
-      }
-# endif
   };
 
-# if !BOOST_WORKAROUND(BOOST_MSVC, < 1300)
   template <class I, class V, class TC, class R, class D>
   inline typename boost::detail::postfix_increment_result<I,V,R,TC>::type
   operator++(
@@ -662,7 +579,6 @@ namespace boost
 
       return tmp;
   }
-# endif
 
 
   //

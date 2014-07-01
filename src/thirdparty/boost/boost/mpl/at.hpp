@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: at.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: at.hpp 85961 2013-09-26 14:10:37Z skelly $
+// $Date: 2013-09-26 10:10:37 -0400 (Thu, 26 Sep 2013) $
+// $Revision: 85961 $
 
 #include <boost/mpl/at_fwd.hpp>
 #include <boost/mpl/aux_/at_impl.hpp>
@@ -20,7 +20,6 @@
 #include <boost/mpl/sequence_tag.hpp>
 #include <boost/mpl/aux_/na_spec.hpp>
 #include <boost/mpl/aux_/lambda_support.hpp>
-#include <boost/mpl/aux_/nttp_decl.hpp>
 
 namespace boost { namespace mpl {
 
@@ -37,7 +36,7 @@ struct at
 
 template<
       typename Sequence
-    , BOOST_MPL_AUX_NTTP_DECL(long, N)
+    , long N
     >
 struct at_c
     : at_impl< typename sequence_tag<Sequence>::type >

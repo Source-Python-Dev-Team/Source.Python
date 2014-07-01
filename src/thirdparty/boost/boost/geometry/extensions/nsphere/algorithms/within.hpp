@@ -3,6 +3,7 @@
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
+// Copyright (c) 2013 Adam Wulkiewicz, Lodz, Poland.
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -54,7 +55,7 @@ inline bool point_in_circle(P const& p, C const& c)
         <
             point_tag, P, point_type
         >::type strategy_type;
-    typedef typename services::return_type<strategy_type>::type return_type;
+    typedef typename services::return_type<strategy_type, P, point_type>::type return_type;
 
     strategy_type strategy;
 
@@ -62,7 +63,7 @@ inline bool point_in_circle(P const& p, C const& c)
     return_type const r = geometry::distance(p, center, strategy);
     return_type const rad = services::result_from_distance
         <
-            strategy_type
+            strategy_type, P, point_type
         >::apply(strategy, get_radius<0>(c));
 
     return r < rad;
@@ -150,9 +151,11 @@ template <typename P, typename Circle>
 struct within<P, Circle, point_tag, nsphere_tag>
 {
     template <typename Strategy>
-    static inline bool apply(P const& p, Circle const& c, Strategy const&)
+    static inline bool apply(P const& p, Circle const& c, Strategy const& strategy)
     {
-        return detail::within::point_in_circle(p, c);
+        ::boost::ignore_unused_variable_warning(strategy);
+        return strategy.apply(p, c);
+        //return detail::within::point_in_circle(p, c);
     }
 };
 
@@ -206,6 +209,19 @@ struct within<M, C, multi_polygon_tag, nsphere_tag>
     }
 };
 
+
+
+template <typename NSphere, typename Box>
+struct within<NSphere, Box, nsphere_tag, box_tag>
+{
+    template <typename Strategy>
+    static inline bool apply(NSphere const& nsphere, Box const& box, Strategy const& strategy)
+    {
+        assert_dimension_equal<NSphere, Box>();
+        boost::ignore_unused_variable_warning(strategy);
+        return strategy.apply(nsphere, box);
+    }
+};
 
 } // namespace dispatch
 #endif // DOXYGEN_NO_DISPATCH
