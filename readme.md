@@ -27,12 +27,12 @@ Source.Python is an open-source project that uses boost::python to allow scripte
   * ../source-python/ - sound files
 * src/ - source code
   * ../core/ - core source code
-  * ../hl2sdk/ - Source-engine SDKs (use the [HL2SDK repository](https://github.com/alliedmodders/hl2sdk/branches/all) as a reference)
+  * ../hl2sdk/ - Source-engine SDKs (use the [HL2SDK repository](http://github.com/alliedmodders/hl2sdk/branches/all) as a reference)
   * ../loader/ - source-python source code (the loader binary)
   * ../patches/ - SDK patches necessary for building
   * ../thirdparty/ - 3rd-party mods used by Source.Python
 
 
 ## Useful links
-* [Source.Python Forums](www.sourcepython.com/forums.php)
-* [Source.Python Wiki](wiki.sourcepython.com)
+* [Source.Python Forums](http://www.sourcepython.com/forums.php)
+* [Source.Python Wiki](http://wiki.sourcepython.com)
