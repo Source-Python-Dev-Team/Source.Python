@@ -45,7 +45,6 @@ command will be accumulated (using your own 'collect_incoming_data'
 method) up to the terminator, and then control will be returned to
 you - by calling your self.found_terminator() method.
 """
-import socket
 import asyncore
 from collections import deque
 
@@ -56,8 +55,8 @@ class async_chat (asyncore.dispatcher):
 
     # these are overridable defaults
 
-    ac_in_buffer_size       = 4096
-    ac_out_buffer_size      = 4096
+    ac_in_buffer_size       = 65536
+    ac_out_buffer_size      = 65536
 
     # we don't want to enable the use of encoding by default, because that is a
     # sign of an application bug that we don't want to pass silently
@@ -69,12 +68,9 @@ class async_chat (asyncore.dispatcher):
         # for string terminator matching
         self.ac_in_buffer = b''
 
-        # we use a list here rather than cStringIO for a few reasons...
-        # del lst[:] is faster than sio.truncate(0)
-        # lst = [] is faster than sio.truncate(0)
-        # cStringIO will be gaining unicode support in py3k, which
-        # will negatively affect the performance of bytes compared to
-        # a ''.join() equivalent
+        # we use a list here rather than io.BytesIO for a few reasons...
+        # del lst[:] is faster than bio.truncate(0)
+        # lst = [] is faster than bio.truncate(0)
         self.incoming = []
 
         # we toss the use of the "simple producer" and replace it with
@@ -114,7 +110,7 @@ class async_chat (asyncore.dispatcher):
 
         try:
             data = self.recv (self.ac_in_buffer_size)
-        except socket.error as why:
+        except OSError as why:
             self.handle_error()
             return
 
@@ -243,7 +239,7 @@ class async_chat (asyncore.dispatcher):
             # send the data
             try:
                 num_sent = self.send(data)
-            except socket.error:
+            except OSError:
                 self.handle_error()
                 return
 

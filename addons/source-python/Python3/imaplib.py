@@ -24,6 +24,8 @@ __version__ = "2.58"
 
 import binascii, errno, random, re, socket, subprocess, sys, time, calendar
 from datetime import datetime, timezone, timedelta
+from io import DEFAULT_BUFFER_SIZE
+
 try:
     import ssl
     HAVE_SSL = True
@@ -40,6 +42,15 @@ Debug = 0
 IMAP4_PORT = 143
 IMAP4_SSL_PORT = 993
 AllowedVersions = ('IMAP4REV1', 'IMAP4')        # Most recent first
+
+# Maximal line length when calling readline(). This is to prevent
+# reading arbitrary length lines. RFC 3501 and 2060 (IMAP 4rev1)
+# don't specify a line length. RFC 2683 however suggests limiting client
+# command lines to 1000 octets and server command lines to 8000 octets.
+# We have selected 10000 for some extra margin and since that is supposedly
+# also what UW and Panda IMAP does.
+_MAXLINE = 10000
+
 
 #       Commands
 
@@ -174,7 +185,7 @@ class IMAP4:
         except Exception:
             try:
                 self.shutdown()
-            except socket.error:
+            except OSError:
                 pass
             raise
 
@@ -254,7 +265,10 @@ class IMAP4:
 
     def readline(self):
         """Read line from remote."""
-        return self.file.readline()
+        line = self.file.readline(_MAXLINE + 1)
+        if len(line) > _MAXLINE:
+            raise self.error("got more than %d bytes" % _MAXLINE)
+        return line
 
 
     def send(self, data):
@@ -267,7 +281,7 @@ class IMAP4:
         self.file.close()
         try:
             self.sock.shutdown(socket.SHUT_RDWR)
-        except socket.error as e:
+        except OSError as e:
             # The server might already have closed the connection
             if e.errno != errno.ENOTCONN:
                 raise
@@ -352,10 +366,10 @@ class IMAP4:
 
                 data = authobject(response)
 
-        It will be called to process server continuation responses.
-        It should return data that will be encoded and sent to server.
-        It should return None if the client abort response '*' should
-        be sent instead.
+        It will be called to process server continuation responses; the
+        response argument it is passed will be a bytes.  It should return bytes
+        data that will be base64 encoded and sent to the server.  It should
+        return None if the client abort response '*' should be sent instead.
         """
         mech = mechanism.upper()
         # XXX: shouldn't this code be removed, not commented out?
@@ -538,7 +552,9 @@ class IMAP4:
     def _CRAM_MD5_AUTH(self, challenge):
         """ Authobject to use with CRAM-MD5 authentication. """
         import hmac
-        return self.user + " " + hmac.HMAC(self.password, challenge).hexdigest()
+        pwd = (self.password.encode('ASCII') if isinstance(self.password, str)
+                                             else self.password)
+        return self.user + " " + hmac.HMAC(pwd, challenge, 'md5').hexdigest()
 
 
     def logout(self):
@@ -726,12 +742,12 @@ class IMAP4:
             raise self.abort('TLS not supported by server')
         # Generate a default SSL context if none was passed.
         if ssl_context is None:
-            ssl_context = ssl.SSLContext(ssl.PROTOCOL_SSLv23)
-            # SSLv2 considered harmful.
-            ssl_context.options |= ssl.OP_NO_SSLv2
+            ssl_context = ssl._create_stdlib_context()
         typ, dat = self._simple_command(name)
         if typ == 'OK':
-            self.sock = ssl_context.wrap_socket(self.sock)
+            server_hostname = self.host if ssl.HAS_SNI else None
+            self.sock = ssl_context.wrap_socket(self.sock,
+                                                server_hostname=server_hostname)
             self.file = self.sock.makefile('rb')
             self._tls_established = True
             self._get_capabilities()
@@ -899,7 +915,7 @@ class IMAP4:
 
         try:
             self.send(data + CRLF)
-        except (socket.error, OSError) as val:
+        except OSError as val:
             raise self.abort('socket error: %s' % val)
 
         if literal is None:
@@ -924,7 +940,7 @@ class IMAP4:
             try:
                 self.send(literal)
                 self.send(CRLF)
-            except (socket.error, OSError) as val:
+            except OSError as val:
                 raise self.abort('socket error: %s' % val)
 
             if not literator:
@@ -1047,6 +1063,11 @@ class IMAP4:
                 del self.tagged_commands[tag]
                 return result
 
+            # If we've seen a BYE at this point, the socket will be
+            # closed, so report the BYE now.
+
+            self._check_bye()
+
             # Some have reported "unexpected response" exceptions.
             # Note that ignoring them here causes loops.
             # Instead, send me details of the unexpected response and
@@ -1069,7 +1090,7 @@ class IMAP4:
 
         # Protocol mandates all lines terminated by CRLF
         if not line.endswith(b'\r\n'):
-            raise self.abort('socket error: unterminated line')
+            raise self.abort('socket error: unterminated line: %r' % line)
 
         line = line[:-2]
         if __debug__:
@@ -1178,7 +1199,7 @@ if HAVE_SSL:
                 ssl_context - a SSLContext object that contains your certificate chain
                               and private key (default: None)
                 Note: if ssl_context is provided, then parameters keyfile or
-                certfile should not be set otherwise ValueError is thrown.
+                certfile should not be set otherwise ValueError is raised.
 
         for more documentation see the docstring of the parent class IMAP4.
         """
@@ -1194,15 +1215,17 @@ if HAVE_SSL:
 
             self.keyfile = keyfile
             self.certfile = certfile
+            if ssl_context is None:
+                ssl_context = ssl._create_stdlib_context(certfile=certfile,
+                                                         keyfile=keyfile)
             self.ssl_context = ssl_context
             IMAP4.__init__(self, host, port)
 
         def _create_socket(self):
             sock = IMAP4._create_socket(self)
-            if self.ssl_context:
-                return self.ssl_context.wrap_socket(sock)
-            else:
-                return ssl.wrap_socket(sock, self.keyfile, self.certfile)
+            server_hostname = self.host if ssl.HAS_SNI else None
+            return self.ssl_context.wrap_socket(sock,
+                                                server_hostname=server_hostname)
 
         def open(self, host='', port=IMAP4_SSL_PORT):
             """Setup connection to remote server on "host:port".
@@ -1242,6 +1265,7 @@ class IMAP4_stream(IMAP4):
         self.sock = None
         self.file = None
         self.process = subprocess.Popen(self.command,
+            bufsize=DEFAULT_BUFFER_SIZE,
             stdin=subprocess.PIPE, stdout=subprocess.PIPE,
             shell=True, close_fds=True)
         self.writefile = self.process.stdin
@@ -1295,14 +1319,16 @@ class _Authenticator:
         #  so when it gets to the end of the 8-bit input
         #  there's no partial 6-bit output.
         #
-        oup = ''
+        oup = b''
+        if isinstance(inp, str):
+            inp = inp.encode('ASCII')
         while inp:
             if len(inp) > 48:
                 t = inp[:48]
                 inp = inp[48:]
             else:
                 t = inp
-                inp = ''
+                inp = b''
             e = binascii.b2a_base64(t)
             if e:
                 oup = oup + e[:-1]
@@ -1310,7 +1336,7 @@ class _Authenticator:
 
     def decode(self, inp):
         if not inp:
-            return ''
+            return b''
         return binascii.a2b_base64(inp)
 
 Months = ' Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec'.split(' ')

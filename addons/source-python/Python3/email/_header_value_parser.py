@@ -69,7 +69,8 @@ XXX: provide complete list of token types.
 
 import re
 import urllib   # For urllib.parse.unquote
-from collections import namedtuple, OrderedDict
+from string import hexdigits
+from collections import OrderedDict
 from email import _encoded_words as _ew
 from email import errors
 from email import utils
@@ -367,8 +368,7 @@ class TokenList(list):
                 yield (indent + '    !! invalid element in token '
                                         'list: {!r}'.format(token))
             else:
-                for line in token._pp(indent+'    '):
-                    yield line
+                yield from token._pp(indent+'    ')
         if self.defects:
             extra = ' Defects: {}'.format(self.defects)
         else:
@@ -392,10 +392,6 @@ class UnstructuredTokenList(TokenList):
     token_type = 'unstructured'
 
     def _fold(self, folded):
-        if any(x.token_type=='encoded-word' for x in self):
-            return self._fold_encoded(folded)
-        # Here we can have either a pure ASCII string that may or may not
-        # have surrogateescape encoded bytes, or a unicode string.
         last_ew = None
         for part in self.parts:
             tstr = str(part)
@@ -1318,24 +1314,22 @@ RouteComponentMarker = ValueTerminal('@', 'route-component-marker')
 # Parser
 #
 
-"""Parse strings according to RFC822/2047/2822/5322 rules.
-
-This is a stateless parser.  Each get_XXX function accepts a string and
-returns either a Terminal or a TokenList representing the RFC object named
-by the method and a string containing the remaining unparsed characters
-from the input.  Thus a parser method consumes the next syntactic construct
-of a given type and returns a token representing the construct plus the
-unparsed remainder of the input string.
-
-For example, if the first element of a structured header is a 'phrase',
-then:
-
-    phrase, value = get_phrase(value)
-
-returns the complete phrase from the start of the string value, plus any
-characters left in the string after the phrase is removed.
-
-"""
+# Parse strings according to RFC822/2047/2822/5322 rules.
+#
+# This is a stateless parser.  Each get_XXX function accepts a string and
+# returns either a Terminal or a TokenList representing the RFC object named
+# by the method and a string containing the remaining unparsed characters
+# from the input.  Thus a parser method consumes the next syntactic construct
+# of a given type and returns a token representing the construct plus the
+# unparsed remainder of the input string.
+#
+# For example, if the first element of a structured header is a 'phrase',
+# then:
+#
+#     phrase, value = get_phrase(value)
+#
+# returns the complete phrase from the start of the string value, plus any
+# characters left in the string after the phrase is removed.
 
 _wsp_splitter = re.compile(r'([{}]+)'.format(''.join(WSP))).split
 _non_atom_end_matcher = re.compile(r"[^{}]+".format(
@@ -1389,35 +1383,6 @@ def _get_ptext_to_endchars(value, endchars):
         pos = pos + 1
     return ''.join(vchars), ''.join([fragment[pos:]] + remainder), had_qp
 
-def _decode_ew_run(value):
-    """ Decode a run of RFC2047 encoded words.
-
-        _decode_ew_run(value) -> (text, value, defects)
-
-    Scans the supplied value for a run of tokens that look like they are RFC
-    2047 encoded words, decodes those words into text according to RFC 2047
-    rules (whitespace between encoded words is discarded), and returns the text
-    and the remaining value (including any leading whitespace on the remaining
-    value), as well as a list of any defects encountered while decoding.  The
-    input value may not have any leading whitespace.
-
-    """
-    res = []
-    defects = []
-    last_ws = ''
-    while value:
-        try:
-            tok, ws, value = _wsp_splitter(value, 1)
-        except ValueError:
-            tok, ws, value = value, '', ''
-        if not (tok.startswith('=?') and tok.endswith('?=')):
-            return ''.join(res), last_ws + tok + ws + value, defects
-        text, charset, lang, new_defects = _ew.decode(tok)
-        res.append(text)
-        defects.extend(new_defects)
-        last_ws = ws
-    return ''.join(res), last_ws, defects
-
 def get_fws(value):
     """FWS = 1*WSP
 
@@ -1443,7 +1408,8 @@ def get_encoded_word(value):
         raise errors.HeaderParseError(
             "expected encoded word but found {}".format(value))
     remstr = ''.join(remainder)
-    if remstr[:2].isdigit():
+    if len(remstr) > 1 and remstr[0] in hexdigits and remstr[1] in hexdigits:
+        # The ? after the CTE was followed by an encoded word escape (=XX).
         rest, *remainder = remstr.split('?=', 1)
         tok = tok + '?=' + rest
     if len(tok.split()) > 1:
@@ -1491,8 +1457,8 @@ def get_unstructured(value):
 
     """
     # XXX: but what about bare CR and LF?  They might signal the start or
-    # end of an encoded word.  YAGNI for now, since out current parsers
-    # will never send us strings with bard CR or LF.
+    # end of an encoded word.  YAGNI for now, since our current parsers
+    # will never send us strings with bare CR or LF.
 
     unstructured = UnstructuredTokenList()
     while value:
@@ -1504,6 +1470,8 @@ def get_unstructured(value):
             try:
                 token, value = get_encoded_word(value)
             except errors.HeaderParseError:
+                # XXX: Need to figure out how to register defects when
+                # appropriate here.
                 pass
             else:
                 have_ws = True
@@ -1588,6 +1556,13 @@ def get_bare_quoted_string(value):
     while value and value[0] != '"':
         if value[0] in WSP:
             token, value = get_fws(value)
+        elif value[:2] == '=?':
+            try:
+                token, value = get_encoded_word(value)
+                bare_quoted_string.defects.append(errors.InvalidHeaderDefect(
+                    "encoded word inside quoted string"))
+            except errors.HeaderParseError:
+                token, value = get_qcontent(value)
         else:
             token, value = get_qcontent(value)
         bare_quoted_string.append(token)
@@ -1656,6 +1631,7 @@ def get_quoted_string(value):
 def get_atom(value):
     """atom = [CFWS] 1*atext [CFWS]
 
+    An atom could be an rfc2047 encoded word.
     """
     atom = Atom()
     if value and value[0] in CFWS_LEADER:
@@ -1664,7 +1640,15 @@ def get_atom(value):
     if value and value[0] in ATOM_ENDS:
         raise errors.HeaderParseError(
             "expected atom but found '{}'".format(value))
-    token, value = get_atext(value)
+    if value.startswith('=?'):
+        try:
+            token, value = get_encoded_word(value)
+        except errors.HeaderParseError:
+            # XXX: need to figure out how to register defects when
+            # appropriate here.
+            token, value = get_atext(value)
+    else:
+        token, value = get_atext(value)
     atom.append(token)
     if value and value[0] in CFWS_LEADER:
         token, value = get_cfws(value)
@@ -1693,12 +1677,22 @@ def get_dot_atom_text(value):
 def get_dot_atom(value):
     """ dot-atom = [CFWS] dot-atom-text [CFWS]
 
+    Any place we can have a dot atom, we could instead have an rfc2047 encoded
+    word.
     """
     dot_atom = DotAtom()
     if value[0] in CFWS_LEADER:
         token, value = get_cfws(value)
         dot_atom.append(token)
-    token, value = get_dot_atom_text(value)
+    if value.startswith('=?'):
+        try:
+            token, value = get_encoded_word(value)
+        except errors.HeaderParseError:
+            # XXX: need to figure out how to register defects when
+            # appropriate here.
+            token, value = get_dot_atom_text(value)
+    else:
+        token, value = get_dot_atom_text(value)
     dot_atom.append(token)
     if value and value[0] in CFWS_LEADER:
         token, value = get_cfws(value)
@@ -1864,7 +1858,7 @@ def get_dtext(value):
     """ dtext = <printable ascii except \ [ ]> / obs-dtext
         obs-dtext = obs-NO-WS-CTL / quoted-pair
 
-    We allow anything except the excluded characters, but but if we find any
+    We allow anything except the excluded characters, but if we find any
     ASCII other than the RFC defined printable ASCII an NonPrintableDefect is
     added to the token's defects list.  Quoted pairs are converted to their
     unquoted values, so what is returned is a ptext token, in this case a

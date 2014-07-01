@@ -62,11 +62,12 @@ SMTP_PORT = 25
 SMTP_SSL_PORT = 465
 CRLF = "\r\n"
 bCRLF = b"\r\n"
+_MAXLINE = 8192 # more than 8 times larger than RFC 821, 4.5.3
 
 OLDSTYLE_AUTH = re.compile(r"auth=(.*)", re.I)
 
 # Exception classes used by this module.
-class SMTPException(Exception):
+class SMTPException(OSError):
     """Base class for all exceptions raised by this module."""
 
 class SMTPServerDisconnected(SMTPException):
@@ -221,15 +222,18 @@ class SMTP:
 
         If specified, `host' is the name of the remote host to which to
         connect.  If specified, `port' specifies the port to which to connect.
-        By default, smtplib.SMTP_PORT is used.  An SMTPConnectError is raised
-        if the specified `host' doesn't respond correctly.  If specified,
-        `local_hostname` is used as the FQDN of the local host.  By default,
-        the local hostname is found using socket.getfqdn(). The
-        `source_address` parameter takes a 2-tuple (host, port) for the socket
-        to bind to as its source address before connecting. If the host is ''
-        and port is 0, the OS default behavior will be used.
+        By default, smtplib.SMTP_PORT is used.  If a host is specified the
+        connect method is called, and if it returns anything other than a
+        success code an SMTPConnectError is raised.  If specified,
+        `local_hostname` is used as the FQDN of the local host in the HELO/EHLO
+        command.  Otherwise, the local hostname is found using
+        socket.getfqdn(). The `source_address` parameter takes a 2-tuple (host,
+        port) for the socket to bind to as its source address before
+        connecting. If the host is '' and port is 0, the OS default behavior
+        will be used.
 
         """
+        self._host = host
         self.timeout = timeout
         self.esmtp_features = {}
         self.source_address = source_address
@@ -309,7 +313,7 @@ class SMTP:
                 try:
                     port = int(port)
                 except ValueError:
-                    raise socket.error("nonnumeric port")
+                    raise OSError("nonnumeric port")
         if not port:
             port = self.default_port
         if self.debuglevel > 0:
@@ -330,7 +334,7 @@ class SMTP:
                 s = s.encode("ascii")
             try:
                 self.sock.sendall(s)
-            except socket.error:
+            except OSError:
                 self.close()
                 raise SMTPServerDisconnected('Server not connected')
         else:
@@ -362,8 +366,8 @@ class SMTP:
             self.file = self.sock.makefile('rb')
         while 1:
             try:
-                line = self.file.readline()
-            except socket.error as e:
+                line = self.file.readline(_MAXLINE + 1)
+            except OSError as e:
                 self.close()
                 raise SMTPServerDisconnected("Connection unexpectedly closed: "
                                              + str(e))
@@ -372,6 +376,8 @@ class SMTP:
                 raise SMTPServerDisconnected("Connection unexpectedly closed")
             if self.debuglevel > 0:
                 print('reply:', repr(line), file=stderr)
+            if len(line) > _MAXLINE:
+                raise SMTPResponseException(500, "Line too long.")
             resp.append(line[4:].strip(b' \t\r\n'))
             code = line[:3]
             # Check that the error code is syntactically correct.
@@ -471,6 +477,18 @@ class SMTP:
     def rset(self):
         """SMTP 'rset' command -- resets session."""
         return self.docmd("rset")
+
+    def _rset(self):
+        """Internal 'rset' command which ignores any SMTPServerDisconnected error.
+
+        Used internally in the library, since the server disconnected error
+        should appear to the application when the *next* command is issued, if
+        we are doing an internal "safety" reset.
+        """
+        try:
+            self.rset()
+        except SMTPServerDisconnected:
+            pass
 
     def noop(self):
         """SMTP 'noop' command -- doesn't do anything :>"""
@@ -577,7 +595,7 @@ class SMTP:
         def encode_cram_md5(challenge, user, password):
             challenge = base64.decodebytes(challenge)
             response = user + " " + hmac.HMAC(password.encode('ascii'),
-                                              challenge).hexdigest()
+                                              challenge, 'md5').hexdigest()
             return encode_base64(response.encode('ascii'), eol='')
 
         def encode_plain(user, password):
@@ -662,10 +680,12 @@ class SMTP:
             if context is not None and certfile is not None:
                 raise ValueError("context and certfile arguments are mutually "
                                  "exclusive")
-            if context is not None:
-                self.sock = context.wrap_socket(self.sock)
-            else:
-                self.sock = ssl.wrap_socket(self.sock, keyfile, certfile)
+            if context is None:
+                context = ssl._create_stdlib_context(certfile=certfile,
+                                                     keyfile=keyfile)
+            server_hostname = self._host if ssl.HAS_SNI else None
+            self.sock = context.wrap_socket(self.sock,
+                                            server_hostname=server_hostname)
             self.file = None
             # RFC 3207:
             # The client MUST discard any knowledge obtained from
@@ -751,7 +771,10 @@ class SMTP:
                 esmtp_opts.append(option)
         (code, resp) = self.mail(from_addr, esmtp_opts)
         if code != 250:
-            self.rset()
+            if code == 421:
+                self.close()
+            else:
+                self._rset()
             raise SMTPSenderRefused(code, resp, from_addr)
         senderrs = {}
         if isinstance(to_addrs, str):
@@ -760,13 +783,19 @@ class SMTP:
             (code, resp) = self.rcpt(each, rcpt_options)
             if (code != 250) and (code != 251):
                 senderrs[each] = (code, resp)
+            if code == 421:
+                self.close()
+                raise SMTPRecipientsRefused(senderrs)
         if len(senderrs) == len(to_addrs):
             # the server refused all our recipients
-            self.rset()
+            self._rset()
             raise SMTPRecipientsRefused(senderrs)
         (code, resp) = self.data(msg)
         if code != 250:
-            self.rset()
+            if code == 421:
+                self.close()
+            else:
+                self._rset()
             raise SMTPDataError(code, resp)
         #if we got here then somebody got our mail
         return senderrs
@@ -842,15 +871,17 @@ class SMTP:
 if _have_ssl:
 
     class SMTP_SSL(SMTP):
-        """ This is a subclass derived from SMTP that connects over an SSL encrypted
-        socket (to use this class you need a socket module that was compiled with SSL
-        support). If host is not specified, '' (the local host) is used. If port is
-        omitted, the standard SMTP-over-SSL port (465) is used. The optional
-        source_address takes a two-tuple (host,port) for socket to bind to. keyfile and certfile
-        are also optional - they can contain a PEM formatted private key and
-        certificate chain file for the SSL connection. context also optional, can contain
-        a SSLContext, and is an alternative to keyfile and certfile; If it is specified both
-        keyfile and certfile must be None.
+        """ This is a subclass derived from SMTP that connects over an SSL
+        encrypted socket (to use this class you need a socket module that was
+        compiled with SSL support). If host is not specified, '' (the local
+        host) is used. If port is omitted, the standard SMTP-over-SSL port
+        (465) is used.  local_hostname and source_address have the same meaning
+        as they do in the SMTP class.  keyfile and certfile are also optional -
+        they can contain a PEM formatted private key and certificate chain file
+        for the SSL connection. context also optional, can contain a
+        SSLContext, and is an alternative to keyfile and certfile; If it is
+        specified both keyfile and certfile must be None.
+
         """
 
         default_port = SMTP_SSL_PORT
@@ -867,6 +898,9 @@ if _have_ssl:
                                  "exclusive")
             self.keyfile = keyfile
             self.certfile = certfile
+            if context is None:
+                context = ssl._create_stdlib_context(certfile=certfile,
+                                                     keyfile=keyfile)
             self.context = context
             SMTP.__init__(self, host, port, local_hostname, timeout,
                     source_address)
@@ -876,10 +910,9 @@ if _have_ssl:
                 print('connect:', (host, port), file=stderr)
             new_socket = socket.create_connection((host, port), timeout,
                     self.source_address)
-            if self.context is not None:
-                new_socket = self.context.wrap_socket(new_socket)
-            else:
-                new_socket = ssl.wrap_socket(new_socket, self.keyfile, self.certfile)
+            server_hostname = self._host if ssl.HAS_SNI else None
+            new_socket = self.context.wrap_socket(new_socket,
+                                                  server_hostname=server_hostname)
             return new_socket
 
     __all__.append("SMTP_SSL")
@@ -893,10 +926,11 @@ class LMTP(SMTP):
     """LMTP - Local Mail Transfer Protocol
 
     The LMTP protocol, which is very similar to ESMTP, is heavily based
-    on the standard SMTP client. It's common to use Unix sockets for LMTP,
-    so our connect() method must support that as well as a regular
-    host:port server. To specify a Unix socket, you must use an absolute
-    path as the host, starting with a '/'.
+    on the standard SMTP client. It's common to use Unix sockets for
+    LMTP, so our connect() method must support that as well as a regular
+    host:port server.  local_hostname and source_address have the same
+    meaning as they do in the SMTP class.  To specify a Unix socket,
+    you must use an absolute path as the host, starting with a '/'.
 
     Authentication is supported, using the regular SMTP mechanism. When
     using a Unix socket, LMTP generally don't support or require any
@@ -920,13 +954,13 @@ class LMTP(SMTP):
             self.sock = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
             self.file = None
             self.sock.connect(host)
-        except socket.error as msg:
+        except OSError:
             if self.debuglevel > 0:
                 print('connect fail:', host, file=stderr)
             if self.sock:
                 self.sock.close()
             self.sock = None
-            raise socket.error(msg)
+            raise
         (code, msg) = self.getreply()
         if self.debuglevel > 0:
             print('connect:', msg, file=stderr)

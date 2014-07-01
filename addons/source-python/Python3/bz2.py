@@ -9,7 +9,6 @@ __all__ = ["BZ2File", "BZ2Compressor", "BZ2Decompressor",
 
 __author__ = "Nadeem Vawda <nadeem.vawda@gmail.com>"
 
-import builtins
 import io
 import warnings
 
@@ -28,6 +27,8 @@ _MODE_WRITE    = 3
 
 _BUFFER_SIZE = 8192
 
+_builtin_open = open
+
 
 class BZ2File(io.BufferedIOBase):
 
@@ -43,16 +44,17 @@ class BZ2File(io.BufferedIOBase):
     def __init__(self, filename, mode="r", buffering=None, compresslevel=9):
         """Open a bzip2-compressed file.
 
-        If filename is a str or bytes object, is gives the name of the file to
-        be opened. Otherwise, it should be a file object, which will be used to
-        read or write the compressed data.
+        If filename is a str or bytes object, it gives the name
+        of the file to be opened. Otherwise, it should be a file object,
+        which will be used to read or write the compressed data.
 
-        mode can be 'r' for reading (default), 'w' for (over)writing, or 'a' for
-        appending. These can equivalently be given as 'rb', 'wb', and 'ab'.
+        mode can be 'r' for reading (default), 'w' for (over)writing,
+        'x' for creating exclusively, or 'a' for appending. These can
+        equivalently be given as 'rb', 'wb', 'xb', and 'ab'.
 
         buffering is ignored. Its use is deprecated.
 
-        If mode is 'w' or 'a', compresslevel can be a number between 1
+        If mode is 'w', 'x' or 'a', compresslevel can be a number between 1
         and 9 specifying the level of compression: 1 produces the least
         compression, and 9 (default) produces the most compression.
 
@@ -79,9 +81,14 @@ class BZ2File(io.BufferedIOBase):
             mode = "rb"
             mode_code = _MODE_READ
             self._decompressor = BZ2Decompressor()
-            self._buffer = None
+            self._buffer = b""
+            self._buffer_offset = 0
         elif mode in ("w", "wb"):
             mode = "wb"
+            mode_code = _MODE_WRITE
+            self._compressor = BZ2Compressor(compresslevel)
+        elif mode in ("x", "xb"):
+            mode = "xb"
             mode_code = _MODE_WRITE
             self._compressor = BZ2Compressor(compresslevel)
         elif mode in ("a", "ab"):
@@ -89,10 +96,10 @@ class BZ2File(io.BufferedIOBase):
             mode_code = _MODE_WRITE
             self._compressor = BZ2Compressor(compresslevel)
         else:
-            raise ValueError("Invalid mode: {!r}".format(mode))
+            raise ValueError("Invalid mode: %r" % (mode,))
 
         if isinstance(filename, (str, bytes)):
-            self._fp = builtins.open(filename, mode)
+            self._fp = _builtin_open(filename, mode)
             self._closefp = True
             self._mode = mode_code
         elif hasattr(filename, "read") or hasattr(filename, "write"):
@@ -124,7 +131,8 @@ class BZ2File(io.BufferedIOBase):
                     self._fp = None
                     self._closefp = False
                     self._mode = _MODE_CLOSED
-                    self._buffer = None
+                    self._buffer = b""
+                    self._buffer_offset = 0
 
     @property
     def closed(self):
@@ -157,15 +165,18 @@ class BZ2File(io.BufferedIOBase):
             raise ValueError("I/O operation on closed file")
 
     def _check_can_read(self):
-        if not self.readable():
+        if self._mode not in (_MODE_READ, _MODE_READ_EOF):
+            self._check_not_closed()
             raise io.UnsupportedOperation("File not open for reading")
 
     def _check_can_write(self):
-        if not self.writable():
+        if self._mode != _MODE_WRITE:
+            self._check_not_closed()
             raise io.UnsupportedOperation("File not open for writing")
 
     def _check_can_seek(self):
-        if not self.readable():
+        if self._mode not in (_MODE_READ, _MODE_READ_EOF):
+            self._check_not_closed()
             raise io.UnsupportedOperation("Seeking is only supported "
                                           "on files open for reading")
         if not self._fp.seekable():
@@ -174,55 +185,79 @@ class BZ2File(io.BufferedIOBase):
 
     # Fill the readahead buffer if it is empty. Returns False on EOF.
     def _fill_buffer(self):
+        if self._mode == _MODE_READ_EOF:
+            return False
         # Depending on the input data, our call to the decompressor may not
         # return any data. In this case, try again after reading another block.
-        while True:
-            if self._buffer:
-                return True
-
-            if self._decompressor.unused_data:
-                rawblock = self._decompressor.unused_data
-            else:
-                rawblock = self._fp.read(_BUFFER_SIZE)
+        while self._buffer_offset == len(self._buffer):
+            rawblock = (self._decompressor.unused_data or
+                        self._fp.read(_BUFFER_SIZE))
 
             if not rawblock:
                 if self._decompressor.eof:
+                    # End-of-stream marker and end of file. We're good.
                     self._mode = _MODE_READ_EOF
                     self._size = self._pos
                     return False
                 else:
+                    # Problem - we were expecting more compressed data.
                     raise EOFError("Compressed file ended before the "
                                    "end-of-stream marker was reached")
 
-            # Continue to next stream.
             if self._decompressor.eof:
+                # Continue to next stream.
                 self._decompressor = BZ2Decompressor()
-
-            self._buffer = self._decompressor.decompress(rawblock)
+                try:
+                    self._buffer = self._decompressor.decompress(rawblock)
+                except OSError:
+                    # Trailing data isn't a valid bzip2 stream. We're done here.
+                    self._mode = _MODE_READ_EOF
+                    self._size = self._pos
+                    return False
+            else:
+                self._buffer = self._decompressor.decompress(rawblock)
+            self._buffer_offset = 0
+        return True
 
     # Read data until EOF.
     # If return_data is false, consume the data without returning it.
     def _read_all(self, return_data=True):
+        # The loop assumes that _buffer_offset is 0. Ensure that this is true.
+        self._buffer = self._buffer[self._buffer_offset:]
+        self._buffer_offset = 0
+
         blocks = []
         while self._fill_buffer():
             if return_data:
                 blocks.append(self._buffer)
             self._pos += len(self._buffer)
-            self._buffer = None
+            self._buffer = b""
         if return_data:
             return b"".join(blocks)
 
     # Read a block of up to n bytes.
     # If return_data is false, consume the data without returning it.
     def _read_block(self, n, return_data=True):
+        # If we have enough data buffered, return immediately.
+        end = self._buffer_offset + n
+        if end <= len(self._buffer):
+            data = self._buffer[self._buffer_offset : end]
+            self._buffer_offset = end
+            self._pos += len(data)
+            return data if return_data else None
+
+        # The loop assumes that _buffer_offset is 0. Ensure that this is true.
+        self._buffer = self._buffer[self._buffer_offset:]
+        self._buffer_offset = 0
+
         blocks = []
         while n > 0 and self._fill_buffer():
             if n < len(self._buffer):
                 data = self._buffer[:n]
-                self._buffer = self._buffer[n:]
+                self._buffer_offset = n
             else:
                 data = self._buffer
-                self._buffer = None
+                self._buffer = b""
             if return_data:
                 blocks.append(data)
             self._pos += len(data)
@@ -238,9 +273,9 @@ class BZ2File(io.BufferedIOBase):
         """
         with self._lock:
             self._check_can_read()
-            if self._mode == _MODE_READ_EOF or not self._fill_buffer():
+            if not self._fill_buffer():
                 return b""
-            return self._buffer
+            return self._buffer[self._buffer_offset:]
 
     def read(self, size=-1):
         """Read up to size uncompressed bytes from the file.
@@ -250,7 +285,7 @@ class BZ2File(io.BufferedIOBase):
         """
         with self._lock:
             self._check_can_read()
-            if self._mode == _MODE_READ_EOF or size == 0:
+            if size == 0:
                 return b""
             elif size < 0:
                 return self._read_all()
@@ -268,15 +303,19 @@ class BZ2File(io.BufferedIOBase):
         # In this case we make multiple reads, to avoid returning b"".
         with self._lock:
             self._check_can_read()
-            if (size == 0 or self._mode == _MODE_READ_EOF or
-                not self._fill_buffer()):
+            if (size == 0 or
+                # Only call _fill_buffer() if the buffer is actually empty.
+                # This gives a significant speedup if *size* is small.
+                (self._buffer_offset == len(self._buffer) and not self._fill_buffer())):
                 return b""
-            if 0 < size < len(self._buffer):
-                data = self._buffer[:size]
-                self._buffer = self._buffer[size:]
+            if size > 0:
+                data = self._buffer[self._buffer_offset :
+                                    self._buffer_offset + size]
+                self._buffer_offset += len(data)
             else:
-                data = self._buffer
-                self._buffer = None
+                data = self._buffer[self._buffer_offset:]
+                self._buffer = b""
+                self._buffer_offset = 0
             self._pos += len(data)
             return data
 
@@ -295,10 +334,20 @@ class BZ2File(io.BufferedIOBase):
         non-negative, no more than size bytes will be read (in which
         case the line may be incomplete). Returns b'' if already at EOF.
         """
-        if not hasattr(size, "__index__"):
-            raise TypeError("Integer argument expected")
-        size = size.__index__()
+        if not isinstance(size, int):
+            if not hasattr(size, "__index__"):
+                raise TypeError("Integer argument expected")
+            size = size.__index__()
         with self._lock:
+            self._check_can_read()
+            # Shortcut for the common case - the whole line is in the buffer.
+            if size < 0:
+                end = self._buffer.find(b"\n", self._buffer_offset) + 1
+                if end > 0:
+                    line = self._buffer[self._buffer_offset : end]
+                    self._buffer_offset = end
+                    self._pos += len(line)
+                    return line
             return io.BufferedIOBase.readline(self, size)
 
     def readlines(self, size=-1):
@@ -308,9 +357,10 @@ class BZ2File(io.BufferedIOBase):
         further lines will be read once the total size of the lines read
         so far equals or exceeds size.
         """
-        if not hasattr(size, "__index__"):
-            raise TypeError("Integer argument expected")
-        size = size.__index__()
+        if not isinstance(size, int):
+            if not hasattr(size, "__index__"):
+                raise TypeError("Integer argument expected")
+            size = size.__index__()
         with self._lock:
             return io.BufferedIOBase.readlines(self, size)
 
@@ -345,7 +395,8 @@ class BZ2File(io.BufferedIOBase):
         self._mode = _MODE_READ
         self._pos = 0
         self._decompressor = BZ2Decompressor()
-        self._buffer = None
+        self._buffer = b""
+        self._buffer_offset = 0
 
     def seek(self, offset, whence=0):
         """Change the file position.
@@ -376,7 +427,7 @@ class BZ2File(io.BufferedIOBase):
                     self._read_all(return_data=False)
                 offset = self._size + offset
             else:
-                raise ValueError("Invalid value for whence: {}".format(whence))
+                raise ValueError("Invalid value for whence: %s" % (whence,))
 
             # Make it so that offset is the number of bytes to skip forward.
             if offset < self._pos:
@@ -385,8 +436,7 @@ class BZ2File(io.BufferedIOBase):
                 offset -= self._pos
 
             # Read and discard data until we reach the desired position.
-            if self._mode != _MODE_READ_EOF:
-                self._read_block(offset, return_data=False)
+            self._read_block(offset, return_data=False)
 
             return self._pos
 
@@ -401,20 +451,20 @@ def open(filename, mode="rb", compresslevel=9,
          encoding=None, errors=None, newline=None):
     """Open a bzip2-compressed file in binary or text mode.
 
-    The filename argument can be an actual filename (a str or bytes object), or
-    an existing file object to read from or write to.
+    The filename argument can be an actual filename (a str or bytes
+    object), or an existing file object to read from or write to.
 
-    The mode argument can be "r", "rb", "w", "wb", "a" or "ab" for binary mode,
-    or "rt", "wt" or "at" for text mode. The default mode is "rb", and the
-    default compresslevel is 9.
+    The mode argument can be "r", "rb", "w", "wb", "x", "xb", "a" or
+    "ab" for binary mode, or "rt", "wt", "xt" or "at" for text mode.
+    The default mode is "rb", and the default compresslevel is 9.
 
-    For binary mode, this function is equivalent to the BZ2File constructor:
-    BZ2File(filename, mode, compresslevel). In this case, the encoding, errors
-    and newline arguments must not be provided.
+    For binary mode, this function is equivalent to the BZ2File
+    constructor: BZ2File(filename, mode, compresslevel). In this case,
+    the encoding, errors and newline arguments must not be provided.
 
     For text mode, a BZ2File object is created, and wrapped in an
-    io.TextIOWrapper instance with the specified encoding, error handling
-    behavior, and line ending(s).
+    io.TextIOWrapper instance with the specified encoding, error
+    handling behavior, and line ending(s).
 
     """
     if "t" in mode:
@@ -453,17 +503,19 @@ def decompress(data):
 
     For incremental decompression, use a BZ2Decompressor object instead.
     """
-    if len(data) == 0:
-        return b""
-
     results = []
-    while True:
+    while data:
         decomp = BZ2Decompressor()
-        results.append(decomp.decompress(data))
+        try:
+            res = decomp.decompress(data)
+        except OSError:
+            if results:
+                break  # Leftover data is not a valid bzip2 stream; ignore it.
+            else:
+                raise  # Error on the first iteration; bail out.
+        results.append(res)
         if not decomp.eof:
             raise ValueError("Compressed data ended before the "
                              "end-of-stream marker was reached")
-        if not decomp.unused_data:
-            return b"".join(results)
-        # There is unused data left over. Proceed to next stream.
         data = decomp.unused_data
+    return b"".join(results)

@@ -8,7 +8,12 @@ extern "C" {
 #endif
 
 PyAPI_FUNC(PyObject *) PySys_GetObject(const char *);
+#ifndef Py_LIMITED_API
+PyAPI_FUNC(PyObject *) _PySys_GetObjectId(_Py_Identifier *key);
+#endif
 PyAPI_FUNC(int) PySys_SetObject(const char *, PyObject *);
+PyAPI_FUNC(int) _PySys_SetObjectId(_Py_Identifier *key, PyObject *);
+
 PyAPI_FUNC(void) PySys_SetArgv(int, wchar_t **);
 PyAPI_FUNC(void) PySys_SetArgvEx(int, wchar_t **, int);
 PyAPI_FUNC(void) PySys_SetPath(const wchar_t *);
@@ -19,10 +24,6 @@ PyAPI_FUNC(void) PySys_WriteStderr(const char *format, ...)
                  Py_GCC_ATTRIBUTE((format(printf, 1, 2)));
 PyAPI_FUNC(void) PySys_FormatStdout(const char *format, ...);
 PyAPI_FUNC(void) PySys_FormatStderr(const char *format, ...);
-
-#ifndef Py_LIMITED_API
-PyAPI_DATA(PyObject *) _PySys_TraceFunc, *_PySys_ProfileFunc;
-#endif
 
 PyAPI_FUNC(void) PySys_ResetWarnOptions(void);
 PyAPI_FUNC(void) PySys_AddWarnOption(const wchar_t *);

@@ -162,7 +162,7 @@ def islink(path):
     """Test whether a path is a symbolic link"""
     try:
         st = os.lstat(path)
-    except (os.error, AttributeError):
+    except (OSError, AttributeError):
         return False
     return stat.S_ISLNK(st.st_mode)
 
@@ -172,37 +172,9 @@ def lexists(path):
     """Test whether a path exists.  Returns True for broken symbolic links"""
     try:
         os.lstat(path)
-    except os.error:
+    except OSError:
         return False
     return True
-
-
-# Are two filenames really pointing to the same file?
-
-def samefile(f1, f2):
-    """Test whether two pathnames reference the same actual file"""
-    s1 = os.stat(f1)
-    s2 = os.stat(f2)
-    return samestat(s1, s2)
-
-
-# Are two open files really referencing the same file?
-# (Not necessarily the same file descriptor!)
-
-def sameopenfile(fp1, fp2):
-    """Test whether two open file objects reference the same file"""
-    s1 = os.fstat(fp1)
-    s2 = os.fstat(fp2)
-    return samestat(s1, s2)
-
-
-# Are two stat buffers (obtained from stat, fstat or lstat)
-# describing the same file?
-
-def samestat(s1, s2):
-    """Test whether two stat buffers reference the same file"""
-    return s1.st_ino == s2.st_ino and \
-           s1.st_dev == s2.st_dev
 
 
 # Is a path a mount point?
@@ -210,18 +182,25 @@ def samestat(s1, s2):
 
 def ismount(path):
     """Test whether a path is a mount point"""
-    if islink(path):
-        # A symlink can never be a mount point
-        return False
     try:
         s1 = os.lstat(path)
-        if isinstance(path, bytes):
-            parent = join(path, b'..')
-        else:
-            parent = join(path, '..')
+    except OSError:
+        # It doesn't exist -- so not a mount point. :-)
+        return False
+    else:
+        # A symlink can never be a mount point
+        if stat.S_ISLNK(s1.st_mode):
+            return False
+
+    if isinstance(path, bytes):
+        parent = join(path, b'..')
+    else:
+        parent = join(path, '..')
+    try:
         s2 = os.lstat(parent)
-    except os.error:
-        return False # It doesn't exist -- so not a mount point :-)
+    except OSError:
+        return False
+
     dev1 = s1.st_dev
     dev2 = s2.st_dev
     if dev1 != dev2:
@@ -300,6 +279,7 @@ def expandvars(path):
         search = _varprogb.search
         start = b'{'
         end = b'}'
+        environ = getattr(os, 'environb', None)
     else:
         if '$' not in path:
             return path
@@ -309,6 +289,7 @@ def expandvars(path):
         search = _varprog.search
         start = '{'
         end = '}'
+        environ = os.environ
     i = 0
     while True:
         m = search(path, i)
@@ -318,18 +299,18 @@ def expandvars(path):
         name = m.group(1)
         if name.startswith(start) and name.endswith(end):
             name = name[1:-1]
-        if isinstance(name, bytes):
-            name = str(name, 'ASCII')
-        if name in os.environ:
+        try:
+            if environ is None:
+                value = os.fsencode(os.environ[os.fsdecode(name)])
+            else:
+                value = environ[name]
+        except KeyError:
+            i = j
+        else:
             tail = path[j:]
-            value = os.environ[name]
-            if isinstance(path, bytes):
-                value = value.encode('ASCII')
             path = path[:i] + value
             i = len(path)
             path += tail
-        else:
-            i = j
     return path
 
 
@@ -391,51 +372,61 @@ def abspath(path):
 def realpath(filename):
     """Return the canonical path of the specified filename, eliminating any
 symbolic links encountered in the path."""
-    if isinstance(filename, bytes):
+    path, ok = _joinrealpath(filename[:0], filename, {})
+    return abspath(path)
+
+# Join two paths, normalizing ang eliminating any symbolic links
+# encountered in the second path.
+def _joinrealpath(path, rest, seen):
+    if isinstance(path, bytes):
         sep = b'/'
-        empty = b''
+        curdir = b'.'
+        pardir = b'..'
     else:
         sep = '/'
-        empty = ''
-    if isabs(filename):
-        bits = [sep] + filename.split(sep)[1:]
-    else:
-        bits = [empty] + filename.split(sep)
+        curdir = '.'
+        pardir = '..'
 
-    for i in range(2, len(bits)+1):
-        component = join(*bits[0:i])
-        # Resolve symbolic links.
-        if islink(component):
-            resolved = _resolve_link(component)
-            if resolved is None:
-                # Infinite loop -- return original component + rest of the path
-                return abspath(join(*([component] + bits[i:])))
+    if isabs(rest):
+        rest = rest[1:]
+        path = sep
+
+    while rest:
+        name, _, rest = rest.partition(sep)
+        if not name or name == curdir:
+            # current dir
+            continue
+        if name == pardir:
+            # parent dir
+            if path:
+                path, name = split(path)
+                if name == pardir:
+                    path = join(path, pardir, pardir)
             else:
-                newpath = join(*([resolved] + bits[i:]))
-                return realpath(newpath)
+                path = pardir
+            continue
+        newpath = join(path, name)
+        if not islink(newpath):
+            path = newpath
+            continue
+        # Resolve the symbolic link
+        if newpath in seen:
+            # Already seen this path
+            path = seen[newpath]
+            if path is not None:
+                # use cached value
+                continue
+            # The symlink is not resolved, so we must have a symlink loop.
+            # Return already resolved part + rest of the path unchanged.
+            return join(newpath, rest), False
+        seen[newpath] = None # not resolved symlink
+        path, ok = _joinrealpath(path, os.readlink(newpath), seen)
+        if not ok:
+            return join(path, rest), False
+        seen[newpath] = path # resolved symlink
 
-    return abspath(filename)
+    return path, True
 
-
-def _resolve_link(path):
-    """Internal helper function.  Takes a path and follows symlinks
-    until we either arrive at something that isn't a symlink, or
-    encounter a path we've seen before (meaning that there's a loop).
-    """
-    paths_seen = set()
-    while islink(path):
-        if path in paths_seen:
-            # Already seen this path, so we must have a symlink loop
-            return None
-        paths_seen.add(path)
-        # Resolve where the link points to
-        resolved = os.readlink(path)
-        if not isabs(resolved):
-            dir = dirname(path)
-            path = normpath(join(dir, resolved))
-        else:
-            path = normpath(resolved)
-    return path
 
 supports_unicode_filenames = (sys.platform == 'darwin')
 

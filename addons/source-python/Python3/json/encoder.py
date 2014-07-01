@@ -127,9 +127,10 @@ class JSONEncoder(object):
         indent level.  An indent level of 0 will only insert newlines.
         None is the most compact representation.
 
-        If specified, separators should be a (item_separator, key_separator)
-        tuple.  The default is (', ', ': ').  To get the most compact JSON
-        representation you should specify (',', ':') to eliminate whitespace.
+        If specified, separators should be an (item_separator, key_separator)
+        tuple.  The default is (', ', ': ') if *indent* is ``None`` and
+        (',', ': ') otherwise.  To get the most compact JSON representation,
+        you should specify (',', ':') to eliminate whitespace.
 
         If specified, default is a function that gets called for objects
         that can't otherwise be serialized.  It should return a JSON encodable
@@ -145,6 +146,8 @@ class JSONEncoder(object):
         self.indent = indent
         if separators is not None:
             self.item_separator, self.key_separator = separators
+        elif indent is not None:
+            self.item_separator = ','
         if default is not None:
             self.default = default
 
@@ -163,6 +166,7 @@ class JSONEncoder(object):
                     pass
                 else:
                     return list(iterable)
+                # Let the base class default method raise the TypeError
                 return JSONEncoder.default(self, o)
 
         """
@@ -171,6 +175,7 @@ class JSONEncoder(object):
     def encode(self, o):
         """Return a JSON string representation of a Python data structure.
 
+        >>> from json.encoder import JSONEncoder
         >>> JSONEncoder().encode({"foo": ["bar", "baz"]})
         '{"foo": ["bar", "baz"]}'
 
@@ -294,9 +299,13 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
             elif value is False:
                 yield buf + 'false'
             elif isinstance(value, int):
-                yield buf + str(value)
+                # Subclasses of int/float may override __str__, but we still
+                # want to encode them as integers/floats in JSON. One example
+                # within the standard library is IntEnum.
+                yield buf + str(int(value))
             elif isinstance(value, float):
-                yield buf + _floatstr(value)
+                # see comment above for int
+                yield buf + _floatstr(float(value))
             else:
                 yield buf
                 if isinstance(value, (list, tuple)):
@@ -305,8 +314,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
                     chunks = _iterencode_dict(value, _current_indent_level)
                 else:
                     chunks = _iterencode(value, _current_indent_level)
-                for chunk in chunks:
-                    yield chunk
+                yield from chunks
         if newline_indent is not None:
             _current_indent_level -= 1
             yield '\n' + _indent * _current_indent_level
@@ -343,7 +351,8 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
             # JavaScript is weakly typed for these, so it makes sense to
             # also allow them.  Many encoders seem to do something like this.
             elif isinstance(key, float):
-                key = _floatstr(key)
+                # see comment for int/float in _make_iterencode
+                key = _floatstr(float(key))
             elif key is True:
                 key = 'true'
             elif key is False:
@@ -351,7 +360,8 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
             elif key is None:
                 key = 'null'
             elif isinstance(key, int):
-                key = str(key)
+                # see comment for int/float in _make_iterencode
+                key = str(int(key))
             elif _skipkeys:
                 continue
             else:
@@ -371,9 +381,11 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
             elif value is False:
                 yield 'false'
             elif isinstance(value, int):
-                yield str(value)
+                # see comment for int/float in _make_iterencode
+                yield str(int(value))
             elif isinstance(value, float):
-                yield _floatstr(value)
+                # see comment for int/float in _make_iterencode
+                yield _floatstr(float(value))
             else:
                 if isinstance(value, (list, tuple)):
                     chunks = _iterencode_list(value, _current_indent_level)
@@ -381,8 +393,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
                     chunks = _iterencode_dict(value, _current_indent_level)
                 else:
                     chunks = _iterencode(value, _current_indent_level)
-                for chunk in chunks:
-                    yield chunk
+                yield from chunks
         if newline_indent is not None:
             _current_indent_level -= 1
             yield '\n' + _indent * _current_indent_level
@@ -400,15 +411,15 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
         elif o is False:
             yield 'false'
         elif isinstance(o, int):
-            yield str(o)
+            # see comment for int/float in _make_iterencode
+            yield str(int(o))
         elif isinstance(o, float):
-            yield _floatstr(o)
+            # see comment for int/float in _make_iterencode
+            yield _floatstr(float(o))
         elif isinstance(o, (list, tuple)):
-            for chunk in _iterencode_list(o, _current_indent_level):
-                yield chunk
+            yield from _iterencode_list(o, _current_indent_level)
         elif isinstance(o, dict):
-            for chunk in _iterencode_dict(o, _current_indent_level):
-                yield chunk
+            yield from _iterencode_dict(o, _current_indent_level)
         else:
             if markers is not None:
                 markerid = id(o)
@@ -416,8 +427,7 @@ def _make_iterencode(markers, _default, _encoder, _indent, _floatstr,
                     raise ValueError("Circular reference detected")
                 markers[markerid] = o
             o = _default(o)
-            for chunk in _iterencode(o, _current_indent_level):
-                yield chunk
+            yield from _iterencode(o, _current_indent_level)
             if markers is not None:
                 del markers[markerid]
     return _iterencode

@@ -134,7 +134,6 @@ from datetime import datetime
 import http.client
 import urllib.parse
 from xml.parsers import expat
-import socket
 import errno
 from io import BytesIO
 try:
@@ -539,7 +538,7 @@ class Marshaller:
 
     def dump_long(self, value, write):
         if value > MAXINT or value < MININT:
-            raise OverflowError("long int exceeds XML-RPC limits")
+            raise OverflowError("int exceeds XML-RPC limits")
         write("<value><int>")
         write(str(int(value)))
         write("</int></value>\n")
@@ -811,7 +810,7 @@ class _MultiCallMethod:
 
 class MultiCallIterator:
     """Iterates over the results of a multicall. Exceptions are
-    thrown in response to xmlrpc faults."""
+    raised in response to xmlrpc faults."""
 
     def __init__(self, results):
         self.results = results
@@ -1045,7 +1044,7 @@ def gzip_decode(data):
     gzf = gzip.GzipFile(mode="rb", fileobj=f)
     try:
         decoded = gzf.read()
-    except IOError:
+    except OSError:
         raise ValueError("invalid data")
     f.close()
     gzf.close()
@@ -1130,8 +1129,9 @@ class Transport:
         for i in (0, 1):
             try:
                 return self.single_request(host, handler, request_body, verbose)
-            except socket.error as e:
-                if i or e.errno not in (errno.ECONNRESET, errno.ECONNABORTED, errno.EPIPE):
+            except OSError as e:
+                if i or e.errno not in (errno.ECONNRESET, errno.ECONNABORTED,
+                                        errno.EPIPE):
                     raise
             except http.client.BadStatusLine: #close after we sent request
                 if i:
@@ -1385,7 +1385,7 @@ class ServerProxy:
         # get the url
         type, uri = urllib.parse.splittype(uri)
         if type not in ("http", "https"):
-            raise IOError("unsupported XML-RPC protocol")
+            raise OSError("unsupported XML-RPC protocol")
         self.__host, self.__handler = urllib.parse.splithost(uri)
         if not self.__handler:
             self.__handler = "/RPC2"
@@ -1460,18 +1460,18 @@ if __name__ == "__main__":
 
     # simple test program (from the XML-RPC specification)
 
-    # server = ServerProxy("http://localhost:8000") # local server
-    server = ServerProxy("http://time.xmlrpc.com/RPC2")
+    # local server, available from Lib/xmlrpc/server.py
+    server = ServerProxy("http://localhost:8000")
 
     try:
         print(server.currentTime.getCurrentTime())
     except Error as v:
         print("ERROR", v)
 
-    # The server at xmlrpc.com doesn't seem to support multicall anymore.
     multi = MultiCall(server)
-    multi.currentTime.getCurrentTime()
-    multi.currentTime.getCurrentTime()
+    multi.getData()
+    multi.pow(2,9)
+    multi.add(1,2)
     try:
         for response in multi():
             print(response)

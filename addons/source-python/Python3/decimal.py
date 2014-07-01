@@ -21,7 +21,7 @@ the General Decimal Arithmetic Specification:
 
 and IEEE standard 854-1987:
 
-    www.cs.berkeley.edu/~ejr/projects/754/private/drafts/854-1987/dir.html
+    http://en.wikipedia.org/wiki/IEEE_854-1987
 
 Decimal floating point has finite precision with arbitrarily large bounds.
 
@@ -140,8 +140,8 @@ __all__ = [
 
 __version__ = '1.70'    # Highest version of the spec this complies with
                         # See http://speleotrove.com/decimal/
+__libmpdec_version__ = "2.4.0" # compatible libmpdec version
 
-import copy as _copy
 import math as _math
 import numbers as _numbers
 import sys
@@ -703,8 +703,7 @@ class Decimal(object):
 
         raise TypeError("Cannot convert %r to Decimal" % value)
 
-    # @classmethod, but @decorator is not valid Python 2.3 syntax, so
-    # don't use it (see notes on Py2.3 compatibility at top of file)
+    @classmethod
     def from_float(cls, f):
         """Converts a float to a decimal number, exactly.
 
@@ -743,7 +742,6 @@ class Decimal(object):
             return result
         else:
             return cls(result)
-    from_float = classmethod(from_float)
 
     def _isnan(self):
         """Returns whether the number is not actually one.
@@ -2596,7 +2594,7 @@ class Decimal(object):
         ans = ans._fix(context)
         return ans
 
-    def same_quantum(self, other):
+    def same_quantum(self, other, context=None):
         """Return True if self and other have the same exponent; otherwise
         return False.
 
@@ -2914,7 +2912,7 @@ class Decimal(object):
         except TypeError:
             return 0
 
-    def canonical(self, context=None):
+    def canonical(self):
         """Returns the same Decimal object.
 
         As we do not have different encodings for the same number, the
@@ -2934,7 +2932,7 @@ class Decimal(object):
             return ans
         return self.compare(other, context=context)
 
-    def compare_total(self, other):
+    def compare_total(self, other, context=None):
         """Compares self to other using the abstract representations.
 
         This is not like the standard compare, which use their numerical
@@ -3007,7 +3005,7 @@ class Decimal(object):
         return _Zero
 
 
-    def compare_total_mag(self, other):
+    def compare_total_mag(self, other, context=None):
         """Compares self to other using abstract repr., ignoring sign.
 
         Like compare_total, but with operand's sign ignored and assumed to be 0.
@@ -3029,7 +3027,7 @@ class Decimal(object):
         else:
             return _dec_from_triple(1, self._int, self._exp, self._is_special)
 
-    def copy_sign(self, other):
+    def copy_sign(self, other, context=None):
         """Returns self with the sign of other."""
         other = _convert_other(other, raiseit=True)
         return _dec_from_triple(other._sign, self._int,
@@ -4182,7 +4180,7 @@ class Context(object):
         """
         if not isinstance(a, Decimal):
             raise TypeError("canonical requires a Decimal as an argument.")
-        return a.canonical(context=self)
+        return a.canonical()
 
     def compare(self, a, b):
         """Compares values numerically.
@@ -6140,7 +6138,7 @@ _parse_format_specifier_regex = re.compile(r"""\A
 (?:\.(?P<precision>0|(?!0)\d+))?
 (?P<type>[eEfFgGn%])?
 \Z
-""", re.VERBOSE)
+""", re.VERBOSE|re.DOTALL)
 
 del re
 

@@ -5,6 +5,7 @@ code that adds all the email6 features.
 from email._policybase import Policy, Compat32, compat32, _extend_docstrings
 from email.utils import _has_surrogates
 from email.headerregistry import HeaderRegistry as HeaderRegistry
+from email.contentmanager import raw_data_manager
 
 __all__ = [
     'Compat32',
@@ -23,7 +24,7 @@ class EmailPolicy(Policy):
     """+
     PROVISIONAL
 
-    The API extensions enabled by this this policy are currently provisional.
+    The API extensions enabled by this policy are currently provisional.
     Refer to the documentation for details.
 
     This policy adds new header parsing and folding algorithms.  Instead of
@@ -58,10 +59,22 @@ class EmailPolicy(Policy):
                            special treatment, while all other fields are
                            treated as unstructured.  This list will be
                            completed before the extension is marked stable.)
+
+    content_manager     -- an object with at least two methods: get_content
+                           and set_content.  When the get_content or
+                           set_content method of a Message object is called,
+                           it calls the corresponding method of this object,
+                           passing it the message object as its first argument,
+                           and any arguments or keywords that were passed to
+                           it as additional arguments.  The default
+                           content_manager is
+                           :data:`~email.contentmanager.raw_data_manager`.
+
     """
 
     refold_source = 'long'
     header_factory = HeaderRegistry()
+    content_manager = raw_data_manager
 
     def __init__(self, **kw):
         # Ensure that each new instance gets a unique header factory
@@ -173,7 +186,7 @@ class EmailPolicy(Policy):
         lines = value.splitlines()
         refold = (self.refold_source == 'all' or
                   self.refold_source == 'long' and
-                    (len(lines[0])+len(name)+2 > maxlen or
+                    (lines and len(lines[0])+len(name)+2 > maxlen or
                      any(len(x) > maxlen for x in lines[1:])))
         if refold or refold_binary and _has_surrogates(value):
             return self.header_factory(name, ''.join(lines)).fold(policy=self)

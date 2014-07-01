@@ -10,13 +10,10 @@ import re
 import sys
 import time
 import random
-import warnings
 
+from copy import deepcopy
 from io import StringIO, BytesIO
-from email._policybase import compat32
-from email.header import Header
 from email.utils import _has_surrogates
-import email.charset as _charset
 
 UNDERSCORE = '_'
 NL = '\n'  # XXX: no longer used by the code below.
@@ -54,8 +51,9 @@ class Generator:
         by RFC 2822.
 
         The policy keyword specifies a policy object that controls a number of
-        aspects of the generator's operation.  The default policy maintains
-        backward compatibility.
+        aspects of the generator's operation.  If no policy is specified,
+        the policy associated with the Message object passed to the
+        flatten method is used.
 
         """
         self._fp = outfp
@@ -79,7 +77,9 @@ class Generator:
         Note that for subobjects, no From_ line is printed.
 
         linesep specifies the characters used to indicate a new line in
-        the output.  The default value is determined by the policy.
+        the output.  The default value is determined by the policy specified
+        when the Generator instance was created or, if none was specified,
+        from the policy associated with the msg.
 
         """
         # We use the _XXX constants for operating on data that comes directly
@@ -146,6 +146,19 @@ class Generator:
         # BytesGenerator overrides this to encode strings to bytes.
         return s
 
+    def _write_lines(self, lines):
+        # We have to transform the line endings.
+        if not lines:
+            return
+        lines = lines.splitlines(True)
+        for line in lines[:-1]:
+            self.write(line.rstrip('\r\n'))
+            self.write(self._NL)
+        laststripped = lines[-1].rstrip('\r\n')
+        self.write(laststripped)
+        if len(lines[-1]) != len(laststripped):
+            self.write(self._NL)
+
     def _write(self, msg):
         # We can't write the headers yet because of the following scenario:
         # say a multipart message includes the boundary string somewhere in
@@ -160,10 +173,18 @@ class Generator:
         # necessary.
         oldfp = self._fp
         try:
+            self._munge_cte = None
             self._fp = sfp = self._new_buffer()
             self._dispatch(msg)
         finally:
             self._fp = oldfp
+            munge_cte = self._munge_cte
+            del self._munge_cte
+        # If we munged the cte, copy the message again and re-fix the CTE.
+        if munge_cte:
+            msg = deepcopy(msg)
+            msg.replace_header('content-transfer-encoding', munge_cte[0])
+            msg.replace_header('content-type', munge_cte[1])
         # Write the headers.  First we see if the message object wants to
         # handle that itself.  If not, we'll do it generically.
         meth = getattr(msg, '_write_headers', None)
@@ -212,12 +233,17 @@ class Generator:
         if _has_surrogates(msg._payload):
             charset = msg.get_param('charset')
             if charset is not None:
+                # XXX: This copy stuff is an ugly hack to avoid modifying the
+                # existing message.
+                msg = deepcopy(msg)
                 del msg['content-transfer-encoding']
                 msg.set_payload(payload, charset)
                 payload = msg.get_payload()
+                self._munge_cte = (msg['content-transfer-encoding'],
+                                   msg['content-type'])
         if self._mangle_from_:
             payload = fcre.sub('>From ', payload)
-        self.write(payload)
+        self._write_lines(payload)
 
     # Default body handler
     _writeBody = _handle_text
@@ -256,7 +282,8 @@ class Generator:
                 preamble = fcre.sub('>From ', msg.preamble)
             else:
                 preamble = msg.preamble
-            self.write(preamble + self._NL)
+            self._write_lines(preamble)
+            self.write(self._NL)
         # dash-boundary transport-padding CRLF
         self.write('--' + boundary + self._NL)
         # body-part
@@ -271,14 +298,13 @@ class Generator:
             # body-part
             self._fp.write(body_part)
         # close-delimiter transport-padding
-        self.write(self._NL + '--' + boundary + '--')
+        self.write(self._NL + '--' + boundary + '--' + self._NL)
         if msg.epilogue is not None:
-            self.write(self._NL)
             if self._mangle_from_:
                 epilogue = fcre.sub('>From ', msg.epilogue)
             else:
                 epilogue = msg.epilogue
-            self.write(epilogue)
+            self._write_lines(epilogue)
 
     def _handle_multipart_signed(self, msg):
         # The contents of signed parts has to stay unmodified in order to keep
@@ -335,7 +361,7 @@ class Generator:
     # This used to be a module level function; we use a classmethod for this
     # and _compile_re so we can continue to provide the module level function
     # for backward compatibility by doing
-    #   _make_boudary = Generator._make_boundary
+    #   _make_boundary = Generator._make_boundary
     # at the end of the module.  It *is* internal, so we could drop that...
     @classmethod
     def _make_boundary(cls, text=None):
@@ -402,9 +428,12 @@ class BytesGenerator(Generator):
         if _has_surrogates(msg._payload) and not self.policy.cte_type=='7bit':
             if self._mangle_from_:
                 msg._payload = fcre.sub(">From ", msg._payload)
-            self.write(msg._payload)
+            self._write_lines(msg._payload)
         else:
             super(BytesGenerator,self)._handle_text(msg)
+
+    # Default body handler
+    _writeBody = _handle_text
 
     @classmethod
     def _compile_re(cls, s, flags):

@@ -73,9 +73,19 @@ BOM64_BE = BOM_UTF32_BE
 ### Codec base classes (defining the API)
 
 class CodecInfo(tuple):
+    """Codec details when looking up the codec registry"""
+
+    # Private API to allow Python 3.4 to blacklist the known non-Unicode
+    # codecs in the standard library. A more general mechanism to
+    # reliably distinguish test encodings from other codecs will hopefully
+    # be defined for Python 3.5
+    #
+    # See http://bugs.python.org/issue19619
+    _is_text_encoding = True # Assume codecs are text encodings by default
 
     def __new__(cls, encode, decode, streamreader=None, streamwriter=None,
-        incrementalencoder=None, incrementaldecoder=None, name=None):
+        incrementalencoder=None, incrementaldecoder=None, name=None,
+        *, _is_text_encoding=None):
         self = tuple.__new__(cls, (encode, decode, streamreader, streamwriter))
         self.name = name
         self.encode = encode
@@ -84,6 +94,8 @@ class CodecInfo(tuple):
         self.incrementaldecoder = incrementaldecoder
         self.streamwriter = streamwriter
         self.streamreader = streamreader
+        if _is_text_encoding is not None:
+            self._is_text_encoding = _is_text_encoding
         return self
 
     def __repr__(self):
@@ -105,6 +117,7 @@ class Codec:
                     Python will use the official U+FFFD REPLACEMENT
                     CHARACTER for the builtin Unicode codecs on
                     decoding and '?' on encoding.
+         'surrogateescape' - replace with private codepoints U+DCnn.
          'xmlcharrefreplace' - Replace with the appropriate XML
                                character reference (only for encoding).
          'backslashreplace'  - Replace with backslashed escape sequences
@@ -461,15 +474,12 @@ class StreamReader(Codec):
 
         # read until we get the required number of characters (if available)
         while True:
-            # can the request can be satisfied from the character buffer?
-            if chars < 0:
-                if size < 0:
-                    if self.charbuffer:
-                        break
-                elif len(self.charbuffer) >= size:
-                    break
-            else:
+            # can the request be satisfied from the character buffer?
+            if chars >= 0:
                 if len(self.charbuffer) >= chars:
+                    break
+            elif size >= 0:
+                if len(self.charbuffer) >= size:
                     break
             # we need more data
             if size < 0:
@@ -478,6 +488,8 @@ class StreamReader(Codec):
                 newdata = self.stream.read(size)
             # decode bytes (those remaining from the last call included)
             data = self.bytebuffer + newdata
+            if not data:
+                break
             try:
                 newchars, decodedbytes = self.decode(data, self.errors)
             except UnicodeDecodeError as exc:

@@ -9,7 +9,10 @@ __all__ = ["glob", "iglob"]
 def glob(pathname):
     """Return a list of paths matching a pathname pattern.
 
-    The pattern may contain simple shell-style wildcards a la fnmatch.
+    The pattern may contain simple shell-style wildcards a la
+    fnmatch. However, unlike fnmatch, filenames starting with a
+    dot are special cases that are not matched by '*' and '?'
+    patterns.
 
     """
     return list(iglob(pathname))
@@ -17,7 +20,10 @@ def glob(pathname):
 def iglob(pathname):
     """Return an iterator which yields the paths matching a pathname pattern.
 
-    The pattern may contain simple shell-style wildcards a la fnmatch.
+    The pattern may contain simple shell-style wildcards a la
+    fnmatch. However, unlike fnmatch, filenames starting with a
+    dot are special cases that are not matched by '*' and '?'
+    patterns.
 
     """
     if not has_magic(pathname):
@@ -26,10 +32,12 @@ def iglob(pathname):
         return
     dirname, basename = os.path.split(pathname)
     if not dirname:
-        for name in glob1(None, basename):
-            yield name
+        yield from glob1(None, basename)
         return
-    if has_magic(dirname):
+    # `os.path.split()` returns the argument itself as a dirname if it is a
+    # drive or UNC path.  Prevent an infinite recursion if a drive or UNC path
+    # contains magic characters (i.e. r'\\?\C:').
+    if dirname != pathname and has_magic(dirname):
         dirs = iglob(dirname)
     else:
         dirs = [dirname]
@@ -53,14 +61,14 @@ def glob1(dirname, pattern):
             dirname = os.curdir
     try:
         names = os.listdir(dirname)
-    except os.error:
+    except OSError:
         return []
-    if pattern[0] != '.':
-        names = [x for x in names if x[0] != '.']
+    if not _ishidden(pattern):
+        names = [x for x in names if not _ishidden(x)]
     return fnmatch.filter(names, pattern)
 
 def glob0(dirname, basename):
-    if basename == '':
+    if not basename:
         # `os.path.split()` returns an empty basename for paths ending with a
         # directory separator.  'q*x/' should match only directories.
         if os.path.isdir(dirname):
@@ -71,8 +79,8 @@ def glob0(dirname, basename):
     return []
 
 
-magic_check = re.compile('[*?[]')
-magic_check_bytes = re.compile(b'[*?[]')
+magic_check = re.compile('([*?[])')
+magic_check_bytes = re.compile(b'([*?[])')
 
 def has_magic(s):
     if isinstance(s, bytes):
@@ -80,3 +88,18 @@ def has_magic(s):
     else:
         match = magic_check.search(s)
     return match is not None
+
+def _ishidden(path):
+    return path[0] in ('.', b'.'[0])
+
+def escape(pathname):
+    """Escape all special characters.
+    """
+    # Escaping is done by wrapping any of "*?[" between square brackets.
+    # Metacharacters do not work in the drive part and shouldn't be escaped.
+    drive, pathname = os.path.splitdrive(pathname)
+    if isinstance(pathname, bytes):
+        pathname = magic_check_bytes.sub(br'[\1]', pathname)
+    else:
+        pathname = magic_check.sub(r'[\1]', pathname)
+    return drive + pathname

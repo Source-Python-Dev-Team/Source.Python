@@ -181,7 +181,8 @@ def as_completed(fs, timeout=None):
 
     Returns:
         An iterator that yields the given Futures as they complete (finished or
-        cancelled).
+        cancelled). If any given Futures are duplicated, they will be returned
+        once.
 
     Raises:
         TimeoutError: If the entire result iterator could not be generated
@@ -190,16 +191,16 @@ def as_completed(fs, timeout=None):
     if timeout is not None:
         end_time = timeout + time.time()
 
+    fs = set(fs)
     with _AcquireFutures(fs):
         finished = set(
                 f for f in fs
                 if f._state in [CANCELLED_AND_NOTIFIED, FINISHED])
-        pending = set(fs) - finished
+        pending = fs - finished
         waiter = _create_and_install_waiters(fs, _AS_COMPLETED)
 
     try:
-        for future in finished:
-            yield future
+        yield from finished
 
         while pending:
             if timeout is None:
@@ -224,7 +225,8 @@ def as_completed(fs, timeout=None):
 
     finally:
         for f in fs:
-            f._waiters.remove(waiter)
+            with f._condition:
+                f._waiters.remove(waiter)
 
 DoneAndNotDoneFutures = collections.namedtuple(
         'DoneAndNotDoneFutures', 'done not_done')
@@ -271,7 +273,8 @@ def wait(fs, timeout=None, return_when=ALL_COMPLETED):
 
     waiter.event.wait(timeout)
     for f in fs:
-        f._waiters.remove(waiter)
+        with f._condition:
+            f._waiters.remove(waiter)
 
     done.update(waiter.finished_futures)
     return DoneAndNotDoneFutures(done, set(fs) - done)
@@ -332,7 +335,7 @@ class Future(object):
         return True
 
     def cancelled(self):
-        """Return True if the future has cancelled."""
+        """Return True if the future was cancelled."""
         with self._condition:
             return self._state in [CANCELLED, CANCELLED_AND_NOTIFIED]
 
@@ -518,7 +521,7 @@ class Executor(object):
         """Returns a iterator equivalent to map(fn, iter).
 
         Args:
-            fn: A callable that will take take as many arguments as there are
+            fn: A callable that will take as many arguments as there are
                 passed iterables.
             timeout: The maximum number of seconds to wait. If None, then there
                 is no limit on the wait time.

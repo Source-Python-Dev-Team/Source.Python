@@ -93,9 +93,8 @@ class Stats:
             self.stats = {}
             return
         elif isinstance(arg, str):
-            f = open(arg, 'rb')
-            self.stats = marshal.load(f)
-            f.close()
+            with open(arg, 'rb') as f:
+                self.stats = marshal.load(f)
             try:
                 file_stats = os.stat(arg)
                 arg = time.ctime(file_stats.st_mtime) + "    " + arg
@@ -149,25 +148,26 @@ class Stats:
 
     def dump_stats(self, filename):
         """Write the profile data to a file we know how to load back."""
-        f = open(filename, 'wb')
-        try:
+        with open(filename, 'wb') as f:
             marshal.dump(self.stats, f)
-        finally:
-            f.close()
 
     # list the tuple indices and directions for sorting,
     # along with some printable description
     sort_arg_dict_default = {
               "calls"     : (((1,-1),              ), "call count"),
+              "ncalls"    : (((1,-1),              ), "call count"),
+              "cumtime"   : (((3,-1),              ), "cumulative time"),
               "cumulative": (((3,-1),              ), "cumulative time"),
               "file"      : (((4, 1),              ), "file name"),
+              "filename"  : (((4, 1),              ), "file name"),
               "line"      : (((5, 1),              ), "line number"),
               "module"    : (((4, 1),              ), "file name"),
               "name"      : (((6, 1),              ), "function name"),
               "nfl"       : (((6, 1),(4, 1),(5, 1),), "name/file/line"),
-              "pcalls"    : (((0,-1),              ), "call count"),
+              "pcalls"    : (((0,-1),              ), "primitive call count"),
               "stdname"   : (((7, 1),              ), "standard name"),
               "time"      : (((2,-1),              ), "internal time"),
+              "tottime"   : (((2,-1),              ), "internal time"),
               }
 
     def get_sort_arg_defs(self):
@@ -608,7 +608,7 @@ if __name__ == '__main__':
             if line:
                 try:
                     self.stats = Stats(line)
-                except IOError as err:
+                except OSError as err:
                     print(err.args[1], file=self.stream)
                     return
                 except Exception as err:

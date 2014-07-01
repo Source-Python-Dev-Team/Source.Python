@@ -584,13 +584,6 @@ class SimpleXMLRPCServer(socketserver.TCPServer,
         SimpleXMLRPCDispatcher.__init__(self, allow_none, encoding, use_builtin_types)
         socketserver.TCPServer.__init__(self, addr, requestHandler, bind_and_activate)
 
-        # [Bug #1222790] If possible, set close-on-exec flag; if a
-        # method spawns a subprocess, the subprocess shouldn't have
-        # the listening socket open.
-        if fcntl is not None and hasattr(fcntl, 'FD_CLOEXEC'):
-            flags = fcntl.fcntl(self.fileno(), fcntl.F_GETFD)
-            flags |= fcntl.FD_CLOEXEC
-            fcntl.fcntl(self.fileno(), fcntl.F_SETFD, flags)
 
 class MultiPathXMLRPCServer(SimpleXMLRPCServer):
     """Multipath XML-RPC Server
@@ -756,20 +749,23 @@ class ServerHTMLDoc(pydoc.HTMLDoc):
             self.escape(anchor), self.escape(name))
 
         if inspect.ismethod(object):
-            args, varargs, varkw, defaults = inspect.getargspec(object)
+            args = inspect.getfullargspec(object)
             # exclude the argument bound to the instance, it will be
             # confusing to the non-Python user
             argspec = inspect.formatargspec (
-                    args[1:],
-                    varargs,
-                    varkw,
-                    defaults,
+                    args.args[1:],
+                    args.varargs,
+                    args.varkw,
+                    args.defaults,
+                    annotations=args.annotations,
                     formatvalue=self.formatvalue
                 )
         elif inspect.isfunction(object):
-            args, varargs, varkw, defaults = inspect.getargspec(object)
+            args = inspect.getfullargspec(object)
             argspec = inspect.formatargspec(
-                args, varargs, varkw, defaults, formatvalue=self.formatvalue)
+                args.args, args.varargs, args.varkw, args.defaults,
+                annotations=args.annotations,
+                formatvalue=self.formatvalue)
         else:
             argspec = '(...)'
 
@@ -964,10 +960,24 @@ class DocCGIXMLRPCRequestHandler(   CGIXMLRPCRequestHandler,
 
 
 if __name__ == '__main__':
+    import datetime
+
+    class ExampleService:
+        def getData(self):
+            return '42'
+
+        class currentTime:
+            @staticmethod
+            def getCurrentTime():
+                return datetime.datetime.now()
+
     server = SimpleXMLRPCServer(("localhost", 8000))
     server.register_function(pow)
     server.register_function(lambda x,y: x+y, 'add')
+    server.register_instance(ExampleService(), allow_dotted_names=True)
+    server.register_multicall_functions()
     print('Serving XML-RPC on localhost port 8000')
+    print('It is advisable to run this example server within a secure, closed network.')
     try:
         server.serve_forever()
     except KeyboardInterrupt:

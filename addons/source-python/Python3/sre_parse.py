@@ -12,9 +12,8 @@
 
 # XXX: show string offset and offending character for all errors
 
-import sys
-
 from sre_constants import *
+from _sre import MAXREPEAT
 
 SPECIAL_CHARS = ".\\[{()*+?^$|"
 REPEAT_CHARS = "*+?{"
@@ -147,7 +146,7 @@ class SubPattern:
         REPEATCODES = (MIN_REPEAT, MAX_REPEAT)
         for op, av in self.data:
             if op is BRANCH:
-                i = sys.maxsize
+                i = MAXREPEAT - 1
                 j = 0
                 for av in av[1]:
                     l, h = av.getwidth()
@@ -165,14 +164,14 @@ class SubPattern:
                 hi = hi + j
             elif op in REPEATCODES:
                 i, j = av[2].getwidth()
-                lo = lo + int(i) * av[0]
-                hi = hi + int(j) * av[1]
+                lo = lo + i * av[0]
+                hi = hi + j * av[1]
             elif op in UNITCODES:
                 lo = lo + 1
                 hi = hi + 1
             elif op == SUCCESS:
                 break
-        self.width = int(min(lo, sys.maxsize)), int(min(hi, sys.maxsize))
+        self.width = min(lo, MAXREPEAT - 1), min(hi, MAXREPEAT)
         return self.width
 
 class Tokenizer:
@@ -224,13 +223,25 @@ class Tokenizer:
     def seek(self, index):
         self.index, self.next = index
 
+# The following three functions are not used in this module anymore, but we keep
+# them here (with DeprecationWarnings) for backwards compatibility.
+
 def isident(char):
+    import warnings
+    warnings.warn('sre_parse.isident() will be removed in 3.5',
+                  DeprecationWarning, stacklevel=2)
     return "a" <= char <= "z" or "A" <= char <= "Z" or char == "_"
 
 def isdigit(char):
+    import warnings
+    warnings.warn('sre_parse.isdigit() will be removed in 3.5',
+                  DeprecationWarning, stacklevel=2)
     return "0" <= char <= "9"
 
 def isname(name):
+    import warnings
+    warnings.warn('sre_parse.isname() will be removed in 3.5',
+                  DeprecationWarning, stacklevel=2)
     # check that group name is a valid string
     if not isident(name[0]):
         return False
@@ -245,7 +256,7 @@ def _class_escape(source, escape):
     if code:
         return code
     code = CATEGORIES.get(escape)
-    if code:
+    if code and code[0] == IN:
         return code
     try:
         c = escape[1:2]
@@ -537,10 +548,14 @@ def _parse(source, state):
                     continue
                 if lo:
                     min = int(lo)
+                    if min >= MAXREPEAT:
+                        raise OverflowError("the repetition number is too large")
                 if hi:
                     max = int(hi)
-                if max < min:
-                    raise error("bad repeat interval")
+                    if max >= MAXREPEAT:
+                        raise OverflowError("the repetition number is too large")
+                    if max < min:
+                        raise error("bad repeat interval")
             else:
                 raise error("not supported")
             # figure out which item to repeat
@@ -580,8 +595,10 @@ def _parse(source, state):
                                 break
                             name = name + char
                         group = 1
-                        if not isname(name):
-                            raise error("bad character in group name")
+                        if not name:
+                            raise error("missing group name")
+                        if not name.isidentifier():
+                            raise error("bad character in group name %r" % name)
                     elif sourcematch("="):
                         # named backreference
                         name = ""
@@ -592,8 +609,11 @@ def _parse(source, state):
                             if char == ")":
                                 break
                             name = name + char
-                        if not isname(name):
-                            raise error("bad character in group name")
+                        if not name:
+                            raise error("missing group name")
+                        if not name.isidentifier():
+                            raise error("bad character in backref group name "
+                                        "%r" % name)
                         gid = state.groupdict.get(name)
                         if gid is None:
                             raise error("unknown group name")
@@ -644,7 +664,9 @@ def _parse(source, state):
                             break
                         condname = condname + char
                     group = 2
-                    if isname(condname):
+                    if not condname:
+                        raise error("missing group name")
+                    if condname.isidentifier():
                         condgroup = state.groupdict.get(condname)
                         if condgroup is None:
                             raise error("unknown group name")
@@ -745,92 +767,78 @@ def parse_template(source, pattern):
     # group references
     s = Tokenizer(source)
     sget = s.get
-    p = []
-    a = p.append
-    def literal(literal, p=p, pappend=a):
-        if p and p[-1][0] is LITERAL:
-            p[-1] = LITERAL, p[-1][1] + literal
-        else:
-            pappend((LITERAL, literal))
-    sep = source[:0]
-    if isinstance(sep, str):
-        makechar = chr
-    else:
-        makechar = chr
-    while 1:
+    groups = []
+    literals = []
+    literal = []
+    lappend = literal.append
+    def addgroup(index):
+        if literal:
+            literals.append(''.join(literal))
+            del literal[:]
+        groups.append((len(literals), index))
+        literals.append(None)
+    while True:
         this = sget()
         if this is None:
             break # end of replacement string
-        if this and this[0] == "\\":
+        if this[0] == "\\":
             # group
-            c = this[1:2]
+            c = this[1]
             if c == "g":
                 name = ""
                 if s.match("<"):
-                    while 1:
+                    while True:
                         char = sget()
                         if char is None:
                             raise error("unterminated group name")
                         if char == ">":
                             break
-                        name = name + char
+                        name += char
                 if not name:
-                    raise error("bad group name")
+                    raise error("missing group name")
                 try:
                     index = int(name)
                     if index < 0:
                         raise error("negative group number")
                 except ValueError:
-                    if not isname(name):
+                    if not name.isidentifier():
                         raise error("bad character in group name")
                     try:
                         index = pattern.groupindex[name]
                     except KeyError:
                         raise IndexError("unknown group name")
-                a((MARK, index))
+                addgroup(index)
             elif c == "0":
                 if s.next in OCTDIGITS:
-                    this = this + sget()
+                    this += sget()
                     if s.next in OCTDIGITS:
-                        this = this + sget()
-                literal(makechar(int(this[1:], 8) & 0xff))
+                        this += sget()
+                lappend(chr(int(this[1:], 8) & 0xff))
             elif c in DIGITS:
                 isoctal = False
                 if s.next in DIGITS:
-                    this = this + sget()
+                    this += sget()
                     if (c in OCTDIGITS and this[2] in OCTDIGITS and
                         s.next in OCTDIGITS):
-                        this = this + sget()
+                        this += sget()
                         isoctal = True
-                        literal(makechar(int(this[1:], 8) & 0xff))
+                        lappend(chr(int(this[1:], 8) & 0xff))
                 if not isoctal:
-                    a((MARK, int(this[1:])))
+                    addgroup(int(this[1:]))
             else:
                 try:
-                    this = makechar(ESCAPES[this][1])
+                    this = chr(ESCAPES[this][1])
                 except KeyError:
                     pass
-                literal(this)
+                lappend(this)
         else:
-            literal(this)
-    # convert template to groups and literals lists
-    i = 0
-    groups = []
-    groupsappend = groups.append
-    literals = [None] * len(p)
-    if isinstance(source, str):
-        encode = lambda x: x
-    else:
+            lappend(this)
+    if literal:
+        literals.append(''.join(literal))
+    if not isinstance(source, str):
         # The tokenizer implicitly decodes bytes objects as latin-1, we must
         # therefore re-encode the final representation.
-        encode = lambda x: x.encode('latin-1')
-    for c, s in p:
-        if c is MARK:
-            groupsappend((i, s))
-            # literal[i] is already None
-        else:
-            literals[i] = encode(s)
-        i = i + 1
+        literals = [None if s is None else s.encode('latin-1') for s in literals]
     return groups, literals
 
 def expand_template(template, match):

@@ -7,8 +7,6 @@
 # Licensed to PSF under a Contributor Agreement.
 #
 
-import sys
-import functools
 import os
 import itertools
 import weakref
@@ -17,13 +15,13 @@ import threading        # we want threading to install it's
                         # cleanup function before multiprocessing does
 from subprocess import _args_from_interpreter_flags
 
-from multiprocessing.process import current_process, active_children
+from . import process
 
 __all__ = [
     'sub_debug', 'debug', 'info', 'sub_warning', 'get_logger',
     'log_to_stderr', 'get_temp_dir', 'register_after_fork',
     'is_exiting', 'Finalize', 'ForkAwareThreadLock', 'ForkAwareLocal',
-    'SUBDEBUG', 'SUBWARNING',
+    'close_all_fds_except', 'SUBDEBUG', 'SUBWARNING',
     ]
 
 #
@@ -71,8 +69,6 @@ def get_logger():
 
             _logger = logging.getLogger(LOGGER_NAME)
             _logger.propagate = 0
-            logging.addLevelName(SUBDEBUG, 'SUBDEBUG')
-            logging.addLevelName(SUBWARNING, 'SUBWARNING')
 
             # XXX multiprocessing should cleanup before logging
             if hasattr(atexit, 'unregister'):
@@ -111,13 +107,14 @@ def log_to_stderr(level=None):
 
 def get_temp_dir():
     # get name of a temp directory which will be automatically cleaned up
-    if current_process()._tempdir is None:
+    tempdir = process.current_process()._config.get('tempdir')
+    if tempdir is None:
         import shutil, tempfile
         tempdir = tempfile.mkdtemp(prefix='pymp-')
         info('created temp directory %s', tempdir)
         Finalize(None, shutil.rmtree, args=[tempdir], exitpriority=-100)
-        current_process()._tempdir = tempdir
-    return current_process()._tempdir
+        process.current_process()._config['tempdir'] = tempdir
+    return tempdir
 
 #
 # Support for reinitialization of objects when bootstrapping a child process
@@ -235,6 +232,12 @@ def _run_finalizers(minpriority=None):
     Finalizers with highest priority are called first; finalizers with
     the same priority will be called in reverse order of creation.
     '''
+    if _finalizer_registry is None:
+        # This function may be called after this module's globals are
+        # destroyed.  See the _exit_function function in this module for more
+        # notes.
+        return
+
     if minpriority is None:
         f = lambda p : p[0][0] is not None
     else:
@@ -266,7 +269,13 @@ def is_exiting():
 
 _exiting = False
 
-def _exit_function():
+def _exit_function(info=info, debug=debug, _run_finalizers=_run_finalizers,
+                   active_children=process.active_children,
+                   current_process=process.current_process):
+    # We hold on to references to functions in the arglist due to the
+    # situation described below, where this function is called after this
+    # module's globals are destroyed.
+
     global _exiting
 
     if not _exiting:
@@ -276,14 +285,28 @@ def _exit_function():
         debug('running all "atexit" finalizers with priority >= 0')
         _run_finalizers(0)
 
-        for p in active_children():
-            if p._daemonic:
-                info('calling terminate() for daemon %s', p.name)
-                p._popen.terminate()
+        if current_process() is not None:
+            # We check if the current process is None here because if
+            # it's None, any call to ``active_children()`` will raise
+            # an AttributeError (active_children winds up trying to
+            # get attributes from util._current_process).  One
+            # situation where this can happen is if someone has
+            # manipulated sys.modules, causing this module to be
+            # garbage collected.  The destructor for the module type
+            # then replaces all values in the module dict with None.
+            # For instance, after setuptools runs a test it replaces
+            # sys.modules with a copy created earlier.  See issues
+            # #9775 and #15881.  Also related: #4106, #9205, and
+            # #9207.
 
-        for p in active_children():
-            info('calling join() for process %s', p.name)
-            p.join()
+            for p in active_children():
+                if p.daemon:
+                    info('calling terminate() for daemon %s', p.name)
+                    p._popen.terminate()
+
+            for p in active_children():
+                info('calling join() for process %s', p.name)
+                p.join()
 
         debug('running the remaining "atexit" finalizers')
         _run_finalizers()
@@ -296,13 +319,49 @@ atexit.register(_exit_function)
 
 class ForkAwareThreadLock(object):
     def __init__(self):
+        self._reset()
+        register_after_fork(self, ForkAwareThreadLock._reset)
+
+    def _reset(self):
         self._lock = threading.Lock()
         self.acquire = self._lock.acquire
         self.release = self._lock.release
-        register_after_fork(self, ForkAwareThreadLock.__init__)
 
 class ForkAwareLocal(threading.local):
     def __init__(self):
         register_after_fork(self, lambda obj : obj.__dict__.clear())
     def __reduce__(self):
         return type(self), ()
+
+#
+# Close fds except those specified
+#
+
+try:
+    MAXFD = os.sysconf("SC_OPEN_MAX")
+except Exception:
+    MAXFD = 256
+
+def close_all_fds_except(fds):
+    fds = list(fds) + [-1, MAXFD]
+    fds.sort()
+    assert fds[-1] == MAXFD, 'fd too large'
+    for i in range(len(fds) - 1):
+        os.closerange(fds[i]+1, fds[i+1])
+
+#
+# Start a program with only specified fds kept open
+#
+
+def spawnv_passfds(path, args, passfds):
+    import _posixsubprocess
+    passfds = sorted(passfds)
+    errpipe_read, errpipe_write = os.pipe()
+    try:
+        return _posixsubprocess.fork_exec(
+            args, [os.fsencode(path)], True, passfds, None, None,
+            -1, -1, -1, -1, -1, -1, errpipe_read, errpipe_write,
+            False, False, None)
+    finally:
+        os.close(errpipe_read)
+        os.close(errpipe_write)

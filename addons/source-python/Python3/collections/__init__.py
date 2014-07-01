@@ -3,16 +3,16 @@ __all__ = ['deque', 'defaultdict', 'namedtuple', 'UserDict', 'UserList',
 
 # For backwards compatibility, continue to make the collections ABCs
 # available through the collections module.
-from collections.abc import *
-import collections.abc
-__all__ += collections.abc.__all__
+from _collections_abc import *
+import _collections_abc
+__all__ += _collections_abc.__all__
 
 from _collections import deque, defaultdict
 from operator import itemgetter as _itemgetter, eq as _eq
 from keyword import iskeyword as _iskeyword
 import sys as _sys
 import heapq as _heapq
-from weakref import proxy as _proxy
+from _weakref import proxy as _proxy
 from itertools import repeat as _repeat, chain as _chain, starmap as _starmap
 from reprlib import recursive_repr as _recursive_repr
 
@@ -199,13 +199,10 @@ class OrderedDict(dict):
 
     def __reduce__(self):
         'Return state information for pickling'
-        items = [[k, self[k]] for k in self]
         inst_dict = vars(self).copy()
         for k in vars(OrderedDict()):
             inst_dict.pop(k, None)
-        if inst_dict:
-            return (self.__class__, (items,), inst_dict)
-        return self.__class__, (items,)
+        return self.__class__, (), inst_dict or None, None, iter(self.items())
 
     def copy(self):
         'od.copy() -> a shallow copy of od'
@@ -228,8 +225,7 @@ class OrderedDict(dict):
 
         '''
         if isinstance(other, OrderedDict):
-            return len(self)==len(other) and \
-                   all(map(_eq, self.items(), other.items()))
+            return dict.__eq__(self, other) and all(map(_eq, self, other))
         return dict.__eq__(self, other)
 
 
@@ -237,7 +233,7 @@ class OrderedDict(dict):
 ### namedtuple
 ################################################################################
 
-_class_template = '''\
+_class_template = """\
 from builtins import property as _property, tuple as _tuple
 from operator import itemgetter as _itemgetter
 from collections import OrderedDict
@@ -261,16 +257,6 @@ class {typename}(tuple):
             raise TypeError('Expected {num_fields:d} arguments, got %d' % len(result))
         return result
 
-    def __repr__(self):
-        'Return a nicely formatted representation string'
-        return self.__class__.__name__ + '({repr_fmt})' % self
-
-    def _asdict(self):
-        'Return a new OrderedDict which maps field names to their values'
-        return OrderedDict(zip(self._fields, self))
-
-    __dict__ = property(_asdict)
-
     def _replace(_self, **kwds):
         'Return a new {typename} object replacing specified fields with new values'
         result = _self._make(map(kwds.pop, {field_names!r}, _self))
@@ -278,12 +264,29 @@ class {typename}(tuple):
             raise ValueError('Got unexpected field names: %r' % list(kwds))
         return result
 
+    def __repr__(self):
+        'Return a nicely formatted representation string'
+        return self.__class__.__name__ + '({repr_fmt})' % self
+
+    @property
+    def __dict__(self):
+        'A new OrderedDict mapping field names to their values'
+        return OrderedDict(zip(self._fields, self))
+
+    def _asdict(self):
+        'Return a new OrderedDict which maps field names to their values.'
+        return self.__dict__
+
     def __getnewargs__(self):
         'Return self as a plain tuple.  Used by copy and pickle.'
         return tuple(self)
 
+    def __getstate__(self):
+        'Exclude the OrderedDict from pickling'
+        return None
+
 {field_defs}
-'''
+"""
 
 _repr_template = '{name}=%r'
 
@@ -323,24 +326,19 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
     if rename:
         seen = set()
         for index, name in enumerate(field_names):
-            if (not all(c.isalnum() or c=='_' for c in name)
+            if (not name.isidentifier()
                 or _iskeyword(name)
-                or not name
-                or name[0].isdigit()
                 or name.startswith('_')
                 or name in seen):
                 field_names[index] = '_%d' % index
             seen.add(name)
     for name in [typename] + field_names:
-        if not all(c.isalnum() or c=='_' for c in name):
-            raise ValueError('Type names and field names can only contain '
-                             'alphanumeric characters and underscores: %r' % name)
+        if not name.isidentifier():
+            raise ValueError('Type names and field names must be valid '
+                             'identifiers: %r' % name)
         if _iskeyword(name):
             raise ValueError('Type names and field names cannot be a '
                              'keyword: %r' % name)
-        if name[0].isdigit():
-            raise ValueError('Type names and field names cannot start with '
-                             'a number: %r' % name)
     seen = set()
     for name in field_names:
         if name.startswith('_') and not rename:
@@ -365,17 +363,14 @@ def namedtuple(typename, field_names, verbose=False, rename=False):
     # Execute the template string in a temporary namespace and support
     # tracing utilities by setting a value for frame.f_globals['__name__']
     namespace = dict(__name__='namedtuple_%s' % typename)
-    try:
-        exec(class_definition, namespace)
-    except SyntaxError as e:
-        raise SyntaxError(e.msg + ':\n\n' + class_definition)
+    exec(class_definition, namespace)
     result = namespace[typename]
     result._source = class_definition
     if verbose:
         print(result._source)
 
     # For pickling to work, the __module__ variable needs to be set to the frame
-    # where the named tuple is created.  Bypass this step in enviroments where
+    # where the named tuple is created.  Bypass this step in environments where
     # sys._getframe is not defined (Jython for example) or sys._getframe is not
     # defined for arguments greater than 0 (IronPython).
     try:
@@ -822,9 +817,14 @@ class ChainMap(MutableMapping):
 
     __copy__ = copy
 
-    def new_child(self):                        # like Django's Context.push()
-        'New ChainMap with a new dict followed by all previous maps.'
-        return self.__class__({}, *self.maps)
+    def new_child(self, m=None):                # like Django's Context.push()
+        '''
+        New ChainMap with a new map followed by all previous maps. If no
+        map is provided, an empty dict is used.
+        '''
+        if m is None:
+            m = {}
+        return self.__class__(m, *self.maps)
 
     @property
     def parents(self):                          # like Django's Context.pop()
