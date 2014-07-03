@@ -8,8 +8,8 @@
 from collections import ChainMap
 from collections import defaultdict
 from collections import OrderedDict
-#   Imports
-from imp import load_source
+#   Importlib
+from importlib import import_module
 
 # Site-Package Imports
 #   ConfigObj
@@ -82,8 +82,8 @@ class _UserMessages(dict):
             if class_data is not None:
 
                 # Import the current message class
-                message_class = getattr(load_source(
-                    message_name, base_path.joinpath(
+                message_class = getattr(
+                    import_module('messages.types.{0}'.format(
                         class_data[0])), class_data[1])
 
                 # Delete the class data as we are done with it
