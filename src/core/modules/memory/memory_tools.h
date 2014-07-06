@@ -125,7 +125,6 @@ inline void* UTIL_Realloc(void* ptr, size_t size)
 #else
 	#error "Implement me!"
 #endif
-	memset(pPtr, 0, size);
 	return pPtr;
 }
 
