@@ -176,6 +176,11 @@ CPointer* CPointer::GetVirtualFunc(int iIndex)
 	return new CPointer((unsigned long) vtable[iIndex]);
 }
 
+CPointer* CPointer::Realloc(int iSize)
+{ 
+	return new CPointer((unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize)); 
+}
+
 CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, object return_type)
 {
 	if (!IsValid())
@@ -216,11 +221,11 @@ void CPointer::PreDealloc(PyObject* self)
 	pointer->Dealloc();
 }
 
-void CPointer::PreRealloc(PyObject* self, int iSize)
+CPointer* CPointer::PreRealloc(PyObject* self, int iSize)
 {
 	CallCallback(self, "on_realloc");
 	CPointer* pointer = extract<CPointer *>(self);
-	pointer->Realloc(iSize);
+	return pointer->Realloc(iSize);
 }
  
 void CPointer::__del__(PyObject* self)

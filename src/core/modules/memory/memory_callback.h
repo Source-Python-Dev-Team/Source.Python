@@ -75,7 +75,7 @@ public:
     int          GetArgumentOffset(int iIndex);
 
 	virtual void Dealloc();
-	virtual void Realloc(int iSize);
+	virtual CPointer* Realloc(int iSize);
 
 public:
     object m_oCallback;
