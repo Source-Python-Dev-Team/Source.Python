@@ -123,7 +123,7 @@ class PluginManager(OrderedDict):
         '''Removes a plugin from the manager'''
 
         # Is the plugin in the dictionary?
-        if not plugin_name in self:
+        if plugin_name not in self:
 
             # Do nothing
             return

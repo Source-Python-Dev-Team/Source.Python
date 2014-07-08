@@ -227,7 +227,7 @@ class _LogInstance(dict):
         instance = self
 
         # Use a while statement to get the parent until root is found
-        while not instance.parent is None:
+        while instance.parent is not None:
 
             # Set the current instance to the parent
             instance = instance.parent
@@ -275,7 +275,7 @@ class LogManager(_LogInstance):
         self._logger = getLogger(name)
 
         # Was a filepath given?
-        if not filepath is None:
+        if filepath is not None:
 
             # Does the given path end with the extension?
             if filepath.endswith('.log'):

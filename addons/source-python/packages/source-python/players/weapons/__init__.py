@@ -384,7 +384,7 @@ class _PlayerWeapons(_GameWeapons):
 
             # Was a classname given and the current
             # weapon is not of that classname?
-            if not classname is None and weapon_class != classname:
+            if classname is not None and weapon_class != classname:
 
                 # Do not yield this index
                 continue
@@ -394,7 +394,7 @@ class _PlayerWeapons(_GameWeapons):
 
             # Was a weapon type given and the
             # current weapon is not of that type?
-            if ((is_filters or not_filters) and not weapon_class in list(
+            if ((is_filters or not_filters) and weapon_class not in list(
                     WeaponClassIter(is_filters, not_filters, 'classname'))):
 
                 # Do not yield this index
@@ -479,7 +479,7 @@ while _current_class:
     _weapon_prop_length = _find_weapon_prop_length(_current_class.table)
 
     # Was m_hMyWeapons found?
-    if not _weapon_prop_length is None:
+    if _weapon_prop_length is not None:
 
         # No need to continue looping
         break

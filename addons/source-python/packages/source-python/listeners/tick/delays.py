@@ -144,7 +144,7 @@ class _TickDelays(dict):
             'TickDelays.__delitem__ <{0}>'.format(item))
 
         # Is the item in the dictionary?
-        if not item in self:
+        if item not in self:
 
             # Log the not in self message
             ListenersTickDelaysLogger.log_info(
@@ -217,7 +217,7 @@ class _TickDelays(dict):
                 'TickDelays.cancel_delay requires a _Delay instance.')
 
         # Is the given _Delay object's time no longer in the dictionary?
-        if not delay_object.exec_time in self:
+        if delay_object.exec_time not in self:
 
             # If not, raise an error
             raise KeyError('Object is no longer registered.')

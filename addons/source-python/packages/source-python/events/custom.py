@@ -72,7 +72,7 @@ class CustomEvent(metaclass=_EventMeta):
         for kwarg in kwargs:
 
             # Is the current keyword in the event's variables?
-            if not kwarg in self._odict:
+            if kwarg not in self._odict:
 
                 # If not, raise an error
                 raise KeyError(

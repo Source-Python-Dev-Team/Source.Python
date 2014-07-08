@@ -42,8 +42,8 @@ class ConVar(_ConVar):
         '''Called when a server-var is initilized.'''
         super(ConVar, self).__init__(
             name, value, flags, description,
-            not min_value is None, min_value or 0.0,
-            not max_value is None, max_value or 0.0)
+            min_value is not None, min_value or 0.0,
+            max_value is not None, max_value or 0.0)
 
     def __getattr__(self, attr):
         '''Gets the value of the given attribute'''
@@ -52,7 +52,7 @@ class ConVar(_ConVar):
         flag = getattr(ConVarFlags, attr.upper(), None)
 
         # Is the attribute a flag?
-        if not flag is None:
+        if flag is not None:
 
             # Return the value of the cvar's flag
             return self.is_flag_set(flag)

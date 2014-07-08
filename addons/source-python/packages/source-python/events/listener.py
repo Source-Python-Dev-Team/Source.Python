@@ -70,7 +70,7 @@ class _EventListener(list):
         '''Removes the callback from the event's list'''
 
         # Is the callback in the list?
-        if not callback in self:
+        if callback not in self:
 
             # Raise an error
             raise ValueError(

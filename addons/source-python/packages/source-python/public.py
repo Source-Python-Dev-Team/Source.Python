@@ -32,7 +32,7 @@ def public(public_object):
     name = public_object.__name__.lstrip('_')
 
     # Is the object's name already in the list?
-    if not name in base_all:
+    if name not in base_all:
 
         # If not, add the name to the list
         base_all.append(name)

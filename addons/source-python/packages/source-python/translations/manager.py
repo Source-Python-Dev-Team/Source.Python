@@ -41,7 +41,7 @@ class _LanguageManager(ConfigObj):
         language = self.get_language(language)
 
         # Was a language returned?
-        if not language is None:
+        if language is not None:
 
             # Set the default language
             self.default = language

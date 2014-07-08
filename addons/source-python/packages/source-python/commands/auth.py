@@ -48,7 +48,7 @@ class _AuthCallback(object):
                     args[0], self.level, self.permission, self.flag):
 
                 # Is there fail callback?
-                if not self.fail_callback is None:
+                if self.fail_callback is not None:
 
                     # Use try/except in case the fail
                     # callback encounters an error

@@ -54,7 +54,7 @@ class _AuthCommands(OrderedDict):
         command = args[0]
 
         # Is the command registered?
-        if not command in self:
+        if command not in self:
 
             # Get a message about the invalid command
             message = '[SP Auth] ' + _auth_strings[

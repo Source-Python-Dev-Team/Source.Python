@@ -110,7 +110,7 @@ class _AuthManager(dict):
                 'Unloading'].get_string(provider=provider))
 
         # Is the provider loaded?
-        if not provider in self:
+        if provider not in self:
 
             # If not, send a message that the provider is not loaded
             AuthManagerLogger.log_message(

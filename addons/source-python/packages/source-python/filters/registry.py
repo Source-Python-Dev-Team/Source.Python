@@ -54,7 +54,7 @@ class _BaseRegistry(dict):
         '''Unregisters a item'''
 
         # Has the item been registered?
-        if not item in self:
+        if item not in self:
 
             # Raise an error, since the item cannot be
             # unregistered if it has not been registered
@@ -80,7 +80,7 @@ class _FilterRegistry(_BaseRegistry):
             error when an invalid item is used'''
 
         # Is the given item valid?
-        if not item in self:
+        if item not in self:
 
             # Raise an error
             raise FilterError('Invalid {0} "{1}"'.format(self._name, item))
@@ -100,7 +100,7 @@ class _ReturnTypeRegistry(_BaseRegistry):
             error when an invalid item is used'''
 
         # Is the given item valid?
-        if not item in self:
+        if item not in self:
 
             # Raise an error
             raise ReturnTypeError('Invalid {0} "{1}"'.format(self._name, item))

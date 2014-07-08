@@ -136,7 +136,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         sub_command = sub_command.lower()
 
         # Is the sub-command in the dictionary?
-        if not sub_command in self:
+        if sub_command not in self:
 
             # Was a sub-command given?
             if sub_command:
@@ -288,7 +288,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         '''Unloads a plugin by name.'''
 
         # Is the plugin loaded?
-        if not plugin_name in self.manager:
+        if plugin_name not in self.manager:
 
             # Send a message that the plugin is not loaded
             self.logger.log_message(self.prefix + self.translations[

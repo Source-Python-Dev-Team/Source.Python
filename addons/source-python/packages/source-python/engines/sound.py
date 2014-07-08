@@ -187,5 +187,5 @@ class Sound(AutoUnload):
 
     def _unload_instance(self):
         '''Removes the sample from the downloads list'''
-        if not self._downloads is None:
+        if self._downloads is not None:
             self._downloads._unload_instance()
