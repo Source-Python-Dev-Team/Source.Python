@@ -38,3 +38,6 @@ for message_name, message_class in _UserMessages(SP_DATA_PATH.joinpath(
 
     # Globalize the current message class
     globals()[message_name] = message_class
+
+    # Add the object, by name, to __all__
+    __all__.append(message_name)

@@ -39,7 +39,7 @@ class _EntityIterManager(object):
         '''Registers the given return type to the class'''
         self._return_types.register(return_type, function)
 
-    def unregister_return_type(self, return_type, function):
+    def unregister_return_type(self, return_type):
         '''Unregisters the given return type from the class'''
         self._return_types.unregister(return_type)
 

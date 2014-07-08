@@ -261,11 +261,11 @@ class LogManager(_LogInstance):
 
     def __init__(
             self, name, level, areas, filepath=None,
-            format=None, date_format=None):
+            log_format=None, date_format=None):
         '''Stores the base values and creates the logger'''
 
         # Store the base formatter
-        self._formatter = Formatter(format, date_format)
+        self._formatter = Formatter(log_format, date_format)
 
         # Store the base attributes
         self._level = level

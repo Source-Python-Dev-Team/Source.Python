@@ -198,11 +198,11 @@ _AuthCommandsInstance = _AuthCommands()
 
 # Add all auth loading/unloading commands to the dictionary
 _AuthCommandsInstance['load'] = _load_auth_providers
-_AuthCommandsInstance['load'].args = ['<provider>', '[provider]',  '...']
+_AuthCommandsInstance['load'].args = ['<provider>', '[provider]', '...']
 _AuthCommandsInstance['unload'] = _unload_auth_providers
-_AuthCommandsInstance['unload'].args = ['<provider>', '[provider]',  '...']
+_AuthCommandsInstance['unload'].args = ['<provider>', '[provider]', '...']
 _AuthCommandsInstance['reload'] = _reload_auth_providers
-_AuthCommandsInstance['reload'].args = ['[provider]', '[provider]',  '...']
+_AuthCommandsInstance['reload'].args = ['[provider]', '[provider]', '...']
 
 # Add all printing commands to the dictionary
 _AuthCommandsInstance['list'] = _print_auth_providers

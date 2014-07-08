@@ -36,15 +36,15 @@ class _EventMeta(type):
     '''Metaclass used to store class attributes in an ordered dictionary'''
 
     @classmethod
-    def __prepare__(mcl, name, bases):
+    def __prepare__(mcs, *args, **kwargs):
         '''Return an ordered dictionary'''
         return OrderedDict()
 
-    def __new__(mcl, name, bases, odict):
+    def __new__(mcs, name, bases, odict):
         '''Called when the class is being created'''
 
         # Create the instance
-        cls = super().__new__(mcl, name, bases, dict(odict))
+        cls = super().__new__(mcs, name, bases, dict(odict))
 
         # Store an ordered dictionary
         cls._odict = OrderedDict()

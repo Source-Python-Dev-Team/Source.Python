@@ -13,7 +13,7 @@ __all__ = []
 class _ProjectileMeta(type):
     '''Metaclass used to auto-create methods specific to the projectile'''
 
-    def __new__(mcl, name, bases, odict):
+    def __new__(mcs, name, bases, odict):
         '''Create the class and create its methods dynamically'''
 
         # Store values to use later
@@ -33,7 +33,7 @@ class _ProjectileMeta(type):
                 continue
 
         # Create the object
-        cls = super().__new__(mcl, name, bases, odict)
+        cls = super().__new__(mcs, name, bases, odict)
 
         # Is the the baseclass that uses the metaclass?
         if len(bases) != 1 or bases[0].__name__ != '_ProjectileBase':
