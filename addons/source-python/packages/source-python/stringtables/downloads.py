@@ -6,8 +6,6 @@
 # Source.Python Imports
 #   Core
 from core import AutoUnload
-#   Paths
-from paths import PLUGIN_PATH
 #   Events
 from events.manager import EventRegistry
 #   Stringtables

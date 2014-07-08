@@ -12,8 +12,6 @@ from engines import EnginesLogger
 from filters.recipients import RecipientFilter
 #   Mathlib
 from mathlib import NULL_VECTOR
-#   Paths
-from paths import PLUGIN_PATH
 #   Stringtables
 from stringtables.downloads import Downloadables
 

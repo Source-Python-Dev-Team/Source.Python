@@ -10,8 +10,8 @@ from collections import OrderedDict
 # Source.Python imports
 #   Auth
 from auth import AuthLogger
+from auth import _auth_strings
 from auth.manager import AuthManager
-from auth.manager import _auth_strings
 
 
 # =============================================================================

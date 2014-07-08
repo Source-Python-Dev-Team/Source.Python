@@ -6,6 +6,7 @@
 # Source.Python Imports
 #   Auth
 from auth import AuthLogger
+from auth import _auth_strings
 
 
 # =============================================================================

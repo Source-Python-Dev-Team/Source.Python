@@ -180,7 +180,7 @@ def uniqueid_from_playerinfo(playerinfo):
     if 'LAN' in steamid:
 
         # Get the player's IP address
-        address = address_from_player(playerinfo)
+        address = address_from_playerinfo(playerinfo)
 
         # Return the Lan player's ID
         return 'LAN_{0}'.format('_'.join(address.split(':')[0].split('.')))

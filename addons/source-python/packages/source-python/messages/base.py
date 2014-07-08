@@ -14,7 +14,6 @@ from imp import load_source
 # Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
-from configobj import Section
 #   Path
 from path import Path
 

@@ -8,8 +8,6 @@
 from auth.manager import AuthManager
 #   Hooks
 from hooks.exceptions import ExceptHooks
-#   Players
-from players import PlayerInfo
 
 
 # =============================================================================
