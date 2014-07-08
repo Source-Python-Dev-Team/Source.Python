@@ -64,10 +64,10 @@ class SubCommandManager(AutoUnload, OrderedDict):
             raise PluginInstanceError(PluginInstanceError.__doc__)
 
         # Store the command
-        self.command = command
+        self._command = command
 
         # Store the prefix
-        self.prefix = prefix if prefix else '[{0}] '.format(
+        self._prefix = prefix if prefix else '[{0}] '.format(
             self.command.upper())
 
         # Set the prefix for the manager and instance classes
@@ -92,29 +92,39 @@ class SubCommandManager(AutoUnload, OrderedDict):
         ServerCommandManager.register_commands(
             self.command, self.call_command, description, 0)
 
+    @property
+    def command(self):
+        '''Returns the server command registered to the class'''
+        return self._command
+
+    @property
+    def prefix(self):
+        '''Returns the prefix to use in log messages'''
+        return self._prefix
+
     def _unload_instance(self):
         '''Unregisters commands when the instance is unloaded'''
         ServerCommandManager.unregister_commands(
             self.command, self.call_command)
 
-    def call_command(self, Command):
+    def call_command(self, command):
         '''Gets the provided sub-command and executes accordingly'''
 
         # Get the argument string
-        arg_string = Command.get_arg_string()
+        arg_string = command.get_arg_string()
 
         # Use try/except to split the argument string,
         # if it contains more than one argument
         try:
 
             # Split the argument string to get the sub-command
-            command, args = arg_string.split(maxsplit=1)
+            sub_command, args = arg_string.split(maxsplit=1)
 
         # Were there not enough arguments to split?
         except ValueError:
 
             # Set the command to the entire string
-            command = arg_string.strip()
+            sub_command = arg_string.strip()
 
             # Set args to nothing
             args = ''
@@ -123,13 +133,13 @@ class SubCommandManager(AutoUnload, OrderedDict):
         args = args.split()
 
         # Make the sub-command lower-case
-        command = command.lower()
+        sub_command = sub_command.lower()
 
         # Is the sub-command in the dictionary?
-        if not command in self:
+        if not sub_command in self:
 
             # Was a sub-command given?
-            if command:
+            if sub_command:
 
                 # Print a message about the invalid sub-command
                 message = self.prefix + self.translations[
@@ -149,11 +159,11 @@ class SubCommandManager(AutoUnload, OrderedDict):
             return
 
         # Does the given sub-command's callable allow for arguments?
-        if hasattr(self[command], 'args'):
+        if hasattr(self[sub_command], 'args'):
 
             # Get the number of required arguments for the callable
             required = len([
-                x for x in self[command].args if x.startswith('<')])
+                x for x in self[sub_command].args if x.startswith('<')])
 
             # Get the number of arguments provided
             given = len(args)
@@ -165,14 +175,14 @@ class SubCommandManager(AutoUnload, OrderedDict):
                 self.logger.log_message(
                     self.prefix + self.translations[
                         'Invalid Arguments'].get_string(
-                        command=self.command, subcommand=command) +
-                    ' '.join(self[command].args))
+                        command=self.command, subcommand=sub_command) +
+                    ' '.join(self[sub_command].args))
 
                 # No need to go further
                 return
 
             # Are all of the arguments required?
-            if required == len(self[command].args):
+            if required == len(self[sub_command].args):
 
                 # Were the correct number of arguments given?
                 if given != required:
@@ -182,29 +192,29 @@ class SubCommandManager(AutoUnload, OrderedDict):
                     self.logger.log_message(
                         self.prefix + self.translations[
                             'Invalid Arguments'].get_string(
-                            command=self.command, subcommand=command) +
-                        ' '.join(self[command].args))
+                            command=self.command, subcommand=sub_command) +
+                        ' '.join(self[sub_command].args))
 
                     # No need to go further
                     return
 
             # Call the sub-command's callable with the given arguments
-            self[command](*args)
+            self[sub_command](*args)
 
             # No need to go further
             return
 
         # Does the current item have its own call_command method?
-        if hasattr(self[command], 'call_command'):
+        if hasattr(self[sub_command], 'call_command'):
 
             # Call the instance's call_command method with the arguments
-            self[command].call_command(args)
+            self[sub_command].call_command(args)
 
             # No need to go further
             return
 
         # Call the callable without the arguments
-        self[command]()
+        self[sub_command]()
 
     def print_help(self, message=''):
         '''Prints all sub-commands for the console command.'''
