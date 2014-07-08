@@ -171,9 +171,10 @@ void CCallback::Dealloc()
     m_ulAddr = 0;
 }
 
-void CCallback::Realloc(int iSize)
+CPointer* CCallback::Realloc(int iSize)
 {
 	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "This function is not implemented for callbacks.")
+	return NULL;
 }
 
 

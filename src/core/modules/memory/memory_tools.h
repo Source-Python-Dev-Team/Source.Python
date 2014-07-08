@@ -125,7 +125,6 @@ inline void* UTIL_Realloc(void* ptr, size_t size)
 #else
 	#error "Implement me!"
 #endif
-	memset(pPtr, 0, size);
 	return pPtr;
 }
 
@@ -280,7 +279,7 @@ public:
 
 	CPointer*           GetVirtualFunc(int iIndex);
 
-	virtual void        Realloc(int iSize) { m_ulAddr = (unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize); }
+	virtual CPointer*   Realloc(int iSize);
 	virtual void        Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
 	CFunction*          MakeFunction(Convention_t eConv, boost::python::tuple args, object return_type);
@@ -288,7 +287,7 @@ public:
 
 	static void         CallCallback(PyObject* self, char* szCallback);
 	static void         PreDealloc(PyObject* self);
-	static void         PreRealloc(PyObject* self, int iSize);
+	static CPointer*    PreRealloc(PyObject* self, int iSize);
 	static void         __del__(PyObject* self);
 
 public:

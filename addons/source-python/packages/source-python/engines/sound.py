@@ -12,8 +12,6 @@ from engines import EnginesLogger
 from filters.recipients import RecipientFilter
 #   Mathlib
 from mathlib import NULL_VECTOR
-#   Paths
-from paths import PLUGIN_PATH
 #   Stringtables
 from stringtables.downloads import Downloadables
 
@@ -189,5 +187,5 @@ class Sound(AutoUnload):
 
     def _unload_instance(self):
         '''Removes the sample from the downloads list'''
-        if not self._downloads is None:
+        if self._downloads is not None:
             self._downloads._unload_instance()

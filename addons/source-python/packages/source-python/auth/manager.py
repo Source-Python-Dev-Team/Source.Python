@@ -6,12 +6,11 @@
 # Source.Python imports
 #   Auth
 from auth import AuthLogger
+from auth import _auth_strings
 from auth.base import AuthBase
 from auth.paths import AUTH_PROVIDER_PATH
 #   Players
 from players.helpers import uniqueid_from_playerinfo
-#   Translations
-from translations.strings import LangStrings
 
 
 # =============================================================================
@@ -26,9 +25,6 @@ __all__ = [
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the auth language strings
-_auth_strings = LangStrings('_core/auth_strings')
-
 # Get the sp.auth.manager logger
 AuthManagerLogger = AuthLogger.manager
 
@@ -114,7 +110,7 @@ class _AuthManager(dict):
                 'Unloading'].get_string(provider=provider))
 
         # Is the provider loaded?
-        if not provider in self:
+        if provider not in self:
 
             # If not, send a message that the provider is not loaded
             AuthManagerLogger.log_message(

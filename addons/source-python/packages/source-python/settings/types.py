@@ -149,8 +149,8 @@ class _NumericalSetting(_SettingsType):
         self._name = name
         self._default = default
         self._text = text
-        self._min = self._type(min_value) if not min_value is None else None
-        self._max = self._type(max_value) if not max_value is None else None
+        self._min = self._type(min_value) if min_value is not None else None
+        self._max = self._type(max_value) if max_value is not None else None
 
     @property
     def min(self):
@@ -166,13 +166,13 @@ class _NumericalSetting(_SettingsType):
         '''Returns whether the given value is a valid value for the setting'''
 
         # Is the given value less than the setting's min value?
-        if not self.min is None and value < self.min:
+        if self.min is not None and value < self.min:
 
             # If too low, return False
             return False
 
         # Is the given value more than the setting's max value?
-        if not self.max is None and value > self.max:
+        if self.max is not None and value > self.max:
 
             # If too high, return False
             return False
@@ -224,7 +224,7 @@ class _StringSetting(_SettingsType):
         '''Removes an option from the settings'''
 
         # Is the option registered?
-        if not name in self.options:
+        if name not in self.options:
 
             # Raise an error
             raise ValueError(

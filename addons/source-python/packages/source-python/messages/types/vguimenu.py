@@ -42,7 +42,7 @@ class VGUIMenu(BaseMessage):
             field_name, field_value, field_index=-1):
         '''Write the given field value to the given message'''
 
-       # Is the given parameter "subkeys" and the given value a dictionnary?
+        # Is the given parameter "subkeys" and the given value a dictionnary?
         if parameter_name == 'subkeys' and isinstance(field_value, dict):
 
             # Loop through all subkeys

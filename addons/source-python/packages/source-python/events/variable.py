@@ -42,7 +42,7 @@ class _EventVariable(object):
         '''Called on instantiation'''
 
         # Was a default value passed?
-        if not default is None:
+        if default is not None:
 
             # Set the default value
             self._default = default

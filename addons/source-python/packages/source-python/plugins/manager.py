@@ -49,7 +49,7 @@ class PluginManager(OrderedDict):
         super(PluginManager, self).__init__()
 
         # Store the base import path
-        self.base_import = base_import
+        self._base_import = base_import
 
         # Does the object have a logger set?
         if not hasattr(self, 'logger'):
@@ -123,7 +123,7 @@ class PluginManager(OrderedDict):
         '''Removes a plugin from the manager'''
 
         # Is the plugin in the dictionary?
-        if not plugin_name in self:
+        if plugin_name not in self:
 
             # Do nothing
             return
@@ -153,6 +153,11 @@ class PluginManager(OrderedDict):
 
         # Remove the plugin from the dictionary
         super(PluginManager, self).__delitem__(plugin_name)
+
+    @property
+    def base_import(self):
+        '''Returns the base import path for the manager'''
+        return self._base_import
 
     def is_loaded(self, plugin_name):
         '''Returns whether or not a plugin is loaded'''

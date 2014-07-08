@@ -14,7 +14,6 @@ from importlib import import_module
 # Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
-from configobj import Section
 #   Path
 from path import Path
 
@@ -136,7 +135,7 @@ class _UserMessages(dict):
                             # Convert the current value
                             default_values[parameter_index] = _fieldtypes[
                                 parameter_type](default_values[
-                                parameter_index])
+                                    parameter_index])
 
                         # Store the current parameter data
                         required_parameters[parameter_name] = dict(

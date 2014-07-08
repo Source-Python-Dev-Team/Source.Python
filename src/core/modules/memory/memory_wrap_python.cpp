@@ -202,7 +202,8 @@ void export_memtools()
 		.def("realloc",
 			&CPointer::PreRealloc,
 			"Reallocates a memory block.",
-			args("size")
+			args("size"),
+			manage_new_object_policy()
 		)
 
 		.def("dealloc",

@@ -134,7 +134,7 @@ class LangStrings(dict):
                 language_code = LanguageManager.get_language(default_language)
 
                 # Is the language valid?
-                if not language_code is None:
+                if language_code is not None:
 
                     # Set the default language
                     self.default_language = language_code
@@ -152,7 +152,7 @@ class LangStrings(dict):
             language_code = LanguageManager.get_language(value)
 
             # Is the given language code valid?
-            if not language_code is None:
+            if language_code is not None:
 
                 # Loop through all strings
                 for key in self:
@@ -270,7 +270,7 @@ class TranslationStrings(dict):
         language = LanguageManager.get_language(language)
 
         # Was a language found?
-        if not language is None and language in self:
+        if language is not None and language in self:
 
             # Return the language
             return language

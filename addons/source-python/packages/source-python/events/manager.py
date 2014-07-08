@@ -70,7 +70,7 @@ class _EventRegistry(dict):
         '''Unregisters the callback for the given event'''
 
         # Is the event registered?
-        if not event in self:
+        if event not in self:
 
             # Raise an error
             raise ValueError('Event "{0}" is not registered'.format(event))

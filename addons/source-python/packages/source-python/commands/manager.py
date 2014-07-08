@@ -37,7 +37,7 @@ class _BaseCommandManager(dict):
             names = [names]
 
         # Are the names of a proper iterable type?
-        if not type(names) in (list, tuple):
+        if type(names) not in (list, tuple):
 
             # Raise an error
             raise TypeError(
@@ -45,7 +45,7 @@ class _BaseCommandManager(dict):
                 ' not "{1}"'.format(type(self).__name__, type(names).__name__))
 
         # Is there a specified callback manager for this class?
-        if not self._callback_manager is None:
+        if self._callback_manager is not None:
 
             # Get the callback manager's instance for the given callback
             callback = self._callback_manager(callback, *args, **kwargs)
@@ -54,7 +54,7 @@ class _BaseCommandManager(dict):
         for name in names:
 
             # Is the command already registered?
-            if not name in self:
+            if name not in self:
 
                 # Are the arguments supposed to be used
                 # when getting the command instance?
@@ -85,7 +85,7 @@ class _BaseCommandManager(dict):
             names = [names]
 
         # Are the names of a proper iterable type?
-        if not type(names) in (list, tuple):
+        if type(names) not in (list, tuple):
 
             # Raise an error
             raise TypeError(
@@ -96,13 +96,13 @@ class _BaseCommandManager(dict):
         for name in names:
 
             # Is the command registered?
-            if not name in self:
+            if name not in self:
 
                 # Raise an error
                 raise KeyError('Command "{0}" not registered'.format(name))
 
             # Is there a specified callback manager for this class?
-            if not self._callback_manager is None:
+            if self._callback_manager is not None:
 
                 # Loop through each callback in the command's list
                 for registered_callback in self[name]:
@@ -190,7 +190,7 @@ class _CallbackList(list):
         '''Removes a callback from the list'''
 
         # Is the callback in the list?
-        if not callback in self:
+        if callback not in self:
 
             # Raise an error
             raise ValueError('Callback not registered to command')
