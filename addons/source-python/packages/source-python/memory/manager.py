@@ -266,7 +266,8 @@ class TypeManager(dict):
         # This is just a wrapper for __call__
         return self(name, bases, cls_dict)
 
-    def create_pipe(self, cls_dict):
+    @staticmethod
+    def create_pipe(cls_dict):
         '''
         Creates a new pipe class that acts like a collection of functions.
         '''
@@ -312,10 +313,10 @@ class TypeManager(dict):
             return_type = self.create_converter(return_type)
 
         # Find the binary
-        bin = find_binary(binary, srv_check)
+        binary = find_binary(binary, srv_check)
 
         # Find the address and make it to a function
-        func = bin[identifier].make_function(convention, args, return_type)
+        func = binary[identifier].make_function(convention, args, return_type)
 
         # Add documentation
         func.__doc__ = doc
@@ -708,10 +709,10 @@ class TypeManager(dict):
         '''
 
         # Get the binary
-        bin = find_binary(binary, srv_check)
+        binary = find_binary(binary, srv_check)
 
         # Get the global pointer
-        ptr = bin.find_pointer(identifier, offset, level)
+        ptr = binary.find_pointer(identifier, offset, level)
 
         # Raise an error if the pointer is invalid
         if not ptr:

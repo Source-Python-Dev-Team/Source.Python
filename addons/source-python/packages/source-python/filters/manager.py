@@ -48,7 +48,7 @@ class _BaseFilterManager(object):
         # Register the return type
         self._return_types.register(return_type, function)
 
-    def unregister_return_type(self, return_type, function):
+    def unregister_return_type(self, return_type):
         '''Unregisters the given return type from the class'''
 
         # Unregister the return type
