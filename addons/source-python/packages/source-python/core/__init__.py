@@ -1,4 +1,4 @@
-# ../core.py
+# ../core/__init__.py
 
 # =============================================================================
 # >> IMPORTS
@@ -15,6 +15,8 @@ from platform import system
 import sys
 
 # Source.Python Imports
+#   Loggers
+from loggers import _SPLogger
 #   Paths
 from paths import GAME_PATH
 
@@ -53,6 +55,9 @@ GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
 
 # Get the platform the server is on
 PLATFORM = system().lower()
+
+# Get the sp.core logger
+CoreLogger = _SPLogger.core
 
 
 # =============================================================================

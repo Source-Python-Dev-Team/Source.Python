@@ -18,8 +18,6 @@ from logging import addLevelName
 from logging import getLogger
 
 # Source.Python Imports
-#   Core
-from core import echo_console
 #   Cvars
 from cvars import ConVar
 #   Paths
@@ -200,6 +198,7 @@ class _LogInstance(dict):
             # If not, print to the console
             # If <engine>.log_print is called with logging being on,
             #   the console is already echoed with the message.
+            from core import echo_console
             echo_console(msg)
 
         # Print to the script's log file?

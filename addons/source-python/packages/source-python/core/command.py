@@ -8,9 +8,11 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-from _core import _CoreLogger
 #   Auth
 from auth.commands import _AuthCommandsInstance
+#   Core
+from core import CoreLogger
+from core.manager import SPPluginManager
 #   Dump
 import _dump
 #   Engines
@@ -22,11 +24,8 @@ from plugins import _plugin_strings
 from plugins.command import SubCommandManager
 from plugins.info import PluginInfo
 from plugins.instance import LoadedPlugin
-from plugins.manager import PluginManager
 #   Tick
 from listeners.tick import TickDelays
-#   Translations
-from translations.strings import LangStrings
 
 
 # =============================================================================
@@ -39,32 +38,24 @@ __all__ = []
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the sp._core.command logger
-_CoreCommandLogger = _CoreLogger.command
+# Get the sp.core.command logger
+CoreCommandLogger = CoreLogger.command
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SPLoadedPlugin(LoadedPlugin):
+class _SPLoadedPlugin(LoadedPlugin):
     '''Plugin instance class used to create "sp" loaded plugins'''
-    logger = _CoreCommandLogger
+    logger = CoreCommandLogger
 
 
-class _SPPluginManager(PluginManager):
-    '''Plugin Manager class used to load "sp" plugins'''
-    logger = _CoreCommandLogger
-
-# Get the _SPPluginManager instance
-SPPluginManager = _SPPluginManager()
-
-
-class _SPSubCommandManager(SubCommandManager):
+class _CoreCommand(SubCommandManager):
     '''Class used for executing "sp" sub-command functionality'''
 
     manager = SPPluginManager
-    instance = SPLoadedPlugin
-    logger = _CoreCommandLogger
+    instance = _SPLoadedPlugin
+    logger = CoreCommandLogger
 
     def print_plugins(self):
         '''Lists all currently loaded plugins.'''
@@ -95,7 +86,7 @@ class _SPSubCommandManager(SubCommandManager):
                     break
 
             # Was an PluginInfo instance found?
-            if not info is None:
+            if info is not None:
 
                 # Add message with the current plugin's name
                 message += plugin + ':\n'
@@ -193,26 +184,26 @@ class _SPSubCommandManager(SubCommandManager):
         # Print the message
         self.logger.log_message(message + '=' * 61 + '\n\n')
 
-# Get the _SPSubCommandManager instance
-SPSubCommandManager = _SPSubCommandManager('sp', 'Source.Python base command.')
+# Get the _CoreCommand instance
+_CoreCommandInstance = _CoreCommand('sp', 'Source.Python base command.')
 
 # Register the load/unload sub-commands
-SPSubCommandManager['load'] = SPSubCommandManager.load_plugin
-SPSubCommandManager['unload'] = SPSubCommandManager.unload_plugin
-SPSubCommandManager['reload'] = SPSubCommandManager.reload_plugin
+_CoreCommandInstance['load'] = _CoreCommandInstance.load_plugin
+_CoreCommandInstance['unload'] = _CoreCommandInstance.unload_plugin
+_CoreCommandInstance['reload'] = _CoreCommandInstance.reload_plugin
 
 # Register the 'auth' sub-command
-SPSubCommandManager['auth'] = _AuthCommandsInstance
+_CoreCommandInstance['auth'] = _AuthCommandsInstance
 
 # Register the 'delay' sub-command
-SPSubCommandManager['delay'] = SPSubCommandManager.delay_execution
-SPSubCommandManager['delay'].args = ['<delay>', '<command>', '[arguments]']
+_CoreCommandInstance['delay'] = _CoreCommandInstance.delay_execution
+_CoreCommandInstance['delay'].args = ['<delay>', '<command>', '[arguments]']
 
 # Register the 'dump' sub-command
-SPSubCommandManager['dump'] = SPSubCommandManager.dump_data
+_CoreCommandInstance['dump'] = _CoreCommandInstance.dump_data
 
 # Register all printing sub-commands
-SPSubCommandManager['list'] = SPSubCommandManager.print_plugins
-SPSubCommandManager['version'] = SPSubCommandManager.print_version
-SPSubCommandManager['credits'] = SPSubCommandManager.print_credits
-SPSubCommandManager['help'] = SPSubCommandManager.print_help
+_CoreCommandInstance['list'] = _CoreCommandInstance.print_plugins
+_CoreCommandInstance['version'] = _CoreCommandInstance.print_version
+_CoreCommandInstance['credits'] = _CoreCommandInstance.print_credits
+_CoreCommandInstance['help'] = _CoreCommandInstance.print_help

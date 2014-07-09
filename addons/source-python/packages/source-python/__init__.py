@@ -55,7 +55,7 @@ __all__ = []
 try:
 
     # Import the core settings dictionary
-    from _core.settings import _CoreSettingsInstance
+    from core.settings import _CoreSettingsInstance
 
     # Set the logging level
     ConVar('sp_logging_level').set_int(
@@ -100,7 +100,7 @@ LanguageManager._register_default_language(
 # =============================================================================
 # >> INITIALIZE SP COMMAND
 # =============================================================================
-from _core.command import SPSubCommandManager
+from core.command import _CoreCommandInstance
 
 
 # =============================================================================
@@ -113,7 +113,8 @@ auth_providers = _CoreSettingsInstance['AUTH_SETTINGS']['providers'].split()
 if auth_providers:
 
     # Load the auth providers
-    SPSubCommandManager.call_command('auth', ['load'] + auth_providers)
+    _CoreCommandInstance.call_command(
+        'auth', ['load'] + auth_providers)
 
 
 # =============================================================================
