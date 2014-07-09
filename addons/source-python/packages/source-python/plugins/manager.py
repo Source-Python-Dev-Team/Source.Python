@@ -191,7 +191,7 @@ class PluginManager(OrderedDict):
                 self._remove_module(module)
 
     @staticmethod
-    def _remove_module(self, module):
+    def _remove_module(module):
         '''Removes a module and unloads any AutoUnload instances'''
 
         # Loop through all items in the module
