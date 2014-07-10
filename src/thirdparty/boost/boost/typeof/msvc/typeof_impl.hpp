@@ -15,9 +15,7 @@
 # include <boost/type_traits/is_function.hpp>
 # include <boost/utility/enable_if.hpp>
 
-# if BOOST_WORKAROUND(BOOST_MSVC,>=1310)
-#  include <typeinfo>
-# endif
+# include <typeinfo>
 
 namespace boost
 {
@@ -25,7 +23,7 @@ namespace boost
     {
 
         //Compile time constant code
-# if BOOST_WORKAROUND(BOOST_MSVC,>=1300) && defined(_MSC_EXTENSIONS)
+# if defined(_MSC_EXTENSIONS)
         template<int N> struct the_counter;
 
         template<typename T,int N = 5/*for similarity*/>
@@ -85,26 +83,7 @@ namespace boost
 
         //Typeof code
 
-# if BOOST_WORKAROUND(BOOST_MSVC,==1300)
-        template<typename ID>
-        struct msvc_extract_type
-        {
-            template<bool>
-            struct id2type_impl;
-
-            typedef id2type_impl<true> id2type;
-        };
-
-        template<typename T, typename ID>
-        struct msvc_register_type : msvc_extract_type<ID>
-        {
-            template<>
-            struct id2type_impl<true>  //VC7.0 specific bugfeature
-            {
-                typedef T type;
-            };
-        };
-#elif BOOST_WORKAROUND(BOOST_MSVC,>=1400)
+# if BOOST_WORKAROUND(BOOST_MSVC,>=1400)
         struct msvc_extract_type_default_param {};
 
         template<typename ID, typename T = msvc_extract_type_default_param>
@@ -189,7 +168,6 @@ namespace boost
         {
             typedef char(*type)[encode_type<T>::value];
         };
-# if BOOST_WORKAROUND(BOOST_MSVC,>=1310)
         template<typename T> typename disable_if<
             typename is_function<T>::type,
             typename sizer<T>::type>::type encode_start(T const&);
@@ -197,10 +175,6 @@ namespace boost
         template<typename T> typename enable_if<
             typename is_function<T>::type,
             typename sizer<T>::type>::type encode_start(T&);
-# else
-        template<typename T>
-            typename sizer<T>::type encode_start(T const&);
-# endif
         template<typename Organizer, typename T>
         msvc_register_type<T,Organizer> typeof_register_type(const T&,Organizer* =0);
 

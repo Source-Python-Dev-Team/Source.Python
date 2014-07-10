@@ -20,7 +20,7 @@
 
 #include <boost/geometry/multi/core/tags.hpp>
 #include <boost/geometry/multi/core/point_type.hpp>
-
+#include <boost/geometry/multi/geometries/concepts/check.hpp>
 
 #include <boost/geometry/algorithms/for_each.hpp>
 
@@ -40,13 +40,12 @@ template <typename Policy>
 struct for_each_multi
 {
     template <typename MultiGeometry, typename Functor>
-    static inline Functor apply(MultiGeometry& multi, Functor f)
+    static inline void apply(MultiGeometry& multi, Functor& f)
     {
         for(BOOST_AUTO_TPL(it, boost::begin(multi)); it != boost::end(multi); ++it)
         {
-            f = Policy::apply(*it, f);
+            Policy::apply(*it, f);
         }
-        return f;
     }
 };
 

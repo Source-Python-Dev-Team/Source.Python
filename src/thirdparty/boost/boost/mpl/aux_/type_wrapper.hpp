@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: type_wrapper.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: type_wrapper.hpp 86245 2013-10-11 23:17:48Z skelly $
+// $Date: 2013-10-11 19:17:48 -0400 (Fri, 11 Oct 2013) $
+// $Revision: 86245 $
 
 #include <boost/mpl/aux_/config/ctps.hpp>
 
@@ -24,7 +24,6 @@ template< typename T > struct type_wrapper
     typedef T type;
 };
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 // agurt 08/may/03: a complicated way to extract the wrapped type; need it 
 // mostly for the sake of GCC (3.2.x), which ICEs if you try to extract the 
 // nested 'type' from 'type_wrapper<T>' when the latter was the result of a
@@ -35,12 +34,6 @@ template< typename T > struct wrapped_type< type_wrapper<T> >
 {
     typedef T type;
 };
-#else
-template< typename W > struct wrapped_type
-{
-    typedef typename W::type type;
-};
-#endif
 
 }}}
 

@@ -24,7 +24,11 @@ BASE_EXEC_PREFIX = os.path.normpath(sys.base_exec_prefix)
 # Path to the base directory of the project. On Windows the binary may
 # live in project/PCBuild9.  If we're dealing with an x64 Windows build,
 # it'll live in project/PCbuild/amd64.
-project_base = os.path.dirname(os.path.abspath(sys.executable))
+# set for cross builds
+if "_PYTHON_PROJECT_BASE" in os.environ:
+    project_base = os.path.abspath(os.environ["_PYTHON_PROJECT_BASE"])
+else:
+    project_base = os.path.dirname(os.path.abspath(sys.executable))
 if os.name == "nt" and "pcbuild" in project_base[-8:].lower():
     project_base = os.path.abspath(os.path.join(project_base, os.path.pardir))
 # PC/VS7.1
@@ -98,7 +102,7 @@ def get_python_inc(plat_specific=0, prefix=None):
             # the build directory may not be the source directory, we
             # must use "srcdir" from the makefile to find the "Include"
             # directory.
-            base = _sys_home or os.path.dirname(os.path.abspath(sys.executable))
+            base = _sys_home or project_base
             if plat_specific:
                 return base
             if _sys_home:
@@ -110,8 +114,6 @@ def get_python_inc(plat_specific=0, prefix=None):
         return os.path.join(prefix, "include", python_dir)
     elif os.name == "nt":
         return os.path.join(prefix, "include")
-    elif os.name == "os2":
-        return os.path.join(prefix, "Include")
     else:
         raise DistutilsPlatformError(
             "I don't know where Python installs its C header files "
@@ -153,11 +155,6 @@ def get_python_lib(plat_specific=0, standard_lib=0, prefix=None):
                 return prefix
             else:
                 return os.path.join(prefix, "Lib", "site-packages")
-    elif os.name == "os2":
-        if standard_lib:
-            return os.path.join(prefix, "Lib")
-        else:
-            return os.path.join(prefix, "Lib", "site-packages")
     else:
         raise DistutilsPlatformError(
             "I don't know where Python installs its library "
@@ -187,13 +184,19 @@ def customize_compiler(compiler):
                 _osx_support.customize_compiler(_config_vars)
                 _config_vars['CUSTOMIZED_OSX_COMPILER'] = 'True'
 
-        (cc, cxx, opt, cflags, ccshared, ldshared, so_ext, ar, ar_flags) = \
+        (cc, cxx, opt, cflags, ccshared, ldshared, shlib_suffix, ar, ar_flags) = \
             get_config_vars('CC', 'CXX', 'OPT', 'CFLAGS',
-                            'CCSHARED', 'LDSHARED', 'SO', 'AR', 'ARFLAGS')
+                            'CCSHARED', 'LDSHARED', 'SHLIB_SUFFIX', 'AR', 'ARFLAGS')
 
-        newcc = None
         if 'CC' in os.environ:
-            cc = os.environ['CC']
+            newcc = os.environ['CC']
+            if (sys.platform == 'darwin'
+                    and 'LDSHARED' not in os.environ
+                    and ldshared.startswith(cc)):
+                # On OS X, if CC is overridden, use that as the default
+                #       command for LDSHARED as well
+                ldshared = newcc + ldshared[len(cc):]
+            cc = newcc
         if 'CXX' in os.environ:
             cxx = os.environ['CXX']
         if 'LDSHARED' in os.environ:
@@ -228,7 +231,7 @@ def customize_compiler(compiler):
             linker_exe=cc,
             archiver=archiver)
 
-        compiler.shared_lib_extension = so_ext
+        compiler.shared_lib_extension = shlib_suffix
 
 
 def get_config_h_filename():
@@ -251,8 +254,7 @@ def get_config_h_filename():
 def get_makefile_filename():
     """Return full pathname of installed Makefile from the Python build."""
     if python_build:
-        return os.path.join(_sys_home or os.path.dirname(sys.executable),
-                                                         "Makefile")
+        return os.path.join(_sys_home or project_base, "Makefile")
     lib_dir = get_python_lib(plat_specific=0, standard_lib=1)
     config_file = 'config-{}{}'.format(get_python_version(), build_flags)
     return os.path.join(lib_dir, config_file, 'Makefile')
@@ -433,7 +435,7 @@ def _init_posix():
     try:
         filename = get_makefile_filename()
         parse_makefile(filename, g)
-    except IOError as msg:
+    except OSError as msg:
         my_msg = "invalid Python installation: unable to open %s" % filename
         if hasattr(msg, "strerror"):
             my_msg = my_msg + " (%s)" % msg.strerror
@@ -445,7 +447,7 @@ def _init_posix():
         filename = get_config_h_filename()
         with open(filename) as file:
             parse_config_h(file, g)
-    except IOError as msg:
+    except OSError as msg:
         my_msg = "invalid Python installation: unable to open %s" % filename
         if hasattr(msg, "strerror"):
             my_msg = my_msg + " (%s)" % msg.strerror
@@ -483,27 +485,10 @@ def _init_nt():
     # XXX hmmm.. a normal install puts include files here
     g['INCLUDEPY'] = get_python_inc(plat_specific=0)
 
-    g['SO'] = '.pyd'
+    g['EXT_SUFFIX'] = '.pyd'
     g['EXE'] = ".exe"
     g['VERSION'] = get_python_version().replace(".", "")
     g['BINDIR'] = os.path.dirname(os.path.abspath(sys.executable))
-
-    global _config_vars
-    _config_vars = g
-
-
-def _init_os2():
-    """Initialize the module as appropriate for OS/2"""
-    g = {}
-    # set basic install directories
-    g['LIBDEST'] = get_python_lib(plat_specific=0, standard_lib=1)
-    g['BINLIBDEST'] = get_python_lib(plat_specific=1, standard_lib=1)
-
-    # XXX hmmm.. a normal install puts include files here
-    g['INCLUDEPY'] = get_python_inc(plat_specific=0)
-
-    g['SO'] = '.pyd'
-    g['EXE'] = ".exe"
 
     global _config_vars
     _config_vars = g
@@ -533,6 +518,11 @@ def get_config_vars(*args):
         _config_vars['prefix'] = PREFIX
         _config_vars['exec_prefix'] = EXEC_PREFIX
 
+        # For backward compatibility, see issue19555
+        SO = _config_vars.get('EXT_SUFFIX')
+        if SO is not None:
+            _config_vars['SO'] = SO
+
         # Always convert srcdir to an absolute path
         srcdir = _config_vars.get('srcdir', project_base)
         if os.name == 'posix':
@@ -555,7 +545,7 @@ def get_config_vars(*args):
         # testing, for example, we might be running a non-installed python
         # from a different directory.
         if python_build and os.name == "posix":
-            base = os.path.dirname(os.path.abspath(sys.executable))
+            base = project_base
             if (not os.path.isabs(_config_vars['srcdir']) and
                 base != os.getcwd()):
                 # srcdir is relative and we are not in the same directory
@@ -583,4 +573,7 @@ def get_config_var(name):
     returned by 'get_config_vars()'.  Equivalent to
     get_config_vars().get(name)
     """
+    if name == 'SO':
+        import warnings
+        warnings.warn('SO is deprecated, use EXT_SUFFIX', DeprecationWarning, 2)
     return get_config_vars().get(name)

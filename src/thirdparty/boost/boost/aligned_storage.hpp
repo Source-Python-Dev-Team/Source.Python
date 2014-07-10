@@ -96,24 +96,10 @@ public: // constants
             )
         );
 
-#if defined(__GNUC__) &&\
-    (__GNUC__ >  3) ||\
-    (__GNUC__ == 3 && (__GNUC_MINOR__ >  2 ||\
-                      (__GNUC_MINOR__ == 2 && __GNUC_PATCHLEVEL__ >=3)))
-
 private: // noncopyable
 
     aligned_storage(const aligned_storage&);
     aligned_storage& operator=(const aligned_storage&);
-
-#else // gcc less than 3.2.3
-
-public: // _should_ be noncopyable, but GCC compiler emits error
-
-    aligned_storage(const aligned_storage&);
-    aligned_storage& operator=(const aligned_storage&);
-
-#endif // gcc < 3.2.3 workaround
 
 public: // structors
 
@@ -132,35 +118,12 @@ public: // accessors
         return static_cast<type*>(this)->address();
     }
 
-#if !BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-
     const void* address() const
     {
         return static_cast<const type*>(this)->address();
     }
-
-#else // MSVC6
-
-    const void* address() const;
-
-#endif // MSVC6 workaround
-
 };
 
-#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
-
-// MSVC6 seems not to like inline functions with const void* returns, so we
-// declare the following here:
-
-template <std::size_t S, std::size_t A>
-const void* aligned_storage<S,A>::address() const
-{
-    return const_cast< aligned_storage<S,A>* >(this)->address();
-}
-
-#endif // MSVC6 workaround
-
-#ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 //
 // Make sure that is_pod recognises aligned_storage<>::type
 // as a POD (Note that aligned_storage<> itself is not a POD):
@@ -171,7 +134,6 @@ struct is_pod< ::boost::detail::aligned_storage::aligned_storage_imp<size_,align
 { 
     BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL(true)
 }; 
-#endif
 
 
 } // namespace boost

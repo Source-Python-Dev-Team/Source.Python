@@ -2,7 +2,7 @@
 #define BOOST_ARCHIVE_BINARY_IARCHIVE_IMPL_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -28,6 +28,10 @@
 
 namespace boost { 
 namespace archive {
+
+namespace detail {
+    template<class Archive> class interface_iarchive;
+} // namespace detail
 
 template<class Archive, class Elem, class Tr>
 class binary_iarchive_impl : 

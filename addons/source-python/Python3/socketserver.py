@@ -131,7 +131,6 @@ __version__ = "0.4"
 
 import socket
 import select
-import sys
 import os
 import errno
 try:
@@ -299,7 +298,7 @@ class BaseServer:
         """
         try:
             request, client_address = self.get_request()
-        except socket.error:
+        except OSError:
             return
         if self.verify_request(request, client_address):
             try:
@@ -479,7 +478,7 @@ class TCPServer(BaseServer):
             #explicitly shutdown.  socket.close() merely releases
             #the socket and waits for GC to perform the actual close.
             request.shutdown(socket.SHUT_WR)
-        except socket.error:
+        except OSError:
             pass #some platforms may raise ENOTCONN here
         self.close_request(request)
 
@@ -532,7 +531,7 @@ class ForkingMixIn:
             # children.
             try:
                 pid, status = os.waitpid(0, 0)
-            except os.error:
+            except OSError:
                 pid = None
             if pid not in self.active_children: continue
             self.active_children.remove(pid)
@@ -545,7 +544,7 @@ class ForkingMixIn:
         for child in self.active_children:
             try:
                 pid, status = os.waitpid(child, os.WNOHANG)
-            except os.error:
+            except OSError:
                 pid = None
             if not pid: continue
             try:
@@ -562,7 +561,7 @@ class ForkingMixIn:
         self.collect_children()
 
     def service_actions(self):
-        """Collect the zombie child processes regularly in the ForkingMixin.
+        """Collect the zombie child processes regularly in the ForkingMixIn.
 
         service_actions is called in the BaseServer's serve_forver loop.
         """
@@ -718,7 +717,12 @@ class StreamRequestHandler(BaseRequestHandler):
 
     def finish(self):
         if not self.wfile.closed:
-            self.wfile.flush()
+            try:
+                self.wfile.flush()
+            except socket.error:
+                # An final socket error may have occurred here, such as
+                # the local error ECONNABORTED.
+                pass
         self.wfile.close()
         self.rfile.close()
 

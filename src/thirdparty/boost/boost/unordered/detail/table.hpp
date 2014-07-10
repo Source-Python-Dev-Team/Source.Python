@@ -7,6 +7,11 @@
 #ifndef BOOST_UNORDERED_DETAIL_ALL_HPP_INCLUDED
 #define BOOST_UNORDERED_DETAIL_ALL_HPP_INCLUDED
 
+#include <boost/config.hpp>
+#if defined(BOOST_HAS_PRAGMA_ONCE)
+#pragma once
+#endif
+
 #include <boost/unordered/detail/buckets.hpp>
 #include <boost/unordered/detail/util.hpp>
 #include <boost/type_traits/aligned_storage.hpp>
@@ -16,6 +21,18 @@
 #if defined(BOOST_MSVC)
 #pragma warning(push)
 #pragma warning(disable:4127) // conditional expression is constant
+#endif
+
+#if defined(BOOST_UNORDERED_DEPRECATED_EQUALITY)
+
+#if defined(__EDG__)
+#elif defined(_MSC_VER) || defined(__BORLANDC__) || defined(__DMC__)
+#pragma message("Warning: BOOST_UNORDERED_DEPRECATED_EQUALITY is no longer supported.")
+#elif defined(__GNUC__) || defined(__HP_aCC) || \
+    defined(__SUNPRO_CC) || defined(__IBMCPP__)
+#warning "BOOST_UNORDERED_DEPRECATED_EQUALITY is no longer supported."
+#endif
+
 #endif
 
 namespace boost { namespace unordered { namespace detail {
@@ -147,6 +164,7 @@ namespace boost { namespace unordered { namespace detail {
         typedef boost::unordered::detail::functions<
             typename Types::hasher,
             typename Types::key_equal> functions;
+        typedef typename functions::set_hash_functions set_hash_functions;
 
         typedef typename Types::allocator allocator;
         typedef typename boost::unordered::detail::
@@ -351,7 +369,7 @@ namespace boost { namespace unordered { namespace detail {
         {}
 
         table(table& x, boost::unordered::detail::move_tag m) :
-            functions(x),
+            functions(x, m),
             allocators_(x.allocators_, m),
             bucket_count_(x.bucket_count_),
             size_(x.size_),
@@ -365,8 +383,8 @@ namespace boost { namespace unordered { namespace detail {
         }
 
         table(table& x, node_allocator const& a,
-                boost::unordered::detail::move_tag) :
-            functions(x),
+                boost::unordered::detail::move_tag m) :
+            functions(x, m),
             allocators_(a, a),
             bucket_count_(x.bucket_count_),
             size_(0),
@@ -443,6 +461,8 @@ namespace boost { namespace unordered { namespace detail {
 
         void swap_allocators(table& other, false_type)
         {
+            boost::unordered::detail::func::ignore_unused_variable_warning(other);
+
             // According to 23.2.1.8, if propagate_on_container_swap is
             // false the behaviour is undefined unless the allocators
             // are equal.
@@ -457,10 +477,8 @@ namespace boost { namespace unordered { namespace detail {
         // Only swaps the allocators if propagate_on_container_swap
         void swap(table& x)
         {
-            boost::unordered::detail::set_hash_functions<hasher, key_equal>
-                op1(*this, x);
-            boost::unordered::detail::set_hash_functions<hasher, key_equal>
-                op2(x, *this);
+            set_hash_functions op1(*this, x);
+            set_hash_functions op2(x, *this);
 
             // I think swap can throw if Propagate::value,
             // since the allocators' swap can throw. Not sure though.
@@ -503,7 +521,7 @@ namespace boost { namespace unordered { namespace detail {
             node_pointer n = static_cast<node_pointer>(prev->next_);
             prev->next_ = n->next_;
 
-            boost::unordered::detail::destroy_value_impl(node_alloc(),
+            boost::unordered::detail::func::destroy_value_impl(node_alloc(),
                 n->value_ptr());
             node_allocator_traits::destroy(node_alloc(),
                     boost::addressof(*n));
@@ -625,8 +643,7 @@ namespace boost { namespace unordered { namespace detail {
         void assign(table const& x, false_type)
         {
             // Strong exception safety.
-            boost::unordered::detail::set_hash_functions<hasher, key_equal>
-                new_func_this(*this, x);
+            set_hash_functions new_func_this(*this, x);
             new_func_this.commit();
             mlf_ = x.mlf_;
             recalculate_max_load();
@@ -654,8 +671,7 @@ namespace boost { namespace unordered { namespace detail {
                 assign(x, false_type());
             }
             else {
-                boost::unordered::detail::set_hash_functions<hasher, key_equal>
-                    new_func_this(*this, x);
+                set_hash_functions new_func_this(*this, x);
 
                 // Delete everything with current allocators before assigning
                 // the new ones.
@@ -702,8 +718,7 @@ namespace boost { namespace unordered { namespace detail {
                 move_assign_no_alloc(x);
             }
             else {
-                boost::unordered::detail::set_hash_functions<hasher, key_equal>
-                    new_func_this(*this, x);
+                set_hash_functions new_func_this(*this, x);
                 new_func_this.commit();
                 mlf_ = x.mlf_;
                 recalculate_max_load();
@@ -728,8 +743,7 @@ namespace boost { namespace unordered { namespace detail {
         
         void move_assign_no_alloc(table& x)
         {
-            boost::unordered::detail::set_hash_functions<hasher, key_equal>
-                new_func_this(*this, x);
+            set_hash_functions new_func_this(*this, x);
             // No throw from here.
             mlf_ = x.mlf_;
             max_load_ = x.max_load_;

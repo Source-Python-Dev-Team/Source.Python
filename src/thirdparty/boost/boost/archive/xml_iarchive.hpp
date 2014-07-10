@@ -2,7 +2,7 @@
 #define BOOST_ARCHIVE_XML_IARCHIVE_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -34,6 +34,10 @@
 
 namespace boost { 
 namespace archive {
+
+namespace detail {
+    template<class Archive> class interface_iarchive;
+} // namespace detail
 
 template<class CharType>
 class basic_xml_grammar;

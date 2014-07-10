@@ -3,11 +3,8 @@ JavaScript syntax (ECMA-262 3rd edition) used as a lightweight data
 interchange format.
 
 :mod:`json` exposes an API familiar to users of the standard library
-:mod:`marshal` and :mod:`pickle` modules. It is the externally maintained
-version of the :mod:`json` library contained in Python 2.6, but maintains
-compatibility with Python 2.4 and Python 2.5 and (currently) has
-significant performance advantages, even without using the optional C
-extension for speedups.
+:mod:`marshal` and :mod:`pickle` modules.  It is derived from a
+version of the externally maintained simplejson library.
 
 Encoding basic Python object hierarchies::
 
@@ -39,8 +36,7 @@ Compact encoding::
 Pretty printing::
 
     >>> import json
-    >>> s = json.dumps({'4': 5, '6': 7}, sort_keys=True, indent=4)
-    >>> print('\n'.join([l.rstrip() for l in  s.splitlines()]))
+    >>> print(json.dumps({'4': 5, '6': 7}, sort_keys=True, indent=4))
     {
         "4": 5,
         "6": 7
@@ -97,7 +93,7 @@ Using json.tool from the shell to validate and pretty-print::
         "json": "obj"
     }
     $ echo '{ 1.2:3.4}' | python -m json.tool
-    Expecting property name enclosed in double quotes: line 1 column 2 (char 2)
+    Expecting property name enclosed in double quotes: line 1 column 3 (char 2)
 """
 __version__ = '2.0.9'
 __all__ = [
@@ -122,7 +118,7 @@ _default_encoder = JSONEncoder(
 
 def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
         allow_nan=True, cls=None, indent=None, separators=None,
-        default=None, **kw):
+        default=None, sort_keys=False, **kw):
     """Serialize ``obj`` as a JSON formatted stream to ``fp`` (a
     ``.write()``-supporting file-like object).
 
@@ -148,12 +144,16 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     level of 0 will only insert newlines. ``None`` is the most compact
     representation.
 
-    If ``separators`` is an ``(item_separator, dict_separator)`` tuple
-    then it will be used instead of the default ``(', ', ': ')`` separators.
-    ``(',', ':')`` is the most compact JSON representation.
+    If specified, ``separators`` should be an ``(item_separator, key_separator)``
+    tuple.  The default is ``(', ', ': ')`` if *indent* is ``None`` and
+    ``(',', ': ')`` otherwise.  To get the most compact JSON representation,
+    you should specify ``(',', ':')`` to eliminate whitespace.
 
     ``default(obj)`` is a function that should return a serializable version
     of obj or raise TypeError. The default simply raises TypeError.
+
+    If *sort_keys* is ``True`` (default: ``False``), then the output of
+    dictionaries will be sorted by key.
 
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
@@ -164,7 +164,7 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
     if (not skipkeys and ensure_ascii and
         check_circular and allow_nan and
         cls is None and indent is None and separators is None and
-        default is None and not kw):
+        default is None and not sort_keys and not kw):
         iterable = _default_encoder.iterencode(obj)
     else:
         if cls is None:
@@ -172,7 +172,7 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
         iterable = cls(skipkeys=skipkeys, ensure_ascii=ensure_ascii,
             check_circular=check_circular, allow_nan=allow_nan, indent=indent,
             separators=separators,
-            default=default, **kw).iterencode(obj)
+            default=default, sort_keys=sort_keys, **kw).iterencode(obj)
     # could accelerate with writelines in some versions of Python, at
     # a debuggability cost
     for chunk in iterable:
@@ -181,7 +181,7 @@ def dump(obj, fp, skipkeys=False, ensure_ascii=True, check_circular=True,
 
 def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
         allow_nan=True, cls=None, indent=None, separators=None,
-        default=None, **kw):
+        default=None, sort_keys=False, **kw):
     """Serialize ``obj`` to a JSON formatted ``str``.
 
     If ``skipkeys`` is false then ``dict`` keys that are not basic types
@@ -206,12 +206,16 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     level of 0 will only insert newlines. ``None`` is the most compact
     representation.
 
-    If ``separators`` is an ``(item_separator, dict_separator)`` tuple
-    then it will be used instead of the default ``(', ', ': ')`` separators.
-    ``(',', ':')`` is the most compact JSON representation.
+    If specified, ``separators`` should be an ``(item_separator, key_separator)``
+    tuple.  The default is ``(', ', ': ')`` if *indent* is ``None`` and
+    ``(',', ': ')`` otherwise.  To get the most compact JSON representation,
+    you should specify ``(',', ':')`` to eliminate whitespace.
 
     ``default(obj)`` is a function that should return a serializable version
     of obj or raise TypeError. The default simply raises TypeError.
+
+    If *sort_keys* is ``True`` (default: ``False``), then the output of
+    dictionaries will be sorted by key.
 
     To use a custom ``JSONEncoder`` subclass (e.g. one that overrides the
     ``.default()`` method to serialize additional types), specify it with
@@ -222,14 +226,14 @@ def dumps(obj, skipkeys=False, ensure_ascii=True, check_circular=True,
     if (not skipkeys and ensure_ascii and
         check_circular and allow_nan and
         cls is None and indent is None and separators is None and
-        default is None and not kw):
+        default is None and not sort_keys and not kw):
         return _default_encoder.encode(obj)
     if cls is None:
         cls = JSONEncoder
     return cls(
         skipkeys=skipkeys, ensure_ascii=ensure_ascii,
         check_circular=check_circular, allow_nan=allow_nan, indent=indent,
-        separators=separators, default=default,
+        separators=separators, default=default, sort_keys=sort_keys,
         **kw).encode(obj)
 
 
@@ -303,6 +307,11 @@ def loads(s, encoding=None, cls=None, object_hook=None, parse_float=None,
     The ``encoding`` argument is ignored and deprecated.
 
     """
+    if not isinstance(s, str):
+        raise TypeError('the JSON object must be str, not {!r}'.format(
+                            s.__class__.__name__))
+    if s.startswith(u'\ufeff'):
+        raise ValueError("Unexpected UTF-8 BOM (decode using utf-8-sig)")
     if (cls is None and object_hook is None and
             parse_int is None and parse_float is None and
             parse_constant is None and object_pairs_hook is None and not kw):

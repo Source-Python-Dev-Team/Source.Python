@@ -20,7 +20,7 @@ from quopri import encodestring as _encodestring
 def _qencode(s):
     enc = _encodestring(s, quotetabs=True)
     # Must encode spaces, which quopri.encodestring() doesn't do
-    return enc.replace(' ', '=20')
+    return enc.replace(b' ', b'=20')
 
 
 def encode_base64(msg):
@@ -28,7 +28,7 @@ def encode_base64(msg):
 
     Also, add an appropriate Content-Transfer-Encoding header.
     """
-    orig = msg.get_payload()
+    orig = msg.get_payload(decode=True)
     encdata = str(_bencode(orig), 'ascii')
     msg.set_payload(encdata)
     msg['Content-Transfer-Encoding'] = 'base64'
@@ -40,7 +40,7 @@ def encode_quopri(msg):
 
     Also, add an appropriate Content-Transfer-Encoding header.
     """
-    orig = msg.get_payload()
+    orig = msg.get_payload(decode=True)
     encdata = _qencode(orig)
     msg.set_payload(encdata)
     msg['Content-Transfer-Encoding'] = 'quoted-printable'
@@ -49,26 +49,17 @@ def encode_quopri(msg):
 
 def encode_7or8bit(msg):
     """Set the Content-Transfer-Encoding header to 7bit or 8bit."""
-    orig = msg.get_payload()
+    orig = msg.get_payload(decode=True)
     if orig is None:
         # There's no payload.  For backwards compatibility we use 7bit
         msg['Content-Transfer-Encoding'] = '7bit'
         return
-    # We play a trick to make this go fast.  If encoding/decode to ASCII
-    # succeeds, we know the data must be 7bit, otherwise treat it as 8bit.
+    # We play a trick to make this go fast.  If decoding from ASCII succeeds,
+    # we know the data must be 7bit, otherwise treat it as 8bit.
     try:
-        if isinstance(orig, str):
-            orig.encode('ascii')
-        else:
-            orig.decode('ascii')
+        orig.decode('ascii')
     except UnicodeError:
-        # iso-2022-* is non-ASCII but still 7-bit
-        charset = msg.get_charset()
-        output_cset = charset and charset.output_charset
-        if output_cset and output_cset.lower().startswith('iso-2022-'):
-            msg['Content-Transfer-Encoding'] = '7bit'
-        else:
-            msg['Content-Transfer-Encoding'] = '8bit'
+        msg['Content-Transfer-Encoding'] = '8bit'
     else:
         msg['Content-Transfer-Encoding'] = '7bit'
 

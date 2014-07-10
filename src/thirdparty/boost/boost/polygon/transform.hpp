@@ -1,13 +1,13 @@
-// Boost.Polygon library point_data.hpp header file
+// Boost.Polygon library transform.hpp header file
 
-//          Copyright 2008 Intel Corporation.
-//          Copyright Simonson Lucanus 2008-2012.
-//          Copyright Andrii Sydorchuk 2012-2012.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// Copyright (c) Intel Corporation 2008.
+// Copyright (c) 2008-2012 Simonson Lucanus.
+// Copyright (c) 2012-2012 Andrii Sydorchuk.
 
 // See http://www.boost.org for updates, documentation, and revision history.
+// Use, modification and distribution is subject to the Boost Software License,
+// Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_POLYGON_TRANSFORM_HPP
 #define BOOST_POLYGON_TRANSFORM_HPP
@@ -16,7 +16,7 @@
 
 namespace boost {
 namespace polygon {
-// Transformation of Coordinate Systems
+// Transformation of Coordinate System.
 // Enum meaning:
 // Select which direction_2d to change the positive direction of each
 // axis in the old coordinate system to map it to the new coordiante system.
@@ -41,16 +41,6 @@ namespace polygon {
 //   111 SOUTH WEST
 class axis_transformation {
  public:
-  // Enum Names and values
-  // NULL_TRANSFORM = 0, BEGIN_TRANSFORM = 0,
-  // EN = 0, EAST_NORTH = 0,
-  // WN = 1, WEST_NORTH = 1, FLIP_X = 1,
-  // ES = 2, EAST_SOUTH = 2, FLIP_Y = 2,
-  // WS = 3, WEST_SOUTH = 3,
-  // NE = 4, NORTH_EAST = 4, SWAP_XY = 4,
-  // SE = 5, SOUTH_EAST = 5,
-  // NW = 6, NORTH_WEST = 6,
-  // SW = 7, SOUTH_WEST = 7,
   enum ATR {
     NULL_TRANSFORM = 0,
     BEGIN_TRANSFORM = 0,

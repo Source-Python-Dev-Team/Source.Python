@@ -1,11 +1,6 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
-// Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
-// Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
-
-// Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
-// (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
+// Copyright (c) 2007-2013 Barend Gehrels, Amsterdam, the Netherlands.
 
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -15,157 +10,143 @@
 #define BOOST_GEOMETRY_EXTENSIONS_STRATEGIES_BUFFER_JOIN_ROUND_HPP
 
 
+// Buffer strategies
 
-#include <boost/geometry/algorithms/convert.hpp>
-#include <boost/geometry/arithmetic/arithmetic.hpp>
-#include <boost/geometry/arithmetic/dot_product.hpp>
 #include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/strategies/tags.hpp>
 #include <boost/geometry/strategies/side.hpp>
 #include <boost/geometry/util/math.hpp>
+#include <boost/geometry/util/select_most_precise.hpp>
 
 #include <boost/geometry/extensions/strategies/buffer_side.hpp>
 
-
-#define BOOST_GEOMETRY_BUFFER_NO_HELPER_POINTS
 
 
 namespace boost { namespace geometry
 {
 
 
-
-
 namespace strategy { namespace buffer
 {
 
 
-
-
-template<typename PointOut>
-struct join_round2
+template
+<
+    typename PointIn,
+    typename PointOut
+>
+struct join_round
 {
-    typedef PointOut vector_type;
-
-    template <typename Vector, typename Point1, typename Point2>
-    static inline Vector create_vector(Point1 const& p1, Point2 const& p2)
-    {
-        Vector v;
-        geometry::convert(p1, v);
-        subtract_point(v, p2);
-        return v;
-    }
-
-    inline join_round2(int max_level = 4)
-        : m_max_level(max_level)
+    inline join_round(int steps_per_circle = 100)
+        : m_steps_per_circle(steps_per_circle)
     {}
 
+    typedef typename strategy::side::services::default_strategy<typename cs_tag<PointIn>::type>::type side;
     typedef typename coordinate_type<PointOut>::type coordinate_type;
-    int m_max_level;
 
+    typedef typename geometry::select_most_precise
+        <
+            typename geometry::select_most_precise
+                <
+                    typename geometry::coordinate_type<PointIn>::type,
+                    typename geometry::coordinate_type<PointOut>::type
+                >::type,
+            double
+        >::type promoted_type;
 
-    template <typename OutputIterator, typename Point, typename PointP, typename Point1, typename Point2>
-    inline void mid_points(Point const& vertex, PointP const& perpendicular,
-                Point1 const& p1, Point2 const& p2,
-                coordinate_type const& buffer_distance,
-                coordinate_type const& max_distance,
-                OutputIterator out,
-                int level = 1) const
+    int m_steps_per_circle;
+
+    template <typename RangeOut>
+    inline void generate_points(PointIn const& vertex,
+                PointIn const& perp1, PointIn const& perp2,
+                promoted_type const& buffer_distance,
+                RangeOut& range_out) const
     {
-        // Generate 'vectors'
-        coordinate_type vp1_x = get<0>(p1) - get<0>(vertex);
-        coordinate_type vp1_y = get<1>(p1) - get<1>(vertex);
+        promoted_type dx1 = get<0>(perp1) - get<0>(vertex);
+        promoted_type dy1 = get<1>(perp1) - get<1>(vertex);
+        promoted_type dx2 = get<0>(perp2) - get<0>(vertex);
+        promoted_type dy2 = get<1>(perp2) - get<1>(vertex);
 
-        coordinate_type vp2_x = (get<0>(p2) - get<0>(vertex));
-        coordinate_type vp2_y = (get<1>(p2) - get<1>(vertex));
+        dx1 /= buffer_distance;
+        dy1 /= buffer_distance;
+        dx2 /= buffer_distance;
+        dy2 /= buffer_distance;
 
-        // Average them to generate vector in between
-        coordinate_type two = 2;
-        coordinate_type v_x = (vp1_x + vp2_x) / two;
-        coordinate_type v_y = (vp1_y + vp2_y) / two;
+        promoted_type angle_diff = acos(dx1 * dx2 + dy1 * dy2);
 
-        coordinate_type between_length = sqrt(v_x * v_x + v_y * v_y);
+        promoted_type two = 2.0;
+        promoted_type steps = m_steps_per_circle;
+        int n = boost::numeric_cast<int>(steps * angle_diff 
+                    / (two * geometry::math::pi<promoted_type>()));
 
-        coordinate_type const positive_buffer_distance = geometry::math::abs(buffer_distance);
-        coordinate_type prop = positive_buffer_distance / between_length;
-
-        PointOut mid_point;
-        set<0>(mid_point, get<0>(vertex) + v_x * prop);
-        set<1>(mid_point, get<1>(vertex) + v_y * prop);
-
-        if (buffer_distance > max_distance)
+        if (n > 1000)
         {
-            // Calculate point projected on original perpendicular segment,
-            // using vector maths
-            vector_type v = create_vector<vector_type>(perpendicular, vertex);
-            vector_type w = create_vector<vector_type>(mid_point, vertex);
-
-            coordinate_type c1 = dot_product(w, v);
-            if (c1 > 0)
-            {
-                coordinate_type c2 = dot_product(v, v);
-                if (c2 > c1)
-                {
-                    coordinate_type b = c1 / c2;
-
-                    PointOut projected_point;
-
-                    multiply_value(v, b);
-                    geometry::convert(vertex, projected_point);
-                    add_point(projected_point, v);
-
-                    coordinate_type projected_distance = geometry::distance(projected_point, mid_point);
-
-                    if (projected_distance > max_distance)
-                    {
-                        // Do not generate from here on.
-                        return;
-                    }
-                }
-            }
+            // TODO change this / verify this
+            std::cout << dx1 << ", " << dy1 << " .. " << dx2 << ", " << dy2 << std::endl;
+            std::cout << angle_diff << " -> " << n << std::endl;
+            n = 1000;
+        }
+        else if (n <= 1)
+        {
+            return;
         }
 
-        if (level < m_max_level)
+        promoted_type const angle1 = atan2(dy1, dx1);
+        promoted_type diff = angle_diff / promoted_type(n);
+        promoted_type a = angle1 - diff;
+
+        for (int i = 0; i < n - 1; i++, a -= diff)
         {
-            mid_points(vertex, perpendicular, p1, mid_point, positive_buffer_distance, max_distance, out, level + 1);
-        }
-        *out++ = mid_point;
-        if (level < m_max_level)
-        {
-            mid_points(vertex, perpendicular, mid_point, p2, positive_buffer_distance, max_distance, out, level + 1);
+            PointIn p;
+            set<0>(p, get<0>(vertex) + buffer_distance * cos(a));
+            set<1>(p, get<1>(vertex) + buffer_distance * sin(a));
+            range_out.push_back(p);
         }
     }
 
-
-    template <typename OutputIterator, typename Point, typename Point2>
-    inline OutputIterator apply(Point const& vertex,
-                Point2 const& perpendicular,
-                Point2 const& p1, Point2 const& p2,
+    template <typename RangeOut>
+    inline void apply(PointIn const& ip, PointIn const& vertex,
+                PointIn const& perp1, PointIn const& perp2,
                 coordinate_type const& buffer_distance,
-                coordinate_type const& max_distance,
-                OutputIterator out) const
+                RangeOut& range_out) const
     {
-        mid_points(vertex, perpendicular, p1, p2, buffer_distance, max_distance, out);
-        return out;
+        if (geometry::equals(perp1, perp2))
+        {
+            //std::cout << "Corner for equal points " << geometry::wkt(ip) << " " << geometry::wkt(perp1) << std::endl;
+            return;
+        }
+
+        coordinate_type zero = 0;
+        int signum = buffer_distance > zero ? 1
+                   : buffer_distance < zero ? -1
+                   : 0;
+
+        if (side::apply(perp1, ip, perp2) == signum)
+        {
+        }
+        else
+        {
+            // Generate 'vectors'
+            coordinate_type vix = (get<0>(ip) - get<0>(vertex));
+            coordinate_type viy = (get<1>(ip) - get<1>(vertex));
+
+            coordinate_type length_i = sqrt(vix * vix + viy * viy);
+
+            coordinate_type const bd = geometry::math::abs(buffer_distance);
+            coordinate_type prop = bd / length_i;
+
+            PointIn bp;
+            set<0>(bp, get<0>(vertex) + vix * prop);
+            set<1>(bp, get<1>(vertex) + viy * prop);
+
+            range_out.push_back(perp1);
+            generate_points(vertex, perp1, perp2, bd, range_out);
+            range_out.push_back(perp2);
+        }
     }
 };
 
 
-template<typename PointOut>
-struct join_none
-{
-    template <typename OutputIterator, typename Point, typename Point2,
-        typename DistanceType>
-    inline OutputIterator apply(Point const& ,
-                Point2 const& ,
-                Point2 const& , Point2 const& ,
-                DistanceType const& ,
-                DistanceType const& ,
-                OutputIterator out) const
-    {
-        return out;
-    }
-};
 
 
 }} // namespace strategy::buffer

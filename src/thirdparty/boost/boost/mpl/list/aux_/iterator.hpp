@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: iterator.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: iterator.hpp 86245 2013-10-11 23:17:48Z skelly $
+// $Date: 2013-10-11 19:17:48 -0400 (Fri, 11 Oct 2013) $
+// $Revision: 86245 $
 
 #include <boost/mpl/iterator_tags.hpp>
 #include <boost/mpl/next_prior.hpp>
@@ -24,7 +24,6 @@
 
 namespace boost { namespace mpl {
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template< typename Node >
 struct l_iter
@@ -45,28 +44,12 @@ struct next< l_iter<Node> >
     typedef l_iter< typename Node::next > type;
 };
 
-#else // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
-
-template< typename Node >
-struct l_iter
-{
-    typedef aux::l_iter_tag tag;
-    typedef forward_iterator_tag category;
-    typedef typename Node::item type;
-    typedef l_iter< typename mpl::next<Node>::type > next;
-};
-
-#endif
 
 
 template<> struct l_iter<l_end>
 {
     typedef aux::l_iter_tag tag;
     typedef forward_iterator_tag category;
-#if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
-    typedef na type;
-    typedef l_iter next;
-#endif
 };
 
 BOOST_MPL_AUX_PASS_THROUGH_LAMBDA_SPEC(1, l_iter)

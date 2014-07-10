@@ -326,11 +326,12 @@ namespace boost { namespace polygon{
           } else if(elm1y == elm2y) {
             if(elm1 == elm2)
               return false;
-            retval = less_slope(elm1.second.get(HORIZONTAL) - elm1.first.get(HORIZONTAL),
-                                     elm1.second.get(VERTICAL) - elm1.first.get(VERTICAL),
-                                     elm2.second.get(HORIZONTAL) - elm2.first.get(HORIZONTAL),
-                                     elm2.second.get(VERTICAL) - elm2.first.get(VERTICAL));
-            retval = ((*justBefore_) != 0) ^ retval;
+            typedef typename coordinate_traits<Unit>::manhattan_area_type at;
+            at dx1 = at(elm1.second.get(HORIZONTAL)) - at(elm1.first.get(HORIZONTAL));
+            at dy1 = at(elm1.second.get(VERTICAL)) - at(elm1.first.get(VERTICAL));
+            at dx2 = at(elm2.second.get(HORIZONTAL)) - at(elm2.first.get(HORIZONTAL));
+            at dy2 = at(elm2.second.get(VERTICAL)) - at(elm2.first.get(VERTICAL));
+            retval = ((*justBefore_) != 0) ^ less_slope(dx1, dy1, dx2, dy2);
           }
         }
         return retval;
@@ -826,11 +827,12 @@ namespace boost { namespace polygon{
           } else if(elm1y == elm2y) {
             if(elm1.pt == elm2.pt && elm1.other_pt == elm2.other_pt)
               return false;
-            retval = less_slope(elm1.other_pt.get(HORIZONTAL) - elm1.pt.get(HORIZONTAL),
-                                     elm1.other_pt.get(VERTICAL) - elm1.pt.get(VERTICAL),
-                                     elm2.other_pt.get(HORIZONTAL) - elm2.pt.get(HORIZONTAL),
-                                     elm2.other_pt.get(VERTICAL) - elm2.pt.get(VERTICAL));
-            retval = ((*justBefore_) != 0) ^ retval;
+            typedef typename coordinate_traits<Unit>::manhattan_area_type at;
+            at dx1 = at(elm1.other_pt.get(HORIZONTAL)) - at(elm1.pt.get(HORIZONTAL));
+            at dy1 = at(elm1.other_pt.get(VERTICAL)) - at(elm1.pt.get(VERTICAL));
+            at dx2 = at(elm2.other_pt.get(HORIZONTAL)) - at(elm2.pt.get(HORIZONTAL));
+            at dy2 = at(elm2.other_pt.get(VERTICAL)) - at(elm2.pt.get(VERTICAL));
+            retval = ((*justBefore_) != 0) ^ less_slope(dx1, dy1, dx2, dy2);
           }
         }
         return retval;
@@ -1233,10 +1235,11 @@ namespace boost { namespace polygon{
       inline less_incoming_count(Point point) : pt_(point) {}
       inline bool operator () (const std::pair<std::pair<std::pair<Point, Point>, int>, active_tail_arbitrary*>& elm1,
                                const std::pair<std::pair<std::pair<Point, Point>, int>, active_tail_arbitrary*>& elm2) const {
-        Unit dx1 = elm1.first.first.first.get(HORIZONTAL) - elm1.first.first.second.get(HORIZONTAL);
-        Unit dx2 = elm2.first.first.first.get(HORIZONTAL) - elm2.first.first.second.get(HORIZONTAL);
-        Unit dy1 = elm1.first.first.first.get(VERTICAL) - elm1.first.first.second.get(VERTICAL);
-        Unit dy2 = elm2.first.first.first.get(VERTICAL) - elm2.first.first.second.get(VERTICAL);
+        typedef typename coordinate_traits<Unit>::manhattan_area_type at;
+        at dx1 = at(elm1.first.first.first.get(HORIZONTAL)) - at(elm1.first.first.second.get(HORIZONTAL));
+        at dx2 = at(elm2.first.first.first.get(HORIZONTAL)) - at(elm2.first.first.second.get(HORIZONTAL));
+        at dy1 = at(elm1.first.first.first.get(VERTICAL)) - at(elm1.first.first.second.get(VERTICAL));
+        at dy2 = at(elm2.first.first.first.get(VERTICAL)) - at(elm2.first.first.second.get(VERTICAL));
         return scanline_base<Unit>::less_slope(dx1, dy1, dx2, dy2);
       }
     };

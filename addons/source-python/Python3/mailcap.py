@@ -20,10 +20,10 @@ def getcaps():
     for mailcap in listmailcapfiles():
         try:
             fp = open(mailcap, 'r')
-        except IOError:
+        except OSError:
             continue
-        morecaps = readmailcapfile(fp)
-        fp.close()
+        with fp:
+            morecaps = readmailcapfile(fp)
         for key, value in morecaps.items():
             if not key in caps:
                 caps[key] = value

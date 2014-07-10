@@ -13,12 +13,12 @@ also be used to integrate scheduling with STDWIN events; the delay
 function is allowed to modify the queue.  Time can be expressed as
 integers or floating point numbers, as long as it is consistent.
 
-Events are specified by tuples (time, priority, action, argument).
+Events are specified by tuples (time, priority, action, argument, kwargs).
 As in UNIX, lower priority numbers mean higher priority; in this
 way the queue can be maintained as a priority queue.  Execution of the
 event means calling the action function, passing it the argument
 sequence in "argument" (remember that in Python, multiple function
-arguments are be packed in a sequence).
+arguments are be packed in a sequence) and keyword parameters in "kwargs".
 The action function may be an instance method so it
 has another way to reference private data (besides global variables).
 """
@@ -50,6 +50,8 @@ class Event(namedtuple('Event', 'time, priority, action, argument, kwargs')):
     def __gt__(s, o): return (s.time, s.priority) >  (o.time, o.priority)
     def __ge__(s, o): return (s.time, s.priority) >= (o.time, o.priority)
 
+_sentinel = object()
+
 class scheduler:
 
     def __init__(self, timefunc=_time, delayfunc=time.sleep):
@@ -60,27 +62,28 @@ class scheduler:
         self.timefunc = timefunc
         self.delayfunc = delayfunc
 
-    def enterabs(self, time, priority, action, argument=[], kwargs={}):
+    def enterabs(self, time, priority, action, argument=(), kwargs=_sentinel):
         """Enter a new event in the queue at an absolute time.
 
         Returns an ID for the event which can be used to remove it,
         if necessary.
 
         """
+        if kwargs is _sentinel:
+            kwargs = {}
+        event = Event(time, priority, action, argument, kwargs)
         with self._lock:
-            event = Event(time, priority, action, argument, kwargs)
             heapq.heappush(self._queue, event)
-            return event # The ID
+        return event # The ID
 
-    def enter(self, delay, priority, action, argument=[], kwargs={}):
+    def enter(self, delay, priority, action, argument=(), kwargs=_sentinel):
         """A variant that specifies the time as a relative time.
 
         This is actually the more commonly used interface.
 
         """
-        with self._lock:
-            time = self.timefunc() + delay
-            return self.enterabs(time, priority, action, argument, kwargs)
+        time = self.timefunc() + delay
+        return self.enterabs(time, priority, action, argument, kwargs)
 
     def cancel(self, event):
         """Remove an event from the queue.
@@ -124,34 +127,36 @@ class scheduler:
         """
         # localize variable access to minimize overhead
         # and to improve thread safety
-        with self._lock:
-            q = self._queue
-            delayfunc = self.delayfunc
-            timefunc = self.timefunc
-            pop = heapq.heappop
-            while q:
-                time, priority, action, argument, kwargs = checked_event = q[0]
+        lock = self._lock
+        q = self._queue
+        delayfunc = self.delayfunc
+        timefunc = self.timefunc
+        pop = heapq.heappop
+        while True:
+            with lock:
+                if not q:
+                    break
+                time, priority, action, argument, kwargs = q[0]
                 now = timefunc()
-                if now < time:
-                    if not blocking:
-                        return time - now
-                    delayfunc(time - now)
+                if time > now:
+                    delay = True
                 else:
-                    event = pop(q)
-                    # Verify that the event was not removed or altered
-                    # by another thread after we last looked at q[0].
-                    if event is checked_event:
-                        action(*argument, **kwargs)
-                        delayfunc(0)   # Let other threads run
-                    else:
-                        heapq.heappush(q, event)
+                    delay = False
+                    pop(q)
+            if delay:
+                if not blocking:
+                    return time - now
+                delayfunc(time - now)
+            else:
+                action(*argument, **kwargs)
+                delayfunc(0)   # Let other threads run
 
     @property
     def queue(self):
         """An ordered list of upcoming events.
 
         Events are named tuples with fields for:
-            time, priority, action, arguments
+            time, priority, action, arguments, kwargs
 
         """
         # Use heapq to sort the queue rather than using 'sorted(self._queue)'.
@@ -159,4 +164,4 @@ class scheduler:
         # the actual order they would be retrieved.
         with self._lock:
             events = self._queue[:]
-            return map(heapq.heappop, [events]*len(events))
+        return list(map(heapq.heappop, [events]*len(events)))

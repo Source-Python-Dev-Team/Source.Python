@@ -20,6 +20,7 @@
 #define BOOST_CPP_REGEX_TRAITS_HPP_INCLUDED
 
 #include <boost/config.hpp>
+#include <boost/integer.hpp>
 
 #ifndef BOOST_NO_STD_LOCALE
 
@@ -107,12 +108,14 @@ template<class charT, class traits>
 typename parser_buf<charT, traits>::pos_type
 parser_buf<charT, traits>::seekoff(off_type off, ::std::ios_base::seekdir way, ::std::ios_base::openmode which)
 {
+   typedef typename boost::int_t<sizeof(way) * CHAR_BIT>::least cast_type;
+
    if(which & ::std::ios_base::out)
       return pos_type(off_type(-1));
    std::ptrdiff_t size = this->egptr() - this->eback();
    std::ptrdiff_t pos = this->gptr() - this->eback();
    charT* g = this->eback();
-   switch(way)
+   switch(static_cast<cast_type>(way))
    {
    case ::std::ios_base::beg:
       if((off < 0) || (off > size))
@@ -621,7 +624,6 @@ typename cpp_regex_traits_implementation<charT>::string_type
          return pos->second;
    }
 #if !defined(BOOST_NO_TEMPLATED_ITERATOR_CONSTRUCTORS)\
-               && !BOOST_WORKAROUND(BOOST_MSVC, < 1300)\
                && !BOOST_WORKAROUND(__BORLANDC__, <= 0x0551)
    std::string name(p1, p2);
 #else
@@ -632,7 +634,6 @@ typename cpp_regex_traits_implementation<charT>::string_type
 #endif
    name = lookup_default_collate_name(name);
 #if !defined(BOOST_NO_TEMPLATED_ITERATOR_CONSTRUCTORS)\
-               && !BOOST_WORKAROUND(BOOST_MSVC, < 1300)\
                && !BOOST_WORKAROUND(__BORLANDC__, <= 0x0551)
    if(name.size())
       return string_type(name.begin(), name.end());
@@ -854,7 +855,7 @@ bool cpp_regex_traits_implementation<charT>::isctype(const charT c, char_class_t
 
 
 template <class charT>
-inline boost::shared_ptr<const cpp_regex_traits_implementation<charT> > create_cpp_regex_traits(const std::locale& l BOOST_APPEND_EXPLICIT_TEMPLATE_TYPE(charT))
+inline boost::shared_ptr<const cpp_regex_traits_implementation<charT> > create_cpp_regex_traits(const std::locale& l)
 {
    cpp_regex_traits_base<charT> key(l);
    return ::boost::object_cache<cpp_regex_traits_base<charT>, cpp_regex_traits_implementation<charT> >::get(key, 5);

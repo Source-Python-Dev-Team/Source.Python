@@ -16,6 +16,8 @@
 #include <boost/geometry/core/point_type.hpp>
 #include <boost/geometry/extensions/algorithms/buffer/buffer_inserter.hpp>
 #include <boost/geometry/extensions/strategies/buffer.hpp>
+#include <boost/geometry/extensions/strategies/buffer_distance_asymmetric.hpp>
+#include <boost/geometry/extensions/strategies/buffer_end_skip.hpp>
 #include <boost/geometry/algorithms/detail/disjoint.hpp>
 #include <boost/geometry/geometries/concepts/check.hpp>
 
@@ -38,22 +40,41 @@ template
 struct offset_range
     : public geometry::detail::buffer::buffer_range
         <
-            RangeOut, 
+            RangeOut,
             linestring_tag
         >
 {
+    typedef geometry::detail::buffer::buffer_range
+        <
+            RangeOut,
+            linestring_tag
+        > super;
     template
     <
-        typename Collection, typename DistanceStrategy, typename JoinStrategy
+        typename Collection,
+        typename DistanceStrategy,
+        typename JoinStrategy,
+        typename EndStrategy
     >
     static inline void apply(Collection& collection, Range const& range,
-                DistanceStrategy const& distance,
-                JoinStrategy const& join)
+                DistanceStrategy const& distance_strategy,
+                JoinStrategy const& join_strategy,
+                EndStrategy const& end_strategy,
+                bool reverse)
     {
-        collection.add_input();
-        iterate(collection, boost::begin(range), boost::end(range), 
-            buffer_side_left,
-            distance, join);
+        collection.start_new_ring();
+        if (reverse)
+        {
+            super::iterate(collection, boost::rbegin(range), boost::rend(range),
+                buffer_side_left,
+                distance_strategy, join_strategy, end_strategy);
+        }
+        else
+        {
+            super::iterate(collection, boost::begin(range), boost::end(range),
+                buffer_side_left,
+                distance_strategy, join_strategy, end_strategy);
+        }
     }
 };
 
@@ -109,24 +130,28 @@ template
     typename Distance
 >
 inline void offset(Geometry const& geometry, GeometryOut& out,
-            JoinStrategy const& join,
+            JoinStrategy const& join_strategy,
             Distance const& distance)
 {
     concept::check<Geometry const>();
     concept::check<GeometryOut>();
 
-    typedef strategy::buffer::distance_assymetric
+    typedef typename geometry::point_type<Geometry>::type point_type;
+
+    bool reverse = distance < 0;
+    typedef strategy::buffer::distance_asymmetric
         <
             typename geometry::coordinate_type<Geometry>::type
         > distance_strategy_type;
-    distance_strategy_type distance_strategy(distance, distance);
+    distance_strategy_type distance_strategy(geometry::math::abs(distance), geometry::math::abs(distance));
 
     detail::buffer::buffered_piece_collection
         <
-            //typename geometry::ring_type<GeometryOut>::type
-            // TODO the piece collection will not require a polygonal argument
-            model::ring<typename point_type<Geometry>::type> 
+            model::ring<point_type>
         > collection;
+
+    typedef strategy::buffer::end_skip<point_type, point_type> end_strategy_type;
+    end_strategy_type end_strategy;
 
     dispatch::offset
     <
@@ -134,7 +159,11 @@ inline void offset(Geometry const& geometry, GeometryOut& out,
         typename tag<GeometryOut>::type,
         Geometry,
         GeometryOut
-    >::apply(collection, geometry, distance_strategy, join);
+    >::apply(collection, geometry, distance_strategy, join_strategy, end_strategy, reverse);
+
+
+    collection.assign_offsetted_rings(out);
+
 }
 
 

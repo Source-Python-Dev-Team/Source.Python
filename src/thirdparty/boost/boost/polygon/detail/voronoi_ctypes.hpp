@@ -10,16 +10,7 @@
 #ifndef BOOST_POLYGON_DETAIL_VORONOI_CTYPES
 #define BOOST_POLYGON_DETAIL_VORONOI_CTYPES
 
-#ifndef BOOST_POLYGON_NO_DEPS
 #include <boost/cstdint.hpp>
-#else
-namespace boost {
-  typedef int int32_t;
-  typedef long long int64_t;
-  typedef unsigned int uint32_t;
-  typedef unsigned long long uint64_t;
-};
-#endif
 
 #include <cmath>
 #include <cstring>

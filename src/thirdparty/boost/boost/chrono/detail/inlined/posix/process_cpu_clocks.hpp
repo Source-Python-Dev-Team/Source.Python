@@ -281,12 +281,13 @@ process_cpu_clock::time_point process_cpu_clock::now() BOOST_NOEXCEPT
     }
     else
     {
-        if ( chrono_detail::tick_factor() != -1 )
+        long factor = chrono_detail::tick_factor();
+        if ( factor != -1 )
         {
             time_point::rep r(
-                    1000*c*chrono_detail::tick_factor(),
-                    1000*(tm.tms_utime + tm.tms_cutime)*chrono_detail::tick_factor(),
-                    1000*(tm.tms_stime + tm.tms_cstime)*chrono_detail::tick_factor());
+                    c*factor,
+                    (tm.tms_utime + tm.tms_cutime)*factor,
+                    (tm.tms_stime + tm.tms_cstime)*factor);
             return time_point(duration(r));
         }
         else
@@ -324,9 +325,9 @@ process_cpu_clock::time_point process_cpu_clock::now(
         if ( chrono_detail::tick_factor() != -1 )
         {
             time_point::rep r(
-                1000*c*chrono_detail::tick_factor(),
-                1000*(tm.tms_utime + tm.tms_cutime)*chrono_detail::tick_factor(),
-                1000*(tm.tms_stime + tm.tms_cstime)*chrono_detail::tick_factor());
+                c*chrono_detail::tick_factor(),
+                (tm.tms_utime + tm.tms_cutime)*chrono_detail::tick_factor(),
+                (tm.tms_stime + tm.tms_cstime)*chrono_detail::tick_factor());
             return time_point(duration(r));
         }
         else

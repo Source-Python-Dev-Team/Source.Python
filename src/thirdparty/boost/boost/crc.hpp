@@ -54,41 +54,11 @@
 // on the CRC's bit count.  This macro expresses that type in a compact
 // form, but also allows an alternate type for compilers that don't support
 // dependent types (in template value-parameters).
-#if !(defined(BOOST_NO_DEPENDENT_TYPES_IN_TEMPLATE_VALUE_PARAMETERS) || (defined(BOOST_MSVC) && (BOOST_MSVC <= 1300)))
+#if !(defined(BOOST_NO_DEPENDENT_TYPES_IN_TEMPLATE_VALUE_PARAMETERS))
 #define BOOST_CRC_PARM_TYPE  typename ::boost::uint_t<Bits>::fast
 #else
 #define BOOST_CRC_PARM_TYPE  unsigned long
 #endif
-
-// Some compilers [MS VC++ 6] cannot correctly set up several versions of a
-// function template unless every template argument can be unambiguously
-// deduced from the function arguments.  (The bug is hidden if only one version
-// is needed.)  Since all of the CRC function templates have this problem, the
-// workaround is to make up a dummy function argument that encodes the template
-// arguments.  Calls to such template functions need all their template
-// arguments explicitly specified.  At least one compiler that needs this
-// workaround also needs the default value for the dummy argument to be
-// specified in the definition.
-#if defined(__GNUC__) || !defined(BOOST_NO_EXPLICIT_FUNCTION_TEMPLATE_ARGUMENTS)
-#define BOOST_CRC_DUMMY_PARM_TYPE
-#define BOOST_CRC_DUMMY_INIT
-#define BOOST_ACRC_DUMMY_PARM_TYPE
-#define BOOST_ACRC_DUMMY_INIT
-#else
-namespace boost { namespace detail {
-    template < std::size_t Bits, BOOST_CRC_PARM_TYPE TruncPoly,
-     BOOST_CRC_PARM_TYPE InitRem, BOOST_CRC_PARM_TYPE FinalXor,
-     bool ReflectIn, bool ReflectRem >
-    struct dummy_crc_argument  { };
-} }
-#define BOOST_CRC_DUMMY_PARM_TYPE   , detail::dummy_crc_argument<Bits, \
- TruncPoly, InitRem, FinalXor, ReflectIn, ReflectRem> *p_
-#define BOOST_CRC_DUMMY_INIT        BOOST_CRC_DUMMY_PARM_TYPE = 0
-#define BOOST_ACRC_DUMMY_PARM_TYPE  , detail::dummy_crc_argument<Bits, \
- TruncPoly, 0, 0, false, false> *p_
-#define BOOST_ACRC_DUMMY_INIT       BOOST_ACRC_DUMMY_PARM_TYPE = 0
-#endif
-
 
 namespace boost
 {
@@ -112,14 +82,13 @@ template < std::size_t Bits, BOOST_CRC_PARM_TYPE TruncPoly,
            BOOST_CRC_PARM_TYPE InitRem, BOOST_CRC_PARM_TYPE FinalXor,
            bool ReflectIn, bool ReflectRem >
     typename uint_t<Bits>::fast  crc( void const *buffer,
-     std::size_t byte_count
-     BOOST_CRC_DUMMY_PARM_TYPE );
+     std::size_t byte_count);
 
 //! Compute the CRC of a memory block, with any augmentation provided by user
 template < std::size_t Bits, BOOST_CRC_PARM_TYPE TruncPoly >
     typename uint_t<Bits>::fast  augmented_crc( void const *buffer,
-     std::size_t byte_count, typename uint_t<Bits>::fast initial_remainder = 0u
-     BOOST_ACRC_DUMMY_PARM_TYPE );
+     std::size_t byte_count,
+     typename uint_t<Bits>::fast initial_remainder = 0u);
 
 //! Computation type for ARC|CRC-16|CRC-IBM|CRC-16/ARC|CRC-16/LHA standard
 typedef crc_optimal<16, 0x8005, 0, 0, true, true>         crc_16_type;
@@ -438,7 +407,7 @@ namespace detail
           the reflected value of <var>i</var>.
      */
     boost::array< unsigned char, (UINTMAX_C( 1 ) << CHAR_BIT) >
-    make_byte_reflection_table()
+    inline make_byte_reflection_table()
     {
         boost::array<unsigned char, ( UINTMAX_C(1) << CHAR_BIT )>  result;
         unsigned char                                              i = 0u;
@@ -464,7 +433,7 @@ namespace detail
           number of states is relatively small, the implementation pre-computes
           and uses a table of all the results.
      */
-    unsigned char  reflect_byte( unsigned char x )
+    inline unsigned char  reflect_byte( unsigned char x )
     {
         static  boost::array<unsigned char, ( UINTMAX_C(1) << CHAR_BIT )> const
           table = make_byte_reflection_table();
@@ -588,7 +557,7 @@ namespace detail
         // The natural reading order for division is highest digit/bit first.
         // The "reflect" parameter switches this.  However, building a bit mask
         // for the lowest bit is the easiest....
-        new_dividend_bits = reflect_optionally( new_dividend_bits, not reflect,
+        new_dividend_bits = reflect_optionally( new_dividend_bits, !reflect,
          word_length );
 
         // Perform modulo-2 division for each new dividend input bit
@@ -2254,7 +2223,6 @@ crc
 (
     void const *  buffer,
     std::size_t   byte_count
-    BOOST_CRC_DUMMY_INIT
 )
 {
     BOOST_CRC_OPTIMAL_NAME  computer;
@@ -2318,7 +2286,6 @@ augmented_crc
     void const *                 buffer,
     std::size_t                  byte_count,
     typename uint_t<Bits>::fast  initial_remainder  // = 0u
-    BOOST_ACRC_DUMMY_INIT
 )
 {
     return detail::low_bits_mask_c<Bits>::value &
@@ -2333,10 +2300,6 @@ augmented_crc
 
 // Undo header-private macros
 #undef BOOST_CRC_OPTIMAL_NAME
-#undef BOOST_ACRC_DUMMY_INIT
-#undef BOOST_ACRC_DUMMY_PARM_TYPE
-#undef BOOST_CRC_DUMMY_INIT
-#undef BOOST_CRC_DUMMY_PARM_TYPE
 #undef BOOST_CRC_PARM_TYPE
 
 

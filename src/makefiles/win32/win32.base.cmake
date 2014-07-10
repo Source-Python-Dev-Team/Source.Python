@@ -79,8 +79,8 @@ Endif()
 # Debug link libraries
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
-    debug ${PYTHONSDK_LIB}/python33_d.lib
-    debug ${BOOSTSDK_LIB}/libboost_python-vc100-mt-gyd-1_53.lib
+    debug ${PYTHONSDK_LIB}/python34_d.lib
+    debug ${BOOSTSDK_LIB}/libboost_python-vc100-mt-gd-1_55.lib
 )
 
 If( SOURCE_ENGINE MATCHES "csgo" )
@@ -94,8 +94,8 @@ Endif()
 # Release link libraries
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    optimized ${PYTHONSDK_LIB}/python33.lib
-    optimized ${BOOSTSDK_LIB}/libboost_python-vc100-mt-1_53.lib
+    optimized ${PYTHONSDK_LIB}/python34.lib
+    optimized ${BOOSTSDK_LIB}/libboost_python-vc100-mt-1_55.lib
 )
 
 If( SOURCE_ENGINE MATCHES "csgo" )

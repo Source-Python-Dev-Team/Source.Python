@@ -7,6 +7,7 @@
 //
 //  Copyright (c) 2009, 2011 Helge Bahmann
 //  Copyright (c) 2009 Phil Endecott
+//  Copyright (c) 2013 Tim Blechmann
 //  Linux-specific code by Phil Endecott
 
 // Different ARM processors have different atomic instructions.  In particular,
@@ -14,7 +15,7 @@
 // Intel/Marvell XScale chips like the one in the NSLU2) have only atomic swap.
 // On Linux the kernel provides some support that lets us abstract away from
 // these differences: it provides emulated CAS and barrier functions at special
-// addresses that are garaunteed not to be interrupted by the kernel.  Using
+// addresses that are guaranteed not to be interrupted by the kernel.  Using
 // this facility is slightly slower than inline assembler would be, but much
 // faster than a system call.
 //
@@ -30,20 +31,27 @@
 // emulated CAS is only good enough to provide compare_exchange_weak
 // semantics.
 
+#include <cstddef>
+#include <boost/cstdint.hpp>
 #include <boost/memory_order.hpp>
+#include <boost/atomic/detail/config.hpp>
+
+#ifdef BOOST_HAS_PRAGMA_ONCE
+#pragma once
+#endif
 
 namespace boost {
 namespace atomics {
 namespace detail {
 
-static inline void
+inline void
 arm_barrier(void)
 {
     void (*kernel_dmb)(void) = (void (*)(void)) 0xffff0fa0;
     kernel_dmb();
 }
 
-static inline void
+inline void
 platform_fence_before(memory_order order)
 {
     switch(order) {
@@ -56,7 +64,7 @@ platform_fence_before(memory_order order)
     }
 }
 
-static inline void
+inline void
 platform_fence_after(memory_order order)
 {
     switch(order) {
@@ -68,27 +76,27 @@ platform_fence_after(memory_order order)
     }
 }
 
-static inline void
+inline void
 platform_fence_before_store(memory_order order)
 {
     platform_fence_before(order);
 }
 
-static inline void
+inline void
 platform_fence_after_store(memory_order order)
 {
     if (order == memory_order_seq_cst)
         arm_barrier();
 }
 
-static inline void
+inline void
 platform_fence_after_load(memory_order order)
 {
     platform_fence_after(order);
 }
 
 template<typename T>
-bool
+inline bool
 platform_cmpxchg32(T & expected, T desired, volatile T * ptr)
 {
     typedef T (*kernel_cmpxchg32_t)(T oldval, T newval, volatile T * ptr);
@@ -105,7 +113,7 @@ platform_cmpxchg32(T & expected, T desired, volatile T * ptr)
 }
 
 #define BOOST_ATOMIC_THREAD_FENCE 2
-static inline void
+inline void
 atomic_thread_fence(memory_order order)
 {
     switch(order) {
@@ -119,22 +127,23 @@ atomic_thread_fence(memory_order order)
 }
 
 #define BOOST_ATOMIC_SIGNAL_FENCE 2
-static inline void
+inline void
 atomic_signal_fence(memory_order)
 {
     __asm__ __volatile__ ("" ::: "memory");
 }
 
-class atomic_flag {
+class atomic_flag
+{
 private:
     atomic_flag(const atomic_flag &) /* = delete */ ;
     atomic_flag & operator=(const atomic_flag &) /* = delete */ ;
     uint32_t v_;
 public:
-    atomic_flag(void) : v_(false) {}
+    BOOST_CONSTEXPR atomic_flag(void) BOOST_NOEXCEPT : v_(0) {}
 
     void
-    clear(memory_order order = memory_order_seq_cst) volatile
+    clear(memory_order order = memory_order_seq_cst) volatile BOOST_NOEXCEPT
     {
         atomics::detail::platform_fence_before_store(order);
         const_cast<volatile uint32_t &>(v_) = 0;
@@ -142,7 +151,7 @@ public:
     }
 
     bool
-    test_and_set(memory_order order = memory_order_seq_cst) volatile
+    test_and_set(memory_order order = memory_order_seq_cst) volatile BOOST_NOEXCEPT
     {
         atomics::detail::platform_fence_before(order);
         uint32_t expected = v_;
@@ -154,6 +163,7 @@ public:
         return expected;
     }
 };
+
 #define BOOST_ATOMIC_FLAG_LOCK_FREE 2
 
 }

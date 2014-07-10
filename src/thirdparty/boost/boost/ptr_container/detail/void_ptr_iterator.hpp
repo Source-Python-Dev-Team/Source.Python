@@ -12,7 +12,7 @@
 #ifndef BOOST_PTR_CONTAINER_DETAIL_VOID_PTR_ITERATOR_HPP
 #define BOOST_PTR_CONTAINER_DETAIL_VOID_PTR_ITERATOR_HPP
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1200)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 

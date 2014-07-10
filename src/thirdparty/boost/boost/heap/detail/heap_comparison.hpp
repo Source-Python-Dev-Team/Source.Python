@@ -230,8 +230,8 @@ bool heap_compare(Heap1 const & lhs, Heap2 const & rhs)
                                       heap_compare_copy
                                      >::type compare_check;
 
-    compare_check check;
-    return check(lhs, rhs);
+    compare_check check_object;
+    return check_object(lhs, rhs);
 }
 
 

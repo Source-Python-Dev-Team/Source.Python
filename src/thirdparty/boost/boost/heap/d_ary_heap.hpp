@@ -21,6 +21,11 @@
 #include <boost/heap/detail/stable_heap.hpp>
 #include <boost/heap/detail/mutable_heap.hpp>
 
+#ifdef BOOST_HAS_PRAGMA_ONCE
+#pragma once
+#endif
+
+
 #ifndef BOOST_DOXYGEN_INVOKED
 #ifdef BOOST_HEAP_SANITYCHECKS
 #define BOOST_HEAP_ASSERT BOOST_ASSERT
@@ -155,7 +160,7 @@ public:
         super_t(rhs), q_(rhs.q_)
     {}
 
-#ifdef BOOST_HAS_RVALUE_REFS
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     d_ary_heap(d_ary_heap && rhs):
         super_t(std::move(rhs)), q_(std::move(rhs.q_))
     {}
@@ -213,7 +218,7 @@ public:
         siftup(q_.size() - 1);
     }
 
-#if defined(BOOST_HAS_RVALUE_REFS) && !defined(BOOST_NO_VARIADIC_TEMPLATES)
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
     template <class... Args>
     void emplace(Args&&... args)
     {
@@ -348,10 +353,8 @@ private:
 
     size_type last_child_index(size_type index) const
     {
-        typedef typename container_type::const_iterator container_iterator;
         const size_t first_index = first_child_index(index);
-
-        const size_type last_index = std::min(first_index + D - 1, size() - 1);
+        const size_type last_index = (std::min)(first_index + D - 1, size() - 1);
 
         return last_index;
     }
@@ -524,7 +527,7 @@ public:
         super_t(rhs)
     {}
 
-#ifdef BOOST_HAS_RVALUE_REFS
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     /// \copydoc boost::heap::priority_queue::priority_queue(priority_queue &&)
     d_ary_heap(d_ary_heap && rhs):
         super_t(std::move(rhs))
@@ -587,7 +590,7 @@ public:
         return super_t::push(v);
     }
 
-#if defined(BOOST_HAS_RVALUE_REFS) && !defined(BOOST_NO_VARIADIC_TEMPLATES)
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
     /// \copydoc boost::heap::priority_queue::emplace
     template <class... Args>
     typename mpl::if_c<is_mutable, handle_type, void>::type emplace(Args&&... args)

@@ -12,7 +12,7 @@
 #include <boost/thread/detail/config.hpp>
 #include <boost/thread/detail/delete.hpp>
 #include <boost/thread/detail/move.hpp>
-#include <boost/thread/thread.hpp>
+#include <boost/thread/thread_only.hpp>
 
 #include <boost/config/abi_prefix.hpp>
 
@@ -38,6 +38,7 @@ namespace boost
     }
   };
 
+#if defined BOOST_THREAD_PROVIDES_INTERRUPTIONS
   struct interrupt_and_join_if_joinable
   {
     void operator()(thread& t)
@@ -49,7 +50,7 @@ namespace boost
       }
     }
   };
-
+#endif
 }
 #include <boost/config/abi_suffix.hpp>
 

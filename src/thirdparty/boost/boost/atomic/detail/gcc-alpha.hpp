@@ -2,13 +2,19 @@
 #define BOOST_ATOMIC_DETAIL_GCC_ALPHA_HPP
 
 //  Copyright (c) 2009 Helge Bahmann
+//  Copyright (c) 2013 Tim Blechmann
 //
 //  Distributed under the Boost Software License, Version 1.0.
 //  See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt)
 
+#include <boost/atomic/detail/config.hpp>
 #include <boost/atomic/detail/base.hpp>
 #include <boost/atomic/detail/builder.hpp>
+
+#ifdef BOOST_HAS_PRAGMA_ONCE
+#pragma once
+#endif
 
 /*
   Refer to http://h71000.www7.hp.com/doc/82final/5601/5601pro_004.html
@@ -44,7 +50,7 @@ namespace boost {
 namespace atomics {
 namespace detail {
 
-static inline void fence_before(memory_order order)
+inline void fence_before(memory_order order)
 {
     switch(order) {
         case memory_order_consume:
@@ -56,7 +62,7 @@ static inline void fence_before(memory_order order)
     }
 }
 
-static inline void fence_after(memory_order order)
+inline void fence_after(memory_order order)
 {
     switch(order) {
         case memory_order_acquire:
@@ -82,18 +88,19 @@ inline void platform_atomic_thread_fence(memory_order order)
 }
 
 template<typename T>
-class atomic_alpha_32 {
+class atomic_alpha_32
+{
 public:
     typedef T integral_type;
-    explicit atomic_alpha_32(T v) : i(v) {}
+    BOOST_CONSTEXPR atomic_alpha_32(T v) BOOST_NOEXCEPT: i(v) {}
     atomic_alpha_32() {}
-    T load(memory_order order=memory_order_seq_cst) const volatile
+    T load(memory_order order=memory_order_seq_cst) const volatile BOOST_NOEXCEPT
     {
         T v=*reinterpret_cast<volatile const int *>(&i);
         fence_after(order);
         return v;
     }
-    void store(T v, memory_order order=memory_order_seq_cst) volatile
+    void store(T v, memory_order order=memory_order_seq_cst) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         *reinterpret_cast<volatile int *>(&i)=(int)v;
@@ -102,7 +109,7 @@ public:
         T &expected,
         T desired,
         memory_order success_order,
-        memory_order failure_order) volatile
+        memory_order failure_order) volatile BOOST_NOEXCEPT
     {
         fence_before(success_order);
         int current, success;
@@ -128,9 +135,9 @@ public:
         return desired;
     }
 
-    bool is_lock_free(void) const volatile {return true;}
+    bool is_lock_free(void) const volatile BOOST_NOEXCEPT {return true;}
 protected:
-    inline T fetch_add_var(T c, memory_order order) volatile
+    inline T fetch_add_var(T c, memory_order order) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         T original, modified;
@@ -151,7 +158,7 @@ protected:
         fence_after(order);
         return original;
     }
-    inline T fetch_inc(memory_order order) volatile
+    inline T fetch_inc(memory_order order) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         int original, modified;
@@ -172,7 +179,7 @@ protected:
         fence_after(order);
         return original;
     }
-    inline T fetch_dec(memory_order order) volatile
+    inline T fetch_dec(memory_order order) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         int original, modified;
@@ -198,10 +205,11 @@ private:
 };
 
 template<typename T>
-class atomic_alpha_64 {
+class atomic_alpha_64
+{
 public:
     typedef T integral_type;
-    explicit atomic_alpha_64(T v) : i(v) {}
+    BOOST_CONSTEXPR atomic_alpha_64(T v) BOOST_NOEXCEPT: i(v) {}
     atomic_alpha_64() {}
     T load(memory_order order=memory_order_seq_cst) const volatile
     {
@@ -209,7 +217,7 @@ public:
         fence_after(order);
         return v;
     }
-    void store(T v, memory_order order=memory_order_seq_cst) volatile
+    void store(T v, memory_order order=memory_order_seq_cst) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         *reinterpret_cast<volatile T *>(&i)=v;
@@ -218,7 +226,7 @@ public:
         T &expected,
         T desired,
         memory_order success_order,
-        memory_order failure_order) volatile
+        memory_order failure_order) volatile BOOST_NOEXCEPT
     {
         fence_before(success_order);
         int current, success;
@@ -244,9 +252,9 @@ public:
         return desired;
     }
 
-    bool is_lock_free(void) const volatile {return true;}
+    bool is_lock_free(void) const volatile BOOST_NOEXCEPT {return true;}
 protected:
-    inline T fetch_add_var(T c, memory_order order) volatile
+    inline T fetch_add_var(T c, memory_order order) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         T original, modified;
@@ -267,7 +275,7 @@ protected:
         fence_after(order);
         return original;
     }
-    inline T fetch_inc(memory_order order) volatile
+    inline T fetch_inc(memory_order order) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         T original, modified;
@@ -288,7 +296,7 @@ protected:
         fence_after(order);
         return original;
     }
-    inline T fetch_dec(memory_order order) volatile
+    inline T fetch_dec(memory_order order) volatile BOOST_NOEXCEPT
     {
         fence_before(order);
         T original, modified;
@@ -314,36 +322,42 @@ private:
 };
 
 template<typename T>
-class platform_atomic_integral<T, 4> : public build_atomic_from_typical<build_exchange<atomic_alpha_32<T> > > {
+class platform_atomic_integral<T, 4> :
+    public build_atomic_from_typical<build_exchange<atomic_alpha_32<T> > >
+{
 public:
     typedef build_atomic_from_typical<build_exchange<atomic_alpha_32<T> > > super;
-    explicit platform_atomic_integral(T v) : super(v) {}
+    BOOST_CONSTEXPR platform_atomic_integral(T v) BOOST_NOEXCEPT: super(v) {}
     platform_atomic_integral(void) {}
 };
 
 template<typename T>
-class platform_atomic_integral<T, 8> : public build_atomic_from_typical<build_exchange<atomic_alpha_64<T> > > {
+class platform_atomic_integral<T, 8> :
+    public build_atomic_from_typical<build_exchange<atomic_alpha_64<T> > >
+{
 public:
     typedef build_atomic_from_typical<build_exchange<atomic_alpha_64<T> > > super;
-    explicit platform_atomic_integral(T v) : super(v) {}
+    BOOST_CONSTEXPR platform_atomic_integral(T v) BOOST_NOEXCEPT: super(v) {}
     platform_atomic_integral(void) {}
 };
 
 template<typename T>
-class platform_atomic_integral<T, 1>: public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> {
+class platform_atomic_integral<T, 1> :
+    public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T>
+{
 public:
     typedef build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> super;
-
-    explicit platform_atomic_integral(T v) : super(v) {}
+    BOOST_CONSTEXPR platform_atomic_integral(T v) BOOST_NOEXCEPT: super(v) {}
     platform_atomic_integral(void) {}
 };
 
 template<typename T>
-class platform_atomic_integral<T, 2>: public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> {
+class platform_atomic_integral<T, 2> :
+    public build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T>
+{
 public:
     typedef build_atomic_from_larger_type<atomic_alpha_32<uint32_t>, T> super;
-
-    explicit platform_atomic_integral(T v) : super(v) {}
+    BOOST_CONSTEXPR platform_atomic_integral(T v) BOOST_NOEXCEPT: super(v) {}
     platform_atomic_integral(void) {}
 };
 

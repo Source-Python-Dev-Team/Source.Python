@@ -11,7 +11,7 @@
 
 #include <ostream>
 #include <string>
-#include <algorithm>
+#include <algorithm> // std::copy
 #include <locale>
 
 #include <boost/config.hpp> // msvc 6.0 needs this to suppress warnings 
@@ -39,7 +39,14 @@ namespace std{
 #include <boost/archive/iterators/dataflow_exception.hpp>
 
 #include <boost/archive/add_facet.hpp>
-#include <boost/archive/detail/utf8_codecvt_facet.hpp>
+#ifndef BOOST_NO_CXX11_HDR_CODECVT
+    #include <codecvt>
+    namespace boost { namespace archive { namespace detail {
+        typedef std::codecvt_utf8<wchar_t> utf8_codecvt_facet;
+    } } }
+#else
+    #include <boost/archive/detail/utf8_codecvt_facet.hpp>
+#endif
 
 namespace boost {
 namespace archive {

@@ -1,4 +1,5 @@
 //  Copyright (c) 2011 Helge Bahmann
+//  Copyright (c) 2013 Tim Blechmann
 //
 //  Distributed under the Boost Software License, Version 1.0.
 //  See accompanying file LICENSE_1_0.txt or copy at
@@ -10,81 +11,91 @@
 #ifndef BOOST_ATOMIC_DETAIL_GENERIC_CAS_HPP
 #define BOOST_ATOMIC_DETAIL_GENERIC_CAS_HPP
 
+#include <boost/cstdint.hpp>
+#include <boost/atomic/detail/config.hpp>
+
+#ifdef BOOST_HAS_PRAGMA_ONCE
+#pragma once
+#endif
+
 namespace boost {
 
 #define BOOST_ATOMIC_THREAD_FENCE 2
 inline void
 atomic_thread_fence(memory_order order)
 {
-    switch(order) {
-        case memory_order_relaxed:
-            break;
-        case memory_order_release:
-        case memory_order_consume:
-        case memory_order_acquire:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __sync_synchronize();
-            break;
+    switch(order)
+    {
+    case memory_order_relaxed:
+        break;
+    case memory_order_release:
+    case memory_order_consume:
+    case memory_order_acquire:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __sync_synchronize();
+        break;
     }
 }
 
 namespace atomics {
 namespace detail {
 
-static inline void
+inline void
 platform_fence_before(memory_order)
 {
     /* empty, as compare_and_swap is synchronizing already */
 }
 
-static inline void
+inline void
 platform_fence_after(memory_order)
 {
     /* empty, as compare_and_swap is synchronizing already */
 }
 
-static inline void
+inline void
 platform_fence_before_store(memory_order order)
 {
-    switch(order) {
-        case memory_order_relaxed:
-        case memory_order_acquire:
-        case memory_order_consume:
-            break;
-        case memory_order_release:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __sync_synchronize();
-            break;
+    switch(order)
+    {
+    case memory_order_relaxed:
+    case memory_order_acquire:
+    case memory_order_consume:
+        break;
+    case memory_order_release:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __sync_synchronize();
+        break;
     }
 }
 
-static inline void
+inline void
 platform_fence_after_store(memory_order order)
 {
     if (order == memory_order_seq_cst)
         __sync_synchronize();
 }
 
-static inline void
+inline void
 platform_fence_after_load(memory_order order)
 {
-    switch(order) {
-        case memory_order_relaxed:
-        case memory_order_release:
-            break;
-        case memory_order_consume:
-        case memory_order_acquire:
-        case memory_order_acq_rel:
-        case memory_order_seq_cst:
-            __sync_synchronize();
-            break;
+    switch(order)
+    {
+    case memory_order_relaxed:
+    case memory_order_release:
+        break;
+    case memory_order_consume:
+    case memory_order_acquire:
+    case memory_order_acq_rel:
+    case memory_order_seq_cst:
+        __sync_synchronize();
+        break;
     }
 }
 
 template<typename T>
-bool
+inline bool
 platform_cmpxchg32_strong(T & expected, T desired, volatile T * ptr)
 {
     T found = __sync_val_compare_and_swap(ptr, expected, desired);
@@ -93,16 +104,17 @@ platform_cmpxchg32_strong(T & expected, T desired, volatile T * ptr)
     return success;
 }
 
-class atomic_flag {
+class atomic_flag
+{
 private:
     atomic_flag(const atomic_flag &) /* = delete */ ;
     atomic_flag & operator=(const atomic_flag &) /* = delete */ ;
     uint32_t v_;
 public:
-    atomic_flag(void) : v_(false) {}
+    BOOST_CONSTEXPR atomic_flag(void) BOOST_NOEXCEPT : v_(0) {}
 
     void
-    clear(memory_order order = memory_order_seq_cst) volatile
+    clear(memory_order order = memory_order_seq_cst) volatile BOOST_NOEXCEPT
     {
         atomics::detail::platform_fence_before_store(order);
         const_cast<volatile uint32_t &>(v_) = 0;
@@ -110,7 +122,7 @@ public:
     }
 
     bool
-    test_and_set(memory_order order = memory_order_seq_cst) volatile
+    test_and_set(memory_order order = memory_order_seq_cst) volatile BOOST_NOEXCEPT
     {
         atomics::detail::platform_fence_before(order);
         uint32_t expected = v_;
@@ -122,6 +134,7 @@ public:
         return expected;
     }
 };
+
 #define BOOST_ATOMIC_FLAG_LOCK_FREE 2
 
 }

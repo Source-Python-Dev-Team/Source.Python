@@ -10,15 +10,13 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: negate.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: negate.hpp 85945 2013-09-26 09:46:46Z skelly $
+// $Date: 2013-09-26 05:46:46 -0400 (Thu, 26 Sep 2013) $
+// $Revision: 85945 $
 
 #include <boost/mpl/integral_c.hpp>
-#include <boost/mpl/aux_/msvc_eti_base.hpp>
 #include <boost/mpl/aux_/na_spec.hpp>
 #include <boost/mpl/aux_/lambda_support.hpp>
-#include <boost/mpl/aux_/config/eti.hpp>
 #include <boost/mpl/aux_/config/integral.hpp>
 #include <boost/mpl/aux_/config/static_constant.hpp>
 
@@ -35,16 +33,9 @@ template<
       typename BOOST_MPL_AUX_NA_PARAM(N)
     >
 struct negate
-#if !defined(BOOST_MPL_CFG_MSVC_ETI_BUG)
     : negate_impl<
           typename negate_tag<N>::type
         >::template apply<N>::type
-#else
-    : aux::msvc_eti_base< typename apply_wrap1<
-          negate_impl< typename negate_tag<N>::type >
-        , N
-        >::type >::type
-#endif
 {
     BOOST_MPL_AUX_LAMBDA_SUPPORT(1, negate, (N))
 };

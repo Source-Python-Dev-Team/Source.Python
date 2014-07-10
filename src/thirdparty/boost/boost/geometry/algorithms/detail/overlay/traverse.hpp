@@ -13,11 +13,13 @@
 
 #include <boost/range.hpp>
 
-#include <boost/geometry/algorithms/detail/overlay/append_no_duplicates.hpp>
+#include <boost/geometry/algorithms/detail/overlay/append_no_dups_or_spikes.hpp>
 #include <boost/geometry/algorithms/detail/overlay/backtrack_check_si.hpp>
 #include <boost/geometry/algorithms/detail/overlay/copy_segments.hpp>
 #include <boost/geometry/algorithms/detail/overlay/turn_info.hpp>
+#include <boost/geometry/algorithms/num_points.hpp>
 #include <boost/geometry/core/access.hpp>
+#include <boost/geometry/core/closure.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
 #include <boost/geometry/geometries/concepts/check.hpp>
 
@@ -57,7 +59,7 @@ inline void debug_traverse(Turn const& turn, Operation op,
     }
 }
 #else
-inline void debug_traverse(Turn const& , Operation, std::string const& )
+inline void debug_traverse(Turn const& , Operation, const char*)
 {
 }
 #endif
@@ -137,7 +139,8 @@ inline bool assign_next_ip(G1 const& g1, G2 const& g2,
         seg_id = info.seg_id;
     }
 
-    detail::overlay::append_no_duplicates(current_output, ip->point);
+    detail::overlay::append_no_dups_or_spikes(current_output, ip->point);
+
     return true;
 }
 
@@ -233,12 +236,19 @@ public :
                 detail::overlay::operation_type operation,
                 Turns& turns, Rings& rings)
     {
+        typedef typename boost::range_value<Rings>::type ring_type;
         typedef typename boost::range_iterator<Turns>::type turn_iterator;
         typedef typename boost::range_value<Turns>::type turn_type;
         typedef typename boost::range_iterator
             <
                 typename turn_type::container_type
             >::type turn_operation_iterator_type;
+
+        std::size_t const min_num_points
+                = core_detail::closure::minimum_ring_size
+                        <
+                            geometry::closure<ring_type>::value
+                        >::value;
 
         std::size_t size_at_start = boost::size(rings);
 
@@ -267,9 +277,8 @@ public :
                         {
                             set_visited_for_continue(*it, *iit);
 
-                            typename boost::range_value<Rings>::type current_output;
-                            detail::overlay::append_no_duplicates(current_output, 
-                                        it->point, true);
+                            ring_type current_output;
+                            geometry::append(current_output, it->point);
 
                             turn_iterator current = it;
                             turn_operation_iterator_type current_iit = iit;
@@ -356,7 +365,10 @@ public :
                                                 "Dead end",
                                                 geometry1, geometry2, state);
                                         }
-                                        detail::overlay::debug_traverse(*current, *current_iit, "Selected  ");
+                                        else
+                                        {
+                                            detail::overlay::debug_traverse(*current, *current_iit, "Selected  ");
+                                        }
 
                                         if (i++ > 2 + 2 * turns.size())
                                         {
@@ -376,7 +388,10 @@ public :
                                 {
                                     iit->visited.set_finished();
                                     detail::overlay::debug_traverse(*current, *iit, "->Finished");
-                                    rings.push_back(current_output);
+                                    if (geometry::num_points(current_output) >= min_num_points)
+                                    {
+                                        rings.push_back(current_output);
+                                    }
                                 }
                             }
                         }

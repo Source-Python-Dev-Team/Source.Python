@@ -7,7 +7,7 @@
 #define BOOST_UTF8_CODECVT_FACET_HPP
 
 // MS compatible compilers support #pragma once
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -85,6 +85,10 @@
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
 
+#ifndef BOOST_NO_CXX11_HDR_CODECVT
+#include <codecvt>
+#endif
+
 #if defined(BOOST_NO_STDC_NAMESPACE)
 namespace std {
     using ::mbstate_t;
@@ -92,14 +96,6 @@ namespace std {
 }
 #endif
 
-#if !defined(__MSL_CPP__) && !defined(__LIBCOMO__) \
-    && !defined(_LIBCPP_VERSION)
-    #define BOOST_CODECVT_DO_LENGTH_CONST const
-#else
-    #define BOOST_CODECVT_DO_LENGTH_CONST
-#endif
-
-// maximum lenght of a multibyte string
 #define MB_LENGTH_MAX 8
 
 BOOST_UTF8_BEGIN_NAMESPACE
@@ -168,23 +164,37 @@ protected:
     }
 
     // How many char objects can I process to get <= max_limit
-    // wchar_t objects?
+    // wchar_t objects? 
+    // This is the "official version which implements the standar
+    // library interface
     virtual int do_length(
-        BOOST_CODECVT_DO_LENGTH_CONST std::mbstate_t &,
+        std::mbstate_t & state,
         const char * from,
         const char * from_end, 
         std::size_t max_limit
-#if BOOST_WORKAROUND(__IBMCPP__, BOOST_TESTED_AT(600))
-        ) const throw();
-#else
-        ) const;
-#endif
+    ) const
+    #if BOOST_WORKAROUND(__IBMCPP__, BOOST_TESTED_AT(600))
+        throw()
+    #endif
+    {
+        return do_length(const_cast<const std::mbstate_t &>(state), from, from_end, max_limit);
+    }
+
+    // this version handles versions of the standard library which pass
+    // the state with a "const". This means early dinkumware standard library
+    virtual int do_length(
+        const std::mbstate_t & state,
+        const char * from,
+        const char * from_end, 
+        std::size_t max_limit
+    ) const;
 
     // Largest possible value do_length(state,from,from_end,1) could return.
     virtual int do_max_length() const throw () {
         return 6; // largest UTF-8 encoding of a UCS-4 character
     }
 };
+
 
 BOOST_UTF8_END_NAMESPACE
 

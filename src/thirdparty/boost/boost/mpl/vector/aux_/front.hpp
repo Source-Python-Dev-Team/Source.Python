@@ -10,14 +10,13 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: front.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: front.hpp 86244 2013-10-11 23:15:00Z skelly $
+// $Date: 2013-10-11 19:15:00 -0400 (Fri, 11 Oct 2013) $
+// $Revision: 86244 $
 
 #include <boost/mpl/front_fwd.hpp>
 #include <boost/mpl/vector/aux_/at.hpp>
 #include <boost/mpl/vector/aux_/tag.hpp>
-#include <boost/mpl/aux_/nttp_decl.hpp>
 #include <boost/mpl/aux_/config/typeof.hpp>
 #include <boost/mpl/aux_/config/ctps.hpp>
 
@@ -36,9 +35,8 @@ struct front_impl< aux::vector_tag >
 
 #else
 
-#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
-template< BOOST_MPL_AUX_NTTP_DECL(long, n_) >
+template< long n_ >
 struct front_impl< aux::vector_tag<n_> >
 {
     template< typename Vector > struct apply
@@ -47,7 +45,6 @@ struct front_impl< aux::vector_tag<n_> >
     };
 };
 
-#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 #endif // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 

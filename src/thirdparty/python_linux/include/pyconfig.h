@@ -50,6 +50,12 @@
 /* Define to 1 if you have the `alarm' function. */
 #define HAVE_ALARM 1
 
+/* Define if aligned memory access is required */
+/* #undef HAVE_ALIGNED_REQUIRED */
+
+/* Define to 1 if you have the <alloca.h> header file. */
+#define HAVE_ALLOCA_H 1
+
 /* Define this if your time.h defines altzone. */
 /* #undef HAVE_ALTZONE */
 
@@ -62,14 +68,11 @@
 /* Define to 1 if you have the `atanh' function. */
 #define HAVE_ATANH 1
 
-/* Define if GCC supports __attribute__((format(PyArg_ParseTuple, 2, 3))) */
-/* #undef HAVE_ATTRIBUTE_FORMAT_PARSETUPLE */
-
 /* Define to 1 if you have the `bind_textdomain_codeset' function. */
 #define HAVE_BIND_TEXTDOMAIN_CODESET 1
 
 /* Define to 1 if you have the <bluetooth/bluetooth.h> header file. */
-/* #undef HAVE_BLUETOOTH_BLUETOOTH_H */
+#define HAVE_BLUETOOTH_BLUETOOTH_H 1
 
 /* Define to 1 if you have the <bluetooth.h> header file. */
 /* #undef HAVE_BLUETOOTH_H */
@@ -194,8 +197,14 @@
 /* Define to 1 if you have the `dup2' function. */
 #define HAVE_DUP2 1
 
+/* Define to 1 if you have the `dup3' function. */
+#define HAVE_DUP3 1
+
 /* Defined when any dynamic module loading is enabled. */
 #define HAVE_DYNAMIC_LOADING 1
+
+/* Define to 1 if you have the <endian.h> header file. */
+#define HAVE_ENDIAN_H 1
 
 /* Define if you have the 'epoll' functions. */
 #define HAVE_EPOLL 1
@@ -318,9 +327,6 @@
 /* Define if you have the getaddrinfo function. */
 #define HAVE_GETADDRINFO 1
 
-/* Define to 1 if you have the `getcwd' function. */
-#define HAVE_GETCWD 1
-
 /* Define this if you have flockfile(), getc_unlocked(), and funlockfile() */
 #define HAVE_GETC_UNLOCKED 1
 
@@ -409,6 +415,9 @@
 /* Define if you have the 'hstrerror' function. */
 #define HAVE_HSTRERROR 1
 
+/* Define this if you have le64toh() */
+#define HAVE_HTOLE64 1
+
 /* Define to 1 if you have the `hypot' function. */
 #define HAVE_HYPOT 1
 
@@ -426,6 +435,12 @@
 
 /* Define to 1 if you have the `initgroups' function. */
 #define HAVE_INITGROUPS 1
+
+/* Define if your compiler provides int32_t. */
+#define HAVE_INT32_T 1
+
+/* Define if your compiler provides int64_t. */
+#define HAVE_INT64_T 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -495,6 +510,9 @@
 
 /* Define to 1 if you have the `linkat' function. */
 #define HAVE_LINKAT 1
+
+/* Define to 1 if you have the <linux/can/bcm.h> header file. */
+#define HAVE_LINUX_CAN_BCM_H 1
 
 /* Define to 1 if you have the <linux/can.h> header file. */
 #define HAVE_LINUX_CAN_H 1
@@ -619,11 +637,17 @@
 /* Define to 1 if you have the `pread' function. */
 #define HAVE_PREAD 1
 
+/* Define if you have the 'prlimit' functions. */
+#define HAVE_PRLIMIT 1
+
 /* Define to 1 if you have the <process.h> header file. */
 /* #undef HAVE_PROCESS_H */
 
 /* Define if your compiler supports function prototype */
 #define HAVE_PROTOTYPES 1
+
+/* Define to 1 if you have the `pthread_atfork' function. */
+#define HAVE_PTHREAD_ATFORK 1
 
 /* Defined for Solaris 2.6 bug in pthread header. */
 /* #undef HAVE_PTHREAD_DESTRUCTOR */
@@ -913,6 +937,9 @@
    */
 /* #undef HAVE_SYS_DIR_H */
 
+/* Define to 1 if you have the <sys/endian.h> header file. */
+/* #undef HAVE_SYS_ENDIAN_H */
+
 /* Define to 1 if you have the <sys/epoll.h> header file. */
 #define HAVE_SYS_EPOLL_H 1
 
@@ -1048,6 +1075,12 @@
 /* Define this if you have tcl and TCL_UTF_MAX==6 */
 /* #undef HAVE_UCS4_TCL */
 
+/* Define if your compiler provides uint32_t. */
+#define HAVE_UINT32_T 1
+
+/* Define if your compiler provides uint64_t. */
+#define HAVE_UINT64_T 1
+
 /* Define to 1 if the system has the type `uintptr_t'. */
 #define HAVE_UINTPTR_T 1
 
@@ -1103,6 +1136,9 @@
 
 /* Define to 1 if you have the `wcsxfrm' function. */
 #define HAVE_WCSXFRM 1
+
+/* Define to 1 if you have the `wmemcmp' function. */
+#define HAVE_WMEMCMP 1
 
 /* Define if tzset() actually switches the local timezone in a meaningful way.
    */
@@ -1170,14 +1206,15 @@
 /* Defined if Python is built as a shared library. */
 #define Py_ENABLE_SHARED 1
 
+/* Define hash algorithm for str, bytes and memoryview. SipHash24: 1, FNV: 2,
+   externally defined: 0 */
+/* #undef Py_HASH_ALGORITHM */
+
 /* assume C89 semantics that RETSIGTYPE is always void */
 #define RETSIGTYPE void
 
 /* Define if setpgrp() must be called as setpgrp(0, 0). */
 /* #undef SETPGRP_HAVE_ARG */
-
-/* Define this to be extension of shared libraries (including the dot!). */
-#define SHLIB_EXT ""
 
 /* Define if i>>j for signed int i does not extend the sign bit when i < 0 */
 /* #undef SIGNED_RIGHT_SHIFT_ZERO_FILLS */
@@ -1244,7 +1281,7 @@
 #define TANH_PRESERVES_ZERO_SIGN 1
 
 /* Library needed by timemodule.c: librt may be needed for clock_gettime() */
-#define TIMEMODULE_LIB rt
+/* #undef TIMEMODULE_LIB */
 
 /* Define to 1 if you can safely include both <sys/time.h> and <time.h>. */
 #define TIME_WITH_SYS_TIME 1
@@ -1345,6 +1382,9 @@
 
 /* Define on Linux to activate all library features */
 #define _GNU_SOURCE 1
+
+/* Define to include mbstate_t for mbrtowc */
+/* #undef _INCLUDE__STDC_A1_SOURCE */
 
 /* This must be defined on some systems to enable large file support. */
 #define _LARGEFILE_SOURCE 1

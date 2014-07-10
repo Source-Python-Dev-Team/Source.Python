@@ -180,7 +180,7 @@ T digamma_imp_1_2(T x, const mpl::int_<0>*)
       BOOST_MATH_BIG_CONSTANT(T, 113, -0.20327832297631728077731148515093164955e-6)
    };
    static const T Q[] = {    
-      1,
+      BOOST_MATH_BIG_CONSTANT(T, 113, 1.0),
       BOOST_MATH_BIG_CONSTANT(T, 113, 2.6210924610812025425088411043163287646),
       BOOST_MATH_BIG_CONSTANT(T, 113, 2.6850757078559596612621337395886392594),
       BOOST_MATH_BIG_CONSTANT(T, 113, 1.4320913706209965531250495490639289418),
@@ -236,7 +236,7 @@ T digamma_imp_1_2(T x, const mpl::int_<64>*)
       BOOST_MATH_BIG_CONSTANT(T, 64, -0.00289268368333918761452)
    };
    static const T Q[] = {    
-      1,
+      BOOST_MATH_BIG_CONSTANT(T, 64, 1.0),
       BOOST_MATH_BIG_CONSTANT(T, 64, 2.1195759927055347547),
       BOOST_MATH_BIG_CONSTANT(T, 64, 1.54350554664961128724),
       BOOST_MATH_BIG_CONSTANT(T, 64, 0.486986018231042975162),
@@ -356,7 +356,7 @@ T digamma_imp(T x, const Tag* t, const Policy& pol)
    //
    // Check for negative arguments and use reflection:
    //
-   if(x < 0)
+   if(x <= -1)
    {
       // Reflect:
       x = 1 - x;
@@ -376,6 +376,8 @@ T digamma_imp(T x, const Tag* t, const Policy& pol)
       }
       result = constants::pi<T>() / tan(constants::pi<T>() * remainder);
    }
+   if(x == 0)
+      return policies::raise_pole_error<T>("boost::math::digamma<%1%>(%1%)", 0, x, pol);
    //
    // If we're above the lower-limit for the
    // asymptotic expansion then use it:
@@ -397,9 +399,9 @@ T digamma_imp(T x, const Tag* t, const Policy& pol)
       //
       // If x < 1 use recurrance to shift to > 1:
       //
-      if(x < 1)
+      while(x < 1)
       {
-         result = -1/x;
+         result -= 1/x;
          x += 1;
       }
       result += digamma_imp_1_2(x, t);

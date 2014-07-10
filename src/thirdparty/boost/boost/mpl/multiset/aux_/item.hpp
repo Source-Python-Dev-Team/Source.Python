@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: item.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id: item.hpp 85956 2013-09-26 13:05:50Z skelly $
+// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
+// $Revision: 85956 $
 
 #include <boost/mpl/multiset/aux_/tag.hpp>
 #include <boost/mpl/int.hpp>
@@ -24,55 +24,7 @@
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
 
-#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-#   include <boost/mpl/eval_if.hpp>
-#   include <boost/mpl/next.hpp>
-#   include <boost/type_traits/is_same.hpp>
-#endif
-
-
 namespace boost { namespace mpl {
-
-#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
-
-template< typename T, typename Base >
-struct ms_item
-{
-    typedef aux::multiset_tag tag;
-
-    template< typename U > struct prior_count
-    {
-        enum { msvc70_wknd_ = sizeof(Base::key_count(BOOST_MPL_AUX_STATIC_CAST(U*,0))) };
-        typedef int_< msvc70_wknd_ > count_;
-        typedef typename eval_if< is_same<T,U>, next<count_>, count_ >::type c_;
-#if defined(BOOST_MPL_CFG_NO_DEPENDENT_ARRAY_TYPES)
-        typedef typename aux::weighted_tag<BOOST_MPL_AUX_MSVC_VALUE_WKND(c_)::value>::type type;
-#else
-        typedef char (&type)[BOOST_MPL_AUX_MSVC_VALUE_WKND(c_)::value];
-#endif
-    };
-
-    template< typename U > struct prior_ref_count
-    {
-        typedef U (* u_)();
-        enum { msvc70_wknd_ = sizeof(Base::ref_key_count(BOOST_MPL_AUX_STATIC_CAST(u_,0))) }; 
-        typedef int_< msvc70_wknd_ > count_;
-        typedef typename eval_if< is_same<T,U>, next<count_>, count_ >::type c_;
-#if defined(BOOST_MPL_CFG_NO_DEPENDENT_ARRAY_TYPES)
-        typedef typename aux::weighted_tag<BOOST_MPL_AUX_MSVC_VALUE_WKND(c_)::value>::type type;
-#else
-        typedef char (&type)[BOOST_MPL_AUX_MSVC_VALUE_WKND(c_)::value];
-#endif
-    };
-
-    template< typename U >
-    static typename prior_count<U>::type key_count(U*);
-
-    template< typename U >
-    static typename prior_ref_count<U>::type ref_key_count(U (*)());
-};
-
-#else // BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 
 namespace aux {
 template< typename U, typename Base >
@@ -106,8 +58,6 @@ struct ms_item
     template< typename U >
     static typename aux::prior_key_count<U,Base>::type key_count(aux::type_wrapper<U>*);
 };
-
-#endif // BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
 
 }}
 

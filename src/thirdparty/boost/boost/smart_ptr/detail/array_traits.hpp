@@ -17,18 +17,13 @@ namespace boost {
         struct array_base {
             typedef typename boost::remove_cv<T>::type type;
         };
+        template<typename T>
+        struct array_base<T[]> {
+            typedef typename array_base<T>::type type;
+        };
         template<typename T, std::size_t N>
         struct array_base<T[N]> {
             typedef typename array_base<T>::type type;
-        };
-        template<typename T>
-        struct array_size {
-        };
-        template<typename T, size_t N>
-        struct array_size<T[N]> {
-            enum {
-                size = N
-            };
         };
         template<typename T>
         struct array_total {
@@ -43,21 +38,13 @@ namespace boost {
             };
         };
         template<typename T> 
-        struct array_inner {
-        };
+        struct array_inner;
         template<typename T>
         struct array_inner<T[]> {
             typedef T type;
         };
-        template<typename T, size_t N>
+        template<typename T, std::size_t N>
         struct array_inner<T[N]> {
-            typedef T type;
-        };
-        template<typename T> 
-        struct arrays_inner {
-        };
-        template<typename T, size_t N> 
-        struct arrays_inner<T[][N]> {
             typedef T type;
         };
     }

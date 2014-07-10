@@ -8,8 +8,8 @@
 // http://www.boost.org/LICENSE_1_0.txt)
 
 // $Source$
-// $Date: 2011-10-07 17:05:54 -0400 (Fri, 07 Oct 2011) $
-// $Revision: 74782 $
+// $Date: 2013-09-25 17:15:34 -0400 (Wed, 25 Sep 2013) $
+// $Revision: 85919 $
 
 #include <boost/type_traits/detail/template_arity_spec.hpp>
 #include <boost/type_traits/integral_constant.hpp>
@@ -45,14 +45,6 @@
     enum { value = type::value }; \
     /**/
 #   define BOOST_TT_AUX_BOOL_C_BASE(C)
-
-#elif defined(BOOST_MSVC) && BOOST_MSVC < 1300
-
-#   define BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL(C) \
-    typedef ::boost::integral_constant<bool,C> base_; \
-    using base_::value; \
-    /**/
-
 #endif
 
 #ifndef BOOST_TT_AUX_BOOL_TRAIT_VALUE_DECL

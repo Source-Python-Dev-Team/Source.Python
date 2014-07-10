@@ -206,10 +206,11 @@ def summarize_address_range(first, last):
     """Summarize a network range given the first and last IP addresses.
 
     Example:
-        >>> summarize_address_range(IPv4Address('192.0.2.0'),
-            IPv4Address('192.0.2.130'))
+        >>> list(summarize_address_range(IPv4Address('192.0.2.0'),
+        ...                              IPv4Address('192.0.2.130')))
+        ...                                #doctest: +NORMALIZE_WHITESPACE
         [IPv4Network('192.0.2.0/25'), IPv4Network('192.0.2.128/31'),
-        IPv4Network('192.0.2.130/32')]
+         IPv4Network('192.0.2.130/32')]
 
     Args:
         first: the first IPv4Address or IPv6Address in the range.
@@ -455,8 +456,8 @@ class _IPAddressBase(_TotalOrderingMixin):
             raise AddressValueError(msg % (address, address_len,
                                            expected_len, self._version))
 
-    def _ip_int_from_prefix(self, prefixlen=None):
-        """Turn the prefix length netmask into a int for comparison.
+    def _ip_int_from_prefix(self, prefixlen):
+        """Turn the prefix length into a bitwise netmask
 
         Args:
             prefixlen: An integer, the prefix length.
@@ -465,36 +466,92 @@ class _IPAddressBase(_TotalOrderingMixin):
             An integer.
 
         """
-        if prefixlen is None:
-            prefixlen = self._prefixlen
         return self._ALL_ONES ^ (self._ALL_ONES >> prefixlen)
 
-    def _prefix_from_ip_int(self, ip_int, mask=32):
-        """Return prefix length from the decimal netmask.
+    def _prefix_from_ip_int(self, ip_int):
+        """Return prefix length from the bitwise netmask.
 
         Args:
-            ip_int: An integer, the IP address.
-            mask: The netmask.  Defaults to 32.
+            ip_int: An integer, the netmask in axpanded bitwise format
 
         Returns:
             An integer, the prefix length.
 
+        Raises:
+            ValueError: If the input intermingles zeroes & ones
         """
-        return mask - _count_righthand_zero_bits(ip_int, mask)
+        trailing_zeroes = _count_righthand_zero_bits(ip_int,
+                                                     self._max_prefixlen)
+        prefixlen = self._max_prefixlen - trailing_zeroes
+        leading_ones = ip_int >> trailing_zeroes
+        all_ones = (1 << prefixlen) - 1
+        if leading_ones != all_ones:
+            byteslen = self._max_prefixlen // 8
+            details = ip_int.to_bytes(byteslen, 'big')
+            msg = 'Netmask pattern %r mixes zeroes & ones'
+            raise ValueError(msg % details)
+        return prefixlen
 
-    def _ip_string_from_prefix(self, prefixlen=None):
-        """Turn a prefix length into a dotted decimal string.
+    def _report_invalid_netmask(self, netmask_str):
+        msg = '%r is not a valid netmask' % netmask_str
+        raise NetmaskValueError(msg) from None
+
+    def _prefix_from_prefix_string(self, prefixlen_str):
+        """Return prefix length from a numeric string
 
         Args:
-            prefixlen: An integer, the netmask prefix length.
+            prefixlen_str: The string to be converted
 
         Returns:
-            A string, the dotted decimal netmask string.
+            An integer, the prefix length.
 
+        Raises:
+            NetmaskValueError: If the input is not a valid netmask
         """
-        if not prefixlen:
-            prefixlen = self._prefixlen
-        return self._string_from_ip_int(self._ip_int_from_prefix(prefixlen))
+        # int allows a leading +/- as well as surrounding whitespace,
+        # so we ensure that isn't the case
+        if not _BaseV4._DECIMAL_DIGITS.issuperset(prefixlen_str):
+            self._report_invalid_netmask(prefixlen_str)
+        try:
+            prefixlen = int(prefixlen_str)
+        except ValueError:
+            self._report_invalid_netmask(prefixlen_str)
+        if not (0 <= prefixlen <= self._max_prefixlen):
+            self._report_invalid_netmask(prefixlen_str)
+        return prefixlen
+
+    def _prefix_from_ip_string(self, ip_str):
+        """Turn a netmask/hostmask string into a prefix length
+
+        Args:
+            ip_str: The netmask/hostmask to be converted
+
+        Returns:
+            An integer, the prefix length.
+
+        Raises:
+            NetmaskValueError: If the input is not a valid netmask/hostmask
+        """
+        # Parse the netmask/hostmask like an IP address.
+        try:
+            ip_int = self._ip_int_from_string(ip_str)
+        except AddressValueError:
+            self._report_invalid_netmask(ip_str)
+
+        # Try matching a netmask (this would be /1*0*/ as a bitwise regexp).
+        # Note that the two ambiguous cases (all-ones and all-zeroes) are
+        # treated as netmasks.
+        try:
+            return self._prefix_from_ip_int(ip_int)
+        except ValueError:
+            pass
+
+        # Invert the bits, and try matching a /0+1+/ hostmask instead.
+        ip_int ^= self._ALL_ONES
+        try:
+            return self._prefix_from_ip_int(ip_int)
+        except ValueError:
+            self._report_invalid_netmask(ip_str)
 
 
 class _BaseAddress(_IPAddressBase):
@@ -503,7 +560,6 @@ class _BaseAddress(_IPAddressBase):
 
     This IP class contains the version independent methods which are
     used by single IP addresses.
-
     """
 
     def __init__(self, address):
@@ -722,11 +778,11 @@ class _BaseNetwork(_IPAddressBase):
             other: An IPv4Network or IPv6Network object of the same type.
 
         Returns:
-            An iterator of the the IPv(4|6)Network objects which is self
+            An iterator of the IPv(4|6)Network objects which is self
             minus other.
 
         Raises:
-            TypeError: If self and other are of difffering address
+            TypeError: If self and other are of differing address
               versions, or if other is not a network object.
             ValueError: If other is not completely contained by self.
 
@@ -872,7 +928,7 @@ class _BaseNetwork(_IPAddressBase):
             raise ValueError('prefix length diff must be > 0')
         new_prefixlen = self._prefixlen + prefixlen_diff
 
-        if not self._is_valid_netmask(str(new_prefixlen)):
+        if new_prefixlen > self._max_prefixlen:
             raise ValueError(
                 'prefix length diff %d is invalid for netblock %s' % (
                     new_prefixlen, self))
@@ -974,11 +1030,23 @@ class _BaseNetwork(_IPAddressBase):
         """Test if this address is allocated for private networks.
 
         Returns:
-            A boolean, True if the address is reserved per RFC 4193.
+            A boolean, True if the address is reserved per
+            iana-ipv4-special-registry or iana-ipv6-special-registry.
 
         """
         return (self.network_address.is_private and
                 self.broadcast_address.is_private)
+
+    @property
+    def is_global(self):
+        """Test if this address is allocated for public networks.
+
+        Returns:
+            A boolean, True if the address is not reserved per
+            iana-ipv4-special-registry or iana-ipv6-special-registry.
+
+        """
+        return not self.is_private
 
     @property
     def is_unspecified(self):
@@ -1220,19 +1288,30 @@ class IPv4Address(_BaseV4, _BaseAddress):
         return self in reserved_network
 
     @property
+    @functools.lru_cache()
     def is_private(self):
         """Test if this address is allocated for private networks.
 
         Returns:
-            A boolean, True if the address is reserved per RFC 1918.
+            A boolean, True if the address is reserved per
+            iana-ipv4-special-registry.
 
         """
-        private_10 = IPv4Network('10.0.0.0/8')
-        private_172 = IPv4Network('172.16.0.0/12')
-        private_192 = IPv4Network('192.168.0.0/16')
-        return (self in private_10 or
-                self in private_172 or
-                self in private_192)
+        return (self in IPv4Network('0.0.0.0/8') or
+                self in IPv4Network('10.0.0.0/8') or
+                self in IPv4Network('127.0.0.0/8') or
+                self in IPv4Network('169.254.0.0/16') or
+                self in IPv4Network('172.16.0.0/12') or
+                self in IPv4Network('192.0.0.0/29') or
+                self in IPv4Network('192.0.0.170/31') or
+                self in IPv4Network('192.0.2.0/24') or
+                self in IPv4Network('192.168.0.0/16') or
+                self in IPv4Network('198.18.0.0/15') or
+                self in IPv4Network('198.51.100.0/24') or
+                self in IPv4Network('203.0.113.0/24') or
+                self in IPv4Network('240.0.0.0/4') or
+                self in IPv4Network('255.255.255.255/32'))
+
 
     @property
     def is_multicast(self):
@@ -1377,7 +1456,7 @@ class IPv4Network(_BaseV4, _BaseNetwork):
               '192.0.2.1'
               '192.0.2.1/255.255.255.255'
               '192.0.2.1/32'
-              are also functionaly equivalent. That is to say, failing to
+              are also functionally equivalent. That is to say, failing to
               provide a subnetmask will create an object with a mask of /32.
 
               If the mask (portion after the / in the argument) is given in
@@ -1427,33 +1506,16 @@ class IPv4Network(_BaseV4, _BaseNetwork):
         self.network_address = IPv4Address(self._ip_int_from_string(addr[0]))
 
         if len(addr) == 2:
-            mask = addr[1].split('.')
-
-            if len(mask) == 4:
-                # We have dotted decimal netmask.
-                if self._is_valid_netmask(addr[1]):
-                    self.netmask = IPv4Address(self._ip_int_from_string(
-                            addr[1]))
-                elif self._is_hostmask(addr[1]):
-                    self.netmask = IPv4Address(
-                        self._ip_int_from_string(addr[1]) ^ self._ALL_ONES)
-                else:
-                    raise NetmaskValueError('%r is not a valid netmask'
-                                                     % addr[1])
-
-                self._prefixlen = self._prefix_from_ip_int(int(self.netmask))
-            else:
-                # We have a netmask in prefix length form.
-                if not self._is_valid_netmask(addr[1]):
-                    raise NetmaskValueError('%r is not a valid netmask'
-                                                     % addr[1])
-                self._prefixlen = int(addr[1])
-                self.netmask = IPv4Address(self._ip_int_from_prefix(
-                    self._prefixlen))
+            try:
+                # Check for a netmask in prefix length form
+                self._prefixlen = self._prefix_from_prefix_string(addr[1])
+            except NetmaskValueError:
+                # Check for a netmask or hostmask in dotted-quad form.
+                # This may raise NetmaskValueError.
+                self._prefixlen = self._prefix_from_ip_string(addr[1])
         else:
             self._prefixlen = self._max_prefixlen
-            self.netmask = IPv4Address(self._ip_int_from_prefix(
-                self._prefixlen))
+        self.netmask = IPv4Address(self._ip_int_from_prefix(self._prefixlen))
 
         if strict:
             if (IPv4Address(int(self.network_address) & int(self.netmask)) !=
@@ -1464,6 +1526,21 @@ class IPv4Network(_BaseV4, _BaseNetwork):
 
         if self._prefixlen == (self._max_prefixlen - 1):
             self.hosts = self.__iter__
+
+    @property
+    @functools.lru_cache()
+    def is_global(self):
+        """Test if this address is allocated for public networks.
+
+        Returns:
+            A boolean, True if the address is not reserved per
+            iana-ipv4-special-registry.
+
+        """
+        return (not (self.network_address in IPv4Network('100.64.0.0/10') and
+                    self.broadcast_address in IPv4Network('100.64.0.0/10')) and
+                not self.is_private)
+
 
 
 class _BaseV6:
@@ -1821,15 +1898,36 @@ class IPv6Address(_BaseV6, _BaseAddress):
         return self in sitelocal_network
 
     @property
+    @functools.lru_cache()
     def is_private(self):
         """Test if this address is allocated for private networks.
 
         Returns:
-            A boolean, True if the address is reserved per RFC 4193.
+            A boolean, True if the address is reserved per
+            iana-ipv6-special-registry.
 
         """
-        private_network = IPv6Network('fc00::/7')
-        return self in private_network
+        return (self in IPv6Network('::1/128') or
+                self in IPv6Network('::/128') or
+                self in IPv6Network('::ffff:0:0/96') or
+                self in IPv6Network('100::/64') or
+                self in IPv6Network('2001::/23') or
+                self in IPv6Network('2001:2::/48') or
+                self in IPv6Network('2001:db8::/32') or
+                self in IPv6Network('2001:10::/28') or
+                self in IPv6Network('fc00::/7') or
+                self in IPv6Network('fe80::/10'))
+
+    @property
+    def is_global(self):
+        """Test if this address is allocated for public networks.
+
+        Returns:
+            A boolean, true if the address is not reserved per
+            iana-ipv6-special-registry.
+
+        """
+        return not self.is_private
 
     @property
     def is_unspecified(self):
@@ -2041,11 +2139,8 @@ class IPv6Network(_BaseV6, _BaseNetwork):
         self.network_address = IPv6Address(self._ip_int_from_string(addr[0]))
 
         if len(addr) == 2:
-            if self._is_valid_netmask(addr[1]):
-                self._prefixlen = int(addr[1])
-            else:
-                raise NetmaskValueError('%r is not a valid netmask'
-                                                     % addr[1])
+            # This may raise NetmaskValueError
+            self._prefixlen = self._prefix_from_prefix_string(addr[1])
         else:
             self._prefixlen = self._max_prefixlen
 
@@ -2060,22 +2155,17 @@ class IPv6Network(_BaseV6, _BaseNetwork):
         if self._prefixlen == (self._max_prefixlen - 1):
             self.hosts = self.__iter__
 
-    def _is_valid_netmask(self, prefixlen):
-        """Verify that the netmask/prefixlen is valid.
+    def hosts(self):
+        """Generate Iterator over usable hosts in a network.
 
-        Args:
-            prefixlen: A string, the netmask in prefix length format.
-
-        Returns:
-            A boolean, True if the prefix represents a valid IPv6
-            netmask.
+          This is like __iter__ except it doesn't return the
+          Subnet-Router anycast address.
 
         """
-        try:
-            prefixlen = int(prefixlen)
-        except ValueError:
-            return False
-        return 0 <= prefixlen <= self._max_prefixlen
+        network = int(self.network_address)
+        broadcast = int(self.broadcast_address)
+        for x in range(network + 1, broadcast + 1):
+            yield self._address_class(x)
 
     @property
     def is_site_local(self):

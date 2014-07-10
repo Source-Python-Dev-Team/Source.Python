@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 
-#if defined(_MSC_VER) && (_MSC_VER >= 1020)
+#if defined(_MSC_VER)
 # pragma once
 #endif
 
@@ -35,7 +35,10 @@
 // rather than including <memory> directly:
 #include <boost/config/no_tr1/memory.hpp>  // std::auto_ptr
 #include <functional>       // std::less
-#include <new>              // std::bad_alloc
+
+#ifdef BOOST_NO_EXCEPTIONS
+# include <new>              // std::bad_alloc
+#endif
 
 #if !defined( BOOST_NO_CXX11_SMART_PTR )
 # include <boost/utility/addressof.hpp>
@@ -145,18 +148,11 @@ public:
 #endif
     }
 
-#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, <= 1200 )
-    template<class Y, class D> shared_count( Y * p, D d ): pi_(0)
-#else
     template<class P, class D> shared_count( P p, D d ): pi_(0)
-#endif
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
         , id_(shared_count_id)
 #endif
     {
-#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, <= 1200 )
-        typedef Y* P;
-#endif
 #ifndef BOOST_NO_EXCEPTIONS
 
         try
@@ -197,7 +193,7 @@ public:
         }
         catch( ... )
         {
-            D()( p ); // delete p
+            D::operator_fn( p ); // delete p
             throw;
         }
 
@@ -207,7 +203,7 @@ public:
 
         if( pi_ == 0 )
         {
-            D()( p ); // delete p
+            D::operator_fn( p ); // delete p
             boost::throw_exception( std::bad_alloc() );
         }
 
@@ -283,7 +279,7 @@ public:
         }
         catch(...)
         {
-            D()( p );
+            D::operator_fn( p );
 
             if( pi_ != 0 )
             {
@@ -303,7 +299,7 @@ public:
         }
         else
         {
-            D()( p );
+            D::operator_fn( p );
             boost::throw_exception( std::bad_alloc() );
         }
 
@@ -379,7 +375,7 @@ public:
         if( pi_ != 0 ) pi_->add_ref_copy();
     }
 
-#if defined( BOOST_HAS_RVALUE_REFS )
+#if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
 
     shared_count(shared_count && r): pi_(r.pi_) // nothrow
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)
@@ -444,6 +440,11 @@ public:
     {
         return pi_? pi_->get_deleter( ti ): 0;
     }
+
+    void * get_untyped_deleter() const
+    {
+        return pi_? pi_->get_untyped_deleter(): 0;
+    }
 };
 
 
@@ -486,7 +487,7 @@ public:
 
 // Move support
 
-#if defined( BOOST_HAS_RVALUE_REFS )
+#if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
 
     weak_count(weak_count && r): pi_(r.pi_) // nothrow
 #if defined(BOOST_SP_ENABLE_DEBUG_HOOKS)

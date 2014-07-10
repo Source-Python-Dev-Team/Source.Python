@@ -21,6 +21,11 @@
 #include <boost/heap/detail/stable_heap.hpp>
 #include <boost/heap/detail/tree_iterator.hpp>
 
+#ifdef BOOST_HAS_PRAGMA_ONCE
+#pragma once
+#endif
+
+
 #ifndef BOOST_DOXYGEN_INVOKED
 #ifdef BOOST_HEAP_SANITYCHECKS
 #define BOOST_HEAP_ASSERT BOOST_ASSERT
@@ -63,7 +68,7 @@ struct make_pairing_heap_base
             base_type(arg)
         {}
 
-#ifdef BOOST_HAS_RVALUE_REFS
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
         type(type const & rhs):
             base_type(rhs), allocator_type(rhs)
         {}
@@ -241,7 +246,7 @@ public:
         size_holder::set_size(rhs.get_size());
     }
 
-#ifdef BOOST_HAS_RVALUE_REFS
+#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     /// \copydoc boost::heap::priority_queue::priority_queue(priority_queue &&)
     pairing_heap(pairing_heap && rhs):
         super_t(std::move(rhs)), root(rhs.root)
@@ -357,7 +362,7 @@ public:
         return handle_type(n);
     }
 
-#if defined(BOOST_HAS_RVALUE_REFS) && !defined(BOOST_NO_VARIADIC_TEMPLATES)
+#if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES)
     /**
      * \b Effects: Adds a new element to the priority queue. The element is directly constructed in-place. Returns handle to element.
      *
@@ -375,7 +380,7 @@ public:
 
         node_pointer n = allocator_type::allocate(1);
 
-        new(n) node(super_t::make_node(std::forward<T>(args)...));
+        new(n) node(super_t::make_node(std::forward<Args>(args)...));
 
         merge_node(n);
         return handle_type(n);
@@ -579,7 +584,7 @@ public:
         rhs.set_size(0);
         rhs.root = NULL;
 
-        super_t::set_stability_count(std::max(super_t::get_stability_count(),
+        super_t::set_stability_count((std::max)(super_t::get_stability_count(),
                                      rhs.get_stability_count()));
         rhs.set_stability_count(0);
     }
@@ -674,7 +679,7 @@ private:
 
     node_pointer merge_first_pair(node_child_list & children)
     {
-        assert(!children.empty());
+        BOOST_HEAP_ASSERT(!children.empty());
         node_pointer first_child = static_cast<node_pointer>(&children.front());
         children.pop_front();
         if (children.empty())

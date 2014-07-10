@@ -1,13 +1,11 @@
 
-//  (C) Copyright Edward Diener 2011
+//  (C) Copyright Edward Diener 2011,2012,2013
 //  Use, modification and distribution are subject to the Boost Software License,
 //  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt).
 
 #if !defined(BOOST_TTI_DETAIL_TEMPLATE_HPP)
 #define BOOST_TTI_DETAIL_TEMPLATE_HPP
-
-#if !defined(BOOST_TTI_VERSION_1_5)
 
 #include <boost/config.hpp>
 #include <boost/mpl/has_xxx.hpp>
@@ -40,12 +38,11 @@
 
 #define BOOST_TTI_DETAIL_TRAIT_HAS_TEMPLATE(trait,name,params) \
   BOOST_MPL_HAS_XXX_TEMPLATE_NAMED_DEF(BOOST_PP_CAT(trait,_detail_mpl), name, false) \
-  template<class TTI_T> \
+  template<class BOOST_TTI_DETAIL_TP_T> \
   struct trait : \
-    BOOST_PP_CAT(trait,_detail_mpl)<TTI_T> \
+    BOOST_PP_CAT(trait,_detail_mpl)<BOOST_TTI_DETAIL_TP_T> \
     { \
     }; \
 /**/
 
-#endif // !BOOST_TTI_VERSION_1_5
 #endif // !BOOST_TTI_DETAIL_TEMPLATE_HPP

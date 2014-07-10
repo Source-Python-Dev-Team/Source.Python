@@ -1,11 +1,11 @@
 
-//  (C) Copyright Edward Diener 2011
+//  (C) Copyright Edward Diener 2011,2012,2013
 //  Use, modification and distribution are subject to the Boost Software License,
 //  Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt).
 
-#if !defined(TTI_DETAIL_TCLASS_HPP)
-#define TTI_DETAIL_TCLASS_HPP
+#if !defined(BOOST_TTI_DETAIL_TCLASS_HPP)
+#define BOOST_TTI_DETAIL_TCLASS_HPP
 
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
@@ -17,13 +17,13 @@ namespace boost
     {
     namespace detail
       {
-      template <class T>
+      template <class BOOST_TTI_DETAIL_TP_T>
       struct tclass :
         boost::mpl::eval_if
           <
-          boost::is_class<T>,
-          T,
-          boost::mpl::identity<T>
+          boost::is_class<BOOST_TTI_DETAIL_TP_T>,
+          BOOST_TTI_DETAIL_TP_T,
+          boost::mpl::identity<BOOST_TTI_DETAIL_TP_T>
           >
         {
         };
@@ -31,4 +31,4 @@ namespace boost
     }
   }
   
-#endif // TTI_DETAIL_TCLASS_HPP
+#endif // BOOST_TTI_DETAIL_TCLASS_HPP

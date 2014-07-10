@@ -1,13 +1,13 @@
 // Boost.Polygon library segment_concept.hpp header file
 
-//          Copyright 2008 Intel Corporation.
-//          Copyright Simonson Lucanus 2008-2012.
-//          Copyright Andrii Sydorchuk 2012-2012.
-// Distributed under the Boost Software License, Version 1.0.
-//    (See accompanying file LICENSE_1_0.txt or copy at
-//          http://www.boost.org/LICENSE_1_0.txt)
+// Copyright (c) Intel Corporation 2008.
+// Copyright (c) 2008-2012 Simonson Lucanus.
+// Copyright (c) 2012-2012 Andrii Sydorchuk.
 
 // See http://www.boost.org for updates, documentation, and revision history.
+// Use, modification and distribution is subject to the Boost Software License,
+// Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
+// http://www.boost.org/LICENSE_1_0.txt)
 
 #ifndef BOOST_POLYGON_SEGMENT_CONCEPT_HPP
 #define BOOST_POLYGON_SEGMENT_CONCEPT_HPP

@@ -121,7 +121,6 @@ namespace boost
     std::basic_ostream<CharT, Traits>&
     operator<<(std::basic_ostream<CharT, Traits>& os, const duration<Rep, Period>& d)
     {
-      typedef std::basic_string<CharT, Traits> string_type;
       bool failed = false;
       BOOST_TRY
       {

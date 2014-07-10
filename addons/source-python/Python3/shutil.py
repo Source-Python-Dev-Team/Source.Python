@@ -39,28 +39,26 @@ __all__ = ["copyfileobj", "copyfile", "copymode", "copystat", "copy", "copy2",
            "ignore_patterns", "chown", "which"]
            # disk_usage is added later, if available on the platform
 
-class Error(EnvironmentError):
+class Error(OSError):
     pass
 
-class SpecialFileError(EnvironmentError):
+class SameFileError(Error):
+    """Raised when source and destination are the same file."""
+
+class SpecialFileError(OSError):
     """Raised when trying to do a kind of operation (e.g. copying) which is
     not supported on a special file (e.g. a named pipe)"""
 
-class ExecError(EnvironmentError):
+class ExecError(OSError):
     """Raised when a command could not be executed"""
 
-class ReadError(EnvironmentError):
+class ReadError(OSError):
     """Raised when an archive cannot be read"""
 
 class RegistryError(Exception):
-    """Raised when a registery operation with the archiving
+    """Raised when a registry operation with the archiving
     and unpacking registeries fails"""
 
-
-try:
-    WindowsError
-except NameError:
-    WindowsError = None
 
 def copyfileobj(fsrc, fdst, length=16*1024):
     """copy data from file-like object fsrc to file-like object fdst"""
@@ -90,7 +88,7 @@ def copyfile(src, dst, *, follow_symlinks=True):
 
     """
     if _samefile(src, dst):
-        raise Error("`%s` and `%s` are the same file" % (src, dst))
+        raise SameFileError("{!r} and {!r} are the same file".format(src, dst))
 
     for fn in [src, dst]:
         try:
@@ -142,7 +140,13 @@ if hasattr(os, 'listxattr'):
 
         """
 
-        for name in os.listxattr(src, follow_symlinks=follow_symlinks):
+        try:
+            names = os.listxattr(src, follow_symlinks=follow_symlinks)
+        except OSError as e:
+            if e.errno not in (errno.ENOTSUP, errno.ENODATA):
+                raise
+            return
+        for name in names:
             try:
                 value = os.getxattr(src, name, follow_symlinks=follow_symlinks)
                 os.setxattr(dst, name, value, follow_symlinks=follow_symlinks)
@@ -189,7 +193,7 @@ def copystat(src, dst, *, follow_symlinks=True):
         #   * follow_symlinks=False,
         #   * lchown() is unavailable, and
         #   * either
-        #       * fchownat() is unvailable or
+        #       * fchownat() is unavailable or
         #       * fchownat() doesn't implement AT_SYMLINK_NOFOLLOW.
         #         (it returned ENOSUP.)
         # therefore we're out of options--we simply cannot chown the
@@ -214,6 +218,9 @@ def copy(src, dst, *, follow_symlinks=True):
 
     If follow_symlinks is false, symlinks won't be followed. This
     resembles GNU's "cp -P src dst".
+
+    If source and destination are the same file, a SameFileError will be
+    raised.
 
     """
     if os.path.isdir(dst):
@@ -323,15 +330,13 @@ def copytree(src, dst, symlinks=False, ignore=None, copy_function=copy2,
         # continue with other files
         except Error as err:
             errors.extend(err.args[0])
-        except EnvironmentError as why:
+        except OSError as why:
             errors.append((srcname, dstname, str(why)))
     try:
         copystat(src, dst)
     except OSError as why:
-        if WindowsError is not None and isinstance(why, WindowsError):
-            # Copying file access times may fail on Windows
-            pass
-        else:
+        # Copying file access times may fail on Windows
+        if why.winerror is None:
             errors.append((src, dst, str(why)))
     if errors:
         raise Error(errors)
@@ -350,24 +355,24 @@ def _rmtree_unsafe(path, onerror):
     names = []
     try:
         names = os.listdir(path)
-    except os.error:
+    except OSError:
         onerror(os.listdir, path, sys.exc_info())
     for name in names:
         fullname = os.path.join(path, name)
         try:
             mode = os.lstat(fullname).st_mode
-        except os.error:
+        except OSError:
             mode = 0
         if stat.S_ISDIR(mode):
             _rmtree_unsafe(fullname, onerror)
         else:
             try:
                 os.unlink(fullname)
-            except os.error:
+            except OSError:
                 onerror(os.unlink, fullname, sys.exc_info())
     try:
         os.rmdir(path)
-    except os.error:
+    except OSError:
         onerror(os.rmdir, path, sys.exc_info())
 
 # Version using fd-based APIs to protect against races
@@ -375,19 +380,20 @@ def _rmtree_safe_fd(topfd, path, onerror):
     names = []
     try:
         names = os.listdir(topfd)
-    except os.error:
+    except OSError as err:
+        err.filename = path
         onerror(os.listdir, path, sys.exc_info())
     for name in names:
         fullname = os.path.join(path, name)
         try:
             orig_st = os.stat(name, dir_fd=topfd, follow_symlinks=False)
             mode = orig_st.st_mode
-        except os.error:
+        except OSError:
             mode = 0
         if stat.S_ISDIR(mode):
             try:
                 dirfd = os.open(name, os.O_RDONLY, dir_fd=topfd)
-            except os.error:
+            except OSError:
                 onerror(os.open, fullname, sys.exc_info())
             else:
                 try:
@@ -395,14 +401,23 @@ def _rmtree_safe_fd(topfd, path, onerror):
                         _rmtree_safe_fd(dirfd, fullname, onerror)
                         try:
                             os.rmdir(name, dir_fd=topfd)
-                        except os.error:
+                        except OSError:
                             onerror(os.rmdir, fullname, sys.exc_info())
+                    else:
+                        try:
+                            # This can only happen if someone replaces
+                            # a directory with a symlink after the call to
+                            # stat.S_ISDIR above.
+                            raise OSError("Cannot call rmtree on a symbolic "
+                                          "link")
+                        except OSError:
+                            onerror(os.path.islink, fullname, sys.exc_info())
                 finally:
                     os.close(dirfd)
         else:
             try:
                 os.unlink(name, dir_fd=topfd)
-            except os.error:
+            except OSError:
                 onerror(os.unlink, fullname, sys.exc_info())
 
 _use_fd_functions = ({os.open, os.stat, os.unlink, os.rmdir} <=
@@ -444,16 +459,18 @@ def rmtree(path, ignore_errors=False, onerror=None):
             onerror(os.lstat, path, sys.exc_info())
             return
         try:
-            if (stat.S_ISDIR(orig_st.st_mode) and
-                os.path.samestat(orig_st, os.fstat(fd))):
+            if os.path.samestat(orig_st, os.fstat(fd)):
                 _rmtree_safe_fd(fd, path, onerror)
                 try:
                     os.rmdir(path)
-                except os.error:
+                except OSError:
                     onerror(os.rmdir, path, sys.exc_info())
             else:
-                raise NotADirectoryError(20,
-                                         "Not a directory: '{}'".format(path))
+                try:
+                    # symlinks to directories are forbidden, see bug #1669
+                    raise OSError("Cannot call rmtree on a symbolic link")
+                except OSError:
+                    onerror(os.path.islink, path, sys.exc_info())
         finally:
             os.close(fd)
     else:
@@ -466,7 +483,8 @@ rmtree.avoids_symlink_attacks = _use_fd_functions
 def _basename(path):
     # A basename() variant which first strips the trailing slash, if present.
     # Thus we always get the last component of the path, even for directories.
-    return os.path.basename(path.rstrip(os.path.sep))
+    sep = os.path.sep + (os.path.altsep or '')
+    return os.path.basename(path.rstrip(sep))
 
 def move(src, dst):
     """Recursively move a file or directory to another location. This is
@@ -662,17 +680,15 @@ def _make_zipfile(base_name, base_dir, verbose=0, dry_run=0, logger=None):
                         zip_filename, base_dir)
 
         if not dry_run:
-            zip = zipfile.ZipFile(zip_filename, "w",
-                                  compression=zipfile.ZIP_DEFLATED)
-
-            for dirpath, dirnames, filenames in os.walk(base_dir):
-                for name in filenames:
-                    path = os.path.normpath(os.path.join(dirpath, name))
-                    if os.path.isfile(path):
-                        zip.write(path, path)
-                        if logger is not None:
-                            logger.info("adding '%s'", path)
-            zip.close()
+            with zipfile.ZipFile(zip_filename, "w",
+                                 compression=zipfile.ZIP_DEFLATED) as zf:
+                for dirpath, dirnames, filenames in os.walk(base_dir):
+                    for name in filenames:
+                        path = os.path.normpath(os.path.join(dirpath, name))
+                        if os.path.isfile(path):
+                            zf.write(path, path)
+                            if logger is not None:
+                                logger.info("adding '%s'", path)
 
     return zip_filename
 
@@ -966,7 +982,7 @@ elif os.name == 'nt':
     def disk_usage(path):
         """Return disk usage statistics about the given path.
 
-        Returned valus is a named tuple with attributes 'total', 'used' and
+        Returned values is a named tuple with attributes 'total', 'used' and
         'free', which are the amount of total, used and free space, in bytes.
         """
         total, free = nt._getdiskusage(path)
@@ -1065,12 +1081,19 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
         return (os.path.exists(fn) and os.access(fn, mode)
                 and not os.path.isdir(fn))
 
-    # Short circuit. If we're given a full path which matches the mode
-    # and it exists, we're done here.
-    if _access_check(cmd, mode):
-        return cmd
+    # If we're given a path with a directory part, look it up directly rather
+    # than referring to PATH directories. This includes checking relative to the
+    # current directory, e.g. ./script
+    if os.path.dirname(cmd):
+        if _access_check(cmd, mode):
+            return cmd
+        return None
 
-    path = (path or os.environ.get("PATH", os.defpath)).split(os.pathsep)
+    if path is None:
+        path = os.environ.get("PATH", os.defpath)
+    if not path:
+        return None
+    path = path.split(os.pathsep)
 
     if sys.platform == "win32":
         # The current directory takes precedence on Windows.
@@ -1081,10 +1104,12 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
         pathext = os.environ.get("PATHEXT", "").split(os.pathsep)
         # See if the given file matches any of the expected path extensions.
         # This will allow us to short circuit when given "python.exe".
-        matches = [cmd for ext in pathext if cmd.lower().endswith(ext.lower())]
         # If it does match, only test that one, otherwise we have to try
         # others.
-        files = [cmd] if matches else [cmd + ext.lower() for ext in pathext]
+        if any(cmd.lower().endswith(ext.lower()) for ext in pathext):
+            files = [cmd]
+        else:
+            files = [cmd + ext for ext in pathext]
     else:
         # On other platforms you don't have things like PATHEXT to tell you
         # what file suffixes are executable, so just pass on cmd as-is.
@@ -1092,9 +1117,9 @@ def which(cmd, mode=os.F_OK | os.X_OK, path=None):
 
     seen = set()
     for dir in path:
-        dir = os.path.normcase(dir)
-        if not dir in seen:
-            seen.add(dir)
+        normdir = os.path.normcase(dir)
+        if not normdir in seen:
+            seen.add(normdir)
             for thefile in files:
                 name = os.path.join(dir, thefile)
                 if _access_check(name, mode):

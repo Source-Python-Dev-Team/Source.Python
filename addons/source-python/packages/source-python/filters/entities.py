@@ -33,7 +33,7 @@ class _EntityIterManager(object):
 
     def __init__(self):
         '''Store the return type registry instance'''
-        self._return_types = _ReturnTypeRegistry(self.__qualname__)
+        self._return_types = _ReturnTypeRegistry(self.__class__.__name__)
 
     def register_return_type(self, return_type, function):
         '''Registers the given return type to the class'''

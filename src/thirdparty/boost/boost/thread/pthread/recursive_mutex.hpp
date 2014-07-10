@@ -28,10 +28,13 @@
 #include <boost/thread/detail/delete.hpp>
 
 #ifdef _POSIX_TIMEOUTS
-#if _POSIX_TIMEOUTS >= 0
+#if _POSIX_TIMEOUTS >= 0 && _POSIX_TIMEOUTS>=200112L
+#ifndef BOOST_PTHREAD_HAS_TIMEDLOCK
 #define BOOST_PTHREAD_HAS_TIMEDLOCK
 #endif
 #endif
+#endif
+
 
 #if defined(BOOST_HAS_PTHREAD_MUTEXATTR_SETTYPE) && defined(BOOST_PTHREAD_HAS_TIMEDLOCK)
 #define BOOST_USE_PTHREAD_RECURSIVE_TIMEDLOCK
@@ -343,7 +346,7 @@ namespace boost
 #if defined BOOST_THREAD_USES_DATETIME
         bool timed_lock(system_time const & abs_time)
         {
-            struct timespec const ts=detail::get_timespec(abs_time);
+            struct timespec const ts=detail::to_timespec(abs_time);
             return do_try_lock_until(ts);
         }
 #endif
@@ -370,12 +373,9 @@ namespace boost
         }
         bool try_lock_until(const chrono::time_point<chrono::system_clock, chrono::nanoseconds>& tp)
         {
-          using namespace chrono;
-          nanoseconds d = tp.time_since_epoch();
-          timespec ts;
-          seconds s = duration_cast<seconds>(d);
-          ts.tv_sec = static_cast<long>(s.count());
-          ts.tv_nsec = static_cast<long>((d - s).count());
+          //using namespace chrono;
+          chrono::nanoseconds d = tp.time_since_epoch();
+          timespec ts = boost::detail::to_timespec(d);
           return do_try_lock_until(ts);
         }
 #endif

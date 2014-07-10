@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: large_arithmetic.hpp 80992 2012-10-15 19:10:33Z steven_watanabe $
+ * $Id: large_arithmetic.hpp 82940 2013-02-16 22:15:31Z steven_watanabe $
  */
 
 #ifndef BOOST_RANDOM_DETAIL_LARGE_ARITHMETIC_HPP
@@ -96,8 +96,8 @@ inline div_t muldivmod(boost::uintmax_t a, boost::uintmax_t b, boost::uintmax_t 
 
         quotient[i - 2] = q;
         product[i] = 0;
-        product[i-1] = (rem >> bits) & mask;
-        product[i-2] = rem & mask;
+        product[i-1] = static_cast<digit_t>((rem >> bits) & mask);
+        product[i-2] = static_cast<digit_t>(rem & mask);
     }
 
     div_t result = {

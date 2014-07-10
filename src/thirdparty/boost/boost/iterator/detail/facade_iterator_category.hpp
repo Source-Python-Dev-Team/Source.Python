@@ -131,7 +131,6 @@ template <class Category, class Traversal>
 struct iterator_category_with_traversal
   : Category, Traversal
 {
-# if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
     // Make sure this isn't used to build any categories where
     // convertibility to Traversal is redundant.  Should just use the
     // Category element in that case.
@@ -147,7 +146,6 @@ struct iterator_category_with_traversal
 #  if !BOOST_WORKAROUND(BOOST_MSVC, BOOST_TESTED_AT(1310))
     BOOST_MPL_ASSERT((is_iterator_traversal<Traversal>));
 #  endif 
-# endif 
 };
 
 // Computes an iterator_category tag whose traversal is Traversal and
@@ -155,9 +153,7 @@ struct iterator_category_with_traversal
 template <class Traversal, class ValueParam, class Reference>
 struct facade_iterator_category_impl
 {
-# if !BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
     BOOST_MPL_ASSERT_NOT((is_iterator_category<Traversal>));
-# endif 
     
     typedef typename iterator_facade_default_category<
         Traversal,ValueParam,Reference
