@@ -113,8 +113,7 @@ auth_providers = _CoreSettingsInstance['AUTH_SETTINGS']['providers'].split()
 if auth_providers:
 
     # Load the auth providers
-    _CoreCommandInstance.call_command(
-        'auth', ['load'] + auth_providers)
+    _CoreCommandInstance.call_command('auth', ['load'] + auth_providers)
 
 
 # =============================================================================

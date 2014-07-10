@@ -14,8 +14,6 @@ from importlib import import_module
 # Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
-#   Path
-from path import Path
 
 # Source.Python Imports
 #   Basetypes
@@ -67,9 +65,6 @@ class _UserMessages(dict):
 
             # Parse and merge the current file
             parsed_messages.merge(ConfigObj(file_path))
-
-        # Get the ../messages/types/ base path
-        base_path = Path(__file__).parent.joinpath('types')
 
         # Loop through all messages
         for message_name, message_data in parsed_messages.items():
