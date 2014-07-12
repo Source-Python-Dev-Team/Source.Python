@@ -252,6 +252,10 @@ void SayConCommand::Dispatch( const CCommand& command )
 	// Get the name of the command used
 	std::string szCommandString (command.Arg(1));
 
+	// Don't handle empty command strings. This would cause a crash.
+	if (szCommandString.empty())
+		return;
+
 	// Copy the string to get a char instance
 	char * szCopyCommandString = new char [szCommandString.length() + 1];
 	std::strcpy(szCopyCommandString, szCommandString.c_str());
