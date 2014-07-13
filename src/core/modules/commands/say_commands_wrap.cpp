@@ -253,29 +253,30 @@ void SayConCommand::Dispatch( const CCommand& command )
 	std::string szCommandString (command.Arg(1));
 
 	// Don't handle empty command strings. This would cause a crash.
-	if (szCommandString.empty())
-		return;
-
-	// Copy the string to get a char instance
-	char * szCopyCommandString = new char [szCommandString.length() + 1];
-	std::strcpy(szCopyCommandString, szCommandString.c_str());
-
-	// Split the command using <space> as the delimiter
-	// This should be the actual Say Command
-	char * szCommand = std::strtok(szCopyCommandString, " ");
-
-	// Find if the command is registered
-	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
-	if( commandMapIter != g_SayCommandMap.end() )
+	if (!szCommandString.empty())
 	{
-		// Get the CSayCommandManager instance for the command
-		CSayCommandManager* pCSayCommandManager = commandMapIter->second;
-		
-		// Call the command and see it wants to block the command
-		if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, command)  == BLOCK)
+
+		// Copy the string to get a char instance
+		char * szCopyCommandString = new char [szCommandString.length() + 1];
+		std::strcpy(szCopyCommandString, szCommandString.c_str());
+
+		// Split the command using <space> as the delimiter
+		// This should be the actual Say Command
+		char * szCommand = std::strtok(szCopyCommandString, " ");
+
+		// Find if the command is registered
+		SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
+		if( commandMapIter != g_SayCommandMap.end() )
 		{
-			// Block the command
-			return;
+			// Get the CSayCommandManager instance for the command
+			CSayCommandManager* pCSayCommandManager = commandMapIter->second;
+		
+			// Call the command and see it wants to block the command
+			if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, command)  == BLOCK)
+			{
+				// Block the command
+				return;
+			}
 		}
 	}
 	
