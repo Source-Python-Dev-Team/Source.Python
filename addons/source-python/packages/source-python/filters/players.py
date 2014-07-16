@@ -164,7 +164,7 @@ _PlayerIterManagerInstance.register_return_type(
 _PlayerIterManagerInstance.register_return_type(
     'address', address_from_playerinfo)
 _PlayerIterManagerInstance.register_return_type(
-    'info', lambda playerinfo: playerinfo)
+    'playerinfo', lambda playerinfo: playerinfo)
 _PlayerIterManagerInstance.register_return_type(
     'player', lambda playerinfo: PlayerEntity(
         index_from_playerinfo(playerinfo)))
