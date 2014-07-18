@@ -1,22 +1,25 @@
+# ../menus/base.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
+# Python Imports
+#   Collections
 from collections import defaultdict
 
-# Source.Python
-#   core
+# Source.Python Imports
+#   Core
 from core import AutoUnload
-#   events
-from events import Event
-#   filters
-from filters.players import PlayerIter
-#   engines
+#   Engines
 from engines.server import EngineServer
-#   translations
-from translations.strings import TranslationStrings
-#   players
+#   Events
+from events import Event
+#   Filters
+from filters.players import PlayerIter
+#   Players
 from players.helpers import index_from_userid
+#   Translations
+from translations.strings import TranslationStrings
 
 
 # =============================================================================

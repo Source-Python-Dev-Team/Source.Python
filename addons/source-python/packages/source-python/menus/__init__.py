@@ -1,17 +1,19 @@
+# ../menus/__init__.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Source.Python
-#  menus
+# Source.Python Imports
+#   Core
+from core import GAME_NAME
+#   Menus
 from menus.base import Text
 
-#  core
-from core import GAME_NAME
-
 
 # =============================================================================
-# >> GLOBAL VARIABLES
+# >> ALL DECLARATION
 # =============================================================================
+# Add all the global variables to __all__
 __all__ = [
     'Text',
     'Option',
@@ -19,6 +21,10 @@ __all__ = [
     'PagedMenu',
 ]
 
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
 SimpleMenu = None
 PagedMenu = None
 Option = None
@@ -36,7 +42,7 @@ class _MenuStyle(object):
     RADIO = 0
 
     # Menus are displayed as ESC menus
-    ESC   = 1
+    ESC = 1
 
 
 # =============================================================================

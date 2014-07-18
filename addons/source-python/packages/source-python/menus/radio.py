@@ -1,17 +1,20 @@
+# ../menus/radio.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
+# Python Imports
+#   Math
 import math
 
-# Source.Python
-#   menus
-from menus.base import _BaseMenu
+# Source.Python Imports
+#   Menus
 from menus.base import Text
+from menus.base import _BaseMenu
 from menus.base import _BaseOption
 from menus.base import _translate_text
 from menus.queue import _radio_queues
-#   messages
+#   Messages
 from messages import ShowMenu
 
 
@@ -59,7 +62,7 @@ class SimpleRadioMenu(_BaseMenu):
         # Return the menu data
         return dict(
             slots=self._slots_to_bin(slots),
-            time=4, # TODO: Dynamically get the value
+            time=4,  # TODO: Dynamically get the value
             message=buffer[:-1] if buffer else buffer
         )
 
@@ -133,14 +136,10 @@ class PagedRadioMenu(SimpleRadioMenu):
     will automatically add navigation options.
     '''
 
-    def __init__(self,
-            data=[],
-            select_callback=None,
-            build_callback=None,
-            description=None,
-            title=None,
-            top_seperator='-'*30,
-            bottom_seperator='-'*30):
+    def __init__(
+            self, data=[], select_callback=None,
+            build_callback=None, description=None,
+            title=None, top_seperator='-'*30, bottom_seperator='-'*30):
         '''
         Initializes the PagedRadioMenu instance.
 
@@ -271,13 +270,15 @@ class PagedRadioMenu(SimpleRadioMenu):
         # TODO: Add translations
         # Add "Back" option
         back_selectable = page.index > 0
-        buffer += RadioOption('Back', highlight=back_selectable)._render(ply_index, 8)
+        buffer += RadioOption(
+            'Back', highlight=back_selectable)._render(ply_index, 8)
         if back_selectable:
             slots.add(8)
 
         # Add "Next" option
         next_selectable = page.index < self.last_page_index
-        buffer += RadioOption('Next', highlight=next_selectable)._render(ply_index, 9)
+        buffer += RadioOption(
+            'Next', highlight=next_selectable)._render(ply_index, 9)
         if next_selectable:
             slots.add(9)
 
@@ -309,7 +310,7 @@ class PagedRadioMenu(SimpleRadioMenu):
         # Return the menu data
         return dict(
             slots=self._slots_to_bin(slots),
-            time=4, # TODO: Dynamically get the value
+            time=4,  # TODO: Dynamically get the value
             message=buffer[:-1]
         )
 

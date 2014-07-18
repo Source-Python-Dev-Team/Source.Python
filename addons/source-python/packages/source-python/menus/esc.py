@@ -1,30 +1,28 @@
+# ../menus/esc.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
+# Python Imports
+#   Math
 import math
 
-from collections import defaultdict
-
-# Source.Python
-#  menus
+# Source.Python Imports
+#   Colors
+from colors import White
+#   Keyvalues
+from keyvalues import KeyValues
+#   Menus
 from menus.base import _BaseMenu
 from menus.base import _BaseOption
 from menus.base import _translate_text
-from menus.queue import _esc_queues
 from menus.queue import ESC_SELECTION_CMD
-#  _messages
-from _messages import create_message
+from menus.queue import _esc_queues
+#   Messages
 from _messages import DialogType
-#  keyvalues
-from keyvalues import KeyValues
-#  events
-from events import Event
-#  players
-from players.helpers import index_from_userid
+from _messages import create_message
+#   Players
 from players.helpers import edict_from_index
-#  colors
-from colors import White
 
 
 # =============================================================================
@@ -36,13 +34,9 @@ class PagedESCMenu(_BaseMenu):
     will automatically add navigation options.
     '''
 
-    def __init__(self,
-            data=[],
-            select_callback=None,
-            build_callback=None,
-            description=None,
-            title=None,
-            title_color=White):
+    def __init__(
+            self, data=[], select_callback=None, build_callback=None,
+            description=None, title=None, title_color=White):
         '''
         Initializes the PagedESCMenu instance.
 
@@ -74,7 +68,8 @@ class PagedESCMenu(_BaseMenu):
         The color of the title.
         '''
 
-        super(PagedESCMenu, self).__init__(data, select_callback, build_callback)
+        super(PagedESCMenu, self).__init__(
+            data, select_callback, build_callback)
         self.description = description
         self.title = title
         self.title_color = title_color
@@ -126,7 +121,8 @@ class PagedESCMenu(_BaseMenu):
             index += 1
             button = data.find_key(str(index), True)
             button.set_string('msg', option._render(ply_index, index))
-            button.set_string('command', '{0} {1}'.format(ESC_SELECTION_CMD, index))
+            button.set_string(
+                'command', '{0} {1}'.format(ESC_SELECTION_CMD, index))
 
         # Fill the rest of the menu with empty options
         option_num = len(page.options)
@@ -134,8 +130,8 @@ class PagedESCMenu(_BaseMenu):
             index += option_num + 1
             button = data.find_key(str(index), True)
             button.set_string('msg', '')
-            button.set_string('command', '{0} {1}'.format(ESC_SELECTION_CMD, index))
-
+            button.set_string(
+                'command', '{0} {1}'.format(ESC_SELECTION_CMD, index))
 
     def _format_footer(self, ply_index, page, data):
         '''
@@ -167,7 +163,6 @@ class PagedESCMenu(_BaseMenu):
         button.set_string('msg', '0. Close')
         button.set_string('command', '{0} 0'.format(ESC_SELECTION_CMD))
 
-
     def _get_menu_data(self, ply_index):
         '''
         Returns all relevant menu data as a KeyValues instance.
@@ -177,8 +172,8 @@ class PagedESCMenu(_BaseMenu):
         '''
 
         data = KeyValues('menu')
-        data.set_string('msg',
-            _translate_text(self.description or '', ply_index))
+        data.set_string(
+            'msg', _translate_text(self.description or '', ply_index))
 
         # Get the player's current page
         page = self._player_pages[ply_index]

@@ -1,24 +1,25 @@
+# ../menus/queue.py
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-import time
-
+# Python Imports
+#   Collections
 from collections import deque
 
-# Source.Python
-#  players
-from players.helpers import index_from_playerinfo
-from players.helpers import index_from_userid
-#  events
-from events import Event
-#  commands
+# Source.Python Imports
+#   Commands
 from commands import CommandReturn
 from commands.client import ClientCommand
-#  listeners
+#   Events
+from events import Event
+#   Listeners
 from listeners.tick.repeat import TickRepeat
-#  menus
+#   Menus
 from menus.base import _BaseMenu
+#   Players
+from players.helpers import index_from_playerinfo
+from players.helpers import index_from_userid
 
 
 # =============================================================================
@@ -212,7 +213,8 @@ def _validate_selection(player_info, command, max_choice):
     if choice < 0:
         return (None, None)
 
-    return (index_from_playerinfo(player_info), 0 if choice > max_choice else choice)
+    return (index_from_playerinfo(
+        player_info), 0 if choice > max_choice else choice)
 
 
 # =============================================================================
@@ -229,6 +231,7 @@ def _radio_refresh():
 
 # TODO: Get the refresh repeat dynamically
 _radio_refresh.start(1, 0)
+
 
 @TickRepeat
 def _esc_refresh():
@@ -255,6 +258,7 @@ def _menuselect_callback(player_info, command):
     index, choice = _validate_selection(player_info, command, 9)
     if index is not None:
         _radio_queues[index]._select(choice)
+
 
 @ClientCommand(ESC_SELECTION_CMD)
 def _escselect_callback(player_info, command):
