@@ -264,18 +264,23 @@ void SayConCommand::Dispatch( const CCommand& command )
 		// This should be the actual Say Command
 		char * szCommand = std::strtok(szCopyCommandString, " ");
 
-		// Find if the command is registered
-		SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
-		if( commandMapIter != g_SayCommandMap.end() )
+		// Is there a command?
+		// This check fixes https://github.com/Source-Python-Dev-Team/Source.Python/issues/17
+		if (szCommand)
 		{
-			// Get the CSayCommandManager instance for the command
-			CSayCommandManager* pCSayCommandManager = commandMapIter->second;
-		
-			// Call the command and see it wants to block the command
-			if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, command)  == BLOCK)
+			// Find if the command is registered
+			SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
+			if( commandMapIter != g_SayCommandMap.end() )
 			{
-				// Block the command
-				return;
+				// Get the CSayCommandManager instance for the command
+				CSayCommandManager* pCSayCommandManager = commandMapIter->second;
+		
+				// Call the command and see it wants to block the command
+				if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, command)  == BLOCK)
+				{
+					// Block the command
+					return;
+				}
 			}
 		}
 	}
