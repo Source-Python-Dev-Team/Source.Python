@@ -596,7 +596,7 @@ class TypeManager(dict):
         '''
 
         # Automatically add the this pointer argument
-        args = (Argument.POINTER,) + args
+        args = (Argument.POINTER,) + tuple(args)
 
         # Create a converter, if it's not a native type
         if return_type not in Return.values:
@@ -625,7 +625,7 @@ class TypeManager(dict):
         '''
 
         # Automatically add the this pointer argument
-        args = (Argument.POINTER,) + args
+        args = (Argument.POINTER,) + tuple(args)
 
         # Create a converter, if it's not a native type
         if return_type not in Return.values:
