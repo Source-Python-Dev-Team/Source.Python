@@ -155,7 +155,7 @@ class INetworkStringTableExt
 public:
 	static const char* GetString(INetworkStringTable& table, int index)
 	{
-		if (index >= table.GetNumStrings())
+		if ((index < 0) || (index >= table.GetNumStrings()))
 			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
 
 		return table.GetString(index);
@@ -264,12 +264,24 @@ void export_stringtable()
 //---------------------------------------------------------------------------------
 // Exposes INetworkStringTableContainer.
 //---------------------------------------------------------------------------------
+class INetworkStringTableContainerExt
+{
+public:
+	static INetworkStringTable* GetTable(INetworkStringTableContainer& table_container, TABLEID table_id)
+	{
+		if ((table_id < 0) || (table_id >= table_container.GetNumTables()))
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
+
+		return table_container.GetTable(table_id);
+	}
+};
+
 void export_stringtable_container()
 {
 	class_<INetworkStringTableContainer, boost::noncopyable>("_StringTables", no_init)
 		
 		.def("__getitem__",
-			&INetworkStringTableContainer::GetTable,
+			&INetworkStringTableContainerExt::GetTable,
 			"Returns the StringTable instance of the given table ID.",
 			("table_index"),
 			reference_existing_object_policy()
