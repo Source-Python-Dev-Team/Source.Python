@@ -150,6 +150,18 @@ int GetStringUserDataLength( INetworkStringTable *pTable, const char *string )
 //---------------------------------------------------------------------------------
 // Exposes INetworkStringTable.
 //---------------------------------------------------------------------------------
+class INetworkStringTableExt
+{
+public:
+	static const char* GetString(INetworkStringTable& table, int index)
+	{
+		if (index >= table.GetNumStrings())
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
+
+		return table.GetString(index);
+	}
+};
+
 void export_stringtable()
 {
 	class_<INetworkStringTable, boost::noncopyable>("StringTable", no_init)
@@ -198,7 +210,7 @@ void export_stringtable()
 		)
 		
 		.def("__getitem__",
-			&INetworkStringTable::GetString,
+			&INetworkStringTableExt::GetString,
 			"Returns the string at the given index.",
 			("string_index")
 		)
