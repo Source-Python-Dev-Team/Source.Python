@@ -7,6 +7,8 @@
 #   StringTables
 from _stringtables import StringTable
 from _stringtables import StringTables
+from _stringtables import INVALID_STRING_TABLE
+from _stringtables import INVALID_STRING_INDEX
 
 
 # =============================================================================
@@ -15,4 +17,6 @@ from _stringtables import StringTables
 __all__ = [
     'StringTable',
     'StringTables',
+    'INVALID_STRING_TABLE',
+    'INVALID_STRING_INDEX',
 ]

@@ -53,6 +53,9 @@ DECLARE_SP_MODULE(_stringtables)
 {
 	export_stringtable();
 	export_stringtable_container();
+	
+	scope().attr("INVALID_STRING_TABLE") = INVALID_STRING_TABLE;
+	scope().attr("INVALID_STRING_INDEX") = INVALID_STRING_INDEX;
 }
 
 //---------------------------------------------------------------------------------
