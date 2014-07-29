@@ -75,7 +75,7 @@ class SimpleRadioMenu(_BaseMenu):
         buffer = list('0000000000')
         for slot in slots:
             if 0 <= slot <= 9:
-                buffer[~(slot-1)] = '1'
+                buffer[~(slot - 1)] = '1'
 
         return int(''.join(buffer), 2)
 
@@ -94,7 +94,7 @@ class SimpleRadioMenu(_BaseMenu):
             return None
 
         return super(SimpleRadioMenu, self)._select(
-            ply_index, self._player_pages[ply_index].options[choice-1])
+            ply_index, self._player_pages[ply_index].options[choice - 1])
 
     def _send(self, ply_index):
         '''
@@ -139,7 +139,7 @@ class PagedRadioMenu(SimpleRadioMenu):
     def __init__(
             self, data=[], select_callback=None,
             build_callback=None, description=None,
-            title=None, top_seperator='-'*30, bottom_seperator='-'*30):
+            title=None, top_seperator='-' * 30, bottom_seperator='-' * 30):
         '''
         Initializes the PagedRadioMenu instance.
 
@@ -198,9 +198,9 @@ class PagedRadioMenu(SimpleRadioMenu):
         '''
 
         # Create the page info string
-        info = '[{0}/{1}]\n'.format(page.index+1, self.page_count)
+        info = '[{0}/{1}]\n'.format(page.index + 1, self.page_count)
         buffer = (_translate_text(self.title or '', ply_index)).ljust(
-            len(self.top_seperator)-len(info)) + info
+            len(self.top_seperator) - len(info)) + info
 
         # Set description if present
         if self.description is not None:
@@ -229,21 +229,19 @@ class PagedRadioMenu(SimpleRadioMenu):
         buffer = ''
 
         # Get all options for the current page
-        options = page.options = self[page.index*7:(page.index+1)*7]
+        options = page.options = self[page.index * 7: (page.index + 1) * 7]
 
         # Loop through all options of the current page
-        for index, option in enumerate(options):
+        for index, option in enumerate(options, 1):
             if not isinstance(option, RadioOption):
                 raise TypeError('Expected a RadioOption instance.')
 
-            index += 1
             buffer += option._render(ply_index, index)
             if option.selectable:
                 slots.add(index)
 
         # Fill the rest of the menu
-        for x in range(7-len(options)):
-            buffer += ' \n'
+        buffer += ' \n' * (7 - len(options))
 
         return buffer
 

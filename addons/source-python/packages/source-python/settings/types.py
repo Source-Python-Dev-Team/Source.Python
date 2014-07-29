@@ -6,6 +6,8 @@
 # Python Imports
 #   Collections
 from collections import OrderedDict
+#   Contextlib
+from contextlib import suppress
 
 # Source.Python Imports
 #   Engines
@@ -83,20 +85,11 @@ class _SettingsType(object):
         # Get the client's convar value
         value = EngineServer.get_client_convar_value(index, convar)
 
-        # Use try/except to typecast the value
-        try:
+        # Try to typecast the value, suppressing ValueErrors
+        with suppress(ValueError):
 
             # Typecast the given value
             value = self._type(value)
-
-        # Was an exception encountered?
-        except ValueError:
-
-            # Do nothing if the error occurred
-            pass
-
-        # Was no exception encountered?
-        else:
 
             # Is the given value a proper one for the convar?
             if self._is_valid_setting(value):
@@ -116,20 +109,11 @@ class _SettingsType(object):
                 # Get the client's value for the convar
                 value = _PlayerSettingsStorage[uniqueid][convar]
 
-                # Use try/except to typecast the value
-                try:
+                # Try to typecast the value, suppressing ValueErrors
+                with suppress(ValueError):
 
                     # Typecast the given value
                     value = self._type(value)
-
-                # Was an exception encountered?
-                except ValueError:
-
-                    # Do nothing if the error occurred
-                    pass
-
-                # Was no exception encountered?
-                else:
 
                     # Is the given value a proper one for the convar?
                     if self._is_valid_setting(value):
@@ -144,7 +128,8 @@ class _SettingsType(object):
 class _NumericalSetting(_SettingsType):
     '''Class used to store integer/float settings with min/max values'''
 
-    def __init__(self, name, default, text='', min_value=None, max_value=None):
+    def __init__(
+            self, name, default, text=None, min_value=None, max_value=None):
         '''Stores the base attributes on instantiation'''
         self._name = name
         self._default = default
@@ -195,7 +180,7 @@ class _StringSetting(_SettingsType):
     '''Class used to store string value settings with available options'''
     _type = str
 
-    def __init__(self, name, default, text=''):
+    def __init__(self, name, default, text=None):
         '''Stores the base attributes on instatiation'''
         self._name = name
         self._default = default
@@ -207,7 +192,7 @@ class _StringSetting(_SettingsType):
         '''Returns the options dictionary for the setting'''
         return self._options
 
-    def add_option(self, name, text=''):
+    def add_option(self, name, text=None):
         '''Adds an option to the setting's dictionary'''
 
         # Is the given option already registered?

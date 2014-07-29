@@ -13,6 +13,7 @@ from filters.recipients import RecipientFilter
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Stringtables
+from stringtables import StringTables
 from stringtables.downloads import Downloadables
 
 
@@ -105,7 +106,8 @@ class Sound(AutoUnload):
         '''Store all the given attributes and set the module for unloading'''
 
         # Set sample as a private attribute, since it should never change
-        self._sample = sample
+        # Added replacing \ with / in paths for comformity
+        self._sample = sample.replace('\\', '/')
 
         # Set all the base attributes
         self.recipients = recipients
@@ -173,7 +175,7 @@ class Sound(AutoUnload):
 
     def is_precached(self):
         '''Returns whether or not the sample is precached'''
-        return EngineSound.is_sound_precached(self.sample)
+        return self.sample in StringTables.soundprecache
 
     @property
     def sample(self):

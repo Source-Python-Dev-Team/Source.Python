@@ -8,7 +8,13 @@
 from collections import OrderedDict
 
 # Source.Python Imports
+#   Core
+from core import AutoUnload
+#   Menus
+from menus import PagedMenu
+from menus import Option
 #   Settings
+from settings.menu import _AvailableSettingsDictionary
 from settings.types import _SettingsType
 from settings.types import _FloatSetting
 from settings.types import _IntegerSetting
@@ -25,19 +31,12 @@ __all__ = [
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Create a dictionary to store all of the user settings
-_MainSettingsDictionary = dict()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _SettingsDictionary(OrderedDict):
     '''Class used to store user settings'''
 
-    def __init__(self, name, text=''):
+    def __init__(self, name, text=None):
         '''
             Verifies the name value on instantiation and stores base attributes
         '''
@@ -52,6 +51,9 @@ class _SettingsDictionary(OrderedDict):
         # Set the base attributes
         self._name = name
         self._text = text
+
+        # Create the instance's menu
+        self._menu = PagedMenu(select_callback=self._chosen_item)
 
         # Call the super class' __init__ to initialize the OrderedDict
         super(_SettingsDictionary, self).__init__()
@@ -77,14 +79,21 @@ class _SettingsDictionary(OrderedDict):
         # Set the item in the dictionary
         super(_SettingsDictionary, self).__setitem__(item, value)
 
+        # Get the new object
+        value = self[item]
+
         # Set the item's prefix
-        self[item]._prefix = self.prefix + '_'
+        value._prefix = self.prefix + '_'
 
         # Does the section's name need added to the prefix?
         if not isinstance(self, PlayerSettings):
 
             # Add the section's name to the prefix
-            self[item]._prefix += self.name.lower().replace(' ', '_') + '_'
+            value._prefix += self.name.lower().replace(' ', '_') + '_'
+
+        # Add the option to the menu
+        self.menu.append(
+            Option(value.name if value.text is None else value.text, value))
 
     @property
     def name(self):
@@ -92,12 +101,22 @@ class _SettingsDictionary(OrderedDict):
         return self._name
 
     @property
+    def text(self):
+        '''Returns the text of the _SettingsDictionary instance'''
+        return self._text
+
+    @property
     def prefix(self):
         '''Returns the prefix of the _SettingsDictionary instance'''
         return self._prefix
 
+    @property
+    def menu(self):
+        '''Returns the instance's menu object'''
+        return self._menu
+
     def add_float_setting(
-            self, name, default, text='', min_value=None, max_value=None):
+            self, name, default, text=None, min_value=None, max_value=None):
         '''Adds a new float setting to the dictionary'''
 
         # Add the new float setting to the dictionary
@@ -107,7 +126,7 @@ class _SettingsDictionary(OrderedDict):
         return self[name]
 
     def add_int_setting(
-            self, name, default, text='', min_value=None, max_value=None):
+            self, name, default, text=None, min_value=None, max_value=None):
         '''Adds a new integer setting to the dictionary'''
 
         # Add the new integer setting to the dictionary
@@ -116,7 +135,7 @@ class _SettingsDictionary(OrderedDict):
         # Return the setting
         return self[name]
 
-    def add_string_setting(self, name, default, text=''):
+    def add_string_setting(self, name, default, text=None):
         '''Adds a new string setting to the dictionary'''
 
         # Add the new string setting to the dictionary
@@ -125,7 +144,7 @@ class _SettingsDictionary(OrderedDict):
         # Return the setting
         return self[name]
 
-    def add_section(self, name, text=''):
+    def add_section(self, name, text=None):
         '''Adds a new section to the dictionary'''
 
         # Add the new section to the dictionary
@@ -134,16 +153,32 @@ class _SettingsDictionary(OrderedDict):
         # Return the section
         return self[name]
 
+    @staticmethod
+    def _chosen_item(menu, index, option):
+        '''Called when an item is chosen from the instance's menu'''
 
-class PlayerSettings(_SettingsDictionary):
+        # Is the chosen value another branch of settings?
+        if isinstance(option.value, _SettingsDictionary):
+
+            # Send the new menu
+            option.value.menu.send(index)
+
+            # No need to go further
+            return
+
+        # TODO: Placeholder for sending setting specific menus
+        print('You chose {0}'.format(option.text))
+
+
+class PlayerSettings(_SettingsDictionary, AutoUnload):
     '''Class used to register user settings'''
 
-    def __init__(self, name, prefix, text=''):
+    def __init__(self, name, prefix, text=None):
         '''Verifies the given values, creates the instance,
             and stores the instance in the main dictionary'''
 
         # Is the given name already registered?
-        if name in _MainSettingsDictionary:
+        if name in _AvailableSettingsDictionary:
 
             # Raise an error
             raise ValueError(
@@ -164,8 +199,17 @@ class PlayerSettings(_SettingsDictionary):
         self._prefix = prefix.lower()
 
         # Add the instance to the main dictionary
-        _MainSettingsDictionary[name] = self
+        _AvailableSettingsDictionary[name] = self
+
+        # Add the settings instance to the main settings menu
+        _AvailableSettingsDictionary.menu.append(
+            Option(name if text is None else text, self))
 
     def unregister_settings(self):
         '''Unregisters the given settings from the dictionary'''
-        del _MainSettingsDictionary[self.name]
+        del _AvailableSettingsDictionary[self.name]
+
+    def _unload_instance(self):
+        '''Unregisters the setting automatically
+            when hosting plugin is unloaded'''
+        self.unregister_settings()

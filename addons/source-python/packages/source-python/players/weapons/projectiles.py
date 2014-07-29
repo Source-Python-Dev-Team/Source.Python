@@ -1,6 +1,14 @@
 # ../players/weapons/projectiles.py
 
 # =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python Imports
+#   Contextlib
+from contextlib import suppress
+
+
+# =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 # Set __all__ to an empty list
@@ -24,13 +32,9 @@ class _ProjectileMeta(type):
 
             # Try to store the odict's value of
             # the attribute and delete it from odict
-            try:
+            with suppress(KeyError):
                 temp[attribute] = odict[attribute]
                 del odict[attribute]
-
-            # If the attribute is not found in odict, just leave it as None
-            except KeyError:
-                continue
 
         # Create the object
         cls = super().__new__(mcs, name, bases, odict)

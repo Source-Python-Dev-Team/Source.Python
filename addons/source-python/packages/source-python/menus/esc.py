@@ -89,7 +89,7 @@ class PagedESCMenu(_BaseMenu):
         '''
 
         # Create the page info string
-        info = '[{0}/{1}]'.format(page.index+1, self.page_count)
+        info = '[{0}/{1}]'.format(page.index + 1, self.page_count)
 
         if self.title:
             data.set_string('title', '{0} {1}'.format(
@@ -114,7 +114,7 @@ class PagedESCMenu(_BaseMenu):
         '''
 
         # Get all options of the current page
-        page.options = tuple(self.options)[page.index*5:(page.index+1)*5]
+        page.options = tuple(self.options)[page.index * 5:(page.index + 1) * 5]
 
         # Loop through all options of the current page
         for index, option in enumerate(page.options):
@@ -126,7 +126,7 @@ class PagedESCMenu(_BaseMenu):
 
         # Fill the rest of the menu with empty options
         option_num = len(page.options)
-        for index in range(5-option_num):
+        for index in range(5 - option_num):
             index += option_num + 1
             button = data.find_key(str(index), True)
             button.set_string('msg', '')
@@ -219,7 +219,7 @@ class PagedESCMenu(_BaseMenu):
         if choice > len(page.options):
             return self
 
-        option = page.options[choice-1]
+        option = page.options[choice - 1]
         if not option.selectable:
             return self
 
