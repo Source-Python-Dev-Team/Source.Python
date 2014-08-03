@@ -1,5 +1,7 @@
 # ../plugins/manager.py
 
+"""Provides plugin loading/unloading functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -38,11 +40,11 @@ PluginsManagerLogger = PluginsLogger.manager
 # >> CLASSES
 # =============================================================================
 class PluginManager(OrderedDict):
-    """Stores plugins and their instances"""
+
+    """Stores plugins and their instances."""
 
     def __init__(self, base_import=''):
-        """Called when the class instance is initialized"""
-
+        """Called when the class instance is initialized."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super(PluginManager, self).__init__()
 
@@ -62,8 +64,7 @@ class PluginManager(OrderedDict):
             self.translations = _plugin_strings
 
     def __missing__(self, plugin_name):
-        """Tries to load a plugin that is not loaded"""
-
+        """Try to load a plugin that is not loaded."""
         # Try to get the plugin's instance
         try:
 
@@ -118,8 +119,7 @@ class PluginManager(OrderedDict):
         return instance
 
     def __delitem__(self, plugin_name):
-        """Removes a plugin from the manager"""
-
+        """Remove a plugin from the manager."""
         # Is the plugin in the dictionary?
         if plugin_name not in self:
 
@@ -154,16 +154,15 @@ class PluginManager(OrderedDict):
 
     @property
     def base_import(self):
-        """Returns the base import path for the manager"""
+        """Return the base import path for the manager."""
         return self._base_import
 
     def is_loaded(self, plugin_name):
-        """Returns whether or not a plugin is loaded"""
+        """Return whether or not a plugin is loaded."""
         return plugin_name in self
 
     def get_plugin_instance(self, plugin_name):
-        """Returns a plugin's instance, if it is loaded"""
-
+        """Return a plugin's instance, if it is loaded."""
         # Is the plugin loaded?
         if plugin_name in self:
 
@@ -174,8 +173,7 @@ class PluginManager(OrderedDict):
         return None
 
     def _remove_modules(self, plugin_name):
-        """Removes all modules from the plugin"""
-
+        """Remove all modules from the plugin."""
         # Get the plugins import path
         base_name = self.base_import + plugin_name
 
@@ -190,8 +188,7 @@ class PluginManager(OrderedDict):
 
     @staticmethod
     def _remove_module(module):
-        """Removes a module and unloads any AutoUnload instances"""
-
+        """Remove a module and unloads any AutoUnload instances."""
         # Loop through all items in the module
         for name in dir(sys.modules[module]):
 

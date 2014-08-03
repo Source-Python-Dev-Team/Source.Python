@@ -1,5 +1,7 @@
 # ../players/games/cstrike.py
 
+"""Provides cstrike specific player functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -15,5 +17,5 @@ from players.weapons.types import _C4
 # >> CLASSES
 # =============================================================================
 class _GameWeapons(_HEGrenade, _Flashbang, _SmokeGrenade, _C4):
-    """Game-specific class inherited by _PlayerWeapons to
-        handle CS:S specific weapon functionality for players"""
+
+    """CS:S specific player weapon functionality."""

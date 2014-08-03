@@ -1,5 +1,7 @@
 # ../settings/storage.py
 
+"""Provides SQL storage and access to player specific settings."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -31,12 +33,11 @@ if not _STORAGE_PATH.parent.isdir():
 # >> CLASSES
 # =============================================================================
 class _UniqueSettings(dict):
-    """Dictionary class used to interact with
-        the database for a specific uniqueid"""
+
+    """Class used to interact with the database for a specific uniqueid."""
 
     def __init__(self, uniqueid):
-        """Stores the given uniqueid and adds it to the players table"""
-
+        """Store the given uniqueid and adds it to the players table."""
         # Call the super class' __init__ to initialize the dictionary
         super(_UniqueSettings, self).__init__()
 
@@ -49,9 +50,7 @@ class _UniqueSettings(dict):
             (self.uniqueid, ))
 
     def __setitem__(self, variable, value):
-        """Override __setitem__ to insert the given
-            variable and value to their respective tables"""
-
+        """Insert the given variable and value to their respective tables."""
         # Set the given variable's value in the dictionary
         super(_UniqueSettings, self).__setitem__(variable, value)
 
@@ -69,17 +68,16 @@ class _UniqueSettings(dict):
 
     @property
     def uniqueid(self):
-        """Returns the instance's uniqueid"""
+        """Return the instance's uniqueid."""
         return self._uniqueid
 
 
 class _PlayerSettingsDictionary(dict):
-    """Dictionary class used to store user specific settings values"""
+
+    """Dictionary class used to store user specific settings values."""
 
     def __init__(self):
-        """Connects to the database, creates the database tables, and
-            loads all values from the database into the dictionary"""
-
+        """Connect to the database and retrieve any stored values."""
         # Call the super class' __init__ to initialize the dictionary
         super(_PlayerSettingsDictionary, self).__init__()
 
@@ -129,9 +127,7 @@ class _PlayerSettingsDictionary(dict):
             self[uniqueid][variable] = value
 
     def __missing__(self, uniqueid):
-        """Adds the given uniqueid to the
-            dictionary as a _UniqueSettings instance"""
-
+        """Add the given uniqueid to the dictionary."""
         # Add the uniqueid to the dictionary
         value = self[uniqueid] = _UniqueSettings(uniqueid)
 
@@ -140,16 +136,16 @@ class _PlayerSettingsDictionary(dict):
 
     @property
     def connection(self):
-        """Returns the connection to the database"""
+        """Return the connection to the database."""
         return self._connection
 
     @property
     def cursor(self):
-        """Returns the cursor instance"""
+        """Return the cursor instance."""
         return self._cursor
 
     def server_spawn(self, game_event):
-        """Stores the dictionary to the database on map change"""
+        """Store the dictionary to the database on map change."""
         self.connection.commit()
 
 # Get the _PlayerSettingsDictionary instance

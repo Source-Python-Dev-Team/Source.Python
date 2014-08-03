@@ -1,5 +1,7 @@
 # ../players/weapons/__init__.py
 
+"""Provides base player weapon functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -47,15 +49,14 @@ else:
 # >> CLASSES
 # =============================================================================
 class _PlayerWeapons(_GameWeapons):
-    """Base Weapon class inherited by PlayerEntity to
-        perform basic weapon functionality for the player"""
+
+    """Extends PlayerEntity to provide basic weapon functionality."""
 
     # =========================================================================
     # >> GET AMMO
     # =========================================================================
     def get_ammo(self, weapon):
-        """Returns the amount of ammo the player has for the given weapon"""
-
+        """Return the amount of ammo the player has for the given weapon."""
         # Get the proper classname for the weapon
         classname = WeaponManager[weapon].name
 
@@ -63,20 +64,18 @@ class _PlayerWeapons(_GameWeapons):
         return self._get_weapon_ammo(classname)
 
     def get_primary_ammo(self):
-        """
-            Returns the amount of ammo the player has for their primary weapon
-        """
+        """Return the amount of ammo the player has for their primary."""
         return self._get_weapon_ammo(is_filters='primary')
 
     def get_secondary_ammo(self):
-        """Returns the amount of ammo the
-            player has for their secondary weapon"""
+        """Return the amount of ammo the player has for their secondary."""
         return self._get_weapon_ammo(is_filters='secondary')
 
     def _get_weapon_ammo(self, classname=None, is_filters=[], not_filters=[]):
-        """Returns the amount of ammo for the
-            first weapon for the given arguments"""
+        """Return the amount of ammo for the given arguments.
 
+        Returns for the first weapon found from the given arguments.
+        """
         # Get the index for the weapon with the given arguments
         index = self.get_weapon_index(classname, is_filters, not_filters)
 
@@ -97,9 +96,7 @@ class _PlayerWeapons(_GameWeapons):
     # >> GET CLIP
     # =========================================================================
     def get_clip(self, weapon):
-        """Returns the amount of ammo in the
-            weapon's clip for the given weapon"""
-
+        """Return the amount of ammo in the clip for the given weapon."""
         # Get the proper classname for the weapon
         classname = WeaponManager[weapon].name
 
@@ -107,19 +104,18 @@ class _PlayerWeapons(_GameWeapons):
         return self._get_weapon_clip(classname)
 
     def get_primary_clip(self):
-        """Returns the amount of ammo in the player's primary weapon's clip"""
+        """Return the amount of ammo in the player's primary weapon clip."""
         return self._get_weapon_clip(is_filters='primary')
 
     def get_secondary_clip(self):
-        """
-            Returns the amount of ammo in the player's secondary weapon's clip
-        """
+        """Return the amount of ammo in the player's secondary weapon clip."""
         return self._get_weapon_clip(is_filters='secondary')
 
     def _get_weapon_clip(self, classname=None, is_filters=[], not_filters=[]):
-        """Returns the amount of ammo in the clip for
-            the first weapon for the given arguments"""
+        """Return the clip amount for the given arguments.
 
+        Returns for the first weapon found from the given arguments.
+        """
         # Get the index for the weapon with the given arguments
         index = self.get_weapon_index(classname, is_filters, not_filters)
 
@@ -139,8 +135,7 @@ class _PlayerWeapons(_GameWeapons):
     # >> SET AMMO
     # =========================================================================
     def set_ammo(self, weapon, value):
-        """Sets the player's ammo property for the given weapon"""
-
+        """Set the player's ammo property for the given weapon."""
         # Get the proper classname for the weapon
         classname = WeaponManager[weapon].name
 
@@ -148,18 +143,19 @@ class _PlayerWeapons(_GameWeapons):
         self._set_weapon_ammo(value, classname)
 
     def set_primary_ammo(self, value):
-        """Sets the player's primary weapon's ammo value"""
+        """Set the player's primary weapon's ammo value."""
         self._set_weapon_ammo(value, is_filters='primary')
 
     def set_secondary_ammo(self, value):
-        """Sets the player's secondary weapon's ammo value"""
+        """Set the player's secondary weapon's ammo value."""
         self._set_weapon_ammo(value, is_filters='secondary')
 
     def _set_weapon_ammo(
             self, value, classname=None, is_filters=[], not_filters=[]):
-        """Sets the player's ammo value for first
-            weapon found with the given arguments"""
+        """Set the player's ammo value for the given arguments.
 
+        Sets for the first weapon found from the given arguments.
+        """
         # Get the index for the given arguments
         index = self.get_weapon_index(classname, is_filters, not_filters)
 
@@ -183,8 +179,7 @@ class _PlayerWeapons(_GameWeapons):
     # >> SET CLIP
     # =========================================================================
     def set_clip(self, weapon, value):
-        """Sets the player's clip value for the given weapon"""
-
+        """Set the player's clip value for the given weapon."""
         # Get the proper classname for the weapon
         classname = WeaponManager[weapon].name
 
@@ -192,18 +187,19 @@ class _PlayerWeapons(_GameWeapons):
         self._set_weapon_clip(value, classname)
 
     def set_primary_clip(self, value):
-        """Sets the player's primary weapon's clip value"""
+        """Set the player's primary weapon's clip value."""
         self._set_weapon_clip(value, is_filters='primary')
 
     def set_secondary_clip(self, value):
-        """Sets the player's secondary weapon's clip value"""
+        """Set the player's secondary weapon's clip value."""
         self._set_weapon_clip(value, is_filters='secondary')
 
     def _set_weapon_clip(
             self, value, classname=None, is_filters=[], not_filters=[]):
-        """Sets the player's clip value for first
-            weapon found with the given arguments"""
+        """Set the player's clip value for the given arguments.
 
+        Sets for the first weapon found from the given arguments.
+        """
         # Get the index for the given arguments
         index = self.get_weapon_index(classname, is_filters, not_filters)
 
@@ -226,8 +222,7 @@ class _PlayerWeapons(_GameWeapons):
     # >> ADD AMMO
     # =========================================================================
     def add_ammo(self, weapon, value):
-        """Adds ammo to the given weapon"""
-
+        """Add ammo to the given weapon."""
         # Get the proper classname for the weapon
         classname = WeaponManager[weapon].name
 
@@ -235,18 +230,19 @@ class _PlayerWeapons(_GameWeapons):
         self._add_weapon_ammo(value, classname)
 
     def add_primary_ammo(self, value):
-        """Adds ammo for the player's primary weapon"""
+        """Add ammo for the player's primary weapon."""
         self._add_weapon_ammo(value, is_filters='primary')
 
     def add_secondary_ammo(self, value):
-        """Adds ammo for the player's secondary weapon"""
+        """Add ammo for the player's secondary weapon."""
         self._add_weapon_ammo(value, is_filters='secondary')
 
     def _add_weapon_ammo(
             self, value, classname=None, is_filters=[], not_filters=[]):
-        """Adds ammo to the player's current value for the
-            first weapon found with the given arguments"""
+        """Add ammo to the player's current value for the given arguments.
 
+        Adds for the first weapon found from the given arguments.
+        """
         # Get the index for the given arguments
         index = self.get_weapon_index(classname, is_filters, not_filters)
 
@@ -274,8 +270,7 @@ class _PlayerWeapons(_GameWeapons):
     # >> ADD CLIP
     # =========================================================================
     def add_clip(self, weapon, value):
-        """Adds ammo to the given weapon's clip"""
-
+        """Add ammo to the given weapon's clip."""
         # Get the proper classname for the weapon
         classname = WeaponManager[weapon].name
 
@@ -283,18 +278,19 @@ class _PlayerWeapons(_GameWeapons):
         self._add_weapon_clip(value, classname)
 
     def add_primary_clip(self, value):
-        """Adds ammo for the player's primary weapon's clip"""
+        """Add ammo for the player's primary weapon's clip."""
         self._add_weapon_clip(value, is_filters='primary')
 
     def add_secondary_clip(self, value):
-        """Adds ammo for the player's secondary weapon's clip"""
+        """Add ammo for the player's secondary weapon's clip."""
         self._add_weapon_clip(value, is_filters='secondary')
 
     def _add_weapon_clip(
             self, value, classname=None, is_filters=[], not_filters=[]):
-        """Adds ammo to the weapon's current value for the
-            first weapon found with the given arguments"""
+        """Add ammo to the weapon's current value for the given arguments.
 
+        Adds for the first weapon found from the given arguments.
+        """
         # Get the index for the given arguments
         index = self.get_weapon_index(classname, is_filters, not_filters)
 
@@ -317,16 +313,15 @@ class _PlayerWeapons(_GameWeapons):
     # >> WEAPON INDEXES
     # =========================================================================
     def get_primary(self):
-        """Returns the player's primary weapon's index"""
+        """Return the player's primary weapon's index."""
         return self.get_weapon_index(is_filters='primary')
 
     def get_secondary(self):
-        """Returns the player's secondary weapon's index"""
+        """Return the player's secondary weapon's index."""
         return self.get_weapon_index(is_filters='secondary')
 
     def get_weapon_index(self, classname=None, is_filters=[], not_filters=[]):
-        """Returns the first instance of the given weapon classname/type"""
-
+        """Return the first instance of the given weapon classname/type."""
         # Loop through all weapon indexes for
         # the player with the given arguments
         for index in self.weapon_indexes(classname, is_filters, not_filters):
@@ -339,14 +334,11 @@ class _PlayerWeapons(_GameWeapons):
 
     def get_weapon_index_list(
             self, classname=None, is_filters=[], not_filters=[]):
-        """Returns a list of weapon indexes for the player"""
+        """Return a list of weapon indexes for the player."""
         return list(self.weapon_indexes(classname, is_filters, not_filters))
 
     def weapon_indexes(self, classname=None, is_filters=[], not_filters=[]):
-        """
-            Iterates over all currently held weapons, and yields their indexes
-        """
-
+        """Iterate over all currently held weapons by thier index."""
         # Loop through the length of m_hMyWeapons
         for offset in range(_weapon_prop_length):
 
@@ -400,8 +392,7 @@ class _PlayerWeapons(_GameWeapons):
     # >> COLOR METHODS
     # =========================================================================
     def get_weapon_color(self):
-        """Returns a tuple value for the player's active weapon's color"""
-
+        """Return a tuple value for the player's active weapon's color."""
         # Get the handle of the player's active weapon
         handle = self.active_weapon
 
@@ -419,8 +410,7 @@ class _PlayerWeapons(_GameWeapons):
         return BaseEntity(index, 'weapon').color
 
     def set_weapon_color(self, red, green, blue, alpha=None):
-        """Sets the player's active weapon's color"""
-
+        """Set the player's active weapon's color."""
         # Get the handle of the player's active weapon
         handle = self.active_weapon
 
@@ -442,8 +432,7 @@ class _PlayerWeapons(_GameWeapons):
 # >> HELPER FUNCTIONS
 # =============================================================================
 def _find_weapon_prop_length(table):
-    """Loops through a prop table to find the myweapons property length"""
-
+    """Loop through a prop table to find the myweapons property length."""
     # Loop through the props in the table
     for offset in range(len(table)):
 

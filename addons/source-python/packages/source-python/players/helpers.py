@@ -1,5 +1,7 @@
 # ../players/helpers.py
 
+"""Provides helper functions specific to players."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -116,8 +118,7 @@ __all__ = ('address_from_playerinfo',
 # >> OTHER HELPER FUNCTIONS
 # =============================================================================
 def index_from_steamid(steamid):
-    """Returns an index from the given SteamID"""
-
+    """Return an index from the given SteamID."""
     # Loop through all players on the server
     for playerinfo in PlayerGenerator():
 
@@ -132,8 +133,7 @@ def index_from_steamid(steamid):
 
 
 def index_from_uniqueid(uniqueid):
-    """Returns an index from the given UniqueID"""
-
+    """Return an index from the given UniqueID."""
     # Loop through all players on the server
     for playerinfo in PlayerGenerator():
 
@@ -148,8 +148,7 @@ def index_from_uniqueid(uniqueid):
 
 
 def index_from_name(name):
-    """Returns an index from the given player name"""
-
+    """Return an index from the given player name."""
     # Loop through all players on the server
     for playerinfo in PlayerGenerator():
 
@@ -164,8 +163,7 @@ def index_from_name(name):
 
 
 def uniqueid_from_playerinfo(playerinfo):
-    """Returns the UniqueID for the given player"""
-
+    """Return the UniqueID for the given player."""
     # Is the player a Bot?
     if playerinfo.is_fake_client():
 
@@ -189,8 +187,7 @@ def uniqueid_from_playerinfo(playerinfo):
 
 
 def address_from_playerinfo(playerinfo):
-    """Returns the IP address for the given player"""
-
+    """Return the IP address for the given player."""
     # Is the player a bot?
     if playerinfo.is_fake_player():
 

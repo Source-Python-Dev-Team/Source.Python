@@ -1,5 +1,7 @@
 # ../plugins/command.py
 
+"""Provides a way to utilize sub-commands for a server command."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -39,11 +41,11 @@ PluginCommandLogger = PluginsLogger.command
 # >> CLASSES
 # =============================================================================
 class SubCommandManager(AutoUnload, OrderedDict):
-    """Class used for executing sub-commands for the given console command"""
+
+    """Class used for executing sub-commands for the given console command."""
 
     def __init__(self, command, description='', prefix=''):
-        """Called on instance initialization"""
-
+        """Called on instance initialization."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super(SubCommandManager, self).__init__()
 
@@ -92,22 +94,21 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
     @property
     def command(self):
-        """Returns the server command registered to the class"""
+        """Return the server command registered to the class."""
         return self._command
 
     @property
     def prefix(self):
-        """Returns the prefix to use in log messages"""
+        """Return the prefix to use in log messages."""
         return self._prefix
 
     def _unload_instance(self):
-        """Unregisters commands when the instance is unloaded"""
+        """Unregister commands when the instance is unloaded."""
         ServerCommandManager.unregister_commands(
             self.command, self.call_command)
 
     def call_command(self, command):
-        """Gets the provided sub-command and executes accordingly"""
-
+        """Get the provided sub-command and executes accordingly."""
         # Get the argument string
         arg_string = command.get_arg_string()
 
@@ -215,8 +216,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         self[sub_command]()
 
     def print_help(self, message=''):
-        """Prints all sub-commands for the console command."""
-
+        """Print all sub-commands for the console command."""
         # Add a header message
         message += '\n' + self.prefix + self.translations[
             'Help'].get_string(command=self.command) + '\n' + '=' * 78
@@ -250,8 +250,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         self.logger.log_message(message + '\n' + '=' * 78)
 
     def load_plugin(self, plugin_name):
-        """Loads a plugin by name."""
-
+        """Load a plugin by name."""
         # Is the plugin already loaded?
         if plugin_name in self.manager:
 
@@ -283,8 +282,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     load_plugin.args = ['<plugin>']
 
     def unload_plugin(self, plugin_name):
-        """Unloads a plugin by name."""
-
+        """Unload a plugin by name."""
         # Is the plugin loaded?
         if plugin_name not in self.manager:
 
@@ -306,8 +304,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     unload_plugin.args = ['<plugin>']
 
     def reload_plugin(self, plugin_name):
-        """Reloads a plugin by name."""
-
+        """Reload a plugin by name."""
         # Unload the plugin
         self.unload_plugin(plugin_name)
 
@@ -318,8 +315,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     reload_plugin.args = ['<plugin>']
 
     def print_plugins(self):
-        """Prints all currently loaded plugins."""
-
+        """Print all currently loaded plugins."""
         # Get the header message
         message = self.prefix + self.translations[
             'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n\t'

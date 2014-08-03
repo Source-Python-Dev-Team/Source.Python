@@ -1,5 +1,7 @@
 # ../translations/strings.py
 
+"""Provides translation functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -48,12 +50,11 @@ _double_escaped_pattern = re_compile(
 # >> CLASSES
 # =============================================================================
 class LangStrings(dict):
-    """Dictionary class used to store all strings for a plugin"""
+
+    """Dictionary class used to store all strings for a plugin."""
 
     def __init__(self, infile, encoding='utf_8'):
-        """Adds all strings as TranslationStrings
-            instances and fixes double escaped strings"""
-
+        """Add all strings and fix double escaped strings."""
         # Get the path to the given file
         self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
 
@@ -141,8 +142,7 @@ class LangStrings(dict):
                 del main_strings['DEFAULT_LANGUAGE']
 
     def __setattr__(self, attribute, value):
-        """Override the __setattr__ method to register the default language"""
-
+        """Register the default language."""
         # Is the given attribute the default language?
         if attribute == 'default_language':
 
@@ -165,8 +165,7 @@ class LangStrings(dict):
         super(LangStrings, self).__setattr__(attribute, value)
 
     def _create_server_file(self):
-        """Creates a server specific langstrings file"""
-
+        """Create a server specific langstrings file."""
         # Get the server specific file's ConfigObj instance
         server_file = ConfigObj(self._serverfile)
 
@@ -181,8 +180,7 @@ class LangStrings(dict):
 
     @staticmethod
     def _replace_escaped_sequences(given_string):
-        """Fixes all double escaped strings"""
-
+        """Fix all double escaped strings."""
         # Loop through all matches
         for escaped_match in set(
                 _double_escaped_pattern.finditer(given_string)):
@@ -220,17 +218,15 @@ class LangStrings(dict):
 
 
 class TranslationStrings(dict):
-    """Dictionary used to store and get language
-        strings for a particular string"""
+
+    """Stores and get language strings for a particular string."""
 
     def __init__(self):
-        """Stores an empty dictionary as the tokens"""
-
+        """Store an empty dictionary as the tokens."""
         self.tokens = {}
 
     def get_string(self, language=None, **tokens):
-        """Returns the language string for the given language/tokens"""
-
+        """Return the language string for the given language/tokens."""
         # Was no language passed?
         if language is None:
 
@@ -262,8 +258,7 @@ class TranslationStrings(dict):
         return message
 
     def get_language(self, language):
-        """Returns the language to be used"""
-
+        """Return the language to be used."""
         # Get the given language's shortname
         language = LanguageManager.get_language(language)
 

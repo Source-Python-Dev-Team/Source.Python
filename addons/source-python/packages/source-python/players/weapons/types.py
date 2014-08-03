@@ -1,5 +1,7 @@
 # ../players/weapons/types.py
 
+"""Provides other weapon type functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -14,11 +16,11 @@ from entities.helpers import index_from_edict
 # >> CLASSES
 # =============================================================================
 class _C4(object):
-    """Class used to interact with a player based on the c4 weapon"""
+
+    """Class used to interact with a player based on the c4 weapon."""
 
     def has_c4(self):
-        """Returns whether or not the player is carrying C4"""
-
+        """Return whether or not the player is carrying C4."""
         # Loop through all c4 entities on the server
         for edict in EntityGenerator('weapon_c4'):
 

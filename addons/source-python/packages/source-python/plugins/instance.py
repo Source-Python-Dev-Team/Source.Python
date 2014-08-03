@@ -1,5 +1,7 @@
 # ../plugins/instance.py
 
+"""Provides a base class used to store a loaded plugin."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -35,11 +37,11 @@ PluginsInstanceLogger = PluginsLogger.instance
 # >> CLASSES
 # =============================================================================
 class LoadedPlugin(object):
-    """Stores a plugin's instance"""
+
+    """Stores a plugin's instance."""
 
     def __init__(self, plugin_name, base_import):
-        """Called when a plugin's instance is initialized"""
-
+        """Called when a plugin's instance is initialized."""
         # Does the object have a logger set?
         if not hasattr(self, 'logger'):
 
@@ -85,5 +87,5 @@ class LoadedPlugin(object):
 
     @property
     def globals(self):
-        """Returns the plugin's globals"""
+        """Return the plugin's globals."""
         return self._globals

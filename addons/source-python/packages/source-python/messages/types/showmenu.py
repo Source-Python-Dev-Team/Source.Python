@@ -14,11 +14,11 @@ from messages.base import BaseMessage
 # >> CLASSES
 # ============================================================================
 class ShowMenu(BaseMessage):
-    """Class used to send a ShowMenu message"""
+
+    """Class used to send a ShowMenu message."""
 
     def _prepare_parameter(self, parameter_name, parameter_value):
-        """Prepare the given parameter value"""
-
+        """Prepare the given parameter value."""
         # Is the given parameter 'slots'?
         if parameter_name == 'slots':
 
@@ -48,8 +48,7 @@ class ShowMenu(BaseMessage):
             parameter_name, parameter_value)
 
     def _send_message(self, recipient, **kwargs):
-        """Send the message to the given recipient filter"""
-
+        """Send the message to the given recipient filter."""
         # TODO: Once we can listen menuselect, refresh the menu based on
         #   self._refreshing_time till we get a selection.
 

@@ -1,5 +1,7 @@
 # ../plugins/info.py
 
+"""Provides plugin information storing."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -19,11 +21,11 @@ __all__ = ('PluginInfo',
 # >> CLASSES
 # =============================================================================
 class PluginInfo(OrderedDict):
-    """Stores information for a plugin"""
+
+    """Stores information for a plugin."""
 
     def __getattr__(self, attribute):
-        """Redirects to __getitem__"""
-
+        """Redirect to __getitem__."""
         # Is the attribute private?
         if attribute.startswith('_'):
 
@@ -35,8 +37,7 @@ class PluginInfo(OrderedDict):
         return self[attribute]
 
     def __setattr__(self, attribute, value):
-        """Redirects to __setitem__"""
-
+        """Redirect to __setitem__."""
         # Is the attribute private?
         if attribute.startswith('_'):
 

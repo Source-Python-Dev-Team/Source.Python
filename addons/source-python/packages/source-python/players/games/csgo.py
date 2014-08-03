@@ -1,5 +1,7 @@
 # ../players/games/csgo.py
 
+"""Provides csgo specific player functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -18,5 +20,5 @@ from players.weapons.types import _C4
 # =============================================================================
 class _GameWeapons(
         _HEGrenade, _Flashbang, _SmokeGrenade, _Decoy, _Incendiary, _C4):
-    """Game-specific class inherited by _PlayerWeapons to
-        handle CS:GO specific weapon functionality for players"""
+
+    """CS:GO specific player weapon functionality."""

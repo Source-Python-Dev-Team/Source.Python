@@ -18,11 +18,11 @@ from messages.base import BaseMessage
 # >> CLASSES
 # ============================================================================
 class SayText(BaseMessage):
-    """Class used to send a SayText message"""
+
+    """Class used to send a SayText message."""
 
     def _prepare_parameter(self, parameter_name, parameter_value):
-        """Prepare the given parameter value"""
-
+        """Prepare the given parameter value."""
         # Prepare the given value
         return_value = super(SayText, self)._prepare_parameter(
             parameter_name, parameter_value)

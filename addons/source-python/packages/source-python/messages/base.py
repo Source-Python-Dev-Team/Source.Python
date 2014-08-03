@@ -47,11 +47,11 @@ _fieldtypes = dict(
 # >> CLASSES
 # ============================================================================
 class _UserMessages(dict):
-    """Class used to store the message classes"""
+
+    """Class used to store the message classes."""
 
     def __init__(self, file_path, *args, **kwargs):
-        """Parse the given files and store the parsed message classes"""
-
+        """Parse the given files and store the parsed message classes."""
         # Parse the given file
         parsed_messages = ConfigObj(file_path)
 
@@ -199,11 +199,11 @@ class _UserMessages(dict):
 
 
 class BaseMessage(dict):
-    """Base message class"""
+
+    """Base message class."""
 
     def __init__(self, *args, **kwargs):
-        """Parse and store the given parameters"""
-
+        """Parse and store the given parameters."""
         # Get a list of the given arguments
         arguments = list(args)
 
@@ -325,8 +325,7 @@ class BaseMessage(dict):
         super(BaseMessage, self).__setattr__('tokens', kwargs)
 
     def __getattr__(self, attribute):
-        """Return the given parameter value"""
-
+        """Return the given parameter value."""
         # Try to return from an attribute first
         try:
 
@@ -340,8 +339,7 @@ class BaseMessage(dict):
             return self[attribute]
 
     def __setattr__(self, attribute, value):
-        """Set the given parameter value"""
-
+        """Set the given parameter value."""
         # Is the given attribute valid?
         if attribute in self.__dict__:
 
@@ -355,8 +353,7 @@ class BaseMessage(dict):
             self[attribute] = value
 
     def __getitem__(self, item):
-        """Return teh given parameter value"""
-
+        """Return teh given parameter value."""
         # Is the given item a valid parameter?
         if item in self or item in self._special_parameters:
 
@@ -375,8 +372,7 @@ class BaseMessage(dict):
             'parameter.'.format(item, self._message_name))
 
     def __setitem__(self, item, value):
-        """Set the given parameter to the given value"""
-
+        """Set the given parameter to the given value."""
         # Is the given item a valid parameter?
         if (item in self._required_parameters or
                 item in self._special_parameters):
@@ -391,8 +387,7 @@ class BaseMessage(dict):
             self.tokens[item] = value
 
     def _prepare_parameter(self, parameter_name, parameter_value):
-        """Prepare the given parameter value"""
-
+        """Prepare the given parameter value."""
         # Get the given parameter data
         parameter_data = self._required_parameters[parameter_name]
 
@@ -449,13 +444,12 @@ class BaseMessage(dict):
     def _write_field_value(
             self, parameter_name, usermsg, field_type,
             field_name, field_value, field_index=-1):
-        """Write the given field value to the given message"""
+        """Write the given field value to the given message."""
         getattr(usermsg, 'set_' + field_type)(
             field_name, field_value, field_index)
 
     def _send_message(self, recipient, **kwargs):
-        """Send the message to the given recipient filter"""
-
+        """Send the message to the given recipient filter."""
         # Get a UserMessage instance
         usermsg = UserMessage(recipient, self._message_name)
 
@@ -546,8 +540,7 @@ class BaseMessage(dict):
         usermsg.send_message()
 
     def send(self, *args, **kwargs):
-        """Send the message to the given users"""
-
+        """Send the message to the given users."""
         # Get a recipient filter of the given users
         recipient = RecipientFilter(*(args or self.users))
 
