@@ -35,16 +35,14 @@ from _globals import MapLoadType
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'AutoUnload',
-    'GAME_NAME',
-    'GlobalVars',
-    'MapLoadType',
-    'PLATFORM',
-    'SOURCE_ENGINE',
-    'echo_console',
-]
+__all__ = ('AutoUnload',
+           'GAME_NAME',
+           'GlobalVars',
+           'MapLoadType',
+           'PLATFORM',
+           'SOURCE_ENGINE',
+           'echo_console',
+           )
 
 
 # =============================================================================

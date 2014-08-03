@@ -13,8 +13,7 @@ from _bots import BotManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'BotCmd',
-    'BotController',
-    'BotManager',
-]
+__all__ = ('BotCmd',
+           'BotController',
+           'BotManager',
+           )

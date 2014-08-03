@@ -43,17 +43,15 @@ from _engines import SOUND_FROM_WORLD
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'Attenuations',
-    'Channels',
-    'EngineSound',
-    'SOUND_FROM_LOCAL_PLAYER',
-    'SOUND_FROM_WORLD',
-    'Sound',
-    'SoundFlags',
-    'VOL_NORM',
-]
+__all__ = ('Attenuations',
+           'Channels',
+           'EngineSound',
+           'SOUND_FROM_LOCAL_PLAYER',
+           'SOUND_FROM_WORLD',
+           'Sound',
+           'SoundFlags',
+           'VOL_NORM',
+           )
 
 
 # =============================================================================

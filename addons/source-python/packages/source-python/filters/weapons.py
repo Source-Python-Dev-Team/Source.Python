@@ -20,11 +20,9 @@ from weapons.manager import WeaponManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'WeaponClassIter',
-    'WeaponEdictIter',
-]
+__all__ = ('WeaponClassIter',
+           'WeaponEdictIter',
+           )
 
 
 # =============================================================================

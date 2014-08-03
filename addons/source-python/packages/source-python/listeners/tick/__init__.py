@@ -14,12 +14,10 @@ from listeners.tick.repeat import TickRepeatStatus
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'TickDelays',
-    'TickRepeat',
-    'TickRepeatStatus',
-]
+__all__ = ('TickDelays',
+           'TickRepeat',
+           'TickRepeatStatus',
+           )
 
 
 # =============================================================================

@@ -15,17 +15,16 @@ from _mathlib import RadianEuler
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'NULL_QANGLE',
-    'NULL_QUATERNION',
-    'NULL_RADIANEULER',
-    'NULL_VECTOR',
-    'Plane',
-    'QAngle',
-    'Quaternion',
-    'RadianEuler',
-    'Vector',
-]
+__all__ = ('NULL_QANGLE',
+           'NULL_QUATERNION',
+           'NULL_RADIANEULER',
+           'NULL_VECTOR',
+           'Plane',
+           'QAngle',
+           'Quaternion',
+           'RadianEuler',
+           'Vector',
+           )
 
 
 # =============================================================================

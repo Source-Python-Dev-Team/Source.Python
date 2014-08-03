@@ -13,8 +13,7 @@ from _engines import QueryCvarStatus
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'EngineServer',
-    'QueryCvarStatus',
-    'ServerGameDLL',
-]
+__all__ = ('EngineServer',
+           'QueryCvarStatus',
+           'ServerGameDLL',
+           )

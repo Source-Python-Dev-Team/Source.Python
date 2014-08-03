@@ -12,10 +12,8 @@ from commands.client.manager import ClientCommandManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'ClientCommand',
-]
+__all__ = ('ClientCommand',
+           )
 
 
 # =============================================================================

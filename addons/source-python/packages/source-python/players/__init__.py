@@ -21,12 +21,10 @@ from _players import PlayerInfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Set all to an empty list
-__all__ = [
-    'NetChannelInfo',
-    'PlayerGenerator',
-    'PlayerInfo',
-]
+__all__ = ('NetChannelInfo',
+           'PlayerGenerator',
+           'PlayerInfo',
+           )
 
 
 # =============================================================================

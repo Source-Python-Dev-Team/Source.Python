@@ -18,13 +18,12 @@ from _basetypes import TakeDamageInfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'Color',
-    'Interval',
-    'SendProp',
-    'SendPropFlags',
-    'SendPropTypes',
-    'SendTable',
-    'ServerClass',
-    'TakeDamageInfo',
-]
+__all__ = ('Color',
+           'Interval',
+           'SendProp',
+           'SendPropFlags',
+           'SendPropTypes',
+           'SendTable',
+           'ServerClass',
+           'TakeDamageInfo',
+           )

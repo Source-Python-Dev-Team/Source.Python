@@ -17,8 +17,7 @@ from paths import SP_DATA_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Set all to an empty list
-__all__ = []
+__all__ = ()
 
 
 # =============================================================================
@@ -40,4 +39,4 @@ for message_name, message_class in _UserMessages(SP_DATA_PATH.joinpath(
     globals()[message_name] = message_class
 
     # Add the object, by name, to __all__
-    __all__.append(message_name)
+    __all__ = tuple(list(__all__) + [message_name])

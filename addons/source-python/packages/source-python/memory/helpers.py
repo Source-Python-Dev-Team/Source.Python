@@ -23,15 +23,14 @@ from memory import make_object
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'Array',
-    'BasePointer',
-    'Key',
-    'MemberFunction',
-    'NO_DEFAULT',
-    'Type',
-    'parse_data',
-]
+__all__ = ('Array',
+           'BasePointer',
+           'Key',
+           'MemberFunction',
+           'NO_DEFAULT',
+           'Type',
+           'parse_data',
+           )
 
 
 # =============================================================================

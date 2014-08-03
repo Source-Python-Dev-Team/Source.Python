@@ -18,11 +18,9 @@ from listeners.tick import ListenersLogger
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'TickRepeat',
-    'TickRepeatStatus',
-]
+__all__ = ('TickRepeat',
+           'TickRepeatStatus',
+           )
 
 
 # =============================================================================

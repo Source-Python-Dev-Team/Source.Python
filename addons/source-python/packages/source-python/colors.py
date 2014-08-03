@@ -11,28 +11,27 @@ from basetypes import Color
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'Black',
-    'Blue',
-    'Brown',
-    'Cyan',
-    'DarkBlue',
-    'DarkGray',
-    'DarkGreen',
-    'DarkRed',
-    'Gray',
-    'Green',
-    'LightBlue',
-    'LightGray',
-    'LightGreen',
-    'LightRed',
-    'Olive',
-    'Orange',
-    'Purple',
-    'Red',
-    'White',
-    'Yellow',
-]
+__all__ = ('Black',
+           'Blue',
+           'Brown',
+           'Cyan',
+           'DarkBlue',
+           'DarkGray',
+           'DarkGreen',
+           'DarkRed',
+           'Gray',
+           'Green',
+           'LightBlue',
+           'LightGray',
+           'LightGreen',
+           'LightRed',
+           'Olive',
+           'Orange',
+           'Purple',
+           'Red',
+           'White',
+           'Yellow',
+           )
 
 
 # =============================================================================

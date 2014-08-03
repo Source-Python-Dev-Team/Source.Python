@@ -19,10 +19,8 @@ from filters.iterator import _IterObject
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'EntityIter',
-]
+__all__ = ('EntityIter',
+           )
 
 
 # =============================================================================
@@ -66,16 +64,16 @@ class EntityIter(_IterObject):
             class_names = [class_names]
 
         # Store the base attributes given
-        self._class_names = class_names
-        self._exact_match = exact_match
-        self._return_types = return_types
+        self.class_names = class_names
+        self.exact_match = exact_match
+        self.return_types = return_types
 
     def _is_valid(self, edict):
         '''Checks to see whether the given edict
             is one that should be iterated over'''
 
         # Are there any class names to be checked?
-        if not self._class_names:
+        if not self.class_names:
 
             # Return True for all entities
             return True
@@ -84,14 +82,14 @@ class EntityIter(_IterObject):
         class_name = edict.get_class_name()
 
         # Loop through all class names for the generator
-        for check_name in self._class_names:
+        for check_name in self.class_names:
 
             # Does the current class name match part of the edict's class name?
-            if not self._exact_match and check_name in class_name:
+            if not self.exact_match and check_name in class_name:
                 return True
 
             # Does the current class name match exactly the edict's class name?
-            elif self._exact_match and check_name == class_name:
+            elif self.exact_match and check_name == class_name:
                 return True
 
         # If none of the class names returned True, return False

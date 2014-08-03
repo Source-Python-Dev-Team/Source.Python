@@ -11,15 +11,13 @@ from events import EventsLogger
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'BoolVariable',
-    'ByteVariable',
-    'FloatVariable',
-    'LongVariable',
-    'ShortVariable',
-    'StringVariable',
-]
+__all__ = ('BoolVariable',
+           'ByteVariable',
+           'FloatVariable',
+           'LongVariable',
+           'ShortVariable',
+           'StringVariable',
+           )
 
 
 # =============================================================================

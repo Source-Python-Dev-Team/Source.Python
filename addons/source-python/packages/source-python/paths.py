@@ -11,24 +11,22 @@ from path import Path
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'BASE_PATH',
-    'CFG_PATH',
-    'CUSTOM_DATA_PATH',
-    'CUSTOM_PACKAGES_PATH',
-    'EVENT_PATH',
-    'GAME_PATH',
-    'LOG_PATH',
-    'PACKAGES_PATH',
-    'PLUGIN_DATA_PATH',
-    'PLUGIN_PATH',
-    'SITE_PACKAGES_PATH',
-    'SOUND_PATH',
-    'SP_DATA_PATH',
-    'SP_PACKAGES_PATH',
-    'TRANSLATION_PATH',
-]
+__all__ = ('BASE_PATH',
+           'CFG_PATH',
+           'CUSTOM_DATA_PATH',
+           'CUSTOM_PACKAGES_PATH',
+           'EVENT_PATH',
+           'GAME_PATH',
+           'LOG_PATH',
+           'PACKAGES_PATH',
+           'PLUGIN_DATA_PATH',
+           'PLUGIN_PATH',
+           'SITE_PACKAGES_PATH',
+           'SOUND_PATH',
+           'SP_DATA_PATH',
+           'SP_PACKAGES_PATH',
+           'TRANSLATION_PATH',
+           )
 
 
 # =============================================================================

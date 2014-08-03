@@ -20,11 +20,9 @@ from paths import SP_DATA_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'DATA_DESC_MAP_OFFSET',
-    'DamageTypes',
-]
+__all__ = ('DATA_DESC_MAP_OFFSET',
+           'DamageTypes',
+           )
 
 
 # =============================================================================

@@ -25,16 +25,14 @@ from _entities import ServerUnknown
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Set all to an empty list
-__all__ = [
-    'BaseEntityHandle',
-    'Edict',
-    'EntityGenerator',
-    'HandleEntity',
-    'ServerEntity',
-    'ServerNetworkable',
-    'ServerUnknown',
-]
+__all__ = ('BaseEntityHandle',
+           'Edict',
+           'EntityGenerator',
+           'HandleEntity',
+           'ServerEntity',
+           'ServerNetworkable',
+           'ServerUnknown',
+           )
 
 
 # =============================================================================

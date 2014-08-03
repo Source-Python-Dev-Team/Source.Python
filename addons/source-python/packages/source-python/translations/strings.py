@@ -30,11 +30,9 @@ from translations.manager import LanguageManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'LangStrings',
-    'TranslationStrings',
-]
+__all__ = ('LangStrings',
+           'TranslationStrings',
+           )
 
 
 # =============================================================================

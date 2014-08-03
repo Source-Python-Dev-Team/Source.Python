@@ -34,25 +34,24 @@ from _memory import make_object
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'Argument',
-    'BinaryFile',
-    'Callback',
-    'Convention',
-    'EXPOSED_CLASSES',
-    'Function',
-    'NULL',
-    'Pointer',
-    'Return',
-    'StackData',
-    'TYPE_SIZES',
-    'alloc',
-    'callback',
-    'find_binary',
-    'get_object_pointer',
-    'get_size',
-    'make_object',
-]
+__all__ = ('Argument',
+           'BinaryFile',
+           'Callback',
+           'Convention',
+           'EXPOSED_CLASSES',
+           'Function',
+           'NULL',
+           'Pointer',
+           'Return',
+           'StackData',
+           'TYPE_SIZES',
+           'alloc',
+           'callback',
+           'find_binary',
+           'get_object_pointer',
+           'get_size',
+           'make_object',
+           )
 
 
 # =============================================================================

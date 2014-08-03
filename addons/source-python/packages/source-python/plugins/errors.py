@@ -3,12 +3,10 @@
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'PluginFileNotFoundError',
-    'PluginInstanceError',
-    'PluginManagerError',
-]
+__all__ = ('PluginFileNotFoundError',
+           'PluginInstanceError',
+           'PluginManagerError',
+           )
 
 
 # =============================================================================

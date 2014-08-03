@@ -21,11 +21,9 @@ from _events import GameEventManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'EventRegistry',
-    'GameEventManager',
-]
+__all__ = ('EventRegistry',
+           'GameEventManager',
+           )
 
 
 # =============================================================================

@@ -14,10 +14,8 @@ from commands.player import _PlayerCommandManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'ClientCommandManager',
-]
+__all__ = ('ClientCommandManager',
+           )
 
 
 # =============================================================================

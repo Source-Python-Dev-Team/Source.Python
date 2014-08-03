@@ -92,20 +92,19 @@ from _engines import SURF_HITBOX
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'BaseTrace',
-    'ContentFlags',
-    'ContentMasks',
-    'DisplacementFlags',
-    'EngineTrace',
-    'EntityEnumerator',
-    'GameTrace',
-    'Ray',
-    'Surface',
-    'SurfaceFlags',
-    'TraceFilter',
-    'TraceType',
-]
+__all__ = ('BaseTrace',
+           'ContentFlags',
+           'ContentMasks',
+           'DisplacementFlags',
+           'EngineTrace',
+           'EntityEnumerator',
+           'GameTrace',
+           'Ray',
+           'Surface',
+           'SurfaceFlags',
+           'TraceFilter',
+           'TraceType',
+           )
 
 
 # =============================================================================

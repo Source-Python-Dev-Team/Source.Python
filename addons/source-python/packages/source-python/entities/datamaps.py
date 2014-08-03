@@ -31,15 +31,13 @@ from entities.helpers import edict_from_pointer
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Set all to an empty list
-__all__ = [
-    'DataMap',
-    'FieldTypes',
-    'InputData',
-    'TypeDescription',
-    'TypeDescriptionFlags',
-    'Variant',
-]
+__all__ = ('DataMap',
+           'FieldTypes',
+           'InputData',
+           'TypeDescription',
+           'TypeDescriptionFlags',
+           'Variant',
+           )
 
 
 # =============================================================================

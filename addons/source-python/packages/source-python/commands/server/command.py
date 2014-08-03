@@ -12,10 +12,8 @@ from commands.server.manager import ServerCommandManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# Add all the global variables to __all__
-__all__ = [
-    'ServerCommand',
-]
+__all__ = ('ServerCommand',
+           )
 
 
 # =============================================================================

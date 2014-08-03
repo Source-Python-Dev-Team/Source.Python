@@ -27,12 +27,11 @@ from _effects import PredictionSystem
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = [
-    'DispatchEffectData',
-    'Effects',
-    'PredictionSystem',
-    'TempEntities',
-]
+__all__ = ('DispatchEffectData',
+           'Effects',
+           'PredictionSystem',
+           'TempEntities',
+           )
 
 
 # ============================================================================
