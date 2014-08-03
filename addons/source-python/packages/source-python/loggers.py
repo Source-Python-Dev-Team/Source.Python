@@ -1,5 +1,7 @@
 # ../loggers.py
 
+"""Provides logging functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -59,13 +61,13 @@ _clean_formatter = Formatter('%(message)s')
 # >> CLASSES
 # =============================================================================
 class _LogInstance(dict):
-    '''Base logging class used to create child logging instances'''
+
+    """Base logging class used to create child logging instances."""
 
     parent = None
 
     def __init__(self, name, parent):
-        '''Stores the parent and gets a child of the parent'''
-
+        """Store the parent and gets a child of the parent."""
         # Store the parent instance
         self.parent = parent
 
@@ -73,8 +75,7 @@ class _LogInstance(dict):
         self._logger = self.parent.logger.getChild(name)
 
     def __missing__(self, item):
-        '''Adds new items as logging instances'''
-
+        """Add new items as logging instances."""
         # Get the new logging instance
         value = self[item] = _LogInstance(item, self)
 
@@ -82,12 +83,11 @@ class _LogInstance(dict):
         return value
 
     def __getattr__(self, attr):
-        '''Calls __getitem__ to return the item in the dictionary'''
+        """Call __getitem__ to return the item in the dictionary."""
         return self[attr]
 
     def __delitem__(self, item):
-        '''Removes all children of the instance and closes the logger'''
-
+        """Remove all children of the instance and closes the logger."""
         # Remove all children
         self[item].clear()
 
@@ -95,8 +95,7 @@ class _LogInstance(dict):
         self.logger.close()
 
     def clear(self):
-        '''Deletes each item individually to close all loggers'''
-
+        """Delete each item individually to close all loggers."""
         # Loop through each child
         for item in list(self):
 
@@ -104,32 +103,31 @@ class _LogInstance(dict):
             del self[item]
 
     def log_critical(self, msg, *args, **kwargs):
-        '''Use to call a critical message'''
+        """Use to call a critical message."""
         self._log(CRITICAL, msg, *args, **kwargs)
 
     def log_debug(self, msg, *args, **kwargs):
-        '''Use to call a debug message'''
+        """Use to call a debug message."""
         self._log(DEBUG, msg, *args, **kwargs)
 
     def log_exception(self, msg, *args, **kwargs):
-        '''Use to call an exception message'''
+        """Use to call an exception message."""
         self._log(EXCEPTION, msg, *args, **kwargs)
 
     def log_info(self, msg, *args, **kwargs):
-        '''Use to call a basic info message'''
+        """Use to call a basic info message."""
         self._log(INFO, msg, *args, **kwargs)
 
     def log_warning(self, msg, *args, **kwargs):
-        '''Use to call a warning message'''
+        """Use to call a warning message."""
         self._log(WARNING, msg, *args, **kwargs)
 
     def log_message(self, msg, *args, **kwargs):
-        '''Use to call a message that should always print'''
+        """Use to call a message that should always print."""
         self._log(MESSAGE, msg, *args, **kwargs)
 
     def log_dump(self, msg, *args, **kwargs):
-        '''Use to call a dump message'''
-
+        """Use to call a dump message."""
         # Change the handler over to the clean handler,
         # so that the text is logged without any prefix
         self.root.logger.removeHandler(self.root._handler)
@@ -143,8 +141,7 @@ class _LogInstance(dict):
         self.root.logger.addHandler(self.root._handler)
 
     def log(self, level, msg, *args, **kwargs):
-        '''Use to call a message with the given logging level'''
-
+        """Use to call a message with the given logging level."""
         # Get the value of the given level
         level = self._get_level_value(level)
 
@@ -152,8 +149,7 @@ class _LogInstance(dict):
         self._log(level, msg, *args, **kwargs)
 
     def _log(self, level, msg, *args, dump=False, **kwargs):
-        '''Main logging method'''
-
+        """Main logging method."""
         # Does the message need logged?
         if self.level > level:
 
@@ -213,13 +209,12 @@ class _LogInstance(dict):
 
     @staticmethod
     def _get_level_value(level):
-        '''Returns a level value used by the logging package'''
+        """Return a level value used by the logging package."""
         return 50 - (10 * level)
 
     @property
     def root(self):
-        '''Returns the root class'''
-
+        """Return the root class."""
         # Store the current instance
         instance = self
 
@@ -234,33 +229,33 @@ class _LogInstance(dict):
 
     @property
     def areas(self):
-        '''Returns the root's areas value'''
+        """Return the root's areas value."""
         return self.root.areas
 
     @property
     def level(self):
-        '''Returns the root's level value'''
+        """Return the root's level value."""
         return self.root.level
 
     @property
     def formatter(self):
-        '''Return's the root's formatter'''
+        """Return the root's formatter."""
         return self.root._formatter
 
     @property
     def logger(self):
-        '''Returns the instance's logger'''
+        """Return the instance's logger."""
         return self._logger
 
 
 class LogManager(_LogInstance):
-    '''Main log class used as a root to create children instances'''
+
+    """Main log class used as a root to create children instances."""
 
     def __init__(
             self, name, level, areas, filepath=None,
             log_format=None, date_format=None):
-        '''Stores the base values and creates the logger'''
-
+        """Store the base values and creates the logger."""
         # Store the base formatter
         self._formatter = Formatter(log_format, date_format)
 
@@ -301,12 +296,12 @@ class LogManager(_LogInstance):
 
     @property
     def level(self):
-        '''Returns the needed level value'''
+        """Return the needed level value."""
         return 50 - (self._level.get_int() * 10)
 
     @property
     def areas(self):
-        '''Returns the areas to print messages to'''
+        """Return the areas to print messages to."""
         return self._areas.get_int()
 
 # Set the core ConVars

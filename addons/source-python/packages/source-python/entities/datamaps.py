@@ -83,7 +83,7 @@ _SupportedTypeObjects = {
 # >> CLASSES
 # =============================================================================
 class _NamedDataMaps(EntityAttributes):
-    '''Dictionary that stores entities with their named datamap objects'''
+    """Dictionary that stores entities with their named datamap objects"""
 
     type = 'datamaps'
     unrepr = False
@@ -94,11 +94,11 @@ NamedDataMaps = _NamedDataMaps()
 
 
 class _EntityDataMaps(dict):
-    '''Dictionary that stores all datamaps by server class name'''
+    """Dictionary that stores all datamaps by server class name"""
 
     def get_data_maps(self, edict):
-        '''Converts the given edict to its server class and returns the
-            _EntityTypeDataMap dictionary for the server class and all bases'''
+        """Converts the given edict to its server class and returns the
+            _EntityTypeDataMap dictionary for the server class and all bases"""
 
         # Is the GetDataDescMap offset set?
         if DATA_DESC_MAP_OFFSET is None:
@@ -167,12 +167,12 @@ EntityDataMaps = _EntityDataMaps()
 
 
 class _DataMap(dict):
-    '''Dictionary class used to store datamap values by type'''
+    """Dictionary class used to store datamap values by type"""
 
     def __init__(self, datamap):
-        '''
+        """
             Adds all type descriptions to the dictionary for the given datamap
-        '''
+        """
 
         # Loop through all type descriptions in the current datamap
         for desc in datamap:
@@ -227,24 +227,24 @@ class _DataMap(dict):
 
 
 class _BaseType(object):
-    '''Base class used for some datadesc types'''
+    """Base class used for some datadesc types"""
 
     def _get_value(self):
-        '''Return the instance itself'''
+        """Return the instance itself"""
         return self
 
     def _set_value(self, value):
-        '''Raise an error, since setting with this type is not allowed'''
+        """Raise an error, since setting with this type is not allowed"""
         raise TypeError('Cannot set type "{0}"'.format(type(self).__name__))
 
 
 class _Embedded(_DataMap, _BaseType):
-    '''Dictionary class used to store embedded datamaps'''
+    """Dictionary class used to store embedded datamaps"""
 
     def __getattr__(self, attr):
-        '''
+        """
             Override __getattr__ to set the pointer and return the item's value
-        '''
+        """
 
         # Is the attribute a member of the dictionary?
         if not attr in self:
@@ -257,8 +257,8 @@ class _Embedded(_DataMap, _BaseType):
         return self[attr]._get_value()
 
     def __setattr__(self, attr, value):
-        '''Override __setattr__ to set the current pointer and
-            call the _set_value method of the wanted instance'''
+        """Override __setattr__ to set the current pointer and
+            call the _set_value method of the wanted instance"""
 
         # Is the attribute a member of the dictionary?
         if attr in self:
@@ -282,10 +282,10 @@ class _Embedded(_DataMap, _BaseType):
 
 
 class _BaseFunctions(Function, _BaseType):
-    '''Base class for all function type descriptions'''
+    """Base class for all function type descriptions"""
 
     def __init__(self, desc):
-        '''Store the name, type, and function'''
+        """Store the name, type, and function"""
         self.name = desc.name
         self.type = desc.type
         function = desc.input.make_function(
@@ -296,24 +296,24 @@ class _BaseFunctions(Function, _BaseType):
 
 
 class _FunctionTable(_BaseFunctions):
-    '''Class used to interact with FUNCTIONTABLE objects'''
+    """Class used to interact with FUNCTIONTABLE objects"""
 
     # Set the arguments for FUNCTIONTABLEs
     arguments = (Argument.POINTER, )
 
     def __call__(self):
-        '''Calls the stored function'''
+        """Calls the stored function"""
         super(_FunctionTable, self).__call__(self.current_pointer)
 
 
 class _Input(_BaseFunctions):
-    '''Class used to interact with INPUT objects'''
+    """Class used to interact with INPUT objects"""
 
     # Set the arguments for INPUTs
     arguments = (Argument.POINTER, Argument.POINTER)
 
     def __call__(self, value=None, caller=None, activator=None):
-        '''Calls the stored function with the values given'''
+        """Calls the stored function with the values given"""
 
         # Is the type not VOID but no value was given?
         if value is None and self.type != FieldTypes.VOID:
@@ -349,40 +349,40 @@ class _Input(_BaseFunctions):
 
 
 class _DataDesc(object):
-    '''Class used to get and set base type description objects'''
+    """Class used to get and set base type description objects"""
 
     def __init__(self, desc):
-        '''Store the type description instance'''
+        """Store the type description instance"""
         self.get_attr = 'get_{0}'.format(_SupportedOffsetTypes[desc.type])
         self.set_attr = 'set_{0}'.format(_SupportedOffsetTypes[desc.type])
         self.offset = desc.offset
 
     def _get_value(self):
-        '''Return the current value of the type
-            description for the current pointer'''
+        """Return the current value of the type
+            description for the current pointer"""
         return getattr(self.current_pointer, self.get_attr)(self.offset)
 
     def _set_value(self, value):
-        '''Set the value of the type description to
-            the given value for the current pointer'''
+        """Set the value of the type description to
+            the given value for the current pointer"""
         getattr(self.current_pointer, self.set_attr)(value, self.offset)
 
 
 class _TypeObject(object):
-    '''Class used to get and set other types of objects for entities'''
+    """Class used to get and set other types of objects for entities"""
 
     def __init__(self, desc, type_object):
-        '''Store the offset and type of object'''
+        """Store the offset and type of object"""
         self.offset = desc.offset
         self.type_object = type_object
 
     def _get_value(self):
-        '''Returns the object type at the offset's address'''
+        """Returns the object type at the offset's address"""
         return make_object(
             self.type_object, self.current_pointer + self.offset)
 
     def _set_value(self, value):
-        '''Sets the object type value at the offset's address'''
+        """Sets the object type value at the offset's address"""
 
         # Is the value of the correct type?
         if not isinstance(value, self.type_object):

@@ -1,5 +1,7 @@
 # ../events/resource.py
 
+"""Provides a way to create resource (.res) files using custom events."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -34,11 +36,11 @@ EventsResourceLogger = EventsLogger.resource
 # >> CLASSES
 # =============================================================================
 class ResourceFile(OrderedDict):
-    '''Class used to write and load custom event .res files'''
+
+    """Class used to write and load custom event .res files."""
 
     def __init__(self, filepath, *events):
-        '''Called on instatiation'''
-
+        """Called on instatiation."""
         # Create the OrderedDict instance
         super(ResourceFile, self).__init__()
 
@@ -69,17 +71,16 @@ class ResourceFile(OrderedDict):
 
     @property
     def filepath(self):
-        '''Returns the path to the .res file'''
+        """Return the path to the .res file."""
         return self._filepath
 
     @property
     def fullpath(self):
-        '''Returns the full path of the .res file'''
+        """Return the full path of the .res file."""
         return EVENT_PATH.joinpath(self.filepath + '.res')
 
     def write(self):
-        '''Writes the .res file to disk'''
-
+        """Write the .res file to disk."""
         # Does the director for the .res file exist?
         if not self.fullpath.parent.isdir():
 
@@ -125,5 +126,5 @@ class ResourceFile(OrderedDict):
             open_file.write('}\n')
 
     def load_events(self):
-        '''Loads events from the .res file'''
+        """Load events from the .res file."""
         GameEventManager.load_events_from_file(self.fullpath)

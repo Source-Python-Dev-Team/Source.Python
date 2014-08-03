@@ -1,5 +1,7 @@
 # ../events/variable.py
 
+"""Provides variable types to be used with custom events."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -34,11 +36,11 @@ EventsVariableLogger = EventsLogger.variable
 # >> CLASSES
 # =============================================================================
 class _EventVariable(object):
-    '''Base class used for event variable types'''
+
+    """Base class used for event variable types."""
 
     def __init__(self, comment='', default=None):
-        '''Called on instantiation'''
-
+        """Called on instantiation."""
         # Was a default value passed?
         if default is not None:
 
@@ -56,35 +58,47 @@ class _EventVariable(object):
 
     @property
     def name(self):
-        '''Returns the variable type name'''
+        """Return the variable type name."""
         return self.__class__.__name__.lower().replace('variable', '')
 
 
 class BoolVariable(_EventVariable):
-    '''Class used to store bool event variables'''
+
+    """Class used to store bool event variables."""
+
     _method = 'bool'
 
 
 class ByteVariable(_EventVariable):
-    '''Class used to store byte event variables'''
+
+    """Class used to store byte event variables."""
+
     _method = 'int'
 
 
 class ShortVariable(_EventVariable):
-    '''Class used to store short event variables'''
+
+    """Class used to store short event variables."""
+
     _method = 'int'
 
 
 class LongVariable(_EventVariable):
-    '''Class used to store long event variables'''
+
+    """Class used to store long event variables."""
+
     _method = 'int'
 
 
 class FloatVariable(_EventVariable):
-    '''Class used to store floating point event variables'''
+
+    """Class used to store floating point event variables."""
+
     _method = 'float'
 
 
 class StringVariable(_EventVariable):
-    '''Class used to store string event variables'''
+
+    """Class used to store string event variables."""
+
     _method = 'string'

@@ -1,5 +1,7 @@
 # ../hooks/base.py
 
+"""Contains a base hooking class used by the hooks package."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -9,20 +11,14 @@ from core import AutoUnload
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _HookBase(list):
-    '''Base hook class used to store callbacks for the specific hook type'''
+
+    """Base hook class used to store callbacks for the specific hook type."""
 
     def append(self, callback):
-        '''Hook the append method to verify the given callback is callable'''
-
+        """Hook the append method to verify the given callback is callable."""
         # Is the given callback callable?
         if not callable(callback):
 
@@ -42,18 +38,19 @@ class _HookBase(list):
 
     @property
     def class_name(self):
-        '''Returns the name of the class'''
+        """Return the name of the class."""
         return self.__class__.__name__
 
 
 class _HookDecorator(AutoUnload):
-    '''Base decorator class used to add/remove hooks on load/unload'''
+
+    """Base decorator class used to add/remove hooks on load/unload."""
 
     def __init__(self, callback):
-        '''Store the given callback and register the hook'''
+        """Store the given callback and register the hook."""
         self.callback = callback
         self._class_instance.append(self.callback)
 
     def _unload_instance(self):
-        '''Unregister the hook'''
+        """Unregister the hook."""
         self._class_instance.remove(self.callback)

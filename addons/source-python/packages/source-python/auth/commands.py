@@ -1,5 +1,7 @@
 # ../auth/commands.py
 
+"""Registers the "sp auth" sub-commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -15,12 +17,6 @@ from auth.manager import AuthManager
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.auth.commands logger
@@ -31,11 +27,11 @@ AuthCommandsLogger = AuthLogger.commands
 # >> CLASSES
 # =============================================================================
 class _AuthCommands(OrderedDict):
-    '''Class used for executing "sp auth" sub-command functionality'''
+
+    """Class used for executing "sp auth" sub-command functionality."""
 
     def call_command(self, args):
-        '''Executes the given "sp auth" sub-command'''
-
+        """Execute the given "sp auth" sub-command."""
         # Was a command given?
         if not args:
 
@@ -78,8 +74,7 @@ class _AuthCommands(OrderedDict):
         self[command]()
 
     def print_auth_help(self, message=''):
-        '''Prints all "sp auth" sub-commands.'''
-
+        """Print all "sp auth" sub-commands."""
         # Get header messages
         header = message + '[SP Auth] ' + _auth_strings[
             'Help'].get_string() + 'sp auth <command> [arguments]\n' + '=' * 78
@@ -88,13 +83,12 @@ class _AuthCommands(OrderedDict):
         self.print_help(header, '=' * 78)
 
     def print_help(self, pretext='', posttext=''):
-        '''Prints all "sp auth" sub-commands'''
+        """Print all "sp auth" sub-commands."""
         AuthCommandsLogger.log_message(
             pretext + '\n' + self.get_help_text() + '\n' + posttext)
 
     def get_help_text(self):
-        '''Returns the help text for auth commands'''
-
+        """Return the help text for auth commands."""
         # Store the base message
         message = ''
 
@@ -121,8 +115,7 @@ class _AuthCommands(OrderedDict):
 # >> FUNCTIONS
 # =============================================================================
 def _load_auth_providers(providers):
-    '''Loads the given auth providers.'''
-
+    """Load the given auth providers."""
     # Were any providers given?
     if not providers:
 
@@ -141,8 +134,7 @@ def _load_auth_providers(providers):
 
 
 def _unload_auth_providers(providers):
-    '''Unloads the given auth providers.'''
-
+    """Unload the given auth providers."""
     # Were any providers given?
     if not providers:
 
@@ -161,8 +153,7 @@ def _unload_auth_providers(providers):
 
 
 def _reload_auth_providers(providers=None):
-    '''Reloads the given auth providers.'''
-
+    """Reload the given auth providers."""
     # Were any providers given?
     if not providers:
 
@@ -177,8 +168,7 @@ def _reload_auth_providers(providers=None):
 
 
 def _print_auth_providers():
-    '''Lists all currently loaded auth providers.'''
-
+    """List all currently loaded auth providers."""
     # Get header messages
     message = '[SP Auth] ' + _auth_strings[
         'Providers'].get_string() + '\n' + '=' * 61 + '\n'

@@ -1,5 +1,7 @@
 # ../menus/__init__.py
 
+"""Provides player menu based functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -32,9 +34,8 @@ Option = None
 # >> CLASSES
 # =============================================================================
 class _MenuStyle(object):
-    '''
-    This class holds menu style values.
-    '''
+
+    """This class holds menu style values."""
 
     # Menus are displayed as radio menus
     RADIO = 0
@@ -47,13 +48,11 @@ class _MenuStyle(object):
 # >> HELPER FUNCTIONS
 # =============================================================================
 def _set_default_menu_style(style):
-    '''
-    Sets the default menu style.
+    """Set the default menu style.
 
     @param <style>:
     A value of the _MenuStyle class.
-    '''
-
+    """
     from menus.radio import SimpleRadioMenu
     from menus.radio import PagedRadioMenu
     from menus.radio import RadioOption

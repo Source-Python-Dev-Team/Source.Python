@@ -1,5 +1,7 @@
 # ../core/manager.py
 
+"""Provides access to all plugins loaded via "sp load"."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -28,7 +30,9 @@ CoreManagerLogger = CoreLogger.manager
 # >> CLASSES
 # =============================================================================
 class _SPPluginManager(PluginManager):
-    '''Plugin Manager class used to load "sp" plugins'''
+
+    """Plugin Manager class used to load "sp" plugins."""
+
     logger = CoreManagerLogger
 
 # Get the _SPPluginManager instance

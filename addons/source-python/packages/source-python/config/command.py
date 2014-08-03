@@ -1,5 +1,7 @@
 # ../config/command.py
 
+"""Provides server command functionality in configuration files."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -9,20 +11,14 @@ from translations.strings import TranslationStrings
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _CommandManager(object):
-    '''Class used to store a command instance'''
+
+    """Class used to store a command instance."""
 
     def __init__(self, name, description):
-        '''Called on instantiation'''
-
+        """Called on instantiation."""
         # Is the given description a TranslationStrings instance?
         if isinstance(description, TranslationStrings):
 
@@ -35,10 +31,10 @@ class _CommandManager(object):
 
     @property
     def name(self):
-        '''Returns the command's name'''
+        """Return the command's name."""
         return self._name
 
     @property
     def description(self):
-        '''Returns the command's description'''
+        """Return the command's description."""
         return self._description

@@ -1,5 +1,7 @@
 # ../cvars/flags.py
 
+"""Provides access to all ConVar flags in the engine."""
+
 # =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
@@ -39,10 +41,10 @@ __all__ = ('ConVarFlags',
 # >> ENUMERATORS
 # =============================================================================
 class ConVarFlags(object):
-    '''ConVar's flags wrapper enumerator.
 
-    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-    '''
+    """ConVar's flags wrapper enumerator."""
+
+    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     NONE = FCVAR_NONE
     UNREGISTERED = FCVAR_UNREGISTERED
     DEVELOPMENTONLY = FCVAR_DEVELOPMENTONLY

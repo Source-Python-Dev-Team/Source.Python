@@ -1,5 +1,7 @@
 # ../filters/recipients.py
 
+"""Provides Recipient Filtering functionality."""
+
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
@@ -19,12 +21,11 @@ __all__ = ('RecipientFilter',
 # >> CLASSES
 # ============================================================================
 class RecipientFilter(_RecipientFilter):
-    '''Class used to improve the ease of use of a _RecipientFilter instance'''
+
+    """Class used to improve the ease of use of a _RecipientFilter instance."""
 
     def __init__(self, *filters):
-        '''Initialize the recipient and update its
-            content matching the given filters'''
-
+        """Initialize and update the recipient filter."""
         # Initialize the _RecipientFilter
         super(RecipientFilter, self).__init__()
 
@@ -35,14 +36,11 @@ class RecipientFilter(_RecipientFilter):
         self.update(*self.filters)
 
     def __contains__(self, index):
-        '''
-            Return True if the given index is in the recipient, False otherwise
-        '''
+        """Return True/False if the given index is in the recipient."""
         return self.has_recipient(index)
 
     def __getitem__(self, item):
-        '''Return the index at the given recipient slot'''
-
+        """Return the index at the given recipient slot."""
         # Slicing?
         if isinstance(item, slice):
 
@@ -54,12 +52,11 @@ class RecipientFilter(_RecipientFilter):
         return self.get_recipient_index[item]
 
     def __len__(self):
-        '''Return the length of the recipient filter'''
+        """Return the length of the recipient filter."""
         return self.get_recipient_count()
 
     def __iter__(self):
-        '''Iterate over the recipient filter'''
-
+        """Iterate over the recipient filter."""
         # Loop through each index in the filter
         for index in range(len(self)):
 
@@ -67,12 +64,11 @@ class RecipientFilter(_RecipientFilter):
             yield self.get_recipient_index(index)
 
     def __repr__(self):
-        '''Return a readable representation of the recipient filter'''
+        """Return a readable representation of the recipient filter."""
         return '({0})'.format(' ,'.join(map(str, self)))
 
     def merge(self, iterable):
-        '''Merge the given recipient'''
-
+        """Merge the given recipient."""
         # Loop through all indexes of the given recipient
         for index in iterable:
 
@@ -80,8 +76,7 @@ class RecipientFilter(_RecipientFilter):
             self.add_recipient(index)
 
     def update(self, *args, clear=True):
-        '''Update the recipient filter matching the given filters'''
-
+        """Update the recipient filter matching the given filters."""
         # Clear the recipient first?
         if clear:
 

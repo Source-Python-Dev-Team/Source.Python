@@ -1,5 +1,7 @@
 # ../config/manager.py
 
+"""Provides a way to create and execute configuration files."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -43,11 +45,11 @@ _config_strings = LangStrings('_core/config_strings')
 # >> CLASSES
 # =============================================================================
 class ConfigManager(object):
-    '''Config Management class used to create a config file'''
+
+    """Config Management class used to create a config file."""
 
     def __init__(self, filepath, indention=3, max_line_length=79):
-        '''Called on instantiation'''
-
+        """Called on instantiation."""
         # Does the filepath contain the extension?
         if filepath.endswith('.cfg'):
 
@@ -71,34 +73,33 @@ class ConfigManager(object):
         self._sections = list()
 
     def __enter__(self):
-        '''Used when using "with" context management to create the file'''
+        """Used when using "with" context management to create the file."""
         return self
 
     @property
     def filepath(self):
-        '''Returns the file path for the config file'''
+        """Return the file path for the config file."""
         return self._filepath
 
     @property
     def indention(self):
-        '''Returns the indention value for the config file'''
+        """Return the indention value for the config file."""
         return self._indention
 
     @property
     def max_line_length(self):
-        '''Returns the max line length for the config file'''
+        """Return the max line length for the config file."""
         return self._max_line_length
 
     @property
     def fullpath(self):
-        '''Returns the "path" instance of the full path to the file'''
+        """Return the "path" instance of the full path to the file."""
         return CFG_PATH.joinpath(self.filepath + '.cfg')
 
     def cvar(
             self, name, default='0', flags=0,
             description='', min_value=None, max_value=None):
-        '''Adds/returns a cvar instance to add to the config file'''
-
+        """Add/return a cvar instance to add to the config file."""
         # Get the _CvarManager instance for the given arguments
         section = _CvarManager(
             name, default, flags, description, min_value, max_value)
@@ -113,8 +114,7 @@ class ConfigManager(object):
         return section
 
     def section(self, name, separator='#'):
-        '''Adds/returns a section instance to add to the config file'''
-
+        """Add/return a section instance to add to the config file."""
         # Get the _SectionManager instance for the given arguments
         section = _SectionManager(name, separator)
 
@@ -125,8 +125,7 @@ class ConfigManager(object):
         return section
 
     def command(self, name, description=''):
-        '''Adds/returns a command instance to add to the config file'''
-
+        """Add/return a command instance to add to the config file."""
         # Get the _CommandManager instance for the given arguments
         section = _CommandManager(name, description)
 
@@ -140,8 +139,7 @@ class ConfigManager(object):
         return section
 
     def text(self, text):
-        '''Adds text to the config file'''
-
+        """Add text to the config file."""
         # Is the given text a TranslationStrings instance?
         if isinstance(text, TranslationStrings):
 
@@ -152,8 +150,7 @@ class ConfigManager(object):
         self._sections.append(text)
 
     def __exit__(self, exctype, value, trace_back):
-        '''Used when exiting "with" context management to create file'''
-
+        """Used when exiting "with" context management to create file."""
         # Was an exception raised?
         if trace_back:
 
@@ -173,8 +170,7 @@ class ConfigManager(object):
         return True
 
     def write(self):
-        '''Writes the config file'''
-
+        """Write the config file."""
         # Get any old values from the existing file
         _old_config = self._parse_old_file()
 
@@ -404,13 +400,12 @@ class ConfigManager(object):
                         open_file.write('// {0}\n'.format(line))
 
     def execute(self):
-        '''Executes the config file'''
+        """Execute the config file."""
         EngineServer.server_command(
             'exec source-python/{0}\n'.format(self.filepath))
 
     def _parse_old_file(self):
-        '''Parses the old config file to get any values already set'''
-
+        """Parse the old config file to get any values already set."""
         # Get a defaultdict instance to store a list of lines
         _old_config = defaultdict(list)
 
@@ -454,8 +449,7 @@ class ConfigManager(object):
         return _old_config
 
     def _get_lines(self, lines, indention=0):
-        '''Yields a list of lines that are
-            less than the file's max line length'''
+        """Yield a list of lines less than the file's max line length."""
         return TextWrapper(
             self.max_line_length, '//' + ' ' * (self.indention - 2),
             '//' + ' ' * (

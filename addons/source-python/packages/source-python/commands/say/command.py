@@ -1,5 +1,7 @@
 # ../commands/say/command.py
 
+"""Provides a decorator class for registering say commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,7 +22,8 @@ __all__ = ('SayCommand',
 # >> CLASSES
 # =============================================================================
 class SayCommand(_BaseCommand):
-    '''Decorator class used to register a say command'''
+
+    """Decorator class used to register a say command."""
 
     # Store the class used to (un)register say commands
     _manager_class = SayCommandManager

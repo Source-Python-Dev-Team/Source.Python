@@ -1,5 +1,7 @@
 # ../filters/registry.py
 
+"""Provides basic registry functionality used by the filters package."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -10,26 +12,19 @@ from filters.errors import ReturnTypeError
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> BASE REGISTRY CLASS
 # =============================================================================
 class _BaseRegistry(dict):
-    '''Class that stores a registry of items'''
+
+    """Class that stores a registry of items."""
 
     def __init__(self, class_name):
-        '''Stores the name and error type on initialization'''
-
+        """Store the name and error type on initialization."""
         # Store the registering class' name
         self._class_name = class_name
 
     def register(self, item, function):
-        '''Registers an item'''
-
+        """Register an item."""
         # Has the item already been added to the dictionary?
         if item in self:
 
@@ -50,8 +45,7 @@ class _BaseRegistry(dict):
         self[item] = function
 
     def unregister(self, item):
-        '''Unregisters a item'''
-
+        """Unregister the given item."""
         # Has the item been registered?
         if item not in self:
 
@@ -69,15 +63,14 @@ class _BaseRegistry(dict):
 # >> REGISTRATION CLASSES
 # =============================================================================
 class _FilterRegistry(_BaseRegistry):
-    '''Class used to register filters'''
+
+    """Class used to register filters."""
 
     # Set the _name attribute for filter registry
     _name = 'filter'
 
     def __getitem__(self, item):
-        '''Override __getitem__ to call the correct
-            error when an invalid item is used'''
-
+        """Call the correct error when an invalid item is used."""
         # Is the given item valid?
         if item not in self:
 
@@ -89,15 +82,14 @@ class _FilterRegistry(_BaseRegistry):
 
 
 class _ReturnTypeRegistry(_BaseRegistry):
-    '''Class used to register return types'''
+
+    """Class used to register return types."""
 
     # Set the _name attribute for return type registry
     _name = 'return type'
 
     def __getitem__(self, item):
-        '''Override __getitem__ to call the correct
-            error when an invalid item is used'''
-
+        """Call the correct error when an invalid item is used."""
         # Is the given item valid?
         if item not in self:
 

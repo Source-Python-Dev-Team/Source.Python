@@ -1,5 +1,7 @@
 # ../memory/helpers.py
 
+"""Provides helper classes/functions for memory functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -37,10 +39,8 @@ __all__ = ('Array',
 # >> Type
 # =============================================================================
 class Type(object):
-    '''
-    This class is used to specify the type of an attribute or array created by
-    a TypeManager instance.
-    '''
+
+    """Stores attribute/array types."""
 
     BOOL = 'bool'
     CHAR = 'char'
@@ -61,10 +61,7 @@ class Type(object):
 
     @staticmethod
     def is_native(type_name):
-        '''
-        Returns True if the given type name is a native type.
-        '''
-
+        """Return True if the given type name is a native type."""
         return hasattr(Type, type_name.upper())
 
 
@@ -72,9 +69,8 @@ class Type(object):
 # >> Key
 # =============================================================================
 class Key(object):
-    '''
-    This class holds some constants and provides converters for parse_data().
-    '''
+
+    """Holds some constants and provides converters for parse_data()."""
 
     # General type information keys
     BINARY = 'binary'
@@ -103,12 +99,10 @@ class Key(object):
 
     @staticmethod
     def as_bool(value):
-        '''
-        Converts a string that represents a boolean value into a boolean
-        value. Raises a ValueError if the string doesn't represent such a
-        value.
-        '''
+        """Convert a string to a boolean.
 
+        Raises a ValueError if the string doesn't represent such a value.
+        """
         value = value.lower()
         if value == 'true':
             return True
@@ -121,10 +115,7 @@ class Key(object):
 
     @staticmethod
     def as_args_tuple(value):
-        '''
-        Converts a string into a tuple containing <Argument> elements.
-        '''
-
+        """Convert a string into a tuple containing <Argument> elements."""
         if isinstance(value, str):
             return (Argument.names[value], )
 
@@ -132,20 +123,18 @@ class Key(object):
 
     @staticmethod
     def as_return_type(value):
-        '''
-        Converts a string into a <Return> object. If the conversion fails, the
-        string itself will be returned.
-        '''
+        """Convert a string into a <Return> object.
 
+        If the conversion fails, the string itself will be returned.
+        """
         return Return.names.get(value, value)
 
     @staticmethod
     def as_identifier(value):
-        '''
-        If the given string contains spaces, this function will try to convert
-        it into a byte string. Otherwise the string itself will be returned.
-        '''
+        """Convert a string into a byte string.
 
+        If no spaces in the string, the string itself will be returned.
+        """
         if ' ' in value:
             return binascii.unhexlify(value.replace(' ', ''))
 
@@ -153,18 +142,12 @@ class Key(object):
 
     @staticmethod
     def as_convention(value):
-        '''
-        Converts a string into a <Convention> object.
-        '''
-
+        """Convert a string into a <Convention> object."""
         return Convention.names[value]
 
     @staticmethod
     def as_attribute_type(value):
-        '''
-        Converts a string into a <Type> value.
-        '''
-
+        """Convert a string into a <Type> value."""
         if Type.is_native(value):
             return getattr(Type, value)
 
@@ -175,20 +158,27 @@ class Key(object):
 # >> BasePointer
 # =============================================================================
 class BasePointer(Pointer):
+
+    """Pointer extension class."""
+
     # These four operator functions are required. Otherwise we would downcast
     # the instance to the Pointer class if we add or subtract bytes.
     # TODO: Can we do that on the C++ side?
     # If yes, this class would be redundant.
     def __add__(self, other):
+        """Return self+value."""
         return make_object(self.__class__, Pointer(int(self) + int(other)))
 
     def __radd__(self, other):
+        """Return value+self."""
         return self + other
 
     def __sub__(self, other):
+        """Return self-value."""
         return make_object(self.__class__, Pointer(int(self) - int(other)))
 
     def __rsub__(self, other):
+        """Return value-self."""
         return self - other
 
 
@@ -196,13 +186,11 @@ class BasePointer(Pointer):
 # >> Array
 # =============================================================================
 class Array(BasePointer):
-    '''
-    This class is used to wrap an array.
-    '''
+
+    """Wrap an array."""
 
     def __init__(self, manager, is_ptr, type_name, ptr, length=None):
-        '''
-        Initializes the array wrapper.
+        """Initialize the array wrapper.
 
         @param <manager>
         Contains an instance of TypeManager.
@@ -219,8 +207,7 @@ class Array(BasePointer):
         @param <length>
         Contains the length of the array. Setting this value allows you to
         iterate over the array.
-        '''
-
+        """
         self._manager = manager
 
         # Set to True if the array contains pointers, else False
@@ -235,24 +222,15 @@ class Array(BasePointer):
         super(Array, self).__init__(ptr)
 
     def __getitem__(self, index):
-        '''
-        Returns the value at the given index.
-        '''
-
+        """Return the value at the given index."""
         return self._make_attribute(index).__get__(self)
 
     def __setitem__(self, index, value):
-        '''
-        Sets the value at the given index.
-        '''
-
+        """Set the value at the given index."""
         self._make_attribute(index).__set__(self, value)
 
     def __iter__(self):
-        '''
-        Returns a generator that can iterate over the array.
-        '''
-
+        """Return a generator that can iterate over the array."""
         # This prevents users from iterating over the array without having
         # _length specified. Otherwise the server would hang or crash.
         if self._length is None:
@@ -264,10 +242,7 @@ class Array(BasePointer):
             yield self[index]
 
     def _make_attribute(self, index):
-        '''
-        Validates the index and returns a new property object.
-        '''
-
+        """Validate the index and returns a new property object."""
         # Validate the index, so we don't access invalid memory addresses
         if self._length is not None and index >= self._length:
             raise IndexError('Index out of range')
@@ -282,10 +257,7 @@ class Array(BasePointer):
         )
 
     def get_offset(self, index):
-        '''
-        Returns the offset of the given index.
-        '''
-
+        """Return the offset of the given index."""
         # Pointer arrays always have every 4 bytes a new pointer
         if self._is_ptr:
             return index * TYPE_SIZES[Type.POINTER]
@@ -310,10 +282,7 @@ class Array(BasePointer):
     # Arrays have another constructor and we don't want to downcast. So, we
     # have to implement these operators here again.
     def __add__(self, other):
-        '''
-        Adds bytes or another pointer to the base address.
-        '''
-
+        """Add bytes or another pointer to the base address."""
         return self.__class__(
             self._manager,
             self._is_ptr,
@@ -323,10 +292,7 @@ class Array(BasePointer):
         )
 
     def __sub__(self, other):
-        '''
-        Subtracts bytes or another pointer from the base address.
-        '''
-
+        """Subtract bytes or another pointer from the base address."""
         return self.__class__(
             self._manager,
             self._is_ptr,
@@ -340,16 +306,14 @@ class Array(BasePointer):
 # >> MemberFunction
 # =============================================================================
 class MemberFunction(Function):
-    '''
-    Use this class to create a wrapper for member functions. It passes the
-    this pointer automatically to the wrapped function.
-    '''
+
+    """Use this class to create a wrapper for member functions.
+
+    It passes the this pointer automatically to the wrapped function.
+    """
 
     def __init__(self, manager, return_type, func, this):
-        '''
-        Initializes the instance.
-        '''
-
+        """Initialize the instance."""
         super(MemberFunction, self).__init__(func)
 
         # This should always hold a TypeManager instance
@@ -362,17 +326,11 @@ class MemberFunction(Function):
         self._type_name = return_type
 
     def __call__(self, *args):
-        '''
-        Calls the function dynamically.
-        '''
-
+        """Call the function dynamically."""
         return super(MemberFunction, self).__call__(self._this, *args)
 
     def call_trampoline(self, *args):
-        '''
-        Calls the trampoline dynamically.
-        '''
-
+        """Call the trampoline dynamically."""
         return super(MemberFunction, self).call_trampoline(
             self._this,
             *args
@@ -383,8 +341,9 @@ class MemberFunction(Function):
 # >> FUNCTIONS
 # =============================================================================
 def parse_data(raw_data, keys):
-    '''
-    Parses the data dictionary by converting the values of the given keys into
+    """Parse the data dictionary.
+
+    Parses by converting the values of the given keys into
     the proper type or assigning them default values. Raises a KeyError if a
     key does not exist and if no default value is available.
 
@@ -414,8 +373,7 @@ def parse_data(raw_data, keys):
     3.
     identifier_nt    = <signature for Windows>
     identifier_posix = <symbol for Linux>
-    '''
-
+    """
     for name, data in raw_data.items():
         temp_data = []
         for key, converter, default in keys:

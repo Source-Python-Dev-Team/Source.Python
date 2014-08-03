@@ -1,5 +1,7 @@
 # ../commands/say/filter.py
 
+"""Provides a decorator class for registering say filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,7 +22,8 @@ __all__ = ('SayFilter',
 # >> CLASSES
 # =============================================================================
 class SayFilter(_BaseFilter):
-    '''Class used to register a say filter'''
+
+    """Class used to register a say filter."""
 
     # Store the class used to (un)register say filters
     _manager_class = SayCommandManager

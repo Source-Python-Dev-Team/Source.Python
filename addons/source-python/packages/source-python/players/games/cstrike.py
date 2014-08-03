@@ -12,14 +12,8 @@ from players.weapons.types import _C4
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _GameWeapons(_HEGrenade, _Flashbang, _SmokeGrenade, _C4):
-    '''Game-specific class inherited by _PlayerWeapons to
-        handle CS:S specific weapon functionality for players'''
+    """Game-specific class inherited by _PlayerWeapons to
+        handle CS:S specific weapon functionality for players"""

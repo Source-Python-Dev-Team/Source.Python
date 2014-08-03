@@ -27,11 +27,11 @@ __all__ = ('BaseEntity',
 # >> CLASSES
 # =============================================================================
 class BaseEntity(_EntitySpecials):
-    '''Class used to interact directly with entities'''
+    """Class used to interact directly with entities"""
 
     def __new__(cls, index, *entities):
-        '''Override the __new__ class method to verify the given index
-            is of the correct entity type and add the index attribute'''
+        """Override the __new__ class method to verify the given index
+            is of the correct entity type and add the index attribute"""
 
         # Get the given indexes edict
         edict = edict_from_index(index)
@@ -55,7 +55,7 @@ class BaseEntity(_EntitySpecials):
         return self
 
     def __getattr__(self, attr):
-        '''Finds if the attribute is valid and returns the appropriate value'''
+        """Finds if the attribute is valid and returns the appropriate value"""
 
         # Loop through all instances (used to get edict/IPlayerInfo attributes)
         for instance in self.instances:
@@ -114,7 +114,7 @@ class BaseEntity(_EntitySpecials):
         raise AttributeError('Attribute "{0}" not found'.format(attr))
 
     def _get_property(self, item):
-        '''Gets the value of the given property'''
+        """Gets the value of the given property"""
 
         # Get the property so that we don't have to make multiple calls
         prop = self.properties[item]
@@ -133,7 +133,7 @@ class BaseEntity(_EntitySpecials):
         return value
 
     def _get_offset(self, item):
-        '''Gets the value of the given offset'''
+        """Gets the value of the given offset"""
 
         # Get the offset so that we don't have to make multiple calls
         offset = self.offsets[item]
@@ -143,9 +143,9 @@ class BaseEntity(_EntitySpecials):
             self.pointer, 'get_{0}'.format(offset.type))(offset.offset)
 
     def _get_virtual(self, item):
-        '''Calls a virtual function'''
+        """Calls a virtual function"""
 
-        '''
+        """
             Make sure to not change this to:
 
                 instance = self.virtuals[item]
@@ -155,7 +155,7 @@ class BaseEntity(_EntitySpecials):
             Doing so will break the functionality, as
                 self.virtuals[item] is set to a _VirtualFunction
                 instance the first time the current_pointer attribute is set
-        '''
+        """
 
         # Set the entity's pointer as the current one
         self.virtuals[item].current_pointer = self.pointer
@@ -164,7 +164,7 @@ class BaseEntity(_EntitySpecials):
         return self.virtuals[item]
 
     def _get_function(self, item):
-        '''Calls a dynamic function'''
+        """Calls a dynamic function"""
 
         # Get the function so that we don't have to make multiple calls
         function = self.functions[item]
@@ -179,7 +179,7 @@ class BaseEntity(_EntitySpecials):
         return function
 
     def __setattr__(self, attr, value):
-        '''Finds if the attribute is value and sets its value'''
+        """Finds if the attribute is value and sets its value"""
 
         # Is the given attribute private?
         if attr.startswith('_'):
@@ -241,7 +241,7 @@ class BaseEntity(_EntitySpecials):
             super(BaseEntity, self).__setattr__(attr, value)
 
     def _set_property(self, item, value):
-        '''Sets the value of the given propery'''
+        """Sets the value of the given propery"""
 
         # Get the property so that we don't have to make multiple calls
         prop = self.properties[item]
@@ -256,7 +256,7 @@ class BaseEntity(_EntitySpecials):
         getattr(self.edict, 'set_prop_{0}'.format(prop.type))(prop.prop, value)
 
     def _set_offset(self, item, value):
-        '''Sets the value of the given offset'''
+        """Sets the value of the given offset"""
 
         # Get the offset so that we don't have to make multiple calls
         offset = self.offsets[item]
@@ -266,7 +266,7 @@ class BaseEntity(_EntitySpecials):
             self.pointer, 'set_{0}'.format(offset.type))(value, offset.offset)
 
     def get_color(self):
-        '''Returns a 4 part tuple (RGBA) for the entity's color'''
+        """Returns a 4 part tuple (RGBA) for the entity's color"""
 
         # Get the render value
         value = self.render
@@ -277,7 +277,7 @@ class BaseEntity(_EntitySpecials):
             (value & 0xff0000) >> 16, (value & 0xff000000) >> 24)
 
     def set_color(self, args):
-        '''Sets the entity's color to the given RGBA values'''
+        """Sets the entity's color to the given RGBA values"""
 
         # Are the the correct number of arguments?
         if not len(args) in (3, 4):
@@ -322,71 +322,71 @@ class BaseEntity(_EntitySpecials):
 
     @property
     def index(self):
-        '''Returns the entity's index'''
+        """Returns the entity's index"""
         return self._index
 
     @property
     def edict(self):
-        '''Returns the entity's edict instance'''
+        """Returns the entity's edict instance"""
         return self._edict
 
     @property
     def entities(self):
-        '''Returns the set of entity names to use for the instance'''
+        """Returns the set of entity names to use for the instance"""
         return self._entities
 
     @property
     def instances(self):
-        '''Yields the entity's edict instance'''
+        """Yields the entity's edict instance"""
         yield self.edict
 
     @property
     def basehandle(self):
-        '''Returns the entity's BaseEntityHandle instance'''
+        """Returns the entity's BaseEntityHandle instance"""
         return self.edict.get_networkable(
             ).get_entity_handle().get_ref_ehandle()
 
     @property
     def inthandle(self):
-        '''Returns the entity's integer handle'''
+        """Returns the entity's integer handle"""
         return self.basehandle.to_int()
 
     @property
     def classname(self):
-        '''Returns the classname of the entity'''
+        """Returns the classname of the entity"""
         return self.edict.get_class_name()
 
     @property
     def pointer(self):
-        '''Returns the entity's pointer'''
+        """Returns the entity's pointer"""
         return Pointer(self.edict.get_unknown().get_base_entity())
 
     @property
     def properties(self):
-        '''Returns all properties for all entities'''
+        """Returns all properties for all entities"""
         return EntityProperties.get_game_attributes(self.entities)
 
     @property
     def offsets(self):
-        '''Returns all offsets for all entities'''
+        """Returns all offsets for all entities"""
         return EntityOffsets.get_game_attributes(self.entities)
 
     @property
     def functions(self):
-        '''Returns all dynamic calling functions for all entities'''
+        """Returns all dynamic calling functions for all entities"""
         return EntityFunctions.get_game_attributes(self.entities)
 
     @property
     def named_datamaps(self):
-        ''''''
+        """"""
         return NamedDataMaps.get_game_attributes(self.entities)
 
     @property
     def datamaps(self):
-        ''''''
+        """"""
         return EntityDataMaps.get_data_maps(self.edict)
 
     @property
     def virtuals(self):
-        ''''''
+        """"""
         return EntityVirtualFunctions.get_virtual_functions(self.edict)

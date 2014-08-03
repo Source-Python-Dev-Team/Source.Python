@@ -1,5 +1,7 @@
 # ../commands/command.py
 
+"""Contains a base decorator class for registering commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -9,20 +11,14 @@ from core import AutoUnload
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _BaseCommand(AutoUnload):
-    '''Base decorator class used to register commands'''
+
+    """Base decorator class used to register commands."""
 
     def __init__(self, names, *args, **kwargs):
-        '''Stores the base values for the decorator'''
-
+        """Store the base values for the decorator."""
         # Store the names
         self.names = names
 
@@ -33,8 +29,7 @@ class _BaseCommand(AutoUnload):
         self.kwargs = kwargs
 
     def __call__(self, callback):
-        '''Registers the commands to the given callback'''
-
+        """Register the commands to the given callback."""
         # Store the callback
         self.callback = callback
 
@@ -46,5 +41,5 @@ class _BaseCommand(AutoUnload):
         return self
 
     def _unload_instance(self):
-        '''Unregisters the commands'''
+        """Unregister the commands."""
         self._manager_class.unregister_commands(self.names, self.callback)

@@ -18,12 +18,6 @@ from memory.manager import manager
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the ini data checkers
@@ -42,11 +36,11 @@ _ini_data = (
 # >> CLASSES
 # =============================================================================
 class _FunctionInstance(Function):
-    '''Class used to store a function to be called with
-        the entity's pointer as the first argument'''
+    """Class used to store a function to be called with
+        the entity's pointer as the first argument"""
 
     def __init__(self, item):
-        '''Called on initialization'''
+        """Called on initialization"""
 
         # Create a list to store the function data
         data = list()
@@ -78,8 +72,8 @@ class _FunctionInstance(Function):
         self.current_pointer = None
 
     def __call__(self, *args):
-        '''Adds the entity's pointer as the <pointer_index>
-            argument when calling the function'''
+        """Adds the entity's pointer as the <pointer_index>
+            argument when calling the function"""
 
         # Add the pointer to the arguments
         args = (
@@ -95,7 +89,7 @@ class _FunctionInstance(Function):
 
 
 class _EntityFunctions(EntityAttributes):
-    '''Dictionary that stores all entities with their functions'''
+    """Dictionary that stores all entities with their functions"""
 
     type = 'functions'
     unrepr = False

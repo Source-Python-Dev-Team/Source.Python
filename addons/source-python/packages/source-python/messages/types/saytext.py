@@ -1,5 +1,7 @@
 # ../messages/types/saytext.py
 
+"""Contains base SayText implementation."""
+
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
@@ -12,20 +14,14 @@ from codecs import unicode_escape_decode
 from messages.base import BaseMessage
 
 
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
 # ============================================================================
 # >> CLASSES
 # ============================================================================
 class SayText(BaseMessage):
-    '''Class used to send a SayText message'''
+    """Class used to send a SayText message"""
 
     def _prepare_parameter(self, parameter_name, parameter_value):
-        '''Prepare the given parameter value'''
+        """Prepare the given parameter value"""
 
         # Prepare the given value
         return_value = super(SayText, self)._prepare_parameter(

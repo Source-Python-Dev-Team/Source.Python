@@ -36,10 +36,10 @@ _gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 # >> CLASSES
 # =============================================================================
 class _WeaponManager(dict):
-    '''Dictionary class to store basic weapon information'''
+    """Dictionary class to store basic weapon information"""
 
     def __init__(self, ini_file):
-        '''Loads the ini file into the dictionary'''
+        """Loads the ini file into the dictionary"""
 
         # Get the ConfigObj instance of the file
         ini = ConfigObj(ini_file, unrepr=True)
@@ -78,7 +78,7 @@ class _WeaponManager(dict):
             self._tags.update(self[name].tags)
 
     def __getitem__(self, item):
-        '''Override __getitem__ to format the given name'''
+        """Override __getitem__ to format the given name"""
 
         # Format the weapon's name
         name = self._format_name(item)
@@ -87,7 +87,7 @@ class _WeaponManager(dict):
         return self.get(name, None)
 
     def __contains__(self, item):
-        '''Override __contains__ to format the given name'''
+        """Override __contains__ to format the given name"""
 
         # Format the weapon's name
         name = self._format_name(item)
@@ -96,7 +96,7 @@ class _WeaponManager(dict):
         return super(_WeaponManager, self).__contains__(name)
 
     def _format_name(self, item):
-        '''Formats the name to include the game's weapon prefix'''
+        """Formats the name to include the game's weapon prefix"""
 
         # Set the weapon to lower-case
         name = item.lower()
@@ -124,40 +124,40 @@ class _WeaponManager(dict):
 
     @property
     def prefix(self):
-        '''Returns the weapon prefix value for the server'''
+        """Returns the weapon prefix value for the server"""
         return self._prefix
 
     @property
     def ammoprop(self):
-        '''Returns the ammoprop property for the server'''
+        """Returns the ammoprop property for the server"""
         return self._ammoprop
 
     @property
     def myweapons(self):
-        '''Returns the myweapons property for the server'''
+        """Returns the myweapons property for the server"""
         return self._myweapons
 
     @property
     def special_names(self):
-        '''Returns the special_names for the server'''
+        """Returns the special_names for the server"""
         return self._special_names
 
     @property
     def projectiles(self):
-        '''Returns the projectiles for the server'''
+        """Returns the projectiles for the server"""
         return self._projectiles
 
     @property
     def tags(self):
-        '''Returns the weapon tags for the server'''
+        """Returns the weapon tags for the server"""
         return self._tags
 
 
 class _Weapon(object):
-    '''Class used to store information specific to the given weapon'''
+    """Class used to store information specific to the given weapon"""
 
     def __init__(self, name, basename, properties):
-        '''Stores the base attributes for the weapon'''
+        """Stores the base attributes for the weapon"""
 
         # Store the weapon's full name
         self._name = name
@@ -182,22 +182,22 @@ class _Weapon(object):
 
     @property
     def name(self):
-        '''Returns the classname of the weapon'''
+        """Returns the classname of the weapon"""
         return self._name
 
     @property
     def basename(self):
-        '''Returns the basename of the weapon'''
+        """Returns the basename of the weapon"""
         return self._basename
 
     @property
     def slot(self):
-        '''Returns the slot of the weapon'''
+        """Returns the slot of the weapon"""
         return self._slot
 
     @property
     def maxammo(self):
-        '''Returns the maxammo amount for the weapon'''
+        """Returns the maxammo amount for the weapon"""
 
         # Is the stored maxammo an integer?
         if isinstance(self._maxammo, int):
@@ -210,17 +210,17 @@ class _Weapon(object):
 
     @property
     def ammoprop(self):
-        '''Returns the ammoprop of the weapon'''
+        """Returns the ammoprop of the weapon"""
         return self._ammoprop
 
     @property
     def clip(self):
-        '''Returns the clip value of the weapon'''
+        """Returns the clip value of the weapon"""
         return self._clip
 
     @property
     def tags(self):
-        '''Returns the tags of the weapon'''
+        """Returns the tags of the weapon"""
         return self._tags
 
 # Does the current game have an ini file?

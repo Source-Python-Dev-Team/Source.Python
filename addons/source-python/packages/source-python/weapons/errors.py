@@ -11,4 +11,4 @@ __all__ = ('WeaponIndexError',
 # >> CLASSES
 # =============================================================================
 class WeaponIndexError(Exception):
-    '''Used when trying to get an invalid weapon index'''
+    """Used when trying to get an invalid weapon index"""

@@ -1,5 +1,7 @@
 # ../config/cvar.py
 
+"""Provides ConVar functionality in configuration files."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -11,21 +13,15 @@ from translations.strings import TranslationStrings
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _CvarManager(dict):
-    '''Class used to store a cvar instance'''
+
+    """Class used to store a cvar instance."""
 
     def __init__(
             self, name, default, flags, description, min_value, max_value):
-        '''Called on instantiation'''
-
+        """Called on instantiation."""
         # Is the given description a TranslationStrings instance?
         if isinstance(description, TranslationStrings):
 
@@ -48,9 +44,7 @@ class _CvarManager(dict):
         self._order = list()
 
     def __getattr__(self, attr):
-        '''Define __getattr__ to return Cvar
-            attributes or items in the instance'''
-
+        """Return Cvar attributes or items in the instance."""
         # Does the Cvar instance have the given attribute?
         if hasattr(self.cvar, attr):
 
@@ -61,8 +55,7 @@ class _CvarManager(dict):
         return self.__getitem__(attr)
 
     def __missing__(self, item):
-        '''Define __missing__ to create the item as a _ListManager instance'''
-
+        """Create the item as a _ListManager instance."""
         # Get the _ListManager instance for the given item
         value = self[item] = _ListManager(item)
 
@@ -73,8 +66,7 @@ class _CvarManager(dict):
         return value
 
     def __iter__(self):
-        '''Override __iter__ to iterate over items in the ordered list'''
-
+        """Iterate over items in the ordered list."""
         # Loop through items in the ordered list
         for item in self._order:
 
@@ -97,9 +89,7 @@ class _CvarManager(dict):
                 yield item, 0
 
     def text(self, text):
-        '''Adds simple text or a TranslationStrings
-            instance to the ordered list'''
-
+        """Add simple text or a TranslationStrings instance to the list."""
         # Is the item a TranslationStrings instance?
         if isinstance(text, TranslationStrings):
 
@@ -111,31 +101,31 @@ class _CvarManager(dict):
 
     @property
     def name(self):
-        '''Returns the cvar's name'''
+        """Return the cvar's name."""
         return self._name
 
     @property
     def default(self):
-        '''Returns the cvar's default value'''
+        """Return the cvar's default value."""
         return self._default
 
     @property
     def description(self):
-        '''Returns the cvar's description'''
+        """Return the cvar's description."""
         return self._description
 
     @property
     def cvar(self):
-        '''Returns the cvar's ConVar instance'''
+        """Return the cvar's ConVar instance."""
         return self._cvar
 
 
 class _ListManager(list):
-    '''List class used to store text for a specific descriptor of a Cvar'''
+
+    """List class used to store text for a specific descriptor of a Cvar."""
 
     def __init__(self, name):
-        '''Called on instantiation'''
-
+        """Called on instantiation."""
         # Is the given name a TranslationStrings instance?
         if isinstance(name, TranslationStrings):
 
@@ -149,12 +139,11 @@ class _ListManager(list):
 
     @property
     def name(self):
-        '''Returns the name of the list'''
+        """Return the name of the list."""
         return self._name
 
     def append(self, text):
-        '''Override append to add the proper text'''
-
+        """Override append to add the proper text."""
         # Is the item a TranslationStrings instance?
         if isinstance(text, TranslationStrings):
 

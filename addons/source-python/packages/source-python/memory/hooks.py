@@ -1,5 +1,7 @@
 # ../memory/hooks.py
 
+"""Provides memory hooking functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -24,12 +26,11 @@ __all__ = ('HookType',
 # >> CLASSES
 # =============================================================================
 class _Hook(AutoUnload):
-    '''Decorator base class used to create
-        pre and post hooks that auto unload'''
+
+    """Create pre and post hooks that auto unload."""
 
     def __init__(self, function):
-        '''Verifies the given function is a Function object and store it'''
-
+        """Verify the given function is a Function object and store it."""
         # Is the function to be hooked a Function instance?
         if not isinstance(function, Function):
 
@@ -40,8 +41,7 @@ class _Hook(AutoUnload):
         self.function = function
 
     def __call__(self, callback):
-        '''Store the callback and hook it'''
-
+        """Store the callback and hook it."""
         # Store the callback
         self.callback = callback
 
@@ -52,15 +52,19 @@ class _Hook(AutoUnload):
         return self
 
     def _unload_instance(self):
-        '''Unregister the hook on script unload'''
+        """Unregister the hook on script unload."""
         self.function.remove_hook(self.hook_type, self.callback)
 
 
 class PreHook(_Hook):
-    '''Decorator class used to create pre hooks that auto unload'''
+
+    """Decorator class used to create pre hooks that auto unload."""
+
     hook_type = HookType.PRE
 
 
 class PostHook(_Hook):
-    '''Decorator class used to create post hooks that auto unload'''
+
+    """Decorator class used to create post hooks that auto unload."""
+
     hook_type = HookType.POST

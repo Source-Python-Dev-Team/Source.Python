@@ -1,20 +1,17 @@
 # ../filters/iterator.py
 
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
+"""Contains base iteration functionality for the filter package."""
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
 class _IterObject(object):
-    '''Base iterator class used to yield filtered items'''
+
+    """Base iterator class used to yield filtered items."""
 
     def __init__(self, is_filters=[], not_filters=[], return_types='index'):
-        '''Stores filters and return types for the instance'''
-
+        """Store filters and return types for the instance."""
         # Are the "is" filters a string?
         if isinstance(is_filters, str):
 
@@ -33,9 +30,7 @@ class _IterObject(object):
         self.return_types = return_types
 
     def __iter__(self):
-        '''Iterates through the class objects
-            and filters out any unneeded ones'''
-
+        """Iterate through the objects and filter out any unneeded items."""
         # Loop through the items in classes iterator
         for item in self.iterator():
 
@@ -69,8 +64,7 @@ class _IterObject(object):
                 yield yield_list
 
     def _is_valid(self, item):
-        '''Returns whether the given item is valid for the instances filters'''
-
+        """Return whether the given item is valid for the instances filters."""
         # Loop through all "is" filters
         for filter_name in self.is_filters:
 

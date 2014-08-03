@@ -1,5 +1,7 @@
 # ../commands/say/manager.py
 
+"""Provides a manager class used to register say commands and filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -22,7 +24,8 @@ __all__ = ('SayCommandManager',
 # >> CLASSES
 # =============================================================================
 class _SayCommandManager(_PlayerCommandManager):
-    '''Manager class used to register say commands and say filters'''
+
+    """Manager class used to register say commands and say filters."""
 
     # Store the base functions
     _get_command = staticmethod(get_say_command)

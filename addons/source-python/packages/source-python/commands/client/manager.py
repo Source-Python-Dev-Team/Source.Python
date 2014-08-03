@@ -1,5 +1,7 @@
 # ../commands/client/manager.py
 
+"""Provides a manager class used to register client commands and filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -22,8 +24,8 @@ __all__ = ('ClientCommandManager',
 # >> CLASSES
 # =============================================================================
 class _ClientCommandManager(_PlayerCommandManager):
-    '''Manager class used to register client
-        commands and client command filters'''
+
+    """Registers client commands and client command filters."""
 
     # Store the base functions
     _get_command = staticmethod(get_client_command)

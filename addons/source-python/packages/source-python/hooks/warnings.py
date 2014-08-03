@@ -1,5 +1,7 @@
 # ../hooks/warnings.py
 
+"""Provides warning hooking functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -39,12 +41,12 @@ HooksWarningsLogger = HooksLogger.warnings
 # >> CLASSES
 # =============================================================================
 class _WarningHooks(_HookBase):
-    '''Class used to log warnings'''
+
+    """Class used to log warnings."""
 
     def print_warning(
             self, message, category, filename, lineno, file=None, line=None):
-        '''Logs a warning'''
-
+        """Log a warning."""
         # Loop through each callback in the warning list
         for callback in self:
 
@@ -82,6 +84,7 @@ warnings.filterwarnings('once')
 
 
 class WarningHook(_HookDecorator):
-    '''Decorator class used to register/unregister
-        a function/method for hooking warnings'''
+
+    """Register/unregister a function/method for hooking warnings."""
+
     _class_instance = WarningHooks

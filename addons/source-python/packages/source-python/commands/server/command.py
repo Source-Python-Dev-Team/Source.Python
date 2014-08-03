@@ -1,5 +1,7 @@
 # ../commands/server/command.py
 
+"""Provides a decorator class for registering server commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,7 +22,8 @@ __all__ = ('ServerCommand',
 # >> CLASSES
 # =============================================================================
 class ServerCommand(_BaseCommand):
-    '''Decorator class used to register a server command'''
+
+    """Decorator class used to register a server command."""
 
     # Store the class used to (un)register server commands
     _manager_class = ServerCommandManager

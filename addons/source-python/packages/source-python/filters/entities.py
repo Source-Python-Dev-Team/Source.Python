@@ -1,5 +1,7 @@
 # ../filters/entities.py
 
+"""Provides entity filtering functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -27,18 +29,19 @@ __all__ = ('EntityIter',
 # >> MAIN ENTITY ITER CLASSES
 # =============================================================================
 class _EntityIterManager(object):
-    '''Filter management class specifically for entity iterating'''
+
+    """Filter management class specifically for entity iterating."""
 
     def __init__(self):
-        '''Store the return type registry instance'''
+        """Store the return type registry instance."""
         self._return_types = _ReturnTypeRegistry(self.__class__.__name__)
 
     def register_return_type(self, return_type, function):
-        '''Registers the given return type to the class'''
+        """Register the given return type to the class."""
         self._return_types.register(return_type, function)
 
     def unregister_return_type(self, return_type):
-        '''Unregisters the given return type from the class'''
+        """Unregister the given return type from the class."""
         self._return_types.unregister(return_type)
 
 # Get the _EntityIterManager instance
@@ -46,7 +49,8 @@ _EntityIterManagerInstance = _EntityIterManager()
 
 
 class EntityIter(_IterObject):
-    '''Entity iterate class'''
+
+    """Entity iterate class."""
 
     # Store the manager for the entity iterator
     manager = _EntityIterManagerInstance
@@ -55,8 +59,7 @@ class EntityIter(_IterObject):
     iterator = staticmethod(EntityGenerator)
 
     def __init__(self, class_names=[], exact_match=True, return_types='index'):
-        '''Stores the base attributes for the generator'''
-
+        """Store the base attributes for the generator."""
         # Is there only one class name given?
         if isinstance(class_names, str):
 
@@ -69,9 +72,7 @@ class EntityIter(_IterObject):
         self.return_types = return_types
 
     def _is_valid(self, edict):
-        '''Checks to see whether the given edict
-            is one that should be iterated over'''
-
+        """Verify that the edict needs yielded."""
         # Are there any class names to be checked?
         if not self.class_names:
 

@@ -1,5 +1,7 @@
 # ../events/manager.py
 
+"""Provides event registration functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -37,12 +39,11 @@ EventsManagerLogger = _SPLogger.events.manager
 # >> CLASSES
 # =============================================================================
 class _EventRegistry(dict):
-    '''Dictionary object used to hold Event names with all registered callbacks
-    '''
+
+    """Stores Event names with all registered callbacks."""
 
     def __missing__(self, event):
-        '''Adds an event to the dictionary and registers for it'''
-
+        """Add an event to the dictionary and registers for it."""
         # Get an _EventListener instance
         listener = self[event] = _EventListener(event)
 
@@ -53,8 +54,7 @@ class _EventRegistry(dict):
         return listener
 
     def register_for_event(self, event, callback):
-        '''Registers the callback for the given event'''
-
+        """Register the callback for the given event."""
         # Is the callback callable?
         if not callable(callback):
 
@@ -65,8 +65,7 @@ class _EventRegistry(dict):
         self[event].append(callback)
 
     def unregister_for_event(self, event, callback):
-        '''Unregisters the callback for the given event'''
-
+        """Unregister the callback for the given event."""
         # Is the event registered?
         if event not in self:
 

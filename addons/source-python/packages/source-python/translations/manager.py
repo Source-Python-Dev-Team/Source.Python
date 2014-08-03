@@ -23,7 +23,7 @@ __all__ = ('LanguageManager',
 # >> CLASSES
 # =============================================================================
 class _LanguageManager(ConfigObj):
-    '''Dictionary class used to store languages and their shortnames'''
+    """Dictionary class used to store languages and their shortnames"""
 
     # en should always be used as the "fallback",
     # since most plugins will have English values
@@ -33,7 +33,7 @@ class _LanguageManager(ConfigObj):
     default = 'en'
 
     def _register_default_language(self, language):
-        '''Registers the default language for the current server'''
+        """Registers the default language for the current server"""
 
         # Get the shortname for the given language
         language = self.get_language(language)
@@ -45,7 +45,7 @@ class _LanguageManager(ConfigObj):
             self.default = language
 
     def get_language(self, language):
-        '''Returns the shortname for the given language'''
+        """Returns the shortname for the given language"""
 
         # Is the given language an item in the dictionary?
         if language in self:

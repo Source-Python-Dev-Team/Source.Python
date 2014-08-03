@@ -1,5 +1,7 @@
 # ../_core/command.py
 
+"""Registers the "sp" command and all of its sub-commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -29,12 +31,6 @@ from listeners.tick import TickDelays
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.core.command logger
@@ -45,20 +41,22 @@ CoreCommandLogger = CoreLogger.command
 # >> CLASSES
 # =============================================================================
 class _SPLoadedPlugin(LoadedPlugin):
-    '''Plugin instance class used to create "sp" loaded plugins'''
+
+    """Plugin instance class used to create "sp" loaded plugins."""
+
     logger = CoreCommandLogger
 
 
 class _CoreCommand(SubCommandManager):
-    '''Class used for executing "sp" sub-command functionality'''
+
+    """Class used for executing "sp" sub-command functionality."""
 
     manager = SPPluginManager
     instance = _SPLoadedPlugin
     logger = CoreCommandLogger
 
     def print_plugins(self):
-        '''Lists all currently loaded plugins.'''
-
+        """List all currently loaded plugins."""
         # Get header messages
         message = self.prefix + _plugin_strings[
             'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
@@ -110,16 +108,13 @@ class _CoreCommand(SubCommandManager):
 
     @staticmethod
     def delay_execution(*args):
-        '''Executes a command after the given delay.'''
-
-        # Add the delay
+        """Execute a command after the given delay."""
         TickDelays.delay(
             float(args[0]),
             EngineServer.server_command, ' '.join(args[1:]) + '\n')
 
     def dump_data(self, dump_type):
-        '''Dumps data to logs.'''
-
+        """Dump data to logs."""
         # Does the given dump type exist as a function?
         if not hasattr(_dump, 'dump_' + dump_type):
 
@@ -151,11 +146,10 @@ class _CoreCommand(SubCommandManager):
 
     @staticmethod
     def print_version():
-        '''Displays Source.Python version information.'''
+        """Display Source.Python version information."""
 
     def print_credits(self):
-        '''Lists all credits for Source.Python.'''
-
+        """List all credits for Source.Python."""
         # Get header messages
         message = self.prefix + _plugin_strings[
             'Credits'].get_string() + '\n' + '=' * 61 + '\n\n'

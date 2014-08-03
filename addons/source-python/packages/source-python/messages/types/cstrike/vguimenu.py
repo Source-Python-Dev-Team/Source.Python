@@ -1,5 +1,7 @@
 # ../messages/types/cstrike/vguimenu.py
 
+"""Contains cstrike specific VGUIMenu implementation."""
+
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
@@ -8,22 +10,16 @@
 from messages.types.vguimenu import VGUIMenu as BaseVGUIMenu
 
 
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
 # ============================================================================
 # >> CLASSES
 # ============================================================================
 class VGUIMenu(BaseVGUIMenu):
-    '''Class used to send a VGUIMenu message'''
+    """Class used to send a VGUIMenu message"""
 
     def _write_field_value(
             self, parameter_name, usermsg, field_type,
             field_name, field_value, field_index=-1):
-        '''Write the given field value to the given message'''
+        """Write the given field value to the given message"""
 
         # Is the given parameter "subkeys"?
         if parameter_name == 'subkeys':

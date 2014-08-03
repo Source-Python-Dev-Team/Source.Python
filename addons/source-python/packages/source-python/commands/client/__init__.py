@@ -1,5 +1,6 @@
 # ../commands/client/__init__.py
 
+"""Provides client command and client command filter functionality."""
 
 # =============================================================================
 # >> FORWARD IMPORTS

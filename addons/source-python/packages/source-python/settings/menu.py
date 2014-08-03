@@ -11,31 +11,25 @@ from players.helpers import index_from_playerinfo
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> FUNCTIONS
 # =============================================================================
 class _AvailableSettings(dict):
-    '''
+    """
         Dictionary that holds all settings.player.PlayerSettings instance menus
-    '''
+    """
 
     def __init__(self):
-        '''Create the main settings menu on instantiation'''
+        """Create the main settings menu on instantiation"""
         self._menu = PagedMenu(select_callback=self._chosen_item)
 
     @property
     def menu(self):
-        '''Returns the main settings menu instance'''
+        """Returns the main settings menu instance"""
         return self._menu
 
     def _private_send_menu(self, *args):
-        '''Called when a private say command is
-            used for sending the settings menu'''
+        """Called when a private say command is
+            used for sending the settings menu"""
 
         # Send the menu
         self._send_menu(*args)
@@ -44,14 +38,14 @@ class _AvailableSettings(dict):
         return False
 
     def _send_menu(self, playerinfo, *args):
-        '''Sends the main settings menu to the player who requested it'''
+        """Sends the main settings menu to the player who requested it"""
         self.menu.send(index_from_playerinfo(playerinfo))
 
     @staticmethod
     def _chosen_item(menu, index, option):
-        '''
+        """
             Sends a player settings menu when one is chosen from the main menu
-        '''
+        """
         option.value.menu.send(index)
 
 # Get the _AvailableSettings instance

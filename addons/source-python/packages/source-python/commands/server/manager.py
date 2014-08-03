@@ -1,5 +1,7 @@
 # ../commands/server/manager.py
 
+"""Provides a manager class used to register server commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,7 +22,8 @@ __all__ = ('ServerCommandManager',
 # >> CLASSES
 # =============================================================================
 class _ServerCommandManager(_BaseCommandManager):
-    '''Manager class used to register server commands'''
+
+    """Manager class used to register server commands."""
 
     # Store the base functions
     _get_command = staticmethod(get_server_command)

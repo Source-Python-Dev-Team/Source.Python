@@ -1,5 +1,7 @@
 # ../menus/queue.py
 
+"""Contains menu queues for individual players."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -23,12 +25,6 @@ from players.helpers import index_from_userid
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CONSTANTS
 # =============================================================================
 # The name of the client command that used for ESC menus
@@ -39,71 +35,68 @@ ESC_SELECTION_CMD = 'escselect'
 # >> CLASSES
 # =============================================================================
 class _UserQueue(deque):
-    '''
-    This class controls the user's menu queue. It handles selections and
-    decides which menu should be displayed.
-    '''
+
+    """Controls the user's menu queue.
+
+    Handles selections and decides which menu should be displayed.
+    """
 
     def __init__(self, index):
-        '''
-        Initializes the queue.
+        """Initialize the queue.
 
         @param <index>:
         A valid player index.
-        '''
-
+        """
         self._index = index
 
     def append(self, menu):
-        # Make sure we don't add a menu twice
+        """Make sure we don't add a menu twice."""
         if menu not in self:
             super(_UserQueue, self).append(menu)
 
     def appendleft(self, menu):
-        # Make sure we don't add a menu twice
+        """Make sure we don't add a menu twice."""
         if menu not in self:
             super(_UserQueue, self).appendleft(menu)
 
     def extend(self, menus):
-        # Make sure we don't add a menu twice
+        """Make sure we don't add a menu twice."""
         for menu in menus:
             self.append(menu)
 
     def extendleft(self, menus):
-        # Make sure we don't add a menu twice
+        """Make sure we don't add a menu twice."""
         for menu in menus:
             self.appendleft(menu)
 
     def __iadd__(self, menus):
-        # Make sure we don't add a menu twice
+        """Make sure we don't add a menu twice."""
         self.extend(menus)
 
     def __setitem__(self, index, menu):
-        # Make sure we don't add a menu twice
+        """Make sure we don't add a menu twice."""
         if self[index] == menu or menu not in self:
             super(_UserQueue, self).__setitem__(index, menu)
 
     def _refresh(self):
-        '''
-        Re-sends the current active menu.
+        """Re-send the current active menu.
 
         If there is no active menu, nothing will be done.
-        '''
-
+        """
         menu = self.get_active_menu()
         if menu is not None:
             menu._refresh(self._index)
 
     def _select(self, choice):
-        '''
+        """Handle a menu selection.
+
         Removes the current active menu from the queue and forwards the
         selection to that menu.
 
         If the selection callback returns a menu, it will be append to the
         left side of the queue. After that the queue will be refreshed, so the
         next menu will be displayed.
-        '''
-
+        """
         # Remove the current active menu
         try:
             active_menu = self.popleft()
@@ -131,25 +124,19 @@ class _UserQueue(deque):
             self._refresh()
 
     def get_active_menu(self):
-        '''
-        Returns the first menu instance in this queue.
+        """Return the first menu instance in this queue.
 
         If there is no menu, None will be returned.
-        '''
-
+        """
         return self[0] if self else None
 
 
 class _ESCUserQueue(_UserQueue):
-    '''
-    This class represents a queue for ESC menus.
-    '''
+
+    """Represents a queue for ESC menus."""
 
     def __init__(self, index):
-        '''
-        Initializes the ESC queue.
-        '''
-
+        """Initialize the ESC queue."""
         super(_ESCUserQueue, self).__init__(index)
 
         # TODO: Set this to the highest possible value.
@@ -157,27 +144,22 @@ class _ESCUserQueue(_UserQueue):
 
 
 class _QueueHolder(dict):
-    '''
-    This class is a default dictionary, which creates an _UserQueue object for
-    every missing key.
-    '''
+
+    """Creates a _UserQueue object for every missing key."""
 
     def __init__(self, cls):
-        '''
-        Initializes the queue holder.
+        """Initialize the queue holder.
 
         @param <cls>:
         This is the queue type this class will hold.
-        '''
-
+        """
         self._cls = cls
 
     def __missing__(self, index):
-        '''
-        Creates a new _UserQueue object for the given index and saves the
-        result in this dict.
-        '''
+        """Create a new _UserQueue object for the given index.
 
+        Saves the result in this dict.
+        """
         obj = self[index] = self._cls(index)
         return obj
 
@@ -194,9 +176,7 @@ _esc_queues = _QueueHolder(_ESCUserQueue)
 # >> FUNCTIONS
 # =============================================================================
 def _validate_selection(player_info, command, max_choice):
-    '''
-    Validates a selection command and returns the index and the player's
-    selection index.
+    """Validate a selection command.
 
     @param <player_infor>:
     A PlayerInfo instance.
@@ -207,8 +187,7 @@ def _validate_selection(player_info, command, max_choice):
     @param <max_choice>:
     The highest possible selection index. If the index was greater,
     <max_choice> will be used.
-    '''
-
+    """
     try:
         choice = int(command.get_arg(1))
     except ValueError:
@@ -228,10 +207,7 @@ def _validate_selection(player_info, command, max_choice):
 # =============================================================================
 @TickRepeat
 def _radio_refresh():
-    '''
-    Updates every queue in the queue dict.
-    '''
-
+    """Update every queue in the queue dict."""
     for queue in _radio_queues.values():
         queue._refresh()
 
@@ -241,10 +217,7 @@ _radio_refresh.start(1, 0)
 
 @TickRepeat
 def _esc_refresh():
-    '''
-    Updates every queue in the queue dict.
-    '''
-
+    """Update every queue in the queue dict."""
     for queue in _esc_queues.values():
         queue._refresh()
 
@@ -257,10 +230,7 @@ _esc_refresh.start(1, 0)
 # =============================================================================
 @ClientCommand('menuselect')
 def _menuselect_callback(player_info, command):
-    '''
-    Forwards the selection to the proper user queue.
-    '''
-
+    """Forward the selection to the proper user queue."""
     index, choice = _validate_selection(player_info, command, 9)
     if index is not None:
         _radio_queues[index]._select(choice)
@@ -268,10 +238,7 @@ def _menuselect_callback(player_info, command):
 
 @ClientCommand(ESC_SELECTION_CMD)
 def _escselect_callback(player_info, command):
-    '''
-    Forwards the selection to the proper user queue.
-    '''
-
+    """Forward the selection to the proper user queue."""
     index, choice = _validate_selection(player_info, command, 7)
     if index is not None:
         _esc_queues[index]._select(choice)
@@ -284,10 +251,7 @@ def _escselect_callback(player_info, command):
 # =============================================================================
 @Event
 def player_disconnect(event):
-    '''
-    Removes the user queue for the disconnected player.
-    '''
-
+    """Remove the user queue for the disconnected player."""
     index = index_from_userid(event.get_int('userid'))
     _radio_queues.pop(index, 0)
     _esc_queues.pop(index, 0)

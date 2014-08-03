@@ -60,30 +60,30 @@ else:
 # >> CLASSES
 # =============================================================================
 class _ConstantBase(dict):
-    '''Base constant class used to not allow setting values'''
+    """Base constant class used to not allow setting values"""
 
     def __contains__(self, item):
-        '''Override __contains__ to return whether the constant is valid'''
+        """Override __contains__ to return whether the constant is valid"""
         return hasattr(self, item)
 
     def __getitem__(self, item):
-        '''Override __getitem__ to return the attribute's value'''
+        """Override __getitem__ to return the attribute's value"""
         return self.__getattr__(item)
 
     def __setitem__(self, item, value):
-        '''Override __setitem__ to not allow setting any values'''
+        """Override __setitem__ to not allow setting any values"""
         return
 
     def __setattr__(self, item, value):
-        '''Override __setattr__ to not allow setting any values'''
+        """Override __setattr__ to not allow setting any values"""
         return
 
 
 class _DamageTypes(_ConstantBase):
-    '''Class used to easily get damage type values by name'''
+    """Class used to easily get damage type values by name"""
 
     def __getattr__(self, attr):
-        '''Override __getattr__ to retrieve the value of the constant'''
+        """Override __getattr__ to retrieve the value of the constant"""
 
         # Is the attribute a proper constant?
         if ('damage_types' in _entity_values

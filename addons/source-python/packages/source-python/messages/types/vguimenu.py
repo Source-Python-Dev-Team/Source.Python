@@ -1,5 +1,7 @@
 # ../messages/types/vguimenu.py
 
+"""Contains base VGUIMenu implementation."""
+
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
@@ -8,20 +10,14 @@
 from messages.base import BaseMessage
 
 
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
 # ============================================================================
 # >> CLASSES
 # ============================================================================
 class VGUIMenu(BaseMessage):
-    '''Class used to send a VGUIMenu message'''
+    """Class used to send a VGUIMenu message"""
 
     def _prepare_parameter(self, parameter_name, parameter_value):
-        '''Prepare the given parameter value'''
+        """Prepare the given parameter value"""
 
         # Is the given parameter "subkeys"?
         if parameter_name == 'subkeys':
@@ -39,7 +35,7 @@ class VGUIMenu(BaseMessage):
     def _write_field_value(
             self, parameter_name, usermsg, field_type,
             field_name, field_value, field_index=-1):
-        '''Write the given field value to the given message'''
+        """Write the given field value to the given message"""
 
         # Is the given parameter "subkeys" and the given value a dictionnary?
         if parameter_name == 'subkeys' and isinstance(field_value, dict):

@@ -26,12 +26,6 @@ from memory.helpers import NO_DEFAULT
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Store the raw data types
@@ -51,10 +45,10 @@ _virtuals_base_path = SP_DATA_PATH.joinpath('virtuals', GAME_NAME)
 # >> CLASSES
 # =============================================================================
 class _EntityVirtualFunctions(dict):
-    '''Dictionary that stores all virtual functions by server class name'''
+    """Dictionary that stores all virtual functions by server class name"""
 
     def get_virtual_functions(self, edict):
-        '''Retrieves all functions for the given edict's server class'''
+        """Retrieves all functions for the given edict's server class"""
 
         # Is the GetDataDescMap offset set?
         if DATA_DESC_MAP_OFFSET is None:
@@ -129,11 +123,11 @@ EntityVirtualFunctions = _EntityVirtualFunctions()
 
 
 class _Virtuals(dict):
-    '''Dictionary used to store virtual functions'''
+    """Dictionary used to store virtual functions"""
 
     def __init__(self, class_name):
-        '''Retrieves all virtual functions for the given
-            class name and stores them in the dictionary'''
+        """Retrieves all virtual functions for the given
+            class name and stores them in the dictionary"""
 
         # Get the paths to the game's virtual functions
         file_path = _virtuals_path.joinpath(class_name + '.ini')
@@ -162,8 +156,8 @@ class _Virtuals(dict):
             self[item] = _VirtualStager(file_contents[item], self, item)
 
     def __setitem__(self, item, value):
-        '''Disallows setting an item to anything other than a
-            _VirtualStager or _VirtualFunction instance'''
+        """Disallows setting an item to anything other than a
+            _VirtualStager or _VirtualFunction instance"""
         if not isinstance(value, (_VirtualStager, _VirtualFunction)):
             raise TypeError(
                 'Setting _Virtuals item to anything other than a ' +
@@ -172,18 +166,18 @@ class _Virtuals(dict):
 
 
 class _VirtualStager(object):
-    '''Class used a "stager" so that the Function instance
-        is only retrieved if the functionality is used'''
+    """Class used a "stager" so that the Function instance
+        is only retrieved if the functionality is used"""
 
     def __init__(self, items, host, name):
-        '''Store the items, host dictionary, and item name'''
+        """Store the items, host dictionary, and item name"""
         self.items = items
         self.host = host
         self.name = name
 
     def __setattr__(self, attr, value):
-        '''Sets the host dictionary's value for the item to a _VirtualFunction
-            instance the first time it is about to be called'''
+        """Sets the host dictionary's value for the item to a _VirtualFunction
+            instance the first time it is about to be called"""
 
         # Is the given attribute anything other than "current_pointer"
         if attr != 'current_pointer':
@@ -200,10 +194,10 @@ class _VirtualStager(object):
 
 
 class _VirtualFunction(Function):
-    '''Class used to create and call a virtual function for entities'''
+    """Class used to create and call a virtual function for entities"""
 
     def __init__(self, items, current_pointer):
-        '''Creates the virtual function'''
+        """Creates the virtual function"""
 
         # Create a list to store the arguments for <>.make_virtual_function()
         data = list()
@@ -235,8 +229,8 @@ class _VirtualFunction(Function):
         self.pointer_index = int(items.get('pointer_index', 0))
 
     def __call__(self, *args):
-        '''Adds the entity's pointer as the <pointer_index>
-            argument when calling the virtual function'''
+        """Adds the entity's pointer as the <pointer_index>
+            argument when calling the virtual function"""
 
         # Add the pointer to the arguments
         args = (

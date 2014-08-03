@@ -1,5 +1,7 @@
 # ../hooks/exceptions.py
 
+"""Provides exception hooking functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -40,13 +42,13 @@ HooksExceptionsLogger = HooksLogger.exceptions
 # >> CLASSES
 # =============================================================================
 class _ExceptHooks(_HookBase):
-    '''List class that stores callbacks to be called on an exception'''
+
+    """List class that stores callbacks to be called on an exception."""
 
     def print_exception(
             self, exctype=None, value=None,
             trace_back=None, callbacks=True):
-        '''Called when an exception is raised'''
-
+        """Called when an exception is raised."""
         # Was an exception passed?
         if exctype is None:
 
@@ -112,6 +114,7 @@ sys.excepthook = ExceptHooks.print_exception
 
 
 class ExceptHook(_HookDecorator):
-    '''Decorator class used to register/unregister
-        a function/method for hooking exceptions'''
+
+    """Register/unregister a function/method for hooking exceptions."""
+
     _class_instance = ExceptHooks

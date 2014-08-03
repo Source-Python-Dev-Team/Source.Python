@@ -1,5 +1,7 @@
 # ../auth/manager.py
 
+"""Contains a dictionary class which is used to store loaded Auth Providers."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -31,12 +33,11 @@ AuthManagerLogger = AuthLogger.manager
 # >> CLASSES
 # =============================================================================
 class _AuthManager(dict):
-    '''Class used to store loaded auth providers
-        and check if a player is authorized'''
+
+    """Stores loaded auth providers."""
 
     def load_auth(self, provider):
-        '''Loads the given provider'''
-
+        """Load the given provider."""
         # Send a message that the auth provider is being loaded
         AuthManagerLogger.log_message(
             '[SP Auth] ' + _auth_strings[
@@ -100,8 +101,7 @@ class _AuthManager(dict):
                 'Load Successful'].get_string(provider=provider))
 
     def unload_auth(self, provider):
-        '''Unloads the given provider'''
-
+        """Unload the given provider."""
         # Send a message that the auth provider is being unloaded
         AuthManagerLogger.log_message(
             '[SP Auth] ' + _auth_strings[
@@ -130,8 +130,7 @@ class _AuthManager(dict):
                 'Unload Successful'].get_string(provider=provider))
 
     def reload_auth(self, provider):
-        '''Reloads the given provider'''
-
+        """Reload the given provider."""
         # Unload the provider
         self.unload_auth(provider)
 
@@ -140,8 +139,7 @@ class _AuthManager(dict):
 
     def is_player_authorized(
             self, playerinfo, level=None, permission=None, flag=None):
-        '''Checks to see if the player is authorized'''
-
+        """Check to see if the player is authorized."""
         # Get the player's uniqueid
         uniqueid = uniqueid_from_playerinfo(playerinfo)
 

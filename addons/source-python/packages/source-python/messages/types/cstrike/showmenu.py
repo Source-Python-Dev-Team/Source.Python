@@ -1,5 +1,7 @@
 # ../messages/types/cstrike/showmenu.py
 
+"""Contains cstrike specific ShowMenu implementation."""
+
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
@@ -10,12 +12,6 @@ from collections import ChainMap
 # Source.Python Imports
 #   Messages
 from messages.types.showmenu import ShowMenu as BaseShowMenu
-
-
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
 
 
 # ============================================================================
@@ -29,10 +25,10 @@ MAXIMUM_LENGTH = 255
 # >> CLASSES
 # ============================================================================
 class ShowMenu(BaseShowMenu):
-    '''Class used to send a ShowMenu message'''
+    """Class used to send a ShowMenu message"""
 
     def _send_message(self, recipient, **kwargs):
-        '''Send the message to the given recipient filter'''
+        """Send the message to the given recipient filter"""
 
         # Get the 'message' parameter value
         message = str(kwargs['message'])

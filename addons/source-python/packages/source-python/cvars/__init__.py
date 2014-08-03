@@ -1,5 +1,7 @@
 # ../cvars/__init__.py
 
+"""Provides access to ConVar instances and the ability to create a ConVar."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -31,21 +33,20 @@ __all__ = ('ConCommandBase',
 # >> CLASSES
 # =============================================================================
 class ConVar(_ConVar):
-    '''ConVar wrapper to provide easy access to cvars.'''
+
+    """ConVar wrapper to provide easy access to cvars."""
 
     def __init__(
             self, name, value='0', flags=0,
             description='', min_value=None, max_value=None):
-
-        '''Called when a server-var is initilized.'''
+        """Called when a server-var is initilized."""
         super(ConVar, self).__init__(
             name, value, flags, description,
             min_value is not None, min_value or 0.0,
             max_value is not None, max_value or 0.0)
 
     def __getattr__(self, attr):
-        '''Gets the value of the given attribute'''
-
+        """Retrieve the value of the given attribute."""
         # Get the flag
         flag = getattr(ConVarFlags, attr.upper(), None)
 
@@ -60,8 +61,7 @@ class ConVar(_ConVar):
             '"ConVar" object has no attribute "{0}"'.format(attr))
 
     def __setattr__(self, attr, value):
-        '''Sets the value of the given attribute'''
-
+        """Set the value of the given attribute."""
         # Get the flag
         flag = getattr(ConVarFlags, attr.upper(), None)
 
@@ -94,5 +94,5 @@ class ConVar(_ConVar):
         self.remove_flags(flag)
 
     def make_public(self):
-        '''Sets the notify flag for the cvar.'''
+        """Set the notify flag for the cvar."""
         self.add_flags(ConVarFlags.NOTIFY)

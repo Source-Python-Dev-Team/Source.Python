@@ -1,5 +1,7 @@
 # ../events/listener.py
 
+"""Contains event listening functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -36,11 +38,11 @@ EventsListenerLogger = _SPLogger.events.listener
 # >> CLASSES
 # =============================================================================
 class _EventListener(list):
-    '''Stores callbacks for the given event'''
+
+    """Stores callbacks for the given event."""
 
     def __init__(self, event):
-        '''Called when an instance is created'''
-
+        """Called when an instance is created."""
         # Store the event name
         self.event = event
 
@@ -51,8 +53,7 @@ class _EventListener(list):
         self.listener.fire_game_event = self.fire_game_event
 
     def append(self, callback):
-        '''Adds the callback to the list'''
-
+        """Add the callback to the list."""
         # Is the callback already in the list?
         if callback in self:
 
@@ -65,8 +66,7 @@ class _EventListener(list):
         super(_EventListener, self).append(callback)
 
     def remove(self, callback):
-        '''Removes the callback from the event's list'''
-
+        """Remove the callback from the event's list."""
         # Is the callback in the list?
         if callback not in self:
 
@@ -79,8 +79,7 @@ class _EventListener(list):
         super(_EventListener, self).remove(callback)
 
     def fire_game_event(self, game_event):
-        '''Loops through all callbacks for an event and calls them'''
-
+        """Loop through all callbacks for an event and calls them."""
         # Loop through each callback in the event's list
         for callback in self:
 

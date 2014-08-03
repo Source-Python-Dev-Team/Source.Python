@@ -11,19 +11,13 @@ from entities.helpers import index_from_edict
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _C4(object):
-    '''Class used to interact with a player based on the c4 weapon'''
+    """Class used to interact with a player based on the c4 weapon"""
 
     def has_c4(self):
-        '''Returns whether or not the player is carrying C4'''
+        """Returns whether or not the player is carrying C4"""
 
         # Loop through all c4 entities on the server
         for edict in EntityGenerator('weapon_c4'):

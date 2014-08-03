@@ -1,5 +1,7 @@
 # ../public.py
 
+"""Provides a dynamic way to add objects to their module's __all__ variable."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -19,8 +21,7 @@ __all__ = ('public',
 # >> FUNCTIONS
 # =============================================================================
 def public(public_object):
-    '''Decorator function used to add objects to their module's __all__ list'''
-
+    """Automatically add objects to their module's __all__ value."""
     # Get the object's module's __all__ list
     base_all = sys.modules[
         public_object.__module__].__dict__.setdefault('__all__', [])

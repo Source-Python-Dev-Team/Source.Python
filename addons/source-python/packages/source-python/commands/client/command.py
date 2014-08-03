@@ -1,5 +1,7 @@
 # ../commands/client/command.py
 
+"""Provides a decorator class for registering client commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,7 +22,8 @@ __all__ = ('ClientCommand',
 # >> CLASSES
 # =============================================================================
 class ClientCommand(_BaseCommand):
-    '''Decorator class used to register a client command'''
+
+    """Decorator class used to register a client command."""
 
     # Store the class used to (un)register client commands
     _manager_class = ClientCommandManager

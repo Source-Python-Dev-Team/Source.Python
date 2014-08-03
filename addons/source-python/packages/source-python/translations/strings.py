@@ -40,19 +40,19 @@ __all__ = ('LangStrings',
 # =============================================================================
 # Get an re.compile instance to correct all double escaped strings
 _double_escaped_pattern = re_compile(
-    r'''(\\(?:(?P<octal>[0-7]{1,3})|x(?P<hexadecimal>[0-9|a-f|A-F]{2})|
-    (?P<notation>a|b|e|f|n|r|s|t|v)))''', VERBOSE)
+    r"""(\\(?:(?P<octal>[0-7]{1,3})|x(?P<hexadecimal>[0-9|a-f|A-F]{2})|
+    (?P<notation>a|b|e|f|n|r|s|t|v)))""", VERBOSE)
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
 class LangStrings(dict):
-    '''Dictionary class used to store all strings for a plugin'''
+    """Dictionary class used to store all strings for a plugin"""
 
     def __init__(self, infile, encoding='utf_8'):
-        '''Adds all strings as TranslationStrings
-            instances and fixes double escaped strings'''
+        """Adds all strings as TranslationStrings
+            instances and fixes double escaped strings"""
 
         # Get the path to the given file
         self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
@@ -141,7 +141,7 @@ class LangStrings(dict):
                 del main_strings['DEFAULT_LANGUAGE']
 
     def __setattr__(self, attribute, value):
-        '''Override the __setattr__ method to register the default language'''
+        """Override the __setattr__ method to register the default language"""
 
         # Is the given attribute the default language?
         if attribute == 'default_language':
@@ -165,7 +165,7 @@ class LangStrings(dict):
         super(LangStrings, self).__setattr__(attribute, value)
 
     def _create_server_file(self):
-        '''Creates a server specific langstrings file'''
+        """Creates a server specific langstrings file"""
 
         # Get the server specific file's ConfigObj instance
         server_file = ConfigObj(self._serverfile)
@@ -181,7 +181,7 @@ class LangStrings(dict):
 
     @staticmethod
     def _replace_escaped_sequences(given_string):
-        '''Fixes all double escaped strings'''
+        """Fixes all double escaped strings"""
 
         # Loop through all matches
         for escaped_match in set(
@@ -220,16 +220,16 @@ class LangStrings(dict):
 
 
 class TranslationStrings(dict):
-    '''Dictionary used to store and get language
-        strings for a particular string'''
+    """Dictionary used to store and get language
+        strings for a particular string"""
 
     def __init__(self):
-        '''Stores an empty dictionary as the tokens'''
+        """Stores an empty dictionary as the tokens"""
 
         self.tokens = {}
 
     def get_string(self, language=None, **tokens):
-        '''Returns the language string for the given language/tokens'''
+        """Returns the language string for the given language/tokens"""
 
         # Was no language passed?
         if language is None:
@@ -244,9 +244,9 @@ class TranslationStrings(dict):
         if language is None:
 
             # Return an empty string
-            '''
+            """
                 Possibly raise an error silently here
-            '''
+            """
             return ''
 
         # Get the message's Template instance
@@ -262,7 +262,7 @@ class TranslationStrings(dict):
         return message
 
     def get_language(self, language):
-        '''Returns the language to be used'''
+        """Returns the language to be used"""
 
         # Get the given language's shortname
         language = LanguageManager.get_language(language)

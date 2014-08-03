@@ -10,26 +10,20 @@ from entities.attributes import EntityAttributes
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _OffsetInstance(object):
-    '''Class used to store an offset by its value and type'''
+    """Class used to store an offset by its value and type"""
 
     def __init__(self, offset):
-        '''Stores the offset and type'''
+        """Stores the offset and type"""
 
         self.offset = offset.get(PLATFORM, offset['linux'])
         self.type = offset['type']
 
 
 class _EntityOffsets(EntityAttributes):
-    '''Dictionary that stores all entities with their offsets'''
+    """Dictionary that stores all entities with their offsets"""
 
     type = 'offsets'
     unrepr = True

@@ -1,5 +1,7 @@
 # ../commands/auth.py
 
+"""Provides Authorization checks for client and say commands."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -11,22 +13,16 @@ from hooks.exceptions import ExceptHooks
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _AuthCallback(object):
-    '''Authorization class used to check if a player is
-        authorized to use a command before calling the callback'''
+
+    """Command Authorization callback hook class."""
 
     def __init__(
             self, callback, level=None,
             permission=None, flag=None, fail_callback=None):
-        '''Stores all the given arguments'''
+        """Store all the given arguments."""
         self.callback = callback
         self.level = level
         self.permission = permission
@@ -36,9 +32,7 @@ class _AuthCallback(object):
         self.fail_callback = fail_callback
 
     def __call__(self, *args):
-        '''Checks to see if the player is
-            authorized before calling the callback'''
-
+        """Verify the player's authorization."""
         # Does the player's authorization need to be checked?
         if self.check_auth:
 

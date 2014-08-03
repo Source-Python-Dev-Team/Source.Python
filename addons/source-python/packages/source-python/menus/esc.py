@@ -1,5 +1,7 @@
 # ../menus/esc.py
 
+"""Provides ESC Menu functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -37,16 +39,16 @@ __all__ = ('PagedESCMenu',
 # >> CLASSES
 # =============================================================================
 class PagedESCMenu(_BaseMenu):
-    '''
-    This class is used to create menus with an unlimited number of options. It
+
+    """Create menus with an unlimited number of options.
+
     will automatically add navigation options.
-    '''
+    """
 
     def __init__(
             self, data=[], select_callback=None, build_callback=None,
             description=None, title=None, title_color=White):
-        '''
-        Initializes the PagedESCMenu instance.
+        """Initialize the PagedESCMenu instance.
 
         @param <data>:
         An iterable which contains data that should be added to the menu.
@@ -74,8 +76,7 @@ class PagedESCMenu(_BaseMenu):
 
         @param <title_color>:
         The color of the title.
-        '''
-
+        """
         super(PagedESCMenu, self).__init__(
             data, select_callback, build_callback)
         self.description = description
@@ -83,8 +84,7 @@ class PagedESCMenu(_BaseMenu):
         self.title_color = title_color
 
     def _format_header(self, ply_index, page, data):
-        '''
-        Prepares the header for the menu.
+        """Prepare the header for the menu.
 
         @param <ply_index>:
         A player index.
@@ -94,8 +94,7 @@ class PagedESCMenu(_BaseMenu):
 
         @param <data>:
         The current menu data.
-        '''
-
+        """
         # Create the page info string
         info = '[{0}/{1}]'.format(page.index + 1, self.page_count)
 
@@ -108,8 +107,7 @@ class PagedESCMenu(_BaseMenu):
         data.set_color('color', self.title_color)
 
     def _format_body(self, ply_index, page, data):
-        '''
-        Prepares the body for the menu.
+        """Prepare the body for the menu.
 
         @param <ply_index>:
         A player index.
@@ -119,8 +117,7 @@ class PagedESCMenu(_BaseMenu):
 
         @param <data>:
         The current menu data.
-        '''
-
+        """
         # Get all options of the current page
         page.options = tuple(self.options)[page.index * 5:(page.index + 1) * 5]
 
@@ -142,8 +139,7 @@ class PagedESCMenu(_BaseMenu):
                 'command', '{0} {1}'.format(ESC_SELECTION_CMD, index))
 
     def _format_footer(self, ply_index, page, data):
-        '''
-        Prepares the footer for the menu.
+        """Prepare the footer for the menu.
 
         @param <ply_index>:
         A player index.
@@ -153,8 +149,7 @@ class PagedESCMenu(_BaseMenu):
 
         @param <data>:
         The current menu data.
-        '''
-
+        """
         # TODO: Add translations
         # Add "Back" option
         button = data.find_key('6', True)
@@ -172,13 +167,11 @@ class PagedESCMenu(_BaseMenu):
         button.set_string('command', '{0} 0'.format(ESC_SELECTION_CMD))
 
     def _get_menu_data(self, ply_index):
-        '''
-        Returns all relevant menu data as a KeyValues instance.
+        """Return all relevant menu data as a KeyValues instance.
 
         @param <ply_index>:
         A player index.
-        '''
-
+        """
         data = KeyValues('menu')
         data.set_string(
             'msg', _translate_text(self.description or '', ply_index))
@@ -195,16 +188,14 @@ class PagedESCMenu(_BaseMenu):
         return data
 
     def _select(self, ply_index, choice):
-        '''
-        Handles a menu selection.
+        """Handle a menu selection.
 
         @param <ply_index>:
         The index of the player who made the selection.
 
         @param <choice>:
         A numeric value that defines what was selected.
-        '''
-
+        """
         # Do nothing if the menu is being closed
         if choice == 0:
             del self._player_pages[ply_index]
@@ -234,13 +225,11 @@ class PagedESCMenu(_BaseMenu):
         return super(PagedESCMenu, self)._select(ply_index, option)
 
     def _send(self, ply_index):
-        '''
-        Builds and sends the menu to the given player via create_message().
+        """Build and send the menu to the given player via create_message().
 
         @param <ply_index>:
         A player index.
-        '''
-
+        """
         queue = self.get_user_queue(ply_index)
         queue.priority -= 1
 
@@ -259,13 +248,11 @@ class PagedESCMenu(_BaseMenu):
         )
 
     def _close(self, ply_index):
-        '''
-        Closes a menu by overriding it with an empty menu.
+        """Close a menu by overriding it with an empty menu.
 
         @param <ply_index>:
         A player index.
-        '''
-
+        """
         queue = self.get_user_queue(ply_index)
         queue.priority -= 1
 
@@ -279,39 +266,26 @@ class PagedESCMenu(_BaseMenu):
 
     @staticmethod
     def _get_queue_holder():
-        '''
-        Returns the queue for ESC menus.
-        '''
-
+        """Return the queue for ESC menus."""
         return _esc_queues
 
     @property
     def last_page_index(self):
-        '''
-        Returns the last page index.
-        '''
-
+        """Return the last page index."""
         return self.page_count - 1
 
     @property
     def page_count(self):
-        '''
-        Returns the number of pages the menu currently has.
-        '''
-
+        """Return the number of pages the menu currently has."""
         return int(math.ceil(len(tuple(self.options)) / 5.0)) or 1
 
     @property
     def options(self):
-        '''
-        Returns all ESCOption objects in the correct order.
-        '''
-
+        """Return all ESCOption objects in the correct order."""
         return filter(lambda op: isinstance(op, ESCOption), self)
 
     def set_player_page(self, ply_index, page_index):
-        '''
-        Sets the player's current page index.
+        """Set the player's current page index.
 
         @param <ply_index>:
         A player index.
@@ -323,8 +297,7 @@ class PagedESCMenu(_BaseMenu):
 
         If <page_index> is greater than the last page index, it will be set to
         the last page index.
-        '''
-
+        """
         page = self._player_pages[ply_index]
         if page_index < 0:
             page.index = 0
@@ -334,30 +307,25 @@ class PagedESCMenu(_BaseMenu):
             page.index = page_index
 
     def get_player_page(self, ply_index):
-        '''
-        Returns the current player page index.
+        """Return the current player page index.
 
         @param <ply_index>:
         A player index.
-        '''
-
+        """
         return self._player_pages[ply_index].index
 
 
 class ESCOption(_BaseOption):
-    '''
-    This class is used to display an enumerated option.
-    '''
+
+    """Display an enumerated option."""
 
     def _render(self, ply_index, choice):
-        '''
-        Renders the data.
+        """Render the data.
 
         @param <ply_index>:
         A player index.
 
         @param <choice>:
         A numeric value that defines the selection number.
-        '''
-
+        """
         return '{0}. {1}'.format(choice, _translate_text(self.text, ply_index))

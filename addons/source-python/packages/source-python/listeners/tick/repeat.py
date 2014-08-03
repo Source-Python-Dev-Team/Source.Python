@@ -1,5 +1,7 @@
 # ../listeners/tick/repeat.py
 
+"""Provides repeating delay functionality using a tick listener."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -34,16 +36,18 @@ ListenersTickRepeatLogger = ListenersLogger.tick.repeat
 # >> CLASSES
 # =============================================================================
 class TickRepeatStatus(object):
-    '''Class used to store TickRepeatStatus values'''
+
+    """Class used to store TickRepeatStatus values."""
+
     STOPPED, RUNNING, PAUSED = range(1, 4)
 
 
 class TickRepeat(AutoUnload):
-    '''Class used to create and call repeats'''
+
+    """Class used to create and call repeats."""
 
     def __init__(self, callback, *args, **kwargs):
-        '''Stores all attributes'''
-
+        """Store all instance attributes."""
         # Store the base attributes
         self.callback = callback
         self.args = args
@@ -62,8 +66,7 @@ class TickRepeat(AutoUnload):
         self._status = TickRepeatStatus.STOPPED
 
     def start(self, interval, limit):
-        '''Starts the repeat loop'''
-
+        """Start the repeat loop."""
         # Log the start message
         ListenersTickRepeatLogger.log_info(
             'TickRepeat.start: <{0}> <{1}>'.format(interval, limit))
@@ -98,8 +101,7 @@ class TickRepeat(AutoUnload):
         self._delay = TickDelays.delay(self._interval, self._execute)
 
     def stop(self):
-        '''Stops the repeat loop'''
-
+        """Stop the repeat loop."""
         # Log the stop message
         ListenersTickRepeatLogger.log_info('TickRepeat.stop')
 
@@ -124,8 +126,7 @@ class TickRepeat(AutoUnload):
         TickDelays.cancel_delay(self._delay)
 
     def restart(self):
-        '''Restarts the repeat'''
-
+        """Restart the repeat."""
         # Log restarting the repeat
         ListenersTickRepeatLogger.log_info('TickRepeat.restart')
 
@@ -136,8 +137,8 @@ class TickRepeat(AutoUnload):
         self.start(self._interval, self._limit)
 
     def pause(self):
-        '''Pauses the repeat.  Pausing allows the repeat to be resumed'''
-
+        """Pause the repeat."""
+        """Pausing allows the repeat to be resumed."""
         # Log the pause message
         ListenersTickRepeatLogger.log_info('TickRepeat.pause')
 
@@ -165,8 +166,8 @@ class TickRepeat(AutoUnload):
         TickDelays.cancel_delay(self._delay)
 
     def resume(self):
-        '''Resume the repeat.  Can only resume if in paused status'''
-
+        """Resume the repeat."""
+        """Can only resume if in paused status."""
         # Log the resume message
         ListenersTickRepeatLogger.log_info('TickRepeat.resume')
 
@@ -189,8 +190,7 @@ class TickRepeat(AutoUnload):
         self._delay = TickDelays.delay(self._loop_time, self._execute)
 
     def extend(self, adjustment):
-        '''Adds to the number of loops to be made'''
-
+        """Add to the number of loops to be made."""
         # Log the extend message
         ListenersTickRepeatLogger.log_info('TickRepeat.extend')
 
@@ -204,8 +204,7 @@ class TickRepeat(AutoUnload):
         self._adjusted += adjustment
 
     def reduce(self, adjustment):
-        '''Reduces the number of loops to be made'''
-
+        """Reduce the number of loops to be made."""
         # Log the reduce message
         ListenersTickRepeatLogger.log_info('TickRepeat.reduce')
 
@@ -230,8 +229,7 @@ class TickRepeat(AutoUnload):
             self.stop()
 
     def _execute(self):
-        '''Executes the repeat's callback with its arguments and keywords'''
-
+        """Execute the repeat's callback with its arguments and keywords."""
         # Log the _execute message
         ListenersTickRepeatLogger.log_info('TickRepeat._execute')
 
@@ -274,8 +272,7 @@ class TickRepeat(AutoUnload):
 
     @property
     def remaining(self):
-        '''Returns the remaining number of loops in the repeat'''
-
+        """Return the remaining number of loops in the repeat."""
         # Is there no limit?
         if not self._limit:
 
@@ -287,13 +284,12 @@ class TickRepeat(AutoUnload):
 
     @property
     def count(self):
-        '''Returns the current number of loops made in the repeat'''
+        """Return the current number of loops made in the repeat."""
         return self._count
 
     @property
     def limit(self):
-        '''Returns the total number of loops to be made'''
-
+        """Return the total number of loops to be made."""
         # Is there no limit?
         if not self._limit:
 
@@ -305,24 +301,24 @@ class TickRepeat(AutoUnload):
 
     @property
     def timeleft(self):
-        '''Returns the remaining time till the end of the repeat'''
+        """Return the remaining time till the end of the repeat."""
         return self.remaining * self._interval
 
     @property
     def elapsed(self):
-        '''Returns the elapsed time since the repeat started'''
+        """Return the elapsed time since the repeat started."""
         return self._count * self._interval
 
     @property
     def total_time(self):
-        '''Returns the total time it will take to complete the repeat'''
+        """Return the total time it will take to complete the repeat."""
         return self.limit * self._interval
 
     @property
     def status(self):
-        '''Returns the status of the repeat'''
+        """Return the status of the repeat."""
         return self._status
 
     def _unload_instance(self):
-        '''Stops the repeat'''
+        """Stop the repeat with being unloaded."""
         self.stop()

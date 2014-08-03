@@ -1,5 +1,7 @@
 # ../commands/manager.py
 
+"""Provides a base class for registering commands and filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -11,24 +13,18 @@ from hooks.exceptions import ExceptHooks
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _BaseCommandManager(dict):
-    '''Class used to (un)register commands'''
+
+    """Class used to (un)register commands."""
 
     # Store the base attributes
     _use_args = True
     _callback_manager = None
 
     def register_commands(self, names, callback, *args, **kwargs):
-        '''Registers the given commands to the given callback'''
-
+        """Register the given commands to the given callback."""
         # Was a single command name given?
         if isinstance(names, str):
 
@@ -75,8 +71,7 @@ class _BaseCommandManager(dict):
             self[name].append(callback)
 
     def unregister_commands(self, names, callback):
-        '''Unregisters the given commands from the given callback'''
-
+        """Unregister the given commands from the given callback."""
         # Was a single command name given?
         if isinstance(names, str):
 
@@ -130,13 +125,11 @@ class _BaseCommandManager(dict):
 
 
 class _CallbackList(list):
-    '''List class used to store'''
+
+    """List class used to store."""
 
     def __init__(self, command):
-        '''
-            Stores the given command and registers the instance to the command
-        '''
-
+        """Register the instance to the command."""
         # Store the command
         self.command = command
 
@@ -144,8 +137,7 @@ class _CallbackList(list):
         self.command.add_callback(self)
 
     def __call__(self, *args):
-        '''Calls all callbacks for the command'''
-
+        """Call all callbacks for the command."""
         # Loop through each callback in the list
         for callback in self:
 
@@ -174,8 +166,7 @@ class _CallbackList(list):
         return CommandReturn.CONTINUE
 
     def append(self, callback):
-        '''Adds a callback to the list'''
-
+        """Add a callback to the list."""
         # Is the callback already in the list?
         if callback in self:
 
@@ -186,8 +177,7 @@ class _CallbackList(list):
         super(_CallbackList, self).append(callback)
 
     def remove(self, callback):
-        '''Removes a callback from the list'''
-
+        """Remove a callback from the list."""
         # Is the callback in the list?
         if callback not in self:
 

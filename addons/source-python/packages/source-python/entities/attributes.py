@@ -17,12 +17,6 @@ from entities import EntitiesLogger
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.entities.attributes logger
@@ -33,18 +27,18 @@ EntitiesAttributesLogger = EntitiesLogger.attributes
 # >> CLASSES
 # =============================================================================
 class EntityAttributes(dict):
-    '''Base Attribute class used to interact with
-        entity's based off of ini data files.'''
+    """Base Attribute class used to interact with
+        entity's based off of ini data files."""
 
-    '''Each class that inherits from EntityAttributes
+    """Each class that inherits from EntityAttributes
                     must have the following attributes:
         type        -   used to know which directory within data to get values
         unrepr      -   used to know what to have ConfigObj unrepr set to
         instance    -   used to know which class to use to create the objects
-    '''
+    """
 
     def __missing__(self, entity):
-        '''Called the first time an entity is added to the dictionary'''
+        """Called the first time an entity is added to the dictionary"""
 
         # Get all attributes for the given entity
         values = self[entity] = self._retrieve_attributes(entity)
@@ -53,7 +47,7 @@ class EntityAttributes(dict):
         return values
 
     def get_game_attributes(self, args):
-        '''Returns all attributes for the given entities'''
+        """Returns all attributes for the given entities"""
 
         # Create an empty dictionary
         values = dict()
@@ -68,7 +62,7 @@ class EntityAttributes(dict):
         return values
 
     def _retrieve_attributes(self, entity):
-        '''Retrieves all attributes for the given entity'''
+        """Retrieves all attributes for the given entity"""
 
         # Create an empty dictionary
         game_attributes = dict()

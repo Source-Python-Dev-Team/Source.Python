@@ -1,5 +1,7 @@
 # ../events/custom.py
 
+"""Provides a way to create custom events."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -31,16 +33,16 @@ EventsCustomLogger = EventsLogger.custom
 # >> CLASSES
 # =============================================================================
 class _EventMeta(type):
-    '''Metaclass used to store class attributes in an ordered dictionary'''
+
+    """Metaclass used to store class attributes in an ordered dictionary."""
 
     @classmethod
     def __prepare__(mcs, *args, **kwargs):
-        '''Return an ordered dictionary'''
+        """Return an ordered dictionary."""
         return OrderedDict()
 
     def __new__(mcs, name, bases, odict):
-        '''Called when the class is being created'''
-
+        """Called when the class is being created."""
         # Create the instance
         cls = super().__new__(mcs, name, bases, dict(odict))
 
@@ -61,11 +63,11 @@ class _EventMeta(type):
 
 
 class CustomEvent(metaclass=_EventMeta):
-    '''Class inherited to create custom events'''
+
+    """Class inherited to create custom events."""
 
     def __init__(self, **kwargs):
-        '''Called on instantiation'''
-
+        """Called on instantiation."""
         # Loop through the given keyword arguments
         for kwarg in kwargs:
 
@@ -81,10 +83,7 @@ class CustomEvent(metaclass=_EventMeta):
             super(CustomEvent, self).__setattr__('_' + kwarg, kwargs[kwarg])
 
     def __setattr__(self, attr, value):
-        '''
-            Override __setattr__ to store variable values as private attributes
-        '''
-
+        """Store variable values as private attributes."""
         # Is the given attribute for a variable?
         if not attr.startswith('_') and attr in self._odict:
 
@@ -98,8 +97,7 @@ class CustomEvent(metaclass=_EventMeta):
         super(CustomEvent, self).__setattr__(attr, value)
 
     def fire(self):
-        '''Fires the event with the stored variable values'''
-
+        """Fire the event with the stored variable values."""
         # Get the event's instance
         event = GameEventManager.create_event(self.name, True)
 
@@ -114,8 +112,7 @@ class CustomEvent(metaclass=_EventMeta):
         GameEventManager.fire_event(event)
 
     def reset(self):
-        '''Resets all event variable values to their default values'''
-
+        """Reset all event variable values to their default values."""
         # Loop through the event's variables
         for variable in self._odict:
 
@@ -125,5 +122,5 @@ class CustomEvent(metaclass=_EventMeta):
 
     @property
     def name(self):
-        '''Returns the name of the event'''
+        """Return the name of the event."""
         return self.__class__.__name__.lower()

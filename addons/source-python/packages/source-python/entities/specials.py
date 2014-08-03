@@ -14,12 +14,6 @@ from filters.weapons import WeaponClassIter
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get a list of projectiles for the game
@@ -31,12 +25,12 @@ _projectile_weapons = list(
 # >> CLASSES
 # =============================================================================
 class _EntitySpecials(object):
-    '''Base class used to hold special functionality'''
+    """Base class used to hold special functionality"""
 
     def damage(
             self, victim_index, damage=0, damage_type=0,
             weapon_index=None, hitgroup=0, **kwargs):
-        '''Method used to hurt another entity with the given arguments'''
+        """Method used to hurt another entity with the given arguments"""
 
         # Import BaseEntity classes
         # Doing this in the global scope causes cross import errors

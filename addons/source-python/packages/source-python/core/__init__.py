@@ -1,5 +1,7 @@
 # ../core/__init__.py
 
+"""Provides core functionality that doesn't fit into any other package."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -62,16 +64,13 @@ CoreLogger = _SPLogger.core
 # >> CLASSES
 # =============================================================================
 class AutoUnload(object):
-    '''
-        Class used to auto unload specific instances.
 
-        Each class which inherits this one
-            should have an _unload_instance method.
-    '''
+    """Class used to auto unload specific instances."""
+
+    """ Each inheriting class must implement an _unload_instance method."""
 
     def __new__(cls, *args, **kwargs):
-        '''Overwrite __new__ to store the calling module'''
-
+        """Overwrite __new__ to store the calling module."""
         # Get the class instance
         self = super(AutoUnload, cls).__new__(cls)
 
@@ -85,8 +84,7 @@ class AutoUnload(object):
         return self
 
     def _unload_instance(self):
-        '''Base _unload_instance method that, if
-            called, raises a NotImplementedError'''
+        """Base _unload_instance implementation."""
         raise NotImplementedError(
             'Class "{0}" from file "{1}" does not '.format(
                 self.__class__.__name__, sys.modules[
@@ -99,8 +97,7 @@ class AutoUnload(object):
 # >> FUNCTIONS
 # =============================================================================
 def echo_console(text):
-    '''echos a message to the server's console'''
-
+    """Echo a message to the server's console."""
     # Import EngineServer
     # This is done here to fix an ImportError
     from engines.server import EngineServer

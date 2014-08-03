@@ -1,5 +1,7 @@
 # ../events/__init__.py
 
+"""Provides event based functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -39,11 +41,11 @@ EventsLogger = _SPLogger.events
 # >> CLASSES
 # =============================================================================
 class Event(AutoUnload):
-    '''Event decorator class'''
+
+    """Event decorator class."""
 
     def __init__(self, callback):
-        '''Store the callback and register the event'''
-
+        """Store the callback and register the event."""
         # Is the callback callable?
         if not callable(callback):
 
@@ -58,6 +60,6 @@ class Event(AutoUnload):
         EventRegistry.register_for_event(self.callback.__name__, self.callback)
 
     def _unload_instance(self):
-        '''Unregisters the event'''
+        """Unregister the event."""
         EventRegistry.unregister_for_event(
             self.callback.__name__, self.callback)

@@ -1,5 +1,7 @@
 # ../commands/client/filter.py
 
+"""Provides a decorator class used for registering client command filters."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -20,7 +22,8 @@ __all__ = ('ClientCommandFilter',
 # >> CLASSES
 # =============================================================================
 class ClientCommandFilter(_BaseFilter):
-    '''Class used to register a client command filter'''
+
+    """Class used to register a client command filter."""
 
     # Store the class used to (un)register client command filters
     _manager_class = ClientCommandManager

@@ -1,5 +1,7 @@
 # ../filters/weapons.py
 
+"""Provides weapon filtering functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -29,22 +31,23 @@ __all__ = ('WeaponClassIter',
 # >> WEAPON EDICT ITER CLASSES
 # =============================================================================
 class _WeaponEdictIterManager(_BaseFilterManager):
-    '''Filter management class specifically for weapon iterating'''
+
+    """Filter management class specifically for weapon iterating."""
 
 # Get the _WeaponIterManager instance
 _WeaponEdictIterManagerInstance = _WeaponEdictIterManager()
 
 
 class WeaponEdictIter(_IterObject):
-    '''Weapon iterate class'''
+
+    """Weapon iterate class."""
 
     # Store the manager for the weapon iterator
     manager = _WeaponEdictIterManagerInstance
 
     @staticmethod
     def iterator():
-        '''Iterates over only weapon entities'''
-
+        """Iterate over only weapon entities."""
         # Loop through all entities on the server
         for edict in EntityGenerator():
 
@@ -59,31 +62,28 @@ class WeaponEdictIter(_IterObject):
 # >> WEAPON CLASS ITER CLASSES
 # =============================================================================
 class _WeaponClassIterManager(_BaseFilterManager):
-    '''Filter management class specifically for weapon tag iterating'''
+
+    """Filter management class specifically for weapon tag iterating."""
 
 # Get the _WeaponClassIterManager instance
 _WeaponClassIterManagerInstance = _WeaponClassIterManager()
 
 
 class WeaponClassIter(_IterObject):
-    '''Weapon tag iterate class'''
+
+    """Weapon tag iterate class."""
 
     # Store the manager for the weapon tag iterator
     manager = _WeaponClassIterManagerInstance
 
     def __init__(self, is_filters=[], not_filters=[], return_types='weapon'):
-        '''Overwrite the __init__ method to re-call main __init__
-            method with "weapon" as the default return_types'''
-
-        # Re-call __init__ in case no return_types were actually passed
-        # since "weapon" is the default value for this iter class
+        """Call main __init__ with "weapon" as the default return_types."""
         super(WeaponClassIter, self).__init__(
             is_filters, not_filters, return_types)
 
     @staticmethod
     def iterator():
-        '''Iterates over all possible weapon types'''
-
+        """Iterate over all possible weapon types."""
         # Loop through all weapons for the current game
         for weapon in WeaponManager:
 
@@ -95,11 +95,11 @@ class WeaponClassIter(_IterObject):
 # >> WEAPON TAG CLASSES
 # =============================================================================
 class _WeaponTags(dict):
-    '''Class used to store weapon tags for the current game'''
+
+    """Class used to store weapon tags for the current game."""
 
     def __missing__(self, item):
-        '''Called when a new item is added to the dictionary'''
-
+        """Called when a new item is added to the dictionary."""
         # Get the _Tag instance for the current item
         instance = self[item] = _Tag(item)
 
@@ -111,18 +111,19 @@ _WeaponTagsInstance = _WeaponTags()
 
 
 class _Tag(object):
-    '''Class used to store a tag and compare to a given weapon'''
+
+    """Class used to store a tag and compare to a given weapon."""
 
     def __init__(self, tag):
-        '''Store the tag for future use'''
+        """Store the tag for future use."""
         self.tag = tag
 
     def _edict_weapon_contains_tag(self, edict):
-        '''Returns whether the weapon contains the tag'''
+        """Return whether the weapon contains the tag."""
         return self.tag in WeaponManager[edict.get_class_name()].tags
 
     def _class_weapon_contains_tag(self, weapon):
-        '''Returns whether the given weapon contains the tag'''
+        """Return whether the given weapon contains the tag."""
         return self.tag in weapon.tags
 
 
@@ -148,7 +149,7 @@ for tag in WeaponManager.tags:
 # >> WEAPON EDICT RETURN TYPES
 # =============================================================================
 def _return_instance(edict):
-    '''Returns the weapon's BaseEntity instance'''
+    """Return the weapon's BaseEntity instance."""
     from entities.entity import BaseEntity
     return BaseEntity(index_from_edict(edict), 'weapon')
 

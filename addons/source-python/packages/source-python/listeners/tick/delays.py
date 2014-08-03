@@ -1,5 +1,7 @@
 # ../listeners/tick/delays.py
 
+"""Provides delay functionality using a tick listener."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -33,12 +35,11 @@ ListenersTickDelaysLogger = ListenersLogger.tick.delays
 # >> CLASSES
 # =============================================================================
 class _Delay(object):
-    '''Stores a delay object that scripters can use to
-        change arguments, cancel the delay, etc...'''
+
+    """Stores a callback to be called at a later time."""
 
     def __init__(self, seconds, callback, *args, **kwargs):
-        '''Called when an instance is instantiated'''
-
+        """Called when an instance is instantiated."""
         # Log the init message
         ListenersTickDelaysLogger.log_info(
             '_Delay.__init__ <{0}> <{1}> <{2}> <{3}>'.format(
@@ -53,8 +54,7 @@ class _Delay(object):
         self.kwargs = kwargs
 
     def __call__(self):
-        '''Calls the delay with the proper arguments and keywords'''
-
+        """Call the delay with the proper arguments and keywords."""
         # Log the call message
         ListenersTickDelaysLogger.log_info(
             '_Delay.__call__ - Try to call - <{0}> <{1}> <{2}>'.format(
@@ -74,11 +74,11 @@ class _Delay(object):
 
 
 class _Times(list):
-    '''List class used to store delays to be called'''
+
+    """List class used to store delays to be called."""
 
     def call_delays(self):
-        '''Call the delays in the list'''
-
+        """Call the delays in the list."""
         # Loop through the delays in the list
         for item in self:
 
@@ -87,17 +87,15 @@ class _Times(list):
 
 
 class _TickDelays(dict):
-    '''Class used to store delays to be called by a tick listener'''
+
+    """Class used to store delays to be called by a tick listener."""
 
     def __init__(self):
-        '''Called when the class is first instantiated'''
-
-        # Store an ordered list to sort delays
+        """Store an ordered list to sort delays."""
         self._order = list()
 
     def __missing__(self, item):
-        '''Called when first adding a time to the dictionary'''
-
+        """Called when first adding a time to the dictionary."""
         # Log the missing message
         ListenersTickDelaysLogger.log_info(
             'TickDelays.__missing__ <{0}>'.format(item))
@@ -125,8 +123,7 @@ class _TickDelays(dict):
         return self[item]
 
     def __iter__(self):
-        '''Override __iter__ to loop through the ordered list'''
-
+        """Loop through the ordered list."""
         # Loop through each item in the ordered list
         for item in self._order:
 
@@ -134,9 +131,7 @@ class _TickDelays(dict):
             yield item
 
     def __delitem__(self, item):
-        '''Override __delitem__ to call the delays and
-            remove the time from the ordered list'''
-
+        """Call the delays and remove the time from the ordered list."""
         # Log the delitem message
         ListenersTickDelaysLogger.log_info(
             'TickDelays.__delitem__ <{0}>'.format(item))
@@ -161,8 +156,7 @@ class _TickDelays(dict):
         super(_TickDelays, self).__delitem__(item)
 
     def delay(self, seconds, callback, *args, **kwargs):
-        '''Method used to create a delay'''
-
+        """Create a delay."""
         # Get the _Delay instance for the given arguments
         delay_object = _Delay(seconds, callback, *args, **kwargs)
 
@@ -173,8 +167,7 @@ class _TickDelays(dict):
         return delay_object
 
     def _tick(self):
-        '''Called every tick when the listener is registered'''
-
+        """Called every tick when the listener is registered."""
         # Get the current time
         current_time = time.time()
 
@@ -201,8 +194,7 @@ class _TickDelays(dict):
             TickListenerManager.unregister_listener(self._tick)
 
     def cancel_delay(self, delay_object):
-        '''Method used to cancel a delay'''
-
+        """Cancel a delay."""
         # Log the canceling message
         ListenersTickDelaysLogger.log_info(
             'TickDelays.cancel_delay <{0}>'.format(delay_object))

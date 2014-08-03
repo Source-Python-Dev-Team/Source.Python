@@ -1,5 +1,7 @@
 # ../filters/players.py
 
+"""Provides player filtering functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -49,14 +51,16 @@ _game_teams = ConfigObj(
 # >> MAIN PLAYER ITER CLASSES
 # =============================================================================
 class _PlayerIterManager(_BaseFilterManager):
-    '''Filter management class specifically for player iterating'''
+
+    """Filter management class specifically for player iterating."""
 
 # Get the _PlayerIterManager instance
 _PlayerIterManagerInstance = _PlayerIterManager()
 
 
 class PlayerIter(_IterObject):
-    '''Player iterate class'''
+
+    """Player iterate class."""
 
     # Store the manager for the player iterator
     manager = _PlayerIterManagerInstance
@@ -69,11 +73,11 @@ class PlayerIter(_IterObject):
 # PLAYER TEAM CLASSES
 # =============================================================================
 class _PlayerTeams(dict):
-    '''Class used to store team names for the current game'''
+
+    """Class used to store team names for the current game."""
 
     def __setitem__(self, item, value):
-        '''Adds a _Team instance for the given team name'''
-
+        """Add a _Team instance for the given team name."""
         # Get the _Team instance
         instance = _Team(value)
 
@@ -85,18 +89,15 @@ _PlayerTeamsInstance = _PlayerTeams()
 
 
 class _Team(object):
-    '''Class used to store a team number and compare to a given player'''
+
+    """Class used to store a team number and compare to a given player."""
 
     def __init__(self, team):
-        '''Store the team number for future use'''
-
-        # Store the team number
+        """Store the team number for future use."""
         self.team = team
 
     def _player_is_on_team(self, PlayerInfo):
-        '''Returns whether the player is on the team'''
-
-        # Return whether the player is on the team
+        """Return whether the player is on the team."""
         return PlayerInfo.get_team_index() == self.team
 
 

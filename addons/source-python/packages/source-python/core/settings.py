@@ -1,5 +1,7 @@
 # ../core/settings.py
 
+"""Contains the core settings which are used during plugin_load."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -23,12 +25,6 @@ from translations.strings import LangStrings
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the core settings language strings
@@ -47,18 +43,16 @@ CoreSettingsLogger = CoreLogger.settings
 # >> CLASSES
 # =============================================================================
 class _SettingsMeta(type):
-    '''Metaclass used to store methods in order of creation'''
+
+    """Metaclass used to store methods in order of creation."""
 
     @classmethod
     def __prepare__(mcs, name, bases):
-        '''Returns an ordered dictionary'''
+        """Return an ordered dictionary."""
         return OrderedDict()
 
     def __new__(mcs, name, bases, odict):
-        '''
-            Stores methods by name and instance in the order they were created
-        '''
-
+        """Store methods by name/instance in the order they were created."""
         # Get the class object
         cls = super().__new__(mcs, name, bases, dict(odict))
 
@@ -79,13 +73,11 @@ class _SettingsMeta(type):
 
 
 class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
-    '''Class used to store core settings'''
+
+    """Class used to store core settings."""
 
     def __init__(self, infile):
-        '''
-            Adds missing items and sets their comments to the server's language
-        '''
-
+        """Add missing items and set comments using the server's language."""
         # Import the file
         super(_CoreSettings, self).__init__(infile)
 
@@ -108,8 +100,7 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         self.write()
 
     def _check_base_settings(self):
-        '''Adds base settings if they are missing'''
-
+        """Add base settings if they are missing."""
         # Are there any base settings in the file?
         if 'BASE_SETTINGS' not in self:
 
@@ -130,8 +121,7 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
             'language'].get_string(self._language).splitlines()
 
     def _check_auth_settings(self):
-        '''Adds auth settings if they are missing'''
-
+        """Add auth settings if they are missing."""
         # Are there any auth settings in the file?
         if 'AUTH_SETTINGS' not in self:
 
@@ -153,8 +143,7 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
             multiple=' '.join(_auth_providers[:3])).splitlines()
 
     def _check_logging_settings(self):
-        '''Adds logging settings if they are missing'''
-
+        """Add logging settings if they are missing."""
         # Are there any logging settings in the file?
         if 'LOG_SETTINGS' not in self:
 
@@ -182,8 +171,7 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
             'log_areas'].get_string(self._language).splitlines()
 
     def _check_user_settings(self):
-        '''Adds user settings if they are missing'''
-
+        """Add user settings if they are missing."""
         # Are there any user settings in the file?
         if 'USER_SETTINGS' not in self:
 

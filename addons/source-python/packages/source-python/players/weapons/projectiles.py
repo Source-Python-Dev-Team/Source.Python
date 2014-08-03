@@ -9,19 +9,13 @@ from contextlib import suppress
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class _ProjectileMeta(type):
-    '''Metaclass used to auto-create methods specific to the projectile'''
+    """Metaclass used to auto-create methods specific to the projectile"""
 
     def __new__(mcs, name, bases, odict):
-        '''Create the class and create its methods dynamically'''
+        """Create the class and create its methods dynamically"""
 
         # Store values to use later
         temp = {'_classname': None, '_is_filters': None, '_not_filters': None}
@@ -99,7 +93,7 @@ class _ProjectileMeta(type):
 
 
 class _ProjectileBase(metaclass=_ProjectileMeta):
-    '''Base Projectile class used to interact with player projectiles'''
+    """Base Projectile class used to interact with player projectiles"""
 
     # Store the base attributes all as None
     _classname = None
@@ -107,42 +101,42 @@ class _ProjectileBase(metaclass=_ProjectileMeta):
     _not_filters = None
 
     def _projectile_indexes(self, classname, is_filters, not_filters):
-        '''Iterates over all indexes the player owns for the projectile type'''
+        """Iterates over all indexes the player owns for the projectile type"""
         return self.weapon_indexes(classname, is_filters, not_filters)
 
     def _get_projectile_index_list(self, classname, is_filters, not_filters):
-        '''Returns a list of indexes the player owns for the projectile type'''
+        """Returns a list of indexes the player owns for the projectile type"""
         return self.get_weapon_index_list(classname, is_filters, not_filters)
 
     def _get_projectile_ammo(self, classname, is_filters, not_filters):
-        '''Returns the ammo amount the player has for the projectile type'''
+        """Returns the ammo amount the player has for the projectile type"""
         return self._get_weapon_ammo(classname, is_filters, not_filters)
 
     def _set_projectile_ammo(self, value, classname, is_filters, not_filters):
-        '''Sets the ammo amount of the player for the projectile type'''
+        """Sets the ammo amount of the player for the projectile type"""
         self._set_weapon_ammo(value, classname, is_filters, not_filters)
 
 
 class _HEGrenade(_ProjectileBase):
-    '''Class used to interact with a player based on the hegrenade weapon'''
+    """Class used to interact with a player based on the hegrenade weapon"""
     _classname = 'weapon_hegrenade'
 
 
 class _Flashbang(_ProjectileBase):
-    '''Class used to interact with a player based on the flashbang weapon'''
+    """Class used to interact with a player based on the flashbang weapon"""
     _classname = 'weapon_flashbang'
 
 
 class _SmokeGrenade(_ProjectileBase):
-    '''Class used to interact with a player based on the smokegrenade weapon'''
+    """Class used to interact with a player based on the smokegrenade weapon"""
     _classname = 'weapon_smokegrenade'
 
 
 class _Decoy(_ProjectileBase):
-    '''Class used to interact with a player based on the decoy weapon'''
+    """Class used to interact with a player based on the decoy weapon"""
     _classname = 'weapon_decoy'
 
 
 class _Incendiary(_ProjectileBase):
-    '''Class used to interact with a player based on incendiary weapons'''
+    """Class used to interact with a player based on incendiary weapons"""
     _is_filters = 'incendiary'

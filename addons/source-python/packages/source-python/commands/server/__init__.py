@@ -1,5 +1,6 @@
 # ../commands/server/__init__.py
 
+"""Provides say command functionality."""
 
 # =============================================================================
 # >> FORWARD IMPORTS

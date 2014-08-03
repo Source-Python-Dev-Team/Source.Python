@@ -1,5 +1,7 @@
 # ../memory/__init__.py
 
+"""Provides binary/memory based functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -65,9 +67,7 @@ MemoryLogger = _SPLogger.memory
 # >> FUNCTIONS
 # =============================================================================
 def callback(convention=Convention.CDECL, args=(), return_type=Return.VOID):
-    '''
-    Use this decorator to create a C++ callback that calls back to the
-    decorated function.
+    """Create a C++ callback that calls back to the decorated function.
 
     EXAMPLE:
 
@@ -79,8 +79,7 @@ def callback(convention=Convention.CDECL, args=(), return_type=Return.VOID):
     Python function:
 
     assert add(4, 6) == 10
-    '''
-
+    """
     def wait_for_func(func):
         return Callback(func, convention, args, return_type)
 

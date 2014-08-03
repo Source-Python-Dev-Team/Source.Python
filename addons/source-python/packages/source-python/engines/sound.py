@@ -1,5 +1,7 @@
 # ../engines/sound.py
 
+"""Provides access to the Sound interface."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -65,10 +67,10 @@ EnginesSoundLogger = EnginesLogger.sound
 # >> ENUMERATORS
 # =============================================================================
 class Attenuations(object):
-    '''Attenuation values wrapper enumerator.
 
-    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-    '''
+    """Attenuation values wrapper enumerator."""
+
+    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     NONE = ATTN_NONE
     NORMAL = ATTN_NORM
     IDLE = ATTN_IDLE
@@ -79,17 +81,18 @@ class Attenuations(object):
 
 
 class PitchTypes(object):
-    '''Pitch values wrapper enumerator.
 
-    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-    '''
+    """Pitch values wrapper enumerator."""
+
+    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     NORMAL = PITCH_NORM
     LOW = PITCH_LOW
     HIGH = PITCH_HIGH
 
 
 class Sound(AutoUnload):
-    '''Class used to interact with a specific sound file'''
+
+    """Class used to interact with a specific sound file."""
 
     # Set the base _downloads attribute to know whether
     #   or not the sample was added to the downloadables
@@ -101,8 +104,7 @@ class Sound(AutoUnload):
             flags=0, pitch=PitchTypes.HIGH, origin=NULL_VECTOR,
             direction=NULL_VECTOR, origins=(), update_positions=True,
             sound_time=0.0, speaker_entity=-1, download=False):
-        '''Store all the given attributes and set the module for unloading'''
-
+        """Store all the given attributes and set the module for unloading."""
         # Set sample as a private attribute, since it should never change
         # Added replacing \ with / in paths for comformity
         self._sample = sample.replace('\\', '/')
@@ -130,9 +132,7 @@ class Sound(AutoUnload):
             self._downloads.add('sound/{0}'.format(self.sample))
 
     def play(self, *recipients):
-        '''Plays the sound using either the given
-           recipients or the instance's recipients'''
-
+        """Play the sound."""
         # Get the recipients to play the sound to
         recipients = RecipientFilter(*(recipients or self.recipients))
 
@@ -150,8 +150,7 @@ class Sound(AutoUnload):
             self.update_positions, self.sound_time, self.speaker_entity)
 
     def stop(self, index=None, channel=None):
-        '''Stops a sound from being played'''
-
+        """Stop a sound from being played."""
         # Was an index passed in?
         if index is None:
 
@@ -168,24 +167,24 @@ class Sound(AutoUnload):
         EngineSound.stop_sound(index, channel, self.sample)
 
     def precache(self):
-        '''Precaches the sample'''
+        """Precache the sample."""
         EngineSound.precache_sound(self.sample)
 
     def is_precached(self):
-        '''Returns whether or not the sample is precached'''
+        """Return whether or not the sample is precached."""
         return self.sample in StringTables.soundprecache
 
     @property
     def sample(self):
-        '''Returns the sample (filename) of the Sound instance'''
+        """Return the filename of the Sound instance."""
         return self._sample
 
     @property
     def duration(self):
-        '''Returns the duration of the sample'''
+        """Return the duration of the sample."""
         return EngineSound.get_sound_duration(self.sample)
 
     def _unload_instance(self):
-        '''Removes the sample from the downloads list'''
+        """Remove the sample from the downloads list."""
         if self._downloads is not None:
             self._downloads._unload_instance()

@@ -1,5 +1,6 @@
 # ../commands/say/__init__.py
 
+"""Provides say command and say filter functionality."""
 
 # =============================================================================
 # >> FORWARD IMPORTS

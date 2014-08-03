@@ -1,5 +1,7 @@
 # ../keyvalues.py
 
+"""Provides access to interact with KeyValues objects."""
+
 # =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
@@ -19,4 +21,5 @@ __all__ = ('KeyValues',
 # >> CLASSES
 # =============================================================================
 class KeyValues(_KeyValues):
-    '''TODO: Extend this as a dict...'''
+
+    """TODO: Extend this as a dict..."""

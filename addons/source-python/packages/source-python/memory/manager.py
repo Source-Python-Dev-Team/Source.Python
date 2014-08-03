@@ -1,5 +1,7 @@
 # ../memory/manager.py
 
+"""Provides extended memory functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -41,10 +43,13 @@ __all__ = ('CustomType',
 # >> CustomType
 # =============================================================================
 class CustomType(BasePointer):
-    '''
-    Subclass this class if you want to create a new type. Make sure that you
-    have set the metaclass attribute to a valid TypeManager instance.
-    '''
+
+    """
+    Subclass this class if you want to create a new type.
+
+    Make sure that you have set the metaclass
+    attribute to a valid TypeManager instance.
+    """
 
     # This should always hold a TypeManager instance. It's set automatically
     # by the metaclass.
@@ -67,10 +72,7 @@ class CustomType(BasePointer):
     _destructor = None
 
     def __init__(self, *args, wrap=False, auto_dealloc=True):
-        '''
-        Initializes the custom type.
-        '''
-
+        """Initialize the custom type."""
         # _manager must be an instance of TypeManager. Otherwise the type
         # wasn't registered by a TypeManager.
         if not isinstance(self._manager, TypeManager):
@@ -120,26 +122,20 @@ class CustomType(BasePointer):
                     'No constructor was specified, but arguments were passed.')
 
     def _ptr(self):
-        '''
-        Returns the pointer of the object.
-        '''
-
+        """Return the pointer of the object."""
         return self
 
     @classmethod
     def _obj(cls, ptr):
-        '''
-        Wraps the given pointer.
-        '''
-
+        """Wrap the given pointer."""
         return cls(ptr, wrap=True)
 
     def on_dealloc(self):
-        '''
+        """Call the destructor.
+
         This method is automatically called, when the pointer gets
         deallocated. It then calls the destructor if it was specified.
-        '''
-
+        """
         # Call the destructor if it was specified
         if self._destructor is not None:
             self._destructor()
@@ -149,15 +145,11 @@ class CustomType(BasePointer):
 # >> TypeManager
 # =============================================================================
 class TypeManager(dict):
-    '''
-    The TypeManager is able to reconstruct almost every possible data type.
-    '''
+
+    """Class able to reconstruct almost every possible data type."""
 
     def __init__(self):
-        '''
-        Initializes the instance.
-        '''
-
+        """Initialize the instance."""
         # This dictionary will hold global pointer instances
         self.global_pointers = {}
 
@@ -168,10 +160,7 @@ class TypeManager(dict):
         self.function_typedefs = {}
 
     def __call__(self, name, bases, cls_dict):
-        '''
-        Creates and registers a new class.
-        '''
-
+        """Create and registers a new class."""
         # Set the manager attribute. This is required, so CustomType.__init__
         # can verify that we have registered the class
         cls_dict['_manager'] = self
@@ -189,13 +178,10 @@ class TypeManager(dict):
         return cls
 
     def register_converter(self, name, obj):
-        '''
-        Registers a callable object as a converter for pointers which are
-        returned by a function or property.
+        """Register a callable object as a converter.
 
         The callable object should only accept a pointer as an argument.
-        '''
-
+        """
         # Make sure we can call the object
         if not callable(obj):
             raise ValueError('Object is not callable.')
@@ -203,14 +189,12 @@ class TypeManager(dict):
         self.converters[name] = obj
 
     def unregister_converter(self, name):
-        '''
-        Unregisters a converter.
-        '''
-
+        """Unregister a converter."""
         self.converters.pop(name, None)
 
     def convert(self, name, ptr):
-        '''
+        """Convert the pointer.
+
         Tries to convert a pointer in the following order:
 
         Attempts to convert the pointer...
@@ -218,8 +202,7 @@ class TypeManager(dict):
         2. to a exposed type
         3. to a function typedef
         4. by using a converter
-        '''
-
+        """
         cls = self.get_class(name)
         if cls is not None:
             # Use the class to convert the pointer
@@ -242,43 +225,31 @@ class TypeManager(dict):
         return converter(ptr)
 
     def create_converter(self, name):
-        '''
-        Creates a new converter for the given name.
-        '''
-
+        """Create a new converter for the given name."""
         return lambda ptr: self.convert(name, ptr)
 
     def get_class(self, name):
-        '''
+        """Return the custom type for the given name.
+
         Tries to return a custom type that matches the given name. If no
         custom type was found, it tries to return a class that was exposed on
         the C++ side. If that fails too, None will be returned.
-        '''
-
+        """
         return self.get(name, None) or EXPOSED_CLASSES.get(name, None)
 
     def create_type(self, name, cls_dict, bases=(CustomType,)):
-        '''
-        Creates and registers a new class.
-        '''
-
+        """Create and registers a new class."""
         # This is just a wrapper for __call__
         return self(name, bases, cls_dict)
 
     @staticmethod
     def create_pipe(cls_dict):
-        '''
-        Creates a new pipe class that acts like a collection of functions.
-        '''
-
+        """Create a new pipe class that acts like a collection of functions."""
         # Just create a container for all the functions
         return type('Pipe', (object,), cls_dict)
 
     def create_pipe_from_file(self, f):
-        '''
-        Creates a pipe from a file or URL.
-        '''
-
+        """Create a pipe from a file or URL."""
         # Prepare functions
         funcs = parse_data(
             ConfigObj(f, file_error=True),
@@ -303,10 +274,7 @@ class TypeManager(dict):
     def pipe_function(
             self, binary, identifier, args=(), return_type=Return.VOID,
             convention=Convention.CDECL, srv_check=True, doc=None):
-        '''
-        Creates a simple pipe function.
-        '''
-
+        """Create a simple pipe function."""
         # Create a converter, if it's not a native type
         if return_type not in Return.values:
             return_type = self.create_converter(return_type)
@@ -322,10 +290,7 @@ class TypeManager(dict):
         return func
 
     def create_type_from_file(self, type_name, f, bases=(CustomType,)):
-        '''
-        Creates and registers a new type from a file or URL.
-        '''
-
+        """Create and registers a new type from a file or URL."""
         # Read the data
         raw_data = ConfigObj(f, file_error=True)
 
@@ -415,14 +380,12 @@ class TypeManager(dict):
         return self(type_name, bases, cls_dict)
 
     def instance_attribute(self, type_name, offset, doc=None):
-        '''
-        Creates a wrapper for an instance attribute.
+        """Create a wrapper for an instance attribute.
 
         Examples:
             Vector vecVal;
             bool bVal;
-        '''
-
+        """
         native_type = Type.is_native(type_name)
 
         def fget(ptr):
@@ -452,14 +415,12 @@ class TypeManager(dict):
         return property(fget, fset, None, doc)
 
     def pointer_attribute(self, type_name, offset, doc=None):
-        '''
-        Creates a wrapper for a pointer attribute.
+        """Create a wrapper for a pointer attribute.
 
         Examples:
             Vector* pVec;
             bool* pBool;
-        '''
-
+        """
         native_type = Type.is_native(type_name)
 
         def fget(ptr):
@@ -506,14 +467,12 @@ class TypeManager(dict):
         return property(fget, fset, None, doc)
 
     def static_instance_array(self, type_name, offset, length=None, doc=None):
-        '''
-        Creates a wrapper for a static instance array.
+        """Create a wrapper for a static instance array.
 
         Examples:
             Vector vecArray[10];
             bool boolArray[10];
-        '''
-
+        """
         def fget(ptr):
             return Array(self, False, type_name, ptr + offset, length)
 
@@ -525,16 +484,14 @@ class TypeManager(dict):
         return property(fget, fset, None, doc)
 
     def dynamic_instance_array(self, type_name, offset, length=None, doc=None):
-        '''
-        Creates a wrapper for a dynamic instance array.
+        """Create a wrapper for a dynamic instance array.
 
         Examples:
             Vector* pVecArray;
             bool* pBoolArray;
 
         Those arrrays are mostly created by the "new" statement.
-        '''
-
+        """
         def fget(ptr):
             return Array(
                 self, False, type_name, ptr.get_pointer(offset), length)
@@ -547,14 +504,12 @@ class TypeManager(dict):
         return property(fget, fset, None, doc)
 
     def static_pointer_array(self, type_name, offset, length=None, doc=None):
-        '''
-        Creates a wrapper for a static pointer array.
+        """Create a wrapper for a static pointer array.
 
         Examples:
             Vector* pVecArray[10];
             bool* pBoolArray[10];
-        '''
-
+        """
         def fget(ptr):
             return Array(self, True, type_name, ptr + offset, length)
 
@@ -566,16 +521,14 @@ class TypeManager(dict):
         return property(fget, fset, None, doc)
 
     def dynamic_pointer_array(self, type_name, offset, length=None, doc=None):
-        '''
-        Creates a wrapper for a dynamic pointer array.
+        """Create a wrapper for a dynamic pointer array.
 
         Examples:
             Vector** pVecArray;
             bool** pBoolArray;
 
         Those arrays are mostly created by the "new" statement.
-        '''
-
+        """
         def fget(ptr):
             return Array(
                 self, True, type_name, ptr.get_pointer(offset), length)
@@ -590,10 +543,7 @@ class TypeManager(dict):
     def virtual_function(
             self, index, args=(), return_type=Return.VOID,
             convention=Convention.THISCALL, doc=None):
-        '''
-        Creates a wrapper for a virtual function.
-        '''
-
+        """Create a wrapper for a virtual function."""
         # Automatically add the this pointer argument
         args = (Argument.POINTER,) + tuple(args)
 
@@ -619,10 +569,7 @@ class TypeManager(dict):
     def function(
             self, identifier, args=(), return_type=Return.VOID,
             convention=Convention.THISCALL, doc=None):
-        '''
-        Creates a wrapper for a function.
-        '''
-
+        """Create a wrapper for a function."""
         # Automatically add the this pointer argument
         args = (Argument.POINTER,) + tuple(args)
 
@@ -659,12 +606,12 @@ class TypeManager(dict):
     def function_typedef(
             self, name, args=(), return_type=Return.VOID,
             convention=Convention.CDECL, doc=None):
-        '''
-        Creates a new function typedef. So, when a class has an attribute that
-        contains a pointer of a function. The attribute will return a Function
-        object that will be created by this method.
-        '''
+        """Create a new function typedef.
 
+        When a class has an attribute that contains a pointer of a function,
+        the attribute will return a Function object that will be created
+        by this method.
+        """
         # Create a converter, if it's not a native type
         if return_type not in Return.values:
             return_type = self.create_converter(return_type)
@@ -678,10 +625,7 @@ class TypeManager(dict):
         return make_function
 
     def create_function_typedefs_from_file(self, f):
-        '''
-        Creates function typedefs from a file.
-        '''
-
+        """Create function typedefs from a file."""
         # Read the data
         raw_data = ConfigObj(f, file_error=True)
 
@@ -702,11 +646,7 @@ class TypeManager(dict):
 
     def global_pointer(
             self, cls, binary, identifier, offset=0, level=0, srv_check=True):
-        '''
-        Searches for a global pointer and wraps the pointer using the given
-        class.
-        '''
-
+        """Search for a global pointer and wrap the it."""
         # Get the binary
         binary = find_binary(binary, srv_check)
 
@@ -722,10 +662,7 @@ class TypeManager(dict):
         return ptr
 
     def create_global_pointers_from_file(self, f):
-        '''
-        Creates global pointers from a file.
-        '''
-
+        """Create global pointers from a file."""
         # Parse pointer data
         pointers = parse_data(
             ConfigObj(f, file_error=True),
@@ -747,10 +684,7 @@ class TypeManager(dict):
             self.global_pointer(cls, *data)
 
     def get_global_pointer(self, name):
-        '''
-        Returns the global pointer for the given class.
-        '''
-
+        """Return the global pointer for the given class."""
         # Allow passing class objects
         if not isinstance(name, str):
             name = name.__name__

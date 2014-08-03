@@ -1,5 +1,7 @@
 # ../engines/trace.py
 
+"""Provides ray tracing functionality."""
+
 # =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
@@ -111,10 +113,10 @@ __all__ = ('BaseTrace',
 # >> ENUMERATORS
 # =============================================================================
 class DisplacementFlags(object):
-    '''Displacement flags wrapper enumerator.
 
-    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-    '''
+    """Displacement flags wrapper enumerator."""
+
+    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     SURFACE = DISPSURF_FLAG_SURFACE
     WALKABLE = DISPSURF_FLAG_WALKABLE
     BUILDABLE = DISPSURF_FLAG_BUILDABLE
@@ -123,10 +125,10 @@ class DisplacementFlags(object):
 
 
 class ContentFlags(object):
-    '''Content flags wrapper enumerator.
 
-    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-    '''
+    """Content flags wrapper enumerator."""
+
+    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     EMPTY = CONTENTS_EMPTY
     SOLID = CONTENTS_SOLID
     WINDOW = CONTENTS_WINDOW
@@ -163,10 +165,10 @@ class ContentFlags(object):
 
 
 class ContentMasks(object):
-    '''Content masks wrapper enumerator.
 
-    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-    '''
+    """Content masks wrapper enumerator."""
+
+    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     ALL = MASK_ALL
     SOLID = MASK_SOLID
     PLAYER_SOLID = MASK_PLAYERSOLID
@@ -190,10 +192,10 @@ class ContentMasks(object):
 
 
 class SurfaceFlags(object):
-    '''Surface flags wrapper enumerator.
 
-    TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+.
-    '''
+    """Surface flags wrapper enumerator."""
+
+    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     LIGHT = SURF_LIGHT
     SKY2D = SURF_SKY2D
     SKY = SURF_SKY
