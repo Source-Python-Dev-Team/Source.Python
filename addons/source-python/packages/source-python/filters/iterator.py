@@ -49,7 +49,7 @@ class _IterObject(object):
             if isinstance(self.return_types, str):
 
                 # Yield the proper type for the current item
-                yield self.manager.return_types[self.return_types](item)
+                yield self.manager._return_types[self.return_types](item)
 
             # Otherwise
             else:
@@ -63,7 +63,7 @@ class _IterObject(object):
                     # Add the current return type for
                     # the current item to the yield list
                     yield_list.append(
-                        self.manager.return_types[return_type](item))
+                        self.manager._return_types[return_type](item))
 
                 # Yield the list of return types for the current item
                 yield yield_list
