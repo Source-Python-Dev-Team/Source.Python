@@ -81,6 +81,7 @@ def callback(convention=Convention.CDECL, args=(), return_type=Return.VOID):
     assert add(4, 6) == 10
     """
     def wait_for_func(func):
+        """Return a memory callback instance."""
         return Callback(func, convention, args, return_type)
 
     return wait_for_func

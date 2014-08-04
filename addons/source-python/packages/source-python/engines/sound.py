@@ -5,6 +5,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Enum
+from enum import IntEnum
+
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -66,11 +70,10 @@ EnginesSoundLogger = EnginesLogger.sound
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class Attenuations(object):
+class Attenuations(IntEnum):
 
     """Attenuation values wrapper enumerator."""
 
-    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     NONE = ATTN_NONE
     NORMAL = ATTN_NORM
     IDLE = ATTN_IDLE
@@ -80,11 +83,10 @@ class Attenuations(object):
     MAXIMUM = MAX_ATTENUATION
 
 
-class PitchTypes(object):
+class PitchTypes(IntEnum):
 
     """Pitch values wrapper enumerator."""
 
-    """TODO: Inherit of "enum.IntEnum" once we have upgraded to Python 3.4+."""
     NORMAL = PITCH_NORM
     LOW = PITCH_LOW
     HIGH = PITCH_HIGH

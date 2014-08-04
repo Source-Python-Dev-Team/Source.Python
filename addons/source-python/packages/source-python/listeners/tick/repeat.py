@@ -137,8 +137,10 @@ class TickRepeat(AutoUnload):
         self.start(self._interval, self._limit)
 
     def pause(self):
-        """Pause the repeat."""
-        """Pausing allows the repeat to be resumed."""
+        """Pause the repeat.
+
+        Pausing allows the repeat to be resumed.
+        """
         # Log the pause message
         ListenersTickRepeatLogger.log_info('TickRepeat.pause')
 
@@ -166,8 +168,10 @@ class TickRepeat(AutoUnload):
         TickDelays.cancel_delay(self._delay)
 
     def resume(self):
-        """Resume the repeat."""
-        """Can only resume if in paused status."""
+        """Resume the repeat.
+
+        Can only resume if in paused status.
+        """
         # Log the resume message
         ListenersTickRepeatLogger.log_info('TickRepeat.resume')
 

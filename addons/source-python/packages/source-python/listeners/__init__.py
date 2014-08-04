@@ -164,7 +164,6 @@ class ClientPutInServer(_ListenerManager):
     manager = ClientPutInServerListenerManager
 
 
-
 class ClientSettingsChanged(_ListenerManager):
 
     """Register/unregister a ClientSettingsChanged listener."""

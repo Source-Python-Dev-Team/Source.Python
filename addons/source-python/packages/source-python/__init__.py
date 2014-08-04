@@ -1,8 +1,7 @@
 # ../__init__.py
 
-"""This is the main __init__ that gets imported on plugin_load."""
+"""This is the main __init__ that gets imported on plugin_load.
 
-"""
 ===============================================================================
 Source Python
 Copyright (C) 2012 Source Python Development Team.  All rights reserved.

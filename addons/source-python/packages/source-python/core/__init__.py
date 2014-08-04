@@ -65,9 +65,10 @@ CoreLogger = _SPLogger.core
 # =============================================================================
 class AutoUnload(object):
 
-    """Class used to auto unload specific instances."""
+    """Class used to auto unload specific instances.
 
-    """ Each inheriting class must implement an _unload_instance method."""
+    Each inheriting class must implement an _unload_instance method.
+    """
 
     def __new__(cls, *args, **kwargs):
         """Overwrite __new__ to store the calling module."""

@@ -240,9 +240,7 @@ class TranslationStrings(dict):
         if language is None:
 
             # Return an empty string
-            """
-                Possibly raise an error silently here
-            """
+            # Possibly raise an error silently here
             return ''
 
         # Get the message's Template instance

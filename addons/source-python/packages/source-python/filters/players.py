@@ -118,30 +118,30 @@ _PlayerIterManagerInstance.register_filter(
         playerinfo).get_prop_int('pl.deadflag'))
 
 # Loop through all teams in the game's team file
-for team in _game_teams['names']:
+for _team in _game_teams['names']:
 
     # Add the team to the _PlayerTeamsInstance dictionary
-    _PlayerTeamsInstance[team] = int(_game_teams['names'][team])
+    _PlayerTeamsInstance[_team] = int(_game_teams['names'][_team])
 
     # Register the filter
     _PlayerIterManagerInstance.register_filter(
-        team, _PlayerTeamsInstance[team]._player_is_on_team)
+        _team, _PlayerTeamsInstance[_team]._player_is_on_team)
 
 # Loop through all base team names
-for number, team in enumerate(('un', 'spec', 't', 'ct')):
+for _number, _team in enumerate(('un', 'spec', 't', 'ct')):
 
     # Has the team already been added to the _PlayerTeamsInstance dictionary
-    if team in _PlayerTeamsInstance:
+    if _team in _PlayerTeamsInstance:
 
         # If it has been added, do not re-add it
         continue
 
     # Add the team to the _PlayerTeamsInstance dictionary
-    _PlayerTeamsInstance[team] = number
+    _PlayerTeamsInstance[_team] = _number
 
     # Register the filter
     _PlayerIterManagerInstance.register_filter(
-        team, _PlayerTeamsInstance[team]._player_is_on_team)
+        _team, _PlayerTeamsInstance[_team]._player_is_on_team)
 
 
 # =============================================================================

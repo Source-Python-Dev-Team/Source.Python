@@ -194,7 +194,7 @@ class _BaseMenu(AutoUnload, list):
         """Return the required data to send a menu.
 
         This method needs to be implemented by a subclass!
-        
+
         @param <ply_index>:
         A player index.
         """

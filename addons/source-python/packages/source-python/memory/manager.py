@@ -389,6 +389,7 @@ class TypeManager(dict):
         native_type = Type.is_native(type_name)
 
         def fget(ptr):
+            """Return the instance attribute value."""
             # Handle custom type
             if not native_type:
                 return self.convert(type_name, ptr + offset)
@@ -397,6 +398,7 @@ class TypeManager(dict):
             return getattr(ptr, 'get_' + type_name)(offset)
 
         def fset(ptr, value):
+            """Set the instance attribute value."""
             # Handle custom type
             if not native_type:
                 cls = self.get_class(type_name)
@@ -424,6 +426,7 @@ class TypeManager(dict):
         native_type = Type.is_native(type_name)
 
         def fget(ptr):
+            """Get the pointer attribute value."""
             # Get the base address of the pointer. We are now on
             # "instance level"
             ptr = ptr.get_pointer(offset)
@@ -436,6 +439,7 @@ class TypeManager(dict):
             return getattr(ptr, 'get_' + type_name)()
 
         def fset(ptr, value):
+            """Set the pointer attribute value."""
             # Handle custom type
             if not native_type:
                 ptr.set_pointer(value)
@@ -474,9 +478,11 @@ class TypeManager(dict):
             bool boolArray[10];
         """
         def fget(ptr):
+            """Get the static instance array."""
             return Array(self, False, type_name, ptr + offset, length)
 
         def fset(ptr, value):
+            """Set all values in the static instance array."""
             array = fget(ptr)
             for index, val in enumerate(value):
                 array[index] = val
@@ -493,10 +499,12 @@ class TypeManager(dict):
         Those arrrays are mostly created by the "new" statement.
         """
         def fget(ptr):
+            """Get the dynamic instance array."""
             return Array(
                 self, False, type_name, ptr.get_pointer(offset), length)
 
         def fset(ptr, value):
+            """Set all values for the dynamic instance array."""
             array = fget(ptr)
             for index, val in enumerate(value):
                 array[index] = val
@@ -511,9 +519,11 @@ class TypeManager(dict):
             bool* pBoolArray[10];
         """
         def fget(ptr):
+            """Get the static pointer array."""
             return Array(self, True, type_name, ptr + offset, length)
 
         def fset(ptr, value):
+            """Set all values for the static pointer array."""
             array = fget(ptr)
             for index, val in enumerate(value):
                 array[index] = val
@@ -530,10 +540,12 @@ class TypeManager(dict):
         Those arrays are mostly created by the "new" statement.
         """
         def fget(ptr):
+            """Get the dynamic pointer array."""
             return Array(
                 self, True, type_name, ptr.get_pointer(offset), length)
 
         def fset(ptr, value):
+            """Set all values for the dynamic pointer array."""
             array = fget(ptr)
             for index, val in enumerate(value):
                 array[index] = val
@@ -552,6 +564,7 @@ class TypeManager(dict):
             return_type = self.create_converter(return_type)
 
         def fget(ptr):
+            """Return the virtual function."""
             # Create the virtual function
             func = ptr.make_virtual_function(
                 index,
@@ -617,6 +630,7 @@ class TypeManager(dict):
             return_type = self.create_converter(return_type)
 
         def make_function(ptr):
+            """Return the function typedef."""
             func = ptr.make_function(convention, args, return_type)
             func.__doc__ = doc
             return func

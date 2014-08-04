@@ -131,18 +131,18 @@ class _Tag(object):
 # >> FILTER REGISTRATION
 # =============================================================================
 # Loop through all tags for the current game
-for tag in WeaponManager.tags:
+for _tag in WeaponManager.tags:
 
     # Get the _WeaponTagsInstance instance for the current tag
-    _instance = _WeaponTagsInstance[tag]
+    _instance = _WeaponTagsInstance[_tag]
 
     # Register the tag's filter for _WeaponEdictIterManagerInstance
     _WeaponEdictIterManagerInstance.register_filter(
-        tag, _instance._edict_weapon_contains_tag)
+        _tag, _instance._edict_weapon_contains_tag)
 
     # Register the tag's filter for _WeaponClassIterManagerInstance
     _WeaponClassIterManagerInstance.register_filter(
-        tag, _instance._class_weapon_contains_tag)
+        _tag, _instance._class_weapon_contains_tag)
 
 
 # =============================================================================
