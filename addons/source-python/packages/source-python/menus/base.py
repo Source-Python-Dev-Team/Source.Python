@@ -43,7 +43,7 @@ class _BaseMenu(AutoUnload, list):
 
     _instances = {}
 
-    def __init__(self, data=[], select_callback=None, build_callback=None):
+    def __init__(self, data=None, select_callback=None, build_callback=None):
         """Initialize the menu.
 
         @param <data>:
@@ -64,7 +64,7 @@ class _BaseMenu(AutoUnload, list):
             1. The instance of this menu.
             2. The index of the player who will recieve this menu.
         """
-        super(_BaseMenu, self).__init__(data)
+        super(_BaseMenu, self).__init__(data or list())
 
         self.select_callback = select_callback
         self.build_callback = build_callback

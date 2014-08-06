@@ -58,16 +58,17 @@ class EntityIter(_IterObject):
     # Store the base iterator
     iterator = staticmethod(EntityGenerator)
 
-    def __init__(self, class_names=[], exact_match=True, return_types='index'):
+    def __init__(
+            self, class_names=None, exact_match=True, return_types='index'):
         """Store the base attributes for the generator."""
-        # Is there only one class name given?
+        # Was only one class name given?
         if isinstance(class_names, str):
 
             # Convert the class name to a list
             class_names = [class_names]
 
         # Store the base attributes given
-        self.class_names = class_names
+        self.class_names = class_names or list()
         self.exact_match = exact_match
         self.return_types = return_types
 

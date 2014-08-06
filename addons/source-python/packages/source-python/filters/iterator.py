@@ -10,23 +10,24 @@ class _IterObject(object):
 
     """Base iterator class used to yield filtered items."""
 
-    def __init__(self, is_filters=[], not_filters=[], return_types='index'):
+    def __init__(
+            self, is_filters=None, not_filters=None, return_types='index'):
         """Store filters and return types for the instance."""
-        # Are the "is" filters a string?
+        # Was only one "is" filter given?
         if isinstance(is_filters, str):
 
             # Store the "is" filters as a list
             is_filters = [is_filters]
 
-        # Are the "not" filters a string?
+        # Was only one "not" filter given?
         if isinstance(not_filters, str):
 
             # Store the "not" filters as a list
             not_filters = [not_filters]
 
         # Store the filters and return types
-        self.is_filters = is_filters
-        self.not_filters = not_filters
+        self.is_filters = is_filters or list()
+        self.not_filters = not_filters or list()
         self.return_types = return_types
 
     def __iter__(self):

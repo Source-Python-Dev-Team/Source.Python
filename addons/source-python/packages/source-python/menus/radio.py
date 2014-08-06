@@ -135,7 +135,7 @@ class PagedRadioMenu(SimpleRadioMenu):
     """
 
     def __init__(
-            self, data=[], select_callback=None,
+            self, data=None, select_callback=None,
             build_callback=None, description=None,
             title=None, top_seperator='-' * 30, bottom_seperator='-' * 30):
         """Initialize the PagedRadioMenu instance.

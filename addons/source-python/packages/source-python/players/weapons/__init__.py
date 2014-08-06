@@ -71,7 +71,8 @@ class _PlayerWeapons(_GameWeapons):
         """Return the amount of ammo the player has for their secondary."""
         return self._get_weapon_ammo(is_filters='secondary')
 
-    def _get_weapon_ammo(self, classname=None, is_filters=[], not_filters=[]):
+    def _get_weapon_ammo(
+            self, classname=None, is_filters=None, not_filters=None):
         """Return the amount of ammo for the given arguments.
 
         Returns for the first weapon found from the given arguments.
@@ -111,7 +112,8 @@ class _PlayerWeapons(_GameWeapons):
         """Return the amount of ammo in the player's secondary weapon clip."""
         return self._get_weapon_clip(is_filters='secondary')
 
-    def _get_weapon_clip(self, classname=None, is_filters=[], not_filters=[]):
+    def _get_weapon_clip(
+            self, classname=None, is_filters=None, not_filters=None):
         """Return the clip amount for the given arguments.
 
         Returns for the first weapon found from the given arguments.
@@ -151,7 +153,7 @@ class _PlayerWeapons(_GameWeapons):
         self._set_weapon_ammo(value, is_filters='secondary')
 
     def _set_weapon_ammo(
-            self, value, classname=None, is_filters=[], not_filters=[]):
+            self, value, classname=None, is_filters=None, not_filters=None):
         """Set the player's ammo value for the given arguments.
 
         Sets for the first weapon found from the given arguments.
@@ -195,7 +197,7 @@ class _PlayerWeapons(_GameWeapons):
         self._set_weapon_clip(value, is_filters='secondary')
 
     def _set_weapon_clip(
-            self, value, classname=None, is_filters=[], not_filters=[]):
+            self, value, classname=None, is_filters=None, not_filters=None):
         """Set the player's clip value for the given arguments.
 
         Sets for the first weapon found from the given arguments.
@@ -238,7 +240,7 @@ class _PlayerWeapons(_GameWeapons):
         self._add_weapon_ammo(value, is_filters='secondary')
 
     def _add_weapon_ammo(
-            self, value, classname=None, is_filters=[], not_filters=[]):
+            self, value, classname=None, is_filters=None, not_filters=None):
         """Add ammo to the player's current value for the given arguments.
 
         Adds for the first weapon found from the given arguments.
@@ -286,7 +288,7 @@ class _PlayerWeapons(_GameWeapons):
         self._add_weapon_clip(value, is_filters='secondary')
 
     def _add_weapon_clip(
-            self, value, classname=None, is_filters=[], not_filters=[]):
+            self, value, classname=None, is_filters=None, not_filters=None):
         """Add ammo to the weapon's current value for the given arguments.
 
         Adds for the first weapon found from the given arguments.
@@ -320,7 +322,8 @@ class _PlayerWeapons(_GameWeapons):
         """Return the player's secondary weapon's index."""
         return self.get_weapon_index(is_filters='secondary')
 
-    def get_weapon_index(self, classname=None, is_filters=[], not_filters=[]):
+    def get_weapon_index(
+            self, classname=None, is_filters=None, not_filters=None):
         """Return the first instance of the given weapon classname/type."""
         # Loop through all weapon indexes for
         # the player with the given arguments
@@ -333,11 +336,12 @@ class _PlayerWeapons(_GameWeapons):
         return None
 
     def get_weapon_index_list(
-            self, classname=None, is_filters=[], not_filters=[]):
+            self, classname=None, is_filters=None, not_filters=None):
         """Return a list of weapon indexes for the player."""
         return list(self.weapon_indexes(classname, is_filters, not_filters))
 
-    def weapon_indexes(self, classname=None, is_filters=[], not_filters=[]):
+    def weapon_indexes(
+            self, classname=None, is_filters=None, not_filters=None):
         """Iterate over all currently held weapons by thier index."""
         # Loop through the length of m_hMyWeapons
         for offset in range(_weapon_prop_length):
@@ -379,11 +383,12 @@ class _PlayerWeapons(_GameWeapons):
 
             # Was a weapon type given and the
             # current weapon is not of that type?
-            if ((is_filters or not_filters) and weapon_class not in list(
-                    WeaponClassIter(is_filters, not_filters, 'classname'))):
+            if not (is_filters is None and not_filters is None):
+                if weapon_class not in list(WeaponClassIter(
+                        is_filters, not_filters, 'classname')):
 
-                # Do not yield this index
-                continue
+                    # Do not yield this index
+                    continue
 
             # Yield the index
             yield index

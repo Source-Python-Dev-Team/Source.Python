@@ -46,7 +46,7 @@ class PagedESCMenu(_BaseMenu):
     """
 
     def __init__(
-            self, data=[], select_callback=None, build_callback=None,
+            self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=White):
         """Initialize the PagedESCMenu instance.
 

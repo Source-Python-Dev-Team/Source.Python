@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Enum
+from enum import IntEnum
 #   Time
 import time
 
@@ -35,11 +37,13 @@ ListenersTickRepeatLogger = ListenersLogger.tick.repeat
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class TickRepeatStatus(object):
+class TickRepeatStatus(IntEnum):
 
     """Class used to store TickRepeatStatus values."""
 
-    STOPPED, RUNNING, PAUSED = range(1, 4)
+    STOPPED = 1
+    RUNNING = 2
+    PAUSED = 3
 
 
 class TickRepeat(AutoUnload):
@@ -72,7 +76,7 @@ class TickRepeat(AutoUnload):
             'TickRepeat.start: <{0}> <{1}>'.format(interval, limit))
 
         # Is the repeat already running?
-        if self._status == TickRepeatStatus.RUNNING:
+        if self._status is TickRepeatStatus.RUNNING:
 
             # Log the status
             ListenersTickRepeatLogger.log_info(
@@ -106,7 +110,7 @@ class TickRepeat(AutoUnload):
         ListenersTickRepeatLogger.log_info('TickRepeat.stop')
 
         # Is the repeat running?
-        if self._status != TickRepeatStatus.RUNNING:
+        if self._status is not TickRepeatStatus.RUNNING:
 
             # Log the status
             ListenersTickRepeatLogger.log_info(
@@ -145,7 +149,7 @@ class TickRepeat(AutoUnload):
         ListenersTickRepeatLogger.log_info('TickRepeat.pause')
 
         # Is the repeat running?
-        if self._status != TickRepeatStatus.RUNNING:
+        if self._status is not TickRepeatStatus.RUNNING:
 
             # Log the status
             ListenersTickRepeatLogger.log_info(
@@ -176,7 +180,7 @@ class TickRepeat(AutoUnload):
         ListenersTickRepeatLogger.log_info('TickRepeat.resume')
 
         # Is the repeat paused?
-        if self._status != TickRepeatStatus.PAUSED:
+        if self._status is not TickRepeatStatus.PAUSED:
 
             # Log the status
             ListenersTickRepeatLogger.log_info(
@@ -223,7 +227,7 @@ class TickRepeat(AutoUnload):
 
         # Are no more loops to be made?
         if (self.remaining and self._limit and
-                self.status == TickRepeatStatus.RUNNING):
+                self.status is TickRepeatStatus.RUNNING):
 
             # Log the reduce-stopping message
             ListenersTickRepeatLogger.log_info(
