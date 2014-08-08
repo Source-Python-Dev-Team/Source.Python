@@ -26,8 +26,8 @@ class _IterObject(object):
             not_filters = [not_filters]
 
         # Store the filters and return types
-        self.is_filters = is_filters or list()
-        self.not_filters = not_filters or list()
+        self.is_filters = list() if is_filters is None else is_filters
+        self.not_filters = list() if not_filters is None else not_filters
         self.return_types = return_types
 
     def __iter__(self):

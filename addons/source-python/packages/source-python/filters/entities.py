@@ -68,7 +68,7 @@ class EntityIter(_IterObject):
             class_names = [class_names]
 
         # Store the base attributes given
-        self.class_names = class_names or list()
+        self.class_names = list() if class_names is None else class_names
         self.exact_match = exact_match
         self.return_types = return_types
 

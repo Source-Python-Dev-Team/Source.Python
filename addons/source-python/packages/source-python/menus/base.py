@@ -64,7 +64,7 @@ class _BaseMenu(AutoUnload, list):
             1. The instance of this menu.
             2. The index of the player who will recieve this menu.
         """
-        super(_BaseMenu, self).__init__(data or list())
+        super(_BaseMenu, self).__init__(list() if data is None else data)
 
         self.select_callback = select_callback
         self.build_callback = build_callback
