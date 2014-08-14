@@ -38,8 +38,8 @@ from configobj import ConfigObjError
 #   Cvars
 from cvars import ConVar
 #   Hooks - These are imported to implement the exceptions and warnings hooks
-from hooks.exceptions import ExceptHooks
-from hooks.warnings import WarningHooks
+from hooks.exceptions import except_hooks
+from hooks.warnings import warning_hooks
 
 
 # =============================================================================
@@ -49,15 +49,15 @@ from hooks.warnings import WarningHooks
 try:
 
     # Import the core settings dictionary
-    from core.settings import _CoreSettingsInstance
+    from core.settings import _core_settings
 
     # Set the logging level
     ConVar('sp_logging_level').set_int(
-        int(_CoreSettingsInstance['LOG_SETTINGS']['level']))
+        int(_core_settings['LOG_SETTINGS']['level']))
 
     # Set the logging areas
     ConVar('sp_logging_areas').set_int(
-        int(_CoreSettingsInstance['LOG_SETTINGS']['areas']))
+        int(_core_settings['LOG_SETTINGS']['areas']))
 
 # Was an exception raised?
 except (ValueError, ConfigObjError):
@@ -68,11 +68,11 @@ except (ValueError, ConfigObjError):
     # Set the logging area to include console, SP logs, and main log
     ConVar('sp_logging_areas').set_int(7)
 
-    # Import the _SPLogger
-    from loggers import _SPLogger
+    # Import the _sp_logger
+    from loggers import _sp_logger
 
     # Log a message about the value
-    _SPLogger.log_message(
+    _sp_logger.log_message(
         '[Source.Python] Plugin did not load properly ' +
         'due to the following error:')
 
@@ -84,59 +84,59 @@ except (ValueError, ConfigObjError):
 # >> TRANSLATIONS SETUP
 # =============================================================================
 # Import the Language Manager
-from translations.manager import LanguageManager
+from translations.manager import language_manager
 
 # Set the default language
-LanguageManager._register_default_language(
-    _CoreSettingsInstance['BASE_SETTINGS']['language'])
+language_manager._register_default_language(
+    _core_settings['BASE_SETTINGS']['language'])
 
 
 # =============================================================================
 # >> INITIALIZE SP COMMAND
 # =============================================================================
-from core.command import _CoreCommandInstance
+from core.command import _core_command
 
 
 # =============================================================================
 # >> AUTH SETUP
 # =============================================================================
 # Get the auth providers that should be loaded
-auth_providers = _CoreSettingsInstance['AUTH_SETTINGS']['providers'].split()
+auth_providers = _core_settings['AUTH_SETTINGS']['providers'].split()
 
 # Should any providers be loaded?
 if auth_providers:
 
     # Load the auth providers
-    _CoreCommandInstance.call_command('auth', ['load'] + auth_providers)
+    _core_command.call_command('auth', ['load'] + auth_providers)
 
 
 # =============================================================================
 # >> USER_SETTINGS SETUP
 # =============================================================================
-from commands.client import ClientCommandManager
-from commands.say import SayCommandManager
-from settings.menu import _AvailableSettingsDictionary
+from commands.client import client_command_manager
+from commands.say import say_command_manager
+from settings.menu import _player_settings
 
 # Are there any private user settings say commands?
-if _CoreSettingsInstance['USER_SETTINGS']['private_say_commands']:
+if _core_settings['USER_SETTINGS']['private_say_commands']:
 
     # Register the private user settings say commands
-    SayCommandManager.register_commands(_CoreSettingsInstance[
+    say_command_manager.register_commands(_core_settings[
         'USER_SETTINGS']['private_say_commands'].split(
-        ','), _AvailableSettingsDictionary._private_send_menu)
+        ','), _player_settings._private_send_menu)
 
 # Are there any public user settings say commands?
-if _CoreSettingsInstance['USER_SETTINGS']['public_say_commands']:
+if _core_settings['USER_SETTINGS']['public_say_commands']:
 
     # Register the public user settings say commands
-    SayCommandManager.register_commands(_CoreSettingsInstance[
+    say_command_manager.register_commands(_core_settings[
         'USER_SETTINGS']['public_say_commands'].split(
-        ','), _AvailableSettingsDictionary._send_menu)
+        ','), _player_settings._send_menu)
 
 # Are there any client user settings commands?
-if _CoreSettingsInstance['USER_SETTINGS']['client_commands']:
+if _core_settings['USER_SETTINGS']['client_commands']:
 
     # Register the client user settings commands
-    ClientCommandManager.register_commands(_CoreSettingsInstance[
+    client_command_manager.register_commands(_core_settings[
         'USER_SETTINGS']['client_commands'].split(
-        ','), _AvailableSettingsDictionary._send_menu)
+        ','), _player_settings._send_menu)

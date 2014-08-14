@@ -20,13 +20,13 @@ from entities.helpers import index_from_inthandle
 #   Engines
 from engines.server import ServerGameDLL
 #   Weapons
-from weapons.manager import WeaponManager
+from weapons.manager import weapon_manager
 
 
 # =============================================================================
 # >> GLOBAL VARIALBES
 # =============================================================================
-# Use try/except to import the _GameWeapons class
+# Use try/except to import the game specific weapon class
 try:
 
     # Get the game's file's instance
@@ -35,20 +35,16 @@ try:
 # Was an ImportError encountered?
 except ImportError:
 
-    # Set the game's _GameWeapons class to the basic "object" type
-    _GameWeapons = object
-
-# Was no ImportError encountered?
-else:
-
-    # Get the game's _GameWeapons class
-    _GameWeapons = _game_instance._GameWeapons
+    # Set the variable to None if failed to import
+    _game_instance = None
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _PlayerWeapons(_GameWeapons):
+class _PlayerWeapons(
+        object if not hasattr(_game_instance, '_GameWeapons')
+        else _game_instance._GameWeapons):
 
     """Extends PlayerEntity to provide basic weapon functionality."""
 
@@ -58,7 +54,7 @@ class _PlayerWeapons(_GameWeapons):
     def get_ammo(self, weapon):
         """Return the amount of ammo the player has for the given weapon."""
         # Get the proper classname for the weapon
-        classname = WeaponManager[weapon].name
+        classname = weapon_manager[weapon].name
 
         # Return the amount of ammo the player has for the weapon
         return self._get_weapon_ammo(classname)
@@ -91,7 +87,7 @@ class _PlayerWeapons(_GameWeapons):
 
         # Return the amount of ammo the player has for the weapon
         return self.get_prop_int(
-            WeaponManager.ammoprop + '%03d' % weapon.ammoprop)
+            weapon_manager.ammoprop + '%03d' % weapon.ammoprop)
 
     # =========================================================================
     # >> GET CLIP
@@ -99,7 +95,7 @@ class _PlayerWeapons(_GameWeapons):
     def get_clip(self, weapon):
         """Return the amount of ammo in the clip for the given weapon."""
         # Get the proper classname for the weapon
-        classname = WeaponManager[weapon].name
+        classname = weapon_manager[weapon].name
 
         # Return the amount of ammo in the weapon's clip
         return self._get_weapon_clip(classname)
@@ -139,7 +135,7 @@ class _PlayerWeapons(_GameWeapons):
     def set_ammo(self, weapon, value):
         """Set the player's ammo property for the given weapon."""
         # Get the proper classname for the weapon
-        classname = WeaponManager[weapon].name
+        classname = weapon_manager[weapon].name
 
         # Set the player's ammo value
         self._set_weapon_ammo(value, classname)
@@ -175,7 +171,7 @@ class _PlayerWeapons(_GameWeapons):
 
         # Set the player's ammo value
         self.set_prop_int(
-            WeaponManager.ammoprop + '%03d' % weapon.ammoprop, value)
+            weapon_manager.ammoprop + '%03d' % weapon.ammoprop, value)
 
     # =========================================================================
     # >> SET CLIP
@@ -183,7 +179,7 @@ class _PlayerWeapons(_GameWeapons):
     def set_clip(self, weapon, value):
         """Set the player's clip value for the given weapon."""
         # Get the proper classname for the weapon
-        classname = WeaponManager[weapon].name
+        classname = weapon_manager[weapon].name
 
         # Set the clip value for the given weapon
         self._set_weapon_clip(value, classname)
@@ -226,7 +222,7 @@ class _PlayerWeapons(_GameWeapons):
     def add_ammo(self, weapon, value):
         """Add ammo to the given weapon."""
         # Get the proper classname for the weapon
-        classname = WeaponManager[weapon].name
+        classname = weapon_manager[weapon].name
 
         # Add ammo for the given weapon
         self._add_weapon_ammo(value, classname)
@@ -262,11 +258,12 @@ class _PlayerWeapons(_GameWeapons):
 
         # Get the current ammo value
         current = self.get_prop_int(
-            WeaponManager.ammoprop + '%03d' % weapon.ammoprop)
+            weapon_manager.ammoprop + '%03d' % weapon.ammoprop)
 
         # Add ammo to the current value
         self.set_prop_int(
-            WeaponManager.ammoprop + '%03d' % weapon.ammoprop, current + value)
+            weapon_manager.ammoprop + '%03d' % weapon.ammoprop,
+            current + value)
 
     # =========================================================================
     # >> ADD CLIP
@@ -274,7 +271,7 @@ class _PlayerWeapons(_GameWeapons):
     def add_clip(self, weapon, value):
         """Add ammo to the given weapon's clip."""
         # Get the proper classname for the weapon
-        classname = WeaponManager[weapon].name
+        classname = weapon_manager[weapon].name
 
         # Add ammo to the given weapon's clip
         self._add_weapon_clip(value, classname)
@@ -348,7 +345,7 @@ class _PlayerWeapons(_GameWeapons):
 
             # Get the player's current weapon at this offset
             handle = self.get_prop_int(
-                WeaponManager.myweapons + '%03i' % offset)
+                weapon_manager.myweapons + '%03i' % offset)
 
             # Is this an invalid handle?
             if handle == -1:
@@ -445,7 +442,7 @@ def _find_weapon_prop_length(table):
         item = table[offset]
 
         # Is this the m_hMyWeapons prop?
-        if item.name == WeaponManager.myweapons[:~0]:
+        if item.name == weapon_manager.myweapons[:~0]:
 
             # If so, return the length of the prop table
             return len(item.data_table)

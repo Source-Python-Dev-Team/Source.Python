@@ -13,49 +13,49 @@ from basetypes import Color
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('Black',
-           'Blue',
-           'Brown',
-           'Cyan',
-           'DarkBlue',
-           'DarkGray',
-           'DarkGreen',
-           'DarkRed',
-           'Gray',
-           'Green',
-           'LightBlue',
-           'LightGray',
-           'LightGreen',
-           'LightRed',
-           'Olive',
-           'Orange',
-           'Purple',
-           'Red',
-           'White',
-           'Yellow',
+__all__ = ('BLACK',
+           'BLUE',
+           'BROWN',
+           'CYAN',
+           'DARK_BLUE',
+           'DARK_GRAY',
+           'DARK_GREEN',
+           'DARK_RED',
+           'GRAY',
+           'GREEN',
+           'LIGHT_BLUE',
+           'LIGHT_GRAY',
+           'LIGHT_GREEN',
+           'LIGHT_RED',
+           'OLIVE',
+           'ORANGE',
+           'PURPLE',
+           'RED',
+           'WHITE',
+           'YELLOW',
            )
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-Red = Color(255, 0, 0)
-LightRed = Color(255, 80, 80)
-DarkRed = Color(128, 0, 0)
-Orange = Color(255, 165, 0)
-Yellow = Color(255, 255, 0)
-Olive = Color(128, 128, 0)
-Green = Color(0, 255, 0)
-LightGreen = Color(128, 255, 128)
-DarkGreen = Color(0, 128, 0)
-Cyan = Color(0, 255, 255)
-Blue = Color(0, 0, 255)
-LightBlue = Color(128, 128, 255)
-DarkBlue = Color(0, 0, 128)
-Purple = Color(255, 0, 255)
-Brown = Color(139, 69, 19)
-White = Color(255, 255, 255)
-Gray = Color(128, 128, 128)
-LightGray = Color(192, 192, 192)
-DarkGray = Color(64, 64, 64)
-Black = Color()
+RED = Color(255, 0, 0)
+LIGHT_RED = Color(255, 80, 80)
+DARK_RED = Color(128, 0, 0)
+ORANGE = Color(255, 165, 0)
+YELLOW = Color(255, 255, 0)
+OLIVE = Color(128, 128, 0)
+GREEN = Color(0, 255, 0)
+LIGHT_GREEN = Color(128, 255, 128)
+DARK_GREEN = Color(0, 128, 0)
+CYAN = Color(0, 255, 255)
+BLUE = Color(0, 0, 255)
+LIGHT_BLUE = Color(128, 128, 255)
+DARK_BLUE = Color(0, 0, 128)
+PURPLE = Color(255, 0, 255)
+BROWN = Color(139, 69, 19)
+WHITE = Color(255, 255, 255)
+GRAY = Color(128, 128, 128)
+LIGHT_GRAY = Color(192, 192, 192)
+DARK_GRAY = Color(64, 64, 64)
+BLACK = Color()

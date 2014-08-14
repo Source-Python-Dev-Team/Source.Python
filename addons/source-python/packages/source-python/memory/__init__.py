@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -60,7 +60,7 @@ __all__ = ('Argument',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.memory logger
-MemoryLogger = _SPLogger.memory
+memory_logger = _sp_logger.memory
 
 
 # =============================================================================

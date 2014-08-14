@@ -16,7 +16,7 @@ from core import AutoUnload
 from menus import PagedMenu
 from menus import Option
 #   Settings
-from settings.menu import _AvailableSettingsDictionary
+from settings.menu import _player_settings
 from settings.types import _SettingsType
 from settings.types import _FloatSetting
 from settings.types import _IntegerSetting
@@ -168,7 +168,7 @@ class PlayerSettings(_SettingsDictionary, AutoUnload):
     def __init__(self, name, prefix, text=None):
         """Verify the given values and store the instance."""
         # Is the given name already registered?
-        if name in _AvailableSettingsDictionary:
+        if name in _player_settings:
 
             # Raise an error
             raise ValueError(
@@ -189,15 +189,15 @@ class PlayerSettings(_SettingsDictionary, AutoUnload):
         self._prefix = prefix.lower()
 
         # Add the instance to the main dictionary
-        _AvailableSettingsDictionary[name] = self
+        _player_settings[name] = self
 
         # Add the settings instance to the main settings menu
-        _AvailableSettingsDictionary.menu.append(
+        _player_settings.menu.append(
             Option(name if text is None else text, self))
 
     def unregister_settings(self):
         """Unregister the given settings from the dictionary."""
-        del _AvailableSettingsDictionary[self.name]
+        del _player_settings[self.name]
 
     def _unload_instance(self):
         """Unregister the setting on unload."""

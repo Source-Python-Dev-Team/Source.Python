@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -33,4 +33,4 @@ __all__ = ('NetChannelInfo',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.players logger
-PlayersLogger = _SPLogger.players
+players_logger = _sp_logger.players

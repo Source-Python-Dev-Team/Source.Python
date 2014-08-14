@@ -7,9 +7,9 @@
 # =============================================================================
 # Source.Python Imports
 #   Auth
-from auth.manager import AuthManager
+from auth.manager import auth_manager
 #   Hooks
-from hooks.exceptions import ExceptHooks
+from hooks.exceptions import except_hooks
 
 
 # =============================================================================
@@ -37,7 +37,7 @@ class _AuthCallback(object):
         if self.check_auth:
 
             # Is the player authorized?
-            if not AuthManager.is_player_authorized(
+            if not auth_manager.is_player_authorized(
                     args[0], self.level, self.permission, self.flag):
 
                 # Is there fail callback?
@@ -54,7 +54,7 @@ class _AuthCallback(object):
                     except:
 
                         # Print the exception to the console
-                        ExceptHooks.print_exception()
+                        except_hooks.print_exception()
 
                 # Return a False value, since the player is not authorized
                 return False

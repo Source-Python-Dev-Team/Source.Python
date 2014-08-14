@@ -9,7 +9,7 @@
 #   Core
 from core import GAME_NAME
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 #   Messages
 from messages.base import _UserMessages
 #   Paths
@@ -26,7 +26,7 @@ __all__ = ()
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.messages logger
-MessagesLogger = _SPLogger.messages
+messages_logger = _sp_logger.messages
 
 
 # ============================================================================

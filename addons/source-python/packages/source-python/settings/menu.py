@@ -46,4 +46,4 @@ class _AvailableSettings(dict):
         option.value.menu.send(index)
 
 # Get the _AvailableSettings instance
-_AvailableSettingsDictionary = _AvailableSettings()
+_player_settings = _AvailableSettings()

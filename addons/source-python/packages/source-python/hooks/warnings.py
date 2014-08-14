@@ -14,10 +14,10 @@ import warnings
 # Source.Python Imports
 #   Hooks
 from hooks import _hooks_strings
-from hooks import HooksLogger
+from hooks import hooks_logger
 from hooks.base import _HookBase
 from hooks.base import _HookDecorator
-from hooks.exceptions import ExceptHooks
+from hooks.exceptions import except_hooks
 #   Paths
 from paths import GAME_PATH
 
@@ -26,7 +26,7 @@ from paths import GAME_PATH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('WarningHook',
-           'WarningHooks',
+           'warning_hooks',
            )
 
 
@@ -34,7 +34,7 @@ __all__ = ('WarningHook',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.hooks.warnings logger
-HooksWarningsLogger = HooksLogger.warnings
+hooks_warnings_logger = hooks_logger.warnings
 
 
 # =============================================================================
@@ -60,7 +60,7 @@ class _WarningHooks(_HookBase):
             except:
 
                 # Log the exception
-                ExceptHooks.print_exception()
+                except_hooks.print_exception()
 
         # Get the message to log
         print_message = '\n[SP] ' + _hooks_strings['Warning'].get_string()
@@ -71,13 +71,13 @@ class _WarningHooks(_HookBase):
             category.__name__, linecache.getline(filename, lineno))
 
         # Log the warning
-        HooksWarningsLogger.log_warning(print_message + '\n')
+        hooks_warnings_logger.log_warning(print_message + '\n')
 
 # Get the _WarningHooks instance
-WarningHooks = _WarningHooks()
+warning_hooks = _WarningHooks()
 
 # Set warnings.showwarning to the print_warning method
-warnings.showwarning = WarningHooks.print_warning
+warnings.showwarning = warning_hooks.print_warning
 
 # Set warnings to only appear once (the first occurrence)
 warnings.filterwarnings('once')
@@ -87,4 +87,4 @@ class WarningHook(_HookDecorator):
 
     """Register/unregister a function/method for hooking warnings."""
 
-    _class_instance = WarningHooks
+    _class_instance = warning_hooks

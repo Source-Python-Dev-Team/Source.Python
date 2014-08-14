@@ -16,7 +16,7 @@ from commands.player import _PlayerCommandManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('ClientCommandManager',
+__all__ = ('client_command_manager',
            )
 
 
@@ -33,4 +33,4 @@ class _ClientCommandManager(_PlayerCommandManager):
     unregister_filter = staticmethod(unregister_client_command_filter)
 
 # Get the _ClientCommandManager instance
-ClientCommandManager = _ClientCommandManager()
+client_command_manager = _ClientCommandManager()

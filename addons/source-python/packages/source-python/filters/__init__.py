@@ -7,11 +7,11 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.filters logger
-FiltersLogger = _SPLogger.filters
+filters_logger = _sp_logger.filters

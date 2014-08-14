@@ -11,16 +11,16 @@ from collections import OrderedDict
 
 # Source.Python imports
 #   Auth
-from auth import AuthLogger
+from auth import auth_logger
 from auth import _auth_strings
-from auth.manager import AuthManager
+from auth.manager import auth_manager
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.auth.commands logger
-AuthCommandsLogger = AuthLogger.commands
+auth_commands_logger = auth_logger.commands
 
 
 # =============================================================================
@@ -84,7 +84,7 @@ class _AuthCommands(OrderedDict):
 
     def print_help(self, pretext='', posttext=''):
         """Print all "sp auth" sub-commands."""
-        AuthCommandsLogger.log_message(
+        auth_commands_logger.log_message(
             pretext + '\n' + self.get_help_text() + '\n' + posttext)
 
     def get_help_text(self):
@@ -120,7 +120,7 @@ def _load_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        AuthCommandsLogger.log_message(
+        auth_commands_logger.log_message(
             '[SP Auth] ' + _auth_strings['Missing Load'].get_string())
 
         # No need to go further
@@ -130,7 +130,7 @@ def _load_auth_providers(providers):
     for provider in providers:
 
         # Load the current provider
-        AuthManager.load_auth(provider)
+        auth_manager.load_auth(provider)
 
 
 def _unload_auth_providers(providers):
@@ -139,7 +139,7 @@ def _unload_auth_providers(providers):
     if not providers:
 
         # Send a message about the required argument
-        AuthCommandsLogger.log_message(
+        auth_commands_logger.log_message(
             '[SP Auth] ' + _auth_strings['Missing Unload'].get_string())
 
         # No need to go further
@@ -149,7 +149,7 @@ def _unload_auth_providers(providers):
     for provider in providers:
 
         # Unload the current provider
-        AuthManager.unload_auth(provider)
+        auth_manager.unload_auth(provider)
 
 
 def _reload_auth_providers(providers=None):
@@ -158,13 +158,13 @@ def _reload_auth_providers(providers=None):
     if not providers:
 
         # Set providers to all currently loaded providers
-        providers = list(AuthManager)
+        providers = list(auth_manager)
 
     # Loop through the providers
     for provider in providers:
 
         # Reload the given provider
-        AuthManager.reload_auth(provider)
+        auth_manager.reload_auth(provider)
 
 
 def _print_auth_providers():
@@ -174,25 +174,25 @@ def _print_auth_providers():
         'Providers'].get_string() + '\n' + '=' * 61 + '\n'
 
     # Loop through all loaded auth providers
-    for provider in AuthManager:
+    for provider in auth_manager:
 
         # Add the current provider to the message
         message += provider + '\n'
 
     # Print ending messages
-    AuthCommandsLogger.log_message(message + '=' * 61)
+    auth_commands_logger.log_message(message + '=' * 61)
 
 # Get the _AuthCommands instance
-_AuthCommandsInstance = _AuthCommands()
+_auth_commands = _AuthCommands()
 
 # Add all auth loading/unloading commands to the dictionary
-_AuthCommandsInstance['load'] = _load_auth_providers
-_AuthCommandsInstance['load'].args = ['<provider>', '[provider]', '...']
-_AuthCommandsInstance['unload'] = _unload_auth_providers
-_AuthCommandsInstance['unload'].args = ['<provider>', '[provider]', '...']
-_AuthCommandsInstance['reload'] = _reload_auth_providers
-_AuthCommandsInstance['reload'].args = ['[provider]', '[provider]', '...']
+_auth_commands['load'] = _load_auth_providers
+_auth_commands['load'].args = ['<provider>', '[provider]', '...']
+_auth_commands['unload'] = _unload_auth_providers
+_auth_commands['unload'].args = ['<provider>', '[provider]', '...']
+_auth_commands['reload'] = _reload_auth_providers
+_auth_commands['reload'].args = ['[provider]', '[provider]', '...']
 
 # Add all printing commands to the dictionary
-_AuthCommandsInstance['list'] = _print_auth_providers
-_AuthCommandsInstance['help'] = _AuthCommandsInstance.print_auth_help
+_auth_commands['list'] = _print_auth_providers
+_auth_commands['help'] = _auth_commands.print_auth_help

@@ -14,7 +14,7 @@ from collections import OrderedDict
 from configobj import ConfigObj
 
 # Source.Python Imports
-from core import CoreLogger
+from core import core_logger
 #   Auth
 from auth.paths import AUTH_PROVIDER_PATH
 #   Paths
@@ -36,7 +36,7 @@ _auth_providers = [
     AUTH_PROVIDER_PATH.dirs() if not provider.namebase.startswith('__')]
 
 # Get the sp.core.settings logger
-CoreSettingsLogger = CoreLogger.settings
+core_settings_logger = core_logger.settings
 
 
 # =============================================================================
@@ -209,4 +209,4 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
             'client_commands'].get_string(self._language).splitlines()
 
 # Get the _CoreSettings instance
-_CoreSettingsInstance = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))
+_core_settings = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))

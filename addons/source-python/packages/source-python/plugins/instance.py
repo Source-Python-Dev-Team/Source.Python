@@ -14,7 +14,7 @@ from importlib import import_module
 from paths import GAME_PATH
 from paths import PLUGIN_PATH
 #   Plugins
-from plugins import PluginsLogger
+from plugins import plugins_logger
 from plugins import _plugin_strings
 from plugins.errors import PluginFileNotFoundError
 
@@ -30,7 +30,7 @@ __all__ = ('LoadedPlugin',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.plugins.instance logger
-PluginsInstanceLogger = PluginsLogger.instance
+plugins_instance_logger = plugins_logger.instance
 
 
 # =============================================================================
@@ -46,7 +46,7 @@ class LoadedPlugin(object):
         if not hasattr(self, 'logger'):
 
             # If not, set the default logger
-            self.logger = PluginsInstanceLogger
+            self.logger = plugins_instance_logger
 
         # Does the object have a translations value set?
         if not hasattr(self, 'translations'):

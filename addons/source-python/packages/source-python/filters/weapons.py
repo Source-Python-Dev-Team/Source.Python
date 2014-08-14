@@ -16,7 +16,7 @@ from entities.helpers import pointer_from_edict
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
 #   Weapons
-from weapons.manager import WeaponManager
+from weapons.manager import weapon_manager
 
 
 # =============================================================================
@@ -35,7 +35,7 @@ class _WeaponEdictIterManager(_BaseFilterManager):
     """Filter management class specifically for weapon iterating."""
 
 # Get the _WeaponIterManager instance
-_WeaponEdictIterManagerInstance = _WeaponEdictIterManager()
+_weapon_edict_iter_manager = _WeaponEdictIterManager()
 
 
 class WeaponEdictIter(_IterObject):
@@ -43,7 +43,7 @@ class WeaponEdictIter(_IterObject):
     """Weapon iterate class."""
 
     # Store the manager for the weapon iterator
-    manager = _WeaponEdictIterManagerInstance
+    manager = _weapon_edict_iter_manager
 
     @staticmethod
     def iterator():
@@ -52,7 +52,7 @@ class WeaponEdictIter(_IterObject):
         for edict in EntityGenerator():
 
             # Is the entity a weapon?
-            if edict.get_class_name() in WeaponManager:
+            if edict.get_class_name() in weapon_manager:
 
                 # Yield the entity
                 yield edict
@@ -66,7 +66,7 @@ class _WeaponClassIterManager(_BaseFilterManager):
     """Filter management class specifically for weapon tag iterating."""
 
 # Get the _WeaponClassIterManager instance
-_WeaponClassIterManagerInstance = _WeaponClassIterManager()
+_weapon_class_iter_manager = _WeaponClassIterManager()
 
 
 class WeaponClassIter(_IterObject):
@@ -74,7 +74,7 @@ class WeaponClassIter(_IterObject):
     """Weapon tag iterate class."""
 
     # Store the manager for the weapon tag iterator
-    manager = _WeaponClassIterManagerInstance
+    manager = _weapon_class_iter_manager
 
     def __init__(
             self, is_filters=None, not_filters=None, return_types='weapon'):
@@ -86,10 +86,10 @@ class WeaponClassIter(_IterObject):
     def iterator():
         """Iterate over all possible weapon types."""
         # Loop through all weapons for the current game
-        for weapon in WeaponManager:
+        for weapon in weapon_manager:
 
             # Yield the weapon
-            yield WeaponManager[weapon]
+            yield weapon_manager[weapon]
 
 
 # =============================================================================
@@ -108,7 +108,7 @@ class _WeaponTags(dict):
         return instance
 
 # Get the _WeaponTags instance
-_WeaponTagsInstance = _WeaponTags()
+_weapon_tags = _WeaponTags()
 
 
 class _Tag(object):
@@ -121,7 +121,7 @@ class _Tag(object):
 
     def _edict_weapon_contains_tag(self, edict):
         """Return whether the weapon contains the tag."""
-        return self.tag in WeaponManager[edict.get_class_name()].tags
+        return self.tag in weapon_manager[edict.get_class_name()].tags
 
     def _class_weapon_contains_tag(self, weapon):
         """Return whether the given weapon contains the tag."""
@@ -132,17 +132,17 @@ class _Tag(object):
 # >> FILTER REGISTRATION
 # =============================================================================
 # Loop through all tags for the current game
-for _tag in WeaponManager.tags:
+for _tag in weapon_manager.tags:
 
-    # Get the _WeaponTagsInstance instance for the current tag
-    _instance = _WeaponTagsInstance[_tag]
+    # Get the _weapon_tags instance for the current tag
+    _instance = _weapon_tags[_tag]
 
-    # Register the tag's filter for _WeaponEdictIterManagerInstance
-    _WeaponEdictIterManagerInstance.register_filter(
+    # Register the tag's filter for _weapon_edict_iter_manager
+    _weapon_edict_iter_manager.register_filter(
         _tag, _instance._edict_weapon_contains_tag)
 
-    # Register the tag's filter for _WeaponClassIterManagerInstance
-    _WeaponClassIterManagerInstance.register_filter(
+    # Register the tag's filter for _weapon_class_iter_manager
+    _weapon_class_iter_manager.register_filter(
         _tag, _instance._class_weapon_contains_tag)
 
 
@@ -155,16 +155,16 @@ def _return_instance(edict):
     return BaseEntity(index_from_edict(edict), 'weapon')
 
 # Register the return type functions
-_WeaponEdictIterManagerInstance.register_return_type('index', index_from_edict)
-_WeaponEdictIterManagerInstance.register_return_type(
+_weapon_edict_iter_manager.register_return_type('index', index_from_edict)
+_weapon_edict_iter_manager.register_return_type(
     'basehandle', basehandle_from_edict)
-_WeaponEdictIterManagerInstance.register_return_type(
+_weapon_edict_iter_manager.register_return_type(
     'inthandle', inthandle_from_edict)
-_WeaponEdictIterManagerInstance.register_return_type(
+_weapon_edict_iter_manager.register_return_type(
     'pointer', pointer_from_edict)
-_WeaponEdictIterManagerInstance.register_return_type(
+_weapon_edict_iter_manager.register_return_type(
     'edict', lambda edict: edict)
-_WeaponEdictIterManagerInstance.register_return_type(
+_weapon_edict_iter_manager.register_return_type(
     'weapon', _return_instance)
 
 
@@ -172,19 +172,19 @@ _WeaponEdictIterManagerInstance.register_return_type(
 # >> WEAPON CLASS RETURN TYPES
 # =============================================================================
 # Register the return type functions
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'weapon', lambda weapon: weapon)
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'classname', lambda weapon: weapon.name)
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'basename', lambda weapon: weapon.basename)
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'slot', lambda weapon: weapon.slot)
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'maxammo', lambda weapon: weapon.maxammo)
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'ammoprop', lambda weapon: weapon.ammoprop)
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'clip', lambda weapon: weapon.clip)
-_WeaponClassIterManagerInstance.register_return_type(
+_weapon_class_iter_manager.register_return_type(
     'tags', lambda weapon: weapon.tags)

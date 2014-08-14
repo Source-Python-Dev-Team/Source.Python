@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 #   Translations
 from translations.strings import LangStrings
 
@@ -19,4 +19,4 @@ from translations.strings import LangStrings
 _hooks_strings = LangStrings('_core/hooks_strings')
 
 # Get the sp.hooks logger
-HooksLogger = _SPLogger.hooks
+hooks_logger = _sp_logger.hooks

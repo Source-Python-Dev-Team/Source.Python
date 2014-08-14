@@ -9,7 +9,7 @@
 #   Core
 from core import AutoUnload
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -71,7 +71,7 @@ __all__ = ('ClientActive',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.listeners logger
-ListenersLogger = _SPLogger.listeners
+listeners_logger = _sp_logger.listeners
 
 
 # =============================================================================
@@ -84,7 +84,7 @@ class _ListenerManager(AutoUnload):
     def __init__(self, callback):
         """Store the callback and register the listener."""
         # Log the <instance>.__init__ message
-        ListenersLogger.log_info(
+        listeners_logger.log_info(
             '{0}.__init__<{1}>'.format(self.name, callback))
 
         # Is the callback callable?
@@ -95,7 +95,7 @@ class _ListenerManager(AutoUnload):
                 "'" + type(callback).__name__ + "'object is not callable")
 
         # Log the registering message
-        ListenersLogger.log_info(
+        listeners_logger.log_info(
             '{0}.__init__ - Registering'.format(self.name))
 
         # Store the callback
@@ -107,7 +107,7 @@ class _ListenerManager(AutoUnload):
     def __call__(self, *args):
         """Call the listener."""
         # Log the calling
-        ListenersLogger.log_info(
+        listeners_logger.log_info(
             '{0}.__call__<{1}>'.format(self.name, args))
 
         # Call the listener
@@ -121,7 +121,7 @@ class _ListenerManager(AutoUnload):
     def _unload_instance(self):
         """Unregister the listener."""
         # Log the unregistering
-        ListenersLogger.log_info(
+        listeners_logger.log_info(
             '{0}._unload_instance - Unregistering <{1}>'.format(
                 self.name, self.callback))
 

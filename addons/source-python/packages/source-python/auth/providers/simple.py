@@ -66,4 +66,4 @@ class _SimpleAuth(AuthBase, set):
         return False
 
 # Get the _SimpleAuth instance
-SimpleAuth = _SimpleAuth()
+simple_auth = _SimpleAuth()

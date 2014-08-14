@@ -15,9 +15,9 @@ import sys
 #   Core
 from core import AutoUnload
 #   Hooks
-from hooks.exceptions import ExceptHooks
+from hooks.exceptions import except_hooks
 #   Plugins
-from plugins import PluginsLogger
+from plugins import plugins_logger
 from plugins import _plugin_strings
 from plugins.errors import PluginFileNotFoundError
 
@@ -33,7 +33,7 @@ __all__ = ('PluginManager',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.plugins.manager logger
-PluginsManagerLogger = PluginsLogger.manager
+plugins_manager_logger = plugins_logger.manager
 
 
 # =============================================================================
@@ -55,7 +55,7 @@ class PluginManager(OrderedDict):
         if not hasattr(self, 'logger'):
 
             # If not, set the default logger
-            self.logger = PluginsManagerLogger
+            self.logger = plugins_manager_logger
 
         # Does the object have a translations value set?
         if not hasattr(self, 'translations'):
@@ -104,7 +104,7 @@ class PluginManager(OrderedDict):
             else:
 
                 # Print the exception to the console
-                ExceptHooks.print_exception(*error)
+                except_hooks.print_exception(*error)
 
                 # Remove all modules from sys.modules
                 self._remove_modules(plugin_name)
@@ -144,7 +144,7 @@ class PluginManager(OrderedDict):
 
                 # Print the error to console, but
                 # allow the plugin to still be unloaded
-                ExceptHooks.print_exception()
+                except_hooks.print_exception()
 
         # Remove all modules from sys.modules
         self._remove_modules(plugin_name)
@@ -217,7 +217,7 @@ class PluginManager(OrderedDict):
                     # Print the error to console, but allow all
                     # other AutoUnload instances to be unloaded
                     # and the plugin to be fully unloaded itself
-                    ExceptHooks.print_exception()
+                    except_hooks.print_exception()
 
         # Delete the module
         del sys.modules[module]

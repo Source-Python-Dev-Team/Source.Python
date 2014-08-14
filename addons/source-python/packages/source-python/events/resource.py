@@ -11,7 +11,7 @@ from collections import OrderedDict
 
 # Source.Python Imports
 #   Events
-from events import EventsLogger
+from events import events_logger
 from events.custom import CustomEvent
 from events.manager import GameEventManager
 #   Paths
@@ -29,7 +29,7 @@ __all__ = ('ResourceFile',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.events.resource logger
-EventsResourceLogger = EventsLogger.resource
+events_resource_logger = events_logger.resource
 
 
 # =============================================================================

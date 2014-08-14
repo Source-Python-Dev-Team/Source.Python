@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Events
-from events import EventsLogger
+from events import events_logger
 
 
 # =============================================================================
@@ -29,7 +29,7 @@ __all__ = ('BoolVariable',
 _DEFAULT_VALUES = {'bool': bool, 'int': int, 'float': float, 'string': str}
 
 # Get the sp.events.variable logger
-EventsVariableLogger = EventsLogger.variable
+events_variable_logger = events_logger.variable
 
 
 # =============================================================================

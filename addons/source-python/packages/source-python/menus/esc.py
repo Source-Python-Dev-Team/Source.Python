@@ -11,7 +11,7 @@ import math
 
 # Source.Python Imports
 #   Colors
-from colors import White
+from colors import WHITE
 #   Keyvalues
 from keyvalues import KeyValues
 #   Menus
@@ -30,8 +30,8 @@ from players.helpers import edict_from_index
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PagedESCMenu',
-           'ESCOption',
+__all__ = ('ESCOption',
+           'PagedESCMenu',
            )
 
 
@@ -47,7 +47,7 @@ class PagedESCMenu(_BaseMenu):
 
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
-            description=None, title=None, title_color=White):
+            description=None, title=None, title_color=WHITE):
         """Initialize the PagedESCMenu instance.
 
         @param <data>:

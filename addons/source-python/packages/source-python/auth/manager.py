@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python imports
 #   Auth
-from auth import AuthLogger
+from auth import auth_logger
 from auth import _auth_strings
 from auth.base import AuthBase
 from auth.paths import AUTH_PROVIDER_PATH
@@ -18,7 +18,7 @@ from players.helpers import uniqueid_from_playerinfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('AuthManager',
+__all__ = ('auth_manager',
            )
 
 
@@ -26,7 +26,7 @@ __all__ = ('AuthManager',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.auth.manager logger
-AuthManagerLogger = AuthLogger.manager
+auth_manager_logger = auth_logger.manager
 
 
 # =============================================================================
@@ -39,7 +39,7 @@ class _AuthManager(dict):
     def load_auth(self, provider):
         """Load the given provider."""
         # Send a message that the auth provider is being loaded
-        AuthManagerLogger.log_message(
+        auth_manager_logger.log_message(
             '[SP Auth] ' + _auth_strings[
                 'Loading'].get_string(provider=provider))
 
@@ -47,7 +47,7 @@ class _AuthManager(dict):
         if provider in self:
 
             # If so, send a message that the provider is already loaded
-            AuthManagerLogger.log_message(
+            auth_manager_logger.log_message(
                 '[SP Auth] ' + _auth_strings[
                     'Already Loaded'].get_string(provider=provider))
 
@@ -58,7 +58,7 @@ class _AuthManager(dict):
         if not AUTH_PROVIDER_PATH.joinpath(provider + '.py').isfile():
 
             # Send a message that the file does not exist
-            AuthManagerLogger.log_message(
+            auth_manager_logger.log_message(
                 '[SP Auth] ' + _auth_strings[
                     'No Module'].get_string(provider=provider))
 
@@ -96,14 +96,14 @@ class _AuthManager(dict):
         self[provider] = instance
 
         # Send a message that the provider was loaded
-        AuthManagerLogger.log_message(
+        auth_manager_logger.log_message(
             '[SP Auth] ' + _auth_strings[
                 'Load Successful'].get_string(provider=provider))
 
     def unload_auth(self, provider):
         """Unload the given provider."""
         # Send a message that the auth provider is being unloaded
-        AuthManagerLogger.log_message(
+        auth_manager_logger.log_message(
             '[SP Auth] ' + _auth_strings[
                 'Unloading'].get_string(provider=provider))
 
@@ -111,7 +111,7 @@ class _AuthManager(dict):
         if provider not in self:
 
             # If not, send a message that the provider is not loaded
-            AuthManagerLogger.log_message(
+            auth_manager_logger.log_message(
                 '[SP Auth] ' + _auth_strings[
                     'Not Loaded'].get_string(provider=provider))
 
@@ -125,7 +125,7 @@ class _AuthManager(dict):
         del self[provider]
 
         # Send a message that the provider was unloaded
-        AuthManagerLogger.log_message(
+        auth_manager_logger.log_message(
             '[SP Auth] ' + _auth_strings[
                 'Unload Successful'].get_string(provider=provider))
 
@@ -157,4 +157,4 @@ class _AuthManager(dict):
         return False
 
 # Get the _AuthManager instance
-AuthManager = _AuthManager()
+auth_manager = _AuthManager()

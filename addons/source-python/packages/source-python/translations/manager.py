@@ -17,7 +17,7 @@ from paths import SP_DATA_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('LanguageManager',
+__all__ = ('language_manager',
            )
 
 
@@ -64,4 +64,4 @@ class _LanguageManager(ConfigObj):
         return None
 
 # Get the _LanguageManager instance for the server's languages file
-LanguageManager = _LanguageManager(SP_DATA_PATH.joinpath('languages.ini'))
+language_manager = _LanguageManager(SP_DATA_PATH.joinpath('languages.ini'))

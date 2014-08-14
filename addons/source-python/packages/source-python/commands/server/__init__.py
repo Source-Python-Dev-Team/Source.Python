@@ -10,7 +10,7 @@
 from _commands import ServerCommandDispatcher
 from _commands import get_server_command
 from commands.server.command import ServerCommand
-from commands.server.manager import ServerCommandManager
+from commands.server.manager import server_command_manager
 
 
 # =============================================================================
@@ -18,6 +18,6 @@ from commands.server.manager import ServerCommandManager
 # =============================================================================
 __all__ = ('ServerCommand',
            'ServerCommandDispatcher',
-           'ServerCommandManager',
            'get_server_command',
+           'server_command_manager',
            )

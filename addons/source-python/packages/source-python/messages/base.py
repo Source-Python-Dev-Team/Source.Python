@@ -27,7 +27,7 @@ from engines.server import EngineServer
 #   Filters
 from filters.recipients import RecipientFilter
 #   Hooks
-from hooks.exceptions import ExceptHooks
+from hooks.exceptions import except_hooks
 #   Messages
 from _messages import UserMessage
 #   Translations
@@ -477,7 +477,7 @@ class BaseMessage(dict):
                 except:
 
                     # Print the exception to the console
-                    ExceptHooks.print_exception()
+                    except_hooks.print_exception()
 
                     # Print a debugging message
                     echo_console(
@@ -518,7 +518,7 @@ class BaseMessage(dict):
                 except:
 
                     # Print the exception to the console
-                    ExceptHooks.print_exception()
+                    except_hooks.print_exception()
 
                     # Print a debugging message
                     echo_console(

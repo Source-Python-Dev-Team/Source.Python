@@ -18,7 +18,7 @@ from engines.server import EngineServer
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
 #   Settings
-from settings.storage import _PlayerSettingsStorage
+from settings.storage import _player_settings_storage
 
 
 # =============================================================================
@@ -95,13 +95,13 @@ class _SettingsType(object):
         uniqueid = uniqueid_from_playerinfo(playerinfo_from_index(index))
 
         # Is the uniqueid in the setting's storage dictionary?
-        if uniqueid in _PlayerSettingsStorage:
+        if uniqueid in _player_settings_storage:
 
             # Is the convar in the clients's dictionary?
-            if convar in _PlayerSettingsStorage[uniqueid]:
+            if convar in _player_settings_storage[uniqueid]:
 
                 # Get the client's value for the convar
-                value = _PlayerSettingsStorage[uniqueid][convar]
+                value = _player_settings_storage[uniqueid][convar]
 
                 # Try to typecast the value, suppressing ValueErrors
                 with suppress(ValueError):

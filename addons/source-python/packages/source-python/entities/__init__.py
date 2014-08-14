@@ -5,7 +5,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -39,4 +39,4 @@ __all__ = ('BaseEntityHandle',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.entities logger
-EntitiesLogger = _SPLogger.entities
+EntitiesLogger = _sp_logger.entities

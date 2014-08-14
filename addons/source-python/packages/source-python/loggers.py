@@ -196,7 +196,7 @@ class _LogInstance(dict):
             echo_console(msg)
 
         # Print to the script's log file?
-        if SCRIPT_LOG & areas and self.root != _SPLogger:
+        if SCRIPT_LOG & areas and self.root != _sp_logger:
 
             # Print message to the log file
             self.logger.log(level, msg, *args, **kwargs)
@@ -205,7 +205,7 @@ class _LogInstance(dict):
         if SP_LOG & areas:
 
             # Print to the SP log file
-            _SPLogger.logger.log(level, msg, *args, **kwargs)
+            _sp_logger.logger.log(level, msg, *args, **kwargs)
 
     @staticmethod
     def _get_level_value(level):
@@ -311,11 +311,11 @@ _areas = ConVar(
     'sp_logging_areas', '1', 0, 'The Source.Python base logging areas')
 
 # Get the Source.Python main LogManager instance
-_SPLogger = LogManager(
+_sp_logger = LogManager(
     'sp', _level, _areas,
     'source-python.{0}'.format(date.today().strftime('%m-%d-%Y')),
     '%(asctime)s - %(name)s\t-\t%(levelname)s\n\t%(message)s',
     '%m-%d-%Y %H:%M:%S')
 
 # Set the parent logger level to allow all message types
-_SPLogger.logger.parent.level = DEBUG
+_sp_logger.logger.parent.level = DEBUG

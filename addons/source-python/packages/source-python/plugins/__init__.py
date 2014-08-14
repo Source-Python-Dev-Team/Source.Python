@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 #   Translations
 from translations.strings import LangStrings
 
@@ -19,4 +19,4 @@ from translations.strings import LangStrings
 _plugin_strings = LangStrings('_core/plugin_strings')
 
 # Get the sp.plugins logger
-PluginsLogger = _SPLogger.plugins
+plugins_logger = _sp_logger.plugins

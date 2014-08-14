@@ -11,7 +11,7 @@ from sqlite3 import connect
 
 # Source.Python Imports
 #   Events
-from events.manager import EventRegistry
+from events.manager import event_registry
 #   Paths
 from paths import SP_DATA_PATH
 
@@ -45,7 +45,7 @@ class _UniqueSettings(dict):
         self._uniqueid = uniqueid
 
         # Add the uniqueid to the players table if it is not already a member
-        _PlayerSettingsStorage.cursor.execute(
+        _player_settings_storage.cursor.execute(
             """INSERT OR IGNORE INTO players VALUES(null, ?)""",
             (self.uniqueid, ))
 
@@ -55,12 +55,12 @@ class _UniqueSettings(dict):
         super(_UniqueSettings, self).__setitem__(variable, value)
 
         # Add the variable to the variables table if it is not already a member
-        _PlayerSettingsStorage.cursor.execute(
+        _player_settings_storage.cursor.execute(
             """INSERT OR IGNORE INTO variables VALUES(null, ?)""",
             (variable, ))
 
         # Set the value of the variable/uniqueid combination
-        _PlayerSettingsStorage.cursor.execute(
+        _player_settings_storage.cursor.execute(
             """INSERT OR REPLACE INTO variable_values SELECT """ +
             """variables.id, players.id, ? FROM variables, players """ +
             """WHERE variables.name=? AND players.uniqueid=?""",
@@ -149,9 +149,9 @@ class _PlayerSettingsDictionary(dict):
         self.connection.commit()
 
 # Get the _PlayerSettingsDictionary instance
-_PlayerSettingsStorage = _PlayerSettingsDictionary()
+_player_settings_storage = _PlayerSettingsDictionary()
 
 # Register for the event server_spawn in order
 # to store the database to file on map change
-EventRegistry.register_for_event(
-    'server_spawn', _PlayerSettingsStorage.server_spawn)
+event_registry.register_for_event(
+    'server_spawn', _player_settings_storage.server_spawn)

@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from core import CoreLogger
+from core import core_logger
 #   Plugins
 from plugins.manager import PluginManager
 
@@ -15,7 +15,7 @@ from plugins.manager import PluginManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('SPPluginManager',
+__all__ = ('core_plugin_manager',
            )
 
 
@@ -23,17 +23,17 @@ __all__ = ('SPPluginManager',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.core.manager logger
-CoreManagerLogger = CoreLogger.manager
+core_manager_logger = core_logger.manager
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _SPPluginManager(PluginManager):
+class _CorePluginManager(PluginManager):
 
     """Plugin Manager class used to load "sp" plugins."""
 
-    logger = CoreManagerLogger
+    logger = core_manager_logger
 
-# Get the _SPPluginManager instance
-SPPluginManager = _SPPluginManager()
+# Get the _CorePluginManager instance
+core_plugin_manager = _CorePluginManager()

@@ -11,7 +11,7 @@ from collections import OrderedDict
 
 # Source.Python Imports
 #   Events
-from events import EventsLogger
+from events import events_logger
 from events.manager import GameEventManager
 
 
@@ -26,7 +26,7 @@ __all__ = ('CustomEvent',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.events.custom logger
-EventsCustomLogger = EventsLogger.custom
+events_custom_logger = events_logger.custom
 
 
 # =============================================================================

@@ -16,7 +16,7 @@ from commands.say import unregister_say_filter
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('SayCommandManager',
+__all__ = ('say_command_manager',
            )
 
 
@@ -33,4 +33,4 @@ class _SayCommandManager(_PlayerCommandManager):
     unregister_filter = staticmethod(unregister_say_filter)
 
 # Get the _SayCommandManager instance
-SayCommandManager = _SayCommandManager()
+say_command_manager = _SayCommandManager()

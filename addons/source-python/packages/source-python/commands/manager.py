@@ -9,7 +9,7 @@
 #   Commands
 from commands import CommandReturn
 #   Hooks
-from hooks.exceptions import ExceptHooks
+from hooks.exceptions import except_hooks
 
 
 # =============================================================================
@@ -151,7 +151,7 @@ class _CallbackList(list):
             except:
 
                 # Print the exception to the console
-                ExceptHooks.print_exception()
+                except_hooks.print_exception()
 
             # Was no error encountered?
             else:

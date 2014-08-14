@@ -19,7 +19,7 @@ from config.command import _CommandManager
 #   Engines
 from engines.server import EngineServer
 #   Hooks
-from hooks.exceptions import ExceptHooks
+from hooks.exceptions import except_hooks
 #   Paths
 from paths import CFG_PATH
 #   Translations
@@ -155,7 +155,7 @@ class ConfigManager(object):
         if trace_back:
 
             # Print the exception
-            ExceptHooks.print_exception(exctype, value, trace_back)
+            except_hooks.print_exception(exctype, value, trace_back)
 
             # Return
             return False

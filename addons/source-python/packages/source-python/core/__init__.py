@@ -18,7 +18,7 @@ import sys
 
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 #   Paths
 from paths import GAME_PATH
 
@@ -57,7 +57,7 @@ GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
 PLATFORM = system().lower()
 
 # Get the sp.core logger
-CoreLogger = _SPLogger.core
+core_logger = _sp_logger.core
 
 
 # =============================================================================

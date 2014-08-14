@@ -9,9 +9,9 @@
 #   Core
 from core import AutoUnload
 #   Events
-from events.manager import EventRegistry
+from events.manager import event_registry
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -34,7 +34,7 @@ __all__ = ('Event',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.events logger
-EventsLogger = _SPLogger.events
+events_logger = _sp_logger.events
 
 
 # =============================================================================
@@ -57,9 +57,10 @@ class Event(AutoUnload):
         self.callback = callback
 
         # Register the event
-        EventRegistry.register_for_event(self.callback.__name__, self.callback)
+        event_registry.register_for_event(
+            self.callback.__name__, self.callback)
 
     def _unload_instance(self):
         """Unregister the event."""
-        EventRegistry.unregister_for_event(
+        event_registry.unregister_for_event(
             self.callback.__name__, self.callback)

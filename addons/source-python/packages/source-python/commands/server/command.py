@@ -8,7 +8,7 @@
 # Source.Python Imports
 #   Commands
 from commands.command import _BaseCommand
-from commands.server.manager import ServerCommandManager
+from commands.server.manager import server_command_manager
 
 
 # =============================================================================
@@ -26,4 +26,4 @@ class ServerCommand(_BaseCommand):
     """Decorator class used to register a server command."""
 
     # Store the class used to (un)register server commands
-    _manager_class = ServerCommandManager
+    _manager_class = server_command_manager

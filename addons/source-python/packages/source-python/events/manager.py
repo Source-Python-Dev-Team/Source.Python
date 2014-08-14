@@ -9,7 +9,7 @@
 #   Events
 from events.listener import _EventListener
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -23,8 +23,8 @@ from _events import GameEventManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('EventRegistry',
-           'GameEventManager',
+__all__ = ('GameEventManager',
+           'event_registry',
            )
 
 
@@ -32,7 +32,7 @@ __all__ = ('EventRegistry',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.events.manager logger
-EventsManagerLogger = _SPLogger.events.manager
+events_manager_logger = _sp_logger.events.manager
 
 
 # =============================================================================
@@ -85,4 +85,4 @@ class _EventRegistry(dict):
             del self[event]
 
 # Get the _EventRegistry instance
-EventRegistry = _EventRegistry()
+event_registry = _EventRegistry()

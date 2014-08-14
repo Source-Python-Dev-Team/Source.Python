@@ -13,7 +13,7 @@ from enum import IntEnum
 #   Core
 from core import AutoUnload
 #   Engines
-from engines import EnginesLogger
+from engines import engines_logger
 #   Filters
 from filters.recipients import RecipientFilter
 #   Mathlib
@@ -64,7 +64,7 @@ __all__ = ('Attenuations',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.engines.sound logger
-EnginesSoundLogger = EnginesLogger.sound
+engines_sound_logger = engines_logger.sound
 
 
 # =============================================================================

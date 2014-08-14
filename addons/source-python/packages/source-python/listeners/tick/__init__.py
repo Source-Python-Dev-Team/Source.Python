@@ -7,8 +7,8 @@
 # =============================================================================
 # Source.Python Imports
 #   Listeners
-from listeners import ListenersLogger
-from listeners.tick.delays import TickDelays
+from listeners import listeners_logger
+from listeners.tick.delays import tick_delays
 from listeners.tick.repeat import TickRepeat
 from listeners.tick.repeat import TickRepeatStatus
 
@@ -16,9 +16,9 @@ from listeners.tick.repeat import TickRepeatStatus
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('TickDelays',
-           'TickRepeat',
+__all__ = ('TickRepeat',
            'TickRepeatStatus',
+           'tick_delays',
            )
 
 
@@ -26,4 +26,4 @@ __all__ = ('TickDelays',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.listeners.tick logger
-ListenersTickLogger = ListenersLogger.tick
+listeners_tick_logger = listeners_logger.tick

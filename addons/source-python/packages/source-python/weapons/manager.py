@@ -23,7 +23,7 @@ from weapons.default import NoWeaponManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('WeaponManager',
+__all__ = ('weapon_manager',
            )
 
 
@@ -225,11 +225,11 @@ class _Weapon(object):
 if _gamepath.isfile():
 
     # Get the _WeaponManager instance
-    WeaponManager = _WeaponManager(_gamepath)
+    weapon_manager = _WeaponManager(_gamepath)
 
 # Is there no ini file for the current game?
 else:
 
-    # Store WeaponManager as a NoWeaponManager instance
+    # Store weapon_manager as a NoWeaponManager instance
     # to raise an error anytime the manager is utilized
-    WeaponManager = NoWeaponManager()
+    weapon_manager = NoWeaponManager()

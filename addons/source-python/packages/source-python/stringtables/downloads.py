@@ -9,7 +9,7 @@
 #   Core
 from core import AutoUnload
 #   Events
-from events.manager import EventRegistry
+from events.manager import event_registry
 #   Stringtables
 from stringtables import StringTables
 
@@ -30,7 +30,7 @@ class Downloadables(AutoUnload, set):
 
     def __init__(self):
         """Add the instance to the downloadables list."""
-        _DownloadablesListInstance.append(self)
+        _downloadables_list.append(self)
 
     def add(self, item):
         """Add an item to the downloadables for a script."""
@@ -41,7 +41,7 @@ class Downloadables(AutoUnload, set):
             return
 
         # Add the item to the downloadables stringtable
-        _DownloadablesListInstance._add_to_download_table(item)
+        _downloadables_list._add_to_download_table(item)
 
         # Add the item to the script's downloadables
         super(Downloadables, self).add(item)
@@ -52,11 +52,11 @@ class Downloadables(AutoUnload, set):
         for item in self:
 
             # Add the item to the downloadables stringtable
-            _DownloadablesListInstance._add_to_download_table(item)
+            _downloadables_list._add_to_download_table(item)
 
     def _unload_instance(self):
         """Remove the instance from the downloadables list."""
-        _DownloadablesListInstance.remove(self)
+        _downloadables_list.remove(self)
 
 
 class _DownloadablesList(list):
@@ -87,9 +87,9 @@ class _DownloadablesList(list):
             item._set_all_downloads()
 
 # Get the _DownloadablesList instance
-_DownloadablesListInstance = _DownloadablesList()
+_downloadables_list = _DownloadablesList()
 
 # Register for the event server_spawn in
 # order to reset all downloads on map change
-EventRegistry.register_for_event(
-    'server_spawn', _DownloadablesListInstance.server_spawn)
+event_registry.register_for_event(
+    'server_spawn', _downloadables_list.server_spawn)

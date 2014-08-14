@@ -7,11 +7,11 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.weapons logger
-WeaponsLogger = _SPLogger.weapons
+weapons_logger = _sp_logger.weapons

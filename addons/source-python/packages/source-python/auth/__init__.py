@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 #   Translations
 from translations.strings import LangStrings
 
@@ -16,7 +16,7 @@ from translations.strings import LangStrings
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.auth logger
-AuthLogger = _SPLogger.auth
+auth_logger = _sp_logger.auth
 
 # Get the auth language strings
 _auth_strings = LangStrings('_core/auth_strings')

@@ -11,10 +11,10 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 #   Auth
-from auth.commands import _AuthCommandsInstance
+from auth.commands import _auth_commands
 #   Core
-from core import CoreLogger
-from core.manager import SPPluginManager
+from core import core_logger
+from core.manager import core_plugin_manager
 #   Dump
 import _dump
 #   Engines
@@ -27,33 +27,33 @@ from plugins.command import SubCommandManager
 from plugins.info import PluginInfo
 from plugins.instance import LoadedPlugin
 #   Tick
-from listeners.tick import TickDelays
+from listeners.tick import tick_delays
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.core.command logger
-CoreCommandLogger = CoreLogger.command
+core_command_logger = core_logger.command
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _SPLoadedPlugin(LoadedPlugin):
+class _CoreLoadedPlugin(LoadedPlugin):
 
     """Plugin instance class used to create "sp" loaded plugins."""
 
-    logger = CoreCommandLogger
+    logger = core_command_logger
 
 
-class _CoreCommand(SubCommandManager):
+class _CoreCommandManager(SubCommandManager):
 
     """Class used for executing "sp" sub-command functionality."""
 
-    manager = SPPluginManager
-    instance = _SPLoadedPlugin
-    logger = CoreCommandLogger
+    manager = core_plugin_manager
+    instance = _CoreLoadedPlugin
+    logger = core_command_logger
 
     def print_plugins(self):
         """List all currently loaded plugins."""
@@ -109,7 +109,7 @@ class _CoreCommand(SubCommandManager):
     @staticmethod
     def delay_execution(*args):
         """Execute a command after the given delay."""
-        TickDelays.delay(
+        tick_delays.delay(
             float(args[0]),
             EngineServer.server_command, ' '.join(args[1:]) + '\n')
 
@@ -177,26 +177,26 @@ class _CoreCommand(SubCommandManager):
         # Print the message
         self.logger.log_message(message + '=' * 61 + '\n\n')
 
-# Get the _CoreCommand instance
-_CoreCommandInstance = _CoreCommand('sp', 'Source.Python base command.')
+# Get the _CoreCommandManager instance
+_core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 
 # Register the load/unload sub-commands
-_CoreCommandInstance['load'] = _CoreCommandInstance.load_plugin
-_CoreCommandInstance['unload'] = _CoreCommandInstance.unload_plugin
-_CoreCommandInstance['reload'] = _CoreCommandInstance.reload_plugin
+_core_command['load'] = _core_command.load_plugin
+_core_command['unload'] = _core_command.unload_plugin
+_core_command['reload'] = _core_command.reload_plugin
 
 # Register the 'auth' sub-command
-_CoreCommandInstance['auth'] = _AuthCommandsInstance
+_core_command['auth'] = _auth_commands
 
 # Register the 'delay' sub-command
-_CoreCommandInstance['delay'] = _CoreCommandInstance.delay_execution
-_CoreCommandInstance['delay'].args = ['<delay>', '<command>', '[arguments]']
+_core_command['delay'] = _core_command.delay_execution
+_core_command['delay'].args = ['<delay>', '<command>', '[arguments]']
 
 # Register the 'dump' sub-command
-_CoreCommandInstance['dump'] = _CoreCommandInstance.dump_data
+_core_command['dump'] = _core_command.dump_data
 
 # Register all printing sub-commands
-_CoreCommandInstance['list'] = _CoreCommandInstance.print_plugins
-_CoreCommandInstance['version'] = _CoreCommandInstance.print_version
-_CoreCommandInstance['credits'] = _CoreCommandInstance.print_credits
-_CoreCommandInstance['help'] = _CoreCommandInstance.print_help
+_core_command['list'] = _core_command.print_plugins
+_core_command['version'] = _core_command.print_version
+_core_command['credits'] = _core_command.print_credits
+_core_command['help'] = _core_command.print_help

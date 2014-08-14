@@ -16,7 +16,7 @@ from traceback import format_exception
 # Source.Python Imports
 #   Hooks
 from hooks import _hooks_strings
-from hooks import HooksLogger
+from hooks import hooks_logger
 from hooks.base import _HookBase
 from hooks.base import _HookDecorator
 #   Paths
@@ -27,7 +27,7 @@ from paths import GAME_PATH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('ExceptHook',
-           'ExceptHooks',
+           'except_hooks',
            )
 
 
@@ -35,7 +35,7 @@ __all__ = ('ExceptHook',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.hooks.exceptions logger
-HooksExceptionsLogger = HooksLogger.exceptions
+hooks_exceptions_logger = hooks_logger.exceptions
 
 
 # =============================================================================
@@ -104,17 +104,17 @@ class _ExceptHooks(_HookBase):
             message += '\n' + line
 
         # Print a blank line to separate the console
-        HooksExceptionsLogger.log_exception(message + '\n\n')
+        hooks_exceptions_logger.log_exception(message + '\n\n')
 
 # Get the _ExceptHooks instance
-ExceptHooks = _ExceptHooks()
+except_hooks = _ExceptHooks()
 
 # Set sys.excepthook to the print_exception method
-sys.excepthook = ExceptHooks.print_exception
+sys.excepthook = except_hooks.print_exception
 
 
 class ExceptHook(_HookDecorator):
 
     """Register/unregister a function/method for hooking exceptions."""
 
-    _class_instance = ExceptHooks
+    _class_instance = except_hooks

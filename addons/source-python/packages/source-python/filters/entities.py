@@ -45,7 +45,7 @@ class _EntityIterManager(object):
         self._return_types.unregister(return_type)
 
 # Get the _EntityIterManager instance
-_EntityIterManagerInstance = _EntityIterManager()
+_entity_iter_manager = _EntityIterManager()
 
 
 class EntityIter(_IterObject):
@@ -53,7 +53,7 @@ class EntityIter(_IterObject):
     """Entity iterate class."""
 
     # Store the manager for the entity iterator
-    manager = _EntityIterManagerInstance
+    manager = _entity_iter_manager
 
     # Store the base iterator
     iterator = staticmethod(EntityGenerator)
@@ -102,14 +102,14 @@ class EntityIter(_IterObject):
 # >> RETURN TYPES
 # =============================================================================
 # Register the return type functions
-_EntityIterManagerInstance.register_return_type('index', index_from_edict)
-_EntityIterManagerInstance.register_return_type('edict', lambda edict: edict)
-_EntityIterManagerInstance.register_return_type(
+_entity_iter_manager.register_return_type('index', index_from_edict)
+_entity_iter_manager.register_return_type('edict', lambda edict: edict)
+_entity_iter_manager.register_return_type(
     'basehandle', basehandle_from_edict)
-_EntityIterManagerInstance.register_return_type(
+_entity_iter_manager.register_return_type(
     'inthandle', inthandle_from_edict)
-_EntityIterManagerInstance.register_return_type('pointer', pointer_from_edict)
-_EntityIterManagerInstance.register_return_type(
+_entity_iter_manager.register_return_type('pointer', pointer_from_edict)
+_entity_iter_manager.register_return_type(
     'entity', lambda edict: BaseEntity(index_from_edict(edict)))
-_EntityIterManagerInstance.register_return_type(
+_entity_iter_manager.register_return_type(
     'classname', lambda edict: edict.get_class_name())

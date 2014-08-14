@@ -26,7 +26,7 @@ from configobj import Section
 from paths import TRANSLATION_PATH
 from paths import GAME_PATH
 #   Translations
-from translations.manager import LanguageManager
+from translations.manager import language_manager
 
 
 # =============================================================================
@@ -103,7 +103,7 @@ class LangStrings(dict):
             for lang in main_strings[key]:
 
                 # Get the shortname of the current language
-                language = LanguageManager.get_language(lang)
+                language = language_manager.get_language(lang)
 
                 # Was the language found?
                 if language is None:
@@ -130,7 +130,7 @@ class LangStrings(dict):
             if not isinstance(default_language, Section):
 
                 # Get the given language code
-                language_code = LanguageManager.get_language(default_language)
+                language_code = language_manager.get_language(default_language)
 
                 # Is the language valid?
                 if language_code is not None:
@@ -147,7 +147,7 @@ class LangStrings(dict):
         if attribute == 'default_language':
 
             # Get the given language code
-            language_code = LanguageManager.get_language(value)
+            language_code = language_manager.get_language(value)
 
             # Is the given language code valid?
             if language_code is not None:
@@ -172,7 +172,7 @@ class LangStrings(dict):
         # Set the initial comments to explain what the file is for
         server_file.initial_comment = _translation_strings[
             'Initial Comment'].get_string(
-            LanguageManager.default,
+            language_manager.default,
             filename=self._mainfile.replace(GAME_PATH, '')).splitlines()
 
         # Write the server specific file
@@ -231,7 +231,7 @@ class TranslationStrings(dict):
         if language is None:
 
             # Set the language to the server's default
-            language = LanguageManager.default
+            language = language_manager.default
 
         # Get the language shortname to be used
         language = self.get_language(language)
@@ -258,7 +258,7 @@ class TranslationStrings(dict):
     def get_language(self, language):
         """Return the language to be used."""
         # Get the given language's shortname
-        language = LanguageManager.get_language(language)
+        language = language_manager.get_language(language)
 
         # Was a language found?
         if language is not None and language in self:
@@ -267,10 +267,10 @@ class TranslationStrings(dict):
             return language
 
         # Is the server's default language in the dictionary?
-        if LanguageManager.default in self:
+        if language_manager.default in self:
 
             # Return the server's default language
-            return LanguageManager.default
+            return language_manager.default
 
         # Is there any default language defined?
         if hasattr(self, '_default_language'):
@@ -282,10 +282,10 @@ class TranslationStrings(dict):
                 return self._default_language
 
         # Is the server's fallback language in the dictionary?
-        if LanguageManager.fallback in self:
+        if language_manager.fallback in self:
 
             # Return the server's fallback language
-            return LanguageManager.fallback
+            return language_manager.fallback
 
         # Return None as the language, as no language has been found
         return None

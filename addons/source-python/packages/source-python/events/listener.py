@@ -7,9 +7,9 @@
 # =============================================================================
 # Source.Python Imports
 #   Hooks
-from hooks.exceptions import ExceptHooks
+from hooks.exceptions import except_hooks
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -31,7 +31,7 @@ __all__ = ('GameEventListener',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.events.listener logger
-EventsListenerLogger = _SPLogger.events.listener
+events_listener_logger = _sp_logger.events.listener
 
 
 # =============================================================================
@@ -93,4 +93,4 @@ class _EventListener(list):
             except:
 
                 # Print the exception to the console
-                ExceptHooks.print_exception()
+                except_hooks.print_exception()

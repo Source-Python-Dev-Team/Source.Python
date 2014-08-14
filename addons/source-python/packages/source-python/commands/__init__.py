@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Loggers
-from loggers import _SPLogger
+from loggers import _sp_logger
 
 
 # =============================================================================
@@ -31,4 +31,4 @@ __all__ = ('Command',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.commands logger
-CommandsLogger = _SPLogger.commands
+commands_logger = _sp_logger.commands

@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Auth
-from auth import AuthLogger
+from auth import auth_logger
 from auth import _auth_strings
 
 
@@ -22,7 +22,7 @@ __all__ = ('AuthBase',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get sp.auth.base logger
-AuthBaseLogger = AuthLogger.base
+auth_base_logger = auth_logger.base
 
 
 # =============================================================================
@@ -34,13 +34,13 @@ class AuthBase(object):
 
     def load(self):
         """Base implementation of load that if called will print an error."""
-        AuthBaseLogger.log_warning(
+        auth_base_logger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
                 classname=self.__class__.__name__, method='load'))
 
     def unload(self):
         """Base implementation of unload that if called will print an error."""
-        AuthBaseLogger.log_warning(
+        auth_base_logger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
                 classname=self.__class__.__name__, method='unload'))
 
@@ -49,7 +49,7 @@ class AuthBase(object):
 
         If base method is called, it will print an error.
         """
-        AuthBaseLogger.log_warning(
+        auth_base_logger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
                 classname=self.__class__.__name__,
                 method='is_player_authorized'))

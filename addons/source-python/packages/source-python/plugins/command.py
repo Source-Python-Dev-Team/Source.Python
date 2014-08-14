@@ -11,11 +11,11 @@ from collections import OrderedDict
 
 # Source.Python Imports
 #   Commands
-from commands.server import ServerCommandManager
+from commands.server import server_command_manager
 #   Core
 from core import AutoUnload
 #   Plugins
-from plugins import PluginsLogger
+from plugins import plugins_logger
 from plugins import _plugin_strings
 from plugins.errors import PluginInstanceError
 from plugins.errors import PluginManagerError
@@ -34,7 +34,7 @@ __all__ = ('SubCommandManager',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.plugins.command logger
-PluginCommandLogger = PluginsLogger.command
+plugins_command_logger = plugins_logger.command
 
 
 # =============================================================================
@@ -80,7 +80,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         if not hasattr(self, 'logger'):
 
             # If not, assign the base logger
-            self.logger = PluginCommandLogger
+            self.logger = plugins_command_logger
 
         # Does the object have a translations value set?
         if not hasattr(self, 'translations'):
@@ -89,7 +89,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
             self.translations = _plugin_strings
 
         # Register the server command
-        ServerCommandManager.register_commands(
+        server_command_manager.register_commands(
             self.command, self.call_command, description, 0)
 
     @property
@@ -104,7 +104,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
     def _unload_instance(self):
         """Unregister commands when the instance is unloaded."""
-        ServerCommandManager.unregister_commands(
+        server_command_manager.unregister_commands(
             self.command, self.call_command)
 
     def call_command(self, command):

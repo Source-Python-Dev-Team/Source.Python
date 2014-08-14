@@ -14,7 +14,7 @@ from commands.server import get_server_command
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('ServerCommandManager',
+__all__ = ('server_command_manager',
            )
 
 
@@ -29,4 +29,4 @@ class _ServerCommandManager(_BaseCommandManager):
     _get_command = staticmethod(get_server_command)
 
 # Get the _ServerCommandManager instance
-ServerCommandManager = _ServerCommandManager()
+server_command_manager = _ServerCommandManager()

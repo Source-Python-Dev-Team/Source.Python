@@ -13,7 +13,7 @@ from _commands import register_say_filter
 from _commands import unregister_say_filter
 from commands.say.command import SayCommand
 from commands.say.filter import SayFilter
-from commands.say.manager import SayCommandManager
+from commands.say.manager import say_command_manager
 
 
 # =============================================================================
@@ -21,9 +21,9 @@ from commands.say.manager import SayCommandManager
 # =============================================================================
 __all__ = ('SayCommand',
            'SayCommandDispatcher',
-           'SayCommandManager',
            'SayFilter',
            'get_say_command',
            'register_say_filter',
+           'say_command_manager',
            'unregister_say_filter',
            )

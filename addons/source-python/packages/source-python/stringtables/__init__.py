@@ -16,8 +16,8 @@ from _stringtables import INVALID_STRING_INDEX
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('StringTable',
-           'StringTables',
+__all__ = ('INVALID_STRING_INDEX',
            'INVALID_STRING_TABLE',
-           'INVALID_STRING_INDEX',
+           'StringTable',
+           'StringTables',
            )
