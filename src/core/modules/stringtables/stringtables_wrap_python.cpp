@@ -320,6 +320,6 @@ void export_stringtable_container()
 	;
 	
 	// Singleton.
-	scope().attr("StringTables") = object(ptr(networkstringtable));
+	scope().attr("string_tables") = object(ptr(networkstringtable));
 	
 }

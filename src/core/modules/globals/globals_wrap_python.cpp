@@ -189,5 +189,5 @@ void export_globals()
 
 	) ADD_MEM_TOOLS(CGlobalVars, "_GlobalVars"); // Globals_Visitor
 
-	scope().attr("GlobalVars") = object(ptr(gpGlobals));
+	scope().attr("global_vars") = object(ptr(gpGlobals));
 }

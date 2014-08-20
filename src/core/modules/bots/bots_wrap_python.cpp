@@ -73,7 +73,7 @@ void export_botmanager()
 		ADD_MEM_TOOLS(IBotManager, "_BotManager")
 	;
 
-	scope().attr("BotManager") = object(ptr(botmanager));
+	scope().attr("bot_manager") = object(ptr(botmanager));
 }
 
 void export_botcontroller()

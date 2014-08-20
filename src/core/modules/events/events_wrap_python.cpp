@@ -275,5 +275,5 @@ void export_igameeventmanager()
 		ADD_MEM_TOOLS(IGameEventManager2, "_GameEventManager")
 	;
 
-	scope().attr("GameEventManager") = object(ptr(gameeventmanager));
+	scope().attr("game_event_manager") = object(ptr(gameeventmanager));
 }

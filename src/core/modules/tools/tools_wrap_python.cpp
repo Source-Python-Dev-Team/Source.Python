@@ -89,7 +89,7 @@ void export_server_tools(scope tools)
 	ServerTools ADD_MEM_TOOLS(IServerTools, "_ServerTools");
 
 	// Singleton...
-	tools.attr("ServerTools") = object(ptr(servertools));
+	tools.attr("server_tools") = object(ptr(servertools));
 }
 
 

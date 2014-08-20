@@ -90,7 +90,7 @@ void export_cvar_interface()
 		ADD_MEM_TOOLS(ICvar, "_Cvar")
 	;
 
-	scope().attr("Cvar") = object(ptr(g_pCVar));
+	scope().attr("cvar") = object(ptr(g_pCVar));
 }
 
 //-----------------------------------------------------------------------------

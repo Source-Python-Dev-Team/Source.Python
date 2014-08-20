@@ -747,7 +747,7 @@ void export_engine_server()
 
 	) ADD_MEM_TOOLS(IVEngineServer, "_EngineServer"); // IVEngineServer_Visitor
 
-	scope().attr("EngineServer") = object(ptr(engine));
+	scope().attr("engine_server") = object(ptr(engine));
 }
 
 
@@ -836,7 +836,7 @@ void export_engine_sound()
 
 	) ADD_MEM_TOOLS(IEngineSound, "_EngineSound"); // IEngineSound_Visitor
 
-	scope().attr("EngineSound") = object(ptr(enginesound));
+	scope().attr("engine_sound") = object(ptr(enginesound));
 
 	// Channels
 	enum_<int>("Channels")
@@ -1066,7 +1066,7 @@ void export_engine_trace()
 		ADD_MEM_TOOLS(IEngineTrace, "_EngineTrace")
 	;
 
-	scope().attr("EngineTrace") = object(ptr(enginetrace));
+	scope().attr("engine_trace") = object(ptr(enginetrace));
 
 	class_<CBaseTrace, boost::noncopyable>("BaseTrace")
 		.def_readwrite("start_position",
@@ -1296,5 +1296,5 @@ void export_server_game_dll()
 	);
 	
 	// Singleton...
-	scope().attr("ServerGameDLL") = object(ptr(servergamedll));
+	scope().attr("server_game_dll") = object(ptr(servergamedll));
 }
