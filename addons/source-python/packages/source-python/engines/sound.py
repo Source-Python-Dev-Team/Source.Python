@@ -19,7 +19,7 @@ from filters.recipients import RecipientFilter
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Stringtables
-from stringtables import StringTables
+from stringtables import string_tables
 from stringtables.downloads import Downloadables
 
 
@@ -28,7 +28,7 @@ from stringtables.downloads import Downloadables
 # =============================================================================
 # Source.Python Imports
 #   Engines
-from _engines import EngineSound
+from _engines import engine_sound
 from _engines import Channels
 from _engines import VOL_NORM
 from _engines import ATTN_NONE
@@ -51,7 +51,7 @@ from _engines import SOUND_FROM_WORLD
 # =============================================================================
 __all__ = ('Attenuations',
            'Channels',
-           'EngineSound',
+           'engine_sound',
            'SOUND_FROM_LOCAL_PLAYER',
            'SOUND_FROM_WORLD',
            'Sound',
@@ -145,7 +145,7 @@ class Sound(AutoUnload):
             self.precache()
 
         # Play the sound
-        EngineSound.emit_sound(
+        engine_sound.emit_sound(
             recipients, self.index, self.channel, self.sample,
             self.volume, self.attenuation, self.flags, self.pitch,
             self.origin, self.direction, self.origins,
@@ -166,15 +166,15 @@ class Sound(AutoUnload):
             channel = self.channel
 
         # Stop the sound
-        EngineSound.stop_sound(index, channel, self.sample)
+        engine_sound.stop_sound(index, channel, self.sample)
 
     def precache(self):
         """Precache the sample."""
-        EngineSound.precache_sound(self.sample)
+        engine_sound.precache_sound(self.sample)
 
     def is_precached(self):
         """Return whether or not the sample is precached."""
-        return self.sample in StringTables.soundprecache
+        return self.sample in string_tables.soundprecache
 
     @property
     def sample(self):
@@ -184,7 +184,7 @@ class Sound(AutoUnload):
     @property
     def duration(self):
         """Return the duration of the sample."""
-        return EngineSound.get_sound_duration(self.sample)
+        return engine_sound.get_sound_duration(self.sample)
 
     def _unload_instance(self):
         """Remove the sample from the downloads list."""

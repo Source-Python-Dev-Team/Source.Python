@@ -236,7 +236,7 @@ class ConfigManager(object):
             # Loop through all sections in the file
             for section in self._sections:
 
-                # Is the current section a Cvar?
+                # Is the current section a cvar?
                 if isinstance(section, _CvarManager):
 
                     # Has any text been added to the file?

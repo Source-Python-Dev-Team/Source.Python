@@ -13,7 +13,7 @@ from memory.manager import manager
 #   Paths
 from paths import SP_DATA_PATH
 #   Tools
-from tools import ServerTools
+from tools import server_tools
 
 
 # =============================================================================
@@ -22,7 +22,7 @@ from tools import ServerTools
 # Source.Python Imports
 #   Effects
 from _effects import DispatchEffectData
-from _effects import Effects
+from _effects import effects
 from _effects import PredictionSystem
 
 
@@ -30,20 +30,20 @@ from _effects import PredictionSystem
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('DispatchEffectData',
-           'Effects',
+           'effects',
            'PredictionSystem',
-           'TempEntities',
+           'temp_entities',
            )
 
 
 # ============================================================================
 # >> GLOBAL VARIABLES
 # ============================================================================
-# Get the TempEntities instance...
+# Get the temp_entities instance...
 try:
-    TempEntities = ServerTools.get_temp_entities()
+    temp_entities = server_tools.get_temp_entities()
 except NotImplementedError:
     manager.create_global_pointers_from_file(
         SP_DATA_PATH.joinpath('effects', SOURCE_ENGINE, 'pointers.ini'))
 
-    TempEntities = manager.get_global_pointer('_TempEntities')
+    temp_entities = manager.get_global_pointer('_TempEntities')

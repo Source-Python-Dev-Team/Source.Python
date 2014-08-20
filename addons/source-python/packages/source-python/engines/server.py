@@ -8,7 +8,7 @@
 # Source.Python Imports
 #   Engines
 from _engines import EngineServer
-from _engines import ServerGameDLL
+from _engines import server_game_dll
 from _engines import QueryCvarStatus
 
 
@@ -17,5 +17,5 @@ from _engines import QueryCvarStatus
 # =============================================================================
 __all__ = ('EngineServer',
            'QueryCvarStatus',
-           'ServerGameDLL',
+           'server_game_dll',
            )

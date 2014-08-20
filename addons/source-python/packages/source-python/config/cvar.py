@@ -33,7 +33,7 @@ class _CvarManager(dict):
         self._default = default
         self._description = description
 
-        # Get the Cvar instance
+        # Get the cvar instance
         self._cvar = ConVar(
             name, default, flags, description, min_value, max_value)
 
@@ -44,11 +44,11 @@ class _CvarManager(dict):
         self._order = list()
 
     def __getattr__(self, attr):
-        """Return Cvar attributes or items in the instance."""
-        # Does the Cvar instance have the given attribute?
+        """Return cvar attributes or items in the instance."""
+        # Does the cvar instance have the given attribute?
         if hasattr(self.cvar, attr):
 
-            # Return the attribute for the Cvar instance
+            # Return the attribute for the cvar instance
             return getattr(self.cvar, attr)
 
         # Return the item
@@ -122,7 +122,7 @@ class _CvarManager(dict):
 
 class _ListManager(list):
 
-    """List class used to store text for a specific descriptor of a Cvar."""
+    """List class used to store text for a specific descriptor of a cvar."""
 
     def __init__(self, name):
         """Called on instantiation."""

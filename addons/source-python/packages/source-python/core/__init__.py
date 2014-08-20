@@ -30,7 +30,7 @@ from paths import GAME_PATH
 #   Constants
 from constants import SOURCE_ENGINE
 #   Globals
-from _globals import GlobalVars
+from _globals import global_vars
 from _globals import MapLoadType
 
 
@@ -39,7 +39,7 @@ from _globals import MapLoadType
 # =============================================================================
 __all__ = ('AutoUnload',
            'GAME_NAME',
-           'GlobalVars',
+           'global_vars',
            'MapLoadType',
            'PLATFORM',
            'SOURCE_ENGINE',

@@ -13,7 +13,7 @@ import time
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Listeners
-from listeners import TickListenerManager
+from listeners import tick_listener_manager
 from listeners import listeners_logger
 
 
@@ -108,7 +108,7 @@ class _TickDelays(dict):
                 'tick_delays - Registering Tick Listener')
 
             # Register the tick listener
-            TickListenerManager.register_listener(self._tick)
+            tick_listener_manager.register_listener(self._tick)
 
         # Add the item to the dictionary as a _Times instance
         self[item] = _Times()
@@ -191,7 +191,7 @@ class _TickDelays(dict):
                 'tick_delays._tick - Unregistering Tick Listener')
 
             # Unregister the tick listener
-            TickListenerManager.unregister_listener(self._tick)
+            tick_listener_manager.unregister_listener(self._tick)
 
     def cancel_delay(self, delay_object):
         """Cancel a delay."""
@@ -239,7 +239,7 @@ class _TickDelays(dict):
                 'tick_delays.cancel_delay - Unregistering Tick Listener')
 
             # Unregister the listener
-            TickListenerManager.unregister_listener(self._tick)
+            tick_listener_manager.unregister_listener(self._tick)
 
 # Get the _TickDelays instance
 tick_delays = _TickDelays()

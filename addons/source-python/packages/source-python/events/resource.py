@@ -13,7 +13,7 @@ from collections import OrderedDict
 #   Events
 from events import events_logger
 from events.custom import CustomEvent
-from events.manager import GameEventManager
+from events.manager import game_event_manager
 #   Paths
 from paths import EVENT_PATH
 
@@ -127,4 +127,4 @@ class ResourceFile(OrderedDict):
 
     def load_events(self):
         """Load events from the .res file."""
-        GameEventManager.load_events_from_file(self.fullpath)
+        game_event_manager.load_events_from_file(self.fullpath)

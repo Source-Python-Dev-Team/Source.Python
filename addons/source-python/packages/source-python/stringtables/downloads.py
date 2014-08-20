@@ -11,7 +11,7 @@ from core import AutoUnload
 #   Events
 from events.manager import event_registry
 #   Stringtables
-from stringtables import StringTables
+from stringtables import string_tables
 
 
 # =============================================================================
@@ -69,7 +69,7 @@ class _DownloadablesList(list):
 
     def _refresh_table_instance(self):
         """Get the current instance of the downloadables table."""
-        self.download_table = StringTables.downloadables
+        self.download_table = string_tables.downloadables
 
     def _add_to_download_table(self, item):
         """Add the given file to the downloadables table."""

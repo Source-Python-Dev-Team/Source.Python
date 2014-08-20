@@ -16,7 +16,7 @@ from enum import IntEnum
 # Source.Python Imports
 #   Engines
 from _engines import Ray
-from _engines import EngineTrace
+from _engines import engine_trace
 from _engines import BaseTrace
 from _engines import DISPSURF_FLAG_SURFACE
 from _engines import DISPSURF_FLAG_WALKABLE
@@ -106,7 +106,7 @@ __all__ = ('BaseTrace',
            'ContentFlags',
            'ContentMasks',
            'DisplacementFlags',
-           'EngineTrace',
+           'engine_trace',
            'EntityEnumerator',
            'GameTrace',
            'Ray',
