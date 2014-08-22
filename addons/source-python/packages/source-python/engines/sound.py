@@ -103,7 +103,7 @@ class Sound(AutoUnload):
     def __init__(
             self, recipients, index, sample, volume=VOL_NORM,
             attenuation=Attenuations.NONE, channel=Channels.AUTO,
-            flags=0, pitch=PitchTypes.HIGH, origin=NULL_VECTOR,
+            flags=0, pitch=PitchTypes.NORMAL, origin=NULL_VECTOR,
             direction=NULL_VECTOR, origins=(), update_positions=True,
             sound_time=0.0, speaker_entity=-1, download=False):
         """Store all the given attributes and set the module for unloading."""
