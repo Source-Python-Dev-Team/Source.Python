@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Engines
-from engines.server import EngineServer
+from engines.server import engine_server
 #   Players
 from players import PlayerGenerator
 
@@ -199,7 +199,7 @@ def address_from_playerinfo(playerinfo):
     index = index_from_playerinfo(playerinfo)
 
     # Get the player's NetInfo instance
-    netinfo = EngineServer.get_player_net_info(index)
+    netinfo = engine_server.get_player_net_info(index)
 
     # Return the player's IP Address
     return netinfo.get_address()

@@ -99,13 +99,13 @@ class AutoUnload(object):
 # =============================================================================
 def echo_console(text):
     """Echo a message to the server's console."""
-    # Import EngineServer
+    # Import engine_server
     # This is done here to fix an ImportError
-    from engines.server import EngineServer
+    from engines.server import engine_server
 
     # Loop through each line in the text
     for line in text.split('\n'):
 
         # Echo the message
-        EngineServer.server_command(
+        engine_server.server_command(
             'echo "{0}"\n'.format(line.replace('"', "'")))

@@ -18,7 +18,7 @@ from core.manager import core_plugin_manager
 #   Dump
 import _dump
 #   Engines
-from engines.server import EngineServer
+from engines.server import engine_server
 #   Paths
 from paths import SP_DATA_PATH
 #   Plugins
@@ -111,7 +111,7 @@ class _CoreCommandManager(SubCommandManager):
         """Execute a command after the given delay."""
         tick_delays.delay(
             float(args[0]),
-            EngineServer.server_command, ' '.join(args[1:]) + '\n')
+            engine_server.server_command, ' '.join(args[1:]) + '\n')
 
     def dump_data(self, dump_type):
         """Dump data to logs."""

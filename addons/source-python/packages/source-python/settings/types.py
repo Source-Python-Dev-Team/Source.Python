@@ -13,7 +13,7 @@ from contextlib import suppress
 
 # Source.Python Imports
 #   Engines
-from engines.server import EngineServer
+from engines.server import engine_server
 #   Players
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
@@ -77,7 +77,7 @@ class _SettingsType(object):
         convar = self.prefix + self.name.lower().replace(' ', '_')
 
         # Get the client's convar value
-        value = EngineServer.get_client_convar_value(index, convar)
+        value = engine_server.get_client_convar_value(index, convar)
 
         # Try to typecast the value, suppressing ValueErrors
         with suppress(ValueError):

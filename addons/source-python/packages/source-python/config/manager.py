@@ -17,7 +17,7 @@ from config.cvar import _CvarManager
 from config.section import _SectionManager
 from config.command import _CommandManager
 #   Engines
-from engines.server import EngineServer
+from engines.server import engine_server
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Paths
@@ -401,7 +401,7 @@ class ConfigManager(object):
 
     def execute(self):
         """Execute the config file."""
-        EngineServer.server_command(
+        engine_server.server_command(
             'exec source-python/{0}\n'.format(self.filepath))
 
     def _parse_old_file(self):
