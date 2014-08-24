@@ -13,7 +13,7 @@ from collections import defaultdict
 #   Core
 from core import AutoUnload
 #   Engines
-from engines.server import EngineServer
+from engines.server import engine_server
 #   Events
 from events import Event
 #   Filters
@@ -312,7 +312,7 @@ def _translate_text(text, ply_index):
     """
     if isinstance(text, TranslationStrings):
         return text.get_string(
-            EngineServer.get_client_convar_value(ply_index, 'cl_language'))
+            engine_server.get_client_convar_value(ply_index, 'cl_language'))
 
     return text
 

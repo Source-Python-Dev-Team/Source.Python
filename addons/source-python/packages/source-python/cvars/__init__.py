@@ -16,7 +16,7 @@ from cvars.flags import ConVarFlags
 # =============================================================================
 # Source.Python Imports
 #   Cvars
-from _cvars import Cvar
+from _cvars import cvar
 from _cvars import ConCommandBase
 
 
@@ -25,7 +25,7 @@ from _cvars import ConCommandBase
 # =============================================================================
 __all__ = ('ConCommandBase',
            'ConVar',
-           'Cvar',
+           'cvar',
            )
 
 

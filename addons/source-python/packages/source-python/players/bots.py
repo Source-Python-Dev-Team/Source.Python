@@ -9,7 +9,7 @@
 #   Bots
 from _bots import BotCmd
 from _bots import BotController
-from _bots import BotManager
+from _bots import bot_manager
 
 
 # =============================================================================
@@ -17,5 +17,5 @@ from _bots import BotManager
 # =============================================================================
 __all__ = ('BotCmd',
            'BotController',
-           'BotManager',
+           'bot_manager',
            )

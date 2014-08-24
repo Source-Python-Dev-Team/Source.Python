@@ -18,7 +18,7 @@ from core import GAME_NAME
 from entities.entity import BaseEntity
 from entities.helpers import index_from_inthandle
 #   Engines
-from engines.server import ServerGameDLL
+from engines.server import server_game_dll
 #   Weapons
 from weapons.manager import weapon_manager
 
@@ -452,7 +452,7 @@ def _find_weapon_prop_length(table):
             _find_weapon_prop_length(item.data_table)
 
 # Get the first ServerClass object
-_current_class = ServerGameDLL.get_all_server_classes()
+_current_class = server_game_dll.get_all_server_classes()
 
 # Use "while" to loop through all ServerClass objects
 while _current_class:

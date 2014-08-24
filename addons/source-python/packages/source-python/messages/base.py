@@ -23,7 +23,7 @@ from basetypes import Color
 #   Core
 from core import echo_console
 #   Engines
-from engines.server import EngineServer
+from engines.server import engine_server
 #   Filters
 from filters.recipients import RecipientFilter
 #   Hooks
@@ -557,7 +557,7 @@ class BaseMessage(dict):
             for index in recipient:
 
                 # Add the current index
-                languages[EngineServer.get_client_convar_value(
+                languages[engine_server.get_client_convar_value(
                     index, 'cl_language')].add(index)
 
             # Loop through all languages

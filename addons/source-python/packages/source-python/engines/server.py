@@ -7,15 +7,15 @@
 # =============================================================================
 # Source.Python Imports
 #   Engines
-from _engines import EngineServer
-from _engines import ServerGameDLL
+from _engines import engine_server
+from _engines import server_game_dll
 from _engines import QueryCvarStatus
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('EngineServer',
+__all__ = ('engine_server',
            'QueryCvarStatus',
-           'ServerGameDLL',
+           'server_game_dll',
            )

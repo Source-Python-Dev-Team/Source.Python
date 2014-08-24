@@ -17,53 +17,53 @@ from loggers import _sp_logger
 # =============================================================================
 # Source.Python Imports
 #   Listeners
-from _listeners import ClientActiveListenerManager
-from _listeners import ClientConnectListenerManager
-from _listeners import ClientDisconnectListenerManager
-from _listeners import ClientFullyConnectListenerManager
-from _listeners import ClientPutInServerListenerManager
-from _listeners import ClientSettingsChangedListenerManager
-from _listeners import LevelInitListenerManager
-from _listeners import LevelShutdownListenerManager
-from _listeners import NetworkidValidatedListenerManager
-from _listeners import OnEdictAllocatedListenerManager
-from _listeners import OnEdictFreedListenerManager
-from _listeners import OnQueryCvarValueFinishedListenerManager
-from _listeners import ServerActivateListenerManager
-from _listeners import TickListenerManager
+from _listeners import client_active_listener_manager
+from _listeners import client_connect_listener_manager
+from _listeners import client_disconnect_listener_manager
+from _listeners import client_fully_connect_listener_manager
+from _listeners import client_put_in_server_listener_manager
+from _listeners import client_settings_changed_listener_manager
+from _listeners import level_init_listener_manager
+from _listeners import level_shutdown_listener_manager
+from _listeners import network_id_validated_listener_manager
+from _listeners import on_edict_allocated_listener_manager
+from _listeners import on_edict_free_listener_manager
+from _listeners import on_query_cvar_value_finished_listener_manager
+from _listeners import server_activate_listener_manager
+from _listeners import tick_listener_manager
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('ClientActive',
-           'ClientActiveListenerManager',
+           'client_active_listener_manager',
            'ClientConnect',
-           'ClientConnectListenerManager',
+           'client_connect_listener_manager',
            'ClientDisconnect',
-           'ClientDisconnectListenerManager',
+           'client_disconnect_listener_manager',
            'ClientFullyConnect',
-           'ClientFullyConnectListenerManager',
+           'client_fully_connect_listener_manager',
            'ClientPutInServer',
-           'ClientPutInServerListenerManager',
+           'client_put_in_server_listener_manager',
            'ClientSettingsChanged',
-           'ClientSettingsChangedListenerManager',
+           'client_settings_changed_listener_manager',
            'LevelInit',
-           'LevelInitListenerManager',
+           'level_init_listener_manager',
            'LevelShutdown',
-           'LevelShutdownListenerManager',
+           'level_shutdown_listener_manager',
            'NetworkidValidated',
-           'NetworkidValidatedListenerManager',
+           'network_id_validated_listener_manager',
            'OnEdictAllocated',
-           'OnEdictAllocatedListenerManager',
+           'on_edict_allocated_listener_manager',
            'OnEdictFreed',
-           'OnEdictFreedListenerManager',
+           'on_edict_free_listener_manager',
            'OnQueryCvarValueFinished',
-           'OnQueryCvarValueFinishedListenerManager',
+           'on_query_cvar_value_finished_listener_manager',
            'ServerActivate',
-           'ServerActivateListenerManager',
+           'server_activate_listener_manager',
            'Tick',
-           'TickListenerManager',
+           'tick_listener_manager',
            )
 
 
@@ -133,95 +133,95 @@ class ClientActive(_ListenerManager):
 
     """Register/unregister a ClientActive listener."""
 
-    manager = ClientActiveListenerManager
+    manager = client_active_listener_manager
 
 
 class ClientConnect(_ListenerManager):
 
     """Register/unregister a ClientConnect listener."""
 
-    manager = ClientConnectListenerManager
+    manager = client_connect_listener_manager
 
 
 class ClientDisconnect(_ListenerManager):
 
     """Register/unregister a ClientDisconnect listener."""
 
-    manager = ClientDisconnectListenerManager
+    manager = client_disconnect_listener_manager
 
 
 class ClientFullyConnect(_ListenerManager):
 
     """Register/unregister a ClientFullyConnect listener."""
 
-    manager = ClientFullyConnectListenerManager
+    manager = client_fully_connect_listener_manager
 
 
 class ClientPutInServer(_ListenerManager):
 
     """Register/unregister a ClientPutInServer listener."""
 
-    manager = ClientPutInServerListenerManager
+    manager = client_put_in_server_listener_manager
 
 
 class ClientSettingsChanged(_ListenerManager):
 
     """Register/unregister a ClientSettingsChanged listener."""
 
-    manager = ClientSettingsChangedListenerManager
+    manager = client_settings_changed_listener_manager
 
 
 class LevelInit(_ListenerManager):
 
     """Register/unregister a LevelInit listener."""
 
-    manager = LevelInitListenerManager
+    manager = level_init_listener_manager
 
 
 class LevelShutdown(_ListenerManager):
 
     """Register/unregister a LevelShutdown listener."""
 
-    manager = LevelShutdownListenerManager
+    manager = level_shutdown_listener_manager
 
 
 class NetworkidValidated(_ListenerManager):
 
     """Register/unregister a NetworkidValidated listener."""
 
-    manager = NetworkidValidatedListenerManager
+    manager = network_id_validated_listener_manager
 
 
 class OnEdictAllocated(_ListenerManager):
 
     """Register/unregister an OnEdictAllocated listener."""
 
-    manager = OnEdictAllocatedListenerManager
+    manager = on_edict_allocated_listener_manager
 
 
 class OnEdictFreed(_ListenerManager):
 
     """Register/unregister an OnEdictFreed listener."""
 
-    manager = OnEdictFreedListenerManager
+    manager = on_edict_free_listener_manager
 
 
 class OnQueryCvarValueFinished(_ListenerManager):
 
     """Register/unregister an OnQueryCvarValueFinished listener."""
 
-    manager = OnQueryCvarValueFinishedListenerManager
+    manager = on_query_cvar_value_finished_listener_manager
 
 
 class ServerActivate(_ListenerManager):
 
     """Register/unregister a ServerActivate listener."""
 
-    manager = ServerActivateListenerManager
+    manager = server_activate_listener_manager
 
 
 class Tick(_ListenerManager):
 
     """Register/unregister a Tick listener."""
 
-    manager = TickListenerManager
+    manager = tick_listener_manager

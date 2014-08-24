@@ -13,7 +13,7 @@ from configobj import ConfigObj
 #   Core
 from core import GAME_NAME
 #   Engines
-from engines.server import EngineServer
+from engines.server import engine_server
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
@@ -186,7 +186,7 @@ _player_iter_manager.register_return_type(
 _player_iter_manager.register_return_type(
     'weapon', lambda playerinfo: playerinfo.get_weapon_name())
 _player_iter_manager.register_return_type(
-    'language', lambda playerinfo: EngineServer.get_client_convar_value(
+    'language', lambda playerinfo: engine_server.get_client_convar_value(
         index_from_playerinfo(playerinfo), 'cl_language'))
 _player_iter_manager.register_return_type(
     'team', lambda playerinfo: playerinfo.get_team_index())

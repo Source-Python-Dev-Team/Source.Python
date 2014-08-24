@@ -162,9 +162,9 @@ class _LogInstance(dict):
         # Print to main log file?
         if MAIN_LOG & areas:
 
-            # Import EngineServer
+            # Import engine_server
             # This is done here to fix an ImportError
-            from engines.server import EngineServer
+            from engines.server import engine_server
 
             # Is a prefix supposed to be logged?
             if not dump:
@@ -184,7 +184,7 @@ class _LogInstance(dict):
                 message = msg
 
             # Print to the main log
-            EngineServer.log_print(message + '\n')
+            engine_server.log_print(message + '\n')
 
         # Print to the console?
         if CONSOLE & areas and not dump:

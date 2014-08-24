@@ -186,7 +186,7 @@ void export_effects()
 		ADD_MEM_TOOLS(IEffects, "_Effects")
 	;
 
-	scope().attr("Effects") = object(ptr(effects));
+	scope().attr("effects") = object(ptr(effects));
 }
 
 

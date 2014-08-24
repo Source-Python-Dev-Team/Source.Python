@@ -17,13 +17,13 @@ from loggers import _sp_logger
 # =============================================================================
 # Source.Python Imports
 #   Events
-from _events import GameEventManager
+from _events import game_event_manager
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('GameEventManager',
+__all__ = ('game_event_manager',
            'event_registry',
            )
 
@@ -47,8 +47,8 @@ class _EventRegistry(dict):
         # Get an _EventListener instance
         listener = self[event] = _EventListener(event)
 
-        # Add the listener to the GameEventManager
-        GameEventManager.add_listener(listener.listener, event, True)
+        # Add the listener to the game_event_manager
+        game_event_manager.add_listener(listener.listener, event, True)
 
         # Return the instance
         return listener
@@ -78,8 +78,8 @@ class _EventRegistry(dict):
         # Are there any callbacks remaining for the event?
         if not self[event]:
 
-            # Remove the listener from the GameEventManager
-            GameEventManager.remove_listener(self[event].listener)
+            # Remove the listener from the game_event_manager
+            game_event_manager.remove_listener(self[event].listener)
 
             # Remove the event from the dictionary
             del self[event]
