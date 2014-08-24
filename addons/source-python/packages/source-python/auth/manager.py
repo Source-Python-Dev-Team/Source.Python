@@ -9,7 +9,7 @@
 #   Auth
 from auth import auth_logger
 from auth import _auth_strings
-from auth.base import AuthBase
+from auth.providers import AuthBase
 from auth.paths import AUTH_PROVIDER_PATH
 #   Players
 from players.helpers import uniqueid_from_playerinfo

@@ -1,4 +1,4 @@
-# ../auth/base.py
+# ../auth/providers/__init__.py
 
 """Provides a base Authorization class."""
 
@@ -21,8 +21,8 @@ __all__ = ('AuthBase',
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get sp.auth.base logger
-auth_base_logger = auth_logger.base
+# Get sp.auth.provider logger
+auth_provider_logger = auth_logger.provider
 
 
 # =============================================================================
@@ -34,13 +34,13 @@ class AuthBase(object):
 
     def load(self):
         """Base implementation of load that if called will print an error."""
-        auth_base_logger.log_warning(
+        auth_provider_logger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
                 classname=self.__class__.__name__, method='load'))
 
     def unload(self):
         """Base implementation of unload that if called will print an error."""
-        auth_base_logger.log_warning(
+        auth_provider_logger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
                 classname=self.__class__.__name__, method='unload'))
 
@@ -49,7 +49,7 @@ class AuthBase(object):
 
         If base method is called, it will print an error.
         """
-        auth_base_logger.log_warning(
+        auth_provider_logger.log_warning(
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
                 classname=self.__class__.__name__,
                 method='is_player_authorized'))

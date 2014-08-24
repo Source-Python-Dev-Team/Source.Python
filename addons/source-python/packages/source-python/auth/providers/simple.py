@@ -11,7 +11,7 @@ import re
 
 # Source.Python Imports
 #   Auth
-from auth.base import AuthBase
+from auth.providers import AuthBase
 from auth.paths import AUTH_CFG_PATH
 
 

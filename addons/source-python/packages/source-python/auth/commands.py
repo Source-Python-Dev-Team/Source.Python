@@ -30,6 +30,8 @@ class _AuthCommands(OrderedDict):
 
     """Class used for executing "sp auth" sub-command functionality."""
 
+    manager = auth_manager
+
     def call_command(self, args):
         """Execute the given "sp auth" sub-command."""
         # Was a command given?
@@ -73,6 +75,77 @@ class _AuthCommands(OrderedDict):
         # Execute the command
         self[command]()
 
+    def _load_auth_providers(self, providers):
+        """Load the given auth providers."""
+        # Were any providers given?
+        if not providers:
+
+            # Send a message about the required argument
+            auth_commands_logger.log_message(
+                '[SP Auth] ' + _auth_strings['Missing Load'].get_string())
+
+            # No need to go further
+            return
+
+        # Loop through all of the given providers
+        for provider in providers:
+
+            # Load the current provider
+            self.manager.load_auth(provider)
+
+    _load_auth_providers.args = ['<provider>', '[provider]', '...']
+
+    def _unload_auth_providers(self, providers):
+        """Unload the given auth providers."""
+        # Were any providers given?
+        if not providers:
+
+            # Send a message about the required argument
+            auth_commands_logger.log_message(
+                '[SP Auth] ' + _auth_strings['Missing Unload'].get_string())
+
+            # No need to go further
+            return
+
+        # Loop through all of the given providers
+        for provider in providers:
+
+            # Unload the current provider
+            self.manager.unload_auth(provider)
+
+    _unload_auth_providers.args = ['<provider>', '[provider]', '...']
+
+    def _reload_auth_providers(self, providers=None):
+        """Reload the given auth providers."""
+        # Were any providers given?
+        if not providers:
+
+            # Set providers to all currently loaded providers
+            providers = list(self.manager)
+
+        # Loop through the providers
+        for provider in providers:
+
+            # Reload the given provider
+            self.manager.reload_auth(provider)
+
+    _reload_auth_providers.args = ['[provider]', '[provider]', '...']
+
+    def _print_auth_providers(self):
+        """List all currently loaded auth providers."""
+        # Get header messages
+        message = '[SP Auth] ' + _auth_strings[
+            'Providers'].get_string() + '\n' + '=' * 61 + '\n'
+
+        # Loop through all loaded auth providers
+        for provider in self.manager:
+
+            # Add the current provider to the message
+            message += provider + '\n'
+
+        # Print ending messages
+        auth_commands_logger.log_message(message + '=' * 61)
+
     def print_auth_help(self, message=''):
         """Print all "sp auth" sub-commands."""
         # Get header messages
@@ -114,85 +187,14 @@ class _AuthCommands(OrderedDict):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def _load_auth_providers(providers):
-    """Load the given auth providers."""
-    # Were any providers given?
-    if not providers:
-
-        # Send a message about the required argument
-        auth_commands_logger.log_message(
-            '[SP Auth] ' + _auth_strings['Missing Load'].get_string())
-
-        # No need to go further
-        return
-
-    # Loop through all of the given providers
-    for provider in providers:
-
-        # Load the current provider
-        auth_manager.load_auth(provider)
-
-
-def _unload_auth_providers(providers):
-    """Unload the given auth providers."""
-    # Were any providers given?
-    if not providers:
-
-        # Send a message about the required argument
-        auth_commands_logger.log_message(
-            '[SP Auth] ' + _auth_strings['Missing Unload'].get_string())
-
-        # No need to go further
-        return
-
-    # Loop through all of the given providers
-    for provider in providers:
-
-        # Unload the current provider
-        auth_manager.unload_auth(provider)
-
-
-def _reload_auth_providers(providers=None):
-    """Reload the given auth providers."""
-    # Were any providers given?
-    if not providers:
-
-        # Set providers to all currently loaded providers
-        providers = list(auth_manager)
-
-    # Loop through the providers
-    for provider in providers:
-
-        # Reload the given provider
-        auth_manager.reload_auth(provider)
-
-
-def _print_auth_providers():
-    """List all currently loaded auth providers."""
-    # Get header messages
-    message = '[SP Auth] ' + _auth_strings[
-        'Providers'].get_string() + '\n' + '=' * 61 + '\n'
-
-    # Loop through all loaded auth providers
-    for provider in auth_manager:
-
-        # Add the current provider to the message
-        message += provider + '\n'
-
-    # Print ending messages
-    auth_commands_logger.log_message(message + '=' * 61)
-
 # Get the _AuthCommands instance
 _auth_commands = _AuthCommands()
 
 # Add all auth loading/unloading commands to the dictionary
-_auth_commands['load'] = _load_auth_providers
-_auth_commands['load'].args = ['<provider>', '[provider]', '...']
-_auth_commands['unload'] = _unload_auth_providers
-_auth_commands['unload'].args = ['<provider>', '[provider]', '...']
-_auth_commands['reload'] = _reload_auth_providers
-_auth_commands['reload'].args = ['[provider]', '[provider]', '...']
+_auth_commands['load'] = _auth_commands._load_auth_providers
+_auth_commands['unload'] = _auth_commands._unload_auth_providers
+_auth_commands['reload'] = _auth_commands._reload_auth_providers
 
 # Add all printing commands to the dictionary
-_auth_commands['list'] = _print_auth_providers
+_auth_commands['list'] = _auth_commands._print_auth_providers
 _auth_commands['help'] = _auth_commands.print_auth_help

@@ -36,15 +36,13 @@ try:
 except ImportError:
 
     # Set the variable to None if failed to import
-    _game_instance = None
+    _game_instance = import_module('players.games')
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _PlayerWeapons(
-        object if not hasattr(_game_instance, '_GameWeapons')
-        else _game_instance._GameWeapons):
+class _PlayerWeapons(_game_instance._GameWeapons):
 
     """Extends PlayerEntity to provide basic weapon functionality."""
 
