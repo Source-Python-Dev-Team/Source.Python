@@ -31,3 +31,13 @@ void CListenerManager::UnregisterListener(PyObject* pCallable)
 	// Remove the callback from the ServerCommandManager instance
 	m_vecCallables.FindAndRemove(oCallable);
 }
+
+void CListenerManager::Notify(tuple args, dict kwargs)
+{
+	for(int i = 0; i < m_vecCallables.Count(); i++)
+	{
+		BEGIN_BOOST_PY()
+			eval("lambda func, args, kwargs: func(*args, **kwargs)")(m_vecCallables[i], args, kwargs);
+		END_BOOST_PY_NORET()
+	}
+}

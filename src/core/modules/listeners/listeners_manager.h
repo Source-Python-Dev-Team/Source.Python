@@ -38,6 +38,7 @@ class CListenerManager
 public:
 	void RegisterListener(PyObject* pCallable);
 	void UnregisterListener(PyObject* pCallable);
+	void Notify(boost::python::tuple args, dict kwargs);
 
 public:
 	CUtlVector<object> m_vecCallables;

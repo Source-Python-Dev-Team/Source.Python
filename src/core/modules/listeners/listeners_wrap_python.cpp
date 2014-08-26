@@ -63,7 +63,7 @@ void export_listener_managers()
     //-------------------------------------------------------------------------
 	// Exposes ListenerManager
 	//-------------------------------------------------------------------------
-	class_<CListenerManager, boost::noncopyable>("_ListenerManager", no_init)
+	class_<CListenerManager, boost::noncopyable>("_ListenerManager")
 		.def("register_listener",
 			&CListenerManager::RegisterListener,
 			"Registers a callable object. If it was already registered it will be ignored.",
@@ -74,6 +74,11 @@ void export_listener_managers()
 			&CListenerManager::UnregisterListener,
 			"Removes a callable object. If it was not registered nothing will happen.",
 			args("callable")
+		)
+
+		.def("notify",
+			raw_method(&CListenerManager::Notify),
+			"Notifies all registered listeners."
 		)
 	;
 
