@@ -63,6 +63,8 @@
 #	define PYLIB_NAME PYLIB_NAME_LINUX_RELEASE
 #endif
 
+#define MSG_PREFIX "[Source.Python] "
+
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
 //---------------------------------------------------------------------------------

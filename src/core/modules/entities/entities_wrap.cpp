@@ -37,6 +37,7 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
 #include "utility/wrap_macros.h"
+#include "core/sp_main.h"
 
 //-----------------------------------------------------------------------------
 // If these aren't defined, we get linker errors about CBaseEdict.
@@ -192,7 +193,7 @@ CSendProp::CSendProp( edict_t* edict, const char* prop_name )
 
 	if( !m_edict )
 	{
-		DevMsg(1, "[SP]: edict was not valid!\n");
+		DevMsg(1, MSG_PREFIX "edict was not valid!\n");
 		return;
 	}
 

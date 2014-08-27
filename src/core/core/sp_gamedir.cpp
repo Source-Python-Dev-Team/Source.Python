@@ -28,6 +28,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "sp_gamedir.h"
+#include "sp_main.h"
 #include "eiface.h"
 #include "strtools.h"
 
@@ -47,7 +48,7 @@ CGamePaths g_GamePaths;
 bool CGamePaths::Initialize( void )
 {
 	if( !engine ) {
-		Msg("[SP] Could not initialize game paths! Engine pointer was invalid.\n");
+		Msg(MSG_PREFIX "Could not initialize game paths! Engine pointer was invalid.\n");
 		return false;
 	}
 
@@ -58,8 +59,8 @@ bool CGamePaths::Initialize( void )
 	V_FixSlashes(m_szGameDir);
 	V_FixSlashes(m_szSPDir);
 
-	DevMsg(1, "[SP] Game directory is %s\n", m_szGameDir);
-	DevMsg(1, "[SP] Source-Python directory is %s\n", m_szSPDir);
+	DevMsg(1, MSG_PREFIX "Game directory is %s\n", m_szGameDir);
+	DevMsg(1, MSG_PREFIX "Source-Python directory is %s\n", m_szSPDir);
 
 	return true;
 }

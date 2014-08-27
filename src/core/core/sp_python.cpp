@@ -33,6 +33,7 @@
 //---------------------------------------------------------------------------------
 #include "sp_python.h"
 #include "sp_gamedir.h"
+#include "sp_main.h"
 #include "eiface.h"
 #include "modules/export_main.h"
 
@@ -63,7 +64,7 @@ void AddToSysPath( const char* path )
 	V_snprintf(szFolderPath, MAX_GAME_PATH, "%s%s", g_GamePaths.GetSPDir(), path);
 	V_FixSlashes(szFolderPath);
 
-	DevMsg(1, "[SP] Adding %s to path\n", szFolderPath);
+	DevMsg(1, MSG_PREFIX "Adding %s to path\n", szFolderPath);
 	std::string szCommandString = "sys.path.append(r\"" + std::string(szFolderPath) + "\")";
 	PyRun_SimpleString(szCommandString.c_str());
 }
@@ -77,7 +78,7 @@ bool CPythonManager::Initialize( void )
 	char szPythonHome[MAX_GAME_PATH];
 	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/Python3", g_GamePaths.GetSPDir());
 	V_FixSlashes(szPythonHome);
-	DevMsg(1, "[SP] Python home path set to %s\n", szPythonHome);
+	DevMsg(1, MSG_PREFIX "Python home path set to %s\n", szPythonHome);
 
 	// Convert to wide char for python.
 	wchar_t wszPythonHome[1024];
@@ -92,7 +93,7 @@ bool CPythonManager::Initialize( void )
 	Py_Initialize();
 
 	// Print some information
-	DevMsg(1, "Python version %s initialized!\n", Py_GetVersion());
+	DevMsg(1, MSG_PREFIX "Python version %s initialized!\n", Py_GetVersion());
 
 	// Make sure sys is imported.
 	PyRun_SimpleString("import sys");
@@ -126,15 +127,19 @@ bool CPythonManager::Initialize( void )
 	modulsp_init();
 
 	// Import the main module file.
-	DevMsg(1, "[SP] Importing main module..\n");
-	BEGIN_BOOST_PY()
+	DevMsg(1, MSG_PREFIX "Importing main module..\n");
 
+	try {
 		python::import("__init__");
+	}
+	catch( ... ) {
+		PyErr_Print();
+		PyErr_Clear();
+		DevMsg(0, MSG_PREFIX "Failed to load.\n");
+		return false;
+	}
 
-	END_BOOST_PY_NORET(); // Noret because we have more stuff to do after this import.
-
-	DevMsg(0, "[Source.Python] Loaded successfully.\n");
-
+	DevMsg(0, MSG_PREFIX "Loaded successfully.\n");
 	return true;
 }
 

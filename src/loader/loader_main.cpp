@@ -156,7 +156,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 //---------------------------------------------------------------------------------
 bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn gameServerFactory )
 {
-	DevMsg(0, "[Source.Python] Loading...\n");
+	DevMsg(0, MSG_PREFIX "Loading...\n");
 
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 

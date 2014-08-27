@@ -29,6 +29,7 @@
 //---------------------------------------------------------------------------------
 #include "boost/python.hpp"
 #include "core/sp_python.h"
+#include "core/sp_main.h"
 #include "export_main.h"
 #include "tier0/dbg.h"
 
@@ -67,7 +68,7 @@ void modulsp_init( void )
 			char* szModuleName = g_SourcePythonModules[i].szName;
 
 			// Debug info.
-			DevMsg(1, "[SP] Initializing %s module\n", szModuleName);
+			DevMsg(1, MSG_PREFIX "Initializing %s module\n", szModuleName);
 
 			// Set the new module as the current scope.
 			object newmodule(borrowed(PyImport_AddModule(szModuleName)));

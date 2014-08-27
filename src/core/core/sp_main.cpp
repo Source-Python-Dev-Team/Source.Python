@@ -157,9 +157,9 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 
 		// If it's not valid, bail out.
 		if( *pGlobal ) {
-			DevMsg(1, "[SP] Interface %s at %x\n", pInterface->szInterface, *pGlobal);
+			DevMsg(1, MSG_PREFIX "Interface %s at %x\n", pInterface->szInterface, *pGlobal);
 		} else {
-			Warning("[SP] Could not retrieve interface %s\n", pInterface->szInterface);
+			Warning(MSG_PREFIX "Could not retrieve interface %s\n", pInterface->szInterface);
 			return false;
 		}
 
@@ -211,13 +211,13 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	// Initialize game paths.
 	if( !g_GamePaths.Initialize() ) {
-		DevMsg(0, "Could not initialize game paths.");
+		DevMsg(0, MSG_PREFIX "Could not initialize game paths.\n");
 		return false;
 	}
 
 	// Initialize python
 	if( !g_PythonManager.Initialize() ) {
-		DevMsg(0, "Could not initialize python.");
+		DevMsg(0, MSG_PREFIX "Could not initialize python.\n");
 		return false;
 	}
 
@@ -377,7 +377,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
 	g_AddonManager.OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
-	DevMsg(1, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
+	DevMsg(1, MSG_PREFIX "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
 }
 
 //-----------------------------------------------------------------------------
@@ -386,7 +386,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 void CSourcePython::FireGameEvent( IGameEvent * event )
 {
 	const char * name = event->GetName();
-	DevMsg(1, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
+	DevMsg(1, MSG_PREFIX "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
 
 	//g_AddonManager.FireGameEvent(event);
 }
