@@ -102,8 +102,8 @@ void export_igameevent()
 
 		.def("is_empty",
 			&IGameEvent::IsEmpty,
-			"Returns true if the given key exists.",
-			args("key_name")
+			"Returns true if the given key exists. If no key name was passed, it will check if the whole event is empty.",
+			(arg("key_name")=((const char*) NULL))
 		)
 
 		.def("get_bool",
