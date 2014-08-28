@@ -58,7 +58,15 @@ public:
 	bool HasRecipient(int iPlayer);
 
 private:
-	CUtlVector<int> m_Recipients;
+	bool				m_bReliable;
+	bool				m_bInitMessage;
+	CUtlVector< int >	m_Recipients;
+	
+	// If using prediction rules, the filter itself suppresses local player
+	bool				m_bUsingPredictionRules;
+	// If ignoring prediction cull, then external systems can determine
+	//  whether this is a special case where culling should not occur
+	bool				m_bIgnorePredictionCull;
 };
 
 #endif

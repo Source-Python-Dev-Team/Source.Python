@@ -55,6 +55,10 @@ extern CGlobalVars		*gpGlobals;
 
 MRecipientFilter::MRecipientFilter()
 {
+	m_bReliable			= false;
+	m_bInitMessage		= false;
+	m_bUsingPredictionRules = false;
+	m_bIgnorePredictionCull = true;
 }
 
 MRecipientFilter::~MRecipientFilter()
@@ -63,12 +67,12 @@ MRecipientFilter::~MRecipientFilter()
 
 bool MRecipientFilter::IsReliable( void ) const
 {
-	return false;
+	return m_bReliable;
 }
 
 bool MRecipientFilter::IsInitMessage( void ) const
 {
-	return false;
+	return m_bInitMessage;
 }
 
 int MRecipientFilter::GetRecipientCount() const
