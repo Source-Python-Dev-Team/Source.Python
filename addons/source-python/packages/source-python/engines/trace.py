@@ -220,44 +220,43 @@ class SurfaceFlags(IntEnum):
     NOCHOP = SURF_NOCHOP
     HITBOX = SURF_HITBOX
 
-    
+
 class TraceFilterSimple(TraceFilter):
 
     """A simple trace filter."""
-    
+
     def __init__(self, ignore=(), trace_type=TraceType.EVERYTHING):
-        """Initializes the filter.
-        
+        """Initialize the filter.
+
         @param <ignore>:
         An iterable of entity indexes to ignore. The trace will not hit these
         entities.
-        
+
         @param <trace_type>:
-        Defines the trace type."""
-        
+        Defines the trace type.
+        """
         super(TraceFilterSimple, self).__init__()
         self.trace_type = trace_type
         self.ignore = tuple(map(inthandle_from_index, ignore))
 
     def should_hit_entity(self, entity, mask):
         """Called when a trace is about to hit an entity.
-        
+
         @param <entity>:
         The entity that should be hit.
-        
+
         @param <mask>:
-        The mask that was used to intialize the trace."""
-        
+        The mask that was used to intialize the trace.
+        """
         entity_inthandle = entity.get_ref_ehandle().to_int()
-        
+
         # Check for entities to ignore
         for ignore_inthandle in self.ignore:
             if ignore_inthandle == entity_inthandle:
                 return False
-                
+
         return True
-        
+
     def get_trace_type(self):
-        """Returns the trace type."""
-        
+        """Return the trace type."""
         return self.trace_type

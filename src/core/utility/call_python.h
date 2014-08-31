@@ -91,10 +91,10 @@ inline void PythonLog( const char* szLevel, const char* szFormat, ... )
 		// Import the loggers module
 		object oLogModule = import("loggers");
 
-		// Get the SPLogger instance
-		object oLogger = oLogModule.attr("_SPLogger");
+		// Get the main SP Logger instance
+		object oLogger = oLogModule.attr("_sp_logger");
 
-		// Get the PyObject instance of the SPLogger
+		// Get the PyObject instance of the logger
 		PyObject* poLogger = oLogger.ptr();
 
 		// Call the given method
@@ -117,10 +117,10 @@ inline void PythonLog( int iLevel, const char* szFormat, ... )
 		// Import the loggers module
 		object oLogModule = import("loggers");
 
-		// Get the SPLogger instance
-		object oLogger = oLogModule.attr("_SPLogger");
+		// Get the main SP Logger instance
+		object oLogger = oLogModule.attr("_sp_logger");
 
-		// Get the PyObject instance of the SPLogger
+		// Get the PyObject instance logger
 		PyObject* poLogger = oLogger.ptr();
 
 		// Call the log method with the given level
