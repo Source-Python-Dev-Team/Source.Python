@@ -1,5 +1,7 @@
 # ../entities/specials.py
 
+"""Provides special methods that do not fit anywhere else."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -25,20 +27,20 @@ _projectile_weapons = list(
 # >> CLASSES
 # =============================================================================
 class _EntitySpecials(object):
-    """Base class used to hold special functionality"""
+
+    """Base class used to hold special functionality."""
 
     def damage(
             self, victim_index, damage=0, damage_type=0,
             weapon_index=None, hitgroup=0, **kwargs):
-        """Method used to hurt another entity with the given arguments"""
-
+        """Method used to hurt another entity with the given arguments."""
         # Import BaseEntity classes
         # Doing this in the global scope causes cross import errors
         from entities.entity import BaseEntity
         from players.entity import PlayerEntity
 
         # Is the game supported?
-        if not 'take_damage' in self.functions or CTakeDamageInfo is None:
+        if 'take_damage' not in self.functions or CTakeDamageInfo is None:
 
             # Raise an error if not supported
             raise NotImplementedError(
@@ -118,5 +120,8 @@ class _EntitySpecials(object):
 
 
 class _FakeWeapon(object):
+
+    """Class used if no weapon is provided in the damage method."""
+
     classname = None
     inthandle = 0

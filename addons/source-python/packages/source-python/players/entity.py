@@ -45,9 +45,6 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
             raise ValueError(
                 'Invalid IPlayerInfo instance for index "{0}"'.format(index))
 
-        # Set the entities attribute
-        self._entities = frozenset(['entity', 'player'])
-
         # Return the instance
         return self
 
@@ -61,6 +58,7 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
         """Yield the player's IPlayerInfo and Edict instances."""
         yield self.playerinfo
         yield self.edict
+        yield self.pointer
 
     @property
     def userid(self):

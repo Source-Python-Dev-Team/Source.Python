@@ -81,7 +81,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
             return 0
 
         # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Return the amount of ammo the player has for the weapon
         return self.get_prop_int(
@@ -122,7 +122,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
             return 0
 
         # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Return the amount of ammo in the weapon's clip
         return weapon.clip
@@ -165,7 +165,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Set the player's ammo value
         self.set_prop_int(
@@ -209,7 +209,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Set the weapon's clip value
         weapon.clip = value
@@ -252,7 +252,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Get the current ammo value
         current = self.get_prop_int(
@@ -301,7 +301,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
                     classname, is_filters, not_filters, self.userid))
 
         # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index, 'weapon')
+        weapon = BaseEntity(index)
 
         # Add ammo to the weapon's clip
         weapon.clip += value
@@ -361,7 +361,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
                 continue
 
             # Get the weapon's edict
-            edict = BaseEntity(index, 'weapon')
+            edict = BaseEntity(index)
 
             # Get the weapon's classname
             weapon_class = edict.get_class_name()
@@ -407,7 +407,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
                 'No active weapon found for player "{0}"'.format(self.userid))
 
         # Return the entity's color
-        return BaseEntity(index, 'weapon').color
+        return BaseEntity(index).color
 
     def set_weapon_color(self, red, green, blue, alpha=None):
         """Set the player's active weapon's color."""
@@ -425,7 +425,7 @@ class _PlayerWeapons(_game_instance._GameWeapons):
                 'No active weapon found for player "{0}"'.format(self.userid))
 
         # Set the entity's color
-        BaseEntity(index, 'weapon').color = (red, green, blue, alpha)
+        BaseEntity(index).color = (red, green, blue, alpha)
 
 
 # =============================================================================

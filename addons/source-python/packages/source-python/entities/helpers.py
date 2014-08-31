@@ -1,5 +1,7 @@
 # ../entities/helpers.py
 
+"""Provides helper functions to convert from one type to another."""
+
 # =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================

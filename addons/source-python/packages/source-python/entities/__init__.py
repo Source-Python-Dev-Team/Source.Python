@@ -1,5 +1,7 @@
 # ../entities/__init__.py
 
+"""Provides entity based functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -39,4 +41,4 @@ __all__ = ('BaseEntityHandle',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.entities logger
-EntitiesLogger = _sp_logger.entities
+entities_logger = _sp_logger.entities
