@@ -251,6 +251,16 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
     def load_plugin(self, plugin_name):
         """Load a plugin by name."""
+        # Is the given plugin name a proper name?
+        if not plugin_name.isalnum():
+
+            # Send a message that the given name is invalid
+            self.logger.log_message(self.prefix + self.translations[
+                'Invalid Name'].get_string(plugin=plugin_name))
+
+            # No need to go further
+            return
+
         # Is the plugin already loaded?
         if plugin_name in self.manager:
 
@@ -283,6 +293,16 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
     def unload_plugin(self, plugin_name):
         """Unload a plugin by name."""
+        # Is the given plugin name a proper name?
+        if not plugin_name.isalnum():
+
+            # Send a message that the given name is invalid
+            self.logger.log_message(self.prefix + self.translations[
+                'Invalid Name'].get_string(plugin=plugin_name))
+
+            # No need to go further
+            return
+
         # Is the plugin loaded?
         if plugin_name not in self.manager:
 
@@ -305,6 +325,16 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
     def reload_plugin(self, plugin_name):
         """Reload a plugin by name."""
+        # Is the given plugin name a proper name?
+        if not plugin_name.isalnum():
+
+            # Send a message that the given name is invalid
+            self.logger.log_message(self.prefix + self.translations[
+                'Invalid Name'].get_string(plugin=plugin_name))
+
+            # No need to go further
+            return
+
         # Unload the plugin
         self.unload_plugin(plugin_name)
 
