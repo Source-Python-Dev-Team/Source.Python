@@ -208,7 +208,7 @@ class _ServerClasses(TypeManager):
                 elif desc.flags & TypeDescriptionFlags.FUNCTIONTABLE:
 
                     # Add the descriptor to the functiontable dictionary
-                    instance._functiontables[name] = desc 
+                    instance._functiontables[name] = desc
 
                 # Is the current descriptor a keyvalue?
                 elif desc.flags & TypeDescriptionFlags.KEY:
@@ -327,10 +327,7 @@ class _ServerClasses(TypeManager):
         for desc in datamap:
 
             # Get the name to use for the embedded
-            # TODO: Test using the external name as it might not be necessary
-            name = basename + '.' + (
-                desc.name if desc.external_name
-                is None else desc.external_name)
+            name = basename + '.' + desc.name
 
             # Get the current offset
             offset = embedded_offset + desc.offset
