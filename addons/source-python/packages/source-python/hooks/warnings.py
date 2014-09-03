@@ -6,8 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   Linecache
-import linecache
+#   TextWrap
+from textwrap import TextWrapper
 #   Warnings
 import warnings
 
@@ -35,6 +35,9 @@ __all__ = ('WarningHook',
 # =============================================================================
 # Get the sp.hooks.warnings logger
 hooks_warnings_logger = hooks_logger.warnings
+
+# Get the TextWrapper instance to use for warnings
+_text_wrapper = TextWrapper(80, subsequent_indent=' ' * 8)
 
 
 # =============================================================================
@@ -68,7 +71,7 @@ class _WarningHooks(_HookBase):
         # Add the warning to the message
         print_message += "\n  File '..{0}', line {1}: {2}\n    {3}".format(
             filename.replace(GAME_PATH, ''), lineno,
-            category.__name__, linecache.getline(filename, lineno))
+            category.__name__, '\n'.join(_text_wrapper.wrap(str(message))))
 
         # Log the warning
         hooks_warnings_logger.log_warning(print_message + '\n')
