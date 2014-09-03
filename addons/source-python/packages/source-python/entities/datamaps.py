@@ -91,12 +91,3 @@ class InputFunction(Function):
 
         # Call the function
         super(InputFunction, self).__call__(self._this, inputdata)
-
-
-class OutputFunction(Function):
-
-    """Class used to create an Output function."""
-
-    def __call__(self, *args):
-        """Do not allow calling of the output."""
-        raise TypeError('Output functions are only hookable, not callable.')

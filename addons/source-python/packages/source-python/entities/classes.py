@@ -23,7 +23,6 @@ from entities.datamaps import _supported_input_types
 from entities.datamaps import DataMap
 from entities.datamaps import FieldTypes
 from entities.datamaps import InputFunction
-from entities.datamaps import OutputFunction
 from entities.datamaps import TypeDescriptionFlags
 from entities.helpers import edict_from_pointer
 #   Memory
@@ -128,7 +127,8 @@ class _ServerClasses(TypeManager):
             #    information based on the datamap.
             descriptors = dict()
             inputs = dict()
-            outputs = dict()
+            instance._outputs = dict()
+            instance._functiontables = dict()
             instance._keyvalues = dict()
 
             # Loop through all descriptors in the current datamap
@@ -201,16 +201,14 @@ class _ServerClasses(TypeManager):
                 # Is the current descriptor an output?
                 elif desc.flags & TypeDescriptionFlags.OUTPUT:
 
-                    # If the output is already registered, move on
-                    if name in outputs:
-                        warn(
-                            'Output "{0}" is '.format(name) +
-                            'already registered for class "{0}"'.format(
-                                datamap.class_name))
-                        continue
-
                     # Add the descriptor to the outputs dictionary
-                    outputs[name] = self.output(desc.offset)
+                    instance._outputs[name] = desc
+
+                # Is the current descriptor a functiontable?
+                elif desc.flags & TypeDescriptionFlags.FUNCTIONTABLE:
+
+                    # Add the descriptor to the functiontable dictionary
+                    instance._functiontables[name] = desc 
 
                 # Is the current descriptor a keyvalue?
                 elif desc.flags & TypeDescriptionFlags.KEY:
@@ -248,14 +246,12 @@ class _ServerClasses(TypeManager):
                         setattr(
                             instance, offset_contents[name], descriptors[name])
 
-            # Store the descriptors, inputs, and outputs with the instance
+            # Store the descriptors and inputs with the instance
             instance._descriptors = self(
                 datamap.class_name + 'Descriptors',
                 (CustomType, ), descriptors)
             instance._inputs = self(
                 datamap.class_name + 'Inputs', (CustomType, ), inputs)
-            instance._outputs = self(
-                datamap.class_name + 'Outputs', (CustomType, ), outputs)
 
             # Loop through all properties to add to the instance
             for property_name in property_contents:
@@ -298,18 +294,6 @@ class _ServerClasses(TypeManager):
                 Return.VOID)
 
             return InputFunction(name, argument_type, function, pointer)
-
-        return property(fget)
-
-    def output(self, offset):
-        """Output type DataMap object."""
-        def fget(pointer):
-            """Retrieve the OutputFunction instance."""
-            function = pointer.make_virtual_function(
-                offset, Convention.THISCALL,
-                (Argument.POINTER, Argument.POINTER), Return.VOID)
-
-            return OutputFunction(function)
 
         return property(fget)
 

@@ -300,20 +300,3 @@ class BaseEntity(_EntitySpecials):
         raise ValueError(
             'Unknown input "{0}" for entity type "{1}".'.format(
                 name, self.classname))
-
-    def get_output(self, name):
-        """Return the OutputFunction instance for the given name."""
-        # Loop through each server class for the entity
-        for server_class in self.server_classes:
-
-            # Does the current server class contain the output?
-            if hasattr(server_class._outputs, name):
-
-                # Return the OutputFunction instance for the given output name
-                return getattr(
-                    make_object(server_class._outputs, self.pointer), name)
-
-        # If no server class contains the output, raise an error
-        raise ValueError(
-            'Unknown output "{0}" for entity type "{1}".'.format(
-                name, self.classname))
