@@ -14,14 +14,10 @@ from warnings import warn
 from configobj import ConfigObj
 
 # Source.Python Imports
-#   Basetypes
-from basetypes import Color
-from basetypes import Interval
 #   Core
 from core import GAME_NAME
 from core import PLATFORM
 #   Entities
-from entities import Edict
 from entities.constants import DATA_DESC_MAP_OFFSET
 from entities.datamaps import _supported_input_types
 from entities.datamaps import DataMap
@@ -30,9 +26,6 @@ from entities.datamaps import InputFunction
 from entities.datamaps import OutputFunction
 from entities.datamaps import TypeDescriptionFlags
 from entities.helpers import edict_from_pointer
-#   Mathlib
-from mathlib import Quaternion
-from mathlib import Vector
 #   Memory
 from memory import Argument
 from memory import Convention
@@ -53,6 +46,7 @@ _offsets_path = SP_DATA_PATH.joinpath('entities', 'offsets', GAME_NAME)
 _virtuals_path = SP_DATA_PATH.joinpath('virtuals', GAME_NAME)
 _properties_path = SP_DATA_PATH.joinpath('entities', 'properties', GAME_NAME)
 
+# Store all supported types
 _supported_offset_types = {
     FieldTypes.BOOLEAN: 'bool',
     FieldTypes.CHARACTER: 'char',
@@ -86,17 +80,30 @@ class _ServerClasses(TypeManager):
 
     def get_start_server_class(self, server_class, pointer):
         """Retrieve the first server class and build any classes."""
+        # If the given server_class is already in the dictionary,
+        #   simply return the given server_class
         if server_class in self:
             return server_class
+
+        # Create a function for the <server_class>::GetDataDescMap method
         function = pointer.make_virtual_function(
             DATA_DESC_MAP_OFFSET, Convention.THISCALL,
             (Argument.POINTER, ), Return.POINTER)
         server_class = datamap = make_object(DataMap, function(pointer))
+
+        # If the current classname is in the dictionary, simply return it
         if datamap.class_name in self:
             return datamap.class_name
+
+        # Loop through all datamaps to add their objects to the dictionary.
+        # Once one is found to be in the dictionary, stop iterating.
         while datamap:
+
+            # If the current classname is in the dictionary, stop iterating
             if datamap.class_name in self:
                 break
+
+            # Get the contents of all files pertaining to the current datamap
             manager_contents = ConfigObj(
                 _managers_path.joinpath(datamap.class_name + '.ini'))
             virtual_contents = ConfigObj(
@@ -105,116 +112,178 @@ class _ServerClasses(TypeManager):
                 _offsets_path.joinpath(datamap.class_name + '.ini'))
             property_contents = ConfigObj(
                 _properties_path.joinpath(datamap.class_name + '.ini'))
+
+            # Add the offsets to any virtual functions for the current datamap
             if 'virtual_function' in manager_contents:
                 for item in manager_contents['virtual_function']:
                     value = manager_contents['virtual_function'][item]
                     value['offset_{0}'.format(
                         PLATFORM)] = virtual_contents[value['name']][PLATFORM]
 
+            # Get a TypeManager instance for the current datamap
             instance = self.create_type_from_file(
                 datamap.class_name, manager_contents)
 
+            # Create dictionaries to hold specific
+            #    information based on the datamap.
             descriptors = dict()
             inputs = dict()
             outputs = dict()
             instance._keyvalues = dict()
 
+            # Loop through all descriptors in the current datamap
             for desc in datamap:
 
+                # If the name doesn't exist, move onto the next one
                 if desc.name is None:
                     continue
 
+                # Get the name to use.
+                # If the external name is set, use it, otherwise use the name.
                 name = (desc.name if desc.external_name
                         is None else desc.external_name)
 
+                # Is the current name already
+                # registered for the current datamap?
                 if hasattr(instance, name):
                     warn(
                         '{0} object already contains the attribute {1}'.format(
                             instance.__class__.__name__, name))
                     continue
 
+                # Is this an embedded descriptor?
                 if desc.type == FieldTypes.EMBEDDED:
 
-                    if name in descriptors:
-                        warn()
-                        continue
+                    # Loop through all embedded
+                    #   descriptors within this embedded.
                     for embedded_name, embedded_type, offset in (
                             self._find_embedded_descriptors(
                                 name, desc.embedded_datamap, desc.offset)):
 
+                        # If the name is already registered, move on
+                        if name in descriptors:
+                            warn(
+                                'Embedded descriptor "{0}" is '.format(name) +
+                                'already registered for class "{0}"'.format(
+                                    datamap.class_name))
+                            continue
+
+                        # Add the embedded to the descriptors dictionary
                         descriptors[embedded_name] = self.instance_attribute(
                             _supported_offset_types[embedded_type], offset)
+
+                        # Is the embedded a named descriptor?
                         if (embedded_name in offset_contents
                                 and embedded_type in _supported_offset_types):
+
+                            # Add the descriptor to the instance by name
                             setattr(
                                 instance,
                                 offset_contents[embedded_name],
                                 descriptors[embedded_name])
 
+                # Is the current descriptor an input?
                 elif (desc.flags & TypeDescriptionFlags.INPUT
                         and not desc.flags & TypeDescriptionFlags.KEY
                         and desc.type in _supported_input_types):
 
+                    # If the input is already registered, move on
                     if name in inputs:
-                        warn()
+                        warn(
+                            'Input "{0}" is '.format(name) +
+                            'already registered for class "{0}"'.format(
+                                datamap.class_name))
                         continue
 
+                    # Add the descriptor to the inputs dictionary
                     inputs[name] = self.input(name, desc)
 
-                # Check types and test
+                # Is the current descriptor an output?
                 elif desc.flags & TypeDescriptionFlags.OUTPUT:
 
+                    # If the output is already registered, move on
                     if name in outputs:
-                        warn()
+                        warn(
+                            'Output "{0}" is '.format(name) +
+                            'already registered for class "{0}"'.format(
+                                datamap.class_name))
                         continue
 
+                    # Add the descriptor to the outputs dictionary
                     outputs[name] = self.output(desc.offset)
 
+                # Is the current descriptor a keyvalue?
                 elif desc.flags & TypeDescriptionFlags.KEY:
 
+                    # If the keyvalue is already registered, move on
                     if name in instance._keyvalues:
-                        warn()
+                        warn(
+                            'KeyValue "{0}" is '.format(name) +
+                            'already registered for class "{0}"'.format(
+                                datamap.class_name))
                         continue
 
+                    # Add the keyvalue to the keyvalues dictionary
                     instance._keyvalues[name] = desc
 
+                # Is the current descriptor supported?
                 elif desc.type in _supported_offset_types:
 
+                    # If the name is already registered, move on
+                    if name in descriptors:
+                        warn(
+                            'Descriptor "{0}" is '.format(name) +
+                            'already registered for class "{0}"'.format(
+                                datamap.class_name))
+                        continue
+
+                    # Add the descriptor to the descriptors dictionary
                     descriptors[name] = self.instance_attribute(
                         _supported_offset_types[desc.type], desc.offset)
+
+                    # Is this a named descriptor?
                     if name in offset_contents:
+
+                        # Add the descriptor to the instance by name
                         setattr(
                             instance, offset_contents[name], descriptors[name])
 
+            # Store the descriptors, inputs, and outputs with the instance
             instance._descriptors = self(
                 datamap.class_name + 'Descriptors',
                 (CustomType, ), descriptors)
-
             instance._inputs = self(
                 datamap.class_name + 'Inputs', (CustomType, ), inputs)
-
             instance._outputs = self(
                 datamap.class_name + 'Outputs', (CustomType, ), outputs)
 
+            # Loop through all properties to add to the instance
             for property_name in property_contents:
 
+                # If the current property name is already registered, move on
                 if hasattr(instance, property_name):
-
-                    warn()
+                    warn(
+                        'Property "{0}" is '.format(name) +
+                        'already registered for class "{0}"'.format(
+                            datamap.class_name))
                     continue
 
+                # Get the properties values
                 property_values = property_contents[property_name]
 
+                # Add the property to the instance
                 setattr(
                     instance, property_name,
-                    self.instance_property(
+                    self.network_property(
                         property_values['prop'],
                         property_values['type'],
                         property_values.get('True', None),
                         property_values.get('False', None)))
 
+            # Get the next server class
             instance._base_class = datamap = datamap.base
 
+        # Return the main server class name
         return server_class.class_name
 
     def input(self, name, desc):
@@ -244,7 +313,7 @@ class _ServerClasses(TypeManager):
 
         return property(fget)
 
-    def instance_property(self, name, type_name, true_value, false_value):
+    def network_property(self, name, type_name, true_value, false_value):
         """Networked property."""
         def fget(pointer):
             """Retrive the network property for the entity."""
@@ -270,16 +339,27 @@ class _ServerClasses(TypeManager):
 
     def _find_embedded_descriptors(self, basename, datamap, embedded_offset):
         """Search for embedded descriptors to be added to the server class."""
+        # Loop through each descriptor in the embedded
         for desc in datamap:
-            # Test this as it might not be necessary
+
+            # Get the name to use for the embedded
+            # TODO: Test using the external name as it might not be necessary
             name = basename + '.' + (
                 desc.name if desc.external_name
                 is None else desc.external_name)
+
+            # Get the current offset
             offset = embedded_offset + desc.offset
+
+            # If the current descriptor is another
+            #   embedded, loop through its descriptors.
             if desc.type == FieldTypes.EMBEDDED:
                 self._find_embedded_descriptors(
                     name, desc.embedded_datamap, offset)
+
+            # If the current descriptor is supported, yield its values
             elif desc.type in _supported_offset_types:
                 yield name, desc.type, offset
 
+# Get the _ServerClasses instance
 _server_classes = _ServerClasses()

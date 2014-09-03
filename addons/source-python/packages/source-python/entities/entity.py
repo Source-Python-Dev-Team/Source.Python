@@ -11,6 +11,8 @@ from entities.classes import _server_classes
 from entities.helpers import edict_from_index
 from entities.helpers import pointer_from_edict
 from entities.specials import _EntitySpecials
+#   Memory
+from memory import make_object
 
 
 # =============================================================================
@@ -62,10 +64,13 @@ class BaseEntity(_EntitySpecials):
                 # Return the instance's value for the given attribute
                 return getattr(instance, attr)
 
+        # Loop through all of the entity's server classes
         for server_class in self.server_classes:
 
+            # Does the current server class contain the given attribute?
             if hasattr(server_class, attr):
 
+                # Return the attribute's value
                 return getattr(server_class(self.pointer, wrap=True), attr)
 
         # If the attribute is not found, raise an error
@@ -93,10 +98,13 @@ class BaseEntity(_EntitySpecials):
             raise ValueError(
                 'Invalid private attribute "{0}" given.'.format(attr))
 
+        # Loop through all of the entity's server classes
         for server_class in self.server_classes:
 
+            # Does the current server class contain the given attribute?
             if hasattr(server_class, attr):
 
+                # Set the attribute's value
                 setattr(server_class(self.pointer, wrap=True), attr, value)
 
         # If the attribute is not found, just set the attribute
@@ -107,25 +115,28 @@ class BaseEntity(_EntitySpecials):
         # Get the base attributes
         attributes = set(super(BaseEntity, self).__dir__())
 
+        # Loop through all instances for the entity
         for instance in self.instances:
 
+            # Loop through all of the attributes of the current instance
             for attr in dir(instance):
 
+                # Add the attribute if it is not private
                 if not attr.startswith('_'):
-
                     attributes.add(attr)
 
+        # Loop through all server classes for the entity
         for server_class in self.server_classes:
 
+            # Loop through all of the server class' attributes
             for attr in dir(server_class):
 
+                # Add the attribute if it is not private
                 if not attr.startswith('_'):
-
                     attributes.add(attr)
 
-        attributes = sorted(attributes)
-
-        return attributes
+        # Return a sorted list of attributes
+        return sorted(attributes)
 
     @property
     def index(self):
@@ -171,8 +182,12 @@ class BaseEntity(_EntitySpecials):
     @property
     def server_classes(self):
         """Loop through all server classes for the entity."""
+        # Get the first server class for the entity.
         server_class = _server_classes.get_start_server_class(
             self.server_class, self.pointer)
+
+        # Use the current server class to get its base
+        #   until there are no more base classes to return.
         while server_class in _server_classes:
             yield _server_classes[server_class]
             try:
@@ -236,35 +251,69 @@ class BaseEntity(_EntitySpecials):
 
     def get_descriptor(self, name):
         """Get the entity's value of the given descriptor."""
+        # Loop through each server class for the entity
         for server_class in self.server_classes:
+
+            # Does the current server class contain the descriptor?
             if hasattr(server_class._descriptors, name):
+
+                # Return the descriptor's value for the entity
                 return getattr(
-                    server_class._descriptors(self.pointer, wrap=True), name)
-        raise
+                    make_object(server_class._descriptors, self.pointer), name)
+
+        # If no server class contains the descriptor, raise an error
+        raise ValueError(
+            'Unknown descriptor "{0}" for entity type "{1}".'.format(
+                name, self.classname))
 
     def set_descriptor(self, name, value):
         """Set the entity's value for the given descriptor."""
+        # Loop through each server class for the entity
         for server_class in self.server_classes:
+
+            # Does the current server class contain the descriptor?
             if hasattr(server_class._descriptors, name):
-                setattr(server_class._descriptors(
-                    self.pointer, wrap=True), name, value)
+
+                # Set the descriptor's value for the entity and return
+                setattr(make_object(
+                    server_class._descriptors, self.pointer), name, value)
                 return
-        raise
+
+        # If no server class contains the descriptor, raise an error
+        raise ValueError(
+            'Unknown descriptor "{0}" for entity type "{1}".'.format(
+                name, self.classname))
 
     def get_input(self, name):
         """Return the InputFunction instance for the given name."""
+        # Loop through each server class for the entity
         for server_class in self.server_classes:
+
+            # Does the current server class contain the input?
             if hasattr(server_class._inputs, name):
+
+                # Return the InputFunction instance for the given input name
                 return getattr(
-                    server_class._inputs(self.pointer, wrap=True), name)
+                    make_object(server_class._inputs, self.pointer), name)
+
+        # If no server class contains the input, raise an error
         raise ValueError(
-            '"{0}" not a valid input name for entity'.format(name))
+            'Unknown input "{0}" for entity type "{1}".'.format(
+                name, self.classname))
 
     def get_output(self, name):
         """Return the OutputFunction instance for the given name."""
+        # Loop through each server class for the entity
         for server_class in self.server_classes:
+
+            # Does the current server class contain the output?
             if hasattr(server_class._outputs, name):
+
+                # Return the OutputFunction instance for the given output name
                 return getattr(
-                    server_class._outputs(self.pointer, wrap=True), name)
+                    make_object(server_class._outputs, self.pointer), name)
+
+        # If no server class contains the output, raise an error
         raise ValueError(
-            '"{0}" not a valid output name for entity'.format(name))
+            'Unknown output "{0}" for entity type "{1}".'.format(
+                name, self.classname))

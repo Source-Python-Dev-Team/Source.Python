@@ -99,4 +99,4 @@ class OutputFunction(Function):
 
     def __call__(self, *args):
         """Do not allow calling of the output."""
-        raise TypeError()
+        raise TypeError('Output functions are only hookable, not callable.')
