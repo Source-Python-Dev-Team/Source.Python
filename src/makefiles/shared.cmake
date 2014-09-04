@@ -58,7 +58,7 @@ Set(DYNAMICHOOKSSDK_LIB       ${DYNAMICHOOKSSDK}/lib)
 Include_Directories(
     ${SOURCESDK}
     ${SOURCESDK}/common
-    ${SOURCESDK}/common/protobuf-2.3.0/src
+    ${SOURCESDK}/common/protobuf-2.5.0/src
     ${SOURCESDK}/game/shared
     ${SOURCESDK}/game/server
     ${SOURCESDK}/public
