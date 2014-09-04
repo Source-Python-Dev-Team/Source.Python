@@ -8,6 +8,8 @@
 # Python Imports
 #   Collections
 from collections import OrderedDict
+#   Re
+import re
 
 # Source.Python Imports
 #   Commands
