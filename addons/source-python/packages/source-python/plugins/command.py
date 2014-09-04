@@ -252,7 +252,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     def load_plugin(self, plugin_name):
         """Load a plugin by name."""
         # Is the given plugin name a proper name?
-        if not plugin_name.isalnum():
+        if not self._is_valid_plugin_name(plugin_name):
 
             # Send a message that the given name is invalid
             self.logger.log_message(self.prefix + self.translations[
@@ -294,7 +294,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     def unload_plugin(self, plugin_name):
         """Unload a plugin by name."""
         # Is the given plugin name a proper name?
-        if not plugin_name.isalnum():
+        if not self._is_valid_plugin_name(plugin_name):
 
             # Send a message that the given name is invalid
             self.logger.log_message(self.prefix + self.translations[
@@ -326,7 +326,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     def reload_plugin(self, plugin_name):
         """Reload a plugin by name."""
         # Is the given plugin name a proper name?
-        if not plugin_name.isalnum():
+        if not self._is_valid_plugin_name(plugin_name):
 
             # Send a message that the given name is invalid
             self.logger.log_message(self.prefix + self.translations[
@@ -358,3 +358,12 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
         # Send the message
         self.logger.log_message(message)
+
+    @staticmethod
+    def _is_valid_plugin_name(plugin_name):
+        """Return whether or not the given plugin name is valid."""
+        # Get the regular expression match for the given plugin name
+        match = re.match('([A-Za-z][A-Za-z0-9_]*[A-Za-z0-9])$', plugin_name)
+
+        # Return whether it is valid or not
+        return False if match is None else match.group() == plugin_name
