@@ -1,4 +1,4 @@
-# ../_core/command.py
+# ../core/command.py
 
 """Registers the "sp" command and all of its sub-commands."""
 
