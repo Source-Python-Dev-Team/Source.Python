@@ -49,4 +49,4 @@ for message_name, message_class in _UserMessages(SP_DATA_PATH.joinpath(
     globals()[message_name] = message_class
 
     # Add the object, by name, to __all__
-    __all__ = tuple(list(__all__) + [message_name])
+    __all__ = tuple(sorted(list(__all__) + [message_name]))

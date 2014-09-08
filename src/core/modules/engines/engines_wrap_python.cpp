@@ -683,12 +683,6 @@ void export_engine_server()
 			reference_existing_object_policy()
 		)
 
-		.def("get_game_server_steamid",
-			&IVEngineServer::GetGameServerSteamID,
-			"Returns the SteamID of the game server.",
-			reference_existing_object_policy()
-		)
-
 		.def("client_command_key_values",
 			&IVEngineServer::ClientCommandKeyValues,
 			"Sends a client command keyvalues which are deleted inside this function.",

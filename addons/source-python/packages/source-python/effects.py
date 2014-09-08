@@ -30,8 +30,8 @@ from _effects import PredictionSystem
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('DispatchEffectData',
-           'effects',
            'PredictionSystem',
+           'effects',
            'temp_entities',
            )
 

@@ -39,11 +39,11 @@ from _globals import MapLoadType
 # =============================================================================
 __all__ = ('AutoUnload',
            'GAME_NAME',
-           'global_vars',
            'MapLoadType',
            'PLATFORM',
            'SOURCE_ENGINE',
            'echo_console',
+           'global_vars',
            )
 
 

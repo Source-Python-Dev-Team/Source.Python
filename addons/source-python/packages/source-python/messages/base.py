@@ -353,7 +353,7 @@ class BaseMessage(dict):
             self[attribute] = value
 
     def __getitem__(self, item):
-        """Return teh given parameter value."""
+        """Return the given parameter value."""
         # Is the given item a valid parameter?
         if item in self or item in self._special_parameters:
 
@@ -368,8 +368,8 @@ class BaseMessage(dict):
 
         # Raise an error
         raise KeyError(
-            '"{0}" is not a valid "{1}" ' +
-            'parameter.'.format(item, self._message_name))
+            '"{0}" is not a valid "{1}" parameter.'.format(
+                item, self._message_name))
 
     def __setitem__(self, item, value):
         """Set the given parameter to the given value."""

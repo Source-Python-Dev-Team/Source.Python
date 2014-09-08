@@ -44,7 +44,7 @@ class AuthBase(object):
             '[SP Auth] ' + _auth_strings['Not Implemented'].get_string(
                 classname=self.__class__.__name__, method='unload'))
 
-    def is_player_authorized(self, *args):
+    def is_player_authorized(self, uniqueid, level, permission, flag):
         """Base implementation of is_player_authorized.
 
         If base method is called, it will print an error.
