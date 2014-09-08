@@ -196,6 +196,60 @@ class BaseEntity(_EntitySpecials):
             except AttributeError:
                 break
 
+    @property
+    def descriptors(self):
+        """Iterate over all descriptors available for the entity.
+
+        This property is a helper for scripters
+            to know what descriptors an entity has available.
+        """
+        # Loop through each server class for the entity
+        for server_class in self.server_classes:
+
+            # Loop through the server class' descriptors
+            for descriptor in dir(server_class._descriptors):
+
+                # Is the current name actually a descriptor?
+                if descriptor not in dir(server_class):
+
+                    # Yield the descriptor
+                    yield descriptor
+
+    @property
+    def inputs(self):
+        """Iterate over all inputs available for the entity.
+
+        This property is a helper for scripters
+            to know what inputs an entity has available.
+        """
+        # Loop through each server class for the entity
+        for server_class in self.server_classes:
+
+            # Loop through the server class' inputs
+            for input in dir(server_class._inputs):
+
+                # Is the current name actually a input?
+                if input not in dir(server_class):
+
+                    # Yield the input
+                    yield input
+
+    @property
+    def keyvalues(self):
+        """Iterate over all entity keyvalues available for the entity.
+
+        This property is a helper for scripters
+            to know what keyvalues an entity has available.
+        """
+        # Loop through each server class for the entity
+        for server_class in self.server_classes:
+
+            # Loop through the server class' keyvalues
+            for keyvalue in server_class._keyvalues:
+
+                # Yield the keyvalue
+                yield keyvalue
+
     def get_color(self):
         """Return a 4 part tuple (RGBA) for the entity's color."""
         # Get the render value
