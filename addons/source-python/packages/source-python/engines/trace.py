@@ -108,15 +108,15 @@ __all__ = ('BaseTrace',
            'ContentFlags',
            'ContentMasks',
            'DisplacementFlags',
-           'engine_trace',
            'EntityEnumerator',
            'GameTrace',
            'Ray',
            'Surface',
            'SurfaceFlags',
            'TraceFilter',
+           'TraceFilterSimple',
            'TraceType',
-           'TraceFilterSimple'
+           'engine_trace',
            )
 
 

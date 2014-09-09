@@ -23,8 +23,8 @@ from _events import game_event_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('game_event_manager',
-           'event_registry',
+__all__ = ('event_registry',
+           'game_event_manager',
            )
 
 

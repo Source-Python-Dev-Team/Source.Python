@@ -51,12 +51,12 @@ from _engines import SOUND_FROM_WORLD
 # =============================================================================
 __all__ = ('Attenuations',
            'Channels',
-           'engine_sound',
            'SOUND_FROM_LOCAL_PLAYER',
            'SOUND_FROM_WORLD',
            'Sound',
            'SoundFlags',
            'VOL_NORM',
+           'engine_sound',
            )
 
 
