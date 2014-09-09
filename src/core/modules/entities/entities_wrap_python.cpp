@@ -190,7 +190,7 @@ void export_server_entity()
 //-----------------------------------------------------------------------------
 void export_server_networkable()
 {
-	class_< IServerNetworkable, boost::noncopyable >("ServerNetworkable", no_init)
+	class_< IServerNetworkable, IServerNetworkable *, boost::noncopyable >("ServerNetworkable", no_init)
 		.def("get_entity_handle",
 			&IServerNetworkable::GetEntityHandle,
 			"Returns the HandleEntity instance of this entity.",
