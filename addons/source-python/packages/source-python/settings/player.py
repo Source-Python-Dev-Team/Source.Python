@@ -51,7 +51,9 @@ class _SettingsDictionary(OrderedDict):
         self._text = text
 
         # Create the instance's menu
-        self._menu = PagedMenu(select_callback=self._chosen_item)
+        self._menu = PagedMenu(
+            select_callback=self._chosen_item,
+            title=name if text is None else text)
 
         # Call the super class' __init__ to initialize the OrderedDict
         super(_SettingsDictionary, self).__init__()
@@ -158,7 +160,7 @@ class _SettingsDictionary(OrderedDict):
             return
 
         # TODO: Placeholder for sending setting specific menus
-        print('You chose {0}'.format(option.text))
+        option.value.menu.send(index)
 
 
 class PlayerSettings(_SettingsDictionary, AutoUnload):
