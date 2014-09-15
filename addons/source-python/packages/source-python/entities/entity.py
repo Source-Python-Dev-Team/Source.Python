@@ -149,6 +149,11 @@ class BaseEntity(_EntitySpecials):
         return self._edict
 
     @property
+    def pointer(self):
+        """Return the entity's pointer."""
+        return self._pointer
+
+    @property
     def instances(self):
         """Yield the entity's base instances."""
         yield self.edict
@@ -157,7 +162,7 @@ class BaseEntity(_EntitySpecials):
     @property
     def basehandle(self):
         """Return the entity's BaseEntityHandle instance."""
-        return self.get_networkable().get_entity_handle().get_ref_ehandle()
+        return self.edict.networkable.get_entity_handle().get_ref_ehandle()
 
     @property
     def inthandle(self):
@@ -170,14 +175,9 @@ class BaseEntity(_EntitySpecials):
         return self.edict.get_class_name()
 
     @property
-    def pointer(self):
-        """Return the entity's pointer."""
-        return self._pointer
-
-    @property
     def server_class(self):
         """Return the entity's server class."""
-        return self.edict.get_networkable().get_server_class()
+        return self.edict.networkable.get_server_class()
 
     @property
     def server_classes(self):
@@ -226,13 +226,13 @@ class BaseEntity(_EntitySpecials):
         for server_class in self.server_classes:
 
             # Loop through the server class' inputs
-            for input in dir(server_class._inputs):
+            for name in dir(server_class._inputs):
 
                 # Is the current name actually a input?
-                if input not in dir(server_class):
+                if name not in dir(server_class):
 
                     # Yield the input
-                    yield input
+                    yield name
 
     @property
     def keyvalues(self):
