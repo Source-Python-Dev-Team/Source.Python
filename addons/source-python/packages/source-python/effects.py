@@ -6,8 +6,8 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-#   Constants
-from constants import SOURCE_ENGINE
+#   Core
+from core import SOURCE_ENGINE
 #   Memory
 from memory.manager import manager
 #   Paths

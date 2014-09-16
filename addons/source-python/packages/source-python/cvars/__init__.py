@@ -65,15 +65,8 @@ class ConVar(_ConVar):
         # Get the flag
         flag = getattr(ConVarFlags, attr.upper(), None)
 
-        # Is the attribute a flag?
+        # Is the attribute not a flag?
         if flag is None:
-
-            # Does the instance itself have the attribute?
-            if not hasattr(self, attr):
-
-                # If not, raise an error
-                raise AttributeError(
-                    '"ConVar" object has no attribute "{0}"'.format(attr))
 
             # Set the attribute
             super(ConVar, self).__setattr__(attr, value)
@@ -94,5 +87,13 @@ class ConVar(_ConVar):
         self.remove_flags(flag)
 
     def make_public(self):
-        """Set the notify flag for the cvar."""
+        """Set the notify flag and makes the cvar public."""
         self.add_flags(ConVarFlags.NOTIFY)
+        cvar.call_global_change_callbacks(
+            self, self.get_string(), self.get_float())
+
+    def remove_public(self):
+        """Removes the notify flag and makes the cvar no longer public."""
+        self.remove_flags(ConVarFlags.NOTIFY)
+        cvar.call_global_change_callbacks(
+            self, self.get_string(), self.get_float())
