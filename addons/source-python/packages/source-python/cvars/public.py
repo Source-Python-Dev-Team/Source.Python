@@ -38,4 +38,4 @@ class PublicConVar(AutoUnload, ConVar):
 
     def _unload_instance(self):
         """Remove the notify flag."""
-        self.remove_flags(ConVarFlags.NOTIFY)
+        self.remove_public()
