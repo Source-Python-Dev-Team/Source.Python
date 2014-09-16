@@ -163,7 +163,7 @@ class _SettingsDictionary(OrderedDict):
         option.value.menu.send(index)
 
 
-class PlayerSettings(_SettingsDictionary, AutoUnload):
+class PlayerSettings(AutoUnload, _SettingsDictionary):
 
     """Class used to register user settings."""
 
