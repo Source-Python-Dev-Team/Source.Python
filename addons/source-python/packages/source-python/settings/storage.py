@@ -22,10 +22,10 @@ from paths import SP_DATA_PATH
 # Get the path to the user settings database file
 _STORAGE_PATH = SP_DATA_PATH.joinpath('settings', 'users.db')
 
-# Does the ../data/source-python/storage/ directory exist?
+# Does the ../data/source-python/settings/ directory exist?
 if not _STORAGE_PATH.parent.isdir():
 
-    # Create the ../data/source-python/storage/ directory
+    # Create the ../data/source-python/settings/ directory
     _STORAGE_PATH.parent.mkdir()
 
 
@@ -44,6 +44,10 @@ class _UniqueSettings(dict):
         # Store the given uniqueid
         self._uniqueid = uniqueid
 
+        # If _player_settings_storage is initializing, don't try to call it
+        if _IN_INITIALIZATION:
+            return
+
         # Add the uniqueid to the players table if it is not already a member
         _player_settings_storage.cursor.execute(
             """INSERT OR IGNORE INTO players VALUES(null, ?)""",
@@ -53,6 +57,10 @@ class _UniqueSettings(dict):
         """Insert the given variable and value to their respective tables."""
         # Set the given variable's value in the dictionary
         super(_UniqueSettings, self).__setitem__(variable, value)
+
+        # If _player_settings_storage is initializing, don't try to call it
+        if _IN_INITIALIZATION:
+            return
 
         # Add the variable to the variables table if it is not already a member
         _player_settings_storage.cursor.execute(
@@ -148,8 +156,16 @@ class _PlayerSettingsDictionary(dict):
         """Store the dictionary to the database on map change."""
         self.connection.commit()
 
+# Set a variable to make sure _UniqueSettings doesn't
+#   call _player_settings_storage while it is being initialized.
+_IN_INITIALIZATION = True
+
 # Get the _PlayerSettingsDictionary instance
 _player_settings_storage = _PlayerSettingsDictionary()
+
+# Now that the initialization is done, allow
+#   _UniqueSettings to call _player_settings_storage.
+_IN_INITIALIZATION = False
 
 # Register for the event server_spawn in order
 # to store the database to file on map change
