@@ -42,7 +42,7 @@ class ServerToolsExt
 public:
 	static void remove_entity(IServerTools *pServerTools, unsigned int iEntityIndex)
 	{
-		pServerTools->RemoveEntity(CEdictExt::GetKeyValueInt(EdictFromIndex(iEntityIndex), "hammerid"));
+		pServerTools->RemoveEntity(iEntityIndex);
 	}
 };
 
