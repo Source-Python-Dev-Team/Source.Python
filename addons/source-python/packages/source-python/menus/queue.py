@@ -13,15 +13,13 @@ from collections import deque
 #   Commands
 from commands import CommandReturn
 from commands.client import ClientCommand
-#   Events
-from events import Event
 #   Listeners
+from listeners import ClientDisconnect
 from listeners.tick.repeat import TickRepeat
 #   Menus
 from menus.base import _BaseMenu
 #   Players
 from players.helpers import index_from_playerinfo
-from players.helpers import index_from_userid
 
 
 # =============================================================================
@@ -247,11 +245,10 @@ def _escselect_callback(player_info, command):
 
 
 # =============================================================================
-# >> GAME EVENTS
+# >> LISTENERS
 # =============================================================================
-@Event
-def player_disconnect(event):
+@ClientDisconnect
+def on_player_disconnect(ply_index):
     """Remove the user queue for the disconnected player."""
-    index = index_from_userid(event.get_int('userid'))
-    _radio_queues.pop(index, 0)
-    _esc_queues.pop(index, 0)
+    _radio_queues.pop(ply_index, 0)
+    _esc_queues.pop(ply_index, 0)

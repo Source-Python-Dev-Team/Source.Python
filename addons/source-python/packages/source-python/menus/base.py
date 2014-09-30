@@ -14,12 +14,10 @@ from collections import defaultdict
 from core import AutoUnload
 #   Engines
 from engines.server import engine_server
-#   Events
-from events import Event
+#   Listeners
+from listeners import ClientDisconnect
 #   Filters
 from filters.players import PlayerIter
-#   Players
-from players.helpers import index_from_userid
 #   Translations
 from translations.strings import TranslationStrings
 
@@ -318,11 +316,10 @@ def _translate_text(text, ply_index):
 
 
 # =============================================================================
-# >> GAME EVENTS
+# >> LISTENERS
 # =============================================================================
-@Event
-def player_disconnect(event):
+@ClientDisconnect
+def on_player_disconnect(ply_index):
     """Called whenever a player left the server."""
-    index = index_from_userid(event.get_int('userid'))
     for instance in _BaseMenu._instances.values():
-        instance._unload_player(index)
+        instance._unload_player(ply_index)
