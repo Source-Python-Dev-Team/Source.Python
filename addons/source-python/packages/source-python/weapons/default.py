@@ -13,7 +13,7 @@ from core import GAME_NAME
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class NoWeaponManager(object):
+class NoWeaponManager(dict):
 
     """Default class to use if no game specific weapon ini file is found."""
 

@@ -20,6 +20,7 @@ from entities.helpers import index_from_inthandle
 #   Engines
 from engines.server import server_game_dll
 #   Weapons
+from weapons.default import NoWeaponManager
 from weapons.manager import weapon_manager
 
 
@@ -338,7 +339,11 @@ class _PlayerWeapons(_game_instance._GameWeapons):
     def weapon_indexes(
             self, classname=None, is_filters=None, not_filters=None):
         """Iterate over all currently held weapons by thier index."""
-        # Loop through the length of m_hMyWeapons
+        # Is the weapon array supported for the current game?
+        if _weapon_prop_length is None:
+            return
+
+        # Loop through the length of the weapon array
         for offset in range(_weapon_prop_length):
 
             # Get the player's current weapon at this offset
@@ -451,20 +456,26 @@ def _find_weapon_prop_length(table):
             # Loop through the table
             _find_weapon_prop_length(item.data_table)
 
-# Get the first ServerClass object
-_current_class = server_game_dll.get_all_server_classes()
+# Default the weapon prop length to None
+_weapon_prop_length = None
 
-# Use "while" to loop through all ServerClass objects
-while _current_class:
+# Is the game supported?
+if not isinstance(weapon_manager, NoWeaponManager):
 
-    # Loop through the ServerClass' props
-    _weapon_prop_length = _find_weapon_prop_length(_current_class.table)
+    # Get the first ServerClass object
+    _current_class = server_game_dll.get_all_server_classes()
 
-    # Was m_hMyWeapons found?
-    if _weapon_prop_length is not None:
+    # Use "while" to loop through all ServerClass objects
+    while _current_class:
 
-        # No need to continue looping
-        break
+        # Loop through the ServerClass' props
+        _weapon_prop_length = _find_weapon_prop_length(_current_class.table)
 
-    # Move to the next ServerClass
-    _current_class = _current_class.next
+        # Was m_hMyWeapons found?
+        if _weapon_prop_length is not None:
+
+            # No need to continue looping
+            break
+
+        # Move to the next ServerClass
+        _current_class = _current_class.next
