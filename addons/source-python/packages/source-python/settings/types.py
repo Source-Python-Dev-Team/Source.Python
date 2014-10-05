@@ -25,8 +25,6 @@ from players.helpers import uniqueid_from_playerinfo
 #   Settings
 from settings import _settings_strings
 from settings.storage import _player_settings_storage
-#   Translations
-from translations.strings import TranslationStrings
 
 
 # =============================================================================
@@ -99,7 +97,7 @@ class _SettingsType(object):
 
     @property
     def convar(self):
-        """Returns the convar name of the setting."""
+        """Return the convar name of the setting."""
         return self.prefix + self.name.lower().replace(' ', '_')
 
     @property

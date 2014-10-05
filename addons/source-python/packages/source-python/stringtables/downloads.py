@@ -73,7 +73,6 @@ class _DownloadablesList(list):
 
     def _add_to_download_table(self, item):
         """Add the given file to the downloadables table."""
-
         # Is the server still in launching process?
         if self.download_table is None:
 

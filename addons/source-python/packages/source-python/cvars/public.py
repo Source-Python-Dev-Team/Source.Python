@@ -10,7 +10,6 @@
 from core import AutoUnload
 #   Cvars
 from cvars import ConVar
-from cvars.flags import ConVarFlags
 
 
 # =============================================================================
