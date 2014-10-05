@@ -16,6 +16,7 @@ from entities.helpers import pointer_from_edict
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
 #   Weapons
+from weapons.default import NoWeaponManager
 from weapons.manager import weapon_manager
 
 
@@ -131,19 +132,22 @@ class _Tag(object):
 # =============================================================================
 # >> FILTER REGISTRATION
 # =============================================================================
-# Loop through all tags for the current game
-for _tag in weapon_manager.tags:
+# Is the game supported?
+if not isinstance(weapon_manager, NoWeaponManager):
 
-    # Get the _weapon_tags instance for the current tag
-    _instance = _weapon_tags[_tag]
+    # Loop through all tags for the current game
+    for _tag in weapon_manager.tags:
 
-    # Register the tag's filter for _weapon_edict_iter_manager
-    _weapon_edict_iter_manager.register_filter(
-        _tag, _instance._edict_weapon_contains_tag)
+        # Get the _weapon_tags instance for the current tag
+        _instance = _weapon_tags[_tag]
 
-    # Register the tag's filter for _weapon_class_iter_manager
-    _weapon_class_iter_manager.register_filter(
-        _tag, _instance._class_weapon_contains_tag)
+        # Register the tag's filter for _weapon_edict_iter_manager
+        _weapon_edict_iter_manager.register_filter(
+            _tag, _instance._edict_weapon_contains_tag)
+
+        # Register the tag's filter for _weapon_class_iter_manager
+        _weapon_class_iter_manager.register_filter(
+            _tag, _instance._class_weapon_contains_tag)
 
 
 # =============================================================================
