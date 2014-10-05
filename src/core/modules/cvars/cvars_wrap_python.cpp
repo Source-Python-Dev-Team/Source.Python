@@ -87,6 +87,12 @@ void export_cvar_interface()
 			reference_existing_object_policy()
 		)
 
+		.def("call_global_change_callbacks",
+			&ICvar::CallGlobalChangeCallbacks,
+			"Calls global change callbacks.",
+			args("cvar", "old_string", "old_float")
+		)
+
 		ADD_MEM_TOOLS(ICvar, "_Cvar")
 	;
 

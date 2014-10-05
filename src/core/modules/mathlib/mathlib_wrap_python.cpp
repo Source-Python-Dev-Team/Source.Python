@@ -63,6 +63,11 @@ public:
 	{
 		return new Vector(0, 0, 0);
 	}
+
+	static bool IsWithinBox(Vector& point, Vector& corner1, Vector& corner2)
+	{
+		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
+	}
 };
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_zero_overload, IsZero, 0, 1)
@@ -175,8 +180,8 @@ void export_vector()
 		)
 
 		.def("is_within_box",
-			&Vector::WithinAABox,
-			args("mins", "maxs"),
+			&VectorExt::IsWithinBox,
+			args("corner1", "corner2"),
 			"Returns True if the vector is within the given box coordinates."
 		)
 

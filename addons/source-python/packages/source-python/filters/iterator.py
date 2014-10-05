@@ -64,6 +64,10 @@ class _IterObject(object):
                 # Yield the list of return types for the current item
                 yield yield_list
 
+    def __len__(self):
+        """Return the length of the generator at this current time."""
+        return len([x for x in self])
+
     def _is_valid(self, item):
         """Return whether the given item is valid for the instances filters."""
         # Loop through all "is" filters

@@ -18,7 +18,7 @@ from messages.types.showmenu import ShowMenu as BaseShowMenu
 # >> GLOBAL VARIABLES
 # ============================================================================
 # Store the maximum length
-MAXIMUM_LENGTH = 255
+MAXIMUM_LENGTH = 125
 
 
 # ============================================================================

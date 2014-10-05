@@ -14,11 +14,25 @@ from contextlib import suppress
 # Source.Python Imports
 #   Engines
 from engines.server import engine_server
+#   Menus
+from menus import PagedMenu
+from menus import Option
+#   Messages
+from messages import SayText
 #   Players
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
 #   Settings
+from settings import _settings_strings
 from settings.storage import _player_settings_storage
+#   Translations
+from translations.strings import TranslationStrings
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+_message = SayText(message=_settings_strings['Chosen'])
 
 
 # =============================================================================
@@ -28,7 +42,7 @@ class _SettingsType(object):
 
     """Class used to store settings with possible values."""
 
-    def __new__(cls, name, default, *args):
+    def __new__(cls, name, default, text=None, *args):
         """Verify the name and default value before getting the new object."""
         # Was a valid value passed as the name?
         if not name.replace('_', '').replace(' ', '').isalpha():
@@ -47,6 +61,18 @@ class _SettingsType(object):
 
         # Get the new object instance
         self = object.__new__(cls)
+
+        # Store the base attributes
+        self._name = name
+        self._default = default
+        self._text = text
+
+        # Store a menu for the object
+        self._menu = PagedMenu(
+            select_callback=self._chosen_value,
+            build_callback=self._menu_build,
+            title=name if text is None else text,
+            description=_settings_strings['Description'])
 
         # Return the instance
         return self
@@ -71,13 +97,20 @@ class _SettingsType(object):
         """Return the prefix of the setting."""
         return self._prefix
 
+    @property
+    def convar(self):
+        """Returns the convar name of the setting."""
+        return self.prefix + self.name.lower().replace(' ', '_')
+
+    @property
+    def menu(self):
+        """Return the setting's menu."""
+        return self._menu
+
     def get_setting(self, index):
         """Return the setting value for the given player index."""
-        # Get the convar's value
-        convar = self.prefix + self.name.lower().replace(' ', '_')
-
         # Get the client's convar value
-        value = engine_server.get_client_convar_value(index, convar)
+        value = engine_server.get_client_convar_value(index, self.convar)
 
         # Try to typecast the value, suppressing ValueErrors
         with suppress(ValueError):
@@ -98,10 +131,10 @@ class _SettingsType(object):
         if uniqueid in _player_settings_storage:
 
             # Is the convar in the clients's dictionary?
-            if convar in _player_settings_storage[uniqueid]:
+            if self.convar in _player_settings_storage[uniqueid]:
 
                 # Get the client's value for the convar
-                value = _player_settings_storage[uniqueid][convar]
+                value = _player_settings_storage[uniqueid][self.convar]
 
                 # Try to typecast the value, suppressing ValueErrors
                 with suppress(ValueError):
@@ -118,6 +151,21 @@ class _SettingsType(object):
         # Return the default value
         return self.default
 
+    def _menu_build(self, menu, index):
+        """Set the default value in the menu description."""
+        self.menu.description.tokens = {'value': self.get_setting(index)}
+
+    def _chosen_value(self, menu, index, option):
+        """Store the player's chosen value for the setting."""
+        # Get the client's uniqueid
+        uniqueid = uniqueid_from_playerinfo(playerinfo_from_index(index))
+
+        # Set the player's setting
+        _player_settings_storage[uniqueid][self.convar] = option.value
+
+        # Send the player a message about their changed setting
+        _message.send(index, convar=self.convar, value=option.value)
+
 
 class _NumericalSetting(_SettingsType):
 
@@ -126,9 +174,6 @@ class _NumericalSetting(_SettingsType):
     def __init__(
             self, name, default, text=None, min_value=None, max_value=None):
         """Store the base attributes on instantiation."""
-        self._name = name
-        self._default = default
-        self._text = text
         self._min = self._type(min_value) if min_value is not None else None
         self._max = self._type(max_value) if max_value is not None else None
 
@@ -182,9 +227,6 @@ class _StringSetting(_SettingsType):
 
     def __init__(self, name, default, text=None):
         """Store the base attributes on instatiation."""
-        self._name = name
-        self._default = default
-        self._text = text
         self._options = OrderedDict()
 
     @property
@@ -202,7 +244,11 @@ class _StringSetting(_SettingsType):
                 'Given name "{0}" is already an option'.format(name))
 
         # Store the option
-        self.options[name] = text if text else name
+        option = self.options[name] = Option(
+            name if text is None else text, name)
+
+        # Add the option to the menu
+        self.menu.append(option)
 
     def remove_option(self, name):
         """Remove an option from the settings."""

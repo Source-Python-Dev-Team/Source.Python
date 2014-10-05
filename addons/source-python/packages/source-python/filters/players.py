@@ -118,7 +118,7 @@ _player_iter_manager.register_filter(
         playerinfo).get_prop_int('pl.deadflag'))
 
 # Loop through all teams in the game's team file
-for _team in _game_teams['names']:
+for _team in _game_teams.get('names', {}):
 
     # Add the team to the _player_teams dictionary
     _player_teams[_team] = int(_game_teams['names'][_team])

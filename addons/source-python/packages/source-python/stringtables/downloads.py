@@ -73,6 +73,14 @@ class _DownloadablesList(list):
 
     def _add_to_download_table(self, item):
         """Add the given file to the downloadables table."""
+
+        # Is the server still in launching process?
+        if self.download_table is None:
+
+            # If so, no need to go further...
+            return
+
+        # Add the given file to the downloadables table.
         self.download_table.add_string(item, item)
 
     def server_spawn(self, game_event):

@@ -10,6 +10,8 @@
 from menus import PagedMenu
 #   Players
 from players.helpers import index_from_playerinfo
+#   Settings
+from settings import _settings_strings
 
 
 # =============================================================================
@@ -21,7 +23,9 @@ class _AvailableSettings(dict):
 
     def __init__(self):
         """Create the main settings menu on instantiation."""
-        self._menu = PagedMenu(select_callback=self._chosen_item)
+        self._menu = PagedMenu(
+            select_callback=self._chosen_item,
+            title=_settings_strings['Main Title'])
 
     @property
     def menu(self):
