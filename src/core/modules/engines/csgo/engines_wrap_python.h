@@ -269,13 +269,16 @@ inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter&
 		float flVolume, float flAttenuation, int iFlags = 0, int iPitch = PITCH_NORM, const Vector *pOrigin = NULL, const Vector *pDirection = NULL,
 		tuple origins = tuple(), bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1)
 {
-	CUtlVector< Vector > pUtlVecOrigins;
-	for(int i=0; i < len(origins); i++)
+	CUtlVector< Vector > *pUtlVecOrigins = NULL;
+	if (len(origins) > 0)
 	{
-		pUtlVecOrigins.AddToTail(extract<Vector>(origins[i]));
+		for(int i=0; i < len(origins); i++)
+		{
+			pUtlVecOrigins->AddToTail(extract<Vector>(origins[i]));
+		}
 	}
 
-	pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, -1, pSample, flVolume, flAttenuation, 0, iFlags, iPitch, pOrigin, pDirection, &pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
+	pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, -1, pSample, flVolume, flAttenuation, 0, iFlags, iPitch, pOrigin, pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
 }
 
 // Visitor function
