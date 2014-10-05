@@ -345,17 +345,11 @@ class _PlayerWeapons(_game_instance._GameWeapons):
             handle = self.get_prop_int(
                 weapon_manager.myweapons + '%03i' % offset)
 
-            # Is this an invalid handle?
-            if handle == -1:
-
-                # Move onto the next offset
-                continue
-
             # Get the weapon's index
-            index = index_from_inthandle(handle)
+            index = index_from_inthandle(handle, raise_exception=False)
 
             # Is this a valid index?
-            if index is None:
+            if not index:
 
                 # Move onto the next offset
                 continue

@@ -226,7 +226,7 @@ class BaseEntity(_EntitySpecials):
                 self.named_datamaps[attr]]._set_value(value)
 
         # Is the attribute a type description for this entity?
-        if attr in self.datamaps:
+        elif attr in self.datamaps:
 
             # Set the pointer for the type description instance
             self.datamaps[attr].current_pointer = self.pointer
