@@ -104,4 +104,6 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
         self.playerinfo.change_team(value)
 
     # Set the "team" property methods
-    team = property(get_team, set_team)
+    team = property(
+        get_team, set_team,
+        doc="""Property to get/set the player's team.""")

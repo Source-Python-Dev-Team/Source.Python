@@ -16,7 +16,7 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
-from core import PLATFORM
+from core import SOURCE_ENGINE
 #   Entities
 from entities.constants import DATA_DESC_MAP_OFFSET
 from entities.datamaps import _supported_input_types
@@ -40,10 +40,10 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get all of the necessary paths
-_managers_path = SP_DATA_PATH.joinpath('entities', 'managers', GAME_NAME)
-_offsets_path = SP_DATA_PATH.joinpath('entities', 'offsets', GAME_NAME)
-_virtuals_path = SP_DATA_PATH.joinpath('virtuals', GAME_NAME)
-_properties_path = SP_DATA_PATH.joinpath('entities', 'properties', GAME_NAME)
+_managers_engine_path = SP_DATA_PATH.joinpath(
+    'entities', 'managers', 'engines', SOURCE_ENGINE)
+_managers_game_path = SP_DATA_PATH.joinpath(
+    'entities', 'managers', 'games', GAME_NAME)
 
 # Store all supported types
 _supported_offset_types = {
@@ -68,6 +68,25 @@ _supported_offset_types = {
     FieldTypes.TIME: 'float',
     FieldTypes.VECTOR: 'Vector',
 }
+
+# Store all supported keyvalue types
+_supported_keyvalue_types = {
+    # FieldTypes.BOOLEAN: '',
+    # FieldTypes.CHARACTER: '',
+    # FieldTypes.COLOR32: '',
+    FieldTypes.EHANDLE: 'int',
+    FieldTypes.FLOAT: 'float',
+    FieldTypes.INTEGER: 'int',
+    FieldTypes.MODELNAME: 'string',
+    FieldTypes.SHORT: 'int',
+    FieldTypes.SOUNDNAME: 'string',
+    FieldTypes.STRING: 'string',
+    FieldTypes.TICK: 'int',
+    FieldTypes.VECTOR: 'vector',
+}
+
+# Get a tuple with the supported inputs (including VOID)
+_supported_inputs = tuple(_supported_input_types) + (FieldTypes.VOID, )
 
 
 # =============================================================================
@@ -102,22 +121,25 @@ class _ServerClasses(TypeManager):
             if datamap.class_name in self:
                 break
 
-            # Get the contents of all files pertaining to the current datamap
+            # Get the engine specific data for the current datamap
             manager_contents = ConfigObj(
-                _managers_path.joinpath(datamap.class_name + '.ini'))
-            virtual_contents = ConfigObj(
-                _virtuals_path.joinpath(datamap.class_name + '.ini'))
-            offset_contents = ConfigObj(
-                _offsets_path.joinpath(datamap.class_name + '.ini'))
-            property_contents = ConfigObj(
-                _properties_path.joinpath(datamap.class_name + '.ini'))
+                _managers_engine_path.joinpath(datamap.class_name + '.ini'))
 
-            # Add the offsets to any virtual functions for the current datamap
-            if 'virtual_function' in manager_contents:
-                for item in manager_contents['virtual_function']:
-                    value = manager_contents['virtual_function'][item]
-                    value['offset_{0}'.format(
-                        PLATFORM)] = virtual_contents[value['name']][PLATFORM]
+            # Merge the game specific values for the current datamap
+            manager_contents.merge(ConfigObj(
+                _managers_game_path.joinpath(datamap.class_name + '.ini')))
+
+            # Get the specific types of values to use
+            input_contents = manager_contents.get('inputs', {})
+            keyvalue_contents  = manager_contents.get('keyvalues', {})
+            descriptor_contents = manager_contents.get('descriptors', {})
+            property_contents = manager_contents.get('properties', {})
+
+            # Are there any values for the manager?
+            if manager_contents:
+
+                # Add the binary path to the manager dictionary
+                manager_contents['binary'] = '{0}/bin/server'.format(GAME_NAME)
 
             # Get a TypeManager instance for the current datamap
             instance = self.create_type_from_file(
@@ -130,6 +152,9 @@ class _ServerClasses(TypeManager):
             instance._outputs = dict()
             instance._functiontables = dict()
             instance._keyvalues = dict()
+
+            # Set the instance's name to the classname
+            instance.__name__ = datamap.class_name
 
             # Loop through all descriptors in the current datamap
             for desc in datamap:
@@ -173,19 +198,19 @@ class _ServerClasses(TypeManager):
                             _supported_offset_types[embedded_type], offset)
 
                         # Is the embedded a named descriptor?
-                        if (embedded_name in offset_contents
+                        if (embedded_name in descriptor_contents
                                 and embedded_type in _supported_offset_types):
 
                             # Add the descriptor to the instance by name
                             setattr(
                                 instance,
-                                offset_contents[embedded_name],
+                                descriptor_contents[embedded_name],
                                 descriptors[embedded_name])
 
                 # Is the current descriptor an input?
                 elif (desc.flags & TypeDescriptionFlags.INPUT
                         and not desc.flags & TypeDescriptionFlags.KEY
-                        and desc.type in _supported_input_types):
+                        and desc.type in _supported_inputs):
 
                     # If the input is already registered, move on
                     if name in inputs:
@@ -197,6 +222,12 @@ class _ServerClasses(TypeManager):
 
                     # Add the descriptor to the inputs dictionary
                     inputs[name] = self.input(name, desc)
+
+                    # Is this a named input?
+                    if name in input_contents:
+
+                        # Add the input to the instance by name
+                        setattr(instance, input_contents[name], inputs[name])
 
                 # Is the current descriptor an output?
                 elif desc.flags & TypeDescriptionFlags.OUTPUT:
@@ -224,6 +255,22 @@ class _ServerClasses(TypeManager):
                     # Add the keyvalue to the keyvalues dictionary
                     instance._keyvalues[name] = desc
 
+                    # Is this a named keyvalue?
+                    if name in keyvalue_contents:
+
+                        # Is the keyvalue's type not supported?
+                        if desc.type not in _supported_keyvalue_types:
+                            warn(
+                                'Named KeyValue "{0}" '.format(name) +
+                                'is of an unsupported type:' +
+                                ' ({0}).'.format(desc.type))
+                            continue
+
+                        # Add the keyvalue to the instance by name
+                        setattr(
+                            instance, keyvalue_contents[name], self.keyvalue(
+                                name, _supported_keyvalue_types[desc.type]))
+
                 # Is the current descriptor supported?
                 elif desc.type in _supported_offset_types:
 
@@ -240,11 +287,12 @@ class _ServerClasses(TypeManager):
                         _supported_offset_types[desc.type], desc.offset)
 
                     # Is this a named descriptor?
-                    if name in offset_contents:
+                    if name in descriptor_contents:
 
                         # Add the descriptor to the instance by name
                         setattr(
-                            instance, offset_contents[name], descriptors[name])
+                            instance, descriptor_contents[name],
+                            descriptors[name])
 
             # Store the descriptors and inputs with the instance
             instance._descriptors = self(
@@ -282,7 +330,8 @@ class _ServerClasses(TypeManager):
         # Return the main server class name
         return server_class.class_name
 
-    def input(self, name, desc):
+    @staticmethod
+    def input(name, desc):
         """Input type DataMap object."""
         argument_type = desc.type
 
@@ -297,10 +346,26 @@ class _ServerClasses(TypeManager):
 
         return property(fget)
 
-    def network_property(self, name, type_name, true_value, false_value):
+    @staticmethod
+    def keyvalue(name, type_name):
+        """Entity keyvalue."""
+        def fget(pointer):
+            """Retrieve the keyvalue for the entity."""
+            return getattr(edict_from_pointer(
+                pointer), 'get_key_value_' + type_name)(name)
+
+        def fset(pointer, value):
+            """Set the keyvalue for the entity to the given value."""
+            getattr(edict_from_pointer(
+                pointer), 'set_key_value_' + type_name)(name, value)
+
+        return property(fget, fset)
+
+    @staticmethod
+    def network_property(name, type_name, true_value, false_value):
         """Networked property."""
         def fget(pointer):
-            """Retrive the network property for the entity."""
+            """Retrieve the network property for the entity."""
             value = getattr(
                 edict_from_pointer(pointer), 'get_prop_' + type_name)(name)
             if true_value is None:

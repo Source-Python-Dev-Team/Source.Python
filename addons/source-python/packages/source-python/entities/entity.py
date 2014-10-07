@@ -301,7 +301,21 @@ class BaseEntity(_EntitySpecials):
         self.render = value
 
     # Set the "color" property for BaseEntity
-    color = property(get_color, set_color)
+    color = property(
+        get_color, set_color,
+        doc="""Property to get/set the entity's color values.""")
+
+    def get_origin(self):
+        """Return the entity's origin vector."""
+        return self.edict.get_key_value_vector('origin')
+
+    def set_origin(self, vector):
+        """Set the entity's origin to the given vector."""
+        self.edict.set_key_value_vector('origin', vector)
+
+    origin = property(
+        get_origin, set_origin,
+        doc="""Property to get/set the entity's origin.""")
 
     def get_descriptor(self, name):
         """Get the entity's value of the given descriptor."""

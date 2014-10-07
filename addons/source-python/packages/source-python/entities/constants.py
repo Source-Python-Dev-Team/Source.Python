@@ -5,6 +5,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Enum
+from enum import Enum
+
 # Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
@@ -58,46 +62,5 @@ if _damage_info_path.isfile():
 else:
     CTakeDamageInfo = None
 
-
-# =============================================================================
-# >> CLASSES
-# =============================================================================
-class _ConstantBase(dict):
-
-    """Base constant class used to not allow setting values."""
-
-    def __contains__(self, item):
-        """Override __contains__ to return whether the constant is valid."""
-        return hasattr(self, item)
-
-    def __getitem__(self, item):
-        """Override __getitem__ to return the attribute's value."""
-        return self.__getattr__(item)
-
-    def __setitem__(self, item, value):
-        """Override __setitem__ to not allow setting any values."""
-        return
-
-    def __setattr__(self, item, value):
-        """Override __setattr__ to not allow setting any values."""
-        return
-
-
-class _DamageTypes(_ConstantBase):
-
-    """Class used to easily get damage type values by name."""
-
-    def __getattr__(self, attr):
-        """Override __getattr__ to retrieve the value of the constant."""
-        # Is the attribute a proper constant?
-        if ('damage_types' in _entity_values
-                and attr in _entity_values['damage_types']):
-
-            # Return the constant's value
-            return _entity_values['damage_types'][attr]
-
-        # Return 0 if the constant is not found
-        return 0
-
-# Get the _DamageTypes instance
-damage_types = _DamageTypes()
+# Get the damage_types for the current engine
+damage_types = Enum('damage_types', _entity_values.get('damage_types', {}))
