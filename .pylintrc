@@ -12,6 +12,7 @@
 #   R0914 - Too many local variables
 #   R0915 - Too many statements
 #   R0921 - Abstract class not referenced
+#   W0141 - Used builtin function %r
 #   W0142 - Used * or ** magic
 #   W0201 - Attribute %r defined outside __init__
 #   W0212 - Access to a protected member %s of a client class
@@ -19,4 +20,4 @@
 #   W0232 - Class has no __init__ method
 #   W0702 - No exception type(s) specified
 
-disable=C0330, E1101, F0401, R0902, R0903, R0904, R0911, R0912, R0913, R0914, R0915, R0921, W0142, W0201, W0212, W0231, W0232, W0702
+disable=C0330, E1101, F0401, R0902, R0903, R0904, R0911, R0912, R0913, R0914, R0915, R0921, W0141, W0142, W0201, W0212, W0231, W0232, W0702
