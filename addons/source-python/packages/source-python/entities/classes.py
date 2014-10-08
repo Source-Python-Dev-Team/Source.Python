@@ -103,6 +103,10 @@ class _ServerClasses(TypeManager):
         if server_class in self:
             return server_class
 
+        # Is the engine not supported?
+        if DATA_DESC_MAP_OFFSET is None:
+            return None
+
         # Create a function for the <server_class>::GetDataDescMap method
         function = pointer.make_virtual_function(
             DATA_DESC_MAP_OFFSET, Convention.THISCALL,

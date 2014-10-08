@@ -74,10 +74,10 @@ class _EntitySpecials(object):
             victim = PlayerEntity(victim_index)
 
             # Is hitgroup a valid attribute?
-            if hasattr(victim, 'm_LastHitGroup'):
+            if hasattr(victim, 'hitgroup'):
 
                 # Set the victim's hitgroup
-                victim.m_LastHitGroup = hitgroup
+                victim.hitgroup = hitgroup
 
         # Get a memory address for CTakeDamageInfo
         take_damage_info = CTakeDamageInfo()

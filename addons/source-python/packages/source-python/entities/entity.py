@@ -186,15 +186,18 @@ class BaseEntity(_EntitySpecials):
         server_class = _server_classes.get_start_server_class(
             self.server_class, self.pointer)
 
-        # Use the current server class to get its base
-        #   until there are no more base classes to return.
-        while server_class in _server_classes:
-            yield _server_classes[server_class]
-            try:
-                server_class = _server_classes[
-                    server_class]._base_class.class_name
-            except AttributeError:
-                break
+        # Is the engine supported?
+        if server_class is not None:
+
+            # Use the current server class to get its base
+            #   until there are no more base classes to return.
+            while server_class in _server_classes:
+                yield _server_classes[server_class]
+                try:
+                    server_class = _server_classes[
+                        server_class]._base_class.class_name
+                except AttributeError:
+                    break
 
     @property
     def descriptors(self):
