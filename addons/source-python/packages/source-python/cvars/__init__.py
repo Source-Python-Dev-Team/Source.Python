@@ -93,7 +93,7 @@ class ConVar(_ConVar):
             self, self.get_string(), self.get_float())
 
     def remove_public(self):
-        """Removes the notify flag and makes the cvar no longer public."""
+        """Remove the notify flag and makes the cvar no longer public."""
         self.remove_flags(ConVarFlags.NOTIFY)
         cvar.call_global_change_callbacks(
             self, self.get_string(), self.get_float())
