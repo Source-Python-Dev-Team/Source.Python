@@ -235,6 +235,7 @@ void export_field_types()
 	FieldTypes.value("MATRIX3X4_WORLDSPACE", FIELD_MATRIX3X4_WORLDSPACE);
 	FieldTypes.value("INTERVAL", FIELD_INTERVAL);
 	FieldTypes.value("MODELINDEX", FIELD_MODELINDEX);
+	FieldTypes.value("MATERIALINDEX", FIELD_MATERIALINDEX);
 	FieldTypes.value("VECTOR2D", FIELD_VECTOR2D);
 	FieldTypes.value("TYPECOUNT", FIELD_TYPECOUNT);
 
