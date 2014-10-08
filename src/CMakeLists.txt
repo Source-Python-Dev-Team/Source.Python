@@ -319,6 +319,9 @@ Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
     core/modules/messages/messages.cpp
     core/modules/messages/messages_wrap_python.cpp
     core/modules/messages/messages_implementation_base.cpp
+)
+
+Set(SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES
     core/modules/messages/${SOURCE_ENGINE}/messages_implementation.cpp
 )
 
@@ -426,7 +429,7 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS}
     ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES}
-    ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES}
+    ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES}
 
     ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
     ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
@@ -480,10 +483,10 @@ Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Bots"                   FILES ${SOURCEPYTHON_BOTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON_MODULE_CONSTANTS_SOURCES})
+Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_MODULE_DATAMAPS_SOURCES})
+Source_Group("Source Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_DATAMAPS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Dump"                   FILES ${SOURCEPYTHON_DUMP_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_SOURCES})
@@ -495,11 +498,11 @@ Source_Group("Source Files\\Module\\Listeners"              FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MODULE_MESSAGES_GAME_SOURCES})
+Source_Group("Source Files\\Module\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES})
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_MODULE_STRINGTABLES_SOURCES})
-Source_Group("Source Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_MODULE_TOOLS_SOURCES})
+Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_TOOLS_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of
