@@ -368,6 +368,11 @@ class _ServerClasses(TypeManager):
     @staticmethod
     def network_property(name, type_name, true_value, false_value):
         """Networked property."""
+        # If there are true/false values, typecast them to integer
+        if true_value is not None:
+            true_value = int(true_value)
+            false_value = int(false_value)
+
         def fget(pointer):
             """Retrieve the network property for the entity."""
             value = getattr(
