@@ -138,6 +138,15 @@ class BaseEntity(_EntitySpecials):
         # Return a sorted list of attributes
         return sorted(attributes)
 
+    @classmethod
+    def _obj(cls, ptr):
+        """Return an entity instance of the given pointer."""
+        return cls(index_from_pointer(ptr))
+
+    def _ptr(self):
+        """Return the entity's pointer."""
+        return self._pointer
+
     @property
     def index(self):
         """Return the entity's index."""
