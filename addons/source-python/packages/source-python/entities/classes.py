@@ -48,7 +48,7 @@ _managers_game_path = SP_DATA_PATH.joinpath(
 # Store all supported types
 _supported_offset_types = {
     FieldTypes.BOOLEAN: 'bool',
-    FieldTypes.CHARACTER: 'char',
+    FieldTypes.CHARACTER: 'uchar',
     FieldTypes.CLASSPTR: 'pointer',
     FieldTypes.COLOR32: 'Color',
     FieldTypes.EDICT: 'Edict',
