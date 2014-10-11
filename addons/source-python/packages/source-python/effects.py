@@ -40,7 +40,7 @@ __all__ = ('DispatchEffectData',
 # Get the temp_entities instance...
 try:
     from _effects import temp_entities
-except NotImplementedError:
+except ImportError:
     manager.create_global_pointers_from_file(
         SP_DATA_PATH.joinpath('effects', SOURCE_ENGINE, 'pointers.ini'))
 
