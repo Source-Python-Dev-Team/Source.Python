@@ -33,6 +33,7 @@
 #include "server_class.h"
 #include <cstdint>
 #include "toolframework/itoolentity.h"
+#include "modules/memory/memory_tools.h"
 
 // Externals
 extern IServerTools* servertools;
@@ -135,4 +136,18 @@ inline const char* CSendProp::Get()
 	return (const char *)((char *) m_base_entity + m_prop_offset);
 }
 
-#endif
+
+//-----------------------------------------------------------------------------
+// IServerNetworkable extension class.
+//-----------------------------------------------------------------------------
+class ServerNetworkableSharedExt
+{
+public:
+	static CPointer *get_base_entity(IServerNetworkable *pNetworkable)
+	{
+		return new CPointer((unsigned long)pNetworkable->GetBaseEntity());
+	}
+};
+
+
+#endif // _ENTITIES_WRAP_H
