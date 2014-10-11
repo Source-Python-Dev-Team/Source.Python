@@ -70,6 +70,7 @@ DECLARE_SP_MODULE(_entities)
 void export_helper_functions()
 {
 	def("create_entity", &create_entity, args("class_name"));
+	def("spawn_entity", &spawn_entity, args("entity_index"));
 }
 
 

@@ -43,7 +43,7 @@ extern IServerTools *servertools;
 
 
 //-----------------------------------------------------------------------------
-// Helper functions.
+// Creates an entity of the given name and returns its index...
 //-----------------------------------------------------------------------------
 unsigned int create_entity(const char *szClassName)
 {
@@ -54,6 +54,22 @@ unsigned int create_entity(const char *szClassName)
 	}
 	CPointer pEntity = CPointer((unsigned long)pBaseEntity);
 	return IndexFromPointer(&pEntity);
+}
+
+
+//-----------------------------------------------------------------------------
+// Spawns the given entity index...
+//-----------------------------------------------------------------------------
+void spawn_entity(unsigned int uiEntityIndex)
+{
+	CPointer *pEntity = PointerFromIndex(uiEntityIndex);
+	if (!pEntity)
+	{
+		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity " \
+			"matching the given index \"%u\".", uiEntityIndex);
+	}
+	CBaseEntity *pBaseEntity = (CBaseEntity *)pEntity->m_ulAddr;
+	servertools->DispatchSpawn(pBaseEntity);
 }
 
 

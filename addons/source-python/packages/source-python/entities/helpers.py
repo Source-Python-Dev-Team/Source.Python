@@ -29,6 +29,7 @@ from _conversions import pointer_from_index
 from _conversions import pointer_from_inthandle
 #   Entities
 from _entities import create_entity
+from _entities import spawn_entity
 
 
 # =============================================================================
@@ -55,4 +56,5 @@ __all__ = ('basehandle_from_edict',
            'pointer_from_edict',
            'pointer_from_index',
            'pointer_from_inthandle',
+           'spawn_entity',
            )
