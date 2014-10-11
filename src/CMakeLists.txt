@@ -225,6 +225,7 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/entities_wrap.h
     core/modules/entities/entities_props.h
     core/modules/entities/entities_generator_wrap.h
+    core/modules/entities/entities_helpers_wrap.h
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES

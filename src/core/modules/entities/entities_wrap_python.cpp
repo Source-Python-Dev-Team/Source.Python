@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "edict.h"
 
+#include "entities_helpers_wrap.h"
 #include "entities_generator_wrap.h"
 #include "entities_wrap.h"
 #include "utility/sp_util.h"
@@ -41,6 +42,7 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 // Entity module definition.
 //-----------------------------------------------------------------------------
+void export_helper_functions();
 void export_base_entity_handle();
 void export_handle_entity();
 void export_server_unknown();
@@ -51,6 +53,7 @@ void export_entity_generator();
 
 DECLARE_SP_MODULE(_entities)
 {
+	export_helper_functions();
 	export_base_entity_handle();
 	export_handle_entity();
 	export_server_unknown();
@@ -59,6 +62,16 @@ DECLARE_SP_MODULE(_entities)
 	export_edict();
 	export_entity_generator();
 }
+
+
+//-----------------------------------------------------------------------------
+// Exports helper functions.
+//-----------------------------------------------------------------------------
+void export_helper_functions()
+{
+	def("create_entity", &create_entity, args("class_name"));
+}
+
 
 //-----------------------------------------------------------------------------
 // Exports CBaseEntityHandle.
