@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Basetypes
+from basetypes import Color
 #   Entities
 from entities.classes import _server_classes
 from entities.helpers import edict_from_index
@@ -263,51 +265,35 @@ class BaseEntity(_EntitySpecials):
                 yield keyvalue
 
     def get_color(self):
-        """Return a 4 part tuple (RGBA) for the entity's color."""
+        """Return the entity's color as a Color instance."""
         # Get the render value
         value = self.render
 
         # Return a tuple with the RGBA values
-        return (
+        return Color(
             value & 0xff, (value & 0xff00) >> 8,
             (value & 0xff0000) >> 16, (value & 0xff000000) >> 24)
 
-    def set_color(self, args):
+    def set_color(self, color, current_alpha=True):
         """Set the entity's color to the given RGBA values."""
-        # Are the the correct number of arguments?
-        if not len(args) in (3, 4):
+        # Is the entity's current alpha supposed to be used?
+        if current_alpha:
 
-            # Raise an error
-            raise TypeError(
-                'set_color() requires 3 or 4 ' +
-                'arguments, {0} were given'.format(len(args)))
-
-        # Get the RGB values
-        red, green, blue = args[:3]
-
-        # Get the value using the RGB values
-        value = red + (green << 8) + (blue << 16)
-
-        # Was an alpha value passed?
-        if len(args) == 3:
-
-            # Get the current alpha value
-            alpha = (self.render & 0xff000000)
-
-        # Otherwise
-        else:
-
-            # Get the 4th value passed
-            alpha = args[3]
-
-        # Add the alpha value to the RGB value
-        value += alpha << 24
+            # Set the given color's alpha to the entity's current
+            color = color.with_alpha(self.color.a)
 
         # Set the rendermode
         self.rendermode = self.rendermode | 1
 
         # Set the renderfx
         self.renderfx = self.renderfx | 256
+
+        # Get the value to set the render property to
+        value = color.r + (color.g << 8) + (color.b << 16) + (color.a << 24)
+
+        # Is the value too large?
+        if value >= 2**31:
+            value -= 2**32
 
         # Set the entity's color
         self.render = value
