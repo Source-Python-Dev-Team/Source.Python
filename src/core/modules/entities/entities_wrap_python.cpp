@@ -30,6 +30,7 @@
 #include "edict.h"
 
 #include "entities_helpers_wrap.h"
+#include "entities_factories_wrap.h"
 #include "entities_generator_wrap.h"
 #include "entities_wrap.h"
 #include "utility/sp_util.h"
@@ -38,6 +39,7 @@ using namespace boost::python;
 
 #include "modules/memory/memory_tools.h"
 #include ENGINE_INCLUDE_PATH(entities_helpers_wrap.h)
+#include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
 
 
 //-----------------------------------------------------------------------------
@@ -51,6 +53,9 @@ void export_server_entity();
 void export_server_networkable();
 void export_edict();
 void export_entity_generator();
+void export_entity_factory();
+void export_entity_factory_dictionary_interface();
+void export_entity_factory_dictionary();
 
 DECLARE_SP_MODULE(_entities)
 {
@@ -62,6 +67,9 @@ DECLARE_SP_MODULE(_entities)
 	export_server_networkable();
 	export_edict();
 	export_entity_generator();
+	export_entity_factory();
+	export_entity_factory_dictionary_interface();
+	export_entity_factory_dictionary();
 }
 
 
@@ -509,4 +517,75 @@ void export_entity_generator()
 			reference_existing_object_policy()
 		)
 	;
+}
+
+//-----------------------------------------------------------------------------
+// Expose IEntityFactory.
+//-----------------------------------------------------------------------------
+void export_entity_factory()
+{
+	class_<IEntityFactory, boost::noncopyable> EntityFactory("EntityFactory", no_init);
+	
+	// Methods...
+	EntityFactory.def("create",
+		&IEntityFactory::Create,
+		reference_existing_object_policy()
+	);
+	
+	EntityFactory.def("destroy", &IEntityFactory::Destroy);
+	
+	// Properties...
+	EntityFactory.add_property("size", &IEntityFactory::GetEntitySize);
+	
+	// Add memory tools...
+	EntityFactory ADD_MEM_TOOLS(IEntityFactory, "EntityFactory");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose IEntityFactoryDictionary.
+//-----------------------------------------------------------------------------
+void export_entity_factory_dictionary_interface()
+{
+	class_<IEntityFactoryDictionary, IEntityFactoryDictionary *,
+		boost::noncopyable> _EntityFactoryDictionary("_EntityFactoryDictionary", no_init);
+
+	// Methods...
+	_EntityFactoryDictionary.def("install_factory", &IEntityFactoryDictionary::InstallFactory);
+
+	_EntityFactoryDictionary.def("create",
+		&IEntityFactoryDictionary::Create,
+		reference_existing_object_policy()
+	);
+
+	_EntityFactoryDictionary.def("destroy", &IEntityFactoryDictionary::Destroy);
+
+	_EntityFactoryDictionary.def("find_factory",
+		&IEntityFactoryDictionary::FindFactory,
+		reference_existing_object_policy()
+	);
+
+	_EntityFactoryDictionary.def("get_cannonical_name", &IEntityFactoryDictionary::GetCannonicalName);
+
+	// Add memory tools...
+	_EntityFactoryDictionary ADD_MEM_TOOLS(IEntityFactoryDictionary, "_EntityFactoryDictionary");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose CEntityFactoryDictionary.
+//-----------------------------------------------------------------------------
+void export_entity_factory_dictionary()
+{
+	class_<CEntityFactoryDictionary, CEntityFactoryDictionary *, bases<IEntityFactoryDictionary>,
+		boost::noncopyable> EntityFactoryDictionary("EntityFactoryDictionary", no_init);
+
+	// Special methods...
+	EntityFactoryDictionary.def("__getitem__",&EntityFactoryDictionarySharedExt::__getitem__);
+
+	// Engine specific stuff...
+	export_engine_specific_entity_factory_dictionary(EntityFactoryDictionary);
+
+	// Add memory tools...
+	EntityFactoryDictionary ADD_MEM_TOOLS(CEntityFactoryDictionary, "EntityFactoryDictionary");
 }
