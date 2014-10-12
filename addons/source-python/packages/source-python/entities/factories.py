@@ -2,6 +2,18 @@
 
 """Provides access to entity factories."""
 
+# ============================================================================
+# >> IMPORTS
+# ============================================================================
+# Source.Python Imports
+#   Core
+from core import SOURCE_ENGINE
+#   Memory
+from memory.manager import manager
+#   Paths
+from paths import SP_DATA_PATH
+
+
 # =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
@@ -23,10 +35,11 @@ __all__ = ('factory_dictionary',
 # ============================================================================
 # >> GLOBAL VARIABLES
 # ============================================================================
-# Get the temp_entities instance...
+# Get the factory_dictionary instance...
 try:
     from _entities import factory_dictionary
 except ImportError:
-    # TODO: Sigscan "s_EntityFactory" for engines that doesn't support
-    #   IServerTools::GetEntityFactoryDictionary such as CS:GO...
-    factory_dictionary = None
+    manager.create_global_pointers_from_file(
+        SP_DATA_PATH.joinpath('entities', 'factories',
+        SOURCE_ENGINE + '.ini'))
+    factory_dictionary = manager.get_global_pointer('EntityFactoryDictionary')
