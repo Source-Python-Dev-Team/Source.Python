@@ -330,9 +330,9 @@ void export_flags()
 	scope().attr("FCVAR_DEVELOPMENTONLY")       = FCVAR_DEVELOPMENTONLY;
 	scope().attr("FCVAR_GAMEDLL")               = FCVAR_GAMEDLL;
 	scope().attr("FCVAR_CLIENTDLL")             = FCVAR_CLIENTDLL;
-	scope().attr("FCVAR_HIDDEN")				= FCVAR_HIDDEN;
+	scope().attr("FCVAR_HIDDEN")                = FCVAR_HIDDEN;
 	scope().attr("FCVAR_PROTECTED")             = FCVAR_PROTECTED;
-	scope().attr("FCVAR_SPONLY")				= FCVAR_SPONLY;
+	scope().attr("FCVAR_SPONLY")                = FCVAR_SPONLY;
 	scope().attr("FCVAR_ARCHIVE")               = FCVAR_ARCHIVE;
 	scope().attr("FCVAR_NOTIFY")                = FCVAR_NOTIFY;
 	scope().attr("FCVAR_USERINFO")              = FCVAR_USERINFO;
