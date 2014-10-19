@@ -8,9 +8,12 @@
 # Source.Python Imports
 #   Basetypes
 from basetypes import Color
+#   Engines
+from engines.precache import Model
 #   Entities
 from entities.classes import _server_classes
 from entities.helpers import edict_from_index
+from entities.helpers import index_from_pointer
 from entities.helpers import pointer_from_edict
 from entities.specials import _EntitySpecials
 #   Memory
@@ -314,6 +317,18 @@ class BaseEntity(_EntitySpecials):
     origin = property(
         get_origin, set_origin,
         doc="""Property to get/set the entity's origin.""")
+
+    def get_model(self):
+        """Return the entity's model."""
+        return Model(self.get_server_entity().get_model_name())
+
+    def set_model(self, model):
+        """Set the entity's model to the given model."""
+        self.edict.get_server_entity().set_model_index(model.index)
+
+    model = property(
+        get_model, set_model,
+        doc="""Property to get/set the entity's model.""")
 
     def get_descriptor(self, name):
         """Get the entity's value of the given descriptor."""

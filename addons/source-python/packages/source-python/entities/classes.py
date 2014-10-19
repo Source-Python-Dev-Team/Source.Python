@@ -135,7 +135,7 @@ class _ServerClasses(TypeManager):
 
             # Get the specific types of values to use
             input_contents = manager_contents.get('inputs', {})
-            keyvalue_contents  = manager_contents.get('keyvalues', {})
+            keyvalue_contents = manager_contents.get('keyvalues', {})
             descriptor_contents = manager_contents.get('descriptors', {})
             property_contents = manager_contents.get('properties', {})
 
@@ -399,6 +399,10 @@ class _ServerClasses(TypeManager):
         """Search for embedded descriptors to be added to the server class."""
         # Loop through each descriptor in the embedded
         for desc in datamap:
+
+            # If the name doesn't exist, move onto the next one
+            if desc.name is None:
+                continue
 
             # Get the name to use for the embedded
             name = basename + '.' + desc.name
