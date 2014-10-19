@@ -1289,6 +1289,9 @@ void export_server_game_dll()
 		reference_existing_object_policy()
 	);
 	
+	// Add memory tools...
+	ServerGameDLL ADD_MEM_TOOLS(IServerGameDLL, "_ServerGameDLL");
+	
 	// Singleton...
 	scope().attr("server_game_dll") = object(ptr(servergamedll));
 }
