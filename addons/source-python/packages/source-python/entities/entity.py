@@ -325,6 +325,7 @@ class BaseEntity(_EntitySpecials):
     def set_model(self, model):
         """Set the entity's model to the given model."""
         self.edict.get_server_entity().set_model_index(model.index)
+        self.edict.set_key_value_string('model', model)
 
     model = property(
         get_model, set_model,
