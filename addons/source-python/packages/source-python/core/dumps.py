@@ -59,27 +59,28 @@ def dump_string_tables(filename):
     # Open/close the file
     with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
 
-        # Get a list of all current string tables
-        all_string_tables = list(string_tables)
-
         # Loop through the string tables
-        for string_table in all_string_tables:
+        for current_index, string_table in enumerate(string_tables):
+
+            # Is the current index not zero?
+            if current_index:
+
+                # If so, Write a separator line before the next string table
+                open_file.write('\n')
+
+            # Get a filtered list of the table's strings skipping all blank
+            #   ones...
+            items = list(filter(None, string_table))
 
             # Write the string table's name and length to file
             open_file.write('{0} (Length: {1})\n'.format(
-                string_table.name, len(string_table)))
+                string_table.name, len(items)))
 
             # Loop through all items in the string table
-            for item in string_table:
+            for item in items:
 
                 # Write the item to file
                 open_file.write('    {0}\n'.format(item))
-
-            # Is this not the last string table?
-            if all_string_tables.index(string_table) != len(string_tables) - 1:
-
-                # Write a separator line before the next string table
-                open_file.write('\n')
 
 
 # =============================================================================
