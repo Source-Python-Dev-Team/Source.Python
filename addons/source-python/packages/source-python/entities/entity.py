@@ -295,8 +295,8 @@ class BaseEntity(_EntitySpecials):
         value = color.r + (color.g << 8) + (color.b << 16) + (color.a << 24)
 
         # Is the value too large?
-        if value >= 2**31:
-            value -= 2**32
+        if value >= 2 ** 31:
+            value -= 2 ** 32
 
         # Set the entity's color
         self.render = value
