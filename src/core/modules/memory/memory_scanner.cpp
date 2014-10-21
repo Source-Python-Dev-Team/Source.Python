@@ -332,7 +332,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 {
 	std::string szBinaryPath = szPath;
 #ifdef __linux__
-	if (bSrvCheck && !str_ends_with(szBinaryPath.data(), "_srv"))
+	if (bSrvCheck && !str_ends_with(szBinaryPath.data(), "_srv") && !str_ends_with(szBinaryPath.data(), ".so"))
 		szBinaryPath += "_srv.so";
 	else if (!str_ends_with(szBinaryPath.data(), ".so"))
 		szBinaryPath += ".so";
@@ -374,7 +374,8 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	if (stat(szBinaryPath.data(), &buf) == -1)
 	{
 		dlFreeLibrary((DLLib *) ulAddr);
-		return NULL;
+		szBinaryPath = "Unable to retrieve the binary size for " + szBinaryPath;
+		BOOST_RAISE_EXCEPTION(PyExc_RuntimeError, szBinaryPath.data())
 	}
 	ulSize = buf.st_size;
 
