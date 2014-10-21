@@ -14,9 +14,8 @@ from configobj import ConfigObj
 from auth.commands import _auth_commands
 #   Core
 from core import core_logger
+from core import dumps
 from core.manager import core_plugin_manager
-#   Dump
-import _dump
 #   Engines
 from engines.server import engine_server
 #   Paths
@@ -113,10 +112,10 @@ class _CoreCommandManager(SubCommandManager):
             float(args[0]),
             engine_server.server_command, ' '.join(args[1:]) + '\n')
 
-    def dump_data(self, dump_type):
+    def dump_data(self, dump_type, filename):
         """Dump data to logs."""
         # Does the given dump type exist as a function?
-        if not hasattr(_dump, 'dump_' + dump_type):
+        if not 'dump_{0}'.format(dump_type) in dumps.__all__:
 
             # If not, print message to notify of unknown dump type
             self.logger.log_message(
@@ -124,13 +123,7 @@ class _CoreCommandManager(SubCommandManager):
                     dump_type))
 
             # Loop though all dump functions
-            for dump in dir(_dump):
-
-                # Is the current dump not valid?
-                if not dump.startswith('dump_'):
-
-                    # No need to go further
-                    continue
+            for dump in dumps.__all__:
 
                 # Print the current dump function
                 self.logger.log_message('\t{0}'.format(dump.lstrip('dump_')))
@@ -139,10 +132,10 @@ class _CoreCommandManager(SubCommandManager):
             return
 
         # Call the function
-        getattr(_dump, 'dump_' + dump_type)()
+        getattr(dumps, 'dump_{0}'.format(dump_type))(filename)
 
     # Set the methods arguments
-    dump_data.args = ['<dump_type>']
+    dump_data.args = ['<dump_type>', '<filename>']
 
     @staticmethod
     def print_version():
