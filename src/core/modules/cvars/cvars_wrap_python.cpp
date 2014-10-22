@@ -43,14 +43,12 @@ extern ICvar* g_pCVar;
 // Exposes the cvar module.
 //-----------------------------------------------------------------------------
 void export_cvar_interface();
-void export_concommandbase();
 void export_convar();
 void export_flags();
 
 DECLARE_SP_MODULE(_cvars)
 {
 	export_cvar_interface();
-	export_concommandbase();
 	export_convar();
 	export_flags();
 }
@@ -93,106 +91,16 @@ void export_cvar_interface()
 			args("cvar", "old_string", "old_float")
 		)
 
+		.def("get_commands",
+			GET_METHOD(ConCommandBase *, ICvar, GetCommands),
+			"Get first ConCommandBase to allow iteration.",
+			reference_existing_object_policy()
+		)
+
 		ADD_MEM_TOOLS(ICvar, "_Cvar")
 	;
 
 	scope().attr("cvar") = object(ptr(g_pCVar));
-}
-
-//-----------------------------------------------------------------------------
-// Exposes the ConCommandBase interface.
-//-----------------------------------------------------------------------------
-void export_concommandbase()
-{
-	class_<ConCommandBase>("ConCommandBase")
-		.def(init< const char*, optional< const char*, int> >())
-
-		.def("is_command",
-			&ConCommandBase::IsCommand,
-			"Returns whether it's a command."
-		)
-
-		.def("is_flag_set",
-			&ConCommandBase::IsFlagSet,
-			"Returns whether the given flag is set or not.",
-			args("flag")
-		)
-
-		.def("add_flags",
-			&ConCommandBase::AddFlags,
-			"Adds the given flags to the ConVar.",
-			args("flag")
-		)
-
-		.def("remove_flags",
-			&ConCommandBase::RemoveFlags,
-			"Removes the given flags from the ConVar.",
-			args("flag")
-		)
-		
-		.def("get_flags",
-			&ConCommandBase::GetFlags,
-			"Returns its flags."
-		)
-		
-		.def("get_name",
-			&ConCommandBase::GetName,
-			"Returns its name."
-		)
-
-		.def("get_help_text",
-			&ConCommandBase::GetHelpText,
-			"Returns the help text."
-		)
-
-		.def("get_next",
-			GET_METHOD(ConCommandBase*, ConCommandBase, GetNext),
-			"Returns the next ConCommandBase instance.",
-			reference_existing_object_policy()
-		)
-
-		.def("is_registered",
-			&ConCommandBase::IsRegistered,
-			"Returns wheter the ConCommandBase instance is registered."
-		)
-
-		.def("get_dll_identifier",
-			&ConCommandBase::GetDLLIdentifier,
-			"Returns the DLL identifier."
-		)
-
-		ADD_MEM_TOOLS(ConCommandBase, "ConCommandBase")
-	;
-
-	// TODO: Rename or move to ConVar
-	class_<IConVar, boost::noncopyable>("_IConVar", no_init)
-		.def("set_string",
-			GET_METHOD(void, IConVar, SetValue, const char*),
-			args("value")
-		)
-
-		.def("set_float",
-			GET_METHOD(void, IConVar, SetValue, float),
-			args("value")
-		)
-
-		.def("set_int",
-			GET_METHOD(void, IConVar, SetValue, int),
-			args("value")
-		)
-
-		.def("get_name",
-			&IConVar::GetName,
-			"Returns its name."
-		)
-
-		.def("is_flag_set",
-			&IConVar::IsFlagSet,
-			"Returns whether the given flag is set."
-		)
-
-		ADD_MEM_TOOLS(IConVar, "_IConVar")
-	;
 }
 
 //-----------------------------------------------------------------------------
@@ -252,6 +160,35 @@ public:
 
 void export_convar()
 {
+	class_<IConVar, boost::noncopyable>("_IConVar", no_init)
+		.def("set_string",
+			GET_METHOD(void, IConVar, SetValue, const char*),
+			args("value")
+		)
+
+		.def("set_float",
+			GET_METHOD(void, IConVar, SetValue, float),
+			args("value")
+		)
+
+		.def("set_int",
+			GET_METHOD(void, IConVar, SetValue, int),
+			args("value")
+		)
+
+		.def("get_name",
+			&IConVar::GetName,
+			"Returns its name."
+		)
+
+		.def("is_flag_set",
+			&IConVar::IsFlagSet,
+			"Returns whether the given flag is set."
+		)
+
+		ADD_MEM_TOOLS(IConVar, "_IConVar")
+	;
+	
 	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("_ConVar", no_init)
 		// We have to overload __init__. Otherwise we would get an error because of "no_init"
 		.def("__init__",

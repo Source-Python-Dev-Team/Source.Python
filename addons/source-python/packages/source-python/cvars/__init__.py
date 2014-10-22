@@ -17,14 +17,12 @@ from cvars.flags import ConVarFlags
 # Source.Python Imports
 #   Cvars
 from _cvars import cvar
-from _cvars import ConCommandBase
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('ConCommandBase',
-           'ConVar',
+__all__ = ('ConVar',
            'cvar',
            )
 
