@@ -17,6 +17,7 @@ from loggers import _sp_logger
 #   Commands
 from _commands import Command
 from _commands import CommandReturn
+from _commands import ConCommandBase
 
 
 # =============================================================================
@@ -24,6 +25,7 @@ from _commands import CommandReturn
 # =============================================================================
 __all__ = ('Command',
            'CommandReturn',
+           'ConCommandBase',
            )
 
 

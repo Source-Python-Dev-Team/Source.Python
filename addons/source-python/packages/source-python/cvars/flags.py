@@ -20,7 +20,9 @@ from _cvars import FCVAR_UNREGISTERED
 from _cvars import FCVAR_DEVELOPMENTONLY
 from _cvars import FCVAR_GAMEDLL
 from _cvars import FCVAR_CLIENTDLL
+from _cvars import FCVAR_HIDDEN
 from _cvars import FCVAR_PROTECTED
+from _cvars import FCVAR_SPONLY
 from _cvars import FCVAR_ARCHIVE
 from _cvars import FCVAR_NOTIFY
 from _cvars import FCVAR_USERINFO
@@ -57,7 +59,9 @@ class ConVarFlags(IntEnum):
     DEVELOPMENTONLY = FCVAR_DEVELOPMENTONLY
     GAMEDLL = FCVAR_GAMEDLL
     CLIENTDLL = FCVAR_CLIENTDLL
+    HIDDEN = FCVAR_HIDDEN
     PROTECTED = FCVAR_PROTECTED
+    SPONLY = FCVAR_SPONLY
     ARCHIVE = FCVAR_ARCHIVE
     NOTIFY = FCVAR_NOTIFY
     USERINFO = FCVAR_USERINFO

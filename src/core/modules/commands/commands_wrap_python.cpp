@@ -83,6 +83,7 @@ void ClearAllCommands()
 // Exposes the command module.
 //-----------------------------------------------------------------------------
 void export_command();
+void export_concommandbase();
 void export_server_command();
 void export_client_command();
 void export_say_command();
@@ -90,6 +91,7 @@ void export_say_command();
 DECLARE_SP_MODULE(_commands)
 {
 	export_command();
+	export_concommandbase();
 	export_server_command();
 	export_client_command();
 	export_say_command();
@@ -154,6 +156,69 @@ void export_command()
 	;
 }
 
+void export_concommandbase()
+{
+	class_<ConCommandBase>("ConCommandBase")
+		.def(init< const char*, optional< const char*, int> >())
+
+		.def("is_command",
+			&ConCommandBase::IsCommand,
+			"Returns whether it's a command."
+		)
+
+		.def("is_flag_set",
+			&ConCommandBase::IsFlagSet,
+			"Returns whether the given flag is set or not.",
+			args("flag")
+		)
+
+		.def("add_flags",
+			&ConCommandBase::AddFlags,
+			"Adds the given flags to the ConVar.",
+			args("flag")
+		)
+
+		.def("remove_flags",
+			&ConCommandBase::RemoveFlags,
+			"Removes the given flags from the ConVar.",
+			args("flag")
+		)
+		
+		.def("get_flags",
+			&ConCommandBase::GetFlags,
+			"Returns its flags."
+		)
+		
+		.def("get_name",
+			&ConCommandBase::GetName,
+			"Returns its name."
+		)
+
+		.def("get_help_text",
+			&ConCommandBase::GetHelpText,
+			"Returns the help text."
+		)
+
+		.def("get_next",
+			GET_METHOD(ConCommandBase*, ConCommandBase, GetNext),
+			"Returns the next ConCommandBase instance.",
+			reference_existing_object_policy()
+		)
+
+		.def("is_registered",
+			&ConCommandBase::IsRegistered,
+			"Returns wheter the ConCommandBase instance is registered."
+		)
+
+		.def("get_dll_identifier",
+			&ConCommandBase::GetDLLIdentifier,
+			"Returns the DLL identifier."
+		)
+
+		ADD_MEM_TOOLS(ConCommandBase, "ConCommandBase")
+	;
+}
+
 //-----------------------------------------------------------------------------
 // Exposes the Server Command interface.
 //-----------------------------------------------------------------------------
@@ -161,7 +226,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS( get_server_command_overloads, GetServerCommand,
 
 void export_server_command()
 {
-	class_<CServerCommandManager, boost::noncopyable>("ServerCommandDispatcher", no_init)
+	class_<CServerCommandManager, bases<ConCommandBase>, boost::noncopyable>("ServerCommandDispatcher", no_init)
 		.def("add_callback",
 			&CServerCommandManager::AddCallback,
 			"Adds a callback to the server command's list.",
