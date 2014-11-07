@@ -32,6 +32,8 @@
 #include "modules/export_main.h"
 #include "modules/memory/memory_tools.h"
 
+#include ENGINE_INCLUDE_PATH(cvars_wrap.h)
+
 
 //-----------------------------------------------------------------------------
 // External variables
@@ -92,7 +94,7 @@ void export_cvar_interface()
 		)
 
 		.def("get_commands",
-			GET_METHOD(ConCommandBase *, ICvar, GetCommands),
+			ICVarExt::GetCommands,
 			"Get first ConCommandBase to allow iteration.",
 			reference_existing_object_policy()
 		)

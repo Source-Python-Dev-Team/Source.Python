@@ -166,6 +166,7 @@ Set(SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES
 # Cvars module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CVARS_MODULE_HEADERS
+    core/modules/cvars/${SOURCE_ENGINE}/cvars_wrap.h
 )
 
 Set(SOURCEPYTHON_CVARS_MODULE_SOURCES
