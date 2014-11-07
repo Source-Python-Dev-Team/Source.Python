@@ -52,6 +52,8 @@ void export_send_prop_types();
 void export_send_prop_flags();
 void export_server_class();
 void export_take_damage_info();
+void export_bf_write();
+void export_bf_read();
 
 
 //-----------------------------------------------------------------------------
@@ -67,6 +69,8 @@ DECLARE_SP_MODULE(_basetypes)
 	export_send_prop_flags();
 	export_server_class();
 	export_take_damage_info();
+	export_bf_write();
+	export_bf_read();
 }
 
 
@@ -371,4 +375,382 @@ void export_take_damage_info()
 	
 	// Add memory tools...
 	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose bf_read/bf_write.
+//-----------------------------------------------------------------------------
+class bf_writeExt {
+public:
+	static void __del__(bf_write* buffer)
+	{
+		delete buffer->GetData();
+	}
+
+	static boost::shared_ptr<bf_write> __init__(int buffer_size)
+	{
+		return boost::shared_ptr<bf_write>(new bf_write(new unsigned char[buffer_size], buffer_size), &__del__);
+	}
+
+	static list GetData(bf_write& buffer)
+	{
+		list result;
+
+		unsigned char* data = buffer.GetData();
+		for (int i=0; i < buffer.GetNumBytesWritten(); i++) {
+			result.append(data[i]);
+		}
+
+		return result;
+	}
+};
+
+void export_bf_write()
+{
+	class_<bf_write>("bf_write", no_init)
+		.def("__init__",
+			make_constructor(&bf_writeExt::__init__, default_call_policies())
+		)
+
+		.def("seek_to_bit",
+			&bf_write::SeekToBit,
+			"Seeks to a specific position."
+		)
+
+		.def("write_one_bit",
+			&bf_write::WriteOneBit
+		)
+
+		.def("write_one_bit_no_check",
+			&bf_write::WriteOneBitNoCheck
+		)
+
+		.def("write_one_bit_at",
+			&bf_write::WriteOneBitAt
+		)
+
+		.def("write_ubit_long",
+			&bf_write::WriteUBitLong,
+			("data", "num_bits", arg("check_range")=true)
+		)
+
+		.def("write_sbit_long",
+			&bf_write::WriteSBitLong
+		)
+
+		.def("write_ubit_var",
+			&bf_write::WriteUBitVar,
+			"Writes an unsigned integer with variable bit length."
+		)
+
+		.def("write_bits_from_buffer",
+			&bf_write::WriteBitsFromBuffer,
+			"Copy the bits straight out of <pIn>. This seeks <pIn> forward by <nBits>. Returns an error if this buffer or the read buffer overflows."
+		)
+
+		.def("write_bit_angle",
+			&bf_write::WriteBitAngle
+		)
+
+		.def("write_bit_coord",
+			&bf_write::WriteBitCoord
+		)
+
+		.def("write_bit_coord_mp",
+			&bf_write::WriteBitCoordMP
+		)
+
+		.def("write_bit_float",
+			&bf_write::WriteBitFloat
+		)
+
+		.def("write_bit_vec3_coord",
+			&bf_write::WriteBitVec3Coord
+		)
+
+		.def("write_bit_normal",
+			&bf_write::WriteBitNormal
+		)
+
+		.def("write_bit_vec3_normal",
+			&bf_write::WriteBitVec3Normal
+		)
+
+		.def("write_bit_angles",
+			&bf_write::WriteBitAngles
+		)
+
+		.def("write_char",
+			&bf_write::WriteChar
+		)
+
+		.def("write_byte",
+			&bf_write::WriteByte
+		)
+
+		.def("write_short",
+			&bf_write::WriteShort
+		)
+
+		.def("write_word",
+			&bf_write::WriteWord
+		)
+
+		.def("write_long",
+			&bf_write::WriteLong
+		)
+
+		.def("write_long_long",
+			&bf_write::WriteLongLong
+		)
+
+		.def("write_float",
+			&bf_write::WriteFloat
+		)
+
+		.def("write_string",
+			// Required for CS:GO
+			GET_METHOD(bool, bf_write, WriteString, const char*),
+			"Returns false if it overflows the buffer."
+		)
+
+		.def("get_num_bytes_written",
+			&bf_write::GetNumBytesWritten
+		)
+
+		.def("get_num_bits_written",
+			&bf_write::GetNumBitsWritten
+		)
+
+		.def("get_max_num_bits",
+			&bf_write::GetMaxNumBits
+		)
+
+		.def("get_num_bits_left",
+			&bf_write::GetNumBitsLeft
+		)
+
+		.def("get_num_bytes_left",
+			&bf_write::GetNumBytesLeft
+		)
+
+		.def("get_data",
+			&bf_writeExt::GetData
+		)
+
+		.def("check_for_overflow",
+			&bf_write::CheckForOverflow
+		)
+
+		.def("is_overflowed",
+			&bf_write::IsOverflowed
+		)
+
+		.def("set_overflow_flag",
+			&bf_write::SetOverflowFlag
+		)
+		
+		.def_readwrite("data_bytes_count",
+			&bf_write::m_nDataBytes
+		)
+
+		.def_readwrite("data_bits_count",
+			&bf_write::m_nDataBits
+		)
+
+		.def_readwrite("current_bit",
+			&bf_write::m_iCurBit
+		)
+
+		ADD_MEM_TOOLS(bf_write, "bf_write")
+	;
+}
+
+class bf_readExt {
+public:
+	static void __del__(bf_read* buffer)
+	{
+		delete buffer->GetBasePointer();
+	}
+
+	static boost::shared_ptr<bf_read> __init__(bf_write& buffer)
+	{
+		int size = buffer.GetNumBytesWritten();
+		void* pData = new unsigned char[size];
+		memcpy(pData, buffer.GetData(), size);
+		return boost::shared_ptr<bf_read>(new bf_read(pData, size), &__del__);
+	}
+
+	static list GetData(bf_read& buffer)
+	{
+		list result;
+		
+		const unsigned char* data = buffer.GetBasePointer();
+		for (unsigned int i=0; i < buffer.m_nDataBytes; i++) {
+			result.append(data[i]);
+		}
+
+		return result;
+	}
+
+	static int GetNumBytesRead(bf_read& buffer)
+	{
+		return BitByte(buffer.GetNumBitsRead());
+	}
+
+	static str ReadString(bf_read& buffer)
+	{
+		char* pStr = new char[buffer.m_nDataBytes];
+		buffer.ReadString(pStr, buffer.m_nDataBytes);
+
+		// Let Boost handle deallocating the string
+		str result = str((const char *) pStr);
+		delete pStr;
+		return result;
+	}
+};
+
+void export_bf_read()
+{
+	class_<bf_read>("bf_read", no_init)
+		.def("__init__",
+			make_constructor(&bf_readExt::__init__, default_call_policies())
+		)
+
+		.def("read_one_bit",
+			&bf_read::ReadOneBit
+		)
+
+		.def("read_bit_angle",
+			&bf_read::ReadBitAngle
+		)
+
+		.def("read_ubit_long",
+			&bf_read::ReadUBitLong
+		)
+
+		.def("peek_ubit_long",
+			&bf_read::PeekUBitLong
+		)
+
+		.def("read_sbit_long",
+			&bf_read::ReadSBitLong
+		)
+
+		.def("read_ubit_var",
+			&bf_read::ReadUBitVar
+		)
+
+		.def("read_bit_coord",
+			&bf_read::ReadBitCoord
+		)
+
+		.def("read_bit_coord_mp",
+			&bf_read::ReadBitCoordMP
+		)
+
+		.def("read_bit_float",
+			&bf_read::ReadBitFloat
+		)
+
+		.def("read_bit_normal",
+			&bf_read::ReadBitNormal
+		)
+
+		.def("read_bit_vec3_coord",
+			&bf_read::ReadBitVec3Coord
+		)
+
+		.def("read_bit_vec3_normal",
+			&bf_read::ReadBitVec3Normal
+		)
+
+		.def("read_bit_angles",
+			&bf_read::ReadBitAngles
+		)
+
+		.def("read_char",
+			&bf_read::ReadChar
+		)
+
+		.def("read_byte",
+			&bf_read::ReadByte
+		)
+
+		.def("read_short",
+			&bf_read::ReadShort
+		)
+
+		.def("read_word",
+			&bf_read::ReadWord
+		)
+
+		.def("read_long",
+			&bf_read::ReadLong
+		)
+
+		.def("read_long_long",
+			&bf_read::ReadLongLong
+		)
+
+		.def("read_float",
+			&bf_read::ReadFloat
+		)
+		
+		.def("read_string",
+			&bf_readExt::ReadString
+		)
+
+		.def("get_num_bytes_left",
+			&bf_read::GetNumBytesLeft
+		)
+
+		.def("get_num_bytes_read",
+			&bf_readExt::GetNumBytesRead
+		)
+
+		.def("get_num_bits_left",
+			&bf_read::GetNumBitsLeft
+		)
+
+		.def("get_num_bits_read",
+			&bf_read::GetNumBitsRead
+		)
+
+		.def("is_overflowed",
+			&bf_read::IsOverflowed
+		)
+
+		.def("seek",
+			&bf_read::Seek
+		)
+
+		.def("seek_relative",
+			&bf_read::SeekRelative
+		)
+
+		.def("set_overflow_flag",
+			&bf_read::SetOverflowFlag
+		)
+
+		.def("get_data",
+			&bf_readExt::GetData
+		)
+
+		.def_readwrite("data_bytes_count",
+			&bf_read::m_nDataBytes
+		)
+
+		.def_readwrite("data_bits_count",
+			&bf_read::m_nDataBits
+		)
+		
+		.add_property("current_bit",
+			&bf_read::Seek,
+			&bf_read::GetNumBitsRead
+		)
+
+		ADD_MEM_TOOLS(bf_read, "bf_read")
+	;
 }
