@@ -142,10 +142,11 @@ void CAddonManager::ClientSettingsChanged( edict_t *pEdict )
 //---------------------------------------------------------------------------------
 // Calls client connect listeners.
 //---------------------------------------------------------------------------------
-void CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, 
+PLUGIN_RESULT CAddonManager::ClientConnect( bool *bAllowConnect, edict_t *pEntity, 
 	const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	CALL_LISTENERS(ClientConnect, *bAllowConnect, IndexFromEdict(pEntity), pszName, pszAddress, reject, maxrejectlen);
+	CALL_LISTENERS(ClientConnect, ptr(new CPointer((unsigned long) bAllowConnect)), IndexFromEdict(pEntity), pszName, pszAddress, ptr(new CPointer((unsigned long) reject)), maxrejectlen);
+	return PLUGIN_OVERRIDE;
 }
 
 //---------------------------------------------------------------------------------

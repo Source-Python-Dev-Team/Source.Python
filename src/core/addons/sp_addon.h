@@ -52,7 +52,7 @@ class CAddonManager
 		void ClientDisconnect( edict_t *pEntity );
 		void ClientPutInServer( edict_t *pEntity, char const *playername );
 		void ClientSettingsChanged( edict_t *pEdict );
-		void ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen );
+		PLUGIN_RESULT ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen );
 
 		void OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity, EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
 
