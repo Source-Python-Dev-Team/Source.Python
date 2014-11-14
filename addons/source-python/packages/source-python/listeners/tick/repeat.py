@@ -194,6 +194,9 @@ class TickRepeat(AutoUnload):
             'TickRepeat.resume - TickRepeatStatus.' +
             'PAUSED - Resuming TickRepeat')
 
+        # Set the status to running
+        self._status = TickRepeatStatus.RUNNING
+
         # Start the delay
         self._delay = tick_delays.delay(self._loop_time, self._execute)
 
