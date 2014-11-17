@@ -18,13 +18,6 @@ from listeners import listeners_logger
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ('tick_delays',
-           )
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.tick.delays logger
@@ -34,7 +27,7 @@ listeners_tick_delays_logger = listeners_logger.tick.delays
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _Delay(object):
+class Delay(object):
 
     """Stores a callback to be called at a later time."""
 
@@ -42,11 +35,11 @@ class _Delay(object):
         """Called when an instance is instantiated."""
         # Log the init message
         listeners_tick_delays_logger.log_info(
-            '_Delay.__init__ <{0}> <{1}> <{2}> <{3}>'.format(
+            'Delay.__init__ <{0}> <{1}> <{2}> <{3}>'.format(
                 seconds, callback, args, kwargs))
 
         # Store the time to execute the callback
-        self.exec_time = time.time() + seconds
+        self._exec_time = time.time() + seconds
 
         # Store the callback, arguments, and keywords
         self.callback = callback
@@ -57,7 +50,7 @@ class _Delay(object):
         """Call the delay with the proper arguments and keywords."""
         # Log the call message
         listeners_tick_delays_logger.log_info(
-            '_Delay.__call__ - Try to call - <{0}> <{1}> <{2}>'.format(
+            'Delay.__call__ - Try to call - <{0}> <{1}> <{2}>'.format(
                 self.callback, self.args, self.kwargs))
 
         # Use try/except in case an error is encountered
@@ -71,6 +64,15 @@ class _Delay(object):
 
             # Print the exception to the console
             except_hooks.print_exception()
+
+    @property
+    def exec_time(self):
+        """Return the time to execute the delayed function."""
+        return self._exec_time
+
+    def cancel(self):
+        """Cancel the delay."""
+        tick_delays.cancel_delay(self)
 
 
 class _Times(list):
@@ -157,11 +159,11 @@ class _TickDelays(dict):
 
     def delay(self, seconds, callback, *args, **kwargs):
         """Create a delay."""
-        # Get the _Delay instance for the given arguments
-        delay_object = _Delay(seconds, callback, *args, **kwargs)
+        # Get the Delay instance for the given arguments
+        delay_object = Delay(seconds, callback, *args, **kwargs)
 
-        # Add the _Delay instance to the dictionary using its execution time
-        self[delay_object.exec_time].append(delay_object)
+        # Add the Delay instance to the dictionary using its execution time
+        self[delay_object._exec_time].append(delay_object)
 
         # Return the object
         return delay_object
@@ -199,15 +201,15 @@ class _TickDelays(dict):
         listeners_tick_delays_logger.log_info(
             'tick_delays.cancel_delay <{0}>'.format(delay_object))
 
-        # Is the given argument a _Delay object?
-        if not isinstance(delay_object, _Delay):
+        # Is the given argument a Delay object?
+        if not isinstance(delay_object, Delay):
 
             # If not, raise an error
             raise TypeError(
-                'tick_delays.cancel_delay requires a _Delay instance.')
+                'tick_delays.cancel_delay requires a Delay instance.')
 
-        # Is the given _Delay object's time no longer in the dictionary?
-        if delay_object.exec_time not in self:
+        # Is the given Delay object's time no longer in the dictionary?
+        if delay_object._exec_time not in self:
 
             # If not, raise an error
             raise KeyError('Object is no longer registered.')
@@ -215,21 +217,21 @@ class _TickDelays(dict):
         # Log the removing from list message
         listeners_tick_delays_logger.log_info(
             'tick_delays.cancel_delay - Removing from '
-            '<{0}>'.format(delay_object.exec_time))
+            '<{0}>'.format(delay_object._exec_time))
 
         # Remove the delay from its time
-        self[delay_object.exec_time].remove(delay_object)
+        self[delay_object._exec_time].remove(delay_object)
 
         # Does the delay's time have any remaining objects?
-        if not self[delay_object.exec_time]:
+        if not self[delay_object._exec_time]:
 
             # Log the deletion of the time from the dictionary message
             listeners_tick_delays_logger.log_info(
                 'tick_delays.cancel_delay - Removing <{0}> '
-                'from dictionary'.format(delay_object.exec_time))
+                'from dictionary'.format(delay_object._exec_time))
 
             # If not, remove the delay's time from the dictionary
-            del self[delay_object.exec_time]
+            del self[delay_object._exec_time]
 
         # Are there any remaining delays?
         if not self:

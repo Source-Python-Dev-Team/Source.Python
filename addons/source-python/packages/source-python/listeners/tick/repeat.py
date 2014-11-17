@@ -20,14 +20,6 @@ from listeners.tick import listeners_logger
 
 
 # =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ('TickRepeat',
-           'TickRepeatStatus',
-           )
-
-
-# =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the sp.tick.repeat logger
@@ -193,6 +185,9 @@ class TickRepeat(AutoUnload):
         listeners_tick_repeat_logger.log_info(
             'TickRepeat.resume - TickRepeatStatus.' +
             'PAUSED - Resuming TickRepeat')
+
+        # Set the status to running
+        self._status = TickRepeatStatus.RUNNING
 
         # Start the delay
         self._delay = tick_delays.delay(self._loop_time, self._execute)

@@ -14,8 +14,12 @@ from contextlib import suppress
 from path import Path
 
 # Source.Python Imports
+#   Core
+from core import AutoUnload
 #   Engines
 from engines.server import engine_server
+#   Events
+from events.manager import event_registry
 #   Stringtables
 from stringtables import INVALID_STRING_INDEX
 from stringtables import string_tables
@@ -39,7 +43,7 @@ class PrecacheError(Exception):
     """Object was not able to be precached due to limit being reached."""
 
 
-class _PrecacheBase(Path):
+class _PrecacheBase(Path, AutoUnload):
 
     """Base precache class used to interact with a specific object."""
 
@@ -51,6 +55,12 @@ class _PrecacheBase(Path):
         """Add the file to downloadables if download is True."""
         # Call Path's __init__ with the given path
         super(_PrecacheBase, self).__init__(path)
+
+        # Precache the instance
+        self._precache_method(self)
+
+        # Register the server_spawn event to precache every map change
+        event_registry.register_for_event('server_spawn', self._server_spawn)
 
         # Should the path be added to the downloadables?
         if download:
@@ -71,24 +81,23 @@ class _PrecacheBase(Path):
             # Return the precache index
             return index
 
-        # Attempt to precache the object
-        index = self._precache_method(self)
-
-        # Was the object able to be precached?
-        if index != INVALID_STRING_INDEX:
-
-            # Return the precache index
-            return index
-
         # If the object was not precached, raise an error
         raise PrecacheError(
             '{0} was not able to be precached due to the '.format(self) +
             '{0} table reaching its limit.'.format(self._precache_table))
 
+    def _server_spawn(self, game_event):
+        """Precache the object on map change."""
+        self._precache_method(self)
+
     def _unload_instance(self):
-        """Remove the path from the downloads list."""
+        """Remove from the downloads list and unregister server_spawn."""
+        # Remove the path from the downloads list
         with suppress(AttributeError):
             self._downloads._unload_instance()
+
+        # Unregister the server_spawn event
+        event_registry.unregister_for_event('server_spawn', self._server_spawn)
 
 
 class Decal(_PrecacheBase):

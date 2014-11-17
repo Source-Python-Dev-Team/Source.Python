@@ -12,12 +12,11 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
-#   Cvars
-from cvars import ConVar
 #   Paths
 from paths import SP_DATA_PATH
 #   Weapons
 from weapons.default import NoWeaponManager
+from weapons.instance import Weapon
 
 
 # =============================================================================
@@ -74,13 +73,13 @@ class _WeaponManager(dict):
             name = self._format_name(basename)
 
             # Add the weapon to the dictionary
-            self[name] = _Weapon(name, basename, ini['weapons'][basename])
+            self[name] = Weapon(name, basename, ini['weapons'][basename])
 
             # Add the weapon's tags to the set of tags
             self._tags.update(self[name].tags)
 
     def __getitem__(self, item):
-        """Format the given name."""
+        """Return the Weapon instance for the given weapon."""
         # Format the weapon's name
         name = self._format_name(item)
 
@@ -149,76 +148,6 @@ class _WeaponManager(dict):
     @property
     def tags(self):
         """Return the weapon tags for the server."""
-        return self._tags
-
-
-class _Weapon(object):
-
-    """Class used to store information specific to the given weapon."""
-
-    def __init__(self, name, basename, properties):
-        """Store the base attributes for the weapon."""
-        # Store the weapon's full name
-        self._name = name
-
-        # Store the weapon's base name
-        self._basename = basename
-
-        # Store the weapon's slot number
-        self._slot = properties.get('slot', None)
-
-        # Store the weapon's max ammo amount
-        self._maxammo = properties.get('maxammo', None)
-
-        # Store the weapon's ammo property
-        self._ammoprop = properties.get('ammoprop', None)
-
-        # Store the weapon's clip amount
-        self._clip = properties.get('clip', 0)
-
-        # Store the weapon's tags
-        self._tags = properties.get('tags', 'all').split(',')
-
-    @property
-    def name(self):
-        """Return the classname of the weapon."""
-        return self._name
-
-    @property
-    def basename(self):
-        """Return the basename of the weapon."""
-        return self._basename
-
-    @property
-    def slot(self):
-        """Return the slot of the weapon."""
-        return self._slot
-
-    @property
-    def maxammo(self):
-        """Return the maxammo amount for the weapon."""
-        # Is the stored maxammo an integer?
-        if isinstance(self._maxammo, int):
-
-            # Return the value
-            return self._maxammo
-
-        # Get the cvar value of the maxammo
-        return ConVar(self._maxammo).get_int()
-
-    @property
-    def ammoprop(self):
-        """Return the ammoprop of the weapon."""
-        return self._ammoprop
-
-    @property
-    def clip(self):
-        """Return the clip value of the weapon."""
-        return self._clip
-
-    @property
-    def tags(self):
-        """Return the tags of the weapon."""
         return self._tags
 
 # Does the current game have an ini file?

@@ -33,7 +33,6 @@ from memory.helpers import parse_data
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('CustomType',
-           'Type',
            'TypeManager',
            'manager',
            )
