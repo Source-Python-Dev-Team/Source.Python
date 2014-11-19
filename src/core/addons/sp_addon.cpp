@@ -164,12 +164,12 @@ void CAddonManager::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie,
 #ifdef ENGINE_CSGO
 void CAddonManager::ClientFullyConnect( edict_t *pEntity )
 {
-	CALL_LISTENERS(ClientFullyConnect, pEntity);
+	CALL_LISTENERS(ClientFullyConnect, IndexFromEdict(pEntity));
 }
 
 void CAddonManager::OnEdictAllocated( edict_t *edict )
 {
-	CALL_LISTENERS(OnEdictAllocated, edict);
+	CALL_LISTENERS(OnEdictAllocated, IndexFromEdict(edict));
 }
 
 void CAddonManager::OnEdictFreed( const edict_t *edict )
