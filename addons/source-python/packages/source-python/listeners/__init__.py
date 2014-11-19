@@ -27,7 +27,7 @@ from _listeners import level_init_listener_manager
 from _listeners import level_shutdown_listener_manager
 from _listeners import network_id_validated_listener_manager
 from _listeners import on_edict_allocated_listener_manager
-from _listeners import on_edict_free_listener_manager
+from _listeners import on_edict_freed_listener_manager
 from _listeners import on_query_cvar_value_finished_listener_manager
 from _listeners import server_activate_listener_manager
 from _listeners import tick_listener_manager
@@ -60,7 +60,7 @@ __all__ = ('ClientActive',
            'level_shutdown_listener_manager',
            'network_id_validated_listener_manager',
            'on_edict_allocated_listener_manager',
-           'on_edict_free_listener_manager',
+           'on_edict_freed_listener_manager',
            'on_query_cvar_value_finished_listener_manager',
            'server_activate_listener_manager',
            'tick_listener_manager',
@@ -202,7 +202,7 @@ class OnEdictFreed(_ListenerManager):
 
     """Register/unregister an OnEdictFreed listener."""
 
-    manager = on_edict_free_listener_manager
+    manager = on_edict_freed_listener_manager
 
 
 class OnQueryCvarValueFinished(_ListenerManager):

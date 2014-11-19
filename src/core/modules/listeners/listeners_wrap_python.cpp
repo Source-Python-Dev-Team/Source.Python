@@ -98,7 +98,7 @@ void export_listener_managers()
 	scope().attr("network_id_validated_listener_manager") = object(ptr(GetNetworkidValidatedListenerManager()));
 	
 	scope().attr("on_edict_allocated_listener_manager") = object(ptr(GetOnEdictAllocatedListenerManager()));
-	scope().attr("on_edict_free_listener_manager") = object(ptr(GetOnEdictFreedListenerManager()));
+	scope().attr("on_edict_freed_listener_manager") = object(ptr(GetOnEdictFreedListenerManager()));
 	
 	scope().attr("on_query_cvar_value_finished_listener_manager") = object(ptr(GetOnQueryCvarValueFinishedListenerManager()));
 	
