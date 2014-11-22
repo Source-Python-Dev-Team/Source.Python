@@ -186,7 +186,7 @@ _player_iter_manager.register_return_type(
 _player_iter_manager.register_return_type(
     'weapon', lambda playerinfo: playerinfo.get_weapon_name())
 _player_iter_manager.register_return_type(
-    'language', lambda playerinfo: engine_server.get_client_convar_value(
-        index_from_playerinfo(playerinfo), 'cl_language'))
+    'language', lambda playerinfo: PlayerEntity(
+        index_from_playerinfo(playerinfo).language)
 _player_iter_manager.register_return_type(
     'team', lambda playerinfo: playerinfo.get_team_index())

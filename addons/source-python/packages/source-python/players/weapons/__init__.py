@@ -5,15 +5,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Importlib
-from importlib import import_module
-
 # Source.Python Imports
 #   Basetypes
 from basetypes import SendPropTypes
-#   Core
-from core import GAME_NAME
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import index_from_inthandle
@@ -25,25 +19,9 @@ from weapons.manager import weapon_manager
 
 
 # =============================================================================
-# >> GLOBAL VARIALBES
-# =============================================================================
-# Use try/except to import the game specific weapon class
-try:
-
-    # Get the game's file's instance
-    _game_instance = import_module('players.games.{0}'.format(GAME_NAME))
-
-# Was an ImportError encountered?
-except ImportError:
-
-    # Set the variable to None if failed to import
-    _game_instance = import_module('players.games')
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
-class _PlayerWeapons(_game_instance._GameWeapons):
+class _PlayerWeapons(object):
 
     """Extends PlayerEntity to provide basic weapon functionality."""
 

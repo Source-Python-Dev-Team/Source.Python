@@ -14,7 +14,8 @@ from entities.entity import BaseEntity
 from players.helpers import playerinfo_from_index
 from players.helpers import address_from_playerinfo
 from players.helpers import uniqueid_from_playerinfo
-from players.weapons import _PlayerWeapons
+from players.games import _game_classes
+from players.games import _game_weapons
 
 
 # =============================================================================
@@ -27,7 +28,7 @@ __all__ = ('PlayerEntity',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(BaseEntity, _PlayerWeapons):
+class PlayerEntity(BaseEntity, _game_classes, _game_weapons):
 
     """Class used to interact directly with players."""
 
@@ -79,11 +80,6 @@ class PlayerEntity(BaseEntity, _PlayerWeapons):
     def isdead(self):
         """Return if the player is dead or alive."""
         return self.playerinfo.is_dead()
-
-    @property
-    def language(self):
-        """Return the player's language."""
-        return engine_server.get_client_convar_value(self.index, 'cl_language')
 
     @property
     def uniqueid(self):
