@@ -12,8 +12,6 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
-#   Engines
-from engines.server import engine_server
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager

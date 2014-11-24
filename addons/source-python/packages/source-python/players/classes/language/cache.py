@@ -15,7 +15,6 @@ from listeners import client_fully_connect_listener_manager
 from listeners import on_query_cvar_value_finished_listener_manager
 #   Players
 from players.helpers import edict_from_index
-from players.helpers import userid_from_index
 
 
 # =============================================================================

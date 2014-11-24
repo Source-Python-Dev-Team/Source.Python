@@ -19,12 +19,12 @@ from players.classes.language import _LanguagePropertyBase
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _GameWeapons(object):
+class _BaseWeapons(object):
 
     """Base class for game specific weapon functionality."""
 
 
-class _GameClasses(_LanguagePropertyBase):
+class _BaseClasses(_LanguagePropertyBase):
 
     """Base class for game specific functionality."""
 
@@ -45,16 +45,16 @@ except ImportError:
 
 # Use try/except to store the game specific weapons
 try:
-    _game_weapons = _game_module._GameWeapons
+    _GameWeapons = _game_module._GameWeapons
 
 # If the module doesn't contain the class, use the base class
 except AttributeError:
-    _game_weapons = _GameWeapons
+    _GameWeapons = _BaseWeapons
 
 # Use try/except to store the game specific classes
 try:
-    _game_classes = _game_module._GameClasses
+    _GameClasses = _game_module._GameClasses
 
 # If the module doesn't contain the class, use the base class
 except AttributeError:
-    _game_classes = _GameClasses
+    _GameClasses = _BaseClasses

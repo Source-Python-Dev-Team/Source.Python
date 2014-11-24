@@ -6,16 +6,14 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Engines
-from engines.server import engine_server
 #   Entities
 from entities.entity import BaseEntity
 #   Players
 from players.helpers import playerinfo_from_index
 from players.helpers import address_from_playerinfo
 from players.helpers import uniqueid_from_playerinfo
-from players.games import _game_classes
-from players.games import _game_weapons
+from players.games import _GameClasses
+from players.games import _GameWeapons
 
 
 # =============================================================================
@@ -28,7 +26,7 @@ __all__ = ('PlayerEntity',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(BaseEntity, _game_classes, _game_weapons):
+class PlayerEntity(BaseEntity, _GameClasses, _GameWeapons):
 
     """Class used to interact directly with players."""
 
