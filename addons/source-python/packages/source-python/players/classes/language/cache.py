@@ -1,6 +1,6 @@
 # ../players/classes/language/cache.py
 
-""""""
+"""Provides a way to get a player's language using a cache."""
 
 # =============================================================================
 # >> IMPORTS
@@ -10,6 +10,7 @@
 from engines.server import QueryCvarStatus
 from engines.server import engine_server
 #   Listeners
+from listeners import client_disconnect_listener_manager
 from listeners import client_fully_connect_listener_manager
 from listeners import on_query_cvar_value_finished_listener_manager
 #   Players
@@ -22,45 +23,59 @@ from players.helpers import userid_from_index
 # =============================================================================
 class _LanguageCache(dict):
 
-    """"""
+    """Dictionary class that stores player's with their language."""
 
-    def query_cvar_value_finished(cookie, index, status, cvarname, cvarvalue):
-        """"""
-        # 
+    def __missing__(self, index):
+        """Return an empty string when the given index is not found."""
+        return ''
+
+    def query_cvar_value_finished(
+            self, cookie, index, status, cvarname, cvarvalue):
+        """Store the player's if that is what the query is for."""
+        # Is the query not for the player's language?
         if cvarname != 'cl_language':
             return
 
-        # 
+        # Was the query unsuccessful?
         if status is not QueryCvarStatus.SUCCESS:
             return
 
-        # 
-        userid = userid_from_index(index)
-
-        # 
-        if userid in self:
+        # Is the player's language already cached?
+        if index in self:
             return
 
-        # 
-        self[userid] = cvarvalue
+        # Store the player's language
+        self[index] = cvarvalue
 
+    def client_disconnect(self, index):
+        """Remove the player from the cache."""
+        # Is the player's language cached?
+        if index in self:
+
+            # Remove the player
+            del self[index]
+
+    @staticmethod
     def client_fully_connect(index):
-        """"""
+        """Query the player's language when they are fully connected."""
         engine_server.start_query_cvar_value(
             edict_from_index(index), 'cl_language')
 
+# Get the _LanguageCache instance and register the listeners
 _language_cache = _LanguageCache()
 on_query_cvar_value_finished_listener_manager.register_listener(
     _language_cache.query_cvar_value_finished)
 client_fully_connect_listener_manager.register_listener(
     _language_cache.client_fully_connect)
+client_disconnect_listener_manager.register_listener(
+    _language_cache.client_disconnect)
 
 
 class _LanguagePropertyCache(object):
 
-    """"""
+    """Provides a property to get the player's cached language."""
 
     @property
     def language(self):
         """Return the player's cached language."""
-        return _language_cache[self.userid]
+        return _language_cache[self.index]

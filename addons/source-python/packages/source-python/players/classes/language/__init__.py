@@ -1,6 +1,6 @@
 # ../players/classes/language/__init__.py
 
-""""""
+"""Provides a base way to get a player's language."""
 
 # =============================================================================
 # >> IMPORTS
@@ -15,7 +15,7 @@ from engines.server import engine_server
 # =============================================================================
 class _LanguagePropertyBase(object):
 
-    """"""
+    """Provides a property to get the player's language."""
 
     @property
     def language(self):
