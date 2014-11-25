@@ -12,12 +12,12 @@ from collections import defaultdict
 # Source.Python Imports
 #   Core
 from core import AutoUnload
-#   Engines
-from engines.server import engine_server
-#   Listeners
-from listeners import ClientDisconnect
 #   Filters
 from filters.players import PlayerIter
+#   Listeners
+from listeners import ClientDisconnect
+#   Players
+from players.helpers import get_client_language
 #   Translations
 from translations.strings import TranslationStrings
 
@@ -309,8 +309,7 @@ def _translate_text(text, ply_index):
     Otherwise the original text will be returned.
     """
     if isinstance(text, TranslationStrings):
-        return text.get_string(
-            engine_server.get_client_convar_value(ply_index, 'cl_language'))
+        return text.get_string(get_client_language(ply_index))
 
     return text
 
