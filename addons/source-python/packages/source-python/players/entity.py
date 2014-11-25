@@ -15,7 +15,6 @@ from math import sin
 #   Constants
 from constants import MAX_TRACE_LENGTH
 #   Engines
-from engines.server import engine_server
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
 from engines.trace import GameTrace
@@ -29,11 +28,11 @@ from mathlib import Vector
 #   Memory
 from memory import Pointer
 #   Players
-from players.helpers import playerinfo_from_index
 from players.helpers import address_from_playerinfo
+from players.helpers import get_client_language
+from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
-from players.games import _game_classes
-from players.games import _game_weapons
+from players.games import _GameWeapons
 from players.weapons import _PlayerWeapons
 
 
@@ -47,7 +46,7 @@ __all__ = ('PlayerEntity',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(BaseEntity, _game_classes, _game_weapons, _PlayerWeapons):
+class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
 
     """Class used to interact directly with players."""
 
@@ -122,6 +121,11 @@ class PlayerEntity(BaseEntity, _game_classes, _game_weapons, _PlayerWeapons):
     team = property(
         get_team, set_team,
         doc="""Property to get/set the player's team.""")
+
+    @property
+    def language(self):
+        """Return the player's language."""
+        return get_client_language(self.index)
 
     def get_trace_ray(self, mask=ContentMasks.ALL, trace_filter=None):
         """Return the player's current trace data."""

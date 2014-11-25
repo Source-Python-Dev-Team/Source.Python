@@ -11,13 +11,8 @@ from engines.server import engine_server
 
 
 # =============================================================================
-# >> CLASSES
+# >> FUNCTIONS
 # =============================================================================
-class _LanguagePropertyBase(object):
-
-    """Provides a property to get the player's language."""
-
-    @property
-    def language(self):
-        """Return the player's language."""
-        return engine_server.get_client_convar_value(self.index, 'cl_language')
+def get_client_language(index):
+    """Return the language of the given client."""
+    return engine_server.get_client_convar_value(index, 'cl_language')

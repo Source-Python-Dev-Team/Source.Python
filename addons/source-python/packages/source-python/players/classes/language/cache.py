@@ -13,8 +13,6 @@ from engines.server import engine_server
 from listeners import client_disconnect_listener_manager
 from listeners import client_fully_connect_listener_manager
 from listeners import on_query_cvar_value_finished_listener_manager
-#   Players
-from players.helpers import edict_from_index
 
 
 # =============================================================================
@@ -57,6 +55,7 @@ class _LanguageCache(dict):
     @staticmethod
     def client_fully_connect(index):
         """Query the player's language when they are fully connected."""
+        from players.helpers import edict_from_index
         engine_server.start_query_cvar_value(
             edict_from_index(index), 'cl_language')
 
@@ -70,11 +69,9 @@ client_disconnect_listener_manager.register_listener(
     _language_cache.client_disconnect)
 
 
-class _LanguagePropertyCache(object):
-
-    """Provides a property to get the player's cached language."""
-
-    @property
-    def language(self):
-        """Return the player's cached language."""
-        return _language_cache[self.index]
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def get_client_language(index):
+    """Return the language of the given client."""
+    return _language_cache[index]

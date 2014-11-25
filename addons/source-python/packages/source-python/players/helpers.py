@@ -10,6 +10,7 @@
 from engines.server import engine_server
 #   Players
 from players import PlayerGenerator
+from players.games import get_client_language
 
 
 # =============================================================================
@@ -77,6 +78,7 @@ __all__ = ('address_from_playerinfo',
            'edict_from_playerinfo',
            'edict_from_pointer',
            'edict_from_userid',
+           'get_client_language',
            'index_from_basehandle',
            'index_from_edict',
            'index_from_inthandle',

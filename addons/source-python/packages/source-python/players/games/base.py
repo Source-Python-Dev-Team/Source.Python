@@ -5,9 +5,7 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Source.Python Imports
-#   Players
-from players.classes.language import _LanguagePropertyBase
+from players.classes.language import get_client_language
 
 
 # =============================================================================
@@ -16,8 +14,3 @@ from players.classes.language import _LanguagePropertyBase
 class _GameWeapons(object):
 
     """Base class for game specific weapon functionality."""
-
-
-class _GameClasses(_LanguagePropertyBase):
-
-    """Base class for game specific functionality."""

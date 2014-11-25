@@ -26,23 +26,17 @@ try:
     # Get the game's module
     _game_module = import_module('players.games.{0}'.format(GAME_NAME))
 
+# If the module doesn't exist, set the variable to None
 except ImportError:
-
-    # Set the variable to None
     _game_module = None
 
-# Use try/except to store the game specific weapons
-try:
-    _game_weapons = _game_module._GameWeapons
+# Loop through each object to import
+for object_name in ('_GameWeapons', 'get_client_language'):
 
-# If the module doesn't contain the class, use the base class
-except AttributeError:
-    _game_weapons = _base_module._GameWeapons
+    # Use try/except to get the game specific object
+    try:
+        globals()[object_name] = getattr(_game_module, object_name)
 
-# Use try/except to store the game specific classes
-try:
-    _game_classes = _game_module._GameClasses
-
-# If the module doesn't contain the class, use the base class
-except AttributeError:
-    _game_classes = _base_module._GameClasses
+    # If their is no game specific object, use the base object
+    except AttributeError:
+        globals()[object_name] = getattr(_base_module, object_name)
