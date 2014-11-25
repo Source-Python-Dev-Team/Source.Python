@@ -1,6 +1,6 @@
 # ../players/games/__init__.py
 
-"""Provides base classes to be used when the game is not natively supported."""
+"""Imports game specific functionality for the PlayerEntity class."""
 
 # =============================================================================
 # >> IMPORTS
@@ -12,26 +12,14 @@ from importlib import import_module
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
-#   Players
-from players.classes.language import _LanguagePropertyBase
-
-
-# =============================================================================
-# >> CLASSES
-# =============================================================================
-class _BaseWeapons(object):
-
-    """Base class for game specific weapon functionality."""
-
-
-class _BaseClasses(_LanguagePropertyBase):
-
-    """Base class for game specific functionality."""
 
 
 # =============================================================================
 # >> GLOBAL VARIALBES
 # =============================================================================
+# Get the base module
+from players.games import base as _base_module
+
 # Use try/except to import the game specific classes
 try:
 
@@ -45,16 +33,16 @@ except ImportError:
 
 # Use try/except to store the game specific weapons
 try:
-    _GameWeapons = _game_module._GameWeapons
+    _game_weapons = _game_module._GameWeapons
 
 # If the module doesn't contain the class, use the base class
 except AttributeError:
-    _GameWeapons = _BaseWeapons
+    _game_weapons = _base_module._GameWeapons
 
 # Use try/except to store the game specific classes
 try:
-    _GameClasses = _game_module._GameClasses
+    _game_classes = _game_module._GameClasses
 
 # If the module doesn't contain the class, use the base class
 except AttributeError:
-    _GameClasses = _BaseClasses
+    _game_classes = _base_module._GameClasses

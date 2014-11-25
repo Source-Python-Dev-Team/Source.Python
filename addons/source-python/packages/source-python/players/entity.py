@@ -12,8 +12,9 @@ from entities.entity import BaseEntity
 from players.helpers import playerinfo_from_index
 from players.helpers import address_from_playerinfo
 from players.helpers import uniqueid_from_playerinfo
-from players.games import _GameClasses
-from players.games import _GameWeapons
+from players.games import _game_classes
+from players.games import _game_weapons
+from players.weapons import _PlayerWeapons
 
 
 # =============================================================================
@@ -26,7 +27,7 @@ __all__ = ('PlayerEntity',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(BaseEntity, _GameClasses, _GameWeapons):
+class PlayerEntity(BaseEntity, _game_classes, _game_weapons, _PlayerWeapons):
 
     """Class used to interact directly with players."""
 
