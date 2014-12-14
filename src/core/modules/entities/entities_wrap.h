@@ -53,20 +53,14 @@ public:
 class CEdictExt
 {
 public:
-	static int         GetPropInt( edict_t* pEdict, const char* prop_name );
-	static float       GetPropFloat( edict_t* pEdict, const char* prop_name );
-	static const char* GetPropString( edict_t* pEdict, const char* prop_name );
-	static Vector      GetPropVector( edict_t* pEdict, const char* prop_name );
-
-	static void        SetPropInt( edict_t* pEdict, const char* prop_name, int iValue );
-	static void        SetPropFloat( edict_t* pEdict, const char* prop_name, float flValue );
-	static void        SetPropString( edict_t* pEdict, const char* prop_name, const char* szValue );
-	static void        SetPropVector( edict_t* pEdict, const char* prop_name, Vector vecValue );
-	
 	static const char* GetKeyValueString(edict_t* pEdict, const char* szName);
 	static int         GetKeyValueInt(edict_t* pEdict, const char* szName);
 	static float       GetKeyValueFloat(edict_t* pEdict, const char* szName);
 	static Vector      GetKeyValueVector(edict_t* pEdict, const char* szName);
+	static bool        GetKeyValueBool(edict_t* pEdict, const char* szName);
+	static Color       GetKeyValueColor(edict_t* pEdict, const char* szName);
+
+	static void        SetKeyValueColor(edict_t* pEdict, const char* szName, Color color);
 
 	template<class T>
 	static void        SetKeyValue(edict_t* pEdict, const char* szName, T value)
@@ -75,66 +69,6 @@ public:
 		servertools->SetKeyValue(pEntity, szName, value);
 	}
 };
-
-//-----------------------------------------------------------------------------
-// Custom SendProp wrapper.
-//-----------------------------------------------------------------------------
-class CSendProp
-{
-public:
-	CSendProp( edict_t* edict, const char* prop_name );
-
-	SendPropType GetType();
-
-	template<class T>
-	T Get()
-	{ return *(T *) ((char *) m_base_entity + m_prop_offset); }
-
-	template<class T>
-	void Set(T value)
-	{
-		*(T *)((char *) m_base_entity + m_prop_offset) = value;
-		
-		// Force a network update.
-		m_edict->StateChanged();
-	}
-
-private:
-	// Offset from the beginning of the network table that
-	// this prop is located at.
-	unsigned int	m_prop_offset;
-
-	// Base entity instance.
-	CBaseEntity*	m_base_entity;
-
-	// Edict instance.
-	edict_t*		m_edict;
-
-	// The actual send prop object.
-	SendProp*		m_send_prop;
-};
-
-// GCC doesn't allow inline template specialization...
-template<>
-inline void CSendProp::Set(const char* szValue)
-{
-	// Get the address of the string buffer.
-	char* data_buffer = (char *)((char *)m_base_entity + m_prop_offset);
-
-	// Write the string to the buffer.
-	V_strncpy(data_buffer, szValue, DT_MAX_STRING_BUFFERSIZE);
-	
-	// Force a network update.
-	m_edict->StateChanged();
-}
-
-// GCC doesn't allow inline template specialization...
-template<>
-inline const char* CSendProp::Get()
-{
-	// Get the address of the string buffer.
-	return (const char *)((char *) m_base_entity + m_prop_offset);
-}
 
 
 //-----------------------------------------------------------------------------

@@ -11,12 +11,17 @@ from basetypes import Color
 #   Engines
 from engines.precache import Model
 #   Entities
-from entities.classes import _server_classes
+from entities.classes import server_classes
+from entities.constants import DATA_DESC_MAP_OFFSET
+from entities.datamaps import DataMap
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
 from entities.helpers import pointer_from_edict
 from entities.specials import _EntitySpecials
 #   Memory
+from memory import Argument
+from memory import Convention
+from memory import Return
 from memory import make_object
 
 
@@ -54,6 +59,7 @@ class BaseEntity(_EntitySpecials):
         self._index = index
         self._edict = edict
         self._pointer = pointer_from_edict(edict)
+        self._server_class = None
 
         # Return the instance
         return self
@@ -191,13 +197,21 @@ class BaseEntity(_EntitySpecials):
     @property
     def server_class(self):
         """Return the entity's server class."""
-        return self.edict.networkable.get_server_class()
+        # 
+        if self._server_class is None:
+            if DATA_DESC_MAP_OFFSET is None:
+                return None
+            function = self.pointer.make_virtual_function(
+                DATA_DESC_MAP_OFFSET, Convention.THISCALL,
+                (Argument.POINTER, ), Return.POINTER)
+            self._server_class = make_object(DataMap, function(self.pointer))
+        return self._server_class
 
     @property
     def server_classes(self):
         """Loop through all server classes for the entity."""
         # Get the first server class for the entity.
-        server_class = _server_classes.get_start_server_class(
+        server_class = server_classes.get_start_server_class(
             self.server_class, self.pointer)
 
         # Is the engine supported?
@@ -205,16 +219,16 @@ class BaseEntity(_EntitySpecials):
 
             # Use the current server class to get its base
             #   until there are no more base classes to return.
-            while server_class in _server_classes:
-                yield _server_classes[server_class]
+            while server_class in server_classes:
+                yield server_classes[server_class]
                 try:
-                    server_class = _server_classes[
+                    server_class = server_classes[
                         server_class]._base_class.class_name
                 except AttributeError:
                     break
 
     @property
-    def descriptors(self):
+    def properties(self):
         """Iterate over all descriptors available for the entity.
 
         This property is a helper for scripters
@@ -224,13 +238,10 @@ class BaseEntity(_EntitySpecials):
         for server_class in self.server_classes:
 
             # Loop through the server class' descriptors
-            for descriptor in dir(server_class._descriptors):
+            for name in server_class.properties:
 
-                # Is the current name actually a descriptor?
-                if descriptor not in dir(server_class):
-
-                    # Yield the descriptor
-                    yield descriptor
+                # Yield the descriptor
+                yield name
 
     @property
     def inputs(self):
@@ -243,13 +254,10 @@ class BaseEntity(_EntitySpecials):
         for server_class in self.server_classes:
 
             # Loop through the server class' inputs
-            for name in dir(server_class._inputs):
+            for name in server_class.inputs:
 
-                # Is the current name actually a input?
-                if name not in dir(server_class):
-
-                    # Yield the input
-                    yield name
+                # Yield the input
+                yield name
 
     @property
     def keyvalues(self):
@@ -262,7 +270,7 @@ class BaseEntity(_EntitySpecials):
         for server_class in self.server_classes:
 
             # Loop through the server class' keyvalues
-            for keyvalue in server_class._keyvalues:
+            for keyvalue in server_class.keyvalues:
 
                 # Yield the keyvalue
                 yield keyvalue
@@ -331,39 +339,161 @@ class BaseEntity(_EntitySpecials):
         get_model, set_model,
         doc="""Property to get/set the entity's model.""")
 
-    def get_descriptor(self, name):
-        """Get the entity's value of the given descriptor."""
-        # Loop through each server class for the entity
+    def get_property_bool(self, name):
+        """Return the boolean property."""
+        return self._get_property(name, 'bool')
+
+    def get_property_color(self, name):
+        """Return the Color property."""
+        return self._get_property(name, 'Color')
+
+    def get_property_edict(self, name):
+        """Return the Edict property."""
+        return self._get_property(name, 'Edict')
+
+    def get_property_float(self, name):
+        """Return the float property."""
+        return self._get_property(name, 'float')
+
+    def get_property_int(self, name):
+        """Return the integer property."""
+        return self._get_property(name, 'int')
+
+    def get_property_interval(self, name):
+        """Return the Interval property."""
+        return self._get_property(name, 'Interval')
+
+    def get_property_pointer(self, name):
+        """Return the pointer property."""
+        return self._get_property(name, 'pointer')
+
+    def get_property_quaternion(self, name):
+        """Return the Quaternion property."""
+        return self._get_property(name, 'Quaternion')
+
+    def get_property_short(self, name):
+        """Return the short property."""
+        return self._get_property(name, 'short')
+
+    def get_property_string_pointer(self, name):
+        """Return the string property."""
+        return self._get_property(name, 'string_pointer')
+
+    def get_property_uchar(self, name):
+        """Return the uchar property."""
+        return self._get_property(name, 'uchar')
+
+    def get_property_uint(self, name):
+        """Return the uint property."""
+        return self._get_property(name, 'uint')
+
+    def get_property_vector(self, name):
+        """Return the Vector property."""
+        return self._get_property(name, 'Vector')
+
+    def _get_property(self, name, prop_type):
+        """Verify the type and return the property."""
+        # Loop through all entity server classes
         for server_class in self.server_classes:
 
-            # Does the current server class contain the descriptor?
-            if hasattr(server_class._descriptors, name):
+            # Is the name a member of the current server class?
+            if name not in server_class.properties:
+                continue
 
-                # Return the descriptor's value for the entity
-                return getattr(
-                    make_object(server_class._descriptors, self.pointer), name)
+            # Is the type the correct type?
+            if prop_type != server_class.properties[name].prop_type:
+                raise
 
-        # If no server class contains the descriptor, raise an error
+            # Return the property for the entity
+            return getattr(
+                make_object(server_class._properties, self.pointer), name)
+
+        # Raise an error if the property name was not found
         raise ValueError(
-            'Unknown descriptor "{0}" for entity type "{1}".'.format(
+            'Property "{0}" not found for entity type "{1}"'.format(
                 name, self.classname))
 
-    def set_descriptor(self, name, value):
-        """Set the entity's value for the given descriptor."""
-        # Loop through each server class for the entity
+    def set_property_bool(self, name, value):
+        """Set the boolean property."""
+        self._set_property(name, 'bool', value)
+
+    def set_property_color(self, name, value):
+        """Set the Color property."""
+        self._set_property(name, 'Color', value)
+
+    def set_property_edict(self, name, value):
+        """Set the Edict property."""
+        self._set_property(name, 'Edict', value)
+
+    def set_property_float(self, name, value):
+        """Set the float property."""
+        self._set_property(name, 'float', value)
+
+    def set_property_int(self, name, value):
+        """Set the integer property."""
+        self._set_property(name, 'int', value)
+
+    def set_property_interval(self, name, value):
+        """Set the Interval property."""
+        self._set_property(name, 'Interval', value)
+
+    def set_property_pointer(self, name, value):
+        """Set the pointer property."""
+        self._set_property(name, 'pointer', value)
+
+    def set_property_quaternion(self, name, value):
+        """Set the Quaternion property."""
+        self._set_property(name, 'Quaternion', value)
+
+    def set_property_short(self, name, value):
+        """Set the short property."""
+        self._set_property(name, 'short', value)
+
+    def set_property_string_pointer(self, name, value):
+        """Set the string property."""
+        self._set_property(name, 'string_pointer', value)
+
+    def set_property_uchar(self, name, value):
+        """Set the uchar property."""
+        self._set_property(name, 'uchar', value)
+
+    def set_property_uint(self, name, value):
+        """Set the uint property."""
+        self._set_property(name, 'uint', value)
+
+    def set_property_vector(self, name, value):
+        """Set the Vector property."""
+        self._set_property(name, 'Vector', value)
+
+    def _set_property(self, name, prop_type, value):
+        """Verify the type and set the property."""
+        # Loop through all entity server classes
         for server_class in self.server_classes:
 
-            # Does the current server class contain the descriptor?
-            if hasattr(server_class._descriptors, name):
+            # Is the name a member of the current server class?
+            if name not in server_class.properties:
+                continue
 
-                # Set the descriptor's value for the entity and return
-                setattr(make_object(
-                    server_class._descriptors, self.pointer), name, value)
-                return
+            # Is the type the correct type?
+            if prop_type != server_class.properties[name].prop_type:
+                raise
 
-        # If no server class contains the descriptor, raise an error
+            # Set the property for the entity
+            setattr(make_object(
+                server_class._properties, self.pointer), name, value)
+
+            # Is the property networked?
+            if server_class.properties[name].networked:
+
+                # Notify the change of state
+                self.edict.state_changed()
+
+            # No need to go further
+            return
+
+        # Raise an error if the property name was not found
         raise ValueError(
-            'Unknown descriptor "{0}" for entity type "{1}".'.format(
+            'Property "{0}" not found for entity type "{1}"'.format(
                 name, self.classname))
 
     def get_input(self, name):
@@ -372,7 +502,7 @@ class BaseEntity(_EntitySpecials):
         for server_class in self.server_classes:
 
             # Does the current server class contain the input?
-            if hasattr(server_class._inputs, name):
+            if name in server_class.inputs:
 
                 # Return the InputFunction instance for the given input name
                 return getattr(

@@ -213,7 +213,6 @@ Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/entities_wrap.h
-    core/modules/entities/entities_props.h
     core/modules/entities/entities_generator_wrap.h
     core/modules/entities/entities_helpers_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_helpers_wrap.h
@@ -222,7 +221,6 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
-    core/modules/entities/entities_props.cpp
     core/modules/entities/entities_wrap.cpp
     core/modules/entities/entities_wrap_python.cpp
     core/modules/entities/entities_generator_wrap.cpp

@@ -185,14 +185,14 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
 
     def get_eye_location(self):
         """Return the eye location of the player."""
-        return Vector(*tuple(self.get_prop_float(
+        return Vector(*tuple(self.get_property_float(
             'm_vecViewOffset[{0}]'.format(x)) + y for x, y in
             enumerate(self.origin)))
 
     def get_view_vector(self):
         """Return the view vector of the player."""
-        eye_angle0 = self.get_prop_float('m_angEyeAngles[0]')
-        eye_angle1 = self.get_prop_float('m_angEyeAngles[1]')
+        eye_angle0 = self.get_property_float('m_angEyeAngles[0]')
+        eye_angle1 = self.get_property_float('m_angEyeAngles[1]')
         return Vector(
             cos(radians(eye_angle1)),
             sin(radians(eye_angle1)),
