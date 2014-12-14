@@ -260,8 +260,12 @@ class _ServerClasses(TypeManager):
             # Is the current property a datatable?
             if prop.type == SendPropTypes.DATATABLE:
 
-                # Find all properties for the table
-                self._find_properties(prop.data_table, name, offset)
+                # Loop through all properties in the datatable
+                for name, prop, offset in self._find_properties(
+                        prop.data_table, name + '.', offset):
+
+                    # Yield their values
+                    yield (name, prop, offset)
 
             # Is the current property not a datatable?
             else:
