@@ -197,22 +197,29 @@ class BaseEntity(_EntitySpecials):
     @property
     def server_class(self):
         """Return the entity's server class."""
-        # 
+        # Has the server class been stored?
         if self._server_class is None:
+
+            # Does the engine/game have a data description offset?
             if DATA_DESC_MAP_OFFSET is None:
                 return None
+
+            # Get the entity's data description function pointer
             function = self.pointer.make_virtual_function(
                 DATA_DESC_MAP_OFFSET, Convention.THISCALL,
                 (Argument.POINTER, ), Return.POINTER)
+
+            # Get the datamap object
             self._server_class = make_object(DataMap, function(self.pointer))
+
+        # Return the server class
         return self._server_class
 
     @property
     def server_classes(self):
         """Loop through all server classes for the entity."""
         # Get the first server class for the entity.
-        server_class = server_classes.get_start_server_class(
-            self.server_class, self.pointer)
+        server_class = server_classes.get_start_server_class(self.server_class)
 
         # Is the engine supported?
         if server_class is not None:
@@ -375,6 +382,10 @@ class BaseEntity(_EntitySpecials):
         """Return the short property."""
         return self._get_property(name, 'short')
 
+    def get_property_string(self, name):
+        """Return the string property."""
+        return self._get_property(name, 'string_array')
+
     def get_property_string_pointer(self, name):
         """Return the string property."""
         return self._get_property(name, 'string_pointer')
@@ -402,7 +413,8 @@ class BaseEntity(_EntitySpecials):
 
             # Is the type the correct type?
             if prop_type != server_class.properties[name].prop_type:
-                raise
+                raise TypeError('Property "{0}" is of type {1} not {2}'.format(
+                    name, server_class.properties[name].prop_type, prop_type))
 
             # Return the property for the entity
             return getattr(
@@ -449,6 +461,10 @@ class BaseEntity(_EntitySpecials):
         """Set the short property."""
         self._set_property(name, 'short', value)
 
+    def set_property_string(self, name, value):
+        """Set the string property."""
+        self._set_property(name, 'string_array', value)
+
     def set_property_string_pointer(self, name, value):
         """Set the string property."""
         self._set_property(name, 'string_pointer', value)
@@ -476,7 +492,8 @@ class BaseEntity(_EntitySpecials):
 
             # Is the type the correct type?
             if prop_type != server_class.properties[name].prop_type:
-                raise
+                raise TypeError('Property "{0}" is of type {1} not {2}'.format(
+                    name, server_class.properties[name].prop_type, prop_type))
 
             # Set the property for the entity
             setattr(make_object(

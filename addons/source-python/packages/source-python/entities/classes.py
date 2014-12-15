@@ -34,7 +34,6 @@ from memory import Argument
 from memory import Convention
 from memory import Return
 from memory import get_object_pointer
-from memory import make_object
 from memory.helpers import Type
 from memory.manager import CustomType
 from memory.manager import TypeManager
@@ -95,7 +94,7 @@ _supported_keyvalue_types = {
 _supported_property_types = {
     SendPropTypes.FLOAT: 'float',
     SendPropTypes.INT: 'int',
-    SendPropTypes.STRING: 'string',
+    SendPropTypes.STRING: 'string_array',
     SendPropTypes.VECTOR: 'Vector',
 }
 
@@ -119,7 +118,7 @@ class _ServerClasses(TypeManager):
 
     """Class used to retrieve objects dynamically for a server class."""
 
-    def get_start_server_class(self, server_class, pointer):
+    def get_start_server_class(self, server_class):
         """Retrieve the first server class."""
         # If the given server_class is already in the dictionary,
         #   simply return the given server_class
