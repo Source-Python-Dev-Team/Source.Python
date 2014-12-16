@@ -330,6 +330,10 @@ class _ServerClasses(TypeManager):
         instance._inputs = self(
             class_name + 'Inputs', (CustomType, ), instance.inputs)
 
+        # Remove the _manager attribute from the dictionary
+        del instance.inputs['_manager']
+
+        # Return the ServerClass
         return instance
 
     def _find_properties(self, table, base_name='', base_offset=0):
@@ -578,4 +582,5 @@ class _ServerClasses(TypeManager):
 
         return property(fget, fset)
 
+# Get the _ServerClasses instance
 server_classes = _ServerClasses()
