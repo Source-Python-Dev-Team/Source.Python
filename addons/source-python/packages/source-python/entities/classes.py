@@ -449,6 +449,10 @@ class _ServerClasses(TypeManager):
         if prop.type not in types:
             return
 
+        # Is the offset not 0?
+        if not offset:
+            return
+
         # Get the instance to use to get/set the property
         value = self.instance_attribute(types[prop.type], offset)
 
