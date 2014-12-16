@@ -328,10 +328,7 @@ class _ServerClasses(TypeManager):
         # Store all of the inputs as attributes
         # of an instance of the class
         instance._inputs = self(
-            class_name + 'Inputs', (CustomType, ), instance.inputs)
-
-        # Remove the _manager attribute from the dictionary
-        del instance.inputs['_manager']
+            class_name + 'Inputs', (CustomType, ), dict(instance.inputs))
 
         # Return the ServerClass
         return instance
