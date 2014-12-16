@@ -16,6 +16,8 @@ from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
 from entities.helpers import pointer_from_edict
 from entities.specials import _EntitySpecials
+#   Memory
+from memory import make_object
 
 
 # =============================================================================

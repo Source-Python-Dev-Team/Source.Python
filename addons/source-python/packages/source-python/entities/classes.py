@@ -446,7 +446,7 @@ class _ServerClasses(TypeManager):
             return
 
         # Is the property type not supported?
-        if not prop.type in types:
+        if prop.type not in types:
             return
 
         # Get the instance to use to get/set the property
