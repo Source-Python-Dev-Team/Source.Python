@@ -16,6 +16,8 @@ from auth.commands import _auth_commands
 from core import core_logger
 from core import dumps
 from core.manager import core_plugin_manager
+#   Cvars
+from cvars import ConVar
 #   Engines
 from engines.server import engine_server
 #   Paths
@@ -61,7 +63,7 @@ class _CoreCommandManager(SubCommandManager):
             'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
 
         # Loop through all loaded plugins
-        for plugin in self.manager:
+        for plugin in sorted(self.manager):
 
             # Set info to None before retrieving it
             info = None
@@ -88,10 +90,19 @@ class _CoreCommandManager(SubCommandManager):
                 message += plugin + ':\n'
 
                 # Loop through all items in the PluginInfo instance
-                for item in info:
+                for item, value in info.items():
+
+                    # Is the value a ConVar?
+                    if isinstance(value, ConVar):
+
+                        # Get the 
+                        value = '{0}:\n\t\t\t{1}: {2}'.format(
+                            value.get_name(),
+                            value.get_help_text(),
+                            value.get_string())
 
                     # Add message for the current item and its value
-                    message += '\t{0}:\n\t\t{1}\n'.format(item, info[item])
+                    message += '\t{0}:\n\t\t{1}\n'.format(item, value)
 
             # Was no PluginInfo instance found?
             else:
@@ -100,7 +111,10 @@ class _CoreCommandManager(SubCommandManager):
                 message += plugin + '\n'
 
             # Add 1 blank line between each plugin
-            message += '\n' + '=' * 61
+            message += '\n'
+
+        # Add the ending separator
+        message += '=' * 61
 
         # Print the message
         self.logger.log_message(message)
