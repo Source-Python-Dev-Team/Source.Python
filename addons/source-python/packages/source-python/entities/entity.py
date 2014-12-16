@@ -12,17 +12,10 @@ from basetypes import Color
 from engines.precache import Model
 #   Entities
 from entities.classes import server_classes
-from entities.constants import DATA_DESC_MAP_OFFSET
-from entities.datamaps import DataMap
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
 from entities.helpers import pointer_from_edict
 from entities.specials import _EntitySpecials
-#   Memory
-from memory import Argument
-from memory import Convention
-from memory import Return
-from memory import make_object
 
 
 # =============================================================================
@@ -197,42 +190,16 @@ class BaseEntity(_EntitySpecials):
     @property
     def server_class(self):
         """Return the entity's server class."""
-        # Has the server class been stored?
-        if self._server_class is None:
-
-            # Does the engine/game have a data description offset?
-            if DATA_DESC_MAP_OFFSET is None:
-                return None
-
-            # Get the entity's data description function pointer
-            function = self.pointer.make_virtual_function(
-                DATA_DESC_MAP_OFFSET, Convention.THISCALL,
-                (Argument.POINTER, ), Return.POINTER)
-
-            # Get the datamap object
-            self._server_class = make_object(DataMap, function(self.pointer))
-
-        # Return the server class
-        return self._server_class
+        return self.edict.networkable.get_server_class()
 
     @property
     def server_classes(self):
-        """Loop through all server classes for the entity."""
-        # Get the first server class for the entity.
-        server_class = server_classes.get_start_server_class(self.server_class)
+        """Yield all server classes for the entity."""
+        # Loop through all server classes for the entity
+        for server_class in server_classes.get_entity_server_classes(self):
 
-        # Is the engine supported?
-        if server_class is not None:
-
-            # Use the current server class to get its base
-            #   until there are no more base classes to return.
-            while server_class in server_classes:
-                yield server_classes[server_class]
-                try:
-                    server_class = server_classes[
-                        server_class]._base_class.class_name
-                except AttributeError:
-                    break
+            # Yield the server class
+            yield server_class
 
     @property
     def properties(self):

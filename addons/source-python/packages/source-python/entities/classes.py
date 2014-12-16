@@ -6,6 +6,9 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Collections
+from collections import OrderedDict
+from collections import defaultdict
 #   Warnings
 from warnings import warn
 
@@ -24,6 +27,7 @@ from engines.server import server_game_dll
 #   Entities
 from entities.constants import DATA_DESC_MAP_OFFSET
 from entities.datamaps import _supported_input_types
+from entities.datamaps import DataMap
 from entities.datamaps import EntityProperty
 from entities.datamaps import FieldTypes
 from entities.datamaps import InputFunction
@@ -34,6 +38,7 @@ from memory import Argument
 from memory import Convention
 from memory import Return
 from memory import get_object_pointer
+from memory import make_object
 from memory.helpers import Type
 from memory.manager import CustomType
 from memory.manager import TypeManager
@@ -104,10 +109,12 @@ _supported_inputs = tuple(_supported_input_types) + (FieldTypes.VOID, )
 # Create a dictionary to store all server classes
 _server_classes = dict()
 
-# Loop through all server classes and add them to the dictionary
+# Loop through all server classes and add them to the dictionaries
+_table_names = dict()
 _current_class = server_game_dll.get_all_server_classes()
 while _current_class:
     _server_classes[_current_class.name] = _current_class.table
+    _table_names[_current_class.table.name] = _current_class.name
     _current_class = _current_class.next
 
 
@@ -118,127 +125,212 @@ class _ServerClasses(TypeManager):
 
     """Class used to retrieve objects dynamically for a server class."""
 
-    def get_start_server_class(self, server_class):
+    def __init__(self):
+        """Store the base attributes."""
+        super(_ServerClasses, self).__init__()
+        self._entity_server_classes = defaultdict(list)
+
+    def get_entity_server_classes(self, entity):
         """Retrieve the first server class."""
-        # If the given server_class is already in the dictionary,
-        #   simply return the given server_class
-        if server_class.class_name in self:
-            return server_class.class_name
+        # Is the entity type already stored?
+        if entity.classname in self._entity_server_classes:
 
-        # Is the engine not supported?
-        if DATA_DESC_MAP_OFFSET is None:
-            return None
+            # Return the server classes
+            return self._entity_server_classes[entity.classname]
 
-        # Get all server classes
-        self._get_all_server_classes(server_class)
+        # Create a list to store the entity's ServerClasses
+        entity_server_classes = [entity.server_class.name]
 
-        # Return the main server class
-        return server_class.class_name
+        # Loop through all ServerClasses for the entity
+        for name in self._get_base_server_classes(entity.server_class.table):
 
-    def _get_all_server_classes(self, datamap):
-        """Retrieve values for all server classes and return the first."""
-        # Loop through all datamaps to add their objects to the dictionary.
-        # Once one is found to be in the dictionary, stop iterating.
-        while datamap:
+            # Add the ServerClass to the list
+            entity_server_classes.append(name)
 
-            # If the current classname is in the dictionary, stop iterating
-            if datamap.class_name in self:
-                break
+        # Create a dictionary to store datamaps in for the entity
+        entity_datamaps = OrderedDict()
 
-            # Get the engine specific data for the current datamap
-            manager_contents = ConfigObj(
-                _managers_engine_path.joinpath(datamap.class_name + '.ini'))
+        # Does the server/game have a GetDataDescMap offset?
+        if DATA_DESC_MAP_OFFSET is not None:
 
-            # Merge the game specific values for the current datamap
-            manager_contents.merge(ConfigObj(
-                _managers_game_path.joinpath(datamap.class_name + '.ini')))
+            # Get the DataMap object for the entity
+            function = entity.pointer.make_virtual_function(
+                DATA_DESC_MAP_OFFSET, Convention.THISCALL,
+                (Argument.POINTER, ), Return.POINTER)
+            datamap = make_object(DataMap, function(entity.pointer))
 
-            # Are there any values for the manager?
-            if manager_contents:
+            # Add all DataMaps for the entity to the dictionary
+            while datamap:
+                entity_datamaps[datamap.class_name] = datamap
+                datamap = datamap.base
 
-                # Add the binary path to the manager dictionary
-                manager_contents['binary'] = '{0}/bin/server'.format(GAME_NAME)
+        # Find if there are ServerClasses that are not in the DataMaps
+        difference = set(
+            entity_server_classes).difference(set(entity_datamaps))
 
-            # Get a TypeManager instance for the current datamap
-            instance = self.create_type_from_file(
-                datamap.class_name, manager_contents)
+        # Find if there are ServerClasses that are also in the DataMaps
+        intersection = set(
+            entity_server_classes).intersection(set(entity_datamaps))
 
-            # Store the class name to more easily look it up
-            instance.__name__ = datamap.class_name
+        # Take care of special cases
+        if not intersection or (difference and intersection):
 
-            # Get the specific types of values to use
-            input_contents = manager_contents.get('input', {})
-            keyvalue_contents = manager_contents.get('keyvalue', {})
-            descriptor_contents = manager_contents.get('descriptor', {})
-            property_contents = manager_contents.get('property', {})
+            # Loop through all ServerClass names
+            for class_name in entity_server_classes:
 
-            # Create dictionaries to store all values for the instance
-            instance.inputs = dict()
-            instance.functiontables = dict()
-            instance.keyvalues = dict()
-            instance.outputs = dict()
-            instance.properties = dict()
+                # Has the current ServerClass name already been added?
+                if class_name in self:
 
-            # Loop through all possible properties for the server class
-            for name, prop, offset in self._find_properties(
-                    _server_classes.get(datamap.class_name, {})):
+                    # Add the instance to the classname's list
+                    self._entity_server_classes[entity.classname].append(
+                        self[class_name])
 
-                # Add the property to the instance
+                    # No need to go further
+                    continue
+
+                # Retrieve all objects for the ServerClass and
+                #   add it to the classname's list
+                self._entity_server_classes[
+                    entity.classname].append(self._get_server_class(
+                        class_name, entity_datamaps.get(class_name, {})))
+
+        # Take care of normal cases
+        if not (difference and intersection):
+
+            # Loop through all DataMap names
+            for class_name in entity_datamaps:
+
+                # Has the current DataMap name already been added?
+                if class_name in self:
+
+                    # Add the instance to the classname's list
+                    self._entity_server_classes[entity.classname].append(
+                        self[class_name])
+
+                    # No need to go further
+                    continue
+
+                # Retrieve all objects for the ServerClass and
+                #   add it to the classname's list
+                self._entity_server_classes[
+                    entity.classname].append(self._get_server_class(
+                        class_name, entity_datamaps[class_name]))
+
+        # Return the server classes
+        return self._entity_server_classes[entity.classname]
+
+    def _get_base_server_classes(self, table):
+        """Yield all baseclasses within the table."""
+        # Loop through all of the props in the table
+        for prop in table:
+
+            # Is the current prop not a baseclass?
+            if prop.name != 'baseclass':
+                continue
+
+            # Yield the current baseclass
+            yield _table_names[prop.data_table.name]
+
+            # Loop through all tables within the baseclass
+            for name in self._get_base_server_classes(prop.data_table):
+
+                # Yield any baseclasses within the baseclass
+                yield name
+
+    def _get_server_class(self, class_name, datamap):
+        """Retrieve values for the server class."""
+        # Get the engine specific data for the current class
+        manager_contents = ConfigObj(
+            _managers_engine_path.joinpath(class_name + '.ini'))
+
+        # Merge the game specific values for the current class
+        manager_contents.merge(ConfigObj(
+            _managers_game_path.joinpath(class_name + '.ini')))
+
+        # Are there any values for the manager?
+        if manager_contents:
+
+            # Add the binary path to the manager dictionary
+            manager_contents['binary'] = '{0}/bin/server'.format(GAME_NAME)
+
+        # Get a TypeManager instance for the current datamap
+        instance = self.create_type_from_file(class_name, manager_contents)
+
+        # Store the class name to more easily look it up
+        instance.__name__ = class_name
+
+        # Get the specific types of values to use
+        input_contents = manager_contents.get('input', {})
+        keyvalue_contents = manager_contents.get('keyvalue', {})
+        descriptor_contents = manager_contents.get('descriptor', {})
+        property_contents = manager_contents.get('property', {})
+
+        # Create dictionaries to store all values for the instance
+        instance.inputs = dict()
+        instance.functiontables = dict()
+        instance.keyvalues = dict()
+        instance.outputs = dict()
+        instance.properties = dict()
+
+        # Loop through all possible properties for the server class
+        for name, prop, offset in self._find_properties(
+                _server_classes.get(class_name, {})):
+
+            # Add the property to the instance
+            self._add_property(
+                instance, name, prop, offset, property_contents,
+                _supported_property_types, True)
+
+        # Loop through all possible descriptors for the server class
+        for name, desc, offset in self._find_descriptors(datamap):
+
+            # Is the current descriptor an Output?
+            if desc.flags & TypeDescriptionFlags.OUTPUT:
+
+                # Store the descriptor in the outputs dictionary
+                instance.outputs[name] = desc
+
+            # Is the current descriptor a FunctionTable?
+            elif desc.flags & TypeDescriptionFlags.FUNCTIONTABLE:
+
+                # Store the descriptor in the functiontables dictionary
+                instance.functiontables[name] = desc
+
+            # Is the current descriptor a KeyValue?
+            elif desc.flags & TypeDescriptionFlags.KEY:
+
+                # Add the key value to the instance
+                self._add_keyvalue(instance, name, desc, keyvalue_contents)
+
+            # Is the current descriptor an Input?
+            elif desc.flags & TypeDescriptionFlags.INPUT:
+
+                # Add the input to the instance
+                self._add_input(instance, name, desc, input_contents)
+
+            # Is the current descriptor of a supported type?
+            elif desc.type in _supported_descriptor_types:
+
+                # Add the descriptor to the instance
                 self._add_property(
-                    instance, name, prop, offset, property_contents,
-                    _supported_property_types, True)
+                    instance, name, desc, offset,
+                    descriptor_contents, _supported_descriptor_types)
 
-            # Loop through all possible descriptors for the server class
-            for name, desc, offset in self._find_descriptors(datamap):
+        # Get a list of all properties for the current server class
+        properties = list(instance.properties)
 
-                # Is the current descriptor an Output?
-                if desc.flags & TypeDescriptionFlags.OUTPUT:
+        # Store all of the properties as
+        # attributes of an instance of the class
+        instance._properties = self(class_name + 'Properties', (
+            CustomType, ), dict(zip(properties, [
+                instance.properties[x].instance for x in properties])))
 
-                    # Store the descriptor in the outputs dictionary
-                    instance.outputs[name] = desc
+        # Store all of the inputs as attributes
+        # of an instance of the class
+        instance._inputs = self(
+            class_name + 'Inputs', (CustomType, ), instance.inputs)
 
-                # Is the current descriptor a FunctionTable?
-                elif desc.flags & TypeDescriptionFlags.FUNCTIONTABLE:
-
-                    # Store the descriptor in the functiontables dictionary
-                    instance.functiontables[name] = desc
-
-                # Is the current descriptor a KeyValue?
-                elif desc.flags & TypeDescriptionFlags.KEY:
-
-                    # Add the key value to the instance
-                    self._add_keyvalue(instance, name, desc, keyvalue_contents)
-
-                # Is the current descriptor an Input?
-                elif desc.flags & TypeDescriptionFlags.INPUT:
-
-                    # Add the input to the instance
-                    self._add_input(instance, name, desc, input_contents)
-
-                # Is the current descriptor of a supported type?
-                elif desc.type in _supported_descriptor_types:
-
-                    # Add the descriptor to the instance
-                    self._add_property(
-                        instance, name, desc, offset,
-                        descriptor_contents, _supported_descriptor_types)
-
-            # Get a list of all properties for the current server class
-            properties = list(instance.properties)
-
-            # Store all of the properties as
-            # attributes of an instance of the class
-            instance._properties = self(datamap.class_name + 'Properties', (
-                CustomType, ), dict(zip(properties, [
-                    instance.properties[x].instance for x in properties])))
-
-            # Store all of the inputs as attributes
-            # of an instance of the class
-            instance._inputs = self(
-                datamap.class_name + 'Inputs', (CustomType, ), instance.inputs)
-
-            # Move to the next datamap
-            instance._base_class = datamap = datamap.base
+        return instance
 
     def _find_properties(self, table, base_name='', base_offset=0):
         """Find send props and yield their values."""
@@ -260,11 +352,11 @@ class _ServerClasses(TypeManager):
             if prop.type == SendPropTypes.DATATABLE:
 
                 # Loop through all properties in the datatable
-                for name, prop, offset in self._find_properties(
+                for new_name, new_prop, new_offset in self._find_properties(
                         prop.data_table, name + '.', offset):
 
                     # Yield their values
-                    yield (name, prop, offset)
+                    yield (new_name, new_prop, new_offset)
 
             # Is the current property not a datatable?
             else:
@@ -296,11 +388,11 @@ class _ServerClasses(TypeManager):
             if desc.type == FieldTypes.EMBEDDED:
 
                 # Loop through all descriptors for the embedded datamap table
-                for name, desc, offset in self._find_descriptors(
+                for new_name, new_desc, new_offset in self._find_descriptors(
                         desc.embedded_datamap, name + '.', offset):
 
                     # Yield their values
-                    yield (name, desc, offset)
+                    yield (new_name, new_desc, new_offset)
 
             # Is the current descriptor not an embedded datamap table?
             else:
@@ -351,6 +443,10 @@ class _ServerClasses(TypeManager):
         """Add the property to the given instance's properties dictionary."""
         # Is the property already in the properties dictionary?
         if name in instance.properties:
+            return
+
+        # Is the property type not supported?
+        if not prop.type in types:
             return
 
         # Get the instance to use to get/set the property
