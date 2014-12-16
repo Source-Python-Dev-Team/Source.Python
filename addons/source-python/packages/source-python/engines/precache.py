@@ -8,6 +8,9 @@
 # Python Imports
 #   Contextlib
 from contextlib import suppress
+#   Inspect
+from inspect import getmodule
+from inspect import stack
 
 # Site-Package Imports
 #   Path
@@ -55,6 +58,12 @@ class _PrecacheBase(Path, AutoUnload):
         """Add the file to downloadables if download is True."""
         # Call Path's __init__ with the given path
         super(_PrecacheBase, self).__init__(path)
+
+        # Get the calling module
+        caller = getmodule(stack()[1][0])
+
+        # Set the _calling_module attribute for the instance
+        self._calling_module = caller.__name__
 
         # Precache the instance
         self._precache_method(self)
