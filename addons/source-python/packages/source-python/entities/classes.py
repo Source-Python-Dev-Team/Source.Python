@@ -18,6 +18,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 #   Basetypes
+from basetypes import SendPropFlags
 from basetypes import SendPropTypes
 #   Core
 from core import GAME_NAME
@@ -338,8 +339,8 @@ class _ServerClasses(TypeManager):
         # Loop through all properties of the given table
         for prop in table:
 
-            # Is the property a base class?
-            if prop.name == 'baseclass':
+            # Is the property a base class or excluded?
+            if prop.name == 'baseclass' or prop.flags & SendPropFlags.EXCLUDE:
                 continue
 
             # Get the name of the property using the given base name
