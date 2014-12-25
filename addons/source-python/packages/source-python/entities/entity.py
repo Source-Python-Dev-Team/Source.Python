@@ -498,3 +498,7 @@ class BaseEntity(_EntitySpecials):
         raise ValueError(
             'Unknown input "{0}" for entity type "{1}".'.format(
                 name, self.classname))
+
+    def call_input(self, name, *args, **kwargs):
+        """Call the InputFunction instance for the given name."""
+        self.get_input(name)(*args, **kwargs)
