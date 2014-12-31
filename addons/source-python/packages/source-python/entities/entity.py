@@ -261,7 +261,7 @@ class BaseEntity(_EntitySpecials):
             value & 0xff, (value & 0xff00) >> 8,
             (value & 0xff0000) >> 16, (value & 0xff000000) >> 24)
 
-    def set_color(self, color, current_alpha=True):
+    def set_color(self, color, current_alpha=False):
         """Set the entity's color to the given RGBA values."""
         # Is the entity's current alpha supposed to be used?
         if current_alpha:
