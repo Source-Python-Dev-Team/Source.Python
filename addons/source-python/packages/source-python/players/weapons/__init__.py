@@ -25,6 +25,13 @@ from weapons.manager import weapon_manager
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = ('Weapon',
+           )
+
+
+# =============================================================================
 # >> GLOBAL VARIALBES
 # =============================================================================
 # Use try/except to import the game specific weapon class
@@ -311,19 +318,31 @@ class _PlayerWeapons(_game_instance._GameWeapons):
     # >> WEAPON INDEXES
     # =========================================================================
     def get_primary(self):
+        return Weapon(self, self.get_primary_index())
+
+    def get_secondary(self):
+        return Weapon(self, self.get_secondary_index())
+
+    def get_primary_index(self):
         """Return the player's primary weapon's index."""
         return self.get_weapon_index(is_filters='primary')
 
-    def get_secondary(self):
+    def get_secondary_index(self):
         """Return the player's secondary weapon's index."""
         return self.get_weapon_index(is_filters='secondary')
+
+    def get_weapon(
+            self, classname=None, is_filters=None, not_filters=None):
+        index = self.get_weapon_index(classname, is_filters, not_filters)
+
+        return index and Weapon(self, index)
 
     def get_weapon_index(
             self, classname=None, is_filters=None, not_filters=None):
         """Return the first instance of the given weapon classname/type."""
         # Loop through all weapon indexes for
         # the player with the given arguments
-        for index in self.weapon_indexes(classname, is_filters, not_filters):
+        for index in self.get_weapons_index(classname, is_filters, not_filters):
 
             # Return the first index found
             return index
@@ -331,12 +350,16 @@ class _PlayerWeapons(_game_instance._GameWeapons):
         # If no index is found, return None
         return None
 
-    def get_weapon_index_list(
+    def get_weapons(
             self, classname=None, is_filters=None, not_filters=None):
-        """Return a list of weapon indexes for the player."""
-        return list(self.weapon_indexes(classname, is_filters, not_filters))
+        return [Weapon(self, index) for index in self.get_weapons_index(
+            classname, is_filters, not_filters)]
 
-    def weapon_indexes(
+    def get_weapons_list(
+            self, classname=None, is_filters=None, not_filters=None):
+        return list(self.get_weapons(classname, is_filters, not_filters))
+
+    def get_weapons_index(
             self, classname=None, is_filters=None, not_filters=None):
         """Iterate over all currently held weapons by thier index."""
         # Is the weapon array supported for the current game?
@@ -387,6 +410,11 @@ class _PlayerWeapons(_game_instance._GameWeapons):
             # Yield the index
             yield index
 
+    def get_weapons_index_list(
+            self, classname=None, is_filters=None, not_filters=None):
+        """Return a list of weapon indexes for the player."""
+        return list(self.get_weapons_index(classname, is_filters, not_filters))
+
     # =========================================================================
     # >> COLOR METHODS
     # =========================================================================
@@ -425,6 +453,92 @@ class _PlayerWeapons(_game_instance._GameWeapons):
 
         # Set the entity's color
         BaseEntity(index, 'weapon').color = (red, green, blue, alpha)
+
+
+class Weapon(object):
+
+    """Allows easy usage of the weapon's attributes."""
+
+    def __init__(self, player, index):
+        """Store the required variables."""
+        # Store the player
+        self._player = player
+
+        # Store the index
+        self._index = index
+
+        # Store the edict
+        self._edict = BaseEntity(index, 'weapon')
+
+        # Set the classname as a placeholder
+        self._classname = None
+
+        # Set the weapon instance as a placeholder
+        self._weapon = None
+
+    # =========================================================================
+    # >> AMMO
+    # =========================================================================
+    def get_ammo(self):
+        """Return the amount of ammo the player has for the given weapon."""
+        return self._player.get_prop_int(
+            weapon_manager.ammoprop + '%03d' % self.weapon.ammoprop)
+
+    def set_ammo(self, value):
+        """Set the player's ammo property for the given weapon."""
+        self._player.set_prop_int(
+            weapon_manager.ammoprop + '%03d' % self.weapon.ammoprop, value)
+
+    # Set the "ammo" property methods
+    ammo = property(get_ammo, set_ammo)
+
+    # =========================================================================
+    # >> CLIP
+    # =========================================================================
+    def get_clip(self):
+        """Return the amount of ammo in the clip for the given weapon."""
+        return self.edict.clip
+
+    def set_clip(self, value):
+        """Set the player's clip value for the given weapon."""
+        self.edict.clip = value
+
+    # Set the "clip" property methods
+    clip = property(get_clip, set_clip)
+
+    @property
+    def index(self):
+        """Return the index of the given weapon."""
+        return self._index
+
+    @property
+    def edict(self):
+        """Return the edict of the given weapon."""
+        return self._edict
+
+    @property
+    def classname(self):
+        """Return the classname of the given weapon."""
+        # Have we gotten the classname before?
+        if self._classname is None:
+
+            # Retrieve the classname from the weapon's edict
+            self._classname = self.edict.get_class_name()
+
+        # Return the classname
+        return self._classname
+
+    @property
+    def weapon(self):
+        """Return the weapon's instance from weapon_manager."""
+        # Have we gotten the weapon instance before?
+        if self._weapon is None:
+
+            # Retrieve the instance from weapon_manager
+            self._weapon = weapon_manager[self.classname]
+
+        # Return the instance
+        return self._weapon
 
 
 # =============================================================================
