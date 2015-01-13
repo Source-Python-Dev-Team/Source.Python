@@ -107,11 +107,8 @@ class _EntitySpecials(object):
         # Loop through the given keywords
         for item in kwargs:
 
-            # Is the keyword supported?
-            if hasattr(take_damage_info, item):
-
-                # Set the offset's value
-                getattr(take_damage_info, item, kwargs[item])
+            # Set the offset's value
+            setattr(take_damage_info, item, kwargs[item])
 
         # Call the function with the victim's pointer and the CTakeDamageInfo
         victim.take_damage(take_damage_info)
