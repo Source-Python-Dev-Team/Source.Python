@@ -526,7 +526,7 @@ class _ServerClasses(TypeManager):
         native_type = Type.is_native(type_name)
 
         def fget(ptr):
-            """Return the propery value."""
+            """Return the property value."""
             # Is the property a native type?
             if native_type:
 

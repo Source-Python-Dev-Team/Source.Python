@@ -77,7 +77,7 @@ class BaseEntity(_EntitySpecials):
             if hasattr(server_class, attr):
 
                 # Return the attribute's value
-                return getattr(server_class(self.pointer, wrap=True), attr)
+                return getattr(make_object(server_class, self.pointer), attr)
 
         # If the attribute is not found, raise an error
         raise AttributeError('Attribute "{0}" not found'.format(attr))
