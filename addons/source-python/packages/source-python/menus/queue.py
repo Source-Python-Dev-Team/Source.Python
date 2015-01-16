@@ -145,29 +145,43 @@ class _QueueHolder(dict):
 
     """Creates a _UserQueue object for every missing key."""
 
-    def __init__(self, cls):
+    def __init__(self, cls, repeat):
         """Initialize the queue holder.
 
         @param <cls>:
         This is the queue type this class will hold.
+        @param <repeat>:
+        Global refresh repeat instance.
         """
         self._cls = cls
+        self._repeat = repeat
 
     def __missing__(self, index):
         """Create a new _UserQueue object for the given index.
 
         Saves the result in this dict.
         """
+        # Is the dictionary currently empty?
+        if not self:
+
+            # If so, start the refresh repeat...
+            self._repeat.start(1, 0)
+
         obj = self[index] = self._cls(index)
         return obj
 
+    def pop(self, key, default=None):
+        '''Remove and return the given key's value.'''
+        return_value = super(_QueueHolder, self).pop(key, default)
 
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# {<user index>: <_UserQueue>}
-_radio_queues = _QueueHolder(_UserQueue)
-_esc_queues = _QueueHolder(_ESCUserQueue)
+        # Is the dictionary currently empty?
+        if not self:
+
+            # If so, stop the refresh repeat...
+            self._repeat.stop()
+
+        # Return the popped key's value...
+        return return_value
 
 
 # =============================================================================
@@ -209,18 +223,19 @@ def _radio_refresh():
     for queue in _radio_queues.values():
         queue._refresh()
 
-# TODO: Get the refresh repeat dynamically
-_radio_refresh.start(1, 0)
-
-
 @TickRepeat
 def _esc_refresh():
     """Update every queue in the queue dict."""
     for queue in _esc_queues.values():
         queue._refresh()
 
-# TODO: Get the refresh repeat dynamically
-_esc_refresh.start(1, 0)
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# {<user index>: <_UserQueue>}
+_radio_queues = _QueueHolder(_UserQueue, _radio_refresh)
+_esc_queues = _QueueHolder(_ESCUserQueue, _esc_refresh)
 
 
 # =============================================================================
