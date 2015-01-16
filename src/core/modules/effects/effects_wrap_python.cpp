@@ -207,6 +207,7 @@ void export_temp_entities_system()
 	TempEntities.def("beam_ring", &ITempEntsSystem::BeamRing);
 	TempEntities.def("beam_ring_point", &ITempEntsSystem::BeamRingPoint);
 	TempEntities.def("beam_spline", &ITempEntsSystem::BeamSpline);
+	TempEntities.def("blood_stream", &ITempEntsSystem::BloodStream);
 	TempEntities.def("blood_sprite", &ITempEntsSystem::BloodSprite);
 	TempEntities.def("break_model", &ITempEntsSystem::BreakModel);
 	TempEntities.def("bsp_decal", &ITempEntsSystem::BSPDecal);
