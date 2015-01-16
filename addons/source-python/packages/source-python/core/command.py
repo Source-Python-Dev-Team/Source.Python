@@ -95,7 +95,7 @@ class _CoreCommandManager(SubCommandManager):
                     # Is the value a ConVar?
                     if isinstance(value, ConVar):
 
-                        # Get the 
+                        # Get the ConVar's text
                         value = '{0}:\n\t\t\t{1}: {2}'.format(
                             value.get_name(),
                             value.get_help_text(),

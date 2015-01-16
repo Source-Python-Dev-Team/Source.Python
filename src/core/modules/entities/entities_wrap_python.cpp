@@ -388,54 +388,6 @@ void export_edict()
 			reference_existing_object_policy()
 		)
 
-		.def("get_prop_int",
-			&CEdictExt::GetPropInt,
-			"Returns the value of a network property as an int.",
-			args("prop_name")
-		)
-
-		.def("get_prop_float",
-			&CEdictExt::GetPropFloat,
-			"Returns the value of a network property as a float.",
-			args("prop_name")
-		)
-
-		.def("get_prop_string",
-			&CEdictExt::GetPropString,
-			"Returns the value of a network property as a string.",
-			args("prop_name")
-		)
-
-		.def("get_prop_vector",
-			&CEdictExt::GetPropVector,
-			"Returns the value of a network property as a vector.",
-			args("prop_name")
-		)
-
-		.def("set_prop_int",
-			&CEdictExt::SetPropInt,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
-		.def("set_prop_float",
-			&CEdictExt::SetPropFloat,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
-		.def("set_prop_string",
-			&CEdictExt::SetPropString,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
-		.def("set_prop_vector",
-			&CEdictExt::SetPropVector,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
 		.def("get_key_value_string",
 			&CEdictExt::GetKeyValueString,
 			"Returns the value of the given field name.",
@@ -460,6 +412,18 @@ void export_edict()
 			args("field_name")
 		)
 
+		.def("get_key_value_bool",
+			&CEdictExt::GetKeyValueBool,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
+		.def("get_key_value_color",
+			&CEdictExt::GetKeyValueColor,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
 		.def("set_key_value_int",
 			&CEdictExt::SetKeyValue<int>,
 			"Sets a field to the given value.",
@@ -480,6 +444,18 @@ void export_edict()
 
 		.def("set_key_value_vector",
 			&CEdictExt::SetKeyValue<Vector>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
+		.def("set_key_value_bool",
+			&CEdictExt::SetKeyValue<bool>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
+		.def("set_key_value_color",
+			&CEdictExt::SetKeyValueColor,
 			"Sets a field to the given value.",
 			args("field_name", "value")
 		)

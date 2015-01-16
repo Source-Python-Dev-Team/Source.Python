@@ -63,7 +63,7 @@ class _PlayerWeapons(object):
         weapon = BaseEntity(index)
 
         # Return the amount of ammo the player has for the weapon
-        return self.get_prop_int(
+        return self.get_property_int(
             weapon_manager.ammoprop + '%03d' % weapon.ammoprop)
 
     # =========================================================================
@@ -147,7 +147,7 @@ class _PlayerWeapons(object):
         weapon = BaseEntity(index)
 
         # Set the player's ammo value
-        self.set_prop_int(
+        self.set_property_int(
             weapon_manager.ammoprop + '%03d' % weapon.ammoprop, value)
 
     # =========================================================================
@@ -234,11 +234,11 @@ class _PlayerWeapons(object):
         weapon = BaseEntity(index)
 
         # Get the current ammo value
-        current = self.get_prop_int(
+        current = self.get_property_int(
             weapon_manager.ammoprop + '%03d' % weapon.ammoprop)
 
         # Add ammo to the current value
-        self.set_prop_int(
+        self.set_property_int(
             weapon_manager.ammoprop + '%03d' % weapon.ammoprop,
             current + value)
 
@@ -325,7 +325,7 @@ class _PlayerWeapons(object):
         for offset in range(_weapon_prop_length):
 
             # Get the player's current weapon at this offset
-            handle = self.get_prop_int(
+            handle = self.get_property_int(
                 weapon_manager.myweapons + '%03i' % offset)
 
             # Get the weapon's index

@@ -44,6 +44,32 @@ _supported_input_types = {
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+class EntityProperty(object):
+
+    """Class used to store property information for verification."""
+
+    def __init__(self, instance, prop_type, networked):
+        """Store the base attributes on instantiation."""
+        self._instance = instance
+        self._prop_type = prop_type
+        self._networked = networked
+
+    @property
+    def instance(self):
+        """Return the instance_property instance for the class."""
+        return self._instance
+
+    @property
+    def prop_type(self):
+        """Return the type of the property."""
+        return self._prop_type
+
+    @property
+    def networked(self):
+        """Return whether the property is networked."""
+        return self._networked
+
+
 class InputFunction(Function):
 
     """Class used to create and call an Input type function."""
