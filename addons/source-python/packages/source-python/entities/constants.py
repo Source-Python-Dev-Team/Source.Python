@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
-from enum import Enum
+from enum import IntEnum
 
 # Site-Package Imports
 #   ConfigObj
@@ -45,4 +45,4 @@ DATA_DESC_MAP_OFFSET = _entity_values.get(
     'DATA_DESC_OFFSET', {}).get(PLATFORM, None)
 
 # Get the damage_types for the current engine
-damage_types = Enum('damage_types', _entity_values.get('damage_types', {}))
+damage_types = IntEnum('damage_types', _entity_values.get('damage_types', {}))
