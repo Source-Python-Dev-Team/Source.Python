@@ -19,12 +19,11 @@ from path import Path
 # Source.Python Imports
 #   Core
 from core import AutoUnload
+from core import global_vars
 #   Engines
 from engines.server import engine_server
 #   Events
 from events.manager import event_registry
-#   Listeners
-from listeners.tick.delays import tick_delays
 #   Stringtables
 from stringtables import INVALID_STRING_INDEX
 from stringtables import string_tables
@@ -67,8 +66,10 @@ class _PrecacheBase(Path, AutoUnload):
         # Set the _calling_module attribute for the instance
         self._calling_module = caller.__name__
 
-        # Precache the instance
-        tick_delays.delay(0.0, self._precache_method, self)
+        # Is the map loaded?
+        if global_vars.map_name:
+            # Precache the instance
+            self._precache_method(self)
 
         # Register the server_spawn event to precache every map change
         event_registry.register_for_event('server_spawn', self._server_spawn)
