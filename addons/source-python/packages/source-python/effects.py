@@ -22,6 +22,7 @@ from paths import SP_DATA_PATH
 from _effects import DispatchEffectData
 from _effects import effects
 from _effects import PredictionSystem
+from _effects import ShatterSurface
 
 
 # =============================================================================
@@ -31,6 +32,7 @@ __all__ = ('DispatchEffectData',
            'PredictionSystem',
            'effects',
            'temp_entities',
+           'ShatterSurface'
            )
 
 

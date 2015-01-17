@@ -68,6 +68,11 @@ DECLARE_SP_MODULE(_effects)
 	export_effects();
 	export_temp_entities_system();
 	export_dispatch_effect_data();
+
+	enum_<ShatterSurface_t>("ShatterSurface")
+		.value("GLASS", SHATTERSURFACE_GLASS)
+		.value("TILE", SHATTERSURFACE_TILE)
+	;
 }
 
 
