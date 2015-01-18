@@ -171,7 +171,7 @@ class _QueueHolder(dict):
         return obj
 
     def pop(self, key, default=None):
-        '''Remove and return the given key's value.'''
+        """Remove and return the given key's value."""
         return_value = super(_QueueHolder, self).pop(key, default)
 
         # Is the dictionary currently empty?
@@ -222,6 +222,7 @@ def _radio_refresh():
     """Update every queue in the queue dict."""
     for queue in _radio_queues.values():
         queue._refresh()
+
 
 @TickRepeat
 def _esc_refresh():
