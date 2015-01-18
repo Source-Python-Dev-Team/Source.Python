@@ -12,8 +12,6 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
-#   Engines
-from engines.server import engine_server
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
@@ -111,11 +109,11 @@ _player_iter_manager.register_filter(
 _player_iter_manager.register_filter(
     'human', lambda playerinfo: not playerinfo.is_fake_client())
 _player_iter_manager.register_filter(
-    'alive', lambda playerinfo: not edict_from_playerinfo(
-        playerinfo).get_prop_int('pl.deadflag'))
+    'alive', lambda playerinfo: not PlayerEntity(index_from_playerinfo(
+        playerinfo)).get_property_int('pl.deadflag'))
 _player_iter_manager.register_filter(
-    'dead', lambda playerinfo: edict_from_playerinfo(
-        playerinfo).get_prop_int('pl.deadflag'))
+    'dead', lambda playerinfo: PlayerEntity(index_from_playerinfo(
+        playerinfo)).get_property_int('pl.deadflag'))
 
 # Loop through all teams in the game's team file
 for _team in _game_teams.get('names', {}):
@@ -186,7 +184,7 @@ _player_iter_manager.register_return_type(
 _player_iter_manager.register_return_type(
     'weapon', lambda playerinfo: playerinfo.get_weapon_name())
 _player_iter_manager.register_return_type(
-    'language', lambda playerinfo: engine_server.get_client_convar_value(
-        index_from_playerinfo(playerinfo), 'cl_language'))
+    'language', lambda playerinfo: PlayerEntity(
+        index_from_playerinfo(playerinfo).language))
 _player_iter_manager.register_return_type(
     'team', lambda playerinfo: playerinfo.get_team_index())

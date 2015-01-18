@@ -12,8 +12,6 @@ from core import SOURCE_ENGINE
 from memory.manager import manager
 #   Paths
 from paths import SP_DATA_PATH
-#   Tools
-from tools import server_tools
 
 
 # =============================================================================
@@ -24,6 +22,7 @@ from tools import server_tools
 from _effects import DispatchEffectData
 from _effects import effects
 from _effects import PredictionSystem
+from _effects import ShatterSurface
 
 
 # =============================================================================
@@ -33,6 +32,7 @@ __all__ = ('DispatchEffectData',
            'PredictionSystem',
            'effects',
            'temp_entities',
+           'ShatterSurface'
            )
 
 
@@ -41,8 +41,8 @@ __all__ = ('DispatchEffectData',
 # ============================================================================
 # Get the temp_entities instance...
 try:
-    temp_entities = server_tools.get_temp_entities()
-except NotImplementedError:
+    from _effects import temp_entities
+except ImportError:
     manager.create_global_pointers_from_file(
         SP_DATA_PATH.joinpath('effects', SOURCE_ENGINE, 'pointers.ini'))
 

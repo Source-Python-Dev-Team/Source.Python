@@ -1,5 +1,7 @@
 # ../entities/helpers.py
 
+"""Provides helper functions to convert from one type to another."""
+
 # =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
@@ -25,6 +27,10 @@ from _conversions import pointer_from_basehandle
 from _conversions import pointer_from_edict
 from _conversions import pointer_from_index
 from _conversions import pointer_from_inthandle
+#   Entities
+from _entities import create_entity
+from _entities import remove_entity
+from _entities import spawn_entity
 
 
 # =============================================================================
@@ -34,6 +40,7 @@ __all__ = ('basehandle_from_edict',
            'basehandle_from_index',
            'basehandle_from_inthandle',
            'basehandle_from_pointer',
+           'create_entity',
            'edict_from_basehandle',
            'edict_from_index',
            'edict_from_inthandle',
@@ -50,4 +57,6 @@ __all__ = ('basehandle_from_edict',
            'pointer_from_edict',
            'pointer_from_index',
            'pointer_from_inthandle',
+           'remove_entity',
+           'spawn_entity',
            )

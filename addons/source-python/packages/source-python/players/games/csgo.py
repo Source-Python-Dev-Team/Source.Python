@@ -7,6 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Players
+from players.classes.language.cache import get_client_language
 from players.weapons.projectiles import _HEGrenade
 from players.weapons.projectiles import _Flashbang
 from players.weapons.projectiles import _SmokeGrenade

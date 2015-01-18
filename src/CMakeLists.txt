@@ -213,12 +213,14 @@ Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/entities_wrap.h
-    core/modules/entities/entities_props.h
     core/modules/entities/entities_generator_wrap.h
+    core/modules/entities/entities_helpers_wrap.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_helpers_wrap.h
+	core/modules/entities/entities_factories_wrap.h
+	core/modules/entities/${SOURCE_ENGINE}/entities_wrap_python.h
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
-    core/modules/entities/entities_props.cpp
     core/modules/entities/entities_wrap.cpp
     core/modules/entities/entities_wrap_python.cpp
     core/modules/entities/entities_generator_wrap.cpp
@@ -351,19 +353,6 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Tools module.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_TOOLS_MODULE_HEADERS
-    core/modules/tools/tools_wrap.h
-    core/modules/tools/${SOURCE_ENGINE}/tools_wrap.h
-    core/modules/tools/${SOURCE_ENGINE}/tools_wrap_python.h
-)
-
-Set(SOURCEPYTHON_TOOLS_MODULE_SOURCES
-    core/modules/tools/tools_wrap_python.cpp
-)
-
-# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -427,9 +416,6 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
     ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
-
-    ${SOURCEPYTHON_TOOLS_MODULE_HEADERS}
-    ${SOURCEPYTHON_TOOLS_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -461,7 +447,6 @@ Source_Group("Header Files\\Module\\Messages"               FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_TOOLS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -488,7 +473,6 @@ Source_Group("Source Files\\Module\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Recipients"             FILES ${SOURCEPYTHON_RECIPIENTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Tools"                  FILES ${SOURCEPYTHON_TOOLS_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of

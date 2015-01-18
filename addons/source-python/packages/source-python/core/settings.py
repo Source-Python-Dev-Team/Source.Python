@@ -54,7 +54,7 @@ class _SettingsMeta(type):
     def __new__(mcs, name, bases, odict):
         """Store methods by name/instance in the order they were created."""
         # Get the class object
-        cls = super().__new__(mcs, name, bases, dict(odict))
+        cls = super(_SettingsMeta, mcs).__new__(mcs, name, bases, dict(odict))
 
         # Create an ordered dictionary to store methods in
         cls._odict = OrderedDict()

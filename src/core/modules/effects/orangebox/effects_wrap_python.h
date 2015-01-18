@@ -31,6 +31,13 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "game/shared/itempents.h"
+#include "toolframework/itoolentity.h"
+
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern IServerTools *servertools;
 
 
 //-----------------------------------------------------------------------------
@@ -50,6 +57,9 @@ template<class T>
 void export_engine_specific_temp_entities_system(T TempEntities)
 {
 	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
+	
+	// Singleton...
+	scope().attr("temp_entities") = object(ptr(servertools->GetTempEntsSystem()));
 }
 
 

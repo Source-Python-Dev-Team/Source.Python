@@ -23,3 +23,16 @@ tests/
 src/Builds/
 src/hl2sdk/*
 !src/hl2sdk/readme.md
+
+addons/source-python/bin/
+addons/source-python/data/custom/
+addons/source-python/data/plugins/
+addons/source-python/packages/custom/
+addons/source-python/plugins/
+cfg/source-python/*
+!cfg/source-python/auth_providers/
+logs/source-python/
+resource/source-python/events/
+resource/source-python/translations/*
+!resource/source-python/translations/_core/
+sound/source-python/

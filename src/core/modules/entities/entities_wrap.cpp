@@ -28,7 +28,6 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include <vector>
-#include "entities_props.h"
 #include "entities_wrap.h"
 #include "dt_common.h"
 #include "utility/sp_util.h"
@@ -54,13 +53,6 @@ const IChangeInfoAccessor *CBaseEdict::GetChangeAccessor() const
 
 
 //-----------------------------------------------------------------------------
-// Global accessor.
-//-----------------------------------------------------------------------------
-typedef boost::unordered_map<std::string, CSendPropHashTable*> SendPropMap;
-SendPropMap g_SendPropMap;
-
-
-//-----------------------------------------------------------------------------
 // IServerUnknown extension
 //-----------------------------------------------------------------------------
 unsigned long IServerUnknownExt::GetBaseEntity( IServerUnknown* unknown )
@@ -71,78 +63,6 @@ unsigned long IServerUnknownExt::GetBaseEntity( IServerUnknown* unknown )
 //-----------------------------------------------------------------------------
 // edict_t extension
 //-----------------------------------------------------------------------------
-int CEdictExt::GetPropInt( edict_t* pEdict, const char* prop_name )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_Int)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an int.");
-
-	return prop.Get<int>();
-}
-
-float CEdictExt::GetPropFloat( edict_t* pEdict, const char* prop_name )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_Float)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.");
-
-	return prop.Get<float>();
-}
-
-const char* CEdictExt::GetPropString( edict_t* pEdict, const char* prop_name )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_String)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.");
-
-	return prop.Get<const char *>();
-}
-
-Vector CEdictExt::GetPropVector( edict_t* pEdict, const char* prop_name )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_Vector)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.");
-
-	return prop.Get<Vector>();
-}
-
-void CEdictExt::SetPropInt( edict_t* pEdict, const char* prop_name, int iValue )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_Int)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not an int.");
-
-	prop.Set<int>(iValue);
-}
-
-void CEdictExt::SetPropFloat( edict_t* pEdict, const char* prop_name, float flValue )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_Float)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a float.");
-
-	prop.Set<float>(flValue);
-}
-
-void CEdictExt::SetPropString( edict_t* pEdict, const char* prop_name, const char* szValue )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_String)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a string.");
-
-	prop.Set<const char *>(szValue);
-}
-
-void CEdictExt::SetPropVector( edict_t* pEdict, const char* prop_name, Vector vecValue )
-{
-	CSendProp prop = CSendProp(pEdict, prop_name);
-	if (prop.GetType() != DPT_Vector)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Property is not a vector.");
-
-	prop.Set<Vector>(vecValue);
-}
-
 const char* CEdictExt::GetKeyValueString(edict_t* pEdict, const char* szName)
 {
 	char szResult[1024];
@@ -181,120 +101,26 @@ Vector CEdictExt::GetKeyValueVector(edict_t* pEdict, const char* szName)
 	return Vector(extract<float>(vec[0]), extract<float>(vec[1]), extract<float>(vec[2]));
 }
 
-//-----------------------------------------------------------------------------
-// CSendProp code.
-//-----------------------------------------------------------------------------
-CSendProp::CSendProp( edict_t* edict, const char* prop_name )
+Color CEdictExt::GetKeyValueColor(edict_t* pEdict, const char* szName)
 {
-	// Set default values.
-	m_send_prop = NULL;
-	m_prop_offset = 0;
-	m_edict = edict;
+	const char* szResult = GetKeyValueString(pEdict, szName);
 
-	if( !m_edict )
-	{
-		DevMsg(1, MSG_PREFIX "edict was not valid!\n");
-		return;
-	}
-
-	// Get the base entity. This saves us from having to call
-	// this code repeatedly.
-	IServerUnknown* entity_unknown = m_edict->GetUnknown();
-	m_base_entity = entity_unknown->GetBaseEntity();
-
-	// Get the entity's classname
-	const char* szClassName = m_edict->GetClassName();
-
-	// Get the classname's prop table
-	SendPropMap::iterator sendPropIter = g_SendPropMap.find(szClassName);
-	if( sendPropIter == g_SendPropMap.end() )
-	{
-		// If the classname isn't mapped, map it
-		g_SendPropMap.insert(std::make_pair(szClassName, new CSendPropHashTable()));
-
-		// Get the classname's prop table
-		sendPropIter = g_SendPropMap.find(szClassName);
-	}
-
-	// Create an offset value to be set by the hash table
-	int iOffset = 0;
-
-	// Get the SendProp from the hash table
-	m_send_prop = sendPropIter->second->get_prop(prop_name, iOffset);
-
-	// Was the SendProp not found in the hash table?
-	if( !m_send_prop )
-	{
-
-		// Get the send table for this entity.
-		ServerClass* server_class = m_edict->GetNetworkable()->GetServerClass();
-		SendTable* send_table = server_class->m_pTable;
-
-		// Split the prop_name by "."
-		std::vector<std::string> tokens;
-		boost::algorithm::split(tokens, prop_name, boost::is_any_of("."));
-
-		// Create base variables to use in the foreach loop
-		unsigned int i = 0;
-		SendProp* send_prop;
-
-		// Create a loop to cycle through each token in the given prop_name
-		BOOST_FOREACH(std::string token, tokens)
-		{
-			// Find the SendProp instance for the current token
-			const char* str_token = token.c_str();
-			send_prop = UTIL_FindSendProp(send_table, str_token, iOffset);
-
-			// Does the SendProp exist?
-			if( !send_prop )
-			{
-				// If not, raise an exception
-				std::string szMessage = "prop_name '";
-				szMessage += prop_name;
-				szMessage += "' was not found!\n";
-				BOOST_RAISE_EXCEPTION(PyExc_ValueError, szMessage.c_str());
-				return;
-			}
-			// Increment the counter
-			i ++;
-
-			// Is this the end of the loop?
-			if( i < tokens.size() )
-			{
-				// If not, is the current SendProp a datatable?
-				if( send_prop->GetType() != DPT_DataTable )
-				{
-					// If not, raise an exception
-					std::string szMessage = "prop_name '";
-					szMessage += prop_name;
-					szMessage += "' was not found!\n";
-					BOOST_RAISE_EXCEPTION(PyExc_ValueError, szMessage.c_str());
-					return;
-				}
-				// Set the current datatable
-				send_table = send_prop->GetDataTable();
-			}
-			else
-			{
-				// Store the SendProp
-				m_send_prop = send_prop;
-
-				// Store the offset
-				m_prop_offset = iOffset;
-
-				// Insert the prop into the hash table
-				sendPropIter->second->insert_offset(prop_name, m_send_prop, m_prop_offset);
-			}
-		}
-	}
-	else
-	{
-		// Prop was valid. Store off the offset.
-		m_prop_offset = iOffset;
-	}
+	object color = eval("lambda x: tuple(map(int, x.split(' ')))")(str(szResult));
+	return Color(extract<int>(color[0]), extract<int>(color[1]), extract<int>(color[2]), extract<int>(color[3]));
 }
 
-inline SendPropType CSendProp::GetType()
+bool CEdictExt::GetKeyValueBool(edict_t* pEdict, const char* szName)
 {
-	return m_send_prop->GetType();
+	const char* szResult = GetKeyValueString(pEdict, szName);
+
+	return strcmp(szResult, "1") == 0;
+}
+
+void CEdictExt::SetKeyValueColor(edict_t* pEdict, const char* szName, Color color)
+{
+	char string[16];
+
+	Q_snprintf(string,sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
+
+	SetKeyValue(pEdict, szName, string);
 }

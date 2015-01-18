@@ -68,6 +68,11 @@ DECLARE_SP_MODULE(_effects)
 	export_effects();
 	export_temp_entities_system();
 	export_dispatch_effect_data();
+
+	enum_<ShatterSurface_t>("ShatterSurface")
+		.value("GLASS", SHATTERSURFACE_GLASS)
+		.value("TILE", SHATTERSURFACE_TILE)
+	;
 }
 
 
@@ -207,6 +212,7 @@ void export_temp_entities_system()
 	TempEntities.def("beam_ring", &ITempEntsSystem::BeamRing);
 	TempEntities.def("beam_ring_point", &ITempEntsSystem::BeamRingPoint);
 	TempEntities.def("beam_spline", &ITempEntsSystem::BeamSpline);
+	TempEntities.def("blood_stream", &ITempEntsSystem::BloodStream);
 	TempEntities.def("blood_sprite", &ITempEntsSystem::BloodSprite);
 	TempEntities.def("break_model", &ITempEntsSystem::BreakModel);
 	TempEntities.def("bsp_decal", &ITempEntsSystem::BSPDecal);
@@ -218,7 +224,7 @@ void export_temp_entities_system()
 	TempEntities.def("explosion", &ITempEntsSystem::Explosion);
 	TempEntities.def("shatter_surface", &ITempEntsSystem::ShatterSurface);
 	TempEntities.def("glow_sprite", &ITempEntsSystem::GlowSprite);
-	TempEntities.def("foot_print_decal", &ITempEntsSystem::FootprintDecal);
+	TempEntities.def("footprint_decal", &ITempEntsSystem::FootprintDecal);
 	TempEntities.def("kill_player_attachments", &ITempEntsSystem::KillPlayerAttachments);
 	TempEntities.def("large_funnel", &ITempEntsSystem::LargeFunnel);
 	TempEntities.def("metal_sparks", &ITempEntsSystem::MetalSparks);

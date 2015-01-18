@@ -44,7 +44,7 @@ class _EventMeta(type):
     def __new__(mcs, name, bases, odict):
         """Called when the class is being created."""
         # Create the instance
-        cls = super().__new__(mcs, name, bases, dict(odict))
+        cls = super(_EventMeta, mcs).__new__(mcs, name, bases, dict(odict))
 
         # Store an ordered dictionary
         cls._odict = OrderedDict()

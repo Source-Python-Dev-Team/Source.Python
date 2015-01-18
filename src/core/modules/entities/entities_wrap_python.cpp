@@ -29,6 +29,8 @@
 //-----------------------------------------------------------------------------
 #include "edict.h"
 
+#include "entities_helpers_wrap.h"
+#include "entities_factories_wrap.h"
 #include "entities_generator_wrap.h"
 #include "entities_wrap.h"
 #include "utility/sp_util.h"
@@ -36,11 +38,14 @@
 using namespace boost::python;
 
 #include "modules/memory/memory_tools.h"
+#include ENGINE_INCLUDE_PATH(entities_helpers_wrap.h)
+#include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
 
 
 //-----------------------------------------------------------------------------
 // Entity module definition.
 //-----------------------------------------------------------------------------
+void export_helper_functions();
 void export_base_entity_handle();
 void export_handle_entity();
 void export_server_unknown();
@@ -48,9 +53,13 @@ void export_server_entity();
 void export_server_networkable();
 void export_edict();
 void export_entity_generator();
+void export_entity_factory();
+void export_entity_factory_dictionary_interface();
+void export_entity_factory_dictionary();
 
 DECLARE_SP_MODULE(_entities)
 {
+	export_helper_functions();
 	export_base_entity_handle();
 	export_handle_entity();
 	export_server_unknown();
@@ -58,7 +67,22 @@ DECLARE_SP_MODULE(_entities)
 	export_server_networkable();
 	export_edict();
 	export_entity_generator();
+	export_entity_factory();
+	export_entity_factory_dictionary_interface();
+	export_entity_factory_dictionary();
 }
+
+
+//-----------------------------------------------------------------------------
+// Exports helper functions.
+//-----------------------------------------------------------------------------
+void export_helper_functions()
+{
+	def("create_entity", &create_entity, args("class_name"));
+	def("remove_entity", &remove_entity, args("entity_index"));
+	def("spawn_entity", &spawn_entity, args("entity_index"));
+}
+
 
 //-----------------------------------------------------------------------------
 // Exports CBaseEntityHandle.
@@ -227,12 +251,12 @@ void export_server_networkable()
 			&IServerNetworkable::GetBaseNetworkable,
 			reference_existing_object_policy()
 		)
+		*/
 
 		.def("get_base_entity",
-			&IServerNetworkable::GetBaseEntity,
+			&ServerNetworkableSharedExt::get_base_entity,
 			reference_existing_object_policy()
 		)
-		*/
 
 		.def("get_pvs_info",
 			&IServerNetworkable::GetPVSInfo,
@@ -364,54 +388,6 @@ void export_edict()
 			reference_existing_object_policy()
 		)
 
-		.def("get_prop_int",
-			&CEdictExt::GetPropInt,
-			"Returns the value of a network property as an int.",
-			args("prop_name")
-		)
-
-		.def("get_prop_float",
-			&CEdictExt::GetPropFloat,
-			"Returns the value of a network property as a float.",
-			args("prop_name")
-		)
-
-		.def("get_prop_string",
-			&CEdictExt::GetPropString,
-			"Returns the value of a network property as a string.",
-			args("prop_name")
-		)
-
-		.def("get_prop_vector",
-			&CEdictExt::GetPropVector,
-			"Returns the value of a network property as a vector.",
-			args("prop_name")
-		)
-
-		.def("set_prop_int",
-			&CEdictExt::SetPropInt,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
-		.def("set_prop_float",
-			&CEdictExt::SetPropFloat,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
-		.def("set_prop_string",
-			&CEdictExt::SetPropString,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
-		.def("set_prop_vector",
-			&CEdictExt::SetPropVector,
-			"Set the a network property to the given value.",
-			args("prop_name", "value")
-		)
-
 		.def("get_key_value_string",
 			&CEdictExt::GetKeyValueString,
 			"Returns the value of the given field name.",
@@ -436,6 +412,18 @@ void export_edict()
 			args("field_name")
 		)
 
+		.def("get_key_value_bool",
+			&CEdictExt::GetKeyValueBool,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
+		.def("get_key_value_color",
+			&CEdictExt::GetKeyValueColor,
+			"Returns the value of the given field name.",
+			args("field_name")
+		)
+
 		.def("set_key_value_int",
 			&CEdictExt::SetKeyValue<int>,
 			"Sets a field to the given value.",
@@ -456,6 +444,18 @@ void export_edict()
 
 		.def("set_key_value_vector",
 			&CEdictExt::SetKeyValue<Vector>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
+		.def("set_key_value_bool",
+			&CEdictExt::SetKeyValue<bool>,
+			"Sets a field to the given value.",
+			args("field_name", "value")
+		)
+
+		.def("set_key_value_color",
+			&CEdictExt::SetKeyValueColor,
 			"Sets a field to the given value.",
 			args("field_name", "value")
 		)
@@ -493,4 +493,75 @@ void export_entity_generator()
 			reference_existing_object_policy()
 		)
 	;
+}
+
+//-----------------------------------------------------------------------------
+// Expose IEntityFactory.
+//-----------------------------------------------------------------------------
+void export_entity_factory()
+{
+	class_<IEntityFactory, boost::noncopyable> EntityFactory("EntityFactory", no_init);
+	
+	// Methods...
+	EntityFactory.def("create",
+		&IEntityFactory::Create,
+		reference_existing_object_policy()
+	);
+	
+	EntityFactory.def("destroy", &IEntityFactory::Destroy);
+	
+	// Properties...
+	EntityFactory.add_property("size", &IEntityFactory::GetEntitySize);
+	
+	// Add memory tools...
+	EntityFactory ADD_MEM_TOOLS(IEntityFactory, "EntityFactory");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose IEntityFactoryDictionary.
+//-----------------------------------------------------------------------------
+void export_entity_factory_dictionary_interface()
+{
+	class_<IEntityFactoryDictionary, IEntityFactoryDictionary *,
+		boost::noncopyable> _EntityFactoryDictionary("_EntityFactoryDictionary", no_init);
+
+	// Methods...
+	_EntityFactoryDictionary.def("install_factory", &IEntityFactoryDictionary::InstallFactory);
+
+	_EntityFactoryDictionary.def("create",
+		&IEntityFactoryDictionary::Create,
+		reference_existing_object_policy()
+	);
+
+	_EntityFactoryDictionary.def("destroy", &IEntityFactoryDictionary::Destroy);
+
+	_EntityFactoryDictionary.def("find_factory",
+		&IEntityFactoryDictionary::FindFactory,
+		reference_existing_object_policy()
+	);
+
+	_EntityFactoryDictionary.def("get_cannonical_name", &IEntityFactoryDictionary::GetCannonicalName);
+
+	// Add memory tools...
+	_EntityFactoryDictionary ADD_MEM_TOOLS(IEntityFactoryDictionary, "_EntityFactoryDictionary");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose CEntityFactoryDictionary.
+//-----------------------------------------------------------------------------
+void export_entity_factory_dictionary()
+{
+	class_<CEntityFactoryDictionary, CEntityFactoryDictionary *, bases<IEntityFactoryDictionary>,
+		boost::noncopyable> EntityFactoryDictionary("EntityFactoryDictionary", no_init);
+
+	// Special methods...
+	EntityFactoryDictionary.def("__getitem__",&EntityFactoryDictionarySharedExt::__getitem__);
+
+	// Engine specific stuff...
+	export_engine_specific_entity_factory_dictionary(EntityFactoryDictionary);
+
+	// Add memory tools...
+	EntityFactoryDictionary ADD_MEM_TOOLS(CEntityFactoryDictionary, "EntityFactoryDictionary");
 }

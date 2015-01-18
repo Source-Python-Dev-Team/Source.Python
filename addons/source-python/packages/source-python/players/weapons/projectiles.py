@@ -32,7 +32,7 @@ class _ProjectileMeta(type):
                 del odict[attribute]
 
         # Create the object
-        cls = super().__new__(mcs, name, bases, odict)
+        cls = super(_ProjectileMeta, mcs).__new__(mcs, name, bases, odict)
 
         # Is the the baseclass that uses the metaclass?
         if len(bases) != 1 or bases[0].__name__ != '_ProjectileBase':
