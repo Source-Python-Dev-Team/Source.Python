@@ -109,11 +109,11 @@ _player_iter_manager.register_filter(
 _player_iter_manager.register_filter(
     'human', lambda playerinfo: not playerinfo.is_fake_client())
 _player_iter_manager.register_filter(
-    'alive', lambda playerinfo: not edict_from_playerinfo(
-        playerinfo).get_property_int('pl.deadflag'))
+    'alive', lambda playerinfo: not PlayerEntity(index_from_playerinfo(
+        playerinfo)).get_property_int('pl.deadflag'))
 _player_iter_manager.register_filter(
-    'dead', lambda playerinfo: edict_from_playerinfo(
-        playerinfo).get_property_int('pl.deadflag'))
+    'dead', lambda playerinfo: PlayerEntity(index_from_playerinfo(
+        playerinfo)).get_property_int('pl.deadflag'))
 
 # Loop through all teams in the game's team file
 for _team in _game_teams.get('names', {}):
