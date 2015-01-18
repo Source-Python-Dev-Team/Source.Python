@@ -224,7 +224,7 @@ void export_temp_entities_system()
 	TempEntities.def("explosion", &ITempEntsSystem::Explosion);
 	TempEntities.def("shatter_surface", &ITempEntsSystem::ShatterSurface);
 	TempEntities.def("glow_sprite", &ITempEntsSystem::GlowSprite);
-	TempEntities.def("foot_print_decal", &ITempEntsSystem::FootprintDecal);
+	TempEntities.def("footprint_decal", &ITempEntsSystem::FootprintDecal);
 	TempEntities.def("kill_player_attachments", &ITempEntsSystem::KillPlayerAttachments);
 	TempEntities.def("large_funnel", &ITempEntsSystem::LargeFunnel);
 	TempEntities.def("metal_sparks", &ITempEntsSystem::MetalSparks);
