@@ -113,6 +113,9 @@ class BaseEntity(_EntitySpecials):
                 # Set the attribute's value
                 setattr(server_class(self.pointer, wrap=True), attr, value)
 
+                # No need to go further
+                return
+
         # If the attribute is not found, just set the attribute
         super(BaseEntity, self).__setattr__(attr, value)
 
