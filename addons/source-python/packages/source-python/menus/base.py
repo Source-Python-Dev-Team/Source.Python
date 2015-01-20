@@ -266,7 +266,8 @@ class _BaseOption(_MenuData):
 
     """This class is used to display an enumerated option."""
 
-    def __init__(self, text, value=None, highlight=True, selectable=True):
+    def __init__(self, text, value=None, highlight=True, selectable=True,
+                 choice=None):
         """Initialize the option.
 
         @param <text>:
@@ -282,11 +283,15 @@ class _BaseOption(_MenuData):
 
         @param <selectable>:
         Set this to True if the option should be selectable.
+
+        @param <choice>:
+        The number to press to choose this option.
         """
         super(_BaseOption, self).__init__(text)
         self.value = value
         self.highlight = highlight
         self.selectable = selectable
+        self.choice = choice
 
     def _render(self, ply_index, choice):
         """Render the data.

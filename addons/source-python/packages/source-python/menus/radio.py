@@ -59,6 +59,15 @@ class SimpleRadioMenu(_BaseMenu):
             elif isinstance(raw_data, RadioOption):
                 page.options.append(raw_data)
                 choice += 1
+
+                if choice == 10:
+                    choice = 0
+
+                if raw_data.choice is not None:
+                    choice = raw_data.choice
+
+                    while len(page.options) < choice - 1:
+                        page.options.append(None)
                 buffer += raw_data._render(ply_index, choice)
                 if raw_data.selectable:
                     slots.add(choice)
@@ -230,7 +239,8 @@ class PagedRadioMenu(SimpleRadioMenu):
             if not isinstance(option, RadioOption):
                 raise TypeError('Expected a RadioOption instance.')
 
-            buffer += option._render(ply_index, index)
+            buffer += option._render(ply_index,
+                index if option.choice is None else option.choice)
             if option.selectable:
                 slots.add(index)
 
