@@ -47,7 +47,8 @@ class PagedESCMenu(_BaseMenu):
 
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
-            description=None, title=None, title_color=WHITE):
+            description=None, title=None, title_color=WHITE,
+            back_option=None):
         """Initialize the PagedESCMenu instance.
 
         @param <data>:
@@ -82,6 +83,7 @@ class PagedESCMenu(_BaseMenu):
         self.description = description
         self.title = title
         self.title_color = title_color
+        self.back_option = back_option
 
     def _format_header(self, ply_index, page, data):
         """Prepare the header for the menu.
@@ -206,6 +208,9 @@ class PagedESCMenu(_BaseMenu):
 
         # Display previous page?
         if choice == 6:
+            if not page.index and self.back_option is not None:
+                return self.back_option
+
             self.set_player_page(ply_index, page.index - 1)
             return self
 

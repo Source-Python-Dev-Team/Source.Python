@@ -59,6 +59,15 @@ class SimpleRadioMenu(_BaseMenu):
             elif isinstance(raw_data, RadioOption):
                 page.options.append(raw_data)
                 choice += 1
+
+                if choice == 10:
+                    choice = 0
+
+                if raw_data.choice is not None:
+                    choice = raw_data.choice
+
+                    while len(page.options) < choice - 1:
+                        page.options.append(None)
                 buffer += raw_data._render(ply_index, choice)
                 if raw_data.selectable:
                     slots.add(choice)
@@ -137,7 +146,8 @@ class PagedRadioMenu(SimpleRadioMenu):
     def __init__(
             self, data=None, select_callback=None,
             build_callback=None, description=None,
-            title=None, top_seperator='-' * 30, bottom_seperator='-' * 30):
+            title=None, top_seperator='-' * 30,
+            bottom_seperator='-' * 30, back_option=None):
         """Initialize the PagedRadioMenu instance.
 
         @param <data>:
@@ -178,6 +188,7 @@ class PagedRadioMenu(SimpleRadioMenu):
         self.description = description
         self.top_seperator = top_seperator
         self.bottom_seperator = bottom_seperator
+        self.back_option = back_option
 
     def _format_header(self, ply_index, page, slots):
         """Prepare the header for the menu.
@@ -228,7 +239,8 @@ class PagedRadioMenu(SimpleRadioMenu):
             if not isinstance(option, RadioOption):
                 raise TypeError('Expected a RadioOption instance.')
 
-            buffer += option._render(ply_index, index)
+            buffer += option._render(ply_index,
+                index if option.choice is None else option.choice)
             if option.selectable:
                 slots.add(index)
 
@@ -257,7 +269,7 @@ class PagedRadioMenu(SimpleRadioMenu):
 
         # TODO: Add translations
         # Add "Back" option
-        back_selectable = page.index > 0
+        back_selectable = page.index > 0 or self.back_option is not None
         buffer += RadioOption(
             'Back', highlight=back_selectable)._render(ply_index, 8)
         if back_selectable:
@@ -319,6 +331,9 @@ class PagedRadioMenu(SimpleRadioMenu):
 
         # Display previous page?
         if choice == 8:
+            if not page.index and self.back_option is not None:
+                return self.back_option
+
             self.set_player_page(ply_index, page.index - 1)
             return self
 
