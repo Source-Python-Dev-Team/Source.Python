@@ -1,4 +1,0 @@
-] version
-Build Label:           1909615   # Uniquely identifies each build
-Network PatchVersion:  1909615   # Determines client and server compatibility
-Protocol version:           24   # High level network protocol version
