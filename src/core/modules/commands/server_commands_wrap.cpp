@@ -128,7 +128,7 @@ CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 		// Unregister the old command
 		g_pCVar->UnregisterConCommand(pConCommand);
 	}
-	else
+	else if( szHelpText != NULL )
 	{
 		// Store the given help text
 		szHelpTextCopy = strdup(szHelpText);
