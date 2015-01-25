@@ -180,8 +180,9 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
         entity = self.get_view_entity()
 
         # Return a PlayerEntity instance of the player or None if not a player
-        return (PlayerEntity(entity.index)
-            if entity is not None and entity.classname == 'player' else None)
+        return (
+            PlayerEntity(entity.index) if entity is not None
+            and entity.classname == 'player' else None)
 
     def get_eye_location(self):
         """Return the eye location of the player."""
