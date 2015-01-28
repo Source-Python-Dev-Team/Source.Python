@@ -95,8 +95,8 @@ class _EntitySpecials(object):
             # Set the inflictor to the entity's index
             take_damage_info.inflictor = self.index
 
-        # Set the atacker to the entity's index
-        take_damage_info.atacker = self.index
+        # Set the attacker to the entity's index
+        take_damage_info.attacker = self.index
 
         # Set the weapon to the weapon's index
         take_damage_info.weapon = weapon.index
