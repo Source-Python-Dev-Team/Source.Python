@@ -1,3 +1,4 @@
+# Base directories
 curses/
 idlelib/
 lib2to3/
@@ -24,6 +25,8 @@ src/Builds/
 src/hl2sdk/*
 !src/hl2sdk/readme.md
 
+# Plugin directories
+__pycache__
 addons/source-python/bin/
 addons/source-python/data/custom/
 addons/source-python/data/plugins/
