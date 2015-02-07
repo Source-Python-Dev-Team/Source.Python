@@ -67,6 +67,17 @@ void export_engine_specific_send_prop_types(T SendPropTypes)
 
 
 //-----------------------------------------------------------------------------
+// Expose SendPropVariant.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_send_prop_variant(T SendPropVariant)
+{
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+}
+
+
+//-----------------------------------------------------------------------------
 // Expose CTakeDamageInfo.
 //-----------------------------------------------------------------------------
 template<class T>

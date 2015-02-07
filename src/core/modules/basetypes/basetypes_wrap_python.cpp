@@ -50,6 +50,7 @@ void export_send_table();
 void export_send_prop();
 void export_send_prop_types();
 void export_send_prop_flags();
+void export_send_prop_variant();
 void export_server_class();
 void export_take_damage_info();
 void export_bf_write();
@@ -57,7 +58,7 @@ void export_bf_read();
 
 
 //-----------------------------------------------------------------------------
-// Declare the basetypes_c module.
+// Declare the _basetypes module.
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_basetypes)
 {
@@ -67,6 +68,7 @@ DECLARE_SP_MODULE(_basetypes)
 	export_send_prop();
 	export_send_prop_types();
 	export_send_prop_flags();
+	export_send_prop_variant();
 	export_server_class();
 	export_take_damage_info();
 	export_bf_write();
@@ -93,26 +95,6 @@ void export_interval()
 //-----------------------------------------------------------------------------
 // Expose Color.
 //-----------------------------------------------------------------------------
-class ColorExt
-{
-public:
-	static Color WithAlpha(const Color& color, unsigned char a)
-	{
-		return Color(color.r(), color.g(), color.b(), a);
-	}
-
-	static str GetHexString(const Color& color)
-	{
-		char buffer[10];
-		if (color.a() == 255)
-			sprintf(buffer, "\x07%02X%02X%02X", color.r(), color.g(), color.b());
-		else
-			sprintf(buffer, "\x08%02X%02X%02X%02X", color.r(), color.g(), color.b(), color.a());
-
-		return str(buffer);
-	}
-};
-
 void export_color()
 {
 	class_<Color, Color *> Color_(
@@ -250,7 +232,12 @@ void export_send_prop()
 	SendProp_.def("get_element_stride", &SendProp::GetElementStride);
 	SendProp_.def("get_type", &SendProp::GetType);
 	SendProp_.def("get_flags", &SendProp::GetFlags);
-	
+
+	SendProp_.def("call_proxy",
+		&SendPropSharedExt::call_proxy, ("entity_index", arg("element")=0),
+		manage_new_object_policy()
+	);
+
 	// CS:GO specific methods...
 	SendProp_.NOT_IMPLEMENTED("get_priority");
 	
@@ -310,6 +297,45 @@ void export_send_prop_flags()
 	SendPropFlags.value("COORD_MP_LOW_PRECISION", SendPropSharedExt::COORD_MP_LOW_PRECISION);
 	SendPropFlags.value("COORD_MP_INTEGRAL", SendPropSharedExt::COORD_MP_INTEGRAL);
 	SendPropFlags.value("CHANGE_OFTEN", SendPropSharedExt::CHANGE_OFTEN);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose DVariant.
+//-----------------------------------------------------------------------------
+void export_send_prop_variant()
+{
+	class_<DVariant, DVariant *> SendPropVariant("SendPropVariant");
+
+	// Properties...
+	SendPropVariant.def_readonly("type", &DVariant::m_Type);
+
+	// Methods...
+	SendPropVariant.def("to_string", &DVariant::ToString);
+
+	// Getter methods...
+	SendPropVariant.def("get_float", &SendPropVariantExt::get_typed_value<DPT_Float, float, &DVariant::m_Float>);
+	SendPropVariant.def("get_int", &SendPropVariantExt::get_typed_value<DPT_Int, long, &DVariant::m_Int>);
+	SendPropVariant.def("get_string", &SendPropVariantExt::get_string);
+	SendPropVariant.def("get_data", &SendPropVariantExt::get_data, reference_existing_object_policy());
+	SendPropVariant.def("get_vector", &SendPropVariantExt::get_vector, manage_new_object_policy());
+
+	// Setter methods...
+	SendPropVariant.def("set_float", &SendPropVariantExt::get_typed_value<DPT_Float, float, &DVariant::m_Float>);
+	SendPropVariant.def("set_string", &SendPropVariantExt::set_string);
+	SendPropVariant.def("set_int", &SendPropVariantExt::set_typed_value<DPT_Int, long, &DVariant::m_Int>);
+	SendPropVariant.def("set_data", &SendPropVariantExt::set_data);
+	SendPropVariant.def("set_vector", &SendPropVariantExt::set_vector);
+
+	// CS:GO specific methods...
+	SendPropVariant.NOT_IMPLEMENTED("get_int64");
+	SendPropVariant.NOT_IMPLEMENTED("set_int64");
+
+	// Engine specific stuff...
+	export_engine_specific_send_prop_variant(SendPropVariant);
+
+	// Add memory tools...
+	SendPropVariant ADD_MEM_TOOLS(DVariant, "SendPropVariant");
 }
 
 
@@ -379,33 +405,8 @@ void export_take_damage_info()
 
 
 //-----------------------------------------------------------------------------
-// Expose bf_read/bf_write.
+// Expose bf_write.
 //-----------------------------------------------------------------------------
-class bf_writeExt {
-public:
-	static void __del__(bf_write* buffer)
-	{
-		delete buffer->GetData();
-	}
-
-	static boost::shared_ptr<bf_write> __init__(int buffer_size)
-	{
-		return boost::shared_ptr<bf_write>(new bf_write(new unsigned char[buffer_size], buffer_size), &__del__);
-	}
-
-	static list GetData(bf_write& buffer)
-	{
-		list result;
-
-		unsigned char* data = buffer.GetData();
-		for (int i=0; i < buffer.GetNumBytesWritten(); i++) {
-			result.append(data[i]);
-		}
-
-		return result;
-	}
-};
-
 void export_bf_write()
 {
 	class_<bf_write>("bf_write", no_init)
@@ -567,50 +568,10 @@ void export_bf_write()
 	;
 }
 
-class bf_readExt {
-public:
-	static void __del__(bf_read* buffer)
-	{
-		delete buffer->GetBasePointer();
-	}
 
-	static boost::shared_ptr<bf_read> __init__(bf_write& buffer)
-	{
-		int size = buffer.GetNumBytesWritten();
-		void* pData = new unsigned char[size];
-		memcpy(pData, buffer.GetData(), size);
-		return boost::shared_ptr<bf_read>(new bf_read(pData, size), &__del__);
-	}
-
-	static list GetData(bf_read& buffer)
-	{
-		list result;
-		
-		const unsigned char* data = buffer.GetBasePointer();
-		for (unsigned int i=0; i < buffer.m_nDataBytes; i++) {
-			result.append(data[i]);
-		}
-
-		return result;
-	}
-
-	static int GetNumBytesRead(bf_read& buffer)
-	{
-		return BitByte(buffer.GetNumBitsRead());
-	}
-
-	static str ReadString(bf_read& buffer)
-	{
-		char* pStr = new char[buffer.m_nDataBytes];
-		buffer.ReadString(pStr, buffer.m_nDataBytes);
-
-		// Let Boost handle deallocating the string
-		str result = str((const char *) pStr);
-		delete pStr;
-		return result;
-	}
-};
-
+//-----------------------------------------------------------------------------
+// Expose bf_read.
+//-----------------------------------------------------------------------------
 void export_bf_read()
 {
 	class_<bf_read>("bf_read", no_init)

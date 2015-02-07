@@ -67,6 +67,16 @@ void export_engine_specific_send_prop_types(T SendPropTypes)
 
 
 //-----------------------------------------------------------------------------
+// Expose SendPropVariant.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_send_prop_variant(T SendPropVariant)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
+//-----------------------------------------------------------------------------
 // Expose CTakeDamageInfo.
 //-----------------------------------------------------------------------------
 template<class T>
