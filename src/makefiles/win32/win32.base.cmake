@@ -36,13 +36,12 @@ Set(CMAKE_CXX_FLAGS_DEBUG   "/DDEBUG /DBOOST_DEBUG_PYTHON /MDd /wd4005")
 Set(CMAKE_CXX_FLAGS_RELEASE "/D_NDEBUG /MD /wd4005 /MP")
 
 # ------------------------------------------------------------------
-# The loader should not link to msvcrt libraries. Those will be
-# delay loaded in.
+# Statically link runtime libraries for the loader
 # ------------------------------------------------------------------
-Set_Target_Properties(source-python PROPERTIES
-    LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib /NODEFAULTLIB:LIBCMT.lib /NODEFAULTLIB:LIBCPMTD.lib"
-    LINK_FLAGS_RELEASE "/NODEFAULTLIB:LIBC.lib /NODEFAULTLIB:LIBCMT.lib  /NODEFAULTLIB:LIBCPMT.lib"
-)
+# This looks like a bug...
+# For the debug config we need to specify the release flag and vice versa.
+target_compile_options(source-python PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+target_compile_options(source-python PRIVATE "/MTd$<$<CONFIG:Release>:d>")
 
 Set_Target_Properties(core PROPERTIES
     LINK_FLAGS_DEBUG   "/NODEFAULTLIB:LIBCD.LIB /NODEFAULTLIB:LIBCMTD.lib /NODEFAULTLIB:LIBCMT.lib /NODEFAULTLIB:LIBCPMTD.lib"
