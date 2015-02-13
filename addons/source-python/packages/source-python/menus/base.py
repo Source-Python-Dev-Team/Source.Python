@@ -32,7 +32,7 @@ class _PlayerPage(object):
     def __init__(self):
         """Initialize the _PlayerPage instance."""
         self.index = 0
-        self.options = []
+        self.options = {}
 
 
 class _BaseMenu(AutoUnload, list):
@@ -81,45 +81,45 @@ class _BaseMenu(AutoUnload, list):
         # Also remove the instance from the _instances dict
         del self._instances[id(self)]
 
-    def _unload_player(self, ply_index):
+    def _unload_player(self, player_index):
         """Remove every player specific information.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        self._player_pages.pop(ply_index, 0)
+        self._player_pages.pop(player_index, 0)
 
-    def _refresh(self, ply_index):
+    def _refresh(self, player_index):
         """Re-send the menu to a player.
 
-        @param <ply_index>:
+        @param <player_index>:
         The index of the player whose menu should be refreshed.
         """
-        self._send(ply_index)
+        self._send(player_index)
 
-    def _build(self, ply_index):
+    def _build(self, player_index):
         """Call the build callback and return all relevant menu data.
 
-        @param <ply_index>:
+        @param <player_index>:
         The index of the player whose menu should be built.
         """
         # Call the build callback if there is one
         if self.build_callback is not None:
-            self.build_callback(self, ply_index)
+            self.build_callback(self, player_index)
 
-        return self._get_menu_data(ply_index)
+        return self._get_menu_data(player_index)
 
-    def _select(self, ply_index, choice):
+    def _select(self, player_index, choice_index):
         """Handle a menu selection.
 
-        @param <ply_index>:
+        @param <player_index>:
         The index of the player who made the selection.
 
-        @param <choice>:
+        @param <choice_index>:
         A numeric value that defines what was selected.
         """
         if self.select_callback is not None:
-            return self.select_callback(self, ply_index, choice)
+            return self.select_callback(self, player_index, choice_index)
 
     def send(self, *ply_indexes):
         """Send the menu to the given player indexes.
@@ -129,8 +129,8 @@ class _BaseMenu(AutoUnload, list):
         if not ply_indexes:
             ply_indexes = PlayerIter('human')
 
-        for ply_index in ply_indexes:
-            queue = self.get_user_queue(ply_index)
+        for player_index in ply_indexes:
+            queue = self.get_user_queue(player_index)
             queue.append(self)
             queue._refresh()
 
@@ -142,8 +142,8 @@ class _BaseMenu(AutoUnload, list):
         if not ply_indexes:
             ply_indexes = PlayerIter('human')
 
-        for ply_index in ply_indexes:
-            queue = self.get_user_queue(ply_index)
+        for player_index in ply_indexes:
+            queue = self.get_user_queue(player_index)
 
             # Try to remove this menu from the queue
             try:
@@ -156,29 +156,29 @@ class _BaseMenu(AutoUnload, list):
                 # the last menu
                 if not queue:
                     # Send an empty menu
-                    self._close(ply_index)
+                    self._close(player_index)
 
                 else:
                     # There is at least one menu in the queue, so refresh to
                     # display it.
                     queue._refresh()
 
-    def is_active_menu(self, ply_index):
+    def is_active_menu(self, player_index):
         """Return True if this menu is the first menu in the user's queue.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        return self.get_user_queue(ply_index).get_active_menu() is self
+        return self.get_user_queue(player_index).get_active_menu() is self
 
     @classmethod
-    def get_user_queue(cls, ply_index):
+    def get_user_queue(cls, player_index):
         """Return the menu queue for the given player.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        return cls._get_queue_holder()[ply_index]
+        return cls._get_queue_holder()[player_index]
 
     @staticmethod
     def _get_queue_holder():
@@ -188,32 +188,32 @@ class _BaseMenu(AutoUnload, list):
         """
         raise NotImplementedError
 
-    def _get_menu_data(self, ply_index):
+    def _get_menu_data(self, player_index):
         """Return the required data to send a menu.
 
         This method needs to be implemented by a subclass!
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
         raise NotImplementedError
 
-    def _send(self, ply_index):
+    def _send(self, player_index):
         """Send a menu to the player.
 
         This method needs to be implemented by a subclass!
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
         raise NotImplementedError
 
-    def _close(self, ply_index):
+    def _close(self, player_index):
         """Close a menu for the player by sending an empty menu.
 
         This method needs to be implemented by a subclass!
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
         raise NotImplementedError
@@ -234,32 +234,34 @@ class _MenuData(object):
         """
         self.text = text
 
-    def _render(self, ply_index):
+    def _render(self, player_index, choice_index=None):
         """Render the data.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
+
+        @param <choice_index>:
+        The number that was selected. It depends on the menu type if this
+        parameter gets passed.
         """
         raise NotImplementedError
 
 
 class Text(_MenuData):
 
-    """Display plain text.
+    """Display plain text."""
 
-
-    NOTE:
-    ESC menus will ignore this data type as it is not possible to show plain
-    text with that menu type.
-    """
-
-    def _render(self, ply_index):
+    def _render(self, player_index, choice_index=None):
         """Render the data.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
+
+        @param <choice_index>:
+        The number that was selected. It depends on the menu type if this
+        parameter gets passed.
         """
-        return str(_translate_text(self.text, ply_index)) + '\n'
+        return str(_translate_text(self.text, player_index)) + '\n'
 
 
 class _BaseOption(_MenuData):
@@ -278,8 +280,6 @@ class _BaseOption(_MenuData):
         @param <hightlight>:
         Set this to true if the text should be hightlighted.
 
-        NOTE: This only works with radio menus.
-
         @param <selectable>:
         Set this to True if the option should be selectable.
         """
@@ -288,14 +288,15 @@ class _BaseOption(_MenuData):
         self.highlight = highlight
         self.selectable = selectable
 
-    def _render(self, ply_index, choice):
+    def _render(self, player_index, choice_index=None):
         """Render the data.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
-        @param <choice>:
-        A numeric value that defines the selection number.
+        @param <choice_index>:
+        The number that was selected. It depends on the menu type if this
+        parameter gets passed.
         """
         raise NotImplementedError
 
@@ -303,13 +304,13 @@ class _BaseOption(_MenuData):
 # =============================================================================
 # >> HELPER FUNCTIONS
 # =============================================================================
-def _translate_text(text, ply_index):
+def _translate_text(text, player_index):
     """Translate <text> if it is an instance of TranslationStrings.
 
     Otherwise the original text will be returned.
     """
     if isinstance(text, TranslationStrings):
-        return text.get_string(get_client_language(ply_index))
+        return text.get_string(get_client_language(player_index))
 
     return text
 
@@ -318,7 +319,7 @@ def _translate_text(text, ply_index):
 # >> LISTENERS
 # =============================================================================
 @ClientDisconnect
-def on_player_disconnect(ply_index):
+def on_player_disconnect(player_index):
     """Called whenever a player left the server."""
     for instance in _BaseMenu._instances.values():
-        instance._unload_player(ply_index)
+        instance._unload_player(player_index)

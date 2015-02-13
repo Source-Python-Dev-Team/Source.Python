@@ -223,7 +223,6 @@ def _radio_refresh():
     for queue in _radio_queues.values():
         queue._refresh()
 
-
 @TickRepeat
 def _esc_refresh():
     """Update every queue in the queue dict."""
@@ -264,7 +263,7 @@ def _escselect_callback(player_info, command):
 # >> LISTENERS
 # =============================================================================
 @ClientDisconnect
-def on_player_disconnect(ply_index):
+def on_player_disconnect(player_index):
     """Remove the user queue for the disconnected player."""
-    _radio_queues.pop(ply_index, 0)
-    _esc_queues.pop(ply_index, 0)
+    _radio_queues.pop(player_index, 0)
+    _esc_queues.pop(player_index, 0)

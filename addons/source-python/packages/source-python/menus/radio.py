@@ -24,8 +24,9 @@ from messages import ShowMenu
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('PagedRadioMenu',
-           'RadioOption',
+           'PagedRadioOption',
            'SimpleRadioMenu',
+           'SimpleRadioOption',
            )
 
 
@@ -36,42 +37,40 @@ class SimpleRadioMenu(_BaseMenu):
 
     """This class creates a basic radio menu."""
 
-    def _get_menu_data(self, ply_index):
+    def _get_menu_data(self, player_index):
         """Return the required data to send a menu.
 
         This method needs to be implemented by a subclass!
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
         # Always enable 0
         slots = {0}
-        choice = 0
         buffer = ''
-        page = self._player_pages[ply_index]
-        page.options = []
+        page = self._player_pages[player_index]
+        page.options = {}
         for raw_data in self:
             # Handle Text objects
             if isinstance(raw_data, Text):
-                buffer += raw_data._render(ply_index)
+                buffer += raw_data._render(player_index)
 
-            # Handle RadioOption objects
-            elif isinstance(raw_data, RadioOption):
-                page.options.append(raw_data)
-                choice += 1
-                buffer += raw_data._render(ply_index, choice)
+            # Handle _BaseOption objects
+            elif isinstance(raw_data, _BaseOption):
+                buffer += raw_data._render(player_index)
                 if raw_data.selectable:
-                    slots.add(choice)
+                    slots.add(raw_data.choice_index)
+                    page.options[raw_data.choice_index] = raw_data
 
-            # Handle every other object type
+            # Handle every other object type as a text
             else:
-                buffer += str(_translate_text(raw_data, ply_index)) + '\n'
+                buffer += Text(raw_data)._render(player_index)
 
         # Return the menu data
         return dict(
             slots=self._slots_to_bin(slots),
-            time=4,  # TODO: Dynamically get the value
-            message=buffer[:-1] if buffer else buffer
+            time=4,
+            message=buffer[:-1] if buffer else ''
         )
 
     def _slots_to_bin(self, slots):
@@ -84,34 +83,34 @@ class SimpleRadioMenu(_BaseMenu):
 
         return int(''.join(buffer), 2)
 
-    def _select(self, ply_index, choice):
+    def _select(self, player_index, choice_index):
         """Handle a menu selection.
 
-        @param <ply_index>:
+        @param <player_index>:
         The index of the player who made the selection.
 
-        @param <choice>:
+        @param <choice_index>:
         A numeric value that defines what was selected.
         """
-        if choice == 0:
+        if choice_index == 0:
             return None
 
-        return super(SimpleRadioMenu, self)._select(
-            ply_index, self._player_pages[ply_index].options[choice - 1])
+        return super(SimpleRadioMenu, self)._select(player_index,
+            self._player_pages[player_index].options[choice_index])
 
-    def _send(self, ply_index):
+    def _send(self, player_index):
         """Build and sends the menu to the given player via ShowMenu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        ShowMenu(**self._build(ply_index)).send(ply_index)
+        ShowMenu(**self._build(player_index)).send(player_index)
 
-    def _close(self, ply_index):
+    def _close(self, player_index):
         """
         Close a menu by overriding it with an empty menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
         # Send an empty menu
@@ -119,7 +118,7 @@ class SimpleRadioMenu(_BaseMenu):
             slots=0b0000000000,
             time=0,
             message='',
-        ).send(ply_index)
+        ).send(player_index)
 
     @staticmethod
     def _get_queue_holder():
@@ -137,7 +136,8 @@ class PagedRadioMenu(SimpleRadioMenu):
     def __init__(
             self, data=None, select_callback=None,
             build_callback=None, description=None,
-            title=None, top_seperator='-' * 30, bottom_seperator='-' * 30):
+            title=None, top_seperator='-' * 30, bottom_seperator='-' * 30,
+            fill=True):
         """Initialize the PagedRadioMenu instance.
 
         @param <data>:
@@ -169,6 +169,10 @@ class PagedRadioMenu(SimpleRadioMenu):
 
         @param <bottom_seperator>:
         A seperator that is displayed right after the body.
+
+        @param <fill>:
+        If True the menu will be filled so that it will always have the same
+        size.
         """
         super(PagedRadioMenu, self).__init__(
             data, select_callback, build_callback
@@ -178,11 +182,12 @@ class PagedRadioMenu(SimpleRadioMenu):
         self.description = description
         self.top_seperator = top_seperator
         self.bottom_seperator = bottom_seperator
+        self.fill = fill
 
-    def _format_header(self, ply_index, page, slots):
+    def _format_header(self, player_index, page, slots):
         """Prepare the header for the menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page>:
@@ -193,12 +198,12 @@ class PagedRadioMenu(SimpleRadioMenu):
         """
         # Create the page info string
         info = '[{0}/{1}]\n'.format(page.index + 1, self.page_count)
-        buffer = (_translate_text(self.title or '', ply_index)).ljust(
+        buffer = (_translate_text(self.title or '', player_index)).ljust(
             len(self.top_seperator) - len(info)) + info
 
         # Set description if present
         if self.description is not None:
-            buffer += _translate_text(self.description, ply_index) + '\n'
+            buffer += _translate_text(self.description, player_index) + '\n'
 
         # Set the top seperator if present
         if self.top_seperator is not None:
@@ -206,10 +211,10 @@ class PagedRadioMenu(SimpleRadioMenu):
 
         return buffer
 
-    def _format_body(self, ply_index, page, slots):
+    def _format_body(self, player_index, page, slots):
         """Prepare the body for the menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page>:
@@ -221,26 +226,30 @@ class PagedRadioMenu(SimpleRadioMenu):
         buffer = ''
 
         # Get all options for the current page
-        options = page.options = self[page.index * 7: (page.index + 1) * 7]
+        options = tuple(enumerate(self[page.index * 7: (page.index + 1) * 7], 1))
+        page.options = dict(options)
 
         # Loop through all options of the current page
-        for index, option in enumerate(options, 1):
-            if not isinstance(option, RadioOption):
-                raise TypeError('Expected a RadioOption instance.')
-
-            buffer += option._render(ply_index, index)
-            if option.selectable:
-                slots.add(index)
+        for choice_index, option in options:
+            if isinstance(option, PagedRadioOption):
+                buffer += option._render(player_index, choice_index)
+                if option.selectable:
+                    slots.add(choice_index)
+            elif isinstance(option, Text):
+                buffer += option._render(player_index, choice_index)
+            else:
+                buffer += Text(option)._render(player_index, choice_index)
 
         # Fill the rest of the menu
-        buffer += ' \n' * (7 - len(options))
+        if self.fill:
+            buffer += ' \n' * (7 - len(options))
 
         return buffer
 
-    def _format_footer(self, ply_index, page, slots):
+    def _format_footer(self, player_index, page, slots):
         """Prepare the footer for the menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page>:
@@ -258,76 +267,76 @@ class PagedRadioMenu(SimpleRadioMenu):
         # TODO: Add translations
         # Add "Back" option
         back_selectable = page.index > 0
-        buffer += RadioOption(
-            'Back', highlight=back_selectable)._render(ply_index, 8)
+        buffer += PagedRadioOption(
+            'Back', highlight=back_selectable)._render(player_index, 8)
         if back_selectable:
             slots.add(8)
 
         # Add "Next" option
         next_selectable = page.index < self.last_page_index
-        buffer += RadioOption(
-            'Next', highlight=next_selectable)._render(ply_index, 9)
+        buffer += PagedRadioOption(
+            'Next', highlight=next_selectable)._render(player_index, 9)
         if next_selectable:
             slots.add(9)
 
         # Add "Close" option
-        buffer += RadioOption('Close', highlight=False)._render(ply_index, 0)
+        buffer += PagedRadioOption('Close', highlight=False)._render(player_index, 0)
 
         # Return the buffer
         return buffer
 
-    def _get_menu_data(self, ply_index):
+    def _get_menu_data(self, player_index):
         """Return all relevant menu data as a dictionary.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
         # Get the player's current page
-        page = self._player_pages[ply_index]
+        page = self._player_pages[player_index]
 
         # Always enable slot 0
         slots = {0}
 
         # Format the menu
-        buffer = self._format_header(ply_index, page, slots)
-        buffer += self._format_body(ply_index, page, slots)
-        buffer += self._format_footer(ply_index, page, slots)
+        buffer = self._format_header(player_index, page, slots)
+        buffer += self._format_body(player_index, page, slots)
+        buffer += self._format_footer(player_index, page, slots)
 
         # Return the menu data
         return dict(
             slots=self._slots_to_bin(slots),
-            time=4,  # TODO: Dynamically get the value
-            message=buffer[:-1]
+            time=4,
+            message=buffer[:-1] if buffer else ''
         )
 
-    def _select(self, ply_index, choice):
+    def _select(self, player_index, choice_index):
         """Handle a menu selection.
 
-        @param <ply_index>:
+        @param <player_index>:
         The index of the player who made the selection.
 
-        @param <choice>:
+        @param <choice_index>:
         A numeric value that defines what was selected.
         """
         # Do nothing if the menu is being closed
-        if choice == 0:
-            del self._player_pages[ply_index]
+        if choice_index == 0:
+            del self._player_pages[player_index]
             return None
 
         # Get the player's current page
-        page = self._player_pages[ply_index]
+        page = self._player_pages[player_index]
 
         # Display previous page?
-        if choice == 8:
-            self.set_player_page(ply_index, page.index - 1)
+        if choice_index == 8:
+            self.set_player_page(player_index, page.index - 1)
             return self
 
         # Display next page?
-        if choice == 9:
-            self.set_player_page(ply_index, page.index + 1)
+        if choice_index == 9:
+            self.set_player_page(player_index, page.index + 1)
             return self
 
-        return super(PagedRadioMenu, self)._select(ply_index, choice)
+        return super(PagedRadioMenu, self)._select(player_index, choice_index)
 
     @property
     def last_page_index(self):
@@ -339,10 +348,10 @@ class PagedRadioMenu(SimpleRadioMenu):
         """Return the number of pages the menu currently has."""
         return int(math.ceil(len(self) / 7.0)) or 1
 
-    def set_player_page(self, ply_index, page_index):
+    def set_player_page(self, player_index, page_index):
         """Set the player's current page index.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page_index>:
@@ -353,7 +362,7 @@ class PagedRadioMenu(SimpleRadioMenu):
         If <page_index> is greater than the last page index, it will be set to
         the last page index.
         """
-        page = self._player_pages[ply_index]
+        page = self._player_pages[player_index]
         if page_index < 0:
             page.index = 0
         elif page_index > self.last_page_index:
@@ -361,18 +370,18 @@ class PagedRadioMenu(SimpleRadioMenu):
         else:
             page.index = page_index
 
-    def get_player_page(self, ply_index):
+    def get_player_page(self, player_index):
         """Return the current player page index.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        return self._player_pages[ply_index].index
+        return self._player_pages[player_index].index
 
 
-class RadioOption(_BaseOption):
+class _BaseRadioOption(_BaseOption):
 
-    """Displays an enumerated option."""
+    """Base class for radio options."""
 
     def _get_highlight_prefix(self):
         """Return the hightlight prefix if <highlight> was set.
@@ -381,17 +390,66 @@ class RadioOption(_BaseOption):
         """
         return '->' if self.highlight else ''
 
-    def _render(self, ply_index, choice):
+
+class SimpleRadioOption(_BaseRadioOption):
+
+    """Provides options for SimpleRadioMenu objects."""
+
+    def __init__(self, choice_index, text, value=None, highlight=True, selectable=True):
+        """Initialize the option.
+
+        @param <choice_index>:
+        The number that is required to select the option.
+        
+        @param <text>:
+        The text that should be displayed.
+
+        @param <value>:
+        The value that should be passed to the menu's selection callback.
+
+        @param <hightlight>:
+        Set this to true if the text should be hightlighted.
+
+        @param <selectable>:
+        Set this to True if the option should be selectable.
+        """
+        super(SimpleRadioOption, self).__init__(text, value, highlight, selectable)
+        self.choice_index = choice_index
+
+    def _render(self, player_index, choice_index=None):
         """Render the data.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
-        @param <choice>:
-        A numeric value that defines the selection number.
+        @param <choice_index>:
+        The number that was selected. It depends on the menu type if this
+        parameter gets passed.
+        """
+
+        return '{0}{1}. {2}\n'.format(
+            self._get_highlight_prefix(),
+            self.choice_index,
+            _translate_text(self.text, player_index)
+        )
+
+
+class PagedRadioOption(_BaseRadioOption):
+
+    """Provides options for PagedRadioMenu objects."""
+
+    def _render(self, player_index, choice_index):
+        """Render the data.
+
+        @param <player_index>:
+        A player index.
+
+        @param <choice_index>:
+        The number that was selected. It depends on the menu type if this
+        parameter gets passed.
         """
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
-            choice,
-            _translate_text(self.text, ply_index)
+            choice_index,
+            _translate_text(self.text, player_index)
         )

@@ -12,19 +12,25 @@ from core import GAME_NAME
 from menus.base import Text
 if GAME_NAME in ('hl2mp', ):
     from menus.esc import PagedESCMenu as PagedMenu
-    from menus.esc import PagedESCMenu as SimpleMenu
-    from menus.esc import ESCOption as Option
+    from menus.esc import PagedESCOption as PagedOption
+
+    from menus.esc import SimpleESCMenu as SimpleMenu
+    from menus.esc import SimpleESCOption as SimpleOption
 else:
     from menus.radio import PagedRadioMenu as PagedMenu
+    from menus.radio import PagedRadioOption as PagedOption
+
     from menus.radio import SimpleRadioMenu as SimpleMenu
-    from menus.radio import RadioOption as Option
+    from menus.radio import SimpleRadioOption as SimpleOption
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('Option',
-           'PagedMenu',
-           'SimpleMenu',
-           'Text',
-           )
+__all__ = (
+    'PagedOption',
+    'SimpleOption',
+    'PagedMenu',
+    'SimpleMenu',
+    'Text',
+)

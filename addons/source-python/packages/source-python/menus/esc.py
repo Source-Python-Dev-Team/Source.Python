@@ -83,10 +83,10 @@ class PagedESCMenu(_BaseMenu):
         self.title = title
         self.title_color = title_color
 
-    def _format_header(self, ply_index, page, data):
+    def _format_header(self, player_index, page, data):
         """Prepare the header for the menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page>:
@@ -100,16 +100,16 @@ class PagedESCMenu(_BaseMenu):
 
         if self.title:
             data.set_string('title', '{0} {1}'.format(
-                _translate_text(self.title, ply_index), info))
+                _translate_text(self.title, player_index), info))
         else:
             data.set_string('title', info)
 
         data.set_color('color', self.title_color)
 
-    def _format_body(self, ply_index, page, data):
+    def _format_body(self, player_index, page, data):
         """Prepare the body for the menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page>:
@@ -125,7 +125,7 @@ class PagedESCMenu(_BaseMenu):
         for index, option in enumerate(page.options):
             index += 1
             button = data.find_key(str(index), True)
-            button.set_string('msg', option._render(ply_index, index))
+            button.set_string('msg', option._render(player_index, index))
             button.set_string(
                 'command', '{0} {1}'.format(ESC_SELECTION_CMD, index))
 
@@ -138,10 +138,10 @@ class PagedESCMenu(_BaseMenu):
             button.set_string(
                 'command', '{0} {1}'.format(ESC_SELECTION_CMD, index))
 
-    def _format_footer(self, ply_index, page, data):
+    def _format_footer(self, player_index, page, data):
         """Prepare the footer for the menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page>:
@@ -166,31 +166,31 @@ class PagedESCMenu(_BaseMenu):
         button.set_string('msg', '0. Close')
         button.set_string('command', '{0} 0'.format(ESC_SELECTION_CMD))
 
-    def _get_menu_data(self, ply_index):
+    def _get_menu_data(self, player_index):
         """Return all relevant menu data as a KeyValues instance.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
         data = KeyValues('menu')
         data.set_string(
-            'msg', _translate_text(self.description or '', ply_index))
+            'msg', _translate_text(self.description or '', player_index))
 
         # Get the player's current page
-        page = self._player_pages[ply_index]
+        page = self._player_pages[player_index]
 
         # Format the menu
-        self._format_header(ply_index, page, data)
-        self._format_body(ply_index, page, data)
-        self._format_footer(ply_index, page, data)
+        self._format_header(player_index, page, data)
+        self._format_body(player_index, page, data)
+        self._format_footer(player_index, page, data)
 
         # Return the menu data
         return data
 
-    def _select(self, ply_index, choice):
+    def _select(self, player_index, choice):
         """Handle a menu selection.
 
-        @param <ply_index>:
+        @param <player_index>:
         The index of the player who made the selection.
 
         @param <choice>:
@@ -198,20 +198,20 @@ class PagedESCMenu(_BaseMenu):
         """
         # Do nothing if the menu is being closed
         if choice == 0:
-            del self._player_pages[ply_index]
+            del self._player_pages[player_index]
             return None
 
         # Get the player's current page
-        page = self._player_pages[ply_index]
+        page = self._player_pages[player_index]
 
         # Display previous page?
         if choice == 6:
-            self.set_player_page(ply_index, page.index - 1)
+            self.set_player_page(player_index, page.index - 1)
             return self
 
         # Display next page?
         if choice == 7:
-            self.set_player_page(ply_index, page.index + 1)
+            self.set_player_page(player_index, page.index + 1)
             return self
 
         # Prevent an IndexError
@@ -222,19 +222,19 @@ class PagedESCMenu(_BaseMenu):
         if not option.selectable:
             return self
 
-        return super(PagedESCMenu, self)._select(ply_index, option)
+        return super(PagedESCMenu, self)._select(player_index, option)
 
-    def _send(self, ply_index):
+    def _send(self, player_index):
         """Build and send the menu to the given player via create_message().
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        queue = self.get_user_queue(ply_index)
+        queue = self.get_user_queue(player_index)
         queue.priority -= 1
 
         # Build the menu
-        data = self._build(ply_index)
+        data = self._build(player_index)
 
         # Set priority and display time
         data.set_int('level', queue.priority)
@@ -242,18 +242,18 @@ class PagedESCMenu(_BaseMenu):
 
         # Send the menu
         create_message(
-            edict_from_index(ply_index),
+            edict_from_index(player_index),
             DialogType.MENU,
             data
         )
 
-    def _close(self, ply_index):
+    def _close(self, player_index):
         """Close a menu by overriding it with an empty menu.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        queue = self.get_user_queue(ply_index)
+        queue = self.get_user_queue(player_index)
         queue.priority -= 1
 
         # Unfortunately, this doesn't hide the menu :(
@@ -262,7 +262,7 @@ class PagedESCMenu(_BaseMenu):
         data.set_int('level', queue.priority)
         data.set_int('time', 10)
         data.set_string('msg', '')
-        create_message(edict_from_index(ply_index), DialogType.MENU, data)
+        create_message(edict_from_index(player_index), DialogType.MENU, data)
 
     @staticmethod
     def _get_queue_holder():
@@ -284,10 +284,10 @@ class PagedESCMenu(_BaseMenu):
         """Return all ESCOption objects in the correct order."""
         return filter(lambda op: isinstance(op, ESCOption), self)
 
-    def set_player_page(self, ply_index, page_index):
+    def set_player_page(self, player_index, page_index):
         """Set the player's current page index.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <page_index>:
@@ -298,7 +298,7 @@ class PagedESCMenu(_BaseMenu):
         If <page_index> is greater than the last page index, it will be set to
         the last page index.
         """
-        page = self._player_pages[ply_index]
+        page = self._player_pages[player_index]
         if page_index < 0:
             page.index = 0
         elif page_index > self.last_page_index:
@@ -306,26 +306,26 @@ class PagedESCMenu(_BaseMenu):
         else:
             page.index = page_index
 
-    def get_player_page(self, ply_index):
+    def get_player_page(self, player_index):
         """Return the current player page index.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
         """
-        return self._player_pages[ply_index].index
+        return self._player_pages[player_index].index
 
 
 class ESCOption(_BaseOption):
 
     """Display an enumerated option."""
 
-    def _render(self, ply_index, choice):
+    def _render(self, player_index, choice):
         """Render the data.
 
-        @param <ply_index>:
+        @param <player_index>:
         A player index.
 
         @param <choice>:
         A numeric value that defines the selection number.
         """
-        return '{0}. {1}'.format(choice, _translate_text(self.text, ply_index))
+        return '{0}. {1}'.format(choice, _translate_text(self.text, player_index))
