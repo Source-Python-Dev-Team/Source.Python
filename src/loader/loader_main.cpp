@@ -35,6 +35,8 @@
 #	include <windows.h>
 #endif
 
+#include "../core/utility/shared_utils.h"
+
 //---------------------------------------------------------------------------------
 // Disable warnings.
 //---------------------------------------------------------------------------------
@@ -81,6 +83,7 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 	V_strncpy(szError, "[SP-LOADER] - No error found\n", 1024);
 
 	engine->GetGameDir(szGamePath, 1024);
+    GenerateSymlink(szGamePath);
 
 	V_snprintf(szFullPath, sizeof(szFullPath), "%s/addons/source-python/%s",
 		szGamePath, libraryPath);
@@ -172,6 +175,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// Get the game directory.
 	// ------------------------------------------------------------------
 	engine->GetGameDir(szGameDir, 1024);
+    GenerateSymlink(szGameDir);
 
 	// ------------------------------------------------------------------
 	// Load windows dependencies.

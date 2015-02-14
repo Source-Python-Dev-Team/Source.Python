@@ -30,6 +30,7 @@ Set(SOURCEPYTHON_LOADER_FILES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_UTIL_HEADERS
     core/utility/sp_util.h
+    core/utility/shared_utils.h
     core/utility/call_python.h
     core/utility/wrap_macros.h
     core/utility/ipythongenerator.h
