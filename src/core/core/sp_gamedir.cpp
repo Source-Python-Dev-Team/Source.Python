@@ -55,7 +55,7 @@ bool CGamePaths::Initialize( void )
 	}
 
 	engine->GetGameDir(m_szGameDir, MAX_GAME_PATH);
-    GenerateSymlink(m_szGameDir);
+	GenerateSymlink(m_szGameDir);
 	V_snprintf(m_szSPDir, MAX_GAME_PATH, "%s%s", m_szGameDir, sp_ADDON_BASE);
 
 	// Fix slashes
