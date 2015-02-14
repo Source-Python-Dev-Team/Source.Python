@@ -317,7 +317,7 @@ void export_send_prop_variant()
 	SendPropVariant.def("get_float", &SendPropVariantExt::get_typed_value<DPT_Float, float, &DVariant::m_Float>);
 	SendPropVariant.def("get_int", &SendPropVariantExt::get_typed_value<DPT_Int, long, &DVariant::m_Int>);
 	SendPropVariant.def("get_string", &SendPropVariantExt::get_string);
-	SendPropVariant.def("get_data", &SendPropVariantExt::get_data, reference_existing_object_policy());
+	SendPropVariant.def("get_data", &SendPropVariantExt::get_data, manage_new_object_policy());
 	SendPropVariant.def("get_vector", &SendPropVariantExt::get_vector, manage_new_object_policy());
 
 	// Setter methods...

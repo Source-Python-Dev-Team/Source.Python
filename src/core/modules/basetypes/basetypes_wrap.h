@@ -176,7 +176,7 @@ public:
 
 	static CPointer *get_data(DVariant *pVariant)
 	{
-		return &CPointer((unsigned long)get_typed_value<DPT_DataTable, void *, &DVariant::m_pData>(pVariant));
+		return new CPointer((unsigned long)get_typed_value<DPT_DataTable, void *, &DVariant::m_pData>(pVariant));
 	}
 
 	static void set_data(DVariant *pVariant, CPointer *pData)
