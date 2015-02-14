@@ -42,6 +42,7 @@
 #include "memory_tools.h"
 #include "utility/sp_util.h"
 #include "utility/call_python.h"
+#include "core/sp_gamedir.h"
 
 
 //-----------------------------------------------------------------------------
@@ -339,6 +340,16 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 #endif
 
 	unsigned long ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
+#ifdef __linux__
+	if (!ulAddr)
+	{
+		// If the previous path failed, try the "bin" folder of the game.
+		// This will allow passing e.g. "server" to this function.
+		szBinaryPath = std::string(g_GamePaths.GetGameDir()) + "/bin/" + szBinaryPath;
+		ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
+	}
+#endif
+
 	if (!ulAddr)
 	{
 		szBinaryPath = "Unable to find " + szBinaryPath;
