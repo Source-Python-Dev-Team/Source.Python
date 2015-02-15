@@ -154,9 +154,9 @@ if not isinstance(weapon_manager, NoWeaponManager):
 # >> WEAPON EDICT RETURN TYPES
 # =============================================================================
 def _return_instance(edict):
-    """Return the weapon's BaseEntity instance."""
-    from entities.entity import BaseEntity
-    return BaseEntity(index_from_edict(edict), 'weapon')
+    """Return the weapon's WeaponEntity instance."""
+    from weapons.entity import WeaponEntity
+    return WeaponEntity(index_from_edict(edict))
 
 # Register the return type functions
 _weapon_edict_iter_manager.register_return_type('index', index_from_edict)

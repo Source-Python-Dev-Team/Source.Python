@@ -28,88 +28,122 @@ class WeaponEntity(BaseEntity):
 
     """Allows easy usage of the weapon's attributes."""
 
-    # =========================================================================
-    # >> AMMO
-    # =========================================================================
-    def has_ammo(self):
-        """Return whether or not the weapon has ammo."""
-        return weapon_manager[self.classname].ammoprop is not None
+    @property
+    def current_owner(self):
+        """Return a BaseEntity instance of the weapon's owner."""
+        # Does no player currently own the weapon?
+        if self.owner == -1:
+            return None
+
+        # Return a BaseEntity instance of the owner
+        return BaseEntity(index_from_inthandle(self.owner))
+
+    def get_clip(self):
+        """Return the amount of ammo in the weapon's clip."""
+        return self.clip if self.clip != -1 else 0
+
+    def set_clip(self, value):
+        """Set the amount of ammo in the weapon's clip."""
+        # Does the weapon have ammo?
+        if self.clip != -1:
+
+            # Set the clip amount
+            self.clip = value
 
     def get_ammo(self):
-        """Return the amount of ammo the player has for the given weapon."""
+        """Return the amount of ammo the player has for the weapon."""
         # Do we have a valid ammoprop?
-        if not self.has_ammo():
+        if self.ammoprop == -1:
             raise ValueError(
                 'Unable to get ammoprop for {0}'.format(self.classname))
 
-        # Get the index of the owner
-        index = index_from_inthandle(self.owner)
+        # Get the owner of the weapon
+        player = self.current_owner
 
-        # Get the owner's entity instance
-        player = BaseEntity(index)
-
-        # Get the weapon
-        weapon = weapon_manager[self.classname]
+        # Does no one currently own the weapon?
+        if player is None:
+            return
 
         # Return the ammo
         return player.get_property_int(
-            'localdata.' + weapon_manager.ammoprop + '%03d' % weapon.ammoprop)
+            weapon_manager.ammoprop + '%03d' % self.ammoprop)
 
     def set_ammo(self, value):
-        """Set the player's ammo property for the given weapon."""
+        """Set the player's ammo property for the weapon."""
         # Do we have a valid ammoprop?
-        if not self.has_ammo():
+        if self.ammoprop == -1:
             raise ValueError(
                 'Unable to set ammoprop for {0}'.format(self.classname))
 
-        # Get the index of the owner
-        index = index_from_inthandle(self.owner)
+        # Get the owner of the weapon
+        player = self.current_owner
 
-        # Get the owner's entity instance
-        player = BaseEntity(index)
-
-        # Get the weapon
-        weapon = weapon_manager[self.classname]
+        # Does no one currently own the weapon?
+        if player is None:
+            return
 
         # Set the ammo
         player.set_property_int(
-            'localdata.' + weapon_manager.ammoprop + '%03d' % weapon.ammoprop,
-            value)
+            weapon_manager.ammoprop + '%03d' % self.ammoprop, value)
 
     # Set the "ammo" property methods
     ammo = property(
         get_ammo, set_ammo,
         doc="""Property to get/set the weapon's ammo.""")
 
-    # =========================================================================
-    # >> CLIP
-    # =========================================================================
-    def get_clip(self):
-        """
-        Return the amount of ammo in the primary clip for the given weapon.
-        """
-        return self.get_property_int('m_iClip1')
+    def get_secondary_fire_clip(self):
+        """Return the amount of ammo in the weapon's secondary fire clip."""
+        return (
+            self.secondary_fire_clip if self.secondary_fire_clip != -1 else 0)
 
-    def set_clip(self, value):
-        """Set the player's primary clip value for the given weapon."""
-        self.set_property_int('m_iClip1', value)
+    def set_secondary_fire_clip(self, value):
+        """Set the amount of ammo in the weapon's secondary fire clip."""
+        # Does the weapon have secondary fire ammo?
+        if self.secondary_fire_clip != -1:
 
-    # Set the "clip" property methods
-    clip = property(
-        get_clip, set_clip,
-        doc="""Property to get/set the weapon's primary clip.""")
+            # Set the secondary fire clip amount
+            self.secondary_fire_clip = value
 
-    def get_clip2(self):
-        """
-        Return the amount of ammo in the secondary clip for the given weapon.
-        """
-        return self.get_property_int('m_iClip2')
+    def get_secondary_fire_ammo(self):
+        """Return the secondary fire ammo the player has for the weapon."""
+        # Do we have a valid ammoprop?
+        if self.secondary_fire_ammoprop == -1:
+            raise ValueError(
+                'Unable to get secondary fire ammoprop for {0}'.format(
+                    self.classname))
 
-    def set_clip2(self, value):
-        """Set the player's secondary clip value for the given weapon."""
-        self.set_property_int('m_iClip2', value)
+        # Get the owner of the weapon
+        player = self.current_owner
 
-    # Set the "clip2" property methods
-    clip2 = property(
-        get_clip2, set_clip2,
-        doc="""Property to get/set the weapon's secondary clip.""")
+        # Does no one currently own the weapon?
+        if player is None:
+            return
+
+        # Return the ammo
+        return player.get_property_int(
+            weapon_manager.ammoprop + '%03d' % self.secondary_fire_ammoprop)
+
+    def set_secondary_fire_ammo(self, value):
+        """Set the player's secondary fire ammo property for the weapon."""
+        # Do we have a valid ammoprop?
+        if self.secondary_fire_ammoprop == -1:
+            raise ValueError(
+                'Unable to set secondary fire ammoprop for {0}'.format(
+                    self.classname))
+
+        # Get the owner of the weapon
+        player = self.current_owner
+
+        # Does no one currently own the weapon?
+        if player is None:
+            return
+
+        # Set the ammo
+        player.set_property_int(
+            weapon_manager.ammoprop +
+            '%03d' % self.secondary_fire_ammoprop, value)
+
+    # Set the "secondary_fire_ammo" property methods
+    secondary_fire_ammo = property(
+        get_secondary_fire_ammo, set_secondary_fire_ammo,
+        doc="""Property to get/set the weapon's secondary fire ammo.""")
