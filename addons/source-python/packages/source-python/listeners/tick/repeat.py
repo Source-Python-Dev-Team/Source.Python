@@ -50,7 +50,7 @@ class TickRepeat(AutoUnload):
         self.kwargs = kwargs
 
         # Log the __init__ message
-        listeners_tick_repeat_logger.log_info(
+        listeners_tick_repeat_logger.log_debug(
             'TickRepeat.__init__: <{0}> <{1}> <{2}>'.format(
                 self.callback, self.args, self.kwargs))
 
@@ -64,21 +64,21 @@ class TickRepeat(AutoUnload):
     def start(self, interval, limit):
         """Start the repeat loop."""
         # Log the start message
-        listeners_tick_repeat_logger.log_info(
+        listeners_tick_repeat_logger.log_debug(
             'TickRepeat.start: <{0}> <{1}>'.format(interval, limit))
 
         # Is the repeat already running?
         if self._status is TickRepeatStatus.RUNNING:
 
             # Log the status
-            listeners_tick_repeat_logger.log_info(
+            listeners_tick_repeat_logger.log_debug(
                 'TickRepeat.start - TickRepeatStatus.RUNNING')
 
             # Do not start the repeat
             return
 
         # Log starting the repeat
-        listeners_tick_repeat_logger.log_info(
+        listeners_tick_repeat_logger.log_debug(
             'TickRepeat.start - !TickRepeatStatus' +
             '.RUNNING - Starting TickRepeat')
 
@@ -99,20 +99,20 @@ class TickRepeat(AutoUnload):
     def stop(self):
         """Stop the repeat loop."""
         # Log the stop message
-        listeners_tick_repeat_logger.log_info('TickRepeat.stop')
+        listeners_tick_repeat_logger.log_debug('TickRepeat.stop')
 
         # Is the repeat running?
         if self._status is not TickRepeatStatus.RUNNING:
 
             # Log the status
-            listeners_tick_repeat_logger.log_info(
+            listeners_tick_repeat_logger.log_debug(
                 'TickRepeat.stop - !TickRepeatStatus.RUNNING')
 
             # No need to stop it
             return
 
         # Log stopping the repeat
-        listeners_tick_repeat_logger.log_info(
+        listeners_tick_repeat_logger.log_debug(
             'TickRepeat.stop - TickRepeatStatus.RUNNING - Stopping TickRepeat')
 
         # Set the status to stopped
@@ -124,7 +124,7 @@ class TickRepeat(AutoUnload):
     def restart(self):
         """Restart the repeat."""
         # Log restarting the repeat
-        listeners_tick_repeat_logger.log_info('TickRepeat.restart')
+        listeners_tick_repeat_logger.log_debug('TickRepeat.restart')
 
         # Stop the repeat
         self.stop()
@@ -138,20 +138,20 @@ class TickRepeat(AutoUnload):
         Pausing allows the repeat to be resumed.
         """
         # Log the pause message
-        listeners_tick_repeat_logger.log_info('TickRepeat.pause')
+        listeners_tick_repeat_logger.log_debug('TickRepeat.pause')
 
         # Is the repeat running?
         if self._status is not TickRepeatStatus.RUNNING:
 
             # Log the status
-            listeners_tick_repeat_logger.log_info(
+            listeners_tick_repeat_logger.log_debug(
                 'TickRepeat.pause - !TickRepeatStatus.RUNNING')
 
             # No need to pause
             return
 
         # Log pausing the repeat
-        listeners_tick_repeat_logger.log_info(
+        listeners_tick_repeat_logger.log_debug(
             'TickRepeat.pause - TickRepeatStatus.RUNNING - Pausing TickRepeat')
 
         # Set the status to paused
@@ -169,20 +169,20 @@ class TickRepeat(AutoUnload):
         Can only resume if in paused status.
         """
         # Log the resume message
-        listeners_tick_repeat_logger.log_info('TickRepeat.resume')
+        listeners_tick_repeat_logger.log_debug('TickRepeat.resume')
 
         # Is the repeat paused?
         if self._status is not TickRepeatStatus.PAUSED:
 
             # Log the status
-            listeners_tick_repeat_logger.log_info(
+            listeners_tick_repeat_logger.log_debug(
                 'TickRepeat.resume - !TickRepeatStatus.PAUSED')
 
             # Do not resume
             return
 
         # Log resuming the repeat
-        listeners_tick_repeat_logger.log_info(
+        listeners_tick_repeat_logger.log_debug(
             'TickRepeat.resume - TickRepeatStatus.' +
             'PAUSED - Resuming TickRepeat')
 
@@ -195,7 +195,7 @@ class TickRepeat(AutoUnload):
     def extend(self, adjustment):
         """Add to the number of loops to be made."""
         # Log the extend message
-        listeners_tick_repeat_logger.log_info('TickRepeat.extend')
+        listeners_tick_repeat_logger.log_debug('TickRepeat.extend')
 
         # Was a positive integer given?
         if adjustment < 1 or not isinstance(adjustment, int):
@@ -209,7 +209,17 @@ class TickRepeat(AutoUnload):
     def reduce(self, adjustment):
         """Reduce the number of loops to be made."""
         # Log the reduce message
-        listeners_tick_repeat_logger.log_info('TickRepeat.reduce')
+        listeners_tick_repeat_logger.log_debug('TickRepeat.reduce')
+
+        # Is there a limit for this repeat?
+        if not self.limit:
+
+            # Log a message about no reducing
+            listeners_tick_repeat_logger.log_debug(
+                'Unable to reduce, TickRepeat instance has no limit.')
+
+            # No need to go further
+            return
 
         # Was a positive integer given?
         if adjustment < 1 or not isinstance(adjustment, int):
@@ -221,11 +231,11 @@ class TickRepeat(AutoUnload):
         self._adjusted -= adjustment
 
         # Are no more loops to be made?
-        if (self.remaining and self._limit and
+        if (self.remaining <= 0 and
                 self.status is TickRepeatStatus.RUNNING):
 
             # Log the reduce-stopping message
-            listeners_tick_repeat_logger.log_info(
+            listeners_tick_repeat_logger.log_debug(
                 'TickRepeat.reduce - Reduce caused repeat to stop')
 
             # Stop the repeat
@@ -234,7 +244,7 @@ class TickRepeat(AutoUnload):
     def _execute(self):
         """Execute the repeat's callback with its arguments and keywords."""
         # Log the _execute message
-        listeners_tick_repeat_logger.log_info('TickRepeat._execute')
+        listeners_tick_repeat_logger.log_debug('TickRepeat._execute')
 
         # Add one to the current count
         self._count += 1
@@ -246,14 +256,14 @@ class TickRepeat(AutoUnload):
             if not self._limit:
 
                 # Log continuing the loop
-                listeners_tick_repeat_logger.log_info(
+                listeners_tick_repeat_logger.log_debug(
                     'TickRepeat._execute - No limit')
 
             # Is there a limit?
             else:
 
                 # Log continuing the loop
-                listeners_tick_repeat_logger.log_info(
+                listeners_tick_repeat_logger.log_debug(
                     'TickRepeat._execute - Remaining - {0}'.format(
                         self.remaining))
 
@@ -264,7 +274,7 @@ class TickRepeat(AutoUnload):
         else:
 
             # Log stopping the repeat
-            listeners_tick_repeat_logger.log_info(
+            listeners_tick_repeat_logger.log_debug(
                 'TickRepeat._execute - Stopping the loop')
 
             # Set the status to stopped
