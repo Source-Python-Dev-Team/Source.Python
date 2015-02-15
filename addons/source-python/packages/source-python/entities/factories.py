@@ -26,9 +26,9 @@ from _entities import EntityFactoryDictionary
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('factory_dictionary',
-           'EntityFactory',
+__all__ = ('EntityFactory',
            'EntityFactoryDictionary',
+           'factory_dictionary',
            )
 
 

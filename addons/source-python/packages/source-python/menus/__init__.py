@@ -27,10 +27,9 @@ else:
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = (
-    'PagedOption',
-    'SimpleOption',
-    'PagedMenu',
-    'SimpleMenu',
-    'Text',
+__all__ = ('PagedMenu',
+           'PagedOption',
+           'SimpleMenu',
+           'SimpleOption',
+           'Text',
 )

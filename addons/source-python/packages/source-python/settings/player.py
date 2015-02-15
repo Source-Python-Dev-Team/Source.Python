@@ -14,7 +14,7 @@ from collections import OrderedDict
 from core import AutoUnload
 #   Menus
 from menus import PagedMenu
-from menus import Option
+from menus import PagedOption
 #   Settings
 from settings.menu import _player_settings
 from settings.types import _SettingsType
@@ -91,7 +91,7 @@ class _SettingsDictionary(OrderedDict):
 
         # Add the option to the menu
         self.menu.append(
-            Option(value.name if value.text is None else value.text, value))
+            PagedOption(value.name if value.text is None else value.text, value))
 
     @property
     def name(self):
@@ -195,7 +195,7 @@ class PlayerSettings(AutoUnload, _SettingsDictionary):
 
         # Add the settings instance to the main settings menu
         _player_settings.menu.append(
-            Option(name if text is None else text, self))
+            PagedOption(name if text is None else text, self))
 
     def unregister_settings(self):
         """Unregister the given settings from the dictionary."""

@@ -16,7 +16,7 @@ from contextlib import suppress
 from engines.server import engine_server
 #   Menus
 from menus import PagedMenu
-from menus import Option
+from menus import PagedOption
 #   Messages
 from messages import SayText
 #   Players
@@ -242,7 +242,7 @@ class _StringSetting(_SettingsType):
                 'Given name "{0}" is already an option'.format(name))
 
         # Store the option
-        option = self.options[name] = Option(
+        option = self.options[name] = PagedOption(
             name if text is None else text, name)
 
         # Add the option to the menu

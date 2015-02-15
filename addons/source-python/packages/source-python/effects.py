@@ -30,9 +30,9 @@ from _effects import ShatterSurface
 # =============================================================================
 __all__ = ('DispatchEffectData',
            'PredictionSystem',
+           'ShatterSurface'
            'effects',
            'temp_entities',
-           'ShatterSurface'
            )
 
 
