@@ -25,7 +25,7 @@ set SPPACKAGEDIR="%CD%"/addons/source-python/packages/source-python/
     echo ============================
     echo.
 
-    python -m pep8 --count --benchmark %SPPACKAGEDIR%
+    python -m pep8 --count --benchmark --ignore=E402 %SPPACKAGEDIR%
 
     echo.
     echo.
