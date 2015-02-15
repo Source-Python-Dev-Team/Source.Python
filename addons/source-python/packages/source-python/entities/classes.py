@@ -263,7 +263,6 @@ class _ServerClasses(TypeManager):
         # Get the specific types of values to use
         input_contents = manager_contents.get('input', {})
         keyvalue_contents = manager_contents.get('keyvalue', {})
-        descriptor_contents = manager_contents.get('descriptor', {})
         property_contents = manager_contents.get('property', {})
 
         # Create dictionaries to store all values for the instance
@@ -315,7 +314,7 @@ class _ServerClasses(TypeManager):
                 # Add the descriptor to the instance
                 self._add_property(
                     instance, name, desc, offset,
-                    descriptor_contents, _supported_descriptor_types)
+                    property_contents, _supported_descriptor_types)
 
         # Get a list of all properties for the current server class
         properties = list(instance.properties)
