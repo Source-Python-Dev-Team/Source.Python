@@ -95,7 +95,8 @@ class SimpleRadioMenu(_BaseMenu):
         if choice_index == 0:
             return None
 
-        return super(SimpleRadioMenu, self)._select(player_index,
+        return super(SimpleRadioMenu, self)._select(
+            player_index,
             self._player_pages[player_index].options[choice_index])
 
     def _send(self, player_index):
@@ -226,7 +227,8 @@ class PagedRadioMenu(SimpleRadioMenu):
         buffer = ''
 
         # Get all options for the current page
-        options = tuple(enumerate(self[page.index * 7: (page.index + 1) * 7], 1))
+        options = tuple(enumerate(
+            self[page.index * 7: (page.index + 1) * 7], 1))
         page.options = dict(options)
 
         # Loop through all options of the current page
@@ -280,7 +282,8 @@ class PagedRadioMenu(SimpleRadioMenu):
             slots.add(9)
 
         # Add "Close" option
-        buffer += PagedRadioOption('Close', highlight=False)._render(player_index, 0)
+        buffer += PagedRadioOption(
+            'Close', highlight=False)._render(player_index, 0)
 
         # Return the buffer
         return buffer
@@ -395,12 +398,14 @@ class SimpleRadioOption(_BaseRadioOption):
 
     """Provides options for SimpleRadioMenu objects."""
 
-    def __init__(self, choice_index, text, value=None, highlight=True, selectable=True):
+    def __init__(
+            self, choice_index, text, value=None,
+            highlight=True, selectable=True):
         """Initialize the option.
 
         @param <choice_index>:
         The number that is required to select the option.
-        
+
         @param <text>:
         The text that should be displayed.
 
@@ -413,7 +418,8 @@ class SimpleRadioOption(_BaseRadioOption):
         @param <selectable>:
         Set this to True if the option should be selectable.
         """
-        super(SimpleRadioOption, self).__init__(text, value, highlight, selectable)
+        super(SimpleRadioOption, self).__init__(
+            text, value, highlight, selectable)
         self.choice_index = choice_index
 
     def _render(self, player_index, choice_index=None):
@@ -426,7 +432,6 @@ class SimpleRadioOption(_BaseRadioOption):
         The number that was selected. It depends on the menu type if this
         parameter gets passed.
         """
-
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
             self.choice_index,

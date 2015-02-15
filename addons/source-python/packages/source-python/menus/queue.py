@@ -223,6 +223,7 @@ def _radio_refresh():
     for queue in _radio_queues.values():
         queue._refresh()
 
+
 @TickRepeat
 def _esc_refresh():
     """Update every queue in the queue dict."""

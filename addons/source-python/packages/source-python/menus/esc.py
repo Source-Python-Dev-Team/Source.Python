@@ -328,4 +328,5 @@ class ESCOption(_BaseOption):
         @param <choice>:
         A numeric value that defines the selection number.
         """
-        return '{0}. {1}'.format(choice, _translate_text(self.text, player_index))
+        return '{0}. {1}'.format(
+            choice, _translate_text(self.text, player_index))
