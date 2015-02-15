@@ -197,6 +197,16 @@ class TickRepeat(AutoUnload):
         # Log the extend message
         listeners_tick_repeat_logger.log_debug('TickRepeat.extend')
 
+        # Is there a limit for this repeat?
+        if not self.limit:
+
+            # Log a message about no reducing
+            listeners_tick_repeat_logger.log_debug(
+                'Unable to extend, TickRepeat instance has no limit.')
+
+            # No need to go further
+            return
+
         # Was a positive integer given?
         if adjustment < 1 or not isinstance(adjustment, int):
 
