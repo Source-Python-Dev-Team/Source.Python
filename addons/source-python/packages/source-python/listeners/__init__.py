@@ -91,7 +91,7 @@ class _ListenerManager(AutoUnload):
 
             # Raise an error
             raise TypeError(
-                "'" + type(callback).__name__ + "'object is not callable")
+                "'" + type(callback).__name__ + "' object is not callable.")
 
         # Log the registering message
         listeners_logger.log_info(

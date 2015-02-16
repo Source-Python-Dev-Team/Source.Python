@@ -35,7 +35,9 @@ class _Hook(AutoUnload):
         if not isinstance(function, Function):
 
             # Raise an error as we can only hook Function instances
-            raise TypeError()
+            raise TypeError(
+                "'" + type(function).__name__ +
+                "' object is not a Function instance.")
 
         # Store the function
         self.function = function
@@ -50,6 +52,11 @@ class _Hook(AutoUnload):
 
         # Return the object
         return self
+
+    @property
+    def hook_type(self):
+        """Raise an error if the inheriting class does not have their own."""
+        raise NotImplementedError('No hook_type defined for class.')
 
     def _unload_instance(self):
         """Unregister the hook on script unload."""

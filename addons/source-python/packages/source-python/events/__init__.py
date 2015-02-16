@@ -51,7 +51,7 @@ class Event(AutoUnload):
 
             # Raise an error
             raise TypeError(
-                "'" + type(callback).__name__ + "' object is not callable")
+                "'" + type(callback).__name__ + "' object is not callable.")
 
         # Store the callback
         self.callback = callback
