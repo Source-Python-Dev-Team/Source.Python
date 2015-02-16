@@ -78,7 +78,6 @@ IEngineTrace*			enginetrace			= NULL;
 IEngineSound*			enginesound			= NULL;
 CGlobalVars*			gpGlobals			= NULL;
 IFileSystem*			filesystem			= NULL;
-IEffects*				effects				= NULL;
 IServerGameDLL*			servergamedll		= NULL;
 IServerTools*			servertools			= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
@@ -135,7 +134,6 @@ InterfaceHelper_t gEngineInterfaces[] = {
 InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERINFOMANAGER, (void **)&playerinfomanager},
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
-	{IEFFECTS_INTERFACE_VERSION, (void **)&effects},
 	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
 	{NULL, NULL}

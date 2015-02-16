@@ -49,8 +49,6 @@
 //-----------------------------------------------------------------------------
 // Externals
 //-----------------------------------------------------------------------------
-extern IEffects* effects;
-
 // This is required to fix a linker error
 IPredictionSystem* IPredictionSystem::g_pPredictionSystems = NULL;
 
@@ -58,14 +56,12 @@ IPredictionSystem* IPredictionSystem::g_pPredictionSystems = NULL;
 // Exposes the effects_c module.
 //-----------------------------------------------------------------------------
 void export_prediction_system();
-void export_effects();
 void export_temp_entities_system();
 void export_dispatch_effect_data();
 
 DECLARE_SP_MODULE(_effects)
 {
 	export_prediction_system();
-	export_effects();
 	export_temp_entities_system();
 	export_dispatch_effect_data();
 
@@ -109,89 +105,6 @@ void export_prediction_system()
 
 		ADD_MEM_TOOLS(IPredictionSystem, "PredictionSystem")
 	;
-}
-
-//-----------------------------------------------------------------------------
-// Expose IEffects
-//-----------------------------------------------------------------------------
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(sparks_overload, Sparks, 1, 4)
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(energy_splash_overload, EnergySplash, 2, 3)
-
-void export_effects()
-{
-	class_<IEffects, bases<IPredictionSystem>, boost::noncopyable>("_Effects", no_init)
-		.def("beam",
-			&IEffects::Beam,
-			"Creates a beam particle effect.",
-			args("start_vec", "end_vec", "model_index", "halo_index", "start_frame", "frame_rate", "life", "width", "end_width", "fade_length", "noise", "red", "green", "blue", "brightness", "speed")
-		)
-		
-		.def("smoke",
-			&IEffects::Smoke,
-			"Creates a smoke effect.",
-			args("origin", "model_index", "scale", "frame_rate")
-		)
-		
-		.def("sparks",
-			&IEffects::Sparks,
-			sparks_overload(
-				"Creates a sparks effect.",
-				args("origin", "magnitude", "trail_length", "direction")
-			)
-		)
-		
-		.def("dust",
-			&IEffects::Dust,
-			"Creates a dust effect.",
-			args("origin", "direction", "size", "speed")
-		)
-		
-		.def("muzzle_flash",
-			&IEffects::MuzzleFlash,
-			"Creates a muzzle flash effect.",
-			args("origin", "angles", "scale", "type")
-		)
-		
-		.def("metal_sparks",
-			&IEffects::MetalSparks,
-			"Creates a muzzle flash effect.",
-			args("origin", "direction")
-		)
-
-		.def("energy_splash",
-			&IEffects::EnergySplash,
-			energy_splash_overload(
-				"Creates a metal sparks effect.",
-				args("origin", "direction", "explosive")
-			)
-		)
-
-		.def("ricochet",
-			&IEffects::Ricochet,
-			"Creates a ricochet effect.",
-			args("origin", "direction")
-		)
-		
-		.def("get_time",
-			&IEffects::Time,
-			"Returns the current time."
-		)
-		
-		.def("is_server",
-			&IEffects::IsServer,
-			"Returns True if this is a server."
-		)
-		
-		.def("suppress_effects_sounds",
-			&IEffects::SuppressEffectsSounds,
-			"Set to True to suppress effect sounds.",
-			args("suppress")
-		)
-
-		ADD_MEM_TOOLS(IEffects, "_Effects")
-	;
-
-	scope().attr("effects") = object(ptr(effects));
 }
 
 
