@@ -5,14 +5,11 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Math
-import math
-
 # Source.Python Imports
 #   Menus
 from menus.base import Text
 from menus.base import _BaseMenu
+from menus.base import _PagedMenuBase
 from menus.base import _BaseOption
 from menus.base import _translate_text
 from menus.queue import _radio_queues
@@ -56,7 +53,7 @@ class SimpleRadioMenu(_BaseMenu):
                 buffer += raw_data._render(player_index)
 
             # Handle _BaseOption objects
-            elif isinstance(raw_data, _BaseOption):
+            elif isinstance(raw_data, SimpleRadioOption):
                 buffer += raw_data._render(player_index)
                 if raw_data.selectable:
                     slots.add(raw_data.choice_index)
@@ -127,7 +124,7 @@ class SimpleRadioMenu(_BaseMenu):
         return _radio_queues
 
 
-class PagedRadioMenu(SimpleRadioMenu):
+class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
     """Create menus with an unlimited number of options.
 
@@ -341,46 +338,6 @@ class PagedRadioMenu(SimpleRadioMenu):
 
         return super(PagedRadioMenu, self)._select(player_index, choice_index)
 
-    @property
-    def last_page_index(self):
-        """Return the last page index."""
-        return self.page_count - 1
-
-    @property
-    def page_count(self):
-        """Return the number of pages the menu currently has."""
-        return int(math.ceil(len(self) / 7.0)) or 1
-
-    def set_player_page(self, player_index, page_index):
-        """Set the player's current page index.
-
-        @param <player_index>:
-        A player index.
-
-        @param <page_index>:
-        An index that defines the current active page.
-
-        If <page_index> is lower than 0, the page index will be set to 0.
-
-        If <page_index> is greater than the last page index, it will be set to
-        the last page index.
-        """
-        page = self._player_pages[player_index]
-        if page_index < 0:
-            page.index = 0
-        elif page_index > self.last_page_index:
-            page.index = self.last_page_index
-        else:
-            page.index = page_index
-
-    def get_player_page(self, player_index):
-        """Return the current player page index.
-
-        @param <player_index>:
-        A player index.
-        """
-        return self._player_pages[player_index].index
-
 
 class _BaseRadioOption(_BaseOption):
 
@@ -429,8 +386,8 @@ class SimpleRadioOption(_BaseRadioOption):
         A player index.
 
         @param <choice_index>:
-        The number that was selected. It depends on the menu type if this
-        parameter gets passed.
+        The number should be required to select this item. It depends on the
+        menu type if this parameter gets passed.
         """
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
@@ -450,8 +407,8 @@ class PagedRadioOption(_BaseRadioOption):
         A player index.
 
         @param <choice_index>:
-        The number that was selected. It depends on the menu type if this
-        parameter gets passed.
+        The number should be required to select this item. It depends on the
+        menu type if this parameter gets passed.
         """
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
