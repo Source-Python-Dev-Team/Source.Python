@@ -90,8 +90,8 @@ class _SettingsDictionary(OrderedDict):
             value._prefix += self.name.lower().replace(' ', '_') + '_'
 
         # Add the option to the menu
-        self.menu.append(
-            PagedOption(value.name if value.text is None else value.text, value))
+        self.menu.append(PagedOption(
+            value.name if value.text is None else value.text, value))
 
     @property
     def name(self):

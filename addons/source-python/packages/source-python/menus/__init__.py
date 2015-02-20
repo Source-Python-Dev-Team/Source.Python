@@ -32,4 +32,4 @@ __all__ = ('PagedMenu',
            'SimpleMenu',
            'SimpleOption',
            'Text',
-)
+           )

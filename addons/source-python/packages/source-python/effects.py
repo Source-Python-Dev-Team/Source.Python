@@ -68,7 +68,8 @@ def beam(
     <start> and <end> can be entity indexes or Vector objects.
 
     If you set <parent> to True, the beam is parented to the given entity
-    index(es)."""
+    index(es).
+    """
     start_entity = -1
     start_vector = None
     end_entity = -1
@@ -93,10 +94,11 @@ def beam(
         end_vector = end
 
     # Create the effect
-    temp_entities.beam_ent_point(recipients, delay, start_entity,
-        start_vector, end_entity, end_vector, model_index, halo_index,
-        start_frame, frame_rate, life, width, end_width, fade_length,
-        amplitude, red, green, blue, alpha, speed)
+    temp_entities.beam_ent_point(
+        recipients, delay, start_entity, start_vector, end_entity, end_vector,
+        model_index, halo_index, start_frame, frame_rate, life, width,
+        end_width, fade_length, amplitude, red, green, blue, alpha, speed)
+
 
 def polygon(
         recipients, delay, points, model_index, halo_index, start_frame,
@@ -106,17 +108,20 @@ def polygon(
 
     <points> must be an iterable with at least 3 elements.
 
-    See beam() for more information."""
+    See beam() for more information.
+    """
     if len(points) < 3:
         raise ValueError('At least 3 points are required.')
 
     start = points[0]
     points = dict(enumerate(points))
     for index, point in points.items():
-        beam(recipients, delay, point, points.get(index + 1, start),
+        beam(
+            recipients, delay, point, points.get(index + 1, start),
             model_index, halo_index, start_frame, frame_rate, life, width,
             end_width, fade_length, amplitude, red, green, blue, alpha, speed,
             parent)
+
 
 def square(
         recipients, delay, start, end, model_index, halo_index, start_frame,
@@ -142,9 +147,11 @@ def square(
     )
 
     for p1, p2 in lines:
-        temp_entities.beam_points(recipients, delay, p1, p2, model_index,
+        temp_entities.beam_points(
+            recipients, delay, p1, p2, model_index,
             halo_index, start_frame, frame_rate, life, width, end_width,
             fade_length, amplitude, red, green, blue, alpha, speed)
+
 
 def box(
         recipients, delay, start, end, model_index, halo_index, start_frame,
@@ -187,9 +194,11 @@ def box(
     )
 
     for p1, p2 in lines:
-        temp_entities.beam_points(recipients, delay, p1, p2, model_index,
+        temp_entities.beam_points(
+            recipients, delay, p1, p2, model_index,
             halo_index, start_frame, frame_rate, life, width, end_width,
             fade_length, amplitude, red, green, blue, alpha, speed)
+
 
 def ball(
         recipients, delay, center, radius, model_index, halo_index,
@@ -199,9 +208,9 @@ def ball(
     """Create a ball by using _TempEntities.beam_ring_point().
 
     NOTE:
-    The number of steps is used for the lower and upper half. So, if you
-    define 15 steps, 29 rings are created (the center ring is shared by both
-    halves)."""
+    The number of steps is used for the lower and upper half. So, if you define
+    15 steps, 29 rings are created (the center ring is shared by both halves).
+    """
     if not isinstance(center, Vector):
         raise TypeError('"center" must be Vector object.')
 
@@ -211,7 +220,8 @@ def ball(
         org = Vector(*center)
         org.z += dist
         rad = 2 * radius * (1 - (float(x) / steps) ** 2) ** 0.5
-        args = (recipients, delay, org, rad, rad - 0.1, model_index,
+        args = (
+            recipients, delay, org, rad, rad - 0.1, model_index,
             halo_index, start_frame, frame_rate, life, width, spread,
             amplitude, red, green, blue, alpha, speed, flags)
 

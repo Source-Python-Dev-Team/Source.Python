@@ -45,7 +45,7 @@ class SimpleESCMenu(_BaseMenu):
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=WHITE):
-        """Initialize the PagedESCMenu instance.
+        """Initialize the SimpleESCMenu instance.
 
         @param <data>:
         An iterable which contains data that should be added to the menu.
@@ -105,7 +105,7 @@ class SimpleESCMenu(_BaseMenu):
         close = SimpleESCOption(0, 'Close')
         button = data.find_key(str(close.choice_index), True)
         button.set_string('msg', close._render(player_index))
-        button.set_string( 'command', '{0} {1}'.format(
+        button.set_string('command', '{0} {1}'.format(
             ESC_SELECTION_CMD, close.choice_index))
 
         # Return the menu data
@@ -175,17 +175,20 @@ class SimpleESCMenu(_BaseMenu):
         return _esc_queues
 
 
-
 class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
 
     """Create menus with an unlimited number of options.
 
     will automatically add navigation options.
     """
-    def __init__(self, data=None, select_callback=None, build_callback=None,
+
+    def __init__(
+            self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=WHITE, fill=True):
-        super(PagedESCMenu, self).__init__(data, select_callback,
-            build_callback, description, title, title_color)
+        """Initialize the PagedESCMenu instance."""
+        super(PagedESCMenu, self).__init__(
+            data, select_callback, build_callback,
+            description, title, title_color)
         self.fill = fill
 
     def _format_header(self, player_index, page, data):
@@ -223,7 +226,6 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         @param <data>:
         The current menu data.
         """
-
         # Loop through all options of the current page
         for index, option in enumerate(
                 self[page.index * 5:(page.index + 1) * 5], 1):
