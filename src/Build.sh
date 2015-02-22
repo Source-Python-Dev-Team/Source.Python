@@ -1,6 +1,9 @@
 # Store the start directory for later reference
 STARTDIR="$PWD"
 
+# Set this to the number of processor cores you would like to use
+NUM_CORES=1
+
 
 # A function to choose the branch to build against
 ChooseBranch () {
@@ -172,7 +175,7 @@ CreateBuild () {
 
     # Build the binaries
     make clean
-    make
+    make -j$NUM_CORES 2>&1 | tee build.log
 
 }
 
