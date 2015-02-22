@@ -64,8 +64,8 @@ protected:
 	virtual void send_message_internal() = 0;
 
 protected:
-	const char *m_message_name;
 	const MRecipientFilter &m_recipient_filter;
+	const char *m_message_name;
 	int m_message_index;
 };
 

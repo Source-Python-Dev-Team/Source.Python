@@ -383,7 +383,7 @@ public:
 		list result;
 		
 		const unsigned char* data = buffer.GetBasePointer();
-		for (unsigned int i=0; i < buffer.m_nDataBytes; i++) {
+		for (int i=0; i < (int) buffer.m_nDataBytes; i++) {
 			result.append(data[i]);
 		}
 

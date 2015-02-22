@@ -165,7 +165,7 @@ inline edict_t* EdictFromUserid( unsigned int userid )
 		pEdict = EdictFromIndex(i);
 		if (pEdict && !pEdict->IsFree() &&
 			strcmp(pEdict->GetClassName(), "player") == 0 &&
-			engine->GetPlayerUserId(pEdict) == userid)
+			engine->GetPlayerUserId(pEdict) == (int) userid)
 		{
 			return pEdict;
 		}
