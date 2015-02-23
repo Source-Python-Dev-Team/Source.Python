@@ -409,7 +409,7 @@ void export_take_damage_info()
 //-----------------------------------------------------------------------------
 void export_bf_write()
 {
-	class_<bf_write>("bf_write", no_init)
+	class_<bf_write>("BitBufferWrite", no_init)
 		.def("__init__",
 			make_constructor(&bf_writeExt::__init__, default_call_policies())
 		)
@@ -574,7 +574,7 @@ void export_bf_write()
 //-----------------------------------------------------------------------------
 void export_bf_read()
 {
-	class_<bf_read>("bf_read", no_init)
+	class_<bf_read>("BitBufferRead", no_init)
 		.def("__init__",
 			make_constructor(&bf_readExt::__init__, default_call_policies())
 		)
