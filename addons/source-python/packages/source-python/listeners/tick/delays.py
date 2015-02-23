@@ -75,6 +75,19 @@ class Delay(object):
         tick_delays.cancel_delay(self)
 
 
+class Delayed(object):
+
+    """Decorator class used to handle delays."""
+
+    def __init__(self, callback):
+        """Store the giving callback."""
+        self.callback = callback
+
+    def __call__(self, seconds, *args, **kwargs):
+        """Start the delay."""
+        return tick_delays.delay(seconds, self.callback, *args, **kwargs)
+
+
 class _Times(list):
 
     """List class used to store delays to be called."""

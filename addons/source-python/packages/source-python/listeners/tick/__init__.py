@@ -9,6 +9,7 @@
 #   Listeners
 from listeners import listeners_logger
 from listeners.tick.delays import Delay
+from listeners.tick.delays import Delayed
 from listeners.tick.delays import tick_delays
 from listeners.tick.repeat import TickRepeat
 from listeners.tick.repeat import TickRepeatStatus
@@ -18,6 +19,7 @@ from listeners.tick.repeat import TickRepeatStatus
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('Delay',
+           'Delayed',
            'TickRepeat',
            'TickRepeatStatus',
            'tick_delays',
