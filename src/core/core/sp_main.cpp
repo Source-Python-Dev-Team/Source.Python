@@ -209,13 +209,13 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	// Initialize game paths.
 	if( !g_GamePaths.Initialize() ) {
-		DevMsg(0, MSG_PREFIX "Could not initialize game paths.\n");
+		Msg(MSG_PREFIX "Could not initialize game paths.\n");
 		return false;
 	}
 
 	// Initialize python
 	if( !g_PythonManager.Initialize() ) {
-		DevMsg(0, MSG_PREFIX "Could not initialize python.\n");
+		Msg(MSG_PREFIX "Could not initialize python.\n");
 		return false;
 	}
 

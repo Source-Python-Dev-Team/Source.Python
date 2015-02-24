@@ -69,9 +69,9 @@ inline void _GenerateSymlink(char* path)
 
 	if (symlink(symlinkOrigin, symlinkPath) != 0 && (errno != EEXIST))
 	{
-		DevMsg(0, MSG_PREFIX "Unable to create a symbolic link (%s).\n", strerror(errno));
-		DevMsg(0, MSG_PREFIX "Original path: %s\n", symlinkOrigin);
-		DevMsg(0, MSG_PREFIX "Symbolic link: %s\n", symlinkPath);
+		Msg(MSG_PREFIX "Unable to create a symbolic link (%s).\n", strerror(errno));
+		Msg(MSG_PREFIX "Original path: %s\n", symlinkOrigin);
+		Msg(MSG_PREFIX "Symbolic link: %s\n", symlinkPath);
 	}
 #endif
 }

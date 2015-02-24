@@ -135,11 +135,11 @@ bool CPythonManager::Initialize( void )
 	catch( ... ) {
 		PyErr_Print();
 		PyErr_Clear();
-		DevMsg(0, MSG_PREFIX "Failed to load.\n");
+		Msg(MSG_PREFIX "Failed to load.\n");
 		return false;
 	}
 
-	DevMsg(0, MSG_PREFIX "Loaded successfully.\n");
+	Msg(MSG_PREFIX "Loaded successfully.\n");
 	return true;
 }
 
