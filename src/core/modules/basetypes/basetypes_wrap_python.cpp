@@ -564,7 +564,7 @@ void export_bf_write()
 			&bf_write::m_iCurBit
 		)
 
-		ADD_MEM_TOOLS(bf_write, "bf_write")
+		ADD_MEM_TOOLS(bf_write, "BitBufferWrite")
 	;
 }
 
@@ -712,6 +712,6 @@ void export_bf_read()
 			&bf_read::GetNumBitsRead
 		)
 
-		ADD_MEM_TOOLS(bf_read, "bf_read")
+		ADD_MEM_TOOLS(bf_read, "BitBufferRead")
 	;
 }
