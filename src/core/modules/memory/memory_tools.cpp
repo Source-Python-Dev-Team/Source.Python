@@ -233,7 +233,7 @@ void CPointer::__del__(PyObject* self)
 	CPointer* ptr = extract<CPointer *>(self);
 	if (ptr->m_bAutoDealloc)
 	{
-		PythonLog(4, "[SP] Automatically deallocating pointer at %u.", ptr->m_ulAddr);
+		PythonLog(4, "Automatically deallocating pointer at %u.", ptr->m_ulAddr);
 		PreDealloc(self);
 	}
 }

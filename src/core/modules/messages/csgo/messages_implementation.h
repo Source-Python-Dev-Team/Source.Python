@@ -32,6 +32,8 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/descriptor.h"
 
+#include "utility/call_python.h"
+
 class CUserMessageImplementation : public IUsermessageImplementationBase
 {
 public:
@@ -77,17 +79,17 @@ private:
 				}
 				else
 				{
-					DevMsg(1, "SP-ERROR: Could not find field name '%s' for usermessage '%s'\n", field_name, m_message_name);
+					PythonLog(1, "Could not find field name '%s' for usermessage '%s'\n", field_name, m_message_name);
 				}
 			}
 			else
 			{
-				DevMsg(1, "SP-ERROR: Could not find descriptor or reflection for usermessage '%s'\n", m_message_name);
+				PythonLog(1, "Could not find descriptor or reflection for usermessage '%s'\n", m_message_name);
 			}
 		}
 		else
 		{
-			DevMsg(1, "SP-ERROR: Could not find message name '%s'\n", m_message_name);
+			PythonLog(1, "Could not find message name '%s'\n", m_message_name);
 		}
 	}
 
@@ -118,17 +120,17 @@ private:
 				}
 				else
 				{
-					DevMsg(1, "SP-ERROR: Could not find field name '%s' for usermessage '%s'\n", field_name, m_message_name);
+					PythonLog(1, "Could not find field name '%s' for usermessage '%s'\n", field_name, m_message_name);
 				}
 			}
 			else
 			{
-				DevMsg(1, "SP-ERROR: Could not find descriptor or reflection for usermessage '%s'\n", m_message_name);
+				PythonLog(1, "Could not find descriptor or reflection for usermessage '%s'\n", m_message_name);
 			}
 		}
 		else
 		{
-			DevMsg(1, "SP-ERROR: Could not find message name '%s'\n", m_message_name);
+			PythonLog(1, "Could not find message name '%s'\n", m_message_name);
 		}
 	}
 

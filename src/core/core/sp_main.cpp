@@ -51,6 +51,7 @@
 #include "networkstringtabledefs.h"
 #include "edict.h"
 #include "convar.h"
+#include "utility/call_python.h"
 
 #include "DynamicHooks.h"
 extern DynamicHooks::CHookManager* g_pHookMngr;
@@ -374,7 +375,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
 	g_AddonManager.OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
-	DevMsg(1, MSG_PREFIX "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
+	PythonLog(1, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
 }
 
 //-----------------------------------------------------------------------------
@@ -383,7 +384,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 void CSourcePython::FireGameEvent( IGameEvent * event )
 {
 	const char * name = event->GetName();
-	DevMsg(1, MSG_PREFIX "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
+	PythonLog(1, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
 
 	//g_AddonManager.FireGameEvent(event);
 }

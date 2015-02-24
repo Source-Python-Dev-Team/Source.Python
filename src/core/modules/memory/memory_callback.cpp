@@ -226,7 +226,7 @@ object CallCallback(CCallback* pCallback, unsigned long ulEBP, unsigned long ulE
 
     END_BOOST_PY_NORET()
 
-	PythonLog(0, "[SP] An exception occured while calling the Python callback. The server will now crash!");
+	PythonLog(0, "An exception occured while calling the Python callback. The server will now crash!");
 
     // Throw an exception. We will crash now :(
     throw;

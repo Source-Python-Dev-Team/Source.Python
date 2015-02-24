@@ -97,18 +97,18 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to parse the signature.");
 	
 	// Search for a cached signature
-	PythonLog(4, "[SP] Searching for a cached signature...");
+	PythonLog(4, "Searching for a cached signature...");
 	for (std::list<Signature_t>::iterator iter=m_Signatures.begin(); iter != m_Signatures.end(); iter++)
 	{
 		Signature_t sig = *iter;
 		if (strcmp((const char *) sig.m_szSignature, (const char *) sigstr) == 0)
 		{
-			PythonLog(4, "[SP] Found a cached signature!");
+			PythonLog(4, "Found a cached signature!");
 			return new CPointer(sig.m_ulAddr);
 		}
 	}
 	
-	PythonLog(4, "[SP] Could not find a cached signature. Searching in the binary...");
+	PythonLog(4, "Could not find a cached signature. Searching in the binary...");
 
 	// Search for a signature in the binary
 	int iLength = len(oSignature);
@@ -117,7 +117,7 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 	// Found the signature?
 	if (pPtr->IsValid())
 	{
-		PythonLog(4, "[SP] Found a signature in the binary!");
+		PythonLog(4, "Found a signature in the binary!");
 
 		// Add the signature to the cache
 		Signature_t sig_t = {new unsigned char[iLength+1], pPtr->m_ulAddr};
@@ -131,7 +131,7 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 	delete pPtr;
 
 	// Haven't found a match? Then seach for a hooked signature
-	PythonLog(4, "[SP] Could not find the signature in the binary. Searching for a hooked signature...");
+	PythonLog(4, "Could not find the signature in the binary. Searching for a hooked signature...");
 
 	// Check length of signature
 	if (iLength <= 6)
@@ -146,13 +146,13 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 	// Couldn't find it?
 	if (!pPtr->IsValid())
 	{
-		PythonLog(4, "[SP] Could not find a hooked signature.");
+		PythonLog(4, "Could not find a hooked signature.");
 		delete pPtr;
 	}
 	// Yay, we found a match! Now, check if the signature is unique
 	else
 	{
-		PythonLog(4, "[SP] Found a hooked signature! Checking if it's unique...");
+		PythonLog(4, "Found a hooked signature! Checking if it's unique...");
 
 		// Add iLength, so we start searching after the match
 		CPointer new_ptr = CPointer(pPtr->m_ulAddr + iLength);
@@ -165,7 +165,7 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 		if (bIsValid)
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Found more than one hooked signatures. Please pass more bytes.");
 
-		PythonLog(4, "[SP] Signature is unique!");
+		PythonLog(4, "Signature is unique!");
 
 		// It's unique! So, add the original signature to the cache
 		Signature_t sig_t = {new unsigned char[iLength+1], pPtr->m_ulAddr};
