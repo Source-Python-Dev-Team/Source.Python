@@ -12,12 +12,11 @@ from math import radians
 from math import sin
 
 # Source.Python Imports
-#   Constants
-from constants import MAX_TRACE_LENGTH
 #   Engines
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
 from engines.trace import GameTrace
+from engines.trace import MAX_TRACE_LENGTH
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities

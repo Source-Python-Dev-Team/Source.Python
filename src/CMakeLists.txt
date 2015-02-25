@@ -138,21 +138,6 @@ Set(SOURCEPYTHON_COMMANDS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# Constants module.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_CONSTANTS_MODULE_HEADERS
-    core/modules/constants/constants_const_wrap.h
-    core/modules/constants/constants_const_wrap_python.h
-    core/modules/constants/${SOURCE_ENGINE}/constants_const_wrap_python.h
-    core/modules/constants/constants_in_buttons_wrap.h
-    core/modules/constants/constants_in_buttons_wrap_python.h
-)
-
-Set(SOURCEPYTHON_CONSTANTS_MODULE_SOURCES
-    core/modules/constants/constants_wrap_python.cpp
-)
-
-# ------------------------------------------------------------------
 # Conversions module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS
@@ -161,6 +146,16 @@ Set(SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS
 
 Set(SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES
     core/modules/conversions/conversions_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
+# Core module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_CORE_MODULE_HEADERS
+)
+
+Set(SOURCEPYTHON_CORE_MODULE_SOURCES
+    core/modules/core/core_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -366,11 +361,11 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS}
     ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES}
 
-    ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS}
-    ${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES}
-
     ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS}
     ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES}
+
+    ${SOURCEPYTHON_CORE_MODULE_HEADERS}
+    ${SOURCEPYTHON_CORE_MODULE_SOURCES}
 
     ${SOURCEPYTHON_CVARS_MODULE_HEADERS}
     ${SOURCEPYTHON_CVARS_MODULE_SOURCES}
@@ -431,8 +426,8 @@ Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Bots"                   FILES ${SOURCEPYTHON_BOTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Constants"              FILES ${SOURCEPYTHON_CONSTANTS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Core"            		FILES ${SOURCEPYTHON_CORE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_DATAMAPS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS})
@@ -456,8 +451,8 @@ Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Bots"                   FILES ${SOURCEPYTHON_BOTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Constants"              FILES ${SOURCEPYTHON_CONSTANTS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Conversions"            FILES ${SOURCEPYTHON_CONVERSIONS_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Core"            		FILES ${SOURCEPYTHON_CORE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\DataMaps"               FILES ${SOURCEPYTHON_DATAMAPS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES})

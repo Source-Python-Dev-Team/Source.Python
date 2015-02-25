@@ -49,6 +49,7 @@
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 #include "engine/iserverplugin.h"
+#include "public/worldsize.h"
 
 #include ENGINE_INCLUDE_PATH(engines_wrap_python.h)
 
@@ -68,6 +69,7 @@ void export_query_cvar_status();
 void export_engine_sound();
 void export_engine_trace();
 void export_server_game_dll();
+void export_worldsize();
 
 DECLARE_SP_MODULE(_engines)
 {
@@ -76,6 +78,7 @@ DECLARE_SP_MODULE(_engines)
 	export_engine_sound();
 	export_engine_trace();
 	export_server_game_dll();
+	export_worldsize();
 }
 
 
@@ -1294,4 +1297,26 @@ void export_server_game_dll()
 	
 	// Singleton...
 	scope().attr("server_game_dll") = object(ptr(servergamedll));
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose Source.Python constants.
+//-----------------------------------------------------------------------------
+void export_worldsize()
+{
+	scope().attr("MAX_COORD_INTEGER") = MAX_COORD_INTEGER;
+	scope().attr("MIN_COORD_INTEGER") = MIN_COORD_INTEGER;
+
+	scope().attr("MAX_COORD_FRACTION") = MAX_COORD_FRACTION;
+	scope().attr("MIN_COORD_FRACTION") = MIN_COORD_FRACTION;
+
+	scope().attr("MAX_COORD_FLOAT") = MAX_COORD_FLOAT;
+	scope().attr("MIN_COORD_FLOAT") = MIN_COORD_FLOAT;
+
+	scope().attr("COORD_EXTENT") = COORD_EXTENT;
+
+	scope().attr("MAX_TRACE_LENGTH") = MAX_TRACE_LENGTH;
+
+	scope().attr("MAX_COORD_RANGE") = MAX_COORD_RANGE;
 }

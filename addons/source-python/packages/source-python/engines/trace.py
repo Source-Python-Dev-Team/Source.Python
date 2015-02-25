@@ -9,6 +9,10 @@
 #   Enum
 from enum import IntEnum
 
+# Source.Python Imports
+#   Entities
+from entities.helpers import inthandle_from_index
+
 
 # =============================================================================
 # >> FORWARD IMPORTS
@@ -61,6 +65,7 @@ from _engines import CONTENTS_DETAIL
 from _engines import CONTENTS_TRANSLUCENT
 from _engines import CONTENTS_LADDER
 from _engines import CONTENTS_HITBOX
+from _engines import COORD_EXTENT
 from _engines import MASK_ALL
 from _engines import MASK_SOLID
 from _engines import MASK_PLAYERSOLID
@@ -81,6 +86,14 @@ from _engines import MASK_NPCWORLDSTATIC
 from _engines import MASK_SPLITAREAPORTAL
 from _engines import MASK_CURRENT
 from _engines import MASK_DEADSOLID
+from _engines import MAX_COORD_INTEGER
+from _engines import MAX_COORD_FRACTION
+from _engines import MAX_COORD_FLOAT
+from _engines import MAX_TRACE_LENGTH
+from _engines import MAX_COORD_RANGE
+from _engines import MIN_COORD_INTEGER
+from _engines import MIN_COORD_FRACTION
+from _engines import MIN_COORD_FLOAT
 from _engines import SURF_LIGHT
 from _engines import SURF_SKY2D
 from _engines import SURF_SKY
@@ -97,8 +110,6 @@ from _engines import SURF_NOSHADOWS
 from _engines import SURF_NODECALS
 from _engines import SURF_NOCHOP
 from _engines import SURF_HITBOX
-#   Entities
-from entities.helpers import inthandle_from_index
 
 
 # =============================================================================
@@ -110,6 +121,14 @@ __all__ = ('BaseTrace',
            'DisplacementFlags',
            'EntityEnumerator',
            'GameTrace',
+           'MAX_COORD_INTEGER',
+           'MAX_COORD_FRACTION',
+           'MAX_COORD_FLOAT',
+           'MAX_TRACE_LENGTH',
+           'MAX_COORD_RANGE',
+           'MIN_COORD_INTEGER',
+           'MIN_COORD_FRACTION',
+           'MIN_COORD_FLOAT',
            'Ray',
            'Surface',
            'SurfaceFlags',
@@ -221,6 +240,9 @@ class SurfaceFlags(IntEnum):
     HITBOX = SURF_HITBOX
 
 
+# =============================================================================
+# >> CLASSES
+# =============================================================================
 class TraceFilterSimple(TraceFilter):
 
     """A simple trace filter."""

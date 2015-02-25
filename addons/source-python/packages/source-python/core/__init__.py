@@ -27,8 +27,8 @@ from paths import GAME_PATH
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Constants
-from constants import SOURCE_ENGINE
+#   Core
+from _core import SOURCE_ENGINE
 #   Globals
 from _globals import global_vars
 from _globals import MapLoadType
