@@ -196,8 +196,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         """
         # Create the page info string
         info = '[{0}/{1}]\n'.format(page.index + 1, self.page_count)
-        buffer = (_translate_text(self.title or '', player_index)).ljust(
-            len(self.top_seperator) - len(info)) + info
+
+        buffer = '{0} {1}'.format(_translate_text(
+            self.title, player_index), info) if self.title else info
 
         # Set description if present
         if self.description is not None:
