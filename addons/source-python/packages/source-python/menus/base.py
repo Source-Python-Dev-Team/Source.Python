@@ -253,6 +253,15 @@ class _PagedMenuBase(object):
 
     """Implements the base of every page based menu."""
 
+    def _get_max_item_count(self):
+        """Return the maximum possible item count per page."""
+        raise NotImplementedError
+
+    def _get_options(self, page_index):
+        """Return a tuple containing the options for the given page index."""
+        item_count = self._get_max_item_count()
+        return self[page_index * item_count: (page_index + 1) * item_count]
+
     @property
     def last_page_index(self):
         """Return the index of the last page."""
@@ -261,7 +270,7 @@ class _PagedMenuBase(object):
     @property
     def page_count(self):
         """Return the number of pages the menu currently has."""
-        return int(math.ceil(len(self) / 5.0)) or 1
+        return int(math.ceil(len(self) / self._get_max_item_count())) or 1
 
     def set_player_page(self, player_index, page_index):
         """Set the player's current page index.

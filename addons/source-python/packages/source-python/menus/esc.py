@@ -191,6 +191,10 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             description, title, title_color)
         self.fill = fill
 
+    def _get_max_item_count(self):
+        """Return the maximum possible item count per page."""
+        return 5
+
     def _format_header(self, player_index, page, data):
         """Prepare the header for the menu.
 
@@ -227,9 +231,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         The current menu data.
         """
         # Loop through all options of the current page
-        for index, option in enumerate(
-                self[page.index * 5:(page.index + 1) * 5], 1):
-
+        for index, option in enumerate(self._get_options(page.index), 1):
             if isinstance(option, PagedESCOption):
                 page.options[index] = option
                 button = data.find_key(str(index), True)

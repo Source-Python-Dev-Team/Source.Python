@@ -182,6 +182,10 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         self.bottom_seperator = bottom_seperator
         self.fill = fill
 
+    def _get_max_item_count(self):
+        """Return the maximum possible item count per page."""
+        return 7
+
     def _format_header(self, player_index, page, slots):
         """Prepare the header for the menu.
 
@@ -225,8 +229,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         buffer = ''
 
         # Get all options for the current page
-        options = tuple(enumerate(
-            self[page.index * 7: (page.index + 1) * 7], 1))
+        options = tuple(enumerate(self._get_options(page.index), 1))
         page.options = dict(options)
 
         # Loop through all options of the current page
