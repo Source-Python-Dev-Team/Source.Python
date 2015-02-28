@@ -77,7 +77,7 @@ void modulsp_init( void )
 			scope moduleScope = newmodule;
 
 			// Run the module's init function.
-			g_SourcePythonModules[i].initFunc();
+			g_SourcePythonModules[i].initFunc(moduleScope);
 		}
 	END_BOOST_PY_NORET()
 }

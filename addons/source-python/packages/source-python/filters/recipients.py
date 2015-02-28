@@ -6,8 +6,8 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-#   Recipients
-from _recipients import _RecipientFilter
+#   Filters
+from _filters._recipients import _RecipientFilter
 
 
 # =============================================================================

@@ -25,35 +25,25 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
 #include "commands_wrap.h"
 #include "server_commands_wrap.h"
-#include "client_commands_wrap.h"
 #include "say_commands_wrap.h"
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
 
+
 //-----------------------------------------------------------------------------
-// Externs.
+// Externals.
 //-----------------------------------------------------------------------------
-extern CClientCommandManager* GetClientCommand(const char* szName);
-extern CServerCommandManager* GetServerCommand(const char* szName,
-	const char* szHelpText = 0, int iFlags = 0);
-extern CSayCommandManager* GetSayCommand(const char* szName);
-
-extern void RegisterClientCommandFilter(PyObject* pCallable);
-extern void UnregisterClientCommandFilter(PyObject* pCallable);
-
-extern void RegisterSayFilter(PyObject* pCallable);
-extern void UnregisterSayFilter(PyObject* pCallable);
-
 extern void InitServerCommands();
 extern void ClearAllServerCommands();
 
 extern void RegisterSayCommands();
 extern void UnregisterSayCommands();
+
 
 //-----------------------------------------------------------------------------
 // Initializes the Server and Say command modules.
@@ -67,6 +57,7 @@ void InitCommands()
 	InitServerCommands();
 }
 
+
 //-----------------------------------------------------------------------------
 // Clears all command instances.
 //-----------------------------------------------------------------------------
@@ -79,46 +70,31 @@ void ClearAllCommands()
 	ClearAllServerCommands();
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes the command module.
+// Forward declarations.
 //-----------------------------------------------------------------------------
 void export_command();
+void export_command_return();
 void export_concommandbase();
-void export_server_command();
-void export_client_command();
-void export_say_command();
 
+
+//-----------------------------------------------------------------------------
+// Declare the _commands module.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_commands)
 {
 	export_command();
+	export_command_return();
 	export_concommandbase();
-	export_server_command();
-	export_client_command();
-	export_say_command();
 }
 
-//-----------------------------------------------------------------------------
-// Exposes the CICommand interface.
-//-----------------------------------------------------------------------------
-class CCommandExt
-{
-public:
-	static const char* GetArg(CCommand command, unsigned int iIndex)
-	{
-		if ((int) iIndex >= command.ArgC())
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
 
-		return command[iIndex];
-	}
-};
-
+//-----------------------------------------------------------------------------
+// Expose CCommand.
+//-----------------------------------------------------------------------------
 void export_command()
 {
-	enum_<CommandReturn>("CommandReturn")
-		.value("CONTINUE", CONTINUE)
-		.value("BLOCK", BLOCK)
-	;
-
 	class_<CCommand>("Command")
 		.def("get_arg_count",
 			&CCommand::ArgC,
@@ -156,6 +132,22 @@ void export_command()
 	;
 }
 
+
+//-----------------------------------------------------------------------------
+// Expose CommandReturn.
+//-----------------------------------------------------------------------------
+void export_command_return()
+{
+	enum_<CommandReturn>("CommandReturn")
+		.value("CONTINUE", CONTINUE)
+		.value("BLOCK", BLOCK)
+	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose ConCommandBase.
+//-----------------------------------------------------------------------------
 void export_concommandbase()
 {
 	class_<ConCommandBase>("ConCommandBase")
@@ -217,111 +209,4 @@ void export_concommandbase()
 
 		ADD_MEM_TOOLS(ConCommandBase, "ConCommandBase")
 	;
-}
-
-//-----------------------------------------------------------------------------
-// Exposes the Server Command interface.
-//-----------------------------------------------------------------------------
-BOOST_PYTHON_FUNCTION_OVERLOADS( get_server_command_overloads, GetServerCommand, 1, 3)
-
-void export_server_command()
-{
-	class_<CServerCommandManager, bases<ConCommandBase>, boost::noncopyable>("ServerCommandDispatcher", no_init)
-		.def("add_callback",
-			&CServerCommandManager::AddCallback,
-			"Adds a callback to the server command's list.",
-			args("callable")
-		)
-
-		.def("remove_callback",
-			&CServerCommandManager::RemoveCallback,
-			"Removes a callback from the server command's list.",
-			args("callable")
-		)
-	;
-
-	def("get_server_command",
-		GetServerCommand,
-		get_server_command_overloads("Gets the ServerCommandDispatcher instance using just the name or also the helptext and/or flags",
-			args("name", "help_text", "flags")
-		)[reference_existing_object_policy()]
-	);
-}
-
-//-----------------------------------------------------------------------------
-// Exposes the Client Command interface.
-//-----------------------------------------------------------------------------
-void export_client_command()
-{
-	class_<CClientCommandManager, boost::noncopyable>("ClientCommandDispatcher", no_init)
-		.def("add_callback",
-			&CClientCommandManager::AddCallback,
-			"Adds a callback to the client command's list.",
-			args("callable")
-		)
-
-		.def("remove_callback",
-			&CClientCommandManager::RemoveCallback,
-			"Removes a callback from the client command's list.",
-			args("callable")
-		)
-	;
-
-	def("get_client_command",
-		GetClientCommand,
-		"Returns the ClientCommandDispatcher instance for the given command",
-		args("name"),
-		reference_existing_object_policy()
-	);
-
-	def("register_client_command_filter",
-		RegisterClientCommandFilter,
-		"Registers a callable to be called when clients use commands.",
-		args("callable")
-	);
-
-	def("unregister_client_command_filter",
-		UnregisterClientCommandFilter,
-		"Unregisters a client command filter.",
-		args("callable")
-	);
-}
-
-//-----------------------------------------------------------------------------
-// Exposes the Say Command interface.
-//-----------------------------------------------------------------------------
-void export_say_command()
-{
-	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
-		.def("add_callback",
-			&CSayCommandManager::AddCallback,
-			"Adds a callback to the say command's list.",
-			args("callable")
-		)
-
-		.def("remove_callback",
-			&CSayCommandManager::RemoveCallback,
-			"Removes a callback from the say command's list.",
-			args("callable")
-		)
-	;
-
-	def("get_say_command",
-		GetSayCommand,
-		"Returns the SayCommandDispatcher instance for the given command",
-		args("name"),
-		reference_existing_object_policy()
-	);
-
-	def("register_say_filter",
-		RegisterSayFilter,
-		"Registers a callable to be called when clients use the say commands (say, say_team).",
-		args("callable")
-	);
-
-	def("unregister_say_filter",
-		UnregisterSayFilter,
-		"Unregisters a say filter.",
-		args("callable")
-	);
 }

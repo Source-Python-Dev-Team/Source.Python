@@ -19,8 +19,8 @@ from paths import SP_DATA_PATH
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from _entities import EntityFactory
-from _entities import EntityFactoryDictionary
+from _entities._factories import EntityFactory
+from _entities._factories import EntityFactoryDictionary
 
 
 # =============================================================================

@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _CONVERSIONS_WRAP_H
-#define _CONVERSIONS_WRAP_H
+#ifndef _CONVERSIONS_H
+#define _CONVERSIONS_H
 
 //-----------------------------------------------------------------------------
 // Includes
@@ -420,4 +420,4 @@ inline IPlayerInfo* PlayerInfoFromUserid( unsigned int userid )
 	return PlayerInfoFromEdict(EdictFromUserid(userid));
 }
 
-#endif // _CONVERSIONS_WRAP_H
+#endif // _CONVERSIONS_H

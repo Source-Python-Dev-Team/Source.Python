@@ -34,7 +34,7 @@
 #include "game/shared/shareddefs.h"
 #include "game/server/util.h"
 #include "tier1/utldict.h"
-#include "modules/conversions/conversions_wrap.h"
+#include "utility/conversions.h"
 
 
 //-----------------------------------------------------------------------------

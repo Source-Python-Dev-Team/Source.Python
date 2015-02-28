@@ -7,9 +7,9 @@
 # =============================================================================
 # Source.Python Imports
 #   Bots
-from _bots import BotCmd
-from _bots import BotController
-from _bots import bot_manager
+from _players._bots import BotCmd
+from _players._bots import BotController
+from _players._bots import bot_manager
 
 
 # =============================================================================

@@ -31,7 +31,7 @@
 #include "utility/sp_util.h"
 #include "game/server/iplayerinfo.h"
 #include "boost/python/iterator.hpp"
-#include "modules/conversions/conversions_wrap.h"
+#include "utility/conversions.h"
 
 // ----------------------------------------------------------------------------
 // External variables.

@@ -36,7 +36,7 @@
 #include "datamap.h"
 #include "game/server/variant_t.h"
 #include "Color.h"
-#include "modules/conversions/conversions_wrap.h"
+#include "utility/conversions.h"
 
 
 //-----------------------------------------------------------------------------

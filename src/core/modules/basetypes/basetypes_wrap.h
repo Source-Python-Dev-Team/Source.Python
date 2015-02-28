@@ -36,7 +36,7 @@
 #include "datamap.h"
 #include "game/shared/takedamageinfo.h"
 #include "modules/memory/memory_tools.h"
-#include "modules/conversions/conversions_wrap.h"
+#include "utility/conversions.h"
 
 
 //-----------------------------------------------------------------------------

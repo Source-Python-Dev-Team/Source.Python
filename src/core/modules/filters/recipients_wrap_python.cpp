@@ -34,15 +34,21 @@
 #include "mrecipientfilter.h"
 #include "modules/memory/memory_tools.h"
 
+
 //-----------------------------------------------------------------------------
-// Exposes the recipientfilter_c module.
+// Forward declarations.
 //-----------------------------------------------------------------------------
 void export_mrecipientfilter();
 
-DECLARE_SP_MODULE(_recipients)
+
+//-----------------------------------------------------------------------------
+// Declare the _filters._recipients module.
+//-----------------------------------------------------------------------------
+DECLARE_SP_SUBMODULE(_filters, _recipients)
 {
 	export_mrecipientfilter();
 }
+
 
 //-----------------------------------------------------------------------------
 // Expose MRecipientFilter

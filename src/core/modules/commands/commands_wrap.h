@@ -27,6 +27,13 @@
 #define _COMMAND_WRAP_H
 
 //-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "convar.h"
+#include "utility/wrap_macros.h"
+
+
+//-----------------------------------------------------------------------------
 // Return values.
 //-----------------------------------------------------------------------------
 enum CommandReturn
@@ -34,5 +41,22 @@ enum CommandReturn
 	BLOCK = 0,
 	CONTINUE
 };
+
+
+//-----------------------------------------------------------------------------
+// CCommand extension class.
+//-----------------------------------------------------------------------------
+class CCommandExt
+{
+public:
+	static const char* GetArg(CCommand command, unsigned int iIndex)
+	{
+		if ((int) iIndex >= command.ArgC())
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
+
+		return command[iIndex];
+	}
+};
+
 
 #endif // _COMMAND_WRAP_H

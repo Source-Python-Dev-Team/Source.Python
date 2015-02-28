@@ -40,15 +40,20 @@
 //---------------------------------------------------------------------------------
 // Python init function typedef.
 //---------------------------------------------------------------------------------
-typedef void (*ModuleInitFn)( void );
+typedef void (*ModuleInitFn)( scope );
 
 //---------------------------------------------------------------------------------
 // This declares a Source.Python module.
 //---------------------------------------------------------------------------------
 #define DECLARE_SP_MODULE( name ) \
-	void PyInit_##name( void ); \
+	void PyInit_##name( scope ); \
 	static CSPModule g_##name##_Init(XSTRINGIFY(name), &PyInit_##name); \
-	void PyInit_##name( void )
+	void PyInit_##name( scope name )
+
+#define DECLARE_SP_SUBMODULE( package, name ) \
+	void PyInit_##package##_##name( scope ); \
+	static CSPModule g_##package##_##name##_Init(XSTRINGIFY(package##.##name), &PyInit_##package##_##name); \
+	void PyInit_##package##_##name( scope name )
 
 //---------------------------------------------------------------------------------
 // This is a module definition structure. The way our module system is going to

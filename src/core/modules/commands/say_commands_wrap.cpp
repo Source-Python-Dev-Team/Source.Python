@@ -38,7 +38,7 @@
 #include "boost/shared_array.hpp"
 #include "core/sp_main.h"
 #include "modules/listeners/listeners_manager.h"
-#include "modules/conversions/conversions_wrap.h"
+#include "utility/conversions.h"
 
 //-----------------------------------------------------------------------------
 // Global say command mapping.

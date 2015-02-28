@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,38 +24,77 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_HELPERS_WRAP_ORANGEBOX_H
-#define _ENTITIES_HELPERS_WRAP_ORANGEBOX_H
-
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include "say_commands_wrap.h"
+#include "modules/export_main.h"
 #include "utility/wrap_macros.h"
-#include "toolframework/itoolentity.h"
-#include "utility/conversions.h"
 #include "modules/memory/memory_tools.h"
 
 
 //-----------------------------------------------------------------------------
-// External variables.
+// Externals.
 //-----------------------------------------------------------------------------
-extern IServerTools *servertools;
+extern CSayCommandManager* GetSayCommand(const char* szName);
+
+extern void RegisterSayFilter(PyObject* pCallable);
+extern void UnregisterSayFilter(PyObject* pCallable);
 
 
 //-----------------------------------------------------------------------------
-// Removes the given entity index...
+// Forward declarations.
 //-----------------------------------------------------------------------------
-void remove_entity(unsigned int uiEntityIndex)
+void export_say_command_manager();
+
+
+//-----------------------------------------------------------------------------
+// Declare the _commands._say module.
+//-----------------------------------------------------------------------------
+DECLARE_SP_SUBMODULE(_commands, _say)
 {
-	CPointer *pEntity = PointerFromIndex(uiEntityIndex);
-	if (!pEntity)
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity " \
-			"matching the given index \"%u\".", uiEntityIndex);
-	}
-	CBaseEntity *pBaseEntity = (CBaseEntity *)pEntity->m_ulAddr;
-	servertools->RemoveEntity(pBaseEntity);
+	export_say_command_manager();
+
+	// Helper functions...
+	def("get_say_command",
+		GetSayCommand,
+		"Returns the SayCommandDispatcher instance for the given command",
+		args("name"),
+		reference_existing_object_policy()
+	);
+
+	def("register_say_filter",
+		RegisterSayFilter,
+		"Registers a callable to be called when clients use the say commands (say, say_team).",
+		args("callable")
+	);
+
+	def("unregister_say_filter",
+		UnregisterSayFilter,
+		"Unregisters a say filter.",
+		args("callable")
+	);
 }
 
 
-#endif // _ENTITIES_HELPERS_WRAP_ORANGEBOX_H
+//-----------------------------------------------------------------------------
+// Expose CSayCommandManager.
+//-----------------------------------------------------------------------------
+void export_say_command_manager()
+{
+	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
+		.def("add_callback",
+			&CSayCommandManager::AddCallback,
+			"Adds a callback to the say command's list.",
+			args("callable")
+		)
+
+		.def("remove_callback",
+			&CSayCommandManager::RemoveCallback,
+			"Removes a callback from the say command's list.",
+			args("callable")
+		)
+
+		ADD_MEM_TOOLS(CSayCommandManager, "SayCommandDispatcher")
+	;
+}

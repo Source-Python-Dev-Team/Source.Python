@@ -49,7 +49,7 @@ void export_type_description_flags();
 //-----------------------------------------------------------------------------
 // Declare the _datamaps module.
 //-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(_datamaps)
+DECLARE_SP_SUBMODULE(_entities, _datamaps)
 {
 	export_datamap();
 	export_type_description();

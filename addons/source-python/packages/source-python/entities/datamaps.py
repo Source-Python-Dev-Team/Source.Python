@@ -6,13 +6,21 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-from _datamaps import DataMap
-from _datamaps import FieldTypes
-from _datamaps import InputData
-from _datamaps import TypeDescription
-from _datamaps import TypeDescriptionFlags
-from _datamaps import Variant
+#   Memory
 from memory import Function
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Entities
+from _entities._datamaps import DataMap
+from _entities._datamaps import FieldTypes
+from _entities._datamaps import InputData
+from _entities._datamaps import TypeDescription
+from _entities._datamaps import TypeDescriptionFlags
+from _entities._datamaps import Variant
 
 
 # =============================================================================

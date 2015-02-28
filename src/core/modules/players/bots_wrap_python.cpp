@@ -24,9 +24,9 @@
 * Development Team grants this exception to all derivative works.
 */
 
-// ----------------------------------------------------------------------------
-// Includes
-// ----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
 #include "modules/export_main.h"
 using namespace boost::python;
 
@@ -36,23 +36,34 @@ using namespace boost::python;
 #include "public/game/server/iplayerinfo.h"
 
 
-// Externals
+//-----------------------------------------------------------------------------
+// Externals.
+//-----------------------------------------------------------------------------
 extern IBotManager* botmanager;
 
-// ----------------------------------------------------------------------------
-// Exposes the bot_c module
-// ----------------------------------------------------------------------------
+
+//-----------------------------------------------------------------------------
+// Forward declarations.
+//-----------------------------------------------------------------------------
 void export_botmanager();
 void export_botcontroller();
 void export_botcmd();
 
-DECLARE_SP_MODULE(_bots)
+
+//-----------------------------------------------------------------------------
+// Declare the _players._bots module.
+//-----------------------------------------------------------------------------
+DECLARE_SP_SUBMODULE(_players, _bots)
 {
 	export_botmanager();
 	export_botcontroller();
 	export_botcmd();
 }
 
+
+//-----------------------------------------------------------------------------
+// Expose IBotManager.
+//-----------------------------------------------------------------------------
 void export_botmanager()
 {
 	class_<IBotManager, boost::noncopyable>("_BotManager", no_init)
@@ -76,6 +87,10 @@ void export_botmanager()
 	scope().attr("bot_manager") = object(ptr(botmanager));
 }
 
+
+//-----------------------------------------------------------------------------
+// Expose IBotController.
+//-----------------------------------------------------------------------------
 void export_botcontroller()
 {
 	class_<IBotController, boost::noncopyable>("BotController", no_init)
@@ -141,6 +156,10 @@ void export_botcontroller()
 	;
 }
 
+
+//-----------------------------------------------------------------------------
+// Expose CBotCmd.
+//-----------------------------------------------------------------------------
 void export_botcmd()
 {
 	class_<CBotCmd>("BotCmd")

@@ -35,7 +35,7 @@
 #include "utility/wrap_macros.h"
 #include "modules/listeners/listeners_manager.h"
 #include "modules/entities/entities_wrap.h"
-#include "modules/conversions/conversions_wrap.h"
+#include "utility/conversions.h"
 
 //---------------------------------------------------------------------------------
 // External variables
