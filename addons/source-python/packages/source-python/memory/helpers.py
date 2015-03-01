@@ -13,11 +13,10 @@ import binascii
 #   Core
 from core import PLATFORM
 #   Memory
-from memory import Argument
 from memory import Convention
+from memory import DataType
 from memory import Function
 from memory import Pointer
-from memory import Return
 from memory import TYPE_SIZES
 from memory import make_object
 
@@ -115,11 +114,11 @@ class Key(object):
 
     @staticmethod
     def as_args_tuple(value):
-        """Convert a string into a tuple containing <Argument> elements."""
+        """Convert a string into a tuple containing <DataType> elements."""
         if isinstance(value, str):
-            return (Argument.names[value], )
+            return (DataType.names[value], )
 
-        return tuple(Argument.names[item] for item in value)
+        return tuple(DataType.names[item] for item in value)
 
     @staticmethod
     def as_return_type(value):
@@ -127,7 +126,7 @@ class Key(object):
 
         If the conversion fails, the string itself will be returned.
         """
-        return Return.names.get(value, value)
+        return DataType.names.get(value, value)
 
     @staticmethod
     def as_identifier(value):

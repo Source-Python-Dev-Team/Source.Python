@@ -11,10 +11,9 @@ from configobj import ConfigObj
 
 # Source.Python
 #   Memory
-from memory import Argument
 from memory import Convention
+from memory import DataType
 from memory import EXPOSED_CLASSES
-from memory import Return
 from memory import TYPE_SIZES
 from memory import alloc
 from memory import find_binary
@@ -256,7 +255,7 @@ class TypeManager(dict):
                 (Key.BINARY, str, NO_DEFAULT),
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
                 (Key.ARGS, Key.as_args_tuple, ()),
-                (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
+                (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.CDECL),
                 (Key.SRV_CHECK, Key.as_bool, True),
                 (Key.DOC, str, None)
@@ -271,11 +270,11 @@ class TypeManager(dict):
         return self.create_pipe(cls_dict)
 
     def pipe_function(
-            self, binary, identifier, args=(), return_type=Return.VOID,
+            self, binary, identifier, args=(), return_type=DataType.VOID,
             convention=Convention.CDECL, srv_check=True, doc=None):
         """Create a simple pipe function."""
         # Create a converter, if it's not a native type
-        if return_type not in Return.values:
+        if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
         # Find the binary
@@ -349,7 +348,7 @@ class TypeManager(dict):
             (
                 (Key.OFFSET, int, NO_DEFAULT),
                 (Key.ARGS, Key.as_args_tuple, ()),
-                (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
+                (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.THISCALL),
                 (Key.DOC, str, None)
             )
@@ -365,7 +364,7 @@ class TypeManager(dict):
             (
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
                 (Key.ARGS, Key.as_args_tuple, ()),
-                (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
+                (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.THISCALL),
                 (Key.DOC, str, None)
             )
@@ -552,14 +551,14 @@ class TypeManager(dict):
         return property(fget, fset, None, doc)
 
     def virtual_function(
-            self, index, args=(), return_type=Return.VOID,
+            self, index, args=(), return_type=DataType.VOID,
             convention=Convention.THISCALL, doc=None):
         """Create a wrapper for a virtual function."""
         # Automatically add the this pointer argument
-        args = (Argument.POINTER,) + tuple(args)
+        args = (DataType.POINTER,) + tuple(args)
 
         # Create a converter, if it's not a native type
-        if return_type not in Return.values:
+        if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
         def fget(ptr):
@@ -579,14 +578,14 @@ class TypeManager(dict):
         return property(fget, None, None, doc)
 
     def function(
-            self, identifier, args=(), return_type=Return.VOID,
+            self, identifier, args=(), return_type=DataType.VOID,
             convention=Convention.THISCALL, doc=None):
         """Create a wrapper for a function."""
         # Automatically add the this pointer argument
-        args = (Argument.POINTER,) + tuple(args)
+        args = (DataType.POINTER,) + tuple(args)
 
         # Create a converter, if it's not a native type
-        if return_type not in Return.values:
+        if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
         class fget(object):
@@ -616,7 +615,7 @@ class TypeManager(dict):
         return fget()
 
     def function_typedef(
-            self, name, args=(), return_type=Return.VOID,
+            self, name, args=(), return_type=DataType.VOID,
             convention=Convention.CDECL, doc=None):
         """Create a new function typedef.
 
@@ -625,7 +624,7 @@ class TypeManager(dict):
         by this method.
         """
         # Create a converter, if it's not a native type
-        if return_type not in Return.values:
+        if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
         def make_function(ptr):
@@ -647,7 +646,7 @@ class TypeManager(dict):
             raw_data,
             (
                 (Key.ARGS, Key.as_args_tuple, ()),
-                (Key.RETURN_TYPE, Key.as_return_type, Return.VOID),
+                (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.CDECL),
                 (Key.DOC, str, None)
             )

@@ -35,9 +35,8 @@ from entities.datamaps import InputFunction
 from entities.datamaps import TypeDescriptionFlags
 from entities.helpers import edict_from_pointer
 #   Memory
-from memory import Argument
 from memory import Convention
-from memory import Return
+from memory import DataType
 from memory import get_object_pointer
 from memory import make_object
 from memory.helpers import Type
@@ -157,7 +156,7 @@ class _ServerClasses(TypeManager):
             # Get the DataMap object for the entity
             function = entity.pointer.make_virtual_function(
                 DATA_DESC_MAP_OFFSET, Convention.THISCALL,
-                (Argument.POINTER, ), Return.POINTER)
+                (DataType.POINTER, ), DataType.POINTER)
             datamap = make_object(DataMap, function(entity.pointer))
 
             # Add all DataMaps for the entity to the dictionary
@@ -511,8 +510,8 @@ class _ServerClasses(TypeManager):
             """Retrieve the InputFunction instance."""
             function = desc.input.make_function(
                 Convention.THISCALL,
-                (Argument.POINTER, Argument.POINTER),
-                Return.VOID)
+                (DataType.POINTER, DataType.POINTER),
+                DataType.VOID)
 
             return InputFunction(name, argument_type, function, pointer)
 
