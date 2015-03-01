@@ -181,7 +181,7 @@ CPointer* CPointer::Realloc(int iSize)
 	return new CPointer((unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize)); 
 }
 
-CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, object return_type)
+CFunction* CPointer::MakeFunction(Convention_t eConv, object args, object return_type)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
@@ -189,7 +189,7 @@ CFunction* CPointer::MakeFunction(Convention_t eConv, tuple args, object return_
 	return new CFunction(m_ulAddr, eConv, args, return_type);
 }
 
-CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, tuple args, object return_type)
+CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, object args, object return_type)
 {
 	return GetVirtualFunc(iIndex)->MakeFunction(eConv, args, return_type);
 }
@@ -241,11 +241,11 @@ void CPointer::__del__(PyObject* self)
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
-CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, tuple args, object return_type)
+CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, object args, object return_type)
 	: CPointer(ulAddr)
 {
 	m_eConv = eConv;
-	m_Args = args;
+	m_Args = tuple(args);
 	m_oReturnType = return_type;
 }
 
