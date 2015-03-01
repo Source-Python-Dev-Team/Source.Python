@@ -265,39 +265,39 @@ object CFunction::Call(tuple args, dict kw)
 	for(int i=0; i < len(args); i++)
 	{
 		object arg = args[i];
-		switch(extract<Argument_t>(m_Args[i]))
+		switch(extract<DataType_t>(m_Args[i]))
 		{
-			case DC_SIGCHAR_BOOL:      dcArgBool(g_pCallVM, extract<bool>(arg)); break;
-			case DC_SIGCHAR_CHAR:      dcArgChar(g_pCallVM, extract<char>(arg)); break;
-			case DC_SIGCHAR_UCHAR:     dcArgChar(g_pCallVM, extract<unsigned char>(arg)); break;
-			case DC_SIGCHAR_SHORT:     dcArgShort(g_pCallVM, extract<short>(arg)); break;
-			case DC_SIGCHAR_USHORT:    dcArgShort(g_pCallVM, extract<unsigned short>(arg)); break;
-			case DC_SIGCHAR_INT:       dcArgInt(g_pCallVM, extract<int>(arg)); break;
-			case DC_SIGCHAR_UINT:      dcArgInt(g_pCallVM, extract<unsigned int>(arg)); break;
-			case DC_SIGCHAR_LONG:      dcArgLong(g_pCallVM, extract<long>(arg)); break;
-			case DC_SIGCHAR_ULONG:     dcArgLong(g_pCallVM, extract<unsigned long>(arg)); break;
-			case DC_SIGCHAR_LONGLONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
-			case DC_SIGCHAR_ULONGLONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
-			case DC_SIGCHAR_FLOAT:     dcArgFloat(g_pCallVM, extract<float>(arg)); break;
-			case DC_SIGCHAR_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
-			case DC_SIGCHAR_POINTER:
+			case DATA_TYPE_BOOL:      dcArgBool(g_pCallVM, extract<bool>(arg)); break;
+			case DATA_TYPE_CHAR:      dcArgChar(g_pCallVM, extract<char>(arg)); break;
+			case DATA_TYPE_UCHAR:     dcArgChar(g_pCallVM, extract<unsigned char>(arg)); break;
+			case DATA_TYPE_SHORT:     dcArgShort(g_pCallVM, extract<short>(arg)); break;
+			case DATA_TYPE_USHORT:    dcArgShort(g_pCallVM, extract<unsigned short>(arg)); break;
+			case DATA_TYPE_INT:       dcArgInt(g_pCallVM, extract<int>(arg)); break;
+			case DATA_TYPE_UINT:      dcArgInt(g_pCallVM, extract<unsigned int>(arg)); break;
+			case DATA_TYPE_LONG:      dcArgLong(g_pCallVM, extract<long>(arg)); break;
+			case DATA_TYPE_ULONG:     dcArgLong(g_pCallVM, extract<unsigned long>(arg)); break;
+			case DATA_TYPE_LONGLONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
+			case DATA_TYPE_ULONGLONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
+			case DATA_TYPE_FLOAT:     dcArgFloat(g_pCallVM, extract<float>(arg)); break;
+			case DATA_TYPE_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
+			case DATA_TYPE_POINTER:
 			{
 				unsigned long ulAddr = 0;
 				if (arg.ptr() != Py_None)
 					ulAddr = ExtractPointer(arg)->m_ulAddr;
 				dcArgPointer(g_pCallVM, ulAddr);
 			} break;
-			case DC_SIGCHAR_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
+			case DATA_TYPE_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
 			default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown argument type.")
 		}
 	}
 
-	ReturnType_t return_type;
+	DataType_t return_type;
 
 	// Try to get the return type
 	try
 	{
-		return_type = extract<ReturnType_t>(m_oReturnType);
+		return_type = extract<DataType_t>(m_oReturnType);
 	}
 	catch( ... )
 	{
@@ -310,22 +310,22 @@ object CFunction::Call(tuple args, dict kw)
 	// Call the function
 	switch(return_type)
 	{
-		case DC_SIGCHAR_VOID:      dcCallVoid(g_pCallVM, m_ulAddr); break;
-		case DC_SIGCHAR_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_CHAR:      return object(dcCallChar(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_UCHAR:     return object((unsigned char) dcCallChar(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_SHORT:     return object(dcCallShort(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_USHORT:    return object((unsigned short) dcCallShort(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_INT:       return object(dcCallInt(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_UINT:      return object((unsigned int) dcCallInt(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_LONG:      return object(dcCallLong(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_ULONG:     return object((unsigned long) dcCallLong(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_LONGLONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_ULONGLONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
-		case DC_SIGCHAR_POINTER:   return object(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
-		case DC_SIGCHAR_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_VOID:      dcCallVoid(g_pCallVM, m_ulAddr); break;
+		case DATA_TYPE_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_CHAR:      return object(dcCallChar(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_UCHAR:     return object((unsigned char) dcCallChar(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_SHORT:     return object(dcCallShort(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_USHORT:    return object((unsigned short) dcCallShort(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_INT:       return object(dcCallInt(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_UINT:      return object((unsigned int) dcCallInt(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_LONG:      return object(dcCallLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_ULONG:     return object((unsigned long) dcCallLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_LONGLONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_ULONGLONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_POINTER:   return object(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
+		case DATA_TYPE_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
 	}
 	return object();
@@ -349,15 +349,15 @@ handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	// Generate the argument string
-	ReturnType_t return_type;
+	DataType_t return_type;
 	try
 	{
-		return_type = extract<ReturnType_t>(m_oReturnType);
+		return_type = extract<DataType_t>(m_oReturnType);
 	}
 	catch ( ... )
 	{
 		PyErr_Clear();
-		return_type = RET_POINTER;
+		return_type = DATA_TYPE_POINTER;
 	}
 	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, return_type));
 
