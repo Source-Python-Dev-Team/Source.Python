@@ -52,7 +52,7 @@ typedef void (*ModuleInitFn)( scope );
 
 #define DECLARE_SP_SUBMODULE( package, name ) \
 	void PyInit_##package##_##name( scope ); \
-	static CSPModule g_##package##_##name##_Init(XSTRINGIFY(package##.##name), &PyInit_##package##_##name); \
+	static CSPModule g_##package##_##name##_Init( XSTRINGIFY(package.name), &PyInit_##package##_##name ); \
 	void PyInit_##package##_##name( scope name )
 
 //---------------------------------------------------------------------------------
