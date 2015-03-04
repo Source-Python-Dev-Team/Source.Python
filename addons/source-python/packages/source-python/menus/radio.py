@@ -135,7 +135,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             self, data=None, select_callback=None,
             build_callback=None, description=None,
             title=None, top_seperator='-' * 30, bottom_seperator='-' * 30,
-            fill=True):
+            fill=True, description_kwargs={}, title_kwargs={}):
         """Initialize the PagedRadioMenu instance.
 
         @param <data>:
@@ -171,13 +171,21 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         @param <fill>:
         If True the menu will be filled so that it will always have the same
         size.
+
+        @param <description_kwargs>:
+        Descriptions's keyword arguments for _translate_text.
+
+        @param <title_kwargs>:
+        Title's keyword arguments for _translate_text.
         """
         super(PagedRadioMenu, self).__init__(
             data, select_callback, build_callback
         )
 
         self.title = title
+        self.title_kwargs = title_kwargs
         self.description = description
+        self.description_kwargs = description_kwargs
         self.top_seperator = top_seperator
         self.bottom_seperator = bottom_seperator
         self.fill = fill
@@ -201,12 +209,14 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         # Create the page info string
         info = '[{0}/{1}]\n'.format(page.index + 1, self.page_count)
 
-        buffer = '{0} {1}'.format(_translate_text(
-            self.title, player_index), info) if self.title else info
+        buffer = '{0} {1}'.format(
+            _translate_text(self.title, player_index, **self.title_kwargs),
+            info) if self.title else info
 
         # Set description if present
         if self.description is not None:
-            buffer += _translate_text(self.description, player_index) + '\n'
+            buffer += _translate_text(
+                self.description, player_index, **self) + '\n'
 
         # Set the top seperator if present
         if self.top_seperator is not None:
@@ -361,7 +371,7 @@ class SimpleRadioOption(_BaseRadioOption):
 
     def __init__(
             self, choice_index, text, value=None,
-            highlight=True, selectable=True):
+            highlight=True, selectable=True, **kwargs):
         """Initialize the option.
 
         @param <choice_index>:
@@ -380,7 +390,7 @@ class SimpleRadioOption(_BaseRadioOption):
         Set this to True if the option should be selectable.
         """
         super(SimpleRadioOption, self).__init__(
-            text, value, highlight, selectable)
+            text, value, highlight, selectable, **kwargs)
         self.choice_index = choice_index
 
     def _render(self, player_index, choice_index=None):
@@ -396,7 +406,7 @@ class SimpleRadioOption(_BaseRadioOption):
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
             self.choice_index,
-            _translate_text(self.text, player_index)
+            _translate_text(self.text, player_index, **self.kwargs)
         )
 
 
@@ -417,5 +427,5 @@ class PagedRadioOption(_BaseRadioOption):
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
             choice_index,
-            _translate_text(self.text, player_index)
+            _translate_text(self.text, player_index, **self.kwargs)
         )

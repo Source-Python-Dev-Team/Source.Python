@@ -44,7 +44,8 @@ class SimpleESCMenu(_BaseMenu):
 
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
-            description=None, title=None, title_color=WHITE):
+            description=None, title=None, title_color=WHITE,
+            description_kwargs={}, title_kwargs={}):
         """Initialize the SimpleESCMenu instance.
 
         @param <data>:
@@ -73,12 +74,20 @@ class SimpleESCMenu(_BaseMenu):
 
         @param <title_color>:
         The color of the title.
+
+        @param <description_kwargs>:
+        Descriptions's keyword arguments for _translate_text.
+
+        @param <title_kwargs>:
+        Title's keyword arguments for _translate_text.
         """
         super(SimpleESCMenu, self).__init__(
             data, select_callback, build_callback)
         self.description = description
+        self.description_kwargs = description_kwargs
         self.title = title
         self.title_color = title_color
+        self.title_kwargs = title_kwargs
 
     def _get_menu_data(self, player_index):
         """Return all relevant menu data as a KeyValues instance.
@@ -88,7 +97,13 @@ class SimpleESCMenu(_BaseMenu):
         """
         data = KeyValues('menu')
         data.set_string(
-            'msg', _translate_text(self.description or '', player_index))
+            'msg',
+            _translate_text(
+                self.description or '',
+                player_index,
+                **self.description_kwargs
+            )
+        )
 
         page = self._player_pages[player_index]
         page.options = {}
@@ -212,7 +227,9 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
 
         if self.title:
             data.set_string('title', '{0} {1}'.format(
-                _translate_text(self.title, player_index), info))
+                _translate_text(self.title, player_index, **self.title_kwargs),
+                info
+            ))
         else:
             data.set_string('title', info)
 
@@ -283,7 +300,13 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         """
         data = KeyValues('menu')
         data.set_string(
-            'msg', _translate_text(self.description or '', player_index))
+            'msg',
+            _translate_text(
+                self.description or '',
+                player_index,
+                **self.description_kwargs
+            )
+        )
 
         # Get the player's current page
         page = self._player_pages[player_index]
@@ -333,7 +356,7 @@ class SimpleESCOption(_BaseOption):
 
     def __init__(
             self, choice_index, text, value=None,
-            highlight=True, selectable=True):
+            highlight=True, selectable=True, **kwargs):
         """Initialize the option.
 
         @param <choice_index>:
@@ -350,9 +373,12 @@ class SimpleESCOption(_BaseOption):
 
         @param <selectable>:
         Does not work with ESC menus.
+
+        @param <kwars>:
+        Keyword arguments passed to the _translate_text function.
         """
         super(SimpleESCOption, self).__init__(
-            text, value, highlight, selectable)
+            text, value, highlight, selectable, **kwargs)
         self.choice_index = choice_index
 
     def _render(self, player_index, choice_index=None):
@@ -366,7 +392,9 @@ class SimpleESCOption(_BaseOption):
         menu type if this parameter gets passed.
         """
         return '{0}. {1}'.format(
-            self.choice_index, _translate_text(self.text, player_index))
+            self.choice_index,
+            _translate_text(self.text, player_index, **self.kwargs)
+        )
 
 
 class PagedESCOption(_BaseOption):
@@ -384,4 +412,6 @@ class PagedESCOption(_BaseOption):
         menu type if this parameter gets passed.
         """
         return '{0}. {1}'.format(
-            choice_index, _translate_text(self.text, player_index))
+            choice_index,
+            _translate_text(self.text, player_index, **self.kwargs)
+        )
