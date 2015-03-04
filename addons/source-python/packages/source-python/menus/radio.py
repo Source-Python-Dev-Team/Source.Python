@@ -135,7 +135,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             self, data=None, select_callback=None,
             build_callback=None, description=None,
             title=None, top_seperator='-' * 30, bottom_seperator='-' * 30,
-            fill=True, description_kwargs={}, title_kwargs={}):
+            fill=True, description_kwargs=None, title_kwargs=None):
         """Initialize the PagedRadioMenu instance.
 
         @param <data>:
@@ -183,9 +183,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         )
 
         self.title = title
-        self.title_kwargs = title_kwargs
+        self.title_kwargs = title_kwargs or {}
         self.description = description
-        self.description_kwargs = description_kwargs
+        self.description_kwargs = description_kwargs or {}
         self.top_seperator = top_seperator
         self.bottom_seperator = bottom_seperator
         self.fill = fill
