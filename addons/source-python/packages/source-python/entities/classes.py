@@ -260,9 +260,12 @@ class _ServerClasses(TypeManager):
         instance.__name__ = class_name
 
         # Get the specific types of values to use
-        input_contents = manager_contents.get('input', {})
-        keyvalue_contents = manager_contents.get('keyvalue', {})
-        property_contents = manager_contents.get('property', {})
+        input_contents = dict(map(
+            reversed, manager_contents.get('input', {}).items()))
+        keyvalue_contents = dict(map(
+            reversed, manager_contents.get('keyvalue', {}).items()))
+        property_contents = dict(map(
+            reversed, manager_contents.get('property', {}).items()))
 
         # Create dictionaries to store all values for the instance
         instance.inputs = dict()

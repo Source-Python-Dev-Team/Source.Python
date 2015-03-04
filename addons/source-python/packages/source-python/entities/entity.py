@@ -54,7 +54,6 @@ class BaseEntity(_EntitySpecials):
         self._index = index
         self._edict = edict
         self._pointer = pointer_from_edict(edict)
-        self._server_class = None
 
         # Return the instance
         return self
