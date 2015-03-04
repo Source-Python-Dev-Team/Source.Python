@@ -7,8 +7,6 @@
 # =============================================================================
 # Source.Python Imports
 #   BaseTypes
-from _basetypes import BitBufferRead
-from _basetypes import BitBufferWrite
 from _basetypes import Color
 from _basetypes import Interval
 from _basetypes import SendProp
@@ -22,9 +20,7 @@ from _basetypes import TakeDamageInfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('BitBufferRead',
-           'BitBufferWrite',
-           'Color',
+__all__ = ('Color',
            'Interval',
            'SendProp',
            'SendPropFlags',

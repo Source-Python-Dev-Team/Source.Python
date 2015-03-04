@@ -99,6 +99,17 @@ Set(SOURCEPYTHON_GENERIC_FILES
 )
 
 # ------------------------------------------------------------------
+# BitBuffers module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS
+    core/modules/bitbuffers/bitbuffers_wrap.h
+)
+
+Set(SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES
+    core/modules/bitbuffers/bitbuffers_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # BaseTypes module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_BASETYPES_MODULE_HEADERS
@@ -333,7 +344,10 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS}
     ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES}
-    
+
+    ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS}
+    ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES}
+
     ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS}
     ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES}
 
@@ -394,6 +408,7 @@ Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 
 Source_Group("Header Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Core"                   FILES ${SOURCEPYTHON_CORE_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_HEADERS})
@@ -416,6 +431,7 @@ Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
 Source_Group("Source Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BBITBUFFERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Core"                   FILES ${SOURCEPYTHON_CORE_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_SOURCES})
