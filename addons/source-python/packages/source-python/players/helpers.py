@@ -17,27 +17,6 @@ from players.games import get_client_language
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Entities
-from _entities._helpers import basehandle_from_edict
-from _entities._helpers import basehandle_from_index
-from _entities._helpers import basehandle_from_inthandle
-from _entities._helpers import basehandle_from_pointer
-from _entities._helpers import edict_from_basehandle
-from _entities._helpers import edict_from_index
-from _entities._helpers import edict_from_inthandle
-from _entities._helpers import edict_from_pointer
-from _entities._helpers import index_from_basehandle
-from _entities._helpers import index_from_edict
-from _entities._helpers import index_from_inthandle
-from _entities._helpers import index_from_pointer
-from _entities._helpers import inthandle_from_basehandle
-from _entities._helpers import inthandle_from_edict
-from _entities._helpers import inthandle_from_index
-from _entities._helpers import inthandle_from_pointer
-from _entities._helpers import pointer_from_basehandle
-from _entities._helpers import pointer_from_edict
-from _entities._helpers import pointer_from_index
-from _entities._helpers import pointer_from_inthandle
 #   Players
 from _players._helpers import basehandle_from_playerinfo
 from _players._helpers import basehandle_from_userid
@@ -67,33 +46,18 @@ from _players._helpers import userid_from_pointer
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('address_from_playerinfo',
-           'basehandle_from_edict',
-           'basehandle_from_index',
-           'basehandle_from_inthandle',
            'basehandle_from_playerinfo',
-           'basehandle_from_pointer',
            'basehandle_from_userid',
-           'edict_from_basehandle',
-           'edict_from_index',
-           'edict_from_inthandle',
            'edict_from_playerinfo',
-           'edict_from_pointer',
            'edict_from_userid',
            'get_client_language',
-           'index_from_basehandle',
-           'index_from_edict',
-           'index_from_inthandle',
            'index_from_name',
            'index_from_playerinfo',
            'index_from_pointer',
            'index_from_steamid',
            'index_from_uniqueid',
            'index_from_userid',
-           'inthandle_from_basehandle',
-           'inthandle_from_edict',
-           'inthandle_from_index',
            'inthandle_from_playerinfo',
-           'inthandle_from_pointer',
            'inthandle_from_userid',
            'playerinfo_from_basehandle',
            'playerinfo_from_edict',
@@ -101,10 +65,6 @@ __all__ = ('address_from_playerinfo',
            'playerinfo_from_inthandle',
            'playerinfo_from_pointer',
            'playerinfo_from_userid',
-           'pointer_from_basehandle',
-           'pointer_from_edict',
-           'pointer_from_index',
-           'pointer_from_inthandle',
            'pointer_from_playerinfo',
            'pointer_from_userid',
            'uniqueid_from_playerinfo',
