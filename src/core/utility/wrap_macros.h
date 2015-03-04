@@ -38,6 +38,8 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 #if !defined(SOURCE_ENGINE)
 #error("SOURCE_ENGINE define must be globally defined, did we forget?");
+#elif !defined(SOURCE_ENGINE_BRANCH)
+#error("SOURCE_ENGINE_BRANCH define must be globally defined, did we forget?");
 #endif
 
 
@@ -138,11 +140,12 @@ object raw_method(T method)
 	}}
 
 //---------------------------------------------------------------------------------
-// These macros allow us to includ engine / game specific files
+// These macros allow us to include engine / branch specific files
 //---------------------------------------------------------------------------------
 // Current working directory macros
-#define JOIN_PATH(folder, file_path)		XSTRINGIFY(folder/file_path)
-#define ENGINE_INCLUDE_PATH(file_path)		JOIN_PATH(SOURCE_ENGINE, file_path)
+#define JOIN_PATH(folder, file_path)			XSTRINGIFY(folder/file_path)
+#define ENGINE_INCLUDE_PATH(file_path)			JOIN_PATH(SOURCE_ENGINE, file_path)
+#define ENGINE_BRANCH_INCLUDE_PATH(file_path)	JOIN_PATH(SOURCE_ENGINE_BRANCH, file_path)
 
 //---------------------------------------------------------------------------------
 // These typedefs save some typing. Use this policy for any functions that return

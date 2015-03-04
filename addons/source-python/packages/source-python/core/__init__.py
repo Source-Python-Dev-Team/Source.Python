@@ -29,6 +29,7 @@ from paths import GAME_PATH
 # Source.Python Imports
 #   Core
 from _core import SOURCE_ENGINE
+from _core import SOURCE_ENGINE_BRANCH
 #   Globals
 from _globals import global_vars
 from _globals import MapLoadType
@@ -42,6 +43,7 @@ __all__ = ('AutoUnload',
            'MapLoadType',
            'PLATFORM',
            'SOURCE_ENGINE',
+           'SOURCE_ENGINE_BRANCH',
            'echo_console',
            'global_vars',
            )
