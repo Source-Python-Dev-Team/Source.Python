@@ -24,31 +24,50 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _DATAMAP_CSGO_WRAP_H
-#define _DATAMAP_CSGO_WRAP_H
+#ifndef _ENTITIES_DATAMAP_CSGO_H
+#define _ENTITIES_DATAMAP_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "datamap.h"
+// #include "game/shared/predictioncopy.h"
+#include "entities_datamaps_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// typedescription_t extension class.
+// Expose datamap_t.
 //-----------------------------------------------------------------------------
-class TypeDescriptionExt
+template<class T>
+void export_engine_specific_datamap(T DataMap)
 {
-public:
-	static int get_flat_offset(typedescription_t pTypeDesc)
-	{
-		return pTypeDesc.flatOffset[TD_OFFSET_NORMAL];
-	}
-	
-	static int get_packed_offset(typedescription_t pTypeDesc)
-	{
-		return pTypeDesc.flatOffset[TD_OFFSET_PACKED];
-	}
-};
+	DataMap.def_readonly("packed_size", &datamap_t::m_nPackedSize);
+
+	// TODO: Expose optimized_datamap_t...
+	// DataMap.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap);
+}
 
 
-#endif // _DATAMAP_CSGO_WRAP_H
+//-----------------------------------------------------------------------------
+// Expose typedescription_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_type_description(T TypeDescription)
+{
+	TypeDescription.def_readonly("offset", &typedescription_t::fieldOffset);
+	TypeDescription.add_property("flat_offset", &TypeDescriptionExt::get_flat_offset);
+	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset);
+	TypeDescription.def_readonly("flat_group", &typedescription_t::flatGroup);
+}
+
+//-----------------------------------------------------------------------------
+// Expose fieldtype_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_field_types(T FieldTypes)
+{
+	FieldTypes.value("INTEGER64", FIELD_INTEGER64);
+	FieldTypes.value("VECTOR4D", FIELD_VECTOR4D);
+}
+
+
+#endif // _ENTITIES_DATAMAP_CSGO_H

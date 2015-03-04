@@ -23,39 +23,39 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _CLIENT_COMMAND_H
-#define _CLIENT_COMMAND_H
+#ifndef _COMMANDS_SERVER_WRAP_H
+#define _COMMANDS_SERVER_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
 #include "boost/unordered_map.hpp"
-#include "core/sp_python.h"
+#include "utlvector.h"
+#include "convar.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
-#include "utlvector.h"
-#include "edict.h"
-#include "convar.h"
-#include "commands_wrap.h"
-#include "modules/entities/entities_wrap.h"
 
 //-----------------------------------------------------------------------------
-// Client Command Manager class.
+// Server Command Manager class.
 //-----------------------------------------------------------------------------
-class CClientCommandManager
+class CServerCommandManager : public ConCommand
 {
 public:
-	CClientCommandManager(const char* szName);
-	~CClientCommandManager();
+	static CServerCommandManager* CreateCommand(const char* szName, const char* szHelpString, int iFlags);
+	~CServerCommandManager();
+	virtual void Init();
 
 	void AddCallback(PyObject* pCallable);
 	void RemoveCallback(PyObject* pCallable);
 
-	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, const CCommand& ccommand);
+protected:
+	void Dispatch( const CCommand& command);
 
 private:
+	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
 	CUtlVector<object> m_vecCallables;
 	const char* m_Name;
+	ConCommand* m_pOldCommand;
 };
 
-#endif // _CLIENT_COMMAND_H
+#endif // _COMMANDS_SERVER_WRAP_H

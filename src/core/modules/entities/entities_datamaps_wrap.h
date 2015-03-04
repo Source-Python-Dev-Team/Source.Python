@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _DATAMAP_WRAP_H
-#define _DATAMAP_WRAP_H
+#ifndef _ENTITIES_DATAMAP_WRAP_H
+#define _ENTITIES_DATAMAP_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -240,4 +240,4 @@ public:
 };
 
 
-#endif // _DATAMAP_WRAP_H
+#endif // _ENTITIES_DATAMAP_WRAP_H

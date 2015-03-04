@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,77 +24,46 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _ENTITIES_DATAMAP_ORANGEBOX_H
+#define _ENTITIES_DATAMAP_ORANGEBOX_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "say_commands_wrap.h"
-#include "modules/export_main.h"
-#include "utility/wrap_macros.h"
-#include "modules/memory/memory_tools.h"
+#include "entities_datamaps_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// Externals.
+// Expose datamap_t.
 //-----------------------------------------------------------------------------
-extern CSayCommandManager* GetSayCommand(const char* szName);
-
-extern void RegisterSayFilter(PyObject* pCallable);
-extern void UnregisterSayFilter(PyObject* pCallable);
-
-
-//-----------------------------------------------------------------------------
-// Forward declarations.
-//-----------------------------------------------------------------------------
-void export_say_command_manager();
-
-
-//-----------------------------------------------------------------------------
-// Declare the _commands._say module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_SUBMODULE(_commands, _say)
+template<class T>
+void export_engine_specific_datamap(T DataMap)
 {
-	export_say_command_manager();
-
-	// Helper functions...
-	def("get_say_command",
-		GetSayCommand,
-		"Returns the SayCommandDispatcher instance for the given command",
-		args("name"),
-		reference_existing_object_policy()
-	);
-
-	def("register_say_filter",
-		RegisterSayFilter,
-		"Registers a callable to be called when clients use the say commands (say, say_team).",
-		args("callable")
-	);
-
-	def("unregister_say_filter",
-		UnregisterSayFilter,
-		"Unregisters a say filter.",
-		args("callable")
-	);
+	DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
+	DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
+	DataMap.def_readonly("packed_size", &datamap_t::packed_size);
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose CSayCommandManager.
+// Expose typedescription_t.
 //-----------------------------------------------------------------------------
-void export_say_command_manager()
+template<class T>
+void export_engine_specific_type_description(T TypeDescription)
 {
-	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
-		.def("add_callback",
-			&CSayCommandManager::AddCallback,
-			"Adds a callback to the say command's list.",
-			args("callable")
-		)
-
-		.def("remove_callback",
-			&CSayCommandManager::RemoveCallback,
-			"Removes a callback from the say command's list.",
-			args("callable")
-		)
-
-		ADD_MEM_TOOLS(CSayCommandManager, "SayCommandDispatcher")
-	;
+	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset)	;
+	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
 }
+
+
+//-----------------------------------------------------------------------------
+// Expose fieldtype_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_field_types(T FieldTypes)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
+#endif // _ENTITIES_DATAMAP_ORANGEBOX_H

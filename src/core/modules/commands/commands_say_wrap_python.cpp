@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "client_commands_wrap.h"
+#include "commands_say_wrap.h"
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
@@ -36,65 +36,65 @@
 //-----------------------------------------------------------------------------
 // Externals.
 //-----------------------------------------------------------------------------
-extern CClientCommandManager* GetClientCommand(const char* szName);
+extern CSayCommandManager* GetSayCommand(const char* szName);
 
-extern void RegisterClientCommandFilter(PyObject* pCallable);
-extern void UnregisterClientCommandFilter(PyObject* pCallable);
+extern void RegisterSayFilter(PyObject* pCallable);
+extern void UnregisterSayFilter(PyObject* pCallable);
 
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_client_command_manager();
+void export_say_command_manager();
 
 
 //-----------------------------------------------------------------------------
-// Declare the _commands._client module.
+// Declare the _commands._say module.
 //-----------------------------------------------------------------------------
-DECLARE_SP_SUBMODULE(_commands, _client)
+DECLARE_SP_SUBMODULE(_commands, _say)
 {
-	export_client_command_manager();
+	export_say_command_manager();
 
 	// Helper functions...
-	def("get_client_command",
-		GetClientCommand,
-		"Returns the ClientCommandDispatcher instance for the given command",
+	def("get_say_command",
+		GetSayCommand,
+		"Returns the SayCommandDispatcher instance for the given command",
 		args("name"),
 		reference_existing_object_policy()
 	);
 
-	def("register_client_command_filter",
-		RegisterClientCommandFilter,
-		"Registers a callable to be called when clients use commands.",
+	def("register_say_filter",
+		RegisterSayFilter,
+		"Registers a callable to be called when clients use the say commands (say, say_team).",
 		args("callable")
 	);
 
-	def("unregister_client_command_filter",
-		UnregisterClientCommandFilter,
-		"Unregisters a client command filter.",
+	def("unregister_say_filter",
+		UnregisterSayFilter,
+		"Unregisters a say filter.",
 		args("callable")
 	);
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose CClientCommandManager.
+// Expose CSayCommandManager.
 //-----------------------------------------------------------------------------
-void export_client_command_manager()
+void export_say_command_manager()
 {
-	class_<CClientCommandManager, boost::noncopyable>("ClientCommandDispatcher", no_init)
+	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
 		.def("add_callback",
-			&CClientCommandManager::AddCallback,
-			"Adds a callback to the client command's list.",
+			&CSayCommandManager::AddCallback,
+			"Adds a callback to the say command's list.",
 			args("callable")
 		)
 
 		.def("remove_callback",
-			&CClientCommandManager::RemoveCallback,
-			"Removes a callback from the client command's list.",
+			&CSayCommandManager::RemoveCallback,
+			"Removes a callback from the say command's list.",
 			args("callable")
 		)
 
-		ADD_MEM_TOOLS(CClientCommandManager, "ClientCommandDispatcher")
+		ADD_MEM_TOOLS(CSayCommandManager, "SayCommandDispatcher")
 	;
 }

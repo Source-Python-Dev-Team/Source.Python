@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,50 +24,69 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _DATAMAP_CSGO_H
-#define _DATAMAP_CSGO_H
-
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// #include "game/shared/predictioncopy.h"
-#include "datamaps_wrap.h"
+#include "commands_server_wrap.h"
+#include "modules/export_main.h"
+#include "utility/wrap_macros.h"
+#include "modules/memory/memory_tools.h"
 
 
 //-----------------------------------------------------------------------------
-// Expose datamap_t.
+// Externals.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_datamap(T DataMap)
+extern CServerCommandManager* GetServerCommand(const char* szName,
+	const char* szHelpText = 0, int iFlags = 0);
+
+
+//-----------------------------------------------------------------------------
+// Forward declarations.
+//-----------------------------------------------------------------------------
+void export_server_command_manager();
+
+
+//-----------------------------------------------------------------------------
+// Overloads.
+//-----------------------------------------------------------------------------
+BOOST_PYTHON_FUNCTION_OVERLOADS(get_server_command_overloads, GetServerCommand, 1, 3)
+
+
+//-----------------------------------------------------------------------------
+// Declare the _commands._server module.
+//-----------------------------------------------------------------------------
+DECLARE_SP_SUBMODULE(_commands, _server)
 {
-	DataMap.def_readonly("packed_size", &datamap_t::m_nPackedSize);
+	export_server_command_manager();
 
-	// TODO: Expose optimized_datamap_t...
-	// DataMap.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap);
+	// Helper functions...
+	def("get_server_command",
+		GetServerCommand,
+		get_server_command_overloads("Gets the ServerCommandDispatcher instance using just the name or also the helptext and/or flags",
+			args("name", "help_text", "flags")
+		)[reference_existing_object_policy()]
+	);
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose typedescription_t.
+// Expose CServerCommandManager.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_type_description(T TypeDescription)
+void export_server_command_manager()
 {
-	TypeDescription.def_readonly("offset", &typedescription_t::fieldOffset);
-	TypeDescription.add_property("flat_offset", &TypeDescriptionExt::get_flat_offset);
-	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset);
-	TypeDescription.def_readonly("flat_group", &typedescription_t::flatGroup);
+	class_<CServerCommandManager, bases<ConCommandBase>, boost::noncopyable>("ServerCommandDispatcher", no_init)
+		.def("add_callback",
+			&CServerCommandManager::AddCallback,
+			"Adds a callback to the server command's list.",
+			args("callable")
+		)
+
+		.def("remove_callback",
+			&CServerCommandManager::RemoveCallback,
+			"Removes a callback from the server command's list.",
+			args("callable")
+		)
+
+		ADD_MEM_TOOLS(CServerCommandManager, "ServerCommandDispatcher")
+	;
 }
-
-//-----------------------------------------------------------------------------
-// Expose fieldtype_t.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_field_types(T FieldTypes)
-{
-	FieldTypes.value("INTEGER64", FIELD_INTEGER64);
-	FieldTypes.value("VECTOR4D", FIELD_VECTOR4D);
-}
-
-
-#endif // _DATAMAP_CSGO_H

@@ -29,10 +29,10 @@
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
-#include "datamaps_wrap.h"
+#include "entities_datamaps_wrap.h"
 #include "modules/memory/memory_tools.h"
 
-#include ENGINE_INCLUDE_PATH(datamaps_wrap_python.h)
+#include ENGINE_INCLUDE_PATH(entities_datamaps_wrap_python.h)
 
 
 //-----------------------------------------------------------------------------

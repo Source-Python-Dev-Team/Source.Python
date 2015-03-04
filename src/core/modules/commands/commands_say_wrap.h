@@ -23,8 +23,8 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _SAY_COMMAND_H
-#define _SAY_COMMAND_H
+#ifndef _COMMANDS_SAY_WRAP_H
+#define _COMMANDS_SAY_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes
@@ -88,4 +88,4 @@ private:
 	CUtlVector<object> m_vecCallables;
 };
 
-#endif // _SAY_COMMAND_H
+#endif // _COMMANDS_SAY_WRAP_H

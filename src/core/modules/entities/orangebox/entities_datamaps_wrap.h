@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -23,39 +23,32 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _SERVER_COMMAND_H
-#define _SERVER_COMMAND_H
+
+#ifndef _ENTITIES_DATAMAP_ORANGEBOX_WRAP_H
+#define _ENTITIES_DATAMAP_ORANGEBOX_WRAP_H
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
-#include "boost/unordered_map.hpp"
-#include "utlvector.h"
-#include "convar.h"
-#include "utility/sp_util.h"
-#include "utility/wrap_macros.h"
+#include "datamap.h"
+
 
 //-----------------------------------------------------------------------------
-// Server Command Manager class.
+// typedescription_t extension class.
 //-----------------------------------------------------------------------------
-class CServerCommandManager : public ConCommand
+class TypeDescriptionExt
 {
 public:
-	static CServerCommandManager* CreateCommand(const char* szName, const char* szHelpString, int iFlags);
-	~CServerCommandManager();
-	virtual void Init();
-
-	void AddCallback(PyObject* pCallable);
-	void RemoveCallback(PyObject* pCallable);
-
-protected:
-	void Dispatch( const CCommand& command);
-
-private:
-	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	CUtlVector<object> m_vecCallables;
-	const char* m_Name;
-	ConCommand* m_pOldCommand;
+	static int get_offset(typedescription_t pTypeDesc)
+	{
+		return pTypeDesc.fieldOffset[TD_OFFSET_NORMAL];
+	}
+	
+	static int get_packed_offset(typedescription_t pTypeDesc)
+	{
+		return pTypeDesc.fieldOffset[TD_OFFSET_PACKED];
+	}
 };
 
-#endif // _SERVER_COMMAND_H
+
+#endif // _ENTITIES_DATAMAP_ORANGEBOX_WRAP_H

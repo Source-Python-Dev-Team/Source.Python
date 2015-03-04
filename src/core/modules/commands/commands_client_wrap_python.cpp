@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "server_commands_wrap.h"
+#include "commands_client_wrap.h"
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
@@ -36,57 +36,65 @@
 //-----------------------------------------------------------------------------
 // Externals.
 //-----------------------------------------------------------------------------
-extern CServerCommandManager* GetServerCommand(const char* szName,
-	const char* szHelpText = 0, int iFlags = 0);
+extern CClientCommandManager* GetClientCommand(const char* szName);
+
+extern void RegisterClientCommandFilter(PyObject* pCallable);
+extern void UnregisterClientCommandFilter(PyObject* pCallable);
 
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_server_command_manager();
+void export_client_command_manager();
 
 
 //-----------------------------------------------------------------------------
-// Overloads.
+// Declare the _commands._client module.
 //-----------------------------------------------------------------------------
-BOOST_PYTHON_FUNCTION_OVERLOADS(get_server_command_overloads, GetServerCommand, 1, 3)
-
-
-//-----------------------------------------------------------------------------
-// Declare the _commands._server module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_SUBMODULE(_commands, _server)
+DECLARE_SP_SUBMODULE(_commands, _client)
 {
-	export_server_command_manager();
+	export_client_command_manager();
 
 	// Helper functions...
-	def("get_server_command",
-		GetServerCommand,
-		get_server_command_overloads("Gets the ServerCommandDispatcher instance using just the name or also the helptext and/or flags",
-			args("name", "help_text", "flags")
-		)[reference_existing_object_policy()]
+	def("get_client_command",
+		GetClientCommand,
+		"Returns the ClientCommandDispatcher instance for the given command",
+		args("name"),
+		reference_existing_object_policy()
+	);
+
+	def("register_client_command_filter",
+		RegisterClientCommandFilter,
+		"Registers a callable to be called when clients use commands.",
+		args("callable")
+	);
+
+	def("unregister_client_command_filter",
+		UnregisterClientCommandFilter,
+		"Unregisters a client command filter.",
+		args("callable")
 	);
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose CServerCommandManager.
+// Expose CClientCommandManager.
 //-----------------------------------------------------------------------------
-void export_server_command_manager()
+void export_client_command_manager()
 {
-	class_<CServerCommandManager, bases<ConCommandBase>, boost::noncopyable>("ServerCommandDispatcher", no_init)
+	class_<CClientCommandManager, boost::noncopyable>("ClientCommandDispatcher", no_init)
 		.def("add_callback",
-			&CServerCommandManager::AddCallback,
-			"Adds a callback to the server command's list.",
+			&CClientCommandManager::AddCallback,
+			"Adds a callback to the client command's list.",
 			args("callable")
 		)
 
 		.def("remove_callback",
-			&CServerCommandManager::RemoveCallback,
-			"Removes a callback from the server command's list.",
+			&CClientCommandManager::RemoveCallback,
+			"Removes a callback from the client command's list.",
 			args("callable")
 		)
 
-		ADD_MEM_TOOLS(CServerCommandManager, "ServerCommandDispatcher")
+		ADD_MEM_TOOLS(CClientCommandManager, "ClientCommandDispatcher")
 	;
 }

@@ -29,7 +29,7 @@
 
 #include "irecipientfilter.h"
 #include "eiface.h"
-#include "modules/filters/mrecipientfilter.h"
+#include "modules/filters/filters_recipients_wrap.h"
 #include "Color.h"
 
 extern IVEngineServer* engine;

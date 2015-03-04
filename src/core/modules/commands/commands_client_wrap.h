@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -23,32 +23,39 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-
-#ifndef _DATAMAP_ORANGEBOX_WRAP_H
-#define _DATAMAP_ORANGEBOX_WRAP_H
-
-//-----------------------------------------------------------------------------
-// Includes.
-//-----------------------------------------------------------------------------
-#include "datamap.h"
-
+#ifndef _COMMANDS_CLIENTS_WRAP_H
+#define _COMMANDS_CLIENTS_WRAP_H
 
 //-----------------------------------------------------------------------------
-// typedescription_t extension class.
+// Includes
 //-----------------------------------------------------------------------------
-class TypeDescriptionExt
+#include "boost/unordered_map.hpp"
+#include "core/sp_python.h"
+#include "utility/sp_util.h"
+#include "utility/wrap_macros.h"
+#include "utlvector.h"
+#include "edict.h"
+#include "convar.h"
+#include "commands_wrap.h"
+#include "modules/entities/entities_wrap.h"
+
+//-----------------------------------------------------------------------------
+// Client Command Manager class.
+//-----------------------------------------------------------------------------
+class CClientCommandManager
 {
 public:
-	static int get_offset(typedescription_t pTypeDesc)
-	{
-		return pTypeDesc.fieldOffset[TD_OFFSET_NORMAL];
-	}
-	
-	static int get_packed_offset(typedescription_t pTypeDesc)
-	{
-		return pTypeDesc.fieldOffset[TD_OFFSET_PACKED];
-	}
+	CClientCommandManager(const char* szName);
+	~CClientCommandManager();
+
+	void AddCallback(PyObject* pCallable);
+	void RemoveCallback(PyObject* pCallable);
+
+	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, const CCommand& ccommand);
+
+private:
+	CUtlVector<object> m_vecCallables;
+	const char* m_Name;
 };
 
-
-#endif // _DATAMAP_ORANGEBOX_WRAP_H
+#endif // _COMMANDS_CLIENTS_WRAP_H

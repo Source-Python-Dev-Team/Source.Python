@@ -115,20 +115,20 @@ Set(SOURCEPYTHON_BASETYPES_MODULE_SOURCES
 # Commands module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_COMMANDS_MODULE_HEADERS
-    core/modules/commands/client_commands_wrap.h
+    core/modules/commands/commands_client_wrap.h
     core/modules/commands/commands_wrap.h
-    core/modules/commands/say_commands_wrap.h
-    core/modules/commands/server_commands_wrap.h
+    core/modules/commands/commands_say_wrap.h
+    core/modules/commands/commands_server_wrap.h
 )
 
 Set(SOURCEPYTHON_COMMANDS_MODULE_SOURCES
-    core/modules/commands/client_commands_wrap.cpp
-    core/modules/commands/client_commands_wrap_python.cpp
+    core/modules/commands/commands_client_wrap.cpp
+    core/modules/commands/commands_client_wrap_python.cpp
     core/modules/commands/commands_wrap_python.cpp
-    core/modules/commands/say_commands_wrap.cpp
-    core/modules/commands/say_commands_wrap_python.cpp
-    core/modules/commands/server_commands_wrap.cpp
-    core/modules/commands/server_commands_wrap_python.cpp
+    core/modules/commands/commands_say_wrap.cpp
+    core/modules/commands/commands_say_wrap_python.cpp
+    core/modules/commands/commands_server_wrap.cpp
+    core/modules/commands/commands_server_wrap_python.cpp
 )
 
 
@@ -186,8 +186,8 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/${SOURCE_ENGINE}/entities_helpers_wrap.h
     core/modules/entities/entities_factories_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_wrap_python.h
-    core/modules/entities/datamaps_wrap.h
-    core/modules/entities/${SOURCE_ENGINE}/datamaps_wrap_python.h
+    core/modules/entities/entities_datamaps_wrap.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_datamaps_wrap_python.h
 )
     
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
@@ -196,7 +196,7 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
     core/modules/entities/entities_wrap_python.cpp
     core/modules/entities/entities_factories_wrap_python.cpp
     core/modules/entities/entities_generator_wrap.cpp
-    core/modules/entities/datamaps_wrap_python.cpp
+    core/modules/entities/entities_datamaps_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
@@ -309,12 +309,12 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 # Filters module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_FILTERS_MODULE_HEADERS
-    core/modules/filters/mrecipientfilter.h
+    core/modules/filters/filters_recipients_wrap.h
 )
 
 Set(SOURCEPYTHON_FILTERS_MODULE_SOURCES
-    core/modules/filters/mrecipientfilter.cpp
-    core/modules/filters/recipients_wrap_python.cpp
+    core/modules/filters/filters_recipients_wrap.cpp
+    core/modules/filters/filters_recipients_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------

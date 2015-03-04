@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "client_commands_wrap.h"
+#include "commands_client_wrap.h"
 #include "commands_wrap.h"
 #include "edict.h"
 #include "convar.h"

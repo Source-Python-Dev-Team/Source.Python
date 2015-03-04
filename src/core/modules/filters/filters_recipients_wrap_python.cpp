@@ -31,7 +31,7 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "mrecipientfilter.h"
+#include "filters_recipients_wrap.h"
 #include "modules/memory/memory_tools.h"
 
 

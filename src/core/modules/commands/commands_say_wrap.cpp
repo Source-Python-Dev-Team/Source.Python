@@ -30,8 +30,8 @@
 #include <iostream>
 #include <string>
 #include "convar.h"
-#include "say_commands_wrap.h"
-#include "server_commands_wrap.h"
+#include "commands_say_wrap.h"
+#include "commands_server_wrap.h"
 #include "commands_wrap.h"
 #include "utility/call_python.h"
 #include "boost/python/call.hpp"

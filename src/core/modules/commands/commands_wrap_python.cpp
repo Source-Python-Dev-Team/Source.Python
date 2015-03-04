@@ -28,8 +28,8 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "commands_wrap.h"
-#include "server_commands_wrap.h"
-#include "say_commands_wrap.h"
+#include "commands_server_wrap.h"
+#include "commands_say_wrap.h"
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
