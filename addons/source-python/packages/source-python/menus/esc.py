@@ -45,7 +45,7 @@ class SimpleESCMenu(_BaseMenu):
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=WHITE,
-            description_kwargs={}, title_kwargs={}):
+            description_kwargs=None, title_kwargs=None):
         """Initialize the SimpleESCMenu instance.
 
         @param <data>:
@@ -84,10 +84,10 @@ class SimpleESCMenu(_BaseMenu):
         super(SimpleESCMenu, self).__init__(
             data, select_callback, build_callback)
         self.description = description
-        self.description_kwargs = description_kwargs
+        self.description_kwargs = description_kwargs or {}
         self.title = title
         self.title_color = title_color
-        self.title_kwargs = title_kwargs
+        self.title_kwargs = title_kwargs or {}
 
     def _get_menu_data(self, player_index):
         """Return all relevant menu data as a KeyValues instance.
