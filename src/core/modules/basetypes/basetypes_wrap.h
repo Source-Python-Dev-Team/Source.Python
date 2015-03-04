@@ -40,30 +40,6 @@
 
 
 //-----------------------------------------------------------------------------
-// Color extension class.
-//-----------------------------------------------------------------------------
-class ColorExt
-{
-public:
-	static Color WithAlpha(const Color& color, unsigned char a)
-	{
-		return Color(color.r(), color.g(), color.b(), a);
-	}
-
-	static str GetHexString(const Color& color)
-	{
-		char buffer[10];
-		if (color.a() == 255)
-			sprintf(buffer, "\x07%02X%02X%02X", color.r(), color.g(), color.b());
-		else
-			sprintf(buffer, "\x08%02X%02X%02X%02X", color.r(), color.g(), color.b(), color.a());
-
-		return str(buffer);
-	}
-};
-
-
-//-----------------------------------------------------------------------------
 // SendTable extension class.
 //-----------------------------------------------------------------------------
 class SendTableSharedExt

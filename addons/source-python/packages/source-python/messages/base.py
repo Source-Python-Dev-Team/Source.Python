@@ -18,8 +18,8 @@ from importlib import import_module
 from configobj import ConfigObj
 
 # Source.Python Imports
-#   Basetypes
-from basetypes import Color
+#   Colors
+from colors import Color
 #   Core
 from core import echo_console
 #   Filters

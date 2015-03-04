@@ -30,7 +30,6 @@
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "tier0/basetypes.h"
-#include "Color.h"
 #include "dt_common.h"
 #include "dt_send.h"
 #include "server_class.h"
@@ -45,7 +44,6 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_interval();
-void export_color();
 void export_send_table();
 void export_send_prop();
 void export_send_prop_types();
@@ -61,7 +59,6 @@ void export_take_damage_info();
 DECLARE_SP_MODULE(_basetypes)
 {
 	export_interval();
-	export_color();
 	export_send_table();
 	export_send_prop();
 	export_send_prop_types();
@@ -85,49 +82,6 @@ void export_interval()
 	
 	// Add memory tools...
 	Interval ADD_MEM_TOOLS(interval_t, "Interval");
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose Color.
-//-----------------------------------------------------------------------------
-void export_color()
-{
-	class_<Color, Color *> Color_(
-		"Color",
-		init<unsigned char, unsigned char, unsigned char, unsigned char>(
-			(arg("r")=0, arg("g")=0, arg("b")=0, arg("a")=255)
-		)
-	);
-	
-	// Properties...
-	Color_.add_property("r", &Color::r, &IndexSetter<Color, unsigned char, 0>);
-	Color_.add_property("g", &Color::g, &IndexSetter<Color, unsigned char, 1>);
-	Color_.add_property("b", &Color::b, &IndexSetter<Color, unsigned char, 2>);
-	Color_.add_property("a", &Color::a, &IndexSetter<Color, unsigned char, 3>);
-
-	// Methods
-	Color_.def(
-		"with_alpha",
-		ColorExt::WithAlpha,
-		"Returns a copy of the color with a new alpha value."
-	);
-
-	// Special methods...
-	Color_.def("__getitem__", &GetItemIndexer<Color, unsigned char, 0, 3>);
-	Color_.def("__setitem__", &SetItemIndexer<Color, unsigned char, 0, 3>);
-	Color_.def(
-		"__str__",
-		&ColorExt::GetHexString,
-		"Returns the color as a hex string."
-	);
-
-	// Operators...
-	Color_.def(self == self);
-	Color_.def(self != self);
-
-	// Add memory tools...
-	Color_ ADD_MEM_TOOLS(Color, "Color");
 }
 
 

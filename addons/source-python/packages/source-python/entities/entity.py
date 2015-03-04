@@ -6,8 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Basetypes
-from basetypes import Color
+#   Colors
+from colors import Color
 #   Engines
 from engines.precache import Model
 #   Entities

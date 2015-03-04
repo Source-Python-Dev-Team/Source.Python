@@ -6,8 +6,8 @@
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   BaseTypes
-from basetypes import Color
+#   Colors
+from _colors import Color
 
 
 # =============================================================================
@@ -16,6 +16,7 @@ from basetypes import Color
 __all__ = ('BLACK',
            'BLUE',
            'BROWN',
+           'Color',
            'CYAN',
            'DARK_BLUE',
            'DARK_GRAY',
