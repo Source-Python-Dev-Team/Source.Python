@@ -18,6 +18,7 @@ from memory import Function
 from _entities._datamaps import DataMap
 from _entities._datamaps import FieldTypes
 from _entities._datamaps import InputData
+from _entities._datamaps import Interval
 from _entities._datamaps import TypeDescription
 from _entities._datamaps import TypeDescriptionFlags
 from _entities._datamaps import Variant
@@ -30,6 +31,7 @@ from _entities._datamaps import Variant
 __all__ = ('DataMap',
            'FieldTypes',
            'InputData',
+           'Interval',
            'TypeDescription',
            'TypeDescriptionFlags',
            'Variant',

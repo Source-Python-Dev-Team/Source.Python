@@ -43,7 +43,6 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_interval();
 void export_send_table();
 void export_send_prop();
 void export_send_prop_types();
@@ -58,7 +57,6 @@ void export_take_damage_info();
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_basetypes)
 {
-	export_interval();
 	export_send_table();
 	export_send_prop();
 	export_send_prop_types();
@@ -66,22 +64,6 @@ DECLARE_SP_MODULE(_basetypes)
 	export_send_prop_variant();
 	export_server_class();
 	export_take_damage_info();
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose interval_t.
-//-----------------------------------------------------------------------------
-void export_interval()
-{
-	class_<interval_t, interval_t *> Interval("Interval");
-	
-	// Properties...
-	Interval.def_readwrite("start", &interval_t::start);
-	Interval.def_readwrite("range", &interval_t::range);
-	
-	// Add memory tools...
-	Interval ADD_MEM_TOOLS(interval_t, "Interval");
 }
 
 

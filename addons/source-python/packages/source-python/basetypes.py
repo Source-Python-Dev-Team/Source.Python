@@ -7,7 +7,6 @@
 # =============================================================================
 # Source.Python Imports
 #   BaseTypes
-from _basetypes import Interval
 from _basetypes import SendProp
 from _basetypes import SendPropFlags
 from _basetypes import SendPropTypes
@@ -19,8 +18,7 @@ from _basetypes import TakeDamageInfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('Interval',
-           'SendProp',
+__all__ = ('SendProp',
            'SendPropFlags',
            'SendPropTypes',
            'SendTable',

@@ -38,6 +38,7 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
+void export_interval();
 void export_datamap();
 void export_type_description();
 void export_input_data();
@@ -51,12 +52,29 @@ void export_type_description_flags();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _datamaps)
 {
+	export_interval();
 	export_datamap();
 	export_type_description();
 	export_input_data();
 	export_variant();
 	export_field_types();
 	export_type_description_flags();
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose interval_t.
+//-----------------------------------------------------------------------------
+void export_interval()
+{
+	class_<interval_t, interval_t *> Interval("Interval");
+	
+	// Properties...
+	Interval.def_readwrite("start", &interval_t::start);
+	Interval.def_readwrite("range", &interval_t::range);
+	
+	// Add memory tools...
+	Interval ADD_MEM_TOOLS(interval_t, "Interval");
 }
 
 

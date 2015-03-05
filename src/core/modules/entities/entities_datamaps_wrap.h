@@ -37,6 +37,7 @@
 #include "game/server/variant_t.h"
 #include "Color.h"
 #include "utility/conversions.h"
+#include "tier0/basetypes.h"
 
 
 //-----------------------------------------------------------------------------
