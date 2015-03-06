@@ -31,6 +31,11 @@
 #include "utility/wrap_macros.h"
 #include "mathlib/vector.h"
 #include "tier1/utlvector.h"
+#include "dt_send.h"
+#include "game/shared/ehandle.h"
+#include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/takedamageinfo.h"
 #include "game/shared/shareddefs.h"
 
 #include ENGINE_INCLUDE_PATH(entities_constants_wrap_python.h)
@@ -87,6 +92,7 @@ void export_damage_types(scope _constants)
     _constants.attr("DMG_DIRECT") = DMG_DIRECT;
     _constants.attr("DMG_BUCKSHOT") = DMG_BUCKSHOT;
     _constants.attr("DMG_LASTGENERICFLAG") = DMG_LASTGENERICFLAG;
+    _constants.attr("BASEDAMAGE_NOT_SPECIFIED") = BASEDAMAGE_NOT_SPECIFIED;
 
     // CS:GO/CS:S specific constants...
     _constants.attr("DMG_HEADSHOT") = object();

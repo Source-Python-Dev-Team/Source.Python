@@ -26,6 +26,7 @@ from paths import SP_DATA_PATH
 # =============================================================================
 # Source.Python Imports
 #   Entities
+from _entities._constants import BASEDAMAGE_NOT_SPECIFIED
 from _entities._constants import DMG_BULLET
 from _entities._constants import DMG_SLASH
 from _entities._constants import DMG_BURN
@@ -90,6 +91,7 @@ class DamageTypes(IntEnum):
 
     """Damage types wrapper enumerator."""
 
+    NOT_SPECIFIED = BASEDAMAGE_NOT_SPECIFIED
     BULLET = DMG_BULLET
     SLASH = DMG_SLASH
     BURN = DMG_BURN
