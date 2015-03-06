@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,28 +24,56 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _BASETYPES_WRAP_PYTHON_CSGO_H
-#define _BASETYPES_WRAP_PYTHON_CSGO_H
+#ifndef _ENTITIES_PROPS_WRAP_PYTHON_ORANGEBOX_H
+#define _ENTITIES_PROPS_WRAP_PYTHON_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dt_common.h"
 #include "dt_send.h"
-#include "basetypes_wrap.h"
+#include "server_class.h"
+#include "entities_props_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// Expose CTakeDamageInfo.
+// Expose ServerClass.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_engine_specific_take_damage_info(T TakeDamageInfo)
+void export_engine_specific_server_class(T ServerClass_)
 {
-	TakeDamageInfo.add_property("radius", &CTakeDamageInfo::GetRadius, &CTakeDamageInfo::SetRadius);
-	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated, &TakeDamageInfoExt::set_penetrated);
-	TakeDamageInfo.add_property("bullet", &TakeDamageInfoExt::get_bullet, &TakeDamageInfoExt::set_bullet);
-	TakeDamageInfo.add_property("recoil", &TakeDamageInfoExt::get_recoil, &TakeDamageInfoExt::set_recoil);
+	// Properties...
+	ServerClass_.def_readonly("name", &ServerClass::m_pNetworkName);
 }
 
 
-#endif // _BASETYPES_WRAP_PYTHON_CSGO_H
+//-----------------------------------------------------------------------------
+// Expose SendProp.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_send_prop(T SendProp_)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropType.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_send_prop_types(T SendPropTypes)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropVariant.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_send_prop_variant(T SendPropVariant)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
+#endif // _ENTITIES_PROPS_WRAP_PYTHON_ORANGEBOX_H

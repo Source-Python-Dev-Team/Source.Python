@@ -6,10 +6,10 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Basetypes
-from basetypes import SendPropTypes
 #   Engines
 from engines.server import server_game_dll
+#   Entities
+from entities.props import SendPropTypes
 #   Paths
 from paths import LOG_PATH
 #   Stringtables

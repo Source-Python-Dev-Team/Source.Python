@@ -36,47 +36,6 @@
 
 
 //-----------------------------------------------------------------------------
-// Expose ServerClass.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_server_class(T ServerClass_)
-{
-	// Properties...
-	ServerClass_.def_readonly("name", &ServerClass::m_pNetworkName);
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose SendProp.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_send_prop(T SendProp_)
-{
-	// Nothing specific to OrangeBox...
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose SendPropType.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_send_prop_types(T SendPropTypes)
-{
-	// Nothing specific to OrangeBox...
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose SendPropVariant.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_send_prop_variant(T SendPropVariant)
-{
-	// Nothing specific to OrangeBox...
-}
-
-
-//-----------------------------------------------------------------------------
 // Expose CTakeDamageInfo.
 //-----------------------------------------------------------------------------
 template<class T>

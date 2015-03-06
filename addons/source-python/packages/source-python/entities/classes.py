@@ -17,9 +17,6 @@ from warnings import warn
 from configobj import ConfigObj
 
 # Source.Python Imports
-#   Basetypes
-from basetypes import SendPropFlags
-from basetypes import SendPropTypes
 #   Core
 from core import GAME_NAME
 from core import SOURCE_ENGINE
@@ -34,6 +31,8 @@ from entities.datamaps import FieldTypes
 from entities.datamaps import InputFunction
 from entities.datamaps import TypeDescriptionFlags
 from entities.helpers import edict_from_pointer
+from entities.props import SendPropFlags
+from entities.props import SendPropTypes
 #   Memory
 from memory import Convention
 from memory import DataType

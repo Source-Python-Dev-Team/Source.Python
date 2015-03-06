@@ -6,11 +6,10 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Basetypes
-from basetypes import SendPropTypes
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import index_from_inthandle
+from entities.props import SendPropTypes
 #   Engines
 from engines.server import server_game_dll
 #   Weapons

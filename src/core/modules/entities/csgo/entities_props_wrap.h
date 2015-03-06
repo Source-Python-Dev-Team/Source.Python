@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,28 +24,57 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _BASETYPES_WRAP_PYTHON_CSGO_H
-#define _BASETYPES_WRAP_PYTHON_CSGO_H
+#ifndef _ENTITIES_PROPS_WRAP_CSGO_H
+#define _ENTITIES_PROPS_WRAP_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dt_common.h"
 #include "dt_send.h"
-#include "basetypes_wrap.h"
+#include "server_class.h"
 
 
 //-----------------------------------------------------------------------------
-// Expose CTakeDamageInfo.
+// ServerClass extension class.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_take_damage_info(T TakeDamageInfo)
+class ServerClassExt
 {
-	TakeDamageInfo.add_property("radius", &CTakeDamageInfo::GetRadius, &CTakeDamageInfo::SetRadius);
-	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated, &TakeDamageInfoExt::set_penetrated);
-	TakeDamageInfo.add_property("bullet", &TakeDamageInfoExt::get_bullet, &TakeDamageInfoExt::set_bullet);
-	TakeDamageInfo.add_property("recoil", &TakeDamageInfoExt::get_recoil, &TakeDamageInfoExt::set_recoil);
+public:
+	static const char *get_name(ServerClass *pServerClass)
+	{
+		return (const char *)pServerClass->m_pNetworkName;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// SendProp constructor declaration.
+//-----------------------------------------------------------------------------
+SendProp::SendProp()
+{
+	m_pVarName = NULL;
+	m_Offset = 0;
+	m_pDataTable = NULL;
+	m_ProxyFn = NULL;
+	m_pExcludeDTName = NULL;
+	m_pParentArrayPropName = NULL;
+
+	m_Type = DPT_Int;
+	m_Flags = 0;
+	m_nBits = 0;
+
+	m_fLowValue = 0.0f;
+	m_fHighValue = 0.0f;
+	m_fHighLowMul = 0.0f;
+	m_pArrayProp = 0;
+	m_ArrayLengthProxy = 0;
+	m_nElements = 1;
+	m_ElementStride = -1;
+	m_DataTableProxyFn = NULL;
+	m_pMatchingRecvProp	= NULL;
+
+	m_priority = SENDPROP_DEFAULT_PRIORITY;
 }
 
 
-#endif // _BASETYPES_WRAP_PYTHON_CSGO_H
+#endif // _ENTITIES_PROPS_WRAP_CSGO_H
