@@ -201,10 +201,12 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/entities_props_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_props_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_props_wrap_python.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_constants_wrap_python.h
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
     core/modules/entities/entities_wrap.cpp
+    core/modules/entities/entities_constants_wrap_python.cpp
     core/modules/entities/entities_helpers_wrap_python.cpp
     core/modules/entities/entities_wrap_python.cpp
     core/modules/entities/entities_factories_wrap_python.cpp
