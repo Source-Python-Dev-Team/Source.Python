@@ -64,6 +64,7 @@ from _entities._constants import DMG_HEADSHOT
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('DATA_DESC_MAP_OFFSET',
+           'BASEDAMAGE_NOT_SPECIFIED',
            'DamageTypes',
            )
 
@@ -91,7 +92,6 @@ class DamageTypes(IntEnum):
 
     """Damage types wrapper enumerator."""
 
-    NOT_SPECIFIED = BASEDAMAGE_NOT_SPECIFIED
     BULLET = DMG_BULLET
     SLASH = DMG_SLASH
     BURN = DMG_BURN
