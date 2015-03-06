@@ -22,6 +22,7 @@ from _entities import HandleEntity
 from _entities import ServerEntity
 from _entities import ServerNetworkable
 from _entities import ServerUnknown
+from _entities import TakeDamageInfo
 
 
 # =============================================================================
@@ -34,6 +35,7 @@ __all__ = ('BaseEntityHandle',
            'ServerEntity',
            'ServerNetworkable',
            'ServerUnknown',
+           'TakeDamageInfo',
            )
 
 

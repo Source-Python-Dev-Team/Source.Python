@@ -110,19 +110,6 @@ Set(SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
-# BaseTypes module.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_BASETYPES_MODULE_HEADERS
-    core/modules/basetypes/basetypes_wrap.h
-    core/modules/basetypes/${SOURCE_ENGINE}/basetypes_wrap.h
-    core/modules/basetypes/${SOURCE_ENGINE}/basetypes_wrap_python.h
-)
-
-Set(SOURCEPYTHON_BASETYPES_MODULE_SOURCES
-    core/modules/basetypes/basetypes_wrap_python.cpp
-)
-
-# ------------------------------------------------------------------
 # Colors module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_COLORS_MODULE_HEADERS
@@ -203,6 +190,7 @@ Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/entities_wrap.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_wrap.h
     core/modules/entities/entities_generator_wrap.h
     core/modules/entities/entities_helpers_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_helpers_wrap.h
@@ -357,9 +345,6 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
-    ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS}
-    ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES}
-
     ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS}
     ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES}
 
@@ -425,7 +410,6 @@ Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 
-Source_Group("Header Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS})
@@ -449,7 +433,6 @@ Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Source Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
-Source_Group("Source Files\\Module\\BaseTypes"              FILES ${SOURCEPYTHON_BASETYPES_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})

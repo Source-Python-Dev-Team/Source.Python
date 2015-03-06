@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,14 +24,13 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _BASETYPES_WRAP_CSGO_H
-#define _BASETYPES_WRAP_CSGO_H
+#ifndef _ENTITIES_WRAP_ORANGEBOX_H
+#define _ENTITIES_WRAP_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
 #include "dt_send.h"
-#include "server_class.h"
 #include "game/shared/ehandle.h"
 #include "isaverestore.h"
 #include "datamap.h"
@@ -43,61 +42,39 @@
 //-----------------------------------------------------------------------------
 CTakeDamageInfo::CTakeDamageInfo()
 {
-	m_vecDamageForce = vec3_origin;
-	m_vecDamagePosition = vec3_origin;
-	m_vecReportedPosition = vec3_origin;
 	m_hInflictor = NULL;
 	m_hAttacker = NULL;
 	m_hWeapon = NULL;
 	m_flDamage = 0.0f;
-	m_flMaxDamage = 0.0f;
 	m_flBaseDamage = BASEDAMAGE_NOT_SPECIFIED;
 	m_bitsDamageType = 0;
 	m_iDamageCustom = 0;
-	m_iDamageStats = 0;
+	m_flMaxDamage = 0.0f;
+	m_vecDamageForce = vec3_origin;
+	m_vecDamagePosition = vec3_origin;
+	m_vecReportedPosition = vec3_origin;
 	m_iAmmoType = -1;
-	m_flRadius = 0.0f;
 	m_iDamagedOtherPlayers = 0;
-	m_iObjectsPenetrated = 0;
-	m_uiBulletID = 0;
-	m_uiRecoilIndex = 0;
+	m_iPlayerPenetrationCount = 0;
+	m_flDamageBonus = 0.0f;
+	m_bForceFriendlyFire = false;
 }
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
+// CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
 class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
 {
 public:
 	int get_penetrated()
 	{
-		return m_iObjectsPenetrated;
+		return m_iPlayerPenetrationCount;
 	}
 	
 	void set_penetrated(int iPenetrated)
 	{
-		m_iObjectsPenetrated = iPenetrated;
-	}
-	
-	uint32 get_bullet()
-	{
-		return m_uiBulletID;
-	}
-	
-	void set_bullet(uint32 uiBullet)
-	{
-		m_uiBulletID = uiBullet;
-	}
-	
-	uint8 get_recoil()
-	{
-		return m_uiRecoilIndex;
-	}
-	
-	void set_recoil(uint8 uiRecoil)
-	{
-		m_uiRecoilIndex = uiRecoil;
+		m_iPlayerPenetrationCount = iPenetrated;
 	}
 };
 
@@ -117,27 +94,7 @@ public:
 	{
 		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
 	}
-	
-	static uint32 get_bullet(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_bullet();
-	}
-	
-	static void set_bullet(CTakeDamageInfo *pTakeDamageInfo, uint32 uiBullet)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_bullet(uiBullet);
-	}
-	
-	static uint8 get_recoil(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_recoil();
-	}
-	
-	static void set_recoil(CTakeDamageInfo *pTakeDamageInfo, uint8 uiRecoil)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_recoil(uiRecoil);
-	}
 };
 
 
-#endif // _BASETYPES_WRAP_CSGO_H
+#endif // _ENTITIES_WRAP_ORANGEBOX_H

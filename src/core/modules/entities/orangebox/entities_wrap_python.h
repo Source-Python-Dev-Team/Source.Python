@@ -53,4 +53,16 @@ void export_engine_specific_entity_factory_dictionary(T EntityFactoryDictionary)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose CTakeDamageInfo.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_take_damage_info(T TakeDamageInfo)
+{
+	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated,
+		&TakeDamageInfoExt::set_penetrated
+	);
+}
+
+
 #endif // _ENTITIES_WRAP_PYTHON_ORANGEBOX_H
