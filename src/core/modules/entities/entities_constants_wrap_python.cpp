@@ -48,6 +48,7 @@
 void export_damage_types(scope);
 void export_entity_flags(scope);
 void export_move_type(scope);
+void export_move_collide(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -58,6 +59,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_damage_types(_constants);
 	export_entity_flags(_constants);
 	export_move_type(_constants);
+	export_move_collide(_constants);
 }
 
 
@@ -157,4 +159,20 @@ void export_move_type(scope _constants)
 	MoveType.value("LADDER", MOVETYPE_LADDER);
 	MoveType.value("OBSERVER", MOVETYPE_OBSERVER);
 	MoveType.value("CUSTOM", MOVETYPE_CUSTOM);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose MoveCollide_t.
+//-----------------------------------------------------------------------------
+void export_move_collide(scope _constants)
+{
+	enum_<MoveCollide_t> MoveCollide("MoveCollide");
+
+	// Values...
+	MoveCollide.value("DEFAULT", MOVECOLLIDE_DEFAULT);
+	MoveCollide.value("FLY_BOUNCE", MOVECOLLIDE_FLY_BOUNCE);
+	MoveCollide.value("FLY_CUSTOM", MOVECOLLIDE_FLY_CUSTOM);
+	MoveCollide.value("FLY_SLIDE", MOVECOLLIDE_FLY_SLIDE);
+	MoveCollide.value("COUNT", MOVECOLLIDE_COUNT);
 }

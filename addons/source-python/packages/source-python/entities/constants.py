@@ -79,6 +79,7 @@ from _entities._constants import FL_ONFIRE
 from _entities._constants import FL_DISSOLVING
 from _entities._constants import FL_TRANSRAGDOLL
 from _entities._constants import FL_UNBLOCKABLE_BY_PLAYER
+from _entities._constants import MoveCollide
 from _entities._constants import MoveType
 
 
@@ -89,6 +90,7 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'DamageTypes',
            'DATA_DESC_MAP_OFFSET',
            'EntityFlags',
+           'MoveCollide',
            'MoveType',
            )
 
