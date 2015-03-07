@@ -34,6 +34,7 @@
 #include <cstdint>
 #include "toolframework/itoolentity.h"
 #include "modules/memory/memory_tools.h"
+#include "string_t.h"
 #include "dt_send.h"
 #include "game/shared/ehandle.h"
 #include "isaverestore.h"
