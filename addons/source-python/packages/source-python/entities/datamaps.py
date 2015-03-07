@@ -5,6 +5,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Enum
+from enum import IntEnum
+
 # Source.Python Imports
 #   Memory
 from memory import Function
@@ -17,10 +21,25 @@ from memory import Function
 #   Entities
 from _entities._datamaps import DataMap
 from _entities._datamaps import FieldType
+from _entities._datamaps import FTYPEDESC_GLOBAL
+from _entities._datamaps import FTYPEDESC_SAVE
+from _entities._datamaps import FTYPEDESC_KEY
+from _entities._datamaps import FTYPEDESC_INPUT
+from _entities._datamaps import FTYPEDESC_OUTPUT
+from _entities._datamaps import FTYPEDESC_FUNCTIONTABLE
+from _entities._datamaps import FTYPEDESC_PTR
+from _entities._datamaps import FTYPEDESC_OVERRIDE
+from _entities._datamaps import FTYPEDESC_INSENDTABLE
+from _entities._datamaps import FTYPEDESC_PRIVATE
+from _entities._datamaps import FTYPEDESC_NOERRORCHECK
+from _entities._datamaps import FTYPEDESC_MODELINDEX
+from _entities._datamaps import FTYPEDESC_INDEX
+from _entities._datamaps import FTYPEDESC_VIEW_OTHER_PLAYER
+from _entities._datamaps import FTYPEDESC_VIEW_OWN_TEAM
+from _entities._datamaps import FTYPEDESC_VIEW_NEVER
 from _entities._datamaps import InputData
 from _entities._datamaps import Interval
 from _entities._datamaps import TypeDescription
-from _entities._datamaps import TypeDescriptionFlags
 from _entities._datamaps import Variant
 
 
@@ -49,6 +68,31 @@ _supported_input_types = {
     FieldType.STRING: 'string',
     FieldType.VECTOR: 'vector',
 }
+
+
+# =============================================================================
+# >> ENUMERATORS
+# =============================================================================
+class TypeDescriptionFlags(IntEnum):
+
+    """TypeDescription flags wrapper enumerator."""
+
+    GLOBAL = FTYPEDESC_GLOBAL
+    SAVE = FTYPEDESC_SAVE
+    KEY = FTYPEDESC_KEY
+    INPUT = FTYPEDESC_INPUT
+    OUTPUT = FTYPEDESC_OUTPUT
+    FUNCTIONTABLE = FTYPEDESC_FUNCTIONTABLE
+    PTR = FTYPEDESC_PTR
+    OVERRIDE = FTYPEDESC_OVERRIDE
+    INSENDTABLE = FTYPEDESC_INSENDTABLE
+    PRIVATE = FTYPEDESC_PRIVATE
+    NOERRORCHECK = FTYPEDESC_NOERRORCHECK
+    MODELINDEX = FTYPEDESC_MODELINDEX
+    INDEX = FTYPEDESC_INDEX
+    VIEW_OTHER_PLAYER = FTYPEDESC_VIEW_OTHER_PLAYER
+    VIEW_OWN_TEAM = FTYPEDESC_VIEW_OWN_TEAM
+    VIEW_NEVER = FTYPEDESC_VIEW_NEVER
 
 
 # =============================================================================

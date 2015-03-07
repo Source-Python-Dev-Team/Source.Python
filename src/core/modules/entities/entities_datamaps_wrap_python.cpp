@@ -44,7 +44,7 @@ void export_type_description();
 void export_input_data();
 void export_variant();
 void export_field_types();
-void export_type_description_flags();
+void export_type_description_flags(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -58,7 +58,7 @@ DECLARE_SP_SUBMODULE(_entities, _datamaps)
 	export_input_data();
 	export_variant();
 	export_field_types();
-	export_type_description_flags();
+	export_type_description_flags(_datamaps);
 }
 
 
@@ -265,28 +265,26 @@ void export_field_types()
 	export_engine_specific_field_types(FieldType);
 }
 
+
 //-----------------------------------------------------------------------------
 // Expose flags.
 //-----------------------------------------------------------------------------
-void export_type_description_flags()
+void export_type_description_flags(scope _datamaps)
 {
-	enum_<TypeDescriptionSharedExt::TypeDescriptionFlags> TypeDescriptionFlags("TypeDescriptionFlags");
-	
-	// Values...
-	TypeDescriptionFlags.value("GLOBAL", TypeDescriptionSharedExt::GLOBAL);
-	TypeDescriptionFlags.value("SAVE", TypeDescriptionSharedExt::SAVE);
-	TypeDescriptionFlags.value("KEY", TypeDescriptionSharedExt::KEY);
-	TypeDescriptionFlags.value("INPUT", TypeDescriptionSharedExt::INPUT);
-	TypeDescriptionFlags.value("OUTPUT", TypeDescriptionSharedExt::OUTPUT);
-	TypeDescriptionFlags.value("FUNCTIONTABLE", TypeDescriptionSharedExt::FUNCTIONTABLE);
-	TypeDescriptionFlags.value("PTR", TypeDescriptionSharedExt::PTR);
-	TypeDescriptionFlags.value("OVERRIDE", TypeDescriptionSharedExt::OVERRIDE);
-	TypeDescriptionFlags.value("INSENDTABLE", TypeDescriptionSharedExt::INSENDTABLE);
-	TypeDescriptionFlags.value("PRIVATE", TypeDescriptionSharedExt::PRIVATE);
-	TypeDescriptionFlags.value("NOERRORCHECK", TypeDescriptionSharedExt::NOERRORCHECK);
-	TypeDescriptionFlags.value("MODELINDEX", TypeDescriptionSharedExt::MODELINDEX);
-	TypeDescriptionFlags.value("INDEX", TypeDescriptionSharedExt::INDEX);
-	TypeDescriptionFlags.value("VIEW_OTHER_PLAYER", TypeDescriptionSharedExt::VIEW_OTHER_PLAYER);
-	TypeDescriptionFlags.value("VIEW_OWN_TEAM", TypeDescriptionSharedExt::VIEW_OWN_TEAM);
-	TypeDescriptionFlags.value("VIEW_NEVER", TypeDescriptionSharedExt::VIEW_NEVER);
+	_datamaps.attr("FTYPEDESC_GLOBAL") = FTYPEDESC_GLOBAL;
+	_datamaps.attr("FTYPEDESC_SAVE") = FTYPEDESC_SAVE;
+	_datamaps.attr("FTYPEDESC_KEY") = FTYPEDESC_KEY;
+	_datamaps.attr("FTYPEDESC_INPUT") = FTYPEDESC_INPUT;
+	_datamaps.attr("FTYPEDESC_OUTPUT") = FTYPEDESC_OUTPUT;
+	_datamaps.attr("FTYPEDESC_FUNCTIONTABLE") = FTYPEDESC_FUNCTIONTABLE;
+	_datamaps.attr("FTYPEDESC_PTR") = FTYPEDESC_PTR;
+	_datamaps.attr("FTYPEDESC_OVERRIDE") = FTYPEDESC_OVERRIDE;
+	_datamaps.attr("FTYPEDESC_INSENDTABLE") = FTYPEDESC_INSENDTABLE;
+	_datamaps.attr("FTYPEDESC_PRIVATE") = FTYPEDESC_PRIVATE;
+	_datamaps.attr("FTYPEDESC_NOERRORCHECK") = FTYPEDESC_NOERRORCHECK;
+	_datamaps.attr("FTYPEDESC_MODELINDEX") = FTYPEDESC_MODELINDEX;
+	_datamaps.attr("FTYPEDESC_INDEX") = FTYPEDESC_INDEX;
+	_datamaps.attr("FTYPEDESC_VIEW_OTHER_PLAYER") = FTYPEDESC_VIEW_OTHER_PLAYER;
+	_datamaps.attr("FTYPEDESC_VIEW_OWN_TEAM") = FTYPEDESC_VIEW_OWN_TEAM;
+	_datamaps.attr("FTYPEDESC_VIEW_NEVER") = FTYPEDESC_VIEW_NEVER;
 }
