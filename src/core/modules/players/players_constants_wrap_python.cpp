@@ -31,6 +31,12 @@
 #include "utility/wrap_macros.h"
 #include "const.h"
 #include "game/shared/in_buttons.h"
+#include "string_t.h"
+#include "dt_send.h"
+#include "game/shared/ehandle.h"
+#include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/shareddefs.h"
 
 #include ENGINE_INCLUDE_PATH(players_constants_wrap_python.h)
 
@@ -41,6 +47,7 @@
 void export_players_flags(scope);
 void export_life_states(scope);
 void export_player_buttons(scope);
+void export_hide_hud_flags(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -51,6 +58,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 	export_players_flags(_constants);
 	export_life_states(_constants);
 	export_player_buttons(_constants);
+	export_hide_hud_flags(_constants);
 }
 
 
@@ -122,4 +130,30 @@ void export_player_buttons(scope _constants)
 
 	// Engine specific stuff...
 	export_engine_specific_player_buttons(_constants);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose hide hud flags.
+//-----------------------------------------------------------------------------
+void export_hide_hud_flags(scope _constants)
+{
+	_constants.attr("HIDEHUD_WEAPONSELECTION") = HIDEHUD_WEAPONSELECTION;
+	_constants.attr("HIDEHUD_FLASHLIGHT") = HIDEHUD_FLASHLIGHT;
+	_constants.attr("HIDEHUD_ALL") = HIDEHUD_ALL;
+	_constants.attr("HIDEHUD_HEALTH") = HIDEHUD_HEALTH;
+	_constants.attr("HIDEHUD_PLAYERDEAD") = HIDEHUD_PLAYERDEAD;
+	_constants.attr("HIDEHUD_NEEDSUIT") = HIDEHUD_NEEDSUIT;
+	_constants.attr("HIDEHUD_MISCSTATUS") = HIDEHUD_MISCSTATUS;
+	_constants.attr("HIDEHUD_CHAT") = HIDEHUD_CHAT;
+	_constants.attr("HIDEHUD_CROSSHAIR") = HIDEHUD_CROSSHAIR;
+	_constants.attr("HIDEHUD_VEHICLE_CROSSHAIR") = HIDEHUD_VEHICLE_CROSSHAIR;
+	_constants.attr("HIDEHUD_INVEHICLE") = HIDEHUD_INVEHICLE;
+	_constants.attr("HIDEHUD_BONUS_PROGRESS") = HIDEHUD_BONUS_PROGRESS;
+
+	// CS:GO specific constants...
+	_constants.attr("HIDEHUD_RADAR") = -1;
+
+	// Engine specific stuff...
+	export_engine_specific_hide_hud_flags(_constants);
 }

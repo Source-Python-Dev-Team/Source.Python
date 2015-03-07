@@ -43,4 +43,14 @@ void export_engine_specific_player_buttons(T _constants)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose hide hud flags.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_hide_hud_flags(T _constants)
+{
+	_constants.attr("HIDEHUD_RADAR") = HIDEHUD_RADAR;
+}
+
+
 #endif // _PLAYERS_CONSTANTS_CSGO_WRAP_PYTHON_H

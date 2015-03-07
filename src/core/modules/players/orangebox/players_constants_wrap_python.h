@@ -43,4 +43,14 @@ void export_engine_specific_player_buttons(T _constants)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose hide hud flags.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_hide_hud_flags(T _constants)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
 #endif // _PLAYERS_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H

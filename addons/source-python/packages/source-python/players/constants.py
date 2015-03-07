@@ -25,6 +25,19 @@ from _players._constants import FL_ATCONTROLS
 from _players._constants import FL_CLIENT
 from _players._constants import FL_FAKECLIENT
 from _players._constants import FL_INWATER
+from _players._constants import HIDEHUD_WEAPONSELECTION
+from _players._constants import HIDEHUD_FLASHLIGHT
+from _players._constants import HIDEHUD_ALL
+from _players._constants import HIDEHUD_HEALTH
+from _players._constants import HIDEHUD_PLAYERDEAD
+from _players._constants import HIDEHUD_NEEDSUIT
+from _players._constants import HIDEHUD_MISCSTATUS
+from _players._constants import HIDEHUD_CHAT
+from _players._constants import HIDEHUD_CROSSHAIR
+from _players._constants import HIDEHUD_VEHICLE_CROSSHAIR
+from _players._constants import HIDEHUD_INVEHICLE
+from _players._constants import HIDEHUD_BONUS_PROGRESS
+from _players._constants import HIDEHUD_RADAR
 from _players._constants import IN_ATTACK
 from _players._constants import IN_JUMP
 from _players._constants import IN_DUCK
@@ -62,6 +75,7 @@ from _players._constants import LIFE_DISCARDBODY
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('LifeState',
+           'HideHudFlags',
            'PlayerButtons',
            'PlayerFlags',
            )
@@ -127,3 +141,22 @@ class PlayerButtons(IntEnum):
     GRENADE1 = IN_GRENADE1
     GRENADE2 = IN_GRENADE2
     LOOKSPIN = IN_LOOKSPIN
+
+
+class HideHudFlags(IntEnum):
+
+    """Hide hud flags wrapper enumerator."""
+
+    WEAPONSELECTION = HIDEHUD_WEAPONSELECTION
+    FLASHLIGHT = HIDEHUD_FLASHLIGHT
+    ALL = HIDEHUD_ALL
+    HEALTH = HIDEHUD_HEALTH
+    PLAYERDEAD = HIDEHUD_PLAYERDEAD
+    NEEDSUIT = HIDEHUD_NEEDSUIT
+    MISCSTATUS = HIDEHUD_MISCSTATUS
+    CHAT = HIDEHUD_CHAT
+    CROSSHAIR = HIDEHUD_CROSSHAIR
+    VEHICLE_CROSSHAIR = HIDEHUD_VEHICLE_CROSSHAIR
+    INVEHICLE = HIDEHUD_INVEHICLE
+    BONUS_PROGRESS = HIDEHUD_BONUS_PROGRESS
+    RADAR = HIDEHUD_RADAR
