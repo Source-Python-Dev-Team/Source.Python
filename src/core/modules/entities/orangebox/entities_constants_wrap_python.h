@@ -84,4 +84,14 @@ void export_engine_specific_render_effects(T RenderEffects)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose Collision_Group_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_collision_group(T CollisionGroup)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
 #endif // _ENTITIES_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H

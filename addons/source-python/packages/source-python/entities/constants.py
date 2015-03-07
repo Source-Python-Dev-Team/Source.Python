@@ -27,6 +27,7 @@ from paths import SP_DATA_PATH
 # Source.Python Imports
 #   Entities
 from _entities._constants import BASEDAMAGE_NOT_SPECIFIED
+from _entities._constants import CollisionGroup
 from _entities._constants import DMG_BULLET
 from _entities._constants import DMG_SLASH
 from _entities._constants import DMG_BURN
@@ -104,6 +105,7 @@ from _entities._constants import SolidType
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
+           'CollisionGroup',
            'DamageTypes',
            'DATA_DESC_MAP_OFFSET',
            'EntityEffects',

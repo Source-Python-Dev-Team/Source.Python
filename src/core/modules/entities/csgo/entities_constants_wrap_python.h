@@ -79,4 +79,15 @@ void export_engine_specific_render_effects(T RenderEffects)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose Collision_Group_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_collision_group(T CollisionGroup)
+{
+	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
+	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
+}
+
+
 #endif // _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H

@@ -54,6 +54,7 @@ void export_solid_flags(scope);
 void export_entity_effects(scope);
 void export_render_mode(scope);
 void export_render_effects(scope);
+void export_collision_group(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -70,6 +71,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_entity_effects(_constants);
 	export_render_mode(_constants);
 	export_render_effects(_constants);
+	export_collision_group(_constants);
 }
 
 
@@ -324,4 +326,42 @@ void export_render_effects(scope _constants)
 
 	// Engine specific stuff...
 	export_engine_specific_render_effects(RenderEffects);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose Collision_Group_t.
+//-----------------------------------------------------------------------------
+void export_collision_group(scope _constants)
+{
+	enum_<Collision_Group_t> CollisionGroup("CollisionGroup");
+
+	// Values...
+	CollisionGroup.value("NONE", COLLISION_GROUP_NONE);
+	CollisionGroup.value("DEBRIS", COLLISION_GROUP_DEBRIS);
+	CollisionGroup.value("DEBRIS_TRIGGER", COLLISION_GROUP_DEBRIS_TRIGGER);
+	CollisionGroup.value("INTERACTIVE_DEBRIS", COLLISION_GROUP_INTERACTIVE_DEBRIS);
+	CollisionGroup.value("INTERACTIVE", COLLISION_GROUP_INTERACTIVE);
+	CollisionGroup.value("PLAYER", COLLISION_GROUP_PLAYER);
+	CollisionGroup.value("BREAKABLE_GLASS", COLLISION_GROUP_BREAKABLE_GLASS);
+	CollisionGroup.value("VEHICLE", COLLISION_GROUP_VEHICLE);
+	CollisionGroup.value("PLAYER_MOVEMENT", COLLISION_GROUP_PLAYER_MOVEMENT);
+	CollisionGroup.value("NPC", COLLISION_GROUP_NPC);
+	CollisionGroup.value("IN_VEHICLE", COLLISION_GROUP_IN_VEHICLE);
+	CollisionGroup.value("WEAPON", COLLISION_GROUP_WEAPON);
+	CollisionGroup.value("VEHICLE_CLIP", COLLISION_GROUP_VEHICLE_CLIP);
+	CollisionGroup.value("PROJECTILE", COLLISION_GROUP_PROJECTILE);
+	CollisionGroup.value("DOOR_BLOCKER", COLLISION_GROUP_DOOR_BLOCKER);
+	CollisionGroup.value("PASSABLE_DOOR", COLLISION_GROUP_PASSABLE_DOOR);
+	CollisionGroup.value("DISSOLVING", COLLISION_GROUP_DISSOLVING);
+	CollisionGroup.value("PUSHAWAY", COLLISION_GROUP_PUSHAWAY);
+	CollisionGroup.value("NPC_ACTOR", COLLISION_GROUP_NPC_ACTOR);
+	CollisionGroup.value("NPC_SCRIPTED", COLLISION_GROUP_NPC_SCRIPTED);
+
+	// CS:GO specific values...
+	NOT_IMPLEMENTED_VALUE(Collision_Group_t, "PZ_CLIP");
+	NOT_IMPLEMENTED_VALUE(Collision_Group_t, "DEBRIS_BLOCK_PROJECTILE");
+
+	// Engine specific stuff...
+	export_engine_specific_collision_group(CollisionGroup);
 }
