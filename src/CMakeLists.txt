@@ -312,6 +312,7 @@ Set(SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
     core/modules/players/players_generator_wrap.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_constants_wrap_python.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES

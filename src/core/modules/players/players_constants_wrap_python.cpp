@@ -30,6 +30,9 @@
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "const.h"
+#include "game/shared/in_buttons.h"
+
+#include ENGINE_INCLUDE_PATH(players_constants_wrap_python.h)
 
 
 //-----------------------------------------------------------------------------
@@ -37,6 +40,7 @@
 //-----------------------------------------------------------------------------
 void export_players_flags(scope);
 void export_life_states(scope);
+void export_player_buttons(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -46,6 +50,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 {
 	export_players_flags(_constants);
 	export_life_states(_constants);
+	export_player_buttons(_constants);
 }
 
 
@@ -78,4 +83,43 @@ void export_life_states(scope _constants)
 	_constants.attr("LIFE_DEAD") = LIFE_DEAD;
 	_constants.attr("LIFE_RESPAWNABLE") = LIFE_RESPAWNABLE;
 	_constants.attr("LIFE_DISCARDBODY") = LIFE_DISCARDBODY;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose life states.
+//-----------------------------------------------------------------------------
+void export_player_buttons(scope _constants)
+{
+	_constants.attr("IN_ATTACK") = IN_ATTACK;
+	_constants.attr("IN_JUMP") = IN_JUMP;
+	_constants.attr("IN_DUCK") = IN_DUCK;
+	_constants.attr("IN_FORWARD") = IN_FORWARD;
+	_constants.attr("IN_BACK") = IN_BACK;
+	_constants.attr("IN_USE") = IN_USE;
+	_constants.attr("IN_CANCEL") = IN_CANCEL;
+	_constants.attr("IN_LEFT") = IN_LEFT;
+	_constants.attr("IN_RIGHT") = IN_RIGHT;
+	_constants.attr("IN_MOVELEFT") = IN_MOVELEFT;
+	_constants.attr("IN_MOVERIGHT") = IN_MOVERIGHT;
+	_constants.attr("IN_ATTACK2") = IN_ATTACK2;
+	_constants.attr("IN_RUN") = IN_RUN;
+	_constants.attr("IN_RELOAD") = IN_RELOAD;
+	_constants.attr("IN_ALT1") = IN_ALT1;
+	_constants.attr("IN_ALT2") = IN_ALT2;
+	_constants.attr("IN_SCORE") = IN_SCORE;
+	_constants.attr("IN_SPEED") = IN_SPEED;
+	_constants.attr("IN_WALK") = IN_WALK;
+	_constants.attr("IN_ZOOM") = IN_ZOOM;
+	_constants.attr("IN_WEAPON1") = IN_WEAPON1;
+	_constants.attr("IN_WEAPON2") = IN_WEAPON2;
+	_constants.attr("IN_BULLRUSH") = IN_BULLRUSH;
+	_constants.attr("IN_GRENADE1") = IN_GRENADE1;
+	_constants.attr("IN_GRENADE2") = IN_GRENADE2;
+
+	// CS:GO specific constants...
+	_constants.attr("IN_LOOKSPIN") = -1;
+
+	// Engine specific stuff...
+	export_engine_specific_player_buttons(_constants);
 }
