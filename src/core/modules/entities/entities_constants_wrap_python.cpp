@@ -49,6 +49,7 @@ void export_damage_types(scope);
 void export_entity_flags(scope);
 void export_move_type(scope);
 void export_move_collide(scope);
+void export_solid_type(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -60,6 +61,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_entity_flags(_constants);
 	export_move_type(_constants);
 	export_move_collide(_constants);
+	export_solid_type(_constants);
 }
 
 
@@ -175,4 +177,22 @@ void export_move_collide(scope _constants)
 	MoveCollide.value("FLY_CUSTOM", MOVECOLLIDE_FLY_CUSTOM);
 	MoveCollide.value("FLY_SLIDE", MOVECOLLIDE_FLY_SLIDE);
 	MoveCollide.value("COUNT", MOVECOLLIDE_COUNT);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SolidType_t.
+//-----------------------------------------------------------------------------
+void export_solid_type(scope _constants)
+{
+	enum_<SolidType_t> SolidType("SolidType");
+	
+	// Values...
+	SolidType.value("NONE", SOLID_NONE);
+	SolidType.value("BSP", SOLID_BSP);
+	SolidType.value("BBOX", SOLID_BBOX);
+	SolidType.value("OBB", SOLID_OBB);
+	SolidType.value("OBB_YAW", SOLID_OBB_YAW);
+	SolidType.value("CUSTOM", SOLID_CUSTOM);
+	SolidType.value("VPHYSICS", SOLID_VPHYSICS);
 }

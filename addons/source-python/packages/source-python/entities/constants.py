@@ -81,6 +81,7 @@ from _entities._constants import FL_TRANSRAGDOLL
 from _entities._constants import FL_UNBLOCKABLE_BY_PLAYER
 from _entities._constants import MoveCollide
 from _entities._constants import MoveType
+from _entities._constants import SolidType
 
 
 # =============================================================================
@@ -92,6 +93,7 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'EntityFlags',
            'MoveCollide',
            'MoveType',
+           'SolidType',
            )
 
 
