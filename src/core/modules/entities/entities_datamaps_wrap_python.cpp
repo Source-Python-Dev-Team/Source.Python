@@ -223,46 +223,46 @@ void export_variant()
 //-----------------------------------------------------------------------------
 void export_field_types()
 {
-	enum_<fieldtype_t> FieldTypes("FieldTypes");
+	enum_<fieldtype_t> FieldType("FieldType");
 	
 	// Values...
-	FieldTypes.value("VOID", FIELD_VOID);
-	FieldTypes.value("FLOAT", FIELD_FLOAT);
-	FieldTypes.value("STRING", FIELD_STRING);
-	FieldTypes.value("VECTOR", FIELD_VECTOR);
-	FieldTypes.value("QUATERNION", FIELD_QUATERNION);
-	FieldTypes.value("INTEGER", FIELD_INTEGER);
-	FieldTypes.value("BOOLEAN", FIELD_BOOLEAN);
-	FieldTypes.value("SHORT", FIELD_SHORT);
-	FieldTypes.value("CHARACTER", FIELD_CHARACTER);
-	FieldTypes.value("COLOR32", FIELD_COLOR32);
-	FieldTypes.value("EMBEDDED", FIELD_EMBEDDED);
-	FieldTypes.value("CUSTOM", FIELD_CUSTOM);
-	FieldTypes.value("CLASSPTR", FIELD_CLASSPTR);
-	FieldTypes.value("EHANDLE", FIELD_EHANDLE);
-	FieldTypes.value("EDICT", FIELD_EDICT);
-	FieldTypes.value("POSITION_VECTOR", FIELD_POSITION_VECTOR);
-	FieldTypes.value("TIME", FIELD_TIME);
-	FieldTypes.value("TICK", FIELD_TICK);
-	FieldTypes.value("MODELNAME", FIELD_MODELNAME);
-	FieldTypes.value("SOUNDNAME", FIELD_SOUNDNAME);
-	FieldTypes.value("INPUT", FIELD_INPUT);
-	FieldTypes.value("FUNCTION", FIELD_FUNCTION);
-	FieldTypes.value("VMATRIX", FIELD_VMATRIX);
-	FieldTypes.value("VMATRIX_WORLDSPACE", FIELD_VMATRIX_WORLDSPACE);
-	FieldTypes.value("MATRIX3X4_WORLDSPACE", FIELD_MATRIX3X4_WORLDSPACE);
-	FieldTypes.value("INTERVAL", FIELD_INTERVAL);
-	FieldTypes.value("MODELINDEX", FIELD_MODELINDEX);
-	FieldTypes.value("MATERIALINDEX", FIELD_MATERIALINDEX);
-	FieldTypes.value("VECTOR2D", FIELD_VECTOR2D);
-	FieldTypes.value("TYPECOUNT", FIELD_TYPECOUNT);
+	FieldType.value("VOID", FIELD_VOID);
+	FieldType.value("FLOAT", FIELD_FLOAT);
+	FieldType.value("STRING", FIELD_STRING);
+	FieldType.value("VECTOR", FIELD_VECTOR);
+	FieldType.value("QUATERNION", FIELD_QUATERNION);
+	FieldType.value("INTEGER", FIELD_INTEGER);
+	FieldType.value("BOOLEAN", FIELD_BOOLEAN);
+	FieldType.value("SHORT", FIELD_SHORT);
+	FieldType.value("CHARACTER", FIELD_CHARACTER);
+	FieldType.value("COLOR32", FIELD_COLOR32);
+	FieldType.value("EMBEDDED", FIELD_EMBEDDED);
+	FieldType.value("CUSTOM", FIELD_CUSTOM);
+	FieldType.value("CLASSPTR", FIELD_CLASSPTR);
+	FieldType.value("EHANDLE", FIELD_EHANDLE);
+	FieldType.value("EDICT", FIELD_EDICT);
+	FieldType.value("POSITION_VECTOR", FIELD_POSITION_VECTOR);
+	FieldType.value("TIME", FIELD_TIME);
+	FieldType.value("TICK", FIELD_TICK);
+	FieldType.value("MODELNAME", FIELD_MODELNAME);
+	FieldType.value("SOUNDNAME", FIELD_SOUNDNAME);
+	FieldType.value("INPUT", FIELD_INPUT);
+	FieldType.value("FUNCTION", FIELD_FUNCTION);
+	FieldType.value("VMATRIX", FIELD_VMATRIX);
+	FieldType.value("VMATRIX_WORLDSPACE", FIELD_VMATRIX_WORLDSPACE);
+	FieldType.value("MATRIX3X4_WORLDSPACE", FIELD_MATRIX3X4_WORLDSPACE);
+	FieldType.value("INTERVAL", FIELD_INTERVAL);
+	FieldType.value("MODELINDEX", FIELD_MODELINDEX);
+	FieldType.value("MATERIALINDEX", FIELD_MATERIALINDEX);
+	FieldType.value("VECTOR2D", FIELD_VECTOR2D);
+	FieldType.value("TYPECOUNT", FIELD_TYPECOUNT);
 
 	// CS:GO values...
 	NOT_IMPLEMENTED_VALUE(fieldtype_t, "INTEGER64");
 	NOT_IMPLEMENTED_VALUE(fieldtype_t, "VECTOR4D");
 
 	// Engine specific stuff...
-	export_engine_specific_field_types(FieldTypes);
+	export_engine_specific_field_types(FieldType);
 }
 
 //-----------------------------------------------------------------------------

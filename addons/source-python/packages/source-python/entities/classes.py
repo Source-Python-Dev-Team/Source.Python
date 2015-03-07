@@ -27,7 +27,7 @@ from entities.constants import DATA_DESC_MAP_OFFSET
 from entities.datamaps import _supported_input_types
 from entities.datamaps import DataMap
 from entities.datamaps import EntityProperty
-from entities.datamaps import FieldTypes
+from entities.datamaps import FieldType
 from entities.datamaps import InputFunction
 from entities.datamaps import TypeDescriptionFlags
 from entities.helpers import edict_from_pointer
@@ -56,42 +56,42 @@ _managers_game_path = SP_DATA_PATH.joinpath(
 
 # Store all supported types
 _supported_descriptor_types = {
-    FieldTypes.BOOLEAN: 'bool',
-    FieldTypes.CHARACTER: 'uchar',
-    FieldTypes.CLASSPTR: 'pointer',
-    FieldTypes.COLOR32: 'Color',
-    FieldTypes.EDICT: 'Edict',
-    FieldTypes.EHANDLE: 'int',
-    FieldTypes.FLOAT: 'float',
-    FieldTypes.FUNCTION: 'pointer',
-    FieldTypes.INTEGER: 'int',
-    FieldTypes.INTERVAL: 'Interval',
-    FieldTypes.MODELINDEX: 'uint',
-    FieldTypes.MODELNAME: 'string_pointer',
-    FieldTypes.POSITION_VECTOR: 'Vector',
-    FieldTypes.QUATERNION: 'Quaternion',
-    FieldTypes.SHORT: 'short',
-    FieldTypes.SOUNDNAME: 'string_pointer',
-    FieldTypes.STRING: 'string_pointer',
-    FieldTypes.TICK: 'int',
-    FieldTypes.TIME: 'float',
-    FieldTypes.VECTOR: 'Vector',
+    FieldType.BOOLEAN: 'bool',
+    FieldType.CHARACTER: 'uchar',
+    FieldType.CLASSPTR: 'pointer',
+    FieldType.COLOR32: 'Color',
+    FieldType.EDICT: 'Edict',
+    FieldType.EHANDLE: 'int',
+    FieldType.FLOAT: 'float',
+    FieldType.FUNCTION: 'pointer',
+    FieldType.INTEGER: 'int',
+    FieldType.INTERVAL: 'Interval',
+    FieldType.MODELINDEX: 'uint',
+    FieldType.MODELNAME: 'string_pointer',
+    FieldType.POSITION_VECTOR: 'Vector',
+    FieldType.QUATERNION: 'Quaternion',
+    FieldType.SHORT: 'short',
+    FieldType.SOUNDNAME: 'string_pointer',
+    FieldType.STRING: 'string_pointer',
+    FieldType.TICK: 'int',
+    FieldType.TIME: 'float',
+    FieldType.VECTOR: 'Vector',
 }
 
 # Store all supported keyvalue types
 _supported_keyvalue_types = {
-    FieldTypes.BOOLEAN: 'bool',
-    FieldTypes.CHARACTER: 'int',
-    FieldTypes.COLOR32: 'color',
-    FieldTypes.EHANDLE: 'int',
-    FieldTypes.FLOAT: 'float',
-    FieldTypes.INTEGER: 'int',
-    FieldTypes.MODELNAME: 'string',
-    FieldTypes.SHORT: 'int',
-    FieldTypes.SOUNDNAME: 'string',
-    FieldTypes.STRING: 'string',
-    FieldTypes.TICK: 'int',
-    FieldTypes.VECTOR: 'vector',
+    FieldType.BOOLEAN: 'bool',
+    FieldType.CHARACTER: 'int',
+    FieldType.COLOR32: 'color',
+    FieldType.EHANDLE: 'int',
+    FieldType.FLOAT: 'float',
+    FieldType.INTEGER: 'int',
+    FieldType.MODELNAME: 'string',
+    FieldType.SHORT: 'int',
+    FieldType.SOUNDNAME: 'string',
+    FieldType.STRING: 'string',
+    FieldType.TICK: 'int',
+    FieldType.VECTOR: 'vector',
 }
 
 # Store all supported property types
@@ -103,7 +103,7 @@ _supported_property_types = {
 }
 
 # Get a tuple with the supported inputs (including VOID)
-_supported_inputs = tuple(_supported_input_types) + (FieldTypes.VOID, )
+_supported_inputs = tuple(_supported_input_types) + (FieldType.VOID, )
 
 # Create a dictionary to store all server classes
 _server_classes = dict()
@@ -387,7 +387,7 @@ class _ServerClasses(TypeManager):
             offset = base_offset + desc.offset
 
             # Is the current descriptor an embedded datamap table?
-            if desc.type == FieldTypes.EMBEDDED:
+            if desc.type == FieldType.EMBEDDED:
 
                 # Loop through all descriptors for the embedded datamap table
                 for new_name, new_desc, new_offset in self._find_descriptors(

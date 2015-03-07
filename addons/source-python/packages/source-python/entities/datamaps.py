@@ -16,7 +16,7 @@ from memory import Function
 # Source.Python Imports
 #   Entities
 from _entities._datamaps import DataMap
-from _entities._datamaps import FieldTypes
+from _entities._datamaps import FieldType
 from _entities._datamaps import InputData
 from _entities._datamaps import Interval
 from _entities._datamaps import TypeDescription
@@ -29,7 +29,7 @@ from _entities._datamaps import Variant
 # =============================================================================
 # Set all to an empty list
 __all__ = ('DataMap',
-           'FieldTypes',
+           'FieldType',
            'InputData',
            'Interval',
            'TypeDescription',
@@ -42,12 +42,12 @@ __all__ = ('DataMap',
 # >> GLOBAL VARIABLES
 # =============================================================================
 _supported_input_types = {
-    FieldTypes.BOOLEAN: 'bool',
-    FieldTypes.COLOR32: 'color',
-    FieldTypes.FLOAT: 'float',
-    FieldTypes.INTEGER: 'int',
-    FieldTypes.STRING: 'string',
-    FieldTypes.VECTOR: 'vector',
+    FieldType.BOOLEAN: 'bool',
+    FieldType.COLOR32: 'color',
+    FieldType.FLOAT: 'float',
+    FieldType.INTEGER: 'int',
+    FieldType.STRING: 'string',
+    FieldType.VECTOR: 'vector',
 }
 
 
@@ -95,12 +95,12 @@ class InputFunction(Function):
     def __call__(self, value=None, caller=None, activator=None):
         """Call the stored function with the values given."""
         # Is the type not VOID but no value was given?
-        if value is None and self._argument_type != FieldTypes.VOID:
+        if value is None and self._argument_type != FieldType.VOID:
             raise ValueError(
                 'Must provide a value for {0}'.format(self._name))
 
         # Is the type VOID but a value was given?
-        if value is not None and self._argument_type == FieldTypes.VOID:
+        if value is not None and self._argument_type == FieldType.VOID:
             raise ValueError(
                 '{0} is type Void.  Do not pass a value.'.format(
                     self._name))
@@ -117,7 +117,7 @@ class InputFunction(Function):
             inputdata.activator = activator
 
         # Does the function require a value?
-        if self._argument_type != FieldTypes.VOID:
+        if self._argument_type != FieldType.VOID:
 
             # Set the value
             getattr(
