@@ -315,7 +315,8 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
-    core/modules/players/bots_wrap_python.cpp
+    core/modules/players/players_bots_wrap_python.cpp
+    core/modules/players/players_constants_wrap_python.cpp
     core/modules/players/players_helpers_wrap_python.cpp
     core/modules/players/players_wrap_python.cpp
     core/modules/players/players_generator_wrap.cpp
