@@ -25,12 +25,18 @@ from _players._constants import FL_ATCONTROLS
 from _players._constants import FL_CLIENT
 from _players._constants import FL_FAKECLIENT
 from _players._constants import FL_INWATER
+from _players._constants import LIFE_ALIVE
+from _players._constants import LIFE_DYING
+from _players._constants import LIFE_DEAD
+from _players._constants import LIFE_RESPAWNABLE
+from _players._constants import LIFE_DISCARDBODY
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PlayerFlags',
+__all__ = ('LifeState',
+           'PlayerFlags',
            )
 
 
@@ -51,3 +57,14 @@ class PlayerFlags(IntEnum):
     CLIENT = FL_CLIENT
     FAKECLIENT = FL_FAKECLIENT
     INWATER = FL_INWATER
+
+
+class LifeState(IntEnum):
+
+    """Player life states wrapper enumerator."""
+
+    ALIVE = LIFE_ALIVE
+    DYING = LIFE_DYING
+    DEAD = LIFE_DEAD
+    RESPAWNABLE = LIFE_RESPAWNABLE
+    DISCARDBODY = LIFE_DISCARDBODY

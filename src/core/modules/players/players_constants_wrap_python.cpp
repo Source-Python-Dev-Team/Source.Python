@@ -36,6 +36,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_players_flags(scope);
+void export_life_states(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -44,6 +45,7 @@ void export_players_flags(scope);
 DECLARE_SP_SUBMODULE(_players, _constants)
 {
 	export_players_flags(_constants);
+	export_life_states(_constants);
 }
 
 
@@ -63,4 +65,17 @@ void export_players_flags(scope _constants)
 	_constants.attr("FL_CLIENT") = FL_CLIENT;
 	_constants.attr("FL_FAKECLIENT") = FL_FAKECLIENT;
 	_constants.attr("FL_INWATER") = FL_INWATER;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose life states.
+//-----------------------------------------------------------------------------
+void export_life_states(scope _constants)
+{
+	_constants.attr("LIFE_ALIVE") = LIFE_ALIVE;
+	_constants.attr("LIFE_DYING") = LIFE_DYING;
+	_constants.attr("LIFE_DEAD") = LIFE_DEAD;
+	_constants.attr("LIFE_RESPAWNABLE") = LIFE_RESPAWNABLE;
+	_constants.attr("LIFE_DISCARDBODY") = LIFE_DISCARDBODY;
 }
