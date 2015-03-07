@@ -58,14 +58,35 @@ from _entities._constants import DMG_DIRECT
 from _entities._constants import DMG_BUCKSHOT
 from _entities._constants import DMG_LASTGENERICFLAG
 from _entities._constants import DMG_HEADSHOT
-
+from _entities._constants import FL_FLY
+from _entities._constants import FL_SWIM
+from _entities._constants import FL_CONVEYOR
+from _entities._constants import FL_NPC
+from _entities._constants import FL_GODMODE
+from _entities._constants import FL_NOTARGET
+from _entities._constants import FL_AIMTARGET
+from _entities._constants import FL_PARTIALGROUND
+from _entities._constants import FL_STATICPROP
+from _entities._constants import FL_GRAPHED
+from _entities._constants import FL_GRENADE
+from _entities._constants import FL_STEPMOVEMENT
+from _entities._constants import FL_DONTTOUCH
+from _entities._constants import FL_BASEVELOCITY
+from _entities._constants import FL_WORLDBRUSH
+from _entities._constants import FL_OBJECT
+from _entities._constants import FL_KILLME
+from _entities._constants import FL_ONFIRE
+from _entities._constants import FL_DISSOLVING
+from _entities._constants import FL_TRANSRAGDOLL
+from _entities._constants import FL_UNBLOCKABLE_BY_PLAYER
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('DATA_DESC_MAP_OFFSET',
-           'BASEDAMAGE_NOT_SPECIFIED',
+__all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'DamageTypes',
+           'DATA_DESC_MAP_OFFSET',
+           'EntityFlags',
            )
 
 
@@ -123,3 +144,30 @@ class DamageTypes(IntEnum):
     BUCKSHOT = DMG_BUCKSHOT
     LASTGENERICFLAG = DMG_LASTGENERICFLAG
     HEADSHOT = DMG_HEADSHOT
+
+
+class EntityFlags(IntEnum):
+
+    """Entity flags wrapper enumerator."""
+
+    FLY = FL_FLY
+    SWIM = FL_SWIM
+    CONVEYOR = FL_CONVEYOR
+    NPC = FL_NPC
+    GODMODE = FL_GODMODE
+    NOTARGET = FL_NOTARGET
+    AIMTARGET = FL_AIMTARGET
+    PARTIALGROUND = FL_PARTIALGROUND
+    STATICPROP = FL_STATICPROP
+    GRAPHED = FL_GRAPHED
+    GRENADE = FL_GRENADE
+    STEPMOVEMENT = FL_STEPMOVEMENT
+    DONTTOUCH = FL_DONTTOUCH
+    BASEVELOCITY = FL_BASEVELOCITY
+    WORLDBRUSH = FL_WORLDBRUSH
+    OBJECT = FL_OBJECT
+    KILLME = FL_KILLME
+    ONFIRE = FL_ONFIRE
+    DISSOLVING = FL_DISSOLVING
+    TRANSRAGDOLL = FL_TRANSRAGDOLL
+    UNBLOCKABLE_BY_PLAYER = FL_UNBLOCKABLE_BY_PLAYER

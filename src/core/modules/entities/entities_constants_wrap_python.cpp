@@ -37,6 +37,7 @@
 #include "datamap.h"
 #include "game/shared/takedamageinfo.h"
 #include "game/shared/shareddefs.h"
+#include "const.h"
 
 #include ENGINE_INCLUDE_PATH(entities_constants_wrap_python.h)
 
@@ -45,6 +46,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_damage_types(scope);
+void export_entity_flags(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -53,6 +55,7 @@ void export_damage_types(scope);
 DECLARE_SP_SUBMODULE(_entities, _constants)
 {
     export_damage_types(_constants);
+    export_entity_flags(_constants);
 }
 
 
@@ -99,4 +102,34 @@ void export_damage_types(scope _constants)
 
     // Engine specific stuff..
     export_engine_specific_damage_types(_constants);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose entity flags.
+//-----------------------------------------------------------------------------
+void export_entity_flags(scope _constants)
+{
+    // Entity flags constants...
+    _constants.attr("FL_FLY") = FL_FLY;
+    _constants.attr("FL_SWIM") = FL_SWIM;
+    _constants.attr("FL_CONVEYOR") = FL_CONVEYOR;
+    _constants.attr("FL_NPC") = FL_NPC;
+    _constants.attr("FL_GODMODE") = FL_GODMODE;
+    _constants.attr("FL_NOTARGET") = FL_NOTARGET;
+    _constants.attr("FL_AIMTARGET") = FL_AIMTARGET;
+    _constants.attr("FL_PARTIALGROUND") = FL_PARTIALGROUND;
+    _constants.attr("FL_STATICPROP") = FL_STATICPROP;
+    _constants.attr("FL_GRAPHED") = FL_GRAPHED;
+    _constants.attr("FL_GRENADE") = FL_GRENADE;
+    _constants.attr("FL_STEPMOVEMENT") = FL_STEPMOVEMENT;
+    _constants.attr("FL_DONTTOUCH") = FL_DONTTOUCH;
+    _constants.attr("FL_BASEVELOCITY") = FL_BASEVELOCITY;
+    _constants.attr("FL_WORLDBRUSH") = FL_WORLDBRUSH;
+    _constants.attr("FL_OBJECT") = FL_OBJECT;
+    _constants.attr("FL_KILLME") = FL_KILLME;
+    _constants.attr("FL_ONFIRE") = FL_ONFIRE;
+    _constants.attr("FL_DISSOLVING") = FL_DISSOLVING;
+    _constants.attr("FL_TRANSRAGDOLL") = FL_TRANSRAGDOLL;
+    _constants.attr("FL_UNBLOCKABLE_BY_PLAYER") = FL_UNBLOCKABLE_BY_PLAYER;
 }
