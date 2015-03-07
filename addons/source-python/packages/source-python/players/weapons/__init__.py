@@ -9,7 +9,7 @@
 #   Entities
 from entities.entity import BaseEntity
 from entities.helpers import index_from_inthandle
-from entities.props import SendPropTypes
+from entities.props import SendPropType
 #   Engines
 from engines.server import server_game_dll
 #   Weapons
@@ -422,7 +422,7 @@ def _find_weapon_prop_length(table):
             return len(item.data_table)
 
         # Is the current prop a table?
-        if item.type == SendPropTypes.DATATABLE:
+        if item.type == SendPropType.DATATABLE:
 
             # Loop through the table
             _find_weapon_prop_length(item.data_table)

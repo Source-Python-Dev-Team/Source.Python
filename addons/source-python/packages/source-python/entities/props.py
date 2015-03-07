@@ -16,7 +16,7 @@ from enum import IntEnum
 # Source.Python Imports
 #   Entities
 from _entities._props import SendProp
-from _entities._props import SendPropTypes
+from _entities._props import SendPropType
 from _entities._props import SendPropVariant
 from _entities._props import SendTable
 from _entities._props import ServerClass
@@ -43,7 +43,7 @@ from _entities._props import SPROP_CHANGES_OFTEN
 # =============================================================================
 __all__ = ('SendProp',
            'SendPropFlags',
-           'SendPropTypes',
+           'SendPropType',
            'SendPropVariant',
            'SendTable',
            'ServerClass',

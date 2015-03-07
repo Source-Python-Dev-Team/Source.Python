@@ -32,7 +32,7 @@ from entities.datamaps import InputFunction
 from entities.datamaps import TypeDescriptionFlags
 from entities.helpers import edict_from_pointer
 from entities.props import SendPropFlags
-from entities.props import SendPropTypes
+from entities.props import SendPropType
 #   Memory
 from memory import Convention
 from memory import DataType
@@ -96,10 +96,10 @@ _supported_keyvalue_types = {
 
 # Store all supported property types
 _supported_property_types = {
-    SendPropTypes.FLOAT: 'float',
-    SendPropTypes.INT: 'int',
-    SendPropTypes.STRING: 'string_array',
-    SendPropTypes.VECTOR: 'Vector',
+    SendPropType.FLOAT: 'float',
+    SendPropType.INT: 'int',
+    SendPropType.STRING: 'string_array',
+    SendPropType.VECTOR: 'Vector',
 }
 
 # Get a tuple with the supported inputs (including VOID)
@@ -351,7 +351,7 @@ class _ServerClasses(TypeManager):
             offset = base_offset + prop.offset
 
             # Is the current property a datatable?
-            if prop.type == SendPropTypes.DATATABLE:
+            if prop.type == SendPropType.DATATABLE:
 
                 # Loop through all properties in the datatable
                 for new_name, new_prop, new_offset in self._find_properties(

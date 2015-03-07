@@ -183,22 +183,22 @@ void export_send_prop()
 //-----------------------------------------------------------------------------
 void export_send_prop_types()
 {
-	enum_<SendPropType> SendPropTypes("SendPropTypes");
+	enum_<SendPropType> SendPropType_("SendPropType");
 	
 	// Values...
-	SendPropTypes.value("INT", DPT_Int);
-	SendPropTypes.value("FLOAT", DPT_Float);
-	SendPropTypes.value("VECTOR", DPT_Vector);
-	SendPropTypes.value("VECTORXY", DPT_VectorXY);
-	SendPropTypes.value("STRING", DPT_String);
-	SendPropTypes.value("ARRAY", DPT_Array);
-	SendPropTypes.value("DATATABLE", DPT_DataTable);
+	SendPropType_.value("INT", DPT_Int);
+	SendPropType_.value("FLOAT", DPT_Float);
+	SendPropType_.value("VECTOR", DPT_Vector);
+	SendPropType_.value("VECTORXY", DPT_VectorXY);
+	SendPropType_.value("STRING", DPT_String);
+	SendPropType_.value("ARRAY", DPT_Array);
+	SendPropType_.value("DATATABLE", DPT_DataTable);
 	
 	// CS:GO specific values...
 	NOT_IMPLEMENTED_VALUE(SendPropType, "INT64");
 	
 	// Engine specific stuff...
-	export_engine_specific_send_prop_types(SendPropTypes);
+	export_engine_specific_send_prop_types(SendPropType_);
 }
 
 

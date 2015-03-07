@@ -9,7 +9,7 @@
 #   Engines
 from engines.server import server_game_dll
 #   Entities
-from entities.props import SendPropTypes
+from entities.props import SendPropType
 #   Paths
 from paths import LOG_PATH
 #   Stringtables
@@ -100,7 +100,7 @@ def _dump_server_class_table(table, open_file, level=1, offset=0):
         new_offset = prop.offset + offset
 
         # Is the current prop a table?
-        if prop.type == SendPropTypes.DATATABLE:
+        if prop.type == SendPropType.DATATABLE:
 
             # Get the new table's instance
             new_table = prop.get_data_table()

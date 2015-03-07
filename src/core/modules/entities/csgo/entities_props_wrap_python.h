@@ -60,9 +60,9 @@ void export_engine_specific_send_prop(T SendProp_)
 // Expose SendPropType.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_engine_specific_send_prop_types(T SendPropTypes)
+void export_engine_specific_send_prop_types(T SendPropType_)
 {
-	SendPropTypes.value("INT64", DPT_Int64);
+	SendPropType_.value("INT64", DPT_Int64);
 }
 
 
