@@ -44,4 +44,15 @@ void export_engine_specific_damage_types(T _constants)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose SolidFlags_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_solid_flags(T SolidFlags)
+{
+	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
+	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
+}
+
+
 #endif // _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H

@@ -46,4 +46,14 @@ void export_engine_specific_damage_types(T _constants)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose SolidFlags_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_solid_flags(T SolidFlags)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
 #endif // _ENTITIES_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H

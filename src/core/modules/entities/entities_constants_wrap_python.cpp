@@ -50,6 +50,7 @@ void export_entity_flags(scope);
 void export_move_type(scope);
 void export_move_collide(scope);
 void export_solid_type(scope);
+void export_solid_flags(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -62,6 +63,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_move_type(_constants);
 	export_move_collide(_constants);
 	export_solid_type(_constants);
+	export_solid_flags(_constants);
 }
 
 
@@ -186,7 +188,7 @@ void export_move_collide(scope _constants)
 void export_solid_type(scope _constants)
 {
 	enum_<SolidType_t> SolidType("SolidType");
-	
+
 	// Values...
 	SolidType.value("NONE", SOLID_NONE);
 	SolidType.value("BSP", SOLID_BSP);
@@ -195,4 +197,32 @@ void export_solid_type(scope _constants)
 	SolidType.value("OBB_YAW", SOLID_OBB_YAW);
 	SolidType.value("CUSTOM", SOLID_CUSTOM);
 	SolidType.value("VPHYSICS", SOLID_VPHYSICS);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SolidFlags_t.
+//-----------------------------------------------------------------------------
+void export_solid_flags(scope _constants)
+{
+	enum_<SolidFlags_t> SolidFlags("SolidFlags");
+
+	// Values...
+	SolidFlags.value("CUSTOMRAYTEST", FSOLID_CUSTOMRAYTEST);
+	SolidFlags.value("CUSTOMBOXTEST", FSOLID_CUSTOMBOXTEST);
+	SolidFlags.value("NOT_SOLID", FSOLID_NOT_SOLID);
+	SolidFlags.value("TRIGGER", FSOLID_TRIGGER);
+	SolidFlags.value("NOT_STANDABLE", FSOLID_NOT_STANDABLE);
+	SolidFlags.value("VOLUME_CONTENTS", FSOLID_VOLUME_CONTENTS);
+	SolidFlags.value("FORCE_WORLD_ALIGNED", FSOLID_FORCE_WORLD_ALIGNED);
+	SolidFlags.value("USE_TRIGGER_BOUNDS", FSOLID_USE_TRIGGER_BOUNDS);
+	SolidFlags.value("ROOT_PARENT_ALIGNED", FSOLID_ROOT_PARENT_ALIGNED);
+	SolidFlags.value("TRIGGER_TOUCH_DEBRIS", FSOLID_TRIGGER_TOUCH_DEBRIS);
+
+	// CS:GO specific values...
+	NOT_IMPLEMENTED_VALUE(SolidFlags_t, "TRIGGER_TOUCH_PLAYER");
+	NOT_IMPLEMENTED_VALUE(SolidFlags_t, "NOT_MOVEABLE");
+
+	// Engine specific stuff...
+	export_engine_specific_solid_flags(SolidFlags);
 }
