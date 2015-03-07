@@ -41,8 +41,8 @@
 template<class T>
 void export_engine_specific_damage_types(T _constants)
 {
-    // Game specific stuff...
-    export_game_specific_damage_types(_constants);
+	// Game specific stuff...
+	export_game_specific_damage_types(_constants);
 }
 
 

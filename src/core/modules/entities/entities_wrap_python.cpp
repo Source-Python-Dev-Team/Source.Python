@@ -66,7 +66,7 @@ DECLARE_SP_MODULE(_entities)
 	export_server_networkable();
 	export_edict();
 	export_entity_generator();
-    export_take_damage_info();
+	export_take_damage_info();
 }
 
 

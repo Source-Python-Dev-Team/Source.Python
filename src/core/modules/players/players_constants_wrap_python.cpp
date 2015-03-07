@@ -43,7 +43,7 @@ void export_players_flags(scope);
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_players, _constants)
 {
-    export_players_flags(_constants);
+	export_players_flags(_constants);
 }
 
 
@@ -52,15 +52,15 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 //-----------------------------------------------------------------------------
 void export_players_flags(scope _constants)
 {
-    // Player flags constants...
-    _constants.attr("FL_ONGROUND") = FL_ONGROUND;
-    _constants.attr("FL_DUCKING") = FL_DUCKING;
-    _constants.attr("FL_WATERJUMP") = FL_WATERJUMP;
-    _constants.attr("FL_ONTRAIN") = FL_ONTRAIN;
-    _constants.attr("FL_INRAIN") = FL_INRAIN;
-    _constants.attr("FL_FROZEN") = FL_FROZEN;
-    _constants.attr("FL_ATCONTROLS") = FL_ATCONTROLS;
-    _constants.attr("FL_CLIENT") = FL_CLIENT;
-    _constants.attr("FL_FAKECLIENT") = FL_FAKECLIENT;
-    _constants.attr("FL_INWATER") = FL_INWATER;
+	// Player flags constants...
+	_constants.attr("FL_ONGROUND") = FL_ONGROUND;
+	_constants.attr("FL_DUCKING") = FL_DUCKING;
+	_constants.attr("FL_WATERJUMP") = FL_WATERJUMP;
+	_constants.attr("FL_ONTRAIN") = FL_ONTRAIN;
+	_constants.attr("FL_INRAIN") = FL_INRAIN;
+	_constants.attr("FL_FROZEN") = FL_FROZEN;
+	_constants.attr("FL_ATCONTROLS") = FL_ATCONTROLS;
+	_constants.attr("FL_CLIENT") = FL_CLIENT;
+	_constants.attr("FL_FAKECLIENT") = FL_FAKECLIENT;
+	_constants.attr("FL_INWATER") = FL_INWATER;
 }

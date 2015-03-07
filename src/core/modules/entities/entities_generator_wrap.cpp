@@ -124,7 +124,7 @@ edict_t* CEntityGenerator::getNext()
 			return pEdict;
 		}
 	}
-    return NULL;
+	return NULL;
 }
 
 //---------------------------------------------------------------------------------

@@ -60,7 +60,7 @@ DECLARE_SP_MODULE(_listeners)
 
 void export_listener_managers() 
 {
-    //-------------------------------------------------------------------------
+	//-------------------------------------------------------------------------
 	// Exposes ListenerManager
 	//-------------------------------------------------------------------------
 	class_<CListenerManager, boost::noncopyable>("_ListenerManager")
