@@ -57,6 +57,7 @@ void export_render_mode(scope);
 void export_render_effects(scope);
 void export_collision_group(scope);
 void export_dissolve_types(scope);
+void export_take_damage(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -75,6 +76,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_render_effects(_constants);
 	export_collision_group(_constants);
 	export_dissolve_types(_constants);
+	export_take_damage(_constants);
 }
 
 
@@ -379,4 +381,16 @@ void export_dissolve_types(scope _constants)
 	_constants.attr("ENTITY_DISSOLVE_ELECTRICAL") = (int)ENTITY_DISSOLVE_ELECTRICAL;
 	_constants.attr("ENTITY_DISSOLVE_ELECTRICAL_LIGHT") = (int)ENTITY_DISSOLVE_ELECTRICAL_LIGHT;
 	_constants.attr("ENTITY_DISSOLVE_CORE") = (int)ENTITY_DISSOLVE_CORE;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose take damage constants.
+//-----------------------------------------------------------------------------
+void export_take_damage(scope _constants)
+{
+	_constants.attr("DAMAGE_NO") = DAMAGE_NO;
+	_constants.attr("DAMAGE_EVENTS_ONLY") = DAMAGE_EVENTS_ONLY;
+	_constants.attr("DAMAGE_YES") = DAMAGE_YES;
+	_constants.attr("DAMAGE_AIM") = DAMAGE_AIM;
 }

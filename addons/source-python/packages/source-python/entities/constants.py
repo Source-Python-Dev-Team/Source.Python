@@ -28,6 +28,10 @@ from paths import SP_DATA_PATH
 #   Entities
 from _entities._constants import BASEDAMAGE_NOT_SPECIFIED
 from _entities._constants import CollisionGroup
+from _entities._constants import DAMAGE_NO
+from _entities._constants import DAMAGE_EVENTS_ONLY
+from _entities._constants import DAMAGE_YES
+from _entities._constants import DAMAGE_AIM
 from _entities._constants import DMG_BULLET
 from _entities._constants import DMG_SLASH
 from _entities._constants import DMG_BURN
@@ -121,6 +125,7 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'RenderMode',
            'SolidFlags',
            'SolidType',
+           'TakeDamage',
            )
 
 
@@ -234,3 +239,13 @@ class DissolveType(IntEnum):
     ELECTRICAL = ENTITY_DISSOLVE_ELECTRICAL
     ELECTRICAL_LIGHT = ENTITY_DISSOLVE_ELECTRICAL_LIGHT
     CORE = ENTITY_DISSOLVE_CORE
+
+
+class TakeDamage(IntEnum):
+
+    """Take damage constants wrapper enumerator."""
+
+    NO = DAMAGE_NO
+    EVENTS_ONLY = DAMAGE_EVENTS_ONLY
+    YES = DAMAGE_YES
+    AIM = DAMAGE_AIM
