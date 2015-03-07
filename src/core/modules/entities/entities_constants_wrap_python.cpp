@@ -56,6 +56,7 @@ void export_entity_effects(scope);
 void export_render_mode(scope);
 void export_render_effects(scope);
 void export_collision_group(scope);
+void export_dissolve_types(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -73,6 +74,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_render_mode(_constants);
 	export_render_effects(_constants);
 	export_collision_group(_constants);
+	export_dissolve_types(_constants);
 }
 
 
@@ -365,4 +367,16 @@ void export_collision_group(scope _constants)
 
 	// Engine specific stuff...
 	export_engine_specific_collision_group(CollisionGroup);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose dissolve types.
+//-----------------------------------------------------------------------------
+void export_dissolve_types(scope _constants)
+{
+	_constants.attr("ENTITY_DISSOLVE_NORMAL") = (int)ENTITY_DISSOLVE_NORMAL;
+	_constants.attr("ENTITY_DISSOLVE_ELECTRICAL") = (int)ENTITY_DISSOLVE_ELECTRICAL;
+	_constants.attr("ENTITY_DISSOLVE_ELECTRICAL_LIGHT") = (int)ENTITY_DISSOLVE_ELECTRICAL_LIGHT;
+	_constants.attr("ENTITY_DISSOLVE_CORE") = (int)ENTITY_DISSOLVE_CORE;
 }

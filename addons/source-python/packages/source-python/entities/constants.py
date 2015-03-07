@@ -72,6 +72,10 @@ from _entities._constants import EF_PARENT_ANIMATES
 from _entities._constants import EF_MARKED_FOR_FAST_REFLECTION
 from _entities._constants import EF_NOSHADOWDEPTH
 from _entities._constants import EF_NOFLASHLIGHT
+from _entities._constants import ENTITY_DISSOLVE_NORMAL
+from _entities._constants import ENTITY_DISSOLVE_ELECTRICAL
+from _entities._constants import ENTITY_DISSOLVE_ELECTRICAL_LIGHT
+from _entities._constants import ENTITY_DISSOLVE_CORE
 from _entities._constants import FL_FLY
 from _entities._constants import FL_SWIM
 from _entities._constants import FL_CONVEYOR
@@ -219,3 +223,13 @@ class EntityEffects(IntEnum):
     MARKED_FOR_FAST_REFLECTION = EF_MARKED_FOR_FAST_REFLECTION
     NOSHADOWDEPTH = EF_NOSHADOWDEPTH
     NOFLASHLIGHT = EF_NOFLASHLIGHT
+
+
+class DissolveType(IntEnum):
+
+    """Dissolve type wrapper enumerator."""
+
+    NORMAL = ENTITY_DISSOLVE_NORMAL
+    ELECTRICAL = ENTITY_DISSOLVE_ELECTRICAL
+    ELECTRICAL_LIGHT = ENTITY_DISSOLVE_ELECTRICAL_LIGHT
+    CORE = ENTITY_DISSOLVE_CORE
