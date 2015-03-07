@@ -52,6 +52,7 @@ void export_move_collide(scope);
 void export_solid_type(scope);
 void export_solid_flags(scope);
 void export_entity_effects(scope);
+void export_render_mode(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -66,6 +67,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_solid_type(_constants);
 	export_solid_flags(_constants);
 	export_entity_effects(_constants);
+	export_render_mode(_constants);
 }
 
 
@@ -108,7 +110,7 @@ void export_damage_types(scope _constants)
 	_constants.attr("BASEDAMAGE_NOT_SPECIFIED") = BASEDAMAGE_NOT_SPECIFIED;
 
 	// CS:GO/CS:S specific constants...
-	_constants.attr("DMG_HEADSHOT") = object();
+	_constants.attr("DMG_HEADSHOT") = -1;
 
 	// Engine specific stuff..
 	export_engine_specific_damage_types(_constants);
@@ -235,22 +237,43 @@ void export_solid_flags(scope _constants)
 //-----------------------------------------------------------------------------
 void export_entity_effects(scope _constants)
 {
-	_constants.attr("EF_BONEMERGE") = EF_BONEMERGE;
-	_constants.attr("EF_BRIGHTLIGHT") = EF_BRIGHTLIGHT;
-	_constants.attr("EF_DIMLIGHT") = EF_DIMLIGHT;
-	_constants.attr("EF_NOINTERP") = EF_NOINTERP;
-	_constants.attr("EF_NOSHADOW") = EF_NOSHADOW;
-	_constants.attr("EF_NODRAW") = EF_NODRAW;
-	_constants.attr("EF_NORECEIVESHADOW") = EF_NORECEIVESHADOW;
-	_constants.attr("EF_BONEMERGE_FASTCULL") = EF_BONEMERGE_FASTCULL;
-	_constants.attr("EF_ITEM_BLINK") = EF_ITEM_BLINK;
-	_constants.attr("EF_PARENT_ANIMATES") = EF_PARENT_ANIMATES;
+	_constants.attr("EF_BONEMERGE") = (long)EF_BONEMERGE;
+	_constants.attr("EF_BRIGHTLIGHT") = (long)EF_BRIGHTLIGHT;
+	_constants.attr("EF_DIMLIGHT") = (long)EF_DIMLIGHT;
+	_constants.attr("EF_NOINTERP") = (long)EF_NOINTERP;
+	_constants.attr("EF_NOSHADOW") = (long)EF_NOSHADOW;
+	_constants.attr("EF_NODRAW") = (long)EF_NODRAW;
+	_constants.attr("EF_NORECEIVESHADOW") = (long)EF_NORECEIVESHADOW;
+	_constants.attr("EF_BONEMERGE_FASTCULL") = (long)EF_BONEMERGE_FASTCULL;
+	_constants.attr("EF_ITEM_BLINK") = (long)EF_ITEM_BLINK;
+	_constants.attr("EF_PARENT_ANIMATES") = (long)EF_PARENT_ANIMATES;
 
 	// CS:GO specific constants...
-	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = object();
-	_constants.attr("EF_NOSHADOWDEPTH") = object();
-	_constants.attr("EF_NOFLASHLIGHT") = object();
+	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = -1;
+	_constants.attr("EF_NOSHADOWDEPTH") = -1;
+	_constants.attr("EF_NOFLASHLIGHT") = -1;
 
 	// Engine specific stuff...
 	export_engine_specific_entity_effects(_constants);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose RenderMode_t.
+//-----------------------------------------------------------------------------
+void export_render_mode(scope _constants)
+{
+	enum_<RenderMode_t> RenderMode("RenderMode");
+	
+	// Values...
+	RenderMode.value("NORMAL", kRenderNormal);
+	RenderMode.value("TRANS_COLOR", kRenderTransColor);
+	RenderMode.value("TRANS_TEXTURE", kRenderTransTexture);
+	RenderMode.value("GLOW", kRenderGlow);
+	RenderMode.value("TRANS_ALPHA", kRenderTransAlpha);
+	RenderMode.value("TRANS_ADD", kRenderTransAdd);
+	RenderMode.value("ENVIRONMENTAL", kRenderEnvironmental);
+	RenderMode.value("TRANS_ADD_FRAME_BLEND", kRenderTransAddFrameBlend);
+	RenderMode.value("WORLD_GLOW", kRenderWorldGlow);
+	RenderMode.value("NONE", kRenderNone);
 }

@@ -108,6 +108,7 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'EntityFlags',
            'MoveCollide',
            'MoveType',
+           'RenderMode',
            'SolidFlags',
            'SolidType',
            )
