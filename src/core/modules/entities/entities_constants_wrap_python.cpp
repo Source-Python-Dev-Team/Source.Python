@@ -53,6 +53,7 @@ void export_solid_type(scope);
 void export_solid_flags(scope);
 void export_entity_effects(scope);
 void export_render_mode(scope);
+void export_render_effects(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -68,6 +69,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_solid_flags(_constants);
 	export_entity_effects(_constants);
 	export_render_mode(_constants);
+	export_render_effects(_constants);
 }
 
 
@@ -264,7 +266,7 @@ void export_entity_effects(scope _constants)
 void export_render_mode(scope _constants)
 {
 	enum_<RenderMode_t> RenderMode("RenderMode");
-	
+
 	// Values...
 	RenderMode.value("NORMAL", kRenderNormal);
 	RenderMode.value("TRANS_COLOR", kRenderTransColor);
@@ -276,4 +278,50 @@ void export_render_mode(scope _constants)
 	RenderMode.value("TRANS_ADD_FRAME_BLEND", kRenderTransAddFrameBlend);
 	RenderMode.value("WORLD_GLOW", kRenderWorldGlow);
 	RenderMode.value("NONE", kRenderNone);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose RenderFx_t.
+//-----------------------------------------------------------------------------
+void export_render_effects(scope _constants)
+{
+	enum_<RenderFx_t> RenderEffects("RenderEffects");
+
+	// Values...
+	RenderEffects.value("NONE", kRenderFxNone);
+	RenderEffects.value("PULSE_SLOW", kRenderFxPulseSlow);
+	RenderEffects.value("PULSE_FAST", kRenderFxPulseFast);
+	RenderEffects.value("PULSE_SLOW_WIDE", kRenderFxPulseSlowWide);
+	RenderEffects.value("PULSE_FAST_WIDE", kRenderFxPulseFastWide);
+	RenderEffects.value("FADE_SLOW", kRenderFxFadeSlow);
+	RenderEffects.value("FADE_FAST", kRenderFxFadeFast);
+	RenderEffects.value("SOLID_SLOW", kRenderFxSolidSlow);
+	RenderEffects.value("SOLID_FAST", kRenderFxSolidFast);
+	RenderEffects.value("STROBE_SLOW", kRenderFxStrobeSlow);
+	RenderEffects.value("STROBE_FAST", kRenderFxStrobeFast);
+	RenderEffects.value("STROBE_FASTER", kRenderFxStrobeFaster);
+	RenderEffects.value("FLICKER_SLOW", kRenderFxFlickerSlow);
+	RenderEffects.value("FLICKER_FAST", kRenderFxFlickerFast);
+	RenderEffects.value("NO_DISSIPATION", kRenderFxNoDissipation);
+	RenderEffects.value("GLOW_SHELL", kRenderFxGlowShell);
+
+	// CS:GO specific values...
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "FADE_OUT");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "FADE_IN");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "PULSE_FAST_WIDER");
+
+	// OrangeBox specific values...
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "DISTORT");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "HOLOGRAM");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "EXPLODE");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "CLAMP_MIN_SCALE");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "ENV_RAIN");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "ENV_SNOW");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "SPOTLIGHT");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "RAGDOLL");
+	NOT_IMPLEMENTED_VALUE(RenderFx_t, "PULSE_FAST_WIDER");
+
+	// Engine specific stuff...
+	export_engine_specific_render_effects(RenderEffects);
 }

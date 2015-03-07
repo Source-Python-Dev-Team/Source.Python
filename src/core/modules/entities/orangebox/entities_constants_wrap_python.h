@@ -66,4 +66,22 @@ void export_engine_specific_entity_effects(T _constants)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose RenderFx_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_render_effects(T RenderEffects)
+{
+	RenderEffects.value("DISTORT", kRenderFxDistort);
+	RenderEffects.value("HOLOGRAM", kRenderFxHologram);
+	RenderEffects.value("EXPLODE", kRenderFxExplode);
+	RenderEffects.value("CLAMP_MIN_SCALE", kRenderFxClampMinScale);
+	RenderEffects.value("ENV_RAIN", kRenderFxEnvRain);
+	RenderEffects.value("ENV_SNOW", kRenderFxEnvSnow);
+	RenderEffects.value("SPOTLIGHT", kRenderFxSpotlight);
+	RenderEffects.value("RAGDOLL", kRenderFxRagdoll);
+	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+}
+
+
 #endif // _ENTITIES_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H

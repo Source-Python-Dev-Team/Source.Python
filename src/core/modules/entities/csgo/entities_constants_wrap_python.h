@@ -67,4 +67,16 @@ void export_engine_specific_entity_effects(T _constants)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose RenderFx_t.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_render_effects(T RenderEffects)
+{
+	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
+	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
+	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+}
+
+
 #endif // _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H
