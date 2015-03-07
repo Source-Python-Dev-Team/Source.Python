@@ -78,6 +78,7 @@ from _players._constants import LIFE_DYING
 from _players._constants import LIFE_DEAD
 from _players._constants import LIFE_RESPAWNABLE
 from _players._constants import LIFE_DISCARDBODY
+from _players._constants import PlayerAnimation
 
 
 # =============================================================================
@@ -85,6 +86,8 @@ from _players._constants import LIFE_DISCARDBODY
 # =============================================================================
 __all__ = ('LifeState',
            'HideHudFlags',
+           'HitGroup',
+           'PlayerAnimation',
            'PlayerButtons',
            'PlayerFlags',
            )

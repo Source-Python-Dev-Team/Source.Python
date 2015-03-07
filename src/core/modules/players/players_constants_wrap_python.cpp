@@ -49,6 +49,7 @@ void export_life_states(scope);
 void export_player_buttons(scope);
 void export_hide_hud_flags(scope);
 void export_hit_groups(scope);
+void export_player_animation(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -61,6 +62,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 	export_player_buttons(_constants);
 	export_hide_hud_flags(_constants);
 	export_hit_groups(_constants);
+	export_player_animation(_constants);
 }
 
 
@@ -175,4 +177,25 @@ void export_hit_groups(scope _constants)
 	_constants.attr("HITGROUP_LEFTLEG") = HITGROUP_LEFTLEG;
 	_constants.attr("HITGROUP_RIGHTLEG") = HITGROUP_RIGHTLEG;
 	_constants.attr("HITGROUP_GEAR") = HITGROUP_GEAR;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose PLAYER_ANIM.
+//-----------------------------------------------------------------------------
+void export_player_animation(scope _constants)
+{
+	enum_<PLAYER_ANIM> PlayerAnimation("PlayerAnimation");
+
+	// Values...
+	PlayerAnimation.value("IDLE", PLAYER_IDLE);
+	PlayerAnimation.value("WALK", PLAYER_WALK);
+	PlayerAnimation.value("JUMP", PLAYER_JUMP);
+	PlayerAnimation.value("SUPERJUMP", PLAYER_SUPERJUMP);
+	PlayerAnimation.value("DIE", PLAYER_DIE);
+	PlayerAnimation.value("ATTACK1", PLAYER_ATTACK1);
+	PlayerAnimation.value("IN_VEHICLE", PLAYER_IN_VEHICLE);
+	PlayerAnimation.value("RELOAD", PLAYER_RELOAD);
+	PlayerAnimation.value("START_AIMING", PLAYER_START_AIMING);
+	PlayerAnimation.value("LEAVE_AIMING", PLAYER_LEAVE_AIMING);
 }
