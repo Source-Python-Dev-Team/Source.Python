@@ -47,6 +47,7 @@
 //-----------------------------------------------------------------------------
 void export_damage_types(scope);
 void export_entity_flags(scope);
+void export_move_type(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -56,6 +57,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 {
     export_damage_types(_constants);
     export_entity_flags(_constants);
+    export_move_type(_constants);
 }
 
 
@@ -132,4 +134,27 @@ void export_entity_flags(scope _constants)
     _constants.attr("FL_DISSOLVING") = FL_DISSOLVING;
     _constants.attr("FL_TRANSRAGDOLL") = FL_TRANSRAGDOLL;
     _constants.attr("FL_UNBLOCKABLE_BY_PLAYER") = FL_UNBLOCKABLE_BY_PLAYER;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose MoveType_t.
+//-----------------------------------------------------------------------------
+void export_move_type(scope _constants)
+{
+    enum_<MoveType_t> MoveType("MoveType");
+
+    // Values...
+    MoveType.value("NONE", MOVETYPE_NONE);
+	MoveType.value("ISOMETRIC", MOVETYPE_ISOMETRIC);
+	MoveType.value("WALK", MOVETYPE_WALK);
+	MoveType.value("STEP", MOVETYPE_STEP);
+	MoveType.value("FLY", MOVETYPE_FLY);
+	MoveType.value("FLYGRAVITY", MOVETYPE_FLYGRAVITY);
+	MoveType.value("VPHYSICS", MOVETYPE_VPHYSICS); 
+	MoveType.value("PUSH", MOVETYPE_PUSH);
+	MoveType.value("NOCLIP", MOVETYPE_NOCLIP);
+	MoveType.value("LADDER", MOVETYPE_LADDER);
+	MoveType.value("OBSERVER", MOVETYPE_OBSERVER);
+	MoveType.value("CUSTOM", MOVETYPE_CUSTOM);
 }
