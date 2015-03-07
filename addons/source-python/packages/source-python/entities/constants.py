@@ -58,6 +58,19 @@ from _entities._constants import DMG_DIRECT
 from _entities._constants import DMG_BUCKSHOT
 from _entities._constants import DMG_LASTGENERICFLAG
 from _entities._constants import DMG_HEADSHOT
+from _entities._constants import EF_BONEMERGE
+from _entities._constants import EF_BRIGHTLIGHT
+from _entities._constants import EF_DIMLIGHT
+from _entities._constants import EF_NOINTERP
+from _entities._constants import EF_NOSHADOW
+from _entities._constants import EF_NODRAW
+from _entities._constants import EF_NORECEIVESHADOW
+from _entities._constants import EF_BONEMERGE_FASTCULL
+from _entities._constants import EF_ITEM_BLINK
+from _entities._constants import EF_PARENT_ANIMATES
+from _entities._constants import EF_MARKED_FOR_FAST_REFLECTION
+from _entities._constants import EF_NOSHADOWDEPTH
+from _entities._constants import EF_NOFLASHLIGHT
 from _entities._constants import FL_FLY
 from _entities._constants import FL_SWIM
 from _entities._constants import FL_CONVEYOR
@@ -91,6 +104,7 @@ from _entities._constants import SolidType
 __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'DamageTypes',
            'DATA_DESC_MAP_OFFSET',
+           'EntityEffects',
            'EntityFlags',
            'MoveCollide',
            'MoveType',
@@ -180,3 +194,22 @@ class EntityFlags(IntEnum):
     DISSOLVING = FL_DISSOLVING
     TRANSRAGDOLL = FL_TRANSRAGDOLL
     UNBLOCKABLE_BY_PLAYER = FL_UNBLOCKABLE_BY_PLAYER
+
+
+class EntityEffects(IntEnum):
+
+    """Entity effects wrapper enumerator."""
+
+    BONEMERGE = EF_BONEMERGE
+    BRIGHTLIGHT = EF_BRIGHTLIGHT
+    DIMLIGHT = EF_DIMLIGHT
+    NOINTERP = EF_NOINTERP
+    NOSHADOW = EF_NOSHADOW
+    NODRAW = EF_NODRAW
+    NORECEIVESHADOW = EF_NORECEIVESHADOW
+    BONEMERGE_FASTCULL = EF_BONEMERGE_FASTCULL
+    ITEM_BLINK = EF_ITEM_BLINK
+    PARENT_ANIMATES = EF_PARENT_ANIMATES
+    MARKED_FOR_FAST_REFLECTION = EF_MARKED_FOR_FAST_REFLECTION
+    NOSHADOWDEPTH = EF_NOSHADOWDEPTH
+    NOFLASHLIGHT = EF_NOFLASHLIGHT

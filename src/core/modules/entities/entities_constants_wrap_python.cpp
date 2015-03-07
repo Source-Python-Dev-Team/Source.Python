@@ -51,6 +51,7 @@ void export_move_type(scope);
 void export_move_collide(scope);
 void export_solid_type(scope);
 void export_solid_flags(scope);
+void export_entity_effects(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -64,6 +65,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_move_collide(_constants);
 	export_solid_type(_constants);
 	export_solid_flags(_constants);
+	export_entity_effects(_constants);
 }
 
 
@@ -225,4 +227,30 @@ void export_solid_flags(scope _constants)
 
 	// Engine specific stuff...
 	export_engine_specific_solid_flags(SolidFlags);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose entity effects.
+//-----------------------------------------------------------------------------
+void export_entity_effects(scope _constants)
+{
+	_constants.attr("EF_BONEMERGE") = EF_BONEMERGE;
+	_constants.attr("EF_BRIGHTLIGHT") = EF_BRIGHTLIGHT;
+	_constants.attr("EF_DIMLIGHT") = EF_DIMLIGHT;
+	_constants.attr("EF_NOINTERP") = EF_NOINTERP;
+	_constants.attr("EF_NOSHADOW") = EF_NOSHADOW;
+	_constants.attr("EF_NODRAW") = EF_NODRAW;
+	_constants.attr("EF_NORECEIVESHADOW") = EF_NORECEIVESHADOW;
+	_constants.attr("EF_BONEMERGE_FASTCULL") = EF_BONEMERGE_FASTCULL;
+	_constants.attr("EF_ITEM_BLINK") = EF_ITEM_BLINK;
+	_constants.attr("EF_PARENT_ANIMATES") = EF_PARENT_ANIMATES;
+
+	// CS:GO specific constants...
+	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = object();
+	_constants.attr("EF_NOSHADOWDEPTH") = object();
+	_constants.attr("EF_NOFLASHLIGHT") = object();
+
+	// Engine specific stuff...
+	export_engine_specific_entity_effects(_constants);
 }

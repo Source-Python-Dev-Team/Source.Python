@@ -55,4 +55,16 @@ void export_engine_specific_solid_flags(T SolidFlags)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose entity effects.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_entity_effects(T _constants)
+{
+	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = EF_MARKED_FOR_FAST_REFLECTION;
+	_constants.attr("EF_NOSHADOWDEPTH") = EF_NOSHADOWDEPTH;
+	_constants.attr("EF_NOFLASHLIGHT") = EF_NOFLASHLIGHT;
+}
+
+
 #endif // _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H

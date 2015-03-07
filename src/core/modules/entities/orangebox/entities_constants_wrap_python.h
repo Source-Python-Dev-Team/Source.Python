@@ -56,4 +56,14 @@ void export_engine_specific_solid_flags(T SolidFlags)
 }
 
 
+//-----------------------------------------------------------------------------
+// Expose entity effects.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_entity_effects(T _constants)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
 #endif // _ENTITIES_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H
