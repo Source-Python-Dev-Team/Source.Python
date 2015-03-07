@@ -48,6 +48,7 @@ void export_players_flags(scope);
 void export_life_states(scope);
 void export_player_buttons(scope);
 void export_hide_hud_flags(scope);
+void export_hit_groups(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -59,6 +60,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 	export_life_states(_constants);
 	export_player_buttons(_constants);
 	export_hide_hud_flags(_constants);
+	export_hit_groups(_constants);
 }
 
 
@@ -156,4 +158,21 @@ void export_hide_hud_flags(scope _constants)
 
 	// Engine specific stuff...
 	export_engine_specific_hide_hud_flags(_constants);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose hit groups.
+//-----------------------------------------------------------------------------
+void export_hit_groups(scope _constants)
+{
+	_constants.attr("HITGROUP_GENERIC") = HITGROUP_GENERIC;
+	_constants.attr("HITGROUP_HEAD") = HITGROUP_HEAD;
+	_constants.attr("HITGROUP_CHEST") = HITGROUP_CHEST;
+	_constants.attr("HITGROUP_STOMACH") = HITGROUP_STOMACH;
+	_constants.attr("HITGROUP_LEFTARM") = HITGROUP_LEFTARM;
+	_constants.attr("HITGROUP_RIGHTARM") = HITGROUP_RIGHTARM;
+	_constants.attr("HITGROUP_LEFTLEG") = HITGROUP_LEFTLEG;
+	_constants.attr("HITGROUP_RIGHTLEG") = HITGROUP_RIGHTLEG;
+	_constants.attr("HITGROUP_GEAR") = HITGROUP_GEAR;
 }

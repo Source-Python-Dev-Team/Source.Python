@@ -38,6 +38,15 @@ from _players._constants import HIDEHUD_VEHICLE_CROSSHAIR
 from _players._constants import HIDEHUD_INVEHICLE
 from _players._constants import HIDEHUD_BONUS_PROGRESS
 from _players._constants import HIDEHUD_RADAR
+from _players._constants import HITGROUP_GENERIC
+from _players._constants import HITGROUP_HEAD
+from _players._constants import HITGROUP_CHEST
+from _players._constants import HITGROUP_STOMACH
+from _players._constants import HITGROUP_LEFTARM	
+from _players._constants import HITGROUP_RIGHTARM
+from _players._constants import HITGROUP_LEFTLEG
+from _players._constants import HITGROUP_RIGHTLEG
+from _players._constants import HITGROUP_GEAR
 from _players._constants import IN_ATTACK
 from _players._constants import IN_JUMP
 from _players._constants import IN_DUCK
@@ -160,3 +169,18 @@ class HideHudFlags(IntEnum):
     INVEHICLE = HIDEHUD_INVEHICLE
     BONUS_PROGRESS = HIDEHUD_BONUS_PROGRESS
     RADAR = HIDEHUD_RADAR
+
+
+class HitGroup(IntEnum):
+
+    """Hit groups wrapper enumerator."""
+
+    GENERIC = HITGROUP_GENERIC
+    HEAD = HITGROUP_HEAD
+    CHEST = HITGROUP_CHEST
+    STOMACH = HITGROUP_STOMACH
+    LEFTARM = HITGROUP_LEFTARM
+    RIGHTARM = HITGROUP_RIGHTARM
+    LEFTLEG = HITGROUP_LEFTLEG
+    RIGHTLEG = HITGROUP_RIGHTLEG
+    GEAR = HITGROUP_GEAR
