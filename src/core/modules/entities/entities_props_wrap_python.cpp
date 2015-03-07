@@ -45,7 +45,7 @@
 void export_send_table();
 void export_send_prop();
 void export_send_prop_types();
-void export_send_prop_flags();
+void export_send_prop_flags(scope);
 void export_send_prop_variant();
 void export_server_class();
 
@@ -58,7 +58,7 @@ DECLARE_SP_SUBMODULE(_entities, _props)
 	export_send_table();
 	export_send_prop();
 	export_send_prop_types();
-	export_send_prop_flags();
+	export_send_prop_flags(_props);
 	export_send_prop_variant();
 	export_server_class();
 }
@@ -205,27 +205,24 @@ void export_send_prop_types()
 //-----------------------------------------------------------------------------
 // Expose SendPropFlags.
 //-----------------------------------------------------------------------------
-void export_send_prop_flags()
+void export_send_prop_flags(scope _props)
 {
-	enum_<SendPropSharedExt::SendPropFlags> SendPropFlags("SendPropFlags");
-	
-	// Values...
-	SendPropFlags.value("UNSIGNED", SendPropSharedExt::UNSIGNED);
-	SendPropFlags.value("COORD", SendPropSharedExt::COORD);
-	SendPropFlags.value("NO_SCALE", SendPropSharedExt::NO_SCALE);
-	SendPropFlags.value("ROUND_DOWN", SendPropSharedExt::ROUND_DOWN);
-	SendPropFlags.value("ROUND_UP", SendPropSharedExt::ROUND_UP);
-	SendPropFlags.value("NORMAL", SendPropSharedExt::NORMAL);
-	SendPropFlags.value("EXCLUDE", SendPropSharedExt::EXCLUDE);
-	SendPropFlags.value("XYZE", SendPropSharedExt::XYZE);
-	SendPropFlags.value("INSIDE_ARRAY", SendPropSharedExt::INSIDE_ARRAY);
-	SendPropFlags.value("PROXY_ALWAYS_YES", SendPropSharedExt::PROXY_ALWAYS_YES);
-	SendPropFlags.value("IS_A_VECTOR_ELEM", SendPropSharedExt::IS_A_VECTOR_ELEM);
-	SendPropFlags.value("COLLAPSIBLE", SendPropSharedExt::COLLAPSIBLE);
-	SendPropFlags.value("COORD_MP", SendPropSharedExt::COORD_MP);
-	SendPropFlags.value("COORD_MP_LOW_PRECISION", SendPropSharedExt::COORD_MP_LOW_PRECISION);
-	SendPropFlags.value("COORD_MP_INTEGRAL", SendPropSharedExt::COORD_MP_INTEGRAL);
-	SendPropFlags.value("CHANGE_OFTEN", SendPropSharedExt::CHANGE_OFTEN);
+	_props.attr("SPROP_UNSIGNED") = SPROP_UNSIGNED;
+	_props.attr("SPROP_COORD") = SPROP_COORD;
+	_props.attr("SPROP_NOSCALE") = SPROP_NOSCALE;
+	_props.attr("SPROP_ROUNDDOWN") = SPROP_ROUNDDOWN;
+	_props.attr("SPROP_ROUNDUP") = SPROP_ROUNDUP;
+	_props.attr("SPROP_NORMAL") = SPROP_NORMAL;
+	_props.attr("SPROP_EXCLUDE") = SPROP_EXCLUDE;
+	_props.attr("SPROP_XYZE") = SPROP_XYZE;
+	_props.attr("SPROP_INSIDEARRAY") = SPROP_INSIDEARRAY;
+	_props.attr("SPROP_PROXY_ALWAYS_YES") = SPROP_PROXY_ALWAYS_YES;
+	_props.attr("SPROP_IS_A_VECTOR_ELEM") = SPROP_IS_A_VECTOR_ELEM;
+	_props.attr("SPROP_COLLAPSIBLE") = SPROP_COLLAPSIBLE;
+	_props.attr("SPROP_COORD_MP") = SPROP_COORD_MP;
+	_props.attr("SPROP_COORD_MP_LOWPRECISION") = SPROP_COORD_MP_LOWPRECISION;
+	_props.attr("SPROP_COORD_MP_INTEGRAL") = SPROP_COORD_MP_INTEGRAL;
+	_props.attr("SPROP_CHANGES_OFTEN") = SPROP_CHANGES_OFTEN;
 }
 
 
