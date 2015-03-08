@@ -31,8 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "utility/wrap_macros.h"
-
-#include ENGINE_BRANCH_INCLUDE_PATH(entities_constants_wrap.h)
+#include "entities_constants_wrap.h"
 
 
 //-----------------------------------------------------------------------------
