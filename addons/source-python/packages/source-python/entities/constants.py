@@ -76,6 +76,38 @@ from _entities._constants import EF_PARENT_ANIMATES
 from _entities._constants import EF_MARKED_FOR_FAST_REFLECTION
 from _entities._constants import EF_NOSHADOWDEPTH
 from _entities._constants import EF_NOFLASHLIGHT
+from _entities._constants import EFL_KILLME
+from _entities._constants import EFL_DORMANT
+from _entities._constants import EFL_NOCLIP_ACTIVE
+from _entities._constants import EFL_SETTING_UP_BONES
+from _entities._constants import EFL_KEEP_ON_RECREATE_ENTITIES
+from _entities._constants import EFL_DIRTY_SHADOWUPDATE
+from _entities._constants import EFL_NOTIFY
+from _entities._constants import EFL_FORCE_CHECK_TRANSMIT
+from _entities._constants import EFL_BOT_FROZEN
+from _entities._constants import EFL_SERVER_ONLY
+from _entities._constants import EFL_NO_AUTO_EDICT_ATTACH
+from _entities._constants import EFL_DIRTY_ABSTRANSFORM
+from _entities._constants import EFL_DIRTY_ABSVELOCITY
+from _entities._constants import EFL_DIRTY_ABSANGVELOCITY
+from _entities._constants import EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS
+from _entities._constants import EFL_DIRTY_SPATIAL_PARTITION
+from _entities._constants import EFL_HAS_PLAYER_CHILD
+from _entities._constants import EFL_IN_SKYBOX
+from _entities._constants import EFL_USE_PARTITION_WHEN_NOT_SOLID
+from _entities._constants import EFL_TOUCHING_FLUID
+from _entities._constants import EFL_IS_BEING_LIFTED_BY_BARNACLE
+from _entities._constants import EFL_NO_ROTORWASH_PUSH
+from _entities._constants import EFL_NO_THINK_FUNCTION
+from _entities._constants import EFL_NO_GAME_PHYSICS_SIMULATION
+from _entities._constants import EFL_CHECK_UNTOUCH
+from _entities._constants import EFL_DONTBLOCKLOS
+from _entities._constants import EFL_DONTWALKON
+from _entities._constants import EFL_NO_DISSOLVE
+from _entities._constants import EFL_NO_MEGAPHYSCANNON_RAGDOLL
+from _entities._constants import EFL_NO_WATER_VELOCITY_CHANGE
+from _entities._constants import EFL_NO_PHYSCANNON_INTERACTION
+from _entities._constants import EFL_NO_DAMAGE_FORCES
 from _entities._constants import ENTITY_DISSOLVE_NORMAL
 from _entities._constants import ENTITY_DISSOLVE_ELECTRICAL
 from _entities._constants import ENTITY_DISSOLVE_ELECTRICAL_LIGHT
@@ -118,6 +150,7 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'DATA_DESC_MAP_OFFSET',
            'EntityEffects',
            'EntityFlags',
+           'EntityStates',
            'DissolveType',
            'MoveCollide',
            'MoveType',
@@ -185,9 +218,9 @@ class DamageTypes(IntEnum):
     HEADSHOT = DMG_HEADSHOT
 
 
-class EntityFlags(IntEnum):
+class EntityStates(IntEnum):
 
-    """Entity flags wrapper enumerator."""
+    """Entity state flags wrapper enumerator."""
 
     FLY = FL_FLY
     SWIM = FL_SWIM
@@ -249,3 +282,41 @@ class TakeDamage(IntEnum):
     EVENTS_ONLY = DAMAGE_EVENTS_ONLY
     YES = DAMAGE_YES
     AIM = DAMAGE_AIM
+
+
+class EntityFlags(IntEnum):
+
+    """Entity flags wrapper enumerator."""
+
+    KILLME = EFL_KILLME
+    DORMANT = EFL_DORMANT
+    NOCLIP_ACTIVE = EFL_NOCLIP_ACTIVE
+    SETTING_UP_BONES = EFL_SETTING_UP_BONES
+    KEEP_ON_RECREATE_ENTITIES = EFL_KEEP_ON_RECREATE_ENTITIES
+    DIRTY_SHADOWUPDATE = EFL_DIRTY_SHADOWUPDATE
+    NOTIFY = EFL_NOTIFY
+    FORCE_CHECK_TRANSMIT = EFL_FORCE_CHECK_TRANSMIT
+    BOT_FROZEN = EFL_BOT_FROZEN
+    SERVER_ONLY = EFL_SERVER_ONLY
+    NO_AUTO_EDICT_ATTACH = EFL_NO_AUTO_EDICT_ATTACH
+    DIRTY_ABSTRANSFORM = EFL_DIRTY_ABSTRANSFORM
+    DIRTY_ABSVELOCITY = EFL_DIRTY_ABSVELOCITY
+    DIRTY_ABSANGVELOCITY = EFL_DIRTY_ABSANGVELOCITY
+    DIRTY_SURROUNDING_COLLISION_BOUNDS = EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS
+    DIRTY_SPATIAL_PARTITION = EFL_DIRTY_SPATIAL_PARTITION
+    HAS_PLAYER_CHILD = EFL_HAS_PLAYER_CHILD
+    IN_SKYBOX = EFL_IN_SKYBOX
+    USE_PARTITION_WHEN_NOT_SOLID = EFL_USE_PARTITION_WHEN_NOT_SOLID
+    TOUCHING_FLUID = EFL_TOUCHING_FLUID
+    IS_BEING_LIFTED_BY_BARNACLE = EFL_IS_BEING_LIFTED_BY_BARNACLE
+    NO_ROTORWASH_PUSH = EFL_NO_ROTORWASH_PUSH
+    NO_THINK_FUNCTION = EFL_NO_THINK_FUNCTION
+    NO_GAME_PHYSICS_SIMULATION = EFL_NO_GAME_PHYSICS_SIMULATION
+    CHECK_UNTOUCH = EFL_CHECK_UNTOUCH
+    DONTBLOCKLOS = EFL_DONTBLOCKLOS
+    DONTWALKON = EFL_DONTWALKON
+    NO_DISSOLVE = EFL_NO_DISSOLVE
+    NO_MEGAPHYSCANNON_RAGDOLL = EFL_NO_MEGAPHYSCANNON_RAGDOLL
+    NO_WATER_VELOCITY_CHANGE = EFL_NO_WATER_VELOCITY_CHANGE
+    NO_PHYSCANNON_INTERACTION = EFL_NO_PHYSCANNON_INTERACTION
+    NO_DAMAGE_FORCES = EFL_NO_DAMAGE_FORCES

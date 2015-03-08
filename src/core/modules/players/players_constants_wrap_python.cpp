@@ -44,7 +44,7 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_players_flags(scope);
+void export_players_states(scope);
 void export_life_states(scope);
 void export_player_buttons(scope);
 void export_hide_hud_flags(scope);
@@ -58,7 +58,7 @@ void export_observer_modes(scope);
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_players, _constants)
 {
-	export_players_flags(_constants);
+	export_players_states(_constants);
 	export_life_states(_constants);
 	export_player_buttons(_constants);
 	export_hide_hud_flags(_constants);
@@ -69,11 +69,11 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose player flags.
+// Expose player state flags.
 //-----------------------------------------------------------------------------
-void export_players_flags(scope _constants)
+void export_players_states(scope _constants)
 {
-	// Player flags constants...
+	// Player state flags constants...
 	_constants.attr("FL_ONGROUND") = FL_ONGROUND;
 	_constants.attr("FL_DUCKING") = FL_DUCKING;
 	_constants.attr("FL_WATERJUMP") = FL_WATERJUMP;

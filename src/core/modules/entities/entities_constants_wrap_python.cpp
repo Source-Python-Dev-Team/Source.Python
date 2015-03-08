@@ -47,7 +47,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_damage_types(scope);
-void export_entity_flags(scope);
+void export_entity_states(scope);
 void export_move_type(scope);
 void export_move_collide(scope);
 void export_solid_type(scope);
@@ -58,6 +58,7 @@ void export_render_effects(scope);
 void export_collision_group(scope);
 void export_dissolve_types(scope);
 void export_take_damage(scope);
+void export_entity_flags(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -66,7 +67,7 @@ void export_take_damage(scope);
 DECLARE_SP_SUBMODULE(_entities, _constants)
 {
 	export_damage_types(_constants);
-	export_entity_flags(_constants);
+	export_entity_states(_constants);
 	export_move_type(_constants);
 	export_move_collide(_constants);
 	export_solid_type(_constants);
@@ -77,6 +78,7 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_collision_group(_constants);
 	export_dissolve_types(_constants);
 	export_take_damage(_constants);
+	export_entity_flags(_constants);
 }
 
 
@@ -127,9 +129,9 @@ void export_damage_types(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose entity flags.
+// Expose entity state flags.
 //-----------------------------------------------------------------------------
-void export_entity_flags(scope _constants)
+void export_entity_states(scope _constants)
 {
 	// Entity flags constants...
 	_constants.attr("FL_FLY") = FL_FLY;
@@ -393,4 +395,44 @@ void export_take_damage(scope _constants)
 	_constants.attr("DAMAGE_EVENTS_ONLY") = DAMAGE_EVENTS_ONLY;
 	_constants.attr("DAMAGE_YES") = DAMAGE_YES;
 	_constants.attr("DAMAGE_AIM") = DAMAGE_AIM;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose entity flags.
+//-----------------------------------------------------------------------------
+void export_entity_flags(scope _constants)
+{
+	_constants.attr("EFL_KILLME") = (long)EFL_KILLME;
+	_constants.attr("EFL_DORMANT") = (long)EFL_DORMANT;
+	_constants.attr("EFL_NOCLIP_ACTIVE") = (long)EFL_NOCLIP_ACTIVE;
+	_constants.attr("EFL_SETTING_UP_BONES") = (long)EFL_SETTING_UP_BONES;
+	_constants.attr("EFL_KEEP_ON_RECREATE_ENTITIES") = (long)EFL_KEEP_ON_RECREATE_ENTITIES;
+	_constants.attr("EFL_DIRTY_SHADOWUPDATE") = (long)EFL_DIRTY_SHADOWUPDATE;
+	_constants.attr("EFL_NOTIFY") = (long)EFL_NOTIFY;
+	_constants.attr("EFL_FORCE_CHECK_TRANSMIT") = (long)EFL_FORCE_CHECK_TRANSMIT;
+	_constants.attr("EFL_BOT_FROZEN") = (long)EFL_BOT_FROZEN;
+	_constants.attr("EFL_SERVER_ONLY") = (long)EFL_SERVER_ONLY;
+	_constants.attr("EFL_NO_AUTO_EDICT_ATTACH") = (long)EFL_NO_AUTO_EDICT_ATTACH;
+	_constants.attr("EFL_DIRTY_ABSTRANSFORM") = (long)EFL_DIRTY_ABSTRANSFORM;
+	_constants.attr("EFL_DIRTY_ABSVELOCITY") = (long)EFL_DIRTY_ABSVELOCITY;
+	_constants.attr("EFL_DIRTY_ABSANGVELOCITY") = (long)EFL_DIRTY_ABSANGVELOCITY;
+	_constants.attr("EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS") = (long)EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS;
+	_constants.attr("EFL_DIRTY_SPATIAL_PARTITION") = (long)EFL_DIRTY_SPATIAL_PARTITION;
+	_constants.attr("EFL_HAS_PLAYER_CHILD") = (long)EFL_HAS_PLAYER_CHILD;
+	_constants.attr("EFL_IN_SKYBOX") = (long)EFL_IN_SKYBOX;
+	_constants.attr("EFL_USE_PARTITION_WHEN_NOT_SOLID") = (long)EFL_USE_PARTITION_WHEN_NOT_SOLID;
+	_constants.attr("EFL_TOUCHING_FLUID") = (long)EFL_TOUCHING_FLUID;
+	_constants.attr("EFL_IS_BEING_LIFTED_BY_BARNACLE") = (long)EFL_IS_BEING_LIFTED_BY_BARNACLE;
+	_constants.attr("EFL_NO_ROTORWASH_PUSH") = (long)EFL_NO_ROTORWASH_PUSH;
+	_constants.attr("EFL_NO_THINK_FUNCTION") = (long)EFL_NO_THINK_FUNCTION;
+	_constants.attr("EFL_NO_GAME_PHYSICS_SIMULATION") = (long)EFL_NO_GAME_PHYSICS_SIMULATION;
+	_constants.attr("EFL_CHECK_UNTOUCH") = (long)EFL_CHECK_UNTOUCH;
+	_constants.attr("EFL_DONTBLOCKLOS") = (long)EFL_DONTBLOCKLOS;
+	_constants.attr("EFL_DONTWALKON") = (long)EFL_DONTWALKON;
+	_constants.attr("EFL_NO_DISSOLVE") = (long)EFL_NO_DISSOLVE;
+	_constants.attr("EFL_NO_MEGAPHYSCANNON_RAGDOLL") =(long)EFL_NO_MEGAPHYSCANNON_RAGDOLL;
+	_constants.attr("EFL_NO_WATER_VELOCITY_CHANGE") = (long)EFL_NO_WATER_VELOCITY_CHANGE;
+	_constants.attr("EFL_NO_PHYSCANNON_INTERACTION") = (long)EFL_NO_PHYSCANNON_INTERACTION;
+	_constants.attr("EFL_NO_DAMAGE_FORCES") = (long)EFL_NO_DAMAGE_FORCES;
 }

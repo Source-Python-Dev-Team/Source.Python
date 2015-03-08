@@ -96,16 +96,16 @@ __all__ = ('LifeState',
            'HitGroup',
            'PlayerAnimation',
            'PlayerButtons',
-           'PlayerFlags',
+           'PlayerStates',
            )
 
 
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class PlayerFlags(IntEnum):
+class PlayerStates(IntEnum):
 
-    """Player flags wrapper enumerator."""
+    """Player states wrapper enumerator."""
 
     ONGROUND = FL_ONGROUND
     DUCKING = FL_DUCKING
@@ -199,6 +199,7 @@ class HitGroup(IntEnum):
 class ObserverMode(IntEnum):
 
     """Observer modes wrapper enumerator."""
+
     NONE = OBS_MODE_NONE
     DEATHCAM = OBS_MODE_DEATHCAM
     FREEZECAM = OBS_MODE_FREEZECAM
