@@ -42,7 +42,7 @@ from _players._constants import HITGROUP_GENERIC
 from _players._constants import HITGROUP_HEAD
 from _players._constants import HITGROUP_CHEST
 from _players._constants import HITGROUP_STOMACH
-from _players._constants import HITGROUP_LEFTARM	
+from _players._constants import HITGROUP_LEFTARM
 from _players._constants import HITGROUP_RIGHTARM
 from _players._constants import HITGROUP_LEFTLEG
 from _players._constants import HITGROUP_RIGHTLEG

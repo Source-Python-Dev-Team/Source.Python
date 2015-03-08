@@ -116,6 +116,7 @@ from _engines import SURF_HITBOX
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('BaseTrace',
+           'COORD_EXTENT',
            'ContentFlags',
            'ContentMasks',
            'DisplacementFlags',
