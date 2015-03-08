@@ -50,6 +50,7 @@ void export_player_buttons(scope);
 void export_hide_hud_flags(scope);
 void export_hit_groups(scope);
 void export_player_animation(scope);
+void export_observer_modes(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -63,6 +64,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 	export_hide_hud_flags(_constants);
 	export_hit_groups(_constants);
 	export_player_animation(_constants);
+	export_observer_modes(_constants);
 }
 
 
@@ -198,4 +200,19 @@ void export_player_animation(scope _constants)
 	PlayerAnimation.value("RELOAD", PLAYER_RELOAD);
 	PlayerAnimation.value("START_AIMING", PLAYER_START_AIMING);
 	PlayerAnimation.value("LEAVE_AIMING", PLAYER_LEAVE_AIMING);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose observer modes.
+//-----------------------------------------------------------------------------
+void export_observer_modes(scope _constants)
+{
+	_constants.attr("OBS_MODE_NONE") = (int)OBS_MODE_NONE;
+	_constants.attr("OBS_MODE_DEATHCAM") = (int)OBS_MODE_DEATHCAM;
+	_constants.attr("OBS_MODE_FREEZECAM") = (int)OBS_MODE_FREEZECAM;
+	_constants.attr("OBS_MODE_FIXED") = (int)OBS_MODE_FIXED;
+	_constants.attr("OBS_MODE_IN_EYE") = (int)OBS_MODE_IN_EYE;
+	_constants.attr("OBS_MODE_CHASE") = (int)OBS_MODE_CHASE;
+	_constants.attr("OBS_MODE_ROAMING") = (int)OBS_MODE_ROAMING;
 }

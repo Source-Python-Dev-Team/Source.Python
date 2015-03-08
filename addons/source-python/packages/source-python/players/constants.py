@@ -78,6 +78,13 @@ from _players._constants import LIFE_DYING
 from _players._constants import LIFE_DEAD
 from _players._constants import LIFE_RESPAWNABLE
 from _players._constants import LIFE_DISCARDBODY
+from _players._constants import OBS_MODE_NONE
+from _players._constants import OBS_MODE_DEATHCAM
+from _players._constants import OBS_MODE_FREEZECAM
+from _players._constants import OBS_MODE_FIXED
+from _players._constants import OBS_MODE_IN_EYE
+from _players._constants import OBS_MODE_CHASE
+from _players._constants import OBS_MODE_ROAMING
 from _players._constants import PlayerAnimation
 
 
@@ -187,3 +194,15 @@ class HitGroup(IntEnum):
     LEFTLEG = HITGROUP_LEFTLEG
     RIGHTLEG = HITGROUP_RIGHTLEG
     GEAR = HITGROUP_GEAR
+
+
+class ObserverMode(IntEnum):
+
+    """Observer modes wrapper enumerator."""
+    NONE = OBS_MODE_NONE
+    DEATHCAM = OBS_MODE_DEATHCAM
+    FREEZECAM = OBS_MODE_FREEZECAM
+    FIXED = OBS_MODE_FIXED
+    IN_EYE = OBS_MODE_IN_EYE
+    CHASE = OBS_MODE_CHASE
+    ROAMING = OBS_MODE_ROAMING
