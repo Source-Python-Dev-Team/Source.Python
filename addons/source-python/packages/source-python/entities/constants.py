@@ -7,6 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
+from enum import Enum
 from enum import IntEnum
 
 # Site-Package Imports
@@ -181,7 +182,7 @@ DATA_DESC_MAP_OFFSET = _entity_values.get(
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class DamageTypes(IntEnum):
+class DamageTypes(Enum):
 
     """Damage types wrapper enumerator."""
 
@@ -245,7 +246,7 @@ class EntityStates(IntEnum):
     UNBLOCKABLE_BY_PLAYER = FL_UNBLOCKABLE_BY_PLAYER
 
 
-class EntityEffects(IntEnum):
+class EntityEffects(Enum):
 
     """Entity effects wrapper enumerator."""
 

@@ -7,6 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
+from enum import Enum
 from enum import IntEnum
 
 
@@ -130,7 +131,7 @@ class LifeState(IntEnum):
     DISCARDBODY = LIFE_DISCARDBODY
 
 
-class PlayerButtons(IntEnum):
+class PlayerButtons(Enum):
 
     """Player buttons wrapper enumerator."""
 
@@ -162,7 +163,7 @@ class PlayerButtons(IntEnum):
     LOOKSPIN = IN_LOOKSPIN
 
 
-class HideHudFlags(IntEnum):
+class HideHudFlags(Enum):
 
     """Hide hud flags wrapper enumerator."""
 
