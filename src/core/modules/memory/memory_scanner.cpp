@@ -295,7 +295,7 @@ CPointer* CBinaryFile::FindPointer(object oIdentifier, int iOffset, unsigned int
 	CPointer* ptr = FindAddress(oIdentifier);
 	if (ptr->IsValid())
 	{
-		ptr += iOffset;
+		ptr->m_ulAddr += iOffset;
 		while (iLevel > 0)
 		{
 			ptr = ptr->GetPtr();
