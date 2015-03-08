@@ -37,7 +37,7 @@ __all__ = ('EntityFactory',
 # ============================================================================
 # Get the factory_dictionary instance...
 try:
-    from _entities import factory_dictionary
+    from _entities._factories import factory_dictionary
 except ImportError:
     manager.create_global_pointers_from_file(SP_DATA_PATH.joinpath(
         'entities', 'factories', SOURCE_ENGINE + '.ini'))

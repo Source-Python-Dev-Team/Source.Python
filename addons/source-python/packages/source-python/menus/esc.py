@@ -8,6 +8,8 @@
 # Source.Python Imports
 #   Colors
 from colors import WHITE
+#   Entities
+from entities.helpers import edict_from_index
 #   Keyvalues
 from keyvalues import KeyValues
 #   Menus
@@ -21,8 +23,6 @@ from menus.queue import _esc_queues
 #   Messages
 from _messages import DialogType
 from _messages import create_message
-#   Players
-from players.helpers import edict_from_index
 
 
 # =============================================================================
