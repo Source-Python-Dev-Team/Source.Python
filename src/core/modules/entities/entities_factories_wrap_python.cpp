@@ -31,7 +31,7 @@
 #include "entities_factories_wrap.h"
 #include "modules/export_main.h"
 
-#include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
+#include ENGINE_INCLUDE_PATH(entities_factories_wrap_python.h)
 
 
 //-----------------------------------------------------------------------------

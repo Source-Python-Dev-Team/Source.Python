@@ -24,26 +24,17 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_PYTHON_CSGO_H
-#define _ENTITIES_WRAP_PYTHON_CSGO_H
+#ifndef _ENTITIES_FACTORIES_WRAP_PYTHON_CSGO_H
+#define _ENTITIES_FACTORIES_WRAP_PYTHON_CSGO_H
 
 //-----------------------------------------------------------------------------
-// Includes.
-//-----------------------------------------------------------------------------
-#include "entities_wrap.h"
-
-
-//-----------------------------------------------------------------------------
-// Expose CTakeDamageInfo.
+// Expose CEntityFactoryDictionary.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_engine_specific_take_damage_info(T TakeDamageInfo)
+void export_engine_specific_entity_factory_dictionary(T EntityFactoryDictionary)
 {
-	TakeDamageInfo.add_property("radius", &CTakeDamageInfo::GetRadius, &CTakeDamageInfo::SetRadius);
-	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated, &TakeDamageInfoExt::set_penetrated);
-	TakeDamageInfo.add_property("bullet", &TakeDamageInfoExt::get_bullet, &TakeDamageInfoExt::set_bullet);
-	TakeDamageInfo.add_property("recoil", &TakeDamageInfoExt::get_recoil, &TakeDamageInfoExt::set_recoil);
+	// Nothing specific to CS:GO...
 }
 
 
-#endif // _ENTITIES_WRAP_PYTHON_CSGO_H
+#endif // _ENTITIES_FACTORIES_WRAP_PYTHON_CSGO_H

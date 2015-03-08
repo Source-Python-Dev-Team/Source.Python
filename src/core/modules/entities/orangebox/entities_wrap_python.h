@@ -30,26 +30,18 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utility/wrap_macros.h"
-#include "toolframework/itoolentity.h"
-#include "utility/conversions.h"
-#include "modules/memory/memory_tools.h"
+#include "entities_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// External variables.
-//-----------------------------------------------------------------------------
-extern IServerTools *servertools;
-
-
-//-----------------------------------------------------------------------------
-// Expose CEntityFactoryDictionary.
+// Expose CTakeDamageInfo.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_engine_specific_entity_factory_dictionary(T EntityFactoryDictionary)
+void export_engine_specific_take_damage_info(T TakeDamageInfo)
 {
-	// Singleton...
-	scope().attr("factory_dictionary") = object(ptr((CEntityFactoryDictionary *)servertools->GetEntityFactoryDictionary()));
+	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated,
+		&TakeDamageInfoExt::set_penetrated
+	);
 }
 
 

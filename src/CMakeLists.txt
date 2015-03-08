@@ -190,10 +190,12 @@ Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/entities_wrap.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_wrap.h
     core/modules/entities/entities_generator_wrap.h
     core/modules/entities/entities_helpers_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_helpers_wrap.h
     core/modules/entities/entities_factories_wrap.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_factories_wrap_python.h
     core/modules/entities/${SOURCE_ENGINE}/entities_wrap_python.h
     core/modules/entities/entities_datamaps_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_datamaps_wrap_python.h

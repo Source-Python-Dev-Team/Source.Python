@@ -95,4 +95,130 @@ public:
 };
 
 
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo wrapper class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
+{
+public:
+	int get_inflictor()
+	{
+		if (m_hInflictor.IsValid())
+		{
+			return m_hInflictor.GetEntryIndex();
+		}
+		return -1;
+	}
+	
+	void set_inflictor(unsigned int iInflictor)
+	{
+		m_hInflictor = BaseHandleFromIndex(iInflictor);
+	}
+	
+	int get_attacker()
+	{
+		if (m_hAttacker.IsValid())
+		{
+			return m_hAttacker.GetEntryIndex();
+		}
+		return -1;
+	}
+	
+	void set_attacker(unsigned int iAttacker)
+	{
+		m_hAttacker = BaseHandleFromIndex(iAttacker);
+	}
+	
+	int get_weapon()
+	{
+		if (m_hWeapon.IsValid())
+		{
+			return m_hWeapon.GetEntryIndex();
+		}
+		return -1;
+	}
+	
+	void set_weapon(unsigned int iWeapon)
+	{
+		m_hWeapon = BaseHandleFromIndex(iWeapon);
+	}
+	
+	void set_base_damage(float flBaseDamage)
+	{
+		m_flBaseDamage = flBaseDamage;
+	}
+	
+	int get_damaged_other_players()
+	{
+		return m_iDamagedOtherPlayers;
+	}
+	
+	void set_damaged_other_players(int iDamagedOtherPlayers)
+	{
+		m_iDamagedOtherPlayers = iDamagedOtherPlayers;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoSharedExt
+{
+public:
+	static CTakeDamageInfo *__init__()
+	{
+		CTakeDamageInfo *pTakeDamageInfo = new CTakeDamageInfo();
+		set_inflictor(pTakeDamageInfo, 0);
+		set_attacker(pTakeDamageInfo, 0);
+		return pTakeDamageInfo;
+	}
+	
+	static int get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_inflictor();
+	}
+	
+	static void set_inflictor(CTakeDamageInfo *pTakeDamageInfo, unsigned int iInflictor)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_inflictor(iInflictor);
+	}
+	
+	static int get_attacker(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_attacker();
+	}
+	
+	static void set_attacker(CTakeDamageInfo *pTakeDamageInfo, unsigned int iAttacker)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_attacker(iAttacker);
+	}
+	
+	static int get_weapon(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_weapon();
+	}
+	
+	static void set_weapon(CTakeDamageInfo *pTakeDamageInfo, unsigned int iWeapon)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_weapon(iWeapon);
+	}
+	
+	static void set_base_damage(CTakeDamageInfo *pTakeDamageInfo, float flBaseDamage)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_base_damage(flBaseDamage);
+	}
+	
+	static int get_damaged_other_players(CTakeDamageInfo *pTakeDamageInfo)
+	{
+		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_damaged_other_players();
+	}
+	
+	static void set_damaged_other_players(CTakeDamageInfo *pTakeDamageInfo, int iDamagedOtherPlayers)
+	{
+		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_damaged_other_players(iDamagedOtherPlayers);
+	}
+};
+
+
 #endif // _ENTITIES_WRAP_H

@@ -9,7 +9,7 @@
 #   Core
 from core import GAME_NAME
 #   Entities
-# from entities import TakeDamageInfo
+from entities import TakeDamageInfo
 from entities.helpers import index_from_inthandle
 #   Filters
 from filters.weapons import WeaponClassIter
