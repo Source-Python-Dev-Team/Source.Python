@@ -19,9 +19,9 @@ from path import Path
 # Source.Python Imports
 #   Core
 from core import AutoUnload
-from core import global_vars
 #   Engines
 from engines.server import engine_server
+from engines.server import global_vars
 #   Events
 from events.manager import event_registry
 #   Stringtables

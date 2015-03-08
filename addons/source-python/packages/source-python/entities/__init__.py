@@ -22,7 +22,7 @@ from _entities import HandleEntity
 from _entities import ServerEntity
 from _entities import ServerNetworkable
 from _entities import ServerUnknown
-from _entities import TakeDamageInfo
+# from _entities import TakeDamageInfo
 
 
 # =============================================================================

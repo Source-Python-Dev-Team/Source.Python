@@ -37,7 +37,6 @@ using namespace boost::python;
 
 #include "modules/memory/memory_tools.h"
 
-#include ENGINE_INCLUDE_PATH(entities_wrap.h)
 #include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
 
 
@@ -51,7 +50,6 @@ void export_server_entity();
 void export_server_networkable();
 void export_edict();
 void export_entity_generator();
-void export_take_damage_info();
 
 
 //-----------------------------------------------------------------------------
@@ -66,7 +64,6 @@ DECLARE_SP_MODULE(_entities)
 	export_server_networkable();
 	export_edict();
 	export_entity_generator();
-	export_take_damage_info();
 }
 
 
@@ -479,49 +476,4 @@ void export_entity_generator()
 			reference_existing_object_policy()
 		)
 	;
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose CTakeDamageInfo.
-//-----------------------------------------------------------------------------
-void export_take_damage_info()
-{
-	class_<CTakeDamageInfo, CTakeDamageInfo *> TakeDamageInfo("TakeDamageInfo");
-	
-	// Initializers...
-	TakeDamageInfo.def("__init__", make_constructor(&TakeDamageInfoSharedExt::__init__));
-	
-	// Properties...
-	TakeDamageInfo.add_property("force", &CTakeDamageInfo::GetDamageForce, &CTakeDamageInfo::SetDamageForce);
-	TakeDamageInfo.add_property("position", &CTakeDamageInfo::GetDamagePosition, &CTakeDamageInfo::SetDamagePosition);
-	
-	TakeDamageInfo.add_property("reported_position", &CTakeDamageInfo::GetReportedPosition,
-		&CTakeDamageInfo::SetReportedPosition
-	);
-	
-	TakeDamageInfo.add_property("damage", &CTakeDamageInfo::GetDamage, &CTakeDamageInfo::SetDamage);
-	TakeDamageInfo.add_property("base_damage", &CTakeDamageInfo::GetBaseDamage, &TakeDamageInfoSharedExt::set_base_damage);
-	TakeDamageInfo.add_property("type", &CTakeDamageInfo::GetDamageType, &CTakeDamageInfo::SetDamageType);
-	TakeDamageInfo.add_property("stats", &CTakeDamageInfo::GetDamageStats, &CTakeDamageInfo::SetDamageStats);
-	TakeDamageInfo.add_property("ammo", &CTakeDamageInfo::GetAmmoType, &CTakeDamageInfo::SetAmmoType);
-	
-	TakeDamageInfo.add_property("damaged_other_players", &TakeDamageInfoSharedExt::get_damaged_other_players,
-		&TakeDamageInfoSharedExt::set_damaged_other_players
-	);
-
-	TakeDamageInfo.add_property("inflictor", &TakeDamageInfoSharedExt::get_inflictor, &TakeDamageInfoSharedExt::set_inflictor);
-	TakeDamageInfo.add_property("attacker", &TakeDamageInfoSharedExt::get_attacker, &TakeDamageInfoSharedExt::set_attacker);
-	TakeDamageInfo.add_property("weapon", &TakeDamageInfoSharedExt::get_weapon, &TakeDamageInfoSharedExt::set_weapon);
-	
-	// CS:GO properties...
-	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("radius");
-	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("bullet");
-	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("recoil");
-	
-	// Engine specific stuff...
-	export_engine_specific_take_damage_info(TakeDamageInfo);
-	
-	// Add memory tools...
-	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
 }
