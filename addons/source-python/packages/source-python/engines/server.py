@@ -10,6 +10,9 @@
 from _engines import engine_server
 from _engines import server_game_dll
 from _engines import QueryCvarStatus
+#   Globals
+from _globals import global_vars
+from _globals import MapLoadType
 
 
 # =============================================================================
@@ -17,5 +20,7 @@ from _engines import QueryCvarStatus
 # =============================================================================
 __all__ = ('QueryCvarStatus',
            'engine_server',
+           'global_vars',
+           'MapLoadType',
            'server_game_dll',
            )
