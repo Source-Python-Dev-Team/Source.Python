@@ -55,7 +55,7 @@ class _LanguageCache(dict):
     @staticmethod
     def client_fully_connect(index):
         """Query the player's language when they are fully connected."""
-        from players.helpers import edict_from_index
+        from entities.helpers import edict_from_index
         engine_server.start_query_cvar_value(
             edict_from_index(index), 'cl_language')
 
