@@ -347,6 +347,20 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Weapons module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_WEAPONS_MODULE_HEADERS
+    core/modules/weapons/weapons_scripts_wrap.h
+    core/modules/weapons/${SOURCE_ENGINE}/weapons_constants_wrap_python.h
+    core/modules/weapons/${SOURCE_ENGINE}/weapons_scripts_wrap_python.h
+)
+
+Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
+    core/modules/weapons/weapons_constants_wrap_python.cpp
+    core/modules/weapons/weapons_scripts_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
@@ -404,6 +418,9 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
     ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
+
+    ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS}
+    ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -433,6 +450,7 @@ Source_Group("Header Files\\Module\\Messages"               FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
+Source_Group("Header Files\\Module\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -457,6 +475,7 @@ Source_Group("Source Files\\Module\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON
 Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES})
+Source_Group("Source Files\\Module\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of
