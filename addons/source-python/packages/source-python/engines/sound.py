@@ -140,7 +140,7 @@ class Sound(AutoUnload):
         recipients = RecipientFilter(*(recipients or self.recipients))
 
         # Is the sound precached?
-        if not self.is_precached():
+        if not self.is_precached:
 
             # Precache the sound
             self.precache()
@@ -173,6 +173,7 @@ class Sound(AutoUnload):
         """Precache the sample."""
         engine_sound.precache_sound(self.sample)
 
+    @property
     def is_precached(self):
         """Return whether or not the sample is precached."""
         return self.sample in string_tables.soundprecache
