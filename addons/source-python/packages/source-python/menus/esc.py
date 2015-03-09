@@ -28,10 +28,10 @@ from _messages import create_message
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('SimpleESCOption',
-           'SimpleESCMenu',
+__all__ = ('PagedESCMenu',
            'PagedESCOption',
-           'PagedESCMenu',
+           'SimpleESCMenu',
+           'SimpleESCOption',
            )
 
 

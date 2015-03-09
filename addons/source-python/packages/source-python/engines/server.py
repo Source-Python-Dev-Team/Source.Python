@@ -18,9 +18,9 @@ from _globals import MapLoadType
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('QueryCvarStatus',
+__all__ = ('MapLoadType',
+           'QueryCvarStatus',
            'engine_server',
            'global_vars',
-           'MapLoadType',
            'server_game_dll',
            )

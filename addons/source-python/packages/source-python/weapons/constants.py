@@ -16,12 +16,14 @@ from enum import IntEnum
 # Source.Python Imports
 #   Weapons
 from _weapons._constants import ITEM_FLAG_SELECTONEMPTY
+from _weapons._constants import ITEM_FLAG_NOAUTORELOAD
 from _weapons._constants import ITEM_FLAG_NOAUTOSWITCHEMPTY
 from _weapons._constants import ITEM_FLAG_LIMITINWORLD
 from _weapons._constants import ITEM_FLAG_EXHAUSTIBLE
 from _weapons._constants import ITEM_FLAG_DOHITLOCATIONDMG
 from _weapons._constants import ITEM_FLAG_NOAMMOPICKUPS
 from _weapons._constants import ITEM_FLAG_NOITEMPICKUP
+from _weapons._constants import MuzzleFlashStyle
 from _weapons._constants import WEAPON_NOT_CARRIED
 from _weapons._constants import WEAPON_IS_CARRIED_BY_PLAYER
 from _weapons._constants import WEAPON_IS_ACTIVE
@@ -54,6 +56,7 @@ class ItemFlags(IntEnum):
     """Item flags wrapper enumerator."""
 
     SELECTONEMPTY = ITEM_FLAG_SELECTONEMPTY
+    NOAUTORELOAD = ITEM_FLAG_NOAUTORELOAD
     NOAUTOSWITCHEMPTY = ITEM_FLAG_NOAUTOSWITCHEMPTY
     LIMITINWORLD = ITEM_FLAG_LIMITINWORLD
     EXHAUSTIBLE = ITEM_FLAG_EXHAUSTIBLE

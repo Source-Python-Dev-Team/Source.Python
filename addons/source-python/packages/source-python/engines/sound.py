@@ -51,6 +51,7 @@ from _engines import SOUND_FROM_WORLD
 # =============================================================================
 __all__ = ('Attenuations',
            'Channels',
+           'PitchTypes',
            'SOUND_FROM_LOCAL_PLAYER',
            'SOUND_FROM_WORLD',
            'Sound',

@@ -92,9 +92,10 @@ from _players._constants import PlayerAnimation
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('LifeState',
-           'HideHudFlags',
+__all__ = ('HideHudFlags',
            'HitGroup',
+           'LifeState',
+           'ObserverMode',
            'PlayerAnimation',
            'PlayerButtons',
            'PlayerStates',
