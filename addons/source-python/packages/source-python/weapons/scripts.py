@@ -37,12 +37,12 @@ __all__ = ('BaseWeaponInfo',
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-get_weapon_info = manager.create_pipe_from_file(SP_DATA_PATH.joinpath(
+_get_weapon_info = manager.create_pipe_from_file(SP_DATA_PATH.joinpath(
     'weapons', 'scripts', SOURCE_ENGINE + '.ini')).get_weapon_info
 
 weapon_scripts = dict()
-for weapon_id in WeaponID.values:
-    weapon_info = get_weapon_info(weapon_id)
-    if weapon_info is None:
+for _weapon_id in WeaponID.values:
+    _weapon_info = _get_weapon_info(_weapon_id)
+    if _weapon_info is None:
         continue
-    weapon_scripts[weapon_info.class_name] = weapon_info
+    weapon_scripts[_weapon_info.class_name] = _weapon_info
