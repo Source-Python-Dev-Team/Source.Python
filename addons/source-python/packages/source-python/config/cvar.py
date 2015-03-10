@@ -35,7 +35,7 @@ class _CvarManager(dict):
 
         # Get the cvar instance
         self._cvar = ConVar(
-            name, default, flags, description, min_value, max_value)
+            name, str(default), flags, description, min_value, max_value)
 
         # Set the attribute to show the default value
         self.show_default = True

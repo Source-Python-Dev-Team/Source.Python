@@ -97,7 +97,7 @@ class ConfigManager(object):
         return CFG_PATH.joinpath(self.filepath + '.cfg')
 
     def cvar(
-            self, name, default='0', flags=0,
+            self, name, default=0, flags=0,
             description='', min_value=None, max_value=None):
         """Add/return a cvar instance to add to the config file."""
         # Get the _CvarManager instance for the given arguments
