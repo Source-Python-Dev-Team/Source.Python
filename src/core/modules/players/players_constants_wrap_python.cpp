@@ -27,6 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include <climits>
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "const.h"
@@ -132,7 +133,7 @@ void export_player_buttons(scope _constants)
 	_constants.attr("IN_GRENADE2") = IN_GRENADE2;
 
 	// CS:GO specific constants...
-	_constants.attr("IN_LOOKSPIN") = object();
+	_constants.attr("IN_LOOKSPIN") = -LONG_MAX;
 
 	// Engine specific stuff...
 	export_engine_specific_player_buttons(_constants);
@@ -158,7 +159,7 @@ void export_hide_hud_flags(scope _constants)
 	_constants.attr("HIDEHUD_BONUS_PROGRESS") = HIDEHUD_BONUS_PROGRESS;
 
 	// CS:GO specific constants...
-	_constants.attr("HIDEHUD_RADAR") = object();
+	_constants.attr("HIDEHUD_RADAR") = -LONG_MAX;
 
 	// Engine specific stuff...
 	export_engine_specific_hide_hud_flags(_constants);

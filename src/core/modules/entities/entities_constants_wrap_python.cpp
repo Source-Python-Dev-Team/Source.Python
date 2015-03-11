@@ -27,6 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include <climits>
 #include "modules/export_main.h"
 #include "utility/wrap_macros.h"
 #include "mathlib/vector.h"
@@ -121,7 +122,7 @@ void export_damage_types(scope _constants)
 	_constants.attr("BASEDAMAGE_NOT_SPECIFIED") = BASEDAMAGE_NOT_SPECIFIED;
 
 	// CS:GO/CS:S specific constants...
-	_constants.attr("DMG_HEADSHOT") = object();
+	_constants.attr("DMG_HEADSHOT") = -LONG_MAX;
 
 	// Engine specific stuff..
 	export_engine_specific_damage_types(_constants);
@@ -260,9 +261,9 @@ void export_entity_effects(scope _constants)
 	_constants.attr("EF_PARENT_ANIMATES") = (long)EF_PARENT_ANIMATES;
 
 	// CS:GO specific constants...
-	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = object();
-	_constants.attr("EF_NOSHADOWDEPTH") = object();
-	_constants.attr("EF_NOFLASHLIGHT") = object();
+	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = -LONG_MAX;
+	_constants.attr("EF_NOSHADOWDEPTH") = -LONG_MAX;
+	_constants.attr("EF_NOFLASHLIGHT") = -LONG_MAX;
 
 	// Engine specific stuff...
 	export_engine_specific_entity_effects(_constants);
