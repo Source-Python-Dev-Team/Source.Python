@@ -49,7 +49,7 @@ void export_engine_specific_weapon_sound(T WeaponSound)
 // Expose WeaponID.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_weapon_id(T _scripts)
+void export_weapon_id(T _constants)
 {
 	enum_<WeaponID> WeaponID_("WeaponID");
 
@@ -98,7 +98,7 @@ void export_weapon_id(T _scripts)
 // Expose WeaponSlot.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_weapon_slot(T _scripts)
+void export_weapon_slot(T _constants)
 {
 	enum_<WeaponSlot> WeaponSlot_("WeaponSlot");
 
@@ -118,7 +118,7 @@ void export_weapon_slot(T _scripts)
 // Expose MuzzleFlashStyle.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_muzzle_flash_styles(T _scripts)
+void export_muzzle_flash_styles(T _constants)
 {
 	enum_<MuzzleFlashStyle> MuzzleFlashStyle_("MuzzleFlashStyle");
 
@@ -136,7 +136,7 @@ void export_muzzle_flash_styles(T _scripts)
 // Expose WeaponType.
 //-----------------------------------------------------------------------------
 template<class T>
-void export_weapon_types(T _scripts)
+void export_weapon_types(T _constants)
 {
 	enum_<WeaponType> WeaponType_("WeaponType");
 

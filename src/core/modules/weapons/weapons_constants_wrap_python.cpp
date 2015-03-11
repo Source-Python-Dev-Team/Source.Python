@@ -47,7 +47,7 @@ void export_weapon_proficiency(scope);
 
 
 //-----------------------------------------------------------------------------
-// Declare the _weapons._scripts module.
+// Declare the _weapons._constants module.
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_weapons, _constants)
 {

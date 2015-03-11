@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_SCRIPTS_ORANGEBOX_CSS_WRAP_PYTHON_H
-#define _WEAPONS_SCRIPTS_ORANGEBOX_CSS_WRAP_PYTHON_H
+#ifndef _WEAPONS_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H
+#define _WEAPONS_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -185,4 +185,4 @@ void export_game_specific_weapon_types(T WeaponType_)
 }
 
 
-#endif // _WEAPONS_SCRIPTS_ORANGEBOX_CSS_WRAP_PYTHON_H
+#endif // _WEAPONS_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H

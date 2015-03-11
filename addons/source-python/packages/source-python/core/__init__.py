@@ -11,10 +11,16 @@ from inspect import getmodule
 from inspect import stack
 #   OS
 from os import sep
+#   Path
+from path import Path
 #   Platform
 from platform import system
 #   Sys
 import sys
+
+# Site-Packages Imports
+#   ConfigObj
+from configobj import ConfigObj
 
 # Source.Python Imports
 #   Loggers
@@ -89,6 +95,29 @@ class AutoUnload(object):
                     self.__class__.__module__].__file__.split(
                     'plugins', 1)[1][1:]) +
             'have its own implementation of an _unload_instance method.')
+
+
+class GameConfigObj(ConfigObj):
+    """Class used to parse specific game data."""
+
+    def __init__(self, infile, *args, **kwargs):
+        """Helper class that parse the given file and merge the current engine
+            specific file then the current game specific file to it."""
+
+        # Get the file directory/name...
+        path, name = Path(infile).splitpath()
+
+        # Call ConfigObj's __init__ method...
+        super(GameConfigObj, self).__init__(infile, *args, **kwargs)
+
+        # Move the path to the current engine sub-directory...
+        path = path.joinpath(SOURCE_ENGINE)
+
+        # Parse and merge the specific engine file...
+        self.merge(ConfigObj(path.joinpath(name), *args, **kwargs))
+
+        # Finally, parse the specific game file...
+        self.merge(ConfigObj(path.joinpath(GAME_NAME, name), *args, **kwargs))
 
 
 # =============================================================================
