@@ -11,15 +11,17 @@ from core import GameConfigObj
 #   Paths
 from paths import SP_DATA_PATH
 #   Memory
-from memory import NULL
 from memory.manager import manager
+#   Weapons
+from weapons.constants import MuzzleFlashStyle
+from weapons.constants import WeaponSlot
+from weapons.constants import WeaponType
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('BaseWeaponInfo',
-           'get_weapon_info',
+__all__ = ('get_weapon_info',
            'WeaponInfo'
            )
 
@@ -27,17 +29,10 @@ __all__ = ('BaseWeaponInfo',
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_path = SP_DATA_PATH.joinpath('weapons', 'scripts')
-
-# Get the BaseWeaponInfo class...
-BaseWeaponInfo = manager.create_type_from_dict(
-    'BaseWeaponInfo',
-    GameConfigObj(_path.joinpath('BaseWeaponInfo.ini')))
-
 # Get the WeaponInfo class...
-WeaponInfo = manager.create_type_from_dict(
-    'WeaponInfo',
-    GameConfigObj(_path.joinpath('WeaponInfo.ini')), (BaseWeaponInfo,))
+_WeaponInfo = manager.create_type_from_dict('WeaponInfo',
+    GameConfigObj(SP_DATA_PATH.joinpath('weapons', 'scripts').joinpath(
+    'WeaponInfo.ini')))
 
 # Get the _get_weapon_info function...
 _get_weapon_info = manager.create_pipe_from_dict(
@@ -46,19 +41,44 @@ _get_weapon_info = manager.create_pipe_from_dict(
 
 
 # =============================================================================
+# >> CLASSES
+# =============================================================================
+class WeaponInfo(_WeaponInfo):
+    '''WeaponInfo extension class.'''
+
+    @property
+    def muzzle_flash_style(self):
+        '''Return the muzzle flash style as a MuzzleFLashStyle instance.'''
+        return MuzzleFlashStyle(self.muzzle_flash_style_index)
+
+    @property
+    def slot(self):
+        '''Return the weapon slot as a WeaponSlot instance.'''
+        return WeaponSlot(self.slot_index)
+
+    @property
+    def weapon_type(self):
+        '''Return the weapon type index as a WeaponType instance.'''
+        return WeaponType(self.weapon_type_index)
+
+# Override the original class with our extension...
+manager['WeaponInfo'] = WeaponInfo
+
+
+# =============================================================================
 # >> HELPER FUNCTIONS
 # =============================================================================
 def get_weapon_info(weapon_id):
-    """Returns the WeaponInfo instance from the given identifier."""
+    """Return the WeaponInfo instance from the given identifier."""
 
     # Get the WeaponInfo instance...
     weapon_info = _get_weapon_info(weapon_id)
 
-    # Was the given identifier not valid?
-    if weapon_info == NULL:
+    # Was the given identifier valid?
+    if weapon_info:
 
-        # Raise an error...
-        raise ValueError('"{0}" is not a valid identifier.'.format(weapon_id))
+        # If so, return the retrieved WeaponInfo instance...
+        return weapon_info
 
-    # Return the WeaponInfo instance...
-    return weapon_info
+    # The given identifier was not valid so raise an error...
+    raise ValueError('"{0}" is not a valid identifier.'.format(weapon_id))

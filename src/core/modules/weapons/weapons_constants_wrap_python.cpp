@@ -53,12 +53,8 @@ DECLARE_SP_SUBMODULE(_weapons, _constants)
 {
 	export_item_flags(_constants);
 	export_weapon_sound(_constants);
-	export_weapon_id(_constants);
-	export_weapon_slot(_constants);
 	export_weapon_states(_constants);
 	export_weapon_proficiency(_constants);
-	export_muzzle_flash_styles(_constants);
-	export_weapon_types(_constants);
 }
 
 

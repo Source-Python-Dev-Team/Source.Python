@@ -9,6 +9,12 @@
 #   Enum
 from enum import IntEnum
 
+# Source.Python Imports
+#   Core
+from core import GameConfigObj
+#   Paths
+from paths import SP_DATA_PATH
+
 
 # =============================================================================
 # >> FORWARD IMPORTS
@@ -23,15 +29,11 @@ from _weapons._constants import ITEM_FLAG_EXHAUSTIBLE
 from _weapons._constants import ITEM_FLAG_DOHITLOCATIONDMG
 from _weapons._constants import ITEM_FLAG_NOAMMOPICKUPS
 from _weapons._constants import ITEM_FLAG_NOITEMPICKUP
-from _weapons._constants import MuzzleFlashStyle
 from _weapons._constants import WEAPON_NOT_CARRIED
 from _weapons._constants import WEAPON_IS_CARRIED_BY_PLAYER
 from _weapons._constants import WEAPON_IS_ACTIVE
 from _weapons._constants import WeaponProficiency
-from _weapons._constants import WeaponID
-from _weapons._constants import WeaponSlot
 from _weapons._constants import WeaponSound
-from _weapons._constants import WeaponType
 
 
 # =============================================================================
@@ -46,6 +48,28 @@ __all__ = ('ItemFlags',
            'WeaponState',
            'WeaponType',
            )
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get the base path...
+_path = SP_DATA_PATH.joinpath('weapons', 'constants')
+
+# Get the MuzzleFlashStyle enumerator...
+MuzzleFlashStyle = IntEnum('MuzzleFlashStyle', GameConfigObj(_path.joinpath(
+    'MuzzleFlashStyle.ini')))
+
+# Get the WeaponID enumerator...
+WeaponID = IntEnum('WeaponID', GameConfigObj(_path.joinpath('WeaponID.ini')))
+
+# Get the WeaponType enumerator...
+WeaponType = IntEnum('WeaponType', GameConfigObj(_path.joinpath(
+    'WeaponType.ini')))
+
+# Get the WeaponSlot enumerator...
+WeaponSlot = IntEnum('WeaponSlot', GameConfigObj(_path.joinpath(
+    'WeaponSlot.ini')))
 
 
 # =============================================================================

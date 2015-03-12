@@ -102,7 +102,7 @@ def dump_weapon_scripts(filename):
     with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
 
         # Loop through all weapon identifiers...
-        for weapon_id in WeaponID.values:
+        for weapon_id in list(WeaponID):
 
             # Ignore invalid identifier suppressing ValueError...
             with suppress(ValueError):
