@@ -5,6 +5,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Contexts
+from contextlib import suppress
+
 # Source.Python Imports
 #   Core
 from core import GameConfigObj
@@ -14,6 +18,7 @@ from paths import SP_DATA_PATH
 from memory.manager import manager
 #   Weapons
 from weapons.constants import MuzzleFlashStyle
+from weapons.constants import WeaponID
 from weapons.constants import WeaponSlot
 from weapons.constants import WeaponType
 
@@ -60,6 +65,28 @@ class WeaponInfo(_WeaponInfo):
     def weapon_type(self):
         '''Return the weapon type index as a WeaponType instance.'''
         return WeaponType(self.weapon_type_index)
+
+    @property
+    def weapon_id(self):
+        '''Return the WeaponID matching the instance class name.'''
+
+        # Loop through all WeaponID values...
+        for weapon_id in list(WeaponID):
+
+            # Skip invalid identifiers suppressing ValueError...
+            with suppress(ValueError):
+
+                # Is the class names not matching?
+                if self.class_name != get_weapon_info(weapon_id).class_name:
+
+                    # If so, skip the current identifier...
+                    continue
+
+                # We found a match! Return the current identifier...
+                return weapon_id
+
+        # Unfortunately, we didn't find any match...
+        return WeaponID.NONE
 
 # Override the original class with our extension...
 manager['WeaponInfo'] = WeaponInfo
