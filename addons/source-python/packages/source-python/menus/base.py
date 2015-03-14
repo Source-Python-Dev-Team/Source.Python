@@ -228,13 +228,17 @@ class _MenuData(object):
     All data types should inherit from this class.
     """
 
-    def __init__(self, text):
+    def __init__(self, text, **kwargs):
         """Initialize the instance.
 
         @param <text>:
         The text that should be displayed.
+
+        @param <kwars>:
+        Keyword arguments passed to the _translate_text function.
         """
         self.text = text
+        self.kwargs = kwargs
 
     def _render(self, player_index, choice_index=None):
         """Render the data.
@@ -317,14 +321,18 @@ class Text(_MenuData):
         The number should be required to select this item. It depends on the
         menu type if this parameter gets passed.
         """
-        return str(_translate_text(self.text, player_index)) + '\n'
+        return '{0}\n'.format(
+            _translate_text(self.text, player_index, **self.kwargs)
+        )
 
 
 class _BaseOption(_MenuData):
 
     """This class is used to display an enumerated option."""
 
-    def __init__(self, text, value=None, highlight=True, selectable=True):
+    def __init__(
+            self, text, value=None, highlight=True,
+            selectable=True, **kwargs):
         """Initialize the option.
 
         @param <text>:
@@ -338,8 +346,11 @@ class _BaseOption(_MenuData):
 
         @param <selectable>:
         Set this to True if the option should be selectable.
+
+        @param <kwars>:
+        Keyword arguments passed to the _translate_text function.
         """
-        super(_BaseOption, self).__init__(text)
+        super(_BaseOption, self).__init__(text, **kwargs)
         self.value = value
         self.highlight = highlight
         self.selectable = selectable
@@ -360,13 +371,13 @@ class _BaseOption(_MenuData):
 # =============================================================================
 # >> HELPER FUNCTIONS
 # =============================================================================
-def _translate_text(text, player_index):
+def _translate_text(text, player_index, **kwargs):
     """Translate <text> if it is an instance of TranslationStrings.
 
     Otherwise the original text will be returned.
     """
     if isinstance(text, TranslationStrings):
-        return text.get_string(get_client_language(player_index))
+        return text.get_string(get_client_language(player_index), **kwargs)
 
     return text
 
