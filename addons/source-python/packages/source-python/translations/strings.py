@@ -216,6 +216,12 @@ class LangStrings(dict):
         # Return the replaced string
         return given_string
 
+    def get_strings(self, key, **tokens):
+        """Return a TranslationStrings object with updated tokens."""
+        strings = self[key]
+        strings.tokens.update(tokens)
+        return strings
+
 
 class TranslationStrings(dict):
 
