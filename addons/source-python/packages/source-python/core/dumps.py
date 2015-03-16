@@ -24,8 +24,7 @@ from paths import LOG_PATH
 #   Stringtables
 from stringtables import string_tables
 #   Weapons
-from weapons.constants import WeaponID
-from weapons.scripts import get_weapon_info
+from weapons.scripts import weapon_scripts
 
 
 # =============================================================================
@@ -101,47 +100,42 @@ def dump_weapon_scripts(filename):
     # Open/close the file
     with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
 
-        # Loop through all weapon identifiers...
-        for weapon_id in list(WeaponID):
+        # Loop through all WeaponInfo instances...
+        for info in weapon_scripts:
 
-            # Ignore invalid identifier suppressing ValueError...
-            with suppress(ValueError):
+            # Is the current script not parsed yet?
+            if not info.is_script_parsed:
 
-                # Get the WeaponInfo instance from the current identifier...
-                weapon_info = get_weapon_info(weapon_id)
+                # If so, skip the current weapon...
+                continue
 
-                # Is the current instance not parsed yet?
-                if not weapon_info.is_script_parsed:
+            # Write the current weapon class name...
+            open_file.write('{0}\n'.format('=' * 80))
+            open_file.write('{0}\n'.format(info.class_name))
+            open_file.write('{0}\n'.format('=' * 80))
 
-                    # If so, skip the current weapon...
+            # Loop through all WeaponInfo's attributes...
+            for attr in dir(info):
+
+                # Is the current attribute private or inherited from
+                #   Pointer?
+                if attr.startswith('_') or hasattr(Pointer, attr):
+
+                    # If so, skip it...
                     continue
 
-                # Write the current weapon class name...
-                open_file.write('{0} (ID: {1})\n'.format(
-                    weapon_info.class_name, weapon_id))
+                # Get the current attribute value...
+                value = getattr(info, attr)
 
-                # Loop through all WeaponInfo's attributes...
-                for attr in dir(weapon_info):
+                # Is the current attribute a method or inehrited from Pointer?
+                if ismethod(value) or isinstance(value, (MemberFunction,
+                    Pointer)):
 
-                    # Is the current attribute private or inherited from
-                    #   Pointer?
-                    if attr.startswith('_') or hasattr(Pointer, attr):
+                    # If so, skip it...
+                    continue
 
-                        # If so, skip it...
-                        continue
-
-                    # Get the current attribute value...
-                    value = getattr(weapon_info, attr)
-
-                    # Is the current attribute a method?
-                    if ismethod(value) or isinstance(value, (MemberFunction,
-                        Pointer)):
-
-                        # If so, skip it...
-                        continue
-
-                    # Write the current attribute...
-                    open_file.write('\t{0} = {1}\n'.format(attr, value))
+                # Write the current attribute...
+                open_file.write('{0} = {1}\n'.format(attr, value))
 
 
 # =============================================================================

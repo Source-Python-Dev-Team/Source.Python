@@ -351,10 +351,12 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_WEAPONS_MODULE_HEADERS
     core/modules/weapons/${SOURCE_ENGINE}/weapons_constants_wrap_python.h
+    core/modules/weapons/${SOURCE_ENGINE}/weapons_scripts_wrap_python.h
 )
 
 Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
     core/modules/weapons/weapons_constants_wrap_python.cpp
+    core/modules/weapons/weapons_scrits_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
