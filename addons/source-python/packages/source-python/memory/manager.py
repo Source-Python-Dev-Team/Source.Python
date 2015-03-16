@@ -293,8 +293,8 @@ class TypeManager(dict):
 
     def create_type_from_file(self, type_name, f, bases=(CustomType,)):
         """Create and registers a new type from a file or URL."""
-        return self.create_type_from_dict(type_name, ConfigObj(f,
-            file_error=True), bases)
+        return self.create_type_from_dict(
+            type_name, ConfigObj(f, file_error=True), bases)
 
     def create_type_from_dict(self, type_name, raw_data, bases=(CustomType,)):
         """Create and registers a new type from a dictionary."""

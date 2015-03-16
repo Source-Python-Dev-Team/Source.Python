@@ -8,27 +8,18 @@
 # Source.Python Imports
 #   Core
 from core import GameConfigObj
-#   ConVars
-from cvars import cvar
-#   Engines
-from engines.server import engine_server
 #   Paths
 from paths import SP_DATA_PATH
 #   Memory
 from memory import make_object
-from memory.hooks import PostHook
 from memory.manager import manager
-#   Weapons
-from weapons.constants import MuzzleFlashStyle
-from weapons.constants import WeaponSlot
-from weapons.constants import WeaponType
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('weapon_scripts',
-           'WeaponInfo'
+__all__ = ('WeaponInfo',
+           'weapon_scripts',
            )
 
 
@@ -36,9 +27,8 @@ __all__ = ('weapon_scripts',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the WeaponInfo class...
-WeaponInfo = manager.create_type_from_dict('WeaponInfo',
-    GameConfigObj(SP_DATA_PATH.joinpath('weapons', 'scripts',
-    'WeaponInfo.ini')))
+WeaponInfo = manager.create_type_from_dict('WeaponInfo', GameConfigObj(
+    SP_DATA_PATH.joinpath('weapons', 'scripts', 'WeaponInfo.ini')))
 
 # Get the _WeaponDatabase class...
 try:
@@ -47,9 +37,9 @@ try:
     # Make sure the manager is able to find us...
     manager['_WeaponDatabase'] = _WeaponDatabase
 except ImportError:
-    _WeaponDatabase = manager.create_type_from_dict('_WeaponDatabase',
-        GameConfigObj(SP_DATA_PATH.joinpath('weapons', 'scripts').joinpath(
-        'WeaponDatabase.ini')))
+    _WeaponDatabase = manager.create_type_from_dict(
+        '_WeaponDatabase', GameConfigObj(SP_DATA_PATH.joinpath(
+            'weapons', 'scripts').joinpath('WeaponDatabase.ini')))
 
 # Get the global _WeaponDatabase pointer...
 manager.create_global_pointers_from_file(GameConfigObj(
@@ -61,6 +51,7 @@ _weapon_scripts = manager.get_global_pointer('_WeaponDatabase')
 # >> CLASSES
 # =============================================================================
 class WeaponDatabase(object):
+
     """WeaponDatabase accessor class."""
 
     def __len__(self):
@@ -69,7 +60,6 @@ class WeaponDatabase(object):
 
     def __getitem__(self, item):
         """Return the WeaponInfo instance matching the given class name."""
-
         # Loop through all WeaponInfo instances...
         for info in self:
 
@@ -87,7 +77,6 @@ class WeaponDatabase(object):
 
     def __iter__(self):
         """Iterate over all WeaponInfo instances."""
-
         # Loop through all indexes...
         for index in range(_weapon_scripts._length):
 

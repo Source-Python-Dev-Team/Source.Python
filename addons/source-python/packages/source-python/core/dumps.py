@@ -6,8 +6,6 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   Contexts
-from contextlib import suppress
 #   Inspect
 from inspect import ismethod
 
@@ -128,8 +126,8 @@ def dump_weapon_scripts(filename):
                 value = getattr(info, attr)
 
                 # Is the current attribute a method or inehrited from Pointer?
-                if ismethod(value) or isinstance(value, (MemberFunction,
-                    Pointer)):
+                if ismethod(value) or isinstance(
+                        value, (MemberFunction, Pointer)):
 
                     # If so, skip it...
                     continue

@@ -32,7 +32,7 @@ class _BaseCommandManager(dict):
             names = [names]
 
         # Are the names of a proper iterable type?
-        if type(names) not in (list, tuple):
+        if not isinstance(names, (list, tuple)):
 
             # Raise an error
             raise TypeError(
@@ -79,7 +79,7 @@ class _BaseCommandManager(dict):
             names = [names]
 
         # Are the names of a proper iterable type?
-        if type(names) not in (list, tuple):
+        if not isinstance(names, (list, tuple)):
 
             # Raise an error
             raise TypeError(

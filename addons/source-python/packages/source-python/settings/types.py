@@ -50,7 +50,7 @@ class _SettingsType(object):
                 'Given name "{0}" is not valid'.format(name))
 
         # Is the given default value of the correct type?
-        if type(default) != cls._type:
+        if not isinstance(default, cls._type):
 
             # Raise an error
             raise ValueError(

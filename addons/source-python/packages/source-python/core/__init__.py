@@ -98,12 +98,11 @@ class AutoUnload(object):
 
 
 class GameConfigObj(ConfigObj):
+
     """Class used to parse specific game data."""
 
     def __init__(self, infile, *args, **kwargs):
-        """Helper class that parse the given file and merge the current engine
-            specific file then the current game specific file to it."""
-
+        """Helper class that merges the given file with engine/game files."""
         # Get the file directory/name...
         path, name = Path(infile).splitpath()
 
