@@ -356,7 +356,7 @@ Set(SOURCEPYTHON_WEAPONS_MODULE_HEADERS
 
 Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
     core/modules/weapons/weapons_constants_wrap_python.cpp
-    core/modules/weapons/weapons_scrits_wrap_python.cpp
+    core/modules/weapons/weapons_scripts_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
