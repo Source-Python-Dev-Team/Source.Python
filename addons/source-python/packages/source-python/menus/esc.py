@@ -90,6 +90,12 @@ class SimpleESCMenu(_BaseMenu):
         data.set_string(
             'msg', _translate_text(self.description or '', player_index))
 
+        if self.title is not None:
+            data.set_string(
+                'title', _translate_text(self.title, player_index))
+
+        data.set_color('color', self.title_color)
+
         page = self._player_pages[player_index]
         page.options = {}
 
@@ -210,7 +216,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         # Create the page info string
         info = '[{0}/{1}]'.format(page.index + 1, self.page_count)
 
-        if self.title:
+        if self.title is not None:
             data.set_string('title', '{0} {1}'.format(
                 _translate_text(self.title, player_index), info))
         else:
