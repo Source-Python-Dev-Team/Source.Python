@@ -94,6 +94,11 @@ class _PrecacheBase(AutoUnload):
             '"{0}" was not able to be precached due to the "{1}" table reac' \
             'hing its limit.'.format(self._path, self._precache_table))
 
+    @property
+    def path(self):
+        """Return the path."""
+        return self._path
+
     def _precache(self):
         """Precache the path."""
         self._precache_method(self._path)
