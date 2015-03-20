@@ -12,10 +12,6 @@ from contextlib import suppress
 from inspect import getmodule
 from inspect import stack
 
-# Site-Package Imports
-#   Path
-from path import Path
-
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -47,7 +43,7 @@ class PrecacheError(Exception):
     """Object was not able to be precached due to limit being reached."""
 
 
-class _PrecacheBase(Path, AutoUnload):
+class _PrecacheBase(AutoUnload):
 
     """Base precache class used to interact with a specific object."""
 
@@ -57,8 +53,8 @@ class _PrecacheBase(Path, AutoUnload):
 
     def __init__(self, path, download=False):
         """Add the file to downloadables if download is True."""
-        # Call Path's __init__ with the given path
-        super(_PrecacheBase, self).__init__(path)
+        # Save the path that should be precached
+        self._path = path
 
         # Get the calling module
         caller = getmodule(stack()[1][0])
@@ -69,7 +65,7 @@ class _PrecacheBase(Path, AutoUnload):
         # Is the map loaded?
         if global_vars.map_name:
             # Precache the instance
-            self._precache_method(self)
+            self._precache()
 
         # Register the server_spawn event to precache every map change
         event_registry.register_for_event('server_spawn', self._server_spawn)
@@ -79,13 +75,13 @@ class _PrecacheBase(Path, AutoUnload):
 
             # Add the path to the downloadables
             self._downloads = Downloadables()
-            self._downloads.add(self)
+            self._downloads.add(self._path)
 
     @property
     def index(self):
         """Return the precached index of the object."""
         # Get the index of the object in its precache table
-        index = string_tables[self._precache_table][self]
+        index = string_tables[self._precache_table][self._path]
 
         # Is the object precached?
         if index != INVALID_STRING_INDEX:
@@ -95,12 +91,16 @@ class _PrecacheBase(Path, AutoUnload):
 
         # If the object was not precached, raise an error
         raise PrecacheError(
-            '{0} was not able to be precached due to the '.format(self) +
-            '{0} table reaching its limit.'.format(self._precache_table))
+            '"{0}" was not able to be precached due to the "{1}" table reac' \
+            'hing its limit.'.format(self._path, self._precache_table))
+
+    def _precache(self):
+        """Precache the path."""
+        self._precache_method(self._path)
 
     def _server_spawn(self, game_event):
         """Precache the object on map change."""
-        self._precache_method(self)
+        self._precache()
 
     def _unload_instance(self):
         """Remove from the downloads list and unregister server_spawn."""
@@ -110,6 +110,17 @@ class _PrecacheBase(Path, AutoUnload):
 
         # Unregister the server_spawn event
         event_registry.unregister_for_event('server_spawn', self._server_spawn)
+
+    @property
+    def _precache_table(self):
+        """Should define the name of the precache table."""
+        raise NotImplementedError
+
+    @property
+    def _precache_method(self):
+        """Should define the method that should be used to precache the
+        path."""
+        raise NotImplementedError
 
 
 class Decal(_PrecacheBase):
