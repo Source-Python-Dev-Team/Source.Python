@@ -46,7 +46,7 @@
 class DataMapSharedExt
 {
 public:
-	static typedescription_t __getitem__(datamap_t pDataMap, int iIndex)
+	static typedescription_t __getitem__(const datamap_t& pDataMap, int iIndex)
 	{
 		if (iIndex < 0 || iIndex > (pDataMap.dataNumFields - 1))
 		{
@@ -89,7 +89,7 @@ public:
 class TypeDescriptionSharedExt
 {
 public:
-	static CPointer *get_input(typedescription_t pTypeDesc)
+	static CPointer *get_input(const typedescription_t& pTypeDesc)
 	{
 		if (pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE)
 		{
@@ -189,7 +189,7 @@ public:
 		return pInputData;
 	}
 	
-	static int get_activator(inputdata_t pInputData)
+	static int get_activator(const inputdata_t& pInputData)
 	{
 		if (pInputData.pActivator)
 		{
@@ -204,7 +204,7 @@ public:
 		pInputData->pActivator = (CBaseEntity *)PointerFromIndex(uiActivator)->m_ulAddr;
 	}
 	
-	static int get_caller(inputdata_t pInputData)
+	static int get_caller(const inputdata_t& pInputData)
 	{
 		if (pInputData.pCaller)
 		{
