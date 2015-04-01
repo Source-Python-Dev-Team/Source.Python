@@ -78,21 +78,35 @@ class SubCommandManager(AutoUnload, OrderedDict):
         # Set the instance class for the manager class
         self.manager.instance = self.instance
 
-        # Does the class have a logger assigned?
-        if not hasattr(self, 'logger'):
-
-            # If not, assign the base logger
-            self.logger = plugins_command_logger
-
-        # Does the object have a translations value set?
-        if not hasattr(self, 'translations'):
-
-            # If not, set the default translations
-            self.translations = _plugin_strings
-
         # Register the server command
         server_command_manager.register_commands(
             self.command, self.call_command, description, 0)
+
+    @property
+    def manager(self):
+        """Raise an error if the inheriting class does not have their own."""
+        raise NotImplementedError('No manager attribute defined for class.')
+
+    @property
+    def instance(self):
+        """Raise an error if the inheriting class does not have their own."""
+        raise NotImplementedError('No instance attribute defined for class.')
+
+    @property
+    def logger(self):
+        """Return the logger to be used for the class.
+
+        By default, use the local logger.
+        """
+        return plugins_command_logger
+
+    @property
+    def translations(self):
+        """Return the translations instance to use for the class.
+
+        By default, use the local translations.
+        """
+        return _plugin_strings
 
     @property
     def command(self):
@@ -144,7 +158,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
                 # Print a message about the invalid sub-command
                 message = self.prefix + self.translations[
-                    'Invalid Command'].get_string(subcommand=command)
+                    'Invalid Command'].get_string(subcommand=sub_command)
 
             # Was no sub-command given?
             else:
