@@ -91,8 +91,8 @@ class _PrecacheBase(AutoUnload):
 
         # If the object was not precached, raise an error
         raise PrecacheError(
-            '"{0}" was not able to be precached due to the "{1}" table reac' \
-            'hing its limit.'.format(self._path, self._precache_table))
+            '"{0}" was not able to be precached due to the "{1}" table ' +
+            'reaching its limit.'.format(self._path, self._precache_table))
 
     @property
     def path(self):
@@ -119,13 +119,12 @@ class _PrecacheBase(AutoUnload):
     @property
     def _precache_table(self):
         """Should define the name of the precache table."""
-        raise NotImplementedError
+        raise NotImplementedError('No _precache_table defined for class.')
 
     @property
     def _precache_method(self):
-        """Should define the method that should be used to precache the
-        path."""
-        raise NotImplementedError
+        """Should define the method to be used to precache the path."""
+        raise NotImplementedError('No _precache_method defined for class.')
 
 
 class Decal(_PrecacheBase):
