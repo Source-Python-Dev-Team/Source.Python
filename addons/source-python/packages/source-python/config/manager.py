@@ -48,7 +48,8 @@ class ConfigManager(object):
 
     """Config Management class used to create a config file."""
 
-    def __init__(self, filepath, indention=3, max_line_length=79):
+    def __init__(
+            self, filepath, cvar_prefix='', indention=3, max_line_length=79):
         """Called on instantiation."""
         # Does the filepath contain the extension?
         if filepath.endswith('.cfg'):
@@ -58,6 +59,7 @@ class ConfigManager(object):
 
         # Store the primary attributes
         self._filepath = filepath
+        self._cvar_prefix = cvar_prefix
         self._indention = indention
         self._max_line_length = max_line_length
 
@@ -82,6 +84,11 @@ class ConfigManager(object):
         return self._filepath
 
     @property
+    def cvar_prefix(self):
+        """Return the convar prefix for the config file."""
+        return self._cvar_prefix
+
+    @property
     def indention(self):
         """Return the indention value for the config file."""
         return self._indention
@@ -100,6 +107,9 @@ class ConfigManager(object):
             self, name, default=0, flags=0,
             description='', min_value=None, max_value=None):
         """Add/return a cvar instance to add to the config file."""
+        # Add the stored prefix to the given name...
+        name = self.cvar_prefix + name
+
         # Get the _CvarManager instance for the given arguments
         section = _CvarManager(
             name, default, flags, description, min_value, max_value)
