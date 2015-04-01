@@ -10,6 +10,9 @@
 from inspect import ismethod
 
 # Source.Python Imports
+#   Cvars
+from cvars import cvar
+from cvars.flags import ConVarFlags
 #   Engines
 from engines.server import server_game_dll
 #   Entities
@@ -28,15 +31,75 @@ from weapons.scripts import weapon_scripts
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('dump_server_classes',
+__all__ = ('dump_convars',
+           'dump_server_classes',
            'dump_string_tables',
            'dump_weapon_scripts',
            )
 
 
 # =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+_convar_types = {
+    True: 'CMD',
+    False: 'VAR',
+}
+
+
+# =============================================================================
 # >> DUMP FUNCTIONS
 # =============================================================================
+def dump_convars(filename):
+    """Dump all convars to the given filename."""
+    # Create a dictionary to store the convars
+    convars = dict()
+
+    # Get the first convar
+    convar = cvar.get_commands()
+
+    # Loop through all convars
+    while convar is not None:
+
+        # Store the convar in the dictionary
+        convars[convar.get_name()] = convar
+
+        # Move to the next convar
+        convar = convar.get_next()
+
+    # Get the number of commands
+    command_count = len([
+        convar_name for convar_name in convars
+        if convars[convar_name].is_command()])
+
+    # Open/close the file
+    with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
+
+        # Write the header
+        open_file.write(
+            'Commands: {0} - Variables: {1} - Total: {2}\n\n'.format(
+                command_count, len(convars) - command_count, len(convars)))
+
+        # Loop through all convars in alphabetic order
+        for convar_name, convar in sorted(convars.items()):
+
+            # Get the type (CMD/VAR) of convar
+            convar_type = _convar_types[convars[convar_name].is_command()]
+
+            # Get the convar's flags
+            convar_flags = [
+                flag.name for flag in ConVarFlags if flag & convar.get_flags()]
+
+            # Get the convar's help text
+            convar_text = convar.get_help_text()
+
+            # Write the convar with its values to file
+            open_file.write('{0} - {1}{2}\n{3}\n\n'.format(
+                convar_name, convar_type,
+                ' - (' + ','.join(convar_flags) + ')' if convar_flags else '',
+                '\t' + convar_text if convar_text else ''))
+
+
 def dump_server_classes(filename):
     """Dump all server class send properties to the given filename."""
     # Open/close the file
