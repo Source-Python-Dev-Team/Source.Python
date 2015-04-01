@@ -1,6 +1,6 @@
 # ../core/command.py
 
-"""Registers the "sp" command and all of its sub-commands."""
+"""Registers the "sp" server command and all of its sub-commands."""
 
 # =============================================================================
 # >> IMPORTS

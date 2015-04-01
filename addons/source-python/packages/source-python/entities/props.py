@@ -1,6 +1,6 @@
 # ../entities/props.py
 
-"""Provides basic interaction with basic internal types."""
+"""Provides access to entity network properties."""
 
 # =============================================================================
 # >> IMPORTS
