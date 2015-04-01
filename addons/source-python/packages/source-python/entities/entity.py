@@ -99,9 +99,15 @@ class BaseEntity(_EntitySpecials):
                 # No need to go further
                 return
 
-            # If not a property, do not allow the private attribute
-            raise ValueError(
-                'Invalid private attribute "{0}" given.'.format(attr))
+        # Is the given attribute a property?
+        if (attr in super(BaseEntity, self).__dir__() and isinstance(
+                getattr(self.__class__, attr), property)):
+
+            # Set the property's value
+            super(BaseEntity, self).__setattr__(attr, value)
+
+            # No need to go further
+            return
 
         # Loop through all of the entity's server classes
         for server_class in self.server_classes:
