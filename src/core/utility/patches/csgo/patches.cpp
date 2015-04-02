@@ -33,3 +33,8 @@
 #ifndef PATCH_SEND_USER_MESSAGE
 #error "Make IVEngineServer::SendUserMessage pure virtual"
 #endif
+
+#include "utility/baseentity.h"
+#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
+#error "We need the CNetworkHandle definition..."
+#endif
