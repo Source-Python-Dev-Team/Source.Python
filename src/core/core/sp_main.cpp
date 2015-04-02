@@ -228,11 +228,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 //-----------------------------------------------------------------------------
 void CSourcePython::Unload( void )
 {
-	if (m_pEntList)
-	{
-		m_pEntList->RemoveListenerEntity(this);
-	}
-	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
 	ClearAllCommands();
 	ConVar_Unregister( );
 
@@ -434,27 +429,4 @@ void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
 	g_AddonManager.OnEntityDeleted(pEntity);
-}
-
-
-void CGlobalEntityList::AddListenerEntity( IEntityListener *pListener )
-{
-    m_entityListeners.AddToTail( pListener );
-}
-
-void CGlobalEntityList::RemoveListenerEntity( IEntityListener *pListener )
-{
-    m_entityListeners.FindAndRemove( pListener );
-}
-
-void CSourcePython::InitializeEntitiesListeners(CPointer* pEntList)
-{
-	if (m_pEntList)
-	{
-		PythonLog(0, "Entities listener is already initialized.");
-		return;
-	}
-
-	m_pEntList = (CGlobalEntityList*) pEntList->m_ulAddr;
-	m_pEntList->AddListenerEntity(this);
 }

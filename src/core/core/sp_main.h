@@ -34,8 +34,6 @@
 #include "modules/memory/memory_tools.h"
 
 #include "utility/baseentity.h"
-#include "game/server/baseanimating.h"
-#include "game/shared/gamerules.h"
 #include "game/shared/entitylist_base.h"
 #include "game/server/entitylist.h"
 
@@ -106,7 +104,6 @@ public:
 
 private:
 	int m_iClientCommandIndex;
-	CGlobalEntityList* m_pEntList;
 };
 
 

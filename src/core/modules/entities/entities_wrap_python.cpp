@@ -28,14 +28,16 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "edict.h"
+#include "utility/baseentity.h"
+#include "game/shared/entitylist_base.h"
+#include "game/server/entitylist.h"
 
 #include "entities_generator_wrap.h"
 #include "entities_wrap.h"
 #include "utility/sp_util.h"
+#include "modules/memory/memory_tools.h"
 #include "modules/export_main.h"
 using namespace boost::python;
-
-#include "modules/memory/memory_tools.h"
 
 #include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
 
@@ -51,6 +53,7 @@ void export_server_networkable();
 void export_edict();
 void export_entity_generator();
 void export_take_damage_info();
+void export_global_entity_list();
 
 
 //-----------------------------------------------------------------------------
@@ -66,6 +69,7 @@ DECLARE_SP_MODULE(_entities)
 	export_edict();
 	export_entity_generator();
 	export_take_damage_info();
+	export_global_entity_list();
 }
 
 
@@ -523,4 +527,32 @@ void export_take_damage_info()
 	
 	// Add memory tools...
 	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
+}
+
+//-----------------------------------------------------------------------------
+// Expose CGlobalEntityList.
+//-----------------------------------------------------------------------------
+void CGlobalEntityList::AddListenerEntity( IEntityListener *pListener )
+{
+    m_entityListeners.AddToTail( pListener );
+}
+
+void CGlobalEntityList::RemoveListenerEntity( IEntityListener *pListener )
+{
+    m_entityListeners.FindAndRemove( pListener );
+}
+
+void export_global_entity_list()
+{
+	class_<CGlobalEntityList, boost::noncopyable>("GlobalEntityList", no_init)
+		.def("add_entity_listener",
+			&CGlobalEntityList::AddListenerEntity
+		)
+
+		.def("remove_entity_listener",
+			&CGlobalEntityList::AddListenerEntity
+		)
+
+		ADD_MEM_TOOLS(CGlobalEntityList, "GlobalEntityList");
+	;
 }

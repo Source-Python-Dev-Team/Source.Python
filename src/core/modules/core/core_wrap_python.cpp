@@ -29,14 +29,8 @@
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
 #include "core/sp_main.h"
-#include "modules/memory/memory_tools.h"
 
 extern CSourcePython g_SourcePythonPlugin;
-
-void InitilizeEntitiesListeners(CPointer* pEntList)
-{
-	g_SourcePythonPlugin.InitializeEntitiesListeners(pEntList);
-}
 
 
 //-----------------------------------------------------------------------------
@@ -48,7 +42,9 @@ DECLARE_SP_MODULE(_core)
 	_core.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
 	_core.attr("SOURCE_ENGINE_BRANCH") = XSTRINGIFY(SOURCE_ENGINE_BRANCH);
 
-	def("initialize_entities_listeners",
-		&InitilizeEntitiesListeners
-	);
+	// IServerPluginCallbacks, public IGameEventListener2, public IEntityListener
+	class_<IEntityListener>("EntityListener");
+	class_<CSourcePython, bases<IEntityListener>, boost::noncopyable>("SourcePython", no_init);
+
+	_core.attr("_sp_plugin") = boost::ref(g_SourcePythonPlugin);
 }
