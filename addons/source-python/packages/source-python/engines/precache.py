@@ -91,7 +91,7 @@ class _PrecacheBase(AutoUnload):
 
         # If the object was not precached, raise an error
         raise PrecacheError(
-            '"{0}" was not able to be precached due to the "{1}" table ' +
+            '"{0}" was not able to be precached due to the "{1}" table '
             'reaching its limit.'.format(self._path, self._precache_table))
 
     @property
