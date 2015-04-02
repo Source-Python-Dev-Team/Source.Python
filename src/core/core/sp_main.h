@@ -33,20 +33,17 @@
 #include "igameevents.h"
 #include "modules/memory/memory_tools.h"
 
+#include "utility/baseentity.h"
+#include "game/server/baseanimating.h"
+#include "game/shared/gamerules.h"
+#include "game/shared/entitylist_base.h"
+#include "game/server/entitylist.h"
 
 //---------------------------------------------------------------------------------
 // Definitions
 //---------------------------------------------------------------------------------
 #define MSG_PREFIX "[Source.Python] "
 
-
-class IEntityListener
-{
-public:
-	virtual void OnEntityCreated( CBaseEntity *pEntity ) {};
-	virtual void OnEntitySpawned( CBaseEntity *pEntity ) {};
-	virtual void OnEntityDeleted( CBaseEntity *pEntity ) {};
-};
 
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
@@ -109,7 +106,7 @@ public:
 
 private:
 	int m_iClientCommandIndex;
-	CUtlVector<IEntityListener *>* m_pEntityListeners;
+	CGlobalEntityList* m_pEntList;
 };
 
 

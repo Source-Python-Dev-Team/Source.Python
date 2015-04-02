@@ -33,9 +33,9 @@
 
 extern CSourcePython g_SourcePythonPlugin;
 
-void InitilizeEntitiesListeners(CPointer* pEntitiesListeners)
+void InitilizeEntitiesListeners(CPointer* pEntList)
 {
-	g_SourcePythonPlugin.InitializeEntitiesListeners(pEntitiesListeners);
+	g_SourcePythonPlugin.InitializeEntitiesListeners(pEntList);
 }
 
 
