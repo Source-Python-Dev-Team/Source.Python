@@ -28,6 +28,15 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
+#include "core/sp_main.h"
+#include "modules/memory/memory_tools.h"
+
+extern CSourcePython g_SourcePythonPlugin;
+
+void InitilizeEntitiesListeners(CPointer* pEntitiesListeners)
+{
+	g_SourcePythonPlugin.InitializeEntitiesListeners(pEntitiesListeners);
+}
 
 
 //-----------------------------------------------------------------------------
@@ -38,4 +47,8 @@ DECLARE_SP_MODULE(_core)
 	// Constants...
 	_core.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
 	_core.attr("SOURCE_ENGINE_BRANCH") = XSTRINGIFY(SOURCE_ENGINE_BRANCH);
+
+	def("initialize_entities_listeners",
+		&InitilizeEntitiesListeners
+	);
 }

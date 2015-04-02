@@ -47,6 +47,9 @@ DEFINE_MANAGER_ACCESSOR(OnEdictFreed)
 DEFINE_MANAGER_ACCESSOR(OnQueryCvarValueFinished)
 DEFINE_MANAGER_ACCESSOR(ServerActivate)
 DEFINE_MANAGER_ACCESSOR(Tick)
+DEFINE_MANAGER_ACCESSOR(OnEntityCreated)
+DEFINE_MANAGER_ACCESSOR(OnEntitySpawned)
+DEFINE_MANAGER_ACCESSOR(OnEntityDeleted)
 
 //-----------------------------------------------------------------------------
 // Exposes the listener_c module.
@@ -105,4 +108,8 @@ void export_listener_managers()
 	scope().attr("server_activate_listener_manager") = object(ptr(GetServerActivateListenerManager()));
 
 	scope().attr("tick_listener_manager") = object(ptr(GetTickListenerManager()));
+	
+	scope().attr("on_entity_created_listener_manager") = object(ptr(GetOnEntityCreatedListenerManager()));
+	scope().attr("on_entity_spawned_listener_manager") = object(ptr(GetOnEntitySpawnedListenerManager()));
+	scope().attr("on_entity_deleted_listener_manager") = object(ptr(GetOnEntityDeletedListenerManager()));
 }

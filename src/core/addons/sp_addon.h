@@ -61,6 +61,10 @@ class CAddonManager
 		void OnEdictAllocated( edict_t *edict );
 		void OnEdictFreed( const edict_t *edict );
 #endif
+
+		void OnEntityCreated( CBaseEntity *pEntity );
+		void OnEntitySpawned( CBaseEntity *pEntity );
+		void OnEntityDeleted( CBaseEntity *pEntity );
 };
 
 //---------------------------------------------------------------------------------

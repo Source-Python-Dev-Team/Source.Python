@@ -174,6 +174,24 @@ void CAddonManager::OnEdictAllocated( edict_t *edict )
 
 void CAddonManager::OnEdictFreed( const edict_t *edict )
 {
-	CALL_LISTENERS(OnEdictFreed, edict);
+	CALL_LISTENERS(OnEdictFreed, ptr(edict));
 }
 #endif
+
+void CAddonManager::OnEntityCreated( CBaseEntity *pEntity )
+{
+	CPointer ptr = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntityCreated, IndexFromPointer(&ptr));
+}
+
+void CAddonManager::OnEntitySpawned( CBaseEntity *pEntity )
+{
+	CPointer ptr = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntitySpawned, IndexFromPointer(&ptr));
+}
+
+void CAddonManager::OnEntityDeleted( CBaseEntity *pEntity )
+{
+	CPointer ptr = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntityDeleted, IndexFromPointer(&ptr));
+}

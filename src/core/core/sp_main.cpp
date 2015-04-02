@@ -228,6 +228,10 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 //-----------------------------------------------------------------------------
 void CSourcePython::Unload( void )
 {
+	if (m_pEntityListeners)
+	{
+		m_pEntityListeners->FindAndRemove(this);
+	}
 	gameeventmanager->RemoveListener( this ); // make sure we are unloaded from the event system
 	ClearAllCommands();
 	ConVar_Unregister( );
@@ -416,3 +420,24 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 	g_AddonManager.OnEdictFreed(edict);
 }
 #endif
+
+void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
+{
+	g_AddonManager.OnEntityCreated(pEntity);
+}
+
+void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
+{
+	g_AddonManager.OnEntitySpawned(pEntity);
+}
+
+void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
+{
+	g_AddonManager.OnEntityDeleted(pEntity);
+}
+
+void CSourcePython::InitializeEntitiesListeners(CPointer* pEntitiesListeners)
+{
+	m_pEntityListeners = (CUtlVector<IEntityListener *>*) pEntitiesListeners->m_ulAddr;
+	m_pEntityListeners->AddToTail(this);
+}

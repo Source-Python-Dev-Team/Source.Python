@@ -140,3 +140,11 @@ if _core_settings['USER_SETTINGS']['client_commands']:
     client_command_manager.register_commands(_core_settings[
         'USER_SETTINGS']['client_commands'].split(
         ','), _player_settings._send_menu)
+
+import memory
+server = memory.find_binary('server')
+
+g_pEntList = server.find_pointer(b'\xE8\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\xB9\x2A\x2A\x2A\x2A\xE8\x2A\x2A\x2A\x2A\xE8', 11, 1)
+
+from _core import initialize_entities_listeners
+initialize_entities_listeners(g_pEntList + 65572)

@@ -31,6 +31,7 @@
 //---------------------------------------------------------------------------------
 #include "engine/iserverplugin.h"
 #include "igameevents.h"
+#include "modules/memory/memory_tools.h"
 
 
 //---------------------------------------------------------------------------------
@@ -39,10 +40,18 @@
 #define MSG_PREFIX "[Source.Python] "
 
 
+class IEntityListener
+{
+public:
+	virtual void OnEntityCreated( CBaseEntity *pEntity ) {};
+	virtual void OnEntitySpawned( CBaseEntity *pEntity ) {};
+	virtual void OnEntityDeleted( CBaseEntity *pEntity ) {};
+};
+
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
 //---------------------------------------------------------------------------------
-class CSourcePython: public IServerPluginCallbacks, public IGameEventListener2
+class CSourcePython: public IServerPluginCallbacks, public IGameEventListener2, public IEntityListener
 {
 public:
 	CSourcePython();
@@ -89,8 +98,18 @@ public:
 	virtual void			FireGameEvent( IGameEvent* event );
 	virtual int				GetCommandIndex() { return m_iClientCommandIndex; }
 
+	// -------------------------------------------
+	// IEntityListener Interface.
+	// -------------------------------------------
+	virtual void OnEntityCreated( CBaseEntity *pEntity );
+	virtual void OnEntitySpawned( CBaseEntity *pEntity );
+	virtual void OnEntityDeleted( CBaseEntity *pEntity );
+
+	void InitializeEntitiesListeners(CPointer* pEntitiListeners);
+
 private:
 	int m_iClientCommandIndex;
+	CUtlVector<IEntityListener *>* m_pEntityListeners;
 };
 
 
