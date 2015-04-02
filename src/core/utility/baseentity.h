@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,22 +24,26 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_REMOVE_FLAGS
-#error "Implement ConCommandBase::RemoveFlags in public/tier1/convar.h"
-#endif
+#ifndef BASEENTITY_H
 
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_GET_FLAGS
-#error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
-#endif
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "datamap.h"
+#include "isaverestore.h"
+#include "game/server/variant_t.h"
+#include "string_t.h"
+#include "game/shared/predictable_entity.h"
+#include "game/shared/shareddefs.h"
+#include "basehandle.h"
+#include "networkvar.h"
+#include "game/server/util.h"
+#include "game/shared/predictableid.h"
+#include "game/shared/takedamageinfo.h"
+#include "game/shared/touchlink.h"
+#include "game/shared/groundlink.h"
+#include "game/shared/baseentity_shared.h"
+#include "game/server/baseentity.h"
 
-#include "KeyValues.h"
-#ifndef PATCH_KEYVALUES_DESTRUCTOR
-#error "Make KeyValues::~KeyValues() public."
-#endif
 
-#include "utility/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#endif // BASEENTITY_H
