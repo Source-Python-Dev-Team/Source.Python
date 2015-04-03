@@ -180,26 +180,26 @@ void CAddonManager::OnEdictFreed( const edict_t *edict )
 
 void CAddonManager::OnEntityCreated( CBaseEntity *pEntity )
 {
-	CPointer ptr = CPointer((unsigned long) pEntity);
-	int iIndex = IndexFromPointer(&ptr);
+	CPointer pAddress = CPointer((unsigned long) pEntity);
+	int iIndex = IndexFromPointer(&pAddress);
 	edict_t* pEdict = EdictFromIndex(iIndex);
 	if (pEdict)
 	{
 		IServerUnknown* pServerUnknown = pEdict->GetUnknown();
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
-	}   
-	CALL_LISTENERS(OnEntityCreated, iIndex);
+	}
+	CALL_LISTENERS(OnEntityCreated, iIndex, ptr(&pAddress));
 }
 
 void CAddonManager::OnEntitySpawned( CBaseEntity *pEntity )
 {
-	CPointer ptr = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntitySpawned, IndexFromPointer(&ptr));
+	CPointer pAddress = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntitySpawned, IndexFromPointer(&pAddress), ptr(&pAddress));
 }
 
 void CAddonManager::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	CPointer ptr = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntityDeleted, IndexFromPointer(&ptr));
+	CPointer pAddress = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntityDeleted, IndexFromPointer(&pAddress), ptr(&pAddress));
 }
