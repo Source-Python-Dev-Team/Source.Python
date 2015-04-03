@@ -30,7 +30,6 @@
 #include "sp_python.h"
 #include "sp_main.h"
 #include "sp_gamedir.h"
-#include "addons/sp_addon.h"
 #include "interface.h"
 #include "filesystem.h"
 #include "eiface.h"
@@ -55,6 +54,10 @@
 
 #include "DynamicHooks.h"
 extern DynamicHooks::CHookManager* g_pHookMngr;
+
+#include "modules/listeners/listeners_manager.h"
+#include "utility/conversions.h"
+
 
 //-----------------------------------------------------------------------------
 // Disable warnings.
@@ -271,7 +274,7 @@ const char *CSourcePython::GetPluginDescription( void )
 //-----------------------------------------------------------------------------
 void CSourcePython::LevelInit( char const *pMapName )
 {
-	g_AddonManager.LevelInit(pMapName);
+	CALL_LISTENERS(LevelInit, pMapName);
 }
 
 //-----------------------------------------------------------------------------
@@ -280,7 +283,11 @@ void CSourcePython::LevelInit( char const *pMapName )
 //-----------------------------------------------------------------------------
 void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int clientMax )
 {
-	g_AddonManager.ServerActivate(pEdictList, edictCount, clientMax);
+	list edicts;
+	for(int i=0; i < edictCount; i++)
+		edicts.append(pEdictList[i]);
+	
+	CALL_LISTENERS(ServerActivate, edicts, edictCount, clientMax);
 }
 
 //-----------------------------------------------------------------------------
@@ -288,7 +295,7 @@ void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 //-----------------------------------------------------------------------------
 void CSourcePython::GameFrame( bool simulating )
 {
-	g_AddonManager.GameFrame();
+	CALL_LISTENERS(Tick);
 }
 
 //-----------------------------------------------------------------------------
@@ -296,7 +303,7 @@ void CSourcePython::GameFrame( bool simulating )
 //-----------------------------------------------------------------------------
 void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
-	g_AddonManager.LevelShutdown();
+	CALL_LISTENERS(LevelShutdown);
 }
 
 //-----------------------------------------------------------------------------
@@ -304,7 +311,7 @@ void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple ti
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientActive( edict_t *pEntity )
 {
-	g_AddonManager.ClientActive(pEntity);
+	CALL_LISTENERS(ClientActive, IndexFromEdict(pEntity));
 }
 
 //-----------------------------------------------------------------------------
@@ -312,7 +319,7 @@ void CSourcePython::ClientActive( edict_t *pEntity )
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientDisconnect( edict_t *pEntity )
 {
-	g_AddonManager.ClientDisconnect(pEntity);
+	CALL_LISTENERS(ClientDisconnect, IndexFromEdict(pEntity));
 }
 
 //-----------------------------------------------------------------------------
@@ -320,7 +327,7 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
-	g_AddonManager.ClientPutInServer(pEntity, playername);
+	CALL_LISTENERS(ClientPutInServer, IndexFromEdict(pEntity), playername);
 }
 
 //-----------------------------------------------------------------------------
@@ -347,7 +354,7 @@ void ClientPrint( edict_t *pEdict, char *format, ... )
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 {
-	g_AddonManager.ClientSettingsChanged(pEdict);
+	CALL_LISTENERS(ClientSettingsChanged, IndexFromEdict(pEdict));
 }
 
 //-----------------------------------------------------------------------------
@@ -355,7 +362,8 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	return g_AddonManager.ClientConnect(bAllowConnect, pEntity, pszName, pszAddress, reject, maxrejectlen);
+	CALL_LISTENERS(ClientConnect, ptr(new CPointer((unsigned long) bAllowConnect)), IndexFromEdict(pEntity), pszName, pszAddress, ptr(new CPointer((unsigned long) reject)), maxrejectlen);
+	return PLUGIN_OVERRIDE;
 }
 
 //-----------------------------------------------------------------------------
@@ -363,7 +371,7 @@ PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntit
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
-    g_AddonManager.NetworkIDValidated(pszUserName, pszNetworkID);
+	CALL_LISTENERS(NetworkidValidated, pszUserName, pszNetworkID);
 	return PLUGIN_CONTINUE;
 }
 
@@ -373,8 +381,8 @@ PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const 
 void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
-	g_AddonManager.OnQueryCvarValueFinished(iCookie, pPlayerEntity, eStatus, pCvarName, pCvarValue);
 	PythonLog(1, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
+	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, IndexFromEdict(pPlayerEntity), eStatus, pCvarName, pCvarValue);
 }
 
 //-----------------------------------------------------------------------------
@@ -402,31 +410,42 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &ar
 #ifdef ENGINE_CSGO
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
-	g_AddonManager.ClientFullyConnect(pEntity);
+	CALL_LISTENERS(ClientFullyConnect, IndexFromEdict(pEntity));
 }
 
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
-	g_AddonManager.OnEdictAllocated(edict);
+	CALL_LISTENERS(OnEdictAllocated, IndexFromEdict(edict));
 }
 
 void CSourcePython::OnEdictFreed( const edict_t *edict )
 {
-	g_AddonManager.OnEdictFreed(edict);
+	CALL_LISTENERS(OnEdictFreed, ptr(edict));
 }
 #endif
 
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
-	g_AddonManager.OnEntityCreated(pEntity);
+	CPointer pAddress = CPointer((unsigned long) pEntity);
+	int iIndex = IndexFromPointer(&pAddress);
+	edict_t* pEdict = EdictFromIndex(iIndex);
+	if (pEdict)
+	{
+		IServerUnknown* pServerUnknown = pEdict->GetUnknown();
+		if (pServerUnknown)
+			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
+	}
+	CALL_LISTENERS(OnEntityCreated, iIndex, ptr(&pAddress));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
-	g_AddonManager.OnEntitySpawned(pEntity);
+	CPointer pAddress = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntitySpawned, IndexFromPointer(&pAddress), ptr(&pAddress));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	g_AddonManager.OnEntityDeleted(pEntity);
+	CPointer pAddress = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntityDeleted, IndexFromPointer(&pAddress), ptr(&pAddress));
 }

@@ -67,22 +67,6 @@ Set(SOURCEPYTHON_CORE_FILES
 )
 
 # ------------------------------------------------------------------
-# Addon system
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_ADDON_HEADERS
-    core/addons/sp_addon.h
-)
-
-Set(SOURCEPYTHON_ADDON_SOURCES
-    core/addons/sp_addon.cpp
-)
-
-Set(SOURCEPYTHON_ADDON_FILES
-    ${SOURCEPYTHON_ADDON_HEADERS}
-    ${SOURCEPYTHON_ADDON_SOURCES}
-)
-
-# ------------------------------------------------------------------
 # Generic plugin stuff.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_GENERIC_HEADERS
@@ -426,7 +410,6 @@ Set(SOURCEPYTHON_MODULE_FILES
 # Create source groups for everything to make our projects nice and
 # clean.
 # ------------------------------------------------------------------
-Source_Group("Header Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_HEADERS})
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Utility"                        FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
@@ -451,7 +434,6 @@ Source_Group("Header Files\\Module\\Filters"                FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
 Source_Group("Header Files\\Module\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS})
 
-Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Source Files\\Utility"                        FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
@@ -488,7 +470,6 @@ Source_Group("Source Files\\Module\\Weapons"                FILES ${SOURCEPYTHON
 # ------------------------------------------------------------------
 Add_Library(core SHARED
     ${SOURCEPYTHON_CORE_FILES}
-    ${SOURCEPYTHON_ADDON_FILES}
     ${SOURCEPYTHON_GENERIC_FILES}
     ${SOURCEPYTHON_MODULE_FILES}
     ${SOURCEPYTHON_UTIL_FILES}
