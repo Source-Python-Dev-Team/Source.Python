@@ -28,25 +28,11 @@ Development Team grants this exception to all derivative works.
 """
 
 # =============================================================================
-# >> IMPORTS
-# =============================================================================
-# Site-Package Imports
-#   Configobj
-from configobj import ConfigObjError
-
-# Source.Python Imports
-#   Cvars
-from cvars import ConVar
-#   Hooks - These are imported to implement the exceptions and warnings hooks
-from hooks.exceptions import except_hooks
-from hooks.warnings import warning_hooks
-
-
-# =============================================================================
 # >> LOAD & UNLOAD
 # =============================================================================
 def load():
-    """Loads Source.Python's Python side."""
+    """Load Source.Python's Python side."""
+    setup_hooks()
     setup_logging()
     setup_translations()
     setup_sp_command()
@@ -55,9 +41,18 @@ def load():
     setup_entities_listener()
 
 def unload():
-    """Unloads Source.Python's Python side."""
-    # TODO: Unload addons
+    """Unload Source.Python's Python side."""
+    unload_plugins()
     remove_entities_listener()
+
+
+# =============================================================================
+# >> HOOKS
+# =============================================================================
+def setup_hooks():
+    """Set up hooks."""
+    from hooks.exceptions import except_hooks
+    from hooks.warnings import warning_hooks
 
 
 # =============================================================================
@@ -65,6 +60,9 @@ def unload():
 # =============================================================================
 def setup_logging():
     """Set up logging."""
+    from configobj import ConfigObjError
+    from cvars import ConVar
+
     # Use try/except in case the logging values are not integers
     try:
 
@@ -198,3 +196,15 @@ def remove_entities_listener():
 
     manager.get_global_pointer('GlobalEntityList').remove_entity_listener(
         _sp_plugin)
+
+
+# =============================================================================
+# >> PLUGINS
+# =============================================================================
+def unload_plugins():
+    """Unload all plugins."""
+    from core.manager import core_plugin_manager
+    from core.command import _core_command
+
+    for plugin_name in core_plugin_manager:
+        _core_command.unload_plugin(plugin_name)
