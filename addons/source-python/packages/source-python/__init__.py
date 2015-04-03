@@ -43,115 +43,158 @@ from hooks.warnings import warning_hooks
 
 
 # =============================================================================
-# >> LOGGING SETUP
+# >> LOAD & UNLOAD
 # =============================================================================
-# Use try/except in case the logging values are not integers
-try:
+def load():
+    """Loads Source.Python's Python side."""
+    setup_logging()
+    setup_translations()
+    setup_sp_command()
+    setup_auth()
+    setup_user_settings()
+    setup_entities_listener()
 
-    # Import the core settings dictionary
+def unload():
+    """Unloads Source.Python's Python side."""
+    # TODO: Unload addons
+    remove_entities_listener()
+
+
+# =============================================================================
+# >> LOGGING
+# =============================================================================
+def setup_logging():
+    """Set up logging."""
+    # Use try/except in case the logging values are not integers
+    try:
+
+        # Import the core settings dictionary
+        from core.settings import _core_settings
+
+        # Set the logging level
+        ConVar('sp_logging_level').set_int(
+            int(_core_settings['LOG_SETTINGS']['level']))
+
+        # Set the logging areas
+        ConVar('sp_logging_areas').set_int(
+            int(_core_settings['LOG_SETTINGS']['areas']))
+
+    # Was an exception raised?
+    except (ValueError, ConfigObjError):
+
+        # Set the logging level to max (5)
+        ConVar('sp_logging_level').set_int(5)
+
+        # Set the logging area to include console, SP logs, and main log
+        ConVar('sp_logging_areas').set_int(7)
+
+        # Import the _sp_logger
+        from loggers import _sp_logger
+
+        # Log a message about the value
+        _sp_logger.log_message(
+            '[Source.Python] Plugin did not load properly ' +
+            'due to the following error:')
+
+        # Re-raise the error
+        raise
+
+
+# =============================================================================
+# >> TRANSLATIONS
+# =============================================================================
+def setup_translations():
+    """Set up translations."""
+    # Import the Language Manager
+    from translations.manager import language_manager
     from core.settings import _core_settings
 
-    # Set the logging level
-    ConVar('sp_logging_level').set_int(
-        int(_core_settings['LOG_SETTINGS']['level']))
-
-    # Set the logging areas
-    ConVar('sp_logging_areas').set_int(
-        int(_core_settings['LOG_SETTINGS']['areas']))
-
-# Was an exception raised?
-except (ValueError, ConfigObjError):
-
-    # Set the logging level to max (5)
-    ConVar('sp_logging_level').set_int(5)
-
-    # Set the logging area to include console, SP logs, and main log
-    ConVar('sp_logging_areas').set_int(7)
-
-    # Import the _sp_logger
-    from loggers import _sp_logger
-
-    # Log a message about the value
-    _sp_logger.log_message(
-        '[Source.Python] Plugin did not load properly ' +
-        'due to the following error:')
-
-    # Re-raise the error
-    raise
+    # Set the default language
+    language_manager._register_default_language(
+        _core_settings['BASE_SETTINGS']['language'])
 
 
 # =============================================================================
-# >> TRANSLATIONS SETUP
+# >> SP COMMAND
 # =============================================================================
-# Import the Language Manager
-from translations.manager import language_manager
-
-# Set the default language
-language_manager._register_default_language(
-    _core_settings['BASE_SETTINGS']['language'])
+def setup_sp_command():
+    """Set up the 'sp' command."""
+    from core.command import _core_command
 
 
 # =============================================================================
-# >> INITIALIZE SP COMMAND
+# >> AUTH
 # =============================================================================
-from core.command import _core_command
+def setup_auth():
+    """Set up authentification."""
+    from core.settings import _core_settings
 
+    # Get the auth providers that should be loaded
+    auth_providers = _core_settings['AUTH_SETTINGS']['providers'].split()
 
-# =============================================================================
-# >> AUTH SETUP
-# =============================================================================
-# Get the auth providers that should be loaded
-auth_providers = _core_settings['AUTH_SETTINGS']['providers'].split()
+    # Should any providers be loaded?
+    if auth_providers:
 
-# Should any providers be loaded?
-if auth_providers:
-
-    # Load the auth providers
-    _core_command.call_command('auth', ['load'] + auth_providers)
+        # Load the auth providers
+        _core_command.call_command('auth', ['load'] + auth_providers)
 
 
 # =============================================================================
-# >> USER_SETTINGS SETUP
+# >> USER_SETTINGS
 # =============================================================================
-from commands.client import client_command_manager
-from commands.say import say_command_manager
-from settings.menu import _player_settings
+def setup_user_settings():
+    """Set up user settings."""
+    from commands.client import client_command_manager
+    from commands.say import say_command_manager
+    from settings.menu import _player_settings
+    from core.settings import _core_settings
 
-# Are there any private user settings say commands?
-if _core_settings['USER_SETTINGS']['private_say_commands']:
+    # Are there any private user settings say commands?
+    if _core_settings['USER_SETTINGS']['private_say_commands']:
 
-    # Register the private user settings say commands
-    say_command_manager.register_commands(_core_settings[
-        'USER_SETTINGS']['private_say_commands'].split(
-        ','), _player_settings._private_send_menu)
+        # Register the private user settings say commands
+        say_command_manager.register_commands(_core_settings[
+            'USER_SETTINGS']['private_say_commands'].split(
+            ','), _player_settings._private_send_menu)
 
-# Are there any public user settings say commands?
-if _core_settings['USER_SETTINGS']['public_say_commands']:
+    # Are there any public user settings say commands?
+    if _core_settings['USER_SETTINGS']['public_say_commands']:
 
-    # Register the public user settings say commands
-    say_command_manager.register_commands(_core_settings[
-        'USER_SETTINGS']['public_say_commands'].split(
-        ','), _player_settings._send_menu)
+        # Register the public user settings say commands
+        say_command_manager.register_commands(_core_settings[
+            'USER_SETTINGS']['public_say_commands'].split(
+            ','), _player_settings._send_menu)
 
-# Are there any client user settings commands?
-if _core_settings['USER_SETTINGS']['client_commands']:
+    # Are there any client user settings commands?
+    if _core_settings['USER_SETTINGS']['client_commands']:
 
-    # Register the client user settings commands
-    client_command_manager.register_commands(_core_settings[
-        'USER_SETTINGS']['client_commands'].split(
-        ','), _player_settings._send_menu)
+        # Register the client user settings commands
+        client_command_manager.register_commands(_core_settings[
+            'USER_SETTINGS']['client_commands'].split(
+            ','), _player_settings._send_menu)
 
 
 # =============================================================================
-# >> ENTITIES LISTENER SETUP
+# >> ENTITIES LISTENER
 # =============================================================================
-from _core import _sp_plugin
-from core import SOURCE_ENGINE
+def setup_entities_listener():
+    """Set up entities listener."""
+    from _core import _sp_plugin
+    from core import SOURCE_ENGINE
 
-from memory.manager import manager
-from paths import SP_DATA_PATH
+    from memory.manager import manager
+    from paths import SP_DATA_PATH
 
-manager.create_global_pointers_from_file(
-    SP_DATA_PATH / 'entities' / 'listeners' / SOURCE_ENGINE / 'pointers.ini')
+    manager.create_global_pointers_from_file(SP_DATA_PATH.joinpath('entities',
+        'listeners', SOURCE_ENGINE, 'pointers.ini'))
 
-manager.get_global_pointer('GlobalEntityList').add_entity_listener(_sp_plugin)
+    manager.get_global_pointer('GlobalEntityList').add_entity_listener(
+        _sp_plugin)
+
+def remove_entities_listener():
+    """Remove entities listener."""
+    from _core import _sp_plugin
+    from memory.manager import manager
+
+    manager.get_global_pointer('GlobalEntityList').remove_entity_listener(
+        _sp_plugin)

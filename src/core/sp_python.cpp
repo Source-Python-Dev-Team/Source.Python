@@ -146,7 +146,7 @@ bool CPythonManager::Initialize( void )
 	DevMsg(1, MSG_PREFIX "Importing main module..\n");
 
 	try {
-		python::import("__init__");
+		python::import("__init__").attr("load")();
 	}
 	catch( ... ) {
 		PyErr_Print();
@@ -165,6 +165,15 @@ bool CPythonManager::Initialize( void )
 //---------------------------------------------------------------------------------
 bool CPythonManager::Shutdown( void )
 {
+	try {
+		python::import("__init__").attr("unload")();
+	}
+	catch( ... ) {
+		PyErr_Print();
+		PyErr_Clear();
+		Msg(MSG_PREFIX "Failed to unload.\n");
+		return false;
+	}
 	return true;
 }
 
