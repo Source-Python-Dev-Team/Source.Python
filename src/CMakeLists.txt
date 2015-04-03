@@ -428,7 +428,7 @@ Set(SOURCEPYTHON_MODULE_FILES
 # ------------------------------------------------------------------
 Source_Group("Header Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_HEADERS})
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
-Source_Group("Header Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_HEADERS})
+Source_Group("Header Files\\Utility"                        FILES ${SOURCEPYTHON_UTIL_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 
 Source_Group("Header Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS})
@@ -453,7 +453,7 @@ Source_Group("Header Files\\Module\\Weapons"                FILES ${SOURCEPYTHON
 
 Source_Group("Source Files\\Addons"                         FILES ${SOURCEPYTHON_ADDON_SOURCES})
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
-Source_Group("Source Files\\Util"                           FILES ${SOURCEPYTHON_UTIL_SOURCES})
+Source_Group("Source Files\\Utility"                        FILES ${SOURCEPYTHON_UTIL_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
 Source_Group("Source Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_SOURCES})
