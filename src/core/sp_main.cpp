@@ -224,6 +224,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 //-----------------------------------------------------------------------------
 void CSourcePython::Unload( void )
 {
+	Msg(MSG_PREFIX "Unloading...\n");
 	ClearAllCommands();
 	ConVar_Unregister( );
 
@@ -238,6 +239,7 @@ void CSourcePython::Unload( void )
 #endif
 
 	g_pHookMngr->UnhookAllFunctions();
+	Msg(MSG_PREFIX "Unloaded successfully.\n");
 }
 
 //-----------------------------------------------------------------------------
