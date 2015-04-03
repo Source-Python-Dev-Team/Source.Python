@@ -28,7 +28,7 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "modules/entities/entities_helpers_wrap.h"
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "utilities/wrap_macros.h"
 
 

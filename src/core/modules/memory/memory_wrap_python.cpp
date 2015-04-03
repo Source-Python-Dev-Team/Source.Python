@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "memory_hooks.h"

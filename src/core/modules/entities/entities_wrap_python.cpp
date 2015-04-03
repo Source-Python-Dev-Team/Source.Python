@@ -36,7 +36,7 @@
 #include "entities_wrap.h"
 #include "utilities/sp_util.h"
 #include "modules/memory/memory_tools.h"
-#include "modules/export_main.h"
+#include "export_main.h"
 using namespace boost::python;
 
 #include ENGINE_INCLUDE_PATH(entities_wrap_python.h)

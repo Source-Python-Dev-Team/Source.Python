@@ -29,7 +29,7 @@
 // ----------------------------------------------------------------------------
 #include "players_generator_wrap.h"
 #include "modules/entities/entities_wrap.h"
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "modules/memory/memory_tools.h"
 
 #include "public/game/server/iplayerinfo.h"

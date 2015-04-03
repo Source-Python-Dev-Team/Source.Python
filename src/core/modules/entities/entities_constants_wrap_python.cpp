@@ -28,7 +28,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include <climits>
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "utilities/wrap_macros.h"
 #include "mathlib/vector.h"
 #include "tier1/utlvector.h"

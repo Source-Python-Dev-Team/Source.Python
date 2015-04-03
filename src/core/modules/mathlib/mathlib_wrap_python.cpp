@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "mathlib/vector.h"
 #include "mathlib/mathlib.h"
 #include "utilities/sp_util.h"

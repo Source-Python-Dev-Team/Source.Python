@@ -67,32 +67,18 @@ Set(SOURCEPYTHON_UTILITIES_FILES
 Set(SOURCEPYTHON_CORE_HEADERS
     core/sp_python.h
     core/sp_main.h
+    core/export_main.h
 )
 
 Set(SOURCEPYTHON_CORE_SOURCES
     core/sp_python.cpp
     core/sp_main.cpp
+    core/export_main.cpp
 )
 
 Set(SOURCEPYTHON_CORE_FILES
     ${SOURCEPYTHON_CORE_HEADERS}
     ${SOURCEPYTHON_CORE_SOURCES}
-)
-
-# ------------------------------------------------------------------
-# Generic plugin stuff.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_GENERIC_HEADERS
-    core/modules/export_main.h
-)
-
-Set(SOURCEPYTHON_GENERIC_SOURCES
-    core/modules/export_main.cpp
-)
-
-Set(SOURCEPYTHON_GENERIC_FILES
-    ${SOURCEPYTHON_GENERIC_HEADERS}
-    ${SOURCEPYTHON_GENERIC_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -426,53 +412,51 @@ Set(SOURCEPYTHON_MODULE_FILES
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
 Source_Group("Header Files\\Patches"                        FILES ${SOURCEPYTHON_PATCHES_HEADERS})
 Source_Group("Header Files\\Utilities"                      FILES ${SOURCEPYTHON_UTILITIES_HEADERS})
-Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 
-Source_Group("Header Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Core"                   FILES ${SOURCEPYTHON_CORE_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITIES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
-Source_Group("Header Files\\Module\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Core"                   FILES ${SOURCEPYTHON_CORE_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Entities"               FILES ${SOURCEPYTHON_ENTITIES_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
 Source_Group("Source Files\\Patches"                        FILES ${SOURCEPYTHON_PATCHES_SOURCES})
 Source_Group("Source Files\\Utilities"                      FILES ${SOURCEPYTHON_UTILITIES_SOURCES})
-Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
 
-Source_Group("Source Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Core"                   FILES ${SOURCEPYTHON_CORE_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Entities"               FILES ${SOURCEPYTHON_ENTITIES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES})
-Source_Group("Source Files\\Module\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES})
-Source_Group("Source Files\\Module\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Core"                   FILES ${SOURCEPYTHON_CORE_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Cvars"                  FILES ${SOURCEPYTHON_CVARS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Effects"                FILES ${SOURCEPYTHON_EFFECTS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Engines"                FILES ${SOURCEPYTHON_ENGINES_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Entities"               FILES ${SOURCEPYTHON_ENTITIES_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Events"                 FILES ${SOURCEPYTHON_EVENTS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Globals"                FILES ${SOURCEPYTHON_GLOBALS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\KeyValues"              FILES ${SOURCEPYTHON_KEYVALUES_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Listeners"              FILES ${SOURCEPYTHON_LISTENERS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES})
+Source_Group("Source Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES})
 
 # ------------------------------------------------------------------
 # All SourcePython source files. Ideally we break out each group of
@@ -486,7 +470,6 @@ Source_Group("Source Files\\Module\\Weapons"                FILES ${SOURCEPYTHON
 # ------------------------------------------------------------------
 Add_Library(core SHARED
     ${SOURCEPYTHON_CORE_FILES}
-    ${SOURCEPYTHON_GENERIC_FILES}
     ${SOURCEPYTHON_MODULE_FILES}
     ${SOURCEPYTHON_UTILITIES_FILES}
 )

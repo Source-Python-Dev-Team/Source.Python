@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "icvar.h"
 #include "convar.h"
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "modules/memory/memory_tools.h"
 
 #include ENGINE_INCLUDE_PATH(cvars_wrap.h)
