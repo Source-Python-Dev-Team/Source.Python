@@ -109,7 +109,7 @@ void export_send_table()
 //-----------------------------------------------------------------------------
 void export_send_prop()
 {
-	class_<SendProp, SendProp *> SendProp_("SendProp", no_init);
+	class_<SendProp, SendProp *, boost::noncopyable> SendProp_("SendProp", no_init);
 	
 	// Properties...
 	SendProp_.def_readonly("type", &SendProp::m_Type);
