@@ -50,15 +50,15 @@ Set(SOURCEPYTHON_UTIL_FILES
 # Core
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CORE_HEADERS
-    core/core/sp_python.h
-    core/core/sp_main.h
-    core/core/sp_gamedir.h
+    core/sp_python.h
+    core/sp_main.h
+    core/sp_gamedir.h
 )
 
 Set(SOURCEPYTHON_CORE_SOURCES
-    core/core/sp_python.cpp
-    core/core/sp_main.cpp
-    core/core/sp_gamedir.cpp
+    core/sp_python.cpp
+    core/sp_main.cpp
+    core/sp_gamedir.cpp
 )
 
 Set(SOURCEPYTHON_CORE_FILES

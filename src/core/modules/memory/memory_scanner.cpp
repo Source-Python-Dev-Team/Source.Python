@@ -42,7 +42,7 @@
 #include "memory_tools.h"
 #include "utility/sp_util.h"
 #include "utility/call_python.h"
-#include "core/sp_gamedir.h"
+#include "sp_gamedir.h"
 
 
 //-----------------------------------------------------------------------------

@@ -28,7 +28,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "core/sp_main.h"
+#include "sp_main.h"
 
 extern CSourcePython g_SourcePythonPlugin;
 

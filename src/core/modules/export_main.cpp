@@ -28,8 +28,8 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "boost/python.hpp"
-#include "core/sp_python.h"
-#include "core/sp_main.h"
+#include "sp_python.h"
+#include "sp_main.h"
 #include "export_main.h"
 #include "tier0/dbg.h"
 

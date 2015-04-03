@@ -43,7 +43,7 @@
 #include "game/server/iplayerinfo.h"
 #include "shake.h" // Linux compile fails without this.
 #include "game/shared/IEffects.h"
-#include "../utility/wrap_macros.h"
+#include "utility/wrap_macros.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 #include "public/toolframework/itoolentity.h"

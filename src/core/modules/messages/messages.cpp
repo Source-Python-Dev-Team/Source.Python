@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "messages.h"
 #include "public/engine/iserverplugin.h"
-#include "core/sp_main.h"
+#include "sp_main.h"
 
 //-----------------------------------------------------------------------------
 // Externals.

@@ -29,7 +29,7 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-#include "core/sp_python.h"
+#include "sp_python.h"
 #include "utllinkedlist.h"
 #include "igameevents.h"
 #include "engine/iserverplugin.h"

@@ -31,7 +31,7 @@
 #include "strtools.h"
 #include "convar.h"
 #include "filesystem.h"
-#include "core/sp_gamedir.h"
+#include "sp_gamedir.h"
 #include "utility/wrap_macros.h"
 #include "modules/listeners/listeners_manager.h"
 #include "modules/entities/entities_wrap.h"

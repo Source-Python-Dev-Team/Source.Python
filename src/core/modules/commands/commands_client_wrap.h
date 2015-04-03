@@ -30,7 +30,7 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "boost/unordered_map.hpp"
-#include "core/sp_python.h"
+#include "sp_python.h"
 #include "utility/sp_util.h"
 #include "utility/wrap_macros.h"
 #include "utlvector.h"

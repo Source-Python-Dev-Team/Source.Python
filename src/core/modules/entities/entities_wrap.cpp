@@ -36,7 +36,7 @@
 #include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
 #include "utility/wrap_macros.h"
-#include "core/sp_main.h"
+#include "sp_main.h"
 
 //-----------------------------------------------------------------------------
 // If these aren't defined, we get linker errors about CBaseEdict.
