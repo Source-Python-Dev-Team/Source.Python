@@ -29,7 +29,6 @@
 // --------------------------------------------------------
 #include "sp_python.h"
 #include "sp_main.h"
-#include "sp_gamedir.h"
 #include "interface.h"
 #include "filesystem.h"
 #include "eiface.h"
@@ -210,12 +209,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	MathLib_Init( 2.2f, 2.2f, 0.0f, 2.0f );
 	InitCommands();
-
-	// Initialize game paths.
-	if( !g_GamePaths.Initialize() ) {
-		Msg(MSG_PREFIX "Could not initialize game paths.\n");
-		return false;
-	}
 
 	// Initialize python
 	if( !g_PythonManager.Initialize() ) {

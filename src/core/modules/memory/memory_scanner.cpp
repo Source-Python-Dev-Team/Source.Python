@@ -42,7 +42,13 @@
 #include "memory_tools.h"
 #include "utility/sp_util.h"
 #include "utility/call_python.h"
-#include "sp_gamedir.h"
+#include "eiface.h"
+
+
+//-----------------------------------------------------------------------------
+// Externals.
+//-----------------------------------------------------------------------------
+extern IVEngineServer* engine;
 
 
 //-----------------------------------------------------------------------------
@@ -343,9 +349,12 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 #ifdef __linux__
 	if (!ulAddr)
 	{
+		char szGameDir[MAX_GAME_PATH];
+		engine->GetGameDir(szGameDir, MAX_GAME_PATH);
+
 		// If the previous path failed, try the "bin" folder of the game.
 		// This will allow passing e.g. "server" to this function.
-		szBinaryPath = std::string(g_GamePaths.GetGameDir()) + "/bin/" + szBinaryPath;
+		szBinaryPath = std::string(szGameDir) + "/bin/" + szBinaryPath;
 		ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
 	}
 #endif

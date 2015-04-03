@@ -32,42 +32,58 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "sp_python.h"
-#include "sp_gamedir.h"
 #include "sp_main.h"
 #include "eiface.h"
+#include "utility/shared_utils.h"
 #include "modules/export_main.h"
+
 
 //---------------------------------------------------------------------------------
 // Interfaces we're going to use.
 //---------------------------------------------------------------------------------
 extern IVEngineServer* engine;
 
+
 //---------------------------------------------------------------------------------
 // Singleton
 //---------------------------------------------------------------------------------
 CPythonManager g_PythonManager;
 
-//---------------------------------------------------------------------------------
-// This is externed because we need to manually import ES's core library into the
-// python namespace.
-//---------------------------------------------------------------------------------
-// PyMODINIT_FUNC PyInit_sp( void );
 
+//---------------------------------------------------------------------------------
+// Forward declarations.
+//---------------------------------------------------------------------------------
 void InitConverters();
 
+
 //---------------------------------------------------------------------------------
-// Adds a path to sys.path (relative to g_GamePaths.GetSPDir()).
+// Returns the path to the ../source-python/addon/ directory.
+//---------------------------------------------------------------------------------
+char *GetSourcePythonDir()
+{
+	char szGameDir[MAX_GAME_PATH];
+	engine->GetGameDir(szGameDir, MAX_GAME_PATH);
+	GenerateSymlink(szGameDir);
+	char szAddonDir[MAX_GAME_PATH];
+	V_snprintf(szAddonDir, MAX_GAME_PATH, "%s%s", szGameDir, "/addons/source-python");
+	return szAddonDir;
+}
+
+
+//---------------------------------------------------------------------------------
+// Adds a path to sys.path (relative to GetSourcePythonDir()).
 //---------------------------------------------------------------------------------
 void AddToSysPath( const char* path )
 {
 	char szFolderPath[MAX_GAME_PATH];
-	V_snprintf(szFolderPath, MAX_GAME_PATH, "%s%s", g_GamePaths.GetSPDir(), path);
+	V_snprintf(szFolderPath, MAX_GAME_PATH, "%s%s", GetSourcePythonDir(), path);
 	V_FixSlashes(szFolderPath);
 
 	DevMsg(1, MSG_PREFIX "Adding %s to path\n", szFolderPath);
 	std::string szCommandString = "sys.path.append(r\"" + std::string(szFolderPath) + "\")";
 	PyRun_SimpleString(szCommandString.c_str());
 }
+
 
 //---------------------------------------------------------------------------------
 // Initializes python.
@@ -76,7 +92,7 @@ bool CPythonManager::Initialize( void )
 {
 	// Construct a path to the python engine directory.
 	char szPythonHome[MAX_GAME_PATH];
-	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/Python3", g_GamePaths.GetSPDir());
+	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/Python3", GetSourcePythonDir());
 	V_FixSlashes(szPythonHome);
 	DevMsg(1, MSG_PREFIX "Python home path set to %s\n", szPythonHome);
 
@@ -142,6 +158,7 @@ bool CPythonManager::Initialize( void )
 	Msg(MSG_PREFIX "Loaded successfully.\n");
 	return true;
 }
+
 
 //---------------------------------------------------------------------------------
 // Shuts down python.
