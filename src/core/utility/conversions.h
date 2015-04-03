@@ -153,8 +153,13 @@ inline edict_t* EdictFromPointer( CPointer* pPtr )
 {
 	if (!pPtr || !pPtr->IsValid())
 		return NULL;
+	
+	IServerUnknown *pUnknown = (IServerUnknown *) pPtr->m_ulAddr;
+	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
+	if (!pNetworkable)
+		return NULL;
 
-	return EdictFromIndex(IndexFromPointer(pPtr));
+	return pNetworkable->GetEdict();
 }
 
 inline edict_t* EdictFromUserid( unsigned int userid )
