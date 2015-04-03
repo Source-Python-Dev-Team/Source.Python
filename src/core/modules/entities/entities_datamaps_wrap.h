@@ -38,6 +38,7 @@
 #include "Color.h"
 #include "utility/conversions.h"
 #include "tier0/basetypes.h"
+#include "utility/baseentity.h"
 
 
 //-----------------------------------------------------------------------------
@@ -160,18 +161,6 @@ void variant_t::SetEntity(CBaseEntity *pValue)
 	eVal = pValue;
 	fieldType = FIELD_EHANDLE; 
 }
-
-
-//-----------------------------------------------------------------------------
-// Structure passed to input handlers.
-//-----------------------------------------------------------------------------
-struct inputdata_t
-{
-	CBaseEntity *pActivator;
-	CBaseEntity *pCaller;
-	variant_t value;
-	int nOutputID;
-};
 
 
 //-----------------------------------------------------------------------------
