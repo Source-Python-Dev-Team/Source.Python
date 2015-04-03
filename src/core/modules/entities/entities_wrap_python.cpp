@@ -542,6 +542,22 @@ void CGlobalEntityList::RemoveListenerEntity( IEntityListener *pListener )
     m_entityListeners.FindAndRemove( pListener );
 }
 
+void CBaseEntityList::OnAddEntity( IHandleEntity *pEnt, CBaseHandle handle )
+{
+}
+
+void CBaseEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
+{
+}
+
+void CGlobalEntityList::OnAddEntity( IHandleEntity *pEnt, CBaseHandle handle )
+{
+}
+
+void CGlobalEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
+{
+}
+
 void export_global_entity_list()
 {
 	class_<CGlobalEntityList, boost::noncopyable>("GlobalEntityList", no_init)
