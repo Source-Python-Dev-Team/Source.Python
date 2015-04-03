@@ -30,7 +30,6 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dt_send.h"
 #include "server_class.h"
 
 
@@ -45,36 +44,6 @@ public:
 		return (const char *)pServerClass->m_pNetworkName;
 	}
 };
-
-
-//-----------------------------------------------------------------------------
-// SendProp constructor declaration.
-//-----------------------------------------------------------------------------
-SendProp::SendProp()
-{
-	m_pVarName = NULL;
-	m_Offset = 0;
-	m_pDataTable = NULL;
-	m_ProxyFn = NULL;
-	m_pExcludeDTName = NULL;
-	m_pParentArrayPropName = NULL;
-
-	m_Type = DPT_Int;
-	m_Flags = 0;
-	m_nBits = 0;
-
-	m_fLowValue = 0.0f;
-	m_fHighValue = 0.0f;
-	m_fHighLowMul = 0.0f;
-	m_pArrayProp = 0;
-	m_ArrayLengthProxy = 0;
-	m_nElements = 1;
-	m_ElementStride = -1;
-	m_DataTableProxyFn = NULL;
-	m_pMatchingRecvProp	= NULL;
-
-	m_priority = SENDPROP_DEFAULT_PRIORITY;
-}
 
 
 #endif // _ENTITIES_PROPS_WRAP_CSGO_H
