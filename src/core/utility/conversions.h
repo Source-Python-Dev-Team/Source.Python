@@ -294,7 +294,15 @@ inline CPointer* PointerFromEdict( edict_t* edict )
 	if (!edict || edict->IsFree())
 		return NULL;
 
-	return new CPointer((unsigned long)(edict->GetNetworkable()->GetBaseEntity()));
+	IServerUnknown* pUnknown = edict->GetUnknown();
+	if (!pUnknown)
+		return NULL;
+
+	void* pEntity = (void*) pUnknown->GetBaseEntity();
+	if (!pEntity)
+		return NULL;
+
+	return new CPointer((unsigned long) pEntity);
 }
 
 inline CPointer* PointerFromBaseHandle( CBaseHandle basehandle )
