@@ -31,10 +31,15 @@
 
 #include "eiface.h"
 #ifndef PATCH_SEND_USER_MESSAGE
-#error "Make IVEngineServer::SendUserMessage pure virtual"
+#error "Make IVEngineServer::SendUserMessage pure virtual."
 #endif
 
 #include "utility/baseentity.h"
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."
+#endif
+
+#include "functors.h"
+#ifndef PATCH_FUNCTOR_CALLBACK0_RETURN_VALUE_CONVERSION
+#error "Convert return value of CFunctorCallback0::GetTarget() to void*."
 #endif
