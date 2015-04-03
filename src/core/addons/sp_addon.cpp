@@ -188,7 +188,8 @@ void CAddonManager::OnEntityCreated( CBaseEntity *pEntity )
 		IServerUnknown* pServerUnknown = pEdict->GetUnknown();
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
-	}
+	}   
+	CALL_LISTENERS(OnEntityCreated, iIndex);
 }
 
 void CAddonManager::OnEntitySpawned( CBaseEntity *pEntity )
