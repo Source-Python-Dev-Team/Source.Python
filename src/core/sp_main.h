@@ -101,8 +101,6 @@ public:
 	virtual void OnEntitySpawned( CBaseEntity *pEntity );
 	virtual void OnEntityDeleted( CBaseEntity *pEntity );
 
-	void InitializeEntitiesListeners(CPointer* pEntitiListeners);
-
 private:
 	int m_iClientCommandIndex;
 };
