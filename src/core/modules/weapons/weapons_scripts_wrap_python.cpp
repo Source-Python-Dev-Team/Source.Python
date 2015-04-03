@@ -28,7 +28,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
 
 #include ENGINE_INCLUDE_PATH(weapons_scripts_wrap_python.h)

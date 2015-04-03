@@ -31,8 +31,8 @@
 //-----------------------------------------------------------------------------
 #include "boost/unordered_map.hpp"
 #include "sp_python.h"
-#include "utility/sp_util.h"
-#include "utility/wrap_macros.h"
+#include "utilities/sp_util.h"
+#include "utilities/wrap_macros.h"
 #include "utlvector.h"
 #include "edict.h"
 #include "convar.h"

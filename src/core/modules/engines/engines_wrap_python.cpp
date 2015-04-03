@@ -33,7 +33,7 @@
 #endif
 
 #include "modules/export_main.h"
-#include "utility/conversions.h"
+#include "utilities/conversions.h"
 
 #include "dt_send.h"
 #include "irecipientfilter.h"

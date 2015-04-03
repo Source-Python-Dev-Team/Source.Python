@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "commands_server_wrap.h"
 #include "commands_wrap.h"
-#include "utility/call_python.h"
+#include "utilities/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
 

@@ -32,7 +32,7 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/descriptor.h"
 
-#include "utility/call_python.h"
+#include "utilities/call_python.h"
 
 class CUserMessageImplementation : public IUsermessageImplementationBase
 {

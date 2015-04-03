@@ -32,7 +32,7 @@
 #include "dyncall.h"
 #include "dyncall_signature.h"
 
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "DynamicHooks.h"
 using namespace DynamicHooks;
 

@@ -30,7 +30,7 @@
 #include "modules/export_main.h"
 #include "mathlib/vector.h"
 #include "mathlib/mathlib.h"
-#include "utility/sp_util.h"
+#include "utilities/sp_util.h"
 
 #include "modules/memory/memory_tools.h"
 

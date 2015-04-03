@@ -28,12 +28,12 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "dt_common.h"
 #include "dt_send.h"
 #include "server_class.h"
 #include "modules/memory/memory_tools.h"
-#include "utility/sp_util.h"
+#include "utilities/sp_util.h"
 #include "entities_props_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(entities_props_wrap_python.h)

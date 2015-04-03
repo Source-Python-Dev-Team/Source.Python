@@ -28,8 +28,8 @@
 // >> INCLUDES
 // ============================================================================
 #include "memory_callback.h"
-#include "utility/wrap_macros.h"
-#include "utility/call_python.h"
+#include "utilities/wrap_macros.h"
+#include "utilities/call_python.h"
 
 #include "AsmJit.h"
 using namespace AsmJit;

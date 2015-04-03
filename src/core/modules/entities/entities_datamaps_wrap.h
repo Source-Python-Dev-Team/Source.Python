@@ -36,9 +36,9 @@
 #include "datamap.h"
 #include "game/server/variant_t.h"
 #include "Color.h"
-#include "utility/conversions.h"
+#include "utilities/conversions.h"
 #include "tier0/basetypes.h"
-#include "utility/baseentity.h"
+#include "utilities/baseentity.h"
 
 
 //-----------------------------------------------------------------------------

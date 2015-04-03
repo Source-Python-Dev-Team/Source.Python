@@ -35,7 +35,7 @@
 #	include <windows.h>
 #endif
 
-#include "../core/utility/shared_utils.h"
+#include "../core/utilities/shared_utils.h"
 
 //---------------------------------------------------------------------------------
 // Disable warnings.

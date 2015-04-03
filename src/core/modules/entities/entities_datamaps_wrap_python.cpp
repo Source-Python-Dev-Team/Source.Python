@@ -28,7 +28,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "entities_datamaps_wrap.h"
 #include "modules/memory/memory_tools.h"
 

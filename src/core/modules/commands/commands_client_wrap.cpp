@@ -33,7 +33,7 @@
 #include "convar.h"
 #include "engine/iserverplugin.h"
 #include "modules/entities/entities_wrap.h"
-#include "utility/call_python.h"
+#include "utilities/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
 #include "modules/listeners/listeners_manager.h"

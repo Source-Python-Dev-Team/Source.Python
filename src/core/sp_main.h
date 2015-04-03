@@ -33,7 +33,7 @@
 #include "igameevents.h"
 #include "modules/memory/memory_tools.h"
 
-#include "utility/baseentity.h"
+#include "utilities/baseentity.h"
 #include "game/shared/entitylist_base.h"
 #include "game/server/entitylist.h"
 

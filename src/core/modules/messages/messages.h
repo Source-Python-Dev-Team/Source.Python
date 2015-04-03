@@ -31,7 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "irecipientfilter.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include ENGINE_INCLUDE_PATH(messages_implementation.h)
 #include "public/engine/iserverplugin.h"
 

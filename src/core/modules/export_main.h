@@ -30,7 +30,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "boost/python.hpp"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 
 //---------------------------------------------------------------------------------
 // Maximum number of modules we can have.

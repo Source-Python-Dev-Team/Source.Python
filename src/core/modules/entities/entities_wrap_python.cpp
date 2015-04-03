@@ -28,13 +28,13 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "edict.h"
-#include "utility/baseentity.h"
+#include "utilities/baseentity.h"
 #include "game/shared/entitylist_base.h"
 #include "game/server/entitylist.h"
 
 #include "entities_generator_wrap.h"
 #include "entities_wrap.h"
-#include "utility/sp_util.h"
+#include "utilities/sp_util.h"
 #include "modules/memory/memory_tools.h"
 #include "modules/export_main.h"
 using namespace boost::python;

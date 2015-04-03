@@ -34,7 +34,7 @@
 #include "sp_python.h"
 #include "sp_main.h"
 #include "eiface.h"
-#include "utility/shared_utils.h"
+#include "utilities/shared_utils.h"
 #include "modules/export_main.h"
 
 

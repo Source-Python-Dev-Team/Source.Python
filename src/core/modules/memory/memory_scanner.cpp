@@ -40,8 +40,8 @@
 
 #include "memory_scanner.h"
 #include "memory_tools.h"
-#include "utility/sp_util.h"
-#include "utility/call_python.h"
+#include "utilities/sp_util.h"
+#include "utilities/call_python.h"
 #include "eiface.h"
 
 

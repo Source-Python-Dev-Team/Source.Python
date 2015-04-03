@@ -32,7 +32,7 @@
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
 #include "basehandle.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "boost/python.hpp"
 
 //-----------------------------------------------------------------------------

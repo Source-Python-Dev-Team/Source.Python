@@ -31,7 +31,7 @@
 // Includes.
 // ----------------------------------------------------------------------------
 #include "boost/python/call.hpp"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 
 // ----------------------------------------------------------------------------
 // Namespaces

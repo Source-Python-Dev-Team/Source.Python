@@ -30,8 +30,8 @@
 // ----------------------------------------------------------------------------
 // Includes.
 // ----------------------------------------------------------------------------
-#include "utility/wrap_macros.h"
-#include "utility/ipythongenerator.h"
+#include "utilities/wrap_macros.h"
+#include "utilities/ipythongenerator.h"
 
 // ----------------------------------------------------------------------------
 // Forward declaration.

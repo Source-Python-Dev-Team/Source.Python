@@ -29,9 +29,9 @@
 // ----------------------------------------------------------------------------
 #include "entities_generator_wrap.h"
 #include "entities_wrap.h"
-#include "utility/sp_util.h"
+#include "utilities/sp_util.h"
 #include "boost/python/iterator.hpp"
-#include "utility/conversions.h"
+#include "utilities/conversions.h"
 
 // ----------------------------------------------------------------------------
 // CEntityGenerator Constructor.

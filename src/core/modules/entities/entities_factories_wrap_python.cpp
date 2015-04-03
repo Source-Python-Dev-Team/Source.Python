@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "entities_factories_wrap.h"
 #include "modules/export_main.h"
 

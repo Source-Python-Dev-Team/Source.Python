@@ -32,7 +32,7 @@ using namespace boost::python;
 
 #include "modules/memory/memory_tools.h"
 
-#include "utility/sp_util.h"
+#include "utilities/sp_util.h"
 #include "messages.h"
 
 //-----------------------------------------------------------------------------

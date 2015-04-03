@@ -30,12 +30,12 @@
 #include <vector>
 #include "entities_wrap.h"
 #include "dt_common.h"
-#include "utility/sp_util.h"
+#include "utilities/sp_util.h"
 #include "edict.h"
 #include "boost/unordered_map.hpp"
 #include "boost/algorithm/string.hpp"
 #include "boost/foreach.hpp"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "sp_main.h"
 
 //-----------------------------------------------------------------------------

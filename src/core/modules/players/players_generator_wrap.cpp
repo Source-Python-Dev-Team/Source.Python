@@ -28,10 +28,10 @@
 // Includes
 // ----------------------------------------------------------------------------
 #include "players_generator_wrap.h"
-#include "utility/sp_util.h"
+#include "utilities/sp_util.h"
 #include "game/server/iplayerinfo.h"
 #include "boost/python/iterator.hpp"
-#include "utility/conversions.h"
+#include "utilities/conversions.h"
 
 // ----------------------------------------------------------------------------
 // External variables.

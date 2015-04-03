@@ -30,9 +30,9 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "toolframework/itoolentity.h"
-#include "utility/conversions.h"
+#include "utilities/conversions.h"
 #include "modules/memory/memory_tools.h"
 
 

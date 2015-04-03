@@ -33,7 +33,7 @@
 #include "datamap.h"
 #include "game/shared/weapon_parse.h"
 #include "tier1/utldict.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 
 
 //-----------------------------------------------------------------------------

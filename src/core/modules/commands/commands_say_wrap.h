@@ -32,8 +32,8 @@
 #include "boost/unordered_map.hpp"
 #include "utlvector.h"
 #include "commands_wrap.h"
-#include "utility/sp_util.h"
-#include "utility/wrap_macros.h"
+#include "utilities/sp_util.h"
+#include "utilities/wrap_macros.h"
 #include "modules/entities/entities_wrap.h"
 
 //-----------------------------------------------------------------------------

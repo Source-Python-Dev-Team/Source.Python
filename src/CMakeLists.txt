@@ -26,24 +26,39 @@ Set(SOURCEPYTHON_LOADER_FILES
 )
 
 # ------------------------------------------------------------------
-# Utility
+# Patches
 # ------------------------------------------------------------------
-Set(SOURCEPYTHON_UTIL_HEADERS
-    core/utility/sp_util.h
-    core/utility/shared_utils.h
-    core/utility/call_python.h
-    core/utility/wrap_macros.h
-    core/utility/conversions.h
-    core/utility/ipythongenerator.h
+Set(SOURCEPYTHON_PATCHES_HEADERS
 )
 
-Set(SOURCEPYTHON_UTIL_SOURCES
-    core/utility/patches/${SOURCE_ENGINE}/patches.cpp
+Set(SOURCEPYTHON_PATCHES_SOURCES
+    core/patches/${SOURCE_ENGINE}/patches.cpp
 )
 
-Set(SOURCEPYTHON_UTIL_FILES
-    ${SOURCEPYTHON_UTIL_HEADERS}
-    ${SOURCEPYTHON_UTIL_SOURCES}
+Set(SOURCEPYTHON_PATCHES_FILES
+    ${SOURCEPYTHON_PATCHES_HEADERS}
+    ${SOURCEPYTHON_PATCHES_SOURCES}
+)
+
+
+# ------------------------------------------------------------------
+# Utilities
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_UTILITIES_HEADERS
+    core/utilities/sp_util.h
+    core/utilities/shared_utils.h
+    core/utilities/call_python.h
+    core/utilities/wrap_macros.h
+    core/utilities/conversions.h
+    core/utilities/ipythongenerator.h
+)
+
+Set(SOURCEPYTHON_UTILITIES_SOURCES
+)
+
+Set(SOURCEPYTHON_UTILITIES_FILES
+    ${SOURCEPYTHON_UTILITIES_HEADERS}
+    ${SOURCEPYTHON_UTILITIES_SOURCES}
 )
 
 # ------------------------------------------------------------------
@@ -52,13 +67,11 @@ Set(SOURCEPYTHON_UTIL_FILES
 Set(SOURCEPYTHON_CORE_HEADERS
     core/sp_python.h
     core/sp_main.h
-    core/sp_gamedir.h
 )
 
 Set(SOURCEPYTHON_CORE_SOURCES
     core/sp_python.cpp
     core/sp_main.cpp
-    core/sp_gamedir.cpp
 )
 
 Set(SOURCEPYTHON_CORE_FILES
@@ -411,7 +424,8 @@ Set(SOURCEPYTHON_MODULE_FILES
 # clean.
 # ------------------------------------------------------------------
 Source_Group("Header Files\\Core"                           FILES ${SOURCEPYTHON_CORE_HEADERS})
-Source_Group("Header Files\\Utility"                        FILES ${SOURCEPYTHON_UTIL_HEADERS})
+Source_Group("Header Files\\Patches"                        FILES ${SOURCEPYTHON_PATCHES_HEADERS})
+Source_Group("Header Files\\Utilities"                      FILES ${SOURCEPYTHON_UTILITIES_HEADERS})
 Source_Group("Header Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_HEADERS})
 
 Source_Group("Header Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS})
@@ -435,8 +449,10 @@ Source_Group("Header Files\\Module\\StringTables"           FILES ${SOURCEPYTHON
 Source_Group("Header Files\\Module\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
-Source_Group("Source Files\\Utility"                        FILES ${SOURCEPYTHON_UTIL_SOURCES})
+Source_Group("Source Files\\Patches"                        FILES ${SOURCEPYTHON_PATCHES_SOURCES})
+Source_Group("Source Files\\Utilities"                      FILES ${SOURCEPYTHON_UTILITIES_SOURCES})
 Source_Group("Source Files\\Generic"                        FILES ${SOURCEPYTHON_GENERIC_SOURCES})
+
 Source_Group("Source Files\\Module\\BitBuffers"             FILES ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Colors"                 FILES ${SOURCEPYTHON_COLORS_MODULE_SOURCES})
 Source_Group("Source Files\\Module\\Commands"               FILES ${SOURCEPYTHON_COMMANDS_MODULE_SOURCES})
@@ -472,7 +488,7 @@ Add_Library(core SHARED
     ${SOURCEPYTHON_CORE_FILES}
     ${SOURCEPYTHON_GENERIC_FILES}
     ${SOURCEPYTHON_MODULE_FILES}
-    ${SOURCEPYTHON_UTIL_FILES}
+    ${SOURCEPYTHON_UTILITIES_FILES}
 )
 
 Add_Library(source-python SHARED

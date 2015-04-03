@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 #include <climits>
 #include "modules/export_main.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "const.h"
 #include "game/shared/in_buttons.h"
 #include "string_t.h"

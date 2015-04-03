@@ -30,7 +30,7 @@
 #include "../export_main.h"
 #include "modules/memory/memory_tools.h"
 
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "networkstringtabledefs.h"
 #include "eiface.h"
 

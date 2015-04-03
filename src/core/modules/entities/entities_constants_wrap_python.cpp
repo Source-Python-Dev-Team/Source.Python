@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 #include <climits>
 #include "modules/export_main.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "mathlib/vector.h"
 #include "tier1/utlvector.h"
 #include "string_t.h"

@@ -41,7 +41,7 @@
 #include "game/server/iplayerinfo.h"
 #include "shake.h" // Linux compile fails without this.
 #include "game/shared/IEffects.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 #include "public/toolframework/itoolentity.h"
@@ -49,13 +49,13 @@
 #include "networkstringtabledefs.h"
 #include "edict.h"
 #include "convar.h"
-#include "utility/call_python.h"
+#include "utilities/call_python.h"
 
 #include "DynamicHooks.h"
 extern DynamicHooks::CHookManager* g_pHookMngr;
 
 #include "modules/listeners/listeners_manager.h"
-#include "utility/conversions.h"
+#include "utilities/conversions.h"
 
 
 //-----------------------------------------------------------------------------

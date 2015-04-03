@@ -28,7 +28,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "modules/export_main.h"
-#include "utility/wrap_macros.h"
+#include "utilities/wrap_macros.h"
 #include "datamap.h"
 #include "game/shared/shareddefs.h"
 #include "game/shared/weapon_parse.h"
