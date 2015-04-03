@@ -181,14 +181,14 @@ void CAddonManager::OnEdictFreed( const edict_t *edict )
 void CAddonManager::OnEntityCreated( CBaseEntity *pEntity )
 {
 	CPointer ptr = CPointer((unsigned long) pEntity);
-	edict_t *pEdict = EdictFromPointer(&ptr);
+	int iIndex = IndexFromPointer(&ptr);
+	edict_t* pEdict = EdictFromIndex(iIndex);
 	if (pEdict)
 	{
-		IServerUnknown *pServerUnknown = pEdict->GetUnknown();
+		IServerUnknown* pServerUnknown = pEdict->GetUnknown();
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
 	}
-	CALL_LISTENERS(OnEntityCreated, IndexFromPointer(&ptr));
 }
 
 void CAddonManager::OnEntitySpawned( CBaseEntity *pEntity )
