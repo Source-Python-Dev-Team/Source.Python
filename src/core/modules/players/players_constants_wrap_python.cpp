@@ -28,7 +28,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include <climits>
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "utilities/wrap_macros.h"
 #include "const.h"
 #include "game/shared/in_buttons.h"

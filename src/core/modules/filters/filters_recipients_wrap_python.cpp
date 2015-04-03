@@ -30,7 +30,7 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "filters_recipients_wrap.h"
 #include "modules/memory/memory_tools.h"
 

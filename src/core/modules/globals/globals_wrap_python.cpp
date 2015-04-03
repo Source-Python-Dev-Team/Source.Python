@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "modules/memory/memory_tools.h"
 #include "edict.h"
 #include ENGINE_INCLUDE_PATH(globals_wrap_python.h)

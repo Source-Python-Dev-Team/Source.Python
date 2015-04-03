@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
+#include "export_main.h"
 using namespace boost::python;
 
 #include "modules/memory/memory_tools.h"

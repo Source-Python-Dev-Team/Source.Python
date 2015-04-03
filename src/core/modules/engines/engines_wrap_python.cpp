@@ -32,7 +32,7 @@
 #include <Windows.h>
 #endif
 
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "utilities/conversions.h"
 
 #include "dt_send.h"

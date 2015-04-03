@@ -28,7 +28,7 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "igameevents.h"
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "modules/memory/memory_tools.h"
 
 #ifndef EVENT_DEBUG_ID_INIT

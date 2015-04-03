@@ -27,7 +27,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "modules/export_main.h"
+#include "export_main.h"
 #include "utilities/wrap_macros.h"
 #include "dt_common.h"
 #include "dt_send.h"
