@@ -154,49 +154,6 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
         # Return the end position of the trace if it hit something
         return trace.end_position if trace.did_hit() else None
 
-    def get_view_entity(self):
-        """Return the entity that the player is looking at."""
-        # Get the player's current trace data
-        trace = self.get_trace_ray()
-
-        # Did the trace hit?
-        if not trace.did_hit():
-            return None
-
-        # Get the entity that the trace hit
-        pointer = Pointer(trace.get_entity().get_base_entity())
-
-        # Get the index of the entity the trace hit
-        index = index_from_pointer(pointer, False)
-
-        # Return a BaseEntity instance of the hit entity if it has an index
-        return BaseEntity(index) if index else None
-
-    def get_view_player(self):
-        """Return the player that the player is looking at."""
-        # Get the entity that the player is looking at
-        entity = self.get_view_entity()
-
-        # Return a PlayerEntity instance of the player or None if not a player
-        return (
-            PlayerEntity(entity.index) if entity is not None and
-            entity.classname == 'player' else None)
-
-    def get_eye_location(self):
-        """Return the eye location of the player."""
-        return Vector(*tuple(self.get_property_float(
-            'localdata.m_vecViewOffset[{0}]'.format(x)) + y for x, y in
-            enumerate(self.origin)))
-
-    def get_view_vector(self):
-        """Return the view vector of the player."""
-        eye_angle_y = self.eye_angle_y
-        return Vector(
-            math.cos(math.radians(eye_angle_y)),
-            math.sin(math.radians(eye_angle_y)),
-            -1 * math.sin(math.radians(self.eye_angle_x))
-        )
-
     def set_view_coordinates(self, coords):
         """Force the player to look at the given coordinates."""
         coord_eye_vec = coords - self.get_eye_location()
@@ -215,26 +172,76 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
             coord_eye_vec.y ** 2 + coord_eye_vec.x ** 2)))
 
         # Set the new angle
-        self.teleport(
-            None,
-            QAngle(x_angle, y_angle, self.get_property_vector('m_angRotation').z),
-            None
-        )
+        self.teleport(None, QAngle(x_angle, y_angle, self.rotation.z), None)
 
-    def set_view_player(self, player):
-        """Force the player to look at the other player's eye location."""
-        self.set_view_coordinates(player.get_eye_location())
+    view_coordinates = property(get_view_coordinates, set_view_coordinates)
+
+    def get_view_entity(self):
+        """Return the entity that the player is looking at."""
+        # Get the player's current trace data
+        trace = self.get_trace_ray()
+
+        # Did the trace hit?
+        if not trace.did_hit():
+            return None
+
+        # Get the entity that the trace hit
+        pointer = Pointer(trace.get_entity().get_base_entity())
+
+        # Get the index of the entity the trace hit
+        index = index_from_pointer(pointer, False)
+
+        # Return a BaseEntity instance of the hit entity if it has an index
+        return BaseEntity(index) if index else None
 
     def set_view_entity(self, entity):
         """Force the player to look at the origin of the given entity."""
         self.set_view_coordinates(entity.origin)
 
+    view_entity = property(get_view_entity, set_view_entity)
+
+    def get_view_player(self):
+        """Return the player that the player is looking at."""
+        # Get the entity that the player is looking at
+        entity = self.get_view_entity()
+
+        # Return a PlayerEntity instance of the player or None if not a player
+        return (
+            PlayerEntity(entity.index) if entity is not None and
+            entity.classname == 'player' else None)
+
+    def set_view_player(self, player):
+        """Force the player to look at the other player's eye location."""
+        self.set_view_coordinates(player.get_eye_location())
+
+    view_player = property(get_view_player, set_view_player)
+
+    def get_eye_location(self):
+        """Return the eye location of the player."""
+        return Vector(*tuple(self.get_property_float(
+            'localdata.m_vecViewOffset[{0}]'.format(x)) + y for x, y in
+            enumerate(self.origin)))
+
+    def get_view_vector(self):
+        """Return the view vector of the player."""
+        eye_angle_y = self.eye_angle_y
+        return Vector(
+            math.cos(math.radians(eye_angle_y)),
+            math.sin(math.radians(eye_angle_y)),
+            -1 * math.sin(math.radians(self.eye_angle_x))
+        )
+
     def get_view_angle(self):
         """Return the view angle."""
         eye_angle_y = self.eye_angle_y
         eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
-        return QAngle(
-            self.eye_angle_x,
-            eye_angle_y,
-            self.get_property_vector('m_angRotation').z
-        )
+        return QAngle(self.eye_angle_x, eye_angle_y, self.rotation.z)
+
+    def set_view_angle(self, angle):
+        """Set the view angle."""
+        # Make sure that only QAngle objects are passed. Otherwise you can
+        # easily crash the server or cause unexpected behaviour
+        assert isinstance(angle, QAngle)
+        self.teleport(None, angle, None)
+
+    view_angle = property(get_view_angle, set_view_angle)
