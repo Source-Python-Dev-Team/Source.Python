@@ -172,11 +172,7 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
             coord_eye_vec.y ** 2 + coord_eye_vec.x ** 2)))
 
         # Set the new angle
-        self.teleport(
-            None,
-            QAngle(x_angle, y_angle, self.get_property_vector('m_angRotation').z),
-            None
-        )
+        self.teleport(None, QAngle(x_angle, y_angle, self.rotation.z), None)
 
     view_coordinates = property(get_view_coordinates, set_view_coordinates)
 
@@ -239,11 +235,7 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
         """Return the view angle."""
         eye_angle_y = self.eye_angle_y
         eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
-        return QAngle(
-            self.eye_angle_x,
-            eye_angle_y,
-            self.get_property_vector('m_angRotation').z
-        )
+        return QAngle(self.eye_angle_x, eye_angle_y, self.rotation.z)
 
     def set_view_angle(self, angle):
         """Set the view angle."""
