@@ -32,6 +32,7 @@
 // ----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
 #include "utilities/ipythongenerator.h"
+#include "utilities/baseentity.h"
 
 // ----------------------------------------------------------------------------
 // Forward declaration.
@@ -54,7 +55,7 @@ protected:
 	virtual edict_t* getNext();
 
 private:
-	int m_iEntityIndex;
+	CBaseEntity *m_pCurrentEntity;
 	void makeStringCopy(const char* szClassName, unsigned int uiClassNameLen);
 	const char* m_szClassName;
 	unsigned int m_uiClassNameLen;

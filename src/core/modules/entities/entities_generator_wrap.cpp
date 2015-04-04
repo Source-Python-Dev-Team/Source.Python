@@ -32,13 +32,21 @@
 #include "utilities/sp_util.h"
 #include "boost/python/iterator.hpp"
 #include "utilities/conversions.h"
+#include "toolframework/itoolentity.h"
+
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern IServerTools *servertools;
+
 
 // ----------------------------------------------------------------------------
 // CEntityGenerator Constructor.
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator( PyObject* self ):
 	IPythonGenerator<edict_t>(self),
-	m_iEntityIndex(0),
+	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
 	m_szClassName(NULL),
 	m_uiClassNameLen(0),
 	m_bExactMatch(false)
@@ -50,7 +58,7 @@ CEntityGenerator::CEntityGenerator( PyObject* self ):
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs ):
 	IPythonGenerator<edict_t>(self),
-	m_iEntityIndex(rhs.m_iEntityIndex),
+	m_pCurrentEntity(rhs.m_pCurrentEntity),
 	m_uiClassNameLen(rhs.m_uiClassNameLen),
 	m_bExactMatch(rhs.m_bExactMatch)
 {
@@ -62,7 +70,7 @@ CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs 
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
 	IPythonGenerator<edict_t>(self),
-	m_iEntityIndex(0),
+	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
 	m_uiClassNameLen(strlen(szClassName)),
 	m_bExactMatch(false)
 {
@@ -74,7 +82,7 @@ CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName, bool bExactMatch):
 	IPythonGenerator<edict_t>(self),
-	m_iEntityIndex(0),
+	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
 	m_uiClassNameLen(strlen(szClassName)),
 	m_bExactMatch(bExactMatch)
 {
@@ -94,37 +102,18 @@ CEntityGenerator::~CEntityGenerator()
 // ----------------------------------------------------------------------------
 edict_t* CEntityGenerator::getNext()
 {
-	edict_t* pEdict = NULL;
-	while(m_iEntityIndex < gpGlobals->maxEntities)
+	CPointer pEntity = CPointer((unsigned long)m_pCurrentEntity);
+	edict_t *pEdict = EdictFromPointer(&pEntity);
+	if (m_uiClassNameLen && m_szClassName)
 	{
-		m_iEntityIndex++;
-		try
-		{
-			pEdict = EdictFromIndex(m_iEntityIndex);
-		} catch ( error_already_set ) {
+		if (!m_bExactMatch && strncmp(pEdict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
 			pEdict = NULL;
-		}
-		if (!pEdict || pEdict->IsFree() || !strlen(pEdict->GetClassName()))
-		{
+
+		else if (m_bExactMatch && strcmp(pEdict->GetClassName(), m_szClassName) != 0)
 			pEdict = NULL;
-		}
-		else if (m_uiClassNameLen && m_szClassName)
-		{
-			if (!m_bExactMatch && strncmp(pEdict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
-			{
-				pEdict = NULL;
-			}
-			else if (m_bExactMatch && strcmp(pEdict->GetClassName(), m_szClassName) != 0)
-			{
-				pEdict = NULL;
-			}
-		}
-		if (pEdict)
-		{
-			return pEdict;
-		}
 	}
-	return NULL;
+	m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);;
+	return pEdict;
 }
 
 //---------------------------------------------------------------------------------
