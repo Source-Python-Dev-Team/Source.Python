@@ -216,11 +216,21 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
 
     view_player = property(get_view_player, set_view_player)
 
+    @property
+    def view_offset(self):
+        """Return the view offset."""
+        return Vector(
+            self.view_offset_x, self.view_offset_y, self.view_offset_z)
+
     def get_eye_location(self):
         """Return the eye location of the player."""
-        return Vector(*tuple(self.get_property_float(
-            'localdata.m_vecViewOffset[{0}]'.format(x)) + y for x, y in
-            enumerate(self.origin)))
+        return self.view_offset + self.origin
+
+    def set_eye_location(self, origin):
+        """Set the eye location."""
+        self.teleport(origin - self.eye_location, None, None)
+
+    eye_location = property(get_eye_location, set_eye_location)
 
     def get_view_vector(self):
         """Return the view vector of the player."""
