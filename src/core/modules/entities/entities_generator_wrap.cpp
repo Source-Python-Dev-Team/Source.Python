@@ -102,18 +102,26 @@ CEntityGenerator::~CEntityGenerator()
 // ----------------------------------------------------------------------------
 edict_t* CEntityGenerator::getNext()
 {
-	CPointer pEntity = CPointer((unsigned long)m_pCurrentEntity);
-	edict_t *pEdict = EdictFromPointer(&pEntity);
-	if (m_uiClassNameLen && m_szClassName)
+	while (m_pCurrentEntity)
 	{
-		if (!m_bExactMatch && strncmp(pEdict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
-			pEdict = NULL;
+		CPointer pEntity = CPointer((unsigned long)m_pCurrentEntity);
+		m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);
+		edict_t *pEdict = EdictFromPointer(&pEntity);
+		if (pEdict)
+		{
+			if (m_uiClassNameLen && m_szClassName)
+			{
+				if (!m_bExactMatch && strncmp(pEdict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
+					pEdict = NULL;
 
-		else if (m_bExactMatch && strcmp(pEdict->GetClassName(), m_szClassName) != 0)
-			pEdict = NULL;
+				else if (m_bExactMatch && strcmp(pEdict->GetClassName(), m_szClassName) != 0)
+					pEdict = NULL;
+			}
+			if (pEdict)
+				return pEdict;
+		}
 	}
-	m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);;
-	return pEdict;
+	return NULL;
 }
 
 //---------------------------------------------------------------------------------
