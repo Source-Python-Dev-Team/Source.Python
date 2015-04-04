@@ -131,7 +131,7 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
         start_vec = self.get_eye_location()
 
         # Calculate the greatest possible distance
-        end_vec = start_vec + self.get_view_vector() * MAX_TRACE_LENGTH
+        end_vec = start_vec + self.view_vector * MAX_TRACE_LENGTH
 
         # Create a new trace object
         trace = GameTrace()
@@ -232,7 +232,8 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
 
     eye_location = property(get_eye_location, set_eye_location)
 
-    def get_view_vector(self):
+    @property
+    def view_vector(self):
         """Return the view vector of the player."""
         eye_angle_y = self.eye_angle_y
         return Vector(
@@ -255,3 +256,9 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
         self.teleport(None, angle, None)
 
     view_angle = property(get_view_angle, set_view_angle)
+
+    def push(self, horiz_mul, vert_mul, vert_override=False):
+        """Push the player along his view vector."""
+        x, y, z = tuple(self.view_vector)
+        self.basevelocity = Vector(x * horiz_mul, y * horiz_mul,
+            z * vert_mul if not vert_override else vert_mul)
