@@ -32,16 +32,13 @@
 // ----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
 #include "utilities/ipythongenerator.h"
+#include "edict.h"
 
-// ----------------------------------------------------------------------------
-// Forward declaration.
-// ----------------------------------------------------------------------------
-class IPlayerInfo;
 
 // ----------------------------------------------------------------------------
 // Declare the generator class.
 // ----------------------------------------------------------------------------
-class CPlayerGenerator: public IPythonGenerator<IPlayerInfo>
+class CPlayerGenerator: public IPythonGenerator<edict_t>
 {
 public:
 	CPlayerGenerator(PyObject* self);
@@ -49,7 +46,7 @@ public:
 	virtual ~CPlayerGenerator();
 
 protected:
-	virtual IPlayerInfo* getNext();
+	virtual edict_t* getNext();
 
 private:
 	int m_iEntityIndex;

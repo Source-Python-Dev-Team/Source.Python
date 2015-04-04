@@ -12,6 +12,13 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
+#   Engines
+from engines.precache import Model
+#   Entities
+from entities.helpers import basehandle_from_edict
+from entities.helpers import index_from_edict
+from entities.helpers import inthandle_from_edict
+from entities.helpers import pointer_from_edict
 #   Filters
 from filters.iterator import _IterObject
 from filters.manager import _BaseFilterManager
@@ -21,13 +28,10 @@ from paths import SP_DATA_PATH
 from players import PlayerGenerator
 from players.entity import PlayerEntity
 from players.helpers import address_from_playerinfo
-from players.helpers import basehandle_from_playerinfo
-from players.helpers import edict_from_playerinfo
-from players.helpers import index_from_playerinfo
-from players.helpers import inthandle_from_playerinfo
-from players.helpers import pointer_from_playerinfo
+from players.helpers import get_client_language
+from players.helpers import playerinfo_from_edict
 from players.helpers import uniqueid_from_playerinfo
-from players.helpers import userid_from_playerinfo
+from players.helpers import userid_from_edict
 
 
 # =============================================================================
@@ -103,17 +107,17 @@ class _Team(object):
 # >> FILTERS
 # =============================================================================
 # Register the filter functions
-_player_iter_manager.register_filter('all', lambda playerinfo: True)
+_player_iter_manager.register_filter('all', lambda edict: True)
 _player_iter_manager.register_filter(
-    'bot', lambda playerinfo: playerinfo.is_fake_client())
+    'bot', lambda edict: playerinfo_from_edict(edict).is_fake_client())
 _player_iter_manager.register_filter(
-    'human', lambda playerinfo: not playerinfo.is_fake_client())
+    'human', lambda edict: not playerinfo_from_edict(edict).is_fake_client())
 _player_iter_manager.register_filter(
-    'alive', lambda playerinfo: not PlayerEntity(index_from_playerinfo(
-        playerinfo)).get_property_int('pl.deadflag'))
+    'alive', lambda edict: not PlayerEntity(playerinfo_from_edict(
+        edict)).get_property_int('pl.deadflag'))
 _player_iter_manager.register_filter(
-    'dead', lambda playerinfo: PlayerEntity(index_from_playerinfo(
-        playerinfo)).get_property_int('pl.deadflag'))
+    'dead', lambda edict: PlayerEntity(index_from_edict(
+        edict)).get_property_int('pl.deadflag'))
 
 # Loop through all teams in the game's team file
 for _team in _game_teams.get('names', {}):
@@ -146,45 +150,48 @@ for _number, _team in enumerate(('un', 'spec', 't', 'ct')):
 # >> RETURN TYPES
 # =============================================================================
 # Register the return type functions
-_player_iter_manager.register_return_type('index', index_from_playerinfo)
-_player_iter_manager.register_return_type('edict', edict_from_playerinfo)
+_player_iter_manager.register_return_type('index', index_from_edict)
+_player_iter_manager.register_return_type('edict', lambda edict: edict)
 _player_iter_manager.register_return_type(
-    'basehandle', basehandle_from_playerinfo)
+    'basehandle', basehandle_from_edict)
 _player_iter_manager.register_return_type(
-    'inthandle', inthandle_from_playerinfo)
+    'inthandle', inthandle_from_edict)
 _player_iter_manager.register_return_type(
-    'pointer', pointer_from_playerinfo)
+    'pointer', pointer_from_edict)
 _player_iter_manager.register_return_type(
-    'userid', userid_from_playerinfo)
+    'userid', userid_from_edict)
 _player_iter_manager.register_return_type(
-    'uniqueid', uniqueid_from_playerinfo)
+    'uniqueid', lambda edict: uniqueid_from_playerinfo(
+        playerinfo_from_edict(edict)))
 _player_iter_manager.register_return_type(
-    'address', address_from_playerinfo)
+    'address', lambda edict: address_from_playerinfo(
+        playerinfo_from_edict(edict)))
 _player_iter_manager.register_return_type(
-    'playerinfo', lambda playerinfo: playerinfo)
+    'playerinfo', lambda edict: playerinfo_from_edict(edict))
 _player_iter_manager.register_return_type(
-    'player', lambda playerinfo: PlayerEntity(
-        index_from_playerinfo(playerinfo)))
+    'player', lambda edict: PlayerEntity(
+        index_from_edict(edict)))
 _player_iter_manager.register_return_type(
-    'name', lambda playerinfo: playerinfo.get_name())
+    'name', lambda edict: playerinfo_from_edict(edict).get_name())
 _player_iter_manager.register_return_type(
-    'steamid', lambda playerinfo: playerinfo.get_networkid_string())
+    'steamid', lambda edict: playerinfo_from_edict(
+        edict).get_networkid_string())
 _player_iter_manager.register_return_type(
-    'location', lambda playerinfo: playerinfo.get_abs_origin())
+    'location', lambda edict: playerinfo_from_edict(edict).get_abs_origin())
 _player_iter_manager.register_return_type(
-    'kills', lambda playerinfo: playerinfo.get_frag_count())
+    'kills', lambda edict: playerinfo_from_edict(edict).get_frag_count())
 _player_iter_manager.register_return_type(
-    'deaths', lambda playerinfo: playerinfo.get_death_count())
+    'deaths', lambda edict: playerinfo_from_edict(edict).get_death_count())
 _player_iter_manager.register_return_type(
-    'model', lambda playerinfo: playerinfo.get_model_name())
+    'model', lambda edict: Model(
+        playerinfo_from_edict(edict).get_model_name()))
 _player_iter_manager.register_return_type(
-    'health', lambda playerinfo: playerinfo.get_health())
+    'health', lambda edict: playerinfo_from_edict(edict).get_health())
 _player_iter_manager.register_return_type(
-    'armor', lambda playerinfo: playerinfo.get_armor_value())
+    'armor', lambda edict: playerinfo_from_edict(edict).get_armor_value())
 _player_iter_manager.register_return_type(
-    'weapon', lambda playerinfo: playerinfo.get_weapon_name())
+    'weapon', lambda edict: playerinfo_from_edict(edict).get_weapon_name())
 _player_iter_manager.register_return_type(
-    'language', lambda playerinfo: PlayerEntity(
-        index_from_playerinfo(playerinfo).language))
+    'language', lambda edict: get_client_language(index_from_edict(edict)))
 _player_iter_manager.register_return_type(
-    'team', lambda playerinfo: playerinfo.get_team_index())
+    'team', lambda edict: playerinfo_from_edict(edict).get_team_index())

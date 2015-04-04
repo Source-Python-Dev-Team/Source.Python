@@ -82,7 +82,10 @@ __all__ = ('address_from_playerinfo',
 def index_from_steamid(steamid):
     """Return an index from the given SteamID."""
     # Loop through all players on the server
-    for playerinfo in PlayerGenerator():
+    for edict in PlayerGenerator():
+
+        # Get the PlayerInfo instance of the player...
+        playerinfo = playerinfo_from_edict(edict)
 
         # Is the current player's SteamID the same as the one given?
         if playerinfo.get_networkid_string() == steamid:
@@ -97,7 +100,10 @@ def index_from_steamid(steamid):
 def index_from_uniqueid(uniqueid):
     """Return an index from the given UniqueID."""
     # Loop through all players on the server
-    for playerinfo in PlayerGenerator():
+    for edict in PlayerGenerator():
+
+        # Get the PlayerInfo instance of the player...
+        playerinfo = playerinfo_from_edict(edict)
 
         # Is the current player's UniqueID the same as the one given?
         if uniqueid_from_playerinfo(playerinfo) == uniqueid:
@@ -112,7 +118,10 @@ def index_from_uniqueid(uniqueid):
 def index_from_name(name):
     """Return an index from the given player name."""
     # Loop through all players on the server
-    for playerinfo in PlayerGenerator():
+    for edict in PlayerGenerator():
+
+        # Get the PlayerInfo instance of the player...
+        playerinfo = playerinfo_from_edict(edict)
 
         # Is the current player's name the same as the one given?
         if playerinfo.get_name() == name:
@@ -151,7 +160,7 @@ def uniqueid_from_playerinfo(playerinfo):
 def address_from_playerinfo(playerinfo):
     """Return the IP address for the given player."""
     # Is the player a bot?
-    if playerinfo.is_fake_player():
+    if playerinfo.is_fake_client():
 
         # Return a base value, since using
         # <netinfo>.get_address() crashes with bots

@@ -29,20 +29,16 @@
 // ----------------------------------------------------------------------------
 #include "players_generator_wrap.h"
 #include "utilities/sp_util.h"
-#include "game/server/iplayerinfo.h"
+#include "edict.h"
 #include "boost/python/iterator.hpp"
 #include "utilities/conversions.h"
 
-// ----------------------------------------------------------------------------
-// External variables.
-// ----------------------------------------------------------------------------
-extern IPlayerInfoManager* playerinfomanager;
 
 // ----------------------------------------------------------------------------
 // CPlayerGenerator Constructor.
 // ----------------------------------------------------------------------------
 CPlayerGenerator::CPlayerGenerator( PyObject* self ):
-	IPythonGenerator<IPlayerInfo>(self),
+	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(0)
 {
 }
@@ -51,7 +47,7 @@ CPlayerGenerator::CPlayerGenerator( PyObject* self ):
 // CPlayerGenerator Copy-Constructor.
 // ----------------------------------------------------------------------------
 CPlayerGenerator::CPlayerGenerator( PyObject* self, const CPlayerGenerator& rhs ):
-	IPythonGenerator<IPlayerInfo>(self),
+	IPythonGenerator<edict_t>(self),
 	m_iEntityIndex(rhs.m_iEntityIndex)
 {
 }
@@ -64,23 +60,17 @@ CPlayerGenerator::~CPlayerGenerator()
 }
 
 // ----------------------------------------------------------------------------
-// Returns the next valid IPlayerInfo instance.
+// Returns the next valid edict_t instance.
 // ----------------------------------------------------------------------------
-IPlayerInfo* CPlayerGenerator::getNext()
+edict_t *CPlayerGenerator::getNext()
 {
-	IPlayerInfo* pPlayerInfo = NULL;
+	edict_t* pEdict = NULL;
 	while(m_iEntityIndex < gpGlobals->maxClients)
 	{
 		m_iEntityIndex++;
-		edict_t* pEdict = EdictFromIndex(m_iEntityIndex);
+		pEdict = EdictFromIndex(m_iEntityIndex);
 		if (pEdict)
-		{
-			pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
-			if ( pPlayerInfo )
-			{
-				return pPlayerInfo;
-			}
-		}
+			break;
 	}
-	return NULL;
+	return pEdict;
 }
