@@ -7,9 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Math
-from math import cos
-from math import radians
-from math import sin
+import math
 
 # Source.Python Imports
 #   Engines
@@ -24,6 +22,7 @@ from entities.entity import BaseEntity
 from entities.helpers import index_from_pointer
 #   Mathlib
 from mathlib import Vector
+from mathlib import QAngle
 #   Memory
 from memory import Pointer
 #   Players
@@ -191,10 +190,51 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
 
     def get_view_vector(self):
         """Return the view vector of the player."""
-        eye_angle0 = self.get_property_float('m_angEyeAngles[0]')
-        eye_angle1 = self.get_property_float('m_angEyeAngles[1]')
+        eye_angle_y = self.eye_angle_y
         return Vector(
-            cos(radians(eye_angle1)),
-            sin(radians(eye_angle1)),
-            -1 * sin(radians(eye_angle0))
+            math.cos(math.radians(eye_angle_y)),
+            math.sin(math.radians(eye_angle_y)),
+            -1 * math.sin(math.radians(self.eye_angle_x))
+        )
+
+    def set_view_coordinates(self, coords):
+        """Force the player to look at the given coordinates."""
+        coord_eye_vec = coords - self.get_eye_location()
+
+        # Calculate the y angle value
+        atan = math.degrees(math.atan(coord_eye_vec.y / coord_eye_vec.x))
+        if coord_eye_vec.x < 0:
+            y_angle = atan + 180
+        elif coord_eye_vec.y < 0:
+            y_angle = atan + 360
+        else:
+            y_angle = atan
+
+        # Calculate the x angle value
+        x_angle = 0 - math.degrees(math.atan(coord_eye_vec.z / math.sqrt(
+            coord_eye_vec.y ** 2 + coord_eye_vec.x ** 2)))
+
+        # Set the new angle
+        self.teleport(
+            None,
+            QAngle(x_angle, y_angle, self.get_property_vector('m_angRotation').z),
+            None
+        )
+
+    def set_view_player(self, player):
+        """Force the player to look at the other player's eye location."""
+        self.set_view_coordinates(player.get_eye_location())
+
+    def set_view_entity(self, entity):
+        """Force the player to look at the origin of the given entity."""
+        self.set_view_coordinates(entity.origin)
+
+    def get_view_angle(self):
+        """Return the view angle."""
+        eye_angle_y = self.eye_angle_y
+        eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
+        return QAngle(
+            self.eye_angle_x,
+            eye_angle_y,
+            self.get_property_vector('m_angRotation').z
         )
