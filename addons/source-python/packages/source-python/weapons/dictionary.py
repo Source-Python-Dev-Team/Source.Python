@@ -1,6 +1,6 @@
-# ../players/dictionary.py
+# ../weapons/dictionary.py
 
-"""Provides helper class to store player instances."""
+"""Provides helper class to store weapon instances."""
 
 # =============================================================================
 # >> IMPORTS
@@ -8,24 +8,24 @@
 # Source.Python Imports
 #   Entities
 from entities.dictionary import EntityDictionary
-#   Players
-from players.entity import PlayerEntity
+#   Weapons
+from weapons.entity import WeaponEntity
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PlayerDictionary',
+__all__ = ('WeaponDictionary',
            )
 
 
 # ============================================================================
 # >> CLASSES
 # ============================================================================
-class PlayerDictionary(EntityDictionary):
+class WeaponDictionary(EntityDictionary):
 
-    """Helper class used to store player instances."""
+    """Helper class used to store weapon instances."""
 
-    def __init__(self, player_class=PlayerEntity):
+    def __init__(self, weapon_class=WeaponEntity):
         """Initialize the dictionary."""
-        super(PlayerDictionary, self).__init__(player_class)
+        super(WeaponDictionary, self).__init__(weapon_class)
