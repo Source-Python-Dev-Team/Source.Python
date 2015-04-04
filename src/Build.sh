@@ -153,7 +153,7 @@ CreateBuild () {
     cd "$STARTDIR"
 
     # Set the branch's build directory
-    BUILDDIR="$STARTDIR/Builds/$BRANCH"
+    BUILDDIR="$STARTDIR/Builds/Linux/$BRANCH"
 
     # Does the build directory exist (make it if not)?
     if [ ! -d "$BUILDDIR" ]; then

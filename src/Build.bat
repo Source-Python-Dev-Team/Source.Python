@@ -110,7 +110,7 @@ setlocal EnableDelayedExpansion
     cd %STARTDIR%
 
     :: Set the branch's build directory
-    set BUILDDIR=%STARTDIR%\Builds\%branch%
+    set BUILDDIR=%STARTDIR%\Builds\Windows\%branch%
 
     :: Does the build directory exist (make it if not)?
     if not exist %BUILDDIR% mkdir %BUILDDIR%
