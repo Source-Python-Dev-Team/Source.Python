@@ -29,8 +29,10 @@
 //-----------------------------------------------------------------------------
 #include "export_main.h"
 #include "utilities/wrap_macros.h"
+#include "studio.h"
 #include "datacache/imdlcache.h"
 #include "modules/memory/memory_tools.h"
+#include "studio_cache_wrap.h"
 
 
 //-----------------------------------------------------------------------------
@@ -64,7 +66,12 @@ void export_model_cache_interface(scope _cache)
 	class_<IMDLCache, IMDLCache *, boost::noncopyable> ModelCache("ModelCache", no_init);
 
 	// Methods...
+	ModelCache.def("find_model", &IMDLCache::FindMDL);
+	ModelCache.def("add_reference", &IMDLCache::AddRef);
+	ModelCache.def("release", &IMDLCache::Release);
+	ModelCache.def("get_reference_count", &IMDLCache::GetRef);
 	ModelCache.def("get_model_name", &IMDLCache::GetModelName);
+	ModelCache.def("get_studio_header", &IMDLCache::GetStudioHdr, reference_existing_object_policy());
 
 	// Add memory tools...
 	ModelCache ADD_MEM_TOOLS(IMDLCache, "ModelCache");

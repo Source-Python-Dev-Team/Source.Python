@@ -333,11 +333,13 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 # Studio module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STUDIO_MODULE_HEADERS
+    core/modules/studio/studio_wrap.h
     core/modules/studio/studio_cache_wrap.h
 )
 
 Set(SOURCEPYTHON_STUDIO_MODULE_SOURCES
     hl2sdk/${BRANCH}/public/studio.cpp
+    core/modules/studio/studio_wrap_python.cpp
     core/modules/studio/studio_cache_wrap_python.cpp
 )
 
