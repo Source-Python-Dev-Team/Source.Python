@@ -464,5 +464,5 @@ void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
 
 void CSourcePython::OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle )
 {
-	CALL_LISTENERS(OnModelLoaded, type, handle);
+	CALL_LISTENERS(OnModelUnloaded, type, handle);
 }
