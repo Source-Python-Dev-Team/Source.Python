@@ -50,6 +50,7 @@
 #include "edict.h"
 #include "convar.h"
 #include "utilities/call_python.h"
+#include "vphysics_interface.h"
 
 #include "DynamicHooks.h"
 extern DynamicHooks::CHookManager* g_pHookMngr;
@@ -83,6 +84,9 @@ CGlobalVars*			gpGlobals			= NULL;
 IFileSystem*			filesystem			= NULL;
 IServerGameDLL*			servergamedll		= NULL;
 IServerTools*			servertools			= NULL;
+IPhysics*				physics				= NULL;
+IPhysicsCollision*		physcollision		= NULL;
+IPhysicsSurfaceProps*	physprops			= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
 
 //-----------------------------------------------------------------------------
@@ -130,6 +134,9 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{VENGINE_SERVER_RANDOM_INTERFACE_VERSION, (void **)&randomStr},
 	{FILESYSTEM_INTERFACE_VERSION, (void **)&filesystem},
 	{INTERFACENAME_NETWORKSTRINGTABLESERVER, (void **)&networkstringtable},
+	{VPHYSICS_INTERFACE_VERSION, (void **)&physics},
+	{VPHYSICS_COLLISION_INTERFACE_VERSION, (void **)&physcollision},
+	{VPHYSICS_SURFACEPROPS_INTERFACE_VERSION, (void **)&physprops},
 
 	{NULL, NULL}
 };
