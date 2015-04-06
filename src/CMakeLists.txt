@@ -330,6 +330,18 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Studio module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_STUDIO_MODULE_HEADERS
+    core/modules/studio/studio_cache_wrap.h
+)
+
+Set(SOURCEPYTHON_STUDIO_MODULE_SOURCES
+    hl2sdk/${BRANCH}/public/studio.cpp
+    core/modules/studio/studio_cache_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # Weapons module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_WEAPONS_MODULE_HEADERS
@@ -401,6 +413,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
     ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_STUDIO_MODULE_HEADERS}
+    ${SOURCEPYTHON_STUDIO_MODULE_SOURCES}
+
     ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS}
     ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES}
 )
@@ -431,6 +446,7 @@ Source_Group("Header Files\\Modules\\Messages"               FILES ${SOURCEPYTHO
 Source_Group("Header Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Studio"                 FILES ${SOURCEPYTHON_STUDIO_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS})
 
 Source_Group("Source Files\\Core"                           FILES ${SOURCEPYTHON_CORE_SOURCES})
@@ -456,6 +472,7 @@ Source_Group("Source Files\\Modules\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHO
 Source_Group("Source Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Studio"                 FILES ${SOURCEPYTHON_STUDIO_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES})
 
 # ------------------------------------------------------------------

@@ -32,6 +32,9 @@
 #include "listeners_manager.h"
 
 
+//-----------------------------------------------------------------------------
+// Listener accessors.
+//-----------------------------------------------------------------------------
 // Create manager accessor functions
 DEFINE_MANAGER_ACCESSOR(ClientActive)
 DEFINE_MANAGER_ACCESSOR(ClientConnect)
@@ -50,18 +53,29 @@ DEFINE_MANAGER_ACCESSOR(Tick)
 DEFINE_MANAGER_ACCESSOR(OnEntityCreated)
 DEFINE_MANAGER_ACCESSOR(OnEntitySpawned)
 DEFINE_MANAGER_ACCESSOR(OnEntityDeleted)
+DEFINE_MANAGER_ACCESSOR(OnModelLoaded)
+DEFINE_MANAGER_ACCESSOR(OnModelUnloaded)
+
 
 //-----------------------------------------------------------------------------
-// Exposes the listener_c module.
+// Forward declarations.
 //-----------------------------------------------------------------------------
-void export_listener_managers();
+void export_listener_managers(scope);
 
+
+//-----------------------------------------------------------------------------
+// Exposes the _listeners module.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_listeners)
 {
-	export_listener_managers();
+	export_listener_managers(_listeners);
 }
 
-void export_listener_managers() 
+
+//-----------------------------------------------------------------------------
+// Exposes CListenerManager.
+//-----------------------------------------------------------------------------
+void export_listener_managers(scope _listeners) 
 {
 	//-------------------------------------------------------------------------
 	// Exposes ListenerManager
@@ -88,28 +102,31 @@ void export_listener_managers()
 	//-------------------------------------------------------------------------
 	// Expose the accessor functions
 	//-------------------------------------------------------------------------
-	scope().attr("client_active_listener_manager") = object(ptr(GetClientActiveListenerManager()));
-	scope().attr("client_connect_listener_manager") = object(ptr(GetClientConnectListenerManager()));
-	scope().attr("client_disconnect_listener_manager") = object(ptr(GetClientDisconnectListenerManager()));
-	scope().attr("client_fully_connect_listener_manager") = object(ptr(GetClientFullyConnectListenerManager()));
-	scope().attr("client_put_in_server_listener_manager") = object(ptr(GetClientPutInServerListenerManager()));
-	scope().attr("client_settings_changed_listener_manager") = object(ptr(GetClientSettingsChangedListenerManager()));
-	
-	scope().attr("level_init_listener_manager") = object(ptr(GetLevelInitListenerManager()));
-	scope().attr("level_shutdown_listener_manager") = object(ptr(GetLevelShutdownListenerManager()));
-	
-	scope().attr("network_id_validated_listener_manager") = object(ptr(GetNetworkidValidatedListenerManager()));
-	
-	scope().attr("on_edict_allocated_listener_manager") = object(ptr(GetOnEdictAllocatedListenerManager()));
-	scope().attr("on_edict_freed_listener_manager") = object(ptr(GetOnEdictFreedListenerManager()));
-	
-	scope().attr("on_query_cvar_value_finished_listener_manager") = object(ptr(GetOnQueryCvarValueFinishedListenerManager()));
-	
-	scope().attr("server_activate_listener_manager") = object(ptr(GetServerActivateListenerManager()));
+	_listeners.attr("client_active_listener_manager") = object(ptr(GetClientActiveListenerManager()));
+	_listeners.attr("client_connect_listener_manager") = object(ptr(GetClientConnectListenerManager()));
+	_listeners.attr("client_disconnect_listener_manager") = object(ptr(GetClientDisconnectListenerManager()));
+	_listeners.attr("client_fully_connect_listener_manager") = object(ptr(GetClientFullyConnectListenerManager()));
+	_listeners.attr("client_put_in_server_listener_manager") = object(ptr(GetClientPutInServerListenerManager()));
+	_listeners.attr("client_settings_changed_listener_manager") = object(ptr(GetClientSettingsChangedListenerManager()));
 
-	scope().attr("tick_listener_manager") = object(ptr(GetTickListenerManager()));
-	
-	scope().attr("on_entity_created_listener_manager") = object(ptr(GetOnEntityCreatedListenerManager()));
-	scope().attr("on_entity_spawned_listener_manager") = object(ptr(GetOnEntitySpawnedListenerManager()));
-	scope().attr("on_entity_deleted_listener_manager") = object(ptr(GetOnEntityDeletedListenerManager()));
+	_listeners.attr("level_init_listener_manager") = object(ptr(GetLevelInitListenerManager()));
+	_listeners.attr("level_shutdown_listener_manager") = object(ptr(GetLevelShutdownListenerManager()));
+
+	_listeners.attr("network_id_validated_listener_manager") = object(ptr(GetNetworkidValidatedListenerManager()));
+
+	_listeners.attr("on_edict_allocated_listener_manager") = object(ptr(GetOnEdictAllocatedListenerManager()));
+	_listeners.attr("on_edict_freed_listener_manager") = object(ptr(GetOnEdictFreedListenerManager()));
+
+	_listeners.attr("on_query_cvar_value_finished_listener_manager") = object(ptr(GetOnQueryCvarValueFinishedListenerManager()));
+
+	_listeners.attr("server_activate_listener_manager") = object(ptr(GetServerActivateListenerManager()));
+
+	_listeners.attr("tick_listener_manager") = object(ptr(GetTickListenerManager()));
+
+	_listeners.attr("on_entity_created_listener_manager") = object(ptr(GetOnEntityCreatedListenerManager()));
+	_listeners.attr("on_entity_spawned_listener_manager") = object(ptr(GetOnEntitySpawnedListenerManager()));
+	_listeners.attr("on_entity_deleted_listener_manager") = object(ptr(GetOnEntityDeletedListenerManager()));
+
+	_listeners.attr("on_model_loaded_listener_manager") = object(ptr(GetOnModelLoadedListenerManager()));
+	_listeners.attr("on_model_unloaded_listener_manager") = object(ptr(GetOnModelUnloadedListenerManager()));
 }

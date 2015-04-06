@@ -28,12 +28,14 @@ from _listeners import level_shutdown_listener_manager
 from _listeners import network_id_validated_listener_manager
 from _listeners import on_edict_allocated_listener_manager
 from _listeners import on_edict_freed_listener_manager
-from _listeners import on_query_cvar_value_finished_listener_manager
-from _listeners import server_activate_listener_manager
-from _listeners import tick_listener_manager
 from _listeners import on_entity_created_listener_manager
 from _listeners import on_entity_spawned_listener_manager
 from _listeners import on_entity_deleted_listener_manager
+from _listeners import on_model_loaded_listener_manager
+from _listeners import on_model_unloaded_listener_manager
+from _listeners import on_query_cvar_value_finished_listener_manager
+from _listeners import server_activate_listener_manager
+from _listeners import tick_listener_manager
 
 
 # =============================================================================
@@ -67,13 +69,16 @@ __all__ = ('ClientActive',
            'network_id_validated_listener_manager',
            'on_edict_allocated_listener_manager',
            'on_edict_freed_listener_manager',
-           'on_query_cvar_value_finished_listener_manager',
            'on_entity_created_listener_manager',
            'on_entity_spawned_listener_manager',
            'on_entity_deleted_listener_manager',
+           'on_model_loaded_listener_manager',
+           'on_model_unloaded_listener_manager',
+           'on_query_cvar_value_finished_listener_manager',
            'server_activate_listener_manager',
            'tick_listener_manager',
            )
+
 
 # =============================================================================
 # >> GLOBAL VARIABLES
@@ -214,27 +219,6 @@ class OnEdictFreed(_ListenerManager):
     manager = on_edict_freed_listener_manager
 
 
-class OnQueryCvarValueFinished(_ListenerManager):
-
-    """Register/unregister an OnQueryCvarValueFinished listener."""
-
-    manager = on_query_cvar_value_finished_listener_manager
-
-
-class ServerActivate(_ListenerManager):
-
-    """Register/unregister a ServerActivate listener."""
-
-    manager = server_activate_listener_manager
-
-
-class Tick(_ListenerManager):
-
-    """Register/unregister a Tick listener."""
-
-    manager = tick_listener_manager
-
-
 class OnEntityCreated(_ListenerManager):
 
     """Register/unregister a OnEntityCreated listener."""
@@ -254,3 +238,38 @@ class OnEntityDeleted(_ListenerManager):
     """Register/unregister a OnEntityDeleted listener."""
 
     manager = on_entity_deleted_listener_manager
+
+
+class OnModelLoaded(_ListenerManager):
+
+    """Register/unregister a OnModelLoaded listener."""
+
+    manager = on_model_loaded_listener_manager
+
+
+class OnModelUnloaded(_ListenerManager):
+
+    """Register/unregister a OnModelUnloaded listener."""
+
+    manager = on_model_unloaded_listener_manager
+
+
+class OnQueryCvarValueFinished(_ListenerManager):
+
+    """Register/unregister an OnQueryCvarValueFinished listener."""
+
+    manager = on_query_cvar_value_finished_listener_manager
+
+
+class ServerActivate(_ListenerManager):
+
+    """Register/unregister a ServerActivate listener."""
+
+    manager = server_activate_listener_manager
+
+
+class Tick(_ListenerManager):
+
+    """Register/unregister a Tick listener."""
+
+    manager = tick_listener_manager

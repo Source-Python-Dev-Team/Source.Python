@@ -36,6 +36,8 @@
 #include "utilities/baseentity.h"
 #include "game/shared/entitylist_base.h"
 #include "game/server/entitylist.h"
+#include "datacache/imdlcache.h"
+
 
 //---------------------------------------------------------------------------------
 // Definitions
@@ -47,7 +49,7 @@
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
 //---------------------------------------------------------------------------------
-class CSourcePython: public IServerPluginCallbacks, public IGameEventListener2, public IEntityListener
+class CSourcePython: public IServerPluginCallbacks, public IGameEventListener2, public IEntityListener, public IMDLCacheNotify
 {
 public:
 	CSourcePython();
@@ -100,6 +102,12 @@ public:
 	virtual void OnEntityCreated( CBaseEntity *pEntity );
 	virtual void OnEntitySpawned( CBaseEntity *pEntity );
 	virtual void OnEntityDeleted( CBaseEntity *pEntity );
+
+	// -------------------------------------------
+	// IMDLCacheNotify Interface.
+	// -------------------------------------------
+	virtual void OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle );
+	virtual void OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle );
 
 private:
 	int m_iClientCommandIndex;

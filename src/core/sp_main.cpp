@@ -51,6 +51,7 @@
 #include "convar.h"
 #include "utilities/call_python.h"
 #include "vphysics_interface.h"
+#include "datacache/imdlcache.h"
 
 #include "DynamicHooks.h"
 extern DynamicHooks::CHookManager* g_pHookMngr;
@@ -87,6 +88,7 @@ IServerTools*			servertools			= NULL;
 IPhysics*				physics				= NULL;
 IPhysicsCollision*		physcollision		= NULL;
 IPhysicsSurfaceProps*	physprops			= NULL;
+IMDLCache*				modelcache			= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
 
 //-----------------------------------------------------------------------------
@@ -137,6 +139,7 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{VPHYSICS_INTERFACE_VERSION, (void **)&physics},
 	{VPHYSICS_COLLISION_INTERFACE_VERSION, (void **)&physcollision},
 	{VPHYSICS_SURFACEPROPS_INTERFACE_VERSION, (void **)&physprops},
+	{MDLCACHE_INTERFACE_VERSION, (void **)&modelcache},
 
 	{NULL, NULL}
 };
@@ -222,6 +225,8 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		Msg(MSG_PREFIX "Could not initialize python.\n");
 		return false;
 	}
+
+	modelcache->SetCacheNotify(this);
 
 	return true;
 }
@@ -450,4 +455,14 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
 	CPointer pAddress = CPointer((unsigned long) pEntity);
 	CALL_LISTENERS(OnEntityDeleted, IndexFromPointer(&pAddress), ptr(&pAddress));
+}
+
+void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
+{
+	CALL_LISTENERS(OnModelLoaded, type, handle);
+}
+
+void CSourcePython::OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle )
+{
+	CALL_LISTENERS(OnModelLoaded, type, handle);
 }
