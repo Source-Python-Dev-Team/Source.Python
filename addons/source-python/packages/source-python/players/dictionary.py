@@ -28,4 +28,5 @@ class PlayerDictionary(EntityDictionary):
 
     def __init__(self, player_class=PlayerEntity, deletion_callback=None):
         """Initialize the dictionary."""
-        super(PlayerDictionary, self).__init__(player_class)
+        super(PlayerDictionary, self).__init__(
+            player_class, deletion_callback)
