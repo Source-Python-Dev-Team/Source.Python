@@ -26,6 +26,6 @@ class PlayerDictionary(EntityDictionary):
 
     """Helper class used to store player instances."""
 
-    def __init__(self, player_class=PlayerEntity):
+    def __init__(self, player_class=PlayerEntity, deletion_callback=None):
         """Initialize the dictionary."""
         super(PlayerDictionary, self).__init__(player_class)
