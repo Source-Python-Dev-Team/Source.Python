@@ -339,6 +339,7 @@ Set(SOURCEPYTHON_STUDIO_MODULE_HEADERS
 Set(SOURCEPYTHON_STUDIO_MODULE_SOURCES
     hl2sdk/${BRANCH}/public/studio.cpp
     core/modules/studio/studio_wrap_python.cpp
+    core/modules/studio/studio_constants_wrap_python.cpp
     core/modules/studio/studio_cache_wrap_python.cpp
 )
 
