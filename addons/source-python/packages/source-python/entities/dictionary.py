@@ -5,10 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Context
-from contextlib import suppress
-
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -32,16 +28,10 @@ class EntityDictionary(AutoUnload, dict):
 
     """Helper class used to store entity instances."""
 
-    def __init__(self, entity_class=BaseEntity, deletion_callback=None):
+    def __init__(self, entity_class=BaseEntity):
         """Initialize the dictionary."""
         # Store the given entity class...
         self._entity_class = entity_class
-
-        # Was any deletion callback passed on initialization?
-        if deletion_callback is not None:
-
-            # Set the given deletion callback...
-            self.deletion_callback = deletion_callback
 
         # Register our OnEntityDeleted listener...
         on_entity_deleted_listener_manager.register_listener(
@@ -66,10 +56,8 @@ class EntityDictionary(AutoUnload, dict):
         # Remove the given index from the dictionary...
         super(EntityDictionary, self).__delitem__(index)
 
-    @staticmethod
-    def deletion_callback(index):
-        """Raise a not implemented exception."""
-        raise NotImplementedError('No deletion callback declared.')
+    def on_automatically_removed(self, index):
+        """Called when an index is automatically removed."""
 
     def _on_entity_deleted(self, index, ptr):
         """OnEntityDeleted listener callback."""
@@ -79,11 +67,8 @@ class EntityDictionary(AutoUnload, dict):
             # No need to go further...
             return
 
-        # Suppress not implemented exception...
-        with suppress(NotImplementedError):
-
-            # Call the deletion callback for the index...
-            self.deletion_callback(index)
+        # Call the deletion callback for the index...
+        self.on_automatically_removed(index)
 
         # Remove the index from the dictionary...
         super(EntityDictionary, self).__delitem__(index)
