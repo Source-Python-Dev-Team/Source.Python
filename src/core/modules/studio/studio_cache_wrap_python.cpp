@@ -32,7 +32,6 @@
 #include "studio.h"
 #include "datacache/imdlcache.h"
 #include "modules/memory/memory_tools.h"
-#include "studio_cache_wrap.h"
 
 
 //-----------------------------------------------------------------------------
