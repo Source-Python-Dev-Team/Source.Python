@@ -37,7 +37,7 @@
 //-----------------------------------------------------------------------------
 // studiohdr_t extension class.
 //-----------------------------------------------------------------------------
-class StudioHeaderExt
+class HeaderExt
 {
 };
 
@@ -45,7 +45,7 @@ class StudioHeaderExt
 //-----------------------------------------------------------------------------
 // mstudiobone_t extension class.
 //-----------------------------------------------------------------------------
-class StudioBoneExt
+class BoneExt
 {
 public:
 	static const char *get_name(mstudiobone_t *pBone)
@@ -68,7 +68,7 @@ public:
 //-----------------------------------------------------------------------------
 // mstudiohitboxset_t extension class.
 //-----------------------------------------------------------------------------
-class StudioHitboxSetExt
+class HitboxSetExt
 {
 public:
 	static const char *get_name(mstudiohitboxset_t *pHitboxSet)
@@ -77,6 +77,67 @@ public:
 	}
 };
 
+
+//-----------------------------------------------------------------------------
+// mstudiohitboxset_t extension class.
+//-----------------------------------------------------------------------------
+class AnimationExt
+{
+public:
+	static const char *get_name(mstudioanimdesc_t *pAnimation)
+	{
+		return (const char *)pAnimation->pszName();
+	}
+
+	static mstudiomovement_t *get_movement(mstudioanimdesc_t *pAnimation, int iMovementIndex)
+	{
+		return reinterpret_cast<mstudiomovement_t *>(pAnimation->pMovement(iMovementIndex));
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// mstudioseqdesc_t extension class.
+//-----------------------------------------------------------------------------
+class SequenceExt
+{
+public:
+	static const char *get_label(mstudioseqdesc_t *pSequence)
+	{
+		return (const char *)pSequence->pszLabel();
+	}
+
+	static const char *get_activity(mstudioseqdesc_t *pSequence)
+	{
+		return (const char *)pSequence->pszActivityName();
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// mstudioevent_t extension class.
+//-----------------------------------------------------------------------------
+class EventExt
+{
+public:
+	static const char *get_name(mstudioevent_t *pEvent)
+	{
+		return (const char *)pEvent->pszEventName();
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// mstudioattachment_t extension class.
+//-----------------------------------------------------------------------------
+class AttachmentExt
+{
+public:
+	static const char *get_name(mstudioattachment_t *pAttachment)
+	{
+		return (const char *)pAttachment->pszName();
+	}
+};
 
 
 #endif // _STUDIO_CACHE_WRAP_H
