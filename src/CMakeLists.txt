@@ -334,7 +334,6 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STUDIO_MODULE_HEADERS
     core/modules/studio/studio_wrap.h
-    core/modules/studio/studio_cache_wrap.h
 )
 
 Set(SOURCEPYTHON_STUDIO_MODULE_SOURCES
