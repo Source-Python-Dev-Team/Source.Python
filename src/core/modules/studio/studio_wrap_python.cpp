@@ -109,17 +109,17 @@ void export_model_header(scope _studio)
 
 	// Methods...
 	ModelHeader.def("get_bone", &studiohdr_t::pBone, reference_existing_object_policy());
-	ModelHeader.def("remap_sequence_bone", &studiohdr_t::RemapSeqBone);
-	ModelHeader.def("remap_animation_bone", &studiohdr_t::RemapAnimBone);
+	// ModelHeader.def("remap_sequence_bone", &studiohdr_t::RemapSeqBone);
+	// ModelHeader.def("remap_animation_bone", &studiohdr_t::RemapAnimBone);
 	ModelHeader.def("get_bone_controller", &studiohdr_t::pBonecontroller, reference_existing_object_policy());
 	ModelHeader.def("get_hitbox_set", &studiohdr_t::pHitboxSet, reference_existing_object_policy());
 	ModelHeader.def("get_local_animation", &studiohdr_t::pLocalAnimdesc, reference_existing_object_policy());
-	ModelHeader.def("has_sequences_available", &studiohdr_t::SequencesAvailable);
-	ModelHeader.def("get_animation", &studiohdr_t::pAnimdesc, reference_existing_object_policy());
-	ModelHeader.def("get_sequences_count", &studiohdr_t::GetNumSeq);
-	ModelHeader.def("get_sequence", &studiohdr_t::pSeqdesc, reference_existing_object_policy());
-	ModelHeader.def("get_activity_list_version", &studiohdr_t::GetActivityListVersion);
-	ModelHeader.def("set_activity_list_version", &studiohdr_t::SetActivityListVersion);
+	// ModelHeader.def("has_sequences_available", &studiohdr_t::SequencesAvailable);
+	// ModelHeader.def("get_animation", &studiohdr_t::pAnimdesc, reference_existing_object_policy());
+	// ModelHeader.def("get_sequences_count", &studiohdr_t::GetNumSeq);
+	// ModelHeader.def("get_sequence", &studiohdr_t::pSeqdesc, reference_existing_object_policy());
+	// ModelHeader.def("get_activity_list_version", &studiohdr_t::GetActivityListVersion);
+	// ModelHeader.def("set_activity_list_version", &studiohdr_t::SetActivityListVersion);
 	ModelHeader.def("get_attachment", &studiohdr_t::pLocalAttachment, reference_existing_object_policy());
 
 	// Special methods...
@@ -254,7 +254,7 @@ void export_animation(scope _studio)
 
 	// Methods...
 	Animation.def("get_movement", &AnimationExt::get_movement, reference_existing_object_policy());
-	Animation.def("get_hierarchy", &mstudioanimdesc_t::pHierarchy, reference_existing_object_policy());
+	// Animation.def("get_hierarchy", &mstudioanimdesc_t::pHierarchy, reference_existing_object_policy());
 
 	// Add memory tools...
 	Animation ADD_MEM_TOOLS(mstudioanimdesc_t, "Animation");
