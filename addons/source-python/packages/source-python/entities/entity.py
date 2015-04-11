@@ -12,9 +12,11 @@ from colors import Color
 from engines.precache import Model
 #   Entities
 from entities.classes import server_classes
+from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
 from entities.helpers import pointer_from_edict
+from entities.helpers import spawn_entity
 from entities.specials import _EntitySpecials
 #   Memory
 from memory import make_object
@@ -151,6 +153,15 @@ class BaseEntity(_EntitySpecials):
 
         # Return a sorted list of attributes
         return sorted(attributes)
+
+    @classmethod
+    def create(cls, classname):
+        """Create a new entity with the given classname."""
+        return cls(create_entity(classname))
+
+    def spawn(self):
+        """Spawn the entity."""
+        spawn_entity(self.index)
 
     @classmethod
     def _obj(cls, ptr):
