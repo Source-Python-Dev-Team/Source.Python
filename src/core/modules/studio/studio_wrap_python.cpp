@@ -123,7 +123,7 @@ void export_model_header(scope _studio)
 	ModelHeader.def("get_attachment", &studiohdr_t::pLocalAttachment, reference_existing_object_policy());
 
 	// Special methods...
-	ModelHeader.def("__init__", make_getter(&studiohdr_t::length));
+	ModelHeader.def("__len__", make_getter(&studiohdr_t::length));
 
 	// Add memory tools...
 	ModelHeader ADD_MEM_TOOLS(studiohdr_t, "ModelHeader");
