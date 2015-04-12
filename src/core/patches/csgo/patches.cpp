@@ -46,5 +46,5 @@
 
 #include "datacache/imdlcache.h"
 #ifndef PATCH_IMDL_CACHE_NOTIFY_VTABLE
-#error "Update virtual functions of IMDLCacheNotify."
+#error "Update virtual functions of IMDLCacheNotify. Also update IMDLCache vtable and include filesystem.h."
 #endif

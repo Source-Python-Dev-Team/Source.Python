@@ -20,6 +20,7 @@
 #endif
 
 #include "appframework/IAppSystem.h"
+#include "filesystem.h"
 
 //-----------------------------------------------------------------------------
 // Forward declarations
@@ -108,7 +109,10 @@ enum MDLCacheFlush_t
 
 //-----------------------------------------------------------------------------
 // The main MDL cacher 
-//----------------------------------------------------------------------------- 
+//-----------------------------------------------------------------------------
+class SCombinerModelInput_t;
+class ECombinedAsset;
+
 abstract_class IMDLCache : public IAppSystem
 {
 public:
@@ -131,6 +135,9 @@ public:
 	virtual studiohwdata_t *GetHardwareData( MDLHandle_t handle ) = 0;
 	virtual vcollide_t *GetVCollide( MDLHandle_t handle ) = 0;
 	virtual unsigned char *GetAnimBlock( MDLHandle_t handle, int nBlock ) = 0;
+
+	// TODO: Validate return type and parameters
+	virtual bool HasAnimBlockBeenPreloaded(unsigned short unk1, int unk2) = 0;
 	virtual virtualmodel_t *GetVirtualModel( MDLHandle_t handle ) = 0;
 	virtual int GetAutoplayList( MDLHandle_t handle, unsigned short **pOut ) = 0;
 	virtual vertexFileHeader_t *GetVertexData( MDLHandle_t handle ) = 0;
@@ -144,6 +151,9 @@ public:
 
 	// Is this MDL using the error model?
 	virtual bool IsErrorModel( MDLHandle_t handle ) = 0;
+	
+	// TODO: Validate return type and parameters
+	virtual bool IsOverBudget(unsigned short unk1) = 0;
 
 	// Flushes the cache, force a full discard
 	virtual void Flush( MDLCacheFlush_t nFlushFlags = MDLCACHE_FLUSH_ALL ) = 0;
@@ -153,6 +163,10 @@ public:
 
 	// Returns the name of the model (its relative path)
 	virtual const char *GetModelName( MDLHandle_t handle ) = 0;
+	
+	// TODO: Validate return type and parameters
+	//		 Probably returns CMDLCacheCriticalSection*
+	virtual void GetCacheSection(MDLCacheDataType_t unk1) = 0;
 
 	// faster access when you already have the studiohdr
 	virtual virtualmodel_t *GetVirtualModelFast( const studiohdr_t *pStudioHdr, MDLHandle_t handle ) = 0;
@@ -205,6 +219,31 @@ public:
 	virtual void EndCoarseLock() = 0;
 
 	virtual void ReloadVCollide( MDLHandle_t handle ) = 0;
+
+	// TODO: Validate return type and parameters of the following methods
+	virtual void ReleaseAnimBlockAllocator() = 0;
+	virtual void RestoreHardwareData(unsigned short unk1, FSAsyncControl_t__ ** unk2, FSAsyncControl_t__ ** unk3) = 0;
+	virtual void DisableVCollideLoad() = 0;
+	virtual void EnableVCollideLoad() = 0;
+	virtual void DisableFileNotFoundWarnings() = 0;
+	virtual void EnableFileNotFoundWarnings() = 0;
+	virtual void ProcessPendingHardwareRestore() = 0;
+	virtual void UnloadQueuedHardwareData() = 0;
+	virtual void DumpDictionaryState() = 0;
+	virtual void CreateCombinedModel(char  const* unk1) = 0;
+	virtual void CreateCombinedModel(unsigned short unk1) = 0;
+	virtual void SetCombineModels(unsigned short unk1, CUtlVector<SCombinerModelInput_t, CUtlMemory<SCombinerModelInput_t, int>>  const& unk2) = 0;
+	virtual void FinishCombinedModel(unsigned short unk1, void* unk2, void * unk3) = 0;
+	virtual void IsCombinedPlaceholder(unsigned short unk1) = 0;
+	virtual void IsCombinedModel(unsigned short unk1) = 0;
+	virtual void GetNumCombinedSubModels(unsigned short unk1) = 0;
+	virtual void GetCombinedSubModelFilename(unsigned short unk1, int unk2, char * unk3, int unk4) = 0;
+	virtual void GetCombinedMaterialKV(unsigned short unk1, int unk2) = 0;
+	virtual void UpdateCombiner() = 0;
+	virtual void GetCombinedInternalAsset(ECombinedAsset unk1, char  const* unk2, int * unk3) = 0;
+	virtual void SetCombinerFlags(unsigned int unk1) = 0;
+	virtual void ClearCombinerFlags(unsigned int unk1) = 0;
+	virtual void DebugCombinerInfo() = 0;
 };
 
 DECLARE_TIER3_INTERFACE( IMDLCache, g_pMDLCache );
