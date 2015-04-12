@@ -31,8 +31,9 @@ from _listeners import on_edict_freed_listener_manager
 from _listeners import on_entity_created_listener_manager
 from _listeners import on_entity_spawned_listener_manager
 from _listeners import on_entity_deleted_listener_manager
-from _listeners import on_model_loaded_listener_manager
-from _listeners import on_model_unloaded_listener_manager
+from _listeners import on_data_loaded_listener_manager
+from _listeners import on_combiner_pre_cache_listener_manager
+from _listeners import on_data_unloaded_listener_manager
 from _listeners import on_query_cvar_value_finished_listener_manager
 from _listeners import server_activate_listener_manager
 from _listeners import tick_listener_manager
@@ -50,6 +51,9 @@ __all__ = ('ClientActive',
            'LevelInit',
            'LevelShutdown',
            'NetworkidValidated',
+           'OnCombinerPrecache',
+           'OnDataLoaded',
+           'OnDataUnloaded',
            'OnEdictAllocated',
            'OnEdictFreed',
            'OnEntityCreated',
@@ -72,8 +76,8 @@ __all__ = ('ClientActive',
            'on_entity_created_listener_manager',
            'on_entity_spawned_listener_manager',
            'on_entity_deleted_listener_manager',
-           'on_model_loaded_listener_manager',
-           'on_model_unloaded_listener_manager',
+           'on_data_loaded_listener_manager',
+           'on_data_unloaded_listener_manager',
            'on_query_cvar_value_finished_listener_manager',
            'server_activate_listener_manager',
            'tick_listener_manager',
@@ -240,18 +244,25 @@ class OnEntityDeleted(_ListenerManager):
     manager = on_entity_deleted_listener_manager
 
 
-class OnModelLoaded(_ListenerManager):
+class OnDataLoaded(_ListenerManager):
 
-    """Register/unregister a OnModelLoaded listener."""
+    """Register/unregister a OnDataLoaded listener."""
 
-    manager = on_model_loaded_listener_manager
+    manager = on_data_loaded_listener_manager
 
 
-class OnModelUnloaded(_ListenerManager):
+class OnCombinerPreCache(_ListenerManager):
 
-    """Register/unregister a OnModelUnloaded listener."""
+    """Register/unregister a OnCombinerPreCache listener."""
 
-    manager = on_model_unloaded_listener_manager
+    manager = on_combiner_pre_cache_listener_manager
+
+
+class OnDataUnloaded(_ListenerManager):
+
+    """Register/unregister a OnDataUnloaded listener."""
+
+    manager = on_data_unloaded_listener_manager
 
 
 class OnQueryCvarValueFinished(_ListenerManager):
