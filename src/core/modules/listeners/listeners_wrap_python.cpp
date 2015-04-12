@@ -53,8 +53,9 @@ DEFINE_MANAGER_ACCESSOR(Tick)
 DEFINE_MANAGER_ACCESSOR(OnEntityCreated)
 DEFINE_MANAGER_ACCESSOR(OnEntitySpawned)
 DEFINE_MANAGER_ACCESSOR(OnEntityDeleted)
-DEFINE_MANAGER_ACCESSOR(OnModelLoaded)
-DEFINE_MANAGER_ACCESSOR(OnModelUnloaded)
+DEFINE_MANAGER_ACCESSOR(OnDataLoaded)
+DEFINE_MANAGER_ACCESSOR(OnCombinerPreCache)
+DEFINE_MANAGER_ACCESSOR(OnDataUnloaded)
 
 
 //-----------------------------------------------------------------------------
@@ -127,6 +128,7 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_entity_spawned_listener_manager") = object(ptr(GetOnEntitySpawnedListenerManager()));
 	_listeners.attr("on_entity_deleted_listener_manager") = object(ptr(GetOnEntityDeletedListenerManager()));
 
-	_listeners.attr("on_model_loaded_listener_manager") = object(ptr(GetOnModelLoadedListenerManager()));
-	_listeners.attr("on_model_unloaded_listener_manager") = object(ptr(GetOnModelUnloadedListenerManager()));
+	_listeners.attr("on_data_loaded_listener_manager") = object(ptr(GetOnDataLoadedListenerManager()));
+	_listeners.attr("on_combiner_pre_cache_listener_manager") = object(ptr(GetOnCombinerPreCacheListenerManager()));
+	_listeners.attr("on_data_unloaded_listener_manager") = object(ptr(GetOnDataUnloadedListenerManager()));
 }

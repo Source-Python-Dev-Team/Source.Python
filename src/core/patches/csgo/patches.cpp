@@ -43,3 +43,8 @@
 #ifndef PATCH_FUNCTOR_CALLBACK0_RETURN_VALUE_CONVERSION
 #error "Convert return value of CFunctorCallback0::GetTarget() to void*."
 #endif
+
+#include "datacache/imdlcache.h"
+#ifndef PATCH_IMDL_CACHE_NOTIFY_VTABLE
+#error "Update virtual functions of IMDLCacheNotify."
+#endif

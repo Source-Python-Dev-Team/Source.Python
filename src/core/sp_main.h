@@ -108,9 +108,14 @@ public:
 	// -------------------------------------------
 	virtual void OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle );
 	virtual void OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle );
+#ifdef ENGINE_CSGO
+	virtual void OnCombinerPreCache(MDLCacheDataType_t type, MDLHandle_t handle );
+	virtual bool ShouldSupressLoadWarning(unsigned short a);
+#endif
 
 private:
 	int m_iClientCommandIndex;
+	IMDLCacheNotify* m_pOldMDLCacheNotifier;
 };
 
 

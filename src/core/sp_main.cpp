@@ -226,6 +226,8 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
+	// TODO: Don't hardcode the 64 bytes offset
+	m_pOldMDLCacheNotifier = *(IMDLCacheNotify **)(((unsigned long) modelcache) + 64);
 	modelcache->SetCacheNotify(this);
 
 	return true;
@@ -459,10 +461,35 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
 {
-	CALL_LISTENERS(OnModelLoaded, type, handle);
+	if (m_pOldMDLCacheNotifier)
+		m_pOldMDLCacheNotifier->OnDataLoaded(type, handle);
+
+	CALL_LISTENERS(OnDataLoaded, type, handle);
 }
 
 void CSourcePython::OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle )
 {
-	CALL_LISTENERS(OnModelUnloaded, type, handle);
+	if (m_pOldMDLCacheNotifier)
+		m_pOldMDLCacheNotifier->OnDataUnloaded(type, handle);
+
+	CALL_LISTENERS(OnDataUnloaded, type, handle);
 }
+	
+#ifdef ENGINE_CSGO
+void CSourcePython::OnCombinerPreCache(MDLCacheDataType_t type, MDLHandle_t handle )
+{
+	if (m_pOldMDLCacheNotifier)
+		m_pOldMDLCacheNotifier->OnCombinerPreCache(type, handle);
+
+	CALL_LISTENERS(OnCombinerPreCache, type, handle);
+}
+
+bool CSourcePython::ShouldSupressLoadWarning(unsigned short a)
+{
+	bool result = false;
+	if (m_pOldMDLCacheNotifier)
+		result = m_pOldMDLCacheNotifier->ShouldSupressLoadWarning(a);
+
+	return result;
+}
+#endif
