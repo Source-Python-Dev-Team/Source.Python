@@ -1,6 +1,6 @@
 # ../__init__.py
 
-"""This is the main __init__ that gets imported on plugin_load.
+"""This is the main file that loads/unloads the Python portion of the plugin.
 
 ===============================================================================
 Source Python
@@ -27,6 +27,7 @@ all respects for all other code used.  Additionally, the Source.Python
 Development Team grants this exception to all derivative works.
 """
 
+
 # =============================================================================
 # >> LOAD & UNLOAD
 # =============================================================================
@@ -39,6 +40,7 @@ def load():
     setup_auth()
     setup_user_settings()
     setup_entities_listener()
+
 
 def unload():
     """Unload Source.Python's Python side."""
@@ -125,6 +127,7 @@ def setup_sp_command():
 # =============================================================================
 def setup_auth():
     """Set up authentification."""
+    from core.command import _core_command
     from core.settings import _core_settings
 
     # Get the auth providers that should be loaded
@@ -134,7 +137,7 @@ def setup_auth():
     if auth_providers:
 
         # Load the auth providers
-        _core_command.call_command('auth', ['load'] + auth_providers)
+        _core_command['auth'].call_command(['load'] + auth_providers)
 
 
 # =============================================================================
@@ -183,11 +186,12 @@ def setup_entities_listener():
     from memory.manager import manager
     from paths import SP_DATA_PATH
 
-    manager.create_global_pointers_from_file(SP_DATA_PATH.joinpath('entities',
-        'listeners', SOURCE_ENGINE, 'pointers.ini'))
+    manager.create_global_pointers_from_file(SP_DATA_PATH.joinpath(
+        'entities', 'listeners', SOURCE_ENGINE, 'pointers.ini'))
 
     manager.get_global_pointer('GlobalEntityList').add_entity_listener(
         _sp_plugin)
+
 
 def remove_entities_listener():
     """Remove entities listener."""
