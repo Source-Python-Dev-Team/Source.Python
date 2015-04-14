@@ -167,7 +167,7 @@ _player_iter_manager.register_return_type(
     'address', lambda edict: address_from_playerinfo(
         playerinfo_from_edict(edict)))
 _player_iter_manager.register_return_type(
-    'playerinfo', lambda edict: playerinfo_from_edict(edict))
+    'playerinfo', playerinfo_from_edict)
 _player_iter_manager.register_return_type(
     'player', lambda edict: PlayerEntity(
         index_from_edict(edict)))

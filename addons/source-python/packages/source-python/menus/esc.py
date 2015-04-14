@@ -16,7 +16,6 @@ from keyvalues import KeyValues
 from menus.base import _BaseMenu
 from menus.base import _PagedMenuBase
 from menus.base import _BaseOption
-from menus.base import Text
 from menus.base import _translate_text
 from menus.queue import ESC_SELECTION_CMD
 from menus.queue import _esc_queues

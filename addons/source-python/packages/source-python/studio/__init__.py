@@ -44,6 +44,7 @@ __all__ = ('studio_logger',
            'HitboxSet',
            'ModelHeader',
            'Movement',
+           'Sequence',
            )
 
 
