@@ -12,14 +12,9 @@ from collections import defaultdict
 #   Warnings
 from warnings import warn
 
-# Site-Packages Imports
-#   Configobj
-from configobj import ConfigObj
-
 # Source.Python Imports
 #   Core
-from core import GAME_NAME
-from core import SOURCE_ENGINE
+from core import GameConfigObj
 #   Engines
 from engines.server import server_game_dll
 #   Entities
@@ -49,10 +44,7 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get all of the necessary paths
-_managers_engine_path = SP_DATA_PATH.joinpath(
-    'entities', 'managers', 'engines', SOURCE_ENGINE)
-_managers_game_path = SP_DATA_PATH.joinpath(
-    'entities', 'managers', 'games', GAME_NAME)
+_managers_path = SP_DATA_PATH.joinpath('entities', 'managers')
 
 # Store all supported types
 _supported_descriptor_types = {
@@ -239,18 +231,14 @@ class _ServerClasses(TypeManager):
     def _get_server_class(self, class_name, datamap):
         """Retrieve values for the server class."""
         # Get the engine specific data for the current class
-        manager_contents = ConfigObj(
-            _managers_engine_path.joinpath(class_name + '.ini'))
-
-        # Merge the game specific values for the current class
-        manager_contents.merge(ConfigObj(
-            _managers_game_path.joinpath(class_name + '.ini')))
+        manager_contents = GameConfigObj(
+            _managers_path.joinpath(class_name + '.ini'))
 
         # Are there any values for the manager?
         if manager_contents:
 
             # Add the binary path to the manager dictionary
-            manager_contents['binary'] = '{0}/bin/server'.format(GAME_NAME)
+            manager_contents['binary'] = 'server'
 
         # Get a TypeManager instance for the current datamap
         instance = self.create_type_from_file(class_name, manager_contents)
