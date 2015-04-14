@@ -37,7 +37,7 @@ class _EntitySpecials(object):
 
     """Base class used to hold special functionality."""
 
-    def hurt(
+    def take_damage(
             self, damage, damage_type=DamageTypes.GENERIC, attacker_index=None,
             weapon_index=None, hitgroup=HitGroup.GENERIC, **kwargs):
         """Method used to hurt the entity with the given arguments."""
