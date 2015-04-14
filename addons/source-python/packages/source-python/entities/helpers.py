@@ -8,10 +8,10 @@
 # Source.Python Imports
 #   Entities
 from _entities._helpers import basehandle_from_edict
-from _entities._helpers import create_entity
 from _entities._helpers import basehandle_from_index
 from _entities._helpers import basehandle_from_inthandle
 from _entities._helpers import basehandle_from_pointer
+from _entities._helpers import create_entity
 from _entities._helpers import edict_from_basehandle
 from _entities._helpers import edict_from_index
 from _entities._helpers import edict_from_inthandle

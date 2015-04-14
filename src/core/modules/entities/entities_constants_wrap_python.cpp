@@ -89,6 +89,8 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 void export_damage_types(scope _constants)
 {
 	// Damage types constants...
+	_constants.attr("DMG_GENERIC") = DMG_GENERIC;
+	_constants.attr("DMG_CRUSH") = DMG_CRUSH;
 	_constants.attr("DMG_BULLET") = DMG_BULLET;
 	_constants.attr("DMG_SLASH") = DMG_SLASH;
 	_constants.attr("DMG_BURN") = DMG_BURN;

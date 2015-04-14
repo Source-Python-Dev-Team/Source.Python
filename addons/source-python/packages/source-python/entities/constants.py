@@ -32,6 +32,8 @@ from _entities._constants import DAMAGE_NO
 from _entities._constants import DAMAGE_EVENTS_ONLY
 from _entities._constants import DAMAGE_YES
 from _entities._constants import DAMAGE_AIM
+from _entities._constants import DMG_GENERIC
+from _entities._constants import DMG_CRUSH
 from _entities._constants import DMG_BULLET
 from _entities._constants import DMG_SLASH
 from _entities._constants import DMG_BURN
@@ -185,6 +187,8 @@ class DamageTypes(IntEnum):
 
     """Damage types wrapper enumerator."""
 
+    GENERIC = DMG_GENERIC
+    CRUSH = DMG_CRUSH
     BULLET = DMG_BULLET
     SLASH = DMG_SLASH
     BURN = DMG_BURN
