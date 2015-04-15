@@ -20,6 +20,9 @@ class _BaseRegistry(dict):
 
     def __init__(self, class_name):
         """Store the name and error type on initialization."""
+        # Initialize the dictionary
+        super(_BaseRegistry, self).__init__()
+
         # Store the registering class' name
         self._class_name = class_name
 

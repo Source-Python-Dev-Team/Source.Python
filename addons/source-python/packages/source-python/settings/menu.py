@@ -23,6 +23,7 @@ class _AvailableSettings(dict):
 
     def __init__(self):
         """Create the main settings menu on instantiation."""
+        super(_AvailableSettings, self).__init__()
         self._menu = PagedMenu(
             select_callback=self._chosen_item,
             title=_settings_strings['Main Title'])

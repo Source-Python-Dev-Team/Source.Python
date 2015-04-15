@@ -22,6 +22,9 @@ class _CvarManager(dict):
     def __init__(
             self, name, default, flags, description, min_value, max_value):
         """Called on instantiation."""
+        # Initialize the dictionary
+        super(_CvarManager, self).__init__()
+
         # Is the given description a TranslationStrings instance?
         if isinstance(description, TranslationStrings):
 
@@ -126,6 +129,9 @@ class _ListManager(list):
 
     def __init__(self, name):
         """Called on instantiation."""
+        # Initialize the list
+        super(_ListManager, self).__init__()
+
         # Is the given name a TranslationStrings instance?
         if isinstance(name, TranslationStrings):
 

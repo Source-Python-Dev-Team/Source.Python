@@ -94,6 +94,7 @@ class _TickDelays(dict):
 
     def __init__(self):
         """Store an ordered list to sort delays."""
+        super(_TickDelays, self).__init__()
         self._order = list()
 
     def __missing__(self, item):

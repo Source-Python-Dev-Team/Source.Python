@@ -42,6 +42,9 @@ class _WeaponManager(dict):
 
     def __init__(self, ini_file):
         """Load the ini file into the dictionary."""
+        # Initialize the dictionary
+        super(_WeaponManager, self).__init__()
+
         # Get the ConfigObj instance of the file
         ini = ConfigObj(ini_file, unrepr=True)
 

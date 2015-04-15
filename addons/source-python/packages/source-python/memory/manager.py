@@ -148,6 +148,9 @@ class TypeManager(dict):
 
     def __init__(self):
         """Initialize the instance."""
+        # Initialize the dictionary
+        super(TypeManager, self).__init__()
+
         # This dictionary will hold global pointer instances
         self.global_pointers = {}
 

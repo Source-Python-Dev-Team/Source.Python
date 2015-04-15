@@ -130,6 +130,9 @@ class _CallbackList(list):
 
     def __init__(self, command):
         """Register the instance to the command."""
+        # Initialize the list
+        super(_CallbackList, self).__init__()
+
         # Store the command
         self.command = command
 

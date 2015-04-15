@@ -45,6 +45,7 @@ class _UserQueue(deque):
         @param <index>:
         A valid player index.
         """
+        super(_UserQueue, self).__init__()
         self._index = index
 
     def append(self, menu):
@@ -153,6 +154,7 @@ class _QueueHolder(dict):
         @param <repeat>:
         Global refresh repeat instance.
         """
+        super(_QueueHolder, self).__init__()
         self._cls = cls
         self._repeat = repeat
 

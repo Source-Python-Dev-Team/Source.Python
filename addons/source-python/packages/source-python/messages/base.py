@@ -52,6 +52,9 @@ class _UserMessages(dict):
 
     def __init__(self, file_path, *args, **kwargs):
         """Parse the given files and store the parsed message classes."""
+        # Initialize the dictionary
+        super(_UserMessages, self).__init__()
+
         # Parse the given file
         parsed_messages = ConfigObj(file_path)
 
@@ -204,6 +207,9 @@ class BaseMessage(dict):
 
     def __init__(self, *args, **kwargs):
         """Parse and store the given parameters."""
+        # Initialize the dictionary
+        super(BaseMessage, self).__init__()
+
         # Get a list of the given arguments
         arguments = list(args)
 
