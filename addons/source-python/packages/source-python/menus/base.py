@@ -7,9 +7,9 @@
 # =============================================================================
 # Python Imports
 #   Collections
-import math
-
 from collections import defaultdict
+#   Math
+import math
 
 # Source.Python Imports
 #   Core

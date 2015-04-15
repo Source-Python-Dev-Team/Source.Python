@@ -32,9 +32,8 @@ from _studio import Sequence
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('studio_logger',
+__all__ = ('AnimSections',
            'Animation',
-           'AnimSections',
            'Attachment',
            'Bone',
            'BoneController',
@@ -45,6 +44,7 @@ __all__ = ('studio_logger',
            'ModelHeader',
            'Movement',
            'Sequence',
+           'studio_logger',
            )
 
 

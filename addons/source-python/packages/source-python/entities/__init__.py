@@ -32,12 +32,12 @@ from _entities import TakeDamageInfo
 __all__ = ('BaseEntityHandle',
            'Edict',
            'EntityGenerator',
+           'GlobalEntityList',
            'HandleEntity',
            'ServerEntity',
            'ServerNetworkable',
            'ServerUnknown',
            'TakeDamageInfo',
-           'GlobalEntityList',
            )
 
 
