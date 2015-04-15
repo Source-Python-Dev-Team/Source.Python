@@ -30,7 +30,17 @@
 #include "export_main.h"
 #include "sp_main.h"
 
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
 extern CSourcePython g_SourcePythonPlugin;
+
+
+//-----------------------------------------------------------------------------
+// Forward declarations.
+//-----------------------------------------------------------------------------
+void export_source_python_plugin(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -38,13 +48,21 @@ extern CSourcePython g_SourcePythonPlugin;
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_core)
 {
+	export_source_python_plugin(_core);
+
 	// Constants...
 	_core.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
 	_core.attr("SOURCE_ENGINE_BRANCH") = XSTRINGIFY(SOURCE_ENGINE_BRANCH);
+}
 
-	// IServerPluginCallbacks, public IGameEventListener2, public IEntityListener
-	class_<IEntityListener>("EntityListener");
-	class_<CSourcePython, bases<IEntityListener>, boost::noncopyable>("SourcePython", no_init);
 
+//-----------------------------------------------------------------------------
+// Expose CSourcePython.
+//-----------------------------------------------------------------------------
+void export_source_python_plugin(scope _core)
+{
+	class_<CSourcePython, bases<IEntityListener>, boost::noncopyable>("_SourcePythonPlugin", no_init);
+
+	// Singleton...
 	_core.attr("_sp_plugin") = boost::ref(g_SourcePythonPlugin);
 }

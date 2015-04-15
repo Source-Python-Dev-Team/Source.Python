@@ -54,6 +54,7 @@ void export_edict();
 void export_entity_generator();
 void export_take_damage_info();
 void export_global_entity_list();
+void export_entity_listener();
 
 
 //-----------------------------------------------------------------------------
@@ -70,6 +71,7 @@ DECLARE_SP_MODULE(_entities)
 	export_entity_generator();
 	export_take_damage_info();
 	export_global_entity_list();
+	export_entity_listener();
 }
 
 
@@ -571,4 +573,16 @@ void export_global_entity_list()
 
 		ADD_MEM_TOOLS(CGlobalEntityList, "GlobalEntityList");
 	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose IEntityListener.
+//-----------------------------------------------------------------------------
+void export_entity_listener()
+{
+	class_<IEntityListener> EntityListener("EntityListener");
+
+	// Add memory tools...
+	EntityListener ADD_MEM_TOOLS(IEntityListener, "EntityListener");
 }

@@ -18,6 +18,7 @@ from loggers import _sp_logger
 from _entities import BaseEntityHandle
 from _entities import Edict
 from _entities import EntityGenerator
+from _entities import EntityListener
 from _entities import GlobalEntityList
 from _entities import HandleEntity
 from _entities import ServerEntity
@@ -32,6 +33,7 @@ from _entities import TakeDamageInfo
 __all__ = ('BaseEntityHandle',
            'Edict',
            'EntityGenerator',
+           'EntityListener',
            'GlobalEntityList',
            'HandleEntity',
            'ServerEntity',
