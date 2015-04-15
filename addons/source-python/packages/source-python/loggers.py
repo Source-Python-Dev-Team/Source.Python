@@ -64,20 +64,24 @@ class _LogInstance(dict):
 
     """Base logging class used to create child logging instances."""
 
-    parent = None
-
-    def __init__(self, name, parent):
+    def __init__(self, parent=None, name=None):
         """Store the parent and gets a child of the parent."""
+        # Initialize the dictionary
+        super(_LogInstance, self).__init__()
+
         # Store the parent instance
         self.parent = parent
 
-        # Store a child logging instance
-        self._logger = self.parent.logger.getChild(name)
+        # Was a parent class passed?
+        if self.parent is not None:
+
+            # Store a child logging instance
+            self._logger = self.parent.logger.getChild(name)
 
     def __missing__(self, item):
         """Add new items as logging instances."""
         # Get the new logging instance
-        value = self[item] = _LogInstance(item, self)
+        value = self[item] = _LogInstance(self, item)
 
         # Return the logging instance
         return value
@@ -256,6 +260,9 @@ class LogManager(_LogInstance):
             self, name, level, areas, filepath=None,
             log_format=None, date_format=None):
         """Store the base values and creates the logger."""
+        # Initialize the dictionary
+        super(LogManager, self).__init__()
+
         # Store the base formatter
         self._formatter = Formatter(log_format, date_format)
 
