@@ -9,7 +9,7 @@
 #   Core
 from core import AutoUnload
 #   Events
-from events.manager import event_registry
+from events.manager import event_manager
 #   Loggers
 from loggers import _sp_logger
 
@@ -46,21 +46,14 @@ class Event(AutoUnload):
 
     def __init__(self, callback):
         """Store the callback and register the event."""
-        # Is the callback callable?
-        if not callable(callback):
-
-            # Raise an error
-            raise TypeError(
-                "'" + type(callback).__name__ + "' object is not callable.")
-
         # Store the callback
         self.callback = callback
 
         # Register the event
-        event_registry.register_for_event(
+        event_manager.register_for_event(
             self.callback.__name__, self.callback)
 
     def _unload_instance(self):
         """Unregister the event."""
-        event_registry.unregister_for_event(
+        event_manager.unregister_for_event(
             self.callback.__name__, self.callback)

@@ -11,7 +11,7 @@ from sqlite3 import connect
 
 # Source.Python Imports
 #   Events
-from events.manager import event_registry
+from events.manager import event_manager
 #   Paths
 from paths import SP_DATA_PATH
 
@@ -169,5 +169,5 @@ _IN_INITIALIZATION = False
 
 # Register for the event server_spawn in order
 # to store the database to file on map change
-event_registry.register_for_event(
+event_manager.register_for_event(
     'server_spawn', _player_settings_storage.server_spawn)

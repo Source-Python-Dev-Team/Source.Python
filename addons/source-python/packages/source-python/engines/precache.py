@@ -19,7 +19,7 @@ from core import AutoUnload
 from engines.server import engine_server
 from engines.server import global_vars
 #   Events
-from events.manager import event_registry
+from events.manager import event_manager
 #   Stringtables
 from stringtables import INVALID_STRING_INDEX
 from stringtables import string_tables
@@ -68,7 +68,7 @@ class _PrecacheBase(AutoUnload):
             self._precache()
 
         # Register the server_spawn event to precache every map change
-        event_registry.register_for_event('server_spawn', self._server_spawn)
+        event_manager.register_for_event('server_spawn', self._server_spawn)
 
         # Should the path be added to the downloadables?
         if download:
@@ -114,7 +114,7 @@ class _PrecacheBase(AutoUnload):
             self._downloads._unload_instance()
 
         # Unregister the server_spawn event
-        event_registry.unregister_for_event('server_spawn', self._server_spawn)
+        event_manager.unregister_for_event('server_spawn', self._server_spawn)
 
     @property
     def _precache_table(self):

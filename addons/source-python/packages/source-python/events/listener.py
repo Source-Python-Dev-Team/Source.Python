@@ -41,10 +41,13 @@ class _EventListener(list):
 
     """Stores callbacks for the given event."""
 
-    def __init__(self, event):
+    def __init__(self, event_name):
         """Called when an instance is created."""
+        # Initialize the list
+        super(_EventListener, self).__init__()
+
         # Store the event name
-        self.event = event
+        self.event_name = event_name
 
         # Store the listener instance
         self.listener = GameEventListener()
@@ -60,7 +63,7 @@ class _EventListener(list):
             # Raise an error
             raise ValueError(
                 'Event callback "{0}" is already registered '
-                'for event "{1}"'.format(callback, self.event))
+                'for event "{1}"'.format(callback, self.event_name))
 
         # Add the callback to the list
         super(_EventListener, self).append(callback)
@@ -73,7 +76,7 @@ class _EventListener(list):
             # Raise an error
             raise ValueError(
                 'Event callback "{0}" is not registered for '
-                'the event "{1}"'.format(callback, self.event))
+                'the event "{1}"'.format(callback, self.event_name))
 
         # Remove the callback from the list
         super(_EventListener, self).remove(callback)
