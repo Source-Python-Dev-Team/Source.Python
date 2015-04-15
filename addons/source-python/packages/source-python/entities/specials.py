@@ -47,7 +47,7 @@ class _EntitySpecials(object):
         from weapons.entity import WeaponEntity
 
         # Is the game supported?
-        if not hasattr(self, 'take_damage'):
+        if not hasattr(self, 'on_take_damage'):
 
             # Raise an error if not supported
             raise NotImplementedError(
@@ -140,4 +140,4 @@ class _EntitySpecials(object):
             setattr(take_damage_info, item, kwargs[item])
 
         # Call the function with the victim's pointer and the CTakeDamageInfo
-        self.take_damage(take_damage_info)
+        self.on_take_damage(take_damage_info)
