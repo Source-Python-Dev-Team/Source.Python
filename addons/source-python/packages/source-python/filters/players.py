@@ -98,9 +98,9 @@ class _Team(object):
         """Store the team number for future use."""
         self.team = team
 
-    def _player_is_on_team(self, playerinfo):
+    def _player_is_on_team(self, edict):
         """Return whether the player is on the team."""
-        return playerinfo.get_team_index() == self.team
+        return playerinfo_from_edict(edict).get_team_index() == self.team
 
 
 # =============================================================================
