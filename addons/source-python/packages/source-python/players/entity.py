@@ -260,6 +260,6 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
     def push(self, horiz_mul, vert_mul, vert_override=False):
         """Push the player along his view vector."""
         x, y, z = tuple(self.view_vector)
-        self.basevelocity = Vector(
+        self.base_velocity = Vector(
             x * horiz_mul, y * horiz_mul,
             z * vert_mul if not vert_override else vert_mul)

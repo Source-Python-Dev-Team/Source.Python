@@ -273,7 +273,7 @@ class BaseEntity(_EntitySpecials):
     def get_color(self):
         """Return the entity's color as a Color instance."""
         # Get the render value
-        value = self.render
+        value = self.render_color
 
         # Return a tuple with the RGBA values
         return Color(
@@ -289,10 +289,10 @@ class BaseEntity(_EntitySpecials):
             color = color.with_alpha(self.color.a)
 
         # Set the rendermode
-        self.rendermode = self.rendermode | 1
+        self.render_mode = self.render_mode | 1
 
         # Set the renderfx
-        self.renderfx = self.renderfx | 256
+        self.render_fx = self.render_fx | 256
 
         # Get the value to set the render property to
         value = color.r + (color.g << 8) + (color.b << 16) + (color.a << 24)
@@ -302,7 +302,7 @@ class BaseEntity(_EntitySpecials):
             value -= 2 ** 32
 
         # Set the entity's color
-        self.render = value
+        self.render_color = value
 
     # Set the "color" property for BaseEntity
     color = property(
