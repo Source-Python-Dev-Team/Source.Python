@@ -40,9 +40,7 @@
 
 
 DCCallVM* g_pCallVM = dcNewCallVM(4096);
-extern std::map<CHook *, std::map<DynamicHooks::HookType_t, std::list<PyObject *> > > g_mapCallbacks;
-
-CHookManager* g_pHookMngr = new CHookManager;
+extern std::map<CHook *, std::map<HookType_t, std::list<PyObject *> > > g_mapCallbacks;
 
 dict g_oExposedClasses;
 
@@ -247,6 +245,23 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, object args, obje
 	m_eConv = eConv;
 	m_Args = tuple(args);
 	m_oReturnType = return_type;
+
+	DataType_t eReturnType;
+
+	// Try to get the return type
+	try
+	{
+		eReturnType = extract<DataType_t>(m_oReturnType);
+	}
+	catch( ... )
+	{
+		PyErr_Clear();
+
+		// It failed, so let's handle it as a pointer
+		eReturnType = DATA_TYPE_POINTER;
+	}
+
+	m_pCallingConvention = MakeDynamicHooksConvention(eConv, ObjectToDataTypeVector(args), eReturnType);
 }
 
 object CFunction::Call(tuple args, dict kw)
@@ -276,8 +291,8 @@ object CFunction::Call(tuple args, dict kw)
 			case DATA_TYPE_UINT:      dcArgInt(g_pCallVM, extract<unsigned int>(arg)); break;
 			case DATA_TYPE_LONG:      dcArgLong(g_pCallVM, extract<long>(arg)); break;
 			case DATA_TYPE_ULONG:     dcArgLong(g_pCallVM, extract<unsigned long>(arg)); break;
-			case DATA_TYPE_LONGLONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
-			case DATA_TYPE_ULONGLONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
+			case DATA_TYPE_LONG_LONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
+			case DATA_TYPE_ULONG_LONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
 			case DATA_TYPE_FLOAT:     dcArgFloat(g_pCallVM, extract<float>(arg)); break;
 			case DATA_TYPE_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DATA_TYPE_POINTER:
@@ -320,8 +335,8 @@ object CFunction::Call(tuple args, dict kw)
 		case DATA_TYPE_UINT:      return object((unsigned int) dcCallInt(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_LONG:      return object(dcCallLong(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_ULONG:     return object((unsigned long) dcCallLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_LONGLONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_ULONGLONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_LONG_LONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_ULONG_LONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_POINTER:   return object(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
@@ -336,14 +351,14 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
 	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_Args, m_oReturnType).Call(args, kw);
 }
 
-handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
@@ -359,13 +374,12 @@ handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 		PyErr_Clear();
 		return_type = DATA_TYPE_POINTER;
 	}
-	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, return_type));
 
 	// Hook the function
-	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, strdup(szParams));
+	CHook* pHook = GetHookManager()->HookFunction((void *) m_ulAddr, m_pCallingConvention);
 
 	// Add the hook handler. If it's already added, it won't be added twice
-	pHook->AddCallback(eType, (void *) &SP_HookHandler);
+	pHook->AddCallback(eType, (HookHandlerFn *) &SP_HookHandler);
 
 	// Add the callback to our map
 	g_mapCallbacks[pHook][eType].push_back(pCallable);
@@ -374,12 +388,12 @@ handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
 	return handle<>(borrowed(pCallable));
 }
 
-void CFunction::RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 		
-	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
 		return;
 

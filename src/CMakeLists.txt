@@ -260,14 +260,14 @@ Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
     core/modules/memory/memory_tools.h
     core/modules/memory/memory_scanner.h
     core/modules/memory/memory_hooks.h
-    core/modules/memory/memory_callback.h
+    #core/modules/memory/memory_callback.h
 )
 
 Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
     core/modules/memory/memory_scanner.cpp
     core/modules/memory/memory_tools.cpp
     core/modules/memory/memory_hooks.cpp
-    core/modules/memory/memory_callback.cpp
+    #core/modules/memory/memory_callback.cpp
     core/modules/memory/memory_wrap_python.cpp
 )
 

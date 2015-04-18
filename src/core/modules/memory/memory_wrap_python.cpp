@@ -31,7 +31,6 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "memory_hooks.h"
-#include "memory_callback.h"
 
 #include "dyncall.h"
 
@@ -392,8 +391,8 @@ void export_dyncall()
 		.value("UINT", DATA_TYPE_UINT)
 		.value("LONG", DATA_TYPE_LONG)
 		.value("ULONG", DATA_TYPE_ULONG)
-		.value("LONG_LONG", DATA_TYPE_LONGLONG)
-		.value("ULONG_LONG", DATA_TYPE_ULONGLONG)
+		.value("LONG_LONG", DATA_TYPE_LONG_LONG)
+		.value("ULONG_LONG", DATA_TYPE_ULON_GLONG)
 		.value("FLOAT", DATA_TYPE_FLOAT)
 		.value("DOUBLE", DATA_TYPE_DOUBLE)
 		.value("POINTER", DATA_TYPE_POINTER)
@@ -425,12 +424,6 @@ void export_dynamichooks()
 			&CStackData::SetItem,
 			"Sets the argument at the specified index."
 		)
-
-		// Properties
-		.add_property("esp",
-			make_function(&CStackData::GetESP, manage_new_object_policy()),
-			"Stack pointer register."
-		)
 	;
 }
 
@@ -439,12 +432,14 @@ void export_dynamichooks()
 //-----------------------------------------------------------------------------
 void export_callbacks()
 {
+	/*
 	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, object, optional<bool> >())
         .def_readwrite("callback",
             &CCallback::m_oCallback,
             "The Python function that gets called by the C++ callback"
         )
     ;
+	*/
 }
 
 

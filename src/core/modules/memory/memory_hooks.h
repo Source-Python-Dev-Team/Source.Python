@@ -11,8 +11,9 @@
 using namespace boost::python;
 
 #include "memory_tools.h"
-#include "DynamicHooks.h"
 
+// DynamicHooks
+#include "hook.h"
 
 //---------------------------------------------------------------------------------
 // Classes
@@ -25,9 +26,6 @@ public:
 	object    GetItem(unsigned int iIndex);
 	void      SetItem(unsigned int iIndex, object value);
 
-	CPointer* GetESP()
-	{ return new CPointer((unsigned long) m_pHook->m_pESP); }
-
 protected:
 	CHook*                m_pHook;
 	std::map<int, object> m_mapCache;
@@ -37,6 +35,6 @@ protected:
 //---------------------------------------------------------------------------------
 // Functions
 //---------------------------------------------------------------------------------
-bool SP_HookHandler(DynamicHooks::HookType_t eHookType, CHook* pHook);
+bool SP_HookHandler(HookType_t eHookType, CHook* pHook);
 
 #endif // MEMORY_HOOKS_H

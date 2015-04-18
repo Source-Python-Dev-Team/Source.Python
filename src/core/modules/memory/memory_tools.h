@@ -33,11 +33,17 @@
 #include "dyncall_signature.h"
 
 #include "utilities/wrap_macros.h"
-#include "DynamicHooks.h"
-using namespace DynamicHooks;
 
 #include "boost/python.hpp"
 using namespace boost::python;
+
+// DynamicHooks
+#include "manager.h"
+#include "conventions/x86MsCdecl.h"
+#include "conventions/x86MsThiscall.h"
+#include "conventions/x86MsStdcall.h"
+#include "conventions/x86GccCdecl.h"
+#include "conventions/x86GccThiscall.h"
 
 
 // Externals
@@ -142,6 +148,13 @@ inline void UTIL_Dealloc(void* ptr)
 //-----------------------------------------------------------------------------
 // Convention enum
 //-----------------------------------------------------------------------------
+enum Convention_t
+{
+	CONV_CDECL,
+	CONV_THISCALL,
+	CONV_STDCALL
+};
+
 inline int GetDynCallConvention(Convention_t eConv)
 {
 	switch (eConv)
@@ -153,32 +166,71 @@ inline int GetDynCallConvention(Convention_t eConv)
 			#else
 				return DC_CALL_C_X86_WIN32_THIS_GNU;
 			#endif
+#ifdef _WIN32
 		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
+#endif
 	}
 
 	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
 	return 0;
 }
 
-enum DataType_t
+inline std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
 {
-	DATA_TYPE_VOID = DC_SIGCHAR_VOID,
-	DATA_TYPE_BOOL = DC_SIGCHAR_BOOL,
-	DATA_TYPE_CHAR = DC_SIGCHAR_CHAR,
-	DATA_TYPE_UCHAR = DC_SIGCHAR_UCHAR,
-	DATA_TYPE_SHORT = DC_SIGCHAR_SHORT,
-	DATA_TYPE_USHORT = DC_SIGCHAR_USHORT,
-	DATA_TYPE_INT = DC_SIGCHAR_INT,
-	DATA_TYPE_UINT = DC_SIGCHAR_UINT,
-	DATA_TYPE_LONG = DC_SIGCHAR_LONG,
-	DATA_TYPE_ULONG = DC_SIGCHAR_ULONG,
-	DATA_TYPE_LONGLONG = DC_SIGCHAR_LONGLONG,
-	DATA_TYPE_ULONGLONG = DC_SIGCHAR_ULONGLONG,
-	DATA_TYPE_FLOAT = DC_SIGCHAR_FLOAT,
-	DATA_TYPE_DOUBLE = DC_SIGCHAR_DOUBLE,
-	DATA_TYPE_POINTER = DC_SIGCHAR_POINTER,
-	DATA_TYPE_STRING = DC_SIGCHAR_STRING
-};
+	std::vector<DataType_t> vecArgTypes;
+	for(int i=0; i < len(oArgTypes); i++)
+	{
+		vecArgTypes.push_back(extract<DataType_t>(oArgTypes[i]));
+	}
+	return vecArgTypes;
+}
+
+inline ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4)
+{
+#ifdef _WIN32
+	switch (eConv)
+	{
+	case CONV_CDECL: return new x86MsCdecl(vecArgTypes, returnType, iAlignment);
+	case CONV_THISCALL: return new x86MsThiscall(vecArgTypes, returnType, iAlignment);
+	case CONV_STDCALL: return new x86MsStdcall(vecArgTypes, returnType, iAlignment);
+	}
+#else
+	switch (eConv)
+	{
+	case CONV_CDECL: return new x86GccCdecl(vecArgTypes, returnType, iAlignment);
+	case CONV_THISCALL: return new x86GccThiscall(vecArgTypes, returnType, iAlignment);
+	}
+#endif
+
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+	return 0;
+}
+
+char DataTypeToDyncallType(DataType_t eType)
+{
+	switch(eType)
+	{
+	case DATA_TYPE_VOID: return DC_SIGCHAR_VOID;
+	case DATA_TYPE_BOOL: return DC_SIGCHAR_BOOL;
+	case DATA_TYPE_CHAR: return DC_SIGCHAR_CHAR;
+	case DATA_TYPE_UCHAR: return DC_SIGCHAR_UCHAR;
+	case DATA_TYPE_SHORT: return DC_SIGCHAR_SHORT;
+	case DATA_TYPE_USHORT: return DC_SIGCHAR_USHORT;
+	case DATA_TYPE_INT: return DC_SIGCHAR_INT;
+	case DATA_TYPE_UINT: return DC_SIGCHAR_UINT;
+	case DATA_TYPE_LONG: return DC_SIGCHAR_LONG;
+	case DATA_TYPE_ULONG: return DC_SIGCHAR_ULONG;
+	case DATA_TYPE_LONG_LONG: return DC_SIGCHAR_LONGLONG;
+	case DATA_TYPE_ULONG_LONG: return DC_SIGCHAR_ULONGLONG;
+	case DATA_TYPE_FLOAT: return DC_SIGCHAR_FLOAT;
+	case DATA_TYPE_DOUBLE: return DC_SIGCHAR_DOUBLE;
+	case DATA_TYPE_POINTER: return DC_SIGCHAR_POINTER;
+	case DATA_TYPE_STRING: return DC_SIGCHAR_STRING;
+	}
+
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported data type.")
+	return 0;
+}
 
 //-----------------------------------------------------------------------------
 // CPointer class
@@ -288,8 +340,8 @@ public:
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
 	
-	handle<> AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
-	void RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
+	handle<> AddHook(HookType_t eType, PyObject* pCallable);
+	void RemoveHook(HookType_t eType, PyObject* pCallable);
     
 	handle<> AddPreHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_PRE, pCallable); }
@@ -307,6 +359,7 @@ public:
 	boost::python::tuple	m_Args;
 	object					m_oReturnType;
 	Convention_t			m_eConv;
+	ICallingConvention*		m_pCallingConvention;
 };
 
 

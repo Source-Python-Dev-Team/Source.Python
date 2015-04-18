@@ -35,8 +35,6 @@
 using namespace AsmJit;
 
 #include "utilities.h"
-#include "DynamicHooks.h"
-using namespace DynamicHooks;
 
 
 // ============================================================================
@@ -71,22 +69,22 @@ CCallback::CCallback(object oCallback, Convention_t eConv, tuple args, object re
 
     switch(RetType)
     {
-        case DATA_TYPE_VOID:      pCallCallbackFunc = GET_CALLBACK_CALLER(void); break;
-        case DATA_TYPE_BOOL:      pCallCallbackFunc = GET_CALLBACK_CALLER(bool); break;
-        case DATA_TYPE_CHAR:      pCallCallbackFunc = GET_CALLBACK_CALLER(char); break;
-        case DATA_TYPE_UCHAR:     pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned char); break;
-        case DATA_TYPE_SHORT:     pCallCallbackFunc = GET_CALLBACK_CALLER(short); break;
-        case DATA_TYPE_USHORT:    pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned short); break;
-        case DATA_TYPE_INT:       pCallCallbackFunc = GET_CALLBACK_CALLER(int); break;
-        case DATA_TYPE_UINT:      pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned int); break;
-        case DATA_TYPE_LONG:      pCallCallbackFunc = GET_CALLBACK_CALLER(long); break;
-        case DATA_TYPE_ULONG:     pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned long); break;
-        case DATA_TYPE_LONGLONG:  pCallCallbackFunc = GET_CALLBACK_CALLER(long long); break;
-        case DATA_TYPE_ULONGLONG: pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned long long); break;
-        case DATA_TYPE_FLOAT:     pCallCallbackFunc = GET_CALLBACK_CALLER(float); break;
-        case DATA_TYPE_DOUBLE:    pCallCallbackFunc = GET_CALLBACK_CALLER(double); break;
-        case DATA_TYPE_POINTER:   pCallCallbackFunc = GET_CALLBACK_CALLER(void *); break;
-        case DATA_TYPE_STRING:    pCallCallbackFunc = GET_CALLBACK_CALLER(char *); break;
+        case DATA_TYPE_VOID:		pCallCallbackFunc = GET_CALLBACK_CALLER(void); break;
+        case DATA_TYPE_BOOL:		pCallCallbackFunc = GET_CALLBACK_CALLER(bool); break;
+        case DATA_TYPE_CHAR:		pCallCallbackFunc = GET_CALLBACK_CALLER(char); break;
+        case DATA_TYPE_UCHAR:		pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned char); break;
+        case DATA_TYPE_SHORT:		pCallCallbackFunc = GET_CALLBACK_CALLER(short); break;
+        case DATA_TYPE_USHORT:		pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned short); break;
+        case DATA_TYPE_INT:			pCallCallbackFunc = GET_CALLBACK_CALLER(int); break;
+        case DATA_TYPE_UINT:		pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned int); break;
+        case DATA_TYPE_LONG:		pCallCallbackFunc = GET_CALLBACK_CALLER(long); break;
+        case DATA_TYPE_ULONG:		pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned long); break;
+        case DATA_TYPE_LONG_LONG:	pCallCallbackFunc = GET_CALLBACK_CALLER(long long); break;
+        case DATA_TYPE_ULONG_LONG:	pCallCallbackFunc = GET_CALLBACK_CALLER(unsigned long long); break;
+        case DATA_TYPE_FLOAT:		pCallCallbackFunc = GET_CALLBACK_CALLER(float); break;
+        case DATA_TYPE_DOUBLE:		pCallCallbackFunc = GET_CALLBACK_CALLER(double); break;
+        case DATA_TYPE_POINTER:		pCallCallbackFunc = GET_CALLBACK_CALLER(void *); break;
+        case DATA_TYPE_STRING:		pCallCallbackFunc = GET_CALLBACK_CALLER(char *); break;
         default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown return type.");
     }
     
@@ -202,21 +200,21 @@ object CallCallback(CCallback* pCallback, unsigned long ulEBP, unsigned long ulE
             object val;
 			switch(extract<DataType_t>(pCallback->m_Args[i]))
             {
-                case DATA_TYPE_BOOL:      val = object(GetArgument<bool>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_CHAR:      val = object(GetArgument<char>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_UCHAR:     val = object(GetArgument<unsigned char>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_SHORT:     val = object(GetArgument<short>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_USHORT:    val = object(GetArgument<unsigned short>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_INT:       val = object(GetArgument<int>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_UINT:      val = object(GetArgument<unsigned int>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_LONG:      val = object(GetArgument<long>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_ULONG:     val = object(GetArgument<unsigned long>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_LONGLONG:  val = object(GetArgument<long long>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_ULONGLONG: val = object(GetArgument<unsigned long long>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_FLOAT:     val = object(GetArgument<float>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_DOUBLE:    val = object(GetArgument<double>(pCallback, ulEBP, ulECX, i)); break;
-                case DATA_TYPE_POINTER:   val = object(ptr(new CPointer(GetArgument<unsigned long>(pCallback, ulEBP, ulECX, i)))); break;
-                case DATA_TYPE_STRING:    val = object(GetArgument<const char*>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_BOOL:		val = object(GetArgument<bool>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_CHAR:		val = object(GetArgument<char>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_UCHAR:		val = object(GetArgument<unsigned char>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_SHORT:		val = object(GetArgument<short>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_USHORT:		val = object(GetArgument<unsigned short>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_INT:			val = object(GetArgument<int>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_UINT:		val = object(GetArgument<unsigned int>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_LONG:		val = object(GetArgument<long>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_ULONG:		val = object(GetArgument<unsigned long>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_LONG_LONG:	val = object(GetArgument<long long>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_ULONG_LONG:	val = object(GetArgument<unsigned long long>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_FLOAT:		val = object(GetArgument<float>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_DOUBLE:		val = object(GetArgument<double>(pCallback, ulEBP, ulECX, i)); break;
+                case DATA_TYPE_POINTER:		val = object(ptr(new CPointer(GetArgument<unsigned long>(pCallback, ulEBP, ulECX, i)))); break;
+                case DATA_TYPE_STRING:		val = object(GetArgument<const char*>(pCallback, ulEBP, ulECX, i)); break;
                 default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown argument type."); break;
             }
             arg_list.append(val);
