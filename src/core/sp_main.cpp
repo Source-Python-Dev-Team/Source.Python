@@ -435,8 +435,7 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
-	CPointer pAddress = CPointer((unsigned long) pEntity);
-	int iIndex = IndexFromPointer(&pAddress);
+	int iIndex = IndexFromBaseEntity(pEntity);
 	edict_t* pEdict = EdictFromIndex(iIndex);
 	if (pEdict)
 	{
@@ -444,19 +443,20 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
 	}
+	CPointer pAddress = CPointer((unsigned long) pEntity);
 	CALL_LISTENERS(OnEntityCreated, iIndex, ptr(&pAddress));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
 	CPointer pAddress = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntitySpawned, IndexFromPointer(&pAddress), ptr(&pAddress));
+	CALL_LISTENERS(OnEntitySpawned, IndexFromBaseEntity(pEntity), ptr(&pAddress));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
 	CPointer pAddress = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntityDeleted, IndexFromPointer(&pAddress), ptr(&pAddress));
+	CALL_LISTENERS(OnEntityDeleted, IndexFromBaseEntity(pEntity), ptr(&pAddress));
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

@@ -55,7 +55,7 @@ public:
 		}
 		return pDataMap.dataDesc[iIndex];
 	}
-	
+
 	static typedescription_t *find(datamap_t *pDataMap, const char *szName)
 	{
 		while (pDataMap)
@@ -112,30 +112,30 @@ public:
 	{
 		return STRING(pVariant->StringID());
 	}
-	
+
 	static void set_string(variant_t *pVariant, const char *szValue)
 	{
 		return pVariant->SetString(MAKE_STRING(szValue));
 	}
-	
+
 	static Color *get_color(variant_t *pVariant)
 	{
 		color32 pColor32 = pVariant->Color32();
 		return new Color((int)pColor32.r, (int)pColor32.g, (int)pColor32.b, (int)pColor32.a);
 	}
-	
+
 	static void set_color(variant_t *pVariant, Color *pColor)
 	{
 		pVariant->SetColor32(pColor->r(), pColor->g(), pColor->b(), pColor->a());
 	}
-	
+
 	static Vector get_vector(variant_t *pVariant)
 	{
 		Vector pVector;
 		pVariant->Vector3D(pVector);
 		return pVector;
 	}
-	
+
 	static int get_entity(variant_t *pVariant)
 	{
 		CHandle<CBaseEntity> pHandle = pVariant->Entity();
@@ -145,7 +145,7 @@ public:
 		}
 		return -1;
 	}
-	
+
 	static void set_entity(variant_t *pVariant, unsigned int uiEntity)
 	{
 		pVariant->SetEntity((CBaseEntity *)PointerFromIndex(uiEntity)->m_ulAddr);
@@ -177,30 +177,20 @@ public:
 		pInputData->nOutputID = 0;
 		return pInputData;
 	}
-	
+
 	static int get_activator(const inputdata_t& pInputData)
 	{
-		if (pInputData.pActivator)
-		{
-			CPointer ptr = CPointer((unsigned long)pInputData.pActivator);
-			return IndexFromPointer(&ptr);
-		}
-		return -1;
+		return IndexFromBaseEntity(pInputData.pActivator);
 	}
-	
+
 	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator)
 	{
 		pInputData->pActivator = (CBaseEntity *)PointerFromIndex(uiActivator)->m_ulAddr;
 	}
-	
+
 	static int get_caller(const inputdata_t& pInputData)
 	{
-		if (pInputData.pCaller)
-		{
-			CPointer ptr = CPointer((unsigned long)pInputData.pCaller);
-			return IndexFromPointer(&ptr);
-		}
-		return -1;
+		return IndexFromBaseEntity(pInputData.pCaller);
 	}
 	
 	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller)

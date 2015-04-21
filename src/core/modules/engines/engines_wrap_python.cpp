@@ -974,8 +974,7 @@ bool CGameTrace::DidHitWorld() const
 
 int CGameTrace::GetEntityIndex() const
 {
-	CPointer ptr = CPointer((unsigned long) m_pEnt);
-	return m_pEnt ? IndexFromPointer(&ptr) : -1;
+	return IndexFromBaseEntity(m_pEnt);
 }
 
 

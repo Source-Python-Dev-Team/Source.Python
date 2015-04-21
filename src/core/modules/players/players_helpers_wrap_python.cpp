@@ -27,8 +27,8 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "modules/entities/entities_helpers_wrap.h"
 #include "export_main.h"
+#include "utilities/conversions.h"
 #include "utilities/wrap_macros.h"
 
 
@@ -43,6 +43,9 @@ void export_player_conversion_functions();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_players, _helpers)
 {
+	// Invalid results...
+	_helpers.attr("INVALID_PLAYER_USERID") = INVALID_PLAYER_USERID;
+
 	// Conversion functions...
 	export_player_conversion_functions();
 }

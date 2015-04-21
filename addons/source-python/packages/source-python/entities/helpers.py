@@ -7,6 +7,8 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
+from _entities._helpers import INVALID_ENTITY_INDEX
+from _entities._helpers import INVALID_ENTITY_INTHANDLE
 from _entities._helpers import basehandle_from_edict
 from _entities._helpers import basehandle_from_index
 from _entities._helpers import basehandle_from_inthandle
@@ -35,7 +37,9 @@ from _entities._helpers import spawn_entity
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('basehandle_from_edict',
+__all__ = ('INVALID_ENTITY_INDEX',
+           'INVALID_ENTITY_INTHANDLE',
+           'basehandle_from_edict',
            'basehandle_from_index',
            'basehandle_from_inthandle',
            'basehandle_from_pointer',

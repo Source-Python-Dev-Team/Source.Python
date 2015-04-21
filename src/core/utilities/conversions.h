@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -28,409 +28,654 @@
 #define _CONVERSIONS_H
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
-#include "edict.h"
 #include "basehandle.h"
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
 #include "modules/memory/memory_tools.h"
+#include "utilities/baseentity.h"
+#include "utilities/wrap_macros.h"
+
 
 //-----------------------------------------------------------------------------
-// Externals
+// External variables.
 //-----------------------------------------------------------------------------
-extern IVEngineServer* engine;
-extern CGlobalVars*	   gpGlobals;
-extern IPlayerInfoManager* playerinfomanager;
+extern IVEngineServer *engine;
+extern CGlobalVars *gpGlobals;
+extern IPlayerInfoManager *playerinfomanager;
+
 
 //-----------------------------------------------------------------------------
-// Forward declarations
+// Invalid results.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromEdict( edict_t* edict );
-edict_t* EdictFromIndex( unsigned int iEntIndex );
-edict_t* EdictFromUserid( unsigned int userid );
-edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo );
-unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo );
-int IntHandleFromBaseHandle( CBaseHandle basehandle );
-CPointer* PointerFromEdict( edict_t* edict );
-IPlayerInfo* PlayerInfoFromIndex( unsigned int index );
-IPlayerInfo* PlayerInfoFromPointer( CPointer* pPtr );
+#define INVALID_ENTITY_INDEX -1
+#define INVALID_PLAYER_USERID -1
+#define INVALID_ENTITY_INTHANDLE INVALID_EHANDLE_INDEX
+
 
 //-----------------------------------------------------------------------------
-// Functions that return an entity's index.
+// Forward declarations.
 //-----------------------------------------------------------------------------
-inline unsigned int IndexFromEdict( edict_t* pEdict )
+edict_t *EdictFromIndex( unsigned int uiEntityIndex, bool bRaiseException );
+edict_t *EdictFromUserid( unsigned int uiUserID, bool bRaiseException );
+edict_t *EdictFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException );
+edict_t *EdictFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException );
+CBaseHandle BaseHandleFromEdict( edict_t *pEdict, bool bRaiseException );
+int IntHandleFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException );
+CPointer *PointerFromEdict( edict_t *pEdict, bool bRaiseException );
+int UseridFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException );
+IPlayerInfo *PlayerInfoFromIndex( unsigned int uiEntityIndex, bool bRaiseException );
+IPlayerInfo *PlayerInfoFromPointer( CPointer *pEntityPointer, bool bRaiseException );
+int IndexFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException );
+
+
+//-----------------------------------------------------------------------------
+// TConversion functions.
+//-----------------------------------------------------------------------------
+inline int IndexFromEdict( edict_t *pEdict, bool bRaiseException = false )
 {
-	if (!pEdict || pEdict->IsFree())
-		return NULL;
+	unsigned int uiEntityIndex = INVALID_ENTITY_INDEX;
 
+	if (pEdict && !pEdict->IsFree())
 #ifdef ENGINE_ORANGEBOX
-	return (unsigned int) engine->IndexOfEdict(pEdict);
+		uiEntityIndex = (unsigned int)engine->IndexOfEdict(pEdict);
 #else
-	return (unsigned int) (pEdict - gpGlobals->pEdicts);
+		uiEntityIndex = (unsigned int)(pEdict - gpGlobals->pEdicts);
 #endif
+
+	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given Edict instance (%x).", pEdict);
+
+	return uiEntityIndex;
 }
 
-inline unsigned int IndexFromBaseHandle( CBaseHandle basehandle )
-{
-	if (!basehandle.IsValid())
-		return NULL;
 
-	return basehandle.GetEntryIndex();
+inline int IndexFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = false )
+{
+	unsigned int uiEntityIndex = INVALID_ENTITY_INDEX;
+
+	if (hBaseHandle.IsValid())
+		uiEntityIndex = hBaseHandle.GetEntryIndex();
+
+	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseHandle instance.");
+
+	return uiEntityIndex;
 }
 
-inline unsigned int IndexFromIntHandle( int iHandle )
+
+inline int IndexFromIntHandle( int iEntityHandle, bool bRaiseException = false )
 {
-	CBaseHandle hHandle(iHandle);
-	unsigned int iIndex = hHandle.GetEntryIndex();
-	const CBaseHandle hTestHandle = BaseHandleFromEdict(EdictFromIndex(iIndex));
-	if (!hTestHandle.IsValid() || (hHandle.GetSerialNumber() != hTestHandle.GetSerialNumber()))
-		return NULL;
+	unsigned int uiEntityIndex = INVALID_ENTITY_INDEX;
 
-	return iIndex;
-}
-
-inline unsigned int IndexFromPointer( CPointer* pPtr )
-{
-	if (!pPtr || !pPtr->IsValid())
-		return NULL;
-
-	IServerUnknown *pUnknown = (IServerUnknown *) pPtr->m_ulAddr;
-	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
-	if (!pNetworkable)
-		return NULL;
-
-	return IndexFromEdict(pNetworkable->GetEdict());
-}
-
-inline unsigned int IndexFromUserid( unsigned int userid )
-{
-	return IndexFromEdict(EdictFromUserid(userid));
-}
-
-inline unsigned int IndexFromPlayerInfo( IPlayerInfo* playerinfo )
-{
-	if (!playerinfo)
-		return NULL;
-
-	return IndexFromEdict(EdictFromPlayerInfo(playerinfo));
-}
-
-//-----------------------------------------------------------------------------
-// Functions that return an entity's edict_t instance.
-//-----------------------------------------------------------------------------
-inline edict_t* EdictFromIndex( unsigned int iEntIndex )
-{
-	edict_t *pEdict = NULL;
-	if(iEntIndex < (unsigned int) gpGlobals->maxEntities)
+	if (iEntityHandle != INVALID_ENTITY_INTHANDLE)
 	{
-#ifdef ENGINE_ORANGEBOX
-		pEdict = engine->PEntityOfEntIndex(iEntIndex);
-#else
-		pEdict = (edict_t *) (gpGlobals->pEdicts + iEntIndex);
-#endif
+		CBaseHandle hBaseHandle(iEntityHandle);
+		const CBaseHandle hTestHandle = BaseHandleFromEdict(EdictFromIndex(hBaseHandle.GetEntryIndex(), false), false);
+		if (hTestHandle.IsValid() || (hBaseHandle.GetSerialNumber() == hTestHandle.GetSerialNumber()))
+			uiEntityIndex = hBaseHandle.GetEntryIndex();
 	}
 
-	if (!pEdict || pEdict->IsFree() || !pEdict->GetUnknown())
-		return NULL;
+	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given IntHandle (%i).", iEntityHandle);
+
+	return uiEntityIndex;
+}
+
+
+inline int IndexFromPointer( CPointer *pEntityPointer, bool bRaiseException = false )
+{
+	unsigned int uiEntityIndex = INVALID_ENTITY_INDEX;
+
+	if (pEntityPointer && pEntityPointer->IsValid())
+		uiEntityIndex = IndexFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr, false);
+
+	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given Pointer instance.");
+
+	return uiEntityIndex;
+}
+
+
+inline int IndexFromUserid( unsigned int uiUserID, bool bRaiseException = false )
+{
+	unsigned int uiEntityIndex = IndexFromEdict(EdictFromUserid(uiUserID, false));
+
+	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given UseriID (%i).", uiUserID);
+
+	return uiEntityIndex;
+}
+
+
+inline int IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException = false )
+{
+	unsigned int uiEntityIndex = IndexFromEdict(EdictFromPlayerInfo(pPlayerInfo, false));
+
+	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given PlayerInfo instance.");
+
+	return uiEntityIndex;
+}
+
+
+inline int IndexFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException = false )
+{
+	unsigned int uiEntityIndex = INVALID_ENTITY_INDEX;
+
+	if (pBaseEntity)
+	{
+		IServerUnknown *pServerUnknown = (IServerUnknown *)pBaseEntity;
+		if (pServerUnknown)
+		{
+			IServerNetworkable *pServerNetworkable = pServerUnknown->GetNetworkable();
+			if (pServerNetworkable)
+				uiEntityIndex = IndexFromEdict(pServerNetworkable->GetEdict());
+		}
+	}
+
+	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseEntity instance.");
+
+	return uiEntityIndex;
+}
+
+
+inline edict_t *EdictFromIndex( unsigned int uiEntityIndex, bool bRaiseException = false )
+{
+	edict_t *pEdict = NULL;
+
+	if (uiEntityIndex < (unsigned int)gpGlobals->maxEntities)
+	{
+#ifdef ENGINE_ORANGEBOX
+		edict_t *pTempEdict = engine->PEntityOfEntIndex(uiEntityIndex);
+#else
+		edict_t *pTempEdict = (edict_t *) (gpGlobals->pEdicts + uiEntityIndex);
+#endif
+		if (pTempEdict && !pTempEdict->IsFree())
+			pEdict = pTempEdict;
+	}
+
+	if ((!pEdict || !pEdict->GetUnknown()) && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given index (%i).", uiEntityIndex);
+
 	return pEdict;
 }
 
-inline edict_t* EdictFromBaseHandle( CBaseHandle basehandle )
-{
-	if (!basehandle.IsValid())
-		return NULL;
 
-	return EdictFromIndex(IndexFromBaseHandle(basehandle));
+inline edict_t *EdictFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = false )
+{
+	edict_t *pEdict = EdictFromIndex(IndexFromBaseHandle(hBaseHandle));
+
+	if (!pEdict && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given BaseHandle instance.");
+
+	return pEdict;
 }
 
-inline edict_t* EdictFromIntHandle( int inthandle )
+
+inline edict_t *EdictFromIntHandle( int iEntityHandle, bool bRaiseException = false )
 {
-	return EdictFromIndex(IndexFromIntHandle(inthandle));
+	edict_t *pEdict = EdictFromIndex(IndexFromIntHandle(iEntityHandle));
+
+	if (!pEdict && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given IntHandle (%i).", iEntityHandle);
+
+	return pEdict;
 }
 
-inline edict_t* EdictFromPointer( CPointer* pPtr )
-{
-	if (!pPtr || !pPtr->IsValid())
-		return NULL;
-	
-	IServerUnknown *pUnknown = (IServerUnknown *) pPtr->m_ulAddr;
-	IServerNetworkable *pNetworkable = pUnknown->GetNetworkable();
-	if (!pNetworkable)
-		return NULL;
 
-	return pNetworkable->GetEdict();
+inline edict_t *EdictFromPointer( CPointer *pEntityPointer, bool bRaiseException = false )
+{
+	edict_t *pEdict = NULL;
+
+	if (pEntityPointer && pEntityPointer->IsValid())
+		pEdict = EdictFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr, false);
+
+	if (!pEdict && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given Pointer instance.");
+
+	return pEdict;
 }
 
-inline edict_t* EdictFromUserid( unsigned int userid )
+
+inline edict_t *EdictFromUserid( unsigned int uiUserID, bool bRaiseException = false )
 {
-	edict_t* pEdict;
-	for(int i=1; i <= gpGlobals->maxClients; ++i)
+	edict_t *pEdict = NULL;
+
+	for (int iCurrentIndex = 1; iCurrentIndex <= gpGlobals->maxClients; iCurrentIndex++)
 	{
-		pEdict = EdictFromIndex(i);
-		if (pEdict && !pEdict->IsFree() &&
-			strcmp(pEdict->GetClassName(), "player") == 0 &&
-			engine->GetPlayerUserId(pEdict) == (int) userid)
+		edict_t *pCurrentEdict = EdictFromIndex(iCurrentIndex);
+		if (engine->GetPlayerUserId(pCurrentEdict) == uiUserID)
+			pEdict = pCurrentEdict;
+	}
+
+	if (!pEdict && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given UseriID (%i).", uiUserID);
+
+	return pEdict;
+}
+
+
+inline edict_t *EdictFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException = false )
+{
+	edict_t *pEdict = NULL;
+
+	if (pPlayerInfo)
+	{
+		pEdict = EdictFromUserid(pPlayerInfo->GetUserID());
+	}
+
+	if (!pEdict && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given PlayerInfo instance.");
+
+	return pEdict;
+}
+
+
+inline edict_t *EdictFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException = false )
+{
+	edict_t *pEdict = NULL;
+
+	if (pBaseEntity)
+	{
+		IServerUnknown *pServerUnknown = (IServerUnknown *)pBaseEntity;
+		if (pServerUnknown)
 		{
-			return pEdict;
+			IServerNetworkable *pServerNetworkable = pServerUnknown->GetNetworkable();
+			if (pServerNetworkable)
+				pEdict = pServerNetworkable->GetEdict();
 		}
 	}
-	
-	return NULL; // TO fix a warning
+
+	if (!pEdict && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given BaseEntity instance.");
+
+	return pEdict;
 }
 
-inline edict_t* EdictFromPlayerInfo( IPlayerInfo* playerinfo )
-{
-	if (!playerinfo)
-		return NULL;
 
-	return EdictFromUserid(UseridFromPlayerInfo(playerinfo));
+inline CBaseHandle BaseHandleFromIndex( unsigned int uiEntityIndex, bool bRaiseException = false )
+{
+	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromIndex(uiEntityIndex), false);
+
+	if (hBaseHandle.IsValid() && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given index (%i).", uiEntityIndex);
+
+	return hBaseHandle;
 }
 
-//-----------------------------------------------------------------------------
-// Functions that return an entity's CBaseHandle instance.
-//-----------------------------------------------------------------------------
-inline CBaseHandle BaseHandleFromIndex( unsigned int index )
+
+inline CBaseHandle BaseHandleFromEdict( edict_t *pEdict, bool bRaiseException = false )
 {
-	return BaseHandleFromEdict(EdictFromIndex(index));
-}
+	CBaseHandle hBaseHandle = NULL;
 
-inline CBaseHandle BaseHandleFromEdict( edict_t* edict )
-{
-	if (!edict || edict->IsFree())
-		return NULL;
-
-	IServerNetworkable* pNetworkable = edict->GetNetworkable();
-	if (!pNetworkable)
-		return NULL;
-
-	IHandleEntity* pHandleEntity = pNetworkable->GetEntityHandle();
-	if (!pHandleEntity)
-		return NULL;
-
-	const CBaseHandle& handle = pHandleEntity->GetRefEHandle();
-	if (!handle.IsValid())
-		return NULL;
-
-	return handle;
-}
-
-inline CBaseHandle BaseHandleFromIntHandle( int inthandle )
-{
-	return CBaseHandle(inthandle);
-}
-
-inline CBaseHandle BaseHandleFromPointer( CPointer* pPtr )
-{
-	if (!pPtr || !pPtr->IsValid())
-		return NULL;
-
-	return BaseHandleFromEdict(EdictFromPointer(pPtr));
-}
-
-inline CBaseHandle BaseHandleFromUserid( unsigned int userid )
-{
-	return BaseHandleFromEdict(EdictFromUserid(userid));
-}
-
-inline CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo* playerinfo )
-{
-	if (!playerinfo)
-		return NULL;
-
-	return BaseHandleFromEdict(EdictFromPlayerInfo(playerinfo));
-}
-
-//-----------------------------------------------------------------------------
-// Functions that return an entity's integer handle.
-//-----------------------------------------------------------------------------
-inline int IntHandleFromIndex( unsigned int index )
-{
-	return IntHandleFromBaseHandle(BaseHandleFromIndex(index));
-}
-
-inline int IntHandleFromEdict( edict_t* edict )
-{
-	if (!edict || edict->IsFree())
-		return NULL;
-
-	return IntHandleFromBaseHandle(BaseHandleFromEdict(edict));
-}
-
-inline int IntHandleFromBaseHandle( CBaseHandle basehandle )
-{
-	if (!basehandle.IsValid())
-		return NULL;
-
-	return basehandle.ToInt();
-}
-
-inline int IntHandleFromPointer( CPointer* pPtr )
-{
-	if (!pPtr || !pPtr->IsValid())
-		return NULL;
-
-	return IntHandleFromEdict(EdictFromPointer(pPtr));
-}
-
-inline int IntHandleFromUserid( unsigned int userid )
-{
-	return IntHandleFromEdict(EdictFromUserid(userid));
-}
-
-inline int IntHandleFromPlayerInfo( IPlayerInfo* playerinfo )
-{
-	if (!playerinfo)
-		return NULL;
-
-	return IntHandleFromEdict(EdictFromPlayerInfo(playerinfo));
-}
-
-//-----------------------------------------------------------------------------
-// Functions that return an entity's CPointer instance.
-//-----------------------------------------------------------------------------
-inline CPointer* PointerFromIndex( unsigned int index )
-{
-	return PointerFromEdict(EdictFromIndex(index));
-}
-
-inline CPointer* PointerFromEdict( edict_t* edict )
-{
-	if (!edict || edict->IsFree())
-		return NULL;
-
-	IServerUnknown* pUnknown = edict->GetUnknown();
-	if (!pUnknown)
-		return NULL;
-
-	void* pEntity = (void*) pUnknown->GetBaseEntity();
-	if (!pEntity)
-		return NULL;
-
-	return new CPointer((unsigned long) pEntity);
-}
-
-inline CPointer* PointerFromBaseHandle( CBaseHandle basehandle )
-{
-	if (!basehandle.IsValid())
-		return NULL;
-
-	return PointerFromEdict(EdictFromBaseHandle(basehandle));
-}
-
-inline CPointer* PointerFromIntHandle( int inthandle )
-{
-	return PointerFromEdict(EdictFromIntHandle(inthandle));
-}
-
-inline CPointer* PointerFromUserid( unsigned int userid )
-{
-	return PointerFromEdict(EdictFromUserid(userid));
-}
-
-inline CPointer* PointerFromPlayerInfo( IPlayerInfo* playerinfo )
-{
-	if (!playerinfo)
-		return NULL;
-
-	return PointerFromEdict(EdictFromPlayerInfo(playerinfo));
-}
-
-//-----------------------------------------------------------------------------
-// Functions that return an player's userid.
-//-----------------------------------------------------------------------------
-inline unsigned int UseridFromIndex( unsigned int index )
-{
-	return UseridFromPlayerInfo(PlayerInfoFromIndex(index));
-}
-
-inline unsigned int UseridFromEdict( edict_t* edict )
-{
-	if (!edict || edict->IsFree())
-		return NULL;
-
-	return UseridFromIndex(IndexFromEdict(edict));
-}
-
-inline unsigned int UseridFromBaseHandle( CBaseHandle basehandle )
-{
-	if (!basehandle.IsValid())
-		return NULL;
-
-	return UseridFromIndex(IndexFromBaseHandle(basehandle));
-}
-
-inline unsigned int UseridFromIntHandle( int inthandle )
-{
-	return UseridFromBaseHandle(BaseHandleFromIntHandle(inthandle));
-}
-
-inline unsigned int UseridFromPointer( CPointer* pPtr )
-{
-	if (!pPtr || !pPtr->IsValid())
-		return NULL;
-
-	return UseridFromPlayerInfo(PlayerInfoFromPointer(pPtr));
-}
-
-inline unsigned int UseridFromPlayerInfo( IPlayerInfo* playerinfo )
-{
-	if (!playerinfo)
-		return NULL;
-
-	return playerinfo->GetUserID();
-}
-
-//-----------------------------------------------------------------------------
-// Functions that return an player's IPlayerInfo instance.
-//-----------------------------------------------------------------------------
-inline IPlayerInfo* PlayerInfoFromIndex( unsigned int index )
-{
-	if (index < 1 || index > (unsigned int) gpGlobals->maxClients)
-		return NULL;
-
-	edict_t* pEdict = EdictFromIndex(index);
-	if (pEdict && !pEdict->IsFree() &&
-		strcmp(pEdict->GetClassName(), "player") == 0)
+	if (pEdict && !pEdict->IsFree())
 	{
-		return playerinfomanager->GetPlayerInfo(pEdict);
+		IServerNetworkable *pServerNetworkable = pEdict->GetNetworkable();
+		if (pServerNetworkable)
+		{
+			IHandleEntity *pHandleEntity = pServerNetworkable->GetEntityHandle();
+			if (pHandleEntity)
+				hBaseHandle = pHandleEntity->GetRefEHandle();
+		}
 	}
-	
-	return NULL; // To fix a warning
+
+	if (!hBaseHandle.IsValid() && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given Edict instance.");
+
+	return hBaseHandle;
 }
 
-inline IPlayerInfo* PlayerInfoFromEdict( edict_t* pEdict )
+
+inline CBaseHandle BaseHandleFromIntHandle( int iEntityHandle, bool bRaiseException = false )
 {
-	if (!pEdict || pEdict->IsFree())
-		return NULL;
+	CBaseHandle hBaseHandle = CBaseHandle(iEntityHandle);
 
-	return playerinfomanager->GetPlayerInfo(pEdict);
+	if (!hBaseHandle.IsValid() && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given IntHandle (%i).", iEntityHandle);
+
+	return hBaseHandle;
 }
 
-inline IPlayerInfo* PlayerInfoFromBaseHandle( CBaseHandle basehandle )
+
+inline CBaseHandle BaseHandleFromPointer( CPointer *pEntityPointer, bool bRaiseException = false )
 {
-	if (!basehandle.IsValid())
-		return NULL;
+	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromPointer(pEntityPointer));
 
-	return PlayerInfoFromIndex(basehandle.GetEntryIndex());
+	if (!hBaseHandle.IsValid() && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given Pointer instance.");
+
+	return hBaseHandle;
 }
 
-inline IPlayerInfo* PlayerInfoFromIntHandle( int inthandle )
+
+inline CBaseHandle BaseHandleFromUserid( unsigned int uiUserID, bool bRaiseException = false )
 {
-	return PlayerInfoFromIndex(IndexFromIntHandle(inthandle));
+	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromUserid(uiUserID));
+
+	if (!hBaseHandle.IsValid() && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given UseriID (%i).", uiUserID);
+
+	return hBaseHandle;
 }
 
-inline IPlayerInfo* PlayerInfoFromPointer( CPointer* pPtr )
+
+inline CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException = false )
 {
-	if (!pPtr || !pPtr->IsValid())
-		return NULL;
+	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromPlayerInfo(pPlayerInfo));
 
-	return PlayerInfoFromIndex(IndexFromPointer(pPtr));
+	if (!hBaseHandle.IsValid() && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given PlayerInfo instance.");
+
+	return hBaseHandle;
 }
 
-inline IPlayerInfo* PlayerInfoFromUserid( unsigned int userid )
+
+inline int IntHandleFromIndex( unsigned int uiEntityIndex, bool bRaiseException = false )
 {
-	return PlayerInfoFromEdict(EdictFromUserid(userid));
+	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromIndex(uiEntityIndex), false);
+
+	if (iEntityHandle == INVALID_ENTITY_INTHANDLE && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given index (%i).", uiEntityIndex);
+
+	return iEntityHandle;
 }
+
+
+inline int IntHandleFromEdict( edict_t *pEdict, bool bRaiseException = false )
+{
+	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromEdict(pEdict), false);
+
+	if (iEntityHandle == INVALID_ENTITY_INTHANDLE && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given Edict instance.");
+
+	return iEntityHandle;
+}
+
+
+inline int IntHandleFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = false )
+{
+	int iEntityHandle = INVALID_ENTITY_INTHANDLE;
+
+	if (hBaseHandle.IsValid())
+		iEntityHandle = hBaseHandle.ToInt();
+
+	if (iEntityHandle == INVALID_ENTITY_INTHANDLE && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseHandle instance.");
+
+	return iEntityHandle;
+}
+
+
+inline int IntHandleFromPointer( CPointer *pEntityPointer, bool bRaiseException = false )
+{
+	int iEntityHandle = IntHandleFromEdict(EdictFromPointer(pEntityPointer));
+
+	if (iEntityHandle == INVALID_ENTITY_INTHANDLE && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given Pointer instance.");
+
+	return iEntityHandle;
+}
+
+
+inline int IntHandleFromUserid( unsigned int uiUserID, bool bRaiseException = false )
+{
+	int iEntityHandle =  IntHandleFromEdict(EdictFromUserid(uiUserID));
+
+	if (iEntityHandle == INVALID_ENTITY_INTHANDLE && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given UserID (%i).", uiUserID);
+
+	return iEntityHandle;
+}
+
+inline int IntHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException = false )
+{
+	int iEntityHandle = IntHandleFromEdict(EdictFromPlayerInfo(pPlayerInfo));
+
+	if (iEntityHandle == INVALID_ENTITY_INTHANDLE && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given PlayerInfo instance.");
+
+	return iEntityHandle;
+}
+
+
+inline CPointer *PointerFromIndex( unsigned int uiEntityIndex, bool bRaiseException = false )
+{
+	CPointer *pEntityPointer = PointerFromEdict(EdictFromIndex(uiEntityIndex), false);
+
+	if (!(pEntityPointer && pEntityPointer->IsValid()) && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given index (%i).", uiEntityIndex);
+
+	return pEntityPointer;
+}
+
+
+inline CPointer *PointerFromEdict( edict_t *pEdict, bool bRaiseException = false )
+{
+	CPointer *pEntityPointer = NULL;
+
+	if (pEdict && !pEdict->IsFree())
+	{
+		IServerUnknown *pServerUnknown = pEdict->GetUnknown();
+		if (pServerUnknown)
+		{
+			CBaseEntity *pBaseEntity = pServerUnknown->GetBaseEntity();
+			if (pBaseEntity)
+				pEntityPointer = new CPointer((unsigned long)pBaseEntity);
+		}
+	}
+
+	if (!(pEntityPointer && pEntityPointer->IsValid()) && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given Edict instance.");
+
+	return pEntityPointer;
+}
+
+
+inline CPointer *PointerFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = false )
+{
+	CPointer *pEntityPointer = PointerFromEdict(EdictFromBaseHandle(hBaseHandle));
+
+	if (!(pEntityPointer && pEntityPointer->IsValid()) && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given BaseHandle instance.");
+
+	return pEntityPointer;
+}
+
+
+inline CPointer *PointerFromIntHandle( int iEntityHandle, bool bRaiseException = false )
+{
+	CPointer *pEntityPointer = PointerFromEdict(EdictFromIntHandle(iEntityHandle));
+
+	if (!(pEntityPointer && pEntityPointer->IsValid()) && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given IntHandle (%i).", iEntityHandle);
+
+	return pEntityPointer;
+}
+
+
+inline CPointer *PointerFromUserid( unsigned int uiUserID, bool bRaiseException = false )
+{
+	CPointer *pEntityPointer = PointerFromEdict(EdictFromUserid(uiUserID));
+
+	if (!(pEntityPointer && pEntityPointer->IsValid()) && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given UserID (%i).", uiUserID);
+
+	return pEntityPointer;
+}
+
+
+inline CPointer *PointerFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException = false )
+{
+	CPointer *pEntityPointer = PointerFromEdict(EdictFromPlayerInfo(pPlayerInfo));
+
+	if (!(pEntityPointer && pEntityPointer->IsValid()) && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given PlayerInfo instance.");
+
+	return pEntityPointer;
+}
+
+
+inline int UseridFromIndex( unsigned int uiEntityIndex, bool bRaiseException = false )
+{
+	unsigned int uiUserID = UseridFromPlayerInfo(PlayerInfoFromIndex(uiEntityIndex, false), false);
+
+	if (uiUserID == INVALID_PLAYER_USERID && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given index (%i).", uiEntityIndex);
+
+	return uiUserID;
+}
+
+
+inline int UseridFromEdict( edict_t *pEdict, bool bRaiseException = false )
+{
+	unsigned int uiUserID = UseridFromIndex(IndexFromEdict(pEdict));
+
+	if (uiUserID == INVALID_PLAYER_USERID && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given Edict instance.");
+
+	return uiUserID;
+}
+
+
+inline int UseridFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = false )
+{
+	unsigned int uiUserID = UseridFromIndex(IndexFromBaseHandle(hBaseHandle));
+
+	if (uiUserID == INVALID_PLAYER_USERID && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given BaseHandle instance.");
+
+	return uiUserID;
+}
+
+
+inline int UseridFromIntHandle( int iEntityHandle, bool bRaiseException = false )
+{
+	unsigned int uiUserID = INVALID_PLAYER_USERID;
+
+	if (iEntityHandle != INVALID_ENTITY_INTHANDLE)
+		uiUserID = UseridFromBaseHandle(BaseHandleFromIntHandle(iEntityHandle));
+
+	if (uiUserID == INVALID_PLAYER_USERID && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given IntHandle (%i).", iEntityHandle);
+
+	return uiUserID;
+}
+
+
+inline int UseridFromPointer( CPointer *pEntityPointer, bool bRaiseException = false )
+{
+	unsigned int uiUserID = UseridFromPlayerInfo(PlayerInfoFromPointer(pEntityPointer, false), false);
+
+	if (uiUserID == INVALID_PLAYER_USERID && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given CPointer instance.");
+
+	return uiUserID;
+}
+
+
+inline int UseridFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException = false )
+{
+	unsigned int uiUserID = INVALID_PLAYER_USERID;
+
+	if (pPlayerInfo)
+		uiUserID = pPlayerInfo->GetUserID();
+
+	if (uiUserID == INVALID_PLAYER_USERID && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given PlayerInfo instance.");
+
+	return uiUserID;
+}
+
+
+inline IPlayerInfo *PlayerInfoFromIndex( unsigned int uiEntityIndex, bool bRaiseException = false )
+{
+	IPlayerInfo *pPlayerInfo = NULL;
+
+	if (uiEntityIndex > 0 || (int)uiEntityIndex < gpGlobals->maxClients)
+	{
+		edict_t *pEdict = EdictFromIndex(uiEntityIndex);
+		if (pEdict)
+			pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
+	}
+
+	if (!pPlayerInfo && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given index (%i).", uiEntityIndex);
+
+	return pPlayerInfo;
+}
+
+
+inline IPlayerInfo *PlayerInfoFromEdict( edict_t *pEdict, bool bRaiseException = false )
+{
+	IPlayerInfo *pPlayerInfo = NULL;
+
+	if (pEdict && !pEdict->IsFree())
+		pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
+
+	if (!pPlayerInfo && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given Edict instance.");
+
+	return pPlayerInfo;
+}
+
+
+inline IPlayerInfo *PlayerInfoFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = false )
+{
+	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(hBaseHandle.GetEntryIndex());
+
+	if (!pPlayerInfo && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given BaseHandle instance.");
+
+	return pPlayerInfo;
+}
+
+
+inline IPlayerInfo *PlayerInfoFromIntHandle( int iEntityHandle, bool bRaiseException = false )
+{
+	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(IndexFromIntHandle(iEntityHandle));
+
+	if (!pPlayerInfo && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given IntHandle (%i).", iEntityHandle);
+
+	return pPlayerInfo;
+}
+
+
+inline IPlayerInfo *PlayerInfoFromPointer( CPointer *pEntityPointer, bool bRaiseException = false )
+{
+	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(IndexFromPointer(pEntityPointer));
+
+	if (!pPlayerInfo && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given Pointer instance.");
+
+	return pPlayerInfo;
+}
+
+
+inline IPlayerInfo *PlayerInfoFromUserid( unsigned int uiUserID, bool bRaiseException = false )
+{
+	IPlayerInfo *pPlayerInfo = PlayerInfoFromEdict(EdictFromUserid(uiUserID));
+
+	if (!pPlayerInfo && bRaiseException)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given UserID (%i).", uiUserID);
+
+	return pPlayerInfo;
+}
+
+
+//-----------------------------------------------------------------------------
+// Helper template to avoid some redundant typing...
+//-----------------------------------------------------------------------------
+#define EXPORT_CONVERSION_FUNCTION(to_type, to_name, from_type, from_name, ...) \
+	def(extract<const char *>(str(XSTRINGIFY(to_name##_from_##from_name)).lower().ptr()), \
+		&to_name##From##from_name, \
+		XSTRINGIFY(Returns the to_name (of type #to_type) from the given from_name (of type #from_type).), \
+		(XSTRINGIFY(from_name), arg("raise_exception")=true), \
+		##__VA_ARGS__ \
+	)
+
 
 #endif // _CONVERSIONS_H

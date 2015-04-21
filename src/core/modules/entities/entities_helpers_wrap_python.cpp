@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "entities_helpers_wrap.h"
 #include "export_main.h"
+#include "utilities/conversions.h"
 #include "utilities/wrap_macros.h"
 
 #include ENGINE_INCLUDE_PATH(entities_helpers_wrap.h)
@@ -45,6 +46,10 @@ void export_entity_conversion_functions();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _helpers)
 {
+	// Invalid results...
+	_helpers.attr("INVALID_ENTITY_INDEX") = INVALID_ENTITY_INDEX;
+	_helpers.attr("INVALID_ENTITY_INTHANDLE") = INVALID_ENTITY_INTHANDLE;
+
 	// Conversion functions...
 	export_entity_conversion_functions();
 

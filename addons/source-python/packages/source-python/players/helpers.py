@@ -18,6 +18,7 @@ from players.games import get_client_language
 # =============================================================================
 # Source.Python Imports
 #   Players
+from _players._helpers import INVALID_PLAYER_USERID
 from _players._helpers import basehandle_from_playerinfo
 from _players._helpers import basehandle_from_userid
 from _players._helpers import edict_from_playerinfo
@@ -45,7 +46,8 @@ from _players._helpers import userid_from_pointer
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('address_from_playerinfo',
+__all__ = ('INVALID_PLAYER_USERID',
+           'address_from_playerinfo',
            'basehandle_from_playerinfo',
            'basehandle_from_userid',
            'edict_from_playerinfo',

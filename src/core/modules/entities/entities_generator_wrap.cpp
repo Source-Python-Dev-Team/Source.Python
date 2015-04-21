@@ -104,9 +104,8 @@ edict_t* CEntityGenerator::getNext()
 {
 	while (m_pCurrentEntity)
 	{
-		CPointer pEntity = CPointer((unsigned long)m_pCurrentEntity);
 		m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);
-		edict_t *pEdict = EdictFromPointer(&pEntity);
+		edict_t *pEdict = EdictFromBaseEntity(m_pCurrentEntity);
 		if (pEdict)
 		{
 			if (m_uiClassNameLen && m_szClassName)
