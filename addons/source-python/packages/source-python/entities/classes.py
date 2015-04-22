@@ -454,27 +454,9 @@ class _ServerClasses(TypeManager):
         if name not in contents:
             return
 
-        # Does the property contain True/False values?
-        if not isinstance(contents[name], str):
-
-            # Loop through all attribute names for the property
-            for attribute, values in contents[name].items():
-
-                # Get the True/False values
-                true_value = int(values['True'])
-                false_value = int(values['False'])
-
-                # Add the current attribute name to the instance
-                setattr(instance, attribute, self.entity_property(
-                    types[prop.type], offset,
-                    networked, true_value, false_value))
-
-        # Does the property not contain True/False values?
-        else:
-
-            # Add the property to the instance
-            setattr(instance, contents[name], self.entity_property(
-                types[prop.type], offset, networked))
+        # Add the property to the instance
+        setattr(instance, contents[name], self.entity_property(
+            types[prop.type], offset, networked))
 
     @staticmethod
     def keyvalue(name, type_name):
