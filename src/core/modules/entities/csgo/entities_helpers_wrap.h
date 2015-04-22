@@ -30,6 +30,7 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include <climits>
 #include "utilities/wrap_macros.h"
 #include "toolframework/itoolentity.h"
 #include "utilities/conversions.h"
@@ -52,11 +53,10 @@ void remove_entity(unsigned int uiEntityIndex)
 	if (!pBaseEntity)
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity matching the given index \"%u\".", uiEntityIndex);
 
-	int iHammerID = 0;
+	int iHammerID = INT_MAX;
 	while (servertools->FindEntityByHammerID(iHammerID))
-	{
-		iHammerID++;
-	}
+		iHammerID--;
+
 	servertools->SetKeyValue(pBaseEntity, "hammerid", iHammerID);
 	servertools->RemoveEntity(iHammerID);
 }
