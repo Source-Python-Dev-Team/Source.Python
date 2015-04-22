@@ -39,11 +39,6 @@ using namespace boost::python;
 
 // DynamicHooks
 #include "manager.h"
-#include "conventions/x86MsCdecl.h"
-#include "conventions/x86MsThiscall.h"
-#include "conventions/x86MsStdcall.h"
-#include "conventions/x86GccCdecl.h"
-#include "conventions/x86GccThiscall.h"
 
 
 // Externals

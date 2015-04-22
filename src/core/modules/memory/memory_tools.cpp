@@ -38,6 +38,13 @@
 #include "utilities/sp_util.h"
 #include "utilities/call_python.h"
 
+// DynamicHooks
+#include "conventions/x86MsCdecl.h"
+#include "conventions/x86MsThiscall.h"
+#include "conventions/x86MsStdcall.h"
+#include "conventions/x86GccCdecl.h"
+#include "conventions/x86GccThiscall.h"
+
 
 DCCallVM* g_pCallVM = dcNewCallVM(4096);
 extern std::map<CHook *, std::map<HookType_t, std::list<PyObject *> > > g_mapCallbacks;
