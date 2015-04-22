@@ -44,6 +44,61 @@ extern std::map<CHook *, std::map<HookType_t, std::list<PyObject *> > > g_mapCal
 
 dict g_oExposedClasses;
 
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
+int GetDynCallConvention(Convention_t eConv)
+{
+	switch (eConv)
+	{
+		case CONV_CDECL: return DC_CALL_C_DEFAULT;
+		case CONV_THISCALL:
+			#ifdef _WIN32
+				return DC_CALL_C_X86_WIN32_THIS_MS;
+			#else
+				return DC_CALL_C_X86_WIN32_THIS_GNU;
+			#endif
+#ifdef _WIN32
+		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
+#endif
+	}
+
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+	return 0;
+}
+
+std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
+{
+	std::vector<DataType_t> vecArgTypes;
+	for(int i=0; i < len(oArgTypes); i++)
+	{
+		vecArgTypes.push_back(extract<DataType_t>(oArgTypes[i]));
+	}
+	return vecArgTypes;
+}
+
+ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4)
+{
+#ifdef _WIN32
+	switch (eConv)
+	{
+	case CONV_CDECL: return new x86MsCdecl(vecArgTypes, returnType, iAlignment);
+	case CONV_THISCALL: return new x86MsThiscall(vecArgTypes, returnType, iAlignment);
+	case CONV_STDCALL: return new x86MsStdcall(vecArgTypes, returnType, iAlignment);
+	}
+#else
+	switch (eConv)
+	{
+	case CONV_CDECL: return new x86GccCdecl(vecArgTypes, returnType, iAlignment);
+	case CONV_THISCALL: return new x86GccThiscall(vecArgTypes, returnType, iAlignment);
+	}
+#endif
+
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+	return 0;
+}
+
 //-----------------------------------------------------------------------------
 // CPointer class
 //-----------------------------------------------------------------------------
