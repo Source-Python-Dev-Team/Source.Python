@@ -435,8 +435,7 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
-	int iIndex = IndexFromBaseEntity(pEntity);
-	edict_t* pEdict = EdictFromIndex(iIndex);
+	edict_t *pEdict = EdictFromIndex(IndexFromBaseEntity(pEntity));
 	if (pEdict)
 	{
 		IServerUnknown* pServerUnknown = pEdict->GetUnknown();

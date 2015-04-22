@@ -47,13 +47,11 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 void remove_entity(unsigned int uiEntityIndex)
 {
-	CPointer *pEntity = PointerFromIndex(uiEntityIndex);
-	if (!pEntity)
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity " \
-			"matching the given index \"%u\".", uiEntityIndex);
-	}
-	CBaseEntity *pBaseEntity = (CBaseEntity *)pEntity->m_ulAddr;
+	CBaseEntity *pBaseEntity = BaseEntityFromIndex(uiEntityIndex);
+
+	if (!pBaseEntity)
+		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity matching the given index \"%u\".", uiEntityIndex);
+
 	int iHammerID = 0;
 	while (servertools->FindEntityByHammerID(iHammerID))
 	{

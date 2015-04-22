@@ -47,10 +47,10 @@ extern IServerTools *servertools;
 unsigned int create_entity(const char *szClassName)
 {
 	CBaseEntity *pBaseEntity = (CBaseEntity *)servertools->CreateEntityByName(szClassName);
+
 	if (!pBaseEntity)
-	{
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to create an entity of type \"%s\".", szClassName);
-	}
+
 	return IndexFromBaseEntity(pBaseEntity);
 }
 
@@ -60,13 +60,11 @@ unsigned int create_entity(const char *szClassName)
 //-----------------------------------------------------------------------------
 void spawn_entity(unsigned int uiEntityIndex)
 {
-	CPointer *pEntity = PointerFromIndex(uiEntityIndex);
-	if (!pEntity)
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity " \
-			"matching the given index \"%u\".", uiEntityIndex);
-	}
-	CBaseEntity *pBaseEntity = (CBaseEntity *)pEntity->m_ulAddr;
+	CBaseEntity *pBaseEntity = BaseEntityFromIndex(uiEntityIndex);
+
+	if (!pBaseEntity)
+		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity matching the given index \"%u\".", uiEntityIndex);
+
 	servertools->DispatchSpawn(pBaseEntity);
 }
 

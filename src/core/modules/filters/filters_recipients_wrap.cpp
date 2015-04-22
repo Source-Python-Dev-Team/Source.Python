@@ -97,7 +97,7 @@ void MRecipientFilter::AddAllPlayers()
 		edict_t *pPlayer = EdictFromIndex(i);
 
 		// Skip invalid entities.
-		if( !pPlayer || pPlayer->IsFree() ) {
+		if( !pPlayer ) {
 			continue;
 		}
 
@@ -119,7 +119,7 @@ void MRecipientFilter::AddRecipient(int iPlayer)
 
 	// Make sure the player is valid
 	edict_t* pPlayer = EdictFromIndex(iPlayer);
-	if(!pPlayer || pPlayer->IsFree())
+	if(!pPlayer)
 		return;
 
 	// Get and compare the classnames. Skip non-player

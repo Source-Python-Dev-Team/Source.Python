@@ -148,7 +148,7 @@ public:
 
 	static void set_entity(variant_t *pVariant, unsigned int uiEntity)
 	{
-		pVariant->SetEntity((CBaseEntity *)PointerFromIndex(uiEntity)->m_ulAddr);
+		pVariant->SetEntity(BaseEntityFromIndex(uiEntity, true));
 	}
 };
 
@@ -185,7 +185,7 @@ public:
 
 	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator)
 	{
-		pInputData->pActivator = (CBaseEntity *)PointerFromIndex(uiActivator)->m_ulAddr;
+		pInputData->pActivator = BaseEntityFromIndex(uiActivator, true);
 	}
 
 	static int get_caller(const inputdata_t& pInputData)
@@ -195,7 +195,7 @@ public:
 	
 	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller)
 	{
-		pInputData->pCaller = (CBaseEntity *)PointerFromIndex(uiCaller)->m_ulAddr;
+		pInputData->pCaller = BaseEntityFromIndex(uiCaller, true);
 	}
 };
 

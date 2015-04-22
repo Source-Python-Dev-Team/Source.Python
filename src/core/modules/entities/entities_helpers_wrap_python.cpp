@@ -48,7 +48,7 @@ DECLARE_SP_SUBMODULE(_entities, _helpers)
 {
 	// Invalid results...
 	_helpers.attr("INVALID_ENTITY_INDEX") = INVALID_ENTITY_INDEX;
-	_helpers.attr("INVALID_ENTITY_INTHANDLE") = INVALID_ENTITY_INTHANDLE;
+	_helpers.attr("INVALID_ENTITY_INTHANDLE") = INVALID_EHANDLE_INDEX;
 
 	// Conversion functions...
 	export_entity_conversion_functions();

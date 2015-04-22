@@ -63,23 +63,19 @@ public:
 	static DVariant *call_proxy(SendProp *pSendProp, unsigned int uiEntityIndex, unsigned int uiOffset, int iElement)
 	{
 		if (pSendProp->GetType() == DPT_DataTable)
-		{
 			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is a DataTable.", pSendProp->GetName());
-		}
+
 		if (pSendProp->IsExcludeProp())
-		{
 			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is exluded.", pSendProp->GetName());
-		}
-		CPointer *pEntity = PointerFromIndex(uiEntityIndex);
+
+		CBaseEntity *pEntity = BaseEntityFromIndex(uiEntityIndex);
 		if (!pEntity)
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity " \
-				"matching the given index \"%u\".", uiEntityIndex);
-		}
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity matching the given index \"%u\".", uiEntityIndex);
+
 		DVariant *pVariant = new DVariant();
 		pVariant->m_Type = pSendProp->m_Type;
-		pSendProp->GetProxyFn()(pSendProp, (const void *)(pEntity->m_ulAddr + (uiOffset - pSendProp->GetOffset())),
-			(const void *)(pEntity->m_ulAddr + uiOffset),
+		pSendProp->GetProxyFn()(pSendProp, (const void *)(pEntity + (uiOffset - pSendProp->GetOffset())),
+			(const void *)(pEntity + uiOffset),
 			pVariant, iElement, (int)uiEntityIndex);
 		return pVariant;
 	}
