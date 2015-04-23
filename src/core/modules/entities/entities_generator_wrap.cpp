@@ -104,20 +104,19 @@ edict_t* CEntityGenerator::getNext()
 {
 	while (m_pCurrentEntity)
 	{
-		m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);
 		edict_t *pEdict = EdictFromBaseEntity(m_pCurrentEntity);
+		m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);
 		if (pEdict)
 		{
 			if (m_uiClassNameLen && m_szClassName)
 			{
 				if (!m_bExactMatch && strncmp(pEdict->GetClassName(), m_szClassName, m_uiClassNameLen) != 0)
-					pEdict = NULL;
+					continue;
 
 				else if (m_bExactMatch && strcmp(pEdict->GetClassName(), m_szClassName) != 0)
-					pEdict = NULL;
+					continue;
 			}
-			if (pEdict)
-				return pEdict;
+			return pEdict;
 		}
 	}
 	return NULL;
