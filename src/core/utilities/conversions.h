@@ -739,10 +739,7 @@ inline int UseridFromPointer( CPointer *pEntityPointer, bool bRaiseException = f
 //-----------------------------------------------------------------------------
 inline IPlayerInfo *PlayerInfoFromEdict( edict_t *pEdict, bool bRaiseException = false )
 {
-	IPlayerInfo *pPlayerInfo = NULL;
-
-	if (pEdict && !pEdict->IsFree())
-		pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
+	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(IndexFromEdict(pEdict));
 
 	if (!pPlayerInfo && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given Edict instance (%x).", pEdict);
