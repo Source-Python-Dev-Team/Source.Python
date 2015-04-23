@@ -148,14 +148,10 @@ inline CBaseHandle BaseHandleFromEdict( edict_t *pEdict, bool bRaiseException = 
 	{
 		IServerNetworkable *pServerNetworkable = pEdict->GetNetworkable();
 		if (pServerNetworkable)
-		{
-			IHandleEntity *pHandleEntity = pServerNetworkable->GetEntityHandle();
-			if (pHandleEntity)
-				hBaseHandle = pHandleEntity->GetRefEHandle();
-		}
+			hBaseHandle = pServerNetworkable->GetEntityHandle();
 	}
 
-	if (!hBaseHandle.IsValid() && bRaiseException)
+	if (!hBaseHandle.ToInt() && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given Edict instance.");
 
 	return hBaseHandle;
@@ -448,7 +444,7 @@ inline CBaseHandle BaseHandleFromIndex( unsigned int uiEntityIndex, bool bRaiseE
 {
 	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromIndex(uiEntityIndex));
 
-	if (hBaseHandle.IsValid() && bRaiseException)
+	if (!hBaseHandle.ToInt() && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given index (%i).", uiEntityIndex);
 
 	return hBaseHandle;
@@ -462,7 +458,7 @@ inline CBaseHandle BaseHandleFromIntHandle( int iEntityHandle, bool bRaiseExcept
 {
 	CBaseHandle hBaseHandle = CBaseHandle(iEntityHandle);
 
-	if (!hBaseHandle.IsValid() && bRaiseException)
+	if (!hBaseHandle.ToInt() && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given IntHandle (%i).", iEntityHandle);
 
 	return hBaseHandle;
@@ -476,7 +472,7 @@ inline CBaseHandle BaseHandleFromPointer( CPointer *pEntityPointer, bool bRaiseE
 {
 	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromPointer(pEntityPointer));
 
-	if (!hBaseHandle.IsValid() && bRaiseException)
+	if (!hBaseHandle.ToInt() && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given Pointer instance.");
 
 	return hBaseHandle;
@@ -490,7 +486,7 @@ inline CBaseHandle BaseHandleFromUserid( unsigned int uiUserID, bool bRaiseExcep
 {
 	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromUserid(uiUserID));
 
-	if (!hBaseHandle.IsValid() && bRaiseException)
+	if (!hBaseHandle.ToInt() && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given UseriID (%i).", uiUserID);
 
 	return hBaseHandle;
@@ -504,7 +500,7 @@ inline CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRai
 {
 	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromPlayerInfo(pPlayerInfo));
 
-	if (!hBaseHandle.IsValid() && bRaiseException)
+	if (!hBaseHandle.ToInt() && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given PlayerInfo instance.");
 
 	return hBaseHandle;
