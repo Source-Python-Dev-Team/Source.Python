@@ -40,9 +40,6 @@
 #include "registers.h"
 #include "convention.h"
 
-#include "AsmJit.h"
-using namespace AsmJit;
-
 
 // ============================================================================
 // >> HookType_t
@@ -71,6 +68,7 @@ typedef bool (*HookHandlerFn)(HookType_t, CHook*);
 // ============================================================================
 // >> CLASSES
 // ============================================================================
+class Assembler;
 class CHook
 {
 private:
