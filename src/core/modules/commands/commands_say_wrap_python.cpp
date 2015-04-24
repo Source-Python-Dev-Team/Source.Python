@@ -45,7 +45,7 @@ extern void UnregisterSayFilter(PyObject* pCallable);
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_say_command_manager();
+void export_say_command_manager(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ void export_say_command_manager();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_commands, _say)
 {
-	export_say_command_manager();
+	export_say_command_manager(_say);
 
 	// Helper functions...
 	def("get_say_command",
@@ -80,7 +80,7 @@ DECLARE_SP_SUBMODULE(_commands, _say)
 //-----------------------------------------------------------------------------
 // Expose CSayCommandManager.
 //-----------------------------------------------------------------------------
-void export_say_command_manager()
+void export_say_command_manager(scope _say)
 {
 	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
 		.def("add_callback",

@@ -38,7 +38,7 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_mrecipientfilter();
+void export_mrecipientfilter(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -46,14 +46,14 @@ void export_mrecipientfilter();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_filters, _recipients)
 {
-	export_mrecipientfilter();
+	export_mrecipientfilter(_recipients);
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose MRecipientFilter
 //-----------------------------------------------------------------------------
-void export_mrecipientfilter()
+void export_mrecipientfilter(scope _recipients)
 {
 	class_<IRecipientFilter, boost::noncopyable>("_IRecipientFilter", no_init)
 		.def("is_reliable",

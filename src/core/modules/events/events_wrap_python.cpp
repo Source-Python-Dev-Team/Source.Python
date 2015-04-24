@@ -63,15 +63,15 @@ extern IGameEventManager2* gameeventmanager;
 //-----------------------------------------------------------------------------
 // Exposes the Game Event module.
 //-----------------------------------------------------------------------------
-void export_igameevent();
-void export_igameeventlistener();
-void export_igameeventmanager();
+void export_igameevent(scope);
+void export_igameeventlistener(scope);
+void export_igameeventmanager(scope);
 
 DECLARE_SP_MODULE(_events)
 {
-	export_igameevent();
-	export_igameeventlistener();
-	export_igameeventmanager();
+	export_igameevent(_events);
+	export_igameeventlistener(_events);
+	export_igameeventmanager(_events);
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 1, 2);
 
-void export_igameevent()
+void export_igameevent(scope _events)
 {
 	class_<IGameEvent, boost::noncopyable>("GameEvent", no_init)
 		.def("get_name",
@@ -175,7 +175,7 @@ void export_igameevent()
 //-----------------------------------------------------------------------------
 // Exposes the game event listener.
 //-----------------------------------------------------------------------------
-void export_igameeventlistener()
+void export_igameeventlistener(scope _events)
 {
 	class_<CGameEventListener2, boost::noncopyable>("GameEventListener")
 		.def("fire_game_event",
@@ -198,7 +198,7 @@ void export_igameeventlistener()
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(fire_event_overload, FireEvent, 1, 2);
 
-void export_igameeventmanager()
+void export_igameeventmanager(scope _events)
 {
 	class_<IGameEventManager2, boost::noncopyable>("_GameEventManager", no_init)
 		.def("load_events_from_file",
@@ -275,5 +275,5 @@ void export_igameeventmanager()
 		ADD_MEM_TOOLS(IGameEventManager2, "_GameEventManager")
 	;
 
-	scope().attr("game_event_manager") = object(ptr(gameeventmanager));
+	_events.attr("game_event_manager") = object(ptr(gameeventmanager));
 }

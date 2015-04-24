@@ -42,12 +42,12 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_send_table();
-void export_send_prop();
-void export_send_prop_types();
+void export_send_table(scope);
+void export_send_prop(scope);
+void export_send_prop_types(scope);
 void export_send_prop_flags(scope);
-void export_send_prop_variant();
-void export_server_class();
+void export_send_prop_variant(scope);
+void export_server_class(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -55,19 +55,19 @@ void export_server_class();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _props)
 {
-	export_send_table();
-	export_send_prop();
-	export_send_prop_types();
+	export_send_table(_props);
+	export_send_prop(_props);
+	export_send_prop_types(_props);
 	export_send_prop_flags(_props);
-	export_send_prop_variant();
-	export_server_class();
+	export_send_prop_variant(_props);
+	export_server_class(_props);
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose SendTable.
 //-----------------------------------------------------------------------------
-void export_send_table()
+void export_send_table(scope _props)
 {
 	class_<SendTable, SendTable *> SendTable_("SendTable", no_init);
 	
@@ -107,7 +107,7 @@ void export_send_table()
 //-----------------------------------------------------------------------------
 // Expose SendProp.
 //-----------------------------------------------------------------------------
-void export_send_prop()
+void export_send_prop(scope _props)
 {
 	class_<SendProp, SendProp *, boost::noncopyable> SendProp_("SendProp", no_init);
 	
@@ -181,7 +181,7 @@ void export_send_prop()
 //-----------------------------------------------------------------------------
 // Expose SendPropType.
 //-----------------------------------------------------------------------------
-void export_send_prop_types()
+void export_send_prop_types(scope _props)
 {
 	enum_<SendPropType> SendPropType_("SendPropType");
 	
@@ -229,7 +229,7 @@ void export_send_prop_flags(scope _props)
 //-----------------------------------------------------------------------------
 // Expose DVariant.
 //-----------------------------------------------------------------------------
-void export_send_prop_variant()
+void export_send_prop_variant(scope _props)
 {
 	class_<DVariant, DVariant *> SendPropVariant("SendPropVariant");
 
@@ -268,7 +268,7 @@ void export_send_prop_variant()
 //-----------------------------------------------------------------------------
 // Expose ServerClass.
 //-----------------------------------------------------------------------------
-void export_server_class()
+void export_server_class(scope _props)
 {
 	class_<ServerClass, ServerClass *> ServerClass_("ServerClass", no_init);
 	

@@ -38,12 +38,12 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_interval();
-void export_datamap();
-void export_type_description();
-void export_input_data();
-void export_variant();
-void export_field_types();
+void export_interval(scope);
+void export_datamap(scope);
+void export_type_description(scope);
+void export_input_data(scope);
+void export_variant(scope);
+void export_field_types(scope);
 void export_type_description_flags(scope);
 
 
@@ -52,12 +52,12 @@ void export_type_description_flags(scope);
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _datamaps)
 {
-	export_interval();
-	export_datamap();
-	export_type_description();
-	export_input_data();
-	export_variant();
-	export_field_types();
+	export_interval(_datamaps);
+	export_datamap(_datamaps);
+	export_type_description(_datamaps);
+	export_input_data(_datamaps);
+	export_variant(_datamaps);
+	export_field_types(_datamaps);
 	export_type_description_flags(_datamaps);
 }
 
@@ -65,7 +65,7 @@ DECLARE_SP_SUBMODULE(_entities, _datamaps)
 //-----------------------------------------------------------------------------
 // Expose interval_t.
 //-----------------------------------------------------------------------------
-void export_interval()
+void export_interval(scope _datamaps)
 {
 	class_<interval_t, interval_t *> Interval("Interval");
 	
@@ -81,7 +81,7 @@ void export_interval()
 //-----------------------------------------------------------------------------
 // Expose datamap_t.
 //-----------------------------------------------------------------------------
-void export_datamap()
+void export_datamap(scope _datamaps)
 {
 	class_<datamap_t, datamap_t *> DataMap("DataMap", no_init);
 
@@ -119,7 +119,7 @@ void export_datamap()
 //-----------------------------------------------------------------------------
 // Expose typedescription_t.
 //-----------------------------------------------------------------------------
-void export_type_description()
+void export_type_description(scope _datamaps)
 {
 	class_<typedescription_t, typedescription_t *> TypeDescription("TypeDescription", no_init);
 
@@ -161,7 +161,7 @@ void export_type_description()
 //-----------------------------------------------------------------------------
 // Expose inputdata_t.
 //-----------------------------------------------------------------------------
-void export_input_data()
+void export_input_data(scope _datamaps)
 {
 	class_<inputdata_t, inputdata_t *> InputData("InputData");
 
@@ -183,7 +183,7 @@ void export_input_data()
 //-----------------------------------------------------------------------------
 // Expose variant_t.
 //-----------------------------------------------------------------------------
-void export_variant()
+void export_variant(scope _datamaps)
 {
 	class_<variant_t, variant_t *> Variant("Variant");
 
@@ -221,7 +221,7 @@ void export_variant()
 //-----------------------------------------------------------------------------
 // Expose fieldtype_t.
 //-----------------------------------------------------------------------------
-void export_field_types()
+void export_field_types(scope _datamaps)
 {
 	enum_<fieldtype_t> FieldType("FieldType");
 	

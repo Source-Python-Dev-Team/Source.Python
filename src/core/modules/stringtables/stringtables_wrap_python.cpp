@@ -43,19 +43,19 @@ extern IVEngineServer* engine;
 //---------------------------------------------------------------------------------
 // Forward declarations.
 //---------------------------------------------------------------------------------
-void export_stringtable();
-void export_stringtable_container();
+void export_stringtable(scope);
+void export_stringtable_container(scope);
 
 //---------------------------------------------------------------------------------
 // Declares the stringtables_c module.
 //---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(_stringtables)
 {
-	export_stringtable();
-	export_stringtable_container();
+	export_stringtable(_stringtables);
+	export_stringtable_container(_stringtables);
 	
-	scope().attr("INVALID_STRING_TABLE") = INVALID_STRING_TABLE;
-	scope().attr("INVALID_STRING_INDEX") = INVALID_STRING_INDEX;
+	_stringtables.attr("INVALID_STRING_TABLE") = INVALID_STRING_TABLE;
+	_stringtables.attr("INVALID_STRING_INDEX") = INVALID_STRING_INDEX;
 }
 
 //---------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ public:
 	}
 };
 
-void export_stringtable()
+void export_stringtable(scope _stringtables)
 {
 	class_<INetworkStringTable, boost::noncopyable>("StringTable", no_init)
 		
@@ -279,7 +279,7 @@ public:
 	}
 };
 
-void export_stringtable_container()
+void export_stringtable_container(scope _stringtables)
 {
 	class_<INetworkStringTableContainer, boost::noncopyable>("_StringTables", no_init)
 		
@@ -320,6 +320,6 @@ void export_stringtable_container()
 	;
 	
 	// Singleton.
-	scope().attr("string_tables") = object(ptr(networkstringtable));
+	_stringtables.attr("string_tables") = object(ptr(networkstringtable));
 	
 }

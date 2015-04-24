@@ -45,7 +45,7 @@ extern void UnregisterClientCommandFilter(PyObject* pCallable);
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_client_command_manager();
+void export_client_command_manager(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -53,7 +53,7 @@ void export_client_command_manager();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_commands, _client)
 {
-	export_client_command_manager();
+	export_client_command_manager(_client);
 
 	// Helper functions...
 	def("get_client_command",
@@ -80,7 +80,7 @@ DECLARE_SP_SUBMODULE(_commands, _client)
 //-----------------------------------------------------------------------------
 // Expose CClientCommandManager.
 //-----------------------------------------------------------------------------
-void export_client_command_manager()
+void export_client_command_manager(scope _client)
 {
 	class_<CClientCommandManager, boost::noncopyable>("ClientCommandDispatcher", no_init)
 		.def("add_callback",

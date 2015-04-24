@@ -40,11 +40,11 @@ extern IFileSystem* filesystem;
 //---------------------------------------------------------------------------------
 // Keyvalues module definition.
 //---------------------------------------------------------------------------------
-void export_keyvalues();
+void export_keyvalues(scope);
 
 DECLARE_SP_MODULE(_keyvalues)
 {
-	export_keyvalues();
+	export_keyvalues(_keyvalues);
 }
 
 //---------------------------------------------------------------------------------
@@ -92,7 +92,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(get_bool_overload, KeyValuesExt::GetBool, 2, 3);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_empty_overload, IsEmpty, 0, 1);
 
 
-void export_keyvalues()
+void export_keyvalues(scope _keyvalues)
 {
 	class_<KeyValues, boost::noncopyable>("_KeyValues",init<const char *>())
 		.def(init<const char *, const char *, const char *>())

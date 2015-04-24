@@ -44,24 +44,24 @@ using namespace boost::python;
 // ----------------------------------------------------------------------------
 // Exposer functions.
 // ----------------------------------------------------------------------------
-void export_playerinfo();
-void export_netinfo();
-void export_player_generator();
+void export_playerinfo(scope);
+void export_netinfo(scope);
+void export_player_generator(scope);
 
 // ----------------------------------------------------------------------------
 // Entity module definition.
 // ----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_players)
 {
-	export_playerinfo();
-	export_netinfo();
-	export_player_generator();
+	export_playerinfo(_players);
+	export_netinfo(_players);
+	export_player_generator(_players);
 }
 
 // ----------------------------------------------------------------------------
 // Exports CBaseEntityHandle.
 // ----------------------------------------------------------------------------
-void export_playerinfo()
+void export_playerinfo(scope _players)
 {
 	class_<IPlayerInfo, boost::noncopyable>("PlayerInfo", no_init)
 		.def("get_name",
@@ -188,7 +188,7 @@ void export_playerinfo()
 	;
 }
 
-void export_netinfo()
+void export_netinfo(scope _players)
 {
 	class_<INetChannelInfo, boost::noncopyable>("NetChannelInfo", no_init)
 		.def("get_address",
@@ -205,7 +205,7 @@ void export_netinfo()
 	;
 }
 
-void export_player_generator()
+void export_player_generator(scope _players)
 {
 	class_<CPlayerGenerator>("PlayerGenerator")
 		.def("__iter__",

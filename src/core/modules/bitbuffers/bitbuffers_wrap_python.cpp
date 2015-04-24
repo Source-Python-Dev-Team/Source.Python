@@ -36,8 +36,8 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_bf_write();
-void export_bf_read();
+void export_bf_write(scope);
+void export_bf_read(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -45,15 +45,15 @@ void export_bf_read();
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_bitbuffers)
 {
-	export_bf_write();
-	export_bf_read();
+	export_bf_write(_bitbuffers);
+	export_bf_read(_bitbuffers);
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose bf_write.
 //-----------------------------------------------------------------------------
-void export_bf_write()
+void export_bf_write(scope _bitbuffers)
 {
 	class_<bf_write>("BitBufferWrite", no_init)
 		.def("__init__",
@@ -218,7 +218,7 @@ void export_bf_write()
 //-----------------------------------------------------------------------------
 // Expose bf_read.
 //-----------------------------------------------------------------------------
-void export_bf_read()
+void export_bf_read(scope _bitbuffers)
 {
 	class_<bf_read>("BitBufferRead", no_init)
 		.def("__init__",

@@ -44,21 +44,21 @@ extern ICvar* g_pCVar;
 //-----------------------------------------------------------------------------
 // Exposes the cvar module.
 //-----------------------------------------------------------------------------
-void export_cvar_interface();
-void export_convar();
-void export_flags();
+void export_cvar_interface(scope);
+void export_convar(scope);
+void export_flags(scope);
 
 DECLARE_SP_MODULE(_cvars)
 {
-	export_cvar_interface();
-	export_convar();
-	export_flags();
+	export_cvar_interface(_cvars);
+	export_convar(_cvars);
+	export_flags(_cvars);
 }
 
 //-----------------------------------------------------------------------------
 // Exposes the Cvar interface.
 //-----------------------------------------------------------------------------
-void export_cvar_interface()
+void export_cvar_interface(scope _cvars)
 {
 	class_<ICvar, boost::noncopyable>("_Cvar", no_init)
 		.def("register_con_command",
@@ -102,7 +102,7 @@ void export_cvar_interface()
 		ADD_MEM_TOOLS(ICvar, "_Cvar")
 	;
 
-	scope().attr("cvar") = object(ptr(g_pCVar));
+	_cvars.attr("cvar") = object(ptr(g_pCVar));
 }
 
 //-----------------------------------------------------------------------------
@@ -160,7 +160,7 @@ public:
 	}
 };
 
-void export_convar()
+void export_convar(scope _cvars)
 {
 	class_<IConVar, boost::noncopyable>("_IConVar", no_init)
 		.def("set_string",
@@ -262,29 +262,29 @@ void export_convar()
 	;
 }
 
-void export_flags()
+void export_flags(scope _cvars)
 {
-	scope().attr("FCVAR_NONE")                  = FCVAR_NONE;
-	scope().attr("FCVAR_UNREGISTERED")          = FCVAR_UNREGISTERED;
-	scope().attr("FCVAR_DEVELOPMENTONLY")       = FCVAR_DEVELOPMENTONLY;
-	scope().attr("FCVAR_GAMEDLL")               = FCVAR_GAMEDLL;
-	scope().attr("FCVAR_CLIENTDLL")             = FCVAR_CLIENTDLL;
-	scope().attr("FCVAR_HIDDEN")                = FCVAR_HIDDEN;
-	scope().attr("FCVAR_PROTECTED")             = FCVAR_PROTECTED;
-	scope().attr("FCVAR_SPONLY")                = FCVAR_SPONLY;
-	scope().attr("FCVAR_ARCHIVE")               = FCVAR_ARCHIVE;
-	scope().attr("FCVAR_NOTIFY")                = FCVAR_NOTIFY;
-	scope().attr("FCVAR_USERINFO")              = FCVAR_USERINFO;
-	scope().attr("FCVAR_PRINTABLEONLY")         = FCVAR_PRINTABLEONLY;
-	scope().attr("FCVAR_UNLOGGED")              = FCVAR_UNLOGGED;
-	scope().attr("FCVAR_NEVER_AS_STRING")       = FCVAR_NEVER_AS_STRING;
-	scope().attr("FCVAR_REPLICATED")            = FCVAR_REPLICATED;
-	scope().attr("FCVAR_CHEAT")                 = FCVAR_CHEAT;
-	scope().attr("FCVAR_DEMO")                  = FCVAR_DEMO;
-	scope().attr("FCVAR_DONTRECORD")            = FCVAR_DONTRECORD;
-	scope().attr("FCVAR_NOT_CONNECTED")         = FCVAR_NOT_CONNECTED;
-	scope().attr("FCVAR_ARCHIVE_XBOX")          = FCVAR_ARCHIVE_XBOX;
-	scope().attr("FCVAR_SERVER_CAN_EXECUTE")    = FCVAR_SERVER_CAN_EXECUTE;
-	scope().attr("FCVAR_SERVER_CANNOT_QUERY")   = FCVAR_SERVER_CANNOT_QUERY;
-	scope().attr("FCVAR_CLIENTCMD_CAN_EXECUTE") = FCVAR_CLIENTCMD_CAN_EXECUTE;
+	_cvars.attr("FCVAR_NONE")                  = FCVAR_NONE;
+	_cvars.attr("FCVAR_UNREGISTERED")          = FCVAR_UNREGISTERED;
+	_cvars.attr("FCVAR_DEVELOPMENTONLY")       = FCVAR_DEVELOPMENTONLY;
+	_cvars.attr("FCVAR_GAMEDLL")               = FCVAR_GAMEDLL;
+	_cvars.attr("FCVAR_CLIENTDLL")             = FCVAR_CLIENTDLL;
+	_cvars.attr("FCVAR_HIDDEN")                = FCVAR_HIDDEN;
+	_cvars.attr("FCVAR_PROTECTED")             = FCVAR_PROTECTED;
+	_cvars.attr("FCVAR_SPONLY")                = FCVAR_SPONLY;
+	_cvars.attr("FCVAR_ARCHIVE")               = FCVAR_ARCHIVE;
+	_cvars.attr("FCVAR_NOTIFY")                = FCVAR_NOTIFY;
+	_cvars.attr("FCVAR_USERINFO")              = FCVAR_USERINFO;
+	_cvars.attr("FCVAR_PRINTABLEONLY")         = FCVAR_PRINTABLEONLY;
+	_cvars.attr("FCVAR_UNLOGGED")              = FCVAR_UNLOGGED;
+	_cvars.attr("FCVAR_NEVER_AS_STRING")       = FCVAR_NEVER_AS_STRING;
+	_cvars.attr("FCVAR_REPLICATED")            = FCVAR_REPLICATED;
+	_cvars.attr("FCVAR_CHEAT")                 = FCVAR_CHEAT;
+	_cvars.attr("FCVAR_DEMO")                  = FCVAR_DEMO;
+	_cvars.attr("FCVAR_DONTRECORD")            = FCVAR_DONTRECORD;
+	_cvars.attr("FCVAR_NOT_CONNECTED")         = FCVAR_NOT_CONNECTED;
+	_cvars.attr("FCVAR_ARCHIVE_XBOX")          = FCVAR_ARCHIVE_XBOX;
+	_cvars.attr("FCVAR_SERVER_CAN_EXECUTE")    = FCVAR_SERVER_CAN_EXECUTE;
+	_cvars.attr("FCVAR_SERVER_CANNOT_QUERY")   = FCVAR_SERVER_CANNOT_QUERY;
+	_cvars.attr("FCVAR_CLIENTCMD_CAN_EXECUTE") = FCVAR_CLIENTCMD_CAN_EXECUTE;
 }

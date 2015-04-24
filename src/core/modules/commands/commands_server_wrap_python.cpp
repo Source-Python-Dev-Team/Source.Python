@@ -43,7 +43,7 @@ extern CServerCommandManager* GetServerCommand(const char* szName,
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_server_command_manager();
+void export_server_command_manager(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(get_server_command_overloads, GetServerCommand, 
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_commands, _server)
 {
-	export_server_command_manager();
+	export_server_command_manager(_server);
 
 	// Helper functions...
 	def("get_server_command",
@@ -72,7 +72,7 @@ DECLARE_SP_SUBMODULE(_commands, _server)
 //-----------------------------------------------------------------------------
 // Expose CServerCommandManager.
 //-----------------------------------------------------------------------------
-void export_server_command_manager()
+void export_server_command_manager(scope _server)
 {
 	class_<CServerCommandManager, bases<ConCommandBase>, boost::noncopyable>("ServerCommandDispatcher", no_init)
 		.def("add_callback",

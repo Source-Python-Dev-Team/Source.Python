@@ -39,21 +39,21 @@
 //-----------------------------------------------------------------------------
 // Exposes the memory_c module.
 //-----------------------------------------------------------------------------
-void export_binaryfile();
-void export_memtools();
-void export_dyncall();
-void export_dynamichooks();
-void export_callbacks();
-void export_sizes();
+void export_binaryfile(scope);
+void export_memtools(scope);
+void export_dyncall(scope);
+void export_dynamichooks(scope);
+void export_callbacks(scope);
+void export_sizes(scope);
 
 DECLARE_SP_MODULE(_memory)
 {
-	export_binaryfile();
-	export_memtools();
-	export_dyncall();
-	export_dynamichooks();
-	export_callbacks();
-	export_sizes();
+	export_binaryfile(_memory);
+	export_memtools(_memory);
+	export_dyncall(_memory);
+	export_dynamichooks(_memory);
+	export_callbacks(_memory);
+	export_sizes(_memory);
 }
 
 //-----------------------------------------------------------------------------
@@ -62,7 +62,7 @@ DECLARE_SP_MODULE(_memory)
 // Overloads
 BOOST_PYTHON_FUNCTION_OVERLOADS(find_binary_overload, FindBinary, 1, 2);
 
-void export_binaryfile()
+void export_binaryfile(scope _memory)
 {
 	class_<CBinaryFile, boost::noncopyable>("BinaryFile", no_init)
 
@@ -131,7 +131,7 @@ void export_binaryfile()
 	EXPOSE_SET_TYPE(name, type) \
 	EXPOSE_GET_TYPE(name, type)
 
-void export_memtools()
+void export_memtools(scope _memory)
 {
 	class_<CPointer, boost::noncopyable>("Pointer", init< optional<unsigned long, bool> >())
 		.def(init<CPointer&>())
@@ -373,13 +373,13 @@ void export_memtools()
 		"Returns the size of the class object or instance of its C++ class."
 	);
 
-	scope().attr("NULL") = object(ptr(new CPointer()));
+	_memory.attr("NULL") = object(ptr(new CPointer()));
 }
 
 //-----------------------------------------------------------------------------
 // Exposes DynCall
 //-----------------------------------------------------------------------------
-void export_dyncall()
+void export_dyncall(scope _memory)
 {
 	enum_<DataType_t>("DataType")
 		.value("VOID", DATA_TYPE_VOID)
@@ -412,7 +412,7 @@ void export_dyncall()
 	;
 }
 
-void export_dynamichooks()
+void export_dynamichooks(scope _memory)
 {
 	class_<CStackData>("StackData", init<CHook*>())
 		// Special methods
@@ -437,7 +437,7 @@ void export_dynamichooks()
 //-----------------------------------------------------------------------------
 // Exposes CCallback
 //-----------------------------------------------------------------------------
-void export_callbacks()
+void export_callbacks(scope _memory)
 {
 	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, object, optional<bool> >())
         .def_readwrite("callback",
@@ -452,17 +452,17 @@ void export_callbacks()
 // Exposes TYPE_SIZES
 //-----------------------------------------------------------------------------
 #define ADD_NATIVE_TYPE_SIZE(name, type) \
-	scope().attr("TYPE_SIZES")[name] = sizeof(type);
+	_memory.attr("TYPE_SIZES")[name] = sizeof(type);
 
 #define ADD_SIZE(type) \
 	ADD_NATIVE_TYPE_SIZE(XSTRINGIFY(type), type)
 
-void export_sizes()
+void export_sizes(scope _memory)
 {
-	scope().attr("EXPOSED_CLASSES") = g_oExposedClasses;
+	_memory.attr("EXPOSED_CLASSES") = g_oExposedClasses;
 
 	// Don't remove this! It's required for the ADD_NATIVE_TYPE_SIZE macro.
-	scope().attr("TYPE_SIZES") = dict();
+	_memory.attr("TYPE_SIZES") = dict();
 
 	// Native types
 	ADD_NATIVE_TYPE_SIZE("BOOL", bool)

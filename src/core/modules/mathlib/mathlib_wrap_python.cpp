@@ -38,19 +38,19 @@
 //-----------------------------------------------------------------------------
 // Exposes the mathlib_c module.
 //-----------------------------------------------------------------------------
-void export_vector();
-void export_qangle();
-void export_quaternion();
-void export_cplane_t();
-void export_radian_euler();
+void export_vector(scope);
+void export_qangle(scope);
+void export_quaternion(scope);
+void export_cplane_t(scope);
+void export_radian_euler(scope);
 
 DECLARE_SP_MODULE(_mathlib)
 {
-	export_vector();
-	export_qangle();
-	export_quaternion();
-	export_cplane_t();
-	export_radian_euler();
+	export_vector(_mathlib);
+	export_qangle(_mathlib);
+	export_quaternion(_mathlib);
+	export_cplane_t(_mathlib);
+	export_radian_euler(_mathlib);
 }
 
 //-----------------------------------------------------------------------------
@@ -72,7 +72,7 @@ public:
 
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_zero_overload, IsZero, 0, 1)
 
-void export_vector()
+void export_vector(scope _mathlib)
 {
 	class_<Vector>("Vector", init<float, float, float>())
 		.def("__init__", make_constructor(&VectorExt::CreateNullVector))
@@ -251,7 +251,7 @@ void export_vector()
 //-----------------------------------------------------------------------------
 // Exposes QAngle
 //-----------------------------------------------------------------------------
-void export_qangle()
+void export_qangle(scope _mathlib)
 {
 	class_<QAngle>("QAngle")
 		.def(init<float, float, float>())
@@ -324,7 +324,7 @@ void export_qangle()
 //-----------------------------------------------------------------------------
 // Exposes Quaternion
 //-----------------------------------------------------------------------------
-void export_quaternion()
+void export_quaternion(scope _mathlib)
 {
 	class_<Quaternion>("Quaternion")
 		.def(init<float, float, float, float>())
@@ -376,7 +376,7 @@ void export_quaternion()
 //-----------------------------------------------------------------------------
 // Exposes cplane_t
 //-----------------------------------------------------------------------------
-void export_cplane_t()
+void export_cplane_t(scope _mathlib)
 {
 	// TODO: Documentation
 	class_<cplane_t>("Plane")
@@ -403,7 +403,7 @@ void export_cplane_t()
 //-----------------------------------------------------------------------------
 // Exposes RadianEuler
 //-----------------------------------------------------------------------------
-void export_radian_euler()
+void export_radian_euler(scope _mathlib)
 {
 	class_<RadianEuler>("RadianEuler")
 		.def(init<float, float, float>())

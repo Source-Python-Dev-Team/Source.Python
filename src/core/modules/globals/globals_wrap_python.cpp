@@ -41,16 +41,16 @@ extern CGlobalVars* gpGlobals;
 //-----------------------------------------------------------------------------
 // Exposes the globals_c module.
 //-----------------------------------------------------------------------------
-void export_maploadtype_t();
-void export_globals();
+void export_maploadtype_t(scope);
+void export_globals(scope);
 
 DECLARE_SP_MODULE(_globals)
 {
-    export_maploadtype_t();
-    export_globals();
+    export_maploadtype_t(_globals);
+    export_globals(_globals);
 }
 
-void export_maploadtype_t()
+void export_maploadtype_t(scope _globals)
 {
 	enum_<MapLoadType_t>("MapLoadType")
 		.value("NewGame", MapLoad_NewGame)
@@ -60,7 +60,7 @@ void export_maploadtype_t()
 	;
 }
 
-void export_globals()
+void export_globals(scope _globals)
 {
 	GlobalsBase_Visitor(
 
@@ -189,5 +189,5 @@ void export_globals()
 
 	) ADD_MEM_TOOLS(CGlobalVars, "_GlobalVars"); // Globals_Visitor
 
-	scope().attr("global_vars") = object(ptr(gpGlobals));
+	_globals.attr("global_vars") = object(ptr(gpGlobals));
 }

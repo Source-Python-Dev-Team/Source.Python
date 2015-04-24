@@ -38,7 +38,7 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_entity_conversion_functions();
+void export_entity_conversion_functions(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -51,7 +51,7 @@ DECLARE_SP_SUBMODULE(_entities, _helpers)
 	_helpers.attr("INVALID_ENTITY_INTHANDLE") = INVALID_EHANDLE_INDEX;
 
 	// Conversion functions...
-	export_entity_conversion_functions();
+	export_entity_conversion_functions(_helpers);
 
 	// Helper functions...
 	def("create_entity", &create_entity, args("class_name"));
@@ -63,7 +63,7 @@ DECLARE_SP_SUBMODULE(_entities, _helpers)
 //-----------------------------------------------------------------------------
 // Exports conversion functions.
 //-----------------------------------------------------------------------------
-void export_entity_conversion_functions()
+void export_entity_conversion_functions(scope _helpers)
 {
 	// To index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);

@@ -45,9 +45,9 @@ extern IBotManager* botmanager;
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_botmanager();
-void export_botcontroller();
-void export_botcmd();
+void export_botmanager(scope);
+void export_botcontroller(scope);
+void export_botcmd(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -55,16 +55,16 @@ void export_botcmd();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_players, _bots)
 {
-	export_botmanager();
-	export_botcontroller();
-	export_botcmd();
+	export_botmanager(_bots);
+	export_botcontroller(_bots);
+	export_botcmd(_bots);
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose IBotManager.
 //-----------------------------------------------------------------------------
-void export_botmanager()
+void export_botmanager(scope _bots)
 {
 	class_<IBotManager, boost::noncopyable>("_BotManager", no_init)
 		.def("get_bot_controller",
@@ -84,14 +84,14 @@ void export_botmanager()
 		ADD_MEM_TOOLS(IBotManager, "_BotManager")
 	;
 
-	scope().attr("bot_manager") = object(ptr(botmanager));
+	_bots.attr("bot_manager") = object(ptr(botmanager));
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose IBotController.
 //-----------------------------------------------------------------------------
-void export_botcontroller()
+void export_botcontroller(scope _bots)
 {
 	class_<IBotController, boost::noncopyable>("BotController", no_init)
 		.def("set_abs_origin",
@@ -160,7 +160,7 @@ void export_botcontroller()
 //-----------------------------------------------------------------------------
 // Expose CBotCmd.
 //-----------------------------------------------------------------------------
-void export_botcmd()
+void export_botcmd(scope _bots)
 {
 	class_<CBotCmd>("BotCmd")
 		.def("reset",

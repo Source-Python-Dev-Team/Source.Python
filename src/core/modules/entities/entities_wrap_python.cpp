@@ -45,16 +45,16 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_base_entity_handle();
-void export_handle_entity();
-void export_server_unknown();
-void export_server_entity();
-void export_server_networkable();
-void export_edict();
-void export_entity_generator();
-void export_take_damage_info();
-void export_global_entity_list();
-void export_entity_listener();
+void export_base_entity_handle(scope);
+void export_handle_entity(scope);
+void export_server_unknown(scope);
+void export_server_entity(scope);
+void export_server_networkable(scope);
+void export_edict(scope);
+void export_entity_generator(scope);
+void export_take_damage_info(scope);
+void export_global_entity_list(scope);
+void export_entity_listener(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -62,23 +62,23 @@ void export_entity_listener();
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_entities)
 {
-	export_base_entity_handle();
-	export_handle_entity();
-	export_server_unknown();
-	export_server_entity();
-	export_server_networkable();
-	export_edict();
-	export_entity_generator();
-	export_take_damage_info();
-	export_global_entity_list();
-	export_entity_listener();
+	export_base_entity_handle(_entities);
+	export_handle_entity(_entities);
+	export_server_unknown(_entities);
+	export_server_entity(_entities);
+	export_server_networkable(_entities);
+	export_edict(_entities);
+	export_entity_generator(_entities);
+	export_take_damage_info(_entities);
+	export_global_entity_list(_entities);
+	export_entity_listener(_entities);
 }
 
 
 //-----------------------------------------------------------------------------
 // Exports CBaseEntityHandle.
 //-----------------------------------------------------------------------------
-void export_base_entity_handle()
+void export_base_entity_handle(scope _entities)
 {
 	class_<CBaseHandle>("BaseEntityHandle")
 		.def(init<CBaseHandle&>())
@@ -129,7 +129,7 @@ void export_base_entity_handle()
 //-----------------------------------------------------------------------------
 // Exports CHandleEntity
 //-----------------------------------------------------------------------------
-void export_handle_entity()
+void export_handle_entity(scope _entities)
 {
 	class_<IHandleEntity, boost::noncopyable>("HandleEntity", no_init)
 		.def("set_ref_ehandle",
@@ -149,7 +149,7 @@ void export_handle_entity()
 //-----------------------------------------------------------------------------
 // Exports CServerUnknown.
 //-----------------------------------------------------------------------------
-void export_server_unknown()
+void export_server_unknown(scope _entities)
 {
 	class_< IServerUnknown, bases<IHandleEntity>, boost::noncopyable >("ServerUnknown", no_init)
 		.def("get_collideable",
@@ -176,7 +176,7 @@ void export_server_unknown()
 //-----------------------------------------------------------------------------
 // Exports CServerEntity.
 //-----------------------------------------------------------------------------
-void export_server_entity()
+void export_server_entity(scope _entities)
 {
 	class_< IServerEntity, bases<IServerUnknown>, boost::noncopyable >("ServerEntity", no_init)
 		.def("get_model_index",
@@ -203,7 +203,7 @@ void export_server_entity()
 //-----------------------------------------------------------------------------
 // Exports CServerNetworkable.
 //-----------------------------------------------------------------------------
-void export_server_networkable()
+void export_server_networkable(scope _entities)
 {
 	class_< IServerNetworkable, IServerNetworkable *, boost::noncopyable >("ServerNetworkable", no_init)
 		.def("get_entity_handle",
@@ -262,7 +262,7 @@ void export_server_networkable()
 //-----------------------------------------------------------------------------
 // Exports edict_t.
 //-----------------------------------------------------------------------------
-void export_edict()
+void export_edict(scope _entities)
 {
 	class_< CBaseEdict >("_BaseEdict")
 		.def("get_server_entity",
@@ -467,7 +467,7 @@ void export_edict()
 //-----------------------------------------------------------------------------
 // Exports CEntityGenerator.
 //-----------------------------------------------------------------------------
-void export_entity_generator()
+void export_entity_generator(scope _entities)
 {
 	class_<CEntityGenerator>("EntityGenerator")
 		.def(init<const char*>())
@@ -490,7 +490,7 @@ void export_entity_generator()
 //-----------------------------------------------------------------------------
 // Expose CTakeDamageInfo.
 //-----------------------------------------------------------------------------
-void export_take_damage_info()
+void export_take_damage_info(scope _entities)
 {
 	class_<CTakeDamageInfo, CTakeDamageInfo *> TakeDamageInfo("TakeDamageInfo");
 	
@@ -560,7 +560,7 @@ void CGlobalEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle 
 {
 }
 
-void export_global_entity_list()
+void export_global_entity_list(scope _entities)
 {
 	class_<CGlobalEntityList, boost::noncopyable>("GlobalEntityList", no_init)
 		.def("add_entity_listener",
@@ -579,7 +579,7 @@ void export_global_entity_list()
 //-----------------------------------------------------------------------------
 // Expose IEntityListener.
 //-----------------------------------------------------------------------------
-void export_entity_listener()
+void export_entity_listener(scope _entities)
 {
 	class_<IEntityListener> EntityListener("EntityListener");
 

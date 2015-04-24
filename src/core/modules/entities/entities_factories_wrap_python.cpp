@@ -37,9 +37,9 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_entity_factory();
-void export_entity_factory_dictionary_interface();
-void export_entity_factory_dictionary();
+void export_entity_factory(scope);
+void export_entity_factory_dictionary_interface(scope);
+void export_entity_factory_dictionary(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -47,16 +47,16 @@ void export_entity_factory_dictionary();
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _factories)
 {
-	export_entity_factory();
-	export_entity_factory_dictionary_interface();
-	export_entity_factory_dictionary();
+	export_entity_factory(_factories);
+	export_entity_factory_dictionary_interface(_factories);
+	export_entity_factory_dictionary(_factories);
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose IEntityFactory.
 //-----------------------------------------------------------------------------
-void export_entity_factory()
+void export_entity_factory(scope _factories)
 {
 	class_<IEntityFactory, boost::noncopyable> EntityFactory("EntityFactory", no_init);
 	
@@ -79,7 +79,7 @@ void export_entity_factory()
 //-----------------------------------------------------------------------------
 // Expose IEntityFactoryDictionary.
 //-----------------------------------------------------------------------------
-void export_entity_factory_dictionary_interface()
+void export_entity_factory_dictionary_interface(scope _factories)
 {
 	class_<IEntityFactoryDictionary, IEntityFactoryDictionary *,
 		boost::noncopyable> _EntityFactoryDictionary("_EntityFactoryDictionary", no_init);
@@ -109,7 +109,7 @@ void export_entity_factory_dictionary_interface()
 //-----------------------------------------------------------------------------
 // Expose CEntityFactoryDictionary.
 //-----------------------------------------------------------------------------
-void export_entity_factory_dictionary()
+void export_entity_factory_dictionary(scope _factories)
 {
 	class_<CEntityFactoryDictionary, CEntityFactoryDictionary *, bases<IEntityFactoryDictionary>,
 		boost::noncopyable> EntityFactoryDictionary("EntityFactoryDictionary", no_init);

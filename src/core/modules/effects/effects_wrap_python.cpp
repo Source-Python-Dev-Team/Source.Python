@@ -55,15 +55,15 @@ IPredictionSystem* IPredictionSystem::g_pPredictionSystems = NULL;
 //-----------------------------------------------------------------------------
 // Exposes the effects_c module.
 //-----------------------------------------------------------------------------
-void export_prediction_system();
-void export_temp_entities_system();
-void export_dispatch_effect_data();
+void export_prediction_system(scope);
+void export_temp_entities_system(scope);
+void export_dispatch_effect_data(scope);
 
 DECLARE_SP_MODULE(_effects)
 {
-	export_prediction_system();
-	export_temp_entities_system();
-	export_dispatch_effect_data();
+	export_prediction_system(_effects);
+	export_temp_entities_system(_effects);
+	export_dispatch_effect_data(_effects);
 
 	enum_<ShatterSurface_t>("ShatterSurface")
 		.value("GLASS", SHATTERSURFACE_GLASS)
@@ -75,7 +75,7 @@ DECLARE_SP_MODULE(_effects)
 //-----------------------------------------------------------------------------
 // Expose IPredictionSystem
 //-----------------------------------------------------------------------------
-void export_prediction_system()
+void export_prediction_system(scope _effects)
 {
 	class_<IPredictionSystem>("PredictionSystem")
 		.def("get_next",
@@ -111,7 +111,7 @@ void export_prediction_system()
 //-----------------------------------------------------------------------------
 // Expose ITempEntsSystem.
 //-----------------------------------------------------------------------------
-void export_temp_entities_system()
+void export_temp_entities_system(scope _effects)
 {
 	class_<ITempEntsSystem, bases<IPredictionSystem>, boost::noncopyable> TempEntities("_TempEntities", no_init);
 
@@ -172,7 +172,7 @@ void export_temp_entities_system()
 //-----------------------------------------------------------------------------
 // Expose CEffectData.
 //-----------------------------------------------------------------------------
-void export_dispatch_effect_data()
+void export_dispatch_effect_data(scope _effects)
 {
 	class_<CEffectData> DispatchEffectData("DispatchEffectData");
 	

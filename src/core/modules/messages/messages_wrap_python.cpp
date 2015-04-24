@@ -38,15 +38,15 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 // Exposes the engine module.
 //-----------------------------------------------------------------------------
-void export_usermessage_interface();
-void export_message_functions();
-void export_dialog_enum();
+void export_usermessage_interface(scope);
+void export_message_functions(scope);
+void export_dialog_enum(scope);
 
 DECLARE_SP_MODULE(_messages)
 {
-	export_usermessage_interface();
-	export_message_functions();
-	export_dialog_enum();
+	export_usermessage_interface(_messages);
+	export_message_functions(_messages);
+	export_dialog_enum(_messages);
 }
 
 //-----------------------------------------------------------------------------
@@ -61,7 +61,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_bool_overload, set_bool, 2, 3);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_overload, set_string, 2, 3);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_buffer_overload, set_buffer, 3, 4);
 
-void export_usermessage_interface()
+void export_usermessage_interface(scope _messages)
 {
 	class_<CUserMessage>("UserMessage", init<const MRecipientFilter &, const char *>())
 		.def("send_message",
@@ -162,7 +162,7 @@ void export_usermessage_interface()
 	;
 }
 
-void export_message_functions()
+void export_message_functions(scope _messages)
 {
 	def("create_message",
 		CreateMessage,
@@ -171,7 +171,7 @@ void export_message_functions()
 	);
 }
 
-void export_dialog_enum()
+void export_dialog_enum(scope _messages)
 {
 	enum_<DIALOG_TYPE>("DialogType")
 		.value("MSG", DIALOG_MSG)

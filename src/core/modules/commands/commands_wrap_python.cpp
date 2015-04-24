@@ -74,9 +74,9 @@ void ClearAllCommands()
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_command();
-void export_command_return();
-void export_concommandbase();
+void export_command(scope);
+void export_command_return(scope);
+void export_concommandbase(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -84,16 +84,16 @@ void export_concommandbase();
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_commands)
 {
-	export_command();
-	export_command_return();
-	export_concommandbase();
+	export_command(_commands);
+	export_command_return(_commands);
+	export_concommandbase(_commands);
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose CCommand.
 //-----------------------------------------------------------------------------
-void export_command()
+void export_command(scope _commands)
 {
 	class_<CCommand>("Command")
 		.def("get_arg_count",
@@ -136,7 +136,7 @@ void export_command()
 //-----------------------------------------------------------------------------
 // Expose CommandReturn.
 //-----------------------------------------------------------------------------
-void export_command_return()
+void export_command_return(scope _commands)
 {
 	enum_<CommandReturn>("CommandReturn")
 		.value("CONTINUE", CONTINUE)
@@ -148,7 +148,7 @@ void export_command_return()
 //-----------------------------------------------------------------------------
 // Expose ConCommandBase.
 //-----------------------------------------------------------------------------
-void export_concommandbase()
+void export_concommandbase(scope _commands)
 {
 	class_<ConCommandBase>("ConCommandBase")
 		.def(init< const char*, optional< const char*, int> >())

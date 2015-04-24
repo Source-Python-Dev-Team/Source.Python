@@ -35,7 +35,7 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_player_conversion_functions();
+void export_player_conversion_functions(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -47,14 +47,14 @@ DECLARE_SP_SUBMODULE(_players, _helpers)
 	_helpers.attr("INVALID_PLAYER_USERID") = INVALID_PLAYER_USERID;
 
 	// Conversion functions...
-	export_player_conversion_functions();
+	export_player_conversion_functions(_helpers);
 }
 
 
 //-----------------------------------------------------------------------------
 // Exports conversion functions.
 //-----------------------------------------------------------------------------
-void export_player_conversion_functions()
+void export_player_conversion_functions(scope _helpers)
 {
 	// To index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);

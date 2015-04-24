@@ -64,21 +64,21 @@ extern IServerPluginHelpers *helpers;
 //---------------------------------------------------------------------------------
 // Exposes the engine module.
 //---------------------------------------------------------------------------------
-void export_engine_server();
-void export_query_cvar_status();
-void export_engine_sound();
-void export_engine_trace();
-void export_server_game_dll();
-void export_worldsize();
+void export_engine_server(scope);
+void export_query_cvar_status(scope);
+void export_engine_sound(scope);
+void export_engine_trace(scope);
+void export_server_game_dll(scope);
+void export_worldsize(scope);
 
 DECLARE_SP_MODULE(_engines)
 {
-	export_engine_server();
-	export_query_cvar_status();
-	export_engine_sound();
-	export_engine_trace();
-	export_server_game_dll();
-	export_worldsize();
+	export_engine_server(_engines);
+	export_query_cvar_status(_engines);
+	export_engine_sound(_engines);
+	export_engine_trace(_engines);
+	export_server_game_dll(_engines);
+	export_worldsize(_engines);
 }
 
 
@@ -114,7 +114,7 @@ BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sentence_file_overload, Precache
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_decal_overload, PrecacheDecal, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_generic_overload, PrecacheGeneric, 1, 2);
 
-void export_engine_server()
+void export_engine_server(scope _engines)
 {
 	// Call engine specific implementation function
 	IVEngineServer_Visitor(
@@ -744,14 +744,14 @@ void export_engine_server()
 
 	) ADD_MEM_TOOLS(IVEngineServer, "_EngineServer"); // IVEngineServer_Visitor
 
-	scope().attr("engine_server") = object(ptr(engine));
+	_engines.attr("engine_server") = object(ptr(engine));
 }
 
 
 //---------------------------------------------------------------------------------
 // Exposes EQueryCvarValueStatus.
 //---------------------------------------------------------------------------------
-void export_query_cvar_status()
+void export_query_cvar_status(scope _engines)
 {
 	enum_<EQueryCvarValueStatus> QueryCvarStatus("QueryCvarStatus");
 
@@ -770,7 +770,7 @@ void export_query_cvar_status()
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sound_overload, PrecacheSound, 1, 3);
 BOOST_PYTHON_FUNCTION_OVERLOADS(emit_sound_overload, IEngineSound_EmitSound, 7, 15);
 
-void export_engine_sound()
+void export_engine_sound(scope _engines)
 {
 	// Call engine specific implementation function
 	IEngineSound_Visitor(
@@ -833,7 +833,7 @@ void export_engine_sound()
 
 	) ADD_MEM_TOOLS(IEngineSound, "_EngineSound"); // IEngineSound_Visitor
 
-	scope().attr("engine_sound") = object(ptr(enginesound));
+	_engines.attr("engine_sound") = object(ptr(enginesound));
 
 	// Channels
 	enum_<int>("Channels")
@@ -850,16 +850,16 @@ void export_engine_sound()
 	;
 
 	// Common volume values
-	scope().attr("VOL_NORM") = VOL_NORM;
+	_engines.attr("VOL_NORM") = VOL_NORM;
 
 	// Common attenuation values
-	scope().attr("ATTN_NONE") = ATTN_NONE;
-	scope().attr("ATTN_NORM") = ATTN_NORM;
-	scope().attr("ATTN_IDLE") = ATTN_IDLE;
-	scope().attr("ATTN_STATIC") = ATTN_STATIC;
-	scope().attr("ATTN_RICOCHET") = ATTN_RICOCHET;
-	scope().attr("ATTN_GUNFIRE") = ATTN_GUNFIRE;
-	scope().attr("MAX_ATTENUATION") = MAX_ATTENUATION;
+	_engines.attr("ATTN_NONE") = ATTN_NONE;
+	_engines.attr("ATTN_NORM") = ATTN_NORM;
+	_engines.attr("ATTN_IDLE") = ATTN_IDLE;
+	_engines.attr("ATTN_STATIC") = ATTN_STATIC;
+	_engines.attr("ATTN_RICOCHET") = ATTN_RICOCHET;
+	_engines.attr("ATTN_GUNFIRE") = ATTN_GUNFIRE;
+	_engines.attr("MAX_ATTENUATION") = MAX_ATTENUATION;
 
 	// Flags for iFlags fields
 	enum_<SoundFlags_t>("SoundFlags")
@@ -877,12 +877,12 @@ void export_engine_sound()
 	;
 
 	// Common pitch values
-	scope().attr("PITCH_NORM") = PITCH_NORM;
-	scope().attr("PITCH_LOW") = PITCH_LOW;
-	scope().attr("PITCH_HIGH") = PITCH_HIGH;
+	_engines.attr("PITCH_NORM") = PITCH_NORM;
+	_engines.attr("PITCH_LOW") = PITCH_LOW;
+	_engines.attr("PITCH_HIGH") = PITCH_HIGH;
 
-	scope().attr("SOUND_FROM_LOCAL_PLAYER") = SOUND_FROM_LOCAL_PLAYER;
-	scope().attr("SOUND_FROM_WORLD") = SOUND_FROM_WORLD;
+	_engines.attr("SOUND_FROM_LOCAL_PLAYER") = SOUND_FROM_LOCAL_PLAYER;
+	_engines.attr("SOUND_FROM_WORLD") = SOUND_FROM_WORLD;
 }
 
 //---------------------------------------------------------------------------------
@@ -978,7 +978,7 @@ int CGameTrace::GetEntityIndex() const
 }
 
 
-void export_engine_trace()
+void export_engine_trace(scope _engines)
 {
 	// Since Ray_t has members of the type AlignedVector that uses ALIGN16, we have
 	// to declare this class as noncopyable.
@@ -1062,7 +1062,7 @@ void export_engine_trace()
 		ADD_MEM_TOOLS(IEngineTrace, "_EngineTrace")
 	;
 
-	scope().attr("engine_trace") = object(ptr(enginetrace));
+	_engines.attr("engine_trace") = object(ptr(enginetrace));
 
 	class_<CBaseTrace, boost::noncopyable>("BaseTrace")
 		.def_readwrite("start_position",
@@ -1100,11 +1100,11 @@ void export_engine_trace()
 		ADD_MEM_TOOLS(CBaseTrace, "BaseTrace")
 	;
 	
-	scope().attr("DISPSURF_FLAG_SURFACE") = DISPSURF_FLAG_SURFACE;
-	scope().attr("DISPSURF_FLAG_WALKABLE") = DISPSURF_FLAG_WALKABLE;
-	scope().attr("DISPSURF_FLAG_BUILDABLE") = DISPSURF_FLAG_BUILDABLE;
-	scope().attr("DISPSURF_FLAG_SURFPROP1") = DISPSURF_FLAG_SURFPROP1;
-	scope().attr("DISPSURF_FLAG_SURFPROP2") = DISPSURF_FLAG_SURFPROP2;
+	_engines.attr("DISPSURF_FLAG_SURFACE") = DISPSURF_FLAG_SURFACE;
+	_engines.attr("DISPSURF_FLAG_WALKABLE") = DISPSURF_FLAG_WALKABLE;
+	_engines.attr("DISPSURF_FLAG_BUILDABLE") = DISPSURF_FLAG_BUILDABLE;
+	_engines.attr("DISPSURF_FLAG_SURFPROP1") = DISPSURF_FLAG_SURFPROP1;
+	_engines.attr("DISPSURF_FLAG_SURFPROP2") = DISPSURF_FLAG_SURFPROP2;
 
 	class_<CGameTrace, bases<CBaseTrace>, boost::noncopyable>("GameTrace")
 		.def("did_hit_world",
@@ -1201,86 +1201,86 @@ void export_engine_trace()
 	;
 
 	// Content flags
-	scope().attr("CONTENTS_EMPTY") = CONTENTS_EMPTY;
-	scope().attr("CONTENTS_SOLID") = CONTENTS_SOLID;
-	scope().attr("CONTENTS_WINDOW") = CONTENTS_WINDOW;
-	scope().attr("CONTENTS_AUX") = CONTENTS_AUX;
-	scope().attr("CONTENTS_GRATE") = CONTENTS_GRATE;
-	scope().attr("CONTENTS_SLIME") = CONTENTS_SLIME;
-	scope().attr("CONTENTS_WATER") = CONTENTS_WATER;
-	scope().attr("CONTENTS_BLOCKLOS") = CONTENTS_BLOCKLOS;
-	scope().attr("CONTENTS_OPAQUE") = CONTENTS_OPAQUE;
-	scope().attr("LAST_VISIBLE_CONTENTS") = LAST_VISIBLE_CONTENTS;
-	scope().attr("ALL_VISIBLE_CONTENTS") = ALL_VISIBLE_CONTENTS;
-	scope().attr("CONTENTS_TESTFOGVOLUME") = CONTENTS_TESTFOGVOLUME;
-	scope().attr("CONTENTS_UNUSED") = CONTENTS_UNUSED;
-	scope().attr("CONTENTS_TEAM1") = CONTENTS_TEAM1;
-	scope().attr("CONTENTS_TEAM2") = CONTENTS_TEAM2;
-	scope().attr("CONTENTS_IGNORE_NODRAW_OPAQUE") = CONTENTS_IGNORE_NODRAW_OPAQUE;
-	scope().attr("CONTENTS_MOVEABLE") = CONTENTS_MOVEABLE;
-	scope().attr("CONTENTS_AREAPORTAL") = CONTENTS_AREAPORTAL;
-	scope().attr("CONTENTS_PLAYERCLIP") = CONTENTS_PLAYERCLIP;
-	scope().attr("CONTENTS_MONSTERCLIP") = CONTENTS_MONSTERCLIP;
-	scope().attr("CONTENTS_CURRENT_0") = CONTENTS_CURRENT_0;
-	scope().attr("CONTENTS_CURRENT_90") = CONTENTS_CURRENT_90;
-	scope().attr("CONTENTS_CURRENT_180") = CONTENTS_CURRENT_180;
-	scope().attr("CONTENTS_CURRENT_270") = CONTENTS_CURRENT_270;
-	scope().attr("CONTENTS_CURRENT_UP") = CONTENTS_CURRENT_UP;
-	scope().attr("CONTENTS_CURRENT_DOWN") = CONTENTS_CURRENT_DOWN;
-	scope().attr("CONTENTS_ORIGIN") = CONTENTS_ORIGIN;
-	scope().attr("CONTENTS_MONSTER") = CONTENTS_MONSTER;
-	scope().attr("CONTENTS_DEBRIS") = CONTENTS_DEBRIS;
-	scope().attr("CONTENTS_DETAIL") = CONTENTS_DETAIL;
-	scope().attr("CONTENTS_TRANSLUCENT") = CONTENTS_TRANSLUCENT;
-	scope().attr("CONTENTS_LADDER") = CONTENTS_LADDER;
-	scope().attr("CONTENTS_HITBOX") = CONTENTS_HITBOX;
+	_engines.attr("CONTENTS_EMPTY") = CONTENTS_EMPTY;
+	_engines.attr("CONTENTS_SOLID") = CONTENTS_SOLID;
+	_engines.attr("CONTENTS_WINDOW") = CONTENTS_WINDOW;
+	_engines.attr("CONTENTS_AUX") = CONTENTS_AUX;
+	_engines.attr("CONTENTS_GRATE") = CONTENTS_GRATE;
+	_engines.attr("CONTENTS_SLIME") = CONTENTS_SLIME;
+	_engines.attr("CONTENTS_WATER") = CONTENTS_WATER;
+	_engines.attr("CONTENTS_BLOCKLOS") = CONTENTS_BLOCKLOS;
+	_engines.attr("CONTENTS_OPAQUE") = CONTENTS_OPAQUE;
+	_engines.attr("LAST_VISIBLE_CONTENTS") = LAST_VISIBLE_CONTENTS;
+	_engines.attr("ALL_VISIBLE_CONTENTS") = ALL_VISIBLE_CONTENTS;
+	_engines.attr("CONTENTS_TESTFOGVOLUME") = CONTENTS_TESTFOGVOLUME;
+	_engines.attr("CONTENTS_UNUSED") = CONTENTS_UNUSED;
+	_engines.attr("CONTENTS_TEAM1") = CONTENTS_TEAM1;
+	_engines.attr("CONTENTS_TEAM2") = CONTENTS_TEAM2;
+	_engines.attr("CONTENTS_IGNORE_NODRAW_OPAQUE") = CONTENTS_IGNORE_NODRAW_OPAQUE;
+	_engines.attr("CONTENTS_MOVEABLE") = CONTENTS_MOVEABLE;
+	_engines.attr("CONTENTS_AREAPORTAL") = CONTENTS_AREAPORTAL;
+	_engines.attr("CONTENTS_PLAYERCLIP") = CONTENTS_PLAYERCLIP;
+	_engines.attr("CONTENTS_MONSTERCLIP") = CONTENTS_MONSTERCLIP;
+	_engines.attr("CONTENTS_CURRENT_0") = CONTENTS_CURRENT_0;
+	_engines.attr("CONTENTS_CURRENT_90") = CONTENTS_CURRENT_90;
+	_engines.attr("CONTENTS_CURRENT_180") = CONTENTS_CURRENT_180;
+	_engines.attr("CONTENTS_CURRENT_270") = CONTENTS_CURRENT_270;
+	_engines.attr("CONTENTS_CURRENT_UP") = CONTENTS_CURRENT_UP;
+	_engines.attr("CONTENTS_CURRENT_DOWN") = CONTENTS_CURRENT_DOWN;
+	_engines.attr("CONTENTS_ORIGIN") = CONTENTS_ORIGIN;
+	_engines.attr("CONTENTS_MONSTER") = CONTENTS_MONSTER;
+	_engines.attr("CONTENTS_DEBRIS") = CONTENTS_DEBRIS;
+	_engines.attr("CONTENTS_DETAIL") = CONTENTS_DETAIL;
+	_engines.attr("CONTENTS_TRANSLUCENT") = CONTENTS_TRANSLUCENT;
+	_engines.attr("CONTENTS_LADDER") = CONTENTS_LADDER;
+	_engines.attr("CONTENTS_HITBOX") = CONTENTS_HITBOX;
 
 	// Masks
-	scope().attr("MASK_ALL") = MASK_ALL;
-	scope().attr("MASK_SOLID") = MASK_SOLID;
-	scope().attr("MASK_PLAYERSOLID") = MASK_PLAYERSOLID;
-	scope().attr("MASK_NPCSOLID") = MASK_NPCSOLID;
-	scope().attr("MASK_WATER") = MASK_WATER;
-	scope().attr("MASK_OPAQUE") = MASK_OPAQUE;
-	scope().attr("MASK_OPAQUE_AND_NPCS") = MASK_OPAQUE_AND_NPCS;
-	scope().attr("MASK_BLOCKLOS") = MASK_BLOCKLOS;
-	scope().attr("MASK_BLOCKLOS_AND_NPCS") = MASK_BLOCKLOS_AND_NPCS;
-	scope().attr("MASK_VISIBLE") = MASK_VISIBLE;
-	scope().attr("MASK_VISIBLE_AND_NPCS") = MASK_VISIBLE_AND_NPCS;
-	scope().attr("MASK_SHOT") = MASK_SHOT;
-	scope().attr("MASK_SHOT_HULL") = MASK_SHOT_HULL;
-	scope().attr("MASK_SHOT_PORTAL") = MASK_SHOT_PORTAL;
-	scope().attr("MASK_SOLID_BRUSHONLY") = MASK_SOLID_BRUSHONLY;
-	scope().attr("MASK_PLAYERSOLID_BRUSHONLY") = MASK_PLAYERSOLID_BRUSHONLY;
-	scope().attr("MASK_NPCWORLDSTATIC") = MASK_NPCWORLDSTATIC;
-	scope().attr("MASK_SPLITAREAPORTAL") = MASK_SPLITAREAPORTAL;
-	scope().attr("MASK_CURRENT") = MASK_CURRENT;
-	scope().attr("MASK_DEADSOLID") = MASK_DEADSOLID;
+	_engines.attr("MASK_ALL") = MASK_ALL;
+	_engines.attr("MASK_SOLID") = MASK_SOLID;
+	_engines.attr("MASK_PLAYERSOLID") = MASK_PLAYERSOLID;
+	_engines.attr("MASK_NPCSOLID") = MASK_NPCSOLID;
+	_engines.attr("MASK_WATER") = MASK_WATER;
+	_engines.attr("MASK_OPAQUE") = MASK_OPAQUE;
+	_engines.attr("MASK_OPAQUE_AND_NPCS") = MASK_OPAQUE_AND_NPCS;
+	_engines.attr("MASK_BLOCKLOS") = MASK_BLOCKLOS;
+	_engines.attr("MASK_BLOCKLOS_AND_NPCS") = MASK_BLOCKLOS_AND_NPCS;
+	_engines.attr("MASK_VISIBLE") = MASK_VISIBLE;
+	_engines.attr("MASK_VISIBLE_AND_NPCS") = MASK_VISIBLE_AND_NPCS;
+	_engines.attr("MASK_SHOT") = MASK_SHOT;
+	_engines.attr("MASK_SHOT_HULL") = MASK_SHOT_HULL;
+	_engines.attr("MASK_SHOT_PORTAL") = MASK_SHOT_PORTAL;
+	_engines.attr("MASK_SOLID_BRUSHONLY") = MASK_SOLID_BRUSHONLY;
+	_engines.attr("MASK_PLAYERSOLID_BRUSHONLY") = MASK_PLAYERSOLID_BRUSHONLY;
+	_engines.attr("MASK_NPCWORLDSTATIC") = MASK_NPCWORLDSTATIC;
+	_engines.attr("MASK_SPLITAREAPORTAL") = MASK_SPLITAREAPORTAL;
+	_engines.attr("MASK_CURRENT") = MASK_CURRENT;
+	_engines.attr("MASK_DEADSOLID") = MASK_DEADSOLID;
 	
 	// Surface flags
-	scope().attr("SURF_LIGHT") = SURF_LIGHT;
-	scope().attr("SURF_SKY2D") = SURF_SKY2D;
-	scope().attr("SURF_SKY") = SURF_SKY;
-	scope().attr("SURF_WARP") = SURF_WARP;
-	scope().attr("SURF_TRANS") = SURF_TRANS;
-	scope().attr("SURF_NOPORTAL") = SURF_NOPORTAL;
-	scope().attr("SURF_TRIGGER") = SURF_TRIGGER;
-	scope().attr("SURF_NODRAW") = SURF_NODRAW;
-	scope().attr("SURF_HINT") = SURF_HINT;
-	scope().attr("SURF_SKIP") = SURF_SKIP;
-	scope().attr("SURF_NOLIGHT") = SURF_NOLIGHT;
-	scope().attr("SURF_BUMPLIGHT") = SURF_BUMPLIGHT;
-	scope().attr("SURF_NOSHADOWS") = SURF_NOSHADOWS;
-	scope().attr("SURF_NODECALS") = SURF_NODECALS;
-	scope().attr("SURF_NOCHOP") = SURF_NOCHOP;
-	scope().attr("SURF_HITBOX") = SURF_HITBOX;
+	_engines.attr("SURF_LIGHT") = SURF_LIGHT;
+	_engines.attr("SURF_SKY2D") = SURF_SKY2D;
+	_engines.attr("SURF_SKY") = SURF_SKY;
+	_engines.attr("SURF_WARP") = SURF_WARP;
+	_engines.attr("SURF_TRANS") = SURF_TRANS;
+	_engines.attr("SURF_NOPORTAL") = SURF_NOPORTAL;
+	_engines.attr("SURF_TRIGGER") = SURF_TRIGGER;
+	_engines.attr("SURF_NODRAW") = SURF_NODRAW;
+	_engines.attr("SURF_HINT") = SURF_HINT;
+	_engines.attr("SURF_SKIP") = SURF_SKIP;
+	_engines.attr("SURF_NOLIGHT") = SURF_NOLIGHT;
+	_engines.attr("SURF_BUMPLIGHT") = SURF_BUMPLIGHT;
+	_engines.attr("SURF_NOSHADOWS") = SURF_NOSHADOWS;
+	_engines.attr("SURF_NODECALS") = SURF_NODECALS;
+	_engines.attr("SURF_NOCHOP") = SURF_NOCHOP;
+	_engines.attr("SURF_HITBOX") = SURF_HITBOX;
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose IServerGameDLL.
 //-----------------------------------------------------------------------------
-void export_server_game_dll()
+void export_server_game_dll(scope _engines)
 {
 	class_<IServerGameDLL, boost::noncopyable> ServerGameDLL("_ServerGameDLL", no_init);
 	
@@ -1295,27 +1295,27 @@ void export_server_game_dll()
 	ServerGameDLL ADD_MEM_TOOLS(IServerGameDLL, "_ServerGameDLL");
 	
 	// Singleton...
-	scope().attr("server_game_dll") = object(ptr(servergamedll));
+	_engines.attr("server_game_dll") = object(ptr(servergamedll));
 }
 
 
 //-----------------------------------------------------------------------------
 // Expose Source.Python constants.
 //-----------------------------------------------------------------------------
-void export_worldsize()
+void export_worldsize(scope _engines)
 {
-	scope().attr("MAX_COORD_INTEGER") = MAX_COORD_INTEGER;
-	scope().attr("MIN_COORD_INTEGER") = MIN_COORD_INTEGER;
+	_engines.attr("MAX_COORD_INTEGER") = MAX_COORD_INTEGER;
+	_engines.attr("MIN_COORD_INTEGER") = MIN_COORD_INTEGER;
 
-	scope().attr("MAX_COORD_FRACTION") = MAX_COORD_FRACTION;
-	scope().attr("MIN_COORD_FRACTION") = MIN_COORD_FRACTION;
+	_engines.attr("MAX_COORD_FRACTION") = MAX_COORD_FRACTION;
+	_engines.attr("MIN_COORD_FRACTION") = MIN_COORD_FRACTION;
 
-	scope().attr("MAX_COORD_FLOAT") = MAX_COORD_FLOAT;
-	scope().attr("MIN_COORD_FLOAT") = MIN_COORD_FLOAT;
+	_engines.attr("MAX_COORD_FLOAT") = MAX_COORD_FLOAT;
+	_engines.attr("MIN_COORD_FLOAT") = MIN_COORD_FLOAT;
 
-	scope().attr("COORD_EXTENT") = COORD_EXTENT;
+	_engines.attr("COORD_EXTENT") = COORD_EXTENT;
 
-	scope().attr("MAX_TRACE_LENGTH") = MAX_TRACE_LENGTH;
+	_engines.attr("MAX_TRACE_LENGTH") = MAX_TRACE_LENGTH;
 
-	scope().attr("MAX_COORD_RANGE") = MAX_COORD_RANGE;
+	_engines.attr("MAX_COORD_RANGE") = MAX_COORD_RANGE;
 }
