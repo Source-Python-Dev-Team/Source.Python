@@ -35,6 +35,9 @@
 
 #include "dyncall.h"
 
+// DynamicHooks
+#include "registers.h"
+
 
 //-----------------------------------------------------------------------------
 // Exposes the memory_c module.
@@ -425,6 +428,170 @@ void export_dynamichooks()
 			&CStackData::SetItem,
 			"Sets the argument at the specified index."
 		)
+	;
+
+	enum_<Register_t>("Register")
+		// ========================================================================
+		// >> 8-bit General purpose registers
+		// ========================================================================
+		.value("AL", AL)
+		.value("CL", CL)
+		.value("DL", DL)
+		.value("BL", BL)
+
+		// 64-bit mode only
+		/*
+		SPL,
+		BPL,
+		SIL,
+		DIL,
+		R8B,
+		R9B,
+		R10B,
+		R11B,
+		R12B,
+		R13B,
+		R14B,
+		R15B,
+		*/
+
+		.value("AH", AH)
+		.value("CH", CH)
+		.value("DH", DH)
+		.value("BH", BH)
+
+		// ========================================================================
+		// >> 16-bit General purpose registers
+		// ========================================================================
+		.value("AX", AX)
+		.value("CX", CX)
+		.value("DX", DX)
+		.value("BX", BX)
+		.value("SP", SP)
+		.value("BP", BP)
+		.value("SI", SI)
+		.value("DI", DI)
+
+		// 64-bit mode only
+		/*
+		R8W,
+		R9W,
+		R10W,
+		R11W,
+		R12W,
+		R13W,
+		R14W,
+		R15W,
+		*/
+
+		// ========================================================================
+		// >> 32-bit General purpose registers
+		// ========================================================================
+		.value("EAX", EAX)
+		.value("ECX", ECX)
+		.value("EDX", EDX)
+		.value("EBX", EBX)
+		.value("ESP", ESP)
+		.value("EBP", EBP)
+		.value("ESI", ESI)
+		.value("EDI", EDI)
+
+		// 64-bit mode only
+		/*
+		R8D,
+		R9D,
+		R10D,
+		R11D,
+		R12D,
+		R13D,
+		R14D,
+		R15D,
+		*/
+	
+		// ========================================================================
+		// >> 64-bit General purpose registers
+		// ========================================================================
+		// 64-bit mode only
+		/*
+		RAX,
+		RCX,
+		RDX,
+		RBX,
+		RSP,
+		RBP,
+		RSI,
+		RDI,
+		*/
+
+		// 64-bit mode only
+		/*
+		R8,
+		R9,
+		R10,
+		R11,
+		R12,
+		R13,
+		R14,
+		R15,
+		*/
+
+		// ========================================================================
+		// >> 64-bit MM (MMX) registers
+		// ========================================================================
+		.value("MM0", MM0)
+		.value("MM1", MM1)
+		.value("MM2", MM2)
+		.value("MM3", MM3)
+		.value("MM4", MM4)
+		.value("MM5", MM5)
+		.value("MM6", MM6)
+		.value("MM7", MM7)
+
+		// ========================================================================
+		// >> 128-bit XMM registers
+		// ========================================================================
+		.value("XMM0", XMM0)
+		.value("XMM1", XMM1)
+		.value("XMM2", XMM2)
+		.value("XMM3", XMM3)
+		.value("XMM4", XMM4)
+		.value("XMM5", XMM5)
+		.value("XMM6", XMM6)
+		.value("XMM7", XMM7)
+
+		// 64-bit mode only
+		/*
+		XMM8,
+		XMM9,
+		XMM10,
+		XMM11,
+		XMM12,
+		XMM13,
+		XMM14,
+		XMM15,
+		*/
+
+		// ========================================================================
+		// >> 16-bit Segment registers
+		// ========================================================================
+		.value("CS", CS)
+		.value("SS", SS)
+		.value("DS", DS)
+		.value("ES", ES)
+		.value("FS", FS)
+		.value("GS", GS)
+
+		// ========================================================================
+		// >> 80-bit FPU registers
+		// ========================================================================
+		.value("ST0", ST0)
+		.value("ST1", ST1)
+		.value("ST2", ST2)
+		.value("ST3", ST3)
+		.value("ST4", ST4)
+		.value("ST5", ST5)
+		.value("ST6", ST6)
+		.value("ST7", ST7)
 	;
 }
 
