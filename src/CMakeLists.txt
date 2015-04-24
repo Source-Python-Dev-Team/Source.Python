@@ -490,6 +490,7 @@ Source_Group("Source Files\\Modules\\Weapons"                FILES ${SOURCEPYTHO
 # this line.
 # ------------------------------------------------------------------
 Add_Library(core SHARED
+    ${SOURCEPYTHON_PATCHES_FILES}
     ${SOURCEPYTHON_CORE_FILES}
     ${SOURCEPYTHON_MODULE_FILES}
     ${SOURCEPYTHON_UTILITIES_FILES}
