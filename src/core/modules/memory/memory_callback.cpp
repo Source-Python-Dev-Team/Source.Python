@@ -136,7 +136,10 @@ int CCallback::GetPopSize()
 
 	int size = 0;
 	for(; i < len(m_Args); i++)
-		size += GetTypeSize(extract<DataType_t>(m_Args[i]));
+	{
+		// TODO: Add alignment
+		size += GetDataTypeSize(extract<DataType_t>(m_Args[i]));
+	}
 
 	return size;
 #endif
@@ -151,7 +154,8 @@ int CCallback::GetArgumentOffset(int iIndex)
 
 	for(int i=0; i <= iIndex - 1; i++)
 	{
-		offset += GetTypeSize(extract<DataType_t>(m_Args[i]));
+		// TODO: Add alignment
+		offset += GetDataTypeSize(extract<DataType_t>(m_Args[i]));
 	}
 
 	// Subtract the this pointer on Windows

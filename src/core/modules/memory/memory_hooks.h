@@ -10,8 +10,6 @@
 #include "boost/python.hpp"
 using namespace boost::python;
 
-#include "memory_tools.h"
-
 // DynamicHooks
 #include "hook.h"
 

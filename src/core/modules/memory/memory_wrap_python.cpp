@@ -31,6 +31,7 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "memory_hooks.h"
+#include "memory_callback.h"
 
 #include "dyncall.h"
 
@@ -432,14 +433,12 @@ void export_dynamichooks()
 //-----------------------------------------------------------------------------
 void export_callbacks()
 {
-	/*
 	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, object, optional<bool> >())
         .def_readwrite("callback",
             &CCallback::m_oCallback,
             "The Python function that gets called by the C++ callback"
         )
     ;
-	*/
 }
 
 
