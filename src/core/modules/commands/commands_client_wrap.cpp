@@ -32,7 +32,6 @@
 #include "edict.h"
 #include "convar.h"
 #include "engine/iserverplugin.h"
-#include "modules/entities/entities_wrap.h"
 #include "utilities/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"

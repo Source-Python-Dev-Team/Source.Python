@@ -50,36 +50,92 @@ extern IServerTools* servertools;
 
 
 //-----------------------------------------------------------------------------
-// IServerUnknown extension
+// IServerUnknown extension class.
 //-----------------------------------------------------------------------------
 class IServerUnknownExt
 {
 public:
-	static unsigned long		GetBaseEntity( IServerUnknown* unknown );
+	static CPointer *GetBaseEntity( IServerUnknown *pServerUnknown )
+	{
+		return new CPointer((unsigned long)pServerUnknown->GetBaseEntity());
+	}
+	
 };
 
+
 //-----------------------------------------------------------------------------
-// edict_t extension
+// edict_t extension class.
 //-----------------------------------------------------------------------------
 class CEdictExt
 {
 public:
-	static const char* GetKeyValueString(edict_t* pEdict, const char* szName);
-	static int         GetKeyValueInt(edict_t* pEdict, const char* szName);
-	static float       GetKeyValueFloat(edict_t* pEdict, const char* szName);
-	static Vector      GetKeyValueVector(edict_t* pEdict, const char* szName);
-	static bool        GetKeyValueBool(edict_t* pEdict, const char* szName);
-	static Color       GetKeyValueColor(edict_t* pEdict, const char* szName);
+	static const char* GetKeyValueString(edict_t* pEdict, const char* szName)
+	{
+		char szResult[1024];
+		CBaseEntity* pEntity = pEdict->GetUnknown()->GetBaseEntity();
+		servertools->GetKeyValue(pEntity, szName, szResult, 1024);
 
-	static void        SetKeyValueColor(edict_t* pEdict, const char* szName, Color color);
+		// Fix for field name "model". I think a string_t object is copied to szResult.
+		if (strcmp(szName, "model") == 0)
+			return *(char **) szResult;
+
+		return szResult;
+	}
+
+	static int GetKeyValueInt(edict_t* pEdict, const char* szName)
+	{
+		return extract<int>(eval("lambda x: int(x)")(str(GetKeyValueString(pEdict, szName))));
+	}
+
+	static float GetKeyValueFloat(edict_t* pEdict, const char* szName)
+	{
+		return extract<float>(eval("lambda x: float(x)")(str(GetKeyValueString(pEdict, szName))));
+	}
+
+	static Vector GetKeyValueVector(edict_t* pEdict, const char* szName)
+	{
+		object vec = eval("lambda x: tuple(map(float, x.split(' ')))")(str(GetKeyValueString(pEdict, szName)));
+		return Vector(extract<float>(vec[0]), extract<float>(vec[1]), extract<float>(vec[2]));
+	}
+
+	static bool GetKeyValueBool(edict_t* pEdict, const char* szName)
+	{
+		return strcmp(GetKeyValueString(pEdict, szName), "1") == 0;
+	}
+
+	static Color GetKeyValueColor(edict_t* pEdict, const char* szName)
+	{
+		object color = eval("lambda x: tuple(map(int, x.split(' ')))")(str(GetKeyValueString(pEdict, szName)));
+		return Color(extract<int>(color[0]), extract<int>(color[1]), extract<int>(color[2]), extract<int>(color[3]));
+	}
+
+	static void SetKeyValueColor(edict_t* pEdict, const char* szName, Color color)
+	{
+		char string[16];
+		Q_snprintf(string, sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
+		SetKeyValue(pEdict, szName, string);
+	}
 
 	template<class T>
-	static void        SetKeyValue(edict_t* pEdict, const char* szName, T value)
+	static void SetKeyValue(edict_t* pEdict, const char* szName, T value)
 	{
-		CBaseEntity* pEntity = pEdict->GetUnknown()->GetBaseEntity();
-		servertools->SetKeyValue(pEntity, szName, value);
+		servertools->SetKeyValue(BaseEntityFromEdict(pEdict, true), szName, value);
 	}
 };
+
+
+//-----------------------------------------------------------------------------
+// If these aren't defined, we get linker errors about CBaseEdict.
+//-----------------------------------------------------------------------------
+IChangeInfoAccessor *CBaseEdict::GetChangeAccessor()
+{
+	return engine->GetChangeAccessor( (const edict_t *)this );
+}
+
+const IChangeInfoAccessor *CBaseEdict::GetChangeAccessor() const
+{
+	return engine->GetChangeAccessor( (const edict_t *)this );
+}
 
 
 //-----------------------------------------------------------------------------

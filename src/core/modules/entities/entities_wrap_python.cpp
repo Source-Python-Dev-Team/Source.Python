@@ -166,7 +166,8 @@ void export_server_unknown(scope _entities)
 
 		.def("get_base_entity",
 			&IServerUnknownExt::GetBaseEntity,
-			"Returns the CBasEntity pointer for this entity."
+			"Returns the CBasEntity pointer for this entity.",
+			manage_new_object_policy()
 		)
 
 		ADD_MEM_TOOLS(IServerUnknown, "ServerUnknown")
