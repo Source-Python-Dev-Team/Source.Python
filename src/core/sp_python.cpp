@@ -59,14 +59,14 @@ void InitConverters();
 //---------------------------------------------------------------------------------
 // Returns the path to the ../source-python/addon/ directory.
 //---------------------------------------------------------------------------------
-char *GetSourcePythonDir()
+const char *GetSourcePythonDir()
 {
 	char szGameDir[MAX_GAME_PATH];
 	engine->GetGameDir(szGameDir, MAX_GAME_PATH);
 	GenerateSymlink(szGameDir);
-	char szAddonDir[MAX_GAME_PATH];
-	V_snprintf(szAddonDir, MAX_GAME_PATH, "%s%s", szGameDir, "/addons/source-python");
-	return szAddonDir;
+	V_snprintf(szGameDir, MAX_GAME_PATH, "%s%s", szGameDir, "/addons/source-python");
+	const char *szAddonDir = szGameDir;
+	return (const char *)szAddonDir;
 }
 
 
