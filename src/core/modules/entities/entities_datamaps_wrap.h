@@ -138,12 +138,7 @@ public:
 
 	static int get_entity(variant_t *pVariant)
 	{
-		CHandle<CBaseEntity> pHandle = pVariant->Entity();
-		if (pHandle.IsValid())
-		{
-			return pVariant->Entity().GetEntryIndex();
-		}
-		return -1;
+		return IndexFromBaseHandle(pVariant->Entity());
 	}
 
 	static void set_entity(variant_t *pVariant, unsigned int uiEntity)

@@ -66,11 +66,9 @@ public:
 			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is a DataTable.", pSendProp->GetName());
 
 		if (pSendProp->IsExcludeProp())
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is exluded.", pSendProp->GetName());
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is excluded.", pSendProp->GetName());
 
-		CBaseEntity *pEntity = BaseEntityFromIndex(uiEntityIndex);
-		if (!pEntity)
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Unable to find an entity matching the given index \"%u\".", uiEntityIndex);
+		CBaseEntity *pEntity = BaseEntityFromIndex(uiEntityIndex, true);
 
 		DVariant *pVariant = new DVariant();
 		pVariant->m_Type = pSendProp->m_Type;

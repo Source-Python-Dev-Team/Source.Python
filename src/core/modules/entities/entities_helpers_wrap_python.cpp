@@ -38,6 +38,7 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
+void export_entity_helper_functions(scope);
 void export_entity_conversion_functions(scope);
 
 
@@ -46,17 +47,33 @@ void export_entity_conversion_functions(scope);
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _helpers)
 {
-	// Invalid results...
-	_helpers.attr("INVALID_ENTITY_INDEX") = INVALID_ENTITY_INDEX;
-	_helpers.attr("INVALID_ENTITY_INTHANDLE") = INVALID_EHANDLE_INDEX;
-
-	// Conversion functions...
+	export_entity_helper_functions(_helpers);
 	export_entity_conversion_functions(_helpers);
+}
 
-	// Helper functions...
-	def("create_entity", &create_entity, args("class_name"));
-	def("remove_entity", &remove_entity, args("entity_index"));
-	def("spawn_entity", &spawn_entity, args("entity_index"));
+
+//-----------------------------------------------------------------------------
+// Exports helper functions.
+//-----------------------------------------------------------------------------
+void export_entity_helper_functions(scope _helpers)
+{
+	def("create_entity",
+		&create_entity,
+		"Creates an entity of the given name and returns its index.",
+		args("class_name")
+	);
+
+	def("remove_entity",
+		&remove_entity,
+		"Removes the entity matching the given index.",
+		args("entity_index")
+	);
+
+	def("spawn_entity",
+		&spawn_entity,
+		"Spawns the entity matching the given index.",
+		args("entity_index")
+	);
 }
 
 
@@ -65,6 +82,10 @@ DECLARE_SP_SUBMODULE(_entities, _helpers)
 //-----------------------------------------------------------------------------
 void export_entity_conversion_functions(scope _helpers)
 {
+	// Invalid results...
+	_helpers.attr("INVALID_ENTITY_INDEX") = INVALID_ENTITY_INDEX;
+	_helpers.attr("INVALID_ENTITY_INTHANDLE") = INVALID_EHANDLE_INDEX;
+
 	// To index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);

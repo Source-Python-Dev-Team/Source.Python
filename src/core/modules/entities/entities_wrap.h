@@ -103,44 +103,32 @@ class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
 public:
 	int get_inflictor()
 	{
-		if (m_hInflictor.IsValid())
-		{
-			return m_hInflictor.GetEntryIndex();
-		}
-		return -1;
+		return IndexFromBaseHandle(m_hInflictor);
 	}
 	
-	void set_inflictor(unsigned int iInflictor)
+	void set_inflictor(unsigned int uiInflictor)
 	{
-		m_hInflictor = BaseHandleFromIndex(iInflictor);
+		m_hInflictor = BaseHandleFromIndex(uiInflictor, true);
 	}
 	
 	int get_attacker()
 	{
-		if (m_hAttacker.IsValid())
-		{
-			return m_hAttacker.GetEntryIndex();
-		}
-		return -1;
+		return IndexFromBaseHandle(m_hAttacker);
 	}
 	
-	void set_attacker(unsigned int iAttacker)
+	void set_attacker(unsigned int uiAttacker)
 	{
-		m_hAttacker = BaseHandleFromIndex(iAttacker);
+		m_hAttacker = BaseHandleFromIndex(uiAttacker, true);
 	}
 	
 	int get_weapon()
 	{
-		if (m_hWeapon.IsValid())
-		{
-			return m_hWeapon.GetEntryIndex();
-		}
-		return -1;
+		return IndexFromBaseHandle(m_hWeapon);
 	}
 	
-	void set_weapon(unsigned int iWeapon)
+	void set_weapon(unsigned int uiWeapon)
 	{
-		m_hWeapon = BaseHandleFromIndex(iWeapon);
+		m_hWeapon = BaseHandleFromIndex(uiWeapon, true);
 	}
 	
 	void set_base_damage(float flBaseDamage)
