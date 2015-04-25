@@ -149,16 +149,6 @@ public:
 
 
 //-----------------------------------------------------------------------------
-// Declared here to fix undefined symbol issues.
-//-----------------------------------------------------------------------------
-void variant_t::SetEntity(CBaseEntity *pValue) 
-{ 
-	eVal = pValue;
-	fieldType = FIELD_EHANDLE; 
-}
-
-
-//-----------------------------------------------------------------------------
 // inputdata_t extension class.
 //-----------------------------------------------------------------------------
 class InputDataSharedExt

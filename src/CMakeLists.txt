@@ -29,10 +29,12 @@ Set(SOURCEPYTHON_LOADER_FILES
 # Patches
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PATCHES_HEADERS
+    core/patches/${SOURCE_ENGINE}/undefined_symbols.h
 )
 
 Set(SOURCEPYTHON_PATCHES_SOURCES
     core/patches/${SOURCE_ENGINE}/patches.cpp
+    core/patches/undefined_symbols.cpp
 )
 
 Set(SOURCEPYTHON_PATCHES_FILES

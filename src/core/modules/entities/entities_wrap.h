@@ -125,20 +125,6 @@ public:
 
 
 //-----------------------------------------------------------------------------
-// If these aren't defined, we get linker errors about CBaseEdict.
-//-----------------------------------------------------------------------------
-IChangeInfoAccessor *CBaseEdict::GetChangeAccessor()
-{
-	return engine->GetChangeAccessor( (const edict_t *)this );
-}
-
-const IChangeInfoAccessor *CBaseEdict::GetChangeAccessor() const
-{
-	return engine->GetChangeAccessor( (const edict_t *)this );
-}
-
-
-//-----------------------------------------------------------------------------
 // IServerNetworkable extension class.
 //-----------------------------------------------------------------------------
 class ServerNetworkableSharedExt

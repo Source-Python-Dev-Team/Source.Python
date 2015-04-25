@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_ORANGEBOX_H
-#define _ENTITIES_WRAP_ORANGEBOX_H
+#ifndef UNDEFINED_SYMBOLS_CSGO_H
+#define UNDEFINED_SYMBOLS_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -38,39 +38,29 @@
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo wrapper class.
+// CTakeDamageInfo constructor declaration.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
+CTakeDamageInfo::CTakeDamageInfo()
 {
-public:
-	int get_penetrated()
-	{
-		return m_iPlayerPenetrationCount;
-	}
-	
-	void set_penetrated(int iPenetrated)
-	{
-		m_iPlayerPenetrationCount = iPenetrated;
-	}
-};
+	m_vecDamageForce = vec3_origin;
+	m_vecDamagePosition = vec3_origin;
+	m_vecReportedPosition = vec3_origin;
+	m_hInflictor = NULL;
+	m_hAttacker = NULL;
+	m_hWeapon = NULL;
+	m_flDamage = 0.0f;
+	m_flMaxDamage = 0.0f;
+	m_flBaseDamage = BASEDAMAGE_NOT_SPECIFIED;
+	m_bitsDamageType = 0;
+	m_iDamageCustom = 0;
+	m_iDamageStats = 0;
+	m_iAmmoType = -1;
+	m_flRadius = 0.0f;
+	m_iDamagedOtherPlayers = 0;
+	m_iObjectsPenetrated = 0;
+	m_uiBulletID = 0;
+	m_uiRecoilIndex = 0;
+}
 
 
-//-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
-//-----------------------------------------------------------------------------
-class TakeDamageInfoExt
-{
-public:
-	static int get_penetrated(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_penetrated();
-	}
-	
-	static void set_penetrated(CTakeDamageInfo *pTakeDamageInfo, int iPenetrated)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
-	}
-};
-
-
-#endif // _ENTITIES_WRAP_ORANGEBOX_H
+#endif // UNDEFINED_SYMBOLS_CSGO_H

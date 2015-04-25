@@ -960,24 +960,6 @@ public:
 };
 
 
-CBaseEntity* GetWorldEntity()
-{
-	return EdictFromIndex(0)->GetNetworkable()->GetBaseEntity();
-}
-
-
-// These two functions are not implemented in the SDK
-bool CGameTrace::DidHitWorld() const
-{
-	return GetWorldEntity() == m_pEnt;
-}
-
-int CGameTrace::GetEntityIndex() const
-{
-	return IndexFromBaseEntity(m_pEnt);
-}
-
-
 void export_engine_trace(scope _engines)
 {
 	// Since Ray_t has members of the type AlignedVector that uses ALIGN16, we have

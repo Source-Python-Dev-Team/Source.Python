@@ -532,35 +532,10 @@ void export_take_damage_info(scope _entities)
 	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
 }
 
+
 //-----------------------------------------------------------------------------
 // Expose CGlobalEntityList.
 //-----------------------------------------------------------------------------
-void CGlobalEntityList::AddListenerEntity( IEntityListener *pListener )
-{
-    m_entityListeners.AddToTail( pListener );
-}
-
-void CGlobalEntityList::RemoveListenerEntity( IEntityListener *pListener )
-{
-    m_entityListeners.FindAndRemove( pListener );
-}
-
-void CBaseEntityList::OnAddEntity( IHandleEntity *pEnt, CBaseHandle handle )
-{
-}
-
-void CBaseEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
-{
-}
-
-void CGlobalEntityList::OnAddEntity( IHandleEntity *pEnt, CBaseHandle handle )
-{
-}
-
-void CGlobalEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
-{
-}
-
 void export_global_entity_list(scope _entities)
 {
 	class_<CGlobalEntityList, boost::noncopyable>("GlobalEntityList", no_init)
