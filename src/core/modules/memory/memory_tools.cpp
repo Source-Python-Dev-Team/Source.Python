@@ -238,7 +238,6 @@ CFunction* CPointer::MakeFunction(object oCallingConvention, object args, object
 
 	Convention_t _eCallingConvention = CONV_NONE;
 	int _iCallingConvention = -1;
-	object _oCallingConvention = object();
 	ICallingConvention* _pCallingConvention = NULL;
 	tuple _tArgs = tuple(args);
 	object _oReturnType = oReturnType;
@@ -267,11 +266,16 @@ CFunction* CPointer::MakeFunction(object oCallingConvention, object args, object
 		// If this happens, we won't be able to call the function, because we are using a custom calling convention
 		PyErr_Clear();
 	
-		_oCallingConvention = oCallingConvention(args, _eReturnType);
+		object _oCallingConvention = oCallingConvention(args, _eReturnType);
+
+		// FIXME:
+		// This is required to fix a crash, but it will also cause a memory leak,
+		// because no calling convention object that is created via this method will ever be deleted.
+		Py_INCREF(_oCallingConvention.ptr());
 		_pCallingConvention = extract<ICallingConvention*>(_oCallingConvention);
 	}
 	
-	return new CFunction(m_ulAddr, _eCallingConvention, _iCallingConvention, _oCallingConvention, _pCallingConvention, _tArgs, _eReturnType, _oReturnType);
+	return new CFunction(m_ulAddr, _eCallingConvention, _iCallingConvention, _pCallingConvention, _tArgs, _eReturnType, _oReturnType);
 }
 
 CFunction* CPointer::MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type)
@@ -327,14 +331,12 @@ void CPointer::__del__(PyObject* self)
 // CFunction class
 //-----------------------------------------------------------------------------
 CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
-		int iCallingConvention, object oCallingConvention,
-		ICallingConvention* pCallingConvention, tuple tArgs,
+		int iCallingConvention, ICallingConvention* pCallingConvention, tuple tArgs,
 		DataType_t eReturnType, object oReturnType)
 	:CPointer(ulAddr)
 {
 	m_eCallingConvention = eCallingConvention;
 	m_iCallingConvention = iCallingConvention;
-	m_oCallingConvention = oCallingConvention;
 	m_pCallingConvention = pCallingConvention;
 	m_tArgs = tArgs;
 	m_eReturnType = eReturnType;
@@ -440,8 +442,8 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
 	return CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
-		m_iCallingConvention, m_oCallingConvention, m_pCallingConvention, m_tArgs,
-		m_eReturnType, m_oReturnType).Call(args, kw);
+		m_iCallingConvention, m_pCallingConvention, m_tArgs, m_eReturnType,
+		m_oReturnType).Call(args, kw);
 }
 
 handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)

@@ -265,8 +265,8 @@ class CFunction: public CPointer
 {
 public:
 	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
-		object oCallingConvention, ICallingConvention* pCallingConvention,
-		boost::python::tuple tArgs, DataType_t eReturnType, object oReturnType);
+		ICallingConvention* pCallingConvention, boost::python::tuple tArgs,
+		DataType_t eReturnType, object oReturnType);
 
 	bool IsCallable();
 	bool IsHookable();
@@ -299,9 +299,6 @@ public:
 
 	// DynCall calling convention
 	int						m_iCallingConvention;
-
-	// Custom DynamicHooks calling convention
-	object					m_oCallingConvention;
 
 	// DynamicHooks calling convention (built-in and custom)
 	ICallingConvention*		m_pCallingConvention;
