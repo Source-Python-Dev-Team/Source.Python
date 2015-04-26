@@ -21,8 +21,9 @@ class CStackData
 public:
 	CStackData(CHook* pHook);
 
-	object    GetItem(unsigned int iIndex);
-	void      SetItem(unsigned int iIndex, object value);
+	object		GetItem(unsigned int iIndex);
+	void		SetItem(unsigned int iIndex, object value);
+	CRegisters* GetRegisters() { return m_pHook->m_pRegisters; }
 
 protected:
 	CHook*                m_pHook;

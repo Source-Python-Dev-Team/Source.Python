@@ -31,7 +31,6 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "memory_hooks.h"
-#include "memory_callback.h"
 
 #include "dyncall.h"
 
@@ -46,7 +45,6 @@ void export_binaryfile();
 void export_memtools();
 void export_dyncall();
 void export_dynamichooks();
-void export_callbacks();
 void export_sizes();
 
 DECLARE_SP_MODULE(_memory)
@@ -55,7 +53,6 @@ DECLARE_SP_MODULE(_memory)
 	export_memtools();
 	export_dyncall();
 	export_dynamichooks();
-	export_callbacks();
 	export_sizes();
 }
 
@@ -294,9 +291,7 @@ void export_memtools()
 		)
 	;
 
-	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, Convention_t, tuple, object>())
-		.def(init<CFunction&>())
-
+	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", no_init)
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
@@ -340,16 +335,16 @@ void export_memtools()
 		)
 
 		// Attributes
-		.def_readwrite("arguments",
-			&CFunction::m_Args
+		.def_readonly("arguments",
+			&CFunction::m_tArgs
 		)
 
-		.def_readwrite("return_type",
+		.def_readonly("return_type",
 			&CFunction::m_oReturnType
 		)
 
-		.def_readwrite("convention",
-			&CFunction::m_eConv
+		.def_readonly("convention",
+			&CFunction::m_eCallingConvention
 		)
 	;
 	
@@ -404,6 +399,7 @@ void export_dyncall()
 	;
 
 	enum_<Convention_t>("Convention")
+		.value("NONE", CONV_NONE)
 		.value("CDECL", CONV_CDECL)
 		.value("STDCALL", CONV_STDCALL)
 		.value("THISCALL", CONV_THISCALL)
@@ -414,6 +410,84 @@ void export_dyncall()
 		.value("POST", HOOKTYPE_POST)
 	;
 }
+
+
+//-----------------------------------------------------------------------------
+// Exposes DynamicHooks
+//-----------------------------------------------------------------------------
+class ICallingConventionWrapper: public ICallingConvention, public wrapper<ICallingConvention>
+{
+public:
+	ICallingConventionWrapper(object oArgTypes, DataType_t returnType, int iAlignment=4)
+		:ICallingConvention(ObjectToDataTypeVector(oArgTypes), returnType, iAlignment)
+	{
+	}
+
+	virtual std::list<Register_t> GetRegisters()
+	{
+		object registers = get_override("get_registers")();
+		std::list<Register_t> result;
+		for(int i=0; i < len(registers); i++)
+		{
+			result.push_back(extract<Register_t>(registers[i]));
+		}
+
+		return result;
+	}
+
+	virtual int GetPopSize()
+	{
+		return get_override("get_pop_size")();
+	}
+	
+	virtual void* GetArgumentPtr(int iIndex, CRegisters* pRegisters)
+	{
+		CPointer* ptr = extract<CPointer*>(GetArgumentPtrWrapper(iIndex, pRegisters));
+		return (void *) ptr->m_ulAddr;
+	}
+
+	object GetArgumentPtrWrapper(int iIndex, CRegisters* pRegisters)
+	{
+		return get_override("get_argument_ptr")(iIndex, ptr(pRegisters));
+	}
+
+	virtual void ArgumentPtrChanged(int iIndex, CRegisters* pRegisters, void* pArgumentPtr)
+	{
+		get_override("argument_ptr_changed")(iIndex, ptr(pRegisters), ptr(new CPointer((unsigned long) pArgumentPtr)));
+	}
+
+	virtual void* GetReturnPtr(CRegisters* pRegisters)
+	{
+		CPointer* ptr = extract<CPointer*>(GetReturnPtrWrapper(pRegisters));
+		return (void *) ptr->m_ulAddr;
+	}
+
+	object GetReturnPtrWrapper(CRegisters* pRegisters)
+	{
+		return get_override("get_return_ptr")(ptr(pRegisters));
+	}
+
+	virtual void ReturnPtrChanged(CRegisters* pRegisters, void* pReturnPtr)
+	{
+		get_override("return_ptr_changed")(ptr(pRegisters), ptr(new CPointer((unsigned long) pReturnPtr)));
+	}
+
+public:
+	tuple GetArgTypes()
+	{
+		return tuple(m_vecArgTypes);
+	}
+};
+
+
+class CRegisterExt
+{
+public:
+	static CPointer* GetAddress(CRegister& reg)
+	{
+		return new CPointer((unsigned long) reg.m_pAddress);
+	}
+};
 
 void export_dynamichooks()
 {
@@ -428,6 +502,10 @@ void export_dynamichooks()
 			&CStackData::SetItem,
 			"Sets the argument at the specified index."
 		)
+
+		.add_property("registers",
+			make_function(&CStackData::GetRegisters, reference_existing_object_policy())
+		)
 	;
 
 	enum_<Register_t>("Register")
@@ -438,22 +516,6 @@ void export_dynamichooks()
 		.value("CL", CL)
 		.value("DL", DL)
 		.value("BL", BL)
-
-		// 64-bit mode only
-		/*
-		SPL,
-		BPL,
-		SIL,
-		DIL,
-		R8B,
-		R9B,
-		R10B,
-		R11B,
-		R12B,
-		R13B,
-		R14B,
-		R15B,
-		*/
 
 		.value("AH", AH)
 		.value("CH", CH)
@@ -472,18 +534,6 @@ void export_dynamichooks()
 		.value("SI", SI)
 		.value("DI", DI)
 
-		// 64-bit mode only
-		/*
-		R8W,
-		R9W,
-		R10W,
-		R11W,
-		R12W,
-		R13W,
-		R14W,
-		R15W,
-		*/
-
 		// ========================================================================
 		// >> 32-bit General purpose registers
 		// ========================================================================
@@ -495,45 +545,6 @@ void export_dynamichooks()
 		.value("EBP", EBP)
 		.value("ESI", ESI)
 		.value("EDI", EDI)
-
-		// 64-bit mode only
-		/*
-		R8D,
-		R9D,
-		R10D,
-		R11D,
-		R12D,
-		R13D,
-		R14D,
-		R15D,
-		*/
-	
-		// ========================================================================
-		// >> 64-bit General purpose registers
-		// ========================================================================
-		// 64-bit mode only
-		/*
-		RAX,
-		RCX,
-		RDX,
-		RBX,
-		RSP,
-		RBP,
-		RSI,
-		RDI,
-		*/
-
-		// 64-bit mode only
-		/*
-		R8,
-		R9,
-		R10,
-		R11,
-		R12,
-		R13,
-		R14,
-		R15,
-		*/
 
 		// ========================================================================
 		// >> 64-bit MM (MMX) registers
@@ -559,18 +570,6 @@ void export_dynamichooks()
 		.value("XMM6", XMM6)
 		.value("XMM7", XMM7)
 
-		// 64-bit mode only
-		/*
-		XMM8,
-		XMM9,
-		XMM10,
-		XMM11,
-		XMM12,
-		XMM13,
-		XMM14,
-		XMM15,
-		*/
-
 		// ========================================================================
 		// >> 16-bit Segment registers
 		// ========================================================================
@@ -593,19 +592,189 @@ void export_dynamichooks()
 		.value("ST6", ST6)
 		.value("ST7", ST7)
 	;
-}
 
-//-----------------------------------------------------------------------------
-// Exposes CCallback
-//-----------------------------------------------------------------------------
-void export_callbacks()
-{
-	class_< CCallback, bases< CFunction >, boost::noncopyable >("Callback", init< object, Convention_t, tuple, object, optional<bool> >())
-        .def_readwrite("callback",
-            &CCallback::m_oCallback,
-            "The Python function that gets called by the C++ callback"
-        )
-    ;
+	class_<CRegister, CRegister*, boost::noncopyable>("ProcessorRegister", no_init)
+		.def("get_bool_value", &CRegister::GetValue<bool>)
+		.def("get_char_value", &CRegister::GetValue<char>)
+		.def("get_uchar_value", &CRegister::GetValue<unsigned char>)
+		.def("get_short_value", &CRegister::GetValue<short>)
+		.def("get_ushort_value", &CRegister::GetValue<unsigned short>)
+		.def("get_int_value", &CRegister::GetValue<int>)
+		.def("get_uint_value", &CRegister::GetValue<unsigned int>)
+		.def("get_long_value", &CRegister::GetValue<long>)
+		.def("get_ulong_value", &CRegister::GetValue<unsigned long>)
+		.def("get_long_long_value", &CRegister::GetValue<long long>)
+		.def("get_ulong_long_value", &CRegister::GetValue<unsigned long long>)
+		.def("get_float_value", &CRegister::GetValue<float>)
+		.def("get_double_value", &CRegister::GetValue<double>)
+		//.def("get_pointer_value", &CRegister::GetValue<void*>)
+		.def("get_string_value", &CRegister::GetValue<const char*>)
+		
+		.def("set_bool_value", &CRegister::SetValue<bool>)
+		.def("set_char_value", &CRegister::SetValue<char>)
+		.def("set_uchar_value", &CRegister::SetValue<unsigned char>)
+		.def("set_short_value", &CRegister::SetValue<short>)
+		.def("set_ushort_value", &CRegister::SetValue<unsigned short>)
+		.def("set_int_value", &CRegister::SetValue<int>)
+		.def("set_uint_value", &CRegister::SetValue<unsigned int>)
+		.def("set_long_value", &CRegister::SetValue<long>)
+		.def("set_ulong_value", &CRegister::SetValue<unsigned long>)
+		.def("set_long_long_value", &CRegister::SetValue<long long>)
+		.def("set_ulong_long_value", &CRegister::SetValue<unsigned long long>)
+		.def("set_float_value", &CRegister::SetValue<float>)
+		.def("set_double_value", &CRegister::SetValue<double>)
+		//.def("set_pointer_value", &CRegister::SetValue<void*>)
+		.def("set_string_value", &CRegister::SetValue<const char*>)
+		
+		.def("get_bool_pointer_value", &CRegister::GetPointerValue<bool>, (arg("offset")=0))
+		.def("get_char_pointer_value", &CRegister::GetPointerValue<char>, (arg("offset")=0))
+		.def("get_uchar_pointer_value", &CRegister::GetPointerValue<unsigned char>, (arg("offset")=0))
+		.def("get_short_pointer_value", &CRegister::GetPointerValue<short>, (arg("offset")=0))
+		.def("get_ushort_pointer_value", &CRegister::GetPointerValue<unsigned short>, (arg("offset")=0))
+		.def("get_int_pointer_value", &CRegister::GetPointerValue<int>, (arg("offset")=0))
+		.def("get_uint_pointer_value", &CRegister::GetPointerValue<unsigned int>, (arg("offset")=0))
+		.def("get_long_pointer_value", &CRegister::GetPointerValue<long>, (arg("offset")=0))
+		.def("get_ulong_pointer_value", &CRegister::GetPointerValue<unsigned long>, (arg("offset")=0))
+		.def("get_long_long_pointer_value", &CRegister::GetPointerValue<long long>, (arg("offset")=0))
+		.def("get_ulong_long_pointer_value", &CRegister::GetPointerValue<unsigned long long>, (arg("offset")=0))
+		.def("get_float_pointer_value", &CRegister::GetPointerValue<float>, (arg("offset")=0))
+		.def("get_double_pointer_value", &CRegister::GetPointerValue<double>, (arg("offset")=0))
+		//.def("get_pointer_pointer_value", &CRegister::GetPointerValue<void*>, (arg("offset")=0))
+		.def("get_string_pointer_value", &CRegister::GetPointerValue<const char*>, (arg("offset")=0))
+		
+		.def("set_bool_pointer_value", &CRegister::SetPointerValue<bool>, ("value", arg("offset")=0))
+		.def("set_char_pointer_value", &CRegister::SetPointerValue<char>, ("value", arg("offset")=0))
+		.def("set_uchar_pointer_value", &CRegister::SetPointerValue<unsigned char>, ("value", arg("offset")=0))
+		.def("set_short_pointer_value", &CRegister::SetPointerValue<short>, ("value", arg("offset")=0))
+		.def("set_ushort_pointer_value", &CRegister::SetPointerValue<unsigned short>, ("value", arg("offset")=0))
+		.def("set_int_pointer_value", &CRegister::SetPointerValue<int>, ("value", arg("offset")=0))
+		.def("set_uint_pointer_value", &CRegister::SetPointerValue<unsigned int>, ("value", arg("offset")=0))
+		.def("set_long_pointer_value", &CRegister::SetPointerValue<long>, ("value", arg("offset")=0))
+		.def("set_ulong_pointer_value", &CRegister::SetPointerValue<unsigned long>, ("value", arg("offset")=0))
+		.def("set_long_long_pointer_value", &CRegister::SetPointerValue<long long>, ("value", arg("offset")=0))
+		.def("set_ulong_long_pointer_value", &CRegister::SetPointerValue<unsigned long long>, ("value", arg("offset")=0))
+		.def("set_float_pointer_value", &CRegister::SetPointerValue<float>, ("value", arg("offset")=0))
+		.def("set_double_pointer_value", &CRegister::SetPointerValue<double>, ("value", arg("offset")=0))
+		//.def("set_pointer_pointer_value", &CRegister::SetPointerValue<void*>, ("value", arg("offset")=0))
+		.def("set_string_pointer_value", &CRegister::SetPointerValue<const char*>, ("value", arg("offset")=0))
+
+		.add_property("size",
+			make_getter(&CRegister::m_iSize)
+		)
+
+		.add_property("address",
+			make_function(&CRegisterExt::GetAddress, manage_new_object_policy())
+		)
+	;
+
+	class_<CRegisters, boost::noncopyable>("Registers", no_init)
+		.def_readonly("al", &CRegisters::m_al)
+		.def_readonly("cl", &CRegisters::m_cl)
+		.def_readonly("dl", &CRegisters::m_dl)
+		.def_readonly("bl", &CRegisters::m_bl)
+
+		.def_readonly("ah", &CRegisters::m_ah)
+		.def_readonly("ch", &CRegisters::m_ch)
+		.def_readonly("dh", &CRegisters::m_dh)
+		.def_readonly("bh", &CRegisters::m_bh)
+		
+		.def_readonly("ax", &CRegisters::m_ax)
+		.def_readonly("cx", &CRegisters::m_cx)
+		.def_readonly("dx", &CRegisters::m_dx)
+		.def_readonly("bx", &CRegisters::m_bx)
+		.def_readonly("sp", &CRegisters::m_sp)
+		.def_readonly("bp", &CRegisters::m_bp)
+		.def_readonly("si", &CRegisters::m_si)
+		.def_readonly("di", &CRegisters::m_di)
+		
+		.def_readonly("eax", &CRegisters::m_eax)
+		.def_readonly("ecx", &CRegisters::m_ecx)
+		.def_readonly("edx", &CRegisters::m_edx)
+		.def_readonly("ebx", &CRegisters::m_ebx)
+		.def_readonly("esp", &CRegisters::m_esp)
+		.def_readonly("ebp", &CRegisters::m_ebp)
+		.def_readonly("esi", &CRegisters::m_esi)
+		.def_readonly("edi", &CRegisters::m_edi)
+		
+		.def_readonly("mm0", &CRegisters::m_mm0)
+		.def_readonly("mm1", &CRegisters::m_mm1)
+		.def_readonly("mm2", &CRegisters::m_mm2)
+		.def_readonly("mm3", &CRegisters::m_mm3)
+		.def_readonly("mm4", &CRegisters::m_mm4)
+		.def_readonly("mm5", &CRegisters::m_mm5)
+		.def_readonly("mm6", &CRegisters::m_mm6)
+		.def_readonly("mm7", &CRegisters::m_mm7)
+		
+		.def_readonly("xmm0", &CRegisters::m_xmm0)
+		.def_readonly("xmm1", &CRegisters::m_xmm1)
+		.def_readonly("xmm2", &CRegisters::m_xmm2)
+		.def_readonly("xmm3", &CRegisters::m_xmm3)
+		.def_readonly("xmm4", &CRegisters::m_xmm4)
+		.def_readonly("xmm5", &CRegisters::m_xmm5)
+		.def_readonly("xmm6", &CRegisters::m_xmm6)
+		.def_readonly("xmm7", &CRegisters::m_xmm7)
+		
+		.def_readonly("cs", &CRegisters::m_cs)
+		.def_readonly("ss", &CRegisters::m_ss)
+		.def_readonly("ds", &CRegisters::m_ds)
+		.def_readonly("es", &CRegisters::m_es)
+		.def_readonly("fs", &CRegisters::m_fs)
+		.def_readonly("gs", &CRegisters::m_gs)
+		
+		.def_readonly("st0", &CRegisters::m_st0)
+		.def_readonly("st1", &CRegisters::m_st1)
+		.def_readonly("st2", &CRegisters::m_st2)
+		.def_readonly("st3", &CRegisters::m_st3)
+		.def_readonly("st4", &CRegisters::m_st4)
+		.def_readonly("st5", &CRegisters::m_st5)
+		.def_readonly("st6", &CRegisters::m_st6)
+		.def_readonly("st7", &CRegisters::m_st7)
+	;
+	
+	class_<ICallingConventionWrapper, boost::noncopyable>("CallingConvention", init< object, DataType_t, optional<int> >())
+		.def("get_registers",
+			pure_virtual(&ICallingConventionWrapper::GetRegisters)
+		)
+
+		.def("get_pop_size",
+			pure_virtual(&ICallingConventionWrapper::GetPopSize)
+		)
+
+		.def("get_argument_ptr",
+			pure_virtual(&ICallingConventionWrapper::GetArgumentPtrWrapper)
+		)
+
+		.def("argument_ptr_changed",
+			pure_virtual(&ICallingConventionWrapper::ArgumentPtrChanged)
+		)
+
+		.def("get_return_ptr",
+			pure_virtual(&ICallingConventionWrapper::GetReturnPtrWrapper)
+		)
+
+		.def("return_ptr_changed",
+			pure_virtual(&ICallingConventionWrapper::ReturnPtrChanged)
+		)
+
+		.add_property("argument_types",
+			&ICallingConventionWrapper::GetArgTypes
+		)
+
+		.def_readonly("return_type",
+			&ICallingConventionWrapper::m_returnType
+		)
+
+		.def_readonly("alignment",
+			&ICallingConventionWrapper::m_iAlignment
+		)
+
+		ADD_MEM_TOOLS_WRAPPER(ICallingConventionWrapper, ICallingConvention, "CallingConvention")
+	;
+
+	def("get_data_type_size",
+		&GetDataTypeSize,
+		("data_type", arg("alignment")=4)
+	);
 }
 
 

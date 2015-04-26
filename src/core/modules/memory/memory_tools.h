@@ -140,11 +140,22 @@ inline void UTIL_Dealloc(void* ptr)
 #endif
 }
 
+inline std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
+{
+	std::vector<DataType_t> vecArgTypes;
+	for(int i=0; i < len(oArgTypes); i++)
+	{
+		vecArgTypes.push_back(extract<DataType_t>(oArgTypes[i]));
+	}
+	return vecArgTypes;
+}
+
 //-----------------------------------------------------------------------------
 // Convention enum
 //-----------------------------------------------------------------------------
 enum Convention_t
 {
+	CONV_NONE,
 	CONV_CDECL,
 	CONV_THISCALL,
 	CONV_STDCALL
@@ -233,8 +244,8 @@ public:
 	virtual CPointer*   Realloc(int iSize);
 	virtual void        Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
-	CFunction*          MakeFunction(Convention_t eConv, boost::python::object args, object return_type);
-	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, boost::python::object args, object return_type);
+	CFunction*			MakeFunction(object oCallingConvention, object args, object return_type);
+	CFunction*			MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type);
 
 	static void         CallCallback(PyObject* self, char* szCallback);
 	static void         PreDealloc(PyObject* self);
@@ -253,7 +264,12 @@ public:
 class CFunction: public CPointer
 {
 public:
-	CFunction(unsigned long ulAddr, Convention_t eConv, boost::python::object args, object return_type);
+	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
+		object oCallingConvention, ICallingConvention* pCallingConvention,
+		boost::python::tuple tArgs, DataType_t eReturnType, object oReturnType);
+
+	bool IsCallable();
+	bool IsHookable();
     
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
@@ -274,9 +290,20 @@ public:
 	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
     
 public:
-	boost::python::tuple	m_Args;
+	boost::python::tuple	m_tArgs;
 	object					m_oReturnType;
-	Convention_t			m_eConv;
+	DataType_t				m_eReturnType;
+
+	// Shared built-in calling convention identifier
+	Convention_t			m_eCallingConvention;
+
+	// DynCall calling convention
+	int						m_iCallingConvention;
+
+	// Custom DynamicHooks calling convention
+	object					m_oCallingConvention;
+
+	// DynamicHooks calling convention (built-in and custom)
 	ICallingConvention*		m_pCallingConvention;
 };
 

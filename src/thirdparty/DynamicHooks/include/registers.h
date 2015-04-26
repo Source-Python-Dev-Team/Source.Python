@@ -246,7 +246,7 @@ public:
 	template<class T>
 	void SetPointerValue(T value, int iOffset=0)
 	{
-		SetValue<T>(GetValue<unsigned long>() + iOffset, value);
+		*(T *) (GetValue<unsigned long>() + iOffset) = value;
 	}
 
 public:

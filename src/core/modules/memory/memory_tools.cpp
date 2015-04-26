@@ -72,17 +72,7 @@ int GetDynCallConvention(Convention_t eConv)
 	}
 
 	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
-	return 0;
-}
-
-std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
-{
-	std::vector<DataType_t> vecArgTypes;
-	for(int i=0; i < len(oArgTypes); i++)
-	{
-		vecArgTypes.push_back(extract<DataType_t>(oArgTypes[i]));
-	}
-	return vecArgTypes;
+	return -1;
 }
 
 ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4)
@@ -103,7 +93,7 @@ ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<D
 #endif
 
 	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
-	return 0;
+	return NULL;
 }
 
 //-----------------------------------------------------------------------------
@@ -241,17 +231,52 @@ CPointer* CPointer::Realloc(int iSize)
 	return new CPointer((unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize)); 
 }
 
-CFunction* CPointer::MakeFunction(Convention_t eConv, object args, object return_type)
+CFunction* CPointer::MakeFunction(object oCallingConvention, object args, object oReturnType)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-	return new CFunction(m_ulAddr, eConv, args, return_type);
+	Convention_t _eCallingConvention = CONV_NONE;
+	int _iCallingConvention = -1;
+	object _oCallingConvention = object();
+	ICallingConvention* _pCallingConvention = NULL;
+	tuple _tArgs = tuple(args);
+	object _oReturnType = oReturnType;
+	DataType_t _eReturnType;
+
+	// Get the enum return type
+	try
+	{
+		_eReturnType = extract<DataType_t>(oReturnType);
+	}
+	catch( ... )
+	{
+		PyErr_Clear();
+		_eReturnType = DATA_TYPE_POINTER;
+	}
+
+	try
+	{
+		// If this line succeeds the user wants to create a function with the built-in calling conventions
+		_eCallingConvention = extract<Convention_t>(oCallingConvention);
+		_iCallingConvention = GetDynCallConvention(_eCallingConvention);
+		_pCallingConvention = MakeDynamicHooksConvention(_eCallingConvention, ObjectToDataTypeVector(args), _eReturnType);
+	}
+	catch( ... )
+	{
+		// If this happens, we won't be able to call the function, because we are using a custom calling convention
+		PyErr_Clear();
+	
+		_oCallingConvention = oCallingConvention(args, _eReturnType);
+		_pCallingConvention = extract<ICallingConvention*>(_oCallingConvention);
+	}
+	
+	return new CFunction(m_ulAddr, _eCallingConvention, _iCallingConvention, _oCallingConvention, _pCallingConvention, _tArgs, _eReturnType, _oReturnType);
 }
 
-CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, object args, object return_type)
+CFunction* CPointer::MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type)
 {
-	return GetVirtualFunc(iIndex)->MakeFunction(eConv, args, return_type);
+	return GetVirtualFunc(iIndex)->MakeFunction(oCallingConvention, args, return_type);
 }
 
 void CPointer::CallCallback(PyObject* self, char* szCallback)
@@ -301,48 +326,51 @@ void CPointer::__del__(PyObject* self)
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
-CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, object args, object return_type)
-	: CPointer(ulAddr)
+CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
+		int iCallingConvention, object oCallingConvention,
+		ICallingConvention* pCallingConvention, tuple tArgs,
+		DataType_t eReturnType, object oReturnType)
+	:CPointer(ulAddr)
 {
-	m_eConv = eConv;
-	m_Args = tuple(args);
-	m_oReturnType = return_type;
+	m_eCallingConvention = eCallingConvention;
+	m_iCallingConvention = iCallingConvention;
+	m_oCallingConvention = oCallingConvention;
+	m_pCallingConvention = pCallingConvention;
+	m_tArgs = tArgs;
+	m_eReturnType = eReturnType;
+	m_oReturnType = oReturnType;
+}
 
-	DataType_t eReturnType;
+bool CFunction::IsCallable()
+{
+	return (m_eCallingConvention != CONV_NONE) && (m_iCallingConvention != -1);
+}
 
-	// Try to get the return type
-	try
-	{
-		eReturnType = extract<DataType_t>(m_oReturnType);
-	}
-	catch( ... )
-	{
-		PyErr_Clear();
-
-		// It failed, so let's handle it as a pointer
-		eReturnType = DATA_TYPE_POINTER;
-	}
-
-	m_pCallingConvention = MakeDynamicHooksConvention(eConv, ObjectToDataTypeVector(args), eReturnType);
+bool CFunction::IsHookable()
+{
+	return m_pCallingConvention != NULL;
 }
 
 object CFunction::Call(tuple args, dict kw)
 {
+	if (!IsCallable())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
+
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	if (len(args) != len(m_Args))
+	if (len(args) != len(m_tArgs))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Number of passed arguments is not equal to the required number.")
 
 	// Reset VM and set the calling convention
 	dcReset(g_pCallVM);
-	dcMode(g_pCallVM, GetDynCallConvention(m_eConv));
+	dcMode(g_pCallVM, m_iCallingConvention);
 
 	// Loop through all passed arguments and add them to the VM
 	for(int i=0; i < len(args); i++)
 	{
 		object arg = args[i];
-		switch(extract<DataType_t>(m_Args[i]))
+		switch(extract<DataType_t>(m_tArgs[i]))
 		{
 			case DATA_TYPE_BOOL:      dcArgBool(g_pCallVM, extract<bool>(arg)); break;
 			case DATA_TYPE_CHAR:      dcArgChar(g_pCallVM, extract<char>(arg)); break;
@@ -369,23 +397,8 @@ object CFunction::Call(tuple args, dict kw)
 		}
 	}
 
-	DataType_t return_type;
-
-	// Try to get the return type
-	try
-	{
-		return_type = extract<DataType_t>(m_oReturnType);
-	}
-	catch( ... )
-	{
-		PyErr_Clear();
-
-		// It failed, so let's handle it as a pointer
-		return m_oReturnType(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
-	}
-
 	// Call the function
-	switch(return_type)
+	switch(m_eReturnType)
 	{
 		case DATA_TYPE_VOID:      dcCallVoid(g_pCallVM, m_ulAddr); break;
 		case DATA_TYPE_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
@@ -401,7 +414,13 @@ object CFunction::Call(tuple args, dict kw)
 		case DATA_TYPE_ULONG_LONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_POINTER:   return object(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
+		case DATA_TYPE_POINTER:
+		{
+			CPointer* pPtr = new CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
+			if (!m_oReturnType.is_none())
+				return m_oReturnType(ptr(pPtr));
+			return object(ptr(pPtr));
+		}
 		case DATA_TYPE_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
 	}
@@ -410,6 +429,9 @@ object CFunction::Call(tuple args, dict kw)
 
 object CFunction::CallTrampoline(tuple args, dict kw)
 {
+	if (!IsCallable())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
+
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
@@ -417,35 +439,28 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_Args, m_oReturnType).Call(args, kw);
+	return CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
+		m_iCallingConvention, m_oCallingConvention, m_pCallingConvention, m_tArgs,
+		m_eReturnType, m_oReturnType).Call(args, kw);
 }
 
 handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
+	if (!IsHookable())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not hookable.")
+
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	// Generate the argument string
-	DataType_t return_type;
-	try
-	{
-		return_type = extract<DataType_t>(m_oReturnType);
-	}
-	catch ( ... )
-	{
-		PyErr_Clear();
-		return_type = DATA_TYPE_POINTER;
-	}
-
 	// Hook the function
 	CHook* pHook = GetHookManager()->HookFunction((void *) m_ulAddr, m_pCallingConvention);
-
+	
 	// Add the hook handler. If it's already added, it won't be added twice
-	pHook->AddCallback(eType, (HookHandlerFn *) &SP_HookHandler);
-
+	pHook->AddCallback(eType, (HookHandlerFn *) (void *) &SP_HookHandler);
+	
 	// Add the callback to our map
 	g_mapCallbacks[pHook][eType].push_back(pCallable);
-
+	
 	// Return the callback, so we can use this method as a decorator
 	return handle<>(borrowed(pCallable));
 }
