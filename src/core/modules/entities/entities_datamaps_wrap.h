@@ -97,6 +97,16 @@ public:
 
 		return make_function(pTypeDesc.inputFunc);
 	}
+
+	static CPointer *get_input_pointer(const typedescription_t& pTypeDesc)
+	{
+		CPointer *pInputPointer = NULL;
+
+		if (pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE)
+			pInputPointer = new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc);
+
+		return pInputPointer;
+	}
 };
 
 

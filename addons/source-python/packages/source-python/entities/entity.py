@@ -163,10 +163,6 @@ class Entity(BaseEntity, _EntitySpecials):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))
 
-    def _ptr(self):
-        """Return the entity's pointer."""
-        return self._pointer
-
     @property
     def index(self):
         """Return the entity's index."""
