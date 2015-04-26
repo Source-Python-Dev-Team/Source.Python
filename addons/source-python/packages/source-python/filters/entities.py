@@ -8,7 +8,7 @@
 # Source.Python Imports
 #   Entities
 from entities import EntityGenerator
-from entities.entity import BaseEntity
+from entities.entity import Entity
 from entities.helpers import basehandle_from_edict
 from entities.helpers import index_from_edict
 from entities.helpers import inthandle_from_edict
@@ -110,6 +110,6 @@ _entity_iter_manager.register_return_type(
     'inthandle', inthandle_from_edict)
 _entity_iter_manager.register_return_type('pointer', pointer_from_edict)
 _entity_iter_manager.register_return_type(
-    'entity', lambda edict: BaseEntity(index_from_edict(edict)))
+    'entity', lambda edict: Entity(index_from_edict(edict)))
 _entity_iter_manager.register_return_type(
     'classname', lambda edict: edict.get_class_name())

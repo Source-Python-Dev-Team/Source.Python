@@ -8,12 +8,14 @@
 # Python Imports
 #   Contextlib
 from contextlib import suppress
+#   Entities
+from entities.entity import BaseEntity
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _ProjectileMeta(type):
+class _ProjectileMeta(BaseEntity.__class__):
 
     """Metaclass used to auto-create methods specific to the projectile."""
 

@@ -42,6 +42,7 @@ void export_interval(scope);
 void export_datamap(scope);
 void export_type_description(scope);
 void export_input_data(scope);
+void export_input_function(scope);
 void export_variant(scope);
 void export_field_types(scope);
 void export_type_description_flags(scope);
@@ -56,6 +57,7 @@ DECLARE_SP_SUBMODULE(_entities, _datamaps)
 	export_datamap(_datamaps);
 	export_type_description(_datamaps);
 	export_input_data(_datamaps);
+	export_input_function(_datamaps);
 	export_variant(_datamaps);
 	export_field_types(_datamaps);
 	export_type_description_flags(_datamaps);
@@ -137,13 +139,8 @@ void export_type_description(scope _datamaps)
 	// TODO: Expose ISaveRestoreOps...
 	TypeDescription.def_readonly("save_restore", &typedescription_t::pSaveRestoreOps);
 
-	TypeDescription.add_property("input",
-		make_function(
-			&TypeDescriptionSharedExt::get_input,
-			manage_new_object_policy()
-		)
-	);
-	
+	TypeDescription.add_property("input", &TypeDescriptionSharedExt::get_input);
+
 	TypeDescription.def_readonly("embedded_datamap", &typedescription_t::td);
 	TypeDescription.def_readonly("size_in_bytes", &typedescription_t::fieldSizeInBytes);
 	TypeDescription.def_readonly("override_field", &typedescription_t::override_field);
@@ -177,6 +174,28 @@ void export_input_data(scope _datamaps)
 
 	// Add memory tools...
 	InputData ADD_MEM_TOOLS(inputdata_t, "InputData");
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose inputfunc_t.
+//-----------------------------------------------------------------------------
+void export_input_function(scope _datamaps)
+{
+	class_<inputfunc_t, boost::noncopyable> InputFunction("InputFunction", no_init);
+
+	// Initializers...
+	// InputData.def("__init__", make_constructor(&InputDataSharedExt::__init__));
+
+	// Properties...
+	// InputData.add_property("activator", &InputDataSharedExt::get_activator, &InputDataSharedExt::set_activator);
+	// InputData.add_property("caller", &InputDataSharedExt::get_caller, &InputDataSharedExt::set_caller);
+
+	// InputData.def_readwrite("value", &inputdata_t::value);
+	// InputData.def_readwrite("output_index", &inputdata_t::nOutputID);
+
+	// Add memory tools...
+	// InputData ADD_MEM_TOOLS(inputdata_t, "InputData");
 }
 
 

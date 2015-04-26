@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from entities.entity import BaseEntity
+from entities.entity import Entity
 from entities.helpers import index_from_inthandle
 #   Weapons
 from weapons.manager import weapon_manager
@@ -24,19 +24,19 @@ __all__ = ('WeaponEntity',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class WeaponEntity(BaseEntity):
+class WeaponEntity(Entity):
 
     """Allows easy usage of the weapon's attributes."""
 
     @property
     def current_owner(self):
-        """Return a BaseEntity instance of the weapon's owner."""
+        """Return a Entity instance of the weapon's owner."""
         # Does no player currently own the weapon?
         if self.owner == -1:
             return None
 
-        # Return a BaseEntity instance of the owner
-        return BaseEntity(index_from_inthandle(self.owner))
+        # Return a Entity instance of the owner
+        return Entity(index_from_inthandle(self.owner))
 
     def get_clip(self):
         """Return the amount of ammo in the weapon's clip."""

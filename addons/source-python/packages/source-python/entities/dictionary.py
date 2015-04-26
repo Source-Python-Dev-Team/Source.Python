@@ -9,7 +9,7 @@
 #   Core
 from core import AutoUnload
 #   Entities
-from entities.entity import BaseEntity
+from entities.entity import Entity
 #   Listeners
 from listeners import on_entity_deleted_listener_manager
 
@@ -28,7 +28,7 @@ class EntityDictionary(AutoUnload, dict):
 
     """Helper class used to store entity instances."""
 
-    def __init__(self, entity_class=BaseEntity):
+    def __init__(self, entity_class=Entity):
         """Initialize the dictionary."""
         # Store the given entity class...
         self._entity_class = entity_class

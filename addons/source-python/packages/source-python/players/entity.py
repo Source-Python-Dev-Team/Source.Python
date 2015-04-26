@@ -19,6 +19,7 @@ from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
 from entities.entity import BaseEntity
+from entities.entity import Entity
 from entities.helpers import index_from_pointer
 #   Mathlib
 from mathlib import Vector
@@ -44,26 +45,17 @@ __all__ = ('PlayerEntity',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
+class PlayerEntity(Entity, BaseEntity, _GameWeapons, _PlayerWeapons):
 
     """Class used to interact directly with players."""
 
-    def __new__(cls, index):
-        """Set the "entities" attribute and set the PlayerInfo."""
-        # Get the "self" object using the super class' __new__
-        self = super(PlayerEntity, cls).__new__(cls, index)
+    def __init__(self, index):
+        """Set the player's PlayerInfo attribute"""
+        # Set the player's PlayerInfo attribute
+        self._playerinfo = playerinfo_from_index(index)
 
-        # Set the player's playerinfo attribute
-        self._playerinfo = playerinfo_from_index(self.index)
-
-        # Is the IPlayerInfo instance valid?
-        if self.playerinfo is None:
-
-            raise ValueError(
-                'Invalid IPlayerInfo instance for index "{0}"'.format(index))
-
-        # Return the instance
-        return self
+        # Initialize the object
+        super(PlayerEntity, self).__init__(index)
 
     @property
     def playerinfo(self):
@@ -191,8 +183,8 @@ class PlayerEntity(BaseEntity, _GameWeapons, _PlayerWeapons):
         # Get the index of the entity the trace hit
         index = index_from_pointer(pointer, False)
 
-        # Return a BaseEntity instance of the hit entity if it has an index
-        return BaseEntity(index) if index else None
+        # Return a Entity instance of the hit entity if it has an index
+        return Entity(index) if index else None
 
     def set_view_entity(self, entity):
         """Force the player to look at the origin of the given entity."""

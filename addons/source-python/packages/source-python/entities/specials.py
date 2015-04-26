@@ -41,9 +41,9 @@ class _EntitySpecials(object):
             self, damage, damage_type=DamageTypes.GENERIC, attacker_index=None,
             weapon_index=None, hitgroup=HitGroup.GENERIC, **kwargs):
         """Method used to hurt the entity with the given arguments."""
-        # Import BaseEntity classes
+        # Import Entity classes
         # Doing this in the global scope causes cross import errors
-        from entities.entity import BaseEntity
+        from entities.entity import Entity
         from weapons.entity import WeaponEntity
 
         # Is the game supported?
@@ -60,9 +60,9 @@ class _EntitySpecials(object):
         # Was an attacker given?
         if attacker_index is not None:
 
-            # Try to get the BaseEntity instance of the attacker
+            # Try to get the Entity instance of the attacker
             with suppress(ValueError):
-                attacker = BaseEntity(attacker_index)
+                attacker = Entity(attacker_index)
 
         # Was a weapon given?
         if weapon_index is not None:
@@ -78,7 +78,7 @@ class _EntitySpecials(object):
             with suppress(ValueError):
                 attacker_index = index_from_inthandle(weapon.current_owner)
                 if attacker_index is not None:
-                    attacker = BaseEntity(attacker_index)
+                    attacker = Entity(attacker_index)
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:

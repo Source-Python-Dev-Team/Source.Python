@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from entities.entity import BaseEntity
+from entities.entity import Entity
 from entities.helpers import index_from_inthandle
 from entities.props import SendPropType
 #   Engines
@@ -58,8 +58,8 @@ class _PlayerWeapons(object):
             # Return 0 as the amount
             return 0
 
-        # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index)
+        # Get the Entity instance for the index
+        weapon = Entity(index)
 
         # Return the amount of ammo the player has for the weapon
         return self.get_property_int(
@@ -99,8 +99,8 @@ class _PlayerWeapons(object):
             # Return 0 as the amount
             return 0
 
-        # Get the BaseEntity instance for the index
-        weapon = BaseEntity(index)
+        # Get the Entity instance for the index
+        weapon = Entity(index)
 
         # Return the amount of ammo in the weapon's clip
         return weapon.clip
@@ -142,8 +142,8 @@ class _PlayerWeapons(object):
                 '"{0}, {1}, {2}" for player "{3}"'.format(
                     classname, is_filters, not_filters, self.userid))
 
-        # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        # Get the entity's Entity instance
+        weapon = Entity(index)
 
         # Set the player's ammo value
         self.set_property_int(
@@ -186,8 +186,8 @@ class _PlayerWeapons(object):
                 '"{0}, {1}, {2}" for player "{3}"'.format(
                     classname, is_filters, not_filters, self.userid))
 
-        # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        # Get the entity's Entity instance
+        weapon = Entity(index)
 
         # Set the weapon's clip value
         weapon.clip = value
@@ -229,8 +229,8 @@ class _PlayerWeapons(object):
                 '"{0}, {1}, {2}" for player "{3}"'.format(
                     classname, is_filters, not_filters, self.userid))
 
-        # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        # Get the entity's Entity instance
+        weapon = Entity(index)
 
         # Get the current ammo value
         current = self.get_property_int(
@@ -278,8 +278,8 @@ class _PlayerWeapons(object):
                 '"{0}, {1}, {2}" for player "{3}"'.format(
                     classname, is_filters, not_filters, self.userid))
 
-        # Get the entity's BaseEntity instance
-        weapon = BaseEntity(index)
+        # Get the entity's Entity instance
+        weapon = Entity(index)
 
         # Add ammo to the weapon's clip
         weapon.clip += value
@@ -337,7 +337,7 @@ class _PlayerWeapons(object):
                 continue
 
             # Get the weapon's edict
-            edict = BaseEntity(index)
+            edict = Entity(index)
 
             # Get the weapon's classname
             weapon_class = edict.get_class_name()
@@ -383,7 +383,7 @@ class _PlayerWeapons(object):
                 'No active weapon found for player "{0}"'.format(self.userid))
 
         # Return the entity's color
-        return BaseEntity(index).color
+        return Entity(index).color
 
     def set_weapon_color(self, red, green, blue, alpha=None):
         """Set the player's active weapon's color."""
@@ -401,7 +401,7 @@ class _PlayerWeapons(object):
                 'No active weapon found for player "{0}"'.format(self.userid))
 
         # Set the entity's color
-        BaseEntity(index).color = (red, green, blue, alpha)
+        Entity(index).color = (red, green, blue, alpha)
 
 
 # =============================================================================

@@ -15,7 +15,7 @@ from entities.classes import server_classes
 from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
-from entities.helpers import pointer_from_edict
+from entities.helpers import pointer_from_index
 from entities.helpers import spawn_entity
 from entities.specials import _EntitySpecials
 #   Memory
@@ -23,42 +23,37 @@ from memory import make_object
 
 
 # =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Entities
+from _entities._entity import BaseEntity
+
+
+# =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 # Add all the global variables to __all__
 __all__ = ('BaseEntity',
+           'Entity',
            )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class BaseEntity(_EntitySpecials):
+class Entity(BaseEntity, _EntitySpecials):
 
     """Class used to interact directly with entities."""
 
-    def __new__(cls, index):
-        """Verify the given index is valid and store base attributes."""
-        # Get the given indexes edict
-        edict = edict_from_index(index)
-
-        # Is the edict valid?
-        if not edict or edict.is_free():
-
-            # If not raise an error
-            raise ValueError(
-                'Index "{0}" is not a proper entity index'.format(index))
-
-        # Create the object
-        self = object.__new__(cls)
-
-        # Set the entity's base attributes
+    def __init__(self, index):
+        """Set the entity's base attributes."""
         self._index = index
-        self._edict = edict
-        self._pointer = pointer_from_edict(edict)
+        self._edict = edict_from_index(index)
+        self._pointer = pointer_from_index(index)
 
-        # Return the instance
-        return self
+        # Initialize the object.
+        super(Entity, self).__init__(index)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
@@ -92,21 +87,21 @@ class BaseEntity(_EntitySpecials):
             name = attr[1:]
 
             # Is the attribute a property?
-            if (name in super(BaseEntity, self).__dir__() and isinstance(
+            if (name in super(Entity, self).__dir__() and isinstance(
                     getattr(self.__class__, name), property)):
 
                 # Set the private attribute's value
-                super(BaseEntity, self).__setattr__(attr, value)
+                super(Entity, self).__setattr__(attr, value)
 
                 # No need to go further
                 return
 
         # Is the given attribute a property?
-        if (attr in super(BaseEntity, self).__dir__() and isinstance(
+        if (attr in super(Entity, self).__dir__() and isinstance(
                 getattr(self.__class__, attr), property)):
 
             # Set the property's value
-            super(BaseEntity, self).__setattr__(attr, value)
+            super(Entity, self).__setattr__(attr, value)
 
             # No need to go further
             return
@@ -124,12 +119,12 @@ class BaseEntity(_EntitySpecials):
                 return
 
         # If the attribute is not found, just set the attribute
-        super(BaseEntity, self).__setattr__(attr, value)
+        super(Entity, self).__setattr__(attr, value)
 
     def __dir__(self):
         """Return an alphabetized list of attributes for the instance."""
         # Get the base attributes
-        attributes = set(super(BaseEntity, self).__dir__())
+        attributes = set(super(Entity, self).__dir__())
 
         # Loop through all instances for the entity
         for instance in self.instances:
@@ -304,7 +299,7 @@ class BaseEntity(_EntitySpecials):
         # Set the entity's color
         self.render_color = value
 
-    # Set the "color" property for BaseEntity
+    # Set the "color" property for Entity
     color = property(
         get_color, set_color,
         doc="""Property to get/set the entity's color values.""")

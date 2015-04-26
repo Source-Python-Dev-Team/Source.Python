@@ -90,14 +90,12 @@ public:
 class TypeDescriptionSharedExt
 {
 public:
-	static CPointer *get_input(const typedescription_t& pTypeDesc)
+	static object get_input(const typedescription_t& pTypeDesc)
 	{
-		if (pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE)
-		{
-			// HACK!
-			return new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc);
-		}
-		return NULL;
+		if (!(pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE))
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);
+
+		return make_function(pTypeDesc.inputFunc);
 	}
 };
 
