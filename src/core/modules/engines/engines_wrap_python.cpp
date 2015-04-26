@@ -25,7 +25,7 @@
 */
 
 //---------------------------------------------------------------------------------
-// Includes
+// Includes.
 //---------------------------------------------------------------------------------
 // Required to fix compilation errors after including cdll_int.h
 #if defined( _WIN32 )
@@ -50,10 +50,14 @@
 #include "engine/IEngineTrace.h"
 #include "engine/iserverplugin.h"
 #include "public/worldsize.h"
+#include "engines_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(engines_wrap_python.h)
 
 
+//---------------------------------------------------------------------------------
+// External variables.
+//---------------------------------------------------------------------------------
 extern IVEngineServer* engine;
 extern IEngineSound* enginesound;
 extern IEngineTrace* enginetrace;
@@ -61,8 +65,9 @@ extern CGlobalVars* gpGlobals;
 extern IServerGameDLL* servergamedll;
 extern IServerPluginHelpers *helpers;
 
+
 //---------------------------------------------------------------------------------
-// Exposes the engine module.
+// Forward declarations.
 //---------------------------------------------------------------------------------
 void export_engine_server(scope);
 void export_query_cvar_status(scope);
@@ -71,6 +76,10 @@ void export_engine_trace(scope);
 void export_server_game_dll(scope);
 void export_worldsize(scope);
 
+
+//---------------------------------------------------------------------------------
+// Declare the _engines module.
+//---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(_engines)
 {
 	export_engine_server(_engines);
@@ -83,37 +92,20 @@ DECLARE_SP_MODULE(_engines)
 
 
 //---------------------------------------------------------------------------------
-// Exposes IVEngineServer.
+// Overloads.
 //---------------------------------------------------------------------------------
-class IVEngineServerExt
-{
-public:
-	static void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand)
-	{
-		pEngine->ClientCommand(pEdict, szCommand);
-	}
-	
-	static void Con_NPrintf(IVEngineServer* pEngine, int pos, const char* fmt)
-	{
-		pEngine->Con_NPrintf(pos, fmt);
-	}
-
-	static void Con_NXPrintf(IVEngineServer* pEngine, const struct con_nprint_s* info, const char* fmt)
-	{
-		pEngine->Con_NXPrintf(info, fmt);
-	}
-	
-	static QueryCvarCookie_t StartQueryCvarValue(IVEngineServer* pEngine, edict_t *pEntity, const char *pName)
-	{
-		return helpers->StartQueryCvarValue(pEntity, pName);
-	}
-};
-
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_model_overload, PrecacheModel, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sentence_file_overload, PrecacheSentenceFile, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_decal_overload, PrecacheDecal, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_generic_overload, PrecacheGeneric, 1, 2);
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sound_overload, PrecacheSound, 1, 3);
+BOOST_PYTHON_FUNCTION_OVERLOADS(emit_sound_overload, IEngineSoundExt::EmitSound, 7, 15);
+
+
+//---------------------------------------------------------------------------------
+// Exports IVEngineServer.
+//---------------------------------------------------------------------------------
 void export_engine_server(scope _engines)
 {
 	// Call engine specific implementation function
@@ -749,7 +741,7 @@ void export_engine_server(scope _engines)
 
 
 //---------------------------------------------------------------------------------
-// Exposes EQueryCvarValueStatus.
+// Exports EQueryCvarValueStatus.
 //---------------------------------------------------------------------------------
 void export_query_cvar_status(scope _engines)
 {
@@ -764,12 +756,8 @@ void export_query_cvar_status(scope _engines)
 
 
 //---------------------------------------------------------------------------------
-// Exposes IEngineSound.
+// Exports IEngineSound.
 //---------------------------------------------------------------------------------
-// Overloads
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sound_overload, PrecacheSound, 1, 3);
-BOOST_PYTHON_FUNCTION_OVERLOADS(emit_sound_overload, IEngineSound_EmitSound, 7, 15);
-
 void export_engine_sound(scope _engines)
 {
 	// Call engine specific implementation function
@@ -804,7 +792,7 @@ void export_engine_sound(scope _engines)
 		)
 
 		.def("emit_sound",
-			&IEngineSound_EmitSound,
+			&IEngineSoundExt::EmitSound,
 			emit_sound_overload(
 				args("filter", "entity_index", "channel", "sample", "volume", "attenuation", "flags", "pitch", "origin", "direction", "origins", "update_positions", "sound_time", "speaker_entity"),
 				"Emits a sound from an entity."
@@ -885,81 +873,10 @@ void export_engine_sound(scope _engines)
 	_engines.attr("SOUND_FROM_WORLD") = SOUND_FROM_WORLD;
 }
 
+
 //---------------------------------------------------------------------------------
-// Exposes IEngineTrace.
+// Exports IEngineTrace.
 //---------------------------------------------------------------------------------
-class ITraceFilterWrap: public ITraceFilter, public wrapper<ITraceFilter>
-{
-public:
-	virtual bool ShouldHitEntity(IHandleEntity* pEntity, int mask)
-	{ return get_override("should_hit_entity")(ptr(pEntity), mask); }
-
-	virtual TraceType_t	GetTraceType() const
-	{ return get_override("get_trace_type")(); }
-};
-
-
-class IEntityEnumeratorWrap: public IEntityEnumerator, public wrapper<IEntityEnumerator>
-{
-public:
-	virtual bool EnumEntity(IHandleEntity* pEntity)
-	{ return get_override("enum_entity")(ptr(pEntity)); }
-};
-
-
-class IEngineTraceExt
-{
-public:
-	static tuple GetPointContents(IEngineTrace* pEngineTrace, const Vector& vec)
-	{
-		IHandleEntity** ppEntities = new IHandleEntity*[gpGlobals->maxEntities];
-		memset(ppEntities, NULL, sizeof(IHandleEntity*) * gpGlobals->maxEntities);
-
-		int iMask = ::GetPointContents(vec, ppEntities);
-
-		list entities;
-		for(int i=0; i < gpGlobals->maxEntities; i++)
-		{
-			if(ppEntities[i])
-			{
-				entities.append(ptr(ppEntities[i]));
-			}
-		}
-		delete ppEntities;
-		return make_tuple(iMask, entities);
-	}
-};
-
-
-class CGameTraceExt
-{
-public:
-	static IServerEntity* GetEntity(CGameTrace* pTrace)
-	{
-		return (IServerEntity *) pTrace->m_pEnt;
-	}
-};
-
-
-class Ray_tExt
-{
-public:
-	static Ray_t* CreateRay1(const Vector& vec1, const Vector& vec2)
-	{
-		Ray_t* pRay = new Ray_t;
-		pRay->Init(vec1, vec2);
-		return pRay;
-	}
-
-	static Ray_t* CreateRay2(const Vector& vec1, const Vector& vec2, const Vector& vec3, const Vector& vec4)
-	{
-		Ray_t* pRay = new Ray_t;
-		pRay->Init(vec1, vec2, vec3, vec4);
-		return pRay;
-	}
-};
-
-
 void export_engine_trace(scope _engines)
 {
 	// Since Ray_t has members of the type AlignedVector that uses ALIGN16, we have
@@ -1260,7 +1177,7 @@ void export_engine_trace(scope _engines)
 
 
 //-----------------------------------------------------------------------------
-// Expose IServerGameDLL.
+// Exports IServerGameDLL.
 //-----------------------------------------------------------------------------
 void export_server_game_dll(scope _engines)
 {
@@ -1282,7 +1199,7 @@ void export_server_game_dll(scope _engines)
 
 
 //-----------------------------------------------------------------------------
-// Expose Source.Python constants.
+// Exports world size constants.
 //-----------------------------------------------------------------------------
 void export_worldsize(scope _engines)
 {

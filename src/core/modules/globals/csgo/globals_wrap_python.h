@@ -24,8 +24,18 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _GLOBALS_WRAP_PYTHON_CSGO_H
+#define _GLOBALS_WRAP_PYTHON_CSGO_H
+
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
 #include "edict.h"
 
+
+//-----------------------------------------------------------------------------
+// CGlobalVarsBase visitor method.
+//-----------------------------------------------------------------------------
 template<class T>
 T GlobalsBase_Visitor(T cls)
 {
@@ -38,6 +48,10 @@ T GlobalsBase_Visitor(T cls)
 	return cls;
 }
 
+
+//-----------------------------------------------------------------------------
+// CGlobalVars visitor method.
+//-----------------------------------------------------------------------------
 template<class T>
 T Globals_Visitor(T cls)
 {
@@ -53,3 +67,6 @@ T Globals_Visitor(T cls)
 
 	return cls;
 }
+
+
+#endif // _GLOBALS_WRAP_PYTHON_CSGO_H

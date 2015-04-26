@@ -39,7 +39,7 @@
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
+// CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
 class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
 {

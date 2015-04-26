@@ -49,7 +49,7 @@ DECLARE_SP_SUBMODULE(_studio, _constants)
 
 
 //-----------------------------------------------------------------------------
-// Exports model types.
+// Exports modtype_t.
 //-----------------------------------------------------------------------------
 void export_model_type(scope _constants)
 {
@@ -64,7 +64,7 @@ void export_model_type(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Exports studio flags.
+// Exports StudioFlags.
 //-----------------------------------------------------------------------------
 void export_studio_flags(scope _constants)
 {

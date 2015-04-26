@@ -140,6 +140,7 @@ Set(SOURCEPYTHON_CORE_MODULE_SOURCES
 # Cvars module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CVARS_MODULE_HEADERS
+    core/modules/cvars/cvars_wrap.h
     core/modules/cvars/${SOURCE_ENGINE}/cvars_wrap.h
 )
 
@@ -163,6 +164,8 @@ Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
 # Engines module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENGINES_MODULE_HEADERS
+    core/modules/engines/engines_wrap.h
+    core/modules/engines/${SOURCE_ENGINE}/engines_wrap.h
     core/modules/engines/${SOURCE_ENGINE}/engines_wrap_python.h
 )
 
@@ -204,6 +207,7 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
 # Events module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EVENTS_MODULE_HEADERS
+    core/modules/events/events_wrap.h
 )
 
 Set(SOURCEPYTHON_EVENTS_MODULE_SOURCES
@@ -225,6 +229,7 @@ Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
 # Keyvalues module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_KEYVALUES_MODULE_HEADERS
+    core/modules/keyvalues/keyvalues_wrap.h
 )
 
 Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
@@ -248,6 +253,7 @@ Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
 # Mathlib module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MATHLIB_MODULE_HEADERS
+    core/modules/mathlib/mathlib_wrap.h
 )
 
 Set(SOURCEPYTHON_MATHLIB_MODULE_SOURCES

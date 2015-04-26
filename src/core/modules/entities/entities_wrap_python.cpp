@@ -37,7 +37,6 @@
 #include "utilities/sp_util.h"
 #include "modules/memory/memory_tools.h"
 #include "export_main.h"
-using namespace boost::python;
 
 #include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
 
@@ -127,7 +126,7 @@ void export_base_entity_handle(scope _entities)
 }
 
 //-----------------------------------------------------------------------------
-// Exports CHandleEntity
+// Exports CHandleEntity.
 //-----------------------------------------------------------------------------
 void export_handle_entity(scope _entities)
 {
@@ -465,6 +464,7 @@ void export_edict(scope _entities)
 	;
 }
 
+
 //-----------------------------------------------------------------------------
 // Exports CEntityGenerator.
 //-----------------------------------------------------------------------------
@@ -489,7 +489,7 @@ void export_entity_generator(scope _entities)
 
 
 //-----------------------------------------------------------------------------
-// Expose CTakeDamageInfo.
+// Exports CTakeDamageInfo.
 //-----------------------------------------------------------------------------
 void export_take_damage_info(scope _entities)
 {
@@ -526,7 +526,7 @@ void export_take_damage_info(scope _entities)
 	TakeDamageInfo.NOT_IMPLEMENTED_ATTR("recoil");
 	
 	// Engine specific stuff...
-	export_engine_specific_take_damage_info(TakeDamageInfo);
+	export_engine_specific_take_damage_info(_entities, TakeDamageInfo);
 	
 	// Add memory tools...
 	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
@@ -534,7 +534,7 @@ void export_take_damage_info(scope _entities)
 
 
 //-----------------------------------------------------------------------------
-// Expose CGlobalEntityList.
+// Exports CGlobalEntityList.
 //-----------------------------------------------------------------------------
 void export_global_entity_list(scope _entities)
 {
@@ -553,7 +553,7 @@ void export_global_entity_list(scope _entities)
 
 
 //-----------------------------------------------------------------------------
-// Expose IEntityListener.
+// Exports IEntityListener.
 //-----------------------------------------------------------------------------
 void export_entity_listener(scope _entities)
 {

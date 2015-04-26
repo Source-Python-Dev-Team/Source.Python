@@ -28,7 +28,7 @@
 */
 
 //---------------------------------------------------------------------------------
-// Includes
+// Includes.
 //---------------------------------------------------------------------------------
 #include "filters_recipients_wrap.h"
 #include "interface.h"
@@ -45,18 +45,26 @@
 #include "engine/IEngineSound.h"
 #include "utilities/conversions.h"
 
-extern IVEngineServer		*engine;
-extern IPlayerInfoManager	*playerinfomanager;
-extern IServerPluginHelpers	*helpers;
-extern CGlobalVars		*gpGlobals;
-
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"
 
+
+//---------------------------------------------------------------------------------
+// External variables.
+//---------------------------------------------------------------------------------
+extern IVEngineServer *engine;
+extern IPlayerInfoManager *playerinfomanager;
+extern IServerPluginHelpers	*helpers;
+extern CGlobalVars *gpGlobals;
+
+
+//---------------------------------------------------------------------------------
+// MRecipientFilter methods.
+//---------------------------------------------------------------------------------
 MRecipientFilter::MRecipientFilter()
 {
-	m_bReliable			= false;
-	m_bInitMessage		= false;
+	m_bReliable = false;
+	m_bInitMessage = false;
 	m_bUsingPredictionRules = false;
 	m_bIgnorePredictionCull = true;
 }

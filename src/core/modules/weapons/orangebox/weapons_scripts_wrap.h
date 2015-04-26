@@ -51,9 +51,8 @@ public:
 	static CPointer *_find(WeaponDataBase_t *pWeaponDataBase, WEAPON_FILE_INFO_HANDLE uiIndex)
 	{
 		if (uiIndex >= pWeaponDataBase->Count())
-		{
 			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
-		}
+
 		return new CPointer((unsigned long)(void *)pWeaponDataBase->Element(uiIndex));
 	}
 };

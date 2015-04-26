@@ -109,7 +109,7 @@ void export_datamap(scope _datamaps)
 	);
 
 	// Engine specific stuff...
-	export_engine_specific_datamap(DataMap);
+	export_engine_specific_datamap(_datamaps, DataMap);
 
 	// Add memory tools...
 	DataMap ADD_MEM_TOOLS(datamap_t, "DataMap");
@@ -151,7 +151,7 @@ void export_type_description(scope _datamaps)
 	TypeDescription.def_readonly("tolerance", &typedescription_t::fieldTolerance);
 
 	// Engine specific stuff...
-	export_engine_specific_type_description(TypeDescription);
+	export_engine_specific_type_description(_datamaps, TypeDescription);
 
 	// Add memory tools...
 	TypeDescription ADD_MEM_TOOLS(typedescription_t, "TypeDescription");
@@ -262,7 +262,7 @@ void export_field_types(scope _datamaps)
 	NOT_IMPLEMENTED_VALUE(fieldtype_t, "VECTOR4D");
 
 	// Engine specific stuff...
-	export_engine_specific_field_types(FieldType);
+	export_engine_specific_field_types(_datamaps, FieldType);
 }
 
 

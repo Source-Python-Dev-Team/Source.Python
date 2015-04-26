@@ -25,18 +25,18 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
 #include "export_main.h"
 #include "mathlib/vector.h"
 #include "mathlib/mathlib.h"
 #include "utilities/sp_util.h"
-
 #include "modules/memory/memory_tools.h"
+#include "mathlib_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// Exposes the mathlib_c module.
+// Forward declarations.
 //-----------------------------------------------------------------------------
 void export_vector(scope);
 void export_qangle(scope);
@@ -44,6 +44,10 @@ void export_quaternion(scope);
 void export_cplane_t(scope);
 void export_radian_euler(scope);
 
+
+//-----------------------------------------------------------------------------
+// Declare the _mathlib module.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_mathlib)
 {
 	export_vector(_mathlib);
@@ -53,25 +57,16 @@ DECLARE_SP_MODULE(_mathlib)
 	export_radian_euler(_mathlib);
 }
 
-//-----------------------------------------------------------------------------
-// Exposes Vector
-//-----------------------------------------------------------------------------
-class VectorExt
-{
-public:
-	static Vector* CreateNullVector()
-	{
-		return new Vector(0, 0, 0);
-	}
 
-	static bool IsWithinBox(Vector& point, Vector& corner1, Vector& corner2)
-	{
-		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
-	}
-};
-
+//-----------------------------------------------------------------------------
+// Overloads.
+//-----------------------------------------------------------------------------
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_zero_overload, IsZero, 0, 1)
 
+
+//-----------------------------------------------------------------------------
+// Exports Vector.
+//-----------------------------------------------------------------------------
 void export_vector(scope _mathlib)
 {
 	class_<Vector>("Vector", init<float, float, float>())
@@ -248,8 +243,9 @@ void export_vector(scope _mathlib)
 	;
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes QAngle
+// Exports QAngle.
 //-----------------------------------------------------------------------------
 void export_qangle(scope _mathlib)
 {
@@ -321,8 +317,9 @@ void export_qangle(scope _mathlib)
 	;
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes Quaternion
+// Exports Quaternion.
 //-----------------------------------------------------------------------------
 void export_quaternion(scope _mathlib)
 {
@@ -373,8 +370,9 @@ void export_quaternion(scope _mathlib)
 	;
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes cplane_t
+// Exports cplane_t.
 //-----------------------------------------------------------------------------
 void export_cplane_t(scope _mathlib)
 {
@@ -400,8 +398,9 @@ void export_cplane_t(scope _mathlib)
 	;
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes RadianEuler
+// Exports RadianEuler.
 //-----------------------------------------------------------------------------
 void export_radian_euler(scope _mathlib)
 {

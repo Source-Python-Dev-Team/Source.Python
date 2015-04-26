@@ -32,8 +32,15 @@
 #include "game/server/entitylist.h"
 #include "utilities/conversions.h"
 #include "utilities/wrap_macros.h"
+#include "game/shared/ipredictionsystem.h"
 
 #include ENGINE_INCLUDE_PATH(undefined_symbols.h)
+
+
+//-----------------------------------------------------------------------------
+// g_pPredictionSystems definition.
+//-----------------------------------------------------------------------------
+IPredictionSystem* IPredictionSystem::g_pPredictionSystems = NULL;
 
 
 //-----------------------------------------------------------------------------

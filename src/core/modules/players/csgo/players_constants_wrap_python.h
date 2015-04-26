@@ -34,7 +34,7 @@
 
 
 //-----------------------------------------------------------------------------
-// Expose damage types.
+// Exports DamageTypes.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_player_buttons(T _constants)
@@ -44,7 +44,7 @@ void export_engine_specific_player_buttons(T _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose hide hud flags.
+// Exports HideHudFlags.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_hide_hud_flags(T _constants)

@@ -31,11 +31,12 @@
 #define _FILTERS_RECIPIENTS_WRAP_H
 
 //---------------------------------------------------------------------------------
-// Includes
+// Includes.
 //---------------------------------------------------------------------------------
 #include "irecipientfilter.h"
 #include "bitvec.h"
 #include "tier1/utlvector.h"
+
 
 //---------------------------------------------------------------------------------
 // Recipient filter class.
@@ -68,5 +69,6 @@ private:
 	//  whether this is a special case where culling should not occur
 	bool				m_bIgnorePredictionCull;
 };
+
 
 #endif // _FILTERS_RECIPIENTS_WRAP_H

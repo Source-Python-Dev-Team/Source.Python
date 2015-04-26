@@ -24,51 +24,41 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _LISTENERS_MANAGER_H
-#define _LISTENERS_MANAGER_H
+#ifndef _EVENTS_WRAP_H
+#define _EVENTS_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
-#include "utilities/wrap_macros.h"
-#include "utilities/call_python.h"
+#include "igameevents.h"
 
 
 //-----------------------------------------------------------------------------
-// Helper macros.
+// Definitions.
 //-----------------------------------------------------------------------------
-// This creates a static manager and a function that returns a pointer to the
-// manager. Must be used in a *.cpp file!
-#define DEFINE_MANAGER_ACCESSOR(name) \
-	static CListenerManager s_##name; \
-	CListenerManager* Get##name##ListenerManager() \
-	{ return &s_##name; }
-
-// Calls all listeners of the given manager
-#define CALL_LISTENERS(name, ...) \
-	extern CListenerManager* Get##name##ListenerManager(); \
-	for(int i = 0; i < Get##name##ListenerManager()->m_vecCallables.Count(); i++) \
-	{ \
-		BEGIN_BOOST_PY() \
-			CALL_PY_FUNC(Get##name##ListenerManager()->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
-		END_BOOST_PY_NORET() \
-	}
+#ifndef EVENT_DEBUG_ID_INIT
+	#define EVENT_DEBUG_ID_INIT 42
+#endif
 
 
 //-----------------------------------------------------------------------------
-// CListenerManager class.
+// IGameEventListener2 wrapper class.
 //-----------------------------------------------------------------------------
-class CListenerManager
+class CGameEventListener2: public IGameEventListener2, public wrapper<IGameEventListener2>
 {
 public:
-	void RegisterListener(PyObject* pCallable);
-	void UnregisterListener(PyObject* pCallable);
-	void Notify(boost::python::tuple args, dict kwargs);
+	virtual void FireGameEvent(IGameEvent* pEvent)
+	{
+		BEGIN_BOOST_PY()
+			get_override("fire_game_event")(ptr(pEvent));
+		END_BOOST_PY()
+	}
 
-public:
-	CUtlVector<object> m_vecCallables;
+	virtual int GetEventDebugID()
+	{
+		return EVENT_DEBUG_ID_INIT;
+	}
 };
 
 
-#endif // _LISTENERS_MANAGER_H
+#endif // _EVENTS_WRAP_H

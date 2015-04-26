@@ -36,7 +36,7 @@
 
 
 //-----------------------------------------------------------------------------
-// Expose damage types.
+// Exports damage types.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_damage_types(T _constants)
@@ -47,17 +47,17 @@ void export_engine_specific_damage_types(T _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose SolidFlags_t.
+// Exports SolidFlags_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_solid_flags(T SolidFlags)
+template<class T, class U>
+void export_engine_specific_solid_flags(T _constants, U SolidFlags)
 {
 	// Nothing specific to OrangeBox...
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose entity effects.
+// Exports entity effects.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_entity_effects(T _constants)
@@ -67,10 +67,10 @@ void export_engine_specific_entity_effects(T _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose RenderFx_t.
+// Exports RenderFx_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_render_effects(T RenderEffects)
+template<class T, class U>
+void export_engine_specific_render_effects(T _constants, U RenderEffects)
 {
 	RenderEffects.value("DISTORT", kRenderFxDistort);
 	RenderEffects.value("HOLOGRAM", kRenderFxHologram);
@@ -85,10 +85,10 @@ void export_engine_specific_render_effects(T RenderEffects)
 
 
 //-----------------------------------------------------------------------------
-// Expose Collision_Group_t.
+// Exports Collision_Group_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_collision_group(T CollisionGroup)
+template<class T, class U>
+void export_engine_specific_collision_group(T _constants, U CollisionGroup)
 {
 	// Nothing specific to OrangeBox...
 }

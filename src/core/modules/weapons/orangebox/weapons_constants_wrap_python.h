@@ -28,10 +28,10 @@
 #define _WEAPONS_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H
 
 //-----------------------------------------------------------------------------
-// Expose WeaponSound_t.
+// Exports WeaponSound_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_weapon_sound(T WeaponSound)
+template<class T, class U>
+void export_engine_specific_weapon_sound(T _constants, U WeaponSound)
 {
 	// Nothing specific to OrangeBox...
 }

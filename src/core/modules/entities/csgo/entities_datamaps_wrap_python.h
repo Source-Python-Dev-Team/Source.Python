@@ -35,10 +35,10 @@
 
 
 //-----------------------------------------------------------------------------
-// Expose datamap_t.
+// Exports datamap_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_datamap(T DataMap)
+template<class T, class U>
+void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
 	DataMap.def_readonly("packed_size", &datamap_t::m_nPackedSize);
 
@@ -48,10 +48,10 @@ void export_engine_specific_datamap(T DataMap)
 
 
 //-----------------------------------------------------------------------------
-// Expose typedescription_t.
+// Exports typedescription_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_type_description(T TypeDescription)
+template<class T, class U>
+void export_engine_specific_type_description(T _datamaps, U TypeDescription)
 {
 	TypeDescription.def_readonly("offset", &typedescription_t::fieldOffset);
 	TypeDescription.add_property("flat_offset", &TypeDescriptionExt::get_flat_offset);
@@ -60,10 +60,10 @@ void export_engine_specific_type_description(T TypeDescription)
 }
 
 //-----------------------------------------------------------------------------
-// Expose fieldtype_t.
+// Exports fieldtype_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_field_types(T FieldTypes)
+template<class T, class U>
+void export_engine_specific_field_types(T _datamaps, U FieldTypes)
 {
 	FieldTypes.value("INTEGER64", FIELD_INTEGER64);
 	FieldTypes.value("VECTOR4D", FIELD_VECTOR4D);

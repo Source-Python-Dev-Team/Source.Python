@@ -118,7 +118,7 @@ void export_entity_factory_dictionary(scope _factories)
 	EntityFactoryDictionary.def("__getitem__",&EntityFactoryDictionarySharedExt::__getitem__);
 
 	// Engine specific stuff...
-	export_engine_specific_entity_factory_dictionary(EntityFactoryDictionary);
+	export_engine_specific_entity_factory_dictionary(_factories, EntityFactoryDictionary);
 
 	// Add memory tools...
 	EntityFactoryDictionary ADD_MEM_TOOLS(CEntityFactoryDictionary, "EntityFactoryDictionary");

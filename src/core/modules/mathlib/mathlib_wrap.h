@@ -24,51 +24,31 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _LISTENERS_MANAGER_H
-#define _LISTENERS_MANAGER_H
+#ifndef _MATHLIB_WRAP_H
+#define _MATHLIB_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
-#include "utilities/wrap_macros.h"
-#include "utilities/call_python.h"
+#include "mathlib/vector.h"
 
 
 //-----------------------------------------------------------------------------
-// Helper macros.
+// Vector extension class.
 //-----------------------------------------------------------------------------
-// This creates a static manager and a function that returns a pointer to the
-// manager. Must be used in a *.cpp file!
-#define DEFINE_MANAGER_ACCESSOR(name) \
-	static CListenerManager s_##name; \
-	CListenerManager* Get##name##ListenerManager() \
-	{ return &s_##name; }
-
-// Calls all listeners of the given manager
-#define CALL_LISTENERS(name, ...) \
-	extern CListenerManager* Get##name##ListenerManager(); \
-	for(int i = 0; i < Get##name##ListenerManager()->m_vecCallables.Count(); i++) \
-	{ \
-		BEGIN_BOOST_PY() \
-			CALL_PY_FUNC(Get##name##ListenerManager()->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
-		END_BOOST_PY_NORET() \
-	}
-
-
-//-----------------------------------------------------------------------------
-// CListenerManager class.
-//-----------------------------------------------------------------------------
-class CListenerManager
+class VectorExt
 {
 public:
-	void RegisterListener(PyObject* pCallable);
-	void UnregisterListener(PyObject* pCallable);
-	void Notify(boost::python::tuple args, dict kwargs);
+	static Vector* CreateNullVector()
+	{
+		return new Vector(0, 0, 0);
+	}
 
-public:
-	CUtlVector<object> m_vecCallables;
+	static bool IsWithinBox(Vector& point, Vector& corner1, Vector& corner2)
+	{
+		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
+	}
 };
 
 
-#endif // _LISTENERS_MANAGER_H
+#endif // _MATHLIB_WRAP_H

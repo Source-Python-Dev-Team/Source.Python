@@ -46,7 +46,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_players_states(scope);
-void export_life_states(scope);
+void export_life_state(scope);
 void export_player_buttons(scope);
 void export_hide_hud_flags(scope);
 void export_hit_groups(scope);
@@ -60,7 +60,7 @@ void export_observer_modes(scope);
 DECLARE_SP_SUBMODULE(_players, _constants)
 {
 	export_players_states(_constants);
-	export_life_states(_constants);
+	export_life_state(_constants);
 	export_player_buttons(_constants);
 	export_hide_hud_flags(_constants);
 	export_hit_groups(_constants);
@@ -70,7 +70,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose player state flags.
+// Exports PlayerStates.
 //-----------------------------------------------------------------------------
 void export_players_states(scope _constants)
 {
@@ -89,9 +89,9 @@ void export_players_states(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose life states.
+// Exports LifeState.
 //-----------------------------------------------------------------------------
-void export_life_states(scope _constants)
+void export_life_state(scope _constants)
 {
 	_constants.attr("LIFE_ALIVE") = LIFE_ALIVE;
 	_constants.attr("LIFE_DYING") = LIFE_DYING;
@@ -102,7 +102,7 @@ void export_life_states(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose life states.
+// Exports PlayerButtons.
 //-----------------------------------------------------------------------------
 void export_player_buttons(scope _constants)
 {
@@ -141,7 +141,7 @@ void export_player_buttons(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose hide hud flags.
+// Exports HideHudFlags.
 //-----------------------------------------------------------------------------
 void export_hide_hud_flags(scope _constants)
 {
@@ -167,7 +167,7 @@ void export_hide_hud_flags(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose hit groups.
+// Exports HitGroup.
 //-----------------------------------------------------------------------------
 void export_hit_groups(scope _constants)
 {
@@ -205,7 +205,7 @@ void export_player_animation(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose observer modes.
+// Exports ObserverMode.
 //-----------------------------------------------------------------------------
 void export_observer_modes(scope _constants)
 {

@@ -25,48 +25,31 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
 #include "igameevents.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
+#include "events_wrap.h"
 
-#ifndef EVENT_DEBUG_ID_INIT
-	#define EVENT_DEBUG_ID_INIT 42
-#endif
 
 //-----------------------------------------------------------------------------
-// This is the IGameEventListener2 callback class. It allows python to subclass
-// IGameEventListener2 then pass an instance of that to CGameEventManager.
-//-----------------------------------------------------------------------------
-class CGameEventListener2: public IGameEventListener2, public wrapper<IGameEventListener2>
-{
-public:
-	virtual void FireGameEvent(IGameEvent* pEvent)
-	{
-		BEGIN_BOOST_PY()
-			get_override("fire_game_event")(ptr(pEvent));
-		END_BOOST_PY()
-	}
-
-	virtual int GetEventDebugID()
-	{
-		return EVENT_DEBUG_ID_INIT;
-	}
-};
-
-//-----------------------------------------------------------------------------
-// Externals
+// External variables.
 //-----------------------------------------------------------------------------
 extern IGameEventManager2* gameeventmanager;
 
+
 //-----------------------------------------------------------------------------
-// Exposes the Game Event module.
+// Forward declarations.
 //-----------------------------------------------------------------------------
 void export_igameevent(scope);
 void export_igameeventlistener(scope);
 void export_igameeventmanager(scope);
 
+
+//-----------------------------------------------------------------------------
+// Declare the _events module.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_events)
 {
 	export_igameevent(_events);
@@ -74,14 +57,22 @@ DECLARE_SP_MODULE(_events)
 	export_igameeventmanager(_events);
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes IGameEvent.
+// Overloads.
 //-----------------------------------------------------------------------------
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_bool_overload, GetBool, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 1, 2);
 
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 1, 2);
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(fire_event_overload, FireEvent, 1, 2);
+
+
+//-----------------------------------------------------------------------------
+// Exports IGameEvent.
+//-----------------------------------------------------------------------------
 void export_igameevent(scope _events)
 {
 	class_<IGameEvent, boost::noncopyable>("GameEvent", no_init)
@@ -172,8 +163,9 @@ void export_igameevent(scope _events)
 	;
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes the game event listener.
+// Exports CGameEventListener2.
 //-----------------------------------------------------------------------------
 void export_igameeventlistener(scope _events)
 {
@@ -192,12 +184,10 @@ void export_igameeventlistener(scope _events)
 	;
 }
 
-//-----------------------------------------------------------------------------
-// Exposes the game event manager.
-//-----------------------------------------------------------------------------
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(fire_event_overload, FireEvent, 1, 2);
 
+//-----------------------------------------------------------------------------
+// Exports IGameEventManager2.
+//-----------------------------------------------------------------------------
 void export_igameeventmanager(scope _events)
 {
 	class_<IGameEventManager2, boost::noncopyable>("_GameEventManager", no_init)

@@ -51,7 +51,7 @@ DECLARE_SP_SUBMODULE(_filters, _recipients)
 
 
 //-----------------------------------------------------------------------------
-// Expose MRecipientFilter
+// Exports MRecipientFilter
 //-----------------------------------------------------------------------------
 void export_mrecipientfilter(scope _recipients)
 {

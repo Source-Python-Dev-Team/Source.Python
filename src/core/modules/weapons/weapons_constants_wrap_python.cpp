@@ -59,7 +59,7 @@ DECLARE_SP_SUBMODULE(_weapons, _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose item flags.
+// Exports ItemFlags.
 //-----------------------------------------------------------------------------
 void export_item_flags(scope _constants)
 {
@@ -75,7 +75,7 @@ void export_item_flags(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose FileSound_t.
+// Exports FileSound_t.
 //-----------------------------------------------------------------------------
 void export_weapon_sound(scope _constants)
 {
@@ -102,12 +102,12 @@ void export_weapon_sound(scope _constants)
 	NOT_IMPLEMENTED_VALUE(WeaponSound_t, "FAST_RELOAD");
 
 	// Engine specific values...
-	export_engine_specific_weapon_sound(WeaponSound);
+	export_engine_specific_weapon_sound(_constants, WeaponSound);
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose weapon states.
+// Exports WeaponState.
 //-----------------------------------------------------------------------------
 void export_weapon_states(scope _constants)
 {
@@ -118,7 +118,7 @@ void export_weapon_states(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose WeaponProficiency_t.
+// Exports WeaponProficiency_t.
 //-----------------------------------------------------------------------------
 void export_weapon_proficiency(scope _constants)
 {

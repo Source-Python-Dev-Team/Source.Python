@@ -25,38 +25,46 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
 #include "icvar.h"
 #include "convar.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
+#include "cvars_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(cvars_wrap.h)
 
 
 //-----------------------------------------------------------------------------
-// External variables
+// External variables.
 //-----------------------------------------------------------------------------
 extern ICvar* g_pCVar;
 
 
 //-----------------------------------------------------------------------------
-// Exposes the cvar module.
+// Forward declarations.
 //-----------------------------------------------------------------------------
 void export_cvar_interface(scope);
+void export_convar_interface(scope);
 void export_convar(scope);
-void export_flags(scope);
+void export_convar_flags(scope);
 
+
+//-----------------------------------------------------------------------------
+// Declare the _cvars module.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_cvars)
 {
 	export_cvar_interface(_cvars);
+	export_convar_interface(_cvars);
 	export_convar(_cvars);
-	export_flags(_cvars);
+	export_convar_flags(_cvars);
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes the Cvar interface.
+// Exports ICvar.
 //-----------------------------------------------------------------------------
 void export_cvar_interface(scope _cvars)
 {
@@ -105,64 +113,14 @@ void export_cvar_interface(scope _cvars)
 	_cvars.attr("cvar") = object(ptr(g_pCVar));
 }
 
+
 //-----------------------------------------------------------------------------
-// Exposes the CConVar interface.
+// Exports IConVar.
 //-----------------------------------------------------------------------------
-class ConVarExt
-{
-public:
-	static void Deleter(ConVar *pConVar)
-	{
-		// Do nothing...
-	}
-
-	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue, int flags,
-		const char *szHelpString, bool bMin, float fMin, bool bMax, float fMax)
-	{
-		ConVar *pConVar = g_pCVar->FindVar(szName);
-		if (!pConVar)
-		{
-			return boost::shared_ptr<ConVar>(new ConVar(strdup(szName), szDefaultValue, flags,
-				strdup(szHelpString), bMin, fMin, bMax, fMax), &Deleter);
-		}
-		return boost::shared_ptr<ConVar>(pConVar, &Deleter);
-	}
-
-	static bool HasMin(ConVar* pConVar)
-	{
-		float fMin;
-		return pConVar->GetMin(fMin);
-	}
-
-	static bool HasMax(ConVar* pConVar)
-	{
-		float fMax;
-		return pConVar->GetMax(fMax);
-	}
-
-	static float GetMin(ConVar* pConVar)
-	{
-		float fMin;
-		pConVar->GetMin(fMin);
-		return fMin;
-	}
-
-	static bool GetMax(ConVar* pConVar)
-	{
-		float fMax;
-		pConVar->GetMax(fMax);
-		return fMax;
-	}
-
-	static void SetValue(ConVar* pConVar, bool bValue)
-	{
-		pConVar->SetValue(bValue);
-	}
-};
-
-void export_convar(scope _cvars)
+void export_convar_interface(scope _cvars)
 {
 	class_<IConVar, boost::noncopyable>("_IConVar", no_init)
+
 		.def("set_string",
 			GET_METHOD(void, IConVar, SetValue, const char*),
 			args("value")
@@ -190,9 +148,15 @@ void export_convar(scope _cvars)
 
 		ADD_MEM_TOOLS(IConVar, "_IConVar")
 	;
-	
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports ConVar.
+//-----------------------------------------------------------------------------
+void export_convar(scope _cvars)
+{
 	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("_ConVar", no_init)
-		// We have to overload __init__. Otherwise we would get an error because of "no_init"
 		.def("__init__",
 			make_constructor(&ConVarExt::__init__,
 				default_call_policies(),
@@ -262,29 +226,33 @@ void export_convar(scope _cvars)
 	;
 }
 
-void export_flags(scope _cvars)
+
+//-----------------------------------------------------------------------------
+// Exports ConVarFlags.
+//-----------------------------------------------------------------------------
+void export_convar_flags(scope _cvars)
 {
-	_cvars.attr("FCVAR_NONE")                  = FCVAR_NONE;
-	_cvars.attr("FCVAR_UNREGISTERED")          = FCVAR_UNREGISTERED;
-	_cvars.attr("FCVAR_DEVELOPMENTONLY")       = FCVAR_DEVELOPMENTONLY;
-	_cvars.attr("FCVAR_GAMEDLL")               = FCVAR_GAMEDLL;
-	_cvars.attr("FCVAR_CLIENTDLL")             = FCVAR_CLIENTDLL;
-	_cvars.attr("FCVAR_HIDDEN")                = FCVAR_HIDDEN;
-	_cvars.attr("FCVAR_PROTECTED")             = FCVAR_PROTECTED;
-	_cvars.attr("FCVAR_SPONLY")                = FCVAR_SPONLY;
-	_cvars.attr("FCVAR_ARCHIVE")               = FCVAR_ARCHIVE;
-	_cvars.attr("FCVAR_NOTIFY")                = FCVAR_NOTIFY;
-	_cvars.attr("FCVAR_USERINFO")              = FCVAR_USERINFO;
-	_cvars.attr("FCVAR_PRINTABLEONLY")         = FCVAR_PRINTABLEONLY;
-	_cvars.attr("FCVAR_UNLOGGED")              = FCVAR_UNLOGGED;
-	_cvars.attr("FCVAR_NEVER_AS_STRING")       = FCVAR_NEVER_AS_STRING;
-	_cvars.attr("FCVAR_REPLICATED")            = FCVAR_REPLICATED;
-	_cvars.attr("FCVAR_CHEAT")                 = FCVAR_CHEAT;
-	_cvars.attr("FCVAR_DEMO")                  = FCVAR_DEMO;
-	_cvars.attr("FCVAR_DONTRECORD")            = FCVAR_DONTRECORD;
-	_cvars.attr("FCVAR_NOT_CONNECTED")         = FCVAR_NOT_CONNECTED;
-	_cvars.attr("FCVAR_ARCHIVE_XBOX")          = FCVAR_ARCHIVE_XBOX;
-	_cvars.attr("FCVAR_SERVER_CAN_EXECUTE")    = FCVAR_SERVER_CAN_EXECUTE;
-	_cvars.attr("FCVAR_SERVER_CANNOT_QUERY")   = FCVAR_SERVER_CANNOT_QUERY;
+	_cvars.attr("FCVAR_NONE") = FCVAR_NONE;
+	_cvars.attr("FCVAR_UNREGISTERED") = FCVAR_UNREGISTERED;
+	_cvars.attr("FCVAR_DEVELOPMENTONLY") = FCVAR_DEVELOPMENTONLY;
+	_cvars.attr("FCVAR_GAMEDLL") = FCVAR_GAMEDLL;
+	_cvars.attr("FCVAR_CLIENTDLL") = FCVAR_CLIENTDLL;
+	_cvars.attr("FCVAR_HIDDEN") = FCVAR_HIDDEN;
+	_cvars.attr("FCVAR_PROTECTED") = FCVAR_PROTECTED;
+	_cvars.attr("FCVAR_SPONLY") = FCVAR_SPONLY;
+	_cvars.attr("FCVAR_ARCHIVE") = FCVAR_ARCHIVE;
+	_cvars.attr("FCVAR_NOTIFY") = FCVAR_NOTIFY;
+	_cvars.attr("FCVAR_USERINFO") = FCVAR_USERINFO;
+	_cvars.attr("FCVAR_PRINTABLEONLY") = FCVAR_PRINTABLEONLY;
+	_cvars.attr("FCVAR_UNLOGGED") = FCVAR_UNLOGGED;
+	_cvars.attr("FCVAR_NEVER_AS_STRING") = FCVAR_NEVER_AS_STRING;
+	_cvars.attr("FCVAR_REPLICATED") = FCVAR_REPLICATED;
+	_cvars.attr("FCVAR_CHEAT") = FCVAR_CHEAT;
+	_cvars.attr("FCVAR_DEMO") = FCVAR_DEMO;
+	_cvars.attr("FCVAR_DONTRECORD") = FCVAR_DONTRECORD;
+	_cvars.attr("FCVAR_NOT_CONNECTED") = FCVAR_NOT_CONNECTED;
+	_cvars.attr("FCVAR_ARCHIVE_XBOX") = FCVAR_ARCHIVE_XBOX;
+	_cvars.attr("FCVAR_SERVER_CAN_EXECUTE") = FCVAR_SERVER_CAN_EXECUTE;
+	_cvars.attr("FCVAR_SERVER_CANNOT_QUERY") = FCVAR_SERVER_CANNOT_QUERY;
 	_cvars.attr("FCVAR_CLIENTCMD_CAN_EXECUTE") = FCVAR_CLIENTCMD_CAN_EXECUTE;
 }

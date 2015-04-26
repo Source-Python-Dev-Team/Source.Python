@@ -242,7 +242,7 @@ void export_solid_flags(scope _constants)
 	NOT_IMPLEMENTED_VALUE(SolidFlags_t, "NOT_MOVEABLE");
 
 	// Engine specific stuff...
-	export_engine_specific_solid_flags(SolidFlags);
+	export_engine_specific_solid_flags(_constants, SolidFlags);
 }
 
 
@@ -335,7 +335,7 @@ void export_render_effects(scope _constants)
 	NOT_IMPLEMENTED_VALUE(RenderFx_t, "PULSE_FAST_WIDER");
 
 	// Engine specific stuff...
-	export_engine_specific_render_effects(RenderEffects);
+	export_engine_specific_render_effects(_constants, RenderEffects);
 }
 
 
@@ -373,7 +373,7 @@ void export_collision_group(scope _constants)
 	NOT_IMPLEMENTED_VALUE(Collision_Group_t, "DEBRIS_BLOCK_PROJECTILE");
 
 	// Engine specific stuff...
-	export_engine_specific_collision_group(CollisionGroup);
+	export_engine_specific_collision_group(_constants, CollisionGroup);
 }
 
 

@@ -43,8 +43,8 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 // Expose CEffectData.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_dispatch_effect_data(T DispatchEffectData)
+template<class T, class U>
+void export_engine_specific_dispatch_effect_data(T _effects, U DispatchEffectData)
 {
 	// Nothing specific to OrangeBox...
 }
@@ -53,13 +53,13 @@ void export_engine_specific_dispatch_effect_data(T DispatchEffectData)
 //-----------------------------------------------------------------------------
 // Expose ITempEntsSystem.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_temp_entities_system(T TempEntities)
+template<class T, class U>
+void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
 {
 	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
 	
 	// Singleton...
-	scope().attr("temp_entities") = object(ptr(servertools->GetTempEntsSystem()));
+	_effects.attr("temp_entities") = object(ptr(servertools->GetTempEntsSystem()));
 }
 
 

@@ -171,7 +171,7 @@ void export_send_prop(scope _props)
 	SendProp_.NOT_IMPLEMENTED("get_priority");
 	
 	// Engine specific stuff...
-	export_engine_specific_send_prop(SendProp_);
+	export_engine_specific_send_prop(_props, SendProp_);
 	
 	// Add memory tools...
 	SendProp_ ADD_MEM_TOOLS(SendProp, "SendProp");
@@ -198,7 +198,7 @@ void export_send_prop_types(scope _props)
 	NOT_IMPLEMENTED_VALUE(SendPropType, "INT64");
 	
 	// Engine specific stuff...
-	export_engine_specific_send_prop_types(SendPropType_);
+	export_engine_specific_send_prop_types(_props, SendPropType_);
 }
 
 
@@ -258,7 +258,7 @@ void export_send_prop_variant(scope _props)
 	SendPropVariant.NOT_IMPLEMENTED("set_int64");
 
 	// Engine specific stuff...
-	export_engine_specific_send_prop_variant(SendPropVariant);
+	export_engine_specific_send_prop_variant(_props, SendPropVariant);
 
 	// Add memory tools...
 	SendPropVariant ADD_MEM_TOOLS(DVariant, "SendPropVariant");
@@ -278,7 +278,7 @@ void export_server_class(scope _props)
 	ServerClass_.def_readonly("class_index", &ServerClass::m_ClassID);
 	
 	// Engine specific stuff...
-	export_engine_specific_server_class(ServerClass_);
+	export_engine_specific_server_class(_props, ServerClass_);
 	
 	// Add memory tools...
 	ServerClass_ ADD_MEM_TOOLS(ServerClass, "ServerClass");

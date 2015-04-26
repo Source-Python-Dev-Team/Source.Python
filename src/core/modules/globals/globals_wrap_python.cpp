@@ -25,31 +25,41 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
 #include "edict.h"
+
 #include ENGINE_INCLUDE_PATH(globals_wrap_python.h)
 
 
 //-----------------------------------------------------------------------------
-// Externals
+// External variables.
 //-----------------------------------------------------------------------------
 extern CGlobalVars* gpGlobals;
 
+
 //-----------------------------------------------------------------------------
-// Exposes the globals_c module.
+// Forward declarations.
 //-----------------------------------------------------------------------------
 void export_maploadtype_t(scope);
 void export_globals(scope);
 
+
+//-----------------------------------------------------------------------------
+// Declare the _globals module.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_globals)
 {
     export_maploadtype_t(_globals);
     export_globals(_globals);
 }
 
+
+//-----------------------------------------------------------------------------
+// Exports MapLoadType_t.
+//-----------------------------------------------------------------------------
 void export_maploadtype_t(scope _globals)
 {
 	enum_<MapLoadType_t>("MapLoadType")
@@ -60,6 +70,10 @@ void export_maploadtype_t(scope _globals)
 	;
 }
 
+
+//-----------------------------------------------------------------------------
+// Exports CGlobalVarsBase.
+//-----------------------------------------------------------------------------
 void export_globals(scope _globals)
 {
 	GlobalsBase_Visitor(

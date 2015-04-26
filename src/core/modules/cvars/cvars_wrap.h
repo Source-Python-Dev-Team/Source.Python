@@ -24,51 +24,69 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _LISTENERS_MANAGER_H
-#define _LISTENERS_MANAGER_H
+#ifndef _CVARS_WRAP_H
+#define _CVARS_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
-#include "utilities/wrap_macros.h"
-#include "utilities/call_python.h"
+#include "convar.h"
 
 
 //-----------------------------------------------------------------------------
-// Helper macros.
+// ConVar extension class.
 //-----------------------------------------------------------------------------
-// This creates a static manager and a function that returns a pointer to the
-// manager. Must be used in a *.cpp file!
-#define DEFINE_MANAGER_ACCESSOR(name) \
-	static CListenerManager s_##name; \
-	CListenerManager* Get##name##ListenerManager() \
-	{ return &s_##name; }
-
-// Calls all listeners of the given manager
-#define CALL_LISTENERS(name, ...) \
-	extern CListenerManager* Get##name##ListenerManager(); \
-	for(int i = 0; i < Get##name##ListenerManager()->m_vecCallables.Count(); i++) \
-	{ \
-		BEGIN_BOOST_PY() \
-			CALL_PY_FUNC(Get##name##ListenerManager()->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
-		END_BOOST_PY_NORET() \
-	}
-
-
-//-----------------------------------------------------------------------------
-// CListenerManager class.
-//-----------------------------------------------------------------------------
-class CListenerManager
+class ConVarExt
 {
 public:
-	void RegisterListener(PyObject* pCallable);
-	void UnregisterListener(PyObject* pCallable);
-	void Notify(boost::python::tuple args, dict kwargs);
+	static void Deleter(ConVar *pConVar)
+	{
+		// Do nothing...
+	}
 
-public:
-	CUtlVector<object> m_vecCallables;
+	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue, int flags,
+		const char *szHelpString, bool bMin, float fMin, bool bMax, float fMax)
+	{
+		ConVar *pConVar = g_pCVar->FindVar(szName);
+		if (!pConVar)
+		{
+			return boost::shared_ptr<ConVar>(new ConVar(strdup(szName), szDefaultValue, flags,
+				strdup(szHelpString), bMin, fMin, bMax, fMax), &Deleter);
+		}
+		return boost::shared_ptr<ConVar>(pConVar, &Deleter);
+	}
+
+	static bool HasMin(ConVar* pConVar)
+	{
+		float fMin;
+		return pConVar->GetMin(fMin);
+	}
+
+	static bool HasMax(ConVar* pConVar)
+	{
+		float fMax;
+		return pConVar->GetMax(fMax);
+	}
+
+	static float GetMin(ConVar* pConVar)
+	{
+		float fMin;
+		pConVar->GetMin(fMin);
+		return fMin;
+	}
+
+	static bool GetMax(ConVar* pConVar)
+	{
+		float fMax;
+		pConVar->GetMax(fMax);
+		return fMax;
+	}
+
+	static void SetValue(ConVar* pConVar, bool bValue)
+	{
+		pConVar->SetValue(bValue);
+	}
 };
 
 
-#endif // _LISTENERS_MANAGER_H
+#endif // _CVARS_WRAP_H

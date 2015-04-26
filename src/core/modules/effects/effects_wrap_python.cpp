@@ -25,7 +25,7 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
 // These includes are really important. Be careful if you try to change the
 // order or remove an include!
@@ -47,24 +47,31 @@
 
 
 //-----------------------------------------------------------------------------
-// Externals
+// Forward declarations.
 //-----------------------------------------------------------------------------
-// This is required to fix a linker error
-IPredictionSystem* IPredictionSystem::g_pPredictionSystems = NULL;
-
-//-----------------------------------------------------------------------------
-// Exposes the effects_c module.
-//-----------------------------------------------------------------------------
+void export_shatter_surface(scope);
 void export_prediction_system(scope);
 void export_temp_entities_system(scope);
 void export_dispatch_effect_data(scope);
 
+
+//-----------------------------------------------------------------------------
+// Declare the _effects module.
+//-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_effects)
 {
+	export_shatter_surface(_effects);
 	export_prediction_system(_effects);
 	export_temp_entities_system(_effects);
 	export_dispatch_effect_data(_effects);
+}
 
+
+//-----------------------------------------------------------------------------
+// Exports ShatterSurface_t.
+//-----------------------------------------------------------------------------
+void export_shatter_surface(scope _effects)
+{
 	enum_<ShatterSurface_t>("ShatterSurface")
 		.value("GLASS", SHATTERSURFACE_GLASS)
 		.value("TILE", SHATTERSURFACE_TILE)
@@ -73,7 +80,7 @@ DECLARE_SP_MODULE(_effects)
 
 
 //-----------------------------------------------------------------------------
-// Expose IPredictionSystem
+// Exports IPredictionSystem.
 //-----------------------------------------------------------------------------
 void export_prediction_system(scope _effects)
 {
@@ -109,7 +116,7 @@ void export_prediction_system(scope _effects)
 
 
 //-----------------------------------------------------------------------------
-// Expose ITempEntsSystem.
+// Exports ITempEntsSystem.
 //-----------------------------------------------------------------------------
 void export_temp_entities_system(scope _effects)
 {
@@ -162,7 +169,7 @@ void export_temp_entities_system(scope _effects)
 	TempEntities.NOT_IMPLEMENTED("dispatch_effect");
 
 	// Engine specific stuff...
-	export_engine_specific_temp_entities_system(TempEntities);
+	export_engine_specific_temp_entities_system(_effects, TempEntities);
 
 	// Add memory tools...
 	TempEntities ADD_MEM_TOOLS(ITempEntsSystem, "_TempEntities");
@@ -170,7 +177,7 @@ void export_temp_entities_system(scope _effects)
 
 
 //-----------------------------------------------------------------------------
-// Expose CEffectData.
+// Exports CEffectData.
 //-----------------------------------------------------------------------------
 void export_dispatch_effect_data(scope _effects)
 {
@@ -200,7 +207,7 @@ void export_dispatch_effect_data(scope _effects)
 	DispatchEffectData.def("get_effect_name_index", &CEffectData::GetEffectNameIndex);
 	
 	// Engine specific stuff...
-	export_engine_specific_dispatch_effect_data(DispatchEffectData);
+	export_engine_specific_dispatch_effect_data(_effects, DispatchEffectData);
 	
 	// Add memory tools...
 	DispatchEffectData ADD_MEM_TOOLS(CEffectData, "DispatchEffectData");

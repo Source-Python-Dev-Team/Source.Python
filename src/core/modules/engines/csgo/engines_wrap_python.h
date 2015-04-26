@@ -25,7 +25,7 @@
 */
 
 //---------------------------------------------------------------------------------
-// Includes
+// Includes.
 //---------------------------------------------------------------------------------
 #include "eiface.h"
 #include "ispsharedmemory.h"
@@ -34,17 +34,21 @@
 #include "engine/IEngineTrace.h"
 
 
-// Externals
+//---------------------------------------------------------------------------------
+// External variables.
+//---------------------------------------------------------------------------------
 extern IEngineTrace* enginetrace;
 
 
 //---------------------------------------------------------------------------------
-// IVEngineServer
+// Overloads.
 //---------------------------------------------------------------------------------
-// Overloads
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_single_player_shared_memory_space_overload, GetSinglePlayerSharedMemorySpace, 1, 2);
 
-// Visitor function
+
+//---------------------------------------------------------------------------------
+// IVEngineServer visitor function.
+//---------------------------------------------------------------------------------
 template<class T>
 T IVEngineServer_Visitor(T cls)
 {
@@ -265,24 +269,6 @@ T IVEngineServer_Visitor(T cls)
 //---------------------------------------------------------------------------------
 // IEngineSound
 //---------------------------------------------------------------------------------
-inline void IEngineSound_EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
-		float flVolume, float flAttenuation, int iFlags = 0, int iPitch = PITCH_NORM, const Vector *pOrigin = NULL, const Vector *pDirection = NULL,
-		tuple origins = tuple(), bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1)
-{
-	CUtlVector<Vector> *pUtlVecOrigins = NULL;
-	CUtlVector<Vector> vecOrigins;
-	if (len(origins) > 0)
-	{
-		pUtlVecOrigins = &vecOrigins;
-		for(int i=0; i < len(origins); i++)
-		{
-			vecOrigins.AddToTail(extract<Vector>(origins[i]));
-		}
-	}
-    
-	pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, -1, pSample, flVolume, flAttenuation, 0, iFlags, iPitch, pOrigin, pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
-}
-
 // Visitor function
 template<class T>
 T IEngineSound_Visitor(T cls)
@@ -304,13 +290,4 @@ T IEngineSound_Visitor(T cls)
 	scope().attr("MASK_NPCWORLDSTATIC_FLUID") = MASK_NPCWORLDSTATIC_FLUID;
 
 	return cls;
-}
-
-
-//---------------------------------------------------------------------------------
-// IEngineTrace
-//---------------------------------------------------------------------------------
-inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
-{
-	return enginetrace->GetPointContents(vecAbsPosition, MASK_ALL, ppEntity);
 }

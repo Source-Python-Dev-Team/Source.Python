@@ -28,7 +28,7 @@
 #define _WEAPONS_SCRIPTS_CSGO_WRAP_PYTHON_H
 
 //-----------------------------------------------------------------------------
-// Expose WeaponDataBase_t.
+// Exports WeaponDataBase_t.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_weapon_database(T _scripts)

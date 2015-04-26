@@ -36,8 +36,8 @@
 //-----------------------------------------------------------------------------
 // Expose CEffectData.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_dispatch_effect_data(T DispatchEffectData)
+template<class T, class U>
+void export_engine_specific_dispatch_effect_data(T _effects, U DispatchEffectData)
 {
 	DispatchEffectData.def_readwrite("other_entity_index", &CEffectData::m_nOtherEntIndex);
 }
@@ -46,8 +46,8 @@ void export_engine_specific_dispatch_effect_data(T DispatchEffectData)
 //-----------------------------------------------------------------------------
 // Expose ITempEntsSystem.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_temp_entities_system(T TempEntities)
+template<class T, class U>
+void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
 {
 	// Nothing specific to CSGO...
 }

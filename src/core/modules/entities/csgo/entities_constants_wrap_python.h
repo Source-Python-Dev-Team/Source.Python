@@ -35,7 +35,7 @@
 
 
 //-----------------------------------------------------------------------------
-// Expose damage types.
+// Exports damage types.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_damage_types(T _constants)
@@ -45,10 +45,10 @@ void export_engine_specific_damage_types(T _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose SolidFlags_t.
+// Exports SolidFlags_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_solid_flags(T SolidFlags)
+template<class T, class U>
+void export_engine_specific_solid_flags(T _constants, U SolidFlags)
 {
 	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
 	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
@@ -56,7 +56,7 @@ void export_engine_specific_solid_flags(T SolidFlags)
 
 
 //-----------------------------------------------------------------------------
-// Expose entity effects.
+// Exports entity effects.
 //-----------------------------------------------------------------------------
 template<class T>
 void export_engine_specific_entity_effects(T _constants)
@@ -68,10 +68,10 @@ void export_engine_specific_entity_effects(T _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose RenderFx_t.
+// Exports RenderFx_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_render_effects(T RenderEffects)
+template<class T, class U>
+void export_engine_specific_render_effects(T _constants, U RenderEffects)
 {
 	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
 	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
@@ -80,10 +80,10 @@ void export_engine_specific_render_effects(T RenderEffects)
 
 
 //-----------------------------------------------------------------------------
-// Expose Collision_Group_t.
+// Exports Collision_Group_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_collision_group(T CollisionGroup)
+template<class T, class U>
+void export_engine_specific_collision_group(T _constants, U CollisionGroup)
 {
 	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
 	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);

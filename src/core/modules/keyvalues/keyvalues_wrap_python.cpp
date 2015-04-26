@@ -25,63 +25,32 @@
 */
 
 //---------------------------------------------------------------------------------
-// Includes
+// Includes.
 //---------------------------------------------------------------------------------
 #include "KeyValues.h"
-#include "filesystem.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
+#include "keyvalues_wrap.h"
+
 
 //---------------------------------------------------------------------------------
-// Externals
-//---------------------------------------------------------------------------------
-extern IFileSystem* filesystem;
-
-//---------------------------------------------------------------------------------
-// Keyvalues module definition.
+// Forward declarations.
 //---------------------------------------------------------------------------------
 void export_keyvalues(scope);
 
+
+//---------------------------------------------------------------------------------
+// Declare the _keyvalues module.
+//---------------------------------------------------------------------------------
 DECLARE_SP_MODULE(_keyvalues)
 {
 	export_keyvalues(_keyvalues);
 }
 
+
 //---------------------------------------------------------------------------------
-// Exposes KeyValues functionality.
+// Overloads.
 //---------------------------------------------------------------------------------
-class KeyValuesExt
-{
-public:
-	static bool GetBool(KeyValues* pKeyValues, const char * szName = NULL, bool bDefault = false)
-	{
-		return pKeyValues->GetInt(szName, bDefault);
-	}
-
-	static void SetBool(KeyValues* pKeyValues, const char * szName, bool bValue)
-	{
-		pKeyValues->SetInt(szName, bValue);
-	}
-
-	static bool LoadFromFile(KeyValues* pKeyValues, const char * szFile)
-	{
-		return pKeyValues->LoadFromFile(filesystem, szFile);
-	}
-
-	static bool SaveToFile(KeyValues* pKeyValues, const char * szFile)
-	{
-		return pKeyValues->SaveToFile(filesystem, szFile);
-	}
-
-	static Color GetColor(KeyValues* pKeyValues, const char* szKeyName, const Color &defaultColor = Color())
-	{
-		if (!pKeyValues->FindKey(szKeyName))
-			return defaultColor;
-
-		return pKeyValues->GetColor(szKeyName);
-	}
-};
-
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(find_key_overload, FindKey, 1, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 0, 2);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_uint64_overload, GetUint64, 0, 2);
@@ -92,6 +61,9 @@ BOOST_PYTHON_FUNCTION_OVERLOADS(get_bool_overload, KeyValuesExt::GetBool, 2, 3);
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_empty_overload, IsEmpty, 0, 1);
 
 
+//---------------------------------------------------------------------------------
+// Exports KeyValues.
+//---------------------------------------------------------------------------------
 void export_keyvalues(scope _keyvalues)
 {
 	class_<KeyValues, boost::noncopyable>("_KeyValues",init<const char *>())

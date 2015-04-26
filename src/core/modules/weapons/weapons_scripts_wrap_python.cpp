@@ -50,7 +50,7 @@ DECLARE_SP_SUBMODULE(_weapons, _scripts)
 
 
 //-----------------------------------------------------------------------------
-// Expose WeaponDataBase_t.
+// Exports WeaponDataBase_t.
 //-----------------------------------------------------------------------------
 void export_weapon_database(scope _scripts)
 {

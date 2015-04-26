@@ -38,8 +38,8 @@
 //-----------------------------------------------------------------------------
 // Expose ServerClass.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_server_class(T ServerClass_)
+template<class T, class U>
+void export_engine_specific_server_class(T _props, U ServerClass_)
 {
 	ServerClass_.add_property("name", &ServerClassExt::get_name);
 }
@@ -48,8 +48,8 @@ void export_engine_specific_server_class(T ServerClass_)
 //-----------------------------------------------------------------------------
 // Expose SendProp.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_send_prop(T SendProp_)
+template<class T, class U>
+void export_engine_specific_send_prop(T _props, U SendProp_)
 {
 	SendProp_.add_property("priority", &SendProp::GetPriority);
 	SendProp_.def("get_priority", &SendProp::GetPriority);
@@ -59,8 +59,8 @@ void export_engine_specific_send_prop(T SendProp_)
 //-----------------------------------------------------------------------------
 // Expose SendPropType.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_send_prop_types(T SendPropType_)
+template<class T, class U>
+void export_engine_specific_send_prop_types(T _props, U SendPropType_)
 {
 	SendPropType_.value("INT64", DPT_Int64);
 }
@@ -69,8 +69,8 @@ void export_engine_specific_send_prop_types(T SendPropType_)
 //-----------------------------------------------------------------------------
 // Expose SendPropVariant.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_send_prop_variant(T SendPropVariant)
+template<class T, class U>
+void export_engine_specific_send_prop_variant(T _props, U SendPropVariant)
 {
 	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
 	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);

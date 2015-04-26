@@ -403,4 +403,3 @@ void export_attachment(scope _studio)
 	// Add memory tools...
 	Attachment ADD_MEM_TOOLS(mstudioattachment_t, "Attachment");
 }
-

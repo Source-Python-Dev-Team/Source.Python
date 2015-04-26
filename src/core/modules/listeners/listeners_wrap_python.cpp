@@ -25,7 +25,7 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
 #include "export_main.h"
 #include "utilities/wrap_macros.h"
@@ -65,7 +65,7 @@ void export_listener_managers(scope);
 
 
 //-----------------------------------------------------------------------------
-// Exposes the _listeners module.
+// Declare the _listeners module.
 //-----------------------------------------------------------------------------
 DECLARE_SP_MODULE(_listeners)
 {
@@ -74,13 +74,10 @@ DECLARE_SP_MODULE(_listeners)
 
 
 //-----------------------------------------------------------------------------
-// Exposes CListenerManager.
+// Exports CListenerManager.
 //-----------------------------------------------------------------------------
 void export_listener_managers(scope _listeners) 
 {
-	//-------------------------------------------------------------------------
-	// Exposes ListenerManager
-	//-------------------------------------------------------------------------
 	class_<CListenerManager, boost::noncopyable>("_ListenerManager")
 		.def("register_listener",
 			&CListenerManager::RegisterListener,
@@ -100,9 +97,6 @@ void export_listener_managers(scope _listeners)
 		)
 	;
 
-	//-------------------------------------------------------------------------
-	// Expose the accessor functions
-	//-------------------------------------------------------------------------
 	_listeners.attr("client_active_listener_manager") = object(ptr(GetClientActiveListenerManager()));
 	_listeners.attr("client_connect_listener_manager") = object(ptr(GetClientConnectListenerManager()));
 	_listeners.attr("client_disconnect_listener_manager") = object(ptr(GetClientDisconnectListenerManager()));

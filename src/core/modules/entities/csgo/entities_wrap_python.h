@@ -34,10 +34,10 @@
 
 
 //-----------------------------------------------------------------------------
-// Expose CTakeDamageInfo.
+// Exports CTakeDamageInfo.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_take_damage_info(T TakeDamageInfo)
+template<class T, class U>
+void export_engine_specific_take_damage_info(T _entities, U TakeDamageInfo)
 {
 	TakeDamageInfo.add_property("radius", &CTakeDamageInfo::GetRadius, &CTakeDamageInfo::SetRadius);
 	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated, &TakeDamageInfoExt::set_penetrated);

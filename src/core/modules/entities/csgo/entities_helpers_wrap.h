@@ -44,7 +44,7 @@ extern IServerTools *servertools;
 
 
 //-----------------------------------------------------------------------------
-// Removes the given entity index...
+// Removes the entity matching the given index.
 //-----------------------------------------------------------------------------
 void remove_entity(unsigned int uiEntityIndex)
 {

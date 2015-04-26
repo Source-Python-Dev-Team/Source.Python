@@ -30,8 +30,8 @@
 //-----------------------------------------------------------------------------
 // Expose CEntityFactoryDictionary.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_entity_factory_dictionary(T EntityFactoryDictionary)
+template<class T, class U>
+void export_engine_specific_entity_factory_dictionary(T _factories, U EntityFactoryDictionary)
 {
 	// Nothing specific to CS:GO...
 }

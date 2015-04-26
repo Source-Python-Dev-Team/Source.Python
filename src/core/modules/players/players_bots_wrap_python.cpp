@@ -37,7 +37,7 @@ using namespace boost::python;
 
 
 //-----------------------------------------------------------------------------
-// Externals.
+// External variables.
 //-----------------------------------------------------------------------------
 extern IBotManager* botmanager;
 
@@ -62,7 +62,7 @@ DECLARE_SP_SUBMODULE(_players, _bots)
 
 
 //-----------------------------------------------------------------------------
-// Expose IBotManager.
+// Exports IBotManager.
 //-----------------------------------------------------------------------------
 void export_botmanager(scope _bots)
 {
@@ -89,7 +89,7 @@ void export_botmanager(scope _bots)
 
 
 //-----------------------------------------------------------------------------
-// Expose IBotController.
+// Exports IBotController.
 //-----------------------------------------------------------------------------
 void export_botcontroller(scope _bots)
 {
@@ -158,7 +158,7 @@ void export_botcontroller(scope _bots)
 
 
 //-----------------------------------------------------------------------------
-// Expose CBotCmd.
+// Exports CBotCmd.
 //-----------------------------------------------------------------------------
 void export_botcmd(scope _bots)
 {

@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,51 +24,49 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _LISTENERS_MANAGER_H
-#define _LISTENERS_MANAGER_H
+#ifndef _ENGINES_WRAP_CSGO_H
+#define _ENGINES_WRAP_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
-#include "utilities/wrap_macros.h"
-#include "utilities/call_python.h"
+#include "engine/IEngineSound.h"
 
 
 //-----------------------------------------------------------------------------
-// Helper macros.
+// IEngineSound extension class.
 //-----------------------------------------------------------------------------
-// This creates a static manager and a function that returns a pointer to the
-// manager. Must be used in a *.cpp file!
-#define DEFINE_MANAGER_ACCESSOR(name) \
-	static CListenerManager s_##name; \
-	CListenerManager* Get##name##ListenerManager() \
-	{ return &s_##name; }
-
-// Calls all listeners of the given manager
-#define CALL_LISTENERS(name, ...) \
-	extern CListenerManager* Get##name##ListenerManager(); \
-	for(int i = 0; i < Get##name##ListenerManager()->m_vecCallables.Count(); i++) \
-	{ \
-		BEGIN_BOOST_PY() \
-			CALL_PY_FUNC(Get##name##ListenerManager()->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
-		END_BOOST_PY_NORET() \
-	}
-
-
-//-----------------------------------------------------------------------------
-// CListenerManager class.
-//-----------------------------------------------------------------------------
-class CListenerManager
+class IEngineSoundExt
 {
 public:
-	void RegisterListener(PyObject* pCallable);
-	void UnregisterListener(PyObject* pCallable);
-	void Notify(boost::python::tuple args, dict kwargs);
-
-public:
-	CUtlVector<object> m_vecCallables;
+	static void EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
+		float flVolume, float flAttenuation, int iFlags = 0, int iPitch = PITCH_NORM, const Vector *pOrigin = NULL, const Vector *pDirection = NULL,
+		tuple origins = tuple(), bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1)
+	{
+		CUtlVector<Vector> *pUtlVecOrigins = NULL;
+		CUtlVector<Vector> vecOrigins;
+		if (len(origins) > 0)
+		{
+			pUtlVecOrigins = &vecOrigins;
+			for(int i=0; i < len(origins); i++)
+			{
+				vecOrigins.AddToTail(extract<Vector>(origins[i]));
+			}
+		}
+		
+		pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, 0, pOrigin,
+			pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
+	}
 };
 
 
-#endif // _LISTENERS_MANAGER_H
+//---------------------------------------------------------------------------------
+// IEngineTrace
+//---------------------------------------------------------------------------------
+inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
+{
+	return enginetrace->GetPointContents(vecAbsPosition, ppEntity);
+}
+
+
+#endif // _ENGINES_WRAP_CSGO_H

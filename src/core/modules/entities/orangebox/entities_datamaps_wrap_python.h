@@ -34,10 +34,10 @@
 
 
 //-----------------------------------------------------------------------------
-// Expose datamap_t.
+// Exports datamap_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_datamap(T DataMap)
+template<class T, class U>
+void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
 	DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
 	DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
@@ -46,10 +46,10 @@ void export_engine_specific_datamap(T DataMap)
 
 
 //-----------------------------------------------------------------------------
-// Expose typedescription_t.
+// Exports typedescription_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_type_description(T TypeDescription)
+template<class T, class U>
+void export_engine_specific_type_description(T _datamaps, U TypeDescription)
 {
 	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset)	;
 	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
@@ -57,10 +57,10 @@ void export_engine_specific_type_description(T TypeDescription)
 
 
 //-----------------------------------------------------------------------------
-// Expose fieldtype_t.
+// Exports fieldtype_t.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_field_types(T FieldTypes)
+template<class T, class U>
+void export_engine_specific_field_types(T _datamaps, U FieldTypes)
 {
 	// Nothing specific to OrangeBox...
 }
