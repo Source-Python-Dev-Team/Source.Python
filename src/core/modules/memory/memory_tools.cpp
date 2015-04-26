@@ -455,7 +455,11 @@ handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
 	// Hook the function
-	CHook* pHook = GetHookManager()->HookFunction((void *) m_ulAddr, m_pCallingConvention);
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	if (!pHook)
+	{
+		pHook = GetHookManager()->HookFunction((void *) m_ulAddr, m_pCallingConvention);
+	}
 	
 	// Add the hook handler. If it's already added, it won't be added twice
 	pHook->AddCallback(eType, (HookHandlerFn *) (void *) &SP_HookHandler);
