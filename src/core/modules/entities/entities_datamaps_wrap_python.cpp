@@ -138,10 +138,6 @@ void export_type_description(scope _datamaps)
 	TypeDescription.def_readonly("save_restore", &typedescription_t::pSaveRestoreOps);
 
 	TypeDescription.add_property("input", &TypeDescriptionSharedExt::get_input);
-	TypeDescription.add_property("input_pointer",
-		make_function(&TypeDescriptionSharedExt::get_input_pointer,
-		manage_new_object_policy())
-	);
 
 	TypeDescription.def_readonly("embedded_datamap", &typedescription_t::td);
 	TypeDescription.def_readonly("size_in_bytes", &typedescription_t::fieldSizeInBytes);

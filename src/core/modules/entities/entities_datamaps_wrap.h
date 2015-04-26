@@ -95,17 +95,12 @@ public:
 		if (!(pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE))
 			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);
 
-		return make_function(pTypeDesc.inputFunc);
-	}
+		CPointer *pInputFunction = new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc);
 
-	static CPointer *get_input_pointer(const typedescription_t& pTypeDesc)
-	{
-		CPointer *pInputPointer = NULL;
+		object oInputFunction = make_function(pTypeDesc.inputFunc);
+		PyDict_SetItemString(oInputFunction.ptr()->ob_type->tp_dict, "_ptr", object(ptr(pInputFunction)).ptr());
 
-		if (pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE)
-			pInputPointer = new CPointer((unsigned long)(void *&)pTypeDesc.inputFunc);
-
-		return pInputPointer;
+		return oInputFunction;
 	}
 };
 
