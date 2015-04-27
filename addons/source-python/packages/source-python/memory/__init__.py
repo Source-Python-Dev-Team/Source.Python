@@ -120,6 +120,10 @@ class Callback(AutoUnload):
         self.callback = callback
         return self
 
+    def _ptr(self):
+        """Return the address of the function."""
+        return self.function
+
     def _unload_instance(self):
         """Remove the hook, restore the allocated space and deallocate it."""
         # TODO: Remove the hook and restore the allocated space
