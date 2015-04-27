@@ -37,6 +37,7 @@
 #include "edict.h"
 #include "convar.h"
 #include "commands_wrap.h"
+#include "game/server/iplayerinfo.h"
 
 
 //-----------------------------------------------------------------------------

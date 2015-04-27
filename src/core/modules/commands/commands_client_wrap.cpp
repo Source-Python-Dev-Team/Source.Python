@@ -38,6 +38,11 @@
 #include "modules/listeners/listeners_manager.h"
 
 //-----------------------------------------------------------------------------
+// Externals
+//-----------------------------------------------------------------------------
+extern IPlayerInfoManager* playerinfomanager;
+
+//-----------------------------------------------------------------------------
 // Global Client command mapping.
 //-----------------------------------------------------------------------------
 typedef boost::unordered_map<std::string, CClientCommandManager*> ClientCommandMap;
