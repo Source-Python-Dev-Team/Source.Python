@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * DynamicHooks
-* Copyright (C) 2015 Robin Gohmert. All rights reserved.
+* Copyright (C) 2013 Robin Gohmert. All rights reserved.
 * =============================================================================
 *
 * This software is provided 'as-is', without any express or implied warranty.
@@ -32,8 +32,23 @@
 #define _UTILITIES_H
 
 // ============================================================================
+// >> INCLUDES
+// ============================================================================
+#include "DynamicHooks.h"
+#include <stdlib.h>
+
+
+// ============================================================================
+// >> DEFINITIONS
+// ============================================================================
+typedef bool (*HookFn)(DynamicHooks::HookType_t, DynamicHooks::CHook*);
+
+
+// ============================================================================
 // >> FUNCTIONS
 // ============================================================================
+int  GetTypeSize(char cType);
+void ParseParams(DynamicHooks::Convention_t eConvention, char* szParams, DynamicHooks::Param_t* pParams, DynamicHooks::Param_t* pRetParam);
 void SetMemPatchable(void* pAddr, size_t size);
 void WriteJMP(unsigned char* src, void* dest);
 

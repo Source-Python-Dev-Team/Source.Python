@@ -28,7 +28,6 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "export_main.h"
-#include "string_t.h"
 #include "utilities/wrap_macros.h"
 #include "dt_common.h"
 #include "dt_send.h"

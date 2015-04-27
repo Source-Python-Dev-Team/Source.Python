@@ -10,8 +10,9 @@
 #include "boost/python.hpp"
 using namespace boost::python;
 
-// DynamicHooks
-#include "hook.h"
+#include "memory_tools.h"
+#include "DynamicHooks.h"
+
 
 //---------------------------------------------------------------------------------
 // Classes
@@ -21,9 +22,11 @@ class CStackData
 public:
 	CStackData(CHook* pHook);
 
-	object		GetItem(unsigned int iIndex);
-	void		SetItem(unsigned int iIndex, object value);
-	CRegisters* GetRegisters() { return m_pHook->m_pRegisters; }
+	object    GetItem(unsigned int iIndex);
+	void      SetItem(unsigned int iIndex, object value);
+
+	CPointer* GetESP()
+	{ return new CPointer((unsigned long) m_pHook->m_pESP); }
 
 protected:
 	CHook*                m_pHook;
@@ -34,6 +37,6 @@ protected:
 //---------------------------------------------------------------------------------
 // Functions
 //---------------------------------------------------------------------------------
-bool SP_HookHandler(HookType_t eHookType, CHook* pHook);
+bool SP_HookHandler(DynamicHooks::HookType_t eHookType, CHook* pHook);
 
 #endif // MEMORY_HOOKS_H

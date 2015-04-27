@@ -14,29 +14,22 @@ from loggers import _sp_logger
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python
-#   core
-from core import AutoUnload
 #   memory
 from _memory import BinaryFile
-from _memory import CallingConvention
+from _memory import Callback
 from _memory import Convention
 from _memory import DataType
 from _memory import EXPOSED_CLASSES
 from _memory import Function
 from _memory import NULL
 from _memory import Pointer
-from _memory import ProcessorRegister
-from _memory import Register
-from _memory import Registers
 from _memory import StackData
 from _memory import TYPE_SIZES
 from _memory import alloc
 from _memory import find_binary
-from _memory import get_data_type_size
 from _memory import get_object_pointer
 from _memory import get_size
 from _memory import make_object
-
 
 
 # =============================================================================
@@ -44,21 +37,17 @@ from _memory import make_object
 # =============================================================================
 __all__ = ('BinaryFile',
            'Callback',
-           'CallingConvention',
            'Convention',
            'DataType',
            'EXPOSED_CLASSES',
            'Function',
            'NULL',
            'Pointer',
-           'ProcessorRegister',
-           'Register',
-           'Registers',
            'StackData',
            'TYPE_SIZES',
            'alloc',
+           'callback',
            'find_binary',
-           'get_data_type_size',
            'get_object_pointer',
            'get_size',
            'make_object',
@@ -73,54 +62,24 @@ memory_logger = _sp_logger.memory
 
 
 # =============================================================================
-# >> CLASSES
+# >> FUNCTIONS
 # =============================================================================
-class Callback(AutoUnload):
+def callback(convention=Convention.CDECL, args=(), return_type=DataType.VOID):
+    """Create a C++ callback that calls back to the decorated function.
 
-    """Create a function in memory that calls a Python callback."""
+    EXAMPLE:
 
-    def __init__(self, convention, arg_types, return_type):
-        """Initialize the Callback object.
+    @callback(Convention.CDECL, (DataType.INT, DataType.INT), DataType.INT)
+    def add(x, y, ebp):
+        return x + y
 
-        @param <convention>:
-        Defines the calling convention of the function.
+    <add> is now a Callback instance, but you can still call it like a normal
+    Python function:
 
-        @param <arg_types>:
-        Defines the argument types of the function.
+    assert add(4, 6) == 10
+    """
+    def wait_for_func(func):
+        """Return a memory callback instance."""
+        return Callback(func, convention, args, return_type)
 
-        @param <return_type>:
-        Defines the return type of the function.
-        """
-        self.callback = None
-
-        # Allocate enough space for a jump, so we can hook it later. Then
-        # convert it to a function. Of course, this isn't a function, but the
-        # hook will override it.
-        self.function = alloc(8, False).make_function(convention, arg_types,
-            return_type)
-
-        # A little hack to access the "self" argument
-        def hook(args):
-            return_value = self.callback(args)
-            if return_value is not None:
-                return return_value
-
-            if return_type == DataType.VOID:
-                return 0
-
-            # We will crash now :(
-            raise ValueError('Return value is not allowed to be None.')
-
-        # Hook the function and make sure the callback doesn't go out of scope
-        self._hook = self.function.add_pre_hook(hook)
-
-    def __call__(self, callback):
-        """Store the given callback."""
-        assert callable(callback)
-        self.callback = callback
-        return self
-
-    def _unload_instance(self):
-        """Remove the hook, restore the allocated space and deallocate it."""
-        # TODO: Remove the hook and restore the allocated space
-        self.function.dealloc()
+    return wait_for_func

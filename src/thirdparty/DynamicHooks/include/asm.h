@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * DynamicHooks
-* Copyright (C) 2015 Robin Gohmert. All rights reserved.
+* Copyright (C) 2013 Robin Gohmert. All rights reserved.
 * =============================================================================
 *
 * This software is provided 'as-is', without any express or implied warranty.

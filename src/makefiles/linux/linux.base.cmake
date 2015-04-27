@@ -96,14 +96,14 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
     ${PYTHONSDK_LIB}/libpython3.4m.a
     ${BOOSTSDK_LIB}/libboost_python.a
     ${PYTHONSDK_LIB}/libpython3.4m.so.1.0
-    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
     ${ASMJITSDK_LIB}/libAsmJit.a
+    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
 )
 
 Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
     ${PYTHONSDK_LIB}/libpython3.4dm.a
     ${BOOSTSDK_LIB}/libboost_python_d.a
     ${PYTHONSDK_LIB}/libpython3.4dm.so.1.0
-    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
     ${ASMJITSDK_LIB}/libAsmJit_d.a
+    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
 )
