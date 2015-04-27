@@ -59,6 +59,7 @@ int GetDynCallConvention(Convention_t eConv)
 {
 	switch (eConv)
 	{
+		case CONV_CUSTOM: return -1;
 		case CONV_CDECL: return DC_CALL_C_DEFAULT;
 		case CONV_THISCALL:
 			#ifdef _WIN32
@@ -70,7 +71,7 @@ int GetDynCallConvention(Convention_t eConv)
 		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
 #endif
 	}
-
+	
 	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
 	return -1;
 }
@@ -231,51 +232,12 @@ CPointer* CPointer::Realloc(int iSize)
 	return new CPointer((unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize)); 
 }
 
-CFunction* CPointer::MakeFunction(object oCallingConvention, object args, object oReturnType)
+CFunction* CPointer::MakeFunction(object oCallingConvention, object oArgs, object oReturnType)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-	Convention_t _eCallingConvention = CONV_NONE;
-	int _iCallingConvention = -1;
-	ICallingConvention* _pCallingConvention = NULL;
-	tuple _tArgs = tuple(args);
-	object _oReturnType = oReturnType;
-	DataType_t _eReturnType;
-
-	// Get the enum return type
-	try
-	{
-		_eReturnType = extract<DataType_t>(oReturnType);
-	}
-	catch( ... )
-	{
-		PyErr_Clear();
-		_eReturnType = DATA_TYPE_POINTER;
-	}
-
-	try
-	{
-		// If this line succeeds the user wants to create a function with the built-in calling conventions
-		_eCallingConvention = extract<Convention_t>(oCallingConvention);
-		_iCallingConvention = GetDynCallConvention(_eCallingConvention);
-		_pCallingConvention = MakeDynamicHooksConvention(_eCallingConvention, ObjectToDataTypeVector(args), _eReturnType);
-	}
-	catch( ... )
-	{
-		// If this happens, we won't be able to call the function, because we are using a custom calling convention
-		PyErr_Clear();
 	
-		object _oCallingConvention = oCallingConvention(args, _eReturnType);
-
-		// FIXME:
-		// This is required to fix a crash, but it will also cause a memory leak,
-		// because no calling convention object that is created via this method will ever be deleted.
-		Py_INCREF(_oCallingConvention.ptr());
-		_pCallingConvention = extract<ICallingConvention*>(_oCallingConvention);
-	}
-	
-	return new CFunction(m_ulAddr, _eCallingConvention, _iCallingConvention, _pCallingConvention, _tArgs, _eReturnType, _oReturnType);
+	return new CFunction(m_ulAddr, oCallingConvention, oArgs, oReturnType);
 }
 
 CFunction* CPointer::MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type)
@@ -330,9 +292,59 @@ void CPointer::__del__(PyObject* self)
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
+CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oArgs, object oReturnType)
+	:CPointer(ulAddr)
+{
+	// Step 1: Validate and convert the argument types
+	m_tArgs = tuple(oArgs);
+
+	// Step 2: Determine the return type/converter
+	try
+	{
+		// If this line succeds...
+		m_eReturnType = extract<DataType_t>(oReturnType);
+
+		// ...no converter will be used
+		m_oConverter = object();
+	}
+	catch( ... )
+	{
+		PyErr_Clear();
+
+		// If this happens the return type is a converter for a pointer
+		m_eReturnType = DATA_TYPE_POINTER;
+		m_oConverter = oReturnType;
+	}
+
+	// Step 3: Determine the calling convention
+	try
+	{
+		// If this line succeeds the user wants to create a function with the built-in calling conventions
+		m_eCallingConvention = extract<Convention_t>(oCallingConvention);
+		m_pCallingConvention = MakeDynamicHooksConvention(m_eCallingConvention, ObjectToDataTypeVector(m_tArgs), m_eReturnType);
+	}
+	catch( ... )
+	{
+		PyErr_Clear();
+	
+		// A custom calling convention will be used...
+		m_eCallingConvention = CONV_CUSTOM;
+		object m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
+
+		// FIXME:
+		// This is required to fix a crash, but it will also cause a memory leak,
+		// because no calling convention object that is created via this method will ever be deleted.
+		Py_INCREF(m_oCallingConvention.ptr());
+		m_pCallingConvention = extract<ICallingConvention*>(m_oCallingConvention);
+	}
+
+	// Step 4: Get the DynCall calling convention
+	m_iCallingConvention = GetDynCallConvention(m_eCallingConvention);
+}
+
 CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
-		int iCallingConvention, ICallingConvention* pCallingConvention, tuple tArgs,
-		DataType_t eReturnType, object oReturnType)
+	int iCallingConvention, ICallingConvention* pCallingConvention, tuple tArgs,
+	DataType_t eReturnType, object oConverter)
 	:CPointer(ulAddr)
 {
 	m_eCallingConvention = eCallingConvention;
@@ -340,12 +352,12 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 	m_pCallingConvention = pCallingConvention;
 	m_tArgs = tArgs;
 	m_eReturnType = eReturnType;
-	m_oReturnType = oReturnType;
+	m_oConverter = oConverter;
 }
 
 bool CFunction::IsCallable()
 {
-	return (m_eCallingConvention != CONV_NONE) && (m_iCallingConvention != -1);
+	return (m_eCallingConvention != CONV_CUSTOM) && (m_iCallingConvention != -1);
 }
 
 bool CFunction::IsHookable()
@@ -419,8 +431,8 @@ object CFunction::Call(tuple args, dict kw)
 		case DATA_TYPE_POINTER:
 		{
 			CPointer* pPtr = new CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
-			if (!m_oReturnType.is_none())
-				return m_oReturnType(ptr(pPtr));
+			if (!m_oConverter.is_none())
+				return m_oConverter(ptr(pPtr));
 			return object(ptr(pPtr));
 		}
 		case DATA_TYPE_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
@@ -442,8 +454,7 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
 	return CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
-		m_iCallingConvention, m_pCallingConvention, m_tArgs, m_eReturnType,
-		m_oReturnType).Call(args, kw);
+		m_iCallingConvention, m_pCallingConvention, m_tArgs, m_eReturnType, m_oConverter).Call(args, kw);
 }
 
 handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)

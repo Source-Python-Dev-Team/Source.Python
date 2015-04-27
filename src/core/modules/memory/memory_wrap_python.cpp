@@ -291,10 +291,19 @@ void export_memtools(scope _memory)
 		)
 	;
 
-	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", no_init)
+	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, object, object, object>())
+		.def(init<CFunction&>())
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
+		)
+
+		.def("is_callable",
+			&CFunction::IsCallable
+		)
+
+		.def("is_hookable",
+			&CFunction::IsHookable
 		)
 
 		.def("call_trampoline",
@@ -340,7 +349,7 @@ void export_memtools(scope _memory)
 		)
 
 		.def_readonly("return_type",
-			&CFunction::m_oReturnType
+			&CFunction::m_oConverter
 		)
 
 		.def_readonly("convention",
@@ -399,7 +408,7 @@ void export_dyncall(scope _memory)
 	;
 
 	enum_<Convention_t>("Convention")
-		.value("NONE", CONV_NONE)
+		.value("CUSTOM", CONV_CUSTOM)
 		.value("CDECL", CONV_CDECL)
 		.value("STDCALL", CONV_STDCALL)
 		.value("THISCALL", CONV_THISCALL)
