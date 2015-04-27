@@ -28,13 +28,55 @@
 * Idea and trampoline code taken from DynDetours (thanks your-name-here).
 */
 
-#ifndef _UTILITIES_H
-#define _UTILITIES_H
+#ifndef _X86_MS_STDCALL_H
+#define _X86_MS_STDCALL_H
 
 // ============================================================================
-// >> FUNCTIONS
+// >> INCLUDES
 // ============================================================================
-void SetMemPatchable(void* pAddr, size_t size);
-void WriteJMP(unsigned char* src, void* dest);
+#include "../convention.h"
 
-#endif // _UTILITIES_H
+
+// ============================================================================
+// >> CLASSES
+// ============================================================================
+/*
+Source: DynCall manual and Windows docs
+
+Registers:
+	- eax = return value
+	- edx = return value
+	- esp = stack pointer
+	- st0 = floating point return value
+
+Parameter passing:
+	- stack parameter order: right-to-left
+	- callee cleans up the stack
+	- all arguments are pushed onto the stack
+	- alignment: 4 bytes
+
+Return values:
+	- return values of pointer or intergral type (<= 32 bits) are returned via the eax register
+	- integers > 32 bits are returned via the eax and edx registers
+	- floating pointer types are returned via the st0 register
+*/
+class x86MsStdcall: public ICallingConvention
+{	
+public:
+	x86MsStdcall(std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4);
+	~x86MsStdcall();
+
+	virtual std::list<Register_t> GetRegisters();
+	virtual int GetPopSize();
+	
+	virtual void* GetArgumentPtr(int iIndex, CRegisters* pRegisters);
+	virtual void ArgumentPtrChanged(int iIndex, CRegisters* pRegisters, void* pArgumentPtr);
+
+	virtual void* GetReturnPtr(CRegisters* pRegisters);
+	virtual void ReturnPtrChanged(CRegisters* pRegisters, void* pReturnPtr);
+
+private:
+	void* m_pReturnBuffer;
+};
+
+#endif // _X86_MS_STDCALL_H

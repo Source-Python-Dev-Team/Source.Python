@@ -34,6 +34,8 @@
 #include "commands_wrap.h"
 #include "utilities/sp_util.h"
 #include "utilities/wrap_macros.h"
+#include "edict.h"
+#include "game/server/iplayerinfo.h"
 
 
 //-----------------------------------------------------------------------------

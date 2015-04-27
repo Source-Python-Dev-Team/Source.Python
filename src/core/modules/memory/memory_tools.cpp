@@ -38,13 +38,63 @@
 #include "utilities/sp_util.h"
 #include "utilities/call_python.h"
 
+// DynamicHooks
+#include "conventions/x86MsCdecl.h"
+#include "conventions/x86MsThiscall.h"
+#include "conventions/x86MsStdcall.h"
+#include "conventions/x86GccCdecl.h"
+#include "conventions/x86GccThiscall.h"
+
 
 DCCallVM* g_pCallVM = dcNewCallVM(4096);
-extern std::map<CHook *, std::map<DynamicHooks::HookType_t, std::list<PyObject *> > > g_mapCallbacks;
-
-CHookManager* g_pHookMngr = new CHookManager;
+extern std::map<CHook *, std::map<HookType_t, std::list<PyObject *> > > g_mapCallbacks;
 
 dict g_oExposedClasses;
+
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
+int GetDynCallConvention(Convention_t eConv)
+{
+	switch (eConv)
+	{
+		case CONV_CDECL: return DC_CALL_C_DEFAULT;
+		case CONV_THISCALL:
+			#ifdef _WIN32
+				return DC_CALL_C_X86_WIN32_THIS_MS;
+			#else
+				return DC_CALL_C_X86_WIN32_THIS_GNU;
+			#endif
+#ifdef _WIN32
+		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
+#endif
+	}
+
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+	return -1;
+}
+
+ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4)
+{
+#ifdef _WIN32
+	switch (eConv)
+	{
+	case CONV_CDECL: return new x86MsCdecl(vecArgTypes, returnType, iAlignment);
+	case CONV_THISCALL: return new x86MsThiscall(vecArgTypes, returnType, iAlignment);
+	case CONV_STDCALL: return new x86MsStdcall(vecArgTypes, returnType, iAlignment);
+	}
+#else
+	switch (eConv)
+	{
+	case CONV_CDECL: return new x86GccCdecl(vecArgTypes, returnType, iAlignment);
+	case CONV_THISCALL: return new x86GccThiscall(vecArgTypes, returnType, iAlignment);
+	}
+#endif
+
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+	return NULL;
+}
 
 //-----------------------------------------------------------------------------
 // CPointer class
@@ -181,17 +231,56 @@ CPointer* CPointer::Realloc(int iSize)
 	return new CPointer((unsigned long) UTIL_Realloc((void *) m_ulAddr, iSize)); 
 }
 
-CFunction* CPointer::MakeFunction(Convention_t eConv, object args, object return_type)
+CFunction* CPointer::MakeFunction(object oCallingConvention, object args, object oReturnType)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-	return new CFunction(m_ulAddr, eConv, args, return_type);
+	Convention_t _eCallingConvention = CONV_NONE;
+	int _iCallingConvention = -1;
+	ICallingConvention* _pCallingConvention = NULL;
+	tuple _tArgs = tuple(args);
+	object _oReturnType = oReturnType;
+	DataType_t _eReturnType;
+
+	// Get the enum return type
+	try
+	{
+		_eReturnType = extract<DataType_t>(oReturnType);
+	}
+	catch( ... )
+	{
+		PyErr_Clear();
+		_eReturnType = DATA_TYPE_POINTER;
+	}
+
+	try
+	{
+		// If this line succeeds the user wants to create a function with the built-in calling conventions
+		_eCallingConvention = extract<Convention_t>(oCallingConvention);
+		_iCallingConvention = GetDynCallConvention(_eCallingConvention);
+		_pCallingConvention = MakeDynamicHooksConvention(_eCallingConvention, ObjectToDataTypeVector(args), _eReturnType);
+	}
+	catch( ... )
+	{
+		// If this happens, we won't be able to call the function, because we are using a custom calling convention
+		PyErr_Clear();
+	
+		object _oCallingConvention = oCallingConvention(args, _eReturnType);
+
+		// FIXME:
+		// This is required to fix a crash, but it will also cause a memory leak,
+		// because no calling convention object that is created via this method will ever be deleted.
+		Py_INCREF(_oCallingConvention.ptr());
+		_pCallingConvention = extract<ICallingConvention*>(_oCallingConvention);
+	}
+	
+	return new CFunction(m_ulAddr, _eCallingConvention, _iCallingConvention, _pCallingConvention, _tArgs, _eReturnType, _oReturnType);
 }
 
-CFunction* CPointer::MakeVirtualFunction(int iIndex, Convention_t eConv, object args, object return_type)
+CFunction* CPointer::MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type)
 {
-	return GetVirtualFunc(iIndex)->MakeFunction(eConv, args, return_type);
+	return GetVirtualFunc(iIndex)->MakeFunction(oCallingConvention, args, return_type);
 }
 
 void CPointer::CallCallback(PyObject* self, char* szCallback)
@@ -241,31 +330,49 @@ void CPointer::__del__(PyObject* self)
 //-----------------------------------------------------------------------------
 // CFunction class
 //-----------------------------------------------------------------------------
-CFunction::CFunction(unsigned long ulAddr, Convention_t eConv, object args, object return_type)
-	: CPointer(ulAddr)
+CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
+		int iCallingConvention, ICallingConvention* pCallingConvention, tuple tArgs,
+		DataType_t eReturnType, object oReturnType)
+	:CPointer(ulAddr)
 {
-	m_eConv = eConv;
-	m_Args = tuple(args);
-	m_oReturnType = return_type;
+	m_eCallingConvention = eCallingConvention;
+	m_iCallingConvention = iCallingConvention;
+	m_pCallingConvention = pCallingConvention;
+	m_tArgs = tArgs;
+	m_eReturnType = eReturnType;
+	m_oReturnType = oReturnType;
+}
+
+bool CFunction::IsCallable()
+{
+	return (m_eCallingConvention != CONV_NONE) && (m_iCallingConvention != -1);
+}
+
+bool CFunction::IsHookable()
+{
+	return m_pCallingConvention != NULL;
 }
 
 object CFunction::Call(tuple args, dict kw)
 {
+	if (!IsCallable())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
+
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	if (len(args) != len(m_Args))
+	if (len(args) != len(m_tArgs))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Number of passed arguments is not equal to the required number.")
 
 	// Reset VM and set the calling convention
 	dcReset(g_pCallVM);
-	dcMode(g_pCallVM, GetDynCallConvention(m_eConv));
+	dcMode(g_pCallVM, m_iCallingConvention);
 
 	// Loop through all passed arguments and add them to the VM
 	for(int i=0; i < len(args); i++)
 	{
 		object arg = args[i];
-		switch(extract<DataType_t>(m_Args[i]))
+		switch(extract<DataType_t>(m_tArgs[i]))
 		{
 			case DATA_TYPE_BOOL:      dcArgBool(g_pCallVM, extract<bool>(arg)); break;
 			case DATA_TYPE_CHAR:      dcArgChar(g_pCallVM, extract<char>(arg)); break;
@@ -276,8 +383,8 @@ object CFunction::Call(tuple args, dict kw)
 			case DATA_TYPE_UINT:      dcArgInt(g_pCallVM, extract<unsigned int>(arg)); break;
 			case DATA_TYPE_LONG:      dcArgLong(g_pCallVM, extract<long>(arg)); break;
 			case DATA_TYPE_ULONG:     dcArgLong(g_pCallVM, extract<unsigned long>(arg)); break;
-			case DATA_TYPE_LONGLONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
-			case DATA_TYPE_ULONGLONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
+			case DATA_TYPE_LONG_LONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
+			case DATA_TYPE_ULONG_LONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
 			case DATA_TYPE_FLOAT:     dcArgFloat(g_pCallVM, extract<float>(arg)); break;
 			case DATA_TYPE_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DATA_TYPE_POINTER:
@@ -292,23 +399,8 @@ object CFunction::Call(tuple args, dict kw)
 		}
 	}
 
-	DataType_t return_type;
-
-	// Try to get the return type
-	try
-	{
-		return_type = extract<DataType_t>(m_oReturnType);
-	}
-	catch( ... )
-	{
-		PyErr_Clear();
-
-		// It failed, so let's handle it as a pointer
-		return m_oReturnType(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
-	}
-
 	// Call the function
-	switch(return_type)
+	switch(m_eReturnType)
 	{
 		case DATA_TYPE_VOID:      dcCallVoid(g_pCallVM, m_ulAddr); break;
 		case DATA_TYPE_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
@@ -320,11 +412,17 @@ object CFunction::Call(tuple args, dict kw)
 		case DATA_TYPE_UINT:      return object((unsigned int) dcCallInt(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_LONG:      return object(dcCallLong(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_ULONG:     return object((unsigned long) dcCallLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_LONGLONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_ULONGLONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_LONG_LONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_ULONG_LONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_POINTER:   return object(ptr(new CPointer(dcCallPointer(g_pCallVM, m_ulAddr))));
+		case DATA_TYPE_POINTER:
+		{
+			CPointer* pPtr = new CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
+			if (!m_oReturnType.is_none())
+				return m_oReturnType(ptr(pPtr));
+			return object(ptr(pPtr));
+		}
 		case DATA_TYPE_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
 	}
@@ -333,53 +431,52 @@ object CFunction::Call(tuple args, dict kw)
 
 object CFunction::CallTrampoline(tuple args, dict kw)
 {
+	if (!IsCallable())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
+
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	return CFunction((unsigned long) pHook->m_pTrampoline, m_eConv, m_Args, m_oReturnType).Call(args, kw);
+	return CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
+		m_iCallingConvention, m_pCallingConvention, m_tArgs, m_eReturnType,
+		m_oReturnType).Call(args, kw);
 }
 
-handle<> CFunction::AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
+	if (!IsHookable())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not hookable.")
+
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 
-	// Generate the argument string
-	DataType_t return_type;
-	try
-	{
-		return_type = extract<DataType_t>(m_oReturnType);
-	}
-	catch ( ... )
-	{
-		PyErr_Clear();
-		return_type = DATA_TYPE_POINTER;
-	}
-	char* szParams = extract<char*>(eval("lambda args, ret: ''.join(map(chr, args)) + ')' + chr(ret)")(m_Args, return_type));
-
 	// Hook the function
-	CHook* pHook = g_pHookMngr->HookFunction((void *) m_ulAddr, m_eConv, strdup(szParams));
-
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	if (!pHook)
+	{
+		pHook = GetHookManager()->HookFunction((void *) m_ulAddr, m_pCallingConvention);
+	}
+	
 	// Add the hook handler. If it's already added, it won't be added twice
-	pHook->AddCallback(eType, (void *) &SP_HookHandler);
-
+	pHook->AddCallback(eType, (HookHandlerFn *) (void *) &SP_HookHandler);
+	
 	// Add the callback to our map
 	g_mapCallbacks[pHook][eType].push_back(pCallable);
-
+	
 	// Return the callback, so we can use this method as a decorator
 	return handle<>(borrowed(pCallable));
 }
 
-void CFunction::RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable)
+void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
 		
-	CHook* pHook = g_pHookMngr->FindHook((void *) m_ulAddr);
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
 		return;
 
