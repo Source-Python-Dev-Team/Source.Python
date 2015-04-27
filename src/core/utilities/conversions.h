@@ -169,7 +169,7 @@ inline int IntHandleFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseExceptio
 		iEntityHandle = hBaseHandle.ToInt();
 
 	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseHandle instance (%x).", hBaseHandle);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
 
 	return iEntityHandle;
 }
@@ -336,7 +336,7 @@ inline int IndexFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = 
 		uiEntityIndex = hBaseHandle.GetEntryIndex();
 
 	if (uiEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseHandle instance (%x).", hBaseHandle);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
 
 	return uiEntityIndex;
 }
@@ -400,7 +400,7 @@ inline edict_t *EdictFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseExcepti
 	edict_t *pEdict = EdictFromIndex(IndexFromBaseHandle(hBaseHandle));
 
 	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given BaseHandle instance (%x).", hBaseHandle);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
 
 	return pEdict;
 }
@@ -613,7 +613,7 @@ inline CPointer *PointerFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseExce
 	CPointer *pEntityPointer = PointerFromEdict(EdictFromBaseHandle(hBaseHandle));
 
 	if (!(pEntityPointer && pEntityPointer->IsValid()) && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given BaseHandle instance (%x).", hBaseHandle);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a Pointer instance from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
 
 	return pEntityPointer;
 }
@@ -697,7 +697,7 @@ inline int UseridFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException =
 	unsigned int uiUserID = UseridFromIndex(IndexFromBaseHandle(hBaseHandle));
 
 	if (uiUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given BaseHandle instance (%x).", hBaseHandle);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
 
 	return uiUserID;
 }
@@ -756,7 +756,7 @@ inline IPlayerInfo *PlayerInfoFromBaseHandle( CBaseHandle hBaseHandle, bool bRai
 	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(hBaseHandle.GetEntryIndex());
 
 	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given BaseHandle instance (%x).", hBaseHandle);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
 
 	return pPlayerInfo;
 }
