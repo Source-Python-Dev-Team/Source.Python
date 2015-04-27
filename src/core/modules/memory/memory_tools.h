@@ -155,7 +155,7 @@ inline std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
 //-----------------------------------------------------------------------------
 enum Convention_t
 {
-	CONV_NONE,
+	CONV_CUSTOM,
 	CONV_CDECL,
 	CONV_THISCALL,
 	CONV_STDCALL
@@ -264,9 +264,10 @@ public:
 class CFunction: public CPointer
 {
 public:
+	CFunction(unsigned long ulAddr, object oCallingConvention, object oArgs, object oReturnType);
 	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
 		ICallingConvention* pCallingConvention, boost::python::tuple tArgs,
-		DataType_t eReturnType, object oReturnType);
+		DataType_t eReturnType, object oConverter);
 
 	bool IsCallable();
 	bool IsHookable();
@@ -291,7 +292,7 @@ public:
     
 public:
 	boost::python::tuple	m_tArgs;
-	object					m_oReturnType;
+	object					m_oConverter;
 	DataType_t				m_eReturnType;
 
 	// Shared built-in calling convention identifier
