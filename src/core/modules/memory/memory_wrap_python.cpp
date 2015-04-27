@@ -658,6 +658,9 @@ void export_dynamichooks(scope _memory)
 		.def_readonly("gs", &CRegisters::m_gs)
 		
 		.def_readonly("st0", &CRegisters::m_st0)
+
+		// The following registers are currently not supported by DynamicHooks
+		/*
 		.def_readonly("st1", &CRegisters::m_st1)
 		.def_readonly("st2", &CRegisters::m_st2)
 		.def_readonly("st3", &CRegisters::m_st3)
@@ -665,6 +668,7 @@ void export_dynamichooks(scope _memory)
 		.def_readonly("st5", &CRegisters::m_st5)
 		.def_readonly("st6", &CRegisters::m_st6)
 		.def_readonly("st7", &CRegisters::m_st7)
+		*/
 	;
 	
 	class_<ICallingConventionWrapper, boost::noncopyable>("CallingConvention", init< object, DataType_t, optional<int> >())
