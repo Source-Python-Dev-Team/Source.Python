@@ -18,19 +18,25 @@ from loggers import _sp_logger
 from core import AutoUnload
 #   memory
 from _memory import BinaryFile
+from _memory import CallingConvention
 from _memory import Convention
 from _memory import DataType
 from _memory import EXPOSED_CLASSES
 from _memory import Function
 from _memory import NULL
 from _memory import Pointer
+from _memory import ProcessorRegister
+from _memory import Register
+from _memory import Registers
 from _memory import StackData
 from _memory import TYPE_SIZES
 from _memory import alloc
 from _memory import find_binary
+from _memory import get_data_type_size
 from _memory import get_object_pointer
 from _memory import get_size
 from _memory import make_object
+
 
 
 # =============================================================================
@@ -38,16 +44,21 @@ from _memory import make_object
 # =============================================================================
 __all__ = ('BinaryFile',
            'Callback',
+           'CallingConvention',
            'Convention',
            'DataType',
            'EXPOSED_CLASSES',
            'Function',
            'NULL',
            'Pointer',
+           'ProcessorRegister',
+           'Register',
+           'Registers',
            'StackData',
            'TYPE_SIZES',
            'alloc',
            'find_binary',
+           'get_data_type_size',
            'get_object_pointer',
            'get_size',
            'make_object',
