@@ -28,13 +28,56 @@
 * Idea and trampoline code taken from DynDetours (thanks your-name-here).
 */
 
-#ifndef _UTILITIES_H
-#define _UTILITIES_H
+#ifndef _MANAGER_H
+#define _MANAGER_H
 
 // ============================================================================
-// >> FUNCTIONS
+// >> INCLUDES
 // ============================================================================
-void SetMemPatchable(void* pAddr, size_t size);
-void WriteJMP(unsigned char* src, void* dest);
+#include <list>
+#include "hook.h"
+#include "convention.h"
 
-#endif // _UTILITIES_H
+
+// ============================================================================
+// >> CHookManager
+// ============================================================================
+class CHookManager
+{
+public:
+	/*
+	Hooks the given function and returns a new CHook instance. If the
+	function was already hooked, the existing CHook instance will be
+	returned.
+	*/
+    CHook* HookFunction(void* pFunc, ICallingConvention* pConvention);
+	
+	/*
+	Removes all callbacks and restores the original function.
+	*/
+    void UnhookFunction(void* pFunc);
+
+	/*
+	Returns either NULL or the found CHook instance.
+	*/
+	CHook* FindHook(void* pFunc);
+
+	/*
+	Removes all callbacks and restores all functions.
+	*/
+	void UnhookAllFunctions();
+
+public:
+	std::list<CHook *> m_Hooks;
+};
+
+
+// ============================================================================
+// >> GetHookManager
+// ============================================================================
+/*
+Returns a pointer to a static CHookManager object.
+*/
+CHookManager* GetHookManager();
+
+#endif // _MANAGER_H

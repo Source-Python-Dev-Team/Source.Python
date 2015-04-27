@@ -33,11 +33,12 @@
 #include "dyncall_signature.h"
 
 #include "utilities/wrap_macros.h"
-#include "DynamicHooks.h"
-using namespace DynamicHooks;
 
 #include "boost/python.hpp"
 using namespace boost::python;
+
+// DynamicHooks
+#include "manager.h"
 
 
 // Externals
@@ -139,45 +140,25 @@ inline void UTIL_Dealloc(void* ptr)
 #endif
 }
 
+inline std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
+{
+	std::vector<DataType_t> vecArgTypes;
+	for(int i=0; i < len(oArgTypes); i++)
+	{
+		vecArgTypes.push_back(extract<DataType_t>(oArgTypes[i]));
+	}
+	return vecArgTypes;
+}
+
 //-----------------------------------------------------------------------------
 // Convention enum
 //-----------------------------------------------------------------------------
-inline int GetDynCallConvention(Convention_t eConv)
+enum Convention_t
 {
-	switch (eConv)
-	{
-		case CONV_CDECL: return DC_CALL_C_DEFAULT;
-		case CONV_THISCALL:
-			#ifdef _WIN32
-				return DC_CALL_C_X86_WIN32_THIS_MS;
-			#else
-				return DC_CALL_C_X86_WIN32_THIS_GNU;
-			#endif
-		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
-	}
-
-	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
-	return 0;
-}
-
-enum DataType_t
-{
-	DATA_TYPE_VOID = DC_SIGCHAR_VOID,
-	DATA_TYPE_BOOL = DC_SIGCHAR_BOOL,
-	DATA_TYPE_CHAR = DC_SIGCHAR_CHAR,
-	DATA_TYPE_UCHAR = DC_SIGCHAR_UCHAR,
-	DATA_TYPE_SHORT = DC_SIGCHAR_SHORT,
-	DATA_TYPE_USHORT = DC_SIGCHAR_USHORT,
-	DATA_TYPE_INT = DC_SIGCHAR_INT,
-	DATA_TYPE_UINT = DC_SIGCHAR_UINT,
-	DATA_TYPE_LONG = DC_SIGCHAR_LONG,
-	DATA_TYPE_ULONG = DC_SIGCHAR_ULONG,
-	DATA_TYPE_LONGLONG = DC_SIGCHAR_LONGLONG,
-	DATA_TYPE_ULONGLONG = DC_SIGCHAR_ULONGLONG,
-	DATA_TYPE_FLOAT = DC_SIGCHAR_FLOAT,
-	DATA_TYPE_DOUBLE = DC_SIGCHAR_DOUBLE,
-	DATA_TYPE_POINTER = DC_SIGCHAR_POINTER,
-	DATA_TYPE_STRING = DC_SIGCHAR_STRING
+	CONV_NONE,
+	CONV_CDECL,
+	CONV_THISCALL,
+	CONV_STDCALL
 };
 
 //-----------------------------------------------------------------------------
@@ -263,8 +244,8 @@ public:
 	virtual CPointer*   Realloc(int iSize);
 	virtual void        Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
-	CFunction*          MakeFunction(Convention_t eConv, boost::python::object args, object return_type);
-	CFunction*          MakeVirtualFunction(int iIndex, Convention_t eConv, boost::python::object args, object return_type);
+	CFunction*			MakeFunction(object oCallingConvention, object args, object return_type);
+	CFunction*			MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type);
 
 	static void         CallCallback(PyObject* self, char* szCallback);
 	static void         PreDealloc(PyObject* self);
@@ -283,13 +264,18 @@ public:
 class CFunction: public CPointer
 {
 public:
-	CFunction(unsigned long ulAddr, Convention_t eConv, boost::python::object args, object return_type);
+	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
+		ICallingConvention* pCallingConvention, boost::python::tuple tArgs,
+		DataType_t eReturnType, object oReturnType);
+
+	bool IsCallable();
+	bool IsHookable();
     
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
 	
-	handle<> AddHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
-	void RemoveHook(DynamicHooks::HookType_t eType, PyObject* pCallable);
+	handle<> AddHook(HookType_t eType, PyObject* pCallable);
+	void RemoveHook(HookType_t eType, PyObject* pCallable);
     
 	handle<> AddPreHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_PRE, pCallable); }
@@ -304,9 +290,18 @@ public:
 	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
     
 public:
-	boost::python::tuple	m_Args;
+	boost::python::tuple	m_tArgs;
 	object					m_oReturnType;
-	Convention_t			m_eConv;
+	DataType_t				m_eReturnType;
+
+	// Shared built-in calling convention identifier
+	Convention_t			m_eCallingConvention;
+
+	// DynCall calling convention
+	int						m_iCallingConvention;
+
+	// DynamicHooks calling convention (built-in and custom)
+	ICallingConvention*		m_pCallingConvention;
 };
 
 

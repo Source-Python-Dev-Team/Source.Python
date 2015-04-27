@@ -53,8 +53,7 @@
 #include "vphysics_interface.h"
 #include "datacache/imdlcache.h"
 
-#include "DynamicHooks.h"
-extern DynamicHooks::CHookManager* g_pHookMngr;
+#include "manager.h"
 
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
@@ -252,7 +251,7 @@ void CSourcePython::Unload( void )
 	DisconnectTier1Libraries( );
 #endif
 
-	g_pHookMngr->UnhookAllFunctions();
+	GetHookManager()->UnhookAllFunctions();
 	Msg(MSG_PREFIX "Unloaded successfully.\n");
 }
 
