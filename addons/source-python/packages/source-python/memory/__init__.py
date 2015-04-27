@@ -75,7 +75,7 @@ memory_logger = _sp_logger.memory
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Callback(AutoUnload):
+class Callback(AutoUnload, Function):
 
     """Create a function in memory that calls a Python callback."""
 
@@ -96,8 +96,8 @@ class Callback(AutoUnload):
         # Allocate enough space for a jump, so we can hook it later. Then
         # convert it to a function. Of course, this isn't a function, but the
         # hook will override it.
-        self.function = alloc(8, False).make_function(convention, arg_types,
-            return_type)
+        super(Callback, self).__init__(
+            alloc(8, False).address, convention, arg_types, return_type)
 
         # A little hack to access the "self" argument
         def hook(args):
@@ -112,19 +112,20 @@ class Callback(AutoUnload):
             raise ValueError('Return value is not allowed to be None.')
 
         # Hook the function and make sure the callback doesn't go out of scope
-        self._hook = self.function.add_pre_hook(hook)
+        self._hook = self.add_pre_hook(hook)
 
-    def __call__(self, callback):
+    def __call__(self, *args, **kw):
         """Store the given callback."""
-        assert callable(callback)
-        self.callback = callback
-        return self
+        # The first call of this function will fully initialize the callback.
+        # All further calls should call the memory function.
+        if self.callback is None:
+            assert callable(args[0])
+            self.callback = args[0]
+            return self
 
-    def _ptr(self):
-        """Return the address of the function."""
-        return self.function
+        return super(Callback, self).__call__(*args, **kw)
 
     def _unload_instance(self):
         """Remove the hook, restore the allocated space and deallocate it."""
-        # TODO: Remove the hook and restore the allocated space
-        self.function.dealloc()
+        self._delete_hook()
+        self.dealloc()
