@@ -289,6 +289,8 @@ public:
 
 	void RemovePostHook(PyObject* pCallable)
 	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
+
+	void DeleteHook();
     
 public:
 	boost::python::tuple	m_tArgs;
