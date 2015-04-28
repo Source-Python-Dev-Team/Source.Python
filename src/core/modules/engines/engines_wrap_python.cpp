@@ -288,7 +288,7 @@ void export_engine_server(scope _engines)
 		.def("client_command",
 			&IVEngineServerExt::ClientCommand,
 			"Runs a command on the client.",
-			args("edict", "command")
+			("edict", "command", arg("server_side")=false)
 		)
 
 		.def("light_style",
