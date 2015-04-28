@@ -346,17 +346,6 @@ void CSourcePython::SetCommandClient( int index )
 	m_iClientCommandIndex = index;
 }
 
-void ClientPrint( edict_t *pEdict, char *format, ... )
-{
-	va_list		argptr;
-	static char	string[1024];
-
-	va_start (argptr, format);
-	Q_vsnprintf(string, sizeof(string), format,argptr);
-	va_end (argptr);
-
-	engine->ClientPrintf( pEdict, string );
-}
 //-----------------------------------------------------------------------------
 // Purpose: called on level start
 //-----------------------------------------------------------------------------
@@ -370,7 +359,7 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	CALL_LISTENERS(ClientConnect, ptr(new CPointer((unsigned long) bAllowConnect)), IndexFromEdict(pEntity), pszName, pszAddress, ptr(new CPointer((unsigned long) reject)), maxrejectlen);
+	CALL_LISTENERS(ClientConnect, ptr(&CPointer((unsigned long) bAllowConnect)), IndexFromEdict(pEntity), pszName, pszAddress, ptr(&CPointer((unsigned long) reject)), maxrejectlen);
 	return PLUGIN_OVERRIDE;
 }
 

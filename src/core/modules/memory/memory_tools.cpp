@@ -329,13 +329,13 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 	
 		// A custom calling convention will be used...
 		m_eCallingConvention = CONV_CUSTOM;
-		object m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
+		object _oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
 
 		// FIXME:
 		// This is required to fix a crash, but it will also cause a memory leak,
 		// because no calling convention object that is created via this method will ever be deleted.
-		Py_INCREF(m_oCallingConvention.ptr());
-		m_pCallingConvention = extract<ICallingConvention*>(m_oCallingConvention);
+		Py_INCREF(_oCallingConvention.ptr());
+		m_pCallingConvention = extract<ICallingConvention*>(_oCallingConvention);
 	}
 
 	// Step 4: Get the DynCall calling convention
@@ -492,4 +492,16 @@ void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
 		return;
 
 	g_mapCallbacks[pHook][eType].remove(pCallable);
+}
+
+void CFunction::DeleteHook()
+{
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	if (!pHook)
+		return;
+
+	g_mapCallbacks.erase(pHook);
+	// Set the calling convention to NULL, because DynamicHooks will delete it otherwise.
+	pHook->m_pCallingConvention = NULL;
+	GetHookManager()->UnhookFunction((void *) m_ulAddr);
 }

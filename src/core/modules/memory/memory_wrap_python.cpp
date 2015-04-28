@@ -343,6 +343,11 @@ void export_memtools(scope _memory)
 			"Removes a post-hook callback."
 		)
 
+		.def("_delete_hook",
+			&CFunction::DeleteHook,
+			"Removes all hooks and restores the original function."
+		)
+
 		// Attributes
 		.def_readonly("arguments",
 			&CFunction::m_tArgs

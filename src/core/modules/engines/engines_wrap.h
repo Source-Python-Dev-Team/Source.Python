@@ -50,9 +50,12 @@ extern IServerPluginHelpers *helpers;
 class IVEngineServerExt
 {
 public:
-	static void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand)
+	static void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand, bool bServerSide)
 	{
-		pEngine->ClientCommand(pEdict, szCommand);
+		if (bServerSide)
+			helpers->ClientCommand(pEdict, szCommand);
+		else
+			pEngine->ClientCommand(pEdict, szCommand);
 	}
 	
 	static void Con_NPrintf(IVEngineServer* pEngine, int pos, const char* fmt)

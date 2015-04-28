@@ -202,19 +202,6 @@ void export_engine_server(scope _engines)
 			args("mins", "maxs", "checkpvs", "checkpvssize")
 		)
 
-		.def("get_player_userid",
-			&IVEngineServer::GetPlayerUserId,
-			"Returns the server assigned userid for this player. Returns -1 if the edict could not \
-			be found.",
-			args("player_instance")
-		)
-
-		.def("get_player_network_id_string",
-			&IVEngineServer::GetPlayerNetworkIDString,
-			"Returns the player's network id as a string.",
-			args("player_instance")
-		)
-
 		.def("get_entity_count",
 			&IVEngineServer::GetEntityCount,
 			"Returns the number of used edict slots."
@@ -301,7 +288,7 @@ void export_engine_server(scope _engines)
 		.def("client_command",
 			&IVEngineServerExt::ClientCommand,
 			"Runs a command on the client.",
-			args("edict", "command")
+			("edict", "command", arg("server_side")=false)
 		)
 
 		.def("light_style",
@@ -350,12 +337,6 @@ void export_engine_server(scope _engines)
 			&IVEngineServer::CrosshairAngle,
 			"Sets the player's crosshair angle",
 			args("client", "pitch", "yaw")
-		)
-
-		.def("get_game_dir",
-			&IVEngineServer::GetGameDir,
-			"Returns the path to the MOD's game directory.",
-			args("max_length")
 		)
 
 		.def("lock_network_string_tables",
