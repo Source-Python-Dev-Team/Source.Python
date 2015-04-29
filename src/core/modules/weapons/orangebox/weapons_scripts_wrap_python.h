@@ -42,7 +42,7 @@ void export_engine_specific_weapon_database(T _scripts)
 	class_<WeaponDataBase_t, boost::noncopyable> _WeaponDatabase("_WeaponDatabase", no_init);
 
 	// Methods...
-	_WeaponDatabase.def("_find", &WeaponDataBaseExt::_find, reference_existing_object_policy());
+	_WeaponDatabase.def("_find", &WeaponDataBaseExt::_find, manage_new_object_policy());
 
 	// Properties...
 	_WeaponDatabase.add_property("_length", &WeaponDataBase_t::Count);
