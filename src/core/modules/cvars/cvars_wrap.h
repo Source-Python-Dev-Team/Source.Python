@@ -31,6 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "convar.h"
+#include "utilities/sp_util.h"
 
 
 //-----------------------------------------------------------------------------
@@ -39,11 +40,6 @@
 class ConVarExt
 {
 public:
-	static void Deleter(ConVar *pConVar)
-	{
-		// Do nothing...
-	}
-
 	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue, int flags,
 		const char *szHelpString, bool bMin, float fMin, bool bMax, float fMax)
 	{
@@ -51,9 +47,9 @@ public:
 		if (!pConVar)
 		{
 			return boost::shared_ptr<ConVar>(new ConVar(strdup(szName), szDefaultValue, flags,
-				strdup(szHelpString), bMin, fMin, bMax, fMax), &Deleter);
+				strdup(szHelpString), bMin, fMin, bMax, fMax), &NeverDeleteDeleter<ConVar *>);
 		}
-		return boost::shared_ptr<ConVar>(pConVar, &Deleter);
+		return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
 	}
 
 	static bool HasMin(ConVar* pConVar)

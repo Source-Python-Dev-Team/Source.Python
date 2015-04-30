@@ -84,4 +84,14 @@ void IndexSetter(T *pSelf, U pValue)
 	(*pSelf)[iIndex] = pValue;
 }
 
+
+//-----------------------------------------------------------------------------
+// Dummy deleter function for shared_ptr that we are not owning.
+//-----------------------------------------------------------------------------
+template<class T>
+void NeverDeleteDeleter(T pSelf)
+{
+}
+
+
 #endif // _SP_UTIL_H

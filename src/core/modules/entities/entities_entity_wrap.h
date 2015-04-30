@@ -31,6 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "utilities/baseentity.h"
+#include "utilities/sp_util.h"
 
 
 //-----------------------------------------------------------------------------
@@ -39,14 +40,9 @@
 class BaseEntityExt
 {
 public:
-	static void Deleter(CBaseEntity *pBaseEntity)
-	{
-		// Do nothing...
-	}
-
 	static boost::shared_ptr<CBaseEntity> __init__(unsigned int uiEntityIndex)
 	{
-		return boost::shared_ptr<CBaseEntity>(BaseEntityFromIndex(uiEntityIndex), &Deleter);
+		return boost::shared_ptr<CBaseEntity>(BaseEntityFromIndex(uiEntityIndex, true), &NeverDeleteDeleter<CBaseEntity *>);
 	}
 };
 
