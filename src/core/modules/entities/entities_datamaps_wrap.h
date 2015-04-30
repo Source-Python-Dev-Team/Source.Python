@@ -95,7 +95,7 @@ public:
 		if (!(pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE))
 			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);
 
-		return CPointer((unsigned long)(void *&)pTypeDesc.inputFunc).MakeFunction(oCallingConvention, args, oReturnType);;
+		return new CFunction((unsigned long)(void *&)pTypeDesc.inputFunc, oCallingConvention, args, oReturnType);
 	}
 };
 

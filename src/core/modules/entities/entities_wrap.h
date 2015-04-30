@@ -50,20 +50,6 @@ extern IServerTools* servertools;
 
 
 //-----------------------------------------------------------------------------
-// IServerUnknown extension class.
-//-----------------------------------------------------------------------------
-class IServerUnknownExt
-{
-public:
-	static CPointer *GetBaseEntity( IServerUnknown *pServerUnknown )
-	{
-		return new CPointer((unsigned long)pServerUnknown->GetBaseEntity());
-	}
-	
-};
-
-
-//-----------------------------------------------------------------------------
 // edict_t extension class.
 //-----------------------------------------------------------------------------
 class CEdictExt

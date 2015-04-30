@@ -41,7 +41,6 @@
 #include "utilities/wrap_macros.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
-#include "effects_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(effects_wrap_python.h)
 
@@ -162,8 +161,8 @@ void export_temp_entities_system(scope _effects)
 	TempEntities.def("physics_prop", &ITempEntsSystem::PhysicsProp);
 	TempEntities.def("trigger_temp_entity", &ITempEntsSystem::TriggerTempEntity);
 
-	TempEntities.def("fizz", &TempEntitiesSharedExt::fizz);
-	TempEntities.def("client_projectile", &TempEntitiesSharedExt::client_projectile);
+	TempEntities.def("fizz", &ITempEntsSystem::Fizz);
+	TempEntities.def("client_projectile", &ITempEntsSystem::ClientProjectile);
 
 	// OrangeBox methods...
 	TempEntities.NOT_IMPLEMENTED("dispatch_effect");
