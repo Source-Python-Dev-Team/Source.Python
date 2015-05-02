@@ -245,7 +245,7 @@ void export_server_networkable(scope _entities)
 		*/
 
 		.def("get_base_entity",
-			&ServerNetworkableSharedExt::get_base_entity,
+			&IServerNetworkable::GetBaseEntity,
 			reference_existing_object_policy()
 		)
 

@@ -111,19 +111,6 @@ public:
 
 
 //-----------------------------------------------------------------------------
-// IServerNetworkable extension class.
-//-----------------------------------------------------------------------------
-class ServerNetworkableSharedExt
-{
-public:
-	static CPointer *get_base_entity(IServerNetworkable *pNetworkable)
-	{
-		return new CPointer((unsigned long)pNetworkable->GetBaseEntity());
-	}
-};
-
-
-//-----------------------------------------------------------------------------
 // CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
 class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
