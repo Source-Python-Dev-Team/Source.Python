@@ -15,7 +15,7 @@ from entities.classes import server_classes
 from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
-from entities.helpers import pointer_from_index
+from entities.helpers import pointer_from_edict
 from entities.helpers import spawn_entity
 from entities.specials import _EntitySpecials
 #   Memory
@@ -46,14 +46,28 @@ class Entity(BaseEntity, _EntitySpecials):
 
     """Class used to interact directly with entities."""
 
-    def __init__(self, index):
-        """Set the entity's base attributes."""
-        self._index = index
-        self._edict = edict_from_index(index)
-        self._pointer = pointer_from_index(index)
+    def __new__(cls, index):
+        """Verify the given index is valid and store base attributes."""
+        # Get the given indexes edict
+        edict = edict_from_index(index, False)
 
-        # Initialize the object.
-        super(Entity, self).__init__(index)
+        # Is the edict valid?
+        if edict is None or edict.get_unknown() is None:
+
+            # If not raise an error
+            raise ValueError(
+                'Index "{0}" is not a proper entity index.'.format(index))
+
+        # Create the object
+        self = BaseEntity.__new__(cls)
+
+        # Set the entity's base attributes
+        self._index = index
+        self._edict = edict
+        self._pointer = pointer_from_edict(edict)
+
+        # Return the instance
+        return self
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""

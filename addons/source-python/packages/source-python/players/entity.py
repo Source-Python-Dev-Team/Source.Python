@@ -45,17 +45,20 @@ __all__ = ('PlayerEntity',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(Entity, BaseEntity, _GameWeapons, _PlayerWeapons):
+class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
     """Class used to interact directly with players."""
 
-    def __init__(self, index):
-        """Set the player's PlayerInfo attribute"""
-        # Set the player's PlayerInfo attribute
-        self._playerinfo = playerinfo_from_index(index)
+    def __new__(cls, index):
+        """Set the "entities" attribute and set the PlayerInfo."""
+        # Get the "self" object using the super class' __new__
+        self = super(PlayerEntity, cls).__new__(cls, index)
 
-        # Initialize the object
-        super(PlayerEntity, self).__init__(index)
+        # Set the player's playerinfo attribute
+        self._playerinfo = playerinfo_from_index(self.index)
+
+        # Return the instance
+        return self
 
     @property
     def playerinfo(self):
