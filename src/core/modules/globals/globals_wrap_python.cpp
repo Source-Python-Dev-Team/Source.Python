@@ -147,7 +147,7 @@ void export_globals(scope _globals)
 
 		.NOT_IMPLEMENTED("is_remote_client")
 		
-	) ADD_MEM_TOOLS(CGlobalVarsBase, "_GlobalVarsBase"); // GlobalsBase_Visitor
+	) ADD_MEM_TOOLS(CGlobalVarsBase); // GlobalsBase_Visitor
 
 
 	Globals_Visitor(
@@ -201,7 +201,7 @@ void export_globals(scope _globals)
 		.NOT_IMPLEMENTED_ATTR("map_group_name")
 		.NOT_IMPLEMENTED_ATTR("server_count")
 
-	) ADD_MEM_TOOLS(CGlobalVars, "_GlobalVars"); // Globals_Visitor
+	) ADD_MEM_TOOLS(CGlobalVars); // Globals_Visitor
 
 	_globals.attr("global_vars") = object(ptr(gpGlobals));
 }

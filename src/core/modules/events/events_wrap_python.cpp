@@ -159,7 +159,7 @@ void export_igameevent(scope _events)
 			args("key_name", "value")
 		)
 
-		ADD_MEM_TOOLS(IGameEvent, "GameEvent")
+		ADD_MEM_TOOLS(IGameEvent)
 	;
 }
 
@@ -180,7 +180,7 @@ void export_igameeventlistener(scope _events)
 			&CGameEventListener2::GetEventDebugID
 		)
 
-		ADD_MEM_TOOLS_WRAPPER(CGameEventListener2, IGameEventListener2, "GameEventListener")
+		ADD_MEM_TOOLS_WRAPPER(CGameEventListener2, IGameEventListener2)
 	;
 }
 
@@ -262,7 +262,7 @@ void export_igameeventmanager(scope _events)
 			args("game_event")
 		)
 
-		ADD_MEM_TOOLS(IGameEventManager2, "_GameEventManager")
+		ADD_MEM_TOOLS(IGameEventManager2)
 	;
 
 	_events.attr("game_event_manager") = object(ptr(gameeventmanager));

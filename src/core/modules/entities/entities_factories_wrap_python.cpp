@@ -72,7 +72,7 @@ void export_entity_factory(scope _factories)
 	EntityFactory.add_property("size", &IEntityFactory::GetEntitySize);
 	
 	// Add memory tools...
-	EntityFactory ADD_MEM_TOOLS(IEntityFactory, "EntityFactory");
+	EntityFactory ADD_MEM_TOOLS(IEntityFactory);
 }
 
 
@@ -102,7 +102,7 @@ void export_entity_factory_dictionary_interface(scope _factories)
 	_EntityFactoryDictionary.def("get_cannonical_name", &IEntityFactoryDictionary::GetCannonicalName);
 
 	// Add memory tools...
-	_EntityFactoryDictionary ADD_MEM_TOOLS(IEntityFactoryDictionary, "_EntityFactoryDictionary");
+	_EntityFactoryDictionary ADD_MEM_TOOLS(IEntityFactoryDictionary);
 }
 
 
@@ -121,5 +121,5 @@ void export_entity_factory_dictionary(scope _factories)
 	export_engine_specific_entity_factory_dictionary(_factories, EntityFactoryDictionary);
 
 	// Add memory tools...
-	EntityFactoryDictionary ADD_MEM_TOOLS(CEntityFactoryDictionary, "EntityFactoryDictionary");
+	EntityFactoryDictionary ADD_MEM_TOOLS(CEntityFactoryDictionary);
 }

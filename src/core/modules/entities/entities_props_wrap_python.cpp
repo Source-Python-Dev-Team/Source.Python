@@ -101,7 +101,7 @@ void export_send_table(scope _props)
 	SendTable_.def("__len__", &SendTable::GetNumProps);
 	
 	// Add memory tools...
-	SendTable_ ADD_MEM_TOOLS(SendTable, "SendTable");
+	SendTable_ ADD_MEM_TOOLS(SendTable);
 }
 
 
@@ -175,7 +175,7 @@ void export_send_prop(scope _props)
 	export_engine_specific_send_prop(_props, SendProp_);
 	
 	// Add memory tools...
-	SendProp_ ADD_MEM_TOOLS(SendProp, "SendProp");
+	SendProp_ ADD_MEM_TOOLS(SendProp);
 }
 
 
@@ -262,7 +262,7 @@ void export_send_prop_variant(scope _props)
 	export_engine_specific_send_prop_variant(_props, SendPropVariant);
 
 	// Add memory tools...
-	SendPropVariant ADD_MEM_TOOLS(DVariant, "SendPropVariant");
+	SendPropVariant ADD_MEM_TOOLS(DVariant);
 }
 
 
@@ -282,5 +282,5 @@ void export_server_class(scope _props)
 	export_engine_specific_server_class(_props, ServerClass_);
 	
 	// Add memory tools...
-	ServerClass_ ADD_MEM_TOOLS(ServerClass, "ServerClass");
+	ServerClass_ ADD_MEM_TOOLS(ServerClass);
 }

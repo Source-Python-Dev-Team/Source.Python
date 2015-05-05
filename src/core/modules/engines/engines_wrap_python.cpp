@@ -715,7 +715,7 @@ void export_engine_server(scope _engines)
 		.NOT_IMPLEMENTED("reserve_server_for_queued_game")
 		.NOT_IMPLEMENTED("get_engine_hltv_info")
 
-	) ADD_MEM_TOOLS(IVEngineServer, "_EngineServer"); // IVEngineServer_Visitor
+	) ADD_MEM_TOOLS(IVEngineServer); // IVEngineServer_Visitor
 
 	_engines.attr("engine_server") = object(ptr(engine));
 }
@@ -800,7 +800,7 @@ void export_engine_sound(scope _engines)
 		// Only available for CS:GO
 		.NOT_IMPLEMENTED("is_looping_sound")
 
-	) ADD_MEM_TOOLS(IEngineSound, "_EngineSound"); // IEngineSound_Visitor
+	) ADD_MEM_TOOLS(IEngineSound); // IEngineSound_Visitor
 
 	_engines.attr("engine_sound") = object(ptr(enginesound));
 
@@ -866,7 +866,7 @@ void export_engine_trace(scope _engines)
 		.def("__init__", make_constructor(&Ray_tExt::CreateRay1))
 		.def("__init__", make_constructor(&Ray_tExt::CreateRay2))
 
-		ADD_MEM_TOOLS(Ray_t, "Ray")
+		ADD_MEM_TOOLS(Ray_t)
 	;
 
 	class_<IEngineTrace, boost::noncopyable>("_EngineTrace", no_init)
@@ -939,7 +939,7 @@ void export_engine_trace(scope _engines)
 		virtual bool GetBrushInfo( int iBrush, CUtlVector<Vector4D> *pPlanesOut, int *pContentsOut ) = 0;
 		*/
 
-		ADD_MEM_TOOLS(IEngineTrace, "_EngineTrace")
+		ADD_MEM_TOOLS(IEngineTrace)
 	;
 
 	_engines.attr("engine_trace") = object(ptr(enginetrace));
@@ -977,7 +977,7 @@ void export_engine_trace(scope _engines)
 			&CBaseTrace::startsolid
 		)
 
-		ADD_MEM_TOOLS(CBaseTrace, "BaseTrace")
+		ADD_MEM_TOOLS(CBaseTrace)
 	;
 	
 	_engines.attr("DISPSURF_FLAG_SURFACE") = DISPSURF_FLAG_SURFACE;
@@ -1028,7 +1028,7 @@ void export_engine_trace(scope _engines)
 			&CGameTrace::hitbox
 		)
 
-		ADD_MEM_TOOLS(CGameTrace, "GameTrace")
+		ADD_MEM_TOOLS(CGameTrace)
 	;
 
 	class_<csurface_t>("Surface")
@@ -1044,7 +1044,7 @@ void export_engine_trace(scope _engines)
 			&csurface_t::flags
 		)
 
-		ADD_MEM_TOOLS(csurface_t, "Surface")
+		ADD_MEM_TOOLS(csurface_t)
 	;
 
 	// Trace filter baseclass
@@ -1059,7 +1059,7 @@ void export_engine_trace(scope _engines)
 			"Returns the trace type."
 		)
 
-		ADD_MEM_TOOLS_WRAPPER(ITraceFilterWrap, ITraceFilter, "TraceFilter")
+		ADD_MEM_TOOLS_WRAPPER(ITraceFilterWrap, ITraceFilter)
 	;
 
 	// Enumerator baseclass
@@ -1069,7 +1069,7 @@ void export_engine_trace(scope _engines)
 			"Gets called with each handle."
 		)
 
-		ADD_MEM_TOOLS_WRAPPER(IEntityEnumeratorWrap, IEntityEnumerator, "EntityEnumerator")
+		ADD_MEM_TOOLS_WRAPPER(IEntityEnumeratorWrap, IEntityEnumerator)
 	;
 
 	// Trace types
@@ -1172,7 +1172,7 @@ void export_server_game_dll(scope _engines)
 	);
 	
 	// Add memory tools...
-	ServerGameDLL ADD_MEM_TOOLS(IServerGameDLL, "_ServerGameDLL");
+	ServerGameDLL ADD_MEM_TOOLS(IServerGameDLL);
 	
 	// Singleton...
 	_engines.attr("server_game_dll") = object(ptr(servergamedll));

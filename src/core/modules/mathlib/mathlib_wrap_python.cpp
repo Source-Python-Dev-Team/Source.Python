@@ -239,7 +239,7 @@ void export_vector(scope _mathlib)
 			args("other")
 		)
 
-		ADD_MEM_TOOLS(Vector, "Vector")
+		ADD_MEM_TOOLS(Vector)
 	;
 }
 
@@ -313,7 +313,7 @@ void export_qangle(scope _mathlib)
 		.def(self * other<float>())
 		.def(self / other<float>())
 
-		ADD_MEM_TOOLS(QAngle, "QAngle")
+		ADD_MEM_TOOLS(QAngle)
 	;
 }
 
@@ -366,7 +366,7 @@ void export_quaternion(scope _mathlib)
 			&Quaternion::w
 		)
 
-		ADD_MEM_TOOLS(Quaternion, "Quaternion")
+		ADD_MEM_TOOLS(Quaternion)
 	;
 }
 
@@ -394,7 +394,7 @@ void export_cplane_t(scope _mathlib)
 			&cplane_t::signbits
 		)
 
-		ADD_MEM_TOOLS(cplane_t, "Plane")
+		ADD_MEM_TOOLS(cplane_t)
 	;
 }
 
@@ -446,6 +446,6 @@ void export_radian_euler(scope _mathlib)
 			&RadianEuler::z
 		)
 
-		ADD_MEM_TOOLS(RadianEuler, "RadianEuler")
+		ADD_MEM_TOOLS(RadianEuler)
 	;
 }

@@ -95,6 +95,6 @@ void export_client_command_manager(scope _client)
 			args("callable")
 		)
 
-		ADD_MEM_TOOLS(CClientCommandManager, "ClientCommandDispatcher")
+		ADD_MEM_TOOLS(CClientCommandManager)
 	;
 }

@@ -73,7 +73,7 @@ void export_model_cache_interface(scope _cache)
 	ModelCache.def("get_model_header", &IMDLCache::GetStudioHdr, reference_existing_object_policy());
 
 	// Add memory tools...
-	ModelCache ADD_MEM_TOOLS(IMDLCache, "ModelCache");
+	ModelCache ADD_MEM_TOOLS(IMDLCache);
 
 	// Singleton...
 	_cache.attr("model_cache") = object(ptr(modelcache));

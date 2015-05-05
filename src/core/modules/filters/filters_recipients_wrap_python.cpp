@@ -77,7 +77,7 @@ void export_mrecipientfilter(scope _recipients)
 			args("slot")
 		)
 
-		ADD_MEM_TOOLS(IRecipientFilter, "_IRecipientFilter")
+		ADD_MEM_TOOLS(IRecipientFilter)
 	;
 
 	class_<MRecipientFilter, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
@@ -109,6 +109,6 @@ void export_mrecipientfilter(scope _recipients)
 			args("iPlayer")
 		)
 
-		ADD_MEM_TOOLS(MRecipientFilter, "_RecipientFilter")
+		ADD_MEM_TOOLS(MRecipientFilter)
 	;
 }

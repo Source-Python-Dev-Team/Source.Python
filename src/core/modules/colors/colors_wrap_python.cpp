@@ -88,5 +88,5 @@ void export_color(scope _colors)
 	Color_.def(self != self);
 
 	// Add memory tools...
-	Color_ ADD_MEM_TOOLS(Color, "Color");
+	Color_ ADD_MEM_TOOLS(Color);
 }

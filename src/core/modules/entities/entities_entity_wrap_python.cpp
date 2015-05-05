@@ -76,5 +76,5 @@ void export_base_entity(scope _entity)
 	);
 
 	// Add memory tools...
-	BaseEntity ADD_MEM_TOOLS(CBaseEntity, "BaseEntity");
+	BaseEntity ADD_MEM_TOOLS(CBaseEntity);
 }

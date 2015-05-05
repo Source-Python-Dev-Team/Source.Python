@@ -270,6 +270,6 @@ void export_keyvalues(scope _keyvalues)
 			args("key_name", "value")
 		)
 
-		ADD_MEM_TOOLS(KeyValues, "_KeyValues")
+		ADD_MEM_TOOLS(KeyValues)
 	;
 }

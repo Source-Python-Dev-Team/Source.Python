@@ -74,7 +74,7 @@ void export_interval(scope _datamaps)
 	Interval.def_readwrite("range", &interval_t::range);
 	
 	// Add memory tools...
-	Interval ADD_MEM_TOOLS(interval_t, "Interval");
+	Interval ADD_MEM_TOOLS(interval_t);
 }
 
 
@@ -112,7 +112,7 @@ void export_datamap(scope _datamaps)
 	export_engine_specific_datamap(_datamaps, DataMap);
 
 	// Add memory tools...
-	DataMap ADD_MEM_TOOLS(datamap_t, "DataMap");
+	DataMap ADD_MEM_TOOLS(datamap_t);
 }
 
 
@@ -149,7 +149,7 @@ void export_type_description(scope _datamaps)
 	export_engine_specific_type_description(_datamaps, TypeDescription);
 
 	// Add memory tools...
-	TypeDescription ADD_MEM_TOOLS(typedescription_t, "TypeDescription");
+	TypeDescription ADD_MEM_TOOLS(typedescription_t);
 }
 
 
@@ -171,7 +171,7 @@ void export_input_data(scope _datamaps)
 	InputData.def_readwrite("output_index", &inputdata_t::nOutputID);
 
 	// Add memory tools...
-	InputData ADD_MEM_TOOLS(inputdata_t, "InputData");
+	InputData ADD_MEM_TOOLS(inputdata_t);
 }
 
 
@@ -209,7 +209,7 @@ void export_variant(scope _datamaps)
 	Variant.def("set_entity", &VariantSharedExt::set_entity);
 
 	// Add memory tools...
-	Variant ADD_MEM_TOOLS(variant_t, "Variant");
+	Variant ADD_MEM_TOOLS(variant_t);
 }
 
 

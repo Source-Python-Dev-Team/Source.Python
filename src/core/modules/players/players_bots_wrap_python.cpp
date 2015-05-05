@@ -81,7 +81,7 @@ void export_botmanager(scope _bots)
 			reference_existing_object_policy()
 		)
 
-		ADD_MEM_TOOLS(IBotManager, "_BotManager")
+		ADD_MEM_TOOLS(IBotManager)
 	;
 
 	_bots.attr("bot_manager") = object(ptr(botmanager));
@@ -152,7 +152,7 @@ void export_botcontroller(scope _bots)
 			args("cmd")
 		)
 
-		ADD_MEM_TOOLS(IBotController, "BotController")
+		ADD_MEM_TOOLS(IBotController)
 	;
 }
 
@@ -238,6 +238,6 @@ void export_botcmd(scope _bots)
 			"Client only, tracks whether we've predicted this command at least once."
 		)
 
-		ADD_MEM_TOOLS(CBotCmd, "BotCmd")
+		ADD_MEM_TOOLS(CBotCmd)
 	;
 }

@@ -210,7 +210,7 @@ void export_bf_write(scope _bitbuffers)
 			&bf_write::m_iCurBit
 		)
 
-		ADD_MEM_TOOLS(bf_write, "BitBufferWrite")
+		ADD_MEM_TOOLS(bf_write)
 	;
 }
 
@@ -358,6 +358,6 @@ void export_bf_read(scope _bitbuffers)
 			&bf_read::GetNumBitsRead
 		)
 
-		ADD_MEM_TOOLS(bf_read, "BitBufferRead")
+		ADD_MEM_TOOLS(bf_read)
 	;
 }

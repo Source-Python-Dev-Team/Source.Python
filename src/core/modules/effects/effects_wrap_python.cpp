@@ -109,7 +109,7 @@ void export_prediction_system(scope _effects)
 		)
 		.staticmethod("suppress_events")
 
-		ADD_MEM_TOOLS(IPredictionSystem, "PredictionSystem")
+		ADD_MEM_TOOLS(IPredictionSystem)
 	;
 }
 
@@ -171,7 +171,7 @@ void export_temp_entities_system(scope _effects)
 	export_engine_specific_temp_entities_system(_effects, TempEntities);
 
 	// Add memory tools...
-	TempEntities ADD_MEM_TOOLS(ITempEntsSystem, "_TempEntities");
+	TempEntities ADD_MEM_TOOLS(ITempEntsSystem);
 }
 
 
@@ -209,5 +209,5 @@ void export_dispatch_effect_data(scope _effects)
 	export_engine_specific_dispatch_effect_data(_effects, DispatchEffectData);
 	
 	// Add memory tools...
-	DispatchEffectData ADD_MEM_TOOLS(CEffectData, "DispatchEffectData");
+	DispatchEffectData ADD_MEM_TOOLS(CEffectData);
 }

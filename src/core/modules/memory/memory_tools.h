@@ -75,17 +75,17 @@ extern dict g_oExposedClasses;
 
 // Use this macro to add the class to the three functions
 // Note: This must be at the end of the class definition!
-#define ADD_MEM_TOOLS(classname, pyname) \
+#define ADD_MEM_TOOLS(classname) \
 	ADD_PTR(classname) \
 	ADD_OBJ(classname) \
 	ADD_SIZE(classname) \
-	STORE_CLASS(classname, pyname)
+	STORE_CLASS(classname, converter::registry::query(typeid(classname))->m_class_object->tp_name)
 
-#define ADD_MEM_TOOLS_WRAPPER(classname, realname, pyname) \
+#define ADD_MEM_TOOLS_WRAPPER(classname, realname) \
 	ADD_PTR(classname) \
 	ADD_OBJ(classname) \
 	ADD_SIZE(classname) \
-	STORE_CLASS(realname, pyname)
+	STORE_CLASS(realname, converter::registry::query(typeid(classname))->m_class_object->tp_name)
 
 
 //-----------------------------------------------------------------------------

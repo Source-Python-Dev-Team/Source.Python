@@ -180,7 +180,7 @@ void export_playerinfo(scope _players)
 			&IPlayerInfo::GetLastUserCommand
 		)
 
-		ADD_MEM_TOOLS(IPlayerInfo, "PlayerInfo")
+		ADD_MEM_TOOLS(IPlayerInfo)
 	;
 }
 
@@ -201,7 +201,7 @@ void export_netinfo(scope _players)
 			"Returns the amount of time the player has been connected."
 		)
 
-		ADD_MEM_TOOLS(INetChannelInfo, "NetChannelInfo")
+		ADD_MEM_TOOLS(INetChannelInfo)
 	;
 }
 

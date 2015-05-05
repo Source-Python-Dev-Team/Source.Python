@@ -121,7 +121,7 @@ void export_base_entity_handle(scope _entities)
 			reference_existing_object_policy()
 		)
 
-		ADD_MEM_TOOLS(CBaseHandle, "BaseEntityHandle")
+		ADD_MEM_TOOLS(CBaseHandle)
 	;
 }
 
@@ -141,7 +141,7 @@ void export_handle_entity(scope _entities)
 			reference_existing_object_policy()
 		)
 
-		ADD_MEM_TOOLS(IHandleEntity, "HandleEntity")
+		ADD_MEM_TOOLS(IHandleEntity)
 	;
 }
 
@@ -169,7 +169,7 @@ void export_server_unknown(scope _entities)
 			reference_existing_object_policy()
 		)
 
-		ADD_MEM_TOOLS(IServerUnknown, "ServerUnknown")
+		ADD_MEM_TOOLS(IServerUnknown)
 	;
 }
 
@@ -195,7 +195,7 @@ void export_server_entity(scope _entities)
 			args("index")
 		)
 
-		ADD_MEM_TOOLS(IServerEntity, "ServerEntity")
+		ADD_MEM_TOOLS(IServerEntity)
 	;
 }
 
@@ -255,7 +255,7 @@ void export_server_networkable(scope _entities)
 			reference_existing_object_policy()
 		)
 
-		ADD_MEM_TOOLS(IServerNetworkable, "ServerNetworkable")
+		ADD_MEM_TOOLS(IServerNetworkable)
 	;
 }
 
@@ -369,7 +369,7 @@ void export_edict(scope _entities)
 			&CBaseEdict::m_pNetworkable
 		)
 
-		ADD_MEM_TOOLS(CBaseEdict, "_BaseEdict")
+		ADD_MEM_TOOLS(CBaseEdict)
 	;
 
 	class_< edict_t, bases<CBaseEdict> >("Edict")
@@ -460,7 +460,7 @@ void export_edict(scope _entities)
 		)
 		*/
 
-		ADD_MEM_TOOLS(edict_t, "Edict")
+		ADD_MEM_TOOLS(edict_t)
 	;
 }
 
@@ -529,7 +529,7 @@ void export_take_damage_info(scope _entities)
 	export_engine_specific_take_damage_info(_entities, TakeDamageInfo);
 	
 	// Add memory tools...
-	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo, "TakeDamageInfo");
+	TakeDamageInfo ADD_MEM_TOOLS(CTakeDamageInfo);
 }
 
 
@@ -547,7 +547,7 @@ void export_global_entity_list(scope _entities)
 			&CGlobalEntityList::AddListenerEntity
 		)
 
-		ADD_MEM_TOOLS(CGlobalEntityList, "GlobalEntityList");
+		ADD_MEM_TOOLS(CGlobalEntityList);
 	;
 }
 
@@ -560,5 +560,5 @@ void export_entity_listener(scope _entities)
 	class_<IEntityListener> EntityListener("EntityListener");
 
 	// Add memory tools...
-	EntityListener ADD_MEM_TOOLS(IEntityListener, "EntityListener");
+	EntityListener ADD_MEM_TOOLS(IEntityListener);
 }

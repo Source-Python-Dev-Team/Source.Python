@@ -260,7 +260,7 @@ void export_stringtable(scope _stringtables)
 			("string")
 		)
 
-		ADD_MEM_TOOLS(INetworkStringTable, "StringTable")
+		ADD_MEM_TOOLS(INetworkStringTable)
 	;
 }
 
@@ -316,7 +316,7 @@ void export_stringtable_container(scope _stringtables)
 			("table", "state")
 		)
 
-		ADD_MEM_TOOLS(INetworkStringTableContainer, "_StringTables")
+		ADD_MEM_TOOLS(INetworkStringTableContainer)
 	;
 	
 	// Singleton.

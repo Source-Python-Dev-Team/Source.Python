@@ -128,7 +128,7 @@ void export_command(scope _commands)
 		)
 		.staticmethod("get_max_command_length")
 
-		ADD_MEM_TOOLS(CCommand, "Command")
+		ADD_MEM_TOOLS(CCommand)
 	;
 }
 
@@ -207,6 +207,6 @@ void export_concommandbase(scope _commands)
 			"Returns the DLL identifier."
 		)
 
-		ADD_MEM_TOOLS(ConCommandBase, "ConCommandBase")
+		ADD_MEM_TOOLS(ConCommandBase)
 	;
 }

@@ -48,7 +48,7 @@ void export_engine_specific_weapon_database(T _scripts)
 	_WeaponDatabase.add_property("_length", &WeaponDataBase_t::Count);
 
 	// Add memory tools...
-	_WeaponDatabase ADD_MEM_TOOLS(WeaponDataBase_t, "_WeaponDatabase");
+	_WeaponDatabase ADD_MEM_TOOLS(WeaponDataBase_t);
 }
 
 #endif // _WEAPONS_SCRIPTS_ORANGEBOX_WRAP_PYTHON_H

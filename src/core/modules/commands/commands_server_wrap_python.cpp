@@ -87,6 +87,6 @@ void export_server_command_manager(scope _server)
 			args("callable")
 		)
 
-		ADD_MEM_TOOLS(CServerCommandManager, "ServerCommandDispatcher")
+		ADD_MEM_TOOLS(CServerCommandManager)
 	;
 }

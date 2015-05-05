@@ -722,7 +722,7 @@ void export_dynamichooks(scope _memory)
 			&ICallingConventionWrapper::m_iAlignment
 		)
 
-		ADD_MEM_TOOLS_WRAPPER(ICallingConventionWrapper, ICallingConvention, "CallingConvention")
+		ADD_MEM_TOOLS_WRAPPER(ICallingConventionWrapper, ICallingConvention)
 	;
 
 	def("get_data_type_size",

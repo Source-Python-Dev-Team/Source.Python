@@ -133,7 +133,7 @@ void export_model_header(scope _studio)
 	ModelHeader.def("__len__", make_getter(&studiohdr_t::length));
 
 	// Add memory tools...
-	ModelHeader ADD_MEM_TOOLS(studiohdr_t, "ModelHeader");
+	ModelHeader ADD_MEM_TOOLS(studiohdr_t);
 }
 
 
@@ -169,7 +169,7 @@ void export_bone(scope _studio)
 	ModelBone.def("get_procedure", &ModelBoneExt::get_procedure, manage_new_object_policy());
 
 	// Add memory tools...
-	ModelBone ADD_MEM_TOOLS(mstudiobone_t, "ModelBone");
+	ModelBone ADD_MEM_TOOLS(mstudiobone_t);
 }
 
 
@@ -189,7 +189,7 @@ void export_bone_controller(scope _studio)
 	BoneController.def_readwrite("input_field", &mstudiobonecontroller_t::inputfield);
 
 	// Add memory tools...
-	BoneController ADD_MEM_TOOLS(mstudiobonecontroller_t, "BoneController");
+	BoneController ADD_MEM_TOOLS(mstudiobonecontroller_t);
 }
 
 
@@ -208,7 +208,7 @@ void export_hitbox_set(scope _studio)
 	HitboxSet.def("get_hitbox", &mstudiohitboxset_t::pHitbox, reference_existing_object_policy());
 
 	// Add memory tools...
-	HitboxSet ADD_MEM_TOOLS(mstudiohitboxset_t, "HitboxSet");
+	HitboxSet ADD_MEM_TOOLS(mstudiohitboxset_t);
 }
 
 
@@ -229,7 +229,7 @@ void export_hitbox(scope _studio)
 	Hitbox.add_property("max", make_getter(&mstudiobbox_t::bbmax, reference_existing_object_policy()));
 
 	// Add memory tools...
-	Hitbox ADD_MEM_TOOLS(mstudiobbox_t, "Hitbox");
+	Hitbox ADD_MEM_TOOLS(mstudiobbox_t);
 }
 
 
@@ -264,7 +264,7 @@ void export_animation(scope _studio)
 	// Animation.def("get_hierarchy", &mstudioanimdesc_t::pHierarchy, reference_existing_object_policy());
 
 	// Add memory tools...
-	Animation ADD_MEM_TOOLS(mstudioanimdesc_t, "Animation");
+	Animation ADD_MEM_TOOLS(mstudioanimdesc_t);
 }
 
 
@@ -286,7 +286,7 @@ void export_movement(scope _studio)
 	Movement.add_property("position", make_getter(&mstudiomovement_t::position, reference_existing_object_policy()));
 
 	// Add memory tools...
-	Movement ADD_MEM_TOOLS(mstudiomovement_t, "Movement");
+	Movement ADD_MEM_TOOLS(mstudiomovement_t);
 }
 
 
@@ -307,7 +307,7 @@ void export_hierarchy(scope _studio)
 	Hierarchy.def_readwrite("start", &mstudiolocalhierarchy_t::iStart);
 
 	// Add memory tools...
-	Hierarchy ADD_MEM_TOOLS(mstudiolocalhierarchy_t, "Hierarchy");
+	Hierarchy ADD_MEM_TOOLS(mstudiolocalhierarchy_t);
 }
 
 
@@ -323,7 +323,7 @@ void export_anim_sections(scope _studio)
 	AnimSections.def_readwrite("index", &mstudioanimsections_t::animindex);
 
 	// Add memory tools...
-	AnimSections ADD_MEM_TOOLS(mstudioanimsections_t, "AnimSections");
+	AnimSections ADD_MEM_TOOLS(mstudioanimsections_t);
 }
 
 
@@ -366,7 +366,7 @@ void export_sequence(scope _studio)
 	Sequence.def("get_weight", &mstudioseqdesc_t::weight);
 
 	// Add memory tools...
-	Sequence ADD_MEM_TOOLS(mstudioseqdesc_t, "Sequence");
+	Sequence ADD_MEM_TOOLS(mstudioseqdesc_t);
 }
 
 
@@ -388,7 +388,7 @@ void export_sequence_event(scope _studio)
 	SequenceEvent.def("get_name", &SequenceEventExt::get_name);
 
 	// Add memory tools...
-	SequenceEvent ADD_MEM_TOOLS(mstudioevent_t, "SequenceEvent");
+	SequenceEvent ADD_MEM_TOOLS(mstudioevent_t);
 }
 
 
@@ -407,5 +407,5 @@ void export_attachment(scope _studio)
 	ModelAttachment.def_readwrite("local", &mstudioattachment_t::local); // TODO: Export matrix3x4_t...
 
 	// Add memory tools...
-	ModelAttachment ADD_MEM_TOOLS(mstudioattachment_t, "ModelAttachment");
+	ModelAttachment ADD_MEM_TOOLS(mstudioattachment_t);
 }

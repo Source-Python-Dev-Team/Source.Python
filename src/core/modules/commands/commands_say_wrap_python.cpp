@@ -95,6 +95,6 @@ void export_say_command_manager(scope _say)
 			args("callable")
 		)
 
-		ADD_MEM_TOOLS(CSayCommandManager, "SayCommandDispatcher")
+		ADD_MEM_TOOLS(CSayCommandManager)
 	;
 }

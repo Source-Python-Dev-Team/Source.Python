@@ -107,7 +107,7 @@ void export_cvar_interface(scope _cvars)
 			reference_existing_object_policy()
 		)
 
-		ADD_MEM_TOOLS(ICvar, "_Cvar")
+		ADD_MEM_TOOLS(ICvar)
 	;
 
 	_cvars.attr("cvar") = object(ptr(g_pCVar));
@@ -146,7 +146,7 @@ void export_convar_interface(scope _cvars)
 			"Returns whether the given flag is set."
 		)
 
-		ADD_MEM_TOOLS(IConVar, "_IConVar")
+		ADD_MEM_TOOLS(IConVar)
 	;
 }
 
@@ -222,7 +222,7 @@ void export_convar(scope _cvars)
 			args("value")
 		)
 
-		ADD_MEM_TOOLS(ConVar, "_ConVar")
+		ADD_MEM_TOOLS(ConVar)
 	;
 }
 
