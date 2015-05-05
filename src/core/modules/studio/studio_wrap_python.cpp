@@ -47,7 +47,7 @@ void export_movement(scope);
 void export_hierarchy(scope);
 void export_anim_sections(scope);
 void export_sequence(scope);
-void export_event(scope);
+void export_sequence_event(scope);
 void export_attachment(scope);
 
 
@@ -66,7 +66,7 @@ DECLARE_SP_MODULE(_studio)
 	export_hierarchy(_studio);
 	export_anim_sections(_studio);
 	export_sequence(_studio);
-	export_event(_studio);
+	export_sequence_event(_studio);
 	export_attachment(_studio);
 }
 
@@ -76,7 +76,14 @@ DECLARE_SP_MODULE(_studio)
 //-----------------------------------------------------------------------------
 void export_model_header(scope _studio)
 {
-	class_<studiohdr_t, studiohdr_t *, boost::noncopyable> ModelHeader("ModelHeader", no_init);
+	class_<studiohdr_t, boost::shared_ptr<studiohdr_t>, boost::noncopyable> ModelHeader("ModelHeader", no_init);
+
+	// Initializer...
+	ModelHeader.def("__init__", make_constructor(&ModelHeaderExt::__init__,
+			default_call_policies(),
+			args("model_name")
+		)
+	);
 
 	// Properties...
 	ModelHeader.def_readwrite("id", &studiohdr_t::id); // Looks like a pointer?
@@ -135,34 +142,34 @@ void export_model_header(scope _studio)
 //-----------------------------------------------------------------------------
 void export_bone(scope _studio)
 {
-	class_<mstudiobone_t, mstudiobone_t *, boost::noncopyable> Bone("Bone");
+	class_<mstudiobone_t, mstudiobone_t *, boost::noncopyable> ModelBone("ModelBone");
 
 	// Properties...
-	Bone.add_property("name", &BoneExt::get_name);
-	Bone.def_readwrite("parent", &mstudiobone_t::parent);
+	ModelBone.add_property("name", &ModelBoneExt::get_name);
+	ModelBone.def_readwrite("parent", &mstudiobone_t::parent);
 
-	Bone.add_property("position", make_getter(&mstudiobone_t::pos, reference_existing_object_policy()));
-	Bone.add_property("quaternion", make_getter(&mstudiobone_t::quat, reference_existing_object_policy()));
-	Bone.add_property("radiant_euler", make_getter(&mstudiobone_t::rot, reference_existing_object_policy()));
-	Bone.add_property("position_scale", make_getter(&mstudiobone_t::posscale, reference_existing_object_policy()));
-	Bone.add_property("radiant_euler_scale", make_getter(&mstudiobone_t::rotscale, reference_existing_object_policy()));
+	ModelBone.add_property("position", make_getter(&mstudiobone_t::pos, reference_existing_object_policy()));
+	ModelBone.add_property("quaternion", make_getter(&mstudiobone_t::quat, reference_existing_object_policy()));
+	ModelBone.add_property("radiant_euler", make_getter(&mstudiobone_t::rot, reference_existing_object_policy()));
+	ModelBone.add_property("position_scale", make_getter(&mstudiobone_t::posscale, reference_existing_object_policy()));
+	ModelBone.add_property("radiant_euler_scale", make_getter(&mstudiobone_t::rotscale, reference_existing_object_policy()));
 
-	Bone.add_property("position_to_bone", make_getter(&mstudiobone_t::poseToBone, reference_existing_object_policy())); // TODO: Export matrix3x4_t...
+	ModelBone.add_property("position_to_bone", make_getter(&mstudiobone_t::poseToBone, reference_existing_object_policy())); // TODO: Export matrix3x4_t...
 
-	Bone.add_property("alignment", make_getter(&mstudiobone_t::qAlignment, reference_existing_object_policy()));
-	Bone.add_property("surface_name", &BoneExt::get_surface_name);
+	ModelBone.add_property("alignment", make_getter(&mstudiobone_t::qAlignment, reference_existing_object_policy()));
+	ModelBone.add_property("surface_name", &ModelBoneExt::get_surface_name);
 
-	Bone.def_readwrite("flags", &mstudiobone_t::flags);
-	Bone.def_readwrite("procedural_type", &mstudiobone_t::proctype);
-	Bone.def_readwrite("physics_bone", &mstudiobone_t::physicsbone);
-	Bone.def_readwrite("flags", &mstudiobone_t::flags);
-	Bone.def_readwrite("contents", &mstudiobone_t::contents);
+	ModelBone.def_readwrite("flags", &mstudiobone_t::flags);
+	ModelBone.def_readwrite("procedural_type", &mstudiobone_t::proctype);
+	ModelBone.def_readwrite("physics_bone", &mstudiobone_t::physicsbone);
+	ModelBone.def_readwrite("flags", &mstudiobone_t::flags);
+	ModelBone.def_readwrite("contents", &mstudiobone_t::contents);
 
 	// Methods...
-	Bone.def("get_procedure", &BoneExt::get_procedure, manage_new_object_policy());
+	ModelBone.def("get_procedure", &ModelBoneExt::get_procedure, manage_new_object_policy());
 
 	// Add memory tools...
-	Bone ADD_MEM_TOOLS(mstudiobone_t, "Bone");
+	ModelBone ADD_MEM_TOOLS(mstudiobone_t, "ModelBone");
 }
 
 
@@ -366,24 +373,23 @@ void export_sequence(scope _studio)
 //-----------------------------------------------------------------------------
 // Exports mstudioevent_t.
 //-----------------------------------------------------------------------------
-void export_event(scope _studio)
+void export_sequence_event(scope _studio)
 {
-	class_<mstudioevent_t, mstudioevent_t *, boost::noncopyable> Event("Event");
+	class_<mstudioevent_t, mstudioevent_t *, boost::noncopyable> SequenceEvent("SequenceEvent");
 
 	// Properties...
-	Event.def_readwrite("cycle", &mstudioevent_t::cycle);
-	Event.def_readwrite("event", &mstudioevent_t::event);
-	Event.def_readwrite("type", &mstudioevent_t::type);
-	Event.add_property("options", &mstudioevent_t::pszOptions);
-	Event.def_readwrite("event_offset", &mstudioevent_t::szeventindex);
+	SequenceEvent.def_readwrite("cycle", &mstudioevent_t::cycle);
+	SequenceEvent.def_readwrite("event", &mstudioevent_t::event);
+	SequenceEvent.def_readwrite("type", &mstudioevent_t::type);
+	SequenceEvent.add_property("options", &mstudioevent_t::pszOptions);
+	SequenceEvent.def_readwrite("event_offset", &mstudioevent_t::szeventindex);
 
 	// Methods...
-	Event.def("get_name", &EventExt::get_name);
+	SequenceEvent.def("get_name", &SequenceEventExt::get_name);
 
 	// Add memory tools...
-	Event ADD_MEM_TOOLS(mstudioevent_t, "Event");
+	SequenceEvent ADD_MEM_TOOLS(mstudioevent_t, "SequenceEvent");
 }
-
 
 
 //-----------------------------------------------------------------------------
@@ -391,15 +397,15 @@ void export_event(scope _studio)
 //-----------------------------------------------------------------------------
 void export_attachment(scope _studio)
 {
-	class_<mstudioattachment_t, mstudioattachment_t *, boost::noncopyable> Attachment("Attachment");
+	class_<mstudioattachment_t, mstudioattachment_t *, boost::noncopyable> ModelAttachment("ModelAttachment");
 
 	// Properties...
-	Attachment.def_readwrite("name_offset", &mstudioattachment_t::sznameindex);
-	Attachment.add_property("name", &AttachmentExt::get_name);
-	Attachment.def_readwrite("flags", &mstudioattachment_t::flags);
-	Attachment.def_readwrite("local_bone", &mstudioattachment_t::localbone);
-	Attachment.def_readwrite("local", &mstudioattachment_t::local); // TODO: Export matrix3x4_t...
+	ModelAttachment.def_readwrite("name_offset", &mstudioattachment_t::sznameindex);
+	ModelAttachment.add_property("name", &ModelAttachmentExt::get_name);
+	ModelAttachment.def_readwrite("flags", &mstudioattachment_t::flags);
+	ModelAttachment.def_readwrite("local_bone", &mstudioattachment_t::localbone);
+	ModelAttachment.def_readwrite("local", &mstudioattachment_t::local); // TODO: Export matrix3x4_t...
 
 	// Add memory tools...
-	Attachment ADD_MEM_TOOLS(mstudioattachment_t, "Attachment");
+	ModelAttachment ADD_MEM_TOOLS(mstudioattachment_t, "ModelAttachment");
 }

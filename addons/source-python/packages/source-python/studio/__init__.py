@@ -17,10 +17,10 @@ from loggers import _sp_logger
 #   Studio
 from _studio import Animation
 from _studio import AnimSections
-from _studio import Attachment
-from _studio import Bone
+from _studio import ModelAttachment
+from _studio import ModelBone
 from _studio import BoneController
-from _studio import Event
+from _studio import SequenceEvent
 from _studio import Hierarchy
 from _studio import Hitbox
 from _studio import HitboxSet
@@ -34,10 +34,10 @@ from _studio import Sequence
 # =============================================================================
 __all__ = ('AnimSections',
            'Animation',
-           'Attachment',
-           'Bone',
+           'ModelAttachment',
+           'ModelBone',
            'BoneController',
-           'Event',
+           'SequenceEvent',
            'Hierarchy',
            'Hitbox',
            'HitboxSet',
@@ -51,5 +51,5 @@ __all__ = ('AnimSections',
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the sp.listeners logger
+# Get the sp.studio logger
 studio_logger = _sp_logger.studio

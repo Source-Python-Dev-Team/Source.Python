@@ -32,27 +32,54 @@
 //-----------------------------------------------------------------------------
 #include "studio.h"
 #include "modules/memory/memory_tools.h"
+#include "utilities/wrap_macros.h"
+#include "utilities/sp_util.h"
+#include "datacache/imdlcache.h"
+
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern IMDLCache *modelcache;
+
+
+//-----------------------------------------------------------------------------
+// studiohdr_t extension class.
+//-----------------------------------------------------------------------------
+class ModelHeaderExt
+{
+public:
+	static boost::shared_ptr<studiohdr_t> __init__(const char *szModelName)
+	{
+		MDLHandle_t usModelIndex = modelcache->FindMDL(szModelName);
+
+		if (usModelIndex == MDLHANDLE_INVALID)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "\"%s\" is not cached.", szModelName);
+
+		return boost::shared_ptr<studiohdr_t>(modelcache->GetStudioHdr(usModelIndex), &NeverDeleteDeleter<studiohdr_t *>);
+	}
+};
 
 
 //-----------------------------------------------------------------------------
 // mstudiobone_t extension class.
 //-----------------------------------------------------------------------------
-class BoneExt
+class ModelBoneExt
 {
 public:
-	static const char *get_name(mstudiobone_t *pBone)
+	static const char *get_name(mstudiobone_t *pModelBone)
 	{
-		return (const char *)pBone->pszName();
+		return (const char *)pModelBone->pszName();
 	}
 
-	static CPointer *get_procedure(mstudiobone_t *pBone)
+	static CPointer *get_procedure(mstudiobone_t *pModelBone)
 	{
-		return new CPointer((unsigned long)pBone->pProcedure());
+		return new CPointer((unsigned long)pModelBone->pProcedure());
 	}
 
-	static const char *get_surface_name(mstudiobone_t *pBone)
+	static const char *get_surface_name(mstudiobone_t *pModelBone)
 	{
-		return (const char *)pBone->pszSurfaceProp();
+		return (const char *)pModelBone->pszSurfaceProp();
 	}
 };
 
@@ -109,12 +136,12 @@ public:
 //-----------------------------------------------------------------------------
 // mstudioevent_t extension class.
 //-----------------------------------------------------------------------------
-class EventExt
+class SequenceEventExt
 {
 public:
-	static const char *get_name(mstudioevent_t *pEvent)
+	static const char *get_name(mstudioevent_t *pSequenceEvent)
 	{
-		return (const char *)pEvent->pszEventName();
+		return (const char *)pSequenceEvent->pszEventName();
 	}
 };
 
@@ -122,12 +149,12 @@ public:
 //-----------------------------------------------------------------------------
 // mstudioattachment_t extension class.
 //-----------------------------------------------------------------------------
-class AttachmentExt
+class ModelAttachmentExt
 {
 public:
-	static const char *get_name(mstudioattachment_t *pAttachment)
+	static const char *get_name(mstudioattachment_t *pModelAttachment)
 	{
-		return (const char *)pAttachment->pszName();
+		return (const char *)pModelAttachment->pszName();
 	}
 };
 
