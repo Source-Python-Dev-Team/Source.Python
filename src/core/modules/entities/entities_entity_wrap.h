@@ -32,6 +32,13 @@
 //-----------------------------------------------------------------------------
 #include "utilities/baseentity.h"
 #include "utilities/sp_util.h"
+#include "toolframework/itoolentity.h"
+
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern IServerTools* servertools;
 
 
 //-----------------------------------------------------------------------------
@@ -43,6 +50,58 @@ public:
 	static boost::shared_ptr<CBaseEntity> __init__(unsigned int uiEntityIndex)
 	{
 		return boost::shared_ptr<CBaseEntity>(BaseEntityFromIndex(uiEntityIndex, true), &NeverDeleteDeleter<CBaseEntity *>);
+	}
+
+		static str GetKeyValueString(CBaseEntity* pBaseEntity, const char* szName)
+	{
+		char szResult[1024];
+		servertools->GetKeyValue(pBaseEntity, szName, szResult, 1024);
+
+		// Fix for field name "model". I think a string_t object is copied to szResult.
+		if (strcmp(szName, "model") == 0)
+			return *(char **) szResult;
+
+		return str(szResult);
+	}
+
+	static int GetKeyValueInt(CBaseEntity* pBaseEntity, const char* szName)
+	{
+		return extract<int>(eval("lambda x: int(x)")(GetKeyValueString(pBaseEntity, szName)));
+	}
+
+	static float GetKeyValueFloat(CBaseEntity* pBaseEntity, const char* szName)
+	{
+		return extract<float>(eval("lambda x: float(x)")(GetKeyValueString(pBaseEntity, szName)));
+	}
+
+	static Vector GetKeyValueVector(CBaseEntity* pBaseEntity, const char* szName)
+	{
+		object vec = eval("lambda x: tuple(map(float, x.split(' ')))")(GetKeyValueString(pBaseEntity, szName));
+		return Vector(extract<float>(vec[0]), extract<float>(vec[1]), extract<float>(vec[2]));
+	}
+
+	static bool GetKeyValueBool(CBaseEntity* pBaseEntity, const char* szName)
+	{
+		return strcmp(extract<const char *>(GetKeyValueString(pBaseEntity, szName)), "1") == 0;
+	}
+
+	static Color GetKeyValueColor(CBaseEntity* pBaseEntity, const char* szName)
+	{
+		object color = eval("lambda x: tuple(map(int, x.split(' ')))")(GetKeyValueString(pBaseEntity, szName));
+		return Color(extract<int>(color[0]), extract<int>(color[1]), extract<int>(color[2]), extract<int>(color[3]));
+	}
+
+	static void SetKeyValueColor(CBaseEntity* pBaseEntity, const char* szName, Color color)
+	{
+		char string[16];
+		Q_snprintf(string, sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
+		SetKeyValue(pBaseEntity, szName, string);
+	}
+
+	template<class T>
+	static void SetKeyValue(CBaseEntity* pBaseEntity, const char* szName, T value)
+	{
+		servertools->SetKeyValue(pBaseEntity, szName, value);
 	}
 };
 

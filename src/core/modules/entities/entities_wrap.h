@@ -32,7 +32,6 @@
 #include "edict.h"
 #include "server_class.h"
 #include <cstdint>
-#include "toolframework/itoolentity.h"
 #include "modules/memory/memory_tools.h"
 #include "string_t.h"
 #include "dt_send.h"
@@ -41,73 +40,6 @@
 #include "datamap.h"
 #include "game/shared/takedamageinfo.h"
 #include "utilities/conversions.h"
-
-
-//-----------------------------------------------------------------------------
-// External variables.
-//-----------------------------------------------------------------------------
-extern IServerTools* servertools;
-
-
-//-----------------------------------------------------------------------------
-// edict_t extension class.
-//-----------------------------------------------------------------------------
-class CEdictExt
-{
-public:
-	static str GetKeyValueString(edict_t* pEdict, const char* szName)
-	{
-		char szResult[1024];
-		CBaseEntity* pEntity = pEdict->GetUnknown()->GetBaseEntity();
-		servertools->GetKeyValue(pEntity, szName, szResult, 1024);
-
-		// Fix for field name "model". I think a string_t object is copied to szResult.
-		if (strcmp(szName, "model") == 0)
-			return *(char **) szResult;
-
-		return str(szResult);
-	}
-
-	static int GetKeyValueInt(edict_t* pEdict, const char* szName)
-	{
-		return extract<int>(eval("lambda x: int(x)")(GetKeyValueString(pEdict, szName)));
-	}
-
-	static float GetKeyValueFloat(edict_t* pEdict, const char* szName)
-	{
-		return extract<float>(eval("lambda x: float(x)")(GetKeyValueString(pEdict, szName)));
-	}
-
-	static Vector GetKeyValueVector(edict_t* pEdict, const char* szName)
-	{
-		object vec = eval("lambda x: tuple(map(float, x.split(' ')))")(GetKeyValueString(pEdict, szName));
-		return Vector(extract<float>(vec[0]), extract<float>(vec[1]), extract<float>(vec[2]));
-	}
-
-	static bool GetKeyValueBool(edict_t* pEdict, const char* szName)
-	{
-		return strcmp(extract<const char *>(GetKeyValueString(pEdict, szName)), "1") == 0;
-	}
-
-	static Color GetKeyValueColor(edict_t* pEdict, const char* szName)
-	{
-		object color = eval("lambda x: tuple(map(int, x.split(' ')))")(GetKeyValueString(pEdict, szName));
-		return Color(extract<int>(color[0]), extract<int>(color[1]), extract<int>(color[2]), extract<int>(color[3]));
-	}
-
-	static void SetKeyValueColor(edict_t* pEdict, const char* szName, Color color)
-	{
-		char string[16];
-		Q_snprintf(string, sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
-		SetKeyValue(pEdict, szName, string);
-	}
-
-	template<class T>
-	static void SetKeyValue(edict_t* pEdict, const char* szName, T value)
-	{
-		servertools->SetKeyValue(BaseEntityFromEdict(pEdict, true), szName, value);
-	}
-};
 
 
 //-----------------------------------------------------------------------------

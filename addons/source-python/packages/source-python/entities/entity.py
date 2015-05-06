@@ -316,11 +316,11 @@ class Entity(BaseEntity, _EntitySpecials):
 
     def get_origin(self):
         """Return the entity's origin vector."""
-        return self.edict.get_key_value_vector('origin')
+        return self.get_key_value_vector('origin')
 
     def set_origin(self, vector):
         """Set the entity's origin to the given vector."""
-        self.edict.set_key_value_vector('origin', vector)
+        self.set_key_value_vector('origin', vector)
 
     origin = property(
         get_origin, set_origin,
@@ -328,12 +328,12 @@ class Entity(BaseEntity, _EntitySpecials):
 
     def get_model(self):
         """Return the entity's model."""
-        return Model(self.get_server_entity().get_model_name())
+        return Model(self.get_model_name())
 
     def set_model(self, model):
         """Set the entity's model to the given model."""
-        self.edict.get_server_entity().set_model_index(model.index)
-        self.edict.set_key_value_string('model', model.path)
+        self.edict.set_model_index(model.index)
+        self.set_key_value_string('model', model.path)
 
     model = property(
         get_model, set_model,

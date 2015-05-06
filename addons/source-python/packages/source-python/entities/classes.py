@@ -24,7 +24,7 @@ from entities.datamaps import EntityProperty
 from entities.datamaps import FieldType
 from entities.datamaps import InputFunction
 from entities.datamaps import TypeDescriptionFlags
-from entities.helpers import edict_from_pointer
+from entities.helpers import baseentity_from_pointer
 from entities.props import SendPropFlags
 from entities.props import SendPropType
 #   Memory
@@ -456,12 +456,12 @@ class _ServerClasses(TypeManager):
         """Entity keyvalue."""
         def fget(pointer):
             """Retrieve the keyvalue for the entity."""
-            return getattr(edict_from_pointer(
+            return getattr(baseentity_from_pointer(
                 pointer), 'get_key_value_' + type_name)(name)
 
         def fset(pointer, value):
             """Set the keyvalue for the entity to the given value."""
-            getattr(edict_from_pointer(
+            getattr(baseentity_from_pointer(
                 pointer), 'set_key_value_' + type_name)(name, value)
 
         return property(fget, fset)

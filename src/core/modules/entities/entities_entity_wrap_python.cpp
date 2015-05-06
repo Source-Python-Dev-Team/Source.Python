@@ -75,6 +75,79 @@ void export_base_entity(scope _entity)
 		"Returns the ServerClass object of the entity."
 	);
 
+	// Methods...
+	BaseEntity.def("get_key_value_string",
+		&BaseEntityExt::GetKeyValueString,
+		"Returns the value of the given field name.",
+		args("field_name")
+	);
+
+	BaseEntity.def("get_key_value_int",
+		&BaseEntityExt::GetKeyValueInt,
+		"Returns the value of the given field name.",
+		args("field_name")
+	);
+
+	BaseEntity.def("get_key_value_float",
+		&BaseEntityExt::GetKeyValueFloat,
+		"Returns the value of the given field name.",
+		args("field_name")
+	);
+
+	BaseEntity.def("get_key_value_vector",
+		&BaseEntityExt::GetKeyValueVector,
+		"Returns the value of the given field name.",
+		args("field_name")
+	);
+
+	BaseEntity.def("get_key_value_bool",
+		&BaseEntityExt::GetKeyValueBool,
+		"Returns the value of the given field name.",
+		args("field_name")
+	);
+
+	BaseEntity.def("get_key_value_color",
+		&BaseEntityExt::GetKeyValueColor,
+		"Returns the value of the given field name.",
+		args("field_name")
+	);
+
+	BaseEntity.def("set_key_value_int",
+		&BaseEntityExt::SetKeyValue<int>,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
+	BaseEntity.def("set_key_value_float",
+		&BaseEntityExt::SetKeyValue<float>,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
+	BaseEntity.def("set_key_value_string",
+		&BaseEntityExt::SetKeyValue<const char *>,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
+	BaseEntity.def("set_key_value_vector",
+		&BaseEntityExt::SetKeyValue<Vector>,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
+	BaseEntity.def("set_key_value_bool",
+		&BaseEntityExt::SetKeyValue<bool>,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
+	BaseEntity.def("set_key_value_color",
+		&BaseEntityExt::SetKeyValueColor,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
 	// Add memory tools...
 	BaseEntity ADD_MEM_TOOLS(CBaseEntity);
 }
