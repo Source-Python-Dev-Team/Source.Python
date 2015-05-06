@@ -19,7 +19,6 @@ from core import GameConfigObj
 from engines.server import server_game_dll
 #   Entities
 from entities.datamaps import _supported_input_types
-from entities.datamaps import DataMap
 from entities.datamaps import EntityProperty
 from entities.datamaps import FieldType
 from entities.datamaps import InputFunction
@@ -31,7 +30,6 @@ from entities.props import SendPropType
 from memory import Convention
 from memory import DataType
 from memory import get_object_pointer
-from memory import make_object
 from memory.helpers import Type
 from memory.manager import CustomType
 from memory.manager import TypeManager

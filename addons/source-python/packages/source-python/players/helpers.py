@@ -52,8 +52,8 @@ from _players._helpers import userid_from_pointer
 # =============================================================================
 __all__ = ('INVALID_PLAYER_USERID',
            'address_from_playerinfo',
+           'baseentity_from_playerinfo',
            'baseentity_from_userid',
-           'basehandle_from_userid',
            'basehandle_from_playerinfo',
            'basehandle_from_userid',
            'edict_from_playerinfo',

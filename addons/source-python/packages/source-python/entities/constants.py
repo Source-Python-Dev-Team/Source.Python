@@ -137,7 +137,6 @@ from _entities._constants import SolidType
 # =============================================================================
 __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'CollisionGroup',
-           'DATA_DESC_MAP_OFFSET',
            'DamageTypes',
            'DissolveType',
            'EntityEffects',

@@ -34,16 +34,16 @@ from _studio import Sequence
 # =============================================================================
 __all__ = ('AnimSections',
            'Animation',
-           'ModelAttachment',
-           'ModelBone',
            'BoneController',
-           'SequenceEvent',
            'Hierarchy',
            'Hitbox',
            'HitboxSet',
+           'ModelAttachment',
+           'ModelBone',
            'ModelHeader',
            'Movement',
            'Sequence',
+           'SequenceEvent',
            'studio_logger',
            )
 

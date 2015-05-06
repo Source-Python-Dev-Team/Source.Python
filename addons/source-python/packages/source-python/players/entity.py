@@ -18,7 +18,6 @@ from engines.trace import MAX_TRACE_LENGTH
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
-from entities.entity import BaseEntity
 from entities.entity import Entity
 from entities.helpers import index_from_pointer
 #   Mathlib
