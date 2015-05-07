@@ -130,7 +130,7 @@ void export_binaryfile(scope _memory)
 
 void export_memtools(scope _memory)
 {
-	class_<CPointer, boost::noncopyable>("Pointer", init< optional<unsigned long, bool> >())
+	class_<CPointer, CPointer *>("Pointer", init< optional<unsigned long, bool> >())
 		.def(init<CPointer&>())
 
 		// get/set_<type> methods
