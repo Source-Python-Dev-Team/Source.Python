@@ -77,6 +77,17 @@ public:
 			pVariant, iElement, (int)uiEntityIndex);
 		return pVariant;
 	}
+
+	static CFunction *get_proxy_function(SendProp *pSendProp, object oCallingConvention, object args, object oReturnType)
+	{
+		if (pSendProp->IsExcludeProp())
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is excluded.", pSendProp->GetName());
+
+		if (pSendProp->GetType() == DPT_DataTable)
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is a DataTable.", pSendProp->GetName());
+
+		return new CFunction((unsigned long)pSendProp->GetProxyFn(), oCallingConvention, args, oReturnType);
+	}
 };
 
 

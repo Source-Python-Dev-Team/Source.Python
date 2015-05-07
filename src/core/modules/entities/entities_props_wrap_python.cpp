@@ -168,6 +168,8 @@ void export_send_prop(scope _props)
 		manage_new_object_policy()
 	);
 
+	SendProp_.def("get_proxy_function", &SendPropSharedExt::get_proxy_function, manage_new_object_policy());
+
 	// CS:GO specific methods...
 	SendProp_.NOT_IMPLEMENTED("get_priority");
 	
