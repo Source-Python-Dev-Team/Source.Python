@@ -41,7 +41,7 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get all of the necessary paths
-_managers_path = SP_DATA_PATH.joinpath('entities', 'managers')
+_managers_path = SP_DATA_PATH.joinpath('entities')
 
 # Store all supported types
 _supported_descriptor_types = {
