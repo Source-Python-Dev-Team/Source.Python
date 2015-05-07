@@ -9,7 +9,9 @@
 #   ConfigObj
 from configobj import ConfigObj
 
-# Source.Python
+# Source.Python Imports
+#   Core
+from core import GameConfigObj
 #   Memory
 from memory import Convention
 from memory import DataType
@@ -26,6 +28,8 @@ from memory.helpers import MemberFunction
 from memory.helpers import NO_DEFAULT
 from memory.helpers import Type
 from memory.helpers import parse_data
+#   Paths
+from paths import SP_DATA_PATH
 
 
 # =============================================================================
@@ -718,3 +722,7 @@ class TypeManager(dict):
 
 # Create a shared manager instance
 manager = TypeManager()
+
+# Parse our global pointers...
+manager.create_global_pointers_from_file(GameConfigObj(
+    SP_DATA_PATH.joinpath('memory', 'global_pointers.ini')))

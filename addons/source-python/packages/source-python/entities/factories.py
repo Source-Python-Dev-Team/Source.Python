@@ -39,6 +39,4 @@ __all__ = ('EntityFactory',
 try:
     from _entities._factories import factory_dictionary
 except ImportError:
-    manager.create_global_pointers_from_file(SP_DATA_PATH.joinpath(
-        'entities', 'factories', SOURCE_ENGINE + '.ini'))
     factory_dictionary = manager.get_global_pointer('EntityFactoryDictionary')

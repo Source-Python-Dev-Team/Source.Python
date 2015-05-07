@@ -186,9 +186,6 @@ def setup_entities_listener():
     from memory.manager import manager
     from paths import SP_DATA_PATH
 
-    manager.create_global_pointers_from_file(SP_DATA_PATH.joinpath(
-        'entities', 'listeners', SOURCE_ENGINE, 'pointers.ini'))
-
     manager.get_global_pointer('GlobalEntityList').add_entity_listener(
         _sp_plugin)
 
