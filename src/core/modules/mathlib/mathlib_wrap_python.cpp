@@ -59,12 +59,6 @@ DECLARE_SP_MODULE(_mathlib)
 
 
 //-----------------------------------------------------------------------------
-// Overloads.
-//-----------------------------------------------------------------------------
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(is_zero_overload, IsZero, 0, 1)
-
-
-//-----------------------------------------------------------------------------
 // Exports Vector.
 //-----------------------------------------------------------------------------
 void export_vector(scope _mathlib)
@@ -153,10 +147,8 @@ void export_vector(scope _mathlib)
 
 		.def("is_zero",
 			&Vector::IsZero,
-			is_zero_overload(
-				args("tolerance"),
-				"Returns True if x, y and z are zero or within the tolerance."
-			)
+			"Returns True if x, y and z are zero or within the tolerance.",
+			(arg("tolerance")=0.01f)
 		)
 
 		.def("normalize",

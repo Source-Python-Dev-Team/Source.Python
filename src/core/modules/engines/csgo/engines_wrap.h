@@ -40,8 +40,8 @@ class IEngineSoundExt
 {
 public:
 	static void EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
-		float flVolume, float flAttenuation, int iFlags = 0, int iPitch = PITCH_NORM, const Vector *pOrigin = NULL, const Vector *pDirection = NULL,
-		tuple origins = tuple(), bool bUpdatePositions = true, float soundtime = 0.0f, int speakerentity = -1)
+		float flVolume, float flAttenuation, int iFlags, int iPitch, const Vector *pOrigin, const Vector *pDirection,
+		tuple origins, bool bUpdatePositions, float soundtime, int speakerentity)
 	{
 		CUtlVector<Vector> *pUtlVecOrigins = NULL;
 		CUtlVector<Vector> vecOrigins;

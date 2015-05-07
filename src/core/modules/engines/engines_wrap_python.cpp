@@ -92,18 +92,6 @@ DECLARE_SP_MODULE(_engines)
 
 
 //---------------------------------------------------------------------------------
-// Overloads.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_model_overload, PrecacheModel, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sentence_file_overload, PrecacheSentenceFile, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_decal_overload, PrecacheDecal, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_generic_overload, PrecacheGeneric, 1, 2);
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(precache_sound_overload, PrecacheSound, 1, 3);
-BOOST_PYTHON_FUNCTION_OVERLOADS(emit_sound_overload, IEngineSoundExt::EmitSound, 7, 15);
-
-
-//---------------------------------------------------------------------------------
 // Exports IVEngineServer.
 //---------------------------------------------------------------------------------
 void export_engine_server(scope _engines)
@@ -138,26 +126,20 @@ void export_engine_server(scope _engines)
 
 		.def("precache_model",
 			&IVEngineServer::PrecacheModel,
-			precache_model_overload(
-				"Precaches a model and returns an integer containing its index.",
-				args("s", "preload")
-			)
+			"Precaches a model and returns an integer containing its index.",
+			("s", arg("preload")=false)
 		)
 
 		.def("precache_decal",
 			&IVEngineServer::PrecacheDecal,
-			precache_decal_overload(
-				"Precaches a decal file and returns an integer containing its index.",
-				args("s", "preload")
-			)
+			"Precaches a decal file and returns an integer containing its index.",
+			("s", arg("preload")=false)
 		)
 
 		.def("precache_generic",
 			&IVEngineServer::PrecacheGeneric,
-			precache_generic_overload(
-				"Precaches a generic asset file and returns an integer containing its index.",
-				args("s", "preload")
-			)
+			"Precaches a generic asset file and returns an integer containing its index.",
+			("s", arg("preload")=false)
 		)
 
 		.def("is_model_precached",
@@ -748,10 +730,8 @@ void export_engine_sound(scope _engines)
 
 		.def("precache_sound",
 			&IEngineSound::PrecacheSound,
-			precache_sound_overload(
-				args("sample", "preload", "is_ui_sound"),
-				"Precaches a particular sample."
-			)
+			("sample", arg("preload")=false, arg("is_ui_sound")=false),
+			"Precaches a particular sample."
 		)
 
 		.def("is_sound_precached",
@@ -774,10 +754,11 @@ void export_engine_sound(scope _engines)
 
 		.def("emit_sound",
 			&IEngineSoundExt::EmitSound,
-			emit_sound_overload(
-				args("filter", "entity_index", "channel", "sample", "volume", "attenuation", "flags", "pitch", "origin", "direction", "origins", "update_positions", "sound_time", "speaker_entity"),
-				"Emits a sound from an entity."
-			)
+			("filter", "entity_index", "channel", "sample",
+				"volume", "attenuation",
+				arg("flags")=0, arg("pitch")=PITCH_NORM, arg("origin")=object(), arg("direction")=object(),
+				arg("origins")=tuple(), arg("update_positions")=true, arg("sound_time")=0.0f, arg("speaker_entity")=INVALID_ENTITY_INDEX),
+			"Emits a sound from an entity."
 		)
 
 		// TODO: Can we use IVEngineServer::SentenceNameFromIndex() and then call IEngineSound::EmitSound()?

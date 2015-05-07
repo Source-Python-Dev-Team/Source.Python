@@ -47,12 +47,6 @@ void export_server_command_manager(scope);
 
 
 //-----------------------------------------------------------------------------
-// Overloads.
-//-----------------------------------------------------------------------------
-BOOST_PYTHON_FUNCTION_OVERLOADS(get_server_command_overloads, GetServerCommand, 1, 3)
-
-
-//-----------------------------------------------------------------------------
 // Declare the _commands._server module.
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_commands, _server)
@@ -61,10 +55,10 @@ DECLARE_SP_SUBMODULE(_commands, _server)
 
 	// Helper functions...
 	def("get_server_command",
-		GetServerCommand,
-		get_server_command_overloads("Gets the ServerCommandDispatcher instance using just the name or also the helptext and/or flags",
-			args("name", "help_text", "flags")
-		)[reference_existing_object_policy()]
+		&GetServerCommand,
+		"Gets the ServerCommandDispatcher instance using just the name or also the helptext and/or flags",
+		("name", arg("help_text")=object(), arg("flags")=0),
+		reference_existing_object_policy()
 	);
 }
 

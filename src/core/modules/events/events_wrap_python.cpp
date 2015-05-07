@@ -59,18 +59,6 @@ DECLARE_SP_MODULE(_events)
 
 
 //-----------------------------------------------------------------------------
-// Overloads.
-//-----------------------------------------------------------------------------
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_bool_overload, GetBool, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_int_overload, GetInt, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_float_overload, GetFloat, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_string_overload, GetString, 1, 2);
-
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 1, 2);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(fire_event_overload, FireEvent, 1, 2);
-
-
-//-----------------------------------------------------------------------------
 // Exports IGameEvent.
 //-----------------------------------------------------------------------------
 void export_igameevent(scope _events)
@@ -99,34 +87,26 @@ void export_igameevent(scope _events)
 
 		.def("get_bool",
 			&IGameEvent::GetBool,
-			get_bool_overload(
-				args("key_name", "default_value"),
-				"Returns the value of the key name as a bool."
-			)
+			("key_name", arg("default_value")=false),
+			"Returns the value of the key name as a bool."
 		)
 
 		.def("get_int",
 			&IGameEvent::GetInt,
-			get_int_overload(
-				args("key_name", "default_value"),
-				"Returns the value of the key name as an int."
-			)
+			("key_name", arg("default_value")=0),
+			"Returns the value of the key name as an int."
 		)
 
 		.def("get_float",
 			&IGameEvent::GetFloat,
-			get_float_overload(
-				args("key_name", "default_value"),
-				"Returns the value of the key name as a float."
-			)
+			("key_name", arg("default_value")=0.0f),
+			"Returns the value of the key name as a float."
 		)
 
 		.def("get_string",
 			&IGameEvent::GetString,
-			get_string_overload(
-				args("key_name", "default_value"),
-				"Returns the value of the key name as a string."
-			)
+			("key_name", arg("default_value")=""),
+			"Returns the value of the key name as a string."
 		)
 
 		.def("set_bool",
@@ -222,22 +202,19 @@ void export_igameeventmanager(scope _events)
 
 		.def("create_event",
 			&IGameEventManager2::CreateEvent,
-			create_event_overload(
-				"Creates an event by name but doesn't fire it. Returns NULL if the event\
-				 is not known or no listener is registered for it. Setting should_force to\
-				 True forces the creation of the event even if no listener for it is active.",
-				args("event_name", "bForce")
-			)[reference_existing_object_policy()]
+			"Creates an event by name but doesn't fire it. Returns NULL if the event\
+			 is not known or no listener is registered for it. Setting should_force to\
+			 True forces the creation of the event even if no listener for it is active.",
+			("event_name", arg("bForce")=false),
+			reference_existing_object_policy()
 		)
 
 		.def("fire_event",
 			&IGameEventManager2::FireEvent,
-			fire_event_overload(
-				"Fires a server event created by create_event. If dont_broadcast is set\
-				 to False (which it is by default), the event is not sent to clients.\
-				 Returns true if the event is fired off successfully.",
-				args("game_event", "dont_broadcast")
-			)
+			"Fires a server event created by create_event. If dont_broadcast is set\
+			 to False (which it is by default), the event is not sent to clients.\
+			 Returns true if the event is fired off successfully.",
+			("game_event", arg("dont_broadcast")=false)
 		)
 
 		.def("fire_event_client_side",

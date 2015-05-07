@@ -52,15 +52,6 @@ DECLARE_SP_MODULE(_messages)
 //-----------------------------------------------------------------------------
 // Exposes the UserMessage class
 //-----------------------------------------------------------------------------
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_char_overload, set_char, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_byte_overload, set_byte, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_short_overload, set_short, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_long_overload, set_long, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_float_overload, set_float, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_bool_overload, set_bool, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_string_overload, set_string, 2, 3);
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(set_buffer_overload, set_buffer, 3, 4);
-
 void export_usermessage_interface(scope _messages)
 {
 	class_<CUserMessage>("UserMessage", init<const MRecipientFilter &, const char *>())
@@ -92,50 +83,38 @@ void export_usermessage_interface(scope _messages)
 
 		.def("set_char",
 			&CUserMessage::set_char,
-			set_char_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 
 		.def("set_byte",
 			&CUserMessage::set_byte,
-			set_byte_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 
 		.def("set_short",
 			&CUserMessage::set_short,
-			set_short_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 
 		.def("set_long",
 			&CUserMessage::set_long,
-			set_long_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 
 		.def("set_float",
 			&CUserMessage::set_float,
-			set_float_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 
 		.def("set_bool",
 			&CUserMessage::set_bool,
-			set_bool_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 
 		.def("set_color",
@@ -146,18 +125,14 @@ void export_usermessage_interface(scope _messages)
 		
 		.def("set_buffer",
 			&CUserMessage::set_buffer,
-			set_buffer_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 
 		.def("set_string",
 			&CUserMessage::set_string,
-			set_string_overload(
-				"Sets a field parameter to the specified value.",
-				args("field_name", "field_value", "index")
-			)
+			"Sets a field parameter to the specified value.",
+			("field_name", "field_value", arg("index")=-1)
 		)
 	;
 }

@@ -41,12 +41,6 @@ extern IEngineTrace* enginetrace;
 
 
 //---------------------------------------------------------------------------------
-// Overloads.
-//---------------------------------------------------------------------------------
-BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(get_single_player_shared_memory_space_overload, GetSinglePlayerSharedMemorySpace, 1, 2);
-
-
-//---------------------------------------------------------------------------------
 // IVEngineServer visitor function.
 //---------------------------------------------------------------------------------
 template<class T>
@@ -122,10 +116,9 @@ T IVEngineServer_Visitor(T cls)
 
 		.def("get_single_player_shared_memory_space",
 			&IVEngineServer::GetSinglePlayerSharedMemorySpace,
-			get_single_player_shared_memory_space_overload(
-				"Finds or creates a shared memory_space.",
-				args("name", "ent_num")
-			)[reference_existing_object_policy()]
+			"Finds or creates a shared memory_space.",
+			("name", arg("ent_num")=MAX_EDICTS),
+			reference_existing_object_policy()
 		)
 
 		/*

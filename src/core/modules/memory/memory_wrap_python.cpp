@@ -59,9 +59,6 @@ DECLARE_SP_MODULE(_memory)
 //-----------------------------------------------------------------------------
 // Exposes CBinaryFile
 //-----------------------------------------------------------------------------
-// Overloads
-BOOST_PYTHON_FUNCTION_OVERLOADS(find_binary_overload, FindBinary, 1, 2);
-
 void export_binaryfile(scope _memory)
 {
 	class_<CBinaryFile, boost::noncopyable>("BinaryFile", no_init)
@@ -103,9 +100,9 @@ void export_binaryfile(scope _memory)
 
 	def("find_binary",
 		&FindBinary,
-		find_binary_overload(
-			args("path", "srv_check"),
-			"Returns a BinaryFile object or None.")[reference_existing_object_policy()]
+		"Returns a BinaryFile object or None.",
+		("path", arg("srv_check")=true),
+		reference_existing_object_policy()
 	);
 }
 
