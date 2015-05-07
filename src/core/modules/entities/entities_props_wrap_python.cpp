@@ -163,11 +163,6 @@ void export_send_prop(scope _props)
 	SendProp_.def("get_type", &SendProp::GetType);
 	SendProp_.def("get_flags", &SendProp::GetFlags);
 
-	SendProp_.def("call_proxy",
-		&SendPropSharedExt::call_proxy, ("entity_index", arg("element")=0),
-		manage_new_object_policy()
-	);
-
 	SendProp_.def("get_proxy_function", &SendPropSharedExt::get_proxy_function, manage_new_object_policy());
 
 	// CS:GO specific methods...
