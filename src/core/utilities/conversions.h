@@ -61,13 +61,18 @@ inline edict_t *EdictFromIndex( unsigned int uiEntityIndex, bool bRaiseException
 	edict_t *pEdict = NULL;
 
 	if (uiEntityIndex < (unsigned int)gpGlobals->maxEntities)
+	{
+		edict_t *pTempEdict;
 #ifdef ENGINE_ORANGEBOX
-		pEdict = engine->PEntityOfEntIndex(uiEntityIndex);
+		pTempEdict = engine->PEntityOfEntIndex(uiEntityIndex);
 #else
-		pEdict = (edict_t *)(gpGlobals->pEdicts + uiEntityIndex);
+		pTempEdict = (edict_t *)(gpGlobals->pEdicts + uiEntityIndex);
 #endif
+		if (pTempEdict && !pTempEdict->IsFree() && pTempEdict->GetUnknown())
+			pEdict = pTempEdict;
+	}
 
-	if ((!pEdict || pEdict->IsFree()) && bRaiseException)
+	if (!pEdict && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given index (%i).", uiEntityIndex);
 
 	return pEdict;
