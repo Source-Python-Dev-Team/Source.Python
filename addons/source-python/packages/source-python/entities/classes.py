@@ -23,6 +23,7 @@ from entities.datamaps import EntityProperty
 from entities.datamaps import FieldType
 from entities.datamaps import InputFunction
 from entities.datamaps import TypeDescriptionFlags
+from entities.helpers import edict_from_pointer
 from entities.helpers import baseentity_from_pointer
 from entities.props import SendPropFlags
 from entities.props import SendPropType
