@@ -77,7 +77,7 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_snprintf=snprintf -D_vsnprintf=vsnpri
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrcmpi=strcasecmp -Wall -Wno-uninitialized -Wno-switch -Wno-unused")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -DCOMPILER_GCC -fno-strict-aliasing -std=c++0x")
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-non-virtual-dtor -Wno-overloaded-virtual -fno-threadsafe-statics -v")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-conversion-null -Wno-write-strings")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-conversion-null -Wno-write-strings -Wno-invalid-offsetof -Wno-reorder")
 
 # ------------------------------------------------------------------
 # Debug / Release compiler flags.
