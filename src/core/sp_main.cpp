@@ -359,7 +359,9 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	CALL_LISTENERS(ClientConnect, ptr(&CPointer((unsigned long) bAllowConnect)), IndexFromEdict(pEntity), pszName, pszAddress, ptr(&CPointer((unsigned long) reject)), maxrejectlen);
+	CPointer allowConnect = CPointer((unsigned long) bAllowConnect);
+	CPointer rejectMessage = CPointer((unsigned long) reject);
+	CALL_LISTENERS(ClientConnect, allowConnect, IndexFromEdict(pEntity), pszName, pszAddress, rejectMessage, maxrejectlen);
 	return PLUGIN_OVERRIDE;
 }
 
