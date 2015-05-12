@@ -183,8 +183,13 @@ bool CPythonManager::Shutdown( void )
 //---------------------------------------------------------------------------------
 // Converters
 //---------------------------------------------------------------------------------
-struct string_t_to_python_str
+struct string_t_to_python
 {
+	string_t_to_python()
+	{
+		to_python_converter< string_t, string_t_to_python >();
+	}
+
 	static PyObject* convert(string_t const& s)
 	{
 		return incref(object(s.ToCStr()).ptr());
@@ -227,7 +232,8 @@ struct baseentity_from_python
 //---------------------------------------------------------------------------------
 void InitConverters()
 {
-	to_python_converter< string_t, string_t_to_python_str >();
+	string_t_to_python();
+
 	baseentity_to_python();
 	baseentity_from_python();
 }
