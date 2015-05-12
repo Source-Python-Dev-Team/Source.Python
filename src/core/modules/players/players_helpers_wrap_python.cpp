@@ -31,6 +31,8 @@
 #include "utilities/conversions.h"
 #include "utilities/wrap_macros.h"
 
+BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
+
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -95,6 +97,6 @@ void export_player_conversion_functions(scope _helpers)
 	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseEntity *, BaseEntity, reference_existing_object_policy());
 
 	// To BaseEntity conversions...
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Userid, reference_existing_object_policy());
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, IPlayerInfo *, PlayerInfo, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Userid, return_by_value_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, IPlayerInfo *, PlayerInfo, return_by_value_policy());
 }

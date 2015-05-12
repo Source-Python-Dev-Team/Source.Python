@@ -27,12 +27,12 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/baseentity.h"
 #include "modules/memory/memory_tools.h"
 #include "export_main.h"
 #include "utilities/conversions.h"
 #include "entities_entity_wrap.h"
 
+BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -54,100 +54,96 @@ DECLARE_SP_SUBMODULE(_entities, _entity)
 //-----------------------------------------------------------------------------
 void export_base_entity(scope _entity)
 {
-	class_<CBaseEntity, boost::shared_ptr<CBaseEntity>, bases<IServerEntity>, boost::noncopyable> BaseEntity("BaseEntity", no_init);
-
-	// Initializer...
+	class_<CBaseEntityWrapper, boost::shared_ptr<CBaseEntityWrapper>, bases<IServerEntity>, boost::noncopyable> BaseEntity("BaseEntity", no_init);
+		
 	BaseEntity.def("__init__",
-		make_constructor(&BaseEntityExt::__init__,
+		make_constructor(
+			&CBaseEntityWrapper::__init__,
 			default_call_policies(),
 			args("entity_index")
 		)
 	);
 
-	// Properties...
-	BaseEntity.add_property("datamap",
-		make_function(&CBaseEntity::GetDataDescMap, reference_existing_object_policy()),
-		"Returns the DataMap object of the entity."
+	BaseEntity.add_property("server_class",
+		make_function(&CBaseEntityWrapper::GetServerClass, reference_existing_object_policy())
 	);
 
-	BaseEntity.add_property("server_class",
-		make_function(&CBaseEntity::GetServerClass, reference_existing_object_policy()),
-		"Returns the ServerClass object of the entity."
+	BaseEntity.add_property("datamap",
+		make_function(&CBaseEntityWrapper::GetDataDescMap, reference_existing_object_policy())
 	);
 
 	// Methods...
 	BaseEntity.def("get_key_value_string",
-		&BaseEntityExt::GetKeyValueString,
+		&CBaseEntityWrapper::GetKeyValueString,
 		"Returns the value of the given field name.",
 		args("field_name")
 	);
 
 	BaseEntity.def("get_key_value_int",
-		&BaseEntityExt::GetKeyValueInt,
+		&CBaseEntityWrapper::GetKeyValueInt,
 		"Returns the value of the given field name.",
 		args("field_name")
 	);
 
 	BaseEntity.def("get_key_value_float",
-		&BaseEntityExt::GetKeyValueFloat,
+		&CBaseEntityWrapper::GetKeyValueFloat,
 		"Returns the value of the given field name.",
 		args("field_name")
 	);
 
 	BaseEntity.def("get_key_value_vector",
-		&BaseEntityExt::GetKeyValueVector,
+		&CBaseEntityWrapper::GetKeyValueVector,
 		"Returns the value of the given field name.",
 		args("field_name")
 	);
 
 	BaseEntity.def("get_key_value_bool",
-		&BaseEntityExt::GetKeyValueBool,
+		&CBaseEntityWrapper::GetKeyValueBool,
 		"Returns the value of the given field name.",
 		args("field_name")
 	);
 
 	BaseEntity.def("get_key_value_color",
-		&BaseEntityExt::GetKeyValueColor,
+		&CBaseEntityWrapper::GetKeyValueColor,
 		"Returns the value of the given field name.",
 		args("field_name")
 	);
 
 	BaseEntity.def("set_key_value_int",
-		&BaseEntityExt::SetKeyValue<int>,
+		&CBaseEntityWrapper::SetKeyValue<int>,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);
 
 	BaseEntity.def("set_key_value_float",
-		&BaseEntityExt::SetKeyValue<float>,
+		&CBaseEntityWrapper::SetKeyValue<float>,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);
 
 	BaseEntity.def("set_key_value_string",
-		&BaseEntityExt::SetKeyValue<const char *>,
+		&CBaseEntityWrapper::SetKeyValue<const char *>,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);
 
 	BaseEntity.def("set_key_value_vector",
-		&BaseEntityExt::SetKeyValue<Vector>,
+		&CBaseEntityWrapper::SetKeyValue<Vector>,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);
 
 	BaseEntity.def("set_key_value_bool",
-		&BaseEntityExt::SetKeyValue<bool>,
+		&CBaseEntityWrapper::SetKeyValue<bool>,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);
 
 	BaseEntity.def("set_key_value_color",
-		&BaseEntityExt::SetKeyValueColor,
+		&CBaseEntityWrapper::SetKeyValueColor,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);
 
-	// Add memory tools...
-	BaseEntity ADD_MEM_TOOLS(CBaseEntity);
+	BaseEntity ADD_MEM_TOOLS(CBaseEntityWrapper);
 }

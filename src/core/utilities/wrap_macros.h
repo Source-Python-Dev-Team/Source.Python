@@ -163,4 +163,6 @@ typedef return_value_policy<reference_existing_object> reference_existing_object
 //---------------------------------------------------------------------------------
 typedef return_value_policy<copy_const_reference> copy_const_reference_policy;
 
+typedef return_value_policy<return_by_value> return_by_value_policy;
+
 #endif // _WRAP_MACROS_H

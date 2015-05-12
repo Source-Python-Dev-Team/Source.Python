@@ -32,6 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "utilities/baseentity.h"
 #include "utilities/sp_util.h"
+#include "utilities/conversions.h"
 #include "toolframework/itoolentity.h"
 
 
@@ -44,15 +45,36 @@ extern IServerTools* servertools;
 //-----------------------------------------------------------------------------
 // CBaseEntity extension class.
 //-----------------------------------------------------------------------------
-class BaseEntityExt
+class CBaseEntityWrapper: public IServerEntity
 {
+private:
+	// Make sure that nobody can call the constructor/destructor
+	CBaseEntityWrapper() {}
+	~CBaseEntityWrapper() {}
+
 public:
-	static boost::shared_ptr<CBaseEntity> __init__(unsigned int uiEntityIndex)
+	// We need to keep the order of these methods up-to-date and maybe we need
+	// to add new methods for other games.
+	// TODO: Do we want to do this? Or do we want to dynamically call the methods from Python?
+	virtual ServerClass* GetServerClass() = 0;
+	virtual int YouForgotToImplementOrDeclareServerClass() = 0;
+	virtual datamap_t* GetDataDescMap() = 0;
+
+public:
+	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex)
 	{
-		return boost::shared_ptr<CBaseEntity>(BaseEntityFromIndex(uiEntityIndex, true), &NeverDeleteDeleter<CBaseEntity *>);
+		return CBaseEntityWrapper::wrap(BaseEntityFromIndex(uiEntityIndex, true));
 	}
 
-		static str GetKeyValueString(CBaseEntity* pBaseEntity, const char* szName)
+	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity)
+	{
+		return boost::shared_ptr<CBaseEntityWrapper>(
+			(CBaseEntityWrapper *) pEntity,
+			&NeverDeleteDeleter<CBaseEntityWrapper *>
+		);
+	}
+
+	static str GetKeyValueString(CBaseEntity* pBaseEntity, const char* szName)
 	{
 		char szResult[1024];
 		servertools->GetKeyValue(pBaseEntity, szName, szResult, 1024);

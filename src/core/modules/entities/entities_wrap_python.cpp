@@ -40,6 +40,8 @@
 
 #include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
 
+BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
+
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -166,7 +168,7 @@ void export_server_unknown(scope _entities)
 		.def("get_base_entity",
 			&IServerUnknown::GetBaseEntity,
 			"Returns the CBasEntity pointer for this entity.",
-			reference_existing_object_policy()
+			return_by_value_policy()
 		)
 
 		ADD_MEM_TOOLS(IServerUnknown)
@@ -246,7 +248,7 @@ void export_server_networkable(scope _entities)
 
 		.def("get_base_entity",
 			&IServerNetworkable::GetBaseEntity,
-			reference_existing_object_policy()
+			return_by_value_policy()
 		)
 
 		.def("get_pvs_info",

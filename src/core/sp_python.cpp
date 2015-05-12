@@ -36,7 +36,9 @@
 #include "eiface.h"
 #include "utilities/shared_utils.h"
 #include "export_main.h"
+#include "modules/entities/entities_entity_wrap.h"
 
+BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
 //---------------------------------------------------------------------------------
 // Interfaces we're going to use.
@@ -64,9 +66,9 @@ const char *GetSourcePythonDir()
 	char szGameDir[MAX_GAME_PATH];
 	engine->GetGameDir(szGameDir, MAX_GAME_PATH);
 	GenerateSymlink(szGameDir);
-	V_snprintf(szGameDir, MAX_GAME_PATH, "%s%s", szGameDir, "/addons/source-python");
-	const char *szAddonDir = szGameDir;
-	return (const char *)szAddonDir;
+	char szAddonDir[MAX_GAME_PATH];
+	V_snprintf(szAddonDir, MAX_GAME_PATH, "%s%s", szGameDir, "/addons/source-python");
+	return szAddonDir;
 }
 
 
@@ -189,6 +191,36 @@ struct string_t_to_python_str
 	}
 };
 
+struct baseentity_to_python
+{
+	baseentity_to_python()
+	{
+		to_python_converter< CBaseEntity*, baseentity_to_python >();
+	}
+
+	static PyObject* convert(CBaseEntity* pAddr)
+	{
+		return incref(object(CBaseEntityWrapper::wrap(pAddr)).ptr());
+	}
+};
+
+struct baseentity_from_python
+{
+	baseentity_from_python()
+	{
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<CBaseEntity>()
+		);
+	}
+
+	static void* convert(PyObject* obj)
+	{
+		CBaseEntityWrapper* pAddr = extract<CBaseEntityWrapper*>(obj);
+		return (void *) pAddr;
+	}
+};
+
 
 //---------------------------------------------------------------------------------
 // Initializes all converters
@@ -196,4 +228,6 @@ struct string_t_to_python_str
 void InitConverters()
 {
 	to_python_converter< string_t, string_t_to_python_str >();
+	baseentity_to_python();
+	baseentity_from_python();
 }

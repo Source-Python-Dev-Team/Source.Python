@@ -45,6 +45,8 @@
 
 #include ENGINE_INCLUDE_PATH(effects_wrap_python.h)
 
+BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
+
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
