@@ -15,6 +15,8 @@ from menus.base import _translate_text
 from menus.queue import _radio_queues
 #   Messages
 from messages import ShowMenu
+#   Core
+from core import SOURCE_ENGINE
 
 
 # =============================================================================
@@ -26,6 +28,21 @@ __all__ = ('PagedRadioMenu',
            'SimpleRadioOption',
            )
 
+# =============================================================================
+# >> GLOBALS
+# =============================================================================
+_footer_select_indexes = {
+    'csgo': {
+        'back': 7,
+        'next': 8,
+        'close': 9
+    },
+    'orangebox': {
+        'back': 8,
+        'next': 9,
+        'close': 0
+    }
+}
 
 # =============================================================================
 # >> CLASSES
@@ -135,7 +152,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             self, data=None, select_callback=None,
             build_callback=None, description=None,
             title=None, top_seperator='-' * 30, bottom_seperator='-' * 30,
-            fill=True):
+            fill=True, manual_back_option=None):
         """Initialize the PagedRadioMenu instance.
 
         @param <data>:
@@ -181,10 +198,11 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         self.top_seperator = top_seperator
         self.bottom_seperator = bottom_seperator
         self.fill = fill
+        self.manual_back_option = manual_back_option
 
     def _get_max_item_count(self):
         """Return the maximum possible item count per page."""
-        return 7
+        return 6 if SOURCE_ENGINE == 'csgo' else 7
 
     def _format_header(self, player_index, page, slots):
         """Prepare the header for the menu.
@@ -245,7 +263,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         # Fill the rest of the menu
         if self.fill:
-            buffer += ' \n' * (7 - len(options))
+            fill_index = 6 if SOURCE_ENGINE == 'csgo' else 7
+            buffer += ' \n' * (fill_index - len(options))
 
         return buffer
 
@@ -269,22 +288,30 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         # TODO: Add translations
         # Add "Back" option
-        back_selectable = page.index > 0
-        buffer += PagedRadioOption(
-            'Back', highlight=back_selectable)._render(player_index, 8)
+        back_selectable = page.index > 0 or self.manual_back_option is not None
+        
+        if self.manual_back_option is not None and page.index == 0:
+            back_option = PagedRadioOption('Back', self.manual_back_option)
+            self._player_pages[player_index].options[_footer_select_indexes[SOURCE_ENGINE]['back']] = back_option
+            buffer += back_option._render(player_index, _footer_select_indexes[SOURCE_ENGINE]['back'])
+        else:
+            buffer += PagedRadioOption(
+                'Back', highlight=back_selectable)._render(player_index, _footer_select_indexes[SOURCE_ENGINE]['back'])
         if back_selectable:
-            slots.add(8)
+            slots.add(_footer_select_indexes[SOURCE_ENGINE]['back'])
 
         # Add "Next" option
         next_selectable = page.index < self.last_page_index
         buffer += PagedRadioOption(
-            'Next', highlight=next_selectable)._render(player_index, 9)
+            'Next', highlight=next_selectable)._render(player_index, _footer_select_indexes[SOURCE_ENGINE]['next'])
         if next_selectable:
-            slots.add(9)
+            slots.add(_footer_select_indexes[SOURCE_ENGINE]['next'])
 
         # Add "Close" option
         buffer += PagedRadioOption(
-            'Close', highlight=False)._render(player_index, 0)
+            'Close', highlight=False)._render(player_index, _footer_select_indexes[SOURCE_ENGINE]['close'])
+        if SOURCE_ENGINE == 'csgo':
+            slots.add(_footer_select_indexes[SOURCE_ENGINE]['close'])
 
         # Return the buffer
         return buffer
@@ -323,7 +350,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         A numeric value that defines what was selected.
         """
         # Do nothing if the menu is being closed
-        if choice_index == 0:
+        if choice_index == _footer_select_indexes[SOURCE_ENGINE]['close']:
             del self._player_pages[player_index]
             return None
 
@@ -331,12 +358,17 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         page = self._player_pages[player_index]
 
         # Display previous page?
-        if choice_index == 8:
-            self.set_player_page(player_index, page.index - 1)
-            return self
-
+        if choice_index == _footer_select_indexes[SOURCE_ENGINE]['back']:
+        
+            # Do we have a manual back option and are we on first page?
+            if self.manual_back_option is not None and page.index == 0:
+                return super(PagedRadioMenu, self)._select(player_index, choice_index)
+            else:
+                self.set_player_page(player_index, page.index - 1)
+                return self
+                
         # Display next page?
-        if choice_index == 9:
+        if choice_index == _footer_select_indexes[SOURCE_ENGINE]['next']:
             self.set_player_page(player_index, page.index + 1)
             return self
 
