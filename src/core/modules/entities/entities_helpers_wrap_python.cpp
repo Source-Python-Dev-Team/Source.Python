@@ -27,10 +27,10 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "entities_helpers_wrap.h"
 #include "export_main.h"
-#include "utilities/conversions.h"
 #include "utilities/wrap_macros.h"
+#include "utilities/conversions.h"
+#include "entities_helpers_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(entities_helpers_wrap.h)
 

@@ -27,9 +27,9 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include "utilities/wrap_macros.h"
 #include "commands_server_wrap.h"
 #include "export_main.h"
-#include "utilities/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
 
 

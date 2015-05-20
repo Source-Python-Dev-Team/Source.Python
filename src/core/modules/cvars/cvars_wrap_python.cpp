@@ -27,10 +27,10 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "icvar.h"
-#include "convar.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
+#include "icvar.h"
+#include "convar.h"
 #include "cvars_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(cvars_wrap.h)

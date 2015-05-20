@@ -29,7 +29,6 @@
 //-----------------------------------------------------------------------------
 #include <iostream>
 #include <string>
-#include "convar.h"
 #include "commands_say_wrap.h"
 #include "commands_server_wrap.h"
 #include "commands_wrap.h"
@@ -39,6 +38,7 @@
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
+#include "convar.h"
 
 //-----------------------------------------------------------------------------
 // Global say command mapping.

@@ -71,13 +71,26 @@ EndIf()
 # ------------------------------------------------------------------
 # Linux compiler flags.
 # ------------------------------------------------------------------
-Set(CMAKE_CXX_FLAGS "-D_LINUX -DPOSIX -DLINUX -Dstricmp=strcasecmp -D_stricmp=strcasecmp")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_strnicmp=strncasecmp -Dstrnicmp=strncasecmp")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_snprintf=snprintf -D_vsnprintf=vsnprintf -D_alloca=alloca")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrcmpi=strcasecmp -Wall -Wno-uninitialized -Wno-switch -Wno-unused")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -DCOMPILER_GCC -fno-strict-aliasing -std=c++0x")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-non-virtual-dtor -Wno-overloaded-virtual -fno-threadsafe-statics -v")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-conversion-null -Wno-write-strings -Wno-invalid-offsetof -Wno-reorder")
+# General definitions
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC ")
+
+# Function alias
+If(NOT SOURCE_ENGINE MATCHES "bms")
+    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp")
+    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrnicmp=strncasecmp -D_snprintf=snprintf")
+    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_vsnprintf=vsnprintf -D_alloca=alloca -Dstrcmpi=strcasecmp")
+EndIf()
+
+# Warnings
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-uninitialized -Wno-switch -Wno-unused")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-non-virtual-dtor -Wno-overloaded-virtual")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-conversion-null -Wno-write-strings")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
+
+# Others
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v")
+
 
 # ------------------------------------------------------------------
 # Debug / Release compiler flags.

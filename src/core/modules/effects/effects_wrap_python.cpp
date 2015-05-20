@@ -29,6 +29,9 @@
 //-----------------------------------------------------------------------------
 // These includes are really important. Be careful if you try to change the
 // order or remove an include!
+#include "utilities/wrap_macros.h"
+#include "export_main.h"
+#include "modules/memory/memory_tools.h"
 #include "utilities/baseentity.h"
 #include "mathlib/vector.h"
 #include <stddef.h>
@@ -39,9 +42,6 @@
 #include "KeyValues.h"
 #include "game/shared/itempents.h"
 #include "game/shared/effect_dispatch_data.h"
-#include "utilities/wrap_macros.h"
-#include "export_main.h"
-#include "modules/memory/memory_tools.h"
 
 #include ENGINE_INCLUDE_PATH(effects_wrap_python.h)
 

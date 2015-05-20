@@ -30,10 +30,10 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "boost/unordered_map.hpp"
-#include "utlvector.h"
-#include "commands_wrap.h"
 #include "utilities/sp_util.h"
-#include "utilities/wrap_macros.h"
+#include "commands_wrap.h"
+#include "utlvector.h"
+//#include "utilities/wrap_macros.h"
 #include "edict.h"
 #include "game/server/iplayerinfo.h"
 

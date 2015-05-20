@@ -27,16 +27,16 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
+#include "utilities/sp_util.h"
 #include "edict.h"
 #include "utilities/baseentity.h"
 #include "game/shared/entitylist_base.h"
 #include "game/server/entitylist.h"
 
-#include "entities_generator_wrap.h"
-#include "entities_wrap.h"
-#include "utilities/sp_util.h"
 #include "modules/memory/memory_tools.h"
 #include "export_main.h"
+#include "entities_wrap.h"
+#include "entities_generator_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(entities_wrap_python.h)
 

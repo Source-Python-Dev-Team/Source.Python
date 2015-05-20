@@ -27,11 +27,11 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include "utilities/wrap_macros.h"
 #include "utilities/baseentity.h"
 #include "game/shared/entitylist_base.h"
 #include "game/server/entitylist.h"
 #include "utilities/conversions.h"
-#include "utilities/wrap_macros.h"
 #include "game/shared/ipredictionsystem.h"
 
 #include ENGINE_INCLUDE_PATH(undefined_symbols.h)

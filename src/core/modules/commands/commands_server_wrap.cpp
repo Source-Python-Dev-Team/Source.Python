@@ -27,11 +27,16 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "commands_server_wrap.h"
-#include "commands_wrap.h"
 #include "utilities/call_python.h"
-#include "boost/python/call.hpp"
-#include "boost/shared_array.hpp"
+//#include "boost/python/call.hpp"
+//#include "boost/shared_array.hpp"
+
+#include "boost/unordered_map.hpp"
+#include "utilities/sp_util.h"
+#include "utilities/wrap_macros.h"
+
+#include "commands_wrap.h"
+#include "commands_server_wrap.h"
 
 //-----------------------------------------------------------------------------
 // Externs.

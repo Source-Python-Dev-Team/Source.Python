@@ -31,6 +31,7 @@
 #include "string_t.h"
 #include "utilities/wrap_macros.h"
 #include "dt_common.h"
+#include "memalloc.h"
 #include "dt_send.h"
 #include "server_class.h"
 #include "modules/memory/memory_tools.h"
