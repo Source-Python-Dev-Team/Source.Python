@@ -430,10 +430,10 @@ object CFunction::Call(tuple args, dict kw)
 		case DATA_TYPE_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_POINTER:
 		{
-			CPointer* pPtr = new CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
+			CPointer pPtr = CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
 			if (!m_oConverter.is_none())
-				return m_oConverter(ptr(pPtr));
-			return object(ptr(pPtr));
+				return m_oConverter(pPtr);
+			return object(pPtr);
 		}
 		case DATA_TYPE_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")

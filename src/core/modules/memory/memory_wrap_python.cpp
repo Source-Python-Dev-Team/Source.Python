@@ -382,7 +382,7 @@ void export_memtools(scope _memory)
 		"Returns the size of the class object or instance of its C++ class."
 	);
 
-	_memory.attr("NULL") = object(ptr(new CPointer()));
+	_memory.attr("NULL") = object(CPointer());
 }
 
 //-----------------------------------------------------------------------------
@@ -464,7 +464,7 @@ public:
 
 	virtual void ArgumentPtrChanged(int iIndex, CRegisters* pRegisters, void* pArgumentPtr)
 	{
-		get_override("argument_ptr_changed")(iIndex, ptr(pRegisters), ptr(new CPointer((unsigned long) pArgumentPtr)));
+		get_override("argument_ptr_changed")(iIndex, ptr(pRegisters), CPointer((unsigned long) pArgumentPtr));
 	}
 
 	virtual void* GetReturnPtr(CRegisters* pRegisters)
@@ -480,7 +480,7 @@ public:
 
 	virtual void ReturnPtrChanged(CRegisters* pRegisters, void* pReturnPtr)
 	{
-		get_override("return_ptr_changed")(ptr(pRegisters), ptr(new CPointer((unsigned long) pReturnPtr)));
+		get_override("return_ptr_changed")(ptr(pRegisters), CPointer((unsigned long) pReturnPtr));
 	}
 
 public:
