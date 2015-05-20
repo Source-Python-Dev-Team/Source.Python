@@ -43,3 +43,8 @@
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."
 #endif
+
+#include "engine/IEngineTrace.h"
+#ifndef PATCH_INTERFACEVERSION_ENGINETRACE
+#error "Correct EngineTraceServer and EngineTraceClient versions."
+#endif
