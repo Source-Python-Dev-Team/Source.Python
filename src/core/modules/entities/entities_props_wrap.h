@@ -98,12 +98,17 @@ public:
 
 	static const char *get_string(DVariant *pVariant)
 	{
-		return (const char *)get_typed_value<DPT_String, char *, &DVariant::m_pString>(pVariant);
+		if (pVariant->m_Type != DPT_String)
+		{
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
+		}
+		return pVariant->m_pString;
 	}
 
 	static void set_string(DVariant *pVariant, const char *pString)
 	{
-		set_typed_value<DPT_String, char *, &DVariant::m_pString>(pVariant, (char *)pString);
+		pVariant->m_Type = DPT_String;
+		*(char**)&pVariant->m_pString = (char*)pString;
 	}
 
 	static CPointer *get_data(DVariant *pVariant)
