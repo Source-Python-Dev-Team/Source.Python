@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------
-# File: src/makefiles/game/ob-valve.cmake
-# Purpose: This is the CMake file for Orangebox.
+# File: src/makefiles/branch/dods.cmake
+# Purpose: This is the CMake file for the dods branch.
 # ------------------------------------------------------------------
 
 # ------------------------------------------------------------------

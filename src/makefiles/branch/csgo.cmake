@@ -1,6 +1,6 @@
 # ------------------------------------------------------------------
-# File: src/makefiles/game/csgo.cmake
-# Purpose: This is the CMake file for CSGO.
+# File: src/makefiles/branch/csgo.cmake
+# Purpose: This is the CMake file for the csgo branch.
 # ------------------------------------------------------------------
 
 # ------------------------------------------------------------------

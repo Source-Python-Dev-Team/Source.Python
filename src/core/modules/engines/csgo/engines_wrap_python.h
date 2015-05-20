@@ -24,6 +24,9 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _ENGINES_WRAP_PYTHON_CSGO_H
+#define _ENGINES_WRAP_PYTHON_CSGO_H
+
 //---------------------------------------------------------------------------------
 // Includes.
 //---------------------------------------------------------------------------------
@@ -284,3 +287,6 @@ T IEngineSound_Visitor(T cls)
 
 	return cls;
 }
+
+
+#endif // _ENGINES_WRAP_PYTHON_CSGO_H
