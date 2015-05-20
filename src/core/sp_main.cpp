@@ -423,6 +423,18 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 }
 #endif
 
+#ifdef ENGINE_BMS
+void CSourcePython::OnEdictAllocated( edict_t *edict )
+{
+	CALL_LISTENERS(OnEdictAllocated, IndexFromEdict(edict));
+}
+
+void CSourcePython::OnEdictFreed( const edict_t *edict )
+{
+	CALL_LISTENERS(OnEdictFreed, ptr(edict));
+}
+#endif
+
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
 	int iIndex = IndexFromBaseEntity(pEntity);
