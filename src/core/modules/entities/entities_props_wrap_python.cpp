@@ -239,7 +239,7 @@ void export_send_prop_variant(scope _props)
 
 	// Getter methods...
 	SendPropVariant.def("get_float", &SendPropVariantExt::get_typed_value<DPT_Float, float, &DVariant::m_Float>);
-	SendPropVariant.def("get_int", &SendPropVariantExt::get_typed_value<DPT_Int, long, &DVariant::m_Int>);
+	SendPropVariant.def("get_int", &SendPropVariantExt::get_typed_value<DPT_Int, int, &DVariant::m_Int>);
 	SendPropVariant.def("get_string", &SendPropVariantExt::get_string);
 	SendPropVariant.def("get_data", &SendPropVariantExt::get_data, manage_new_object_policy());
 	SendPropVariant.def("get_vector", &SendPropVariantExt::get_vector, manage_new_object_policy());
@@ -247,7 +247,7 @@ void export_send_prop_variant(scope _props)
 	// Setter methods...
 	SendPropVariant.def("set_float", &SendPropVariantExt::get_typed_value<DPT_Float, float, &DVariant::m_Float>);
 	SendPropVariant.def("set_string", &SendPropVariantExt::set_string);
-	SendPropVariant.def("set_int", &SendPropVariantExt::set_typed_value<DPT_Int, long, &DVariant::m_Int>);
+	SendPropVariant.def("set_int", &SendPropVariantExt::set_typed_value<DPT_Int, int, &DVariant::m_Int>);
 	SendPropVariant.def("set_data", &SendPropVariantExt::set_data);
 	SendPropVariant.def("set_vector", &SendPropVariantExt::set_vector);
 

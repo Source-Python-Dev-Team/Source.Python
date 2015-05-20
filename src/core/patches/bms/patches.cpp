@@ -48,3 +48,8 @@
 #ifndef PATCH_INTERFACEVERSION_ENGINETRACE
 #error "Correct EngineTraceServer and EngineTraceClient versions."
 #endif
+
+#include "game/server/entitylist.h"
+#ifndef PATCH_ADD_ON_ENTITY_PRE_SPAWNED
+#error "Add IEntityListener::OnEntityPreSpawned."
+#endif

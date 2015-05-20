@@ -28,6 +28,7 @@ from _listeners import level_shutdown_listener_manager
 from _listeners import network_id_validated_listener_manager
 from _listeners import on_edict_allocated_listener_manager
 from _listeners import on_edict_freed_listener_manager
+from _listeners import on_entity_pre_spawned_listener_manager
 from _listeners import on_entity_created_listener_manager
 from _listeners import on_entity_spawned_listener_manager
 from _listeners import on_entity_deleted_listener_manager
@@ -59,6 +60,7 @@ __all__ = ('ClientActive',
            'OnEntityCreated',
            'OnEntityDeleted',
            'OnEntitySpawned',
+           'OnEntityPreSpawned',
            'OnQueryCvarValueFinished',
            'ServerActivate',
            'Tick',
@@ -76,6 +78,7 @@ __all__ = ('ClientActive',
            'on_data_unloaded_listener_manager',
            'on_edict_allocated_listener_manager',
            'on_edict_freed_listener_manager',
+           'on_entity_pre_spawned_listener_manager',
            'on_entity_created_listener_manager',
            'on_entity_deleted_listener_manager',
            'on_entity_spawned_listener_manager',
@@ -222,6 +225,13 @@ class OnEdictFreed(_ListenerManager):
     """Register/unregister an OnEdictFreed listener."""
 
     manager = on_edict_freed_listener_manager
+
+
+class OnEntityPreSpawned(_ListenerManager):
+
+    """Register/unregister a OnEntityPreSpawned listener."""
+
+    manager = on_entity_pre_spawned_listener_manager
 
 
 class OnEntityCreated(_ListenerManager):

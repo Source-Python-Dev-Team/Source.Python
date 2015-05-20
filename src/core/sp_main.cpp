@@ -435,6 +435,14 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 }
 #endif
 
+#ifdef ENGINE_BMS
+void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
+{
+	CPointer pAddress = CPointer((unsigned long) pEntity);
+	CALL_LISTENERS(OnEntityPreSpawned, pAddress);
+}
+#endif
+
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
 	int iIndex = IndexFromBaseEntity(pEntity);

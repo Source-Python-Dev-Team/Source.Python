@@ -50,6 +50,7 @@ DEFINE_MANAGER_ACCESSOR(OnEdictFreed)
 DEFINE_MANAGER_ACCESSOR(OnQueryCvarValueFinished)
 DEFINE_MANAGER_ACCESSOR(ServerActivate)
 DEFINE_MANAGER_ACCESSOR(Tick)
+DEFINE_MANAGER_ACCESSOR(OnEntityPreSpawned)
 DEFINE_MANAGER_ACCESSOR(OnEntityCreated)
 DEFINE_MANAGER_ACCESSOR(OnEntitySpawned)
 DEFINE_MANAGER_ACCESSOR(OnEntityDeleted)
@@ -117,7 +118,8 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("server_activate_listener_manager") = object(ptr(GetServerActivateListenerManager()));
 
 	_listeners.attr("tick_listener_manager") = object(ptr(GetTickListenerManager()));
-
+	
+	_listeners.attr("on_entity_pre_spawned_listener_manager") = object(ptr(GetOnEntityPreSpawnedListenerManager()));
 	_listeners.attr("on_entity_created_listener_manager") = object(ptr(GetOnEntityCreatedListenerManager()));
 	_listeners.attr("on_entity_spawned_listener_manager") = object(ptr(GetOnEntitySpawnedListenerManager()));
 	_listeners.attr("on_entity_deleted_listener_manager") = object(ptr(GetOnEntityDeletedListenerManager()));

@@ -104,6 +104,9 @@ public:
 	// -------------------------------------------
 	// IEntityListener Interface.
 	// -------------------------------------------
+#ifdef ENGINE_BMS
+	virtual void OnEntityPreSpawned( CBaseEntity *pEntity );
+#endif
 	virtual void OnEntityCreated( CBaseEntity *pEntity );
 	virtual void OnEntitySpawned( CBaseEntity *pEntity );
 	virtual void OnEntityDeleted( CBaseEntity *pEntity );
