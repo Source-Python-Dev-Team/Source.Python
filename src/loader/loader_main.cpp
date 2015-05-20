@@ -467,3 +467,21 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 	}
 }
 #endif
+
+#ifdef ENGINE_BMS
+void CSourcePython::OnEdictAllocated( edict_t *edict )
+{
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->OnEdictAllocated(edict);
+	}
+}
+
+void CSourcePython::OnEdictFreed( const edict_t *edict )
+{
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->OnEdictFreed(edict);
+	}
+}
+#endif

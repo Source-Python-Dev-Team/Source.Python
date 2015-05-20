@@ -87,6 +87,11 @@ public:
 	virtual void			OnEdictFreed( const edict_t *edict );
 #endif
 
+#ifdef ENGINE_BMS
+	virtual void			OnEdictAllocated( edict_t *edict );
+	virtual void			OnEdictFreed( const edict_t *edict );
+#endif
+
 	virtual PLUGIN_RESULT	NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
 	virtual void			OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 								EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );

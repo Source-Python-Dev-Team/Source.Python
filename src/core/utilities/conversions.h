@@ -63,7 +63,7 @@ inline edict_t *EdictFromIndex( unsigned int uiEntityIndex, bool bRaiseException
 	if (uiEntityIndex < (unsigned int)gpGlobals->maxEntities)
 	{
 		edict_t *pTempEdict;
-#ifdef ENGINE_ORANGEBOX
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
 		pTempEdict = engine->PEntityOfEntIndex(uiEntityIndex);
 #else
 		pTempEdict = (edict_t *)(gpGlobals->pEdicts + uiEntityIndex);
@@ -261,7 +261,7 @@ inline int IndexFromEdict( edict_t *pEdict, bool bRaiseException = false )
 	unsigned int uiEntityIndex = INVALID_ENTITY_INDEX;
 
 	if (pEdict && !pEdict->IsFree())
-#ifdef ENGINE_ORANGEBOX
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
 		uiEntityIndex = (unsigned int)engine->IndexOfEdict(pEdict);
 #else
 		uiEntityIndex = (unsigned int)(pEdict - gpGlobals->pEdicts);
