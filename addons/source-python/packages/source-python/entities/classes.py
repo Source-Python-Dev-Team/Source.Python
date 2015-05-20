@@ -283,6 +283,14 @@ class _ServerClasses(TypeManager):
                 # Add the key value to the instance
                 self._add_keyvalue(instance, name, desc, keyvalue_contents)
 
+                # Is the key value also a valid property?
+                if desc.name and desc.type in _supported_descriptor_types:
+
+                    # Add the descriptor to the instance
+                    self._add_property(
+                        instance, desc.name, desc, offset,
+                        property_contents, _supported_descriptor_types)
+
             # Is the current descriptor an Input?
             elif desc.flags & TypeDescriptionFlags.INPUT:
 
