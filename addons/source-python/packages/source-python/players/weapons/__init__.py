@@ -331,7 +331,7 @@ class _PlayerWeapons(object):
             index = index_from_inthandle(handle, raise_exception=False)
 
             # Is this a valid index?
-            if not index:
+            if index == -1:
 
                 # Move onto the next offset
                 continue
