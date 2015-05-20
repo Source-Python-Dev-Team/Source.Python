@@ -31,8 +31,9 @@
 // Includes
 //-----------------------------------------------------------------------------
 #include "export_main.h"
-#include "filters_recipients_wrap.h"
 #include "modules/memory/memory_tools.h"
+#include "memalloc.h"
+#include "filters_recipients_wrap.h"
 
 
 //-----------------------------------------------------------------------------

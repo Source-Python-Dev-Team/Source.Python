@@ -33,6 +33,7 @@
 #include "const.h"
 #include "game/shared/in_buttons.h"
 #include "string_t.h"
+#include "memalloc.h"
 #include "dt_send.h"
 #include "game/shared/ehandle.h"
 #include "isaverestore.h"

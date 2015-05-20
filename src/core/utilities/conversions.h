@@ -30,12 +30,12 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include "utilities/wrap_macros.h"
+#include "modules/memory/memory_tools.h"
 #include "basehandle.h"
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
-#include "modules/memory/memory_tools.h"
 #include "utilities/baseentity.h"
-#include "utilities/wrap_macros.h"
 
 
 //-----------------------------------------------------------------------------

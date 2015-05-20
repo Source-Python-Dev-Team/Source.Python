@@ -30,6 +30,7 @@
 //---------------------------------------------------------------------------------
 // Includes.
 //---------------------------------------------------------------------------------
+#include "utilities/conversions.h"
 #include "filters_recipients_wrap.h"
 #include "interface.h"
 #include "filesystem.h"
@@ -43,7 +44,6 @@
 #include "shake.h"
 #include "game/shared/IEffects.h"
 #include "engine/IEngineSound.h"
-#include "utilities/conversions.h"
 
 // memdbgon must be the last include file in a .cpp file!!!
 #include "tier0/memdbgon.h"

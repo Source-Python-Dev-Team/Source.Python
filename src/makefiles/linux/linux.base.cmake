@@ -36,12 +36,29 @@ Include_Directories(
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES
     pthread dl util
-    ${SOURCESDK_LIB}/linux/mathlib_i486.a
-    ${SOURCESDK_LIB}/linux/tier1_i486.a
     ${DYNCALLSDK_LIB}/libdyncall_s.a
     ${DYNCALLSDK_LIB}/libdyncallback_s.a
     ${DYNCALLSDK_LIB}/libdynload_s.a
 )
+
+
+If(SOURCE_ENGINE MATCHES "bms")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+        ${SOURCESDK_LIB}/public/linux32/mathlib.a
+        ${SOURCESDK_LIB}/public/linux32/tier1.a
+        ${SOURCESDK_LIB}/public/linux32/tier2.a
+        ${SOURCESDK_LIB}/public/linux32/tier3.a
+        ${SOURCESDK_LIB}/public/linux32/libtier0_srv.so
+        ${SOURCESDK_LIB}/public/linux32/libvstdlib_srv.so
+    )
+Else()
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+        ${SOURCESDK_LIB}/linux/mathlib_i486.a
+        ${SOURCESDK_LIB}/linux/tier1_i486.a
+    )
+EndIf()
 
 # ------------------------------------------------------------------
 # Game specific library hacks.
@@ -89,7 +106,7 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
 
 # Others
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fno-threadsafe-statics -v")
 
 
 # ------------------------------------------------------------------
