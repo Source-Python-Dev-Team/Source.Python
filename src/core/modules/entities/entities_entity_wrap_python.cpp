@@ -32,7 +32,12 @@
 #include "utilities/conversions.h"
 #include "entities_entity_wrap.h"
 
+
+//-----------------------------------------------------------------------------
+// Type ID specializations.
+//-----------------------------------------------------------------------------
 BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
+
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -50,12 +55,13 @@ DECLARE_SP_SUBMODULE(_entities, _entity)
 
 
 //-----------------------------------------------------------------------------
-// Exports CBaseEntityHandle.
+// Exports CBaseEntity.
 //-----------------------------------------------------------------------------
 void export_base_entity(scope _entity)
 {
 	class_<CBaseEntityWrapper, boost::shared_ptr<CBaseEntityWrapper>, bases<IServerEntity>, boost::noncopyable> BaseEntity("BaseEntity", no_init);
-		
+
+	// Initializers...
 	BaseEntity.def("__init__",
 		make_constructor(
 			&CBaseEntityWrapper::__init__,
@@ -64,12 +70,15 @@ void export_base_entity(scope _entity)
 		)
 	);
 
+	// Properties...
 	BaseEntity.add_property("server_class",
-		make_function(&CBaseEntityWrapper::GetServerClass, reference_existing_object_policy())
+		make_function(&CBaseEntityWrapper::GetServerClass, reference_existing_object_policy()),
+		"The ServerClass instance of this entity (read-only)."
 	);
 
 	BaseEntity.add_property("datamap",
-		make_function(&CBaseEntityWrapper::GetDataDescMap, reference_existing_object_policy())
+		make_function(&CBaseEntityWrapper::GetDataDescMap, reference_existing_object_policy()),
+		"The DataMap instance of this entity (read-only)."
 	);
 
 	// Methods...
@@ -145,5 +154,6 @@ void export_base_entity(scope _entity)
 		args("field_name", "value")
 	);
 
+	// Add memory tools...
 	BaseEntity ADD_MEM_TOOLS(CBaseEntityWrapper);
 }
