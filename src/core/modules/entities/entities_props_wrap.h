@@ -121,7 +121,7 @@ public:
 			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
 		}
 
-		return (int) pVariant->m_Int;
+		return pVariant->m_Int;
 	}
 
 	static void set_int(DVariant* pVariant, int iValue)
