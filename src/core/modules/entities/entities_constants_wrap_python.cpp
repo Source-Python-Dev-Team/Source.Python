@@ -40,6 +40,7 @@
 #include "game/shared/takedamageinfo.h"
 #include "game/shared/shareddefs.h"
 #include "const.h"
+#include "utilities/conversions.h"
 
 #include ENGINE_INCLUDE_PATH(entities_constants_wrap_python.h)
 
@@ -60,6 +61,7 @@ void export_collision_group(scope);
 void export_dissolve_types(scope);
 void export_take_damage(scope);
 void export_entity_flags(scope);
+void export_miscellaneous_constants(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -80,15 +82,15 @@ DECLARE_SP_SUBMODULE(_entities, _constants)
 	export_dissolve_types(_constants);
 	export_take_damage(_constants);
 	export_entity_flags(_constants);
+	export_miscellaneous_constants(_constants);
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose damage types.
+// Exports damage types.
 //-----------------------------------------------------------------------------
 void export_damage_types(scope _constants)
 {
-	// Damage types constants...
 	_constants.attr("DMG_GENERIC") = DMG_GENERIC;
 	_constants.attr("DMG_CRUSH") = DMG_CRUSH;
 	_constants.attr("DMG_BULLET") = DMG_BULLET;
@@ -132,11 +134,10 @@ void export_damage_types(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose entity state flags.
+// Exports entity state flags.
 //-----------------------------------------------------------------------------
 void export_entity_states(scope _constants)
 {
-	// Entity flags constants...
 	_constants.attr("FL_FLY") = FL_FLY;
 	_constants.attr("FL_SWIM") = FL_SWIM;
 	_constants.attr("FL_CONVEYOR") = FL_CONVEYOR;
@@ -162,7 +163,7 @@ void export_entity_states(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose MoveType_t.
+// Exports MoveType_t.
 //-----------------------------------------------------------------------------
 void export_move_type(scope _constants)
 {
@@ -185,7 +186,7 @@ void export_move_type(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose MoveCollide_t.
+// Exports MoveCollide_t.
 //-----------------------------------------------------------------------------
 void export_move_collide(scope _constants)
 {
@@ -201,7 +202,7 @@ void export_move_collide(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose SolidType_t.
+// Exports SolidType_t.
 //-----------------------------------------------------------------------------
 void export_solid_type(scope _constants)
 {
@@ -219,7 +220,7 @@ void export_solid_type(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose SolidFlags_t.
+// Exports SolidFlags_t.
 //-----------------------------------------------------------------------------
 void export_solid_flags(scope _constants)
 {
@@ -247,7 +248,7 @@ void export_solid_flags(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose entity effects.
+// Exports entity effects.
 //-----------------------------------------------------------------------------
 void export_entity_effects(scope _constants)
 {
@@ -273,7 +274,7 @@ void export_entity_effects(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose RenderMode_t.
+// Exports RenderMode_t.
 //-----------------------------------------------------------------------------
 void export_render_mode(scope _constants)
 {
@@ -294,7 +295,7 @@ void export_render_mode(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose RenderFx_t.
+// Exports RenderFx_t.
 //-----------------------------------------------------------------------------
 void export_render_effects(scope _constants)
 {
@@ -340,7 +341,7 @@ void export_render_effects(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose Collision_Group_t.
+// Exports Collision_Group_t.
 //-----------------------------------------------------------------------------
 void export_collision_group(scope _constants)
 {
@@ -378,7 +379,7 @@ void export_collision_group(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose dissolve types.
+// Exports dissolve types.
 //-----------------------------------------------------------------------------
 void export_dissolve_types(scope _constants)
 {
@@ -390,7 +391,7 @@ void export_dissolve_types(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose take damage constants.
+// Exports take damage constants.
 //-----------------------------------------------------------------------------
 void export_take_damage(scope _constants)
 {
@@ -402,7 +403,7 @@ void export_take_damage(scope _constants)
 
 
 //-----------------------------------------------------------------------------
-// Expose entity flags.
+// Exports entity flags.
 //-----------------------------------------------------------------------------
 void export_entity_flags(scope _constants)
 {
@@ -438,4 +439,13 @@ void export_entity_flags(scope _constants)
 	_constants.attr("EFL_NO_WATER_VELOCITY_CHANGE") = (long)EFL_NO_WATER_VELOCITY_CHANGE;
 	_constants.attr("EFL_NO_PHYSCANNON_INTERACTION") = (long)EFL_NO_PHYSCANNON_INTERACTION;
 	_constants.attr("EFL_NO_DAMAGE_FORCES") = (long)EFL_NO_DAMAGE_FORCES;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports miscellaneous constants.
+//-----------------------------------------------------------------------------
+void export_miscellaneous_constants(scope _constants)
+{
+	_constants.attr("WORLD_ENTITY_INDEX") = WORLD_ENTITY_INDEX;
 }

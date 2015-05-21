@@ -56,7 +56,7 @@ SendProp::~SendProp()
 //-----------------------------------------------------------------------------
 bool CGameTrace::DidHitWorld() const
 {
-	return BaseEntityFromIndex(0) == m_pEnt;
+	return BaseEntityFromIndex(WORLD_ENTITY_INDEX) == m_pEnt;
 }
 
 

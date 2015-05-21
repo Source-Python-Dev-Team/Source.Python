@@ -47,6 +47,12 @@ extern IPlayerInfoManager *playerinfomanager;
 
 
 //-----------------------------------------------------------------------------
+// Constants.
+//-----------------------------------------------------------------------------
+#define WORLD_ENTITY_INDEX 0
+
+
+//-----------------------------------------------------------------------------
 // Invalid results.
 //-----------------------------------------------------------------------------
 #define INVALID_ENTITY_INDEX -1
@@ -60,7 +66,7 @@ inline edict_t *EdictFromIndex( int iEntityIndex, bool bRaiseException = false )
 {
 	edict_t *pEdict = NULL;
 
-	if (iEntityIndex < gpGlobals->maxEntities)
+	if (iEntityIndex > INVALID_ENTITY_INDEX && iEntityIndex < gpGlobals->maxEntities)
 	{
 		edict_t *pTempEdict;
 #if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
@@ -86,11 +92,14 @@ inline edict_t *EdictFromUserid( int iUserID, bool bRaiseException = false )
 {
 	edict_t *pEdict = NULL;
 
-	for (int iCurrentIndex = 1; iCurrentIndex <= gpGlobals->maxClients; iCurrentIndex++)
+	if (iUserID > INVALID_PLAYER_USERID)
 	{
-		edict_t *pCurrentEdict = EdictFromIndex(iCurrentIndex);
-		if (engine->GetPlayerUserId(pCurrentEdict) == iUserID)
-			pEdict = pCurrentEdict;
+		for (int iCurrentIndex = 1; iCurrentIndex <= gpGlobals->maxClients; iCurrentIndex++)
+		{
+			edict_t *pCurrentEdict = EdictFromIndex(iCurrentIndex);
+			if (engine->GetPlayerUserId(pCurrentEdict) == iUserID)
+				pEdict = pCurrentEdict;
+		}
 	}
 
 	if (!pEdict && bRaiseException)

@@ -130,6 +130,7 @@ from _entities._constants import RenderEffects
 from _entities._constants import RenderMode
 from _entities._constants import SolidFlags
 from _entities._constants import SolidType
+from _entities._constants import WORLD_ENTITY_INDEX
 
 
 # =============================================================================
@@ -149,6 +150,7 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
            'SolidFlags',
            'SolidType',
            'TakeDamage',
+           'WORLD_ENTITY_INDEX',
            )
 
 
