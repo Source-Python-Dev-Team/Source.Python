@@ -79,6 +79,9 @@ public:
 class SendPropVariantExt
 {
 public:
+	// TODO:
+	// I guess we can remove the get_typed_value() method and use a more
+	// descriptive exception message in the specific methods.
 	template<SendPropType prop_type, typename return_type, return_type DVariant::*member>
 	static return_type get_typed_value(DVariant *pVariant)
 	{
@@ -109,6 +112,26 @@ public:
 	{
 		pVariant->m_Type = DPT_String;
 		*(char**)&pVariant->m_pString = (char*)pString;
+	}
+
+	static int get_int(DVariant* pVariant)
+	{
+		if (pVariant->m_Type != DPT_Int)
+		{
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
+		}
+
+		return (int) pVariant->m_Int;
+	}
+
+	static void set_int(DVariant* pVariant, int iValue)
+	{
+		if (pVariant->m_Type != DPT_Int)
+		{
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
+		}
+
+		pVariant->m_Int = iValue;
 	}
 
 	static CPointer *get_data(DVariant *pVariant)
