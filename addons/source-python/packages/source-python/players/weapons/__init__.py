@@ -9,6 +9,7 @@
 #   Entities
 from entities.entity import Entity
 from entities.helpers import index_from_inthandle
+from entities.helpers import INVALID_ENTITY_INDEX
 from entities.props import SendPropType
 #   Engines
 from engines.server import server_game_dll
@@ -331,7 +332,7 @@ class _PlayerWeapons(object):
             index = index_from_inthandle(handle, raise_exception=False)
 
             # Is this a valid index?
-            if index == -1:
+            if index == INVALID_ENTITY_INDEX:
 
                 # Move onto the next offset
                 continue
