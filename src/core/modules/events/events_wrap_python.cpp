@@ -168,6 +168,8 @@ void export_igameeventlistener(scope _events)
 //-----------------------------------------------------------------------------
 // Exports IGameEventManager2.
 //-----------------------------------------------------------------------------
+BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 2, 2);
+
 void export_igameeventmanager(scope _events)
 {
 	class_<IGameEventManager2, boost::noncopyable>("_GameEventManager", no_init)
@@ -202,11 +204,12 @@ void export_igameeventmanager(scope _events)
 
 		.def("create_event",
 			&IGameEventManager2::CreateEvent,
-			"Creates an event by name but doesn't fire it. Returns NULL if the event\
-			 is not known or no listener is registered for it. Setting should_force to\
-			 True forces the creation of the event even if no listener for it is active.",
-			("event_name", arg("bForce")=false),
-			reference_existing_object_policy()
+			create_event_overload(
+				"Creates an event by name but doesn't fire it. Returns NULL if the event\
+				is not known or no listener is registered for it. Setting <force> to True\
+				forces the creation of the event even if no listener for it is active.",
+				("event_name", arg("force")=false)
+			)[reference_existing_object_policy()]
 		)
 
 		.def("fire_event",
