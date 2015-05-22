@@ -411,19 +411,9 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
 	CALL_LISTENERS(ClientFullyConnect, IndexFromEdict(pEntity));
 }
-
-void CSourcePython::OnEdictAllocated( edict_t *edict )
-{
-	CALL_LISTENERS(OnEdictAllocated, IndexFromEdict(edict));
-}
-
-void CSourcePython::OnEdictFreed( const edict_t *edict )
-{
-	CALL_LISTENERS(OnEdictFreed, ptr(edict));
-}
 #endif
 
-#ifdef ENGINE_BMS
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	CALL_LISTENERS(OnEdictAllocated, IndexFromEdict(edict));
