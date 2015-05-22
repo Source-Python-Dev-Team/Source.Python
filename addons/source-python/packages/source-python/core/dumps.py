@@ -24,8 +24,6 @@ from memory.helpers import MemberFunction
 from paths import LOG_PATH
 #   Stringtables
 from stringtables import string_tables
-#   Weapons
-from weapons.scripts import weapon_scripts
 
 
 # =============================================================================
@@ -158,6 +156,10 @@ def dump_string_tables(filename):
 
 def dump_weapon_scripts(filename):
     """Dump all WeaponInfo instances to the given file name."""
+    # Import weapon_scripts
+    # This was moved here due to issues with the bms branch
+    from weapons.scripts import weapon_scripts
+
     # Open/close the file
     with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
 
