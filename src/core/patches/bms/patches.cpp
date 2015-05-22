@@ -49,11 +49,6 @@
 #error "Correct EngineTraceServer and EngineTraceClient versions."
 #endif
 
-#include "game/server/entitylist.h"
-#ifndef PATCH_ADD_ON_ENTITY_PRE_SPAWNED
-#error "Add IEntityListener::OnEntityPreSpawned."
-#endif
-
 #include "public/tier0/threadtools.h"
 #ifndef PATCH_UPDATE_AUTO_LOCK
 // TODO: Create a real fix for this!
