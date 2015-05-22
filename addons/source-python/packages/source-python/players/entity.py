@@ -11,6 +11,7 @@ import math
 
 # Source.Python Imports
 #   Engines
+from engines.server import engine_server
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
 from engines.trace import GameTrace
@@ -257,3 +258,10 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         self.base_velocity = Vector(
             x * horiz_mul, y * horiz_mul,
             z * vert_mul if not vert_override else vert_mul)
+
+    def client_command(self, command, server_side=False):
+        """Execute a command on the client. If <server_side> is True, the
+        command will be emulated by the server.
+        """
+
+        engine_server.client_command(self.edict, command, server_side)
