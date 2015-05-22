@@ -263,5 +263,8 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         """Execute a command on the client. If <server_side> is True, the
         command will be emulated by the server.
         """
-
         engine_server.client_command(self.edict, command, server_side)
+
+    def slay(self):
+        """Slay the player."""
+        self.client_command('kill', True)
