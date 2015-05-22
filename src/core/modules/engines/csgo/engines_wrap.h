@@ -57,6 +57,11 @@ public:
 		pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, -1, pSample, flVolume, flAttenuation, 0, iFlags, iPitch, pOrigin, pDirection,
 			pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
 	}
+
+	static void StopSound(IEngineSound* pEngineSound, int iEntIndex, int iChannel, const char *pSample)
+	{
+		pEngineSound->StopSound(iEntIndex, iChannel, pSample, -1);
+	}
 };
 
 

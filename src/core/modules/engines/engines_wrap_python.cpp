@@ -765,7 +765,7 @@ void export_engine_sound(scope _engines)
 		.NOT_IMPLEMENTED("emit_sentence_by_index")
 
 		.def("stop_sound",
-			&IEngineSound::StopSound,
+			&IEngineSoundExt::StopSound,
 			args("entity_index", "channel", "sample"),
 			"Stops a sound from being emitted from an entity."
 		)
