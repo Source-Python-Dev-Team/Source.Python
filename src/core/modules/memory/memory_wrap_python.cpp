@@ -514,6 +514,10 @@ void export_dynamichooks(scope _memory)
 			"Sets the argument at the specified index."
 		)
 
+		.def("__repr__",
+			&CStackData::__repr__
+		)
+
 		.add_property("registers",
 			make_function(&CStackData::GetRegisters, reference_existing_object_policy())
 		)

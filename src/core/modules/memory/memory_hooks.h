@@ -50,6 +50,7 @@ public:
 	object		GetItem(unsigned int iIndex);
 	void		SetItem(unsigned int iIndex, object value);
 	CRegisters* GetRegisters() { return m_pHook->m_pRegisters; }
+	str			__repr__() { return str(tuple(ptr(this))); }
 
 protected:
 	CHook*                m_pHook;
