@@ -183,6 +183,7 @@ bool CPythonManager::Shutdown( void )
 //---------------------------------------------------------------------------------
 // Converters
 //---------------------------------------------------------------------------------
+// string_t
 struct string_t_to_python
 {
 	string_t_to_python()
@@ -196,6 +197,7 @@ struct string_t_to_python
 	}
 };
 
+// CBaseEntity*
 struct baseentity_to_python
 {
 	baseentity_to_python()
@@ -226,6 +228,36 @@ struct baseentity_from_python
 	}
 };
 
+// void*
+struct void_ptr_to_python
+{
+	void_ptr_to_python()
+	{
+		to_python_converter< void*, void_ptr_to_python >();
+	}
+
+	static PyObject* convert(void* pPtr)
+	{
+		return incref(object(CPointer((unsigned long) pPtr)).ptr());
+	}
+};
+
+struct void_ptr_from_python
+{
+	void_ptr_from_python()
+	{
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<void>()
+		);
+	}
+
+	static void* convert(PyObject* obj)
+	{
+		CPointer* pAddr = extract<CPointer*>(obj);
+		return (void *) pAddr->m_ulAddr;
+	}
+};
 
 //---------------------------------------------------------------------------------
 // Initializes all converters
@@ -236,4 +268,7 @@ void InitConverters()
 
 	baseentity_to_python();
 	baseentity_from_python();
+	
+	void_ptr_to_python();
+	void_ptr_from_python();
 }
