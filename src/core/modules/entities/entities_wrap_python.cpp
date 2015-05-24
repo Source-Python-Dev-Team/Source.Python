@@ -56,6 +56,7 @@ void export_entity_generator(scope);
 void export_take_damage_info(scope);
 void export_global_entity_list(scope);
 void export_entity_listener(scope);
+void export_check_transmit_info(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -73,6 +74,7 @@ DECLARE_SP_MODULE(_entities)
 	export_take_damage_info(_entities);
 	export_global_entity_list(_entities);
 	export_entity_listener(_entities);
+	export_check_transmit_info(_entities);
 }
 
 
@@ -374,7 +376,7 @@ void export_edict(scope _entities)
 		ADD_MEM_TOOLS(CBaseEdict)
 	;
 
-	class_< edict_t, bases<CBaseEdict> >("Edict")
+	class_< edict_t, edict_t*, bases<CBaseEdict> >("Edict")
 		.def("get_collidable",
 			&edict_t::GetCollideable,
 			"Returns its Collideable instance.",
@@ -491,4 +493,31 @@ void export_entity_listener(scope _entities)
 
 	// Add memory tools...
 	EntityListener ADD_MEM_TOOLS(IEntityListener);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CCheckTransmitInfo.
+//-----------------------------------------------------------------------------
+void export_check_transmit_info(scope _entities)
+{
+	class_<CCheckTransmitInfo, CCheckTransmitInfo*> CheckTransmitInfo("CheckTransmitInfo");
+
+	CheckTransmitInfo.def_readwrite("client", &CCheckTransmitInfo::m_pClientEnt);
+	//byte	m_PVS[PAD_NUMBER( MAX_MAP_CLUSTERS,8 ) / 8];
+	CheckTransmitInfo.def_readwrite("pvs_size", &CCheckTransmitInfo::m_nPVSSize, "PVS size in bytes.");
+
+	//CBitVec<MAX_EDICTS>	*m_pTransmitEdict;	// entity n is already marked for transmission
+	//CBitVec<MAX_EDICTS>	*m_pTransmitAlways; // entity n is always sent even if not in PVS (HLTV and Replay only)
+	
+	CheckTransmitInfo.def_readwrite("areas_networked", &CCheckTransmitInfo::m_AreasNetworked, "Number of networked areas.");
+	//int		m_Areas[MAX_WORLD_AREAS]; // the areas
+	
+	// This is used to determine visibility, so if the previous state
+	// is the same as the current state (along with pvs and areas networked),
+	// then the parts of the map that the player can see haven't changed.
+	//byte	m_AreaFloodNums[MAX_MAP_AREAS];
+	CheckTransmitInfo.def_readwrite("map_areas", &CCheckTransmitInfo::m_nMapAreas, "Number of map areas.");
+
+	CheckTransmitInfo ADD_MEM_TOOLS(CCheckTransmitInfo);
 }
