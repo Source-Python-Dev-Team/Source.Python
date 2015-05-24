@@ -75,8 +75,8 @@ void export_player_conversion_functions(scope _helpers)
 	EXPORT_CONVERSION_FUNCTION(int, IntHandle, IPlayerInfo *, PlayerInfo);
 
 	// To Pointer conversions...
-	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, unsigned int, Userid, reference_existing_object_policy());
-	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, IPlayerInfo *, PlayerInfo, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, unsigned int, Userid, manage_new_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, IPlayerInfo *, PlayerInfo, manage_new_object_policy());
 
 	// To UserID conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, Index);
