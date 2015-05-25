@@ -71,7 +71,6 @@ enum MDLCacheDataType_t
 };
 
 
-#define PATCH_IMDL_CACHE_NOTIFY_VTABLE
 abstract_class IMDLCacheNotify
 {
 public:
@@ -110,6 +109,7 @@ enum MDLCacheFlush_t
 //-----------------------------------------------------------------------------
 // The main MDL cacher 
 //-----------------------------------------------------------------------------
+#define PATCH_IMDL_CACHE_VTABLE
 class SCombinerModelInput_t;
 class ECombinedAsset;
 
