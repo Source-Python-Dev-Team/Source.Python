@@ -115,7 +115,7 @@ public:
 	virtual void OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle );
 #ifdef ENGINE_CSGO
 	virtual void OnCombinerPreCache(MDLCacheDataType_t type, MDLHandle_t handle );
-	virtual bool ShouldSupressLoadWarning(unsigned short a);
+	virtual bool ShouldSupressLoadWarning(MDLHandle_t handle);
 #endif
 
 private:

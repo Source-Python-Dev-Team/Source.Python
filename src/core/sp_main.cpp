@@ -484,11 +484,11 @@ void CSourcePython::OnCombinerPreCache(MDLCacheDataType_t type, MDLHandle_t hand
 	CALL_LISTENERS(OnCombinerPreCache, type, handle);
 }
 
-bool CSourcePython::ShouldSupressLoadWarning(unsigned short a)
+bool CSourcePython::ShouldSupressLoadWarning(MDLHandle_t handle)
 {
 	bool result = false;
 	if (m_pOldMDLCacheNotifier)
-		result = m_pOldMDLCacheNotifier->ShouldSupressLoadWarning(a);
+		result = m_pOldMDLCacheNotifier->ShouldSupressLoadWarning(handle);
 
 	return result;
 }
