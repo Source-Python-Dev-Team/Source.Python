@@ -33,8 +33,3 @@
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."
 #endif
-
-#include "datacache/imdlcache.h"
-#ifndef PATCH_IMDL_CACHE_VTABLE
-#error "Update IMDLCache vtable."
-#endif
