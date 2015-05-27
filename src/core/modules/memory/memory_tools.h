@@ -271,6 +271,8 @@ public:
 
 	bool IsCallable();
 	bool IsHookable();
+
+	bool IsHooked();
     
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
