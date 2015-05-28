@@ -42,17 +42,7 @@
 //-----------------------------------------------------------------------------
 class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
 {
-public:
-	int get_penetrated()
-	{
-		return -1;
-		// return m_iPlayerPenetrationCount;
-	}
-	
-	void set_penetrated(int iPenetrated)
-	{
-		// m_iPlayerPenetrationCount = iPenetrated;
-	}
+	// Nothing specific to Left4Dead2...
 };
 
 
@@ -61,16 +51,7 @@ public:
 //-----------------------------------------------------------------------------
 class TakeDamageInfoExt
 {
-public:
-	static int get_penetrated(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_penetrated();
-	}
-	
-	static void set_penetrated(CTakeDamageInfo *pTakeDamageInfo, int iPenetrated)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
-	}
+	// Nothing specific to Left4Dead2...
 };
 
 

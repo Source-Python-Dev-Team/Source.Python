@@ -39,9 +39,7 @@
 template<class T, class U>
 void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
-	// DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
-	// DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
-	// DataMap.def_readonly("packed_size", &datamap_t::packed_size);
+	// Nothing specific to Left4Dead2...
 }
 
 
@@ -51,8 +49,7 @@ void export_engine_specific_datamap(T _datamaps, U DataMap)
 template<class T, class U>
 void export_engine_specific_type_description(T _datamaps, U TypeDescription)
 {
-	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset)	;
-	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
+	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset);
 }
 
 
