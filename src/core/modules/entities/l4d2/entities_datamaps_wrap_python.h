@@ -39,9 +39,9 @@
 template<class T, class U>
 void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
-	DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
-	DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
-	DataMap.def_readonly("packed_size", &datamap_t::packed_size);
+	// DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
+	// DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
+	// DataMap.def_readonly("packed_size", &datamap_t::packed_size);
 }
 
 

@@ -41,7 +41,9 @@ class ICVarExt
 public:
 	static ConCommandBase* GetCommands(ICvar* pCvar)
 	{
-		return pCvar->GetCommands();
+		ICvar::Iterator iter(pCvar);
+		iter.SetFirst();
+		return iter.Get();
 	};
 };
 

@@ -32,8 +32,6 @@
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
 
-#include ENGINE_BRANCH_INCLUDE_PATH(entities_constants_wrap_python.h)
-
 
 //-----------------------------------------------------------------------------
 // Exports damage types.
@@ -41,8 +39,7 @@
 template<class T>
 void export_engine_specific_damage_types(T _constants)
 {
-	// Game specific stuff...
-	export_game_specific_damage_types(_constants);
+	// Nothing specific to Left4Dead2...
 }
 
 

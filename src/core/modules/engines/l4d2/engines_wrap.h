@@ -54,8 +54,8 @@ public:
 			}
 		}
 		
-		pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, 0, pOrigin,
-			pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
+		// pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, 0, pOrigin,
+			// pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
 	}
 
 	static void StopSound(IEngineSound* pEngineSound, int iEntIndex, int iChannel, const char *pSample)
@@ -70,7 +70,8 @@ public:
 //---------------------------------------------------------------------------------
 inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
 {
-	return enginetrace->GetPointContents(vecAbsPosition, ppEntity);
+	return -1;
+	// return enginetrace->GetPointContents(vecAbsPosition, ppEntity);
 }
 
 

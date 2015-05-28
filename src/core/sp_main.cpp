@@ -396,6 +396,16 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 }
 
 //-----------------------------------------------------------------------------
+// Purpose: called when an event is fired
+//-----------------------------------------------------------------------------
+#if defined(ENGINE_LEFT4DEAD2)
+int CSourcePython::GetEventDebugID()
+{
+	return EVENT_DEBUG_ID_INIT;
+}
+#endif
+
+//-----------------------------------------------------------------------------
 // Orangebox.
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )

@@ -96,6 +96,9 @@ public:
 	// IGameEventListener Interface.
 	// -------------------------------------------
 	virtual void			FireGameEvent( IGameEvent* event );
+#if defined(ENGINE_LEFT4DEAD2)
+	virtual int				GetEventDebugID();
+#endif
 	virtual int				GetCommandIndex() { return m_iClientCommandIndex; }
 
 	// -------------------------------------------

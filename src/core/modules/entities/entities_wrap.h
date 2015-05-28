@@ -85,12 +85,13 @@ public:
 	
 	int get_damaged_other_players()
 	{
-		return m_iDamagedOtherPlayers;
+		return -1;
+		// return m_iDamagedOtherPlayers;
 	}
 	
 	void set_damaged_other_players(int iDamagedOtherPlayers)
 	{
-		m_iDamagedOtherPlayers = iDamagedOtherPlayers;
+		// m_iDamagedOtherPlayers = iDamagedOtherPlayers;
 	}
 };
 

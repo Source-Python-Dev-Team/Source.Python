@@ -47,7 +47,7 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 void remove_entity(unsigned int uiEntityIndex)
 {
-	servertools->RemoveEntity(BaseEntityFromIndex(uiEntityIndex, true));
+	// servertools->RemoveEntity(BaseEntityFromIndex(uiEntityIndex, true));
 }
 
 

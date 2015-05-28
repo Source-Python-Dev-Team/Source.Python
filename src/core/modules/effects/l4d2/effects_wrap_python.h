@@ -57,9 +57,6 @@ template<class T, class U>
 void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
 {
 	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
-	
-	// Singleton...
-	_effects.attr("temp_entities") = object(ptr(servertools->GetTempEntsSystem()));
 }
 
 

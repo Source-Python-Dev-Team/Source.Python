@@ -45,12 +45,13 @@ class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
 public:
 	int get_penetrated()
 	{
-		return m_iPlayerPenetrationCount;
+		return -1;
+		// return m_iPlayerPenetrationCount;
 	}
 	
 	void set_penetrated(int iPenetrated)
 	{
-		m_iPlayerPenetrationCount = iPenetrated;
+		// m_iPlayerPenetrationCount = iPenetrated;
 	}
 };
 

@@ -41,12 +41,13 @@ class TypeDescriptionExt
 public:
 	static int get_offset(const typedescription_t& pTypeDesc)
 	{
-		return pTypeDesc.fieldOffset[TD_OFFSET_NORMAL];
+		return pTypeDesc.fieldOffset;
 	}
 	
 	static int get_packed_offset(const typedescription_t& pTypeDesc)
 	{
-		return pTypeDesc.fieldOffset[TD_OFFSET_PACKED];
+		return -1;
+		// return pTypeDesc.fieldOffset[TD_OFFSET_PACKED];
 	}
 };
 
