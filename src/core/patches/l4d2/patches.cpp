@@ -24,16 +24,6 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_REMOVE_FLAGS
-#error "Implement ConCommandBase::RemoveFlags in public/tier1/convar.h"
-#endif
-
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_GET_FLAGS
-#error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
-#endif
-
 #include "KeyValues.h"
 #ifndef PATCH_KEYVALUES_DESTRUCTOR
 #error "Make KeyValues::~KeyValues() public."
