@@ -365,6 +365,11 @@ bool CFunction::IsHookable()
 	return m_pCallingConvention != NULL;
 }
 
+bool CFunction::IsHooked()
+{
+	return GetHookManager()->FindHook((void *) m_ulAddr) != NULL;
+}
+
 object CFunction::Call(tuple args, dict kw)
 {
 	if (!IsCallable())

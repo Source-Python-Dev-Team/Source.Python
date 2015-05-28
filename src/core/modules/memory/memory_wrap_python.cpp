@@ -296,11 +296,18 @@ void export_memtools(scope _memory)
 		)
 
 		.def("is_callable",
-			&CFunction::IsCallable
+			&CFunction::IsCallable,
+			"Return True if the function is callable."
 		)
 
 		.def("is_hookable",
-			&CFunction::IsHookable
+			&CFunction::IsHookable,
+			"Return True if the function is hookable."
+		)
+
+		.def("is_hooked",
+			&CFunction::IsHooked,
+			"Return True if the function is hooked."
 		)
 
 		.def("call_trampoline",

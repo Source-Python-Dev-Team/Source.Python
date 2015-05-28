@@ -46,6 +46,7 @@
 
 #include "engine/IEngineTrace.h"
 #ifndef PATCH_INTERFACEVERSION_ENGINETRACE
+// TODO: Update vtable as well!
 #error "Correct EngineTraceServer and EngineTraceClient versions."
 #endif
 
