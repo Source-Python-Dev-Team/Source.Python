@@ -180,14 +180,8 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         if not trace.did_hit():
             return None
 
-        # Get the entity that the trace hit
-        pointer = Pointer(trace.get_entity().get_base_entity())
-
-        # Get the index of the entity the trace hit
-        index = index_from_pointer(pointer, False)
-
-        # Return a Entity instance of the hit entity if it has an index
-        return Entity(index) if index else None
+        # Return the hit entity as an Entity instance
+        return Entity(trace.get_entity_index())
 
     def set_view_entity(self, entity):
         """Force the player to look at the origin of the given entity."""
