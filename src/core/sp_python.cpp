@@ -125,8 +125,10 @@ bool CPythonManager::Initialize( void )
 		const char* szParam = pCommandLine->GetParm(i);
 		int iParamLength = strlen(szParam);
 
-		wchar_t* wszParam = new wchar_t[iParamLength];
-		V_strtowcs(szParam, -1, wszParam, iParamLength+1);
+		wchar_t* wszParam = new wchar_t[iParamLength+1];
+		// Not sure what's wrong with V_strtowcs, but it seems like it
+		// doesn't convert the string correctly on Linux
+		mbstowcs(wszParam, szParam, iParamLength+1);
 
 		argv[i] = wszParam;
 	}
