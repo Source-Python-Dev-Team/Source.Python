@@ -37,6 +37,7 @@
 #include "utilities/shared_utils.h"
 #include "export_main.h"
 #include "modules/entities/entities_entity_wrap.h"
+#include "icommandline.h"
 
 BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
@@ -112,6 +113,26 @@ bool CPythonManager::Initialize( void )
 
 	// Print some information
 	DevMsg(1, MSG_PREFIX "Python version %s initialized!\n", Py_GetVersion());
+	
+	// Set sys.argv and update sys.path
+	DevMsg(1, MSG_PREFIX "Setting sys.argv...\n");
+	ICommandLine* pCommandLine = CommandLine();
+
+	int iParamCount = pCommandLine->ParmCount();
+	wchar_t** argv = new wchar_t*[iParamCount];
+	for (int i=0; i < iParamCount; i++)
+	{
+		const char* szParam = pCommandLine->GetParm(i);
+		int iParamLength = strlen(szParam);
+
+		wchar_t* wszParam = new wchar_t[iParamLength+1];
+		// Not sure what's wrong with V_strtowcs, but it seems like it
+		// doesn't convert the string correctly on Linux
+		mbstowcs(wszParam, szParam, iParamLength+1);
+
+		argv[i] = wszParam;
+	}
+	PySys_SetArgv(iParamCount, argv);
 
 	// Make sure sys is imported.
 	PyRun_SimpleString("import sys");

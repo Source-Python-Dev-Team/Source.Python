@@ -12,6 +12,10 @@ from collections import defaultdict
 #   Warnings
 from warnings import warn
 
+# Site Package Imports
+#   Configobj
+from configobj import Section
+
 # Source.Python Imports
 #   Core
 from core import GameConfigObj
@@ -241,10 +245,16 @@ class _ServerClasses(TypeManager):
         # Get the specific types of values to use
         input_contents = dict(map(
             reversed, manager_contents.get('input', {}).items()))
-        keyvalue_contents = dict(map(
-            reversed, manager_contents.get('keyvalue', {}).items()))
         property_contents = dict(map(
             reversed, manager_contents.get('property', {}).items()))
+        keyvalue_contents = {}
+        hardcoded_keyvalues = {}
+        for item, value in manager_contents.get('keyvalue', {}).items():
+            if isinstance(value, Section):
+                hardcoded_keyvalues[item] = value
+                hardcoded_keyvalues[item].update({'alias': item})
+            else:
+                keyvalue_contents[value] = item
 
         # Create dictionaries to store all values for the instance
         instance.inputs = dict()
@@ -318,6 +328,28 @@ class _ServerClasses(TypeManager):
         # of an instance of the class
         instance._inputs = self(
             class_name + 'Inputs', (CustomType, ), dict(instance.inputs))
+
+        # Loop through all hard coded keyvalues
+        for item, value in hardcoded_keyvalues.items():
+
+            # Get the keyvalue's name and type
+            name = value['name']
+            keyvalue_type = getattr(FieldType, value['type'])
+
+            # Is the keyvalue already added to the instance?
+            if name in instance.keyvalues:
+                warn('KeyValue "{0}" already implemented.'.format(name))
+                continue
+
+            # Is the type unsupported?
+            if keyvalue_type not in _supported_keyvalue_types:
+                warn('Unsupported KeyValue type "{0}".'.format(keyvalue_type))
+                continue
+
+            # Add the keyvalue to the instance
+            instance.keyvalues[name] = value
+            setattr(instance, value['alias'], self.keyvalue(
+                name, _supported_keyvalue_types[keyvalue_type]))
 
         # Return the ServerClass
         return instance

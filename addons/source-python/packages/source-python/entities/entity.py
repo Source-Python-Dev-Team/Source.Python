@@ -6,12 +6,11 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Colors
-from colors import Color
 #   Engines
 from engines.precache import Model
 #   Entities
 from entities.classes import server_classes
+from entities.constants import RenderMode
 from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
@@ -277,54 +276,23 @@ class Entity(BaseEntity, _EntitySpecials):
 
     def get_color(self):
         """Return the entity's color as a Color instance."""
-        # Get the render value
-        value = self.render_color
+        return self.render_color
 
-        # Return a tuple with the RGBA values
-        return Color(
-            value & 0xff, (value & 0xff00) >> 8,
-            (value & 0xff0000) >> 16, (value & 0xff000000) >> 24)
-
-    def set_color(self, color, current_alpha=False):
+    def set_color(self, color):
         """Set the entity's color to the given RGBA values."""
-        # Is the entity's current alpha supposed to be used?
-        if current_alpha:
-
-            # Set the given color's alpha to the entity's current
-            color = color.with_alpha(self.color.a)
-
-        # Set the rendermode
-        self.render_mode = self.render_mode | 1
-
-        # Set the renderfx
-        self.render_fx = self.render_fx | 256
-
-        # Get the value to set the render property to
-        value = color.r + (color.g << 8) + (color.b << 16) + (color.a << 24)
-
-        # Is the value too large?
-        if value >= 2 ** 31:
-            value -= 2 ** 32
+        # Set the entity's render mode
+        self.render_mode |= RenderMode.TRANS_COLOR
 
         # Set the entity's color
-        self.render_color = value
+        self.render_color = color
+
+        # Set the entity's alpha
+        self.render_amt = color.a
 
     # Set the "color" property for Entity
     color = property(
         get_color, set_color,
         doc="""Property to get/set the entity's color values.""")
-
-    def get_origin(self):
-        """Return the entity's origin vector."""
-        return self.get_key_value_vector('origin')
-
-    def set_origin(self, vector):
-        """Set the entity's origin to the given vector."""
-        self.set_key_value_vector('origin', vector)
-
-    origin = property(
-        get_origin, set_origin,
-        doc="""Property to get/set the entity's origin.""")
 
     def get_model(self):
         """Return the entity's model."""

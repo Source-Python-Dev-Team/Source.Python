@@ -20,12 +20,9 @@ from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
 from entities.entity import Entity
-from entities.helpers import index_from_pointer
 #   Mathlib
 from mathlib import Vector
 from mathlib import QAngle
-#   Memory
-from memory import Pointer
 #   Players
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
@@ -180,14 +177,8 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         if not trace.did_hit():
             return None
 
-        # Get the entity that the trace hit
-        pointer = Pointer(trace.get_entity().get_base_entity())
-
-        # Get the index of the entity the trace hit
-        index = index_from_pointer(pointer, False)
-
-        # Return a Entity instance of the hit entity if it has an index
-        return Entity(index) if index else None
+        # Return the hit entity as an Entity instance
+        return Entity(trace.get_entity_index())
 
     def set_view_entity(self, entity):
         """Force the player to look at the origin of the given entity."""
@@ -260,8 +251,9 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
             z * vert_mul if not vert_override else vert_mul)
 
     def client_command(self, command, server_side=False):
-        """Execute a command on the client. If <server_side> is True, the
-        command will be emulated by the server.
+        """Execute a command on the client.
+
+        If <server_side> is True, the command will be emulated by the server.
         """
         engine_server.client_command(self.edict, command, server_side)
 
