@@ -181,10 +181,7 @@ def setup_user_settings():
 def setup_entities_listener():
     """Set up entities listener."""
     from _core import _sp_plugin
-    from core import SOURCE_ENGINE
-
     from memory.manager import manager
-    from paths import SP_DATA_PATH
 
     manager.get_global_pointer('GlobalEntityList').add_entity_listener(
         _sp_plugin)

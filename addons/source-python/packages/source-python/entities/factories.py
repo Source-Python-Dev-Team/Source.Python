@@ -6,12 +6,8 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-#   Core
-from core import SOURCE_ENGINE
 #   Memory
 from memory.manager import manager
-#   Paths
-from paths import SP_DATA_PATH
 
 
 # =============================================================================

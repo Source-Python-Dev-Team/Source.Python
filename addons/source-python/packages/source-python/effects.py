@@ -6,14 +6,10 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-#   Core
-from core import SOURCE_ENGINE
 #   Mathlib
 from mathlib import Vector
 #   Memory
 from memory.manager import manager
-#   Paths
-from paths import SP_DATA_PATH
 #   Entities
 from entities.entity import Entity
 
