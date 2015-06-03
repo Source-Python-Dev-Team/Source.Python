@@ -31,6 +31,8 @@
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "memory_hooks.h"
+#include "memory_function_info.h"
+#include "memory_utilities.h"
 
 #include "dyncall.h"
 
@@ -41,6 +43,7 @@
 //-----------------------------------------------------------------------------
 // Exposes the memory_c module.
 //-----------------------------------------------------------------------------
+void export_function_info(scope);
 void export_binaryfile(scope);
 void export_memtools(scope);
 void export_dyncall(scope);
@@ -49,11 +52,31 @@ void export_sizes(scope);
 
 DECLARE_SP_MODULE(_memory)
 {
+	export_function_info(_memory);
 	export_binaryfile(_memory);
 	export_memtools(_memory);
 	export_dyncall(_memory);
 	export_dynamichooks(_memory);
 	export_sizes(_memory);
+}
+
+//-----------------------------------------------------------------------------
+// Exposes CFunctionInfo
+//-----------------------------------------------------------------------------
+void export_function_info(scope _core)
+{
+	class_<CFunctionInfo> _FunctionInfo("FunctionInfo", no_init);
+
+	_FunctionInfo.def("make_function", &CFunctionInfo::MakeFunction, manage_new_object_policy());
+	_FunctionInfo.def_readonly("is_virtual", &CFunctionInfo::m_bIsVirtual);
+	_FunctionInfo.def_readonly("this_pointer_offset", &CFunctionInfo::m_iThisPtrOffset);
+	_FunctionInfo.def_readonly("vtable_index", &CFunctionInfo::m_iVtableIndex);
+	_FunctionInfo.def_readonly("vtable_offset", &CFunctionInfo::m_iVtableOffset);
+	_FunctionInfo.def_readonly("return_type", &CFunctionInfo::m_eReturnType);
+	_FunctionInfo.add_property("argument_types", &CFunctionInfo::GetArgumentTypes);
+	_FunctionInfo.def_readonly("calling_convention", &CFunctionInfo::m_eCallingConvention);
+
+	def("get_function_info", &PyGetFunctionInfo);
 }
 
 //-----------------------------------------------------------------------------

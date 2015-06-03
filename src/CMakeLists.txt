@@ -268,6 +268,9 @@ Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
     core/modules/memory/memory_tools.h
     core/modules/memory/memory_scanner.h
     core/modules/memory/memory_hooks.h
+    core/modules/memory/memory_calling_convention.h
+    core/modules/memory/memory_function_info.h
+    core/modules/memory/memory_utilities.h
 )
 
 Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
@@ -366,6 +369,10 @@ Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
+    # CFunctionInfo must be exposed at first
+    ${SOURCEPYTHON_MEMORY_MODULE_HEADERS}
+    ${SOURCEPYTHON_MEMORY_MODULE_SOURCES}
+    
     ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS}
     ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES}
 
@@ -406,9 +413,6 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_MATHLIB_MODULE_HEADERS}
     ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES}
-
-    ${SOURCEPYTHON_MEMORY_MODULE_HEADERS}
-    ${SOURCEPYTHON_MEMORY_MODULE_SOURCES}
 
     ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS}
     ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES}

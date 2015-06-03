@@ -169,10 +169,12 @@ void export_igameeventlistener(scope _events)
 // Exports IGameEventManager2.
 //-----------------------------------------------------------------------------
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 2, 2);
-
+#include "modules/memory/memory_utilities.h"
 void export_igameeventmanager(scope _events)
 {
-	class_<IGameEventManager2, boost::noncopyable>("_GameEventManager", no_init)
+	class_<IGameEventManager2, boost::noncopyable> _GameEventManager("_GameEventManager", no_init);
+
+	_GameEventManager
 		.def("load_events_from_file",
 			&IGameEventManager2::LoadEventsFromFile,
 			"Loads game event descriptions from a file eg resource/gameevents.res",
@@ -244,6 +246,7 @@ void export_igameeventmanager(scope _events)
 
 		ADD_MEM_TOOLS(IGameEventManager2)
 	;
+	AddGetFunctionInfo(_GameEventManager, "fire_event", &IGameEventManager2::FireEvent);
 
 	_events.attr("game_event_manager") = object(ptr(gameeventmanager));
 }
