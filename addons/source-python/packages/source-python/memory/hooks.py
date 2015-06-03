@@ -12,6 +12,7 @@ from core import AutoUnload
 from _memory import HookType
 from memory import Function
 from memory import get_function_info
+from memory import get_object_pointer
 
 
 # =============================================================================
@@ -36,7 +37,9 @@ class _Hook(AutoUnload):
         if not isinstance(function, Function):
             # Try getting the function info
             info = get_function_info(function)
-            function = info.make_function(function.__self__)
+            
+            function = get_object_pointer(
+                function.__self__).make_function(info)
 
         # Store the function
         self.function = function

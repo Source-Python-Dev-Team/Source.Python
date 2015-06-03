@@ -165,6 +165,7 @@ enum Convention_t
 // CPointer class
 //-----------------------------------------------------------------------------
 class CFunction;
+class CFunctionInfo;
 
 class CPointer
 {
@@ -244,6 +245,7 @@ public:
 	virtual CPointer*   Realloc(int iSize);
 	virtual void        Dealloc() { UTIL_Dealloc((void *) m_ulAddr); m_ulAddr = 0; }
 
+	CFunction*			MakeFunction(CFunctionInfo& info);
 	CFunction*			MakeFunction(object oCallingConvention, object args, object return_type);
 	CFunction*			MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type);
 

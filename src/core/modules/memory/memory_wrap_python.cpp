@@ -67,7 +67,6 @@ void export_function_info(scope _core)
 {
 	class_<CFunctionInfo> _FunctionInfo("FunctionInfo", no_init);
 
-	_FunctionInfo.def("make_function", &CFunctionInfo::MakeFunction, manage_new_object_policy());
 	_FunctionInfo.def_readonly("is_virtual", &CFunctionInfo::m_bIsVirtual);
 	_FunctionInfo.def_readonly("this_pointer_offset", &CFunctionInfo::m_iThisPtrOffset);
 	_FunctionInfo.def_readonly("vtable_index", &CFunctionInfo::m_iVtableIndex);
@@ -206,11 +205,19 @@ void export_memtools(scope _memory)
 		)
 
 		.def("make_function",
-			&CPointer::MakeFunction,
+			GET_METHOD(CFunction*, CPointer, MakeFunction, object, object, object),
 			"Creates a new Function instance.",
 			args("convention", "arguments", "return_type"),
 			manage_new_object_policy()
 		)
+
+		.def("make_function",
+			GET_METHOD(CFunction*, CPointer, MakeFunction, CFunctionInfo&),
+			"Create a new Function instance.",
+			("info"),
+			manage_new_object_policy()
+		)
+
 
 		.def("make_virtual_function",
 			&CPointer::MakeVirtualFunction,

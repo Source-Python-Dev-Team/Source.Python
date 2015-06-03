@@ -422,18 +422,6 @@ public:
 class CFunctionInfo
 {
 public:
-	CFunction* MakeFunction(object this_obj)
-	{
-		if (!m_bIsVirtual)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not a virtual function.")
-
-		unsigned long ulThis = ExtractPointer(this_obj)->m_ulAddr;
-		void** vtable = *(void ***) (ulThis + m_iVtableOffset);
-		void* pFunc = vtable[m_iVtableIndex];
-
-		return new CFunction((unsigned long) pFunc, object(m_eCallingConvention), GetArgumentTypes(), object(m_eReturnType));
-	}
-
 	tuple GetArgumentTypes()
 	{
 		list argumentTypes;
