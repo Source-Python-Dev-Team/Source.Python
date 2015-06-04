@@ -380,40 +380,6 @@ DataType_t TypeToDataType_t()
     puts("Unknown data type!");
     return DATA_TYPE_POINTER;
 }
-    
-// ========================================================================
-// >> FunctionAnalyzer
-// ========================================================================
-class CFunctionInfo;
-
-class FunctionAnalyzer
-{
-public:
-    template<class Signature>
-    FunctionAnalyzer(Signature sig, CFunctionInfo& info)
-        : result(info)
-    {
-        typedef typename boost::mpl::at<Signature, boost::mpl::int_<0> >::type return_type;
-        typedef typename boost::mpl::pop_front<Signature>::type parameters;
-
-        // Get the return type
-        info.m_eReturnType = TypeToDataType_t<return_type>();
-
-        // Analyze the parameters. We need to add 1 pointer to every type to compile without any errors.
-        boost::mpl::for_each<typename boost::mpl::transform< parameters, boost::add_pointer<boost::mpl::_1> >::type >(*this);
-    }
-public:
-    template<class T>
-    void operator()(T)
-    {
-        // Strip off the pointer we have added
-        typedef typename boost::remove_pointer<T>::type without_pointer;
-        result.m_vecArgumentTypes.push_back(TypeToDataType_t< without_pointer >());
-    }
-
-public:
-    CFunctionInfo& result;
-};
 
 
 // ============================================================================
@@ -454,6 +420,38 @@ public:
     
     // The functions calling convention
     Convention_t m_eCallingConvention;
+};
+    
+// ========================================================================
+// >> FunctionAnalyzer
+// ========================================================================
+class FunctionAnalyzer
+{
+public:
+    template<class Signature>
+    FunctionAnalyzer(Signature sig, CFunctionInfo& info)
+        : result(info)
+    {
+        typedef typename boost::mpl::at<Signature, boost::mpl::int_<0> >::type return_type;
+        typedef typename boost::mpl::pop_front<Signature>::type parameter_types;
+
+        // Get the return type
+        info.m_eReturnType = TypeToDataType_t<return_type>();
+
+        // Analyze the parameters. We need to add 1 pointer to every type to compile without any errors.
+        boost::mpl::for_each<typename boost::mpl::transform< parameter_types, boost::add_pointer<boost::mpl::_1> >::type >(*this);
+    }
+public:
+    template<class T>
+    void operator()(T)
+    {
+        // Strip off the pointer we have added
+        typedef typename boost::remove_pointer<T>::type without_pointer;
+        result.m_vecArgumentTypes.push_back(TypeToDataType_t< without_pointer >());
+    }
+
+public:
+    CFunctionInfo& result;
 };
 
 
