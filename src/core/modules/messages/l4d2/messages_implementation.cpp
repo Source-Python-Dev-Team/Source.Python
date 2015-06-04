@@ -34,7 +34,7 @@ IUsermessageImplementationBase(recipient_filter, message_name)
 	
 	// TODO - Check if we should pass this as a non-const so we don't have to const-cast it. I'm sure I saw a constructor
 	// somewhere requiring this to be passed as a const-ref somewhere
-	m_buffer = engine->UserMessageBegin(&const_cast<MRecipientFilter&>(recipient_filter), m_message_index);
+	m_buffer = engine->UserMessageBegin(&const_cast<MRecipientFilter&>(recipient_filter), m_message_index, message_name);
 }
 
 void CUserMessageImplementation::send_message_internal()
