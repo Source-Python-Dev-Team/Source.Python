@@ -28,6 +28,7 @@
 #define _MEMORY_TOOLS_H
 
 #include <malloc.h>
+#include "commonmacros.h" // Required for IsPowerOfTwo in memalloc.h
 #include "memalloc.h"
 #include "dyncall.h"
 #include "dyncall_signature.h"
