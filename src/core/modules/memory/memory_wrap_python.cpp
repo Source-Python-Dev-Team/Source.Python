@@ -24,45 +24,66 @@
 * Development Team grants this exception to all derivative works.
 */
 
-//-----------------------------------------------------------------------------
-// Includes
-//-----------------------------------------------------------------------------
+// ============================================================================
+// >> INCLUDES
+// ============================================================================
 #include "export_main.h"
+
+// Memory
 #include "memory_scanner.h"
 #include "memory_tools.h"
 #include "memory_hooks.h"
 #include "memory_function_info.h"
 #include "memory_utilities.h"
-
-#include "dyncall.h"
+#include "memory_wrap_python.h"
 
 // DynamicHooks
 #include "registers.h"
 
-
-//-----------------------------------------------------------------------------
-// Exposes the memory_c module.
-//-----------------------------------------------------------------------------
+// ============================================================================
+// >> FORWARD DECLARATIONS
+// ============================================================================
 void export_function_info(scope);
-void export_binaryfile(scope);
-void export_memtools(scope);
-void export_dyncall(scope);
-void export_dynamichooks(scope);
-void export_sizes(scope);
+void export_binary_file(scope);
+void export_pointer(scope);
+void export_function(scope);
+void export_data_type_t(scope);
+void export_convention_t(scope);
+void export_hook_type_t(scope);
+void export_stack_data(scope);
+void export_register_t(scope);
+void export_register(scope);
+void export_registers(scope);
+void export_calling_convention(scope);
+void export_functions(scope);
+void export_global_variables(scope);
 
+
+// ============================================================================
+// >> Exports the _memory module
+// ============================================================================
 DECLARE_SP_MODULE(_memory)
 {
 	export_function_info(_memory);
-	export_binaryfile(_memory);
-	export_memtools(_memory);
-	export_dyncall(_memory);
-	export_dynamichooks(_memory);
-	export_sizes(_memory);
+	export_binary_file(_memory);
+	export_pointer(_memory);
+	export_function(_memory);
+	export_data_type_t(_memory);
+	export_convention_t(_memory);
+	export_hook_type_t(_memory);
+	export_stack_data(_memory);
+	export_register_t(_memory);
+	export_register(_memory);
+	export_registers(_memory);
+	export_calling_convention(_memory);
+	export_functions(_memory);
+	export_global_variables(_memory);
 }
 
-//-----------------------------------------------------------------------------
-// Exposes CFunctionInfo
-//-----------------------------------------------------------------------------
+
+// ============================================================================
+// >> CFunctionInfo
+// ============================================================================
 void export_function_info(scope _core)
 {
 	class_<CFunctionInfo> _FunctionInfo("FunctionInfo", no_init);
@@ -74,14 +95,13 @@ void export_function_info(scope _core)
 	_FunctionInfo.def_readonly("return_type", &CFunctionInfo::m_eReturnType);
 	_FunctionInfo.add_property("argument_types", &CFunctionInfo::GetArgumentTypes);
 	_FunctionInfo.def_readonly("calling_convention", &CFunctionInfo::m_eCallingConvention);
-
-	def("get_function_info", &PyGetFunctionInfo);
 }
 
-//-----------------------------------------------------------------------------
-// Exposes CBinaryFile
-//-----------------------------------------------------------------------------
-void export_binaryfile(scope _memory)
+
+// ============================================================================
+// >> CBinaryFile
+// ============================================================================
+void export_binary_file(scope _memory)
 {
 	class_<CBinaryFile, boost::noncopyable>("BinaryFile", no_init)
 
@@ -119,19 +139,12 @@ void export_binaryfile(scope _memory)
 			"Size of the binary."
 		)
 	;
-
-	def("find_binary",
-		&FindBinary,
-		"Returns a BinaryFile object or None.",
-		("path", arg("srv_check")=true),
-		reference_existing_object_policy()
-	);
 }
 
 
-//-----------------------------------------------------------------------------
-// Exposes CPointer and CFunction
-//-----------------------------------------------------------------------------
+// ============================================================================
+// >> CPointer
+// ============================================================================
 #define EXPOSE_SET_TYPE(name, type) \
 	.def("set_" XSTRINGIFY(name), \
 		&CPointer::Set<type>, \
@@ -150,7 +163,7 @@ void export_binaryfile(scope _memory)
 	EXPOSE_SET_TYPE(name, type) \
 	EXPOSE_GET_TYPE(name, type)
 
-void export_memtools(scope _memory)
+void export_pointer(scope _memory)
 {
 	class_<CPointer, CPointer *>("Pointer", init< optional<unsigned long, bool> >())
 		.def(init<CPointer&>())
@@ -317,7 +330,14 @@ void export_memtools(scope _memory)
 			&CPointer::m_bAutoDealloc
 		)
 	;
+}
 
+
+// ============================================================================
+// >> CFunction
+// ============================================================================
+void export_function(scope _memory)
+{
 	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, object, object, object>())
 		.def(init<CFunction&>())
 		.def("__call__",
@@ -395,37 +415,13 @@ void export_memtools(scope _memory)
 			&CFunction::m_eCallingConvention
 		)
 	;
-	
-	def("alloc",
-		Alloc,
-		"Allocates a memory block.",
-		("size", arg("auto_dealloc")=true),
-		manage_new_object_policy()
-	);
-
-	def("get_object_pointer",
-		&GetObjectPointer,
-		args("object"),
-		"Returns the pointer of the C++ object"
-	);
-
-	def("make_object",
-		&MakeObject,
-		"Wraps a pointer using an exposed class."
-	);
-
-	def("get_size",
-		&GetSize,
-		"Returns the size of the class object or instance of its C++ class."
-	);
-
-	_memory.attr("NULL") = object(CPointer());
 }
 
-//-----------------------------------------------------------------------------
-// Exposes DynCall
-//-----------------------------------------------------------------------------
-void export_dyncall(scope _memory)
+
+// ============================================================================
+// >> DataType_t
+// ============================================================================
+void export_data_type_t(scope _memory)
 {
 	enum_<DataType_t>("DataType")
 		.value("VOID", DATA_TYPE_VOID)
@@ -445,14 +441,28 @@ void export_dyncall(scope _memory)
 		.value("POINTER", DATA_TYPE_POINTER)
 		.value("STRING", DATA_TYPE_STRING)
 	;
+}
 
+
+// ============================================================================
+// >> Convention_t
+// ============================================================================
+void export_convention_t(scope _memory)
+{
 	enum_<Convention_t>("Convention")
 		.value("CUSTOM", CONV_CUSTOM)
 		.value("CDECL", CONV_CDECL)
 		.value("STDCALL", CONV_STDCALL)
 		.value("THISCALL", CONV_THISCALL)
 	;
+}
 
+
+// ============================================================================
+// >> HookType_t
+// ============================================================================
+void export_hook_type_t(scope _memory)
+{
 	enum_<HookType_t>("HookType")
 		.value("PRE", HOOKTYPE_PRE)
 		.value("POST", HOOKTYPE_POST)
@@ -460,84 +470,10 @@ void export_dyncall(scope _memory)
 }
 
 
-//-----------------------------------------------------------------------------
-// Exposes DynamicHooks
-//-----------------------------------------------------------------------------
-class ICallingConventionWrapper: public ICallingConvention, public wrapper<ICallingConvention>
-{
-public:
-	ICallingConventionWrapper(object oArgTypes, DataType_t returnType, int iAlignment=4)
-		:ICallingConvention(ObjectToDataTypeVector(oArgTypes), returnType, iAlignment)
-	{
-	}
-
-	virtual std::list<Register_t> GetRegisters()
-	{
-		object registers = get_override("get_registers")();
-		std::list<Register_t> result;
-		for(int i=0; i < len(registers); i++)
-		{
-			result.push_back(extract<Register_t>(registers[i]));
-		}
-
-		return result;
-	}
-
-	virtual int GetPopSize()
-	{
-		return get_override("get_pop_size")();
-	}
-	
-	virtual void* GetArgumentPtr(int iIndex, CRegisters* pRegisters)
-	{
-		CPointer* ptr = extract<CPointer*>(GetArgumentPtrWrapper(iIndex, pRegisters));
-		return (void *) ptr->m_ulAddr;
-	}
-
-	object GetArgumentPtrWrapper(int iIndex, CRegisters* pRegisters)
-	{
-		return get_override("get_argument_ptr")(iIndex, ptr(pRegisters));
-	}
-
-	virtual void ArgumentPtrChanged(int iIndex, CRegisters* pRegisters, void* pArgumentPtr)
-	{
-		get_override("argument_ptr_changed")(iIndex, ptr(pRegisters), CPointer((unsigned long) pArgumentPtr));
-	}
-
-	virtual void* GetReturnPtr(CRegisters* pRegisters)
-	{
-		CPointer* ptr = extract<CPointer*>(GetReturnPtrWrapper(pRegisters));
-		return (void *) ptr->m_ulAddr;
-	}
-
-	object GetReturnPtrWrapper(CRegisters* pRegisters)
-	{
-		return get_override("get_return_ptr")(ptr(pRegisters));
-	}
-
-	virtual void ReturnPtrChanged(CRegisters* pRegisters, void* pReturnPtr)
-	{
-		get_override("return_ptr_changed")(ptr(pRegisters), CPointer((unsigned long) pReturnPtr));
-	}
-
-public:
-	tuple GetArgTypes()
-	{
-		return tuple(m_vecArgTypes);
-	}
-};
-
-
-class CRegisterExt
-{
-public:
-	static CPointer* GetAddress(CRegister& reg)
-	{
-		return new CPointer((unsigned long) reg.m_pAddress);
-	}
-};
-
-void export_dynamichooks(scope _memory)
+// ============================================================================
+// >> CStackData
+// ============================================================================
+void export_stack_data(scope _memory)
 {
 	class_<CStackData>("StackData", init<CHook*>())
 		// Special methods
@@ -559,7 +495,14 @@ void export_dynamichooks(scope _memory)
 			make_function(&CStackData::GetRegisters, reference_existing_object_policy())
 		)
 	;
+}
 
+
+// ============================================================================
+// >> Register_t
+// ============================================================================
+void export_register_t(scope _memory)
+{
 	enum_<Register_t>("Register")
 		// ========================================================================
 		// >> 8-bit General purpose registers
@@ -644,7 +587,14 @@ void export_dynamichooks(scope _memory)
 		.value("ST6", ST6)
 		.value("ST7", ST7)
 	;
+}
 
+
+// ============================================================================
+// >> CRegister
+// ============================================================================
+void export_register(scope _memory)
+{
 	class_<CRegister, CRegister*, boost::noncopyable>("ProcessorRegister", no_init)
 		.add_property("size",
 			make_getter(&CRegister::m_iSize)
@@ -654,7 +604,14 @@ void export_dynamichooks(scope _memory)
 			make_function(&CRegisterExt::GetAddress, manage_new_object_policy())
 		)
 	;
+}
 
+
+// ============================================================================
+// >> CRegisters
+// ============================================================================
+void export_registers(scope _memory)
+{
 	class_<CRegisters, boost::noncopyable>("Registers", no_init)
 		.def_readonly("al", &CRegisters::m_al)
 		.def_readonly("cl", &CRegisters::m_cl)
@@ -722,7 +679,14 @@ void export_dynamichooks(scope _memory)
 		.def_readonly("st7", &CRegisters::m_st7)
 		*/
 	;
-	
+}
+
+
+// ============================================================================
+// >> ICallingConventionWrapper
+// ============================================================================
+void export_calling_convention(scope _memory)
+{
 	class_<ICallingConventionWrapper, boost::noncopyable>("CallingConvention", init< object, DataType_t, optional<int> >())
 		.def("get_registers",
 			pure_virtual(&ICallingConventionWrapper::GetRegisters)
@@ -762,6 +726,47 @@ void export_dynamichooks(scope _memory)
 
 		ADD_MEM_TOOLS_WRAPPER(ICallingConventionWrapper, ICallingConvention)
 	;
+}
+
+
+// ============================================================================
+// >> FUNCTIONS
+// ============================================================================
+void export_functions(scope _memory)
+{
+	def("get_function_info", 
+		&PyGetFunctionInfo
+	);
+
+	def("find_binary",
+		&FindBinary,
+		"Returns a BinaryFile object or None.",
+		("path", arg("srv_check")=true),
+		reference_existing_object_policy()
+	);
+	
+	def("alloc",
+		Alloc,
+		"Allocates a memory block.",
+		("size", arg("auto_dealloc")=true),
+		manage_new_object_policy()
+	);
+
+	def("get_object_pointer",
+		&GetObjectPointer,
+		args("object"),
+		"Returns the pointer of the C++ object"
+	);
+
+	def("make_object",
+		&MakeObject,
+		"Wraps a pointer using an exposed class."
+	);
+
+	def("get_size",
+		&GetSize,
+		"Returns the size of the class object or instance of its C++ class."
+	);
 
 	def("get_data_type_size",
 		&GetDataTypeSize,
@@ -770,9 +775,9 @@ void export_dynamichooks(scope _memory)
 }
 
 
-//-----------------------------------------------------------------------------
-// Exposes TYPE_SIZES
-//-----------------------------------------------------------------------------
+// ============================================================================
+// >> GLOBAL VARIABLES
+// ============================================================================
 dict g_oExposedClasses;
 
 #define ADD_NATIVE_TYPE_SIZE(name, type) \
@@ -781,7 +786,7 @@ dict g_oExposedClasses;
 #define ADD_SIZE(type) \
 	ADD_NATIVE_TYPE_SIZE(XSTRINGIFY(type), type)
 
-void export_sizes(scope _memory)
+void export_global_variables(scope _memory)
 {
 	_memory.attr("EXPOSED_CLASSES") = g_oExposedClasses;
 
@@ -804,4 +809,6 @@ void export_sizes(scope _memory)
 	ADD_NATIVE_TYPE_SIZE("DOUBLE", double)
 	ADD_NATIVE_TYPE_SIZE("POINTER", void*)
 	ADD_NATIVE_TYPE_SIZE("STRING", char*)
+
+	_memory.attr("NULL") = object(CPointer());
 }

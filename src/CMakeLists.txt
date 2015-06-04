@@ -274,6 +274,7 @@ Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
     core/modules/memory/memory_scanner.h
     core/modules/memory/memory_tools.h
     core/modules/memory/memory_utilities.h
+    core/modules/memory/memory_wrap_python.h
 )
 
 Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
