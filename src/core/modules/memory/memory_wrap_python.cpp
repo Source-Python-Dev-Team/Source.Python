@@ -773,6 +773,8 @@ void export_dynamichooks(scope _memory)
 //-----------------------------------------------------------------------------
 // Exposes TYPE_SIZES
 //-----------------------------------------------------------------------------
+dict g_oExposedClasses;
+
 #define ADD_NATIVE_TYPE_SIZE(name, type) \
 	scope().attr("TYPE_SIZES")[name] = sizeof(type);
 

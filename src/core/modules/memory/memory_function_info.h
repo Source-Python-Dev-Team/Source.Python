@@ -43,6 +43,8 @@
 
 #ifndef _MEMORY_FUNCTION_INFO_H
 #define _MEMORY_FUNCTION_INFO_H
+
+#include <stdint.h>
     
 // ========================================================================
 // >> SourceHook code
@@ -388,7 +390,7 @@ DataType_t TypeToDataType_t()
 class CFunctionInfo
 {
 public:
-	tuple GetArgumentTypes()
+	boost::python::tuple GetArgumentTypes()
 	{
 		list argumentTypes;
 		for(std::vector<DataType_t>::iterator it=this->m_vecArgumentTypes.begin(); it != this->m_vecArgumentTypes.end(); it++)
@@ -396,7 +398,7 @@ public:
 			argumentTypes.append(*it);
 		}
 
-		return tuple(argumentTypes);
+		return boost::python::tuple(argumentTypes);
 	}
     
 public:

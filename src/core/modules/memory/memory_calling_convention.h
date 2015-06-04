@@ -33,7 +33,7 @@
   #ifndef _MEMORY_CALLING_CONVENTION_H
   #define _MEMORY_CALLING_CONVENTION_H
 
-  #include "modules/memory/memory_tools.h"
+  #include "modules/memory/memory_function.h"
   #include <boost/type_traits.hpp>
 
   #include <boost/preprocessor/iteration/iterate.hpp>

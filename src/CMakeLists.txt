@@ -265,18 +265,22 @@ Set(SOURCEPYTHON_MATHLIB_MODULE_SOURCES
 # Memory module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
-    core/modules/memory/memory_tools.h
-    core/modules/memory/memory_scanner.h
-    core/modules/memory/memory_hooks.h
+    core/modules/memory/memory_alloc.h
     core/modules/memory/memory_calling_convention.h
+    core/modules/memory/memory_function.h
     core/modules/memory/memory_function_info.h
+    core/modules/memory/memory_hooks.h
+    core/modules/memory/memory_pointer.h
+    core/modules/memory/memory_scanner.h
+    core/modules/memory/memory_tools.h
     core/modules/memory/memory_utilities.h
 )
 
 Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
-    core/modules/memory/memory_scanner.cpp
-    core/modules/memory/memory_tools.cpp
+    core/modules/memory/memory_function.cpp
     core/modules/memory/memory_hooks.cpp
+    core/modules/memory/memory_pointer.cpp
+    core/modules/memory/memory_scanner.cpp
     core/modules/memory/memory_wrap_python.cpp
 )
 

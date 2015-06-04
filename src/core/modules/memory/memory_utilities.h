@@ -30,7 +30,12 @@
 // ============================================================================
 // >> INCLUDES
 // ============================================================================
+// Memory
 #include "memory_function_info.h"
+#include "memory_pointer.h"
+
+// Utilities
+#include "utilities/wrap_macros.h"
 
 
 // ============================================================================
@@ -41,7 +46,34 @@
 
 
 // ============================================================================
-// >> FUNCTIONS
+// >> ExtractPointer
+// ============================================================================
+inline CPointer* ExtractPointer(object oPtr)
+{
+	if(PyObject_HasAttrString(oPtr.ptr(), "_ptr"))
+		oPtr = oPtr.attr("_ptr")();
+
+	CPointer* pPtr = extract<CPointer *>(oPtr);
+	return pPtr;
+}
+
+
+// ============================================================================
+// >> ObjectToDataTypeVector
+// ============================================================================
+inline std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
+{
+	std::vector<DataType_t> vecArgTypes;
+	for(int i=0; i < len(oArgTypes); i++)
+	{
+		vecArgTypes.push_back(extract<DataType_t>(oArgTypes[i]));
+	}
+	return vecArgTypes;
+}
+
+
+// ============================================================================
+// >> AddGetFunctionInfo
 // ============================================================================
 template<class BoostExposedClass, class Function>
 void AddGetFunctionInfo(BoostExposedClass obj, const char* szName, Function func)
@@ -59,12 +91,107 @@ void AddGetFunctionInfo(BoostExposedClass obj, const char* szName, Function func
 	);
 }
 
+
+// ============================================================================
+// >> PyGetFunctionInfo
+// ============================================================================
 inline object PyGetFunctionInfo(object obj)
 {
 	if (!PyObject_HasAttrString(obj.ptr(), FUNC_INFO_NAME))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function info does not exist for this function.");
 
 	return obj.attr(FUNC_INFO_NAME);
+}
+
+
+
+
+
+// ============================================================================
+// >> TODO
+// ============================================================================
+// Externals
+extern dict g_oExposedClasses;
+
+
+//---------------------------------------------------------------------------------
+// Macros
+//---------------------------------------------------------------------------------
+// Use this macro to add this class to get_pointer_object()
+#define ADD_PTR(classname) \
+	.def("_ptr", \
+		&__ptr__<classname>, \
+		manage_new_object_policy() \
+	)
+
+// Use this macro to add this class to make_object()
+#define ADD_OBJ(classname) \
+	.def("_obj", \
+		&__obj__<classname>, \
+		reference_existing_object_policy() \
+	).staticmethod("_obj")
+
+// Use this macro to add this class to get_size()
+// Note: This must be at the end of the class definition!
+#define ADD_SIZE(classname) \
+	.attr("_size") = sizeof(classname);
+
+// Use this macro to add the class to the ExposedClasses dict
+#define STORE_CLASS(classname, pyname) \
+	extern dict g_oExposedClasses; \
+	g_oExposedClasses[XSTRINGIFY(classname)] = scope().attr(pyname);
+
+// Use this macro to add the class to the three functions
+// Note: This must be at the end of the class definition!
+#define ADD_MEM_TOOLS(classname) \
+	ADD_PTR(classname) \
+	ADD_OBJ(classname) \
+	ADD_SIZE(classname) \
+	STORE_CLASS(classname, converter::registry::query(typeid(classname))->m_class_object->tp_name)
+
+#define ADD_MEM_TOOLS_WRAPPER(classname, realname) \
+	ADD_PTR(classname) \
+	ADD_OBJ(classname) \
+	ADD_SIZE(classname) \
+	STORE_CLASS(realname, converter::registry::query(typeid(classname))->m_class_object->tp_name)
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
+template<class T>
+CPointer* __ptr__(T* pThis)
+{
+	return new CPointer((unsigned long) pThis);
+}
+
+template<class T>
+T* __obj__(CPointer* pPtr)
+{
+	return (T *) pPtr->m_ulAddr;
+}
+
+inline object GetObjectPointer(object obj)
+{
+	if (!PyObject_HasAttrString(obj.ptr(), "_ptr"))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
+
+	return obj.attr("_ptr")();
+}
+
+inline object MakeObject(object cls, CPointer* pPtr)
+{
+	if (!PyObject_HasAttrString(cls.ptr(), "_obj"))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
+
+	return cls.attr("_obj")(ptr(pPtr));
+}
+
+inline object GetSize(object cls)
+{
+	if (!PyObject_HasAttrString(cls.ptr(), "_size"))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
+
+	return cls.attr("_size");
 }
 
 #endif // _MEMORY_UTILITIES_H
