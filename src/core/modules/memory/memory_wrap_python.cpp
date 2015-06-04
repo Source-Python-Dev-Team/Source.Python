@@ -579,6 +579,8 @@ void export_register_t(scope _memory)
 		// >> 80-bit FPU registers
 		// ========================================================================
 		.value("ST0", ST0)
+		// The following registers are currently not supported by DynamicHooks
+		/*
 		.value("ST1", ST1)
 		.value("ST2", ST2)
 		.value("ST3", ST3)
@@ -586,6 +588,7 @@ void export_register_t(scope _memory)
 		.value("ST5", ST5)
 		.value("ST6", ST6)
 		.value("ST7", ST7)
+		*/
 	;
 }
 
