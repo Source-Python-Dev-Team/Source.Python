@@ -635,22 +635,15 @@ void export_engine_server(scope _engines)
 			reference_existing_object_policy()
 		)
 
-		.def("get_game_server_steamid",
-			&IVEngineServer::GetGameServerSteamID,
-			"Returns the SteamID of the game server.",
-			reference_existing_object_policy()
-		)
-
 		.def("client_command_key_values",
 			&IVEngineServer::ClientCommandKeyValues,
 			"Sends a client command keyvalues which are deleted inside this function.",
 			args("edict", "key_values")
 		)
 
-		.def("get_server_version",
-			&IVEngineServer::GetServerVersion,
-			"Returns the version of the server."
-		)
+		// Not on L4D2
+		.NOT_IMPLEMENTED("get_server_version")
+		.NOT_IMPLEMENTED("get_game_server_steamid")
 
 		// OB specific methods
 		.NOT_IMPLEMENTED("get_time")

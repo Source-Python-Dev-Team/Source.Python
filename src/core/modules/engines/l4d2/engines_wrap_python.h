@@ -47,23 +47,6 @@ extern IEngineTrace* enginetrace;
 template<class T>
 T IVEngineServer_Visitor(T cls)
 {
-	cls
-		.def("get_time",
-			&IVEngineServer::Time,
-			"Returns a high precision timer for doing profiling work"
-		)
-
-		.def("multiplayer_end_game",
-			&IVEngineServer::MultiplayerEndGame,
-			"Matchmaking"
-		)
-
-		.def("create_fake_client_ex",
-			&IVEngineServer::CreateFakeClientEx,
-			reference_existing_object_policy()
-		)
-	;
-
 	return cls;
 }
 

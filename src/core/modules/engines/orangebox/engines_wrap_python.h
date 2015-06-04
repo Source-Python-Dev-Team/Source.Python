@@ -48,6 +48,17 @@ template<class T>
 T IVEngineServer_Visitor(T cls)
 {
 	cls
+		.def("get_game_server_steamid",
+			&IVEngineServer::GetGameServerSteamID,
+			"Returns the SteamID of the game server.",
+			reference_existing_object_policy()
+		)
+
+		.def("get_server_version",
+			&IVEngineServer::GetServerVersion,
+			"Returns the version of the server."
+		)
+
 		.def("get_time",
 			&IVEngineServer::Time,
 			"Returns a high precision timer for doing profiling work"
