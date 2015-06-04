@@ -24,6 +24,30 @@
 * Development Team grants this exception to all derivative works.
 */
 
+// ============================================================================
+// >> MACROS
+// ============================================================================
+// The name of the attribute that is added to an exposed function.
+#ifndef FUNC_INFO_NAME
+#define FUNC_INFO_NAME "_func_info"
+#endif
+
+// The name of the method that is added to a class to return its pointer.
+#ifndef GET_PTR_NAME
+#define GET_PTR_NAME "_ptr"
+#endif
+
+// The name of the static method that is added to a class to wrap a pointer of this class.
+#ifndef GET_OBJ_NAME
+#define GET_OBJ_NAME "_obj"
+#endif
+
+// The name of the class attribute that contains the size of the class
+#ifndef GET_SIZE_NAME
+#define GET_SIZE_NAME "_size"
+#endif
+
+
 #ifndef _MEMORY_UTILITIES_H
 #define _MEMORY_UTILITIES_H
 
@@ -34,24 +58,14 @@
 #include "memory_function_info.h"
 #include "memory_pointer.h"
 
-// Utilities
-#include "utilities/wrap_macros.h"
-
-
-// ============================================================================
-// >> MACROS
-// ============================================================================
-// The name of the attribute that is added to an exposed function
-#define FUNC_INFO_NAME "_func_info"
-
 
 // ============================================================================
 // >> ExtractPointer
 // ============================================================================
 inline CPointer* ExtractPointer(object oPtr)
 {
-	if(PyObject_HasAttrString(oPtr.ptr(), "_ptr"))
-		oPtr = oPtr.attr("_ptr")();
+	if(PyObject_HasAttrString(oPtr.ptr(), GET_PTR_NAME))
+		oPtr = oPtr.attr(GET_PTR_NAME)();
 
 	CPointer* pPtr = extract<CPointer *>(oPtr);
 	return pPtr;
@@ -76,7 +90,7 @@ inline std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
 // >> AddGetFunctionInfo
 // ============================================================================
 template<class BoostExposedClass, class Function>
-void AddGetFunctionInfo(BoostExposedClass obj, const char* szName, Function func)
+void AddFunctionInfo(BoostExposedClass obj, const char* szName, Function func)
 {
 	dict d(handle<>(borrowed(downcast<PyTypeObject>(obj.ptr())->tp_dict)));
     object method = (object)(d[szName]);
@@ -93,105 +107,73 @@ void AddGetFunctionInfo(BoostExposedClass obj, const char* szName, Function func
 
 
 // ============================================================================
-// >> PyGetFunctionInfo
+// >> ADD_PTR
 // ============================================================================
-inline object PyGetFunctionInfo(object obj)
-{
-	if (!PyObject_HasAttrString(obj.ptr(), FUNC_INFO_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function info does not exist for this function.");
-
-	return obj.attr(FUNC_INFO_NAME);
-}
-
-
-
-
-
-// ============================================================================
-// >> TODO
-// ============================================================================
-// Externals
-extern dict g_oExposedClasses;
-
-
-//---------------------------------------------------------------------------------
-// Macros
-//---------------------------------------------------------------------------------
-// Use this macro to add this class to get_pointer_object()
-#define ADD_PTR(classname) \
-	.def("_ptr", \
-		&__ptr__<classname>, \
-		manage_new_object_policy() \
-	)
-
-// Use this macro to add this class to make_object()
-#define ADD_OBJ(classname) \
-	.def("_obj", \
-		&__obj__<classname>, \
-		reference_existing_object_policy() \
-	).staticmethod("_obj")
-
-// Use this macro to add this class to get_size()
-// Note: This must be at the end of the class definition!
-#define ADD_SIZE(classname) \
-	.attr("_size") = sizeof(classname);
-
-// Use this macro to add the class to the ExposedClasses dict
-#define STORE_CLASS(classname, pyname) \
-	extern dict g_oExposedClasses; \
-	g_oExposedClasses[XSTRINGIFY(classname)] = scope().attr(pyname);
-
-// Use this macro to add the class to the three functions
-// Note: This must be at the end of the class definition!
-#define ADD_MEM_TOOLS(classname) \
-	ADD_PTR(classname) \
-	ADD_OBJ(classname) \
-	ADD_SIZE(classname) \
-	STORE_CLASS(classname, converter::registry::query(typeid(classname))->m_class_object->tp_name)
-
-#define ADD_MEM_TOOLS_WRAPPER(classname, realname) \
-	ADD_PTR(classname) \
-	ADD_OBJ(classname) \
-	ADD_SIZE(classname) \
-	STORE_CLASS(realname, converter::registry::query(typeid(classname))->m_class_object->tp_name)
-
-//-----------------------------------------------------------------------------
-// Functions
-//-----------------------------------------------------------------------------
 template<class T>
 CPointer* __ptr__(T* pThis)
 {
 	return new CPointer((unsigned long) pThis);
 }
 
+// Use this macro to add this class to get_pointer_object()
+#define ADD_PTR(classname) \
+	.def(GET_PTR_NAME, \
+		&__ptr__<classname>, \
+		manage_new_object_policy() \
+	)
+
+
+// ============================================================================
+// >> ADD_OBJ
+// ============================================================================
 template<class T>
 T* __obj__(CPointer* pPtr)
 {
 	return (T *) pPtr->m_ulAddr;
 }
 
-inline object GetObjectPointer(object obj)
-{
-	if (!PyObject_HasAttrString(obj.ptr(), "_ptr"))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
+// Use this macro to add this class to make_object()
+#define ADD_OBJ(classname) \
+	.def(GET_OBJ_NAME, \
+		&__obj__<classname>, \
+		reference_existing_object_policy() \
+	).staticmethod(GET_OBJ_NAME)
 
-	return obj.attr("_ptr")();
-}
 
-inline object MakeObject(object cls, CPointer* pPtr)
-{
-	if (!PyObject_HasAttrString(cls.ptr(), "_obj"))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
+// ============================================================================
+// >> ADD_SIZE
+// ============================================================================
+// Use this macro to add this class to get_size()
+// Note: This must be at the end of the class definition!
+#define ADD_SIZE(classname) \
+	.attr(GET_SIZE_NAME) = sizeof(classname);
 
-	return cls.attr("_obj")(ptr(pPtr));
-}
 
-inline object GetSize(object cls)
-{
-	if (!PyObject_HasAttrString(cls.ptr(), "_size"))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
+// ============================================================================
+// >> STORE_CLASS
+// ============================================================================
+// Use this macro to add the class to the ExposedClasses dict
+#define STORE_CLASS(classname, pyname) \
+	extern dict g_oExposedClasses; \
+	g_oExposedClasses[XSTRINGIFY(classname)] = scope().attr(pyname);
 
-	return cls.attr("_size");
-}
+
+// ============================================================================
+// >> ADD_MEM_TOOLS_WRAPPER
+// ============================================================================
+#define ADD_MEM_TOOLS_WRAPPER(classname, realname) \
+	ADD_PTR(classname) \
+	ADD_OBJ(classname) \
+	ADD_SIZE(classname) \
+	STORE_CLASS(realname, converter::registry::query(typeid(classname))->m_class_object->tp_name)
+
+
+// ============================================================================
+// >> ADD_MEM_TOOLS
+// ============================================================================
+// Use this macro to add the class to the three functions
+// Note: This must be at the end of the class definition!
+#define ADD_MEM_TOOLS(classname) \
+	ADD_MEM_TOOLS_WRAPPER(classname, classname)
 
 #endif // _MEMORY_UTILITIES_H

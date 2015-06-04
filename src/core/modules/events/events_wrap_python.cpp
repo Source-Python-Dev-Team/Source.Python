@@ -246,7 +246,7 @@ void export_igameeventmanager(scope _events)
 
 		ADD_MEM_TOOLS(IGameEventManager2)
 	;
-	AddGetFunctionInfo(_GameEventManager, "fire_event", &IGameEventManager2::FireEvent);
+	AddFunctionInfo(_GameEventManager, "fire_event", &IGameEventManager2::FireEvent);
 
 	_events.attr("game_event_manager") = object(ptr(gameeventmanager));
 }

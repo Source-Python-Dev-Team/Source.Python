@@ -27,15 +27,59 @@
 #ifndef _MEMORY_TOOLS_H
 #define _MEMORY_TOOLS_H
 
-/*
-#include "utilities/wrap_macros.h"
-
-#include "boost/python.hpp"
-using namespace boost::python;
-*/
-
-#include "memory_utilities.h"
+// ============================================================================
+// >> INCLUDES
+// ============================================================================
 #include "memory_pointer.h"
+#include "memory_utilities.h"
+
+
+// ============================================================================
+// >> GetObjectPointer
+// ============================================================================
+inline object GetObjectPointer(object obj)
+{
+	if (!PyObject_HasAttrString(obj.ptr(), GET_PTR_NAME))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
+
+	return obj.attr(GET_PTR_NAME)();
+}
+
+
+// ============================================================================
+// >> MakeObject
+// ============================================================================
+inline object MakeObject(object cls, CPointer* pPtr)
+{
+	if (!PyObject_HasAttrString(cls.ptr(), GET_OBJ_NAME))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
+
+	return cls.attr(GET_OBJ_NAME)(ptr(pPtr));
+}
+
+
+// ============================================================================
+// >> GetSize
+// ============================================================================
+inline object GetSize(object cls)
+{
+	if (!PyObject_HasAttrString(cls.ptr(), GET_SIZE_NAME))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
+
+	return cls.attr(GET_SIZE_NAME);
+}
+
+
+// ============================================================================
+// >> GetFunctionInfo
+// ============================================================================
+inline object PyGetFunctionInfo(object obj)
+{
+	if (!PyObject_HasAttrString(obj.ptr(), FUNC_INFO_NAME))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function info does not exist for this function.");
+
+	return obj.attr(FUNC_INFO_NAME);
+}
 
 
 #endif // _MEMORY_TOOLS_H
