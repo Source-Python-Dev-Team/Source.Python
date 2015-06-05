@@ -390,7 +390,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 void CSourcePython::FireGameEvent( IGameEvent * event )
 {
 	const char * name = event->GetName();
-	PythonLog(1, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
+	PythonLog(4, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
 
 	//g_AddonManager.FireGameEvent(event);
 }
