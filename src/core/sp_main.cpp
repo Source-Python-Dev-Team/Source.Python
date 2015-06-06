@@ -257,15 +257,18 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 void CSourcePython::Unload( void )
 {
 	Msg(MSG_PREFIX "Unloading...\n");
+	
+	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
+	GetHookManager()->UnhookAllFunctions();
+	
+	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
+	g_PythonManager.Shutdown();
 
 	DevMsg(1, MSG_PREFIX "Clearing all commands...\n");
 	ClearAllCommands();
 
 	DevMsg(1, MSG_PREFIX "Unregistering ConVar...\n");
 	ConVar_Unregister( );
-	
-	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
-	g_PythonManager.Shutdown();
 
 	// New in CSGO...
 #ifdef ENGINE_CSGO
@@ -278,9 +281,6 @@ void CSourcePython::Unload( void )
 	DevMsg(1, MSG_PREFIX "Disconnecting tier1 libraries...\n");
 	DisconnectTier1Libraries( );
 #endif
-	
-	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
-	GetHookManager()->UnhookAllFunctions();
 
 	Msg(MSG_PREFIX "Unloaded successfully.\n");
 }
