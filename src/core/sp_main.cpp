@@ -421,8 +421,6 @@ void CSourcePython::FireGameEvent( IGameEvent * event )
 {
 	const char * name = event->GetName();
 	PythonLog(4, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
-
-	//g_AddonManager.FireGameEvent(event);
 }
 
 //-----------------------------------------------------------------------------
