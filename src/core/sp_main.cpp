@@ -198,37 +198,56 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 {
 	// This seems to be new with
 #ifdef ENGINE_CSGO
+	DevMsg(1, MSG_PREFIX "Connecting interfaces...\n");
 	ConnectInterfaces(&interfaceFactory, 1);
 #else
+	DevMsg(1, MSG_PREFIX "Connecting tier1 libraries...\n");
 	ConnectTier1Libraries( &interfaceFactory, 1 );
+
+	DevMsg(1, MSG_PREFIX "Connecting tier2 libraries...\n");
 	ConnectTier2Libraries( &interfaceFactory, 2 );
 #endif
 
 	// Get all engine interfaces.
+	DevMsg(1, MSG_PREFIX "Retrieving engine interfaces...\n");
 	if( !GetInterfaces(gEngineInterfaces, interfaceFactory) ) {
 		return false;
 	}
 
 	// Get all game interfaces.
+	DevMsg(1, MSG_PREFIX "Retrieving game interfaces...\n");
 	if( !GetInterfaces(gGameInterfaces, gameServerFactory) ) {
 		return false;
 	}
-
+	
+	DevMsg(1, MSG_PREFIX "Retrieving global variables...\n");
 	gpGlobals = playerinfomanager->GetGlobalVars();
-
+	if (!gpGlobals) {
+		Msg(MSG_PREFIX "Could retrieve global variables.\n");
+		return false;
+	}
+	
+	DevMsg(1, MSG_PREFIX "Initializing mathlib...\n");
 	MathLib_Init( 2.2f, 2.2f, 0.0f, 2.0f );
+
+	DevMsg(1, MSG_PREFIX "Initializing server and say commands...\n");
 	InitCommands();
 
 	// Initialize python
+	DevMsg(1, MSG_PREFIX "Initializing python...\n");
 	if( !g_PythonManager.Initialize() ) {
 		Msg(MSG_PREFIX "Could not initialize python.\n");
 		return false;
 	}
 
 	// TODO: Don't hardcode the 64 bytes offset
+	DevMsg(1, MSG_PREFIX "Retrieving the current cache notifier...\n");
 	m_pOldMDLCacheNotifier = *(IMDLCacheNotify **)(((unsigned long) modelcache) + 64);
-	modelcache->SetCacheNotify(this);
 
+	DevMsg(1, MSG_PREFIX "Setting the new cache notifier...\n");
+	modelcache->SetCacheNotify(this);
+	
+	Msg(MSG_PREFIX "Loaded successfully.\n");
 	return true;
 }
 
@@ -238,20 +257,31 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 void CSourcePython::Unload( void )
 {
 	Msg(MSG_PREFIX "Unloading...\n");
-	ClearAllCommands();
-	ConVar_Unregister( );
 
+	DevMsg(1, MSG_PREFIX "Clearing all commands...\n");
+	ClearAllCommands();
+
+	DevMsg(1, MSG_PREFIX "Unregistering ConVar...\n");
+	ConVar_Unregister( );
+	
+	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
 	g_PythonManager.Shutdown();
 
 	// New in CSGO...
 #ifdef ENGINE_CSGO
+	DevMsg(1, MSG_PREFIX "Disconnecting interfaces...\n");
 	DisconnectInterfaces();
 #else
+	DevMsg(1, MSG_PREFIX "Disconnecting tier2 libraries...\n");
 	DisconnectTier2Libraries( );
+
+	DevMsg(1, MSG_PREFIX "Disconnecting tier1 libraries...\n");
 	DisconnectTier1Libraries( );
 #endif
-
+	
+	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
 	GetHookManager()->UnhookAllFunctions();
+
 	Msg(MSG_PREFIX "Unloaded successfully.\n");
 }
 
