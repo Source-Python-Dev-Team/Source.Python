@@ -102,12 +102,12 @@ void export_command(scope _commands)
 		)
 
 		.def("get_arg_string",
-			&CCommand::ArgS,
+			&CCommandExt::ArgS,
 			"Returns the argument string for the command (does not include the command itself)"
 		)
 
 		.def("get_command_string",
-			&CCommand::GetCommandString,
+			&CCommandExt::GetCommandString,
 			"Returns the entire command string"
 		)
 
