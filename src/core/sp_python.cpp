@@ -166,7 +166,7 @@ bool CPythonManager::Initialize( void )
 	modulsp_init();
 
 	// Import the main module file.
-	DevMsg(1, MSG_PREFIX "Importing main module..\n");
+	DevMsg(1, MSG_PREFIX "Loading main module...\n");
 
 	try {
 		python::import("__init__").attr("load")();
@@ -174,11 +174,10 @@ bool CPythonManager::Initialize( void )
 	catch( ... ) {
 		PyErr_Print();
 		PyErr_Clear();
-		Msg(MSG_PREFIX "Failed to load.\n");
+		Msg(MSG_PREFIX "Failed to load the main module.\n");
 		return false;
 	}
 
-	Msg(MSG_PREFIX "Loaded successfully.\n");
 	return true;
 }
 
@@ -188,15 +187,19 @@ bool CPythonManager::Initialize( void )
 //---------------------------------------------------------------------------------
 bool CPythonManager::Shutdown( void )
 {
+	DevMsg(1, MSG_PREFIX "Unloading main module...\n");
 	try {
 		python::import("__init__").attr("unload")();
 	}
 	catch( ... ) {
 		PyErr_Print();
 		PyErr_Clear();
-		Msg(MSG_PREFIX "Failed to unload.\n");
+		Msg(MSG_PREFIX "Failed to unload the main module.\n");
 		return false;
 	}
+	
+	DevMsg(1, MSG_PREFIX "Finalizing python...\n");
+	Py_Finalize();
 	return true;
 }
 
