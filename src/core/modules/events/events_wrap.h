@@ -42,6 +42,19 @@
 
 
 //-----------------------------------------------------------------------------
+// IGameEvent extension class.
+//-----------------------------------------------------------------------------
+class IGameEventExt
+{
+public:
+	static PyObject* GetString(IGameEvent* pEvent, const char* szKey, const char* szDefault)
+	{
+		const char* szValue = pEvent->GetString(szKey, szDefault);
+		return PyUnicode_DecodeUTF8(szValue, strlen(szValue), "ignore");
+	}
+};
+
+//-----------------------------------------------------------------------------
 // IGameEventListener2 wrapper class.
 //-----------------------------------------------------------------------------
 class CGameEventListener2: public IGameEventListener2, public wrapper<IGameEventListener2>
