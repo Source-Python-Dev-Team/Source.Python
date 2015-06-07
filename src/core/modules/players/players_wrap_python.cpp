@@ -33,6 +33,7 @@
 
 #include "public/game/server/iplayerinfo.h"
 #include "inetchannelinfo.h"
+#include "players_wrap_python.h"
 
 
 //-----------------------------------------------------------------------------
@@ -61,7 +62,7 @@ void export_playerinfo(scope _players)
 {
 	class_<IPlayerInfo, boost::noncopyable>("PlayerInfo", no_init)
 		.def("get_name",
-			&IPlayerInfo::GetName,
+			&IPlayerInfoExt::GetName,
 			"Returns the player's name"
 		)
 

@@ -104,7 +104,7 @@ void export_igameevent(scope _events)
 		)
 
 		.def("get_string",
-			&IGameEvent::GetString,
+			&IGameEventExt::GetString,
 			("key_name", arg("default_value")=""),
 			"Returns the value of the key name as a string."
 		)
@@ -123,12 +123,6 @@ void export_igameevent(scope _events)
 
 		.def("set_float",
 			&IGameEvent::SetFloat,
-			"Sets the given key name.",
-			args("key_name", "value")
-		)
-
-		.def("set_string",
-			&IGameEvent::SetString,
 			"Sets the given key name.",
 			args("key_name", "value")
 		)

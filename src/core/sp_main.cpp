@@ -282,6 +282,9 @@ void CSourcePython::Unload( void )
 	DisconnectTier1Libraries( );
 #endif
 
+	DevMsg(1, MSG_PREFIX "Resetting cache notifier...\n");
+	modelcache->SetCacheNotify(m_pOldMDLCacheNotifier);
+
 	Msg(MSG_PREFIX "Unloaded successfully.\n");
 }
 

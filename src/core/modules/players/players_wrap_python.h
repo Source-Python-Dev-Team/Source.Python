@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -23,53 +23,29 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _COMMAND_WRAP_H
-#define _COMMAND_WRAP_H
+
+#ifndef _PLAYERS_WRAP_PYTHON_H
+#define _PLAYERS_WRAP_PYTHON_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/wrap_macros.h"
-#include "convar.h"
+#include "public/game/server/iplayerinfo.h"
+#include "boost/python.hpp"
+using namespace boost::python;
 
 
 //-----------------------------------------------------------------------------
-// Return values.
+// IPlayerInfo extension class
 //-----------------------------------------------------------------------------
-enum CommandReturn
-{
-	BLOCK = 0,
-	CONTINUE
-};
-
-
-//-----------------------------------------------------------------------------
-// CCommand extension class.
-//-----------------------------------------------------------------------------
-class CCommandExt
+class IPlayerInfoExt
 {
 public:
-	static PyObject* GetArg(CCommand& command, unsigned int iIndex)
+	static PyObject* GetName(IPlayerInfo* pInfo)
 	{
-		if ((int) iIndex >= command.ArgC())
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
-
-		const char* szValue = command[iIndex];
-		return PyUnicode_DecodeUTF8(szValue, strlen(szValue), "ignore");
-	}
-
-	static PyObject* ArgS(CCommand& command)
-	{
-		const char* szValue = command.ArgS();
-		return PyUnicode_DecodeUTF8(szValue, strlen(szValue), "ignore");
-	}
-
-	static PyObject* GetCommandString(CCommand& command)
-	{
-		const char* szValue = command.GetCommandString();
+		const char* szValue = pInfo->GetName();
 		return PyUnicode_DecodeUTF8(szValue, strlen(szValue), "ignore");
 	}
 };
 
-
-#endif // _COMMAND_WRAP_H
+#endif // _PLAYERS_WRAP_PYTHON_H
