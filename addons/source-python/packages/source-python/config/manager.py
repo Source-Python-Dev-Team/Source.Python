@@ -16,6 +16,8 @@ from textwrap import TextWrapper
 from config.cvar import _CvarManager
 from config.section import _SectionManager
 from config.command import _CommandManager
+#   Cvars
+from cvars import ConVar
 #   Engines
 from engines.server import engine_server
 #   Hooks
@@ -417,8 +419,56 @@ class ConfigManager(object):
 
     def execute(self):
         """Execute the config file."""
-        engine_server.server_command(
-            'exec source-python/{0}\n'.format(self.filepath))
+        # Does the file exist?
+        if not self.fullpath.isfile():
+            raise FileNotFoundError(
+                'Cannot execute file "{0}", file not found'.format(
+                    self.fullpath))
+
+        # Open/close the file
+        with self.fullpath.open() as open_file:
+
+            # Loop through all lines in the file
+            for line in open_file.readlines():
+
+                # Strip the line
+                line = line.strip()
+
+                # Is the line a command or cvar?
+                if line.startswith('//') or not line:
+                    continue
+
+                # Get the command's or cvar's name
+                name = line.split(' ', 1)[0]
+
+                # Is the command/cvar valid
+                if not name in self._commands | self._cvars:
+                    continue
+
+                # Does the command/cvar have any value/arguments?
+                if not line.count(' '):
+                    continue
+
+                # Is this a command?
+                if name in self._commands:
+
+                    # Execute the line
+                    engine_server.server_command(line + '\n')
+
+                # Is this a cvar
+                else:
+
+                    # Get the cvar's value
+                    value = line.split(' ', 1)[1]
+
+                    # Do quotes need removed?
+                    if value.startswith('"') and line.count('"') >= 2:
+
+                        # Remove the quotes
+                        value = value.split('"')[1]
+
+                    # Set the cvar's value
+                    ConVar(name).set_string(value)
 
     def _parse_old_file(self):
         """Parse the old config file to get any values already set."""
