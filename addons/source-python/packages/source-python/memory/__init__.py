@@ -23,6 +23,7 @@ from _memory import Convention
 from _memory import DataType
 from _memory import EXPOSED_CLASSES
 from _memory import Function
+from _memory import FunctionInfo
 from _memory import NULL
 from _memory import Pointer
 from _memory import ProcessorRegister
@@ -33,6 +34,7 @@ from _memory import TYPE_SIZES
 from _memory import alloc
 from _memory import find_binary
 from _memory import get_data_type_size
+from _memory import get_function_info
 from _memory import get_object_pointer
 from _memory import get_size
 from _memory import make_object
@@ -48,6 +50,7 @@ __all__ = ('BinaryFile',
            'DataType',
            'EXPOSED_CLASSES',
            'Function',
+           'FunctionInfo',
            'NULL',
            'Pointer',
            'ProcessorRegister',
@@ -58,6 +61,7 @@ __all__ = ('BinaryFile',
            'alloc',
            'find_binary',
            'get_data_type_size',
+           'get_function_info',
            'get_object_pointer',
            'get_size',
            'make_object',

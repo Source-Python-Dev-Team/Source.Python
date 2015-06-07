@@ -319,6 +319,7 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
     core/modules/players/players_helpers_wrap_python.cpp
     core/modules/players/players_wrap_python.cpp
     core/modules/players/players_generator_wrap.cpp
+    core/modules/players/players_voice.cpp
 )
 
 # ------------------------------------------------------------------

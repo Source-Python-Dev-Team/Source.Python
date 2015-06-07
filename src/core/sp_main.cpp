@@ -52,6 +52,7 @@
 #include "utilities/call_python.h"
 #include "vphysics_interface.h"
 #include "datacache/imdlcache.h"
+#include "ivoiceserver.h"
 
 #include "manager.h"
 
@@ -88,6 +89,7 @@ IPhysics*				physics				= NULL;
 IPhysicsCollision*		physcollision		= NULL;
 IPhysicsSurfaceProps*	physprops			= NULL;
 IMDLCache*				modelcache			= NULL;
+IVoiceServer*			voiceserver			= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
 
 //-----------------------------------------------------------------------------
@@ -139,6 +141,7 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{VPHYSICS_COLLISION_INTERFACE_VERSION, (void **)&physcollision},
 	{VPHYSICS_SURFACEPROPS_INTERFACE_VERSION, (void **)&physprops},
 	{MDLCACHE_INTERFACE_VERSION, (void **)&modelcache},
+	{INTERFACEVERSION_VOICESERVER, (void **)&voiceserver},
 
 	{NULL, NULL}
 };
