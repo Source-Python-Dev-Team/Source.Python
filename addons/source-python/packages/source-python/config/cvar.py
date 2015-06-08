@@ -8,6 +8,8 @@
 # Source.Python Imports
 #   Cvars
 from cvars import ConVar
+#   Hooks
+from hooks.exceptions import except_hooks
 #   Translations
 from translations.strings import TranslationStrings
 
