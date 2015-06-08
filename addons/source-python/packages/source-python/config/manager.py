@@ -442,7 +442,7 @@ class ConfigManager(object):
                 name = line.split(' ', 1)[0]
 
                 # Is the command/cvar valid
-                if not name in self._commands | self._cvars:
+                if name not in self._commands | self._cvars:
                     continue
 
                 # Does the command/cvar have any value/arguments?
