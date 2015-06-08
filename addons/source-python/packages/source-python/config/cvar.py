@@ -46,6 +46,10 @@ class _CvarManager(dict):
         # Store a list to iterate over description fields and text
         self._order = list()
 
+    def __enter__(self):
+        """Used when using "with" context management to create the cvar."""
+        return self
+
     def __getattr__(self, attr):
         """Return cvar attributes or items in the instance."""
         # Does the cvar instance have the given attribute?
@@ -102,6 +106,20 @@ class _CvarManager(dict):
 
                 # Yield the item
                 yield item, 0
+
+    def __exit__(self, exctype, value, trace_back):
+        """Used when exiting "with" context management to create the cvar."""
+        # Was an exception raised?
+        if trace_back:
+
+            # Print the exception
+            except_hooks.print_exception(exctype, value, trace_back)
+
+            # Return
+            return False
+
+        # Return
+        return True
 
     def text(self, text):
         """Add simple text or a TranslationStrings instance to the list."""
