@@ -57,6 +57,18 @@ class _CvarManager(dict):
         # Return the item
         return self.__getitem__(attr)
 
+    def __setattr__(self, attr, value):
+        """Set cvar attributes."""
+        # Does the cvar instance have the given attribute?
+        if not attr.startswith('_') and hasattr(self.cvar, attr):
+
+            # Set the cvar's attribute and return
+            setattr(self.cvar, attr, value)
+            return
+
+        # Set the instance's attribute
+        super(_CvarManager, self).__setattr__(attr, value)
+
     def __missing__(self, item):
         """Create the item as a _ListManager instance."""
         # Get the _ListManager instance for the given item

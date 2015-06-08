@@ -101,7 +101,7 @@ class Entity(BaseEntity, _EntitySpecials):
 
             # Is the attribute a property?
             if (name in super(Entity, self).__dir__() and isinstance(
-                    getattr(self.__class__, name), property)):
+                    getattr(self.__class__, name, None), property)):
 
                 # Set the private attribute's value
                 super(Entity, self).__setattr__(attr, value)
@@ -111,7 +111,7 @@ class Entity(BaseEntity, _EntitySpecials):
 
         # Is the given attribute a property?
         if (attr in super(Entity, self).__dir__() and isinstance(
-                getattr(self.__class__, attr), property)):
+                getattr(self.__class__, attr, None), property)):
 
             # Set the property's value
             super(Entity, self).__setattr__(attr, value)
