@@ -74,6 +74,9 @@ using namespace boost::python;
 #define GET_METHOD(return_type, class_name, method, ...) \
 	static_cast< return_type (class_name::*)( __VA_ARGS__ ) >(&class_name::method)
 
+#define GET_CONST_METHOD(return_type, class_name, method, ...) \
+	static_cast< return_type (class_name::*)( __VA_ARGS__ ) const >(&class_name::method)
+
 //---------------------------------------------------------------------------------
 // This macro returns the given overloaded function
 //---------------------------------------------------------------------------------
