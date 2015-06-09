@@ -13,6 +13,8 @@ from collections import OrderedDict
 #   Events
 from events import events_logger
 from events.manager import game_event_manager
+#   Hooks
+from hooks.exceptions import except_hooks
 
 
 # =============================================================================
@@ -95,6 +97,27 @@ class CustomEvent(metaclass=_EventMeta):
 
         # Set the attribute
         super(CustomEvent, self).__setattr__(attr, value)
+
+    def __enter__(self):
+        """Context management that automatically fires on exit."""
+        return self
+
+    def __exit__(self, exctype, value, trace_back):
+        """Fire the event on exit, unless an exception was encountered."""
+        # Was an exception raised?
+        if trace_back:
+
+            # Print the exception
+            except_hooks.print_exception(exctype, value, trace_back)
+
+            # Return
+            return False
+
+        # Fire the event
+        self.fire()
+
+        # Return
+        return True
 
     def fire(self):
         """Fire the event with the stored variable values."""
