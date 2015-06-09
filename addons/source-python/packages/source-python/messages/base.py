@@ -30,6 +30,7 @@ from hooks.exceptions import except_hooks
 from _messages import UserMessage
 #   Players
 from players.helpers import get_client_language
+from players.helpers import playerinfo_from_index
 #   Translations
 from translations.strings import TranslationStrings
 
@@ -561,6 +562,9 @@ class BaseMessage(dict):
 
             # Loop through all indexes
             for index in recipient:
+
+                if playerinfo_from_index(index).is_fake_client():
+                    continue
 
                 # Add the current index
                 languages[get_client_language(index)].add(index)
