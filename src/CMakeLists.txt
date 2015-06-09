@@ -336,6 +336,17 @@ Set(SOURCEPYTHON_FILTERS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Steam module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_STEAM_MODULE_HEADERS
+    core/modules/steam/${SOURCE_ENGINE}/steam_wrap_python.h
+)
+
+Set(SOURCEPYTHON_STEAM_MODULE_SOURCES
+    core/modules/steam/steam_wrap_python.cpp
+)
+
+# ------------------------------------------------------------------
 # StringTables module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS
@@ -431,6 +442,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_FILTERS_MODULE_HEADERS}
     ${SOURCEPYTHON_FILTERS_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_STEAM_MODULE_HEADERS}
+    ${SOURCEPYTHON_STEAM_MODULE_SOURCES}
+
     ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS}
     ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES}
 
@@ -467,6 +481,7 @@ Source_Group("Header Files\\Modules\\Messages"               FILES ${SOURCEPYTHO
 Source_Group("Header Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Steam"                  FILES ${SOURCEPYTHON_STEAM_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Studio"                 FILES ${SOURCEPYTHON_STUDIO_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS})
 
@@ -492,6 +507,7 @@ Source_Group("Source Files\\Modules\\Messages"               FILES ${SOURCEPYTHO
 Source_Group("Source Files\\Modules\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES})
 Source_Group("Source Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Steam"                  FILES ${SOURCEPYTHON_STEAM_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Studio"                 FILES ${SOURCEPYTHON_STUDIO_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Weapons"                FILES ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES})

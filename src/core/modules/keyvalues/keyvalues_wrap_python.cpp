@@ -102,7 +102,7 @@ void export_keyvalues(scope _keyvalues)
 		)
 
 		.def("find_key_by_symbol",
-			static_cast< KeyValues* (KeyValues::*)( int ) const >(&KeyValues::FindKey),
+			GET_CONST_METHOD(KeyValues*, KeyValues, FindKey, int),
 			"Finds a subkey by an integer identifier.",
 			args("key"),
 			reference_existing_object_policy()
