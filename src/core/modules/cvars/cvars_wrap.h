@@ -46,7 +46,7 @@ public:
 		ConVar *pConVar = g_pCVar->FindVar(szName);
 		if (!pConVar)
 		{
-			return boost::shared_ptr<ConVar>(new ConVar(strdup(szName), szDefaultValue, flags,
+			return boost::shared_ptr<ConVar>(new ConVar(strdup(szName), strdup(szDefaultValue), flags,
 				strdup(szHelpString), bMin, fMin, bMax, fMax), &NeverDeleteDeleter<ConVar *>);
 		}
 		return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
