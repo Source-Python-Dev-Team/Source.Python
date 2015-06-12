@@ -56,7 +56,6 @@ void export_engine_specific_dispatch_effect_data(T _effects, U DispatchEffectDat
 template<class T, class U>
 void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
 {
-	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
 }
 
 
