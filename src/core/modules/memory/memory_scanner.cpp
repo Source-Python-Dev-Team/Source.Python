@@ -350,8 +350,8 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 #ifdef __linux__
 	if (!ulAddr)
 	{
-		char szGameDir[MAX_GAME_PATH];
-		engine->GetGameDir(szGameDir, MAX_GAME_PATH);
+		char szGameDir[MAX_PATH_LENGTH];
+		engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
 
 		// If the previous path failed, try the "bin" folder of the game.
 		// This will allow passing e.g. "server" to this function.

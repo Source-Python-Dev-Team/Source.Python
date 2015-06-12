@@ -63,6 +63,8 @@
 #	define PYLIB_NAME PYLIB_NAME_LINUX_RELEASE
 #endif
 
+#define MAX_PATH_LENGTH 1024
+#define MAX_ERROR_LENGTH 1024
 #define MSG_PREFIX "[Source.Python] "
 
 //---------------------------------------------------------------------------------

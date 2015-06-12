@@ -33,7 +33,14 @@
 #include "utilities/baseentity.h"
 #include "utilities/sp_util.h"
 #include "utilities/conversions.h"
+#include "utilities/wrap_macros.h"
 #include "toolframework/itoolentity.h"
+
+
+//-----------------------------------------------------------------------------
+// Definitions.
+//-----------------------------------------------------------------------------
+#define MAX_KEY_VALUE_LENGTH 1024
 
 
 //-----------------------------------------------------------------------------
@@ -76,8 +83,10 @@ public:
 
 	static str GetKeyValueString(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		char szResult[1024];
-		servertools->GetKeyValue(pBaseEntity, szName, szResult, 1024);
+		char szResult[MAX_KEY_VALUE_LENGTH];
+		if (!servertools->GetKeyValue(pBaseEntity, szName, szResult, MAX_KEY_VALUE_LENGTH))
+			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
+				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
 
 		// Fix for field name "model". I think a string_t object is copied to szResult.
 		if (strcmp(szName, "model") == 0)
@@ -123,7 +132,9 @@ public:
 	template<class T>
 	static void SetKeyValue(CBaseEntity* pBaseEntity, const char* szName, T value)
 	{
-		servertools->SetKeyValue(pBaseEntity, szName, value);
+		if (!servertools->SetKeyValue(pBaseEntity, szName, value))
+			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
+				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
 	}
 };
 
