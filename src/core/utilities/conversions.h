@@ -248,7 +248,7 @@ inline IPlayerInfo *PlayerInfoFromIndex( int iEntityIndex, bool bRaiseException 
 {
 	IPlayerInfo *pPlayerInfo = NULL;
 
-	if (iEntityIndex > 0 && iEntityIndex < gpGlobals->maxClients)
+	if (iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex < gpGlobals->maxClients)
 	{
 		edict_t *pEdict = EdictFromIndex(iEntityIndex);
 		if (pEdict)

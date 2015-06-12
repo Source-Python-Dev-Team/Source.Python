@@ -77,12 +77,12 @@ CSourcePython::~CSourcePython()
 //---------------------------------------------------------------------------------
 void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 {
-	char szFullPath[1024];
-	char szGamePath[1024];
-	char szError[1024];
-	V_strncpy(szError, "[SP-LOADER] - No error found\n", 1024);
+	char szFullPath[MAX_PATH_LENGTH];
+	char szGamePath[MAX_PATH_LENGTH];
+	char szError[MAX_PATH_LENGTH];
+	V_strncpy(szError, "[SP-LOADER] - No error found\n", MAX_PATH_LENGTH);
 
-	engine->GetGameDir(szGamePath, 1024);
+	engine->GetGameDir(szGamePath, MAX_PATH_LENGTH);
 	GenerateSymlink(szGamePath);
 
 	V_snprintf(szFullPath, sizeof(szFullPath), "%s/addons/source-python/%s",
@@ -117,8 +117,8 @@ void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 		}
 		else
 		{
-			char szResult[1024];
-			memset(szResult, '\0', 1024);
+			char szResult[MAX_ERROR_LENGTH];
+			memset(szResult, '\0', MAX_ERROR_LENGTH);
 
 			// Too lazy to bring across any windows functions, cast myself from wide to narrow
 			for (unsigned int i=0; i < nBufferLength; ++i)
@@ -166,15 +166,15 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// ------------------------------------------------------------------
 	// Build path to python engines directory.
 	// ------------------------------------------------------------------
-	char szGameDir[1024];
-	char szPythonHome[1024];
-	char szPythonEngine[1024];
-	char szSourcePython[1024];
+	char szGameDir[MAX_PATH_LENGTH];
+	char szPythonHome[MAX_PATH_LENGTH];
+	char szPythonEngine[MAX_PATH_LENGTH];
+	char szSourcePython[MAX_PATH_LENGTH];
 
 	// ------------------------------------------------------------------
 	// Get the game directory.
 	// ------------------------------------------------------------------
-	engine->GetGameDir(szGameDir, 1024);
+	engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
 	GenerateSymlink(szGameDir);
 
 	// ------------------------------------------------------------------
@@ -193,7 +193,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// ------------------------------------------------------------------
 	// Construct paths to python and the core.
 	// ------------------------------------------------------------------
-	V_snprintf(szPythonHome, 1024, "%s/addons/source-python", szGameDir);
+	V_snprintf(szPythonHome, MAX_PATH_LENGTH, "%s/addons/source-python", szGameDir);
 	V_snprintf(szSourcePython, sizeof(szSourcePython), "%s/%s", szPythonHome, CORE_NAME);
 	V_snprintf(szPythonEngine, sizeof(szPythonEngine), "%s/%s", szPythonHome, PYLIB_NAME);
 
