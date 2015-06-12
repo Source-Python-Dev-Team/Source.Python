@@ -241,8 +241,14 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	}
 
 	// TODO: Don't hardcode the 64 bytes offset
+#ifdef ENGINE_LEFT4DEAD2
+	#define CACHE_NOTIFY_OFFSET 68
+#else
+	#define CACHE_NOTIFY_OFFSET 64
+#endif
+
 	DevMsg(1, MSG_PREFIX "Retrieving the current cache notifier...\n");
-	m_pOldMDLCacheNotifier = *(IMDLCacheNotify **)(((unsigned long) modelcache) + 64);
+	m_pOldMDLCacheNotifier = *(IMDLCacheNotify **)(((unsigned long) modelcache) + CACHE_NOTIFY_OFFSET);
 
 	DevMsg(1, MSG_PREFIX "Setting the new cache notifier...\n");
 	modelcache->SetCacheNotify(this);
