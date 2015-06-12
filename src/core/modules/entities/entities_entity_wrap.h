@@ -37,6 +37,12 @@
 
 
 //-----------------------------------------------------------------------------
+// Definitions.
+//-----------------------------------------------------------------------------
+#define MAX_KEY_VALUE_LENGTH 1024
+
+
+//-----------------------------------------------------------------------------
 // External variables.
 //-----------------------------------------------------------------------------
 extern IServerTools* servertools;
@@ -76,8 +82,8 @@ public:
 
 	static str GetKeyValueString(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		char szResult[1024];
-		servertools->GetKeyValue(pBaseEntity, szName, szResult, 1024);
+		char szResult[MAX_KEY_VALUE_LENGTH];
+		servertools->GetKeyValue(pBaseEntity, szName, szResult, MAX_KEY_VALUE_LENGTH);
 
 		// Fix for field name "model". I think a string_t object is copied to szResult.
 		if (strcmp(szName, "model") == 0)

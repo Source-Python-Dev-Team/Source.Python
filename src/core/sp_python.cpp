@@ -64,11 +64,11 @@ void InitConverters();
 //---------------------------------------------------------------------------------
 const char *GetSourcePythonDir()
 {
-	static char szGameDir[MAX_GAME_PATH];
-	engine->GetGameDir(szGameDir, MAX_GAME_PATH);
+	static char szGameDir[MAX_PATH_LENGTH];
+	engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
 	GenerateSymlink(szGameDir);
-	static char szAddonDir[MAX_GAME_PATH];
-	V_snprintf(szAddonDir, MAX_GAME_PATH, "%s%s", szGameDir, "/addons/source-python");
+	static char szAddonDir[MAX_PATH_LENGTH];
+	V_snprintf(szAddonDir, MAX_PATH_LENGTH, "%s%s", szGameDir, "/addons/source-python");
 	return szAddonDir;
 }
 
@@ -78,8 +78,8 @@ const char *GetSourcePythonDir()
 //---------------------------------------------------------------------------------
 void AddToSysPath( const char* path )
 {
-	char szFolderPath[MAX_GAME_PATH];
-	V_snprintf(szFolderPath, MAX_GAME_PATH, "%s%s", GetSourcePythonDir(), path);
+	char szFolderPath[MAX_PATH_LENGTH];
+	V_snprintf(szFolderPath, MAX_PATH_LENGTH, "%s%s", GetSourcePythonDir(), path);
 	V_FixSlashes(szFolderPath);
 
 	DevMsg(1, MSG_PREFIX "Adding %s to path\n", szFolderPath);
@@ -94,14 +94,14 @@ void AddToSysPath( const char* path )
 bool CPythonManager::Initialize( void )
 {
 	// Construct a path to the python engine directory.
-	char szPythonHome[MAX_GAME_PATH];
-	V_snprintf(szPythonHome, MAX_GAME_PATH, "%s/Python3", GetSourcePythonDir());
+	char szPythonHome[MAX_PATH_LENGTH];
+	V_snprintf(szPythonHome, MAX_PATH_LENGTH, "%s/Python3", GetSourcePythonDir());
 	V_FixSlashes(szPythonHome);
 	DevMsg(1, MSG_PREFIX "Python home path set to %s\n", szPythonHome);
 
 	// Convert to wide char for python.
-	wchar_t wszPythonHome[1024];
-	V_strtowcs(szPythonHome, -1, wszPythonHome, 1024);
+	wchar_t wszPythonHome[MAX_PATH_LENGTH];
+	V_strtowcs(szPythonHome, -1, wszPythonHome, MAX_PATH_LENGTH);
 
 	// Set that as the python home directory.
  	Py_SetPythonHome(wszPythonHome);
