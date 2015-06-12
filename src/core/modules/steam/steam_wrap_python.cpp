@@ -235,7 +235,7 @@ void export_universe(scope _steam)
 	Universe.value("MAX", k_EUniverseMax);
 
 	// Game/engine specific values
-	// Available in Orangebox, CS:GO
+	// Available in Orangebox, CS:GO, L4D2
 	NOT_IMPLEMENTED_VALUE(EUniverse, "RC");
 	
 	export_engine_specific_universe(_steam, Universe);
@@ -261,7 +261,7 @@ void export_account_type(scope _steam)
 	AccountType.value("MAX", k_EAccountTypeMax);
 
 	// Game/engine specific values
-	// Available in Orangebox
+	// Available in Orangebox, L4D2
 	NOT_IMPLEMENTED_VALUE(EAccountType, "P2_SUPER_SEEDER");
 
 	// Available in BM:S
