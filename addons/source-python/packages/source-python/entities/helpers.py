@@ -7,8 +7,6 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from _entities._helpers import INVALID_ENTITY_INDEX
-from _entities._helpers import INVALID_ENTITY_INTHANDLE
 from _entities._helpers import baseentity_from_basehandle
 from _entities._helpers import baseentity_from_edict
 from _entities._helpers import baseentity_from_index
