@@ -461,21 +461,24 @@ public:
 // >> GetFunctionInfo
 // ============================================================================
 template<class Function>
-inline void GetFunctionInfo(Function func, CFunctionInfo& info)
+inline CFunctionInfo* GetFunctionInfo(Function func)
 {
+	CFunctionInfo* pInfo = new CFunctionInfo();
+
     MemFuncInfo out;
     MFI_Impl<sizeof(func)>::GetFuncInfo((void *&) func, out);
     
-    info.m_bIsVirtual = out.isVirtual;
-    info.m_iThisPtrOffset = out.thisptroffs;
-    info.m_iVtableIndex = out.vtblindex;
-    info.m_iVtableOffset = out.vtbloffs;
+    pInfo->m_bIsVirtual = out.isVirtual;
+    pInfo->m_iThisPtrOffset = out.thisptroffs;
+    pInfo->m_iVtableIndex = out.vtblindex;
+    pInfo->m_iVtableOffset = out.vtbloffs;
     
     // Get return type and parameters
-    FunctionAnalyzer(boost::python::detail::get_signature(func), info);
+    FunctionAnalyzer(boost::python::detail::get_signature(func), *pInfo);
 
     // Get calling convention
-    info.m_eCallingConvention = GetCallingConvention(func);
+    pInfo->m_eCallingConvention = GetCallingConvention(func);
+	return pInfo;
 }
 
 #endif // _MEMORY_FUNCTION_INFO_H

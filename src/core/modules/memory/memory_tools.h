@@ -70,16 +70,4 @@ inline object GetSize(object cls)
 }
 
 
-// ============================================================================
-// >> GetFunctionInfo
-// ============================================================================
-inline object PyGetFunctionInfo(object obj)
-{
-	if (!PyObject_HasAttrString(obj.ptr(), FUNC_INFO_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function info does not exist for this function.");
-
-	return obj.attr(FUNC_INFO_NAME);
-}
-
-
 #endif // _MEMORY_TOOLS_H

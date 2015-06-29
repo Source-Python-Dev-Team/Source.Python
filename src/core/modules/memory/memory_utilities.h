@@ -87,26 +87,6 @@ inline std::vector<DataType_t> ObjectToDataTypeVector(object oArgTypes)
 
 
 // ============================================================================
-// >> AddGetFunctionInfo
-// ============================================================================
-template<class BoostExposedClass, class Function>
-void AddFunctionInfo(BoostExposedClass obj, const char* szName, Function func)
-{
-	dict d(handle<>(borrowed(downcast<PyTypeObject>(obj.ptr())->tp_dict)));
-    object method = (object)(d[szName]);
-
-	CFunctionInfo info;
-	GetFunctionInfo(func, info);
-
-	PyDict_SetItemString(
-		method.ptr()->ob_type->tp_dict,
-		FUNC_INFO_NAME,
-		object(info).ptr()
-	);
-}
-
-
-// ============================================================================
 // >> ADD_PTR
 // ============================================================================
 template<class T>
@@ -175,5 +155,34 @@ T* __obj__(CPointer* pPtr)
 // Note: This must be at the end of the class definition!
 #define ADD_MEM_TOOLS(classname) \
 	ADD_MEM_TOOLS_WRAPPER(classname, classname)
+
+
+// ============================================================================
+// >> 
+// ============================================================================
+#define BEGIN_FUNCTION_INFO_DICT(classname) \
+	{ \
+		extern dict g_oFunctionInfo; \
+		dict functionInfoDict; \
+		g_oFunctionInfo[ #classname ] = functionInfoDict;
+
+#define END_FUNCTION_INFO_DICT() \
+	}
+
+#define BEGIN_FUNCTION_INFO_EX(name) \
+	{ \
+		list functionInfoList; \
+		functionInfoDict[ ##name ] = functionInfoList;
+
+#define END_FUNCTION_INFO_EX() \
+	}
+
+#define FUNCTION_INFO_EX(name, function) \
+	functionInfoList.append(ptr(GetFunctionInfo( ##function )));
+
+#define FUNCTION_INFO(name, function) \
+	BEGIN_FUNCTION_INFO_EX( ##name ) \
+	FUNCTION_INFO_EX( ##name, ##function ) \
+	END_FUNCTION_INFO_EX()
 
 #endif // _MEMORY_UTILITIES_H

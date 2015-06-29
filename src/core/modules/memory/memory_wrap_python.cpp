@@ -737,10 +737,6 @@ void export_calling_convention(scope _memory)
 // ============================================================================
 void export_functions(scope _memory)
 {
-	def("get_function_info", 
-		&PyGetFunctionInfo
-	);
-
 	def("find_binary",
 		&FindBinary,
 		"Returns a BinaryFile object or None.",
@@ -782,6 +778,7 @@ void export_functions(scope _memory)
 // >> GLOBAL VARIABLES
 // ============================================================================
 dict g_oExposedClasses;
+dict g_oFunctionInfo;
 
 #define ADD_NATIVE_TYPE_SIZE(name, type) \
 	scope().attr("TYPE_SIZES")[name] = sizeof(type);
@@ -792,6 +789,7 @@ dict g_oExposedClasses;
 void export_global_variables(scope _memory)
 {
 	_memory.attr("EXPOSED_CLASSES") = g_oExposedClasses;
+	_memory.attr("FUNCTION_INFO") = g_oFunctionInfo;
 
 	// Don't remove this! It's required for the ADD_NATIVE_TYPE_SIZE macro.
 	_memory.attr("TYPE_SIZES") = dict();
@@ -814,4 +812,5 @@ void export_global_variables(scope _memory)
 	ADD_NATIVE_TYPE_SIZE("STRING", char*)
 
 	_memory.attr("NULL") = object(CPointer());
+
 }

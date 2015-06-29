@@ -61,15 +61,16 @@ void export_voice_server(scope _voice)
 	class_<IVoiceServer, IVoiceServer*, boost::noncopyable> _VoiceServer("_VoiceServer", no_init);
 
 	_VoiceServer.def("get_client_listening", &IVoiceServer::GetClientListening);
-	AddFunctionInfo(_VoiceServer, "get_client_listening", &IVoiceServer::GetClientListening);
-
 	_VoiceServer.def("set_client_listening", &IVoiceServer::SetClientListening);
-	AddFunctionInfo(_VoiceServer, "set_client_listening", &IVoiceServer::SetClientListening);
-
 	_VoiceServer.def("set_client_proximity", &IVoiceServer::SetClientProximity);
-	AddFunctionInfo(_VoiceServer, "set_client_proximity", &IVoiceServer::SetClientProximity);
 
 	_VoiceServer ADD_MEM_TOOLS(IVoiceServer);
 
 	_voice.attr("voice_server") = object(ptr(voiceserver));
+
+	BEGIN_FUNCTION_INFO_DICT(IVoiceServer)
+		FUNCTION_INFO("GetClientListening", &IVoiceServer::GetClientListening)
+		FUNCTION_INFO("SetClientListening", &IVoiceServer::SetClientListening)
+		FUNCTION_INFO("SetClientProximity", &IVoiceServer::SetClientProximity)
+	END_FUNCTION_INFO_DICT()
 }
