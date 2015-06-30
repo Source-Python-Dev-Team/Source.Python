@@ -2,7 +2,7 @@
 STARTDIR="$PWD"
 
 # Set this to the number of processor cores you would like to use
-NUM_CORES=1
+NUM_CORES=${NUM_CORES:=1}
 
 
 # A function to choose the branch to build against
@@ -178,5 +178,14 @@ CreateBuild () {
     make -j$NUM_CORES 2>&1 | tee build.log
 
 }
-
-ChooseBranch
+if [ "$#" -gt "0" ]; then
+    BRANCH=$1
+    if [ "$#" -eq "2" ]; then
+        BUILD_TYPE=$2
+        CloneRepo
+    else
+        ChooseBuildType
+    fi
+else
+    ChooseBranch
+fi

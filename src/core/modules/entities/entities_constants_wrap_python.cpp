@@ -448,4 +448,7 @@ void export_entity_flags(scope _constants)
 void export_miscellaneous_constants(scope _constants)
 {
 	_constants.attr("WORLD_ENTITY_INDEX") = WORLD_ENTITY_INDEX;
+	_constants.attr("INVALID_ENTITY_INDEX") = INVALID_ENTITY_INDEX;
+	_constants.attr("INVALID_ENTITY_INTHANDLE") = INVALID_EHANDLE_INDEX;
+
 }

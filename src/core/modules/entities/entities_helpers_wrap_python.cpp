@@ -84,10 +84,6 @@ void export_entity_helper_functions(scope _helpers)
 //-----------------------------------------------------------------------------
 void export_entity_conversion_functions(scope _helpers)
 {
-	// Invalid results...
-	_helpers.attr("INVALID_ENTITY_INDEX") = INVALID_ENTITY_INDEX;
-	_helpers.attr("INVALID_ENTITY_INTHANDLE") = INVALID_EHANDLE_INDEX;
-
 	// To Index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);

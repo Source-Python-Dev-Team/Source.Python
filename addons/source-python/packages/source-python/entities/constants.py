@@ -16,6 +16,8 @@ from enum import IntEnum
 # Source.Python Imports
 #   Entities
 from _entities._constants import BASEDAMAGE_NOT_SPECIFIED
+from _entities._constants import INVALID_ENTITY_INDEX
+from _entities._constants import INVALID_ENTITY_INTHANDLE
 from _entities._constants import CollisionGroup
 from _entities._constants import DAMAGE_NO
 from _entities._constants import DAMAGE_EVENTS_ONLY
