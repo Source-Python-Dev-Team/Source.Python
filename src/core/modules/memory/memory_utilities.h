@@ -158,31 +158,71 @@ T* __obj__(CPointer* pPtr)
 
 
 // ============================================================================
-// >> 
+// >> FUNCTION INFO
 // ============================================================================
-#define BEGIN_FUNCTION_INFO_DICT(classname) \
+/*
+Macros to create class info dictionaries. The following example shows the usage:
+
+class A
+{
+public:
+	virtual void f() = 0;
+	virtual void f() const = 0;
+	virtual void f(int x) = 0;
+	virtual void g() = 0;
+};
+
+BEGIN_CLASS_INFO(A)
+	// Start a new function info list, because "f" is overloaded
+	BEGIN_FUNCTION_INFO_LIST("f")
+		FUNCTION_INFO_OVERLOAD(void, f)
+		FUNCTION_INFO_CONST_OVERLOAD(void, f)
+		FUNCTION_INFO_OVERLOAD(void, f, int)
+	END_FUNCTION_INFO_LIST()
+
+	// Use this macro if there are no function overloads
+	FUNCTION_INFO(g)
+END_CLASS_INFO()
+*/
+
+// Start a new class info dictionary
+#define BEGIN_CLASS_INFO(classname) \
 	{ \
+		typedef classname functionInfoClass; \
 		extern dict g_oFunctionInfo; \
 		dict functionInfoDict; \
 		g_oFunctionInfo[ #classname ] = functionInfoDict;
 
-#define END_FUNCTION_INFO_DICT() \
+// Finish a class info dictionary
+#define END_CLASS_INFO() \
 	}
 
-#define BEGIN_FUNCTION_INFO_EX(name) \
+// Start a function info list
+#define BEGIN_FUNCTION_INFO_LIST(name) \
 	{ \
 		list functionInfoList; \
 		functionInfoDict[ ##name ] = functionInfoList;
 
-#define END_FUNCTION_INFO_EX() \
+// Finish a function info list
+#define END_FUNCTION_INFO_LIST() \
 	}
 
-#define FUNCTION_INFO_EX(name, function) \
+// Requires a function address
+#define ADD_FUNCTION_INFO(function) \
 	functionInfoList.append(ptr(GetFunctionInfo( ##function )));
 
-#define FUNCTION_INFO(name, function) \
-	BEGIN_FUNCTION_INFO_EX( ##name ) \
-	FUNCTION_INFO_EX( ##name, ##function ) \
-	END_FUNCTION_INFO_EX()
+// Use this macro if there are no function overloads
+#define FUNCTION_INFO(function) \
+	BEGIN_FUNCTION_INFO_LIST( #function ) \
+	ADD_FUNCTION_INFO( &functionInfoClass::##function ) \
+	END_FUNCTION_INFO_LIST()
+
+// Use this macro to add a specific overloaded function
+#define FUNCTION_INFO_OVERLOAD(return_type, method, ...) \
+	ADD_FUNCTION_INFO( GET_METHOD(##return_type, functionInfoClass, ##method, ##__VA_ARGS__) )
+
+// Use this macro to add a specific overloaded function which was decorated with the "const" modifier
+#define FUNCTION_INFO_CONST_OVERLOAD(return_type, method, ...) \
+	ADD_FUNCTION_INFO( GET_CONST_METHOD(##return_type, functionInfoClass, ##method, ##__VA_ARGS__) )
 
 #endif // _MEMORY_UTILITIES_H

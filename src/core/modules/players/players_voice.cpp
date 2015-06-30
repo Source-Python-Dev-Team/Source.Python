@@ -68,9 +68,9 @@ void export_voice_server(scope _voice)
 
 	_voice.attr("voice_server") = object(ptr(voiceserver));
 
-	BEGIN_FUNCTION_INFO_DICT(IVoiceServer)
-		FUNCTION_INFO("GetClientListening", &IVoiceServer::GetClientListening)
-		FUNCTION_INFO("SetClientListening", &IVoiceServer::SetClientListening)
-		FUNCTION_INFO("SetClientProximity", &IVoiceServer::SetClientProximity)
-	END_FUNCTION_INFO_DICT()
+	BEGIN_CLASS_INFO(IVoiceServer)
+		FUNCTION_INFO(GetClientListening)
+		FUNCTION_INFO(SetClientListening)
+		FUNCTION_INFO(SetClientProximity)
+	END_CLASS_INFO()
 }

@@ -94,9 +94,17 @@
   struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A))>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
+  template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
+  struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A)) const>
+    : boost::integral_constant<Convention_t, CONV_CDECL> {};
+
   // Handle variadic class methods
   template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
   struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...)>
+    : boost::integral_constant<Convention_t, CONV_CDECL> {};
+
+  template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
+  struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...) const>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
   #ifdef _WIN32
@@ -106,7 +114,15 @@
     : boost::integral_constant<Convention_t, CONV_THISCALL> {};
 
   template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
+  struct CallingConvention<R (__thiscall T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A)) const>
+    : boost::integral_constant<Convention_t, CONV_THISCALL> {};
+
+  template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
   struct CallingConvention<R (__stdcall T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A))>
+    : boost::integral_constant<Convention_t, CONV_STDCALL> {};
+
+  template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
+  struct CallingConvention<R (__stdcall T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A)) const>
     : boost::integral_constant<Convention_t, CONV_STDCALL> {};
   #endif // _WIN32
 #endif // BOOST_PP_IS_ITERATING
