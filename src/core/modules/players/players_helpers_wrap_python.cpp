@@ -55,9 +55,6 @@ DECLARE_SP_SUBMODULE(_players, _helpers)
 //-----------------------------------------------------------------------------
 void export_player_conversion_functions(scope _helpers)
 {
-	// Invalid results...
-	_helpers.attr("INVALID_PLAYER_USERID") = INVALID_PLAYER_USERID;
-
 	// To Index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);

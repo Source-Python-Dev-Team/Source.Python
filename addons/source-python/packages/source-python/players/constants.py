@@ -73,6 +73,7 @@ from _players._constants import IN_BULLRUSH
 from _players._constants import IN_GRENADE1
 from _players._constants import IN_GRENADE2
 from _players._constants import IN_LOOKSPIN
+from _players._constants import INVALID_PLAYER_USERID
 from _players._constants import LIFE_ALIVE
 from _players._constants import LIFE_DYING
 from _players._constants import LIFE_DEAD
@@ -91,7 +92,8 @@ from _players._constants import PlayerAnimation
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('HideHudFlags',
+__all__ = ('INVALID_PLAYER_USERID',
+           'HideHudFlags',
            'HitGroup',
            'LifeState',
            'ObserverMode',

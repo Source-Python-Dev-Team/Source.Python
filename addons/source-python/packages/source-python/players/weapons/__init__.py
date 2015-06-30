@@ -7,9 +7,9 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
+from entities.constants import INVALID_ENTITY_INDEX
 from entities.entity import Entity
 from entities.helpers import index_from_inthandle
-from entities.helpers import INVALID_ENTITY_INDEX
 from entities.props import SendPropType
 #   Engines
 from engines.server import server_game_dll

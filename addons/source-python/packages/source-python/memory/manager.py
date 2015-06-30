@@ -318,7 +318,7 @@ class TypeManager(dict):
             )
         ))[0][1]
 
-        cls_dict = dict(zip(('_binary', '_src_check', '_size'), data))
+        cls_dict = dict(zip(('_binary', '_srv_check', '_size'), data))
 
         # Prepare pointer and instance attributes
         for method in (self.instance_attribute, self.pointer_attribute):
