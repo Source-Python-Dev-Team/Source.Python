@@ -52,6 +52,8 @@ __all__ = ('BinaryFile',
            'EXPOSED_CLASSES',
            'Function',
            'FunctionInfo',
+           'get_class_info',
+           'get_class_name',
            'NULL',
            'Pointer',
            'ProcessorRegister',
@@ -148,4 +150,23 @@ def get_function_info(classname, function_name, function_index=0):
     required if the function is overloaded and you want to get a different
     FunctionInfo object than the first one.
     """
-    return CLASS_INFO[classname][function_name][function_index]
+    return get_class_info(classname)[function_name][function_index]
+
+def get_class_info(classname):
+    """Return the class info dictionary of a class.
+
+    @param <classname>:
+    A string that defines the name of the class on the C++ side.
+    """
+    return CLASS_INFO[classname]
+
+def get_class_name(cls):
+    """Return the name of the class on the C++ side.
+    
+    A ValueError is raised if the class was not exposed by Source.Python.
+    """
+    for name, possible_cls in EXPOSED_CLASSES.items():
+        if cls is possible_cls:
+            return name
+
+    raise ValueError('Given class was not exposed.')
