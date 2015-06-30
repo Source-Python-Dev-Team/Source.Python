@@ -19,6 +19,7 @@ from core import AutoUnload
 #   memory
 from _memory import BinaryFile
 from _memory import CallingConvention
+from _memory import CLASS_INFO
 from _memory import Convention
 from _memory import DataType
 from _memory import EXPOSED_CLASSES
@@ -34,7 +35,6 @@ from _memory import TYPE_SIZES
 from _memory import alloc
 from _memory import find_binary
 from _memory import get_data_type_size
-from _memory import get_function_info
 from _memory import get_object_pointer
 from _memory import get_size
 from _memory import make_object
@@ -46,6 +46,7 @@ from _memory import make_object
 __all__ = ('BinaryFile',
            'Callback',
            'CallingConvention',
+           'CLASS_INFO',
            'Convention',
            'DataType',
            'EXPOSED_CLASSES',
@@ -132,3 +133,19 @@ class Callback(AutoUnload, Function):
         """Remove the hook, restore the allocated space and deallocate it."""
         self._delete_hook()
         self.dealloc()
+
+def get_function_info(classname, function_name, function_index=0):
+    """Return the FunctionInfo object of a member function.
+
+    @param <classname>:
+    The name of the class on the C++ side.
+
+    @param <function_name>:
+    The name of the member function on the C++ side.
+
+    @param <function_index>:
+    The index of the member function in the function info list. This is only
+    required if the function is overloaded and you want to get a different
+    FunctionInfo object than the first one.
+    """
+    return CLASS_INFO[classname][function_name][function_index]

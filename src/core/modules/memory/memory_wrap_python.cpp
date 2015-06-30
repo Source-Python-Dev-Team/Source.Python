@@ -778,7 +778,7 @@ void export_functions(scope _memory)
 // >> GLOBAL VARIABLES
 // ============================================================================
 dict g_oExposedClasses;
-dict g_oFunctionInfo;
+dict g_oClassInfo;
 
 #define ADD_NATIVE_TYPE_SIZE(name, type) \
 	scope().attr("TYPE_SIZES")[name] = sizeof(type);
@@ -789,7 +789,7 @@ dict g_oFunctionInfo;
 void export_global_variables(scope _memory)
 {
 	_memory.attr("EXPOSED_CLASSES") = g_oExposedClasses;
-	_memory.attr("FUNCTION_INFO") = g_oFunctionInfo;
+	_memory.attr("CLASS_INFO") = g_oClassInfo;
 
 	// Don't remove this! It's required for the ADD_NATIVE_TYPE_SIZE macro.
 	_memory.attr("TYPE_SIZES") = dict();

@@ -189,9 +189,9 @@ END_CLASS_INFO()
 #define BEGIN_CLASS_INFO(classname) \
 	{ \
 		typedef classname functionInfoClass; \
-		extern dict g_oFunctionInfo; \
-		dict functionInfoDict; \
-		g_oFunctionInfo[ #classname ] = functionInfoDict;
+		extern dict g_oClassInfo; \
+		dict classInfoDict; \
+		g_oClassInfo[ #classname ] = classInfoDict;
 
 // Finish a class info dictionary
 #define END_CLASS_INFO() \
@@ -201,7 +201,7 @@ END_CLASS_INFO()
 #define BEGIN_FUNCTION_INFO_LIST(name) \
 	{ \
 		list functionInfoList; \
-		functionInfoDict[ ##name ] = functionInfoList;
+		classInfoDict[ ##name ] = functionInfoList;
 
 // Finish a function info list
 #define END_FUNCTION_INFO_LIST() \
