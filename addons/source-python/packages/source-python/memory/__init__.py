@@ -5,6 +5,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+import inspect
+
 # Source.Python
 #   Loggers
 from loggers import _sp_logger
@@ -152,17 +155,24 @@ def get_function_info(classname, function_name, function_index=0):
     """
     return get_class_info(classname)[function_name][function_index]
 
-def get_class_info(classname):
+def get_class_info(cls):
     """Return the class info dictionary of a class.
 
-    @param <classname>:
-    A string that defines the name of the class on the C++ side.
+    @param <cls>:
+    A string that defines the name of the class on the C++ side or an exposed
+    class.
     """
-    return CLASS_INFO[classname]
+    if isinstance(cls, str):
+        return CLASS_INFO[cls]
+
+    if not inspect.isclass(cls):
+        cls = cls.__class__
+
+    return get_class_info(get_class_name(cls))
 
 def get_class_name(cls):
     """Return the name of the class on the C++ side.
-    
+
     A ValueError is raised if the class was not exposed by Source.Python.
     """
     for name, possible_cls in EXPOSED_CLASSES.items():
@@ -170,3 +180,11 @@ def get_class_name(cls):
             return name
 
     raise ValueError('Given class was not exposed.')
+
+def get_class(classname):
+    """Return the class of an exposed class.
+
+    @param <classname>:
+    The name of the exposed class on the C++ side.
+    """
+    return EXPOSED_CLASSES[classname]
