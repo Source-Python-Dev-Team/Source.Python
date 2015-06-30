@@ -55,6 +55,7 @@ __all__ = ('BinaryFile',
            'EXPOSED_CLASSES',
            'Function',
            'FunctionInfo',
+           'get_class',
            'get_class_info',
            'get_class_name',
            'NULL',
@@ -160,7 +161,7 @@ def get_class_info(cls):
 
     @param <cls>:
     A string that defines the name of the class on the C++ side or an exposed
-    class.
+    class or an object of an exposed class.
     """
     if isinstance(cls, str):
         return CLASS_INFO[cls]
