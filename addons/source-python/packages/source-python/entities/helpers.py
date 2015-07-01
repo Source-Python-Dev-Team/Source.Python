@@ -45,9 +45,7 @@ from _entities._helpers import spawn_entity
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('INVALID_ENTITY_INDEX',
-           'INVALID_ENTITY_INTHANDLE',
-           'baseentity_from_basehandle',
+__all__ = ('baseentity_from_basehandle',
            'baseentity_from_edict',
            'baseentity_from_index',
            'baseentity_from_inthandle',
