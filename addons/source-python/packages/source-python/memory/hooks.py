@@ -11,8 +11,6 @@ from core import AutoUnload
 #   Memory
 from _memory import HookType
 from memory import Function
-from memory import get_function_info
-from memory import get_object_pointer
 
 
 # =============================================================================
@@ -35,11 +33,11 @@ class _Hook(AutoUnload):
         """Verify the given function is a Function object and store it."""
         # Is the function to be hooked a Function instance?
         if not isinstance(function, Function):
-            # Try getting the function info
-            info = get_function_info(function)
-            
-            function = get_object_pointer(
-                function.__self__).make_function(info)
+
+            # Raise an error as we can only hook Function instances
+            raise TypeError(
+                "'" + type(function).__name__ +
+                "' object is not a Function instance.")
 
         # Store the function
         self.function = function
