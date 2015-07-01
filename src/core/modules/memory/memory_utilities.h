@@ -201,7 +201,7 @@ END_CLASS_INFO()
 #define BEGIN_FUNCTION_INFO_LIST(name) \
 	{ \
 		list functionInfoList; \
-		classInfoDict[ ##name ] = functionInfoList;
+		classInfoDict[ name ] = functionInfoList;
 
 // Finish a function info list
 #define END_FUNCTION_INFO_LIST() \
@@ -209,20 +209,20 @@ END_CLASS_INFO()
 
 // Requires a function address
 #define ADD_FUNCTION_INFO(function) \
-	functionInfoList.append(ptr(GetFunctionInfo( ##function )));
+	functionInfoList.append(ptr(GetFunctionInfo( function )));
 
 // Use this macro if there are no function overloads
 #define FUNCTION_INFO(function) \
 	BEGIN_FUNCTION_INFO_LIST( #function ) \
-	ADD_FUNCTION_INFO( &functionInfoClass::##function ) \
+	ADD_FUNCTION_INFO( &functionInfoClass::function ) \
 	END_FUNCTION_INFO_LIST()
 
 // Use this macro to add a specific overloaded function
 #define FUNCTION_INFO_OVERLOAD(return_type, method, ...) \
-	ADD_FUNCTION_INFO( GET_METHOD(##return_type, functionInfoClass, ##method, ##__VA_ARGS__) )
+	ADD_FUNCTION_INFO( GET_METHOD( return_type, functionInfoClass, method, __VA_ARGS__ ) )
 
 // Use this macro to add a specific overloaded function which was decorated with the "const" modifier
 #define FUNCTION_INFO_CONST_OVERLOAD(return_type, method, ...) \
-	ADD_FUNCTION_INFO( GET_CONST_METHOD(##return_type, functionInfoClass, ##method, ##__VA_ARGS__) )
+	ADD_FUNCTION_INFO( GET_CONST_METHOD( return_type, functionInfoClass, method, __VA_ARGS__ ) )
 
 #endif // _MEMORY_UTILITIES_H
