@@ -140,11 +140,15 @@ class Callback(AutoUnload, Function):
         self._delete_hook()
         self.dealloc()
 
-def get_function_info(classname, function_name, function_index=0):
-    """Return the FunctionInfo object of a member function.
 
-    @param <classname>:
-    The name of the class on the C++ side.
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def get_function(obj, function_name, function_index=0):
+    """Return a Function object created by using a FunctionInfo object.
+
+    @param <obj>:
+    An object of an exposed class.
 
     @param <function_name>:
     The name of the member function on the C++ side.
@@ -154,7 +158,25 @@ def get_function_info(classname, function_name, function_index=0):
     required if the function is overloaded and you want to get a different
     FunctionInfo object than the first one.
     """
-    return get_class_info(classname)[function_name][function_index]
+    return get_object_pointer(obj).make_function(
+        get_function_info(obj, function_name, function_index))
+
+def get_function_info(cls, function_name, function_index=0):
+    """Return the FunctionInfo object of a member function.
+
+    @param <cls>:
+    A string that defines the name of the class on the C++ side or an exposed
+    class or an object of an exposed class.
+
+    @param <function_name>:
+    The name of the member function on the C++ side.
+
+    @param <function_index>:
+    The index of the member function in the function info list. This is only
+    required if the function is overloaded and you want to get a different
+    FunctionInfo object than the first one.
+    """
+    return get_class_info(cls)[function_name][function_index]
 
 def get_class_info(cls):
     """Return the class info dictionary of a class.
@@ -183,7 +205,7 @@ def get_class_name(cls):
     raise ValueError('Given class was not exposed.')
 
 def get_class(classname):
-    """Return the class of an exposed class.
+    """Retrieve the class object of an exposed class by its C++ class name.
 
     @param <classname>:
     The name of the exposed class on the C++ side.
