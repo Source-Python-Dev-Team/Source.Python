@@ -19,7 +19,7 @@ class _ProjectileMeta(BaseEntity.__class__):
 
     """Metaclass used to auto-create methods specific to the projectile."""
 
-    def __new__(mcs, name, bases, odict):
+    def __new__(cls, name, bases, odict):
         """Create the class and create its methods dynamically."""
         # Store values to use later
         temp = {'_classname': None, '_is_filters': None, '_not_filters': None}
@@ -34,7 +34,7 @@ class _ProjectileMeta(BaseEntity.__class__):
                 del odict[attribute]
 
         # Create the object
-        cls = super(_ProjectileMeta, mcs).__new__(mcs, name, bases, odict)
+        cls = super(_ProjectileMeta, cls).__new__(cls, name, bases, odict)
 
         # Is the the baseclass that uses the metaclass?
         if len(bases) != 1 or bases[0].__name__ != '_ProjectileBase':
