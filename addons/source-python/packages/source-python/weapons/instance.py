@@ -36,7 +36,7 @@ class Weapon(object):
         self._slot = properties.get('slot', None)
 
         # Store the weapon's max ammo amount
-        self._maxammo = properties.get('maxammo', None)
+        self._maxammo = properties.get('maxammo', 0)
 
         # Store the weapon's ammo property
         self._ammoprop = properties.get('ammoprop', None)
