@@ -63,11 +63,10 @@ EndIf()
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(SOURCE_ENGINE MATCHES "orangebox")
+If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2")
     # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
-         ${SOURCESDK_LIB}/linux/tier1_i486.a
          ${SOURCESDK_LIB}/linux/tier2_i486.a
          ${SOURCESDK_LIB}/linux/tier3_i486.a
          ${SOURCESDK_LIB}/linux/libtier0_srv.so
