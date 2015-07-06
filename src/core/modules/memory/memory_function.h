@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,50 +24,81 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _MEMORY_TOOLS_H
-#define _MEMORY_TOOLS_H
+#ifndef _MEMORY_FUNCTION_H
+#define _MEMORY_FUNCTION_H
 
 // ============================================================================
 // >> INCLUDES
 // ============================================================================
+// Memory
 #include "memory_pointer.h"
-#include "memory_utilities.h"
+
+// DynamicHooks
+#include "manager.h"
 
 
 // ============================================================================
-// >> GetObjectPointer
+// >> Convention_t
 // ============================================================================
-inline object GetObjectPointer(object obj)
+enum Convention_t
 {
-	if (!PyObject_HasAttrString(obj.ptr(), GET_PTR_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
-
-	return obj.attr(GET_PTR_NAME)();
-}
+	CONV_CUSTOM,
+	CONV_CDECL,
+	CONV_THISCALL,
+	CONV_STDCALL
+};
 
 
 // ============================================================================
-// >> MakeObject
+// >> CFunction
 // ============================================================================
-inline object MakeObject(object cls, CPointer* pPtr)
+class CFunction: public CPointer
 {
-	if (!PyObject_HasAttrString(cls.ptr(), GET_OBJ_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
+public:
+	CFunction(unsigned long ulAddr, object oCallingConvention, object oArgs, object oReturnType);
+	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
+		ICallingConvention* pCallingConvention, boost::python::tuple tArgs,
+		DataType_t eReturnType, object oConverter);
 
-	return cls.attr(GET_OBJ_NAME)(ptr(pPtr));
-}
+	bool IsCallable();
+	bool IsHookable();
+
+	bool IsHooked();
+    
+	object Call(boost::python::tuple args, dict kw);
+	object CallTrampoline(boost::python::tuple args, dict kw);
+	
+	handle<> AddHook(HookType_t eType, PyObject* pCallable);
+	void RemoveHook(HookType_t eType, PyObject* pCallable);
+    
+	handle<> AddPreHook(PyObject* pCallable)
+	{ return AddHook(HOOKTYPE_PRE, pCallable); }
+
+	handle<> AddPostHook(PyObject* pCallable)
+	{ return AddHook(HOOKTYPE_POST, pCallable); }
+    
+	void RemovePreHook(PyObject* pCallable)
+	{ RemoveHook(HOOKTYPE_PRE, pCallable); }
+
+	void RemovePostHook(PyObject* pCallable)
+	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
+
+	void DeleteHook();
+    
+public:
+	boost::python::tuple	m_tArgs;
+	object					m_oConverter;
+	DataType_t				m_eReturnType;
+
+	// Shared built-in calling convention identifier
+	Convention_t			m_eCallingConvention;
+
+	// DynCall calling convention
+	int						m_iCallingConvention;
+
+	// DynamicHooks calling convention (built-in and custom)
+	ICallingConvention*		m_pCallingConvention;
+};
 
 
-// ============================================================================
-// >> GetSize
-// ============================================================================
-inline object GetSize(object cls)
-{
-	if (!PyObject_HasAttrString(cls.ptr(), GET_SIZE_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
-
-	return cls.attr(GET_SIZE_NAME);
-}
-
-
-#endif // _MEMORY_TOOLS_H
+#endif // _MEMORY_FUNCTION_H

@@ -135,6 +135,21 @@ void export_igameevent(scope _events)
 
 		ADD_MEM_TOOLS(IGameEvent)
 	;
+
+	BEGIN_CLASS_INFO(IGameEvent)
+		FUNCTION_INFO(GetName)
+		FUNCTION_INFO(IsReliable)
+		FUNCTION_INFO(IsLocal)
+		FUNCTION_INFO(IsEmpty)
+		FUNCTION_INFO(GetBool)
+		FUNCTION_INFO(GetInt)
+		FUNCTION_INFO(GetFloat)
+		FUNCTION_INFO(GetString)
+		FUNCTION_INFO(SetBool)
+		FUNCTION_INFO(SetInt)
+		FUNCTION_INFO(SetFloat)
+		FUNCTION_INFO(SetString)
+	END_CLASS_INFO()
 }
 
 
@@ -156,6 +171,11 @@ void export_igameeventlistener(scope _events)
 
 		ADD_MEM_TOOLS_WRAPPER(CGameEventListener2, IGameEventListener2)
 	;
+
+	BEGIN_CLASS_INFO(IGameEventListener2)
+		FUNCTION_INFO(FireGameEvent)
+		// TODO: GetEventDebugID
+	END_CLASS_INFO()
 }
 
 
@@ -238,6 +258,24 @@ void export_igameeventmanager(scope _events)
 
 		ADD_MEM_TOOLS(IGameEventManager2)
 	;
+
+	BEGIN_CLASS_INFO(IGameEventManager2)
+		FUNCTION_INFO(LoadEventsFromFile)
+		FUNCTION_INFO(Reset)
+		FUNCTION_INFO(AddListener)
+		FUNCTION_INFO(FindListener)
+		FUNCTION_INFO(RemoveListener)
+
+		// TODO: This method is overloaded in some SDKs
+		// FUNCTION_INFO(CreateEvent)
+		
+		FUNCTION_INFO(FireEvent)
+		FUNCTION_INFO(FireEventClientSide)
+		FUNCTION_INFO(DuplicateEvent)
+		FUNCTION_INFO(FreeEvent)
+		FUNCTION_INFO(SerializeEvent)
+		FUNCTION_INFO(UnserializeEvent)
+	END_CLASS_INFO()
 
 	_events.attr("game_event_manager") = object(ptr(gameeventmanager));
 }

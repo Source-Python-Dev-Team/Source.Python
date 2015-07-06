@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,50 +24,79 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _MEMORY_TOOLS_H
-#define _MEMORY_TOOLS_H
+#ifndef _MEMORY_ALLOC_H
+#define _MEMORY_ALLOC_H
 
 // ============================================================================
 // >> INCLUDES
 // ============================================================================
-#include "memory_pointer.h"
-#include "memory_utilities.h"
+#include "commonmacros.h" // Required for IsPowerOfTwo in memalloc.h
+#include <malloc.h>
+#include "memalloc.h"
 
 
 // ============================================================================
-// >> GetObjectPointer
+// >> UTIL_GetMemSize
 // ============================================================================
-inline object GetObjectPointer(object obj)
+inline size_t UTIL_GetMemSize(void* ptr)
 {
-	if (!PyObject_HasAttrString(obj.ptr(), GET_PTR_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
-
-	return obj.attr(GET_PTR_NAME)();
+#ifdef _WIN32
+	return g_pMemAlloc->GetSize(ptr);
+#elif defined(__linux__)
+	return malloc_usable_size(ptr);
+#else
+	#error "Unsupported platform."
+#endif
 }
 
 
 // ============================================================================
-// >> MakeObject
+// >> UTIL_Alloc
 // ============================================================================
-inline object MakeObject(object cls, CPointer* pPtr)
+inline void* UTIL_Alloc(size_t size)
 {
-	if (!PyObject_HasAttrString(cls.ptr(), GET_OBJ_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
-
-	return cls.attr(GET_OBJ_NAME)(ptr(pPtr));
+	void* pPtr = NULL;
+#ifdef _WIN32
+	pPtr = g_pMemAlloc->IndirectAlloc(size);
+#elif defined(__linux__)
+	pPtr = malloc(size);
+#else
+	#error "Unsupported platform."
+#endif
+	memset(pPtr, 0, size);
+	return pPtr;
 }
 
 
 // ============================================================================
-// >> GetSize
+// >> UTIL_Realloc
 // ============================================================================
-inline object GetSize(object cls)
+inline void* UTIL_Realloc(void* ptr, size_t size)
 {
-	if (!PyObject_HasAttrString(cls.ptr(), GET_SIZE_NAME))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
-
-	return cls.attr(GET_SIZE_NAME);
+	void* pPtr = NULL;
+#ifdef _WIN32
+	pPtr = g_pMemAlloc->Realloc(ptr, size);
+#elif defined(__linux__)
+	pPtr = realloc(ptr, size);
+#else
+	#error "Unsupported platform."
+#endif
+	return pPtr;
 }
 
 
-#endif // _MEMORY_TOOLS_H
+// ============================================================================
+// >> UTIL_Dealloc
+// ============================================================================
+inline void UTIL_Dealloc(void* ptr)
+{
+#ifdef _WIN32
+	g_pMemAlloc->Free(ptr);
+#elif defined(__linux__)
+	free(ptr);
+#else
+	#error "Unsupported platform."
+#endif
+}
+
+#endif // _MEMORY_ALLOC_H

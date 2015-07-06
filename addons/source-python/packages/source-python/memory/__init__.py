@@ -5,6 +5,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+import inspect
+
 # Source.Python
 #   Loggers
 from loggers import _sp_logger
@@ -19,10 +22,12 @@ from core import AutoUnload
 #   memory
 from _memory import BinaryFile
 from _memory import CallingConvention
+from _memory import CLASS_INFO
 from _memory import Convention
 from _memory import DataType
 from _memory import EXPOSED_CLASSES
 from _memory import Function
+from _memory import FunctionInfo
 from _memory import NULL
 from _memory import Pointer
 from _memory import ProcessorRegister
@@ -44,10 +49,15 @@ from _memory import make_object
 __all__ = ('BinaryFile',
            'Callback',
            'CallingConvention',
+           'CLASS_INFO',
            'Convention',
            'DataType',
            'EXPOSED_CLASSES',
            'Function',
+           'FunctionInfo',
+           'get_class',
+           'get_class_info',
+           'get_class_name',
            'NULL',
            'Pointer',
            'ProcessorRegister',
@@ -58,6 +68,7 @@ __all__ = ('BinaryFile',
            'alloc',
            'find_binary',
            'get_data_type_size',
+           'get_function_info',
            'get_object_pointer',
            'get_size',
            'make_object',
@@ -128,3 +139,75 @@ class Callback(AutoUnload, Function):
         """Remove the hook, restore the allocated space and deallocate it."""
         self._delete_hook()
         self.dealloc()
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def get_function(obj, function_name, function_index=0):
+    """Return a Function object created by using a FunctionInfo object.
+
+    @param <obj>:
+    An object of an exposed class.
+
+    @param <function_name>:
+    The name of the member function on the C++ side.
+
+    @param <function_index>:
+    The index of the member function in the function info list. This is only
+    required if the function is overloaded and you want to get a different
+    FunctionInfo object than the first one.
+    """
+    return get_object_pointer(obj).make_function(
+        get_function_info(obj, function_name, function_index))
+
+def get_function_info(cls, function_name, function_index=0):
+    """Return the FunctionInfo object of a member function.
+
+    @param <cls>:
+    A string that defines the name of the class on the C++ side or an exposed
+    class or an object of an exposed class.
+
+    @param <function_name>:
+    The name of the member function on the C++ side.
+
+    @param <function_index>:
+    The index of the member function in the function info list. This is only
+    required if the function is overloaded and you want to get a different
+    FunctionInfo object than the first one.
+    """
+    return get_class_info(cls)[function_name][function_index]
+
+def get_class_info(cls):
+    """Return the class info dictionary of a class.
+
+    @param <cls>:
+    A string that defines the name of the class on the C++ side or an exposed
+    class or an object of an exposed class.
+    """
+    if isinstance(cls, str):
+        return CLASS_INFO[cls]
+
+    if not inspect.isclass(cls):
+        cls = cls.__class__
+
+    return get_class_info(get_class_name(cls))
+
+def get_class_name(cls):
+    """Return the name of the class on the C++ side.
+
+    A ValueError is raised if the class was not exposed by Source.Python.
+    """
+    for name, possible_cls in EXPOSED_CLASSES.items():
+        if cls is possible_cls:
+            return name
+
+    raise ValueError('Given class was not exposed.')
+
+def get_class(classname):
+    """Retrieve the class object of an exposed class by its C++ class name.
+
+    @param <classname>:
+    The name of the exposed class on the C++ side.
+    """
+    return EXPOSED_CLASSES[classname]

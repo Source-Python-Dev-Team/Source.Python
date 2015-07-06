@@ -60,6 +60,9 @@ class Entity(BaseEntity, _EntitySpecials):
         # Create the object
         self = BaseEntity.__new__(cls)
 
+        # Initialize the object
+        super(Entity, self).__init__(index)
+
         # Set the entity's base attributes
         self._index = index
         self._edict = edict
