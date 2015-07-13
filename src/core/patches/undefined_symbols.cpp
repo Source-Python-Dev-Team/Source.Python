@@ -33,6 +33,7 @@
 #include "game/server/entitylist.h"
 #include "utilities/conversions.h"
 #include "game/shared/ipredictionsystem.h"
+#include "memalloc.h"
 
 #include ENGINE_INCLUDE_PATH(undefined_symbols.h)
 

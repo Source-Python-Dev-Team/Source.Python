@@ -53,11 +53,12 @@ DECLARE_SP_MODULE(_keyvalues)
 //---------------------------------------------------------------------------------
 void export_keyvalues(scope _keyvalues)
 {
-	class_<KeyValues, boost::noncopyable>("_KeyValues",init<const char *>())
-		.def(init<const char *, const char *, const char *>())
-		.def(init<const char *, const char *, int>())
-		.def(init<const char *, const char *, const char *, const char *, const char *>())
-		.def(init<const char *, const char *, int, const char *, int>())
+	class_<KeyValues,  boost::shared_ptr<KeyValues>, boost::noncopyable>("_KeyValues", no_init)
+		.def("__init__", make_constructor(&KeyValuesExt::__init__1))
+		.def("__init__", make_constructor(&KeyValuesExt::__init__2))
+		.def("__init__", make_constructor(&KeyValuesExt::__init__3))
+		.def("__init__", make_constructor(&KeyValuesExt::__init__4))
+		.def("__init__", make_constructor(&KeyValuesExt::__init__5))
 
 		.def("get_name",
 			&KeyValues::GetName,

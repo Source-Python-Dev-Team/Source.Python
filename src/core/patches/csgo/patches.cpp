@@ -24,11 +24,6 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "KeyValues.h"
-#ifndef PATCH_KEYVALUES_DESTRUCTOR
-#error "Make KeyValues::~KeyValues() public."
-#endif
-
 #include "utilities/baseentity.h"
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."

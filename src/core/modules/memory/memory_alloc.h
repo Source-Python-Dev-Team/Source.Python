@@ -30,6 +30,7 @@
 // ============================================================================
 // >> INCLUDES
 // ============================================================================
+#include "commonmacros.h"
 #include <malloc.h>
 #include "memalloc.h"
 
@@ -56,7 +57,7 @@ inline void* UTIL_Alloc(size_t size)
 {
 	void* pPtr = NULL;
 #ifdef _WIN32
-	pPtr = g_pMemAlloc->IndirectAlloc(size);
+	pPtr = MemAlloc_Alloc(size);
 #elif defined(__linux__)
 	pPtr = malloc(size);
 #else
