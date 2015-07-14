@@ -89,7 +89,11 @@ EndIf()
 # Linux compiler flags.
 # ------------------------------------------------------------------
 # General definitions
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC -DNO_MALLOC_OVERRIDE")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC")
+
+if(SOURCE_ENGINE MATCHES "orangebox")
+    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_MALLOC_OVERRIDE")
+Endif()
 
 # Function alias
 If(NOT SOURCE_ENGINE MATCHES "bms")
