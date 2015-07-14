@@ -89,7 +89,7 @@ EndIf()
 # Linux compiler flags.
 # ------------------------------------------------------------------
 # General definitions
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC ")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC -DNO_MALLOC_OVERRIDE")
 
 # Function alias
 If(NOT SOURCE_ENGINE MATCHES "bms")
