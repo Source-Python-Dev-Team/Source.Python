@@ -126,7 +126,7 @@ void export_usermessage_interface(scope _messages)
 		.def("set_buffer",
 			&CUserMessage::set_buffer,
 			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
+			("field_name", "buffer", "num_bytes", arg("index")=-1)
 		)
 
 		.def("set_string",
