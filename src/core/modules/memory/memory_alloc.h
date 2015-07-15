@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -57,7 +57,7 @@ inline void* UTIL_Alloc(size_t size)
 {
 	void* pPtr = NULL;
 #ifdef _WIN32
-	pPtr = g_pMemAlloc->IndirectAlloc(size);
+	pPtr = MemAlloc_Alloc(size);
 #elif defined(__linux__)
 	pPtr = malloc(size);
 #else

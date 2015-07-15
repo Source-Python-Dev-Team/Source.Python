@@ -189,7 +189,7 @@ class _QueueHolder(dict):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def _validate_selection(player_info, command, max_choice):
+def _validate_selection(player_info, command, valid_choices):
     """Validate a selection command.
 
     @param <player_infor>:
@@ -198,9 +198,8 @@ def _validate_selection(player_info, command, max_choice):
     @param <command>:
     A Command instance.
 
-    @param <max_choice>:
-    The highest possible selection index. If the index was greater,
-    <max_choice> will be used.
+    @param <valid_choices>:
+    A list of integers that defines all valid choices
     """
     try:
         choice = int(command.get_arg(1))
@@ -208,12 +207,10 @@ def _validate_selection(player_info, command, max_choice):
         # Catch errors caused by e.g. "menuselect a"
         return (None, None)
 
-    # Don't allow negative selections
-    if choice < 0:
-        return (None, None)
+    if choice in valid_choices:
+        return (index_from_playerinfo(player_info), choice)
 
-    return (index_from_playerinfo(
-        player_info), 0 if choice > max_choice else choice)
+    return (None, None)
 
 
 # =============================================================================
@@ -247,7 +244,9 @@ _esc_queues = _QueueHolder(_ESCUserQueue, _esc_refresh)
 @ClientCommand('menuselect')
 def _menuselect_callback(player_info, command):
     """Forward the selection to the proper user queue."""
-    index, choice = _validate_selection(player_info, command, 9)
+    from menus.radio import VALID_CHOICES
+    
+    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
     if index is not None:
         _radio_queues[index]._select(choice)
 
@@ -255,7 +254,9 @@ def _menuselect_callback(player_info, command):
 @ClientCommand(ESC_SELECTION_CMD)
 def _escselect_callback(player_info, command):
     """Forward the selection to the proper user queue."""
-    index, choice = _validate_selection(player_info, command, 7)
+    from menus.esc import VALID_CHOICES
+    
+    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
     if index is not None:
         _esc_queues[index]._select(choice)
 

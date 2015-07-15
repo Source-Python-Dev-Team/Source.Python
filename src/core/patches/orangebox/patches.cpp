@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -32,11 +32,6 @@
 #include "convar.h"
 #ifndef PATCH_CONVAR_H_GET_FLAGS
 #error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
-#endif
-
-#include "KeyValues.h"
-#ifndef PATCH_KEYVALUES_DESTRUCTOR
-#error "Make KeyValues::~KeyValues() public."
 #endif
 
 #include "utilities/baseentity.h"

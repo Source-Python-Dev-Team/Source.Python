@@ -62,22 +62,27 @@ def dump_class_info(filename):
                     open_file.write('\t\tOverload {0}:\n'.format(index))
                     _dump_function_info_attribute(
                         open_file, 'is_virtual', info.is_virtual)
-                    _dump_function_info_attribute(open_file,
-                        'this_pointer_offset', info.this_pointer_offset)
+                    _dump_function_info_attribute(
+                        open_file, 'this_pointer_offset',
+                        info.this_pointer_offset)
                     _dump_function_info_attribute(
                         open_file, 'vtable_index', info.vtable_index)
                     _dump_function_info_attribute(
                         open_file, 'vtable_offset', info.vtable_offset)
                     _dump_function_info_attribute(
                         open_file, 'return_type', info.return_type)
-                    _dump_function_info_attribute(open_file, 'argument_types',
+                    _dump_function_info_attribute(
+                        open_file, 'argument_types',
                         tuple(map(str, info.argument_types)))
-                    _dump_function_info_attribute(open_file,
-                        'calling_convention', info.calling_convention)
+                    _dump_function_info_attribute(
+                        open_file, 'calling_convention',
+                        info.calling_convention)
+
 
 def _dump_function_info_attribute(open_file, attr_name, value):
     """Dump an attribute of a FunctionInfo object."""
     open_file.write('\t\t\t{0}: {1}\n'.format(attr_name.ljust(20), value))
+
 
 def dump_convars(filename):
     """Dump all convars to the given filename."""

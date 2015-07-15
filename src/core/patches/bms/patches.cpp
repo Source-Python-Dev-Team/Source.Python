@@ -34,11 +34,6 @@
 #error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
 #endif
 
-#include "KeyValues.h"
-#ifndef PATCH_KEYVALUES_DESTRUCTOR
-#error "Make KeyValues::~KeyValues() public."
-#endif
-
 #include "utilities/baseentity.h"
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."

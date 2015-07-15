@@ -111,6 +111,7 @@ class Callback(AutoUnload, Function):
 
         # A little hack to access the "self" argument
         def hook(args):
+            """Call the callback and get the return value."""
             return_value = self.callback(args)
             if return_value is not None:
                 return return_value
@@ -161,6 +162,7 @@ def get_function(obj, function_name, function_index=0):
     return get_object_pointer(obj).make_function(
         get_function_info(obj, function_name, function_index))
 
+
 def get_function_info(cls, function_name, function_index=0):
     """Return the FunctionInfo object of a member function.
 
@@ -178,6 +180,7 @@ def get_function_info(cls, function_name, function_index=0):
     """
     return get_class_info(cls)[function_name][function_index]
 
+
 def get_class_info(cls):
     """Return the class info dictionary of a class.
 
@@ -193,6 +196,7 @@ def get_class_info(cls):
 
     return get_class_info(get_class_name(cls))
 
+
 def get_class_name(cls):
     """Return the name of the class on the C++ side.
 
@@ -203,6 +207,7 @@ def get_class_name(cls):
             return name
 
     raise ValueError('Given class was not exposed.')
+
 
 def get_class(classname):
     """Retrieve the class object of an exposed class by its C++ class name.

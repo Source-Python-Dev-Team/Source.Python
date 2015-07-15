@@ -8,6 +8,8 @@
 # Source.Python Imports
 #   Core
 from core import AutoUnload
+#   Entities
+from entities.constants import INVALID_ENTITY_INDEX
 #   Memory
 from _memory import HookType
 #   Filters
@@ -136,4 +138,5 @@ _waiting_entity_hooks = _WaitingEntityHooks()
 @OnEntityCreated
 def on_entity_created(index, ptr):
     """Called when a new entity has been created."""
-    _waiting_entity_hooks.initialize(index)
+    if index != INVALID_ENTITY_INDEX:
+        _waiting_entity_hooks.initialize(index)
