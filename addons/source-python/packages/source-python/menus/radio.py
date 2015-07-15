@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Core
+from core import SOURCE_ENGINE
 #   Menus
 from menus.base import Text
 from menus.base import _BaseMenu
@@ -28,6 +30,23 @@ __all__ = ('PagedRadioMenu',
 
 
 # =============================================================================
+# >> CONSTANTS
+# =============================================================================
+if SOURCE_ENGINE == 'csgo':
+    BUTTON_BACK = 7
+    BUTTON_NEXT = 8
+    BUTTON_CLOSE = 9
+    MAX_ITEM_COUNT = 6
+    VALID_CHOICES = range(1, 10)
+else:
+    BUTTON_BACK = 8
+    BUTTON_NEXT = 9
+    BUTTON_CLOSE = 0
+    MAX_ITEM_COUNT = 7
+    VALID_CHOICES = range(10)
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class SimpleRadioMenu(_BaseMenu):
@@ -42,8 +61,8 @@ class SimpleRadioMenu(_BaseMenu):
         @param <player_index>:
         A player index.
         """
-        # Always enable 0
-        slots = {0}
+        # Always enable BUTTON_CLOSE
+        slots = {BUTTON_CLOSE}
         buffer = ''
         page = self._player_pages[player_index]
         page.options = {}
@@ -89,7 +108,7 @@ class SimpleRadioMenu(_BaseMenu):
         @param <choice_index>:
         A numeric value that defines what was selected.
         """
-        if choice_index == 0:
+        if choice_index == BUTTON_CLOSE:
             return None
 
         return super(SimpleRadioMenu, self)._select(
@@ -184,7 +203,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
     def _get_max_item_count(self):
         """Return the maximum possible item count per page."""
-        return 7
+        return MAX_ITEM_COUNT
 
     def _format_header(self, player_index, page, slots):
         """Prepare the header for the menu.
@@ -245,7 +264,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         # Fill the rest of the menu
         if self.fill:
-            buffer += ' \n' * (7 - len(options))
+            buffer += ' \n' * (self._get_max_item_count() - len(options))
 
         return buffer
 
@@ -271,20 +290,20 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         # Add "Back" option
         back_selectable = page.index > 0
         buffer += PagedRadioOption(
-            'Back', highlight=back_selectable)._render(player_index, 8)
+            'Back', highlight=back_selectable)._render(player_index, BUTTON_BACK)
         if back_selectable:
-            slots.add(8)
+            slots.add(BUTTON_BACK)
 
         # Add "Next" option
         next_selectable = page.index < self.last_page_index
         buffer += PagedRadioOption(
-            'Next', highlight=next_selectable)._render(player_index, 9)
+            'Next', highlight=next_selectable)._render(player_index, BUTTON_NEXT)
         if next_selectable:
-            slots.add(9)
+            slots.add(BUTTON_NEXT)
 
         # Add "Close" option
         buffer += PagedRadioOption(
-            'Close', highlight=False)._render(player_index, 0)
+            'Close', highlight=False)._render(player_index, BUTTON_CLOSE)
 
         # Return the buffer
         return buffer
@@ -298,8 +317,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         # Get the player's current page
         page = self._player_pages[player_index]
 
-        # Always enable slot 0
-        slots = {0}
+        # Always enable slot BUTTON_CLOSE
+        slots = {BUTTON_CLOSE}
 
         # Format the menu
         buffer = self._format_header(player_index, page, slots)
@@ -323,7 +342,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         A numeric value that defines what was selected.
         """
         # Do nothing if the menu is being closed
-        if choice_index == 0:
+        if choice_index == BUTTON_CLOSE:
             del self._player_pages[player_index]
             return None
 
@@ -331,12 +350,12 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         page = self._player_pages[player_index]
 
         # Display previous page?
-        if choice_index == 8:
+        if choice_index == BUTTON_BACK:
             self.set_player_page(player_index, page.index - 1)
             return self
 
         # Display next page?
-        if choice_index == 9:
+        if choice_index == BUTTON_NEXT:
             self.set_player_page(player_index, page.index + 1)
             return self
 
