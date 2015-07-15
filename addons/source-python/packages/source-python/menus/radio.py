@@ -32,7 +32,7 @@ __all__ = ('PagedRadioMenu',
 # =============================================================================
 # >> CONSTANTS
 # =============================================================================
-if SOURCE_ENGINE == 'csgo':
+if SOURCE_ENGINE in ('csgo', 'bms'):
     BUTTON_BACK = 7
     BUTTON_NEXT = 8
     BUTTON_CLOSE = 9
