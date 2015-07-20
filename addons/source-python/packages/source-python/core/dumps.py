@@ -16,7 +16,12 @@ from cvars.flags import ConVarFlags
 #   Engines
 from engines.server import server_game_dll
 #   Entities
+from entities.datamaps import FieldType
+from entities.entity import BaseEntity
+from entities.factories import factory_dictionary
 from entities.props import SendPropType
+#   Filters
+from filters.entities import EntityIter
 #   Memory
 from memory import CLASS_INFO
 from memory import Pointer
@@ -32,6 +37,7 @@ from stringtables import string_tables
 # =============================================================================
 __all__ = ('dump_class_info',
            'dump_convars',
+           'dump_datamaps',
            'dump_server_classes',
            'dump_string_tables',
            'dump_weapon_scripts',
@@ -48,7 +54,7 @@ _convar_types = {
 
 
 # =============================================================================
-# >> DUMP FUNCTIONS
+# >> CLASS INFO
 # =============================================================================
 def dump_class_info(filename):
     """Dump the CLASS_INFO dictionary to the given file name."""
@@ -78,12 +84,14 @@ def dump_class_info(filename):
                         open_file, 'calling_convention',
                         info.calling_convention)
 
-
 def _dump_function_info_attribute(open_file, attr_name, value):
     """Dump an attribute of a FunctionInfo object."""
     open_file.write('\t\t\t{0}: {1}\n'.format(attr_name.ljust(20), value))
 
 
+# =============================================================================
+# >> CONVARS
+# =============================================================================
 def dump_convars(filename):
     """Dump all convars to the given filename."""
     # Create a dictionary to store the convars
@@ -134,6 +142,69 @@ def dump_convars(filename):
                 '\t' + convar_text if convar_text else ''))
 
 
+# =============================================================================
+# >> DATA MAPS
+# =============================================================================
+def dump_datamaps(filename):
+    """Dump all entity data maps to the given file name."""
+    # Create a dict to get rid of all duplicates
+    datamaps = dict(_get_datamaps())
+    with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
+        for class_name, datamap in sorted(datamaps.items()):
+            _dump_datamap(open_file, class_name, datamap)
+
+def _get_datamaps():
+    """Create a generator to loop through all entity DataMap objects.
+
+    The yielded values are two-tuples, which contain the data class name of
+    the data map and the actual DataMap object.
+    """
+    for classname in factory_dictionary:
+        datamap = _get_datamap(classname)
+        while datamap:
+            yield datamap.class_name, datamap
+            datamap = datamap.base
+
+def _get_datamap(classname):
+    """Return the DataMap object for the given entity classname."""
+    # Check existing entities at first
+    for index in EntityIter(classname):
+        return BaseEntity(index).datamap
+
+    # We haven't found an entity. Let's create it temporarily
+    entity = factory_dictionary.create(classname)
+    datamap = entity.get_base_entity().datamap
+    factory_dictionary.destroy(classname, entity)
+    return datamap
+
+def _dump_datamap(open_file, class_name, datamap):
+    """Dump a DataMap object to the given file object."""
+    open_file.write('{0}\n'.format(class_name))
+    for desc in datamap:
+        _dump_type_description(open_file, desc)
+
+    open_file.write('\n')
+
+def _dump_type_description(open_file, desc, indent=1, offset=0):
+    """Dump a TypeDescription object to the given file object."""
+    offset += desc.offset
+    open_file.write('{0}{1} {2} (offset {3})'.format(
+        '\t'*indent, desc.type, desc.name, offset))
+
+    if desc.type == FieldType.EMBEDDED:
+        open_file.write(
+            ' [{0} properties]:\n'.format(len(desc.embedded_datamap)))
+
+        # Dump the embedded data map
+        for desc in desc.embedded_datamap:
+            _dump_type_description(open_file, desc, indent+1, offset)
+    else:
+        open_file.write('\n')
+
+
+# =============================================================================
+# >> SERVER CLASSES
+# =============================================================================
 def dump_server_classes(filename):
     """Dump all server class send properties to the given filename."""
     # Open/close the file
@@ -160,86 +231,6 @@ def dump_server_classes(filename):
                 # Write a separator line before the next server class output
                 open_file.write('\n')
 
-
-def dump_string_tables(filename):
-    """Dump all string tables to the given filename."""
-    # Open/close the file
-    with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
-
-        # Loop through the string tables
-        for current_index, string_table in enumerate(string_tables):
-
-            # Is the current index not zero?
-            if current_index:
-
-                # If so, Write a separator line before the next string table
-                open_file.write('\n')
-
-            # Get a filtered list of the table's strings skipping all blank
-            #   ones...
-            items = list(filter(None, string_table))
-
-            # Write the string table's name and length to file
-            open_file.write('{0} (Length: {1})\n'.format(
-                string_table.name, len(items)))
-
-            # Loop through all items in the string table
-            for item in items:
-
-                # Write the item to file
-                open_file.write('    {0}\n'.format(item))
-
-
-def dump_weapon_scripts(filename):
-    """Dump all WeaponInfo instances to the given file name."""
-    # Import weapon_scripts
-    # This was moved here due to issues with the bms branch
-    from weapons.scripts import weapon_scripts
-
-    # Open/close the file
-    with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
-
-        # Loop through all WeaponInfo instances...
-        for info in weapon_scripts:
-
-            # Is the current script not parsed yet?
-            if not info.is_script_parsed:
-
-                # If so, skip the current weapon...
-                continue
-
-            # Write the current weapon class name...
-            open_file.write('{0}\n'.format('=' * 80))
-            open_file.write('{0}\n'.format(info.class_name))
-            open_file.write('{0}\n'.format('=' * 80))
-
-            # Loop through all WeaponInfo's attributes...
-            for attr in dir(info):
-
-                # Is the current attribute private or inherited from
-                #   Pointer?
-                if attr.startswith('_') or hasattr(Pointer, attr):
-
-                    # If so, skip it...
-                    continue
-
-                # Get the current attribute value...
-                value = getattr(info, attr)
-
-                # Is the current attribute a method or inehrited from Pointer?
-                if ismethod(value) or isinstance(
-                        value, (MemberFunction, Pointer)):
-
-                    # If so, skip it...
-                    continue
-
-                # Write the current attribute...
-                open_file.write('{0} = {1}\n'.format(attr, value))
-
-
-# =============================================================================
-# >> HELPER FUNCTIONS
-# =============================================================================
 def _dump_server_class_table(table, open_file, level=1, offset=0):
     """Dump all items in the given table to the given file."""
     # Loop through the send props in the table
@@ -295,3 +286,85 @@ def _dump_server_class_table(table, open_file, level=1, offset=0):
             # Write the property and its values to file
             open_file.write('{0}{1} {2} (offset {3})\n'.format(
                 '    ' * level, prop.type, prop.name, prop.offset))
+
+
+# =============================================================================
+# >> STRING TABLES
+# =============================================================================
+def dump_string_tables(filename):
+    """Dump all string tables to the given filename."""
+    # Open/close the file
+    with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
+
+        # Loop through the string tables
+        for current_index, string_table in enumerate(string_tables):
+
+            # Is the current index not zero?
+            if current_index:
+
+                # If so, Write a separator line before the next string table
+                open_file.write('\n')
+
+            # Get a filtered list of the table's strings skipping all blank
+            #   ones...
+            items = list(filter(None, string_table))
+
+            # Write the string table's name and length to file
+            open_file.write('{0} (Length: {1})\n'.format(
+                string_table.name, len(items)))
+
+            # Loop through all items in the string table
+            for item in items:
+
+                # Write the item to file
+                open_file.write('    {0}\n'.format(item))
+
+
+# =============================================================================
+# >> WEAPON SCRIPTS
+# =============================================================================
+def dump_weapon_scripts(filename):
+    """Dump all WeaponInfo instances to the given file name."""
+    # Import weapon_scripts
+    # This was moved here due to issues with the bms branch
+    from weapons.scripts import weapon_scripts
+
+    # Open/close the file
+    with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
+
+        # Loop through all WeaponInfo instances...
+        for info in weapon_scripts:
+
+            # Is the current script not parsed yet?
+            if not info.is_script_parsed:
+
+                # If so, skip the current weapon...
+                continue
+
+            # Write the current weapon class name...
+            open_file.write('{0}\n'.format('=' * 80))
+            open_file.write('{0}\n'.format(info.class_name))
+            open_file.write('{0}\n'.format('=' * 80))
+
+            # Loop through all WeaponInfo's attributes...
+            for attr in dir(info):
+
+                # Is the current attribute private or inherited from
+                #   Pointer?
+                if attr.startswith('_') or hasattr(Pointer, attr):
+
+                    # If so, skip it...
+                    continue
+
+                # Get the current attribute value...
+                value = getattr(info, attr)
+
+                # Is the current attribute a method or inehrited from Pointer?
+                if ismethod(value) or isinstance(
+                        value, (MemberFunction, Pointer)):
+
+                    # If so, skip it...
+                    continue
+
+                # Write the current attribute...
+                open_file.write('{0} = {1}\n'.format(attr, value))
