@@ -31,15 +31,11 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
-#include "toolframework/itoolentity.h"
+#include "game/server/util.h"
+#include "../entities_factories_wrap.h"
 #include "utilities/conversions.h"
 #include "modules/memory/memory_tools.h"
 
-
-//-----------------------------------------------------------------------------
-// External variables.
-//-----------------------------------------------------------------------------
-extern IServerTools *servertools;
 
 
 //-----------------------------------------------------------------------------
@@ -47,7 +43,11 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 void remove_entity(unsigned int uiEntityIndex)
 {
-	// servertools->RemoveEntity(BaseEntityFromIndex(uiEntityIndex, true));
+	CEntityFactoryDictionary* pFactoryDict = extract<CEntityFactoryDictionary*>(
+		import("entities.factories").attr("factory_dictionary"));
+
+	edict_t* pEdict = EdictFromIndex(uiEntityIndex, true);
+	pFactoryDict->Destroy(pEdict->GetClassName(), pEdict->GetNetworkable());
 }
 
 
