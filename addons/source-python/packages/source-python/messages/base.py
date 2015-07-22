@@ -448,8 +448,9 @@ class BaseMessage(dict):
         # Return the prepared value
         return return_value
 
+    @staticmethod
     def _write_field_value(
-            self, parameter_name, usermsg, field_type,
+            parameter_name, usermsg, field_type,
             field_name, field_value, field_index=-1):
         """Write the given field value to the given message."""
         getattr(usermsg, 'set_' + field_type)(

@@ -202,7 +202,8 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             description, title, title_color)
         self.fill = fill
 
-    def _get_max_item_count(self):
+    @staticmethod
+    def _get_max_item_count():
         """Return the maximum possible item count per page."""
         return 5
 
@@ -258,7 +259,8 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
                 button = data.find_key(str(index), True)
                 button.set_string('msg', '')
 
-    def _format_footer(self, player_index, page, data):
+    @staticmethod
+    def _format_footer(player_index, page, data):
         """Prepare the footer for the menu.
 
         @param <player_index>:

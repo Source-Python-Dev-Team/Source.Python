@@ -89,7 +89,8 @@ class SimpleRadioMenu(_BaseMenu):
             message=buffer[:-1] if buffer else ''
         )
 
-    def _slots_to_bin(self, slots):
+    @staticmethod
+    def _slots_to_bin(slots):
         """Convert an iterable of slots to the binary slot representation."""
         # Keys are enabled in that order: 0987654321
         buffer = list('0000000000')
@@ -123,7 +124,8 @@ class SimpleRadioMenu(_BaseMenu):
         """
         ShowMenu(**self._build(player_index)).send(player_index)
 
-    def _close(self, player_index):
+    @staticmethod
+    def _close(player_index):
         """
         Close a menu by overriding it with an empty menu.
 
@@ -201,7 +203,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         self.bottom_seperator = bottom_seperator
         self.fill = fill
 
-    def _get_max_item_count(self):
+    @staticmethod
+    def _get_max_item_count():
         """Return the maximum possible item count per page."""
         return MAX_ITEM_COUNT
 
@@ -290,14 +293,16 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         # Add "Back" option
         back_selectable = page.index > 0
         buffer += PagedRadioOption(
-            'Back', highlight=back_selectable)._render(player_index, BUTTON_BACK)
+            'Back', highlight=back_selectable)._render(
+                player_index, BUTTON_BACK)
         if back_selectable:
             slots.add(BUTTON_BACK)
 
         # Add "Next" option
         next_selectable = page.index < self.last_page_index
         buffer += PagedRadioOption(
-            'Next', highlight=next_selectable)._render(player_index, BUTTON_NEXT)
+            'Next', highlight=next_selectable)._render(
+                player_index, BUTTON_NEXT)
         if next_selectable:
             slots.add(BUTTON_NEXT)
 

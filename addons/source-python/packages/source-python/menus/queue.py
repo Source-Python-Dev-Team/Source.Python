@@ -245,7 +245,7 @@ _esc_queues = _QueueHolder(_ESCUserQueue, _esc_refresh)
 def _menuselect_callback(player_info, command):
     """Forward the selection to the proper user queue."""
     from menus.radio import VALID_CHOICES
-    
+
     index, choice = _validate_selection(player_info, command, VALID_CHOICES)
     if index is not None:
         _radio_queues[index]._select(choice)
@@ -255,7 +255,7 @@ def _menuselect_callback(player_info, command):
 def _escselect_callback(player_info, command):
     """Forward the selection to the proper user queue."""
     from menus.esc import VALID_CHOICES
-    
+
     index, choice = _validate_selection(player_info, command, VALID_CHOICES)
     if index is not None:
         _esc_queues[index]._select(choice)

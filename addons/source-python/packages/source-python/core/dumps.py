@@ -84,6 +84,7 @@ def dump_class_info(filename):
                         open_file, 'calling_convention',
                         info.calling_convention)
 
+
 def _dump_function_info_attribute(open_file, attr_name, value):
     """Dump an attribute of a FunctionInfo object."""
     open_file.write('\t\t\t{0}: {1}\n'.format(attr_name.ljust(20), value))
@@ -153,6 +154,7 @@ def dump_datamaps(filename):
         for class_name, datamap in sorted(datamaps.items()):
             _dump_datamap(open_file, class_name, datamap)
 
+
 def _get_datamaps():
     """Create a generator to loop through all entity DataMap objects.
 
@@ -164,6 +166,7 @@ def _get_datamaps():
         while datamap:
             yield datamap.class_name, datamap
             datamap = datamap.base
+
 
 def _get_datamap(classname):
     """Return the DataMap object for the given entity classname."""
@@ -177,6 +180,7 @@ def _get_datamap(classname):
     factory_dictionary.destroy(classname, entity)
     return datamap
 
+
 def _dump_datamap(open_file, class_name, datamap):
     """Dump a DataMap object to the given file object."""
     open_file.write('{0}\n'.format(class_name))
@@ -184,6 +188,7 @@ def _dump_datamap(open_file, class_name, datamap):
         _dump_type_description(open_file, desc)
 
     open_file.write('\n')
+
 
 def _dump_type_description(open_file, desc, indent=1, offset=0):
     """Dump a TypeDescription object to the given file object."""
@@ -230,6 +235,7 @@ def dump_server_classes(filename):
 
                 # Write a separator line before the next server class output
                 open_file.write('\n')
+
 
 def _dump_server_class_table(table, open_file, level=1, offset=0):
     """Dump all items in the given table to the given file."""

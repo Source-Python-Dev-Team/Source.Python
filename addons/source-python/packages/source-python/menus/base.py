@@ -253,7 +253,8 @@ class _PagedMenuBase(object):
 
     """Implements the base of every page based menu."""
 
-    def _get_max_item_count(self):
+    @staticmethod
+    def _get_max_item_count():
         """Return the maximum possible item count per page."""
         raise NotImplementedError
 

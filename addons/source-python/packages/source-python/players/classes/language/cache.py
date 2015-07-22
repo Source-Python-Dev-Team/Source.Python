@@ -22,7 +22,8 @@ class _LanguageCache(dict):
 
     """Dictionary class that stores player's with their language."""
 
-    def __missing__(self, index):
+    @staticmethod
+    def __missing__(index):
         """Return an empty string when the given index is not found."""
         return ''
 
