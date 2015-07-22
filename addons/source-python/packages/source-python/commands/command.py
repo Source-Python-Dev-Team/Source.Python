@@ -19,14 +19,10 @@ class _BaseCommand(AutoUnload):
 
     def __init__(self, names, *args, **kwargs):
         """Store the base values for the decorator."""
-        # Store the names
         self.names = names
-
-        # Store the arguments
         self.args = args
-
-        # Store the keyword arguments
         self.kwargs = kwargs
+        self.callback = None
 
     def __call__(self, callback):
         """Register the commands to the given callback."""

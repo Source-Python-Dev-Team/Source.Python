@@ -40,6 +40,7 @@ class _Hook(AutoUnload):
                 "' object is not a Function instance.")
 
         # Store the function
+        self.callback = None
         self.function = function
 
     def __call__(self, callback):

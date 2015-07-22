@@ -60,6 +60,8 @@ class TickRepeat(AutoUnload):
         self._count = 0
         self._adjusted = 0
         self._status = TickRepeatStatus.STOPPED
+        self._delay = None
+        self._loop_time = None
 
     def start(self, interval, limit):
         """Start the repeat loop."""

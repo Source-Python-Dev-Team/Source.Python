@@ -80,6 +80,7 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         """Add missing items and set comments using the server's language."""
         # Import the file
         super(_CoreSettings, self).__init__(infile)
+        self._language = None
 
         # Loop through the registered methods
         for item in self._odict:
