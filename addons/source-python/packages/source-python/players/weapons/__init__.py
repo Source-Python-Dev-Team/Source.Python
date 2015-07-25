@@ -9,6 +9,7 @@
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
 from entities.entity import Entity
+from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.props import SendPropType
 #   Engines
@@ -337,11 +338,8 @@ class _PlayerWeapons(object):
                 # Move onto the next offset
                 continue
 
-            # Get the weapon's edict
-            edict = Entity(index)
-
             # Get the weapon's classname
-            weapon_class = edict.get_class_name()
+            weapon_class = edict_from_index(index).get_class_name()
 
             # Was a classname given and the current
             # weapon is not of that classname?
