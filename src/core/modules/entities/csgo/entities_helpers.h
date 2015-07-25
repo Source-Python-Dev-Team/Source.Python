@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_HELPERS_WRAP_CSGO_H
-#define _ENTITIES_HELPERS_WRAP_CSGO_H
+#ifndef _ENTITIES_HELPERS_CSGO_H
+#define _ENTITIES_HELPERS_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -59,4 +59,4 @@ void remove_entity(unsigned int uiEntityIndex)
 }
 
 
-#endif // _ENTITIES_HELPERS_WRAP_CSGO_H
+#endif // _ENTITIES_HELPERS_CSGO_H

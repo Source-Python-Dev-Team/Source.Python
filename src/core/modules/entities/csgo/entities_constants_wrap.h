@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H
-#define _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H
+#ifndef _ENTITIES_CONSTANTS_CSGO_WRAP_H
+#define _ENTITIES_CONSTANTS_CSGO_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -90,4 +90,4 @@ void export_engine_specific_collision_group(T _constants, U CollisionGroup)
 }
 
 
-#endif // _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H
+#endif // _ENTITIES_CONSTANTS_CSGO_WRAP_H

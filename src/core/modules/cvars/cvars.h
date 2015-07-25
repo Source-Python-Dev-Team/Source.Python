@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _CVARS_WRAP_H
-#define _CVARS_WRAP_H
+#ifndef _CVARS_H
+#define _CVARS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -85,4 +85,4 @@ public:
 };
 
 
-#endif // _CVARS_WRAP_H
+#endif // _CVARS_H

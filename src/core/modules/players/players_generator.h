@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EXPORT_PLAYER_GENERATOR_H
-#define _EXPORT_PLAYER_GENERATOR_H
+#ifndef _PLAYERS_GENERATOR_H
+#define _PLAYERS_GENERATOR_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -54,4 +54,4 @@ private:
 
 BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CPlayerGenerator)
 
-#endif
+#endif // _PLAYERS_GENERATOR_H

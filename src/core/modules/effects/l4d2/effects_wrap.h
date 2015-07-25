@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EFFECTS_WRAP_PYTHON_L4D2_H
-#define _EFFECTS_WRAP_PYTHON_L4D2_H
+#ifndef _EFFECTS_WRAP_L4D2_H
+#define _EFFECTS_WRAP_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -59,4 +59,4 @@ void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
 }
 
 
-#endif // _EFFECTS_WRAP_PYTHON_L4D2_H
+#endif // _EFFECTS_WRAP_L4D2_H

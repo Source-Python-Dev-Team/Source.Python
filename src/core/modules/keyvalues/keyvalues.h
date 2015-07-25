@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _KEYVALUES_WRAP_H
-#define _KEYVALUES_WRAP_H
+#ifndef _KEYVALUES_H
+#define _KEYVALUES_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -106,4 +106,4 @@ public:
 };
 
 
-#endif // _KEYVALUES_WRAP_H
+#endif // _KEYVALUES_H

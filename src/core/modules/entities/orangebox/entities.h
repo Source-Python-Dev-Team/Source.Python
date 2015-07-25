@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_ORANGEBOX_H
-#define _ENTITIES_WRAP_ORANGEBOX_H
+#ifndef _ENTITIES_ORANGEBOX_H
+#define _ENTITIES_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -73,4 +73,4 @@ public:
 };
 
 
-#endif // _ENTITIES_WRAP_ORANGEBOX_H
+#endif // _ENTITIES_ORANGEBOX_H

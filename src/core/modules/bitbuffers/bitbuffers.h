@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _BITBUFFERS_WRAP_H
-#define _BITBUFFERS_WRAP_H
+#ifndef _BITBUFFERS_H
+#define _BITBUFFERS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -112,4 +112,4 @@ public:
 };
 
 
-#endif // _BITBUFFERS_WRAP_H
+#endif // _BITBUFFERS_H

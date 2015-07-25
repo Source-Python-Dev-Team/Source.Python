@@ -24,9 +24,9 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_L4D2_H
-#define _ENTITIES_PROPS_WRAP_L4D2_H
+#ifndef _ENTITIES_PROPS_L4D2_H
+#define _ENTITIES_PROPS_L4D2_H
 
 // Nothing specific to Left4Dead2...
 
-#endif // _ENTITIES_PROPS_WRAP_L4D2_H
+#endif // _ENTITIES_PROPS_L4D2_H

@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _CVARS_WRAP_ORANGEBOX_H
-#define _CVARS_WRAP_ORANGEBOX_H
+#ifndef _CVARS_ORANGEBOX_H
+#define _CVARS_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -45,4 +45,4 @@ public:
 	};
 };
 
-#endif // _CVARS_WRAP_ORANGEBOX_H
+#endif // _CVARS_ORANGEBOX_H

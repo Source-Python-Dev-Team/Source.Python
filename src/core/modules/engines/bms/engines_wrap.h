@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_PYTHON_BMS_H
-#define _ENGINES_WRAP_PYTHON_BMS_H
+#ifndef _ENGINES_WRAP_BMS_H
+#define _ENGINES_WRAP_BMS_H
 
 //---------------------------------------------------------------------------------
 // Includes.
@@ -88,4 +88,4 @@ T IEngineSound_Visitor(T cls)
 	return cls;
 }
 
-#endif // _ENGINES_WRAP_PYTHON_BMS_H
+#endif // _ENGINES_WRAP_BMS_H

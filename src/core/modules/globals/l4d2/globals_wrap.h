@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _GLOBALS_WRAP_PYTHON_L4D2_H
-#define _GLOBALS_WRAP_PYTHON_L4D2_H
+#ifndef _GLOBALS_WRAP_L4D2_H
+#define _GLOBALS_WRAP_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -53,4 +53,4 @@ T Globals_Visitor(T cls)
 }
 
 
-#endif // _GLOBALS_WRAP_PYTHON_L4D2_H
+#endif // _GLOBALS_WRAP_L4D2_H

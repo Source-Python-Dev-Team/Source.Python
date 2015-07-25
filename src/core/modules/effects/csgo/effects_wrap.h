@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EFFECTS_WRAP_PYTHON_CSGO_H
-#define _EFFECTS_WRAP_PYTHON_CSGO_H
+#ifndef _EFFECTS_WRAP_CSGO_H
+#define _EFFECTS_WRAP_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -53,4 +53,4 @@ void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
 }
 
 
-#endif // _EFFECTS_WRAP_PYTHON_CSGO_H
+#endif // _EFFECTS_WRAP_CSGO_H

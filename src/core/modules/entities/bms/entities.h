@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_BMS_H
-#define _ENTITIES_WRAP_BMS_H
+#ifndef _ENTITIES_BMS_H
+#define _ENTITIES_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -73,4 +73,4 @@ public:
 };
 
 
-#endif // _ENTITIES_WRAP_BMS_H
+#endif // _ENTITIES_BMS_H

@@ -24,9 +24,9 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_BMS_H
-#define _ENTITIES_PROPS_WRAP_BMS_H
+#ifndef _ENTITIES_PROPS_BMS_H
+#define _ENTITIES_PROPS_BMS_H
 
 // Nothing specific to BMS...
 
-#endif // _ENTITIES_PROPS_WRAP_BMS_H
+#endif // _ENTITIES_PROPS_BMS_H

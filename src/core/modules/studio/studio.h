@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _STUDIO_WRAP_H
-#define _STUDIO_WRAP_H
+#ifndef _STUDIO_H
+#define _STUDIO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -159,4 +159,4 @@ public:
 };
 
 
-#endif // _STUDIO_CACHE_WRAP_H
+#endif // _STUDIO_H

@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _STEAM_WRAP_PYTHON_H
-#define _STEAM_WRAP_PYTHON_H
+#ifndef _STEAM_WRAP_ORANGEBOX_H
+#define _STEAM_WRAP_ORANGEBOX_H
 
 template<class T>
 void export_engine_specific_steamid(scope _steam, T SteamID)
@@ -44,4 +44,4 @@ void export_engine_specific_account_type(scope _steam, T AccountType)
 	AccountType.value("P2_SUPER_SEEDER", k_EAccountTypeP2PSuperSeeder);
 }
 
-#endif // _STEAM_WRAP_PYTHON_H
+#endif // _STEAM_WRAP_ORANGEBOX_H

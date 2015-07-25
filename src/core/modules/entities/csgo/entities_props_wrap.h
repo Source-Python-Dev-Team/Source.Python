@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_PYTHON_CSGO_H
-#define _ENTITIES_PROPS_WRAP_PYTHON_CSGO_H
+#ifndef _ENTITIES_PROPS_WRAP_CSGO_H
+#define _ENTITIES_PROPS_WRAP_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -77,4 +77,4 @@ void export_engine_specific_send_prop_variant(T _props, U SendPropVariant)
 }
 
 
-#endif // _ENTITIES_PROPS_WRAP_PYTHON_CSGO_H
+#endif // _ENTITIES_PROPS_WRAP_CSGO_H

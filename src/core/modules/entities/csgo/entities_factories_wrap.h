@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_FACTORIES_WRAP_PYTHON_CSGO_H
-#define _ENTITIES_FACTORIES_WRAP_PYTHON_CSGO_H
+#ifndef _ENTITIES_FACTORIES_WRAP_CSGO_H
+#define _ENTITIES_FACTORIES_WRAP_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Expose CEntityFactoryDictionary.

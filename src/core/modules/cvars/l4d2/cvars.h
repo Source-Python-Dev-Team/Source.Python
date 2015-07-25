@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _CVARS_WRAP_L4D2_H
-#define _CVARS_WRAP_L4D2_H
+#ifndef _CVARS_L4D2_H
+#define _CVARS_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -47,4 +47,4 @@ public:
 	};
 };
 
-#endif // _CVARS_WRAP_L4D2_H
+#endif // _CVARS_L4D2_H

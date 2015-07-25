@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_DATAMAP_ORANGEBOX_H
-#define _ENTITIES_DATAMAP_ORANGEBOX_H
+#ifndef _ENTITIES_DATAMAPS_WRAP_ORANGEBOX_H
+#define _ENTITIES_DATAMAPS_WRAP_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -66,4 +66,4 @@ void export_engine_specific_field_types(T _datamaps, U FieldTypes)
 }
 
 
-#endif // _ENTITIES_DATAMAP_ORANGEBOX_H
+#endif // _ENTITIES_DATAMAPS_WRAP_ORANGEBOX_H

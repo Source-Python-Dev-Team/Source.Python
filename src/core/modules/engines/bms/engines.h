@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_BMS_H
-#define _ENGINES_WRAP_BMS_H
+#ifndef _ENGINES_BMS_H
+#define _ENGINES_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -74,4 +74,4 @@ inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEnti
 }
 
 
-#endif // _ENGINES_WRAP_BMS_H
+#endif // _ENGINES_BMS_H

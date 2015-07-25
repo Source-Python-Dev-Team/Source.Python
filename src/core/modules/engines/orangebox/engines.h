@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_ORANGEBOX_H
-#define _ENGINES_WRAP_ORANGEBOX_H
+#ifndef _ENGINES_ORANGEBOX_H
+#define _ENGINES_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -74,4 +74,4 @@ inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEnti
 }
 
 
-#endif // _ENGINES_WRAP_ORANGEBOX_H
+#endif // _ENGINES_ORANGEBOX_H

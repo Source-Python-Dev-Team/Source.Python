@@ -27,8 +27,8 @@
 * https://developer.valvesoftware.com/wiki/Ingame_menu_for_server_plugins_(CS:S_only)
 */
 
-#ifndef _FILTERS_RECIPIENTS_WRAP_H
-#define _FILTERS_RECIPIENTS_WRAP_H
+#ifndef _FILTERS_RECIPIENTS_H
+#define _FILTERS_RECIPIENTS_H
 
 //---------------------------------------------------------------------------------
 // Includes.
@@ -71,4 +71,4 @@ private:
 };
 
 
-#endif // _FILTERS_RECIPIENTS_WRAP_H
+#endif // _FILTERS_RECIPIENTS_H

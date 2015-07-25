@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_SCRIPTS_L4D2_WRAP_PYTHON_H
-#define _WEAPONS_SCRIPTS_L4D2_WRAP_PYTHON_H
+#ifndef _WEAPONS_SCRIPTS_L4D2_WRAP_H
+#define _WEAPONS_SCRIPTS_L4D2_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -51,4 +51,4 @@ void export_engine_specific_weapon_database(T _scripts)
 	_WeaponDatabase ADD_MEM_TOOLS(WeaponDataBase_t);
 }
 
-#endif // _WEAPONS_SCRIPTS_L4D2_WRAP_PYTHON_H
+#endif // _WEAPONS_SCRIPTS_L4D2_WRAP_H

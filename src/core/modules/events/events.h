@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EVENTS_WRAP_H
-#define _EVENTS_WRAP_H
+#ifndef _EVENTS_H
+#define _EVENTS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -74,4 +74,4 @@ public:
 };
 
 
-#endif // _EVENTS_WRAP_H
+#endif // _EVENTS_H

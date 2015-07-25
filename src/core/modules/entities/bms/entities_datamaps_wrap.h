@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_DATAMAP_BMS_H
-#define _ENTITIES_DATAMAP_BMS_H
+#ifndef _ENTITIES_DATAMAPS_BMS_H
+#define _ENTITIES_DATAMAPS_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -66,4 +66,4 @@ void export_engine_specific_field_types(T _datamaps, U FieldTypes)
 }
 
 
-#endif // _ENTITIES_DATAMAP_BMS_H
+#endif // _ENTITIES_DATAMAPS_BMS_H

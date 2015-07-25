@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _COLORS_WRAP_H
-#define _COLORS_WRAP_H
+#ifndef COLORS_H
+#define COLORS_H
 
 //-----------------------------------------------------------------------------
 // Includes.

@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _MATHLIB_WRAP_H
-#define _MATHLIB_WRAP_H
+#ifndef _MATHLIB_H
+#define _MATHLIB_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -51,4 +51,4 @@ public:
 };
 
 
-#endif // _MATHLIB_WRAP_H
+#endif // _MATHLIB_H

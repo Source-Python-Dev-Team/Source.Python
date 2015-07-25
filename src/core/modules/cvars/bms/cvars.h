@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _CVARS_WRAP_BMS_H
-#define _CVARS_WRAP_BMS_H
+#ifndef _CVARS_BMS_H
+#define _CVARS_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -45,4 +45,4 @@ public:
 	};
 };
 
-#endif // _CVARS_WRAP_BMS_H
+#endif // _CVARS_BMS_H

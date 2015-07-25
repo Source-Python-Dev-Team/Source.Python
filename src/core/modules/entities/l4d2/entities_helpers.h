@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_HELPERS_WRAP_L4D2_H
-#define _ENTITIES_HELPERS_WRAP_L4D2_H
+#ifndef _ENTITIES_HELPERS_L4D2_H
+#define _ENTITIES_HELPERS_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -51,4 +51,4 @@ void remove_entity(unsigned int uiEntityIndex)
 }
 
 
-#endif // _ENTITIES_HELPERS_WRAP_L4D2_H
+#endif // _ENTITIES_HELPERS_L4D2_H

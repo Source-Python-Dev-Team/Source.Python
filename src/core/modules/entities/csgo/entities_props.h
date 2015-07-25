@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_CSGO_H
-#define _ENTITIES_PROPS_WRAP_CSGO_H
+#ifndef _ENTITIES_PROPS_CSGO_H
+#define _ENTITIES_PROPS_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -46,4 +46,4 @@ public:
 };
 
 
-#endif // _ENTITIES_PROPS_WRAP_CSGO_H
+#endif // _ENTITIES_PROPS_CSGO_H

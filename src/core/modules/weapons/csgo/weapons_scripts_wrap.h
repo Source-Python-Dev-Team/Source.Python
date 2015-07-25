@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_SCRIPTS_CSGO_WRAP_PYTHON_H
-#define _WEAPONS_SCRIPTS_CSGO_WRAP_PYTHON_H
+#ifndef _WEAPONS_SCRIPTS_CSGO_WRAP_H
+#define _WEAPONS_SCRIPTS_CSGO_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Exports WeaponDataBase_t.
@@ -36,4 +36,4 @@ void export_engine_specific_weapon_database(T _scripts)
 	// Nothing specific to CS:GO...
 }
 
-#endif // _WEAPONS_SCRIPTS_CSGO_WRAP_PYTHON_H
+#endif // _WEAPONS_SCRIPTS_CSGO_WRAP_H

@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_PYTHON_L4D2_H
-#define _ENGINES_WRAP_PYTHON_L4D2_H
+#ifndef _ENGINES_WRAP_L4D2_H
+#define _ENGINES_WRAP_L4D2_H
 
 //---------------------------------------------------------------------------------
 // Includes.
@@ -60,4 +60,4 @@ T IEngineSound_Visitor(T cls)
 	return cls;
 }
 
-#endif // _ENGINES_WRAP_PYTHON_L4D2_H
+#endif // _ENGINES_WRAP_L4D2_H

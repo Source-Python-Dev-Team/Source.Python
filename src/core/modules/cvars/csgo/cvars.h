@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _CVARS_WRAP_CSGO_H
-#define _CVARS_WRAP_CSGO_H
+#ifndef _CVARS_CSGO_H
+#define _CVARS_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -48,4 +48,4 @@ public:
 };
 
 
-#endif // _CVARS_WRAP_CSGO_H
+#endif // _CVARS_CSGO_H

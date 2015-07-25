@@ -24,9 +24,9 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_ORANGEBOX_H
-#define _ENTITIES_PROPS_WRAP_ORANGEBOX_H
+#ifndef _ENTITIES_PROPS_ORANGEBOX_H
+#define _ENTITIES_PROPS_ORANGEBOX_H
 
 // Nothing specific to OrangeBox...
 
-#endif // _ENTITIES_PROPS_WRAP_ORANGEBOX_H
+#endif // _ENTITIES_PROPS_ORANGEBOX_H

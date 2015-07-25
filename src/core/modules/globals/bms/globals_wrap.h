@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _GLOBALS_WRAP_PYTHON_BMS_H
-#define _GLOBALS_WRAP_PYTHON_BMS_H
+#ifndef _GLOBALS_WRAP_BMS_H
+#define _GLOBALS_WRAP_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -53,4 +53,4 @@ T Globals_Visitor(T cls)
 }
 
 
-#endif // _GLOBALS_WRAP_PYTHON_BMS_H
+#endif // _GLOBALS_WRAP_BMS_H

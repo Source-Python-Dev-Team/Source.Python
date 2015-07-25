@@ -23,8 +23,8 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _COMMANDS_CLIENTS_WRAP_H
-#define _COMMANDS_CLIENTS_WRAP_H
+#ifndef _COMMANDS_CLIENTS_H
+#define _COMMANDS_CLIENTS_H
 
 //-----------------------------------------------------------------------------
 // Includes
@@ -59,4 +59,4 @@ private:
 	const char* m_Name;
 };
 
-#endif // _COMMANDS_CLIENTS_WRAP_H
+#endif // _COMMANDS_CLIENTS_H

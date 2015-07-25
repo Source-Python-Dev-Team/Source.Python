@@ -23,8 +23,8 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _ENTITIES_WRAP_H
-#define _ENTITIES_WRAP_H
+#ifndef _ENTITIES_H
+#define _ENTITIES_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -157,4 +157,4 @@ public:
 };
 
 
-#endif // _ENTITIES_WRAP_H
+#endif // _ENTITIES_H

@@ -23,8 +23,8 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _COMMAND_WRAP_H
-#define _COMMAND_WRAP_H
+#ifndef _COMMANDS_H
+#define _COMMANDS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -72,4 +72,4 @@ public:
 };
 
 
-#endif // _COMMAND_WRAP_H
+#endif // _COMMAND_H

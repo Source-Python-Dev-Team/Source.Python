@@ -23,8 +23,8 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-#ifndef _COMMANDS_SERVER_WRAP_H
-#define _COMMANDS_SERVER_WRAP_H
+#ifndef _COMMANDS_SERVER_H
+#define _COMMANDS_SERVER_H
 
 //-----------------------------------------------------------------------------
 // Includes
@@ -55,4 +55,4 @@ private:
 	ConCommand* m_pOldCommand;
 };
 
-#endif // _COMMANDS_SERVER_WRAP_H
+#endif // _COMMANDS_SERVER_H

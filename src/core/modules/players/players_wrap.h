@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _PLAYERS_WRAP_PYTHON_H
-#define _PLAYERS_WRAP_PYTHON_H
+#ifndef _PLAYERS_WRAP_H
+#define _PLAYERS_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -48,4 +48,4 @@ public:
 	}
 };
 
-#endif // _PLAYERS_WRAP_PYTHON_H
+#endif // _PLAYERS_WRAP_H

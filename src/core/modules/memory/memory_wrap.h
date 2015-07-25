@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _MEMORY_WRAP_PYTHON_H
-#define _MEMORY_WRAP_PYTHON_H
+#ifndef _MEMORY_WRAP_H
+#define _MEMORY_WRAP_H
 
 // ============================================================================
 // >> INCLUDES
@@ -121,4 +121,4 @@ public:
 	}
 };
 
-#endif // _MEMORY_WRAP_PYTHON_H
+#endif // _MEMORY_WRAP_H

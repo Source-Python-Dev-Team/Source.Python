@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _PLAYERS_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H
-#define _PLAYERS_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H
+#ifndef _PLAYERS_CONSTANTS_ORANGEBOX_WRAP_H
+#define _PLAYERS_CONSTANTS_ORANGEBOX_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -53,4 +53,4 @@ void export_engine_specific_hide_hud_flags(T _constants)
 }
 
 
-#endif // _PLAYERS_CONSTANTS_ORANGEBOX_WRAP_PYTHON_H
+#endif // _PLAYERS_CONSTANTS_ORANGEBOX_WRAP_H

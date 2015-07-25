@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_L4D2_H
-#define _ENTITIES_WRAP_L4D2_H
+#ifndef _ENTITIES_L4D2_H
+#define _ENTITIES_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -55,4 +55,4 @@ class TakeDamageInfoExt
 };
 
 
-#endif // _ENTITIES_WRAP_L4D2_H
+#endif // _ENTITIES_L4D2_H

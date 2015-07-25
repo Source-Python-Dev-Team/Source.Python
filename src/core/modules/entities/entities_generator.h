@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EXPORT_EDICT_GENERATOR_H
-#define _EXPORT_EDICT_GENERATOR_H
+#ifndef _ENTITIES_GENERATOR_H
+#define _ENTITIES_GENERATOR_H
 
 // ----------------------------------------------------------------------------
 // Includes.
@@ -64,4 +64,4 @@ private:
 
 BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CEntityGenerator)
 
-#endif
+#endif // _ENTITIES_GENERATOR_H

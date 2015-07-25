@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
-#define _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
+#ifndef _ENTITIES_CONSTANTS_ORANGEBOX_CSS_H
+#define _ENTITIES_CONSTANTS_ORANGEBOX_CSS_H
 
 //-----------------------------------------------------------------------------
 // Damage types.
@@ -34,4 +34,4 @@
 #define DMG_LASTGENERICFLAG DMG_HEADSHOT
 
 
-#endif // _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
+#endif // _ENTITIES_CONSTANTS_ORANGEBOX_CSS_H

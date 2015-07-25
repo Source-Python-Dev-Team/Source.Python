@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_H
-#define _ENGINES_WRAP_H
+#ifndef _ENGINES_H
+#define _ENGINES_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -168,4 +168,4 @@ public:
 };
 
 
-#endif // _ENGINES_WRAP_H
+#endif // _ENGINES_H

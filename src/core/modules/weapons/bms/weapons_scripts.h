@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_SCRIPTS_BMS_WRAP_H
-#define _WEAPONS_SCRIPTS_BMS_WRAP_H
+#ifndef _WEAPONS_SCRIPTS_BMS_H
+#define _WEAPONS_SCRIPTS_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -58,4 +58,4 @@ public:
 };
 
 
-#endif // _WEAPONS_SCRIPTS_BMS_WRAP_H
+#endif // _WEAPONS_SCRIPTS_BMS_H

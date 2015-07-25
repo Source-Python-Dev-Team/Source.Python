@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_FACTORIES_WRAP_PYTHON_L4D2_H
-#define _ENTITIES_FACTORIES_WRAP_PYTHON_L4D2_H
+#ifndef _ENTITIES_FACTORIES_WRAP_L4D2_H
+#define _ENTITIES_FACTORIES_WRAP_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -52,4 +52,4 @@ void export_engine_specific_entity_factory_dictionary(T _factories, U EntityFact
 }
 
 
-#endif // _ENTITIES_FACTORIES_WRAP_PYTHON_L4D2_H
+#endif // _ENTITIES_FACTORIES_WRAP_L4D2_H

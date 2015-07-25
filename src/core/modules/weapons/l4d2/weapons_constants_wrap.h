@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_CONSTANTS_L4D2_WRAP_PYTHON_H
-#define _WEAPONS_CONSTANTS_L4D2_WRAP_PYTHON_H
+#ifndef _WEAPONS_CONSTANTS_L4D2_WRAP_H
+#define _WEAPONS_CONSTANTS_L4D2_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Exports WeaponSound_t.
@@ -37,4 +37,4 @@ void export_engine_specific_weapon_sound(T _constants, U WeaponSound)
 }
 
 
-#endif // _WEAPONS_CONSTANTS_L4D2_WRAP_PYTHON_H
+#endif // _WEAPONS_CONSTANTS_L4D2_WRAP_H

@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_FACTORIES_WRAP_H
-#define _ENTITIES_FACTORIES_WRAP_H
+#ifndef _ENTITIES_FACTORIES_H
+#define _ENTITIES_FACTORIES_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -64,4 +64,4 @@ public:
 };
 
 
-#endif // _ENTITIES_FACTORIES_WRAP_H
+#endif // _ENTITIES_FACTORIES_H

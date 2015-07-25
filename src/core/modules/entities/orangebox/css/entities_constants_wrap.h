@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H
-#define _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H
+#ifndef _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
+#define _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -44,4 +44,4 @@ void export_game_specific_damage_types(T _constants)
 }
 
 
-#endif // _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H
+#endif // _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H

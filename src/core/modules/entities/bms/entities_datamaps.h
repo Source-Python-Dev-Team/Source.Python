@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_DATAMAP_BMS_WRAP_H
-#define _ENTITIES_DATAMAP_BMS_WRAP_H
+#ifndef _ENTITIES_DATAMAP_BMS_H
+#define _ENTITIES_DATAMAP_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.

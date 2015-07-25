@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_SCRIPTS_L4D2_WRAP_H
-#define _WEAPONS_SCRIPTS_L4D2_WRAP_H
+#ifndef _WEAPONS_SCRIPTS_L4D2_H
+#define _WEAPONS_SCRIPTS_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -58,4 +58,4 @@ public:
 };
 
 
-#endif // _WEAPONS_SCRIPTS_L4D2_WRAP_H
+#endif // _WEAPONS_SCRIPTS_L4D2_H

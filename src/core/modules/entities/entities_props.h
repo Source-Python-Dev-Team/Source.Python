@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_H
-#define _ENTITIES_PROPS_WRAP_H
+#ifndef _ENTITIES_PROPS_H
+#define _ENTITIES_PROPS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -163,4 +163,4 @@ public:
 };
 
 
-#endif // _ENTITIES_PROPS_WRAP_H
+#endif // _ENTITIES_PROPS_H
