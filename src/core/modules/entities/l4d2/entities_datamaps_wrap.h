@@ -24,32 +24,43 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_DATAMAP_L4D2_WRAP_H
-#define _ENTITIES_DATAMAP_L4D2_WRAP_H
+#ifndef _ENTITIES_DATAMAP_L4D2_H
+#define _ENTITIES_DATAMAP_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "datamap.h"
+#include "entities_datamaps_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// typedescription_t extension class.
+// Exports datamap_t.
 //-----------------------------------------------------------------------------
-class TypeDescriptionExt
+template<class T, class U>
+void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
-public:
-	static int get_offset(const typedescription_t& pTypeDesc)
-	{
-		return pTypeDesc.fieldOffset;
-	}
-	
-	static int get_packed_offset(const typedescription_t& pTypeDesc)
-	{
-		return -1;
-		// return pTypeDesc.fieldOffset[TD_OFFSET_PACKED];
-	}
-};
+	// Nothing specific to Left4Dead2...
+}
 
 
-#endif // _ENTITIES_DATAMAP_L4D2_WRAP_H
+//-----------------------------------------------------------------------------
+// Exports typedescription_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_type_description(T _datamaps, U TypeDescription)
+{
+	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports fieldtype_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_field_types(T _datamaps, U FieldTypes)
+{
+	// Nothing specific to Left4Dead2...
+}
+
+
+#endif // _ENTITIES_DATAMAP_L4D2_H

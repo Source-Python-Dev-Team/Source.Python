@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,53 +24,25 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_BMS_H
-#define _ENTITIES_WRAP_BMS_H
+#ifndef _ENTITIES_WRAP_PYTHON_BMS_H
+#define _ENTITIES_WRAP_PYTHON_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dt_send.h"
-#include "game/shared/ehandle.h"
-#include "isaverestore.h"
-#include "datamap.h"
-#include "game/shared/takedamageinfo.h"
+#include "entities_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo wrapper class.
+// Exports CTakeDamageInfo.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
+template<class T, class U>
+void export_engine_specific_take_damage_info(T _entities, U TakeDamageInfo)
 {
-public:
-	int get_penetrated()
-	{
-		return m_iPlayerPenetrationCount;
-	}
-	
-	void set_penetrated(int iPenetrated)
-	{
-		m_iPlayerPenetrationCount = iPenetrated;
-	}
-};
+	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated,
+		&TakeDamageInfoExt::set_penetrated
+	);
+}
 
 
-//-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
-//-----------------------------------------------------------------------------
-class TakeDamageInfoExt
-{
-public:
-	static int get_penetrated(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_penetrated();
-	}
-	
-	static void set_penetrated(CTakeDamageInfo *pTakeDamageInfo, int iPenetrated)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
-	}
-};
-
-
-#endif // _ENTITIES_WRAP_BMS_H
+#endif // _ENTITIES_WRAP_PYTHON_BMS_H

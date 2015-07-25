@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,94 +24,26 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_CSGO_H
-#define _ENTITIES_WRAP_CSGO_H
+#ifndef _ENTITIES_WRAP_PYTHON_CSGO_H
+#define _ENTITIES_WRAP_PYTHON_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dt_send.h"
-#include "server_class.h"
-#include "game/shared/ehandle.h"
-#include "isaverestore.h"
-#include "datamap.h"
-#include "game/shared/takedamageinfo.h"
+#include "entities_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo wrapper class.
+// Exports CTakeDamageInfo.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
+template<class T, class U>
+void export_engine_specific_take_damage_info(T _entities, U TakeDamageInfo)
 {
-public:
-	int get_penetrated()
-	{
-		return m_iObjectsPenetrated;
-	}
-	
-	void set_penetrated(int iPenetrated)
-	{
-		m_iObjectsPenetrated = iPenetrated;
-	}
-	
-	uint32 get_bullet()
-	{
-		return m_uiBulletID;
-	}
-	
-	void set_bullet(uint32 uiBullet)
-	{
-		m_uiBulletID = uiBullet;
-	}
-	
-	uint8 get_recoil()
-	{
-		return m_uiRecoilIndex;
-	}
-	
-	void set_recoil(uint8 uiRecoil)
-	{
-		m_uiRecoilIndex = uiRecoil;
-	}
-};
+	TakeDamageInfo.add_property("radius", &CTakeDamageInfo::GetRadius, &CTakeDamageInfo::SetRadius);
+	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated, &TakeDamageInfoExt::set_penetrated);
+	TakeDamageInfo.add_property("bullet", &TakeDamageInfoExt::get_bullet, &TakeDamageInfoExt::set_bullet);
+	TakeDamageInfo.add_property("recoil", &TakeDamageInfoExt::get_recoil, &TakeDamageInfoExt::set_recoil);
+}
 
 
-//-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
-//-----------------------------------------------------------------------------
-class TakeDamageInfoExt
-{
-public:
-	static int get_penetrated(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_penetrated();
-	}
-	
-	static void set_penetrated(CTakeDamageInfo *pTakeDamageInfo, int iPenetrated)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
-	}
-	
-	static uint32 get_bullet(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_bullet();
-	}
-	
-	static void set_bullet(CTakeDamageInfo *pTakeDamageInfo, uint32 uiBullet)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_bullet(uiBullet);
-	}
-	
-	static uint8 get_recoil(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_recoil();
-	}
-	
-	static void set_recoil(CTakeDamageInfo *pTakeDamageInfo, uint8 uiRecoil)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_recoil(uiRecoil);
-	}
-};
-
-
-#endif // _ENTITIES_WRAP_CSGO_H
+#endif // _ENTITIES_WRAP_PYTHON_CSGO_H

@@ -87,42 +87,42 @@ Set(SOURCEPYTHON_CORE_FILES
 # BitBuffers module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS
-    core/modules/bitbuffers/bitbuffers_wrap.h
+    core/modules/bitbuffers/bitbuffers.h
 )
 
 Set(SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES
-    core/modules/bitbuffers/bitbuffers_wrap_python.cpp
+    core/modules/bitbuffers/bitbuffers_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Colors module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_COLORS_MODULE_HEADERS
-    core/modules/colors/colors_wrap.h
+    core/modules/colors/colors.h
 )
 
 Set(SOURCEPYTHON_COLORS_MODULE_SOURCES
-    core/modules/colors/colors_wrap_python.cpp
+    core/modules/colors/colors_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Commands module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_COMMANDS_MODULE_HEADERS
-    core/modules/commands/commands_client_wrap.h
-    core/modules/commands/commands_wrap.h
-    core/modules/commands/commands_say_wrap.h
-    core/modules/commands/commands_server_wrap.h
+    core/modules/commands/commands_client.h
+    core/modules/commands/commands.h
+    core/modules/commands/commands_say.h
+    core/modules/commands/commands_server.h
 )
 
 Set(SOURCEPYTHON_COMMANDS_MODULE_SOURCES
+    core/modules/commands/commands_client.cpp
     core/modules/commands/commands_client_wrap.cpp
-    core/modules/commands/commands_client_wrap_python.cpp
-    core/modules/commands/commands_wrap_python.cpp
+    core/modules/commands/commands_wrap.cpp
+    core/modules/commands/commands_say.cpp
     core/modules/commands/commands_say_wrap.cpp
-    core/modules/commands/commands_say_wrap_python.cpp
+    core/modules/commands/commands_server.cpp
     core/modules/commands/commands_server_wrap.cpp
-    core/modules/commands/commands_server_wrap_python.cpp
 )
 
 
@@ -133,108 +133,120 @@ Set(SOURCEPYTHON_CORE_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_CORE_MODULE_SOURCES
-    core/modules/core/core_wrap_python.cpp
+    core/modules/core/core_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Cvars module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CVARS_MODULE_HEADERS
-    core/modules/cvars/cvars_wrap.h
-    core/modules/cvars/${SOURCE_ENGINE}/cvars_wrap.h
+    core/modules/cvars/cvars.h
+    core/modules/cvars/${SOURCE_ENGINE}/cvars.h
 )
 
 Set(SOURCEPYTHON_CVARS_MODULE_SOURCES
-    core/modules/cvars/cvars_wrap_python.cpp
+    core/modules/cvars/cvars_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Effects module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EFFECTS_MODULE_HEADERS
-    core/modules/effects/${SOURCE_ENGINE}/effects_wrap_python.h
+    core/modules/effects/${SOURCE_ENGINE}/effects_wrap.h
 )
 
 Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
-    core/modules/effects/effects_wrap_python.cpp
+    core/modules/effects/effects_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Engines module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENGINES_MODULE_HEADERS
-    core/modules/engines/engines_wrap.h
+    core/modules/engines/engines.h
+    core/modules/engines/${SOURCE_ENGINE}/engines.h
     core/modules/engines/${SOURCE_ENGINE}/engines_wrap.h
-    core/modules/engines/${SOURCE_ENGINE}/engines_wrap_python.h
 )
 
 Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
-    core/modules/engines/engines_wrap_python.cpp
+    core/modules/engines/engines_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Entities module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
-    core/modules/entities/entities_wrap.h
+    core/modules/entities/entities.h
+    core/modules/entities/${SOURCE_ENGINE}/entities.h
+    core/modules/entities/entities_generator.h
+    core/modules/entities/entities_helpers.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_helpers.h
+    core/modules/entities/entities_factories.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_factories_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_wrap.h
-    core/modules/entities/entities_generator_wrap.h
-    core/modules/entities/entities_helpers_wrap.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_helpers_wrap.h
-    core/modules/entities/entities_factories_wrap.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_factories_wrap_python.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_wrap_python.h
-    core/modules/entities/entities_datamaps_wrap.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_datamaps_wrap_python.h
-    core/modules/entities/entities_props_wrap.h
+    core/modules/entities/entities_datamaps.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_datamaps_wrap.h
+    core/modules/entities/entities_props.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_props.h
     core/modules/entities/${SOURCE_ENGINE}/entities_props_wrap.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_props_wrap_python.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_constants_wrap_python.h
-    core/modules/entities/entities_entity_wrap.h
+    core/modules/entities/${SOURCE_ENGINE}/entities_constants_wrap.h
+    core/modules/entities/entities_entity.h
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
-    core/modules/entities/entities_constants_wrap_python.cpp
-    core/modules/entities/entities_helpers_wrap_python.cpp
-    core/modules/entities/entities_wrap_python.cpp
-    core/modules/entities/entities_factories_wrap_python.cpp
-    core/modules/entities/entities_generator_wrap.cpp
-    core/modules/entities/entities_datamaps_wrap_python.cpp
-    core/modules/entities/entities_props_wrap_python.cpp
-    core/modules/entities/entities_entity_wrap_python.cpp
+    core/modules/entities/entities_constants_wrap.cpp
+    core/modules/entities/entities_helpers_wrap.cpp
+    core/modules/entities/entities_wrap.cpp
+    core/modules/entities/entities_factories_wrap.cpp
+    core/modules/entities/entities_generator.cpp
+    core/modules/entities/entities_datamaps_wrap.cpp
+    core/modules/entities/entities_props_wrap.cpp
+    core/modules/entities/entities_entity_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Events module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EVENTS_MODULE_HEADERS
-    core/modules/events/events_wrap.h
+    core/modules/events/events.h
 )
 
 Set(SOURCEPYTHON_EVENTS_MODULE_SOURCES
-    core/modules/events/events_wrap_python.cpp
+    core/modules/events/events_wrap.cpp
+)
+
+# ------------------------------------------------------------------
+# Filters module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_FILTERS_MODULE_HEADERS
+    core/modules/filters/filters_recipients.h
+)
+
+Set(SOURCEPYTHON_FILTERS_MODULE_SOURCES
+    core/modules/filters/filters_recipients.cpp
+    core/modules/filters/filters_recipients_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Globals module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_GLOBALS_MODULE_HEADERS
-    core/modules/globals/${SOURCE_ENGINE}/globals_wrap_python.h
+    core/modules/globals/${SOURCE_ENGINE}/globals_wrap.h
 )
 
 Set(SOURCEPYTHON_GLOBALS_MODULE_SOURCES
-    core/modules/globals/globals_wrap_python.cpp
+    core/modules/globals/globals_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Keyvalues module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_KEYVALUES_MODULE_HEADERS
-    core/modules/keyvalues/keyvalues_wrap.h
+    core/modules/keyvalues/keyvalues.h
 )
 
 Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
-    core/modules/keyvalues/keyvalues_wrap_python.cpp
+    core/modules/keyvalues/keyvalues_wrap.cpp
     ${SOURCESDK}/tier1/KeyValues.cpp
 )
 
@@ -247,18 +259,18 @@ Set(SOURCEPYTHON_LISTENERS_MODULE_HEADERS
 
 Set(SOURCEPYTHON_LISTENERS_MODULE_SOURCES
     core/modules/listeners/listeners_manager.cpp
-    core/modules/listeners/listeners_wrap_python.cpp
+    core/modules/listeners/listeners_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Mathlib module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MATHLIB_MODULE_HEADERS
-    core/modules/mathlib/mathlib_wrap.h
+    core/modules/mathlib/mathlib.h
 )
 
 Set(SOURCEPYTHON_MATHLIB_MODULE_SOURCES
-    core/modules/mathlib/mathlib_wrap_python.cpp
+    core/modules/mathlib/mathlib_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -274,7 +286,7 @@ Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
     core/modules/memory/memory_scanner.h
     core/modules/memory/memory_tools.h
     core/modules/memory/memory_utilities.h
-    core/modules/memory/memory_wrap_python.h
+    core/modules/memory/memory_wrap.h
 )
 
 Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
@@ -282,7 +294,7 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
     core/modules/memory/memory_hooks.cpp
     core/modules/memory/memory_pointer.cpp
     core/modules/memory/memory_scanner.cpp
-    core/modules/memory/memory_wrap_python.cpp
+    core/modules/memory/memory_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -296,7 +308,7 @@ Set(SOURCEPYTHON_MESSAGES_MODULE_HEADERS
 
 Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
     core/modules/messages/messages.cpp
-    core/modules/messages/messages_wrap_python.cpp
+    core/modules/messages/messages_wrap.cpp
     core/modules/messages/messages_implementation_base.cpp
 )
 
@@ -309,41 +321,29 @@ Set(SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES
 # Players module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
-    core/modules/players/players_wrap_python.h
-    core/modules/players/players_generator_wrap.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_constants_wrap_python.h
+    core/modules/players/players_wrap.h
+    core/modules/players/players_generator.h
+    core/modules/players/${SOURCE_ENGINE}/players_constants_wrap.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
-    core/modules/players/players_bots_wrap_python.cpp
-    core/modules/players/players_constants_wrap_python.cpp
-    core/modules/players/players_helpers_wrap_python.cpp
-    core/modules/players/players_wrap_python.cpp
-    core/modules/players/players_generator_wrap.cpp
+    core/modules/players/players_bots_wrap.cpp
+    core/modules/players/players_constants_wrap.cpp
+    core/modules/players/players_helpers_wrap.cpp
+    core/modules/players/players_wrap.cpp
+    core/modules/players/players_generator.cpp
     core/modules/players/players_voice.cpp
-)
-
-# ------------------------------------------------------------------
-# Filters module.
-# ------------------------------------------------------------------
-Set(SOURCEPYTHON_FILTERS_MODULE_HEADERS
-    core/modules/filters/filters_recipients_wrap.h
-)
-
-Set(SOURCEPYTHON_FILTERS_MODULE_SOURCES
-    core/modules/filters/filters_recipients_wrap.cpp
-    core/modules/filters/filters_recipients_wrap_python.cpp
 )
 
 # ------------------------------------------------------------------
 # Steam module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STEAM_MODULE_HEADERS
-    core/modules/steam/${SOURCE_ENGINE}/steam_wrap_python.h
+    core/modules/steam/${SOURCE_ENGINE}/steam_wrap.h
 )
 
 Set(SOURCEPYTHON_STEAM_MODULE_SOURCES
-    core/modules/steam/steam_wrap_python.cpp
+    core/modules/steam/steam_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -353,34 +353,34 @@ Set(SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
-    core/modules/stringtables/stringtables_wrap_python.cpp
+    core/modules/stringtables/stringtables_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Studio module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STUDIO_MODULE_HEADERS
-    core/modules/studio/studio_wrap.h
+    core/modules/studio/studio.h
 )
 
 Set(SOURCEPYTHON_STUDIO_MODULE_SOURCES
     # hl2sdk/${BRANCH}/public/studio.cpp
-    core/modules/studio/studio_wrap_python.cpp
-    core/modules/studio/studio_constants_wrap_python.cpp
-    core/modules/studio/studio_cache_wrap_python.cpp
+    core/modules/studio/studio_wrap.cpp
+    core/modules/studio/studio_constants_wrap.cpp
+    core/modules/studio/studio_cache_wrap.cpp
 )
 
 # ------------------------------------------------------------------
 # Weapons module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_WEAPONS_MODULE_HEADERS
-    core/modules/weapons/${SOURCE_ENGINE}/weapons_constants_wrap_python.h
-    core/modules/weapons/${SOURCE_ENGINE}/weapons_scripts_wrap_python.h
+    core/modules/weapons/${SOURCE_ENGINE}/weapons_constants_wrap.h
+    core/modules/weapons/${SOURCE_ENGINE}/weapons_scripts_wrap.h
 )
 
 Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
-    core/modules/weapons/weapons_constants_wrap_python.cpp
-    core/modules/weapons/weapons_scripts_wrap_python.cpp
+    core/modules/weapons/weapons_constants_wrap.cpp
+    core/modules/weapons/weapons_scripts_wrap.cpp
 )
 
 # ------------------------------------------------------------------

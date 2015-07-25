@@ -24,38 +24,31 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_SCRIPTS_L4D2_WRAP_H
-#define _WEAPONS_SCRIPTS_L4D2_WRAP_H
+#ifndef _WEAPONS_SCRIPTS_L4D2_WRAP_PYTHON_H
+#define _WEAPONS_SCRIPTS_L4D2_WRAP_PYTHON_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "datamap.h"
-#include "game/shared/weapon_parse.h"
-#include "tier1/utldict.h"
-#include "utilities/wrap_macros.h"
+#include "weapons_scripts.h"
 
 
 //-----------------------------------------------------------------------------
-// WeaponDataBase_t declaration.
+// Expose WeaponDataBase_t.
 //-----------------------------------------------------------------------------
-typedef CUtlDict<FileWeaponInfo_t *, unsigned short> WeaponDataBase_t;
-
-
-//-----------------------------------------------------------------------------
-// WeaponDataBase_t extension class.
-//-----------------------------------------------------------------------------
-class WeaponDataBaseExt
+template<class T>
+void export_engine_specific_weapon_database(T _scripts)
 {
-public:
-	static CPointer *_find(WeaponDataBase_t *pWeaponDataBase, WEAPON_FILE_INFO_HANDLE uiIndex)
-	{
-		if (uiIndex >= pWeaponDataBase->Count())
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
+	class_<WeaponDataBase_t, boost::noncopyable> _WeaponDatabase("_WeaponDatabase", no_init);
 
-		return new CPointer((unsigned long)(void *)pWeaponDataBase->Element(uiIndex));
-	}
-};
+	// Methods...
+	_WeaponDatabase.def("_find", &WeaponDataBaseExt::_find, manage_new_object_policy());
 
+	// Properties...
+	_WeaponDatabase.add_property("_length", &WeaponDataBase_t::Count);
 
-#endif // _WEAPONS_SCRIPTS_L4D2_WRAP_H
+	// Add memory tools...
+	_WeaponDatabase ADD_MEM_TOOLS(WeaponDataBase_t);
+}
+
+#endif // _WEAPONS_SCRIPTS_L4D2_WRAP_PYTHON_H

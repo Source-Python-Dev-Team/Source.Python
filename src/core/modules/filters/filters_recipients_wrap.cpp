@@ -27,130 +27,89 @@
 * https://developer.valvesoftware.com/wiki/Ingame_menu_for_server_plugins_(CS:S_only)
 */
 
-//---------------------------------------------------------------------------------
-// Includes.
-//---------------------------------------------------------------------------------
-#include "utilities/conversions.h"
-#include "filters_recipients_wrap.h"
-#include "interface.h"
-#include "filesystem.h"
-#include "engine/iserverplugin.h"
-#include "game/server/iplayerinfo.h"
-#include "eiface.h"
-#include "igameevents.h"
-#include "convar.h"
-#include "Color.h"
-
-#include "shake.h"
-#include "game/shared/IEffects.h"
-#include "engine/IEngineSound.h"
-
-// memdbgon must be the last include file in a .cpp file!!!
-#include "tier0/memdbgon.h"
+//-----------------------------------------------------------------------------
+// Includes
+//-----------------------------------------------------------------------------
+#include "export_main.h"
+#include "modules/memory/memory_tools.h"
+#include "memalloc.h"
+#include "filters_recipients.h"
 
 
-//---------------------------------------------------------------------------------
-// External variables.
-//---------------------------------------------------------------------------------
-extern IVEngineServer *engine;
-extern IPlayerInfoManager *playerinfomanager;
-extern IServerPluginHelpers	*helpers;
-extern CGlobalVars *gpGlobals;
+//-----------------------------------------------------------------------------
+// Forward declarations.
+//-----------------------------------------------------------------------------
+void export_mrecipientfilter(scope);
 
 
-//---------------------------------------------------------------------------------
-// MRecipientFilter methods.
-//---------------------------------------------------------------------------------
-MRecipientFilter::MRecipientFilter()
+//-----------------------------------------------------------------------------
+// Declare the _filters._recipients module.
+//-----------------------------------------------------------------------------
+DECLARE_SP_SUBMODULE(_filters, _recipients)
 {
-	m_bReliable = false;
-	m_bInitMessage = false;
-	m_bUsingPredictionRules = false;
-	m_bIgnorePredictionCull = true;
+	export_mrecipientfilter(_recipients);
 }
 
-MRecipientFilter::~MRecipientFilter()
+
+//-----------------------------------------------------------------------------
+// Exports MRecipientFilter
+//-----------------------------------------------------------------------------
+void export_mrecipientfilter(scope _recipients)
 {
-}
+	class_<IRecipientFilter, boost::noncopyable>("_IRecipientFilter", no_init)
+		.def("is_reliable",
+			&IRecipientFilter::IsReliable,
+			"Whether this recipient filter will be network reliable (sent in-order)"
+		)
 
-bool MRecipientFilter::IsReliable( void ) const
-{
-	return m_bReliable;
-}
+		.def("is_init_message",
+			&IRecipientFilter::IsInitMessage,
+			"Whether the message has been initialised?"
+		)
 
-bool MRecipientFilter::IsInitMessage( void ) const
-{
-	return m_bInitMessage;
-}
+		.def("get_recipient_count",
+			&IRecipientFilter::GetRecipientCount,
+			"Obtain the amount of clients in this filter"
+		)
 
-int MRecipientFilter::GetRecipientCount() const
-{
-	return m_Recipients.Count();
-}
+		.def("get_recipient_index",
+			&IRecipientFilter::GetRecipientIndex,
+			"Obtains the player index at the slot in the filter",
+			args("slot")
+		)
 
-int MRecipientFilter::GetRecipientIndex(int slot) const
-{
-	if(slot < 0 || slot >= GetRecipientCount())
-		return -1;
+		ADD_MEM_TOOLS(IRecipientFilter)
+	;
 
-	return m_Recipients[slot];
-}
+	class_<MRecipientFilter, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
+		.def("add_all_players",
+			&MRecipientFilter::AddAllPlayers,
+			"Adds all the players on the server to the filter"
+		)
 
-void MRecipientFilter::AddAllPlayers()
-{
-	m_Recipients.RemoveAll();
+		.def("add_recipient",
+			&MRecipientFilter::AddRecipient,
+			"Adds the index of the player to the filter",
+			args("iPlayer")
+		)
 
-	for(int i = 1; i <= gpGlobals->maxClients; i++)
-	{
-		edict_t *pPlayer = EdictFromIndex(i);
+		.def("remove_all_players",
+			&MRecipientFilter::RemoveAllPlayers,
+			"Removes all the players on the server from the filter"
+		)
 
-		// Skip invalid entities.
-		if( !pPlayer ) {
-			continue;
-		}
+		.def("remove_recipient",
+			&MRecipientFilter::RemoveRecipient,
+			"Removes the index of the player from the filter",
+			args("iPlayer")
+		)
 
-		// Get and compare the classnames. Skip non-player
-		// entities.
-		const char* classname = pPlayer->GetClassName();
-		if( strcmp(classname, "player") != 0 ) {
-			continue;
-		}
+		.def("has_recipient",
+			&MRecipientFilter::HasRecipient,
+			"Returns true if the given index is in the recipient, false otherwise.",
+			args("iPlayer")
+		)
 
-		m_Recipients.AddToTail(i);
-	}
-}
-void MRecipientFilter::AddRecipient(int iPlayer)
-{
-	// Return if the recipient is already in the vector
-	if(m_Recipients.Find(iPlayer) != m_Recipients.InvalidIndex())
-		return;
-
-	// Make sure the player is valid
-	edict_t* pPlayer = EdictFromIndex(iPlayer);
-	if(!pPlayer)
-		return;
-
-	// Get and compare the classnames. Skip non-player
-	// entities.
-	const char* classname = pPlayer->GetClassName();
-	if( strcmp(classname, "player") != 0 ) {
-		return;
-	}
-
-	m_Recipients.AddToTail(iPlayer);
-}
-
-void MRecipientFilter::RemoveRecipient( int iPlayer )
-{
-	m_Recipients.FindAndRemove(iPlayer);
-}
-
-void MRecipientFilter::RemoveAllPlayers()
-{
-	m_Recipients.RemoveAll();
-}
-
-bool MRecipientFilter::HasRecipient( int iPlayer )
-{
-	return m_Recipients.HasElement(iPlayer);
+		ADD_MEM_TOOLS(MRecipientFilter)
+	;
 }

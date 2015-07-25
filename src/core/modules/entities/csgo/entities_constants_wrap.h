@@ -24,14 +24,70 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_CSGO_WRAP_H
-#define _ENTITIES_CONSTANTS_CSGO_WRAP_H
+#ifndef _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H
+#define _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H
 
 //-----------------------------------------------------------------------------
-// Damage types.
+// Includes.
 //-----------------------------------------------------------------------------
-#define DMG_HEADSHOT (1 << 30)
-#define DMG_LASTGENERICFLAG DMG_HEADSHOT
+#include "utilities/wrap_macros.h"
+#include "entities_constants_wrap.h"
 
 
-#endif // _ENTITIES_CONSTANTS_CSGO_WRAP_H
+//-----------------------------------------------------------------------------
+// Exports damage types.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_damage_types(T _constants)
+{
+	_constants.attr("DMG_HEADSHOT") = DMG_HEADSHOT;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports SolidFlags_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_solid_flags(T _constants, U SolidFlags)
+{
+	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
+	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports entity effects.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_entity_effects(T _constants)
+{
+	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = (long)EF_MARKED_FOR_FAST_REFLECTION;
+	_constants.attr("EF_NOSHADOWDEPTH") = (long)EF_NOSHADOWDEPTH;
+	_constants.attr("EF_NOFLASHLIGHT") = (long)EF_NOFLASHLIGHT;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports RenderFx_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_render_effects(T _constants, U RenderEffects)
+{
+	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
+	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
+	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports Collision_Group_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_collision_group(T _constants, U CollisionGroup)
+{
+	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
+	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
+}
+
+
+#endif // _ENTITIES_CONSTANTS_CSGO_WRAP_PYTHON_H

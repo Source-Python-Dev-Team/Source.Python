@@ -24,26 +24,57 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_CSGO_H
-#define _ENTITIES_PROPS_WRAP_CSGO_H
+#ifndef _ENTITIES_PROPS_WRAP_PYTHON_CSGO_H
+#define _ENTITIES_PROPS_WRAP_PYTHON_CSGO_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "server_class.h"
+#include "dt_common.h"
+#include "dt_send.h"
+#include "entities_props_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// ServerClass extension class.
+// Expose ServerClass.
 //-----------------------------------------------------------------------------
-class ServerClassExt
+template<class T, class U>
+void export_engine_specific_server_class(T _props, U ServerClass_)
 {
-public:
-	static const char *get_name(ServerClass *pServerClass)
-	{
-		return (const char *)pServerClass->m_pNetworkName;
-	}
-};
+	ServerClass_.add_property("name", &ServerClassExt::get_name);
+}
 
 
-#endif // _ENTITIES_PROPS_WRAP_CSGO_H
+//-----------------------------------------------------------------------------
+// Expose SendProp.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop(T _props, U SendProp_)
+{
+	SendProp_.add_property("priority", &SendProp::GetPriority);
+	SendProp_.def("get_priority", &SendProp::GetPriority);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropType.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop_types(T _props, U SendPropType_)
+{
+	SendPropType_.value("INT64", DPT_Int64);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropVariant.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop_variant(T _props, U SendPropVariant)
+{
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+}
+
+
+#endif // _ENTITIES_PROPS_WRAP_PYTHON_CSGO_H

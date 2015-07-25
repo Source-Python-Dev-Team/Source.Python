@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,35 +24,23 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_L4D2_H
-#define _ENTITIES_WRAP_L4D2_H
+#ifndef _ENTITIES_WRAP_PYTHON_L4D2_H
+#define _ENTITIES_WRAP_PYTHON_L4D2_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dt_send.h"
-#include "game/shared/ehandle.h"
-#include "isaverestore.h"
-#include "datamap.h"
-#include "game/shared/takedamageinfo.h"
+#include "entities_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo wrapper class.
+// Exports CTakeDamageInfo.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
+template<class T, class U>
+void export_engine_specific_take_damage_info(T _entities, U TakeDamageInfo)
 {
 	// Nothing specific to Left4Dead2...
-};
+}
 
 
-//-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
-//-----------------------------------------------------------------------------
-class TakeDamageInfoExt
-{
-	// Nothing specific to Left4Dead2...
-};
-
-
-#endif // _ENTITIES_WRAP_L4D2_H
+#endif // _ENTITIES_WRAP_PYTHON_L4D2_H

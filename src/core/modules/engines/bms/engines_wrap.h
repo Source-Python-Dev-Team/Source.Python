@@ -24,54 +24,68 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_BMS_H
-#define _ENGINES_WRAP_BMS_H
+#ifndef _ENGINES_WRAP_PYTHON_BMS_H
+#define _ENGINES_WRAP_PYTHON_BMS_H
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
 // Includes.
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+#include "eiface.h"
 #include "engine/IEngineSound.h"
-
-
-//-----------------------------------------------------------------------------
-// IEngineSound extension class.
-//-----------------------------------------------------------------------------
-class IEngineSoundExt
-{
-public:
-	static void EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
-		float flVolume, float flAttenuation, int iFlags, int iPitch, const Vector *pOrigin, const Vector *pDirection,
-		tuple origins, bool bUpdatePositions, float soundtime, int speakerentity)
-	{
-		CUtlVector<Vector> *pUtlVecOrigins = NULL;
-		CUtlVector<Vector> vecOrigins;
-		if (len(origins) > 0)
-		{
-			pUtlVecOrigins = &vecOrigins;
-			for(int i=0; i < len(origins); i++)
-			{
-				vecOrigins.AddToTail(extract<Vector>(origins[i]));
-			}
-		}
-		
-		pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, 0, pOrigin,
-			pDirection, pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
-	}
-
-	static void StopSound(IEngineSound* pEngineSound, int iEntIndex, int iChannel, const char *pSample)
-	{
-		pEngineSound->StopSound(iEntIndex, iChannel, pSample);
-	}
-};
+#include "engine/IEngineTrace.h"
 
 
 //---------------------------------------------------------------------------------
-// IEngineTrace
+// External variables.
 //---------------------------------------------------------------------------------
-inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
+extern IEngineTrace* enginetrace;
+
+
+//---------------------------------------------------------------------------------
+// IVEngineServer visitor function.
+//---------------------------------------------------------------------------------
+template<class T>
+T IVEngineServer_Visitor(T cls)
 {
-	return enginetrace->GetPointContents(vecAbsPosition, ppEntity);
+	cls
+		.def("get_game_server_steamid",
+			&IVEngineServer::GetGameServerSteamID,
+			"Returns the SteamID of the game server.",
+			reference_existing_object_policy()
+		)
+
+		.def("get_server_version",
+			&IVEngineServer::GetServerVersion,
+			"Returns the version of the server."
+		)
+
+		.def("get_time",
+			&IVEngineServer::Time,
+			"Returns a high precision timer for doing profiling work"
+		)
+
+		.def("multiplayer_end_game",
+			&IVEngineServer::MultiplayerEndGame,
+			"Matchmaking"
+		)
+
+		.def("create_fake_client_ex",
+			&IVEngineServer::CreateFakeClientEx,
+			reference_existing_object_policy()
+		)
+	;
+
+	return cls;
 }
 
 
-#endif // _ENGINES_WRAP_BMS_H
+//---------------------------------------------------------------------------------
+// IEngineSound visitor function.
+//---------------------------------------------------------------------------------
+template<class T>
+T IEngineSound_Visitor(T cls)
+{
+	return cls;
+}
+
+#endif // _ENGINES_WRAP_PYTHON_BMS_H

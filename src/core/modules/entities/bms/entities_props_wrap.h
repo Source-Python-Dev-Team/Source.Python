@@ -24,9 +24,56 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_PROPS_WRAP_BMS_H
-#define _ENTITIES_PROPS_WRAP_BMS_H
+#ifndef _ENTITIES_PROPS_WRAP_PYTHON_BMS_H
+#define _ENTITIES_PROPS_WRAP_PYTHON_BMS_H
 
-// Nothing specific to BMS...
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "dt_send.h"
+#include "server_class.h"
+#include "entities_props_wrap.h"
 
-#endif // _ENTITIES_PROPS_WRAP_BMS_H
+
+//-----------------------------------------------------------------------------
+// Expose ServerClass.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_server_class(T _props, U ServerClass_)
+{
+	// Properties...
+	ServerClass_.def_readonly("name", &ServerClass::m_pNetworkName);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendProp.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop(T _props, U SendProp_)
+{
+	// Nothing specific to BMS...
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropType.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop_types(T _props, U SendPropType_)
+{
+	// Nothing specific to BMS...
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendPropVariant.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop_variant(T _props, U SendPropVariant)
+{
+	// Nothing specific to BMS...
+}
+
+
+#endif // _ENTITIES_PROPS_WRAP_PYTHON_BMS_H

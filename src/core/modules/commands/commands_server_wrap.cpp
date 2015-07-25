@@ -25,249 +25,62 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/call_python.h"
-//#include "boost/python/call.hpp"
-//#include "boost/shared_array.hpp"
-
-#include "boost/unordered_map.hpp"
-#include "utilities/sp_util.h"
 #include "utilities/wrap_macros.h"
+#include "commands_server.h"
+#include "export_main.h"
+#include "modules/memory/memory_tools.h"
 
-#include "commands_wrap.h"
-#include "commands_server_wrap.h"
-
-//-----------------------------------------------------------------------------
-// Externs.
-//-----------------------------------------------------------------------------
-extern ICvar* g_pCVar;
 
 //-----------------------------------------------------------------------------
-// ConVar Accessor class and registration
-//
-// NOTE: This is used to ensure any new ConCommands created get registered to the
-//	   active ICVar instance.
+// Externals.
 //-----------------------------------------------------------------------------
-class CPluginConVarAccessor : public IConCommandBaseAccessor
+extern CServerCommandManager* GetServerCommand(const char* szName,
+	const char* szHelpText = 0, int iFlags = 0);
+
+
+//-----------------------------------------------------------------------------
+// Forward declarations.
+//-----------------------------------------------------------------------------
+void export_server_command_manager(scope);
+
+
+//-----------------------------------------------------------------------------
+// Declare the _commands._server module.
+//-----------------------------------------------------------------------------
+DECLARE_SP_SUBMODULE(_commands, _server)
 {
-public:
-	virtual bool RegisterConCommandBase(ConCommandBase* pCommand)
-	{
-		g_pCVar->RegisterConCommand(pCommand);
-		return true;
-	}
-};
+	export_server_command_manager(_server);
 
-CPluginConVarAccessor g_ConVarAccessor;
-
-//-----------------------------------------------------------------------------
-// Registers the ConVar accessor above to take in new ConCommand requests.
-//-----------------------------------------------------------------------------
-void InitServerCommands()
-{
-	ConVar_Register(0, &g_ConVarAccessor);
+	// Helper functions...
+	def("get_server_command",
+		&GetServerCommand,
+		"Gets the ServerCommandDispatcher instance using just the name or also the helptext and/or flags",
+		("name", arg("help_text")=object(), arg("flags")=0),
+		reference_existing_object_policy()
+	);
 }
 
-//-----------------------------------------------------------------------------
-// Global server command mapping.
-//-----------------------------------------------------------------------------
-typedef boost::unordered_map<std::string, CServerCommandManager*> ServerCommandMap;
-ServerCommandMap g_ServerCommandMap;
 
 //-----------------------------------------------------------------------------
-// Returns a CServerCommandManager for the given command name.
+// Expose CServerCommandManager.
 //-----------------------------------------------------------------------------
-CServerCommandManager* GetServerCommand(const char* szName,
-	const char* szHelpText = 0, int iFlags = 0)
+void export_server_command_manager(scope _server)
 {
-	// Find if the given name is a registered server command
-	ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.find(szName);
-	if( commandMapIter == g_ServerCommandMap.end())
-	{
-		// If the command is not already registered, add the name and the CServerCommandManager instance to the mapping
-		g_ServerCommandMap.insert(std::make_pair(szName, CServerCommandManager::CreateCommand(szName, szHelpText, iFlags)));
+	class_<CServerCommandManager, bases<ConCommandBase>, boost::noncopyable>("ServerCommandDispatcher", no_init)
+		.def("add_callback",
+			&CServerCommandManager::AddCallback,
+			"Adds a callback to the server command's list.",
+			args("callable")
+		)
 
-		// Get the server command in the mapping
-		commandMapIter = g_ServerCommandMap.find(szName);
-	}
+		.def("remove_callback",
+			&CServerCommandManager::RemoveCallback,
+			"Removes a callback from the server command's list.",
+			args("callable")
+		)
 
-	// Return the CServerCommandManager instance for the command
-	return commandMapIter->second;
-}
-
-//-----------------------------------------------------------------------------
-// Removes a CServerCommandManager instance for the given name.
-//-----------------------------------------------------------------------------
-void RemoveCServerCommandManager(const char* szName)
-{
-	// Find if the given name is a registered server command
-	ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.find(szName);
-	if( commandMapIter != g_ServerCommandMap.end())
-	{
-		// If the command is registered, delete the CServerCommandManager instance
-		//		and remove the command from the mapping
-		delete commandMapIter->second;
-		g_ServerCommandMap.erase(commandMapIter);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Returns a CServerCommandManager instance.
-//-----------------------------------------------------------------------------
-CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
-	const char* szHelpText, int iFlags)
-{
-	// Copy the name and store a help text copier value
-	char* szNameCopy = strdup(szName);
-	char* szHelpTextCopy = NULL;
-
-	// FInd if the command already exists
-	ConCommand* pConCommand = g_pCVar->FindCommand(szName);
-	if( pConCommand )
-	{
-		// Store the current command's help text and flags
-		szHelpTextCopy = strdup(pConCommand->GetHelpText());
-		iFlags = pConCommand->GetFlags();
-
-		// Unregister the old command
-		g_pCVar->UnregisterConCommand(pConCommand);
-	}
-	else if( szHelpText != NULL )
-	{
-		// Store the given help text
-		szHelpTextCopy = strdup(szHelpText);
-	}
-
-	// Return a new instance of ConCommand
-	return new CServerCommandManager(pConCommand, szNameCopy, szHelpTextCopy, iFlags);
-}
-
-//-----------------------------------------------------------------------------
-// CServerCommandManager constructor.
-//-----------------------------------------------------------------------------
-CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
-		const char* szName, const char* szHelpText, int iFlags):
-	ConCommand(szName, (FnCommandCallback_t)NULL, szHelpText, iFlags),
-	m_pOldCommand(pConCommand)
-{
-	m_Name = szName;
-}
-
-//-----------------------------------------------------------------------------
-// CServerCommandManager destructor.
-//-----------------------------------------------------------------------------
-CServerCommandManager::~CServerCommandManager()
-{
-	// Get the ConCommand instance
-	ConCommand* pConCommand = g_pCVar->FindCommand(m_Name);
-
-	// Unregister the ConCommand
-	g_pCVar->UnregisterConCommand(pConCommand);
-
-	// Was the command registered before we registered it?
-	if( m_pOldCommand )
-	{
-		// Re-register the old command instance
-		g_pCVar->RegisterConCommand(m_pOldCommand);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// CServerCommandManager Init override.
-//-----------------------------------------------------------------------------
-void CServerCommandManager::Init()
-{
-	ConCommand::Init();
-}
-
-//-----------------------------------------------------------------------------
-// Adds a callable to a CServerCommandManager instance.
-//-----------------------------------------------------------------------------
-void CServerCommandManager::AddCallback( PyObject* pCallable )
-{
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
-	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Removes a callable from a CServerCommandManager instance.
-//-----------------------------------------------------------------------------
-void CServerCommandManager::RemoveCallback( PyObject* pCallable )
-{
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Remove the callback from the CServerCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
-
-	// Are there any more callbacks registered for this command?
-	if( !m_vecCallables.Count() )
-	{
-		// Remove the CServerCommandManager instance
-		RemoveCServerCommandManager(m_Name);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Calls all callables for the command when it is called on the server.
-//-----------------------------------------------------------------------------
-void CServerCommandManager::Dispatch( const CCommand& command )
-{
-	// Loop through all registered callbacks for the command
-	// (use equals also to know when to call the old callback)
-	for(int i = 0; i <= m_vecCallables.Count(); i++)
-	{
-
-		// Is the current iteration for a registered callback?
-		if( i < m_vecCallables.Count() )
-		{
-			
-			BEGIN_BOOST_PY()
-
-				// Get the PyObject instance of the callable
-				PyObject* pCallable = m_vecCallables[i].ptr();
-
-				// Call the callable and store its return value
-				object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command));
-
-				// Does the callable wish to block the command?
-				if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
-				{
-					// Block the command
-					break;
-				}
-
-			END_BOOST_PY_NORET()
-		}
-
-		// Was the command previously registered?
-		else if(m_pOldCommand)
-		{
-			// Call the old callback
-			m_pOldCommand->Dispatch(command);
-		}
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Removes all CServerCommandManager instances.
-//-----------------------------------------------------------------------------
-void ClearAllServerCommands()
-{
-	// Loop through all items in the mapping
-	for(ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.begin(); commandMapIter != g_ServerCommandMap.end(); ++commandMapIter)
-	{
-		// Remove the CServerCommandManager instance
-		delete commandMapIter->second;
-	}
-	// Clear the mapping
-	g_ServerCommandMap.clear();
+		ADD_MEM_TOOLS(CServerCommandManager)
+	;
 }

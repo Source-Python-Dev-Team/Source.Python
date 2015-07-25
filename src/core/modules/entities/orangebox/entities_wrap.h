@@ -24,53 +24,25 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_WRAP_ORANGEBOX_H
-#define _ENTITIES_WRAP_ORANGEBOX_H
+#ifndef _ENTITIES_WRAP_PYTHON_ORANGEBOX_H
+#define _ENTITIES_WRAP_PYTHON_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dt_send.h"
-#include "game/shared/ehandle.h"
-#include "isaverestore.h"
-#include "datamap.h"
-#include "game/shared/takedamageinfo.h"
+#include "entities.h"
 
 
 //-----------------------------------------------------------------------------
-// CTakeDamageInfo wrapper class.
+// Exports CTakeDamageInfo.
 //-----------------------------------------------------------------------------
-class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
+template<class T, class U>
+void export_engine_specific_take_damage_info(T _entities, U TakeDamageInfo)
 {
-public:
-	int get_penetrated()
-	{
-		return m_iPlayerPenetrationCount;
-	}
-	
-	void set_penetrated(int iPenetrated)
-	{
-		m_iPlayerPenetrationCount = iPenetrated;
-	}
-};
+	TakeDamageInfo.add_property("penetrated", &TakeDamageInfoExt::get_penetrated,
+		&TakeDamageInfoExt::set_penetrated
+	);
+}
 
 
-//-----------------------------------------------------------------------------
-// CTakeDamageInfo extension class.
-//-----------------------------------------------------------------------------
-class TakeDamageInfoExt
-{
-public:
-	static int get_penetrated(CTakeDamageInfo *pTakeDamageInfo)
-	{
-		return ((TakeDamageInfoWrapper *)pTakeDamageInfo)->get_penetrated();
-	}
-	
-	static void set_penetrated(CTakeDamageInfo *pTakeDamageInfo, int iPenetrated)
-	{
-		((TakeDamageInfoWrapper *)pTakeDamageInfo)->set_penetrated(iPenetrated);
-	}
-};
-
-
-#endif // _ENTITIES_WRAP_ORANGEBOX_H
+#endif // _ENTITIES_WRAP_PYTHON_ORANGEBOX_H

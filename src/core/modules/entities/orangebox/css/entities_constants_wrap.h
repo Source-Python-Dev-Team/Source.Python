@@ -24,14 +24,24 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
-#define _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
+#ifndef _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H
+#define _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H
 
 //-----------------------------------------------------------------------------
-// Damage types.
+// Includes.
 //-----------------------------------------------------------------------------
-#define DMG_HEADSHOT (1 << 30)
-#define DMG_LASTGENERICFLAG DMG_HEADSHOT
+#include "utilities/wrap_macros.h"
+#include "entities_constants.h"
 
 
-#endif // _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_H
+//-----------------------------------------------------------------------------
+// Expose damage types.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_game_specific_damage_types(T _constants)
+{
+	_constants.attr("DMG_HEADSHOT") = DMG_HEADSHOT;
+}
+
+
+#endif // _ENTITIES_CONSTANTS_ORANGEBOX_CSS_WRAP_PYTHON_H

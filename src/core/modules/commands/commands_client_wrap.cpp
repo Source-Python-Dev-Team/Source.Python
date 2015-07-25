@@ -25,211 +25,76 @@
 */
 
 //-----------------------------------------------------------------------------
-// Includes
+// Includes.
 //-----------------------------------------------------------------------------
-#include "commands_client_wrap.h"
-#include "commands_wrap.h"
-#include "edict.h"
-#include "convar.h"
-#include "engine/iserverplugin.h"
-#include "utilities/call_python.h"
-#include "boost/python/call.hpp"
-#include "boost/shared_array.hpp"
-#include "modules/listeners/listeners_manager.h"
+#include "commands_client.h"
+#include "export_main.h"
+#include "utilities/wrap_macros.h"
+#include "modules/memory/memory_tools.h"
+
 
 //-----------------------------------------------------------------------------
-// Externals
+// Externals.
 //-----------------------------------------------------------------------------
-extern IPlayerInfoManager* playerinfomanager;
+extern CClientCommandManager* GetClientCommand(const char* szName);
+
+extern void RegisterClientCommandFilter(PyObject* pCallable);
+extern void UnregisterClientCommandFilter(PyObject* pCallable);
+
 
 //-----------------------------------------------------------------------------
-// Global Client command mapping.
+// Forward declarations.
 //-----------------------------------------------------------------------------
-typedef boost::unordered_map<std::string, CClientCommandManager*> ClientCommandMap;
-ClientCommandMap g_ClientCommandMap;
+void export_client_command_manager(scope);
+
 
 //-----------------------------------------------------------------------------
-// Static singletons.
+// Declare the _commands._client module.
 //-----------------------------------------------------------------------------
-static CListenerManager s_ClientCommandFilters;
-
-//-----------------------------------------------------------------------------
-// Returns a CClientCommandManager for the given command name.
-//-----------------------------------------------------------------------------
-CClientCommandManager* GetClientCommand(const char* szName)
+DECLARE_SP_SUBMODULE(_commands, _client)
 {
-	// Find if the given name is a registered client command
-	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szName);
-	if( commandMapIter == g_ClientCommandMap.end())
-	{
-		// If the command is not already registered, add the name and the CClientCommandManager instance to the mapping
-		g_ClientCommandMap.insert(std::make_pair(szName, new CClientCommandManager(szName)));
+	export_client_command_manager(_client);
 
-		// Get the client command in the mapping
-		commandMapIter = g_ClientCommandMap.find(szName);
-	}
+	// Helper functions...
+	def("get_client_command",
+		GetClientCommand,
+		"Returns the ClientCommandDispatcher instance for the given command",
+		args("name"),
+		reference_existing_object_policy()
+	);
 
-	// Return the CClientCommandManager instance for the command
-	return commandMapIter->second;
+	def("register_client_command_filter",
+		RegisterClientCommandFilter,
+		"Registers a callable to be called when clients use commands.",
+		args("callable")
+	);
+
+	def("unregister_client_command_filter",
+		UnregisterClientCommandFilter,
+		"Unregisters a client command filter.",
+		args("callable")
+	);
 }
 
+
 //-----------------------------------------------------------------------------
-// Removes a CClientCommandManager instance for the given name.
+// Expose CClientCommandManager.
 //-----------------------------------------------------------------------------
-void RemoveCClientCommandManager(const char* szName)
+void export_client_command_manager(scope _client)
 {
-	// Find if the given name is a registered client command
-	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szName);
-	if( commandMapIter != g_ClientCommandMap.end())
-	{
-		// If the command is registered, delete the CClientCommandManager instance
-		//		and remove the command from the mapping
-		delete commandMapIter->second;
-		g_ClientCommandMap.erase(commandMapIter);
-	}
-}
+	class_<CClientCommandManager, boost::noncopyable>("ClientCommandDispatcher", no_init)
+		.def("add_callback",
+			&CClientCommandManager::AddCallback,
+			"Adds a callback to the client command's list.",
+			args("callable")
+		)
 
-//-----------------------------------------------------------------------------
-// Register function for client command filter.
-//-----------------------------------------------------------------------------
-void RegisterClientCommandFilter(PyObject* pCallable)
-{
-	s_ClientCommandFilters.RegisterListener(pCallable);
-}
+		.def("remove_callback",
+			&CClientCommandManager::RemoveCallback,
+			"Removes a callback from the client command's list.",
+			args("callable")
+		)
 
-//-----------------------------------------------------------------------------
-// Unregister function for client command filter.
-//-----------------------------------------------------------------------------
-void UnregisterClientCommandFilter(PyObject* pCallable)
-{
-	s_ClientCommandFilters.UnregisterListener(pCallable);
-}
-
-//-----------------------------------------------------------------------------
-// Dispatches a client command.
-//-----------------------------------------------------------------------------
-PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
-{
-	// Get the IPlayerInfo instance of the player
-	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEntity);
-
-	// Loop through all registered Client Command Filters
-	for(int i = 0; i < s_ClientCommandFilters.m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = s_ClientCommandFilters.m_vecCallables[i].ptr();
-
-			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), boost::ref(command));
-
-			// Does the Client Command Filter want to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
-			{
-				// Block the command
-				return PLUGIN_STOP;
-			}
-
-		END_BOOST_PY_NORET()
-	}
-
-	// Get the command's name
-	const char* szCommand = command.Arg(0);
-
-	// Find if the command exists in the mapping
-	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szCommand);
-	if( commandMapIter != g_ClientCommandMap.end() )
-	{
-		// If the command exists, get the CClientCommandManager instance and call its Dispatch method
-		CClientCommandManager* pCClientCommandManager = commandMapIter->second;
-
-		// Does the command need to be blocked?
-		if( !pCClientCommandManager->Dispatch(pPlayerInfo, command))
-		{
-			// Block the command
-			return PLUGIN_STOP;
-		}
-	}
-
-	return PLUGIN_CONTINUE;
-}
-
-//-----------------------------------------------------------------------------
-// CClientCommandManager constructor.
-//-----------------------------------------------------------------------------
-CClientCommandManager::CClientCommandManager(const char* szName)
-{
-	m_Name = szName;
-}
-
-//-----------------------------------------------------------------------------
-// CClientCommandManager destructor.
-//-----------------------------------------------------------------------------
-CClientCommandManager::~CClientCommandManager()
-{
-}
-
-//-----------------------------------------------------------------------------
-// Adds a callable to a CClientCommandManager instance.
-//-----------------------------------------------------------------------------
-void CClientCommandManager::AddCallback( PyObject* pCallable )
-{
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
-	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Removes a callable from a CClientCommandManager instance.
-//-----------------------------------------------------------------------------
-void CClientCommandManager::RemoveCallback( PyObject* pCallable )
-{
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Remove the callback from the CClientCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
-
-	// Are there any more callbacks registered for this command?
-	if( !m_vecCallables.Count() )
-	{
-		// Remove the CClientCommandManager instance
-		RemoveCClientCommandManager(m_Name);
-	}
-}
-
-//-----------------------------------------------------------------------------
-// Calls all callables for the command when it is called on the client.
-//-----------------------------------------------------------------------------
-CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, const CCommand& command )
-{
-	// Loop through all callables registered for the CClientCommandManager instance
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), boost::ref(command));
-
-			// Does the callable wish to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
-			{
-				// Block the command
-				return BLOCK;
-			}
-
-		END_BOOST_PY_NORET()
-	}
-
-	return CONTINUE;
+		ADD_MEM_TOOLS(CClientCommandManager)
+	;
 }

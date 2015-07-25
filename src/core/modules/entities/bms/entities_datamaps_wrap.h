@@ -24,31 +24,46 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_DATAMAP_BMS_WRAP_H
-#define _ENTITIES_DATAMAP_BMS_WRAP_H
+#ifndef _ENTITIES_DATAMAP_BMS_H
+#define _ENTITIES_DATAMAP_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "datamap.h"
+#include "entities_datamaps_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// typedescription_t extension class.
+// Exports datamap_t.
 //-----------------------------------------------------------------------------
-class TypeDescriptionExt
+template<class T, class U>
+void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
-public:
-	static int get_offset(const typedescription_t& pTypeDesc)
-	{
-		return pTypeDesc.fieldOffset[TD_OFFSET_NORMAL];
-	}
-	
-	static int get_packed_offset(const typedescription_t& pTypeDesc)
-	{
-		return pTypeDesc.fieldOffset[TD_OFFSET_PACKED];
-	}
-};
+	DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
+	DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
+	DataMap.def_readonly("packed_size", &datamap_t::packed_size);
+}
 
 
-#endif // _ENTITIES_DATAMAP_BMS_WRAP_H
+//-----------------------------------------------------------------------------
+// Exports typedescription_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_type_description(T _datamaps, U TypeDescription)
+{
+	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset)	;
+	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports fieldtype_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_field_types(T _datamaps, U FieldTypes)
+{
+	// Nothing specific to BMS...
+}
+
+
+#endif // _ENTITIES_DATAMAP_BMS_H

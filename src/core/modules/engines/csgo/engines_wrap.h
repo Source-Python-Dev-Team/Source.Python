@@ -24,54 +24,280 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_CSGO_H
-#define _ENGINES_WRAP_CSGO_H
+#ifndef _ENGINES_WRAP_PYTHON_CSGO_H
+#define _ENGINES_WRAP_PYTHON_CSGO_H
 
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
 // Includes.
-//-----------------------------------------------------------------------------
+//---------------------------------------------------------------------------------
+#include "eiface.h"
+#include "ispsharedmemory.h"
+#include "modules/messages/messages.h"
 #include "engine/IEngineSound.h"
+#include "engine/IEngineTrace.h"
 
 
-//-----------------------------------------------------------------------------
-// IEngineSound extension class.
-//-----------------------------------------------------------------------------
-class IEngineSoundExt
+//---------------------------------------------------------------------------------
+// External variables.
+//---------------------------------------------------------------------------------
+extern IEngineTrace* enginetrace;
+
+
+//---------------------------------------------------------------------------------
+// IVEngineServer visitor function.
+//---------------------------------------------------------------------------------
+template<class T>
+T IVEngineServer_Visitor(T cls)
 {
-public:
-	static void EmitSound(IEngineSound* pEngineSound, IRecipientFilter& filter, int iEntIndex, int iChannel, const char *pSample, 
-		float flVolume, float flAttenuation, int iFlags, int iPitch, const Vector *pOrigin, const Vector *pDirection,
-		tuple origins, bool bUpdatePositions, float soundtime, int speakerentity)
-	{
-		CUtlVector<Vector> *pUtlVecOrigins = NULL;
-		CUtlVector<Vector> vecOrigins;
-		if (len(origins) > 0)
-		{
-			pUtlVecOrigins = &vecOrigins;
-			for(int i=0; i < len(origins); i++)
-			{
-				vecOrigins.AddToTail(extract<Vector>(origins[i]));
-			}
-		}
+	cls
+		.def("get_game_server_steamid",
+			&IVEngineServer::GetGameServerSteamID,
+			"Returns the SteamID of the game server.",
+			reference_existing_object_policy()
+		)
+
+		.def("get_server_version",
+			&IVEngineServer::GetServerVersion,
+			"Returns the version of the server."
+		)
+
+		.def("get_launch_options",
+			&IVEngineServer::GetLaunchOptions,
+			"Returns abitrary launch options",
+			reference_existing_object_policy()
+		)
+
+		.def("is_userid_in_use",
+			&IVEngineServer::IsUserIDInUse,
+			"Returns whether the user ID is in use.",
+			args("userid")
+		)
+
+		.def("get_loading_process_for_userid",
+			&IVEngineServer::GetLoadingProgressForUserID,
+			args("userid")
+		)
+
+		.def("is_log_enabled",
+			&IVEngineServer::IsLogEnabled,
+			"Returns whether logging is enabled."
+		)
+
+		.def("get_timescale",
+			&IVEngineServer::GetTimescale
+		)
+
+		.def("is_level_main_menu_background",
+			&IVEngineServer::IsLevelMainMenuBackground,
+			"Returns whether the engine is running a background map."
+		)
+
+		.def("is_any_client_low_violence",
+			&IVEngineServer::IsAnyClientLowViolence,
+			args("ent_num")
+		)
+
+		.def("is_split_screen_player",
+			&IVEngineServer::IsSplitScreenPlayer,
+			args("ent_num")
+		)
+
+		.def("get_split_screen_player_attack_to_edict",
+			&IVEngineServer::GetSplitScreenPlayerAttachToEdict,
+			args("ent_num"),
+			reference_existing_object_policy()
+		)
+
+		.def("get_num_split_screen_users_attached_to_edict",
+			&IVEngineServer::GetNumSplitScreenUsersAttachedToEdict,
+			args("ent_num")
+		)
+
+		.def("get_split_screen_player_for_edict",
+			&IVEngineServer::GetSplitScreenPlayerForEdict,
+			args("ent_num", "slot"),
+			reference_existing_object_policy()
+		)
+
+		.def("is_override_load_game_ents_on",
+			&IVEngineServer::IsOverrideLoadGameEntsOn
+		)
+
+		.def("force_flush_entity",
+			&IVEngineServer::ForceFlushEntity,
+			args("entity")
+		)
+
+		.def("get_single_player_shared_memory_space",
+			&IVEngineServer::GetSinglePlayerSharedMemorySpace,
+			"Finds or creates a shared memory_space.",
+			("name", arg("ent_num")=MAX_EDICTS),
+			reference_existing_object_policy()
+		)
+
+		/*
+		// TODO: void*
+		.def("alloc_level_specific_data",
+			&IVEngineServer::AllocLevelStaticData,
+			"Allocates hunk memory.",
+			args("bytes"),
+			reference_existing_object_policy()
+		)
+		*/
+
+		.def("is_creating_reslist",
+			&IVEngineServer::IsCreatingReslist
+		)
+
+		.def("is_creating_xbox_reslist",
+			&IVEngineServer::IsCreatingXboxReslist
+		)
+
+		.def("is_dedicated_server_for_xbox",
+			&IVEngineServer::IsDedicatedServerForXbox
+		)
+
+		.def("is_dedicated_server_for_ps3",
+			&IVEngineServer::IsDedicatedServerForPS3
+		)
+
+		.def("pause",
+			&IVEngineServer::Pause,
+			args("pause", "force")
+		)
+
+		.def("set_timescale",
+			&IVEngineServer::SetTimescale,
+			args("timescale")
+		)
+
+		.def("host_validated_session",
+			&IVEngineServer::HostValidateSession,
+			"Validates session."
+		)
+
+		.def("refresh_screen_if_necessary",
+			&IVEngineServer::RefreshScreenIfNecessary,
+			"Update the 360 pacifier/spinner."
+		)
+
+		.def("has_paint_map",
+			&IVEngineServer::HasPaintmap,
+			"Tells the engine to allocate paint surfaces."
+		)
+		/*
+		.def("sphere_paint_surface",
+			&IVEngineServer::SpherePaintSurface,
+			args("model", "vector", "uchar", "float", "float")
+		)
+
+		.def("sphere_trace_paint_surface",
+			&IVEngineServer::SphereTracePaintSurface,
+			args("model", "vector", "vector", "float", "CUtlVector<unsigned char>")
+		)
+		*/
+
+		.def("remove_all_paint",
+			&IVEngineServer::RemoveAllPaint
+		)
+
+		.def("paint_all_surfaces",
+			&IVEngineServer::PaintAllSurfaces,
+			args("uchar")
+		)
+
+		/*
+		.def("remove_paint",
+			&IVEngineServer::RemovePaint,
+			args("model")
+		)
+		*/
+
+		.def("get_client_xuid",
+			&IVEngineServer::GetClientXUID,
+			args("edict")
+		)
+
+		.def("is_active_app",
+			&IVEngineServer::IsActiveApp
+		)
+
+		.def("set_noclip_enabled",
+			&IVEngineServer::SetNoClipEnabled,
+			args("enabled")
+		)
+
+		.def("get_paint_map_data_rle",
+			&IVEngineServer::GetPaintmapDataRLE,
+			args("mapdata")
+		)
+
+		.def("load_paint_map_data_rle",
+			&IVEngineServer::LoadPaintmapDataRLE,
+			args("mapdata")
+		)
+
+		.def("send_paint_map_data_to_client",
+			&IVEngineServer::SendPaintmapDataToClient,
+			args("edict")
+		)
+
+		.def("get_latency_for_choreo_sounds",
+			&IVEngineServer::GetLatencyForChoreoSounds
+		)
+
+		.def("get_client_cross_player_platform",
+			&IVEngineServer::GetClientCrossPlayPlatform,
+			args("ent_num")
+		)
+
+		.def("ensure_instance_baseline",
+			&IVEngineServer::EnsureInstanceBaseline,
+			args("ent_num")
+		)
+
+		.def("reserve_server_for_queued_game",
+			&IVEngineServer::ReserveServerForQueuedGame,
+			args("reservation_payload")
+		)
 		
-		pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, -1, pSample, flVolume, flAttenuation, 0, iFlags, iPitch, pOrigin, pDirection,
-			pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
-	}
+		/*
+		.def("get_engine_hltv_info",
+			&IVEngineServer::GetEngineHltvInfo,
+			args("out")
+		)
+		*/
+	;
 
-	static void StopSound(IEngineSound* pEngineSound, int iEntIndex, int iChannel, const char *pSample)
-	{
-		pEngineSound->StopSound(iEntIndex, iChannel, pSample, -1);
-	}
-};
-
-
-//---------------------------------------------------------------------------------
-// IEngineTrace
-//---------------------------------------------------------------------------------
-inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
-{
-	return enginetrace->GetPointContents(vecAbsPosition, MASK_ALL, ppEntity);
+	return cls;
 }
 
 
-#endif // _ENGINES_WRAP_CSGO_H
+//---------------------------------------------------------------------------------
+// IEngineSound
+//---------------------------------------------------------------------------------
+// Visitor function
+template<class T>
+T IEngineSound_Visitor(T cls)
+{
+	cls
+		.def("is_looping_sound",
+			&IEngineSound::IsLoopingSound,
+			args("sample"),
+			"Returns True if the given sample is looping."
+		)
+	;
+	
+	scope().attr("CONTENTS_BLOCKLIGHT") = CONTENTS_BLOCKLIGHT;
+
+	scope().attr("SURF_NOPAINT") = SURF_NOPAINT;
+
+	scope().attr("MASK_NPCFLUID") = MASK_NPCFLUID;
+	scope().attr("MASK_SHOT_BRUSHONLY") = MASK_SHOT_BRUSHONLY;
+	scope().attr("MASK_NPCWORLDSTATIC_FLUID") = MASK_NPCWORLDSTATIC_FLUID;
+
+	return cls;
+}
+
+
+#endif // _ENGINES_WRAP_PYTHON_CSGO_H
