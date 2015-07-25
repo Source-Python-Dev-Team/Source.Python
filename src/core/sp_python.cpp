@@ -197,9 +197,6 @@ bool CPythonManager::Shutdown( void )
 		Msg(MSG_PREFIX "Failed to unload the main module.\n");
 		return false;
 	}
-	
-	DevMsg(1, MSG_PREFIX "Finalizing python...\n");
-	Py_Finalize();
 	return true;
 }
 
