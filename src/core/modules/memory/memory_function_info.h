@@ -380,7 +380,12 @@ DataType_t TypeToDataType_t()
     if (boost::is_same<T, double>::value)
         return DATA_TYPE_DOUBLE;
 
+	if (boost::is_enum<T>::value)
+		return DATA_TYPE_INT;
+
     puts("Unknown data type!");
+	puts(typeid(_T).name());
+	puts(typeid(T).name());
     return DATA_TYPE_POINTER;
 }
 
