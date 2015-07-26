@@ -63,11 +63,6 @@ class Entity(BaseEntity, _EntitySpecials):
         # Initialize the object
         super(Entity, self).__init__(index)
 
-        # Set the entity's base attributes
-        self._index = index
-        self._edict = edict
-        self._pointer = pointer_from_edict(edict)
-
         # Return the instance
         return self
 
@@ -180,35 +175,10 @@ class Entity(BaseEntity, _EntitySpecials):
         return cls(index_from_pointer(ptr))
 
     @property
-    def index(self):
-        """Return the entity's index."""
-        return self._index
-
-    @property
-    def edict(self):
-        """Return the entity's edict instance."""
-        return self._edict
-
-    @property
-    def pointer(self):
-        """Return the entity's pointer."""
-        return self._pointer
-
-    @property
     def instances(self):
         """Yield the entity's base instances."""
         yield self.edict
         yield self.pointer
-
-    @property
-    def basehandle(self):
-        """Return the entity's BaseEntityHandle instance."""
-        return self.edict.networkable.get_entity_handle().get_ref_ehandle()
-
-    @property
-    def inthandle(self):
-        """Return the entity's integer handle."""
-        return self.basehandle.to_int()
 
     @property
     def classname(self):

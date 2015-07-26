@@ -31,7 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 // #include "game/shared/predictioncopy.h"
-#include "entities_datamaps_wrap.h"
+#include "entities_datamaps.h"
 
 
 //-----------------------------------------------------------------------------

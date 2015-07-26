@@ -36,7 +36,7 @@
 #include "eiface.h"
 #include "utilities/shared_utils.h"
 #include "export_main.h"
-#include "modules/entities/entities_entity_wrap.h"
+#include "modules/entities/entities_entity.h"
 #include "icommandline.h"
 
 BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)

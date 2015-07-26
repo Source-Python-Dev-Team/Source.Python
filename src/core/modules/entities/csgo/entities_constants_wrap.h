@@ -31,7 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
-#include "entities_constants_wrap.h"
+#include "entities_constants.h"
 
 
 //-----------------------------------------------------------------------------
