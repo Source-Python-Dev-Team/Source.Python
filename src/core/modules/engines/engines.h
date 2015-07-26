@@ -34,6 +34,7 @@
 #include "engine/iserverplugin.h"
 #include "eiface.h"
 #include "engine/IEngineTrace.h"
+#include "iserver.h"
 
 #include ENGINE_INCLUDE_PATH(engines.h)
 
@@ -164,6 +165,19 @@ public:
 		Ray_t* pRay = new Ray_t;
 		pRay->Init(vec1, vec2, vec3, vec4);
 		return pRay;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// IServer extension class.
+//-----------------------------------------------------------------------------
+class IServerExt
+{
+public:
+	static void* GetClient(IServer* pServer, int iIndex)
+	{
+		return (void *) pServer->GetClient(iIndex);
 	}
 };
 

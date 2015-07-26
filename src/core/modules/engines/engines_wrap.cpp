@@ -51,6 +51,7 @@
 #include "engine/iserverplugin.h"
 #include "public/worldsize.h"
 #include "engines.h"
+#include "iserver.h"
 
 #include ENGINE_INCLUDE_PATH(engines_wrap.h)
 
@@ -75,6 +76,7 @@ void export_engine_sound(scope);
 void export_engine_trace(scope);
 void export_server_game_dll(scope);
 void export_worldsize(scope);
+void export_iserver(scope);
 
 
 //---------------------------------------------------------------------------------
@@ -88,6 +90,7 @@ DECLARE_SP_MODULE(_engines)
 	export_engine_trace(_engines);
 	export_server_game_dll(_engines);
 	export_worldsize(_engines);
+	export_iserver(_engines);
 }
 
 
@@ -1265,4 +1268,197 @@ void export_worldsize(scope _engines)
 	_engines.attr("MAX_TRACE_LENGTH") = MAX_TRACE_LENGTH;
 
 	_engines.attr("MAX_COORD_RANGE") = MAX_COORD_RANGE;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports IServer.
+//-----------------------------------------------------------------------------
+void export_iserver(scope _engines)
+{
+	class_<IConnectionlessPacketHandler, IConnectionlessPacketHandler*, boost::noncopyable> _IConnectionlessPacketHandler("ConnectionlessPacketHandler", no_init);
+
+	_IConnectionlessPacketHandler.def(
+		"process_connectionless_packet",
+		&IConnectionlessPacketHandler::ProcessConnectionlessPacket
+	);
+
+
+	class_< IServer, IServer*, bases<IConnectionlessPacketHandler>, boost::noncopyable > _IServer("Server", no_init);
+
+	_IServer.def(
+		"get_num_clients",
+		&IServer::GetNumClients,
+		"Return the current number of clients."
+	);
+
+	_IServer.def(
+		"get_num_proxies",
+		&IServer::GetNumProxies,
+		"Return the number of attached HLTV proxies."
+	);
+
+	_IServer.def(
+		"get_num_fake_clients",
+		&IServer::GetNumFakeClients,
+		"Return the number of fake clients."
+	);
+
+	_IServer.def(
+		"get_max_clients",
+		&IServer::GetMaxClients,
+		"Return the current client limit."
+	);
+
+	_IServer.def(
+		"get_client",
+		&IServerExt::GetClient,
+		"Return the interface to a client.",
+		return_by_value_policy()
+	);
+
+	_IServer.def(
+		"get_client_count",
+		&IServer::GetClientCount,
+		"Return the number of client slots (used and unused)."
+	);
+
+	_IServer.def(
+		"get_udp_port",
+		&IServer::GetUDPPort,
+		"Return the currently used UDP port."
+	);
+
+	_IServer.def(
+		"get_time",
+		&IServer::GetTime,
+		"Return the game world time."
+	);
+
+	_IServer.def(
+		"get_tick",
+		&IServer::GetTick,
+		"Return the game world tick."
+	);
+
+	_IServer.def(
+		"get_tick_interval",
+		&IServer::GetTickInterval,
+		"Return the tick interval in seconds."
+	);
+
+	_IServer.def(
+		"get_name",
+		&IServer::GetName,
+		"Return the public server name"
+	);
+
+	_IServer.def(
+		"get_map_name",
+		&IServer::GetMapName,
+		"Return the current map name."
+	);
+
+	_IServer.def(
+		"get_spawn_count",
+		&IServer::GetSpawnCount
+	);
+
+	_IServer.def(
+		"get_num_classes",
+		&IServer::GetNumClasses
+	);
+
+	_IServer.def(
+		"get_class_bits",
+		&IServer::GetClassBits
+	);
+
+	_IServer.def(
+		"get_net_stats",
+		&IServer::GetNetStats,
+		"Total net in/out in bytes/sec."
+	);
+
+	_IServer.def(
+		"get_num_players",
+		&IServer::GetNumPlayers
+	);
+
+	_IServer.def(
+		"get_player_info",
+		&IServer::GetPlayerInfo
+	);
+
+	_IServer.def(
+		"is_active",
+		&IServer::IsActive
+	);
+
+	_IServer.def(
+		"is_loading",
+		&IServer::IsLoading
+	);
+
+	_IServer.def(
+		"is_dedicated",
+		&IServer::IsDedicated
+	);
+
+	_IServer.def(
+		"is_paused",
+		&IServer::IsPaused
+	);
+
+	_IServer.def(
+		"is_multiplayer",
+		&IServer::IsMultiplayer
+	);
+
+	_IServer.def(
+		"is_pausable",
+		&IServer::IsPausable
+	);
+
+	_IServer.def(
+		"is_hltv",
+		&IServer::IsHLTV
+	);
+
+	_IServer.def(
+		"is_replay",
+		&IServer::IsReplay
+	);
+
+	_IServer.def(
+		"get_password",
+		&IServer::GetPassword
+	);
+
+	_IServer.def(
+		"set_paused",
+		&IServer::SetPaused
+	);
+
+	_IServer.def(
+		"set_password",
+		&IServer::SetPassword
+	);
+
+	_IServer.def(
+		"broadcast_message",
+		GET_METHOD(void, IServer, BroadcastMessage, INetMessage&, bool, bool)
+	);
+
+	_IServer.def(
+		"broadcast_message",
+		GET_METHOD(void, IServer, BroadcastMessage, INetMessage&, IRecipientFilter&)
+	);
+
+	_IServer.def(
+		"disconnect_client",
+		&IServer::DisconnectClient
+	);
+
+	_IServer ADD_MEM_TOOLS(IServer)
 }
