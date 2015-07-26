@@ -284,6 +284,7 @@ Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
     core/modules/memory/memory_hooks.h
     core/modules/memory/memory_pointer.h
     core/modules/memory/memory_scanner.h
+    core/modules/memory/memory_signature.h
     core/modules/memory/memory_tools.h
     core/modules/memory/memory_utilities.h
     core/modules/memory/memory_wrap.h

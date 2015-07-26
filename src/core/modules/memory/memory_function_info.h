@@ -313,6 +313,7 @@ template<> struct MFI_Impl<4*SH_PTRSIZE>   // THE BIGGEST ONE!!!1GABEN
 // ============================================================================
 // >> INCLUDES
 // ============================================================================
+#include "memory_signature.h"
 #include "memory_calling_convention.h"
 #include "memory_tools.h"
 
@@ -474,7 +475,7 @@ inline CFunctionInfo* GetFunctionInfo(Function func)
     pInfo->m_iVtableOffset = out.vtbloffs;
     
     // Get return type and parameters
-    FunctionAnalyzer(boost::python::detail::get_signature(func), *pInfo);
+    FunctionAnalyzer(memory::get_signature(func), *pInfo);
 
     // Get calling convention
     pInfo->m_eCallingConvention = GetCallingConvention(func);
