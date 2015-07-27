@@ -248,6 +248,22 @@ void export_convar(scope _cvars)
 
 		ADD_MEM_TOOLS(ConVar)
 	;
+
+	BEGIN_CLASS_INFO(ConVar)
+		FUNCTION_INFO(GetFloat)
+		FUNCTION_INFO(GetInt)
+		FUNCTION_INFO(GetBool)
+		FUNCTION_INFO(GetString)
+		FUNCTION_INFO(Revert)
+		FUNCTION_INFO(GetDefault)
+		FUNCTION_INFO(GetMin)
+		FUNCTION_INFO(GetMax)
+		BEGIN_FUNCTION_INFO_LIST("SetValue")
+			FUNCTION_INFO_OVERLOAD(void, SetValue, const char*)
+			FUNCTION_INFO_OVERLOAD(void, SetValue, float)
+			FUNCTION_INFO_OVERLOAD(void, SetValue, int)
+		END_FUNCTION_INFO_LIST()
+	END_CLASS_INFO()
 }
 
 
