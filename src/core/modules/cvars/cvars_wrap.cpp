@@ -162,6 +162,16 @@ void export_convar_interface(scope _cvars)
 
 		ADD_MEM_TOOLS(IConVar)
 	;
+
+	BEGIN_CLASS_INFO(IConVar)
+		BEGIN_FUNCTION_INFO_LIST("FindVar")
+			FUNCTION_INFO_OVERLOAD(void, SetValue, const char*)
+			FUNCTION_INFO_OVERLOAD(void, SetValue, float)
+			FUNCTION_INFO_OVERLOAD(void, SetValue, int)
+		END_FUNCTION_INFO_LIST()
+		FUNCTION_INFO(GetName)
+		FUNCTION_INFO(IsFlagSet)
+	END_CLASS_INFO()
 }
 
 
