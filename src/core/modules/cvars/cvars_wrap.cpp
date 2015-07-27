@@ -110,6 +110,20 @@ void export_cvar_interface(scope _cvars)
 		ADD_MEM_TOOLS(ICvar)
 	;
 
+	BEGIN_CLASS_INFO(ICvar)
+		FUNCTION_INFO(RegisterConCommand)
+		FUNCTION_INFO(UnregisterConCommand)
+		BEGIN_FUNCTION_INFO_LIST("FindCommandBase")
+			FUNCTION_INFO_OVERLOAD(ConCommandBase*, FindCommandBase, const char *)
+			FUNCTION_INFO_CONST_OVERLOAD(const ConCommandBase*, FindCommandBase, const char *)
+		END_FUNCTION_INFO_LIST()
+		BEGIN_FUNCTION_INFO_LIST("FindVar")
+			FUNCTION_INFO_OVERLOAD(ConVar*, FindVar, const char *)
+			FUNCTION_INFO_CONST_OVERLOAD(const ConVar*, FindVar, const char *)
+		END_FUNCTION_INFO_LIST()
+		FUNCTION_INFO(CallGlobalChangeCallbacks)
+	END_CLASS_INFO()
+
 	_cvars.attr("cvar") = object(ptr(g_pCVar));
 }
 
