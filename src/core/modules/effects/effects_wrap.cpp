@@ -114,6 +114,13 @@ void export_prediction_system(scope _effects)
 
 		ADD_MEM_TOOLS(IPredictionSystem)
 	;
+
+	BEGIN_CLASS_INFO(IPredictionSystem)
+		FUNCTION_INFO(GetNext)
+		FUNCTION_INFO(SetSuppressEvent)
+		FUNCTION_INFO(CanPredict)
+		FUNCTION_INFO(SuppressEvents)
+	END_CLASS_INFO()
 }
 
 
@@ -163,7 +170,6 @@ void export_temp_entities_system(scope _effects)
 	TempEntities.def("gauss_explosion", &ITempEntsSystem::GaussExplosion);
 	TempEntities.def("physics_prop", &ITempEntsSystem::PhysicsProp);
 	TempEntities.def("trigger_temp_entity", &ITempEntsSystem::TriggerTempEntity);
-
 	TempEntities.def("fizz", &ITempEntsSystem::Fizz);
 	TempEntities.def("client_projectile", &ITempEntsSystem::ClientProjectile);
 
@@ -175,6 +181,49 @@ void export_temp_entities_system(scope _effects)
 
 	// Add memory tools...
 	TempEntities ADD_MEM_TOOLS(ITempEntsSystem);
+
+	BEGIN_CLASS_INFO(ITempEntsSystem)
+		FUNCTION_INFO(ArmorRicochet)
+		FUNCTION_INFO(BeamEntPoint)
+		FUNCTION_INFO(BeamEnts)
+		FUNCTION_INFO(BeamFollow)
+		FUNCTION_INFO(BeamPoints)
+		FUNCTION_INFO(BeamLaser)
+		FUNCTION_INFO(BeamRing)
+		FUNCTION_INFO(BeamRingPoint)
+		FUNCTION_INFO(BeamSpline)
+		FUNCTION_INFO(BloodStream)
+		FUNCTION_INFO(BloodSprite)
+		FUNCTION_INFO(BreakModel)
+		FUNCTION_INFO(BSPDecal)
+		FUNCTION_INFO(ProjectDecal)
+		FUNCTION_INFO(Bubbles)
+		FUNCTION_INFO(BubbleTrail)
+		FUNCTION_INFO(Decal)
+		FUNCTION_INFO(DynamicLight)
+		FUNCTION_INFO(Explosion)
+		FUNCTION_INFO(ShatterSurface)
+		FUNCTION_INFO(GlowSprite)
+		FUNCTION_INFO(FootprintDecal)
+		FUNCTION_INFO(KillPlayerAttachments)
+		FUNCTION_INFO(LargeFunnel)
+		FUNCTION_INFO(MetalSparks)
+		FUNCTION_INFO(EnergySplash)
+		FUNCTION_INFO(PlayerDecal)
+		FUNCTION_INFO(ShowLine)
+		FUNCTION_INFO(Smoke)
+		FUNCTION_INFO(Sparks)
+		FUNCTION_INFO(Sprite)
+		FUNCTION_INFO(SpriteSpray)
+		FUNCTION_INFO(WorldDecal)
+		FUNCTION_INFO(MuzzleFlash)
+		FUNCTION_INFO(Dust)
+		FUNCTION_INFO(GaussExplosion)
+		FUNCTION_INFO(PhysicsProp)
+		FUNCTION_INFO(TriggerTempEntity)
+		FUNCTION_INFO(Fizz)
+		FUNCTION_INFO(ClientProjectile)
+	END_CLASS_INFO()
 }
 
 
