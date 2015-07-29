@@ -47,17 +47,14 @@ from _memory import make_object
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('BinaryFile',
+           'CLASS_INFO',
            'Callback',
            'CallingConvention',
-           'CLASS_INFO',
            'Convention',
            'DataType',
            'EXPOSED_CLASSES',
            'Function',
            'FunctionInfo',
-           'get_class',
-           'get_class_info',
-           'get_class_name',
            'NULL',
            'Pointer',
            'ProcessorRegister',
@@ -67,11 +64,15 @@ __all__ = ('BinaryFile',
            'TYPE_SIZES',
            'alloc',
            'find_binary',
+           'get_class',
+           'get_class_info',
+           'get_class_name',
            'get_data_type_size',
            'get_function_info',
            'get_object_pointer',
            'get_size',
-           'make_object',
+           'get_virtual_function',
+           'make_object'
            )
 
 
@@ -145,7 +146,7 @@ class Callback(AutoUnload, Function):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def get_function(obj, function_name, function_index=0):
+def get_virtual_function(obj, function_name, function_index=0):
     """Return a Function object created by using a FunctionInfo object.
 
     @param <obj>:

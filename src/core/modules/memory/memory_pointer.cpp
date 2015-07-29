@@ -176,14 +176,8 @@ CFunction* CPointer::MakeFunction(CFunctionInfo& info)
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
-	if (!info.m_bIsVirtual)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not a virtual function.")
-
-	void** vtable = *(void ***) (this->m_ulAddr + info.m_iVtableOffset);
-	void* pFunc = vtable[info.m_iVtableIndex];
-
 	return new CFunction(
-		(unsigned long) pFunc, 
+		(unsigned long) this, 
 		object(info.m_eCallingConvention),
 		info.GetArgumentTypes(), 
 		object(info.m_eReturnType)
@@ -201,6 +195,25 @@ CFunction* CPointer::MakeFunction(object oCallingConvention, object oArgs, objec
 CFunction* CPointer::MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type)
 {
 	return GetVirtualFunc(iIndex)->MakeFunction(oCallingConvention, args, return_type);
+}
+
+CFunction* CPointer::MakeVirtualFunction(CFunctionInfo& info)
+{
+	if (!IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+
+	if (!info.m_bIsVirtual)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not a virtual function.")
+
+	void** vtable = *(void ***) (this->m_ulAddr + info.m_iVtableOffset);
+	void* pFunc = vtable[info.m_iVtableIndex];
+
+	return new CFunction(
+		(unsigned long) pFunc, 
+		object(info.m_eCallingConvention),
+		info.GetArgumentTypes(), 
+		object(info.m_eReturnType)
+	);
 }
 
 void CPointer::CallCallback(PyObject* self, char* szCallback)

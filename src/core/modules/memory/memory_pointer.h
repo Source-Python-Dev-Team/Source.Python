@@ -128,6 +128,7 @@ public:
 	CFunction*			MakeFunction(CFunctionInfo& info);
 	CFunction*			MakeFunction(object oCallingConvention, object args, object return_type);
 	CFunction*			MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type);
+	CFunction*			MakeVirtualFunction(CFunctionInfo& info);
 
 	static void         CallCallback(PyObject* self, char* szCallback);
 	static void         PreDealloc(PyObject* self);

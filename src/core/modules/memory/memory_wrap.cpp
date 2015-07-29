@@ -226,16 +226,22 @@ void export_pointer(scope _memory)
 
 		.def("make_function",
 			GET_METHOD(CFunction*, CPointer, MakeFunction, CFunctionInfo&),
-			"Create a new Function instance.",
+			"Use the given FunctionInfo object to convert the pointer into a Function object.",
 			("info"),
 			manage_new_object_policy()
 		)
 
-
 		.def("make_virtual_function",
-			&CPointer::MakeVirtualFunction,
+			GET_METHOD(CFunction*, CPointer, MakeVirtualFunction, int, object, object, object),
 			"Creates a new Function instance.",
 			args("index", "convention", "arguments", "return_type"),
+			manage_new_object_policy()
+		)
+
+		.def("make_virtual_function",
+			GET_METHOD(CFunction*, CPointer, MakeVirtualFunction, CFunctionInfo&),
+			"Use the given FunctionInfo object to retrieve a virtual function and convert it into a Function object.",
+			("info"),
 			manage_new_object_policy()
 		)
 
