@@ -46,20 +46,17 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
     """Class used to interact directly with players."""
 
-    def __new__(cls, index):
-        """Set the "entities" attribute and set the PlayerInfo."""
-        # Get the "self" object using the super class' __new__
-        self = super(PlayerEntity, cls).__new__(cls, index)
-
-        # Set the player's playerinfo attribute
-        self._playerinfo = playerinfo_from_index(self.index)
-
-        # Return the instance
-        return self
+    def __init__(self, index):
+        """Initialize the PlayerEntity object."""
+        super(PlayerEntity, self).__init__(index)
+        self._playerinfo = None
 
     @property
     def playerinfo(self):
         """Return the player's IPlayerInfo instance."""
+        if self._playerinfo is None:
+            self._playerinfo = playerinfo_from_index(self.index)
+
         return self._playerinfo
 
     @property

@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Memory
+import memory
 #   Engines
 from engines.precache import Model
 #   Entities
@@ -14,7 +16,6 @@ from entities.constants import RenderMode
 from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
-from entities.helpers import pointer_from_edict
 from entities.helpers import spawn_entity
 from entities.specials import _EntitySpecials
 #   Memory
@@ -44,6 +45,16 @@ __all__ = ('BaseEntity',
 class Entity(BaseEntity, _EntitySpecials):
 
     """Class used to interact directly with entities."""
+
+    def __init__(self, index):
+        """Initialize the Entity object."""
+        # Initialize the object
+        super(Entity, self).__init__(index)
+
+        # Set the entity's base attributes
+        self._index = index
+        self._edict = None
+        self._pointer = None
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
@@ -154,10 +165,41 @@ class Entity(BaseEntity, _EntitySpecials):
         return cls(index_from_pointer(ptr))
 
     @property
+    def index(self):
+        """Return the entity's index."""
+        return self._index
+
+    @property
+    def edict(self):
+        """Return the entity's edict instance."""
+        if self._edict is None:
+            self._edict = edict_from_index(self.index)
+
+        return self._edict
+
+    @property
+    def pointer(self):
+        """Return the entity's pointer."""
+        if self._pointer is None:
+            self._pointer = memory.get_object_pointer(self)
+
+        return self._pointer
+
+    @property
     def instances(self):
         """Yield the entity's base instances."""
         yield self.edict
         yield self.pointer
+
+    @property
+    def basehandle(self):
+        """Return the entity's BaseEntityHandle instance."""
+        return self.edict.networkable.get_entity_handle().get_ref_ehandle()
+
+    @property
+    def inthandle(self):
+        """Return the entity's integer handle."""
+        return self.basehandle.to_int()
 
     @property
     def classname(self):
