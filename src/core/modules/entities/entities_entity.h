@@ -136,6 +136,31 @@ public:
 			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
 				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
 	}
+
+	static edict_t* GetEdict(CBaseEntity* pBaseEntity)
+	{
+		return EdictFromBaseEntity(pBaseEntity);
+	}
+	
+	static int GetIndex(CBaseEntity* pBaseEntity)
+	{
+		return IndexFromBaseEntity(pBaseEntity);
+	}
+	
+	static CPointer* GetPointer(CBaseEntity* pBaseEntity)
+	{
+		return PointerFromBaseEntity(pBaseEntity);
+	}
+	
+	static CBaseHandle GetBaseHandle(CBaseEntity* pBaseEntity)
+	{
+		return BaseHandleFromBaseEntity(pBaseEntity);
+	}
+	
+	static int GetIntHandle(CBaseEntity* pBaseEntity)
+	{
+		return IntHandleFromBaseEntity(pBaseEntity);
+	}
 };
 
 

@@ -81,11 +81,11 @@ void export_base_entity(scope _entity)
 		"The DataMap instance of this entity (read-only)."
 	);
 
-	BaseEntity.add_property("edict", make_function(&EdictFromBaseEntity, reference_existing_object_policy()));
-	BaseEntity.add_property("index", &IndexFromBaseEntity);
-	BaseEntity.add_property("pointer", make_function(&PointerFromBaseEntity, manage_new_object_policy()));
-	BaseEntity.add_property("basehandle", &BaseHandleFromBaseEntity);
-	BaseEntity.add_property("inthandle", &IntHandleFromBaseEntity);
+	BaseEntity.add_property("edict", make_function(&CBaseEntityWrapper::GetEdict, reference_existing_object_policy()));
+	BaseEntity.add_property("index", &CBaseEntityWrapper::GetIndex);
+	BaseEntity.add_property("pointer", make_function(&CBaseEntityWrapper::GetPointer, manage_new_object_policy()));
+	BaseEntity.add_property("basehandle", &CBaseEntityWrapper::GetBaseHandle);
+	BaseEntity.add_property("inthandle", &CBaseEntityWrapper::GetIntHandle);
 
 	// Methods...
 	BaseEntity.def("get_key_value_string",
