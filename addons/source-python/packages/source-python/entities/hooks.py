@@ -40,7 +40,7 @@ class _EntityHook(AutoUnload):
 
         @param <entity_class_names>:
         The name of the entity class or a list of entity classes. E.g
-        'cs_bot' or ['cs_bot', 'player'].
+        'CCSBot' or ['CCSBot', 'CCSPlayer'].
 
         @<function_name>:
         The name of the function to hook. The function must be available
@@ -59,11 +59,10 @@ class _EntityHook(AutoUnload):
         self.callback = callback
 
         # Try initializing the hook...
-        for entity in EntityIter(
-                self.entity_class_names, return_types='entity'):
-            # Yay! There is an entity of the given class name
-            self.initialize(entity)
-            return self
+        for entity in EntityIter(return_types='entity'):
+            if self.initialize(entity):
+                # Yay! The entity was the one we were looking for
+                return self
 
         # Initialization failed. There is currently no entity with the given
         # class name. So, we need to wait until such an entity has been
@@ -81,7 +80,7 @@ class _EntityHook(AutoUnload):
 
         Return True if the initialization was successful.
         """
-        if entity.classname not in self.entity_class_names:
+        if entity.datamap.class_name not in self.entity_class_names:
             return False
 
         self.function = getattr(entity, self.function_name)
