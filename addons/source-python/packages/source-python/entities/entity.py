@@ -13,6 +13,7 @@ from engines.precache import Model
 #   Entities
 from entities.classes import server_classes
 from entities.constants import RenderMode
+from entities.factories import factory_dictionary
 from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_pointer
@@ -163,6 +164,16 @@ class Entity(BaseEntity, _EntitySpecials):
     def _obj(cls, ptr):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))
+        
+    @property
+    def _size(self):
+        """Return the entity's size."""
+        return self.factory.size
+        
+    @property
+    def factory(self):
+        """Return the entity's factory."""
+        return factory_dictionary.find_factory(self.classname)
 
     @property
     def index(self):
