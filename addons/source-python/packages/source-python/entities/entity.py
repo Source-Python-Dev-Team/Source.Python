@@ -45,27 +45,6 @@ class Entity(BaseEntity, _EntitySpecials):
 
     """Class used to interact directly with entities."""
 
-    def __new__(cls, index):
-        """Verify the given index is valid and store base attributes."""
-        # Get the given indexes edict
-        edict = edict_from_index(index, False)
-
-        # Is the edict valid?
-        if edict is None or edict.get_unknown() is None:
-
-            # If not raise an error
-            raise ValueError(
-                'Index "{0}" is not a proper entity index.'.format(index))
-
-        # Create the object
-        self = BaseEntity.__new__(cls)
-
-        # Initialize the object
-        super(Entity, self).__init__(index)
-
-        # Return the instance
-        return self
-
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
         # Loop through all instances (used to get edict/IPlayerInfo attributes)
