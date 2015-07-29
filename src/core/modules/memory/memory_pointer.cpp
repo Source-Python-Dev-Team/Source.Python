@@ -177,7 +177,7 @@ CFunction* CPointer::MakeFunction(CFunctionInfo& info)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 
 	return new CFunction(
-		(unsigned long) this, 
+		m_ulAddr, 
 		object(info.m_eCallingConvention),
 		info.GetArgumentTypes(), 
 		object(info.m_eReturnType)
