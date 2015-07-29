@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
 #include "game/server/util.h"
-#include "../entities_factories_wrap.h"
+#include "../entities_factories.h"
 #include "utilities/conversions.h"
 #include "modules/memory/memory_tools.h"
 

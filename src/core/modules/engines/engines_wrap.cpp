@@ -1425,10 +1425,12 @@ void export_iserver(scope _engines)
 		&IServer::IsHLTV
 	);
 
+	/*
 	_IServer.def(
 		"is_replay",
 		&IServer::IsReplay
 	);
+	*/
 
 	_IServer.def(
 		"get_password",
