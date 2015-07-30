@@ -15,7 +15,6 @@ from loggers import _sp_logger
 # =============================================================================
 # Source.Python Imports
 #   Players
-from _players import NetChannelInfo
 from _players import PlayerGenerator
 from _players import PlayerInfo
 
@@ -23,8 +22,7 @@ from _players import PlayerInfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('NetChannelInfo',
-           'PlayerGenerator',
+__all__ = ('PlayerGenerator',
            'PlayerInfo',
            )
 
