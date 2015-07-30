@@ -32,7 +32,9 @@
 #include "modules/memory/memory_tools.h"
 
 #include "public/game/server/iplayerinfo.h"
+#include "iclient.h"
 #include "inetchannelinfo.h"
+#include "inetchannel.h"
 #include "players_wrap.h"
 
 
@@ -40,8 +42,8 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_playerinfo(scope);
-void export_netinfo(scope);
 void export_player_generator(scope);
+void export_client(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -50,8 +52,8 @@ void export_player_generator(scope);
 DECLARE_SP_MODULE(_players)
 {
 	export_playerinfo(_players);
-	export_netinfo(_players);
 	export_player_generator(_players);
+	export_client(_players);
 }
 
 
@@ -187,27 +189,6 @@ void export_playerinfo(scope _players)
 
 
 //-----------------------------------------------------------------------------
-// Exports INetChannelInfo.
-//-----------------------------------------------------------------------------
-void export_netinfo(scope _players)
-{
-	class_<INetChannelInfo, boost::noncopyable>("NetChannelInfo", no_init)
-		.def("get_address",
-			&INetChannelInfo::GetAddress,
-			"Returns the net address of the player."
-		)
-
-		.def("get_time_connected",
-			&INetChannelInfo::GetTimeConnected,
-			"Returns the amount of time the player has been connected."
-		)
-
-		ADD_MEM_TOOLS(INetChannelInfo)
-	;
-}
-
-
-//-----------------------------------------------------------------------------
 // Exports CPlayerGenerator.
 //-----------------------------------------------------------------------------
 void export_player_generator(scope _players)
@@ -224,4 +205,29 @@ void export_player_generator(scope _players)
 			reference_existing_object_policy()
 		)
 	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports IClient.
+//-----------------------------------------------------------------------------
+void export_client(scope _players)
+{
+	class_<IClient, IClient*, bases<INetChannelHandler>, boost::noncopyable> Client("Client", no_init);
+
+	Client.def(
+		"get_client_name",
+		&IClient::GetClientName,
+		"Return the client's name."
+	);
+
+	Client.def(
+		"get_net_channel",
+		&IClient::GetNetChannel,
+		reference_existing_object_policy()
+	);
+
+	// TODO: Export more
+
+	Client ADD_MEM_TOOLS(IClient);
 }

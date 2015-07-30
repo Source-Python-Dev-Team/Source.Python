@@ -169,17 +169,4 @@ public:
 };
 
 
-//-----------------------------------------------------------------------------
-// IServer extension class.
-//-----------------------------------------------------------------------------
-class IServerExt
-{
-public:
-	static void* GetClient(IServer* pServer, int iIndex)
-	{
-		return (void *) pServer->GetClient(iIndex);
-	}
-};
-
-
 #endif // _ENGINES_H

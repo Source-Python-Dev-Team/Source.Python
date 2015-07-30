@@ -52,6 +52,7 @@
 #include "public/worldsize.h"
 #include "engines.h"
 #include "iserver.h"
+#include "iclient.h"
 
 #include ENGINE_INCLUDE_PATH(engines_wrap.h)
 
@@ -1312,9 +1313,9 @@ void export_iserver(scope _engines)
 
 	_IServer.def(
 		"get_client",
-		&IServerExt::GetClient,
+		&IServer::GetClient,
 		"Return the interface to a client.",
-		return_by_value_policy()
+		reference_existing_object_policy()
 	);
 
 	_IServer.def(
