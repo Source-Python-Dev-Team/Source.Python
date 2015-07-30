@@ -54,6 +54,9 @@ inline object MakeObject(object cls, CPointer* pPtr)
 	if (!PyObject_HasAttrString(cls.ptr(), GET_OBJ_NAME))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
 
+	if (!pPtr->IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.");
+
 	return cls.attr(GET_OBJ_NAME)(ptr(pPtr));
 }
 
