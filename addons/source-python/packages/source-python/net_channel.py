@@ -37,6 +37,6 @@ __all__ = ('NetChannel',
 # >> CLASSES
 # =============================================================================
 class NetFlow(IntEnum):
-    FLOW_IN_OUT = FLOW_IN_OUT
-    FLOW_INCOMING = FLOW_INCOMING
-    FLOW_OUTGOING = FLOW_OUTGOING
+    IN_OUT = FLOW_IN_OUT
+    INCOMING = FLOW_INCOMING
+    OUTGOING = FLOW_OUTGOING
