@@ -160,7 +160,7 @@ def get_virtual_function(obj, function_name, function_index=0):
     required if the function is overloaded and you want to get a different
     FunctionInfo object than the first one.
     """
-    return get_object_pointer(obj).make_function(
+    return get_object_pointer(obj).make_virtual_function(
         get_function_info(obj, function_name, function_index))
 
 
