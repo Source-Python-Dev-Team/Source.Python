@@ -11,6 +11,7 @@ import math
 
 # Source.Python Imports
 #   Engines
+from engines.server import server
 from engines.server import engine_server
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
@@ -23,7 +24,11 @@ from entities.entity import Entity
 #   Mathlib
 from mathlib import Vector
 from mathlib import QAngle
+#   Memory
+import memory
+from memory.hooks import PreHook
 #   Players
+from players import BaseClient
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
@@ -76,10 +81,26 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         """Return the player's SteamID."""
         return self.playerinfo.get_networkid_string()
 
-    @property
-    def name(self):
+    def get_name(self):
         """Return the player's name."""
         return self.playerinfo.get_name()
+
+    def set_name(self, name):
+        """Set the player's name."""
+        self.base_client.set_name(name)
+
+    name = property(get_name, set_name)
+
+    @property
+    def client(self):
+        """Return the player's Client object."""
+        return server.get_client(self.index - 1)
+
+    @property
+    def base_client(self):
+        """Return the player's BaseClient object."""
+        return memory.make_object(
+            BaseClient, memory.get_object_pointer(self.client) - 4)
 
     @property
     def isdead(self):
@@ -257,3 +278,13 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     def slay(self):
         """Slay the player."""
         self.client_command('kill', True)
+
+
+# =============================================================================
+# >> CALLBACKS
+# =============================================================================
+@PreHook(memory.get_virtual_function(engine_server, 'ClientCommand'))
+def _pre_client_command(args):
+    """A pre-hook on IVEngineServer::ClientCommand to block name changes."""
+    if args[2] == 'name "%s"':
+        return 0
