@@ -164,12 +164,12 @@ class Entity(BaseEntity, _EntitySpecials):
     def _obj(cls, ptr):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))
-        
+
     @property
     def _size(self):
         """Return the entity's size."""
         return self.factory.size
-        
+
     @property
     def factory(self):
         """Return the entity's factory."""
