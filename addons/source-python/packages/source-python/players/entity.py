@@ -10,6 +10,8 @@
 import math
 
 # Source.Python Imports
+#   Core
+from core import SOURCE_ENGINE_BRANCH
 #   Engines
 from engines.server import server
 from engines.server import engine_server
@@ -283,8 +285,11 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 # =============================================================================
 # >> CALLBACKS
 # =============================================================================
-@PreHook(memory.get_virtual_function(engine_server, 'ClientCommand'))
-def _pre_client_command(args):
-    """A pre-hook on IVEngineServer::ClientCommand to block name changes."""
-    if args[2] == 'name "%s"':
-        return 0
+if SOURCE_ENGINE_BRANCH in ('css', 'csgo'):
+    @PreHook(memory.get_virtual_function(engine_server, 'ClientCommand'))
+    def _pre_client_command(args):
+        """A pre-hook on IVEngineServer::ClientCommand to block name changes
+        started by the server.
+        """
+        if args[2] == 'name "%s"':
+            return 0
