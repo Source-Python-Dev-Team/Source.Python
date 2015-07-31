@@ -53,6 +53,7 @@
 #include "engines.h"
 #include "iserver.h"
 #include "iclient.h"
+#include "inetmessage.h"
 
 #include ENGINE_INCLUDE_PATH(engines_wrap.h)
 
@@ -1278,12 +1279,6 @@ void export_worldsize(scope _engines)
 void export_iserver(scope _engines)
 {
 	class_<IConnectionlessPacketHandler, IConnectionlessPacketHandler*, boost::noncopyable> _IConnectionlessPacketHandler("ConnectionlessPacketHandler", no_init);
-
-	_IConnectionlessPacketHandler.def(
-		"process_connectionless_packet",
-		&IConnectionlessPacketHandler::ProcessConnectionlessPacket
-	);
-
 
 	class_< IServer, IServer*, bases<IConnectionlessPacketHandler>, boost::noncopyable > _IServer("Server", no_init);
 

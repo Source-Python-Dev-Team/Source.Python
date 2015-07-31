@@ -119,7 +119,7 @@ void export_prediction_system(scope _effects)
 		FUNCTION_INFO(GetNext)
 		FUNCTION_INFO(SetSuppressEvent)
 		FUNCTION_INFO(CanPredict)
-		FUNCTION_INFO(SuppressEvents)
+		//FUNCTION_INFO(SuppressEvents)
 	END_CLASS_INFO()
 }
 
