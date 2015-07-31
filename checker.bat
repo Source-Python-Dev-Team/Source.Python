@@ -25,7 +25,7 @@ set SPPACKAGEDIR="%CD%"/addons/source-python/packages/source-python/
     echo ============================
     echo.
 
-    python -m pep8 --count --benchmark --ignore=E402 %SPPACKAGEDIR%
+    python -m pep8 --count --benchmark %SPPACKAGEDIR%
 
     echo.
     echo.
@@ -52,7 +52,7 @@ set SPPACKAGEDIR="%CD%"/addons/source-python/packages/source-python/
     echo =====================
     echo.
 
-    python -m pylint --rcfile "%CD%"/.pylintrc %SPPACKAGEDIR% --const-rgx="(([A-Z_][A-Z0-9_]*)|([a-z_][a-z0-9_]*)|(__.*__))$" --msg-template="{msg_id}:{line:3d},{column:2d}: {msg} ({symbol})"
+    python -m pylint --rcfile "%CD%"/.pylintrc %SPPACKAGEDIR%
 
     GOTO checkagain
 

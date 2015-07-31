@@ -1,24 +1,64 @@
+[MASTER]
+# List of files/directories to blacklist (not paths)
+ignore=
+
+
 [MESSAGES CONTROL]
 # Definitions of codes disabled
-#   C0330 - Wrong %s indentation
-#   E0611 - No name %r in module %r
-#   E1101 - %s %r has no %r member
-#   F0401 - Unable to import %s
-#   R0902 - Too many instance attributes
-#   R0903 - Too few public methods
-#   R0904 - Too many public methods
-#   R0911 - Too many return statements
-#   R0912 - Too many branches
-#   R0913 - Too many arguments
-#   R0914 - Too many local variables
-#   R0915 - Too many statements
-#   R0921 - Abstract class not referenced
-#   W0141 - Used builtin function %r
-#   W0142 - Used * or ** magic
-#   W0201 - Attribute %r defined outside __init__
-#   W0212 - Access to a protected member %s of a client class
-#   W0231 - __init__ method from base class %r is not called
-#   W0232 - Class has no __init__ method
-#   W0702 - No exception type(s) specified
+# For a list of error codes, see:
+#   http://pylint-messages.wikidot.com/all-codes
+# disable=C0103, E0203, R0911, R0915, R0921, W0142, W0201, W0232, W0613
+disable=C0330, E0611, E1101, F0401, R0902, R0903, R0904, R0912, R0913, R0914, W0212, W0702
 
-disable=C0330, E0611, E1101, F0401, R0902, R0903, R0904, R0911, R0912, R0913, R0914, R0915, R0921, W0141, W0142, W0201, W0212, W0231, W0232, W0702
+
+[BASIC]
+# List of bad builtin function names
+bad-functions=eval,exec,__import__
+
+# Module name regex
+module-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Constant name regex
+const-rgx=(([A-Z_][A-Z0-9_]*)|([a-z_][a-z0-9_]*)|(__.*__))$
+
+# Class name regex
+class-rgx=[A-Z_][a-zA-Z0-9]+$
+
+# Function name regex
+function-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Method name regex
+method-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Attribute name regex
+attr-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Argument name regex
+argument-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Variable name regex
+variable-rgx=[a-z_][a-z0-9_]{2,30}$
+
+# Class attribute name regex
+class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{1,40}|(__.*__))$
+
+# In-line variable name regex
+inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
+
+# Variable names that are always ok
+good-names=x,y,z,a,b,c,d,e,f,g,h,x1,y1,z1,x2,y2,z2,p1,p2,source-python,fget,create_global_pointers_from_file,create_function_typedefs_from_file,MuzzleFlashStyle,WeaponID,WeaponType,WeaponSlot,WeaponInfo
+
+
+[REPORTS]
+# The message output template
+msg-template={msg_id}:{line:3d},{column:2d}: {msg} ({symbol})
+
+
+[SIMILARITIES]
+ignore-imports=yes
+ignore-comments=yes
+ignore-docstrings=yes
+
+
+[VARIABLES]
+dummy-variables-rgx=game_event|args|kwargs|ptr

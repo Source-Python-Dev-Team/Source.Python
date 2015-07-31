@@ -5,6 +5,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Importlib
+from importlib import import_module
+
 # Source.Python imports
 #   Auth
 from auth import auth_logger
@@ -66,8 +70,7 @@ class _AuthManager(dict):
             return
 
         # Import the provider's module
-        module = __import__(
-            'auth.providers.{0}'.format(provider), fromlist=[''])
+        module = import_module('auth.providers.{0}'.format(provider))
 
         # Loop through all objects in the module
         for module_object in dir(module):
