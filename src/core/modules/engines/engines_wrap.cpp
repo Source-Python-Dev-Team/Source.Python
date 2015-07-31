@@ -658,6 +658,9 @@ void export_engine_server(scope _engines)
 		.NOT_IMPLEMENTED("create_fake_client_ex")
 		.NOT_IMPLEMENTED("get_replay")
 
+		// BM:S specific
+		.NOT_IMPLEMENTED("get_server")
+
 		// CS:GO specific methods
 		.NOT_IMPLEMENTED("get_launch_options")
 		.NOT_IMPLEMENTED("is_userid_in_use")

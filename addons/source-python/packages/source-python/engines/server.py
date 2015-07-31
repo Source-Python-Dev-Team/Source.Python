@@ -34,4 +34,10 @@ __all__ = ('MapLoadType',
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-server = manager.get_global_pointer('Server')
+try:
+    # Try to get the server using the exposed method. If that fails, because
+    # it isn't implemented for this game ...
+    server = engine_server.get_server()
+except NotImplementedError:
+    # ... fall back to the sig-scanned server
+    server = manager.get_global_pointer('Server')
