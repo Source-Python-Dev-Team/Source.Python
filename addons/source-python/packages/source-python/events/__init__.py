@@ -44,16 +44,29 @@ class Event(AutoUnload):
 
     """Event decorator class."""
 
-    def __init__(self, callback):
-        """Store the callback and register the event."""
-        # Store the callback
-        self.callback = callback
+    def __init__(self, *event_names):
+        """Store the event names."""
+        self._event_names = event_names
+        self._callback = None
 
-        # Register the event
-        event_manager.register_for_event(
-            self.callback.__name__, self.callback)
+    def __call__(self, callback):
+        """Store the callback and register the events."""
+        # Store the callback
+        self._callback = callback
+
+        # Loop through all event names
+        for event_name in self._event_names:
+
+            # Register the event
+            event_manager.register_for_event(event_name, self._callback)
+
+        # Return the instance so that it unloads properly
+        return self
 
     def _unload_instance(self):
-        """Unregister the event."""
-        event_manager.unregister_for_event(
-            self.callback.__name__, self.callback)
+        """Unregister the events."""
+        # Loop through all event names
+        for event_name in self._event_names:
+
+            # Unregister the event
+            event_manager.unregister_for_event(event_name, self._callback)
