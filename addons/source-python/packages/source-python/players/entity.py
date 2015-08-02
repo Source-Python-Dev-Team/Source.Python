@@ -56,7 +56,7 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     def __init__(self, index):
         """Initialize the PlayerEntity object."""
         super(PlayerEntity, self).__init__(index)
-        self._playerinfo = None
+        super(Entity, self).__setattr__('_playerinfo', None)
 
     @property
     def playerinfo(self):

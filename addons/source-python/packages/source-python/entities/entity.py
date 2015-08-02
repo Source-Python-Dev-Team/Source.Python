@@ -53,9 +53,9 @@ class Entity(BaseEntity, _EntitySpecials):
         super(Entity, self).__init__(index)
 
         # Set the entity's base attributes
-        self._index = index
-        self._edict = None
-        self._pointer = None
+        super(Entity, self).__setattr__('_index', index)
+        super(Entity, self).__setattr__('_edict', None)
+        super(Entity, self).__setattr__('_pointer', None)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
