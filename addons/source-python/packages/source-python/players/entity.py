@@ -288,8 +288,9 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 if SOURCE_ENGINE_BRANCH in ('css', 'csgo'):
     @PreHook(memory.get_virtual_function(engine_server, 'ClientCommand'))
     def _pre_client_command(args):
-        """A pre-hook on IVEngineServer::ClientCommand to block name changes
-        started by the server.
+        """Block name changes started by the server.
+
+        Pre-hook on IVEngineServer::ClientCommand to block the name changes.
         """
         if args[2] == 'name "%s"':
             return 0

@@ -42,5 +42,5 @@ __all__ = ('BaseClient',
 # Get the sp.players logger
 players_logger = _sp_logger.players
 
-BaseClient = manager.create_type_from_dict('BaseClient',
-    GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
+BaseClient = manager.create_type_from_dict(
+    'BaseClient', GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
