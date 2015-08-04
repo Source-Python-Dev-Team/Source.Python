@@ -100,14 +100,28 @@ public:
 		return str(szResult);
 	}
 
-	static int GetKeyValueInt(CBaseEntity* pBaseEntity, const char* szName)
+	static long GetKeyValueInt(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		return extract<int>(eval("lambda x: int(x)")(GetKeyValueString(pBaseEntity, szName)));
+		char szResult[128];
+		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
+		
+		long iResult;
+		if (!sputils::UTIL_StringToLong(&iResult, szResult))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be an integer.");
+
+		return iResult;
 	}
 
-	static float GetKeyValueFloat(CBaseEntity* pBaseEntity, const char* szName)
+	static double GetKeyValueFloat(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		return extract<float>(eval("lambda x: float(x)")(GetKeyValueString(pBaseEntity, szName)));
+		char szResult[128];
+		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
+		
+		double dResult;
+		if (!sputils::UTIL_StringToDouble(&dResult, szResult))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a float.");
+
+		return dResult;
 	}
 
 	static Vector GetKeyValueVector(CBaseEntity* pBaseEntity, const char* szName)

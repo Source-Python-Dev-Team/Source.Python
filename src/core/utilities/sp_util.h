@@ -158,6 +158,26 @@ inline bool UTIL_StringToIntArray( int *pVector, int count, const char *pString 
 	return j == count - 1;
 }
 
+//-----------------------------------------------------------------------------
+// Convert the given string into a long. Return true on success.
+//-----------------------------------------------------------------------------
+inline bool UTIL_StringToLong(long* pOut, const char* szString)
+{
+	char* p;
+	*pOut = strtol(szString, &p, 10);
+	return !*p;
+}
+
+//-----------------------------------------------------------------------------
+// Convert the given string into a double. Return true on success.
+//-----------------------------------------------------------------------------
+inline bool UTIL_StringToDouble(double* pOut, const char* szString)
+{
+	char* p;
+	*pOut = strtod(szString, &p);
+	return !*p;
+}
+
 } // namespace sputils
 
 #endif // _SP_UTIL_H
