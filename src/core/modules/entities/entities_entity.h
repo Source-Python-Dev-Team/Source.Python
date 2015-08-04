@@ -107,7 +107,7 @@ public:
 		
 		long iResult;
 		if (!sputils::UTIL_StringToLong(&iResult, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be an integer.");
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be an integer: '%s'.", szResult);
 
 		return iResult;
 	}
@@ -119,7 +119,7 @@ public:
 		
 		double dResult;
 		if (!sputils::UTIL_StringToDouble(&dResult, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a float.");
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a float: '%s'.", szResult);
 
 		return dResult;
 	}
@@ -131,14 +131,26 @@ public:
 
 		float fResult[3];
 		if (!sputils::UTIL_StringToFloatArray(fResult, 3, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a vector.");
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a vector: '%s'.", szResult);
 
 		return Vector(fResult[0], fResult[1], fResult[2]);
 	}
 
 	static bool GetKeyValueBool(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		return strcmp(extract<const char *>(GetKeyValueString(pBaseEntity, szName)), "1") == 0;
+		char szResult[3];
+		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 3);
+		if (szResult[1] != '\0')
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a boolean: '%s'.", szResult);
+
+		if (szResult[0] == '1')
+			return true;
+		else if (szResult[0] == '0')
+			return false;
+		else
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid boolean value: '%c'.", szResult[0]);
+
+		return false; // to fix a warning.
 	}
 
 	static Color GetKeyValueColor(CBaseEntity* pBaseEntity, const char* szName)
@@ -148,7 +160,7 @@ public:
 
 		int iResult[4];
 		if (!sputils::UTIL_StringToIntArray(iResult, 4, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a color.");
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a color: '%s'.", szResult);
 
 		return Color(iResult[0], iResult[1], iResult[2], iResult[3]);
 	}
