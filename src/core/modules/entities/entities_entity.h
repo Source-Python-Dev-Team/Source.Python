@@ -107,8 +107,16 @@ public:
 
 	static Vector GetKeyValueVector(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		object vec = eval("lambda x: tuple(map(float, x.split(' ')))")(GetKeyValueString(pBaseEntity, szName));
-		return Vector(extract<float>(vec[0]), extract<float>(vec[1]), extract<float>(vec[2]));
+		char szResult[MAX_KEY_VALUE_LENGTH];
+		if (!servertools->GetKeyValue(pBaseEntity, szName, szResult, MAX_KEY_VALUE_LENGTH))
+			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
+				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
+
+		float fResult[3];
+		if (!sputils::UTIL_StringToFloatArray(fResult, 3, szResult))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a vector.");
+
+		return Vector(fResult[0], fResult[1], fResult[2]);
 	}
 
 	static bool GetKeyValueBool(CBaseEntity* pBaseEntity, const char* szName)

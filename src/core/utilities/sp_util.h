@@ -31,6 +31,8 @@
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
 #include "boost/python.hpp"
+#include "strtools.h"
+
 
 //-----------------------------------------------------------------------------
 // Namespaces to use
@@ -93,5 +95,43 @@ void NeverDeleteDeleter(T pSelf)
 {
 }
 
+
+//-----------------------------------------------------------------------------
+// Convert a string into a float array.
+// Copied from util_shared.cpp, adapted to return true on success
+//-----------------------------------------------------------------------------
+namespace sputils {
+
+inline bool UTIL_StringToFloatArray( float *pVector, int count, const char *pString )
+{
+	char *pstr, *pfront, tempString[128];
+	int	j;
+
+	Q_strncpy( tempString, pString, sizeof(tempString) );
+	pstr = pfront = tempString;
+
+	for ( j = 0; j < count; j++ )			// lifted from pr_edict.c
+	{
+		pVector[j] = atof( pfront );
+
+		// skip any leading whitespace
+		while ( *pstr && *pstr <= ' ' )
+			pstr++;
+
+		// skip to next whitespace
+		while ( *pstr && *pstr > ' ' )
+			pstr++;
+
+		if (!*pstr)
+			break;
+
+		pstr++;
+		pfront = pstr;
+	}
+
+	return j == count - 1;
+}
+
+} // namespace sputils
 
 #endif // _SP_UTIL_H
