@@ -81,12 +81,17 @@ public:
 		);
 	}
 
+	static void GetKeyValueStringRaw(CBaseEntity* pBaseEntity, const char* szName, char* szOut, int iLength)
+	{
+		if (!servertools->GetKeyValue(pBaseEntity, szName, szOut, iLength))
+			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
+				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
+	}
+
 	static str GetKeyValueString(CBaseEntity* pBaseEntity, const char* szName)
 	{
 		char szResult[MAX_KEY_VALUE_LENGTH];
-		if (!servertools->GetKeyValue(pBaseEntity, szName, szResult, MAX_KEY_VALUE_LENGTH))
-			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
-				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
+		GetKeyValueStringRaw(pBaseEntity, szName, szResult, MAX_KEY_VALUE_LENGTH);
 
 		// Fix for field name "model". I think a string_t object is copied to szResult.
 		if (strcmp(szName, "model") == 0)
@@ -107,10 +112,8 @@ public:
 
 	static Vector GetKeyValueVector(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		char szResult[MAX_KEY_VALUE_LENGTH];
-		if (!servertools->GetKeyValue(pBaseEntity, szName, szResult, MAX_KEY_VALUE_LENGTH))
-			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
-				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
+		char szResult[128];
+		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
 
 		float fResult[3];
 		if (!sputils::UTIL_StringToFloatArray(fResult, 3, szResult))
@@ -126,8 +129,14 @@ public:
 
 	static Color GetKeyValueColor(CBaseEntity* pBaseEntity, const char* szName)
 	{
-		object color = eval("lambda x: tuple(map(int, x.split(' ')))")(GetKeyValueString(pBaseEntity, szName));
-		return Color(extract<int>(color[0]), extract<int>(color[1]), extract<int>(color[2]), extract<int>(color[3]));
+		char szResult[128];
+		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
+
+		int iResult[4];
+		if (!sputils::UTIL_StringToIntArray(iResult, 4, szResult))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a color.");
+
+		return Color(iResult[0], iResult[1], iResult[2], iResult[3]);
 	}
 
 	static void SetKeyValueColor(CBaseEntity* pBaseEntity, const char* szName, Color color)

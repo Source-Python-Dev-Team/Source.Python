@@ -95,13 +95,12 @@ void NeverDeleteDeleter(T pSelf)
 {
 }
 
+namespace sputils {
 
 //-----------------------------------------------------------------------------
 // Convert a string into a float array.
 // Copied from util_shared.cpp, adapted to return true on success
 //-----------------------------------------------------------------------------
-namespace sputils {
-
 inline bool UTIL_StringToFloatArray( float *pVector, int count, const char *pString )
 {
 	char *pstr, *pfront, tempString[128];
@@ -125,6 +124,33 @@ inline bool UTIL_StringToFloatArray( float *pVector, int count, const char *pStr
 		if (!*pstr)
 			break;
 
+		pstr++;
+		pfront = pstr;
+	}
+
+	return j == count - 1;
+}
+
+//-----------------------------------------------------------------------------
+// Convert a string into an int array.
+// Copied from util_shared.cpp, adapted to return true on success
+//-----------------------------------------------------------------------------
+inline bool UTIL_StringToIntArray( int *pVector, int count, const char *pString )
+{
+	char *pstr, *pfront, tempString[128];
+	int	j;
+
+	Q_strncpy( tempString, pString, sizeof(tempString) );
+	pstr = pfront = tempString;
+
+	for ( j = 0; j < count; j++ )			// lifted from pr_edict.c
+	{
+		pVector[j] = atoi( pfront );
+
+		while ( *pstr && *pstr != ' ' )
+			pstr++;
+		if (!*pstr)
+			break;
 		pstr++;
 		pfront = pstr;
 	}
