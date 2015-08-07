@@ -18,12 +18,17 @@ from filters.entities import EntityIter
 from listeners import OnEntityCreated
 #   Entities
 from entities.entity import Entity
+#   Players
+from players.constants import INVALID_PLAYER_USERID
+from players.entity import PlayerEntity
+from players.helpers import userid_from_index
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('EntityPostHook',
+__all__ = ('EntityCondition',
+           'EntityPostHook',
            'EntityPreHook',
            )
 
@@ -31,25 +36,63 @@ __all__ = ('EntityPostHook',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+class EntityCondition(object):
+
+    """Store some default entity conditions."""
+
+    @staticmethod
+    def is_player(entity):
+        """Return True if the entity is a player."""
+        return userid_from_index(entity.index, False) != INVALID_PLAYER_USERID
+
+    @classmethod
+    def is_not_player(cls, entity):
+        """Return True if the entity is not a player."""
+        return not cls.is_player(entity)
+
+    @classmethod
+    def is_human_player(cls, entity):
+        """Return True if the entity is a human player."""
+        return (cls.is_player(entity) and
+            PlayerEntity(entity.index).steamid != 'BOT')
+
+    @classmethod
+    def is_bot_player(cls, entity):
+        """Return True if the entity is a bot."""
+        return (cls.is_player(entity) and
+            PlayerEntity(entity.index).steamid == 'BOT')
+
+    @staticmethod
+    def equals_entity_classname(*classnames):
+        """Return a function that requires an Entity object and returns True
+        if the entity's classname equals one of the passed classnames.
+        """
+        return lambda entity: entity.classname in classnames
+
+    @staticmethod
+    def equals_datamap_classname(*classnames):
+        """Return a function that requires an Entity object and returns True
+        if the entity's datamap classname equals one of the passed classnames.
+        """
+        return lambda entity: entity.datamap.class_name in classnames
+
+
 class _EntityHook(AutoUnload):
 
     """Create entity pre and post hooks that auto unload."""
 
-    def __init__(self, entity_class_names, function_name):
+    def __init__(self, test_function, function_name):
         """Initialize the hook object.
 
-        @param <entity_class_names>:
-        The name of the entity class or a list of entity classes. E.g
-        'CCSBot' or ['CCSBot', 'CCSPlayer'].
+        @param <test_function>:
+        A callable object that accepts an Entity object as a parameter. The
+        function should return True if the entity matches the required one.
 
         @<function_name>:
         The name of the function to hook. The function must be available
         through the Entity class.
         """
-        if isinstance(entity_class_names, str):
-            entity_class_names = [entity_class_names]
-
-        self.entity_class_names = entity_class_names
+        self.test_function = test_function
         self.function_name = function_name
         self.function = None
         self.callback = None
@@ -80,7 +123,7 @@ class _EntityHook(AutoUnload):
 
         Return True if the initialization was successful.
         """
-        if entity.datamap.class_name not in self.entity_class_names:
+        if not self.test_function(entity):
             return False
 
         self.function = getattr(entity, self.function_name)
