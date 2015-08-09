@@ -53,26 +53,32 @@ class EntityCondition(object):
     @classmethod
     def is_human_player(cls, entity):
         """Return True if the entity is a human player."""
-        return (cls.is_player(entity) and
+        return (
+            cls.is_player(entity) and
             PlayerEntity(entity.index).steamid != 'BOT')
 
     @classmethod
     def is_bot_player(cls, entity):
         """Return True if the entity is a bot."""
-        return (cls.is_player(entity) and
+        return (
+            cls.is_player(entity) and
             PlayerEntity(entity.index).steamid == 'BOT')
 
     @staticmethod
     def equals_entity_classname(*classnames):
-        """Return a function that requires an Entity object and returns True
-        if the entity's classname equals one of the passed classnames.
+        """Return a function that requires an Entity object.
+
+        The function returns True if the entity's
+        classname equals one of the passed classnames.
         """
         return lambda entity: entity.classname in classnames
 
     @staticmethod
     def equals_datamap_classname(*classnames):
-        """Return a function that requires an Entity object and returns True
-        if the entity's datamap classname equals one of the passed classnames.
+        """Return a function that requires an Entity object.
+
+        The function returns True if the entity's
+        datamap classname equals one of the passed classnames.
         """
         return lambda entity: entity.datamap.class_name in classnames
 
