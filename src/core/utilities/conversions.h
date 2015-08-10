@@ -103,7 +103,7 @@ inline edict_t *EdictFromUserid( int iUserID, bool bRaiseException = false )
 	}
 
 	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given UseriID (%i).", iUserID);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given UserID (%i).", iUserID);
 
 	return pEdict;
 }
@@ -417,7 +417,7 @@ inline int IndexFromUserid( int iUserID, bool bRaiseException = false )
 	int iEntityIndex = IndexFromEdict(EdictFromUserid(iUserID));
 
 	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given UseriID (%i).", iUserID);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given UserID (%i).", iUserID);
 
 	return iEntityIndex;
 }
@@ -546,7 +546,7 @@ inline CBaseHandle BaseHandleFromUserid( int iUserID, bool bRaiseException = fal
 	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromUserid(iUserID));
 
 	if (!hBaseHandle.ToInt() && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given UseriID (%i).", iUserID);
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given UserID (%i).", iUserID);
 
 	return hBaseHandle;
 }
