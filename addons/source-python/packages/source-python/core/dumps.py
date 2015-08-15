@@ -94,7 +94,7 @@ def _dump_function_info_attribute(open_file, attr_name, value):
 # >> CONVARS
 # =============================================================================
 def dump_convars(filename):
-    """Dump all convars to the given filename."""
+    """Dump all convars to the given file name."""
     # Create a dictionary to store the convars
     convars = dict()
 
@@ -211,7 +211,7 @@ def _dump_type_description(open_file, desc, indent=1, offset=0):
 # >> SERVER CLASSES
 # =============================================================================
 def dump_server_classes(filename):
-    """Dump all server class send properties to the given filename."""
+    """Dump all server class send properties to the given file name."""
     # Open/close the file
     with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
 
@@ -298,7 +298,7 @@ def _dump_server_class_table(table, open_file, level=1, offset=0):
 # >> STRING TABLES
 # =============================================================================
 def dump_string_tables(filename):
-    """Dump all string tables to the given filename."""
+    """Dump all string tables to the given file name."""
     # Open/close the file
     with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
 
