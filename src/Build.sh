@@ -1,3 +1,5 @@
+#!/usr/bin/env sh
+
 # Store the start directory for later reference
 STARTDIR="$PWD"
 
