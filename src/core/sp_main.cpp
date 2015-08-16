@@ -422,7 +422,7 @@ PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const 
 void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
-	PythonLog(4, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s\n", iCookie, eStatus, pCvarName, pCvarValue );
+	PythonLog(4, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s", iCookie, eStatus, pCvarName, pCvarValue );
 	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, IndexFromEdict(pPlayerEntity), eStatus, pCvarName, pCvarValue);
 }
 
@@ -432,7 +432,7 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 void CSourcePython::FireGameEvent( IGameEvent * event )
 {
 	const char * name = event->GetName();
-	PythonLog(4, "CSourcePython::FireGameEvent: Got event \"%s\"\n", name );
+	PythonLog(4, "CSourcePython::FireGameEvent: Got event \"%s\"", name );
 }
 
 //-----------------------------------------------------------------------------

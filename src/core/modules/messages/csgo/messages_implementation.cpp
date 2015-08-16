@@ -54,7 +54,7 @@ void CUserMessageImplementation::send_message_internal()
 	}
 	else
 	{
-		PythonLog(1, "Could not send message '%s', invalid message name\n", m_message_name);
+		PythonLog(1, "Could not send message '%s', invalid message name", m_message_name);
 	}
 }
 
