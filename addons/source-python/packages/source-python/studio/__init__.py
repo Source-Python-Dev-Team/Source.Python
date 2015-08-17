@@ -44,7 +44,6 @@ __all__ = ('AnimSections',
            'Movement',
            'Sequence',
            'SequenceEvent',
-           'studio_logger',
            )
 
 
