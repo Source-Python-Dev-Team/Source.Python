@@ -101,14 +101,12 @@ public:
 	// -------------------------------------------
 	// Counter-Strike: Global Offensive
 	// -------------------------------------------
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 	virtual int				GetEventDebugID( void ) { return EVENT_DEBUG_ID_INIT; }
 	virtual void			ClientFullyConnect( edict_t *pEntity );
-	virtual void			OnEdictAllocated( edict_t *edict );
-	virtual void			OnEdictFreed( const edict_t *edict );
 #endif
 
-#ifdef ENGINE_BMS
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
 	virtual void			OnEdictAllocated( edict_t *edict );
 	virtual void			OnEdictFreed( const edict_t *edict );
 #endif

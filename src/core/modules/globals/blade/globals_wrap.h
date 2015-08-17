@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _GLOBALS_WRAP_Blade_H
-#define _GLOBALS_WRAP_Blade_H
+#ifndef _GLOBALS_WRAP_BLADE_H
+#define _GLOBALS_WRAP_BLADE_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -39,12 +39,6 @@
 template<class T>
 T GlobalsBase_Visitor(T cls)
 {
-	cls
-		.def("is_remote_client",
-			&CGlobalVarsBase::IsRemoteClient
-		)
-	;
-
 	return cls;
 }
 
@@ -65,4 +59,4 @@ T Globals_Visitor(T cls)
 }
 
 
-#endif // _GLOBALS_WRAP_Blade_H
+#endif // _GLOBALS_WRAP_BLADE_H

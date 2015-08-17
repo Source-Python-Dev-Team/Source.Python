@@ -446,14 +446,14 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &ar
 //-----------------------------------------------------------------------------
 // Alien Swarm.
 //-----------------------------------------------------------------------------
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
 	CALL_LISTENERS(ClientFullyConnect, IndexFromEdict(pEntity));
 }
 #endif
 
-#if defined(ENGINE_CSGO) || defined(ENGINE_BMS)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	CALL_LISTENERS(OnEdictAllocated, IndexFromEdict(edict));

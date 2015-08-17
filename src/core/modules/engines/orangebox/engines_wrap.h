@@ -73,6 +73,17 @@ T IVEngineServer_Visitor(T cls)
 			&IVEngineServer::CreateFakeClientEx,
 			reference_existing_object_policy()
 		)
+
+		.def("set_achievement_mgr",
+			&IVEngineServer::SetAchievementMgr,
+			"Sets the achievement manager."
+		)
+
+		.def("get_achievement_mgr",
+			&IVEngineServer::GetAchievementMgr,
+			"Returns the current achievement manager.",
+			reference_existing_object_policy()
+		)
 	;
 
 	return cls;

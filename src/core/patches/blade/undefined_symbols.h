@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef UNDEFINED_SYMBOLS_ORANGEBOX_H
-#define UNDEFINED_SYMBOLS_ORANGEBOX_H
+#ifndef UNDEFINED_SYMBOLS_BLADE_H
+#define UNDEFINED_SYMBOLS_BLADE_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -54,10 +54,6 @@ CTakeDamageInfo::CTakeDamageInfo()
 	m_vecDamagePosition = vec3_origin;
 	m_vecReportedPosition = vec3_origin;
 	m_iAmmoType = -1;
-	m_iDamagedOtherPlayers = 0;
-	m_iPlayerPenetrationCount = 0;
-	m_flDamageBonus = 0.0f;
-	m_bForceFriendlyFire = false;
 }
 
-#endif // _UNDEFINED_SYMBOLS_ORANGEBOX_H
+#endif // _UNDEFINED_SYMBOLS_BLADE_H
