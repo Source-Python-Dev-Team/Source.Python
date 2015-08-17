@@ -79,17 +79,17 @@ private:
 				}
 				else
 				{
-					PythonLog(1, "Could not find field name '%s' for usermessage '%s'\n", field_name, m_message_name);
+					PythonLog(1, "Could not find field name '%s' for usermessage '%s'", field_name, m_message_name);
 				}
 			}
 			else
 			{
-				PythonLog(1, "Could not find descriptor or reflection for usermessage '%s'\n", m_message_name);
+				PythonLog(1, "Could not find descriptor or reflection for usermessage '%s'", m_message_name);
 			}
 		}
 		else
 		{
-			PythonLog(1, "Could not find message name '%s'\n", m_message_name);
+			PythonLog(1, "Could not find message name '%s'", m_message_name);
 		}
 	}
 
@@ -120,17 +120,17 @@ private:
 				}
 				else
 				{
-					PythonLog(1, "Could not find field name '%s' for usermessage '%s'\n", field_name, m_message_name);
+					PythonLog(1, "Could not find field name '%s' for usermessage '%s'", field_name, m_message_name);
 				}
 			}
 			else
 			{
-				PythonLog(1, "Could not find descriptor or reflection for usermessage '%s'\n", m_message_name);
+				PythonLog(1, "Could not find descriptor or reflection for usermessage '%s'", m_message_name);
 			}
 		}
 		else
 		{
-			PythonLog(1, "Could not find message name '%s'\n", m_message_name);
+			PythonLog(1, "Could not find message name '%s'", m_message_name);
 		}
 	}
 
