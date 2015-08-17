@@ -46,7 +46,7 @@ extern IServerTools *servertools;
 template<class T, class U>
 void export_engine_specific_dispatch_effect_data(T _effects, U DispatchEffectData)
 {
-	// Nothing specific to OrangeBox...
+	// Nothing specific to BMS...
 }
 
 
