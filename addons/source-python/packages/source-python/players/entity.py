@@ -281,6 +281,14 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         """Slay the player."""
         self.client_command('kill', True)
 
+    def say(self, message):
+        """Force the player to say something in the global chat."""
+        self.client_command('say {0}'.format(message), True)
+
+    def say_team(self, message):
+        """Force the player to say something in the team chat."""
+        self.client_command('say_team {0}'.format(message), True)
+
 
 # =============================================================================
 # >> CALLBACKS
