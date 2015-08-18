@@ -57,7 +57,7 @@ class _WarningHooks(_HookBase):
             try:
 
                 # Call the callback
-                callback(message, category, filename, lineno, file, line)
+                callback(message, category, filename, lineno)
 
             # Was an error encountered?
             except:
