@@ -1,11 +1,37 @@
 @echo off
 
+:: The branch name
+set branch=%1
+
+:: Release = 1, Debug = 0
+set build_type=%2
+
+:: 0 = use interactive method, 1 = use msbuild
+set use_msbuild=0
+
 :: Set the start directory for later reference
 set STARTDIR="%CD%"
 
 :: Allow the use of delayed expansion
 setlocal EnableDelayedExpansion
 
+:: If branch or build_type wasn't set, use the interactive method
+if [%branch%] == [] goto :ChooseBranch
+if [%build_type%] == [] goto :ChooseBranch
+
+:: Validate the build_type
+if %build_type% == 1 (
+    set use_msbuild=1
+    set build_type="Release"
+)
+if %build_type% == 0 (
+    set use_msbuild=1
+    set build_type="Debug"
+)
+
+:: If msbuild should be used, we already know the branch.
+:: -> Skip ChooseBranch
+if %use_msbuild% == 1 goto CloneRepo
 
 :: A function to choose the branch to build against
 :ChooseBranch
@@ -118,8 +144,12 @@ setlocal EnableDelayedExpansion
     :: Create the build files
     cmake . -B%BUILDDIR% -G"Visual Studio 10" -DBRANCH=%branch%
 
-    :: Pause to show the process is completed
-    pause
+    if %use_msbuild% == 1 (
+        msbuild %BUILDDIR%\source-python.sln /p:Configuration=%build_type% /p:VCTargetsPath="C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0"
+    ) else (
+        :: Pause to show the process is completed
+        pause
+    )
 
     :: Exit the program
     exit
@@ -131,5 +161,7 @@ setlocal EnableDelayedExpansion
     :: Send an error message
     echo Encountered Error # %ERRORLEVEL%
 
-    :: Pause to show the error
-    pause
+    if %use_msbuild% == 0 (
+        :: Pause to show the error
+        pause
+    )
