@@ -46,6 +46,14 @@ class Event(AutoUnload):
 
     def __init__(self, *event_names):
         """Store the event names."""
+        # Validate event names
+        if not event_names:
+            raise ValueError('At least one event name is required.')
+
+        for event_name in event_names:
+            if not isinstance(event_name, str):
+                raise ValueError('Event name must be a string.')
+
         self._event_names = event_names
         self._callback = None
 
