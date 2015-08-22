@@ -140,7 +140,8 @@ class _CoreCommandManager(SubCommandManager):
             for dump in dumps.__all__:
 
                 # Print the current dump function
-                self.logger.log_message('\t{0}'.format(dump.lstrip('dump_')))
+                self.logger.log_message(
+                    '\t{0}'.format(dump.replace('dump_', '')))
 
             # No need to go further
             return

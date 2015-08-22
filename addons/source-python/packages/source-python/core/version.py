@@ -26,5 +26,5 @@ VERSION = 'unversioned'
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_sp_version = PublicConVar('sp_version', VERSION,
-    description='Source.Python version')
+_sp_version = PublicConVar(
+    'sp_version', VERSION, description='Source.Python version')
