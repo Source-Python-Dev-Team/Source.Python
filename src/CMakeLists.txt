@@ -335,6 +335,7 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
     core/modules/players/players_wrap.h
     core/modules/players/players_generator.h
     core/modules/players/${SOURCE_ENGINE}/players_constants_wrap.h
+    core/modules/players/${SOURCE_ENGINE}/players_wrap.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES

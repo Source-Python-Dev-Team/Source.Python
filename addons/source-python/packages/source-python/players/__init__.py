@@ -24,6 +24,7 @@ from paths import SP_DATA_PATH
 from _players import Client
 from _players import PlayerGenerator
 from _players import PlayerInfo
+from _players import UserCmd
 
 
 # =============================================================================
@@ -33,6 +34,7 @@ __all__ = ('BaseClient',
            'Client',
            'PlayerGenerator',
            'PlayerInfo',
+           'UserCmd',
            )
 
 
