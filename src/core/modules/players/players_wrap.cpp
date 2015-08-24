@@ -31,6 +31,7 @@
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
 
+#include "game/shared/shareddefs.h"
 #include "game/shared/usercmd.h"
 #include "public/game/server/iplayerinfo.h"
 #include "iclient.h"
