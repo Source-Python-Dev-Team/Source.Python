@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _PLAYERS_WRAP_H
-#define _PLAYERS_WRAP_H
+#ifndef _PLAYERS_WRAP_L4D2_H
+#define _PLAYERS_WRAP_L4D2_H
 
 
 //-----------------------------------------------------------------------------
@@ -36,4 +36,4 @@ void export_engine_specific_user_cmd(scope _players, T UserCmd)
 {
 }
 
-#endif // _PLAYERS_WRAP_H
+#endif // _PLAYERS_WRAP_L4D2_H
