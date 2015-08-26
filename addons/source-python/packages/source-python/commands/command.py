@@ -26,8 +26,17 @@ class _BaseCommand(AutoUnload):
 
     def __call__(self, callback):
         """Register the commands to the given callback."""
-        # Store the callback
-        self.callback = callback
+        # Is there another registered decorator for the callback?
+        if isinstance(callback, _BaseCommand):
+
+            # Store the callback
+            self.callback = callback.callback
+
+        # Is this the first decorator registering the callback?
+        else:
+
+            # Store the callback
+            self.callback = callback
 
         # Register the commands
         self._manager_class.register_commands(
