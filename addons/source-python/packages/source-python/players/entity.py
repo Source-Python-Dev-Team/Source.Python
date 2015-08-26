@@ -36,6 +36,7 @@ from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
 from players.games import _GameWeapons
+from players.voice import mute_manager
 from players.weapons import _PlayerWeapons
 
 
@@ -280,6 +281,35 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     def slay(self):
         """Slay the player."""
         self.client_command('kill', True)
+
+    def say(self, message):
+        """Force the player to say something in the global chat."""
+        self.client_command('say {0}'.format(message), True)
+
+    def say_team(self, message):
+        """Force the player to say something in the team chat."""
+        self.client_command('say_team {0}'.format(message), True)
+
+    def mute(self, receivers=None):
+        """Mute the player.
+
+        See players.voice.mute_manager.mute_player for more information.
+        """
+        mute_manager.mute_player(self.index, receivers)
+
+    def unmute(self, receivers=None):
+        """Unmute the player.
+
+        See players.voice.mute_manager.unmute_player for more information.
+        """
+        mute_manager.unmute_player(self.index, receivers)
+
+    def is_muted(self, receivers=None):
+        """Return True if the player is currently muted.
+
+        See players.voice.mute_manager.is_muted for more information.
+        """
+        return mute_manager.is_muted(self.index, receivers)
 
 
 # =============================================================================

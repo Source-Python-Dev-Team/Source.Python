@@ -40,6 +40,7 @@ def load():
     setup_auth()
     setup_user_settings()
     setup_entities_listener()
+    setup_versioning()
 
 
 def unload():
@@ -206,3 +207,11 @@ def unload_plugins():
 
     for plugin_name in core_plugin_manager:
         _core_command.unload_plugin(plugin_name)
+
+
+# =============================================================================
+# >> VERSION
+# =============================================================================
+def setup_versioning():
+    """Setup versioning."""
+    from core import version

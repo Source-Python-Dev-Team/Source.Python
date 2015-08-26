@@ -177,12 +177,12 @@ inline CBaseHandle BaseHandleFromEdict( edict_t *pEdict, bool bRaiseException = 
 //-----------------------------------------------------------------------------
 inline int IntHandleFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = false )
 {
-	int iEntityHandle = INVALID_EHANDLE_INDEX;
+	int iEntityHandle = (int) INVALID_EHANDLE_INDEX;
 
 	if (hBaseHandle.IsValid())
 		iEntityHandle = hBaseHandle.ToInt();
 
-	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
 
 	return iEntityHandle;
@@ -392,9 +392,9 @@ inline int IndexFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException = 
 //-----------------------------------------------------------------------------
 inline int IndexFromIntHandle( int iEntityHandle, bool bRaiseException = false )
 {
-	int iEntityIndex = INVALID_ENTITY_INDEX;
+	int iEntityIndex = (int) INVALID_ENTITY_INDEX;
 
-	if (iEntityHandle != INVALID_EHANDLE_INDEX)
+	if (iEntityHandle != (int) INVALID_EHANDLE_INDEX)
 	{
 		CBaseHandle hBaseHandle(iEntityHandle);
 		const CBaseHandle hTestHandle = BaseHandleFromEdict(EdictFromIndex(hBaseHandle.GetEntryIndex()));
@@ -573,7 +573,7 @@ inline int IntHandleFromIndex( int iEntityIndex, bool bRaiseException = false )
 {
 	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromIndex(iEntityIndex));
 
-	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given index (%i).", iEntityIndex);
 
 	return iEntityHandle;
@@ -587,7 +587,7 @@ inline int IntHandleFromEdict( edict_t *pEdict, bool bRaiseException = false )
 {
 	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromEdict(pEdict));
 
-	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given Edict instance (%x).", pEdict);
 
 	return iEntityHandle;
@@ -601,7 +601,7 @@ inline int IntHandleFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseExcepti
 {
 	int iEntityHandle = IntHandleFromEdict(EdictFromBaseEntity(pBaseEntity));
 
-	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseEntity instance (%x).", pBaseEntity);
 
 	return iEntityHandle;
@@ -615,7 +615,7 @@ inline int IntHandleFromPointer( CPointer *pEntityPointer, bool bRaiseException 
 {
 	int iEntityHandle = IntHandleFromBaseEntity(BaseEntityFromPointer(pEntityPointer));
 
-	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
 
 	return iEntityHandle;
@@ -629,7 +629,7 @@ inline int IntHandleFromUserid( int iUserID, bool bRaiseException = false )
 {
 	int iEntityHandle = IntHandleFromEdict(EdictFromUserid(iUserID));
 
-	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given UserID (%i).", iUserID);
 
 	return iEntityHandle;
@@ -643,7 +643,7 @@ inline int IntHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseExcepti
 {
 	int iEntityHandle = IntHandleFromEdict(EdictFromPlayerInfo(pPlayerInfo));
 
-	if (iEntityHandle == INVALID_EHANDLE_INDEX && bRaiseException)
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given PlayerInfo instance (%x).", pPlayerInfo);
 
 	return iEntityHandle;
@@ -851,7 +851,7 @@ inline int UseridFromIntHandle( int iEntityHandle, bool bRaiseException = false 
 {
 	int iUserID = INVALID_PLAYER_USERID;
 
-	if (iEntityHandle != INVALID_EHANDLE_INDEX)
+	if (iEntityHandle != (int) INVALID_EHANDLE_INDEX)
 		iUserID = UseridFromBaseHandle(BaseHandleFromIntHandle(iEntityHandle));
 
 	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
