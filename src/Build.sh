@@ -179,6 +179,10 @@ CreateBuild () {
     make clean
     make -j$NUM_CORES 2>&1 | tee build.log
 
+    # Set the exit code to the exit code of the make command. Otherwise it
+    # would be the exit code of the pipe command
+    test ${PIPESTATUS[0]} -eq 0
+
 }
 if [ "$#" -gt "0" ]; then
     BRANCH=$1
