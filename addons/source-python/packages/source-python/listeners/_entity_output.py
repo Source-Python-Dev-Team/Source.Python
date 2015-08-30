@@ -69,7 +69,7 @@ def _pre_fire_output(args):
 
     delay = args[4]
     entity_output_listener_manager.notify(
-        output_name, activator, caller, delay)
+        output_name, activator, caller, value, delay)
 
 
 # =============================================================================
