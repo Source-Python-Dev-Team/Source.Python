@@ -264,6 +264,22 @@ class Entity(BaseEntity, _EntitySpecials):
                 yield name
 
     @property
+    def outputs(self):
+        """Iterate over all outputs available for the entity.
+
+        This property is a helper for scripters
+            to know what outputs an entity has available.
+        """
+        # Loop through each server class for the entity
+        for server_class in self.server_classes:
+
+            # Loop through the server class' outputs
+            for name in server_class.outputs:
+
+                # Yield the input
+                yield name
+
+    @property
     def keyvalues(self):
         """Iterate over all entity keyvalues available for the entity.
 
