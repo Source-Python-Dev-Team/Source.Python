@@ -23,11 +23,24 @@ class _BaseCommand(AutoUnload):
         self.args = args
         self.kwargs = kwargs
         self.callback = None
+        self._head_decorator = None
 
     def __call__(self, callback):
         """Register the commands to the given callback."""
-        # Store the callback
-        self.callback = callback
+        # Is there another registered decorator for the callback?
+        if isinstance(callback, _BaseCommand):
+
+            # Store the callback
+            self.callback = callback.callback
+
+            # Store the previous decorator instance
+            self._head_decorator = callback
+
+        # Is this the first decorator registering the callback?
+        else:
+
+            # Store the callback
+            self.callback = callback
 
         # Register the commands
         self._manager_class.register_commands(
@@ -38,4 +51,11 @@ class _BaseCommand(AutoUnload):
 
     def _unload_instance(self):
         """Unregister the commands."""
+        # Unregister the commands
         self._manager_class.unregister_commands(self.names, self.callback)
+
+        # Was there another decorator for the callback?
+        if self._head_decorator is not None:
+
+            # Unregister the other decorator
+            self._head_decorator._unload_instance()

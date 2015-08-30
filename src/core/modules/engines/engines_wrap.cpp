@@ -982,9 +982,9 @@ void export_engine_trace(scope _engines)
 		)
 
 		.def("enumerate_entities_in_box",
-			GET_METHOD(void, IEngineTrace, EnumerateEntities, const Vector&, const Vector&, IEntityEnumerator*),
+			&IEngineTraceExt::EnumerateEntitiesInBox,
 			"Enumerates over all entities within a box.",
-			args("mins", "maxs", "enumerator")
+			args("p1", "p2", "enumerator")
 		)
 
 		.def("get_collideable",

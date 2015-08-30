@@ -54,16 +54,18 @@ class _MuteManager(collections.defaultdict):
             return range(1, global_vars.max_clients + 1)
 
         # Check if "receivers" contains valid player indexes
-        if not all(map(lambda index: (isinstance(index, int) and
-                0 < index < global_vars.max_clients), receivers)):
+        if not all(map(lambda index: (isinstance(
+                index, int) and 0 < index < global_vars.max_clients),
+                receivers)):
             raise ValueError(
                 '"receivers" doesn\'t contain valid player indexes.')
 
         return receivers
 
     def mute_player(self, sender, receivers=None):
-        """Mute a player, so other players can't hear him talking. The muted
-        player will still hear the other players.
+        """Mute a player, so other players can't hear him talking.
+
+        The muted player will still hear the other players.
 
         If <receivers> is None, the sender will be muted for all players
         currently on the server and all future players.
@@ -97,7 +99,8 @@ class _MuteManager(collections.defaultdict):
         If you want to check if the player is muted only for specific players,
         pass a tuple that contains the player indexes that should be checked.
         """
-        return all(map(lambda receiver: sender in self[receiver],
+        return all(map(
+            lambda receiver: sender in self[receiver],
             self._get_receivers(receivers)))
 
 mute_manager = _MuteManager(set)
@@ -115,6 +118,7 @@ def _pre_set_client_listening(args):
     # Check if the sender is muted for this receiver
     if mute_manager.is_muted(sender, [receiver]):
         args[3] = False
+
 
 @ClientDisconnect
 def _on_client_disconnect(index):
