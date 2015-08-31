@@ -171,6 +171,15 @@ public:
 
 		return pNetworkable->GetClassName();
 	}
+
+	static bool IsNetworked(IServerUnknown* pUnknown)
+	{
+		IServerNetworkable *pServerNetworkable = pUnknown->GetNetworkable();
+		if (pServerNetworkable)
+			return pServerNetworkable->GetEdict() != NULL;
+
+		return false;
+	}
 };
 
 
