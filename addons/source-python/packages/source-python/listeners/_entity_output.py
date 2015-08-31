@@ -17,7 +17,7 @@ import memory
 from memory.hooks import PreHook
 from memory.manager import manager
 #   Entity
-from entities.entity import Entity
+from entities.entity import BaseEntity
 from entities.datamaps import Variant
 #   Listeners
 from _listeners import _ListenerManager
@@ -27,14 +27,15 @@ from _listeners import _ListenerManager
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('entity_output_listener_manager',
-)
+           )
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-BaseEntityOutput = manager.create_type_from_dict('BaseEntityOutput',
-    GameConfigObj(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
+BaseEntityOutput = manager.create_type_from_dict(
+    'BaseEntityOutput', GameConfigObj(
+        SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
 entity_output_listener_manager = _ListenerManager()
 
@@ -55,7 +56,7 @@ def _pre_fire_output(args):
         # name
         return
 
-    caller = memory.make_object(Entity, caller_ptr)
+    caller = memory.make_object(BaseEntity, caller_ptr)
     output_name = _find_output_name(caller, args[0])
     if output_name is None:
         return None
@@ -64,8 +65,8 @@ def _pre_fire_output(args):
     value = (value_ptr or None) and memory.make_object(Variant, value_ptr)
 
     activator_ptr = args[2]
-    activator = ((activator_ptr or None)
-        and memory.make_object(Entity, activator_ptr))
+    activator = ((activator_ptr or None) and memory.make_object(
+        BaseEntity, activator_ptr))
 
     delay = args[4]
     entity_output_listener_manager.notify(
