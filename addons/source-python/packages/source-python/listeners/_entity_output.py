@@ -18,6 +18,7 @@ from memory.hooks import PreHook
 from memory.manager import manager
 #   Entity
 from entities.entity import BaseEntity
+from entities.entity import Entity
 from entities.datamaps import Variant
 #   Listeners
 from _listeners import _ListenerManager
@@ -61,12 +62,17 @@ def _pre_fire_output(args):
     if output_name is None:
         return None
 
+    if caller.is_networked():
+        caller = memory.make_object(Entity, caller_ptr)
+
     value_ptr = args[1]
     value = (value_ptr or None) and memory.make_object(Variant, value_ptr)
 
     activator_ptr = args[2]
     activator = ((activator_ptr or None) and memory.make_object(
         BaseEntity, activator_ptr))
+    if activator is not None and activator.is_networked():
+        activator = memory.make_object(Entity, activator_ptr)
 
     delay = args[4]
     entity_output_listener_manager.notify(
