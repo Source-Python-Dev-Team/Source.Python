@@ -213,11 +213,6 @@ class Entity(BaseEntity, _EntitySpecials):
         return self.basehandle.to_int()
 
     @property
-    def classname(self):
-        """Return the classname of the entity."""
-        return self.edict.get_class_name()
-
-    @property
     def server_class(self):
         """Return the entity's server class."""
         return self.edict.networkable.get_server_class()

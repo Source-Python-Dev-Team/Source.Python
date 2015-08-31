@@ -157,4 +157,21 @@ public:
 };
 
 
+//-----------------------------------------------------------------------------
+// IServerUnknown extension class.
+//-----------------------------------------------------------------------------
+class IServerUnknownExt
+{
+public:
+	static const char* GetClassname(IServerUnknown* pUnknown)
+	{
+		IServerNetworkable* pNetworkable = pUnknown->GetNetworkable();
+		if (!pNetworkable)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
+
+		return pNetworkable->GetClassName();
+	}
+};
+
+
 #endif // _ENTITIES_H
