@@ -131,6 +131,11 @@ public:
 		delete ppEntities;
 		return make_tuple(iMask, entities);
 	}
+
+	static void EnumerateEntitiesInBox(IEngineTrace* pEngineTrace, const Vector& p1, const Vector& p2, IEntityEnumerator* pEnumerator)
+	{
+		pEngineTrace->EnumerateEntities(p1.Min(p2), p2.Max(p1), pEnumerator);
+	}
 };
 
 

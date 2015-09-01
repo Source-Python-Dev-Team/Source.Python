@@ -58,6 +58,7 @@
 
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
+#include "modules/entities/entities_entity.h"
 
 
 //-----------------------------------------------------------------------------
@@ -468,8 +469,7 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 #ifdef ENGINE_BMS
 void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 {
-	CPointer pAddress = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntityPreSpawned, pAddress);
+	CALL_LISTENERS(OnEntityPreSpawned, ptr((CBaseEntityWrapper*) pEntity));
 }
 #endif
 
@@ -483,20 +483,17 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
 	}
-	CPointer pAddress = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntityCreated, iIndex, ptr(&pAddress));
+	CALL_LISTENERS(OnEntityCreated, iIndex, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
-	CPointer pAddress = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntitySpawned, IndexFromBaseEntity(pEntity), ptr(&pAddress));
+	CALL_LISTENERS(OnEntitySpawned, IndexFromBaseEntity(pEntity), ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	CPointer pAddress = CPointer((unsigned long) pEntity);
-	CALL_LISTENERS(OnEntityDeleted, IndexFromBaseEntity(pEntity), ptr(&pAddress));
+	CALL_LISTENERS(OnEntityDeleted, IndexFromBaseEntity(pEntity), ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

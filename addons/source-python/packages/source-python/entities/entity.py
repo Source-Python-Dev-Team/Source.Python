@@ -213,11 +213,6 @@ class Entity(BaseEntity, _EntitySpecials):
         return self.basehandle.to_int()
 
     @property
-    def classname(self):
-        """Return the classname of the entity."""
-        return self.edict.get_class_name()
-
-    @property
     def server_class(self):
         """Return the entity's server class."""
         return self.edict.networkable.get_server_class()
@@ -259,6 +254,22 @@ class Entity(BaseEntity, _EntitySpecials):
 
             # Loop through the server class' inputs
             for name in server_class.inputs:
+
+                # Yield the input
+                yield name
+
+    @property
+    def outputs(self):
+        """Iterate over all outputs available for the entity.
+
+        This property is a helper for scripters
+            to know what outputs an entity has available.
+        """
+        # Loop through each server class for the entity
+        for server_class in self.server_classes:
+
+            # Loop through the server class' outputs
+            for name in server_class.outputs:
 
                 # Yield the input
                 yield name
