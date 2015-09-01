@@ -515,8 +515,7 @@ inline CBaseHandle BaseHandleFromIntHandle( int iEntityHandle, bool bRaiseExcept
 //-----------------------------------------------------------------------------
 inline CBaseHandle BaseHandleFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException = false)
 {
-	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromBaseEntity(pBaseEntity));
-
+	CBaseHandle hBaseHandle = pBaseEntity->GetRefEHandle();
 	if (!hBaseHandle.ToInt() && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given BaseEntity instance (%x).", pBaseEntity);
 
@@ -599,7 +598,7 @@ inline int IntHandleFromEdict( edict_t *pEdict, bool bRaiseException = false )
 //-----------------------------------------------------------------------------
 inline int IntHandleFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException = false )
 {
-	int iEntityHandle = IntHandleFromEdict(EdictFromBaseEntity(pBaseEntity));
+	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromBaseEntity(pBaseEntity));
 
 	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseEntity instance (%x).", pBaseEntity);

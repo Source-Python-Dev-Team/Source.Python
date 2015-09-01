@@ -173,6 +173,16 @@ void export_server_unknown(scope _entities)
 			return_by_value_policy()
 		)
 
+		.add_property("classname",
+			&IServerUnknownExt::GetClassname,
+			"Return the entity's classname."
+		)
+
+		.def("is_networked",
+			&IServerUnknownExt::IsNetworked,
+			"Return True if the entity is networked."
+		)
+
 		ADD_MEM_TOOLS(IServerUnknown)
 	;
 }

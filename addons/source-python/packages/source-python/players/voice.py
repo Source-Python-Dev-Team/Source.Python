@@ -55,7 +55,7 @@ class _MuteManager(collections.defaultdict):
 
         # Check if "receivers" contains valid player indexes
         if not all(map(lambda index: (isinstance(
-                index, int) and 0 < index < global_vars.max_clients),
+                index, int) and 0 < index <= global_vars.max_clients),
                 receivers)):
             raise ValueError(
                 '"receivers" doesn\'t contain valid player indexes.')

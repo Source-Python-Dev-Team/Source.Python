@@ -38,6 +38,8 @@ from _listeners import on_data_unloaded_listener_manager
 from _listeners import on_query_cvar_value_finished_listener_manager
 from _listeners import server_activate_listener_manager
 from _listeners import tick_listener_manager
+#   Entity output
+from listeners._entity_output import entity_output_listener_manager
 
 
 # =============================================================================
@@ -49,6 +51,7 @@ __all__ = ('ClientActive',
            'ClientFullyConnect',
            'ClientPutInServer',
            'ClientSettingsChanged',
+           'EntityOutput',
            'LevelInit',
            'LevelShutdown',
            'NetworkidValidated',
@@ -70,6 +73,7 @@ __all__ = ('ClientActive',
            'client_fully_connect_listener_manager',
            'client_put_in_server_listener_manager',
            'client_settings_changed_listener_manager',
+           'entity_output_listener_manager',
            'level_init_listener_manager',
            'level_shutdown_listener_manager',
            'network_id_validated_listener_manager',
@@ -190,6 +194,13 @@ class ClientSettingsChanged(_ListenerManager):
     """Register/unregister a ClientSettingsChanged listener."""
 
     manager = client_settings_changed_listener_manager
+
+
+class EntityOutput(_ListenerManager):
+
+    """Register/unregister an EntityOutput listener."""
+
+    manager = entity_output_listener_manager
 
 
 class LevelInit(_ListenerManager):
