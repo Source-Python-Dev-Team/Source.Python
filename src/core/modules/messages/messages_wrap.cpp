@@ -39,12 +39,14 @@ using namespace boost::python;
 void export_usermessages(scope);
 void export_message_functions(scope);
 void export_dialog_enum(scope);
+void export_shake_command(scope);
 
 DECLARE_SP_MODULE(_messages)
 {
 	export_usermessages(_messages);
 	export_message_functions(_messages);
 	export_dialog_enum(_messages);
+	export_shake_command(_messages);
 }
 
 
@@ -71,6 +73,10 @@ void export_usermessages(scope _messages)
 		&SendSayText,
 		("recipients", "text", arg("index")=0, arg("chat")=false)
 	);
+
+	def("send_shake",
+		&SendShake
+	);
 }
 
 void export_message_functions(scope _messages)
@@ -90,5 +96,17 @@ void export_dialog_enum(scope _messages)
 		.value("TEXT", DIALOG_TEXT)
 		.value("ENTRY", DIALOG_ENTRY)
 		.value("ASKCONNECT", DIALOG_ASKCONNECT)
+	;
+}
+
+void export_shake_command(scope _messages)
+{
+	enum_<ShakeCommand_t>("ShakeCommand")
+		.value("START", SHAKE_START)
+		.value("STOP", SHAKE_STOP)
+		.value("AMPLITUDE", SHAKE_AMPLITUDE)
+		.value("FREQUENCY", SHAKE_FREQUENCY)
+		.value("START_RUMBLEONLY", SHAKE_START_RUMBLEONLY)
+		.value("START_NORUMBLE", SHAKE_START_NORUMBLE)
 	;
 }

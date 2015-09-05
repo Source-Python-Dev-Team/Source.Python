@@ -34,6 +34,7 @@
 #include "utilities/wrap_macros.h"
 
 #include "public/engine/iserverplugin.h"
+#include "public/shake.h"
 
 
 //-----------------------------------------------------------------------------
@@ -48,6 +49,8 @@ void SendShowMenu(IRecipientFilter& recipients, int valid_slots,
 
 void SendHintText(IRecipientFilter& recipients, const char* message);
 void SendSayText(IRecipientFilter& recipients, const char* message, int index=0, bool chat=false);
+void SendShake(IRecipientFilter& recipients, ShakeCommand_t shake_command,
+	float amplitude, float frequency, float duration);
 
 
 //-----------------------------------------------------------------------------

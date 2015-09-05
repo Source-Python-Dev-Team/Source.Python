@@ -224,3 +224,27 @@ void SendSayText(IRecipientFilter& recipients, const char* message, int index, b
 	engine->MessageEnd();
 #endif
 }
+
+
+//-----------------------------------------------------------------------------
+// Shake
+//-----------------------------------------------------------------------------
+void SendShake(IRecipientFilter& recipients, ShakeCommand_t shake_command,
+	float amplitude, float frequency, float duration)
+{
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_Shake buffer = CCSUsrMsg_Shake();
+	buffer.set_command(shake_command);
+	buffer.set_local_amplitude(amplitude);
+	buffer.set_frequency(frequency);
+	buffer.set_duration(duration);
+	SendProtobufMessage(recipients, "Shake", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "Shake");
+	buffer->WriteByte(shake_command);
+	buffer->WriteFloat(amplitude);
+	buffer->WriteFloat(frequency);
+	buffer->WriteFloat(duration);
+	engine->MessageEnd();
+#endif
+}
