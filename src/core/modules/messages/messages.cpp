@@ -42,11 +42,38 @@ extern IServerGameDLL *servergamedll;
 
 
 //-----------------------------------------------------------------------------
-// HELPERS
+// Forward declarations.
 //-----------------------------------------------------------------------------
-#ifndef USE_PROTOBUF
-static int GetUsermessageIndex(const char* message_name)
+int GetUserMessageIndex(const char* message_name);
+
+
+//-----------------------------------------------------------------------------
+// Helpers.
+//-----------------------------------------------------------------------------
+#ifdef USE_PROTOBUF
+	#include "game/shared/csgo/protobuf/cstrike15_usermessages.pb.h"
+	#include "public/game/shared/csgo/protobuf/cstrike15_usermessage_helpers.h"
+
+	static void SendProtobufMessage(IRecipientFilter& recipients, const char* message_name, google::protobuf::Message& buffer)
+	{
+		engine->SendUserMessage(recipients, GetUserMessageIndex(message_name), buffer);
+	}
+#else
+	static bf_write* StartBitbufMessage(IRecipientFilter& recipients, const char* message_name)
+	{
+	#ifdef ENGINE_LEFT4DEAD2
+		return engine->UserMessageBegin(&recipients, GetUserMessageIndex(message_name), message_name);
+	#else
+		return engine->UserMessageBegin(&recipients, GetUserMessageIndex(message_name));
+	#endif
+	}
+#endif
+
+static int GetUserMessageIndex(const char* message_name)
 {
+#ifdef USE_PROTOBUF
+	return g_Cstrike15UsermessageHelpers.GetIndex(message_name);
+#else
 	char sz_mname[256];
 	int sizereturn;
 	int index = 0;
@@ -59,8 +86,8 @@ static int GetUsermessageIndex(const char* message_name)
 		index++;
 	}
 	return 0;
-}
 #endif
+}
 
 
 //-----------------------------------------------------------------------------
@@ -80,9 +107,19 @@ void SendSayText2(IRecipientFilter& recipients, const char* message,
 	const char* param3, const char* param4)
 {
 #ifdef USE_PROTOBUF
-	
+	// TODO: Add textchatall
+	CCSUsrMsg_SayText2 buffer = CCSUsrMsg_SayText2();
+	buffer.set_msg_name(message);
+	buffer.set_chat(chat);
+	buffer.set_ent_idx(index);
+	buffer.add_params(param1);
+	buffer.add_params(param2);
+	buffer.add_params(param3);
+	buffer.add_params(param4);
+	SendProtobufMessage(recipients, "SayText2", buffer);
+
 #else
-	bf_write* buffer = engine->UserMessageBegin(&recipients, GetUsermessageIndex("SayText2"));
+	bf_write* buffer = StartBitbufMessage(recipients, "SayText2");
 	buffer->WriteByte(index);
 	buffer->WriteByte(chat);
 	buffer->WriteString(message);
