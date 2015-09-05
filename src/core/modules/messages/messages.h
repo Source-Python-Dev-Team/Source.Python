@@ -53,6 +53,8 @@ void SendShake(IRecipientFilter& recipients, ShakeCommand_t shake_command,
 	float amplitude, float frequency, float duration);
 void SendResetHUD(IRecipientFilter& recipients, bool reset);
 void SendVGUIMenu(IRecipientFilter& recipients, const char* name, bool show, dict data);
+void SendTextMsg(IRecipientFilter& recipients, int destination, const char* name,
+	const char* param1="", const char* param2="", const char* param3="", const char* param4="");
 
 
 //-----------------------------------------------------------------------------

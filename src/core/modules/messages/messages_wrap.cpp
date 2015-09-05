@@ -47,6 +47,14 @@ DECLARE_SP_MODULE(_messages)
 	export_message_functions(_messages);
 	export_dialog_enum(_messages);
 	export_shake_command(_messages);
+
+	/*
+	TODO: Expose these constants
+	#define HUD_PRINTNOTIFY		1
+	#define HUD_PRINTCONSOLE	2
+	#define HUD_PRINTTALK		3
+	#define HUD_PRINTCENTER		4
+	*/
 }
 
 
@@ -84,6 +92,11 @@ void export_usermessages(scope _messages)
 
 	def("send_vgui_menu",
 		&SendVGUIMenu
+	);
+
+	def("send_text_msg",
+		&SendTextMsg,
+		("recipients", "destination", "name", arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
 	);
 }
 

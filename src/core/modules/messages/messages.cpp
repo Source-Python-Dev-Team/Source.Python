@@ -306,3 +306,31 @@ void SendVGUIMenu(IRecipientFilter& recipients, const char* name, bool show, dic
 	engine->MessageEnd();
 #endif
 }
+
+
+//-----------------------------------------------------------------------------
+// TextMsg
+//-----------------------------------------------------------------------------
+void SendTextMsg(IRecipientFilter& recipients, int destination, const char* name,
+	const char* param1, const char* param2, const char* param3, const char* param4)
+{
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_TextMsg buffer = CCSUsrMsg_TextMsg();
+	buffer.set_msg_dst(destination);
+	// TODO: What should we do with the "name" parameter
+	buffer.add_params(param1);
+	buffer.add_params(param2);
+	buffer.add_params(param3);
+	buffer.add_params(param4);
+	SendProtobufMessage(recipients, "TextMsg", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "TextMsg");
+	buffer->WriteByte(destination);
+	buffer->WriteString(name);
+	buffer->WriteString(param1);
+	buffer->WriteString(param2);
+	buffer->WriteString(param3);
+	buffer->WriteString(param4);
+	engine->MessageEnd();
+#endif
+}
