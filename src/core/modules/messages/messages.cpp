@@ -117,7 +117,6 @@ void SendSayText2(IRecipientFilter& recipients, const char* message,
 	buffer.add_params(param3);
 	buffer.add_params(param4);
 	SendProtobufMessage(recipients, "SayText2", buffer);
-
 #else
 	bf_write* buffer = StartBitbufMessage(recipients, "SayText2");
 	buffer->WriteByte(index);
@@ -145,7 +144,6 @@ void SendShowMenu(IRecipientFilter& recipients, int valid_slots, int display_tim
 	buffer.set_display_time(display_time);
 	buffer.set_menu_string(menu_string);
 	SendProtobufMessage(recipients, "ShowMenu", buffer);
-
 #else
 	int length = strlen(menu_string);
 	char* data = (char *) menu_string;
@@ -187,3 +185,21 @@ void SendShowMenu(IRecipientFilter& recipients, int valid_slots, int display_tim
 	}
 #endif
 }
+
+
+//-----------------------------------------------------------------------------
+// HintText
+//-----------------------------------------------------------------------------
+void SendHintText(IRecipientFilter& recipients, const char* message)
+{
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_HintText buffer = CCSUsrMsg_HintText();
+	buffer.set_text(message);
+	SendProtobufMessage(recipients, "HintText", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "HintText");
+	buffer->WriteString(message);
+	engine->MessageEnd();
+#endif
+}
+

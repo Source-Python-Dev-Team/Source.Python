@@ -53,15 +53,18 @@ DECLARE_SP_MODULE(_messages)
 //-----------------------------------------------------------------------------
 void export_usermessages(scope _messages)
 {
-	def(
-		"send_saytext2",
+	def("send_say_text2",
 		&SendSayText2,
-		("recipients", "message", arg("index")=0, arg("chat")=false, arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
+		("recipients", "message", arg("index")=0, arg("chat")=false,
+			arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
 	);
 
-	def(
-		"send_show_menu",
+	def("send_show_menu",
 		&SendShowMenu
+	);
+
+	def("send_hint_text",
+		&SendHintText
 	);
 }
 
