@@ -353,3 +353,33 @@ void SendKeyHintText(IRecipientFilter& recipients, const char* message)
 	engine->MessageEnd();
 #endif
 }
+
+
+//-----------------------------------------------------------------------------
+// Fade
+//-----------------------------------------------------------------------------
+void SendFade(IRecipientFilter& recipients, int duration, int hold_time, int flags, Color color)
+{
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_Fade buffer = CCSUsrMsg_Fade();
+	buffer.set_duration(duration);
+	buffer.set_hold_time(hold_time);
+	buffer.set_flags(flags);
+	CMsgRGBA* mutable_color = buffer.mutable_clr();
+	mutable_color->set_r(color.r());
+	mutable_color->set_g(color.g());
+	mutable_color->set_b(color.b());
+	mutable_color->set_a(color.a());
+	SendProtobufMessage(recipients, "Fade", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "Fade");
+	buffer->WriteShort(duration);
+	buffer->WriteShort(hold_time);
+	buffer->WriteShort(flags);
+	buffer->WriteByte(color.r());
+	buffer->WriteByte(color.g());
+	buffer->WriteByte(color.b());
+	buffer->WriteByte(color.a());
+	engine->MessageEnd();
+#endif
+}

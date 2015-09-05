@@ -102,6 +102,10 @@ void export_usermessages(scope _messages)
 	def("send_key_hint_text",
 		&SendKeyHintText
 	);
+
+	def("send_fade",
+		&SendFade
+	);
 }
 
 void export_message_functions(scope _messages)

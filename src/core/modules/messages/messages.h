@@ -56,6 +56,7 @@ void SendVGUIMenu(IRecipientFilter& recipients, const char* name, bool show, dic
 void SendTextMsg(IRecipientFilter& recipients, int destination, const char* name,
 	const char* param1="", const char* param2="", const char* param3="", const char* param4="");
 void SendKeyHintText(IRecipientFilter& recipients, const char* message);
+void SendFade(IRecipientFilter& recipients, int duration, int hold_time, int flags, Color color);
 
 
 //-----------------------------------------------------------------------------
