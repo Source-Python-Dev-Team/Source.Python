@@ -100,7 +100,7 @@ void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data )
 
 
 //-----------------------------------------------------------------------------
-// Usermessages
+// SayText2
 //-----------------------------------------------------------------------------
 void SendSayText2(IRecipientFilter& recipients, const char* message,
 	int index, bool chat, const char* param1, const char* param2,
@@ -128,5 +128,62 @@ void SendSayText2(IRecipientFilter& recipients, const char* message,
 	buffer->WriteString(param3);
 	buffer->WriteString(param4);
 	engine->MessageEnd();
+#endif
+}
+
+
+//-----------------------------------------------------------------------------
+// ShowMenu
+//-----------------------------------------------------------------------------
+#define MENU_MSG_CHUNK_SIZE 250
+
+void SendShowMenu(IRecipientFilter& recipients, int valid_slots, int display_time, const char* menu_string)
+{
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_ShowMenu buffer = CCSUsrMsg_ShowMenu();
+	buffer.set_bits_valid_slots(valid_slots);
+	buffer.set_display_time(display_time);
+	buffer.set_menu_string(menu_string);
+	SendProtobufMessage(recipients, "ShowMenu", buffer);
+
+#else
+	int length = strlen(menu_string);
+	char* data = (char *) menu_string;
+	char saved_char = 0;
+
+	// This code is taken from here:
+	// https://github.com/alliedmodders/sourcemod/blob/3291e3a38f8a458c7aebc233811e9514a2ec5f11/core/MenuStyle_Radio.cpp#L503
+	while (true)
+	{
+		// If the menu string is bigger than the chunk size, we need to split
+		// the data and send it in several messages.
+		if (length > MENU_MSG_CHUNK_SIZE)
+		{
+			// Save the char at the split position, so we can restore it later
+			saved_char = data[MENU_MSG_CHUNK_SIZE];
+			data[MENU_MSG_CHUNK_SIZE] = '\0';
+		}
+
+		// Send the chunked data
+		bf_write* buffer = StartBitbufMessage(recipients, "ShowMenu");
+		buffer->WriteWord(valid_slots);
+		buffer->WriteChar(display_time);
+		buffer->WriteByte(length > MENU_MSG_CHUNK_SIZE ? 1 : 0);
+		buffer->WriteString(data);
+		engine->MessageEnd();
+
+		if (length > MENU_MSG_CHUNK_SIZE)
+		{
+			// Restore the saved char and set the data variable to the remaining data
+			data[MENU_MSG_CHUNK_SIZE] = saved_char;
+			data = &data[MENU_MSG_CHUNK_SIZE];
+			length -= MENU_MSG_CHUNK_SIZE;
+		}
+		else
+		{
+			// If we didn't split the data in this loop, there is nothing left to send.
+			break;
+		}
+	}
 #endif
 }

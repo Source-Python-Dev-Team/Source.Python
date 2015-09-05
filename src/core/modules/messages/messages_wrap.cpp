@@ -58,6 +58,11 @@ void export_usermessages(scope _messages)
 		&SendSayText2,
 		("recipients", "message", arg("index")=0, arg("chat")=false, arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
 	);
+
+	def(
+		"send_show_menu",
+		&SendShowMenu
+	);
 }
 
 void export_message_functions(scope _messages)

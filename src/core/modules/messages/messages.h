@@ -43,6 +43,8 @@ void SendSayText2(IRecipientFilter& recipients, const char* message,
 	int index=0, bool chat=false, const char* param1="", const char* param2="",
 	const char* param3="", const char* param4="");
 
+void SendShowMenu(IRecipientFilter& recipients, int valid_slots, int display_time, const char* menu_string);
+
 
 //-----------------------------------------------------------------------------
 // Functions.
