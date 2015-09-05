@@ -55,6 +55,7 @@ void SendResetHUD(IRecipientFilter& recipients, bool reset);
 void SendVGUIMenu(IRecipientFilter& recipients, const char* name, bool show, dict data);
 void SendTextMsg(IRecipientFilter& recipients, int destination, const char* name,
 	const char* param1="", const char* param2="", const char* param3="", const char* param4="");
+void SendKeyHintText(IRecipientFilter& recipients, const char* message);
 
 
 //-----------------------------------------------------------------------------

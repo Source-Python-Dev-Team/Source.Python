@@ -98,6 +98,10 @@ void export_usermessages(scope _messages)
 		&SendTextMsg,
 		("recipients", "destination", "name", arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
 	);
+
+	def("send_key_hint_text",
+		&SendKeyHintText
+	);
 }
 
 void export_message_functions(scope _messages)

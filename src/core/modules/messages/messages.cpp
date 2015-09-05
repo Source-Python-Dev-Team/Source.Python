@@ -334,3 +334,22 @@ void SendTextMsg(IRecipientFilter& recipients, int destination, const char* name
 	engine->MessageEnd();
 #endif
 }
+
+
+//-----------------------------------------------------------------------------
+// KeyHintText
+//-----------------------------------------------------------------------------
+void SendKeyHintText(IRecipientFilter& recipients, const char* message)
+{
+	// TODO: How do multiple hints look like?
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_KeyHintText buffer = CCSUsrMsg_KeyHintText();
+	buffer.add_hints(message);
+	SendProtobufMessage(recipients, "KeyHintText", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "KeyHintText");
+	buffer->WriteByte(1);
+	buffer->WriteString(message);
+	engine->MessageEnd();
+#endif
+}
