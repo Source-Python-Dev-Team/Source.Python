@@ -77,6 +77,10 @@ void export_usermessages(scope _messages)
 	def("send_shake",
 		&SendShake
 	);
+
+	def("send_reset_hud",
+		&SendResetHUD
+	);
 }
 
 void export_message_functions(scope _messages)

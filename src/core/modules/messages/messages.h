@@ -51,6 +51,7 @@ void SendHintText(IRecipientFilter& recipients, const char* message);
 void SendSayText(IRecipientFilter& recipients, const char* message, int index=0, bool chat=false);
 void SendShake(IRecipientFilter& recipients, ShakeCommand_t shake_command,
 	float amplitude, float frequency, float duration);
+void SendResetHUD(IRecipientFilter& recipients, bool reset);
 
 
 //-----------------------------------------------------------------------------

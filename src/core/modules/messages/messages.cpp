@@ -248,3 +248,20 @@ void SendShake(IRecipientFilter& recipients, ShakeCommand_t shake_command,
 	engine->MessageEnd();
 #endif
 }
+
+
+//-----------------------------------------------------------------------------
+// ResetHUD
+//-----------------------------------------------------------------------------
+void SendResetHUD(IRecipientFilter& recipients, bool reset)
+{
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_ResetHud buffer = CCSUsrMsg_ResetHud();
+	buffer.set_reset(reset);
+	SendProtobufMessage(recipients, "ResetHUD", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "ResetHUD");
+	buffer->WriteByte(reset);
+	engine->MessageEnd();
+#endif
+}
