@@ -30,111 +30,34 @@
 #include "export_main.h"
 using namespace boost::python;
 
-#include "modules/memory/memory_tools.h"
-
-#include "utilities/sp_util.h"
 #include "messages.h"
+
 
 //-----------------------------------------------------------------------------
 // Exposes the engine module.
 //-----------------------------------------------------------------------------
-void export_usermessage_interface(scope);
+void export_usermessages(scope);
 void export_message_functions(scope);
 void export_dialog_enum(scope);
 
 DECLARE_SP_MODULE(_messages)
 {
-	export_usermessage_interface(_messages);
+	export_usermessages(_messages);
 	export_message_functions(_messages);
 	export_dialog_enum(_messages);
 }
 
+
 //-----------------------------------------------------------------------------
 // Exposes the UserMessage class
 //-----------------------------------------------------------------------------
-void export_usermessage_interface(scope _messages)
+void export_usermessages(scope _messages)
 {
-	class_<CUserMessage>("UserMessage", init<const MRecipientFilter &, const char *>())
-		.def("send_message",
-			&CUserMessage::send_message,
-			"Sends the usermessage to the client recipients."
-		)
-
-		.def("get_message_name",
-			&CUserMessage::get_message_name,
-			"Retrieves the string name of the message."
-		)
-
-		.def("get_message_index",
-			&CUserMessage::get_message_index,
-			"Retrieves the integer index of the message. -1 means the message is not valid."
-		)
-
-		.def("get_recipient_filter",
-			&CUserMessage::get_recipient_filter,
-			"Retrieves the clients this message will be sent to.",
-			reference_existing_object_policy()
-		)
-
-		.def("has_been_sent",
-			&CUserMessage::has_been_sent,
-			"Whether the message has been sent to the clients."
-		)
-
-		.def("set_char",
-			&CUserMessage::set_char,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-
-		.def("set_byte",
-			&CUserMessage::set_byte,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-
-		.def("set_short",
-			&CUserMessage::set_short,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-
-		.def("set_long",
-			&CUserMessage::set_long,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-
-		.def("set_float",
-			&CUserMessage::set_float,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-
-		.def("set_bool",
-			&CUserMessage::set_bool,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-
-		.def("set_color",
-			&CUserMessage::set_color,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-		
-		.def("set_buffer",
-			&CUserMessage::set_buffer,
-			"Sets a field parameter to the specified value.",
-			("field_name", "buffer", "num_bytes", arg("index")=-1)
-		)
-
-		.def("set_string",
-			&CUserMessage::set_string,
-			"Sets a field parameter to the specified value.",
-			("field_name", "field_value", arg("index")=-1)
-		)
-	;
+	def(
+		"send_saytext2",
+		&SendSayText2,
+		("recipients", "message", arg("index")=0, arg("chat")=false, arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
+	);
 }
 
 void export_message_functions(scope _messages)

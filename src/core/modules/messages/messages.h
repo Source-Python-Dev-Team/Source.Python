@@ -24,54 +24,29 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _USERMESSAGE_H_
-#define _USERMESSAGE_H_
+#ifndef _MESSAGES_H
+#define _MESSAGES_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
 #include "irecipientfilter.h"
 #include "utilities/wrap_macros.h"
-#include ENGINE_INCLUDE_PATH(messages_implementation.h)
+
 #include "public/engine/iserverplugin.h"
 
+
 //-----------------------------------------------------------------------------
-// CUserMessage.
+// Usermessages
 //-----------------------------------------------------------------------------
-class CUserMessage : public CUserMessageImplementation
-{
-public:
-	CUserMessage(const MRecipientFilter &recipient_filter, const char *message_name);
-	~CUserMessage();
+void SendSayText2(IRecipientFilter& recipients, const char* message,
+	int index=0, bool chat=false, const char* param1="", const char* param2="",
+	const char* param3="", const char* param4="");
 
-	virtual void send_message();
-
-	const char *get_message_name() const;
-	const int get_message_index() const;
-	const MRecipientFilter &get_recipient_filter() const;
-	bool has_been_sent() const;
-
-	// Virtual function call override (calls to base class)
-	// Pure-virtual methods which must be inherited and overwritten in the inherited
-	// classes
-	virtual void set_char(const char *field_name, char field_value, int index=-1);
-	virtual void set_byte(const char *field_name, unsigned char field_value, int index=-1);
-	virtual void set_short(const char *field_name, signed short field_value, int index=-1);
-	virtual void set_long(const char *field_name, signed long field_value, int index=-1);
-	virtual void set_float(const char *field_name, float field_value, int index=-1);
-	virtual void set_bool(const char *field_name, bool field_value, int index=-1);
-
-	// Unknown sized buffers
-	virtual void set_buffer(const char *field_name, void *buffer, unsigned int num_bytes, int index=-1);
-	virtual void set_string(const char *field_name, const char *field_value, int index=-1);
-
-private:
-	bool m_sent;
-};
 
 //-----------------------------------------------------------------------------
 // Functions.
 //-----------------------------------------------------------------------------
 void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
 
-#endif // _USERMESSAGE_H_
+#endif // _MESSAGES_H

@@ -303,21 +303,12 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MESSAGES_MODULE_HEADERS
     core/modules/messages/messages.h
-    core/modules/messages/messages_implementation_base.h
-    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.h
 )
 
 Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
     core/modules/messages/messages.cpp
     core/modules/messages/messages_wrap.cpp
-    core/modules/messages/messages_implementation_base.cpp
 )
-
-Set(SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES
-    ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES}
-    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.cpp
-)
-
 # ------------------------------------------------------------------
 # NetChannel module.
 # ------------------------------------------------------------------
@@ -446,7 +437,6 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS}
     ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES}
-    ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES}
 
     ${SOURCEPYTHON_NET_CHANNEL_MODULE_HEADERS}
     ${SOURCEPYTHON_NET_CHANNEL_MODULE_SOURCES}
@@ -520,7 +510,6 @@ Source_Group("Source Files\\Modules\\Listeners"              FILES ${SOURCEPYTHO
 Source_Group("Source Files\\Modules\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
-Source_Group("Source Files\\Modules\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES})
 Source_Group("Source Files\\Modules\\NetChannel"             FILES ${SOURCEPYTHON_NET_CHANNEL_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})

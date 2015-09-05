@@ -29,96 +29,39 @@
 //-----------------------------------------------------------------------------
 #include "messages.h"
 #include "public/engine/iserverplugin.h"
+#include "eiface.h"
 #include "sp_main.h"
+
 
 //-----------------------------------------------------------------------------
 // Externals.
 //-----------------------------------------------------------------------------
 extern IServerPluginHelpers *helpers;
 extern CSourcePython g_SourcePythonPlugin;
+extern IServerGameDLL *servergamedll;
+
 
 //-----------------------------------------------------------------------------
-// CUserMessage implementation.
+// HELPERS
 //-----------------------------------------------------------------------------
-CUserMessage::CUserMessage(const MRecipientFilter &recipient_filter, const char *message_name ) :
-	CUserMessageImplementation(recipient_filter, message_name),
-	m_sent(false)
+#ifndef USE_PROTOBUF
+static int GetUsermessageIndex(const char* message_name)
 {
-}
-
-CUserMessage::~CUserMessage()
-{
-	send_message();
-}
-
-void CUserMessage::send_message()
-{
-	if (m_sent == false)
+	char sz_mname[256];
+	int sizereturn;
+	int index = 0;
+	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
 	{
-		send_message_internal();
-		m_sent = true;
+		if (strcmp(message_name, sz_mname) == 0)
+		{
+			return index;
+		}
+		index++;
 	}
+	return 0;
 }
+#endif
 
-bool CUserMessage::has_been_sent() const
-{
-	return m_sent;
-}
-
-const char * CUserMessage::get_message_name() const
-{
-	return m_message_name;
-}
-
-const int CUserMessage::get_message_index() const
-{
-	return m_message_index;
-}
-
-const MRecipientFilter & CUserMessage::get_recipient_filter() const
-{
-	return m_recipient_filter;
-}
-
-void CUserMessage::set_char( const char *field_name, char field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_char(field_name, field_value, index);
-}
-
-void CUserMessage::set_byte( const char *field_name, unsigned char field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_byte(field_name, field_value, index);
-}
-
-void CUserMessage::set_short( const char *field_name, signed short field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_short(field_name, field_value, index);
-}
-
-void CUserMessage::set_long( const char *field_name, signed long field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_long(field_name, field_value, index);
-}
-
-void CUserMessage::set_float( const char *field_name, float field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_float(field_name, field_value, index);
-}
-
-void CUserMessage::set_bool( const char *field_name, bool field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_bool(field_name, field_value, index);
-}
-
-void CUserMessage::set_buffer( const char *field_name, void *buffer, unsigned int num_bytes, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_buffer(field_name, buffer, num_bytes, index);
-}
-
-void CUserMessage::set_string( const char *field_name, const char *field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_string(field_name, field_value, index);
-}
 
 //-----------------------------------------------------------------------------
 // Functions.
@@ -126,4 +69,27 @@ void CUserMessage::set_string( const char *field_name, const char *field_value, 
 void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data )
 {
 	helpers->CreateMessage(pEdict, type, data, &g_SourcePythonPlugin);
+}
+
+
+//-----------------------------------------------------------------------------
+// Usermessages
+//-----------------------------------------------------------------------------
+void SendSayText2(IRecipientFilter& recipients, const char* message,
+	int index, bool chat, const char* param1, const char* param2,
+	const char* param3, const char* param4)
+{
+#ifdef USE_PROTOBUF
+	
+#else
+	bf_write* buffer = engine->UserMessageBegin(&recipients, GetUsermessageIndex("SayText2"));
+	buffer->WriteByte(index);
+	buffer->WriteByte(chat);
+	buffer->WriteString(message);
+	buffer->WriteString(param1);
+	buffer->WriteString(param2);
+	buffer->WriteString(param3);
+	buffer->WriteString(param4);
+	engine->MessageEnd();
+#endif
 }
