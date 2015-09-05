@@ -203,3 +203,24 @@ void SendHintText(IRecipientFilter& recipients, const char* message)
 #endif
 }
 
+
+//-----------------------------------------------------------------------------
+// SayText
+//-----------------------------------------------------------------------------
+void SendSayText(IRecipientFilter& recipients, const char* message, int index, bool chat)
+{
+#ifdef USE_PROTOBUF
+	// TODO: Add textallchat
+	CCSUsrMsg_SayText buffer = CCSUsrMsg_SayText();
+	buffer.set_ent_idx(index);
+	buffer.set_text(message);
+	buffer.set_chat(message);
+	SendProtobufMessage(recipients, "SayText", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "SayText");
+	buffer->WriteByte(index);
+	buffer->WriteString(message);
+	buffer->WriteByte(chat);
+	engine->MessageEnd();
+#endif
+}

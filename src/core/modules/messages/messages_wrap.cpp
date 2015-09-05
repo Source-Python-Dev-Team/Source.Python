@@ -66,6 +66,11 @@ void export_usermessages(scope _messages)
 	def("send_hint_text",
 		&SendHintText
 	);
+
+	def("send_say_text",
+		&SendSayText,
+		("recipients", "text", arg("index")=0, arg("chat")=false)
+	);
 }
 
 void export_message_functions(scope _messages)

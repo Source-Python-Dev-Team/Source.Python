@@ -47,6 +47,7 @@ void SendShowMenu(IRecipientFilter& recipients, int valid_slots,
 	int display_time, const char* menu_string);
 
 void SendHintText(IRecipientFilter& recipients, const char* message);
+void SendSayText(IRecipientFilter& recipients, const char* message, int index=0, bool chat=false);
 
 
 //-----------------------------------------------------------------------------
