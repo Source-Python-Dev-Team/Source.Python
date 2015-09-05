@@ -81,6 +81,10 @@ void export_usermessages(scope _messages)
 	def("send_reset_hud",
 		&SendResetHUD
 	);
+
+	def("send_vgui_menu",
+		&SendVGUIMenu
+	);
 }
 
 void export_message_functions(scope _messages)

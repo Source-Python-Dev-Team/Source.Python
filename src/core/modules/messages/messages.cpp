@@ -265,3 +265,44 @@ void SendResetHUD(IRecipientFilter& recipients, bool reset)
 	engine->MessageEnd();
 #endif
 }
+
+
+//-----------------------------------------------------------------------------
+// VGUIMenu
+//-----------------------------------------------------------------------------
+void SendVGUIMenu(IRecipientFilter& recipients, const char* name, bool show, dict data)
+{
+#ifdef USE_PROTOBUF
+	CCSUsrMsg_VGUIMenu buffer = CCSUsrMsg_VGUIMenu();
+	buffer.set_name(name);
+	buffer.set_show(show);
+
+	for(int i=0; i < len(data); i++)
+    {
+        const char* key = extract<const char*>(data.keys()[i]);
+        const char* value = extract<const char*>(data[key]);
+
+        CCSUsrMsg_VGUIMenu_Subkey* subkey = buffer.add_subkeys();
+        subkey->set_name(key);
+        subkey->set_str(value);
+    }
+
+	SendProtobufMessage(recipients, "VGUIMenu", buffer);
+#else
+	bf_write* buffer = StartBitbufMessage(recipients, "VGUIMenu");
+	buffer->WriteString(name);
+	buffer->WriteByte(show);
+	buffer->WriteByte(len(data));
+
+	for(int i=0; i < len(data); i++)
+    {
+        const char* key = extract<const char*>(data.keys()[i]);
+        const char* value = extract<const char*>(data[key]);
+		
+		buffer->WriteString(key);
+		buffer->WriteString(value);
+    }
+
+	engine->MessageEnd();
+#endif
+}
