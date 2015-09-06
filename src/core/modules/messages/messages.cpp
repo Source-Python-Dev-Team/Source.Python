@@ -51,7 +51,7 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 
 	// Initialize buffer
 #ifdef USE_PROTOBUF
-	#error "Not implemented"
+	m_buffer = new CProtobufMessage(const_cast<google::protobuf::Message*>(g_Cstrike15UsermessageHelpers.GetPrototype(message_name)));
 #else
 	#ifdef ENGINE_LEFT4DEAD2
 		m_buffer = engine->UserMessageBegin(&recipients, GetMessageIndex(), message_name);
@@ -61,10 +61,17 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 #endif
 }
 
+CUserMessage::~CUserMessage()
+{
+#ifdef USE_PROTOBUF
+	delete m_buffer;
+#endif
+}
+
 void CUserMessage::Send()
 {
 #ifdef USE_PROTOBUF
-	engine->SendUserMessage(m_recipients, GetMessageIndex(), m_buffer->GetMessage());
+	engine->SendUserMessage(m_recipients, GetMessageIndex(), *m_buffer->GetProtobufMessage());
 #else
 	engine->MessageEnd();
 #endif
@@ -103,7 +110,23 @@ bool CUserMessage::IsProtobuf()
 //-----------------------------------------------------------------------------
 // CProtobufMessage.
 //-----------------------------------------------------------------------------
+#ifdef USE_PROTOBUF
+	CProtobufMessage::CProtobufMessage(google::protobuf::Message* message):
+		m_message(message)
+	{
+		if (!m_message) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Message is NULL");
+		}
 
+		if (!m_message->GetDescriptor()) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Descriptor is NULL");
+		}
+
+		if (!m_message->GetReflection()) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Reflection is NULL");
+		}
+	}
+#endif
 
 //-----------------------------------------------------------------------------
 // Functions.

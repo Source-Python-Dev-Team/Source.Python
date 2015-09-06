@@ -39,12 +39,14 @@ using namespace boost::python;
 void export_message_functions(scope);
 void export_dialog_enum(scope);
 void export_user_message(scope);
+void export_protobuf_message(scope);
 
 DECLARE_SP_MODULE(_messages)
 {
 	export_message_functions(_messages);
 	export_dialog_enum(_messages);
 	export_user_message(_messages);
+	export_protobuf_message(_messages);
 }
 
 
@@ -80,6 +82,76 @@ void export_user_message(scope _message)
 	);
 }
 
+
+//-----------------------------------------------------------------------------
+// Exposes CProtobufMessage
+//-----------------------------------------------------------------------------
+void export_protobuf_message(scope _messages)
+{
+#ifdef USE_PROTOBUF
+	class_<CProtobufMessage> ProtobufMessage("ProtobufMessage", no_init);
+	
+	ProtobufMessage.def("get_int32", &CProtobufMessage::GetInt32);
+	ProtobufMessage.def("get_int64", &CProtobufMessage::GetInt64);
+	ProtobufMessage.def("get_uint32", &CProtobufMessage::GetUInt32);
+	ProtobufMessage.def("get_uint64", &CProtobufMessage::GetUInt64);
+	ProtobufMessage.def("get_float", &CProtobufMessage::GetFloat);
+	ProtobufMessage.def("get_double", &CProtobufMessage::GetDouble);
+	ProtobufMessage.def("get_bool", &CProtobufMessage::GetBool);
+	ProtobufMessage.def("get_string", &CProtobufMessage::GetString);
+	ProtobufMessage.def("get_enum", &CProtobufMessage::GetEnum);
+	ProtobufMessage.def("get_message", &CProtobufMessage::GetMessage);
+	
+	ProtobufMessage.def("get_repeated_int32", &CProtobufMessage::GetRepeatedInt32);
+	ProtobufMessage.def("get_repeated_int64", &CProtobufMessage::GetRepeatedInt64);
+	ProtobufMessage.def("get_repeated_uint32", &CProtobufMessage::GetRepeatedUInt32);
+	ProtobufMessage.def("get_repeated_uint64", &CProtobufMessage::GetRepeatedUInt64);
+	ProtobufMessage.def("get_repeated_float", &CProtobufMessage::GetRepeatedFloat);
+	ProtobufMessage.def("get_repeated_double", &CProtobufMessage::GetRepeatedDouble);
+	ProtobufMessage.def("get_repeated_bool", &CProtobufMessage::GetRepeatedBool);
+	ProtobufMessage.def("get_repeated_string", &CProtobufMessage::GetRepeatedString);
+	ProtobufMessage.def("get_repeated_enum", &CProtobufMessage::GetRepeatedEnum);
+	ProtobufMessage.def("get_repeated_message", &CProtobufMessage::GetRepeatedMessage);
+	
+	ProtobufMessage.def("set_int32", &CProtobufMessage::SetInt32);
+	ProtobufMessage.def("set_int64", &CProtobufMessage::SetInt64);
+	ProtobufMessage.def("set_uint32", &CProtobufMessage::SetUInt32);
+	ProtobufMessage.def("set_uint64", &CProtobufMessage::SetUInt64);
+	ProtobufMessage.def("set_float", &CProtobufMessage::SetFloat);
+	ProtobufMessage.def("set_double", &CProtobufMessage::SetDouble);
+	ProtobufMessage.def("set_bool", &CProtobufMessage::SetBool);
+	ProtobufMessage.def("set_string", &CProtobufMessage::SetString);
+	ProtobufMessage.def("set_enum", &CProtobufMessage::SetEnum);
+	ProtobufMessage.def("mutable_message", &CProtobufMessage::MutableMessage);
+	
+	ProtobufMessage.def("set_repeated_int32", &CProtobufMessage::SetRepeatedInt32);
+	ProtobufMessage.def("set_repeated_int64", &CProtobufMessage::SetRepeatedInt64);
+	ProtobufMessage.def("set_repeated_uint32", &CProtobufMessage::SetRepeatedUInt32);
+	ProtobufMessage.def("set_repeated_uint64", &CProtobufMessage::SetRepeatedUInt64);
+	ProtobufMessage.def("set_repeated_float", &CProtobufMessage::SetRepeatedFloat);
+	ProtobufMessage.def("set_repeated_double", &CProtobufMessage::SetRepeatedDouble);
+	ProtobufMessage.def("set_repeated_bool", &CProtobufMessage::SetRepeatedBool);
+	ProtobufMessage.def("set_repeated_string", &CProtobufMessage::SetRepeatedString);
+	ProtobufMessage.def("set_repeated_enum", &CProtobufMessage::SetRepeatedEnum);
+	ProtobufMessage.def("mutable_repeated_message", &CProtobufMessage::MutableRepeatedMessage);
+	
+	ProtobufMessage.def("add_int32", &CProtobufMessage::AddInt32);
+	ProtobufMessage.def("add_int64", &CProtobufMessage::AddInt64);
+	ProtobufMessage.def("add_uint32", &CProtobufMessage::AddUInt32);
+	ProtobufMessage.def("add_uint64", &CProtobufMessage::AddUInt64);
+	ProtobufMessage.def("add_float", &CProtobufMessage::AddFloat);
+	ProtobufMessage.def("add_double", &CProtobufMessage::AddDouble);
+	ProtobufMessage.def("add_bool", &CProtobufMessage::AddBool);
+	ProtobufMessage.def("add_string", &CProtobufMessage::AddString);
+	ProtobufMessage.def("add_enum", &CProtobufMessage::AddEnum);
+	ProtobufMessage.def("add_message", &CProtobufMessage::AddMessage);
+#endif
+}
+
+
+//-----------------------------------------------------------------------------
+// Exposes functions
+//-----------------------------------------------------------------------------
 void export_message_functions(scope _messages)
 {
 	def("create_message",
@@ -89,6 +161,10 @@ void export_message_functions(scope _messages)
 	);
 }
 
+
+//-----------------------------------------------------------------------------
+// Exposes the DIALOG_TYPE enum
+//-----------------------------------------------------------------------------
 void export_dialog_enum(scope _messages)
 {
 	enum_<DIALOG_TYPE>("DialogType")
