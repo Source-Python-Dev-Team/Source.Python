@@ -38,17 +38,48 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 void export_message_functions(scope);
 void export_dialog_enum(scope);
+void export_user_message(scope);
 
 DECLARE_SP_MODULE(_messages)
 {
 	export_message_functions(_messages);
 	export_dialog_enum(_messages);
+	export_user_message(_messages);
 }
 
 
 //-----------------------------------------------------------------------------
 // Exposes the UserMessage class
 //-----------------------------------------------------------------------------
+void export_user_message(scope _message)
+{
+	class_<CUserMessage> UserMessage("UserMessage", init<IRecipientFilter&, const char*>());
+
+	UserMessage.add_property("recipients",
+		make_function(&CUserMessage::GetRecipients, reference_existing_object_policy())
+	);
+
+	UserMessage.add_property("message_name",
+		&CUserMessage::GetMessageName
+	);
+
+	UserMessage.add_property("message_index",
+		&CUserMessage::GetMessageIndex
+	);
+
+	UserMessage.add_property("buffer",
+		make_function(&CUserMessage::GetBuffer, reference_existing_object_policy())
+	);
+
+	UserMessage.def("send",
+		&CUserMessage::Send
+	);
+
+	UserMessage.add_property("is_protobuf",
+		&CUserMessage::IsProtobuf
+	);
+}
+
 void export_message_functions(scope _messages)
 {
 	def("create_message",

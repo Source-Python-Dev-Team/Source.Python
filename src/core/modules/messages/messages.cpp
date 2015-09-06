@@ -38,6 +38,71 @@
 //-----------------------------------------------------------------------------
 extern IServerPluginHelpers *helpers;
 extern CSourcePython g_SourcePythonPlugin;
+extern IServerGameDLL *servergamedll;
+
+
+//-----------------------------------------------------------------------------
+// CUserMessage.
+//-----------------------------------------------------------------------------
+CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_name):
+	m_recipients(recipients)
+{
+	m_message_name = message_name;
+
+	// Initialize buffer
+#ifdef USE_PROTOBUF
+	#error "Not implemented"
+#else
+	#ifdef ENGINE_LEFT4DEAD2
+		m_buffer = engine->UserMessageBegin(&recipients, GetMessageIndex(), message_name);
+	#else
+		m_buffer = engine->UserMessageBegin(&recipients, GetMessageIndex());
+	#endif
+#endif
+}
+
+void CUserMessage::Send()
+{
+#ifdef USE_PROTOBUF
+	engine->SendUserMessage(m_recipients, GetMessageIndex(), m_buffer->GetMessage());
+#else
+	engine->MessageEnd();
+#endif
+}
+
+int CUserMessage::GetMessageIndex()
+{
+#ifdef USE_PROTOBUF
+	return g_Cstrike15UsermessageHelpers.GetIndex(m_message_name);
+#else
+	char sz_mname[256];
+	int sizereturn;
+	int index = 0;
+	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
+	{
+		if (strcmp(m_message_name, sz_mname) == 0)
+		{
+			return index;
+		}
+		index++;
+	}
+	return 0;
+#endif
+}
+
+bool CUserMessage::IsProtobuf()
+{
+#ifdef USE_PROTOBUF
+	return true;
+#else
+	return false;
+#endif
+}
+
+
+//-----------------------------------------------------------------------------
+// CProtobufMessage.
+//-----------------------------------------------------------------------------
 
 
 //-----------------------------------------------------------------------------

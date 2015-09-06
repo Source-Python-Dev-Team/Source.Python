@@ -34,6 +34,57 @@
 #include "utilities/wrap_macros.h"
 
 #include "public/engine/iserverplugin.h"
+#include "bitbuf.h"
+
+
+#ifdef USE_PROTBUF
+	#define MESSAGE_BUFFER CProtobufMessage
+#else
+	#define MESSAGE_BUFFER bf_write
+#endif
+
+
+//-----------------------------------------------------------------------------
+// Classes.
+//-----------------------------------------------------------------------------
+#ifdef USE_PROTOBUF
+	class CProtobufMessage
+	{
+	public:
+		google::protobuf::Message* GetMessage();
+
+	private:
+		google::protobuf::Message* m_message;
+	};
+#endif
+
+
+class CUserMessage
+{
+public:
+	CUserMessage(IRecipientFilter& recipients, const char* message_name);
+
+public:
+	// Attribute accessors
+	IRecipientFilter& GetRecipients()
+	{ return m_recipients; }
+
+	const char* GetMessageName()
+	{ return m_message_name; }
+
+	MESSAGE_BUFFER* GetBuffer()
+	{ return m_buffer; }
+
+public:
+	void Send();
+	int GetMessageIndex();
+	bool IsProtobuf();
+
+private:
+	IRecipientFilter& m_recipients;
+	const char* m_message_name;
+	MESSAGE_BUFFER* m_buffer;
+};
 
 
 //-----------------------------------------------------------------------------
