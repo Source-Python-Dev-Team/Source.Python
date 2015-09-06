@@ -77,9 +77,9 @@ void export_user_message(scope _message)
 		&CUserMessage::Send
 	);
 
-	UserMessage.add_property("is_protobuf",
+	UserMessage.def("is_protobuf",
 		&CUserMessage::IsProtobuf
-	);
+	).staticmethod("is_protobuf");
 }
 
 

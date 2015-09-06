@@ -309,7 +309,7 @@ public:
 public:
 	void Send();
 	int GetMessageIndex();
-	bool IsProtobuf();
+	static bool IsProtobuf();
 
 private:
 	IRecipientFilter& m_recipients;
