@@ -36,78 +36,19 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 // Exposes the engine module.
 //-----------------------------------------------------------------------------
-void export_usermessages(scope);
 void export_message_functions(scope);
 void export_dialog_enum(scope);
-void export_shake_command(scope);
 
 DECLARE_SP_MODULE(_messages)
 {
-	export_usermessages(_messages);
 	export_message_functions(_messages);
 	export_dialog_enum(_messages);
-	export_shake_command(_messages);
-
-	/*
-	TODO: Expose these constants
-	#define HUD_PRINTNOTIFY		1
-	#define HUD_PRINTCONSOLE	2
-	#define HUD_PRINTTALK		3
-	#define HUD_PRINTCENTER		4
-	*/
 }
 
 
 //-----------------------------------------------------------------------------
 // Exposes the UserMessage class
 //-----------------------------------------------------------------------------
-void export_usermessages(scope _messages)
-{
-	def("send_say_text2",
-		&SendSayText2,
-		("recipients", "message", arg("index")=0, arg("chat")=false,
-			arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
-	);
-
-	def("send_show_menu",
-		&SendShowMenu
-	);
-
-	def("send_hint_text",
-		&SendHintText
-	);
-
-	def("send_say_text",
-		&SendSayText,
-		("recipients", "text", arg("index")=0, arg("chat")=false)
-	);
-
-	def("send_shake",
-		&SendShake
-	);
-
-	def("send_reset_hud",
-		&SendResetHUD
-	);
-
-	def("send_vgui_menu",
-		&SendVGUIMenu
-	);
-
-	def("send_text_msg",
-		&SendTextMsg,
-		("recipients", "destination", "name", arg("param1")="", arg("param2")="", arg("param3")="", arg("param4")="")
-	);
-
-	def("send_key_hint_text",
-		&SendKeyHintText
-	);
-
-	def("send_fade",
-		&SendFade
-	);
-}
-
 void export_message_functions(scope _messages)
 {
 	def("create_message",
@@ -125,17 +66,5 @@ void export_dialog_enum(scope _messages)
 		.value("TEXT", DIALOG_TEXT)
 		.value("ENTRY", DIALOG_ENTRY)
 		.value("ASKCONNECT", DIALOG_ASKCONNECT)
-	;
-}
-
-void export_shake_command(scope _messages)
-{
-	enum_<ShakeCommand_t>("ShakeCommand")
-		.value("START", SHAKE_START)
-		.value("STOP", SHAKE_STOP)
-		.value("AMPLITUDE", SHAKE_AMPLITUDE)
-		.value("FREQUENCY", SHAKE_FREQUENCY)
-		.value("START_RUMBLEONLY", SHAKE_START_RUMBLEONLY)
-		.value("START_NORUMBLE", SHAKE_START_NORUMBLE)
 	;
 }

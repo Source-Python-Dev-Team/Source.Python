@@ -34,29 +34,6 @@
 #include "utilities/wrap_macros.h"
 
 #include "public/engine/iserverplugin.h"
-#include "public/shake.h"
-
-
-//-----------------------------------------------------------------------------
-// Usermessages
-//-----------------------------------------------------------------------------
-void SendSayText2(IRecipientFilter& recipients, const char* message,
-	int index=0, bool chat=false, const char* param1="", const char* param2="",
-	const char* param3="", const char* param4="");
-
-void SendShowMenu(IRecipientFilter& recipients, int valid_slots,
-	int display_time, const char* menu_string);
-
-void SendHintText(IRecipientFilter& recipients, const char* message);
-void SendSayText(IRecipientFilter& recipients, const char* message, int index=0, bool chat=false);
-void SendShake(IRecipientFilter& recipients, ShakeCommand_t shake_command,
-	float amplitude, float frequency, float duration);
-void SendResetHUD(IRecipientFilter& recipients, bool reset);
-void SendVGUIMenu(IRecipientFilter& recipients, const char* name, bool show, dict data);
-void SendTextMsg(IRecipientFilter& recipients, int destination, const char* name,
-	const char* param1="", const char* param2="", const char* param3="", const char* param4="");
-void SendKeyHintText(IRecipientFilter& recipients, const char* message);
-void SendFade(IRecipientFilter& recipients, int duration, int hold_time, int flags, Color color);
 
 
 //-----------------------------------------------------------------------------
