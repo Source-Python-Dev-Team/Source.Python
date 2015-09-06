@@ -46,11 +46,8 @@ class UserMessageCreator(object):
 
     """Provide an easy interface to create user messages."""
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args):
         """Initialize the user message."""
-        if kwargs:
-            raise ValueError('Do not provide keywords.')
-
         self.args = args
 
     def send(self, *player_indexes):
