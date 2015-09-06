@@ -5,10 +5,20 @@
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
+# Python Imports
+import collections
+
 # Source.Python Imports
 #   Loggers
 from loggers import _sp_logger
+#   Filters
 from filters.recipients import RecipientFilter
+from filters.players import PlayerIter
+#   Players
+from players.helpers import get_client_language
+from players.helpers import playerinfo_from_index
+#   Translations
+from translations.strings import TranslationStrings
 
 
 # ============================================================================
@@ -44,9 +54,6 @@ __all__ = ('DialogType',
 # Get the sp.messages logger
 messages_logger = _sp_logger.messages
 
-# TODO: Temp "fix" to be able to load the plugin
-ShowMenu = None
-
 
 # =============================================================================
 # >> CLASSES
@@ -59,18 +66,40 @@ class UserMessageCreator(object):
         """Initialize the user message."""
         self.args = args
 
-    def send(self, *player_indexes):
+    def send(self, *player_indexes, **tokens):
         """Send the user message."""
-        # TODO: Handle translations
-        user_message = UserMessage(
-            RecipientFilter(*player_indexes), self.message_name)
+        if not player_indexes:
+            player_indexes = PlayerIter()
 
-        if user_message.is_protobuf():
-            self.protobuf(user_message.buffer, *self.args)
-        else:
-            self.bitbuf(user_message.buffer, *self.args)
+        # Categorize the players by their language
+        languages = collections.defaultdict(set)
+        for index in player_indexes:
+            if playerinfo_from_index(index).is_fake_client():
+                # No need to send a user message to bots
+                continue
 
-        user_message.send()
+            languages[get_client_language(index)].add(index)
+
+        for language, indexes in languages.items():
+            translated_args = []
+
+            # Translate the arguments
+            for arg in self.args:
+                if isinstance(arg, TranslationStrings):
+                    translated_args.append(arg.get_string(language, **tokens))
+                else:
+                    translated_args.append(arg)
+
+            # Send the user message
+            user_message = UserMessage(
+                RecipientFilter(*indexes), self.message_name)
+
+            if user_message.is_protobuf():
+                self.protobuf(user_message.buffer, *translated_args)
+            else:
+                self.bitbuf(user_message.buffer, *translated_args)
+
+            user_message.send()
 
     def protobuf(self, buffer, *args):
         """Protobuf implementation of this user message."""
