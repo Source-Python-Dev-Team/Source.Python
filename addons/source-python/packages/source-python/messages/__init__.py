@@ -26,6 +26,15 @@ __all__ = ('DialogType',
            'UserMessage',
            'UserMessageCreator',
            'VGUIMenu',
+           'ShowMenu',
+           'SayText2',
+           'HintText',
+           'SayText',
+           'Shake',
+           'ResetHUD',
+           'TextMsg',
+           'KeyHintText',
+           'Fade'
            )
 
 
