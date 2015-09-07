@@ -63,10 +63,9 @@ CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long ulSize)
 
 CPointer* CBinaryFile::FindSignatureRaw(object oSignature)
 {
-	unsigned char* sigstr = NULL;
-	PyArg_Parse(oSignature.ptr(), "y", &sigstr);
+	unsigned char* sigstr = (unsigned char *) PyBytes_AsString(oSignature.ptr());
 	if (!sigstr)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to parse the signature.");
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to read the given signature.");
 
 	int iLength = len(oSignature);
 
@@ -96,12 +95,9 @@ CPointer* CBinaryFile::FindSignatureRaw(object oSignature)
 
 CPointer* CBinaryFile::FindSignature(object oSignature)
 {
-	// This is required because there's no straight way to get a string from a python
-	// object from boost (without using the stl).
-	unsigned char* sigstr = NULL;
-	PyArg_Parse(oSignature.ptr(), "y", &sigstr);
+	unsigned char* sigstr = (unsigned char *) PyBytes_AsString(oSignature.ptr());
 	if (!sigstr)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to parse the signature.");
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to read the given signature.");
 	
 	// Search for a cached signature
 	PythonLog(4, "Searching for a cached signature...");
