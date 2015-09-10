@@ -66,6 +66,8 @@ void export_vector(scope _mathlib)
 	class_<Vector>("Vector", init<float, float, float>())
 		.def("__init__", make_constructor(&VectorExt::CreateNullVector))
 
+		.def("__repr__", &VectorExt::__repr__)
+
 		// Members
 		.def_readwrite("x",
 			&Vector::x
