@@ -51,12 +51,22 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 
 	// Initialize buffer
 #ifdef USE_PROTOBUF
-	m_buffer = new CProtobufMessage(const_cast<google::protobuf::Message*>(g_Cstrike15UsermessageHelpers.GetPrototype(message_name)));
+	const google::protobuf::Message* message = g_Cstrike15UsermessageHelpers.GetPrototype(message_name);
+	if (!message) {
+		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
+	}
+
+	m_buffer = new CProtobufMessage(const_cast<google::protobuf::Message*>(message));
 #else
+	int index = GetMessageIndex();
+	if (index == -1) {
+		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
+	}
+
 	#ifdef ENGINE_LEFT4DEAD2
-		m_buffer = engine->UserMessageBegin(&recipients, GetMessageIndex(), message_name);
+		m_buffer = engine->UserMessageBegin(&recipients, index, message_name);
 	#else
-		m_buffer = engine->UserMessageBegin(&recipients, GetMessageIndex());
+		m_buffer = engine->UserMessageBegin(&recipients, index);
 	#endif
 #endif
 }
@@ -87,13 +97,13 @@ int CUserMessage::GetMessageIndex()
 	int index = 0;
 	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
 	{
-		if (strcmp(m_message_name, sz_mname) == 0)
+		if (V_strcasecmp(m_message_name, sz_mname) == 0)
 		{
 			return index;
 		}
 		index++;
 	}
-	return 0;
+	return -1;
 #endif
 }
 

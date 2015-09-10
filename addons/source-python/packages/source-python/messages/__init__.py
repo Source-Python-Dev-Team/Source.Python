@@ -281,7 +281,7 @@ class Shake(UserMessageCreator):
         super().__init__(shake_command, amplitude, frequency, duration)
 
     def protobuf(self, buffer, shake_command, amplitude, frequency, duration):
-        buffer.set_enum('command', shake_command)
+        buffer.set_int32('command', shake_command)
         buffer.set_float('local_amplitude', amplitude)
         buffer.set_float('frequency', frequency)
         buffer.set_float('duration', duration)
@@ -297,7 +297,7 @@ class ResetHUD(UserMessageCreator):
 
     """Create a ResetHUD."""
 
-    message_name = 'ResetHUD'
+    message_name = 'ResetHud'
 
     def __init__(self, reset=True):
         super().__init__(reset)
@@ -322,6 +322,7 @@ class TextMsg(UserMessageCreator):
     def protobuf(self, buffer, destination, name, param1, param2, param3,
             param4):
         buffer.set_int32('msg_dst', destination)
+        buffer.add_string('params', name)
         buffer.add_string('params', param1)
         buffer.add_string('params', param2)
         buffer.add_string('params', param3)
@@ -366,9 +367,9 @@ class Fade(UserMessageCreator):
         super().__init__(duration, hold_time, flags, r, g, b, a)
 
     def protobuf(self, buffer, duration, hold_time, flags, r, g, b, a):
-        buffer.set_int32(duration)
-        buffer.set_int32(hold_time)
-        buffer.set_int32(flags)
+        buffer.set_int32('duration', duration)
+        buffer.set_int32('hold_time', hold_time)
+        buffer.set_int32('flags', flags)
         color = buffer.mutable_message('clr')
         color.set_int32('r', r)
         color.set_int32('g', g)
