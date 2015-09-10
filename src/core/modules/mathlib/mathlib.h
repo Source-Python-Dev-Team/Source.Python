@@ -48,6 +48,9 @@ public:
 	{
 		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
 	}
+
+	static str __repr__(Vector* pVector)
+	{ return str(tuple(pVector)); }
 };
 
 

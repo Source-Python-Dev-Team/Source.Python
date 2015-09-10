@@ -108,10 +108,9 @@ CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
 	unsigned char* base  = (unsigned char *) m_ulAddr;
 	unsigned char* end   = (unsigned char *) (m_ulAddr + ulNumBytes - (iByteLen - 1));
 
-	unsigned char* bytes = NULL;
-	PyArg_Parse(oBytes.ptr(), "y", &bytes);
-	if(!bytes)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to parse the signature.");
+	unsigned char* bytes = (unsigned char *) PyBytes_AsString(oBytes.ptr());
+	if (!bytes)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to read the given signature.");
 
 	while (base < end)
 	{
