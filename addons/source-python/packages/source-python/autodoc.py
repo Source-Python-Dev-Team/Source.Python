@@ -1,7 +1,4 @@
-"""This module provides functions to create documentation for plugins or
-custom modules/packages automatically."""
-
-# TODO: Add custom module/package support
+"""This module provides a class to create documentation automatically."""
 
 # =============================================================================
 # >> IMPORTS
@@ -9,135 +6,173 @@ custom modules/packages automatically."""
 # Python
 import sys
 
-# Source.Python
-from paths import PLUGIN_PATH
+from path import Path
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = ('SphinxProject',)
 
 
 # =============================================================================
-# >> FUNCTIONS
+# >> CLASSES
 # =============================================================================
-def project_exists(name):
-    """Return True if a Sphinx project for a plugin exists.
+class SphinxProject(object):
 
-    :param str name: The name of the plugin to test.
-    """
-    return (PLUGIN_PATH / name / 'doc').isdir()
+    """Representation of a Sphinx project."""
 
-def create_project(name, author, project_name=None, version='1'):
-    """Start a new Sphinx project for a plugin or custom module/package.
+    def __init__(self, package_dir, project_dir):
+        """Initialize the Sphinx project object.
 
-    :param str name: The name of the plugin or custom module/package.
-    :param str author: The name of the author.
-    :param str project_name: The project name that will be displayed in the
-        documentation. If None ``name`` will be used.
-    :param str version: The project version.
-    """
-    from sphinx.quickstart import main
+        :param str package_dir: The path to the package to document.
+        :param str project_dir: The path to the Sphinx project or where it
+            should be saved.
+        """
+        self._package_dir = Path(package_dir)
+        self._project_dir = Path(project_dir)
+        self.validate_package()
 
-    args = [
-        '', # Will be skipped.
-        '-q', # Don't start the interactive mode
-    ]
+    @property
+    def project_dir(self):
+        """Return the project directory as a Path object."""
+        return self._project_dir
 
-    if project_name is None:
-        project_name = name
+    @property
+    def project_source_dir(self):
+        """Return the project source directory."""
+        return self.project_dir / 'source'
 
-    args.append('-p {0}'.format(project_name))
-    args.append('-a {0}'.format(author))
-    args.append('-v {0}'.format(version))
+    @property
+    def project_build_dir(self):
+        """Return the project build directory."""
+        return self.project_dir / 'build'
 
-    # TODO:
-    # Also test if the plugin is loaded to avoid site effects, because load()
-    # wasn't called
-    plugin_dir = PLUGIN_PATH / name
-    if not plugin_dir.isdir():
-        raise NameError('"{0}" is not a valid plugin.'.format(name))
+    @property
+    def package_dir(self):
+        """Return the package directory as a Path object."""
+        return self._package_dir
 
-    project_dir = plugin_dir / 'doc'
-    if not project_dir.isdir():
-        project_dir.mkdir()
+    def project_exists(self):
+        """Return True if the Sphinx project exists."""
+        return self.project_dir.isdir()
 
-    args.extend([
-        str(project_dir),
-        '--sep', # Separate rst and build directory
-        '--ext-autodoc', # Enable autodoc
-        '--no-makefile',
-        '--no-batchfile'
-    ])
+    def package_exists(self):
+        """Return True if the package exists."""
+        return self.package_dir.isdir()
 
-    # Hacky, but required, because sphinx is reading sys.argv even if you pass
-    # a list to main()
-    old_argv = sys.argv
-    sys.argv = args
-    try:
-        main(sys.argv)
-    except:
-        raise
-    finally:
-        sys.argv = old_argv
-    sys.argv = old_argv
+    def create(self, author, project_name=None, version='1'):
+        """Create a new Sphinx project.
 
-def generate_rst_files(name):
-    """Generate *.rst files for a plugin or custom module/package.
+        :param str author: Name of the package author.
+        :param str project_name: Name of the project that is displayed in the
+            documentation. If None, it will be the name of the package.
+        :param str version: Project/package version.
+        """
+        if self.project_exists():
+            raise ValueError('The project already exists.')
 
-    :param str name: The name of the plugin or custom module/package.
-    """
-    plugin_dir = PLUGIN_PATH / name
-    project_dir = plugin_dir / 'doc' / 'source'
-    if not project_dir.isdir():
-        raise NameError(
-            'Create a project before trying to generate *.rst files.')
+        self.validate_package()
+        self.project_dir.mkdir()
 
-    from sphinx.apidoc import main
-    args = [
-        '', # Will be skipped.
-        '-e', # Separate pages/files for every module
-        '-o',
-        str(project_dir),
-        str(plugin_dir), # Package to document
-        str(project_dir), # Exclude the doc directory
-    ]
+        from sphinx.quickstart import main
 
-    # Hacky, but required, because sphinx is reading sys.argv even if you pass
-    # a list to main()
-    old_argv = sys.argv
-    sys.argv = args
-    try:
-        main(sys.argv)
-    except:
-        raise
-    finally:
-        sys.argv = old_argv
+        argv = [
+            '', # Will be skipped.
+            '-q', # Don't start the interactive mode
+        ]
 
-def build_documentation(name):
-    """Build the documentation for a plugin or custom module/package.
+        if project_name is None:
+            project_name = self.package_dir.namebase
 
-    :param str name: The name of the plugin or custom module/package.
-    """
-    plugin_dir = PLUGIN_PATH / name
-    project_dir = plugin_dir / 'doc'
-    if not project_dir.isdir():
-        raise NameError(
-            'Create a project before trying to build a documentation.')
+        argv.append('-p {0}'.format(project_name))
+        argv.append('-a {0}'.format(author))
+        argv.append('-v {0}'.format(version))
 
-    source_dir = project_dir / 'source'
-    build_dir = project_dir / 'build'
+        argv.extend([
+            str(self.project_dir),
+            '--sep', # Separate source and build directory
+            '--ext-autodoc', # Enable autodoc
+            '--no-makefile',
+            '--no-batchfile'
+        ])
 
-    from sphinx import main
-    args = [
-        '', # Will be skipped.
-        str(source_dir),
-        str(build_dir),
-    ]
-
-    # Hacky, but required, because sphinx is reading sys.argv even if you pass
-    # a list to main()
-    old_argv = sys.argv
-    sys.argv = args
-    try:
-        main(sys.argv)
-    except SystemExit as e:
-        if e.code != 0:
+        # Hacky, but required, because sphinx is reading sys.argv even if you
+        # pass a list to main()
+        old_argv = sys.argv
+        sys.argv = argv
+        try:
+            main(sys.argv)
+        except:
             raise
-    finally:
-        sys.argv = old_argv
+        finally:
+            sys.argv = old_argv
+
+    def generate_project_files(self):
+        """Generate the project files (*.rst files)."""
+        self.validate_project_and_package()
+
+        from sphinx.apidoc import main
+        argv = [
+            '', # Will be skipped.
+            '-e', # Separate pages/files for every module
+            '-o',
+            str(self.project_source_dir),
+            str(self.package_dir), # Package to document
+            str(self.project_dir), # Exclude the project directory
+        ]
+
+        # Hacky, but required, because sphinx is reading sys.argv even if you
+        # pass a list to main()
+        old_argv = sys.argv
+        sys.argv = argv
+        try:
+            main(sys.argv)
+        except:
+            raise
+        finally:
+            sys.argv = old_argv
+
+    def build(self):
+        """Build the Sphinx project."""
+        self.validate_project_and_package()
+
+        added_to_path = self.package_dir in sys.path
+        if not added_to_path:
+            sys.path.append(str(self.package_dir.parent))
+
+        from sphinx import main
+        argv = [
+            '', # Will be skipped.
+            str(self.project_source_dir),
+            str(self.project_build_dir),
+        ]
+
+        # Hacky, but required, because sphinx is reading sys.argv even if you
+        # pass a list to main()
+        old_argv = sys.argv
+        sys.argv = argv
+        try:
+            main(sys.argv)
+        except SystemExit as e:
+            if e.code != 0:
+                raise
+        finally:
+            sys.argv = old_argv
+            if added_to_path:
+                sys.path.remove(str(self.package_dir.parent))
+
+    def validate_project_and_package(self):
+        """Raise a ValueError if the project or package does not exist."""
+        self.validate_project()
+        self.validate_package()
+
+    def validate_project(self):
+        """Raise a ValueError if the project does not exist."""
+        if not self.project_exists():
+            raise ValueError(
+                'Create the project before generating project files.')
+
+    def validate_package(self):
+        """Raise a ValueError if the package does not exist."""
+        if not self.package_exists():
+            raise ValueError('The package does not exist.')
