@@ -136,8 +136,8 @@ class SphinxProject(object):
         """Build the Sphinx project."""
         self.validate_project_and_package()
 
-        added_to_path = self.package_dir in sys.path
-        if not added_to_path:
+        add_to_path = self.package_dir not in sys.path
+        if add_to_path:
             sys.path.append(str(self.package_dir.parent))
 
         from sphinx import main
@@ -158,8 +158,18 @@ class SphinxProject(object):
                 raise
         finally:
             sys.argv = old_argv
-            if added_to_path:
+            if add_to_path:
                 sys.path.remove(str(self.package_dir.parent))
+
+    def quickstart(self, author, project_name=None, version='1'):
+        """A wrapper for creating a project (if it does not exist), generating
+        project files and build the documentation.
+        """
+        if not self.project_exists():
+            self.create(author, project_name, version)
+
+        self.generate_project_files()
+        self.build()
 
     def validate_project_and_package(self):
         """Raise a ValueError if the project or package does not exist."""
