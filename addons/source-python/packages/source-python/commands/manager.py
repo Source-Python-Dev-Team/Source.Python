@@ -42,7 +42,8 @@ class _BaseCommandManager(object):
     def _get_command_proxy(self, callback):
         """Return the command proxy for the given callback.
 
-        Raise a ValueError when the proxy wasn't found."""
+        Raise a ValueError when the proxy wasn't found.
+        """
         for proxy in self._callback_proxies:
             if proxy.callback is callback:
                 return proxy
