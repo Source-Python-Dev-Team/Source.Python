@@ -225,11 +225,22 @@ void SayConCommand::Dispatch( const CCommand& command )
 	bool bTeamOnly = strcmp(command.Arg(0), "say_team") == 0;
 
 	// Create a new CCommand object that does not contain the first argument
-	// (say or say_team) as that is redundant
-	//CCommand( int nArgC, const char **ppArgV )
-	const char** argv = command.ArgV();
-	argv++;
-	const CCommand stripped_command = CCommand(command.ArgC() - 1, argv);
+	// (say or say_team) and is properly splitted
+	CCommand stripped_command = CCommand();
+	char* szCommand = (char*) command.ArgS();
+
+	// Remove quotes (if existant), so the arguments are not recognized as a
+	// single argument.
+	int iLastCharPos = strlen(szCommand) - 1;
+	if (szCommand[0] == '"' && szCommand[iLastCharPos] == '"') {
+		szCommand[iLastCharPos] = '\0';
+		szCommand++;
+	}
+
+	if (!stripped_command.Tokenize(szCommand)) {
+		PythonLog(0, "Failed to tokenize '%s'.", command.GetCommandString());
+		return;
+	}
 
 	// Loop through all registered Say Filter callbacks
 	for(int i = 0; i < s_SayFilters.m_vecCallables.Count(); i++)
@@ -252,39 +263,18 @@ void SayConCommand::Dispatch( const CCommand& command )
 		END_BOOST_PY_NORET()
 	}
 
-	// Get the name of the command used
-	std::string szCommandString (stripped_command.Arg(0));
-
-	// Don't handle empty command strings. This would cause a crash.
-	if (!szCommandString.empty())
+	// Find if the command is registered
+	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
+	if( commandMapIter != g_SayCommandMap.end() )
 	{
-
-		// Copy the string to get a char instance
-		char * szCopyCommandString = new char [szCommandString.length() + 1];
-		std::strcpy(szCopyCommandString, szCommandString.c_str());
-
-		// Split the command using <space> as the delimiter
-		// This should be the actual Say Command
-		char * szCommand = std::strtok(szCopyCommandString, " ");
-
-		// Is there a command?
-		// This check fixes https://github.com/Source-Python-Dev-Team/Source.Python/issues/17
-		if (szCommand)
-		{
-			// Find if the command is registered
-			SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
-			if( commandMapIter != g_SayCommandMap.end() )
-			{
-				// Get the CSayCommandManager instance for the command
-				CSayCommandManager* pCSayCommandManager = commandMapIter->second;
+		// Get the CSayCommandManager instance for the command
+		CSayCommandManager* pCSayCommandManager = commandMapIter->second;
 		
-				// Call the command and see it wants to block the command
-				if( pCSayCommandManager->Dispatch(stripped_command, iIndex, bTeamOnly)  == BLOCK)
-				{
-					// Block the command
-					return;
-				}
-			}
+		// Call the command and see it wants to block the command
+		if( pCSayCommandManager->Dispatch(stripped_command, iIndex, bTeamOnly)  == BLOCK)
+		{
+			// Block the command
+			return;
 		}
 	}
 	
