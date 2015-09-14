@@ -227,7 +227,14 @@ void SayConCommand::Dispatch( const CCommand& command )
 	
 	// Get whether the command was say or say_team
 	bool bTeamOnly = strcmp(command.Arg(0), "say_team") == 0;
-	
+
+	// Create a new CCommand object that does not contain the first argument
+	// (say or say_team) as that is redundant
+	//CCommand( int nArgC, const char **ppArgV )
+	const char** argv = command.ArgV();
+	argv++;
+	const CCommand stripped_command = CCommand(command.ArgC() - 1, argv);
+
 	// Loop through all registered Say Filter callbacks
 	for(int i = 0; i < s_SayFilters.m_vecCallables.Count(); i++)
 	{
@@ -237,7 +244,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 			PyObject* pCallable = s_SayFilters.m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), bTeamOnly, boost::ref(command));
+			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), bTeamOnly, boost::ref(stripped_command));
 
 			// Does the current Say Filter wish to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
@@ -250,7 +257,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 	}
 
 	// Get the name of the command used
-	std::string szCommandString (command.Arg(1));
+	std::string szCommandString (stripped_command.Arg(0));
 
 	// Don't handle empty command strings. This would cause a crash.
 	if (!szCommandString.empty())
@@ -276,7 +283,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 				CSayCommandManager* pCSayCommandManager = commandMapIter->second;
 		
 				// Call the command and see it wants to block the command
-				if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, command)  == BLOCK)
+				if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, stripped_command)  == BLOCK)
 				{
 					// Block the command
 					return;
