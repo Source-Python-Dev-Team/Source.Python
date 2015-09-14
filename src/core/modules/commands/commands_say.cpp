@@ -227,7 +227,9 @@ void SayConCommand::Dispatch( const CCommand& command )
 	// Create a new CCommand object that does not contain the first argument
 	// (say or say_team) and is properly splitted
 	CCommand stripped_command = CCommand();
-	char* szCommand = (char*) command.ArgS();
+	char szTempCommand[512];
+	strcpy(szTempCommand, command.ArgS());
+	char* szCommand = szTempCommand;
 
 	// Remove quotes (if existant), so the arguments are not recognized as a
 	// single argument.
@@ -264,7 +266,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 	}
 
 	// Find if the command is registered
-	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
+	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(stripped_command[0]);
 	if( commandMapIter != g_SayCommandMap.end() )
 	{
 		// Get the CSayCommandManager instance for the command
