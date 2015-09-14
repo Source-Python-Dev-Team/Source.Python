@@ -82,7 +82,7 @@ public:
 	void AddCallback(PyObject* pCallable);
 	void RemoveCallback(PyObject* pCallable);
 
-	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, bool bTeamOnly, const CCommand& ccommand);
+	CommandReturn Dispatch(const CCommand& ccommand, int iIndex, bool bTeamOnly);
 
 private:
 	const char* m_Name;
