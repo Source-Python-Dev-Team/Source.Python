@@ -360,11 +360,11 @@ class Fade(UserMessageCreator):
         buffer.set_int32('duration', duration)
         buffer.set_int32('hold_time', hold_time)
         buffer.set_int32('flags', flags)
-        color = buffer.mutable_message('clr')
-        color.set_int32('r', color.r)
-        color.set_int32('g', color.g)
-        color.set_int32('b', color.b)
-        color.set_int32('a', color.a)
+        color_buffer = buffer.mutable_message('clr')
+        color_buffer.set_int32('r', color.r)
+        color_buffer.set_int32('g', color.g)
+        color_buffer.set_int32('b', color.b)
+        color_buffer.set_int32('a', color.a)
 
     def bitbuf(self, buffer, duration, hold_time, flags, color):
         buffer.write_short(duration)
