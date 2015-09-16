@@ -69,6 +69,11 @@ public:
 		const char* szValue = command.GetCommandString();
 		return PyUnicode_DecodeUTF8(szValue, strlen(szValue), "ignore");
 	}
+
+	static bool Tokenize(CCommand& command, const char* szCommand)
+	{
+		return command.Tokenize(szCommand);
+	}
 };
 
 

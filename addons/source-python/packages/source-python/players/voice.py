@@ -31,8 +31,8 @@ from _players._voice import voice_server
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('voice_server',
-           'mute_manager',
+__all__ = ('mute_manager',
+           'voice_server',
            )
 
 

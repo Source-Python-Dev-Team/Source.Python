@@ -36,6 +36,8 @@
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
 #include "modules/listeners/listeners_manager.h"
+#include "utilities/conversions.h"
+
 
 //-----------------------------------------------------------------------------
 // Externals
@@ -110,8 +112,7 @@ void UnregisterClientCommandFilter(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 {
-	// Get the IPlayerInfo instance of the player
-	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEntity);
+	int iIndex = IndexFromEdict(pEntity);
 
 	// Loop through all registered Client Command Filters
 	for(int i = 0; i < s_ClientCommandFilters.m_vecCallables.Count(); i++)
@@ -122,7 +123,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 			PyObject* pCallable = s_ClientCommandFilters.m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), boost::ref(command));
+			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command), iIndex);
 
 			// Does the Client Command Filter want to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
@@ -145,7 +146,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 		CClientCommandManager* pCClientCommandManager = commandMapIter->second;
 
 		// Does the command need to be blocked?
-		if( !pCClientCommandManager->Dispatch(pPlayerInfo, command))
+		if( !pCClientCommandManager->Dispatch(command, iIndex))
 		{
 			// Block the command
 			return PLUGIN_STOP;
@@ -208,7 +209,7 @@ void CClientCommandManager::RemoveCallback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Calls all callables for the command when it is called on the client.
 //-----------------------------------------------------------------------------
-CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, const CCommand& command )
+CommandReturn CClientCommandManager::Dispatch( const CCommand& command, int iIndex )
 {
 	// Loop through all callables registered for the CClientCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)
@@ -219,7 +220,7 @@ CommandReturn CClientCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, const C
 			PyObject* pCallable = m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), boost::ref(command));
+			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command), iIndex);
 
 			// Does the callable wish to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
