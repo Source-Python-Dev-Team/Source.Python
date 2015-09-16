@@ -29,6 +29,7 @@ from _net_channel import NetMessage
 __all__ = ('NetChannel',
            'NetChannelHandler',
            'NetChannelInfo',
+           'NetFlow',
            'NetMessage',
            )
 

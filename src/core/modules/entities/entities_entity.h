@@ -81,17 +81,22 @@ public:
 		);
 	}
 
-	static void GetKeyValueStringRaw(CBaseEntity* pBaseEntity, const char* szName, char* szOut, int iLength)
+	// TODO: Why doesn't implicit conversion work?
+	// operaton CBaseEntity* () { return (CBaseEntity *) this; }
+	CBaseEntity* GetThis()
+	{ return (CBaseEntity *) this; }
+
+	void GetKeyValueStringRaw(const char* szName, char* szOut, int iLength)
 	{
-		if (!servertools->GetKeyValue(pBaseEntity, szName, szOut, iLength))
+		if (!servertools->GetKeyValue(GetThis(), szName, szOut, iLength))
 			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
-				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
+				szName, GetDataDescMap()->dataClassName);
 	}
 
-	static str GetKeyValueString(CBaseEntity* pBaseEntity, const char* szName)
+	str GetKeyValueString(const char* szName)
 	{
 		char szResult[MAX_KEY_VALUE_LENGTH];
-		GetKeyValueStringRaw(pBaseEntity, szName, szResult, MAX_KEY_VALUE_LENGTH);
+		GetKeyValueStringRaw(szName, szResult, MAX_KEY_VALUE_LENGTH);
 
 		// Fix for field name "model". I think a string_t object is copied to szResult.
 		if (strcmp(szName, "model") == 0)
@@ -100,10 +105,10 @@ public:
 		return str(szResult);
 	}
 
-	static long GetKeyValueInt(CBaseEntity* pBaseEntity, const char* szName)
+	long GetKeyValueInt(const char* szName)
 	{
 		char szResult[128];
-		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
+		GetKeyValueStringRaw(szName, szResult, 128);
 		
 		long iResult;
 		if (!sputils::UTIL_StringToLong(&iResult, szResult))
@@ -112,10 +117,10 @@ public:
 		return iResult;
 	}
 
-	static double GetKeyValueFloat(CBaseEntity* pBaseEntity, const char* szName)
+	double GetKeyValueFloat(const char* szName)
 	{
 		char szResult[128];
-		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
+		GetKeyValueStringRaw(szName, szResult, 128);
 		
 		double dResult;
 		if (!sputils::UTIL_StringToDouble(&dResult, szResult))
@@ -124,10 +129,10 @@ public:
 		return dResult;
 	}
 
-	static Vector GetKeyValueVector(CBaseEntity* pBaseEntity, const char* szName)
+	Vector GetKeyValueVector(const char* szName)
 	{
 		char szResult[128];
-		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
+		GetKeyValueStringRaw(szName, szResult, 128);
 
 		float fResult[3];
 		if (!sputils::UTIL_StringToFloatArray(fResult, 3, szResult))
@@ -136,10 +141,10 @@ public:
 		return Vector(fResult[0], fResult[1], fResult[2]);
 	}
 
-	static bool GetKeyValueBool(CBaseEntity* pBaseEntity, const char* szName)
+	bool GetKeyValueBool(const char* szName)
 	{
 		char szResult[3];
-		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 3);
+		GetKeyValueStringRaw(szName, szResult, 3);
 		if (szResult[1] != '\0')
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a boolean: '%s'.", szResult);
 
@@ -153,10 +158,10 @@ public:
 		return false; // to fix a warning.
 	}
 
-	static Color GetKeyValueColor(CBaseEntity* pBaseEntity, const char* szName)
+	Color GetKeyValueColor(const char* szName)
 	{
 		char szResult[128];
-		GetKeyValueStringRaw(pBaseEntity, szName, szResult, 128);
+		GetKeyValueStringRaw(szName, szResult, 128);
 
 		int iResult[4];
 		if (!sputils::UTIL_StringToIntArray(iResult, 4, szResult))
@@ -165,45 +170,35 @@ public:
 		return Color(iResult[0], iResult[1], iResult[2], iResult[3]);
 	}
 
-	static void SetKeyValueColor(CBaseEntity* pBaseEntity, const char* szName, Color color)
+	void SetKeyValueColor(const char* szName, Color color)
 	{
 		char string[16];
 		Q_snprintf(string, sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
-		SetKeyValue(pBaseEntity, szName, string);
+		SetKeyValue(szName, string);
 	}
 
 	template<class T>
-	static void SetKeyValue(CBaseEntity* pBaseEntity, const char* szName, T value)
+	void SetKeyValue(const char* szName, T value)
 	{
-		if (!servertools->SetKeyValue(pBaseEntity, szName, value))
+		if (!servertools->SetKeyValue(GetThis(), szName, value))
 			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
-				szName, ((CBaseEntityWrapper *)pBaseEntity)->GetDataDescMap()->dataClassName);
+				szName, GetDataDescMap()->dataClassName);
 	}
 
-	static edict_t* GetEdict(CBaseEntity* pBaseEntity)
-	{
-		return EdictFromBaseEntity(pBaseEntity);
-	}
+	edict_t* GetEdict()
+	{ return EdictFromBaseEntity(GetThis()); }
 	
-	static int GetIndex(CBaseEntity* pBaseEntity)
-	{
-		return IndexFromBaseEntity(pBaseEntity);
-	}
+	int GetIndex()
+	{ return IndexFromBaseEntity(GetThis()); }
 	
-	static CPointer* GetPointer(CBaseEntity* pBaseEntity)
-	{
-		return PointerFromBaseEntity(pBaseEntity);
-	}
+	CPointer* GetPointer()
+	{ return PointerFromBaseEntity(GetThis()); }
 	
-	static CBaseHandle GetBaseHandle(CBaseEntity* pBaseEntity)
-	{
-		return BaseHandleFromBaseEntity(pBaseEntity);
-	}
+	CBaseHandle GetBaseHandle()
+	{ return BaseHandleFromBaseEntity(GetThis()); }
 	
-	static int GetIntHandle(CBaseEntity* pBaseEntity)
-	{
-		return IntHandleFromBaseEntity(pBaseEntity);
-	}
+	int GetIntHandle()
+	{ return IntHandleFromBaseEntity(GetThis()); }
 };
 
 

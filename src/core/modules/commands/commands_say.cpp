@@ -37,7 +37,6 @@
 #include "boost/shared_array.hpp"
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
-#include "utilities/conversions.h"
 #include "convar.h"
 
 //-----------------------------------------------------------------------------
@@ -222,12 +221,29 @@ void SayConCommand::Dispatch( const CCommand& command )
 	// Get the index of the player that used the command
 	int iIndex = GetCommandIndex();
 	
-	// Get the IPlayerInfo instance of the player
-	IPlayerInfo* pPlayerInfo = PlayerInfoFromIndex(iIndex);
-	
 	// Get whether the command was say or say_team
 	bool bTeamOnly = strcmp(command.Arg(0), "say_team") == 0;
-	
+
+	// Create a new CCommand object that does not contain the first argument
+	// (say or say_team) and is properly splitted
+	CCommand stripped_command = CCommand();
+	char szTempCommand[512];
+	strcpy(szTempCommand, command.ArgS());
+	char* szCommand = szTempCommand;
+
+	// Remove quotes (if existant), so the arguments are not recognized as a
+	// single argument.
+	int iLastCharPos = strlen(szCommand) - 1;
+	if (szCommand[0] == '"' && szCommand[iLastCharPos] == '"') {
+		szCommand[iLastCharPos] = '\0';
+		szCommand++;
+	}
+
+	if (!stripped_command.Tokenize(szCommand)) {
+		PythonLog(0, "Failed to tokenize '%s'.", command.GetCommandString());
+		return;
+	}
+
 	// Loop through all registered Say Filter callbacks
 	for(int i = 0; i < s_SayFilters.m_vecCallables.Count(); i++)
 	{
@@ -237,7 +253,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 			PyObject* pCallable = s_SayFilters.m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), bTeamOnly, boost::ref(command));
+			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(stripped_command), iIndex, bTeamOnly);
 
 			// Does the current Say Filter wish to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
@@ -249,39 +265,18 @@ void SayConCommand::Dispatch( const CCommand& command )
 		END_BOOST_PY_NORET()
 	}
 
-	// Get the name of the command used
-	std::string szCommandString (command.Arg(1));
-
-	// Don't handle empty command strings. This would cause a crash.
-	if (!szCommandString.empty())
+	// Find if the command is registered
+	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(stripped_command[0]);
+	if( commandMapIter != g_SayCommandMap.end() )
 	{
-
-		// Copy the string to get a char instance
-		char * szCopyCommandString = new char [szCommandString.length() + 1];
-		std::strcpy(szCopyCommandString, szCommandString.c_str());
-
-		// Split the command using <space> as the delimiter
-		// This should be the actual Say Command
-		char * szCommand = std::strtok(szCopyCommandString, " ");
-
-		// Is there a command?
-		// This check fixes https://github.com/Source-Python-Dev-Team/Source.Python/issues/17
-		if (szCommand)
-		{
-			// Find if the command is registered
-			SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szCommand);
-			if( commandMapIter != g_SayCommandMap.end() )
-			{
-				// Get the CSayCommandManager instance for the command
-				CSayCommandManager* pCSayCommandManager = commandMapIter->second;
+		// Get the CSayCommandManager instance for the command
+		CSayCommandManager* pCSayCommandManager = commandMapIter->second;
 		
-				// Call the command and see it wants to block the command
-				if( pCSayCommandManager->Dispatch(pPlayerInfo, bTeamOnly, command)  == BLOCK)
-				{
-					// Block the command
-					return;
-				}
-			}
+		// Call the command and see it wants to block the command
+		if( pCSayCommandManager->Dispatch(stripped_command, iIndex, bTeamOnly)  == BLOCK)
+		{
+			// Block the command
+			return;
 		}
 	}
 	
@@ -346,7 +341,7 @@ void CSayCommandManager::RemoveCallback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 // Dispatches the say command.
 //-----------------------------------------------------------------------------
-CommandReturn CSayCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, bool bTeamOnly, const CCommand& command )
+CommandReturn CSayCommandManager::Dispatch( const CCommand& command, int iIndex, bool bTeamOnly)
 {
 	// Loop through all callables registered for the CSayCommandManager instance
 	for(int i = 0; i < m_vecCallables.Count(); i++)
@@ -357,7 +352,7 @@ CommandReturn CSayCommandManager::Dispatch( IPlayerInfo* pPlayerInfo, bool bTeam
 			PyObject* pCallable = m_vecCallables[i].ptr();
 
 			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, ptr(pPlayerInfo), bTeamOnly, boost::ref(command));
+			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command), iIndex, bTeamOnly);
 
 			// Does the callable wish to block the command?
 			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
