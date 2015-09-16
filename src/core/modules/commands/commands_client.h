@@ -52,7 +52,7 @@ public:
 	void AddCallback(PyObject* pCallable);
 	void RemoveCallback(PyObject* pCallable);
 
-	CommandReturn Dispatch(IPlayerInfo* pPlayerInfo, const CCommand& ccommand);
+	CommandReturn Dispatch(const CCommand& ccommand, int iIndex);
 
 private:
 	CUtlVector<object> m_vecCallables;
