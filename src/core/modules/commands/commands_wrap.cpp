@@ -123,6 +123,10 @@ void export_command(scope _commands)
 			args("index")
 		)
 
+		.def("tokenize",
+			&CCommandExt::Tokenize
+		)
+
 		.def("get_max_command_length",
 			&CCommand::MaxCommandLength
 		)
