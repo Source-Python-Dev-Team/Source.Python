@@ -9,6 +9,8 @@
 import collections
 
 # Source.Python Imports
+#   Colors
+from colors import Color
 #   Filters
 from filters.recipients import RecipientFilter
 from filters.players import PlayerIter
@@ -17,6 +19,13 @@ from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
 #   Translations
 from translations.strings import TranslationStrings
+
+
+# ============================================================================
+# >> FORWARD IMPORTS
+# ============================================================================
+#   Messages
+from _messages import UserMessage
 
 
 # =============================================================================
@@ -344,24 +353,24 @@ class Fade(UserMessageCreator):
 
     message_name = 'Fade'
 
-    def __init__(self, duration, hold_time, flags, r=255, g=255, b=255, a=255):
-        super().__init__(duration, hold_time, flags, r, g, b, a)
+    def __init__(self, duration, hold_time, flags, color=Color(255, 255, 255, 255)):
+        super().__init__(duration, hold_time, flags, color)
 
-    def protobuf(self, buffer, duration, hold_time, flags, r, g, b, a):
+    def protobuf(self, buffer, duration, hold_time, flags, color):
         buffer.set_int32('duration', duration)
         buffer.set_int32('hold_time', hold_time)
         buffer.set_int32('flags', flags)
         color = buffer.mutable_message('clr')
-        color.set_int32('r', r)
-        color.set_int32('g', g)
-        color.set_int32('b', b)
-        color.set_int32('a', a)
+        color.set_int32('r', color.r)
+        color.set_int32('g', color.g)
+        color.set_int32('b', color.b)
+        color.set_int32('a', color.a)
 
-    def bitbuf(self, buffer, duration, hold_time, flags, r, g, b, a):
+    def bitbuf(self, buffer, duration, hold_time, flags, color):
         buffer.write_short(duration)
         buffer.write_short(hold_time)
         buffer.write_short(flags)
-        buffer.write_byte(r)
-        buffer.write_byte(g)
-        buffer.write_byte(b)
-        buffer.write_byte(a)
+        buffer.write_byte(color.r)
+        buffer.write_byte(color.g)
+        buffer.write_byte(color.b)
+        buffer.write_byte(color.a)
