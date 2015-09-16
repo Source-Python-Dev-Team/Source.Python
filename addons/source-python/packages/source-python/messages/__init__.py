@@ -19,6 +19,7 @@ from messages.base import ResetHUD
 from messages.base import TextMsg
 from messages.base import KeyHintText
 from messages.base import Fade
+from messages.base import UserMessageCreator
 
 
 # ============================================================================
