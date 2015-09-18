@@ -41,9 +41,9 @@ if SOURCE_ENGINE in ('csgo', 'bms'):
 else:
     BUTTON_BACK = 8
     BUTTON_NEXT = 9
-    BUTTON_CLOSE = 0
+    BUTTON_CLOSE = 10
     MAX_ITEM_COUNT = 7
-    VALID_CHOICES = range(10)
+    VALID_CHOICES = range(1, 11)
 
 
 # =============================================================================
