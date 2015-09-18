@@ -189,14 +189,14 @@ class _QueueHolder(dict):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def _validate_selection(player_info, command, valid_choices):
+def _validate_selection(command, index, valid_choices):
     """Validate a selection command.
-
-    @param <player_infor>:
-    A PlayerInfo instance.
 
     @param <command>:
     A Command instance.
+
+    @param <index>:
+    The player index that issued the command.
 
     @param <valid_choices>:
     A list of integers that defines all valid choices
@@ -208,7 +208,7 @@ def _validate_selection(player_info, command, valid_choices):
         return (None, None)
 
     if choice in valid_choices:
-        return (index_from_playerinfo(player_info), choice)
+        return (index, choice)
 
     return (None, None)
 
@@ -242,21 +242,21 @@ _esc_queues = _QueueHolder(_ESCUserQueue, _esc_refresh)
 # >> CLIENT COMMANDS
 # =============================================================================
 @ClientCommand('menuselect')
-def _menuselect_callback(player_info, command):
+def _menuselect_callback(command, index):
     """Forward the selection to the proper user queue."""
     from menus.radio import VALID_CHOICES
 
-    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
+    index, choice = _validate_selection(command, index, VALID_CHOICES)
     if index is not None:
         _radio_queues[index]._select(choice)
 
 
 @ClientCommand(ESC_SELECTION_CMD)
-def _escselect_callback(player_info, command):
+def _escselect_callback(command, index):
     """Forward the selection to the proper user queue."""
     from menus.esc import VALID_CHOICES
 
-    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
+    index, choice = _validate_selection(command, index, VALID_CHOICES)
     if index is not None:
         _esc_queues[index]._select(choice)
 
