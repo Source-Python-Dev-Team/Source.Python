@@ -19,6 +19,7 @@ from messages.base import ResetHUD
 from messages.base import TextMsg
 from messages.base import KeyHintText
 from messages.base import Fade
+from messages.base import HudMsg
 from messages.base import UserMessageCreator
 from messages.base import UserMessage
 
@@ -45,7 +46,8 @@ __all__ = ('DialogType',
            'ResetHUD',
            'TextMsg',
            'KeyHintText',
-           'Fade'
+           'Fade',
+           'HudMsg',
            )
 
 

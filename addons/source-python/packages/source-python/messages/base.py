@@ -374,3 +374,65 @@ class Fade(UserMessageCreator):
         buffer.write_byte(color.g)
         buffer.write_byte(color.b)
         buffer.write_byte(color.a)
+
+
+class HudMsg(UserMessageCreator):
+
+    """Create a HudMsg."""
+
+    message_name = 'HudMsg'
+
+    # TODO: Use Vector2D for x and y?
+    def __init__(self, channel=0, x=-1, y=-1,
+            color1=Color(255, 255, 255, 255),
+            color2=Color(255, 255, 255, 255), effect=0, fade_in=0, fade_out=0,
+            hold_time=4, fx_time=0, message=""):
+        super().__init__(channel, x, y, color1, color2, effect, fade_in,
+            fade_out, hold_time, fx_time, message)
+
+    def protobuf(self, buffer, channel, x, y, color1, color2, effect, fade_in,
+            fade_out, hold_time, fx_time, message):
+        buffer.set_int32('channel', channel)
+
+        pos_buffer = buffer.mutable_message('pos')
+        pos_buffer.set_float('x', x)
+        pos_buffer.set_float('y', y)
+
+        color1_buffer = buffer.mutable_message('clr1')
+        color1_buffer.set_int32('r', color1.r)
+        color1_buffer.set_int32('g', color1.g)
+        color1_buffer.set_int32('b', color1.b)
+        color1_buffer.set_int32('a', color1.a)
+
+        color2_buffer = buffer.mutable_message('clr2')
+        color2_buffer.set_int32('r', color2.r)
+        color2_buffer.set_int32('g', color2.g)
+        color2_buffer.set_int32('b', color2.b)
+        color2_buffer.set_int32('a', color2.a)
+
+        buffer.set_int32('effect', effect)
+        buffer.set_float('fade_in_time', fade_in)
+        buffer.set_float('fade_out_time', fade_out)
+        buffer.set_float('hold_time', hold_time)
+        buffer.set_float('fx_time', fx_time)
+        buffer.set_string('text', message)
+
+    def bitbuf(self, buffer, channel, x, y, color1, color2, effect, fade_in,
+            fade_out, hold_time, fx_time, message):
+        buffer.write_byte(channel)
+        buffer.write_float(x)
+        buffer.write_float(y)
+        buffer.write_byte(color1.r)
+        buffer.write_byte(color1.g)
+        buffer.write_byte(color1.b)
+        buffer.write_byte(color1.a)
+        buffer.write_byte(color2.r)
+        buffer.write_byte(color2.g)
+        buffer.write_byte(color2.b)
+        buffer.write_byte(color2.a)
+        buffer.write_byte(effect)
+        buffer.write_float(fade_in)
+        buffer.write_float(fade_out)
+        buffer.write_float(hold_time)
+        buffer.write_float(fx_time)
+        buffer.write_string(message)
