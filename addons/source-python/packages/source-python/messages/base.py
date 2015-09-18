@@ -48,20 +48,59 @@ __all__ = ('UserMessageCreator',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class UserMessageCreator(object):
+class AttrDict(dict):
+
+    """A dictionary that redirects __getattr__ to __getitem__ and __setattr__
+    to __setitem__."""
+
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
+
+
+class UserMessageCreator(AttrDict):
 
     """Provide an easy interface to create user messages."""
 
-    def __init__(self, *args):
-        """Initialize the user message."""
-        self.args = args
+    def __init__(self, local_variables):
+        # Remove "self" if existant, so you can simply pass locals()
+        local_variables.pop('self', 0)
+        super().__init__(local_variables)
 
     def send(self, *player_indexes, **tokens):
         """Send the user message."""
         if not player_indexes:
             player_indexes = PlayerIter()
 
-        # Categorize the players by their language
+        for language, indexes in self._categorize_players_by_language(
+                player_indexes).items():
+            self._send(indexes, self._get_translated_kwargs(language, tokens))
+
+    def _send(self, player_indexes, translated_kwargs):
+        """Send the user message to the given players.
+
+        @param <player_indexes>:
+        An iterable that contains players with the same language setting.
+
+        @param <translated_kwargs>:
+        An AttrDict object that contains the translated arguments.
+        """
+        user_message = UserMessage(
+            RecipientFilter(*player_indexes), self.message_name)
+
+        if user_message.is_protobuf():
+            self.protobuf(user_message.buffer, translated_kwargs)
+        else:
+            self.bitbuf(user_message.buffer, translated_kwargs)
+
+        user_message.send()
+
+    @staticmethod
+    def _categorize_players_by_language(player_indexes):
+        """Categorize players by their language.
+
+        Return a dict in the following format:
+        {<language>: set([<player index>, ...])}
+        """
         languages = collections.defaultdict(set)
         for index in player_indexes:
             if playerinfo_from_index(index).is_fake_client():
@@ -70,32 +109,26 @@ class UserMessageCreator(object):
 
             languages[get_client_language(index)].add(index)
 
-        for language, indexes in languages.items():
-            translated_args = []
+        return languages
 
-            # Translate the arguments
-            for arg in self.args:
-                if isinstance(arg, TranslationStrings):
-                    translated_args.append(arg.get_string(language, **tokens))
-                else:
-                    translated_args.append(arg)
+    def _get_translated_kwargs(self, language, tokens):
+        """Return an AttrDict object that contains translated and tokenized
+        arguments.
+        """
+        translated_kwargs = AttrDict()
+        for key, value in self.items():
+            if isinstance(value, TranslationStrings):
+                value = value.get_string(language, **tokens)
 
-            # Send the user message
-            user_message = UserMessage(
-                RecipientFilter(*indexes), self.message_name)
+            translated_kwargs[key] = value
 
-            if user_message.is_protobuf():
-                self.protobuf(user_message.buffer, *translated_args)
-            else:
-                self.bitbuf(user_message.buffer, *translated_args)
+        return translated_kwargs
 
-            user_message.send()
-
-    def protobuf(self, buffer, *args):
+    def protobuf(self, buffer, translated_kwargs):
         """Protobuf implementation of this user message."""
         raise NotImplementedError('Must be implemented by a subclass.')
 
-    def bitbuf(self, buffer, *args):
+    def bitbuf(self, buffer, translated_kwargs):
         """Bitbuf implementation of this user message."""
         raise NotImplementedError('Must be implemented by a subclass.')
 
@@ -124,7 +157,7 @@ class VGUIMenu(UserMessageCreator):
         A dictionary that defines the data for the menu.
         """
         # TODO: Which names and subkeys are available?
-        super().__init__(name, subkeys, show)
+        super().__init__(locals())
 
     def protobuf(self, buffer, name, subkeys, show):
         buffer.set_string('name', name)
@@ -152,7 +185,7 @@ class ShowMenu(UserMessageCreator):
 
     def __init__(self, menu_string, valid_slots=1023, display_time=4):
         """Initialize the radio menu."""
-        super().__init__(menu_string, valid_slots, display_time)
+        super().__init__(locals())
 
     def send(self, *player_indexes):
         """Send the user message."""
@@ -162,25 +195,26 @@ class ShowMenu(UserMessageCreator):
         if UserMessage.is_protobuf():
             user_message = UserMessage(
                 RecipientFilter(*player_indexes), self.message_name)
-            self.protobuf(user_message.buffer, *self.args)
+            self.protobuf(user_message.buffer, self)
             user_message.send()
         else:
-            self.bitbuf(player_indexes, *self.args)
+            self.bitbuf(player_indexes, self)
 
-    def protobuf(self, buffer, menu_string, valid_slots, display_time):
-        buffer.set_int32('bits_valid_slots', valid_slots)
-        buffer.set_int32('display_time', display_time)
-        buffer.set_string('menu_string', menu_string)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_int32('bits_valid_slots', kwargs.valid_slots)
+        buffer.set_int32('display_time', kwargs.display_time)
+        buffer.set_string('menu_string', kwargs.menu_string)
 
-    def bitbuf(self, player_indexes, menu_string, valid_slots, display_time):
+    def bitbuf(self, player_indexes, kwargs):
+        menu_string = kwargs.menu_string
         length = len(menu_string)
         while True:
             user_message = UserMessage(
                 RecipientFilter(*player_indexes), self.message_name)
 
             buffer = user_message.buffer
-            buffer.write_word(valid_slots)
-            buffer.write_char(display_time)
+            buffer.write_word(kwargs.valid_slots)
+            buffer.write_char(kwargs.display_time)
             buffer.write_byte(length > self.CHUNK_SIZE)
             buffer.write_string(menu_string[:self.CHUNK_SIZE])
 
@@ -201,28 +235,26 @@ class SayText2(UserMessageCreator):
 
     def __init__(self, message, index=0, chat=False, param1='', param2='',
             param3='', param4=''):
-        super().__init__(message, index, chat, param1, param2, param3, param4)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, message, index, chat, param1, param2, param3,
-            param4):
-        buffer.set_string('msg_name', message)
-        buffer.set_bool('chat', chat)
-        buffer.set_int32('ent_idx', index)
-        buffer.add_string('params', param1)
-        buffer.add_string('params', param2)
-        buffer.add_string('params', param3)
-        buffer.add_string('params', param4)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_string('msg_name', kwargs.message)
+        buffer.set_bool('chat', kwargs.chat)
+        buffer.set_int32('ent_idx', kwargs.index)
+        buffer.add_string('params', kwargs.param1)
+        buffer.add_string('params', kwargs.param2)
+        buffer.add_string('params', kwargs.param3)
+        buffer.add_string('params', kwargs.param4)
         # TODO: Handle textchatall
 
-    def bitbuf(self, buffer, message, index, chat, param1, param2, param3,
-            param4):
-        buffer.write_byte(index)
-        buffer.write_byte(chat)
-        buffer.write_string(message)
-        buffer.write_string(param1)
-        buffer.write_string(param2)
-        buffer.write_string(param3)
-        buffer.write_string(param4)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_byte(kwargs.index)
+        buffer.write_byte(kwargs.chat)
+        buffer.write_string(kwargs.message)
+        buffer.write_string(kwargs.param1)
+        buffer.write_string(kwargs.param2)
+        buffer.write_string(kwargs.param3)
+        buffer.write_string(kwargs.param4)
 
 
 class HintText(UserMessageCreator):
@@ -232,13 +264,13 @@ class HintText(UserMessageCreator):
     message_name = 'HintText'
 
     def __init__(self, message):
-        super().__init__(message)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, message):
-        buffer.set_string('text', message)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_string('text', kwargs.message)
 
-    def bitbuf(self, buffer, message):
-        buffer.write_string(message)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_string(kwargs.message)
 
 
 class SayText(UserMessageCreator):
@@ -248,17 +280,17 @@ class SayText(UserMessageCreator):
     message_name = 'SayText'
 
     def __init__(self, message, index=0, chat=False):
-        super().__init__(message, index, chat)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, message, index, chat):
-        buffer.set_int32('ent_idx', index)
-        buffer.set_bool('chat', chat)
-        buffer.set_string('text', message)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_int32('ent_idx', kwargs.index)
+        buffer.set_bool('chat', kwargs.chat)
+        buffer.set_string('text', kwargs.message)
 
-    def bitbuf(self, buffer, message, index, chat):
-        buffer.write_byte(index)
-        buffer.write_string(message)
-        buffer.write_byte(chat)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_byte(kwargs.index)
+        buffer.write_string(kwargs.message)
+        buffer.write_byte(kwargs.chat)
 
 
 class Shake(UserMessageCreator):
@@ -268,19 +300,19 @@ class Shake(UserMessageCreator):
     message_name = 'Shake'
 
     def __init__(self, shake_command, amplitude, frequency, duration):
-        super().__init__(shake_command, amplitude, frequency, duration)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, shake_command, amplitude, frequency, duration):
-        buffer.set_int32('command', shake_command)
-        buffer.set_float('local_amplitude', amplitude)
-        buffer.set_float('frequency', frequency)
-        buffer.set_float('duration', duration)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_int32('command', kwargs.shake_command)
+        buffer.set_float('local_amplitude', kwargs.amplitude)
+        buffer.set_float('frequency', kwargs.frequency)
+        buffer.set_float('duration', kwargs.duration)
 
-    def bitbuf(self, buffer, shake_command, amplitude, frequency, duration):
-        buffer.write_byte(shake_command)
-        buffer.write_float(amplitude)
-        buffer.write_float(frequency)
-        buffer.write_float(duration)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_byte(kwargs.shake_command)
+        buffer.write_float(kwargs.amplitude)
+        buffer.write_float(kwargs.frequency)
+        buffer.write_float(kwargs.duration)
 
 
 class ResetHUD(UserMessageCreator):
@@ -290,13 +322,13 @@ class ResetHUD(UserMessageCreator):
     message_name = 'ResetHud'
 
     def __init__(self, reset=True):
-        super().__init__(reset)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, reset):
-        buffer.set_bool('reset', reset)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_bool('reset', kwargs.reset)
 
-    def bitbuf(self, buffer, reset):
-        buffer.write_byte(reset)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_byte(kwargs.reset)
 
 
 class TextMsg(UserMessageCreator):
@@ -307,25 +339,23 @@ class TextMsg(UserMessageCreator):
 
     def __init__(self, destination, name, param1='', param2='', param3='',
             param4=''):
-        super().__init__(destination, name, param1, param2, param3, param4)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, destination, name, param1, param2, param3,
-            param4):
-        buffer.set_int32('msg_dst', destination)
-        buffer.add_string('params', name)
-        buffer.add_string('params', param1)
-        buffer.add_string('params', param2)
-        buffer.add_string('params', param3)
-        buffer.add_string('params', param4)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_int32('msg_dst', kwargs.destination)
+        buffer.add_string('params', kwargs.name)
+        buffer.add_string('params', kwargs.param1)
+        buffer.add_string('params', kwargs.param2)
+        buffer.add_string('params', kwargs.param3)
+        buffer.add_string('params', kwargs.param4)
 
-    def bitbuf(self, buffer, destination, name, param1, param2, param3,
-            param4):
-        buffer.write_byte(destination)
-        buffer.write_string(name)
-        buffer.write_string(param1)
-        buffer.write_string(param2)
-        buffer.write_string(param3)
-        buffer.write_string(param4)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_byte(kwargs.destination)
+        buffer.write_string(kwargs.name)
+        buffer.write_string(kwargs.param1)
+        buffer.write_string(kwargs.param2)
+        buffer.write_string(kwargs.param3)
+        buffer.write_string(kwargs.param4)
 
 
 class KeyHintText(UserMessageCreator):
@@ -335,15 +365,15 @@ class KeyHintText(UserMessageCreator):
     message_name = 'KeyHintText'
 
     def __init__(self, *hints):
-        super().__init__(*hints)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, *hints):
-        for hint in hints:
+    def protobuf(self, buffer, kwargs):
+        for hint in kwargs.hints:
             buffer.add_string('hints', hint)
 
-    def bitbuf(self, buffer, *hints):
-        buffer.write_byte(len(hints))
-        for hint in hints:
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_byte(len(kwargs.hints))
+        for hint in kwargs.hints:
             buffer.write_string(hint)
 
 
@@ -353,27 +383,28 @@ class Fade(UserMessageCreator):
 
     message_name = 'Fade'
 
-    def __init__(self, duration, hold_time, flags, color=Color(255, 255, 255, 255)):
-        super().__init__(duration, hold_time, flags, color)
+    def __init__(self, duration, hold_time, flags,
+            color=Color(255, 255, 255, 255)):
+        super().__init__(locals())
 
-    def protobuf(self, buffer, duration, hold_time, flags, color):
-        buffer.set_int32('duration', duration)
-        buffer.set_int32('hold_time', hold_time)
-        buffer.set_int32('flags', flags)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_int32('duration', kwargs.duration)
+        buffer.set_int32('hold_time', kwargs.hold_time)
+        buffer.set_int32('flags', kwargs.flags)
         color_buffer = buffer.mutable_message('clr')
-        color_buffer.set_int32('r', color.r)
-        color_buffer.set_int32('g', color.g)
-        color_buffer.set_int32('b', color.b)
-        color_buffer.set_int32('a', color.a)
+        color_buffer.set_int32('r', kwargs.color.r)
+        color_buffer.set_int32('g', kwargs.color.g)
+        color_buffer.set_int32('b', kwargs.color.b)
+        color_buffer.set_int32('a', kwargs.color.a)
 
-    def bitbuf(self, buffer, duration, hold_time, flags, color):
-        buffer.write_short(duration)
-        buffer.write_short(hold_time)
-        buffer.write_short(flags)
-        buffer.write_byte(color.r)
-        buffer.write_byte(color.g)
-        buffer.write_byte(color.b)
-        buffer.write_byte(color.a)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_short(kwargs.duration)
+        buffer.write_short(kwargs.hold_time)
+        buffer.write_short(kwargs.flags)
+        buffer.write_byte(kwargs.color.r)
+        buffer.write_byte(kwargs.color.g)
+        buffer.write_byte(kwargs.color.b)
+        buffer.write_byte(kwargs.color.a)
 
 
 class HudMsg(UserMessageCreator):
@@ -387,52 +418,49 @@ class HudMsg(UserMessageCreator):
             color1=Color(255, 255, 255, 255),
             color2=Color(255, 255, 255, 255), effect=0, fade_in=0, fade_out=0,
             hold_time=4, fx_time=0, message=""):
-        super().__init__(channel, x, y, color1, color2, effect, fade_in,
-            fade_out, hold_time, fx_time, message)
+        super().__init__(locals())
 
-    def protobuf(self, buffer, channel, x, y, color1, color2, effect, fade_in,
-            fade_out, hold_time, fx_time, message):
-        buffer.set_int32('channel', channel)
+    def protobuf(self, buffer, kwargs):
+        buffer.set_int32('channel', kwargs.channel)
 
         pos_buffer = buffer.mutable_message('pos')
-        pos_buffer.set_float('x', x)
-        pos_buffer.set_float('y', y)
+        pos_buffer.set_float('x', kwargs.x)
+        pos_buffer.set_float('y', kwargs.y)
 
         color1_buffer = buffer.mutable_message('clr1')
-        color1_buffer.set_int32('r', color1.r)
-        color1_buffer.set_int32('g', color1.g)
-        color1_buffer.set_int32('b', color1.b)
-        color1_buffer.set_int32('a', color1.a)
+        color1_buffer.set_int32('r', kwargs.color1.r)
+        color1_buffer.set_int32('g', kwargs.color1.g)
+        color1_buffer.set_int32('b', kwargs.color1.b)
+        color1_buffer.set_int32('a', kwargs.color1.a)
 
         color2_buffer = buffer.mutable_message('clr2')
-        color2_buffer.set_int32('r', color2.r)
-        color2_buffer.set_int32('g', color2.g)
-        color2_buffer.set_int32('b', color2.b)
-        color2_buffer.set_int32('a', color2.a)
+        color2_buffer.set_int32('r', kwargs.color2.r)
+        color2_buffer.set_int32('g', kwargs.color2.g)
+        color2_buffer.set_int32('b', kwargs.color2.b)
+        color2_buffer.set_int32('a', kwargs.color2.a)
 
-        buffer.set_int32('effect', effect)
-        buffer.set_float('fade_in_time', fade_in)
-        buffer.set_float('fade_out_time', fade_out)
-        buffer.set_float('hold_time', hold_time)
-        buffer.set_float('fx_time', fx_time)
-        buffer.set_string('text', message)
+        buffer.set_int32('effect', kwargs.effect)
+        buffer.set_float('fade_in_time', kwargs.fade_in)
+        buffer.set_float('fade_out_time', kwargs.fade_out)
+        buffer.set_float('hold_time', kwargs.hold_time)
+        buffer.set_float('fx_time', kwargs.fx_time)
+        buffer.set_string('text', kwargs.message)
 
-    def bitbuf(self, buffer, channel, x, y, color1, color2, effect, fade_in,
-            fade_out, hold_time, fx_time, message):
-        buffer.write_byte(channel)
-        buffer.write_float(x)
-        buffer.write_float(y)
-        buffer.write_byte(color1.r)
-        buffer.write_byte(color1.g)
-        buffer.write_byte(color1.b)
-        buffer.write_byte(color1.a)
-        buffer.write_byte(color2.r)
-        buffer.write_byte(color2.g)
-        buffer.write_byte(color2.b)
-        buffer.write_byte(color2.a)
-        buffer.write_byte(effect)
-        buffer.write_float(fade_in)
-        buffer.write_float(fade_out)
-        buffer.write_float(hold_time)
-        buffer.write_float(fx_time)
-        buffer.write_string(message)
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_byte(kwargs.channel)
+        buffer.write_float(kwargs.x)
+        buffer.write_float(kwargs.y)
+        buffer.write_byte(kwargs.color1.r)
+        buffer.write_byte(kwargs.color1.g)
+        buffer.write_byte(kwargs.color1.b)
+        buffer.write_byte(kwargs.color1.a)
+        buffer.write_byte(kwargs.color2.r)
+        buffer.write_byte(kwargs.color2.g)
+        buffer.write_byte(kwargs.color2.b)
+        buffer.write_byte(kwargs.color2.a)
+        buffer.write_byte(kwargs.effect)
+        buffer.write_float(kwargs.fade_in)
+        buffer.write_float(kwargs.fade_out)
+        buffer.write_float(kwargs.hold_time)
+        buffer.write_float(kwargs.fx_time)
+        buffer.write_string(kwargs.message)
