@@ -21,6 +21,8 @@ from menus.base import _BaseMenu
 #   Players
 from players.helpers import index_from_playerinfo
 
+from core import SOURCE_ENGINE_BRANCH
+
 
 # =============================================================================
 # >> CONSTANTS
@@ -189,29 +191,62 @@ class _QueueHolder(dict):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def _validate_selection(player_info, command, valid_choices):
-    """Validate a selection command.
 
-    @param <player_infor>:
-    A PlayerInfo instance.
+# 17/09/2015 CSS update seems to make the client send menuselect 10 instead of
+# menuselect 0, however it seems to still get handled as menuselect 0 by SP
+# even when BUTTON_CLOSE and VALID_CHOICES are updated to resemble this change,
+# below should be a quick fix to address this issue and make menuselect 0 work
+# again.
+if SOURCE_ENGINE_BRANCH in ('css',):
+    def _validate_selection(index, command, valid_choices):
+        """Validate a selection command.
 
-    @param <command>:
-    A Command instance.
+        @param <index>:
+        A player's index integer.
 
-    @param <valid_choices>:
-    A list of integers that defines all valid choices
-    """
-    try:
-        choice = int(command.get_arg(1))
-    except ValueError:
-        # Catch errors caused by e.g. "menuselect a"
+        @param <command>:
+        A Command instance.
+
+        @param <valid_choices>:
+        A list of integers that defines all valid choices
+        """
+        try:
+            choice = int(command.get_arg(1))
+        except ValueError:
+            # Catch errors caused by e.g. "menuselect a"
+            return (None, None)
+
+        # Fix described above.
+        if choice == 10:
+            choice = 0
+
+        if choice in valid_choices:
+            return (index, choice)
+
         return (None, None)
+else:
+    def _validate_selection(index, command, valid_choices):
+        """Validate a selection command.
 
-    if choice in valid_choices:
-        return (index_from_playerinfo(player_info), choice)
+        @param <index>:
+        A player's index integer.
 
-    return (None, None)
+        @param <command>:
+        A Command instance.
 
+        @param <valid_choices>:
+        A list of integers that defines all valid choices
+        """
+        try:
+            choice = int(command.get_arg(1))
+        except ValueError:
+            # Catch errors caused by e.g. "menuselect a"
+            return (None, None)
+
+        if choice in valid_choices:
+            return (index, choice)
+
+        return (None, None)
 
 # =============================================================================
 # >> REPEATS
@@ -242,21 +277,21 @@ _esc_queues = _QueueHolder(_ESCUserQueue, _esc_refresh)
 # >> CLIENT COMMANDS
 # =============================================================================
 @ClientCommand('menuselect')
-def _menuselect_callback(player_info, command):
+def _menuselect_callback(command, index):
     """Forward the selection to the proper user queue."""
     from menus.radio import VALID_CHOICES
 
-    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
+    index, choice = _validate_selection(index, command, VALID_CHOICES)
     if index is not None:
         _radio_queues[index]._select(choice)
 
 
-@ClientCommand(ESC_SELECTION_CMD)
-def _escselect_callback(player_info, command):
+@ClientCommand(ESC_SELECTION_CMD) 
+def _escselect_callback(command, index):
     """Forward the selection to the proper user queue."""
     from menus.esc import VALID_CHOICES
 
-    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
+    index, choice = _validate_selection(index, command, VALID_CHOICES)
     if index is not None:
         _esc_queues[index]._select(choice)
 
