@@ -159,19 +159,19 @@ class VGUIMenu(UserMessageCreator):
         # TODO: Which names and subkeys are available?
         super().__init__(locals())
 
-    def protobuf(self, buffer, name, subkeys, show):
-        buffer.set_string('name', name)
-        buffer.set_bool('show', show)
-        for key, value in subkeys.items():
+    def protobuf(self, buffer, kwargs):
+        buffer.set_string('name', kwargs.name)
+        buffer.set_bool('show', kwargs.show)
+        for key, value in kwargs.subkeys.items():
             temp_buffer = buffer.add_message('subkeys')
             temp_buffer.set_string('name', key)
             temp_buffer.set_string('str', value)
 
-    def bitbuf(self, buffer, name, subkeys, show):
-        buffer.write_string(name)
-        buffer.write_byte(show)
-        buffer.write_byte(len(subkeys))
-        for key, value in subkeys.items():
+    def bitbuf(self, buffer, kwargs):
+        buffer.write_string(kwargs.name)
+        buffer.write_byte(kwargs.show)
+        buffer.write_byte(len(kwargs.subkeys))
+        for key, value in kwargs.subkeys.items():
             buffer.write_string(key)
             buffer.write_string(value)
 
