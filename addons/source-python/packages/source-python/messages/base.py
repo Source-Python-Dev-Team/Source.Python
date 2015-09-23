@@ -50,8 +50,7 @@ __all__ = ('UserMessageCreator',
 # =============================================================================
 class AttrDict(dict):
 
-    """A dictionary that redirects __getattr__ to __getitem__ and __setattr__
-    to __setitem__."""
+    """A dictionary that redirects __getattr__ and __setattr__."""
 
     __getattr__ = dict.__getitem__
     __setattr__ = dict.__setitem__
@@ -62,7 +61,7 @@ class UserMessageCreator(AttrDict):
     """Provide an easy interface to create user messages."""
 
     def __init__(self, local_variables):
-        # Remove "self" if existant, so you can simply pass locals()
+        """Remove "self" if existant, so you can simply pass locals()."""
         local_variables.pop('self', 0)
         super().__init__(local_variables)
 
@@ -112,9 +111,7 @@ class UserMessageCreator(AttrDict):
         return languages
 
     def _get_translated_kwargs(self, language, tokens):
-        """Return an AttrDict object that contains translated and tokenized
-        arguments.
-        """
+        """Return translated and tokenized arguments."""
         translated_kwargs = AttrDict()
         for key, value in self.items():
             if isinstance(value, TranslationStrings):
@@ -144,7 +141,7 @@ class VGUIMenu(UserMessageCreator):
 
     message_name = 'VGUIMenu'
 
-    def __init__(self, name, subkeys={}, show=True):
+    def __init__(self, name, subkeys=None, show=True):
         """Initialize the VGUI menu.
 
         @param <name>:
@@ -156,10 +153,15 @@ class VGUIMenu(UserMessageCreator):
         @param <subkeys>:
         A dictionary that defines the data for the menu.
         """
+        # Set subkeys if it needs to be set
+        if subkeys is None:
+            subkeys = {}
+
         # TODO: Which names and subkeys are available?
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the VGUIMenu with protobuf."""
         buffer.set_string('name', kwargs.name)
         buffer.set_bool('show', kwargs.show)
         for key, value in kwargs.subkeys.items():
@@ -168,6 +170,7 @@ class VGUIMenu(UserMessageCreator):
             temp_buffer.set_string('str', value)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the VGUIMenu with bitbuf."""
         buffer.write_string(kwargs.name)
         buffer.write_byte(kwargs.show)
         buffer.write_byte(len(kwargs.subkeys))
@@ -201,11 +204,13 @@ class ShowMenu(UserMessageCreator):
             self.bitbuf(player_indexes, self)
 
     def protobuf(self, buffer, kwargs):
+        """Send the ShowMenu with protobuf."""
         buffer.set_int32('bits_valid_slots', kwargs.valid_slots)
         buffer.set_int32('display_time', kwargs.display_time)
         buffer.set_string('menu_string', kwargs.menu_string)
 
     def bitbuf(self, player_indexes, kwargs):
+        """Send the ShowMenu with bitbuf."""
         menu_string = kwargs.menu_string
         length = len(menu_string)
         while True:
@@ -233,11 +238,14 @@ class SayText2(UserMessageCreator):
 
     message_name = 'SayText2'
 
-    def __init__(self, message, index=0, chat=False, param1='', param2='',
-            param3='', param4=''):
+    def __init__(
+            self, message, index=0, chat=False,
+            param1='', param2='', param3='', param4=''):
+        """Initialize the SayText2 instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the SayText2 with protobuf."""
         buffer.set_string('msg_name', kwargs.message)
         buffer.set_bool('chat', kwargs.chat)
         buffer.set_int32('ent_idx', kwargs.index)
@@ -248,6 +256,7 @@ class SayText2(UserMessageCreator):
         # TODO: Handle textchatall
 
     def bitbuf(self, buffer, kwargs):
+        """Send the SayText2 with bitbuf."""
         buffer.write_byte(kwargs.index)
         buffer.write_byte(kwargs.chat)
         buffer.write_string(kwargs.message)
@@ -264,12 +273,15 @@ class HintText(UserMessageCreator):
     message_name = 'HintText'
 
     def __init__(self, message):
+        """Initialize the HintText instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the HintText with protobuf."""
         buffer.set_string('text', kwargs.message)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the HintText with bitbuf."""
         buffer.write_string(kwargs.message)
 
 
@@ -280,14 +292,17 @@ class SayText(UserMessageCreator):
     message_name = 'SayText'
 
     def __init__(self, message, index=0, chat=False):
+        """Initialize the SayText instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the SayText with protobuf."""
         buffer.set_int32('ent_idx', kwargs.index)
         buffer.set_bool('chat', kwargs.chat)
         buffer.set_string('text', kwargs.message)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the SayText with bitbuf."""
         buffer.write_byte(kwargs.index)
         buffer.write_string(kwargs.message)
         buffer.write_byte(kwargs.chat)
@@ -300,15 +315,18 @@ class Shake(UserMessageCreator):
     message_name = 'Shake'
 
     def __init__(self, shake_command, amplitude, frequency, duration):
+        """Initialize the Shake instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the Shake with protobuf."""
         buffer.set_int32('command', kwargs.shake_command)
         buffer.set_float('local_amplitude', kwargs.amplitude)
         buffer.set_float('frequency', kwargs.frequency)
         buffer.set_float('duration', kwargs.duration)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the Shake with bitbuf."""
         buffer.write_byte(kwargs.shake_command)
         buffer.write_float(kwargs.amplitude)
         buffer.write_float(kwargs.frequency)
@@ -322,12 +340,15 @@ class ResetHUD(UserMessageCreator):
     message_name = 'ResetHud'
 
     def __init__(self, reset=True):
+        """Initialize the ResetHUD instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the ResetHUD with protobuf."""
         buffer.set_bool('reset', kwargs.reset)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the ResetHUD with bitbuf."""
         buffer.write_byte(kwargs.reset)
 
 
@@ -337,11 +358,14 @@ class TextMsg(UserMessageCreator):
 
     message_name = 'TextMsg'
 
-    def __init__(self, destination, name, param1='', param2='', param3='',
-            param4=''):
+    def __init__(
+            self, destination, name, param1='',
+            param2='', param3='', param4=''):
+        """Initialize the TextMsg instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the TextMsg with protobuf."""
         buffer.set_int32('msg_dst', kwargs.destination)
         buffer.add_string('params', kwargs.name)
         buffer.add_string('params', kwargs.param1)
@@ -350,6 +374,7 @@ class TextMsg(UserMessageCreator):
         buffer.add_string('params', kwargs.param4)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the TextMsg with bitbuf."""
         buffer.write_byte(kwargs.destination)
         buffer.write_string(kwargs.name)
         buffer.write_string(kwargs.param1)
@@ -365,13 +390,16 @@ class KeyHintText(UserMessageCreator):
     message_name = 'KeyHintText'
 
     def __init__(self, *hints):
+        """Initialize the KeyHintText instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the KeyHintText with protobuf."""
         for hint in kwargs.hints:
             buffer.add_string('hints', hint)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the KeyHintText with bitbuf."""
         buffer.write_byte(len(kwargs.hints))
         for hint in kwargs.hints:
             buffer.write_string(hint)
@@ -383,11 +411,13 @@ class Fade(UserMessageCreator):
 
     message_name = 'Fade'
 
-    def __init__(self, duration, hold_time, flags,
-            color=Color(255, 255, 255, 255)):
+    def __init__(
+            self, duration, hold_time, flags, color=Color(255, 255, 255, 255)):
+        """Initialize the Fade instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the Fade with protobuf."""
         buffer.set_int32('duration', kwargs.duration)
         buffer.set_int32('hold_time', kwargs.hold_time)
         buffer.set_int32('flags', kwargs.flags)
@@ -398,6 +428,7 @@ class Fade(UserMessageCreator):
         color_buffer.set_int32('a', kwargs.color.a)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the Fade with bitbuf."""
         buffer.write_short(kwargs.duration)
         buffer.write_short(kwargs.hold_time)
         buffer.write_short(kwargs.flags)
@@ -414,13 +445,15 @@ class HudMsg(UserMessageCreator):
     message_name = 'HudMsg'
 
     # TODO: Use Vector2D for x and y?
-    def __init__(self, channel=0, x=-1, y=-1,
-            color1=Color(255, 255, 255, 255),
-            color2=Color(255, 255, 255, 255), effect=0, fade_in=0, fade_out=0,
-            hold_time=4, fx_time=0, message=""):
+    def __init__(
+            self, channel=0, x=-1, y=-1, color1=Color(255, 255, 255, 255),
+            color2=Color(255, 255, 255, 255), effect=0, fade_in=0,
+            fade_out=0, hold_time=4, fx_time=0, message=""):
+        """Initialize the HudMsg instance."""
         super().__init__(locals())
 
     def protobuf(self, buffer, kwargs):
+        """Send the HudMsg with protobuf."""
         buffer.set_int32('channel', kwargs.channel)
 
         pos_buffer = buffer.mutable_message('pos')
@@ -447,6 +480,7 @@ class HudMsg(UserMessageCreator):
         buffer.set_string('text', kwargs.message)
 
     def bitbuf(self, buffer, kwargs):
+        """Send the HudMsg with bitbuf."""
         buffer.write_byte(kwargs.channel)
         buffer.write_float(kwargs.x)
         buffer.write_float(kwargs.y)
