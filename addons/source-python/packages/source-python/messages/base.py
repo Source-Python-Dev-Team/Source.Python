@@ -10,7 +10,7 @@ import collections
 
 # Source.Python Imports
 #   Colors
-from colors import Color
+from colors import WHITE
 #   Filters
 from filters.recipients import RecipientFilter
 from filters.players import PlayerIter
@@ -26,23 +26,6 @@ from translations.strings import TranslationStrings
 # ============================================================================
 #   Messages
 from _messages import UserMessage
-
-
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ('UserMessageCreator',
-           'VGUIMenu',
-           'ShowMenu',
-           'SayText2',
-           'HintText',
-           'SayText',
-           'Shake',
-           'ResetHUD',
-           'TextMsg',
-           'KeyHintText',
-           'Fade'
-           )
 
 
 # =============================================================================
@@ -411,8 +394,7 @@ class Fade(UserMessageCreator):
 
     message_name = 'Fade'
 
-    def __init__(
-            self, duration, hold_time, flags, color=Color(255, 255, 255, 255)):
+    def __init__(self, duration, hold_time, flags, color=WHITE):
         """Initialize the Fade instance."""
         super().__init__(locals())
 
@@ -446,9 +428,8 @@ class HudMsg(UserMessageCreator):
 
     # TODO: Use Vector2D for x and y?
     def __init__(
-            self, channel=0, x=-1, y=-1, color1=Color(255, 255, 255, 255),
-            color2=Color(255, 255, 255, 255), effect=0, fade_in=0,
-            fade_out=0, hold_time=4, fx_time=0, message=""):
+            self, channel=0, x=-1, y=-1, color1=WHITE, color2=WHITE, effect=0,
+            fade_in=0, fade_out=0, hold_time=4, fx_time=0, message=""):
         """Initialize the HudMsg instance."""
         super().__init__(locals())
 

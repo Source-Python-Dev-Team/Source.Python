@@ -35,19 +35,19 @@ from _messages import DialogType
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('DialogType',
+           'Fade',
+           'HintText',
+           'HudMsg',
+           'KeyHintText',
+           'ResetHUD',
+           'SayText',
+           'SayText2',
+           'Shake',
+           'ShowMenu',
+           'TextMsg',
            'UserMessage',
            'UserMessageCreator',
-           'VGUIMenu',
-           'ShowMenu',
-           'SayText2',
-           'HintText',
-           'SayText',
-           'Shake',
-           'ResetHUD',
-           'TextMsg',
-           'KeyHintText',
-           'Fade',
-           'HudMsg',
+           'VGUIMenu
            )
 
 
