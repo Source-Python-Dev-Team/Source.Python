@@ -147,12 +147,6 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{NULL, NULL}
 };
 
-// TODO: This is just a quick fix. The real fix is coming soon.
-#ifdef ENGINE_ORANGEBOX
-	#undef INTERFACEVERSION_SERVERGAMEDLL
-	#define INTERFACEVERSION_SERVERGAMEDLL "ServerGameDLL010"
-#endif
-
 InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERINFOMANAGER, (void **)&playerinfomanager},
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},

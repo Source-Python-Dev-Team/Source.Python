@@ -73,6 +73,11 @@ T IVEngineServer_Visitor(T cls)
 			&IVEngineServer::CreateFakeClientEx,
 			reference_existing_object_policy()
 		)
+
+		.def("get_server",
+			&IVEngineServer::GetIServer,
+			reference_existing_object_policy()
+		)
 	;
 
 	return cls;
