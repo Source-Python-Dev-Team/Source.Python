@@ -18,8 +18,6 @@ from listeners import ClientDisconnect
 from listeners.tick.repeat import TickRepeat
 #   Menus
 from menus.base import _BaseMenu
-#   Players
-from players.helpers import index_from_playerinfo
 
 
 # =============================================================================
