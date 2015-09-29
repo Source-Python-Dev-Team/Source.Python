@@ -26,6 +26,7 @@ from translations.strings import TranslationStrings
 # ============================================================================
 #   Messages
 from _messages import UserMessage
+from _messages import SCREENFADE_FRACBITS
 
 
 # =============================================================================
@@ -393,6 +394,7 @@ class Fade(UserMessageCreator):
     """Create a Fade."""
 
     message_name = 'Fade'
+    moved_frac_bits = 1 << SCREENFADE_FRACBITS
 
     def __init__(self, duration, hold_time, flags, color=WHITE):
         """Initialize the Fade instance."""
@@ -400,8 +402,8 @@ class Fade(UserMessageCreator):
 
     def protobuf(self, buffer, kwargs):
         """Send the Fade with protobuf."""
-        buffer.set_int32('duration', kwargs.duration)
-        buffer.set_int32('hold_time', kwargs.hold_time)
+        buffer.set_int32('duration', kwargs.duration * self.moved_frac_bits)
+        buffer.set_int32('hold_time', kwargs.hold_time * self.moved_frac_bits)
         buffer.set_int32('flags', kwargs.flags)
         color_buffer = buffer.mutable_message('clr')
         color_buffer.set_int32('r', kwargs.color.r)
@@ -411,8 +413,8 @@ class Fade(UserMessageCreator):
 
     def bitbuf(self, buffer, kwargs):
         """Send the Fade with bitbuf."""
-        buffer.write_short(kwargs.duration)
-        buffer.write_short(kwargs.hold_time)
+        buffer.write_short(kwargs.duration * self.moved_frac_bits)
+        buffer.write_short(kwargs.hold_time * self.moved_frac_bits)
         buffer.write_short(kwargs.flags)
         buffer.write_byte(kwargs.color.r)
         buffer.write_byte(kwargs.color.g)

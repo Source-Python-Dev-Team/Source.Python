@@ -31,6 +31,8 @@
 using namespace boost::python;
 
 #include "messages.h"
+#include "shake.h"
+#include "shareddefs.h"
 
 
 //-----------------------------------------------------------------------------
@@ -40,6 +42,10 @@ void export_message_functions(scope);
 void export_dialog_enum(scope);
 void export_user_message(scope);
 void export_protobuf_message(scope);
+void export_shake_command(scope);
+void export_hud_destination(scope);
+void export_fade_flags(scope);
+void export_constants(scope);
 
 DECLARE_SP_MODULE(_messages)
 {
@@ -47,6 +53,10 @@ DECLARE_SP_MODULE(_messages)
 	export_dialog_enum(_messages);
 	export_user_message(_messages);
 	export_protobuf_message(_messages);
+	export_shake_command(_messages);
+	export_hud_destination(_messages);
+	export_fade_flags(_messages);
+	export_constants(_messages);
 }
 
 
@@ -174,4 +184,60 @@ void export_dialog_enum(scope _messages)
 		.value("ENTRY", DIALOG_ENTRY)
 		.value("ASKCONNECT", DIALOG_ASKCONNECT)
 	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exposes the ShakeCommand_t enum
+//-----------------------------------------------------------------------------
+void export_shake_command(scope _messages)
+{
+	enum_<ShakeCommand_t>("ShakeCommand")
+		.value("START", SHAKE_START)
+		.value("STOP", SHAKE_STOP)
+		.value("AMPLITUDE", SHAKE_AMPLITUDE)
+		.value("FREQUENCY", SHAKE_FREQUENCY)
+		.value("START_RUMBLEONLY", SHAKE_START_RUMBLEONLY)
+		.value("START_NORUMBLE", SHAKE_START_NORUMBLE)
+	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exposes the hud destination constants
+//-----------------------------------------------------------------------------
+void export_hud_destination(scope _messages)
+{
+	enum HudDestination {};
+
+	enum_<HudDestination> _HudDestination("HudDestination");
+	_HudDestination.value("NOTIFY", (HudDestination) HUD_PRINTNOTIFY);
+	_HudDestination.value("CONSOLE", (HudDestination) HUD_PRINTCONSOLE);
+	_HudDestination.value("TALK", (HudDestination) HUD_PRINTTALK);
+	_HudDestination.value("CENTER", (HudDestination) HUD_PRINTCENTER);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exposes the fade flags
+//-----------------------------------------------------------------------------
+void export_fade_flags(scope _messages)
+{
+	enum FadeFlags{};
+
+	enum_<FadeFlags> _FadeFlags("FadeFlags");
+	_FadeFlags.value("IN", (FadeFlags) FFADE_IN);
+	_FadeFlags.value("OUT", (FadeFlags) FFADE_OUT);
+	_FadeFlags.value("MODULATE", (FadeFlags) FFADE_MODULATE);
+	_FadeFlags.value("STAYOUT", (FadeFlags) FFADE_STAYOUT);
+	_FadeFlags.value("PURGE", (FadeFlags) FFADE_PURGE);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exposes the messages specific constants
+//-----------------------------------------------------------------------------
+void export_constants(scope _messages)
+{
+	_messages.attr("SCREENFADE_FRACBITS") = SCREENFADE_FRACBITS;
 }

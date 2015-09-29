@@ -29,6 +29,9 @@ from messages.base import UserMessage
 # ============================================================================
 #   Messages
 from _messages import DialogType
+from _messages import ShakeCommand
+from _messages import HudDestination
+from _messages import FadeFlags
 
 
 # =============================================================================
@@ -36,18 +39,21 @@ from _messages import DialogType
 # =============================================================================
 __all__ = ('DialogType',
            'Fade',
+           'FadeFlags',
            'HintText',
+           'HudDestination',
            'HudMsg',
            'KeyHintText',
            'ResetHUD',
            'SayText',
            'SayText2',
            'Shake',
+           'ShakeCommand',
            'ShowMenu',
            'TextMsg',
            'UserMessage',
            'UserMessageCreator',
-           'VGUIMenu
+           'VGUIMenu',
            )
 
 
