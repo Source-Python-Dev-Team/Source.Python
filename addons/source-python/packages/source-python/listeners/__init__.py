@@ -2,12 +2,22 @@
 
 """Provides listener based functionality."""
 
+# TODO: Fix name conflict with _ListenerManager
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+import socket
+from urllib.error import URLError
 # Source.Python Imports
+#   Cvars
+from cvars import ConVar
 #   Core
 from core import AutoUnload
+from core.settings import _core_settings
+from core.version import is_newer_version_available
+from core.version import is_unversioned
 #   Loggers
 from loggers import _sp_logger
 
@@ -17,6 +27,7 @@ from loggers import _sp_logger
 # =============================================================================
 # Source.Python Imports
 #   Listeners
+from _listeners import _ListenerManager
 from _listeners import client_active_listener_manager
 from _listeners import client_connect_listener_manager
 from _listeners import client_disconnect_listener_manager
@@ -67,6 +78,7 @@ __all__ = ('ClientActive',
            'OnQueryCvarValueFinished',
            'ServerActivate',
            'Tick',
+           'VersionUpdate',
            'client_active_listener_manager',
            'client_connect_listener_manager',
            'client_disconnect_listener_manager',
@@ -89,6 +101,7 @@ __all__ = ('ClientActive',
            'on_query_cvar_value_finished_listener_manager',
            'server_activate_listener_manager',
            'tick_listener_manager',
+           'version_update_listener_manager',
            )
 
 
@@ -97,6 +110,18 @@ __all__ = ('ClientActive',
 # =============================================================================
 # Get the sp.listeners logger
 listeners_logger = _sp_logger.listeners
+version_update_listener_manager = _ListenerManager()
+
+_check_for_update = ConVar('sp_check_for_update',
+    _core_settings['VERSION_SETTINGS']['check_for_update'],
+    description='Enable/disable checking for version updates.',
+    min_value=0, max_value=1)
+
+_notify_on_update = ConVar('sp_notify_on_update',
+    _core_settings['VERSION_SETTINGS']['notify_on_update'],
+    description=('Log a warning when a Source.Python update is available. Req'
+        'uires sp_check_for_update to be set to 1.'),
+    min_value=0, max_value=1)
 
 
 # =============================================================================
@@ -142,6 +167,11 @@ class _ListenerManager(AutoUnload):
     def name(self):
         """Return the class name of the instance."""
         return self.__class__.__name__
+
+    @property
+    def manager(self):
+        """Return a _ListenerManager object."""
+        raise NotImplementedError('Must be implemented by a subclass.')
 
     def _unload_instance(self):
         """Unregister the listener."""
@@ -306,3 +336,36 @@ class Tick(_ListenerManager):
     """Register/unregister a Tick listener."""
 
     manager = tick_listener_manager
+
+
+class VersionUpdate(_ListenerManager):
+
+    """Register/unregister a version update listener."""
+
+    manager = version_update_listener_manager
+
+
+# =============================================================================
+# >> CALLBACKS
+# =============================================================================
+@LevelInit
+def _on_level_init(map_name):
+    """Called when a new map gets initialized."""
+    if not _check_for_update.get_int():
+        return
+
+    try:
+        update_available, version = is_newer_version_available()
+    except (URLError, socket.timeout):
+        return
+
+    if not update_available:
+        return
+
+    if _notify_on_update.get_int():
+        # TODO: Add translations
+        listeners_logger.log_warning(
+            'A new Source.Python version is available!')
+
+    version_update_listener_manager.notify(
+        update_available, version, is_unversioned())
