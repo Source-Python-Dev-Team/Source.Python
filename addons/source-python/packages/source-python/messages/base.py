@@ -1,33 +1,19 @@
 # ../messages/base.py
 
-"""Contains base message functionality to be used by user messages."""
+"""Provides user messages."""
 
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
 # Python Imports
-#   Collections
-from collections import ChainMap
-from collections import defaultdict
-from collections import OrderedDict
-#   Importlib
-from importlib import import_module
-
-# Site-Package Imports
-#   ConfigObj
-from configobj import ConfigObj
+import collections
 
 # Source.Python Imports
 #   Colors
-from colors import Color
-#   Core
-from core import echo_console
+from colors import WHITE
 #   Filters
 from filters.recipients import RecipientFilter
-#   Hooks
-from hooks.exceptions import except_hooks
-#   Messages
-from _messages import UserMessage
+from filters.players import PlayerIter
 #   Players
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
@@ -36,572 +22,488 @@ from translations.strings import TranslationStrings
 
 
 # ============================================================================
-# >> GLOBAL VARIABLES
+# >> FORWARD IMPORTS
 # ============================================================================
-# Store the fieldtype converters
-_fieldtypes = dict(
-    bool=bool, char=str, byte=int, short=int, long=int,
-    float=float, buffer=object, string=str, color=Color)
+#   Messages
+from _messages import UserMessage
+from _messages import SCREENFADE_FRACBITS
+from _messages import ShakeCommand
+from _messages import HudDestination
+from _messages import FadeFlags
 
 
-# ============================================================================
+# =============================================================================
 # >> CLASSES
-# ============================================================================
-class _UserMessages(dict):
+# =============================================================================
+class AttrDict(dict):
 
-    """Class used to store the message classes."""
+    """A dictionary that redirects __getattr__ and __setattr__."""
 
-    def __init__(self, file_path, *args, **kwargs):
-        """Parse the given files and store the parsed message classes."""
-        # Initialize the dictionary
-        super(_UserMessages, self).__init__()
+    __getattr__ = dict.__getitem__
+    __setattr__ = dict.__setitem__
 
-        # Parse the given file
-        parsed_messages = ConfigObj(file_path)
 
-        # Loop through all given arguments
-        for file_path in args:
+class UserMessageCreator(AttrDict):
 
-            # Parse and merge the current file
-            parsed_messages.merge(ConfigObj(file_path))
+    """Provide an easy interface to create user messages."""
 
-        # Loop through all messages
-        for message_name, message_data in parsed_messages.items():
+    def __init__(self, **kwargs):
+        """Initialize the usermessage creator.
 
-            # Get the current message class data
-            class_data = message_data.get('MESSAGE_CLASS', None)
-
-            # Any class to import?
-            if class_data is not None:
-
-                # Import the current message class
-                message_class = getattr(
-                    import_module('messages.types.{0}'.format(
-                        class_data[0])), class_data[1])
-
-                # Delete the class data as we are done with it
-                del message_data['MESSAGE_CLASS']
-
-            # Otherwise
-            else:
-
-                # Use the base class
-                message_class = BaseMessage
-
-            # Get an ordered dictionnary to store the parameters
-            required_parameters = OrderedDict()
-
-            # Get the required parameters
-            message_parameters = message_data.get(
-                'REQUIRED_PARAMETERS', None)
-
-            # Get a set to store the translatable parameters
-            translatable_parameters = set()
-
-            # Any required parameters?
-            if message_parameters is not None:
-
-                # Delete the required parameters from the message data
-                del message_data['REQUIRED_PARAMETERS']
-
-                # Loop through all required parameters
-                for parameter_name in message_parameters:
-
-                    # Get the current parameter data
-                    parameter_data = message_data.get(parameter_name)
-
-                    # Delete the current parameter data
-                    del message_data[parameter_name]
-
-                    # Get the current parameter length
-                    parameter_length = int(parameter_data.get('length', '1'))
-
-                    # Is the current parameter larger than one value?
-                    if parameter_length > 1:
-
-                        # Get the the current parameter values
-                        default_values = parameter_data['default_values']
-
-                        # Loop through all required values
-                        for parameter_index, parameter_type in zip(range(
-                                parameter_length), parameter_data['types']):
-
-                            # Convert the current value
-                            default_values[parameter_index] = _fieldtypes[
-                                parameter_type](default_values[
-                                    parameter_index])
-
-                        # Store the current parameter data
-                        required_parameters[parameter_name] = dict(
-                            default_values=default_values,
-                            types=parameter_data['types'])
-
-                    # Otherwise
-                    else:
-
-                        # Get the current parameter type
-                        parameter_type = parameter_data['type']
-
-                        # Is the current parameter translatable?
-                        if parameter_type == 'string':
-
-                            # Add the current parameter to the translatables
-                            translatable_parameters.add(parameter_name)
-
-                        default_value = parameter_data.get(
-                            'default_value', None)
-                        if default_value is None:
-                            converted_value = _fieldtypes[parameter_type]()
-                        else:
-                            converted_value = _fieldtypes[
-                                parameter_type](default_value)
-
-                        # Store the current parameter data
-                        required_parameters[parameter_name] = dict(
-                            default_value=converted_value,
-                            type=parameter_type)
-
-                    # Store more data
-                    required_parameters[parameter_name].update(dict(
-                        length=parameter_length,
-                        field_name=parameter_data.get('field_name', '')))
-
-            # Get a dictionnary to store the special parameters
-            special_parameters = dict()
-
-            # Get the special parameters
-            message_parameters = message_data.get('SPECIAL_PARAMETERS', None)
-
-            # Any special parameters?
-            if message_parameters is not None:
-
-                # Delete the special parameters from the message data
-                del message_data['SPECIAL_PARAMETERS']
-
-                # Loop through all special parameters
-                for parameter_name in message_parameters:
-
-                    # Set the current parameter value
-                    special_parameters[parameter_name] = message_data.get(
-                        parameter_name, None)
-
-                    # Is the current parameter value None?
-                    if special_parameters[parameter_name] is None:
-
-                        # No need to go further
-                        continue
-
-                    # Delete the current parameter data
-                    del message_data[parameter_name]
-
-            # Store the current message class
-            self[message_name] = type(message_name, (message_class,), dict(
-                _message_name=message_name,
-                _required_parameters=required_parameters,
-                _translatable_parameters=translatable_parameters,
-                _special_parameters=special_parameters, **message_data))
-
-
-class BaseMessage(dict):
-
-    """Base message class."""
-
-    def __init__(self, *args, **kwargs):
-        """Parse and store the given parameters."""
-        # Initialize the dictionary
-        super(BaseMessage, self).__init__()
-
-        # Get a list of the given arguments
-        arguments = list(args)
-
-        # Loop through all required parameters
-        for parameter_name in self._required_parameters:
-
-            # Get the current parameter data
-            parameter_data = self._required_parameters[parameter_name]
-
-            # Get the current parameter length
-            parameter_length = parameter_data['length']
-
-            # Is the current parameter larger than one value?
-            if parameter_length > 1:
-
-                # Get the current parameter default values
-                default_values = parameter_data['default_values']
-
-                # Is the current parameter given as keyword?
-                if parameter_name in kwargs:
-
-                    # Get the given values
-                    parameter_values = kwargs[parameter_name]
-
-                    # Delete the current parameter from the keywords
-                    del kwargs[parameter_name]
-
-                # Otherwise, any arguments?
-                elif arguments:
-
-                    # Get the given values
-                    parameter_values = arguments[:parameter_length]
-
-                    # Get the given parameters length
-                    values_length = len(parameter_values)
-
-                    # Remove the values from the given arguments
-                    arguments = arguments[values_length:]
-
-                    # Make sure we have enough values
-                    parameter_values += default_values[values_length:]
-
-                # Otherwise
-                else:
-
-                    # use the default values
-                    parameter_values = default_values
-
-                # Set the current parameter value
-                self[parameter_name] = parameter_values
-
-            # Otherwise
-            else:
-
-                # Is the current parameter given as keyword?
-                if parameter_name in kwargs:
-
-                    # Get the current parameter value
-                    parameter_value = kwargs[parameter_name]
-
-                    # Delete the keyword as we are done with it
-                    del kwargs[parameter_name]
-
-                # Otherwise, any arguments?
-                elif arguments:
-
-                    # Get the given value
-                    parameter_value = arguments.pop()
-
-                # Otherwise
-                else:
-
-                    # Use the default value
-                    parameter_value = parameter_data['default_value']
-
-                # Set the current parameter value
-                self[parameter_name] = parameter_value
-
-        # Get a set to store the given users
-        users = set()
-
-        # Is the users given as keyword?
-        if 'users' in kwargs:
-
-            # Get the given users
-            users = kwargs['users']
-
-            # Delete the users from the keywords
-            del kwargs['users']
-
-        # Otherwise, any arguments?
-        elif arguments:
-
-            # Get the given users
-            users = arguments
-
-        # Set the given users
-        super(BaseMessage, self).__setattr__('users', users)
-
-        # Loop through all special parameters
-        for parameter_name in self._special_parameters:
-
-            # Get a variable to store the current parameter value
-            parameter_value = self._special_parameters[parameter_name]
-
-            # Is the current parameter not given?
-            if parameter_name in kwargs:
-
-                # Get the given value
-                parameter_value = kwargs[parameter_name]
-
-                # Delete the current parameter from the keywords
-                del kwargs[parameter_name]
-
-            # Store the given value
-            self[parameter_name] = parameter_value
-
-        # Set the given tokens
-        super(BaseMessage, self).__setattr__('tokens', kwargs)
-
-    def __getattr__(self, attribute):
-        """Return the given parameter value."""
-        # Try to return from an attribute first
-        try:
-
-            # Return the given attribute value
-            return super(BaseMessage, self).__getattr__(attribute)
-
-        # Was the given attribute not valid?
-        except AttributeError:
-
-            # Return the given parameter value
-            return self[attribute]
-
-    def __setattr__(self, attribute, value):
-        """Set the given parameter value."""
-        # Is the given attribute valid?
-        if attribute in self.__dict__:
-
-            # Set the given attribute value
-            super(BaseMessage, self).__setattr__(attribute, value)
-
-        # Otherwise
-        else:
-
-            # Set the given parameter value
-            self[attribute] = value
-
-    def __getitem__(self, item):
-        """Return the given parameter value."""
-        # Is the given item a valid parameter?
-        if item in self or item in self._special_parameters:
-
-            # Return the value of the given parameter
-            return super(BaseMessage, self).__getitem__(item)
-
-        # Otherwise, is the given item matching a token?
-        elif item in self.tokens:
-
-            # Return the value of the given token
-            return self.tokens[item]
-
-        # Raise an error
-        raise KeyError(
-            '"{0}" is not a valid "{1}" parameter.'.format(
-                item, self._message_name))
+        @param <kwargs>:
+        A dictionary that contains all valid fields.
+        """
+        super().__setattr__('valid_fields', kwargs.keys())
+        super().__init__(kwargs)
 
     def __setitem__(self, item, value):
-        """Set the given parameter to the given value."""
-        # Is the given item a valid parameter?
-        if (item in self._required_parameters or
-                item in self._special_parameters):
+        """Set a field value."""
+        if item not in self.valid_fields:
+            raise NameError('Invalid field name "{0}".'.format(item))
 
-            # Set the given parameter to the given value
-            super(BaseMessage, self).__setitem__(item, value)
+        super().__setitem__(item, value)
 
-        # Otherwise
+    def __setattr__(self, attr, value):
+        """Set a field value."""
+        self[attr] = value
+
+    def send(self, *player_indexes, **tokens):
+        """Send the user message."""
+        if not player_indexes:
+            player_indexes = PlayerIter()
+
+        for language, indexes in self._categorize_players_by_language(
+                player_indexes).items():
+            self._send(indexes, self._get_translated_kwargs(language, tokens))
+
+    def _send(self, player_indexes, translated_kwargs):
+        """Send the user message to the given players.
+
+        @param <player_indexes>:
+        An iterable that contains players with the same language setting.
+
+        @param <translated_kwargs>:
+        An AttrDict object that contains the translated arguments.
+        """
+        user_message = UserMessage(
+            RecipientFilter(*player_indexes), self.message_name)
+
+        if user_message.is_protobuf():
+            self.protobuf(user_message.buffer, translated_kwargs)
         else:
+            self.bitbuf(user_message.buffer, translated_kwargs)
 
-            # Assume it is a token
-            self.tokens[item] = value
-
-    def _prepare_parameter(self, parameter_name, parameter_value):
-        """Prepare the given parameter value."""
-        # Get the given parameter data
-        parameter_data = self._required_parameters[parameter_name]
-
-        # Get the given parameter length
-        parameter_length = parameter_data['length']
-
-        # Is the current parameter larger than one value?
-        if parameter_length > 1:
-
-            # Is the given value not iterable?
-            if not hasattr(parameter_value, '__iter__'):
-
-                # Convert the given parametervalue to a tuple
-                parameter_value = (parameter_value,)
-
-            # Get a list of the given values
-            parameter_values = list(parameter_value)
-
-            # Get the length of the values
-            values_length = len(parameter_values)
-
-            # Not enough values?
-            if values_length < parameter_length:
-
-                # Make sure we have enough value
-                parameter_values += parameter_data['default_values'][
-                    values_length:]
-
-            # Loop through all values
-            for parameter_index, parameter_type, parameter_value in zip(
-                range(parameter_length), parameter_data['types'],
-                    parameter_values):
-
-                # Convert the current value
-                parameter_values[parameter_index] = _fieldtypes[
-                    parameter_type](parameter_value)
-
-            # Set the return value
-            return_value = parameter_values
-
-        # Otherwise
-        else:
-
-            field_converter = _fieldtypes[parameter_data['type']]
-            if not isinstance(parameter_value, field_converter):
-                parameter_value = field_converter(parameter_value)
-
-            # Convert the given value
-            return_value = parameter_value
-
-        # Return the prepared value
-        return return_value
+        user_message.send()
 
     @staticmethod
-    def _write_field_value(
-            parameter_name, usermsg, field_type,
-            field_name, field_value, field_index=-1):
-        """Write the given field value to the given message."""
-        getattr(usermsg, 'set_' + field_type)(
-            field_name, field_value, field_index)
+    def _categorize_players_by_language(player_indexes):
+        """Categorize players by their language.
 
-    def _send_message(self, recipient, **kwargs):
-        """Send the message to the given recipient filter."""
-        # Get a UserMessage instance
-        usermsg = UserMessage(recipient, self._message_name)
+        Return a dict in the following format:
+        {<language>: set([<player index>, ...])}
+        """
+        languages = collections.defaultdict(set)
+        for index in player_indexes:
+            if playerinfo_from_index(index).is_fake_client():
+                # No need to send a user message to bots
+                continue
 
-        # Loop through all required parameters
-        for parameter_name in self._required_parameters:
+            languages[get_client_language(index)].add(index)
 
-            # Get the current parameter data
-            parameter_data = self._required_parameters[parameter_name]
+        return languages
 
-            # Get the current parameter length
-            parameter_length = parameter_data['length']
+    def _get_translated_kwargs(self, language, tokens):
+        """Return translated and tokenized arguments."""
+        translated_kwargs = AttrDict()
+        for key, value in self.items():
+            if isinstance(value, TranslationStrings):
+                value = value.get_string(language, **tokens)
 
-            # Is the current parameter larger than one value?
-            if parameter_length > 1:
+            translated_kwargs[key] = value
 
-                # Try to prepare the current parameter values
-                try:
+        return translated_kwargs
 
-                    # Prepare the given values
-                    parameter_values = self._prepare_parameter(
-                        parameter_name, kwargs[parameter_name])
+    def protobuf(self, buffer, translated_kwargs):
+        """Protobuf implementation of this user message."""
+        raise NotImplementedError('Must be implemented by a subclass.')
 
-                # I'm not really fan of this but, to prevent crashes, we need
-                #   to hook any exceptions that may occurs...
-                except:
+    def bitbuf(self, buffer, translated_kwargs):
+        """Bitbuf implementation of this user message."""
+        raise NotImplementedError('Must be implemented by a subclass.')
 
-                    # Print the exception to the console
-                    except_hooks.print_exception()
+    @property
+    def message_name(self):
+        """Return the user message name."""
+        raise NotImplementedError('Must be implemented by a subclass.')
 
-                    # Print a debugging message
-                    echo_console(
-                        '"{0}" is not a valid value for "{1}.{2}"'.format(
-                            kwargs[parameter_name],
-                            self._message_name,
-                            parameter_name))
 
-                    # Use the default values
-                    parameter_values = self._prepare_parameter(
-                        parameter_name, parameter_data['default_values'])
+class VGUIMenu(UserMessageCreator):
 
-                # Get the current parameter field name
-                field_name = parameter_data['field_name']
+    """Create a VGUIMenu."""
 
-                # Loop through all values
-                for parameter_index, parameter_type, parameter_value in zip(
-                    range(parameter_length), parameter_data['types'],
-                        parameter_values):
+    message_name = 'VGUIMenu'
 
-                    # Write the current parameter
-                    self._write_field_value(
-                        parameter_name, usermsg, parameter_type,
-                        field_name, parameter_value, parameter_index)
+    def __init__(self, name, subkeys=None, show=True):
+        """Initialize the VGUI menu.
 
-            # Otherwise
-            else:
+        @param <name>:
+        A string that defines the name of the menu.
 
-                # Try to convert the given value
-                try:
+        @param <show>:
+        If True the menu will be shown, else it will be hidden.
 
-                    # Prepare the current parameter
-                    parameter_value = self._prepare_parameter(
-                        parameter_name, kwargs[parameter_name])
+        @param <subkeys>:
+        A dictionary that defines the data for the menu.
+        """
+        # Set subkeys if it needs to be set
+        if subkeys is None:
+            subkeys = {}
 
-                # I'm not really fan of this but, to prevent crashes, we need
-                #   to hook any exceptions that may occurs...
-                except:
+        # TODO: Which names and subkeys are available?
+        super().__init__(name=name, subkeys=subkeys, show=show)
 
-                    # Print the exception to the console
-                    except_hooks.print_exception()
+    def protobuf(self, buffer, kwargs):
+        """Send the VGUIMenu with protobuf."""
+        buffer.set_string('name', kwargs.name)
+        buffer.set_bool('show', kwargs.show)
+        for key, value in kwargs.subkeys.items():
+            temp_buffer = buffer.add_message('subkeys')
+            temp_buffer.set_string('name', key)
+            temp_buffer.set_string('str', value)
 
-                    # Print a debugging message
-                    echo_console(
-                        '"{0}" is not a valid value for "{1}.{2}"'.format(
-                            kwargs[parameter_name],
-                            self._message_name,
-                            parameter_name))
+    def bitbuf(self, buffer, kwargs):
+        """Send the VGUIMenu with bitbuf."""
+        buffer.write_string(kwargs.name)
+        buffer.write_byte(kwargs.show)
+        buffer.write_byte(len(kwargs.subkeys))
+        for key, value in kwargs.subkeys.items():
+            buffer.write_string(key)
+            buffer.write_string(value)
 
-                    # Use the default value
-                    parameter_value = self._prepare_parameter(
-                        parameter_name, parameter_data['default_value'])
 
-                # Write the current parameter
-                self._write_field_value(
-                    parameter_name, usermsg, parameter_data['type'],
-                    parameter_data['field_name'], parameter_value)
+class ShowMenu(UserMessageCreator):
 
-        # Send the message
-        usermsg.send_message()
+    """Create a radio menu."""
 
-    def send(self, *args, **kwargs):
-        """Send the message to the given users."""
-        # Get a recipient filter of the given users
-        recipient = RecipientFilter(*(args or self.users))
+    message_name = 'ShowMenu'
+    chunk_size = 62
 
-        # Any parameter to translate?
-        if self._translatable_parameters:
+    def __init__(self, menu_string, valid_slots=1023, display_time=4):
+        """Initialize the radio menu."""
+        super().__init__(menu_string=menu_string, valid_slots=valid_slots,
+            display_time=display_time)
 
-            # Get a default dictionnary to store the players
-            languages = defaultdict(set)
-
-            # Get a mapping of the given tokens
-            tokens = ChainMap(kwargs, self.tokens)
-
-            # Loop through all indexes
-            for index in recipient:
-
-                if playerinfo_from_index(index).is_fake_client():
-                    continue
-
-                # Add the current index
-                languages[get_client_language(index)].add(index)
-
-            # Loop through all languages
-            for language, users in languages.items():
-
-                # Get a dictionnary to store the translated strings
-                translated_parameters = dict()
-
-                # Loop through all translatable parameter
-                for parameter_name in self._translatable_parameters:
-
-                    # Get the current parameter value
-                    parameter_value = self[parameter_name]
-
-                    # Is the current parameter not translatable?
-                    if not isinstance(parameter_value, TranslationStrings):
-
-                        # No need to go further
-                        continue
-
-                    # Translate the current parameter
-                    translated_parameters[
-                        parameter_name] = parameter_value.get_string(
-                        language, **tokens)
-
-                # Update the recipient filter
-                recipient.update(*users)
-
-                # Send the message
-                self._send_message(
-                    recipient, **ChainMap(translated_parameters, self))
-
-        # Otherwise
+    def send(self, *player_indexes):
+        """Send the user message."""
+        # We need to handle the ShowMenu user message with bitbuffers
+        # differently, because the maximum size is 255. If the message exceeds
+        # this length, we need to sent it in several parts.
+        if UserMessage.is_protobuf():
+            user_message = UserMessage(
+                RecipientFilter(*player_indexes), self.message_name)
+            self.protobuf(user_message.buffer, self)
+            user_message.send()
         else:
+            self.bitbuf(player_indexes, self)
 
-            # Send the message
-            self._send_message(recipient, **self)
+    def protobuf(self, buffer, kwargs):
+        """Send the ShowMenu with protobuf."""
+        buffer.set_int32('bits_valid_slots', kwargs.valid_slots)
+        buffer.set_int32('display_time', kwargs.display_time)
+        buffer.set_string('menu_string', kwargs.menu_string)
+
+    def bitbuf(self, player_indexes, kwargs):
+        """Send the ShowMenu with bitbuf."""
+        menu_string = kwargs.menu_string
+        length = len(menu_string)
+        while True:
+            user_message = UserMessage(
+                RecipientFilter(*player_indexes), self.message_name)
+
+            buffer = user_message.buffer
+            buffer.write_word(kwargs.valid_slots)
+            buffer.write_char(kwargs.display_time)
+            buffer.write_byte(length > self.chunk_size)
+            buffer.write_string(menu_string[:self.chunk_size])
+
+            user_message.send()
+
+            if length > self.chunk_size:
+                menu_string = menu_string[self.chunk_size:]
+                length -= self.chunk_size
+            else:
+                break
+
+
+class SayText2(UserMessageCreator):
+
+    """Create a SayText2."""
+
+    message_name = 'SayText2'
+
+    def __init__(
+            self, message, index=0, chat=False,
+            param1='', param2='', param3='', param4=''):
+        """Initialize the SayText2 instance."""
+        super().__init__(message=message, index=index, chat=chat,
+            param1=param1, param2=param2, param3=param3, param4=param4)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the SayText2 with protobuf."""
+        buffer.set_string('msg_name', kwargs.message)
+        buffer.set_bool('chat', kwargs.chat)
+        buffer.set_int32('ent_idx', kwargs.index)
+        buffer.add_string('params', kwargs.param1)
+        buffer.add_string('params', kwargs.param2)
+        buffer.add_string('params', kwargs.param3)
+        buffer.add_string('params', kwargs.param4)
+        # TODO: Handle textchatall
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the SayText2 with bitbuf."""
+        buffer.write_byte(kwargs.index)
+        buffer.write_byte(kwargs.chat)
+        buffer.write_string(kwargs.message)
+        buffer.write_string(kwargs.param1)
+        buffer.write_string(kwargs.param2)
+        buffer.write_string(kwargs.param3)
+        buffer.write_string(kwargs.param4)
+
+
+class HintText(UserMessageCreator):
+
+    """Create a HintText."""
+
+    message_name = 'HintText'
+
+    def __init__(self, message):
+        """Initialize the HintText instance."""
+        super().__init__(message=message)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the HintText with protobuf."""
+        buffer.set_string('text', kwargs.message)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the HintText with bitbuf."""
+        buffer.write_string(kwargs.message)
+
+
+class SayText(UserMessageCreator):
+
+    """Create a SayText."""
+
+    message_name = 'SayText'
+
+    def __init__(self, message, index=0, chat=False):
+        """Initialize the SayText instance."""
+        super().__init__(message=message, index=index, chat=chat)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the SayText with protobuf."""
+        buffer.set_int32('ent_idx', kwargs.index)
+        buffer.set_bool('chat', kwargs.chat)
+        buffer.set_string('text', kwargs.message)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the SayText with bitbuf."""
+        buffer.write_byte(kwargs.index)
+        buffer.write_string(kwargs.message)
+        buffer.write_byte(kwargs.chat)
+
+
+class Shake(UserMessageCreator):
+
+    """Create a Shake."""
+
+    message_name = 'Shake'
+
+    def __init__(self, amplitude, duration, frequency=1,
+            shake_command=ShakeCommand.START):
+        """Initialize the Shake instance."""
+        super().__init__(amplitude=amplitude, duration=duration,
+            frequency=frequency, shake_command=shake_command)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the Shake with protobuf."""
+        buffer.set_int32('command', kwargs.shake_command)
+        buffer.set_float('local_amplitude', kwargs.amplitude)
+        buffer.set_float('frequency', kwargs.frequency)
+        buffer.set_float('duration', kwargs.duration)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the Shake with bitbuf."""
+        buffer.write_byte(kwargs.shake_command)
+        buffer.write_float(kwargs.amplitude)
+        buffer.write_float(kwargs.frequency)
+        buffer.write_float(kwargs.duration)
+
+
+class ResetHUD(UserMessageCreator):
+
+    """Create a ResetHUD."""
+
+    message_name = 'ResetHud'
+
+    def __init__(self, reset=True):
+        """Initialize the ResetHUD instance."""
+        super().__init__(reset=reset)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the ResetHUD with protobuf."""
+        buffer.set_bool('reset', kwargs.reset)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the ResetHUD with bitbuf."""
+        buffer.write_byte(kwargs.reset)
+
+
+class TextMsg(UserMessageCreator):
+
+    """Create a TextMsg."""
+
+    message_name = 'TextMsg'
+
+    def __init__(
+            self, name, destination=HudDestination.CENTER, param1='',
+            param2='', param3='', param4=''):
+        """Initialize the TextMsg instance."""
+        super().__init__(name=name, destination=destination, param1=param1,
+            param2=param2, param3=param3, param4=param4)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the TextMsg with protobuf."""
+        buffer.set_int32('msg_dst', kwargs.destination)
+        buffer.add_string('params', kwargs.name)
+        buffer.add_string('params', kwargs.param1)
+        buffer.add_string('params', kwargs.param2)
+        buffer.add_string('params', kwargs.param3)
+        buffer.add_string('params', kwargs.param4)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the TextMsg with bitbuf."""
+        buffer.write_byte(kwargs.destination)
+        buffer.write_string(kwargs.name)
+        buffer.write_string(kwargs.param1)
+        buffer.write_string(kwargs.param2)
+        buffer.write_string(kwargs.param3)
+        buffer.write_string(kwargs.param4)
+
+
+class KeyHintText(UserMessageCreator):
+
+    """Create a KeyHintText."""
+
+    message_name = 'KeyHintText'
+
+    def __init__(self, *hints):
+        """Initialize the KeyHintText instance."""
+        super().__init__(hints=hints)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the KeyHintText with protobuf."""
+        for hint in kwargs.hints:
+            buffer.add_string('hints', hint)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the KeyHintText with bitbuf."""
+        buffer.write_byte(len(kwargs.hints))
+        for hint in kwargs.hints:
+            buffer.write_string(hint)
+
+
+class Fade(UserMessageCreator):
+
+    """Create a Fade."""
+
+    message_name = 'Fade'
+    moved_frac_bits = 1 << SCREENFADE_FRACBITS
+
+    def __init__(self, duration, hold_time, color=WHITE, flags=FadeFlags.IN):
+        """Initialize the Fade instance."""
+        super().__init__(duration=duration, hold_time=hold_time, color=color,
+            flags=flags)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the Fade with protobuf."""
+        buffer.set_int32('duration', kwargs.duration * self.moved_frac_bits)
+        buffer.set_int32('hold_time', kwargs.hold_time * self.moved_frac_bits)
+        buffer.set_int32('flags', kwargs.flags)
+        color_buffer = buffer.mutable_message('clr')
+        color_buffer.set_int32('r', kwargs.color.r)
+        color_buffer.set_int32('g', kwargs.color.g)
+        color_buffer.set_int32('b', kwargs.color.b)
+        color_buffer.set_int32('a', kwargs.color.a)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the Fade with bitbuf."""
+        buffer.write_short(kwargs.duration * self.moved_frac_bits)
+        buffer.write_short(kwargs.hold_time * self.moved_frac_bits)
+        buffer.write_short(kwargs.flags)
+        buffer.write_byte(kwargs.color.r)
+        buffer.write_byte(kwargs.color.g)
+        buffer.write_byte(kwargs.color.b)
+        buffer.write_byte(kwargs.color.a)
+
+
+class HudMsg(UserMessageCreator):
+
+    """Create a HudMsg."""
+
+    message_name = 'HudMsg'
+
+    # TODO: Use Vector2D for x and y?
+    def __init__(
+            self, message, x=-1, y=-1, color1=WHITE, color2=WHITE, effect=0,
+            fade_in=0, fade_out=0, hold_time=4, fx_time=0, channel=0):
+        """Initialize the HudMsg instance."""
+        super().__init__(message=message, x=x, y=y, color1=color1,
+            color2=color2, effect=effect, fade_in=fade_in, fade_out=fade_out,
+            hold_time=hold_time, fx_time=fx_time, channel=channel)
+
+    def protobuf(self, buffer, kwargs):
+        """Send the HudMsg with protobuf."""
+        buffer.set_int32('channel', kwargs.channel)
+
+        pos_buffer = buffer.mutable_message('pos')
+        pos_buffer.set_float('x', kwargs.x)
+        pos_buffer.set_float('y', kwargs.y)
+
+        color1_buffer = buffer.mutable_message('clr1')
+        color1_buffer.set_int32('r', kwargs.color1.r)
+        color1_buffer.set_int32('g', kwargs.color1.g)
+        color1_buffer.set_int32('b', kwargs.color1.b)
+        color1_buffer.set_int32('a', kwargs.color1.a)
+
+        color2_buffer = buffer.mutable_message('clr2')
+        color2_buffer.set_int32('r', kwargs.color2.r)
+        color2_buffer.set_int32('g', kwargs.color2.g)
+        color2_buffer.set_int32('b', kwargs.color2.b)
+        color2_buffer.set_int32('a', kwargs.color2.a)
+
+        buffer.set_int32('effect', kwargs.effect)
+        buffer.set_float('fade_in_time', kwargs.fade_in)
+        buffer.set_float('fade_out_time', kwargs.fade_out)
+        buffer.set_float('hold_time', kwargs.hold_time)
+        buffer.set_float('fx_time', kwargs.fx_time)
+        buffer.set_string('text', kwargs.message)
+
+    def bitbuf(self, buffer, kwargs):
+        """Send the HudMsg with bitbuf."""
+        buffer.write_byte(kwargs.channel)
+        buffer.write_float(kwargs.x)
+        buffer.write_float(kwargs.y)
+        buffer.write_byte(kwargs.color1.r)
+        buffer.write_byte(kwargs.color1.g)
+        buffer.write_byte(kwargs.color1.b)
+        buffer.write_byte(kwargs.color1.a)
+        buffer.write_byte(kwargs.color2.r)
+        buffer.write_byte(kwargs.color2.g)
+        buffer.write_byte(kwargs.color2.b)
+        buffer.write_byte(kwargs.color2.a)
+        buffer.write_byte(kwargs.effect)
+        buffer.write_float(kwargs.fade_in)
+        buffer.write_float(kwargs.fade_out)
+        buffer.write_float(kwargs.hold_time)
+        buffer.write_float(kwargs.fx_time)
+        buffer.write_string(kwargs.message)

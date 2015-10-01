@@ -6,14 +6,22 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
-#   Core
-from core import GAME_NAME
 #   Loggers
 from loggers import _sp_logger
 #   Messages
-from messages.base import _UserMessages
-#   Paths
-from paths import SP_DATA_PATH
+from messages.base import VGUIMenu
+from messages.base import ShowMenu
+from messages.base import SayText2
+from messages.base import HintText
+from messages.base import SayText
+from messages.base import Shake
+from messages.base import ResetHUD
+from messages.base import TextMsg
+from messages.base import KeyHintText
+from messages.base import Fade
+from messages.base import HudMsg
+from messages.base import UserMessageCreator
+from messages.base import UserMessage
 
 
 # ============================================================================
@@ -21,12 +29,31 @@ from paths import SP_DATA_PATH
 # ============================================================================
 #   Messages
 from _messages import DialogType
+from _messages import ShakeCommand
+from _messages import HudDestination
+from _messages import FadeFlags
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('DialogType',
+           'Fade',
+           'FadeFlags',
+           'HintText',
+           'HudDestination',
+           'HudMsg',
+           'KeyHintText',
+           'ResetHUD',
+           'SayText',
+           'SayText2',
+           'Shake',
+           'ShakeCommand',
+           'ShowMenu',
+           'TextMsg',
+           'UserMessage',
+           'UserMessageCreator',
+           'VGUIMenu',
            )
 
 
@@ -35,18 +62,3 @@ __all__ = ('DialogType',
 # =============================================================================
 # Get the sp.messages logger
 messages_logger = _sp_logger.messages
-
-
-# ============================================================================
-# >> INITIALIZATION
-# ============================================================================
-# Loop trough all message classes
-for message_name, message_class in _UserMessages(SP_DATA_PATH.joinpath(
-    'messages', 'usermessages.ini'), SP_DATA_PATH.joinpath(
-        'messages', 'games', GAME_NAME + '.ini')).items():
-
-    # Globalize the current message class
-    globals()[message_name] = message_class
-
-    # Add the object, by name, to __all__
-    __all__ = tuple(sorted(list(__all__) + [message_name]))
