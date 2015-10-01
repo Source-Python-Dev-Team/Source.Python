@@ -83,11 +83,7 @@ class SimpleRadioMenu(_BaseMenu):
                 buffer += Text(raw_data)._render(player_index)
 
         # Return the menu data
-        return dict(
-            slots=self._slots_to_bin(slots),
-            time=4,
-            message=buffer[:-1] if buffer else ''
-        )
+        return (buffer[:-1] if buffer else '', self._slots_to_bin(slots), 1)
 
     @staticmethod
     def _slots_to_bin(slots):
@@ -122,7 +118,7 @@ class SimpleRadioMenu(_BaseMenu):
         @param <player_index>:
         A player index.
         """
-        ShowMenu(**self._build(player_index)).send(player_index)
+        ShowMenu(*self._build(player_index)).send(player_index)
 
     @staticmethod
     def _close(player_index):
@@ -133,11 +129,7 @@ class SimpleRadioMenu(_BaseMenu):
         A player index.
         """
         # Send an empty menu
-        ShowMenu(
-            slots=0b0000000000,
-            time=0,
-            message='',
-        ).send(player_index)
+        ShowMenu('', 0b0000000000, 0).send(player_index)
 
     @staticmethod
     def _get_queue_holder():
@@ -331,11 +323,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         buffer += self._format_footer(player_index, page, slots)
 
         # Return the menu data
-        return dict(
-            slots=self._slots_to_bin(slots),
-            time=4,
-            message=buffer[:-1] if buffer else ''
-        )
+        return (buffer[:-1] if buffer else '', self._slots_to_bin(slots), 1)
 
     def _select(self, player_index, choice_index):
         """Handle a menu selection.

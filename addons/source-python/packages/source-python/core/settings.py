@@ -121,6 +121,23 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         self['BASE_SETTINGS'].comments['language'] = _core_strings[
             'language'].get_string(self._language).splitlines()
 
+    def _check_version_settings(self):
+        """Add version settings if they are missing."""
+        if 'VERSION_SETTINGS' not in self:
+            self['VERSION_SETTINGS'] = {}
+
+        if 'check_for_update' not in self['VERSION_SETTINGS']:
+            self['VERSION_SETTINGS']['check_for_update'] = '1'
+
+        if 'notify_on_update' not in self['VERSION_SETTINGS']:
+            self['VERSION_SETTINGS']['notify_on_update'] = '1'
+
+        self['VERSION_SETTINGS'].comments['check_for_update'] = _core_strings[
+            'check_for_update'].get_string(self._language).splitlines()
+
+        self['VERSION_SETTINGS'].comments['notify_on_update'] = _core_strings[
+            'notify_on_update'].get_string(self._language).splitlines()
+
     def _check_auth_settings(self):
         """Add auth settings if they are missing."""
         # Are there any auth settings in the file?

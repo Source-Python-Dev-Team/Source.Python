@@ -12,4 +12,4 @@ include("makefiles/branch/${BRANCH}/usermessages.cmake")
 # Set the engine version.
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "csgo")
-add_definitions(-DENGINE_CSGO)
+add_definitions(-DENGINE_CSGO -DUSE_PROTOBUF)
