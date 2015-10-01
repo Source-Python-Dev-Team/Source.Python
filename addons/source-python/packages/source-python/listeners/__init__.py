@@ -18,6 +18,7 @@ from core import AutoUnload
 from core.settings import _core_settings
 from core.version import is_newer_version_available
 from core.version import is_unversioned
+from core.version import VERSION
 #   Loggers
 from loggers import _sp_logger
 
@@ -367,5 +368,4 @@ def _on_level_init(map_name):
         listeners_logger.log_warning(
             'A new Source.Python version is available!')
 
-    version_update_listener_manager.notify(
-        update_available, version, is_unversioned())
+    version_update_listener_manager.notify(VERSION, version, is_unversioned())
