@@ -16,6 +16,7 @@ from auth.commands import _auth_commands
 from core import core_logger
 from core import dumps
 from core.manager import core_plugin_manager
+from core.version import VERSION
 #   Cvars
 from cvars import ConVar
 #   Engines
@@ -152,9 +153,10 @@ class _CoreCommandManager(SubCommandManager):
     # Set the methods arguments
     dump_data.args = ['<dump_type>', '<filename>']
 
-    @staticmethod
-    def print_version():
+    def print_version(self):
         """Display Source.Python version information."""
+        self.logger.log_message(
+            'Current Source.Python version: {0}'.format(VERSION))
 
     def print_credits(self):
         """List all credits for Source.Python."""
