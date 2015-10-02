@@ -12,6 +12,8 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Auth
 from auth.commands import _auth_commands
+#   Autodoc
+from autodoc import SphinxProject
 #   Core
 from core import core_logger
 from core import dumps
@@ -23,6 +25,8 @@ from cvars import ConVar
 from engines.server import engine_server
 #   Paths
 from paths import SP_DATA_PATH
+from paths import SP_DOCS_PATH
+from paths import SP_PACKAGES_PATH
 #   Plugins
 from plugins import _plugin_strings
 from plugins.command import SubCommandManager
@@ -141,6 +145,28 @@ class _CoreCommandManager(SubCommandManager):
         self.logger.log_message(
             'Current Source.Python version: {0}'.format(VERSION))
 
+    @staticmethod
+    def build_doc():
+        """Build the Source.Python docs."""
+        # TODO: Split the steps done in this function into several commands.
+        #       Also provide the same commands for plugins and custom packages
+        project = SphinxProject(SP_PACKAGES_PATH, SP_DOCS_PATH)
+        if not project.project_exists():
+            project.create(
+                'Source.Python Development Team', 'Source.Python', VERSION)
+
+        project.generate_project_files()
+
+        # We need to get rid of "source-python." in the module path
+        for file_path in project.project_source_dir.files('*.rst'):
+            with file_path.open() as f:
+                data = f.read()
+
+            with file_path.open('w') as f:
+                f.write(data.replace('source-python.', ''))
+
+        project.build()
+
     def print_credits(self):
         """List all credits for Source.Python."""
         # Get header messages
@@ -193,3 +219,6 @@ _core_command['list'] = _core_command.print_plugins
 _core_command['version'] = _core_command.print_version
 _core_command['credits'] = _core_command.print_credits
 _core_command['help'] = _core_command.print_help
+
+# Register the 'build_doc' sub-command
+_core_command['build_doc'] = _core_command.build_doc
