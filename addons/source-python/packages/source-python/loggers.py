@@ -320,7 +320,7 @@ _areas = ConVar(
 # Get the Source.Python main LogManager instance
 _sp_logger = LogManager(
     'sp', _level, _areas,
-    'source-python.{0}'.format(date.today().strftime('%m-%d-%Y')),
+    'source-python.{0}'.format(date.today().strftime('%Y-%m-%d')),
     '%(asctime)s - %(name)s\t-\t%(levelname)s\n\t%(message)s',
     '%m-%d-%Y %H:%M:%S')
 
