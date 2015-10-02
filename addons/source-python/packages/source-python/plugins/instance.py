@@ -17,6 +17,7 @@ from paths import PLUGIN_PATH
 from plugins import plugins_logger
 from plugins import _plugin_strings
 from plugins.errors import PluginFileNotFoundError
+from plugins.info import PluginInfo
 
 
 # =============================================================================
@@ -89,3 +90,15 @@ class LoadedPlugin(object):
     def globals(self):
         """Return the plugin's globals."""
         return self._globals
+
+    @property
+    def info(self):
+        """Return the plugin's PluginInfo object.
+
+        If no PluginInfo was found, None will be returned.
+        """
+        for obj in self.globals.values():
+            if isinstance(obj, PluginInfo):
+                return obj
+
+        return None

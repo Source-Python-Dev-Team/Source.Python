@@ -16,6 +16,7 @@ from auth.commands import _auth_commands
 from core import core_logger
 from core import dumps
 from core.manager import core_plugin_manager
+from core.version import VERSION
 #   Cvars
 from cvars import ConVar
 #   Engines
@@ -63,31 +64,14 @@ class _CoreCommandManager(SubCommandManager):
             'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
 
         # Loop through all loaded plugins
-        for plugin in sorted(self.manager):
-
-            # Set info to None before retrieving it
-            info = None
-
-            # Loop through all global objects in the plugin
-            for object_name in self.manager[plugin].globals:
-
-                # Get the current object's instance
-                instance = self.manager[plugin].globals[object_name]
-
-                # Is the current object an PluginInfo instance?
-                if isinstance(instance, PluginInfo):
-
-                    # Set info to the current instance
-                    info = instance
-
-                    # No need to continue the loop
-                    break
+        for plugin_name in sorted(self.manager):
+            info = self.manager[plugin_name].info
 
             # Was an PluginInfo instance found?
             if info is not None:
 
                 # Add message with the current plugin's name
-                message += plugin + ':\n'
+                message += plugin_name + ':\n'
 
                 # Loop through all items in the PluginInfo instance
                 for item, value in info.items():
@@ -108,7 +92,7 @@ class _CoreCommandManager(SubCommandManager):
             else:
 
                 # Add message with the current plugin's name
-                message += plugin + '\n'
+                message += plugin_name + '\n'
 
             # Add 1 blank line between each plugin
             message += '\n'
@@ -152,9 +136,10 @@ class _CoreCommandManager(SubCommandManager):
     # Set the methods arguments
     dump_data.args = ['<dump_type>', '<filename>']
 
-    @staticmethod
-    def print_version():
+    def print_version(self):
         """Display Source.Python version information."""
+        self.logger.log_message(
+            'Current Source.Python version: {0}'.format(VERSION))
 
     def print_credits(self):
         """List all credits for Source.Python."""

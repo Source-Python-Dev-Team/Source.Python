@@ -36,7 +36,7 @@ LAST_SUCCESSFUL_BUILD_NUMBER_URL = ('http://build.affecta.net/job/Source.Pyth'
 # >> GLOBAL VARIABLES
 # =============================================================================
 _sp_version = PublicConVar(
-    'sp_version', VERSION, description='Source.Python version')
+    'sp_version', str(VERSION), description='Source.Python version')
 
 
 # =============================================================================
