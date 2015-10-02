@@ -154,6 +154,19 @@ class _CoreCommandManager(SubCommandManager):
         if not project.project_exists():
             project.create(
                 'Source.Python Development Team', 'Source.Python', VERSION)
+        else:
+            # Update version and release
+            conf_file = project.project_source_dir / 'conf.py'
+            with conf_file.open() as f:
+                lines = f.readlines()
+
+            with conf_file.open('w') as f:
+                for line in lines:
+                    if line.startswith(('version', 'release')):
+                        line = '{0} = \' {1}\'\n'.format(
+                            line.split(maxsplit=1)[0], VERSION)
+
+                    f.write(line)
 
         project.generate_project_files()
 
