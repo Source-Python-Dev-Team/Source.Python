@@ -11,12 +11,14 @@ from path import Path
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('SphinxProject',)
+__all__ = ('SphinxProject', 'SphinxError')
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+class SphinxError(Exception): pass
+
 class SphinxProject(object):
 
     """Representation of a Sphinx project."""
@@ -103,7 +105,7 @@ class SphinxProject(object):
         try:
             main(sys.argv)
         except:
-            raise
+            raise SphinxError
         finally:
             sys.argv = old_argv
 
@@ -128,7 +130,7 @@ class SphinxProject(object):
         try:
             main(sys.argv)
         except:
-            raise
+            raise SphinxError
         finally:
             sys.argv = old_argv
 
@@ -155,7 +157,7 @@ class SphinxProject(object):
             main(sys.argv)
         except SystemExit as e:
             if e.code != 0:
-                raise
+                raise SphinxError
         finally:
             sys.argv = old_argv
             if add_to_path:
