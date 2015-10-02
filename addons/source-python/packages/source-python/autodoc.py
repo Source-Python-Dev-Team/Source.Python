@@ -134,9 +134,11 @@ class SphinxProject(object):
         finally:
             sys.argv = old_argv
 
-    def build(self):
+    def build(self, clean=True):
         """Build the Sphinx project."""
         self.validate_project_and_package()
+        if clean:
+            self.project_build_dir.rmtree_p()
 
         add_to_path = self.package_dir not in sys.path
         if add_to_path:
