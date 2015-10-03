@@ -13,6 +13,7 @@ Contents:
 
    installation
    updating
+   sp-commands
    events
 
 
