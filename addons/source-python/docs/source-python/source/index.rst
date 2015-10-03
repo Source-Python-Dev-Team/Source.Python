@@ -1,12 +1,17 @@
-..  Source.Python documentation master file, created by
-   sphinx-quickstart on Fri Oct  2 20:32:29 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+Source.Python documentation
+===========================
 
-Welcome to  Source.Python's documentation!
-==========================================
+Welcome to the Source.Python documentation! Source.Python is an open-source
+project that uses Boost.Python to allow scripters to interact with Valve's
+Source-engine. In this wiki, you will find documentation on the how to
+install, update, and use Source.Python. If you ave any questions, please
+search for an answer on our `forums <http://www.sourcepython.com/forum.php>`_.
+If you cannot find the answer to your question, please post a question of your
+own in the appropriate forum. 
 
-Contents:
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
@@ -18,13 +23,13 @@ Contents:
 
 
 Module reference
-================
+----------------
 
 * :ref:`modindex`
 
 
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`search`
