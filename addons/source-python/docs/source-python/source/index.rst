@@ -12,6 +12,7 @@ Contents:
    :maxdepth: 2
 
    installation
+   updating
 
 
 Indices and tables
