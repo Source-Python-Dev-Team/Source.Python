@@ -16,6 +16,7 @@ Contents
 .. toctree::
    :maxdepth: 2
 
+   getting-started
    installation
    updating
    sp-commands
