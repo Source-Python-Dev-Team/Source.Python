@@ -13,12 +13,18 @@ Contents:
 
    installation
    updating
+   events
+
+
+Module reference
+================
+
+* :ref:`modindex`
 
 
 Indices and tables
 ==================
 
 * :ref:`genindex`
-* :ref:`modindex`
 * :ref:`search`
 
