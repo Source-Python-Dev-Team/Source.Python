@@ -18,7 +18,6 @@ plat-unixware7/
 addons/source-python/Python3/site-packages/*
 tkinter/
 turtledemo/
-unittest/
 test/
 tests/
 src/Builds/
