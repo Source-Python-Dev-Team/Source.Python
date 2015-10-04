@@ -109,7 +109,7 @@ class SphinxProject(object):
         finally:
             sys.argv = old_argv
 
-    def generate_project_files(self):
+    def generate_project_files(self, sub_dir=''):
         """Generate the project files (*.rst files)."""
         self.validate_project_and_package()
 
@@ -118,9 +118,8 @@ class SphinxProject(object):
             '', # Will be skipped.
             '-e', # Separate pages/files for every module
             '-o',
-            str(self.project_source_dir),
+            str(self.project_source_dir / sub_dir),
             str(self.package_dir), # Package to document
-            str(self.project_dir), # Exclude the project directory
         ]
 
         # Hacky, but required, because sphinx is reading sys.argv even if you

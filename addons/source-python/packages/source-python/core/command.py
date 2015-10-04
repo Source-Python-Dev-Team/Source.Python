@@ -254,26 +254,76 @@ class _CoreCommandManager(SubCommandManager):
         project = SphinxProject(SP_PACKAGES_PATH, SP_DOCS_PATH)
         if project.project_exists():
             try:
-                project.generate_project_files()
+                project.generate_project_files('modules')
             except:
                 self.logger.log_message(('An error occured while generating p'
                     'roject files for Source.Python'))
             else:
-                # TODO: Make sure we replace the correct source-python
-                #       occurences
-                # We need to get rid of "source-python." in the module path
-                for file_path in project.project_source_dir.files('*.rst'):
-                    with file_path.open() as f:
-                        data = f.read()
-
-                    with file_path.open('w') as f:
-                        f.write(data.replace('source-python.', ''))
+                modules_dir = project.project_source_dir.joinpath('modules')
+                modules_dir.joinpath('modules.rst').remove()
+                for file_path in modules_dir.files('source-python.*.rst'):
+                    self._prepare_generated_source_python_file(file_path)
 
                 self.logger.log_message(
                     'Project files have been generated for Source.Python.')
         else:
             self.logger.log_message(
                 'Sphinx project does not exist for Source.Python.')
+
+    @staticmethod
+    def _prepare_generated_source_python_file(file_path):
+        """Rename the generated file if it wasn't already renamed by a
+        previous generation. In that case remove the generated file.
+
+        After renaming the file several patches are applied to the file like
+        removing 'source-python.' and adding the ':titlesonly:' directive.
+        """
+        new_name = file_path.parent / file_path.basename().replace(
+            'source-python.', '')
+        if new_name.isfile():
+            file_path.remove()
+            return
+
+        file_path.rename(new_name)
+
+        with new_name.open() as f:
+            lines = f.readlines()
+
+        with new_name.open('w') as f:
+            # Remove source-python from the title
+            title = lines.pop(0).replace('source-python.', '')
+            f.write(title)
+
+            # Since the heading underline is now longer than required, we also
+            # adapt it to the new title
+            f.write(lines.pop(0)[0]*len(title) + '\n')
+
+            def write_next_4_lines(current):
+                f.write(current)
+                for x in range(3):
+                    f.write(lines.pop(0))
+
+            while lines:
+                line = lines.pop(0)
+
+                if line.lstrip().startswith(
+                        ('.. automodule:: source-python.', 'source-python.')):
+                    # We need to get rid of "source-python."
+                    f.write(line.replace('source-python.', ''))
+
+                # Who's so funny and added two different indentions?
+                # Subpackages are indented with 4 spaces
+                elif line == 'Subpackages\n':
+                    write_next_4_lines(line)
+                    f.write('    :titlesonly:\n')
+
+                # Submodules only need 3 spaces...
+                elif line == 'Submodules\n':
+                    write_next_4_lines(line)
+                    f.write('   :titlesonly:\n')
+
+                else:
+                    f.write(line)
 
     def _generate_custom_package_docs(self, package):
         """Generate Sphinx project files for a custom package."""
