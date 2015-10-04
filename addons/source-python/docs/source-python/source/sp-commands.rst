@@ -172,7 +172,7 @@ Loads the provided authorization service(s).
 
 
 unload
-^^^^
+^^^^^^
 
 Unloads the provided authorization service(s).
 
@@ -190,7 +190,7 @@ Unloads the provided authorization service(s).
 
 
 reload
-^^^^
+^^^^^^
 
 Reloads the provided authorization service(s). If no service(s) are provided, it will reload all currently loaded services.
 

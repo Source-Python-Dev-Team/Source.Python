@@ -571,7 +571,6 @@ This event is fired when all hostages have been rescued during a round.  In CS:G
 ====  ===========  ====
 Name  Description  Type
 ====  ===========  ====
-
 ====  ===========  ====
 
 
