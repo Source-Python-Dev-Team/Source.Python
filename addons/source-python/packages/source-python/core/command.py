@@ -360,6 +360,11 @@ class _CoreCommandManager(SubCommandManager):
         project = SphinxProject(PLUGIN_PATH / package,
             PLUGIN_DOCS_PATH / package)
         if project.project_exists():
+            if package not in self.manager:
+                self.logger.log_message(
+                    'Plugin must be loaded to build the project files.')
+                return
+
             try:
                 project.build()
             except:
