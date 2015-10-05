@@ -95,6 +95,8 @@ class SimpleRadioMenu(_BaseMenu):
         for slot in slots:
             if 0 <= slot <= 9:
                 buffer[~(slot - 1)] = '1'
+            else:
+                raise ValueError('Slot out of range: {}'.format(slot))
 
         return int(''.join(buffer), 2)
 
