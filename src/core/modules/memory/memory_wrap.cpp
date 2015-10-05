@@ -165,7 +165,7 @@ void export_binary_file(scope _memory)
 
 void export_pointer(scope _memory)
 {
-	class_<CPointer, CPointer *>("Pointer", init< optional<unsigned long, bool> >())
+	class_<CPointer, boost::shared_ptr<CPointer> >("Pointer", init< optional<unsigned long, bool> >())
 		.def(init<CPointer&>())
 
 		// get/set_<type> methods
