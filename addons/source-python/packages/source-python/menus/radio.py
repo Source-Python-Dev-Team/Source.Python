@@ -36,12 +36,14 @@ if SOURCE_ENGINE in ('csgo', 'bms'):
     BUTTON_BACK = 7
     BUTTON_NEXT = 8
     BUTTON_CLOSE = 9
+    BUTTON_CLOSE_SLOT = BUTTON_CLOSE
     MAX_ITEM_COUNT = 6
     VALID_CHOICES = range(1, 10)
 else:
     BUTTON_BACK = 8
     BUTTON_NEXT = 9
     BUTTON_CLOSE = 10
+    BUTTON_CLOSE_SLOT = 0
     MAX_ITEM_COUNT = 7
     VALID_CHOICES = range(1, 11)
 
@@ -61,8 +63,8 @@ class SimpleRadioMenu(_BaseMenu):
         @param <player_index>:
         A player index.
         """
-        # Always enable BUTTON_CLOSE
-        slots = {BUTTON_CLOSE}
+        # Always enable BUTTON_CLOSE_SLOT
+        slots = {BUTTON_CLOSE_SLOT}
         buffer = ''
         page = self._player_pages[player_index]
         page.options = {}
@@ -314,8 +316,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         # Get the player's current page
         page = self._player_pages[player_index]
 
-        # Always enable slot BUTTON_CLOSE
-        slots = {BUTTON_CLOSE}
+        # Always enable BUTTON_CLOSE_SLOT
+        slots = {BUTTON_CLOSE_SLOT}
 
         # Format the menu
         buffer = self._format_header(player_index, page, slots)
