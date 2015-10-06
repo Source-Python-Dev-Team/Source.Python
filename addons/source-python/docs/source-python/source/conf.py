@@ -285,3 +285,31 @@ texinfo_documents = [
 
 # If true, do not generate a @detailmenu in the "Top" node's menu.
 #texinfo_no_detailmenu = False
+
+
+# =============================================================================
+# >> CUSTOM
+# =============================================================================
+autodoc_member_order = 'groupwise'
+
+# Add names (e.g. magic methods) you always want to skip
+names_to_skip = (
+    '__module__',
+    '__instance_size__',
+)
+
+# Add names (e.g. magic methods) you always want to show
+names_to_force = (
+)
+
+def skip(app, what, name, obj, skip, options):
+    if name in names_to_skip:
+        return True
+
+    if name in names_to_force:
+        return False
+
+    return skip
+
+def setup(app):
+    app.connect("autodoc-skip-member", skip)

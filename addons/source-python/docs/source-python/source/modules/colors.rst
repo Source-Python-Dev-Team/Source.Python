@@ -5,3 +5,4 @@ colors module
     :members:
     :undoc-members:
     :show-inheritance:
+    :special-members:

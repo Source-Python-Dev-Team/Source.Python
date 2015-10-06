@@ -54,6 +54,11 @@ public:
 
 		return str(buffer);
 	}
+
+	static str GetRepr(const Color& color)
+	{
+		return str(tuple(color));
+	}
 };
 
 
