@@ -16,6 +16,7 @@ import math
 from core import AutoUnload
 #   Filters
 from filters.players import PlayerIter
+from filters.recipients import RecipientFilter
 #   Listeners
 from listeners import ClientDisconnect
 #   Players
@@ -128,9 +129,7 @@ class _BaseMenu(AutoUnload, list):
 
         If no indexes were given, the menu will be sent to every player.
         """
-        if not ply_indexes:
-            ply_indexes = PlayerIter('human')
-
+        ply_indexes = RecipientFilter(*ply_indexes)
         for player_index in ply_indexes:
             queue = self.get_user_queue(player_index)
             queue.append(self)
@@ -141,9 +140,7 @@ class _BaseMenu(AutoUnload, list):
 
         If no indexes were given, the menu will be closed for all players.
         """
-        if not ply_indexes:
-            ply_indexes = PlayerIter('human')
-
+        ply_indexes = RecipientFilter(*ply_indexes)
         for player_index in ply_indexes:
             queue = self.get_user_queue(player_index)
 

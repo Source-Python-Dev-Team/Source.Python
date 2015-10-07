@@ -69,9 +69,7 @@ class UserMessageCreator(AttrDict):
 
     def send(self, *player_indexes, **tokens):
         """Send the user message."""
-        if not player_indexes:
-            player_indexes = PlayerIter()
-
+        player_indexes = RecipientFilter(*player_indexes)
         for language, indexes in self._categorize_players_by_language(
                 player_indexes).items():
             self._send(indexes, self._get_translated_kwargs(language, tokens))
