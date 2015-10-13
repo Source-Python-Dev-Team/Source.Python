@@ -21,7 +21,6 @@ __all__ = ('Weapon',
 # >> CLASSES
 # =============================================================================
 class Weapon(object):
-
     """Class used to store information specific to the given weapon."""
 
     def __init__(self, name, basename, properties):

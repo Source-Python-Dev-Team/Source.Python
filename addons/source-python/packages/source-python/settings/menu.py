@@ -18,7 +18,6 @@ from settings import _settings_strings
 # >> FUNCTIONS
 # =============================================================================
 class _AvailableSettings(dict):
-
     """Holds all settings.player.PlayerSettings instance menus."""
 
     def __init__(self):

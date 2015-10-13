@@ -76,7 +76,6 @@ WeaponSlot = IntEnum('WeaponSlot', GameConfigObj(_path.joinpath(
 # >> ENUMERATORS
 # =============================================================================
 class ItemFlags(IntEnum):
-
     """Item flags wrapper enumerator."""
 
     SELECTONEMPTY = ITEM_FLAG_SELECTONEMPTY
@@ -90,7 +89,6 @@ class ItemFlags(IntEnum):
 
 
 class WeaponState(IntEnum):
-
     """Weapon states wrapper enumerator."""
 
     NOT_CARRIED = WEAPON_NOT_CARRIED

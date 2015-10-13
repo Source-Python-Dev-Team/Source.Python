@@ -18,7 +18,6 @@ from translations.strings import TranslationStrings
 # >> CLASSES
 # =============================================================================
 class _CvarManager(dict):
-
     """Class used to store a cvar instance."""
 
     def __init__(
@@ -156,7 +155,6 @@ class _CvarManager(dict):
 
 
 class _ListManager(list):
-
     """List class used to store text for a specific descriptor of a cvar."""
 
     def __init__(self, name):

@@ -14,7 +14,6 @@ from translations.strings import TranslationStrings
 # >> CLASSES
 # =============================================================================
 class _CommandManager(object):
-
     """Class used to store a command instance."""
 
     def __init__(self, name, description):

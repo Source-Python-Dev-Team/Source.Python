@@ -27,7 +27,6 @@ auth_commands_logger = auth_logger.commands
 # >> CLASSES
 # =============================================================================
 class _AuthCommands(OrderedDict):
-
     """Class used for executing "sp auth" sub-command functionality."""
 
     manager = auth_manager

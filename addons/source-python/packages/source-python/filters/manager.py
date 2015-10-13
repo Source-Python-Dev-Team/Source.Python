@@ -15,7 +15,6 @@ from filters.registry import _ReturnTypeRegistry
 # >> CLASSES
 # =============================================================================
 class _BaseFilterManager(object):
-
     """Filter registration manager class."""
 
     def __init__(self):

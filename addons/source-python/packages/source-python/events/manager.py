@@ -39,7 +39,6 @@ events_manager_logger = _sp_logger.events.manager
 # >> CLASSES
 # =============================================================================
 class _EventManager(dict):
-
     """Stores Event names with all registered callbacks."""
 
     def __missing__(self, event_name):

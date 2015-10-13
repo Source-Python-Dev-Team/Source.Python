@@ -37,7 +37,6 @@ auth_manager_logger = auth_logger.manager
 # >> CLASSES
 # =============================================================================
 class _AuthManager(dict):
-
     """Stores loaded auth providers."""
 
     def load_auth(self, provider):

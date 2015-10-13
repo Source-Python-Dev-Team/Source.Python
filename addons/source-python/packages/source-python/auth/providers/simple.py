@@ -26,7 +26,6 @@ _SIMPLE_FILE_PATH = AUTH_CFG_PATH.joinpath('simple.txt')
 # >> CLASSES
 # =============================================================================
 class _SimpleAuth(AuthBase, set):
-
     """Class used to determine if a player is authorized."""
 
     def load(self):

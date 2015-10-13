@@ -18,7 +18,6 @@ from hooks.exceptions import except_hooks
 # >> CLASSES
 # =============================================================================
 class _AuthCallback(object):
-
     """Command Authorization callback hook class."""
 
     def __init__(

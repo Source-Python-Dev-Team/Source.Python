@@ -21,7 +21,6 @@ __all__ = ('RecipientFilter',
 # >> CLASSES
 # ============================================================================
 class RecipientFilter(_RecipientFilter):
-
     """Class used to improve the ease of use of a _RecipientFilter instance."""
 
     def __init__(self, *filters):

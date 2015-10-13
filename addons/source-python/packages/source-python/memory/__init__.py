@@ -87,7 +87,6 @@ memory_logger = _sp_logger.memory
 # >> CLASSES
 # =============================================================================
 class Callback(AutoUnload, Function):
-
     """Create a function in memory that calls a Python callback."""
 
     def __init__(self, convention, arg_types, return_type):

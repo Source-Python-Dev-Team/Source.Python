@@ -35,7 +35,6 @@ events_custom_logger = events_logger.custom
 # >> CLASSES
 # =============================================================================
 class _EventMeta(type):
-
     """Metaclass used to store class attributes in an ordered dictionary."""
 
     @classmethod
@@ -65,7 +64,6 @@ class _EventMeta(type):
 
 
 class CustomEvent(metaclass=_EventMeta):
-
     """Class inherited to create custom events."""
 
     def __init__(self, **kwargs):

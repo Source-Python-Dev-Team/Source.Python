@@ -30,7 +30,6 @@ core_manager_logger = core_logger.manager
 # >> CLASSES
 # =============================================================================
 class _CorePluginManager(PluginManager):
-
     """Plugin Manager class used to load "sp" plugins."""
 
     logger = core_manager_logger

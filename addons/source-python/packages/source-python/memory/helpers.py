@@ -38,7 +38,6 @@ __all__ = ('Array',
 # >> Type
 # =============================================================================
 class Type(object):
-
     """Stores attribute/array types."""
 
     BOOL = 'bool'
@@ -68,7 +67,6 @@ class Type(object):
 # >> Key
 # =============================================================================
 class Key(object):
-
     """Holds some constants and provides converters for parse_data()."""
 
     # General type information keys
@@ -157,7 +155,6 @@ class Key(object):
 # >> BasePointer
 # =============================================================================
 class BasePointer(Pointer):
-
     """Pointer extension class."""
 
     # These four operator functions are required. Otherwise we would downcast
@@ -185,7 +182,6 @@ class BasePointer(Pointer):
 # >> Array
 # =============================================================================
 class Array(BasePointer):
-
     """Wrap an array."""
 
     def __init__(self, manager, is_ptr, type_name, ptr, length=None):
@@ -305,7 +301,6 @@ class Array(BasePointer):
 # >> MemberFunction
 # =============================================================================
 class MemberFunction(Function):
-
     """Use this class to create a wrapper for member functions.
 
     It passes the this pointer automatically to the wrapped function.

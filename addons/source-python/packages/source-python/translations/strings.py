@@ -50,7 +50,6 @@ _double_escaped_pattern = re_compile(
 # >> CLASSES
 # =============================================================================
 class LangStrings(dict):
-
     """Dictionary class used to store all strings for a plugin."""
 
     def __init__(self, infile, encoding='utf_8'):
@@ -227,7 +226,6 @@ class LangStrings(dict):
 
 
 class TranslationStrings(dict):
-
     """Stores and get language strings for a particular string."""
 
     def __init__(self):

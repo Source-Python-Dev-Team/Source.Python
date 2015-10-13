@@ -52,7 +52,6 @@ else:
 # >> CLASSES
 # =============================================================================
 class SimpleRadioMenu(_BaseMenu):
-
     """This class creates a basic radio menu."""
 
     def _get_menu_data(self, player_index):
@@ -142,7 +141,6 @@ class SimpleRadioMenu(_BaseMenu):
 
 
 class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
-
     """Create menus with an unlimited number of options.
 
     Navigation options will automatically be added.
@@ -360,7 +358,6 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
 
 class _BaseRadioOption(_BaseOption):
-
     """Base class for radio options."""
 
     def _get_highlight_prefix(self):
@@ -372,7 +369,6 @@ class _BaseRadioOption(_BaseOption):
 
 
 class SimpleRadioOption(_BaseRadioOption):
-
     """Provides options for SimpleRadioMenu objects."""
 
     def __init__(
@@ -417,7 +413,6 @@ class SimpleRadioOption(_BaseRadioOption):
 
 
 class PagedRadioOption(_BaseRadioOption):
-
     """Provides options for PagedRadioMenu objects."""
 
     def _render(self, player_index, choice_index):

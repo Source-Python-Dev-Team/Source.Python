@@ -31,7 +31,6 @@ ESC_SELECTION_CMD = 'escselect'
 # >> CLASSES
 # =============================================================================
 class _UserQueue(deque):
-
     """Controls the user's menu queue.
 
     Handles selections and decides which menu should be displayed.
@@ -129,7 +128,6 @@ class _UserQueue(deque):
 
 
 class _ESCUserQueue(_UserQueue):
-
     """Represents a queue for ESC menus."""
 
     def __init__(self, index):
@@ -141,7 +139,6 @@ class _ESCUserQueue(_UserQueue):
 
 
 class _QueueHolder(dict):
-
     """Creates a _UserQueue object for every missing key."""
 
     def __init__(self, cls, repeat):

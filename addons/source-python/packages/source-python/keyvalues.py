@@ -21,5 +21,4 @@ __all__ = ('KeyValues',
 # >> CLASSES
 # =============================================================================
 class KeyValues(_KeyValues):
-
     """TODO: Extend this as a dict..."""

@@ -67,7 +67,6 @@ core_logger = _sp_logger.core
 # >> CLASSES
 # =============================================================================
 class AutoUnload(object):
-
     """Class used to auto unload specific instances.
 
     Each inheriting class must implement an _unload_instance method.
@@ -98,7 +97,6 @@ class AutoUnload(object):
 
 
 class GameConfigObj(ConfigObj):
-
     """Class used to parse specific game data."""
 
     def __init__(self, infile, *args, **kwargs):

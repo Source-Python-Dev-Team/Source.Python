@@ -72,7 +72,6 @@ engines_sound_logger = engines_logger.sound
 # >> ENUMERATORS
 # =============================================================================
 class Attenuations(IntEnum):
-
     """Attenuation values wrapper enumerator."""
 
     NONE = ATTN_NONE
@@ -85,7 +84,6 @@ class Attenuations(IntEnum):
 
 
 class PitchTypes(IntEnum):
-
     """Pitch values wrapper enumerator."""
 
     NORMAL = PITCH_NORM
@@ -94,7 +92,6 @@ class PitchTypes(IntEnum):
 
 
 class Sound(AutoUnload):
-
     """Class used to interact with a specific sound file."""
 
     # Set the base _downloads attribute to know whether

@@ -43,7 +43,6 @@ plugins_command_logger = plugins_logger.command
 # >> CLASSES
 # =============================================================================
 class SubCommandManager(AutoUnload, OrderedDict):
-
     """Class used for executing sub-commands for the given console command."""
 
     def __init__(self, command, description='', prefix=''):

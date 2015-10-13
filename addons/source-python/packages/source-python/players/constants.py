@@ -107,7 +107,6 @@ __all__ = ('HideHudFlags',
 # >> ENUMERATORS
 # =============================================================================
 class PlayerStates(IntEnum):
-
     """Player states wrapper enumerator."""
 
     ONGROUND = FL_ONGROUND
@@ -123,7 +122,6 @@ class PlayerStates(IntEnum):
 
 
 class LifeState(IntEnum):
-
     """Player life states wrapper enumerator."""
 
     ALIVE = LIFE_ALIVE
@@ -134,7 +132,6 @@ class LifeState(IntEnum):
 
 
 class PlayerButtons(IntEnum):
-
     """Player buttons wrapper enumerator."""
 
     ATTACK = IN_ATTACK
@@ -166,7 +163,6 @@ class PlayerButtons(IntEnum):
 
 
 class HideHudFlags(IntEnum):
-
     """Hide hud flags wrapper enumerator."""
 
     WEAPONSELECTION = HIDEHUD_WEAPONSELECTION
@@ -185,7 +181,6 @@ class HideHudFlags(IntEnum):
 
 
 class HitGroup(IntEnum):
-
     """Hit groups wrapper enumerator."""
 
     GENERIC = HITGROUP_GENERIC
@@ -200,7 +195,6 @@ class HitGroup(IntEnum):
 
 
 class ObserverMode(IntEnum):
-
     """Observer modes wrapper enumerator."""
 
     NONE = OBS_MODE_NONE

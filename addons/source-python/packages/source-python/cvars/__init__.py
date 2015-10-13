@@ -31,7 +31,6 @@ __all__ = ('ConVar',
 # >> CLASSES
 # =============================================================================
 class ConVar(_ConVar):
-
     """ConVar wrapper to provide easy access to cvars."""
 
     def __init__(

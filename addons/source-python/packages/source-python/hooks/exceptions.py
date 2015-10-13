@@ -42,7 +42,6 @@ hooks_exceptions_logger = hooks_logger.exceptions
 # >> CLASSES
 # =============================================================================
 class _ExceptHooks(_HookBase):
-
     """List class that stores callbacks to be called on an exception."""
 
     def print_exception(
@@ -114,7 +113,6 @@ sys.excepthook = except_hooks.print_exception
 
 
 class ExceptHook(_HookDecorator):
-
     """Register/unregister a function/method for hooking exceptions."""
 
     _class_instance = except_hooks

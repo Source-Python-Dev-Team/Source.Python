@@ -25,7 +25,6 @@ __all__ = ('Downloadables',
 # >> CLASSES
 # =============================================================================
 class Downloadables(AutoUnload, set):
-
     """Class used to store downloadables for a script."""
 
     def __init__(self):
@@ -61,7 +60,6 @@ class Downloadables(AutoUnload, set):
 
 
 class _DownloadablesList(list):
-
     """List object used to store downloads on a per-script basis."""
 
     def __init__(self):

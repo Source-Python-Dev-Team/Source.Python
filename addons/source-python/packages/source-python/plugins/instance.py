@@ -38,7 +38,6 @@ plugins_instance_logger = plugins_logger.instance
 # >> CLASSES
 # =============================================================================
 class LoadedPlugin(object):
-
     """Stores a plugin's instance."""
 
     def __init__(self, plugin_name, base_import):

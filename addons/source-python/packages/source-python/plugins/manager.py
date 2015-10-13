@@ -40,7 +40,6 @@ plugins_manager_logger = plugins_logger.manager
 # >> CLASSES
 # =============================================================================
 class PluginManager(OrderedDict):
-
     """Stores plugins and their instances."""
 
     def __init__(self, base_import=''):

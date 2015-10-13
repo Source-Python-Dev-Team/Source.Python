@@ -33,7 +33,6 @@ if not _STORAGE_PATH.parent.isdir():
 # >> CLASSES
 # =============================================================================
 class _UniqueSettings(dict):
-
     """Class used to interact with the database for a specific uniqueid."""
 
     def __init__(self, uniqueid):
@@ -81,7 +80,6 @@ class _UniqueSettings(dict):
 
 
 class _PlayerSettingsDictionary(dict):
-
     """Dictionary class used to store user specific settings values."""
 
     def __init__(self):

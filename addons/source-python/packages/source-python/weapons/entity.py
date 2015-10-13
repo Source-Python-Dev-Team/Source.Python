@@ -25,7 +25,6 @@ __all__ = ('WeaponEntity',
 # >> CLASSES
 # =============================================================================
 class WeaponEntity(Entity):
-
     """Allows easy usage of the weapon's attributes."""
 
     @property

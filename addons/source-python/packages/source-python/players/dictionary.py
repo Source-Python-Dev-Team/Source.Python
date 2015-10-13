@@ -23,7 +23,6 @@ __all__ = ('PlayerDictionary',
 # >> CLASSES
 # ============================================================================
 class PlayerDictionary(EntityDictionary):
-
     """Helper class used to store player instances."""
 
     def __init__(self, player_class=PlayerEntity):

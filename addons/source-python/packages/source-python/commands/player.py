@@ -15,7 +15,6 @@ from commands.manager import _BaseCommandManager
 # >> CLASSES
 # =============================================================================
 class _PlayerCommandManager(_BaseCommandManager):
-
     """Base class used to (un)register client/say commands."""
 
     _callback_proxy = _AuthCallback

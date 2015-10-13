@@ -45,7 +45,6 @@ __all__ = ('CustomType',
 # >> CustomType
 # =============================================================================
 class CustomType(BasePointer):
-
     """
     Subclass this class if you want to create a new type.
 
@@ -147,7 +146,6 @@ class CustomType(BasePointer):
 # >> TypeManager
 # =============================================================================
 class TypeManager(dict):
-
     """Class able to reconstruct almost every possible data type."""
 
     def __init__(self):

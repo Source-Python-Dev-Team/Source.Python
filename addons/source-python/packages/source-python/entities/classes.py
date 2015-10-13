@@ -115,7 +115,6 @@ while _current_class:
 # >> CLASSES
 # =============================================================================
 class _ServerClasses(TypeManager):
-
     """Class used to retrieve objects dynamically for a server class."""
 
     def __init__(self):

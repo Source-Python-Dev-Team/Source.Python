@@ -144,7 +144,6 @@ __all__ = ('BaseTrace',
 # >> ENUMERATORS
 # =============================================================================
 class DisplacementFlags(IntEnum):
-
     """Displacement flags wrapper enumerator."""
 
     SURFACE = DISPSURF_FLAG_SURFACE
@@ -155,7 +154,6 @@ class DisplacementFlags(IntEnum):
 
 
 class ContentFlags(IntEnum):
-
     """Content flags wrapper enumerator."""
 
     EMPTY = CONTENTS_EMPTY
@@ -194,7 +192,6 @@ class ContentFlags(IntEnum):
 
 
 class ContentMasks(IntEnum):
-
     """Content masks wrapper enumerator."""
 
     ALL = MASK_ALL
@@ -220,7 +217,6 @@ class ContentMasks(IntEnum):
 
 
 class SurfaceFlags(IntEnum):
-
     """Surface flags wrapper enumerator."""
 
     LIGHT = SURF_LIGHT
@@ -245,7 +241,6 @@ class SurfaceFlags(IntEnum):
 # >> CLASSES
 # =============================================================================
 class TraceFilterSimple(TraceFilter):
-
     """A simple trace filter."""
 
     def __init__(self, ignore=(), trace_type=TraceType.EVERYTHING):

@@ -38,7 +38,6 @@ events_listener_logger = _sp_logger.events.listener
 # >> CLASSES
 # =============================================================================
 class _EventListener(list):
-
     """Stores callbacks for the given event."""
 
     def __init__(self, event_name):

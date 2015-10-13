@@ -44,7 +44,6 @@ _text_wrapper = TextWrapper(80, subsequent_indent=' ' * 8)
 # >> CLASSES
 # =============================================================================
 class _WarningHooks(_HookBase):
-
     """Class used to log warnings."""
 
     def print_warning(
@@ -87,7 +86,6 @@ warnings.filterwarnings('once')
 
 
 class WarningHook(_HookDecorator):
-
     """Register/unregister a function/method for hooking warnings."""
 
     _class_instance = warning_hooks

@@ -51,7 +51,6 @@ __all__ = ('PlayerEntity',
 # >> CLASSES
 # =============================================================================
 class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
-
     """Class used to interact directly with players."""
 
     def __init__(self, index):

@@ -44,7 +44,6 @@ __all__ = ('BaseEntity',
 # >> CLASSES
 # =============================================================================
 class Entity(BaseEntity, _EntitySpecials):
-
     """Class used to interact directly with entities."""
 
     def __init__(self, index):

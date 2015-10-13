@@ -34,7 +34,6 @@ __all__ = ('PlayerSettings',
 # >> CLASSES
 # =============================================================================
 class _SettingsDictionary(OrderedDict):
-
     """Class used to store user settings."""
 
     def __init__(self, name, text=None):
@@ -164,7 +163,6 @@ class _SettingsDictionary(OrderedDict):
 
 
 class PlayerSettings(AutoUnload, _SettingsDictionary):
-
     """Class used to register user settings."""
 
     def __init__(self, name, prefix, text=None):

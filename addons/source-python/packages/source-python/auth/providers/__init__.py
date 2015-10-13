@@ -29,7 +29,6 @@ auth_provider_logger = auth_logger.provider
 # >> CLASSES
 # =============================================================================
 class AuthBase(object):
-
     """A basic Auth Service class to be inherited by other Auth services."""
 
     def load(self):

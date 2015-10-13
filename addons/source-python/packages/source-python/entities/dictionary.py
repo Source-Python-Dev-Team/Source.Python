@@ -25,7 +25,6 @@ __all__ = ('EntityDictionary',
 # >> CLASSES
 # ============================================================================
 class EntityDictionary(AutoUnload, dict):
-
     """Helper class used to store entity instances."""
 
     def __init__(self, entity_class=Entity):

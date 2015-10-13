@@ -29,7 +29,6 @@ __all__ = ('EntityIter',
 # >> MAIN ENTITY ITER CLASSES
 # =============================================================================
 class _EntityIterManager(object):
-
     """Filter management class specifically for entity iterating."""
 
     def __init__(self):
@@ -49,7 +48,6 @@ _entity_iter_manager = _EntityIterManager()
 
 
 class EntityIter(_IterObject):
-
     """Entity iterate class."""
 
     # Store the manager for the entity iterator

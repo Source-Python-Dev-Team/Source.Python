@@ -7,7 +7,6 @@
 # >> CLASSES
 # =============================================================================
 class _IterObject(object):
-
     """Base iterator class used to yield filtered items."""
 
     def __init__(

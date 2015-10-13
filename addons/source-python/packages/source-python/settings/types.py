@@ -37,7 +37,6 @@ _message = SayText(message=_settings_strings['Chosen'])
 # >> CLASSES
 # =============================================================================
 class _SettingsType(object):
-
     """Class used to store settings with possible values."""
 
     def __new__(cls, name, default, text=None, *args):
@@ -166,7 +165,6 @@ class _SettingsType(object):
 
 
 class _NumericalSetting(_SettingsType):
-
     """Class used to store integer/float settings with min/max values."""
 
     def __init__(
@@ -204,21 +202,18 @@ class _NumericalSetting(_SettingsType):
 
 
 class _FloatSetting(_NumericalSetting):
-
     """Class used to store float value settings."""
 
     _type = float
 
 
 class _IntegerSetting(_NumericalSetting):
-
     """Class used to store integer value settings."""
 
     _type = int
 
 
 class _StringSetting(_SettingsType):
-
     """Class used to store string value settings with available options."""
 
     _type = str

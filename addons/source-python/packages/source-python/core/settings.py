@@ -43,7 +43,6 @@ core_settings_logger = core_logger.settings
 # >> CLASSES
 # =============================================================================
 class _CoreSettings(ConfigObj):
-
     """Class used to store core settings."""
 
     def __init__(self, infile):

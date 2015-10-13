@@ -37,7 +37,6 @@ _gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 # >> CLASSES
 # =============================================================================
 class _WeaponManager(dict):
-
     """Dictionary class to store basic weapon information."""
 
     def __init__(self, ini_file):

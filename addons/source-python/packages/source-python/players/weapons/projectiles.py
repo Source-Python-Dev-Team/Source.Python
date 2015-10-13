@@ -16,7 +16,6 @@ from entities.entity import BaseEntity
 # >> CLASSES
 # =============================================================================
 class _ProjectileMeta(BaseEntity.__class__):
-
     """Metaclass used to auto-create methods specific to the projectile."""
 
     def __new__(cls, name, bases, odict):
@@ -97,7 +96,6 @@ class _ProjectileMeta(BaseEntity.__class__):
 
 
 class _ProjectileBase(metaclass=_ProjectileMeta):
-
     """Base Projectile class used to interact with player projectiles."""
 
     # Store the base attributes all as None
@@ -123,35 +121,30 @@ class _ProjectileBase(metaclass=_ProjectileMeta):
 
 
 class _HEGrenade(_ProjectileBase):
-
     """Class that interacts with a player based on the hegrenade weapon."""
 
     _classname = 'weapon_hegrenade'
 
 
 class _Flashbang(_ProjectileBase):
-
     """Class that interacts with a player based on the flashbang weapon."""
 
     _classname = 'weapon_flashbang'
 
 
 class _SmokeGrenade(_ProjectileBase):
-
     """Class that interacts with a player based on the smokegrenade weapon."""
 
     _classname = 'weapon_smokegrenade'
 
 
 class _Decoy(_ProjectileBase):
-
     """Class that interacts with a player based on the decoy weapon."""
 
     _classname = 'weapon_decoy'
 
 
 class _Incendiary(_ProjectileBase):
-
     """Class that interacts with a player based on incendiary weapons."""
 
     _is_filters = 'incendiary'

@@ -26,7 +26,6 @@ __all__ = ('Alignment',
 # >> CLASSES
 # =============================================================================
 class Alignment(Enum):
-
     """Contains constants to specify the aligment of table items."""
 
     LEFT = str.ljust
@@ -35,7 +34,6 @@ class Alignment(Enum):
 
 
 class Column(list):
-
     """Represents a column of a table."""
 
     def __init__(
@@ -85,7 +83,6 @@ class Column(list):
 
 
 class Item(object):
-
     """Represents a value/item of a column."""
 
     def __init__(self, value, alignment=Alignment.LEFT):
@@ -124,7 +121,6 @@ class Item(object):
 
 
 class AsciiTable(object):
-
     """Represents a table."""
 
     def __init__(self, *columns):

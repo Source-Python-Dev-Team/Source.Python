@@ -32,7 +32,6 @@ __all__ = ('WeaponClassIter',
 # >> WEAPON EDICT ITER CLASSES
 # =============================================================================
 class _WeaponEdictIterManager(_BaseFilterManager):
-
     """Filter management class specifically for weapon iterating."""
 
 # Get the _WeaponIterManager instance
@@ -40,7 +39,6 @@ _weapon_edict_iter_manager = _WeaponEdictIterManager()
 
 
 class WeaponEdictIter(_IterObject):
-
     """Weapon iterate class."""
 
     # Store the manager for the weapon iterator
@@ -63,7 +61,6 @@ class WeaponEdictIter(_IterObject):
 # >> WEAPON CLASS ITER CLASSES
 # =============================================================================
 class _WeaponClassIterManager(_BaseFilterManager):
-
     """Filter management class specifically for weapon tag iterating."""
 
 # Get the _WeaponClassIterManager instance
@@ -71,7 +68,6 @@ _weapon_class_iter_manager = _WeaponClassIterManager()
 
 
 class WeaponClassIter(_IterObject):
-
     """Weapon tag iterate class."""
 
     # Store the manager for the weapon tag iterator
@@ -97,7 +93,6 @@ class WeaponClassIter(_IterObject):
 # >> WEAPON TAG CLASSES
 # =============================================================================
 class _WeaponTags(dict):
-
     """Class used to store weapon tags for the current game."""
 
     def __missing__(self, item):
@@ -113,7 +108,6 @@ _weapon_tags = _WeaponTags()
 
 
 class _Tag(object):
-
     """Class used to store a tag and compare to a given weapon."""
 
     def __init__(self, tag):

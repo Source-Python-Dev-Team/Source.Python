@@ -15,7 +15,6 @@ from filters.errors import ReturnTypeError
 # >> BASE REGISTRY CLASS
 # =============================================================================
 class _BaseRegistry(dict):
-
     """Class that stores a registry of items."""
 
     def __init__(self, class_name):
@@ -66,7 +65,6 @@ class _BaseRegistry(dict):
 # >> REGISTRATION CLASSES
 # =============================================================================
 class _FilterRegistry(_BaseRegistry):
-
     """Class used to register filters."""
 
     # Set the _name attribute for filter registry
@@ -85,7 +83,6 @@ class _FilterRegistry(_BaseRegistry):
 
 
 class _ReturnTypeRegistry(_BaseRegistry):
-
     """Class used to register return types."""
 
     # Set the _name attribute for return type registry

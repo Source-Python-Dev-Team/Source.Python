@@ -61,7 +61,6 @@ _clean_formatter = Formatter('%(message)s')
 # >> CLASSES
 # =============================================================================
 class _LogInstance(dict):
-
     """Base logging class used to create child logging instances."""
 
     def __init__(self, parent=None, name=None):
@@ -253,7 +252,6 @@ class _LogInstance(dict):
 
 
 class LogManager(_LogInstance):
-
     """Main log class used as a root to create children instances."""
 
     def __init__(

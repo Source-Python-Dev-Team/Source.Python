@@ -23,7 +23,6 @@ __all__ = ('WeaponDictionary',
 # >> CLASSES
 # ============================================================================
 class WeaponDictionary(EntityDictionary):
-
     """Helper class used to store weapon instances."""
 
     def __init__(self, weapon_class=WeaponEntity):

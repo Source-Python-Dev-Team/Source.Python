@@ -36,7 +36,6 @@ events_variable_logger = events_logger.variable
 # >> CLASSES
 # =============================================================================
 class _EventVariable(object):
-
     """Base class used for event variable types."""
 
     def __init__(self, comment='', default=None):
@@ -63,42 +62,36 @@ class _EventVariable(object):
 
 
 class BoolVariable(_EventVariable):
-
     """Class used to store bool event variables."""
 
     _method = 'bool'
 
 
 class ByteVariable(_EventVariable):
-
     """Class used to store byte event variables."""
 
     _method = 'int'
 
 
 class ShortVariable(_EventVariable):
-
     """Class used to store short event variables."""
 
     _method = 'int'
 
 
 class LongVariable(_EventVariable):
-
     """Class used to store long event variables."""
 
     _method = 'int'
 
 
 class FloatVariable(_EventVariable):
-
     """Class used to store floating point event variables."""
 
     _method = 'float'
 
 
 class StringVariable(_EventVariable):
-
     """Class used to store string event variables."""
 
     _method = 'string'

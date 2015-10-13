@@ -44,7 +44,6 @@ VALID_CHOICES = range(8)
 # >> CLASSES
 # =============================================================================
 class SimpleESCMenu(_BaseMenu):
-
     """This class creates basic ESC menus."""
 
     def __init__(
@@ -187,7 +186,6 @@ class SimpleESCMenu(_BaseMenu):
 
 
 class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
-
     """Create menus with an unlimited number of options.
 
     will automatically add navigation options.
@@ -341,7 +339,6 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
 
 
 class SimpleESCOption(_BaseOption):
-
     """Provides options for SimpleESCMenu objects."""
 
     def __init__(
@@ -383,7 +380,6 @@ class SimpleESCOption(_BaseOption):
 
 
 class PagedESCOption(_BaseOption):
-
     """Display an enumerated option."""
 
     def _render(self, player_index, choice_index=None):

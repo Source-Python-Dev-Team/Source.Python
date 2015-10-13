@@ -37,7 +37,6 @@ __all__ = ('EntityCondition',
 # >> CLASSES
 # =============================================================================
 class EntityCondition(object):
-
     """Store some default entity conditions."""
 
     @staticmethod
@@ -84,7 +83,6 @@ class EntityCondition(object):
 
 
 class _EntityHook(AutoUnload):
-
     """Create entity pre and post hooks that auto unload."""
 
     def __init__(self, test_function, function_name):
@@ -147,21 +145,18 @@ class _EntityHook(AutoUnload):
 
 
 class EntityPreHook(_EntityHook):
-
     """Decorator class used to create entity pre hooks that auto unload."""
 
     hook_type = HookType.PRE
 
 
 class EntityPostHook(_EntityHook):
-
     """Decorator class used to create entity post hooks that auto unload."""
 
     hook_type = HookType.POST
 
 
 class _WaitingEntityHooks(list):
-
     """A dictionary to store hooks waiting for intialization."""
 
     def initialize(self, index):

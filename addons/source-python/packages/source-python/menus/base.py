@@ -29,7 +29,6 @@ from translations.strings import TranslationStrings
 # >> CLASSES
 # =============================================================================
 class _PlayerPage(object):
-
     """Saves information about the player's current active page."""
 
     def __init__(self):
@@ -39,7 +38,6 @@ class _PlayerPage(object):
 
 
 class _BaseMenu(AutoUnload, list):
-
     """The base menu. Every menu class should inherit from this class."""
 
     _instances = {}
@@ -219,7 +217,6 @@ class _BaseMenu(AutoUnload, list):
 
 
 class _MenuData(object):
-
     """Base class for menu data.
 
     All data types should inherit from this class.
@@ -247,7 +244,6 @@ class _MenuData(object):
 
 
 class _PagedMenuBase(object):
-
     """Implements the base of every page based menu."""
 
     @staticmethod
@@ -302,7 +298,6 @@ class _PagedMenuBase(object):
 
 
 class Text(_MenuData):
-
     """Display plain text."""
 
     def _render(self, player_index, choice_index=None):
@@ -319,7 +314,6 @@ class Text(_MenuData):
 
 
 class _BaseOption(_MenuData):
-
     """This class is used to display an enumerated option."""
 
     def __init__(self, text, value=None, highlight=True, selectable=True):

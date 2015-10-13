@@ -53,7 +53,6 @@ _game_teams = ConfigObj(
 # >> MAIN PLAYER ITER CLASSES
 # =============================================================================
 class _PlayerIterManager(_BaseFilterManager):
-
     """Filter management class specifically for player iterating."""
 
 # Get the _PlayerIterManager instance
@@ -61,7 +60,6 @@ _player_iter_manager = _PlayerIterManager()
 
 
 class PlayerIter(_IterObject):
-
     """Player iterate class."""
 
     # Store the manager for the player iterator
@@ -75,7 +73,6 @@ class PlayerIter(_IterObject):
 # PLAYER TEAM CLASSES
 # =============================================================================
 class _PlayerTeams(dict):
-
     """Class used to store team names for the current game."""
 
     def __setitem__(self, item, value):
@@ -91,7 +88,6 @@ _player_teams = _PlayerTeams()
 
 
 class _Team(object):
-
     """Class used to store a team number and compare to a given player."""
 
     def __init__(self, team):

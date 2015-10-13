@@ -40,7 +40,6 @@ __all__ = ('mute_manager',
 # >> CLASSES
 # =============================================================================
 class _MuteManager(collections.defaultdict):
-
     """A singleton that manages muting players."""
 
     def _get_receivers(self, receivers):

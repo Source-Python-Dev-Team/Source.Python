@@ -21,7 +21,6 @@ __all__ = ('PluginInfo',
 # >> CLASSES
 # =============================================================================
 class PluginInfo(OrderedDict):
-
     """Stores information for a plugin."""
 
     def __getattr__(self, attribute):

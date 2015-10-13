@@ -21,7 +21,6 @@ __all__ = ('sv_tags',
 # >> CLASSES
 # =============================================================================
 class _SVTags(ConVar):
-
     """Class used to interact wit the sv_tags ConVar."""
 
     def add(self, tag):

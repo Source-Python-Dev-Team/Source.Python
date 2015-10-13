@@ -36,7 +36,6 @@ events_resource_logger = events_logger.resource
 # >> CLASSES
 # =============================================================================
 class ResourceFile(OrderedDict):
-
     """Class used to write and load custom event .res files."""
 
     def __init__(self, filepath, *events):

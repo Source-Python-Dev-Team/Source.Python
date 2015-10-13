@@ -34,7 +34,6 @@ _projectile_weapons = list(
 # >> CLASSES
 # =============================================================================
 class _EntitySpecials(object):
-
     """Base class used to hold special functionality."""
 
     def take_damage(

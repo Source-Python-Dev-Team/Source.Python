@@ -25,7 +25,6 @@ __all__ = ('language_manager',
 # >> CLASSES
 # =============================================================================
 class _LanguageManager(ConfigObj):
-
     """Dictionary class used to store languages and their shortnames."""
 
     # en should always be used as the "fallback",
