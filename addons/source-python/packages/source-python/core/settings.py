@@ -5,10 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Collections
-from collections import OrderedDict
-
 # Site-Package Imports
 #   Configobj
 from configobj import ConfigObj

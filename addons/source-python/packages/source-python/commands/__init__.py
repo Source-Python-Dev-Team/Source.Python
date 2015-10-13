@@ -44,15 +44,15 @@ commands_logger = _sp_logger.commands
 # >> CLASSES
 # =============================================================================
 class ParserError(Exception):
-
-    """An exception that will be raised when an error occured during parsing a
-    command or arguments."""
+    """Exception raised when parsing a command's arguments."""
 
     def __init__(self, message):
+        """Store the message."""
+        super(ParserError, self).__init__(message)
         self.message = message.rstrip() if message else ''
 
-class CommandParser(argparse.ArgumentParser):
 
+class CommandParser(argparse.ArgumentParser):
     """A class to parse Command objects."""
 
     def __init__(self, command_name, *args, **kwargs):
@@ -64,7 +64,7 @@ class CommandParser(argparse.ArgumentParser):
 
         See argparse.ArgumentParser for more information.
         """
-        super().__init__(command_name, *args, **kwargs)
+        super(CommandParser, self).__init__(command_name, *args, **kwargs)
 
     def _print_message(self, message, file=None):
         """Redirect messages that should be printed into a ParserError."""

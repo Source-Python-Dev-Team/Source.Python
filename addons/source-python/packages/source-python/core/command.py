@@ -34,7 +34,6 @@ from paths import SP_DATA_PATH
 #   Plugins
 from plugins import _plugin_strings
 from plugins.command import SubCommandManager
-from plugins.info import PluginInfo
 from plugins.instance import LoadedPlugin
 #   Tick
 from listeners.tick import tick_delays
@@ -51,14 +50,12 @@ core_command_logger = core_logger.command
 # >> CLASSES
 # =============================================================================
 class _CoreLoadedPlugin(LoadedPlugin):
-
     """Plugin instance class used to create "sp" loaded plugins."""
 
     logger = core_command_logger
 
 
 class _CoreCommandManager(SubCommandManager):
-
     """Class used for executing "sp" sub-command functionality."""
 
     manager = core_plugin_manager
@@ -158,8 +155,9 @@ class _CoreCommandManager(SubCommandManager):
         elif action == 'build':
             self._build_sphinx_project(package)
         else:
-            self.logger.log_message(('Invalid action: "{0}". Valid action are'
-                ': create, generate and build'.format(action)))
+            self.logger.log_message(
+                'Invalid action: "{0}".'.format(action) +
+                '  Valid actions are: create, generate and build')
     docs_handler.args = ['<action>', '<package>']
 
     def _create_sphinx_project(self, package):
@@ -171,8 +169,10 @@ class _CoreCommandManager(SubCommandManager):
         elif self.is_plugin(package):
             self._create_plugin_docs(package)
         else:
-            self.logger.log_message(('"{0}" is not source-python, a custom pa'
-                'ckage or a plugin.'.format(package)))
+            self.logger.log_message(
+                'Invalid project name: "{0}".'.format(package) +
+                '  Project name must be source-python, ' +
+                'a custom package name, or a plugin name.')
 
     def _generate_sphinx_project(self, package):
         """Generate project files for a Sphinx project."""
@@ -183,8 +183,10 @@ class _CoreCommandManager(SubCommandManager):
         elif self.is_plugin(package):
             self._generate_plugin_docs(package)
         else:
-            self.logger.log_message(('"{0}" is not source-python, a custom pa'
-                'ckage or a plugin.'.format(package)))
+            self.logger.log_message(
+                'Invalid project name: "{0}".'.format(package) +
+                '  Project name must be source-python, ' +
+                'a custom package name, or a plugin name.')
 
     def _build_sphinx_project(self, package):
         """Build project files for a Sphinx project."""
@@ -195,8 +197,10 @@ class _CoreCommandManager(SubCommandManager):
         elif self.is_plugin(package):
             self._build_plugin_docs(package)
         else:
-            self.logger.log_message(('"{0}" is not source-python, a custom pa'
-                'ckage or a plugin.'.format(package)))
+            self.logger.log_message(
+                'Invalid project name: "{0}".'.format(package) +
+                '  Project name must be source-python, ' +
+                'a custom package name, or a plugin name.')
 
     def _create_source_python_docs(self):
         """Create a Sphinx project for Source.Python."""
@@ -206,48 +210,56 @@ class _CoreCommandManager(SubCommandManager):
                 'Sphinx project already exists for Source.Python')
         else:
             try:
-                project.create('Source.Python Development Team',
-                    'Source.Python', VERSION)
+                project.create(
+                    'Source.Python Development Team', 'Source.Python', VERSION)
             except:
-                self.logger.log_message(('An occured while creating Sphinx pr'
-                    'oject for Source.Python.'))
+                self.logger.log_message(
+                    'An occured while creating Sphinx ' +
+                    'project for Source.Python.')
             else:
                 self.logger.log_message(
                     'Sphinx project has been created for Source.Python.')
 
     def _create_custom_package_docs(self, package):
         """Create a Sphinx project for a custom package."""
-        project = SphinxProject(CUSTOM_PACKAGES_PATH / package,
+        project = SphinxProject(
+            CUSTOM_PACKAGES_PATH / package,
             CUSTOM_PACKAGES_DOCS_PATH / package)
         if project.project_exists():
-            self.logger.log_message(('Sphinx project already exists for custo'
-                'm package "{0}".'.format(package)))
+            self.logger.log_message(
+                'Sphinx project already exists for custom' +
+                ' package "{0}".'.format(package))
         else:
             try:
                 project.create('Unknown')
             except:
-                self.logger.log_message(('An error occured while creating Sph'
-                    'inx project for custom package "{0}".'.format(package)))
+                self.logger.log_message(
+                    'An error occured while creating Sphinx project for ' +
+                    'custom package "{0}".'.format(package))
             else:
-                self.logger.log_message(('Sphinx project has been created for'
-                    ' custom package "{0}".'.format(package)))
+                self.logger.log_message(
+                    'Sphinx project has been created for' +
+                    ' custom package "{0}".'.format(package))
 
     def _create_plugin_docs(self, package):
         """Create a Sphinx project for a plugin."""
-        project = SphinxProject(PLUGIN_PATH / package,
-            PLUGIN_DOCS_PATH / package)
+        project = SphinxProject(
+            PLUGIN_PATH / package, PLUGIN_DOCS_PATH / package)
         if project.project_exists():
-            self.logger.log_message(('Sphinx project already exists for plugi'
-                'n "{0}".'.format(package)))
+            self.logger.log_message(
+                'Sphinx project already exists for ' +
+                'plugin "{0}".'.format(package))
         else:
             try:
                 project.create('Unknown')
             except:
-                self.logger.log_message(('An error occured while creating Sph'
-                    'inx project for plugin "{0}".'.format(package)))
+                self.logger.log_message(
+                    'An error occured while creating Sphinx project ' +
+                    'for plugin "{0}".'.format(package))
             else:
-                self.logger.log_message(('Sphinx project has been created for'
-                    ' plugin "{0}".'.format(package)))
+                self.logger.log_message(
+                    'Sphinx project has been created for' +
+                    ' plugin "{0}".'.format(package))
 
     def _generate_source_python_docs(self):
         """Generate Sphinx project files for Source.Python."""
@@ -256,8 +268,9 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.generate_project_files('modules')
             except:
-                self.logger.log_message(('An error occured while generating p'
-                    'roject files for Source.Python'))
+                self.logger.log_message(
+                    'An error occured while generating ' +
+                    'project files for Source.Python')
             else:
                 modules_dir = project.project_source_dir.joinpath('modules')
                 modules_dir.joinpath('modules.rst').remove()
@@ -272,8 +285,9 @@ class _CoreCommandManager(SubCommandManager):
 
     @staticmethod
     def _prepare_generated_source_python_file(file_path):
-        """Rename the generated file if it wasn't already renamed by a
-        previous generation. In that case remove the generated file.
+        """Rename the generated file if it wasn't already renamed.
+
+        If it was already renamed, remove the generated file.
 
         After renaming the file several patches are applied to the file like
         removing 'source-python.' and adding the ':titlesonly:' directive.
@@ -327,37 +341,44 @@ class _CoreCommandManager(SubCommandManager):
 
     def _generate_custom_package_docs(self, package):
         """Generate Sphinx project files for a custom package."""
-        project = SphinxProject(CUSTOM_PACKAGES_PATH / package,
+        project = SphinxProject(
+            CUSTOM_PACKAGES_PATH / package,
             CUSTOM_PACKAGES_DOCS_PATH / package)
         if project.project_exists():
             try:
                 project.generate_project_files()
             except:
-                self.logger.log_message(('An error occured while generating p'
-                    'roject files for custom package "{0}".'.format(package)))
+                self.logger.log_message(
+                    'An error occured while generating project ' +
+                    'files for custom package "{0}".'.format(package))
             else:
-                self.logger.log_message(('Project files have been generated f'
-                    'or custom package "{0}".'.format(package)))
+                self.logger.log_message(
+                    'Project files have been generated for '
+                    'custom package "{0}".'.format(package))
         else:
-            self.logger.log_message(('Sphinx project does not exist for custo'
-                'm package "{0}".'.format(package)))
+            self.logger.log_message(
+                'Sphinx project does not exist for ' +
+                'custom package "{0}".'.format(package))
 
     def _generate_plugin_docs(self, package):
         """Generate Sphinx project files for a plugin."""
-        project = SphinxProject(PLUGIN_PATH / package,
-            PLUGIN_DOCS_PATH / package)
+        project = SphinxProject(
+            PLUGIN_PATH / package, PLUGIN_DOCS_PATH / package)
         if project.project_exists():
             try:
                 project.generate_project_files()
             except:
-                self.logger.log_message(('An error occured while generating p'
-                    'roject files for plugin "{0}".'.format(package)))
+                self.logger.log_message(
+                    'An error occured while generating project ' +
+                    'files for plugin "{0}".'.format(package))
             else:
-                self.logger.log_message(('Project files have been generated f'
-                    'or plugin "{0}".'.format(package)))
+                self.logger.log_message(
+                    'Project files have been generated ' +
+                    'for plugin "{0}".'.format(package))
         else:
-            self.logger.log_message(('Sphinx project does not exist for plugi'
-                'n "{0}".'.format(package)))
+            self.logger.log_message(
+                'Sphinx project does not exist for' +
+                ' plugin "{0}".'.format(package))
 
     def _build_source_python_docs(self):
         """Build Sphinx project files for Source.Python."""
@@ -379,8 +400,9 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.build()
             except:
-                self.logger.log_message(('An error occured while building pro'
-                    'ject files for Source.Python.'))
+                self.logger.log_message(
+                    'An error occured while building ' +
+                    'project files for Source.Python.')
             else:
                 self.logger.log_message(
                     'Project files have been built for Source.Python.')
@@ -390,25 +412,29 @@ class _CoreCommandManager(SubCommandManager):
 
     def _build_custom_package_docs(self, package):
         """Build Sphinx project files for a custom package."""
-        project = SphinxProject(CUSTOM_PACKAGES_PATH / package,
+        project = SphinxProject(
+            CUSTOM_PACKAGES_PATH / package,
             CUSTOM_PACKAGES_DOCS_PATH / package)
         if project.project_exists():
             try:
                 project.build()
             except:
-                self.logger.log_message(('An error occured while building pro'
-                    'ject files for custom package "{0}".'.format(package)))
+                self.logger.log_message(
+                    'An error occured while building project ' +
+                    'files for custom package "{0}".'.format(package))
             else:
-                self.logger.log_message(('Project files have been built for c'
-                    'ustom package "{0}".'.format(package)))
+                self.logger.log_message(
+                    'Project files have been built for ' +
+                    'custom package "{0}".'.format(package))
         else:
-            self.logger.log_message(('Sphinx project does not exist for custo'
-                'm package "{0}".'.format(package)))
+            self.logger.log_message(
+                'Sphinx project does not exist for ' +
+                'custom package "{0}".'.format(package))
 
     def _build_plugin_docs(self, package):
         """Build Sphinx project files for a plugin."""
-        project = SphinxProject(PLUGIN_PATH / package,
-            PLUGIN_DOCS_PATH / package)
+        project = SphinxProject(
+            PLUGIN_PATH / package, PLUGIN_DOCS_PATH / package)
         if project.project_exists():
             if not self.manager.is_loaded(package):
                 self.logger.log_message(
@@ -418,14 +444,17 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.build()
             except:
-                self.logger.log_message(('An error occured while building pro'
-                    'ject files for plugin "{0}".'.format(package)))
+                self.logger.log_message(
+                    'An error occured while building project ' +
+                    'files for plugin "{0}".'.format(package))
             else:
-                self.logger.log_message(('Project files have been built for p'
-                    'lugin "{0}".'.format(package)))
+                self.logger.log_message(
+                    'Project files have been built for ' +
+                    'plugin "{0}".'.format(package))
         else:
-            self.logger.log_message(('Sphinx project does not exist for plugi'
-                'n "{0}".'.format(package)))
+            self.logger.log_message(
+                'Sphinx project does not exist for ' +
+                'plugin "{0}".'.format(package))
 
     @staticmethod
     def is_source_python(package):

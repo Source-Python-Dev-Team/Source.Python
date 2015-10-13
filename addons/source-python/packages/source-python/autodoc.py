@@ -17,10 +17,11 @@ __all__ = ('SphinxProject', 'SphinxError')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SphinxError(Exception): pass
+class SphinxError(Exception):
+    """Exception raised when creating, building, or generating Sphinx docs."""
+
 
 class SphinxProject(object):
-
     """Representation of a Sphinx project."""
 
     def __init__(self, package_dir, project_dir):
@@ -79,8 +80,8 @@ class SphinxProject(object):
         from sphinx.quickstart import main
 
         argv = [
-            '', # Will be skipped.
-            '-q', # Don't start the interactive mode
+            '',  # Will be skipped.
+            '-q',  # Don't start the interactive mode
         ]
 
         if project_name is None:
@@ -92,8 +93,8 @@ class SphinxProject(object):
 
         argv.extend([
             str(self.project_dir),
-            '--sep', # Separate source and build directory
-            '--ext-autodoc', # Enable autodoc
+            '--sep',  # Separate source and build directory
+            '--ext-autodoc',  # Enable autodoc
             '--no-makefile',
             '--no-batchfile'
         ])
@@ -115,11 +116,11 @@ class SphinxProject(object):
 
         from sphinx.apidoc import main
         argv = [
-            '', # Will be skipped.
-            '-e', # Separate pages/files for every module
+            '',  # Will be skipped.
+            '-e',  # Separate pages/files for every module
             '-o',
             str(self.project_source_dir / sub_dir),
-            str(self.package_dir), # Package to document
+            str(self.package_dir),  # Package to document
         ]
 
         # Hacky, but required, because sphinx is reading sys.argv even if you
@@ -145,7 +146,7 @@ class SphinxProject(object):
 
         from sphinx import main
         argv = [
-            '', # Will be skipped.
+            '',  # Will be skipped.
             str(self.project_source_dir),
             str(self.project_build_dir),
         ]
@@ -165,9 +166,7 @@ class SphinxProject(object):
                 sys.path.remove(str(self.package_dir.parent))
 
     def quickstart(self, author, project_name=None, version='1'):
-        """A wrapper for creating a project (if it does not exist), generating
-        project files and build the documentation.
-        """
+        """A wrapper for creating, generating, and building documentation."""
         if not self.project_exists():
             self.create(author, project_name, version)
 

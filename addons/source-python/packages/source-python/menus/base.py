@@ -15,7 +15,6 @@ import math
 #   Core
 from core import AutoUnload
 #   Filters
-from filters.players import PlayerIter
 from filters.recipients import RecipientFilter
 #   Listeners
 from listeners import ClientDisconnect

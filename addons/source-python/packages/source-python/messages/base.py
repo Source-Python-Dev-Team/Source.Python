@@ -13,7 +13,6 @@ import collections
 from colors import WHITE
 #   Filters
 from filters.recipients import RecipientFilter
-from filters.players import PlayerIter
 #   Players
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
@@ -36,7 +35,6 @@ from _messages import FadeFlags
 # >> CLASSES
 # =============================================================================
 class AttrDict(dict):
-
     """A dictionary that redirects __getattr__ and __setattr__."""
 
     __getattr__ = dict.__getitem__
@@ -44,7 +42,6 @@ class AttrDict(dict):
 
 
 class UserMessageCreator(AttrDict):
-
     """Provide an easy interface to create user messages."""
 
     def __init__(self, **kwargs):
@@ -136,7 +133,6 @@ class UserMessageCreator(AttrDict):
 
 
 class VGUIMenu(UserMessageCreator):
-
     """Create a VGUIMenu."""
 
     message_name = 'VGUIMenu'
@@ -180,7 +176,6 @@ class VGUIMenu(UserMessageCreator):
 
 
 class ShowMenu(UserMessageCreator):
-
     """Create a radio menu."""
 
     message_name = 'ShowMenu'
@@ -188,7 +183,9 @@ class ShowMenu(UserMessageCreator):
 
     def __init__(self, menu_string, valid_slots=1023, display_time=4):
         """Initialize the radio menu."""
-        super().__init__(menu_string=menu_string, valid_slots=valid_slots,
+        super().__init__(
+            menu_string=menu_string,
+            valid_slots=valid_slots,
             display_time=display_time)
 
     def send(self, *player_indexes):
@@ -234,7 +231,6 @@ class ShowMenu(UserMessageCreator):
 
 
 class SayText2(UserMessageCreator):
-
     """Create a SayText2."""
 
     message_name = 'SayText2'
@@ -243,7 +239,8 @@ class SayText2(UserMessageCreator):
             self, message, index=0, chat=False,
             param1='', param2='', param3='', param4=''):
         """Initialize the SayText2 instance."""
-        super().__init__(message=message, index=index, chat=chat,
+        super().__init__(
+            message=message, index=index, chat=chat,
             param1=param1, param2=param2, param3=param3, param4=param4)
 
     def protobuf(self, buffer, kwargs):
@@ -269,7 +266,6 @@ class SayText2(UserMessageCreator):
 
 
 class HintText(UserMessageCreator):
-
     """Create a HintText."""
 
     message_name = 'HintText'
@@ -288,7 +284,6 @@ class HintText(UserMessageCreator):
 
 
 class SayText(UserMessageCreator):
-
     """Create a SayText."""
 
     message_name = 'SayText'
@@ -311,15 +306,16 @@ class SayText(UserMessageCreator):
 
 
 class Shake(UserMessageCreator):
-
     """Create a Shake."""
 
     message_name = 'Shake'
 
-    def __init__(self, amplitude, duration, frequency=1,
+    def __init__(
+            self, amplitude, duration, frequency=1,
             shake_command=ShakeCommand.START):
         """Initialize the Shake instance."""
-        super().__init__(amplitude=amplitude, duration=duration,
+        super().__init__(
+            amplitude=amplitude, duration=duration,
             frequency=frequency, shake_command=shake_command)
 
     def protobuf(self, buffer, kwargs):
@@ -338,7 +334,6 @@ class Shake(UserMessageCreator):
 
 
 class ResetHUD(UserMessageCreator):
-
     """Create a ResetHUD."""
 
     message_name = 'ResetHud'
@@ -357,16 +352,16 @@ class ResetHUD(UserMessageCreator):
 
 
 class TextMsg(UserMessageCreator):
-
     """Create a TextMsg."""
 
     message_name = 'TextMsg'
 
     def __init__(
-            self, name, destination=HudDestination.CENTER, param1='',
-            param2='', param3='', param4=''):
+            self, name, destination=HudDestination.CENTER,
+            param1='', param2='', param3='', param4=''):
         """Initialize the TextMsg instance."""
-        super().__init__(name=name, destination=destination, param1=param1,
+        super().__init__(
+            name=name, destination=destination, param1=param1,
             param2=param2, param3=param3, param4=param4)
 
     def protobuf(self, buffer, kwargs):
@@ -389,7 +384,6 @@ class TextMsg(UserMessageCreator):
 
 
 class KeyHintText(UserMessageCreator):
-
     """Create a KeyHintText."""
 
     message_name = 'KeyHintText'
@@ -411,7 +405,6 @@ class KeyHintText(UserMessageCreator):
 
 
 class Fade(UserMessageCreator):
-
     """Create a Fade."""
 
     message_name = 'Fade'
@@ -419,8 +412,8 @@ class Fade(UserMessageCreator):
 
     def __init__(self, duration, hold_time, color=WHITE, flags=FadeFlags.IN):
         """Initialize the Fade instance."""
-        super().__init__(duration=duration, hold_time=hold_time, color=color,
-            flags=flags)
+        super().__init__(
+            duration=duration, hold_time=hold_time, color=color, flags=flags)
 
     def protobuf(self, buffer, kwargs):
         """Send the Fade with protobuf."""
@@ -445,7 +438,6 @@ class Fade(UserMessageCreator):
 
 
 class HudMsg(UserMessageCreator):
-
     """Create a HudMsg."""
 
     message_name = 'HudMsg'
@@ -455,7 +447,8 @@ class HudMsg(UserMessageCreator):
             self, message, x=-1, y=-1, color1=WHITE, color2=WHITE, effect=0,
             fade_in=0, fade_out=0, hold_time=4, fx_time=0, channel=0):
         """Initialize the HudMsg instance."""
-        super().__init__(message=message, x=x, y=y, color1=color1,
+        super().__init__(
+            message=message, x=x, y=y, color1=color1,
             color2=color2, effect=effect, fade_in=fade_in, fade_out=fade_out,
             hold_time=hold_time, fx_time=fx_time, channel=channel)
 
