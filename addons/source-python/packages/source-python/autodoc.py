@@ -111,7 +111,11 @@ class SphinxProject(object):
             sys.argv = old_argv
 
     def generate_project_files(self, sub_dir=''):
-        """Generate the project files (*.rst files)."""
+        """Generate the project files (*.rst files).
+
+        :param str sub_dir: A sub-directory of the :attr:`project_source_dir`
+            where the module documentation will be generated in.
+        """
         self.validate_project_and_package()
 
         from sphinx.apidoc import main
@@ -135,7 +139,10 @@ class SphinxProject(object):
             sys.argv = old_argv
 
     def build(self, clean=True):
-        """Build the Sphinx project."""
+        """Build the Sphinx project.
+
+        :param bool clean: If True a clean build will be created.
+        """
         self.validate_project_and_package()
         if clean:
             self.project_build_dir.rmtree_p()
@@ -166,7 +173,12 @@ class SphinxProject(object):
                 sys.path.remove(str(self.package_dir.parent))
 
     def quickstart(self, author, project_name=None, version='1'):
-        """A wrapper for creating, generating, and building documentation."""
+        """A wrapper for creating, generating, and building documentation.
+
+        :param str author: Author of the project.
+        :param str project_name: Name of the project.
+        :param str version: Version of the project.
+        """
         if not self.project_exists():
             self.create(author, project_name, version)
 
