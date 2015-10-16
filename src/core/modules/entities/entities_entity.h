@@ -35,6 +35,7 @@
 #include "utilities/conversions.h"
 #include "utilities/wrap_macros.h"
 #include "toolframework/itoolentity.h"
+#include "entities.h"
 
 
 //-----------------------------------------------------------------------------
@@ -47,6 +48,7 @@
 // External variables.
 //-----------------------------------------------------------------------------
 extern IServerTools* servertools;
+extern CGlobalVars *gpGlobals;
 
 
 //-----------------------------------------------------------------------------
@@ -199,6 +201,15 @@ public:
 	
 	int GetIntHandle()
 	{ return IntHandleFromBaseEntity(GetThis()); }
+
+	bool IsPlayer()
+	{
+		if (!IServerUnknownExt::IsNetworked(GetThis()))
+			return false;
+
+		int index = GetIndex();
+		return index > WORLD_ENTITY_INDEX && index <= gpGlobals->maxClients;
+	}
 };
 
 

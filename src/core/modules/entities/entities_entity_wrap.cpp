@@ -160,6 +160,11 @@ void export_base_entity(scope _entity)
 		args("field_name", "value")
 	);
 
+	BaseEntity.def("is_player",
+		&CBaseEntityWrapper::IsPlayer,
+		"Return True if the entity is a player."
+	);
+
 	// Add memory tools...
 	BaseEntity ADD_MEM_TOOLS(CBaseEntityWrapper);
 }
