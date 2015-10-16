@@ -53,8 +53,8 @@ SP_DOCS_PATH = DOCS_PATH / 'source-python'
 #: ../addons/source-python/docs/plugins
 PLUGIN_DOCS_PATH = DOCS_PATH / 'plugins'
 
-#: ../addons/source-python/docs/custom-packages
-CUSTOM_PACKAGES_DOCS_PATH = DOCS_PATH / 'custom-packages'
+#: ../addons/source-python/docs/custom
+CUSTOM_PACKAGES_DOCS_PATH = DOCS_PATH / 'custom'
 
 #: ../addons/source-python/plugins
 PLUGIN_PATH = BASE_PATH / 'plugins'
