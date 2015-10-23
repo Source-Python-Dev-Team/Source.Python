@@ -40,7 +40,7 @@ specific event variables.
     All games provide different events. Some events might exist on all games,
     but they can still provide different event variables.
 
-Bellow you can find a list of games and their supported events.
+Below you can find a list of games and their supported events.
 
 .. toctree::
    :glob:
