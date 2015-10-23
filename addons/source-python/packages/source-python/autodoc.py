@@ -138,7 +138,7 @@ class SphinxProject(object):
         finally:
             sys.argv = old_argv
 
-    def build(self, clean=True):
+    def build(self, clean=False):
         """Build the Sphinx project.
 
         :param bool clean: If True a clean build will be created.
