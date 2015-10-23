@@ -292,15 +292,28 @@ texinfo_documents = [
 # =============================================================================
 autodoc_member_order = 'groupwise'
 
+# Directives that should be used by default
+autodoc_default_flags = [
+    'private-members',
+]
+
 # Add names (e.g. magic methods) you always want to skip
-names_to_skip = (
+names_to_skip = [
+    # special methods
     '__module__',
     '__instance_size__',
-)
+    '__slots__',
+
+    # memory methods
+    '_ptr',
+    '_obj',
+    '_size',
+]
 
 # Add names (e.g. magic methods) you always want to show
-names_to_force = (
-)
+names_to_force = [
+    '__init__',
+]
 
 def skip(app, what, name, obj, skip, options):
     if name in names_to_skip:
