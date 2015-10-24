@@ -30,6 +30,7 @@ Contents
    updating
    sp-commands
    events
+   credits
 
 
 Module reference

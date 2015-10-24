@@ -397,6 +397,11 @@ class _CoreCommandManager(SubCommandManager):
 
                     f.write(line)
 
+            # Create/update credits.rst
+            with project.project_source_dir.joinpath(
+                    'credits.rst').open('w') as f:
+                f.write(self._get_updated_credits_wiki())
+
             try:
                 project.build()
             except:
@@ -409,6 +414,43 @@ class _CoreCommandManager(SubCommandManager):
         else:
             self.logger.log_message(
                 'Sphinx project does not exist for Source.Python.')
+
+    def _get_updated_credits_wiki(self):
+        """Return the content for the credits.rst."""
+        groups = ConfigObj(
+            SP_DATA_PATH / 'credits.ini', encoding='unicode_escape')
+
+        header = 'Credits'
+        column1 = 'Nickname'
+        column2 = 'Real name'
+        col1_len = len(column1)
+        col2_len = len(column2)
+
+        output = '{}\n{}\n\n'.format(header, '='*len(header))
+        for group, names in groups.items():
+            # Determine the maximum column widths
+            max_nickname = len(max(names.keys(), key=len)) or col1_len
+            max_realname = len(max(names.values(), key=len)) or col2_len
+
+            # Calculate the row separator
+            separator = '{}  {}'.format('='*max_nickname, '='*max_realname)
+
+            # Use the group name as a sub-heading
+            output += '{}\n{}\n\n'.format(group, '-'*len(group))
+
+            # Add columns + separators
+            output += '{}\n{}{}  {}\n{}\n'.format(separator, column1,
+                ' '*(max_nickname-col1_len), column2, separator)
+
+            # Add the table content
+            for nickname, realname in names.items():
+                output += '{}  {}\n'.format(
+                    nickname.ljust(max_nickname), realname)
+
+            output += separator
+            output += '\n\n\n'
+
+        return output
 
     def _build_custom_package_docs(self, package):
         """Build Sphinx project files for a custom package."""
