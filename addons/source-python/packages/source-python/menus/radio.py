@@ -55,12 +55,11 @@ class SimpleRadioMenu(_BaseMenu):
     """This class creates a basic radio menu."""
 
     def _get_menu_data(self, player_index):
-        """Return the required data to send a menu.
+        """Return a triple that contains the menu string to send, the enabled
+        slots and the time to show the menu.
 
-        This method needs to be implemented by a subclass!
-
-        @param <player_index>:
-        A player index.
+        :param int player_index: See
+            :meth:`menus.base._BaseMenu._get_menu_data`.
         """
         # Always enable BUTTON_CLOSE_SLOT
         slots = {BUTTON_CLOSE_SLOT}
@@ -88,7 +87,11 @@ class SimpleRadioMenu(_BaseMenu):
 
     @staticmethod
     def _slots_to_bin(slots):
-        """Convert an iterable of slots to the binary slot representation."""
+        """Convert an iterable of slots to the binary slot representation.
+
+        :param iterable slots: Slots that should be enabled.
+        :raise ValueError: Raised if a slot is out of range.
+        """
         # Keys are enabled in that order: 0987654321
         buffer = list('0000000000')
         for slot in slots:
@@ -100,14 +103,7 @@ class SimpleRadioMenu(_BaseMenu):
         return int(''.join(buffer), 2)
 
     def _select(self, player_index, choice_index):
-        """Handle a menu selection.
-
-        @param <player_index>:
-        The index of the player who made the selection.
-
-        @param <choice_index>:
-        A numeric value that defines what was selected.
-        """
+        """See :meth:`menus.base._BaseMenu._select`."""
         if choice_index == BUTTON_CLOSE:
             return None
 
@@ -118,19 +114,13 @@ class SimpleRadioMenu(_BaseMenu):
     def _send(self, player_index):
         """Build and sends the menu to the given player via ShowMenu.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: See :meth:`menus.base._BaseMenu._send`.
         """
         ShowMenu(*self._build(player_index)).send(player_index)
 
     @staticmethod
     def _close(player_index):
-        """
-        Close a menu by overriding it with an empty menu.
-
-        @param <player_index>:
-        A player index.
-        """
+        """See :meth:`menus.base._BaseMenu._close`."""
         # Send an empty menu
         ShowMenu('', 0b0000000000, 0).send(player_index)
 
@@ -143,7 +133,7 @@ class SimpleRadioMenu(_BaseMenu):
 class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
     """Create menus with an unlimited number of options.
 
-    Navigation options will automatically be added.
+    Navigation options will be added automatically.
     """
 
     def __init__(
@@ -151,41 +141,23 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             build_callback=None, description=None,
             title=None, top_seperator='-' * 30, bottom_seperator='-' * 30,
             fill=True):
-        """Initialize the PagedRadioMenu instance.
+        """Initialize the object.
 
-        @param <data>:
-        An iterable which contains data that should be added to the menu.
-
-        @param <select_callback>:
-        A callable object that gets called whenever a selection was made.
-
-        The callback will recieve 3 parameters:
-            1. The instance of this menu.
-            2. The player's index who made the selection.
-            3. The player's choice.
-
-        @param <build_callback>:
-        A callable object that gets called before a menu is displayed.
-
-        The callback will recieve 2 parameters:
-            1. The instance of this menu.
-            2. The index of the player who will recieve this menu.
-
-        @param <description>:
-        A description that is displayed under the title.
-
-        @param <title>:
-        A title that is displayed at the top of the menu.
-
-        @param <top_seperator>:
-        A seperator that is displayed right after the title/description.
-
-        @param <bottom_seperator>:
-        A seperator that is displayed right after the body.
-
-        @param <fill>:
-        If True the menu will be filled so that it will always have the same
-        size.
+        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None select_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None build_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param str|None description: A description that is displayed under the
+            title.
+        :param str|None title: A title that is displayed at the top of the
+            menu.
+        :param str top_seperator: A seperator that is displayed right after
+            the title/description.
+        :param str bottom_seperator: A seperator that is displayed right after
+            the body.
+        :param bool fill: If True the menu will be filled so that it will
+            always have the same  size.
         """
         super(PagedRadioMenu, self).__init__(
             data, select_callback, build_callback
@@ -205,14 +177,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
     def _format_header(self, player_index, page, slots):
         """Prepare the header for the menu.
 
-        @param <player_index>:
-        A player index.
-
-        @param <page>:
-        A _PlayerPage instance.
-
-        @param <slots>:
-        A set to which slots can be added.
+        :param int player_index: A player index.
+        :param _PlayerPage page: The player's current page.
+        :param set slots: A set to which slots can be added.
         """
         # Create the page info string
         info = '[{0}/{1}]\n'.format(page.index + 1, self.page_count)
@@ -233,14 +200,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
     def _format_body(self, player_index, page, slots):
         """Prepare the body for the menu.
 
-        @param <player_index>:
-        A player index.
-
-        @param <page>:
-        A _PlayerPage instance.
-
-        @param <slots>:
-        A set to which slots can be added.
+        :param int player_index: A player index.
+        :param _PlayerPage page: The player's current page.
+        :param set slots: A set to which slots can be added.
         """
         buffer = ''
 
@@ -268,14 +230,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
     def _format_footer(self, player_index, page, slots):
         """Prepare the footer for the menu.
 
-        @param <player_index>:
-        A player index.
-
-        @param <page>:
-        A _PlayerPage instance.
-
-        @param <slots>:
-        A set to which slots can be added.
+        :param int player_index: A player index.
+        :param _PlayerPage page: The player's current page.
+        :param set slots: A set to which slots can be added.
         """
         buffer = ''
 
@@ -310,8 +267,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
     def _get_menu_data(self, player_index):
         """Return all relevant menu data as a dictionary.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         # Get the player's current page
         page = self._player_pages[player_index]
@@ -328,14 +284,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         return (buffer[:-1] if buffer else '', self._slots_to_bin(slots), 1)
 
     def _select(self, player_index, choice_index):
-        """Handle a menu selection.
-
-        @param <player_index>:
-        The index of the player who made the selection.
-
-        @param <choice_index>:
-        A numeric value that defines what was selected.
-        """
+        """See :meth:`menus.base._BaseMenu._select`."""
         # Do nothing if the menu is being closed
         if choice_index == BUTTON_CLOSE:
             del self._player_pages[player_index]
@@ -361,7 +310,7 @@ class _BaseRadioOption(_BaseOption):
     """Base class for radio options."""
 
     def _get_highlight_prefix(self):
-        """Return the hightlight prefix if <highlight> was set.
+        """Return the hightlight prefix if ``highlight`` was set.
 
         Else it will return an empty string.
         """
@@ -369,42 +318,26 @@ class _BaseRadioOption(_BaseOption):
 
 
 class SimpleRadioOption(_BaseRadioOption):
-    """Provides options for SimpleRadioMenu objects."""
+    """Provides options for :class:`SimpleRadioMenu` objects."""
 
     def __init__(
             self, choice_index, text, value=None,
             highlight=True, selectable=True):
         """Initialize the option.
 
-        @param <choice_index>:
-        The number that is required to select the option.
-
-        @param <text>:
-        The text that should be displayed.
-
-        @param <value>:
-        The value that should be passed to the menu's selection callback.
-
-        @param <hightlight>:
-        Set this to true if the text should be hightlighted.
-
-        @param <selectable>:
-        Set this to True if the option should be selectable.
+        :param int choice_index: The number that is required to select the
+            option.
+        :param str text: See :meth:`menus.base._BaseOption.__init__`.
+        :param value: See :meth:`menus.base._BaseOption.__init__`.
+        :param bool hightlight: If True the text will be highlighted.
+        :param bool selectable: If True the option will be selectable.
         """
         super(SimpleRadioOption, self).__init__(
             text, value, highlight, selectable)
         self.choice_index = choice_index
 
     def _render(self, player_index, choice_index=None):
-        """Render the data.
-
-        @param <player_index>:
-        A player index.
-
-        @param <choice_index>:
-        The number should be required to select this item. It depends on the
-        menu type if this parameter gets passed.
-        """
+        """See :meth:`menus.base._MenuData._render`."""
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
             self.choice_index,
@@ -413,18 +346,10 @@ class SimpleRadioOption(_BaseRadioOption):
 
 
 class PagedRadioOption(_BaseRadioOption):
-    """Provides options for PagedRadioMenu objects."""
+    """Provides options for :class:`PagedRadioMenu` objects."""
 
     def _render(self, player_index, choice_index):
-        """Render the data.
-
-        @param <player_index>:
-        A player index.
-
-        @param <choice_index>:
-        The number should be required to select this item. It depends on the
-        menu type if this parameter gets passed.
-        """
+        """See :meth:`menus.base._MenuData._render`."""
         return '{0}{1}. {2}\n'.format(
             self._get_highlight_prefix(),
             choice_index,

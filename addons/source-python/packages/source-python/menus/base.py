@@ -28,10 +28,10 @@ from translations.strings import TranslationStrings
 # >> CLASSES
 # =============================================================================
 class _PlayerPage(object):
-    """Saves information about the player's current active page."""
+    """Stores information about the player's current active page."""
 
     def __init__(self):
-        """Initialize the _PlayerPage instance."""
+        """Initialize the object."""
         self.index = 0
         self.options = {}
 
@@ -44,23 +44,21 @@ class _BaseMenu(AutoUnload, list):
     def __init__(self, data=None, select_callback=None, build_callback=None):
         """Initialize the menu.
 
-        @param <data>:
-        An iterable which contains data that should be added to the menu.
+        :param iterable|None data: Data that should be added to the menu.
+        :param callable|None select_callback: A function that gets called
+            whenever a selection was made.
 
-        @param <select_callback>:
-        A callable object that gets called whenever a selection was made.
+            The callback will recieve 3 parameters:
+                1. The instance of this menu.
+                2. The player's index who made the selection.
+                3. The player's choice.
 
-        The callback will recieve 3 parameters:
-            1. The instance of this menu.
-            2. The player's index who made the selection.
-            3. The player's choice.
+        :param callable|None build_callback: A function that gets called
+            before a menu is displayed.
 
-        @param <build_callback>:
-        A callable object that gets called before a menu is displayed.
-
-        The callback will recieve 2 parameters:
-            1. The instance of this menu.
-            2. The index of the player who will recieve this menu.
+            The callback will recieve 2 parameters:
+                1. The instance of this menu.
+                2. The index of the player who will recieve this menu.
         """
         super(_BaseMenu, self).__init__(list() if data is None else data)
 
@@ -70,10 +68,7 @@ class _BaseMenu(AutoUnload, list):
         self._instances[id(self)] = self
 
     def _unload_instance(self):
-        """Unload the instance.
-
-        This will close this menu instance for every player.
-        """
+        """Close this menu object for every player."""
         # Just close all open menus, which will remove all instances from the
         # queues
         self.close()
@@ -84,24 +79,23 @@ class _BaseMenu(AutoUnload, list):
     def _unload_player(self, player_index):
         """Remove every player specific information.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         self._player_pages.pop(player_index, 0)
 
     def _refresh(self, player_index):
         """Re-send the menu to a player.
 
-        @param <player_index>:
-        The index of the player whose menu should be refreshed.
+        :param int player_index: The index of the player whose menu should be
+            refreshed.
         """
         self._send(player_index)
 
     def _build(self, player_index):
         """Call the build callback and return all relevant menu data.
 
-        @param <player_index>:
-        The index of the player whose menu should be built.
+        :param int player_index: The index of the player whose menu should be
+            built.
         """
         # Call the build callback if there is one
         if self.build_callback is not None:
@@ -112,11 +106,9 @@ class _BaseMenu(AutoUnload, list):
     def _select(self, player_index, choice_index):
         """Handle a menu selection.
 
-        @param <player_index>:
-        The index of the player who made the selection.
-
-        @param <choice_index>:
-        A numeric value that defines what was selected.
+        :param int player_index: The index of the player who made the
+            selection.
+        :param int choice_index: Defines what was selected.
         """
         if self.select_callback is not None:
             return self.select_callback(self, player_index, choice_index)
@@ -162,8 +154,7 @@ class _BaseMenu(AutoUnload, list):
     def is_active_menu(self, player_index):
         """Return True if this menu is the first menu in the user's queue.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         return self.get_user_queue(player_index).get_active_menu() is self
 
@@ -171,8 +162,7 @@ class _BaseMenu(AutoUnload, list):
     def get_user_queue(cls, player_index):
         """Return the menu queue for the given player.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         return cls._get_queue_holder()[player_index]
 
@@ -189,8 +179,7 @@ class _BaseMenu(AutoUnload, list):
 
         This method needs to be implemented by a subclass!
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         raise NotImplementedError
 
@@ -199,8 +188,7 @@ class _BaseMenu(AutoUnload, list):
 
         This method needs to be implemented by a subclass!
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         raise NotImplementedError
 
@@ -209,8 +197,7 @@ class _BaseMenu(AutoUnload, list):
 
         This method needs to be implemented by a subclass!
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         raise NotImplementedError
 
@@ -224,20 +211,16 @@ class _MenuData(object):
     def __init__(self, text):
         """Initialize the instance.
 
-        @param <text>:
-        The text that should be displayed.
+        :param str text: The text that should be displayed.
         """
         self.text = text
 
     def _render(self, player_index, choice_index=None):
         """Render the data.
 
-        @param <player_index>:
-        A player index.
-
-        @param <choice_index>:
-        The number that was selected. It depends on the menu type if this
-        parameter gets passed.
+        :param int player_index: A player index.
+        :param int|None choice_index: The number that was selected.
+            It depends on the menu type if this parameter gets passed.
         """
         raise NotImplementedError
 
@@ -251,7 +234,10 @@ class _PagedMenuBase(object):
         raise NotImplementedError
 
     def _get_options(self, page_index):
-        """Return a tuple containing the options for the given page index."""
+        """Return a tuple containing the options for the given page index.
+        
+        :param int page_index: The index of the page.
+        """
         item_count = self._get_max_item_count()
         return self[page_index * item_count: (page_index + 1) * item_count]
 
@@ -268,16 +254,13 @@ class _PagedMenuBase(object):
     def set_player_page(self, player_index, page_index):
         """Set the player's current page index.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
+        :param int page_index: The current active page index.
 
-        @param <page_index>:
-        An index that defines the current active page.
+        If ``page_index`` is lower than 0, the page index will be set to 0.
 
-        If <page_index> is lower than 0, the page index will be set to 0.
-
-        If <page_index> is greater than the last page index, it will be set to
-        the last page index.
+        If ``page_index`` is greater than the last page index, it will be set
+        to the last page index.
         """
         page = self._player_pages[player_index]
         if page_index < 0:
@@ -290,8 +273,7 @@ class _PagedMenuBase(object):
     def get_player_page(self, player_index):
         """Return the current player page index.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: A player index.
         """
         return self._player_pages[player_index].index
 
@@ -300,15 +282,7 @@ class Text(_MenuData):
     """Display plain text."""
 
     def _render(self, player_index, choice_index=None):
-        """Render the data.
-
-        @param <player_index>:
-        A player index.
-
-        @param <choice_index>:
-        The number should be required to select this item. It depends on the
-        menu type if this parameter gets passed.
-        """
+        """See :meth:`_MenuData._render`."""
         return str(_translate_text(self.text, player_index)) + '\n'
 
 
@@ -318,17 +292,13 @@ class _BaseOption(_MenuData):
     def __init__(self, text, value=None, highlight=True, selectable=True):
         """Initialize the option.
 
-        @param <text>:
-        The text that should be displayed.
-
-        @param <value>:
-        The value that should be passed to the menu's selection callback.
-
-        @param <hightlight>:
-        Set this to true if the text should be hightlighted.
-
-        @param <selectable>:
-        Set this to True if the option should be selectable.
+        :param str text: The text that should be displayed.
+        :param value: The value that should be passed to the menu's
+            selection callback.
+        :param bool hightlight: Set this to true if the text should be
+            hightlighted.
+        :param bool selectable: Set this to True if the option should be
+            selectable.
         """
         super(_BaseOption, self).__init__(text)
         self.value = value
@@ -336,15 +306,7 @@ class _BaseOption(_MenuData):
         self.selectable = selectable
 
     def _render(self, player_index, choice_index=None):
-        """Render the data.
-
-        @param <player_index>:
-        A player index.
-
-        @param <choice_index>:
-        The number should be required to select this item. It depends on the
-        menu type if this parameter gets passed.
-        """
+        """See :meth:`_MenuData._render`."""
         raise NotImplementedError
 
 
@@ -352,9 +314,9 @@ class _BaseOption(_MenuData):
 # >> HELPER FUNCTIONS
 # =============================================================================
 def _translate_text(text, player_index):
-    """Translate <text> if it is an instance of TranslationStrings.
-
-    Otherwise the original text will be returned.
+    """Translate ``text`` if it is an instance of
+    :class:`translations.strings.TranslationStrings`. Otherwise the original
+    text will be returned.
     """
     if isinstance(text, TranslationStrings):
         return text.get_string(get_client_language(player_index))

@@ -49,34 +49,18 @@ class SimpleESCMenu(_BaseMenu):
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=WHITE):
-        """Initialize the SimpleESCMenu instance.
-
-        @param <data>:
-        An iterable which contains data that should be added to the menu.
-
-        @param <select_callback>:
-        A callable object that gets called whenever a selection was made.
-
-        The callback will recieve 3 parameters:
-            1. The instance of this menu.
-            2. The player's index who made the selection.
-            3. The player's choice.
-
-        @param <build_callback>:
-        A callable object that gets called before a menu is displayed.
-
-        The callback will recieve 2 parameters:
-            1. The instance of this menu.
-            2. The index of the player who will recieve this menu.
-
-        @param <description>:
-        A description that is displayed under the title.
-
-        @param <title>:
-        A title that is displayed at the top of the menu.
-
-        @param <title_color>:
-        The color of the title.
+        """Initialize the object.
+        
+        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None select_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None build_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param str|None description: A description that is displayed under the
+            title.
+        :param str|None title: A title that is displayed at the top of the
+            menu.
+        :param Color title_color: The color of the title.
         """
         super(SimpleESCMenu, self).__init__(
             data, select_callback, build_callback)
@@ -85,10 +69,11 @@ class SimpleESCMenu(_BaseMenu):
         self.title_color = title_color
 
     def _get_menu_data(self, player_index):
-        """Return all relevant menu data as a KeyValues instance.
+        """Return all relevant menu data as a :class:`keyvalues.KeyValues`
+        object.
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: See
+            :meth:`menus.base._BaseMenu._get_menu_data`.
         """
         data = KeyValues('menu')
         data.set_string(
@@ -122,14 +107,7 @@ class SimpleESCMenu(_BaseMenu):
         return data
 
     def _select(self, player_index, choice_index):
-        """Handle a menu selection.
-
-        @param <player_index>:
-        The index of the player who made the selection.
-
-        @param <choice_index>:
-        A numeric value that defines what was selected.
-        """
+        """See :meth:`menus.base._BaseMenu._select`."""
         if choice_index == 0:
             return None
 
@@ -142,8 +120,7 @@ class SimpleESCMenu(_BaseMenu):
     def _send(self, player_index):
         """Build and send the menu to the given player via create_message().
 
-        @param <player_index>:
-        A player index.
+        :param int player_index: See :meth:`menus.base._BaseMenu._send`.
         """
         queue = self.get_user_queue(player_index)
         queue.priority -= 1
@@ -163,11 +140,7 @@ class SimpleESCMenu(_BaseMenu):
         )
 
     def _close(self, player_index):
-        """Close a menu by overriding it with an empty menu.
-
-        @param <player_index>:
-        A player index.
-        """
+        """See :meth:`menus.base._BaseMenu._close`."""
         queue = self.get_user_queue(player_index)
         queue.priority -= 1
 
@@ -188,13 +161,25 @@ class SimpleESCMenu(_BaseMenu):
 class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
     """Create menus with an unlimited number of options.
 
-    will automatically add navigation options.
+    Navigation options will be added automatically.
     """
 
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=WHITE, fill=True):
-        """Initialize the PagedESCMenu instance."""
+        """Initialize the object.
+        
+        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None select_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None build_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param str|None description: See :meth:`SimpleESCMenu.__init__`.
+        :param str|None title: See :meth:`SimpleESCMenu.__init__`.
+        :param Color title_color: See :meth:`SimpleESCMenu.__init__`.
+        :param bool fill: If True the menu will always have the same size by
+            filling unused options.
+        """
         super(PagedESCMenu, self).__init__(
             data, select_callback, build_callback,
             description, title, title_color)
@@ -208,14 +193,9 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
     def _format_header(self, player_index, page, data):
         """Prepare the header for the menu.
 
-        @param <player_index>:
-        A player index.
-
-        @param <page>:
-        A _PlayerPage instance.
-
-        @param <data>:
-        The current menu data.
+        :param int player_index: A player index.
+        :param _PlayerPage page: The player's current page.
+        :param KeyValues data: The current menu data.
         """
         # Create the page info string
         info = '[{0}/{1}]'.format(page.index + 1, self.page_count)
@@ -231,14 +211,9 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
     def _format_body(self, player_index, page, data):
         """Prepare the body for the menu.
 
-        @param <player_index>:
-        A player index.
-
-        @param <page>:
-        A _PlayerPage instance.
-
-        @param <data>:
-        The current menu data.
+        :param int player_index: A player index.
+        :param _PlayerPage page: The player's current page.
+        :param KeyValues data: The current menu data.
         """
         # Loop through all options of the current page
         for index, option in enumerate(self._get_options(page.index), 1):
@@ -261,14 +236,9 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
     def _format_footer(player_index, page, data):
         """Prepare the footer for the menu.
 
-        @param <player_index>:
-        A player index.
-
-        @param <page>:
-        A _PlayerPage instance.
-
-        @param <data>:
-        The current menu data.
+        :param int player_index: A player index.
+        :param _PlayerPage page: The player's current page.
+        :param KeyValues data: The current menu data.
         """
         # TODO: Add translations
         # Add "Back" option
@@ -287,11 +257,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         button.set_string('command', '{0} 0'.format(ESC_SELECTION_CMD))
 
     def _get_menu_data(self, player_index):
-        """Return all relevant menu data as a KeyValues instance.
-
-        @param <player_index>:
-        A player index.
-        """
+        """See :meth:`menus.base._BaseMenu._get_menu_data`."""
         data = KeyValues('menu')
         data.set_string(
             'msg', _translate_text(self.description or '', player_index))
@@ -309,14 +275,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         return data
 
     def _select(self, player_index, choice_index):
-        """Handle a menu selection.
-
-        @param <player_index>:
-        The index of the player who made the selection.
-
-        @param <choice_index>:
-        A numeric value that defines what was selected.
-        """
+        """See :meth:`menus.base._BaseMenu._select`."""
         # Do nothing if the menu is being closed
         if choice_index == 0:
             del self._player_pages[player_index]
@@ -339,42 +298,26 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
 
 
 class SimpleESCOption(_BaseOption):
-    """Provides options for SimpleESCMenu objects."""
+    """Provides options for :class:`SimpleESCMenu` objects."""
 
     def __init__(
             self, choice_index, text, value=None,
             highlight=True, selectable=True):
         """Initialize the option.
-
-        @param <choice_index>:
-        The number that is required to select the option.
-
-        @param <text>:
-        The text that should be displayed.
-
-        @param <value>:
-        The value that should be passed to the menu's selection callback.
-
-        @param <hightlight>:
-        Does not work with ESC menus.
-
-        @param <selectable>:
-        Does not work with ESC menus.
+        
+        :param int choice_index: The number that is required to select the
+            option.
+        :param str text: See :meth:`menus.base._BaseOption.__init__`.
+        :param value: See :meth:`menus.base._BaseOption.__init__`.
+        :param bool hightlight: Does not work with ESC menus.
+        :param bool selectable: Does not work with ESC menus.
         """
         super(SimpleESCOption, self).__init__(
             text, value, highlight, selectable)
         self.choice_index = choice_index
 
     def _render(self, player_index, choice_index=None):
-        """Render the data.
-
-        @param <player_index>:
-        A player index.
-
-        @param <choice_index>:
-        The number should be required to select this item. It depends on the
-        menu type if this parameter gets passed.
-        """
+        """See :meth:`menus.base._MenuData._render`."""
         return '{0}. {1}'.format(
             self.choice_index, _translate_text(self.text, player_index))
 
@@ -383,14 +326,6 @@ class PagedESCOption(_BaseOption):
     """Display an enumerated option."""
 
     def _render(self, player_index, choice_index=None):
-        """Render the data.
-
-        @param <player_index>:
-        A player index.
-
-        @param <choice_index>:
-        The number should be required to select this item. It depends on the
-        menu type if this parameter gets passed.
-        """
+        """See :meth:`menus.base._MenuData._render`."""
         return '{0}. {1}'.format(
             choice_index, _translate_text(self.text, player_index))
