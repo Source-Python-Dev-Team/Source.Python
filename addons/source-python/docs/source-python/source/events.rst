@@ -1,6 +1,10 @@
 Events
 ======
 
+
+Introduction
+------------
+
 Events are probably one of the most important tools when you want to write a
 plugin for a game. The game fires them in specific situations (e.g. when a
 player was hurt, died or the round started) and Source.Python is able to
@@ -40,6 +44,10 @@ specific event variables.
     All games provide different events. Some events might exist on all games,
     but they can still provide different event variables.
 
+    
+Events
+------
+    
 Below you can find a list of games and their supported events.
 
 .. toctree::
