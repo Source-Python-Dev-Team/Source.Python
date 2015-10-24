@@ -47,8 +47,7 @@ class UserMessageCreator(AttrDict):
     def __init__(self, **kwargs):
         """Initialize the usermessage creator.
 
-        @param <kwargs>:
-        A dictionary that contains all valid fields.
+        :param dict kwargs: All valid fields.
         """
         super().__setattr__('valid_fields', kwargs.keys())
         super().__init__(kwargs)
@@ -74,11 +73,9 @@ class UserMessageCreator(AttrDict):
     def _send(self, player_indexes, translated_kwargs):
         """Send the user message to the given players.
 
-        @param <player_indexes>:
-        An iterable that contains players with the same language setting.
-
-        @param <translated_kwargs>:
-        An AttrDict object that contains the translated arguments.
+        :param iterable player_indexes: All players with the same language
+            setting.
+        :param AttrDict translated_kwargs: The translated arguments.
         """
         user_message = UserMessage(
             RecipientFilter(*player_indexes), self.message_name)
@@ -140,14 +137,10 @@ class VGUIMenu(UserMessageCreator):
     def __init__(self, name, subkeys=None, show=True):
         """Initialize the VGUI menu.
 
-        @param <name>:
-        A string that defines the name of the menu.
-
-        @param <show>:
-        If True the menu will be shown, else it will be hidden.
-
-        @param <subkeys>:
-        A dictionary that defines the data for the menu.
+        :param str name: Name of the menu.
+        :param dict subkeys: Additional menu data.
+        :param bool show: If True the menu will be shown, else it will be
+            hidden.
         """
         # Set subkeys if it needs to be set
         if subkeys is None:

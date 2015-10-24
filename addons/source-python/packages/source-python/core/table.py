@@ -41,17 +41,10 @@ class Column(list):
             left_padding=2, right_padding=2):
         """Intialize the column.
 
-        @param <name>:
-        Name of the column.
-
-        @param <alignment>:
-        The alignment of the column name.
-
-        @param <left_padding>:
-        Number of spaces for left padding.
-
-        @param <right_padding>:
-        Number of spaces for right padding.
+        :param str name: Name of the column.
+        :param int alignment: The alignment of the column name.
+        :param int left_padding: Number of spaces for left padding.
+        :param int right_padding: Number of spaces for right padding.
         """
         super(Column, self).__init__()
         self.name = Item(name, alignment)
@@ -88,11 +81,8 @@ class Item(object):
     def __init__(self, value, alignment=Alignment.LEFT):
         """Initialize the item.
 
-        @param <value>:
-        The value this item should have.
-
-        @param <aligment>:
-        The aligment of the item in the table.
+        :param value: The value this item should have.
+        :param int aligment: The aligment of the item in the table.
         """
         self.value = str(value)
         self.alignment = alignment
@@ -104,16 +94,11 @@ class Item(object):
     def _format(self, padding, left_padding, right_padding):
         """Format the item.
 
-        @param <padding>:
-        The length of the longest item in the column.
-
-        @param <left_padding>:
-        A number that defines how many spaces should be added to the left of
-        the item.
-
-        @param <right_padding>:
-        A number that defines how many spaces should be added to the right of
-        the item.
+        :param int padding: The length of the longest item in the column.
+        :param int left_padding: A number that defines how many spaces should
+            be added to the left of the item.
+        :param int right_padding: A number that defines how many spaces should
+            be added to the right of the item.
         """
         return '{0}{1}{2}'.format(
             ' ' * left_padding, self.alignment(self.value, padding),
@@ -166,13 +151,10 @@ class AsciiTable(object):
     def format(self, header_separator='=', column_separator='|'):
         """Format the table and returns an ASCII table string.
 
-        @param <header_separator>:
-        A single character that defines the character that should be used to
-        create the horizontal separator.
-
-        @param <column_separator>:
-        A single character that defines the character that should be used to
-        create the vertical separators.
+        :param str header_separator: A single character that defines the
+            character that should be used to create the horizontal separator.
+        :param str column_separator: A single character that defines the
+            character that should be used to create the vertical separators.
         """
         if not isinstance(header_separator, str) or len(header_separator) != 1:
             raise ValueError('Header separator must be a single character.')

@@ -187,21 +187,15 @@ class Array(BasePointer):
     def __init__(self, manager, is_ptr, type_name, ptr, length=None):
         """Initialize the array wrapper.
 
-        @param <manager>
-        Contains an instance of TypeManager.
-
-        @param <is_ptr>
-        Set to True if the array contains pointers, else False.
-
-        @param <type_name>
-        Contains the name of the array type. E.g. 'Vector' or 'bool'.
-
-        @param <ptr>
-        Contains the base address of the array (the very first array entry).
-
-        @param <length>
-        Contains the length of the array. Setting this value allows you to
-        iterate over the array.
+        :param TypeManager manager: The manager that should be used to
+            retrieve classes.
+        :param bool is_ptr: Set to True if the array contains pointers.
+        :param str type_name: The name of the array type. E.g. 'Vector' or
+            'bool'.
+        :param Pointer ptr: The base address of the array (the very first
+            array entry).
+        :param int|None length: Length of the array. Setting this value allows
+            you to iterate over the array.
         """
         self._manager = manager
 

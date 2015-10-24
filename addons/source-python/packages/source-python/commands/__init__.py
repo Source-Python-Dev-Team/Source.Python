@@ -58,11 +58,10 @@ class CommandParser(argparse.ArgumentParser):
     def __init__(self, command_name, *args, **kwargs):
         """Initialize the parser.
 
-        @param <command_name>:
-        The name of the command that will be parsed. This is required for
-        proper help/error messages.
+        :param str command_name: The name of the command that will be parsed.
+            This is required for proper help/error messages.
 
-        See argparse.ArgumentParser for more information.
+        See :class:`argparse.ArgumentParser` for more information.
         """
         super(CommandParser, self).__init__(command_name, *args, **kwargs)
 
@@ -81,10 +80,9 @@ class CommandParser(argparse.ArgumentParser):
     def parse_command(self, command, namespace=None):
         """Parse a Command object.
 
-        @param <command>:
-        The Command object that should be parsed.
+        :param Command command: The command that should be parsed.
 
-        See parse_args() for more information.
+        See :meth:`~.argparse.ArgumentParser.parse_args` for more information.
         """
         return self.parse_args(
             [command[x] for x in range(1, command.get_arg_count())], namespace)
