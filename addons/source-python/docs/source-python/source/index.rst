@@ -31,6 +31,7 @@ Contents
    sp-commands
    events
    credits
+   todos
 
 
 Module reference
