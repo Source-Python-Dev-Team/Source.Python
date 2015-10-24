@@ -54,7 +54,10 @@ public:
 
 	virtual std::list<Register_t> GetRegisters()
 	{
-		object registers = get_override("get_registers")();
+		override get_registers = get_override("get_registers");
+		CHECK_OVERRIDE(get_registers);
+
+		object registers = get_registers();
 		std::list<Register_t> result;
 		for(int i=0; i < len(registers); i++)
 		{
@@ -66,7 +69,9 @@ public:
 
 	virtual int GetPopSize()
 	{
-		return get_override("get_pop_size")();
+		override get_pop_size = get_override("get_pop_size");
+		CHECK_OVERRIDE(get_pop_size);
+		return get_pop_size();
 	}
 	
 	virtual void* GetArgumentPtr(int iIndex, CRegisters* pRegisters)
@@ -77,12 +82,16 @@ public:
 
 	object GetArgumentPtrWrapper(int iIndex, CRegisters* pRegisters)
 	{
-		return get_override("get_argument_ptr")(iIndex, ptr(pRegisters));
+		override get_argument_ptr = get_override("get_argument_ptr");
+		CHECK_OVERRIDE(get_argument_ptr);
+		return get_argument_ptr(iIndex, ptr(pRegisters));
 	}
 
 	virtual void ArgumentPtrChanged(int iIndex, CRegisters* pRegisters, void* pArgumentPtr)
 	{
-		get_override("argument_ptr_changed")(iIndex, ptr(pRegisters), CPointer((unsigned long) pArgumentPtr));
+		override argument_ptr_changed = get_override("argument_ptr_changed");
+		CHECK_OVERRIDE(argument_ptr_changed);
+		argument_ptr_changed(iIndex, ptr(pRegisters), CPointer((unsigned long) pArgumentPtr));
 	}
 
 	virtual void* GetReturnPtr(CRegisters* pRegisters)
@@ -93,12 +102,16 @@ public:
 
 	object GetReturnPtrWrapper(CRegisters* pRegisters)
 	{
-		return get_override("get_return_ptr")(ptr(pRegisters));
+		override get_return_ptr = get_override("get_return_ptr");
+		CHECK_OVERRIDE(get_return_ptr);
+		return get_return_ptr(ptr(pRegisters));
 	}
 
 	virtual void ReturnPtrChanged(CRegisters* pRegisters, void* pReturnPtr)
 	{
-		get_override("return_ptr_changed")(ptr(pRegisters), CPointer((unsigned long) pReturnPtr));
+		override return_ptr_changed = get_override("return_ptr_changed");
+		CHECK_OVERRIDE(return_ptr_changed);
+		return_ptr_changed(ptr(pRegisters), CPointer((unsigned long) pReturnPtr));
 	}
 
 public:

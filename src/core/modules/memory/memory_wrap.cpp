@@ -696,41 +696,80 @@ void export_registers(scope _memory)
 // ============================================================================
 void export_calling_convention(scope _memory)
 {
-	class_<ICallingConventionWrapper, boost::noncopyable>("CallingConvention", init< object, DataType_t, optional<int> >())
+	class_<ICallingConventionWrapper, boost::noncopyable>(
+		"CallingConvention",
+		"An an abstract class that is used to create custom calling "
+		"conventions (only available for hooking function and not for"
+		" calling functions).\n",
+		init< object, DataType_t, optional<int> >(
+			(arg("arg_types"), arg("return_type"), arg("alignment")),
+			"Initialize the calling convention.\n"
+			"\n"
+			":param iterable arg_types: A list of :class:`DataType` values that define the argument types of a function.\n"
+			":param DataType return_type: The return type of a function.\n"
+			":param int alignment: The stack alignment."
+			)
+		)
+
 		.def("get_registers",
-			pure_virtual(&ICallingConventionWrapper::GetRegisters)
+			&ICallingConventionWrapper::GetRegisters,
+			"Return a list of :class:`Register` values. These registeres will be saved for later access."
 		)
 
 		.def("get_pop_size",
-			pure_virtual(&ICallingConventionWrapper::GetPopSize)
+			&ICallingConventionWrapper::GetPopSize,
+			"Return the number of bytes that should be added to the stack to clean up."
 		)
-
+		
 		.def("get_argument_ptr",
-			pure_virtual(&ICallingConventionWrapper::GetArgumentPtrWrapper)
+			&ICallingConventionWrapper::GetArgumentPtrWrapper,
+			(arg("index"), arg("registers")),
+			"Return a pointer to the argument at the given index.\n"
+			"\n"
+			":param int index: The index of the argument.\n"
+			":param Registers registers: A snapshot of all saved registers."
 		)
 
 		.def("argument_ptr_changed",
-			pure_virtual(&ICallingConventionWrapper::ArgumentPtrChanged)
+			&ICallingConventionWrapper::ArgumentPtrChanged,
+			(arg("index"), arg("registers"), arg("ptr")),
+			"Called when the argument pointer returned by :meth:`get_argument_ptr` has been changed.\n"
+			"\n"
+			":param int index: The index of the argument that has been changed.\n"
+			":param Registers registers: A snapshot of all saved registers.\n"
+			":param Pointer ptr: The argument pointer that has been changed."
 		)
 
 		.def("get_return_ptr",
-			pure_virtual(&ICallingConventionWrapper::GetReturnPtrWrapper)
+			&ICallingConventionWrapper::GetReturnPtrWrapper,
+			(arg("registers")),
+			"Return a pointer to the return value.\n"
+			"\n"
+			":param Registers registers: A snapshot of all saved registers."
 		)
 
 		.def("return_ptr_changed",
-			pure_virtual(&ICallingConventionWrapper::ReturnPtrChanged)
+			&ICallingConventionWrapper::ReturnPtrChanged,
+			(arg("registers"), arg("ptr")),
+			"Called when the return value pointer returned by :meth:`get_return_ptr` has been changed.\n"
+			"\n"
+			":param Registers registers: A snapshot of all saved registers.\n"
+			":param Pointer ptr: The return value pointer that has been changed."
 		)
 
 		.add_property("argument_types",
-			&ICallingConventionWrapper::GetArgTypes
+			&ICallingConventionWrapper::GetArgTypes,
+			"A list of :class:`DataType` values that define the argument types of a function."
 		)
 
 		.def_readonly("return_type",
-			&ICallingConventionWrapper::m_returnType
+			&ICallingConventionWrapper::m_returnType,
+			"A :class:`DataType` value that defines the return type of a function."
 		)
 
 		.def_readonly("alignment",
-			&ICallingConventionWrapper::m_iAlignment
+			&ICallingConventionWrapper::m_iAlignment,
+			"An integer that defines the stack alignment."
 		)
 
 		ADD_MEM_TOOLS_WRAPPER(ICallingConventionWrapper, ICallingConvention)
