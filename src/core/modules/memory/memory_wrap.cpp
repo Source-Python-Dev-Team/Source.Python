@@ -745,37 +745,56 @@ void export_functions(scope _memory)
 {
 	def("find_binary",
 		&FindBinary,
-		"Returns a BinaryFile object or None.",
 		("path", arg("srv_check")=true),
+		"Search for a binary and return it as a :class:`BinaryFile` object.\n"
+		"\n"
+		":param str path: The path to the binary file (absolute, relative or just the name of the file if it's on the search path).\n"
+		":param bool srv_check: If True it will automatically check the binary for the '_srv' ending on Linux.",
 		reference_existing_object_policy()
 	);
 	
 	def("alloc",
 		Alloc,
-		"Allocates a memory block.",
 		("size", arg("auto_dealloc")=true),
+		"Allocate a memory block.\n"
+		"\n"
+		":param int size: The size (in bytes) of the memory block.\n"
+		":param bool auto_dealloc: If True the memory block will be deallocated automatically when the return value goes out of the scope.",
 		manage_new_object_policy()
 	);
 
 	def("get_object_pointer",
 		&GetObjectPointer,
-		args("object"),
-		"Returns the pointer of the C++ object"
+		(arg("obj")),
+		"Return the pointer of the C++ object of a given Python object.\n"
+		"\n"
+		":param obj: The object you want to retrieve a pointer from."
 	);
 
 	def("make_object",
 		&MakeObject,
-		"Wraps a pointer using an exposed class."
+		(arg("cls"), arg("ptr")),
+		"Wrap a pointer using an exposed class.\n"
+		"\n"
+		":param cls: The class that should be used to wrap the pointer.\n"
+		":param Pointer ptr: The pointer that should be wrapped."
 	);
 
 	def("get_size",
 		&GetSize,
-		"Returns the size of the class object or instance of its C++ class."
+		(arg("cls")),
+		"Return the size of a class or class object of its C++ class.\n"
+		"\n"
+		":param cls: A class or class object."
 	);
 
 	def("get_data_type_size",
 		&GetDataTypeSize,
-		("data_type", arg("alignment")=4)
+		("data_type", arg("alignment")=4),
+		"Return the size of the data type after applying alignment.\n"
+		"\n"
+		":param DataType data_type: The data type you would like to get the size of.\n"
+		":param int alignment: The alignment that should be used."
 	);
 }
 
