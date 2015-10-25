@@ -30,6 +30,10 @@ Contents
    updating
    sp-commands
    events
+   contributing
+   coding-conventions
+   reporting-a-bug
+   known-issues
    credits
    todos
 
