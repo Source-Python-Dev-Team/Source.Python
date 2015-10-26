@@ -87,9 +87,7 @@ memory_logger = _sp_logger.memory
 # >> CLASSES
 # =============================================================================
 class Callback(AutoUnload, Function):
-    """A decorator that creates a function in memory that calls a Python
-    callback.
-    """
+    """Decorator to create a function in memory to call a Python callback."""
 
     def __init__(self, convention, arg_types, return_type):
         """Initialize the Callback object.
@@ -124,8 +122,9 @@ class Callback(AutoUnload, Function):
         self._hook = self.add_pre_hook(hook)
 
     def __call__(self, *args, **kw):
-        """Store the given callback on the first call. All further calls will
-        call the created callback function.
+        """Store the given callback on the first call.
+
+        All further calls will call the created callback function.
         """
         if self.callback is None:
             assert callable(args[0])
@@ -144,8 +143,10 @@ class Callback(AutoUnload, Function):
 # >> FUNCTIONS
 # =============================================================================
 def get_virtual_function(obj, function_name, function_index=0):
-    """Return a :class:`Function` object created by using a
-    :class:`FunctionInfo` object.
+    """Return a :class:`Function` object.
+    
+    Create the :class:`Function` object by using
+    a :class:`FunctionInfo` object.
 
     :param obj: An object of an exposed class.
     :param str function_name: See :func:`get_function_info`.

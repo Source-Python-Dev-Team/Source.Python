@@ -55,8 +55,7 @@ class SimpleRadioMenu(_BaseMenu):
     """This class creates a basic radio menu."""
 
     def _get_menu_data(self, player_index):
-        """Return a triple that contains the menu string to send, the enabled
-        slots and the time to show the menu.
+        """Return the menu string, enabled slots, and time to show the menu.
 
         :param int player_index: See
             :meth:`menus.base._BaseMenu._get_menu_data`.

@@ -439,8 +439,10 @@ class _CoreCommandManager(SubCommandManager):
             output += '{}\n{}\n\n'.format(group, '-'*len(group))
 
             # Add columns + separators
-            output += '{}\n{}{}  {}\n{}\n'.format(separator, column1,
-                ' '*(max_nickname-col1_len), column2, separator)
+            output += '{}\n{}{}  {}\n{}\n'.format(
+                separator, column1,
+                ' ' * (max_nickname - col1_len),
+                column2, separator)
 
             # Add the table content
             for nickname, realname in names.items():

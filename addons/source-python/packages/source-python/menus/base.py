@@ -235,7 +235,7 @@ class _PagedMenuBase(object):
 
     def _get_options(self, page_index):
         """Return a tuple containing the options for the given page index.
-        
+
         :param int page_index: The index of the page.
         """
         item_count = self._get_max_item_count()
@@ -314,7 +314,9 @@ class _BaseOption(_MenuData):
 # >> HELPER FUNCTIONS
 # =============================================================================
 def _translate_text(text, player_index):
-    """Translate ``text`` if it is an instance of
+    """Translate the given ``text``.
+
+    Only translate if ``text`` is an instance of
     :class:`translations.strings.TranslationStrings`. Otherwise the original
     text will be returned.
     """

@@ -50,7 +50,7 @@ class SimpleESCMenu(_BaseMenu):
             self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=WHITE):
         """Initialize the object.
-        
+
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
         :param callable|None select_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
@@ -68,8 +68,7 @@ class SimpleESCMenu(_BaseMenu):
         self.title_color = title_color
 
     def _get_menu_data(self, player_index):
-        """Return all relevant menu data as a :class:`keyvalues.KeyValues`
-        object.
+        """Return all menu data as a :class:`keyvalues.KeyValues` object.
 
         :param int player_index: See
             :meth:`menus.base._BaseMenu._get_menu_data`.
@@ -167,7 +166,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             self, data=None, select_callback=None, build_callback=None,
             description=None, title=None, title_color=WHITE, fill=True):
         """Initialize the object.
-        
+
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
         :param callable|None select_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
@@ -303,7 +302,7 @@ class SimpleESCOption(_BaseOption):
             self, choice_index, text, value=None,
             highlight=True, selectable=True):
         """Initialize the option.
-        
+
         :param int choice_index: The number that is required to select the
             option.
         :param str text: See :meth:`menus.base._BaseOption.__init__`.
