@@ -243,8 +243,10 @@ void export_vector(scope _mathlib)
 //-----------------------------------------------------------------------------
 void export_qangle(scope _mathlib)
 {
-	class_<QAngle>("QAngle")
-		.def(init<float, float, float>())
+	class_<QAngle>("QAngle", init<float, float, float>())
+		.def("__init__", make_constructor(&QAngleExt::CreateNullQAngle))
+
+		.def("__repr__", &QAngleExt::__repr__)
 
 		.def_readwrite("x",
 			&QAngle::x
@@ -317,9 +319,11 @@ void export_qangle(scope _mathlib)
 //-----------------------------------------------------------------------------
 void export_quaternion(scope _mathlib)
 {
-	class_<Quaternion>("Quaternion")
-		.def(init<float, float, float, float>())
+	class_<Quaternion>("Quaternion", init<float, float, float, float>())
 		.def(init<RadianEuler>())
+		.def("__init__", make_constructor(&QuaternionExt::CreateNullQuaternion))
+
+		.def("__repr__", &QuaternionExt::__repr__)
 
 		.def("is_valid",
 			&Quaternion::IsValid,
@@ -398,10 +402,12 @@ void export_cplane_t(scope _mathlib)
 //-----------------------------------------------------------------------------
 void export_radian_euler(scope _mathlib)
 {
-	class_<RadianEuler>("RadianEuler")
-		.def(init<float, float, float>())
+	class_<RadianEuler>("RadianEuler", init<float, float, float>())
 		.def(init<Quaternion>())
 		.def(init<QAngle>())
+		.def("__init__", make_constructor(&RadianEulerExt::CreateNullRadianEuler))
+
+		.def("__repr__", &RadianEulerExt::__repr__)
 
 		.def("to_qangle",
 			&RadianEuler::ToQAngle,
