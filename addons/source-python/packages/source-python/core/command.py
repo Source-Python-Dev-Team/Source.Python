@@ -214,7 +214,7 @@ class _CoreCommandManager(SubCommandManager):
                     'Source.Python Development Team', 'Source.Python', VERSION)
             except:
                 self.logger.log_message(
-                    'An occured while creating Sphinx ' +
+                    'An error occured while creating Sphinx ' +
                     'project for Source.Python.')
             else:
                 self.logger.log_message(
