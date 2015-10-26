@@ -57,7 +57,7 @@ public:
 
 	static str GetRepr(const Color& color)
 	{
-		return str(tuple(color));
+		return str("Color" + str(tuple(color)));
 	}
 };
 

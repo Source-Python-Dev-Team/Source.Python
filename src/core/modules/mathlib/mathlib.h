@@ -39,18 +39,16 @@
 class VectorExt
 {
 public:
-	static Vector* CreateNullVector()
-	{
-		return new Vector(0, 0, 0);
-	}
-
 	static bool IsWithinBox(Vector& point, Vector& corner1, Vector& corner2)
 	{
 		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
 	}
 
 	static str __repr__(Vector* pVector)
-	{ return str(tuple(pVector)); }
+	{
+		return str("Vector" + str(tuple(pVector)));
+	}
+	// { return str(tuple(pVector)); }
 };
 
 
@@ -60,13 +58,8 @@ public:
 class QAngleExt
 {
 public:
-	static QAngle* CreateNullQAngle()
-	{
-		return new QAngle(0, 0, 0);
-	}
-
 	static str __repr__(QAngle* pQAngle)
-	{ return str(tuple(pQAngle)); }
+	{ return str("QAngle" + str(tuple(pQAngle))); }
 };
 
 
@@ -76,13 +69,8 @@ public:
 class QuaternionExt
 {
 public:
-	static Quaternion* CreateNullQuaternion()
-	{
-		return new Quaternion(0, 0, 0, 0);
-	}
-
 	static str __repr__(Quaternion* pQuaternion)
-	{ return str(tuple(pQuaternion)); }
+	{ return str("Quaternion" + str(tuple(pQuaternion))); }
 };
 
 
@@ -92,13 +80,8 @@ public:
 class RadianEulerExt
 {
 public:
-	static RadianEuler* CreateNullRadianEuler()
-	{
-		return new RadianEuler(0, 0, 0);
-	}
-
 	static str __repr__(RadianEuler* pRadianEuler)
-	{ return str(tuple(pRadianEuler)); }
+	{ return str("RadianEuler" + str(tuple(pRadianEuler))); }
 };
 
 #endif // _MATHLIB_H
