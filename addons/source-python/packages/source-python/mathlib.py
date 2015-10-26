@@ -33,7 +33,7 @@ __all__ = ('NULL_QANGLE',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Set the Null objects
-NULL_QANGLE = QAngle(.0, .0, .0)
-NULL_QUATERNION = Quaternion(.0, .0, .0, .0)
-NULL_RADIANEULER = RadianEuler(.0, .0, .0)
+NULL_QANGLE = QAngle()
+NULL_QUATERNION = Quaternion()
+NULL_RADIANEULER = RadianEuler()
 NULL_VECTOR = Vector()

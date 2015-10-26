@@ -55,8 +55,7 @@ class SimpleRadioMenu(_BaseMenu):
     """This class creates a basic radio menu."""
 
     def _get_menu_data(self, player_index):
-        """Return a triple that contains the menu string to send, the enabled
-        slots and the time to show the menu.
+        """Return the menu string, enabled slots, and time to show the menu.
 
         :param int player_index: See
             :meth:`menus.base._BaseMenu._get_menu_data`.
@@ -107,7 +106,7 @@ class SimpleRadioMenu(_BaseMenu):
         if choice_index == BUTTON_CLOSE:
             return None
 
-        return super(SimpleRadioMenu, self)._select(
+        return super()._select(
             player_index,
             self._player_pages[player_index].options[choice_index])
 
@@ -159,9 +158,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         :param bool fill: If True the menu will be filled so that it will
             always have the same  size.
         """
-        super(PagedRadioMenu, self).__init__(
-            data, select_callback, build_callback
-        )
+        super().__init__(data, select_callback, build_callback)
 
         self.title = title
         self.description = description
@@ -303,7 +300,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             self.set_player_page(player_index, page.index + 1)
             return self
 
-        return super(PagedRadioMenu, self)._select(player_index, choice_index)
+        return super()._select(player_index, choice_index)
 
 
 class _BaseRadioOption(_BaseOption):
@@ -332,8 +329,7 @@ class SimpleRadioOption(_BaseRadioOption):
         :param bool hightlight: If True the text will be highlighted.
         :param bool selectable: If True the option will be selectable.
         """
-        super(SimpleRadioOption, self).__init__(
-            text, value, highlight, selectable)
+        super().__init__(text, value, highlight, selectable)
         self.choice_index = choice_index
 
     def _render(self, player_index, choice_index=None):

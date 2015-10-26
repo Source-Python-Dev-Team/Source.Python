@@ -48,7 +48,7 @@ class ParserError(Exception):
 
     def __init__(self, message):
         """Store the message."""
-        super(ParserError, self).__init__(message)
+        super().__init__(message)
         self.message = message.rstrip() if message else ''
 
 
@@ -63,7 +63,7 @@ class CommandParser(argparse.ArgumentParser):
 
         See :class:`argparse.ArgumentParser` for more information.
         """
-        super(CommandParser, self).__init__(command_name, *args, **kwargs)
+        super().__init__(command_name, *args, **kwargs)
 
     def _print_message(self, message, file=None):
         """Redirect messages that should be printed into a ParserError."""

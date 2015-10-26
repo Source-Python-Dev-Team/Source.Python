@@ -42,7 +42,7 @@ class PluginInfo(OrderedDict):
 
             # Re-call __setattr__
             # This is done to fix an issue with OrderedDict.__init__
-            super(PluginInfo, self).__setattr__(attribute, value)
+            super().__setattr__(attribute, value)
 
             # No need to go further
             return

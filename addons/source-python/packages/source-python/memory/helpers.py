@@ -208,7 +208,7 @@ class Array(BasePointer):
         # Optional -- specifies the length of the array
         self._length = length
 
-        super(Array, self).__init__(ptr)
+        super().__init__(ptr)
 
     def __getitem__(self, index):
         """Return the value at the given index."""
@@ -302,7 +302,7 @@ class MemberFunction(Function):
 
     def __init__(self, manager, return_type, func, this):
         """Initialize the instance."""
-        super(MemberFunction, self).__init__(func)
+        super().__init__(func)
 
         # This should always hold a TypeManager instance
         self._manager = manager
@@ -315,11 +315,11 @@ class MemberFunction(Function):
 
     def __call__(self, *args):
         """Call the function dynamically."""
-        return super(MemberFunction, self).__call__(self._this, *args)
+        return super().__call__(self._this, *args)
 
     def call_trampoline(self, *args):
         """Call the trampoline dynamically."""
-        return super(MemberFunction, self).call_trampoline(
+        return super().call_trampoline(
             self._this,
             *args
         )

@@ -49,12 +49,12 @@ class Entity(BaseEntity, _EntitySpecials):
     def __init__(self, index):
         """Initialize the Entity object."""
         # Initialize the object
-        super(Entity, self).__init__(index)
+        super().__init__(index)
 
         # Set the entity's base attributes
-        super(Entity, self).__setattr__('_index', index)
-        super(Entity, self).__setattr__('_edict', None)
-        super(Entity, self).__setattr__('_pointer', None)
+        super().__setattr__('_index', index)
+        super().__setattr__('_edict', None)
+        super().__setattr__('_pointer', None)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
@@ -88,21 +88,21 @@ class Entity(BaseEntity, _EntitySpecials):
             name = attr[1:]
 
             # Is the attribute a property?
-            if (name in super(Entity, self).__dir__() and isinstance(
+            if (name in super().__dir__() and isinstance(
                     getattr(self.__class__, name, None), property)):
 
                 # Set the private attribute's value
-                super(Entity, self).__setattr__(attr, value)
+                super().__setattr__(attr, value)
 
                 # No need to go further
                 return
 
         # Is the given attribute a property?
-        if (attr in super(Entity, self).__dir__() and isinstance(
+        if (attr in super().__dir__() and isinstance(
                 getattr(self.__class__, attr, None), property)):
 
             # Set the property's value
-            super(Entity, self).__setattr__(attr, value)
+            super().__setattr__(attr, value)
 
             # No need to go further
             return
@@ -120,12 +120,12 @@ class Entity(BaseEntity, _EntitySpecials):
                 return
 
         # If the attribute is not found, just set the attribute
-        super(Entity, self).__setattr__(attr, value)
+        super().__setattr__(attr, value)
 
     def __dir__(self):
         """Return an alphabetized list of attributes for the instance."""
         # Get the base attributes
-        attributes = set(super(Entity, self).__dir__())
+        attributes = set(super().__dir__())
 
         # Loop through all instances for the entity
         for instance in self.instances:

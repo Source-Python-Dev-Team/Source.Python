@@ -75,7 +75,7 @@ class AutoUnload(object):
     def __new__(cls, *args, **kwargs):
         """Overwrite __new__ to store the calling module."""
         # Get the class instance
-        self = super(AutoUnload, cls).__new__(cls)
+        self = super().__new__(cls)
 
         # Get the calling module
         caller = getmodule(stack()[1][0])
@@ -105,7 +105,7 @@ class GameConfigObj(ConfigObj):
         path, name = Path(infile).splitpath()
 
         # Call ConfigObj's __init__ method...
-        super(GameConfigObj, self).__init__(infile, *args, **kwargs)
+        super().__init__(infile, *args, **kwargs)
 
         # Move the path to the current engine sub-directory...
         path = path.joinpath(SOURCE_ENGINE)

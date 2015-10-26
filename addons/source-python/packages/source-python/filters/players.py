@@ -81,7 +81,7 @@ class _PlayerTeams(dict):
         instance = _Team(value)
 
         # Add the _Team instance for the given team name
-        super(_PlayerTeams, self).__setitem__(item, instance)
+        super().__setitem__(item, instance)
 
 # Get the _PlayerTeams instance
 _player_teams = _PlayerTeams()

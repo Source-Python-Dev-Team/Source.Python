@@ -48,7 +48,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     def __init__(self, command, description='', prefix=''):
         """Called on instance initialization."""
         # Re-call OrderedDict's __init__ to properly setup the object
-        super(SubCommandManager, self).__init__()
+        super().__init__()
 
         # Does the class have a proper manager object assigned?
         if not (hasattr(self, 'manager') and

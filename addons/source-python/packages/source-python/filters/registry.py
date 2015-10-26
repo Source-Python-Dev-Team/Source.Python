@@ -20,7 +20,7 @@ class _BaseRegistry(dict):
     def __init__(self, class_name):
         """Store the name and error type on initialization."""
         # Initialize the dictionary
-        super(_BaseRegistry, self).__init__()
+        super().__init__()
 
         # Store the registering class' name
         self._class_name = class_name
@@ -79,7 +79,7 @@ class _FilterRegistry(_BaseRegistry):
             raise FilterError('Invalid {0} "{1}"'.format(self._name, item))
 
         # Return the callable
-        return super(_FilterRegistry, self).__getitem__(item)
+        return super().__getitem__(item)
 
 
 class _ReturnTypeRegistry(_BaseRegistry):
@@ -97,4 +97,4 @@ class _ReturnTypeRegistry(_BaseRegistry):
             raise ReturnTypeError('Invalid {0} "{1}"'.format(self._name, item))
 
         # Return the callable
-        return super(_ReturnTypeRegistry, self).__getitem__(item)
+        return super().__getitem__(item)

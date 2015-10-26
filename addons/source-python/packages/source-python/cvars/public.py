@@ -29,7 +29,7 @@ class PublicConVar(AutoUnload, ConVar):
             self, name, value='0', flags=0,
             description='', min_value=None, max_value=None):
         """Set the cvar's value and set the notify flag."""
-        super(PublicConVar, self).__init__(
+        super().__init__(
             name, value, flags, description, min_value, max_value)
         self.set_string(value)
         self.make_public()

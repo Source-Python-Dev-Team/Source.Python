@@ -26,7 +26,7 @@ class RecipientFilter(_RecipientFilter):
     def __init__(self, *filters):
         """Initialize and update the recipient filter."""
         # Initialize the _RecipientFilter
-        super(RecipientFilter, self).__init__()
+        super().__init__()
 
         # Store the given filters
         self.filters = filters

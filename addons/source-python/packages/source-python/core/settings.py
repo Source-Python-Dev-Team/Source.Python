@@ -44,7 +44,7 @@ class _CoreSettings(ConfigObj):
     def __init__(self, infile):
         """Add missing items and set comments using the server's language."""
         # Import the file
-        super(_CoreSettings, self).__init__(infile)
+        super().__init__(infile)
         self._language = None
         self._check_settings()
 

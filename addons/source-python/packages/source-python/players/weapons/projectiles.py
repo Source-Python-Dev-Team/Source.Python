@@ -33,7 +33,7 @@ class _ProjectileMeta(BaseEntity.__class__):
                 del odict[attribute]
 
         # Create the object
-        cls = super(_ProjectileMeta, cls).__new__(cls, name, bases, odict)
+        cls = super().__new__(cls, name, bases, odict)
 
         # Is the the baseclass that uses the metaclass?
         if len(bases) != 1 or bases[0].__name__ != '_ProjectileBase':

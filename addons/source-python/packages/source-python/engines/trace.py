@@ -250,7 +250,7 @@ class TraceFilterSimple(TraceFilter):
             trace will not hit these entities.
         :param TraceType trace_type: The trace type that should be used.
         """
-        super(TraceFilterSimple, self).__init__()
+        super().__init__()
         self.trace_type = trace_type
         self.ignore = tuple(map(inthandle_from_index, ignore))
 

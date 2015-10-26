@@ -33,7 +33,7 @@ class _HookBase(list):
                 '{0} callback already registered'.format(self.class_name))
 
         # Add the callback to the list
-        super(_HookBase, self).append(callback)
+        super().append(callback)
 
     @property
     def class_name(self):

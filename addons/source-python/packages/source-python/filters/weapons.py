@@ -76,8 +76,7 @@ class WeaponClassIter(_IterObject):
     def __init__(
             self, is_filters=None, not_filters=None, return_types='weapon'):
         """Call main __init__ with "weapon" as the default return_types."""
-        super(WeaponClassIter, self).__init__(
-            is_filters, not_filters, return_types)
+        super().__init__(is_filters, not_filters, return_types)
 
     @staticmethod
     def iterator():

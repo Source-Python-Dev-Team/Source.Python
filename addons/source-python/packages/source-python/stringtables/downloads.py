@@ -29,7 +29,7 @@ class Downloadables(AutoUnload, set):
 
     def __init__(self):
         """Add the instance to the downloadables list."""
-        super(Downloadables, self).__init__()
+        super().__init__()
         _downloadables_list.append(self)
 
     def add(self, item):
@@ -44,7 +44,7 @@ class Downloadables(AutoUnload, set):
         _downloadables_list._add_to_download_table(item)
 
         # Add the item to the script's downloadables
-        super(Downloadables, self).add(item)
+        super().add(item)
 
     def _set_all_downloads(self):
         """Add all downloadables for the script on level init."""
@@ -64,7 +64,7 @@ class _DownloadablesList(list):
 
     def __init__(self):
         """Refresh the downloadables table instance."""
-        super(_DownloadablesList, self).__init__()
+        super().__init__()
         self._refresh_table_instance()
 
     def _refresh_table_instance(self):

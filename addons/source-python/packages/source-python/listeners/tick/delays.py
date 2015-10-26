@@ -91,7 +91,7 @@ class _TickDelays(dict):
 
     def __init__(self):
         """Store an ordered list to sort delays."""
-        super(_TickDelays, self).__init__()
+        super().__init__()
         self._order = list()
 
     def __missing__(self, item):
@@ -153,7 +153,7 @@ class _TickDelays(dict):
         self._order.remove(item)
 
         # Remove the item from the dictionary
-        super(_TickDelays, self).__delitem__(item)
+        super().__delitem__(item)
 
     def delay(self, seconds, callback, *args, **kwargs):
         """Create a delay."""

@@ -119,7 +119,7 @@ class _ServerClasses(TypeManager):
 
     def __init__(self):
         """Store the base attributes."""
-        super(_ServerClasses, self).__init__()
+        super().__init__()
         self._entity_server_classes = defaultdict(list)
 
     def get_entity_server_classes(self, entity):
@@ -244,8 +244,12 @@ class _ServerClasses(TypeManager):
         # Get the specific types of values to use
         input_contents = dict(map(
             reversed, manager_contents.get('input', {}).items()))
-        property_contents = dict(map(
-            reversed, manager_contents.get('property', {}).items()))
+        property_contents = {}
+        for item, value in manager_contents.get('property', {}).items():
+            if isinstance(value, Section):
+                property_contents[value['name']] = (item, value['type'])
+            else:
+                property_contents[value] = item
         keyvalue_contents = {}
         hardcoded_keyvalues = {}
         for item, value in manager_contents.get('keyvalue', {}).items():
@@ -485,9 +489,19 @@ class _ServerClasses(TypeManager):
         if name not in contents:
             return
 
-        # Add the property to the instance
-        setattr(instance, contents[name], self.entity_property(
-            types[prop.type], offset, networked))
+        # Is this a property that needs transformed?
+        if isinstance(contents[name], tuple):
+
+            # Add the property to the instance
+            setattr(instance, contents[name][0], self.entity_property(
+                contents[name][1], offset, networked))
+
+        # Is the property normal?
+        else:
+
+            # Add the property to the instance
+            setattr(instance, contents[name], self.entity_property(
+                types[prop.type], offset, networked))
 
     @staticmethod
     def keyvalue(name, type_name):
@@ -520,9 +534,7 @@ class _ServerClasses(TypeManager):
 
         return property(fget)
 
-    def entity_property(
-            self, type_name, offset, networked,
-            true_value=None, false_value=None):
+    def entity_property(self, type_name, offset, networked):
         """Entity property."""
         native_type = Type.is_native(type_name)
 
@@ -531,32 +543,14 @@ class _ServerClasses(TypeManager):
             # Is the property a native type?
             if native_type:
 
-                # Retrieve the value
-                value = getattr(ptr, 'get_' + type_name)(offset)
-
-            # Is the property not a native type?
-            else:
-
-                # Retrieve the value
-                value = self.convert(type_name, ptr + offset)
-
-            # Does the property not have True/False values?
-            if true_value is None:
-
                 # Return the value
-                return value
+                return getattr(ptr, 'get_' + type_name)(offset)
 
-            # Return whether the value equals the True value
-            return value == true_value
+            # Return the value
+            return self.convert(type_name, ptr + offset)
 
         def fset(ptr, value):
             """Set the property value and notify if networked."""
-            # Does the property have True/False values?
-            if true_value is not None:
-
-                # Get the proper value to set
-                value = true_value if value else false_value
-
             # Is the property a native type?
             if native_type:
 
