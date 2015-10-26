@@ -37,7 +37,7 @@ class EntityDictionary(AutoUnload, dict):
             self._on_entity_deleted)
 
         # Initialize the dictionary...
-        super(EntityDictionary, self).__init__()
+        super().__init__()
 
     def __missing__(self, index):
         """Add and return the entity instance for the given index."""
@@ -53,7 +53,7 @@ class EntityDictionary(AutoUnload, dict):
             return
 
         # Remove the given index from the dictionary...
-        super(EntityDictionary, self).__delitem__(index)
+        super().__delitem__(index)
 
     def on_automatically_removed(self, index):
         """Called when an index is automatically removed."""
@@ -70,7 +70,7 @@ class EntityDictionary(AutoUnload, dict):
         self.on_automatically_removed(index)
 
         # Remove the index from the dictionary...
-        super(EntityDictionary, self).__delitem__(index)
+        super().__delitem__(index)
 
     def _unload_instance(self):
         """Unregister our OnEntityDeleted listener."""

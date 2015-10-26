@@ -45,7 +45,7 @@ class _EventMeta(type):
     def __new__(mcs, name, bases, odict):
         """Called when the class is being created."""
         # Create the instance
-        cls = super(_EventMeta, mcs).__new__(mcs, name, bases, dict(odict))
+        cls = super().__new__(mcs, name, bases, dict(odict))
 
         # Store an ordered dictionary
         cls._odict = OrderedDict()
@@ -80,7 +80,7 @@ class CustomEvent(metaclass=_EventMeta):
                     'the event "{1}"'.format(kwarg, self.name))
 
             # Store the variable's value as a private attribute
-            super(CustomEvent, self).__setattr__('_' + kwarg, kwargs[kwarg])
+            super().__setattr__('_' + kwarg, kwargs[kwarg])
 
     def __setattr__(self, attr, value):
         """Store variable values as private attributes."""
@@ -88,13 +88,13 @@ class CustomEvent(metaclass=_EventMeta):
         if not attr.startswith('_') and attr in self._odict:
 
             # Set the attribute as the private value
-            super(CustomEvent, self).__setattr__('_' + attr, value)
+            super().__setattr__('_' + attr, value)
 
             # No need to go further
             return
 
         # Set the attribute
-        super(CustomEvent, self).__setattr__(attr, value)
+        super().__setattr__(attr, value)
 
     def __enter__(self):
         """Context management that automatically fires on exit."""
@@ -138,7 +138,7 @@ class CustomEvent(metaclass=_EventMeta):
         for variable in self._odict:
 
             # Set the variable to its default value
-            super(CustomEvent, self).__setattr__(
+            super().__setattr__(
                 '_' + variable, getattr(self, variable)._default)
 
     @property

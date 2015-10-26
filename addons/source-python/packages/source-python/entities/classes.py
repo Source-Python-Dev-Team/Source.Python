@@ -119,7 +119,7 @@ class _ServerClasses(TypeManager):
 
     def __init__(self):
         """Store the base attributes."""
-        super(_ServerClasses, self).__init__()
+        super().__init__()
         self._entity_server_classes = defaultdict(list)
 
     def get_entity_server_classes(self, entity):

@@ -41,7 +41,7 @@ class ResourceFile(OrderedDict):
     def __init__(self, filepath, *events):
         """Called on instatiation."""
         # Create the OrderedDict instance
-        super(ResourceFile, self).__init__()
+        super().__init__()
 
         # Does the given path end with the extension?
         if filepath.endswith('.res'):

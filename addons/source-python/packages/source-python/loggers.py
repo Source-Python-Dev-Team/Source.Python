@@ -66,7 +66,7 @@ class _LogInstance(dict):
     def __init__(self, parent=None, name=None):
         """Store the parent and gets a child of the parent."""
         # Initialize the dictionary
-        super(_LogInstance, self).__init__()
+        super().__init__()
 
         # Store the parent instance
         self.parent = parent
@@ -259,7 +259,7 @@ class LogManager(_LogInstance):
             log_format=None, date_format=None):
         """Store the base values and creates the logger."""
         # Initialize the dictionary
-        super(LogManager, self).__init__()
+        super().__init__()
 
         # Store the base formatter
         self._formatter = Formatter(log_format, date_format)

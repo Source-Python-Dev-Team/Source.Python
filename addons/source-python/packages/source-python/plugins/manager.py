@@ -45,7 +45,7 @@ class PluginManager(OrderedDict):
     def __init__(self, base_import=''):
         """Called when the class instance is initialized."""
         # Re-call OrderedDict's __init__ to properly setup the object
-        super(PluginManager, self).__init__()
+        super().__init__()
 
         # Store the base import path
         self._base_import = base_import
@@ -149,7 +149,7 @@ class PluginManager(OrderedDict):
         self._remove_modules(plugin_name)
 
         # Remove the plugin from the dictionary
-        super(PluginManager, self).__delitem__(plugin_name)
+        super().__delitem__(plugin_name)
 
     @property
     def base_import(self):

@@ -41,7 +41,7 @@ class _UserQueue(deque):
 
         :param int index: A valid player index.
         """
-        super(_UserQueue, self).__init__()
+        super().__init__()
         self._index = index
 
     def append(self, menu):
@@ -51,7 +51,7 @@ class _UserQueue(deque):
         """
         # Make sure we don't add a menu twice.
         if menu not in self:
-            super(_UserQueue, self).append(menu)
+            super().append(menu)
 
     def appendleft(self, menu):
         """Add a menu to the beginning of the queue.
@@ -60,7 +60,7 @@ class _UserQueue(deque):
         """
         # Make sure we don't add a menu twice.
         if menu not in self:
-            super(_UserQueue, self).appendleft(menu)
+            super().appendleft(menu)
 
     def extend(self, menus):
         """Add all menus in the given iterable to the end of the queue.
@@ -93,7 +93,7 @@ class _UserQueue(deque):
         """
         # Make sure we don't add a menu twice.
         if menu not in self:
-            super(_UserQueue, self).__setitem__(index, menu)
+            super().__setitem__(index, menu)
 
     def _refresh(self):
         """Re-send the current active menu.
@@ -173,7 +173,7 @@ class _QueueHolder(dict):
         :param _UserQueue cls: The queue to hold.
         :param TickRepeat repeat: Global refresh repeat object.
         """
-        super(_QueueHolder, self).__init__()
+        super().__init__()
         self._cls = cls
         self._repeat = repeat
 
@@ -193,7 +193,7 @@ class _QueueHolder(dict):
 
     def pop(self, key, default=None):
         """Remove and return the given key's value."""
-        return_value = super(_QueueHolder, self).pop(key, default)
+        return_value = super().pop(key, default)
 
         # Is the dictionary currently empty?
         if not self:

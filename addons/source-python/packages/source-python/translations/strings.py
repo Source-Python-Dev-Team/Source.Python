@@ -55,7 +55,7 @@ class LangStrings(dict):
     def __init__(self, infile, encoding='utf_8'):
         """Add all strings and fix double escaped strings."""
         # Initialize the dictionary
-        super(LangStrings, self).__init__()
+        super().__init__()
 
         # Get the path to the given file
         self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
@@ -164,7 +164,7 @@ class LangStrings(dict):
                 value = language_code
 
         # Set the attribute
-        super(LangStrings, self).__setattr__(attribute, value)
+        super().__setattr__(attribute, value)
 
     def _create_server_file(self):
         """Create a server specific langstrings file."""
@@ -230,7 +230,7 @@ class TranslationStrings(dict):
 
     def __init__(self):
         """Store an empty dictionary as the tokens."""
-        super(TranslationStrings, self).__init__()
+        super().__init__()
         self.tokens = {}
 
     def get_string(self, language=None, **tokens):

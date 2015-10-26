@@ -46,7 +46,7 @@ class Column(list):
         :param int left_padding: Number of spaces for left padding.
         :param int right_padding: Number of spaces for right padding.
         """
-        super(Column, self).__init__()
+        super().__init__()
         self.name = Item(name, alignment)
         self.left_padding = left_padding
         self.right_padding = right_padding

@@ -60,7 +60,7 @@ class _BaseMenu(AutoUnload, list):
                 1. The instance of this menu.
                 2. The index of the player who will recieve this menu.
         """
-        super(_BaseMenu, self).__init__(list() if data is None else data)
+        super().__init__(list() if data is None else data)
 
         self.select_callback = select_callback
         self.build_callback = build_callback
@@ -300,7 +300,7 @@ class _BaseOption(_MenuData):
         :param bool selectable: Set this to True if the option should be
             selectable.
         """
-        super(_BaseOption, self).__init__(text)
+        super().__init__(text)
         self.value = value
         self.highlight = highlight
         self.selectable = selectable

@@ -27,4 +27,4 @@ class WeaponDictionary(EntityDictionary):
 
     def __init__(self, weapon_class=WeaponEntity):
         """Initialize the dictionary."""
-        super(WeaponDictionary, self).__init__(weapon_class)
+        super().__init__(weapon_class)

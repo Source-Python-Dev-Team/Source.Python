@@ -62,8 +62,7 @@ class SimpleESCMenu(_BaseMenu):
             menu.
         :param Color title_color: The color of the title.
         """
-        super(SimpleESCMenu, self).__init__(
-            data, select_callback, build_callback)
+        super().__init__(data, select_callback, build_callback)
         self.description = description
         self.title = title
         self.title_color = title_color
@@ -115,7 +114,7 @@ class SimpleESCMenu(_BaseMenu):
         if not option.selectable:
             return self
 
-        return super(SimpleESCMenu, self)._select(player_index, option)
+        return super()._select(player_index, option)
 
     def _send(self, player_index):
         """Build and send the menu to the given player via create_message().
@@ -180,7 +179,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         :param bool fill: If True the menu will always have the same size by
             filling unused options.
         """
-        super(PagedESCMenu, self).__init__(
+        super().__init__(
             data, select_callback, build_callback,
             description, title, title_color)
         self.fill = fill
@@ -294,7 +293,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             self.set_player_page(player_index, page_index + 1)
             return self
 
-        return super(PagedESCMenu, self)._select(player_index, choice_index)
+        return super()._select(player_index, choice_index)
 
 
 class SimpleESCOption(_BaseOption):
@@ -312,8 +311,7 @@ class SimpleESCOption(_BaseOption):
         :param bool hightlight: Does not work with ESC menus.
         :param bool selectable: Does not work with ESC menus.
         """
-        super(SimpleESCOption, self).__init__(
-            text, value, highlight, selectable)
+        super().__init__(text, value, highlight, selectable)
         self.choice_index = choice_index
 
     def _render(self, player_index, choice_index=None):

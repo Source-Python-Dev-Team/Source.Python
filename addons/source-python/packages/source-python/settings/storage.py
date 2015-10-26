@@ -38,7 +38,7 @@ class _UniqueSettings(dict):
     def __init__(self, uniqueid):
         """Store the given uniqueid and adds it to the players table."""
         # Call the super class' __init__ to initialize the dictionary
-        super(_UniqueSettings, self).__init__()
+        super().__init__()
 
         # Store the given uniqueid
         self._uniqueid = uniqueid
@@ -55,7 +55,7 @@ class _UniqueSettings(dict):
     def __setitem__(self, variable, value):
         """Insert the given variable and value to their respective tables."""
         # Set the given variable's value in the dictionary
-        super(_UniqueSettings, self).__setitem__(variable, value)
+        super().__setitem__(variable, value)
 
         # If _player_settings_storage is initializing, don't try to call it
         if _IN_INITIALIZATION:
@@ -85,7 +85,7 @@ class _PlayerSettingsDictionary(dict):
     def __init__(self):
         """Connect to the database and retrieve any stored values."""
         # Call the super class' __init__ to initialize the dictionary
-        super(_PlayerSettingsDictionary, self).__init__()
+        super().__init__()
 
         # Connect to the database
         self._connection = connect(_STORAGE_PATH)

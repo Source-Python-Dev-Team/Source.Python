@@ -24,7 +24,7 @@ class _CvarManager(dict):
             self, name, default, flags, description, min_value, max_value):
         """Called on instantiation."""
         # Initialize the dictionary
-        super(_CvarManager, self).__init__()
+        super().__init__()
 
         # Is the given description a TranslationStrings instance?
         if isinstance(description, TranslationStrings):
@@ -72,7 +72,7 @@ class _CvarManager(dict):
             return
 
         # Set the instance's attribute
-        super(_CvarManager, self).__setattr__(attr, value)
+        super().__setattr__(attr, value)
 
     def __missing__(self, item):
         """Create the item as a _ListManager instance."""
@@ -160,7 +160,7 @@ class _ListManager(list):
     def __init__(self, name):
         """Called on instantiation."""
         # Initialize the list
-        super(_ListManager, self).__init__()
+        super().__init__()
 
         # Is the given name a TranslationStrings instance?
         if isinstance(name, TranslationStrings):
@@ -187,4 +187,4 @@ class _ListManager(list):
             text = text.get_string()
 
         # Add the item to the list
-        super(_ListManager, self).append(text)
+        super().append(text)

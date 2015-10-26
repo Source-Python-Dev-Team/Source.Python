@@ -42,7 +42,7 @@ class _WeaponManager(dict):
     def __init__(self, ini_file):
         """Load the ini file into the dictionary."""
         # Initialize the dictionary
-        super(_WeaponManager, self).__init__()
+        super().__init__()
 
         # Get the ConfigObj instance of the file
         ini = ConfigObj(ini_file, unrepr=True)
@@ -94,7 +94,7 @@ class _WeaponManager(dict):
         name = self._format_name(item)
 
         # Return whether the weapon is in the dictionary
-        return super(_WeaponManager, self).__contains__(name)
+        return super().__contains__(name)
 
     def _format_name(self, item):
         """Format the name to include the game's weapon prefix."""

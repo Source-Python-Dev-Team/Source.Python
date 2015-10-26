@@ -104,7 +104,7 @@ class Callback(AutoUnload, Function):
         # Allocate enough space for a jump, so we can hook it later. Then
         # convert it to a function. Of course, this isn't a function, but the
         # hook will override it.
-        super(Callback, self).__init__(
+        super().__init__(
             alloc(8, False).address, convention, arg_types, return_type)
 
         # A little hack to access the "self" argument
@@ -132,7 +132,7 @@ class Callback(AutoUnload, Function):
             self.callback = args[0]
             return self
 
-        return super(Callback, self).__call__(*args, **kw)
+        return super().__call__(*args, **kw)
 
     def _unload_instance(self):
         """Remove the hook, restore the allocated space and deallocate it."""
