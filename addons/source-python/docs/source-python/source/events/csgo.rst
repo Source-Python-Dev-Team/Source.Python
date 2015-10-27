@@ -451,7 +451,9 @@ userid  The userid of the player whose round start sounds are reset.  short
 
 gg_team_leader
 --------------
-This event *(needs updating).
+This event ...
+
+.. todo:: Update description of CS:GO gg_team_leader event.
 
 ========  =======================================================  =====
 Name      Description                                              Type
