@@ -111,7 +111,7 @@ class SphinxProject(object):
             sys.argv = old_argv
 
     def generate_project_files(self, sub_dir=''):
-        """Generate the project files (*.rst files).
+        """Generate the project files (`*.rst` files).
 
         :param str sub_dir: A sub-directory of the :attr:`project_source_dir`
             where the module documentation will be generated in.

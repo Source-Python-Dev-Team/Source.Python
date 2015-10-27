@@ -950,7 +950,7 @@ inline IPlayerInfo *PlayerInfoFromUserid( int iUserID, bool bRaiseException = fa
 #define EXPORT_CONVERSION_FUNCTION(to_type, to_name, from_type, from_name, ...) \
 	def(extract<const char *>(str(XSTRINGIFY(to_name##_from_##from_name)).lower().ptr()), \
 		&to_name##From##from_name, \
-		XSTRINGIFY(Returns the to_name (of type #to_type) from the given from_name (of type #from_type).), \
+		XSTRINGIFY(Return the to_name (of type `#to_type`) from the given from_name (of type `#from_type`).), \
 		(XSTRINGIFY(from_name), arg("raise_exception")=true), \
 		##__VA_ARGS__ \
 	)
