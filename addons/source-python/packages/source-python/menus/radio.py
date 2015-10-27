@@ -176,7 +176,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         :param int player_index: A player index.
         :param _PlayerPage page: The player's current page.
-        :param set slots: A set to which slots can be added.
+        :param slots: A set to which slots can be added.
+        :type slots: :class:`set`
         """
         # Create the page info string
         info = '[{0}/{1}]\n'.format(page.index + 1, self.page_count)
@@ -199,7 +200,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         :param int player_index: A player index.
         :param _PlayerPage page: The player's current page.
-        :param set slots: A set to which slots can be added.
+        :param slots: A set to which slots can be added.
+        :type slots: :class:`set`
         """
         buffer = ''
 
@@ -229,7 +231,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         :param int player_index: A player index.
         :param _PlayerPage page: The player's current page.
-        :param set slots: A set to which slots can be added.
+        :param slots: A set to which slots can be added.
+        :type slots: :class:`set`
         """
         buffer = ''
 
