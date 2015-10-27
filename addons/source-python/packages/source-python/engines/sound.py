@@ -28,7 +28,6 @@ from stringtables.downloads import Downloadables
 # =============================================================================
 # Source.Python Imports
 #   Engines
-from _engines import engine_sound
 from _engines import Channels
 from _engines import VOL_NORM
 from _engines import ATTN_NONE
@@ -44,6 +43,7 @@ from _engines import PITCH_LOW
 from _engines import PITCH_HIGH
 from _engines import SOUND_FROM_LOCAL_PLAYER
 from _engines import SOUND_FROM_WORLD
+from _engines import engine_sound
 
 
 # =============================================================================

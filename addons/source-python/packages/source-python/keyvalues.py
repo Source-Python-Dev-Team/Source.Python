@@ -7,11 +7,15 @@
 # =============================================================================
 # Source.Python Imports
 #   KeyValues
+from _keyvalues import KeyValueType
 from _keyvalues import KeyValues
+from _keyvalues import KeyValuesIter
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('KeyValues',
+__all__ = ('KeyValueType',
+           'KeyValues',
+           'KeyValuesIter',
            )
