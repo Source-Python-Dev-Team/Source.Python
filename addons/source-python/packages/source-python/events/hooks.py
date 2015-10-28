@@ -183,6 +183,7 @@ def _pre_game_event(args):
     # TODO: use data or some other means to get the offset
     kwargs = make_object(
         KeyValues, get_object_pointer(game_event).get_pointer(8)).as_dict()
+    kwargs['event_name'] = event_name
 
     # Loop through all callbacks in the pre-event's list
     for callback in pre_event_manager[event_name]:

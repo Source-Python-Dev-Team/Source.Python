@@ -91,6 +91,7 @@ class _EventListener(list):
         # TODO: use data or some other means to get the offset
         kwargs = make_object(
             KeyValues, get_object_pointer(game_event).get_pointer(8)).as_dict()
+        kwargs['event_name'] = game_event.get_name()
 
         # Loop through each callback in the event's list
         for callback in self:
