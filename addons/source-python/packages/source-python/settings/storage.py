@@ -150,7 +150,7 @@ class _PlayerSettingsDictionary(dict):
         """Return the cursor instance."""
         return self._cursor
 
-    def server_spawn(self, game_event):
+    def server_spawn(self, **kwargs):
         """Store the dictionary to the database on map change."""
         self.connection.commit()
 

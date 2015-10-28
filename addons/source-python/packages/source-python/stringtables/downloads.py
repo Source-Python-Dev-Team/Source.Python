@@ -82,7 +82,7 @@ class _DownloadablesList(list):
         # Add the given file to the downloadables table.
         self.download_table.add_string(item, item)
 
-    def server_spawn(self, game_event):
+    def server_spawn(self, **kwargs):
         """Add all items stored as downloadables to the stringtable."""
         # Refresh the downloadables table instance
         self._refresh_table_instance()

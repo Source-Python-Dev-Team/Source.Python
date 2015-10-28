@@ -17,7 +17,10 @@ from events import GameEvent
 from events.manager import game_event_manager
 #   Hooks
 from hooks.exceptions import except_hooks
+#   KeyValues
+from keyvalues import KeyValues
 #   Memory
+from memory import get_object_pointer
 from memory import get_virtual_function
 from memory import make_object
 from memory.hooks import PreHook
@@ -176,6 +179,11 @@ def _pre_game_event(args):
     # Create a variable to know what to do after all pre-events are called
     event_action = EventAction.CONTINUE
 
+    # Convert the GameEvent object into a dictionary
+    # TODO: use data or some other means to get the offset
+    kwargs = make_object(
+        KeyValues, get_object_pointer(game_event).get_pointer(8)).as_dict()
+
     # Loop through all callbacks in the pre-event's list
     for callback in pre_event_manager[event_name]:
 
@@ -183,7 +191,7 @@ def _pre_game_event(args):
         try:
 
             # Call the callback and get its return value
-            current_action = callback(game_event)
+            current_action = callback(**kwargs)
 
             # Is the return value invalid?
             if (current_action is not None and

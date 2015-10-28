@@ -8,8 +8,13 @@
 # Source.Python Imports
 #   Hooks
 from hooks.exceptions import except_hooks
+#   KeyValues
+from keyvalues import KeyValues
 #   Loggers
 from loggers import _sp_logger
+#   Memory
+from memory import get_object_pointer
+from memory import make_object
 
 
 # =============================================================================
@@ -82,6 +87,11 @@ class _EventListener(list):
 
     def fire_game_event(self, game_event):
         """Loop through all callbacks for an event and calls them."""
+        # Convert the GameEvent object into a dictionary
+        # TODO: use data or some other means to get the offset
+        kwargs = make_object(
+            KeyValues, get_object_pointer(game_event).get_pointer(8)).as_dict()
+
         # Loop through each callback in the event's list
         for callback in self:
 
@@ -89,7 +99,7 @@ class _EventListener(list):
             try:
 
                 # Call the callback
-                callback(game_event)
+                callback(**kwargs)
 
             # Was an error encountered?
             except:

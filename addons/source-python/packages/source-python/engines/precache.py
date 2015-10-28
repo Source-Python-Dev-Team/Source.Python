@@ -104,7 +104,7 @@ class _PrecacheBase(AutoUnload):
         """Precache the path."""
         self._precache_method(self._path, self._preload)
 
-    def _server_spawn(self, game_event):
+    def _server_spawn(self, **kwargs):
         """Precache the object on map change."""
         self._precache()
 
