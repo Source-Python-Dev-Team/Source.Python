@@ -144,7 +144,7 @@ class Callback(AutoUnload, Function):
 # =============================================================================
 def get_virtual_function(obj, function_name, function_index=0):
     """Return a :class:`Function` object.
-    
+
     Create the :class:`Function` object by using
     a :class:`FunctionInfo` object.
 

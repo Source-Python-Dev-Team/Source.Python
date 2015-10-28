@@ -181,7 +181,7 @@ class Entity(BaseEntity, _EntitySpecials):
 
     @property
     def edict(self):
-        """Return the entity's edict instance."""
+        """Return the entity's :class:`entities.Edict` instance."""
         if self._edict is None:
             self._edict = edict_from_index(self.index)
 
@@ -189,7 +189,7 @@ class Entity(BaseEntity, _EntitySpecials):
 
     @property
     def pointer(self):
-        """Return the entity's pointer."""
+        """Return the entity's :class:`memory.Pointer`."""
         if self._pointer is None:
             self._pointer = memory.get_object_pointer(self)
 
@@ -197,7 +197,11 @@ class Entity(BaseEntity, _EntitySpecials):
 
     @property
     def instances(self):
-        """Yield the entity's base instances."""
+        """Yield the entity's base instances.
+
+        Values yielded are the entity's :class:`entities.Edict`
+        and :class:`memory.Pointer` objects.
+        """
         yield self.edict
         yield self.pointer
 

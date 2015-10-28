@@ -72,7 +72,9 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
     @property
     def instances(self):
-        """Yield the player's :class:`players.PlayerInfo`,
+        """Yield the player's base instances.
+
+        Values yielded are the player's :class:`players.PlayerInfo`,
         :class:`entities.Edict` and :class:`memory.Pointer` objects.
         """
         yield self.playerinfo
