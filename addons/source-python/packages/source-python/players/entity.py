@@ -54,13 +54,17 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
-        """Initialize the PlayerEntity object."""
+        """Initialize the object.
+
+        :param int index: A valid player index.
+        :raise ValueError: Raised if the index is invalid.
+        """
         super().__init__(index)
         super(Entity, self).__setattr__('_playerinfo', None)
 
     @property
     def playerinfo(self):
-        """Return the player's IPlayerInfo instance."""
+        """Return the player's :class:`PlayerInfo` object."""
         if self._playerinfo is None:
             self._playerinfo = playerinfo_from_index(self.index)
 
@@ -68,23 +72,34 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
     @property
     def instances(self):
-        """Yield the player's IPlayerInfo and Edict instances."""
+        """Yield the player's :class:`players.PlayerInfo`,
+        :class:`entities.Edict` and :class:`memory.Pointer` objects.
+        """
         yield self.playerinfo
         yield self.edict
         yield self.pointer
 
     @property
     def userid(self):
-        """Return the player's userid."""
+        """Return the player's userid.
+
+        :rtype: int
+        """
         return self.playerinfo.get_userid()
 
     @property
     def steamid(self):
-        """Return the player's SteamID."""
+        """Return the player's SteamID.
+
+        :rtype: str
+        """
         return self.playerinfo.get_networkid_string()
 
     def get_name(self):
-        """Return the player's name."""
+        """Return the player's name.
+
+        :rtype: str
+        """
         return self.playerinfo.get_name()
 
     def set_name(self, name):
@@ -95,18 +110,21 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
     @property
     def client(self):
-        """Return the player's Client object."""
+        """Return the player's :class:`players.Client` object."""
         return server.get_client(self.index - 1)
 
     @property
     def base_client(self):
-        """Return the player's BaseClient object."""
+        """Return the player's :class:`players.BaseClient` object."""
         return memory.make_object(
             BaseClient, memory.get_object_pointer(self.client) - 4)
 
     @property
     def isdead(self):
-        """Return if the player is dead or alive."""
+        """Return if the player is dead or alive.
+
+        :rtype: bool
+        """
         return self.playerinfo.is_dead()
 
     @property
@@ -116,29 +134,46 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
     @property
     def address(self):
-        """Return the player's IP address."""
+        """Return the player's IP address and port.
+
+        If the player is a bot, '0' will be returned.
+
+        :return: The IP address. E.g. '127.0.0.1:27015'
+        :rtype: str
+        """
         return address_from_playerinfo(self.playerinfo)
 
     def get_team(self):
-        """Return the player's team."""
+        """Return the player's team.
+
+        :rtype: int
+        """
         return self.playerinfo.get_team_index()
 
     def set_team(self, value):
         """Set the players team."""
         self.playerinfo.change_team(value)
 
-    # Set the "team" property methods
-    team = property(
-        get_team, set_team,
-        doc="""Property to get/set the player's team.""")
+    team = property(get_team, set_team)
 
     @property
     def language(self):
-        """Return the player's language."""
+        """Return the player's language.
+
+        If the player is a bot, an empty string will be returned.
+
+        :rtype: str
+        """
         return get_client_language(self.index)
 
     def get_trace_ray(self, mask=ContentMasks.ALL, trace_filter=None):
-        """Return the player's current trace data."""
+        """Return the player's current trace data.
+
+        :param ContentMasks mask: Will be passed to the trace filter.
+        :param TraceFilter trace_filter: The trace filter to use. If None was
+            given :class:`engines.trace.TraceFilterSimple` will be used.
+        :rtype: GameTrace
+        """
         # Get the eye location of the player
         start_vec = self.get_eye_location()
 
@@ -159,7 +194,12 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         return trace
 
     def get_view_coordinates(self):
-        """Return the coordinates the player is currently looking at."""
+        """Return the coordinates the player is currently looking at.
+
+        Return None if the player is not looking at anything.
+
+        :rtype: Vector
+        """
         # Get the player's current trace data
         trace = self.get_trace_ray()
 
@@ -167,7 +207,10 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         return trace.end_position if trace.did_hit() else None
 
     def set_view_coordinates(self, coords):
-        """Force the player to look at the given coordinates."""
+        """Force the player to look at the given coordinates.
+
+        :param Vector coords: The coordinates the player should look at.
+        """
         coord_eye_vec = coords - self.get_eye_location()
 
         # Calculate the y angle value
@@ -189,7 +232,12 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     view_coordinates = property(get_view_coordinates, set_view_coordinates)
 
     def get_view_entity(self):
-        """Return the entity that the player is looking at."""
+        """Return the entity that the player is looking at.
+
+        Return None if the player is not looking at an entity.
+
+        :rtype: Entity
+        """
         # Get the player's current trace data
         trace = self.get_trace_ray()
 
@@ -201,13 +249,21 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         return Entity(trace.get_entity_index())
 
     def set_view_entity(self, entity):
-        """Force the player to look at the origin of the given entity."""
+        """Force the player to look at the origin of the given entity.
+
+        :param Entity entity: The entity the player should look at.
+        """
         self.set_view_coordinates(entity.origin)
 
     view_entity = property(get_view_entity, set_view_entity)
 
     def get_view_player(self):
-        """Return the player that the player is looking at."""
+        """Return the player that the player is looking at.
+
+        Return None if the player is not looking at a player.
+
+        :rtype: PlayerEntity
+        """
         # Get the entity that the player is looking at
         entity = self.get_view_entity()
 
@@ -217,30 +273,42 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
             entity.classname == 'player' else None)
 
     def set_view_player(self, player):
-        """Force the player to look at the other player's eye location."""
+        """Force the player to look at the other player's eye location.
+
+        :param PlayerEntity player: The other player.
+        """
         self.set_view_coordinates(player.get_eye_location())
 
     view_player = property(get_view_player, set_view_player)
 
     @property
     def view_offset(self):
-        """Return the view offset."""
+        """Return the player's view offset.
+
+        :rtype: Vector
+        """
         return Vector(
             self.view_offset_x, self.view_offset_y, self.view_offset_z)
 
     def get_eye_location(self):
-        """Return the eye location of the player."""
+        """Return the player's eye location.
+
+        :rtype: Vector
+        """
         return self.view_offset + self.origin
 
-    def set_eye_location(self, origin):
-        """Set the eye location."""
-        self.teleport(origin - self.eye_location, None, None)
+    def set_eye_location(self, eye_location):
+        """Set the player's eye location."""
+        self.teleport(eye_location - self.view_offset, None, None)
 
     eye_location = property(get_eye_location, set_eye_location)
 
     @property
     def view_vector(self):
-        """Return the view vector of the player."""
+        """Return the view vector of the player.
+
+        :rtype: Vector
+        """
         eye_angle_y = self.eye_angle_y
         return Vector(
             math.cos(math.radians(eye_angle_y)),
@@ -249,13 +317,16 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         )
 
     def get_view_angle(self):
-        """Return the view angle."""
+        """Return the player's view angle.
+
+        :rtype: QAngle
+        """
         eye_angle_y = self.eye_angle_y
         eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
         return QAngle(self.eye_angle_x, eye_angle_y, self.rotation.z)
 
     def set_view_angle(self, angle):
-        """Set the view angle."""
+        """Set the player's view angle."""
         # Make sure that only QAngle objects are passed. Otherwise you can
         # easily crash the server or cause unexpected behaviour
         assert isinstance(angle, QAngle)
@@ -264,7 +335,13 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     view_angle = property(get_view_angle, set_view_angle)
 
     def push(self, horiz_mul, vert_mul, vert_override=False):
-        """Push the player along his view vector."""
+        """Push the player along his view vector.
+
+        :param float horiz_mul: Horizontal multiplier.
+        :param float vert_mul: Vertical multiplier.
+        :param bool vert_override: If True ``vert_mul`` will be used as a
+            static value and not as a multiplier.
+        """
         x, y, z = tuple(self.view_vector)
         self.base_velocity = Vector(
             x * horiz_mul, y * horiz_mul,
@@ -273,7 +350,9 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     def client_command(self, command, server_side=False):
         """Execute a command on the client.
 
-        If <server_side> is True, the command will be emulated by the server.
+        :param str command: The command to execute.
+        :param bool server_side: If True the command will be emulated by the
+            server.
         """
         engine_server.client_command(self.edict, command, server_side)
 
@@ -282,11 +361,17 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         self.client_command('kill', True)
 
     def say(self, message):
-        """Force the player to say something in the global chat."""
+        """Force the player to say something in the global chat.
+
+        :param str message: The text the player should say.
+        """
         self.client_command('say {0}'.format(message), True)
 
     def say_team(self, message):
-        """Force the player to say something in the team chat."""
+        """Force the player to say something in the team chat.
+
+        :param str message: The text the player should say.
+        """
         self.client_command('say_team {0}'.format(message), True)
 
     def mute(self, receivers=None):
