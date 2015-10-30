@@ -22,6 +22,9 @@ from engines.trace import MAX_TRACE_LENGTH
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
+from entities.constants import CollisionGroup
+from entities.constants import MoveType
+from entities.constants import TakeDamage
 from entities.entity import Entity
 #   Mathlib
 from mathlib import Vector
@@ -31,6 +34,7 @@ import memory
 from memory.hooks import PreHook
 #   Players
 from players import BaseClient
+from players.constants import PlayerStates
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
@@ -396,6 +400,145 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         See players.voice.mute_manager.is_muted for more information.
         """
         return mute_manager.is_muted(self.index, receivers)
+
+    def set_noclip(self, enable):
+        """Enable/disable noclip mode.
+
+        Noclip mode gives the player the ability to fly through the map.
+
+        :param bool enable: If True noclip mode will be enabled.
+        """
+        if enable:
+            self.move_type = MoveType.NOCLIP
+        else:
+            self.move_type = MoveType.WALK
+
+    def get_noclip(self):
+        """Return whether noclip mode is enabled.
+
+        :rtype: bool
+        """
+        return self.move_type == MoveType.NOCLIP
+
+    noclip = property(get_noclip, set_noclip)
+
+    def set_jetpack(self, enable):
+        """Enable/disable jetpack mode.
+
+        Jetpack mode gives the player the ability to use a jetpack.
+
+        :param bool enable: If True jetpack mode will be enabled.
+        """
+        if enable:
+            self.move_type = MoveType.FLY
+        else:
+            self.move_type = MoveType.WALK
+
+    def get_jetpack(self):
+        """Return whether jetpack mode is enabled.
+
+        :rtype: bool
+        """
+        return self.move_type == MoveType.FLY
+
+    jetpack = property(get_jetpack, set_jetpack)
+
+    def set_godmode(self, enable):
+        """Enable/disable god mode.
+
+        Godmode makes the player invulnerable.
+
+        :param bool enable: If True god mode will be enabled.
+
+        .. todo::
+
+            Add m_takedamage to the data files. Which name do we want to use?
+            We can't use take_damage.
+        """
+        if enable:
+            self.set_property_uchar('m_takedamage', TakeDamage.NO)
+        else:
+            self.set_property_uchar('m_takedamage', TakeDamage.YES)
+
+    def get_godmode(self):
+        """Return whether god mode is enabled.
+
+        :rtype: bool
+
+        .. todo::
+
+            Add m_takedamage to the data files. Which name do we want to use?
+            We can't use take_damage.
+        """
+        return self.get_property_uchar('m_takedamage') == TakeDamage.NO
+
+    godmode = property(get_godmode, set_godmode)
+
+    def set_noblock(self, enable):
+        """Enable/disable noblock mode.
+
+        Noblock mode assigns a new collision group to the player that does
+        block other players. That means other players can run through each
+        other.
+
+        :param bool enable: If True noblock mode will be enabled.
+        """
+        if enable:
+            self.collision_group = CollisionGroup.DEBRIS_TRIGGER
+        else:
+            self.collison_group = CollisionGroup.PLAYER
+
+    def get_noblock(self):
+        """Return whether noblock mode is enabled.
+
+        :rtype: bool
+        """
+        return self.collision_group == CollisionGroup.DEBRIS_TRIGGER
+
+    noblock = property(get_noblock, set_noblock)
+
+    def set_freeze(self, enable):
+        """Enable/disable freeze mode.
+
+        Freeze mode makes the player unable to move, look and shoot.
+
+        :param bool enable: If True frezze mode will be enabled.
+        """
+        if enable:
+            self.flags |= PlayerStates.FROZEN
+        else:
+            self.flags &= ~PlayerStates.FROZEN
+
+    def get_freeze(self):
+        """Return whether freeze mode is enabled.
+
+        :rtype: bool
+        """
+        return bool(self.flags & PlayerStates.FROZEN)
+
+    freeze = property(get_freeze, set_freeze)
+
+    def set_stuck(self, enable):
+        """Enable/disable stuck mode.
+
+        Stuck mode forces the player to stay exactly at his current position
+        even if he is currently in the air. He's still able to look and shoot.
+
+        :param bool enable: If True stuck mode will be enabled.
+        """
+        if enable:
+            self.move_type = MoveType.NONE
+        else:
+            self.move_type = MoveType.WALK
+
+    def get_stuck(self):
+        """Return whether stuck mode is enabled.
+
+        :rtype: bool
+        """
+        return self.move_type == MoveType.NONE
+
+    stuck = property(get_stuck, set_stuck)
 
 
 # =============================================================================
