@@ -477,9 +477,8 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
     def set_noblock(self, enable):
         """Enable/disable noblock mode.
 
-        Noblock mode assigns a new collision group to the player that does
-        block other players. That means other players can run through each
-        other.
+        Noblock mode assigns a new collision group to the player that doesn't
+        block other players. That means players can run through each other.
 
         :param bool enable: If True noblock mode will be enabled.
         """
