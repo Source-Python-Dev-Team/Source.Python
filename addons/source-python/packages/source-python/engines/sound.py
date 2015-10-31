@@ -7,6 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
+from enum import Enum
 from enum import IntEnum
 
 # Source.Python Imports
@@ -28,7 +29,7 @@ from stringtables.downloads import Downloadables
 # =============================================================================
 # Source.Python Imports
 #   Engines
-from _engines._sound import Channels
+from _engines._sound import Channel
 from _engines._sound import VOL_NORM
 from _engines._sound import ATTN_NONE
 from _engines._sound import ATTN_NORM
@@ -38,9 +39,7 @@ from _engines._sound import ATTN_RICOCHET
 from _engines._sound import ATTN_GUNFIRE
 from _engines._sound import MAX_ATTENUATION
 from _engines._sound import SoundFlags
-from _engines._sound import PITCH_NORM
-from _engines._sound import PITCH_LOW
-from _engines._sound import PITCH_HIGH
+from _engines._sound import Pitch
 from _engines._sound import SOUND_FROM_LOCAL_PLAYER
 from _engines._sound import SOUND_FROM_WORLD
 from _engines._sound import engine_sound
@@ -49,9 +48,9 @@ from _engines._sound import engine_sound
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('Attenuations',
-           'Channels',
-           'PitchTypes',
+__all__ = ('Attenuation',
+           'Channel',
+           'Pitch',
            'SOUND_FROM_LOCAL_PLAYER',
            'SOUND_FROM_WORLD',
            'Sound',
@@ -71,7 +70,7 @@ engines_sound_logger = engines_logger.sound
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class Attenuations(IntEnum):
+class Attenuation(float, Enum):
     """Attenuation values wrapper enumerator."""
 
     NONE = ATTN_NONE
@@ -83,14 +82,9 @@ class Attenuations(IntEnum):
     MAXIMUM = MAX_ATTENUATION
 
 
-class PitchTypes(IntEnum):
-    """Pitch values wrapper enumerator."""
-
-    NORMAL = PITCH_NORM
-    LOW = PITCH_LOW
-    HIGH = PITCH_HIGH
-
-
+# =============================================================================
+# >> CLASSES
+# =============================================================================
 class Sound(AutoUnload):
     """Class used to interact with a specific sound file."""
 
@@ -100,8 +94,8 @@ class Sound(AutoUnload):
 
     def __init__(
             self, recipients, index, sample, volume=VOL_NORM,
-            attenuation=Attenuations.NONE, channel=Channels.AUTO,
-            flags=0, pitch=PitchTypes.NORMAL, origin=NULL_VECTOR,
+            attenuation=Attenuation.NONE, channel=Channel.AUTO,
+            flags=0, pitch=Pitch.NORMAL, origin=NULL_VECTOR,
             direction=NULL_VECTOR, origins=(), update_positions=True,
             sound_time=0.0, speaker_entity=-1, download=False):
         """Store all the given attributes and set the module for unloading."""

@@ -47,6 +47,11 @@ extern IEngineSound* enginesound;
 // Forward declarations.
 //---------------------------------------------------------------------------------
 void export_engine_sound(scope);
+void export_channel(scope);
+void export_global_sound_variables(scope);
+void export_attenuation(scope);
+void export_sound_flags_t(scope);
+void export_pitch(scope);
 
 
 //---------------------------------------------------------------------------------
@@ -55,6 +60,11 @@ void export_engine_sound(scope);
 DECLARE_SP_SUBMODULE(_engines, _sound)
 {
 	export_engine_sound(_sound);
+	export_channel(_sound);
+	export_global_sound_variables(_sound);
+	export_attenuation(_sound);
+	export_sound_flags_t(_sound);
+	export_pitch(_sound);
 }
 
 
@@ -124,9 +134,15 @@ void export_engine_sound(scope _sound)
 	) ADD_MEM_TOOLS(IEngineSound); // IEngineSound_Visitor
 
 	_sound.attr("engine_sound") = object(ptr(enginesound));
+}
 
-	// Channels
-	enum_<int>("Channels")
+
+//---------------------------------------------------------------------------------
+// Exports Channel.
+//---------------------------------------------------------------------------------
+void export_channel(scope _sound)
+{
+	enum_<int>("Channel")
 		.value("REPLACE", CHAN_REPLACE)
 		.value("AUTO", CHAN_AUTO)
 		.value("WEAPON", CHAN_WEAPON)
@@ -138,11 +154,27 @@ void export_engine_sound(scope _sound)
 		.value("VOICE_BASE", CHAN_VOICE_BASE)
 		.value("USER_BASE", CHAN_USER_BASE)
 	;
+}
 
+
+//---------------------------------------------------------------------------------
+// Exports volume values.
+//---------------------------------------------------------------------------------
+void export_global_sound_variables(scope _sound)
+{
 	// Common volume values
 	_sound.attr("VOL_NORM") = VOL_NORM;
 
-	// Common attenuation values
+	_sound.attr("SOUND_FROM_LOCAL_PLAYER") = SOUND_FROM_LOCAL_PLAYER;
+	_sound.attr("SOUND_FROM_WORLD") = SOUND_FROM_WORLD;
+}
+
+
+//---------------------------------------------------------------------------------
+// Exports attenuation values.
+//---------------------------------------------------------------------------------
+void export_attenuation(scope _sound)
+{
 	_sound.attr("ATTN_NONE") = ATTN_NONE;
 	_sound.attr("ATTN_NORM") = ATTN_NORM;
 	_sound.attr("ATTN_IDLE") = ATTN_IDLE;
@@ -150,8 +182,14 @@ void export_engine_sound(scope _sound)
 	_sound.attr("ATTN_RICOCHET") = ATTN_RICOCHET;
 	_sound.attr("ATTN_GUNFIRE") = ATTN_GUNFIRE;
 	_sound.attr("MAX_ATTENUATION") = MAX_ATTENUATION;
+}
 
-	// Flags for iFlags fields
+
+//---------------------------------------------------------------------------------
+// Exports SoundFlags_t.
+//---------------------------------------------------------------------------------
+void export_sound_flags_t(scope _sound)
+{
 	enum_<SoundFlags_t>("SoundFlags")
 		.value("NOFLAGS", SND_NOFLAGS)
 		.value("CHANGE_VOL", SND_CHANGE_VOL)
@@ -165,12 +203,19 @@ void export_engine_sound(scope _sound)
 		.value("IGNORE_PHONEMES", SND_IGNORE_PHONEMES)
 		.value("IGNORE_NAME", SND_IGNORE_NAME)
 	;
+}
 
-	// Common pitch values
-	_sound.attr("PITCH_NORM") = PITCH_NORM;
-	_sound.attr("PITCH_LOW") = PITCH_LOW;
-	_sound.attr("PITCH_HIGH") = PITCH_HIGH;
 
-	_sound.attr("SOUND_FROM_LOCAL_PLAYER") = SOUND_FROM_LOCAL_PLAYER;
-	_sound.attr("SOUND_FROM_WORLD") = SOUND_FROM_WORLD;
+//---------------------------------------------------------------------------------
+// Exports pitch values.
+//---------------------------------------------------------------------------------
+void export_pitch(scope _sound)
+{
+	enum Pitch {};
+
+	enum_<Pitch> _Pitch("Pitch");
+
+	_Pitch.value("NORMAL", (Pitch) PITCH_NORM);
+	_Pitch.value("LOW", (Pitch) PITCH_LOW);
+	_Pitch.value("HIGH", (Pitch) PITCH_HIGH);
 }
