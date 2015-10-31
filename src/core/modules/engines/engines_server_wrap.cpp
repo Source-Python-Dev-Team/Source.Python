@@ -27,6 +27,11 @@
 //---------------------------------------------------------------------------------
 // Includes.
 //---------------------------------------------------------------------------------
+// Required to fix compilation errors after including cdll_int.h (CSGO only)
+#if defined( _WIN32 )
+	#include <Windows.h>
+#endif
+
 #include "export_main.h"
 #include "utilities/conversions.h"
 
