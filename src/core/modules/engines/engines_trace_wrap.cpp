@@ -47,24 +47,48 @@ extern IEngineTrace* enginetrace;
 //---------------------------------------------------------------------------------
 // Forward declarations.
 //---------------------------------------------------------------------------------
+void export_ray_t(scope);
 void export_engine_trace(scope);
+void export_base_trace(scope);
 void export_worldsize(scope);
-
+void export_displacement_flags(scope);
+void export_game_trace(scope);
+void export_surface_t(scope);
+void export_trace_filter(scope);
+void export_entity_enumerator(scope);
+void export_trace_type_t(scope);
+void export_content_flags(scope);
+void export_content_masks(scope);
+void export_surface_flags(scope);
 
 //---------------------------------------------------------------------------------
 // Declare the _trace module.
 //---------------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_engines, _trace)
 {
+	export_ray_t(_trace);
 	export_engine_trace(_trace);
+	export_base_trace(_trace);
 	export_worldsize(_trace);
+	export_displacement_flags(_trace);
+	export_game_trace(_trace);
+	export_surface_t(_trace);
+	export_trace_filter(_trace);
+	export_entity_enumerator(_trace);
+	export_trace_type_t(_trace);
+
+	// Sucks that we can't use enum for content flags and masks. They are too big
+	// and crash the server
+	export_content_flags(_trace);
+	export_content_masks(_trace);
+	export_surface_flags(_trace);
 }
 
 
 //---------------------------------------------------------------------------------
-// Exports IEngineTrace.
+// Exports Ray_t.
 //---------------------------------------------------------------------------------
-void export_engine_trace(scope _trace)
+void export_ray_t(scope _trace)
 {
 	// Since Ray_t has members of the type AlignedVector that uses ALIGN16, we have
 	// to declare this class as noncopyable.
@@ -74,7 +98,14 @@ void export_engine_trace(scope _trace)
 
 		ADD_MEM_TOOLS(Ray_t)
 	;
+}
 
+
+//---------------------------------------------------------------------------------
+// Exports IEngineTrace.
+//---------------------------------------------------------------------------------
+void export_engine_trace(scope _trace)
+{
 	class_<IEngineTrace, boost::noncopyable>("_EngineTrace", no_init)
 		.def("get_point_contents",
 			&IEngineTraceExt::GetPointContents,
@@ -149,7 +180,14 @@ void export_engine_trace(scope _trace)
 	;
 
 	_trace.attr("engine_trace") = object(ptr(enginetrace));
+}
 
+
+//-----------------------------------------------------------------------------
+// Exports CBaseTrace.
+//-----------------------------------------------------------------------------
+void export_base_trace(scope _trace)
+{
 	class_<CBaseTrace, boost::noncopyable>("BaseTrace")
 		.def_readwrite("start_position",
 			&CBaseTrace::startpos
@@ -185,13 +223,53 @@ void export_engine_trace(scope _trace)
 
 		ADD_MEM_TOOLS(CBaseTrace)
 	;
-	
-	_trace.attr("DISPSURF_FLAG_SURFACE") = DISPSURF_FLAG_SURFACE;
-	_trace.attr("DISPSURF_FLAG_WALKABLE") = DISPSURF_FLAG_WALKABLE;
-	_trace.attr("DISPSURF_FLAG_BUILDABLE") = DISPSURF_FLAG_BUILDABLE;
-	_trace.attr("DISPSURF_FLAG_SURFPROP1") = DISPSURF_FLAG_SURFPROP1;
-	_trace.attr("DISPSURF_FLAG_SURFPROP2") = DISPSURF_FLAG_SURFPROP2;
+}
 
+
+//-----------------------------------------------------------------------------
+// Exports world size constants.
+//-----------------------------------------------------------------------------
+void export_worldsize(scope _trace)
+{
+	_trace.attr("MAX_COORD_INTEGER") = MAX_COORD_INTEGER;
+	_trace.attr("MIN_COORD_INTEGER") = MIN_COORD_INTEGER;
+
+	_trace.attr("MAX_COORD_FRACTION") = MAX_COORD_FRACTION;
+	_trace.attr("MIN_COORD_FRACTION") = MIN_COORD_FRACTION;
+
+	_trace.attr("MAX_COORD_FLOAT") = MAX_COORD_FLOAT;
+	_trace.attr("MIN_COORD_FLOAT") = MIN_COORD_FLOAT;
+
+	_trace.attr("COORD_EXTENT") = COORD_EXTENT;
+
+	_trace.attr("MAX_TRACE_LENGTH") = MAX_TRACE_LENGTH;
+
+	_trace.attr("MAX_COORD_RANGE") = MAX_COORD_RANGE;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports displacement flags
+//-----------------------------------------------------------------------------
+void export_displacement_flags(scope _trace)
+{	
+	enum DisplacementFlags {};
+
+	enum_<DisplacementFlags> _DisplacementFlags("DisplacementFlags");
+	
+	_DisplacementFlags.value("SURFACE", (DisplacementFlags) DISPSURF_FLAG_SURFACE);
+	_DisplacementFlags.value("WALKABLE", (DisplacementFlags) DISPSURF_FLAG_WALKABLE);
+	_DisplacementFlags.value("BUILDABLE", (DisplacementFlags) DISPSURF_FLAG_BUILDABLE);
+	_DisplacementFlags.value("SURFPROP1", (DisplacementFlags) DISPSURF_FLAG_SURFPROP1);
+	_DisplacementFlags.value("SURFPROP2", (DisplacementFlags) DISPSURF_FLAG_SURFPROP2);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CGameTrace
+//-----------------------------------------------------------------------------
+void export_game_trace(scope _trace)
+{
 	class_<CGameTrace, bases<CBaseTrace>, boost::noncopyable>("GameTrace")
 		.def("did_hit_world",
 			&CGameTrace::DidHitWorld,
@@ -234,7 +312,14 @@ void export_engine_trace(scope _trace)
 
 		ADD_MEM_TOOLS(CGameTrace)
 	;
+}
 
+
+//-----------------------------------------------------------------------------
+// Exports csurface_t
+//-----------------------------------------------------------------------------
+void export_surface_t(scope _trace)
+{	
 	class_<csurface_t>("Surface")
 		.def_readwrite("name",
 			&csurface_t::name
@@ -250,7 +335,14 @@ void export_engine_trace(scope _trace)
 
 		ADD_MEM_TOOLS(csurface_t)
 	;
+}
 
+
+//-----------------------------------------------------------------------------
+// Exports csurface_t
+//-----------------------------------------------------------------------------
+void export_trace_filter(scope _trace)
+{	
 	// Trace filter baseclass
 	class_<ITraceFilterWrap, boost::noncopyable>("TraceFilter")
 		.def("should_hit_entity",
@@ -265,7 +357,14 @@ void export_engine_trace(scope _trace)
 
 		ADD_MEM_TOOLS_WRAPPER(ITraceFilterWrap, ITraceFilter)
 	;
+}
 
+
+//-----------------------------------------------------------------------------
+// Exports csurface_t
+//-----------------------------------------------------------------------------
+void export_entity_enumerator(scope _trace)
+{	
 	// Enumerator baseclass
 	class_<IEntityEnumeratorWrap, boost::noncopyable>("EntityEnumerator")
 		.def("enum_entity",
@@ -275,7 +374,14 @@ void export_engine_trace(scope _trace)
 
 		ADD_MEM_TOOLS_WRAPPER(IEntityEnumeratorWrap, IEntityEnumerator)
 	;
+}
 
+
+//-----------------------------------------------------------------------------
+// Exports TraceType_t
+//-----------------------------------------------------------------------------
+void export_trace_type_t(scope _trace)
+{	
 	// Trace types
 	enum_<TraceType_t>("TraceType")
 		.value("EVERYTHING", TRACE_EVERYTHING)
@@ -283,8 +389,14 @@ void export_engine_trace(scope _trace)
 		.value("ENTITIES_ONLY", TRACE_ENTITIES_ONLY)
 		.value("EVERYTHING_FILTER_PROPS", TRACE_EVERYTHING_FILTER_PROPS)
 	;
+}
 
-	// Content flags
+
+//-----------------------------------------------------------------------------
+// Exports content flags
+//-----------------------------------------------------------------------------
+void export_content_flags(scope _trace)
+{
 	_trace.attr("CONTENTS_EMPTY") = CONTENTS_EMPTY;
 	_trace.attr("CONTENTS_SOLID") = CONTENTS_SOLID;
 	_trace.attr("CONTENTS_WINDOW") = CONTENTS_WINDOW;
@@ -318,8 +430,14 @@ void export_engine_trace(scope _trace)
 	_trace.attr("CONTENTS_TRANSLUCENT") = CONTENTS_TRANSLUCENT;
 	_trace.attr("CONTENTS_LADDER") = CONTENTS_LADDER;
 	_trace.attr("CONTENTS_HITBOX") = CONTENTS_HITBOX;
+}
 
-	// Masks
+
+//-----------------------------------------------------------------------------
+// Exports content masks
+//-----------------------------------------------------------------------------
+void export_content_masks(scope _trace)
+{	
 	_trace.attr("MASK_ALL") = MASK_ALL;
 	_trace.attr("MASK_SOLID") = MASK_SOLID;
 	_trace.attr("MASK_PLAYERSOLID") = MASK_PLAYERSOLID;
@@ -340,44 +458,33 @@ void export_engine_trace(scope _trace)
 	_trace.attr("MASK_SPLITAREAPORTAL") = MASK_SPLITAREAPORTAL;
 	_trace.attr("MASK_CURRENT") = MASK_CURRENT;
 	_trace.attr("MASK_DEADSOLID") = MASK_DEADSOLID;
-	
-	// Surface flags
-	_trace.attr("SURF_LIGHT") = SURF_LIGHT;
-	_trace.attr("SURF_SKY2D") = SURF_SKY2D;
-	_trace.attr("SURF_SKY") = SURF_SKY;
-	_trace.attr("SURF_WARP") = SURF_WARP;
-	_trace.attr("SURF_TRANS") = SURF_TRANS;
-	_trace.attr("SURF_NOPORTAL") = SURF_NOPORTAL;
-	_trace.attr("SURF_TRIGGER") = SURF_TRIGGER;
-	_trace.attr("SURF_NODRAW") = SURF_NODRAW;
-	_trace.attr("SURF_HINT") = SURF_HINT;
-	_trace.attr("SURF_SKIP") = SURF_SKIP;
-	_trace.attr("SURF_NOLIGHT") = SURF_NOLIGHT;
-	_trace.attr("SURF_BUMPLIGHT") = SURF_BUMPLIGHT;
-	_trace.attr("SURF_NOSHADOWS") = SURF_NOSHADOWS;
-	_trace.attr("SURF_NODECALS") = SURF_NODECALS;
-	_trace.attr("SURF_NOCHOP") = SURF_NOCHOP;
-	_trace.attr("SURF_HITBOX") = SURF_HITBOX;
 }
 
 
+
 //-----------------------------------------------------------------------------
-// Exports world size constants.
+// Exports surface flags
 //-----------------------------------------------------------------------------
-void export_worldsize(scope _trace)
-{
-	_trace.attr("MAX_COORD_INTEGER") = MAX_COORD_INTEGER;
-	_trace.attr("MIN_COORD_INTEGER") = MIN_COORD_INTEGER;
+void export_surface_flags(scope _trace)
+{	
+	enum SurfaceFlags {};
 
-	_trace.attr("MAX_COORD_FRACTION") = MAX_COORD_FRACTION;
-	_trace.attr("MIN_COORD_FRACTION") = MIN_COORD_FRACTION;
-
-	_trace.attr("MAX_COORD_FLOAT") = MAX_COORD_FLOAT;
-	_trace.attr("MIN_COORD_FLOAT") = MIN_COORD_FLOAT;
-
-	_trace.attr("COORD_EXTENT") = COORD_EXTENT;
-
-	_trace.attr("MAX_TRACE_LENGTH") = MAX_TRACE_LENGTH;
-
-	_trace.attr("MAX_COORD_RANGE") = MAX_COORD_RANGE;
+	enum_<SurfaceFlags> _SurfaceFlags("SurfaceFlags");
+	
+	_SurfaceFlags.value("LIGHT", (SurfaceFlags) SURF_LIGHT);
+	_SurfaceFlags.value("SKY2D", (SurfaceFlags) SURF_SKY2D);
+	_SurfaceFlags.value("SKY", (SurfaceFlags) SURF_SKY);
+	_SurfaceFlags.value("WARP", (SurfaceFlags) SURF_WARP);
+	_SurfaceFlags.value("TRANS", (SurfaceFlags) SURF_TRANS);
+	_SurfaceFlags.value("NOPORTAL", (SurfaceFlags) SURF_NOPORTAL);
+	_SurfaceFlags.value("TRIGGER", (SurfaceFlags) SURF_TRIGGER);
+	_SurfaceFlags.value("NODRAW", (SurfaceFlags) SURF_NODRAW);
+	_SurfaceFlags.value("HINT", (SurfaceFlags) SURF_HINT);
+	_SurfaceFlags.value("SKIP", (SurfaceFlags) SURF_SKIP);
+	_SurfaceFlags.value("NOLIGHT", (SurfaceFlags) SURF_NOLIGHT);
+	_SurfaceFlags.value("BUMPLIGHT", (SurfaceFlags) SURF_BUMPLIGHT);
+	_SurfaceFlags.value("NOSHADOWS", (SurfaceFlags) SURF_NOSHADOWS);
+	_SurfaceFlags.value("NODECALS", (SurfaceFlags) SURF_NODECALS);
+	_SurfaceFlags.value("NOCHOP", (SurfaceFlags) SURF_NOCHOP);
+	_SurfaceFlags.value("HITBOX", (SurfaceFlags) SURF_HITBOX);
 }

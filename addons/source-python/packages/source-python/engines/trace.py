@@ -22,13 +22,10 @@ from entities.helpers import inthandle_from_index
 from _engines._trace import Ray
 from _engines._trace import engine_trace
 from _engines._trace import BaseTrace
-from _engines._trace import DISPSURF_FLAG_SURFACE
-from _engines._trace import DISPSURF_FLAG_WALKABLE
-from _engines._trace import DISPSURF_FLAG_BUILDABLE
-from _engines._trace import DISPSURF_FLAG_SURFPROP1
-from _engines._trace import DISPSURF_FLAG_SURFPROP2
+from _engines._trace import DisplacementFlags
 from _engines._trace import GameTrace
 from _engines._trace import Surface
+from _engines._trace import SurfaceFlags
 from _engines._trace import TraceFilter
 from _engines._trace import EntityEnumerator
 from _engines._trace import TraceType
@@ -94,22 +91,6 @@ from _engines._trace import MAX_COORD_RANGE
 from _engines._trace import MIN_COORD_INTEGER
 from _engines._trace import MIN_COORD_FRACTION
 from _engines._trace import MIN_COORD_FLOAT
-from _engines._trace import SURF_LIGHT
-from _engines._trace import SURF_SKY2D
-from _engines._trace import SURF_SKY
-from _engines._trace import SURF_WARP
-from _engines._trace import SURF_TRANS
-from _engines._trace import SURF_NOPORTAL
-from _engines._trace import SURF_TRIGGER
-from _engines._trace import SURF_NODRAW
-from _engines._trace import SURF_HINT
-from _engines._trace import SURF_SKIP
-from _engines._trace import SURF_NOLIGHT
-from _engines._trace import SURF_BUMPLIGHT
-from _engines._trace import SURF_NOSHADOWS
-from _engines._trace import SURF_NODECALS
-from _engines._trace import SURF_NOCHOP
-from _engines._trace import SURF_HITBOX
 
 
 # =============================================================================
@@ -143,16 +124,6 @@ __all__ = ('BaseTrace',
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class DisplacementFlags(IntEnum):
-    """Displacement flags wrapper enumerator."""
-
-    SURFACE = DISPSURF_FLAG_SURFACE
-    WALKABLE = DISPSURF_FLAG_WALKABLE
-    BUILDABLE = DISPSURF_FLAG_BUILDABLE
-    SURFPROP1 = DISPSURF_FLAG_SURFPROP1
-    SURFPROP2 = DISPSURF_FLAG_SURFPROP2
-
-
 class ContentFlags(IntEnum):
     """Content flags wrapper enumerator."""
 
@@ -214,27 +185,6 @@ class ContentMasks(IntEnum):
     SPLIT_AREA_PORTAL = MASK_SPLITAREAPORTAL
     CURRENT = MASK_CURRENT
     DEAD_SOLID = MASK_DEADSOLID
-
-
-class SurfaceFlags(IntEnum):
-    """Surface flags wrapper enumerator."""
-
-    LIGHT = SURF_LIGHT
-    SKY2D = SURF_SKY2D
-    SKY = SURF_SKY
-    WARP = SURF_WARP
-    TRANS = SURF_TRANS
-    NOPORTAL = SURF_NOPORTAL
-    TRIGGER = SURF_TRIGGER
-    NODRAW = SURF_NODRAW
-    HINT = SURF_HINT
-    SKIP = SURF_SKIP
-    NOLIGHT = SURF_NOLIGHT
-    BUMPLIGHT = SURF_BUMPLIGHT
-    NOSHADOWS = SURF_NOSHADOWS
-    NODECALS = SURF_NODECALS
-    NOCHOP = SURF_NOCHOP
-    HITBOX = SURF_HITBOX
 
 
 # =============================================================================
