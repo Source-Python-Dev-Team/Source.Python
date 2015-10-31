@@ -208,12 +208,6 @@ void export_engine_trace(scope _trace)
 			"Returns the index of the entity that was hit."
 		)
 
-		.def("get_entity",
-			&CGameTraceExt::GetEntity,
-			"Returns the entity instance that was hit.",
-			reference_existing_object_policy()
-		)
-
 		.def_readwrite("fraction_left_solid",
 			&CGameTrace::fractionleftsolid
 		)
@@ -228,6 +222,10 @@ void export_engine_trace(scope _trace)
 
 		.def_readwrite("physicsbone",
 			&CGameTrace::physicsbone
+		)
+
+		.def_readwrite("entity",
+			&CGameTrace::m_pEnt
 		)
 
 		.def_readwrite("hitbox",
