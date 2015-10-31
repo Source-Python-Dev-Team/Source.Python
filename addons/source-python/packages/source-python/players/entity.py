@@ -315,11 +315,11 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
         :rtype: Vector
         """
-        eye_angle_y = self.eye_angle_y
+        eye_angle = self.eye_angle
         return Vector(
-            math.cos(math.radians(eye_angle_y)),
-            math.sin(math.radians(eye_angle_y)),
-            -1 * math.sin(math.radians(self.eye_angle_x))
+            math.cos(math.radians(eye_angle.y)),
+            math.sin(math.radians(eye_angle.y)),
+            -1 * math.sin(math.radians(self.eye_angle.x))
         )
 
     def get_view_angle(self):
