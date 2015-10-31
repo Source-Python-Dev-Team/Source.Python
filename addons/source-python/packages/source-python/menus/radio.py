@@ -259,7 +259,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         # Add "Close" option
         buffer += PagedRadioOption(
-            'Close', highlight=False)._render(player_index, BUTTON_CLOSE)
+            'Close', highlight=False)._render(player_index, BUTTON_CLOSE_SLOT)
 
         # Return the buffer
         return buffer
