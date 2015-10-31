@@ -28,22 +28,22 @@ from stringtables.downloads import Downloadables
 # =============================================================================
 # Source.Python Imports
 #   Engines
-from _engines import Channels
-from _engines import VOL_NORM
-from _engines import ATTN_NONE
-from _engines import ATTN_NORM
-from _engines import ATTN_IDLE
-from _engines import ATTN_STATIC
-from _engines import ATTN_RICOCHET
-from _engines import ATTN_GUNFIRE
-from _engines import MAX_ATTENUATION
-from _engines import SoundFlags
-from _engines import PITCH_NORM
-from _engines import PITCH_LOW
-from _engines import PITCH_HIGH
-from _engines import SOUND_FROM_LOCAL_PLAYER
-from _engines import SOUND_FROM_WORLD
-from _engines import engine_sound
+from _engines._sound import Channels
+from _engines._sound import VOL_NORM
+from _engines._sound import ATTN_NONE
+from _engines._sound import ATTN_NORM
+from _engines._sound import ATTN_IDLE
+from _engines._sound import ATTN_STATIC
+from _engines._sound import ATTN_RICOCHET
+from _engines._sound import ATTN_GUNFIRE
+from _engines._sound import MAX_ATTENUATION
+from _engines._sound import SoundFlags
+from _engines._sound import PITCH_NORM
+from _engines._sound import PITCH_LOW
+from _engines._sound import PITCH_HIGH
+from _engines._sound import SOUND_FROM_LOCAL_PLAYER
+from _engines._sound import SOUND_FROM_WORLD
+from _engines._sound import engine_sound
 
 
 # =============================================================================

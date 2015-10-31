@@ -1,0 +1,385 @@
+/**
+* =============================================================================
+* Source Python
+* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* =============================================================================
+*
+* This program is free software; you can redistribute it and/or modify it under
+* the terms of the GNU General Public License, version 3.0, as published by the
+* Free Software Foundation.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License along with
+* this program.  If not, see <http://www.gnu.org/licenses/>.
+*
+* As a special exception, the Source Python Team gives you permission
+* to link the code of this program (as well as its derivative works) to
+* "Half-Life 2," the "Source Engine," and any Game MODs that run on software
+* by the Valve Corporation.  You must obey the GNU General Public License in
+* all respects for all other code used.  Additionally, the Source.Python
+* Development Team grants this exception to all derivative works.
+*/
+
+//---------------------------------------------------------------------------------
+// Includes.
+//---------------------------------------------------------------------------------
+// Source.Python
+#include "export_main.h"
+#include "utilities/conversions.h"
+#include "engines.h"
+#include ENGINE_INCLUDE_PATH(engines_wrap.h)
+
+// SDK
+#include "engine/IEngineTrace.h"
+#include "public/worldsize.h"
+
+
+//---------------------------------------------------------------------------------
+// External variables.
+//---------------------------------------------------------------------------------
+extern IEngineTrace* enginetrace;
+
+
+//---------------------------------------------------------------------------------
+// Forward declarations.
+//---------------------------------------------------------------------------------
+void export_engine_trace(scope);
+void export_worldsize(scope);
+
+
+//---------------------------------------------------------------------------------
+// Declare the _trace module.
+//---------------------------------------------------------------------------------
+DECLARE_SP_SUBMODULE(_engines, _trace)
+{
+	export_engine_trace(_trace);
+	export_worldsize(_trace);
+}
+
+
+//---------------------------------------------------------------------------------
+// Exports IEngineTrace.
+//---------------------------------------------------------------------------------
+void export_engine_trace(scope _trace)
+{
+	// Since Ray_t has members of the type AlignedVector that uses ALIGN16, we have
+	// to declare this class as noncopyable.
+	class_<Ray_t, boost::noncopyable>("Ray", no_init)
+		.def("__init__", make_constructor(&Ray_tExt::CreateRay1))
+		.def("__init__", make_constructor(&Ray_tExt::CreateRay2))
+
+		ADD_MEM_TOOLS(Ray_t)
+	;
+
+	class_<IEngineTrace, boost::noncopyable>("_EngineTrace", no_init)
+		.def("get_point_contents",
+			&IEngineTraceExt::GetPointContents,
+			"Returns the contents mask and the entities at the given position.",
+			args("position")
+		)
+
+		.def("get_point_contents_of_collidable",
+			&IEngineTrace::GetPointContents_Collideable,
+			"Returns the content mask, but only tests the given entity.",
+			args("entity", "position")
+		)
+
+		.def("clip_ray_to_entity",
+			&IEngineTrace::ClipRayToEntity,
+			"Traces a ray against a particular entity.",
+			args("ray", "mask", "entity", "trace")
+		)
+
+		.def("clip_ray_to_collidable",
+			&IEngineTrace::ClipRayToCollideable,
+			"Traces a ray against a particular entity.",
+			args("ray", "mask", "entity", "trace")
+		)
+
+		.def("trace_ray",
+			&IEngineTrace::TraceRay,
+			"A version that simply accepts a ray (can work as a traceline or tracehull).",
+			args("ray", "mask", "filter", "trace")
+		)
+
+		.def("enumerate_entities",
+			GET_METHOD(void, IEngineTrace, EnumerateEntities, const Ray_t&, bool, IEntityEnumerator*),
+			"Enumerates over all entities along a ray.",
+			args("ray", "triggers", "enumerator")
+		)
+
+		.def("enumerate_entities_in_box",
+			&IEngineTraceExt::EnumerateEntitiesInBox,
+			"Enumerates over all entities within a box.",
+			args("p1", "p2", "enumerator")
+		)
+
+		.def("get_collideable",
+			&IEngineTrace::GetCollideable,
+			"Convert a handle entity to a collideable.",
+			args("entity"),
+			reference_existing_object_policy()
+		)
+
+		.def("is_point_outside_of_world",
+			&IEngineTrace::PointOutsideWorld,
+			"Tests a point to see if it's outside any playable area.",
+			args("position")
+		)
+
+		.def("sweep_collideable",
+			&IEngineTrace::SweepCollideable,
+			"Sweeps a collideable through the world.",
+			args("collideable", "start", "end", "angles", "mask", "filter", "trace")
+		)
+
+		/*
+		//finds brushes in an AABB, prone to some false positives
+		virtual void GetBrushesInAABB( const Vector &vMins, const Vector &vMaxs, CUtlVector<int> *pOutput, int iContentsMask = 0xFFFFFFFF ) = 0;
+
+		//retrieve brush planes and contents, returns true if data is being returned in the output pointers, false if the brush doesn't exist
+		virtual bool GetBrushInfo( int iBrush, CUtlVector<Vector4D> *pPlanesOut, int *pContentsOut ) = 0;
+		*/
+
+		ADD_MEM_TOOLS(IEngineTrace)
+	;
+
+	_trace.attr("engine_trace") = object(ptr(enginetrace));
+
+	class_<CBaseTrace, boost::noncopyable>("BaseTrace")
+		.def_readwrite("start_position",
+			&CBaseTrace::startpos
+		)
+
+		.def_readwrite("end_position",
+			&CBaseTrace::endpos
+		)
+
+		.def_readwrite("plane",
+			&CBaseTrace::plane
+		)
+
+		.def_readwrite("fraction",
+			&CBaseTrace::fraction
+		)
+
+		.def_readwrite("contents",
+			&CBaseTrace::contents
+		)
+
+		.def_readwrite("displacement_flags",
+			&CBaseTrace::dispFlags
+		)
+
+		.def_readwrite("all_solid",
+			&CBaseTrace::allsolid
+		)
+
+		.def_readwrite("start_solid",
+			&CBaseTrace::startsolid
+		)
+
+		ADD_MEM_TOOLS(CBaseTrace)
+	;
+	
+	_trace.attr("DISPSURF_FLAG_SURFACE") = DISPSURF_FLAG_SURFACE;
+	_trace.attr("DISPSURF_FLAG_WALKABLE") = DISPSURF_FLAG_WALKABLE;
+	_trace.attr("DISPSURF_FLAG_BUILDABLE") = DISPSURF_FLAG_BUILDABLE;
+	_trace.attr("DISPSURF_FLAG_SURFPROP1") = DISPSURF_FLAG_SURFPROP1;
+	_trace.attr("DISPSURF_FLAG_SURFPROP2") = DISPSURF_FLAG_SURFPROP2;
+
+	class_<CGameTrace, bases<CBaseTrace>, boost::noncopyable>("GameTrace")
+		.def("did_hit_world",
+			&CGameTrace::DidHitWorld,
+			"Returns True if the ray hit the world entity."
+		)
+
+		.def("did_hit",
+			&CGameTrace::DidHit,
+			"Returns true if there was any kind of impact at all"
+		)
+
+		.def("get_entity_index",
+			&CGameTrace::GetEntityIndex,
+			"Returns the index of the entity that was hit."
+		)
+
+		.def("get_entity",
+			&CGameTraceExt::GetEntity,
+			"Returns the entity instance that was hit.",
+			reference_existing_object_policy()
+		)
+
+		.def_readwrite("fraction_left_solid",
+			&CGameTrace::fractionleftsolid
+		)
+
+		.def_readwrite("surface",
+			&CGameTrace::surface
+		)
+
+		.def_readwrite("hitgroup",
+			&CGameTrace::hitgroup
+		)
+
+		.def_readwrite("physicsbone",
+			&CGameTrace::physicsbone
+		)
+
+		.def_readwrite("hitbox",
+			&CGameTrace::hitbox
+		)
+
+		ADD_MEM_TOOLS(CGameTrace)
+	;
+
+	class_<csurface_t>("Surface")
+		.def_readwrite("name",
+			&csurface_t::name
+		)
+
+		.def_readwrite("surface_props",
+			&csurface_t::surfaceProps
+		)
+
+		.def_readwrite("flags",
+			&csurface_t::flags
+		)
+
+		ADD_MEM_TOOLS(csurface_t)
+	;
+
+	// Trace filter baseclass
+	class_<ITraceFilterWrap, boost::noncopyable>("TraceFilter")
+		.def("should_hit_entity",
+			pure_virtual(&ITraceFilterWrap::ShouldHitEntity),
+			"Returns True if the a should hit the entity."
+		)
+
+		.def("get_trace_type",
+			pure_virtual(&ITraceFilterWrap::GetTraceType),
+			"Returns the trace type."
+		)
+
+		ADD_MEM_TOOLS_WRAPPER(ITraceFilterWrap, ITraceFilter)
+	;
+
+	// Enumerator baseclass
+	class_<IEntityEnumeratorWrap, boost::noncopyable>("EntityEnumerator")
+		.def("enum_entity",
+			pure_virtual(&IEntityEnumeratorWrap::EnumEntity),
+			"Gets called with each handle."
+		)
+
+		ADD_MEM_TOOLS_WRAPPER(IEntityEnumeratorWrap, IEntityEnumerator)
+	;
+
+	// Trace types
+	enum_<TraceType_t>("TraceType")
+		.value("EVERYTHING", TRACE_EVERYTHING)
+		.value("WORLD_ONLY", TRACE_WORLD_ONLY)
+		.value("ENTITIES_ONLY", TRACE_ENTITIES_ONLY)
+		.value("EVERYTHING_FILTER_PROPS", TRACE_EVERYTHING_FILTER_PROPS)
+	;
+
+	// Content flags
+	_trace.attr("CONTENTS_EMPTY") = CONTENTS_EMPTY;
+	_trace.attr("CONTENTS_SOLID") = CONTENTS_SOLID;
+	_trace.attr("CONTENTS_WINDOW") = CONTENTS_WINDOW;
+	_trace.attr("CONTENTS_AUX") = CONTENTS_AUX;
+	_trace.attr("CONTENTS_GRATE") = CONTENTS_GRATE;
+	_trace.attr("CONTENTS_SLIME") = CONTENTS_SLIME;
+	_trace.attr("CONTENTS_WATER") = CONTENTS_WATER;
+	_trace.attr("CONTENTS_BLOCKLOS") = CONTENTS_BLOCKLOS;
+	_trace.attr("CONTENTS_OPAQUE") = CONTENTS_OPAQUE;
+	_trace.attr("LAST_VISIBLE_CONTENTS") = LAST_VISIBLE_CONTENTS;
+	_trace.attr("ALL_VISIBLE_CONTENTS") = ALL_VISIBLE_CONTENTS;
+	_trace.attr("CONTENTS_TESTFOGVOLUME") = CONTENTS_TESTFOGVOLUME;
+	_trace.attr("CONTENTS_UNUSED") = CONTENTS_UNUSED;
+	_trace.attr("CONTENTS_TEAM1") = CONTENTS_TEAM1;
+	_trace.attr("CONTENTS_TEAM2") = CONTENTS_TEAM2;
+	_trace.attr("CONTENTS_IGNORE_NODRAW_OPAQUE") = CONTENTS_IGNORE_NODRAW_OPAQUE;
+	_trace.attr("CONTENTS_MOVEABLE") = CONTENTS_MOVEABLE;
+	_trace.attr("CONTENTS_AREAPORTAL") = CONTENTS_AREAPORTAL;
+	_trace.attr("CONTENTS_PLAYERCLIP") = CONTENTS_PLAYERCLIP;
+	_trace.attr("CONTENTS_MONSTERCLIP") = CONTENTS_MONSTERCLIP;
+	_trace.attr("CONTENTS_CURRENT_0") = CONTENTS_CURRENT_0;
+	_trace.attr("CONTENTS_CURRENT_90") = CONTENTS_CURRENT_90;
+	_trace.attr("CONTENTS_CURRENT_180") = CONTENTS_CURRENT_180;
+	_trace.attr("CONTENTS_CURRENT_270") = CONTENTS_CURRENT_270;
+	_trace.attr("CONTENTS_CURRENT_UP") = CONTENTS_CURRENT_UP;
+	_trace.attr("CONTENTS_CURRENT_DOWN") = CONTENTS_CURRENT_DOWN;
+	_trace.attr("CONTENTS_ORIGIN") = CONTENTS_ORIGIN;
+	_trace.attr("CONTENTS_MONSTER") = CONTENTS_MONSTER;
+	_trace.attr("CONTENTS_DEBRIS") = CONTENTS_DEBRIS;
+	_trace.attr("CONTENTS_DETAIL") = CONTENTS_DETAIL;
+	_trace.attr("CONTENTS_TRANSLUCENT") = CONTENTS_TRANSLUCENT;
+	_trace.attr("CONTENTS_LADDER") = CONTENTS_LADDER;
+	_trace.attr("CONTENTS_HITBOX") = CONTENTS_HITBOX;
+
+	// Masks
+	_trace.attr("MASK_ALL") = MASK_ALL;
+	_trace.attr("MASK_SOLID") = MASK_SOLID;
+	_trace.attr("MASK_PLAYERSOLID") = MASK_PLAYERSOLID;
+	_trace.attr("MASK_NPCSOLID") = MASK_NPCSOLID;
+	_trace.attr("MASK_WATER") = MASK_WATER;
+	_trace.attr("MASK_OPAQUE") = MASK_OPAQUE;
+	_trace.attr("MASK_OPAQUE_AND_NPCS") = MASK_OPAQUE_AND_NPCS;
+	_trace.attr("MASK_BLOCKLOS") = MASK_BLOCKLOS;
+	_trace.attr("MASK_BLOCKLOS_AND_NPCS") = MASK_BLOCKLOS_AND_NPCS;
+	_trace.attr("MASK_VISIBLE") = MASK_VISIBLE;
+	_trace.attr("MASK_VISIBLE_AND_NPCS") = MASK_VISIBLE_AND_NPCS;
+	_trace.attr("MASK_SHOT") = MASK_SHOT;
+	_trace.attr("MASK_SHOT_HULL") = MASK_SHOT_HULL;
+	_trace.attr("MASK_SHOT_PORTAL") = MASK_SHOT_PORTAL;
+	_trace.attr("MASK_SOLID_BRUSHONLY") = MASK_SOLID_BRUSHONLY;
+	_trace.attr("MASK_PLAYERSOLID_BRUSHONLY") = MASK_PLAYERSOLID_BRUSHONLY;
+	_trace.attr("MASK_NPCWORLDSTATIC") = MASK_NPCWORLDSTATIC;
+	_trace.attr("MASK_SPLITAREAPORTAL") = MASK_SPLITAREAPORTAL;
+	_trace.attr("MASK_CURRENT") = MASK_CURRENT;
+	_trace.attr("MASK_DEADSOLID") = MASK_DEADSOLID;
+	
+	// Surface flags
+	_trace.attr("SURF_LIGHT") = SURF_LIGHT;
+	_trace.attr("SURF_SKY2D") = SURF_SKY2D;
+	_trace.attr("SURF_SKY") = SURF_SKY;
+	_trace.attr("SURF_WARP") = SURF_WARP;
+	_trace.attr("SURF_TRANS") = SURF_TRANS;
+	_trace.attr("SURF_NOPORTAL") = SURF_NOPORTAL;
+	_trace.attr("SURF_TRIGGER") = SURF_TRIGGER;
+	_trace.attr("SURF_NODRAW") = SURF_NODRAW;
+	_trace.attr("SURF_HINT") = SURF_HINT;
+	_trace.attr("SURF_SKIP") = SURF_SKIP;
+	_trace.attr("SURF_NOLIGHT") = SURF_NOLIGHT;
+	_trace.attr("SURF_BUMPLIGHT") = SURF_BUMPLIGHT;
+	_trace.attr("SURF_NOSHADOWS") = SURF_NOSHADOWS;
+	_trace.attr("SURF_NODECALS") = SURF_NODECALS;
+	_trace.attr("SURF_NOCHOP") = SURF_NOCHOP;
+	_trace.attr("SURF_HITBOX") = SURF_HITBOX;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports world size constants.
+//-----------------------------------------------------------------------------
+void export_worldsize(scope _trace)
+{
+	_trace.attr("MAX_COORD_INTEGER") = MAX_COORD_INTEGER;
+	_trace.attr("MIN_COORD_INTEGER") = MIN_COORD_INTEGER;
+
+	_trace.attr("MAX_COORD_FRACTION") = MAX_COORD_FRACTION;
+	_trace.attr("MIN_COORD_FRACTION") = MIN_COORD_FRACTION;
+
+	_trace.attr("MAX_COORD_FLOAT") = MAX_COORD_FLOAT;
+	_trace.attr("MIN_COORD_FLOAT") = MIN_COORD_FLOAT;
+
+	_trace.attr("COORD_EXTENT") = COORD_EXTENT;
+
+	_trace.attr("MAX_TRACE_LENGTH") = MAX_TRACE_LENGTH;
+
+	_trace.attr("MAX_COORD_RANGE") = MAX_COORD_RANGE;
+}

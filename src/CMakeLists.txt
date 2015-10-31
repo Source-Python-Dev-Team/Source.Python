@@ -170,6 +170,9 @@ Set(SOURCEPYTHON_ENGINES_MODULE_HEADERS
 
 Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
     core/modules/engines/engines_wrap.cpp
+    core/modules/engines/engines_server_wrap.cpp
+    core/modules/engines/engines_sound_wrap.cpp
+    core/modules/engines/engines_trace_wrap.cpp
 )
 
 # ------------------------------------------------------------------
