@@ -56,7 +56,14 @@ Set(SOURCEPYTHON_UTILITIES_HEADERS
 )
 
 Set(SOURCEPYTHON_UTILITIES_SOURCES
-    core/utilities/conversions.cpp
+    core/utilities/conversions/baseentity_from.cpp
+    core/utilities/conversions/basehandle_from.cpp
+    core/utilities/conversions/edict_from.cpp
+    core/utilities/conversions/index_from.cpp
+    core/utilities/conversions/inthandle_from.cpp
+    core/utilities/conversions/playerinfo_from.cpp
+    core/utilities/conversions/pointer_from.cpp
+    core/utilities/conversions/userid_from.cpp
 )
 
 Set(SOURCEPYTHON_UTILITIES_FILES
