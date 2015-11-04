@@ -45,10 +45,7 @@ public:
 	}
 
 	static str __repr__(Vector* pVector)
-	{
-		return str("Vector" + str(tuple(pVector)));
-	}
-	// { return str(tuple(pVector)); }
+	{ return str("Vector" + str(tuple(pVector))); }
 };
 
 

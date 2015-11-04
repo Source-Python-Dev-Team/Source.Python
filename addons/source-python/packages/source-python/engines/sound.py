@@ -8,7 +8,6 @@
 # Python Imports
 #   Enum
 from enum import Enum
-from enum import IntEnum
 
 # Source.Python Imports
 #   Core
