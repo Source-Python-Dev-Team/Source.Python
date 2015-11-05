@@ -383,7 +383,7 @@ class _PlayerWeapons(object):
         # Return the entity's color
         return Entity(index).color
 
-    def set_weapon_color(self, red, green, blue, alpha=None):
+    def set_weapon_color(self, color):
         """Set the player's active weapon's color."""
         # Get the handle of the player's active weapon
         handle = self.active_weapon
@@ -399,7 +399,7 @@ class _PlayerWeapons(object):
                 'No active weapon found for player "{0}"'.format(self.userid))
 
         # Set the entity's color
-        Entity(index).color = (red, green, blue, alpha)
+        Entity(index).color = color
 
 
 # =============================================================================
