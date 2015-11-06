@@ -67,12 +67,6 @@ void export_mrecipientfilter(scope _recipients)
 			"Whether the message has been initialised?"
 		)
 
-		.def("get_recipient_count",
-			&IRecipientFilter::GetRecipientCount,
-			"Return the recipient count."
-		)
-
-		// TODO: Remove get_recipient_count()?
 		.def("__len__",
 			&IRecipientFilter::GetRecipientCount,
 			"Return the recipient count."
@@ -110,13 +104,6 @@ void export_mrecipientfilter(scope _recipients)
 			args("index")
 		)
 
-		.def("has_recipient",
-			&MRecipientFilter::HasRecipient,
-			"Return True if the given index is in the recipient filter.",
-			args("index")
-		)
-
-		// TODO: Remove has_recipient()?
 		.def("__contains__",
 			&MRecipientFilter::HasRecipient,
 			"Return True if the given index is in the recipient filter.",
