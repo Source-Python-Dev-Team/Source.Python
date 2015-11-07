@@ -8,6 +8,7 @@
 # Source.Python Imports
 #   Commands
 from _commands._client import ClientCommandDispatcher
+from _commands._client import ClientCommandGenerator
 from _commands._client import get_client_command
 from _commands._client import register_client_command_filter
 from _commands._client import unregister_client_command_filter
@@ -22,6 +23,7 @@ from commands.client.manager import client_command_manager
 __all__ = ('ClientCommand',
            'ClientCommandDispatcher',
            'ClientCommandFilter',
+           'ClientCommandGenerator',
            'client_command_manager',
            'get_client_command',
            'register_client_command_filter',
