@@ -28,6 +28,8 @@ from entities.constants import MoveType
 from entities.constants import TakeDamage
 from entities.entity import Entity
 from entities.helpers import index_from_inthandle
+#   Filters
+from filters.weapons import WeaponIter
 #   Mathlib
 from mathlib import Vector
 from mathlib import QAngle
@@ -545,7 +547,7 @@ class Player(Entity):
     # >> WEAPONS
     # =========================================================================
     def get_active_weapon(self):
-        """Return player's active weapon.
+        """Return the player's active weapon.
 
         :rtype: WeaponEntity
         """
@@ -555,6 +557,16 @@ class Player(Entity):
         return Weapon(index)
 
     active_weapon = property(get_active_weapon)
+
+    def get_weapons(self, is_filters=None, not_filters=None):
+        """Return the player's weapons.
+
+        :return: A generator of :class:`weapons.entity.WeaponEntity` objects
+        :rtype: generator
+        """
+        for weapon in WeaponIter(is_filters, not_filters):
+            if index_from_inthandle(weapon.owner) == self.index:
+                yield weapon
 
 
 # =============================================================================
