@@ -6,10 +6,3 @@
 # >> IMPORTS
 # =============================================================================
 from players.classes.language import get_client_language
-
-
-# =============================================================================
-# >> CLASSES
-# =============================================================================
-class _GameWeapons(object):
-    """Base class for game specific weapon functionality."""
