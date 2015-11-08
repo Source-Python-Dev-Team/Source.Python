@@ -23,7 +23,7 @@ from weapons.manager import weapon_manager
 # >> CLASSES
 # =============================================================================
 class _PlayerWeapons(object):
-    """Extends PlayerEntity to provide basic weapon functionality."""
+    """Extends Player to provide basic weapon functionality."""
 
     # =========================================================================
     # >> GET AMMO

@@ -13,14 +13,14 @@ from cvars import ConVar
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('Weapon',
+__all__ = ('WeaponClass',
            )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Weapon(object):
+class WeaponClass(object):
     """Class used to store information specific to the given weapon."""
 
     def __init__(self, name, basename, properties):

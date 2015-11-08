@@ -1,6 +1,6 @@
 # ../players/games/__init__.py
 
-"""Imports game specific functionality for the PlayerEntity class."""
+"""Imports game specific functionality for the Player class."""
 
 # =============================================================================
 # >> IMPORTS

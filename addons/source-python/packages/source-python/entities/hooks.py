@@ -20,7 +20,7 @@ from listeners import OnEntityCreated
 from entities.entity import Entity
 #   Players
 from players.constants import INVALID_PLAYER_USERID
-from players.entity import PlayerEntity
+from players.entity import Player
 from players.helpers import userid_from_index
 
 
@@ -54,14 +54,14 @@ class EntityCondition(object):
         """Return True if the entity is a human player."""
         return (
             cls.is_player(entity) and
-            PlayerEntity(entity.index).steamid != 'BOT')
+            Player(entity.index).steamid != 'BOT')
 
     @classmethod
     def is_bot_player(cls, entity):
         """Return True if the entity is a bot."""
         return (
             cls.is_player(entity) and
-            PlayerEntity(entity.index).steamid == 'BOT')
+            Player(entity.index).steamid == 'BOT')
 
     @staticmethod
     def equals_entity_classname(*classnames):

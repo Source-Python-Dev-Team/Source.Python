@@ -47,14 +47,14 @@ from players.weapons import _PlayerWeapons
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PlayerEntity',
+__all__ = ('Player',
            )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
+class Player(Entity, _GameWeapons, _PlayerWeapons):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
@@ -268,20 +268,20 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
         Return None if the player is not looking at a player.
 
-        :rtype: PlayerEntity
+        :rtype: Player
         """
         # Get the entity that the player is looking at
         entity = self.get_view_entity()
 
-        # Return a PlayerEntity instance of the player or None if not a player
+        # Return a Player instance of the player or None if not a player
         return (
-            PlayerEntity(entity.index) if entity is not None and
+            Player(entity.index) if entity is not None and
             entity.classname == 'player' else None)
 
     def set_view_player(self, player):
         """Force the player to look at the other player's eye location.
 
-        :param PlayerEntity player: The other player.
+        :param Player player: The other player.
         """
         self.set_view_coordinates(player.get_eye_location())
 
@@ -501,7 +501,7 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
         Freeze mode makes the player unable to move, look and shoot.
 
-        :param bool enable: If True frezze mode will be enabled.
+        :param bool enable: If True freeze mode will be enabled.
         """
         if enable:
             self.flags |= PlayerStates.FROZEN
