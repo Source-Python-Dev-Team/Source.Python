@@ -82,11 +82,11 @@ class _EntitySpecials(object):
         if attacker is not None and weapon is None:
 
             # Does the attacker have a weapon attribute?
-            if hasattr(attacker, 'active_weapon'):
+            if hasattr(attacker, 'active_weapon_handle'):
 
                 # Get the attacker's current weapon index
                 weapon_index = index_from_inthandle(
-                    attacker.active_weapon, False)
+                    attacker.active_weapon_handle, False)
 
                 # Get the weapon's Weapon instance if it is valid
                 if weapon_index is not None:

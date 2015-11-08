@@ -368,7 +368,7 @@ class _PlayerWeapons(object):
     def get_weapon_color(self):
         """Return a tuple value for the player's active weapon's color."""
         # Get the handle of the player's active weapon
-        handle = self.active_weapon
+        handle = self.active_weapon_handle
 
         # Get the weapon's BaseHandle instance
         index = index_from_inthandle(handle)
@@ -386,7 +386,7 @@ class _PlayerWeapons(object):
     def set_weapon_color(self, color):
         """Set the player's active weapon's color."""
         # Get the handle of the player's active weapon
-        handle = self.active_weapon
+        handle = self.active_weapon_handle
 
         # Get the weapon's BaseHandle instance
         index = index_from_inthandle(handle)
