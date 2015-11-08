@@ -23,9 +23,11 @@ from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
 from entities.constants import CollisionGroup
+from entities.constants import INVALID_ENTITY_INDEX
 from entities.constants import MoveType
 from entities.constants import TakeDamage
 from entities.entity import Entity
+from entities.helpers import index_from_inthandle
 #   Mathlib
 from mathlib import Vector
 from mathlib import QAngle
@@ -40,6 +42,8 @@ from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
 from players.voice import mute_manager
+#   Weapons
+from weapons.entity import Weapon
 
 
 # =============================================================================
@@ -536,6 +540,21 @@ class Player(Entity):
         return self.move_type == MoveType.NONE
 
     stuck = property(get_stuck, set_stuck)
+
+    # =========================================================================
+    # >> WEAPONS
+    # =========================================================================
+    def get_active_weapon(self):
+        """Return player's active weapon.
+
+        :rtype: WeaponEntity
+        """
+        index = index_from_inthandle(self.active_weapon_handle)
+        if index is INVALID_ENTITY_INDEX:
+            return None
+        return Weapon(index)
+
+    active_weapon = property(get_active_weapon)
 
 
 # =============================================================================
