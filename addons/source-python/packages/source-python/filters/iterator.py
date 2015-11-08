@@ -58,7 +58,7 @@ class _IterObject(metaclass=_IterObjectMeta):
         return len([x for x in self])
 
     @property
-    def iterator():
+    def iterator(self):
         """Raise an error if the inheriting class does not have their own."""
         raise NotImplementedError('No iterator attribute defined for class.')
 
