@@ -57,6 +57,7 @@ void export_take_damage_info(scope);
 void export_global_entity_list(scope);
 void export_entity_listener(scope);
 void export_check_transmit_info(scope);
+void export_baseentity_generator(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -75,6 +76,7 @@ DECLARE_SP_MODULE(_entities)
 	export_global_entity_list(_entities);
 	export_entity_listener(_entities);
 	export_check_transmit_info(_entities);
+	export_baseentity_generator(_entities);
 }
 
 
@@ -530,4 +532,16 @@ void export_check_transmit_info(scope _entities)
 	CheckTransmitInfo.def_readwrite("map_areas", &CCheckTransmitInfo::m_nMapAreas, "Number of map areas.");
 
 	CheckTransmitInfo ADD_MEM_TOOLS(CCheckTransmitInfo);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CBaseEntityGenerator.
+//-----------------------------------------------------------------------------
+void export_baseentity_generator(scope _entities)
+{
+	class_<CBaseEntityGenerator>("BaseEntityGenerator")
+		.def("__iter__", &CBaseEntityGenerator::iter)
+		.def("__next__", &CBaseEntityGenerator::next, reference_existing_object_policy())
+	;
 }

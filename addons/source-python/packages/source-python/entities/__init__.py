@@ -15,6 +15,7 @@ from loggers import _sp_logger
 # =============================================================================
 # Source.Python Imports
 #   Entities
+from _entities import BaseEntityGenerator
 from _entities import BaseEntityHandle
 from _entities import CheckTransmitInfo
 from _entities import Edict
@@ -31,7 +32,8 @@ from _entities import TakeDamageInfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('BaseEntityHandle',
+__all__ = ('BaseEntityGenerator',
+           'BaseEntityHandle',
            'CheckTransmitInfo',
            'Edict',
            'EntityGenerator',
