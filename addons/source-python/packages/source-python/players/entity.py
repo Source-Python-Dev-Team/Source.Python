@@ -549,7 +549,7 @@ class Player(Entity):
     def get_active_weapon(self):
         """Return the player's active weapon.
 
-        :rtype: WeaponEntity
+        :rtype: Weapon
         """
         index = index_from_inthandle(self.active_weapon_handle)
         if index is INVALID_ENTITY_INDEX:
@@ -561,12 +561,36 @@ class Player(Entity):
     def get_weapons(self, is_filters=None, not_filters=None):
         """Return the player's weapons.
 
-        :return: A generator of :class:`weapons.entity.WeaponEntity` objects
+        :return: A generator of :class:`weapons.entity.Weapon` objects
         :rtype: generator
         """
         for weapon in WeaponIter(is_filters, not_filters):
             if index_from_inthandle(weapon.owner) == self.index:
                 yield weapon
+
+    def get_primary_weapon(self):
+        """Return the player's primary weapon.
+
+        :rtype: Weapon
+        """
+        try:
+            return next(self.get_weapons(is_filters='primary'))
+        except ValueError:
+            return None
+
+    primary_weapon = property(get_primary_weapon)
+
+    def get_secondary_weapon(self):
+        """Return the player's secondary weapon.
+
+        :rtype: Weapon
+        """
+        try:
+            return next(self.get_weapons(is_filters='secondary'))
+        except ValueError:
+            return None
+
+    secondary_weapon = property(get_secondary_weapon)
 
 
 # =============================================================================
