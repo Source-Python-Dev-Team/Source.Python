@@ -415,7 +415,8 @@ class _CoreCommandManager(SubCommandManager):
             self.logger.log_message(
                 'Sphinx project does not exist for Source.Python.')
 
-    def _get_updated_credits_wiki(self):
+    @staticmethod
+    def _get_updated_credits_wiki():
         """Return the content for the credits.rst."""
         groups = ConfigObj(
             SP_DATA_PATH / 'credits.ini', encoding='unicode_escape')
