@@ -10,6 +10,10 @@
 from contextlib import suppress
 #   Entities
 from entities.entity import BaseEntity
+#   Filters
+from filters.weapons import WeaponClassIter
+#   Weapons
+from weapons.manager import weapon_manager
 
 
 # =============================================================================
@@ -21,10 +25,10 @@ class _ProjectileMeta(BaseEntity.__class__):
     def __new__(cls, name, bases, odict):
         """Create the class and create its methods dynamically."""
         # Store values to use later
-        temp = {'_classname': None, '_is_filters': None, '_not_filters': None}
+        temp = {'_classname': None, '_filters': None}
 
         # Loop through the base class attributes
-        for attribute in ('_classname', '_is_filters', '_not_filters'):
+        for attribute in ('_classname', '_filters'):
 
             # Try to store the odict's value of
             # the attribute and delete it from odict
@@ -41,55 +45,35 @@ class _ProjectileMeta(BaseEntity.__class__):
             # Do not add any methods
             return cls
 
-        # Get the weapon's name based off of the class name
-        method_name = name.strip('_').lower()
-
         # Create the iterator <weapon>_indexes method and set its docstring
         setattr(
-            cls, '{0}_indexes'.format(method_name),
+            cls, '{0}_indexes'.format(cls._name),
             property(lambda self: cls._projectile_indexes(
-                self, temp['_classname'],
-                temp['_is_filters'], temp['_not_filters']), doc='Returns ' +
-                'a generator of {0} indexes the player owns.'.format(
-                    method_name)))
+                self, temp['_classname'], temp['_filters']), doc='Returns a ' +
+                'generator of {0} indexes the player owns.'.format(cls._name)))
 
-        # Create the get_<weapon>_indexes method
+        # Create the get_<weapon>_ammo method
         setattr(
-            cls, 'get_{0}_indexes'.format(method_name),
-            lambda self: cls._get_projectile_index_list(
-                self, temp['_classname'],
-                temp['_is_filters'], temp['_not_filters']))
-
-        # Set the docstring for the method
-        getattr(
-            cls, 'get_{0}_indexes'.format(method_name)).__doc__ = (
-            'Returns a list of {0} indexes the player owns.'.format(
-                method_name))
-
-        # Create the get_<weapon>_count method
-        setattr(
-            cls, 'get_{0}_count'.format(method_name),
+            cls, 'get_{0}_ammo'.format(cls._name),
             lambda self: cls._get_projectile_ammo(
-                self, temp['_classname'],
-                temp['_is_filters'], temp['_not_filters']))
+                self, temp['_classname'], temp['_filters']))
 
         # Set the docstring for the method
         getattr(
-            cls, 'get_{0}_count'.format(method_name)).__doc__ = (
-            "Returns the player's {0} ammo amount.".format(method_name))
+            cls, 'get_{0}_ammo'.format(cls._name)).__doc__ = (
+            "Returns the player's {0} ammo amount.".format(cls._name))
 
-        # Create the set_<weapon>_count method
+        # Create the set_<weapon>_ammo method
         setattr(
-            cls, 'set_{0}_count'.format(method_name),
+            cls, 'set_{0}_ammo'.format(cls._name),
             lambda self, value: cls._set_projectile_ammo(
-                self, value, temp['_classname'],
-                temp['_is_filters'], temp['_not_filters']))
+                self, value, temp['_classname'], temp['_filters']))
 
         # Set the docstring for the method
         getattr(
-            cls, 'set_{0}_count'.format(method_name)).__doc__ = (
+            cls, 'set_{0}_ammo'.format(cls._name)).__doc__ = (
             "Sets the player's {0} ammo amount to the given value.".format(
-                method_name))
+                cls._name))
 
         # Return the new class
         return cls
@@ -100,51 +84,61 @@ class _ProjectileBase(metaclass=_ProjectileMeta):
 
     # Store the base attributes all as None
     _classname = None
-    _is_filters = None
-    _not_filters = None
+    _filters = None
 
-    def _projectile_indexes(self, classname, is_filters, not_filters):
+    def _projectile_indexes(self, classname, filters):
         """Iterate over all indexes the player owns for the projectile type."""
-        return self.weapon_indexes(classname, is_filters, not_filters)
+        return self.weapon_indexes(classname, filters)
 
-    def _get_projectile_index_list(self, classname, is_filters, not_filters):
-        """Return a list of indexes the player owns for the projectile type."""
-        return self.get_weapon_index_list(classname, is_filters, not_filters)
-
-    def _get_projectile_ammo(self, classname, is_filters, not_filters):
+    def _get_projectile_ammo(self, classname, filters):
         """Return the ammo amount the player has for the projectile type."""
-        return self._get_weapon_ammo(classname, is_filters, not_filters)
+        if classname is None:
+            weapon = [weapon for weapon in WeaponClassIter(filters)][0]
+        else:
+            weapon = weapon_manager[classname]
+        return self.get_property_int(
+            weapon_manager.ammoprop + '%03d' % weapon.ammoprop)
 
-    def _set_projectile_ammo(self, value, classname, is_filters, not_filters):
+    def _set_projectile_ammo(self, value, classname, filters):
         """Set the ammo amount of the player for the projectile type."""
-        self._set_weapon_ammo(value, classname, is_filters, not_filters)
+        if classname is None:
+            weapon = [weapon for weapon in WeaponClassIter(filters)][0]
+        else:
+            weapon = weapon_manager[classname]
+        self.set_property_int(
+            weapon_manager.ammoprop + '%03d' % weapon.ammoprop, value)
 
 
 class _HEGrenade(_ProjectileBase):
     """Class that interacts with a player based on the hegrenade weapon."""
 
+    _name = 'hegrenade'
     _classname = 'weapon_hegrenade'
 
 
 class _Flashbang(_ProjectileBase):
     """Class that interacts with a player based on the flashbang weapon."""
 
+    _name = 'flashbang'
     _classname = 'weapon_flashbang'
 
 
 class _SmokeGrenade(_ProjectileBase):
     """Class that interacts with a player based on the smokegrenade weapon."""
 
+    _name = 'smokegrenade'
     _classname = 'weapon_smokegrenade'
 
 
 class _Decoy(_ProjectileBase):
     """Class that interacts with a player based on the decoy weapon."""
 
+    _name = 'decoy'
     _classname = 'weapon_decoy'
 
 
 class _Incendiary(_ProjectileBase):
     """Class that interacts with a player based on incendiary weapons."""
 
-    _is_filters = 'incendiary'
+    _name = 'incendiary'
+    _filters = 'incendiary'
