@@ -362,7 +362,11 @@ void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple ti
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientActive( edict_t *pEntity )
 {
-	CALL_LISTENERS(ClientActive, IndexFromEdict(pEntity));
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEntity, iEntityIndex))
+		return;
+
+	CALL_LISTENERS(ClientActive, iEntityIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -370,7 +374,11 @@ void CSourcePython::ClientActive( edict_t *pEntity )
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientDisconnect( edict_t *pEntity )
 {
-	CALL_LISTENERS(ClientDisconnect, IndexFromEdict(pEntity));
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEntity, iEntityIndex))
+		return;
+
+	CALL_LISTENERS(ClientDisconnect, iEntityIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -378,7 +386,11 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
-	CALL_LISTENERS(ClientPutInServer, IndexFromEdict(pEntity), playername);
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEntity, iEntityIndex))
+		return;
+
+	CALL_LISTENERS(ClientPutInServer, iEntityIndex, playername);
 }
 
 //-----------------------------------------------------------------------------
@@ -394,7 +406,11 @@ void CSourcePython::SetCommandClient( int index )
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 {
-	CALL_LISTENERS(ClientSettingsChanged, IndexFromEdict(pEdict));
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEdict, iEntityIndex))
+		return;
+
+	CALL_LISTENERS(ClientSettingsChanged, iEntityIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -402,9 +418,13 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEntity, iEntityIndex))
+		return PLUGIN_CONTINUE;
+
 	CPointer allowConnect = CPointer((unsigned long) bAllowConnect);
 	CPointer rejectMessage = CPointer((unsigned long) reject);
-	CALL_LISTENERS(ClientConnect, allowConnect, IndexFromEdict(pEntity), pszName, pszAddress, rejectMessage, maxrejectlen);
+	CALL_LISTENERS(ClientConnect, allowConnect, iEntityIndex, pszName, pszAddress, rejectMessage, maxrejectlen);
 	return PLUGIN_OVERRIDE;
 }
 
@@ -424,7 +444,11 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 	EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue )
 {
 	PythonLog(4, "Cvar query (cookie: %d, status: %d) - name: %s, value: %s", iCookie, eStatus, pCvarName, pCvarValue );
-	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, IndexFromEdict(pPlayerEntity), eStatus, pCvarName, pCvarValue);
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pPlayerEntity, iEntityIndex))
+		return;
+
+	CALL_LISTENERS(OnQueryCvarValueFinished, (int) iCookie, iEntityIndex, eStatus, pCvarName, pCvarValue);
 }
 
 //-----------------------------------------------------------------------------
@@ -450,14 +474,22 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &ar
 #ifdef ENGINE_CSGO
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
-	CALL_LISTENERS(ClientFullyConnect, IndexFromEdict(pEntity));
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEntity, iEntityIndex))
+		return;
+
+	CALL_LISTENERS(ClientFullyConnect, iEntityIndex);
 }
 #endif
 
 #if defined(ENGINE_CSGO) || defined(ENGINE_BMS)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
-	CALL_LISTENERS(OnEdictAllocated, IndexFromEdict(edict));
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEntity, iEntityIndex))
+		return;
+
+	CALL_LISTENERS(OnEdictAllocated, iEntityIndex);
 }
 
 void CSourcePython::OnEdictFreed( const edict_t *edict )
@@ -475,8 +507,15 @@ void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
-	int iIndex = IndexFromBaseEntity(pEntity);
-	edict_t *pEdict = EdictFromIndex(iIndex);
+	// TODO: Udpate this. The index should be None instead of -1
+	unsigned int iIndex;
+	if (!IndexFromBaseEntity(pEntity, iIndex))
+		iIndex = -1;
+
+	edict_t *pEdict;
+	if (!EdictFromIndex(iIndex, pEdict))
+		pEdict = NULL;
+
 	if (pEdict)
 	{
 		IServerUnknown* pServerUnknown = pEdict->GetUnknown();
@@ -488,12 +527,22 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
-	CALL_LISTENERS(OnEntitySpawned, IndexFromBaseEntity(pEntity), ptr((CBaseEntityWrapper*) pEntity));
+	// TODO: Udpate this. The index should be None instead of -1
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseEntity(pEntity, iEntityIndex))
+		iEntityIndex = -1;
+
+	CALL_LISTENERS(OnEntitySpawned, iEntityIndex, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	CALL_LISTENERS(OnEntityDeleted, IndexFromBaseEntity(pEntity), ptr((CBaseEntityWrapper*) pEntity));
+	// TODO: Udpate this. The index should be None instead of -1
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseEntity(pEntity, iEntityIndex))
+		iEntityIndex = -1;
+
+	CALL_LISTENERS(OnEntityDeleted, iEntityIndex, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

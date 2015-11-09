@@ -33,106 +33,93 @@
 //-----------------------------------------------------------------------------
 // Returns a BaseEntity instance from the given Edict instance.
 //-----------------------------------------------------------------------------
-CBaseEntity *BaseEntityFromEdict( edict_t *pEdict, bool bRaiseException )
+bool BaseEntityFromEdict( edict_t *pEdict, CBaseEntity*& output )
 {
-	CBaseEntity *pBaseEntity = NULL;
+	if (!pEdict || pEdict->IsFree())
+		return false;
 
-	if (pEdict && !pEdict->IsFree())
-	{
-		IServerUnknown *pServerUnknown = pEdict->GetUnknown();
-		if (pServerUnknown)
-			pBaseEntity = pServerUnknown->GetBaseEntity();
-	}
+	IServerUnknown *pServerUnknown = pEdict->GetUnknown();
+	if (!pServerUnknown)
+		return false;
 
-	if (!pBaseEntity && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity instance from the given Edict instance (%x).", pEdict);
-
-	return pBaseEntity;
+	output = pServerUnknown->GetBaseEntity();
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseEntity instance from the given Pointer instance.
 //-----------------------------------------------------------------------------
-CBaseEntity *BaseEntityFromPointer( CPointer *pEntityPointer, bool bRaiseException )
+bool BaseEntityFromPointer( CPointer *pEntityPointer, CBaseEntity*& output )
 {
-	CBaseEntity *pBaseEntity = NULL;
+	if (!pEntityPointer || !pEntityPointer->IsValid())
+		return false;
 
-	if (IndexFromPointer(pEntityPointer) != INVALID_ENTITY_INDEX)
-		pBaseEntity = (CBaseEntity *)pEntityPointer->m_ulAddr;
-
-	if (!pBaseEntity && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity instance from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
-
-	return pBaseEntity;
+	output = (CBaseEntity *) pEntityPointer->m_ulAddr;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseEntity instance from the given index.
 //-----------------------------------------------------------------------------
-CBaseEntity *BaseEntityFromIndex( int iEntityIndex, bool bRaiseException )
+bool BaseEntityFromIndex( unsigned int iEntityIndex, CBaseEntity*& output )
 {
-	CBaseEntity *pBaseEntity = BaseEntityFromEdict(EdictFromIndex(iEntityIndex));
+	edict_t* pEdict;
+	if (!EdictFromIndex(iEntityIndex, pEdict))
+		return false;
 
-	if (!pBaseEntity && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity instance from the given index (%i).", iEntityIndex);
-
-	return pBaseEntity;
+	return BaseEntityFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseEntity instance from the given BaseHandle instance.
 //-----------------------------------------------------------------------------
-CBaseEntity *BaseEntityFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException )
+bool BaseEntityFromBaseHandle( CBaseHandle hBaseHandle, CBaseEntity*& output )
 {
-	CBaseEntity *pBaseEntity = BaseEntityFromEdict(EdictFromBaseHandle(hBaseHandle));
+	edict_t* pEdict;
+	if (!EdictFromBaseHandle(hBaseHandle, pEdict))
+		return false;
 
-	if (!pBaseEntity && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity instance from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
-
-	return pBaseEntity;
+	return BaseEntityFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseEntity instance from the given IntHandle.
 //-----------------------------------------------------------------------------
-CBaseEntity *BaseEntityFromIntHandle( int iEntityHandle, bool bRaiseException )
+bool BaseEntityFromIntHandle( unsigned int iEntityHandle, CBaseEntity*& output )
 {
-	CBaseEntity *pBaseEntity = BaseEntityFromEdict(EdictFromIntHandle(iEntityHandle));
+	edict_t* pEdict;
+	if (!EdictFromIntHandle(iEntityHandle, pEdict))
+		return false;
 
-	if (!pBaseEntity  && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity instance from the given IntHandle (%i).", iEntityHandle);
-
-	return pBaseEntity;
+	return BaseEntityFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseEntity instance from the given UserID.
 //-----------------------------------------------------------------------------
-CBaseEntity *BaseEntityFromUserid( int iUserID, bool bRaiseException )
+bool BaseEntityFromUserid( unsigned int iUserID, CBaseEntity*& output )
 {
-	CBaseEntity *pBaseEntity = BaseEntityFromEdict(EdictFromUserid(iUserID));
+	edict_t* pEdict;
+	if (!EdictFromUserid(iUserID, pEdict))
+		return false;
 
-	if (!pBaseEntity && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity instance from the given UserID (%i).", iUserID);
-
-	return pBaseEntity;
+	return BaseEntityFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseEntity instance from the given PlayerInfo instance.
 //-----------------------------------------------------------------------------
-CBaseEntity *BaseEntityFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException )
+bool BaseEntityFromPlayerInfo( IPlayerInfo *pPlayerInfo, CBaseEntity*& output )
 {
-	CBaseEntity *pBaseEntity = BaseEntityFromEdict(EdictFromPlayerInfo(pPlayerInfo));
+	edict_t* pEdict;
+	if (!EdictFromPlayerInfo(pPlayerInfo, pEdict))
+		return false;
 
-	if (!pBaseEntity && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity instance from the given PlayerInfo instance (%x).", pPlayerInfo);
-
-	return pBaseEntity;
+	return BaseEntityFromEdict(pEdict, output);
 }

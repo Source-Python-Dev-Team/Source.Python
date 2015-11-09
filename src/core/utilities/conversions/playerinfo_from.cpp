@@ -33,103 +33,96 @@
 //-----------------------------------------------------------------------------
 // Returns a PlayerInfo instance from the given index.
 //-----------------------------------------------------------------------------
-IPlayerInfo *PlayerInfoFromIndex( int iEntityIndex, bool bRaiseException )
+bool PlayerInfoFromIndex( unsigned int iEntityIndex, IPlayerInfo*& output)
 {
-	IPlayerInfo *pPlayerInfo = NULL;
+	if (iEntityIndex == WORLD_ENTITY_INDEX || iEntityIndex > (unsigned int) gpGlobals->maxClients)
+		return false;
 
-	if (iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex <= gpGlobals->maxClients)
-	{
-		edict_t *pEdict = EdictFromIndex(iEntityIndex);
-		if (pEdict)
-			pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
-	}
+	edict_t *pEdict;
+	if (!EdictFromIndex(iEntityIndex, pEdict))
+		return false;
 
-	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given index (%i).", iEntityIndex);
-
-	return pPlayerInfo;
+	return PlayerInfoFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a PlayerInfo instance from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
-IPlayerInfo *PlayerInfoFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException )
+bool PlayerInfoFromBaseEntity( CBaseEntity *pBaseEntity, IPlayerInfo*& output)
 {
-	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(IndexFromBaseEntity(pBaseEntity));
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseEntity(pBaseEntity, iEntityIndex))
+		return false;
 
-	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given BaseEntity instance (%x).", pBaseEntity);
-
-	return pPlayerInfo;
+	return PlayerInfoFromIndex(iEntityIndex, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a PlayerInfo instance from the given Pointer instance.
 //-----------------------------------------------------------------------------
-IPlayerInfo *PlayerInfoFromPointer( CPointer *pEntityPointer, bool bRaiseException )
+bool PlayerInfoFromPointer( CPointer *pEntityPointer, IPlayerInfo*& output)
 {
-	IPlayerInfo *pPlayerInfo = PlayerInfoFromBaseEntity(BaseEntityFromPointer(pEntityPointer));
+	CBaseEntity* pBaseEntity;
+	if (!BaseEntityFromPointer(pEntityPointer, pBaseEntity))
+		return false;
 
-	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
-
-	return pPlayerInfo;
+	return PlayerInfoFromBaseEntity(pBaseEntity, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a PlayerInfo instance from the given Edict instance.
 //-----------------------------------------------------------------------------
-IPlayerInfo *PlayerInfoFromEdict( edict_t *pEdict, bool bRaiseException )
+bool PlayerInfoFromEdict( edict_t *pEdict, IPlayerInfo*& output)
 {
-	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(IndexFromEdict(pEdict));
+	if (pEdict || pEdict->IsFree())
+		return false;
 
-	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given Edict instance (%x).", pEdict);
+	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
+	if (!pPlayerInfo)
+		return false;
 
-	return pPlayerInfo;
+	output = pPlayerInfo;
+	return false;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a PlayerInfo instance from the given BaseHandle instance.
 //-----------------------------------------------------------------------------
-IPlayerInfo *PlayerInfoFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException )
+bool PlayerInfoFromBaseHandle( CBaseHandle hBaseHandle, IPlayerInfo*& output)
 {
-	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(hBaseHandle.GetEntryIndex());
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseHandle(hBaseHandle, iEntityIndex))
+		return false;
 
-	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
-
-	return pPlayerInfo;
+	return PlayerInfoFromIndex(iEntityIndex, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a PlayerInfo instance from the given IntHandle.
 //-----------------------------------------------------------------------------
-IPlayerInfo *PlayerInfoFromIntHandle( int iEntityHandle, bool bRaiseException )
+bool PlayerInfoFromIntHandle( unsigned int iEntityHandle, IPlayerInfo*& output)
 {
-	IPlayerInfo *pPlayerInfo = PlayerInfoFromIndex(IndexFromIntHandle(iEntityHandle));
+	unsigned int iEntityIndex;
+	if (!IndexFromIntHandle(iEntityHandle, iEntityIndex))
+		return false;
 
-	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given IntHandle (%i).", iEntityHandle);
-
-	return pPlayerInfo;
+	return PlayerInfoFromIndex(iEntityIndex, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a PlayerInfo instance from the given UserID.
 //-----------------------------------------------------------------------------
-IPlayerInfo *PlayerInfoFromUserid( int iUserID, bool bRaiseException )
+bool PlayerInfoFromUserid( unsigned int iUserID, IPlayerInfo*& output)
 {
-	IPlayerInfo *pPlayerInfo = PlayerInfoFromEdict(EdictFromUserid(iUserID));
+	edict_t* pEdict;
+	if (!EdictFromUserid(iUserID, pEdict))
+		return false;
 
-	if (!pPlayerInfo && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a PlayerInfo instance from the given UserID (%i).", iUserID);
-
-	return pPlayerInfo;
+	return PlayerInfoFromEdict(pEdict, output);
 }

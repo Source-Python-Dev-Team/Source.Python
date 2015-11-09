@@ -103,7 +103,10 @@ edict_t* CEntityGenerator::getNext()
 {
 	while (m_pCurrentEntity)
 	{
-		edict_t *pEdict = EdictFromBaseEntity(m_pCurrentEntity);
+		edict_t *pEdict;
+		if (!EdictFromBaseEntity(m_pCurrentEntity, pEdict))
+			pEdict = NULL;
+
 		m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);
 		if (pEdict)
 		{

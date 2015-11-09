@@ -33,128 +33,125 @@
 //-----------------------------------------------------------------------------
 // Returns an index from the given Edict instance.
 //-----------------------------------------------------------------------------
-int IndexFromEdict( edict_t *pEdict, bool bRaiseException )
+bool IndexFromEdict( edict_t *pEdict, unsigned int& output )
 {
-	int iEntityIndex = INVALID_ENTITY_INDEX;
+	if (!pEdict || pEdict->IsFree())
+		return false;
 
-	if (pEdict && !pEdict->IsFree())
+	int iEntityIndex;
 #if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
-		iEntityIndex = engine->IndexOfEdict(pEdict);
+	iEntityIndex = engine->IndexOfEdict(pEdict);
 #else
-		iEntityIndex = pEdict - gpGlobals->pEdicts;
+	iEntityIndex = pEdict - gpGlobals->pEdicts;
 #endif
 
-	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given Edict instance (%x).", pEdict);
+	if (iEntityIndex == INVALID_ENTITY_INDEX)
+		return false;
 
-	return iEntityIndex;
+	output = iEntityIndex;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an index from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
-int IndexFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException )
+bool IndexFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output )
 {
-	int iEntityIndex = INVALID_ENTITY_INDEX;
+	if (!pBaseEntity)
+		return false;
 
-	if (pBaseEntity)
-	{
-		IServerUnknown *pServerUnknown = (IServerUnknown *)pBaseEntity;
-		if (pServerUnknown)
-		{
-			IServerNetworkable *pServerNetworkable = pServerUnknown->GetNetworkable();
-			if (pServerNetworkable)
-				iEntityIndex = IndexFromEdict(pServerNetworkable->GetEdict());
-		}
-	}
+	IServerNetworkable *pServerNetworkable = pBaseEntity->GetNetworkable();
+	if (!pServerNetworkable)
+		return false;
 
-	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseEntity instance (%x).", pBaseEntity);
+	edict_t* pEdict = pServerNetworkable->GetEdict();
+	if (!pEdict || pEdict->IsFree())
+		return false;
 
-	return iEntityIndex;
+	return IndexFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an index from the given Pointer instance.
 //-----------------------------------------------------------------------------
-int IndexFromPointer( CPointer *pEntityPointer, bool bRaiseException )
+bool IndexFromPointer( CPointer *pEntityPointer, unsigned int& output )
 {
-	int iEntityIndex = INVALID_ENTITY_INDEX;
+	if (!pEntityPointer || !pEntityPointer->IsValid())
+		return false;
 
-	if (pEntityPointer && pEntityPointer->IsValid())
-		iEntityIndex = IndexFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr);
-
-	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
-
-	return iEntityIndex;
+	return IndexFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an index from the given BaseHandle instance.
 //-----------------------------------------------------------------------------
-int IndexFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException )
+bool IndexFromBaseHandle( CBaseHandle hBaseHandle, unsigned int& output )
 {
-	int iEntityIndex = INVALID_ENTITY_INDEX;
+	if (!hBaseHandle.IsValid())
+		return false;
 
-	if (hBaseHandle.IsValid())
-		iEntityIndex = hBaseHandle.GetEntryIndex();
+	int iEntityIndex = hBaseHandle.GetEntryIndex();
+	if (iEntityIndex == INVALID_ENTITY_INDEX)
+		return false;
 
-	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
-
-	return iEntityIndex;
+	output = iEntityIndex;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an index from the given IntHandle.
 //-----------------------------------------------------------------------------
-int IndexFromIntHandle( int iEntityHandle, bool bRaiseException )
+bool IndexFromIntHandle( unsigned int iEntityHandle, unsigned int& output )
 {
-	int iEntityIndex = (int) INVALID_ENTITY_INDEX;
+	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX)
+		return false;
 
-	if (iEntityHandle != (int) INVALID_EHANDLE_INDEX)
-	{
-		CBaseHandle hBaseHandle(iEntityHandle);
-		const CBaseHandle hTestHandle = BaseHandleFromEdict(EdictFromIndex(hBaseHandle.GetEntryIndex()));
-		if (hTestHandle.IsValid() || (hBaseHandle.GetSerialNumber() == hTestHandle.GetSerialNumber()))
-			iEntityIndex = hBaseHandle.GetEntryIndex();
-	}
+	CBaseHandle hBaseHandle(iEntityHandle);
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseHandle(hBaseHandle, iEntityIndex))
+		return false;
 
-	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given IntHandle (%i).", iEntityHandle);
+	edict_t* pEdict;
+	if (!EdictFromIndex(iEntityIndex, pEdict))
+		return false;
 
-	return iEntityIndex;
+	CBaseHandle hTestHandle;
+	if (!BaseHandleFromEdict(pEdict, hTestHandle))
+		return false;
+
+	if (!hTestHandle.IsValid() || hBaseHandle.GetSerialNumber() != hTestHandle.GetSerialNumber())
+		return false;
+
+	output = iEntityIndex;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an index from the given UserID.
 //-----------------------------------------------------------------------------
-int IndexFromUserid( int iUserID, bool bRaiseException )
+bool IndexFromUserid( unsigned int iUserID, unsigned int& output )
 {
-	int iEntityIndex = IndexFromEdict(EdictFromUserid(iUserID));
+	edict_t* pEdict;
+	if (!EdictFromUserid(iUserID, pEdict))
+		return false;
 
-	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given UserID (%i).", iUserID);
-
-	return iEntityIndex;
+	return IndexFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an index instance from the given PlayerInfo instance.
 //-----------------------------------------------------------------------------
-int IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException )
+bool IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output )
 {
-	int iEntityIndex = IndexFromEdict(EdictFromPlayerInfo(pPlayerInfo));
+	edict_t* pEdict;
+	if (!EdictFromPlayerInfo(pPlayerInfo, pEdict))
+		return false;
 
-	if (iEntityIndex == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given PlayerInfo instance (%x).", pPlayerInfo);
-
-	return iEntityIndex;
+	return IndexFromEdict(pEdict, output);
 }

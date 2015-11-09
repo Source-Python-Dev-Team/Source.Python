@@ -56,7 +56,11 @@ SendProp::~SendProp()
 //-----------------------------------------------------------------------------
 bool CGameTrace::DidHitWorld() const
 {
-	return BaseEntityFromIndex(WORLD_ENTITY_INDEX) == m_pEnt;
+	CBaseEntity* pBaseEntity;
+	if (!BaseEntityFromIndex(WORLD_ENTITY_INDEX, pBaseEntity))
+		return false;
+
+	return pBaseEntity == m_pEnt;
 }
 
 
@@ -65,7 +69,11 @@ bool CGameTrace::DidHitWorld() const
 //-----------------------------------------------------------------------------
 int CGameTrace::GetEntityIndex() const
 {
-	return IndexFromBaseEntity(m_pEnt);
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseEntity(m_pEnt, iEntityIndex))
+		return INVALID_ENTITY_INDEX;
+
+	return iEntityIndex;
 }
 
 

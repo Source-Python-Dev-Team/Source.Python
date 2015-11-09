@@ -112,7 +112,10 @@ void UnregisterClientCommandFilter(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 {
-	int iIndex = IndexFromEdict(pEntity);
+	unsigned int iIndex;
+	// TODO: When does this ever happen?
+	if (!IndexFromEdict(pEntity, iIndex))
+		iIndex = -1;
 
 	// Loop through all registered Client Command Filters
 	for(int i = 0; i < s_ClientCommandFilters.m_vecCallables.Count(); i++)
