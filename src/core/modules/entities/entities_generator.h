@@ -33,6 +33,7 @@
 #include "utilities/wrap_macros.h"
 #include "utilities/ipythongenerator.h"
 #include "utilities/baseentity.h"
+#include "entities_entity.h"
 
 // ----------------------------------------------------------------------------
 // Forward declaration.
@@ -63,5 +64,25 @@ private:
 };
 
 BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CEntityGenerator)
+
+
+// ----------------------------------------------------------------------------
+// CBaseEntityGenerator
+// ----------------------------------------------------------------------------
+class CBaseEntityGenerator: public IPythonGenerator<CBaseEntityWrapper>
+{
+public:
+	CBaseEntityGenerator(PyObject* self);
+	CBaseEntityGenerator(PyObject* self, const CBaseEntityGenerator& rhs);
+	virtual ~CBaseEntityGenerator() {}
+
+protected:
+	virtual CBaseEntityWrapper* getNext();
+
+private:
+	CBaseEntity* m_pCurrentEntity;
+};
+
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CBaseEntityGenerator)
 
 #endif // _ENTITIES_GENERATOR_H

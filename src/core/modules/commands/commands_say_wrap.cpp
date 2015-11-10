@@ -31,6 +31,7 @@
 #include "export_main.h"
 #include "utilities/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
+#include "boost/unordered_map.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -40,6 +41,9 @@ extern CSayCommandManager* GetSayCommand(const char* szName);
 
 extern void RegisterSayFilter(PyObject* pCallable);
 extern void UnregisterSayFilter(PyObject* pCallable);
+
+extern boost::unordered_map<std::string, CSayCommandManager*> g_SayCommandMap;
+COMMAND_GENERATOR(SayCommandGenerator, g_SayCommandMap)
 
 
 //-----------------------------------------------------------------------------
@@ -74,6 +78,8 @@ DECLARE_SP_SUBMODULE(_commands, _say)
 		"Unregisters a say filter.",
 		args("callable")
 	);
+
+	EXPOSE_COMMAND_GENERATOR(SayCommandGenerator)
 }
 
 

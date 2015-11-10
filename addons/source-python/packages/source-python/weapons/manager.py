@@ -16,7 +16,7 @@ from core import GAME_NAME
 from paths import SP_DATA_PATH
 #   Weapons
 from weapons.default import NoWeaponManager
-from weapons.instance import Weapon
+from weapons.instance import WeaponClass
 
 
 # =============================================================================
@@ -75,13 +75,13 @@ class _WeaponManager(dict):
             name = self._format_name(basename)
 
             # Add the weapon to the dictionary
-            self[name] = Weapon(name, basename, ini['weapons'][basename])
+            self[name] = WeaponClass(name, basename, ini['weapons'][basename])
 
             # Add the weapon's tags to the set of tags
             self._tags.update(self[name].tags)
 
     def __getitem__(self, item):
-        """Return the Weapon instance for the given weapon."""
+        """Return the WeaponClass instance for the given weapon."""
         # Format the weapon's name
         name = self._format_name(item)
 

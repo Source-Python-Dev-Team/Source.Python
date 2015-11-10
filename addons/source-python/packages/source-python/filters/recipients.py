@@ -34,10 +34,6 @@ class RecipientFilter(_RecipientFilter):
         # Update the recipient matching the given filters
         self.update(*self.filters)
 
-    def __contains__(self, index):
-        """Return True/False if the given index is in the recipient."""
-        return self.has_recipient(index)
-
     def __getitem__(self, item):
         """Return the index at the given recipient slot."""
         # Slicing?
@@ -49,10 +45,6 @@ class RecipientFilter(_RecipientFilter):
 
         # Return the index at the given recipient slot
         return self.get_recipient_index[item]
-
-    def __len__(self):
-        """Return the length of the recipient filter."""
-        return self.get_recipient_count()
 
     def __iter__(self):
         """Iterate over the recipient filter."""

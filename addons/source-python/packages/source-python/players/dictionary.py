@@ -9,7 +9,7 @@
 #   Entities
 from entities.dictionary import EntityDictionary
 #   Players
-from players.entity import PlayerEntity
+from players.entity import Player
 
 
 # =============================================================================
@@ -25,6 +25,6 @@ __all__ = ('PlayerDictionary',
 class PlayerDictionary(EntityDictionary):
     """Helper class used to store player instances."""
 
-    def __init__(self, player_class=PlayerEntity):
+    def __init__(self, player_class=Player):
         """Initialize the dictionary."""
         super().__init__(player_class)

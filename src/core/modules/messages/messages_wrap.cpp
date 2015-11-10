@@ -28,6 +28,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "export_main.h"
+#include "modules/memory/memory_utilities.h"
 using namespace boost::python;
 
 #include "messages.h"
@@ -90,6 +91,8 @@ void export_user_message(scope _message)
 	UserMessage.def("is_protobuf",
 		&CUserMessage::IsProtobuf
 	).staticmethod("is_protobuf");
+
+	UserMessage ADD_MEM_TOOLS(CUserMessage);
 }
 
 
@@ -155,6 +158,8 @@ void export_protobuf_message(scope _messages)
 	ProtobufMessage.def("add_string", &CProtobufMessage::AddString);
 	ProtobufMessage.def("add_enum", &CProtobufMessage::AddEnum);
 	ProtobufMessage.def("add_message", &CProtobufMessage::AddMessage);
+
+	ProtobufMessage ADD_MEM_TOOLS(CProtobufMessage);
 #endif
 }
 

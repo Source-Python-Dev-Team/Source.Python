@@ -49,14 +49,14 @@ from auth.manager import auth_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PlayerEntity',
+__all__ = ('Player',
            )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
+class Player(Entity, _GameWeapons, _PlayerWeapons):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
@@ -270,33 +270,24 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
         Return None if the player is not looking at a player.
 
-        :rtype: PlayerEntity
+        :rtype: Player
         """
         # Get the entity that the player is looking at
         entity = self.get_view_entity()
 
-        # Return a PlayerEntity instance of the player or None if not a player
+        # Return a Player instance of the player or None if not a player
         return (
-            PlayerEntity(entity.index) if entity is not None and
+            Player(entity.index) if entity is not None and
             entity.classname == 'player' else None)
 
     def set_view_player(self, player):
         """Force the player to look at the other player's eye location.
 
-        :param PlayerEntity player: The other player.
+        :param Player player: The other player.
         """
         self.set_view_coordinates(player.get_eye_location())
 
     view_player = property(get_view_player, set_view_player)
-
-    @property
-    def view_offset(self):
-        """Return the player's view offset.
-
-        :rtype: Vector
-        """
-        return Vector(
-            self.view_offset_x, self.view_offset_y, self.view_offset_z)
 
     def get_eye_location(self):
         """Return the player's eye location.
@@ -329,9 +320,9 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
         :rtype: QAngle
         """
-        eye_angle_y = self.eye_angle_y
+        eye_angle_y = self.eye_angle.y
         eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
-        return QAngle(self.eye_angle_x, eye_angle_y, self.rotation.z)
+        return QAngle(self.eye_angle.x, eye_angle_y, self.rotation.z)
 
     def set_view_angle(self, angle):
         """Set the player's view angle."""
@@ -503,7 +494,7 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
 
         Freeze mode makes the player unable to move, look and shoot.
 
-        :param bool enable: If True frezze mode will be enabled.
+        :param bool enable: If True freeze mode will be enabled.
         """
         if enable:
             self.flags |= PlayerStates.FROZEN
