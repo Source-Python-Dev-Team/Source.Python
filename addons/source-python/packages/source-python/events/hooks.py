@@ -36,7 +36,6 @@ __all__ = ('EventAction',
 # >> CLASSES
 # =============================================================================
 class EventAction(IntEnum):
-
     """Enum class used to know what to do with a pre-hooked event."""
 
     CONTINUE = 0
@@ -45,7 +44,6 @@ class EventAction(IntEnum):
 
 
 class PreEvent(AutoUnload):
-
     """Pre-Event decorator class."""
 
     def __init__(self, *event_names):
@@ -77,7 +75,6 @@ class PreEvent(AutoUnload):
 
 
 class _PreEventDictionary(dict):
-
     """Dictionary class used to store pre-events with their callbacks."""
 
     def __missing__(self, event_name):
@@ -123,13 +120,12 @@ pre_event_manager = _PreEventDictionary()
 
 
 class _PreEventList(list):
-
     """List class used to store callbacks for a given event."""
 
     def __init__(self, event_name):
         """Initialize the list and store the event name."""
         # Initialize the list
-        super(_PreEventList, self).__init__()
+        super().__init__()
 
         # Store the event name
         self.event_name = event_name
@@ -145,7 +141,7 @@ class _PreEventList(list):
                 'for event "{1}"'.format(callback, self.event_name))
 
         # Add the callback to the list
-        super(_PreEventList, self).append(callback)
+        super().append(callback)
 
     def remove(self, callback):
         """Remove the callback from the list."""
@@ -158,7 +154,7 @@ class _PreEventList(list):
                 'event "{1}"'.format(callback, self.event_name))
 
         # Remove the callback from the list
-        super(_PreEventList, self).remove(callback)
+        super().remove(callback)
 
 
 # =============================================================================

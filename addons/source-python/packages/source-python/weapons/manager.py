@@ -16,7 +16,7 @@ from core import GAME_NAME
 from paths import SP_DATA_PATH
 #   Weapons
 from weapons.default import NoWeaponManager
-from weapons.instance import Weapon
+from weapons.instance import WeaponClass
 
 
 # =============================================================================
@@ -37,13 +37,12 @@ _gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 # >> CLASSES
 # =============================================================================
 class _WeaponManager(dict):
-
     """Dictionary class to store basic weapon information."""
 
     def __init__(self, ini_file):
         """Load the ini file into the dictionary."""
         # Initialize the dictionary
-        super(_WeaponManager, self).__init__()
+        super().__init__()
 
         # Get the ConfigObj instance of the file
         ini = ConfigObj(ini_file, unrepr=True)
@@ -76,13 +75,13 @@ class _WeaponManager(dict):
             name = self._format_name(basename)
 
             # Add the weapon to the dictionary
-            self[name] = Weapon(name, basename, ini['weapons'][basename])
+            self[name] = WeaponClass(name, basename, ini['weapons'][basename])
 
             # Add the weapon's tags to the set of tags
             self._tags.update(self[name].tags)
 
     def __getitem__(self, item):
-        """Return the Weapon instance for the given weapon."""
+        """Return the WeaponClass instance for the given weapon."""
         # Format the weapon's name
         name = self._format_name(item)
 
@@ -95,7 +94,7 @@ class _WeaponManager(dict):
         name = self._format_name(item)
 
         # Return whether the weapon is in the dictionary
-        return super(_WeaponManager, self).__contains__(name)
+        return super().__contains__(name)
 
     def _format_name(self, item):
         """Format the name to include the game's weapon prefix."""

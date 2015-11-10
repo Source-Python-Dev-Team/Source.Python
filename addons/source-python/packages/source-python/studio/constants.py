@@ -42,7 +42,6 @@ __all__ = ('ModelType',
 # >> ENUMERATORS
 # =============================================================================
 class StudioFlags(IntEnum):
-
     """Studio flags wrapper enumerator."""
 
     NONE = STUDIO_NONE

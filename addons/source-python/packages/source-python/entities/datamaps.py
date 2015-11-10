@@ -74,7 +74,6 @@ _supported_input_types = {
 # >> ENUMERATORS
 # =============================================================================
 class TypeDescriptionFlags(IntEnum):
-
     """TypeDescription flags wrapper enumerator."""
 
     GLOBAL = FTYPEDESC_GLOBAL
@@ -99,7 +98,6 @@ class TypeDescriptionFlags(IntEnum):
 # >> CLASSES
 # =============================================================================
 class EntityProperty(object):
-
     """Class used to store property information for verification."""
 
     def __init__(self, instance, prop_type, networked):
@@ -125,12 +123,11 @@ class EntityProperty(object):
 
 
 class InputFunction(Function):
-
     """Class used to create and call an Input type function."""
 
     def __init__(self, name, argument_type, function, this):
         """Instantiate the function instance and store the base attributes."""
-        super(InputFunction, self).__init__(function)
+        super().__init__(function)
 
         self._name = name
         self._argument_type = argument_type
@@ -170,4 +167,4 @@ class InputFunction(Function):
                     self._argument_type]))(value)
 
         # Call the function
-        super(InputFunction, self).__call__(self._this, inputdata)
+        super().__call__(self._this, inputdata)

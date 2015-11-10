@@ -39,19 +39,46 @@
 class VectorExt
 {
 public:
-	static Vector* CreateNullVector()
-	{
-		return new Vector(0, 0, 0);
-	}
-
 	static bool IsWithinBox(Vector& point, Vector& corner1, Vector& corner2)
 	{
 		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
 	}
 
 	static str __repr__(Vector* pVector)
-	{ return str(tuple(pVector)); }
+	{ return str("Vector" + str(tuple(pVector))); }
 };
 
+
+//-----------------------------------------------------------------------------
+// QAngle extension class.
+//-----------------------------------------------------------------------------
+class QAngleExt
+{
+public:
+	static str __repr__(QAngle* pQAngle)
+	{ return str("QAngle" + str(tuple(pQAngle))); }
+};
+
+
+//-----------------------------------------------------------------------------
+// Quaternion extension class.
+//-----------------------------------------------------------------------------
+class QuaternionExt
+{
+public:
+	static str __repr__(Quaternion* pQuaternion)
+	{ return str("Quaternion" + str(tuple(pQuaternion))); }
+};
+
+
+//-----------------------------------------------------------------------------
+// RadianEuler extension class.
+//-----------------------------------------------------------------------------
+class RadianEulerExt
+{
+public:
+	static str __repr__(RadianEuler* pRadianEuler)
+	{ return str("RadianEuler" + str(tuple(pRadianEuler))); }
+};
 
 #endif // _MATHLIB_H

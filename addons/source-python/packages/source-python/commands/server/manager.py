@@ -15,7 +15,6 @@ from commands.server import get_server_command
 # >> CLASSES
 # =============================================================================
 class _ServerCommandManager(_BaseCommandManager):
-
     """Manager class used to register server commands."""
 
     # Store the base functions

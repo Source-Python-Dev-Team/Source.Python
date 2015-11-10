@@ -37,6 +37,8 @@
 // Forward declarations.
 //---------------------------------------------------------------------------------
 void export_keyvalues(scope);
+void export_keyvalues_types(scope);
+void export_keyvalues_iter(scope);
 
 
 //---------------------------------------------------------------------------------
@@ -45,6 +47,8 @@ void export_keyvalues(scope);
 DECLARE_SP_MODULE(_keyvalues)
 {
 	export_keyvalues(_keyvalues);
+	export_keyvalues_types(_keyvalues);
+	export_keyvalues_iter(_keyvalues);
 }
 
 
@@ -53,7 +57,7 @@ DECLARE_SP_MODULE(_keyvalues)
 //---------------------------------------------------------------------------------
 void export_keyvalues(scope _keyvalues)
 {
-	class_<KeyValues,  boost::shared_ptr<KeyValues>, boost::noncopyable>("_KeyValues", no_init)
+	class_<KeyValues,  boost::shared_ptr<KeyValues>, boost::noncopyable>("KeyValues", no_init)
 		.def("__init__", make_constructor(&KeyValuesExt::__init__1))
 		.def("__init__", make_constructor(&KeyValuesExt::__init__2))
 		.def("__init__", make_constructor(&KeyValuesExt::__init__3))
@@ -168,37 +172,37 @@ void export_keyvalues(scope _keyvalues)
 		.def("get_int",
 			GET_METHOD(int, KeyValues, GetInt, const char *, int),
 			"Returns the integer value for the given key name.",
-			("key_name", arg("default_value")=0)
+			(arg("key_name")=object(), arg("default_value")=0)
 		)
 
 		.def("get_uint64",
 			GET_METHOD(uint64, KeyValues, GetUint64, const char *, uint64),
 			"Gets the 64-bit integer value for the given key name.",
-			("key_name", arg("default_value")=0)
+			(arg("key_name")=object(), arg("default_value")=0)
 		)
 
 		.def("get_float",
 			GET_METHOD(float, KeyValues, GetFloat, const char *, float),
 			"Returns the floating point value for the given key name.",
-			("key_name", arg("default_value")=0.0f)
+			(arg("key_name")=object(), arg("default_value")=0.0f)
 		)
 
 		.def("get_string",
 			GET_METHOD(const char *, KeyValues, GetString, const char *, const char *),
 			"Returns the string value for the given key name.",
-			("key_name", arg("default_value")="")
+			(arg("key_name")=object(), arg("default_value")="")
 		)
 
 		.def("get_color",
 			&KeyValuesExt::GetColor,
 			"Returns the color value of the given key name.",
-			("key_name", arg("default_value")=object())
+			(arg("key_name")=object(), arg("default_value")=object())
 		)
 
 		.def("get_bool",
 			&KeyValuesExt::GetBool,
 			"Returns the boolean value for the given key name.",
-			("key_name", arg("default_value")=false)
+			(arg("key_name")=object(), arg("default_value")=false)
 		)
 
 		.def("is_empty",
@@ -243,6 +247,77 @@ void export_keyvalues(scope _keyvalues)
 			args("key_name", "value")
 		)
 
+		.def("get_data_type",
+			&KeyValues::GetDataType,
+			"Return the data type of this KeyValue object or the given key."
+		)
+
+		.def("__getitem__",
+			&KeyValuesExt::__getitem__,
+			"Return the value of the given key."
+		)
+
+		.def("__setitem__",
+			&KeyValuesExt::__setitem__,
+			"Set the value of the given key."
+		)
+
+		.def("__delitem__",
+			&KeyValuesExt::__delitem__,
+			"Remove the given key."
+		)
+
+		.def("__iter__",
+			&KeyValuesExt::__iter__,
+			"Return an iterator that will iterate over all keys."
+		)
+			
+		.def("as_dict",
+			&KeyValuesExt::as_dict,
+			"Return the KeyValues object as a dict."
+		)
+
 		ADD_MEM_TOOLS(KeyValues)
 	;
+}
+
+
+//---------------------------------------------------------------------------------
+// Exports KeyValues types.
+//---------------------------------------------------------------------------------
+void export_keyvalues_types(scope _keyvalues)
+{
+	enum_<KeyValues::types_t> KeyValuesType("KeyValueType");
+	
+	KeyValuesType.value("NONE", KeyValues::TYPE_NONE);
+	KeyValuesType.value("STRING", KeyValues::TYPE_STRING);
+	KeyValuesType.value("INT", KeyValues::TYPE_INT);
+	KeyValuesType.value("FLOAT", KeyValues::TYPE_FLOAT);
+	KeyValuesType.value("PTR", KeyValues::TYPE_PTR);
+	KeyValuesType.value("WSTRING", KeyValues::TYPE_WSTRING);
+	KeyValuesType.value("COLOR", KeyValues::TYPE_COLOR);
+	KeyValuesType.value("UNINT64", KeyValues::TYPE_UINT64);
+	
+#ifdef ENGINE_CSGO
+	// TODO: Move this to a engine specific file
+	KeyValuesType.value("COMPILED_INT_BYTE", KeyValues::TYPE_COMPILED_INT_BYTE);
+	KeyValuesType.value("COMPILED_INT_0", KeyValues::TYPE_COMPILED_INT_0);
+	KeyValuesType.value("COMPILED_INT_1", KeyValues::TYPE_COMPILED_INT_1);
+#endif
+
+	KeyValuesType.value("NUM_TYPES", KeyValues::TYPE_NUMTYPES);
+}
+
+
+//---------------------------------------------------------------------------------
+// Exports KeyValues iter.
+//---------------------------------------------------------------------------------
+void export_keyvalues_iter(scope _keyvalues)
+{
+	class_<KeyValuesIter> _KeyValuesIter("KeyValuesIter", init<KeyValues*>());
+
+	_KeyValuesIter.def(
+		"__next__",
+		&KeyValuesIter::__next__
+	);
 }

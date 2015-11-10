@@ -21,5 +21,4 @@ from players.weapons.types import _C4
 # =============================================================================
 class _GameWeapons(
         _HEGrenade, _Flashbang, _SmokeGrenade, _Decoy, _Incendiary, _C4):
-
     """CS:GO specific player weapon functionality."""

@@ -5,18 +5,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Collections
-from collections import OrderedDict
-
 # Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
 
 # Source.Python Imports
 from core import core_logger
-#   Auth
-from auth.paths import AUTH_PROVIDER_PATH
 #   Paths
 from paths import GAME_PATH
 from paths import CFG_PATH
@@ -30,11 +24,6 @@ from translations.strings import LangStrings
 # Get the core settings language strings
 _core_strings = LangStrings('_core/core_settings_strings')
 
-# Get a list of auth providers
-_auth_providers = [
-    provider.namebase for provider in AUTH_PROVIDER_PATH.files() +
-    AUTH_PROVIDER_PATH.dirs() if not provider.namebase.startswith('__')]
-
 # Get the sp.core.settings logger
 core_settings_logger = core_logger.settings
 
@@ -42,51 +31,15 @@ core_settings_logger = core_logger.settings
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _SettingsMeta(type):
-
-    """Metaclass used to store methods in order of creation."""
-
-    @classmethod
-    def __prepare__(mcs, name, bases):
-        """Return an ordered dictionary."""
-        return OrderedDict()
-
-    def __new__(mcs, name, bases, odict):
-        """Store methods by name/instance in the order they were created."""
-        # Get the class object
-        cls = super(_SettingsMeta, mcs).__new__(mcs, name, bases, dict(odict))
-
-        # Create an ordered dictionary to store methods in
-        cls._odict = OrderedDict()
-
-        # Loop through the methods
-        for item in odict:
-
-            # Is the current method one that needs stored?
-            if item.startswith('_check_'):
-
-                # Store the method by its name
-                cls._odict[item] = odict[item]
-
-        # Return the class
-        return cls
-
-
-class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
-
+class _CoreSettings(ConfigObj):
     """Class used to store core settings."""
 
     def __init__(self, infile):
         """Add missing items and set comments using the server's language."""
         # Import the file
-        super(_CoreSettings, self).__init__(infile)
+        super().__init__(infile)
         self._language = None
-
-        # Loop through the registered methods
-        for item in self._odict:
-
-            # Call the method
-            self._odict[item](self)
+        self._check_settings()
 
         # Add the initial comment
         self.initial_comment = ['../' + self.filename.replace(GAME_PATH, '')]
@@ -99,6 +52,13 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
 
         # Write the file
         self.write()
+
+    def _check_settings(self):
+        """Check all settings in the settings file."""
+        self._check_base_settings()
+        self._check_version_settings()
+        self._check_logging_settings()
+        self._check_user_settings()
 
     def _check_base_settings(self):
         """Add base settings if they are missing."""
@@ -121,27 +81,22 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         self['BASE_SETTINGS'].comments['language'] = _core_strings[
             'language'].get_string(self._language).splitlines()
 
-    def _check_auth_settings(self):
-        """Add auth settings if they are missing."""
-        # Are there any auth settings in the file?
-        if 'AUTH_SETTINGS' not in self:
+    def _check_version_settings(self):
+        """Add version settings if they are missing."""
+        if 'VERSION_SETTINGS' not in self:
+            self['VERSION_SETTINGS'] = {}
 
-            # Add the auth settings
-            self['AUTH_SETTINGS'] = {}
+        if 'check_for_update' not in self['VERSION_SETTINGS']:
+            self['VERSION_SETTINGS']['check_for_update'] = '1'
 
-        # Is there a providers setting?
-        if 'providers' not in self['AUTH_SETTINGS']:
+        if 'notify_on_update' not in self['VERSION_SETTINGS']:
+            self['VERSION_SETTINGS']['notify_on_update'] = '1'
 
-            # Add the providers setting
-            self['AUTH_SETTINGS']['providers'] = ''
+        self['VERSION_SETTINGS'].comments['check_for_update'] = _core_strings[
+            'check_for_update'].get_string(self._language).splitlines()
 
-        # Set the auth provider comments
-        self['AUTH_SETTINGS'].comments['providers'] = _core_strings[
-            'providers'].get_string(
-            self._language,
-            providers='\n'.join(_auth_providers),
-            single=_auth_providers[0],
-            multiple=' '.join(_auth_providers[:3])).splitlines()
+        self['VERSION_SETTINGS'].comments['notify_on_update'] = _core_strings[
+            'notify_on_update'].get_string(self._language).splitlines()
 
     def _check_logging_settings(self):
         """Add logging settings if they are missing."""

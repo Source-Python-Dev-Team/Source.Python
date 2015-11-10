@@ -1,163 +1,176 @@
-# ../auth/manager.py
+import os
+import re
+import glob
+import importlib.machinery
 
-"""Contains a dictionary class which is used to store loaded Auth Providers."""
+from configobj import ConfigObj
 
-# =============================================================================
-# >> IMPORTS
-# =============================================================================
-# Python Imports
-#   Importlib
-from importlib import import_module
+from auth.paths import BACKEND_CONFIG_FILE
+from auth.base import PermissionSource
+from paths import SP_PACKAGES_PATH
 
-# Source.Python imports
-#   Auth
-from auth import auth_logger
-from auth import _auth_strings
-from auth.providers import AuthBase
-from auth.paths import AUTH_PROVIDER_PATH
-#   Players
-from players.helpers import uniqueid_from_playerinfo
+from players.helpers import playerinfo_from_index, uniqueid_from_playerinfo
 
 
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ('auth_manager',
-           )
+class PermissionBase(set):
+    def __init__(self, name):
+        super().__init__()
+        self.parents = set()
+        self.cache = set()
+        self.name = name
+        self.data = {}
 
+    def __hash__(self):
+        return hash(self.name)
 
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Get the sp.auth.manager logger
-auth_manager_logger = auth_logger.manager
+    def add(self, *args, **kwargs):
+        super().add(*args, **kwargs)
+        self._refresh_cache()
 
+    def remove(self, *args, **kwargs):
+        super().remove(*args, **kwargs)
+        self._refresh_cache()
 
-# =============================================================================
-# >> CLASSES
-# =============================================================================
-class _AuthManager(dict):
+    @staticmethod
+    def _compile_permission(permission):
+        return re.compile(permission.replace(".", "\\.").replace("*", "(.*)"))
 
-    """Stores loaded auth providers."""
+    def _refresh_cache(self):
+        self.cache.clear()
+        for permission in self:
+            self.cache.add(self._compile_permission(permission))
 
-    def load_auth(self, provider):
-        """Load the given provider."""
-        # Send a message that the auth provider is being loaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Loading'].get_string(provider=provider))
-
-        # Is the provider loaded?
-        if provider in self:
-
-            # If so, send a message that the provider is already loaded
-            auth_manager_logger.log_message(
-                '[SP Auth] ' + _auth_strings[
-                    'Already Loaded'].get_string(provider=provider))
-
-            # No need to go further
-            return
-
-        # Does the provider's file exist?
-        if not AUTH_PROVIDER_PATH.joinpath(provider + '.py').isfile():
-
-            # Send a message that the file does not exist
-            auth_manager_logger.log_message(
-                '[SP Auth] ' + _auth_strings[
-                    'No Module'].get_string(provider=provider))
-
-            # No need to go further
-            return
-
-        # Import the provider's module
-        module = import_module('auth.providers.{0}'.format(provider))
-
-        # Loop through all objects in the module
-        for module_object in dir(module):
-
-            # Get the object's instance
-            instance = getattr(module, module_object)
-
-            # Is the current object a AuthBase instance?
-            if isinstance(instance, AuthBase):
-
-                # Found the instance
-                break
-
-        # Was no AuthBase instance found?
-        else:
-
-            # Raise an error that the object was not found
-            raise NotImplementedError(
-                'No AuthBase instance found in provider'
-                ' "{0}"'.format(provider))
-
-        # Attempt to call the provider's load function
-        instance.load()
-
-        # Add the provider to the dictionary
-        self[provider] = instance
-
-        # Send a message that the provider was loaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Load Successful'].get_string(provider=provider))
-
-    def unload_auth(self, provider):
-        """Unload the given provider."""
-        # Send a message that the auth provider is being unloaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Unloading'].get_string(provider=provider))
-
-        # Is the provider loaded?
-        if provider not in self:
-
-            # If not, send a message that the provider is not loaded
-            auth_manager_logger.log_message(
-                '[SP Auth] ' + _auth_strings[
-                    'Not Loaded'].get_string(provider=provider))
-
-            # No need to go further
-            return
-
-        # Call the providers unload method
-        self[provider].unload()
-
-        # Remove the provider
-        del self[provider]
-
-        # Send a message that the provider was unloaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Unload Successful'].get_string(provider=provider))
-
-    def reload_auth(self, provider):
-        """Reload the given provider."""
-        # Unload the provider
-        self.unload_auth(provider)
-
-        # Load the provider
-        self.load_auth(provider)
-
-    def is_player_authorized(
-            self, playerinfo, level=None, permission=None, flag=None):
-        """Check to see if the player is authorized."""
-        # Get the player's uniqueid
-        uniqueid = uniqueid_from_playerinfo(playerinfo)
-
-        # Loop through all loaded auth providers
-        for provider in self:
-
-            # Is the player authorized?
-            if self[provider].is_player_authorized(
-                    uniqueid, level, permission, flag):
-
-                # If the player is authorized, return true
+    def has(self, permission):
+        for re_perm in self.cache:
+            if re_perm.match(permission):
                 return True
-
-        # If the player is not found authorized for any provider, return false
+        for parent in self.parents:
+            if parent.has_permission(permission):
+                return True
         return False
 
-# Get the _AuthManager instance
-auth_manager = _AuthManager()
+    def list_permissions(self):
+        perms = set()
+        perms.update(self)
+        for parent in self.parents:
+            perms.update(parent.list_permissions())
+        return perms
+
+    def get_data(self, node):
+        if node in self.data:
+            return self.data[node]
+        else:
+            for parent in self.parents:
+                data = parent.get_data(node)
+                if data is not None:
+                    return data
+
+    def add_parent(self, parent):
+        self.parents.add(auth_manager.groups[parent])
+        auth_manager.groups[parent].children.add(self)
+
+    def remove_parent(self, parent):
+        self.parents.remove(auth_manager.groups[parent])
+        auth_manager.groups[parent].children.remove(self)
+
+
+class PermissionPlayer(PermissionBase):
+    def __new__(cls, name):
+        if name in auth_manager.players:
+            return auth_manager.players[name]
+        else:
+            player = super().__new__(cls)
+            auth_manager.players[name] = player
+            return player
+
+
+class PermissionGroup(PermissionBase):
+    def __new__(cls, name):
+        if name in auth_manager.groups:
+            return auth_manager.groups[name]
+        else:
+            group = super().__new__(cls)
+            auth_manager.groups[name] = group
+            return group
+
+    def __init__(self, name):
+        super().__init__(name)
+        self.children = set()
+
+
+class PermissionDict(dict):
+    def __init__(self, permission_type):
+        super().__init__()
+        self.permission_type = permission_type
+
+    def __missing__(self, key):
+        self[key] = self.permission_type(key)
+        return self[key]
+
+
+class AuthManager(object):
+    def __init__(self):
+        self.groups = PermissionDict(PermissionGroup)
+        self.players = PermissionDict(PermissionPlayer)
+        self.available_backends = []
+        self.active_backend = None
+
+    def load(self):
+        self._find_available_backends()
+        self._load_config()
+
+    def load_backend(self, backend_name):
+        for backend in self.available_backends:
+            if backend.name.casefold() == backend_name.casefold():
+                self.active_backend = backend
+                self.groups.clear()
+                self.players.clear()
+                backend.load()
+                return True
+        return False
+
+    def _find_available_backends(self):
+        for backend in glob.glob(SP_PACKAGES_PATH.joinpath("auth", "backends/*.py")):
+            name = "auth.backend." + os.path.splitext(os.path.basename(backend))[0]
+            loader = importlib.machinery.SourceFileLoader(name, backend)
+            module = loader.load_module(name)
+            for var in module.__dict__.values():
+                if isinstance(var, PermissionSource):
+                    self.available_backends.append(var)
+                    break
+
+    def _load_config(self):
+        config = ConfigObj()
+        config["Config"] = {
+            "PermissionBackend": "flatfile"
+        }
+
+        backends_config = {}
+        for backend in self.available_backends:
+            backends_config[backend.name] = backend.options
+
+        config["backends"] = backends_config
+        config.filename = BACKEND_CONFIG_FILE
+
+        if os.path.exists(BACKEND_CONFIG_FILE):
+            user_config = ConfigObj(BACKEND_CONFIG_FILE)
+            config.merge(user_config)
+
+        config.write()
+
+        for backend in self.available_backends:
+            backend.options = config["backends"][backend.name]
+
+        self.load_backend(config["Config"]["PermissionBackend"])
+
+    def get_player(self, index):
+        return self.players[uniqueid_from_index(index)]
+
+    def get_group(self, group_name):
+        return self.groups[group_name]
+
+
+def uniqueid_from_index(index):
+    return uniqueid_from_playerinfo(playerinfo_from_index(index))
+
+auth_manager = AuthManager()

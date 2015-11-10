@@ -15,7 +15,6 @@ from commands.server.manager import server_command_manager
 # >> CLASSES
 # =============================================================================
 class ServerCommand(_BaseCommand):
-
     """Decorator class used to register a server command."""
 
     # Store the class used to (un)register server commands

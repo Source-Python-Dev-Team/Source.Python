@@ -100,7 +100,7 @@ void export_datamap(scope _datamaps)
 
 	// Special methods...
 	DataMap.def("__len__", make_getter(&datamap_t::dataNumFields));
-	DataMap.def("__getitem__", &DataMapSharedExt::__getitem__);
+	DataMap.def("__getitem__", &DataMapSharedExt::__getitem__, reference_existing_object_policy());
 
 	// Helper methods...
 	DataMap.def("find",

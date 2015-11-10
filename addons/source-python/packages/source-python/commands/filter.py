@@ -14,7 +14,6 @@ from core import AutoUnload
 # >> CLASSES
 # =============================================================================
 class _BaseFilter(AutoUnload):
-
     """Class used to register a filter."""
 
     def __init__(self, callback):

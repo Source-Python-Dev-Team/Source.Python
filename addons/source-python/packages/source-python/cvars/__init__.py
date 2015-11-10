@@ -31,14 +31,13 @@ __all__ = ('ConVar',
 # >> CLASSES
 # =============================================================================
 class ConVar(_ConVar):
-
     """ConVar wrapper to provide easy access to cvars."""
 
     def __init__(
             self, name, value='0', flags=0,
             description='', min_value=None, max_value=None):
         """Called when a server-var is initilized."""
-        super(ConVar, self).__init__(
+        super().__init__(
             name, value, flags, description,
             min_value is not None, min_value or 0.0,
             max_value is not None, max_value or 0.0)
@@ -67,7 +66,7 @@ class ConVar(_ConVar):
         if flag is None:
 
             # Set the attribute
-            super(ConVar, self).__setattr__(attr, value)
+            super().__setattr__(attr, value)
 
             # No need to go further
             return

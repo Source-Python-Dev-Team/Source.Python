@@ -17,7 +17,6 @@ from commands.player import _PlayerCommandManager
 # >> CLASSES
 # =============================================================================
 class _ClientCommandManager(_PlayerCommandManager):
-
     """Registers client commands and client command filters."""
 
     # Store the base functions

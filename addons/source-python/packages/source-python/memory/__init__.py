@@ -87,27 +87,22 @@ memory_logger = _sp_logger.memory
 # >> CLASSES
 # =============================================================================
 class Callback(AutoUnload, Function):
-
-    """Create a function in memory that calls a Python callback."""
+    """Decorator to create a function in memory to call a Python callback."""
 
     def __init__(self, convention, arg_types, return_type):
         """Initialize the Callback object.
 
-        @param <convention>:
-        Defines the calling convention of the function.
-
-        @param <arg_types>:
-        Defines the argument types of the function.
-
-        @param <return_type>:
-        Defines the return type of the function.
+        :param Convention|CallingConvention convention: Calling convention
+            that should be used for this callback.
+        :param iterable arg_types: Argument types of the callback.
+        :param return_type: Return type of the callback.
         """
         self.callback = None
 
         # Allocate enough space for a jump, so we can hook it later. Then
         # convert it to a function. Of course, this isn't a function, but the
         # hook will override it.
-        super(Callback, self).__init__(
+        super().__init__(
             alloc(8, False).address, convention, arg_types, return_type)
 
         # A little hack to access the "self" argument
@@ -127,15 +122,16 @@ class Callback(AutoUnload, Function):
         self._hook = self.add_pre_hook(hook)
 
     def __call__(self, *args, **kw):
-        """Store the given callback."""
-        # The first call of this function will fully initialize the callback.
-        # All further calls should call the memory function.
+        """Store the given callback on the first call.
+
+        All further calls will call the created callback function.
+        """
         if self.callback is None:
             assert callable(args[0])
             self.callback = args[0]
             return self
 
-        return super(Callback, self).__call__(*args, **kw)
+        return super().__call__(*args, **kw)
 
     def _unload_instance(self):
         """Remove the hook, restore the allocated space and deallocate it."""
@@ -147,37 +143,30 @@ class Callback(AutoUnload, Function):
 # >> FUNCTIONS
 # =============================================================================
 def get_virtual_function(obj, function_name, function_index=0):
-    """Return a Function object created by using a FunctionInfo object.
+    """Return a :class:`Function` object.
 
-    @param <obj>:
-    An object of an exposed class.
+    Create the :class:`Function` object by using
+    a :class:`FunctionInfo` object.
 
-    @param <function_name>:
-    The name of the member function on the C++ side.
-
-    @param <function_index>:
-    The index of the member function in the function info list. This is only
-    required if the function is overloaded and you want to get a different
-    FunctionInfo object than the first one.
+    :param obj: An object of an exposed class.
+    :param str function_name: See :func:`get_function_info`.
+    :param int function_index: See :func:`get_function_info`.
+    :raise ValueError: See :func:`get_class_name`.
     """
     return get_object_pointer(obj).make_virtual_function(
         get_function_info(obj, function_name, function_index))
 
 
 def get_function_info(cls, function_name, function_index=0):
-    """Return the FunctionInfo object of a member function.
+    """Return the :class:`FunctionInfo` object of a member function.
 
-    @param <cls>:
-    A string that defines the name of the class on the C++ side or an exposed
-    class or an object of an exposed class.
-
-    @param <function_name>:
-    The name of the member function on the C++ side.
-
-    @param <function_index>:
-    The index of the member function in the function info list. This is only
-    required if the function is overloaded and you want to get a different
-    FunctionInfo object than the first one.
+    :param str cls: See :func:`get_class_info`.
+    :param str function_name: The name of the member function on the C++ side.
+    :param int function_index: The index of the member function in the
+        function info list. This is only required if the function is
+        overloaded and you want to get a different FunctionInfo object than
+        the first one.
+    :raise ValueError: See :func:`get_class_name`.
     """
     return get_class_info(cls)[function_name][function_index]
 
@@ -185,9 +174,9 @@ def get_function_info(cls, function_name, function_index=0):
 def get_class_info(cls):
     """Return the class info dictionary of a class.
 
-    @param <cls>:
-    A string that defines the name of the class on the C++ side or an exposed
-    class or an object of an exposed class.
+    :param str cls:  A string that defines the name of the class on the C++
+        side or an exposed class or an object of an exposed class.
+    :raise ValueError: See :func:`get_class_name`.
     """
     if isinstance(cls, str):
         return CLASS_INFO[cls]
@@ -199,10 +188,14 @@ def get_class_info(cls):
 
 
 def get_class_name(cls):
-    """Return the name of the class on the C++ side.
+    """Return the name of a class or class object on the C++ side.
 
-    A ValueError is raised if the class was not exposed by Source.Python.
+    :param cls: A class or class object.
+    :raise ValueError: Raised if the class was not exposed by Source.Python.
     """
+    if not inspect.isclass(cls):
+        cls = cls.__class__
+
     for name, possible_cls in EXPOSED_CLASSES.items():
         if cls is possible_cls:
             return name
@@ -211,9 +204,10 @@ def get_class_name(cls):
 
 
 def get_class(classname):
-    """Retrieve the class object of an exposed class by its C++ class name.
+    """Return the class of an exposed class by its C++ class name.
 
-    @param <classname>:
-    The name of the exposed class on the C++ side.
+    :param str classname: The name of the exposed class on the C++ side.
+    :raise KeyError: Raised if the `classname` is not the name of an exposed
+        class.
     """
     return EXPOSED_CLASSES[classname]

@@ -28,7 +28,6 @@ listeners_tick_delays_logger = listeners_logger.tick.delays
 # >> CLASSES
 # =============================================================================
 class Delay(object):
-
     """Stores a callback to be called at a later time."""
 
     def __init__(self, seconds, callback, *args, **kwargs):
@@ -76,7 +75,6 @@ class Delay(object):
 
 
 class _Times(list):
-
     """List class used to store delays to be called."""
 
     def call_delays(self):
@@ -89,12 +87,11 @@ class _Times(list):
 
 
 class _TickDelays(dict):
-
     """Class used to store delays to be called by a tick listener."""
 
     def __init__(self):
         """Store an ordered list to sort delays."""
-        super(_TickDelays, self).__init__()
+        super().__init__()
         self._order = list()
 
     def __missing__(self, item):
@@ -156,7 +153,7 @@ class _TickDelays(dict):
         self._order.remove(item)
 
         # Remove the item from the dictionary
-        super(_TickDelays, self).__delitem__(item)
+        super().__delitem__(item)
 
     def delay(self, seconds, callback, *args, **kwargs):
         """Create a delay."""

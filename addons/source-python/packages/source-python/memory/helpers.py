@@ -38,7 +38,6 @@ __all__ = ('Array',
 # >> Type
 # =============================================================================
 class Type(object):
-
     """Stores attribute/array types."""
 
     BOOL = 'bool'
@@ -68,7 +67,6 @@ class Type(object):
 # >> Key
 # =============================================================================
 class Key(object):
-
     """Holds some constants and provides converters for parse_data()."""
 
     # General type information keys
@@ -157,7 +155,6 @@ class Key(object):
 # >> BasePointer
 # =============================================================================
 class BasePointer(Pointer):
-
     """Pointer extension class."""
 
     # These four operator functions are required. Otherwise we would downcast
@@ -185,27 +182,20 @@ class BasePointer(Pointer):
 # >> Array
 # =============================================================================
 class Array(BasePointer):
-
     """Wrap an array."""
 
     def __init__(self, manager, is_ptr, type_name, ptr, length=None):
         """Initialize the array wrapper.
 
-        @param <manager>
-        Contains an instance of TypeManager.
-
-        @param <is_ptr>
-        Set to True if the array contains pointers, else False.
-
-        @param <type_name>
-        Contains the name of the array type. E.g. 'Vector' or 'bool'.
-
-        @param <ptr>
-        Contains the base address of the array (the very first array entry).
-
-        @param <length>
-        Contains the length of the array. Setting this value allows you to
-        iterate over the array.
+        :param TypeManager manager: The manager that should be used to
+            retrieve classes.
+        :param bool is_ptr: Set to True if the array contains pointers.
+        :param str type_name: The name of the array type. E.g. 'Vector' or
+            'bool'.
+        :param Pointer ptr: The base address of the array (the very first
+            array entry).
+        :param int|None length: Length of the array. Setting this value allows
+            you to iterate over the array.
         """
         self._manager = manager
 
@@ -218,7 +208,7 @@ class Array(BasePointer):
         # Optional -- specifies the length of the array
         self._length = length
 
-        super(Array, self).__init__(ptr)
+        super().__init__(ptr)
 
     def __getitem__(self, index):
         """Return the value at the given index."""
@@ -305,7 +295,6 @@ class Array(BasePointer):
 # >> MemberFunction
 # =============================================================================
 class MemberFunction(Function):
-
     """Use this class to create a wrapper for member functions.
 
     It passes the this pointer automatically to the wrapped function.
@@ -313,7 +302,7 @@ class MemberFunction(Function):
 
     def __init__(self, manager, return_type, func, this):
         """Initialize the instance."""
-        super(MemberFunction, self).__init__(func)
+        super().__init__(func)
 
         # This should always hold a TypeManager instance
         self._manager = manager
@@ -326,11 +315,11 @@ class MemberFunction(Function):
 
     def __call__(self, *args):
         """Call the function dynamically."""
-        return super(MemberFunction, self).__call__(self._this, *args)
+        return super().__call__(self._this, *args)
 
     def call_trampoline(self, *args):
         """Call the trampoline dynamically."""
-        return super(MemberFunction, self).call_trampoline(
+        return super().call_trampoline(
             self._this,
             *args
         )

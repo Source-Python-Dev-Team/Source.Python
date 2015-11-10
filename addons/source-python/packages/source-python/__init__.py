@@ -1,31 +1,30 @@
 # ../__init__.py
 
-"""This is the main file that loads/unloads the Python portion of the plugin.
+"""This is the main file that loads/unloads the Python part of the plugin."""
 
-===============================================================================
-Source Python
-Copyright (C) 2012 Source Python Development Team.  All rights reserved.
-===============================================================================
+# =============================================================================
+# Source Python
+# Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+# =============================================================================
 
-This program is free software; you can redistribute it and/or modify it
-under the terms of the GNU General Public License, version 3.0, as
-published by the Free Software Foundation.
+# This program is free software; you can redistribute it and/or modify it
+# under the terms of the GNU General Public License, version 3.0, as
+# published by the Free Software Foundation.
 
-This program is distributed in the hope that it will be useful, but WITHOUT
-ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
-FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
-more details.
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+# FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+# more details.
 
-You should have received a copy of the GNU General Public License along
-with this program.  If not, see <http://www.gnu.org/licenses/>.
+# You should have received a copy of the GNU General Public License along
+# with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-As a special exception, the Source.Python Team gives you permission
-to link the code of this program (as well as its derivative works) to
-"Half-Life 2," the "Source Engine," and any Game MODs that run on software
-by the Valve Corporation.  You must obey the GNU General Public License in
-all respects for all other code used.  Additionally, the Source.Python
-Development Team grants this exception to all derivative works.
-"""
+# As a special exception, the Source.Python Team gives you permission
+# to link the code of this program (as well as its derivative works) to
+# "Half-Life 2," the "Source Engine," and any Game MODs that run on software
+# by the Valve Corporation.  You must obey the GNU General Public License in
+# all respects for all other code used.  Additionally, the Source.Python
+# Development Team grants this exception to all derivative works.
 
 
 # =============================================================================
@@ -128,17 +127,9 @@ def setup_sp_command():
 # =============================================================================
 def setup_auth():
     """Set up authentification."""
-    from core.command import _core_command
-    from core.settings import _core_settings
+    from auth.manager import auth_manager
 
-    # Get the auth providers that should be loaded
-    auth_providers = _core_settings['AUTH_SETTINGS']['providers'].split()
-
-    # Should any providers be loaded?
-    if auth_providers:
-
-        # Load the auth providers
-        _core_command['auth'].call_command(['load'] + auth_providers)
+    auth_manager.load()
 
 
 # =============================================================================

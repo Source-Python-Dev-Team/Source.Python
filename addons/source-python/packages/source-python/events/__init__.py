@@ -41,7 +41,6 @@ events_logger = _sp_logger.events
 # >> CLASSES
 # =============================================================================
 class Event(AutoUnload):
-
     """Event decorator class."""
 
     def __init__(self, *event_names):

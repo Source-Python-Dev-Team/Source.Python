@@ -56,6 +56,14 @@ Set(SOURCEPYTHON_UTILITIES_HEADERS
 )
 
 Set(SOURCEPYTHON_UTILITIES_SOURCES
+    core/utilities/conversions/baseentity_from.cpp
+    core/utilities/conversions/basehandle_from.cpp
+    core/utilities/conversions/edict_from.cpp
+    core/utilities/conversions/index_from.cpp
+    core/utilities/conversions/inthandle_from.cpp
+    core/utilities/conversions/playerinfo_from.cpp
+    core/utilities/conversions/pointer_from.cpp
+    core/utilities/conversions/userid_from.cpp
 )
 
 Set(SOURCEPYTHON_UTILITIES_FILES
@@ -170,6 +178,9 @@ Set(SOURCEPYTHON_ENGINES_MODULE_HEADERS
 
 Set(SOURCEPYTHON_ENGINES_MODULE_SOURCES
     core/modules/engines/engines_wrap.cpp
+    core/modules/engines/engines_server_wrap.cpp
+    core/modules/engines/engines_sound_wrap.cpp
+    core/modules/engines/engines_trace_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -303,21 +314,12 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MESSAGES_MODULE_HEADERS
     core/modules/messages/messages.h
-    core/modules/messages/messages_implementation_base.h
-    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.h
 )
 
 Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
     core/modules/messages/messages.cpp
     core/modules/messages/messages_wrap.cpp
-    core/modules/messages/messages_implementation_base.cpp
 )
-
-Set(SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES
-    ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES}
-    core/modules/messages/${SOURCE_ENGINE}/messages_implementation.cpp
-)
-
 # ------------------------------------------------------------------
 # NetChannel module.
 # ------------------------------------------------------------------
@@ -520,7 +522,6 @@ Source_Group("Source Files\\Modules\\Listeners"              FILES ${SOURCEPYTHO
 Source_Group("Source Files\\Modules\\Mathlib"                FILES ${SOURCEPYTHON_MATHLIB_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
-Source_Group("Source Files\\Modules\\Messages\\${BRANCH}"    FILES ${SOURCEPYTHON_MESSAGES_MODULE_GAME_SOURCES})
 Source_Group("Source Files\\Modules\\NetChannel"             FILES ${SOURCEPYTHON_NET_CHANNEL_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})

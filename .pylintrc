@@ -22,13 +22,13 @@ module-rgx=[a-z_][a-z0-9_]{2,30}$
 const-rgx=(([A-Z_][A-Z0-9_]*)|([a-z_][a-z0-9_]*)|(__.*__))$
 
 # Class name regex
-class-rgx=[A-Z_][a-zA-Z0-9]+$
+class-rgx=([A-Z_][a-zA-Z0-9]+)|([A-Z][A-Z_]*)$
 
 # Function name regex
-function-rgx=[a-z_][a-z0-9_]{2,30}$
+function-rgx=[a-z_][a-z0-9_]{2,32}$
 
 # Method name regex
-method-rgx=[a-z_][a-z0-9_]{2,30}$
+method-rgx=[a-z_][a-z0-9_]{2,36}$
 
 # Attribute name regex
 attr-rgx=[a-z_][a-z0-9_]{2,30}$

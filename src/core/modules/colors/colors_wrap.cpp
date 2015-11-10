@@ -56,31 +56,89 @@ void export_color(scope _colors)
 {
 	class_<Color, Color *> Color_(
 		"Color",
+		"This class is used to store a 32 bit color. The color is stored in its RGBA components.",
 		init<unsigned char, unsigned char, unsigned char, unsigned char>(
-			(arg("r")=0, arg("g")=0, arg("b")=0, arg("a")=255)
+			(arg("r")=0, arg("g")=0, arg("b")=0, arg("a")=255),
+			"Initialize the Color object.\n"
+			"\n"
+			":param int r: See :attr:`r`.\n"
+			":param int g: See :attr:`g`.\n"
+			":param int b: See :attr:`b`.\n"
+			":param int a: See :attr:`a`.\n"
 		)
 	);
 	
 	// Properties...
-	Color_.add_property("r", &Color::r, &IndexSetter<Color, unsigned char, 0>);
-	Color_.add_property("g", &Color::g, &IndexSetter<Color, unsigned char, 1>);
-	Color_.add_property("b", &Color::b, &IndexSetter<Color, unsigned char, 2>);
-	Color_.add_property("a", &Color::a, &IndexSetter<Color, unsigned char, 3>);
+	Color_.add_property(
+		"r",
+		&Color::r, 
+		&IndexSetter<Color, unsigned char, 0>,
+		"A value between 0 and 255 that defines the red component of the color."
+	);
+
+	Color_.add_property(
+		"g", 
+		&Color::g,
+		&IndexSetter<Color, unsigned char, 1>,
+		"A value between 0 and 255 that defines the green component of the color."
+	);
+
+	Color_.add_property(
+		"b",
+		&Color::b,
+		&IndexSetter<Color, unsigned char, 2>,
+		"A value between 0 and 255 that defines the blue component of the color."
+	);
+
+	Color_.add_property(
+		"a", 
+		&Color::a,
+		&IndexSetter<Color, unsigned char, 3>,
+		"A value between 0 and 255 that defines the alpha value (transparency)."
+	);
 
 	// Methods
 	Color_.def(
 		"with_alpha",
 		ColorExt::WithAlpha,
-		"Returns a copy of the color with a new alpha value."
+		(arg("a")),
+		"Return a copy of the color with a new alpha value.\n"
+		"\n"
+		":param int a: The new alpha value."
 	);
 
 	// Special methods...
-	Color_.def("__getitem__", &GetItemIndexer<Color, unsigned char, 0, 3>);
-	Color_.def("__setitem__", &SetItemIndexer<Color, unsigned char, 0, 3>);
+	Color_.def(
+		"__getitem__", 
+		&GetItemIndexer<Color, unsigned char, 0, 3>,
+		(arg("index")),
+		"Return the color component at the given index (0 - 3).\n"
+		"\n"
+		":param int index: An index between 0 and 3 that defines the color component to get.\n"
+		":return: The color component value.\n"
+		":rtype: int"
+	);
+
+	Color_.def(
+		"__setitem__", 
+		&SetItemIndexer<Color, unsigned char, 0, 3>,
+		(arg("index"), arg("value")),
+		"Set the color component at the given index.\n"
+		"\n"
+		":param int index: An index between 0 and 3 that defines the color component to set.\n"
+		":param int value: A value between 0 and 255 that defines the new color component value."
+	);
+
 	Color_.def(
 		"__str__",
 		&ColorExt::GetHexString,
-		"Returns the color as a hex string."
+		"Return the color as a hexadecimal string."
+	);
+
+	Color_.def(
+		"__repr__",
+		&ColorExt::GetRepr,
+		"Return the color as a stringified tuple."
 	);
 
 	// Operators...

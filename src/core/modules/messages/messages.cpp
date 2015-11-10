@@ -29,96 +29,114 @@
 //-----------------------------------------------------------------------------
 #include "messages.h"
 #include "public/engine/iserverplugin.h"
+#include "eiface.h"
 #include "sp_main.h"
+
 
 //-----------------------------------------------------------------------------
 // Externals.
 //-----------------------------------------------------------------------------
 extern IServerPluginHelpers *helpers;
 extern CSourcePython g_SourcePythonPlugin;
+extern IServerGameDLL *servergamedll;
+
 
 //-----------------------------------------------------------------------------
-// CUserMessage implementation.
+// CUserMessage.
 //-----------------------------------------------------------------------------
-CUserMessage::CUserMessage(const MRecipientFilter &recipient_filter, const char *message_name ) :
-	CUserMessageImplementation(recipient_filter, message_name),
-	m_sent(false)
+CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_name):
+	m_recipients(recipients)
 {
+	m_message_name = message_name;
+
+	// Initialize buffer
+#ifdef USE_PROTOBUF
+	const google::protobuf::Message* message = g_Cstrike15UsermessageHelpers.GetPrototype(message_name);
+	if (!message) {
+		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
+	}
+
+	m_buffer = new CProtobufMessage(const_cast<google::protobuf::Message*>(message));
+#else
+	int index = GetMessageIndex();
+	if (index == -1) {
+		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
+	}
+
+	#ifdef ENGINE_LEFT4DEAD2
+		m_buffer = engine->UserMessageBegin(&recipients, index, message_name);
+	#else
+		m_buffer = engine->UserMessageBegin(&recipients, index);
+	#endif
+#endif
 }
 
 CUserMessage::~CUserMessage()
 {
-	send_message();
+#ifdef USE_PROTOBUF
+	delete m_buffer;
+#endif
 }
 
-void CUserMessage::send_message()
+void CUserMessage::Send()
 {
-	if (m_sent == false)
+#ifdef USE_PROTOBUF
+	engine->SendUserMessage(m_recipients, GetMessageIndex(), *m_buffer->GetProtobufMessage());
+#else
+	engine->MessageEnd();
+#endif
+}
+
+int CUserMessage::GetMessageIndex()
+{
+#ifdef USE_PROTOBUF
+	return g_Cstrike15UsermessageHelpers.GetIndex(m_message_name);
+#else
+	char sz_mname[256];
+	int sizereturn;
+	int index = 0;
+	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
 	{
-		send_message_internal();
-		m_sent = true;
+		if (V_strcasecmp(m_message_name, sz_mname) == 0)
+		{
+			return index;
+		}
+		index++;
 	}
+	return -1;
+#endif
 }
 
-bool CUserMessage::has_been_sent() const
+bool CUserMessage::IsProtobuf()
 {
-	return m_sent;
+#ifdef USE_PROTOBUF
+	return true;
+#else
+	return false;
+#endif
 }
 
-const char * CUserMessage::get_message_name() const
-{
-	return m_message_name;
-}
 
-const int CUserMessage::get_message_index() const
-{
-	return m_message_index;
-}
+//-----------------------------------------------------------------------------
+// CProtobufMessage.
+//-----------------------------------------------------------------------------
+#ifdef USE_PROTOBUF
+	CProtobufMessage::CProtobufMessage(google::protobuf::Message* message):
+		m_message(message)
+	{
+		if (!m_message) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Message is NULL");
+		}
 
-const MRecipientFilter & CUserMessage::get_recipient_filter() const
-{
-	return m_recipient_filter;
-}
+		if (!m_message->GetDescriptor()) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Descriptor is NULL");
+		}
 
-void CUserMessage::set_char( const char *field_name, char field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_char(field_name, field_value, index);
-}
-
-void CUserMessage::set_byte( const char *field_name, unsigned char field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_byte(field_name, field_value, index);
-}
-
-void CUserMessage::set_short( const char *field_name, signed short field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_short(field_name, field_value, index);
-}
-
-void CUserMessage::set_long( const char *field_name, signed long field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_long(field_name, field_value, index);
-}
-
-void CUserMessage::set_float( const char *field_name, float field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_float(field_name, field_value, index);
-}
-
-void CUserMessage::set_bool( const char *field_name, bool field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_bool(field_name, field_value, index);
-}
-
-void CUserMessage::set_buffer( const char *field_name, void *buffer, unsigned int num_bytes, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_buffer(field_name, buffer, num_bytes, index);
-}
-
-void CUserMessage::set_string( const char *field_name, const char *field_value, int index/*=-1*/ )
-{
-	CUserMessageImplementation::set_string(field_name, field_value, index);
-}
+		if (!m_message->GetReflection()) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Reflection is NULL");
+		}
+	}
+#endif
 
 //-----------------------------------------------------------------------------
 // Functions.

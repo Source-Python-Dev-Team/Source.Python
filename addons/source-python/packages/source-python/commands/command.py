@@ -14,7 +14,6 @@ from core import AutoUnload
 # >> CLASSES
 # =============================================================================
 class _BaseCommand(AutoUnload):
-
     """Base decorator class used to register commands."""
 
     def __init__(self, names, *args, **kwargs):

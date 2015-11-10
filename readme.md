@@ -11,6 +11,9 @@ Source.Python is an open-source project that uses boost::python to allow scripte
     * ../data/custom/ - custom package data
     * ../data/plugins/ - plugin specific data
     * ../data/source-python/ - Source.Python specific data
+    * ../docs/custom/ - custom package documentation
+    * ../docs/plugins/ - plugin documentation
+    * ../docs/source-python/ - Source.Python documentation
     * ../packages/custom/ - custom packages
     * ../packages/site-packages/ - included site-packages
     * ../packages/source-python/ - Source.Python Python API

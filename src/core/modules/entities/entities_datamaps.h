@@ -47,7 +47,7 @@
 class DataMapSharedExt
 {
 public:
-	static typedescription_t __getitem__(const datamap_t& pDataMap, int iIndex)
+	static typedescription_t& __getitem__(const datamap_t& pDataMap, int iIndex)
 	{
 		if (iIndex < 0 || iIndex > (pDataMap.dataNumFields - 1))
 		{

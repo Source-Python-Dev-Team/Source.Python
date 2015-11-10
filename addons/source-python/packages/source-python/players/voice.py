@@ -40,10 +40,10 @@ __all__ = ('mute_manager',
 # >> CLASSES
 # =============================================================================
 class _MuteManager(collections.defaultdict):
-
     """A singleton that manages muting players."""
 
-    def _get_receivers(self, receivers):
+    @staticmethod
+    def _get_receivers(receivers):
         """Return a tuple containing player indexes.
 
         If <receivers> is None, a tuple is returned that contains all valid

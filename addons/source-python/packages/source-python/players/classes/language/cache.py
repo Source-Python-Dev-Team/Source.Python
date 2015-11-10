@@ -19,7 +19,6 @@ from listeners import on_query_cvar_value_finished_listener_manager
 # >> CLASSES
 # =============================================================================
 class _LanguageCache(dict):
-
     """Dictionary class that stores player's with their language."""
 
     @staticmethod

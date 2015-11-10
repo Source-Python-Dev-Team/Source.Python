@@ -18,12 +18,11 @@ from settings import _settings_strings
 # >> FUNCTIONS
 # =============================================================================
 class _AvailableSettings(dict):
-
     """Holds all settings.player.PlayerSettings instance menus."""
 
     def __init__(self):
         """Create the main settings menu on instantiation."""
-        super(_AvailableSettings, self).__init__()
+        super().__init__()
         self._menu = PagedMenu(
             select_callback=self._chosen_item,
             title=_settings_strings['Main Title'])

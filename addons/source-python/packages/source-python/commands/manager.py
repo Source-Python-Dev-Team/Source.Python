@@ -7,7 +7,6 @@
 # >> CLASSES
 # =============================================================================
 class _BaseCommandManager(object):
-
     """Class used to (un)register commands."""
 
     # Can be set to a class that acts like a proxy for commands. It will be

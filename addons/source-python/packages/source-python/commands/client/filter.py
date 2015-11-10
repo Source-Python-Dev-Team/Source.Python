@@ -15,7 +15,6 @@ from commands.client.manager import client_command_manager
 # >> CLASSES
 # =============================================================================
 class ClientCommandFilter(_BaseFilter):
-
     """Class used to register a client command filter."""
 
     # Store the class used to (un)register client command filters

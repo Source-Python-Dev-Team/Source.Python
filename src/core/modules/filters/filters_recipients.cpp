@@ -109,13 +109,6 @@ void MRecipientFilter::AddAllPlayers()
 			continue;
 		}
 
-		// Get and compare the classnames. Skip non-player
-		// entities.
-		const char* classname = pPlayer->GetClassName();
-		if( strcmp(classname, "player") != 0 ) {
-			continue;
-		}
-
 		m_Recipients.AddToTail(i);
 	}
 }
@@ -130,14 +123,9 @@ void MRecipientFilter::AddRecipient(int iPlayer)
 	if(!pPlayer)
 		return;
 
-	// Get and compare the classnames. Skip non-player
-	// entities.
-	const char* classname = pPlayer->GetClassName();
-	if( strcmp(classname, "player") != 0 ) {
-		return;
-	}
-
-	m_Recipients.AddToTail(iPlayer);
+	// Skip non-player entities.
+	if (iPlayer > WORLD_ENTITY_INDEX && iPlayer <= gpGlobals->maxClients)
+		m_Recipients.AddToTail(iPlayer);
 }
 
 void MRecipientFilter::RemoveRecipient( int iPlayer )

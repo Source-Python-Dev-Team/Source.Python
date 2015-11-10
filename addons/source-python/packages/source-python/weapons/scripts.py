@@ -51,7 +51,6 @@ _weapon_scripts = manager.get_global_pointer('_WeaponDatabase')
 # >> CLASSES
 # =============================================================================
 class WeaponDatabase(object):
-
     """WeaponDatabase accessor class."""
 
     def __len__(self):

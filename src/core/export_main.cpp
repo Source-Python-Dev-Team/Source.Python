@@ -54,6 +54,9 @@ int CSPModule::nextFreeModule = 0;
 //---------------------------------------------------------------------------------
 void modulsp_init( void )
 {
+	// Disable C++ signature in doc strings
+	docstring_options local_docstring_options(true, true, false);
+
 	BEGIN_BOOST_PY()
 
 		// Now iterate through all modules and add them.

@@ -26,7 +26,6 @@ __all__ = ('HookType',
 # >> CLASSES
 # =============================================================================
 class _Hook(AutoUnload):
-
     """Create pre and post hooks that auto unload."""
 
     def __init__(self, function):
@@ -65,14 +64,12 @@ class _Hook(AutoUnload):
 
 
 class PreHook(_Hook):
-
     """Decorator class used to create pre hooks that auto unload."""
 
     hook_type = HookType.PRE
 
 
 class PostHook(_Hook):
-
     """Decorator class used to create post hooks that auto unload."""
 
     hook_type = HookType.POST

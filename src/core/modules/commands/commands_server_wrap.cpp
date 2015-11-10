@@ -27,10 +27,12 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include "boost/unordered_map.hpp"
 #include "utilities/wrap_macros.h"
 #include "commands_server.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
+#include "commands.h"
 
 
 //-----------------------------------------------------------------------------
@@ -38,6 +40,9 @@
 //-----------------------------------------------------------------------------
 extern CServerCommandManager* GetServerCommand(const char* szName,
 	const char* szHelpText = 0, int iFlags = 0);
+
+extern boost::unordered_map<std::string, CServerCommandManager*> g_ServerCommandMap;
+COMMAND_GENERATOR(ServerCommandGenerator, g_ServerCommandMap)
 
 
 //-----------------------------------------------------------------------------
@@ -60,6 +65,8 @@ DECLARE_SP_SUBMODULE(_commands, _server)
 		("name", arg("help_text")=object(), arg("flags")=0),
 		reference_existing_object_policy()
 	);
+
+	EXPOSE_COMMAND_GENERATOR(ServerCommandGenerator)
 }
 
 

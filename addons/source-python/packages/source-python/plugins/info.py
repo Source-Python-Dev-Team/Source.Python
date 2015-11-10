@@ -21,7 +21,6 @@ __all__ = ('PluginInfo',
 # >> CLASSES
 # =============================================================================
 class PluginInfo(OrderedDict):
-
     """Stores information for a plugin."""
 
     def __getattr__(self, attribute):
@@ -43,7 +42,7 @@ class PluginInfo(OrderedDict):
 
             # Re-call __setattr__
             # This is done to fix an issue with OrderedDict.__init__
-            super(PluginInfo, self).__setattr__(attribute, value)
+            super().__setattr__(attribute, value)
 
             # No need to go further
             return

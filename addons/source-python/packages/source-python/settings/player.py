@@ -34,7 +34,6 @@ __all__ = ('PlayerSettings',
 # >> CLASSES
 # =============================================================================
 class _SettingsDictionary(OrderedDict):
-
     """Class used to store user settings."""
 
     def __init__(self, name, text=None):
@@ -56,7 +55,7 @@ class _SettingsDictionary(OrderedDict):
             title=name if text is None else text)
 
         # Call the super class' __init__ to initialize the OrderedDict
-        super(_SettingsDictionary, self).__init__()
+        super().__init__()
 
     def __setitem__(self, item, value):
         """Validate the given value and its type before setting the item."""
@@ -75,7 +74,7 @@ class _SettingsDictionary(OrderedDict):
                 'Given item "{0}" is already registered'.format(item))
 
         # Set the item in the dictionary
-        super(_SettingsDictionary, self).__setitem__(item, value)
+        super().__setitem__(item, value)
 
         # Get the new object
         value = self[item]
@@ -164,7 +163,6 @@ class _SettingsDictionary(OrderedDict):
 
 
 class PlayerSettings(AutoUnload, _SettingsDictionary):
-
     """Class used to register user settings."""
 
     def __init__(self, name, prefix, text=None):
@@ -185,7 +183,7 @@ class PlayerSettings(AutoUnload, _SettingsDictionary):
 
         # Call the super class' __init__ to verify
         # the name and store base attributes
-        super(PlayerSettings, self).__init__(name, text)
+        super().__init__(name, text)
 
         # Set the prefix for the settings
         self._prefix = prefix.lower()

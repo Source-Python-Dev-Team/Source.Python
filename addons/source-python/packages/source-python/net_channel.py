@@ -38,7 +38,6 @@ __all__ = ('NetChannel',
 # >> CLASSES
 # =============================================================================
 class NetFlow(IntEnum):
-
     """Network Channel Enum class."""
 
     IN_OUT = FLOW_IN_OUT

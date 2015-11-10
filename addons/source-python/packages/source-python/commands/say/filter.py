@@ -15,7 +15,6 @@ from commands.say.manager import say_command_manager
 # >> CLASSES
 # =============================================================================
 class SayFilter(_BaseFilter):
-
     """Class used to register a say filter."""
 
     # Store the class used to (un)register say filters

@@ -162,7 +162,6 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
 # >> ENUMERATORS
 # =============================================================================
 class DamageTypes(IntEnum):
-
     """Damage types wrapper enumerator."""
 
     GENERIC = DMG_GENERIC
@@ -201,7 +200,6 @@ class DamageTypes(IntEnum):
 
 
 class EntityStates(IntEnum):
-
     """Entity state flags wrapper enumerator."""
 
     FLY = FL_FLY
@@ -228,7 +226,6 @@ class EntityStates(IntEnum):
 
 
 class EntityEffects(IntEnum):
-
     """Entity effects wrapper enumerator."""
 
     BONEMERGE = EF_BONEMERGE
@@ -247,7 +244,6 @@ class EntityEffects(IntEnum):
 
 
 class DissolveType(IntEnum):
-
     """Dissolve type wrapper enumerator."""
 
     NORMAL = ENTITY_DISSOLVE_NORMAL
@@ -257,7 +253,6 @@ class DissolveType(IntEnum):
 
 
 class TakeDamage(IntEnum):
-
     """Take damage constants wrapper enumerator."""
 
     NO = DAMAGE_NO
@@ -267,7 +262,6 @@ class TakeDamage(IntEnum):
 
 
 class EntityFlags(IntEnum):
-
     """Entity flags wrapper enumerator."""
 
     KILLME = EFL_KILLME

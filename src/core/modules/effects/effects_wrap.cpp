@@ -103,10 +103,6 @@ void export_prediction_system(scope _effects)
 			&IPredictionSystem::CanPredict
 		)
 
-		.def_readwrite("prediction_systems",
-			&IPredictionSystem::g_pPredictionSystems
-		)
-
 		.def("suppress_events",
 			&IPredictionSystem::SuppressEvents
 		)

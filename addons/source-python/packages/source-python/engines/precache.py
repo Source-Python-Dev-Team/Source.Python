@@ -39,12 +39,10 @@ __all__ = ('Decal',
 # >> CLASSES
 # =============================================================================
 class PrecacheError(Exception):
-
     """Object was not able to be precached due to limit being reached."""
 
 
 class _PrecacheBase(AutoUnload):
-
     """Base precache class used to interact with a specific object."""
 
     # Set the base _downloads attribute to know whether
@@ -131,7 +129,6 @@ class _PrecacheBase(AutoUnload):
 
 
 class Decal(_PrecacheBase):
-
     """Class used to handle a specific decal."""
 
     # Set the base attributes
@@ -140,7 +137,6 @@ class Decal(_PrecacheBase):
 
 
 class Generic(_PrecacheBase):
-
     """Class used to handle generic precaching."""
 
     # Set the base attributes
@@ -149,7 +145,6 @@ class Generic(_PrecacheBase):
 
 
 class Model(_PrecacheBase):
-
     """Class used to handle a specific model."""
 
     # Set the base attributes

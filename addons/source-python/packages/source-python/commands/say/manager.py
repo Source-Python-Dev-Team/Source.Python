@@ -17,7 +17,6 @@ from commands.say import unregister_say_filter
 # >> CLASSES
 # =============================================================================
 class _SayCommandManager(_PlayerCommandManager):
-
     """Manager class used to register say commands and say filters."""
 
     # Store the base functions

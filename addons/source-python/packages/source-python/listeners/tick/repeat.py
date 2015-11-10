@@ -30,7 +30,6 @@ listeners_tick_repeat_logger = listeners_logger.tick.repeat
 # >> CLASSES
 # =============================================================================
 class TickRepeatStatus(IntEnum):
-
     """Class used to store TickRepeatStatus values."""
 
     STOPPED = 1
@@ -39,7 +38,6 @@ class TickRepeatStatus(IntEnum):
 
 
 class TickRepeat(AutoUnload):
-
     """Class used to create and call repeats."""
 
     def __init__(self, callback, *args, **kwargs):

@@ -67,7 +67,6 @@ core_logger = _sp_logger.core
 # >> CLASSES
 # =============================================================================
 class AutoUnload(object):
-
     """Class used to auto unload specific instances.
 
     Each inheriting class must implement an _unload_instance method.
@@ -76,7 +75,7 @@ class AutoUnload(object):
     def __new__(cls, *args, **kwargs):
         """Overwrite __new__ to store the calling module."""
         # Get the class instance
-        self = super(AutoUnload, cls).__new__(cls)
+        self = super().__new__(cls)
 
         # Get the calling module
         caller = getmodule(stack()[1][0])
@@ -98,7 +97,6 @@ class AutoUnload(object):
 
 
 class GameConfigObj(ConfigObj):
-
     """Class used to parse specific game data."""
 
     def __init__(self, infile, *args, **kwargs):
@@ -107,7 +105,7 @@ class GameConfigObj(ConfigObj):
         path, name = Path(infile).splitpath()
 
         # Call ConfigObj's __init__ method...
-        super(GameConfigObj, self).__init__(infile, *args, **kwargs)
+        super().__init__(infile, *args, **kwargs)
 
         # Move the path to the current engine sub-directory...
         path = path.joinpath(SOURCE_ENGINE)

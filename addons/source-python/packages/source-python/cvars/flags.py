@@ -51,7 +51,6 @@ __all__ = ('ConVarFlags',
 # >> ENUMERATORS
 # =============================================================================
 class ConVarFlags(IntEnum):
-
     """ConVar's flags wrapper enumerator."""
 
     NONE = FCVAR_NONE

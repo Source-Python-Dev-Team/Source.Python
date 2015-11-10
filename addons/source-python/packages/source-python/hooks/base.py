@@ -14,7 +14,6 @@ from core import AutoUnload
 # >> CLASSES
 # =============================================================================
 class _HookBase(list):
-
     """Base hook class used to store callbacks for the specific hook type."""
 
     def append(self, callback):
@@ -34,7 +33,7 @@ class _HookBase(list):
                 '{0} callback already registered'.format(self.class_name))
 
         # Add the callback to the list
-        super(_HookBase, self).append(callback)
+        super().append(callback)
 
     @property
     def class_name(self):
@@ -43,7 +42,6 @@ class _HookBase(list):
 
 
 class _HookDecorator(AutoUnload):
-
     """Base decorator class used to add/remove hooks on load/unload."""
 
     def __init__(self, callback):
