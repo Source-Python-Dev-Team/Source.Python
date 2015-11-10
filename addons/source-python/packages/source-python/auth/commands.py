@@ -1,6 +1,6 @@
 # TODO Add commands to add/remove permissions once command filters are added
 
-from players.entity import PlayerEntity
+from players.entity import Player
 
 from commands.client import ClientCommand
 from commands.server import ServerCommand
@@ -34,7 +34,7 @@ class AuthCommand(object):
         if command.get_arg_count() - 1 != len(self.arguments):
             return
         if self.permission is not None:
-            if index is not None and not PlayerEntity(index).has_permission(self.permission):
+            if index is not None and not Player(index).has_permission(self.permission):
                 return
         args = []
         for i in range(0, len(self.arguments)):

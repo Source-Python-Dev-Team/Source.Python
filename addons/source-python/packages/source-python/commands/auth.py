@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Players
-from players.entity import PlayerEntity
+from players.entity import Player
 #   Hooks
 from hooks.exceptions import except_hooks
 
@@ -31,7 +31,7 @@ class _AuthCallback(object):
         if self.permission is not None:
 
             # Is the player authorized?
-            if not PlayerEntity(args[1]).has_permission(self.permission):
+            if not Player(args[1]).has_permission(self.permission):
 
                 # Is there fail callback?
                 if self.fail_callback is not None:
