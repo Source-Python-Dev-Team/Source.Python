@@ -57,15 +57,10 @@ auth_commands = AuthCommandManager()
 
 
 @ClientCommand("auth")
-def auth_client_command(command, index):
+@ServerCommand("auth")
+def _auth_command(command, index=None):
     for authcommand in auth_commands:
         authcommand.test(index, command)
-
-
-@ServerCommand("auth")
-def auth_server_command(command):
-    for auth_command in auth_commands:
-        auth_command.test(None, command)
 
 
 @auth_commands.register_command("load <backend>", "sp.auth.commands.load")
