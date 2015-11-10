@@ -127,17 +127,9 @@ def setup_sp_command():
 # =============================================================================
 def setup_auth():
     """Set up authentification."""
-    from core.command import _core_command
-    from core.settings import _core_settings
+    from auth.manager import auth_manager
 
-    # Get the auth providers that should be loaded
-    auth_providers = _core_settings['AUTH_SETTINGS']['providers'].split()
-
-    # Should any providers be loaded?
-    if auth_providers:
-
-        # Load the auth providers
-        _core_command['auth'].call_command(['load'] + auth_providers)
+    auth_manager.load()
 
 
 # =============================================================================

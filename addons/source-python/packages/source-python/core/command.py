@@ -10,8 +10,6 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-#   Auth
-from auth.commands import _auth_commands
 #   Autodoc
 from autodoc import SphinxProject
 #   Core
@@ -553,9 +551,6 @@ _core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 _core_command['load'] = _core_command.load_plugin
 _core_command['unload'] = _core_command.unload_plugin
 _core_command['reload'] = _core_command.reload_plugin
-
-# Register the 'auth' sub-command
-_core_command['auth'] = _auth_commands
 
 # Register the 'delay' sub-command
 _core_command['delay'] = _core_command.delay_execution

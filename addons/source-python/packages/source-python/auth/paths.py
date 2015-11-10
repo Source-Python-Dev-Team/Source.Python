@@ -1,29 +1,8 @@
-# ../auth/paths.py
-
-"""Stores directories used by the auth package."""
-
-# =============================================================================
-# >> IMPORTS
-# =============================================================================
-# Source.Python Imports
-#   Paths
-from paths import SP_PACKAGES_PATH
 from paths import CFG_PATH
 
+AUTH_CFG_PATH = CFG_PATH.joinpath("auth")
 
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-__all__ = ('AUTH_CFG_PATH',
-           'AUTH_PROVIDER_PATH',
-           )
+if not AUTH_CFG_PATH.exists():
+    AUTH_CFG_PATH.mkdir()
 
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Store the path to the auth providers
-AUTH_PROVIDER_PATH = SP_PACKAGES_PATH.joinpath('auth', 'providers')
-
-# Store the path to the auth configurations
-AUTH_CFG_PATH = CFG_PATH.joinpath('auth_providers')
+BACKEND_CONFIG_FILE = AUTH_CFG_PATH.joinpath("permissions.ini")

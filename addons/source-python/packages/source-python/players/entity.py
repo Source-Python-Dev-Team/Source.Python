@@ -42,6 +42,8 @@ from players.helpers import uniqueid_from_playerinfo
 from players.games import _GameWeapons
 from players.voice import mute_manager
 from players.weapons import _PlayerWeapons
+#   Permissions
+from auth.manager import auth_manager
 
 
 # =============================================================================
@@ -538,6 +540,27 @@ class PlayerEntity(Entity, _GameWeapons, _PlayerWeapons):
         return self.move_type == MoveType.NONE
 
     stuck = property(get_stuck, set_stuck)
+
+    def list_permissions(self):
+        return auth_manager.get_player(self.index).list_permissions()
+
+    def has_permission(self, permission):
+        return auth_manager.get_player(self.index).has(permission)
+
+    def add_permission(self, permission):
+        auth_manager.get_player(self.index).add(permission)
+
+    def remove_permission(self, permission):
+        auth_manager.get_player(self.index).remove(permission)
+
+    def get_groups(self):
+        return auth_manager.get_player(self.index).parents()
+
+    def add_group(self, group_name):
+        auth_manager.get_player(self.index).add_parent(group_name)
+
+    def remove_group(self, group_name):
+        auth_manager.get_player(self.index).remove_parent(group_name)
 
 
 # =============================================================================

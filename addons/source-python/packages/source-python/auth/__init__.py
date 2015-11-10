@@ -11,6 +11,8 @@ from loggers import _sp_logger
 #   Translations
 from translations.strings import LangStrings
 
+from . import commands
+
 
 # =============================================================================
 # >> GLOBAL VARIABLES

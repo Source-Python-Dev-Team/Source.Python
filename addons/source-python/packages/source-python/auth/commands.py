@@ -1,199 +1,80 @@
-# ../auth/commands.py
+# TODO Add commands to add/remove permissions once command filters are added
 
-"""Registers the "sp auth" sub-commands."""
+from players.entity import PlayerEntity
 
-# =============================================================================
-# >> IMPORTS
-# =============================================================================
-# Python Imports
-#   Collections
-from collections import OrderedDict
+from commands.client import ClientCommand
+from commands.server import ServerCommand
+from .manager import auth_manager
 
-# Source.Python imports
-#   Auth
-from auth import auth_logger
-from auth import _auth_strings
-from auth.manager import auth_manager
+from messages import SayText2
+
+import re
 
 
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Get the sp.auth.commands logger
-auth_commands_logger = auth_logger.commands
+argument_re = re.compile("<([^>]+)>")
 
 
-# =============================================================================
-# >> CLASSES
-# =============================================================================
-class _AuthCommands(OrderedDict):
-    """Class used for executing "sp auth" sub-command functionality."""
+class AuthCommand(object):
+    def __init__(self, command, permission=None):
+        self.permission = permission
+        self.command = command
+        self.arguments = []
+        for arg in command.split(" "):
+            if argument_re.match(arg):
+                self.arguments.append(None)
+            else:
+                self.arguments.append(arg)
+        self.callback = None
 
-    manager = auth_manager
+    def __call__(self, callback, *args, **kwargs):
+        self.callback = callback
+        return callback
 
-    def call_command(self, args):
-        """Execute the given "sp auth" sub-command."""
-        # Was a command given?
-        if not args:
-
-            # Get a message that a sub-command is needed
-            message = '[SP Auth] ' + _auth_strings[
-                'Missing Command'].get_string() + '\n'
-
-            # Print the auth help text
-            self.print_auth_help(message)
-
-            # No need to go further
+    def test(self, index, command):
+        if command.get_arg_count() - 1 != len(self.arguments):
             return
-
-        # Get the command
-        command = args[0]
-
-        # Is the command registered?
-        if command not in self:
-
-            # Get a message about the invalid command
-            message = '[SP Auth] ' + _auth_strings[
-                'Invalid Sub-Command'].get_string(command=command) + '\n'
-
-            # Print the auth help text
-            self.print_auth_help(message)
-
-            # No need to go further
-            return
-
-        # Does the given command use arguments?
-        if hasattr(self[command], 'args'):
-
-            # Execute the command with the given arguments
-            self[command](args[1:])
-
-            # Go no further
-            return
-
-        # Execute the command
-        self[command]()
-
-    def _load_auth_providers(self, providers):
-        """Load the given auth providers."""
-        # Were any providers given?
-        if not providers:
-
-            # Send a message about the required argument
-            auth_commands_logger.log_message(
-                '[SP Auth] ' + _auth_strings['Missing Load'].get_string())
-
-            # No need to go further
-            return
-
-        # Loop through all of the given providers
-        for provider in providers:
-
-            # Load the current provider
-            self.manager.load_auth(provider)
-
-    _load_auth_providers.args = ['<provider>', '[provider]', '...']
-
-    def _unload_auth_providers(self, providers):
-        """Unload the given auth providers."""
-        # Were any providers given?
-        if not providers:
-
-            # Send a message about the required argument
-            auth_commands_logger.log_message(
-                '[SP Auth] ' + _auth_strings['Missing Unload'].get_string())
-
-            # No need to go further
-            return
-
-        # Loop through all of the given providers
-        for provider in providers:
-
-            # Unload the current provider
-            self.manager.unload_auth(provider)
-
-    _unload_auth_providers.args = ['<provider>', '[provider]', '...']
-
-    def _reload_auth_providers(self, providers=None):
-        """Reload the given auth providers."""
-        # Were any providers given?
-        if not providers:
-
-            # Set providers to all currently loaded providers
-            providers = list(self.manager)
-
-        # Loop through the providers
-        for provider in providers:
-
-            # Reload the given provider
-            self.manager.reload_auth(provider)
-
-    _reload_auth_providers.args = ['[provider]', '[provider]', '...']
-
-    def _print_auth_providers(self):
-        """List all currently loaded auth providers."""
-        # Get header messages
-        message = '[SP Auth] ' + _auth_strings[
-            'Providers'].get_string() + '\n' + '=' * 61 + '\n'
-
-        # Loop through all loaded auth providers
-        for provider in self.manager:
-
-            # Add the current provider to the message
-            message += provider + '\n'
-
-        # Print ending messages
-        auth_commands_logger.log_message(message + '=' * 61)
-
-    def print_auth_help(self, message=''):
-        """Print all "sp auth" sub-commands."""
-        # Get header messages
-        header = message + '[SP Auth] ' + _auth_strings[
-            'Help'].get_string() + 'sp auth <command> [arguments]\n' + '=' * 78
-
-        # Print all "sp auth" sub-commands
-        self.print_help(header, '=' * 78)
-
-    def print_help(self, pretext='', posttext=''):
-        """Print all "sp auth" sub-commands."""
-        auth_commands_logger.log_message(
-            pretext + '\n' + self.get_help_text() + '\n' + posttext)
-
-    def get_help_text(self):
-        """Return the help text for auth commands."""
-        # Store the base message
-        message = ''
-
-        # Loop through all registered sub-commands
-        for item in self:
-
-            # Add the base text
-            text = 'auth {0}'.format(item)
-
-            # Does the current item use arguments?
-            if hasattr(self[item], 'args'):
-
-                # Add the arguments to the text
-                text += ' ' + ' '.join(self[item].args)
-
-            # Add the doc strings
-            message += text + self[item].__doc__.rjust(78 - len(text)) + '\n'
-
-        # Return the message
-        return message.rstrip('\n')
+        if self.permission is not None:
+            if index is not None and not PlayerEntity(index).has_permission(self.permission):
+                return
+        args = []
+        for i in range(0, len(self.arguments)):
+            if self.arguments[i] is not None and self.arguments[i] != command[i + 1]:
+                return
+            elif self.arguments[i] is None:
+                args.append(command[i + 1])
+        if self.callback is not None:
+            self.callback(index, *args)
 
 
-# =============================================================================
-# >> FUNCTIONS
-# =============================================================================
-# Get the _AuthCommands instance
-_auth_commands = _AuthCommands()
+class AuthCommandManager(list):
+    def register_command(self, command, permission=None):
+        authcommand = AuthCommand(command, permission)
+        self.append(authcommand)
+        return authcommand
 
-# Add all auth loading/unloading commands to the dictionary
-_auth_commands['load'] = _auth_commands._load_auth_providers
-_auth_commands['unload'] = _auth_commands._unload_auth_providers
-_auth_commands['reload'] = _auth_commands._reload_auth_providers
 
-# Add all printing commands to the dictionary
-_auth_commands['list'] = _auth_commands._print_auth_providers
-_auth_commands['help'] = _auth_commands.print_auth_help
+auth_commands = AuthCommandManager()
+
+
+@ClientCommand("auth")
+def auth_client_command(command, index):
+    for authcommand in auth_commands:
+        authcommand.test(index, command)
+
+
+@ServerCommand("auth")
+def auth_server_command(command):
+    for auth_command in auth_commands:
+        auth_command.test(None, command)
+
+
+@auth_commands.register_command("load <backend>", "sp.auth.commands.load")
+def load_backend_command(index, backend):
+    if auth_manager.load_backend(backend):
+        message = "[Auth] Loaded backend {} succesfully.".format(backend)
+    else:
+        message = "[Auth] Failed to load backend {}.".format(backend)
+    if index is None:
+        print(message)
+    else:
+        SayText2(message=message).send(index)

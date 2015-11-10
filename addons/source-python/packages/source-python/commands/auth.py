@@ -6,10 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Auth
-from auth.manager import auth_manager
 #   Players
-from players.helpers import playerinfo_from_index
+from players.entity import PlayerEntity
 #   Hooks
 from hooks.exceptions import except_hooks
 
@@ -21,26 +19,19 @@ class _AuthCallback(object):
     """Command Authorization callback hook class."""
 
     def __init__(
-            self, callback, level=None,
-            permission=None, flag=None, fail_callback=None):
+            self, callback, permission=None, fail_callback=None):
         """Store all the given arguments."""
         self.callback = callback
-        self.level = level
         self.permission = permission
-        self.flag = flag
-        self.check_auth = not all(
-            [item is None for item in [level, permission, flag]])
         self.fail_callback = fail_callback
 
     def __call__(self, *args):
         """Verify the player's authorization."""
         # Does the player's authorization need to be checked?
-        if self.check_auth:
+        if self.permission is not None:
 
             # Is the player authorized?
-            if not auth_manager.is_player_authorized(
-                playerinfo_from_index(args[1]), self.level, self.permission,
-                    self.flag):
+            if not PlayerEntity(args[1]).has_permission(self.permission):
 
                 # Is there fail callback?
                 if self.fail_callback is not None:
