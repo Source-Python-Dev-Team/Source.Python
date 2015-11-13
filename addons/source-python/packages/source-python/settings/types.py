@@ -20,8 +20,7 @@ from menus import PagedOption
 #   Messages
 from messages import SayText
 #   Players
-from players.helpers import playerinfo_from_index
-from players.helpers import uniqueid_from_playerinfo
+from players.helpers import uniqueid_from_index
 #   Settings
 from settings import _settings_strings
 from settings.storage import _player_settings_storage
@@ -122,7 +121,7 @@ class _SettingsType(object):
                 return value
 
         # Get the client's uniqueid
-        uniqueid = uniqueid_from_playerinfo(playerinfo_from_index(index))
+        uniqueid = uniqueid_from_index(index))
 
         # Is the uniqueid in the setting's storage dictionary?
         if uniqueid in _player_settings_storage:
@@ -155,7 +154,7 @@ class _SettingsType(object):
     def _chosen_value(self, menu, index, option):
         """Store the player's chosen value for the setting."""
         # Get the client's uniqueid
-        uniqueid = uniqueid_from_playerinfo(playerinfo_from_index(index))
+        uniqueid = uniqueid_from_index(index))
 
         # Set the player's setting
         _player_settings_storage[uniqueid][self.convar] = option.value
