@@ -45,12 +45,13 @@ specific event variables.
     but they can still provide different event variables.
 
     
-Events
-------
+Available events
+----------------
     
 Below you can find a list of games and their supported events.
 
 .. toctree::
+   :titlesonly:
    :glob:
 
    events/*
