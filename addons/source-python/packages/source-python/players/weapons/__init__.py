@@ -7,7 +7,6 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from entities.constants import INVALID_ENTITY_INDEX
 from entities.entity import Entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
