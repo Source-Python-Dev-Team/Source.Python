@@ -332,7 +332,7 @@ class _PlayerWeapons(object):
             index = index_from_inthandle(handle, raise_exception=False)
 
             # Is this a valid index?
-            if index == INVALID_ENTITY_INDEX:
+            if index is None:
 
                 # Move onto the next offset
                 continue

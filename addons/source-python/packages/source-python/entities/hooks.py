@@ -42,7 +42,7 @@ class EntityCondition(object):
     @staticmethod
     def is_player(entity):
         """Return True if the entity is a player."""
-        return userid_from_index(entity.index, False) != INVALID_PLAYER_USERID
+        return userid_from_index(entity.index) is not None
 
     @classmethod
     def is_not_player(cls, entity):
