@@ -38,7 +38,6 @@ _player_levels = defaultdict(set)
 # >> CLASSES
 # ============================================================================
 class _DialogBase(object):
-
     """Base Dialog class used to send Dialog messages to players."""
 
     # Set the base attributes
@@ -124,7 +123,6 @@ class _DialogBase(object):
 
 
 class DialogAskConnect(_DialogBase):
-
     """Class used to send DialogType.ASKCONNECT messages to players.
 
     DialogType.ASKCONNECT shows a box in-game that requests the player to hit
@@ -141,7 +139,6 @@ class DialogAskConnect(_DialogBase):
 
 
 class DialogEntry(_DialogBase):
-
     """Class used to send DialogType.ENTRY messages to players.
 
     DialogType.ENTRY shows the title while in-game (TopText) in the given
@@ -174,8 +171,64 @@ class DialogEntry(_DialogBase):
         keyvalues.set_string('command', self.command)
 
 
-class DialogMsg(_DialogBase):
+class DialogMenu(_DialogBase):
+    """Class used to send DialogType.MENU messages to players.
 
+    DialogType.MENU shows the title while in-game (TopText) in the given
+    color, as well as the msg in a box when the player uses their ESC key
+    and a menu for the player to choose an option from.
+
+    The value the player chooses is then sent as an argument for the given
+    client command name.
+    """
+
+    message_type = DialogType.MENU
+
+    def __init__(
+            self, title, msg, command, color=WHITE, time=10, options=None):
+        """Set all the base attributes on instantiation."""
+        self.title = title
+        self.msg = msg
+        self._command = command
+        self.color = color
+        self.time = time
+        self.options = options
+
+    @property
+    def command(self):
+        """Return the registered command for the Menu."""
+        return self._command
+
+    def _set_keyvalues(self, keyvalues, player, **tokens):
+        """Set any remaining values to the KeyValues object."""
+        # Are there any options for the menu?
+        if self.options is None:
+            raise ValueError(
+                'Invalid value for options.  Attribute must be iterable.')
+
+        # Set the base values
+        keyvalues.set_color('color', self.color)
+        keyvalues.set_string('msg', self._get_text(self.msg, player, **tokens))
+
+        # Are the options in a dictionary?
+        if isinstance(self.options, dict):
+            for key, value in options.items():
+                button = keyvalues.find_key(str(key), True)
+                button.set_string(
+                    'msg', self._get_text(value, player, **tokens))
+                button.set_string(
+                    'command', '{0} {1}'.format(self.command, key))
+            return
+
+        # The options are in a non-dictionary iterable
+        for item in self.options:
+            button = keyvalues.find_key(item, True)
+            button.set_string('msg', item)
+            button.set_string(
+                'command', '{0} {1}'.format(self.command, item))
+
+
+class DialogMsg(_DialogBase):
     """Class used to send DialogType.MSG messages to players.
 
     DialogType.MSG shows the title while in-game (TopText) in the given color.
@@ -195,7 +248,6 @@ class DialogMsg(_DialogBase):
 
 
 class DialogText(_DialogBase):
-
     """Class used to send DialogType.TEXT messages to players.
 
     DialogType.TEXT shows the title while in-game (TopText) in the given
@@ -215,8 +267,6 @@ class DialogText(_DialogBase):
         """Set any remaining values to the KeyValues object."""
         keyvalues.set_color('color', self.color)
         keyvalues.set_string('msg', self._get_text(self.msg, player, **tokens))
-
-# TODO: Implement DialogMenu class
 
 
 # ============================================================================

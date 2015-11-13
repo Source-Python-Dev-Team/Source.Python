@@ -43,6 +43,7 @@ from _messages import FadeFlags
 # =============================================================================
 __all__ = ('DialogAskConnect',
            'DialogEntry',
+           'DialogMenu',
            'DialogMsg',
            'DialogText',
            'DialogType',
