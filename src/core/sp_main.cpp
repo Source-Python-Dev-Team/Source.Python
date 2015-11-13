@@ -507,13 +507,17 @@ void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
-	// TODO: Udpate this. The index should be None instead of -1
-	unsigned int iIndex;
-	if (!IndexFromBaseEntity(pEntity, iIndex))
-		iIndex = -1;
+	unsigned int iEntityIndex;
+	object index;
+	if (!IndexFromBaseEntity(pEntity, iEntityIndex)) {
+		index = object();
+	}
+	else {
+		index = object(iEntityIndex);
+	}
 
 	edict_t *pEdict;
-	if (!EdictFromIndex(iIndex, pEdict))
+	if (!EdictFromIndex(iEntityIndex, pEdict))
 		pEdict = NULL;
 
 	if (pEdict)
@@ -522,27 +526,35 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
 	}
-	CALL_LISTENERS(OnEntityCreated, iIndex, ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntityCreated, index, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
-	// TODO: Udpate this. The index should be None instead of -1
 	unsigned int iEntityIndex;
-	if (!IndexFromBaseEntity(pEntity, iEntityIndex))
-		iEntityIndex = -1;
+	object index;
+	if (!IndexFromBaseEntity(pEntity, iEntityIndex)) {
+		index = object();
+	}
+	else {
+		index = object(iEntityIndex);
+	}
 
-	CALL_LISTENERS(OnEntitySpawned, iEntityIndex, ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntitySpawned, index, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	// TODO: Udpate this. The index should be None instead of -1
 	unsigned int iEntityIndex;
-	if (!IndexFromBaseEntity(pEntity, iEntityIndex))
-		iEntityIndex = -1;
+	object index;
+	if (!IndexFromBaseEntity(pEntity, iEntityIndex)) {
+		index = object();
+	}
+	else {
+		index = object(iEntityIndex);
+	}
 
-	CALL_LISTENERS(OnEntityDeleted, iEntityIndex, ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntityDeleted, index, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
