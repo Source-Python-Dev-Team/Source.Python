@@ -121,7 +121,7 @@ class _SettingsType(object):
                 return value
 
         # Get the client's uniqueid
-        uniqueid = uniqueid_from_index(index))
+        uniqueid = uniqueid_from_index(index)
 
         # Is the uniqueid in the setting's storage dictionary?
         if uniqueid in _player_settings_storage:
