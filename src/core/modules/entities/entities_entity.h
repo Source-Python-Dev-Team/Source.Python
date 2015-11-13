@@ -242,7 +242,10 @@ public:
 			return false;
 
 		unsigned int iEntityIndex;
-		return IndexFromBaseEntity(GetThis(), iEntityIndex);
+		if (!IndexFromBaseEntity(GetThis(), iEntityIndex)) 
+			return false;
+
+		return iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex <= (unsigned int) gpGlobals->maxClients;
 	}
 };
 
