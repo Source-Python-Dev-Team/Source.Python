@@ -102,7 +102,6 @@ public:
 	// Counter-Strike: Global Offensive
 	// -------------------------------------------
 #ifdef ENGINE_CSGO
-	virtual int				GetEventDebugID( void ) { return EVENT_DEBUG_ID_INIT; }
 	virtual void			ClientFullyConnect( edict_t *pEntity );
 	virtual void			OnEdictAllocated( edict_t *edict );
 	virtual void			OnEdictFreed( const edict_t *edict );
