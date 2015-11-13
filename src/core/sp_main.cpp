@@ -486,7 +486,7 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	unsigned int iEntityIndex;
-	if (!IndexFromEdict(pEntity, iEntityIndex))
+	if (!IndexFromEdict(edict, iEntityIndex))
 		return;
 
 	CALL_LISTENERS(OnEdictAllocated, iEntityIndex);
