@@ -154,7 +154,7 @@ class _SettingsType(object):
     def _chosen_value(self, menu, index, option):
         """Store the player's chosen value for the setting."""
         # Get the client's uniqueid
-        uniqueid = uniqueid_from_index(index))
+        uniqueid = uniqueid_from_index(index)
 
         # Set the player's setting
         _player_settings_storage[uniqueid][self.convar] = option.value
