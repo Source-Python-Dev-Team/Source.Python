@@ -46,7 +46,7 @@ Your plugin should now look like this.
         print('Plugin has been unloaded successfully!')
 
 
-Extending your first plugin
+Modifying your first plugin
 ---------------------------
 
 Just sending a message to the server console is not very exciting. Moreover,
@@ -112,7 +112,7 @@ Your plugin should now look like this.
     @Event('player_spawn')
     def on_player_spawn(event):
         # Get the user ID of the spawned player
-        userid = event.get_int('userid')
+        userid = event['userid']
 
         # Convert the user ID into a player index
         index = index_from_userid(userid)
@@ -127,4 +127,4 @@ Your plugin should now look like this.
 What's next?
 ------------
 
-Nothing here...
+.. todo:: Write this "What's next?" article.
