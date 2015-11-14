@@ -77,7 +77,7 @@ bool PlayerInfoFromPointer( CPointer *pEntityPointer, IPlayerInfo*& output)
 //-----------------------------------------------------------------------------
 bool PlayerInfoFromEdict( edict_t *pEdict, IPlayerInfo*& output)
 {
-	if (pEdict || pEdict->IsFree())
+	if (!pEdict || pEdict->IsFree())
 		return false;
 
 	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
@@ -85,7 +85,7 @@ bool PlayerInfoFromEdict( edict_t *pEdict, IPlayerInfo*& output)
 		return false;
 
 	output = pPlayerInfo;
-	return false;
+	return true;
 }
 
 

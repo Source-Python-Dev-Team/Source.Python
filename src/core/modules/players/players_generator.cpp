@@ -71,7 +71,7 @@ edict_t *CPlayerGenerator::getNext()
 	while(m_iEntityIndex < gpGlobals->maxClients)
 	{
 		m_iEntityIndex++;
-		if (!EdictFromIndex(m_iEntityIndex, pEdict))
+		if (EdictFromIndex(m_iEntityIndex, pEdict))
 			break;
 	}
 	return pEdict;
