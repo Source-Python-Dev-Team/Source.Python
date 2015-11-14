@@ -22,6 +22,10 @@ from messages.base import Fade
 from messages.base import HudMsg
 from messages.base import UserMessageCreator
 from messages.base import UserMessage
+from messages.dialog import DialogAskConnect
+from messages.dialog import DialogEntry
+from messages.dialog import DialogMsg
+from messages.dialog import DialogText
 
 
 # ============================================================================
@@ -37,7 +41,12 @@ from _messages import FadeFlags
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('DialogType',
+__all__ = ('DialogAskConnect',
+           'DialogEntry',
+           'DialogMenu',
+           'DialogMsg',
+           'DialogText',
+           'DialogType',
            'Fade',
            'FadeFlags',
            'HintText',
