@@ -11,7 +11,11 @@ from loggers import _sp_logger
 #   Translations
 from translations.strings import LangStrings
 
-from . import commands
+from paths import AUTH_CFG_PATH
+
+
+if not AUTH_CFG_PATH.exists():
+    AUTH_CFG_PATH.mkdir()
 
 
 # =============================================================================

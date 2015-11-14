@@ -1,7 +1,8 @@
-import os
 import json
 
-from auth.paths import AUTH_CFG_PATH
+from path import Path
+
+from paths import AUTH_CFG_PATH
 from auth.base import PermissionSource
 from auth.manager import auth_manager
 
@@ -21,7 +22,8 @@ class FlatfilePermissionSource(PermissionSource):
 
     @staticmethod
     def load_config(store, path):
-        if not os.path.exists(path):
+        path = Path(path)
+        if not path.exists():
             with open(path, "w") as file:
                 json.dump({}, file)
         with open(path) as file:
@@ -39,7 +41,8 @@ class FlatfilePermissionSource(PermissionSource):
 
     @staticmethod
     def load_simple_config(store, path):
-        if not os.path.exists(path):
+        path = Path(path)
+        if not path.exists():
             open(path, "w").close()
         with open(path) as file:
             for uniqueid in file.readlines():

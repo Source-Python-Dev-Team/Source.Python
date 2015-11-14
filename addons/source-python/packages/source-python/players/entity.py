@@ -67,6 +67,7 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
         """
         super().__init__(index)
         super(Entity, self).__setattr__('_playerinfo', None)
+        self.permissions = auth_manager.get_player_permissions(index)
 
     @property
     def playerinfo(self):
@@ -531,27 +532,6 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
         return self.move_type == MoveType.NONE
 
     stuck = property(get_stuck, set_stuck)
-
-    def list_permissions(self):
-        return auth_manager.get_player(self.index).list_permissions()
-
-    def has_permission(self, permission):
-        return auth_manager.get_player(self.index).has(permission)
-
-    def add_permission(self, permission):
-        auth_manager.get_player(self.index).add(permission)
-
-    def remove_permission(self, permission):
-        auth_manager.get_player(self.index).remove(permission)
-
-    def get_groups(self):
-        return auth_manager.get_player(self.index).parents()
-
-    def add_group(self, group_name):
-        auth_manager.get_player(self.index).add_parent(group_name)
-
-    def remove_group(self, group_name):
-        auth_manager.get_player(self.index).remove_parent(group_name)
 
 
 # =============================================================================

@@ -1,13 +1,10 @@
-import os
 import re
-import glob
 import importlib.machinery
 
 from configobj import ConfigObj
 
-from auth.paths import BACKEND_CONFIG_FILE
 from auth.base import PermissionSource
-from paths import SP_PACKAGES_PATH
+from paths import SP_PACKAGES_PATH, BACKEND_CONFIG_FILE
 
 from players.helpers import playerinfo_from_index, uniqueid_from_playerinfo
 
@@ -20,16 +17,13 @@ class PermissionBase(set):
         self.name = name
         self.data = {}
 
-    def __hash__(self):
-        return hash(self.name)
+    def add(self, permission):
+        super().add(permission)
+        self.cache.add(self._compile_permission(permission))
 
-    def add(self, *args, **kwargs):
-        super().add(*args, **kwargs)
-        self._refresh_cache()
-
-    def remove(self, *args, **kwargs):
-        super().remove(*args, **kwargs)
-        self._refresh_cache()
+    def remove(self, permission):
+        super().remove(permission)
+        self.cache.remove(self._compile_permission(permission))
 
     @staticmethod
     def _compile_permission(permission):
@@ -40,12 +34,12 @@ class PermissionBase(set):
         for permission in self:
             self.cache.add(self._compile_permission(permission))
 
-    def has(self, permission):
+    def __contains__(self, permission):
         for re_perm in self.cache:
             if re_perm.match(permission):
                 return True
         for parent in self.parents:
-            if parent.has_permission(permission):
+            if permission in parent:
                 return True
         return False
 
@@ -74,7 +68,7 @@ class PermissionBase(set):
         auth_manager.groups[parent].children.remove(self)
 
 
-class PermissionPlayer(PermissionBase):
+class PlayerPermissions(PermissionBase):
     def __new__(cls, name):
         if name in auth_manager.players:
             return auth_manager.players[name]
@@ -84,7 +78,7 @@ class PermissionPlayer(PermissionBase):
             return player
 
 
-class PermissionGroup(PermissionBase):
+class GroupPermissions(PermissionBase):
     def __new__(cls, name):
         if name in auth_manager.groups:
             return auth_manager.groups[name]
@@ -110,8 +104,8 @@ class PermissionDict(dict):
 
 class AuthManager(object):
     def __init__(self):
-        self.groups = PermissionDict(PermissionGroup)
-        self.players = PermissionDict(PermissionPlayer)
+        self.groups = PermissionDict(GroupPermissions)
+        self.players = PermissionDict(PlayerPermissions)
         self.available_backends = []
         self.active_backend = None
 
@@ -130,9 +124,9 @@ class AuthManager(object):
         return False
 
     def _find_available_backends(self):
-        for backend in glob.glob(SP_PACKAGES_PATH.joinpath("auth", "backends/*.py")):
-            name = "auth.backend." + os.path.splitext(os.path.basename(backend))[0]
-            loader = importlib.machinery.SourceFileLoader(name, backend)
+        for backend in SP_PACKAGES_PATH.joinpath("auth", "backends").glob("*.py"):
+            name = "auth.backend." + backend.basename().splitext()[0]
+            loader = importlib.machinery.SourceFileLoader(name, str(backend))
             module = loader.load_module(name)
             for var in module.__dict__.values():
                 if isinstance(var, PermissionSource):
@@ -152,7 +146,7 @@ class AuthManager(object):
         config["backends"] = backends_config
         config.filename = BACKEND_CONFIG_FILE
 
-        if os.path.exists(BACKEND_CONFIG_FILE):
+        if BACKEND_CONFIG_FILE.exists():
             user_config = ConfigObj(BACKEND_CONFIG_FILE)
             config.merge(user_config)
 
@@ -163,14 +157,11 @@ class AuthManager(object):
 
         self.load_backend(config["Config"]["PermissionBackend"])
 
-    def get_player(self, index):
-        return self.players[uniqueid_from_index(index)]
+    def get_player_permissions(self, index):
+        return self.players[uniqueid_from_playerinfo(playerinfo_from_index(index))]
 
-    def get_group(self, group_name):
+    def get_group_permissions(self, group_name):
         return self.groups[group_name]
 
-
-def uniqueid_from_index(index):
-    return uniqueid_from_playerinfo(playerinfo_from_index(index))
 
 auth_manager = AuthManager()

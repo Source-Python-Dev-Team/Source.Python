@@ -31,7 +31,7 @@ class _AuthCallback(object):
         if self.permission is not None:
 
             # Is the player authorized?
-            if not Player(args[1]).has_permission(self.permission):
+            if self.permission not in Player(args[1]).permissions:
 
                 # Is there fail callback?
                 if self.fail_callback is not None:

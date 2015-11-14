@@ -1,14 +1,16 @@
 # TODO Add commands to add/remove permissions once command filters are added
 
+import re
+
 from players.entity import Player
 
 from commands.client import ClientCommand
 from commands.server import ServerCommand
+
+from messages import TextMsg
+
+from . import auth_logger
 from .manager import auth_manager
-
-from messages import SayText2
-
-import re
 
 
 argument_re = re.compile("<([^>]+)>")
@@ -34,7 +36,7 @@ class AuthCommand(object):
         if command.get_arg_count() - 1 != len(self.arguments):
             return
         if self.permission is not None:
-            if index is not None and not Player(index).has_permission(self.permission):
+            if index is not None and self.permission not in Player(index).permissions:
                 return
         args = []
         for i in range(0, len(self.arguments)):
@@ -70,6 +72,6 @@ def load_backend_command(index, backend):
     else:
         message = "[Auth] Failed to load backend {}.".format(backend)
     if index is None:
-        print(message)
+        auth_logger.log_message(message)
     else:
-        SayText2(message=message).send(index)
+        TextMsg(message, destination=2).send(index)
