@@ -428,15 +428,6 @@ void CSourcePython::OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t
 }
 
 //-----------------------------------------------------------------------------
-// Purpose: called when an event is fired
-//-----------------------------------------------------------------------------
-void CSourcePython::FireGameEvent( IGameEvent * event )
-{
-	const char * name = event->GetName();
-	PythonLog(4, "CSourcePython::FireGameEvent: Got event \"%s\"", name );
-}
-
-//-----------------------------------------------------------------------------
 // Orangebox.
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &args )
