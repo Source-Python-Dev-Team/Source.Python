@@ -212,7 +212,7 @@ class DialogMenu(_DialogBase):
 
         # Are the options in a dictionary?
         if isinstance(self.options, dict):
-            for key, value in options.items():
+            for key, value in self.options.items():
                 button = keyvalues.find_key(str(key), True)
                 button.set_string(
                     'msg', self._get_text(value, player, **tokens))
