@@ -13,9 +13,13 @@ import re
 
 # Source.Python Imports
 #   Commands
+from commands.client import client_command_manager
 from commands.server import server_command_manager
 #   Core
 from core import AutoUnload
+#   Messages
+from messages import HudDestination
+from messages import TextMsg
 #   Plugins
 from plugins import plugins_logger
 from plugins import _plugin_strings
@@ -49,7 +53,9 @@ class SubCommandManager(AutoUnload, OrderedDict):
     logger = plugins_command_logger
     translations = _plugin_strings
 
-    def __init__(self, command, description='', prefix=''):
+    def __init__(
+            self, command, description='', prefix='',
+            client_permission=None):
         """Called on instance initialization."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
@@ -68,6 +74,9 @@ class SubCommandManager(AutoUnload, OrderedDict):
             # If not, raise an error
             raise PluginInstanceError(PluginInstanceError.__doc__)
 
+        # Set the client index to the default value
+        self._index = None
+
         # Store the command
         self._command = command
 
@@ -84,6 +93,22 @@ class SubCommandManager(AutoUnload, OrderedDict):
         # Register the server command
         server_command_manager.register_commands(
             self.command, self.call_command, description, 0)
+
+        # Store the permission to know if the client command was registered
+        self._permission = client_permission
+
+        # Should the client command be registered?
+        if self._permission is not None:
+
+            # Register the client command
+            client_command_manager.register_commands(
+                self.command, self.call_command,
+                permission=client_permission, fail_callback=self.fail_callback)
+
+    @property
+    def index(self):
+        """Return the client index that executed the client command."""
+        return self._index
 
     @property
     def manager(self):
@@ -107,11 +132,22 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
     def _unload_instance(self):
         """Unregister commands when the instance is unloaded."""
+        # Unregister the server command
         server_command_manager.unregister_commands(
             self.command, self.call_command)
 
-    def call_command(self, command):
+        # Does the client command need unregistered?
+        if self._permission is not None:
+
+            # Unregister the client command
+            client_command_manager.unregister_commands(
+                self.command, self.call_command)
+
+    def call_command(self, command, index=None):
         """Get the provided sub-command and executes accordingly."""
+        # Store the index
+        self._index = index
+
         # Get the argument string
         arg_string = command.get_arg_string()
 
@@ -157,6 +193,9 @@ class SubCommandManager(AutoUnload, OrderedDict):
             # Print the help text for the console command
             self.print_help(message)
 
+            # Reset the client index
+            self._index = None
+
             # No need to go further
             return
 
@@ -173,12 +212,14 @@ class SubCommandManager(AutoUnload, OrderedDict):
             # Were enough arguments provided?
             if given < required:
 
-                # Print a message about the invalid number of arguments given
-                self.logger.log_message(
-                    self.prefix + self.translations[
-                        'Invalid Arguments'].get_string(
+                # Log a message about the invalid number of arguments given
+                self._log_message(self.prefix + self.translations[
+                    'Invalid Arguments'].get_string(
                         command=self.command, subcommand=sub_command) +
                     ' '.join(self[sub_command].args))
+
+                # Reset the client index
+                self._index = None
 
                 # No need to go further
                 return
@@ -189,13 +230,14 @@ class SubCommandManager(AutoUnload, OrderedDict):
                 # Were the correct number of arguments given?
                 if given != required:
 
-                    # Print a message about the invalid
-                    # number of arguments given
-                    self.logger.log_message(
-                        self.prefix + self.translations[
+                    # Log a message about the invalid number of arguments given
+                    self._log_message(self.prefix + self.translations[
                             'Invalid Arguments'].get_string(
                             command=self.command, subcommand=sub_command) +
                         ' '.join(self[sub_command].args))
+
+                    # Reset the client index
+                    self._index = None
 
                     # No need to go further
                     return
@@ -203,20 +245,41 @@ class SubCommandManager(AutoUnload, OrderedDict):
             # Call the sub-command's callable with the given arguments
             self[sub_command](*args)
 
+            # Reset the client index
+            self._index = None
+
             # No need to go further
             return
 
         # Does the current item have its own call_command method?
         if hasattr(self[sub_command], 'call_command'):
 
+            # Set the client index for the sub-command
+            self[sub_command]._index = index
+
             # Call the instance's call_command method with the arguments
             self[sub_command].call_command(args)
+
+            # Reset the client index
+            self._index = None
+
+            # Reset the client index for the sub-command
+            self[sub_command]._index = None
 
             # No need to go further
             return
 
         # Call the callable without the arguments
         self[sub_command]()
+
+        # Reset the client index
+        self._index = None
+
+    def fail_callback(self, command, index):
+        """Notify the player they are not authorized to use command."""
+        TextMsg(
+            'You are not authorized to use the "{0}" command.'.format(
+            self.command), HudDestination.CONSOLE).send(index)
 
     def print_help(self, message=''):
         """Print all sub-commands for the console command."""
@@ -250,15 +313,15 @@ class SubCommandManager(AutoUnload, OrderedDict):
                 item].__doc__.rjust(78 - len(text))
 
         # Send the message
-        self.logger.log_message(message + '\n' + '=' * 78)
+        self._log_message(message+ '\n' + '=' * 78)
 
     def load_plugin(self, plugin_name):
         """Load a plugin by name."""
         # Is the given plugin name a proper name?
         if not self._is_valid_plugin_name(plugin_name):
 
-            # Send a message that the given name is invalid
-            self.logger.log_message(self.prefix + self.translations[
+            # Log a message that the given name is invalid
+            self._log_message(self.prefix + self.translations[
                 'Invalid Name'].get_string(plugin=plugin_name))
 
             # No need to go further
@@ -267,8 +330,8 @@ class SubCommandManager(AutoUnload, OrderedDict):
         # Is the plugin already loaded?
         if plugin_name in self.manager:
 
-            # Send a message that the plugin is already loaded
-            self.logger.log_message(self.prefix + self.translations[
+            # Log a message that the plugin is already loaded
+            self._log_message(self.prefix + self.translations[
                 'Already Loaded'].get_string(plugin=plugin_name))
 
             # No need to go further
@@ -280,15 +343,15 @@ class SubCommandManager(AutoUnload, OrderedDict):
         # Was the plugin unable to be loaded?
         if plugin is None:
 
-            # Send a message that the plugin was not loaded
-            self.logger.log_message(self.prefix + self.translations[
+            # Log a message that the plugin was not loaded
+            self._log_message(self.prefix + self.translations[
                 'Unable to Load'].get_string(plugin=plugin_name))
 
             # No need to go further
             return
 
-        # Send a message that the plugin was loaded
-        self.logger.log_message(self.prefix + self.translations[
+        # Log a message that the plugin was loaded
+        self._log_message(self.prefix + self.translations[
             'Successful Load'].get_string(plugin=plugin_name))
 
     # Set the method's required arguments
@@ -300,7 +363,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         if not self._is_valid_plugin_name(plugin_name):
 
             # Send a message that the given name is invalid
-            self.logger.log_message(self.prefix + self.translations[
+            self._log_message(self.prefix + self.translations[
                 'Invalid Name'].get_string(plugin=plugin_name))
 
             # No need to go further
@@ -310,7 +373,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         if plugin_name not in self.manager:
 
             # Send a message that the plugin is not loaded
-            self.logger.log_message(self.prefix + self.translations[
+            self._log_message(self.prefix + self.translations[
                 'Not Loaded'].get_string(plugin=plugin_name))
 
             # No need to go further
@@ -320,7 +383,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         del self.manager[plugin_name]
 
         # Send a message that the plugin was unloaded
-        self.logger.log_message(self.prefix + self.translations[
+        self._log_message(self.prefix + self.translations[
             'Successful Unload'].get_string(plugin=plugin_name))
 
     # Set the method's required arguments
@@ -332,7 +395,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         if not self._is_valid_plugin_name(plugin_name):
 
             # Send a message that the given name is invalid
-            self.logger.log_message(self.prefix + self.translations[
+            self._log_message(self.prefix + self.translations[
                 'Invalid Name'].get_string(plugin=plugin_name))
 
             # No need to go further
@@ -360,7 +423,21 @@ class SubCommandManager(AutoUnload, OrderedDict):
         message += '\n\n' + '=' * 61
 
         # Send the message
+        self._log_message(message)
+
+    def _log_message(self, message):
+        """Log the message and send to client console if client command."""
+        # Log the message
         self.logger.log_message(message)
+
+        # Was the client command used?
+        if self.index is not None:
+
+            # Loop through the lines of the message
+            for line in message.splitlines():
+
+                # Print the help text to the client
+                TextMsg(line, HudDestination.CONSOLE).send(self.index)
 
     @staticmethod
     def _is_valid_plugin_name(plugin_name):

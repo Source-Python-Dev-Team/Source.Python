@@ -7,6 +7,7 @@ from players.entity import Player
 from commands.client import ClientCommand
 from commands.server import ServerCommand
 
+from messages import HudDestination
 from messages import TextMsg
 
 from . import auth_logger
@@ -74,4 +75,4 @@ def load_backend_command(index, backend):
     if index is None:
         auth_logger.log_message(message)
     else:
-        TextMsg(message, destination=2).send(index)
+        TextMsg(message, destination=HudDestination.CONSOLE).send(index)

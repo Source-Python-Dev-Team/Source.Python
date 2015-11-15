@@ -106,7 +106,7 @@ class _CoreCommandManager(SubCommandManager):
         message += '=' * 61
 
         # Print the message
-        self.logger.log_message(message)
+        self._log_message(message)
 
     @staticmethod
     def delay_execution(*args):
@@ -121,7 +121,7 @@ class _CoreCommandManager(SubCommandManager):
         if not 'dump_{0}'.format(dump_type) in dumps.__all__:
 
             # If not, print message to notify of unknown dump type
-            self.logger.log_message(
+            self._log_message(
                 'Invalid dump_type "{0}". The valid types are:'.format(
                     dump_type))
 
@@ -129,7 +129,7 @@ class _CoreCommandManager(SubCommandManager):
             for dump in dumps.__all__:
 
                 # Print the current dump function
-                self.logger.log_message(
+                self._log_message(
                     '\t{0}'.format(dump.replace('dump_', '')))
 
             # No need to go further
@@ -143,7 +143,7 @@ class _CoreCommandManager(SubCommandManager):
 
     def print_version(self):
         """Display Source.Python version information."""
-        self.logger.log_message(
+        self._log_message(
             'Current Source.Python version: {0}'.format(VERSION))
 
     def docs_handler(self, action, package):
@@ -155,7 +155,7 @@ class _CoreCommandManager(SubCommandManager):
         elif action == 'build':
             self._build_sphinx_project(package)
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Invalid action: "{0}".'.format(action) +
                 '  Valid actions are: create, generate and build')
     docs_handler.args = ['<action>', '<package>']
@@ -169,7 +169,7 @@ class _CoreCommandManager(SubCommandManager):
         elif self.is_plugin(package):
             self._create_plugin_docs(package)
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Invalid project name: "{0}".'.format(package) +
                 '  Project name must be source-python, ' +
                 'a custom package name, or a plugin name.')
@@ -183,7 +183,7 @@ class _CoreCommandManager(SubCommandManager):
         elif self.is_plugin(package):
             self._generate_plugin_docs(package)
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Invalid project name: "{0}".'.format(package) +
                 '  Project name must be source-python, ' +
                 'a custom package name, or a plugin name.')
@@ -197,7 +197,7 @@ class _CoreCommandManager(SubCommandManager):
         elif self.is_plugin(package):
             self._build_plugin_docs(package)
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Invalid project name: "{0}".'.format(package) +
                 '  Project name must be source-python, ' +
                 'a custom package name, or a plugin name.')
@@ -206,18 +206,18 @@ class _CoreCommandManager(SubCommandManager):
         """Create a Sphinx project for Source.Python."""
         project = SphinxProject(SP_PACKAGES_PATH, SP_DOCS_PATH)
         if project.project_exists():
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project already exists for Source.Python')
         else:
             try:
                 project.create(
                     'Source.Python Development Team', 'Source.Python', VERSION)
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while creating Sphinx ' +
                     'project for Source.Python.')
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Sphinx project has been created for Source.Python.')
 
     def _create_custom_package_docs(self, package):
@@ -226,18 +226,18 @@ class _CoreCommandManager(SubCommandManager):
             CUSTOM_PACKAGES_PATH / package,
             CUSTOM_PACKAGES_DOCS_PATH / package)
         if project.project_exists():
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project already exists for custom' +
                 ' package "{0}".'.format(package))
         else:
             try:
                 project.create('Unknown')
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while creating Sphinx project for ' +
                     'custom package "{0}".'.format(package))
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Sphinx project has been created for' +
                     ' custom package "{0}".'.format(package))
 
@@ -246,18 +246,18 @@ class _CoreCommandManager(SubCommandManager):
         project = SphinxProject(
             PLUGIN_PATH / package, PLUGIN_DOCS_PATH / package)
         if project.project_exists():
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project already exists for ' +
                 'plugin "{0}".'.format(package))
         else:
             try:
                 project.create('Unknown')
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while creating Sphinx project ' +
                     'for plugin "{0}".'.format(package))
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Sphinx project has been created for' +
                     ' plugin "{0}".'.format(package))
 
@@ -268,7 +268,7 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.generate_project_files('modules')
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while generating ' +
                     'project files for Source.Python')
             else:
@@ -277,10 +277,10 @@ class _CoreCommandManager(SubCommandManager):
                 for file_path in modules_dir.files('source-python.*.rst'):
                     self._prepare_generated_source_python_file(file_path)
 
-                self.logger.log_message(
+                self._log_message(
                     'Project files have been generated for Source.Python.')
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project does not exist for Source.Python.')
 
     @staticmethod
@@ -348,15 +348,15 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.generate_project_files()
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while generating project ' +
                     'files for custom package "{0}".'.format(package))
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Project files have been generated for '
                     'custom package "{0}".'.format(package))
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project does not exist for ' +
                 'custom package "{0}".'.format(package))
 
@@ -368,15 +368,15 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.generate_project_files()
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while generating project ' +
                     'files for plugin "{0}".'.format(package))
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Project files have been generated ' +
                     'for plugin "{0}".'.format(package))
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project does not exist for' +
                 ' plugin "{0}".'.format(package))
 
@@ -405,14 +405,14 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.build()
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while building ' +
                     'project files for Source.Python.')
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Project files have been built for Source.Python.')
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project does not exist for Source.Python.')
 
     @staticmethod
@@ -464,15 +464,15 @@ class _CoreCommandManager(SubCommandManager):
             try:
                 project.build()
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while building project ' +
                     'files for custom package "{0}".'.format(package))
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Project files have been built for ' +
                     'custom package "{0}".'.format(package))
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project does not exist for ' +
                 'custom package "{0}".'.format(package))
 
@@ -482,22 +482,22 @@ class _CoreCommandManager(SubCommandManager):
             PLUGIN_PATH / package, PLUGIN_DOCS_PATH / package)
         if project.project_exists():
             if not self.manager.is_loaded(package):
-                self.logger.log_message(
+                self._log_message(
                     'Plugin must be loaded to build the project files.')
                 return
 
             try:
                 project.build()
             except:
-                self.logger.log_message(
+                self._log_message(
                     'An error occured while building project ' +
                     'files for plugin "{0}".'.format(package))
             else:
-                self.logger.log_message(
+                self._log_message(
                     'Project files have been built for ' +
                     'plugin "{0}".'.format(package))
         else:
-            self.logger.log_message(
+            self._log_message(
                 'Sphinx project does not exist for ' +
                 'plugin "{0}".'.format(package))
 
@@ -545,10 +545,12 @@ class _CoreCommandManager(SubCommandManager):
             message += '\n'
 
         # Print the message
-        self.logger.log_message(message + '=' * 61 + '\n\n')
+        self._log_message(message + '=' * 61 + '\n\n')
 
 # Get the _CoreCommandManager instance
-_core_command = _CoreCommandManager('sp', 'Source.Python base command.')
+# TODO: add the client permission value
+_core_command = _CoreCommandManager(
+    'sp', 'Source.Python base command.', client_permission='')
 
 # Register the load/unload sub-commands
 _core_command['load'] = _core_command.load_plugin
