@@ -24,6 +24,7 @@ from messages.base import UserMessageCreator
 from messages.base import UserMessage
 from messages.dialog import DialogAskConnect
 from messages.dialog import DialogEntry
+from messages.dialog import DialogMenu
 from messages.dialog import DialogMsg
 from messages.dialog import DialogText
 
