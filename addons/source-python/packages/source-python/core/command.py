@@ -23,6 +23,9 @@ from core.version import VERSION
 from cvars import ConVar
 #   Engines
 from engines.server import engine_server
+#   Messages
+from messages import HudDestination
+from messages import TextMsg
 #   Paths
 from paths import SP_DOCS_PATH
 from paths import CUSTOM_PACKAGES_DOCS_PATH
@@ -31,6 +34,8 @@ from paths import SP_PACKAGES_PATH
 from paths import CUSTOM_PACKAGES_PATH
 from paths import PLUGIN_PATH
 from paths import SP_DATA_PATH
+#   Players
+from players.entity import Player
 #   Plugins
 from plugins import _plugin_strings
 from plugins.command import SubCommandManager
@@ -55,12 +60,88 @@ class _CoreLoadedPlugin(LoadedPlugin):
     logger = core_command_logger
 
 
+class _CorePermissions(object):
+    """Class used to store a sub-command callback and its permission."""
+
+    def __init__(self, sub_command, callback):
+        """Store the base attributes."""
+        self._sub_command = sub_command
+        self._callback = callback
+        self._container_class = None
+        self.permission = None
+        self.__doc__ = self.callback.__doc__
+
+        # Does the callback have args?
+        if hasattr(self.callback, 'args'):
+
+            # Set the args
+            self.args = self.callback.args
+
+    @property
+    def sub_command(self):
+        """Return the sub_command."""
+        return self._sub_command
+
+    @property
+    def callback(self):
+        """Return the callback."""
+        return self._callback
+
+    @property
+    def container_class(self):
+        """Return the container_class."""
+        return self._container_class
+
+    def __call__(self, *args):
+        """Call the callback if authorization check out."""
+        # Is the client command being used?
+        if self.container_class.index is not None:
+
+            # Does the sub-command have a permission?
+            if self.permission is not None:
+
+                # Is the client not authorized to use the sub-command?
+                if self.permission not in Player(
+                        self.container_class.index).permissions:
+
+                    # Notify the client that they are not authorized
+                    TextMsg(
+                        'You are not authorized to use the "{0} {1}" '
+                        'sub-command.'.format(
+                            self.container_class.command, self.sub_command),
+                        HudDestination.CONSOLE).send(
+                            self.container_class.index)
+
+                    # No need to go further
+                    return
+
+        # Call the callback
+        self.callback(*args)
+
+
 class _CoreCommandManager(SubCommandManager):
     """Class used for executing "sp" sub-command functionality."""
 
     manager = core_plugin_manager
     instance = _CoreLoadedPlugin
     logger = core_command_logger
+
+    def __setitem__(self, item, value):
+        """Overwrite __setitem__ to set using _CorePermissions class."""
+        # Is the item already registered?
+        if item in self:
+
+            # Raise an error
+            raise KeyError('Key "{0}" already exists.'.format(item))
+
+        # Get the _CorePermissions instance for the item
+        instance = _CorePermissions(item, value)
+
+        # Set the container class for the instance
+        instance._container_class = self
+
+        # Add the instance to the dictionary
+        super().__setitem__(item, instance)
 
     def print_plugins(self):
         """List all currently loaded plugins."""
@@ -158,6 +239,7 @@ class _CoreCommandManager(SubCommandManager):
             self._log_message(
                 'Invalid action: "{0}".'.format(action) +
                 '  Valid actions are: create, generate and build')
+
     docs_handler.args = ['<action>', '<package>']
 
     def _create_sphinx_project(self, package):
@@ -548,21 +630,25 @@ class _CoreCommandManager(SubCommandManager):
         self._log_message(message + '=' * 61 + '\n\n')
 
 # Get the _CoreCommandManager instance
-# TODO: add the client permission value
 _core_command = _CoreCommandManager(
-    'sp', 'Source.Python base command.', client_permission='')
+    'sp', 'Source.Python base command.', register_client=True)
 
 # Register the load/unload sub-commands
 _core_command['load'] = _core_command.load_plugin
+_core_command['load'].permission = 'sp.commands.load'
 _core_command['unload'] = _core_command.unload_plugin
+_core_command['unload'].permission = 'sp.commands.unload'
 _core_command['reload'] = _core_command.reload_plugin
+_core_command['reload'].permission = 'sp.commands.reload'
 
 # Register the 'delay' sub-command
 _core_command['delay'] = _core_command.delay_execution
 _core_command['delay'].args = ['<delay>', '<command>', '[arguments]']
+_core_command['delay'].permission = 'sp.commands.delay'
 
 # Register the 'dump' sub-command
 _core_command['dump'] = _core_command.dump_data
+_core_command['dump'].permission = 'sp.commands.dump'
 
 # Register all printing sub-commands
 _core_command['list'] = _core_command.print_plugins
@@ -572,3 +658,4 @@ _core_command['help'] = _core_command.print_help
 
 # Register the 'docs' sub-command
 _core_command['docs'] = _core_command.docs_handler
+_core_command['docs'].permission = 'sp.commands.docs'

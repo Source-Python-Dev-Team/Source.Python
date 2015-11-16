@@ -55,7 +55,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
     def __init__(
             self, command, description='', prefix='',
-            client_permission=None):
+            register_client=False, client_permission=None):
         """Called on instance initialization."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
@@ -94,11 +94,11 @@ class SubCommandManager(AutoUnload, OrderedDict):
         server_command_manager.register_commands(
             self.command, self.call_command, description, 0)
 
-        # Store the permission to know if the client command was registered
-        self._permission = client_permission
+        # Store whether the client command should be registered
+        self._register_client = register_client
 
         # Should the client command be registered?
-        if self._permission is not None:
+        if self._register_client:
 
             # Register the client command
             client_command_manager.register_commands(
@@ -137,7 +137,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
             self.command, self.call_command)
 
         # Does the client command need unregistered?
-        if self._permission is not None:
+        if self._register_client:
 
             # Unregister the client command
             client_command_manager.unregister_commands(
@@ -255,7 +255,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         if hasattr(self[sub_command], 'call_command'):
 
             # Set the client index for the sub-command
-            self[sub_command]._index = index
+            self[sub_command]._index = self.index
 
             # Call the instance's call_command method with the arguments
             self[sub_command].call_command(args)
