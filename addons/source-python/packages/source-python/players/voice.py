@@ -13,7 +13,7 @@ import collections
 #    Engines
 from engines.server import global_vars
 #    Listeners
-from listeners import ClientDisconnect
+from listeners import OnClientDisconnect
 #    Memory
 import memory
 
@@ -120,7 +120,7 @@ def _pre_set_client_listening(args):
         args[3] = False
 
 
-@ClientDisconnect
+@OnClientDisconnect
 def _on_client_disconnect(index):
     """Called when a player left the server."""
     # Unmute the player, so the next player who gets this index won't be muted
