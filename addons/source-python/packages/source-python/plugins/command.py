@@ -10,6 +10,8 @@
 from collections import OrderedDict
 #   Re
 import re
+#   TextWrap
+from textwrap import TextWrapper
 
 # Source.Python Imports
 #   Commands
@@ -287,33 +289,50 @@ class SubCommandManager(AutoUnload, OrderedDict):
         message += '\n' + self.prefix + self.translations[
             'Help'].get_string(command=self.command) + '\n' + '=' * 78
 
-        # Loop through all registered sub-commands
-        for item in self:
+        # Store an ordered dictionary to hold values for the help text
+        items_dictionary = OrderedDict()
 
-            # Set the text
-            text = str(item)
+        # Get all the text to display
+        self._get_help_text(self, items_dictionary)
 
-            # Does the current sub-command have its own print_help method?
-            if hasattr(self[item], 'print_help'):
+        # Get the maximum length of all sub-commands
+        length = max(map(len, items_dictionary.keys())) + 1
 
-                # Get the instance's help text
-                message += '\n' + self[item].get_help_text()
+        # Get the subsequent indent value
+        indent = ' ' * (length + 2)
 
-                # Continue to the next item
-                continue
+        # Loop through all items in the dictionary
+        for item, value in items_dictionary.items():
 
-            # Does the current command have any arguments?
-            if hasattr(self[item], 'args'):
+            # Get the wrapped text to display
+            lines = TextWrapper(
+                78, subsequent_indent=indent, break_long_words=False).wrap(
+                    item.ljust(length) + value)
 
-                # Add the arguments to the text
-                text += ' ' + ' '.join(self[item].args)
-
-            # Add a message for the current command
-            message += '\n' + text + self[
-                item].__doc__.rjust(78 - len(text))
+            # Add the text to the message
+            message += '\n' + '\n'.join(lines)
 
         # Send the message
-        self._log_message(message+ '\n' + '=' * 78)
+        self._log_message(message + '\n' + '=' * 78)
+
+    def _get_help_text(self, instance, items_dictionary, prefix=''):
+        """"""
+        for item, value in instance.items():
+
+            name = '{0} {1}'.format(prefix, item) if prefix else item
+
+            if isinstance(value, dict):
+
+                self._get_help_text(value, items_dictionary, name)
+
+            elif hasattr(instance[item], 'args'):
+
+                items_dictionary[
+                    name + ' ' + ' '.join(instance[item].args)] = value.__doc__
+
+            else:
+
+                items_dictionary[name] = value.__doc__
 
     def load_plugin(self, plugin_name):
         """Load a plugin by name."""
