@@ -117,3 +117,6 @@ class _IterObject(metaclass=_IterObjectMeta):
             raise NameError(
                 '{0} cannot unregister filter "{1}".  Filter is '
                 'not registered.'.format(cls.__name__, filter_name))
+
+        # Remove the filter from the dictionary
+        del cls._filters[filter_name]
