@@ -21,6 +21,9 @@ from entities.helpers import spawn_entity
 from entities.specials import _EntitySpecials
 #   Memory
 from memory import make_object
+#   Studio
+from studio.cache import model_cache
+from studio.constants import INVALID_ATTACHMENT_INDEX
 
 
 # =============================================================================
@@ -360,6 +363,12 @@ class Entity(BaseEntity, _EntitySpecials):
         get_model, set_model,
         doc="""Property to get/set the entity's model.""")
 
+    @property
+    def model_header(self):
+        """Return a ModelHeader instance of the current entity's model."""
+        return model_cache.get_model_header(model_cache.find_model(
+            self.model.path))
+
     def get_property_bool(self, name):
         """Return the boolean property."""
         return self._get_property(name, 'bool')
@@ -547,3 +556,21 @@ class Entity(BaseEntity, _EntitySpecials):
     def call_input(self, name, *args, **kwargs):
         """Call the InputFunction instance for the given name."""
         self.get_input(name)(*args, **kwargs)
+
+    def lookup_attachment(self, name):
+        """Return the attachment index matching the given name."""
+        # Get the ModelHeader instance of the entity
+        model_header = self.model_header
+
+        # Loop through all attachments
+        for attachment in map(model_header.get_attachment,
+            range(model_header.attachments_count)):
+
+            # Are the names matching?
+            if name == attachment.name:
+
+                # Return the current index
+                return index
+
+        # No attachment found
+        return INVALID_ATTACHMENT_INDEX
