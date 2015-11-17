@@ -45,7 +45,29 @@ class EventAction(IntEnum):
 
 
 class PreEvent(AutoUnload):
-    """Pre-Event decorator class."""
+    """Pre-Event decorator class.
+
+    .. code-block:: python
+
+        from events.hooks import PreEvent
+
+
+        @PreEvent('player_death')
+        def player_died(game_event):
+            ...
+
+
+        @PreEvent('round_start', 'round_freeze_end')
+        def some_function(game_event):
+            ...
+
+    .. seealso:: :doc:`../events` for a list of supported events per game.
+
+    .. seealso:: :class:`events.GameEvent` for
+        game_event argument functionality.
+
+    .. seealso:: :class:`EventAction` for values to return in the decorator.
+    """
 
     def __init__(self, *event_names):
         """Store the event names."""
@@ -87,7 +109,24 @@ class _PreEventDictionary(dict):
         return value
 
     def register_for_event(self, event_name, callback):
-        """Register the callback for the given event."""
+        """Register the callback for the given event.
+
+        .. code-block:: python
+
+            from events.hooks import pre_event_manager
+
+            def function(game_event):
+                ...
+
+            pre_event_manager.register_for_event('player_death', function)
+
+        .. seealso:: :doc:`../events` for a list of supported events per game.
+
+        .. seealso:: :class:`events.GameEvent` for
+            game_event argument functionality.
+
+        .. seealso:: :class:`EventAction` for values to return in the callback.
+        """
         # Is the callback callable?
         if not callable(callback):
 
@@ -99,7 +138,17 @@ class _PreEventDictionary(dict):
         self[event_name].append(callback)
 
     def unregister_for_event(self, event_name, callback):
-        """Unregister the callback for the given event."""
+        """Unregister the callback for the given event.
+
+        .. code-block:: python
+
+            from events.hooks import pre_event_manager
+
+            def function(game_event):
+                ...
+
+            pre_event_manager.unregister_for_event('player_death', function)
+        """
         # Is the event registered?
         if event_name not in self:
 

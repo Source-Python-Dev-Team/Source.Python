@@ -41,7 +41,27 @@ events_logger = _sp_logger.events
 # >> CLASSES
 # =============================================================================
 class Event(AutoUnload):
-    """Event decorator class."""
+    """Event decorator class.
+
+    .. code-block:: python
+
+        from events import Event
+
+
+        @Event('player_death')
+        def player_died(game_event):
+            ...
+
+
+        @Event('round_start', 'round_freeze_end')
+        def some_function(game_event):
+            ...
+
+    .. seealso:: :doc:`../events` for a list of supported events per game.
+
+    .. seealso:: :class:`GameEvent` for
+        game_event argument functionality.
+    """
 
     def __init__(self, *event_names):
         """Store the event names."""
