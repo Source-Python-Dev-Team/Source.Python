@@ -14,13 +14,15 @@ from _commands._say import register_say_filter
 from _commands._say import unregister_say_filter
 from commands.say.command import SayCommand
 from commands.say.filter import SayFilter
+from commands.say.manager import _SayCommandManager
 from commands.say.manager import say_command_manager
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('SayCommand',
+__all__ = ('_SayCommandManager',
+           'SayCommand',
            'SayCommandDispatcher',
            'SayCommandGenerator',
            'SayFilter',
