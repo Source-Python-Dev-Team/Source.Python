@@ -10,7 +10,13 @@
 import memory
 #   Engines
 from engines.precache import Model
+from engines.trace import engine_trace
+from engines.trace import ContentMasks
+from engines.trace import GameTrace
+from engines.trace import Ray
+from engines.trace import TraceFilterSimple
 #   Entities
+from entities import BaseEntityGenerator
 from entities.classes import server_classes
 from entities.constants import RenderMode
 from entities.factories import factory_dictionary
@@ -573,3 +579,19 @@ class Entity(BaseEntity, _EntitySpecials):
 
         # No attachment found
         return INVALID_ATTACHMENT_INDEX
+
+    def is_in_solid(self, mask=ContentMasks.ALL,
+        generator=BaseEntityGenerator):
+        """Return whether or not the entity is in solid."""
+        # Get a Ray object of the entity physic box
+        ray = Ray(self.origin, self.origin, self.mins, self.maxs)
+            
+        # Get a new GameTrace instance
+        trace = GameTrace()
+        
+        # Do the trace
+        engine_trace.trace_ray(ray, mask, TraceFilterSimple(
+            [entity.index for entity in generator()]), trace)
+
+        # Return whether or not the trace did hit
+        return trace.did_hit()
