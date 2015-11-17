@@ -1,6 +1,8 @@
 paths module
 =============
 
+.. automodule:: paths
+
 .. data:: GAME_PATH
 
     ../<game>
