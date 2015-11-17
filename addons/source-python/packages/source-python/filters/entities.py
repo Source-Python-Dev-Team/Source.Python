@@ -7,6 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
+from entities import BaseEntityGenerator
 from entities import EntityGenerator
 from entities.entity import Entity
 from entities.helpers import index_from_edict
@@ -17,15 +18,16 @@ from filters.iterator import _IterObject
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('EntityIter',
+__all__ = ('BaseEntityIter',
+           'EntityIter',
            )
 
 
 # =============================================================================
 # >> ENTITY ITERATION CLASSES
 # =============================================================================
-class EntityIter(_IterObject):
-    """Entity iterate class."""
+class BaseEntityIter(_IterObject):
+    """BaseEntity iterate class."""
 
     def __init__(self, class_names=None, exact_match=True):
         """Store the base attributes for the generator."""
@@ -41,12 +43,8 @@ class EntityIter(_IterObject):
 
     @staticmethod
     def iterator():
-        """Iterate over all Entity objects."""
-        # Loop through all entities on the server
-        for edict in EntityGenerator():
-
-            # Yield the Entity instance for the current edict
-            yield Entity(index_from_edict(edict))
+        """Iterate over all :class:`entities.entity.BaseEntity` objects."""
+        return BaseEntityGenerator()
 
     def _is_valid(self, entity):
         """Verify that the edict needs yielded."""
@@ -69,3 +67,13 @@ class EntityIter(_IterObject):
 
         # If none of the class names returned True, return False
         return False
+
+
+class EntityIter(BaseEntityIter):
+    """Entity iterate class."""
+
+    @staticmethod
+    def iterator():
+        """Iterate over all :class:`entities.entity.Entity` objects."""
+        for edict in EntityGenerator():
+            yield Entity(index_from_edict(edict))

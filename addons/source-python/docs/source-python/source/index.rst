@@ -11,42 +11,52 @@ have any questions, please search for an answer on our
 answer to your question, please post a question of your own in the appropriate
 forum.
 
-
-General information
--------------------
-
 Source.Python is currently embedding Python 3.4.1 and will be upgraded from
 time to time.
 
 
-Contents
---------
+General
+-------
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
 
-   getting-started
    installation
    updating
    sp-commands
+   known-issues
+   credits
+   
+
+Developing with Source.Python
+-----------------------------
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+
+   getting-started
    events
+   module_tutorials
+
+
+Contributing to Source.Python
+-----------------------------
+
+.. toctree::
+   :maxdepth: 2
+   :glob:
+   
    contributing
    coding-conventions
    reporting-a-bug
-   known-issues
-   credits
    todos
-
-
-Module reference
-----------------
-
-* :ref:`modindex`
 
 
 Indices and tables
 ------------------
 
+* :ref:`modindex`
 * :ref:`genindex`
 * :ref:`search`
 

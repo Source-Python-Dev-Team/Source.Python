@@ -8,12 +8,9 @@ Submodules
    :titlesonly:
 
    filters.entities
-   filters.errors
    filters.iterator
-   filters.manager
    filters.players
    filters.recipients
-   filters.registry
    filters.weapons
 
 Module contents

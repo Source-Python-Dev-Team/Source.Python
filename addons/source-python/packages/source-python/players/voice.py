@@ -13,7 +13,7 @@ import collections
 #    Engines
 from engines.server import global_vars
 #    Listeners
-from listeners import ClientDisconnect
+from listeners import OnClientDisconnect
 #    Memory
 import memory
 
@@ -31,7 +31,8 @@ from _players._voice import voice_server
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('mute_manager',
+__all__ = ('_MuteManager',
+           'mute_manager',
            'voice_server',
            )
 
@@ -42,7 +43,8 @@ __all__ = ('mute_manager',
 class _MuteManager(collections.defaultdict):
     """A singleton that manages muting players."""
 
-    def _get_receivers(self, receivers):
+    @staticmethod
+    def _get_receivers(receivers):
         """Return a tuple containing player indexes.
 
         If <receivers> is None, a tuple is returned that contains all valid
@@ -102,6 +104,7 @@ class _MuteManager(collections.defaultdict):
             lambda receiver: sender in self[receiver],
             self._get_receivers(receivers)))
 
+#: The singleton object of the :class:`_MuteManager` class
 mute_manager = _MuteManager(set)
 
 
@@ -119,7 +122,7 @@ def _pre_set_client_listening(args):
         args[3] = False
 
 
-@ClientDisconnect
+@OnClientDisconnect
 def _on_client_disconnect(index):
     """Called when a player left the server."""
     # Unmute the player, so the next player who gets this index won't be muted

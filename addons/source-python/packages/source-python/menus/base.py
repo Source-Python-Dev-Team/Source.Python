@@ -17,7 +17,7 @@ from core import AutoUnload
 #   Filters
 from filters.recipients import RecipientFilter
 #   Listeners
-from listeners import ClientDisconnect
+from listeners import OnClientDisconnect
 #   Players
 from players.helpers import get_client_language
 #   Translations
@@ -329,7 +329,7 @@ def _translate_text(text, player_index):
 # =============================================================================
 # >> LISTENERS
 # =============================================================================
-@ClientDisconnect
+@OnClientDisconnect
 def on_player_disconnect(player_index):
     """Called whenever a player left the server."""
     for instance in _BaseMenu._instances.values():

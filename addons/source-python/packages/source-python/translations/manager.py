@@ -17,7 +17,8 @@ from paths import SP_DATA_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('language_manager',
+__all__ = ('_LanguageManager',
+           'language_manager',
            )
 
 
@@ -62,5 +63,5 @@ class _LanguageManager(ConfigObj):
         # If the value is not found, return None
         return None
 
-# Get the _LanguageManager instance for the server's languages file
+#: The singleton object of the :class:`_LanguageManager` class
 language_manager = _LanguageManager(SP_DATA_PATH.joinpath('languages.ini'))

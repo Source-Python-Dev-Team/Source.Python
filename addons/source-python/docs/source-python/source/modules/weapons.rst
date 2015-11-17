@@ -11,7 +11,6 @@ Submodules
    weapons.default
    weapons.dictionary
    weapons.entity
-   weapons.errors
    weapons.instance
    weapons.manager
    weapons.scripts

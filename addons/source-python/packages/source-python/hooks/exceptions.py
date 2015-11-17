@@ -26,7 +26,8 @@ from paths import GAME_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('ExceptHook',
+__all__ = ('_ExceptHooks',
+           'ExceptHook',
            'except_hooks',
            )
 
@@ -105,7 +106,7 @@ class _ExceptHooks(_HookBase):
         # Print a blank line to separate the console
         hooks_exceptions_logger.log_exception(message + '\n\n')
 
-# Get the _ExceptHooks instance
+#: The singleton object of the :class:`_ExceptHooks` class
 except_hooks = _ExceptHooks()
 
 # Set sys.excepthook to the print_exception method

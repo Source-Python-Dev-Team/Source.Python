@@ -155,6 +155,40 @@ class Entity(BaseEntity, _EntitySpecials):
         """Create a new entity with the given classname."""
         return cls(create_entity(classname))
 
+    @staticmethod
+    def find(classname):
+        """Try to find an entity with the given classname.
+
+        If not entity has been found, None will be returned.
+
+        :param str classname: The classname of the entity.
+        :return: Return the found entity.
+        :rtype: Entity
+        """
+        # Import this here to fix a circular import
+        from filters.entities import EntityIter
+
+        for entity in EntityIter(classname):
+            return entity
+
+        return None
+
+    @classmethod
+    def find_or_create(cls, classname):
+        """Try to find an entity with the given classname.
+
+        If no entity has been found, it will be created.
+
+        :param str classname: The classname of the entity.
+        :return: Return the found or created entity.
+        :rtype: Entity
+        """
+        entity = cls.find(classname)
+        if entity is None:
+            entity = cls.create(classname)
+
+        return entity
+
     def spawn(self):
         """Spawn the entity."""
         spawn_entity(self.index)

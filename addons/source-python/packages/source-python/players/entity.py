@@ -284,7 +284,7 @@ class Player(Entity, _GameWeapons):
         # Return a Player instance of the player or None if not a player
         return (
             Player(entity.index) if entity is not None and
-            entity.classname == 'player' else None)
+            entity.is_player() else None)
 
     def set_view_player(self, player):
         """Force the player to look at the other player's eye location.
@@ -294,15 +294,6 @@ class Player(Entity, _GameWeapons):
         self.set_view_coordinates(player.get_eye_location())
 
     view_player = property(get_view_player, set_view_player)
-
-    @property
-    def view_offset(self):
-        """Return the player's view offset.
-
-        :rtype: Vector
-        """
-        return Vector(
-            self.view_offset_x, self.view_offset_y, self.view_offset_z)
 
     def get_eye_location(self):
         """Return the player's eye location.
@@ -335,9 +326,9 @@ class Player(Entity, _GameWeapons):
 
         :rtype: QAngle
         """
-        eye_angle_y = self.eye_angle_y
+        eye_angle_y = self.eye_angle.y
         eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
-        return QAngle(self.eye_angle_x, eye_angle_y, self.rotation.z)
+        return QAngle(self.eye_angle.x, eye_angle_y, self.rotation.z)
 
     def set_view_angle(self, angle):
         """Set the player's view angle."""

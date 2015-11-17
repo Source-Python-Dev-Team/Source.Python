@@ -106,7 +106,7 @@ class _EntityHook(AutoUnload):
         self.callback = callback
 
         # Try initializing the hook...
-        for entity in EntityIter(return_types='entity'):
+        for entity in EntityIter():
             if self.initialize(entity):
                 # Yay! The entity was the one we were looking for
                 return self

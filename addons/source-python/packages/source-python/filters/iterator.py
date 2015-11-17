@@ -17,6 +17,11 @@ class _IterObjectMeta(type):
         # Create the _filters dictionary
         cls._filters = dict()
 
+        # Create the filters property
+        cls.__class__.filters = property(
+            lambda cls: cls._filters,
+            doc='Return the class filters dictionary.')
+
         # Return the class
         return cls
 
@@ -117,3 +122,6 @@ class _IterObject(metaclass=_IterObjectMeta):
             raise NameError(
                 '{0} cannot unregister filter "{1}".  Filter is '
                 'not registered.'.format(cls.__name__, filter_name))
+
+        # Remove the filter from the dictionary
+        del cls._filters[filter_name]
