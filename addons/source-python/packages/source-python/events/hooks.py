@@ -26,9 +26,9 @@ from memory.hooks import PreHook
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_PreEventDictionary',
-           'EventAction',
+__all__ = ('EventAction',
            'PreEvent',
+           '_PreEventDictionary',
            'pre_event_manager',
            )
 

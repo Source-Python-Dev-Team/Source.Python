@@ -18,10 +18,10 @@ from commands.server.manager import server_command_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_ServerCommandManager',
-           'ServerCommand',
+__all__ = ('ServerCommand',
            'ServerCommandDispatcher',
            'ServerCommandGenerator',
+           '_ServerCommandManager',
            'get_server_command',
            'server_command_manager',
            )

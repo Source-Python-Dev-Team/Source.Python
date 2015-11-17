@@ -21,11 +21,11 @@ from commands.client.manager import client_command_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_ClientCommandManager',
-           'ClientCommand',
+__all__ = ('ClientCommand',
            'ClientCommandDispatcher',
            'ClientCommandFilter',
            'ClientCommandGenerator',
+           '_ClientCommandManager',
            'client_command_manager',
            'get_client_command',
            'register_client_command_filter',

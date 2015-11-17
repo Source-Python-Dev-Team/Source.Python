@@ -25,8 +25,8 @@ from paths import GAME_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_WarningHooks',
-           'WarningHook',
+__all__ = ('WarningHook',
+           '_WarningHooks',
            'warning_hooks',
            )
 

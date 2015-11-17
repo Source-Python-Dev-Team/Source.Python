@@ -18,10 +18,10 @@ from listeners.tick.repeat import TickRepeatStatus
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_TickDelays',
-           'Delay',
+__all__ = ('Delay',
            'TickRepeat',
            'TickRepeatStatus',
+           '_TickDelays',
            'tick_delays',
            )
 

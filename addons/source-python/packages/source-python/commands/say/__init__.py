@@ -21,11 +21,11 @@ from commands.say.manager import say_command_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_SayCommandManager',
-           'SayCommand',
+__all__ = ('SayCommand',
            'SayCommandDispatcher',
            'SayCommandGenerator',
            'SayFilter',
+           '_SayCommandManager',
            'get_say_command',
            'register_say_filter',
            'say_command_manager',
