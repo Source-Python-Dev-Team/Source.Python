@@ -31,6 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "igameevents.h"
+#include "modules/keyvalues/keyvalues.h"
 
 
 //-----------------------------------------------------------------------------
@@ -44,7 +45,7 @@
 //-----------------------------------------------------------------------------
 // IGameEvent extension class.
 //-----------------------------------------------------------------------------
-class IGameEventExt
+class IGameEventExt: public IGameEvent
 {
 public:
 	static PyObject* GetString(IGameEvent* pEvent, const char* szKey, const char* szDefault)
@@ -52,6 +53,25 @@ public:
 		const char* szValue = pEvent->GetString(szKey, szDefault);
 		return PyUnicode_DecodeUTF8(szValue, strlen(szValue), "ignore");
 	}
+
+	static KeyValues* GetVariables(IGameEvent* pEvent)
+	{
+		return ((IGameEventExt *) pEvent)->m_pVariables;
+	}
+
+	static object __getitem__(IGameEvent* pEvent, const char* item)
+	{
+		return KeyValuesExt::__getitem__(GetVariables(pEvent), item);
+	}
+
+	static void __setitem__(IGameEvent* pEvent, const char* item, object value)
+	{
+		KeyValuesExt::__setitem__(GetVariables(pEvent), item, value);
+	}
+
+public:
+	void* m_pDescriptor;
+	KeyValues* m_pVariables;
 };
 
 //-----------------------------------------------------------------------------

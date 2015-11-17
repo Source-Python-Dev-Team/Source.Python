@@ -22,13 +22,13 @@ module-rgx=[a-z_][a-z0-9_]{2,30}$
 const-rgx=(([A-Z_][A-Z0-9_]*)|([a-z_][a-z0-9_]*)|(__.*__))$
 
 # Class name regex
-class-rgx=[A-Z_][a-zA-Z0-9]+$
+class-rgx=([A-Z_][a-zA-Z0-9]+)|([A-Z][A-Z_]*)$
 
 # Function name regex
-function-rgx=[a-z_][a-z0-9_]{2,30}$
+function-rgx=[a-z_][a-z0-9_]{2,32}$
 
 # Method name regex
-method-rgx=[a-z_][a-z0-9_]{2,30}$
+method-rgx=[a-z_][a-z0-9_]{2,36}$
 
 # Attribute name regex
 attr-rgx=[a-z_][a-z0-9_]{2,30}$
@@ -46,7 +46,7 @@ class-attribute-rgx=([A-Za-z_][A-Za-z0-9_]{1,40}|(__.*__))$
 inlinevar-rgx=[A-Za-z_][A-Za-z0-9_]*$
 
 # Variable names that are always ok
-good-names=x,y,z,a,b,c,d,e,f,g,h,x1,y1,z1,x2,y2,z2,p1,p2,source-python,fget,create_global_pointers_from_file,create_function_typedefs_from_file,MuzzleFlashStyle,WeaponID,WeaponType,WeaponSlot,WeaponInfo,BaseClient
+good-names=x,y,z,a,b,c,d,e,f,g,h,x1,y1,z1,x2,y2,z2,p1,p2,source-python,fget,create_global_pointers_from_file,create_function_typedefs_from_file,MuzzleFlashStyle,WeaponID,WeaponType,WeaponSlot,WeaponInfo,BaseClient,BaseEntityOutput
 
 
 [REPORTS]

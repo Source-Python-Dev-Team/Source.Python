@@ -14,7 +14,6 @@ from translations.strings import TranslationStrings
 # >> CLASSES
 # =============================================================================
 class _SectionManager(object):
-
     """Class used to store a section instance."""
 
     def __init__(self, name, separator):

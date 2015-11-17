@@ -10,8 +10,8 @@
 from engines.server import QueryCvarStatus
 from engines.server import engine_server
 #   Listeners
-from listeners import client_disconnect_listener_manager
-from listeners import client_fully_connect_listener_manager
+from listeners import on_client_disconnect_listener_manager
+from listeners import on_client_fully_connect_listener_manager
 from listeners import on_query_cvar_value_finished_listener_manager
 
 
@@ -19,7 +19,6 @@ from listeners import on_query_cvar_value_finished_listener_manager
 # >> CLASSES
 # =============================================================================
 class _LanguageCache(dict):
-
     """Dictionary class that stores player's with their language."""
 
     @staticmethod
@@ -64,9 +63,9 @@ class _LanguageCache(dict):
 _language_cache = _LanguageCache()
 on_query_cvar_value_finished_listener_manager.register_listener(
     _language_cache.query_cvar_value_finished)
-client_fully_connect_listener_manager.register_listener(
+on_client_fully_connect_listener_manager.register_listener(
     _language_cache.client_fully_connect)
-client_disconnect_listener_manager.register_listener(
+on_client_disconnect_listener_manager.register_listener(
     _language_cache.client_disconnect)
 
 

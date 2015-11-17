@@ -14,12 +14,10 @@ from collections import deque
 from commands import CommandReturn
 from commands.client import ClientCommand
 #   Listeners
-from listeners import ClientDisconnect
+from listeners import OnClientDisconnect
 from listeners.tick.repeat import TickRepeat
 #   Menus
 from menus.base import _BaseMenu
-#   Players
-from players.helpers import index_from_playerinfo
 
 
 # =============================================================================
@@ -33,7 +31,6 @@ ESC_SELECTION_CMD = 'escselect'
 # >> CLASSES
 # =============================================================================
 class _UserQueue(deque):
-
     """Controls the user's menu queue.
 
     Handles selections and decides which menu should be displayed.
@@ -42,40 +39,61 @@ class _UserQueue(deque):
     def __init__(self, index):
         """Initialize the queue.
 
-        @param <index>:
-        A valid player index.
+        :param int index: A valid player index.
         """
-        super(_UserQueue, self).__init__()
+        super().__init__()
         self._index = index
 
     def append(self, menu):
-        """Make sure we don't add a menu twice."""
+        """Add a menu to the end of the queue.
+
+        :param _BaseMenu menu: The menu to add.
+        """
+        # Make sure we don't add a menu twice.
         if menu not in self:
-            super(_UserQueue, self).append(menu)
+            super().append(menu)
 
     def appendleft(self, menu):
-        """Make sure we don't add a menu twice."""
+        """Add a menu to the beginning of the queue.
+
+        :param _BaseMenu menu: The menu to add.
+        """
+        # Make sure we don't add a menu twice.
         if menu not in self:
-            super(_UserQueue, self).appendleft(menu)
+            super().appendleft(menu)
 
     def extend(self, menus):
-        """Make sure we don't add a menu twice."""
+        """Add all menus in the given iterable to the end of the queue.
+
+        :param iterable menus: The menus to add.
+        """
+        # Make sure we don't add a menu twice.
         for menu in menus:
             self.append(menu)
 
     def extendleft(self, menus):
-        """Make sure we don't add a menu twice."""
+        """Add all menus in the given iterable to the beginning of the queue.
+
+        :param iterable menus: The menus to add.
+        """
+        # Make sure we don't add a menu twice.
         for menu in menus:
             self.appendleft(menu)
 
     def __iadd__(self, menus):
-        """Make sure we don't add a menu twice."""
+        """See :meth:`extend`."""
+        # Make sure we don't add a menu twice.
         self.extend(menus)
 
     def __setitem__(self, index, menu):
-        """Make sure we don't add a menu twice."""
-        if self[index] == menu or menu not in self:
-            super(_UserQueue, self).__setitem__(index, menu)
+        """Replace a menu at the given index.
+
+        :param int index: The index in the queue.
+        :param _BaseMenu menu: The menu to set.
+        """
+        # Make sure we don't add a menu twice.
+        if menu not in self:
+            super().__setitem__(index, menu)
 
     def _refresh(self):
         """Re-send the current active menu.
@@ -92,9 +110,11 @@ class _UserQueue(deque):
         Removes the current active menu from the queue and forwards the
         selection to that menu.
 
-        If the selection callback returns a menu, it will be append to the
+        If the selection callback returns a menu, it will be appended to the
         left side of the queue. After that the queue will be refreshed, so the
         next menu will be displayed.
+
+        :param int choice: The choice that was made.
         """
         # Remove the current active menu
         try:
@@ -131,37 +151,37 @@ class _UserQueue(deque):
 
 
 class _ESCUserQueue(_UserQueue):
-
     """Represents a queue for ESC menus."""
 
     def __init__(self, index):
-        """Initialize the ESC queue."""
-        super(_ESCUserQueue, self).__init__(index)
+        """Initialize the ESC queue.
+
+        :param int index: See :meth:`_UserQueue.__init__`.
+        """
+        super().__init__(index)
 
         # TODO: Set this to the highest possible value.
         self.priority = 0
 
 
 class _QueueHolder(dict):
-
     """Creates a _UserQueue object for every missing key."""
 
     def __init__(self, cls, repeat):
         """Initialize the queue holder.
 
-        @param <cls>:
-        This is the queue type this class will hold.
-        @param <repeat>:
-        Global refresh repeat instance.
+        :param _UserQueue cls: The queue to hold.
+        :param repeat: Global refresh repeat object.
+        :type repeat: :class:`listeners.tick.TickRepeat`
         """
-        super(_QueueHolder, self).__init__()
+        super().__init__()
         self._cls = cls
         self._repeat = repeat
 
     def __missing__(self, index):
         """Create a new _UserQueue object for the given index.
 
-        Saves the result in this dict.
+        :param int index: A player index.
         """
         # Is the dictionary currently empty?
         if not self:
@@ -174,7 +194,7 @@ class _QueueHolder(dict):
 
     def pop(self, key, default=None):
         """Remove and return the given key's value."""
-        return_value = super(_QueueHolder, self).pop(key, default)
+        return_value = super().pop(key, default)
 
         # Is the dictionary currently empty?
         if not self:
@@ -189,17 +209,12 @@ class _QueueHolder(dict):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def _validate_selection(player_info, command, valid_choices):
+def _validate_selection(command, index, valid_choices):
     """Validate a selection command.
 
-    @param <player_infor>:
-    A PlayerInfo instance.
-
-    @param <command>:
-    A Command instance.
-
-    @param <valid_choices>:
-    A list of integers that defines all valid choices
+    :param Command index: The command from client command callback.
+    :param int index: The player index that issued the command.
+    :param iterable valid_choices: All valid choices.
     """
     try:
         choice = int(command.get_arg(1))
@@ -208,7 +223,7 @@ def _validate_selection(player_info, command, valid_choices):
         return (None, None)
 
     if choice in valid_choices:
-        return (index_from_playerinfo(player_info), choice)
+        return (index, choice)
 
     return (None, None)
 
@@ -242,21 +257,21 @@ _esc_queues = _QueueHolder(_ESCUserQueue, _esc_refresh)
 # >> CLIENT COMMANDS
 # =============================================================================
 @ClientCommand('menuselect')
-def _menuselect_callback(player_info, command):
+def _menuselect_callback(command, index):
     """Forward the selection to the proper user queue."""
     from menus.radio import VALID_CHOICES
 
-    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
+    index, choice = _validate_selection(command, index, VALID_CHOICES)
     if index is not None:
         _radio_queues[index]._select(choice)
 
 
 @ClientCommand(ESC_SELECTION_CMD)
-def _escselect_callback(player_info, command):
+def _escselect_callback(command, index):
     """Forward the selection to the proper user queue."""
     from menus.esc import VALID_CHOICES
 
-    index, choice = _validate_selection(player_info, command, VALID_CHOICES)
+    index, choice = _validate_selection(command, index, VALID_CHOICES)
     if index is not None:
         _esc_queues[index]._select(choice)
 
@@ -266,7 +281,7 @@ def _escselect_callback(player_info, command):
 # =============================================================================
 # >> LISTENERS
 # =============================================================================
-@ClientDisconnect
+@OnClientDisconnect
 def on_player_disconnect(player_index):
     """Remove the user queue for the disconnected player."""
     _radio_queues.pop(player_index, 0)

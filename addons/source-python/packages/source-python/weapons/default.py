@@ -11,10 +11,16 @@ from core import GAME_NAME
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = ('NoWeaponManager',
+           )
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class NoWeaponManager(dict):
-
     """Default class to use if no game specific weapon ini file is found."""
 
     def __getattribute__(self, attr):

@@ -61,13 +61,12 @@ _clean_formatter = Formatter('%(message)s')
 # >> CLASSES
 # =============================================================================
 class _LogInstance(dict):
-
     """Base logging class used to create child logging instances."""
 
     def __init__(self, parent=None, name=None):
         """Store the parent and gets a child of the parent."""
         # Initialize the dictionary
-        super(_LogInstance, self).__init__()
+        super().__init__()
 
         # Store the parent instance
         self.parent = parent
@@ -253,7 +252,6 @@ class _LogInstance(dict):
 
 
 class LogManager(_LogInstance):
-
     """Main log class used as a root to create children instances."""
 
     def __init__(
@@ -261,7 +259,7 @@ class LogManager(_LogInstance):
             log_format=None, date_format=None):
         """Store the base values and creates the logger."""
         # Initialize the dictionary
-        super(LogManager, self).__init__()
+        super().__init__()
 
         # Store the base formatter
         self._formatter = Formatter(log_format, date_format)
@@ -320,7 +318,7 @@ _areas = ConVar(
 # Get the Source.Python main LogManager instance
 _sp_logger = LogManager(
     'sp', _level, _areas,
-    'source-python.{0}'.format(date.today().strftime('%m-%d-%Y')),
+    'source-python.{0}'.format(date.today().strftime('%Y-%m-%d')),
     '%(asctime)s - %(name)s\t-\t%(levelname)s\n\t%(message)s',
     '%m-%d-%Y %H:%M:%S')
 

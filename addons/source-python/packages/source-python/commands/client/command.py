@@ -15,7 +15,6 @@ from commands.client.manager import client_command_manager
 # >> CLASSES
 # =============================================================================
 class ClientCommand(_BaseCommand):
-
     """Decorator class used to register a client command."""
 
     # Store the class used to (un)register client commands

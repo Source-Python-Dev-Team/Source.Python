@@ -20,7 +20,7 @@ from listeners import OnEntityCreated
 from entities.entity import Entity
 #   Players
 from players.constants import INVALID_PLAYER_USERID
-from players.entity import PlayerEntity
+from players.entity import Player
 from players.helpers import userid_from_index
 
 
@@ -37,7 +37,6 @@ __all__ = ('EntityCondition',
 # >> CLASSES
 # =============================================================================
 class EntityCondition(object):
-
     """Store some default entity conditions."""
 
     @staticmethod
@@ -55,14 +54,14 @@ class EntityCondition(object):
         """Return True if the entity is a human player."""
         return (
             cls.is_player(entity) and
-            PlayerEntity(entity.index).steamid != 'BOT')
+            Player(entity.index).steamid != 'BOT')
 
     @classmethod
     def is_bot_player(cls, entity):
         """Return True if the entity is a bot."""
         return (
             cls.is_player(entity) and
-            PlayerEntity(entity.index).steamid == 'BOT')
+            Player(entity.index).steamid == 'BOT')
 
     @staticmethod
     def equals_entity_classname(*classnames):
@@ -84,7 +83,6 @@ class EntityCondition(object):
 
 
 class _EntityHook(AutoUnload):
-
     """Create entity pre and post hooks that auto unload."""
 
     def __init__(self, test_function, function_name):
@@ -108,7 +106,7 @@ class _EntityHook(AutoUnload):
         self.callback = callback
 
         # Try initializing the hook...
-        for entity in EntityIter(return_types='entity'):
+        for entity in EntityIter():
             if self.initialize(entity):
                 # Yay! The entity was the one we were looking for
                 return self
@@ -147,21 +145,18 @@ class _EntityHook(AutoUnload):
 
 
 class EntityPreHook(_EntityHook):
-
     """Decorator class used to create entity pre hooks that auto unload."""
 
     hook_type = HookType.PRE
 
 
 class EntityPostHook(_EntityHook):
-
     """Decorator class used to create entity post hooks that auto unload."""
 
     hook_type = HookType.POST
 
 
 class _WaitingEntityHooks(list):
-
     """A dictionary to store hooks waiting for intialization."""
 
     def initialize(self, index):

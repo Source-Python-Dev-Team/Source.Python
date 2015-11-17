@@ -16,16 +16,20 @@ from path import Path
 __all__ = ('BASE_PATH',
            'CFG_PATH',
            'CUSTOM_DATA_PATH',
+           'CUSTOM_PACKAGES_DOCS_PATH',
            'CUSTOM_PACKAGES_PATH',
+           'DOCS_PATH',
            'EVENT_PATH',
            'GAME_PATH',
            'LOG_PATH',
            'PACKAGES_PATH',
            'PLUGIN_DATA_PATH',
+           'PLUGIN_DOCS_PATH',
            'PLUGIN_PATH',
            'SITE_PACKAGES_PATH',
            'SOUND_PATH',
            'SP_DATA_PATH',
+           'SP_DOCS_PATH',
            'SP_PACKAGES_PATH',
            'TRANSLATION_PATH',
            )
@@ -34,51 +38,62 @@ __all__ = ('BASE_PATH',
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-# Get the game's base path
+#: ../<game>
 GAME_PATH = Path(Path(__file__).rsplit('addons', 1)[0])
 
-# Get the base path to ../addons/source-python
-BASE_PATH = GAME_PATH.joinpath('addons', 'source-python')
+#: ../addons/source-python
+BASE_PATH = GAME_PATH / 'addons' / 'source-python'
 
-# Get the plugin's base path
-PLUGIN_PATH = BASE_PATH.joinpath('plugins')
+#: ../addons/source-python/docs
+DOCS_PATH = BASE_PATH / 'docs'
 
-# Get the packages path
-PACKAGES_PATH = BASE_PATH.joinpath('packages')
+#: ../addons/source-python/docs/source-python
+SP_DOCS_PATH = DOCS_PATH / 'source-python'
 
-# Get the SP base package path
-SP_PACKAGES_PATH = PACKAGES_PATH.joinpath('source-python')
+#: ../addons/source-python/docs/plugins
+PLUGIN_DOCS_PATH = DOCS_PATH / 'plugins'
 
-# Get the Custom packages path
-CUSTOM_PACKAGES_PATH = PACKAGES_PATH.joinpath('custom')
+#: ../addons/source-python/docs/custom
+CUSTOM_PACKAGES_DOCS_PATH = DOCS_PATH / 'custom'
 
-# Get the site-packages path
-SITE_PACKAGES_PATH = PACKAGES_PATH.joinpath('site-packages')
+#: ../addons/source-python/plugins
+PLUGIN_PATH = BASE_PATH / 'plugins'
 
-# Get the cfg's base path
-CFG_PATH = GAME_PATH.joinpath('cfg', 'source-python')
+#: ../addons/source-python/packages
+PACKAGES_PATH = BASE_PATH / 'packages'
 
-# Get the log's base path
-LOG_PATH = GAME_PATH.joinpath('logs', 'source-python')
+#: ../addons/source-python/packages/source-python
+SP_PACKAGES_PATH = PACKAGES_PATH / 'source-python'
 
-# Get the translation's base path
-TRANSLATION_PATH = GAME_PATH.joinpath(
-    'resource', 'source-python', 'translations')
+#: ../addons/source-python/packages/custom
+CUSTOM_PACKAGES_PATH = PACKAGES_PATH / 'custom'
 
-# Get the custom event's base path
-EVENT_PATH = GAME_PATH.joinpath('resource', 'source-python', 'events')
+#: ../addons/source-python/packages/site-packages
+SITE_PACKAGES_PATH = PACKAGES_PATH / 'site-packages'
 
-# Get the sound's base path
-SOUND_PATH = GAME_PATH.joinpath('sound', 'source-python')
+#: ../addons/source-python/cfg/source-python
+CFG_PATH = GAME_PATH / 'cfg' / 'source-python'
 
-# Get the base path to the data
-DATA_PATH = BASE_PATH.joinpath('data')
+#: ../addons/source-python/logs/source-python
+LOG_PATH = GAME_PATH / 'logs' / 'source-python'
 
-# Get the SP base data path
-SP_DATA_PATH = DATA_PATH.joinpath('source-python')
+#: ../addons/source-python/resource/source-python/translation
+TRANSLATION_PATH = GAME_PATH / 'resource' / 'source-python' / 'translations'
 
-# Get the Custom data base path
-CUSTOM_DATA_PATH = DATA_PATH.joinpath('custom')
+#: ../addons/source-python/resource/source-python/events
+EVENT_PATH = GAME_PATH / 'resource' / 'source-python' / 'events'
 
-# Get the plugin specific data path
-PLUGIN_DATA_PATH = DATA_PATH.joinpath('plugins')
+#: ../addons/source-python/sound/source-python
+SOUND_PATH = GAME_PATH / 'sound' / 'source-python'
+
+#: ../addons/source-python/data
+DATA_PATH = BASE_PATH / 'data'
+
+#: ../addons/source-python/data/source-python
+SP_DATA_PATH = DATA_PATH / 'source-python'
+
+#: ../addons/source-python/data/custom
+CUSTOM_DATA_PATH = DATA_PATH / 'custom'
+
+#: ../addons/source-python/data/plugins
+PLUGIN_DATA_PATH = DATA_PATH / 'plugins'

@@ -67,9 +67,9 @@ void export_mrecipientfilter(scope _recipients)
 			"Whether the message has been initialised?"
 		)
 
-		.def("get_recipient_count",
+		.def("__len__",
 			&IRecipientFilter::GetRecipientCount,
-			"Obtain the amount of clients in this filter"
+			"Return the recipient count."
 		)
 
 		.def("get_recipient_index",
@@ -90,7 +90,7 @@ void export_mrecipientfilter(scope _recipients)
 		.def("add_recipient",
 			&MRecipientFilter::AddRecipient,
 			"Adds the index of the player to the filter",
-			args("iPlayer")
+			args("index")
 		)
 
 		.def("remove_all_players",
@@ -101,14 +101,15 @@ void export_mrecipientfilter(scope _recipients)
 		.def("remove_recipient",
 			&MRecipientFilter::RemoveRecipient,
 			"Removes the index of the player from the filter",
-			args("iPlayer")
+			args("index")
 		)
 
-		.def("has_recipient",
+		.def("__contains__",
 			&MRecipientFilter::HasRecipient,
-			"Returns true if the given index is in the recipient, false otherwise.",
-			args("iPlayer")
+			"Return True if the given index is in the recipient filter.",
+			args("index")
 		)
+			
 
 		ADD_MEM_TOOLS(MRecipientFilter)
 	;

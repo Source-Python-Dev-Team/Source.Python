@@ -17,15 +17,14 @@ from weapons.manager import weapon_manager
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Add all the global variables to __all__
-__all__ = ('WeaponEntity',
+__all__ = ('Weapon',
            )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class WeaponEntity(Entity):
-
+class Weapon(Entity):
     """Allows easy usage of the weapon's attributes."""
 
     @property

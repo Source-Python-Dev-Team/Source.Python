@@ -8,6 +8,8 @@
 # Source.Python Imports
 #   Auth
 from auth.manager import auth_manager
+#   Players
+from players.helpers import playerinfo_from_index
 #   Hooks
 from hooks.exceptions import except_hooks
 
@@ -16,7 +18,6 @@ from hooks.exceptions import except_hooks
 # >> CLASSES
 # =============================================================================
 class _AuthCallback(object):
-
     """Command Authorization callback hook class."""
 
     def __init__(
@@ -38,7 +39,8 @@ class _AuthCallback(object):
 
             # Is the player authorized?
             if not auth_manager.is_player_authorized(
-                    args[0], self.level, self.permission, self.flag):
+                playerinfo_from_index(args[1]), self.level, self.permission,
+                    self.flag):
 
                 # Is there fail callback?
                 if self.fail_callback is not None:

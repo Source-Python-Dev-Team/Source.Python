@@ -23,7 +23,8 @@ from _events import game_event_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('event_manager',
+__all__ = ('_EventManager',
+           'event_manager',
            'game_event_manager',
            )
 
@@ -39,7 +40,6 @@ events_manager_logger = _sp_logger.events.manager
 # >> CLASSES
 # =============================================================================
 class _EventManager(dict):
-
     """Stores Event names with all registered callbacks."""
 
     def __missing__(self, event_name):
@@ -86,5 +86,5 @@ class _EventManager(dict):
             # Remove the event from the dictionary
             del self[event_name]
 
-# Get the _EventManager instance
+#: The singleton object of the :class:`_EventManager` class
 event_manager = _EventManager()

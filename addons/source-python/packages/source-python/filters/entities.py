@@ -7,59 +7,29 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
+from entities import BaseEntityGenerator
 from entities import EntityGenerator
 from entities.entity import Entity
-from entities.helpers import basehandle_from_edict
 from entities.helpers import index_from_edict
-from entities.helpers import inthandle_from_edict
-from entities.helpers import pointer_from_edict
 #   Filters
-from filters.registry import _ReturnTypeRegistry
 from filters.iterator import _IterObject
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('EntityIter',
+__all__ = ('BaseEntityIter',
+           'EntityIter',
            )
 
 
 # =============================================================================
-# >> MAIN ENTITY ITER CLASSES
+# >> ENTITY ITERATION CLASSES
 # =============================================================================
-class _EntityIterManager(object):
+class BaseEntityIter(_IterObject):
+    """BaseEntity iterate class."""
 
-    """Filter management class specifically for entity iterating."""
-
-    def __init__(self):
-        """Store the return type registry instance."""
-        self._return_types = _ReturnTypeRegistry(self.__class__.__name__)
-
-    def register_return_type(self, return_type, function):
-        """Register the given return type to the class."""
-        self._return_types.register(return_type, function)
-
-    def unregister_return_type(self, return_type):
-        """Unregister the given return type from the class."""
-        self._return_types.unregister(return_type)
-
-# Get the _EntityIterManager instance
-_entity_iter_manager = _EntityIterManager()
-
-
-class EntityIter(_IterObject):
-
-    """Entity iterate class."""
-
-    # Store the manager for the entity iterator
-    manager = _entity_iter_manager
-
-    # Store the base iterator
-    iterator = staticmethod(EntityGenerator)
-
-    def __init__(
-            self, class_names=None, exact_match=True, return_types='index'):
+    def __init__(self, class_names=None, exact_match=True):
         """Store the base attributes for the generator."""
         # Was only one class name given?
         if isinstance(class_names, str):
@@ -70,9 +40,13 @@ class EntityIter(_IterObject):
         # Store the base attributes given
         self.class_names = list() if class_names is None else class_names
         self.exact_match = exact_match
-        self.return_types = return_types
 
-    def _is_valid(self, edict):
+    @staticmethod
+    def iterator():
+        """Iterate over all :class:`entities.entity.BaseEntity` objects."""
+        return BaseEntityGenerator()
+
+    def _is_valid(self, entity):
         """Verify that the edict needs yielded."""
         # Are there any class names to be checked?
         if not self.class_names:
@@ -80,36 +54,26 @@ class EntityIter(_IterObject):
             # Return True for all entities
             return True
 
-        # Get the edict's class name
-        class_name = edict.get_class_name()
-
         # Loop through all class names for the generator
         for check_name in self.class_names:
 
             # Does the current class name match part of the edict's class name?
-            if not self.exact_match and check_name in class_name:
+            if not self.exact_match and check_name in entity.classname:
                 return True
 
             # Does the current class name match exactly the edict's class name?
-            elif self.exact_match and check_name == class_name:
+            elif self.exact_match and check_name == entity.classname:
                 return True
 
         # If none of the class names returned True, return False
         return False
 
 
-# =============================================================================
-# >> RETURN TYPES
-# =============================================================================
-# Register the return type functions
-_entity_iter_manager.register_return_type('index', index_from_edict)
-_entity_iter_manager.register_return_type('edict', lambda edict: edict)
-_entity_iter_manager.register_return_type(
-    'basehandle', basehandle_from_edict)
-_entity_iter_manager.register_return_type(
-    'inthandle', inthandle_from_edict)
-_entity_iter_manager.register_return_type('pointer', pointer_from_edict)
-_entity_iter_manager.register_return_type(
-    'entity', lambda edict: Entity(index_from_edict(edict)))
-_entity_iter_manager.register_return_type(
-    'classname', lambda edict: edict.get_class_name())
+class EntityIter(BaseEntityIter):
+    """Entity iterate class."""
+
+    @staticmethod
+    def iterator():
+        """Iterate over all :class:`entities.entity.Entity` objects."""
+        for edict in EntityGenerator():
+            yield Entity(index_from_edict(edict))

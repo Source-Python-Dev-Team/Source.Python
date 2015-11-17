@@ -29,6 +29,7 @@ from _net_channel import NetMessage
 __all__ = ('NetChannel',
            'NetChannelHandler',
            'NetChannelInfo',
+           'NetFlow',
            'NetMessage',
            )
 
@@ -37,7 +38,6 @@ __all__ = ('NetChannel',
 # >> CLASSES
 # =============================================================================
 class NetFlow(IntEnum):
-
     """Network Channel Enum class."""
 
     IN_OUT = FLOW_IN_OUT

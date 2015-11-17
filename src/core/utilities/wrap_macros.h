@@ -124,6 +124,14 @@ object raw_method(T method)
 	);
 
 //---------------------------------------------------------------------------------
+// Use this macro to check the return value of a get_override(...) call.
+//---------------------------------------------------------------------------------
+#define CHECK_OVERRIDE(override) \
+	if (override.is_none()) \
+		BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Method must be implemented by a subclass.")
+
+
+//---------------------------------------------------------------------------------
 // Use this macro to raise a Python exception.
 //---------------------------------------------------------------------------------
 #define BOOST_RAISE_EXCEPTION( exceptionName, exceptionString, ... ) \

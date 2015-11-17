@@ -38,13 +38,12 @@ events_listener_logger = _sp_logger.events.listener
 # >> CLASSES
 # =============================================================================
 class _EventListener(list):
-
     """Stores callbacks for the given event."""
 
     def __init__(self, event_name):
         """Called when an instance is created."""
         # Initialize the list
-        super(_EventListener, self).__init__()
+        super().__init__()
 
         # Store the event name
         self.event_name = event_name
@@ -66,7 +65,7 @@ class _EventListener(list):
                 'for event "{1}"'.format(callback, self.event_name))
 
         # Add the callback to the list
-        super(_EventListener, self).append(callback)
+        super().append(callback)
 
     def remove(self, callback):
         """Remove the callback from the event's list."""
@@ -79,7 +78,7 @@ class _EventListener(list):
                 'the event "{1}"'.format(callback, self.event_name))
 
         # Remove the callback from the list
-        super(_EventListener, self).remove(callback)
+        super().remove(callback)
 
     def fire_game_event(self, game_event):
         """Loop through all callbacks for an event and calls them."""

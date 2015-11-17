@@ -17,7 +17,6 @@ from commands.say import unregister_say_filter
 # >> CLASSES
 # =============================================================================
 class _SayCommandManager(_PlayerCommandManager):
-
     """Manager class used to register say commands and say filters."""
 
     # Store the base functions
@@ -25,5 +24,5 @@ class _SayCommandManager(_PlayerCommandManager):
     register_filter = staticmethod(register_say_filter)
     unregister_filter = staticmethod(unregister_say_filter)
 
-# Get the _SayCommandManager instance
+#: The singleton object of the :class:`_SayCommandManager` class
 say_command_manager = _SayCommandManager()

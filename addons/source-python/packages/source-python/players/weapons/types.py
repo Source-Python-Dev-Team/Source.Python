@@ -14,7 +14,6 @@ from filters.entities import EntityIter
 # >> CLASSES
 # =============================================================================
 class _C4(object):
-
     """Class used to interact with a player based on the c4 weapon."""
 
     def has_c4(self):

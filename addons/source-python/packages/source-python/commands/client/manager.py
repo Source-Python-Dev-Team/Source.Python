@@ -17,7 +17,6 @@ from commands.player import _PlayerCommandManager
 # >> CLASSES
 # =============================================================================
 class _ClientCommandManager(_PlayerCommandManager):
-
     """Registers client commands and client command filters."""
 
     # Store the base functions
@@ -25,5 +24,5 @@ class _ClientCommandManager(_PlayerCommandManager):
     register_filter = staticmethod(register_client_command_filter)
     unregister_filter = staticmethod(unregister_client_command_filter)
 
-# Get the _ClientCommandManager instance
+#: The singleton object of the :class:`_ClientCommandManager` class
 client_command_manager = _ClientCommandManager()

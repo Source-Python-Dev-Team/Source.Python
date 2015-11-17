@@ -15,12 +15,10 @@ __all__ = ('PluginFileNotFoundError',
 # >> CLASSES
 # =============================================================================
 class PluginFileNotFoundError(FileNotFoundError):
-
     """Plugin file not found."""
 
 
 class PluginInstanceError(TypeError):
-
     """Improper plugin instance class assigned."""
 
 PluginInstanceError.__doc__ += (
@@ -28,7 +26,6 @@ PluginInstanceError.__doc__ += (
 
 
 class PluginManagerError(TypeError):
-
     """Improper plugin manager assigned."""
 
 PluginManagerError.__doc__ += (

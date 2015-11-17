@@ -165,7 +165,7 @@ void export_binary_file(scope _memory)
 
 void export_pointer(scope _memory)
 {
-	class_<CPointer, CPointer *>("Pointer", init< optional<unsigned long, bool> >())
+	class_<CPointer, boost::shared_ptr<CPointer> >("Pointer", init< optional<unsigned long, bool> >())
 		.def(init<CPointer&>())
 
 		// get/set_<type> methods
@@ -696,41 +696,80 @@ void export_registers(scope _memory)
 // ============================================================================
 void export_calling_convention(scope _memory)
 {
-	class_<ICallingConventionWrapper, boost::noncopyable>("CallingConvention", init< object, DataType_t, optional<int> >())
+	class_<ICallingConventionWrapper, boost::noncopyable>(
+		"CallingConvention",
+		"An an abstract class that is used to create custom calling "
+		"conventions (only available for hooking function and not for"
+		" calling functions).\n",
+		init< object, DataType_t, optional<int> >(
+			(arg("arg_types"), arg("return_type"), arg("alignment")),
+			"Initialize the calling convention.\n"
+			"\n"
+			":param iterable arg_types: A list of :class:`DataType` values that define the argument types of a function.\n"
+			":param DataType return_type: The return type of a function.\n"
+			":param int alignment: The stack alignment."
+			)
+		)
+
 		.def("get_registers",
-			pure_virtual(&ICallingConventionWrapper::GetRegisters)
+			&ICallingConventionWrapper::GetRegisters,
+			"Return a list of :class:`Register` values. These registeres will be saved for later access."
 		)
 
 		.def("get_pop_size",
-			pure_virtual(&ICallingConventionWrapper::GetPopSize)
+			&ICallingConventionWrapper::GetPopSize,
+			"Return the number of bytes that should be added to the stack to clean up."
 		)
-
+		
 		.def("get_argument_ptr",
-			pure_virtual(&ICallingConventionWrapper::GetArgumentPtrWrapper)
+			&ICallingConventionWrapper::GetArgumentPtrWrapper,
+			(arg("index"), arg("registers")),
+			"Return a pointer to the argument at the given index.\n"
+			"\n"
+			":param int index: The index of the argument.\n"
+			":param Registers registers: A snapshot of all saved registers."
 		)
 
 		.def("argument_ptr_changed",
-			pure_virtual(&ICallingConventionWrapper::ArgumentPtrChanged)
+			&ICallingConventionWrapper::ArgumentPtrChanged,
+			(arg("index"), arg("registers"), arg("ptr")),
+			"Called when the argument pointer returned by :meth:`get_argument_ptr` has been changed.\n"
+			"\n"
+			":param int index: The index of the argument that has been changed.\n"
+			":param Registers registers: A snapshot of all saved registers.\n"
+			":param Pointer ptr: The argument pointer that has been changed."
 		)
 
 		.def("get_return_ptr",
-			pure_virtual(&ICallingConventionWrapper::GetReturnPtrWrapper)
+			&ICallingConventionWrapper::GetReturnPtrWrapper,
+			(arg("registers")),
+			"Return a pointer to the return value.\n"
+			"\n"
+			":param Registers registers: A snapshot of all saved registers."
 		)
 
 		.def("return_ptr_changed",
-			pure_virtual(&ICallingConventionWrapper::ReturnPtrChanged)
+			&ICallingConventionWrapper::ReturnPtrChanged,
+			(arg("registers"), arg("ptr")),
+			"Called when the return value pointer returned by :meth:`get_return_ptr` has been changed.\n"
+			"\n"
+			":param Registers registers: A snapshot of all saved registers.\n"
+			":param Pointer ptr: The return value pointer that has been changed."
 		)
 
 		.add_property("argument_types",
-			&ICallingConventionWrapper::GetArgTypes
+			&ICallingConventionWrapper::GetArgTypes,
+			"A list of :class:`DataType` values that define the argument types of a function."
 		)
 
 		.def_readonly("return_type",
-			&ICallingConventionWrapper::m_returnType
+			&ICallingConventionWrapper::m_returnType,
+			"A :class:`DataType` value that defines the return type of a function."
 		)
 
 		.def_readonly("alignment",
-			&ICallingConventionWrapper::m_iAlignment
+			&ICallingConventionWrapper::m_iAlignment,
+			"An integer that defines the stack alignment."
 		)
 
 		ADD_MEM_TOOLS_WRAPPER(ICallingConventionWrapper, ICallingConvention)
@@ -745,37 +784,56 @@ void export_functions(scope _memory)
 {
 	def("find_binary",
 		&FindBinary,
-		"Returns a BinaryFile object or None.",
 		("path", arg("srv_check")=true),
+		"Search for a binary and return it as a :class:`BinaryFile` object.\n"
+		"\n"
+		":param str path: The path to the binary file (absolute, relative or just the name of the file if it's on the search path).\n"
+		":param bool srv_check: If True it will automatically check the binary for the '_srv' ending on Linux.",
 		reference_existing_object_policy()
 	);
 	
 	def("alloc",
 		Alloc,
-		"Allocates a memory block.",
 		("size", arg("auto_dealloc")=true),
+		"Allocate a memory block.\n"
+		"\n"
+		":param int size: The size (in bytes) of the memory block.\n"
+		":param bool auto_dealloc: If True the memory block will be deallocated automatically when the return value goes out of the scope.",
 		manage_new_object_policy()
 	);
 
 	def("get_object_pointer",
 		&GetObjectPointer,
-		args("object"),
-		"Returns the pointer of the C++ object"
+		(arg("obj")),
+		"Return the pointer of the C++ object of a given Python object.\n"
+		"\n"
+		":param obj: The object you want to retrieve a pointer from."
 	);
 
 	def("make_object",
 		&MakeObject,
-		"Wraps a pointer using an exposed class."
+		(arg("cls"), arg("ptr")),
+		"Wrap a pointer using an exposed class.\n"
+		"\n"
+		":param cls: The class that should be used to wrap the pointer.\n"
+		":param Pointer ptr: The pointer that should be wrapped."
 	);
 
 	def("get_size",
 		&GetSize,
-		"Returns the size of the class object or instance of its C++ class."
+		(arg("cls")),
+		"Return the size of a class or class object of its C++ class.\n"
+		"\n"
+		":param cls: A class or class object."
 	);
 
 	def("get_data_type_size",
 		&GetDataTypeSize,
-		("data_type", arg("alignment")=4)
+		("data_type", arg("alignment")=4),
+		"Return the size of the data type after applying alignment.\n"
+		"\n"
+		":param DataType data_type: The data type you would like to get the size of.\n"
+		":param int alignment: The alignment that should be used."
 	);
 }
 

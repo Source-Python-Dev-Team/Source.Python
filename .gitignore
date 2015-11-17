@@ -18,7 +18,6 @@ plat-unixware7/
 addons/source-python/Python3/site-packages/*
 tkinter/
 turtledemo/
-unittest/
 test/
 tests/
 src/Builds/
@@ -40,3 +39,11 @@ resource/source-python/events/
 resource/source-python/translations/*
 !resource/source-python/translations/_core/
 sound/source-python/
+
+# Wiki directories
+addons/source-python/docs/source-python/build/
+addons/source-python/docs/source-python/source/credits.rst
+addons/source-python/docs/custom/
+!addons/source-python/docs/custom/readme.md
+addons/source-python/docs/plugins/
+!addons/source-python/docs/plugins/readme.md

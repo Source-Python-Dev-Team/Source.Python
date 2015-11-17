@@ -9,7 +9,7 @@
 #   Entities
 from entities.dictionary import EntityDictionary
 #   Weapons
-from weapons.entity import WeaponEntity
+from weapons.entity import Weapon
 
 
 # =============================================================================
@@ -23,9 +23,8 @@ __all__ = ('WeaponDictionary',
 # >> CLASSES
 # ============================================================================
 class WeaponDictionary(EntityDictionary):
-
     """Helper class used to store weapon instances."""
 
-    def __init__(self, weapon_class=WeaponEntity):
+    def __init__(self, weapon_class=Weapon):
         """Initialize the dictionary."""
-        super(WeaponDictionary, self).__init__(weapon_class)
+        super().__init__(weapon_class)

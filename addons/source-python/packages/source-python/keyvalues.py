@@ -7,19 +7,15 @@
 # =============================================================================
 # Source.Python Imports
 #   KeyValues
-from _keyvalues import _KeyValues
+from _keyvalues import KeyValueType
+from _keyvalues import KeyValues
+from _keyvalues import KeyValuesIter
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('KeyValues',
+__all__ = ('KeyValueType',
+           'KeyValues',
+           'KeyValuesIter',
            )
-
-
-# =============================================================================
-# >> CLASSES
-# =============================================================================
-class KeyValues(_KeyValues):
-
-    """TODO: Extend this as a dict..."""

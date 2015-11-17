@@ -43,13 +43,16 @@ plugins_command_logger = plugins_logger.command
 # >> CLASSES
 # =============================================================================
 class SubCommandManager(AutoUnload, OrderedDict):
-
     """Class used for executing sub-commands for the given console command."""
+
+    # Set the default class values for base attributes
+    logger = plugins_command_logger
+    translations = _plugin_strings
 
     def __init__(self, command, description='', prefix=''):
         """Called on instance initialization."""
         # Re-call OrderedDict's __init__ to properly setup the object
-        super(SubCommandManager, self).__init__()
+        super().__init__()
 
         # Does the class have a proper manager object assigned?
         if not (hasattr(self, 'manager') and
@@ -91,22 +94,6 @@ class SubCommandManager(AutoUnload, OrderedDict):
     def instance(self):
         """Raise an error if the inheriting class does not have their own."""
         raise NotImplementedError('No instance attribute defined for class.')
-
-    @property
-    def logger(self):
-        """Return the logger to be used for the class.
-
-        By default, use the local logger.
-        """
-        return plugins_command_logger
-
-    @property
-    def translations(self):
-        """Return the translations instance to use for the class.
-
-        By default, use the local translations.
-        """
-        return _plugin_strings
 
     @property
     def command(self):

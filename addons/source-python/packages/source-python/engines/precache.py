@@ -39,22 +39,23 @@ __all__ = ('Decal',
 # >> CLASSES
 # =============================================================================
 class PrecacheError(Exception):
-
     """Object was not able to be precached due to limit being reached."""
 
 
 class _PrecacheBase(AutoUnload):
-
     """Base precache class used to interact with a specific object."""
 
     # Set the base _downloads attribute to know whether
     #   or not the path was added to the downloadables
     _downloads = None
 
-    def __init__(self, path, download=False):
+    def __init__(self, path, preload=False, download=False):
         """Add the file to downloadables if download is True."""
         # Save the path that should be precached
         self._path = path
+
+        # Save whether the the file should be preloaded
+        self._preload = preload
 
         # Get the calling module
         caller = getmodule(stack()[1][0])
@@ -101,7 +102,7 @@ class _PrecacheBase(AutoUnload):
 
     def _precache(self):
         """Precache the path."""
-        self._precache_method(self._path)
+        self._precache_method(self._path, self._preload)
 
     def _server_spawn(self, game_event):
         """Precache the object on map change."""
@@ -128,7 +129,6 @@ class _PrecacheBase(AutoUnload):
 
 
 class Decal(_PrecacheBase):
-
     """Class used to handle a specific decal."""
 
     # Set the base attributes
@@ -137,7 +137,6 @@ class Decal(_PrecacheBase):
 
 
 class Generic(_PrecacheBase):
-
     """Class used to handle generic precaching."""
 
     # Set the base attributes
@@ -146,7 +145,6 @@ class Generic(_PrecacheBase):
 
 
 class Model(_PrecacheBase):
-
     """Class used to handle a specific model."""
 
     # Set the base attributes

@@ -133,6 +133,18 @@ void export_igameevent(scope _events)
 			args("key_name", "value")
 		)
 
+		.add_property("variables",
+			make_function(IGameEventExt::GetVariables, reference_existing_object_policy())
+		)
+
+		.def("__getitem__",
+			&IGameEventExt::__getitem__
+		)
+
+		.def("__setitem__",
+			&IGameEventExt::__setitem__
+		)
+
 		ADD_MEM_TOOLS(IGameEvent)
 	;
 

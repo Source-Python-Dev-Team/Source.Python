@@ -26,15 +26,13 @@ from players.constants import HitGroup
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get a list of projectiles for the game
-_projectile_weapons = list(
-    WeaponClassIter('grenade', return_types='classname'))
+_projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
 class _EntitySpecials(object):
-
     """Base class used to hold special functionality."""
 
     def take_damage(
@@ -44,7 +42,7 @@ class _EntitySpecials(object):
         # Import Entity classes
         # Doing this in the global scope causes cross import errors
         from entities.entity import Entity
-        from weapons.entity import WeaponEntity
+        from weapons.entity import Weapon
 
         # Is the game supported?
         if not hasattr(self, 'on_take_damage'):
@@ -67,9 +65,9 @@ class _EntitySpecials(object):
         # Was a weapon given?
         if weapon_index is not None:
 
-            # Try to get the WeaponEntity instance of the weapon
+            # Try to get the Weapon instance of the weapon
             with suppress(ValueError):
-                weapon = WeaponEntity(weapon_index)
+                weapon = Weapon(weapon_index)
 
         # Is there a weapon but no attacker?
         if attacker is None and weapon is not None:
@@ -90,9 +88,9 @@ class _EntitySpecials(object):
                 weapon_index = index_from_inthandle(
                     attacker.active_weapon, False)
 
-                # Get the weapon's WeaponEntity instance if it is valid
+                # Get the weapon's Weapon instance if it is valid
                 if weapon_index is not None:
-                    weapon = WeaponEntity(weapon_index)
+                    weapon = Weapon(weapon_index)
 
         # Is hitgroup a valid attribute?
         if hasattr(self, 'hitgroup'):

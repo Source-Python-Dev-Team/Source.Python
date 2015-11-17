@@ -32,7 +32,6 @@
 //---------------------------------------------------------------------------------
 #include "eiface.h"
 #include "ispsharedmemory.h"
-#include "modules/messages/messages.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 

@@ -54,7 +54,6 @@ __all__ = ('SendProp',
 # >> ENUMERATORS
 # =============================================================================
 class SendPropFlags(IntEnum):
-
     """SendProp flags wrapper enumerator."""
 
     UNSIGNED = SPROP_UNSIGNED

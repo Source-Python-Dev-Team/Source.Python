@@ -91,6 +91,11 @@ void export_net_channel(scope _net_channel)
 		reference_existing_object_policy()
 	);
 
+	NetChannel.def(
+		"send_file",
+		&INetChannel::SendFile
+	);
+
 	// TODO: Export more
 
 	NetChannel ADD_MEM_TOOLS(INetChannel);

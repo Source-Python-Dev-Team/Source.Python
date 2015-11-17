@@ -44,18 +44,17 @@ __all__ = ('BaseEntity',
 # >> CLASSES
 # =============================================================================
 class Entity(BaseEntity, _EntitySpecials):
-
     """Class used to interact directly with entities."""
 
     def __init__(self, index):
         """Initialize the Entity object."""
         # Initialize the object
-        super(Entity, self).__init__(index)
+        super().__init__(index)
 
         # Set the entity's base attributes
-        super(Entity, self).__setattr__('_index', index)
-        super(Entity, self).__setattr__('_edict', None)
-        super(Entity, self).__setattr__('_pointer', None)
+        super().__setattr__('_index', index)
+        super().__setattr__('_edict', None)
+        super().__setattr__('_pointer', None)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
@@ -89,21 +88,21 @@ class Entity(BaseEntity, _EntitySpecials):
             name = attr[1:]
 
             # Is the attribute a property?
-            if (name in super(Entity, self).__dir__() and isinstance(
+            if (name in super().__dir__() and isinstance(
                     getattr(self.__class__, name, None), property)):
 
                 # Set the private attribute's value
-                super(Entity, self).__setattr__(attr, value)
+                super().__setattr__(attr, value)
 
                 # No need to go further
                 return
 
         # Is the given attribute a property?
-        if (attr in super(Entity, self).__dir__() and isinstance(
+        if (attr in super().__dir__() and isinstance(
                 getattr(self.__class__, attr, None), property)):
 
             # Set the property's value
-            super(Entity, self).__setattr__(attr, value)
+            super().__setattr__(attr, value)
 
             # No need to go further
             return
@@ -121,12 +120,12 @@ class Entity(BaseEntity, _EntitySpecials):
                 return
 
         # If the attribute is not found, just set the attribute
-        super(Entity, self).__setattr__(attr, value)
+        super().__setattr__(attr, value)
 
     def __dir__(self):
         """Return an alphabetized list of attributes for the instance."""
         # Get the base attributes
-        attributes = set(super(Entity, self).__dir__())
+        attributes = set(super().__dir__())
 
         # Loop through all instances for the entity
         for instance in self.instances:
@@ -156,6 +155,40 @@ class Entity(BaseEntity, _EntitySpecials):
         """Create a new entity with the given classname."""
         return cls(create_entity(classname))
 
+    @staticmethod
+    def find(classname):
+        """Try to find an entity with the given classname.
+
+        If not entity has been found, None will be returned.
+
+        :param str classname: The classname of the entity.
+        :return: Return the found entity.
+        :rtype: Entity
+        """
+        # Import this here to fix a circular import
+        from filters.entities import EntityIter
+
+        for entity in EntityIter(classname):
+            return entity
+
+        return None
+
+    @classmethod
+    def find_or_create(cls, classname):
+        """Try to find an entity with the given classname.
+
+        If no entity has been found, it will be created.
+
+        :param str classname: The classname of the entity.
+        :return: Return the found or created entity.
+        :rtype: Entity
+        """
+        entity = cls.find(classname)
+        if entity is None:
+            entity = cls.create(classname)
+
+        return entity
+
     def spawn(self):
         """Spawn the entity."""
         spawn_entity(self.index)
@@ -182,7 +215,7 @@ class Entity(BaseEntity, _EntitySpecials):
 
     @property
     def edict(self):
-        """Return the entity's edict instance."""
+        """Return the entity's :class:`entities.Edict` instance."""
         if self._edict is None:
             self._edict = edict_from_index(self.index)
 
@@ -190,7 +223,7 @@ class Entity(BaseEntity, _EntitySpecials):
 
     @property
     def pointer(self):
-        """Return the entity's pointer."""
+        """Return the entity's :class:`memory.Pointer`."""
         if self._pointer is None:
             self._pointer = memory.get_object_pointer(self)
 
@@ -198,7 +231,11 @@ class Entity(BaseEntity, _EntitySpecials):
 
     @property
     def instances(self):
-        """Yield the entity's base instances."""
+        """Yield the entity's base instances.
+
+        Values yielded are the entity's :class:`entities.Edict`
+        and :class:`memory.Pointer` objects.
+        """
         yield self.edict
         yield self.pointer
 
@@ -211,11 +248,6 @@ class Entity(BaseEntity, _EntitySpecials):
     def inthandle(self):
         """Return the entity's integer handle."""
         return self.basehandle.to_int()
-
-    @property
-    def classname(self):
-        """Return the classname of the entity."""
-        return self.edict.get_class_name()
 
     @property
     def server_class(self):
@@ -259,6 +291,22 @@ class Entity(BaseEntity, _EntitySpecials):
 
             # Loop through the server class' inputs
             for name in server_class.inputs:
+
+                # Yield the input
+                yield name
+
+    @property
+    def outputs(self):
+        """Iterate over all outputs available for the entity.
+
+        This property is a helper for scripters
+            to know what outputs an entity has available.
+        """
+        # Loop through each server class for the entity
+        for server_class in self.server_classes:
+
+            # Loop through the server class' outputs
+            for name in server_class.outputs:
 
                 # Yield the input
                 yield name

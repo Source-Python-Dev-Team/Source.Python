@@ -25,16 +25,18 @@ __all__ = ('Downloadables',
 # >> CLASSES
 # =============================================================================
 class Downloadables(AutoUnload, set):
-
     """Class used to store downloadables for a script."""
 
     def __init__(self):
         """Add the instance to the downloadables list."""
-        super(Downloadables, self).__init__()
+        super().__init__()
         _downloadables_list.append(self)
 
     def add(self, item):
-        """Add an item to the downloadables for a script."""
+        """Add an item to the downloadables for a script.
+
+        :param str item: The path to add to the downloadables.
+        """
         # Is the item already in the list?
         if item in self:
 
@@ -45,7 +47,35 @@ class Downloadables(AutoUnload, set):
         _downloadables_list._add_to_download_table(item)
 
         # Add the item to the script's downloadables
-        super(Downloadables, self).add(item)
+        super().add(item)
+
+    def add_directory(self, directory):
+        """Add all files in the given directory to the downloadables.
+
+        :param str directory: The directory to add to the downloadables.
+        """
+        # Loop through all files in the directory
+        for file in GAME_PATH.joinpath(directory).walkfiles():
+
+            # Add the current file to the downloadables
+            self.add(file.replace(GAME_PATH, '').replace('\\', '/'))
+
+    def remove_directory(self, directory):
+        """Remove all files in the given directory from the downloadables.
+
+        :param str directory: The directory to remove from the downloadables.
+        """
+        # Convert slashes
+        directory = directory.replace('\\', '/')
+
+        # Loop through all items in the set
+        for item in list(self):
+
+            # Is the current item in the given directory?
+            if item.startswith(directory):
+
+                # Remove the item from the set
+                self.remove(item)
 
     def _set_all_downloads(self):
         """Add all downloadables for the script on level init."""
@@ -61,12 +91,11 @@ class Downloadables(AutoUnload, set):
 
 
 class _DownloadablesList(list):
-
     """List object used to store downloads on a per-script basis."""
 
     def __init__(self):
         """Refresh the downloadables table instance."""
-        super(_DownloadablesList, self).__init__()
+        super().__init__()
         self._refresh_table_instance()
 
     def _refresh_table_instance(self):

@@ -31,6 +31,7 @@
 #include "export_main.h"
 #include "utilities/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
+#include "boost/unordered_map.hpp"
 
 
 //-----------------------------------------------------------------------------
@@ -40,6 +41,9 @@ extern CClientCommandManager* GetClientCommand(const char* szName);
 
 extern void RegisterClientCommandFilter(PyObject* pCallable);
 extern void UnregisterClientCommandFilter(PyObject* pCallable);
+
+extern boost::unordered_map<std::string, CClientCommandManager*> g_ClientCommandMap;
+COMMAND_GENERATOR(ClientCommandGenerator, g_ClientCommandMap)
 
 
 //-----------------------------------------------------------------------------
@@ -74,6 +78,8 @@ DECLARE_SP_SUBMODULE(_commands, _client)
 		"Unregisters a client command filter.",
 		args("callable")
 	);
+
+	EXPOSE_COMMAND_GENERATOR(ClientCommandGenerator)
 }
 
 

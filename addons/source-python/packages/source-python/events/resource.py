@@ -36,13 +36,12 @@ events_resource_logger = events_logger.resource
 # >> CLASSES
 # =============================================================================
 class ResourceFile(OrderedDict):
-
     """Class used to write and load custom event .res files."""
 
     def __init__(self, filepath, *events):
         """Called on instatiation."""
         # Create the OrderedDict instance
-        super(ResourceFile, self).__init__()
+        super().__init__()
 
         # Does the given path end with the extension?
         if filepath.endswith('.res'):

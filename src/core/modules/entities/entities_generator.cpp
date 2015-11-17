@@ -138,3 +138,32 @@ void CEntityGenerator::makeStringCopy(const char* szClassName, unsigned int uiCl
 		m_szClassName = NULL;
 	}
 }
+
+
+// ----------------------------------------------------------------------------
+// CBaseEntityGenerator Constructor.
+// ----------------------------------------------------------------------------
+CBaseEntityGenerator::CBaseEntityGenerator( PyObject* self ):
+	IPythonGenerator<CBaseEntityWrapper>(self)
+{
+	m_pCurrentEntity = (CBaseEntity *) servertools->FirstEntity();
+}
+
+// ----------------------------------------------------------------------------
+// CBaseEntityGenerator Copy-Constructor.
+// ----------------------------------------------------------------------------
+CBaseEntityGenerator::CBaseEntityGenerator( PyObject* self, const CBaseEntityGenerator& rhs ):
+	IPythonGenerator<CBaseEntityWrapper>(self)
+{
+	m_pCurrentEntity = rhs.m_pCurrentEntity;
+}
+
+// ----------------------------------------------------------------------------
+// Returns the next valid CBaseEntity instance.
+// ----------------------------------------------------------------------------
+CBaseEntityWrapper* CBaseEntityGenerator::getNext()
+{
+	CBaseEntity* result = m_pCurrentEntity;
+	m_pCurrentEntity = (CBaseEntity *) servertools->NextEntity(m_pCurrentEntity);
+	return (CBaseEntityWrapper *) result;
+}

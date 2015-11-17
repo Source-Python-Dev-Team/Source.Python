@@ -21,23 +21,18 @@ __all__ = ('RecipientFilter',
 # >> CLASSES
 # ============================================================================
 class RecipientFilter(_RecipientFilter):
-
     """Class used to improve the ease of use of a _RecipientFilter instance."""
 
     def __init__(self, *filters):
         """Initialize and update the recipient filter."""
         # Initialize the _RecipientFilter
-        super(RecipientFilter, self).__init__()
+        super().__init__()
 
         # Store the given filters
         self.filters = filters
 
         # Update the recipient matching the given filters
         self.update(*self.filters)
-
-    def __contains__(self, index):
-        """Return True/False if the given index is in the recipient."""
-        return self.has_recipient(index)
 
     def __getitem__(self, item):
         """Return the index at the given recipient slot."""
@@ -50,10 +45,6 @@ class RecipientFilter(_RecipientFilter):
 
         # Return the index at the given recipient slot
         return self.get_recipient_index[item]
-
-    def __len__(self):
-        """Return the length of the recipient filter."""
-        return self.get_recipient_count()
 
     def __iter__(self):
         """Iterate over the recipient filter."""

@@ -49,7 +49,7 @@
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
 //---------------------------------------------------------------------------------
-class CSourcePython: public IServerPluginCallbacks, public IGameEventListener2, public IEntityListener, public IMDLCacheNotify
+class CSourcePython: public IServerPluginCallbacks, public IEntityListener, public IMDLCacheNotify
 {
 public:
 	CSourcePython();
@@ -81,9 +81,9 @@ public:
 	// Alien Swarm.
 	// -------------------------------------------
 #if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
-	virtual int				GetEventDebugID( void ) { return EVENT_DEBUG_ID_INIT; }	
 	virtual void			ClientFullyConnect( edict_t *pEntity );
 #endif
+
 #if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
 	virtual void			OnEdictAllocated( edict_t *edict );
 	virtual void			OnEdictFreed( const edict_t *edict );
@@ -92,14 +92,6 @@ public:
 	virtual PLUGIN_RESULT	NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
 	virtual void			OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 								EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
-	// -------------------------------------------
-	// IGameEventListener Interface.
-	// -------------------------------------------
-	virtual void			FireGameEvent( IGameEvent* event );
-
-#if defined(ENGINE_LEFT4DEAD2)
-	virtual int				GetEventDebugID() { return EVENT_DEBUG_ID_INIT; }
-#endif
 
 	virtual int				GetCommandIndex() { return m_iClientCommandIndex; }
 

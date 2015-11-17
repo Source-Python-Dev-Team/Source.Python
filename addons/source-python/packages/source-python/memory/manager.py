@@ -45,7 +45,6 @@ __all__ = ('CustomType',
 # >> CustomType
 # =============================================================================
 class CustomType(BasePointer):
-
     """
     Subclass this class if you want to create a new type.
 
@@ -100,7 +99,7 @@ class CustomType(BasePointer):
                 raise ValueError(
                     'If <wrap> is true only one argument is accepted.')
 
-            super(CustomType, self).__init__(args[0])
+            super().__init__(args[0])
 
         # Obviously, we want to create a new instance
         else:
@@ -110,7 +109,7 @@ class CustomType(BasePointer):
                     'In order to create an instance _size is required.')
 
             # Allocate some space
-            super(CustomType, self).__init__(alloc(self._size, False))
+            super().__init__(alloc(self._size, False))
             self.auto_dealloc = auto_dealloc
 
             # Optionally, call a constructor
@@ -147,13 +146,12 @@ class CustomType(BasePointer):
 # >> TypeManager
 # =============================================================================
 class TypeManager(dict):
-
     """Class able to reconstruct almost every possible data type."""
 
     def __init__(self):
         """Initialize the instance."""
         # Initialize the dictionary
-        super(TypeManager, self).__init__()
+        super().__init__()
 
         # This dictionary will hold global pointer instances
         self.global_pointers = {}

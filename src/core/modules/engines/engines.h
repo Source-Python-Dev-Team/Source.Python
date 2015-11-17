@@ -131,18 +131,10 @@ public:
 		delete ppEntities;
 		return make_tuple(iMask, entities);
 	}
-};
 
-
-//-----------------------------------------------------------------------------
-// CGameTrace extension class.
-//-----------------------------------------------------------------------------
-class CGameTraceExt
-{
-public:
-	static IServerEntity* GetEntity(CGameTrace* pTrace)
+	static void EnumerateEntitiesInBox(IEngineTrace* pEngineTrace, const Vector& p1, const Vector& p2, IEntityEnumerator* pEnumerator)
 	{
-		return (IServerEntity *) pTrace->m_pEnt;
+		pEngineTrace->EnumerateEntities(p1.Min(p2), p2.Max(p1), pEnumerator);
 	}
 };
 

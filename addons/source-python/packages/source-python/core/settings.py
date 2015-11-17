@@ -5,10 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Collections
-from collections import OrderedDict
-
 # Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
@@ -42,51 +38,15 @@ core_settings_logger = core_logger.settings
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _SettingsMeta(type):
-
-    """Metaclass used to store methods in order of creation."""
-
-    @classmethod
-    def __prepare__(mcs, name, bases):
-        """Return an ordered dictionary."""
-        return OrderedDict()
-
-    def __new__(mcs, name, bases, odict):
-        """Store methods by name/instance in the order they were created."""
-        # Get the class object
-        cls = super(_SettingsMeta, mcs).__new__(mcs, name, bases, dict(odict))
-
-        # Create an ordered dictionary to store methods in
-        cls._odict = OrderedDict()
-
-        # Loop through the methods
-        for item in odict:
-
-            # Is the current method one that needs stored?
-            if item.startswith('_check_'):
-
-                # Store the method by its name
-                cls._odict[item] = odict[item]
-
-        # Return the class
-        return cls
-
-
-class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
-
+class _CoreSettings(ConfigObj):
     """Class used to store core settings."""
 
     def __init__(self, infile):
         """Add missing items and set comments using the server's language."""
         # Import the file
-        super(_CoreSettings, self).__init__(infile)
+        super().__init__(infile)
         self._language = None
-
-        # Loop through the registered methods
-        for item in self._odict:
-
-            # Call the method
-            self._odict[item](self)
+        self._check_settings()
 
         # Add the initial comment
         self.initial_comment = ['../' + self.filename.replace(GAME_PATH, '')]
@@ -99,6 +59,14 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
 
         # Write the file
         self.write()
+
+    def _check_settings(self):
+        """Check all settings in the settings file."""
+        self._check_base_settings()
+        self._check_version_settings()
+        self._check_auth_settings()
+        self._check_logging_settings()
+        self._check_user_settings()
 
     def _check_base_settings(self):
         """Add base settings if they are missing."""
@@ -120,6 +88,23 @@ class _CoreSettings(ConfigObj, metaclass=_SettingsMeta):
         # Set the language comments
         self['BASE_SETTINGS'].comments['language'] = _core_strings[
             'language'].get_string(self._language).splitlines()
+
+    def _check_version_settings(self):
+        """Add version settings if they are missing."""
+        if 'VERSION_SETTINGS' not in self:
+            self['VERSION_SETTINGS'] = {}
+
+        if 'check_for_update' not in self['VERSION_SETTINGS']:
+            self['VERSION_SETTINGS']['check_for_update'] = '1'
+
+        if 'notify_on_update' not in self['VERSION_SETTINGS']:
+            self['VERSION_SETTINGS']['notify_on_update'] = '1'
+
+        self['VERSION_SETTINGS'].comments['check_for_update'] = _core_strings[
+            'check_for_update'].get_string(self._language).splitlines()
+
+        self['VERSION_SETTINGS'].comments['notify_on_update'] = _core_strings[
+            'notify_on_update'].get_string(self._language).splitlines()
 
     def _check_auth_settings(self):
         """Add auth settings if they are missing."""

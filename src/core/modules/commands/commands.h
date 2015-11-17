@@ -31,6 +31,8 @@
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
 #include "convar.h"
+#include "utilities/ipythongenerator.h"
+#include "boost/typeof/typeof.hpp" 
 
 
 //-----------------------------------------------------------------------------
@@ -69,7 +71,75 @@ public:
 		const char* szValue = command.GetCommandString();
 		return PyUnicode_DecodeUTF8(szValue, strlen(szValue), "ignore");
 	}
+
+	static bool Tokenize(CCommand& command, const char* szCommand)
+	{
+		return command.Tokenize(szCommand);
+	}
 };
 
+
+//-----------------------------------------------------------------------------
+// CommandGenerator template
+//-----------------------------------------------------------------------------
+template<class CommandMap>
+class CommandGenerator: public IPythonGenerator<const char>
+{
+public:
+	CommandGenerator(PyObject* self)
+		: IPythonGenerator<const char>(self)
+	{
+	}
+	
+	CommandGenerator(PyObject* self, const CommandGenerator<CommandMap>& rhs)
+		: IPythonGenerator<const char>(self)
+	{
+		m_Begin = rhs.m_Begin;
+		m_End = rhs.m_End;
+	}
+
+	virtual ~CommandGenerator()
+	{
+	}
+
+protected:
+	virtual const char* getNext()
+	{
+		if (m_Begin == m_End) {
+			return NULL;
+		}
+
+		return (*m_Begin++).first.c_str();
+	}
+
+protected:
+	typename CommandMap::const_iterator m_Begin;
+	typename CommandMap::const_iterator m_End;
+};
+
+
+// Macro to generate the subclass that implements the CommandGenerator
+#define COMMAND_GENERATOR(classname, command_map) \
+	class classname: public CommandGenerator<BOOST_TYPEOF(command_map)> \
+	{ \
+	public: \
+		classname(PyObject* self) \
+			: CommandGenerator<BOOST_TYPEOF(command_map)>(self) \
+		{ \
+			m_Begin = command_map.cbegin(); \
+			m_End = command_map.cend(); \
+		} \
+		\
+		classname(PyObject* self, const classname& rhs) \
+			: CommandGenerator<BOOST_TYPEOF(command_map)>(self, rhs) {} \
+	}; \
+	\
+	BOOST_SPECIALIZE_HAS_BACK_REFERENCE(classname)
+
+#define EXPOSE_COMMAND_GENERATOR(classname) \
+	class_<classname>(XSTRINGIFY(classname)) \
+		.def("__iter__", &classname::iter) \
+		.def("__next__", &classname::next) \
+	;
 
 #endif // _COMMAND_H
