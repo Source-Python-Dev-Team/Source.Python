@@ -103,7 +103,7 @@ class WarningHook(_HookDecorator):
 
         @WarningHook
         def warning_callback(message, category, filename, lineno):
-            ...
+            # Code...
 
     .. seealso:: :obj:`warnings.showwarning`
     """

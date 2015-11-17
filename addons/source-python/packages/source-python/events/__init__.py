@@ -56,12 +56,12 @@ class Event(AutoUnload):
 
         @Event('player_death')
         def player_died(game_event):
-            ...
+            # Code...
 
 
         @Event('round_start', 'round_freeze_end')
         def some_function(game_event):
-            ...
+            # Code...
 
     .. seealso:: :doc:`../events` for a list of supported events per game.
 

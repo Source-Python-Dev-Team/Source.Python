@@ -130,7 +130,7 @@ class ExceptHook(_HookDecorator):
 
         @ExceptHook
         def exception_callback(exctype, value, trace_back):
-            ...
+            # Code...
 
     .. seealso:: :obj:`sys.excepthook`
     """

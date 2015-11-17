@@ -63,12 +63,12 @@ class PreEvent(AutoUnload):
 
         @PreEvent('player_death')
         def player_died(game_event):
-            ...
+            # Code...
 
 
         @PreEvent('round_start', 'round_freeze_end')
         def some_function(game_event):
-            ...
+            # Code...
 
     .. seealso:: :doc:`../events` for a list of supported events per game.
 
@@ -125,7 +125,7 @@ class _PreEventDictionary(dict):
             from events.hooks import pre_event_manager
 
             def function(game_event):
-                ...
+                # Code...
 
             pre_event_manager.register_for_event('player_death', function)
 
@@ -154,7 +154,7 @@ class _PreEventDictionary(dict):
             from events.hooks import pre_event_manager
 
             def function(game_event):
-                ...
+                # Code...
 
             pre_event_manager.unregister_for_event('player_death', function)
         """

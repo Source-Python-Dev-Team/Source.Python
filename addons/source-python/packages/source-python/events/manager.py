@@ -61,7 +61,7 @@ class _EventManager(dict):
             from events.manager import event_manager
 
             def function(game_event):
-                ...
+                # Code...
 
             event_manager.register_for_event('player_death', function)
 
@@ -88,7 +88,7 @@ class _EventManager(dict):
             from events.manager import event_manager
 
             def function(game_event):
-                ...
+                # Code...
 
             event_manager.unregister_for_event('player_death', function)
         """
