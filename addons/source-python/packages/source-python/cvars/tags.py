@@ -13,7 +13,8 @@ from cvars import ConVar
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('sv_tags',
+__all__ = ('_SVTags',
+           'sv_tags',
            )
 
 
@@ -41,5 +42,5 @@ class _SVTags(ConVar):
         tags.discard(tag)
         self.set_string(','.join(tags))
 
-# Get the _SVTags instance
+#: The singleton object of the :class:`_SVTags` class
 sv_tags = _SVTags('sv_tags')
