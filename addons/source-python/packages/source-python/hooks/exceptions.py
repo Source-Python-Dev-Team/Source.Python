@@ -114,6 +114,25 @@ sys.excepthook = except_hooks.print_exception
 
 
 class ExceptHook(_HookDecorator):
-    """Register/unregister a function/method for hooking exceptions."""
+    """Register/unregister a function/method for hooking exceptions.
+
+    .. py:decorator:: ExceptHook
+
+        Fired when an exception is encountered
+
+        Passed arguments: :class:`Exception` class,
+        :class:`Exception` object, :py:obj:`types.TracebackType`
+
+    .. code-block:: python
+
+        from hooks.exceptions import ExceptHook
+
+
+        @ExceptHook
+        def exception_callback(exctype, value, trace_back):
+            ...
+
+    .. seealso:: :py:obj:`sys.excepthook`
+    """
 
     _class_instance = except_hooks

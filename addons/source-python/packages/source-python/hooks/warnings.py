@@ -87,6 +87,25 @@ warnings.filterwarnings('once')
 
 
 class WarningHook(_HookDecorator):
-    """Register/unregister a function/method for hooking warnings."""
+    """Register/unregister a function/method for hooking warnings.
+
+    .. py:decorator:: WarningHook
+
+        Fired when a warning is encountered
+
+        Passed arguments: :class:`Warning` object, :class:`Warning` class,
+        :py:obj:`str` *filename*, :py:obj:`int` *lineno*
+
+    .. code-block:: python
+
+        from hooks.warnings import WarningHook
+
+
+        @WarningHook
+        def warning_callback(message, category, filename, lineno):
+            ...
+
+    .. seealso:: :py:obj:`warnings.showwarning`
+    """
 
     _class_instance = warning_hooks
