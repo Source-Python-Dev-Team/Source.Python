@@ -47,7 +47,7 @@ class EventAction(IntEnum):
 class PreEvent(AutoUnload):
     """Pre-Event decorator class.
 
-    .. py:decorator:: PreEvent(*event_names)
+    .. decorator:: PreEvent(*event_names)
 
         Fired when any event in *event_names* is
         about to be fired on the server
