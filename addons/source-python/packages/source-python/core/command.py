@@ -471,11 +471,15 @@ class _CoreCommandManager(SubCommandManager):
             with conf_file.open() as f:
                 lines = f.readlines()
 
+            # Get the version string
+            version = VERSION if VERSION == 'unversioned' else (
+                'v{0}'.format(VERSION))
+
             with conf_file.open('w') as f:
                 for line in lines:
                     if line.startswith(('version', 'release')):
                         line = '{0} = \' {1}\'\n'.format(
-                            line.split(maxsplit=1)[0], VERSION)
+                            line.split(maxsplit=1)[0], version)
 
                     f.write(line)
 
