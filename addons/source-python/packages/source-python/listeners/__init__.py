@@ -347,4 +347,5 @@ def _on_level_init(map_name):
         listeners_logger.log_warning(
             'A new Source.Python version is available!')
 
-    on_version_update_listener_manager.notify(VERSION, version, is_unversioned())
+    on_version_update_listener_manager.notify(
+        VERSION, version, is_unversioned())

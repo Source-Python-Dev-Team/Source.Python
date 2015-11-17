@@ -580,15 +580,15 @@ class Entity(BaseEntity, _EntitySpecials):
         # No attachment found
         return INVALID_ATTACHMENT_INDEX
 
-    def is_in_solid(self, mask=ContentMasks.ALL,
-        generator=BaseEntityGenerator):
+    def is_in_solid(
+            self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
         """Return whether or not the entity is in solid."""
         # Get a Ray object of the entity physic box
         ray = Ray(self.origin, self.origin, self.mins, self.maxs)
-            
+
         # Get a new GameTrace instance
         trace = GameTrace()
-        
+
         # Do the trace
         engine_trace.trace_ray(ray, mask, TraceFilterSimple(
             [entity.index for entity in generator()]), trace)
