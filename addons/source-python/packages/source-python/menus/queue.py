@@ -171,7 +171,8 @@ class _QueueHolder(dict):
         """Initialize the queue holder.
 
         :param _UserQueue cls: The queue to hold.
-        :param TickRepeat repeat: Global refresh repeat object.
+        :param repeat: Global refresh repeat object.
+        :type repeat: :class:`listeners.tick.TickRepeat`
         """
         super().__init__()
         self._cls = cls
