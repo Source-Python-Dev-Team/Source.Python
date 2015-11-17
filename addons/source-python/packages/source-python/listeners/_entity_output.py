@@ -31,7 +31,7 @@ BaseEntityOutput = manager.create_type_from_dict(
     'BaseEntityOutput', GameConfigObj(
         SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
-entity_output_listener_manager = _ListenerManager()
+on_entity_output_listener_manager = _ListenerManager()
 
 
 # =============================================================================
@@ -68,7 +68,7 @@ def _pre_fire_output(args):
         activator = memory.make_object(Entity, activator_ptr)
 
     delay = args[4]
-    entity_output_listener_manager.notify(
+    on_entity_output_listener_manager.notify(
         output_name, activator, caller, value, delay)
 
 

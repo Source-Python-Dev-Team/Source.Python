@@ -33,7 +33,10 @@ class Downloadables(AutoUnload, set):
         _downloadables_list.append(self)
 
     def add(self, item):
-        """Add an item to the downloadables for a script."""
+        """Add an item to the downloadables for a script.
+
+        :param str item: The path to add to the downloadables.
+        """
         # Is the item already in the list?
         if item in self:
 
@@ -45,6 +48,34 @@ class Downloadables(AutoUnload, set):
 
         # Add the item to the script's downloadables
         super().add(item)
+
+    def add_directory(self, directory):
+        """Add all files in the given directory to the downloadables.
+
+        :param str directory: The directory to add to the downloadables.
+        """
+        # Loop through all files in the directory
+        for file in GAME_PATH.joinpath(directory).walkfiles():
+
+            # Add the current file to the downloadables
+            self.add(file.replace(GAME_PATH, '').replace('\\', '/'))
+
+    def remove_directory(self, directory):
+        """Remove all files in the given directory from the downloadables.
+
+        :param str directory: The directory to remove from the downloadables.
+        """
+        # Convert slashes
+        directory = directory.replace('\\', '/')
+
+        # Loop through all items in the set
+        for item in list(self):
+
+            # Is the current item in the given directory?
+            if item.startswith(directory):
+
+                # Remove the item from the set
+                self.remove(item)
 
     def _set_all_downloads(self):
         """Add all downloadables for the script on level init."""

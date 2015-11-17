@@ -15,7 +15,8 @@ from plugins.manager import PluginManager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('core_plugin_manager',
+__all__ = ('_CorePluginManager',
+           'core_plugin_manager',
            )
 
 
@@ -34,5 +35,5 @@ class _CorePluginManager(PluginManager):
 
     logger = core_manager_logger
 
-# Get the _CorePluginManager instance
+#: The singleton object of the :class:`_CorePluginManager` class
 core_plugin_manager = _CorePluginManager()

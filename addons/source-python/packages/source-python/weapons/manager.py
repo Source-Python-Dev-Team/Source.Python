@@ -22,7 +22,8 @@ from weapons.instance import WeaponClass
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('weapon_manager',
+__all__ = ('_WeaponManager',
+           'weapon_manager',
            )
 
 
@@ -155,12 +156,17 @@ class _WeaponManager(dict):
 # Does the current game have an ini file?
 if _gamepath.isfile():
 
-    # Get the _WeaponManager instance
+    #: The singleton object of the :class:`_WeaponManager` class.
+    #: If the game is not supported, :class:`weapons.default.NoWeaponManager`
+    #: is used instead
     weapon_manager = _WeaponManager(_gamepath)
 
 # Is there no ini file for the current game?
 else:
 
+    #: The singleton object of the :class:`_WeaponManager` class.
+    #: If the game is not supported, :class:`weapons.default.NoWeaponManager`
+    #: is used instead
     # Store weapon_manager as a NoWeaponManager instance
     # to raise an error anytime the manager is utilized
     weapon_manager = NoWeaponManager()

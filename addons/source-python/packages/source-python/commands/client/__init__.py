@@ -14,13 +14,15 @@ from _commands._client import register_client_command_filter
 from _commands._client import unregister_client_command_filter
 from commands.client.command import ClientCommand
 from commands.client.filter import ClientCommandFilter
+from commands.client.manager import _ClientCommandManager
 from commands.client.manager import client_command_manager
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('ClientCommand',
+__all__ = ('_ClientCommandManager',
+           'ClientCommand',
            'ClientCommandDispatcher',
            'ClientCommandFilter',
            'ClientCommandGenerator',

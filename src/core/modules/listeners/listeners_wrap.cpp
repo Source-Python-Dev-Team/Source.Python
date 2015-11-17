@@ -36,20 +36,20 @@
 // Listener accessors.
 //-----------------------------------------------------------------------------
 // Create manager accessor functions
-DEFINE_MANAGER_ACCESSOR(ClientActive)
-DEFINE_MANAGER_ACCESSOR(ClientConnect)
-DEFINE_MANAGER_ACCESSOR(ClientDisconnect)
-DEFINE_MANAGER_ACCESSOR(ClientFullyConnect)
-DEFINE_MANAGER_ACCESSOR(ClientPutInServer)
-DEFINE_MANAGER_ACCESSOR(ClientSettingsChanged)
-DEFINE_MANAGER_ACCESSOR(LevelInit)
-DEFINE_MANAGER_ACCESSOR(LevelShutdown)
-DEFINE_MANAGER_ACCESSOR(NetworkidValidated)
+DEFINE_MANAGER_ACCESSOR(OnClientActive)
+DEFINE_MANAGER_ACCESSOR(OnClientConnect)
+DEFINE_MANAGER_ACCESSOR(OnClientDisconnect)
+DEFINE_MANAGER_ACCESSOR(OnClientFullyConnect)
+DEFINE_MANAGER_ACCESSOR(OnClientPutInServer)
+DEFINE_MANAGER_ACCESSOR(OnClientSettingsChanged)
+DEFINE_MANAGER_ACCESSOR(OnLevelInit)
+DEFINE_MANAGER_ACCESSOR(OnLevelShutdown)
+DEFINE_MANAGER_ACCESSOR(OnNetworkidValidated)
 DEFINE_MANAGER_ACCESSOR(OnEdictAllocated)
 DEFINE_MANAGER_ACCESSOR(OnEdictFreed)
 DEFINE_MANAGER_ACCESSOR(OnQueryCvarValueFinished)
-DEFINE_MANAGER_ACCESSOR(ServerActivate)
-DEFINE_MANAGER_ACCESSOR(Tick)
+DEFINE_MANAGER_ACCESSOR(OnServerActivate)
+DEFINE_MANAGER_ACCESSOR(OnTick)
 DEFINE_MANAGER_ACCESSOR(OnEntityPreSpawned)
 DEFINE_MANAGER_ACCESSOR(OnEntityCreated)
 DEFINE_MANAGER_ACCESSOR(OnEntitySpawned)
@@ -98,26 +98,26 @@ void export_listener_managers(scope _listeners)
 		)
 	;
 
-	_listeners.attr("client_active_listener_manager") = object(ptr(GetClientActiveListenerManager()));
-	_listeners.attr("client_connect_listener_manager") = object(ptr(GetClientConnectListenerManager()));
-	_listeners.attr("client_disconnect_listener_manager") = object(ptr(GetClientDisconnectListenerManager()));
-	_listeners.attr("client_fully_connect_listener_manager") = object(ptr(GetClientFullyConnectListenerManager()));
-	_listeners.attr("client_put_in_server_listener_manager") = object(ptr(GetClientPutInServerListenerManager()));
-	_listeners.attr("client_settings_changed_listener_manager") = object(ptr(GetClientSettingsChangedListenerManager()));
+	_listeners.attr("on_client_active_listener_manager") = object(ptr(GetOnClientActiveListenerManager()));
+	_listeners.attr("on_client_connect_listener_manager") = object(ptr(GetOnClientConnectListenerManager()));
+	_listeners.attr("on_client_disconnect_listener_manager") = object(ptr(GetOnClientDisconnectListenerManager()));
+	_listeners.attr("on_client_fully_connect_listener_manager") = object(ptr(GetOnClientFullyConnectListenerManager()));
+	_listeners.attr("on_client_put_in_server_listener_manager") = object(ptr(GetOnClientPutInServerListenerManager()));
+	_listeners.attr("on_client_settings_changed_listener_manager") = object(ptr(GetOnClientSettingsChangedListenerManager()));
 
-	_listeners.attr("level_init_listener_manager") = object(ptr(GetLevelInitListenerManager()));
-	_listeners.attr("level_shutdown_listener_manager") = object(ptr(GetLevelShutdownListenerManager()));
+	_listeners.attr("on_level_init_listener_manager") = object(ptr(GetOnLevelInitListenerManager()));
+	_listeners.attr("on_level_shutdown_listener_manager") = object(ptr(GetOnLevelShutdownListenerManager()));
 
-	_listeners.attr("network_id_validated_listener_manager") = object(ptr(GetNetworkidValidatedListenerManager()));
+	_listeners.attr("on_network_id_validated_listener_manager") = object(ptr(GetOnNetworkidValidatedListenerManager()));
 
 	_listeners.attr("on_edict_allocated_listener_manager") = object(ptr(GetOnEdictAllocatedListenerManager()));
 	_listeners.attr("on_edict_freed_listener_manager") = object(ptr(GetOnEdictFreedListenerManager()));
 
 	_listeners.attr("on_query_cvar_value_finished_listener_manager") = object(ptr(GetOnQueryCvarValueFinishedListenerManager()));
 
-	_listeners.attr("server_activate_listener_manager") = object(ptr(GetServerActivateListenerManager()));
+	_listeners.attr("on_server_activate_listener_manager") = object(ptr(GetOnServerActivateListenerManager()));
 
-	_listeners.attr("tick_listener_manager") = object(ptr(GetTickListenerManager()));
+	_listeners.attr("on_tick_listener_manager") = object(ptr(GetOnTickListenerManager()));
 	
 	_listeners.attr("on_entity_pre_spawned_listener_manager") = object(ptr(GetOnEntityPreSpawnedListenerManager()));
 	_listeners.attr("on_entity_created_listener_manager") = object(ptr(GetOnEntityCreatedListenerManager()));

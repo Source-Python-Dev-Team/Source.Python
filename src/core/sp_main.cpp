@@ -325,7 +325,7 @@ const char *CSourcePython::GetPluginDescription( void )
 //-----------------------------------------------------------------------------
 void CSourcePython::LevelInit( char const *pMapName )
 {
-	CALL_LISTENERS(LevelInit, pMapName);
+	CALL_LISTENERS(OnLevelInit, pMapName);
 }
 
 //-----------------------------------------------------------------------------
@@ -338,7 +338,7 @@ void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 	for(int i=0; i < edictCount; i++)
 		edicts.append(pEdictList[i]);
 	
-	CALL_LISTENERS(ServerActivate, edicts, edictCount, clientMax);
+	CALL_LISTENERS(OnServerActivate, edicts, edictCount, clientMax);
 }
 
 //-----------------------------------------------------------------------------
@@ -346,7 +346,7 @@ void CSourcePython::ServerActivate( edict_t *pEdictList, int edictCount, int cli
 //-----------------------------------------------------------------------------
 void CSourcePython::GameFrame( bool simulating )
 {
-	CALL_LISTENERS(Tick);
+	CALL_LISTENERS(OnTick);
 }
 
 //-----------------------------------------------------------------------------
@@ -354,7 +354,7 @@ void CSourcePython::GameFrame( bool simulating )
 //-----------------------------------------------------------------------------
 void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
-	CALL_LISTENERS(LevelShutdown);
+	CALL_LISTENERS(OnLevelShutdown);
 }
 
 //-----------------------------------------------------------------------------
@@ -366,7 +366,7 @@ void CSourcePython::ClientActive( edict_t *pEntity )
 	if (!IndexFromEdict(pEntity, iEntityIndex))
 		return;
 
-	CALL_LISTENERS(ClientActive, iEntityIndex);
+	CALL_LISTENERS(OnClientActive, iEntityIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -378,7 +378,7 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 	if (!IndexFromEdict(pEntity, iEntityIndex))
 		return;
 
-	CALL_LISTENERS(ClientDisconnect, iEntityIndex);
+	CALL_LISTENERS(OnClientDisconnect, iEntityIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -390,7 +390,7 @@ void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername 
 	if (!IndexFromEdict(pEntity, iEntityIndex))
 		return;
 
-	CALL_LISTENERS(ClientPutInServer, iEntityIndex, playername);
+	CALL_LISTENERS(OnClientPutInServer, iEntityIndex, playername);
 }
 
 //-----------------------------------------------------------------------------
@@ -410,7 +410,7 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 	if (!IndexFromEdict(pEdict, iEntityIndex))
 		return;
 
-	CALL_LISTENERS(ClientSettingsChanged, iEntityIndex);
+	CALL_LISTENERS(OnClientSettingsChanged, iEntityIndex);
 }
 
 //-----------------------------------------------------------------------------
@@ -424,7 +424,7 @@ PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntit
 
 	CPointer allowConnect = CPointer((unsigned long) bAllowConnect);
 	CPointer rejectMessage = CPointer((unsigned long) reject);
-	CALL_LISTENERS(ClientConnect, allowConnect, iEntityIndex, pszName, pszAddress, rejectMessage, maxrejectlen);
+	CALL_LISTENERS(OnClientConnect, allowConnect, iEntityIndex, pszName, pszAddress, rejectMessage, maxrejectlen);
 	return PLUGIN_OVERRIDE;
 }
 
@@ -433,7 +433,7 @@ PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntit
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::NetworkIDValidated( const char *pszUserName, const char *pszNetworkID )
 {
-	CALL_LISTENERS(NetworkidValidated, pszUserName, pszNetworkID);
+	CALL_LISTENERS(OnNetworkidValidated, pszUserName, pszNetworkID);
 	return PLUGIN_CONTINUE;
 }
 
@@ -469,7 +469,7 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 	if (!IndexFromEdict(pEntity, iEntityIndex))
 		return;
 
-	CALL_LISTENERS(ClientFullyConnect, iEntityIndex);
+	CALL_LISTENERS(OnClientFullyConnect, iEntityIndex);
 }
 #endif
 
