@@ -17,6 +17,11 @@ class _IterObjectMeta(type):
         # Create the _filters dictionary
         cls._filters = dict()
 
+        # Create the filters property
+        cls.__class__.filters = property(
+            lambda cls: cls._filters,
+            doc='Return the class filters dictionary.')
+
         # Return the class
         return cls
 
