@@ -43,6 +43,12 @@ events_logger = _sp_logger.events
 class Event(AutoUnload):
     """Event decorator class.
 
+    .. py:decorator:: Event(*event_names)
+
+            Fired when any event in *event_names* is fired on the server
+
+            Passed arguments: :class:`GameEvent`
+
     .. code-block:: python
 
         from events import Event

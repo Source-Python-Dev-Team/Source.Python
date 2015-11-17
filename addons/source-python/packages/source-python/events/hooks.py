@@ -47,6 +47,15 @@ class EventAction(IntEnum):
 class PreEvent(AutoUnload):
     """Pre-Event decorator class.
 
+    .. py:decorator:: PreEvent(*event_names)
+
+        Fired when any event in *event_names* is
+        about to be fired on the server
+
+        Passed arguments: :class:`events.GameEvent`
+
+        Return types: :class:`EventAction`
+
     .. code-block:: python
 
         from events.hooks import PreEvent
@@ -66,7 +75,7 @@ class PreEvent(AutoUnload):
     .. seealso:: :class:`events.GameEvent` for
         game_event argument functionality.
 
-    .. seealso:: :class:`EventAction` for values to return in the decorator.
+    .. seealso:: :class:`EventAction` for values to return in the function.
     """
 
     def __init__(self, *event_names):
