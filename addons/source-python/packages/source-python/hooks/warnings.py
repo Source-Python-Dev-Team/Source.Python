@@ -76,7 +76,7 @@ class _WarningHooks(_HookBase):
         # Log the warning
         hooks_warnings_logger.log_warning(print_message + '\n')
 
-#: The singleton object of the :class:`_WarningHooks` class
+# The singleton object of the :class:`_WarningHooks` class
 warning_hooks = _WarningHooks()
 
 # Set warnings.showwarning to the print_warning method

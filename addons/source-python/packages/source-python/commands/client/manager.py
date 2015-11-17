@@ -24,5 +24,5 @@ class _ClientCommandManager(_PlayerCommandManager):
     register_filter = staticmethod(register_client_command_filter)
     unregister_filter = staticmethod(unregister_client_command_filter)
 
-#: The singleton object of the :class:`_ClientCommandManager` class
+# The singleton object of the :class:`_ClientCommandManager` class
 client_command_manager = _ClientCommandManager()

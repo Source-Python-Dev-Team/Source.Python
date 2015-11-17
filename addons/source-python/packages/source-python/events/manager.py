@@ -111,5 +111,5 @@ class _EventManager(dict):
             # Remove the event from the dictionary
             del self[event_name]
 
-#: The singleton object of the :class:`_EventManager` class
+# The singleton object of the :class:`_EventManager` class
 event_manager = _EventManager()

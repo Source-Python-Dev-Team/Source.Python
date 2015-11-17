@@ -241,5 +241,5 @@ class _TickDelays(dict):
             # Unregister the listener
             on_tick_listener_manager.unregister_listener(self._tick)
 
-#: The singleton object of the :class:`_TickDelays` class
+# The singleton object of the :class:`_TickDelays` class
 tick_delays = _TickDelays()

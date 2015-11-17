@@ -174,7 +174,7 @@ class _PreEventDictionary(dict):
             # Remove the pre-event from the dictionary
             del self[event_name]
 
-#:  The singleton object of the :class:`_PreEventDictionary` class
+# The singleton object of the :class:`_PreEventDictionary` class
 pre_event_manager = _PreEventDictionary()
 
 

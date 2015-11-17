@@ -63,5 +63,5 @@ class _LanguageManager(ConfigObj):
         # If the value is not found, return None
         return None
 
-#: The singleton object of the :class:`_LanguageManager` class
+# The singleton object of the :class:`_LanguageManager` class
 language_manager = _LanguageManager(SP_DATA_PATH.joinpath('languages.ini'))

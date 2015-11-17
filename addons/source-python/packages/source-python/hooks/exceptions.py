@@ -106,7 +106,7 @@ class _ExceptHooks(_HookBase):
         # Print a blank line to separate the console
         hooks_exceptions_logger.log_exception(message + '\n\n')
 
-#: The singleton object of the :class:`_ExceptHooks` class
+# The singleton object of the :class:`_ExceptHooks` class
 except_hooks = _ExceptHooks()
 
 # Set sys.excepthook to the print_exception method

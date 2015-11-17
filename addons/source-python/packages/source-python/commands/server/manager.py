@@ -20,5 +20,5 @@ class _ServerCommandManager(_BaseCommandManager):
     # Store the base functions
     _get_command = staticmethod(get_server_command)
 
-#: The singleton object of the :class:`_ServerCommandManager` class
+# The singleton object of the :class:`_ServerCommandManager` class
 server_command_manager = _ServerCommandManager()

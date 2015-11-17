@@ -24,5 +24,5 @@ class _SayCommandManager(_PlayerCommandManager):
     register_filter = staticmethod(register_say_filter)
     unregister_filter = staticmethod(unregister_say_filter)
 
-#: The singleton object of the :class:`_SayCommandManager` class
+# The singleton object of the :class:`_SayCommandManager` class
 say_command_manager = _SayCommandManager()
