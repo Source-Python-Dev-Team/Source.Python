@@ -563,11 +563,10 @@ class Entity(BaseEntity, _EntitySpecials):
         model_header = self.model_header
 
         # Loop through all attachments
-        for attachment in map(model_header.get_attachment,
-            range(model_header.attachments_count)):
+        for index in range(model_header.attachments_count):
 
             # Are the names matching?
-            if name == attachment.name:
+            if name == model_header.get_attachment(index).name:
 
                 # Return the current index
                 return index
