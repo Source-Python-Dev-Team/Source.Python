@@ -26,7 +26,8 @@ from memory.hooks import PreHook
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('EventAction',
+__all__ = ('_PreEventDictionary',
+           'EventAction',
            'PreEvent',
            'pre_event_manager',
            )
@@ -115,7 +116,7 @@ class _PreEventDictionary(dict):
             # Remove the pre-event from the dictionary
             del self[event_name]
 
-# Get the _PreEventDictionary instance
+#:  The singleton object of the :class:`_PreEventDictionary` class
 pre_event_manager = _PreEventDictionary()
 
 

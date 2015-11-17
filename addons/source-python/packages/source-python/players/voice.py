@@ -31,7 +31,8 @@ from _players._voice import voice_server
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('mute_manager',
+__all__ = ('_MuteManager',
+           'mute_manager',
            'voice_server',
            )
 
@@ -103,6 +104,7 @@ class _MuteManager(collections.defaultdict):
             lambda receiver: sender in self[receiver],
             self._get_receivers(receivers)))
 
+#: The singleton object of the :class:`_MuteManager` class
 mute_manager = _MuteManager(set)
 
 
