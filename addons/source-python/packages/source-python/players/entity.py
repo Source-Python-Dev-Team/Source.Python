@@ -276,7 +276,7 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
         # Return a Player instance of the player or None if not a player
         return (
             Player(entity.index) if entity is not None and
-            entity.classname == 'player' else None)
+            entity.is_player() else None)
 
     def set_view_player(self, player):
         """Force the player to look at the other player's eye location.
