@@ -16,7 +16,7 @@ from filters.recipients import RecipientFilter
 #   KeyValues
 from keyvalues import KeyValues
 #   Listeners
-from listeners import LevelShutdown
+from listeners import OnLevelShutdown
 from listeners.tick import tick_delays
 #   Messages
 from _messages import DialogType
@@ -272,7 +272,7 @@ class DialogText(_DialogBase):
 # ============================================================================
 # >> LISTENERS
 # ============================================================================
-@LevelShutdown
+@OnLevelShutdown
 def _level_shutdown():
     """Clear the player levels dictionary."""
     _player_levels.clear()

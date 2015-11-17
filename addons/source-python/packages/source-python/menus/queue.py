@@ -14,7 +14,7 @@ from collections import deque
 from commands import CommandReturn
 from commands.client import ClientCommand
 #   Listeners
-from listeners import ClientDisconnect
+from listeners import OnClientDisconnect
 from listeners.tick.repeat import TickRepeat
 #   Menus
 from menus.base import _BaseMenu
@@ -280,7 +280,7 @@ def _escselect_callback(command, index):
 # =============================================================================
 # >> LISTENERS
 # =============================================================================
-@ClientDisconnect
+@OnClientDisconnect
 def on_player_disconnect(player_index):
     """Remove the user queue for the disconnected player."""
     _radio_queues.pop(player_index, 0)

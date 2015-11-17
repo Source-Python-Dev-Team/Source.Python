@@ -29,15 +29,15 @@ from loggers import _sp_logger
 # Source.Python Imports
 #   Listeners
 from _listeners import _ListenerManager
-from _listeners import client_active_listener_manager
-from _listeners import client_connect_listener_manager
-from _listeners import client_disconnect_listener_manager
-from _listeners import client_fully_connect_listener_manager
-from _listeners import client_put_in_server_listener_manager
-from _listeners import client_settings_changed_listener_manager
-from _listeners import level_init_listener_manager
-from _listeners import level_shutdown_listener_manager
-from _listeners import network_id_validated_listener_manager
+from _listeners import on_client_active_listener_manager
+from _listeners import on_client_connect_listener_manager
+from _listeners import on_client_disconnect_listener_manager
+from _listeners import on_client_fully_connect_listener_manager
+from _listeners import on_client_put_in_server_listener_manager
+from _listeners import on_client_settings_changed_listener_manager
+from _listeners import on_level_init_listener_manager
+from _listeners import on_level_shutdown_listener_manager
+from _listeners import on_network_id_validated_listener_manager
 from _listeners import on_edict_allocated_listener_manager
 from _listeners import on_edict_freed_listener_manager
 from _listeners import on_entity_pre_spawned_listener_manager
@@ -48,25 +48,25 @@ from _listeners import on_data_loaded_listener_manager
 from _listeners import on_combiner_pre_cache_listener_manager
 from _listeners import on_data_unloaded_listener_manager
 from _listeners import on_query_cvar_value_finished_listener_manager
-from _listeners import server_activate_listener_manager
-from _listeners import tick_listener_manager
+from _listeners import on_server_activate_listener_manager
+from _listeners import on_tick_listener_manager
 #   Entity output
-from listeners._entity_output import entity_output_listener_manager
+from listeners._entity_output import on_entity_output_listener_manager
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('ClientActive',
-           'ClientConnect',
-           'ClientDisconnect',
-           'ClientFullyConnect',
-           'ClientPutInServer',
-           'ClientSettingsChanged',
-           'EntityOutput',
-           'LevelInit',
-           'LevelShutdown',
-           'NetworkidValidated',
+__all__ = ('OnClientActive',
+           'OnClientConnect',
+           'OnClientDisconnect',
+           'OnClientFullyConnect',
+           'OnClientPutInServer',
+           'OnClientSettingsChanged',
+           'OnEntityOutput',
+           'OnLevelInit',
+           'OnLevelShutdown',
+           'OnNetworkidValidated',
            'OnCombinerPreCache',
            'OnDataLoaded',
            'OnDataUnloaded',
@@ -77,20 +77,20 @@ __all__ = ('ClientActive',
            'OnEntityPreSpawned',
            'OnEntitySpawned',
            'OnQueryCvarValueFinished',
-           'ServerActivate',
-           'Tick',
-           'VersionUpdate',
-           'client_active_listener_manager',
-           'client_connect_listener_manager',
-           'client_disconnect_listener_manager',
-           'client_fully_connect_listener_manager',
-           'client_put_in_server_listener_manager',
-           'client_settings_changed_listener_manager',
-           'entity_output_listener_manager',
-           'level_init_listener_manager',
-           'level_shutdown_listener_manager',
-           'network_id_validated_listener_manager',
-           'on_combiner_pre_cache_listener_manager',
+           'OnServerActivate',
+           'OnTick',
+           'OnVersionUpdate',
+           'on_client_active_listener_manager',
+           'on_client_connect_listener_manager',
+           'on_client_disconnect_listener_manager',
+           'on_client_fully_connect_listener_manager',
+           'on_client_put_in_server_listener_manager',
+           'on_client_settings_changed_listener_manager',
+           'on_entity_output_listener_manager',
+           'on_level_init_listener_manager',
+           'on_level_shutdown_listener_manager',
+           'on_network_id_validated_listener_manager',
+           'on_on_combiner_pre_cache_listener_manager',
            'on_data_loaded_listener_manager',
            'on_data_unloaded_listener_manager',
            'on_edict_allocated_listener_manager',
@@ -100,9 +100,9 @@ __all__ = ('ClientActive',
            'on_entity_pre_spawned_listener_manager',
            'on_entity_spawned_listener_manager',
            'on_query_cvar_value_finished_listener_manager',
-           'server_activate_listener_manager',
-           'tick_listener_manager',
-           'version_update_listener_manager',
+           'on_server_activate_listener_manager',
+           'on_tick_listener_manager',
+           'on_version_update_listener_manager',
            )
 
 
@@ -111,7 +111,7 @@ __all__ = ('ClientActive',
 # =============================================================================
 # Get the sp.listeners logger
 listeners_logger = _sp_logger.listeners
-version_update_listener_manager = _ListenerManager()
+on_version_update_listener_manager = _ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -187,64 +187,64 @@ class _ListenerManager(AutoUnload):
         self.manager.unregister_listener(self.callback)
 
 
-class ClientActive(_ListenerManager):
+class OnClientActive(_ListenerManager):
     """Register/unregister a ClientActive listener."""
 
-    manager = client_active_listener_manager
+    manager = on_client_active_listener_manager
 
 
-class ClientConnect(_ListenerManager):
+class OnClientConnect(_ListenerManager):
     """Register/unregister a ClientConnect listener."""
 
-    manager = client_connect_listener_manager
+    manager = on_client_connect_listener_manager
 
 
-class ClientDisconnect(_ListenerManager):
+class OnClientDisconnect(_ListenerManager):
     """Register/unregister a ClientDisconnect listener."""
 
-    manager = client_disconnect_listener_manager
+    manager = on_client_disconnect_listener_manager
 
 
-class ClientFullyConnect(_ListenerManager):
+class OnClientFullyConnect(_ListenerManager):
     """Register/unregister a ClientFullyConnect listener."""
 
-    manager = client_fully_connect_listener_manager
+    manager = on_client_fully_connect_listener_manager
 
 
-class ClientPutInServer(_ListenerManager):
+class OnClientPutInServer(_ListenerManager):
     """Register/unregister a ClientPutInServer listener."""
 
-    manager = client_put_in_server_listener_manager
+    manager = on_client_put_in_server_listener_manager
 
 
-class ClientSettingsChanged(_ListenerManager):
+class OnClientSettingsChanged(_ListenerManager):
     """Register/unregister a ClientSettingsChanged listener."""
 
-    manager = client_settings_changed_listener_manager
+    manager = on_client_settings_changed_listener_manager
 
 
-class EntityOutput(_ListenerManager):
+class OnEntityOutput(_ListenerManager):
     """Register/unregister an EntityOutput listener."""
 
-    manager = entity_output_listener_manager
+    manager = on_entity_output_listener_manager
 
 
-class LevelInit(_ListenerManager):
+class OnLevelInit(_ListenerManager):
     """Register/unregister a LevelInit listener."""
 
-    manager = level_init_listener_manager
+    manager = on_level_init_listener_manager
 
 
-class LevelShutdown(_ListenerManager):
+class OnLevelShutdown(_ListenerManager):
     """Register/unregister a LevelShutdown listener."""
 
-    manager = level_shutdown_listener_manager
+    manager = on_level_shutdown_listener_manager
 
 
-class NetworkidValidated(_ListenerManager):
+class OnNetworkidValidated(_ListenerManager):
     """Register/unregister a NetworkidValidated listener."""
 
-    manager = network_id_validated_listener_manager
+    manager = on_network_id_validated_listener_manager
 
 
 class OnEdictAllocated(_ListenerManager):
@@ -307,28 +307,28 @@ class OnQueryCvarValueFinished(_ListenerManager):
     manager = on_query_cvar_value_finished_listener_manager
 
 
-class ServerActivate(_ListenerManager):
+class OnServerActivate(_ListenerManager):
     """Register/unregister a ServerActivate listener."""
 
-    manager = server_activate_listener_manager
+    manager = on_server_activate_listener_manager
 
 
-class Tick(_ListenerManager):
+class OnTick(_ListenerManager):
     """Register/unregister a Tick listener."""
 
-    manager = tick_listener_manager
+    manager = on_tick_listener_manager
 
 
-class VersionUpdate(_ListenerManager):
+class OnVersionUpdate(_ListenerManager):
     """Register/unregister a version update listener."""
 
-    manager = version_update_listener_manager
+    manager = on_version_update_listener_manager
 
 
 # =============================================================================
 # >> CALLBACKS
 # =============================================================================
-@LevelInit
+@OnLevelInit
 def _on_level_init(map_name):
     """Called when a new map gets initialized."""
     if not _check_for_update.get_int():
@@ -347,4 +347,4 @@ def _on_level_init(map_name):
         listeners_logger.log_warning(
             'A new Source.Python version is available!')
 
-    version_update_listener_manager.notify(VERSION, version, is_unversioned())
+    on_version_update_listener_manager.notify(VERSION, version, is_unversioned())
