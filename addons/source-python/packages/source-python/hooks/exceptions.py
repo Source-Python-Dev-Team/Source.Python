@@ -48,7 +48,11 @@ class _ExceptHooks(_HookBase):
     def print_exception(
             self, exctype=None, value=None,
             trace_back=None, callbacks=True):
-        """Called when an exception is raised."""
+        """Called when an exception is raised.
+
+        This method hooks :obj:`sys.excepthook` to log all exceptions
+        and call registered callbacks with the provided arguments.
+        """
         # Was an exception passed?
         if exctype is None:
 
@@ -114,25 +118,6 @@ sys.excepthook = except_hooks.print_exception
 
 
 class ExceptHook(_HookDecorator):
-    """Register/unregister a function/method for hooking exceptions.
-
-    .. decorator:: ExceptHook
-
-        Fired when an exception is encountered
-
-        Passed arguments: :class:`Exception` class,
-        :class:`Exception` object, :obj:`types.TracebackType`
-
-    .. code-block:: python
-
-        from hooks.exceptions import ExceptHook
-
-
-        @ExceptHook
-        def exception_callback(exctype, value, trace_back):
-            # Code...
-
-    .. seealso:: :obj:`sys.excepthook`
-    """
+    """Register/unregister a function/method for hooking exceptions."""
 
     _class_instance = except_hooks

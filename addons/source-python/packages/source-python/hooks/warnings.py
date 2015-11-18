@@ -49,7 +49,11 @@ class _WarningHooks(_HookBase):
 
     def print_warning(
             self, message, category, filename, lineno, file=None, line=None):
-        """Log a warning."""
+        """Called when a warning is encountered.
+
+        This method hooks :obj:`warnings.showwarning` to log all warnings
+        and call registered callbacks with the provided arguments.
+        """
         # Loop through each callback in the warning list
         for callback in self:
 
@@ -87,25 +91,6 @@ warnings.filterwarnings('once')
 
 
 class WarningHook(_HookDecorator):
-    """Register/unregister a function/method for hooking warnings.
-
-    .. decorator:: WarningHook
-
-        Fired when a warning is encountered
-
-        Passed arguments: :class:`Warning` object, :class:`Warning` class,
-        :obj:`str` *filename*, :obj:`int` *lineno*
-
-    .. code-block:: python
-
-        from hooks.warnings import WarningHook
-
-
-        @WarningHook
-        def warning_callback(message, category, filename, lineno):
-            # Code...
-
-    .. seealso:: :obj:`warnings.showwarning`
-    """
+    """Register/unregister a function/method for hooking warnings."""
 
     _class_instance = warning_hooks
