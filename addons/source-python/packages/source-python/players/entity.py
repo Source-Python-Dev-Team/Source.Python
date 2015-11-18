@@ -23,9 +23,13 @@ from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
 from entities.constants import CollisionGroup
+from entities.constants import INVALID_ENTITY_INDEX
 from entities.constants import MoveType
 from entities.constants import TakeDamage
 from entities.entity import Entity
+from entities.helpers import index_from_inthandle
+#   Filters
+from filters.weapons import WeaponIter
 #   Mathlib
 from mathlib import Vector
 from mathlib import QAngle
@@ -39,9 +43,9 @@ from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
-from players.games import _GameWeapons
 from players.voice import mute_manager
-from players.weapons import _PlayerWeapons
+#   Weapons
+from weapons.entity import Weapon
 
 
 # =============================================================================
@@ -54,7 +58,7 @@ __all__ = ('Player',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(Entity, _GameWeapons, _PlayerWeapons):
+class Player(Entity):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
@@ -529,6 +533,55 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
         return self.move_type == MoveType.NONE
 
     stuck = property(get_stuck, set_stuck)
+
+    # =========================================================================
+    # >> WEAPONS
+    # =========================================================================
+    def get_active_weapon(self):
+        """Return the player's active weapon.
+
+        :rtype: Weapon
+        """
+        index = index_from_inthandle(self.active_weapon_handle)
+        if index is INVALID_ENTITY_INDEX:
+            return None
+        return Weapon(index)
+
+    active_weapon = property(get_active_weapon)
+
+    def get_weapons(self, is_filters=None, not_filters=None):
+        """Return the player's weapons.
+
+        :return: A generator of :class:`weapons.entity.Weapon` objects
+        :rtype: generator
+        """
+        for weapon in WeaponIter(is_filters, not_filters):
+            if index_from_inthandle(weapon.owner) == self.index:
+                yield weapon
+
+    def get_primary_weapon(self):
+        """Return the player's primary weapon.
+
+        :rtype: Weapon
+        """
+        try:
+            return next(self.get_weapons(is_filters='primary'))
+        except ValueError:
+            return None
+
+    primary_weapon = property(get_primary_weapon)
+
+    def get_secondary_weapon(self):
+        """Return the player's secondary weapon.
+
+        :rtype: Weapon
+        """
+        try:
+            return next(self.get_weapons(is_filters='secondary'))
+        except ValueError:
+            return None
+
+    secondary_weapon = property(get_secondary_weapon)
 
 
 # =============================================================================
