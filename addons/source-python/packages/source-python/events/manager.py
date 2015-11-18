@@ -56,6 +56,10 @@ class _EventManager(dict):
     def register_for_event(self, event_name, callback):
         """Register the callback for the given event.
 
+        :param str event_name: The name of the event to register.
+        :param callback: The function to be called when the
+            event is fired on the server.
+
         .. code-block:: python
 
             from events.manager import event_manager
@@ -66,9 +70,6 @@ class _EventManager(dict):
             event_manager.register_for_event('player_death', function)
 
         .. seealso:: :doc:`../events` for a list of supported events per game.
-
-        .. seealso:: :class:`events.GameEvent` for
-            game_event argument functionality.
         """
         # Is the callback callable?
         if not callable(callback):
@@ -82,6 +83,9 @@ class _EventManager(dict):
 
     def unregister_for_event(self, event_name, callback):
         """Unregister the callback for the given event.
+
+        :param str event_name: The name of the event to unregister.
+        :param callback: The function to unregister from the event.
 
         .. code-block:: python
 
