@@ -33,135 +33,111 @@
 //-----------------------------------------------------------------------------
 // Returns an Edict instance from the given index.
 //-----------------------------------------------------------------------------
-edict_t *EdictFromIndex( int iEntityIndex, bool bRaiseException )
+bool EdictFromIndex( unsigned int iEntityIndex, edict_t*& output )
 {
-	edict_t *pEdict = NULL;
+	if (iEntityIndex >= (unsigned int) gpGlobals->maxEntities)
+		return false;
 
-	if (iEntityIndex > INVALID_ENTITY_INDEX && iEntityIndex < gpGlobals->maxEntities)
-	{
-		edict_t *pTempEdict;
+	edict_t* pEdict;
 #if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
-		pTempEdict = engine->PEntityOfEntIndex(iEntityIndex);
+	pEdict = engine->PEntityOfEntIndex(iEntityIndex);
 #else
-		pTempEdict = (edict_t *)(gpGlobals->pEdicts + iEntityIndex);
+	pEdict = (edict_t *)(gpGlobals->pEdicts + iEntityIndex);
 #endif
-		if (pTempEdict && !pTempEdict->IsFree() && pTempEdict->GetUnknown())
-			pEdict = pTempEdict;
-	}
+	if (!pEdict || pEdict->IsFree() || !pEdict->GetUnknown())
+		return false;
 
-	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given index (%i).", iEntityIndex);
-
-	return pEdict;
+	output = pEdict;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an Edict instance from the given UserID.
 //-----------------------------------------------------------------------------
-edict_t *EdictFromUserid( int iUserID, bool bRaiseException )
+bool EdictFromUserid( unsigned int iUserID, edict_t*& output )
 {
-	edict_t *pEdict = NULL;
-
-	if (iUserID > INVALID_PLAYER_USERID)
+	for (int iCurrentIndex = 1; iCurrentIndex <= gpGlobals->maxClients; iCurrentIndex++)
 	{
-		for (int iCurrentIndex = 1; iCurrentIndex <= gpGlobals->maxClients; iCurrentIndex++)
-		{
-			edict_t *pCurrentEdict = EdictFromIndex(iCurrentIndex);
-			if (engine->GetPlayerUserId(pCurrentEdict) == iUserID)
-				pEdict = pCurrentEdict;
+		edict_t* pEdict;
+		if (!EdictFromIndex(iCurrentIndex, pEdict))
+			continue;
+
+		if (engine->GetPlayerUserId(pEdict) == iUserID) {
+			output = pEdict;
+			return true;
 		}
 	}
-
-	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given UserID (%i).", iUserID);
-
-	return pEdict;
+	return false;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an Edict instance from the given PlayerInfo instance.
 //-----------------------------------------------------------------------------
-edict_t *EdictFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException )
+bool EdictFromPlayerInfo( IPlayerInfo *pPlayerInfo, edict_t*& output )
 {
-	edict_t *pEdict = NULL;
+	if (!pPlayerInfo)
+		return false;
 
-	if (pPlayerInfo)
-		pEdict = EdictFromUserid(pPlayerInfo->GetUserID());
-
-	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given PlayerInfo instance (%x).", pPlayerInfo);
-
-	return pEdict;
+	return EdictFromUserid(pPlayerInfo->GetUserID(), output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an Edict instance from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
-edict_t *EdictFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException )
+bool EdictFromBaseEntity( CBaseEntity *pBaseEntity, edict_t*& output )
 {
-	edict_t *pEdict = NULL;
+	if (!pBaseEntity)
+		return false;
+	
+	IServerNetworkable *pServerNetworkable = pBaseEntity->GetNetworkable();
+	if (!pServerNetworkable)
+		return false;
 
-	if (pBaseEntity)
-	{
-		IServerUnknown *pServerUnknown = (IServerUnknown *)pBaseEntity;
-		if (pServerUnknown)
-		{
-			IServerNetworkable *pServerNetworkable = pServerUnknown->GetNetworkable();
-			if (pServerNetworkable)
-				pEdict = pServerNetworkable->GetEdict();
-		}
-	}
+	edict_t* pEdict = pServerNetworkable->GetEdict();
+	if (!pEdict || pEdict->IsFree())
+		return false;
 
-	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given BaseEntity instance (%x).", pBaseEntity);
-
-	return pEdict;
+	output = pEdict;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an Edict instance from the given BaseHandle instance.
 //-----------------------------------------------------------------------------
-edict_t *EdictFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException )
+bool EdictFromBaseHandle( CBaseHandle hBaseHandle, edict_t*& output )
 {
-	edict_t *pEdict = EdictFromIndex(IndexFromBaseHandle(hBaseHandle));
+	unsigned int iIndex;
+	if (!IndexFromBaseHandle(hBaseHandle, iIndex))
+		return false;
 
-	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
-
-	return pEdict;
+	return EdictFromIndex(iIndex, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an Edict instance from the given IntHandle.
 //-----------------------------------------------------------------------------
-edict_t *EdictFromIntHandle( int iEntityHandle, bool bRaiseException )
+bool EdictFromIntHandle( unsigned int iEntityHandle, edict_t*& output )
 {
-	edict_t *pEdict = EdictFromIndex(IndexFromIntHandle(iEntityHandle));
+	unsigned int iIndex;
+	if (!IndexFromIntHandle(iEntityHandle, iIndex))
+		return false;
 
-	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given IntHandle (%i).", iEntityHandle);
-
-	return pEdict;
+	return EdictFromIndex(iIndex, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an Edict instance from the given Pointer instance.
 //-----------------------------------------------------------------------------
-edict_t *EdictFromPointer( CPointer *pEntityPointer, bool bRaiseException )
+bool EdictFromPointer( CPointer *pEntityPointer, edict_t*& output )
 {
-	edict_t *pEdict = NULL;
+	if (!pEntityPointer || !pEntityPointer->IsValid())
+		return false;
 
-	if (pEntityPointer && pEntityPointer->IsValid())
-		pEdict = EdictFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr);
-
-	if (!pEdict && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict instance from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
-
-	return pEdict;
+	return EdictFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr, output);
 }

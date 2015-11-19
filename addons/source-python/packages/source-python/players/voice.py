@@ -104,7 +104,7 @@ class _MuteManager(collections.defaultdict):
             lambda receiver: sender in self[receiver],
             self._get_receivers(receivers)))
 
-#: The singleton object of the :class:`_MuteManager` class
+# The singleton object of the :class:`_MuteManager` class
 mute_manager = _MuteManager(set)
 
 

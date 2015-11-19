@@ -25,8 +25,8 @@ from paths import GAME_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_WarningHooks',
-           'WarningHook',
+__all__ = ('WarningHook',
+           '_WarningHooks',
            'warning_hooks',
            )
 
@@ -49,7 +49,11 @@ class _WarningHooks(_HookBase):
 
     def print_warning(
             self, message, category, filename, lineno, file=None, line=None):
-        """Log a warning."""
+        """Called when a warning is encountered.
+
+        This method hooks :obj:`warnings.showwarning` to log all warnings
+        and call registered callbacks with the provided arguments.
+        """
         # Loop through each callback in the warning list
         for callback in self:
 
@@ -76,7 +80,7 @@ class _WarningHooks(_HookBase):
         # Log the warning
         hooks_warnings_logger.log_warning(print_message + '\n')
 
-#: The singleton object of the :class:`_WarningHooks` class
+# The singleton object of the :class:`_WarningHooks` class
 warning_hooks = _WarningHooks()
 
 # Set warnings.showwarning to the print_warning method

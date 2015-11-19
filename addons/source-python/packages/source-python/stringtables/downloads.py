@@ -10,6 +10,8 @@
 from core import AutoUnload
 #   Events
 from events.manager import event_manager
+#   Paths
+from paths import GAME_PATH
 #   Stringtables
 from stringtables import string_tables
 

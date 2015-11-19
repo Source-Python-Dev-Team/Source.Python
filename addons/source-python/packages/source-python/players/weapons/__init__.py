@@ -7,7 +7,6 @@
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from entities.constants import INVALID_ENTITY_INDEX
 from entities.entity import Entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
@@ -332,7 +331,7 @@ class _PlayerWeapons(object):
             index = index_from_inthandle(handle, raise_exception=False)
 
             # Is this a valid index?
-            if index == INVALID_ENTITY_INDEX:
+            if index is None:
 
                 # Move onto the next offset
                 continue
