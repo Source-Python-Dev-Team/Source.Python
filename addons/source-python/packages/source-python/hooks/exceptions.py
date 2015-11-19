@@ -26,8 +26,8 @@ from paths import GAME_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_ExceptHooks',
-           'ExceptHook',
+__all__ = ('ExceptHook',
+           '_ExceptHooks',
            'except_hooks',
            )
 
@@ -48,7 +48,11 @@ class _ExceptHooks(_HookBase):
     def print_exception(
             self, exctype=None, value=None,
             trace_back=None, callbacks=True):
-        """Called when an exception is raised."""
+        """Called when an exception is raised.
+
+        This method hooks :obj:`sys.excepthook` to log all exceptions
+        and call registered callbacks with the provided arguments.
+        """
         # Was an exception passed?
         if exctype is None:
 
@@ -106,7 +110,7 @@ class _ExceptHooks(_HookBase):
         # Print a blank line to separate the console
         hooks_exceptions_logger.log_exception(message + '\n\n')
 
-#: The singleton object of the :class:`_ExceptHooks` class
+# The singleton object of the :class:`_ExceptHooks` class
 except_hooks = _ExceptHooks()
 
 # Set sys.excepthook to the print_exception method

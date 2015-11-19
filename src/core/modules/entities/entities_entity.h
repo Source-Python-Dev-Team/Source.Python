@@ -72,7 +72,11 @@ public:
 public:
 	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex)
 	{
-		return CBaseEntityWrapper::wrap(BaseEntityFromIndex(uiEntityIndex, true));
+		CBaseEntity* pBaseEntity;
+		if (!BaseEntityFromIndex(uiEntityIndex, pBaseEntity))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to create BaseEntity object from this index: '%i'", uiEntityIndex);
+
+		return CBaseEntityWrapper::wrap(pBaseEntity);
 	}
 
 	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity)
@@ -188,27 +192,60 @@ public:
 	}
 
 	edict_t* GetEdict()
-	{ return EdictFromBaseEntity(GetThis()); }
+	{
+		edict_t* pEdict;
+		if (!EdictFromBaseEntity(GetThis(), pEdict))
+			return NULL;
+
+		return pEdict;
+	}
 	
-	int GetIndex()
-	{ return IndexFromBaseEntity(GetThis()); }
+	object GetIndex()
+	{
+		unsigned int iEntityIndex;
+		if (!IndexFromBaseEntity(GetThis(), iEntityIndex))
+			return object();
+
+		return object(iEntityIndex);
+	}
 	
 	CPointer* GetPointer()
-	{ return PointerFromBaseEntity(GetThis()); }
+	{
+		CPointer pPointer;
+		if (!PointerFromBaseEntity(GetThis(), pPointer))
+			return NULL;
+
+		return new CPointer(pPointer);
+	}
 	
-	CBaseHandle GetBaseHandle()
-	{ return BaseHandleFromBaseEntity(GetThis()); }
+	object GetBaseHandle()
+	{
+		CBaseHandle hBaseHandle;
+		if (!BaseHandleFromBaseEntity(GetThis(), hBaseHandle))
+			return object();
+
+		return object(hBaseHandle);
+	}
 	
-	int GetIntHandle()
-	{ return IntHandleFromBaseEntity(GetThis()); }
+	object GetIntHandle()
+	{
+		unsigned int iEntityHandle;
+		if (!IntHandleFromBaseEntity(GetThis(), iEntityHandle))
+			return object();
+
+		return object(iEntityHandle);
+	}
 
 	bool IsPlayer()
 	{
 		if (!IServerUnknownExt::IsNetworked(GetThis()))
 			return false;
 
-		int index = GetIndex();
-		return index > WORLD_ENTITY_INDEX && index <= gpGlobals->maxClients;
+		unsigned int iEntityIndex;
+		if (!IndexFromBaseEntity(GetThis(), iEntityIndex)) 
+			return false;
+
+		return iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex <= (unsigned int) gpGlobals->maxClients;
 	}
 };
 

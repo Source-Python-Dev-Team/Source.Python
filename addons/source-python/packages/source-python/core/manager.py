@@ -35,5 +35,5 @@ class _CorePluginManager(PluginManager):
 
     logger = core_manager_logger
 
-#: The singleton object of the :class:`_CorePluginManager` class
+# The singleton object of the :class:`_CorePluginManager` class
 core_plugin_manager = _CorePluginManager()

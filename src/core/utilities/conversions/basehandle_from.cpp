@@ -33,102 +33,107 @@
 //-----------------------------------------------------------------------------
 // Returns a BaseHandle instance from the given Edict instance.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromEdict( edict_t *pEdict, bool bRaiseException )
+bool BaseHandleFromEdict( edict_t *pEdict, CBaseHandle& output )
 {
-	CBaseHandle hBaseHandle = NULL;
+	if (!pEdict || pEdict->IsFree())
+		return false;
 
-	if (pEdict && !pEdict->IsFree())
-	{
-		IServerNetworkable *pServerNetworkable = pEdict->GetNetworkable();
-		if (pServerNetworkable)
-			hBaseHandle = pServerNetworkable->GetEntityHandle();
-	}
+	IServerNetworkable *pServerNetworkable = pEdict->GetNetworkable();
+	if (!pServerNetworkable)
+		return false;
 
-	if (!hBaseHandle.ToInt() && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given Edict instance (%x).", pEdict);
+	IHandleEntity* pHandleEntity = pServerNetworkable->GetEntityHandle();
+	if (!pHandleEntity)
+		return false;
 
-	return hBaseHandle;
+	CBaseHandle hBaseHandle = pHandleEntity->GetRefEHandle();
+	if (!hBaseHandle.ToInt())
+		return false;
+
+	output = hBaseHandle;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseHandle instance from the given index.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromIndex( int iEntityIndex, bool bRaiseException )
+bool BaseHandleFromIndex( unsigned int iEntityIndex, CBaseHandle& output )
 {
-	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromIndex(iEntityIndex));
+	edict_t* pEdict;
+	if (!EdictFromIndex(iEntityIndex, pEdict))
+		return false;
 
-	if (!hBaseHandle.ToInt() && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given index (%i).", iEntityIndex);
-
-	return hBaseHandle;
+	return BaseHandleFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseHandle instance from the given IntHandle.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromIntHandle( int iEntityHandle, bool bRaiseException )
+bool BaseHandleFromIntHandle( unsigned int iEntityHandle, CBaseHandle& output )
 {
 	CBaseHandle hBaseHandle = CBaseHandle(iEntityHandle);
+	unsigned int iIndex;
+	if (!IndexFromBaseHandle(hBaseHandle, iIndex))
+		return false;
 
-	if (IndexFromBaseHandle(hBaseHandle) == INVALID_ENTITY_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given IntHandle (%i).", iEntityHandle);
-
-	return hBaseHandle;
+	output = hBaseHandle;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseHandle instance from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException )
+bool BaseHandleFromBaseEntity( CBaseEntity *pBaseEntity, CBaseHandle& output )
 {
-	CBaseHandle hBaseHandle = pBaseEntity->GetRefEHandle();
-	if (!hBaseHandle.ToInt() && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given BaseEntity instance (%x).", pBaseEntity);
+	if (!pBaseEntity)
+		return false;
 
-	return hBaseHandle;
+	CBaseHandle hBaseHandle = pBaseEntity->GetRefEHandle();
+	if (!hBaseHandle.ToInt())
+		return false;
+
+	output = hBaseHandle;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseHandle instance from the given Pointer instance.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromPointer( CPointer *pEntityPointer, bool bRaiseException )
+bool BaseHandleFromPointer( CPointer *pEntityPointer, CBaseHandle& output )
 {
-	CBaseHandle hBaseHandle = BaseHandleFromBaseEntity(BaseEntityFromPointer(pEntityPointer));
+	CBaseEntity* pBaseEntity;
+	if (!BaseEntityFromPointer(pEntityPointer, pBaseEntity))
+		return false;
 
-	if (!hBaseHandle.ToInt() && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
-
-	return hBaseHandle;
+	return BaseHandleFromBaseEntity(pBaseEntity, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseHandle instance from the given UserID.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromUserid( int iUserID, bool bRaiseException )
+bool BaseHandleFromUserid( unsigned int iUserID, CBaseHandle& output )
 {
-	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromUserid(iUserID));
+	edict_t* pEdict;
+	if (!EdictFromUserid(iUserID, pEdict))
+		return false;
 
-	if (!hBaseHandle.ToInt() && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given UserID (%i).", iUserID);
-
-	return hBaseHandle;
+	return BaseHandleFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a BaseHandle instance from the given PlayerInfo instance.
 //-----------------------------------------------------------------------------
-CBaseHandle BaseHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException )
+bool BaseHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, CBaseHandle& output )
 {
-	CBaseHandle hBaseHandle = BaseHandleFromEdict(EdictFromPlayerInfo(pPlayerInfo));
+	edict_t* pEdict;
+	if (!EdictFromPlayerInfo(pPlayerInfo, pEdict))
+		return false;
 
-	if (!hBaseHandle.ToInt() && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle instance from the given PlayerInfo instance (%x).", pPlayerInfo);
-
-	return hBaseHandle;
+	return BaseHandleFromEdict(pEdict, output);
 }

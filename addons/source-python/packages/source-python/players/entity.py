@@ -145,7 +145,7 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
     def address(self):
         """Return the player's IP address and port.
 
-        If the player is a bot, '0' will be returned.
+        If the player is a bot, an empty string will be returned.
 
         :return: The IP address. E.g. '127.0.0.1:27015'
         :rtype: str

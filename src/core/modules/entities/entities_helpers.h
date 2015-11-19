@@ -44,23 +44,32 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 // Creates an entity of the given name and returns its index...
 //-----------------------------------------------------------------------------
+// TODO: This should return a BaseEntity object
 unsigned int create_entity(const char *szClassName)
 {
 	CBaseEntity *pBaseEntity = (CBaseEntity *)servertools->CreateEntityByName(szClassName);
-
 	if (!pBaseEntity)
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to create an entity of type \"%s\".", szClassName);
 
-	return IndexFromBaseEntity(pBaseEntity);
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseEntity(pBaseEntity, iEntityIndex))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseEntity object: '%p'", pBaseEntity);
+
+	return iEntityIndex;
 }
 
 
 //-----------------------------------------------------------------------------
 // Spawns the given entity index...
 //-----------------------------------------------------------------------------
+// TODO: This should accept a BaseEntity object
 void spawn_entity(unsigned int uiEntityIndex)
 {
-	servertools->DispatchSpawn(BaseEntityFromIndex(uiEntityIndex, true));
+	CBaseEntity* pBaseEntity;
+	if (!BaseEntityFromIndex(uiEntityIndex, pBaseEntity))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiEntityIndex);
+
+	servertools->DispatchSpawn(pBaseEntity);
 }
 
 

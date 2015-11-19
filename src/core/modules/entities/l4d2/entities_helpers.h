@@ -46,7 +46,10 @@ void remove_entity(unsigned int uiEntityIndex)
 	CEntityFactoryDictionary* pFactoryDict = extract<CEntityFactoryDictionary*>(
 		import("entities.factories").attr("factory_dictionary"));
 
-	edict_t* pEdict = EdictFromIndex(uiEntityIndex, true);
+	edict_t* pEdict;
+    if (!EdictFromIndex(uiEntityIndex, pEdict))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an Edict object from the given index: '%i'", uiEntityIndex);
+        
 	pFactoryDict->Destroy(pEdict->GetClassName(), pEdict->GetNetworkable());
 }
 

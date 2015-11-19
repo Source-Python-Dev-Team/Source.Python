@@ -73,6 +73,7 @@ __all__ = ('address_from_playerinfo',
            'playerinfo_from_userid',
            'pointer_from_playerinfo',
            'pointer_from_userid',
+           'uniqueid_from_index',
            'uniqueid_from_playerinfo',
            'userid_from_baseentity',
            'userid_from_basehandle',
@@ -100,9 +101,8 @@ def index_from_steamid(steamid):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-
-    # If no player found with a matching SteamID, raise an error
-    raise ValueError('Invalid SteamID "{0}"'.format(steamid))
+            
+    return None
 
 
 def index_from_uniqueid(uniqueid):
@@ -118,9 +118,8 @@ def index_from_uniqueid(uniqueid):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-
-    # If no player found with a matching UniqueID, raise an error
-    raise ValueError('Invalid UniqueID "{0}"'.format(uniqueid))
+            
+    return None
 
 
 def index_from_name(name):
@@ -136,9 +135,8 @@ def index_from_name(name):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-
-    # If no player found with a matching name, raise an error
-    raise ValueError('Invalid name "{0}"'.format(name))
+            
+    return None
 
 
 def uniqueid_from_playerinfo(playerinfo):
@@ -163,6 +161,15 @@ def uniqueid_from_playerinfo(playerinfo):
 
     # Return the player's SteamID
     return steamid
+    
+    
+def uniqueid_from_index(index):
+    """Return the UniqueID for the given player index."""
+    playerinfo = playerinfo_from_index(index)
+    if playerinfo is None:
+        return None
+        
+    return uniqueid_from_playerinfo(playerinfo)
 
 
 def address_from_playerinfo(playerinfo):
@@ -170,9 +177,9 @@ def address_from_playerinfo(playerinfo):
     # Is the player a bot?
     if playerinfo.is_fake_client():
 
-        # Return a base value, since using
-        # <netinfo>.get_address() crashes with bots
-        return '0'
+        # Return an empty string, since using <netinfo>.get_address() crashes
+        # with bots
+        return ''
 
     # Get the player's index
     index = index_from_playerinfo(playerinfo)
