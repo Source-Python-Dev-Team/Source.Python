@@ -134,14 +134,22 @@ public:
 		return pVector;
 	}
 
-	static int get_entity(variant_t *pVariant)
+	static object get_entity(variant_t *pVariant)
 	{
-		return IndexFromBaseHandle(pVariant->Entity());
+		unsigned int iEntityIndex;
+		if (!IndexFromBaseHandle(pVariant->Entity(), iEntityIndex))
+			return object();
+
+		return object(iEntityIndex);
 	}
 
 	static void set_entity(variant_t *pVariant, unsigned int uiEntity)
 	{
-		pVariant->SetEntity(BaseEntityFromIndex(uiEntity, true));
+		CBaseEntity* pBaseEntity;
+		if (!BaseEntityFromIndex(uiEntity, pBaseEntity))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiEntity);
+
+		pVariant->SetEntity(pBaseEntity);
 	}
 };
 
@@ -161,24 +169,34 @@ public:
 		return pInputData;
 	}
 
-	static int get_activator(const inputdata_t& pInputData)
+	static object get_activator(const inputdata_t& pInputData)
 	{
-		return IndexFromBaseEntity(pInputData.pActivator);
+		unsigned int iEntityIndex;
+		if (!IndexFromBaseEntity(pInputData.pActivator, iEntityIndex))
+			return object();
+
+		return object(iEntityIndex);
 	}
 
 	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator)
 	{
-		pInputData->pActivator = BaseEntityFromIndex(uiActivator, true);
+		if (!BaseEntityFromIndex(uiActivator, pInputData->pActivator))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiActivator);
 	}
 
-	static int get_caller(const inputdata_t& pInputData)
+	static object get_caller(const inputdata_t& pInputData)
 	{
-		return IndexFromBaseEntity(pInputData.pCaller);
+		unsigned int iEntityIndex;
+		if (!IndexFromBaseEntity(pInputData.pCaller, iEntityIndex))
+			return object();
+
+		return object(iEntityIndex);
 	}
 	
 	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller)
 	{
-		pInputData->pCaller = BaseEntityFromIndex(uiCaller, true);
+		if (!BaseEntityFromIndex(uiCaller, pInputData->pCaller))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiCaller);
 	}
 };
 
