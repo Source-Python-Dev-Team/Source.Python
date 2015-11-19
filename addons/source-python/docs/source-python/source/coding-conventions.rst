@@ -68,7 +68,7 @@ Naming conventions
     _private_variable = False
 
 8. Only built-in magic methods should have 2 leading and trailing underscores.
-9. **All** names should be very descriptive as to what the object does or is
+9. **All** names should be very descriptive as to what the object does or is.
 
 
 Formatting
