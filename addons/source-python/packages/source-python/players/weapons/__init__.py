@@ -327,8 +327,11 @@ class _PlayerWeapons(object):
             handle = self.get_property_int(
                 weapon_manager.myweapons + '%03i' % offset)
 
+            if handle == -1:
+                continue
+
             # Get the weapon's index
-            index = index_from_inthandle(handle, raise_exception=False)
+            index = index_from_inthandle(handle)
 
             # Is this a valid index?
             if index is None:
@@ -352,8 +355,8 @@ class _PlayerWeapons(object):
             # Was a weapon type given and the
             # current weapon is not of that type?
             if not (is_filters is None and not_filters is None):
-                if weapon_class not in list(WeaponClassIter(
-                        is_filters, not_filters, 'classname')):
+                if weapon_class not in map(lambda value: value.name,
+                        WeaponClassIter(is_filters, not_filters)):
 
                     # Do not yield this index
                     continue
