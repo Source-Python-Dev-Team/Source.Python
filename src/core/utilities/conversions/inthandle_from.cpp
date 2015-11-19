@@ -39,7 +39,7 @@ bool IntHandleFromBaseHandle( CBaseHandle hBaseHandle, unsigned int& output )
 		return false;
 
 	unsigned int iEntityHandle = hBaseHandle.ToInt();
-	if (iEntityHandle == INVALID_EHANDLE_INDEX)
+	if (!iEntityHandle)
 		return false;
 
 	output = iEntityHandle;

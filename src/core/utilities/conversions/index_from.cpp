@@ -90,7 +90,7 @@ bool IndexFromPointer( CPointer *pEntityPointer, unsigned int& output )
 //-----------------------------------------------------------------------------
 bool IndexFromBaseHandle( CBaseHandle hBaseHandle, unsigned int& output )
 {
-	if (!hBaseHandle.IsValid())
+	if (!hBaseHandle.IsValid() || !hBaseHandle.ToInt())
 		return false;
 
 	int iEntityIndex = hBaseHandle.GetEntryIndex();
