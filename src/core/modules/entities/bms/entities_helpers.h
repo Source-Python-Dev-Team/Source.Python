@@ -47,11 +47,7 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 void remove_entity(unsigned int uiEntityIndex)
 {
-	CBaseEntity* pBaseEntity;
-	if (!BaseEntityFromIndex(uiEntityIndex, pBaseEntity))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiEntityIndex);
-		
-	servertools->RemoveEntity(pBaseEntity);
+	servertools->RemoveEntity(ExcBaseEntityFromIndex(uiEntityIndex));
 }
 
 

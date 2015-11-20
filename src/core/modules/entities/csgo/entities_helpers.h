@@ -48,10 +48,7 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 void remove_entity(unsigned int uiEntityIndex)
 {
-	CBaseEntity *pBaseEntity;
-	if (!BaseEntityFromIndex(uiEntityIndex, pBaseEntity))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiEntityIndex);
-
+	CBaseEntity *pBaseEntity = ExcBaseEntityFromIndex(uiEntityIndex);
 	int iHammerID = INT_MAX;
 	while (servertools->FindEntityByHammerID(iHammerID))
 		iHammerID--;

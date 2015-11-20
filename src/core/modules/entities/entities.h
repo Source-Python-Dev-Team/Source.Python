@@ -48,49 +48,34 @@
 class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
 {
 public:
-	object get_inflictor()
+	unsigned int get_inflictor()
 	{
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseHandle(m_hInflictor, iEntityIndex))
-			return object();
-
-		return object(iEntityIndex);
+		return ExcIndexFromBaseHandle(m_hInflictor);
 	}
 	
 	void set_inflictor(unsigned int uiInflictor)
 	{
-		if (!BaseHandleFromIndex(uiInflictor, m_hInflictor))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle object from the given index: '%i'", uiInflictor);
+		m_hInflictor = ExcBaseHandleFromIndex(uiInflictor);
 	}
 	
-	object get_attacker()
+	unsigned int get_attacker()
 	{
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseHandle(m_hAttacker, iEntityIndex))
-			return object();
-
-		return object(iEntityIndex);
+		return ExcIndexFromBaseHandle(m_hAttacker);
 	}
 	
 	void set_attacker(unsigned int uiAttacker)
 	{
-		if (!BaseHandleFromIndex(uiAttacker, m_hAttacker))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle object from the given index: '%i'", uiAttacker);
+		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
 	}
 	
-	object get_weapon()
+	unsigned int get_weapon()
 	{
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseHandle(m_hWeapon, iEntityIndex))
-			return object();
-
-		return object(iEntityIndex);
+		return ExcIndexFromBaseHandle(m_hWeapon);
 	}
 	
 	void set_weapon(unsigned int uiWeapon)
 	{
-		if (!BaseHandleFromIndex(uiWeapon, m_hWeapon))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseHandle object from the given index: '%i'", uiWeapon);
+		m_hWeapon = ExcBaseHandleFromIndex(uiWeapon);
 	}
 	
 	void set_base_damage(float flBaseDamage)
@@ -125,7 +110,7 @@ public:
 		return pTakeDamageInfo;
 	}
 	
-	static object get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
+	static unsigned int get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_inflictor();
 	}
@@ -135,7 +120,7 @@ public:
 		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_inflictor(iInflictor);
 	}
 	
-	static object get_attacker(CTakeDamageInfo *pTakeDamageInfo)
+	static unsigned int get_attacker(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_attacker();
 	}
@@ -145,7 +130,7 @@ public:
 		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_attacker(iAttacker);
 	}
 	
-	static object get_weapon(CTakeDamageInfo *pTakeDamageInfo)
+	static unsigned int get_weapon(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_weapon();
 	}

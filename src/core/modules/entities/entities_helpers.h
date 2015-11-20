@@ -51,11 +51,7 @@ unsigned int create_entity(const char *szClassName)
 	if (!pBaseEntity)
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to create an entity of type \"%s\".", szClassName);
 
-	unsigned int iEntityIndex;
-	if (!IndexFromBaseEntity(pBaseEntity, iEntityIndex))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an index from the given BaseEntity object: '%p'", pBaseEntity);
-
-	return iEntityIndex;
+	return ExcIndexFromBaseEntity(pBaseEntity);
 }
 
 
@@ -65,11 +61,7 @@ unsigned int create_entity(const char *szClassName)
 // TODO: This should accept a BaseEntity object
 void spawn_entity(unsigned int uiEntityIndex)
 {
-	CBaseEntity* pBaseEntity;
-	if (!BaseEntityFromIndex(uiEntityIndex, pBaseEntity))
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiEntityIndex);
-
-	servertools->DispatchSpawn(pBaseEntity);
+	servertools->DispatchSpawn(ExcBaseEntityFromIndex(uiEntityIndex));
 }
 
 
