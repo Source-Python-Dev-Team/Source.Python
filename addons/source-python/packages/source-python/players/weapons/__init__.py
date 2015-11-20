@@ -327,16 +327,9 @@ class _PlayerWeapons(object):
             handle = self.get_property_int(
                 weapon_manager.myweapons + '%03i' % offset)
 
-            if handle == -1:
-                continue
-
-            # Get the weapon's index
-            index = index_from_inthandle(handle)
-
-            # Is this a valid index?
-            if index is None:
-
-                # Move onto the next offset
+            try:
+                index = index_from_inthandle(handle)
+            except (ValueError, OverflowError):
                 continue
 
             # Get the weapon's classname
