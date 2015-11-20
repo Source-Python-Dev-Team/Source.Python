@@ -101,8 +101,9 @@ def index_from_steamid(steamid):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-            
-    return None
+
+    raise ValueError(
+        'Conversion from "SteamID" ({}) to "Index" failed.'.format(steamid))
 
 
 def index_from_uniqueid(uniqueid):
@@ -118,8 +119,9 @@ def index_from_uniqueid(uniqueid):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-            
-    return None
+
+    raise ValueError(
+        'Conversion from "UniqueID" ({}) to "Index" failed.'.format(uniqueid))
 
 
 def index_from_name(name):
@@ -135,8 +137,9 @@ def index_from_name(name):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-            
-    return None
+
+    raise ValueError(
+        'Conversion from "Name" ({}) to "Index" failed.'.format(name))
 
 
 def uniqueid_from_playerinfo(playerinfo):
@@ -161,15 +164,11 @@ def uniqueid_from_playerinfo(playerinfo):
 
     # Return the player's SteamID
     return steamid
-    
-    
+
+
 def uniqueid_from_index(index):
     """Return the UniqueID for the given player index."""
-    playerinfo = playerinfo_from_index(index)
-    if playerinfo is None:
-        return None
-        
-    return uniqueid_from_playerinfo(playerinfo)
+    return uniqueid_from_playerinfo(playerinfo_from_index(index))
 
 
 def address_from_playerinfo(playerinfo):
