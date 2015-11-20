@@ -40,8 +40,6 @@
 
 #include ENGINE_INCLUDE_PATH(entities_wrap.h)
 
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
-
 
 //-----------------------------------------------------------------------------
 // Forward declarations.

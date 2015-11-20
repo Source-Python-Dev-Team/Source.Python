@@ -32,8 +32,6 @@
 #include "utilities/wrap_macros.h"
 #include "modules/entities/entities_entity.h"
 
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
-
 
 //-----------------------------------------------------------------------------
 // Forward declarations.

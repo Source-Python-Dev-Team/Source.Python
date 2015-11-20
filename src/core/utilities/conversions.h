@@ -37,6 +37,7 @@
 #include "public/game/server/iplayerinfo.h"
 #include "utilities/baseentity.h"
 
+BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
 //-----------------------------------------------------------------------------
 // External variables.
