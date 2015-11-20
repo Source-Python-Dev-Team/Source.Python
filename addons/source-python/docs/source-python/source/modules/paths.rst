@@ -49,23 +49,23 @@ paths module
 
 .. data:: CFG_PATH
 
-    ../addons/source-python/cfg/source-python
+    ../cfg/source-python
 
 .. data:: LOG_PATH
 
-    ../addons/source-python/logs/source-python
+    ../logs/source-python
 
 .. data:: TRANSLATION_PATH
 
-    ../addons/source-python/resource/source-python/translation
+    ../resource/source-python/translation
 
 .. data:: EVENT_PATH
 
-    ../addons/source-python/resource/source-python/events
+    ../resource/source-python/events
 
 .. data:: SOUND_PATH
 
-    ../addons/source-python/sound/source-python
+    ../sound/source-python
 
 .. data:: DATA_PATH
 

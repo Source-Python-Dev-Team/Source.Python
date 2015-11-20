@@ -71,19 +71,19 @@ CUSTOM_PACKAGES_PATH = PACKAGES_PATH / 'custom'
 # ../addons/source-python/packages/site-packages
 SITE_PACKAGES_PATH = PACKAGES_PATH / 'site-packages'
 
-# ../addons/source-python/cfg/source-python
+# ../cfg/source-python
 CFG_PATH = GAME_PATH / 'cfg' / 'source-python'
 
-# ../addons/source-python/logs/source-python
+# ../logs/source-python
 LOG_PATH = GAME_PATH / 'logs' / 'source-python'
 
-# ../addons/source-python/resource/source-python/translation
+# ../resource/source-python/translation
 TRANSLATION_PATH = GAME_PATH / 'resource' / 'source-python' / 'translations'
 
-# ../addons/source-python/resource/source-python/events
+# ../resource/source-python/events
 EVENT_PATH = GAME_PATH / 'resource' / 'source-python' / 'events'
 
-# ../addons/source-python/sound/source-python
+# ../sound/source-python
 SOUND_PATH = GAME_PATH / 'sound' / 'source-python'
 
 # ../addons/source-python/data
