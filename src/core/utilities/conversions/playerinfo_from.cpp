@@ -80,6 +80,15 @@ bool PlayerInfoFromEdict( edict_t *pEdict, IPlayerInfo*& output)
 	if (!pEdict || pEdict->IsFree())
 		return false;
 
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEdict, iEntityIndex)) 
+		return false;
+
+	// We need to check this, because GetPlayerInfo() doesn't make sure the given
+	// edict is a player edict. Instead it will return a non-NULL pointer.
+	if (iEntityIndex <= WORLD_ENTITY_INDEX || iEntityIndex > (unsigned int) gpGlobals->maxClients)
+		return false;
+
 	IPlayerInfo* pPlayerInfo = playerinfomanager->GetPlayerInfo(pEdict);
 	if (!pPlayerInfo)
 		return false;
