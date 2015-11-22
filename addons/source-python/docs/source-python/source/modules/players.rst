@@ -7,7 +7,6 @@ Subpackages
 .. toctree::
     :titlesonly:
 
-    players.classes
     players.games
     players.weapons
 
