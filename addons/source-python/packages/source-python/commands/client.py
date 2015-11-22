@@ -1,4 +1,4 @@
-# ../commands/client/__init__.py
+# ../commands/client.py
 
 """Provides client command and client command filter functionality."""
 
