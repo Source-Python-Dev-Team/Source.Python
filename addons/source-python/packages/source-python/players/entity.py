@@ -619,13 +619,10 @@ class Player(Entity, _GameWeapons):
             handle = self.get_property_int(
                 weapon_manager.myweapons + '%03i' % offset)
 
-            # Get the weapon's index
-            index = index_from_inthandle(handle, raise_exception=False)
-
-            # Is this a valid index?
-            if index == INVALID_ENTITY_INDEX:
-
-                # Move onto the next offset
+            # Try to get the index of the handle
+            try:
+                index = index_from_inthandle(handle)
+            except:
                 continue
 
             # Get the weapon's classname
@@ -644,9 +641,9 @@ class Player(Entity, _GameWeapons):
             # Was a weapon type given and the
             # current weapon is not of that type?
             if not (is_filters is None and not_filters is None):
-                if weapon_class not in [
-                        weapon.name for weapon in WeaponClassIter(
-                            is_filters, not_filters)]:
+                if weapon_class not in map(
+                        lambda value: value.name,
+                        WeaponClassIter(is_filters, not_filters)):
 
                     # Do not yield this index
                     continue
