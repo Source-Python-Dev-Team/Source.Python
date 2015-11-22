@@ -19,7 +19,6 @@ from listeners import OnEntityCreated
 from entities.entity import Entity
 #   Players
 from players.entity import Player
-from players.helpers import userid_from_index
 
 
 # =============================================================================
