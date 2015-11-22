@@ -508,7 +508,7 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 	}
 
 	edict_t *pEdict;
-	if (!EdictFromIndex(iEntityIndex, pEdict)) {
+	if (EdictFromIndex(iEntityIndex, pEdict)) {
 		IServerUnknown* pServerUnknown = pEdict->GetUnknown();
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
