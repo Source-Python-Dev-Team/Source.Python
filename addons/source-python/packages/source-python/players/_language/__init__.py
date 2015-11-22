@@ -1,4 +1,4 @@
-# ../players/classes/language/__init__.py
+# ../players/_language/__init__.py
 
 """Provides a base way to get a player's language."""
 

@@ -1,4 +1,4 @@
-# ../players/classes/language/cache.py
+# ../players/_language/cache.py
 
 """Provides a way to get a player's language using a cache."""
 
