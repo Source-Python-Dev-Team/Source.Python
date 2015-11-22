@@ -15,7 +15,7 @@ from commands import CommandReturn
 from commands.client import ClientCommand
 #   Listeners
 from listeners import OnClientDisconnect
-from listeners.tick.repeat import TickRepeat
+from listeners.tick import TickRepeat
 #   Menus
 from menus.base import _BaseMenu
 

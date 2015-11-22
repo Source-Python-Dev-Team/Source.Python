@@ -19,9 +19,8 @@ from configobj import Section
 # Source.Python Imports
 #   Core
 from core import GameConfigObj
-#   Engines
-from engines.server import server_game_dll
 #   Entities
+from entities import ServerClassGenerator
 from entities.datamaps import _supported_input_types
 from entities.datamaps import EntityProperty
 from entities.datamaps import FieldType
@@ -104,11 +103,9 @@ _server_classes = dict()
 
 # Loop through all server classes and add them to the dictionaries
 _table_names = dict()
-_current_class = server_game_dll.get_all_server_classes()
-while _current_class:
-    _server_classes[_current_class.name] = _current_class.table
-    _table_names[_current_class.table.name] = _current_class.name
-    _current_class = _current_class.next
+for _server_class in ServerClassGenerator():
+    _server_classes[_server_class.name] = _server_class.table
+    _table_names[_server_class.table.name] = _server_class.name
 
 
 # =============================================================================

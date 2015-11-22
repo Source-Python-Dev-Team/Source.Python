@@ -9,7 +9,6 @@
 #   Core
 from core import AutoUnload
 #   Entities
-from entities.constants import INVALID_ENTITY_INDEX
 #   Memory
 from _memory import HookType
 #   Filters
@@ -19,7 +18,6 @@ from listeners import OnEntityCreated
 #   Entities
 from entities.entity import Entity
 #   Players
-from players.constants import INVALID_PLAYER_USERID
 from players.entity import Player
 from players.helpers import userid_from_index
 
@@ -42,26 +40,22 @@ class EntityCondition(object):
     @staticmethod
     def is_player(entity):
         """Return True if the entity is a player."""
-        return userid_from_index(entity.index, False) != INVALID_PLAYER_USERID
+        return entity.is_player()
 
-    @classmethod
-    def is_not_player(cls, entity):
+    @staticmethod
+    def is_not_player(entity):
         """Return True if the entity is not a player."""
-        return not cls.is_player(entity)
+        return not entity.is_player()
 
-    @classmethod
-    def is_human_player(cls, entity):
+    @staticmethod
+    def is_human_player(entity):
         """Return True if the entity is a human player."""
-        return (
-            cls.is_player(entity) and
-            Player(entity.index).steamid != 'BOT')
+        return (entity.is_player() and Player(entity.index).steamid != 'BOT')
 
-    @classmethod
-    def is_bot_player(cls, entity):
+    @staticmethod
+    def is_bot_player(entity):
         """Return True if the entity is a bot."""
-        return (
-            cls.is_player(entity) and
-            Player(entity.index).steamid == 'BOT')
+        return (entity.is_player() and Player(entity.index).steamid == 'BOT')
 
     @staticmethod
     def equals_entity_classname(*classnames):
@@ -181,5 +175,5 @@ _waiting_entity_hooks = _WaitingEntityHooks()
 @OnEntityCreated
 def on_entity_created(index, ptr):
     """Called when a new entity has been created."""
-    if index != INVALID_ENTITY_INDEX:
+    if index is not None:
         _waiting_entity_hooks.initialize(index)

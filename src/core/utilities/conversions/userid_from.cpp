@@ -33,102 +33,93 @@
 //-----------------------------------------------------------------------------
 // Returns a UserID from the given PlayerInfo instance.
 //-----------------------------------------------------------------------------
-int UseridFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException )
+bool UseridFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output )
 {
-	int iUserID = INVALID_PLAYER_USERID;
+	if (!pPlayerInfo)
+		return false;
 
-	if (pPlayerInfo)
-		iUserID = pPlayerInfo->GetUserID();
+	int iUserID = pPlayerInfo->GetUserID();
+	if (iUserID == INVALID_PLAYER_USERID)
+		return false;
 
-	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given PlayerInfo instance (%x).", pPlayerInfo);
-
-	return iUserID;
+	output = iUserID;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a UserID from the given index.
 //-----------------------------------------------------------------------------
-int UseridFromIndex( int iEntityIndex, bool bRaiseException )
+bool UseridFromIndex( unsigned int iEntityIndex, unsigned int& output )
 {
-	int iUserID = UseridFromPlayerInfo(PlayerInfoFromIndex(iEntityIndex));
+	IPlayerInfo* pPlayerInfo;
+	if (!PlayerInfoFromIndex(iEntityIndex, pPlayerInfo))
+		return false;
 
-	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given index (%i).", iEntityIndex);
-
-	return iUserID;
+	return UseridFromPlayerInfo(pPlayerInfo, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a UserID from the given Edict instance.
 //-----------------------------------------------------------------------------
-int UseridFromEdict( edict_t *pEdict, bool bRaiseException )
+bool UseridFromEdict( edict_t *pEdict, unsigned int& output )
 {
-	int iUserID = UseridFromIndex(IndexFromEdict(pEdict));
+	unsigned int iEntityIndex;
+	if (!IndexFromEdict(pEdict, iEntityIndex))
+		return false;
 
-	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given Edict instance (%x).", pEdict);
-
-	return iUserID;
+	return UseridFromIndex(iEntityIndex, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a UserID from the given BaseHandle instance.
 //-----------------------------------------------------------------------------
-int UseridFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException )
+bool UseridFromBaseHandle( CBaseHandle hBaseHandle, unsigned int& output )
 {
-	int iUserID = UseridFromIndex(IndexFromBaseHandle(hBaseHandle));
+	unsigned int iEntityIndex;
+	if (!IndexFromBaseHandle(hBaseHandle, iEntityIndex))
+		return false;
 
-	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
-
-	return iUserID;
+	return UseridFromIndex(iEntityIndex, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a UserID from the given IntHandle.
 //-----------------------------------------------------------------------------
-int UseridFromIntHandle( int iEntityHandle, bool bRaiseException )
+bool UseridFromIntHandle( unsigned int iEntityHandle, unsigned int& output )
 {
-	int iUserID = INVALID_PLAYER_USERID;
+	CBaseHandle hBaseHandle;
+	if (!BaseHandleFromIntHandle(iEntityHandle, hBaseHandle))
+		return false;
 
-	if (iEntityHandle != (int) INVALID_EHANDLE_INDEX)
-		iUserID = UseridFromBaseHandle(BaseHandleFromIntHandle(iEntityHandle));
-
-	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given IntHandle (%i).", iEntityHandle);
-
-	return iUserID;
+	return UseridFromBaseHandle(hBaseHandle, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a UserID from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
-int UseridFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException )
+bool UseridFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output )
 {
-	int iUserID = UseridFromPlayerInfo(PlayerInfoFromBaseEntity(pBaseEntity));
+	IPlayerInfo* pPlayerInfo;
+	if (!PlayerInfoFromBaseEntity(pBaseEntity, pPlayerInfo))
+		return false;
 
-	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given BaseEntity instance (%x).", pBaseEntity);
-
-	return iUserID;
+	return UseridFromPlayerInfo(pPlayerInfo, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns a UserID from the given Pointer instance.
 //-----------------------------------------------------------------------------
-int UseridFromPointer( CPointer *pEntityPointer, bool bRaiseException )
+bool UseridFromPointer( CPointer *pEntityPointer, unsigned int& output )
 {
-	int iUserID = UseridFromBaseEntity(BaseEntityFromPointer(pEntityPointer));
+	CBaseEntity* pBaseEntity;
+	if (!BaseEntityFromPointer(pEntityPointer, pBaseEntity))
+		return false;
 
-	if (iUserID == INVALID_PLAYER_USERID && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a UserID from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
-
-	return iUserID;
+	return UseridFromBaseEntity(pBaseEntity, output);
 }

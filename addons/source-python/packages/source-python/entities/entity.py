@@ -10,7 +10,13 @@
 import memory
 #   Engines
 from engines.precache import Model
+from engines.trace import engine_trace
+from engines.trace import ContentMasks
+from engines.trace import GameTrace
+from engines.trace import Ray
+from engines.trace import TraceFilterSimple
 #   Entities
+from entities import BaseEntityGenerator
 from entities.classes import server_classes
 from entities.constants import RenderMode
 from entities.factories import factory_dictionary
@@ -21,6 +27,9 @@ from entities.helpers import spawn_entity
 from entities.specials import _EntitySpecials
 #   Memory
 from memory import make_object
+#   Studio
+from studio.cache import model_cache
+from studio.constants import INVALID_ATTACHMENT_INDEX
 
 
 # =============================================================================
@@ -360,6 +369,12 @@ class Entity(BaseEntity, _EntitySpecials):
         get_model, set_model,
         doc="""Property to get/set the entity's model.""")
 
+    @property
+    def model_header(self):
+        """Return a ModelHeader instance of the current entity's model."""
+        return model_cache.get_model_header(model_cache.find_model(
+            self.model.path))
+
     def get_property_bool(self, name):
         """Return the boolean property."""
         return self._get_property(name, 'bool')
@@ -547,3 +562,36 @@ class Entity(BaseEntity, _EntitySpecials):
     def call_input(self, name, *args, **kwargs):
         """Call the InputFunction instance for the given name."""
         self.get_input(name)(*args, **kwargs)
+
+    def lookup_attachment(self, name):
+        """Return the attachment index matching the given name."""
+        # Get the ModelHeader instance of the entity
+        model_header = self.model_header
+
+        # Loop through all attachments
+        for index in range(model_header.attachments_count):
+
+            # Are the names matching?
+            if name == model_header.get_attachment(index).name:
+
+                # Return the current index
+                return index
+
+        # No attachment found
+        return INVALID_ATTACHMENT_INDEX
+
+    def is_in_solid(
+            self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
+        """Return whether or not the entity is in solid."""
+        # Get a Ray object of the entity physic box
+        ray = Ray(self.origin, self.origin, self.mins, self.maxs)
+
+        # Get a new GameTrace instance
+        trace = GameTrace()
+
+        # Do the trace
+        engine_trace.trace_ray(ray, mask, TraceFilterSimple(
+            [entity.index for entity in generator()]), trace)
+
+        # Return whether or not the trace did hit
+        return trace.did_hit()

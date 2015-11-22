@@ -102,16 +102,15 @@ void MRecipientFilter::AddAllPlayers()
 
 	for(int i = 1; i <= gpGlobals->maxClients; i++)
 	{
-		edict_t *pPlayer = EdictFromIndex(i);
-
-		// Skip invalid entities.
-		if( !pPlayer ) {
+		// Make sure the player is valid
+		edict_t* pPlayer;
+		if(!EdictFromIndex(i, pPlayer))
 			continue;
-		}
 
 		m_Recipients.AddToTail(i);
 	}
 }
+
 void MRecipientFilter::AddRecipient(int iPlayer)
 {
 	// Return if the recipient is already in the vector
@@ -119,8 +118,8 @@ void MRecipientFilter::AddRecipient(int iPlayer)
 		return;
 
 	// Make sure the player is valid
-	edict_t* pPlayer = EdictFromIndex(iPlayer);
-	if(!pPlayer)
+	edict_t* pPlayer;
+	if(!EdictFromIndex(iPlayer, pPlayer))
 		return;
 
 	// Skip non-player entities.

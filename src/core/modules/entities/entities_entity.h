@@ -72,7 +72,7 @@ public:
 public:
 	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex)
 	{
-		return CBaseEntityWrapper::wrap(BaseEntityFromIndex(uiEntityIndex, true));
+		return CBaseEntityWrapper::wrap(ExcBaseEntityFromIndex(uiEntityIndex));
 	}
 
 	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity)
@@ -188,27 +188,40 @@ public:
 	}
 
 	edict_t* GetEdict()
-	{ return EdictFromBaseEntity(GetThis()); }
+	{
+		return ExcEdictFromBaseEntity(GetThis());
+	}
 	
-	int GetIndex()
-	{ return IndexFromBaseEntity(GetThis()); }
+	unsigned int GetIndex()
+	{
+		return ExcIndexFromBaseEntity(GetThis());
+	}
 	
-	CPointer* GetPointer()
-	{ return PointerFromBaseEntity(GetThis()); }
+	CPointer GetPointer()
+	{
+		return ExcPointerFromBaseEntity(GetThis());
+	}
 	
 	CBaseHandle GetBaseHandle()
-	{ return BaseHandleFromBaseEntity(GetThis()); }
+	{
+		return ExcBaseHandleFromBaseEntity(GetThis());
+	}
 	
-	int GetIntHandle()
-	{ return IntHandleFromBaseEntity(GetThis()); }
+	unsigned int GetIntHandle()
+	{
+		return ExcIntHandleFromBaseEntity(GetThis());
+	}
 
 	bool IsPlayer()
 	{
 		if (!IServerUnknownExt::IsNetworked(GetThis()))
 			return false;
 
-		int index = GetIndex();
-		return index > WORLD_ENTITY_INDEX && index <= gpGlobals->maxClients;
+		unsigned int iEntityIndex;
+		if (!IndexFromBaseEntity(GetThis(), iEntityIndex)) 
+			return false;
+
+		return iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex <= (unsigned int) gpGlobals->maxClients;
 	}
 };
 

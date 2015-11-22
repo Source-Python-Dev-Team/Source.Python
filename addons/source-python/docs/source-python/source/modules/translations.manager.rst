@@ -5,3 +5,8 @@ translations.manager module
     :members:
     :undoc-members:
     :show-inheritance:
+    :exclude-members: language_manager
+
+.. data:: language_manager
+
+    The singleton object of the :class:`_LanguageManager` class.

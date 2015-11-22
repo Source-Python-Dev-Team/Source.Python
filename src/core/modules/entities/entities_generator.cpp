@@ -32,12 +32,14 @@
 #include "boost/python/iterator.hpp"
 #include "utilities/conversions.h"
 #include "toolframework/itoolentity.h"
+#include "eiface.h"
 
 
 //-----------------------------------------------------------------------------
 // External variables.
 //-----------------------------------------------------------------------------
 extern IServerTools *servertools;
+extern IServerGameDLL* servergamedll;
 
 
 // ----------------------------------------------------------------------------
@@ -103,7 +105,10 @@ edict_t* CEntityGenerator::getNext()
 {
 	while (m_pCurrentEntity)
 	{
-		edict_t *pEdict = EdictFromBaseEntity(m_pCurrentEntity);
+		edict_t *pEdict;
+		if (!EdictFromBaseEntity(m_pCurrentEntity, pEdict))
+			pEdict = NULL;
+
 		m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);
 		if (pEdict)
 		{
@@ -166,4 +171,36 @@ CBaseEntityWrapper* CBaseEntityGenerator::getNext()
 	CBaseEntity* result = m_pCurrentEntity;
 	m_pCurrentEntity = (CBaseEntity *) servertools->NextEntity(m_pCurrentEntity);
 	return (CBaseEntityWrapper *) result;
+}
+
+
+// ----------------------------------------------------------------------------
+// CServerClassGenerator Constructor.
+// ----------------------------------------------------------------------------
+CServerClassGenerator::CServerClassGenerator( PyObject* self ):
+	IPythonGenerator<ServerClass>(self)
+{
+	m_pCurrentServerClass = servergamedll->GetAllServerClasses();
+}
+
+// ----------------------------------------------------------------------------
+// CServerClassGenerator Copy-Constructor.
+// ----------------------------------------------------------------------------
+CServerClassGenerator::CServerClassGenerator( PyObject* self, const CServerClassGenerator& rhs ):
+	IPythonGenerator<ServerClass>(self)
+{
+	m_pCurrentServerClass = rhs.m_pCurrentServerClass;
+}
+
+// ----------------------------------------------------------------------------
+// Returns the next valid CBaseEntity instance.
+// ----------------------------------------------------------------------------
+ServerClass* CServerClassGenerator::getNext()
+{
+	if (!m_pCurrentServerClass)
+		return NULL;
+
+	ServerClass* result = m_pCurrentServerClass;
+	m_pCurrentServerClass = m_pCurrentServerClass->m_pNext;
+	return result;
 }

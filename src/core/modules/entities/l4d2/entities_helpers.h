@@ -46,7 +46,7 @@ void remove_entity(unsigned int uiEntityIndex)
 	CEntityFactoryDictionary* pFactoryDict = extract<CEntityFactoryDictionary*>(
 		import("entities.factories").attr("factory_dictionary"));
 
-	edict_t* pEdict = EdictFromIndex(uiEntityIndex, true);
+	edict_t* pEdict = ExcEdictFromIndex(uiEntityIndex);
 	pFactoryDict->Destroy(pEdict->GetClassName(), pEdict->GetNetworkable());
 }
 

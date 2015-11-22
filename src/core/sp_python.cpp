@@ -39,7 +39,6 @@
 #include "modules/entities/entities_entity.h"
 #include "icommandline.h"
 
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
 //---------------------------------------------------------------------------------
 // Interfaces we're going to use.

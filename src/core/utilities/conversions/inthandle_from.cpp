@@ -33,99 +33,93 @@
 //-----------------------------------------------------------------------------
 // Returns an IntHandle from the given BaseHandle instance.
 //-----------------------------------------------------------------------------
-int IntHandleFromBaseHandle( CBaseHandle hBaseHandle, bool bRaiseException )
+bool IntHandleFromBaseHandle( CBaseHandle hBaseHandle, unsigned int& output )
 {
-	int iEntityHandle = (int) INVALID_EHANDLE_INDEX;
+	if (!hBaseHandle.IsValid())
+		return false;
 
-	if (hBaseHandle.IsValid())
-		iEntityHandle = hBaseHandle.ToInt();
+	unsigned int iEntityHandle = hBaseHandle.ToInt();
+	if (!iEntityHandle)
+		return false;
 
-	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseHandle instance (%i).", hBaseHandle.ToInt());
-
-	return iEntityHandle;
+	output = iEntityHandle;
+	return true;
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an IntHandle from the given index.
 //-----------------------------------------------------------------------------
-int IntHandleFromIndex( int iEntityIndex, bool bRaiseException )
+bool IntHandleFromIndex( unsigned int iEntityIndex, unsigned int& output )
 {
-	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromIndex(iEntityIndex));
+	CBaseHandle hBaseHandle;
+	if (!BaseHandleFromIndex(iEntityIndex, hBaseHandle))
+		return false;
 
-	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given index (%i).", iEntityIndex);
-
-	return iEntityHandle;
+	return IntHandleFromBaseHandle(hBaseHandle, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an IntHandle from the given Edict instance.
 //-----------------------------------------------------------------------------
-int IntHandleFromEdict( edict_t *pEdict, bool bRaiseException )
+bool IntHandleFromEdict( edict_t *pEdict, unsigned int& output )
 {
-	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromEdict(pEdict));
+	CBaseHandle hBaseHandle;
+	if (!BaseHandleFromEdict(pEdict, hBaseHandle))
+		return false;
 
-	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given Edict instance (%x).", pEdict);
-
-	return iEntityHandle;
+	return IntHandleFromBaseHandle(hBaseHandle, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an IntHandle from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
-int IntHandleFromBaseEntity( CBaseEntity *pBaseEntity, bool bRaiseException )
+bool IntHandleFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output )
 {
-	int iEntityHandle = IntHandleFromBaseHandle(BaseHandleFromBaseEntity(pBaseEntity));
+	CBaseHandle hBaseHandle;
+	if (!BaseHandleFromBaseEntity(pBaseEntity, hBaseHandle))
+		return false;
 
-	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given BaseEntity instance (%x).", pBaseEntity);
-
-	return iEntityHandle;
+	return IntHandleFromBaseHandle(hBaseHandle, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an IntHandle from the given Pointer instance.
 //-----------------------------------------------------------------------------
-int IntHandleFromPointer( CPointer *pEntityPointer, bool bRaiseException )
+bool IntHandleFromPointer( CPointer *pEntityPointer, unsigned int& output )
 {
-	int iEntityHandle = IntHandleFromBaseEntity(BaseEntityFromPointer(pEntityPointer));
+	CBaseEntity* pBaseEntity;
+	if (!BaseEntityFromPointer(pEntityPointer, pBaseEntity))
+		return false;
 
-	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given Pointer instance (%x).", pEntityPointer->m_ulAddr);
-
-	return iEntityHandle;
+	return IntHandleFromBaseEntity(pBaseEntity, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an IntHandle from the given UserID.
 //-----------------------------------------------------------------------------
-int IntHandleFromUserid( int iUserID, bool bRaiseException )
+bool IntHandleFromUserid( unsigned int iUserID, unsigned int& output )
 {
-	int iEntityHandle = IntHandleFromEdict(EdictFromUserid(iUserID));
+	edict_t* pEdict;
+	if (!EdictFromUserid(iUserID, pEdict))
+		return false;
 
-	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given UserID (%i).", iUserID);
-
-	return iEntityHandle;
+	return IntHandleFromEdict(pEdict, output);
 }
 
 
 //-----------------------------------------------------------------------------
 // Returns an IntHandle from the given PlayerInfo instance.
 //-----------------------------------------------------------------------------
-int IntHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, bool bRaiseException )
+bool IntHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output )
 {
-	int iEntityHandle = IntHandleFromEdict(EdictFromPlayerInfo(pPlayerInfo));
+	edict_t* pEdict;
+	if (!EdictFromPlayerInfo(pPlayerInfo, pEdict))
+		return false;
 
-	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX && bRaiseException)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get an IntHandle from the given PlayerInfo instance (%x).", pPlayerInfo);
-
-	return iEntityHandle;
+	return IntHandleFromEdict(pEdict, output);
 }

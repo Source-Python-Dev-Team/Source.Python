@@ -54,7 +54,23 @@ class _EventManager(dict):
         return listener
 
     def register_for_event(self, event_name, callback):
-        """Register the callback for the given event."""
+        """Register the callback for the given event.
+
+        :param str event_name: The name of the event to register.
+        :param callback: The function to be called when the
+            event is fired on the server.
+
+        .. code-block:: python
+
+            from events.manager import event_manager
+
+            def function(game_event):
+                # Code...
+
+            event_manager.register_for_event('player_death', function)
+
+        .. seealso:: :doc:`../events` for a list of supported events per game.
+        """
         # Is the callback callable?
         if not callable(callback):
 
@@ -66,7 +82,20 @@ class _EventManager(dict):
         self[event_name].append(callback)
 
     def unregister_for_event(self, event_name, callback):
-        """Unregister the callback for the given event."""
+        """Unregister the callback for the given event.
+
+        :param str event_name: The name of the event to unregister.
+        :param callback: The function to unregister from the event.
+
+        .. code-block:: python
+
+            from events.manager import event_manager
+
+            def function(game_event):
+                # Code...
+
+            event_manager.unregister_for_event('player_death', function)
+        """
         # Is the event registered?
         if event_name not in self:
 
@@ -86,5 +115,5 @@ class _EventManager(dict):
             # Remove the event from the dictionary
             del self[event_name]
 
-#: The singleton object of the :class:`_EventManager` class
+# The singleton object of the :class:`_EventManager` class
 event_manager = _EventManager()

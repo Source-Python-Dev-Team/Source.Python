@@ -45,9 +45,10 @@ extern IServerTools *servertools;
 //-----------------------------------------------------------------------------
 // Removes the entity matching the given index.
 //-----------------------------------------------------------------------------
+// TODO: This should accept a BaseEntity object
 void remove_entity(unsigned int uiEntityIndex)
 {
-	servertools->RemoveEntity(BaseEntityFromIndex(uiEntityIndex, true));
+	servertools->RemoveEntity(ExcBaseEntityFromIndex(uiEntityIndex));
 }
 
 
