@@ -48,7 +48,7 @@ class _EventMeta(type):
         cls = super().__new__(mcs, name, bases, dict(odict))
 
         # Is this CustomEvent itself?
-        if name == 'CustomEvent' and not bases:
+        if not bases:
 
             return cls
 
