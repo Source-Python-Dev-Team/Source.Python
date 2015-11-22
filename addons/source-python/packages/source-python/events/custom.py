@@ -47,6 +47,11 @@ class _EventMeta(type):
         # Create the instance
         cls = super().__new__(mcs, name, bases, dict(odict))
 
+        # Is this CustomEvent itself?
+        if name == 'CustomEvent' and not bases:
+
+            return cls
+
         # Store an ordered dictionary
         cls._odict = OrderedDict()
 
@@ -58,6 +63,24 @@ class _EventMeta(type):
 
                 # Add the item to the dictionary
                 cls._odict[item] = odict[item]
+
+        # Loop through all base classes
+        for base in bases:
+
+            # Skip CustomEvent itself
+            if base is CustomEvent:
+                continue
+
+            # Skip any non CustomEvent base classes
+            if not issubclass(base, CustomEvent):
+                continue
+
+            # Loop through all items in the base class
+            for item in base._odict:
+
+                # Add the item if it doesn't already exist for the class
+                if item not in cls._odict:
+                    cls._odict[item] = base._odict[item]
 
         # Return the class
         return cls
