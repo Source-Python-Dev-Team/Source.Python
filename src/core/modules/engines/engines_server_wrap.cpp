@@ -101,7 +101,7 @@ void export_engine_server(scope _server)
 		)
 
 		.def("is_map_valid",
-			&IVEngineServer::IsMapValid,
+			&IVEngineServerExt::IsMapValid,
 			"Returns true if filename refers to a valid map.",
 			args("filename")
 		)

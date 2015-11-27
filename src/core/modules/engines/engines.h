@@ -48,7 +48,7 @@ extern IServerPluginHelpers *helpers;
 //-----------------------------------------------------------------------------
 // IVEngineServer extension class.
 //-----------------------------------------------------------------------------
-class IVEngineServerExt
+class IVEngineServerExt: public GameIVEngineServerExt
 {
 public:
 	static void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand, bool bServerSide)

@@ -34,6 +34,19 @@
 
 
 //-----------------------------------------------------------------------------
+// IVEngineServer extension class.
+//-----------------------------------------------------------------------------
+class GameIVEngineServerExt
+{
+public:
+	static bool IsMapValid(IVEngineServer* pServer, const char* map_name)
+	{
+		return pServer->IsMapValid(szMapName);
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // IEngineSound extension class.
 //-----------------------------------------------------------------------------
 class IEngineSoundExt
