@@ -41,7 +41,7 @@ class GameIVEngineServerExt
 public:
 	static bool IsMapValid(IVEngineServer* pServer, const char* map_name)
 	{
-		return pServer->IsMapValid(szMapName);
+		return pServer->IsMapValid(map_name);
 	}
 };
 
