@@ -18,10 +18,11 @@ from re import VERBOSE
 
 # Site-Package Imports
 #   Configobj
-from configobj import ConfigObj
 from configobj import Section
 
 # Source.Python Imports
+#   Core
+from core import GameConfigObj
 #   Paths
 from paths import TRANSLATION_PATH
 from paths import GAME_PATH
@@ -72,7 +73,7 @@ class LangStrings(dict):
             self._mainfile.namebase + '_server.ini')
 
         # Get the strings from the main file
-        main_strings = ConfigObj(self._mainfile, encoding=encoding)
+        main_strings = GameConfigObj(self._mainfile, encoding=encoding)
 
         # Does the server specific file exist?
         if not self._serverfile.isfile() and not infile.startswith('_core/'):
@@ -84,7 +85,7 @@ class LangStrings(dict):
         else:
 
             # Get any strings from the server specific file
-            server_strings = ConfigObj(self._serverfile, encoding=encoding)
+            server_strings = GameConfigObj(self._serverfile, encoding=encoding)
 
             # Merge the two ConfigObj instances together
             main_strings.merge(server_strings)
@@ -169,7 +170,7 @@ class LangStrings(dict):
     def _create_server_file(self):
         """Create a server specific langstrings file."""
         # Get the server specific file's ConfigObj instance
-        server_file = ConfigObj(self._serverfile)
+        server_file = GameConfigObj(self._serverfile)
 
         # Set the initial comments to explain what the file is for
         server_file.initial_comment = _translation_strings[
