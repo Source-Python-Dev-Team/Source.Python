@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Collections
+from collections import defaultdict
 #   Inspect
 from inspect import getmodule
 from inspect import stack
@@ -72,6 +74,8 @@ class AutoUnload(object):
     Each inheriting class must implement an _unload_instance method.
     """
 
+    _module_instances = defaultdict(list)
+
     def __new__(cls, *args, **kwargs):
         """Overwrite __new__ to store the calling module."""
         # Get the class instance
@@ -81,7 +85,7 @@ class AutoUnload(object):
         caller = getmodule(stack()[1][0])
 
         # Set the _calling_module attribute for the instance
-        self._calling_module = caller.__name__
+        AutoUnload._module_instances[caller.__name__].append(self)
 
         # Return the instance
         return self
