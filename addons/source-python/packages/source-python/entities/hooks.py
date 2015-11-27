@@ -49,12 +49,12 @@ class EntityCondition(object):
     @staticmethod
     def is_human_player(entity):
         """Return True if the entity is a human player."""
-        return (entity.is_player() and Player(entity.index).steamid != 'BOT')
+        return entity.is_player() and Player(entity.index).steamid != 'BOT'
 
     @staticmethod
     def is_bot_player(entity):
         """Return True if the entity is a bot."""
-        return (entity.is_player() and Player(entity.index).steamid == 'BOT')
+        return entity.is_player() and Player(entity.index).steamid == 'BOT'
 
     @staticmethod
     def equals_entity_classname(*classnames):
