@@ -64,6 +64,9 @@ PLATFORM = system().lower()
 # Get the sp.core logger
 core_logger = _sp_logger.core
 
+# Create a dictionary to store AutoUnload object in
+_module_instances = defaultdict(list)
+
 
 # =============================================================================
 # >> CLASSES
@@ -74,8 +77,6 @@ class AutoUnload(object):
     Each inheriting class must implement an _unload_instance method.
     """
 
-    _module_instances = defaultdict(list)
-
     def __new__(cls, *args, **kwargs):
         """Overwrite __new__ to store the calling module."""
         # Get the class instance
@@ -85,7 +86,7 @@ class AutoUnload(object):
         caller = getmodule(stack()[1][0])
 
         # Set the _calling_module attribute for the instance
-        AutoUnload._module_instances[caller.__name__].append(self)
+        _module_instances[caller.__name__].append(self)
 
         # Return the instance
         return self

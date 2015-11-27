@@ -13,7 +13,7 @@ import sys
 
 # Source.Python Imports
 #   Core
-from core import AutoUnload
+from core import _module_instances
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Plugins
@@ -184,10 +184,10 @@ class PluginManager(OrderedDict):
                 continue
 
             # Does the current module have any AutoUnload objects?
-            if module in AutoUnload._module_instances:
+            if module in _module_instances:
 
                 # Loop through all AutoUnload objects in the current module
-                for instance in AutoUnload._module_instances[module]:
+                for instance in _module_instances[module]:
 
                     # Use try/except in-case the instance
                     # does not have an _unload_instance method
@@ -205,7 +205,7 @@ class PluginManager(OrderedDict):
                         except_hooks.print_exception()
 
                 # Remove the module from AutoUnload
-                del AutoUnload._module_instances[module]
+                del _module_instances[module]
 
             # Delete the module
             del sys.modules[module]
