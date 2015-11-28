@@ -163,6 +163,13 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
+	// Was the IVEngineServer interface retrieved properly?
+	if (!engine)
+	{
+		Msg(MSG_PREFIX "Unable to retrieve IVEngineServer interface.\n");
+		return false;
+	}
+
 	// ------------------------------------------------------------------
 	// Build path to python engines directory.
 	// ------------------------------------------------------------------
