@@ -110,9 +110,9 @@ Your plugin should now look like this.
         SayText2('Plugin has been unloaded successfully!').send()
 
     @Event('player_spawn')
-    def on_player_spawn(event):
+    def on_player_spawn(game_event):
         # Get the user ID of the spawned player
-        userid = event['userid']
+        userid = game_event['userid']
 
         # Convert the user ID into a player index
         index = index_from_userid(userid)
