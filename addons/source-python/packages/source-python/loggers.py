@@ -30,6 +30,7 @@ from paths import LOG_PATH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('LogManager',
+           '_LogInstance',
            )
 
 

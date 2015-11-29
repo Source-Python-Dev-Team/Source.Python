@@ -29,6 +29,7 @@ from stringtables.downloads import Downloadables
 __all__ = ('Decal',
            'Generic',
            'Model',
+           '_PrecacheBase',
            )
 
 
