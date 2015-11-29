@@ -36,7 +36,20 @@ class ConVar(_ConVar):
     def __init__(
             self, name, value='0', flags=0,
             description='', min_value=None, max_value=None):
-        """Called when a server-var is initilized."""
+        """Called when a server-var is initilized.
+
+        If the ConVar already exists, all other parameters
+        except ``name`` are inconsequential.
+
+        :param str name: The name of the ConVar.
+        :param str value: The initial value of the
+            ConVar if it doesn't already exist.
+        :param ConVarFlags flags: The initial flags of the
+            ConVar if it doesn't already exist.
+        :param str description: The description of the ConVar.
+        :param float min_value: The minimum value allowed for the ConVar.
+        :param float max_value: The maximum value allowed for the ConVar.
+        """
         super().__init__(
             name, value, flags, description,
             min_value is not None, min_value or 0.0,
