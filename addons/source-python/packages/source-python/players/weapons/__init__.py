@@ -362,38 +362,22 @@ class _PlayerWeapons(object):
     # =========================================================================
     def get_weapon_color(self):
         """Return a tuple value for the player's active weapon's color."""
-        # Get the handle of the player's active weapon
-        handle = self.active_weapon
-
-        # Get the weapon's BaseHandle instance
-        index = index_from_inthandle(handle)
-
-        # Was no index found?
-        if index is None:
-
-            # Raise an error
+        try:
+            index = index_from_inthandle(self.active_weapon)
+        except (ValueError, OverflowError):
             raise ValueError(
                 'No active weapon found for player "{0}"'.format(self.userid))
 
-        # Return the entity's color
         return Entity(index).color
 
     def set_weapon_color(self, color):
         """Set the player's active weapon's color."""
-        # Get the handle of the player's active weapon
-        handle = self.active_weapon
-
-        # Get the weapon's BaseHandle instance
-        index = index_from_inthandle(handle)
-
-        # Was no index found?
-        if index is None:
-
-            # Raise an error
+        try:
+            index = index_from_inthandle(self.active_weapon)
+        except (ValueError, OverflowError):
             raise ValueError(
                 'No active weapon found for player "{0}"'.format(self.userid))
 
-        # Set the entity's color
         Entity(index).color = color
 
 
