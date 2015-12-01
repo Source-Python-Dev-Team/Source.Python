@@ -59,7 +59,7 @@ class LangStrings(dict):
         super().__init__()
 
         # Get the path to the given file
-        self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
+        self._mainfile = TRANSLATION_PATH / infile + '.ini'
 
         # Does the file exist?
         if not self._mainfile.isfile():
@@ -69,8 +69,8 @@ class LangStrings(dict):
                 'No file found at {0}'.format(self._mainfile))
 
         # Get the path to the server specific file
-        self._serverfile = self._mainfile.parent.joinpath(
-            self._mainfile.namebase + '_server.ini')
+        self._serverfile = self._mainfile.parent / '{0}_server.ini'.format(
+            self._mainfile.namebase)
 
         # Get the strings from the main file
         main_strings = GameConfigObj(self._mainfile, encoding=encoding)

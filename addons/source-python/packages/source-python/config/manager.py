@@ -102,7 +102,7 @@ class ConfigManager(object):
     @property
     def fullpath(self):
         """Return the "path" instance of the full path to the file."""
-        return CFG_PATH.joinpath(self.filepath + '.cfg')
+        return CFG_PATH / self.filepath + '.cfg'
 
     def cvar(
             self, name, default=0, flags=0,

@@ -265,7 +265,7 @@ class LogManager(_LogInstance):
                 filepath = filepath[:~3]
 
             # Get the path to the log file
-            log_path = LOG_PATH / filepath + '.log')
+            log_path = LOG_PATH / filepath + '.log'
 
             # Does the parent directory exist?
             if not log_path.parent.isdir():

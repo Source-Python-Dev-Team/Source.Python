@@ -195,4 +195,4 @@ class _CoreSettings(ConfigObj):
             'client_commands'].get_string(self._language).splitlines()
 
 # Get the _CoreSettings instance
-_core_settings = _CoreSettings(CFG_PATH.joinpath('core_settings.ini'))
+_core_settings = _CoreSettings(CFG_PATH / 'core_settings.ini')

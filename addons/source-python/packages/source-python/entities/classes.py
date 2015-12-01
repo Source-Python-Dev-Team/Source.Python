@@ -45,7 +45,7 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get all of the necessary paths
-_managers_path = SP_DATA_PATH.joinpath('entities')
+_managers_path = SP_DATA_PATH / 'entities'
 
 # Store all supported types
 _supported_descriptor_types = {
@@ -223,8 +223,7 @@ class _ServerClasses(TypeManager):
     def _get_server_class(self, class_name, datamap):
         """Retrieve values for the server class."""
         # Get the engine specific data for the current class
-        manager_contents = GameConfigObj(
-            _managers_path.joinpath(class_name + '.ini'))
+        manager_contents = GameConfigObj(_managers_path / class_name + '.ini')
 
         # Are there any values for the manager?
         if manager_contents:

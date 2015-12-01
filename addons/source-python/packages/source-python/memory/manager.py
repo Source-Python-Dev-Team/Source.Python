@@ -723,4 +723,4 @@ manager = TypeManager()
 
 # Parse our global pointers...
 manager.create_global_pointers_from_file(GameConfigObj(
-    SP_DATA_PATH.joinpath('memory', 'global_pointers.ini')))
+    SP_DATA_PATH / 'memory' / 'global_pointers.ini'))

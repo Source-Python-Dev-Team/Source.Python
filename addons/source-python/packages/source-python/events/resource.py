@@ -76,7 +76,7 @@ class ResourceFile(OrderedDict):
     @property
     def fullpath(self):
         """Return the full path of the .res file."""
-        return EVENT_PATH.joinpath(self.filepath + '.res')
+        return EVENT_PATH / self.filepath + '.res'
 
     def write(self):
         """Write the .res file to disk."""

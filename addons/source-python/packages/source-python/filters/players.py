@@ -34,8 +34,7 @@ __all__ = ('PlayerIter',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the team's file for the current game
-_game_teams = ConfigObj(
-    SP_DATA_PATH.joinpath('teams', GAME_NAME + '.ini'))
+_game_teams = ConfigObj(SP_DATA_PATH / 'teams' / GAME_NAME + '.ini')
 
 
 # =============================================================================

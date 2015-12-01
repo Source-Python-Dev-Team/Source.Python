@@ -20,7 +20,7 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the path to the user settings database file
-_STORAGE_PATH = SP_DATA_PATH.joinpath('settings', 'users.db')
+_STORAGE_PATH = SP_DATA_PATH / 'settings' / 'users.db'
 
 # Does the ../data/source-python/settings/ directory exist?
 if not _STORAGE_PATH.parent.isdir():
