@@ -19,6 +19,7 @@ __all__ = ('BoolVariable',
            'LongVariable',
            'ShortVariable',
            'StringVariable',
+           '_EventVariable',
            )
 
 
