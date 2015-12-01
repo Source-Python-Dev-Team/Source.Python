@@ -54,9 +54,6 @@ addLevelName(EXCEPTION, 'EXCEPTION')
 # Store a formatter for use with the main log
 _main_log_formatter = Formatter('- %(name)s\t-\t%(levelname)s\n\t%(message)s')
 
-# Store a formatter for use with dumps
-_clean_formatter = Formatter('%(message)s')
-
 
 # =============================================================================
 # >> CLASSES
@@ -129,20 +126,6 @@ class _LogInstance(dict):
     def log_message(self, msg, *args, **kwargs):
         """Use to call a message that should always print."""
         self._log(MESSAGE, msg, *args, **kwargs)
-
-    def log_dump(self, msg, *args, **kwargs):
-        """Use to call a dump message."""
-        # Change the handler over to the clean handler,
-        # so that the text is logged without any prefix
-        self.root.logger.removeHandler(self.root._handler)
-        self.root.logger.addHandler(self.root._clean_handler)
-
-        # Log the message
-        self._log(MESSAGE, msg, *args, dump=True, **kwargs)
-
-        # Revert the handler back to the original formatting
-        self.root.logger.removeHandler(self.root._clean_handler)
-        self.root.logger.addHandler(self.root._handler)
 
     def log(self, level, msg, *args, **kwargs):
         """Use to call a message with the given logging level."""
@@ -282,7 +265,7 @@ class LogManager(_LogInstance):
                 filepath = filepath[:~3]
 
             # Get the path to the log file
-            log_path = LOG_PATH.joinpath(filepath + '.log')
+            log_path = LOG_PATH / filepath + '.log')
 
             # Does the parent directory exist?
             if not log_path.parent.isdir():
@@ -291,14 +274,9 @@ class LogManager(_LogInstance):
                 log_path.parent.makedirs()
 
             # Create the handler an add it to the logger
-            self._handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
+            self._handler = FileHandler(log_path)
             self._handler.setFormatter(self.formatter)
             self.logger.addHandler(self._handler)
-
-            # Create a clean handler for logging without a prefix
-            self._clean_handler = FileHandler(
-                LOG_PATH.joinpath(filepath + '.log'))
-            self._clean_handler.setFormatter(_clean_formatter)
 
     @property
     def level(self):
