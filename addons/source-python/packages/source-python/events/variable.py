@@ -60,38 +60,43 @@ class _EventVariable(object):
         """Return the variable type name."""
         return self.__class__.__name__.lower().replace('variable', '')
 
+    @property
+    def method(self):
+        """Raise an error if the inheriting class does not have their own."""
+        raise NotImplementedError('No method attribute defined for class.')
+
 
 class BoolVariable(_EventVariable):
     """Class used to store bool event variables."""
 
-    _method = 'bool'
+    method = 'set_bool'
 
 
 class ByteVariable(_EventVariable):
     """Class used to store byte event variables."""
 
-    _method = 'int'
+    method = 'set_int'
 
 
 class ShortVariable(_EventVariable):
     """Class used to store short event variables."""
 
-    _method = 'int'
+    method = 'set_int'
 
 
 class LongVariable(_EventVariable):
     """Class used to store long event variables."""
 
-    _method = 'int'
+    method = 'set_int'
 
 
 class FloatVariable(_EventVariable):
     """Class used to store floating point event variables."""
 
-    _method = 'float'
+    method = 'set_float'
 
 
 class StringVariable(_EventVariable):
     """Class used to store string event variables."""
 
-    _method = 'string'
+    method = 'set_string'

@@ -149,7 +149,7 @@ class CustomEvent(metaclass=_EventMeta):
         for variable in self._odict:
 
             # Set the event variable values
-            getattr(event, 'set_' + self._odict[variable]._method)(
+            getattr(event, self._odict[variable].method)(
                 variable, getattr(self, '_' + variable))
 
         # Fire the event
