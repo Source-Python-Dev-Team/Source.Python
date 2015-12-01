@@ -10,8 +10,8 @@
 from sqlite3 import connect
 
 # Source.Python Imports
-#   Events
-from events.manager import event_manager
+#   Listeners
+from listeners import OnLevelShutdown
 #   Paths
 from paths import SP_DATA_PATH
 
@@ -150,7 +150,8 @@ class _PlayerSettingsDictionary(dict):
         """Return the cursor instance."""
         return self._cursor
 
-    def server_spawn(self, game_event):
+    @OnLevelShutdown
+    def on_level_shutdown():
         """Store the dictionary to the database on map change."""
         self.connection.commit()
 
@@ -164,8 +165,3 @@ _player_settings_storage = _PlayerSettingsDictionary()
 # Now that the initialization is done, allow
 #   _UniqueSettings to call _player_settings_storage.
 _IN_INITIALIZATION = False
-
-# Register for the event server_spawn in order
-# to store the database to file on map change
-event_manager.register_for_event(
-    'server_spawn', _player_settings_storage.server_spawn)
