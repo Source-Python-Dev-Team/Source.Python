@@ -11,7 +11,7 @@ from sqlite3 import connect
 
 # Source.Python Imports
 #   Listeners
-from listeners import OnLevelShutdown
+from listeners import on_level_shutdown_listener_manager
 #   Paths
 from paths import SP_DATA_PATH
 
@@ -150,8 +150,7 @@ class _PlayerSettingsDictionary(dict):
         """Return the cursor instance."""
         return self._cursor
 
-    @OnLevelShutdown
-    def on_level_shutdown():
+    def on_level_shutdown(self):
         """Store the dictionary to the database on map change."""
         self.connection.commit()
 
@@ -165,3 +164,7 @@ _player_settings_storage = _PlayerSettingsDictionary()
 # Now that the initialization is done, allow
 #   _UniqueSettings to call _player_settings_storage.
 _IN_INITIALIZATION = False
+
+# Register a level shutdown listener to store the database on map change
+on_level_shutdown_listener_manager.register_listener(
+    _player_settings_storage.on_level_shutdown)
