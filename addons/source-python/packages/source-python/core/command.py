@@ -272,7 +272,7 @@ class _CoreCommandManager(SubCommandManager):
                     'An error occured while generating ' +
                     'project files for Source.Python')
             else:
-                modules_dir = project.project_source_dir.joinpath('modules')
+                modules_dir = project.project_source_dir / 'modules'
                 modules_dir.joinpath('modules.rst').remove()
                 for file_path in modules_dir.files('source-python.*.rst'):
                     self._prepare_generated_source_python_file(file_path)
@@ -530,7 +530,7 @@ class _CoreCommandManager(SubCommandManager):
 
         # Get the credits information
         groups = ConfigObj(
-            SP_DATA_PATH.joinpath('credits.ini'), encoding='unicode_escape')
+            SP_DATA_PATH / 'credits.ini', encoding='unicode_escape')
 
         # Loop through all groups in the credits
         for group in groups:
