@@ -61,9 +61,9 @@ class Entity(BaseEntity, _EntitySpecials):
         super().__init__(index)
 
         # Set the entity's base attributes
-        super().__setattr__('_index', index)
-        super().__setattr__('_edict', None)
-        super().__setattr__('_pointer', None)
+        object.__setattr__(self, '_index', index)
+        object.__setattr__(self, '_edict', None)
+        object.__setattr__(self, '_pointer', None)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
@@ -101,7 +101,7 @@ class Entity(BaseEntity, _EntitySpecials):
                     getattr(self.__class__, name, None), property)):
 
                 # Set the private attribute's value
-                super().__setattr__(attr, value)
+                object.__setattr__(self, attr, value)
 
                 # No need to go further
                 return
@@ -111,7 +111,7 @@ class Entity(BaseEntity, _EntitySpecials):
                 getattr(self.__class__, attr, None), property)):
 
             # Set the property's value
-            super().__setattr__(attr, value)
+            object.__setattr__(self, attr, value)
 
             # No need to go further
             return
@@ -227,7 +227,7 @@ class Entity(BaseEntity, _EntitySpecials):
         """Return the entity's :class:`entities.Edict` instance."""
         if self._edict is None:
             edict = edict_from_index(self.index)
-            super(Entity, self).__setattr__('_edict', edict)
+            object.__setattr__(self, '_edict', edict)
         return self._edict
 
     @property
@@ -235,7 +235,7 @@ class Entity(BaseEntity, _EntitySpecials):
         """Return the entity's :class:`memory.Pointer`."""
         if self._pointer is None:
             pointer = memory.get_object_pointer(self)
-            super(Entity, self).__setattr__('_pointer', pointer)
+            object.__setattr__(self, '_pointer', pointer)
         return self._pointer
 
     @property
