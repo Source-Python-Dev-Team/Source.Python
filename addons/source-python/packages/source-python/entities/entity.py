@@ -226,16 +226,16 @@ class Entity(BaseEntity, _EntitySpecials):
     def edict(self):
         """Return the entity's :class:`entities.Edict` instance."""
         if self._edict is None:
-            self._edict = edict_from_index(self.index)
-
+            edict = edict_from_index(self.index)
+            super(Entity, self).__setattr__('_edict', edict)
         return self._edict
 
     @property
     def pointer(self):
         """Return the entity's :class:`memory.Pointer`."""
         if self._pointer is None:
-            self._pointer = memory.get_object_pointer(self)
-
+            pointer = memory.get_object_pointer(self)
+            super(Entity, self).__setattr__('_pointer', pointer)
         return self._pointer
 
     @property

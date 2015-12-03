@@ -70,8 +70,8 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
     def playerinfo(self):
         """Return the player's :class:`PlayerInfo` object."""
         if self._playerinfo is None:
-            self._playerinfo = playerinfo_from_index(self.index)
-
+            playerinfo = playerinfo_from_index(self.index)
+            super(Player, self).__setattr__('_playerinfo', playerinfo)
         return self._playerinfo
 
     @property
