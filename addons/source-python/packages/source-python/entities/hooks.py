@@ -108,7 +108,9 @@ class _EntityHook(AutoUnload):
         # class name. So, we need to wait until such an entity has been
         # created.
         _waiting_entity_hooks.append(self)
-        return self
+
+        # Return the callback
+        return self.callback
 
     @property
     def hook_type(self):
