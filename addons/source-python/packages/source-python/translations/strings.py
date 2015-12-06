@@ -261,6 +261,9 @@ class TranslationStrings(dict):
         # Substitute the token in the message
         message = message.substitute(self.tokens)
 
+        # Format the message with any remaining tokens
+        message = message.format(**self.tokens)
+
         # Return the message
         return message
 
