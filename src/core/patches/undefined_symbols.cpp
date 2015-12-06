@@ -33,6 +33,7 @@
 #include "game/server/entitylist.h"
 #include "utilities/conversions.h"
 #include "game/shared/ipredictionsystem.h"
+#include "game/server/basetempentity.h"
 
 #include ENGINE_INCLUDE_PATH(undefined_symbols.h)
 
@@ -130,6 +131,7 @@ void CGlobalEntityList::OnAddEntity( IHandleEntity *pEnt, CBaseHandle handle )
 {
 }
 
+
 //-----------------------------------------------------------------------------
 // Default OnRemoveEntity callback definitions.
 //-----------------------------------------------------------------------------
@@ -139,4 +141,22 @@ void CBaseEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
 
 void CGlobalEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
 {
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns the name of the temp entity.
+//-----------------------------------------------------------------------------
+const char *CBaseTempEntity::GetName()
+{
+	return m_pszName;
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns the next temp entity in the chain.
+//-----------------------------------------------------------------------------
+CBaseTempEntity *CBaseTempEntity::GetNext()
+{
+	return m_pNext;
 }
