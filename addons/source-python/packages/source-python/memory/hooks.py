@@ -50,8 +50,8 @@ class _Hook(AutoUnload):
         # Hook the callback to the Function
         self.function.add_hook(self.hook_type, self.callback)
 
-        # Return the object
-        return self
+        # Return the callback
+        return self.callback
 
     @property
     def hook_type(self):

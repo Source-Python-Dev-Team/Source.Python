@@ -33,7 +33,7 @@ class _BaseCommand(AutoUnload):
             self.names, self.callback, *self.args, **self.kwargs)
 
         # Return the original callback
-        return callback
+        return self.callback
 
     def _unload_instance(self):
         """Unregister the commands."""
