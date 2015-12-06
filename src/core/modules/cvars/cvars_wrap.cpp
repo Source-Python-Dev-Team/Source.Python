@@ -164,7 +164,7 @@ void export_convar_interface(scope _cvars)
 	;
 
 	BEGIN_CLASS_INFO(IConVar)
-		BEGIN_FUNCTION_INFO_LIST("FindVar")
+		BEGIN_FUNCTION_INFO_LIST("SetValue")
 			FUNCTION_INFO_OVERLOAD(void, SetValue, const char*)
 			FUNCTION_INFO_OVERLOAD(void, SetValue, float)
 			FUNCTION_INFO_OVERLOAD(void, SetValue, int)
