@@ -160,6 +160,7 @@ Set(SOURCEPYTHON_CVARS_MODULE_SOURCES
 # Effects module
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EFFECTS_MODULE_HEADERS
+    core/modules/effects/effects.h
     core/modules/effects/${SOURCE_ENGINE}/effects_wrap.h
 )
 

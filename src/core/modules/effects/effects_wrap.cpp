@@ -43,6 +43,7 @@
 #include "game/shared/itempents.h"
 #include "game/shared/effect_dispatch_data.h"
 #include "game/server/basetempentity.h"
+#include "effects.h"
 
 #include ENGINE_INCLUDE_PATH(effects_wrap.h)
 
@@ -269,7 +270,10 @@ void export_dispatch_effect_data(scope _effects)
 void export_base_temp_entity(scope _effects)
 {
 	class_<CBaseTempEntity, boost::noncopyable> BaseTempEntity("BaseTempEntity", no_init);
-	
+
+	// Constructor...
+	BaseTempEntity.def("__init__", make_constructor(&BaseTempEntityExt::__init__, default_call_policies()));
+
 	// Properties...
 	BaseTempEntity.add_property("name", &CBaseTempEntity::GetName);
 	BaseTempEntity.add_property("next", make_function(&CBaseTempEntity::GetNext, reference_existing_object_policy()));
