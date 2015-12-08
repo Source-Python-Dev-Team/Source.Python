@@ -202,11 +202,6 @@ public:
 		return ExcPointerFromBaseEntity(GetThis());
 	}
 	
-	CBaseHandle GetBaseHandle()
-	{
-		return ExcBaseHandleFromBaseEntity(GetThis());
-	}
-	
 	unsigned int GetIntHandle()
 	{
 		return ExcIntHandleFromBaseEntity(GetThis());

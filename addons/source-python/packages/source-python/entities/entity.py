@@ -249,11 +249,6 @@ class Entity(BaseEntity, _EntitySpecials):
         yield self.pointer
 
     @property
-    def basehandle(self):
-        """Return the entity's BaseEntityHandle instance."""
-        return self.edict.networkable.get_entity_handle().get_ref_ehandle()
-
-    @property
     def inthandle(self):
         """Return the entity's integer handle."""
         return self.basehandle.to_int()
