@@ -24,14 +24,15 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EFFECTS_WRAP_ORANGEBOX_H
-#define _EFFECTS_WRAP_ORANGEBOX_H
+#ifndef _EFFECTS_BASE_WRAP_BMS_H
+#define _EFFECTS_BASE_WRAP_BMS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
 #include "game/shared/itempents.h"
 #include "toolframework/itoolentity.h"
+#include "game/server/basetempentity.h"
 
 
 //-----------------------------------------------------------------------------
@@ -41,26 +42,13 @@ extern IServerTools *servertools;
 
 
 //-----------------------------------------------------------------------------
-// Expose CEffectData.
+// Exports CBaseTempEntity.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_dispatch_effect_data(T _effects, U DispatchEffectData)
+void export_engine_specific_temp_entity(T _base, U TempEntity)
 {
-	// Nothing specific to OrangeBox...
+	_base.attr("_first_temp_entity") = object(ptr(servertools->GetTempEntList()));
 }
 
 
-//-----------------------------------------------------------------------------
-// Expose ITempEntsSystem.
-//-----------------------------------------------------------------------------
-template<class T, class U>
-void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
-{
-	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
-	
-	// Singleton...
-	_effects.attr("temp_entities") = object(ptr(servertools->GetTempEntsSystem()));
-}
-
-
-#endif // _EFFECTS_WRAP_ORANGEBOX_H
+#endif // _EFFECTS_BASE_WRAP_BMS_H

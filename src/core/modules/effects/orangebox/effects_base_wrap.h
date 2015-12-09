@@ -24,38 +24,31 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EFFECTS_H
-#define _EFFECTS_H
+#ifndef _EFFECTS_BASE_WRAP_ORANGEBOX_H
+#define _EFFECTS_BASE_WRAP_ORANGEBOX_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/wrap_macros.h"
+#include "game/shared/itempents.h"
+#include "toolframework/itoolentity.h"
 #include "game/server/basetempentity.h"
-#include "modules/memory/memory_alloc.h"
 
 
 //-----------------------------------------------------------------------------
-// CBaseTempEntity extension class.
+// External variables.
 //-----------------------------------------------------------------------------
-class BaseTempEntityExt
+extern IServerTools *servertools;
+
+
+//-----------------------------------------------------------------------------
+// Exports CBaseTempEntity.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_temp_entity(T _effects, U TempEntity)
 {
-public:
-	static boost::shared_ptr<CBaseTempEntity> __init__(CBaseTempEntity *pBaseTempEntity, size_t nSize)
-	{
-		void *pReturnValue = UTIL_Alloc(nSize);
-		if (!pReturnValue)
-			BOOST_RAISE_EXCEPTION(PyExc_MemoryError, "Unable to allocate memory.");
-
-		memcpy(pReturnValue, (void *)pBaseTempEntity, sizeof(CBaseTempEntity));
-		return boost::shared_ptr<CBaseTempEntity>((CBaseTempEntity *)pReturnValue, &Deleter);
-	}
-
-	static void Deleter(CBaseTempEntity *pBaseTempEntity)
-	{
-		UTIL_Dealloc((void *)pBaseTempEntity);
-	}
-};
+	_effects.attr("_first_temp_entity") = object(ptr(servertools->GetTempEntList()));
+}
 
 
-#endif // _EFFECTS_H
+#endif // _EFFECTS_BASE_WRAP_ORANGEBOX_H

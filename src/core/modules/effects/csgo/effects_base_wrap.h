@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,43 +24,17 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EFFECTS_WRAP_ORANGEBOX_H
-#define _EFFECTS_WRAP_ORANGEBOX_H
+#ifndef _EFFECTS_BASE_WRAP_CSGO_H
+#define _EFFECTS_BASE_WRAP_CSGO_H
 
 //-----------------------------------------------------------------------------
-// Includes.
-//-----------------------------------------------------------------------------
-#include "game/shared/itempents.h"
-#include "toolframework/itoolentity.h"
-
-
-//-----------------------------------------------------------------------------
-// External variables.
-//-----------------------------------------------------------------------------
-extern IServerTools *servertools;
-
-
-//-----------------------------------------------------------------------------
-// Expose CEffectData.
+// Exports CBaseTempEntity.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_dispatch_effect_data(T _effects, U DispatchEffectData)
+void export_engine_specific_temp_entity(T _base, U TempEntity)
 {
-	// Nothing specific to OrangeBox...
+	// Nothing specific to CSGO...
 }
 
 
-//-----------------------------------------------------------------------------
-// Expose ITempEntsSystem.
-//-----------------------------------------------------------------------------
-template<class T, class U>
-void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
-{
-	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
-	
-	// Singleton...
-	_effects.attr("temp_entities") = object(ptr(servertools->GetTempEntsSystem()));
-}
-
-
-#endif // _EFFECTS_WRAP_ORANGEBOX_H
+#endif // _EFFECTS_BASE_WRAP_CSGO_H

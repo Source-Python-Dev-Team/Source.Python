@@ -42,8 +42,6 @@
 #include "KeyValues.h"
 #include "game/shared/itempents.h"
 #include "game/shared/effect_dispatch_data.h"
-#include "game/server/basetempentity.h"
-#include "effects.h"
 
 #include ENGINE_INCLUDE_PATH(effects_wrap.h)
 
@@ -57,7 +55,6 @@ void export_shatter_surface(scope);
 void export_prediction_system(scope);
 void export_temp_entities_system(scope);
 void export_dispatch_effect_data(scope);
-void export_base_temp_entity(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -69,7 +66,6 @@ DECLARE_SP_MODULE(_effects)
 	export_prediction_system(_effects);
 	export_temp_entities_system(_effects);
 	export_dispatch_effect_data(_effects);
-	export_base_temp_entity(_effects);
 }
 
 
@@ -261,39 +257,4 @@ void export_dispatch_effect_data(scope _effects)
 	
 	// Add memory tools...
 	DispatchEffectData ADD_MEM_TOOLS(CEffectData);
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports CBaseTempEntity.
-//-----------------------------------------------------------------------------
-void export_base_temp_entity(scope _effects)
-{
-	class_<CBaseTempEntity, boost::noncopyable> BaseTempEntity("BaseTempEntity", no_init);
-
-	// Constructor...
-	BaseTempEntity.def("__init__", make_constructor(&BaseTempEntityExt::__init__, default_call_policies()));
-
-	// Properties...
-	BaseTempEntity.add_property("name", &CBaseTempEntity::GetName);
-	BaseTempEntity.add_property("next", make_function(&CBaseTempEntity::GetNext, reference_existing_object_policy()));
-	BaseTempEntity.add_property("server_class", make_function(&CBaseTempEntity::GetServerClass, reference_existing_object_policy()));
-
-	// Methods...
-	BaseTempEntity.def("create", &CBaseTempEntity::Create, ("recipient_filter", arg("delay")=0.0));
-	BaseTempEntity.def("precache", &CBaseTempEntity::Precache);
-	BaseTempEntity.def("test", &CBaseTempEntity::Test);
-
-	// Engine specific stuff...
-	export_engine_specific_temp_entity(_effects, BaseTempEntity);
-
-	// Add memory tools...
-	BaseTempEntity ADD_MEM_TOOLS(CBaseTempEntity);
-
-	// Add class info...
-	BEGIN_CLASS_INFO(CBaseTempEntity)
-		FUNCTION_INFO(Create)
-		FUNCTION_INFO(Precache)
-		FUNCTION_INFO(Test)
-	END_CLASS_INFO()
 }

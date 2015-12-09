@@ -19,7 +19,6 @@ from entities.entity import Entity
 # =============================================================================
 # Source.Python Imports
 #   Effects
-from _effects import BaseTempEntity
 from _effects import DispatchEffectData
 from _effects import PredictionSystem
 from _effects import ShatterSurface
@@ -28,8 +27,7 @@ from _effects import ShatterSurface
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('BaseTempEntity',
-           'DispatchEffectData',
+__all__ = ('DispatchEffectData',
            'PredictionSystem',
            'ShatterSurface',
            'ball',
@@ -37,7 +35,6 @@ __all__ = ('BaseTempEntity',
            'box',
            'polygon',
            'square',
-           'temp_entity_list',
            'temp_entities',
            )
 
@@ -50,38 +47,6 @@ try:
     from _effects import temp_entities
 except ImportError:
     temp_entities = manager.get_global_pointer('_TempEntities')
-
-# Get the first temp entity in the chain...
-try:
-    from _effects import _first_temp_entity
-except ImportError:
-    _first_temp_entity = manager.get_global_pointer('BaseTempEntity')
-
-
-# ============================================================================
-# >> CLASSES
-# ============================================================================
-class _TempEntityList(list):
-    """Class used to store BaseTempEntity instance."""
-
-    def __init__(self, temp_entity):
-        """Loop through all temp entity in the chain and append them to the
-            list."""
-        while temp_entity:
-            self.append(temp_entity)
-            temp_entity = temp_entity.next
-
-    def find_by_name(self, name):
-        """Return the temp entity matching the given name."""
-        for temp_entity in self:
-            if temp_entity.name != name:
-                continue
-            return temp_entity
-        raise NameError(
-            '"{}" is not a valid temp entity name.'.format(name))
-
-# Get a filled list from the first temp entity instance in the chain...
-temp_entity_list = _TempEntityList(_first_temp_entity)
 
 
 # =============================================================================

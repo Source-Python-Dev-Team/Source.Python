@@ -53,14 +53,4 @@ void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
 }
 
 
-//-----------------------------------------------------------------------------
-// Exports CBaseTempEntity.
-//-----------------------------------------------------------------------------
-template<class T, class U>
-void export_engine_specific_temp_entity(T _effects, U TempEntity)
-{
-	// Nothing specific to CSGO...
-}
-
-
 #endif // _EFFECTS_WRAP_CSGO_H

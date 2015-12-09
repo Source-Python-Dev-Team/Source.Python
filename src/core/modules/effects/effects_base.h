@@ -24,43 +24,44 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _EFFECTS_WRAP_ORANGEBOX_H
-#define _EFFECTS_WRAP_ORANGEBOX_H
+#ifndef _EFFECTS_BASE_H
+#define _EFFECTS_BASE_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "game/shared/itempents.h"
-#include "toolframework/itoolentity.h"
+#include "utilities/wrap_macros.h"
+#include "utilities/sp_util.h"
+#include "game/server/basetempentity.h"
+#include "modules/memory/memory_alloc.h"
 
 
 //-----------------------------------------------------------------------------
-// External variables.
+// CBaseTempEntity extension class.
 //-----------------------------------------------------------------------------
-extern IServerTools *servertools;
-
-
-//-----------------------------------------------------------------------------
-// Expose CEffectData.
-//-----------------------------------------------------------------------------
-template<class T, class U>
-void export_engine_specific_dispatch_effect_data(T _effects, U DispatchEffectData)
+class BaseTempEntityExt
 {
-	// Nothing specific to OrangeBox...
-}
+public:
+	static boost::shared_ptr<CBaseTempEntity> _wrap_ptr(CPointer *pPtr)
+	{
+		return boost::shared_ptr<CBaseTempEntity>((CBaseTempEntity *)(void *)pPtr->m_ulAddr, &NeverDeleteDeleter<CBaseTempEntity *>);
+	}
+
+	static boost::shared_ptr<CBaseTempEntity> _copy_base(CBaseTempEntity *pBaseTempEntity, size_t nSize)
+	{
+		void *pReturnValue = UTIL_Alloc(nSize);
+		if (!pReturnValue)
+			BOOST_RAISE_EXCEPTION(PyExc_MemoryError, "Unable to allocate memory.");
+
+		memcpy(pReturnValue, (void *)pBaseTempEntity, nSize);
+		return boost::shared_ptr<CBaseTempEntity>((CBaseTempEntity *)pReturnValue, &Deleter);
+	}
+
+	static void Deleter(CBaseTempEntity *pBaseTempEntity)
+	{
+		UTIL_Dealloc((void *)pBaseTempEntity);
+	}
+};
 
 
-//-----------------------------------------------------------------------------
-// Expose ITempEntsSystem.
-//-----------------------------------------------------------------------------
-template<class T, class U>
-void export_engine_specific_temp_entities_system(T _effects, U TempEntities)
-{
-	TempEntities.def("dispatch_effect", &ITempEntsSystem::DispatchEffect);
-	
-	// Singleton...
-	_effects.attr("temp_entities") = object(ptr(servertools->GetTempEntsSystem()));
-}
-
-
-#endif // _EFFECTS_WRAP_ORANGEBOX_H
+#endif // _EFFECTS_BASE_H
