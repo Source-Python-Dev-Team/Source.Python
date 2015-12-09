@@ -210,7 +210,7 @@ class TraceFilterSimple(TraceFilter):
         :param HandleEntity entity: The entity that should be hit.
         :param int mask: The mask that was used to intialize the trace.
         """
-        entity_inthandle = entity.get_ref_ehandle().to_int()
+        entity_inthandle = entity.basehandle.to_int()
 
         # Check for entities to ignore
         for ignore_inthandle in self.ignore:
