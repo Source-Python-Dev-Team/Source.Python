@@ -8,7 +8,6 @@ Submodules
    :titlesonly:
 
    effects.base
-   effects.classes
    effects.hooks
    effects.templates
 

@@ -48,6 +48,12 @@ try:
 except ImportError:
     temp_entities = manager.get_global_pointer('_TempEntities')
 
+# Get the first temp entity in the chain...
+try:
+    from _effects._base import _first_temp_entity
+except ImportError:
+    _first_temp_entity = manager.get_global_pointer('BaseTempEntity')
+
 
 # =============================================================================
 # >> FUNCTIONS
