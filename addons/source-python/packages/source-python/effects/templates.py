@@ -59,28 +59,6 @@ class TempEntityTemplate(BaseTempEntity):
         self._aliases = GameConfigObj(
             SP_DATA_PATH / 'effects' / temp_entity.server_class.name + '.ini')
 
-        # The temp entity has no color property by default...
-        self._has_color = False
-
-        # The temp entity has no model property by default...
-        self._has_model = False
-
-        # Loop through all aliases...
-        for alias in self.aliases:
-
-            # Is the current alias a color attribute?
-            if alias in (ALIAS_ALPHA_NAME, ALIAS_BLUE_NAME, ALIAS_GREEN_NAME,
-                ALIAS_RED_NAME):
-
-                # The temp entity has a color property...
-                self._has_color = True
-
-            # Otherwise, is the alias a model index?
-            elif alias == ALIAS_MODEL_INDEX_NAME:
-
-                # The temp entity has a model property...
-                self._has_model = True
-
         # Get a dictionary to store the properties...
         self._properties = dict()
 
@@ -202,14 +180,28 @@ class TempEntityTemplate(BaseTempEntity):
         """Return whether or not the temp entity has a color property.
 
         :rtype: bool"""
-        return self._has_color
+        # Loop through all color aliases...
+        for alias in (ALIAS_ALPHA_NAME, ALIAS_BLUE_NAME, ALIAS_GREEN_NAME,
+            ALIAS_RED_NAME):
+
+            # Is the current alias valid?
+            if alias not in self.aliases:
+
+                # No need to go further...
+                continue
+
+            # The temp entity has a color property...
+            return True
+
+        # The temp entity doesn't have a color property...
+        return False
 
     @property
     def has_model(self):
         """Return whether or not the temp entity has a model property.
 
         :rtype: bool"""
-        return self._has_model
+        return ALIAS_MODEL_INDEX_NAME in self.aliases
 
 
 class TempEntityTemplates(dict):
