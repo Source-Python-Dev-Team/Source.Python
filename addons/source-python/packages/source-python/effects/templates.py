@@ -9,6 +9,10 @@ from core import GameConfigObj
 #   Effects
 from effects.base import _first_temp_entity
 from effects.base import BaseTempEntity
+from effects.constants import ALIAS_ALPHA_NAME
+from effects.constants import ALIAS_BLUE_NAME
+from effects.constants import ALIAS_GREEN_NAME
+from effects.constants import ALIAS_RED_NAME
 #   Entities
 from entities.classes import _supported_property_types
 from entities.classes import server_classes
@@ -53,6 +57,19 @@ class TempEntityTemplate(BaseTempEntity):
         # Get the aliases...
         self._aliases = GameConfigObj(
             SP_DATA_PATH / 'effects' / temp_entity.server_class.name + '.ini')
+
+        # The temp entity has no color property by default...
+        self._has_color = False
+
+        # Loop through all aliases...
+        for alias in self.aliases:
+
+            # Is the current alias a color attribute?
+            if alias in (ALIAS_ALPHA_NAME, ALIAS_BLUE_NAME, ALIAS_GREEN_NAME,
+                ALIAS_RED_NAME):
+
+                # The temp entity has a color property...
+                self._has_color = True
 
         # Get a dictionary to store the properties...
         self._properties = dict()
@@ -169,6 +186,13 @@ class TempEntityTemplate(BaseTempEntity):
     def size(self):
         """Return the size of the temp entity instance."""
         return self._size
+
+    @property
+    def has_color(self):
+        """Return whether or not the temp entity has a color property.
+
+        :rtype: bool"""
+        return self._has_color
 
 
 class TempEntityTemplates(dict):

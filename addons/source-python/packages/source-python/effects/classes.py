@@ -4,8 +4,14 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
+#   Colors
+from colors import Color
 #   Effects
 from effects.base import BaseTempEntity
+from effects.constants import ALIAS_ALPHA_NAME
+from effects.constants import ALIAS_BLUE_NAME
+from effects.constants import ALIAS_GREEN_NAME
+from effects.constants import ALIAS_RED_NAME
 from effects.templates import temp_entity_templates
 #   Entities
 from entities.classes import _supported_property_types
@@ -394,3 +400,46 @@ class TempEntity(BaseTempEntity):
     def template(self):
         """Return the template of the temp entity."""
         return temp_entity_templates[self.name]
+
+    @property
+    def has_color(self):
+        """Return whether or not the temp entity has a color property.
+
+        :rtype: bool"""
+        return self.template.has_color
+
+    def get_color(self):
+        """Return the color of the temp entity.
+
+        :rtype: Color"""
+        # Does the temp entity has a color property?
+        if not self.has_color:
+
+            # Raise an exception...
+            raise NameError('"{}" doesn\'t have a color property.'.format(
+                self.name))
+
+        return Color(r=getattr(self, ALIAS_RED_NAME, 0),
+            g=getattr(self, ALIAS_GREEN_NAME, 0),
+            b=getattr(self, ALIAS_BLUE_NAME, 0),
+            a=getattr(self, ALIAS_ALPHA_NAME, 0))
+
+    def set_color(self, color):
+        """Set the temp entity to the given color.
+
+        :param Color color: The color to set."""
+        # Does the temp entity has a color property?
+        if not self.has_color:
+
+            # Raise an exception...
+            raise NameError('"{}" doesn\'t have a color property.'.format(
+                self.name))
+
+        # Set the color attributes of the temp entity...
+        setattr(self, ALIAS_RED_NAME, color.r)
+        setattr(self, ALIAS_GREEN_NAME, color.g)
+        setattr(self, ALIAS_BLUE_NAME, color.b)
+        setattr(self, ALIAS_ALPHA_NAME, color.a)
+
+    # Register the color property...
+    color = property(get_color, set_color)
