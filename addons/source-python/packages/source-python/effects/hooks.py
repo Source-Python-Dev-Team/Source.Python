@@ -7,7 +7,7 @@
 #   Core
 from core import AutoUnload
 #   Effects
-from effects.classes import TempEntity
+from effects.base import TempEntity
 from effects.templates import temp_entity_templates
 #   Filters
 from filters.recipients import RecipientFilter

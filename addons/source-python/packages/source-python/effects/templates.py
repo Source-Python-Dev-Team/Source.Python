@@ -7,8 +7,8 @@
 #   Core
 from core import GameConfigObj
 #   Effects
-from effects.base import _first_temp_entity
-from effects.base import BaseTempEntity
+from _effects._base import BaseTempEntity
+from effects import _first_temp_entity
 from effects.constants import ALIAS_ALPHA_NAME
 from effects.constants import ALIAS_BLUE_NAME
 from effects.constants import ALIAS_GREEN_NAME
