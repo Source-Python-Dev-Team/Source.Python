@@ -12,6 +12,7 @@ from effects.base import BaseTempEntity
 from effects.constants import ALIAS_ALPHA_NAME
 from effects.constants import ALIAS_BLUE_NAME
 from effects.constants import ALIAS_GREEN_NAME
+from effects.constants import ALIAS_MODEL_INDEX_NAME
 from effects.constants import ALIAS_RED_NAME
 #   Entities
 from entities.classes import _supported_property_types
@@ -61,6 +62,9 @@ class TempEntityTemplate(BaseTempEntity):
         # The temp entity has no color property by default...
         self._has_color = False
 
+        # The temp entity has no model property by default...
+        self._has_model = False
+
         # Loop through all aliases...
         for alias in self.aliases:
 
@@ -70,6 +74,12 @@ class TempEntityTemplate(BaseTempEntity):
 
                 # The temp entity has a color property...
                 self._has_color = True
+
+            # Otherwise, is the alias a model index?
+            elif alias == ALIAS_MODEL_INDEX_NAME:
+
+                # The temp entity has a model property...
+                self._has_model = True
 
         # Get a dictionary to store the properties...
         self._properties = dict()
@@ -193,6 +203,13 @@ class TempEntityTemplate(BaseTempEntity):
 
         :rtype: bool"""
         return self._has_color
+
+    @property
+    def has_model(self):
+        """Return whether or not the temp entity has a model property.
+
+        :rtype: bool"""
+        return self._has_model
 
 
 class TempEntityTemplates(dict):

@@ -11,11 +11,14 @@ from effects.base import BaseTempEntity
 from effects.constants import ALIAS_ALPHA_NAME
 from effects.constants import ALIAS_BLUE_NAME
 from effects.constants import ALIAS_GREEN_NAME
+from effects.constants import ALIAS_MODEL_INDEX_NAME
 from effects.constants import ALIAS_RED_NAME
 from effects.templates import temp_entity_templates
 #   Entities
 from entities.classes import _supported_property_types
 from entities.props import SendPropType
+#   Engines
+from engines.precache import Model
 #   Filters
 from filters.recipients import RecipientFilter
 #   Memory
@@ -26,6 +29,8 @@ from memory import Pointer
 from memory.helpers import Array
 from memory.helpers import Type
 from memory.manager import manager
+#   String Tables
+from stringtables import string_tables
 
 # Site-Packages Imports
 #   ConfigObj
@@ -443,3 +448,59 @@ class TempEntity(BaseTempEntity):
 
     # Register the color property...
     color = property(get_color, set_color)
+
+    @property
+    def has_model(self):
+        """Return whether or not the temp entity has a model property.
+
+        :rtype: bool"""
+        return self.template.has_model
+
+    def get_model(self):
+        """Return the model of the temp entity.
+
+        :rtype: Model"""
+        # Does the temp entity has a model property?
+        if not self.has_model:
+
+            # Raise an exception...
+            raise NameError('"{}" doesn\'t have a model property.'.format(
+                self.name))
+
+        # Try to return the model...
+        try:
+
+            # Get the name of the model...
+            return Model(string_tables[Model._precache_table][
+                getattr(self, ALIAS_MODEL_INDEX_NAME)])
+
+        # Was the index not valid?
+        except IndexError:
+
+            # Return an error model...
+            return Model('models/error.mdl')
+
+    def set_model(self, model):
+        """Set the model of temp entity to the given model.
+
+        :param Model model: The model to set."""
+        # Does the temp entity has a model property?
+        if not self.has_model:
+
+            # Raise an exception...
+            raise NameError('"{}" doesn\'t have a model property.'.format(
+                self.name))
+
+        # Is the given model not valid?
+        if not isinstance(model, Model):
+
+            # Raise an exception...
+            raise TypeError(
+                '"{}" (of type "{}") is not a valid Model.'.format(
+                model, type(model)))
+
+        # Set the model of the temp entity...
+        setattr(self, ALIAS_MODEL_INDEX_NAME, model.index)
+
+    # Register the color property...
+    model = property(get_model, set_model)
