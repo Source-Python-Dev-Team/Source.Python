@@ -135,7 +135,7 @@ class TempEntityTemplate(BaseTempEntity):
             if size > self.size:
 
                 # Update the size...
-                self._size = get_size(BaseTempEntity) + size
+                self._size = size
 
             # Add the property...
             self._properties[name] = (prop, offset, type_name)

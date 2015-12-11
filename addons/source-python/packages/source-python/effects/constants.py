@@ -22,3 +22,5 @@ ALIAS_ALPHA_NAME = 'alpha'
 
 # Alias used by the "model" property...
 ALIAS_MODEL_INDEX_NAME = "model_index"
+
+ALIAS_BEAM_HALO_INDEX_NAME = 'halo_index'
