@@ -475,21 +475,21 @@ class TempEntity(BaseTempEntity):
             raise NameError('"{}" doesn\'t have a model property.'.format(
                 self.name))
 
-        # Try to return the model...
-        try:
+        # Get the model name of the temp entity...
+        model_name = string_tables[Model._precache_table][
+            getattr(self, ALIAS_MODEL_INDEX_NAME)]
 
-            # Get the name of the model...
-            return Model(string_tables[Model._precache_table][
-                getattr(self, ALIAS_MODEL_INDEX_NAME)])
-
-        # Was the index not valid?
-        except IndexError:
+        # Was the model not precached?
+        if not model_name:
 
             # Return an error model...
             return Model('models/error.mdl')
 
+        # Return a Model instance of the model name...
+        return Model(model_name)
+
     def set_model(self, model):
-        """Set the model of temp entity to the given model.
+        """Set the model of the temp entity to the given model.
 
         :param Model model: The model to set."""
         # Does the temp entity has a model property?
