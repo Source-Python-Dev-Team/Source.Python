@@ -29,8 +29,14 @@
 //-----------------------------------------------------------------------------
 #include "export_main.h"
 #include "utilities/wrap_macros.h"
+#include "mathlib/vector.h"
+#include "tier1/utlvector.h"
+#include "string_t.h"
+#include "dt_send.h"
 #include "game/shared/ehandle.h"
 #include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/takedamageinfo.h"
 #include "game/shared/shareddefs.h"
 
 
