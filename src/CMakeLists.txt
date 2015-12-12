@@ -168,6 +168,7 @@ Set(SOURCEPYTHON_EFFECTS_MODULE_HEADERS
 Set(SOURCEPYTHON_EFFECTS_MODULE_SOURCES
     core/modules/effects/effects_wrap.cpp
     core/modules/effects/effects_base_wrap.cpp
+    core/modules/effects/effects_constants_wrap.cpp
 )
 
 # ------------------------------------------------------------------
