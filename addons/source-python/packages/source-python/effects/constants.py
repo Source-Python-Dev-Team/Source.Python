@@ -27,7 +27,8 @@ __all__ = ('ALIAS_ALPHA_NAME',
            'ALIAS_BLUE_NAME',
            'ALIAS_GREEN_NAME',
            'ALIAS_MODEL_INDEX_NAME',
-           'ALIAS_RED_NAME'
+           'ALIAS_RED_NAME',
+           'BloodColor',
            )
 
 
