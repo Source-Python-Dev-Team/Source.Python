@@ -198,9 +198,6 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// Load python.
 	// ------------------------------------------------------------------
 	if( SPLoadLibrary(engine, PYLIB_NAME) == NULL ) {
-		Warning("===========================================\n");
-		Warning("[SP-LOADER] Could not load %s!\n", PYLIB_NAME);
-		Warning("===========================================\n");
 		return false;
 	}
 
@@ -209,9 +206,6 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// ------------------------------------------------------------------
 	m_pCore = SPLoadLibrary(engine, CORE_NAME);
 	if (!m_pCore) {
-		Warning("===========================================\n");
-		Warning("[SP-LOADER] Could not load %s!\n", CORE_NAME);
-		Warning("===========================================\n");
 		return false;
 	}
 
