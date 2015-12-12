@@ -7,11 +7,7 @@
 #   Colors
 from colors import Color
 #   Effects
-from effects.constants import ALIAS_ALPHA_NAME
-from effects.constants import ALIAS_BLUE_NAME
-from effects.constants import ALIAS_GREEN_NAME
-from effects.constants import ALIAS_MODEL_INDEX_NAME
-from effects.constants import ALIAS_RED_NAME
+from effects.constants import TempEntityAlias
 from effects.templates import temp_entity_templates
 #   Entities
 from entities.classes import _supported_property_types
@@ -59,11 +55,12 @@ class TempEntity(BaseTempEntity):
     """Class used to interact with a specific temp entity."""
 
     def __init__(self, temp_entity, **aliases):
-        """Initialize the temp entity intance.
+        """Initialize the temp entity instance.
 
         :param str/Pointer temp_entity: The name of the temp entity to
-            initialize or the pointer to wrap."""
-        # Is the given name a Pointer?
+            initialize or the pointer to wrap.
+        :param dict aliases: Any alias to set on initialization."""
+        # Is the given name a Pointer instance?
         if isinstance(temp_entity, Pointer):
 
             # Wrap the given pointer...
@@ -78,7 +75,7 @@ class TempEntity(BaseTempEntity):
         # Initialize the temp entity...
         super()._copy_base(template, template.size)
 
-        # Loop trhough all given aliases...
+        # Loop through all given aliases...
         for alias, value in aliases.items():
 
             # Set the alias to the given value...
@@ -90,6 +87,13 @@ class TempEntity(BaseTempEntity):
 
         :param Pointer ptr: The pointer to wrap."""
         return cls(ptr)
+
+    @property
+    def _size(self):
+        """Return the size of the temp entity.
+
+        :rtype: int"""
+        return self.template.size
 
     def __getattr__(self, name):
         """Return the value of the given alias.
@@ -172,7 +176,10 @@ class TempEntity(BaseTempEntity):
         super().__setattr__(name, value)
 
     def _get_property(self, prop_name, prop_type):
-        """Return the value of the given property name."""
+        """Return the value of the given property name.
+
+        :param str prop_name: The name of the property.
+        :param SendPropType prop_type: The type of the property."""
         # Is the given property not valid?
         if prop_name not in self.template.properties:
 
@@ -411,7 +418,9 @@ class TempEntity(BaseTempEntity):
 
     @property
     def template(self):
-        """Return the template of the temp entity."""
+        """Return the template of the temp entity.
+
+        :rtype: TempEntityTemplate"""
         return temp_entity_templates[self.name]
 
     @property
@@ -432,10 +441,10 @@ class TempEntity(BaseTempEntity):
             raise NameError('"{}" doesn\'t have a color property.'.format(
                 self.name))
 
-        return Color(r=getattr(self, ALIAS_RED_NAME, 0),
-            g=getattr(self, ALIAS_GREEN_NAME, 0),
-            b=getattr(self, ALIAS_BLUE_NAME, 0),
-            a=getattr(self, ALIAS_ALPHA_NAME, 0))
+        return Color(r=getattr(self, str(TempEntityAlias.RED), 0),
+            g=getattr(self, str(TempEntityAlias.GREEN), 0),
+            b=getattr(self, str(TempEntityAlias.BLUE), 0),
+            a=getattr(self, str(TempEntityAlias.ALPHA), 0))
 
     def set_color(self, color):
         """Set the temp entity to the given color.
@@ -449,10 +458,10 @@ class TempEntity(BaseTempEntity):
                 self.name))
 
         # Set the color attributes of the temp entity...
-        setattr(self, ALIAS_RED_NAME, color.r)
-        setattr(self, ALIAS_GREEN_NAME, color.g)
-        setattr(self, ALIAS_BLUE_NAME, color.b)
-        setattr(self, ALIAS_ALPHA_NAME, color.a)
+        setattr(self, str(TempEntityAlias.RED), color.r)
+        setattr(self, str(TempEntityAlias.GREEN), color.g)
+        setattr(self, str(TempEntityAlias.BLUE), color.b)
+        setattr(self, str(TempEntityAlias.ALPHA), color.a)
 
     # Register the color property...
     color = property(get_color, set_color)
@@ -475,21 +484,21 @@ class TempEntity(BaseTempEntity):
             raise NameError('"{}" doesn\'t have a model property.'.format(
                 self.name))
 
-        # Try to return the model...
-        try:
+        # Get the model name of the temp entity...
+        model_name = string_tables[Model._precache_table][
+            getattr(self, str(TempEntityAlias.MODEL_INDEX))]
 
-            # Get the name of the model...
-            return Model(string_tables[Model._precache_table][
-                getattr(self, ALIAS_MODEL_INDEX_NAME)])
-
-        # Was the index not valid?
-        except IndexError:
+        # Was the model not precached?
+        if not model_name:
 
             # Return an error model...
-            return Model('models/error.mdl')
+            model_name = 'models/error.mdl'
+
+        # Return a Model instance of the model name...
+        return Model(model_name)
 
     def set_model(self, model):
-        """Set the model of temp entity to the given model.
+        """Set the model of the temp entity to the given model.
 
         :param Model model: The model to set."""
         # Does the temp entity has a model property?
@@ -508,7 +517,7 @@ class TempEntity(BaseTempEntity):
                 model, type(model)))
 
         # Set the model of the temp entity...
-        setattr(self, ALIAS_MODEL_INDEX_NAME, model.index)
+        setattr(self, str(TempEntityAlias.MODEL_INDEX), model.index)
 
-    # Register the color property...
+    # Register the model property...
     model = property(get_model, set_model)

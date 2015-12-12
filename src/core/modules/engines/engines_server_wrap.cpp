@@ -117,19 +117,19 @@ void export_engine_server(scope _server)
 		)
 
 		.def("precache_model",
-			&IVEngineServer::PrecacheModel,
+			&IVEngineServerExt::precache_model,
 			"Precaches a model and returns an integer containing its index.",
 			("s", arg("preload")=false)
 		)
 
 		.def("precache_decal",
-			&IVEngineServer::PrecacheDecal,
+			&IVEngineServerExt::precache_decal,
 			"Precaches a decal file and returns an integer containing its index.",
 			("s", arg("preload")=false)
 		)
 
 		.def("precache_generic",
-			&IVEngineServer::PrecacheGeneric,
+			&IVEngineServerExt::precache_generic,
 			"Precaches a generic asset file and returns an integer containing its index.",
 			("s", arg("preload")=false)
 		)
