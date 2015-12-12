@@ -5,6 +5,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
+from enum import Enum
 from enum import IntEnum
 
 
@@ -23,31 +24,33 @@ from _effects._constants import BLOOD_COLOR_MECH
 # ============================================================================
 # >> ALL DECLARATION
 # ============================================================================
-__all__ = ('ALIAS_ALPHA_NAME',
-           'ALIAS_BLUE_NAME',
-           'ALIAS_GREEN_NAME',
-           'ALIAS_MODEL_INDEX_NAME',
-           'ALIAS_RED_NAME',
-           'BloodColor',
+__all__ = ('BloodColor',
+           'TempEntityAlias',
            )
 
 
-# ============================================================================
-# >> GLOBAL VARIABLES
-# ============================================================================
-# Aliases used by the "color" property...
-ALIAS_RED_NAME = 'red'
-ALIAS_GREEN_NAME = 'green'
-ALIAS_BLUE_NAME = 'blue'
-ALIAS_ALPHA_NAME = 'alpha'
-
-# Alias used by the "model" property...
-ALIAS_MODEL_INDEX_NAME = "model_index"
-
-
 # =============================================================================
-# >> IMPORTS
+# >> ENUMERATORS
 # =============================================================================
+class TempEntityAlias(Enum):
+    """Temp entity aliases enumerator."""
+
+    # Aliases used by the "color" property...
+    RED = 'red'
+    GREEN = 'green'
+    BLUE = 'blue'
+    ALPHA = 'alpha'
+
+    # Alias used by the "model" property...
+    MODEL_INDEX = 'model_index'
+
+    def __str__(self):
+        """Return the value as a string instance.
+
+        :rtype: str"""
+        return str(self.value)
+
+
 class BloodColor(IntEnum):
     """Blood colors wrapper enumerator."""
 

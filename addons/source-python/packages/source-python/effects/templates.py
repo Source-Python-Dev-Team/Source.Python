@@ -9,11 +9,7 @@ from core import GameConfigObj
 #   Effects
 from _effects._base import BaseTempEntity
 from effects import _first_temp_entity
-from effects.constants import ALIAS_ALPHA_NAME
-from effects.constants import ALIAS_BLUE_NAME
-from effects.constants import ALIAS_GREEN_NAME
-from effects.constants import ALIAS_MODEL_INDEX_NAME
-from effects.constants import ALIAS_RED_NAME
+from effects.constants import TempEntityAlias
 #   Entities
 from entities.classes import _supported_property_types
 from entities.classes import server_classes
@@ -162,17 +158,23 @@ class TempEntityTemplate(BaseTempEntity):
 
     @property
     def aliases(self):
-        """Return the aliases of the temp entity."""
+        """Return the aliases of the temp entity.
+
+        :rtype: GameConfigObj"""
         return self._aliases
 
     @property
     def properties(self):
-        """Returns the properties data of the temp entity."""
+        """Returns the properties data of the temp entity.
+
+        :rtype: dict"""
         return self._properties
 
     @property
     def size(self):
-        """Return the size of the temp entity instance."""
+        """Return the size of the temp entity instance.
+
+        :rtype: int"""
         return self._size
 
     @property
@@ -181,8 +183,8 @@ class TempEntityTemplate(BaseTempEntity):
 
         :rtype: bool"""
         # Loop through all color aliases...
-        for alias in (ALIAS_ALPHA_NAME, ALIAS_BLUE_NAME, ALIAS_GREEN_NAME,
-            ALIAS_RED_NAME):
+        for alias in map(str, (TempEntityAlias.ALPHA, TempEntityAlias.BLUE,
+            TempEntityAlias.GREEN, TempEntityAlias.RED)):
 
             # Is the current alias valid?
             if alias not in self.aliases:
@@ -201,7 +203,7 @@ class TempEntityTemplate(BaseTempEntity):
         """Return whether or not the temp entity has a model property.
 
         :rtype: bool"""
-        return ALIAS_MODEL_INDEX_NAME in self.aliases
+        return str(TempEntityAlias.MODEL_INDEX) in self.aliases
 
 
 class TempEntityTemplates(dict):
