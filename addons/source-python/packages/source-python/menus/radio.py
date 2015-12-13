@@ -138,7 +138,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
     def __init__(
             self, data=None, select_callback=None,
             build_callback=None, description=None,
-            title=None, top_seperator='-' * 30, bottom_seperator='-' * 30,
+            title=None, top_separator='-' * 30, bottom_separator='-' * 30,
             fill=True):
         """Initialize the object.
 
@@ -151,9 +151,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             title.
         :param str|None title: A title that is displayed at the top of the
             menu.
-        :param str top_seperator: A seperator that is displayed right after
+        :param str top_separator: A separator that is displayed right after
             the title/description.
-        :param str bottom_seperator: A seperator that is displayed right after
+        :param str bottom_separator: A separator that is displayed right after
             the body.
         :param bool fill: If True the menu will be filled so that it will
             always have the same  size.
@@ -162,8 +162,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         self.title = title
         self.description = description
-        self.top_seperator = top_seperator
-        self.bottom_seperator = bottom_seperator
+        self.top_separator = top_separator
+        self.bottom_separator = bottom_separator
         self.fill = fill
 
     @staticmethod
@@ -189,9 +189,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         if self.description is not None:
             buffer += _translate_text(self.description, player_index) + '\n'
 
-        # Set the top seperator if present
-        if self.top_seperator is not None:
-            buffer += self.top_seperator + '\n'
+        # Set the top separator if present
+        if self.top_separator is not None:
+            buffer += self.top_separator + '\n'
 
         return buffer
 
@@ -236,9 +236,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         """
         buffer = ''
 
-        # Set the bottom seperator if present
-        if self.bottom_seperator is not None:
-            buffer += self.bottom_seperator + '\n'
+        # Set the bottom separator if present
+        if self.bottom_separator is not None:
+            buffer += self.bottom_separator + '\n'
 
         # TODO: Add translations
         # Add "Back" option
