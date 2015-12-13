@@ -270,10 +270,12 @@ class ConfigManager(object):
                     if section.show_default:
 
                         # Write the cvar's default value
+                        default = ' "{0}"\n' if isinstance(
+                            section.default, str) else ' {0}\n'
                         open_file.write(
                             '//' + spaces +
                             _config_strings['Default'].get_string() +
-                            ' {0}\n'.format(section.default))
+                            default.format(section.default))
 
                     # Loop through the description to get valid
                     # lines with length less than the max line length
