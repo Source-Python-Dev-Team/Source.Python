@@ -51,7 +51,7 @@ class _EventVariable(object):
         else:
 
             # Set the default value to the type's default
-            self._default = _DEFAULT_VALUES[self._method]()
+            self._default = _DEFAULT_VALUES[self.method]()
 
         # Store the comment
         self._comment = comment
@@ -70,34 +70,34 @@ class _EventVariable(object):
 class BoolVariable(_EventVariable):
     """Class used to store bool event variables."""
 
-    method = 'set_bool'
+    method = 'bool'
 
 
 class ByteVariable(_EventVariable):
     """Class used to store byte event variables."""
 
-    method = 'set_int'
+    method = 'int'
 
 
 class ShortVariable(_EventVariable):
     """Class used to store short event variables."""
 
-    method = 'set_int'
+    method = 'int'
 
 
 class LongVariable(_EventVariable):
     """Class used to store long event variables."""
 
-    method = 'set_int'
+    method = 'int'
 
 
 class FloatVariable(_EventVariable):
     """Class used to store floating point event variables."""
 
-    method = 'set_float'
+    method = 'float'
 
 
 class StringVariable(_EventVariable):
     """Class used to store string event variables."""
 
-    method = 'set_string'
+    method = 'string'
