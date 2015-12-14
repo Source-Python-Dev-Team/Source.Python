@@ -476,7 +476,7 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
         if enable:
             self.collision_group = CollisionGroup.DEBRIS_TRIGGER
         else:
-            self.collison_group = CollisionGroup.PLAYER
+            self.collision_group = CollisionGroup.PLAYER
 
     def get_noblock(self):
         """Return whether noblock mode is enabled.
