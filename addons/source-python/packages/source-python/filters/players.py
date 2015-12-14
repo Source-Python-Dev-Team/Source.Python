@@ -45,7 +45,7 @@ class PlayerIter(_IterObject):
 
     @staticmethod
     def iterator():
-        """Iterate over all Player objects."""
+        """Iterate over all :class:`players.entity.Player` objects."""
         # Loop through all players on the server
         for edict in PlayerGenerator():
 
