@@ -135,7 +135,7 @@ class _LogInstance(dict):
         # Call the main logging method
         self._log(level, msg, *args, **kwargs)
 
-    def _log(self, level, msg, *args, dump=False, **kwargs):
+    def _log(self, level, msg, *args, **kwargs):
         """Main logging method."""
         # Does the message need logged?
         if self.level > level:
@@ -153,28 +153,19 @@ class _LogInstance(dict):
             # This is done here to fix an ImportError
             from engines.server import engine_server
 
-            # Is a prefix supposed to be logged?
-            if not dump:
+            # Create the record
+            record = self.logger.makeRecord(
+                self.logger.name, level,
+                '(unknown file)', 0, msg, args, None)
 
-                # Create the record
-                record = self.logger.makeRecord(
-                    self.logger.name, level,
-                    '(unknown file)', 0, msg, args, None)
-
-                # Get the message to send
-                message = _main_log_formatter.format(record)
-
-            # Is the message not supposed to have a prefix?
-            else:
-
-                # Use the given message
-                message = msg
+            # Get the message to send
+            message = _main_log_formatter.format(record)
 
             # Print to the main log
             engine_server.log_print(message + '\n')
 
         # Print to the console?
-        if CONSOLE & areas and not dump:
+        if CONSOLE & areas:
 
             # If not, print to the console
             # If <engine>.log_print is called with logging being on,
