@@ -391,7 +391,7 @@ class TempEntity(BaseTempEntity):
 
         :param str prop_name: The name of the property.
         :param Vector value: The value to set."""
-        self._set_property(prop_name, SendPropType.VECTOR)
+        self._set_property(prop_name, SendPropType.VECTOR, value)
 
     def create(self, filter=None, delay=0.0, **aliases):
         """Create the temp entity effect.
