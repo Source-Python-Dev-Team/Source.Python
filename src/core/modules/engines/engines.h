@@ -51,6 +51,13 @@ extern IServerPluginHelpers *helpers;
 class IVEngineServerExt: public GameIVEngineServerExt
 {
 public:
+	static void ServerCommand(IVEngineServer* pEngine, const char* szCommand)
+	{
+		std::string string_command = szCommand;
+		string_command += ";";
+		pEngine->ServerCommand(string_command.c_str());
+	}
+
 	static void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand, bool bServerSide)
 	{
 		if (bServerSide)

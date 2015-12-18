@@ -249,7 +249,7 @@ void export_engine_server(scope _server)
 		)
 
 		.def("server_command",
-			&IVEngineServer::ServerCommand,
+			&IVEngineServerExt::ServerCommand,
 			"Issues a command to the command parser as if it was typed at the server console.",
 			args("command")
 		)
