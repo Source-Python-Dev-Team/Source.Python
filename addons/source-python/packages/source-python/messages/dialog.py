@@ -44,10 +44,17 @@ class _DialogBase(object):
     time = 0
     title = ''
 
-    def send(self, *args, **tokens):
-        """Send the Dialog message to the appropriate recipients."""
+    def send(self, *player_indexes, **tokens):
+        """Send the Dialog message to the appropriate recipients.
+
+        :param player_indexes: Values can be a player index, multiple player
+            indexes (star args),
+            a :class:`filters.players.PlayerIter` instance,
+            or a :class:`filters.recipients.RecipientFilter` instance.
+        :param tokens: Keyword arguments used to replace values in messages.
+        """
         # Get a recipient filter of the given users
-        recipients = RecipientFilter(*args)
+        recipients = RecipientFilter(*player_indexes)
 
         # Get the KeyValues instance
         keyvalues = KeyValues(self.message_type.name.lower())
