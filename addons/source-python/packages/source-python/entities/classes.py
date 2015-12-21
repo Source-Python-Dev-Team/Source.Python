@@ -234,9 +234,6 @@ class _ServerClasses(TypeManager):
         # Get a TypeManager instance for the current datamap
         instance = self.create_type_from_file(class_name, manager_contents)
 
-        # Store the class name to more easily look it up
-        instance.__name__ = class_name
-
         # Get the specific types of values to use
         input_contents = dict(map(
             reversed, manager_contents.get('input', {}).items()))
