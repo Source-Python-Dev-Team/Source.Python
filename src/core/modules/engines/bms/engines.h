@@ -83,7 +83,7 @@ public:
 //---------------------------------------------------------------------------------
 inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
 {
-	return enginetrace->GetPointContents(vecAbsPosition, ppEntity);
+	return enginetrace->GetPointContents(vecAbsPosition, MASK_ALL, ppEntity);
 }
 
 
