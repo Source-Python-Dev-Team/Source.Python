@@ -1,5 +1,7 @@
 # ../effects/base.py
 
+"""Provides base effect classes."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -59,7 +61,8 @@ class TempEntity(BaseTempEntity):
 
         :param str/Pointer temp_entity: The name of the temp entity to
             initialize or the pointer to wrap.
-        :param dict aliases: Any alias to set on initialization."""
+        :param dict aliases: Any alias to set on initialization.
+        """
         # Is the given name a Pointer instance?
         if isinstance(temp_entity, Pointer):
 
@@ -85,21 +88,24 @@ class TempEntity(BaseTempEntity):
     def _obj(cls, ptr):
         """Wrap the given pointer.
 
-        :param Pointer ptr: The pointer to wrap."""
+        :param Pointer ptr: The pointer to wrap.
+        """
         return cls(ptr)
 
     @property
     def _size(self):
         """Return the size of the temp entity.
 
-        :rtype: int"""
+        :rtype: int
+        """
         return self.template.size
 
     def __getattr__(self, name):
         """Return the value of the given alias.
 
         :param str name: The alias name.
-        :rtype: object"""
+        :rtype: object
+        """
         # Get the name of the prop...
         prop_name = self.template.aliases.get(name, None)
 
@@ -114,7 +120,8 @@ class TempEntity(BaseTempEntity):
                     prop_name['name']]
 
                 # Return the value of the property...
-                return make_object(manager.get_class(prop_name['type']),
+                return make_object(
+                    manager.get_class(prop_name['type']),
                     get_object_pointer(self) + offset)
 
             # Get the data of the property...
@@ -130,7 +137,8 @@ class TempEntity(BaseTempEntity):
         """Set the value of the given alias.
 
         :param str name: The alias name.
-        :param object value: The value to set."""
+        :param object value: The value to set.
+        """
         # Get the name of the prop...
         prop_name = self.template.aliases.get(name, None)
 
@@ -153,7 +161,7 @@ class TempEntity(BaseTempEntity):
                     # Raise an exception...
                     raise TypeError(
                         'The given value is not of type "{}".'.format(
-                        type_name))
+                            type_name))
 
                 # Set the value of the property...
                 get_object_pointer(value).copy(
@@ -179,14 +187,15 @@ class TempEntity(BaseTempEntity):
         """Return the value of the given property name.
 
         :param str prop_name: The name of the property.
-        :param SendPropType prop_type: The type of the property."""
+        :param SendPropType prop_type: The type of the property.
+        """
         # Is the given property not valid?
         if prop_name not in self.template.properties:
 
             # Raise an exception...
             raise NameError(
                 '"{}" is not a valid property for temp entity "{}".'.format(
-                prop_name, self.name))
+                    prop_name, self.name))
 
         # Get the property data...
         prop, offset, type_name = self.template.properties[prop_name]
@@ -195,15 +204,15 @@ class TempEntity(BaseTempEntity):
         if prop.type != prop_type:
 
             # Raise an exception...
-            raise TypeError('"{}" is not of type "{}".'.format(prop_name,
-                prop_type))
+            raise TypeError('"{}" is not of type "{}".'.format(
+                prop_name, prop_type))
 
         # Is the property an array?
         if prop_type == SendPropType.ARRAY:
 
             # Return an array instance...
-            return Array(manager, False, type_name,
-                get_object_pointer(self) + offset, prop.length)
+            return Array(manager, False, type_name, get_object_pointer(
+                self) + offset, prop.length)
 
         # Is the given type not supported?
         if prop_type not in _supported_property_types:
@@ -215,14 +224,15 @@ class TempEntity(BaseTempEntity):
         if Type.is_native(type_name):
 
             # Return the value...
-            return getattr(get_object_pointer(self), 'get_' + type_name)(
-                offset)
+            return getattr(
+                get_object_pointer(self), 'get_' + type_name)(offset)
 
         # Otherwise
         else:
 
             # Make the object and return it...
-            return make_object(manager.get_class(type_name),
+            return make_object(
+                manager.get_class(type_name),
                 get_object_pointer(self) + offset)
 
         # Raise an exception...
@@ -232,42 +242,48 @@ class TempEntity(BaseTempEntity):
         """Return the value of the given property as an Array instance.
 
         :param str prop_name: The name of the property.
-        :rtype: Array"""
+        :rtype: Array
+        """
         return self._get_property(prop_name, SendPropType.ARRAY)
 
     def get_property_bool(self, prop_name):
         """Return the value of the given property as a boolean.
 
         :param str prop_name: The name of the property.
-        :rtype: bool"""
+        :rtype: bool
+        """
         return bool(self._get_property(prop_name, SendPropType.INT))
 
     def get_property_float(self, prop_name):
         """Return the value of the given property as a float.
 
         :param str prop_name: The name of the property.
-        :rtype: float"""
+        :rtype: float
+        """
         return self._get_property(prop_name, SendPropType.FLOAT)
 
     def get_property_int(self, prop_name):
         """Return the value of the given property as an integer.
 
         :param str prop_name: The name of the property.
-        :rtype: int"""
+        :rtype: int
+        """
         return self._get_property(prop_name, SendPropType.INT)
 
     def get_property_string(self, prop_name):
         """Return the value of the given property as a string.
 
         :param str prop_name: The name of the property.
-        :rtype: str"""
+        :rtype: str
+        """
         return self._get_property(prop_name, SendPropType.STRING)
 
     def get_property_vector(self, prop_name):
         """Return the value of the given property as a string.
 
         :param str prop_name: The name of the property.
-        :rtype: Vector"""
+        :rtype: Vector
+        """
         return self._get_property(prop_name, SendPropType.VECTOR)
 
     def _set_property(self, prop_name, prop_type, value):
@@ -275,14 +291,15 @@ class TempEntity(BaseTempEntity):
 
         :param str prop_name: The name of the property.
         :param SendPropType prop_type: The type of the property.
-        :param value object: To value to set to the given property."""
+        :param value object: To value to set to the given property.
+        """
         # Is the given property not valid?
         if prop_name not in self.template.properties:
 
             # Raise an exception...
             raise NameError(
                 '"{}" is not a valid property for temp entity "{}".'.format(
-                prop_name, self.name))
+                    prop_name, self.name))
 
         # Get the property data...
         prop, offset, type_name = self.template.properties[prop_name]
@@ -291,8 +308,8 @@ class TempEntity(BaseTempEntity):
         if prop.type != prop_type:
 
             # Raise an exception...
-            raise TypeError('"{}" is not of type "{}".'.format(prop_name,
-                prop_type))
+            raise TypeError('"{}" is not of type "{}".'.format(
+                prop_name, prop_type))
 
         # Is the property an array?
         if prop_type == SendPropType.ARRAY:
@@ -355,42 +372,48 @@ class TempEntity(BaseTempEntity):
         """Set the value of the given property as an Array instance.
 
         :param str prop_name: The name of the property.
-        :param Array value: The value to set."""
+        :param Array value: The value to set.
+        """
         self._set_property(prop_name, SendPropType.ARRAY, value)
 
     def set_property_bool(self, prop_name, value):
         """Set the value of the given property as a boolean.
 
         :param str prop_name: The name of the property.
-        :param bool value: The value to set."""
+        :param bool value: The value to set.
+        """
         self._set_property(int(prop_name), SendPropType.INT, value)
 
     def set_property_float(self, prop_name, value):
         """Set the value of the given property as a float.
 
         :param str prop_name: The name of the property.
-        :param float value: The value to set."""
+        :param float value: The value to set.
+        """
         self._set_property(prop_name, SendPropType.FLOAT, value)
 
     def set_property_int(self, prop_name, value):
         """Set the value of the given property as an integer.
 
         :param str prop_name: The name of the property.
-        :param int value: The value to set."""
+        :param int value: The value to set.
+        """
         self._set_property(prop_name, SendPropType.INT, value)
 
     def set_property_string(self, prop_name, value):
         """Set the value of the given property as a string.
 
         :param str prop_name: The name of the property.
-        :param str value: The value to set."""
+        :param str value: The value to set.
+        """
         self._set_property(prop_name, SendPropType.STRING, value)
 
     def set_property_vector(self, prop_name, value):
         """Set the value of the given property as a string.
 
         :param str prop_name: The name of the property.
-        :param Vector value: The value to set."""
+        :param Vector value: The value to set.
+        """
         self._set_property(prop_name, SendPropType.VECTOR, value)
 
     def create(self, filter=None, delay=0.0, **aliases):
@@ -400,7 +423,8 @@ class TempEntity(BaseTempEntity):
             players to send the effect to.
         :param float delay: The delay before creating the effect.
         :param dict aliases: Any aliases to set before creating the temp entity
-            effect."""
+            effect.
+        """
         # Was no recipient filter given?
         if filter is None:
 
@@ -420,20 +444,23 @@ class TempEntity(BaseTempEntity):
     def template(self):
         """Return the template of the temp entity.
 
-        :rtype: TempEntityTemplate"""
+        :rtype: TempEntityTemplate
+        """
         return temp_entity_templates[self.name]
 
     @property
     def has_color(self):
         """Return whether or not the temp entity has a color property.
 
-        :rtype: bool"""
+        :rtype: bool
+        """
         return self.template.has_color
 
     def get_color(self):
         """Return the color of the temp entity.
 
-        :rtype: Color"""
+        :rtype: Color
+        """
         # Does the temp entity has a color property?
         if not self.has_color:
 
@@ -441,7 +468,8 @@ class TempEntity(BaseTempEntity):
             raise NameError('"{}" doesn\'t have a color property.'.format(
                 self.name))
 
-        return Color(r=getattr(self, str(TempEntityAlias.RED), 0),
+        return Color(
+            r=getattr(self, str(TempEntityAlias.RED), 0),
             g=getattr(self, str(TempEntityAlias.GREEN), 0),
             b=getattr(self, str(TempEntityAlias.BLUE), 0),
             a=getattr(self, str(TempEntityAlias.ALPHA), 0))
@@ -449,7 +477,8 @@ class TempEntity(BaseTempEntity):
     def set_color(self, color):
         """Set the temp entity to the given color.
 
-        :param Color color: The color to set."""
+        :param Color color: The color to set.
+        """
         # Does the temp entity has a color property?
         if not self.has_color:
 
@@ -470,13 +499,15 @@ class TempEntity(BaseTempEntity):
     def has_model(self):
         """Return whether or not the temp entity has a model property.
 
-        :rtype: bool"""
+        :rtype: bool
+        """
         return self.template.has_model
 
     def get_model(self):
         """Return the model of the temp entity.
 
-        :rtype: Model"""
+        :rtype: Model
+        """
         # Does the temp entity has a model property?
         if not self.has_model:
 
@@ -500,7 +531,8 @@ class TempEntity(BaseTempEntity):
     def set_model(self, model):
         """Set the model of the temp entity to the given model.
 
-        :param Model model: The model to set."""
+        :param Model model: The model to set.
+        """
         # Does the temp entity has a model property?
         if not self.has_model:
 
@@ -514,7 +546,7 @@ class TempEntity(BaseTempEntity):
             # Raise an exception...
             raise TypeError(
                 '"{}" (of type "{}") is not a valid Model.'.format(
-                model, type(model)))
+                    model, type(model)))
 
         # Set the model of the temp entity...
         setattr(self, str(TempEntityAlias.MODEL_INDEX), model.index)

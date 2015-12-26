@@ -1,5 +1,7 @@
 # ../effects/hooks.py
 
+"""Provides hooking effect functionality."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -34,7 +36,8 @@ class _TempEntityHook(AutoUnload):
     def __init__(self, temp_entity_name):
         """Initialize the hook object.
 
-        :param str temp_entity_name: The name of the temp entity to hook."""
+        :param str temp_entity_name: The name of the temp entity to hook.
+        """
         # Store the given temp entity name...
         self.name = temp_entity_name
 
@@ -73,8 +76,7 @@ class _TempEntityHook(AutoUnload):
 
 
 class TempEntityPreHook(_TempEntityHook):
-    """Decorator class used to create temp entity pre hooks that auto
-        unload."""
+    """Decorator used to create temp entity pre hooks that auto unload."""
 
     hook_type = HookType.PRE
 
@@ -82,7 +84,8 @@ class TempEntityPreHook(_TempEntityHook):
         """Called when a pre temp entity hook is called.
 
         :param StackData stack_data: The stack data instance describing the
-            parameters."""
+            parameters.
+        """
         # Get the temp entity instance...
         temp_entity = make_object(TempEntity, stack_data[0])
 
@@ -93,13 +96,12 @@ class TempEntityPreHook(_TempEntityHook):
             return
 
         # Call the stored callback...
-        return self._callback(temp_entity, make_object(RecipientFilter,
-            stack_data[1]))
+        return self._callback(
+            temp_entity, make_object(RecipientFilter, stack_data[1]))
 
 
 class TempEntityPostHook(_TempEntityHook):
-    """Decorator class used to create temp entity post hooks that auto
-        unload."""
+    """Decorator used to create temp entity post hooks that auto unload."""
 
     hook_type = HookType.POST
 
@@ -108,7 +110,8 @@ class TempEntityPostHook(_TempEntityHook):
 
         :param StackData stack_data: The stack data instance describing the
             parameters.
-        :param object return_value: The value returned."""
+        :param object return_value: The value returned.
+        """
         # Get the temp entity instance...
         temp_entity = make_object(TempEntity, stack_data[0])
 
@@ -119,5 +122,5 @@ class TempEntityPostHook(_TempEntityHook):
             return
 
         # Call the stored callback...
-        return self._callback(temp_entity, make_object(RecipientFilter,
-            stack_data[1]))
+        return self._callback(
+            temp_entity, make_object(RecipientFilter, stack_data[1]))

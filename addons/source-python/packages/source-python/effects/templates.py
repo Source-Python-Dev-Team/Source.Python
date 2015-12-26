@@ -1,5 +1,7 @@
 # ../effects/templates.py
 
+"""Base templates for effect classes."""
+
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
@@ -77,10 +79,10 @@ class TempEntityTemplate(BaseTempEntity):
         super()._copy_base(temp_entity, self.size)
 
     def _add_properties(self, send_table):
-        """Parse the given send table and add all properties to the
-            dictionary.
+        """Parse the given send table and add all properties to the dictionary.
 
-        :param SendTable send_table: The send table instance to parse."""
+        :param SendTable send_table: The send table instance to parse.
+        """
         # Loop through all properties...
         for name, prop, offset in server_classes._find_properties(send_table):
 
@@ -140,7 +142,8 @@ class TempEntityTemplate(BaseTempEntity):
     def _get_type_size(type_name):
         """Helper method returning the size of the given type.
 
-        :param str type_name: The name of the type."""
+        :param str type_name: The name of the type.
+        """
         # Is the type native?
         if Type.is_native(type_name):
 
@@ -160,31 +163,36 @@ class TempEntityTemplate(BaseTempEntity):
     def aliases(self):
         """Return the aliases of the temp entity.
 
-        :rtype: GameConfigObj"""
+        :rtype: GameConfigObj
+        """
         return self._aliases
 
     @property
     def properties(self):
-        """Returns the properties data of the temp entity.
+        """Return the properties data of the temp entity.
 
-        :rtype: dict"""
+        :rtype: dict
+        """
         return self._properties
 
     @property
     def size(self):
         """Return the size of the temp entity instance.
 
-        :rtype: int"""
+        :rtype: int
+        """
         return self._size
 
     @property
     def has_color(self):
         """Return whether or not the temp entity has a color property.
 
-        :rtype: bool"""
+        :rtype: bool
+        """
         # Loop through all color aliases...
-        for alias in map(str, (TempEntityAlias.ALPHA, TempEntityAlias.BLUE,
-            TempEntityAlias.GREEN, TempEntityAlias.RED)):
+        for alias in map(str, (
+                TempEntityAlias.ALPHA, TempEntityAlias.BLUE,
+                TempEntityAlias.GREEN, TempEntityAlias.RED)):
 
             # Is the current alias valid?
             if alias not in self.aliases:
@@ -202,7 +210,8 @@ class TempEntityTemplate(BaseTempEntity):
     def has_model(self):
         """Return whether or not the temp entity has a model property.
 
-        :rtype: bool"""
+        :rtype: bool
+        """
         return str(TempEntityAlias.MODEL_INDEX) in self.aliases
 
 
@@ -213,7 +222,8 @@ class TempEntityTemplates(dict):
         """Called when a temp entity template is requested but missing.
 
         :param str temp_entity_name: The name of the temp entity template
-            requested."""
+            requested.
+        """
         # Get the first temp entity in the chain...
         temp_entity = _first_temp_entity
 

@@ -118,7 +118,7 @@ class _CoreCommandManager(SubCommandManager):
     def dump_data(self, dump_type, filename):
         """Dump data to logs."""
         # Does the given dump type exist as a function?
-        if not 'dump_{0}'.format(dump_type) in dumps.__all__:
+        if 'dump_{0}'.format(dump_type) not in dumps.__all__:
 
             # If not, print message to notify of unknown dump type
             self.logger.log_message(

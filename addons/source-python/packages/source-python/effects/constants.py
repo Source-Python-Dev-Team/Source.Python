@@ -1,5 +1,7 @@
 # ../effects/constants.py
 
+"""Provides constants for effects."""
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -47,7 +49,8 @@ class TempEntityAlias(Enum):
     def __str__(self):
         """Return the value as a string instance.
 
-        :rtype: str"""
+        :rtype: str
+        """
         return str(self.value)
 
 
