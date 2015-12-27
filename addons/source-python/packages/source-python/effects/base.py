@@ -506,7 +506,7 @@ class TempEntity(BaseTempEntity):
         :param str prop_name: The name of the property.
         :param bool value: The value to set.
         """
-        self._set_property(int(prop_name), SendPropType.INT, value)
+        self._set_property(prop_name, SendPropType.INT, int(value))
 
     def set_property_float(self, prop_name, value):
         """Set the value of the given property as a float.
