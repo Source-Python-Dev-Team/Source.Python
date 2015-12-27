@@ -89,7 +89,11 @@ __all__ = ('address_from_playerinfo',
 # >> OTHER HELPER FUNCTIONS
 # =============================================================================
 def index_from_steamid(steamid):
-    """Return an index from the given SteamID."""
+    """Return an index from the given SteamID.
+
+    :param str steamid: The SteamID to get the index of.
+    :rtype: int
+    """
     # Loop through all players on the server
     for edict in PlayerGenerator():
 
@@ -101,12 +105,17 @@ def index_from_steamid(steamid):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-            
-    return None
+
+    raise ValueError(
+        'Conversion from "SteamID" ({}) to "Index" failed.'.format(steamid))
 
 
 def index_from_uniqueid(uniqueid):
-    """Return an index from the given UniqueID."""
+    """Return an index from the given UniqueID.
+
+    :param str uniqueid: The UniqueID to get the index of.
+    :rtype: int
+    """
     # Loop through all players on the server
     for edict in PlayerGenerator():
 
@@ -118,12 +127,17 @@ def index_from_uniqueid(uniqueid):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-            
-    return None
+
+    raise ValueError(
+        'Conversion from "UniqueID" ({}) to "Index" failed.'.format(uniqueid))
 
 
 def index_from_name(name):
-    """Return an index from the given player name."""
+    """Return an index from the given player name.
+
+    :param str name: The player name to get the index of.
+    :rtype: int
+    """
     # Loop through all players on the server
     for edict in PlayerGenerator():
 
@@ -135,12 +149,19 @@ def index_from_name(name):
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
-            
-    return None
+
+    raise ValueError(
+        'Conversion from "Name" ({}) to "Index" failed.'.format(name))
 
 
 def uniqueid_from_playerinfo(playerinfo):
-    """Return the UniqueID for the given player."""
+    """Return the UniqueID for the given player.
+
+    :param PlayerInfo playerinfo: The PlayerInfo
+        instance to get the UniqueID from.
+    :return: The UniqueID of the player. E.g. 'BOT_STAN' or 'STEAM_0:0:12345'
+    :rtype: str
+    """
     # Is the player a Bot?
     if playerinfo.is_fake_client():
 
@@ -161,19 +182,28 @@ def uniqueid_from_playerinfo(playerinfo):
 
     # Return the player's SteamID
     return steamid
-    
-    
+
+
 def uniqueid_from_index(index):
-    """Return the UniqueID for the given player index."""
-    playerinfo = playerinfo_from_index(index)
-    if playerinfo is None:
-        return None
-        
-    return uniqueid_from_playerinfo(playerinfo)
+    """Return the UniqueID for the given player index.
+
+    :param int index: The player index to get the UniqueID from.
+    :return: The UniqueID of the player. E.g. 'BOT_STAN' or 'STEAM_0:0:12345'
+    :rtype: str
+    """
+    return uniqueid_from_playerinfo(playerinfo_from_index(index))
 
 
 def address_from_playerinfo(playerinfo):
-    """Return the IP address for the given player."""
+    """Return the IP address for the given player.
+
+    If the player is a bot, an empty string will be returned.
+
+    :param PlayerInfo playerinfo: The PlayerInfo
+        instance to get the UniqueID from.
+    :return: The IP address. E.g. '127.0.0.1:27015'
+    :rtype: str
+    """
     # Is the player a bot?
     if playerinfo.is_fake_client():
 

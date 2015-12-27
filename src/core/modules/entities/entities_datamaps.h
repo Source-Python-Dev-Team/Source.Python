@@ -134,22 +134,14 @@ public:
 		return pVector;
 	}
 
-	static object get_entity(variant_t *pVariant)
+	static unsigned int get_entity(variant_t *pVariant)
 	{
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseHandle(pVariant->Entity(), iEntityIndex))
-			return object();
-
-		return object(iEntityIndex);
+		return ExcIndexFromBaseHandle(pVariant->Entity());
 	}
 
 	static void set_entity(variant_t *pVariant, unsigned int uiEntity)
 	{
-		CBaseEntity* pBaseEntity;
-		if (!BaseEntityFromIndex(uiEntity, pBaseEntity))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiEntity);
-
-		pVariant->SetEntity(pBaseEntity);
+		pVariant->SetEntity(ExcBaseEntityFromIndex(uiEntity));
 	}
 };
 
@@ -169,34 +161,24 @@ public:
 		return pInputData;
 	}
 
-	static object get_activator(const inputdata_t& pInputData)
+	static unsigned int get_activator(const inputdata_t& pInputData)
 	{
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseEntity(pInputData.pActivator, iEntityIndex))
-			return object();
-
-		return object(iEntityIndex);
+		return ExcIndexFromBaseEntity(pInputData.pActivator);
 	}
 
 	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator)
 	{
-		if (!BaseEntityFromIndex(uiActivator, pInputData->pActivator))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiActivator);
+		pInputData->pActivator = ExcBaseEntityFromIndex(uiActivator);
 	}
 
-	static object get_caller(const inputdata_t& pInputData)
+	static unsigned int get_caller(const inputdata_t& pInputData)
 	{
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseEntity(pInputData.pCaller, iEntityIndex))
-			return object();
-
-		return object(iEntityIndex);
+		return ExcIndexFromBaseEntity(pInputData.pCaller);
 	}
 	
 	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller)
 	{
-		if (!BaseEntityFromIndex(uiCaller, pInputData->pCaller))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to get a BaseEntity object from the given index: '%i'", uiCaller);
+		pInputData->pCaller = ExcBaseEntityFromIndex(uiCaller);
 	}
 };
 

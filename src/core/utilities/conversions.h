@@ -37,6 +37,7 @@
 #include "public/game/server/iplayerinfo.h"
 #include "utilities/baseentity.h"
 
+BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
 //-----------------------------------------------------------------------------
 // External variables.
@@ -60,6 +61,28 @@ extern IPlayerInfoManager *playerinfomanager;
 
 
 //-----------------------------------------------------------------------------
+// Helper macro to avoid some redundant typing...
+//-----------------------------------------------------------------------------
+#define CREATE_EXC_CONVERSION_FUNCTION(to_type, to_name, from_type, from_name) \
+	inline to_type Exc##to_name##From##from_name(from_type from) { \
+		to_type result; \
+		if (!to_name##From##from_name(from, result)) { \
+			const char* str_value = extract<const char*>(str(from)); \
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, XSTRINGIFY(Conversion from #from_name (%s) to #to_name failed.), str_value); \
+		} \
+		return result; \
+	} \
+
+#define EXPORT_CONVERSION_FUNCTION(to_type, to_name, from_type, from_name, ...) \
+	def(extract<const char *>(str(XSTRINGIFY(to_name##_from_##from_name)).lower().ptr()), \
+		&Exc##to_name##From##from_name, \
+		XSTRINGIFY(Return the to_name (of type `#to_type`) from the given from_name (of type `#from_type`).), \
+		args(XSTRINGIFY(from_name)), \
+		##__VA_ARGS__ \
+	)
+
+
+//-----------------------------------------------------------------------------
 // EdictFrom* declarations
 //-----------------------------------------------------------------------------
 bool EdictFromIndex( unsigned int iEntityIndex, edict_t*& output );
@@ -69,6 +92,14 @@ bool EdictFromBaseEntity( CBaseEntity *pBaseEntity, edict_t*& output );
 bool EdictFromBaseHandle( CBaseHandle hBaseHandle, edict_t*& output );
 bool EdictFromIntHandle( unsigned int iEntityHandle, edict_t*& output );
 bool EdictFromPointer( CPointer *pEntityPointer, edict_t*& output );
+
+CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Index);
+CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, CBaseHandle, BaseHandle);
+CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, IntHandle);
+CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, CPointer *, Pointer);
+CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Userid);
+CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, IPlayerInfo *, PlayerInfo);
 
 
 //-----------------------------------------------------------------------------
@@ -82,6 +113,14 @@ bool IntHandleFromPointer( CPointer *pEntityPointer, unsigned int& output );
 bool IntHandleFromUserid( unsigned int iUserID, unsigned int& output );
 bool IntHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output );
 
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Index);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, edict_t *, Edict);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseHandle, BaseHandle);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, CPointer *, Pointer);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Userid);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, IPlayerInfo *, PlayerInfo);
+
 
 //-----------------------------------------------------------------------------
 // BaseEntityFrom* declarations
@@ -93,6 +132,14 @@ bool BaseEntityFromIntHandle( unsigned int iEntityHandle, CBaseEntity*& output )
 bool BaseEntityFromBaseHandle( CBaseHandle hBaseHandle, CBaseEntity*& output );
 bool BaseEntityFromUserid( unsigned int iUserID, CBaseEntity*& output );
 bool BaseEntityFromPlayerInfo( IPlayerInfo *pPlayerInfo, CBaseEntity*& output );
+
+CREATE_EXC_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Index);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, edict_t *, Edict);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CBaseHandle, BaseHandle);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, IntHandle);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CPointer *, Pointer);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Userid);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, IPlayerInfo *, PlayerInfo);
 
 
 //-----------------------------------------------------------------------------
@@ -106,6 +153,14 @@ bool UseridFromIntHandle( unsigned int iEntityHandle, unsigned int& output );
 bool UseridFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output );
 bool UseridFromPointer( CPointer *pEntityPointer, unsigned int& output );
 
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, Index);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, edict_t *, Edict);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, CBaseHandle, BaseHandle);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, IntHandle);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, CPointer *, Pointer);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, IPlayerInfo *, PlayerInfo);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, CBaseEntity *, BaseEntity);
+
 
 //-----------------------------------------------------------------------------
 // PlayerInfoFrom* declarations
@@ -117,6 +172,14 @@ bool PlayerInfoFromEdict( edict_t *pEdict, IPlayerInfo*& output );
 bool PlayerInfoFromBaseHandle( CBaseHandle hBaseHandle, IPlayerInfo*& output );
 bool PlayerInfoFromIntHandle( unsigned int iEntityHandle, IPlayerInfo*& output );
 bool PlayerInfoFromUserid( unsigned int iUserID, IPlayerInfo*& output );
+
+CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Index);
+CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, edict_t *, Edict);
+CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseHandle, BaseHandle);
+CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, IntHandle);
+CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CPointer *, Pointer);
+CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Userid);
+CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseEntity *, BaseEntity);
 
 
 //-----------------------------------------------------------------------------
@@ -130,6 +193,14 @@ bool IndexFromIntHandle( unsigned int iEntityHandle, unsigned int& output );
 bool IndexFromUserid( unsigned int iUserID, unsigned int& output );
 bool IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output );
 
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, IntHandle);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
+
 
 //-----------------------------------------------------------------------------
 // BaseHandleFrom* declarations
@@ -141,6 +212,14 @@ bool BaseHandleFromPointer( CPointer *pEntityPointer, CBaseHandle& output );
 bool BaseHandleFromUserid( unsigned int iUserID, CBaseHandle& output );
 bool BaseHandleFromPlayerInfo( IPlayerInfo *pPlayerInfo, CBaseHandle& output );
 bool BaseHandleFromEdict( edict_t *pEdict, CBaseHandle& output );
+
+CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Index);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, edict_t *, Edict);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, IntHandle);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CPointer *, Pointer);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Userid);
+CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, IPlayerInfo *, PlayerInfo);
 
 
 //-----------------------------------------------------------------------------
@@ -154,27 +233,13 @@ bool PointerFromUserid( unsigned int iUserID, CPointer& output );
 bool PointerFromPlayerInfo( IPlayerInfo *pPlayerInfo, CPointer& output );
 bool PointerFromEdict( edict_t *pEdict, CPointer& output );
 
-
-//-----------------------------------------------------------------------------
-// Helper macro to avoid some redundant typing...
-//-----------------------------------------------------------------------------
-#define EXPORT_CONVERSION_FUNCTION(to_type, to_name, from_type, from_name, result_wrapper) \
-	class to_name##From##from_name##Wrapper \
-	{ \
-	public: \
-		static object wrapper(from_type from) { \
-			to_type result; \
-			if (!to_name##From##from_name(from, result)) \
-				return object();\
-			\
-			return result_wrapper; \
-		} \
-	}; \
-	def(extract<const char *>(str(XSTRINGIFY(to_name##_from_##from_name)).lower().ptr()), \
-		&to_name##From##from_name##Wrapper::wrapper, \
-		XSTRINGIFY(Return the to_name (of type `#to_type`) from the given from_name (of type `#from_type`).), \
-		args(XSTRINGIFY(from_name)) \
-	)
+CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Index);
+CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, edict_t *, Edict);
+CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, CBaseHandle, BaseHandle);
+CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, IntHandle);
+CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Userid);
+CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo);
 
 
 #endif // _CONVERSIONS_H

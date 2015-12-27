@@ -83,6 +83,10 @@ class _HookDecorator(AutoUnload):
         self.callback = callback
         self._class_instance.append(self.callback)
 
+    def __call__(self, *args, **kwargs):
+        """Call the callback."""
+        return self.callback(*args, **kwargs)
+
     def _unload_instance(self):
         """Unregister the hook."""
         self._class_instance.remove(self.callback)

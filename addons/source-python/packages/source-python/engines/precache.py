@@ -8,9 +8,6 @@
 # Python Imports
 #   Contextlib
 from contextlib import suppress
-#   Inspect
-from inspect import getmodule
-from inspect import stack
 
 # Source.Python Imports
 #   Core
@@ -32,6 +29,7 @@ from stringtables.downloads import Downloadables
 __all__ = ('Decal',
            'Generic',
            'Model',
+           '_PrecacheBase',
            )
 
 
@@ -57,14 +55,9 @@ class _PrecacheBase(AutoUnload):
         # Save whether the the file should be preloaded
         self._preload = preload
 
-        # Get the calling module
-        caller = getmodule(stack()[1][0])
-
-        # Set the _calling_module attribute for the instance
-        self._calling_module = caller.__name__
-
         # Is the map loaded?
         if global_vars.map_name:
+
             # Precache the instance
             self._precache()
 

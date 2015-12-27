@@ -1,4 +1,4 @@
-# ../commands/say/__init__.py
+# ../commands/say.py
 
 """Provides say command and say filter functionality."""
 

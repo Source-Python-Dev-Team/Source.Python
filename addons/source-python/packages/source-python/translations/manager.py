@@ -64,4 +64,4 @@ class _LanguageManager(ConfigObj):
         return None
 
 # The singleton object of the :class:`_LanguageManager` class
-language_manager = _LanguageManager(SP_DATA_PATH.joinpath('languages.ini'))
+language_manager = _LanguageManager(SP_DATA_PATH / 'languages.ini')

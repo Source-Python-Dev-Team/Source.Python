@@ -21,7 +21,7 @@ class _CvarManager(dict):
     """Class used to store a cvar instance."""
 
     def __init__(
-            self, name, default, flags, description, min_value, max_value):
+            self, name, default, description, flags, min_value, max_value):
         """Called on instantiation."""
         # Initialize the dictionary
         super().__init__()
@@ -39,7 +39,7 @@ class _CvarManager(dict):
 
         # Get the cvar instance
         self._cvar = ConVar(
-            name, str(default), flags, description, min_value, max_value)
+            name, str(default), description, flags, min_value, max_value)
 
         # Set the attribute to show the default value
         self.show_default = True

@@ -8,6 +8,7 @@ Submodules
    :titlesonly:
 
    messages.base
+   messages.dialog
 
 Module contents
 ---------------

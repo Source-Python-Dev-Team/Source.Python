@@ -32,8 +32,6 @@
 #include "utilities/wrap_macros.h"
 #include "modules/entities/entities_entity.h"
 
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
-
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -57,44 +55,44 @@ DECLARE_SP_SUBMODULE(_players, _helpers)
 void export_player_conversion_functions(scope _helpers)
 {
 	// To Index conversions...
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo, object(result));
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
 
 	// To Edict conversions...
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Userid, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, IPlayerInfo *, PlayerInfo, object(ptr(result)));
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Userid, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, IPlayerInfo *, PlayerInfo, reference_existing_object_policy());
 
 	// To BaseHandle conversions...
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Userid, object(result));
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, IPlayerInfo *, PlayerInfo, object(result));
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Userid);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, IPlayerInfo *, PlayerInfo);
 
 	// To IntHandle conversions...
-	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Userid, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, IPlayerInfo *, PlayerInfo, object(result));
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Userid);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, IPlayerInfo *, PlayerInfo);
 
 	// To Pointer conversions...
-	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Userid, object(result));
-	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo, object(result));
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Userid);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo);
 
 	// To UserID conversions...
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, Index, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, edict_t *, Edict, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CBaseHandle, BaseHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, IntHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CPointer *, Pointer, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, IPlayerInfo *, PlayerInfo, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CBaseEntity *, BaseEntity, object(result));
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, IPlayerInfo *, PlayerInfo);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Userid, CBaseEntity *, BaseEntity);
 	
 	// To PlayerInfo conversions...
-	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Index, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, edict_t *, Edict, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseHandle, BaseHandle, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, IntHandle, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CPointer *, Pointer, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Userid, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseEntity *, BaseEntity, object(ptr(result)));
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Index, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, edict_t *, Edict, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseHandle, BaseHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, IntHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CPointer *, Pointer, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Userid, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseEntity *, BaseEntity, reference_existing_object_policy());
 
 	// To BaseEntity conversions...
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Userid, object(ptr((CBaseEntityWrapper*) result)));
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, IPlayerInfo *, PlayerInfo, object(ptr((CBaseEntityWrapper*) result)));
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Userid, return_by_value_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, IPlayerInfo *, PlayerInfo, return_by_value_policy());
 }

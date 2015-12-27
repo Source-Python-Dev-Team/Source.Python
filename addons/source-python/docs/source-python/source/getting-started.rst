@@ -86,7 +86,7 @@ overview of what events are and how to listen to them.
 
 We will now listen to the ``player_spawn`` event to give every player a little
 extra HP when they spawn. To modify the player's health you need an object of
-the :class:`players.entity.PlayerEntity` class. Its constructor only requires
+the :class:`players.entity.Player` class. Its constructor only requires
 a player index. Since the ``player_spawn`` event provides the user ID of the
 player that spawned, you can use :func:`players.helpers.index_from_userid` to
 convert the user ID into a player index.
@@ -96,7 +96,7 @@ Your plugin should now look like this.
 .. code-block:: python
 
     from events import Event
-    from players.entity import PlayerEntity
+    from players.entity import Player
     from players.helpers import index_from_userid
     from messages import SayText2
 
@@ -110,15 +110,15 @@ Your plugin should now look like this.
         SayText2('Plugin has been unloaded successfully!').send()
 
     @Event('player_spawn')
-    def on_player_spawn(event):
+    def on_player_spawn(game_event):
         # Get the user ID of the spawned player
-        userid = event['userid']
+        userid = game_event['userid']
 
         # Convert the user ID into a player index
         index = index_from_userid(userid)
 
-        # Create a PlayerEntity object...
-        player = PlayerEntity(index)
+        # Create a Player object...
+        player = Player(index)
 
         # ... to add some extra HP
         player.health += EXTRA_HP

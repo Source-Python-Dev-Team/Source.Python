@@ -34,8 +34,7 @@ __all__ = ('PlayerIter',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the team's file for the current game
-_game_teams = ConfigObj(
-    SP_DATA_PATH.joinpath('teams', GAME_NAME + '.ini'))
+_game_teams = ConfigObj(SP_DATA_PATH / 'teams' / GAME_NAME + '.ini')
 
 
 # =============================================================================
@@ -46,7 +45,7 @@ class PlayerIter(_IterObject):
 
     @staticmethod
     def iterator():
-        """Iterate over all Player objects."""
+        """Iterate over all :class:`players.entity.Player` objects."""
         # Loop through all players on the server
         for edict in PlayerGenerator():
 

@@ -13,7 +13,7 @@ import sys
 
 # Source.Python Imports
 #   Core
-from core import AutoUnload
+from core import _module_instances
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Plugins
@@ -179,44 +179,33 @@ class PluginManager(OrderedDict):
         # Loop through all loaded modules
         for module in list(sys.modules):
 
-            # Is the current module within the plugin?
-            if module.startswith(base_name):
-
-                # Remove the module
-                self._remove_module(module)
-
-    @staticmethod
-    def _remove_module(module):
-        """Remove a module and unloads any AutoUnload instances."""
-        # Loop through all items in the module
-        for name in dir(sys.modules[module]):
-
-            # Get the item's object
-            instance = getattr(sys.modules[module], name)
-
-            # Is the object an AutoUnload instance
-            if not isinstance(instance, AutoUnload):
-
-                # No need to do anything with this object
+            # Is the current module not within the plugin?
+            if not module.startswith(base_name):
                 continue
 
-            # Is the instance native to the given module?
-            if instance._calling_module == module:
+            # Does the current module have any AutoUnload objects?
+            if module in _module_instances:
 
-                # Use try/except in-case the instance
-                # does not have an _unload_instance method
-                try:
+                # Loop through all AutoUnload objects in the current module
+                for instance in _module_instances[module]:
 
-                    # Unload the object
-                    instance._unload_instance()
+                    # Use try/except in-case the instance
+                    # does not have an _unload_instance method
+                    try:
 
-                # Was a NotImplementedError encountered?
-                except NotImplementedError:
+                        # Unload the object
+                        instance._unload_instance()
 
-                    # Print the error to console, but allow all
-                    # other AutoUnload instances to be unloaded
-                    # and the plugin to be fully unloaded itself
-                    except_hooks.print_exception()
+                    # Was a NotImplementedError encountered?
+                    except NotImplementedError:
 
-        # Delete the module
-        del sys.modules[module]
+                        # Print the error to console, but allow all
+                        # other AutoUnload instances to be unloaded
+                        # and the plugin to be fully unloaded itself
+                        except_hooks.print_exception()
+
+                # Remove the module from AutoUnload
+                del _module_instances[module]
+
+            # Delete the module
+            del sys.modules[module]

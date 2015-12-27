@@ -164,7 +164,7 @@ void export_convar_interface(scope _cvars)
 	;
 
 	BEGIN_CLASS_INFO(IConVar)
-		BEGIN_FUNCTION_INFO_LIST("FindVar")
+		BEGIN_FUNCTION_INFO_LIST("SetValue")
 			FUNCTION_INFO_OVERLOAD(void, SetValue, const char*)
 			FUNCTION_INFO_OVERLOAD(void, SetValue, float)
 			FUNCTION_INFO_OVERLOAD(void, SetValue, int)
@@ -184,8 +184,8 @@ void export_convar(scope _cvars)
 		.def("__init__",
 			make_constructor(&ConVarExt::__init__,
 				default_call_policies(),
-				("szName", arg("szDefaultValue")="", arg("flags")=0, arg("szHelpString")="", arg("bMin")=false,
-					arg("fMin")=0.0, arg("bMax")=false, arg("fMax")=0.0)
+				("szName", arg("szDefaultValue")="", arg("szHelpString")="", arg("flags")=0,
+				arg("bMin")=false, arg("fMin")=0.0, arg("bMax")=false, arg("fMax")=0.0)
 			),
 			"Creates a new server variable. If it already exists, the existing one will be returned."
 		)

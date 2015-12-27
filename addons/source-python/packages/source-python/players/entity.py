@@ -66,15 +66,15 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
         :raise ValueError: Raised if the index is invalid.
         """
         super().__init__(index)
-        super(Entity, self).__setattr__('_playerinfo', None)
+        object.__setattr__(self, '_playerinfo', None)
         self.permissions = auth_manager.get_player_permissions(index)
 
     @property
     def playerinfo(self):
         """Return the player's :class:`PlayerInfo` object."""
         if self._playerinfo is None:
-            self._playerinfo = playerinfo_from_index(self.index)
-
+            playerinfo = playerinfo_from_index(self.index)
+            object.__setattr__(self, '_playerinfo', playerinfo)
         return self._playerinfo
 
     @property
@@ -479,7 +479,7 @@ class Player(Entity, _GameWeapons, _PlayerWeapons):
         if enable:
             self.collision_group = CollisionGroup.DEBRIS_TRIGGER
         else:
-            self.collison_group = CollisionGroup.PLAYER
+            self.collision_group = CollisionGroup.PLAYER
 
     def get_noblock(self):
         """Return whether noblock mode is enabled.

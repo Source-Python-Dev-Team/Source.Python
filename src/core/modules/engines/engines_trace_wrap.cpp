@@ -37,8 +37,6 @@
 #include "engine/IEngineTrace.h"
 #include "public/worldsize.h"
 
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
-
 
 //---------------------------------------------------------------------------------
 // External variables.

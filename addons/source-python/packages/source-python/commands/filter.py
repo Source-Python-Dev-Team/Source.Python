@@ -31,6 +31,10 @@ class _BaseFilter(AutoUnload):
         # Register the filter
         self._manager_class.register_filter(self.callback)
 
+    def __call__(self, *args, **kwargs):
+        """Call the callback."""
+        return self.callback(*args, **kwargs)
+
     def _unload_instance(self):
         """Unregister the filter."""
         self._manager_class.unregister_filter(self.callback)

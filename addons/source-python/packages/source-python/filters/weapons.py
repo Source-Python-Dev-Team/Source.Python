@@ -32,7 +32,7 @@ class WeaponIter(_IterObject):
 
     @staticmethod
     def iterator():
-        """Iterate over all Weapon entities."""
+        """Iterate over all :class:`weapons.entity.Weapon` objects."""
         # Import the Weapon class.
         # This is done here to avoid circular imports
         from weapons.entity import Weapon
@@ -52,7 +52,7 @@ class WeaponClassIter(_IterObject):
 
     @staticmethod
     def iterator():
-        """Iterate over all WeaponClass objects."""
+        """Iterate over all :class:`weapons.instance.WeaponClass` objects."""
         # Loop through all weapons for the current game
         for weapon in weapon_manager:
 

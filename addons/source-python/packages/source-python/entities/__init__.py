@@ -23,6 +23,7 @@ from _entities import EntityGenerator
 from _entities import EntityListener
 from _entities import GlobalEntityList
 from _entities import HandleEntity
+from _entities import ServerClassGenerator
 from _entities import ServerEntity
 from _entities import ServerNetworkable
 from _entities import ServerUnknown
@@ -40,6 +41,7 @@ __all__ = ('BaseEntityGenerator',
            'EntityListener',
            'GlobalEntityList',
            'HandleEntity',
+           'ServerClassGenerator',
            'ServerEntity',
            'ServerNetworkable',
            'ServerUnknown',

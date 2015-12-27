@@ -1,4 +1,4 @@
-# ../listeners/tick/__init__.py
+# ../listeners/tick.py
 
 """Provides tick listener based functionality."""
 

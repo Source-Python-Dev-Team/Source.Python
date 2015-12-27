@@ -72,11 +72,7 @@ public:
 public:
 	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex)
 	{
-		CBaseEntity* pBaseEntity;
-		if (!BaseEntityFromIndex(uiEntityIndex, pBaseEntity))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to create BaseEntity object from this index: '%i'", uiEntityIndex);
-
-		return CBaseEntityWrapper::wrap(pBaseEntity);
+		return CBaseEntityWrapper::wrap(ExcBaseEntityFromIndex(uiEntityIndex));
 	}
 
 	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity)
@@ -193,47 +189,22 @@ public:
 
 	edict_t* GetEdict()
 	{
-		edict_t* pEdict;
-		if (!EdictFromBaseEntity(GetThis(), pEdict))
-			return NULL;
-
-		return pEdict;
+		return ExcEdictFromBaseEntity(GetThis());
 	}
 	
-	object GetIndex()
+	unsigned int GetIndex()
 	{
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseEntity(GetThis(), iEntityIndex))
-			return object();
-
-		return object(iEntityIndex);
+		return ExcIndexFromBaseEntity(GetThis());
 	}
 	
-	CPointer* GetPointer()
+	CPointer GetPointer()
 	{
-		CPointer pPointer;
-		if (!PointerFromBaseEntity(GetThis(), pPointer))
-			return NULL;
-
-		return new CPointer(pPointer);
+		return ExcPointerFromBaseEntity(GetThis());
 	}
 	
-	object GetBaseHandle()
+	unsigned int GetIntHandle()
 	{
-		CBaseHandle hBaseHandle;
-		if (!BaseHandleFromBaseEntity(GetThis(), hBaseHandle))
-			return object();
-
-		return object(hBaseHandle);
-	}
-	
-	object GetIntHandle()
-	{
-		unsigned int iEntityHandle;
-		if (!IntHandleFromBaseEntity(GetThis(), iEntityHandle))
-			return object();
-
-		return object(iEntityHandle);
+		return ExcIntHandleFromBaseEntity(GetThis());
 	}
 
 	bool IsPlayer()

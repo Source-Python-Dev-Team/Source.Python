@@ -35,8 +35,6 @@
 
 #include ENGINE_INCLUDE_PATH(entities_helpers.h)
 
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
-
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -85,45 +83,45 @@ void export_entity_helper_functions(scope _helpers)
 //-----------------------------------------------------------------------------
 void export_entity_conversion_functions(scope _helpers)
 {
-// To Index conversions...
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, IntHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseEntity *, BaseEntity, object(result));
+	// To Index conversions...
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseEntity *, BaseEntity);
 
 	// To Edict conversions...
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Index, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CBaseHandle, BaseHandle, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, IntHandle, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CPointer *, Pointer, object(ptr(result)));
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CBaseEntity *, BaseEntity, object(ptr(result)));
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Index, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CBaseHandle, BaseHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, IntHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CPointer *, Pointer, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CBaseEntity *, BaseEntity, reference_existing_object_policy());
 
 	// To BaseHandle conversions...
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Index, object(result));
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, edict_t *, Edict, object(result));
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, IntHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CPointer *, Pointer, object(result));
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CBaseEntity *, BaseEntity, object(result));
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CBaseEntity *, BaseEntity);
 
 	// To IntHandle conversions...
-	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Index, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, edict_t *, Edict, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseHandle, BaseHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CPointer *, Pointer, object(result));
-	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseEntity *, BaseEntity, object(result));
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseEntity *, BaseEntity);
 
 	// To Pointer conversions...
-	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Index, object(result));
-	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, edict_t *, Edict, object(result));
-	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, CBaseHandle, BaseHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, IntHandle, object(result));
-	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, CBaseEntity *, BaseEntity, object(result));
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, CBaseEntity *, BaseEntity);
 
 	// To BaseEntity conversions...
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Index, object(ptr((CBaseEntityWrapper*) result)));
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, edict_t *, Edict, object(ptr((CBaseEntityWrapper*) result)));
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CBaseHandle, BaseHandle, object(ptr((CBaseEntityWrapper*) result)));
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, IntHandle, object(ptr((CBaseEntityWrapper*) result)));
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CPointer *, Pointer, object(ptr((CBaseEntityWrapper*) result)));
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Index, return_by_value_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, edict_t *, Edict, return_by_value_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CBaseHandle, BaseHandle, return_by_value_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, IntHandle, return_by_value_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CPointer *, Pointer, return_by_value_policy());
 }

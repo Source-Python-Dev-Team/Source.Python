@@ -18,12 +18,12 @@ to interact with these players. A basic example could look like this:
     from events import Event
 
     @Event('player_hurt')
-    def on_player_hurt(event):
+    def on_player_hurt(game_event):
         # Retrieve the user ID of the victim
-        userid = event['userid']
+        userid = game_event['userid']
 
         # Retrieve the user ID of the attacker
-        attacker = event['attacker']
+        attacker = game_event['attacker']
 
         print('user ID "{}" was hurt by attacker ID "{}"'.format(userid, attacker))
 
@@ -62,8 +62,8 @@ contains all event variables. You can use this little snippet to display them.
     from pprint import pprint
 
     @Event('player_hurt')
-    def on_player_hurt(event):
-        pprint(event.variables.as_dict())
+    def on_player_hurt(game_event):
+        pprint(game_event.variables.as_dict())
 
     
 Available events

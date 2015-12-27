@@ -102,18 +102,18 @@ class ConfigManager(object):
     @property
     def fullpath(self):
         """Return the "path" instance of the full path to the file."""
-        return CFG_PATH.joinpath(self.filepath + '.cfg')
+        return CFG_PATH / self.filepath + '.cfg'
 
     def cvar(
-            self, name, default=0, flags=0,
-            description='', min_value=None, max_value=None):
+            self, name, default=0, description='',
+            flags=0, min_value=None, max_value=None):
         """Add/return a cvar instance to add to the config file."""
         # Add the stored prefix to the given name...
         name = self.cvar_prefix + name
 
         # Get the _CvarManager instance for the given arguments
         section = _CvarManager(
-            name, default, flags, description, min_value, max_value)
+            name, default, description, flags, min_value, max_value)
 
         # Add the cvar to the list of cvars
         self._cvars.add(name)
@@ -270,10 +270,12 @@ class ConfigManager(object):
                     if section.show_default:
 
                         # Write the cvar's default value
+                        default = ' "{0}"\n' if isinstance(
+                            section.default, str) else ' {0}\n'
                         open_file.write(
                             '//' + spaces +
                             _config_strings['Default'].get_string() +
-                            ' {0}\n'.format(section.default))
+                            default.format(section.default))
 
                     # Loop through the description to get valid
                     # lines with length less than the max line length

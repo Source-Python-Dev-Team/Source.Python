@@ -50,21 +50,21 @@ class PreEvent(AutoUnload):
     def __init__(self, *event_names):
         """Store the event names."""
         self._event_names = event_names
-        self._callback = None
+        self.callback = None
 
     def __call__(self, callback):
         """Store the callback and register the pre-events."""
         # Store the callback
-        self._callback = callback
+        self.callback = callback
 
         # Loop through all pre-event names
         for event_name in self._event_names:
 
             # Register the pre-event
-            pre_event_manager.register_for_event(event_name, self._callback)
+            pre_event_manager.register_for_event(event_name, self.callback)
 
-        # Return the instance so that it unloads properly
-        return self
+        # Return the callback
+        return self.callback
 
     def _unload_instance(self):
         """Unregister the pre-events."""
@@ -72,7 +72,7 @@ class PreEvent(AutoUnload):
         for event_name in self._event_names:
 
             # Unregister the pre-event
-            pre_event_manager.unregister_for_event(event_name, self._callback)
+            pre_event_manager.unregister_for_event(event_name, self.callback)
 
 
 class _PreEventManager(dict):
