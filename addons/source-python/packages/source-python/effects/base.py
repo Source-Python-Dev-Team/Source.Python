@@ -534,20 +534,20 @@ class TempEntity(BaseTempEntity):
         """
         self._set_property(prop_name, SendPropType.VECTOR, value)
 
-    def create(self, filter=None, delay=0.0, **aliases):
+    def create(self, recipients=None, delay=0.0, **aliases):
         """Create the temp entity effect.
 
-        :param RecipientFilter filter: The recipient filter listing the
+        :param RecipientFilter recipients: The recipient filter listing the
             players to send the effect to.
         :param float delay: The delay before creating the effect.
         :param dict aliases: Any aliases to set before creating the temp entity
             effect.
         """
         # Was no recipient filter given?
-        if filter is None:
+        if recipients is None:
 
             # Get a recipient filter containing all players...
-            filter = RecipientFilter()
+            recipients = RecipientFilter()
 
         # Loop trhough all given aliases...
         for alias, value in aliases.items():
@@ -556,7 +556,7 @@ class TempEntity(BaseTempEntity):
             setattr(self, alias, value)
 
         # Create the temp entity effect...
-        super().create(filter, delay)
+        super().create(recipients, delay)
 
     @property
     def template(self):
