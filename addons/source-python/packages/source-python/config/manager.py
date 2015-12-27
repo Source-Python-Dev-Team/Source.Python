@@ -105,15 +105,15 @@ class ConfigManager(object):
         return CFG_PATH / self.filepath + '.cfg'
 
     def cvar(
-            self, name, default=0, flags=0,
-            description='', min_value=None, max_value=None):
+            self, name, default=0, description='',
+            flags=0, min_value=None, max_value=None):
         """Add/return a cvar instance to add to the config file."""
         # Add the stored prefix to the given name...
         name = self.cvar_prefix + name
 
         # Get the _CvarManager instance for the given arguments
         section = _CvarManager(
-            name, default, flags, description, min_value, max_value)
+            name, default, description, flags, min_value, max_value)
 
         # Add the cvar to the list of cvars
         self._cvars.add(name)

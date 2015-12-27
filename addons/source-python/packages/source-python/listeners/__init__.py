@@ -116,15 +116,13 @@ on_version_update_listener_manager = _ListenerManager()
 _check_for_update = ConVar(
     'sp_check_for_update',
     _core_settings['VERSION_SETTINGS']['check_for_update'],
-    description='Enable/disable checking for version updates.',
-    min_value=0, max_value=1)
+    'Enable/disable checking for version updates.', min_value=0, max_value=1)
 
 _notify_on_update = ConVar(
     'sp_notify_on_update',
     _core_settings['VERSION_SETTINGS']['notify_on_update'],
-    description=(
-        'Log a warning when a Source.Python update is available.' +
-        ' Requires sp_check_for_update to be set to 1.'),
+    'Log a warning when a Source.Python update is available.' +
+    ' Requires sp_check_for_update to be set to 1.',
     min_value=0, max_value=1)
 
 

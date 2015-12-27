@@ -281,9 +281,9 @@ class LogManager(_LogInstance):
 
 # Set the core ConVars
 _level = ConVar(
-    'sp_logging_level', '0', 0, 'The Source.Python base logging level')
+    'sp_logging_level', '0', 'The Source.Python base logging level')
 _areas = ConVar(
-    'sp_logging_areas', '1', 0, 'The Source.Python base logging areas')
+    'sp_logging_areas', '1', 'The Source.Python base logging areas')
 
 # Get the Source.Python main LogManager instance
 _sp_logger = LogManager(
