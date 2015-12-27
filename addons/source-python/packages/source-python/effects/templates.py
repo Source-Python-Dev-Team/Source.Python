@@ -11,7 +11,6 @@ from core import GameConfigObj
 #   Effects
 from _effects._base import BaseTempEntity
 from effects import _first_temp_entity
-from effects.constants import TempEntityAlias
 #   Entities
 from entities.classes import _supported_property_types
 from entities.classes import server_classes
@@ -182,37 +181,6 @@ class TempEntityTemplate(BaseTempEntity):
         :rtype: int
         """
         return self._size
-
-    @property
-    def has_color(self):
-        """Return whether or not the temp entity has a color property.
-
-        :rtype: bool
-        """
-        # Loop through all color aliases...
-        for alias in map(str, (
-                TempEntityAlias.ALPHA, TempEntityAlias.BLUE,
-                TempEntityAlias.GREEN, TempEntityAlias.RED)):
-
-            # Is the current alias valid?
-            if alias not in self.aliases:
-
-                # No need to go further...
-                continue
-
-            # The temp entity has a color property...
-            return True
-
-        # The temp entity doesn't have a color property...
-        return False
-
-    @property
-    def has_model(self):
-        """Return whether or not the temp entity has a model property.
-
-        :rtype: bool
-        """
-        return str(TempEntityAlias.MODEL_INDEX) in self.aliases
 
 
 class TempEntityTemplates(dict):

@@ -9,13 +9,14 @@
 #   Colors
 from colors import Color
 #   Effects
-from effects.constants import TempEntityAlias
 from effects.templates import temp_entity_templates
+#   Engines
+from engines.precache import Decal
+from engines.precache import Model
 #   Entities
 from entities.classes import _supported_property_types
+from entities.entity import Entity
 from entities.props import SendPropType
-#   Engines
-from engines.precache import Model
 #   Filters
 from filters.recipients import RecipientFilter
 #   Memory
@@ -26,6 +27,8 @@ from memory import Pointer
 from memory.helpers import Array
 from memory.helpers import Type
 from memory.manager import manager
+#   Players
+from players.entity import Player
 #   String Tables
 from stringtables import string_tables
 
@@ -115,14 +118,67 @@ class TempEntity(BaseTempEntity):
             # Is the name a section?
             if isinstance(prop_name, Section):
 
-                # Get the data of the property...
-                prop, offset, type_name = self.template.properties[
-                    prop_name['name']]
+                # Is the alias a decal?
+                if prop_name['type'] == Decal.__name__:
 
-                # Return the value of the property...
-                return make_object(
-                    manager.get_class(prop_name['type']),
-                    get_object_pointer(self) + offset)
+                    # Return the decal instance...
+                    return Decal(string_tables[Decal._precache_table][
+                        getattr(self, prop_name['name'])])
+
+                # Otherwise, is the alias an entity?
+                elif prop_name['type'] == Entity.__name__:
+
+                    # Return the entity instance...
+                    return Entity(getattr(self, prop_name['name']))
+
+                # Otherwise, is the alias a player?
+                if prop_name['type'] == Player.__name__:
+
+                    # Return the player instance...
+                    return Player(getattr(self, prop_name['name']))
+
+                # Otherwise, is the alias a model?
+                elif prop_name['type'] == Model.__name__:
+
+                    # Get the name of the model...
+                    model_name = string_tables[Model._precache_table][
+                        getattr(self, prop_name['name'])]
+
+                    # Was the model not precached?
+                    if not model_name:
+
+                        # Return an error model...
+                        return Model('models/error.mdl')
+
+                    # Return the model instance...
+                    return Model(model_name)
+
+                # Otherwise, is the alias a color?
+                elif prop_name['type'] == Color.__name__:
+
+                    # Get a tuple to store the RGBA values...
+                    values = tuple()
+
+                    # Loop through all aliases...
+                    for alias in prop_name['name']:
+
+                        # Add the current value to the tuple...
+                        values += (getattr(self, alias),)
+
+                    # Return the color instance...
+                    return Color(*values)
+
+                # Otherwise...
+                else:
+
+                    # Get the data of the property...
+                    prop, offset, type_name = self.template.properties[
+                        prop_name['name']]
+
+                    # Return the value of the property...
+                    return make_object(
+                        manager.get_class(prop_name['type']),
+                        get_object_pointer(self) + offset)
 
             # Get the data of the property...
             prop, offset, type_name = self.template.properties[prop_name]
@@ -148,25 +204,87 @@ class TempEntity(BaseTempEntity):
             # Is the name a section?
             if isinstance(prop_name, Section):
 
-                # Get the data of the property...
-                prop, offset, type_name = self.template.properties[
-                    prop_name['name']]
+                # Is the alias a decal?
+                if prop_name['type'] == Decal.__name__:
 
-                # Get the class of the type...
-                cls = manager.get_class(prop_name['type'])
+                    # Is the given value an invalid decal instance?
+                    if not isinstance(value, Decal):
 
-                # Is the given value not valid?
-                if not isinstance(value, cls):
+                        # Raise an exception...
+                        raise ValueError(
+                            '"{}" is not a valid Decal instance.'.format(
+                                value))
 
-                    # Raise an exception...
-                    raise TypeError(
-                        'The given value is not of type "{}".'.format(
-                            type_name))
+                    # Set the model index...
+                    setattr(self, prop_name['name'], value.index)
 
-                # Set the value of the property...
-                get_object_pointer(value).copy(
-                    get_object_pointer(self) + offset,
-                    self.template._get_type_size(prop_name['type']))
+                # Is the alias an entity?
+                if prop_name['type'] == Entity.__name__:
+
+                    # Is the given value an invalid entity instance?
+                    if not isinstance(value, Entity):
+
+                        # Raise an exception...
+                        raise ValueError(
+                            '"{}" is not a valid Entity instance.'.format(
+                                value))
+
+                    # Set the alias value...
+                    setattr(self, prop_name['name'], value)
+
+                # Otherwise, is the alias a model?
+                elif prop_name['type'] == Model.__name__:
+
+                    # Is the given value an invalid model instance?
+                    if not isinstance(value, Model):
+
+                        # Raise an exception...
+                        raise ValueError(
+                            '"{}" is not a valid Model instance.'.format(
+                                value))
+
+                    # Set the model index...
+                    setattr(self, prop_name['name'], value.index)
+
+                # Otherwise, is the alias a color?
+                elif prop_name['type'] == Color.__name__:
+
+                    # Is the given value an invalid color instance?
+                    if not isinstance(value, Color):
+
+                        # Raise an exception...
+                        raise ValueError(
+                            '"{}" is not a valid Color instance.'.format(
+                                value))
+
+                    # Loop through all aliases...
+                    for index, alias in enumerate(prop_name['name']):
+
+                        # Set the current alias...
+                        setattr(self, alias, value[index])
+
+                # Otherwise...
+                else:
+
+                    # Get the data of the property...
+                    prop, offset, type_name = self.template.properties[
+                        prop_name['name']]
+
+                    # Get the class of the type...
+                    cls = manager.get_class(prop_name['type'])
+
+                    # Is the given value not valid?
+                    if not isinstance(value, cls):
+
+                        # Raise an exception...
+                        raise TypeError(
+                            'The given value is not of type "{}".'.format(
+                                type_name))
+
+                    # Set the value of the property...
+                    get_object_pointer(value).copy(
+                        get_object_pointer(self) + offset,
+                        self.template._get_type_size(prop_name['type']))
 
                 # No need to go further...
                 return
@@ -447,109 +565,3 @@ class TempEntity(BaseTempEntity):
         :rtype: TempEntityTemplate
         """
         return temp_entity_templates[self.name]
-
-    @property
-    def has_color(self):
-        """Return whether or not the temp entity has a color property.
-
-        :rtype: bool
-        """
-        return self.template.has_color
-
-    def get_color(self):
-        """Return the color of the temp entity.
-
-        :rtype: Color
-        """
-        # Does the temp entity has a color property?
-        if not self.has_color:
-
-            # Raise an exception...
-            raise NameError('"{}" doesn\'t have a color property.'.format(
-                self.name))
-
-        return Color(
-            r=getattr(self, str(TempEntityAlias.RED), 0),
-            g=getattr(self, str(TempEntityAlias.GREEN), 0),
-            b=getattr(self, str(TempEntityAlias.BLUE), 0),
-            a=getattr(self, str(TempEntityAlias.ALPHA), 0))
-
-    def set_color(self, color):
-        """Set the temp entity to the given color.
-
-        :param Color color: The color to set.
-        """
-        # Does the temp entity has a color property?
-        if not self.has_color:
-
-            # Raise an exception...
-            raise NameError('"{}" doesn\'t have a color property.'.format(
-                self.name))
-
-        # Set the color attributes of the temp entity...
-        setattr(self, str(TempEntityAlias.RED), color.r)
-        setattr(self, str(TempEntityAlias.GREEN), color.g)
-        setattr(self, str(TempEntityAlias.BLUE), color.b)
-        setattr(self, str(TempEntityAlias.ALPHA), color.a)
-
-    # Register the color property...
-    color = property(get_color, set_color)
-
-    @property
-    def has_model(self):
-        """Return whether or not the temp entity has a model property.
-
-        :rtype: bool
-        """
-        return self.template.has_model
-
-    def get_model(self):
-        """Return the model of the temp entity.
-
-        :rtype: Model
-        """
-        # Does the temp entity has a model property?
-        if not self.has_model:
-
-            # Raise an exception...
-            raise NameError('"{}" doesn\'t have a model property.'.format(
-                self.name))
-
-        # Get the model name of the temp entity...
-        model_name = string_tables[Model._precache_table][
-            getattr(self, str(TempEntityAlias.MODEL_INDEX))]
-
-        # Was the model not precached?
-        if not model_name:
-
-            # Return an error model...
-            model_name = 'models/error.mdl'
-
-        # Return a Model instance of the model name...
-        return Model(model_name)
-
-    def set_model(self, model):
-        """Set the model of the temp entity to the given model.
-
-        :param Model model: The model to set.
-        """
-        # Does the temp entity has a model property?
-        if not self.has_model:
-
-            # Raise an exception...
-            raise NameError('"{}" doesn\'t have a model property.'.format(
-                self.name))
-
-        # Is the given model not valid?
-        if not isinstance(model, Model):
-
-            # Raise an exception...
-            raise TypeError(
-                '"{}" (of type "{}") is not a valid Model.'.format(
-                    model, type(model)))
-
-        # Set the model of the temp entity...
-        setattr(self, str(TempEntityAlias.MODEL_INDEX), model.index)
-
-    # Register the model property...
-    model = property(get_model, set_model)
