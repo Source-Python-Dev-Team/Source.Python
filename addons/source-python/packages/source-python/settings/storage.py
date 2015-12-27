@@ -10,8 +10,8 @@
 from sqlite3 import connect
 
 # Source.Python Imports
-#   Events
-from events.manager import event_manager
+#   Listeners
+from listeners import on_level_shutdown_listener_manager
 #   Paths
 from paths import SP_DATA_PATH
 
@@ -20,7 +20,7 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the path to the user settings database file
-_STORAGE_PATH = SP_DATA_PATH.joinpath('settings', 'users.db')
+_STORAGE_PATH = SP_DATA_PATH / 'settings' / 'users.db'
 
 # Does the ../data/source-python/settings/ directory exist?
 if not _STORAGE_PATH.parent.isdir():
@@ -150,7 +150,7 @@ class _PlayerSettingsDictionary(dict):
         """Return the cursor instance."""
         return self._cursor
 
-    def server_spawn(self, game_event):
+    def on_level_shutdown(self):
         """Store the dictionary to the database on map change."""
         self.connection.commit()
 
@@ -165,7 +165,6 @@ _player_settings_storage = _PlayerSettingsDictionary()
 #   _UniqueSettings to call _player_settings_storage.
 _IN_INITIALIZATION = False
 
-# Register for the event server_spawn in order
-# to store the database to file on map change
-event_manager.register_for_event(
-    'server_spawn', _player_settings_storage.server_spawn)
+# Register a level shutdown listener to store the database on map change
+on_level_shutdown_listener_manager.register_listener(
+    _player_settings_storage.on_level_shutdown)

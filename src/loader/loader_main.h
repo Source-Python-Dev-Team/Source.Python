@@ -121,8 +121,7 @@ public:
 private:
 	int						m_iClientCommandIndex;
 
-	CSysModule*				m_pPython;
-	CDllDemandLoader*		m_pCore;
+	void*					m_pCore;
 	IServerPluginCallbacks*	m_pCorePlugin;
 };
 

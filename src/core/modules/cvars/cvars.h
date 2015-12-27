@@ -40,8 +40,8 @@
 class ConVarExt
 {
 public:
-	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue, int flags,
-		const char *szHelpString, bool bMin, float fMin, bool bMax, float fMax)
+	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue,
+		const char *szHelpString, int flags, bool bMin, float fMin, bool bMax, float fMax)
 	{
 		ConVar *pConVar = g_pCVar->FindVar(szName);
 		if (!pConVar)

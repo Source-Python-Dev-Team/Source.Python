@@ -48,9 +48,16 @@ extern IServerPluginHelpers *helpers;
 //-----------------------------------------------------------------------------
 // IVEngineServer extension class.
 //-----------------------------------------------------------------------------
-class IVEngineServerExt
+class IVEngineServerExt: public GameIVEngineServerExt
 {
 public:
+	static void ServerCommand(IVEngineServer* pEngine, const char* szCommand)
+	{
+		std::string string_command = szCommand;
+		string_command += ";";
+		pEngine->ServerCommand(string_command.c_str());
+	}
+
 	static void ClientCommand(IVEngineServer* pEngine, edict_t* pEdict, const char* szCommand, bool bServerSide)
 	{
 		if (bServerSide)
@@ -72,6 +79,30 @@ public:
 	static QueryCvarCookie_t StartQueryCvarValue(IVEngineServer* pEngine, edict_t *pEntity, const char *pName)
 	{
 		return helpers->StartQueryCvarValue(pEntity, pName);
+	}
+
+	static int precache_model(IVEngineServer* pEngine, const char* szModelName, bool bPreload = false)
+	{
+		if (*szModelName == 0)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "\"%s\" is not a valid model name.", szModelName);
+
+		return pEngine->PrecacheModel(szModelName, bPreload);
+	}
+
+	static int precache_decal(IVEngineServer* pEngine, const char* szDecalName, bool bPreload = false)
+	{
+		if (*szDecalName == 0)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "\"%s\" is not a valid decal name.", szDecalName);
+
+		return pEngine->PrecacheDecal(szDecalName, bPreload);
+	}
+
+	static int precache_generic(IVEngineServer* pEngine, const char* szGenericName, bool bPreload = false)
+	{
+		if (*szGenericName == 0)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "\"%s\" is not a valid generic name.", szGenericName);
+
+		return pEngine->PrecacheGeneric(szGenericName, bPreload);
 	}
 };
 

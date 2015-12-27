@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Collections
+from collections import defaultdict
 #   Inspect
 from inspect import getmodule
 from inspect import stack
@@ -62,6 +64,9 @@ PLATFORM = system().lower()
 # Get the sp.core logger
 core_logger = _sp_logger.core
 
+# Create a dictionary to store AutoUnload object in
+_module_instances = defaultdict(list)
+
 
 # =============================================================================
 # >> CLASSES
@@ -81,7 +86,7 @@ class AutoUnload(object):
         caller = getmodule(stack()[1][0])
 
         # Set the _calling_module attribute for the instance
-        self._calling_module = caller.__name__
+        _module_instances[caller.__name__].append(self)
 
         # Return the instance
         return self
@@ -108,13 +113,13 @@ class GameConfigObj(ConfigObj):
         super().__init__(infile, *args, **kwargs)
 
         # Move the path to the current engine sub-directory...
-        path = path.joinpath(SOURCE_ENGINE)
+        path = path / SOURCE_ENGINE
 
         # Parse and merge the specific engine file...
-        self.merge(ConfigObj(path.joinpath(name), *args, **kwargs))
+        self.merge(ConfigObj(path / name, *args, **kwargs))
 
         # Finally, parse the specific game file...
-        self.merge(ConfigObj(path.joinpath(GAME_NAME, name), *args, **kwargs))
+        self.merge(ConfigObj(path / GAME_NAME / name, *args, **kwargs))
 
 
 # =============================================================================

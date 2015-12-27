@@ -200,6 +200,14 @@ def get_class_name(cls):
         if cls is possible_cls:
             return name
 
+    for base_class in cls.__bases__:
+        try:
+            class_name = get_class_name(base_class)
+        except ValueError:
+            continue
+        else:
+            return class_name
+
     raise ValueError('Given class was not exposed.')
 
 

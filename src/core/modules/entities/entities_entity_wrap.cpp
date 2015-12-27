@@ -78,7 +78,6 @@ void export_base_entity(scope _entity)
 	BaseEntity.add_property("edict", make_function(&CBaseEntityWrapper::GetEdict, reference_existing_object_policy()));
 	BaseEntity.add_property("index", &CBaseEntityWrapper::GetIndex);
 	BaseEntity.add_property("pointer", make_function(&CBaseEntityWrapper::GetPointer));
-	BaseEntity.add_property("basehandle", &CBaseEntityWrapper::GetBaseHandle);
 	BaseEntity.add_property("inthandle", &CBaseEntityWrapper::GetIntHandle);
 
 	// Methods...

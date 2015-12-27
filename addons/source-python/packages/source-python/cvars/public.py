@@ -26,11 +26,11 @@ class PublicConVar(AutoUnload, ConVar):
     """Class used to set the notify flag on load/unload."""
 
     def __init__(
-            self, name, value='0', flags=0,
-            description='', min_value=None, max_value=None):
+            self, name, value='0', description='',
+            flags=0, min_value=None, max_value=None):
         """Set the cvar's value and set the notify flag."""
         super().__init__(
-            name, value, flags, description, min_value, max_value)
+            name, value, description, flags, min_value, max_value)
         self.set_string(value)
         self.make_public()
 

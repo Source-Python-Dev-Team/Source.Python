@@ -163,13 +163,17 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
+	// Was the IVEngineServer interface retrieved properly?
+	if (!engine)
+	{
+		Msg(MSG_PREFIX "Unable to retrieve IVEngineServer interface.\n");
+		return false;
+	}
+
 	// ------------------------------------------------------------------
 	// Build path to python engines directory.
 	// ------------------------------------------------------------------
 	char szGameDir[MAX_PATH_LENGTH];
-	char szPythonHome[MAX_PATH_LENGTH];
-	char szPythonEngine[MAX_PATH_LENGTH];
-	char szSourcePython[MAX_PATH_LENGTH];
 
 	// ------------------------------------------------------------------
 	// Get the game directory.
@@ -191,53 +195,30 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 #endif
 
 	// ------------------------------------------------------------------
-	// Construct paths to python and the core.
-	// ------------------------------------------------------------------
-	V_snprintf(szPythonHome, MAX_PATH_LENGTH, "%s/addons/source-python", szGameDir);
-	V_snprintf(szSourcePython, sizeof(szSourcePython), "%s/%s", szPythonHome, CORE_NAME);
-	V_snprintf(szPythonEngine, sizeof(szPythonEngine), "%s/%s", szPythonHome, PYLIB_NAME);
-
-	V_FixSlashes(szSourcePython);
-	V_FixSlashes(szPythonEngine);
-
-	// ------------------------------------------------------------------
 	// Load python.
 	// ------------------------------------------------------------------
-#ifdef _WIN32
-	m_pPython = Sys_LoadModule(szPythonEngine);
-#else
-	// This little gem cost me an entire thursday and a night's worth of
-	// sleep. Sys_LoadModule calls dlopen(lib, RTLD_NOW). Because it omits
-	// RTLD_GLOBAL, when Core.so decides to load, it is unable to relocate
-	// python's symbols correctly causing PyThreadState_GET() to fail!
-	// Long story short, we need RTLD_NOW coupled with RTLD_GLOBAL.
-	m_pPython = (CSysModule *)dlopen(szPythonEngine, RTLD_NOW | RTLD_GLOBAL);
-#endif
-
-	if( !m_pPython ) {
-		Warning("===========================================\n");
-		Warning("[SP-LOADER] Could not load %s!\n", szPythonEngine);
-		Warning("===========================================\n");
+	if( SPLoadLibrary(engine, PYLIB_NAME) == NULL ) {
 		return false;
 	}
 
 	// ------------------------------------------------------------------
 	// Load the Source.Python core.
 	// ------------------------------------------------------------------
-	m_pCore = new CDllDemandLoader(szSourcePython);
-
-	if( !m_pCore->GetFactory() ) {
-		Warning("===========================================\n");
-		Warning("[SP-LOADER] Could not load the %s!\n", szSourcePython);
-		Warning("===========================================\n");
+	m_pCore = SPLoadLibrary(engine, CORE_NAME);
+	if (!m_pCore) {
 		return false;
 	}
 
-	// Get the interface from it.
-	m_pCorePlugin = static_cast<IServerPluginCallbacks*>(
-		m_pCore->GetFactory()(INTERFACEVERSION_ISERVERPLUGINCALLBACKS, NULL)
-		);
+	// Sys_LoadModule and CDllDemandLoader seem to be broken in CS:GO
+#ifdef _WIN32
+	CreateInterfaceFn pFunc = (CreateInterfaceFn) GetProcAddress((HMODULE) m_pCore, CREATEINTERFACE_PROCNAME);
+#elif __linux__
+	CreateInterfaceFn pFunc = (CreateInterfaceFn) dlsym(m_pCore, CREATEINTERFACE_PROCNAME);
+#else
+	#error Unsupported platform.
+#endif
 
+	m_pCorePlugin = static_cast<IServerPluginCallbacks*>(pFunc(INTERFACEVERSION_ISERVERPLUGINCALLBACKS, NULL));
 	if( !m_pCorePlugin ) {
 		Warning("=========================================================================\n");
 		Warning("[SP-LOADER] Could not retrieve the server plugin interface from the core!\n");
@@ -276,7 +257,10 @@ void CSourcePython::Pause( void )
 //---------------------------------------------------------------------------------
 void CSourcePython::UnPause( void )
 {
-	m_pCorePlugin->UnPause();
+	if (m_pCorePlugin != NULL)
+	{
+		m_pCorePlugin->UnPause();
+	}
 }
 
 //---------------------------------------------------------------------------------

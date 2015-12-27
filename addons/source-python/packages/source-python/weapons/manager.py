@@ -31,7 +31,7 @@ __all__ = ('_WeaponManager',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the game's ini path
-_gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
+_gamepath = SP_DATA_PATH / 'weapons' / GAME_NAME + '.ini'
 
 
 # =============================================================================
@@ -40,13 +40,13 @@ _gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 class _WeaponManager(dict):
     """Dictionary class to store basic weapon information."""
 
-    def __init__(self, ini_file):
+    def __init__(self):
         """Load the ini file into the dictionary."""
         # Initialize the dictionary
         super().__init__()
 
         # Get the ConfigObj instance of the file
-        ini = ConfigObj(ini_file, unrepr=True)
+        ini = ConfigObj(_gamepath, unrepr=True)
 
         # Get the "properties"
         properties = ini['properties']
@@ -157,7 +157,7 @@ class _WeaponManager(dict):
 if _gamepath.isfile():
 
     # Get the _WeaponManager instance
-    weapon_manager = _WeaponManager(_gamepath)
+    weapon_manager = _WeaponManager()
 
 # Is there no ini file for the current game?
 else:

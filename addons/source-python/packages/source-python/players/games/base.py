@@ -9,7 +9,7 @@
 #   Core
 from core import GAME_NAME
 #   Players
-from players.classes.language import get_client_language
+from players._language import get_client_language
 
 
 # =============================================================================

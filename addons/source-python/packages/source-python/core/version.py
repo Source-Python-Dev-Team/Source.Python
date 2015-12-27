@@ -36,8 +36,7 @@ LAST_SUCCESSFUL_BUILD_NUMBER_URL = (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_sp_version = PublicConVar(
-    'sp_version', str(VERSION), description='Source.Python version')
+_sp_version = PublicConVar('sp_version', str(VERSION), 'Source.Python version')
 
 
 # =============================================================================

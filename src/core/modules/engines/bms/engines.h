@@ -34,6 +34,19 @@
 
 
 //-----------------------------------------------------------------------------
+// IVEngineServer extension class.
+//-----------------------------------------------------------------------------
+class GameIVEngineServerExt
+{
+public:
+	static bool IsMapValid(IVEngineServer* pServer, const char* map_name)
+	{
+		return pServer->IsMapValid(map_name);
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // IEngineSound extension class.
 //-----------------------------------------------------------------------------
 class IEngineSoundExt
@@ -70,7 +83,7 @@ public:
 //---------------------------------------------------------------------------------
 inline int GetPointContents(const Vector &vecAbsPosition, IHandleEntity** ppEntity)
 {
-	return enginetrace->GetPointContents(vecAbsPosition, ppEntity);
+	return enginetrace->GetPointContents(vecAbsPosition, MASK_ALL, ppEntity);
 }
 
 

@@ -33,6 +33,7 @@
 #include "game/server/entitylist.h"
 #include "utilities/conversions.h"
 #include "game/shared/ipredictionsystem.h"
+#include "game/server/basetempentity.h"
 
 #include ENGINE_INCLUDE_PATH(undefined_symbols.h)
 
@@ -130,6 +131,7 @@ void CGlobalEntityList::OnAddEntity( IHandleEntity *pEnt, CBaseHandle handle )
 {
 }
 
+
 //-----------------------------------------------------------------------------
 // Default OnRemoveEntity callback definitions.
 //-----------------------------------------------------------------------------
@@ -139,4 +141,52 @@ void CBaseEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
 
 void CGlobalEntityList::OnRemoveEntity( IHandleEntity *pEnt, CBaseHandle handle )
 {
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns the name of the temp entity.
+//-----------------------------------------------------------------------------
+const char *CBaseTempEntity::GetName()
+{
+	return m_pszName;
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns the next temp entity in the chain.
+//-----------------------------------------------------------------------------
+CBaseTempEntity *CBaseTempEntity::GetNext()
+{
+	return m_pNext;
+}
+
+// Since all of them are virtual functions and we do not allow creating objects
+// of this class, we can simply implement them by doing nothing. Subclasses
+// have their own implementation.
+// TODO: Can we compile basetempentity.cpp? That might be easier.
+CBaseTempEntity::~CBaseTempEntity( void )
+{
+}
+
+void CBaseTempEntity::Test( const Vector& current_origin, const QAngle& current_angles )
+{
+}
+
+void CBaseTempEntity::Precache( void )
+{
+}
+
+void CBaseTempEntity::Create( IRecipientFilter& filter, float delay )
+{
+}
+
+ServerClass* CBaseTempEntity::GetServerClass()
+{
+	return NULL;
+}
+
+int CBaseTempEntity::YouForgotToImplementOrDeclareServerClass()
+{
+	return 0;
 }

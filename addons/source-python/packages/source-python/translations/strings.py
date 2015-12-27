@@ -18,10 +18,11 @@ from re import VERBOSE
 
 # Site-Package Imports
 #   Configobj
-from configobj import ConfigObj
 from configobj import Section
 
 # Source.Python Imports
+#   Core
+from core import GameConfigObj
 #   Paths
 from paths import TRANSLATION_PATH
 from paths import GAME_PATH
@@ -58,7 +59,7 @@ class LangStrings(dict):
         super().__init__()
 
         # Get the path to the given file
-        self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
+        self._mainfile = TRANSLATION_PATH / infile + '.ini'
 
         # Does the file exist?
         if not self._mainfile.isfile():
@@ -68,11 +69,11 @@ class LangStrings(dict):
                 'No file found at {0}'.format(self._mainfile))
 
         # Get the path to the server specific file
-        self._serverfile = self._mainfile.parent.joinpath(
-            self._mainfile.namebase + '_server.ini')
+        self._serverfile = self._mainfile.parent / '{0}_server.ini'.format(
+            self._mainfile.namebase)
 
         # Get the strings from the main file
-        main_strings = ConfigObj(self._mainfile, encoding=encoding)
+        main_strings = GameConfigObj(self._mainfile, encoding=encoding)
 
         # Does the server specific file exist?
         if not self._serverfile.isfile() and not infile.startswith('_core/'):
@@ -84,7 +85,7 @@ class LangStrings(dict):
         else:
 
             # Get any strings from the server specific file
-            server_strings = ConfigObj(self._serverfile, encoding=encoding)
+            server_strings = GameConfigObj(self._serverfile, encoding=encoding)
 
             # Merge the two ConfigObj instances together
             main_strings.merge(server_strings)
@@ -169,7 +170,7 @@ class LangStrings(dict):
     def _create_server_file(self):
         """Create a server specific langstrings file."""
         # Get the server specific file's ConfigObj instance
-        server_file = ConfigObj(self._serverfile)
+        server_file = GameConfigObj(self._serverfile)
 
         # Set the initial comments to explain what the file is for
         server_file.initial_comment = _translation_strings[
@@ -259,6 +260,9 @@ class TranslationStrings(dict):
 
         # Substitute the token in the message
         message = message.substitute(self.tokens)
+
+        # Format the message with any remaining tokens
+        message = message.format(**self.tokens)
 
         # Return the message
         return message

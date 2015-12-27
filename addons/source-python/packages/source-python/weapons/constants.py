@@ -54,22 +54,20 @@ __all__ = ('ItemFlags',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the base path...
-_path = SP_DATA_PATH.joinpath('weapons', 'constants')
+_path = SP_DATA_PATH / 'weapons' / 'constants'
 
 # Get the MuzzleFlashStyle enumerator...
-MuzzleFlashStyle = IntEnum('MuzzleFlashStyle', GameConfigObj(_path.joinpath(
-    'MuzzleFlashStyle.ini')))
+MuzzleFlashStyle = IntEnum(
+    'MuzzleFlashStyle', GameConfigObj(_path / 'MuzzleFlashStyle.ini'))
 
 # Get the WeaponID enumerator...
-WeaponID = IntEnum('WeaponID', GameConfigObj(_path.joinpath('WeaponID.ini')))
+WeaponID = IntEnum('WeaponID', GameConfigObj(_path / 'WeaponID.ini'))
 
 # Get the WeaponType enumerator...
-WeaponType = IntEnum('WeaponType', GameConfigObj(_path.joinpath(
-    'WeaponType.ini')))
+WeaponType = IntEnum('WeaponType', GameConfigObj(_path / 'WeaponType.ini'))
 
 # Get the WeaponSlot enumerator...
-WeaponSlot = IntEnum('WeaponSlot', GameConfigObj(_path.joinpath(
-    'WeaponSlot.ini')))
+WeaponSlot = IntEnum('WeaponSlot', GameConfigObj(_path / 'WeaponSlot.ini'))
 
 
 # =============================================================================

@@ -30,6 +30,7 @@ from paths import LOG_PATH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('LogManager',
+           '_LogInstance',
            )
 
 
@@ -52,9 +53,6 @@ addLevelName(EXCEPTION, 'EXCEPTION')
 
 # Store a formatter for use with the main log
 _main_log_formatter = Formatter('- %(name)s\t-\t%(levelname)s\n\t%(message)s')
-
-# Store a formatter for use with dumps
-_clean_formatter = Formatter('%(message)s')
 
 
 # =============================================================================
@@ -129,20 +127,6 @@ class _LogInstance(dict):
         """Use to call a message that should always print."""
         self._log(MESSAGE, msg, *args, **kwargs)
 
-    def log_dump(self, msg, *args, **kwargs):
-        """Use to call a dump message."""
-        # Change the handler over to the clean handler,
-        # so that the text is logged without any prefix
-        self.root.logger.removeHandler(self.root._handler)
-        self.root.logger.addHandler(self.root._clean_handler)
-
-        # Log the message
-        self._log(MESSAGE, msg, *args, dump=True, **kwargs)
-
-        # Revert the handler back to the original formatting
-        self.root.logger.removeHandler(self.root._clean_handler)
-        self.root.logger.addHandler(self.root._handler)
-
     def log(self, level, msg, *args, **kwargs):
         """Use to call a message with the given logging level."""
         # Get the value of the given level
@@ -151,7 +135,7 @@ class _LogInstance(dict):
         # Call the main logging method
         self._log(level, msg, *args, **kwargs)
 
-    def _log(self, level, msg, *args, dump=False, **kwargs):
+    def _log(self, level, msg, *args, **kwargs):
         """Main logging method."""
         # Does the message need logged?
         if self.level > level:
@@ -169,28 +153,19 @@ class _LogInstance(dict):
             # This is done here to fix an ImportError
             from engines.server import engine_server
 
-            # Is a prefix supposed to be logged?
-            if not dump:
+            # Create the record
+            record = self.logger.makeRecord(
+                self.logger.name, level,
+                '(unknown file)', 0, msg, args, None)
 
-                # Create the record
-                record = self.logger.makeRecord(
-                    self.logger.name, level,
-                    '(unknown file)', 0, msg, args, None)
-
-                # Get the message to send
-                message = _main_log_formatter.format(record)
-
-            # Is the message not supposed to have a prefix?
-            else:
-
-                # Use the given message
-                message = msg
+            # Get the message to send
+            message = _main_log_formatter.format(record)
 
             # Print to the main log
             engine_server.log_print(message + '\n')
 
         # Print to the console?
-        if CONSOLE & areas and not dump:
+        if CONSOLE & areas:
 
             # If not, print to the console
             # If <engine>.log_print is called with logging being on,
@@ -281,7 +256,7 @@ class LogManager(_LogInstance):
                 filepath = filepath[:~3]
 
             # Get the path to the log file
-            log_path = LOG_PATH.joinpath(filepath + '.log')
+            log_path = LOG_PATH / filepath + '.log'
 
             # Does the parent directory exist?
             if not log_path.parent.isdir():
@@ -290,14 +265,9 @@ class LogManager(_LogInstance):
                 log_path.parent.makedirs()
 
             # Create the handler an add it to the logger
-            self._handler = FileHandler(LOG_PATH.joinpath(filepath + '.log'))
+            self._handler = FileHandler(log_path)
             self._handler.setFormatter(self.formatter)
             self.logger.addHandler(self._handler)
-
-            # Create a clean handler for logging without a prefix
-            self._clean_handler = FileHandler(
-                LOG_PATH.joinpath(filepath + '.log'))
-            self._clean_handler.setFormatter(_clean_formatter)
 
     @property
     def level(self):
@@ -311,9 +281,9 @@ class LogManager(_LogInstance):
 
 # Set the core ConVars
 _level = ConVar(
-    'sp_logging_level', '0', 0, 'The Source.Python base logging level')
+    'sp_logging_level', '0', 'The Source.Python base logging level')
 _areas = ConVar(
-    'sp_logging_areas', '1', 0, 'The Source.Python base logging areas')
+    'sp_logging_areas', '1', 'The Source.Python base logging areas')
 
 # Get the Source.Python main LogManager instance
 _sp_logger = LogManager(

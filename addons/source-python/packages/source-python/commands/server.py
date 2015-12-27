@@ -1,4 +1,4 @@
-# ../commands/server/__init__.py
+# ../commands/server.py
 
 """Provides say command functionality."""
 

@@ -137,14 +137,9 @@ void export_base_entity_handle(scope _entities)
 void export_handle_entity(scope _entities)
 {
 	class_<IHandleEntity, boost::noncopyable>("HandleEntity", no_init)
-		.def("set_ref_ehandle",
-			&IHandleEntity::SetRefEHandle,
-			args("handle")
-		)
-
-		.def("get_ref_ehandle",
-			&IHandleEntity::GetRefEHandle,
-			reference_existing_object_policy()
+		.add_property("basehandle",
+			make_function(&IHandleEntity::GetRefEHandle, reference_existing_object_policy()),
+			&IHandleEntity::SetRefEHandle
 		)
 
 		ADD_MEM_TOOLS(IHandleEntity)

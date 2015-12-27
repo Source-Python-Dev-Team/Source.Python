@@ -101,7 +101,7 @@ void export_engine_server(scope _server)
 		)
 
 		.def("is_map_valid",
-			&IVEngineServer::IsMapValid,
+			&IVEngineServerExt::IsMapValid,
 			"Returns true if filename refers to a valid map.",
 			args("filename")
 		)
@@ -117,19 +117,19 @@ void export_engine_server(scope _server)
 		)
 
 		.def("precache_model",
-			&IVEngineServer::PrecacheModel,
+			&IVEngineServerExt::precache_model,
 			"Precaches a model and returns an integer containing its index.",
 			("s", arg("preload")=false)
 		)
 
 		.def("precache_decal",
-			&IVEngineServer::PrecacheDecal,
+			&IVEngineServerExt::precache_decal,
 			"Precaches a decal file and returns an integer containing its index.",
 			("s", arg("preload")=false)
 		)
 
 		.def("precache_generic",
-			&IVEngineServer::PrecacheGeneric,
+			&IVEngineServerExt::precache_generic,
 			"Precaches a generic asset file and returns an integer containing its index.",
 			("s", arg("preload")=false)
 		)
@@ -249,7 +249,7 @@ void export_engine_server(scope _server)
 		)
 
 		.def("server_command",
-			&IVEngineServer::ServerCommand,
+			&IVEngineServerExt::ServerCommand,
 			"Issues a command to the command parser as if it was typed at the server console.",
 			args("command")
 		)
