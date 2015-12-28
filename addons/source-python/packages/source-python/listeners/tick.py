@@ -52,6 +52,9 @@ class Delay(object):
             'Delay.__init__ <{0}> <{1}> <{2}> <{3}>'.format(
                 seconds, callback, args, kwargs))
 
+        if not callable(callback):
+            raise ValueError('Given callback is not callable.')
+
         # Store the time to execute the callback
         self._exec_time = time.time() + seconds
 
