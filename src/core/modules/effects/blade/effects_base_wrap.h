@@ -24,38 +24,17 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_HELPERS_BLADE_H
-#define _ENTITIES_HELPERS_BLADE_H
+#ifndef _EFFECTS_BASE_WRAP_CSGO_H
+#define _EFFECTS_BASE_WRAP_CSGO_H
 
 //-----------------------------------------------------------------------------
-// Includes.
+// Exports CBaseTempEntity.
 //-----------------------------------------------------------------------------
-#include <climits>
-#include "utilities/wrap_macros.h"
-#include "toolframework/itoolentity.h"
-#include "utilities/conversions.h"
-#include "modules/memory/memory_tools.h"
-
-
-//-----------------------------------------------------------------------------
-// External variables.
-//-----------------------------------------------------------------------------
-extern IServerTools *servertools;
-
-
-//-----------------------------------------------------------------------------
-// Removes the entity matching the given index.
-//-----------------------------------------------------------------------------
-void remove_entity(unsigned int uiEntityIndex)
+template<class T, class U>
+void export_engine_specific_temp_entity(T _base, U TempEntity)
 {
-	CBaseEntity *pBaseEntity = ExcBaseEntityFromIndex(uiEntityIndex);
-	int iHammerID = INT_MAX;
-	while (servertools->FindEntityByHammerID(iHammerID))
-		iHammerID--;
-
-	servertools->SetKeyValue(pBaseEntity, "hammerid", iHammerID);
-	servertools->RemoveEntity(iHammerID);
+	// Nothing specific to CSGO...
 }
 
 
-#endif // _ENTITIES_HELPERS_BLADE_H
+#endif // _EFFECTS_BASE_WRAP_CSGO_H
