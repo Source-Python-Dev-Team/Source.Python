@@ -19,7 +19,7 @@ class _C4(object):
     def has_c4(self):
         """Return whether or not the player is carrying C4."""
         # Loop through all c4 entities on the server
-        for weapon in EntityIter('weapon_c4', return_types='entity'):
+        for weapon in EntityIter('weapon_c4'):
 
             # Is the entity's "owner" the player?
             if weapon.owner == self.handle.to_int():

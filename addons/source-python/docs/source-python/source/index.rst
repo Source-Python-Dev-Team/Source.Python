@@ -64,8 +64,11 @@ Indices and tables
 Other helpful links
 -------------------
 * Source.Python
-   * `Source.Python forums <http://www.sourcepython.com/forum.php>`_
-   * `Source.Python repository <http://github.com/Source-Python-Dev-Team/Source.Python/>`_
-   * `Source.Python issue list <http://github.com/Source-Python-Dev-Team/Source.Python/issues>`_
+
+  * `Source.Python forums <http://www.sourcepython.com/forum.php>`_
+  * `Source.Python repository <http://github.com/Source-Python-Dev-Team/Source.Python/>`_
+  * `Source.Python issue list <http://github.com/Source-Python-Dev-Team/Source.Python/issues>`_
+  
 * Python 3
-   * `Python 3 documentation <https://docs.python.org/3/>`_
+
+  * `Python 3 documentation <https://docs.python.org/3/>`_

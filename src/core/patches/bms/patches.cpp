@@ -39,12 +39,6 @@
 #error "We need the CNetworkHandle definition..."
 #endif
 
-#include "engine/IEngineTrace.h"
-#ifndef PATCH_INTERFACEVERSION_ENGINETRACE
-// TODO: Update vtable as well!
-#error "Correct EngineTraceServer and EngineTraceClient versions."
-#endif
-
 #include "public/tier0/threadtools.h"
 #ifndef PATCH_UPDATE_AUTO_LOCK
 // TODO: Create a real fix for this!

@@ -10,7 +10,13 @@
 import memory
 #   Engines
 from engines.precache import Model
+from engines.trace import engine_trace
+from engines.trace import ContentMasks
+from engines.trace import GameTrace
+from engines.trace import Ray
+from engines.trace import TraceFilterSimple
 #   Entities
+from entities import BaseEntityGenerator
 from entities.classes import server_classes
 from entities.constants import RenderMode
 from entities.factories import factory_dictionary
@@ -21,6 +27,9 @@ from entities.helpers import spawn_entity
 from entities.specials import _EntitySpecials
 #   Memory
 from memory import make_object
+#   Studio
+from studio.cache import model_cache
+from studio.constants import INVALID_ATTACHMENT_INDEX
 
 
 # =============================================================================
@@ -52,9 +61,9 @@ class Entity(BaseEntity, _EntitySpecials):
         super().__init__(index)
 
         # Set the entity's base attributes
-        super().__setattr__('_index', index)
-        super().__setattr__('_edict', None)
-        super().__setattr__('_pointer', None)
+        object.__setattr__(self, '_index', index)
+        object.__setattr__(self, '_edict', None)
+        object.__setattr__(self, '_pointer', None)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
@@ -92,7 +101,7 @@ class Entity(BaseEntity, _EntitySpecials):
                     getattr(self.__class__, name, None), property)):
 
                 # Set the private attribute's value
-                super().__setattr__(attr, value)
+                object.__setattr__(self, attr, value)
 
                 # No need to go further
                 return
@@ -102,7 +111,7 @@ class Entity(BaseEntity, _EntitySpecials):
                 getattr(self.__class__, attr, None), property)):
 
             # Set the property's value
-            super().__setattr__(attr, value)
+            object.__setattr__(self, attr, value)
 
             # No need to go further
             return
@@ -217,16 +226,16 @@ class Entity(BaseEntity, _EntitySpecials):
     def edict(self):
         """Return the entity's :class:`entities.Edict` instance."""
         if self._edict is None:
-            self._edict = edict_from_index(self.index)
-
+            edict = edict_from_index(self.index)
+            object.__setattr__(self, '_edict', edict)
         return self._edict
 
     @property
     def pointer(self):
         """Return the entity's :class:`memory.Pointer`."""
         if self._pointer is None:
-            self._pointer = memory.get_object_pointer(self)
-
+            pointer = memory.get_object_pointer(self)
+            object.__setattr__(self, '_pointer', pointer)
         return self._pointer
 
     @property
@@ -238,11 +247,6 @@ class Entity(BaseEntity, _EntitySpecials):
         """
         yield self.edict
         yield self.pointer
-
-    @property
-    def basehandle(self):
-        """Return the entity's BaseEntityHandle instance."""
-        return self.edict.networkable.get_entity_handle().get_ref_ehandle()
 
     @property
     def inthandle(self):
@@ -359,6 +363,12 @@ class Entity(BaseEntity, _EntitySpecials):
     model = property(
         get_model, set_model,
         doc="""Property to get/set the entity's model.""")
+
+    @property
+    def model_header(self):
+        """Return a ModelHeader instance of the current entity's model."""
+        return model_cache.get_model_header(model_cache.find_model(
+            self.model.path))
 
     def get_property_bool(self, name):
         """Return the boolean property."""
@@ -547,3 +557,36 @@ class Entity(BaseEntity, _EntitySpecials):
     def call_input(self, name, *args, **kwargs):
         """Call the InputFunction instance for the given name."""
         self.get_input(name)(*args, **kwargs)
+
+    def lookup_attachment(self, name):
+        """Return the attachment index matching the given name."""
+        # Get the ModelHeader instance of the entity
+        model_header = self.model_header
+
+        # Loop through all attachments
+        for index in range(model_header.attachments_count):
+
+            # Are the names matching?
+            if name == model_header.get_attachment(index).name:
+
+                # Return the current index
+                return index
+
+        # No attachment found
+        return INVALID_ATTACHMENT_INDEX
+
+    def is_in_solid(
+            self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
+        """Return whether or not the entity is in solid."""
+        # Get a Ray object of the entity physic box
+        ray = Ray(self.origin, self.origin, self.mins, self.maxs)
+
+        # Get a new GameTrace instance
+        trace = GameTrace()
+
+        # Do the trace
+        engine_trace.trace_ray(ray, mask, TraceFilterSimple(
+            [entity.index for entity in generator()]), trace)
+
+        # Return whether or not the trace did hit
+        return trace.did_hit()

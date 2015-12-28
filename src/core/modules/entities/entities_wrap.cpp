@@ -40,8 +40,6 @@
 
 #include ENGINE_INCLUDE_PATH(entities_wrap.h)
 
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
-
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -58,6 +56,7 @@ void export_global_entity_list(scope);
 void export_entity_listener(scope);
 void export_check_transmit_info(scope);
 void export_baseentity_generator(scope);
+void export_server_class_generator(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -77,6 +76,7 @@ DECLARE_SP_MODULE(_entities)
 	export_entity_listener(_entities);
 	export_check_transmit_info(_entities);
 	export_baseentity_generator(_entities);
+	export_server_class_generator(_entities);
 }
 
 
@@ -137,14 +137,9 @@ void export_base_entity_handle(scope _entities)
 void export_handle_entity(scope _entities)
 {
 	class_<IHandleEntity, boost::noncopyable>("HandleEntity", no_init)
-		.def("set_ref_ehandle",
-			&IHandleEntity::SetRefEHandle,
-			args("handle")
-		)
-
-		.def("get_ref_ehandle",
-			&IHandleEntity::GetRefEHandle,
-			reference_existing_object_policy()
+		.add_property("basehandle",
+			make_function(&IHandleEntity::GetRefEHandle, reference_existing_object_policy()),
+			&IHandleEntity::SetRefEHandle
 		)
 
 		ADD_MEM_TOOLS(IHandleEntity)
@@ -543,5 +538,17 @@ void export_baseentity_generator(scope _entities)
 	class_<CBaseEntityGenerator>("BaseEntityGenerator")
 		.def("__iter__", &CBaseEntityGenerator::iter)
 		.def("__next__", &CBaseEntityGenerator::next, reference_existing_object_policy())
+	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CServerClassGenerator.
+//-----------------------------------------------------------------------------
+void export_server_class_generator(scope _entities)
+{
+	class_<CServerClassGenerator>("ServerClassGenerator")
+		.def("__iter__", &CServerClassGenerator::iter)
+		.def("__next__", &CServerClassGenerator::next, reference_existing_object_policy())
 	;
 }

@@ -19,9 +19,8 @@ from configobj import Section
 # Source.Python Imports
 #   Core
 from core import GameConfigObj
-#   Engines
-from engines.server import server_game_dll
 #   Entities
+from entities import ServerClassGenerator
 from entities.datamaps import _supported_input_types
 from entities.datamaps import EntityProperty
 from entities.datamaps import FieldType
@@ -46,7 +45,7 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get all of the necessary paths
-_managers_path = SP_DATA_PATH.joinpath('entities')
+_managers_path = SP_DATA_PATH / 'entities'
 
 # Store all supported types
 _supported_descriptor_types = {
@@ -104,11 +103,9 @@ _server_classes = dict()
 
 # Loop through all server classes and add them to the dictionaries
 _table_names = dict()
-_current_class = server_game_dll.get_all_server_classes()
-while _current_class:
-    _server_classes[_current_class.name] = _current_class.table
-    _table_names[_current_class.table.name] = _current_class.name
-    _current_class = _current_class.next
+for _server_class in ServerClassGenerator():
+    _server_classes[_server_class.name] = _server_class.table
+    _table_names[_server_class.table.name] = _server_class.name
 
 
 # =============================================================================
@@ -226,8 +223,7 @@ class _ServerClasses(TypeManager):
     def _get_server_class(self, class_name, datamap):
         """Retrieve values for the server class."""
         # Get the engine specific data for the current class
-        manager_contents = GameConfigObj(
-            _managers_path.joinpath(class_name + '.ini'))
+        manager_contents = GameConfigObj(_managers_path / class_name + '.ini')
 
         # Are there any values for the manager?
         if manager_contents:
@@ -237,9 +233,6 @@ class _ServerClasses(TypeManager):
 
         # Get a TypeManager instance for the current datamap
         instance = self.create_type_from_file(class_name, manager_contents)
-
-        # Store the class name to more easily look it up
-        instance.__name__ = class_name
 
         # Get the specific types of values to use
         input_contents = dict(map(

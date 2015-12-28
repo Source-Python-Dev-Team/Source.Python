@@ -48,34 +48,34 @@
 class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
 {
 public:
-	int get_inflictor()
+	unsigned int get_inflictor()
 	{
-		return IndexFromBaseHandle(m_hInflictor);
+		return ExcIndexFromBaseHandle(m_hInflictor);
 	}
 	
 	void set_inflictor(unsigned int uiInflictor)
 	{
-		m_hInflictor = BaseHandleFromIndex(uiInflictor, true);
+		m_hInflictor = ExcBaseHandleFromIndex(uiInflictor);
 	}
 	
-	int get_attacker()
+	unsigned int get_attacker()
 	{
-		return IndexFromBaseHandle(m_hAttacker);
+		return ExcIndexFromBaseHandle(m_hAttacker);
 	}
 	
 	void set_attacker(unsigned int uiAttacker)
 	{
-		m_hAttacker = BaseHandleFromIndex(uiAttacker, true);
+		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
 	}
 	
-	int get_weapon()
+	unsigned int get_weapon()
 	{
-		return IndexFromBaseHandle(m_hWeapon);
+		return ExcIndexFromBaseHandle(m_hWeapon);
 	}
 	
 	void set_weapon(unsigned int uiWeapon)
 	{
-		m_hWeapon = BaseHandleFromIndex(uiWeapon, true);
+		m_hWeapon = ExcBaseHandleFromIndex(uiWeapon);
 	}
 	
 	void set_base_damage(float flBaseDamage)
@@ -110,7 +110,7 @@ public:
 		return pTakeDamageInfo;
 	}
 	
-	static int get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
+	static unsigned int get_inflictor(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_inflictor();
 	}
@@ -120,7 +120,7 @@ public:
 		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_inflictor(iInflictor);
 	}
 	
-	static int get_attacker(CTakeDamageInfo *pTakeDamageInfo)
+	static unsigned int get_attacker(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_attacker();
 	}
@@ -130,7 +130,7 @@ public:
 		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_attacker(iAttacker);
 	}
 	
-	static int get_weapon(CTakeDamageInfo *pTakeDamageInfo)
+	static unsigned int get_weapon(CTakeDamageInfo *pTakeDamageInfo)
 	{
 		return ((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->get_weapon();
 	}

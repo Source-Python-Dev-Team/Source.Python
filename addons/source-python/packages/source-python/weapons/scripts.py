@@ -28,7 +28,7 @@ __all__ = ('WeaponInfo',
 # =============================================================================
 # Get the WeaponInfo class...
 WeaponInfo = manager.create_type_from_dict('WeaponInfo', GameConfigObj(
-    SP_DATA_PATH.joinpath('weapons', 'scripts', 'WeaponInfo.ini')))
+    SP_DATA_PATH / 'weapons' / 'scripts' / 'WeaponInfo.ini'))
 
 # Get the _WeaponDatabase class...
 try:
@@ -38,12 +38,12 @@ try:
     manager['_WeaponDatabase'] = _WeaponDatabase
 except ImportError:
     _WeaponDatabase = manager.create_type_from_dict(
-        '_WeaponDatabase', GameConfigObj(SP_DATA_PATH.joinpath(
-            'weapons', 'scripts').joinpath('WeaponDatabase.ini')))
+        '_WeaponDatabase', GameConfigObj(
+            SP_DATA_PATH / 'weapons' / 'scripts' / 'WeaponDatabase.ini'))
 
 # Get the global _WeaponDatabase pointer...
 manager.create_global_pointers_from_file(GameConfigObj(
-    SP_DATA_PATH.joinpath('weapons', 'scripts', 'global_pointers.ini')))
+    SP_DATA_PATH / 'weapons' / 'scripts' / 'global_pointers.ini'))
 _weapon_scripts = manager.get_global_pointer('_WeaponDatabase')
 
 

@@ -31,10 +31,9 @@
 #include "utilities/wrap_macros.h"
 #include "utilities/conversions.h"
 #include "entities_helpers.h"
+#include "entities_entity.h"
 
 #include ENGINE_INCLUDE_PATH(entities_helpers.h)
-
-BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
 
 //-----------------------------------------------------------------------------
@@ -87,42 +86,42 @@ void export_entity_conversion_functions(scope _helpers)
 	// To Index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);
-	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, IntHandle);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, CBaseEntity *, BaseEntity);
 
 	// To Edict conversions...
 	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Index, reference_existing_object_policy());
 	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CBaseHandle, BaseHandle, reference_existing_object_policy());
-	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, int, IntHandle, reference_existing_object_policy());
+	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, IntHandle, reference_existing_object_policy());
 	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CPointer *, Pointer, reference_existing_object_policy());
 	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, CBaseEntity *, BaseEntity, reference_existing_object_policy());
 
 	// To BaseHandle conversions...
 	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Index);
 	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, edict_t *, Edict);
-	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, IntHandle);
 	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CPointer *, Pointer);
 	EXPORT_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CBaseEntity *, BaseEntity);
 
 	// To IntHandle conversions...
-	EXPORT_CONVERSION_FUNCTION(int, IntHandle, unsigned int, Index);
-	EXPORT_CONVERSION_FUNCTION(int, IntHandle, edict_t *, Edict);
-	EXPORT_CONVERSION_FUNCTION(int, IntHandle, CBaseHandle, BaseHandle);
-	EXPORT_CONVERSION_FUNCTION(int, IntHandle, CPointer *, Pointer);
-	EXPORT_CONVERSION_FUNCTION(int, IntHandle, CBaseEntity *, BaseEntity);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CPointer *, Pointer);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseEntity *, BaseEntity);
 
 	// To Pointer conversions...
-	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, unsigned int, Index, manage_new_object_policy());
-	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, edict_t *, Edict, manage_new_object_policy());
-	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, CBaseHandle, BaseHandle, manage_new_object_policy());
-	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, int, IntHandle, manage_new_object_policy());
-	EXPORT_CONVERSION_FUNCTION(CPointer *, Pointer, CBaseEntity *, BaseEntity, manage_new_object_policy());
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Index);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, edict_t *, Edict);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, CBaseHandle, BaseHandle);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, IntHandle);
+	EXPORT_CONVERSION_FUNCTION(CPointer, Pointer, CBaseEntity *, BaseEntity);
 
 	// To BaseEntity conversions...
 	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Index, return_by_value_policy());
 	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, edict_t *, Edict, return_by_value_policy());
 	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CBaseHandle, BaseHandle, return_by_value_policy());
-	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, int, IntHandle, return_by_value_policy());
+	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, IntHandle, return_by_value_policy());
 	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, CPointer *, Pointer, return_by_value_policy());
 }

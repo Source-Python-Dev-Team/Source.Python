@@ -134,14 +134,14 @@ public:
 		return pVector;
 	}
 
-	static int get_entity(variant_t *pVariant)
+	static unsigned int get_entity(variant_t *pVariant)
 	{
-		return IndexFromBaseHandle(pVariant->Entity());
+		return ExcIndexFromBaseHandle(pVariant->Entity());
 	}
 
 	static void set_entity(variant_t *pVariant, unsigned int uiEntity)
 	{
-		pVariant->SetEntity(BaseEntityFromIndex(uiEntity, true));
+		pVariant->SetEntity(ExcBaseEntityFromIndex(uiEntity));
 	}
 };
 
@@ -161,24 +161,24 @@ public:
 		return pInputData;
 	}
 
-	static int get_activator(const inputdata_t& pInputData)
+	static unsigned int get_activator(const inputdata_t& pInputData)
 	{
-		return IndexFromBaseEntity(pInputData.pActivator);
+		return ExcIndexFromBaseEntity(pInputData.pActivator);
 	}
 
 	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator)
 	{
-		pInputData->pActivator = BaseEntityFromIndex(uiActivator, true);
+		pInputData->pActivator = ExcBaseEntityFromIndex(uiActivator);
 	}
 
-	static int get_caller(const inputdata_t& pInputData)
+	static unsigned int get_caller(const inputdata_t& pInputData)
 	{
-		return IndexFromBaseEntity(pInputData.pCaller);
+		return ExcIndexFromBaseEntity(pInputData.pCaller);
 	}
 	
 	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller)
 	{
-		pInputData->pCaller = BaseEntityFromIndex(uiCaller, true);
+		pInputData->pCaller = ExcBaseEntityFromIndex(uiCaller);
 	}
 };
 

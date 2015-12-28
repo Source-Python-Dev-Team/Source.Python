@@ -34,6 +34,7 @@
 #include "utilities/ipythongenerator.h"
 #include "utilities/baseentity.h"
 #include "entities_entity.h"
+#include "eiface.h"
 
 // ----------------------------------------------------------------------------
 // Forward declaration.
@@ -84,5 +85,25 @@ private:
 };
 
 BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CBaseEntityGenerator)
+
+
+// ----------------------------------------------------------------------------
+// CServerClassGenerator
+// ----------------------------------------------------------------------------
+class CServerClassGenerator: public IPythonGenerator<ServerClass>
+{
+public:
+	CServerClassGenerator(PyObject* self);
+	CServerClassGenerator(PyObject* self, const CServerClassGenerator& rhs);
+	virtual ~CServerClassGenerator() {}
+
+protected:
+	virtual ServerClass* getNext();
+
+private:
+	ServerClass* m_pCurrentServerClass;
+};
+
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CServerClassGenerator)
 
 #endif // _ENTITIES_GENERATOR_H

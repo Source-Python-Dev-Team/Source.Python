@@ -13,9 +13,8 @@ from inspect import ismethod
 #   Cvars
 from cvars import cvar
 from cvars.flags import ConVarFlags
-#   Engines
-from engines.server import server_game_dll
 #   Entities
+from entities import ServerClassGenerator
 from entities.datamaps import FieldType
 from entities.entity import BaseEntity
 from entities.factories import factory_dictionary
@@ -215,11 +214,8 @@ def dump_server_classes(filename):
     # Open/close the file
     with LOG_PATH.joinpath(filename + '.txt').open('w') as open_file:
 
-        # Get the starting server class
-        server_class = server_game_dll.get_all_server_classes()
-
-        # Use a while statement to loop through all server classes
-        while server_class:
+        # Loop through all server classes
+        for server_class in ServerClassGenerator():
 
             # Print the server class' name to file
             open_file.write('{0}\n'.format(server_class.name))

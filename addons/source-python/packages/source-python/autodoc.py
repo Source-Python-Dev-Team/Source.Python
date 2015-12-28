@@ -1,3 +1,5 @@
+# ../autodoc.py
+
 """This module provides a class to create documentation automatically."""
 
 # =============================================================================

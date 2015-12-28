@@ -17,23 +17,57 @@ class _HookBase(list):
     """Base hook class used to store callbacks for the specific hook type."""
 
     def append(self, callback):
-        """Hook the append method to verify the given callback is callable."""
+        """Register the given callback to the list.
+
+        :param callback: The function to register to the list.
+
+        .. code-block:: python
+
+            def function(*args, **kwargs):
+                # Code...
+
+            <_HookBase object>.append(function)
+        """
         # Is the given callback callable?
         if not callable(callback):
 
             # Raise an exception
             raise ValueError(
-                '{0} callbacks must be callable'.format(self.class_name))
+                'Callback {0} is not callable'.format(callback))
 
         # Is the given callback already registered?
         if callback in self:
 
             # Raise an exception
             raise ValueError(
-                '{0} callback already registered'.format(self.class_name))
+                'Callback {0} is already registered to {0}'.format(
+                    callback, self.class_name))
 
         # Add the callback to the list
         super().append(callback)
+
+    def remove(self, callback):
+        """Unregister the given callback from the list.
+
+        :param callback: The function to unregister from the list.
+
+        .. code-block:: python
+
+            def function(*args, **kwargs):
+                # Code...
+
+            <_HookBase object>.remove(function)
+        """
+        # Is the given callback a member of the object?
+        if callback not in self:
+
+            # Raise an exception
+            raise ValueError(
+                'Callback {0} is not registered to {1}'.format(
+                    callback, self.class_name))
+
+        # Remove the callback from the list
+        super().remove(callback)
 
     @property
     def class_name(self):
@@ -48,6 +82,10 @@ class _HookDecorator(AutoUnload):
         """Store the given callback and register the hook."""
         self.callback = callback
         self._class_instance.append(self.callback)
+
+    def __call__(self, *args, **kwargs):
+        """Call the callback."""
+        return self.callback(*args, **kwargs)
 
     def _unload_instance(self):
         """Unregister the hook."""

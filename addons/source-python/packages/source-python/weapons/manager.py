@@ -31,7 +31,7 @@ __all__ = ('_WeaponManager',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the game's ini path
-_gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
+_gamepath = SP_DATA_PATH / 'weapons' / GAME_NAME + '.ini'
 
 
 # =============================================================================
@@ -40,13 +40,13 @@ _gamepath = SP_DATA_PATH.joinpath('weapons', GAME_NAME + '.ini')
 class _WeaponManager(dict):
     """Dictionary class to store basic weapon information."""
 
-    def __init__(self, ini_file):
+    def __init__(self):
         """Load the ini file into the dictionary."""
         # Initialize the dictionary
         super().__init__()
 
         # Get the ConfigObj instance of the file
-        ini = ConfigObj(ini_file, unrepr=True)
+        ini = ConfigObj(_gamepath, unrepr=True)
 
         # Get the "properties"
         properties = ini['properties']
@@ -156,17 +156,12 @@ class _WeaponManager(dict):
 # Does the current game have an ini file?
 if _gamepath.isfile():
 
-    #: The singleton object of the :class:`_WeaponManager` class.
-    #: If the game is not supported, :class:`weapons.default.NoWeaponManager`
-    #: is used instead
-    weapon_manager = _WeaponManager(_gamepath)
+    # Get the _WeaponManager instance
+    weapon_manager = _WeaponManager()
 
 # Is there no ini file for the current game?
 else:
 
-    #: The singleton object of the :class:`_WeaponManager` class.
-    #: If the game is not supported, :class:`weapons.default.NoWeaponManager`
-    #: is used instead
     # Store weapon_manager as a NoWeaponManager instance
     # to raise an error anytime the manager is utilized
     weapon_manager = NoWeaponManager()

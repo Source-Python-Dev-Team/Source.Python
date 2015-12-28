@@ -31,6 +31,25 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "engine/IEngineSound.h"
+#include "eiface.h"
+
+
+//-----------------------------------------------------------------------------
+// IVEngineServer extension class.
+//-----------------------------------------------------------------------------
+class GameIVEngineServerExt
+{
+public:
+	static bool IsMapValid(IVEngineServer* pServer, const char* map_name)
+	{
+		int iLength = strlen(map_name) + 10;
+		char* szMapName = new char[iLength];
+		V_snprintf(szMapName, iLength, "maps/%s.bsp", map_name);
+		bool result = pServer->IsMapValid(szMapName);
+		delete szMapName;
+		return result;
+	}
+};
 
 
 //-----------------------------------------------------------------------------

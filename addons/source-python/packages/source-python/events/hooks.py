@@ -26,9 +26,9 @@ from memory.hooks import PreHook
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('_PreEventDictionary',
-           'EventAction',
+__all__ = ('EventAction',
            'PreEvent',
+           '_PreEventManager',
            'pre_event_manager',
            )
 
@@ -50,21 +50,21 @@ class PreEvent(AutoUnload):
     def __init__(self, *event_names):
         """Store the event names."""
         self._event_names = event_names
-        self._callback = None
+        self.callback = None
 
     def __call__(self, callback):
         """Store the callback and register the pre-events."""
         # Store the callback
-        self._callback = callback
+        self.callback = callback
 
         # Loop through all pre-event names
         for event_name in self._event_names:
 
             # Register the pre-event
-            pre_event_manager.register_for_event(event_name, self._callback)
+            pre_event_manager.register_for_event(event_name, self.callback)
 
-        # Return the instance so that it unloads properly
-        return self
+        # Return the callback
+        return self.callback
 
     def _unload_instance(self):
         """Unregister the pre-events."""
@@ -72,10 +72,10 @@ class PreEvent(AutoUnload):
         for event_name in self._event_names:
 
             # Unregister the pre-event
-            pre_event_manager.unregister_for_event(event_name, self._callback)
+            pre_event_manager.unregister_for_event(event_name, self.callback)
 
 
-class _PreEventDictionary(dict):
+class _PreEventManager(dict):
     """Dictionary class used to store pre-events with their callbacks."""
 
     def __missing__(self, event_name):
@@ -87,7 +87,23 @@ class _PreEventDictionary(dict):
         return value
 
     def register_for_event(self, event_name, callback):
-        """Register the callback for the given event."""
+        """Register the callback for the given event.
+
+        :param str event_name: The name of the event to register.
+        :param callback: The function to be called when the
+            event is fired on the server.
+
+        .. code-block:: python
+
+            from events.hooks import pre_event_manager
+
+            def function(game_event):
+                # Code...
+
+            pre_event_manager.register_for_event('player_death', function)
+
+        .. seealso:: :doc:`../events` for a list of supported events per game.
+        """
         # Is the callback callable?
         if not callable(callback):
 
@@ -99,7 +115,20 @@ class _PreEventDictionary(dict):
         self[event_name].append(callback)
 
     def unregister_for_event(self, event_name, callback):
-        """Unregister the callback for the given event."""
+        """Unregister the callback for the given event.
+
+        :param str event_name: The name of the event to unregister.
+        :param callback: The function to unregister from the event.
+
+        .. code-block:: python
+
+            from events.hooks import pre_event_manager
+
+            def function(game_event):
+                # Code...
+
+            pre_event_manager.unregister_for_event('player_death', function)
+        """
         # Is the event registered?
         if event_name not in self:
 
@@ -116,8 +145,8 @@ class _PreEventDictionary(dict):
             # Remove the pre-event from the dictionary
             del self[event_name]
 
-#:  The singleton object of the :class:`_PreEventDictionary` class
-pre_event_manager = _PreEventDictionary()
+# The singleton object of the :class:`_PreEventManager` class
+pre_event_manager = _PreEventManager()
 
 
 class _PreEventList(list):
