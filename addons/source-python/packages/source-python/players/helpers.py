@@ -182,15 +182,16 @@ def uniqueid_from_playerinfo(playerinfo):
 
     # Return the player's SteamID
     return steamid
-    
-    
+
+
 def uniqueid_from_index(index):
-    """Return the UniqueID for the given player index."""
-    playerinfo = playerinfo_from_index(index)
-    if playerinfo is None:
-        return None
-        
-    return uniqueid_from_playerinfo(playerinfo)
+    """Return the UniqueID for the given player index.
+
+    :param int index: The player index to get the UniqueID from.
+    :return: The UniqueID of the player. E.g. 'BOT_STAN' or 'STEAM_0:0:12345'
+    :rtype: str
+    """
+    return uniqueid_from_playerinfo(playerinfo_from_index(index))
 
 
 def uniqueid_from_index(index):
