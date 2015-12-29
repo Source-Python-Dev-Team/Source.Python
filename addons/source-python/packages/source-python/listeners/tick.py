@@ -118,15 +118,14 @@ class Delay(AutoUnload):
     def cancel(self):
         """Cancel the delay.
 
-        :raise ValueError: Raised if the delay expired or has been already
-            canceled.
+        :raise ValueError: Raised if the delay is not running.
         """
         _delay_manager.remove(self)
 
     @property
-    def expired(self):
-        """Return True if the delay expired."""
-        return self not in _delay_manager
+    def running(self):
+        """Return True if the delay running."""
+        return self in _delay_manager
 
     def _unload_instance(self):
         try:
