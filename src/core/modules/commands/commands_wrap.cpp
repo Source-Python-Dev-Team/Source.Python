@@ -33,6 +33,7 @@
 #include "commands_say.h"
 #include "commands.h"
 #include "commands_server.h"
+#include "sp_main.h"
 
 
 //-----------------------------------------------------------------------------
@@ -51,9 +52,11 @@ extern void UnregisterSayCommands();
 void InitCommands()
 {
 	// Register the say and say_team commands
+	DevMsg(1, MSG_PREFIX "Registering say and say_team commands...\n");
 	RegisterSayCommands();
 
-	// Register teh ConVar accessor.
+	// Register the ConVar accessor.
+	DevMsg(1, MSG_PREFIX "Registering ConVar accessor...\n");
 	InitServerCommands();
 }
 
