@@ -307,6 +307,17 @@ class TempEntity(BaseTempEntity):
         # Set the value of the given attribute...
         super().__setattr__(name, value)
 
+    def __dir__(self):
+        """Return an alphabetized list of attributes for the instance."""
+        # Get the base attributes
+        attributes = set(super().__dir__())
+
+        # Add all aliases to the attributes
+        attributes.update(set(self.template.aliases))
+
+        # Return a sorted list of attributes
+        return sorted(attributes)
+
     def _get_property(self, prop_name, prop_type):
         """Return the value of the given property name.
 
