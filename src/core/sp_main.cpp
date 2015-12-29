@@ -143,7 +143,6 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{VPHYSICS_SURFACEPROPS_INTERFACE_VERSION, (void **)&physprops},
 	{MDLCACHE_INTERFACE_VERSION, (void **)&modelcache},
 	{INTERFACEVERSION_VOICESERVER, (void **)&voiceserver},
-	{CVAR_INTERFACE_VERSION, (void **)&g_pCVar},
 
 	{NULL, NULL}
 };
@@ -203,7 +202,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 {
 #if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 	DevMsg(1, MSG_PREFIX "Connecting interfaces...\n");
-	//ConnectInterfaces(&interfaceFactory, 1);
+	ConnectInterfaces(&interfaceFactory, 1);
 #else
 	DevMsg(1, MSG_PREFIX "Connecting tier1 libraries...\n");
 	ConnectTier1Libraries( &interfaceFactory, 1 );
