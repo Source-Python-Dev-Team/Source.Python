@@ -48,7 +48,10 @@ class _DelayManager(list):
         """Internal tick listener."""
         current_time = time.time()
         while self and self[0].exec_time <= current_time:
-            self.pop(0).execute()
+            try:
+                self.pop(0).execute()
+            except:
+                except_hooks.print_exception()
 
         self._unregister_if_empty()
 
@@ -107,10 +110,7 @@ class Delay(AutoUnload):
 
     def execute(self):
         """Call the callback."""
-        try:
-            self.callback(*self.args, **self.kwargs)
-        except:
-            except_hooks.print_exception()
+        return self.callback(*self.args, **self.kwargs)
 
     def cancel(self):
         """Cancel the delay.
