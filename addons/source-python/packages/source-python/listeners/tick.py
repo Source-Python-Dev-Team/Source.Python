@@ -47,10 +47,7 @@ class _DelayManager(list):
     def _tick(self):
         """Internal tick listener."""
         current_time = time.time()
-        while self:
-            if self[0].exec_time > current_time:
-                break
-
+        while self and self[0].exec_time <= current_time:
             self.pop(0).execute()
 
         self._unregister_if_empty()
