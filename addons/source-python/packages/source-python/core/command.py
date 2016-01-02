@@ -41,7 +41,7 @@ from plugins import _plugin_strings
 from plugins.command import SubCommandManager
 from plugins.instance import LoadedPlugin
 #   Tick
-from listeners.tick import tick_delays
+from listeners.tick import Delay
 
 
 # =============================================================================
@@ -192,7 +192,7 @@ class _CoreCommandManager(SubCommandManager):
     @staticmethod
     def delay_execution(*args):
         """Execute a command after the given delay."""
-        tick_delays.delay(
+        Delay(
             float(args[0]),
             engine_server.server_command, ' '.join(args[1:]) + '\n')
 

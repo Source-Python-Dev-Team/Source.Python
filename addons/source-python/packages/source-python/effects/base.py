@@ -132,7 +132,7 @@ class TempEntity(BaseTempEntity):
                     return Entity(getattr(self, prop_name['name']))
 
                 # Otherwise, is the alias a player?
-                if prop_name['type'] == Player.__name__:
+                elif prop_name['type'] == Player.__name__:
 
                     # Return the player instance...
                     return Player(getattr(self, prop_name['name']))
@@ -230,7 +230,13 @@ class TempEntity(BaseTempEntity):
                                 value))
 
                     # Set the alias value...
-                    setattr(self, prop_name['name'], value)
+                    setattr(self, prop_name['name'], value.index)
+
+                # Otherwise, is the alias a player?
+                elif prop_name['type'] == Player.__name__:
+
+                    # Set the player instance...
+                    setattr(self, prop_name['name'], value.index)
 
                 # Otherwise, is the alias a model?
                 elif prop_name['type'] == Model.__name__:
@@ -300,6 +306,17 @@ class TempEntity(BaseTempEntity):
 
         # Set the value of the given attribute...
         super().__setattr__(name, value)
+
+    def __dir__(self):
+        """Return an alphabetized list of attributes for the instance."""
+        # Get the base attributes
+        attributes = set(super().__dir__())
+
+        # Add all aliases to the attributes
+        attributes.update(set(self.template.aliases))
+
+        # Return a sorted list of attributes
+        return sorted(attributes)
 
     def _get_property(self, prop_name, prop_type):
         """Return the value of the given property name.
@@ -500,7 +517,7 @@ class TempEntity(BaseTempEntity):
         :param str prop_name: The name of the property.
         :param bool value: The value to set.
         """
-        self._set_property(int(prop_name), SendPropType.INT, value)
+        self._set_property(prop_name, SendPropType.INT, int(value))
 
     def set_property_float(self, prop_name, value):
         """Set the value of the given property as a float.

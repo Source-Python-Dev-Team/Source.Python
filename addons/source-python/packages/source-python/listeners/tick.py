@@ -6,9 +6,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Contextlib
+from contextlib import suppress
 #   Enum
 from enum import IntEnum
 #   Time
+import bisect
 import time
 
 # Source.Python Imports
@@ -27,8 +30,6 @@ from listeners import on_tick_listener_manager
 __all__ = ('Delay',
            'TickRepeat',
            'TickRepeatStatus',
-           '_TickDelays',
-           'tick_delays',
            )
 
 
@@ -42,222 +43,92 @@ listeners_tick_logger = listeners_logger.tick
 # =============================================================================
 # >> DELAY CLASSES
 # =============================================================================
-class Delay(object):
-    """Stores a callback to be called at a later time."""
+class _DelayManager(list):
+    """A class that is responsible for executing delays."""
 
-    def __init__(self, seconds, callback, *args, **kwargs):
-        """Called when an instance is instantiated."""
-        # Log the init message
-        listeners_tick_logger.log_debug(
-            'Delay.__init__ <{0}> <{1}> <{2}> <{3}>'.format(
-                seconds, callback, args, kwargs))
+    def _tick(self):
+        """Internal tick listener."""
+        current_time = time.time()
+        while self and self[0].exec_time <= current_time:
+            try:
+                self.pop(0).execute()
+            except:
+                except_hooks.print_exception()
 
-        # Store the time to execute the callback
-        self._exec_time = time.time() + seconds
+        self._unregister_if_empty()
 
-        # Store the callback, arguments, and keywords
+    def _register_if_empty(self):
+        """Register the internal tick listener if the list is empty."""
+        if not self:
+            on_tick_listener_manager.register_listener(self._tick)
+
+    def _unregister_if_empty(self):
+        """Unregister the internal tick listener if the list is empty."""
+        if not self:
+            on_tick_listener_manager.unregister_listener(self._tick)
+
+    def add(self, delay):
+        """Add a delay to the list.
+
+        :param Delay delay: The delay to add.
+        """
+        self._register_if_empty()
+        bisect.insort_left(self, delay)
+
+_delay_manager = _DelayManager()
+
+
+class Delay(AutoUnload):
+    """Execute a callback after a given delay."""
+
+    def __init__(self, delay, callback, *args, **kwargs):
+        """Initialize the delay.
+
+        :param int delay: The delay in seconds.
+        :param callback: A callable object that should be called after the
+            delay expired.
+        :param args: Arguments that should be passed to the callback.
+        :param kwargs: Keyword arguments that should be passed to the
+            callback.
+        """
+        if not callable(callback):
+            raise ValueError('Given callback is not callable.')
+
+        self.delay = delay
+        self.exec_time = time.time() + delay
         self.callback = callback
         self.args = args
         self.kwargs = kwargs
+        _delay_manager.add(self)
+
+    def __lt__(self, other):
+        """Return True if this :attr:`exec_time` is less than the other's."""
+        return self.exec_time < other.exec_time
 
     def __call__(self):
-        """Call the delay with the proper arguments and keywords."""
-        # Log the call message
-        listeners_tick_logger.log_debug(
-            'Delay.__call__ - Try to call - <{0}> <{1}> <{2}>'.format(
-                self.callback, self.args, self.kwargs))
+        """Cancel the delay and immediately call the callback."""
+        self.cancel()
+        return self.execute()
 
-        # Use try/except in case an error is encountered
-        try:
-
-            # Execute the callback with the arguments and keywords
-            self.callback(*self.args, **self.kwargs)
-
-        # Was an error encountered?
-        except:
-
-            # Print the exception to the console
-            except_hooks.print_exception()
-
-    @property
-    def exec_time(self):
-        """Return the time to execute the delayed function."""
-        return self._exec_time
+    def execute(self):
+        """Call the callback."""
+        return self.callback(*self.args, **self.kwargs)
 
     def cancel(self):
-        """Cancel the delay."""
-        tick_delays.cancel_delay(self)
+        """Cancel the delay.
 
+        :raise ValueError: Raised if the delay is not running.
+        """
+        _delay_manager.remove(self)
 
-class _Times(list):
-    """List class used to store delays to be called."""
+    @property
+    def running(self):
+        """Return True if the delay running."""
+        return self in _delay_manager
 
-    def call_delays(self):
-        """Call the delays in the list."""
-        # Loop through the delays in the list
-        for item in self:
-
-            # Call the delay
-            item()
-
-
-class _TickDelays(dict):
-    """Class used to store delays to be called by a tick listener."""
-
-    def __init__(self):
-        """Store an ordered list to sort delays."""
-        super().__init__()
-        self._order = list()
-
-    def __missing__(self, item):
-        """Called when first adding a time to the dictionary."""
-        # Log the missing message
-        listeners_tick_logger.log_debug(
-            'tick_delays.__missing__ <{0}>'.format(item))
-
-        # Is the tick listener registered?
-        if not self:
-
-            # Log the tick listener registration message
-            listeners_tick_logger.log_debug(
-                'tick_delays - Registering Tick Listener')
-
-            # Register the tick listener
-            on_tick_listener_manager.register_listener(self._tick)
-
-        # Add the item to the dictionary as a _Times instance
-        self[item] = _Times()
-
-        # Add the time to the ordered list
-        self._order.append(item)
-
-        # Sort the ordered list
-        self._order.sort()
-
-        # Return the item's instance
-        return self[item]
-
-    def __iter__(self):
-        """Loop through the ordered list."""
-        # Loop through each item in the ordered list
-        for item in self._order:
-
-            # Yield the item
-            yield item
-
-    def __delitem__(self, item):
-        """Call the delays and remove the time from the ordered list."""
-        # Log the delitem message
-        listeners_tick_logger.log_debug(
-            'tick_delays.__delitem__ <{0}>'.format(item))
-
-        # Is the item in the dictionary?
-        if item not in self:
-
-            # Log the not in self message
-            listeners_tick_logger.log_debug(
-                'tick_delays.__delitem__ - Item not in dictionary')
-
-            # If not, simply return
-            return
-
-        # Call all delays for the given item
-        self[item].call_delays()
-
-        # Remove the item from the ordered list
-        self._order.remove(item)
-
-        # Remove the item from the dictionary
-        super().__delitem__(item)
-
-    def delay(self, seconds, callback, *args, **kwargs):
-        """Create a delay."""
-        # Get the Delay instance for the given arguments
-        delay_object = Delay(seconds, callback, *args, **kwargs)
-
-        # Add the Delay instance to the dictionary using its execution time
-        self[delay_object._exec_time].append(delay_object)
-
-        # Return the object
-        return delay_object
-
-    def _tick(self):
-        """Called every tick when the listener is registered."""
-        # Get the current time
-        current_time = time.time()
-
-        # Loop through each item in the ordered list
-        for item in self:
-
-            # Should the delays be called?
-            if item > current_time:
-
-                # If not, no need to continue looping
-                break
-
-            # Remove the item from the dictionary
-            del self[item]
-
-        # Is the dictionary now empty?
-        if not self:
-
-            # Log the tick listener unregistering message
-            listeners_tick_logger.log_debug(
-                'tick_delays._tick - Unregistering Tick Listener')
-
-            # Unregister the tick listener
-            on_tick_listener_manager.unregister_listener(self._tick)
-
-    def cancel_delay(self, delay_object):
-        """Cancel a delay."""
-        # Log the canceling message
-        listeners_tick_logger.log_debug(
-            'tick_delays.cancel_delay <{0}>'.format(delay_object))
-
-        # Is the given argument a Delay object?
-        if not isinstance(delay_object, Delay):
-
-            # If not, raise an error
-            raise TypeError(
-                'tick_delays.cancel_delay requires a Delay instance.')
-
-        # Is the given Delay object's time no longer in the dictionary?
-        if delay_object._exec_time not in self:
-
-            # If not, raise an error
-            raise KeyError('Object is no longer registered.')
-
-        # Log the removing from list message
-        listeners_tick_logger.log_debug(
-            'tick_delays.cancel_delay - Removing from '
-            '<{0}>'.format(delay_object._exec_time))
-
-        # Remove the delay from its time
-        self[delay_object._exec_time].remove(delay_object)
-
-        # Does the delay's time have any remaining objects?
-        if not self[delay_object._exec_time]:
-
-            # Log the deletion of the time from the dictionary message
-            listeners_tick_logger.log_debug(
-                'tick_delays.cancel_delay - Removing <{0}> '
-                'from dictionary'.format(delay_object._exec_time))
-
-            # If not, remove the delay's time from the dictionary
-            del self[delay_object._exec_time]
-
-        # Are there any remaining delays?
-        if not self:
-
-            # Log the tick listener unregistering message
-            listeners_tick_logger.log_debug(
-                'tick_delays.cancel_delay - Unregistering Tick Listener')
-
-            # Unregister the listener
-            on_tick_listener_manager.unregister_listener(self._tick)
-
-# The singleton object of the :class:`_TickDelays` class
-tick_delays = _TickDelays()
+    def _unload_instance(self):
+        with suppress(ValueError):
+            self.cancel()
 
 
 # =============================================================================
@@ -328,7 +199,7 @@ class TickRepeat(AutoUnload):
         self._adjusted = 0
 
         # Start the delay
-        self._delay = tick_delays.delay(self._interval, self._execute)
+        self._delay = Delay(self._interval, self._execute)
 
     def stop(self):
         """Stop the repeat loop."""
@@ -353,7 +224,7 @@ class TickRepeat(AutoUnload):
         self._status = TickRepeatStatus.STOPPED
 
         # Cancel the delay
-        tick_delays.cancel_delay(self._delay)
+        self._delay.cancel()
 
     def restart(self):
         """Restart the repeat."""
@@ -395,7 +266,7 @@ class TickRepeat(AutoUnload):
         self._loop_time = self._delay.exec_time - time.time()
 
         # Cancel the delay
-        tick_delays.cancel_delay(self._delay)
+        self._delay.cancel()
 
     def resume(self):
         """Resume the repeat.
@@ -424,7 +295,7 @@ class TickRepeat(AutoUnload):
         self._status = TickRepeatStatus.RUNNING
 
         # Start the delay
-        self._delay = tick_delays.delay(self._loop_time, self._execute)
+        self._delay = Delay(self._loop_time, self._execute)
 
     def extend(self, adjustment):
         """Add to the number of loops to be made."""
@@ -512,7 +383,7 @@ class TickRepeat(AutoUnload):
                         self.remaining))
 
             # Call the delay again
-            self._delay = tick_delays.delay(self._interval, self._execute)
+            self._delay = Delay(self._interval, self._execute)
 
         # Are no more loops to be made?
         else:
