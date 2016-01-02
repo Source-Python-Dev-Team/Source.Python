@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Contextlib
+from contextlib import suppress
 #   Enum
 from enum import IntEnum
 #   Time
@@ -125,10 +127,8 @@ class Delay(AutoUnload):
         return self in _delay_manager
 
     def _unload_instance(self):
-        try:
+        with suppress(ValueError):
             self.cancel()
-        except ValueError:
-            pass
 
 
 # =============================================================================
