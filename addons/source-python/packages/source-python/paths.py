@@ -33,6 +33,7 @@ __all__ = ('BASE_PATH',
            'SP_PACKAGES_PATH',
            'TRANSLATION_PATH',
            'AUTH_CFG_PATH',
+           'BACKENDS_PATH',
            'BACKEND_CONFIG_FILE'
            )
 
@@ -101,7 +102,10 @@ CUSTOM_DATA_PATH = DATA_PATH / 'custom'
 PLUGIN_DATA_PATH = DATA_PATH / 'plugins'
 
 #: ../addons/source-python/cfg/source-python/auth
-AUTH_CFG_PATH = CFG_PATH / "auth"
+AUTH_CFG_PATH = CFG_PATH / 'auth'
+
+#: ../addons/source-python/packages/source-python/auth/backends
+BACKENDS_PATH = SP_PACKAGES_PATH / 'auth' / 'backends'
 
 #: ../addons/source-python/cfg/source-python/auth/permissions.ini
-BACKEND_CONFIG_FILE = AUTH_CFG_PATH / "permissions.ini"
+BACKEND_CONFIG_FILE = AUTH_CFG_PATH / 'permissions.ini'

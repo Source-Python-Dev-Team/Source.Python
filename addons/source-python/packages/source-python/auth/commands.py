@@ -14,15 +14,28 @@ from . import auth_logger
 from .manager import auth_manager
 
 
-argument_re = re.compile("<([^>]+)>")
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+# TODO: Fill __all__
+__all__ = ()
 
 
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+argument_re = re.compile('<([^>]+)>')
+
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
 class AuthCommand(object):
     def __init__(self, command, permission=None):
         self.permission = permission
         self.command = command
         self.arguments = []
-        for arg in command.split(" "):
+        for arg in command.split(' '):
             if argument_re.match(arg):
                 self.arguments.append(None)
             else:
@@ -59,19 +72,19 @@ class AuthCommandManager(list):
 auth_commands = AuthCommandManager()
 
 
-@ClientCommand("auth")
-@ServerCommand("auth")
+@ClientCommand('auth')
+@ServerCommand('auth')
 def _auth_command(command, index=None):
     for authcommand in auth_commands:
         authcommand.test(index, command)
 
 
-@auth_commands.register_command("load <backend>", "sp.auth.commands.load")
+@auth_commands.register_command('load <backend>', 'sp.auth.commands.load')
 def load_backend_command(index, backend):
     if auth_manager.load_backend(backend):
-        message = "[Auth] Loaded backend {} succesfully.".format(backend)
+        message = '[Auth] Loaded backend {} succesfully.'.format(backend)
     else:
-        message = "[Auth] Failed to load backend {}.".format(backend)
+        message = '[Auth] Failed to load backend {}.'.format(backend)
     if index is None:
         auth_logger.log_message(message)
     else:

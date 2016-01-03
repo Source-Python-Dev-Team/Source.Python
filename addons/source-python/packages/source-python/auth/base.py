@@ -1,5 +1,17 @@
+# ../auth/base.py
+
+"""TODO"""
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = ('PermissionSource',)
+
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
 class PermissionSource(object):
-    name = ""
     options = {}
 
     def load(self):
@@ -7,5 +19,7 @@ class PermissionSource(object):
 
     def unload(self):
         pass
-
-
+        
+    @property
+    def name(self):
+        raise NotImplementedError('Every backend must define a name.')
