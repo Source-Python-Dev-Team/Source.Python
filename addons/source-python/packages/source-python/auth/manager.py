@@ -193,7 +193,7 @@ class _AuthManager(object):
         """Find all available backends."""
         for backend in BACKENDS_PATH.glob('*.py'):
             name = 'auth.backend.' + backend.basename().splitext()[0]
-            loader = SourceFileLoader(name, backend)
+            loader = SourceFileLoader(name, str(backend))
             module = loader.load_module(name)
             for var in vars(module).values():
                 if isinstance(var, PermissionSource):
