@@ -26,8 +26,13 @@ from players.helpers import uniqueid_from_index
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-# TODO: Fill __all__
-__all__ = ()
+__all__ = ('_AuthManager',
+           'auth_manager'
+           'GroupPermissions',
+           'PermissionBase',
+           'PermissionDict',
+           'PlayerPermissions',
+    )
 
 
 # =============================================================================
@@ -51,7 +56,7 @@ class PermissionBase(set):
 
     def add(self, permission):
         """Add a permission.
-        
+
         :param str permission: The permission to add.
         """
         super().add(permission)
@@ -59,7 +64,7 @@ class PermissionBase(set):
 
     def remove(self, permission):
         """Remove a permission.
-        
+
         :param str permission: The permission to remove.
         """
         super().remove(permission)
@@ -84,7 +89,7 @@ class PermissionBase(set):
 
     def flatten(self):
         """Return all permissions flattened recursively.
-        
+
         :rtype: generator
         """
         yield from self
@@ -102,7 +107,7 @@ class PermissionBase(set):
 
     def add_parent(self, parent):
         """Add a parent permission.
-        
+
         :param str parent: Name of the permission group.
         """
         group = auth_manager.groups[parent]
@@ -111,7 +116,7 @@ class PermissionBase(set):
 
     def remove_parent(self, parent):
         """Remove a parent permission.
-        
+
         :param str parent: Name of the permission group.
         """
         group = auth_manager.groups[parent]
@@ -121,10 +126,10 @@ class PermissionBase(set):
 
 class PlayerPermissions(PermissionBase):
     """A container for player permissions."""
-    
+
     def __new__(cls, uniqueid):
         """Return a PlayerPermissions object.
-        
+
         :param str uniqueid: The unique ID of a player.
         """
         if uniqueid in auth_manager.players:
@@ -136,10 +141,10 @@ class PlayerPermissions(PermissionBase):
 
 class GroupPermissions(PermissionBase):
     """A container for group permissions."""
-    
+
     def __new__(cls, name):
         """Return a GroupPermissions object.
-        
+
         :param str name: Name of the group.
         """
         if name in auth_manager.groups:
@@ -150,7 +155,7 @@ class GroupPermissions(PermissionBase):
 
     def __init__(self, name):
         """Initialize the object.
-        
+
         :param str name: Name of the group.
         """
         super().__init__(name)
@@ -159,10 +164,10 @@ class GroupPermissions(PermissionBase):
 
 class PermissionDict(dict):
     """A permission storage."""
-    
+
     def __init__(self, permission_type):
         """Initialize the object.
-        
+
         :param PermissionBase permission_type: The permission class whose
             objects should be stored.
         """
@@ -227,7 +232,7 @@ class _AuthManager(object):
 
     def load_backend(self, backend_name):
         """Load a backend.
-        
+
         :param str backend_name: Name of the backend.
         """
         for backend in self.available_backends:
@@ -244,7 +249,7 @@ class _AuthManager(object):
 
     def get_player_permissions(self, index):
         """Return the permissions of a player.
-        
+
         :param int index: Index of the player.
         :rtype: PlayerPermissions
         """
@@ -252,7 +257,7 @@ class _AuthManager(object):
 
     def get_group_permissions(self, group_name):
         """Return the group permissions.
-        
+
         :param str group_name: Name of the group.
         :rtype: GroupPermissions
         """
