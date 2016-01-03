@@ -23,14 +23,18 @@ from paths import AUTH_CFG_PATH
 # >> ALL DECLARATION
 # =============================================================================
 # TODO: Fill __all__
-__all__ = ()
+__all__ = ('FlatfilePermissionSource',
+           'source',
+    )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
 class FlatfilePermissionSource(PermissionSource):
-    """TODO"""
+    """A backend that provides an admin and group file in JSON format and a
+    simple text file.
+    """
 
     name = 'flatfile'
     options = {
@@ -59,12 +63,7 @@ class FlatfilePermissionSource(PermissionSource):
                 json.dump({}, file)
 
         with path.open() as file:
-            try:
-                nodes = json.load(file)
-            except ValueError:
-                print('Malformed permissions file: {}'.format(path))
-
-            for node_name, node in nodes.items():
+            for node_name, node in json.load(file).items():
                 node_store = store[node_name.strip()]
                 for permission in node.get('permissions', set()):
                     if permission != '':
