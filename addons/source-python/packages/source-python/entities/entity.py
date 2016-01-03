@@ -336,7 +336,7 @@ class Entity(BaseEntity, _EntitySpecials):
         return self.render_color
 
     def set_color(self, color):
-        """Set the entity's color to the given RGBA values."""
+        """Set the entity's color."""
         # Set the entity's render mode
         self.render_mode |= RenderMode.TRANS_COLOR
 
