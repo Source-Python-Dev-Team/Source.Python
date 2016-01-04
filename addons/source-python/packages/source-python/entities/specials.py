@@ -75,21 +75,20 @@ class _EntitySpecials(object):
             # Try to get the attacker based off of the weapon's owner
             with suppress(ValueError):
                 attacker_index = index_from_inthandle(weapon.current_owner)
-                if attacker_index is not None:
-                    attacker = Entity(attacker_index)
+                attacker = Entity(attacker_index)
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:
 
             # Does the attacker have a weapon attribute?
             if hasattr(attacker, 'active_weapon'):
+                with suppress(ValueError):
 
-                # Get the attacker's current weapon index
-                weapon_index = index_from_inthandle(
-                    attacker.active_weapon, False)
+                    # Get the attacker's current weapon index
+                    weapon_index = index_from_inthandle(
+                        attacker.active_weapon)
 
-                # Get the weapon's Weapon instance if it is valid
-                if weapon_index is not None:
+                    # Get the weapon's Weapon instance
                     weapon = Weapon(weapon_index)
 
         # Is hitgroup a valid attribute?
