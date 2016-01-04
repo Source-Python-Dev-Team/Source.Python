@@ -38,20 +38,19 @@ __all__ = ('_AuthManager',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PermissionBase(set):
+class PermissionBase(dict):
     """Base class for group and player permissions."""
 
     def __init__(self, name):
         """Initialize the object."""
         super().__init__()
         self.parents = set()
-        self.cache = set()
         self.name = name
         self.data = {}
 
     def __hash__(self):
         """Return a hash value based on the name."""
-        # This is required, because we are adding sets to sets
+        # This is required, because we are adding dicts to sets
         return hash(self.name)
 
     def add(self, permission):
@@ -59,16 +58,14 @@ class PermissionBase(set):
 
         :param str permission: The permission to add.
         """
-        super().add(permission)
-        self.cache.add(self._compile_permission(permission))
+        self[permission] = self._compile_permission(permission)
 
     def remove(self, permission):
         """Remove a permission.
 
         :param str permission: The permission to remove.
         """
-        super().remove(permission)
-        self.cache.remove(self._compile_permission(permission))
+        del self[permission]
 
     @staticmethod
     def _compile_permission(permission):
@@ -77,7 +74,7 @@ class PermissionBase(set):
 
     def __contains__(self, permission):
         """Return True if the permission is granted by this object."""
-        for re_perm in self.cache:
+        for re_perm in self.values():
             if re_perm.match(permission):
                 return True
 
