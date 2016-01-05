@@ -10,8 +10,6 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-#   Auth
-from auth import commands
 #   Autodoc
 from autodoc import SphinxProject
 #   Core
