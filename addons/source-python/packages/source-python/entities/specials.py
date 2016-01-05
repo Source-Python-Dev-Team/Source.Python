@@ -73,7 +73,7 @@ class _EntitySpecials(object):
         if attacker is None and weapon is not None:
 
             # Try to get the attacker based off of the weapon's owner
-            with suppress(ValueError):
+            with suppress(ValueError, OverflowError):
                 attacker_index = index_from_inthandle(weapon.current_owner)
                 attacker = Entity(attacker_index)
 
@@ -82,7 +82,7 @@ class _EntitySpecials(object):
 
             # Does the attacker have a weapon attribute?
             if hasattr(attacker, 'active_weapon'):
-                with suppress(ValueError):
+                with suppress(ValueError, OverflowError):
 
                     # Get the attacker's current weapon index
                     weapon_index = index_from_inthandle(
