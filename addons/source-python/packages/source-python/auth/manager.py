@@ -46,7 +46,6 @@ class PermissionBase(dict):
         super().__init__()
         self.parents = set()
         self.name = name
-        self.data = {}
 
     def __hash__(self):
         """Return a hash value based on the name."""
@@ -92,15 +91,6 @@ class PermissionBase(dict):
         yield from self
         for parent in self.parents:
             yield from parent
-
-    def get_data(self, node):
-        if node in self.data:
-            return self.data[node]
-
-        for parent in self.parents:
-            data = parent.get_data(node)
-            if data is not None:
-                return data
 
     def add_parent(self, parent):
         """Add a parent permission.
