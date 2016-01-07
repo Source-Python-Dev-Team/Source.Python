@@ -1,6 +1,6 @@
-# ../auth/backends/flatfile.py
+# ../auth/backends/sql.py
 
-"""Provides the flat file backend."""
+"""Provides the SQL backend."""
 
 # =============================================================================
 # >> IMPORTS
@@ -51,8 +51,7 @@ class PermissionObject(Base):
 
 
 class SQLPermissionSource(PermissionSource):
-    """A backend that provides an admin and group file in JSON format and a
-    simple text file.
+    """A backend that provides admins and groups from an SQL database.
     """
     name = 'sql'
     options = {
