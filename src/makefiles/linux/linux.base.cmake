@@ -113,6 +113,12 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v -f
 
 
 # ------------------------------------------------------------------
+# Linux linker flags.
+# ------------------------------------------------------------------
+Set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--exclude-libs,libprotobuf.a")
+
+
+# ------------------------------------------------------------------
 # Debug / Release compiler flags.
 # ------------------------------------------------------------------
 If(CMAKE_BUILD_TYPE MATCHES Debug)
