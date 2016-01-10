@@ -12,7 +12,7 @@ from auth.manager import auth_manager
 #   Paths
 from paths import SP_DATA_PATH
 
-from sqlalchemy import Column, String, Integer, ForeignKey, Enum, create_engine
+from sqlalchemy import Column, String, Integer, ForeignKey, Enum, create_engine, Table, UniqueConstraint
 
 from sqlalchemy.orm import relationship, sessionmaker
 
@@ -27,27 +27,40 @@ Session = sessionmaker()
 # =============================================================================
 __all__ = ('SQLPermissionSource',
            'source',
-    )
+           )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
 
+parents_table = Table('parents', Base.metadata,
+                      Column('parent_id', Integer, ForeignKey('objects.id'), primary_key=True),
+                      Column('child_id', Integer, ForeignKey('objects.id'), primary_key=True)
+                      )
+
+
 class Permission(Base):
-    __tablename__ = "permissions"
+    __tablename__ = 'permissions'
     id = Column(Integer, primary_key=True)
-    object_id = Column(Integer, ForeignKey("objects.id"))
-    server_id = Column(Integer, default=-1)
-    node = Column(String)
+    object_id = Column(Integer, ForeignKey('objects.id'), nullable=False)
+    server_id = Column(Integer, default=-1, nullable=False)
+    node = Column(String, nullable=False)
+    __table_args__ = (UniqueConstraint('object_id', 'server_id', 'node', name='object_server_node_uc'),)
 
 
 class PermissionObject(Base):
-    __tablename__ = "objects"
+    __tablename__ = 'objects'
     id = Column(Integer, primary_key=True)
-    identifier = Column(String)
-    type = Column(Enum("Group", "Player"), name="object_type")
-    permissions = relationship("Permission")
+    identifier = Column(String, nullable=False, unique=True)
+    type = Column(Enum('Group', 'Player'), name='object_type')
+    permissions = relationship('Permission', backref='object')
+    children = relationship('PermissionObject',
+                            secondary=parents_table,
+                            primaryjoin=id == parents_table.c.parent_id,
+                            secondaryjoin=id == parents_table.c.child_id,
+                            backref='parents'
+                            )
 
 
 class SQLPermissionSource(PermissionSource):
@@ -56,7 +69,7 @@ class SQLPermissionSource(PermissionSource):
     name = 'sql'
     options = {
         'uri': 'sqlite:///' + SP_DATA_PATH.joinpath('permissions.db'),
-        "server_id": -1
+        'server_id': -1
     }
     engine = None
 
@@ -65,9 +78,13 @@ class SQLPermissionSource(PermissionSource):
         Base.metadata.create_all(self.engine)
         Session.configure(bind=self.engine)
         session = Session()
-        obj = session.query(PermissionObject).first()
-        print([permission.node for permission in obj.permissions if
-               (permission.server_id == -1 or permission.server_id == int(self.options["server_id"]))])
-
+        for node in session.query(PermissionObject).all():
+            if node.type == 'Group':
+                store = auth_manager.groups[node.identifier]
+            else:
+                store = auth_manager.players[node.identifier]
+            for permission in node.permissions:
+                if permission.server_id == -1 or permission.server_id == int(self.options['server_id']):
+                    store.add(permission.node)
 
 source = SQLPermissionSource()
