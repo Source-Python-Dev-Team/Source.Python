@@ -18,6 +18,8 @@ from sqlalchemy import Column, String, Integer, ForeignKey, Enum, create_engine,
 
 from sqlalchemy.orm import relationship, sessionmaker
 
+from sqlalchemy.exc import SQLAlchemyError
+
 from sqlalchemy.ext.declarative import declarative_base
 
 Base = declarative_base()
@@ -54,14 +56,14 @@ class Permission(Base):
     id = Column(Integer, primary_key=True)
     object_id = Column(Integer, ForeignKey('objects.id'), nullable=False)
     server_id = Column(Integer, default=-1, nullable=False)
-    node = Column(String, nullable=False)
+    node = Column(String(255), nullable=False)
     __table_args__ = (UniqueConstraint('object_id', 'server_id', 'node', name='object_server_node_uc'),)
 
 
 class PermissionObject(Base):
     __tablename__ = 'objects'
     id = Column(Integer, primary_key=True)
-    identifier = Column(String, nullable=False, unique=True)
+    identifier = Column(String(64), nullable=False, unique=True)
     type = Column(Enum('Group', 'Player'), name='object_type')
     permissions = relationship('Permission', backref='object')
     children = relationship('PermissionObject',
@@ -83,9 +85,13 @@ class SQLPermissionSource(PermissionSource):
     engine = None
 
     def load(self):
-        self.engine = create_engine(self.options['uri'])
-        Base.metadata.create_all(self.engine)
-        Session.configure(bind=self.engine)
+        try:
+            self.engine = create_engine(self.options['uri'])
+            Base.metadata.create_all(self.engine)
+            Session.configure(bind=self.engine)
+        except SQLAlchemyError as e:
+            print(e)
+            return
         SPThread(target=self._do_load).start()
 
     def _do_load(self):
