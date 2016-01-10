@@ -109,7 +109,13 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
 
 # Others
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v -fvisibility=hidden")
+
+
+# ------------------------------------------------------------------
+# Linux linker flags.
+# ------------------------------------------------------------------
+Set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--exclude-libs,libprotobuf.a")
 
 
 # ------------------------------------------------------------------
