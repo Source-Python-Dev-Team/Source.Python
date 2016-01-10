@@ -5,12 +5,14 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+from threading import Thread
 # Source.Python Imports
 #   Auth
 from auth.base import PermissionSource
 from auth.manager import auth_manager
 #   Paths
 from paths import SP_DATA_PATH
+from listeners import on_tick_listener_manager
 
 from sqlalchemy import Column, String, Integer, ForeignKey, Enum, create_engine, Table, UniqueConstraint
 
@@ -33,6 +35,13 @@ __all__ = ('SQLPermissionSource',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+class SPThread(Thread):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        on_tick_listener_manager.register_listener(self._tick)
+
+    def _tick(self):
+        pass
 
 parents_table = Table('parents', Base.metadata,
                       Column('parent_id', Integer, ForeignKey('objects.id'), primary_key=True),
@@ -77,6 +86,9 @@ class SQLPermissionSource(PermissionSource):
         self.engine = create_engine(self.options['uri'])
         Base.metadata.create_all(self.engine)
         Session.configure(bind=self.engine)
+        SPThread(target=self._do_load).start()
+
+    def _do_load(self):
         session = Session()
         for node in session.query(PermissionObject).all():
             if node.type == 'Group':
@@ -86,5 +98,6 @@ class SQLPermissionSource(PermissionSource):
             for permission in node.permissions:
                 if permission.server_id == -1 or permission.server_id == int(self.options['server_id']):
                     store.add(permission.node)
+        session.close()
 
 source = SQLPermissionSource()
