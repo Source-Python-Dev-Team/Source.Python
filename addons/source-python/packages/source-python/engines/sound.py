@@ -14,6 +14,8 @@ from enum import Enum
 from core import AutoUnload
 #   Engines
 from engines import engines_logger
+#   Entities
+from entities.constants import WORLD_ENTITY_INDEX
 #   Filters
 from filters.recipients import RecipientFilter
 #   Mathlib
@@ -92,7 +94,7 @@ class Sound(AutoUnload):
     _downloads = None
 
     def __init__(
-            self, recipients, index, sample, volume=VOL_NORM,
+            self, sample, index=WORLD_ENTITY_INDEX, volume=VOL_NORM,
             attenuation=Attenuation.NONE, channel=Channel.AUTO,
             flags=0, pitch=Pitch.NORMAL, origin=NULL_VECTOR,
             direction=NULL_VECTOR, origins=(), update_positions=True,
@@ -103,7 +105,6 @@ class Sound(AutoUnload):
         self._sample = sample.replace('\\', '/')
 
         # Set all the base attributes
-        self.recipients = recipients
         self.index = index
         self.volume = volume
         self.attenuation = attenuation
@@ -127,7 +128,7 @@ class Sound(AutoUnload):
     def play(self, *recipients):
         """Play the sound."""
         # Get the recipients to play the sound to
-        recipients = RecipientFilter(*(recipients or self.recipients))
+        recipients = RecipientFilter(*recipients)
 
         # Is the sound precached?
         if not self.is_precached:
