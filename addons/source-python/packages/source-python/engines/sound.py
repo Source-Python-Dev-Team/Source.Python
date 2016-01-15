@@ -15,7 +15,7 @@ from core import AutoUnload
 #   Engines
 from engines import engines_logger
 #   Entities
-from entities.constants import WORLD_ENTITY_INDEX
+from entities.constants import INVALID_ENTITY_INDEX
 #   Filters
 from filters.recipients import RecipientFilter
 #   Mathlib
@@ -94,11 +94,12 @@ class Sound(AutoUnload):
     _downloads = None
 
     def __init__(
-            self, sample, index=WORLD_ENTITY_INDEX, volume=VOL_NORM,
+            self, sample, index=SOUND_FROM_WORLD, volume=VOL_NORM,
             attenuation=Attenuation.NONE, channel=Channel.AUTO,
-            flags=0, pitch=Pitch.NORMAL, origin=NULL_VECTOR,
-            direction=NULL_VECTOR, origins=(), update_positions=True,
-            sound_time=0.0, speaker_entity=-1, download=False):
+            flags=SoundFlags.NO_FLAGS, pitch=Pitch.NORMAL,
+            origin=NULL_VECTOR, direction=NULL_VECTOR, origins=(),
+            update_positions=True, sound_time=0.0,
+            speaker_entity=INVALID_ENTITY_INDEX, download=False):
         """Store all the given attributes and set the module for unloading."""
         # Set sample as a private attribute, since it should never change
         # Added replacing \ with / in paths for comformity
