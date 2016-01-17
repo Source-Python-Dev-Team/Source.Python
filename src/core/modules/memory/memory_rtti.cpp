@@ -25,11 +25,13 @@
 */
 
 #include "memory_rtti.h"
+#include "utilities/call_python.h"
 
 #include <assert.h>
 #include <ctype.h>
 #include <new>
 #include <stdlib.h>
+#include <string>
 
 #ifdef WIN32
 struct _s_RTTIBaseClassDescriptor;
@@ -90,6 +92,23 @@ public:
 		return IsDerivedFrom(pType->GetName());
 	}
 
+	void Dump()
+	{
+		Dump(0);
+	}
+
+	void Dump(int level)
+	{
+		std::string x = "";
+		for (int i=0; i < level; ++i)
+			x += "-";
+
+		PythonLog(-1, "%s%s", x.c_str(), GetName());
+		for (unsigned int i=0; i < GetNumBaseClasses(); ++i) {
+			GetBaseClass(i)->Dump(level + 1);
+		}
+	}
+
 private:
 	ptrdiff_t m_Offset;
 	size_t m_BaseTypes;
@@ -127,7 +146,7 @@ using namespace std;
 
 using std::type_info;
 
-typedef type_info TypeDescriptor;
+typedef std::type_info TypeDescriptor;
 
 struct PMD
 {

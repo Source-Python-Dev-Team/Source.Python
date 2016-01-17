@@ -57,6 +57,10 @@ public:
 	/* Returns true if the type is derived from the given class name. */
 	virtual bool IsDerivedFrom(const char* name) = 0;
 	virtual bool IsDerivedFrom(IBaseType* pType) = 0;
+
+	/* Dumps the class hierachy. */
+	virtual void Dump() = 0;
+	virtual void Dump(int level) = 0;
 };
 
 /* Get type information for a class pointer */

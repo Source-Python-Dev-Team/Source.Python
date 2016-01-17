@@ -380,6 +380,12 @@ void export_type_info(scope _memory)
 		manage_new_object_policy(),
 		"Return an iterator to iterate over all base classes."
 	);
+
+	TypeInfo.def(
+		"dump",
+		GET_METHOD(void, IBaseType, Dump),
+		"Dump the class hierachy to the console."
+	);
 }
 
 
