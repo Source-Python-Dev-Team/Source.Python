@@ -258,3 +258,8 @@ void CPointer::__del__(PyObject* self)
 		PreDealloc(self);
 	}
 }
+ 
+IBaseType* CPointer::GetTypeInfo()
+{
+	return GetType((void*) m_ulAddr);
+}

@@ -36,6 +36,7 @@ using namespace boost::python;
 
 // Memory
 #include "memory_alloc.h"
+#include "memory_rtti.h"
 
 // Utilities
 #include "utilities/wrap_macros.h"
@@ -134,6 +135,8 @@ public:
 	static void         PreDealloc(PyObject* self);
 	static CPointer*    PreRealloc(PyObject* self, int iSize);
 	static void         __del__(PyObject* self);
+
+	IBaseType*	GetTypeInfo();
 
 public:
 	unsigned long m_ulAddr;
