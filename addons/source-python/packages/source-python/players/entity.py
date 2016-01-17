@@ -39,7 +39,7 @@ from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
-from players.games import _GameWeapons
+from players.games import _GamePlayer
 from players.voice import mute_manager
 from players.weapons import _PlayerWeapons
 
@@ -54,7 +54,7 @@ __all__ = ('Player',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(Entity, _GameWeapons, _PlayerWeapons):
+class Player(Entity, _GamePlayer, _PlayerWeapons):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
