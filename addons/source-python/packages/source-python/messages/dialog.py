@@ -17,7 +17,7 @@ from filters.recipients import RecipientFilter
 from keyvalues import KeyValues
 #   Listeners
 from listeners import OnLevelShutdown
-from listeners.tick import tick_delays
+from listeners.tick import Delay
 #   Messages
 from _messages import DialogType
 from _messages import create_message
@@ -109,7 +109,7 @@ class _DialogBase(object):
         _player_levels[userid].add(level)
 
         # Remove the level after the time is up
-        tick_delays.delay(self.time, _player_levels[userid].remove, level)
+        Delay(self.time, _player_levels[userid].remove, level)
 
         # Return the level
         return level

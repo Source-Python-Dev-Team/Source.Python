@@ -16,5 +16,5 @@ from players.weapons.types import _C4
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _GameWeapons(_HEGrenade, _Flashbang, _SmokeGrenade, _C4):
-    """CS:S specific player weapon functionality."""
+class _GamePlayer(_HEGrenade, _Flashbang, _SmokeGrenade, _C4):
+    """CS:S specific player functionality."""

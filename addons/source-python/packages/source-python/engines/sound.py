@@ -14,6 +14,8 @@ from enum import Enum
 from core import AutoUnload
 #   Engines
 from engines import engines_logger
+#   Entities
+from entities.constants import INVALID_ENTITY_INDEX
 #   Filters
 from filters.recipients import RecipientFilter
 #   Mathlib
@@ -92,18 +94,18 @@ class Sound(AutoUnload):
     _downloads = None
 
     def __init__(
-            self, recipients, index, sample, volume=VOL_NORM,
+            self, sample, index=SOUND_FROM_WORLD, volume=VOL_NORM,
             attenuation=Attenuation.NONE, channel=Channel.AUTO,
-            flags=0, pitch=Pitch.NORMAL, origin=NULL_VECTOR,
-            direction=NULL_VECTOR, origins=(), update_positions=True,
-            sound_time=0.0, speaker_entity=-1, download=False):
+            flags=SoundFlags.NO_FLAGS, pitch=Pitch.NORMAL,
+            origin=NULL_VECTOR, direction=NULL_VECTOR, origins=(),
+            update_positions=True, sound_time=0.0,
+            speaker_entity=INVALID_ENTITY_INDEX, download=False):
         """Store all the given attributes and set the module for unloading."""
         # Set sample as a private attribute, since it should never change
         # Added replacing \ with / in paths for comformity
         self._sample = sample.replace('\\', '/')
 
         # Set all the base attributes
-        self.recipients = recipients
         self.index = index
         self.volume = volume
         self.attenuation = attenuation
@@ -127,7 +129,7 @@ class Sound(AutoUnload):
     def play(self, *recipients):
         """Play the sound."""
         # Get the recipients to play the sound to
-        recipients = RecipientFilter(*(recipients or self.recipients))
+        recipients = RecipientFilter(*recipients)
 
         # Is the sound precached?
         if not self.is_precached:

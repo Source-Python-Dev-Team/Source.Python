@@ -20,7 +20,7 @@ from entities.entity import BaseEntity
 from entities.factories import factory_dictionary
 from entities.props import SendPropType
 #   Filters
-from filters.entities import EntityIter
+from filters.entities import BaseEntityIter
 #   Memory
 from memory import CLASS_INFO
 from memory import Pointer
@@ -170,8 +170,8 @@ def _get_datamaps():
 def _get_datamap(classname):
     """Return the DataMap object for the given entity classname."""
     # Check existing entities at first
-    for index in EntityIter(classname):
-        return BaseEntity(index).datamap
+    for base_entity in BaseEntityIter(classname):
+        return base_entity.datamap
 
     # We haven't found an entity. Let's create it temporarily
     entity = factory_dictionary.create(classname)

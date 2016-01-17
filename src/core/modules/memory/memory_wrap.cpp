@@ -36,6 +36,7 @@
 #include "memory_function_info.h"
 #include "memory_utilities.h"
 #include "memory_wrap.h"
+#include "memory_rtti.h"
 
 // DynamicHooks
 #include "registers.h"
@@ -46,6 +47,8 @@
 void export_function_info(scope);
 void export_binary_file(scope);
 void export_pointer(scope);
+void export_type_info(scope);
+void export_type_info_iter(scope);
 void export_function(scope);
 void export_data_type_t(scope);
 void export_convention_t(scope);
@@ -67,6 +70,8 @@ DECLARE_SP_MODULE(_memory)
 	export_function_info(_memory);
 	export_binary_file(_memory);
 	export_pointer(_memory);
+	export_type_info(_memory);
+	export_type_info_iter(_memory);
 	export_function(_memory);
 	export_data_type_t(_memory);
 	export_convention_t(_memory);
@@ -335,7 +340,67 @@ void export_pointer(scope _memory)
 		.def_readwrite("auto_dealloc",
 			&CPointer::m_bAutoDealloc
 		)
+
+		// Properties
+		.add_property("type_info",
+			make_function(&CPointer::GetTypeInfo, manage_new_object_policy())
+		)
 	;
+}
+
+
+// ============================================================================
+// >> IBaseType
+// ============================================================================
+void export_type_info(scope _memory)
+{
+	class_<IBaseType, boost::noncopyable> TypeInfo("TypeInfo", no_init);
+
+	TypeInfo.add_property(
+		"name",
+		&IBaseType::GetName,
+		"Return the class name of the type."
+	);
+
+	TypeInfo.def(
+		"is_derived_from",
+		GET_METHOD(bool, IBaseType, IsDerivedFrom, const char*),
+		"Return True if the type is derived from the given class name."
+	);
+
+	TypeInfo.def(
+		"is_derived_from", 
+		GET_METHOD(bool, IBaseType, IsDerivedFrom, IBaseType*),
+		"Return True if the type is derived from the given class name."
+	);
+
+	TypeInfo.def(
+		"__iter__", 
+		&IBaseTypeExt::__iter__, 
+		manage_new_object_policy(),
+		"Return an iterator to iterate over all base classes."
+	);
+
+	TypeInfo.def(
+		"dump",
+		GET_METHOD(void, IBaseType, Dump),
+		"Dump the class hierachy to the console."
+	);
+}
+
+
+// ============================================================================
+// >> IBaseTypeIter
+// ============================================================================
+void export_type_info_iter(scope _memory)
+{
+	class_<IBaseTypeIter> _IBaseTypeIter("TypeInfoIter", init<IBaseType*>());
+
+	_IBaseTypeIter.def(
+		"__next__",
+		&IBaseTypeIter::__next__,
+		reference_existing_object_policy()
+	);
 }
 
 

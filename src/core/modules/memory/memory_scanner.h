@@ -53,6 +53,14 @@ public:
 	CPointer* FindPointer(object oIdentifier, int iOffset, unsigned int iLevel);
 	CPointer* FindAddress(object oIdentifier);
 
+
+private:
+	void AddSignatureToCache(unsigned char* sigstr, int iLength, unsigned int ulAddr);
+
+	bool SearchSigInCache(unsigned char* sigstr, CPointer*& result);
+	bool SearchSigInBinary(object oSignature, int iLength, unsigned char* sigstr, CPointer*& result);
+	bool SearchSigHooked(object oSignature, int iLength, unsigned char* sigstr, CPointer*& result);
+
 public:
 	unsigned long          m_ulAddr;
 	unsigned long          m_ulSize;
