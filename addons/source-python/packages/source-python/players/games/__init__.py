@@ -31,7 +31,7 @@ except ImportError:
     _game_module = None
 
 # Loop through each object to import
-for object_name in ('_GameWeapons', 'get_client_language'):
+for object_name in ('_GamePlayer', 'get_client_language'):
 
     # Use try/except to get the game specific object
     try:
