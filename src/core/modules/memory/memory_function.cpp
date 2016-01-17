@@ -195,9 +195,7 @@ object CFunction::Call(tuple args, dict kw)
 	if (!IsCallable())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
 
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
-
+	Validate();
 	if (len(args) != len(m_tArgs))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Number of passed arguments is not equal to the required number.")
 
@@ -271,9 +269,7 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 	if (!IsCallable())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
 
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
-
+	Validate();
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
@@ -286,21 +282,15 @@ handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsHookable())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not hookable.")
-
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
-
-	// Hook the function
+		
+	Validate();
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
-	if (!pHook)
-	{
+	if (!pHook) {
 		pHook = GetHookManager()->HookFunction((void *) m_ulAddr, m_pCallingConvention);
 	}
 	
 	// Add the hook handler. If it's already added, it won't be added twice
 	pHook->AddCallback(eType, (HookHandlerFn *) (void *) &SP_HookHandler);
-	
-	// Add the callback to our map
 	g_mapCallbacks[pHook][eType].push_back(pCallable);
 	
 	// Return the callback, so we can use this method as a decorator
@@ -309,9 +299,7 @@ handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 
 void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function pointer is NULL.")
-		
+	Validate();
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
 		return;

@@ -68,7 +68,10 @@ class UserMessageCreator(AttrDict):
         player_indexes = RecipientFilter(*player_indexes)
         for language, indexes in self._categorize_players_by_language(
                 player_indexes).items():
-            self._send(indexes, self._get_translated_kwargs(language, tokens))
+            translated_kwargs = AttrDict(self)
+            translated_kwargs.update(
+                self._get_translated_kwargs(language, tokens))
+            self._send(indexes, translated_kwargs)
 
     def _send(self, player_indexes, translated_kwargs):
         """Send the user message to the given players.
@@ -107,13 +110,20 @@ class UserMessageCreator(AttrDict):
     def _get_translated_kwargs(self, language, tokens):
         """Return translated and tokenized arguments."""
         translated_kwargs = AttrDict()
-        for key, value in self.items():
-            if isinstance(value, TranslationStrings):
-                value = value.get_string(language, **tokens)
-
-            translated_kwargs[key] = value
+        for key in self.translatable_fields:
+            translated_kwargs[key] = self._translate(self[key], language, tokens)
 
         return translated_kwargs
+
+    @staticmethod
+    def _translate(value, language, tokens):
+        """Translate the given value if it's a :class:`TranslationStrings`
+        object.
+        """
+        if isinstance(value, TranslationStrings):
+            return value.get_string(language, **tokens)
+
+        return value
 
     def protobuf(self, buffer, translated_kwargs):
         """Protobuf implementation of this user message."""
@@ -128,11 +138,17 @@ class UserMessageCreator(AttrDict):
         """Return the user message name."""
         raise NotImplementedError('Must be implemented by a subclass.')
 
+    @property
+    def translatable_fields(self):
+        """Return a list of translatable fields."""
+        raise NotImplementedError('Must be implemented by a subclass.')
+
 
 class VGUIMenu(UserMessageCreator):
     """Create a VGUIMenu."""
 
     message_name = 'VGUIMenu'
+    translatable_fields = []
 
     def __init__(self, name, subkeys=None, show=True):
         """Initialize the VGUI menu.
@@ -142,7 +158,6 @@ class VGUIMenu(UserMessageCreator):
         :param bool show: If True the menu will be shown, else it will be
             hidden.
         """
-        # Set subkeys if it needs to be set
         if subkeys is None:
             subkeys = {}
 
@@ -173,6 +188,7 @@ class ShowMenu(UserMessageCreator):
 
     message_name = 'ShowMenu'
     chunk_size = 62
+    translatable_fields = []
 
     def __init__(self, menu_string, valid_slots=1023, display_time=4):
         """Initialize the radio menu."""
@@ -227,6 +243,7 @@ class SayText2(UserMessageCreator):
     """Create a SayText2."""
 
     message_name = 'SayText2'
+    translatable_fields = ['message', 'param1', 'param2', 'param3', 'param4']
 
     def __init__(
             self, message, index=0, chat=False,
@@ -262,6 +279,7 @@ class HintText(UserMessageCreator):
     """Create a HintText."""
 
     message_name = 'HintText'
+    translatable_fields = ['message']
 
     def __init__(self, message):
         """Initialize the HintText instance."""
@@ -280,6 +298,7 @@ class SayText(UserMessageCreator):
     """Create a SayText."""
 
     message_name = 'SayText'
+    translatable_fields = ['message']
 
     def __init__(self, message, index=0, chat=False):
         """Initialize the SayText instance."""
@@ -302,6 +321,7 @@ class Shake(UserMessageCreator):
     """Create a Shake."""
 
     message_name = 'Shake'
+    translatable_fields = []
 
     def __init__(
             self, amplitude, duration, frequency=1,
@@ -330,6 +350,7 @@ class ResetHUD(UserMessageCreator):
     """Create a ResetHUD."""
 
     message_name = 'ResetHud'
+    translatable_fields = []
 
     def __init__(self, reset=True):
         """Initialize the ResetHUD instance."""
@@ -348,19 +369,20 @@ class TextMsg(UserMessageCreator):
     """Create a TextMsg."""
 
     message_name = 'TextMsg'
+    translatable_fields = ['message', 'param1', 'param2', 'param3', 'param4']
 
     def __init__(
-            self, name, destination=HudDestination.CENTER,
+            self, message, destination=HudDestination.CENTER,
             param1='', param2='', param3='', param4=''):
         """Initialize the TextMsg instance."""
         super().__init__(
-            name=name, destination=destination, param1=param1,
+            message=message, destination=destination, param1=param1,
             param2=param2, param3=param3, param4=param4)
 
     def protobuf(self, buffer, kwargs):
         """Send the TextMsg with protobuf."""
         buffer.set_int32('msg_dst', kwargs.destination)
-        buffer.add_string('params', kwargs.name)
+        buffer.add_string('params', kwargs.message)
         buffer.add_string('params', kwargs.param1)
         buffer.add_string('params', kwargs.param2)
         buffer.add_string('params', kwargs.param3)
@@ -369,7 +391,7 @@ class TextMsg(UserMessageCreator):
     def bitbuf(self, buffer, kwargs):
         """Send the TextMsg with bitbuf."""
         buffer.write_byte(kwargs.destination)
-        buffer.write_string(kwargs.name)
+        buffer.write_string(kwargs.message)
         buffer.write_string(kwargs.param1)
         buffer.write_string(kwargs.param2)
         buffer.write_string(kwargs.param3)
@@ -396,11 +418,20 @@ class KeyHintText(UserMessageCreator):
         for hint in kwargs.hints:
             buffer.write_string(hint)
 
+    def _get_translated_kwargs(self, language, tokens):
+        """Return translated and tokenized arguments."""
+        hints = []
+        for hint in self.hints:
+            hints.append(self._translate(hint, language, tokens))
+
+        return dict(hints=hints)
+
 
 class Fade(UserMessageCreator):
     """Create a Fade."""
 
     message_name = 'Fade'
+    translatable_fields = []
     moved_frac_bits = 1 << SCREENFADE_FRACBITS
 
     def __init__(self, duration, hold_time, color=WHITE, flags=FadeFlags.IN):
@@ -434,6 +465,7 @@ class HudMsg(UserMessageCreator):
     """Create a HudMsg."""
 
     message_name = 'HudMsg'
+    translatable_fields = ['message']
 
     # TODO: Use Vector2D for x and y?
     def __init__(
