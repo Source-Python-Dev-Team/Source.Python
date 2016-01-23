@@ -241,6 +241,13 @@ class _AuthManager(object):
         :rtype: PlayerPermissions
         """
         return self.players[uniqueid_from_index(index)]
+        
+    def is_authorized(self, index, permission):
+        """Return True if the player has been granted the given permission.
+        
+        :rtype: bool
+        """
+        return permission in self.get_player_permissions(index)
 
     def get_group_permissions(self, group_name):
         """Return the group permissions.
