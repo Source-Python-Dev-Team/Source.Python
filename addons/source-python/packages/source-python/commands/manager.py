@@ -44,7 +44,7 @@ class _BaseCommandManager(object):
         Raise a ValueError when the proxy wasn't found.
         """
         for proxy in self._callback_proxies:
-            if proxy.callback is callback:
+            if proxy.callback == callback:
                 return proxy
 
         raise ValueError('Unable to find a proxy for the given callback.')
