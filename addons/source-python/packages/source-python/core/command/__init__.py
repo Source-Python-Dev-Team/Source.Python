@@ -15,7 +15,6 @@ from commands.server import server_command_manager
 from commands.typed import TypedServerCommand
 #   Core
 from core import core_logger
-from core import dumps
 from core.manager import core_plugin_manager
 from core.version import VERSION
 #   Cvars
@@ -182,43 +181,6 @@ class _CoreCommandManager(SubCommandManager):
         # Print the message
         self._log_message(message)
 
-    @staticmethod
-    def delay_execution(delay, command, *args):
-        """Execute a command after the given delay."""
-        Delay(delay, engine_server.server_command,
-            command + ' ' + ' '.join(args))
-
-    def dump_data(self, dump_type, filename):
-        """Dump data to logs."""
-        # Does the given dump type exist as a function?
-        if 'dump_{0}'.format(dump_type) not in dumps.__all__:
-
-            # If not, print message to notify of unknown dump type
-            self._log_message(
-                'Invalid dump_type "{0}". The valid types are:'.format(
-                    dump_type))
-
-            # Loop though all dump functions
-            for dump in dumps.__all__:
-
-                # Print the current dump function
-                self._log_message(
-                    '\t{0}'.format(dump.replace('dump_', '')))
-
-            # No need to go further
-            return
-
-        # Call the function
-        getattr(dumps, 'dump_{0}'.format(dump_type))(filename)
-
-    # Set the methods arguments
-    dump_data.args = ['<dump_type>', '<filename>']
-
-    def print_version(self):
-        """Display Source.Python version information."""
-        self._log_message(
-            'Current Source.Python version: {0}'.format(VERSION))
-
     def print_credits(self):
         """List all credits for Source.Python."""
         # Get header messages
@@ -276,14 +238,7 @@ def _sp_reload(command_info, plugin):
 @TypedServerCommand(['sp', 'delay'])
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
-    _core_command.delay_execution(delay, command, *args)
-
-#: .. todo:: There should be a sub-command for every dump type
-#: .. todo:: Make the file name optional
-@TypedServerCommand(['sp', 'dump'])
-def _sp_dump(command_info, dump_type, file_name):
-    """Dump data to logs."""
-    _core_command.dump_data(dump_type, file_name)
+    Delay(delay, engine_server.server_command, command + ' ' + ' '.join(args))
 
 @TypedServerCommand(['sp', 'list'])
 def _sp_list(command_info):
@@ -298,7 +253,8 @@ def _sp_version(command_info):
 @TypedServerCommand(['sp', 'credits'])
 def _sp_credits(command_info):
     """List all credits for Source.Python."""
-    _core_command.print_credits()
+    core_command_logger.log_message(
+        'Current Source.Python version: {0}'.format(VERSION))
 
 @TypedServerCommand(['sp', 'help'])
 def _sp_help(command_info, command=None, *sub_commands):
