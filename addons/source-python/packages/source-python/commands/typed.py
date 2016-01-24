@@ -16,8 +16,8 @@ import textwrap
 from auth.manager import auth_manager
 #   Core
 from core import AutoUnload
-from core import echo_console
 #   Commands
+from commands import commands_logger
 from commands import CommandReturn
 from commands.server import server_command_manager
 from commands.client import client_command_manager
@@ -39,6 +39,12 @@ SUPPORTED_KINDS = (
     Parameter.POSITIONAL_OR_KEYWORD,
     Parameter.VAR_POSITIONAL,
 )
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+logger = commands_logger.typed
 
 
 # =============================================================================
@@ -101,7 +107,7 @@ class CommandNode(Node):
             fail_callback, requires_registration):
         """Initialize the object.
 
-        .. see-also:: :meth:`CommandParser.add_command`
+        .. seealso:: :meth:`CommandParser.add_command`
         """
         super().__init__(commands, description)
         self.params = params
@@ -217,8 +223,8 @@ class CommandParser(Store):
 
         :param str/list/tuple: Command to remove.
 
-        .. see-also:: _remove_command
-        .. see-also:: _validate_commands
+        .. seealso:: :meth:`_remove_command`
+        .. seealso:: :meth:`_validate_commands`
         """
         return self._remove_command(self._validate_commands(commands))
 
@@ -253,7 +259,7 @@ class CommandParser(Store):
         :rtype: Node
         :raise ValueError: Raised if the node does not exist.
 
-        .. see-also:: _validate_command
+        .. seealso:: :meth:`_validate_command`
         """
         store = self
         for command_name in self._validate_commands(commands):
@@ -270,7 +276,7 @@ class CommandParser(Store):
         :param str/list/tuple: Command to search.
         :rtype: CommandNode
 
-        .. see-also:: get_node
+        .. seealso:: :meth:`get_node`
         """
         command = self.get_node(commands)
         assert isinstance(command, CommandNode)
@@ -283,7 +289,7 @@ class CommandParser(Store):
         :raise TypeError: Raised if ``commands`` is not a str, list or tuple.
         :raise ValueError: Raised if ``commands`` is an empty list or tuple.
 
-        .. see-also:: _validate_command
+        .. seealso:: :meth:`_validate_command`
         """
         if isinstance(commands, str):
             self._validate_command(commands)
@@ -502,7 +508,7 @@ class TypedServerCommand(_TypedCommand):
 
     @staticmethod
     def send_message(command_info, message):
-        echo_console(message)
+        logger.log_message(message)
 
 
 class _TypedPlayerCommand(_TypedCommand):
