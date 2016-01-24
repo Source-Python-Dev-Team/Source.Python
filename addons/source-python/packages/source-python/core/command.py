@@ -188,11 +188,10 @@ class _CoreCommandManager(SubCommandManager):
         self._log_message(message)
 
     @staticmethod
-    def delay_execution(*args):
+    def delay_execution(delay, command, *args):
         """Execute a command after the given delay."""
-        Delay(
-            float(args[0]),
-            engine_server.server_command, ' '.join(args[1:]) + '\n')
+        Delay(delay, engine_server.server_command,
+            command + ' ' + ' '.join(args))
 
     def dump_data(self, dump_type, filename):
         """Dump data to logs."""
@@ -632,32 +631,78 @@ class _CoreCommandManager(SubCommandManager):
         self._log_message(message + '=' * 61 + '\n\n')
 
 # Get the _CoreCommandManager instance
-_core_command = _CoreCommandManager(
-    'sp', 'Source.Python base command.', register_client=True)
+_core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 
-# Register the load/unload sub-commands
-_core_command['load'] = _core_command.load_plugin
-_core_command['load'].permission = 'sp.commands.load'
-_core_command['unload'] = _core_command.unload_plugin
-_core_command['unload'].permission = 'sp.commands.unload'
-_core_command['reload'] = _core_command.reload_plugin
-_core_command['reload'].permission = 'sp.commands.reload'
+from commands.server import server_command_manager
+from commands.typed import TypedServerCommand
 
-# Register the 'delay' sub-command
-_core_command['delay'] = _core_command.delay_execution
-_core_command['delay'].args = ['<delay>', '<command>', '[arguments]']
-_core_command['delay'].permission = 'sp.commands.delay'
+# A little hack, so I don't have to rewrite everything...
+server_command_manager.unregister_commands('sp', _core_command.call_command)
 
-# Register the 'dump' sub-command
-_core_command['dump'] = _core_command.dump_data
-_core_command['dump'].permission = 'sp.commands.dump'
+@TypedServerCommand(['sp', 'load'])
+def _sp_load(plugin):
+    """Load a plugin."""
+    _core_command.load_plugin(plugin)
 
-# Register all printing sub-commands
-_core_command['list'] = _core_command.print_plugins
-_core_command['version'] = _core_command.print_version
-_core_command['credits'] = _core_command.print_credits
-_core_command['help'] = _core_command.print_help
+@TypedServerCommand(['sp', 'unload'])
+def _sp_unload(plugin):
+    """Unload a plugin."""
+    _core_command.unload_plugin(plugin)
 
-# Register the 'docs' sub-command
-_core_command['docs'] = _core_command.docs_handler
-_core_command['docs'].permission = 'sp.commands.docs'
+@TypedServerCommand(['sp', 'reload'])
+def _sp_reload(plugin):
+    """Reload a plugin."""
+    _core_command.reload_plugin(plugin)
+
+@TypedServerCommand(['sp', 'delay'])
+def _sp_delay(delay:float, command, *args):
+    """Execute a command after a given delay."""
+    _core_command.delay_execution(delay, command, *args)
+
+#: .. todo:: There should be a sub-command for every dump type
+#: .. todo:: Make the file name optional
+@TypedServerCommand(['sp', 'dump'])
+def _sp_dump(dump_type, file_name):
+    """Dump data to logs."""
+    _core_command.dump_data(dump_type, file_name)
+
+@TypedServerCommand(['sp', 'list'])
+def _sp_list():
+    """List all currently loaded plugins."""
+    _core_command.print_plugins()
+
+@TypedServerCommand(['sp', 'version'])
+def _sp_version():
+    """Display Source.Python version information."""
+    _core_command.print_version()
+
+@TypedServerCommand(['sp', 'credits'])
+def _sp_credits():
+    """List all credits for Source.Python."""
+    _core_command.print_credits()
+
+@TypedServerCommand(['sp', 'help'])
+def _sp_help(command=None, *sub_commands):
+    """Print all sp sub-commands or help for a specific command."""
+    if command is None:
+        engine_server.server_command('sp')
+        return
+    
+    commands = (command,) + sub_commands
+    try:
+        node = TypedServerCommand.parser.get_node(commands)
+    except ValueError:
+        core_command_logger.log_message(
+            'Command "{}" does not exist.'.format(' '.join(commands)))
+        return
+        
+    core_command_logger.log_message(node.signature)
+    if node.description is not None:
+        core_command_logger.log_message('  ' + node.description)
+        
+
+#: .. todo:: There should be a sub-command for every docs command
+@TypedServerCommand(['sp', 'docs'])
+def _sp_docs(action, package):
+    """Create, generate or build a Sphinx project."""
+    _core_command.docs_handler(action, package)
