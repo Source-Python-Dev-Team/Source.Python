@@ -248,13 +248,13 @@ def _sp_list(command_info):
 @TypedServerCommand(['sp', 'version'])
 def _sp_version(command_info):
     """Display Source.Python version information."""
-    _core_command.print_version()
+    core_command_logger.log_message(
+        'Current Source.Python version: {0}'.format(VERSION))
 
 @TypedServerCommand(['sp', 'credits'])
 def _sp_credits(command_info):
     """List all credits for Source.Python."""
-    core_command_logger.log_message(
-        'Current Source.Python version: {0}'.format(VERSION))
+    _core_command.print_credits()
 
 @TypedServerCommand(['sp', 'help'])
 def _sp_help(command_info, command=None, *sub_commands):
