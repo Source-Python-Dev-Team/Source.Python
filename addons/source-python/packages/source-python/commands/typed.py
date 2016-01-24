@@ -328,7 +328,8 @@ class CommandParser(Store):
                 try:
                     param = params.pop(0)
                 except IndexError:
-                    raise ArgumentNumberMismatch('Too many arguments.')
+                    raise ArgumentNumberMismatch(
+                        'Too many arguments:\n  {}'.format(command.signature))
 
             if param.annotation is not param.empty:
                 try:
@@ -438,9 +439,7 @@ class _TypedCommand(AutoUnload):
         try:
             command, args = cls.parser.parse_command(command)
             result = cls.on_clean_command(command, args, *additional_args)
-        except ArgumentError as e:
-            cls.send_message(e.message, *additional_args)
-        except SubCommandError as e:
+        except ValidationError as e:
             cls.send_message(e.message, *additional_args)
         else:
             return result
