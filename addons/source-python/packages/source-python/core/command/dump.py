@@ -45,3 +45,10 @@ def _sp_dump_string_tables(command_info, file_name):
 def _sp_dump_weapon_scripts(command_info, file_name):
     """Dump weapon scripts."""
     dumps.dump_weapon_scripts(file_name)
+
+
+# =============================================================================
+# >> DESCRIPTIONS
+# =============================================================================
+_sp_dump = TypedServerCommand.parser.get_node(['sp', 'dump'])
+_sp_dump.description = 'Dump various data to files.'
