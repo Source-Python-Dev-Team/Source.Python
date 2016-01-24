@@ -373,12 +373,9 @@ class CommandParser(Store):
         for node in sorted(store.values(), key=lambda node: node.commands[1]):
             sig_lines = wrapper.wrap(node.signature)
             desc_lines = wrapper.wrap(node.description or '')
-            temp = ''
             for sig, desc in itertools.zip_longest(
                     sig_lines, desc_lines, fillvalue=''):
-                temp += '\n  ' + sig.ljust(40) + '  ' + desc
-
-            result += temp
+                result += '\n  ' + sig.ljust(40) + '  ' + desc
 
         return result
 
