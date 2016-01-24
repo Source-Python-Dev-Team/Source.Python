@@ -144,6 +144,11 @@ def parse_filter(expr, filters=None):
         filters = get_default_filters()
 
     return _parse_node(ast.parse(expr, mode='eval').body, filters)
+    
+def filter_str(expr):
+    """.. see-also:: :func:`parse_filter`"""
+    # A simple wrapper for parse_filter for a better looking command signature
+    return parse_filter(expr)
 
 def get_default_filters():
     """Return the default filters (all available filters)."""
