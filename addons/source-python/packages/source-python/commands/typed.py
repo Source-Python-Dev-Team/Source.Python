@@ -1,5 +1,5 @@
-#: .. todo: Create a server command "sp help [*command]".
-#: .. todo: Add the ability to define prefixes for messages.
+#: .. todo:: Add the ability to define prefixes for messages.
+#: .. todo:: Add callback to the Node class. It could be called when a sub-command is required.
 
 # =============================================================================
 # >> IMPORTS
@@ -8,6 +8,8 @@
 #   Inspect
 import inspect
 from inspect import Parameter
+import itertools
+import textwrap
 
 # Source.Python
 #   Auth
@@ -61,13 +63,22 @@ class SubCommandExpectedError(SubCommandError): pass
 # >> CLASSES
 # =============================================================================
 class Node(object):
-    def __init__(self, description):
+    def __init__(self, commands, description):
         self.description = description
+        self.commands = commands
+
+    @property
+    def signature(self):
+        raise NotImplementedError('Must be implemented by a sub class.')
 
 
 class Store(Node, dict):
-    def __init__(self, description=None):
-        super().__init__(description)
+    def __init__(self, commands=None, description=None):
+        super().__init__(commands, description)
+
+    @property
+    def signature(self):
+        return ' '.join(self.commands) + ' <sub-command>'
 
 
 class CommandNode(Node):
@@ -77,8 +88,7 @@ class CommandNode(Node):
 
         .. see-also:: :meth:`CommandParser.add_command`
         """
-        super().__init__(description)
-        self.commands = commands
+        super().__init__(commands, description)
         self.params = params
         self.callback = callback
 
@@ -93,7 +103,7 @@ class CommandNode(Node):
         self.command_to_register = commands[0]
 
     @property
-    def command_signature(self):
+    def signature(self):
         """Return the full signature of a command.
 
         :rtype: str
@@ -138,6 +148,7 @@ class CommandNode(Node):
             type_name=type_name, default=default, close_char=close_char)
 
 
+# TODO: This base class is not quite correct.
 class CommandParser(Store):
     def add_command(self, commands, params, callback, description=None,
             permission=None, fail_callback=None):
@@ -156,9 +167,11 @@ class CommandParser(Store):
         command = CommandNode(tuple(commands), tuple(params), callback,
             description, permission, fail_callback, commands[0] not in self)
 
+        parsed_commands = []
         store = self
         while commands:
             command_name = commands.pop(0)
+            parsed_commands.append(command_name)
             if command_name in store:
                 store = store[command_name]
                 if (isinstance(store, CommandNode) or
@@ -170,7 +183,7 @@ class CommandParser(Store):
                 if commands:
                     # We need to split these two lines to prevent recursive
                     # dicts
-                    new_store = store[command_name] = Store()
+                    new_store = store[command_name] = Store(tuple(parsed_commands))
                     store = new_store
                 else:
                     store[command_name] = command
@@ -317,7 +330,8 @@ class CommandParser(Store):
                 break
 
             if param.default is param.empty:
-                raise ArgumentNumberMismatch('Not enough arguments.')
+                raise ArgumentNumberMismatch(
+                    'Not enough arguments:\n  {}'.format(command.signature))
 
             result.append(param.default)
 
@@ -345,10 +359,28 @@ class CommandParser(Store):
 
         if isinstance(store, Store):
             raise SubCommandExpectedError(
-                'Not enough arguments. Valid sub commands: {}'.format(
-                    ', '.join(sorted(store))))
+                'A sub-command is required:{}'.format(
+                    self._get_help_text(store)))
 
         return (store, args)
+
+    @staticmethod
+    def _get_help_text(store):
+        wrapper = textwrap.TextWrapper(
+            40, subsequent_indent='  ', break_long_words=True)
+
+        result = ''
+        for node in sorted(store.values(), key=lambda node: node.commands[1]):
+            sig_lines = wrapper.wrap(node.signature)
+            desc_lines = wrapper.wrap(node.description or '')
+            temp = ''
+            for sig, desc in itertools.zip_longest(
+                    sig_lines, desc_lines, fillvalue=''):
+                temp += '\n  ' + sig.ljust(40) + '  ' + desc
+
+            result += temp
+
+        return result
 
 
 # We can't integrate this into SayCommand, ServerCommand and ClientCommand,
@@ -359,12 +391,10 @@ class CommandParser(Store):
 class _TypedCommand(AutoUnload):
     """Decorator class to create typed commands."""
 
-    def __init__(self, commands, description=None, permission=None,
-            fail_callback=None):
+    def __init__(self, commands, permission=None, fail_callback=None):
         """Register a typed command callback.
 
         :param str/list/tuple commands: (Sub-) command to register.
-        :param str description: Description of the command.
         :param str/bool permission: A permission that is required to execute
             the command. If True, the permission string will be generated from
             the given command.
@@ -372,7 +402,6 @@ class _TypedCommand(AutoUnload):
             the required permission.
         """
         self.commands = commands
-        self.description = description
         self.permission = permission
         self.fail_callback = fail_callback
         self.command = None
@@ -390,7 +419,7 @@ class _TypedCommand(AutoUnload):
 
         self.command = self.parser.add_command(
             self.commands, params[self.args_to_skip:], callback,
-            self.description, self.permission, self.fail_callback)
+            inspect.getdoc(callback), self.permission, self.fail_callback)
 
         if self.command.requires_registration:
             self.manager.register_commands(
@@ -415,7 +444,6 @@ class _TypedCommand(AutoUnload):
             result = cls.on_clean_command(command, args, *additional_args)
         except ArgumentError as e:
             cls.send_message(e.message, *additional_args)
-            cls.send_message(command.command_signature, *additional_args)
         except SubCommandError as e:
             cls.send_message(e.message, *additional_args)
         else:
