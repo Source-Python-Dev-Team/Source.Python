@@ -65,6 +65,15 @@ class Entity(BaseEntity, _EntitySpecials):
         object.__setattr__(self, '_edict', None)
         object.__setattr__(self, '_pointer', None)
 
+    def __eq__(self, other):
+        """Return True if both entities have the same index."""
+        return self.index == other.index
+
+    def __hash__(self):
+        """Return a hash value based on the entity index."""
+        # Required for sets, because we have implemented __eq__
+        return hash(self.index)
+
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
         # Loop through all instances (used to get edict/IPlayerInfo attributes)

@@ -711,6 +711,17 @@ def _sp_docs(command_info, action, package):
 """
 Add server commands to add/remove groups
 Add server commands to add/remove permissions to players and groups
+
+Use this?
+sp auth permission player add <filter> [*permissions]
+sp auth permission player remove <filter> [*permissions]
+sp auth permission player add_parent <filter> [*parents]
+sp auth permission player remove parent <filter> [*parents]
+
+sp auth permission group add <filter> [*permissions]
+sp auth permission group remove <filter> [*permissions]
+sp auth permission group add_parent <filter> [*parents]
+sp auth permission group remove parent <filter> [*parents]
 """
 
 @TypedServerCommand(['sp', 'auth', 'backend', 'load'])
