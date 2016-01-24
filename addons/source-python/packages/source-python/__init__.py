@@ -119,7 +119,7 @@ def setup_translations():
 # =============================================================================
 def setup_sp_command():
     """Set up the 'sp' command."""
-    from core.command import _core_command
+    from core.command import auth, docs
 
 
 # =============================================================================
