@@ -10,6 +10,8 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
+#   Auth
+from auth.manager import auth_manager
 #   Autodoc
 from autodoc import SphinxProject
 #   Core
@@ -687,7 +689,7 @@ def _sp_help(command_info, command=None, *sub_commands):
     if command is None:
         engine_server.server_command('sp')
         return
-    
+
     commands = (command,) + sub_commands
     try:
         node = TypedServerCommand.parser.get_node(commands)
@@ -695,14 +697,40 @@ def _sp_help(command_info, command=None, *sub_commands):
         core_command_logger.log_message(
             'Command "{}" does not exist.'.format(' '.join(commands)))
         return
-        
+
     core_command_logger.log_message(node.signature)
     if node.description is not None:
         core_command_logger.log_message('  ' + node.description)
-        
 
 #: .. todo:: There should be a sub-command for every docs command
 @TypedServerCommand(['sp', 'docs'])
 def _sp_docs(command_info, action, package):
     """Create, generate or build a Sphinx project."""
     _core_command.docs_handler(action, package)
+
+"""
+Add server commands to add/remove groups
+Add server commands to add/remove permissions to players and groups
+"""
+
+@TypedServerCommand(['sp', 'auth', 'backend', 'load'])
+def _sp_auth_load(command_info, backend):
+    """Load or reload a backend."""
+    # TODO:
+    # load_backend should raise errors, so we actually know what went wrong
+    # (e.g. backend does not exist).
+    if auth_manager.load_backend(backend):
+        message = 'Backend "{}" successfully loaded!'
+    else:
+        message = 'Failed to load backend "{}".'
+
+    core_command_logger.log_message(message.format(backend))
+
+@TypedServerCommand(['sp', 'auth', 'backend', 'list'])
+def _sp_auth_list(command_info):
+    """List all available backends."""
+    result = 'Available backends:'
+    for backend in auth_manager.available_backends:
+        result += '\n  ' + backend.name.casefold()
+
+    core_command_logger.log_message(result)
