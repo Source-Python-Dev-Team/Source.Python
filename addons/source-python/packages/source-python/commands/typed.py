@@ -198,7 +198,8 @@ class CommandParser(Store):
                 if commands:
                     # We need to split these two lines to prevent recursive
                     # dicts
-                    new_store = store[command_name] = Store(tuple(parsed_commands))
+                    new_store = store[command_name] = Store(
+                        tuple(parsed_commands))
                     store = new_store
                 else:
                     store[command_name] = command
@@ -380,6 +381,13 @@ class CommandParser(Store):
         return (store, args)
 
 
+class CommandInfo(object):
+    def __init__(self, command, index=None, team_only=None):
+        self.command = command
+        self.index = index
+        self.team_only = team_only
+
+
 # We can't integrate this into SayCommand, ServerCommand and ClientCommand,
 # because multiple callbacks are not supported by this system (because of the
 # possibility of different function signatures). But multiple callbacks are
@@ -406,17 +414,13 @@ class _TypedCommand(AutoUnload):
     def __call__(self, callback):
         """Finish registering a typed command callback."""
         params = tuple(inspect.signature(callback).parameters.values())
-        # TODO:
-        # Do we want to force people to use names likes command, index and
-        # team_only? This will make it easier to avoid issues!
-        if len(params) < self.args_to_skip:
+        if not params:
             raise ValueError(
-                'Callback must at least accept {} arguments.'.format(
-                    self.args_to_skip))
+                'Callback must at least accept 1 argument (command_info).')
 
         self.command = self.parser.add_command(
-            self.commands, params[self.args_to_skip:], callback,
-            inspect.getdoc(callback), self.permission, self.fail_callback)
+            self.commands, params[1:], callback, inspect.getdoc(callback),
+            self.permission, self.fail_callback)
 
         if self.command.requires_registration:
             self.manager.register_commands(
@@ -430,30 +434,32 @@ class _TypedCommand(AutoUnload):
                 self.command.command_to_register, self.on_command)
 
     @classmethod
-    def on_command(cls, command, *additional_args):
+    def on_command(cls, command, *args):
         """Called when a (base) command has been executed.
 
         Parse the command, clean its arguments and execute the callback.
         """
         # TODO: Translations!
+        command_info = CommandInfo(command, *args)
         try:
-            command, args = cls.parser.parse_command(command)
-            result = cls.on_clean_command(command, args, *additional_args)
+            command_node, args = cls.parser.parse_command(
+                command_info.command)
+            result = cls.on_clean_command(command_info, command_node, args)
         except ValidationError as e:
-            cls.send_message(e.message, *additional_args)
+            cls.send_message(command_info, e.message)
         else:
             return result
 
         return CommandReturn.CONTINUE
 
     @classmethod
-    def on_clean_command(cls, command, args, *additional_args):
+    def on_clean_command(cls, command_info, command_node, args):
         """Called when the arguments of the parsed command should be cleaned.
 
         :rtype: CommandReturn
         """
-        cleaned_args = cls.parser.clean_command(command, args)
-        return command.callback(*(list(additional_args) + cleaned_args))
+        cleaned_args = cls.parser.clean_command(command_node, args)
+        return command_node.callback(command_info, *cleaned_args)
 
     @property
     def parser(self):
@@ -481,11 +487,8 @@ class _TypedCommand(AutoUnload):
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
     @staticmethod
-    def send_message(message, *args):
-        """Send a message.
-
-        :param *args: Additional arguments like index and team_only.
-        """
+    def send_message(command_info, message):
+        """Send a message."""
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
 
@@ -494,10 +497,9 @@ class TypedServerCommand(_TypedCommand):
 
     parser = CommandParser()
     manager = server_command_manager
-    args_to_skip = 0
 
     @staticmethod
-    def send_message(message):
+    def send_message(command_info, message):
         echo_console(message)
 
 
@@ -505,27 +507,25 @@ class _TypedPlayerCommand(_TypedCommand):
     """Decorator class to create typed player based commands."""
 
     @classmethod
-    def on_clean_command(cls, command, args, index, *additional_args):
-        if (command.permission is None or
-                auth_manager.is_authorized(index, command.permission)):
-            return super().on_clean_command(
-                command, args, index, *additional_args)
+    def on_clean_command(cls, command_info, command_node, args):
+        if (command_node.permission is None or
+                auth_manager.is_authorized(
+                    command_info.index, command_node.permission)):
+            return super().on_clean_command(command_info, command_node, args)
 
-        return cls.handle_fail_callback(
-            command, args, index, *additional_args)
+        return cls.handle_fail_callback(command_info, command_node, args)
 
     @classmethod
-    def handle_fail_callback(cls, command, args, index, *additional_args):
-        if command.fail_callback is not None:
-            return command.fail_callback(
-                index, *(list(additional_args) + args))
+    def handle_fail_callback(cls, command_info, command_node, args):
+        if command_node.fail_callback is not None:
+            return command_node.fail_callback(command_info, args)
 
         # TODO: Send "Required permission: <permission>" or write it to the
         #       logs?
         cls.send_message(
+            command_info,
             'You are not authorized to use this command.\n' +
-                'Required permission: {}'.format(command.permission),
-            index, *additional_args)
+                'Required permission: {}'.format(command_node.permission))
         return CommandReturn.CONTINUE
 
 
@@ -534,11 +534,10 @@ class TypedClientCommand(_TypedPlayerCommand):
 
     parser = CommandParser()
     manager = client_command_manager
-    args_to_skip = 1
 
     @staticmethod
-    def send_message(message, index):
-        TextMsg(message, HudDestination.CONSOLE).send(index)
+    def send_message(command_info, message):
+        TextMsg(message, HudDestination.CONSOLE).send(command_info.index)
 
 
 class TypedSayCommand(_TypedPlayerCommand):
@@ -546,8 +545,7 @@ class TypedSayCommand(_TypedPlayerCommand):
 
     parser = CommandParser()
     manager = say_command_manager
-    args_to_skip = 2
 
     @staticmethod
-    def send_message(message, index, team_only):
-        SayText2(message).send(index)
+    def send_message(command_info, message):
+        SayText2(message).send(command_info.index)

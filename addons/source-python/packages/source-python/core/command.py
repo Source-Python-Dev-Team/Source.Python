@@ -640,49 +640,49 @@ from commands.typed import TypedServerCommand
 server_command_manager.unregister_commands('sp', _core_command.call_command)
 
 @TypedServerCommand(['sp', 'load'])
-def _sp_load(plugin):
+def _sp_load(command_info, plugin):
     """Load a plugin."""
     _core_command.load_plugin(plugin)
 
 @TypedServerCommand(['sp', 'unload'])
-def _sp_unload(plugin):
+def _sp_unload(command_info, plugin):
     """Unload a plugin."""
     _core_command.unload_plugin(plugin)
 
 @TypedServerCommand(['sp', 'reload'])
-def _sp_reload(plugin):
+def _sp_reload(command_info, plugin):
     """Reload a plugin."""
     _core_command.reload_plugin(plugin)
 
 @TypedServerCommand(['sp', 'delay'])
-def _sp_delay(delay:float, command, *args):
+def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
     _core_command.delay_execution(delay, command, *args)
 
 #: .. todo:: There should be a sub-command for every dump type
 #: .. todo:: Make the file name optional
 @TypedServerCommand(['sp', 'dump'])
-def _sp_dump(dump_type, file_name):
+def _sp_dump(command_info, dump_type, file_name):
     """Dump data to logs."""
     _core_command.dump_data(dump_type, file_name)
 
 @TypedServerCommand(['sp', 'list'])
-def _sp_list():
+def _sp_list(command_info):
     """List all currently loaded plugins."""
     _core_command.print_plugins()
 
 @TypedServerCommand(['sp', 'version'])
-def _sp_version():
+def _sp_version(command_info):
     """Display Source.Python version information."""
     _core_command.print_version()
 
 @TypedServerCommand(['sp', 'credits'])
-def _sp_credits():
+def _sp_credits(command_info):
     """List all credits for Source.Python."""
     _core_command.print_credits()
 
 @TypedServerCommand(['sp', 'help'])
-def _sp_help(command=None, *sub_commands):
+def _sp_help(command_info, command=None, *sub_commands):
     """Print all sp sub-commands or help for a specific command."""
     if command is None:
         engine_server.server_command('sp')
@@ -703,6 +703,6 @@ def _sp_help(command=None, *sub_commands):
 
 #: .. todo:: There should be a sub-command for every docs command
 @TypedServerCommand(['sp', 'docs'])
-def _sp_docs(action, package):
+def _sp_docs(command_info, action, package):
     """Create, generate or build a Sphinx project."""
     _core_command.docs_handler(action, package)
