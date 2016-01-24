@@ -63,6 +63,7 @@ class PermissionBase(dict):
         """Remove a permission.
 
         :param str permission: The permission to remove.
+        :raise KeyError: Raised if the permission wasn't granted.
         """
         del self[permission]
 
@@ -105,6 +106,7 @@ class PermissionBase(dict):
         """Remove a parent permission.
 
         :param str parent: Name of the permission group.
+        :raise KeyError: Raised if the parent wasn't added to this object.
         """
         group = auth_manager.groups[parent]
         self.parents.remove(group)
