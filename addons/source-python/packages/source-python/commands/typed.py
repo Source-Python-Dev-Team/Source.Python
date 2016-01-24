@@ -86,7 +86,7 @@ class Store(Node, dict):
             40, subsequent_indent='  ', break_long_words=True)
 
         result = ''
-        for node in sorted(self.values(), key=lambda node: node.commands[1]):
+        for node in sorted(self.values(), key=lambda node: node.signature):
             sig_lines = wrapper.wrap(node.signature)
             desc_lines = wrapper.wrap(node.description or '')
             for sig, desc in itertools.zip_longest(
@@ -335,6 +335,8 @@ class CommandParser(Store):
             if param.annotation is not param.empty:
                 try:
                     arg = param.annotation(arg)
+                except ValidationError:
+                    raise
                 except:
                     raise InvalidArgumentValue(
                         '"{}" is an invalid value for "{}:{}".'.format(
