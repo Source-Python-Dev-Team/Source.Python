@@ -80,6 +80,21 @@ class Store(Node, dict):
     def signature(self):
         return ' '.join(self.commands) + ' <sub-command>'
 
+    @property
+    def help_text(self):
+        wrapper = textwrap.TextWrapper(
+            40, subsequent_indent='  ', break_long_words=True)
+
+        result = ''
+        for node in sorted(self.values(), key=lambda node: node.commands[1]):
+            sig_lines = wrapper.wrap(node.signature)
+            desc_lines = wrapper.wrap(node.description or '')
+            for sig, desc in itertools.zip_longest(
+                    sig_lines, desc_lines, fillvalue=''):
+                result += '\n  ' + sig.ljust(40) + '  ' + desc
+
+        return result
+
 
 class CommandNode(Node):
     def __init__(self, commands, params, callback, description, permission,
@@ -359,25 +374,9 @@ class CommandParser(Store):
 
         if isinstance(store, Store):
             raise SubCommandExpectedError(
-                'A sub-command is required:{}'.format(
-                    self._get_help_text(store)))
+                'A sub-command is required:{}'.format(store.help_text))
 
         return (store, args)
-
-    @staticmethod
-    def _get_help_text(store):
-        wrapper = textwrap.TextWrapper(
-            40, subsequent_indent='  ', break_long_words=True)
-
-        result = ''
-        for node in sorted(store.values(), key=lambda node: node.commands[1]):
-            sig_lines = wrapper.wrap(node.signature)
-            desc_lines = wrapper.wrap(node.description or '')
-            for sig, desc in itertools.zip_longest(
-                    sig_lines, desc_lines, fillvalue=''):
-                result += '\n  ' + sig.ljust(40) + '  ' + desc
-
-        return result
 
 
 # We can't integrate this into SayCommand, ServerCommand and ClientCommand,
