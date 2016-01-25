@@ -144,11 +144,6 @@ def parse_filter(expr, filters=None):
         filters = get_default_filters()
 
     return _parse_node(ast.parse(expr, mode='eval').body, filters)
-    
-def filter_str(expr):
-    """.. seealso:: :func:`parse_filter`"""
-    # A simple wrapper for parse_filter for a better looking command signature
-    return parse_filter(expr)
 
 def get_default_filters():
     """Return the default filters (all available filters)."""
@@ -174,5 +169,7 @@ def _parse_node(node, filters):
 
         return left - right
 
-    #: .. todo:: Add info about the wrong node
+    # TODO:
+    # Figure out how to get the offset of the wrong node (for raising a better
+    # SyntaxError).
     raise SyntaxError('Unsupported node type: {}'.format(type(node)))

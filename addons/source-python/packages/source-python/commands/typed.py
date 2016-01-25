@@ -22,6 +22,8 @@ from commands import CommandReturn
 from commands.server import server_command_manager
 from commands.client import client_command_manager
 from commands.say import say_command_manager
+#   Filters
+from filters.players import parse_filter
 #   Messages
 from messages import SayText2
 from messages import TextMsg
@@ -557,3 +559,12 @@ class TypedSayCommand(_TypedPlayerCommand):
     @staticmethod
     def send_message(command_info, message):
         SayText2(message).send(command_info.index)
+
+
+# =============================================================================
+# >> COMMAND ANNOTATIONS
+# =============================================================================
+def filter_str(expr):
+    """.. seealso:: :func:`filters.players.parse_filter`"""
+    # A simple wrapper for parse_filter for a better looking command signature
+    return parse_filter(expr)

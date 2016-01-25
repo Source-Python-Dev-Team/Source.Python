@@ -12,11 +12,10 @@ from contextlib import suppress
 #   Auth
 from auth.manager import auth_manager
 #   Commands
+from commands.typed import filter_str
 from commands.typed import TypedServerCommand
 #   Core
 from core.command import core_command_logger
-#   Filters
-from filters.players import filter_str
 
 
 # =============================================================================
