@@ -165,7 +165,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         self.top_separator = top_separator
         self.bottom_separator = bottom_separator
         self.fill = fill
-        self.parent = parent
+        self.parent_menu = parent_menu
 
     @staticmethod
     def _get_max_item_count():

@@ -183,7 +183,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             data, select_callback, build_callback,
             description, title, title_color)
         self.fill = fill
-        self.parent = parent
+        self.parent_menu = parent_menu
 
     @staticmethod
     def _get_max_item_count():
