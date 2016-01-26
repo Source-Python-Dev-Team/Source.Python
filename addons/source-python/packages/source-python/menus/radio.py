@@ -243,7 +243,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         # TODO: Add translations
         # Add "Back" option
-        back_selectable = page.index > 0 or self.back_option is not None
+        back_selectable = page.index > 0 or self.parent_menu is not None
         buffer += PagedRadioOption(
             'Back', highlight=back_selectable)._render(
                 player_index, BUTTON_BACK)
