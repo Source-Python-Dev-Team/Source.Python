@@ -164,7 +164,8 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
 
     def __init__(
             self, data=None, select_callback=None, build_callback=None,
-            description=None, title=None, title_color=WHITE, fill=True):
+            description=None, title=None, title_color=WHITE, fill=True,
+            parent_menu=None):
         """Initialize the object.
 
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
@@ -182,6 +183,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             data, select_callback, build_callback,
             description, title, title_color)
         self.fill = fill
+        self.parent_menu = parent_menu
 
     @staticmethod
     def _get_max_item_count():
@@ -284,6 +286,10 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
 
         # Display previous page?
         if choice_index == 6:
+            # Is the player on the first page, and do we have a parent menu?
+            if not page_index and self.parent_menu is not None:
+                return self.parent_menu
+
             self.set_player_page(player_index, page_index - 1)
             return self
 
