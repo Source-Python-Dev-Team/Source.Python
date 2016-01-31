@@ -99,7 +99,7 @@ class SQLPermissionSource(PermissionSource):
         self.engine = create_engine(self.options['uri'])
         Base.metadata.create_all(self.engine)
         Session.configure(bind=self.engine)
-        SPThread(target=self._do_load).start()
+        GameThread(target=self._do_load).start()
 
     def _do_load(self):
         session = Session()
