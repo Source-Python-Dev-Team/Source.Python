@@ -91,7 +91,7 @@ void export_vector(scope _mathlib)
 			"Returns True if the vector is valid."
 		)
 
-		.def("invalidated",
+		.def("invalidate",
 			&Vector::Invalidate,
 			"Invalidates the vector."
 		)
