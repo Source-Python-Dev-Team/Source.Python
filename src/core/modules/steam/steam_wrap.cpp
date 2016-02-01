@@ -124,8 +124,8 @@ void export_steamid(scope _steam)
 		"Convert a Steam ID to its 64-bit representation."
 	);
 
-	SteamID.def(
-		"get_static_account_key", 
+	SteamID.add_property(
+		"static_account_key", 
 		&CSteamID::GetStaticAccountKey,
 		"Convert the static parts of a Steam ID to a 64-bit representation. For " \
 		"multiseat accounts, all instances of that account will have the same " \
@@ -175,8 +175,8 @@ void export_steamid(scope _steam)
 		"Return True if this is an individual user account ID."
 	);
 
-	SteamID.def("get_account_instance", &CSteamID::GetUnAccountInstance);
-	SteamID.def("get_account_type", &CSteamID::GetEAccountType);
+	SteamID.add_property("account_instance", &CSteamID::GetUnAccountInstance);
+	SteamID.add_property("account_type", &CSteamID::GetEAccountType);
 	SteamID.def("is_valid", &CSteamID::IsValid);
 	SteamID.def(self == self);
 	SteamID.def(self != self);

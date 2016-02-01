@@ -266,7 +266,7 @@ void export_pointer(scope _memory)
 			&CPointer::__del__
 		)
 
-		 .def("get_size",
+		 .add_property("size",
 			&CPointer::GetSize,
 			"Returns the size of the memory block."
 		)

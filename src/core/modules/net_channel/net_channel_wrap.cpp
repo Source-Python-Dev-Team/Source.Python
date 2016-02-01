@@ -85,10 +85,9 @@ void export_net_channel(scope _net_channel)
 {
 	class_<INetChannel, INetChannel*, boost::noncopyable> NetChannel("NetChannel", no_init);
 
-	NetChannel.def(
-		"get_msg_handler",
-		&INetChannel::GetMsgHandler,
-		reference_existing_object_policy()
+	NetChannel.add_property(
+		"msg_handler",
+		make_function(&INetChannel::GetMsgHandler, reference_existing_object_policy())
 	);
 
 	NetChannel.def(
@@ -114,38 +113,38 @@ void export_net_channel_info(scope _net_channel)
 	class_<INetChannelInfo, INetChannelInfo*, boost::noncopyable> NetChannelInfo("NetChannelInfo", no_init);
 
 	// TODO: Some methods require int pointers
-	NetChannelInfo.def(
-		"get_name",
+	NetChannelInfo.add_property(
+		"name",
 		&INetChannelInfo::GetName,
 		"Return the channel's name."
 	);
 	
-	NetChannelInfo.def(
-		"get_address",
+	NetChannelInfo.add_property(
+		"address",
 		&INetChannelInfo::GetAddress,
 		"Returns the net address of the player."
 	);
 
-	NetChannelInfo.def(
-		"get_time",
+	NetChannelInfo.add_property(
+		"time",
 		&INetChannelInfo::GetTime,
 		"Return the current net time."
 	);
 
-	NetChannelInfo.def(
-		"get_time_connected",
+	NetChannelInfo.add_property(
+		"time_connected",
 		&INetChannelInfo::GetTimeConnected,
 		"Returns the amount of time the player has been connected."
 	);
 
-	NetChannelInfo.def(
-		"get_buffer_size",
+	NetChannelInfo.add_property(
+		"buffer_size",
 		&INetChannelInfo::GetBufferSize,
 		"Return the packet history size."
 	);
 
-	NetChannelInfo.def(
-		"get_data_rate",
+	NetChannelInfo.add_property(
+		"data_rate",
 		&INetChannelInfo::GetDataRate,
 		"Return the send data rate in bytes/second."
 	);
@@ -240,8 +239,8 @@ void export_net_channel_info(scope _net_channel)
 		"Return TCP progress if transmitting."
 	);
 
-	NetChannelInfo.def(
-		"get_time_since_last_received",
+	NetChannelInfo.add_property(
+		"time_since_last_received",
 		&INetChannelInfo::GetTimeSinceLastReceived,
 		"Return the time since the last received packet in seconds."
 	);
@@ -261,8 +260,8 @@ void export_net_channel_info(scope _net_channel)
 		&INetChannelInfo::GetRemoteFramerate
 	);
 
-	NetChannelInfo.def(
-		"get_timeout_seconds",
+	NetChannelInfo.add_property(
+		"timeout_seconds",
 		&INetChannelInfo::GetTimeoutSeconds
 	);
 		
@@ -276,18 +275,6 @@ void export_net_channel_info(scope _net_channel)
 void export_net_message(scope _net_channel)
 {
 	class_<INetMessage, INetMessage*, boost::noncopyable> NetMessage("NetMessage", no_init);
-
-	NetMessage.def(
-		"set_net_channel",
-		&INetMessage::SetNetChannel,
-		"Set the net channel this message is from/for."
-	);
-
-	NetMessage.def(
-		"set_reliable",
-		&INetMessage::SetReliable,
-		"Set to True if it's a reliable message."
-	);
 
 	NetMessage.def(
 		"process",
@@ -307,35 +294,39 @@ void export_net_message(scope _net_channel)
 		"Return True if writing was OK."
 	);
 
-	NetMessage.def(
-		"is_reliable",
+	NetMessage.add_property(
+		"reliable",
 		&INetMessage::IsReliable,
+		&INetMessage::SetReliable,
 		"Return True if the message needs reliable handling."
 	);
 
-	NetMessage.def(
-		"get_type",
+	NetMessage.add_property(
+		"type",
 		&INetMessage::GetType,
 		"Return the module specific header tag. E.g. svc_serverinfo."
 	);
 
-	NetMessage.def(
-		"get_group",
+	NetMessage.add_property(
+		"group",
 		&INetMessage::GetGroup,
 		"Return the net message group."
 	);
 
-	NetMessage.def(
-		"get_name",
+	NetMessage.add_property(
+		"name",
 		&INetMessage::GetName,
 		"Return the network message name. E.g. svc_serverinfo."
 	);
 
-	NetMessage.def(
-		"get_net_channel",
-		&INetMessage::GetNetChannel,
-		"Return the net channel this message is from/for.",
-		reference_existing_object_policy()
+	NetMessage.add_property(
+		"net_channel",
+		make_function(
+			&INetMessage::GetNetChannel,
+			reference_existing_object_policy()
+		),
+		&INetMessage::SetNetChannel,
+		"Return the net channel this message is from/for."
 	);
 
 	NetMessage.def(
