@@ -96,24 +96,24 @@ DECLARE_SP_MODULE(_commands)
 void export_command(scope _commands)
 {
 	class_<CCommand>("Command")
-		.add_property("arg_count",
+		.def("__len__",
 			&CCommand::ArgC,
-			"Returns the number of arguments in the command"
+			"Return the number of arguments in the command."
 		)
 
 		.add_property("arg_string",
 			&CCommandExt::ArgS,
-			"Returns the argument string for the command (does not include the command itself)"
+			"Return the argument string for the command (does not include the command itself)."
 		)
 
 		.add_property("command_string",
 			&CCommandExt::GetCommandString,
-			"Returns the entire command string"
+			"Return the entire command string including the command itself."
 		)
 
 		.def("__getitem__",
 			&CCommandExt::GetArg,
-			"Gets the value of the argument at the given index",
+			"Return the argument at the given index.",
 			args("index")
 		)
 
