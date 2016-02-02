@@ -69,19 +69,19 @@ DECLARE_SP_MODULE(_cvars)
 void export_cvar_interface(scope _cvars)
 {
 	class_<ICvar, boost::noncopyable>("_Cvar", no_init)
-		.def("register_con_command",
+		.def("register_command",
 			&ICvar::RegisterConCommand,
 			"Registers a console command.",
 			args("con_command")
 		)
 
-		.def("unregister_con_command",
+		.def("unregister_command",
 			&ICvar::UnregisterConCommand,
 			"Unregisters a console command.",
 			args("con_command")
 		)
 
-		.def("find_command_base",
+		.def("find_command",
 			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char *),
 			"Returns a ConCommandBase instance for the given command, if it exists",
 			args("name"),
