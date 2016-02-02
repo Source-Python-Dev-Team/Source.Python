@@ -353,7 +353,7 @@ class Entity(BaseEntity, _EntitySpecials):
 
     def get_model(self):
         """Return the entity's model."""
-        return Model(self.get_model_name())
+        return Model(self.model_name)
 
     def set_model(self, model):
         """Set the entity's model to the given model."""

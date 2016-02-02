@@ -79,7 +79,7 @@ def beam(
         if parent:
             start_entity = start
         else:
-            start_vector = Entity(start).get_origin()
+            start_vector = Entity(start).origin
     else:
         start_vector = start
 
@@ -88,7 +88,7 @@ def beam(
         if parent:
             end_entity = end
         else:
-            end_vector = Entity(end).get_origin()
+            end_vector = Entity(end).origin
     else:
         end_vector = end
 

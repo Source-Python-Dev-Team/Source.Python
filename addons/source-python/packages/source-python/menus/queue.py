@@ -217,7 +217,7 @@ def _validate_selection(command, index, valid_choices):
     :param iterable valid_choices: All valid choices.
     """
     try:
-        choice = int(command.get_arg(1))
+        choice = int(command[1])
     except ValueError:
         # Catch errors caused by e.g. "menuselect a"
         return (None, None)

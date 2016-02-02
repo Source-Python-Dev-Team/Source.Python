@@ -18,6 +18,6 @@ def get_client_language(index):
     from players.helpers import playerinfo_from_index
     playerinfo = playerinfo_from_index(index)
     if (playerinfo.is_fake_client() or
-            'BOT' in playerinfo.get_networkid_string()):
+            'BOT' in playerinfo.networkid_string):
         return ''
     return engine_server.get_client_convar_value(index, 'cl_language')

@@ -113,7 +113,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     def call_command(self, command):
         """Get the provided sub-command and executes accordingly."""
         # Get the argument string
-        arg_string = command.get_arg_string()
+        arg_string = command.arg_string
 
         # Use try/except to split the argument string,
         # if it contains more than one argument
@@ -234,7 +234,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
             if hasattr(self[item], 'print_help'):
 
                 # Get the instance's help text
-                message += '\n' + self[item].get_help_text()
+                message += '\n' + self[item].help_text
 
                 # Continue to the next item
                 continue
