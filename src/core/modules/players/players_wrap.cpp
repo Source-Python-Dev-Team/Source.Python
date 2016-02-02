@@ -79,7 +79,7 @@ void export_playerinfo(scope _players)
 			"Returns the player's userid."
 		)
 
-		.add_property("networkid_string",
+		.add_property("steamid",
 			&IPlayerInfo::GetNetworkIDString,
 			"Returns the player's SteamID."
 		)

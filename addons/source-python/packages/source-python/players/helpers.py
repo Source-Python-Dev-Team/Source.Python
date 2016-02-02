@@ -101,7 +101,7 @@ def index_from_steamid(steamid):
         playerinfo = playerinfo_from_edict(edict)
 
         # Is the current player's SteamID the same as the one given?
-        if playerinfo.networkid_string == steamid:
+        if playerinfo.steamid == steamid:
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
@@ -169,7 +169,7 @@ def uniqueid_from_playerinfo(playerinfo):
         return 'BOT_{0}'.format(playerinfo.name)
 
     # Get the player's SteamID
-    steamid = playerinfo.networkid_string
+    steamid = playerinfo.steamid
 
     # Is this a Lan SteamID?
     if 'LAN' in steamid:

@@ -99,7 +99,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :rtype: str
         """
-        return self.playerinfo.networkid_string
+        return self.playerinfo.steamid
 
     def get_name(self):
         """Return the player's name.
