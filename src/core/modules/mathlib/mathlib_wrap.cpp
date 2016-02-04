@@ -138,6 +138,7 @@ void export_vector(scope _mathlib)
 
 		.add_property("length",
 			&Vector::Length,
+			&VectorExt::SetLength,
 			"Returns the vector's 3D length."
 		)
 
