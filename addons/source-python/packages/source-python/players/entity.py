@@ -259,7 +259,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :param Entity entity: The entity the player should look at.
         """
-        self.set_view_coordinates(entity.origin)
+        self.view_coordinates = entity.origin
 
     view_entity = property(get_view_entity, set_view_entity)
 
@@ -283,7 +283,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :param Player player: The other player.
         """
-        self.set_view_coordinates(player.eye_location)
+        self.view_coordinates = player.eye_location
 
     view_player = property(get_view_player, set_view_player)
 
