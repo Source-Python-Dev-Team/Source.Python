@@ -256,7 +256,7 @@ class Entity(BaseEntity, _EntitySpecials):
     @property
     def server_class(self):
         """Return the entity's server class."""
-        return self.edict.networkable.get_server_class()
+        return self.networkable.server_class
 
     @property
     def server_classes(self):

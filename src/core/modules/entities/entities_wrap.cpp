@@ -295,14 +295,6 @@ void export_edict(scope _entities)
 			"Returns its ServerEntity instance."
 		)
 
-		.add_property("networkable",
-			make_function(
-				&CBaseEdict::GetNetworkable,
-				reference_existing_object_policy()
-			),
-			"Returns its ServerNetworkable instance."
-		)
-
 		.add_property("server_unknown",
 			make_function(
 				&CBaseEdict::GetUnknown,
