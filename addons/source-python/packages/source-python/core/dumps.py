@@ -107,7 +107,7 @@ def dump_convars(filename):
         convars[convar.name] = convar
 
         # Move to the next convar
-        convar = convar.get_next()
+        convar = convar.next
 
     # Get the number of commands
     command_count = len([

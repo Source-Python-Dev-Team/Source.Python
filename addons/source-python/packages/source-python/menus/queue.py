@@ -100,7 +100,7 @@ class _UserQueue(deque):
 
         If there is no active menu, nothing will be done.
         """
-        menu = self.get_active_menu()
+        menu = self.active_menu
         if menu is not None:
             menu._refresh(self._index)
 
@@ -142,7 +142,8 @@ class _UserQueue(deque):
         if self:
             self._refresh()
 
-    def get_active_menu(self):
+    @property
+    def active_menu(self):
         """Return the first menu instance in this queue.
 
         If there is no menu, None will be returned.
