@@ -640,7 +640,6 @@ void export_engine_server(scope _server)
 		.NOT_IMPLEMENTED("game_server_steamid")
 
 		// OB specific methods
-		.NOT_IMPLEMENTED("time")
 		.NOT_IMPLEMENTED("multiplayer_end_game")
 		.NOT_IMPLEMENTED("create_fake_client_ex")
 		.NOT_IMPLEMENTED("replay")

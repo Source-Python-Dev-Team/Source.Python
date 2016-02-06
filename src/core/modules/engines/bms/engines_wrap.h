@@ -61,11 +61,6 @@ T IVEngineServer_Visitor(T cls)
 			"Returns the version of the server."
 		)
 
-		.add_property("time",
-			&IVEngineServer::Time,
-			"Returns a high precision timer for doing profiling work"
-		)
-
 		.def("multiplayer_end_game",
 			&IVEngineServer::MultiplayerEndGame,
 			"Matchmaking"
