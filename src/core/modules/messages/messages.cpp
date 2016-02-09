@@ -51,7 +51,7 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 
 	// Initialize buffer
 #ifdef USE_PROTOBUF
-	const google::protobuf::Message* message = g_Cstrike15UsermessageHelpers.GetPrototype(message_name);
+	const google::protobuf::Message* message = g_Cstrike15UsermessageHelpers.GetPrototype(message_name)->New();
 	if (!message) {
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
 	}
@@ -74,7 +74,9 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 CUserMessage::~CUserMessage()
 {
 #ifdef USE_PROTOBUF
+	delete m_buffer->GetProtobufMessage();
 	delete m_buffer;
+	m_buffer = NULL;
 #endif
 }
 
