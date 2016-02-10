@@ -139,7 +139,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             self, data=None, select_callback=None,
             build_callback=None, description=None,
             title=None, top_separator='-' * 30, bottom_separator='-' * 30,
-            fill=True):
+            fill=True, parent_menu=None):
         """Initialize the object.
 
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
@@ -165,6 +165,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         self.top_separator = top_separator
         self.bottom_separator = bottom_separator
         self.fill = fill
+        self.parent_menu = parent_menu
 
     @staticmethod
     def _get_max_item_count():
@@ -242,7 +243,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         # TODO: Add translations
         # Add "Back" option
-        back_selectable = page.index > 0
+        back_selectable = page.index > 0 or self.parent_menu is not None
         buffer += PagedRadioOption(
             'Back', highlight=back_selectable)._render(
                 player_index, BUTTON_BACK)
@@ -295,6 +296,10 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
         # Display previous page?
         if choice_index == BUTTON_BACK:
+            # Is the player on the first page, and do we have a parent menu?
+            if not page.index and self.parent_menu is not None:
+                return self.parent_menu
+
             self.set_player_page(player_index, page.index - 1)
             return self
 

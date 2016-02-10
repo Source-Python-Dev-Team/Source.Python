@@ -111,15 +111,14 @@ class UserMessageCreator(AttrDict):
         """Return translated and tokenized arguments."""
         translated_kwargs = AttrDict()
         for key in self.translatable_fields:
-            translated_kwargs[key] = self._translate(self[key], language, tokens)
+            translated_kwargs[key] = self._translate(
+                self[key], language, tokens)
 
         return translated_kwargs
 
     @staticmethod
     def _translate(value, language, tokens):
-        """Translate the given value if it's a :class:`TranslationStrings`
-        object.
-        """
+        """Translate the value if it's a :class:`TranslationStrings` object."""
         if isinstance(value, TranslationStrings):
             return value.get_string(language, **tokens)
 
@@ -255,7 +254,7 @@ class SayText2(UserMessageCreator):
 
     def protobuf(self, buffer, kwargs):
         """Send the SayText2 with protobuf."""
-        buffer.set_string('msg_name', kwargs.message)
+        buffer.set_string('msg_name', ' \x01' + kwargs.message)
         buffer.set_bool('chat', kwargs.chat)
         buffer.set_int32('ent_idx', kwargs.index)
         buffer.add_string('params', kwargs.param1)
@@ -268,7 +267,7 @@ class SayText2(UserMessageCreator):
         """Send the SayText2 with bitbuf."""
         buffer.write_byte(kwargs.index)
         buffer.write_byte(kwargs.chat)
-        buffer.write_string(kwargs.message)
+        buffer.write_string('\x01' + kwargs.message)
         buffer.write_string(kwargs.param1)
         buffer.write_string(kwargs.param2)
         buffer.write_string(kwargs.param3)
@@ -308,12 +307,12 @@ class SayText(UserMessageCreator):
         """Send the SayText with protobuf."""
         buffer.set_int32('ent_idx', kwargs.index)
         buffer.set_bool('chat', kwargs.chat)
-        buffer.set_string('text', kwargs.message)
+        buffer.set_string('text', ' \x01' + kwargs.message)
 
     def bitbuf(self, buffer, kwargs):
         """Send the SayText with bitbuf."""
         buffer.write_byte(kwargs.index)
-        buffer.write_string(kwargs.message)
+        buffer.write_string('\x01' + kwargs.message)
         buffer.write_byte(kwargs.chat)
 
 

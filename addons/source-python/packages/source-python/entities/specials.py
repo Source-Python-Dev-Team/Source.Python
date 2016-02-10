@@ -37,7 +37,8 @@ class _EntitySpecials(object):
 
     def take_damage(
             self, damage, damage_type=DamageTypes.GENERIC, attacker_index=None,
-            weapon_index=None, hitgroup=HitGroup.GENERIC, **kwargs):
+            weapon_index=None, hitgroup=HitGroup.GENERIC, skip_hooks=False,
+            **kwargs):
         """Method used to hurt the entity with the given arguments."""
         # Import Entity classes
         # Doing this in the global scope causes cross import errors
@@ -136,5 +137,12 @@ class _EntitySpecials(object):
             # Set the offset's value
             setattr(take_damage_info, item, kwargs[item])
 
-        # Call the function with the victim's pointer and the CTakeDamageInfo
-        self.on_take_damage(take_damage_info)
+        if skip_hooks:
+            try:
+                # Try calling the trampoline
+                self.on_take_damage.call_trampoline(take_damage_info)
+            except ValueError:
+                # If it failed, the function probably wasn't hooked
+                self.on_take_damage(take_damage_info)
+        else:
+            self.on_take_damage(take_damage_info)
