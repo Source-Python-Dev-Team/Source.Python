@@ -111,15 +111,14 @@ class UserMessageCreator(AttrDict):
         """Return translated and tokenized arguments."""
         translated_kwargs = AttrDict()
         for key in self.translatable_fields:
-            translated_kwargs[key] = self._translate(self[key], language, tokens)
+            translated_kwargs[key] = self._translate(
+                self[key], language, tokens)
 
         return translated_kwargs
 
     @staticmethod
     def _translate(value, language, tokens):
-        """Translate the given value if it's a :class:`TranslationStrings`
-        object.
-        """
+        """Translate the value if it's a :class:`TranslationStrings` object."""
         if isinstance(value, TranslationStrings):
             return value.get_string(language, **tokens)
 
