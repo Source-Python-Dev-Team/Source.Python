@@ -8,6 +8,8 @@
 # Source.Python Imports
 #   Filters
 from _filters._recipients import _RecipientFilter
+#   Players
+from players.entity import Player
 
 
 # =============================================================================
@@ -40,8 +42,8 @@ class RecipientFilter(_RecipientFilter):
         if isinstance(item, slice):
 
             # Return a mapping matching the given slice
-            return map(self.get_recipient_index, range(*item.indices(
-                len(self))))
+            return list(map(
+                self.get_recipient_index, range(*item.indices(len(self)))))
 
         # Return the index at the given recipient slot
         return self.get_recipient_index[item]
@@ -56,12 +58,18 @@ class RecipientFilter(_RecipientFilter):
 
     def __repr__(self):
         """Return a readable representation of the recipient filter."""
-        return '({0})'.format(' ,'.join(map(str, self)))
+        return '({0})'.format(', '.join(map(str, self)))
 
     def merge(self, iterable):
         """Merge the given recipient."""
         # Loop through all indexes of the given recipient
         for index in iterable:
+
+            # Get the index if a Player object was passed
+            # This is also a fix for PlayerIter now
+            #   only iterating over Player instances.
+            if isinstance(index, Player):
+                index = index.index
 
             # Add the current index to the recipient filter
             self.add_recipient(index)

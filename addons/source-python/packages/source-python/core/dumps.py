@@ -16,7 +16,6 @@ from cvars.flags import ConVarFlags
 #   Entities
 from entities import ServerClassGenerator
 from entities.datamaps import FieldType
-from entities.entity import BaseEntity
 from entities.factories import factory_dictionary
 from entities.props import SendPropType
 #   Filters

@@ -348,7 +348,8 @@ class _PlayerWeapons(object):
             # Was a weapon type given and the
             # current weapon is not of that type?
             if not (is_filters is None and not_filters is None):
-                if weapon_class not in map(lambda value: value.name,
+                if weapon_class not in map(
+                        lambda value: value.name,
                         WeaponClassIter(is_filters, not_filters)):
 
                     # Do not yield this index
@@ -387,10 +388,7 @@ class _PlayerWeapons(object):
 def _find_weapon_prop_length(table):
     """Loop through a prop table to find the myweapons property length."""
     # Loop through the props in the table
-    for offset in range(len(table)):
-
-        # Get the prop
-        item = table[offset]
+    for offset, item in enumerate(table):
 
         # Is this the m_hMyWeapons prop?
         if item.name == weapon_manager.myweapons[:~0]:
