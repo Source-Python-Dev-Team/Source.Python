@@ -59,8 +59,8 @@ class _TempEntityHook(AutoUnload):
             if temp_entity.name == self.name:
 
                 # Call the registered callback...
-                return callback(temp_entity,
-                    make_object(RecipientFilter, stack_data[1]))
+                return callback(temp_entity, make_object(
+                    RecipientFilter, stack_data[1]))
 
         # Store the callback...
         self._callback = _callback

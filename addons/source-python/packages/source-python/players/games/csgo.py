@@ -54,4 +54,5 @@ class _GamePlayer(
         self.increment_assists_count(value - self.assists)
 
     assists = property(
-        _get_assists, _set_assists, doc="""The number of assists a player has.""")
+        _get_assists, _set_assists,
+        doc="""The number of assists a player has.""")
