@@ -436,6 +436,11 @@ void export_function(scope _memory)
 			"Calls the trampoline function dynamically."
 		)
 
+		.def("skip_hooks",
+			raw_method(&CFunction::SkipHooks),
+			"Call the function, but skip hooks if there are any."
+		)
+
 		.def("add_hook",
 			&CFunction::AddHook,
 			"Adds a hook callback.",
