@@ -278,6 +278,14 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 		m_iCallingConvention, m_pCallingConvention, m_tArgs, m_eReturnType, m_oConverter).Call(args, kw);
 }
 
+object CFunction::SkipHooks(tuple args, dict kw)
+{
+	if (IsHooked())
+		return CallTrampoline(args, kw);
+
+	return Call(args, kw);
+}
+
 handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsHookable())

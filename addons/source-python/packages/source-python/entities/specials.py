@@ -138,11 +138,6 @@ class _EntitySpecials(object):
             setattr(take_damage_info, item, kwargs[item])
 
         if skip_hooks:
-            try:
-                # Try calling the trampoline
-                self.on_take_damage.call_trampoline(take_damage_info)
-            except ValueError:
-                # If it failed, the function probably wasn't hooked
-                self.on_take_damage(take_damage_info)
+            self.on_take_damage.skip_hooks(take_damage_info)
         else:
             self.on_take_damage(take_damage_info)
