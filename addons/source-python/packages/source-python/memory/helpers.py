@@ -319,10 +319,11 @@ class MemberFunction(Function):
 
     def call_trampoline(self, *args):
         """Call the trampoline dynamically."""
-        return super().call_trampoline(
-            self._this,
-            *args
-        )
+        return super().call_trampoline(self._this, *args)
+
+    def skip_hooks(self, *args):
+        """Call the function, but skip hooks if there are any."""
+        return super().skip_hooks(self._this, *args)
 
 
 # =============================================================================

@@ -94,7 +94,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :rtype: int
         """
-        return self.playerinfo.get_userid()
+        return self.playerinfo.userid
 
     @property
     def steamid(self):
@@ -102,14 +102,14 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :rtype: str
         """
-        return self.playerinfo.get_networkid_string()
+        return self.playerinfo.steamid
 
     def get_name(self):
         """Return the player's name.
 
         :rtype: str
         """
-        return self.playerinfo.get_name()
+        return self.playerinfo.name
 
     def set_name(self, name):
         """Set the player's name."""
@@ -157,11 +157,11 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :rtype: int
         """
-        return self.playerinfo.get_team_index()
+        return self.playerinfo.team
 
     def set_team(self, value):
         """Set the players team."""
-        self.playerinfo.change_team(value)
+        self.playerinfo.team = team
 
     team = property(get_team, set_team)
 
@@ -184,7 +184,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         :rtype: GameTrace
         """
         # Get the eye location of the player
-        start_vec = self.get_eye_location()
+        start_vec = self.eye_location
 
         # Calculate the greatest possible distance
         end_vec = start_vec + self.view_vector * MAX_TRACE_LENGTH
@@ -220,7 +220,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :param Vector coords: The coordinates the player should look at.
         """
-        coord_eye_vec = coords - self.get_eye_location()
+        coord_eye_vec = coords - self.eye_location
 
         # Calculate the y angle value
         atan = math.degrees(math.atan(coord_eye_vec.y / coord_eye_vec.x))
@@ -255,14 +255,14 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
             return None
 
         # Return the hit entity as an Entity instance
-        return Entity(trace.get_entity_index())
+        return Entity(trace.entity_index)
 
     def set_view_entity(self, entity):
         """Force the player to look at the origin of the given entity.
 
         :param Entity entity: The entity the player should look at.
         """
-        self.set_view_coordinates(entity.origin)
+        self.view_coordinates = entity.origin
 
     view_entity = property(get_view_entity, set_view_entity)
 
@@ -274,7 +274,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         :rtype: Player
         """
         # Get the entity that the player is looking at
-        entity = self.get_view_entity()
+        entity = self.view_entity
 
         # Return a Player instance of the player or None if not a player
         return (
@@ -286,7 +286,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         :param Player player: The other player.
         """
-        self.set_view_coordinates(player.get_eye_location())
+        self.view_coordinates = player.eye_location
 
     view_player = property(get_view_player, set_view_player)
 

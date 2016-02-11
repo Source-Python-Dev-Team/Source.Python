@@ -100,7 +100,7 @@ class _UserQueue(deque):
 
         If there is no active menu, nothing will be done.
         """
-        menu = self.get_active_menu()
+        menu = self.active_menu
         if menu is not None:
             menu._refresh(self._index)
 
@@ -142,7 +142,8 @@ class _UserQueue(deque):
         if self:
             self._refresh()
 
-    def get_active_menu(self):
+    @property
+    def active_menu(self):
         """Return the first menu instance in this queue.
 
         If there is no menu, None will be returned.
@@ -217,7 +218,7 @@ def _validate_selection(command, index, valid_choices):
     :param iterable valid_choices: All valid choices.
     """
     try:
-        choice = int(command.get_arg(1))
+        choice = int(command[1])
     except ValueError:
         # Catch errors caused by e.g. "menuselect a"
         return (None, None)

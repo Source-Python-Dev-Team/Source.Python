@@ -97,16 +97,16 @@ def dump_convars(filename):
     convars = dict()
 
     # Get the first convar
-    convar = cvar.get_commands()
+    convar = cvar.commands
 
     # Loop through all convars
     while convar is not None:
 
         # Store the convar in the dictionary
-        convars[convar.get_name()] = convar
+        convars[convar.name] = convar
 
         # Move to the next convar
-        convar = convar.get_next()
+        convar = convar.next
 
     # Get the number of commands
     command_count = len([
@@ -129,10 +129,10 @@ def dump_convars(filename):
 
             # Get the convar's flags
             convar_flags = [
-                flag.name for flag in ConVarFlags if flag & convar.get_flags()]
+                flag.name for flag in ConVarFlags if flag & convar.flags]
 
             # Get the convar's help text
-            convar_text = convar.get_help_text()
+            convar_text = convar.help_text
 
             # Write the convar with its values to file
             open_file.write('{0} - {1}{2}\n{3}\n\n'.format(
@@ -174,7 +174,7 @@ def _get_datamap(classname):
 
     # We haven't found an entity. Let's create it temporarily
     entity = factory_dictionary.create(classname)
-    datamap = entity.get_base_entity().datamap
+    datamap = entity.base_entity.datamap
     factory_dictionary.destroy(classname, entity)
     return datamap
 
@@ -249,7 +249,7 @@ def _dump_server_class_table(table, open_file, level=1, offset=0):
         if prop.type == SendPropType.DATATABLE:
 
             # Get the new table's instance
-            new_table = prop.get_data_table()
+            new_table = prop.data_table
 
             # Was there an offset passed?
             if offset:

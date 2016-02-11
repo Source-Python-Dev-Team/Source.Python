@@ -151,7 +151,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
         self._index = index
 
         # Get the argument string
-        arg_string = command.get_arg_string()
+        arg_string = command.arg_string
 
         # Use try/except to split the argument string,
         # if it contains more than one argument

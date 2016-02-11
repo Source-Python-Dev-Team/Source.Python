@@ -282,7 +282,7 @@ void export_game_trace(scope _trace)
 			"Returns true if there was any kind of impact at all"
 		)
 
-		.def("get_entity_index",
+		.add_property("entity_index",
 			&CGameTrace::GetEntityIndex,
 			"Returns the index of the entity that was hit."
 		)

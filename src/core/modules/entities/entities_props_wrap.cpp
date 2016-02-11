@@ -79,8 +79,6 @@ void export_send_table(scope _props)
 	SendTable_.add_property("name", &SendTable::GetName);
 	
 	// Methods...
-	SendTable_.def("get_name", &SendTable::GetName);
-	SendTable_.def("get_length", &SendTable::GetNumProps);
 	SendTable_.def("is_initialized", &SendTable::IsInitialized);
 	SendTable_.def("set_initialized", &SendTable::SetInitialized);
 	
@@ -88,10 +86,17 @@ void export_send_table(scope _props)
 		reference_existing_object_policy()
 	);
 	
-	SendTable_.def("set_write_flag", &SendTable::SetWriteFlag);
-	SendTable_.def("get_write_flag", &SendTable::GetWriteFlag);
-	SendTable_.def("has_props_encoded_against_tick_count", &SendTable::HasPropsEncodedAgainstTickCount);
-	SendTable_.def("set_has_props_encoded_against_tick_count", &SendTable::SetHasPropsEncodedAgainstTickcount);
+	SendTable_.add_property(
+		"write_flag",
+		&SendTable::GetWriteFlag,
+		&SendTable::SetWriteFlag
+	);
+
+	SendTable_.add_property(
+		"props_encoded_against_tick_count",
+		&SendTable::HasPropsEncodedAgainstTickCount,
+		&SendTable::SetHasPropsEncodedAgainstTickcount
+	);
 	
 	// Special methods...
 	SendTable_.def("__getitem__",
@@ -140,29 +145,11 @@ void export_send_prop(scope _props)
 	SendProp_.NOT_IMPLEMENTED_ATTR("priority");
 	
 	// Methods...
-	SendProp_.def("get_offset", &SendProp::GetOffset);
-	
-	SendProp_.def("get_data_table",
-		&SendProp::GetDataTable,
-		reference_existing_object_policy()
-	);
+	SendProp_.add_property("offset", &SendProp::GetOffset);
 
-	SendProp_.def("get_exclude_data_table_name", &SendProp::GetExcludeDTName);
-	SendProp_.def("get_parent_array_prop_name", &SendProp::GetParentArrayPropName);
-	SendProp_.def("get_name", &SendProp::GetName);
 	SendProp_.def("is_signed", &SendProp::IsSigned);
 	SendProp_.def("is_exclude_prop", &SendProp::IsExcludeProp);
 	SendProp_.def("is_inside_array", &SendProp::IsInsideArray);
-	
-	SendProp_.def("get_array_prop",
-		&SendProp::GetArrayProp,
-		reference_existing_object_policy()
-	);
-
-	SendProp_.def("get_length", &SendProp::GetNumElements);
-	SendProp_.def("get_element_stride", &SendProp::GetElementStride);
-	SendProp_.def("get_type", &SendProp::GetType);
-	SendProp_.def("get_flags", &SendProp::GetFlags);
 
 	SendProp_.def("get_proxy_function", &SendPropSharedExt::get_proxy_function, manage_new_object_policy());
 

@@ -176,7 +176,7 @@ void export_engine_server(scope _server)
 			args("mins", "maxs", "checkpvs", "checkpvssize")
 		)
 
-		.def("get_entity_count",
+		.add_property("entity_count",
 			&IVEngineServer::GetEntityCount,
 			"Returns the number of used edict slots."
 		)
@@ -397,7 +397,7 @@ void export_engine_server(scope _server)
 			args("old_level", "landmark_name")
 		)
 
-		.def("get_map_entities_string",
+		.add_property("map_entities_string",
 			&IVEngineServer::GetMapEntitiesString,
 			"Get the pristine map entity lump string."
 		)
@@ -510,9 +510,11 @@ void export_engine_server(scope _server)
 			reference_existing_object_policy()
 		)
 
-		.def("get_shared_edict_change_info",
-			&IVEngineServer::GetSharedEdictChangeInfo,
-			reference_existing_object_policy()
+		.add_property("shared_edict_change_info",
+			make_function(
+				&IVEngineServer::GetSharedEdictChangeInfo,
+				reference_existing_object_policy()
+			)
 		)
 
 		.def("allow_immediate_edict_reuse",
@@ -537,18 +539,16 @@ void export_engine_server(scope _server)
 			args("pvs_info")
 		)
 
-		.def("set_achievement_mgr",
+		.add_property("achievement_mgr",
+			make_function(
+				&IVEngineServer::GetAchievementMgr,
+				reference_existing_object_policy()
+			),
 			&IVEngineServer::SetAchievementMgr,
-			"Sets the achievement manager."
+			"Return the achievement manager."
 		)
 
-		.def("get_achievement_mgr",
-			&IVEngineServer::GetAchievementMgr,
-			"Returns the current achievement manager.",
-			reference_existing_object_policy()
-		)
-
-		.def("get_app_id",
+		.add_property("app_id",
 			&IVEngineServer::GetAppID,
 			"Returns the game's appid."
 		)
@@ -595,7 +595,7 @@ void export_engine_server(scope _server)
 		)
 		*/
 
-		.def("get_cluster_count",
+		.add_property("cluster_count",
 			&IVEngineServer::GetClusterCount,
 			"Returns total number of clusters."
 		)
@@ -636,24 +636,23 @@ void export_engine_server(scope _server)
 		)
 
 		// Not on L4D2
-		.NOT_IMPLEMENTED("get_server_version")
-		.NOT_IMPLEMENTED("get_game_server_steamid")
+		.NOT_IMPLEMENTED("server_version")
+		.NOT_IMPLEMENTED("game_server_steamid")
 
 		// OB specific methods
-		.NOT_IMPLEMENTED("get_time")
 		.NOT_IMPLEMENTED("multiplayer_end_game")
 		.NOT_IMPLEMENTED("create_fake_client_ex")
-		.NOT_IMPLEMENTED("get_replay")
+		.NOT_IMPLEMENTED("replay")
 
 		// BM:S specific
-		.NOT_IMPLEMENTED("get_server")
+		.NOT_IMPLEMENTED("server")
 
 		// CS:GO specific methods
-		.NOT_IMPLEMENTED("get_launch_options")
+		.NOT_IMPLEMENTED("launch_options")
 		.NOT_IMPLEMENTED("is_userid_in_use")
 		.NOT_IMPLEMENTED("get_loading_process_for_userid")
 		.NOT_IMPLEMENTED("is_log_enabled")
-		.NOT_IMPLEMENTED("get_timescale")
+		.NOT_IMPLEMENTED("timescale")
 		.NOT_IMPLEMENTED("is_level_main_menu_background")
 		.NOT_IMPLEMENTED("is_any_client_low_violence")
 		.NOT_IMPLEMENTED("is_split_screen_player")
@@ -667,7 +666,6 @@ void export_engine_server(scope _server)
 		.NOT_IMPLEMENTED("is_dedicated_server_for_xbox")
 		.NOT_IMPLEMENTED("is_dedicated_server_for_ps3")
 		.NOT_IMPLEMENTED("pause")
-		.NOT_IMPLEMENTED("set_timescale")
 		.NOT_IMPLEMENTED("host_validated_session")
 		.NOT_IMPLEMENTED("refresh_screen_if_necessary")
 		.NOT_IMPLEMENTED("has_paint_map")
@@ -681,7 +679,7 @@ void export_engine_server(scope _server)
 		.NOT_IMPLEMENTED("get_paint_map_data_rle")
 		.NOT_IMPLEMENTED("load_paint_map_data_rle")
 		.NOT_IMPLEMENTED("send_paint_map_data_to_client")
-		.NOT_IMPLEMENTED("get_latency_for_choreo_sounds")
+		.NOT_IMPLEMENTED("latency_for_choreo_sounds")
 		.NOT_IMPLEMENTED("get_client_cross_play_platform")
 		.NOT_IMPLEMENTED("ensure_instance_baseline")
 		.NOT_IMPLEMENTED("reserve_server_for_queued_game")
@@ -807,10 +805,12 @@ void export_server_game_dll(scope _server)
 	class_<IServerGameDLL, boost::noncopyable> ServerGameDLL("_ServerGameDLL", no_init);
 	
 	// Methods...
-	ServerGameDLL.def(
-		"get_all_server_classes",
-		&IServerGameDLL::GetAllServerClasses,
-		reference_existing_object_policy()
+	ServerGameDLL.add_property(
+		"all_server_classes",
+		make_function(
+			&IServerGameDLL::GetAllServerClasses,
+			reference_existing_object_policy()
+		)
 	);
 	
 	// Add memory tools...
@@ -830,26 +830,26 @@ void export_iserver(scope _server)
 
 	class_< IServer, IServer*, bases<IConnectionlessPacketHandler>, boost::noncopyable > _IServer("Server", no_init);
 
-	_IServer.def(
-		"get_num_clients",
+	_IServer.add_property(
+		"num_clients",
 		&IServer::GetNumClients,
 		"Return the current number of clients."
 	);
 
-	_IServer.def(
-		"get_num_proxies",
+	_IServer.add_property(
+		"num_proxies",
 		&IServer::GetNumProxies,
 		"Return the number of attached HLTV proxies."
 	);
 
-	_IServer.def(
-		"get_num_fake_clients",
+	_IServer.add_property(
+		"num_fake_clients",
 		&IServer::GetNumFakeClients,
 		"Return the number of fake clients."
 	);
 
-	_IServer.def(
-		"get_max_clients",
+	_IServer.add_property(
+		"max_clients",
 		&IServer::GetMaxClients,
 		"Return the current client limit."
 	);
@@ -861,60 +861,60 @@ void export_iserver(scope _server)
 		reference_existing_object_policy()
 	);
 
-	_IServer.def(
-		"get_client_count",
+	_IServer.add_property(
+		"client_count",
 		&IServer::GetClientCount,
 		"Return the number of client slots (used and unused)."
 	);
 
-	_IServer.def(
-		"get_udp_port",
+	_IServer.add_property(
+		"udp_port",
 		&IServer::GetUDPPort,
 		"Return the currently used UDP port."
 	);
 
-	_IServer.def(
-		"get_time",
+	_IServer.add_property(
+		"time",
 		&IServer::GetTime,
 		"Return the game world time."
 	);
 
-	_IServer.def(
-		"get_tick",
+	_IServer.add_property(
+		"tick",
 		&IServer::GetTick,
 		"Return the game world tick."
 	);
 
-	_IServer.def(
-		"get_tick_interval",
+	_IServer.add_property(
+		"tick_interval",
 		&IServer::GetTickInterval,
 		"Return the tick interval in seconds."
 	);
 
-	_IServer.def(
-		"get_name",
+	_IServer.add_property(
+		"name",
 		&IServer::GetName,
 		"Return the public server name"
 	);
 
-	_IServer.def(
-		"get_map_name",
+	_IServer.add_property(
+		"map_name",
 		&IServer::GetMapName,
 		"Return the current map name."
 	);
 
-	_IServer.def(
-		"get_spawn_count",
+	_IServer.add_property(
+		"spawn_count",
 		&IServer::GetSpawnCount
 	);
 
-	_IServer.def(
-		"get_num_classes",
+	_IServer.add_property(
+		"num_classes",
 		&IServer::GetNumClasses
 	);
 
-	_IServer.def(
-		"get_class_bits",
+	_IServer.add_property(
+		"class_bits",
 		&IServer::GetClassBits
 	);
 
@@ -924,8 +924,8 @@ void export_iserver(scope _server)
 		"Total net in/out in bytes/sec."
 	);
 
-	_IServer.def(
-		"get_num_players",
+	_IServer.add_property(
+		"num_players",
 		&IServer::GetNumPlayers
 	);
 
@@ -950,11 +950,6 @@ void export_iserver(scope _server)
 	);
 
 	_IServer.def(
-		"is_paused",
-		&IServer::IsPaused
-	);
-
-	_IServer.def(
 		"is_multiplayer",
 		&IServer::IsMultiplayer
 	);
@@ -976,19 +971,17 @@ void export_iserver(scope _server)
 	);
 	*/
 
-	_IServer.def(
-		"get_password",
-		&IServer::GetPassword
+	_IServer.add_property(
+		"password",
+		&IServer::GetPassword,
+		&IServer::SetPassword,
+		"Return the server password."
 	);
 
-	_IServer.def(
-		"set_paused",
+	_IServer.add_property(
+		"paused",
+		&IServer::IsPaused,
 		&IServer::SetPaused
-	);
-
-	_IServer.def(
-		"set_password",
-		&IServer::SetPassword
 	);
 
 	_IServer.def(

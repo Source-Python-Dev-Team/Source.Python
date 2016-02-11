@@ -87,10 +87,12 @@ void export_shatter_surface(scope _effects)
 void export_prediction_system(scope _effects)
 {
 	class_<IPredictionSystem>("PredictionSystem")
-		.def("get_next",
-			&IPredictionSystem::GetNext,
-			"Returns the next prediction system.",
-			reference_existing_object_policy()
+		.add_property("next",
+			make_function(
+				&IPredictionSystem::GetNext,
+				reference_existing_object_policy()
+			),
+			"Returns the next prediction system."
 		)
 
 		.def("set_suppress_event",
@@ -250,7 +252,7 @@ void export_dispatch_effect_data(scope _effects)
 	DispatchEffectData.NOT_IMPLEMENTED_ATTR("other_entity_index");
 	
 	// Methods...
-	DispatchEffectData.def("get_effect_name_index", &CEffectData::GetEffectNameIndex);
+	DispatchEffectData.add_property("effect_name_index", &CEffectData::GetEffectNameIndex);
 	
 	// Engine specific stuff...
 	export_engine_specific_dispatch_effect_data(_effects, DispatchEffectData);
