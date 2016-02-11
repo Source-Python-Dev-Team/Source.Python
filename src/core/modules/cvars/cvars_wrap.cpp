@@ -69,19 +69,19 @@ DECLARE_SP_MODULE(_cvars)
 void export_cvar_interface(scope _cvars)
 {
 	class_<ICvar, boost::noncopyable>("_Cvar", no_init)
-		.def("register_con_command",
+		.def("register_command",
 			&ICvar::RegisterConCommand,
 			"Registers a console command.",
 			args("con_command")
 		)
 
-		.def("unregister_con_command",
+		.def("unregister_command",
 			&ICvar::UnregisterConCommand,
 			"Unregisters a console command.",
 			args("con_command")
 		)
 
-		.def("find_command_base",
+		.def("find_command",
 			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char *),
 			"Returns a ConCommandBase instance for the given command, if it exists",
 			args("name"),
@@ -101,10 +101,12 @@ void export_cvar_interface(scope _cvars)
 			args("cvar", "old_string", "old_float")
 		)
 
-		.def("get_commands",
-			ICVarExt::GetCommands,
-			"Get first ConCommandBase to allow iteration.",
-			reference_existing_object_policy()
+		.add_property("commands",
+			make_function(
+				ICVarExt::GetCommands,
+				reference_existing_object_policy()
+			),
+			"Get first ConCommandBase to allow iteration."
 		)
 
 		ADD_MEM_TOOLS(ICvar)
@@ -150,7 +152,7 @@ void export_convar_interface(scope _cvars)
 			args("value")
 		)
 
-		.def("get_name",
+		.add_property("name",
 			&IConVar::GetName,
 			"Returns its name."
 		)
@@ -215,7 +217,7 @@ void export_convar(scope _cvars)
 			"Resets to default value."
 		)
 
-		.def("get_default",
+		.add_property("default",
 			&ConVar::GetDefault,
 			"Returns the default value."
 		)
@@ -230,12 +232,12 @@ void export_convar(scope _cvars)
 			"Returns wether the ConVar has a maximum value."
 		)
 
-		.def("get_min",
+		.add_property("min",
 			&ConVarExt::GetMin,
 			"Returns the minimum value."
 		)
 
-		.def("get_max",
+		.add_property("max",
 			&ConVarExt::GetMax,
 			"Returns the maximum value."
 		)

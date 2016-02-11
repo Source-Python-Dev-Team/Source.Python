@@ -96,30 +96,24 @@ DECLARE_SP_MODULE(_commands)
 void export_command(scope _commands)
 {
 	class_<CCommand>("Command")
-		.def("get_arg_count",
+		.def("__len__",
 			&CCommand::ArgC,
-			"Returns the number of arguments in the command"
+			"Return the number of arguments in the command."
 		)
 
-		.def("get_arg_string",
+		.add_property("arg_string",
 			&CCommandExt::ArgS,
-			"Returns the argument string for the command (does not include the command itself)"
+			"Return the argument string for the command (does not include the command itself)."
 		)
 
-		.def("get_command_string",
+		.add_property("command_string",
 			&CCommandExt::GetCommandString,
-			"Returns the entire command string"
+			"Return the entire command string including the command itself."
 		)
 
 		.def("__getitem__",
 			&CCommandExt::GetArg,
-			"Gets the value of the argument at the given index",
-			args("index")
-		)
-
-		.def("get_arg",
-			&CCommandExt::GetArg,
-			"Gets the value of the argument at the given index",
+			"Return the argument at the given index.",
 			args("index")
 		)
 
@@ -127,10 +121,9 @@ void export_command(scope _commands)
 			&CCommandExt::Tokenize
 		)
 
-		.def("get_max_command_length",
+		.add_static_property("max_command_length",
 			&CCommand::MaxCommandLength
 		)
-		.staticmethod("get_max_command_length")
 
 		ADD_MEM_TOOLS(CCommand)
 	;
@@ -180,25 +173,27 @@ void export_concommandbase(scope _commands)
 			args("flag")
 		)
 		
-		.def("get_flags",
+		.add_property("flags",
 			&ConCommandBase::GetFlags,
 			"Returns its flags."
 		)
 		
-		.def("get_name",
+		.add_property("name",
 			&ConCommandBase::GetName,
 			"Returns its name."
 		)
 
-		.def("get_help_text",
+		.add_property("help_text",
 			&ConCommandBase::GetHelpText,
 			"Returns the help text."
 		)
 
-		.def("get_next",
-			GET_METHOD(ConCommandBase*, ConCommandBase, GetNext),
-			"Returns the next ConCommandBase instance.",
-			reference_existing_object_policy()
+		.add_property("next",
+			make_function(
+				GET_METHOD(ConCommandBase*, ConCommandBase, GetNext),
+				reference_existing_object_policy()
+			),
+			"Returns the next ConCommandBase instance."
 		)
 
 		.def("is_registered",
@@ -206,7 +201,7 @@ void export_concommandbase(scope _commands)
 			"Returns wheter the ConCommandBase instance is registered."
 		)
 
-		.def("get_dll_identifier",
+		.add_property("dll_identifier",
 			&ConCommandBase::GetDLLIdentifier,
 			"Returns the DLL identifier."
 		)

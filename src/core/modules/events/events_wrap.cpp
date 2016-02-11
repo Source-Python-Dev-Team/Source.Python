@@ -64,7 +64,7 @@ DECLARE_SP_MODULE(_events)
 void export_igameevent(scope _events)
 {
 	class_<IGameEvent, boost::noncopyable>("GameEvent", no_init)
-		.def("get_name",
+		.add_property("name",
 			&IGameEvent::GetName,
 			"Returns the event name."
 		)
@@ -177,7 +177,7 @@ void export_igameeventlistener(scope _events)
 			args("event")
 		)
 
-		.def("get_event_debug_id",
+		.add_property("event_debug_id",
 			&CGameEventListener2::GetEventDebugID
 		)
 

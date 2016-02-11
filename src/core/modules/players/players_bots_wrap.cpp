@@ -106,26 +106,16 @@ void export_botcontroller(scope _bots)
 			args("ang")
 		)
 
-		.def("set_local_origin",
-			&IBotController::SetLocalOrigin,
-			"Sets the bot's local origin.",
-			args("origin")
-		)
-
-		.def("get_local_origin",
+		.add_property("local_origin",
 			&IBotController::GetLocalOrigin,
+			&IBotController::SetLocalOrigin,
 			"Returns the bot's local origin."
 		)
 
-		.def("set_local_angles",
-			&IBotController::SetLocalAngles,
-			"Sets the bot's local angles.",
-			args("angles")
-		)
-
-		.def("get_local_angles",
+		.add_property("local_angles",
 			&IBotController::GetLocalAngles,
-			"Returns the bot's local angles."
+			&IBotController::SetLocalAngles,
+			"Sets the bot's local angles."
 		)
 
 		.def("remove_all_items",

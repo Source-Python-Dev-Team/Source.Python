@@ -156,7 +156,7 @@ class _BaseMenu(AutoUnload, list):
 
         :param int player_index: A player index.
         """
-        return self.get_user_queue(player_index).get_active_menu() is self
+        return self.get_user_queue(player_index).active_menu is self
 
     @classmethod
     def get_user_queue(cls, player_index):

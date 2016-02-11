@@ -101,7 +101,7 @@ def index_from_steamid(steamid):
         playerinfo = playerinfo_from_edict(edict)
 
         # Is the current player's SteamID the same as the one given?
-        if playerinfo.get_networkid_string() == steamid:
+        if playerinfo.steamid == steamid:
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
@@ -145,7 +145,7 @@ def index_from_name(name):
         playerinfo = playerinfo_from_edict(edict)
 
         # Is the current player's name the same as the one given?
-        if playerinfo.get_name() == name:
+        if playerinfo.name == name:
 
             # Return the index of the current player
             return index_from_playerinfo(playerinfo)
@@ -166,10 +166,10 @@ def uniqueid_from_playerinfo(playerinfo):
     if playerinfo.is_fake_client():
 
         # Return the bot's UniqueID
-        return 'BOT_{0}'.format(playerinfo.get_name())
+        return 'BOT_{0}'.format(playerinfo.name)
 
     # Get the player's SteamID
-    steamid = playerinfo.get_networkid_string()
+    steamid = playerinfo.steamid
 
     # Is this a Lan SteamID?
     if 'LAN' in steamid:
@@ -207,7 +207,7 @@ def address_from_playerinfo(playerinfo):
     # Is the player a bot?
     if playerinfo.is_fake_client():
 
-        # Return an empty string, since using <netinfo>.get_address() crashes
+        # Return an empty string, since using <netinfo>.address crashes
         # with bots
         return ''
 
@@ -218,4 +218,4 @@ def address_from_playerinfo(playerinfo):
     netinfo = engine_server.get_player_net_info(index)
 
     # Return the player's IP Address
-    return netinfo.get_address()
+    return netinfo.address
