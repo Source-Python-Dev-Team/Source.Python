@@ -266,7 +266,7 @@ void export_pointer(scope _memory)
 			&CPointer::__del__
 		)
 
-		 .def("get_size",
+		 .add_property("size",
 			&CPointer::GetSize,
 			"Returns the size of the memory block."
 		)
@@ -434,6 +434,11 @@ void export_function(scope _memory)
 		.def("call_trampoline",
 			raw_method(&CFunction::CallTrampoline),
 			"Calls the trampoline function dynamically."
+		)
+
+		.def("skip_hooks",
+			raw_method(&CFunction::SkipHooks),
+			"Call the function, but skip hooks if there are any."
 		)
 
 		.def("add_hook",

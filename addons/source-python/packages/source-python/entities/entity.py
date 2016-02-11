@@ -256,7 +256,7 @@ class Entity(BaseEntity, _EntitySpecials):
     @property
     def server_class(self):
         """Return the entity's server class."""
-        return self.edict.networkable.get_server_class()
+        return self.networkable.server_class
 
     @property
     def server_classes(self):
@@ -353,11 +353,11 @@ class Entity(BaseEntity, _EntitySpecials):
 
     def get_model(self):
         """Return the entity's model."""
-        return Model(self.get_model_name())
+        return Model(self.model_name)
 
     def set_model(self, model):
         """Set the entity's model to the given model."""
-        self.set_model_index(model.index)
+        self.model_index = model.index
         self.set_key_value_string('model', model.path)
 
     model = property(

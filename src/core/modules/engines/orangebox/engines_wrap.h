@@ -48,20 +48,17 @@ template<class T>
 T IVEngineServer_Visitor(T cls)
 {
 	cls
-		.def("get_game_server_steamid",
-			&IVEngineServer::GetGameServerSteamID,
-			"Returns the SteamID of the game server.",
-			reference_existing_object_policy()
+		.add_property("game_server_steamid",
+			make_function(
+				&IVEngineServer::GetGameServerSteamID,
+				reference_existing_object_policy()
+			),
+			"Returns the SteamID of the game server."
 		)
 
-		.def("get_server_version",
+		.add_property("server_version",
 			&IVEngineServer::GetServerVersion,
 			"Returns the version of the server."
-		)
-
-		.def("get_time",
-			&IVEngineServer::Time,
-			"Returns a high precision timer for doing profiling work"
 		)
 
 		.def("multiplayer_end_game",
@@ -74,20 +71,11 @@ T IVEngineServer_Visitor(T cls)
 			reference_existing_object_policy()
 		)
 
-		.def("set_achievement_mgr",
-			&IVEngineServer::SetAchievementMgr,
-			"Sets the achievement manager."
-		)
-
-		.def("get_achievement_mgr",
-			&IVEngineServer::GetAchievementMgr,
-			"Returns the current achievement manager.",
-			reference_existing_object_policy()
-		)
-
-		.def("get_server",
-			&IVEngineServer::GetIServer,
-			reference_existing_object_policy()
+		.add_property("server",
+			make_function(
+				&IVEngineServer::GetIServer,
+				reference_existing_object_policy()
+			)
 		)
 	;
 

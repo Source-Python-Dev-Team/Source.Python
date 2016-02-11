@@ -333,7 +333,7 @@ class _PlayerWeapons(object):
                 continue
 
             # Get the weapon's classname
-            weapon_class = edict_from_index(index).get_class_name()
+            weapon_class = edict_from_index(index).classname
 
             # Was a classname given and the current
             # weapon is not of that classname?
@@ -409,7 +409,7 @@ _weapon_prop_length = None
 if not isinstance(weapon_manager, NoWeaponManager):
 
     # Get the first ServerClass object
-    _current_class = server_game_dll.get_all_server_classes()
+    _current_class = server_game_dll.all_server_classes
 
     # Use "while" to loop through all ServerClass objects
     while _current_class:

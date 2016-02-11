@@ -69,38 +69,33 @@ DECLARE_SP_MODULE(_players)
 void export_playerinfo(scope _players)
 {
 	class_<IPlayerInfo, boost::noncopyable>("PlayerInfo", no_init)
-		.def("get_name",
+		.add_property("name",
 			&IPlayerInfoExt::GetName,
 			"Returns the player's name"
 		)
 
-		.def("get_userid",
+		.add_property("userid",
 			&IPlayerInfo::GetUserID,
 			"Returns the player's userid."
 		)
 
-		.def("get_networkid_string",
+		.add_property("steamid",
 			&IPlayerInfo::GetNetworkIDString,
 			"Returns the player's SteamID."
 		)
 
-		.def("get_team_index",
+		.add_property("team",
 			&IPlayerInfo::GetTeamIndex,
+			&IPlayerInfo::ChangeTeam,
 			"Returns the player's team number."
 		)
 
-		.def("change_team",
-			&IPlayerInfo::ChangeTeam,
-			"Moves the player to the given team.",
-			args("team_number")
-		)
-
-		.def("get_frag_count",
+		.add_property("kills",
 			&IPlayerInfo::GetFragCount,
 			"Returns the player's frag count."
 		)
 		
-		.def("get_death_count",
+		.add_property("deaths",
 			&IPlayerInfo::GetDeathCount,
 			"Returns the player's death count."
 		)
@@ -110,7 +105,7 @@ void export_playerinfo(scope _players)
 			"Returns whether the player is connected."
 		)
 
-		.def("get_armor_value",
+		.add_property("armor",
 			&IPlayerInfo::GetArmorValue,
 			"Returns the player's armor value."
 		)
@@ -145,47 +140,47 @@ void export_playerinfo(scope _players)
 			"Returns whether the player is an observer."
 		)
 
-		.def("get_abs_origin",
+		.add_property("origin",
 			&IPlayerInfo::GetAbsOrigin,
 			"Returns the player's origin Vector instance."
 		)
 
-		.def("get_abs_angles",
+		.add_property("angles",
 			&IPlayerInfo::GetAbsAngles,
 			"Returns the player's angle QAngle instance."
 		)
 
-		.def("get_player_mins",
+		.add_property("mins",
 			&IPlayerInfo::GetPlayerMins,
 			"Returns the player's min Vector instance."
 		)
 
-		.def("get_player_maxs",
+		.add_property("maxs",
 			&IPlayerInfo::GetPlayerMaxs,
 			"Returns the player's max Vector instance."
 		)
 
-		.def("get_weapon_name",
+		.add_property("weapon_name",
 			&IPlayerInfo::GetWeaponName,
 			"Returns the name of the weapon the player is carrying."
 		)
 
-		.def("get_model_name",
+		.add_property("model_name",
 			&IPlayerInfo::GetModelName,
 			"Returns the name of the player's model."
 		)
 
-		.def("get_health",
+		.add_property("health",
 			&IPlayerInfo::GetHealth,
 			"Returns the player's health."
 		)
 
-		.def("get_max_health",
+		.add_property("max_health",
 			&IPlayerInfo::GetMaxHealth,
 			"Returns the player's maximum health."
 		)
 		
-		.def("get_last_user_command",
+		.add_property("last_user_command",
 			&IPlayerInfo::GetLastUserCommand
 		)
 
@@ -221,16 +216,18 @@ void export_client(scope _players)
 {
 	class_<IClient, IClient*, bases<INetChannelHandler>, boost::noncopyable> Client("Client", no_init);
 
-	Client.def(
-		"get_client_name",
+	Client.add_property(
+		"name",
 		&IClient::GetClientName,
 		"Return the client's name."
 	);
 
-	Client.def(
-		"get_net_channel",
-		&IClient::GetNetChannel,
-		reference_existing_object_policy()
+	Client.add_property(
+		"net_channel",
+		make_function(
+			&IClient::GetNetChannel,
+			reference_existing_object_policy()
+		)
 	);
 
 	// TODO: Export more
@@ -251,8 +248,8 @@ void export_user_cmd(scope _players)
 		&CUserCmd::Reset
 	);
 
-	UserCmd.def(
-		"get_checksum",
+	UserCmd.add_property(
+		"checksum",
 		&CUserCmd::GetChecksum
 	);
 

@@ -136,12 +136,13 @@ void export_vector(scope _mathlib)
 			"Negates the vector."
 		)
 
-		.def("get_length",
+		.add_property("length",
 			&Vector::Length,
+			&VectorExt::SetLength,
 			"Returns the vector's 3D length."
 		)
 
-		.def("get_length_sqr",
+		.add_property("length_sqr",
 			&Vector::LengthSqr,
 			"Returns the vector's 3D length as a square product."
 		)
@@ -197,12 +198,12 @@ void export_vector(scope _mathlib)
 			args("other")
 		)
 
-		.def("get_length_2D",
+		.add_property("length_2D",
 			&Vector::Length2D,
 			"Returns the vector's 2D length."
 		)
 
-		.def("get_length_2D_sqr",
+		.add_property("length_2D_sqr",
 			&Vector::Length2DSqr,
 			"Returns the vector's 2D length as a square product."
 		)
@@ -292,12 +293,12 @@ void export_qangle(scope _mathlib)
 		.def(self *= other<float>())
 		.def(self /= other<float>())
 
-		.def("get_length",
+		.add_property("length",
 			&QAngle::Length,
 			"Returns the length of the angle."
 		)
 
-		.def("get_length_sqr",
+		.add_property("length_sqr",
 			&QAngle::LengthSqr,
 			"Returns the square of the angle's length."
 		)

@@ -104,11 +104,11 @@ void export_base_entity_handle(scope _entities)
 			"Returns whether the handle has been initted with any values."
 		)
 
-		.def("get_entry_index",
+		.add_property("entry_index",
 			&CBaseHandle::GetEntryIndex
 		)
 
-		.def("get_serial_number",
+		.add_property("serial_number",
 			&CBaseHandle::GetSerialNumber
 		)
 
@@ -152,22 +152,28 @@ void export_handle_entity(scope _entities)
 void export_server_unknown(scope _entities)
 {
 	class_< IServerUnknown, bases<IHandleEntity>, boost::noncopyable >("ServerUnknown", no_init)
-		.def("get_collideable",
-			&IServerUnknown::GetCollideable,
-			"Returns the Collideable object for this entity.",
-			reference_existing_object_policy()
+		.add_property("collideable",
+			make_function(
+				&IServerUnknown::GetCollideable,
+				reference_existing_object_policy()
+			),
+			"Returns the Collideable object for this entity."
 		)
 
-		.def("get_networkable",
-			&IServerUnknown::GetNetworkable,
-			"Returns the ServerNetworkable object for this entity.",
-			reference_existing_object_policy()
+		.add_property("networkable",
+			make_function(
+				&IServerUnknown::GetNetworkable,
+				reference_existing_object_policy()
+			),
+			"Returns the ServerNetworkable object for this entity."
 		)
 
-		.def("get_base_entity",
-			&IServerUnknown::GetBaseEntity,
-			"Returns the CBasEntity pointer for this entity.",
-			return_by_value_policy()
+		.add_property("base_entity",
+			make_function(
+				&IServerUnknown::GetBaseEntity,
+				return_by_value_policy()
+			),
+			"Returns the CBasEntity pointer for this entity."
 		)
 
 		.add_property("classname",
@@ -190,20 +196,15 @@ void export_server_unknown(scope _entities)
 void export_server_entity(scope _entities)
 {
 	class_< IServerEntity, bases<IServerUnknown>, boost::noncopyable >("ServerEntity", no_init)
-		.def("get_model_index",
+		.add_property("model_index",
 			&IServerEntity::GetModelIndex,
+			&IServerEntity::SetModelIndex,
 			"Returns the model index for this entity."
 		)
 
-		.def("get_model_name",
+		.add_property("model_name",
 			&IServerEntity::GetModelName,
 			"Returns the name of the model this entity is using."
-		)
-
-		.def("set_model_index",
-			&IServerEntity::SetModelIndex,
-			"Sets the model of this entity.",
-			args("index")
 		)
 
 		ADD_MEM_TOOLS(IServerEntity)
@@ -217,25 +218,31 @@ void export_server_entity(scope _entities)
 void export_server_networkable(scope _entities)
 {
 	class_< IServerNetworkable, IServerNetworkable *, boost::noncopyable >("ServerNetworkable", no_init)
-		.def("get_entity_handle",
-			&IServerNetworkable::GetEntityHandle,
-			"Returns the HandleEntity instance of this entity.",
-			reference_existing_object_policy()
+		.add_property("entity_handle",
+			make_function(
+				&IServerNetworkable::GetEntityHandle,
+				reference_existing_object_policy()
+			),
+			"Returns the HandleEntity instance of this entity."
 		)
 
-		.def("get_server_class",
-			&IServerNetworkable::GetServerClass,
-			"Returns the ServerClass instance of this entity.",
-			reference_existing_object_policy()
+		.add_property("server_class",
+			make_function(
+				&IServerNetworkable::GetServerClass,
+				reference_existing_object_policy()
+			),
+			"Returns the ServerClass instance of this entity."
 		)
 
-		.def("get_edict",
-			&IServerNetworkable::GetEdict,
-			"Returns the edict_t instance of this entity.",
-			reference_existing_object_policy()
+		.add_property("edict",
+			make_function(
+				&IServerNetworkable::GetEdict,
+				reference_existing_object_policy()
+			),
+			"Returns the edict_t instance of this entity."
 		)
 
-		.def("get_class_name",
+		.add_property("classname",
 			&IServerNetworkable::GetClassName,
 			"Returns the class name of this entity."
 		)
@@ -255,15 +262,19 @@ void export_server_networkable(scope _entities)
 		)
 		*/
 
-		.def("get_base_entity",
-			&IServerNetworkable::GetBaseEntity,
-			return_by_value_policy()
+		.add_property("base_entity",
+			make_function(
+				&IServerNetworkable::GetBaseEntity,
+				return_by_value_policy()
+			)
 		)
 
-		.def("get_pvs_info",
-			&IServerNetworkable::GetPVSInfo,
-			"Returns the current visible data.",
-			reference_existing_object_policy()
+		.add_property("pvs_info",
+			make_function(
+				&IServerNetworkable::GetPVSInfo,
+				reference_existing_object_policy()
+			),
+			"Returns the current visible data."
 		)
 
 		ADD_MEM_TOOLS(IServerNetworkable)
@@ -276,22 +287,20 @@ void export_server_networkable(scope _entities)
 void export_edict(scope _entities)
 {
 	class_< CBaseEdict >("_BaseEdict")
-		.def("get_server_entity",
-			GET_METHOD(IServerEntity*, CBaseEdict, GetIServerEntity),
-			"Returns its ServerEntity instance.",
-			reference_existing_object_policy()
+		.add_property("server_entity",
+			make_function(
+				GET_METHOD(IServerEntity*, CBaseEdict, GetIServerEntity),
+				reference_existing_object_policy()
+			),
+			"Returns its ServerEntity instance."
 		)
 
-		.def("get_networkable",
-			&CBaseEdict::GetNetworkable,
-			"Returns its ServerNetworkable instance.",
-			reference_existing_object_policy()
-		)
-
-		.def("get_unknown",
-			&CBaseEdict::GetUnknown,
-			"Returns its ServerUnknown instance.",
-			reference_existing_object_policy()
+		.add_property("server_unknown",
+			make_function(
+				&CBaseEdict::GetUnknown,
+				reference_existing_object_policy()
+			),
+			"Returns its ServerUnknown instance."
 		)
 
 		.def("set_edict",
@@ -300,20 +309,17 @@ void export_edict(scope _entities)
 			args("unknown", "full_edict")
 		)
 
-		.def("area_num",
+		.add_property("area_num",
 			&CBaseEdict::AreaNum
 		)
 
-		.def("get_class_name",
+		.add_property("classname",
 			&CBaseEdict::GetClassName,
 			"Returns the edict's class name."
 		)
 
-		.def("is_free",
-			&CBaseEdict::IsFree
-		)
-
-		.def("set_free",
+		.add_property("free",
+			&CBaseEdict::IsFree,
 			&CBaseEdict::SetFree
 		)
 
@@ -344,27 +350,21 @@ void export_edict(scope _entities)
 			&CBaseEdict::ClearTransmitState
 		)
 
-		.def("set_change_info",
-			&CBaseEdict::SetChangeInfo,
-			args("info")
+		.add_property("change_info",
+			&CBaseEdict::GetChangeInfo,
+			&CBaseEdict::SetChangeInfo
 		)
 
-		.def("set_change_info_serial_number",
-			&CBaseEdict::SetChangeInfoSerialNumber,
-			args("serial_number")
+		.add_property("change_info_serial_number",
+			&CBaseEdict::GetChangeInfoSerialNumber,
+			&CBaseEdict::SetChangeInfoSerialNumber
 		)
 
-		.def("get_change_info",
-			&CBaseEdict::GetChangeInfo
-		)
-
-		.def("get_change_info_serial_number",
-			&CBaseEdict::GetChangeInfoSerialNumber
-		)
-
-		.def("get_change_accessor",
-			GET_METHOD(IChangeInfoAccessor*, CBaseEdict, GetChangeAccessor),
-			reference_existing_object_policy()
+		.add_property("change_accessor",
+			make_function(
+				GET_METHOD(IChangeInfoAccessor*, CBaseEdict, GetChangeAccessor),
+				reference_existing_object_policy()
+			)
 		)
 
 		// Class attributes
@@ -384,10 +384,12 @@ void export_edict(scope _entities)
 	;
 
 	class_< edict_t, edict_t*, bases<CBaseEdict> >("Edict")
-		.def("get_collidable",
-			&edict_t::GetCollideable,
-			"Returns its Collideable instance.",
-			reference_existing_object_policy()
+		.add_property("collidable",
+			make_function(
+				&edict_t::GetCollideable,
+				reference_existing_object_policy()
+			),
+			"Returns its Collideable instance."
 		)
 
 		// Class attributes

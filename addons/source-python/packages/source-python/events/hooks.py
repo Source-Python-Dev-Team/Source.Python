@@ -197,7 +197,7 @@ def _pre_game_event(args):
     game_event = make_object(GameEvent, args[1])
 
     # Get the name of the event
-    event_name = game_event.get_name()
+    event_name = game_event.name
 
     # If the current event is not in the dictionary, return
     if event_name not in pre_event_manager:
