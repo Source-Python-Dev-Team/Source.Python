@@ -52,65 +52,6 @@ class _CoreLoadedPlugin(LoadedPlugin):
     logger = core_command_logger
 
 
-class _CorePermissions(object):
-    """Class used to store a sub-command callback and its permission."""
-
-    def __init__(self, sub_command, callback):
-        """Store the base attributes."""
-        self._sub_command = sub_command
-        self._callback = callback
-        self._container_class = None
-        self.permission = None
-        self.__doc__ = self.callback.__doc__
-
-        # Does the callback have args?
-        if hasattr(self.callback, 'args'):
-
-            # Set the args
-            self.args = self.callback.args
-
-    @property
-    def sub_command(self):
-        """Return the sub_command."""
-        return self._sub_command
-
-    @property
-    def callback(self):
-        """Return the callback."""
-        return self._callback
-
-    @property
-    def container_class(self):
-        """Return the container_class."""
-        return self._container_class
-
-    def __call__(self, *args):
-        """Call the callback if authorization check out."""
-        # Is the client command being used?
-        if self.container_class.index is not None:
-
-            # Does the sub-command have a permission?
-            if self.permission is not None:
-
-                # Is the client not authorized to use the sub-command?
-                if self.permission not in Player(
-                        self.container_class.index).permissions:
-
-                    # Notify the client that they are not authorized
-                    TextMsg(
-                        'You are not authorized to use the "{0} {1}" '
-                        'sub-command.'.format(
-                            self.container_class.command, self.sub_command),
-                        HudDestination.CONSOLE).send(
-                            self.container_class.index)
-
-                    # No need to go further
-                    return
-
-        # Call the callback
-        self.callback(*args)
-
-
 class _CoreCommandManager(SubCommandManager):
     """Class used for executing "sp" sub-command functionality."""
 
@@ -118,25 +59,11 @@ class _CoreCommandManager(SubCommandManager):
     instance = _CoreLoadedPlugin
     logger = core_command_logger
 
-    def __setitem__(self, item, value):
-        """Overwrite __setitem__ to set using _CorePermissions class."""
-        # Is the item already registered?
-        if item in self:
-
-            # Raise an error
-            raise KeyError('Key "{0}" already exists.'.format(item))
-
-        # Get the _CorePermissions instance for the item
-        instance = _CorePermissions(item, value)
-
-        # Set the container class for the instance
-        instance._container_class = self
-
-        # Add the instance to the dictionary
-        super().__setitem__(item, instance)
-
     def print_plugins(self):
-        """List all currently loaded plugins."""
+        """List all currently loaded plugins.
+        
+        .. todo:: Move this to :class:`plugins.command.SubCommandManager`?
+        """
         # Get header messages
         message = self.prefix + _plugin_strings[
             'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
@@ -159,8 +86,8 @@ class _CoreCommandManager(SubCommandManager):
 
                         # Get the ConVar's text
                         value = '{0}:\n\t\t\t{1}: {2}'.format(
-                            value.get_name(),
-                            value.get_help_text(),
+                            value.name,
+                            value.help_text,
                             value.get_string())
 
                     # Add message for the current item and its value

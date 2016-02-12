@@ -155,9 +155,6 @@ class SubCommandManager(AutoUnload, OrderedDict):
         self._log_message(self.prefix + self.translations[
             'Successful Load'].get_string(plugin=plugin_name))
 
-    # Set the method's required arguments
-    load_plugin.args = ['<plugin>']
-
     def unload_plugin(self, plugin_name):
         """Unload a plugin by name."""
         # Is the given plugin name a proper name?
@@ -187,9 +184,6 @@ class SubCommandManager(AutoUnload, OrderedDict):
         self._log_message(self.prefix + self.translations[
             'Successful Unload'].get_string(plugin=plugin_name))
 
-    # Set the method's required arguments
-    unload_plugin.args = ['<plugin>']
-
     def reload_plugin(self, plugin_name):
         """Reload a plugin by name."""
         # Is the given plugin name a proper name?
@@ -207,9 +201,6 @@ class SubCommandManager(AutoUnload, OrderedDict):
 
         # Load the plugin
         self.load_plugin(plugin_name)
-
-    # Set the method's required arguments
-    reload_plugin.args = ['<plugin>']
 
     def print_plugins(self):
         """Print all currently loaded plugins."""
