@@ -11,7 +11,6 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 #   Commands
-from commands.server import server_command_manager
 from commands.typed import TypedServerCommand
 #   Core
 from core import core_logger
@@ -21,9 +20,6 @@ from core.version import VERSION
 from cvars import ConVar
 #   Engines
 from engines.server import engine_server
-#   Messages
-from messages import HudDestination
-from messages import TextMsg
 #   Paths
 from paths import SP_DATA_PATH
 #   Players
