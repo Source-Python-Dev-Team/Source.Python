@@ -213,50 +213,47 @@ class _CoreCommandManager(SubCommandManager):
 # Get the _CoreCommandManager instance
 _core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 
-# A little hack, so I don't have to rewrite everything...
-server_command_manager.unregister_commands('sp', _core_command.call_command)
-
 
 # =============================================================================
 # >> sp
 # =============================================================================
-@TypedServerCommand(['sp', 'load'])
+@_core_command.sub_command(['load'])
 def _sp_load(command_info, plugin):
     """Load a plugin."""
     _core_command.load_plugin(plugin)
 
-@TypedServerCommand(['sp', 'unload'])
+@_core_command.sub_command(['unload'])
 def _sp_unload(command_info, plugin):
     """Unload a plugin."""
     _core_command.unload_plugin(plugin)
 
-@TypedServerCommand(['sp', 'reload'])
+@_core_command.sub_command(['reload'])
 def _sp_reload(command_info, plugin):
     """Reload a plugin."""
     _core_command.reload_plugin(plugin)
 
-@TypedServerCommand(['sp', 'delay'])
+@_core_command.sub_command(['delay'])
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
     Delay(delay, engine_server.server_command, command + ' ' + ' '.join(args))
 
-@TypedServerCommand(['sp', 'list'])
+@_core_command.sub_command(['list'])
 def _sp_list(command_info):
     """List all currently loaded plugins."""
     _core_command.print_plugins()
 
-@TypedServerCommand(['sp', 'version'])
+@_core_command.sub_command(['version'])
 def _sp_version(command_info):
     """Display Source.Python version information."""
     core_command_logger.log_message(
         'Current Source.Python version: {0}'.format(VERSION))
 
-@TypedServerCommand(['sp', 'credits'])
+@_core_command.sub_command(['credits'])
 def _sp_credits(command_info):
     """List all credits for Source.Python."""
     _core_command.print_credits()
 
-@TypedServerCommand(['sp', 'help'])
+@_core_command.sub_command(['help'])
 def _sp_help(command_info, command=None, *sub_commands):
     """Print all sp sub-commands or help for a specific command."""
     if command is None:

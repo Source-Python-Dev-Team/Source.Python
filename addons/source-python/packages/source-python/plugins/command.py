@@ -15,8 +15,7 @@ from textwrap import TextWrapper
 
 # Source.Python Imports
 #   Commands
-from commands.client import client_command_manager
-from commands.server import server_command_manager
+from commands.typed import TypedServerCommand
 #   Core
 from core import AutoUnload
 #   Messages
@@ -55,9 +54,7 @@ class SubCommandManager(AutoUnload, OrderedDict):
     logger = plugins_command_logger
     translations = _plugin_strings
 
-    def __init__(
-            self, command, description='', prefix='',
-            register_client=False, client_permission=None):
+    def __init__(self, command, description='', prefix=''):
         """Called on instance initialization."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
@@ -76,9 +73,6 @@ class SubCommandManager(AutoUnload, OrderedDict):
             # If not, raise an error
             raise PluginInstanceError(PluginInstanceError.__doc__)
 
-        # Set the client index to the default value
-        self._index = None
-
         # Store the command
         self._command = command
 
@@ -92,25 +86,15 @@ class SubCommandManager(AutoUnload, OrderedDict):
         # Set the instance class for the manager class
         self.manager.instance = self.instance
 
-        # Register the server command
-        server_command_manager.register_commands(
-            self.command, self.call_command, description, 0)
+    def sub_command(self, commands):
+        """Add a sub-command.
 
-        # Store whether the client command should be registered
-        self._register_client = register_client
+        .. seealso:: :class:`commands.typed.TypedServerCommand`
+        """
+        if isinstance(commands, str):
+            commands = [commands]
 
-        # Should the client command be registered?
-        if self._register_client:
-
-            # Register the client command
-            client_command_manager.register_commands(
-                self.command, self.call_command,
-                permission=client_permission, fail_callback=self.fail_callback)
-
-    @property
-    def index(self):
-        """Return the client index that executed the client command."""
-        return self._index
+        return TypedServerCommand([self._command] + list(commands))
 
     @property
     def manager(self):
@@ -131,208 +115,6 @@ class SubCommandManager(AutoUnload, OrderedDict):
     def prefix(self):
         """Return the prefix to use in log messages."""
         return self._prefix
-
-    def _unload_instance(self):
-        """Unregister commands when the instance is unloaded."""
-        # Unregister the server command
-        server_command_manager.unregister_commands(
-            self.command, self.call_command)
-
-        # Does the client command need unregistered?
-        if self._register_client:
-
-            # Unregister the client command
-            client_command_manager.unregister_commands(
-                self.command, self.call_command)
-
-    def call_command(self, command, index=None):
-        """Get the provided sub-command and executes accordingly."""
-        # Store the index
-        self._index = index
-
-        # Get the argument string
-        arg_string = command.arg_string
-
-        # Use try/except to split the argument string,
-        # if it contains more than one argument
-        try:
-
-            # Split the argument string to get the sub-command
-            sub_command, args = arg_string.split(maxsplit=1)
-
-        # Were there not enough arguments to split?
-        except ValueError:
-
-            # Set the command to the entire string
-            sub_command = arg_string.strip()
-
-            # Set args to nothing
-            args = ''
-
-        # Split the remaining args
-        args = args.split()
-
-        # Make the sub-command lower-case
-        sub_command = sub_command.lower()
-
-        # Is the sub-command in the dictionary?
-        if sub_command not in self:
-
-            # Was a sub-command given?
-            if sub_command:
-
-                # Print a message about the invalid sub-command
-                message = self.prefix + self.translations[
-                    'Invalid Command'].get_string(subcommand=sub_command)
-
-            # Was no sub-command given?
-            else:
-
-                # Print a message about the missing sub-command
-                message = self.prefix + self.translations[
-                    'No Command'].get_string(command=self.command)
-
-            # Print the help text for the console command
-            self.print_help(message)
-
-            # Reset the client index
-            self._index = None
-
-            # No need to go further
-            return
-
-        # Does the given sub-command's callable allow for arguments?
-        if hasattr(self[sub_command], 'args'):
-
-            # Get the number of required arguments for the callable
-            required = len([
-                x for x in self[sub_command].args if x.startswith('<')])
-
-            # Get the number of arguments provided
-            given = len(args)
-
-            # Were enough arguments provided?
-            if given < required:
-
-                # Log a message about the invalid number of arguments given
-                self._log_message(self.prefix + self.translations[
-                    'Invalid Arguments'].get_string(
-                        command=self.command, subcommand=sub_command) +
-                    ' '.join(self[sub_command].args))
-
-                # Reset the client index
-                self._index = None
-
-                # No need to go further
-                return
-
-            # Are all of the arguments required?
-            if required == len(self[sub_command].args):
-
-                # Were the correct number of arguments given?
-                if given != required:
-
-                    # Log a message about the invalid number of arguments given
-                    self._log_message(self.prefix + self.translations[
-                            'Invalid Arguments'].get_string(
-                            command=self.command, subcommand=sub_command) +
-                        ' '.join(self[sub_command].args))
-
-                    # Reset the client index
-                    self._index = None
-
-                    # No need to go further
-                    return
-
-            # Call the sub-command's callable with the given arguments
-            self[sub_command](*args)
-
-            # Reset the client index
-            self._index = None
-
-            # No need to go further
-            return
-
-        # Does the current item have its own call_command method?
-        if hasattr(self[sub_command], 'call_command'):
-
-            # Set the client index for the sub-command
-            self[sub_command]._index = self.index
-
-            # Call the instance's call_command method with the arguments
-            self[sub_command].call_command(args)
-
-            # Reset the client index
-            self._index = None
-
-            # Reset the client index for the sub-command
-            self[sub_command]._index = None
-
-            # No need to go further
-            return
-
-        # Call the callable without the arguments
-        self[sub_command]()
-
-        # Reset the client index
-        self._index = None
-
-    def fail_callback(self, command, index):
-        """Notify the player they are not authorized to use command."""
-        TextMsg(
-            'You are not authorized to use the "{0}" command.'.format(
-            self.command), HudDestination.CONSOLE).send(index)
-
-    def print_help(self, message=''):
-        """Print all sub-commands for the console command."""
-        # Add a header message
-        message += '\n' + self.prefix + self.translations[
-            'Help'].get_string(command=self.command) + '\n' + '=' * 78
-
-        # Store an ordered dictionary to hold values for the help text
-        items_dictionary = OrderedDict()
-
-        # Get all the text to display
-        self._get_help_text(self, items_dictionary)
-
-        # Get the maximum length of all sub-commands
-        length = max(map(len, items_dictionary.keys())) + 1
-
-        # Get the subsequent indent value
-        indent = ' ' * (length + 2)
-
-        # Loop through all items in the dictionary
-        for item, value in items_dictionary.items():
-
-            # Get the wrapped text to display
-            lines = TextWrapper(
-                78, subsequent_indent=indent, break_long_words=False).wrap(
-                    item.ljust(length) + value)
-
-            # Add the text to the message
-            message += '\n' + '\n'.join(lines)
-
-        # Send the message
-        self._log_message(message + '\n' + '=' * 78)
-
-    def _get_help_text(self, instance, items_dictionary, prefix=''):
-        """"""
-        for item, value in instance.items():
-
-            name = '{0} {1}'.format(prefix, item) if prefix else item
-
-            if isinstance(value, dict):
-
-                self._get_help_text(value, items_dictionary, name)
-
-            elif hasattr(instance[item], 'args'):
-
-                items_dictionary[
-                    name + ' ' + ' '.join(instance[item].args)] = value.__doc__
-
-            else:
-
-                items_dictionary[name] = value.__doc__
 
     def load_plugin(self, plugin_name):
         """Load a plugin by name."""
@@ -445,18 +227,9 @@ class SubCommandManager(AutoUnload, OrderedDict):
         self._log_message(message)
 
     def _log_message(self, message):
-        """Log the message and send to client console if client command."""
+        """Log a message."""
         # Log the message
         self.logger.log_message(message)
-
-        # Was the client command used?
-        if self.index is not None:
-
-            # Loop through the lines of the message
-            for line in message.splitlines():
-
-                # Print the help text to the client
-                TextMsg(line, HudDestination.CONSOLE).send(self.index)
 
     @staticmethod
     def _is_valid_plugin_name(plugin_name):

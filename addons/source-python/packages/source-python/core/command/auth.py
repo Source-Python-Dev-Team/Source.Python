@@ -15,6 +15,7 @@ from auth.manager import auth_manager
 from commands.typed import filter_str
 from commands.typed import TypedServerCommand
 #   Core
+from core.command import _core_command
 from core.command import core_command_logger
 
 
@@ -27,7 +28,7 @@ logger = core_command_logger.auth
 # =============================================================================
 # >> sp auth backend
 # =============================================================================
-@TypedServerCommand(['sp', 'auth', 'backend', 'load'])
+@_core_command.sub_command(['auth', 'backend', 'load'])
 def _sp_auth_load(command_info, backend):
     """Load or reload a backend."""
     # TODO:
@@ -40,7 +41,7 @@ def _sp_auth_load(command_info, backend):
 
     logger.log_message(message.format(backend))
 
-@TypedServerCommand(['sp', 'auth', 'backend', 'list'])
+@_core_command.sub_command(['auth', 'backend', 'list'])
 def _sp_auth_list(command_info):
     """List all available backends."""
     result = 'Available backends:'
@@ -53,7 +54,7 @@ def _sp_auth_list(command_info):
 # =============================================================================
 # >> sp auth permission player
 # =============================================================================
-@TypedServerCommand(['sp', 'auth', 'permission', 'player', 'add'])
+@_core_command.sub_command(['auth', 'permission', 'player', 'add'])
 def _sp_auth_permission_player_add(
         command_info, players:filter_str, permission):
     """Grant a permission to players."""
@@ -62,7 +63,7 @@ def _sp_auth_permission_player_add(
         logger.log_message(
             'Granted permission "{}" to {}.'.format(permission, player.name))
 
-@TypedServerCommand(['sp', 'auth', 'permission', 'player', 'remove'])
+@_core_command.sub_command(['auth', 'permission', 'player', 'remove'])
 def _sp_auth_permission_player_remove(
         command_info, players:filter_str, permission):
     """Remove a permission from players."""
@@ -74,7 +75,7 @@ def _sp_auth_permission_player_remove(
             'Removed permission "{}" from {}.'.format(
                 permission, player.name))
 
-@TypedServerCommand(['sp', 'auth', 'permission', 'player', 'add_parent'])
+@_core_command.sub_command(['auth', 'permission', 'player', 'add_parent'])
 def _sp_auth_permission_player_add_parent(
         command_info, players:filter_str, parent):
     """Add a parent to players."""
@@ -83,7 +84,7 @@ def _sp_auth_permission_player_add_parent(
         logger.log_message(
             'Added parent "{}" to {}.'.format(parent, player.name))
 
-@TypedServerCommand(['sp', 'auth', 'permission', 'player', 'remove_parent'])
+@_core_command.sub_command(['auth', 'permission', 'player', 'remove_parent'])
 def _sp_auth_permission_player_remove_parent(
         command_info, players:filter_str, parent):
     """Remove a parent from players."""
@@ -98,14 +99,14 @@ def _sp_auth_permission_player_remove_parent(
 # =============================================================================
 # >> sp auth permission group
 # =============================================================================
-@TypedServerCommand(['sp', 'auth', 'permission', 'group', 'add'])
+@_core_command.sub_command(['auth', 'permission', 'group', 'add'])
 def _sp_auth_permission_group_add(command_info, group, permission):
     """Add a permission to a group."""
     auth_manager.get_group_permissions(group).add(permission)
     logger.log_message(
         'Added permission "{}" to group "{}".'.format(permission, group))
 
-@TypedServerCommand(['sp', 'auth', 'permission', 'group', 'remove'])
+@_core_command.sub_command(['auth', 'permission', 'group', 'remove'])
 def _sp_auth_permission_group_remove(command_info, group, permission):
     """Remove a permission from a group."""
     with suppress(KeyError):
@@ -114,14 +115,14 @@ def _sp_auth_permission_group_remove(command_info, group, permission):
     logger.log_message(
         'Removed permission "{}" from group "{}".'.format(permission, group))
 
-@TypedServerCommand(['sp', 'auth', 'permission', 'group', 'add_parent'])
+@_core_command.sub_command(['auth', 'permission', 'group', 'add_parent'])
 def _sp_auth_permission_group_add_parent(command_info, group, parent):
     """Add a parent to a group."""
     auth_manager.get_group_permissions(group).add_parent(parent)
     logger.log_message(
         'Added parent "{}" to group "{}".'.format(parent, group))
 
-@TypedServerCommand(['sp', 'auth', 'permission', 'group', 'remove_parent'])
+@_core_command.sub_command(['auth', 'permission', 'group', 'remove_parent'])
 def _sp_auth_permission_group_remove_parent(command_info, group, parent):
     """Remove a parent from a group."""
     with suppress(KeyError):
