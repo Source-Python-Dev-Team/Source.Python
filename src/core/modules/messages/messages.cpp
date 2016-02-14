@@ -51,12 +51,12 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 
 	// Initialize buffer
 #ifdef USE_PROTOBUF
-	const google::protobuf::Message* message = g_Cstrike15UsermessageHelpers.GetPrototype(message_name)->New();
+	const google::protobuf::Message* message = g_Cstrike15UsermessageHelpers.GetPrototype(message_name);
 	if (!message) {
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
 	}
 
-	m_buffer = new CProtobufMessage(const_cast<google::protobuf::Message*>(message));
+	m_buffer = new CProtobufMessage(const_cast<google::protobuf::Message*>(message->New()));
 #else
 	int index = GetMessageIndex();
 	if (index == -1) {
