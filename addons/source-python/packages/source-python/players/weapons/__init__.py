@@ -388,7 +388,7 @@ class _PlayerWeapons(object):
 def _find_weapon_prop_length(table):
     """Loop through a prop table to find the myweapons property length."""
     # Loop through the props in the table
-    for offset, item in enumerate(table):
+    for item in table:
 
         # Is this the m_hMyWeapons prop?
         if item.name == weapon_manager.myweapons[:~0]:
