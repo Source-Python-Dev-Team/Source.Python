@@ -183,7 +183,7 @@ void export_bf_write(scope _bitbuffers)
 		)
 
 		.add_property("data",
-			&BitBufferWriteExt::GetData
+			make_function(&bf_write::GetData, return_by_value_policy())
 		)
 
 		.def("check_for_overflow",
@@ -342,7 +342,7 @@ void export_bf_read(scope _bitbuffers)
 		)
 
 		.add_property("data",
-			&BitBufferReadExt::GetData
+			make_function(&bf_read::GetBasePointer, return_by_value_policy())
 		)
 
 		.def_readwrite("data_bytes_count",

@@ -48,18 +48,6 @@ public:
 	{
 		return boost::shared_ptr<bf_write>(new bf_write(new unsigned char[buffer_size], buffer_size), &__del__);
 	}
-
-	static list GetData(bf_write& buffer)
-	{
-		list result;
-
-		unsigned char* data = buffer.GetData();
-		for (int i=0; i < buffer.GetNumBytesWritten(); i++) {
-			result.append(data[i]);
-		}
-
-		return result;
-	}
 };
 
 
@@ -80,18 +68,6 @@ public:
 		void* pData = new unsigned char[size];
 		memcpy(pData, buffer.GetData(), size);
 		return boost::shared_ptr<bf_read>(new bf_read(pData, size), &__del__);
-	}
-
-	static list GetData(bf_read& buffer)
-	{
-		list result;
-		
-		const unsigned char* data = buffer.GetBasePointer();
-		for (int i=0; i < (int) buffer.m_nDataBytes; i++) {
-			result.append(data[i]);
-		}
-
-		return result;
 	}
 
 	static int GetNumBytesRead(bf_read& buffer)

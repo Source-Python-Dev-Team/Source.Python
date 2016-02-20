@@ -279,6 +279,37 @@ struct void_ptr_from_python
 	}
 };
 
+// unsigned char*
+struct unsigned_char_ptr_to_python
+{
+	unsigned_char_ptr_to_python()
+	{
+		to_python_converter< unsigned char*, unsigned_char_ptr_to_python >();
+	}
+
+	static PyObject* convert(unsigned char* pPtr)
+	{
+		return incref(object(CPointer((unsigned long) pPtr)).ptr());
+	}
+};
+
+struct unsigned_char_ptr_from_python
+{
+	unsigned_char_ptr_from_python()
+	{
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<unsigned char>()
+		);
+	}
+
+	static void* convert(PyObject* obj)
+	{
+		CPointer* pAddr = extract<CPointer*>(obj);
+		return (void *) pAddr->m_ulAddr;
+	}
+};
+
 //---------------------------------------------------------------------------------
 // Initializes all converters
 //---------------------------------------------------------------------------------
@@ -291,4 +322,7 @@ void InitConverters()
 	
 	void_ptr_to_python();
 	void_ptr_from_python();
+	
+	unsigned_char_ptr_to_python();
+	unsigned_char_ptr_from_python();
 }
