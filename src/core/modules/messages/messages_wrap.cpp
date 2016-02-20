@@ -102,7 +102,9 @@ void export_user_message(scope _message)
 void export_protobuf_message(scope _messages)
 {
 #ifdef USE_PROTOBUF
-	class_<google::protobuf::Message, boost::noncopyable> ProtobufMessage("ProtobufMessage", no_init);
+	class_<google::protobuf::Message, boost::shared_ptr<google::protobuf::Message>, boost::noncopyable> ProtobufMessage("ProtobufMessage", no_init);
+
+	ProtobufMessage.def("__init__", make_constructor(&CProtobufMessageExt::__init__));
 	
 	ProtobufMessage.def("get_int32", &CProtobufMessageExt::GetInt32);
 	ProtobufMessage.def("get_int64", &CProtobufMessageExt::GetInt64);
@@ -158,6 +160,9 @@ void export_protobuf_message(scope _messages)
 	ProtobufMessage.def("add_string", &CProtobufMessageExt::AddString);
 	ProtobufMessage.def("add_enum", &CProtobufMessageExt::AddEnum);
 	ProtobufMessage.def("add_message", &CProtobufMessageExt::AddMessage, reference_existing_object_policy());
+	
+	ProtobufMessage.add_property("name", &google::protobuf::Message::GetTypeName);
+	ProtobufMessage.add_property("debug_string", &google::protobuf::Message::DebugString);
 
 	ProtobufMessage ADD_MEM_TOOLS(google::protobuf::Message);
 #endif

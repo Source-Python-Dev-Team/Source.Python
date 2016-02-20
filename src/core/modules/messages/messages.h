@@ -53,6 +53,31 @@
 	class CProtobufMessageExt
 	{
 	public:
+		static boost::shared_ptr<google::protobuf::Message> __init__(const char* szMessage)
+		{
+			const google::protobuf::DescriptorPool* pool = google::protobuf::DescriptorPool::generated_pool();
+			if (!pool) {
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pool is NULL");
+			}
+
+			const google::protobuf::Descriptor* descriptor = pool->FindMessageTypeByName(szMessage);
+			if (!descriptor) {
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find '%s'.", szMessage);
+			}
+
+			google::protobuf::MessageFactory* factory = google::protobuf::MessageFactory::generated_factory();
+			if (!factory) {
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Factory is NULL");
+			}
+
+			const google::protobuf::Message* message = factory->GetPrototype(descriptor);
+			if (!message) {
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get prototype of '%s'.", szMessage);
+			}
+
+			return boost::shared_ptr<google::protobuf::Message>(message->New());
+		}
+
 		static const google::protobuf::FieldDescriptor* GetFieldDescriptor(google::protobuf::Message* pMessage, const char* field_name)
 		{
 			const google::protobuf::FieldDescriptor* descriptor = pMessage->GetDescriptor()->FindFieldByName(field_name);
