@@ -56,7 +56,18 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
 	}
 
-	m_buffer = new CProtobufMessage(const_cast<google::protobuf::Message*>(message->New()));
+	m_buffer = message->New();
+	if (!m_buffer) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Message is NULL");
+	}
+
+	if (!m_buffer->GetDescriptor()) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Descriptor is NULL");
+	}
+
+	if (!m_buffer->GetReflection()) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Reflection is NULL");
+	}
 #else
 	int index = GetMessageIndex();
 	if (index == -1) {
@@ -74,7 +85,6 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 CUserMessage::~CUserMessage()
 {
 #ifdef USE_PROTOBUF
-	delete m_buffer->GetProtobufMessage();
 	delete m_buffer;
 	m_buffer = NULL;
 #endif
@@ -83,7 +93,7 @@ CUserMessage::~CUserMessage()
 void CUserMessage::Send()
 {
 #ifdef USE_PROTOBUF
-	engine->SendUserMessage(m_recipients, GetMessageIndex(), *m_buffer->GetProtobufMessage());
+	engine->SendUserMessage(m_recipients, GetMessageIndex(), *m_buffer);
 #else
 	engine->MessageEnd();
 #endif
@@ -117,28 +127,6 @@ bool CUserMessage::IsProtobuf()
 	return false;
 #endif
 }
-
-
-//-----------------------------------------------------------------------------
-// CProtobufMessage.
-//-----------------------------------------------------------------------------
-#ifdef USE_PROTOBUF
-	CProtobufMessage::CProtobufMessage(google::protobuf::Message* message):
-		m_message(message)
-	{
-		if (!m_message) {
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Message is NULL");
-		}
-
-		if (!m_message->GetDescriptor()) {
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Descriptor is NULL");
-		}
-
-		if (!m_message->GetReflection()) {
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Reflection is NULL");
-		}
-	}
-#endif
 
 //-----------------------------------------------------------------------------
 // Functions.
