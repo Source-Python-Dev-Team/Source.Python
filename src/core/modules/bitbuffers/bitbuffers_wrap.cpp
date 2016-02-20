@@ -55,7 +55,7 @@ DECLARE_SP_MODULE(_bitbuffers)
 //-----------------------------------------------------------------------------
 void export_bf_write(scope _bitbuffers)
 {
-	class_<bf_write>("BitBufferWrite", no_init)
+	class_<bf_write>("BitBufferWrite", init<void*, int, optional<int> >())
 		.def("__init__",
 			make_constructor(&BitBufferWriteExt::__init__, default_call_policies())
 		)
@@ -220,7 +220,7 @@ void export_bf_write(scope _bitbuffers)
 //-----------------------------------------------------------------------------
 void export_bf_read(scope _bitbuffers)
 {
-	class_<bf_read>("BitBufferRead", no_init)
+	class_<bf_read>("BitBufferRead", init<void*, int, optional<int> >())
 		.def("__init__",
 			make_constructor(&BitBufferReadExt::__init__, default_call_policies())
 		)
