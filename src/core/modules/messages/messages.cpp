@@ -57,17 +57,6 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 	}
 
 	m_buffer = message->New();
-	if (!m_buffer) {
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Message is NULL");
-	}
-
-	if (!m_buffer->GetDescriptor()) {
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Descriptor is NULL");
-	}
-
-	if (!m_buffer->GetReflection()) {
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Reflection is NULL");
-	}
 #else
 	int index = GetMessageIndex();
 	if (index == -1) {
