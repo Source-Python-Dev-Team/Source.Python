@@ -187,7 +187,7 @@ void export_bf_write(scope _bitbuffers)
 		)
 
 		.add_property("data",
-			make_function(&bf_write::GetData, return_by_value_policy())
+			make_function(&bf_write::GetBasePointer, return_by_value_policy())
 		)
 
 		.def("check_for_overflow",
