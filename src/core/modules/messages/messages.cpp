@@ -75,7 +75,6 @@ CUserMessage::~CUserMessage()
 {
 #ifdef USE_PROTOBUF
 	delete m_buffer;
-	m_buffer = NULL;
 #endif
 }
 
