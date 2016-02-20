@@ -293,23 +293,6 @@ struct unsigned_char_ptr_to_python
 	}
 };
 
-struct unsigned_char_ptr_from_python
-{
-	unsigned_char_ptr_from_python()
-	{
-		boost::python::converter::registry::insert(
-			&convert,
-			boost::python::type_id<unsigned char>()
-		);
-	}
-
-	static void* convert(PyObject* obj)
-	{
-		CPointer* pAddr = extract<CPointer*>(obj);
-		return (void *) pAddr->m_ulAddr;
-	}
-};
-
 //---------------------------------------------------------------------------------
 // Initializes all converters
 //---------------------------------------------------------------------------------
@@ -324,5 +307,4 @@ void InitConverters()
 	void_ptr_from_python();
 	
 	unsigned_char_ptr_to_python();
-	unsigned_char_ptr_from_python();
 }
