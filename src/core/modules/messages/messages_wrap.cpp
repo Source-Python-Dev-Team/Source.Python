@@ -163,6 +163,7 @@ void export_protobuf_message(scope _messages)
 	
 	ProtobufMessage.add_property("name", &google::protobuf::Message::GetTypeName);
 	ProtobufMessage.add_property("debug_string", &google::protobuf::Message::DebugString);
+	ProtobufMessage.add_property("byte_size", &google::protobuf::Message::ByteSize);
 
 	ProtobufMessage ADD_MEM_TOOLS(google::protobuf::Message);
 #endif
