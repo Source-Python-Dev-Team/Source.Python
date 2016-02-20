@@ -57,7 +57,7 @@ void export_bf_write(scope _bitbuffers)
 {
 	class_<bf_write>("BitBufferWrite", init<void*, int, optional<int> >())
 		.def("__init__",
-			make_constructor(&BitBufferWriteExt::__init__, default_call_policies())
+			make_constructor(&BitBufferWriteExt::__init__)
 		)
 
 		.def("seek_to_bit",
@@ -222,7 +222,7 @@ void export_bf_read(scope _bitbuffers)
 {
 	class_<bf_read>("BitBufferRead", init<void*, int, optional<int> >())
 		.def("__init__",
-			make_constructor(&BitBufferReadExt::__init__, default_call_policies())
+			make_constructor(&BitBufferReadExt::__init__)
 		)
 
 		.def("read_one_bit",
