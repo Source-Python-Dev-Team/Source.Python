@@ -63,6 +63,15 @@ using namespace boost::python;
 	}
 
 //---------------------------------------------------------------------------------
+// Use this macro to raise a Python exception.
+//---------------------------------------------------------------------------------
+#define BOOST_RAISE_EXCEPTION( exceptionName, exceptionString, ... ) \
+    { \
+		PyErr_Format(exceptionName, exceptionString, ##__VA_ARGS__); \
+		throw_error_already_set(); \
+    }
+
+//---------------------------------------------------------------------------------
 // This macro will turn input into a string.
 //---------------------------------------------------------------------------------
 #define XSTRINGIFY(s) STRINGIFY(s)
@@ -97,21 +106,17 @@ object raw_method(T method)
 // Use this macro to define a function or class method that raises a
 // NotImplementedError. This is quite hacky, but saves a lot work!
 //---------------------------------------------------------------------------------
-#define NOT_IMPLEMENTED_RAW() \
-	eval( \
-		"lambda *args, **kw: exec('raise NotImplementedError(\"Not implemented on this engine.\")')", \
-		import("__main__").attr("__dict__") \
-	)
+inline object _NotImplementedOnThisEngine(boost::python::tuple args, boost::python::dict kw)
+{
+	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Not implemented on this engine.");
+	return object();
+}
 
 #define NOT_IMPLEMENTED(name) \
-	def( \
-		name, \
-		NOT_IMPLEMENTED_RAW(), \
-		"\nNot implemented on this engine.\n" \
-	)
+	def(name, raw_function(&_NotImplementedOnThisEngine), "Not implemented on this engine.")
 
 #define NOT_IMPLEMENTED_ATTR(name) \
-	add_property(name, NOT_IMPLEMENTED_RAW(), NOT_IMPLEMENTED_RAW(), "\nNot implemented on this engine.\n")
+	add_property(name, raw_function(&_NotImplementedOnThisEngine), raw_function(&_NotImplementedOnThisEngine), "Not implemented on this engine.")
 
 //---------------------------------------------------------------------------------
 // Use this macro to default a not implemented value to None.
@@ -129,16 +134,6 @@ object raw_method(T method)
 #define CHECK_OVERRIDE(override) \
 	if (override.is_none()) \
 		BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Method must be implemented by a subclass.")
-
-
-//---------------------------------------------------------------------------------
-// Use this macro to raise a Python exception.
-//---------------------------------------------------------------------------------
-#define BOOST_RAISE_EXCEPTION( exceptionName, exceptionString, ... ) \
-    { \
-		PyErr_Format(exceptionName, exceptionString, ##__VA_ARGS__); \
-		throw_error_already_set(); \
-    }
 
 //---------------------------------------------------------------------------------
 // Use this macro to add a specialization for a class to hold back-references.
