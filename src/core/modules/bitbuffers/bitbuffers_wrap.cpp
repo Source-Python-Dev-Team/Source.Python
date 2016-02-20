@@ -91,6 +91,10 @@ void export_bf_write(scope _bitbuffers)
 			"Writes an unsigned integer with variable bit length."
 		)
 
+		.def("write_var_int32",
+			&bf_write::WriteVarInt32
+		)
+
 		.def("write_bits_from_buffer",
 			&bf_write::WriteBitsFromBuffer,
 			"Copy the bits straight out of <pIn>. This seeks <pIn> forward by <nBits>. Returns an error if this buffer or the read buffer overflows."
