@@ -161,6 +161,9 @@ void export_protobuf_message(scope _messages)
 	ProtobufMessage.def("add_enum", &CProtobufMessageExt::AddEnum);
 	ProtobufMessage.def("add_message", &CProtobufMessageExt::AddMessage, reference_existing_object_policy());
 	
+	ProtobufMessage.def("serialize_to_array", &google::protobuf::Message::SerializeToArray);
+	ProtobufMessage.def("parse_from_array", &google::protobuf::Message::ParseFromArray);
+
 	ProtobufMessage.add_property("name", &google::protobuf::Message::GetTypeName);
 	ProtobufMessage.add_property("debug_string", &google::protobuf::Message::DebugString);
 	ProtobufMessage.add_property("byte_size", &google::protobuf::Message::ByteSize);
