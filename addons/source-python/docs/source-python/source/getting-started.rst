@@ -127,4 +127,8 @@ Your plugin should now look like this.
 What's next?
 ------------
 
-.. todo:: Write this "What's next?" article.
+You should definitely take a look at the :doc:`module tutorials section <module_tutorials>`.
+It contains detailed tutorials about Source.Python modules/packages.
+
+Moreover, you should take a look at the :ref:`modindex`. It's a list of all
+Source.Python modules/packages and contains the API documentation.
