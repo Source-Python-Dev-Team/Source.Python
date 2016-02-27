@@ -38,17 +38,25 @@ public:
 		if (!input || input[0] == '\0')
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Input is empty.")
 
-		uint32 account_id;
 		uint32 universe;
+		uint32 auth_server;
+		uint32 account_id;
 
 		// Try SteamID2
-		if (sscanf(input, "STEAM_0:%u:%u", &universe, &account_id) == 2) {
-			account_id = account_id * 2 + universe;
+		if (sscanf(input, "STEAM_%u:%u:%u", &universe, &auth_server, &account_id) == 3) {
+			account_id = account_id * 2 | auth_server;
+
+			// Some games represent the public universe as 0, others as 1
+			if (universe == 0)
+				universe++;
+
+			return new CSteamID(account_id, (EUniverse) universe, k_EAccountTypeIndividual);
 		}
 
 		// Try SteamID3
-		else if (sscanf(input, "[U:1:%u]", &account_id) == 1) {
-			universe = account_id % 2;
+		if (sscanf(input, "[U:%u:%u]", &universe, &account_id) == 2) {
+			// TODO: Parse the account type ("U")
+			return new CSteamID(account_id, (EUniverse) universe, k_EAccountTypeIndividual);
 		}
 
 		// Try SteamID64
@@ -66,7 +74,7 @@ public:
 			return new CSteamID(ulSteamid64);
 		}
 	
-		return new CSteamID(account_id, (EUniverse) (universe + 1), k_EAccountTypeIndividual);
+		return NULL;
 	}
 };
 
