@@ -30,6 +30,7 @@
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
 #include "steam/steamclientpublic.h"
+#include "steam_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(steam_wrap.h)
 
@@ -56,7 +57,7 @@ DECLARE_SP_MODULE(_steam)
 // Exports CSteamID.
 //-----------------------------------------------------------------------------
 void export_steamid(scope _steam)
-{	
+{
 	//-----------------------------------------------------------------------------
 	// Purpose: Constructor
 	//-----------------------------------------------------------------------------
@@ -88,6 +89,12 @@ void export_steamid(scope _steam)
 	//			See the stubbed out overloads in the private: section for more info.
 	//-----------------------------------------------------------------------------
 	SteamID.def(init<uint64>());
+
+	SteamID.def(
+		"parse",
+		&CSteamIDExt::Parse, manage_new_object_policy(),
+		"Parse a SteamID2, SteamID3 or SteamID64 string representation and create a new SteamID object."
+	).staticmethod("parse");
 
 	// Methods
 	SteamID.def(
