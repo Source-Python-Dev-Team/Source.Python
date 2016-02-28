@@ -55,12 +55,11 @@ public:
 		
 		char account_type_identifier;
 		uint32 account_instance;
+		EAccountType account_type;
+		EChatSteamIDInstanceFlags default_account_instance;
 
 		// Try SteamID3 with account instance
 		if (sscanf(input, "[%c:%u:%u:%u]", &account_type_identifier, &universe, &account_id, &account_instance) == 4) {
-			EAccountType account_type;
-			EChatSteamIDInstanceFlags default_account_instance;
-
 			if (!ParseAccountTypeIdentifier(account_type_identifier, account_type, default_account_instance))
 				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid account type identifier for SteamID3 value '%s'.", input)
 
@@ -69,9 +68,6 @@ public:
 		
 		// Try SteamID3 without account instance
 		if (sscanf(input, "[%c:%u:%u]", &account_type_identifier, &universe, &account_id) == 3) {
-			EAccountType account_type;
-			EChatSteamIDInstanceFlags default_account_instance;
-
 			if (!ParseAccountTypeIdentifier(account_type_identifier, account_type, default_account_instance))
 				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid account type identifier for SteamID3 value '%s'.", input)
 
