@@ -265,17 +265,14 @@ void export_account_type(scope _steam)
 	AccountType.value("CONTENT_SERVER", k_EAccountTypeContentServer);
 	AccountType.value("CLAN", k_EAccountTypeClan);
 	AccountType.value("CHAT", k_EAccountTypeChat);
-	AccountType.value("MAX", k_EAccountTypeMax);
+	AccountType.value("ANONYMOUS_USER", (EAccountType) 10);
 
 	// Game/engine specific values
 	// Available in Orangebox, L4D2
-	NOT_IMPLEMENTED_VALUE(EAccountType, "P2_SUPER_SEEDER");
+	NOT_IMPLEMENTED_VALUE(EAccountType, "P2P_SUPER_SEEDER");
 
 	// Available in BM:S
 	NOT_IMPLEMENTED_VALUE(EAccountType, "CONSOLE_USER");
-
-	// Available in BM:S, CS:GO
-	NOT_IMPLEMENTED_VALUE(EAccountType, "ANONYMOUS_USER");
 	
 	export_engine_specific_account_type(_steam, AccountType);
 }

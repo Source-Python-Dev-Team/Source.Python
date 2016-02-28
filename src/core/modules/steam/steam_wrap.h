@@ -52,11 +52,30 @@ public:
 
 			return new CSteamID(account_id, (EUniverse) universe, k_EAccountTypeIndividual);
 		}
+		
+		char account_type_identifier;
+		uint32 account_instance;
 
-		// Try SteamID3
-		if (sscanf(input, "[U:%u:%u]", &universe, &account_id) == 2) {
-			// TODO: Parse the account type ("U")
-			return new CSteamID(account_id, (EUniverse) universe, k_EAccountTypeIndividual);
+		// Try SteamID3 with account instance
+		if (sscanf(input, "[%c:%u:%u:%u]", &account_type_identifier, &universe, &account_id, &account_instance) == 4) {
+			EAccountType account_type;
+			EChatSteamIDInstanceFlags default_account_instance;
+
+			if (!ParseAccountTypeIdentifier(account_type_identifier, account_type, default_account_instance))
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid account type identifier for SteamID3 value '%s'.", input)
+
+			return new CSteamID(account_id, account_instance, (EUniverse) universe, account_type);
+		}
+		
+		// Try SteamID3 without account instance
+		if (sscanf(input, "[%c:%u:%u]", &account_type_identifier, &universe, &account_id) == 3) {
+			EAccountType account_type;
+			EChatSteamIDInstanceFlags default_account_instance;
+
+			if (!ParseAccountTypeIdentifier(account_type_identifier, account_type, default_account_instance))
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid account type identifier for SteamID3 value '%s'.", input)
+
+			return new CSteamID(account_id, default_account_instance, (EUniverse) universe, account_type);
 		}
 
 		// Try SteamID64
@@ -75,6 +94,56 @@ public:
 		}
 	
 		return NULL;
+	}
+
+	static bool ParseAccountTypeIdentifier(char identifier, EAccountType& account_type, EChatSteamIDInstanceFlags& account_instance)
+	{
+		account_instance = (EChatSteamIDInstanceFlags) 1;
+		switch (identifier)
+		{
+			case 'I':
+				account_type = k_EAccountTypeInvalid;
+				break;
+			case 'U':
+				account_type = k_EAccountTypeIndividual;
+				break;
+			case 'M':
+				account_type = k_EAccountTypeMultiseat;
+				break;
+			case 'G':
+				account_type = k_EAccountTypeGameServer;
+				break;
+			case 'A':
+				account_type = k_EAccountTypeAnonGameServer;
+				break;
+			case 'P':
+				account_type = k_EAccountTypePending;
+				break;
+			case 'C':
+				account_type = k_EAccountTypeContentServer;
+				break;
+			case 'g':
+				account_type = k_EAccountTypeClan;
+				account_instance = (EChatSteamIDInstanceFlags) 0;
+				break;
+			case 'T':
+				account_type = k_EAccountTypeChat;
+				break;
+			case 'c':
+				account_type = k_EAccountTypeChat;
+				account_instance = k_EChatInstanceFlagClan;
+				break;
+			case 'L':
+				account_type = k_EAccountTypeChat;
+				account_instance = k_EChatInstanceFlagLobby;
+				break;
+			case 'a':
+				account_type = (EAccountType) 10;
+				break;
+			default:
+				return false;
+		}
+		return true;
 	}
 };
 
