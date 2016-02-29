@@ -95,6 +95,12 @@ void export_net_channel(scope _net_channel)
 		&INetChannel::SendFile
 	);
 
+	NetChannel.def(
+		"send_data",
+		&INetChannel::SendData,
+		("buffer", arg("reliable")=true)
+	);
+
 	// TODO: Export more
 
 	NetChannel ADD_MEM_TOOLS(INetChannel);

@@ -582,13 +582,13 @@ timelimit  The time limit (in seconds) for the round to last.  long
 
 server_cvar
 -----------
-This event is fired each time a {{ObjectUrl|cvars#ConVar}} with the {{ObjectUrl|cvars.flags#NOTIFY}} flag set is changed.
+This event is fired each time a :class:`cvars.ConVar` with the :attr:`cvars.flags.ConVarFlags.NOTIFY` flag set is changed.
 
 =========  ===================================================================  ======
 Name       Description                                                          Type
 =========  ===================================================================  ======
-cvarname   The name of the {{ObjectUrl|cvars#ConVar}} whose value was changed.  string
-cvarvalue  The value that the {{ObjectUrl|cvars#ConVar}} was changed to.        string
+cvarname   The name of the :class:`cvars.ConVar` whose value was changed.       string
+cvarvalue  The value that the :class:`cvars.ConVar` was changed to.             string
 =========  ===================================================================  ======
 
 
@@ -602,7 +602,7 @@ Name        Description                                              Type
 address     The IP address/port of the server.                       string
 dedicated   True if the server is a dedicated server.                bool
 game        The directory path of the server.                        string
-hostname    The value of the 'hostname' {{ObjectUrl|cvars#ConVar}}.  string
+hostname    The value of the 'hostname' :class:`cvars.ConVar`.       string
 ip          The IP address of the server.                            long
 mapname     The name of the map that is loaded on the server.        string
 maxplayers  The maximum number of players allowed on the server.     long

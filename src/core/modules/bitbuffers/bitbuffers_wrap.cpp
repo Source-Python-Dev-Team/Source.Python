@@ -55,9 +55,9 @@ DECLARE_SP_MODULE(_bitbuffers)
 //-----------------------------------------------------------------------------
 void export_bf_write(scope _bitbuffers)
 {
-	class_<bf_write>("BitBufferWrite", no_init)
+	class_<bf_write>("BitBufferWrite", init<void*, int, optional<int> >())
 		.def("__init__",
-			make_constructor(&BitBufferWriteExt::__init__, default_call_policies())
+			make_constructor(&BitBufferWriteExt::__init__)
 		)
 
 		.def("seek_to_bit",
@@ -90,6 +90,12 @@ void export_bf_write(scope _bitbuffers)
 			&bf_write::WriteUBitVar,
 			"Writes an unsigned integer with variable bit length."
 		)
+
+#ifdef ENGINE_CSGO
+		.def("write_var_int32",
+			&bf_write::WriteVarInt32
+		)
+#endif
 
 		.def("write_bits_from_buffer",
 			&bf_write::WriteBitsFromBuffer,
@@ -183,7 +189,7 @@ void export_bf_write(scope _bitbuffers)
 		)
 
 		.add_property("data",
-			&BitBufferWriteExt::GetData
+			make_function(&bf_write::GetBasePointer, return_by_value_policy())
 		)
 
 		.def("check_for_overflow",
@@ -220,9 +226,9 @@ void export_bf_write(scope _bitbuffers)
 //-----------------------------------------------------------------------------
 void export_bf_read(scope _bitbuffers)
 {
-	class_<bf_read>("BitBufferRead", no_init)
+	class_<bf_read>("BitBufferRead", init<void*, int, optional<int> >())
 		.def("__init__",
-			make_constructor(&BitBufferReadExt::__init__, default_call_policies())
+			make_constructor(&BitBufferReadExt::__init__)
 		)
 
 		.def("read_one_bit",
@@ -342,7 +348,7 @@ void export_bf_read(scope _bitbuffers)
 		)
 
 		.add_property("data",
-			&BitBufferReadExt::GetData
+			make_function(&bf_read::GetBasePointer, return_by_value_policy())
 		)
 
 		.def_readwrite("data_bytes_count",
