@@ -268,7 +268,7 @@ void export_user_cmd(scope _players)
 		"Player instantaneous view angles."
 	);
 
-	UserCmd.NOT_IMPLEMENTED("aim_direction");
+	UserCmd.NOT_IMPLEMENTED_ATTR("aim_direction");
 
 	UserCmd.def_readwrite("forward_move",
 		&CUserCmd::forwardmove,
@@ -325,8 +325,8 @@ void export_user_cmd(scope _players)
 		"Client only, tracks whether we've predicted this command at least once."
 	);
 	
-	UserCmd.NOT_IMPLEMENTED("head_angles");
-	UserCmd.NOT_IMPLEMENTED("head_offset");
+	UserCmd.NOT_IMPLEMENTED_ATTR("head_angles");
+	UserCmd.NOT_IMPLEMENTED_ATTR("head_offset");
 
 	export_engine_specific_user_cmd(_players, UserCmd);
 

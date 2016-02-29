@@ -10,8 +10,11 @@
 import math
 
 # Source.Python Imports
+#   Bitbuffers
+from bitbuffers import BitBufferWrite
 #   Core
 from core import SOURCE_ENGINE_BRANCH
+from core import SOURCE_ENGINE
 #   Engines
 from engines.server import server
 from engines.server import engine_server
@@ -529,6 +532,37 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         return self.move_type == MoveType.NONE
 
     stuck = property(get_stuck, set_stuck)
+
+    def send_convar_value(self, cvar_name, value):
+        """Send a convar value.
+
+        :param str cvar_name: Name of the convar.
+        :param str value: Value to send.
+        """
+        buffer_size = 256
+        buffer = BitBufferWrite(buffer_size)
+
+        if SOURCE_ENGINE == 'csgo':
+            from _messages import ProtobufMessage
+            msg = ProtobufMessage('CNETMsg_SetConVar')
+
+            cvar = msg.mutable_message('convars').add_message('cvars')
+            cvar.set_string('name', cvar_name)
+            cvar.set_string('value', str(value))
+
+            msg_size = msg.byte_size
+            buffer.write_var_int32(6)
+            buffer.write_var_int32(msg_size)
+            msg.serialize_to_array(
+                buffer.data + buffer.num_bytes_written, buffer_size)
+            buffer.seek_to_bit((buffer.num_bytes_written + msg_size) * 8)
+        else:
+            buffer.write_ubit_long(5, 6)
+            buffer.write_byte(1)
+            buffer.write_string(cvar_name)
+            buffer.write_string(str(value))
+
+        self.client.net_channel.send_data(buffer)
 
 
 # =============================================================================

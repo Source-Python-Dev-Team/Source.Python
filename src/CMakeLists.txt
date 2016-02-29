@@ -359,6 +359,7 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 # Steam module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STEAM_MODULE_HEADERS
+    core/modules/steam/steam_wrap.h
     core/modules/steam/${SOURCE_ENGINE}/steam_wrap.h
 )
 

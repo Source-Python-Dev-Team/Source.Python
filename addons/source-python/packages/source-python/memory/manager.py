@@ -10,8 +10,6 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
-#   Core
-from core import GameConfigObj
 #   Memory
 from memory import Convention
 from memory import DataType
@@ -21,6 +19,7 @@ from memory import alloc
 from memory import find_binary
 from memory import get_object_pointer
 from memory import make_object
+from memory import memory_logger
 from memory.helpers import Array
 from memory.helpers import BasePointer
 from memory.helpers import Key
@@ -39,6 +38,12 @@ __all__ = ('CustomType',
            'TypeManager',
            'manager',
            )
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+manager_logger = memory_logger.manager
 
 
 # =============================================================================
@@ -670,6 +675,9 @@ class TypeManager(dict):
     def global_pointer(
             self, cls, binary, identifier, offset=0, level=0, srv_check=True):
         """Search for a global pointer and wrap the it."""
+        manager_logger.log_debug(
+            'Retrieving global pointer for {}...'.format(cls.__name__))
+
         # Get the binary
         binary = find_binary(binary, srv_check)
 
@@ -720,7 +728,3 @@ class TypeManager(dict):
 
 # Create a shared manager instance
 manager = TypeManager()
-
-# Parse our global pointers...
-manager.create_global_pointers_from_file(GameConfigObj(
-    SP_DATA_PATH / 'memory' / 'global_pointers.ini'))

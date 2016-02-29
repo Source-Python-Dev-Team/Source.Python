@@ -636,8 +636,8 @@ void export_engine_server(scope _server)
 		)
 
 		// Not on L4D2
-		.NOT_IMPLEMENTED("server_version")
-		.NOT_IMPLEMENTED("game_server_steamid")
+		.NOT_IMPLEMENTED_ATTR("server_version")
+		.NOT_IMPLEMENTED_ATTR("game_server_steamid")
 
 		// OB specific methods
 		.NOT_IMPLEMENTED("multiplayer_end_game")
@@ -645,14 +645,14 @@ void export_engine_server(scope _server)
 		.NOT_IMPLEMENTED("replay")
 
 		// BM:S specific
-		.NOT_IMPLEMENTED("server")
+		.NOT_IMPLEMENTED_ATTR("server")
 
 		// CS:GO specific methods
-		.NOT_IMPLEMENTED("launch_options")
+		.NOT_IMPLEMENTED_ATTR("launch_options")
 		.NOT_IMPLEMENTED("is_userid_in_use")
 		.NOT_IMPLEMENTED("get_loading_process_for_userid")
 		.NOT_IMPLEMENTED("is_log_enabled")
-		.NOT_IMPLEMENTED("timescale")
+		.NOT_IMPLEMENTED_ATTR("timescale")
 		.NOT_IMPLEMENTED("is_level_main_menu_background")
 		.NOT_IMPLEMENTED("is_any_client_low_violence")
 		.NOT_IMPLEMENTED("is_split_screen_player")

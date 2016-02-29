@@ -39,26 +39,14 @@
 class BitBufferWriteExt
 {
 public:
-	static void __del__(bf_write* buffer)
-	{
-		delete buffer->GetData();
-	}
-
 	static boost::shared_ptr<bf_write> __init__(int buffer_size)
 	{
 		return boost::shared_ptr<bf_write>(new bf_write(new unsigned char[buffer_size], buffer_size), &__del__);
 	}
 
-	static list GetData(bf_write& buffer)
+	static void __del__(bf_write* buffer)
 	{
-		list result;
-
-		unsigned char* data = buffer.GetData();
-		for (int i=0; i < buffer.GetNumBytesWritten(); i++) {
-			result.append(data[i]);
-		}
-
-		return result;
+		delete buffer->GetData();
 	}
 };
 
@@ -69,11 +57,6 @@ public:
 class BitBufferReadExt
 {
 public:
-	static void __del__(bf_read* buffer)
-	{
-		delete buffer->GetBasePointer();
-	}
-
 	static boost::shared_ptr<bf_read> __init__(bf_write& buffer)
 	{
 		int size = buffer.GetNumBytesWritten();
@@ -82,16 +65,9 @@ public:
 		return boost::shared_ptr<bf_read>(new bf_read(pData, size), &__del__);
 	}
 
-	static list GetData(bf_read& buffer)
+	static void __del__(bf_read* buffer)
 	{
-		list result;
-		
-		const unsigned char* data = buffer.GetBasePointer();
-		for (int i=0; i < (int) buffer.m_nDataBytes; i++) {
-			result.append(data[i]);
-		}
-
-		return result;
+		delete buffer->GetBasePointer();
 	}
 
 	static int GetNumBytesRead(bf_read& buffer)

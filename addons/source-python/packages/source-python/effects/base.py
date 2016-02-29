@@ -219,7 +219,7 @@ class TempEntity(BaseTempEntity):
                     setattr(self, prop_name['name'], value.index)
 
                 # Is the alias an entity?
-                if prop_name['type'] == Entity.__name__:
+                elif prop_name['type'] == Entity.__name__:
 
                     # Is the given value an invalid entity instance?
                     if not isinstance(value, Entity):
