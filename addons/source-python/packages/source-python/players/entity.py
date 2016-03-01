@@ -10,8 +10,11 @@
 import math
 
 # Source.Python Imports
+#   Bitbuffers
+from bitbuffers import BitBufferWrite
 #   Core
 from core import SOURCE_ENGINE_BRANCH
+from core import SOURCE_ENGINE
 #   Engines
 from engines.server import server
 from engines.server import engine_server
@@ -44,7 +47,7 @@ from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
 from players.helpers import uniqueid_from_playerinfo
-from players.games import _GameWeapons
+from players.games import _GamePlayer
 from players.voice import mute_manager
 #   Weapons
 from weapons.default import NoWeaponManager
@@ -99,7 +102,7 @@ class Player(Entity, _GameWeapons):
 
         :rtype: int
         """
-        return self.playerinfo.get_userid()
+        return self.playerinfo.userid
 
     @property
     def steamid(self):
@@ -107,14 +110,14 @@ class Player(Entity, _GameWeapons):
 
         :rtype: str
         """
-        return self.playerinfo.get_networkid_string()
+        return self.playerinfo.steamid
 
     def get_name(self):
         """Return the player's name.
 
         :rtype: str
         """
-        return self.playerinfo.get_name()
+        return self.playerinfo.name
 
     def set_name(self, name):
         """Set the player's name."""
@@ -162,11 +165,11 @@ class Player(Entity, _GameWeapons):
 
         :rtype: int
         """
-        return self.playerinfo.get_team_index()
+        return self.playerinfo.team
 
     def set_team(self, value):
         """Set the players team."""
-        self.playerinfo.change_team(value)
+        self.playerinfo.team = team
 
     team = property(get_team, set_team)
 
@@ -189,7 +192,7 @@ class Player(Entity, _GameWeapons):
         :rtype: GameTrace
         """
         # Get the eye location of the player
-        start_vec = self.get_eye_location()
+        start_vec = self.eye_location
 
         # Calculate the greatest possible distance
         end_vec = start_vec + self.view_vector * MAX_TRACE_LENGTH
@@ -225,7 +228,7 @@ class Player(Entity, _GameWeapons):
 
         :param Vector coords: The coordinates the player should look at.
         """
-        coord_eye_vec = coords - self.get_eye_location()
+        coord_eye_vec = coords - self.eye_location
 
         # Calculate the y angle value
         atan = math.degrees(math.atan(coord_eye_vec.y / coord_eye_vec.x))
@@ -260,14 +263,14 @@ class Player(Entity, _GameWeapons):
             return None
 
         # Return the hit entity as an Entity instance
-        return Entity(trace.get_entity_index())
+        return Entity(trace.entity_index)
 
     def set_view_entity(self, entity):
         """Force the player to look at the origin of the given entity.
 
         :param Entity entity: The entity the player should look at.
         """
-        self.set_view_coordinates(entity.origin)
+        self.view_coordinates = entity.origin
 
     view_entity = property(get_view_entity, set_view_entity)
 
@@ -279,7 +282,7 @@ class Player(Entity, _GameWeapons):
         :rtype: Player
         """
         # Get the entity that the player is looking at
-        entity = self.get_view_entity()
+        entity = self.view_entity
 
         # Return a Player instance of the player or None if not a player
         return (
@@ -291,7 +294,7 @@ class Player(Entity, _GameWeapons):
 
         :param Player player: The other player.
         """
-        self.set_view_coordinates(player.get_eye_location())
+        self.view_coordinates = player.eye_location
 
     view_player = property(get_view_player, set_view_player)
 
@@ -538,6 +541,37 @@ class Player(Entity, _GameWeapons):
 
     stuck = property(get_stuck, set_stuck)
 
+    def send_convar_value(self, cvar_name, value):
+        """Send a convar value.
+
+        :param str cvar_name: Name of the convar.
+        :param str value: Value to send.
+        """
+        buffer_size = 256
+        buffer = BitBufferWrite(buffer_size)
+
+        if SOURCE_ENGINE == 'csgo':
+            from _messages import ProtobufMessage
+            msg = ProtobufMessage('CNETMsg_SetConVar')
+
+            cvar = msg.mutable_message('convars').add_message('cvars')
+            cvar.set_string('name', cvar_name)
+            cvar.set_string('value', str(value))
+
+            msg_size = msg.byte_size
+            buffer.write_var_int32(6)
+            buffer.write_var_int32(msg_size)
+            msg.serialize_to_array(
+                buffer.data + buffer.num_bytes_written, buffer_size)
+            buffer.seek_to_bit((buffer.num_bytes_written + msg_size) * 8)
+        else:
+            buffer.write_ubit_long(5, 6)
+            buffer.write_byte(1)
+            buffer.write_string(cvar_name)
+            buffer.write_string(str(value))
+
+        self.client.net_channel.send_data(buffer)
+
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
     # =========================================================================
@@ -672,10 +706,7 @@ if SOURCE_ENGINE_BRANCH in ('css', 'csgo'):
 def _find_weapon_prop_length(table):
     """Loop through a prop table to find the myweapons property length."""
     # Loop through the props in the table
-    for offset in range(len(table)):
-
-        # Get the prop
-        item = table[offset]
+    for item in table:
 
         # Is this the m_hMyWeapons prop?
         if item.name == weapon_manager.myweapons[:~0]:

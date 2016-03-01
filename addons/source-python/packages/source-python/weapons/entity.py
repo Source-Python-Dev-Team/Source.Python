@@ -146,3 +146,16 @@ class Weapon(Entity):
     secondary_fire_ammo = property(
         get_secondary_fire_ammo, set_secondary_fire_ammo,
         doc="""Property to get/set the weapon's secondary fire ammo.""")
+
+    def set_color(self, color):
+        """Set the weapon's color."""
+        color = color.r + (color.g << 8) + (color.b << 16) + (color.a << 24)
+        if color >= 2**31:
+            color -= 2**32
+        self.render_mode_prop |= 1
+        self.render_fx |= 256
+        self.render = color
+
+    color = property(
+        Entity.get_color, set_color,
+        doc="""Property to get/set the weapon's color.""")

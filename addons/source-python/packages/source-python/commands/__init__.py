@@ -85,4 +85,4 @@ class CommandParser(argparse.ArgumentParser):
         See :meth:`~.argparse.ArgumentParser.parse_args` for more information.
         """
         return self.parse_args(
-            [command[x] for x in range(1, command.get_arg_count())], namespace)
+            [command[x] for x in range(1, len(command))], namespace)

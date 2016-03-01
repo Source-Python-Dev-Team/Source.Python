@@ -55,9 +55,9 @@ DECLARE_SP_MODULE(_bitbuffers)
 //-----------------------------------------------------------------------------
 void export_bf_write(scope _bitbuffers)
 {
-	class_<bf_write>("BitBufferWrite", no_init)
+	class_<bf_write>("BitBufferWrite", init<void*, int, optional<int> >())
 		.def("__init__",
-			make_constructor(&BitBufferWriteExt::__init__, default_call_policies())
+			make_constructor(&BitBufferWriteExt::__init__)
 		)
 
 		.def("seek_to_bit",
@@ -90,6 +90,12 @@ void export_bf_write(scope _bitbuffers)
 			&bf_write::WriteUBitVar,
 			"Writes an unsigned integer with variable bit length."
 		)
+
+#ifdef ENGINE_CSGO
+		.def("write_var_int32",
+			&bf_write::WriteVarInt32
+		)
+#endif
 
 		.def("write_bits_from_buffer",
 			&bf_write::WriteBitsFromBuffer,
@@ -162,28 +168,28 @@ void export_bf_write(scope _bitbuffers)
 			"Returns false if it overflows the buffer."
 		)
 
-		.def("get_num_bytes_written",
+		.add_property("num_bytes_written",
 			&bf_write::GetNumBytesWritten
 		)
 
-		.def("get_num_bits_written",
+		.add_property("num_bits_written",
 			&bf_write::GetNumBitsWritten
 		)
 
-		.def("get_max_num_bits",
+		.add_property("max_num_bits",
 			&bf_write::GetMaxNumBits
 		)
 
-		.def("get_num_bits_left",
+		.add_property("num_bits_left",
 			&bf_write::GetNumBitsLeft
 		)
 
-		.def("get_num_bytes_left",
+		.add_property("num_bytes_left",
 			&bf_write::GetNumBytesLeft
 		)
 
-		.def("get_data",
-			&BitBufferWriteExt::GetData
+		.add_property("data",
+			make_function(&bf_write::GetBasePointer, return_by_value_policy())
 		)
 
 		.def("check_for_overflow",
@@ -220,9 +226,9 @@ void export_bf_write(scope _bitbuffers)
 //-----------------------------------------------------------------------------
 void export_bf_read(scope _bitbuffers)
 {
-	class_<bf_read>("BitBufferRead", no_init)
+	class_<bf_read>("BitBufferRead", init<void*, int, optional<int> >())
 		.def("__init__",
-			make_constructor(&BitBufferReadExt::__init__, default_call_policies())
+			make_constructor(&BitBufferReadExt::__init__)
 		)
 
 		.def("read_one_bit",
@@ -309,19 +315,19 @@ void export_bf_read(scope _bitbuffers)
 			&BitBufferReadExt::ReadString
 		)
 
-		.def("get_num_bytes_left",
+		.add_property("num_bytes_left",
 			&bf_read::GetNumBytesLeft
 		)
 
-		.def("get_num_bytes_read",
+		.add_property("num_bytes_read",
 			&BitBufferReadExt::GetNumBytesRead
 		)
 
-		.def("get_num_bits_left",
+		.add_property("num_bits_left",
 			&bf_read::GetNumBitsLeft
 		)
 
-		.def("get_num_bits_read",
+		.add_property("num_bits_read",
 			&bf_read::GetNumBitsRead
 		)
 
@@ -341,8 +347,8 @@ void export_bf_read(scope _bitbuffers)
 			&bf_read::SetOverflowFlag
 		)
 
-		.def("get_data",
-			&BitBufferReadExt::GetData
+		.add_property("data",
+			make_function(&bf_read::GetBasePointer, return_by_value_policy())
 		)
 
 		.def_readwrite("data_bytes_count",

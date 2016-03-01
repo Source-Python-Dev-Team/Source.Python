@@ -102,64 +102,73 @@ void export_user_message(scope _message)
 void export_protobuf_message(scope _messages)
 {
 #ifdef USE_PROTOBUF
-	class_<CProtobufMessage> ProtobufMessage("ProtobufMessage", no_init);
-	
-	ProtobufMessage.def("get_int32", &CProtobufMessage::GetInt32);
-	ProtobufMessage.def("get_int64", &CProtobufMessage::GetInt64);
-	ProtobufMessage.def("get_uint32", &CProtobufMessage::GetUInt32);
-	ProtobufMessage.def("get_uint64", &CProtobufMessage::GetUInt64);
-	ProtobufMessage.def("get_float", &CProtobufMessage::GetFloat);
-	ProtobufMessage.def("get_double", &CProtobufMessage::GetDouble);
-	ProtobufMessage.def("get_bool", &CProtobufMessage::GetBool);
-	ProtobufMessage.def("get_string", &CProtobufMessage::GetString);
-	ProtobufMessage.def("get_enum", &CProtobufMessage::GetEnum);
-	ProtobufMessage.def("get_message", &CProtobufMessage::GetMessage);
-	
-	ProtobufMessage.def("get_repeated_int32", &CProtobufMessage::GetRepeatedInt32);
-	ProtobufMessage.def("get_repeated_int64", &CProtobufMessage::GetRepeatedInt64);
-	ProtobufMessage.def("get_repeated_uint32", &CProtobufMessage::GetRepeatedUInt32);
-	ProtobufMessage.def("get_repeated_uint64", &CProtobufMessage::GetRepeatedUInt64);
-	ProtobufMessage.def("get_repeated_float", &CProtobufMessage::GetRepeatedFloat);
-	ProtobufMessage.def("get_repeated_double", &CProtobufMessage::GetRepeatedDouble);
-	ProtobufMessage.def("get_repeated_bool", &CProtobufMessage::GetRepeatedBool);
-	ProtobufMessage.def("get_repeated_string", &CProtobufMessage::GetRepeatedString);
-	ProtobufMessage.def("get_repeated_enum", &CProtobufMessage::GetRepeatedEnum);
-	ProtobufMessage.def("get_repeated_message", &CProtobufMessage::GetRepeatedMessage);
-	
-	ProtobufMessage.def("set_int32", &CProtobufMessage::SetInt32);
-	ProtobufMessage.def("set_int64", &CProtobufMessage::SetInt64);
-	ProtobufMessage.def("set_uint32", &CProtobufMessage::SetUInt32);
-	ProtobufMessage.def("set_uint64", &CProtobufMessage::SetUInt64);
-	ProtobufMessage.def("set_float", &CProtobufMessage::SetFloat);
-	ProtobufMessage.def("set_double", &CProtobufMessage::SetDouble);
-	ProtobufMessage.def("set_bool", &CProtobufMessage::SetBool);
-	ProtobufMessage.def("set_string", &CProtobufMessage::SetString);
-	ProtobufMessage.def("set_enum", &CProtobufMessage::SetEnum);
-	ProtobufMessage.def("mutable_message", &CProtobufMessage::MutableMessage);
-	
-	ProtobufMessage.def("set_repeated_int32", &CProtobufMessage::SetRepeatedInt32);
-	ProtobufMessage.def("set_repeated_int64", &CProtobufMessage::SetRepeatedInt64);
-	ProtobufMessage.def("set_repeated_uint32", &CProtobufMessage::SetRepeatedUInt32);
-	ProtobufMessage.def("set_repeated_uint64", &CProtobufMessage::SetRepeatedUInt64);
-	ProtobufMessage.def("set_repeated_float", &CProtobufMessage::SetRepeatedFloat);
-	ProtobufMessage.def("set_repeated_double", &CProtobufMessage::SetRepeatedDouble);
-	ProtobufMessage.def("set_repeated_bool", &CProtobufMessage::SetRepeatedBool);
-	ProtobufMessage.def("set_repeated_string", &CProtobufMessage::SetRepeatedString);
-	ProtobufMessage.def("set_repeated_enum", &CProtobufMessage::SetRepeatedEnum);
-	ProtobufMessage.def("mutable_repeated_message", &CProtobufMessage::MutableRepeatedMessage);
-	
-	ProtobufMessage.def("add_int32", &CProtobufMessage::AddInt32);
-	ProtobufMessage.def("add_int64", &CProtobufMessage::AddInt64);
-	ProtobufMessage.def("add_uint32", &CProtobufMessage::AddUInt32);
-	ProtobufMessage.def("add_uint64", &CProtobufMessage::AddUInt64);
-	ProtobufMessage.def("add_float", &CProtobufMessage::AddFloat);
-	ProtobufMessage.def("add_double", &CProtobufMessage::AddDouble);
-	ProtobufMessage.def("add_bool", &CProtobufMessage::AddBool);
-	ProtobufMessage.def("add_string", &CProtobufMessage::AddString);
-	ProtobufMessage.def("add_enum", &CProtobufMessage::AddEnum);
-	ProtobufMessage.def("add_message", &CProtobufMessage::AddMessage);
+	class_<google::protobuf::Message, boost::shared_ptr<google::protobuf::Message>, boost::noncopyable> ProtobufMessage("ProtobufMessage", no_init);
 
-	ProtobufMessage ADD_MEM_TOOLS(CProtobufMessage);
+	ProtobufMessage.def("__init__", make_constructor(&CProtobufMessageExt::__init__));
+	
+	ProtobufMessage.def("get_int32", &CProtobufMessageExt::GetInt32);
+	ProtobufMessage.def("get_int64", &CProtobufMessageExt::GetInt64);
+	ProtobufMessage.def("get_uint32", &CProtobufMessageExt::GetUInt32);
+	ProtobufMessage.def("get_uint64", &CProtobufMessageExt::GetUInt64);
+	ProtobufMessage.def("get_float", &CProtobufMessageExt::GetFloat);
+	ProtobufMessage.def("get_double", &CProtobufMessageExt::GetDouble);
+	ProtobufMessage.def("get_bool", &CProtobufMessageExt::GetBool);
+	ProtobufMessage.def("get_string", &CProtobufMessageExt::GetString);
+	ProtobufMessage.def("get_enum", &CProtobufMessageExt::GetEnum);
+	ProtobufMessage.def("get_message", &CProtobufMessageExt::GetMessage, reference_existing_object_policy());
+	
+	ProtobufMessage.def("get_repeated_int32", &CProtobufMessageExt::GetRepeatedInt32);
+	ProtobufMessage.def("get_repeated_int64", &CProtobufMessageExt::GetRepeatedInt64);
+	ProtobufMessage.def("get_repeated_uint32", &CProtobufMessageExt::GetRepeatedUInt32);
+	ProtobufMessage.def("get_repeated_uint64", &CProtobufMessageExt::GetRepeatedUInt64);
+	ProtobufMessage.def("get_repeated_float", &CProtobufMessageExt::GetRepeatedFloat);
+	ProtobufMessage.def("get_repeated_double", &CProtobufMessageExt::GetRepeatedDouble);
+	ProtobufMessage.def("get_repeated_bool", &CProtobufMessageExt::GetRepeatedBool);
+	ProtobufMessage.def("get_repeated_string", &CProtobufMessageExt::GetRepeatedString);
+	ProtobufMessage.def("get_repeated_enum", &CProtobufMessageExt::GetRepeatedEnum);
+	ProtobufMessage.def("get_repeated_message", &CProtobufMessageExt::GetRepeatedMessage, reference_existing_object_policy());
+	
+	ProtobufMessage.def("set_int32", &CProtobufMessageExt::SetInt32);
+	ProtobufMessage.def("set_int64", &CProtobufMessageExt::SetInt64);
+	ProtobufMessage.def("set_uint32", &CProtobufMessageExt::SetUInt32);
+	ProtobufMessage.def("set_uint64", &CProtobufMessageExt::SetUInt64);
+	ProtobufMessage.def("set_float", &CProtobufMessageExt::SetFloat);
+	ProtobufMessage.def("set_double", &CProtobufMessageExt::SetDouble);
+	ProtobufMessage.def("set_bool", &CProtobufMessageExt::SetBool);
+	ProtobufMessage.def("set_string", &CProtobufMessageExt::SetString);
+	ProtobufMessage.def("set_enum", &CProtobufMessageExt::SetEnum);
+	ProtobufMessage.def("mutable_message", &CProtobufMessageExt::MutableMessage, reference_existing_object_policy());
+	
+	ProtobufMessage.def("set_repeated_int32", &CProtobufMessageExt::SetRepeatedInt32);
+	ProtobufMessage.def("set_repeated_int64", &CProtobufMessageExt::SetRepeatedInt64);
+	ProtobufMessage.def("set_repeated_uint32", &CProtobufMessageExt::SetRepeatedUInt32);
+	ProtobufMessage.def("set_repeated_uint64", &CProtobufMessageExt::SetRepeatedUInt64);
+	ProtobufMessage.def("set_repeated_float", &CProtobufMessageExt::SetRepeatedFloat);
+	ProtobufMessage.def("set_repeated_double", &CProtobufMessageExt::SetRepeatedDouble);
+	ProtobufMessage.def("set_repeated_bool", &CProtobufMessageExt::SetRepeatedBool);
+	ProtobufMessage.def("set_repeated_string", &CProtobufMessageExt::SetRepeatedString);
+	ProtobufMessage.def("set_repeated_enum", &CProtobufMessageExt::SetRepeatedEnum);
+	ProtobufMessage.def("mutable_repeated_message", &CProtobufMessageExt::MutableRepeatedMessage, reference_existing_object_policy());
+	
+	ProtobufMessage.def("add_int32", &CProtobufMessageExt::AddInt32);
+	ProtobufMessage.def("add_int64", &CProtobufMessageExt::AddInt64);
+	ProtobufMessage.def("add_uint32", &CProtobufMessageExt::AddUInt32);
+	ProtobufMessage.def("add_uint64", &CProtobufMessageExt::AddUInt64);
+	ProtobufMessage.def("add_float", &CProtobufMessageExt::AddFloat);
+	ProtobufMessage.def("add_double", &CProtobufMessageExt::AddDouble);
+	ProtobufMessage.def("add_bool", &CProtobufMessageExt::AddBool);
+	ProtobufMessage.def("add_string", &CProtobufMessageExt::AddString);
+	ProtobufMessage.def("add_enum", &CProtobufMessageExt::AddEnum);
+	ProtobufMessage.def("add_message", &CProtobufMessageExt::AddMessage, reference_existing_object_policy());
+	
+	ProtobufMessage.def("serialize_to_array", &google::protobuf::Message::SerializeToArray);
+	ProtobufMessage.def("parse_from_array", &google::protobuf::Message::ParseFromArray);
+
+	ProtobufMessage.add_property("name", &google::protobuf::Message::GetTypeName);
+	ProtobufMessage.add_property("debug_string", &google::protobuf::Message::DebugString);
+	ProtobufMessage.add_property("byte_size", &google::protobuf::Message::ByteSize);
+
+	ProtobufMessage ADD_MEM_TOOLS(google::protobuf::Message);
 #endif
 }
 

@@ -35,6 +35,7 @@
 
 // Utilities
 #include "memory_utilities.h"
+#include "memory_rtti.h"
 
 // Boost.Python
 #include "boost/python.hpp"
@@ -131,6 +132,44 @@ public:
 	static CPointer* GetAddress(CRegister& reg)
 	{
 		return new CPointer((unsigned long) reg.m_pAddress);
+	}
+};
+
+
+// ============================================================================
+// >> IBaseTypeIter
+// ============================================================================
+class IBaseTypeIter
+{
+public:
+	IBaseTypeIter(IBaseType* pType) {
+		m_pType = pType;
+		m_iIndex = 0;
+	}
+
+	IBaseType* __next__() {
+		if (m_iIndex >= m_pType->GetNumBaseClasses()) {
+			BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "No more types.");
+		}
+
+		return m_pType->GetBaseClass(m_iIndex++);
+	}
+
+private:
+	IBaseType* m_pType;
+	size_t m_iIndex;
+};
+
+
+// ============================================================================
+// >> IBaseTypeExt
+// ============================================================================
+class IBaseTypeExt
+{
+public:
+	static IBaseTypeIter* __iter__(IBaseType* pType)
+	{
+		return new IBaseTypeIter(pType);
 	}
 };
 

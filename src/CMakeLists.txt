@@ -303,6 +303,7 @@ Set(SOURCEPYTHON_MEMORY_MODULE_HEADERS
     core/modules/memory/memory_tools.h
     core/modules/memory/memory_utilities.h
     core/modules/memory/memory_wrap.h
+    core/modules/memory/memory_rtti.h
 )
 
 Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
@@ -311,6 +312,7 @@ Set(SOURCEPYTHON_MEMORY_MODULE_SOURCES
     core/modules/memory/memory_pointer.cpp
     core/modules/memory/memory_scanner.cpp
     core/modules/memory/memory_wrap.cpp
+    core/modules/memory/memory_rtti.cpp
 )
 
 # ------------------------------------------------------------------
@@ -357,6 +359,7 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 # Steam module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STEAM_MODULE_HEADERS
+    core/modules/steam/steam_wrap.h
     core/modules/steam/${SOURCE_ENGINE}/steam_wrap.h
 )
 

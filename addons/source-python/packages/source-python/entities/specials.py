@@ -37,7 +37,8 @@ class _EntitySpecials(object):
 
     def take_damage(
             self, damage, damage_type=DamageTypes.GENERIC, attacker_index=None,
-            weapon_index=None, hitgroup=HitGroup.GENERIC, **kwargs):
+            weapon_index=None, hitgroup=HitGroup.GENERIC, skip_hooks=False,
+            **kwargs):
         """Method used to hurt the entity with the given arguments."""
         # Import Entity classes
         # Doing this in the global scope causes cross import errors
@@ -73,23 +74,22 @@ class _EntitySpecials(object):
         if attacker is None and weapon is not None:
 
             # Try to get the attacker based off of the weapon's owner
-            with suppress(ValueError):
+            with suppress(ValueError, OverflowError):
                 attacker_index = index_from_inthandle(weapon.current_owner)
-                if attacker_index is not None:
-                    attacker = Entity(attacker_index)
+                attacker = Entity(attacker_index)
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:
 
             # Does the attacker have a weapon attribute?
             if hasattr(attacker, 'active_weapon'):
+                with suppress(ValueError, OverflowError):
 
-                # Get the attacker's current weapon index
-                weapon_index = index_from_inthandle(
-                    attacker.active_weapon, False)
+                    # Get the attacker's current weapon index
+                    weapon_index = index_from_inthandle(
+                        attacker.active_weapon)
 
-                # Get the weapon's Weapon instance if it is valid
-                if weapon_index is not None:
+                    # Get the weapon's Weapon instance
                     weapon = Weapon(weapon_index)
 
         # Is hitgroup a valid attribute?
@@ -137,5 +137,7 @@ class _EntitySpecials(object):
             # Set the offset's value
             setattr(take_damage_info, item, kwargs[item])
 
-        # Call the function with the victim's pointer and the CTakeDamageInfo
-        self.on_take_damage(take_damage_info)
+        if skip_hooks:
+            self.on_take_damage.skip_hooks(take_damage_info)
+        else:
+            self.on_take_damage(take_damage_info)

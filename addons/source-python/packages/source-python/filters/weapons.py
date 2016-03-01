@@ -41,7 +41,7 @@ class WeaponIter(_IterObject):
         for edict in EntityGenerator():
 
             # Is the entity a weapon?
-            if edict.get_class_name() in weapon_manager:
+            if edict.classname in weapon_manager:
 
                 # Yield the Weapon instance for the current edict
                 yield Weapon(index_from_edict(edict))

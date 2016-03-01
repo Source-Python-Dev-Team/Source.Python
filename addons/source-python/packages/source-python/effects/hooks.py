@@ -50,19 +50,26 @@ class _TempEntityHook(AutoUnload):
 
     def __call__(self, callback):
         """Store the callback and try initialize the hook."""
+        def _callback(stack_data, *args):
+            """Called when the hooked method is called."""
+            # Get the temp entity instance...
+            temp_entity = make_object(TempEntity, stack_data[0])
+
+            # Are we looking for that temp entity?
+            if temp_entity.name == self.name:
+
+                # Call the registered callback...
+                return callback(temp_entity, make_object(
+                    RecipientFilter, stack_data[1]))
+
         # Store the callback...
-        self._callback = callback
+        self._callback = _callback
 
         # Initialize the hook...
-        self.function.add_hook(self.hook_type, self.callback)
+        self.function.add_hook(self.hook_type, self._callback)
 
         # Return the callback...
-        return self.callback
-
-    @property
-    def callback(self):
-        """Raise an error if the inheriting class does not have their own."""
-        raise NotImplementedError('No callback defined for class.')
+        return _callback
 
     @property
     def hook_type(self):
@@ -72,7 +79,7 @@ class _TempEntityHook(AutoUnload):
     def _unload_instance(self):
         """Unload the hook."""
         # Unregister the hook...
-        self.function.remove_hook(self.hook_type, self.callback)
+        self.function.remove_hook(self.hook_type, self._callback)
 
 
 class TempEntityPreHook(_TempEntityHook):
@@ -80,47 +87,8 @@ class TempEntityPreHook(_TempEntityHook):
 
     hook_type = HookType.PRE
 
-    def callback(self, stack_data):
-        """Called when a pre temp entity hook is called.
-
-        :param StackData stack_data: The stack data instance describing the
-            parameters.
-        """
-        # Get the temp entity instance...
-        temp_entity = make_object(TempEntity, stack_data[0])
-
-        # Is the name not matching?
-        if temp_entity.name != self.name:
-
-            # No need to go further...
-            return
-
-        # Call the stored callback...
-        return self._callback(
-            temp_entity, make_object(RecipientFilter, stack_data[1]))
-
 
 class TempEntityPostHook(_TempEntityHook):
     """Decorator used to create temp entity post hooks that auto unload."""
 
     hook_type = HookType.POST
-
-    def callback(self, stack_data, return_value):
-        """Called when a post temp entity hook is called.
-
-        :param StackData stack_data: The stack data instance describing the
-            parameters.
-        :param object return_value: The value returned.
-        """
-        # Get the temp entity instance...
-        temp_entity = make_object(TempEntity, stack_data[0])
-
-        # Is the name not matching?
-        if temp_entity.name != self.name:
-
-            # No need to go further...
-            return
-
-        # Call the stored callback...
-        return self._callback(
-            temp_entity, make_object(RecipientFilter, stack_data[1]))
