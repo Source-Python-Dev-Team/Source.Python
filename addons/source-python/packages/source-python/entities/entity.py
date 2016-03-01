@@ -31,7 +31,6 @@ from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import spawn_entity
-from entities.specials import _EntitySpecials
 #   Filters
 from filters.weapons import WeaponClassIter
 #   Memory
@@ -71,7 +70,7 @@ _projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Entity(BaseEntity, _EntitySpecials):
+class Entity(BaseEntity):
     """Class used to interact directly with entities."""
 
     def __init__(self, index):
