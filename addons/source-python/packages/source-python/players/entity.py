@@ -161,7 +161,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
     def set_team(self, value):
         """Set the players team."""
-        self.playerinfo.team = team
+        self.playerinfo.team = value
 
     team = property(get_team, set_team)
 
