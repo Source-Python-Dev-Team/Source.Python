@@ -41,6 +41,9 @@ on_entity_output_listener_manager = _ListenerManager()
 @PreHook(BaseEntityOutput.fire_output)
 def _pre_fire_output(args):
     """Called when an output is about to be fired."""
+    if not on_entity_output_listener_manager:
+        return
+
     # Windows is a bit weird: the function takes 4 additional arguments...
     if PLATFORM == 'windows':
         args = (args[0],) + tuple(args)[5:]

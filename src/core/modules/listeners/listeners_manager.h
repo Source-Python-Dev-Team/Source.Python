@@ -65,6 +65,8 @@ public:
 	void RegisterListener(PyObject* pCallable);
 	void UnregisterListener(PyObject* pCallable);
 	void Notify(boost::python::tuple args, dict kwargs);
+	int GetCount()
+	{ return m_vecCallables.Count(); }
 
 public:
 	CUtlVector<object> m_vecCallables;
