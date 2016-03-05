@@ -243,6 +243,16 @@ class Entity(BaseEntity):
         return self.basehandle.to_int()
 
     @property
+    def collideable(self):
+        """Return the entity's Collideable instance."""
+        return self.edict.collideable
+
+    @property
+    def networkable(self):
+        """Return the entity's Networkable instance."""
+        return self.edict.networkable
+
+    @property
     def server_class(self):
         """Return the entity's server class."""
         return self.networkable.server_class
