@@ -161,7 +161,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
     def set_team(self, value):
         """Set the players team."""
-        self.playerinfo.team = team
+        self.playerinfo.team = value
 
     team = property(get_team, set_team)
 
@@ -490,26 +490,26 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
     noblock = property(get_noblock, set_noblock)
 
-    def set_freeze(self, enable):
-        """Enable/disable freeze mode.
+    def set_frozen(self, enable):
+        """Enable/disable frozen mode.
 
-        Freeze mode makes the player unable to move, look and shoot.
+        Frozen mode makes the player unable to move, look and shoot.
 
-        :param bool enable: If True freeze mode will be enabled.
+        :param bool enable: If True frozen mode will be enabled.
         """
         if enable:
             self.flags |= PlayerStates.FROZEN
         else:
             self.flags &= ~PlayerStates.FROZEN
 
-    def get_freeze(self):
-        """Return whether freeze mode is enabled.
+    def get_frozen(self):
+        """Return whether frozen mode is enabled.
 
         :rtype: bool
         """
         return bool(self.flags & PlayerStates.FROZEN)
 
-    freeze = property(get_freeze, set_freeze)
+    frozen = property(get_frozen, set_frozen)
 
     def set_stuck(self, enable):
         """Enable/disable stuck mode.

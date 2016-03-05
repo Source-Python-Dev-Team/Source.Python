@@ -20,6 +20,7 @@ from memory.manager import manager
 from entities.entity import BaseEntity
 from entities.entity import Entity
 from entities.datamaps import Variant
+from entities.helpers import find_output_name
 #   Listeners
 from _listeners import _ListenerManager
 
@@ -40,6 +41,9 @@ on_entity_output_listener_manager = _ListenerManager()
 @PreHook(BaseEntityOutput.fire_output)
 def _pre_fire_output(args):
     """Called when an output is about to be fired."""
+    if not on_entity_output_listener_manager:
+        return
+
     # Windows is a bit weird: the function takes 4 additional arguments...
     if PLATFORM == 'windows':
         args = (args[0],) + tuple(args)[5:]
@@ -51,7 +55,7 @@ def _pre_fire_output(args):
         return
 
     caller = memory.make_object(BaseEntity, caller_ptr)
-    output_name = _find_output_name(caller, args[0])
+    output_name = find_output_name(caller, args[0])
     if output_name is None:
         return None
 
@@ -70,28 +74,3 @@ def _pre_fire_output(args):
     delay = args[4]
     on_entity_output_listener_manager.notify(
         output_name, activator, caller, value, delay)
-
-
-# =============================================================================
-# >> HELPER FUNCTIONS
-# =============================================================================
-def _find_output_name(caller, output):
-    """Lookup the name of an output.
-
-    If the output is unnamed, None will be returned.
-
-    @param <caller>:
-    A BaseEntity object whose datamap will be used to search for the name.
-
-    @param <output>:
-    A Pointer object.
-    """
-    datamap = caller.datamap
-    while datamap:
-        for desc in datamap:
-            if caller.pointer + desc.offset == output:
-                return desc.external_name
-
-        datamap = datamap.base
-
-    return None

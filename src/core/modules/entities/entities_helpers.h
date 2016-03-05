@@ -33,7 +33,9 @@
 #include "toolframework/itoolentity.h"
 #include "modules/memory/memory_tools.h"
 #include "utilities/conversions.h"
+#include "entities_entity.h"
 
+#include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
 //-----------------------------------------------------------------------------
 // External variables.
@@ -62,6 +64,28 @@ unsigned int create_entity(const char *szClassName)
 void spawn_entity(unsigned int uiEntityIndex)
 {
 	servertools->DispatchSpawn(ExcBaseEntityFromIndex(uiEntityIndex));
+}
+
+
+//-----------------------------------------------------------------------------
+// Find an entity output name
+//-----------------------------------------------------------------------------
+inline const char* FindOutputName(CBaseEntity* pCaller, void* pOutput)
+{
+	datamap_t* pDatamap = ((CBaseEntityWrapper *) pCaller)->GetDataDescMap();
+	while (pDatamap)
+	{
+		for (int iCurrentIndex=0; iCurrentIndex < pDatamap->dataNumFields; ++iCurrentIndex)
+		{
+			typedescription_t pCurrentDataDesc = pDatamap->dataDesc[iCurrentIndex];
+			if ((unsigned long) pCaller + TypeDescriptionExt::get_offset(pCurrentDataDesc) == (unsigned long) pOutput)
+				return pCurrentDataDesc.externalName;
+		}
+
+		pDatamap = pDatamap->baseMap;
+	}
+
+	return NULL;
 }
 
 

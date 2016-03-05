@@ -10,8 +10,6 @@
 from binascii import unhexlify
 #   Codecs
 from codecs import unicode_escape_decode
-#   String
-from string import Template
 #   Re
 from re import compile as re_compile
 from re import VERBOSE
@@ -252,20 +250,11 @@ class TranslationStrings(dict):
             # Possibly raise an error silently here
             return ''
 
-        # Get the message's Template instance
-        message = Template(self[language])
-
         # Update the stored tokens with the given ones
         self.tokens.update(tokens)
 
-        # Substitute the token in the message
-        message = message.substitute(self.tokens)
-
-        # Format the message with any remaining tokens
-        message = message.format(**self.tokens)
-
-        # Return the message
-        return message
+        # Return the formatted message
+        return self[language].format(**self.tokens)
 
     def get_language(self, language):
         """Return the language to be used."""

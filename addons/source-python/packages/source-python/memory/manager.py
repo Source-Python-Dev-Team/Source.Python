@@ -27,8 +27,6 @@ from memory.helpers import MemberFunction
 from memory.helpers import NO_DEFAULT
 from memory.helpers import Type
 from memory.helpers import parse_data
-#   Paths
-from paths import SP_DATA_PATH
 
 
 # =============================================================================
