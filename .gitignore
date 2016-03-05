@@ -47,3 +47,6 @@ addons/source-python/docs/custom/
 !addons/source-python/docs/custom/readme.md
 addons/source-python/docs/plugins/
 !addons/source-python/docs/plugins/readme.md
+
+# PyCharm directory
+.idea/
