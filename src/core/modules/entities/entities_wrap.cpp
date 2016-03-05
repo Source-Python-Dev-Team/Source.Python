@@ -384,7 +384,7 @@ void export_edict(scope _entities)
 	;
 
 	class_< edict_t, edict_t*, bases<CBaseEdict> >("Edict")
-		.add_property("collidable",
+		.add_property("collideable",
 			make_function(
 				&edict_t::GetCollideable,
 				reference_existing_object_policy()
