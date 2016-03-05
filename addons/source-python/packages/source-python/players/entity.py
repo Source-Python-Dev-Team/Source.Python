@@ -118,14 +118,6 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
             BaseClient, memory.get_object_pointer(self.client) - 4)
 
     @property
-    def isdead(self):
-        """Return if the player is dead or alive.
-
-        :rtype: bool
-        """
-        return self.playerinfo.is_dead()
-
-    @property
     def uniqueid(self):
         """Return the player's uniqueid."""
         return uniqueid_from_playerinfo(self.playerinfo)
