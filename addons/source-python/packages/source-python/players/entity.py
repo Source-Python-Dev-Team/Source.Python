@@ -133,6 +133,41 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         """
         return address_from_playerinfo(self.playerinfo)
 
+    def is_connected(self):
+        """Return whether the player is connected.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_connected()
+
+    def is_fake_client(self):
+        """Return whether the player is a fake client.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_fake_client()
+
+    def is_hltv(self):
+        """Return whether the player is HLTV.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_hltv()
+
+    def is_in_a_vehicle(self):
+        """Return whether the player is in a vehicle.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_in_a_vehicle()
+
+    def is_observer(self):
+        """Return whether the player is an observer.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_observer()
+
     def get_team(self):
         """Return the player's team.
 
