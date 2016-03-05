@@ -85,15 +85,6 @@ class Entity(BaseEntity):
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
-        # Loop through all instances (used to get edict/IPlayerInfo attributes)
-        for instance in self.instances:
-
-            # Does the current instance contain the given attribute?
-            if hasattr(instance, attr):
-
-                # Return the instance's value for the given attribute
-                return getattr(instance, attr)
-
         # Loop through all of the entity's server classes
         for server_class in self.server_classes:
 
@@ -153,16 +144,6 @@ class Entity(BaseEntity):
         """Return an alphabetized list of attributes for the instance."""
         # Get the base attributes
         attributes = set(super().__dir__())
-
-        # Loop through all instances for the entity
-        for instance in self.instances:
-
-            # Loop through all of the attributes of the current instance
-            for attr in dir(instance):
-
-                # Add the attribute if it is not private
-                if not attr.startswith('_'):
-                    attributes.add(attr)
 
         # Loop through all server classes for the entity
         for server_class in self.server_classes:
@@ -255,16 +236,6 @@ class Entity(BaseEntity):
             pointer = get_object_pointer(self)
             object.__setattr__(self, '_pointer', pointer)
         return self._pointer
-
-    @property
-    def instances(self):
-        """Yield the entity's base instances.
-
-        Values yielded are the entity's :class:`entities.Edict`
-        and :class:`memory.Pointer` objects.
-        """
-        yield self.edict
-        yield self.pointer
 
     @property
     def inthandle(self):
