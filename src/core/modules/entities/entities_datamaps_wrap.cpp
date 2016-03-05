@@ -124,6 +124,7 @@ void export_type_description(scope _datamaps)
 	class_<typedescription_t, typedescription_t *> TypeDescription("TypeDescription", no_init);
 
 	// Properties...
+	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset);
 	TypeDescription.def_readonly("type", &typedescription_t::fieldType);
 	TypeDescription.def_readonly("name", &typedescription_t::fieldName);
 	TypeDescription.def_readonly("size", &typedescription_t::fieldSize);

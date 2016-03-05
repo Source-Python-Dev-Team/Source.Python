@@ -15,7 +15,7 @@ from engines.server import engine_server
 # =============================================================================
 def get_client_language(index):
     """Return the language of the given client.
-    
+
     :param int index: Index of the client.
     """
     from players.helpers import playerinfo_from_index

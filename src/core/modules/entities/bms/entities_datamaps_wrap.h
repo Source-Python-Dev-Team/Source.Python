@@ -51,7 +51,6 @@ void export_engine_specific_datamap(T _datamaps, U DataMap)
 template<class T, class U>
 void export_engine_specific_type_description(T _datamaps, U TypeDescription)
 {
-	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset)	;
 	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
 }
 

@@ -23,6 +23,7 @@ from _entities._helpers import edict_from_basehandle
 from _entities._helpers import edict_from_index
 from _entities._helpers import edict_from_inthandle
 from _entities._helpers import edict_from_pointer
+from _entities._helpers import find_output_name
 from _entities._helpers import index_from_baseentity
 from _entities._helpers import index_from_basehandle
 from _entities._helpers import index_from_edict
@@ -61,6 +62,7 @@ __all__ = ('baseentity_from_basehandle',
            'edict_from_index',
            'edict_from_inthandle',
            'edict_from_pointer',
+           'find_output_name',
            'index_from_baseentity',
            'index_from_basehandle',
            'index_from_edict',
