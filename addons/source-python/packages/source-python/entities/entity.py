@@ -99,22 +99,6 @@ class Entity(BaseEntity):
 
     def __setattr__(self, attr, value):
         """Find if the attribute is value and sets its value."""
-        # Is the given attribute private?
-        if attr.startswith('_'):
-
-            # Get the name of the private attribute
-            name = attr[1:]
-
-            # Is the attribute a property?
-            if (name in super().__dir__() and isinstance(
-                    getattr(self.__class__, name, None), property)):
-
-                # Set the private attribute's value
-                object.__setattr__(self, attr, value)
-
-                # No need to go further
-                return
-
         # Is the given attribute a property?
         if (attr in super().__dir__() and isinstance(
                 getattr(self.__class__, attr, None), property)):
