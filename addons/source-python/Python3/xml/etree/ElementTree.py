@@ -125,7 +125,7 @@ class Element:
     This class is the reference implementation of the Element interface.
 
     An element's length is its number of subelements.  That means if you
-    you want to check if an element is truly empty, you should check BOTH
+    want to check if an element is truly empty, you should check BOTH
     its length AND its text attribute.
 
     The element tag, attribute names, and attribute values can be either
@@ -174,7 +174,7 @@ class Element:
         self._children = []
 
     def __repr__(self):
-        return "<Element %s at 0x%x>" % (repr(self.tag), id(self))
+        return "<%s %r at %#x>" % (self.__class__.__name__, self.tag, id(self))
 
     def makeelement(self, tag, attrib):
         """Create a new element with the same type.
@@ -509,7 +509,7 @@ class QName:
     def __str__(self):
         return self.text
     def __repr__(self):
-        return '<QName %r>' % (self.text,)
+        return '<%s %r>' % (self.__class__.__name__, self.text)
     def __hash__(self):
         return hash(self.text)
     def __le__(self, other):
@@ -532,10 +532,6 @@ class QName:
         if isinstance(other, QName):
             return self.text == other.text
         return self.text == other
-    def __ne__(self, other):
-        if isinstance(other, QName):
-            return self.text != other.text
-        return self.text != other
 
 # --------------------------------------------------------------------
 
@@ -756,14 +752,13 @@ class ElementTree:
                 encoding = "utf-8"
             else:
                 encoding = "us-ascii"
-        else:
-            encoding = encoding.lower()
-        with _get_writer(file_or_filename, encoding) as write:
+        enc_lower = encoding.lower()
+        with _get_writer(file_or_filename, enc_lower) as write:
             if method == "xml" and (xml_declaration or
                     (xml_declaration is None and
-                     encoding not in ("utf-8", "us-ascii", "unicode"))):
+                     enc_lower not in ("utf-8", "us-ascii", "unicode"))):
                 declared_encoding = encoding
-                if encoding == "unicode":
+                if enc_lower == "unicode":
                     # Retrieve the default encoding for the xml declaration
                     import locale
                     declared_encoding = locale.getpreferredencoding()

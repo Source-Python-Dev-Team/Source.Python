@@ -1,10 +1,10 @@
-#!/usr/bin/env sh
+# !/usr/bin/env sh
 
 # Store the start directory for later reference
 STARTDIR="$PWD"
 
 # Set this to the number of processor cores you would like to use
-NUM_CORES=${NUM_CORES:=1}
+NUM_CORES=${NUM_CORES:=3}
 
 
 # A function to choose the branch to build against
@@ -84,7 +84,7 @@ ChooseBuildType () {
     fi
 
     # If the choice was valid, create the clone, if it doesn't exist
-    CloneRepo
+    CreateBuild
 
 }
 
@@ -176,7 +176,6 @@ CreateBuild () {
     cd "$BUILDDIR"
 
     # Build the binaries
-    make clean
     make -j$NUM_CORES 2>&1 | tee build.log
 
     # Set the exit code to the exit code of the make command. Otherwise it
