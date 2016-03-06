@@ -78,17 +78,6 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         return self._playerinfo
 
     @property
-    def instances(self):
-        """Yield the player's base instances.
-
-        Values yielded are the player's :class:`players.PlayerInfo`,
-        :class:`entities.Edict` and :class:`memory.Pointer` objects.
-        """
-        yield self.playerinfo
-        yield self.edict
-        yield self.pointer
-
-    @property
     def userid(self):
         """Return the player's userid.
 
@@ -129,14 +118,6 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
             BaseClient, memory.get_object_pointer(self.client) - 4)
 
     @property
-    def isdead(self):
-        """Return if the player is dead or alive.
-
-        :rtype: bool
-        """
-        return self.playerinfo.is_dead()
-
-    @property
     def uniqueid(self):
         """Return the player's uniqueid."""
         return uniqueid_from_playerinfo(self.playerinfo)
@@ -151,6 +132,41 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         :rtype: str
         """
         return address_from_playerinfo(self.playerinfo)
+
+    def is_connected(self):
+        """Return whether the player is connected.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_connected()
+
+    def is_fake_client(self):
+        """Return whether the player is a fake client.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_fake_client()
+
+    def is_hltv(self):
+        """Return whether the player is HLTV.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_hltv()
+
+    def is_in_a_vehicle(self):
+        """Return whether the player is in a vehicle.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_in_a_vehicle()
+
+    def is_observer(self):
+        """Return whether the player is an observer.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_observer()
 
     def get_team(self):
         """Return the player's team.

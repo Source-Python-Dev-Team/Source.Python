@@ -31,15 +31,3 @@ __all__ = ('ConnectionlessPacketHandler',
            'server',
            'server_game_dll',
            )
-
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-try:
-    # Try to get the server using the exposed method. If that fails, because
-    # it isn't implemented for this game ...
-    server = engine_server.server
-except NotImplementedError:
-    # ... fall back to the sig-scanned server
-    server = manager.get_global_pointer('Server')

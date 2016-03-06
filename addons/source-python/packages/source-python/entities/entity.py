@@ -85,15 +85,6 @@ class Entity(BaseEntity):
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
-        # Loop through all instances (used to get edict/IPlayerInfo attributes)
-        for instance in self.instances:
-
-            # Does the current instance contain the given attribute?
-            if hasattr(instance, attr):
-
-                # Return the instance's value for the given attribute
-                return getattr(instance, attr)
-
         # Loop through all of the entity's server classes
         for server_class in self.server_classes:
 
@@ -108,22 +99,6 @@ class Entity(BaseEntity):
 
     def __setattr__(self, attr, value):
         """Find if the attribute is value and sets its value."""
-        # Is the given attribute private?
-        if attr.startswith('_'):
-
-            # Get the name of the private attribute
-            name = attr[1:]
-
-            # Is the attribute a property?
-            if (name in super().__dir__() and isinstance(
-                    getattr(self.__class__, name, None), property)):
-
-                # Set the private attribute's value
-                object.__setattr__(self, attr, value)
-
-                # No need to go further
-                return
-
         # Is the given attribute a property?
         if (attr in super().__dir__() and isinstance(
                 getattr(self.__class__, attr, None), property)):
@@ -153,16 +128,6 @@ class Entity(BaseEntity):
         """Return an alphabetized list of attributes for the instance."""
         # Get the base attributes
         attributes = set(super().__dir__())
-
-        # Loop through all instances for the entity
-        for instance in self.instances:
-
-            # Loop through all of the attributes of the current instance
-            for attr in dir(instance):
-
-                # Add the attribute if it is not private
-                if not attr.startswith('_'):
-                    attributes.add(attr)
 
         # Loop through all server classes for the entity
         for server_class in self.server_classes:
@@ -257,19 +222,19 @@ class Entity(BaseEntity):
         return self._pointer
 
     @property
-    def instances(self):
-        """Yield the entity's base instances.
-
-        Values yielded are the entity's :class:`entities.Edict`
-        and :class:`memory.Pointer` objects.
-        """
-        yield self.edict
-        yield self.pointer
-
-    @property
     def inthandle(self):
         """Return the entity's integer handle."""
         return self.basehandle.to_int()
+
+    @property
+    def collideable(self):
+        """Return the entity's Collideable instance."""
+        return self.edict.collideable
+
+    @property
+    def networkable(self):
+        """Return the entity's Networkable instance."""
+        return self.edict.networkable
 
     @property
     def server_class(self):
