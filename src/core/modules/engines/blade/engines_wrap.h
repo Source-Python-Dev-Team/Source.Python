@@ -50,16 +50,14 @@ template<class T>
 T IVEngineServer_Visitor(T cls)
 {
 	cls
-		.def("get_game_server_steamid",
-			&IVEngineServer::GetGameServerSteamID,
-			"Returns the SteamID of the game server.",
-			reference_existing_object_policy()
+		.add_property("game_server_steamid",
+			make_function(&IVEngineServer::GetGameServerSteamID, reference_existing_object_policy()),
+			"Returns the SteamID of the game server."
 		)
 
-		.def("get_launch_options",
-			&IVEngineServer::GetLaunchOptions,
-			"Returns abitrary launch options",
-			reference_existing_object_policy()
+		.add_property("launch_options",
+			make_function(&IVEngineServer::GetLaunchOptions, reference_existing_object_policy()),
+			"Returns abitrary launch options"
 		)
 
 		.def("is_userid_in_use",
@@ -78,8 +76,9 @@ T IVEngineServer_Visitor(T cls)
 			"Returns whether logging is enabled."
 		)
 
-		.def("get_timescale",
-			&IVEngineServer::GetTimescale
+		.add_property("timescale",
+			&IVEngineServer::GetTimescale,
+			&IVEngineServer::SetTimescale
 		)
 
 		.def("is_level_main_menu_background",
@@ -155,11 +154,6 @@ T IVEngineServer_Visitor(T cls)
 		.def("pause",
 			&IVEngineServer::Pause,
 			args("pause", "force")
-		)
-
-		.def("set_timescale",
-			&IVEngineServer::SetTimescale,
-			args("timescale")
 		)
 
 		.def("host_validated_session",
