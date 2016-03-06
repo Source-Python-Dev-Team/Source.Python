@@ -95,7 +95,7 @@ Proposal
   numeric, sequence, and mapping.  Each protocol consists of a
   collection of related operations.  If an operation that is not
   provided by a particular type is invoked, then a standard exception,
-  NotImplementedError is raised with a operation name as an argument.
+  NotImplementedError is raised with an operation name as an argument.
   In addition, for convenience this interface defines a set of
   constructors for building objects of built-in types.  This is needed
   so new objects can be returned from C functions that otherwise treat
@@ -265,6 +265,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
 
      PyAPI_FUNC(PyObject *) PyObject_Call(PyObject *callable_object,
                                           PyObject *args, PyObject *kw);
+
+#ifndef Py_LIMITED_API
+     PyAPI_FUNC(PyObject *) _Py_CheckFunctionResult(PyObject *func,
+                                                    PyObject *result,
+                                                    const char *where);
+#endif
 
        /*
      Call a callable Python object, callable_object, with
@@ -658,6 +664,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
      o1*o2.
        */
 
+     PyAPI_FUNC(PyObject *) PyNumber_MatrixMultiply(PyObject *o1, PyObject *o2);
+
+       /*
+     This is the equivalent of the Python expression: o1 @ o2.
+       */
+
      PyAPI_FUNC(PyObject *) PyNumber_FloorDivide(PyObject *o1, PyObject *o2);
 
        /*
@@ -830,6 +842,12 @@ xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx*/
      Returns the result of multiplying o1 by o2, possibly in-place, or
      null on failure.  This is the equivalent of the Python expression:
      o1 *= o2.
+       */
+
+     PyAPI_FUNC(PyObject *) PyNumber_InPlaceMatrixMultiply(PyObject *o1, PyObject *o2);
+
+       /*
+     This is the equivalent of the Python expression: o1 @= o2.
        */
 
      PyAPI_FUNC(PyObject *) PyNumber_InPlaceFloorDivide(PyObject *o1,
