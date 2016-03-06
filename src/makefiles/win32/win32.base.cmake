@@ -78,6 +78,7 @@ If( SOURCE_ENGINE MATCHES "csgo")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         ${SOURCEPYTHON_LINK_LIBRARIES}
         ${SOURCESDK_LIB}/win32/release/vs2010/libprotobuf.lib
+    )
 Endif()
 
 # ------------------------------------------------------------------
