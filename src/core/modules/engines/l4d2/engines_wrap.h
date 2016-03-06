@@ -31,6 +31,7 @@
 // Includes.
 //---------------------------------------------------------------------------------
 #include "eiface.h"
+#include "iachievementmgr.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 
