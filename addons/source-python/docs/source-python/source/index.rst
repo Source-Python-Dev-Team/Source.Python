@@ -11,7 +11,7 @@ have any questions, please search for an answer on our
 answer to your question, please post a question of your own in the appropriate
 forum.
 
-Source.Python is currently embedding Python 3.4.1 and will be upgraded from
+Source.Python is currently embedding Python 3.5.1 and will be upgraded from
 time to time.
 
 

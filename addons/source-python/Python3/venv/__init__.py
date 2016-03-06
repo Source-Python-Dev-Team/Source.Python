@@ -30,7 +30,6 @@ optional arguments:
 import logging
 import os
 import shutil
-import struct
 import subprocess
 import sys
 import types
@@ -140,11 +139,11 @@ class EnvBuilder:
         create_if_needed(path)
         create_if_needed(libpath)
         # Issue 21197: create lib64 as a symlink to lib on 64-bit non-OS X POSIX
-        if ((struct.calcsize('P') == 8) and (os.name == 'posix') and
+        if ((sys.maxsize > 2**32) and (os.name == 'posix') and
             (sys.platform != 'darwin')):
-            p = os.path.join(env_dir, 'lib')
             link_path = os.path.join(env_dir, 'lib64')
-            os.symlink(p, link_path)
+            if not os.path.exists(link_path):   # Issue #21643
+                os.symlink('lib', link_path)
         context.bin_path = binpath = os.path.join(env_dir, binname)
         context.bin_name = binname
         context.env_exe = os.path.join(binpath, exename)
@@ -178,7 +177,7 @@ class EnvBuilder:
                 result = f.startswith('python') and f.endswith('.exe')
             return result
 
-    def symlink_or_copy(self, src, dst):
+    def symlink_or_copy(self, src, dst, relative_symlinks_ok=False):
         """
         Try symlinking a file, and if that fails, fall back to copying.
         """
@@ -186,7 +185,11 @@ class EnvBuilder:
         if not force_copy:
             try:
                 if not os.path.islink(dst): # can't link to itself!
-                    os.symlink(src, dst)
+                    if relative_symlinks_ok:
+                        assert os.path.dirname(src) == os.path.dirname(dst)
+                        os.symlink(os.path.basename(src), dst)
+                    else:
+                        os.symlink(src, dst)
             except Exception:   # may need to use a more specific exception
                 logger.warning('Unable to symlink %r to %r', src, dst)
                 force_copy = True
@@ -201,7 +204,6 @@ class EnvBuilder:
                         being processed.
         """
         binpath = context.bin_path
-        exename = context.python_exe
         path = context.env_exe
         copier = self.symlink_or_copy
         copier(context.executable, path)
@@ -212,7 +214,11 @@ class EnvBuilder:
             for suffix in ('python', 'python3'):
                 path = os.path.join(binpath, suffix)
                 if not os.path.exists(path):
-                    os.symlink(exename, path)
+                    # Issue 18807: make copies if
+                    # symlinks are not wanted
+                    copier(context.env_exe, path, relative_symlinks_ok=True)
+                    if not os.path.islink(path):
+                        os.chmod(path, 0o755)
         else:
             subdir = 'DLLs'
             include = self.include_binary
@@ -234,7 +240,8 @@ class EnvBuilder:
                 if 'init.tcl' in files:
                     tcldir = os.path.basename(root)
                     tcldir = os.path.join(context.env_dir, 'Lib', tcldir)
-                    os.makedirs(tcldir)
+                    if not os.path.exists(tcldir):
+                        os.makedirs(tcldir)
                     src = os.path.join(root, 'init.tcl')
                     dst = os.path.join(tcldir, 'init.tcl')
                     shutil.copyfile(src, dst)

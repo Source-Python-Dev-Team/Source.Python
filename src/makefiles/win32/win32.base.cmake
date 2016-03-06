@@ -78,7 +78,7 @@ Endif()
 # Debug link libraries
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
-    debug ${PYTHONSDK_LIB}/python34_d.lib
+    debug ${PYTHONSDK_LIB}/python35_d.lib
     debug ${BOOSTSDK_LIB}/libboost_python-vc100-mt-gd-1_55.lib
 )
 
@@ -93,7 +93,7 @@ Endif()
 # Release link libraries
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    optimized ${PYTHONSDK_LIB}/python34.lib
+    optimized ${PYTHONSDK_LIB}/python35.lib
     optimized ${BOOSTSDK_LIB}/libboost_python-vc100-mt-1_55.lib
 )
 
