@@ -39,6 +39,11 @@
 class TypeDescriptionExt
 {
 public:
+	static int get_offset(const typedescription_t& pTypeDesc)
+	{
+		return pTypeDesc.fieldOffset;
+	}
+    
 	static int get_flat_offset(const typedescription_t& pTypeDesc)
 	{
 		return pTypeDesc.flatOffset[TD_OFFSET_NORMAL];

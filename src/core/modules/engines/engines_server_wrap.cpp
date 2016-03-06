@@ -539,6 +539,7 @@ void export_engine_server(scope _server)
 			args("pvs_info")
 		)
 
+		/*
 		.add_property("achievement_mgr",
 			make_function(
 				&IVEngineServer::GetAchievementMgr,
@@ -547,6 +548,7 @@ void export_engine_server(scope _server)
 			&IVEngineServer::SetAchievementMgr,
 			"Return the achievement manager."
 		)
+		*/
 
 		.add_property("app_id",
 			&IVEngineServer::GetAppID,

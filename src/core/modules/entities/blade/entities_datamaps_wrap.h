@@ -53,7 +53,6 @@ void export_engine_specific_datamap(T _datamaps, U DataMap)
 template<class T, class U>
 void export_engine_specific_type_description(T _datamaps, U TypeDescription)
 {
-	TypeDescription.def_readonly("offset", &typedescription_t::fieldOffset);
 	TypeDescription.add_property("flat_offset", &TypeDescriptionExt::get_flat_offset);
 	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset);
 	TypeDescription.def_readonly("flat_group", &typedescription_t::flatGroup);
