@@ -70,6 +70,12 @@ If( SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         ${SOURCEPYTHON_LINK_LIBRARIES}
         ${SOURCESDK_LIB}/public/interfaces.lib
+    )
+Endif()
+
+If( SOURCE_ENGINE MATCHES "csgo")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        ${SOURCEPYTHON_LINK_LIBRARIES}
         ${SOURCESDK_LIB}/win32/release/vs2010/libprotobuf.lib
     )
 Endif()
