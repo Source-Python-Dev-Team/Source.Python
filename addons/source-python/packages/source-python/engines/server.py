@@ -15,8 +15,6 @@ from _engines._server import server_game_dll
 #   Globals
 from _globals import MapLoadType
 from _globals import global_vars
-#   Memory
-from memory.manager import manager
 
 
 # =============================================================================
@@ -28,6 +26,5 @@ __all__ = ('ConnectionlessPacketHandler',
            'Server',
            'engine_server',
            'global_vars',
-           'server',
            'server_game_dll',
            )
