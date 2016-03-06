@@ -5,10 +5,10 @@
 # ------------------------------------------------------------------
 
 # ------------------------------------------------------------------
-# We only need a release and debug configuration.
+# We only need a release configuration.
 # ------------------------------------------------------------------
-Set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING 
-	"Only do Release and Debug" 
+Set(CMAKE_CONFIGURATION_TYPES "Release" CACHE STRING 
+	"Only do Release" 
 	FORCE
 )
 
