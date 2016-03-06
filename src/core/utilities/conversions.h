@@ -241,5 +241,4 @@ CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo);
 
-
 #endif // _CONVERSIONS_H

@@ -605,7 +605,7 @@ PyAPI_FUNC(PyObject*) PyUnicode_New(
     );
 #endif
 
-/* Initializes the canonical string representation from a the deprecated
+/* Initializes the canonical string representation from the deprecated
    wstr/Py_UNICODE representation. This function is used to convert Unicode
    objects which were created using the old API to the new flexible format
    introduced with PEP 393.
@@ -849,7 +849,7 @@ PyAPI_FUNC(int) PyUnicode_Resize(
 
    Coercion is done in the following way:
 
-   1. bytes, bytearray and other char buffer compatible objects are decoded
+   1. bytes, bytearray and other bytes-like objects are decoded
       under the assumptions that they contain data using the UTF-8
       encoding. Decoding is done in "strict" mode.
 
@@ -965,7 +965,7 @@ _PyUnicodeWriter_WriteSubstring(_PyUnicodeWriter *writer,
     Py_ssize_t end
     );
 
-/* Append a ASCII-encoded byte string.
+/* Append an ASCII-encoded byte string.
    Return 0 on success, raise an exception and return -1 on error. */
 PyAPI_FUNC(int)
 _PyUnicodeWriter_WriteASCIIString(_PyUnicodeWriter *writer,
@@ -1052,7 +1052,7 @@ PyAPI_FUNC(Py_ssize_t) PyUnicode_AsWideChar(
    always ends with a nul character. If size is not NULL, write the number of
    wide characters (excluding the null character) into *size.
 
-   Returns a buffer allocated by PyMem_Alloc() (use PyMem_Free() to free it)
+   Returns a buffer allocated by PyMem_Malloc() (use PyMem_Free() to free it)
    on success. On error, returns NULL, *size is undefined and raises a
    MemoryError. */
 
@@ -2041,7 +2041,7 @@ PyAPI_FUNC(PyObject *) PyUnicode_RichCompare(
     int op                      /* Operation: Py_EQ, Py_NE, Py_GT, etc. */
     );
 
-/* Apply a argument tuple or dictionary to a format string and return
+/* Apply an argument tuple or dictionary to a format string and return
    the resulting Unicode string. */
 
 PyAPI_FUNC(PyObject *) PyUnicode_Format(
@@ -2059,12 +2059,6 @@ PyAPI_FUNC(int) PyUnicode_Contains(
     PyObject *container,        /* Container string */
     PyObject *element           /* Element string */
     );
-
-/* Checks whether the string contains any NUL characters. */
-
-#ifndef Py_LIMITED_API
-PyAPI_FUNC(int) _PyUnicode_HasNULChars(PyObject *);
-#endif
 
 /* Checks whether argument is a valid identifier. */
 
@@ -2244,6 +2238,8 @@ PyAPI_FUNC(Py_UNICODE*) Py_UNICODE_strrchr(
     const Py_UNICODE *s,
     Py_UNICODE c
     );
+
+PyAPI_FUNC(PyObject*) _PyUnicode_FormatLong(PyObject *, int, int, int);
 
 /* Create a copy of a unicode string ending with a nul character. Return NULL
    and raise a MemoryError exception on memory allocation failure, otherwise

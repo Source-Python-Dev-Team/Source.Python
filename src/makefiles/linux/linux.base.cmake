@@ -74,12 +74,18 @@ If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2")
     )
 EndIf()
 
-If(SOURCE_ENGINE MATCHES "csgo")
+If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux/interfaces_i486.a
          ${SOURCESDK_LIB}/linux/libtier0.so
          ${SOURCESDK_LIB}/linux/libvstdlib.so
+    )
+EndIf()
+
+If(SOURCE_ENGINE MATCHES "csgo")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux32/release/libprotobuf.a
     )
 EndIf()
@@ -132,17 +138,17 @@ EndIf()
 # correctly...
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    ${PYTHONSDK_LIB}/libpython3.4m.a
+    ${PYTHONSDK_LIB}/libpython3.5m.a
     ${BOOSTSDK_LIB}/libboost_python.a
-    ${PYTHONSDK_LIB}/libpython3.4m.so.1.0
+    ${PYTHONSDK_LIB}/libpython3.5m.so.1.0
     ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
     ${ASMJITSDK_LIB}/libAsmJit.a
 )
 
 Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
-    ${PYTHONSDK_LIB}/libpython3.4dm.a
+    ${PYTHONSDK_LIB}/libpython3.5dm.a
     ${BOOSTSDK_LIB}/libboost_python_d.a
-    ${PYTHONSDK_LIB}/libpython3.4dm.so.1.0
+    ${PYTHONSDK_LIB}/libpython3.5dm.so.1.0
     ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
     ${ASMJITSDK_LIB}/libAsmJit_d.a
 )

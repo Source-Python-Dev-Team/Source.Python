@@ -96,6 +96,11 @@ void export_listener_managers(scope _listeners)
 			raw_method(&CListenerManager::Notify),
 			"Notifies all registered listeners."
 		)
+
+		.def("__len__",
+			&CListenerManager::GetCount,
+			"Return the number of registered listeners."
+		)
 	;
 
 	_listeners.attr("on_client_active_listener_manager") = object(ptr(GetOnClientActiveListenerManager()));

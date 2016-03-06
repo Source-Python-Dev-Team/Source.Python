@@ -1,7 +1,7 @@
 """Find modules used by a script, using introspection."""
 
 import dis
-import importlib._bootstrap
+import importlib._bootstrap_external
 import importlib.machinery
 import marshal
 import os
@@ -223,7 +223,7 @@ class ModuleFinder:
         if not m.__path__:
             return
         modules = {}
-        # 'suffixes' used to be a list hardcoded to [".py", ".pyc", ".pyo"].
+        # 'suffixes' used to be a list hardcoded to [".py", ".pyc"].
         # But we must also collect Python extension modules - although
         # we cannot separate normal dlls from Python extensions.
         suffixes = []
@@ -289,7 +289,7 @@ class ModuleFinder:
             co = compile(fp.read()+'\n', pathname, 'exec')
         elif type == imp.PY_COMPILED:
             try:
-                marshal_data = importlib._bootstrap._validate_bytecode_header(fp.read())
+                marshal_data = importlib._bootstrap_external._validate_bytecode_header(fp.read())
             except ImportError as exc:
                 self.msgout(2, "raise ImportError: " + str(exc), pathname)
                 raise
@@ -568,11 +568,12 @@ class ModuleFinder:
             if isinstance(consts[i], type(co)):
                 consts[i] = self.replace_paths_in_code(consts[i])
 
-        return types.CodeType(co.co_argcount, co.co_nlocals, co.co_stacksize,
-                         co.co_flags, co.co_code, tuple(consts), co.co_names,
-                         co.co_varnames, new_filename, co.co_name,
-                         co.co_firstlineno, co.co_lnotab,
-                         co.co_freevars, co.co_cellvars)
+        return types.CodeType(co.co_argcount, co.co_kwonlyargcount,
+                              co.co_nlocals, co.co_stacksize, co.co_flags,
+                              co.co_code, tuple(consts), co.co_names,
+                              co.co_varnames, new_filename, co.co_name,
+                              co.co_firstlineno, co.co_lnotab, co.co_freevars,
+                              co.co_cellvars)
 
 
 def test():

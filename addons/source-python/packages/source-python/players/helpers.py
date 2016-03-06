@@ -194,6 +194,16 @@ def uniqueid_from_index(index):
     return uniqueid_from_playerinfo(playerinfo_from_index(index))
 
 
+def uniqueid_from_index(index):
+    """Return the UniqueID for the given player index.
+
+    :param int index: The player index to get the UniqueID from.
+    :return: The UniqueID of the player. E.g. 'BOT_STAN' or 'STEAM_0:0:12345'
+    :rtype: str
+    """
+    return uniqueid_from_playerinfo(playerinfo_from_index(index))
+
+
 def address_from_playerinfo(playerinfo):
     """Return the IP address for the given player.
 
