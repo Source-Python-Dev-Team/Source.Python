@@ -16,7 +16,6 @@ Submodules
    entities.helpers
    entities.hooks
    entities.props
-   entities.specials
 
 Module contents
 ---------------
