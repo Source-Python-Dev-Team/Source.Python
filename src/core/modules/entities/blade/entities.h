@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,7 +24,36 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#ifndef _ENTITIES_BLADE_H
+#define _ENTITIES_BLADE_H
+
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "dt_send.h"
+#include "server_class.h"
+#include "game/shared/ehandle.h"
+#include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/takedamageinfo.h"
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo wrapper class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoWrapper: public TakeDamageInfoBaseWrapper
+{
+	// Nothing specific to Blade...
+};
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo extension class.
+//-----------------------------------------------------------------------------
+class TakeDamageInfoExt
+{
+	// Nothing specific to Blade...
+};
+
+
+#endif // _ENTITIES_BLADE_H

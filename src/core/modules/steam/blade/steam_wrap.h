@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,7 +24,47 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#ifndef _STEAM_WRAP_BLADE_H
+#define _STEAM_WRAP_BLADE_H
+
+template<class T>
+void export_engine_specific_steamid(scope _steam, T SteamID)
+{
+	SteamID.def(
+		"create_blank_anonymous_user_account",
+		&CSteamID::CreateBlankAnonUserLogon,
+		"Create an anonymous user login to be filled in by the AM.",
+		("universe")
+	);
+
+	SteamID.def(
+		"is_lobby",
+		&CSteamID::IsLobby,
+		"Return True if this is a lobby account ID."
+	);
+
+	SteamID.def(
+		"is_anonymous_account",
+		&CSteamID::BAnonAccount,
+		"Return True if this is an anonymous account."
+	);
+
+	SteamID.def(
+		"is_anonymous_user_account",
+		&CSteamID::BAnonUserAccount,
+		"Return True if this is an anonymous user account."
+	);
+}
+
+template<class T>
+void export_engine_specific_universe(scope _steam, T Universe)
+{
+	Universe.value("RC", k_EUniverseRC);
+}
+
+template<class T>
+void export_engine_specific_account_type(scope _steam, T AccountType)
+{
+}
+
+#endif // _STEAM_WRAP_BLADE_H

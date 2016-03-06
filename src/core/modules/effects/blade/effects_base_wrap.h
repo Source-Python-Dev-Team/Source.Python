@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012 - 2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,7 +24,17 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#ifndef _EFFECTS_BASE_WRAP_BLADE_H
+#define _EFFECTS_BASE_WRAP_BLADE_H
+
+//-----------------------------------------------------------------------------
+// Exports CBaseTempEntity.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_temp_entity(T _base, U TempEntity)
+{
+	// Nothing specific to Blade...
+}
+
+
+#endif // _EFFECTS_BASE_WRAP_BLADE_H

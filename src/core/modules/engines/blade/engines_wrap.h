@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012 - 2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,14 +24,15 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_CSGO_H
-#define _ENGINES_WRAP_CSGO_H
+#ifndef _ENGINES_WRAP_BLADE_H
+#define _ENGINES_WRAP_BLADE_H
 
 //---------------------------------------------------------------------------------
 // Includes.
 //---------------------------------------------------------------------------------
 #include "eiface.h"
 #include "ispsharedmemory.h"
+#include "modules/messages/messages.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 
@@ -50,23 +51,12 @@ T IVEngineServer_Visitor(T cls)
 {
 	cls
 		.add_property("game_server_steamid",
-			make_function(
-				&IVEngineServer::GetGameServerSteamID,
-				reference_existing_object_policy()
-			),
+			make_function(&IVEngineServer::GetGameServerSteamID, reference_existing_object_policy()),
 			"Returns the SteamID of the game server."
 		)
 
-		.add_property("server_version",
-			&IVEngineServer::GetServerVersion,
-			"Returns the version of the server."
-		)
-
 		.add_property("launch_options",
-			make_function(
-				&IVEngineServer::GetLaunchOptions,
-				reference_existing_object_policy()
-			),
+			make_function(&IVEngineServer::GetLaunchOptions, reference_existing_object_policy()),
 			"Returns abitrary launch options"
 		)
 
@@ -161,16 +151,12 @@ T IVEngineServer_Visitor(T cls)
 			&IVEngineServer::IsDedicatedServerForXbox
 		)
 
-		.def("is_dedicated_server_for_ps3",
-			&IVEngineServer::IsDedicatedServerForPS3
-		)
-
 		.def("pause",
 			&IVEngineServer::Pause,
 			args("pause", "force")
 		)
 
-		.add_property("host_validated_session",
+		.def("host_validated_session",
 			&IVEngineServer::HostValidateSession,
 			"Validates session."
 		)
@@ -241,39 +227,13 @@ T IVEngineServer_Visitor(T cls)
 			args("edict")
 		)
 
-		.add_property("latency_for_choreo_sounds",
+		.def("get_latency_for_choreo_sounds",
 			&IVEngineServer::GetLatencyForChoreoSounds
 		)
 
 		.def("get_client_cross_player_platform",
 			&IVEngineServer::GetClientCrossPlayPlatform,
 			args("ent_num")
-		)
-
-		.def("ensure_instance_baseline",
-			&IVEngineServer::EnsureInstanceBaseline,
-			args("ent_num")
-		)
-
-		.def("reserve_server_for_queued_game",
-			&IVEngineServer::ReserveServerForQueuedGame,
-			args("reservation_payload")
-		)
-		
-		/*
-		.def("get_engine_hltv_info",
-			&IVEngineServer::GetEngineHltvInfo,
-			args("out")
-		)
-		*/
-
-		.add_property("achievement_mgr",
-			make_function(
-				&IVEngineServer::GetAchievementMgr,
-				reference_existing_object_policy()
-			),
-			&IVEngineServer::SetAchievementMgr,
-			"Return the achievement manager."
 		)
 	;
 
@@ -308,4 +268,4 @@ T IEngineSound_Visitor(T cls)
 }
 
 
-#endif // _ENGINES_WRAP_CSGO_H
+#endif // _ENGINES_WRAP_BLADE_H
