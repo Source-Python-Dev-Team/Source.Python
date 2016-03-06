@@ -136,8 +136,16 @@ def setup_global_pointers():
     from core import GameConfigObj
     from memory.manager import manager
     from paths import SP_DATA_PATH
+
     manager.create_global_pointers_from_file(GameConfigObj(
         SP_DATA_PATH / 'memory' / 'global_pointers.ini'))
+
+    _sp_logger.log_debug('Setting up global "server" variables...')
+    from engines import server
+    try:
+        server.server = server.engine_server.server
+    except NotImplementedError:
+        server.server = manager.get_global_pointer('Server')
 
 
 # =============================================================================

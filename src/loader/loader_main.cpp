@@ -426,7 +426,7 @@ PLUGIN_RESULT CSourcePython::ClientCommand( edict_t *pEntity, const CCommand &ar
 //---------------------------------------------------------------------------------
 // Alien Swarm.
 //---------------------------------------------------------------------------------
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 {
 	if (m_pCorePlugin != NULL)
@@ -434,25 +434,9 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 		m_pCorePlugin->ClientFullyConnect(pEntity);
 	}
 }
-
-void CSourcePython::OnEdictAllocated( edict_t *edict )
-{
-	if (m_pCorePlugin != NULL)
-	{
-		m_pCorePlugin->OnEdictAllocated(edict);
-	}
-}
-
-void CSourcePython::OnEdictFreed( const edict_t *edict )
-{
-	if (m_pCorePlugin != NULL)
-	{
-		m_pCorePlugin->OnEdictFreed(edict);
-	}
-}
 #endif
 
-#ifdef ENGINE_BMS
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	if (m_pCorePlugin != NULL)

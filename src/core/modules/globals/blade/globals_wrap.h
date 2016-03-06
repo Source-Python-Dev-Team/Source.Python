@@ -24,7 +24,39 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#ifndef _GLOBALS_WRAP_BLADE_H
+#define _GLOBALS_WRAP_BLADE_H
+
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "edict.h"
+
+
+//-----------------------------------------------------------------------------
+// CGlobalVarsBase visitor method.
+//-----------------------------------------------------------------------------
+template<class T>
+T GlobalsBase_Visitor(T cls)
+{
+	return cls;
+}
+
+
+//-----------------------------------------------------------------------------
+// CGlobalVars visitor method.
+//-----------------------------------------------------------------------------
+template<class T>
+T Globals_Visitor(T cls)
+{
+	cls
+		.def_readonly("server_count",
+			&CGlobalVars::serverCount
+		)
+	;
+
+	return cls;
+}
+
+
+#endif // _GLOBALS_WRAP_BLADE_H
