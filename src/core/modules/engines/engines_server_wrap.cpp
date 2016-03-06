@@ -539,15 +539,6 @@ void export_engine_server(scope _server)
 			args("pvs_info")
 		)
 
-		.add_property("achievement_mgr",
-			make_function(
-				&IVEngineServer::GetAchievementMgr,
-				reference_existing_object_policy()
-			),
-			&IVEngineServer::SetAchievementMgr,
-			"Return the achievement manager."
-		)
-
 		.add_property("app_id",
 			&IVEngineServer::GetAppID,
 			"Returns the game's appid."
@@ -634,6 +625,9 @@ void export_engine_server(scope _server)
 			"Sends a client command keyvalues which are deleted inside this function.",
 			args("edict", "key_values")
 		)
+
+		// Not in Blade
+		.NOT_IMPLEMENTED_ATTR("achievement_mgr")
 
 		// Not on L4D2
 		.NOT_IMPLEMENTED_ATTR("server_version")
@@ -764,8 +758,6 @@ void export_engine_server(scope _server)
 		FUNCTION_INFO(IsInternalBuild)
 		FUNCTION_INFO(GetChangeAccessor)
 		FUNCTION_INFO(CleanUpEntityClusterList)
-		FUNCTION_INFO(SetAchievementMgr)
-		FUNCTION_INFO(GetAchievementMgr)
 		FUNCTION_INFO(GetAppID)
 		FUNCTION_INFO(IsLowViolence)
 		FUNCTION_INFO(StartQueryCvarValue)

@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,7 +24,36 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#ifndef UNDEFINED_SYMBOLS_BLADE_H
+#define UNDEFINED_SYMBOLS_BLADE_H
+
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "dt_send.h"
+#include "game/shared/ehandle.h"
+#include "isaverestore.h"
+#include "datamap.h"
+#include "game/shared/takedamageinfo.h"
+
+
+//-----------------------------------------------------------------------------
+// CTakeDamageInfo constructor declaration.
+//-----------------------------------------------------------------------------
+CTakeDamageInfo::CTakeDamageInfo()
+{
+	m_hInflictor = NULL;
+	m_hAttacker = NULL;
+	m_hWeapon = NULL;
+	m_flDamage = 0.0f;
+	m_flBaseDamage = BASEDAMAGE_NOT_SPECIFIED;
+	m_bitsDamageType = 0;
+	m_iDamageCustom = 0;
+	m_flMaxDamage = 0.0f;
+	m_vecDamageForce = vec3_origin;
+	m_vecDamagePosition = vec3_origin;
+	m_vecReportedPosition = vec3_origin;
+	m_iAmmoType = -1;
+}
+
+#endif // _UNDEFINED_SYMBOLS_BLADE_H

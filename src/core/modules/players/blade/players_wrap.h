@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,7 +24,23 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#ifndef _PLAYERS_WRAP_BLADE_H
+#define _PLAYERS_WRAP_BLADE_H
+
+
+//-----------------------------------------------------------------------------
+// IPlayerInfo extension class
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_user_cmd(scope _players, T UserCmd)
+{
+	UserCmd.def_readwrite("head_angles",
+		&CUserCmd::headangles
+	);
+
+	UserCmd.def_readwrite("head_offset",
+		&CUserCmd::headoffset
+	);
+}
+
+#endif // _PLAYERS_WRAP_BLADE_H

@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,7 +24,36 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#ifndef _ENTITIES_DATAMAPS_BLADE_H
+#define _ENTITIES_DATAMAPS_BLADE_H
+
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "datamap.h"
+
+
+//-----------------------------------------------------------------------------
+// typedescription_t extension class.
+//-----------------------------------------------------------------------------
+class TypeDescriptionExt
+{
+public:
+	static int get_offset(const typedescription_t& pTypeDesc)
+	{
+		return pTypeDesc.fieldOffset;
+	}
+    
+	static int get_flat_offset(const typedescription_t& pTypeDesc)
+	{
+		return pTypeDesc.flatOffset[TD_OFFSET_NORMAL];
+	}
+	
+	static int get_packed_offset(const typedescription_t& pTypeDesc)
+	{
+		return pTypeDesc.flatOffset[TD_OFFSET_PACKED];
+	}
+};
+
+
+#endif // _ENTITIES_DATAMAPS_BLADE_H

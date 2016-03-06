@@ -74,12 +74,18 @@ If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2")
     )
 EndIf()
 
-If(SOURCE_ENGINE MATCHES "csgo")
+If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux/interfaces_i486.a
          ${SOURCESDK_LIB}/linux/libtier0.so
          ${SOURCESDK_LIB}/linux/libvstdlib.so
+    )
+EndIf()
+
+If(SOURCE_ENGINE MATCHES "csgo")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux32/release/libprotobuf.a
     )
 EndIf()
