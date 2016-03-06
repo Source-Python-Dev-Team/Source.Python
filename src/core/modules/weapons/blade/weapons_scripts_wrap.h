@@ -33,7 +33,7 @@
 template<class T>
 void export_engine_specific_weapon_database(T _scripts)
 {
-	// Nothing specific to CS:GO...
+	// Nothing specific to Blade...
 }
 
 #endif // _WEAPONS_SCRIPTS_BLADE_WRAP_H
