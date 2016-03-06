@@ -108,6 +108,5 @@ If( SOURCE_ENGINE MATCHES "csgo" )
     SET(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
         ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE}
         optimized ${SOURCESDK_LIB}/win32/release/vs2010/libprotobuf.lib
->>>>>>> parent of 511c374... Removed debug mode
     )
 Endif()
