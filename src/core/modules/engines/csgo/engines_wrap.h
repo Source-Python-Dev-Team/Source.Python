@@ -267,15 +267,13 @@ T IVEngineServer_Visitor(T cls)
 		)
 		*/
 
-		.def("set_achievement_mgr",
+		.add_property("achievement_mgr",
+			make_function(
+				&IVEngineServer::GetAchievementMgr,
+				reference_existing_object_policy()
+			),
 			&IVEngineServer::SetAchievementMgr,
-			"Sets the achievement manager."
-		)
-
-		.def("get_achievement_mgr",
-			&IVEngineServer::GetAchievementMgr,
-			"Returns the current achievement manager.",
-			reference_existing_object_policy()
+			"Return the achievement manager."
 		)
 	;
 
