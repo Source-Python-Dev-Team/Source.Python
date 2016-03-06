@@ -35,10 +35,10 @@
 //---------------------------------------------------------------------------------
 // Definitions
 //---------------------------------------------------------------------------------
-#define PYLIB_NAME_WIN32_RELEASE	"Python3/plat-win/python34.dll"
-#define PYLIB_NAME_WIN32_DEBUG		"Python3/plat-win/python34_d.dll"
-#define PYLIB_NAME_LINUX_RELEASE	"Python3/plat-linux/libpython3.4m.so.1.0"
-#define PYLIB_NAME_LINUX_DEBUG		"Python3/plat-linux/libpython3.4dm.so.1.0"
+#define PYLIB_NAME_WIN32_RELEASE	"Python3/plat-win/python35.dll"
+#define PYLIB_NAME_WIN32_DEBUG		"Python3/plat-win/python35_d.dll"
+#define PYLIB_NAME_LINUX_RELEASE	"Python3/plat-linux/libpython3.5m.so.1.0"
+#define PYLIB_NAME_LINUX_DEBUG		"Python3/plat-linux/libpython3.5dm.so.1.0"
 
 #define CORE_NAME_WIN32				"bin/core.dll"
 #define CORE_NAME_LINUX				"bin/core.so"

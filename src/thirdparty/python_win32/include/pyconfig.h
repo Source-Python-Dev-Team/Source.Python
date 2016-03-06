@@ -145,18 +145,24 @@ WIN32 is still required for the locale module.
 #if defined(_M_IA64)
 #define COMPILER _Py_PASTE_VERSION("64 bit (Itanium)")
 #define MS_WINI64
+#define PYD_PLATFORM_TAG "win_ia64"
 #elif defined(_M_X64) || defined(_M_AMD64)
+#if defined(__INTEL_COMPILER)
+#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 64 bit (amd64) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
+#else
 #define COMPILER _Py_PASTE_VERSION("64 bit (AMD64)")
+#endif /* __INTEL_COMPILER */
 #define MS_WINX64
+#define PYD_PLATFORM_TAG "win_amd64"
 #else
 #define COMPILER _Py_PASTE_VERSION("64 bit (Unknown)")
 #endif
 #endif /* MS_WIN64 */
 
 /* set the version macros for the windows headers */
-/* Python 3.4+ requires Windows XP or greater */
-#define Py_WINVER 0x0501 /* _WIN32_WINNT_WINXP */
-#define Py_NTDDI NTDDI_WINXP
+/* Python 3.5+ requires Windows Vista or greater */
+#define Py_WINVER 0x0600 /* _WIN32_WINNT_VISTA */
+#define Py_NTDDI NTDDI_VISTA
 
 /* We only set these values when building Python - we don't want to force
    these values on extensions, as that will affect the prototypes and
@@ -192,9 +198,15 @@ typedef _W64 int ssize_t;
 
 #if defined(MS_WIN32) && !defined(MS_WIN64)
 #if defined(_M_IX86)
+#if defined(__INTEL_COMPILER)
+#define COMPILER ("[ICC v." _Py_STRINGIZE(__INTEL_COMPILER) " 32 bit (Intel) with MSC v." _Py_STRINGIZE(_MSC_VER) " CRT]")
+#else
 #define COMPILER _Py_PASTE_VERSION("32 bit (Intel)")
+#endif /* __INTEL_COMPILER */
+#define PYD_PLATFORM_TAG "win32"
 #elif defined(_M_ARM)
 #define COMPILER _Py_PASTE_VERSION("32 bit (ARM)")
+#define PYD_PLATFORM_TAG "win_arm"
 #else
 #define COMPILER _Py_PASTE_VERSION("32 bit (Unknown)")
 #endif
@@ -213,6 +225,13 @@ typedef int pid_t;
 #define hypot _hypot
 #endif
 
+/* VS 2015 defines these names with a leading underscore */
+#if _MSC_VER >= 1900
+#define timezone _timezone
+#define daylight _daylight
+#define tzname _tzname
+#endif
+
 /* Side by Side assemblies supported in VS 2005 and VS 2008 but not 2010*/
 #if _MSC_VER >= 1400 && _MSC_VER < 1600
 #define HAVE_SXS 1
@@ -225,35 +244,6 @@ typedef int pid_t;
 #endif
 
 #endif /* _MSC_VER */
-
-/* ------------------------------------------------------------------------*/
-/* The Borland compiler defines __BORLANDC__ */
-/* XXX These defines are likely incomplete, but should be easy to fix. */
-#ifdef __BORLANDC__
-#define COMPILER "[Borland]"
-
-#ifdef _WIN32
-/* tested with BCC 5.5 (__BORLANDC__ >= 0x0550)
- */
-
-typedef int pid_t;
-/* BCC55 seems to understand __declspec(dllimport), it is used in its
-   own header files (winnt.h, ...) - so we can do nothing and get the default*/
-
-#undef HAVE_SYS_UTIME_H
-#define HAVE_UTIME_H
-#define HAVE_DIRENT_H
-
-/* rename a few functions for the Borland compiler */
-#include <io.h>
-#define _chsize chsize
-#define _setmode setmode
-
-#else /* !_WIN32 */
-#error "Only Win32 and later are supported"
-#endif /* !_WIN32 */
-
-#endif /* BORLANDC */
 
 /* ------------------------------------------------------------------------*/
 /* egcs/gnu-win32 defines __GNUC__ and _WIN32 */
@@ -322,11 +312,11 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 			their Makefile (other compilers are generally
 			taken care of by distutils.) */
 #			if defined(_DEBUG)
-#				pragma comment(lib,"python34_d.lib")
+#				pragma comment(lib,"python35_d.lib")
 #			elif defined(Py_LIMITED_API)
 #				pragma comment(lib,"python3.lib")
 #			else
-#				pragma comment(lib,"python34.lib")
+#				pragma comment(lib,"python35.lib")
 #			endif /* _DEBUG */
 #		endif /* _MSC_VER */
 #	endif /* Py_BUILD_CORE */
@@ -390,7 +380,7 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 #else
 /* VC6, VS 2002 and eVC4 don't support the C99 LL suffix for 64-bit integer literals */
 #define Py_LL(x) x##I64
-#endif  /* _MSC_VER > 1200  */
+#endif  /* _MSC_VER > 1300  */
 #endif  /* _MSC_VER */
 
 #endif
@@ -435,6 +425,11 @@ Py_NO_ENABLE_SHARED to find out.  Also support MS_NO_COREDLL for b/w compat */
 
 /* Define to 1 if you have the `copysign' function. */
 #define HAVE_COPYSIGN 1
+
+/* Define to 1 if you have the `round' function. */
+#if _MSC_VER >= 1800
+#define HAVE_ROUND 1
+#endif
 
 /* Define to 1 if you have the `isinf' macro. */
 #define HAVE_DECL_ISINF 1

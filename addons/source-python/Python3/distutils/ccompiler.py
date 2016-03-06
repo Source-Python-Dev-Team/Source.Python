@@ -752,7 +752,7 @@ class CCompiler:
         raise NotImplementedError
 
     def library_option(self, lib):
-        """Return the compiler option to add 'dir' to the list of libraries
+        """Return the compiler option to add 'lib' to the list of libraries
         linked into the shared library or executable.
         """
         raise NotImplementedError
@@ -959,7 +959,7 @@ def get_default_compiler(osname=None, platform=None):
 # is assumed to be in the 'distutils' package.)
 compiler_class = { 'unix':    ('unixccompiler', 'UnixCCompiler',
                                "standard UNIX-style compiler"),
-                   'msvc':    ('msvccompiler', 'MSVCCompiler',
+                   'msvc':    ('_msvccompiler', 'MSVCCompiler',
                                "Microsoft Visual C++"),
                    'cygwin':  ('cygwinccompiler', 'CygwinCCompiler',
                                "Cygwin port of GNU C Compiler for Win32"),
