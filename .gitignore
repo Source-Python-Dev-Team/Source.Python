@@ -50,3 +50,6 @@ addons/source-python/docs/plugins/
 
 # PyCharm directory
 .idea/
+
+# Linux temp files
+*~
