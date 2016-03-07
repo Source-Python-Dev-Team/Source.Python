@@ -1,19 +1,41 @@
-# ../
+# ../players/_entity/orangebox/cstrike.py
 
-""""""
+"""Provides CS:S specific Player based functionality."""
 
 # =============================================================================
+# >> IMPORTS
 # =============================================================================
+# Source.Python Imports
+#   Engines
 from engines.server import engine_server
+#   Filters
+from filters.entities import EntityIter
+#   Memory
 from memory import get_virtual_function
 from memory.hooks import PreHook
-from players._entity.orangebox import Player as _Player
+#   Players
+from . import Player as _Player
 
 
 # =============================================================================
+# >> CLASSES
 # =============================================================================
 class Player(_Player):
-    """"""
+    """Class used to interact directly with players."""
+
+    def has_c4(self):
+        """Return whether or not the player is carrying C4."""
+        # Loop through all c4 entities on the server
+        for weapon in EntityIter('weapon_c4'):
+
+            # Is the entity's "owner" the player?
+            if weapon.owner == self.inthandle:
+
+                # Return True
+                return True
+
+        # If no c4 is owned by the player, return False
+        return False
 
 
 # =============================================================================

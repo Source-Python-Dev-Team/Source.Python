@@ -657,10 +657,31 @@ class Player(Entity):
             yield index
 
     def get_projectile_ammo(self, projectile):
-        """"""
+        """Return the player's ammo value of the given projectile.
+
+        :param str projectile: The name of the projectile to get the ammo of.
+        :rtype: int
+        """
+        return self.get_property_int(
+            weapon_manager.ammoprop +
+            '%03d' % weapon_manager[projectile].ammoprop)
 
     def set_projectile_ammo(self, projectile, value):
-        """"""
+        """Set the player's ammo value for the given projectile.
+
+        :param str projectile: The name of the projectile to set the ammo of.
+        :param int value: The value to set the projectile's ammo to.
+        """
+        self.set_property_int(
+            weapon_manager.ammoprop +
+            '%03d' % weapon_manager[projectile].ammoprop, value)
+
+    def projectile_indexes(self, projectile):
+        """Yield all indexes of the given projectile for the player.
+
+        :param str projectile: The name of the projectile to find indexes of.
+        """
+        self.weapon_indexes(weapon_manager[projectile].name)
 
 
 # =============================================================================
