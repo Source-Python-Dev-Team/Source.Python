@@ -234,6 +234,7 @@ class _AuthManager(dict):
         """Set the active backend.
 
         :param str backend_name: Name of the backend.
+        :raise ValueError: Raised if the backend does not exist.
         """
         try:
             backend = self[backend_name.casefold()]
