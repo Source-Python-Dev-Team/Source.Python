@@ -267,7 +267,8 @@ class CommandParser(Store):
         for command_name in self._validate_commands(commands):
             try:
                 store = store[command_name]
-            except KeyError:
+            except (TypeError, KeyError):
+                # The TypeError happens if "store" is already a CommandNode
                 raise ValueError('Node does not exist.')
 
         return store
@@ -367,8 +368,9 @@ class CommandParser(Store):
     def parse_command(self, command):
         """Parse a :class:`Command` object.
 
-        Splits the command into the actual command and its arguments
+        Splits the command into the actual command and its arguments.
 
+        :param Command command: A command to parse.
         :raise SubCommandNotFound: Raised if a sub command was not found.
         :raise SubCommandExpected: Raised if a sub command was expected, but
             more arguments have been passed.
