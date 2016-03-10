@@ -44,15 +44,15 @@ class FlatfilePermissionSource(PermissionSource):
 
     def load(self):
         """Load the backend."""
-        self.load_config(
+        self.load_json_config(
             auth_manager.players, self.options['admin_config_path'])
-        self.load_config(
+        self.load_json_config(
             auth_manager.groups, self.options['group_config_path'])
         self.load_simple_config(
             auth_manager.players, self.options['simple_config_path'])
 
     @staticmethod
-    def load_config(store, path):
+    def load_json_config(store, path):
         """Load a config from a file into the given store."""
         path = Path(path)
 
