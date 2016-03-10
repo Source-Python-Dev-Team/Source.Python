@@ -235,13 +235,13 @@ class _AuthManager(dict):
 
         :param str backend_name: Name of the backend.
         """
-        self._unload_active_backend()
         try:
             backend = self[backend_name.casefold()]
         except KeyError:
             raise ValueError(
                 'Backend "{}" does not exist.'.format(backend_name))
 
+        self._unload_active_backend()
         self.active_backend = backend
         backend.load()
 
@@ -251,6 +251,7 @@ class _AuthManager(dict):
             self.active_backend.unload()
             self.groups.clear()
             self.players.clear()
+            self.active_backend = None
 
     def is_backend_loaded(self, backend_name):
         """Return True if the given backend is currently loaded.
