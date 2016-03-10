@@ -28,27 +28,31 @@ logger = core_command_logger.auth
 # =============================================================================
 # >> sp auth backend
 # =============================================================================
-@_core_command.sub_command(['auth', 'backend', 'load'])
+@_core_command.sub_command(['auth', 'backend', 'set'])
 def _sp_auth_load(command_info, backend):
-    """Load or reload a backend."""
-    # TODO:
-    # load_backend should raise errors, so we actually know what went wrong
-    # (e.g. backend does not exist).
-    if auth_manager.load_backend(backend):
-        message = 'Backend "{}" successfully loaded!'
+    """Set the active backend."""
+    try:
+        auth_manager.set_active_backend(backend)
+    except ValueError:
+        logger.log_message('Backend "{}" does not exist.'.format(backend))
     else:
-        message = 'Failed to load backend "{}".'
-
-    logger.log_message(message.format(backend))
+        logger.log_message(
+            'Backend "{}" has been loaded sucessfully!'.format(backend))
 
 @_core_command.sub_command(['auth', 'backend', 'list'])
 def _sp_auth_list(command_info):
-    """List all available backends."""
-    result = 'Available backends:'
-    for backend in auth_manager.available_backends:
-        result += '\n  ' + backend.name.casefold()
+    """List all available backends and marks the active backend."""
+    if not auth_manager:
+        logger.log_message('No available backends!')
+    else:
+        result = 'Available backends:'
+        for backend in sorted(auth_manager):
+            if auth_manager.is_backend_loaded(backend):
+                backend = backend.ljust(15) + ' [ACTIVE]'
 
-    logger.log_message(result)
+            result += '\n  ' + backend
+
+        logger.log_message(result)
 
 
 # =============================================================================

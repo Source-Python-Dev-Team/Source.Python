@@ -168,26 +168,33 @@ class PermissionDict(dict):
         return instance
 
 
-class _AuthManager(object):
+class _AuthManager(dict):
     """Manages backends and configuration files."""
 
     def __init__(self):
         """Initialize the object."""
         self.groups = PermissionDict(GroupPermissions)
         self.players = PermissionDict(PlayerPermissions)
-        self.available_backends = []
         self.active_backend = None
 
     def _find_available_backends(self):
-        """Find all available backends."""
+        """Find all available backends.
+
+        :raise ValueError: Raised if no backend or multiple backends are found
+            within a single file.
+        """
         for backend in BACKENDS_PATH.glob('*.py'):
             name = 'auth.backend.' + backend.basename().splitext()[0]
             loader = SourceFileLoader(name, str(backend))
             module = loader.load_module(name)
             for var in vars(module).values():
                 if isinstance(var, PermissionSource):
-                    self.available_backends.append(var)
+                    self[var.name.casefold()] = var
                     break
+            else:
+                raise ValueError(
+                    'Found no backend or multiple backends in "{}".'.format(
+                        backend))
 
     def _load_config(self):
         """Load the configuration."""
@@ -197,7 +204,7 @@ class _AuthManager(object):
         }
 
         backends_config = {}
-        for backend in self.available_backends:
+        for backend in self.values():
             backends_config[backend.name] = backend.options
 
         config['backends'] = backends_config
@@ -209,32 +216,49 @@ class _AuthManager(object):
 
         config.write()
 
-        for backend in self.available_backends:
+        for backend in self.values():
             backend.options = config['backends'][backend.name]
 
-        self.load_backend(config['Config']['PermissionBackend'])
+        self.set_active_backend(config['Config']['PermissionBackend'])
 
     def load(self):
         """Load the auth manager."""
         self._find_available_backends()
         self._load_config()
 
-    def load_backend(self, backend_name):
-        """Load a backend.
+    def unload(self):
+        """Unload the auth manager."""
+        self._unload_active_backend()
+
+    def set_active_backend(self, backend_name):
+        """Set the active backend.
 
         :param str backend_name: Name of the backend.
         """
-        for backend in self.available_backends:
-            if backend.name.casefold() != backend_name.casefold():
-                continue
+        self._unload_active_backend()
+        try:
+            backend = self[backend_name.casefold()]
+        except KeyError:
+            raise ValueError(
+                'Backend "{}" does not exist.'.format(backend_name))
 
-            self.active_backend = backend
+        self.active_backend = backend
+        backend.load()
+
+    def _unload_active_backend(self):
+        """Unload the active backend if there is one."""
+        if self.active_backend is not None:
+            self.active_backend.unload()
             self.groups.clear()
             self.players.clear()
-            backend.load()
-            return True
 
-        return False
+    def is_backend_loaded(self, backend_name):
+        """Return True if the given backend is currently loaded.
+
+        :rtype: bool
+        """
+        return (self.active_backend is not None and
+            backend_name.casefold() == self.active_backend.name)
 
     def get_player_permissions(self, index):
         """Return the permissions of a player.
@@ -243,10 +267,10 @@ class _AuthManager(object):
         :rtype: PlayerPermissions
         """
         return self.players[uniqueid_from_index(index)]
-        
+
     def is_authorized(self, index, permission):
         """Return True if the player has been granted the given permission.
-        
+
         :rtype: bool
         """
         return permission in self.get_player_permissions(index)

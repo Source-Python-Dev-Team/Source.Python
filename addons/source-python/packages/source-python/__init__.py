@@ -55,6 +55,7 @@ def unload():
     """Unload Source.Python's Python side."""
     unload_plugins()
     remove_entities_listener()
+    unload_auth()
 
 
 # =============================================================================
@@ -167,6 +168,13 @@ def setup_auth():
 
     from auth.manager import auth_manager
     auth_manager.load()
+
+def unload_auth():
+    """Unload authentification."""
+    _sp_logger.log_debug('Unloading auth...')
+
+    from auth.manager import auth_manager
+    auth_manager.unload()
 
 
 # =============================================================================
