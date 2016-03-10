@@ -78,20 +78,20 @@ class EntityCondition(object):
 class _EntityHook(AutoUnload):
     """Create entity pre and post hooks that auto unload."""
 
-    def __init__(self, test_function, function_name):
+    def __init__(self, test_function, function):
         """Initialize the hook object.
 
-        @param <test_function>:
-        A callable object that accepts an Entity object as a parameter. The
-        function should return True if the entity matches the required one.
-
-        @<function_name>:
-        The name of the function to hook. The function must be available
-        through the Entity class.
+        :param callable test_function: A callable object that accepts an
+            Entity object as a parameter. The function should return True if
+            the entity matches the required one.
+        :param str/callable function: This is the function to hook. It can be
+            either a string that defines the name of a function of the entity
+            or a callable object that returns a :class:`memory.Function`
+            object.
         """
         self.test_function = test_function
-        self.function_name = function_name
-        self.function = None
+        self.function = function
+        self.hooked_function = None
         self.callback = None
 
     def __call__(self, callback):
@@ -125,14 +125,18 @@ class _EntityHook(AutoUnload):
         if not self.test_function(entity):
             return False
 
-        self.function = getattr(entity, self.function_name)
-        self.function.add_hook(self.hook_type, self.callback)
+        if callable(self.function):
+            self.hooked_function = self.function(entity)
+        else:
+            self.hooked_function = getattr(entity, self.function)
+
+        self.hooked_function.add_hook(self.hook_type, self.callback)
         return True
 
     def _unload_instance(self):
         """Unload the hook."""
-        if self.function is not None:
-            self.function.remove_hook(self.hook_type, self.callback)
+        if self.hooked_function is not None:
+            self.hooked_function.remove_hook(self.hook_type, self.callback)
         else:
             # If the function is None, the hook wasn't initialized, so it's
             # still in the _waiting_entity_hooks dict

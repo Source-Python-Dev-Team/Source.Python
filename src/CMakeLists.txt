@@ -585,21 +585,7 @@ Add_Definitions(
 # ------------------------------------------------------------------
 # Setup link libraries for this project.
 # ------------------------------------------------------------------
-Target_Link_Libraries(core          ${SOURCEPYTHON_LINK_LIBRARIES})
+Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES})
+Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
+    
 Target_Link_Libraries(source-python ${SOURCEPYTHON_LINK_LIBRARIES})
-
-# ------------------------------------------------------------------
-# This is a hack for linux which doesn't seem to have proper
-# configurations which breaks link libraries.
-# ------------------------------------------------------------------
-If(UNIX)
-    If(CMAKE_BUILD_TYPE MATCHES Debug)
-        Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_DEBUG})
-    Else()
-        Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
-    EndIf()
-Else()
-    # Do it the correct way.
-    Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_DEBUG})
-    Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
-EndIf()
