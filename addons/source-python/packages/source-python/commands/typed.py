@@ -187,6 +187,12 @@ class CommandParser(Store):
         :rtype: CommandNode
         """
         commands = self._validate_commands(commands)
+        for param in params:
+            if param.kind not in SUPPORTED_KINDS:
+                raise TypeError(
+                    'Unsupported argument type "{}" for argument.'.format(
+                        param.kind, param.name))
+
         command = CommandNode(tuple(commands), tuple(params), callback,
             description, permission, fail_callback, commands[0] not in self)
 
@@ -211,12 +217,6 @@ class CommandParser(Store):
                     store = new_store
                 else:
                     store[command_name] = command
-
-        for param in params:
-            if param.kind not in SUPPORTED_KINDS:
-                raise TypeError(
-                    'Unsupported argument type "{}" for argument.'.format(
-                        param.kind, param.name))
 
         return command
 
