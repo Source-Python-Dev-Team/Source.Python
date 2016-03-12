@@ -23,19 +23,19 @@ class PermissionSource(object):
         """Called when the backend is unloaded."""
         pass
 
-    def permission_added(self, store, permission):
+    def permission_added(self, node, permission):
         """Called when a permission has been added."""
         pass
 
-    def permission_removed(self, store, permission):
+    def permission_removed(self, node, permission):
         """Called when a permission has been removed."""
         pass
 
-    def parent_added(self, store, permission):
+    def parent_added(self, node, parent_name):
         """Called when a parent has been added."""
         pass
 
-    def parent_removed(self, store, permission):
+    def parent_removed(self, node, parent_name):
         """Called when a parent has been removed."""
         pass
 

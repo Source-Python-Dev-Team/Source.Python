@@ -7,12 +7,15 @@
 # =============================================================================
 # Python Imports
 #   Thread
+from contextlib import contextmanager
 from threading import Thread
 
 # Source.Python Imports
 #   Auth
 from auth.base import PermissionSource
 from auth.manager import auth_manager
+from auth.manager import PlayerPermissions
+from auth.manager import GroupPermissions
 #   Paths
 from paths import SP_DATA_PATH
 #   Listeners
@@ -56,6 +59,34 @@ parents_table = Table(
 
 
 # =============================================================================
+# >> HELPER FUNCTIONS
+# =============================================================================
+@contextmanager
+def session_scope():
+    """Provide a transactional scope around a series of operations."""
+    # http://docs.sqlalchemy.org/en/latest/orm/session_basics.html
+    session = Session()
+    try:
+        yield session
+        session.commit()
+    except:
+        session.rollback()
+        raise
+    finally:
+        session.close()
+
+def get_or_create(session, model, **kwargs):
+    """Get or create a row."""
+    instance = session.query(model).filter_by(**kwargs).first()
+    if not instance:
+        instance = model(**kwargs)
+        session.add(instance)
+        session.commit()
+
+    return instance
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class Permission(Base):
@@ -71,9 +102,11 @@ class Permission(Base):
 
 class PermissionObject(Base):
     __tablename__ = 'objects'
+    __table_args__ = (UniqueConstraint(
+        'identifier', 'object_type', name='identifier_type_uc'),)
 
     id = Column(Integer, primary_key=True)
-    identifier = Column(String(64), nullable=False, unique=True)
+    identifier = Column(String(64), nullable=False)
     type = Column(Enum('Group', 'Player'), name='object_type')
 
     permissions = relationship('Permission', backref='object')
@@ -99,20 +132,93 @@ class SQLPermissionSource(PermissionSource):
         self.engine = create_engine(self.options['uri'])
         Base.metadata.create_all(self.engine)
         Session.configure(bind=self.engine)
-        GameThread(target=self._do_load).start()
+
+        # TODO:
+        # Currently, we can't use threading for this task, because it will be
+        # executed after the active backend has been set. And this results in
+        # triggering the permission_added/removed, etc. callbacks. This is
+        # wrong and causes exception, because the permissions are saved to the
+        # database.
+        #GameThread(target=self._do_load).start()
+        self._do_load()
+
+    def permission_added(self, node, permission):
+        server_id = int(self.options['server_id'])
+        with session_scope() as session:
+            permission_obj = get_or_create(session, PermissionObject,
+                identifier=node.name, type=self.get_node_type(node))
+
+            instance = Permission(
+                object_id=permission_obj.id,
+                server_id=server_id, # TODO: What if someone wants to pass -1?
+                node=permission
+            )
+            session.add(instance)
+
+    def permission_removed(self, node, permission):
+        server_id = int(self.options['server_id'])
+        with session_scope() as session:
+            permission_obj = session.query(PermissionObject).filter_by(
+                identifier=node.name, type=self.get_node_type(node)).one()
+
+            session.query(Permission).filter_by(
+                object_id=permission_obj.id,
+                server_id=server_id, # TODO: What if someone wants to pass -1?
+                node=permission
+            ).delete(False)
+
+    def parent_added(self, node, parent_name):
+        with session_scope() as session:
+            child = get_or_create(session, PermissionObject,
+                identifier=node.name, type=self.get_node_type(node))
+
+            parent = get_or_create(session, PermissionObject,
+                identifier=parent_name, type='Group')
+
+            parent_insert = parents_table.insert().values(
+                parent_id=parent.id,
+                child_id=child.id)
+            session.execute(parent_insert)
+
+    def parent_removed(self, node, parent_name):
+        with session_scope() as session:
+            child = session.query(PermissionObject).filter_by(
+                identifier=node.name, type=self.get_node_type(node)).one()
+
+            parent = session.query(PermissionObject).filter_by(
+                identifier=parent_name, type='Group').one()
+
+            session.query(parents_table).filter_by(
+                child_id=child.id,
+                parent_id=parent.id
+            ).delete(False)
+
+    @staticmethod
+    def get_node_type(node):
+        if isinstance(node, PlayerPermissions):
+            node_type = 'Player'
+        elif isinstance(node, GroupPermissions):
+            node_type = 'Group'
+        else:
+            raise TypeError(
+                'Unexpected type "{}".'.format(type(node).__name__))
+
+        return node_type
 
     def _do_load(self):
-        session = Session()
-        for node in session.query(PermissionObject).all():
-            if node.type == 'Group':
-                store = auth_manager.groups[node.identifier]
-            else:
-                store = auth_manager.players[node.identifier]
+        server_id = int(self.options['server_id'])
+        with session_scope() as session:
+            for node in session.query(PermissionObject).all():
+                if node.type == 'Group':
+                    store = auth_manager.groups[node.identifier]
+                else:
+                    store = auth_manager.players[node.identifier]
 
-            for permission in node.permissions:
-                if permission.server_id == -1 or permission.server_id == int(self.options['server_id']):
-                    store.add(permission.node)
+                for permission in node.permissions:
+                    if permission.server_id in (-1, server_id):
+                        store.add(permission.node)
 
-        session.close()
+                for parent in node.parents:
+                    store.add_parent(parent.identifier)
 
 source = SQLPermissionSource()

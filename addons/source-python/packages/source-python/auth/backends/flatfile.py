@@ -134,30 +134,36 @@ class FlatfilePermissionSource(PermissionSource):
             for uniqueid in file.readlines():
                 store[uniqueid.strip()].add('*')
 
-    def permission_added(self, store, permission):
-        self._store_changed(store, permission)
+    def permission_added(self, node, permission):
+        self._node_permission_changed(node, permission)
 
-    def permission_removed(self, store, permission):
-        self._store_changed(store, permission)
+    def permission_removed(self, node, permission):
+        self._node_permission_changed(node, permission)
 
-    def parent_added(self, store, permission):
-        self._store_changed(store, permission)
+    def parent_added(self, node, parent_name):
+        self._node_parent_changed(node, parent_name)
 
-    def parent_removed(self, store, permission):
-        self._store_changed(store, permission)
+    def parent_removed(self, node, parent_name):
+        self._node_parent_changed(node, parent_name)
 
-    def _store_changed(self, store, permission):
-        """Save configuration files depending on the store and the permission
-        that has been changed.
-        """
-        if isinstance(store, PlayerPermissions):
+    def _node_permission_changed(self, node, permission):
+        if isinstance(node, PlayerPermissions):
             self.save_admin_config()
             if permission == '*':
                 self.save_simple_config()
-        elif isinstance(store, GroupPermissions):
+        elif isinstance(node, GroupPermissions):
             self.save_group_config()
         else:
-            raise ValueError(
-                'Unexpected type "{}".'.format(type(store).__name__))
+            raise TypeError(
+                'Unexpected type "{}".'.format(type(node).__name__))
+
+    def _node_parent_changed(self, node, parent_name):
+        if isinstance(node, PlayerPermissions):
+            self.save_admin_config()
+        elif isinstance(node, GroupPermissions):
+            self.save_group_config()
+        else:
+            raise TypeError(
+                'Unexpected type "{}".'.format(type(node).__name__))
 
 source = FlatfilePermissionSource()
