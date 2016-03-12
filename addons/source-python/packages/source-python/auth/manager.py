@@ -131,6 +131,10 @@ class PermissionBase(dict):
         yield from self
         for parent in self.parents:
             yield from parent
+            
+    def clear(self):
+        super().clear()
+        self.parents.clear()
 
 
 class PlayerPermissions(PermissionBase):
@@ -186,6 +190,12 @@ class PermissionDict(dict):
     def __missing__(self, key):
         instance = self[key] = self.permission_type(key)
         return instance
+        
+    def clear(self):
+        for value in self.values():
+            value.clear()
+            
+        super().clear()
 
 
 class _AuthManager(dict):
