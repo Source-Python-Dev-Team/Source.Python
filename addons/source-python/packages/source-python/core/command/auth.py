@@ -90,9 +90,20 @@ def _sp_auth_permission_player_remove_parent(
     """Remove a parent from players."""
     for player in players:
         player.permissions.remove_parent(parent)
-
         logger.log_message(
             'Removed parent "{}" from {}.'.format(parent, player.name))
+
+@_core_command.sub_command(['auth', 'permission', 'player', 'test'])
+def _sp_auth_permission_player_test(
+        command_info, players:filter_str, permission):
+    """Test if players are granted a permission."""
+    logger.log_message(
+        '"{}" is granted to the following players:'.format(permission))
+    for player in players:
+        if permission not in player.permissions:
+            continue
+
+        logger.log_message('  {} ({})'.format(player.name, player.steamid))
 
 
 # =============================================================================
