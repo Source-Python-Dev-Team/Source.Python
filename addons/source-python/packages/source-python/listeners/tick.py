@@ -52,6 +52,15 @@ class GameThread(Thread):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         on_tick_listener_manager.register_listener(self._tick)
+        
+    def __del__(self):
+        on_tick_listener_manager.unregister_listener(self._tick)
+
+    def _bootstrap_inner(self):
+        try:
+            super()._bootstrap_inner()
+        finally:
+            on_tick_listener_manager.unregister_listener(self._tick)
 
     def _tick(self):
         pass
