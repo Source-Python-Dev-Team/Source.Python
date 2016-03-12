@@ -5,9 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-from contextlib import suppress
-
 # Source.Python Imports
 #   Auth
 from auth.manager import auth_manager
@@ -72,8 +69,7 @@ def _sp_auth_permission_player_remove(
         command_info, players:filter_str, permission):
     """Remove a permission from players."""
     for player in players:
-        with suppress(KeyError):
-            player.permissions.remove(permission)
+        player.permissions.remove(permission)
 
         logger.log_message(
             'Removed permission "{}" from {}.'.format(
@@ -93,8 +89,7 @@ def _sp_auth_permission_player_remove_parent(
         command_info, players:filter_str, parent):
     """Remove a parent from players."""
     for player in players:
-        with suppress(KeyError):
-            player.permissions.remove_parent(parent)
+        player.permissions.remove_parent(parent)
 
         logger.log_message(
             'Removed parent "{}" from {}.'.format(parent, player.name))
@@ -113,8 +108,7 @@ def _sp_auth_permission_group_add(command_info, group, permission):
 @_core_command.sub_command(['auth', 'permission', 'group', 'remove'])
 def _sp_auth_permission_group_remove(command_info, group, permission):
     """Remove a permission from a group."""
-    with suppress(KeyError):
-        auth_manager.get_group_permissions(group).remove(permission)
+    auth_manager.get_group_permissions(group).remove(permission)
 
     logger.log_message(
         'Removed permission "{}" from group "{}".'.format(permission, group))
@@ -129,8 +123,7 @@ def _sp_auth_permission_group_add_parent(command_info, group, parent):
 @_core_command.sub_command(['auth', 'permission', 'group', 'remove_parent'])
 def _sp_auth_permission_group_remove_parent(command_info, group, parent):
     """Remove a parent from a group."""
-    with suppress(KeyError):
-        auth_manager.get_group_permissions(group).remove_parent(parent)
+    auth_manager.get_group_permissions(group).remove_parent(parent)
 
     logger.log_message(
         'Removed parent "{}" from group "{}".'.format(parent, group))

@@ -57,15 +57,54 @@ class PermissionBase(dict):
 
         :param str permission: The permission to add.
         """
+        if permission in self:
+            return
+
         self[permission] = self._compile_permission(permission)
+        if auth_manager.active_backend is not None:
+            auth_manager.active_backend.permission_added(self, permission)
 
     def remove(self, permission):
         """Remove a permission.
 
         :param str permission: The permission to remove.
-        :raise KeyError: Raised if the permission wasn't granted.
         """
-        del self[permission]
+        try:
+            del self[permission]
+        except KeyError:
+            pass
+        else:
+            if auth_manager.active_backend is not None:
+                auth_manager.active_backend.permission_removed(
+                    self, permission)
+
+    def add_parent(self, parent):
+        """Add a parent permission.
+
+        :param str parent: Name of the permission group.
+        """
+        group = auth_manager.groups[parent]
+        if group in self.parents:
+            return
+
+        self.parents.add(group)
+        group.children.add(self)
+        if auth_manager.active_backend is not None:
+            auth_manager.active_backend.parent_added(self, parent)
+
+    def remove_parent(self, parent):
+        """Remove a parent permission.
+
+        :param str parent: Name of the permission group.
+        """
+        group = auth_manager.groups[parent]
+        if group not in self.parents:
+            return
+
+        self.parents.remove(group)
+        group.children.remove(self)
+        if auth_manager.active_backend is not None:
+            auth_manager.active_backend.parent_removed(self, parent)
 
     @staticmethod
     def _compile_permission(permission):
@@ -92,25 +131,6 @@ class PermissionBase(dict):
         yield from self
         for parent in self.parents:
             yield from parent
-
-    def add_parent(self, parent):
-        """Add a parent permission.
-
-        :param str parent: Name of the permission group.
-        """
-        group = auth_manager.groups[parent]
-        self.parents.add(group)
-        group.children.add(self)
-
-    def remove_parent(self, parent):
-        """Remove a parent permission.
-
-        :param str parent: Name of the permission group.
-        :raise KeyError: Raised if the parent wasn't added to this object.
-        """
-        group = auth_manager.groups[parent]
-        self.parents.remove(group)
-        group.children.remove(self)
 
 
 class PlayerPermissions(PermissionBase):
@@ -243,8 +263,8 @@ class _AuthManager(dict):
                 'Backend "{}" does not exist.'.format(backend_name))
 
         self._unload_active_backend()
-        self.active_backend = backend
         backend.load()
+        self.active_backend = backend
 
     def _unload_active_backend(self):
         """Unload the active backend if there is one."""
