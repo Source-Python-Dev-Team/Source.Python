@@ -111,16 +111,22 @@ class PermissionBase(dict):
         """Compile a permission."""
         return re.compile(permission.replace('.', '\\.').replace('*', '(.*)'))
 
-    def __contains__(self, permission):
+    def __contains__(self, permission, name_list=None):
         """Return True if the permission is granted by this object."""
+        if name_list is None:
+            name_list = []
+        # Checks to see if parents are recursive
+        if self.name in name_list:
+            # Break if recursive
+            return False
+        else:
+            name_list.append(self.name)
         for re_perm in self.values():
             if re_perm.match(permission):
                 return True
-
         for parent in self.parents:
-            if permission in parent:
+            if permission.__contains__(parent, name_list):
                 return True
-
         return False
 
     def flatten(self):
