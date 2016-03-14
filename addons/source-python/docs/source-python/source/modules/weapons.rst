@@ -13,6 +13,7 @@ Submodules
    weapons.entity
    weapons.instance
    weapons.manager
+   weapons.restrictions
    weapons.scripts
 
 Module contents

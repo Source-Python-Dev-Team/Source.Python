@@ -21,6 +21,7 @@ Submodules
    players.dictionary
    players.entity
    players.helpers
+   players.teams
    players.voice
 
 Module contents
