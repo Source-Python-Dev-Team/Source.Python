@@ -607,6 +607,18 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         from weapons.restrictions import weapon_restriction_manager
         return weapon_restriction_manager.is_player_restricted(self, weapon)
 
+    @property
+    def spectators(self):
+        """Return all players observing this player.
+
+        :return: The generator yields :class:`players.entity.Player` objects.
+        :rtype: generator
+        """
+        from filters.players import PlayerIter
+        for other in PlayerIter('dead'):
+            if self.inthandle == other.observer_target:
+                yield other
+
 
 # =============================================================================
 # >> CALLBACKS
