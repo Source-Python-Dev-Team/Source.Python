@@ -57,20 +57,19 @@ def _sp_auth_list(command_info):
 # =============================================================================
 @_core_command.sub_command(['auth', 'permission', 'player', 'add'])
 def _sp_auth_permission_player_add(
-        command_info, players:filter_str, permission):
+        command_info, players:filter_str, permission, server_id:int=None):
     """Grant a permission to players."""
     for player in players:
-        player.permissions.add(permission)
+        player.permissions.add(permission, server_id)
         logger.log_message(
             'Granted permission "{}" to {}.'.format(permission, player.name))
 
 @_core_command.sub_command(['auth', 'permission', 'player', 'remove'])
 def _sp_auth_permission_player_remove(
-        command_info, players:filter_str, permission):
+        command_info, players:filter_str, permission, server_id:int=None):
     """Remove a permission from players."""
     for player in players:
-        player.permissions.remove(permission)
-
+        player.permissions.remove(permission, server_id)
         logger.log_message(
             'Removed permission "{}" from {}.'.format(
                 permission, player.name))
@@ -110,17 +109,18 @@ def _sp_auth_permission_player_test(
 # >> sp auth permission group
 # =============================================================================
 @_core_command.sub_command(['auth', 'permission', 'group', 'add'])
-def _sp_auth_permission_group_add(command_info, group, permission):
+def _sp_auth_permission_group_add(
+        command_info, group, permission, server_id:int=None):
     """Add a permission to a group."""
-    auth_manager.get_group_permissions(group).add(permission)
+    auth_manager.get_group_permissions(group).add(permission, server_id)
     logger.log_message(
         'Added permission "{}" to group "{}".'.format(permission, group))
 
 @_core_command.sub_command(['auth', 'permission', 'group', 'remove'])
-def _sp_auth_permission_group_remove(command_info, group, permission):
+def _sp_auth_permission_group_remove(
+        command_info, group, permission, server_id:int=None):
     """Remove a permission from a group."""
-    auth_manager.get_group_permissions(group).remove(permission)
-
+    auth_manager.get_group_permissions(group).remove(permission, server_id)
     logger.log_message(
         'Removed permission "{}" from group "{}".'.format(permission, group))
 
@@ -135,7 +135,6 @@ def _sp_auth_permission_group_add_parent(command_info, group, parent):
 def _sp_auth_permission_group_remove_parent(command_info, group, parent):
     """Remove a parent from a group."""
     auth_manager.get_group_permissions(group).remove_parent(parent)
-
     logger.log_message(
         'Removed parent "{}" from group "{}".'.format(parent, group))
 
