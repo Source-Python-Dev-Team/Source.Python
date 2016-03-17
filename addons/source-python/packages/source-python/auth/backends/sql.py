@@ -12,7 +12,7 @@ from threading import Thread
 
 # Source.Python Imports
 #   Auth
-from auth.base import PermissionSource
+from auth.base import Backend
 from auth.manager import auth_manager
 from auth.manager import PlayerPermissions
 from auth.manager import GroupPermissions
@@ -33,14 +33,14 @@ from sqlalchemy import Table
 from sqlalchemy import UniqueConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('SQLPermissionSource',
+__all__ = ('SQLBackend',
            'source',
            )
 
@@ -118,14 +118,11 @@ class PermissionObject(Base):
                             )
 
 
-class SQLPermissionSource(PermissionSource):
+class SQLBackend(Backend):
     """A backend that provides admins and groups from an SQL database."""
 
     name = 'sql'
-    options = {
-        'uri': 'sqlite:///' + SP_DATA_PATH.joinpath('permissions.db'),
-        'server_id': -1
-    }
+    options = {'uri': 'sqlite:///' + SP_DATA_PATH.joinpath('permissions.db')}
     engine = None
 
     def load(self):
@@ -142,43 +139,47 @@ class SQLPermissionSource(PermissionSource):
         #GameThread(target=self._do_load).start()
         self._do_load()
 
-    def permission_added(self, node, permission):
-        server_id = int(self.options['server_id'])
-        with session_scope() as session:
-            permission_obj = get_or_create(session, PermissionObject,
-                identifier=node.name, type=self.get_node_type(node))
+    def permission_added(self, node, permission, server_id):
+        try:
+            with session_scope() as session:
+                permission_obj = get_or_create(session, PermissionObject,
+                    identifier=node.name, type=self.get_node_type(node))
 
-            instance = Permission(
-                object_id=permission_obj.id,
-                server_id=server_id, # TODO: What if someone wants to pass -1?
-                node=permission
-            )
-            session.add(instance)
+                instance = Permission(
+                    object_id=permission_obj.id,
+                    server_id=server_id,
+                    node=permission
+                )
+                session.add(instance)
+        except IntegrityError:
+            pass
 
-    def permission_removed(self, node, permission):
-        server_id = int(self.options['server_id'])
+    def permission_removed(self, node, permission, server_id):
         with session_scope() as session:
             permission_obj = session.query(PermissionObject).filter_by(
                 identifier=node.name, type=self.get_node_type(node)).one()
 
             session.query(Permission).filter_by(
                 object_id=permission_obj.id,
-                server_id=server_id, # TODO: What if someone wants to pass -1?
+                server_id=server_id,
                 node=permission
             ).delete(False)
 
     def parent_added(self, node, parent_name):
-        with session_scope() as session:
-            child = get_or_create(session, PermissionObject,
-                identifier=node.name, type=self.get_node_type(node))
+        try:
+            with session_scope() as session:
+                child = get_or_create(session, PermissionObject,
+                    identifier=node.name, type=self.get_node_type(node))
 
-            parent = get_or_create(session, PermissionObject,
-                identifier=parent_name, type='Group')
+                parent = get_or_create(session, PermissionObject,
+                    identifier=parent_name, type='Group')
 
-            parent_insert = parents_table.insert().values(
-                parent_id=parent.id,
-                child_id=child.id)
-            session.execute(parent_insert)
+                parent_insert = parents_table.insert().values(
+                    parent_id=parent.id,
+                    child_id=child.id)
+                session.execute(parent_insert)
+        except IntegrityError:
+            pass
 
     def parent_removed(self, node, parent_name):
         with session_scope() as session:
@@ -206,7 +207,6 @@ class SQLPermissionSource(PermissionSource):
         return node_type
 
     def _do_load(self):
-        server_id = int(self.options['server_id'])
         with session_scope() as session:
             for node in session.query(PermissionObject).all():
                 if node.type == 'Group':
@@ -215,10 +215,10 @@ class SQLPermissionSource(PermissionSource):
                     store = auth_manager.players[node.identifier]
 
                 for permission in node.permissions:
-                    if permission.server_id in (-1, server_id):
+                    if auth_manager.targets_this_server(permission.server_id):
                         store.add(permission.node)
 
                 for parent in node.parents:
                     store.add_parent(parent.identifier)
 
-source = SQLPermissionSource()
+source = SQLBackend()

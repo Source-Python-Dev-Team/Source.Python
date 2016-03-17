@@ -5,14 +5,14 @@
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PermissionSource',
+__all__ = ('Backend',
     )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PermissionSource(object):
+class Backend(object):
     options = {}
 
     def load(self):
@@ -23,11 +23,11 @@ class PermissionSource(object):
         """Called when the backend is unloaded."""
         pass
 
-    def permission_added(self, node, permission):
+    def permission_added(self, node, permission, server_id):
         """Called when a permission has been added."""
         pass
 
-    def permission_removed(self, node, permission):
+    def permission_removed(self, node, permission, server_id):
         """Called when a permission has been removed."""
         pass
 

@@ -15,7 +15,7 @@ from importlib.machinery import SourceFileLoader
 from configobj import ConfigObj
 # Source.Python Imports
 #   Auth
-from auth.base import PermissionSource
+from auth.base import Backend
 #   Paths
 from paths import BACKEND_CONFIG_FILE
 from paths import BACKENDS_PATH
@@ -52,31 +52,39 @@ class PermissionBase(dict):
         # This is required, because we are adding dicts to sets
         return hash(self.name)
 
-    def add(self, permission):
+    def add(self, permission, server_id=None):
         """Add a permission.
 
         :param str permission: The permission to add.
+        :param int server_id: The server ID to which the permission should be
+            added. If no server ID is given, it will be only added to this
+            server.
         """
-        if permission in self:
-            return
+        if (auth_manager.targets_this_server(server_id) and
+                permission not in self):
+            self[permission] = self._compile_permission(permission)
 
-        self[permission] = self._compile_permission(permission)
         if auth_manager.active_backend is not None:
-            auth_manager.active_backend.permission_added(self, permission)
+            auth_manager.active_backend.permission_added(
+                self, permission, server_id)
 
-    def remove(self, permission):
+    def remove(self, permission, server_id=None):
         """Remove a permission.
 
         :param str permission: The permission to remove.
+        :param int server_id: The server ID from which the permission should
+            be removed. If no server ID is given, it will be only removed from
+            this server.
         """
-        try:
-            del self[permission]
-        except KeyError:
-            pass
-        else:
-            if auth_manager.active_backend is not None:
-                auth_manager.active_backend.permission_removed(
-                    self, permission)
+        if auth_manager.targets_this_server(server_id):
+            try:
+                del self[permission]
+            except KeyError:
+                pass
+
+        if auth_manager.active_backend is not None:
+            auth_manager.active_backend.permission_removed(
+                self, permission, server_id)
 
     def add_parent(self, parent):
         """Add a parent permission.
@@ -84,11 +92,11 @@ class PermissionBase(dict):
         :param str parent: Name of the permission group.
         """
         group = auth_manager.groups[parent]
-        if group in self.parents:
-            return
+        if group not in self.parents:
+            # TODO: Detect cycles
+            self.parents.add(group)
+            group.children.add(self)
 
-        self.parents.add(group)
-        group.children.add(self)
         if auth_manager.active_backend is not None:
             auth_manager.active_backend.parent_added(self, parent)
 
@@ -99,10 +107,9 @@ class PermissionBase(dict):
         """
         group = auth_manager.groups[parent]
         if group not in self.parents:
-            return
+            self.parents.remove(group)
+            group.children.remove(self)
 
-        self.parents.remove(group)
-        group.children.remove(self)
         if auth_manager.active_backend is not None:
             auth_manager.active_backend.parent_removed(self, parent)
 
@@ -137,7 +144,7 @@ class PermissionBase(dict):
         yield from self
         for parent in self.parents:
             yield from parent
-            
+
     def clear(self):
         super().clear()
         self.parents.clear()
@@ -196,11 +203,11 @@ class PermissionDict(dict):
     def __missing__(self, key):
         instance = self[key] = self.permission_type(key)
         return instance
-        
+
     def clear(self):
         for value in self.values():
             value.clear()
-            
+
         super().clear()
 
 
@@ -212,6 +219,7 @@ class _AuthManager(dict):
         self.groups = PermissionDict(GroupPermissions)
         self.players = PermissionDict(PlayerPermissions)
         self.active_backend = None
+        self.server_id = -1
 
     def _find_available_backends(self):
         """Find all available backends.
@@ -224,7 +232,7 @@ class _AuthManager(dict):
             loader = SourceFileLoader(name, str(backend))
             module = loader.load_module(name)
             for var in vars(module).values():
-                if isinstance(var, PermissionSource):
+                if isinstance(var, Backend):
                     self[var.name.casefold()] = var
                     break
             else:
@@ -235,8 +243,9 @@ class _AuthManager(dict):
     def _load_config(self):
         """Load the configuration."""
         config = ConfigObj()
-        config['Config'] = {
-            'PermissionBackend': 'flatfile'
+        config['config'] = {
+            'backend': 'flatfile',
+            'server_id': -1
         }
 
         backends_config = {}
@@ -255,7 +264,8 @@ class _AuthManager(dict):
         for backend in self.values():
             backend.options = config['backends'][backend.name]
 
-        self.set_active_backend(config['Config']['PermissionBackend'])
+        self.server_id = int(config['config']['server_id'])
+        self.set_active_backend(config['config']['backend'])
 
     def load(self):
         """Load the auth manager."""
@@ -320,6 +330,14 @@ class _AuthManager(dict):
         :rtype: GroupPermissions
         """
         return self.groups[group_name]
+
+    def targets_this_server(self, server_id):
+        """Return whether the server ID targets this server.
+
+        :param int server_id: A server ID to test.
+        :rtype: bool
+        """
+        return server_id in (-1, self.server_id, None)
 
 #: The singleton object of :class:`_AuthManager`.
 auth_manager = _AuthManager()

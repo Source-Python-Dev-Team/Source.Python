@@ -13,7 +13,7 @@ import json
 from path import Path
 # Source.Python Imports
 #   Auth
-from auth.base import PermissionSource
+from auth.base import Backend
 from auth.manager import auth_manager
 from auth.manager import PlayerPermissions
 from auth.manager import GroupPermissions
@@ -24,7 +24,7 @@ from paths import AUTH_CFG_PATH
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('FlatfilePermissionSource',
+__all__ = ('FlatfileBackend',
            'source',
     )
 
@@ -32,7 +32,7 @@ __all__ = ('FlatfilePermissionSource',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class FlatfilePermissionSource(PermissionSource):
+class FlatfileBackend(Backend):
     """A backend that provides an admin and group file in JSON format and a
     simple text file.
     """
@@ -134,11 +134,11 @@ class FlatfilePermissionSource(PermissionSource):
             for uniqueid in file.readlines():
                 store[uniqueid.strip()].add('*')
 
-    def permission_added(self, node, permission):
-        self._node_permission_changed(node, permission)
+    def permission_added(self, node, permission, server_id):
+        self._node_permission_changed(node, permission, server_id)
 
-    def permission_removed(self, node, permission):
-        self._node_permission_changed(node, permission)
+    def permission_removed(self, node, permission, server_id):
+        self._node_permission_changed(node, permission, server_id)
 
     def parent_added(self, node, parent_name):
         self._node_parent_changed(node, parent_name)
@@ -146,7 +146,10 @@ class FlatfilePermissionSource(PermissionSource):
     def parent_removed(self, node, parent_name):
         self._node_parent_changed(node, parent_name)
 
-    def _node_permission_changed(self, node, permission):
+    def _node_permission_changed(self, node, permission, server_id):
+        if not auth_manager.targets_this_server(server_id):
+            return
+
         if isinstance(node, PlayerPermissions):
             self.save_admin_config()
             if permission == '*':
@@ -166,4 +169,4 @@ class FlatfilePermissionSource(PermissionSource):
             raise TypeError(
                 'Unexpected type "{}".'.format(type(node).__name__))
 
-source = FlatfilePermissionSource()
+source = FlatfileBackend()
