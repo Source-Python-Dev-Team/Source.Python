@@ -129,15 +129,7 @@ class SQLBackend(Backend):
         self.engine = create_engine(self.options['uri'])
         Base.metadata.create_all(self.engine)
         Session.configure(bind=self.engine)
-
-        # TODO:
-        # Currently, we can't use threading for this task, because it will be
-        # executed after the active backend has been set. And this results in
-        # triggering the permission_added/removed, etc. callbacks. This is
-        # wrong and causes exception, because the permissions are saved to the
-        # database.
-        #GameThread(target=self._do_load).start()
-        self._do_load()
+        GameThread(target=self._do_load).start()
 
     def permission_added(self, node, permission, server_id):
         try:
@@ -215,10 +207,9 @@ class SQLBackend(Backend):
                     store = auth_manager.players[node.identifier]
 
                 for permission in node.permissions:
-                    if auth_manager.targets_this_server(permission.server_id):
-                        store.add(permission.node)
+                    store.add(permission.node, update_backend=False)
 
                 for parent in node.parents:
-                    store.add_parent(parent.identifier)
+                    store.add_parent(parent.identifier, update_backend=False)
 
 source = SQLBackend()

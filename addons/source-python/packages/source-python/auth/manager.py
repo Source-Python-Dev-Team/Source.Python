@@ -52,29 +52,31 @@ class PermissionBase(dict):
         # This is required, because we are adding dicts to sets
         return hash(self.name)
 
-    def add(self, permission, server_id=None):
+    def add(self, permission, server_id=None, update_backend=True):
         """Add a permission.
 
         :param str permission: The permission to add.
         :param int server_id: The server ID to which the permission should be
             added. If no server ID is given, it will be only added to this
             server.
+        :param bool update_backend: If True, the backend will be updated.
         """
         if (auth_manager.targets_this_server(server_id) and
                 permission not in self):
             self[permission] = self._compile_permission(permission)
 
-        if auth_manager.active_backend is not None:
+        if update_backend and auth_manager.active_backend is not None:
             auth_manager.active_backend.permission_added(
                 self, permission, server_id)
 
-    def remove(self, permission, server_id=None):
+    def remove(self, permission, server_id=None, update_backend=True):
         """Remove a permission.
 
         :param str permission: The permission to remove.
         :param int server_id: The server ID from which the permission should
             be removed. If no server ID is given, it will be only removed from
             this server.
+        :param bool update_backend: If True, the backend will be updated.
         """
         if auth_manager.targets_this_server(server_id):
             try:
@@ -82,14 +84,15 @@ class PermissionBase(dict):
             except KeyError:
                 pass
 
-        if auth_manager.active_backend is not None:
+        if update_backend and auth_manager.active_backend is not None:
             auth_manager.active_backend.permission_removed(
                 self, permission, server_id)
 
-    def add_parent(self, parent):
+    def add_parent(self, parent, update_backend=True):
         """Add a parent permission.
 
         :param str parent: Name of the permission group.
+        :param bool update_backend: If True, the backend will be updated.
         """
         group = auth_manager.groups[parent]
         if group not in self.parents:
@@ -97,20 +100,21 @@ class PermissionBase(dict):
             self.parents.add(group)
             group.children.add(self)
 
-        if auth_manager.active_backend is not None:
+        if update_backend and auth_manager.active_backend is not None:
             auth_manager.active_backend.parent_added(self, parent)
 
-    def remove_parent(self, parent):
+    def remove_parent(self, parent, update_backend=True):
         """Remove a parent permission.
 
         :param str parent: Name of the permission group.
+        :param bool update_backend: If True, the backend will be updated.
         """
         group = auth_manager.groups[parent]
         if group not in self.parents:
             self.parents.remove(group)
             group.children.remove(self)
 
-        if auth_manager.active_backend is not None:
+        if update_backend and auth_manager.active_backend is not None:
             auth_manager.active_backend.parent_removed(self, parent)
 
     @staticmethod
