@@ -583,6 +583,45 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
 
         self.client.net_channel.send_data(buffer)
 
+    def restrict_weapons(self, *weapons):
+        """Restrict the weapon for the player.
+
+        :param str weapons: A weapon or any number of weapons to add
+            as restricted for the player.
+        """
+        from weapons.restrictions import weapon_restriction_handler
+        weapon_restriction_handler.add_player_restrictions(self, *weapons)
+
+    def unrestrict_weapons(self, *weapons):
+        """Restrict the weapon for the player.
+
+        :param str weapons: A weapon or any number of weapons to remove
+            as restricted for the player.
+        """
+        from weapons.restrictions import weapon_restriction_handler
+        weapon_restriction_handler.remove_player_restrictions(self, *weapons)
+
+    def is_weapon_restricted(self, weapon):
+        """Return whether the player is restricted from the given weapon.
+
+        :param str weapon: The name of the weapon to check against restriction.
+        :rtype: bool
+        """
+        from weapons.restrictions import weapon_restriction_manager
+        return weapon_restriction_manager.is_player_restricted(self, weapon)
+
+    @property
+    def spectators(self):
+        """Return all players observing this player.
+
+        :return: The generator yields :class:`players.entity.Player` objects.
+        :rtype: generator
+        """
+        from filters.players import PlayerIter
+        for other in PlayerIter('dead'):
+            if self.inthandle == other.observer_target:
+                yield other
+
 
 # =============================================================================
 # >> CALLBACKS
