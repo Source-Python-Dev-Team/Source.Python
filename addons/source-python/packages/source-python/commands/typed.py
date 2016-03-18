@@ -521,7 +521,7 @@ class _TypedPlayerCommand(_TypedCommand):
     @classmethod
     def on_clean_command(cls, command_info, command_node, args):
         if (command_node.permission is None or
-                auth_manager.is_authorized(
+                auth_manager.is_player_authorized(
                     command_info.index, command_node.permission)):
             return super().on_clean_command(command_info, command_node, args)
 

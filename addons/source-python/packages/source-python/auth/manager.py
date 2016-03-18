@@ -320,7 +320,7 @@ class _AuthManager(dict):
         """
         return self.players[uniqueid_from_index(index)]
 
-    def is_authorized(self, index, permission):
+    def is_player_authorized(self, index, permission):
         """Return True if the player has been granted the given permission.
 
         :rtype: bool
@@ -334,6 +334,13 @@ class _AuthManager(dict):
         :rtype: GroupPermissions
         """
         return self.groups[group_name]
+
+    def is_group_authorized(self, index, permission):
+        """Return True if the group has been granted the given permission.
+
+        :rtype: bool
+        """
+        return permission in self.get_group_permissions(index)
 
     def targets_this_server(self, server_id):
         """Return whether the server ID targets this server.
