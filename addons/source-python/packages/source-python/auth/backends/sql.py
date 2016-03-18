@@ -117,19 +117,52 @@ class PermissionObject(Base):
                             backref='parents'
                             )
 
+class LoadThread(GameThread):
+    def __init__(self):
+        super().__init__()
+        self._running = True
+
+    def stop(self):
+        self._running = False
+
+    def run(self):
+        with session_scope() as session:
+            for node in session.query(PermissionObject).all():
+                if not self._running:
+                    break
+
+                if node.type == 'Group':
+                    store = auth_manager.groups[node.identifier]
+                else:
+                    store = auth_manager.players[node.identifier]
+
+                for permission in node.permissions:
+                    store.add(permission.node, update_backend=False)
+
+                for parent in node.parents:
+                    store.add_parent(parent.identifier, update_backend=False)
+
 
 class SQLBackend(Backend):
     """A backend that provides admins and groups from an SQL database."""
 
     name = 'sql'
     options = {'uri': 'sqlite:///' + SP_DATA_PATH.joinpath('permissions.db')}
-    engine = None
+
+    def __init__(self):
+        self.engine = None
+        self.thread = None
 
     def load(self):
         self.engine = create_engine(self.options['uri'])
         Base.metadata.create_all(self.engine)
         Session.configure(bind=self.engine)
-        GameThread(target=self._do_load).start()
+        self.thread = LoadThread()
+        self.thread.start()
+
+    def unload(self):
+        self.thread.stop()
+        self.thread.join()
 
     def permission_added(self, node, permission, server_id):
         try:
@@ -197,19 +230,5 @@ class SQLBackend(Backend):
                 'Unexpected type "{}".'.format(type(node).__name__))
 
         return node_type
-
-    def _do_load(self):
-        with session_scope() as session:
-            for node in session.query(PermissionObject).all():
-                if node.type == 'Group':
-                    store = auth_manager.groups[node.identifier]
-                else:
-                    store = auth_manager.players[node.identifier]
-
-                for permission in node.permissions:
-                    store.add(permission.node, update_backend=False)
-
-                for parent in node.parents:
-                    store.add_parent(parent.identifier, update_backend=False)
 
 source = SQLBackend()
