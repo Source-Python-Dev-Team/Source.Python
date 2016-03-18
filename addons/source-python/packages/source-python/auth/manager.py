@@ -62,7 +62,7 @@ class PermissionBase(dict):
         :param bool update_backend: If True, the backend will be updated.
         """
         if (auth_manager.targets_this_server(server_id) and
-                permission not in self):
+                permission not in self.keys()):
             self[permission] = self._compile_permission(permission)
 
         if update_backend and auth_manager.active_backend is not None:
@@ -122,11 +122,11 @@ class PermissionBase(dict):
         """Compile a permission."""
         return re.compile(permission.replace('.', '\\.').replace('*', '(.*)'))
 
-    def __contains__(self, permission, name_list=None):
+    def __contains__(self, permission):
         """Return True if the permission is granted by this object."""
-        if name_list is None:
-            name_list = []
+        return self._has_permission(permission, [])
 
+    def _has_permission(self, permission, name_list):
         # Checks to see if parents are recursive
         if self.name in name_list:
             # Break if recursive
@@ -139,7 +139,7 @@ class PermissionBase(dict):
                 return True
 
         for parent in self.parents:
-            if permission.__contains__(parent, name_list):
+            if parent._has_permission(permission, name_list):
                 return True
 
         return False
