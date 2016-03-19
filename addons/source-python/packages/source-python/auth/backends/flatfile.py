@@ -117,10 +117,10 @@ class FlatfileBackend(Backend):
                 node_store = store[node_name.strip()]
                 for permission in node.get('permissions', set()):
                     if permission != '':
-                        node_store.add(permission)
+                        node_store.add(permission, update_backend=False)
 
                 for group_name in node.get('parents', set()):
-                    node_store.add_parent(group_name)
+                    node_store.add_parent(group_name, update_backend=False)
 
     @staticmethod
     def load_simple_config(store, path):
@@ -132,7 +132,7 @@ class FlatfileBackend(Backend):
 
         with path.open() as file:
             for uniqueid in file.readlines():
-                store[uniqueid.strip()].add('*')
+                store[uniqueid.strip()].add('*', update_backend=False))
 
     def permission_added(self, node, permission, server_id):
         self._node_permission_changed(node, permission, server_id)
