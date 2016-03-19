@@ -132,7 +132,7 @@ class FlatfileBackend(Backend):
 
         with path.open() as file:
             for uniqueid in file.readlines():
-                store[uniqueid.strip()].add('*', update_backend=False))
+                store[uniqueid.strip()].add('*', update_backend=False)
 
     def permission_added(self, node, permission, server_id):
         self._node_permission_changed(node, permission, server_id)
