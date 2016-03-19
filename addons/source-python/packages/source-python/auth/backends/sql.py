@@ -102,20 +102,20 @@ class Permission(Base):
 
 class PermissionObject(Base):
     __tablename__ = 'objects'
-    __table_args__ = (UniqueConstraint(
-        'identifier', 'object_type', name='identifier_type_uc'),)
 
     id = Column(Integer, primary_key=True)
-    identifier = Column(String(64), nullable=False)
+    identifier = Column(String(64), nullable=False, unique=True)
     type = Column(Enum('Group', 'Player'), name='object_type')
 
     permissions = relationship('Permission', backref='object')
-    children = relationship('PermissionObject',
-                            secondary=parents_table,
-                            primaryjoin=id == parents_table.c.parent_id,
-                            secondaryjoin=id == parents_table.c.child_id,
-                            backref='parents'
-                            )
+    children = relationship(
+        'PermissionObject',
+        secondary=parents_table,
+        primaryjoin=id == parents_table.c.parent_id,
+        secondaryjoin=id == parents_table.c.child_id,
+        backref='parents'
+    )
+
 
 class LoadThread(GameThread):
     def __init__(self):
