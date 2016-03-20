@@ -167,6 +167,12 @@ class PlayerPermissions(PermissionBase):
     """A container for player permissions."""
 
     def __init__(self, name, steamid64):
+        """Initialize the object.
+
+        :param str name: A SteamID2, SteamID3 or SteamID64 value.
+        :param int steamid64: The SteamID64 value that was also used to store
+            the object in the :class:PlayerPermissionDict`` object.
+        """
         super().__init__(name)
         self.steamid64 = steamid64
 
@@ -195,12 +201,20 @@ class _PermissionDict(dict):
 
 class GroupPermissionDict(_PermissionDict):
     def __missing__(self, group_name):
+        """Create, store and return a :class:`GroupPermissions` object.
+
+        :param str group_name: The name of the group to retrieve.
+        """
         instance = self[group_name] = GroupPermissions(group_name)
         return instance
 
 
 class PlayerPermissionDict(_PermissionDict):
     def __missing__(self, steamid):
+        """Create, store and return a :class:`PlayerPermissions` object.
+
+        :param str/int steamid: A SteamID2, SteamID3 or SteamID64 value.
+        """
         if not isinstance(steamid, int):
             steamid64 = SteamID.parse(steamid).to_uint64()
             if steamid64 in self:
