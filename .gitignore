@@ -42,7 +42,7 @@ sound/source-python/
 
 # Wiki directories
 addons/source-python/docs/source-python/build/
-addons/source-python/docs/source-python/source/credits.rst
+addons/source-python/docs/source-python/source/general/credits.rst
 addons/source-python/docs/custom/
 !addons/source-python/docs/custom/readme.md
 addons/source-python/docs/plugins/
