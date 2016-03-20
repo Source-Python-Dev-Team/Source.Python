@@ -11,7 +11,7 @@ When creating a pull request, please always provide a reason why you made that
 change. We will then review, discuss and merge or close it.
 
 If you successfully contributed to Source.Python we will gladly add you to our
-:doc:`credits page <credits>` (if you want).
+:doc:`credits page <../general/credits>` (if you want).
 
 
 Contributing to the source code
