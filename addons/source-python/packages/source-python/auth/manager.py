@@ -1,6 +1,6 @@
 # ../auth/manager.py
 
-"""TODO"""
+"""Provides a singleton class to access player permissions."""
 
 # =============================================================================
 # >> IMPORTS
