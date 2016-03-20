@@ -403,7 +403,7 @@ class _CoreCommandManager(SubCommandManager):
 
             # Create/update credits.rst
             with project.project_source_dir.joinpath(
-                    'credits.rst').open('w') as f:
+                    'general', 'credits.rst').open('w') as f:
                 f.write(self._get_updated_credits_wiki())
 
             try:
