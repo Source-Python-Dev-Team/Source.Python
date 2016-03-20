@@ -21,11 +21,11 @@ General
 .. toctree::
    :maxdepth: 1
 
-   installation
-   updating
-   sp-commands
-   known-issues
-   credits
+   general/installation
+   general/updating
+   general/sp-commands
+   general/known-issues
+   general/credits
    
 
 Developing with Source.Python
@@ -35,9 +35,9 @@ Developing with Source.Python
    :maxdepth: 2
    :glob:
 
-   getting-started
-   events
-   module_tutorials
+   developing/getting-started
+   developing/events
+   developing/module_tutorials
 
 
 Contributing to Source.Python
@@ -47,10 +47,10 @@ Contributing to Source.Python
    :maxdepth: 2
    :glob:
    
-   contributing
-   coding-conventions
-   reporting-a-bug
-   todos
+   contributing/contributing
+   contributing/coding-conventions
+   contributing/reporting-a-bug
+   contributing/todos
 
 
 Indices and tables
