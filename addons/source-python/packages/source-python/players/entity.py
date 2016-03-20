@@ -70,7 +70,8 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         """
         super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
-        self.permissions = auth_manager.get_player_permissions(index)
+        self.permissions = auth_manager.get_player_permissions_from_steamid(
+            self.steamid)
 
     @property
     def playerinfo(self):

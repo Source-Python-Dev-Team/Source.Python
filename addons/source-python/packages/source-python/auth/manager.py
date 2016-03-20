@@ -16,21 +16,26 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Auth
 from auth.base import Backend
+#   Engines
+from engines.server import engine_server
 #   Paths
 from paths import BACKEND_CONFIG_FILE
 from paths import BACKENDS_PATH
 #   Players
-from players.helpers import uniqueid_from_index
+from players.helpers import playerinfo_from_index
+#   Steam
+from steam import SteamID
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('_AuthManager',
-           'auth_manager'
+           'auth_manager',
+           'GroupPermissionDict',
            'GroupPermissions',
            'PermissionBase',
-           'PermissionDict',
+           'PlayerPermissionDict',
            'PlayerPermissions',
     )
 
@@ -161,31 +166,9 @@ class PermissionBase(dict):
 class PlayerPermissions(PermissionBase):
     """A container for player permissions."""
 
-    def __new__(cls, uniqueid):
-        """Return a PlayerPermissions object.
-
-        :param str uniqueid: The unique ID of a player.
-        """
-        if uniqueid in auth_manager.players:
-            return auth_manager.players[uniqueid]
-
-        self = auth_manager.players[uniqueid] = super().__new__(cls)
-        return self
-
 
 class GroupPermissions(PermissionBase):
     """A container for group permissions."""
-
-    def __new__(cls, name):
-        """Return a GroupPermissions object.
-
-        :param str name: Name of the group.
-        """
-        if name in auth_manager.groups:
-            return auth_manager.groups[name]
-
-        self = auth_manager.groups[name] = super().__new__(cls)
-        return self
 
     def __init__(self, name):
         """Initialize the object.
@@ -196,21 +179,8 @@ class GroupPermissions(PermissionBase):
         self.children = set()
 
 
-class PermissionDict(dict):
+class _PermissionDict(dict):
     """A permission storage."""
-
-    def __init__(self, permission_type):
-        """Initialize the object.
-
-        :param PermissionBase permission_type: The permission class whose
-            objects should be stored.
-        """
-        super().__init__()
-        self.permission_type = permission_type
-
-    def __missing__(self, key):
-        instance = self[key] = self.permission_type(key)
-        return instance
 
     def clear(self):
         for value in self.values():
@@ -219,13 +189,35 @@ class PermissionDict(dict):
         super().clear()
 
 
+class GroupPermissionDict(_PermissionDict):
+    def __missing__(self, group_name):
+        instance = self[group_name] = GroupPermissions(group_name)
+        return instance
+
+
+class PlayerPermissionDict(_PermissionDict):
+    def __missing__(self, steamid):
+        if not isinstance(steamid, int):
+            steamid64 = SteamID.parse(steamid).to_uint64()
+            if steamid64 in self:
+                return self[steamid64]
+
+            # We got a SteamID in a string format, so we can store it by using
+            # its SteamID64 value, but keep the original name.
+            instance = self[steamid64] = PlayerPermissions(steamid)
+        else:
+            instance = self[steamid] = PlayerPermissions(steamid)
+
+        return instance
+
+
 class _AuthManager(dict):
     """Manages backends and configuration files."""
 
     def __init__(self):
         """Initialize the object."""
-        self.groups = PermissionDict(GroupPermissions)
-        self.players = PermissionDict(PlayerPermissions)
+        self.groups = GroupPermissionDict()
+        self.players = PlayerPermissionDict()
         self.active_backend = None
         self.server_id = -1
 
@@ -317,12 +309,23 @@ class _AuthManager(dict):
             backend_name.casefold() == self.active_backend.name)
 
     def get_player_permissions(self, index):
+        """.. seealso:: :meth:`get_player_permissions_from_steamid`"""
+        return self.get_player_permissions_from_steamid(
+            playerinfo_from_index(index).steamid)
+
+    def get_player_permissions_from_steamid(self, steamid):
         """Return the permissions of a player.
 
-        :param int index: Index of the player.
+        :param str/int steamid: The SteamID2, SteamID3 or SteamID64 of a
+            player.
+        :return: If the given SteamID is invalid (e.g. 'BOT'), None will be
+            returned.
         :rtype: PlayerPermissions
         """
-        return self.players[uniqueid_from_index(index)]
+        try:
+            return self.players[steamid]
+        except ValueError:
+            return None
 
     def is_player_authorized(self, index, permission):
         """Return True if the player has been granted the given permission.

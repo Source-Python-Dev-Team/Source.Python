@@ -60,15 +60,27 @@ def _sp_auth_permission_player_add(
         command_info, players:filter_str, permission, server_id:int=None):
     """Grant a permission to players."""
     for player in players:
+        if player.permissions is None:
+            logger.log_message(
+                'Failed to retrieve permissions for {} ({}).'.format(
+                    player.name, player.steamid))
+            continue
+
         player.permissions.add(permission, server_id)
-        logger.log_message(
-            'Granted permission "{}" to {}.'.format(permission, player.name))
+        logger.log_message('Granted permission "{}" to {}.'.format(
+            permission, player.name))
 
 @_core_command.sub_command(['auth', 'permission', 'player', 'remove'])
 def _sp_auth_permission_player_remove(
         command_info, players:filter_str, permission, server_id:int=None):
     """Remove a permission from players."""
     for player in players:
+        if player.permissions is None:
+            logger.log_message(
+                'Failed to retrieve permissions for {} ({}).'.format(
+                    player.name, player.steamid))
+            continue
+
         player.permissions.remove(permission, server_id)
         logger.log_message(
             'Removed permission "{}" from {}.'.format(
@@ -79,6 +91,12 @@ def _sp_auth_permission_player_add_parent(
         command_info, players:filter_str, parent):
     """Add a parent to players."""
     for player in players:
+        if player.permissions is None:
+            logger.log_message(
+                'Failed to retrieve permissions for {} ({}).'.format(
+                    player.name, player.steamid))
+            continue
+
         player.permissions.add_parent(parent)
         logger.log_message(
             'Added parent "{}" to {}.'.format(parent, player.name))
@@ -88,6 +106,12 @@ def _sp_auth_permission_player_remove_parent(
         command_info, players:filter_str, parent):
     """Remove a parent from players."""
     for player in players:
+        if player.permissions is None:
+            logger.log_message(
+                'Failed to retrieve permissions for {} ({}).'.format(
+                    player.name, player.steamid))
+            continue
+
         player.permissions.remove_parent(parent)
         logger.log_message(
             'Removed parent "{}" from {}.'.format(parent, player.name))
@@ -99,6 +123,12 @@ def _sp_auth_permission_player_test(
     logger.log_message(
         '"{}" is granted to the following players:'.format(permission))
     for player in players:
+        if player.permissions is None:
+            logger.log_message(
+                'Failed to retrieve permissions for {} ({}).'.format(
+                    player.name, player.steamid))
+            continue
+
         if permission not in player.permissions:
             continue
 

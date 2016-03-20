@@ -75,7 +75,7 @@ class FlatfileBackend(Backend):
         with path.open('w') as f:
             temp_dict = {}
             for name, permissions in store.items():
-                node = temp_dict[name] = {}
+                node = temp_dict[permissions.name] = {}
 
                 parents = permissions.parents
                 if parents:
@@ -99,7 +99,7 @@ class FlatfileBackend(Backend):
             for name, permissions in sorted(store.items()):
                 for permission in permissions:
                     if permission == '*':
-                        f.write(name + '\n')
+                        f.write(permissions.name + '\n')
                         break
 
     @staticmethod
