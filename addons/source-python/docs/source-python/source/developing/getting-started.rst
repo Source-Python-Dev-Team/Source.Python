@@ -4,7 +4,7 @@ Getting started
 If you are new to Source.Python this is the right place for you!
 
 In order to use Source.Python you need to install it on your game server. To
-do so, please follow the instructions described :doc:`here <installation>`.
+do so, please follow the instructions described :doc:`here <../general/installation>`.
 
 As soon as you have successfully installed Source.Python you can start writing
 your first plugin.

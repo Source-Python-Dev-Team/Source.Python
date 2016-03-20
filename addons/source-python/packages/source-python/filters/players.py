@@ -90,8 +90,8 @@ class _Team(object):
 PlayerIter.register_filter('all', lambda player: True)
 PlayerIter.register_filter('bot', lambda player: player.is_fake_client())
 PlayerIter.register_filter('human', lambda player: not player.is_fake_client())
-PlayerIter.register_filter('alive', lambda player: not player.dead_flag)
-PlayerIter.register_filter('dead', lambda player: player.dead_flag)
+PlayerIter.register_filter('alive', lambda player: not player.dead)
+PlayerIter.register_filter('dead', lambda player: player.dead)
 
 # Loop through all teams in the game's team file
 for _team in _game_teams.get('names', {}):

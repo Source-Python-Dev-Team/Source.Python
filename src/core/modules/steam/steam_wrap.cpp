@@ -126,9 +126,19 @@ void export_steamid(scope _steam)
 	);
 
 	SteamID.def(
-		"convert_to_uint64", 
+		"to_uint64", 
 		&CSteamID::ConvertToUint64,
 		"Convert a Steam ID to its 64-bit representation."
+	);
+
+	SteamID.def("to_steamid2",
+		&CSteamIDExt::ToSteamID2,
+		"Convert the Steam ID to its SteamID2 string representation."
+	);
+
+	SteamID.def("to_steamid3",
+		&CSteamIDExt::ToSteamID3,
+		"Convert the Steam ID to its SteamID3 string representation."
 	);
 
 	SteamID.add_property(
