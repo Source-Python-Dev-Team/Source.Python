@@ -152,13 +152,13 @@ def _generate_source_python_docs():
     project = SphinxProject(SP_PACKAGES_PATH, SP_DOCS_PATH)
     if project.project_exists():
         try:
-            project.generate_project_files('modules')
+            project.generate_project_files('developing/modules')
         except:
             logger.log_message(
                 'An error occured while generating ' +
                 'project files for Source.Python')
         else:
-            modules_dir = project.project_source_dir / 'modules'
+            modules_dir = project.project_source_dir / 'developing' / 'modules'
             modules_dir.joinpath('modules.rst').remove()
             for file_path in modules_dir.files('source-python.*.rst'):
                 _prepare_generated_source_python_file(file_path)
@@ -306,7 +306,7 @@ def _build_source_python_docs():
 
         # Create/update credits.rst
         with project.project_source_dir.joinpath(
-                'credits.rst').open('w') as f:
+                'general', 'credits.rst').open('w') as f:
             f.write(_get_updated_credits_wiki())
 
         try:
