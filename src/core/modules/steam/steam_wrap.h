@@ -158,19 +158,6 @@ public:
 
 	static bool AccountTypeToIdentifier(EAccountType account_type, EChatSteamIDInstanceFlags account_instance_flags, char& identifier)
 	{
-		if (account_type == k_EAccountTypeChat)
-		{
-			if (account_instance_flags == k_EChatInstanceFlagClan) {
-				identifier = 'c';
-			}
-			else if (account_instance_flags == k_EChatInstanceFlagLobby) {
-				identifier = 'L';
-			}
-			else {
-				return false;
-			}
-		}
-
 		switch (account_type)
 		{
 			case k_EAccountTypeInvalid:
@@ -198,7 +185,18 @@ public:
 				identifier = 'g';
 				break;
 			case k_EAccountTypeChat:
-				identifier = 'T';
+				if (account_instance_flags == k_EChatInstanceFlagClan) {
+					identifier = 'c';
+				}
+				else if (account_instance_flags == k_EChatInstanceFlagLobby) {
+					identifier = 'L';
+				}
+				else if (account_instance_flags == 1) {
+					identifier = 'T';
+				}
+				else {
+					return false;
+				}
 				break;
 			case 10:
 				identifier = 'a';
