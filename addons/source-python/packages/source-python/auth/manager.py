@@ -166,6 +166,10 @@ class PermissionBase(dict):
 class PlayerPermissions(PermissionBase):
     """A container for player permissions."""
 
+    def __init__(self, name, steamid64):
+        super().__init__(name)
+        self.steamid64 = steamid64
+
 
 class GroupPermissions(PermissionBase):
     """A container for group permissions."""
@@ -204,9 +208,9 @@ class PlayerPermissionDict(_PermissionDict):
 
             # We got a SteamID in a string format, so we can store it by using
             # its SteamID64 value, but keep the original name.
-            instance = self[steamid64] = PlayerPermissions(steamid)
+            instance = self[steamid64] = PlayerPermissions(steamid, steamid64)
         else:
-            instance = self[steamid] = PlayerPermissions(steamid)
+            instance = self[steamid] = PlayerPermissions(steamid, steamid)
 
         return instance
 

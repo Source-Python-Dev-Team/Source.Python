@@ -167,8 +167,9 @@ class SQLBackend(Backend):
     def permission_added(self, node, permission, server_id):
         try:
             with session_scope() as session:
+                node_type, identifier = self.get_node_type_and_identifier(node)
                 permission_obj = get_or_create(session, PermissionObject,
-                    identifier=node.name, type=self.get_node_type(node))
+                    identifier=identifier, type=node_type)
 
                 instance = Permission(
                     object_id=permission_obj.id,
@@ -181,8 +182,9 @@ class SQLBackend(Backend):
 
     def permission_removed(self, node, permission, server_id):
         with session_scope() as session:
+            node_type, identifier = self.get_node_type_and_identifier(node)
             permission_obj = session.query(PermissionObject).filter_by(
-                identifier=node.name, type=self.get_node_type(node)).one()
+                identifier=identifier, type=node_type).one()
 
             session.query(Permission).filter_by(
                 object_id=permission_obj.id,
@@ -193,8 +195,9 @@ class SQLBackend(Backend):
     def parent_added(self, node, parent_name):
         try:
             with session_scope() as session:
+                node_type, identifier = self.get_node_type_and_identifier(node)
                 child = get_or_create(session, PermissionObject,
-                    identifier=node.name, type=self.get_node_type(node))
+                    identifier=identifier, type=node_type)
 
                 parent = get_or_create(session, PermissionObject,
                     identifier=parent_name, type='Group')
@@ -208,8 +211,9 @@ class SQLBackend(Backend):
 
     def parent_removed(self, node, parent_name):
         with session_scope() as session:
+            node_type, identifier = self.get_node_type_and_identifier(node)
             child = session.query(PermissionObject).filter_by(
-                identifier=node.name, type=self.get_node_type(node)).one()
+                identifier=identifier, type=node_type).one()
 
             parent = session.query(PermissionObject).filter_by(
                 identifier=parent_name, type='Group').one()
@@ -220,15 +224,15 @@ class SQLBackend(Backend):
             ).delete(False)
 
     @staticmethod
-    def get_node_type(node):
+    def get_node_type_and_identifier(node):
         if isinstance(node, PlayerPermissions):
-            node_type = 'Player'
+            result = ('Player', node.steamid64)
         elif isinstance(node, GroupPermissions):
-            node_type = 'Group'
+            result = ('Group', node.name)
         else:
             raise TypeError(
                 'Unexpected type "{}".'.format(type(node).__name__))
 
-        return node_type
+        return result
 
 source = SQLBackend()
