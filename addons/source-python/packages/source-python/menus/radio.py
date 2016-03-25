@@ -91,15 +91,14 @@ class SimpleRadioMenu(_BaseMenu):
         :param iterable slots: Slots that should be enabled.
         :raise ValueError: Raised if a slot is out of range.
         """
-        # Keys are enabled in that order: 0987654321
-        buffer = list('0000000000')
+        result = 0
         for slot in slots:
             if 0 <= slot <= 9:
-                buffer[~(slot - 1)] = '1'
+                result |= 1 << slot
             else:
                 raise ValueError('Slot out of range: {}'.format(slot))
 
-        return int(''.join(buffer), 2)
+        return result
 
     def _select(self, player_index, choice_index):
         """See :meth:`menus.base._BaseMenu._select`."""
