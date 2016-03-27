@@ -33,28 +33,6 @@ __all__ = ('ConVar',
 class ConVar(_ConVar):
     """ConVar wrapper to provide easy access to cvars."""
 
-    def __init__(
-            self, name, value='0', description='',
-            flags=0, min_value=None, max_value=None):
-        """Called when a server-var is initilized.
-
-        If the ConVar already exists, all other parameters
-        except ``name`` are inconsequential.
-
-        :param str name: The name of the ConVar.
-        :param str value: The initial value of the
-            ConVar if it doesn't already exist.
-        :param str description: The description of the ConVar.
-        :param ConVarFlags flags: The initial flags of the
-            ConVar if it doesn't already exist.
-        :param float min_value: The minimum value allowed for the ConVar.
-        :param float max_value: The maximum value allowed for the ConVar.
-        """
-        super().__init__(
-            name, value, description, flags,
-            min_value is not None, min_value or 0.0,
-            max_value is not None, max_value or 0.0)
-
     def __getattr__(self, attr):
         """Retrieve the value of the given attribute."""
         # Get the flag
@@ -95,15 +73,3 @@ class ConVar(_ConVar):
 
         # Remove the flag
         self.remove_flags(flag)
-
-    def make_public(self):
-        """Set the notify flag and makes the cvar public."""
-        self.add_flags(ConVarFlags.NOTIFY)
-        cvar.call_global_change_callbacks(
-            self, self.get_string(), self.get_float())
-
-    def remove_public(self):
-        """Remove the notify flag and makes the cvar no longer public."""
-        self.remove_flags(ConVarFlags.NOTIFY)
-        cvar.call_global_change_callbacks(
-            self, self.get_string(), self.get_float())
