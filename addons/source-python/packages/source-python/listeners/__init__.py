@@ -13,6 +13,7 @@ from urllib.error import URLError
 # Source.Python Imports
 #   Cvars
 from cvars import ConVar
+from cvars import cvar
 #   Core
 from core import AutoUnload
 from core.settings import _core_settings
@@ -21,6 +22,9 @@ from core.version import is_unversioned
 from core.version import VERSION
 #   Loggers
 from loggers import _sp_logger
+#   Memory
+import memory
+from memory.hooks import PreHook
 
 
 # =============================================================================
@@ -64,6 +68,7 @@ __all__ = ('OnClientActive',
            'OnClientPutInServer',
            'OnClientSettingsChanged',
            'OnCombinerPreCache',
+           'OnConVarChanged',
            'OnDataLoaded',
            'OnDataUnloaded',
            'OnEdictAllocated',
@@ -87,6 +92,7 @@ __all__ = ('OnClientActive',
            'on_client_put_in_server_listener_manager',
            'on_client_settings_changed_listener_manager',
            'on_combiner_pre_cache_listener_manager',
+           'on_convar_changed_listener_manager',
            'on_data_loaded_listener_manager',
            'on_data_unloaded_listener_manager',
            'on_edict_allocated_listener_manager',
@@ -112,6 +118,7 @@ __all__ = ('OnClientActive',
 # Get the sp.listeners logger
 listeners_logger = _sp_logger.listeners
 on_version_update_listener_manager = _ListenerManager()
+on_convar_changed_listener_manager = _ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -323,6 +330,12 @@ class OnVersionUpdate(_ListenerManager):
     manager = on_version_update_listener_manager
 
 
+class OnConVarChanged(_ListenerManager):
+    """Register/unregister a ConVar listener."""
+
+    manager = on_convar_changed_listener_manager
+
+
 # =============================================================================
 # >> CALLBACKS
 # =============================================================================
@@ -347,3 +360,11 @@ def _on_level_init(map_name):
 
     on_version_update_listener_manager.notify(
         VERSION, version, is_unversioned())
+
+
+@PreHook(memory.get_virtual_function(cvar, 'CallGlobalChangeCallbacks'))
+def _pre_call_global_change_callbacks(args):
+    """Called when a ConVar has been changed."""
+    convar = memory.make_object(ConVar, args[1])
+    old_value = args[2]
+    on_convar_changed_listener_manager.notify(convar, old_value)
