@@ -43,6 +43,9 @@ public:
 	static boost::shared_ptr<ConVar> __init__(const char* name, const char* value,
 		const char* description, int flags, object min_value, object max_value)
 	{
+		if (!name || name[0] == '\0')
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "An empty string is not a valid ConVar name.")
+
 		float fMin = 0;
 		float fMax = 0;
 
