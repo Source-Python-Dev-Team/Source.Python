@@ -182,7 +182,7 @@ void export_convar_interface(scope _cvars)
 //-----------------------------------------------------------------------------
 void export_convar(scope _cvars)
 {
-	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("_ConVar", no_init)
+	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("ConVar", no_init)
 
 		.def("__init__",
 			make_constructor(&ConVarExt::__init__,

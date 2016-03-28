@@ -165,19 +165,20 @@ void export_concommandbase(scope _commands)
 		)
 
 		.def("add_flags",
-			&ConCommandBase::AddFlags,
+			&ConCommandBaseExt::AddFlags,
 			"Adds the given flags to the ConVar.",
 			args("flag")
 		)
 
 		.def("remove_flags",
-			&ConCommandBase::RemoveFlags,
+			&ConCommandBaseExt::RemoveFlags,
 			"Removes the given flags from the ConVar.",
 			args("flag")
 		)
 		
 		.add_property("flags",
-			&ConCommandBase::GetFlags,
+			&ConCommandBaseExt::GetFlags,
+			&ConCommandBaseExt::SetFlags,
 			"Returns its flags."
 		)
 		

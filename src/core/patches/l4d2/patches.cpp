@@ -24,6 +24,11 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#include "convar.h"
+#ifndef PATCH_CONVAR_H_PUBLIC_FLAGS
+#error "Make ConCommandBase::m_nFlags public."
+#endif
+
 #include "utilities/baseentity.h"
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."

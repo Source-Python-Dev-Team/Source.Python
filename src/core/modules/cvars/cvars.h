@@ -108,13 +108,13 @@ public:
 
 	static void MakePublic(ConVar* pConVar)
 	{
-		pConVar->AddFlags(FCVAR_NOTIFY);
+		pConVar->m_nFlags |= FCVAR_NOTIFY;
 		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
 
 	static void RemovePublic(ConVar* pConVar)
 	{
-		pConVar->RemoveFlags(FCVAR_NOTIFY);
+		pConVar->m_nFlags &= ~FCVAR_NOTIFY;
 		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
 };
