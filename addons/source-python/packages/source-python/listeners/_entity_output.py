@@ -22,7 +22,7 @@ from entities.entity import Entity
 from entities.datamaps import Variant
 from entities.helpers import find_output_name
 #   Listeners
-from _listeners import _ListenerManager
+from _listeners import ListenerManager
 
 
 # =============================================================================
@@ -32,7 +32,7 @@ BaseEntityOutput = manager.create_type_from_dict(
     'BaseEntityOutput', GameConfigObj(
         SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
-on_entity_output_listener_manager = _ListenerManager()
+on_entity_output_listener_manager = ListenerManager()
 
 
 # =============================================================================
