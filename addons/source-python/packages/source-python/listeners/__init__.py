@@ -2,8 +2,6 @@
 
 """Provides listener based functionality."""
 
-# TODO: Fix name conflict with _ListenerManager
-
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
