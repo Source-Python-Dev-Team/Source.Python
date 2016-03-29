@@ -185,11 +185,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// Load windows dependencies.
 	// ------------------------------------------------------------------
 #if defined(_WIN32)
-	if( SPLoadLibrary(engine, MSVCRT_LIB) == NULL ) {
-		return false;
-	}
-
-	if( SPLoadLibrary(engine, MSVCP_LIB) == NULL ) {
+	if( SPLoadLibrary(engine, VCRUNTIME_LIB) == NULL ) {
 		return false;
 	}
 #endif

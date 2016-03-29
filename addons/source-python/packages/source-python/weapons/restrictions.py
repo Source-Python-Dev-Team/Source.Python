@@ -35,7 +35,8 @@ from weapons.manager import weapon_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('WeaponRestrictionHandler',
+__all__ = ('_WeaponRestrictionManager',
+           'WeaponRestrictionHandler',
            'weapon_restriction_handler',
            'weapon_restriction_manager',
            )

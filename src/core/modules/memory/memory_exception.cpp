@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,12 +24,39 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_PUBLIC_FLAGS
-#error "Make ConCommandBase::m_nFlags public."
-#endif
+#ifdef _WIN32
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+// ============================================================================
+// >> INCLUDES
+// ============================================================================
+// Windows
+#include <Windows.h>
+
+// Memory
+#include "utilities/wrap_macros.h"
+
+// Utilities
+#include "memory_exception.h"
+
+
+// ============================================================================
+// >> FUNCTIONS
+// ============================================================================
+int ExceptionHandler(_EXCEPTION_POINTERS* info, DWORD code)
+{
+	if (code == EXCEPTION_ACCESS_VIOLATION) {
+		EXCEPTION_RECORD* record = info->ExceptionRecord;
+		char* exc_message;
+
+		if (record->ExceptionInformation[0] == 0)
+			exc_message = "Access violation while reading address '%u'.";
+		else 
+			exc_message = "Access violation while writing address '%u'.";
+
+		BOOST_RAISE_EXCEPTION(PyExc_RuntimeError, exc_message, record->ExceptionInformation[1])
+	}
+
+	return EXCEPTION_CONTINUE_SEARCH;
+}
+
+#endif // _WIN32

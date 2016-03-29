@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,12 +24,22 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_PUBLIC_FLAGS
-#error "Make ConCommandBase::m_nFlags public."
+#ifndef _MEMORY_EXCEPTION_H
+#define _MEMORY_EXCEPTION_H
+
+// ============================================================================
+// >> Macros to catch access violations
+// ============================================================================
+#ifdef _WIN32
+	#include <excpt.h>
+
+	int ExceptionHandler(_EXCEPTION_POINTERS* info, unsigned long code);
+
+	#define TRY_SEGV() __try {
+	#define EXCEPT_SEGV() } __except(ExceptionHandler(GetExceptionInformation(), GetExceptionCode())) {}
+#else
+	#define TRY_SEGV()
+	#define EXCEPT_SEGV()
 #endif
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
+#endif // _MEMORY_EXCEPTION_H

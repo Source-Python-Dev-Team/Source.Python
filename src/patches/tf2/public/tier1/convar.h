@@ -121,12 +121,6 @@ public:
 	// Set flag
 	virtual void				AddFlags( int flags );
 
-#define PATCH_CONVAR_H_REMOVE_FLAGS
-	void RemoveFlags(int iFlags) { m_nFlags &= ~ iFlags; }
-
-#define PATCH_CONVAR_H_GET_FLAGS
-	int GetFlags() { return m_nFlags; }
-
 	// Return name of cvar
 	virtual const char			*GetName( void ) const;
 
@@ -172,6 +166,8 @@ private:
 	const char 					*m_pszName;
 	const char 					*m_pszHelpString;
 	
+#define PATCH_CONVAR_H_PUBLIC_FLAGS
+public:
 	// ConVar flags
 	int							m_nFlags;
 

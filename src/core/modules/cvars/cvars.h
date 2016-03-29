@@ -40,15 +40,38 @@
 class ConVarExt
 {
 public:
-	static boost::shared_ptr<ConVar> __init__(const char *szName, const char *szDefaultValue,
-		const char *szHelpString, int flags, bool bMin, float fMin, bool bMax, float fMax)
+	static boost::shared_ptr<ConVar> __init__(const char* name, const char* value,
+		const char* description, int flags, object min_value, object max_value)
 	{
-		ConVar *pConVar = g_pCVar->FindVar(szName);
+		if (!name || name[0] == '\0')
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "An empty string is not a valid ConVar name.")
+
+		float fMin = 0;
+		float fMax = 0;
+
+		try {
+			fMin = extract<float>(min_value);
+		}
+		catch (...) {
+			PyErr_Clear();
+		}
+
+		try {
+			fMax = extract<float>(max_value);
+		}
+		catch (...) {
+			PyErr_Clear();
+		}
+
+		ConVar *pConVar = g_pCVar->FindVar(name);
 		if (!pConVar)
 		{
-			return boost::shared_ptr<ConVar>(new ConVar(strdup(szName), strdup(szDefaultValue), flags,
-				strdup(szHelpString), bMin, fMin, bMax, fMax), &NeverDeleteDeleter<ConVar *>);
+			ConVar* pConVar = new ConVar(strdup(name), strdup(value), flags,
+				strdup(description), !min_value.is_none(), fMin, !max_value.is_none(), fMax);
+
+			return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
 		}
+
 		return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
 	}
 
@@ -81,6 +104,18 @@ public:
 	static void SetValue(ConVar* pConVar, bool bValue)
 	{
 		pConVar->SetValue(bValue);
+	}
+
+	static void MakePublic(ConVar* pConVar)
+	{
+		pConVar->m_nFlags |= FCVAR_NOTIFY;
+		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
+	}
+
+	static void RemovePublic(ConVar* pConVar)
+	{
+		pConVar->m_nFlags &= ~FCVAR_NOTIFY;
+		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
 };
 

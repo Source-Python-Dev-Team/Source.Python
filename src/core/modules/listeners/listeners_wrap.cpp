@@ -79,7 +79,7 @@ DECLARE_SP_MODULE(_listeners)
 //-----------------------------------------------------------------------------
 void export_listener_managers(scope _listeners) 
 {
-	class_<CListenerManager, boost::noncopyable>("_ListenerManager")
+	class_<CListenerManager, boost::noncopyable>("ListenerManager")
 		.def("register_listener",
 			&CListenerManager::RegisterListener,
 			"Registers a callable object. If it was already registered it will be ignored.",
