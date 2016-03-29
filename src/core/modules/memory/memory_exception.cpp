@@ -42,7 +42,7 @@
 // ============================================================================
 // >> FUNCTIONS
 // ============================================================================
-int ExceptionHandler(EXCEPTION_POINTERS* info, DWORD code)
+int ExceptionHandler(_EXCEPTION_POINTERS* info, DWORD code)
 {
 	if (code == EXCEPTION_ACCESS_VIOLATION) {
 		EXCEPTION_RECORD* record = info->ExceptionRecord;
