@@ -31,9 +31,9 @@
 // >> Macros to catch access violations
 // ============================================================================
 #ifdef _WIN32
-	#include <Windows.h>
+	#include <excpt.h>
 
-	int ExceptionHandler(EXCEPTION_POINTERS* info, unsigned long code);
+	int ExceptionHandler(_EXCEPTION_POINTERS* info, unsigned long code);
 
 	#define TRY_SEGV() __try {
 	#define EXCEPT_SEGV() } __except(ExceptionHandler(GetExceptionInformation(), GetExceptionCode())) {}
