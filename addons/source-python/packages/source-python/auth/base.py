@@ -31,12 +31,12 @@ class Backend(object):
         """Called when a permission has been removed."""
         pass
 
-    def parent_added(self, node, parent_name):
-        """Called when a parent has been added."""
+    def group_added(self, node, group_name):
+        """Called when a group has been added."""
         pass
 
-    def parent_removed(self, node, parent_name):
-        """Called when a parent has been removed."""
+    def group_removed(self, node, group_name):
+        """Called when a group has been removed."""
         pass
 
     @property

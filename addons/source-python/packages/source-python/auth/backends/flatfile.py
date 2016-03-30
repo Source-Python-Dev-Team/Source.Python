@@ -33,13 +33,16 @@ __all__ = ('FlatfileBackend',
 # >> CLASSES
 # =============================================================================
 class FlatfileBackend(Backend):
-    """A backend that provides an admin and group file in JSON format and a
-    simple text file.
+    """A backend that provides the following configuration files:
+
+    * players.json
+    * groups.json
+    * simple.txt
     """
 
     name = 'flatfile'
     options = {
-        'admin_config_path': AUTH_CFG_PATH / 'admins.json',
+        'player_config_path': AUTH_CFG_PATH / 'players.json',
         'group_config_path': AUTH_CFG_PATH / 'groups.json',
         'simple_config_path': AUTH_CFG_PATH / 'simple.txt'
     }
@@ -47,16 +50,16 @@ class FlatfileBackend(Backend):
     def load(self):
         """Load the backend."""
         self.load_json_config(
-            auth_manager.players, self.options['admin_config_path'])
+            auth_manager.players, self.options['player_config_path'])
         self.load_json_config(
             auth_manager.groups, self.options['group_config_path'])
         self.load_simple_config(
             auth_manager.players, self.options['simple_config_path'])
 
-    def save_admin_config(self):
-        """Save the admin configuration file."""
+    def save_player_config(self):
+        """Save the player configuration file."""
         self._save_json_config(
-            auth_manager.players, self.options['admin_config_path'])
+            auth_manager.players, self.options['player_config_path'])
 
     def save_simple_config(self):
         """Save the simple configuration file."""
@@ -77,10 +80,10 @@ class FlatfileBackend(Backend):
             for name, permissions in store.items():
                 node = temp_dict[permissions.name] = {}
 
-                parents = permissions.parents
-                if parents:
-                    node['parents'] = list(
-                        map(lambda parent: parent.name, parents))
+                groups = permissions.groups
+                if groups:
+                    node['groups'] = list(
+                        map(lambda group: group.name, groups))
 
                 if permissions:
                     node['permissions'] = list(permissions)
@@ -119,8 +122,8 @@ class FlatfileBackend(Backend):
                     if permission != '':
                         node_store.add(permission, update_backend=False)
 
-                for group_name in node.get('parents', set()):
-                    node_store.add_parent(group_name, update_backend=False)
+                for group_name in node.get('groups', set()):
+                    node_store.add_group(group_name, update_backend=False)
 
     @staticmethod
     def load_simple_config(store, path):
@@ -140,18 +143,18 @@ class FlatfileBackend(Backend):
     def permission_removed(self, node, permission, server_id):
         self._node_permission_changed(node, permission, server_id)
 
-    def parent_added(self, node, parent_name):
-        self._node_parent_changed(node, parent_name)
+    def group_added(self, node, group_name):
+        self._node_group_changed(node, group_name)
 
-    def parent_removed(self, node, parent_name):
-        self._node_parent_changed(node, parent_name)
+    def group_removed(self, node, group_name):
+        self._node_group_changed(node, group_name)
 
     def _node_permission_changed(self, node, permission, server_id):
         if not auth_manager.targets_this_server(server_id):
             return
 
         if isinstance(node, PlayerPermissions):
-            self.save_admin_config()
+            self.save_player_config()
             if permission == '*':
                 self.save_simple_config()
         elif isinstance(node, GroupPermissions):
@@ -160,9 +163,9 @@ class FlatfileBackend(Backend):
             raise TypeError(
                 'Unexpected type "{}".'.format(type(node).__name__))
 
-    def _node_parent_changed(self, node, parent_name):
+    def _node_group_changed(self, node, group_name):
         if isinstance(node, PlayerPermissions):
-            self.save_admin_config()
+            self.save_player_config()
         elif isinstance(node, GroupPermissions):
             self.save_group_config()
         else:

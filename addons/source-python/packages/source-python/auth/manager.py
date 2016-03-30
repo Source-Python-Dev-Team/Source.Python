@@ -49,7 +49,7 @@ class PermissionBase(dict):
     def __init__(self, name):
         """Initialize the object."""
         super().__init__()
-        self.parents = set()
+        self.groups = set()
         self.name = name
 
     def __hash__(self):
@@ -93,34 +93,34 @@ class PermissionBase(dict):
             auth_manager.active_backend.permission_removed(
                 self, permission, server_id)
 
-    def add_parent(self, parent, update_backend=True):
-        """Add a parent permission.
+    def add_group(self, group_name, update_backend=True):
+        """Add a group.
 
-        :param str parent: Name of the permission group.
+        :param str group_name: Name of the group.
         :param bool update_backend: If True, the backend will be updated.
         """
-        group = auth_manager.groups[parent]
-        if group not in self.parents:
+        group = auth_manager.groups[group_name]
+        if group not in self.groups:
             # TODO: Detect cycles
-            self.parents.add(group)
+            self.groups.add(group)
             group.children.add(self)
 
         if update_backend and auth_manager.active_backend is not None:
-            auth_manager.active_backend.parent_added(self, parent)
+            auth_manager.active_backend.group_added(self, group_name)
 
-    def remove_parent(self, parent, update_backend=True):
-        """Remove a parent permission.
+    def remove_group(self, group_name, update_backend=True):
+        """Remove a group.
 
-        :param str parent: Name of the permission group.
+        :param str group_name: Name of the group.
         :param bool update_backend: If True, the backend will be updated.
         """
-        group = auth_manager.groups[parent]
-        if group not in self.parents:
-            self.parents.remove(group)
+        group = auth_manager.groups[group_name]
+        if group not in self.groups:
+            self.groups.remove(group)
             group.children.remove(self)
 
         if update_backend and auth_manager.active_backend is not None:
-            auth_manager.active_backend.parent_removed(self, parent)
+            auth_manager.active_backend.group_removed(self, group_name)
 
     @staticmethod
     def _compile_permission(permission):
@@ -132,7 +132,7 @@ class PermissionBase(dict):
         return self._has_permission(permission, [])
 
     def _has_permission(self, permission, name_list):
-        # Checks to see if parents are recursive
+        # Checks to see if groups are recursive
         if self.name in name_list:
             # Break if recursive
             return False
@@ -143,8 +143,8 @@ class PermissionBase(dict):
             if re_perm.match(permission):
                 return True
 
-        for parent in self.parents:
-            if parent._has_permission(permission, name_list):
+        for group in self.groups:
+            if group._has_permission(permission, name_list):
                 return True
 
         return False
@@ -155,12 +155,12 @@ class PermissionBase(dict):
         :rtype: generator
         """
         yield from self
-        for parent in self.parents:
-            yield from parent
+        for group in self.groups:
+            yield from group
 
     def clear(self):
         super().clear()
-        self.parents.clear()
+        self.groups.clear()
 
 
 class PlayerPermissions(PermissionBase):

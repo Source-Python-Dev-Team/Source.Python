@@ -50,10 +50,10 @@ __all__ = ('SQLBackend',
 # =============================================================================
 Base = declarative_base()
 Session = sessionmaker()
-parents_table = Table(
-    'parents',
+groups_table = Table(
+    'groups',
     Base.metadata,
-    Column('parent_id', Integer, ForeignKey('objects.id'), primary_key=True),
+    Column('group_id', Integer, ForeignKey('objects.id'), primary_key=True),
     Column('child_id', Integer, ForeignKey('objects.id'), primary_key=True)
 )
 
@@ -110,10 +110,10 @@ class PermissionObject(Base):
     permissions = relationship('Permission', backref='object')
     children = relationship(
         'PermissionObject',
-        secondary=parents_table,
-        primaryjoin=id == parents_table.c.parent_id,
-        secondaryjoin=id == parents_table.c.child_id,
-        backref='parents'
+        secondary=groups_table,
+        primaryjoin=id == groups_table.c.group_id,
+        secondaryjoin=id == groups_table.c.child_id,
+        backref='groups'
     )
 
 
@@ -139,12 +139,12 @@ class LoadThread(GameThread):
                 for permission in node.permissions:
                     store.add(permission.node, update_backend=False)
 
-                for parent in node.parents:
-                    store.add_parent(parent.identifier, update_backend=False)
+                for group in node.groups:
+                    store.add_group(group.identifier, update_backend=False)
 
 
 class SQLBackend(Backend):
-    """A backend that provides admins and groups from an SQL database."""
+    """A backend that provides players and groups from an SQL database."""
 
     name = 'sql'
     options = {'uri': 'sqlite:///' + SP_DATA_PATH.joinpath('permissions.db')}
@@ -192,35 +192,35 @@ class SQLBackend(Backend):
                 node=permission
             ).delete(False)
 
-    def parent_added(self, node, parent_name):
+    def group_added(self, node, group_name):
         try:
             with session_scope() as session:
                 node_type, identifier = self.get_node_type_and_identifier(node)
                 child = get_or_create(session, PermissionObject,
                     identifier=identifier, type=node_type)
 
-                parent = get_or_create(session, PermissionObject,
-                    identifier=parent_name, type='Group')
+                group = get_or_create(session, PermissionObject,
+                    identifier=group_name, type='Group')
 
-                parent_insert = parents_table.insert().values(
-                    parent_id=parent.id,
+                group_insert = groups_table.insert().values(
+                    group_id=group.id,
                     child_id=child.id)
-                session.execute(parent_insert)
+                session.execute(group_insert)
         except IntegrityError:
             pass
 
-    def parent_removed(self, node, parent_name):
+    def group_removed(self, node, group_name):
         with session_scope() as session:
             node_type, identifier = self.get_node_type_and_identifier(node)
             child = session.query(PermissionObject).filter_by(
                 identifier=identifier, type=node_type).one()
 
-            parent = session.query(PermissionObject).filter_by(
-                identifier=parent_name, type='Group').one()
+            group = session.query(PermissionObject).filter_by(
+                identifier=group_name, type='Group').one()
 
-            session.query(parents_table).filter_by(
+            session.query(groups_table).filter_by(
                 child_id=child.id,
-                parent_id=parent.id
+                group_id=group.id
             ).delete(False)
 
     @staticmethod
