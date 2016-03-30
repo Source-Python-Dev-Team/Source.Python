@@ -9,6 +9,11 @@
 #   Enum
 from enum import Enum
 
+# Site Package Imports
+#   Mutagen
+from mutagen import mp3
+from mutagen import oggvorbis
+
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -20,6 +25,8 @@ from entities.constants import INVALID_ENTITY_INDEX
 from filters.recipients import RecipientFilter
 #   Mathlib
 from mathlib import NULL_VECTOR
+#   Paths
+from paths import GAME_PATH
 #   Stringtables
 from stringtables import string_tables
 from stringtables.downloads import Downloadables
@@ -176,9 +183,25 @@ class Sound(AutoUnload):
         return self._sample
 
     @property
+    def extension(self):
+        """Return the type of sound."""
+        return self.full_path.ext[1:]
+
+    @property
+    def full_path(self):
+        """Return the full path to the file."""
+        return GAME_PATH / 'sound' / self.sample
+
+    @property
     def duration(self):
         """Return the duration of the sample."""
-        return engine_sound.get_sound_duration(self.sample)
+        value = engine_sound.get_sound_duration(self.sample)
+        if not value:
+            if self.extension == 'ogg':
+                value = oggvorbis.Open(self.full_path).info.length
+            elif self.extension == 'mp3':
+                value = mp3.Open(self.full_path).info.length
+        return value
 
     def _unload_instance(self):
         """Remove the sample from the downloads list."""
