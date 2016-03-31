@@ -16,10 +16,11 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Auth
 from auth.base import Backend
+#   Core
+from core.settings import _core_settings
 #   Engines
 from engines.server import engine_server
 #   Paths
-from paths import BACKEND_CONFIG_FILE
 from paths import BACKENDS_PATH
 #   Players
 from players.helpers import playerinfo_from_index
@@ -239,8 +240,8 @@ class _AuthManager(dict):
         self.active_backend = None
         self.server_id = -1
 
-    def _find_available_backends(self):
-        """Find all available backends.
+    def find_and_add_available_backends(self):
+        """Find and add all available backends.
 
         :raise ValueError: Raised if no backend or multiple backends are found
             within a single file.
@@ -258,37 +259,10 @@ class _AuthManager(dict):
                     'Found no backend or multiple backends in "{}".'.format(
                         backend))
 
-    def _load_config(self):
-        """Load the configuration."""
-        config = ConfigObj()
-        config['config'] = {
-            'backend': 'flatfile',
-            'server_id': -1
-        }
-
-        backends_config = {}
-        for backend in self.values():
-            backends_config[backend.name] = backend.options
-
-        config['backends'] = backends_config
-        config.filename = BACKEND_CONFIG_FILE
-
-        if BACKEND_CONFIG_FILE.exists():
-            user_config = ConfigObj(BACKEND_CONFIG_FILE)
-            config.merge(user_config)
-
-        config.write()
-
-        for backend in self.values():
-            backend.options = config['backends'][backend.name]
-
-        self.server_id = int(config['config']['server_id'])
-        self.set_active_backend(config['config']['backend'])
-
     def load(self):
         """Load the auth manager."""
-        self._find_available_backends()
-        self._load_config()
+        self.server_id = int(_core_settings['AUTH_SETTINGS']['server_id'])
+        self.set_active_backend(_core_settings['AUTH_SETTINGS']['backend'])
 
     def unload(self):
         """Unload the auth manager."""

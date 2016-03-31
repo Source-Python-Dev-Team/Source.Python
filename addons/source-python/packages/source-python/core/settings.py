@@ -10,6 +10,7 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
+#   Core
 from core import core_logger
 #   Paths
 from paths import GAME_PATH
@@ -39,6 +40,9 @@ class _CoreSettings(ConfigObj):
         # Import the file
         super().__init__(infile)
         self._language = None
+
+    def load(self):
+        """Load and update the core settings."""
         self._check_settings()
 
         # Add the initial comment
@@ -59,6 +63,7 @@ class _CoreSettings(ConfigObj):
         self._check_version_settings()
         self._check_logging_settings()
         self._check_user_settings()
+        self._check_auth_settings()
 
     def _check_base_settings(self):
         """Add base settings if they are missing."""
@@ -163,6 +168,40 @@ class _CoreSettings(ConfigObj):
         # Set the client commands comments
         self['USER_SETTINGS'].comments['client_commands'] = _core_strings[
             'client_commands'].get_string(self._language).splitlines()
+
+    def _check_auth_settings(self):
+        """Add auth settings if they are missing."""
+        if 'AUTH_SETTINGS' not in self:
+            self['AUTH_SETTINGS'] = {}
+
+        if 'backend' not in self['AUTH_SETTINGS']:
+            self['AUTH_SETTINGS']['backend'] = 'flatfile'
+
+        if 'server_id' not in self['AUTH_SETTINGS']:
+            self['AUTH_SETTINGS']['server_id'] = '-1'
+
+        if 'BACKENDS' not in self['AUTH_SETTINGS']:
+            self['AUTH_SETTINGS']['BACKENDS'] = {}
+
+        self['AUTH_SETTINGS'].comments['BACKENDS'] = ['']
+
+        from auth.manager import auth_manager
+        auth_manager.find_and_add_available_backends()
+
+        for backend in auth_manager.values():
+            self._check_backend_settings(backend)
+
+    def _check_backend_settings(self, backend):
+        """Add settings for a backend if they are missing."""
+        if backend.name not in self['AUTH_SETTINGS']['BACKENDS']:
+            self['AUTH_SETTINGS']['BACKENDS'][backend.name] = {}
+
+        self['AUTH_SETTINGS']['BACKENDS'].comments[backend.name] = ['']
+        for option, value in backend.options.items():
+            if option in self['AUTH_SETTINGS']['BACKENDS'][backend.name]:
+                continue
+
+            self['AUTH_SETTINGS']['BACKENDS'][backend.name][option] = value
 
 # Get the _CoreSettings instance
 _core_settings = _CoreSettings(CFG_PATH / 'core_settings.ini')

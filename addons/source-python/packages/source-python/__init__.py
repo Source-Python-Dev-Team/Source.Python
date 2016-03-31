@@ -39,6 +39,7 @@ from loggers import _sp_logger  # It's save to import this here
 # =============================================================================
 def load():
     """Load Source.Python's Python side."""
+    setup_core_settings()
     setup_logging()
     setup_hooks()
     setup_translations()
@@ -59,14 +60,14 @@ def unload():
 
 
 # =============================================================================
-# >> HOOKS
+# >> CORE SETTINGS
 # =============================================================================
-def setup_hooks():
-    """Set up hooks."""
-    _sp_logger.log_debug('Setting up hooks...')
+def setup_core_settings():
+    """Setup core settings."""
+    _sp_logger.log_debug('Setting up core settings...')
 
-    from hooks.exceptions import except_hooks
-    from hooks.warnings import warning_hooks
+    from core.settings import _core_settings
+    _core_settings.load()
 
 
 # =============================================================================
@@ -109,6 +110,17 @@ def setup_logging():
 
         # Re-raise the error
         raise
+
+
+# =============================================================================
+# >> HOOKS
+# =============================================================================
+def setup_hooks():
+    """Set up hooks."""
+    _sp_logger.log_debug('Setting up hooks...')
+
+    from hooks.exceptions import except_hooks
+    from hooks.warnings import warning_hooks
 
 
 # =============================================================================

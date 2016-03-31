@@ -34,7 +34,6 @@ __all__ = ('BASE_PATH',
            'TRANSLATION_PATH',
            'AUTH_CFG_PATH',
            'BACKENDS_PATH',
-           'BACKEND_CONFIG_FILE'
            )
 
 
