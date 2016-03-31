@@ -136,37 +136,41 @@ def _sp_auth_permission_player_test(
 
 
 # =============================================================================
-# >> sp auth permission group
+# >> sp auth permission parent
 # =============================================================================
-@_core_command.sub_command(['auth', 'permission', 'group', 'add'])
-def _sp_auth_permission_group_add(
-        command_info, group, permission, server_id:int=None):
-    """Add a permission to a group."""
-    auth_manager.get_group_permissions(group).add(permission, server_id)
+@_core_command.sub_command(['auth', 'permission', 'parent', 'add'])
+def _sp_auth_permission_parent_add(
+        command_info, parent, permission, server_id:int=None):
+    """Add a permission to a parent."""
+    auth_manager.get_parent_permissions(parent).add(permission, server_id)
     logger.log_message(
-        'Added permission "{}" to group "{}".'.format(permission, group))
+        'Added permission "{}" to parent "{}".'.format(permission, parent))
 
-@_core_command.sub_command(['auth', 'permission', 'group', 'remove'])
-def _sp_auth_permission_group_remove(
-        command_info, group, permission, server_id:int=None):
-    """Remove a permission from a group."""
-    auth_manager.get_group_permissions(group).remove(permission, server_id)
-    logger.log_message(
-        'Removed permission "{}" from group "{}".'.format(permission, group))
+@_core_command.sub_command(['auth', 'permission', 'parent', 'remove'])
+def _sp_auth_permission_parent_remove(
+        command_info, parent, permission, server_id:int=None):
+    """Remove a permission from a parent."""
+    auth_manager.get_parent_permissions(parent).remove(permission, server_id)
+    logger.log_message('Removed permission "{}" from parent "{}".'.format(
+            permission, parent))
 
-@_core_command.sub_command(['auth', 'permission', 'group', 'add_parent'])
-def _sp_auth_permission_group_add_parent(command_info, group, parent):
-    """Add a parent to a group."""
-    auth_manager.get_group_permissions(group).add_parent(parent)
+@_core_command.sub_command(['auth', 'permission', 'parent', 'add_parent'])
+def _sp_auth_permission_parent_add_parent(
+        command_info, parent, parent_to_add):
+    """Add a parent to a parent."""
+    auth_manager.get_parent_permissions(parent).add_parent(parent_to_add)
     logger.log_message(
-        'Added parent "{}" to group "{}".'.format(parent, group))
+        'Added parent "{}" to parent "{}".'.format(parent_to_add, parent))
 
-@_core_command.sub_command(['auth', 'permission', 'group', 'remove_parent'])
-def _sp_auth_permission_group_remove_parent(command_info, group, parent):
-    """Remove a parent from a group."""
-    auth_manager.get_group_permissions(group).remove_parent(parent)
+@_core_command.sub_command(['auth', 'permission', 'parent', 'remove_parent'])
+def _sp_auth_permission_parent_remove_parent(
+        command_info, parent, parent_to_remove):
+    """Remove a parent from a parent."""
+    auth_manager.get_parent_permissions(parent).remove_parent(
+        parent_to_remove)
     logger.log_message(
-        'Removed parent "{}" from group "{}".'.format(parent, group))
+        'Removed parent "{}" from parent "{}".'.format(
+            parent_to_remove, parent))
 
 
 # =============================================================================
@@ -175,14 +179,18 @@ def _sp_auth_permission_group_remove_parent(command_info, group, parent):
 _sp_auth = TypedServerCommand.parser.get_node(['sp', 'auth'])
 _sp_auth.description = 'Authorization specific commands.'
 
-_sp_auth_backend = TypedServerCommand.parser.get_node(['sp', 'auth', 'backend'])
+_sp_auth_backend = TypedServerCommand.parser.get_node(
+    ['sp', 'auth', 'backend'])
 _sp_auth_backend.description = 'Authorization backend specific commands.'
 
-_sp_auth_permission = TypedServerCommand.parser.get_node(['sp', 'auth', 'permission'])
+_sp_auth_permission = TypedServerCommand.parser.get_node(
+    ['sp', 'auth', 'permission'])
 _sp_auth_permission.description = 'Commands to modify permissions.'
 
-_sp_auth_permission_group = TypedServerCommand.parser.get_node(['sp', 'auth', 'permission', 'group'])
-_sp_auth_permission_group.description = 'Commands to modify group permissions.'
+_sp_auth_permission_parent = TypedServerCommand.parser.get_node(
+    ['sp', 'auth', 'permission', 'parent'])
+_sp_auth_permission_parent.description = 'Commands to modify parent permissions.'
 
-_sp_auth_permission_player = TypedServerCommand.parser.get_node(['sp', 'auth', 'permission', 'player'])
+_sp_auth_permission_player = TypedServerCommand.parser.get_node(
+    ['sp', 'auth', 'permission', 'player'])
 _sp_auth_permission_player.description = 'Commands to modify player permissions.'

@@ -16,7 +16,7 @@ from path import Path
 from auth.base import Backend
 from auth.manager import auth_manager
 from auth.manager import PlayerPermissions
-from auth.manager import GroupPermissions
+from auth.manager import ParentPermissions
 #   Paths
 from paths import AUTH_CFG_PATH
 
@@ -36,14 +36,14 @@ class FlatfileBackend(Backend):
     """A backend that provides the following configuration files:
 
     * players.json
-    * groups.json
+    * parents.json
     * simple.txt
     """
 
     name = 'flatfile'
     options = {
         'player_config_path': AUTH_CFG_PATH / 'players.json',
-        'group_config_path': AUTH_CFG_PATH / 'groups.json',
+        'parent_config_path': AUTH_CFG_PATH / 'parents.json',
         'simple_config_path': AUTH_CFG_PATH / 'simple.txt'
     }
 
@@ -52,7 +52,7 @@ class FlatfileBackend(Backend):
         self.load_json_config(
             auth_manager.players, self.options['player_config_path'])
         self.load_json_config(
-            auth_manager.groups, self.options['group_config_path'])
+            auth_manager.parents, self.options['parent_config_path'])
         self.load_simple_config(
             auth_manager.players, self.options['simple_config_path'])
 
@@ -66,10 +66,10 @@ class FlatfileBackend(Backend):
         self._save_simple_config(
             auth_manager.players, self.options['simple_config_path'])
 
-    def save_group_config(self):
-        """Save the group configuration file."""
+    def save_parent_config(self):
+        """Save the parent configuration file."""
         self._save_json_config(
-            auth_manager.groups, self.options['group_config_path'])
+            auth_manager.parents, self.options['parent_config_path'])
 
     @staticmethod
     def _save_json_config(store, path):
@@ -80,10 +80,10 @@ class FlatfileBackend(Backend):
             for name, permissions in store.items():
                 node = temp_dict[permissions.name] = {}
 
-                groups = permissions.groups
-                if groups:
-                    node['groups'] = list(
-                        map(lambda group: group.name, groups))
+                parents = permissions.parents
+                if parents:
+                    node['parents'] = list(
+                        map(lambda parent: parent.name, parents))
 
                 if permissions:
                     node['permissions'] = list(permissions)
@@ -122,8 +122,8 @@ class FlatfileBackend(Backend):
                     if permission != '':
                         node_store.add(permission, update_backend=False)
 
-                for group_name in node.get('groups', set()):
-                    node_store.add_group(group_name, update_backend=False)
+                for parent_name in node.get('parents', set()):
+                    node_store.add_parent(parent_name, update_backend=False)
 
     @staticmethod
     def load_simple_config(store, path):
@@ -143,11 +143,11 @@ class FlatfileBackend(Backend):
     def permission_removed(self, node, permission, server_id):
         self._node_permission_changed(node, permission, server_id)
 
-    def group_added(self, node, group_name):
-        self._node_group_changed(node, group_name)
+    def parent_added(self, node, parent_name):
+        self._node_parent_changed(node, parent_name)
 
-    def group_removed(self, node, group_name):
-        self._node_group_changed(node, group_name)
+    def parent_removed(self, node, parent_name):
+        self._node_parent_changed(node, parent_name)
 
     def _node_permission_changed(self, node, permission, server_id):
         if not auth_manager.targets_this_server(server_id):
@@ -157,17 +157,17 @@ class FlatfileBackend(Backend):
             self.save_player_config()
             if permission == '*':
                 self.save_simple_config()
-        elif isinstance(node, GroupPermissions):
-            self.save_group_config()
+        elif isinstance(node, ParentPermissions):
+            self.save_parent_config()
         else:
             raise TypeError(
                 'Unexpected type "{}".'.format(type(node).__name__))
 
-    def _node_group_changed(self, node, group_name):
+    def _node_parent_changed(self, node, parent_name):
         if isinstance(node, PlayerPermissions):
             self.save_player_config()
-        elif isinstance(node, GroupPermissions):
-            self.save_group_config()
+        elif isinstance(node, ParentPermissions):
+            self.save_parent_config()
         else:
             raise TypeError(
                 'Unexpected type "{}".'.format(type(node).__name__))

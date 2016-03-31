@@ -33,8 +33,8 @@ from steam import SteamID
 # =============================================================================
 __all__ = ('_AuthManager',
            'auth_manager',
-           'GroupPermissionDict',
-           'GroupPermissions',
+           'ParentPermissionDict',
+           'ParentPermissions',
            'PermissionBase',
            'PlayerPermissionDict',
            'PlayerPermissions',
@@ -45,12 +45,12 @@ __all__ = ('_AuthManager',
 # >> CLASSES
 # =============================================================================
 class PermissionBase(dict):
-    """Base class for group and player permissions."""
+    """Base class for parent and player permissions."""
 
     def __init__(self, name):
         """Initialize the object."""
         super().__init__()
-        self.groups = set()
+        self.parents = set()
         self.name = name
 
     def __hash__(self):
@@ -94,34 +94,34 @@ class PermissionBase(dict):
             auth_manager.active_backend.permission_removed(
                 self, permission, server_id)
 
-    def add_group(self, group_name, update_backend=True):
-        """Add a group.
+    def add_parent(self, parent_name, update_backend=True):
+        """Add a parent.
 
-        :param str group_name: Name of the group.
+        :param str parent_name: Name of the parent.
         :param bool update_backend: If True, the backend will be updated.
         """
-        group = auth_manager.groups[group_name]
-        if group not in self.groups:
+        parent = auth_manager.parents[parent_name]
+        if parent not in self.parents:
             # TODO: Detect cycles
-            self.groups.add(group)
-            group.children.add(self)
+            self.parents.add(parent)
+            parent.children.add(self)
 
         if update_backend and auth_manager.active_backend is not None:
-            auth_manager.active_backend.group_added(self, group_name)
+            auth_manager.active_backend.parent_added(self, parent_name)
 
-    def remove_group(self, group_name, update_backend=True):
-        """Remove a group.
+    def remove_parent(self, parent_name, update_backend=True):
+        """Remove a parent.
 
-        :param str group_name: Name of the group.
+        :param str parent_name: Name of the parent.
         :param bool update_backend: If True, the backend will be updated.
         """
-        group = auth_manager.groups[group_name]
-        if group not in self.groups:
-            self.groups.remove(group)
-            group.children.remove(self)
+        parent = auth_manager.parents[parent_name]
+        if parent not in self.parents:
+            self.parents.remove(parent)
+            parent.children.remove(self)
 
         if update_backend and auth_manager.active_backend is not None:
-            auth_manager.active_backend.group_removed(self, group_name)
+            auth_manager.active_backend.parent_removed(self, parent_name)
 
     @staticmethod
     def _compile_permission(permission):
@@ -133,7 +133,7 @@ class PermissionBase(dict):
         return self._has_permission(permission, [])
 
     def _has_permission(self, permission, name_list):
-        # Checks to see if groups are recursive
+        # Checks to see if parents are recursive
         if self.name in name_list:
             # Break if recursive
             return False
@@ -144,8 +144,8 @@ class PermissionBase(dict):
             if re_perm.match(permission):
                 return True
 
-        for group in self.groups:
-            if group._has_permission(permission, name_list):
+        for parent in self.parents:
+            if parent._has_permission(permission, name_list):
                 return True
 
         return False
@@ -156,12 +156,12 @@ class PermissionBase(dict):
         :rtype: generator
         """
         yield from self
-        for group in self.groups:
-            yield from group
+        for parent in self.parents:
+            yield from parent
 
     def clear(self):
         super().clear()
-        self.groups.clear()
+        self.parents.clear()
 
 
 class PlayerPermissions(PermissionBase):
@@ -178,13 +178,13 @@ class PlayerPermissions(PermissionBase):
         self.steamid64 = steamid64
 
 
-class GroupPermissions(PermissionBase):
-    """A container for group permissions."""
+class ParentPermissions(PermissionBase):
+    """A container for parent permissions."""
 
     def __init__(self, name):
         """Initialize the object.
 
-        :param str name: Name of the group.
+        :param str name: Name of the parent.
         """
         super().__init__(name)
         self.children = set()
@@ -200,13 +200,13 @@ class _PermissionDict(dict):
         super().clear()
 
 
-class GroupPermissionDict(_PermissionDict):
-    def __missing__(self, group_name):
-        """Create, store and return a :class:`GroupPermissions` object.
+class ParentPermissionDict(_PermissionDict):
+    def __missing__(self, parent_name):
+        """Create, store and return a :class:`ParentPermissions` object.
 
-        :param str group_name: The name of the group to retrieve.
+        :param str parent_name: The name of the parent to retrieve.
         """
-        instance = self[group_name] = GroupPermissions(group_name)
+        instance = self[parent_name] = ParentPermissions(parent_name)
         return instance
 
 
@@ -235,7 +235,7 @@ class _AuthManager(dict):
 
     def __init__(self):
         """Initialize the object."""
-        self.groups = GroupPermissionDict()
+        self.parents = ParentPermissionDict()
         self.players = PlayerPermissionDict()
         self.active_backend = None
         self.server_id = -1
@@ -288,7 +288,7 @@ class _AuthManager(dict):
         """Unload the active backend if there is one."""
         if self.active_backend is not None:
             self.active_backend.unload()
-            self.groups.clear()
+            self.parents.clear()
             self.players.clear()
             self.active_backend = None
 
@@ -326,20 +326,20 @@ class _AuthManager(dict):
         """
         return permission in self.get_player_permissions(index)
 
-    def get_group_permissions(self, group_name):
-        """Return the group permissions.
+    def get_parent_permissions(self, parent_name):
+        """Return the parent permissions.
 
-        :param str group_name: Name of the group.
-        :rtype: GroupPermissions
+        :param str parent_name: Name of the parent.
+        :rtype: ParentPermissions
         """
-        return self.groups[group_name]
+        return self.parents[parent_name]
 
-    def is_group_authorized(self, index, permission):
-        """Return True if the group has been granted the given permission.
+    def is_parent_authorized(self, index, permission):
+        """Return True if the parent has been granted the given permission.
 
         :rtype: bool
         """
-        return permission in self.get_group_permissions(index)
+        return permission in self.get_parent_permissions(index)
 
     def targets_this_server(self, server_id):
         """Return whether the server ID targets this server.

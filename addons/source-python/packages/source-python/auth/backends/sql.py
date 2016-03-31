@@ -15,7 +15,7 @@ from threading import Thread
 from auth.base import Backend
 from auth.manager import auth_manager
 from auth.manager import PlayerPermissions
-from auth.manager import GroupPermissions
+from auth.manager import ParentPermissions
 #   Paths
 from paths import SP_DATA_PATH
 #   Listeners
@@ -50,10 +50,10 @@ __all__ = ('SQLBackend',
 # =============================================================================
 Base = declarative_base()
 Session = sessionmaker()
-groups_table = Table(
-    'groups',
+parents_table = Table(
+    'parents',
     Base.metadata,
-    Column('group_id', Integer, ForeignKey('objects.id'), primary_key=True),
+    Column('parent_id', Integer, ForeignKey('objects.id'), primary_key=True),
     Column('child_id', Integer, ForeignKey('objects.id'), primary_key=True)
 )
 
@@ -105,15 +105,15 @@ class PermissionObject(Base):
 
     id = Column(Integer, primary_key=True)
     identifier = Column(String(64), nullable=False, unique=True)
-    type = Column(Enum('Group', 'Player'), name='object_type')
+    type = Column(Enum('Parent', 'Player'), name='object_type')
 
     permissions = relationship('Permission', backref='object')
     children = relationship(
         'PermissionObject',
-        secondary=groups_table,
-        primaryjoin=id == groups_table.c.group_id,
-        secondaryjoin=id == groups_table.c.child_id,
-        backref='groups'
+        secondary=parents_table,
+        primaryjoin=id == parents_table.c.parent_id,
+        secondaryjoin=id == parents_table.c.child_id,
+        backref='parents'
     )
 
 
@@ -131,20 +131,20 @@ class LoadThread(GameThread):
                 if not self._running:
                     break
 
-                if node.type == 'Group':
-                    store = auth_manager.groups[node.identifier]
+                if node.type == 'Parent':
+                    store = auth_manager.parents[node.identifier]
                 else:
                     store = auth_manager.players[node.identifier]
 
                 for permission in node.permissions:
                     store.add(permission.node, update_backend=False)
 
-                for group in node.groups:
-                    store.add_group(group.identifier, update_backend=False)
+                for parent in node.parents:
+                    store.add_parent(parent.identifier, update_backend=False)
 
 
 class SQLBackend(Backend):
-    """A backend that provides players and groups from an SQL database."""
+    """A backend that provides players and parents from an SQL database."""
 
     name = 'sql'
     options = {'uri': 'sqlite:///' + SP_DATA_PATH.joinpath('permissions.db')}
@@ -192,43 +192,43 @@ class SQLBackend(Backend):
                 node=permission
             ).delete(False)
 
-    def group_added(self, node, group_name):
+    def parent_added(self, node, parent_name):
         try:
             with session_scope() as session:
                 node_type, identifier = self.get_node_type_and_identifier(node)
                 child = get_or_create(session, PermissionObject,
                     identifier=identifier, type=node_type)
 
-                group = get_or_create(session, PermissionObject,
-                    identifier=group_name, type='Group')
+                parent = get_or_create(session, PermissionObject,
+                    identifier=parent_name, type='Parent')
 
-                group_insert = groups_table.insert().values(
-                    group_id=group.id,
+                parent_insert = parents_table.insert().values(
+                    parent_id=parent.id,
                     child_id=child.id)
-                session.execute(group_insert)
+                session.execute(parent_insert)
         except IntegrityError:
             pass
 
-    def group_removed(self, node, group_name):
+    def parent_removed(self, node, parent_name):
         with session_scope() as session:
             node_type, identifier = self.get_node_type_and_identifier(node)
             child = session.query(PermissionObject).filter_by(
                 identifier=identifier, type=node_type).one()
 
-            group = session.query(PermissionObject).filter_by(
-                identifier=group_name, type='Group').one()
+            parent = session.query(PermissionObject).filter_by(
+                identifier=parent_name, type='Parent').one()
 
-            session.query(groups_table).filter_by(
+            session.query(parents_table).filter_by(
                 child_id=child.id,
-                group_id=group.id
+                parent_id=parent.id
             ).delete(False)
 
     @staticmethod
     def get_node_type_and_identifier(node):
         if isinstance(node, PlayerPermissions):
             result = ('Player', node.steamid64)
-        elif isinstance(node, GroupPermissions):
-            result = ('Group', node.name)
+        elif isinstance(node, ParentPermissions):
+            result = ('Parent', node.name)
         else:
             raise TypeError(
                 'Unexpected type "{}".'.format(type(node).__name__))
