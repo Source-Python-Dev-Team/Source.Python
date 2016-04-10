@@ -196,11 +196,30 @@ following situations:
 * You run multiple server and want to share the permissions across all servers.
 * You want to use `SP-Webmin <http://github.com/necavi/SP-Webmin>`_ for advanced multi-server management.
 
+Currently the auth API officially only supports SQLite and MySQL, but as it is
+implemented using SQLAlchemy it should work on other database engines such as
+Postgre.
+
+The SQL configuration section is located in ``permissions.ini`` in the
+``../cfg/source-python/auth/`` directory.
+
+* SQLite:
+    ``uri = sqlite://<path to databasefile>``
+    Example:
+    ``uri = sqlite://<addon path>\source-python\data\source-python\permissions.db``
+
+    While multiple servers can use the same SQLite database it is not recommended
+
+* MySQL:
+    ``uri = mysql+pymysql://<username>:<password>@<host>/<database>``
+    Example:
+    ``uri = mysql+pymysql://user:1234@127.0.0.1/admins``
+
+    Any number of servers can be pointed to the same database
+
 
 .. todo::
 
-    Which databases are supported?
-    How to use one database for multiple servers? What are the requirements?
     How to use one database and have global and server specific permissions?
 
 .. todo::
