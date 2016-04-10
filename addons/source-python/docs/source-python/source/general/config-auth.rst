@@ -13,9 +13,11 @@ types that can have permissions:
 * Parents
 
 Parents can be used to create a set of permissions (like groups or roles).
-Then you can add parents to players, so they inherit the permissions of the
-parents. You can also add parents to other parents! This allows a flexible and
-clear permission hierachy.
+Both players and groups can inherit permissions from groups, allowing a
+flexible and dynamic permission hierarchy.
+
+This system allows permissions to be added to all children entities easily
+when a new plugin is added.
 
 Before granting permissions and creating parents, you need to choose an
 authorization backend.
@@ -65,21 +67,21 @@ Example content for ``players.json``:
 .. code-block:: javascript
 
     {
-        "STEAMID1": {
+        "[U:1:6456723]": {
             "permissions": [
-                "plugin1.do1",
-                "plugin1.do2"
+                "admin.kick",
+                "admin.ban"
             ]
         },
-        "STEAMID2": {
+        "STEAM_0:323145": {
             "permissions": [
-                "plugin1.do1",
-                "plugin2.do1"
+                "admin.burn",
+                "fun.rtd"
             ]
         },
-        "STEAMID3": {
+        "78944003194": {
             "parents": [
-                "plugin1_admin"
+                "admin"
             ]
         }
     }
@@ -98,31 +100,31 @@ Example content for ``parents.json``:
 .. code-block:: javascript
 
     {
-        "plugin1_admin": {
+        "admin": {
             "permissions": [
-                "plugin1.*"
+                "admin.*"
             ]
         }
     }
 
-The above example creates a new group called ``plugin1_admin`` which is able
-to execute every permission defined by ``plugin1``. Every player or parent
-that inherits from this parent is able to execute ``plugin1.do1`` and
-``plugin1.do2``. In case the plugin author of ``plugin1`` adds in another
-permission (e.g. ``plugin1.do3``) all players and parents inheriting from
-``plugin1_admin`` will automatically have the permission to execute
-``plugin1.do3``, because the asterisk matches everything.
+The above example creates a new group called ``admin`` which is able
+to execute every permission defined by the ``admin`` plugin. Every player
+or parent that inherits from this parent is able to execute ``admin.kick``
+and ``admin.ban``. In case the plugin author of ``admin`` adds in another
+permission (e.g. ``admin.burn``) all players and parents inheriting from
+``admin`` will automatically have the permission to execute
+``admin.burn``, because the asterisk symbol (*) matches all subnodes.
 
 The third file is a simple text file that grants all players that have been
 added to this file the permission to execute everything and all.
 
 Example content for ``simple.txt``:
 
-.. code-block:: none
+.. code-block::
 
-    STEAMID1
-    STEAMID2
-    STEAMID3
+    [U:1:6456723]
+    STEAM_0:323145
+    78944003194
 
 The equivalent for this configuration by using ``players.json`` would look
 like this:
@@ -130,17 +132,17 @@ like this:
 .. code-block:: javascript
 
     {
-        "STEAMID1": {
+        "[U:1:6456723]": {
             "permissions": [
                 "*"
             ]
         },
-        "STEAMID2": {
+        "STEAM_0:323145": {
             "permissions": [
                 "*"
             ]
         },
-        "STEAMID3": {
+        "78944003194": {
             "permissions": [
                 "*"
             ]
@@ -155,17 +157,17 @@ Example content for ``players.json``:
 .. code-block:: javascript
 
     {
-        "STEAMID1": {
+        "[U:1:6456723]": {
             "parents": [
                 "super_admin"
             ]
         },
-        "STEAMID2": {
+        "STEAM_0:323145": {
             "parents": [
                 "super_admin"
             ]
         },
-        "STEAMID3": {
+        "78944003194": {
             "parents": [
                 "super_admin"
             ]
@@ -192,7 +194,7 @@ The SQL backend is a more advanced backend and is a good choice in the
 following situations:
 
 * You run multiple server and want to share the permissions across all servers.
-* You want to use SP-Webmin
+* You want to use `SP-Webmin <http://github.com/necavi/SP-Webmin>`_ for advanced multi-server management.
 
 
 .. todo::
