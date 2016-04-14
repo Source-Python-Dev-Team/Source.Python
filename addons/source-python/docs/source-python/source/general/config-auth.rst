@@ -33,7 +33,8 @@ between two built-in backends:
 * SQL
 
 To define which backend should be used, please open ``core_settings.ini`` and
-specify the backend you want to use in the ``AUTH_SETTINGS`` section.
+specify the backend you want to use in the ``AUTH_SETTINGS`` section. Backend
+specific settings are provided in sub-sections within the ``BACKENDS`` section.
 
 
 Flatfile
@@ -53,6 +54,7 @@ The backend creates three files to store all the authorization related data:
 3. ``simple.txt``
 
 .. note::
+
     By default these files are created in ``../cfg/source-python/auth/``, but
     you can easily configure other locations in the ``AUTH_SETTINGS`` section
     in ``core_settings.ini``. This makes sense if you run multiple srcds
@@ -75,20 +77,20 @@ Example content for ``players.json``:
         },
         "STEAM_0:323145": {
             "permissions": [
-                "admin.burn",
                 "fun.rtd"
             ]
         },
         "78944003194": {
             "parents": [
-                "admin"
+                "administrator"
             ]
         }
     }
 
-In the example above ``STEAMID1``, ``STEAMID2`` and ``STEAMID3`` would be
-replaced with real SteamIDs, obviously. The SteamID format can be either
-SteamID2 (STEAM_Y:X:Z), SteamID3 ([U:X]) or SteamID64 (a long number).
+.. note::
+
+    The SteamID format can be either SteamID2 (STEAM_Y:X:Z), SteamID3 ([U:X])
+    or SteamID64 (a long number).
 
 The second file is used to grant parents permissions and to add parents to
 other parents. The format is pretty much the same like the format in
@@ -100,19 +102,19 @@ Example content for ``parents.json``:
 .. code-block:: javascript
 
     {
-        "admin": {
+        "administrator": {
             "permissions": [
                 "admin.*"
             ]
         }
     }
 
-The above example creates a new group called ``admin`` which is able
+The above example creates a new group called ``administrator`` which is able
 to execute every permission defined by the ``admin`` plugin. Every player
 or parent that inherits from this parent is able to execute ``admin.kick``
 and ``admin.ban``. In case the plugin author of ``admin`` adds in another
 permission (e.g. ``admin.burn``) all players and parents inheriting from
-``admin`` will automatically have the permission to execute
+``administrator`` will automatically have the permission to execute
 ``admin.burn``, because the asterisk symbol (*) matches all subnodes.
 
 The third file is a simple text file that grants all players that have been
@@ -120,7 +122,7 @@ added to this file the permission to execute everything and all.
 
 Example content for ``simple.txt``:
 
-.. code-block::
+.. code-block:: none
 
     [U:1:6456723]
     STEAM_0:323145
@@ -196,26 +198,51 @@ following situations:
 * You run multiple server and want to share the permissions across all servers.
 * You want to use `SP-Webmin <http://github.com/necavi/SP-Webmin>`_ for advanced multi-server management.
 
-Currently the auth API officially only supports SQLite and MySQL, but as it is
+Currently, the auth API officially only supports SQLite and MySQL, but as it is
 implemented using SQLAlchemy it should work on other database engines such as
 Postgre.
 
-The SQL configuration section is located in ``permissions.ini`` in the
-``../cfg/source-python/auth/`` directory.
 
-* SQLite:
-    ``uri = sqlite://<path to databasefile>``
-    Example:
-    ``uri = sqlite://<addon path>\source-python\data\source-python\permissions.db``
+SQLite configuration
+""""""""""""""""""""
 
-    While multiple servers can use the same SQLite database it is not recommended
+Abstract example:
 
-* MySQL:
-    ``uri = mysql+pymysql://<username>:<password>@<host>/<database>``
-    Example:
-    ``uri = mysql+pymysql://user:1234@127.0.0.1/admins``
+.. code-block:: ini
 
-    Any number of servers can be pointed to the same database
+    [[[sql]]]
+    uri = sqlite://<path to database file>
+
+Concrete example:
+
+.. code-block:: ini
+
+    [[[sql]]]
+    uri = sqlite://<addon path>\source-python\data\source-python\permissions.db
+
+.. note::
+
+    While multiple servers can use the same SQLite database it is not recommended.
+
+
+MySQL configuration
+"""""""""""""""""""
+
+Abstract example:
+
+.. code-block:: ini
+
+    [[[sql]]]
+    uri = mysql+pymysql://<username>:<password>@<host>/<database>``
+
+Concrete example:
+
+.. code-block:: ini
+
+    [[[sql]]]
+    uri = mysql+pymysql://user:1234@127.0.0.1/permissions
+
+Any number of servers can be pointed to the same database
 
 
 .. todo::
