@@ -65,7 +65,7 @@ Other helpful links
 -------------------
 * Source.Python
 
-  * `Source.Python forums <http://www.sourcepython.com/forum.php>`_
+  * `Source.Python forums <http://forums.sourcepython.com/>`_
   * `Source.Python repository <http://github.com/Source-Python-Dev-Team/Source.Python/>`_
   * `Source.Python issue list <http://github.com/Source-Python-Dev-Team/Source.Python/issues>`_
   
