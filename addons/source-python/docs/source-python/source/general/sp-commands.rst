@@ -153,75 +153,164 @@ auth
 The auth.commands module registers further sub-commands for the "auth" sub-command.
 
 
-load
-^^^^
+set
+^^^
 
-Loads the provided authorization service(s).
-
-.. code-block:: none
-
-    // Usage
-    // sp auth load <provider> [provider] ...
-
-    // Load one provider
-    sp auth load simple
-
-    // Multiples can be loaded at the same time.
-    // Note that currently only "simple" is included in Source.Python.
-    sp auth load simple sourcemod
-
-
-unload
-^^^^^^
-
-Unloads the provided authorization service(s).
+Sets the provided authorization service(s).
 
 .. code-block:: none
 
     // Usage
-    // sp auth unload <provider> [provider] ...
-
-    // Unload one provider
-    sp auth unload simple
-
-    // Multiples can be unloaded at the same time.
-    // Note that currently only "simple" is included in Source.Python.
-    sp auth unload simple sourcemod
-
-
-reload
-^^^^^^
-
-Reloads the provided authorization service(s). If no service(s) are provided, it will reload all currently loaded services.
-
-.. code-block:: none
-
-    // Usage
-    // sp auth reload [provider] [provider] ...
-
-    // Reload one provider
-    sp auth reload simple
-
-    // Multiples can be reloaded at the same time.
-    // Note that currently only "simple" is included in Source.Python.
-    sp auth reload simple sourcemod
-
-    // Reload all currently loaded authorization services
-    sp auth reload
+    // sp auth set <provider>
+    sp auth set sql
 
 
 list
 ^^^^
 
-List all currently loaded authorization services.
+Lists the available authorization services.
 
 .. code-block:: none
 
     // Usage
     // sp auth list
 
-    // List all currently loaded authorization services
+    // Lists the available authorization services.
     sp auth list
+
+
+permission player add
+^^^^^^^^^^^^^^^^^^^^^
+
+Adds a permission node to a player
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player add <playerfilter> <permission node> [server_id]
+
+    // Adds a permission node to a player
+    sp auth permission player add all admin.permission.node 1
+
+
+
+permission player remove
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Removes a permission node from a player
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player remove <playerfilter> <permission node> [server_id]
+
+    // Removes a permission node from a player
+    permission player remove all admin.permission.node 1
+
+
+
+permission player add_parent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adds a parent to a player
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player add_parent <playerfilter> <parent>
+
+    // Adds a parent to a player
+    permission player add_parent all administrator
+
+
+
+permission player remove_parent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Removes a parent from a player
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player remove_parent <playerfilter> <parent>
+
+    // Removes a parent from a player
+    permission player remove_parent all administrator
+
+
+
+permission player test
+^^^^^^^^^^^^^^^^^^^^^^
+
+Tests to see if a players has a permission node
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player test <playerfilter> <permission node>
+
+    // Tests to see if a players has a permission node
+    permission player test all admin.permission.node
+
+
+
+permission parent add
+^^^^^^^^^^^^^^^^^^^^^
+
+Adds a permission node to a parent group
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent add <parent> <permission node>
+
+    // Adds a permission node to a parent group
+    permission parent add administrator admin.permission.node
+
+
+
+permission parent remove
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+Removes a permission node from a parent group
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent remove <parent> <permission node>
+
+    // Removes a permission node from a parent group
+    permission parent remove administrator admin.permission.node
+
+
+
+permission parent add_parent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Adds a parent group to a parent
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent add_parent <parent> <parent to add>
+
+    // Adds a parent group to a parent
+    permission parent add_parent administrator moderator
+
+
+
+permission parent remove_parent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Removes a parent group from a parent
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent remove_parent <parent> <parent to add>
+
+    // Removes a parent group from a parent
+    permission parent remove_parent administrator moderator
 
 
 help

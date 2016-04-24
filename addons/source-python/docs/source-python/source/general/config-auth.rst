@@ -243,12 +243,3 @@ Concrete example:
     uri = mysql+pymysql://user:1234@127.0.0.1/permissions
 
 Any number of servers can be pointed to the same database
-
-
-.. todo::
-
-    How to use one database and have global and server specific permissions?
-
-.. todo::
-
-    Update console command documentation and mention it in this file.
