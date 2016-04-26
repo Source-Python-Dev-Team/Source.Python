@@ -471,12 +471,35 @@ class _ServerClasses(TypeManager):
         if not offset:
             return
 
+        # Get the proper type to use for the prop
+        if networked:
+            if prop.type == SendPropType.INT:
+                bit_count = prop.bits
+                if bit_count < 1:
+                    # Note: I have yet to encounter this, so I'm not
+                    #   sure under what circumstances this can occur.
+                    # That is why this simply returns.
+                    return
+                if bit_count >= 17:
+                    prop_type = 'int'
+                elif bit_count >= 9:
+                    prop_type = '{0}short'.format(
+                        '' if prop.is_signed() else 'u')
+                elif bit_count >= 2:
+                    prop_type = '{0}char'.format(
+                        '' if prop.is_signed() else 'u')
+                else:
+                    prop_type = 'bool'
+            else:
+                prop_type = types[prop.type]
+        else:
+            prop_type = types[prop.type]
+
         # Get the instance to use to get/set the property
-        value = self.instance_attribute(types[prop.type], offset)
+        value = self.instance_attribute(prop_type, offset)
 
         # Add the property to the properties dictionary
-        instance.properties[name] = EntityProperty(
-            value, types[prop.type], networked)
+        instance.properties[name] = EntityProperty(value, prop_type, networked)
 
         # Is the property not a named property?
         if name not in contents:
@@ -494,7 +517,7 @@ class _ServerClasses(TypeManager):
 
             # Add the property to the instance
             setattr(instance, contents[name], self.entity_property(
-                types[prop.type], offset, networked))
+                prop_type, offset, networked))
 
     @staticmethod
     def keyvalue(name, type_name):
