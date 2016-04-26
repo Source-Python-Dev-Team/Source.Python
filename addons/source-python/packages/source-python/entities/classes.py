@@ -263,10 +263,32 @@ class _ServerClasses(TypeManager):
         for name, prop, offset in self._find_properties(
                 _server_classes.get(class_name, {})):
 
+            if prop.type not in _supported_property_types:
+                continue
+
+            prop_type = _supported_property_types[prop.type]
+
+            if prop.type == SendPropType.INT:
+                bit_count = prop.bits
+                if bit_count < 1:
+                    # Note: I have yet to encounter this, so I'm not
+                    #   sure under what circumstances this can occur.
+                    # That is why this simply continues.
+                    continue
+                if bit_count >= 17:
+                    prop_type = 'int'
+                elif bit_count >= 9:
+                    prop_type = '{0}short'.format(
+                        '' if prop.is_signed() else 'u')
+                elif bit_count >= 2:
+                    prop_type = '{0}char'.format(
+                        '' if prop.is_signed() else 'u')
+                else:
+                    prop_type = 'bool'
+
             # Add the property to the instance
             self._add_property(
-                instance, name, prop, offset, property_contents,
-                _supported_property_types, True)
+                instance, name, offset, property_contents, prop_type, True)
 
         # Loop through all possible descriptors for the server class
         for name, desc, offset in self._find_descriptors(datamap):
@@ -294,8 +316,8 @@ class _ServerClasses(TypeManager):
 
                     # Add the descriptor to the instance
                     self._add_property(
-                        instance, desc.name, desc, offset,
-                        property_contents, _supported_descriptor_types)
+                        instance, desc.name, offset, property_contents,
+                        _supported_descriptor_types[desc.type])
 
             # Is the current descriptor an Input?
             elif desc.flags & TypeDescriptionFlags.INPUT:
@@ -308,8 +330,8 @@ class _ServerClasses(TypeManager):
 
                 # Add the descriptor to the instance
                 self._add_property(
-                    instance, name, desc, offset,
-                    property_contents, _supported_descriptor_types)
+                    instance, name, offset, property_contents,
+                    _supported_descriptor_types[desc.type])
 
         # Get a list of all properties for the current server class
         properties = list(instance.properties)
@@ -456,44 +478,16 @@ class _ServerClasses(TypeManager):
             setattr(instance, contents[name], instance.inputs[name])
 
     def _add_property(
-            self, instance, name, prop, offset,
-            contents, types, networked=False):
+            self, instance, name, offset, contents,
+            prop_type, networked=False):
         """Add the property to the given instance's properties dictionary."""
         # Is the property already in the properties dictionary?
         if name in instance.properties:
             return
 
-        # Is the property type not supported?
-        if prop.type not in types:
-            return
-
         # Is the offset not 0?
         if not offset:
             return
-
-        # Get the proper type to use for the prop
-        if networked:
-            if prop.type == SendPropType.INT:
-                bit_count = prop.bits
-                if bit_count < 1:
-                    # Note: I have yet to encounter this, so I'm not
-                    #   sure under what circumstances this can occur.
-                    # That is why this simply returns.
-                    return
-                if bit_count >= 17:
-                    prop_type = 'int'
-                elif bit_count >= 9:
-                    prop_type = '{0}short'.format(
-                        '' if prop.is_signed() else 'u')
-                elif bit_count >= 2:
-                    prop_type = '{0}char'.format(
-                        '' if prop.is_signed() else 'u')
-                else:
-                    prop_type = 'bool'
-            else:
-                prop_type = types[prop.type]
-        else:
-            prop_type = types[prop.type]
 
         # Get the instance to use to get/set the property
         value = self.instance_attribute(prop_type, offset)
