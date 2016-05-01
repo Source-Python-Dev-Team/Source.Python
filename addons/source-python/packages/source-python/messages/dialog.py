@@ -17,7 +17,7 @@ from filters.recipients import RecipientFilter
 from keyvalues import KeyValues
 #   Listeners
 from listeners import OnLevelShutdown
-from listeners.tick import tick_delays
+from listeners.tick import Delay
 #   Messages
 from _messages import DialogType
 from _messages import create_message
@@ -44,10 +44,17 @@ class _DialogBase(object):
     time = 0
     title = ''
 
-    def send(self, *args, **tokens):
-        """Send the Dialog message to the appropriate recipients."""
+    def send(self, *player_indexes, **tokens):
+        """Send the Dialog message to the appropriate recipients.
+
+        :param player_indexes: Values can be a player index, multiple player
+            indexes (star args),
+            a :class:`filters.players.PlayerIter` instance,
+            or a :class:`filters.recipients.RecipientFilter` instance.
+        :param tokens: Keyword arguments used to replace values in messages.
+        """
         # Get a recipient filter of the given users
-        recipients = RecipientFilter(*args)
+        recipients = RecipientFilter(*player_indexes)
 
         # Get the KeyValues instance
         keyvalues = KeyValues(self.message_type.name.lower())
@@ -102,7 +109,7 @@ class _DialogBase(object):
         _player_levels[userid].add(level)
 
         # Remove the level after the time is up
-        tick_delays.delay(self.time, _player_levels[userid].remove, level)
+        Delay(self.time, _player_levels[userid].remove, level)
 
         # Return the level
         return level
@@ -133,7 +140,11 @@ class DialogAskConnect(_DialogBase):
     message_type = DialogType.ASKCONNECT
 
     def __init__(self, title, time=10):
-        """Set all the base attributes on instantiation."""
+        """Set all the base attributes on instantiation.
+
+        :param str title: The IP address to connect to.
+        :param int time: The time (in seconds) for the notification to display.
+        """
         self.title = title
         self.time = time
 
@@ -152,7 +163,15 @@ class DialogEntry(_DialogBase):
     message_type = DialogType.ENTRY
 
     def __init__(self, title, msg, command, color=WHITE, time=10):
-        """Set all the base attributes on instantiation."""
+        """Set all the base attributes on instantiation.
+
+        :param str title: The title of the entry box and top text.
+        :param str msg: The message of the entry box.
+        :param str command: The command to execute on entry.  Note that
+            the entered values are arguments of the command on entry.
+        :param Color color: The color of the toptext notification.
+        :param int time: The time (in seconds) for the notification to display.
+        """
         self.title = title
         self.msg = msg
         self._command = command
@@ -186,7 +205,20 @@ class DialogMenu(_DialogBase):
 
     def __init__(
             self, title, msg, command, color=WHITE, time=10, options=None):
-        """Set all the base attributes on instantiation."""
+        """Set all the base attributes on instantiation.
+
+        :param str title: The title of the menu box and top text.
+        :param str msg: The message of the menu box.
+        :param str command: The command to execute on entry.  Note that
+            the key/item of the selected option will be the argument.
+        :param Color color: The color of the toptext notification.
+        :param int time: The time (in seconds) for the notification to display.
+        :param iterable options: The options for the menu.  If a dictionary
+            is passed, the values will be displayed while the keys will be
+            the argument of the command when selected.
+            If any other iterable is used, the items will be both the
+            displayed text and the argument.
+        """
         self.title = title
         self.msg = msg
         self._command = command
@@ -237,7 +269,12 @@ class DialogMsg(_DialogBase):
     message_type = DialogType.MSG
 
     def __init__(self, title, color=WHITE, time=10):
-        """Set all the base attributes on instantiation."""
+        """Set all the base attributes on instantiation.
+
+        :param str title: The top text.
+        :param Color color: The color of the toptext notification.
+        :param int time: The time (in seconds) for the notification to display.
+        """
         self.title = title
         self.color = color
         self.time = time
@@ -257,7 +294,13 @@ class DialogText(_DialogBase):
     message_type = DialogType.TEXT
 
     def __init__(self, title, msg, color=WHITE, time=10):
-        """Set all the base attributes on instantiation."""
+        """Set all the base attributes on instantiation.
+
+        :param str title: The title of the message box and top text.
+        :param str msg: The message of the message box.
+        :param Color color: The color of the toptext notification.
+        :param int time: The time (in seconds) for the notification to display.
+        """
         self.title = title
         self.msg = msg
         self.color = color

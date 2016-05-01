@@ -77,7 +77,7 @@ CFG_PATH = GAME_PATH / 'cfg' / 'source-python'
 # ../logs/source-python
 LOG_PATH = GAME_PATH / 'logs' / 'source-python'
 
-# ../resource/source-python/translation
+# ../resource/source-python/translations
 TRANSLATION_PATH = GAME_PATH / 'resource' / 'source-python' / 'translations'
 
 # ../resource/source-python/events

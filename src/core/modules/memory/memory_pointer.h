@@ -36,9 +36,13 @@ using namespace boost::python;
 
 // Memory
 #include "memory_alloc.h"
+#include "memory_rtti.h"
 
 // Utilities
 #include "utilities/wrap_macros.h"
+
+// Must be included at last...
+#include "memory_exception.h"
 
 
 // ============================================================================
@@ -86,20 +90,21 @@ public:
 	template<class T>
 	T Get(int iOffset = 0)
 	{
-		if (!IsValid())
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-		return *(T *) (m_ulAddr + iOffset);
+		Validate();
+		T result;
+		TRY_SEGV()
+			result = *(T *) (m_ulAddr + iOffset);
+		EXCEPT_SEGV()
+		return result;
 	}
 
 	template<class T>
 	void Set(T value, int iOffset = 0)
 	{
-		if (!IsValid())
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-		unsigned long newAddr = m_ulAddr + iOffset;
-		*(T *) newAddr = value;
+		Validate();
+		TRY_SEGV()
+			*(T *) (m_ulAddr + iOffset) = value;
+		EXCEPT_SEGV()
 	}
 
 	const char *        GetStringArray(int iOffset = 0);
@@ -134,6 +139,9 @@ public:
 	static void         PreDealloc(PyObject* self);
 	static CPointer*    PreRealloc(PyObject* self, int iSize);
 	static void         __del__(PyObject* self);
+
+	IBaseType*			GetTypeInfo();
+	void				Validate();
 
 public:
 	unsigned long m_ulAddr;

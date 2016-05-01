@@ -5,9 +5,13 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Contextlib
+from contextlib import suppress
+
 # Source.Python Imports
-#   Memory
-import memory
+#   Core
+from core import GAME_NAME
 #   Engines
 from engines.precache import Model
 from engines.trace import engine_trace
@@ -17,16 +21,23 @@ from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
 from entities import BaseEntityGenerator
+from entities import TakeDamageInfo
 from entities.classes import server_classes
+from entities.constants import DamageTypes
 from entities.constants import RenderMode
 from entities.factories import factory_dictionary
 from entities.helpers import create_entity
 from entities.helpers import edict_from_index
+from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import spawn_entity
-from entities.specials import _EntitySpecials
+#   Filters
+from filters.weapons import WeaponClassIter
 #   Memory
+from memory import get_object_pointer
 from memory import make_object
+#   Players
+from players.constants import HitGroup
 #   Studio
 from studio.cache import model_cache
 from studio.constants import INVALID_ATTACHMENT_INDEX
@@ -50,9 +61,16 @@ __all__ = ('BaseEntity',
 
 
 # =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Get a list of projectiles for the game
+_projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
-class Entity(BaseEntity, _EntitySpecials):
+class Entity(BaseEntity):
     """Class used to interact directly with entities."""
 
     def __init__(self, index):
@@ -61,21 +79,12 @@ class Entity(BaseEntity, _EntitySpecials):
         super().__init__(index)
 
         # Set the entity's base attributes
-        super().__setattr__('_index', index)
-        super().__setattr__('_edict', None)
-        super().__setattr__('_pointer', None)
+        object.__setattr__(self, '_index', index)
+        object.__setattr__(self, '_edict', None)
+        object.__setattr__(self, '_pointer', None)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
-        # Loop through all instances (used to get edict/IPlayerInfo attributes)
-        for instance in self.instances:
-
-            # Does the current instance contain the given attribute?
-            if hasattr(instance, attr):
-
-                # Return the instance's value for the given attribute
-                return getattr(instance, attr)
-
         # Loop through all of the entity's server classes
         for server_class in self.server_classes:
 
@@ -90,28 +99,12 @@ class Entity(BaseEntity, _EntitySpecials):
 
     def __setattr__(self, attr, value):
         """Find if the attribute is value and sets its value."""
-        # Is the given attribute private?
-        if attr.startswith('_'):
-
-            # Get the name of the private attribute
-            name = attr[1:]
-
-            # Is the attribute a property?
-            if (name in super().__dir__() and isinstance(
-                    getattr(self.__class__, name, None), property)):
-
-                # Set the private attribute's value
-                super().__setattr__(attr, value)
-
-                # No need to go further
-                return
-
         # Is the given attribute a property?
         if (attr in super().__dir__() and isinstance(
                 getattr(self.__class__, attr, None), property)):
 
             # Set the property's value
-            super().__setattr__(attr, value)
+            object.__setattr__(self, attr, value)
 
             # No need to go further
             return
@@ -135,16 +128,6 @@ class Entity(BaseEntity, _EntitySpecials):
         """Return an alphabetized list of attributes for the instance."""
         # Get the base attributes
         attributes = set(super().__dir__())
-
-        # Loop through all instances for the entity
-        for instance in self.instances:
-
-            # Loop through all of the attributes of the current instance
-            for attr in dir(instance):
-
-                # Add the attribute if it is not private
-                if not attr.startswith('_'):
-                    attributes.add(attr)
 
         # Loop through all server classes for the entity
         for server_class in self.server_classes:
@@ -226,32 +209,17 @@ class Entity(BaseEntity, _EntitySpecials):
     def edict(self):
         """Return the entity's :class:`entities.Edict` instance."""
         if self._edict is None:
-            self._edict = edict_from_index(self.index)
-
+            edict = edict_from_index(self.index)
+            object.__setattr__(self, '_edict', edict)
         return self._edict
 
     @property
     def pointer(self):
         """Return the entity's :class:`memory.Pointer`."""
         if self._pointer is None:
-            self._pointer = memory.get_object_pointer(self)
-
+            pointer = get_object_pointer(self)
+            object.__setattr__(self, '_pointer', pointer)
         return self._pointer
-
-    @property
-    def instances(self):
-        """Yield the entity's base instances.
-
-        Values yielded are the entity's :class:`entities.Edict`
-        and :class:`memory.Pointer` objects.
-        """
-        yield self.edict
-        yield self.pointer
-
-    @property
-    def basehandle(self):
-        """Return the entity's BaseEntityHandle instance."""
-        return self.edict.networkable.get_entity_handle().get_ref_ehandle()
 
     @property
     def inthandle(self):
@@ -259,9 +227,19 @@ class Entity(BaseEntity, _EntitySpecials):
         return self.basehandle.to_int()
 
     @property
+    def collideable(self):
+        """Return the entity's Collideable instance."""
+        return self.edict.collideable
+
+    @property
+    def networkable(self):
+        """Return the entity's Networkable instance."""
+        return self.edict.networkable
+
+    @property
     def server_class(self):
         """Return the entity's server class."""
-        return self.edict.networkable.get_server_class()
+        return self.networkable.server_class
 
     @property
     def server_classes(self):
@@ -341,9 +319,9 @@ class Entity(BaseEntity, _EntitySpecials):
         return self.render_color
 
     def set_color(self, color):
-        """Set the entity's color to the given RGBA values."""
+        """Set the entity's color."""
         # Set the entity's render mode
-        self.render_mode |= RenderMode.TRANS_COLOR
+        self.render_mode = RenderMode.TRANS_COLOR
 
         # Set the entity's color
         self.render_color = color
@@ -358,11 +336,11 @@ class Entity(BaseEntity, _EntitySpecials):
 
     def get_model(self):
         """Return the entity's model."""
-        return Model(self.get_model_name())
+        return Model(self.model_name)
 
     def set_model(self, model):
         """Set the entity's model to the given model."""
-        self.set_model_index(model.index)
+        self.model_index = model.index
         self.set_key_value_string('model', model.path)
 
     model = property(
@@ -595,3 +573,100 @@ class Entity(BaseEntity, _EntitySpecials):
 
         # Return whether or not the trace did hit
         return trace.did_hit()
+
+    def take_damage(
+            self, damage, damage_type=DamageTypes.GENERIC, attacker_index=None,
+            weapon_index=None, hitgroup=HitGroup.GENERIC, skip_hooks=False,
+            **kwargs):
+        """Method used to hurt the entity with the given arguments."""
+        # Import Entity classes
+        # Doing this in the global scope causes cross import errors
+        from weapons.entity import Weapon
+
+        # Is the game supported?
+        if not hasattr(self, 'on_take_damage'):
+
+            # Raise an error if not supported
+            raise NotImplementedError(
+                '"take_damage" is not implemented for {0}'.format(GAME_NAME))
+
+        # Store values for later use
+        attacker = None
+        weapon = None
+
+        # Was an attacker given?
+        if attacker_index is not None:
+
+            # Try to get the Entity instance of the attacker
+            with suppress(ValueError):
+                attacker = Entity(attacker_index)
+
+        # Was a weapon given?
+        if weapon_index is not None:
+
+            # Try to get the Weapon instance of the weapon
+            with suppress(ValueError):
+                weapon = Weapon(weapon_index)
+
+        # Is there a weapon but no attacker?
+        if attacker is None and weapon is not None:
+
+            # Try to get the attacker based off of the weapon's owner
+            with suppress(ValueError, OverflowError):
+                attacker_index = index_from_inthandle(weapon.current_owner)
+                attacker = Entity(attacker_index)
+
+        # Is there an attacker but no weapon?
+        if attacker is not None and weapon is None:
+
+            # Try to use the attacker's active weapon
+            with suppress(AttributeError, ValueError, OverflowError):
+                weapon = Weapon(index_from_inthandle(attacker.active_weapon))
+
+        # Try to set the hitgroup
+        with suppress(AttributeError):
+            self.hitgroup = hitgroup
+
+        # Get a TakeDamageInfo instance
+        take_damage_info = TakeDamageInfo()
+
+        # Is there a valid weapon?
+        if weapon is not None:
+
+            # Is the weapon a projectile?
+            if weapon.classname in _projectile_weapons:
+
+                # Set the inflictor to the weapon's index
+                take_damage_info.inflictor = weapon.index
+
+            # Is the weapon not a projectile and the attacker is valid?
+            elif attacker_index is not None:
+
+                # Set the inflictor to the attacker's index
+                take_damage_info.inflictor = attacker_index
+
+            # Set the weapon to the weapon's index
+            take_damage_info.weapon = weapon.index
+
+        # Is the attacker valid?
+        if attacker_index is not None:
+
+            # Set the attacker to the attacker's index
+            take_damage_info.attacker = attacker_index
+
+        # Set the damage amount
+        take_damage_info.damage = damage
+
+        # Set the damage type value
+        take_damage_info.type = damage_type
+
+        # Loop through the given keywords
+        for item in kwargs:
+
+            # Set the offset's value
+            setattr(take_damage_info, item, kwargs[item])
+
+        if skip_hooks:
+            self.on_take_damage.skip_hooks(take_damage_info)
+        else:
+            self.on_take_damage(take_damage_info)

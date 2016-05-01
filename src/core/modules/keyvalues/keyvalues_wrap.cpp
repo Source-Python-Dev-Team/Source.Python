@@ -64,21 +64,15 @@ void export_keyvalues(scope _keyvalues)
 		.def("__init__", make_constructor(&KeyValuesExt::__init__4))
 		.def("__init__", make_constructor(&KeyValuesExt::__init__5))
 
-		.def("get_name",
+		.add_property("name",
 			&KeyValues::GetName,
+			&KeyValues::SetName,
 			"Returns the name of the keyvalues object."
 		)
 
-		.def("set_name", 
-			&KeyValues::SetName,
-			"Sets the name of the keyvalues object.",
-			args("name")
-		)
-
-		.def("get_name_symbol",
+		.add_property("name_symbol",
 			&KeyValues::GetNameSymbol,
-			"Gets the name as a unique integer.",
-			args("key_symbol")
+			"Gets the name as a unique integer."
 		)
 
 		.def("uses_escape_sequences",
@@ -132,41 +126,52 @@ void export_keyvalues(scope _keyvalues)
 			args("sub_key")
 		)
 
-		.def("get_first_sub_key",
-			&KeyValues::GetFirstSubKey,
-			"Returns the first subkey in the list. Will iterate over the keys AND the\
-			values.",
-			reference_existing_object_policy()
+		.add_property("first_sub_key",
+			make_function(
+				&KeyValues::GetFirstSubKey,
+				reference_existing_object_policy()
+			),
+			"Returns the first subkey in the list. Will iterate over the keys AND the values."
 		)
 
-		.def("get_next_key",
-			&KeyValues::GetNextKey,
-			"Returns the next subkey. Will iterate the keys AND the values.",
-			reference_existing_object_policy()
+		.add_property("next_key",
+			make_function(
+				&KeyValues::GetNextKey,
+				reference_existing_object_policy()
+			),
+			"Returns the next subkey. Will iterate the keys AND the values."
 		)
 
-		.def("get_first_true_sub_key",
-			&KeyValues::GetFirstTrueSubKey,
-			"Returns the first subkey (both key and value).",
-			reference_existing_object_policy()
+		.add_property("first_true_sub_key",
+			make_function(
+				&KeyValues::GetFirstTrueSubKey,
+				reference_existing_object_policy()
+			),
+			"Returns the first subkey (both key and value)."
 		)
 
-		.def("get_next_true_sub_key",
-			&KeyValues::GetNextTrueSubKey,
-			"Returns the next subkey (both key and value).",
-			reference_existing_object_policy()
+		.add_property("next_true_sub_key",
+			make_function(
+				&KeyValues::GetNextTrueSubKey,
+				reference_existing_object_policy()
+			),
+			"Returns the next subkey (both key and value)."
 		)
 
-		.def("get_first_value",
-			&KeyValues::GetFirstValue,
-			"Returns the first value in the tree.",
-			reference_existing_object_policy()
+		.add_property("first_value",
+			make_function(
+				&KeyValues::GetFirstValue,
+				reference_existing_object_policy()
+			),
+			"Returns the first value in the tree."
 		)
 
-		.def("get_next_value",
-			&KeyValues::GetNextValue,
-			"Returns the next value in the tree.",
-			reference_existing_object_policy()
+		.add_property("next_value",
+			make_function(
+				&KeyValues::GetNextValue,
+				reference_existing_object_policy()
+			),
+			"Returns the next value in the tree."
 		)
 
 		.def("get_int",

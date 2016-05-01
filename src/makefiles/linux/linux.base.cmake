@@ -74,12 +74,18 @@ If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2")
     )
 EndIf()
 
-If(SOURCE_ENGINE MATCHES "csgo")
+If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux/interfaces_i486.a
          ${SOURCESDK_LIB}/linux/libtier0.so
          ${SOURCESDK_LIB}/linux/libvstdlib.so
+    )
+EndIf()
+
+If(SOURCE_ENGINE MATCHES "csgo")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux32/release/libprotobuf.a
     )
 EndIf()
@@ -109,34 +115,28 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
 
 # Others
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v -fvisibility=hidden")
 
 
 # ------------------------------------------------------------------
-# Debug / Release compiler flags.
+# Linux linker flags.
 # ------------------------------------------------------------------
-If(CMAKE_BUILD_TYPE MATCHES Debug)
-    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -DBOOST_DEBUG_PYTHON -D_DEBUG -DPy_DEBUG")
-Else()
-    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_NDEBUG")
-EndIf()
+Set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,--exclude-libs,libprotobuf.a")
+
+
+# ------------------------------------------------------------------
+# Release compiler flags.
+# ------------------------------------------------------------------
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_NDEBUG")
 
 # ------------------------------------------------------------------
 # Stub these out because cmake doesn't set debug/release libraries
 # correctly...
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    ${PYTHONSDK_LIB}/libpython3.4m.a
+    ${PYTHONSDK_LIB}/libpython3.5m.a
     ${BOOSTSDK_LIB}/libboost_python.a
-    ${PYTHONSDK_LIB}/libpython3.4m.so.1.0
+    ${PYTHONSDK_LIB}/libpython3.5m.so.1.0
     ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
     ${ASMJITSDK_LIB}/libAsmJit.a
-)
-
-Set(SOURCEPYTHON_LINK_LIBRARIES_DEBUG
-    ${PYTHONSDK_LIB}/libpython3.4dm.a
-    ${BOOSTSDK_LIB}/libboost_python_d.a
-    ${PYTHONSDK_LIB}/libpython3.4dm.so.1.0
-    ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
-    ${ASMJITSDK_LIB}/libAsmJit_d.a
 )

@@ -35,13 +35,11 @@
 //---------------------------------------------------------------------------------
 // Definitions
 //---------------------------------------------------------------------------------
-#define PYLIB_NAME_WIN32_RELEASE	"Python3/plat-win/python34.dll"
-#define PYLIB_NAME_WIN32_DEBUG		"Python3/plat-win/python34_d.dll"
-#define PYLIB_NAME_LINUX_RELEASE	"Python3/plat-linux/libpython3.4m.so.1.0"
-#define PYLIB_NAME_LINUX_DEBUG		"Python3/plat-linux/libpython3.4dm.so.1.0"
+#define PYLIB_NAME_WIN32	"Python3/plat-win/python35.dll"
+#define PYLIB_NAME_LINUX	"Python3/plat-linux/libpython3.5m.so.1.0"
 
-#define CORE_NAME_WIN32				"bin/core.dll"
-#define CORE_NAME_LINUX				"bin/core.so"
+#define CORE_NAME_WIN32		"bin/core.dll"
+#define CORE_NAME_LINUX		"bin/core.so"
 
 #if defined(_WIN32)
 #	define CORE_NAME  CORE_NAME_WIN32
@@ -49,18 +47,11 @@
 #	define CORE_NAME  CORE_NAME_LINUX
 #endif
 
-#if defined(_WIN32) && defined(DEBUG)
-#	define PYLIB_NAME PYLIB_NAME_WIN32_DEBUG
-#	define MSVCRT_LIB "Python3/plat-win/msvcr100d.dll"
-#	define MSVCP_LIB  "Python3/plat-win/msvcp100d.dll"
-#elif defined(_WIN32) && !defined(DEBUG)
-#	define PYLIB_NAME PYLIB_NAME_WIN32_RELEASE
-#	define MSVCRT_LIB "Python3/plat-win/msvcr100.dll"
-#	define MSVCP_LIB  "Python3/plat-win/msvcp100.dll"
-#elif defined(LINUX) && defined(DEBUG)
-#	define PYLIB_NAME PYLIB_NAME_LINUX_DEBUG
-#elif defined(LINUX) && !defined(DEBUG)
-#	define PYLIB_NAME PYLIB_NAME_LINUX_RELEASE
+#if defined(_WIN32)
+#	define PYLIB_NAME PYLIB_NAME_WIN32
+#	define VCRUNTIME_LIB "Python3/plat-win/vcruntime140.dll"
+#elif defined(LINUX)
+#	define PYLIB_NAME PYLIB_NAME_LINUX
 #endif
 
 #define MAX_PATH_LENGTH 1024
@@ -101,13 +92,11 @@ public:
 	// -------------------------------------------
 	// Counter-Strike: Global Offensive
 	// -------------------------------------------
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 	virtual void			ClientFullyConnect( edict_t *pEntity );
-	virtual void			OnEdictAllocated( edict_t *edict );
-	virtual void			OnEdictFreed( const edict_t *edict );
 #endif
 
-#ifdef ENGINE_BMS
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
 	virtual void			OnEdictAllocated( edict_t *edict );
 	virtual void			OnEdictFreed( const edict_t *edict );
 #endif
@@ -121,8 +110,7 @@ public:
 private:
 	int						m_iClientCommandIndex;
 
-	CSysModule*				m_pPython;
-	CDllDemandLoader*		m_pCore;
+	void*					m_pCore;
 	IServerPluginCallbacks*	m_pCorePlugin;
 };
 

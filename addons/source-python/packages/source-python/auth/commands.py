@@ -157,9 +157,10 @@ class _AuthCommands(OrderedDict):
     def print_help(self, pretext='', posttext=''):
         """Print all "sp auth" sub-commands."""
         auth_commands_logger.log_message(
-            pretext + '\n' + self.get_help_text() + '\n' + posttext)
+            pretext + '\n' + self.help_text + '\n' + posttext)
 
-    def get_help_text(self):
+    @property
+    def help_text(self):
         """Return the help text for auth commands."""
         # Store the base message
         message = ''

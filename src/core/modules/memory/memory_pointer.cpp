@@ -32,7 +32,6 @@
 #include "memory_utilities.h"
 
 // Utilities
-//#include "utilities/wrap_macros.h"
 #include "utilities/call_python.h"
 
 
@@ -47,44 +46,63 @@ CPointer::CPointer(unsigned long ulAddr /* = 0 */, bool bAutoDealloc /* false */
 
 const char * CPointer::GetStringArray(int iOffset /* = 0 */)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-	return (const char *) m_ulAddr + iOffset;
+	Validate();
+	TRY_SEGV()
+		return (const char *) m_ulAddr + iOffset;
+	EXCEPT_SEGV()
+	return NULL;
 }
 
 void CPointer::SetStringArray(char* szText, int iOffset /* = 0 */)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+	Validate();
+	TRY_SEGV()
+		strcpy((char *) (m_ulAddr + iOffset), szText);
+	EXCEPT_SEGV()
+}
 
-	strcpy((char *) (m_ulAddr + iOffset), szText);
+unsigned long GetPtrHelper(unsigned long addr)
+{
+	TRY_SEGV()
+		return *(unsigned long *) addr;
+	EXCEPT_SEGV()
+	return 0;
 }
 
 CPointer* CPointer::GetPtr(int iOffset /* = 0 */)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+	Validate();
+	return new CPointer(GetPtrHelper(m_ulAddr + iOffset));
+}
 
-	return new CPointer(*(unsigned long *) (m_ulAddr + iOffset));
+void SetPtrHelper(unsigned long addr, unsigned long ptr)
+{
+	TRY_SEGV()
+		*(unsigned long *) addr = ptr;
+	EXCEPT_SEGV()
 }
 
 void CPointer::SetPtr(object oPtr, int iOffset /* = 0 */)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
+	Validate();
 	CPointer* pPtr = ExtractPointer(oPtr);
-	*(unsigned long *) (m_ulAddr + iOffset) = pPtr->m_ulAddr;
+	SetPtrHelper(m_ulAddr + iOffset, pPtr->m_ulAddr);
+}
+
+int CompareHelper(void* first, void* second, unsigned long length)
+{
+	TRY_SEGV()
+		return memcmp(first, second, length);
+	EXCEPT_SEGV()
+	return 0;
 }
 
 int CPointer::Compare(object oOther, unsigned long ulNum)
 {
+	Validate();
 	CPointer* pOther = ExtractPointer(oOther);
-	if (!m_ulAddr || !pOther->IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
-
-	return memcmp((void *) m_ulAddr, (void *) pOther->m_ulAddr, ulNum);
+	pOther->Validate();
+	return CompareHelper((void *) m_ulAddr, (void *) pOther->m_ulAddr, ulNum);
 }
 
 bool CPointer::IsOverlapping(object oOther, unsigned long ulNumBytes)
@@ -96,73 +114,96 @@ bool CPointer::IsOverlapping(object oOther, unsigned long ulNumBytes)
 	return pOther->m_ulAddr + ulNumBytes > m_ulAddr;
 }
 
+void* SearchBytesHelper(unsigned char* base, unsigned char* end, unsigned char* bytes, unsigned long length)
+{	
+	TRY_SEGV()
+		while (base < end)
+		{
+			unsigned long i = 0;
+			for(; i < length; i++)
+			{
+				if (bytes[i] == '\x2A')
+					continue;
+
+				if (bytes[i] != base[i])
+					break;
+			}
+
+			if (i == length)
+				return base;
+
+			base++;
+		}
+	EXCEPT_SEGV()
+	return NULL;
+}
+
 CPointer* CPointer::SearchBytes(object oBytes, unsigned long ulNumBytes)
 {
-	if (!m_ulAddr)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
+	Validate();
 	unsigned long iByteLen = len(oBytes);
 	if (ulNumBytes < iByteLen)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Search range is too small.")
 
 	unsigned char* base  = (unsigned char *) m_ulAddr;
 	unsigned char* end   = (unsigned char *) (m_ulAddr + ulNumBytes - (iByteLen - 1));
-
 	unsigned char* bytes = (unsigned char *) PyBytes_AsString(oBytes.ptr());
 	if (!bytes)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to read the given signature.");
 
-	while (base < end)
-	{
-		unsigned long i = 0;
-		for(; i < iByteLen; i++)
-		{
-			if (bytes[i] == '\x2A')
-				continue;
+	return new CPointer((unsigned long) SearchBytesHelper(base, end, bytes, iByteLen));
+}
 
-			if (bytes[i] != base[i])
-				break;
-		}
-
-		if (i == iByteLen)
-			return new CPointer((unsigned long) base);
-
-		base++;
-	}
-	return new CPointer();
+void CopyHelper(void* dest, void* source, unsigned long length)
+{
+	TRY_SEGV()
+		memcpy(dest, source, length);
+	EXCEPT_SEGV()
 }
 
 void CPointer::Copy(object oDest, unsigned long ulNumBytes)
 {
+	Validate();
 	CPointer* pDest = ExtractPointer(oDest);
-	if (!m_ulAddr || !pDest->IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
+	pDest->Validate();
 
 	if (IsOverlapping(oDest, ulNumBytes))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointers are overlapping!")
 
-	memcpy((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
+	CopyHelper((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
+}
+
+void MoveHelper(void* dest, void* source, unsigned long length)
+{
+	TRY_SEGV()
+		memmove(dest, source, length);
+	EXCEPT_SEGV()
 }
 
 void CPointer::Move(object oDest, unsigned long ulNumBytes)
 {
+	Validate();
 	CPointer* pDest = ExtractPointer(oDest);
-	if (!m_ulAddr || !pDest->IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "At least one pointer is NULL.")
+	pDest->Validate();
+	MoveHelper((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
+}
 
-	memmove((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
+unsigned long GetVirtualFuncHelper(unsigned long addr, int index)
+{
+	TRY_SEGV()
+		void** vtable = *(void ***) addr;
+		if (!vtable)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the virtual function table.")
+
+		return (unsigned long) vtable[index];
+	EXCEPT_SEGV()
+	return 0;
 }
 
 CPointer* CPointer::GetVirtualFunc(int iIndex)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
-	void** vtable = *(void ***) m_ulAddr;
-	if (!vtable)
-		return new CPointer();
-
-	return new CPointer((unsigned long) vtable[iIndex]);
+	Validate();
+	return new CPointer(GetVirtualFuncHelper(m_ulAddr, iIndex));
 }
 
 CPointer* CPointer::Realloc(int iSize)
@@ -172,9 +213,7 @@ CPointer* CPointer::Realloc(int iSize)
 
 CFunction* CPointer::MakeFunction(CFunctionInfo& info)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
+	Validate();
 	return new CFunction(
 		m_ulAddr, 
 		object(info.m_eCallingConvention),
@@ -185,9 +224,7 @@ CFunction* CPointer::MakeFunction(CFunctionInfo& info)
 
 CFunction* CPointer::MakeFunction(object oCallingConvention, object oArgs, object oReturnType)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-	
+	Validate();
 	return new CFunction(m_ulAddr, oCallingConvention, oArgs, oReturnType);
 }
 
@@ -198,17 +235,12 @@ CFunction* CPointer::MakeVirtualFunction(int iIndex, object oCallingConvention, 
 
 CFunction* CPointer::MakeVirtualFunction(CFunctionInfo& info)
 {
-	if (!IsValid())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
-
+	Validate();
 	if (!info.m_bIsVirtual)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not a virtual function.")
 
-	void** vtable = *(void ***) (this->m_ulAddr + info.m_iVtableOffset);
-	void* pFunc = vtable[info.m_iVtableIndex];
-
 	return new CFunction(
-		(unsigned long) pFunc, 
+		GetVirtualFuncHelper(m_ulAddr + info.m_iVtableOffset, info.m_iVtableIndex), 
 		object(info.m_eCallingConvention),
 		info.GetArgumentTypes(), 
 		object(info.m_eReturnType)
@@ -257,4 +289,19 @@ void CPointer::__del__(PyObject* self)
 		PythonLog(4, "Automatically deallocating pointer at %u.", ptr->m_ulAddr);
 		PreDealloc(self);
 	}
+}
+ 
+IBaseType* CPointer::GetTypeInfo()
+{
+	Validate();
+	TRY_SEGV()
+		return GetType((void*) m_ulAddr);
+	EXCEPT_SEGV()
+	return NULL;
+}
+
+void CPointer::Validate()
+{
+	if (!IsValid())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
 }

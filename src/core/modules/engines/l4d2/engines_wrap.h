@@ -31,6 +31,7 @@
 // Includes.
 //---------------------------------------------------------------------------------
 #include "eiface.h"
+#include "iachievementmgr.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 
@@ -57,6 +58,17 @@ T IVEngineServer_Visitor(T cls)
 template<class T>
 T IEngineSound_Visitor(T cls)
 {
+	cls
+		.add_property("achievement_mgr",
+			make_function(
+				&IVEngineServer::GetAchievementMgr,
+				reference_existing_object_policy()
+			),
+			&IVEngineServer::SetAchievementMgr,
+			"Return the achievement manager."
+		)
+	;
+
 	return cls;
 }
 

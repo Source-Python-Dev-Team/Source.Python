@@ -113,13 +113,13 @@ class GameConfigObj(ConfigObj):
         super().__init__(infile, *args, **kwargs)
 
         # Move the path to the current engine sub-directory...
-        path = path.joinpath(SOURCE_ENGINE)
+        path = path / SOURCE_ENGINE
 
         # Parse and merge the specific engine file...
-        self.merge(ConfigObj(path.joinpath(name), *args, **kwargs))
+        self.merge(ConfigObj(path / name, *args, **kwargs))
 
         # Finally, parse the specific game file...
-        self.merge(ConfigObj(path.joinpath(GAME_NAME, name), *args, **kwargs))
+        self.merge(ConfigObj(path / GAME_NAME / name, *args, **kwargs))
 
 
 # =============================================================================

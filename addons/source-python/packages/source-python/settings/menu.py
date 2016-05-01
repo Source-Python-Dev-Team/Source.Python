@@ -8,8 +8,6 @@
 # Source.Python Imports
 #   Menus
 from menus import PagedMenu
-#   Players
-from players.helpers import index_from_playerinfo
 #   Settings
 from settings import _settings_strings
 
@@ -40,9 +38,9 @@ class _AvailableSettings(dict):
         # Make the command private
         return False
 
-    def _send_menu(self, playerinfo, *args):
+    def _send_menu(self, command, index, team_only=None):
         """Send the main settings menu to the player who requested it."""
-        self.menu.send(index_from_playerinfo(playerinfo))
+        self.menu.send(index)
 
     @staticmethod
     def _chosen_item(menu, index, option):

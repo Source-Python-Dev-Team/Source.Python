@@ -355,7 +355,10 @@ class Random(_random.Random):
 
         """
         u = self.random()
-        c = 0.5 if mode is None else (mode - low) / (high - low)
+        try:
+            c = 0.5 if mode is None else (mode - low) / (high - low)
+        except ZeroDivisionError:
+            return low
         if u > c:
             u = 1.0 - u
             c = 1.0 - c
@@ -684,7 +687,7 @@ def _test_generator(n, func, args):
     print(round(t1-t0, 3), 'sec,', end=' ')
     avg = total/n
     stddev = _sqrt(sqsum/n - avg*avg)
-    print('avg %g, stddev %g, min %g, max %g' % \
+    print('avg %g, stddev %g, min %g, max %g\n' % \
               (avg, stddev, smallest, largest))
 
 

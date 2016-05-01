@@ -30,6 +30,7 @@
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
 #include "steam/steamclientpublic.h"
+#include "steam_wrap.h"
 
 #include ENGINE_INCLUDE_PATH(steam_wrap.h)
 
@@ -56,7 +57,7 @@ DECLARE_SP_MODULE(_steam)
 // Exports CSteamID.
 //-----------------------------------------------------------------------------
 void export_steamid(scope _steam)
-{	
+{
 	//-----------------------------------------------------------------------------
 	// Purpose: Constructor
 	//-----------------------------------------------------------------------------
@@ -89,6 +90,12 @@ void export_steamid(scope _steam)
 	//-----------------------------------------------------------------------------
 	SteamID.def(init<uint64>());
 
+	SteamID.def(
+		"parse",
+		&CSteamIDExt::Parse, manage_new_object_policy(),
+		"Parse a SteamID2, SteamID3 or SteamID64 string representation and create a new SteamID object."
+	).staticmethod("parse");
+
 	// Methods
 	SteamID.def(
 		"set",
@@ -119,13 +126,23 @@ void export_steamid(scope _steam)
 	);
 
 	SteamID.def(
-		"convert_to_uint64", 
+		"to_uint64", 
 		&CSteamID::ConvertToUint64,
 		"Convert a Steam ID to its 64-bit representation."
 	);
 
-	SteamID.def(
-		"get_static_account_key", 
+	SteamID.def("to_steamid2",
+		&CSteamIDExt::ToSteamID2,
+		"Convert the Steam ID to its SteamID2 string representation."
+	);
+
+	SteamID.def("to_steamid3",
+		&CSteamIDExt::ToSteamID3,
+		"Convert the Steam ID to its SteamID3 string representation."
+	);
+
+	SteamID.add_property(
+		"static_account_key", 
 		&CSteamID::GetStaticAccountKey,
 		"Convert the static parts of a Steam ID to a 64-bit representation. For " \
 		"multiseat accounts, all instances of that account will have the same " \
@@ -175,8 +192,8 @@ void export_steamid(scope _steam)
 		"Return True if this is an individual user account ID."
 	);
 
-	SteamID.def("get_account_instance", &CSteamID::GetUnAccountInstance);
-	SteamID.def("get_account_type", &CSteamID::GetEAccountType);
+	SteamID.add_property("account_instance", &CSteamID::GetUnAccountInstance);
+	SteamID.add_property("account_type", &CSteamID::GetEAccountType);
 	SteamID.def("is_valid", &CSteamID::IsValid);
 	SteamID.def(self == self);
 	SteamID.def(self != self);
@@ -258,17 +275,14 @@ void export_account_type(scope _steam)
 	AccountType.value("CONTENT_SERVER", k_EAccountTypeContentServer);
 	AccountType.value("CLAN", k_EAccountTypeClan);
 	AccountType.value("CHAT", k_EAccountTypeChat);
-	AccountType.value("MAX", k_EAccountTypeMax);
+	AccountType.value("ANONYMOUS_USER", (EAccountType) 10);
 
 	// Game/engine specific values
 	// Available in Orangebox, L4D2
-	NOT_IMPLEMENTED_VALUE(EAccountType, "P2_SUPER_SEEDER");
+	NOT_IMPLEMENTED_VALUE(EAccountType, "P2P_SUPER_SEEDER");
 
 	// Available in BM:S
 	NOT_IMPLEMENTED_VALUE(EAccountType, "CONSOLE_USER");
-
-	// Available in BM:S, CS:GO
-	NOT_IMPLEMENTED_VALUE(EAccountType, "ANONYMOUS_USER");
 	
 	export_engine_specific_account_type(_steam, AccountType);
 }

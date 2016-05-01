@@ -11,7 +11,7 @@ have any questions, please search for an answer on our
 answer to your question, please post a question of your own in the appropriate
 forum.
 
-Source.Python is currently embedding Python 3.4.1 and will be upgraded from
+Source.Python is currently embedding Python 3.5.1 and will be upgraded from
 time to time.
 
 
@@ -21,11 +21,11 @@ General
 .. toctree::
    :maxdepth: 1
 
-   installation
-   updating
-   sp-commands
-   known-issues
-   credits
+   general/installation
+   general/updating
+   general/sp-commands
+   general/known-issues
+   general/credits
    
 
 Developing with Source.Python
@@ -35,9 +35,9 @@ Developing with Source.Python
    :maxdepth: 2
    :glob:
 
-   getting-started
-   events
-   module_tutorials
+   developing/getting-started
+   developing/events
+   developing/module_tutorials
 
 
 Contributing to Source.Python
@@ -47,10 +47,10 @@ Contributing to Source.Python
    :maxdepth: 2
    :glob:
    
-   contributing
-   coding-conventions
-   reporting-a-bug
-   todos
+   contributing/contributing
+   contributing/coding-conventions
+   contributing/reporting-a-bug
+   contributing/todos
 
 
 Indices and tables
@@ -65,7 +65,7 @@ Other helpful links
 -------------------
 * Source.Python
 
-  * `Source.Python forums <http://www.sourcepython.com/forum.php>`_
+  * `Source.Python forums <http://forums.sourcepython.com/>`_
   * `Source.Python repository <http://github.com/Source-Python-Dev-Team/Source.Python/>`_
   * `Source.Python issue list <http://github.com/Source-Python-Dev-Team/Source.Python/issues>`_
   

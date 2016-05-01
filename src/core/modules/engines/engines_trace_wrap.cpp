@@ -114,7 +114,7 @@ void export_engine_trace(scope _trace)
 			args("position")
 		)
 
-		.def("get_point_contents_of_collidable",
+		.def("get_point_contents_of_collideable",
 			&IEngineTrace::GetPointContents_Collideable,
 			"Returns the content mask, but only tests the given entity.",
 			args("entity", "position")
@@ -126,7 +126,7 @@ void export_engine_trace(scope _trace)
 			args("ray", "mask", "entity", "trace")
 		)
 
-		.def("clip_ray_to_collidable",
+		.def("clip_ray_to_collideable",
 			&IEngineTrace::ClipRayToCollideable,
 			"Traces a ray against a particular entity.",
 			args("ray", "mask", "entity", "trace")
@@ -282,7 +282,7 @@ void export_game_trace(scope _trace)
 			"Returns true if there was any kind of impact at all"
 		)
 
-		.def("get_entity_index",
+		.add_property("entity_index",
 			&CGameTrace::GetEntityIndex,
 			"Returns the index of the entity that was hit."
 		)

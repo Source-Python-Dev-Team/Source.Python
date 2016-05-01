@@ -105,21 +105,19 @@ class Callback(AutoUnload, Function):
         super().__init__(
             alloc(8, False).address, convention, arg_types, return_type)
 
-        # A little hack to access the "self" argument
-        def hook(args):
-            """Call the callback and get the return value."""
-            return_value = self.callback(args)
-            if return_value is not None:
-                return return_value
+        self.add_pre_hook(self._hook)
 
-            if return_type == DataType.VOID:
-                return 0
+    def _hook(self, args):
+        """Call the callback and get the return value."""
+        return_value = self.callback(args)
+        if return_value is not None:
+            return return_value
 
-            # We will crash now :(
-            raise ValueError('Return value is not allowed to be None.')
+        if self.return_type == DataType.VOID:
+            return 0
 
-        # Hook the function and make sure the callback doesn't go out of scope
-        self._hook = self.add_pre_hook(hook)
+        # We will crash now :(
+        raise ValueError('Return value is not allowed to be None.')
 
     def __call__(self, *args, **kw):
         """Store the given callback on the first call.
@@ -199,6 +197,14 @@ def get_class_name(cls):
     for name, possible_cls in EXPOSED_CLASSES.items():
         if cls is possible_cls:
             return name
+
+    for base_class in cls.__bases__:
+        try:
+            class_name = get_class_name(base_class)
+        except ValueError:
+            continue
+        else:
+            return class_name
 
     raise ValueError('Given class was not exposed.')
 

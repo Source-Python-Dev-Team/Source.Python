@@ -333,7 +333,7 @@ class _PlayerWeapons(object):
                 continue
 
             # Get the weapon's classname
-            weapon_class = edict_from_index(index).get_class_name()
+            weapon_class = edict_from_index(index).classname
 
             # Was a classname given and the current
             # weapon is not of that classname?
@@ -348,7 +348,8 @@ class _PlayerWeapons(object):
             # Was a weapon type given and the
             # current weapon is not of that type?
             if not (is_filters is None and not_filters is None):
-                if weapon_class not in map(lambda value: value.name,
+                if weapon_class not in map(
+                        lambda value: value.name,
                         WeaponClassIter(is_filters, not_filters)):
 
                     # Do not yield this index
@@ -387,10 +388,7 @@ class _PlayerWeapons(object):
 def _find_weapon_prop_length(table):
     """Loop through a prop table to find the myweapons property length."""
     # Loop through the props in the table
-    for offset in range(len(table)):
-
-        # Get the prop
-        item = table[offset]
+    for item in table:
 
         # Is this the m_hMyWeapons prop?
         if item.name == weapon_manager.myweapons[:~0]:
@@ -411,7 +409,7 @@ _weapon_prop_length = None
 if not isinstance(weapon_manager, NoWeaponManager):
 
     # Get the first ServerClass object
-    _current_class = server_game_dll.get_all_server_classes()
+    _current_class = server_game_dll.all_server_classes
 
     # Use "while" to loop through all ServerClass objects
     while _current_class:

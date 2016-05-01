@@ -25,24 +25,13 @@
 */
 
 #include "convar.h"
-#ifndef PATCH_CONVAR_H_REMOVE_FLAGS
-#error "Implement ConCommandBase::RemoveFlags in public/tier1/convar.h"
-#endif
-
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_GET_FLAGS
-#error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
+#ifndef PATCH_CONVAR_H_PUBLIC_FLAGS
+#error "Make ConCommandBase::m_nFlags public."
 #endif
 
 #include "utilities/baseentity.h"
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."
-#endif
-
-#include "engine/IEngineTrace.h"
-#ifndef PATCH_INTERFACEVERSION_ENGINETRACE
-// TODO: Update vtable as well!
-#error "Correct EngineTraceServer and EngineTraceClient versions."
 #endif
 
 #include "public/tier0/threadtools.h"

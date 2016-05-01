@@ -182,9 +182,14 @@ public:
 	template<class T>
 	void SetKeyValue(const char* szName, T value)
 	{
-		if (!servertools->SetKeyValue(GetThis(), szName, value))
-			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
-				szName, GetDataDescMap()->dataClassName);
+		/*
+			Removing this conditional/exception as it causes issues with certain entity keyvalues
+		*/
+		//	if (!servertools->SetKeyValue(GetThis(), szName, value))
+		//		BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
+		//			szName, GetDataDescMap()->dataClassName);
+
+		servertools->SetKeyValue(GetThis(), szName, value);
 	}
 
 	edict_t* GetEdict()
@@ -200,11 +205,6 @@ public:
 	CPointer GetPointer()
 	{
 		return ExcPointerFromBaseEntity(GetThis());
-	}
-	
-	CBaseHandle GetBaseHandle()
-	{
-		return ExcBaseHandleFromBaseEntity(GetThis());
 	}
 	
 	unsigned int GetIntHandle()

@@ -33,14 +33,14 @@ class _HookBase(list):
 
             # Raise an exception
             raise ValueError(
-                'Callback {0} is not callable'.format(callback))
+                'Callback {0} is not callable.'.format(callback))
 
         # Is the given callback already registered?
         if callback in self:
 
             # Raise an exception
             raise ValueError(
-                'Callback {0} is already registered to {0}'.format(
+                'Callback {0} is already registered to {1}.'.format(
                     callback, self.class_name))
 
         # Add the callback to the list
@@ -63,7 +63,7 @@ class _HookBase(list):
 
             # Raise an exception
             raise ValueError(
-                'Callback {0} is not registered to {1}'.format(
+                'Callback {0} is not registered to {1}.'.format(
                     callback, self.class_name))
 
         # Remove the callback from the list
@@ -82,6 +82,10 @@ class _HookDecorator(AutoUnload):
         """Store the given callback and register the hook."""
         self.callback = callback
         self._class_instance.append(self.callback)
+
+    def __call__(self, *args, **kwargs):
+        """Call the callback."""
+        return self.callback(*args, **kwargs)
 
     def _unload_instance(self):
         """Unregister the hook."""

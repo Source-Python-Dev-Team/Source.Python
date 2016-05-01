@@ -11,5 +11,5 @@ from players._language import get_client_language
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _GameWeapons(object):
-    """Base class for game specific weapon functionality."""
+class _GamePlayer(object):
+    """Base class for game specific functionality."""

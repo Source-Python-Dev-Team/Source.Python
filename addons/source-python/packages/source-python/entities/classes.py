@@ -45,7 +45,7 @@ from paths import SP_DATA_PATH
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get all of the necessary paths
-_managers_path = SP_DATA_PATH.joinpath('entities')
+_managers_path = SP_DATA_PATH / 'entities'
 
 # Store all supported types
 _supported_descriptor_types = {
@@ -223,8 +223,7 @@ class _ServerClasses(TypeManager):
     def _get_server_class(self, class_name, datamap):
         """Retrieve values for the server class."""
         # Get the engine specific data for the current class
-        manager_contents = GameConfigObj(
-            _managers_path.joinpath(class_name + '.ini'))
+        manager_contents = GameConfigObj(_managers_path / class_name + '.ini')
 
         # Are there any values for the manager?
         if manager_contents:
@@ -234,9 +233,6 @@ class _ServerClasses(TypeManager):
 
         # Get a TypeManager instance for the current datamap
         instance = self.create_type_from_file(class_name, manager_contents)
-
-        # Store the class name to more easily look it up
-        instance.__name__ = class_name
 
         # Get the specific types of values to use
         input_contents = dict(map(
@@ -267,10 +263,32 @@ class _ServerClasses(TypeManager):
         for name, prop, offset in self._find_properties(
                 _server_classes.get(class_name, {})):
 
+            if prop.type not in _supported_property_types:
+                continue
+
+            prop_type = _supported_property_types[prop.type]
+
+            if prop.type == SendPropType.INT:
+                bit_count = prop.bits
+                if bit_count < 1:
+                    # Note: I have yet to encounter this, so I'm not
+                    #   sure under what circumstances this can occur.
+                    # That is why this simply continues.
+                    continue
+                if bit_count >= 17:
+                    prop_type = 'int'
+                elif bit_count >= 9:
+                    prop_type = '{0}short'.format(
+                        '' if prop.is_signed() else 'u')
+                elif bit_count >= 2:
+                    prop_type = '{0}char'.format(
+                        '' if prop.is_signed() else 'u')
+                else:
+                    prop_type = 'bool'
+
             # Add the property to the instance
             self._add_property(
-                instance, name, prop, offset, property_contents,
-                _supported_property_types, True)
+                instance, name, offset, property_contents, prop_type, True)
 
         # Loop through all possible descriptors for the server class
         for name, desc, offset in self._find_descriptors(datamap):
@@ -298,8 +316,8 @@ class _ServerClasses(TypeManager):
 
                     # Add the descriptor to the instance
                     self._add_property(
-                        instance, desc.name, desc, offset,
-                        property_contents, _supported_descriptor_types)
+                        instance, desc.name, offset, property_contents,
+                        _supported_descriptor_types[desc.type])
 
             # Is the current descriptor an Input?
             elif desc.flags & TypeDescriptionFlags.INPUT:
@@ -312,8 +330,8 @@ class _ServerClasses(TypeManager):
 
                 # Add the descriptor to the instance
                 self._add_property(
-                    instance, name, desc, offset,
-                    property_contents, _supported_descriptor_types)
+                    instance, name, offset, property_contents,
+                    _supported_descriptor_types[desc.type])
 
         # Get a list of all properties for the current server class
         properties = list(instance.properties)
@@ -460,15 +478,11 @@ class _ServerClasses(TypeManager):
             setattr(instance, contents[name], instance.inputs[name])
 
     def _add_property(
-            self, instance, name, prop, offset,
-            contents, types, networked=False):
+            self, instance, name, offset, contents,
+            prop_type, networked=False):
         """Add the property to the given instance's properties dictionary."""
         # Is the property already in the properties dictionary?
         if name in instance.properties:
-            return
-
-        # Is the property type not supported?
-        if prop.type not in types:
             return
 
         # Is the offset not 0?
@@ -476,11 +490,10 @@ class _ServerClasses(TypeManager):
             return
 
         # Get the instance to use to get/set the property
-        value = self.instance_attribute(types[prop.type], offset)
+        value = self.instance_attribute(prop_type, offset)
 
         # Add the property to the properties dictionary
-        instance.properties[name] = EntityProperty(
-            value, types[prop.type], networked)
+        instance.properties[name] = EntityProperty(value, prop_type, networked)
 
         # Is the property not a named property?
         if name not in contents:
@@ -498,7 +511,7 @@ class _ServerClasses(TypeManager):
 
             # Add the property to the instance
             setattr(instance, contents[name], self.entity_property(
-                types[prop.type], offset, networked))
+                prop_type, offset, networked))
 
     @staticmethod
     def keyvalue(name, type_name):

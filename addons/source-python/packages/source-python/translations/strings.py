@@ -10,8 +10,6 @@
 from binascii import unhexlify
 #   Codecs
 from codecs import unicode_escape_decode
-#   String
-from string import Template
 #   Re
 from re import compile as re_compile
 from re import VERBOSE
@@ -59,7 +57,7 @@ class LangStrings(dict):
         super().__init__()
 
         # Get the path to the given file
-        self._mainfile = TRANSLATION_PATH.joinpath(infile + '.ini')
+        self._mainfile = TRANSLATION_PATH / infile + '.ini'
 
         # Does the file exist?
         if not self._mainfile.isfile():
@@ -69,8 +67,8 @@ class LangStrings(dict):
                 'No file found at {0}'.format(self._mainfile))
 
         # Get the path to the server specific file
-        self._serverfile = self._mainfile.parent.joinpath(
-            self._mainfile.namebase + '_server.ini')
+        self._serverfile = self._mainfile.parent / '{0}_server.ini'.format(
+            self._mainfile.namebase)
 
         # Get the strings from the main file
         main_strings = GameConfigObj(self._mainfile, encoding=encoding)
@@ -252,17 +250,11 @@ class TranslationStrings(dict):
             # Possibly raise an error silently here
             return ''
 
-        # Get the message's Template instance
-        message = Template(self[language])
-
         # Update the stored tokens with the given ones
         self.tokens.update(tokens)
 
-        # Substitute the token in the message
-        message = message.substitute(self.tokens)
-
-        # Return the message
-        return message
+        # Return the formatted message
+        return self[language].format(**self.tokens)
 
     def get_language(self, language):
         """Return the language to be used."""
