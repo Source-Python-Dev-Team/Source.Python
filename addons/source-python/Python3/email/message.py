@@ -9,6 +9,7 @@ __all__ = ['Message']
 import re
 import uu
 import quopri
+import warnings
 from io import BytesIO, StringIO
 
 # Intrapackage imports
@@ -272,7 +273,7 @@ class Message:
                     bpayload = payload.encode('ascii')
                 except UnicodeError:
                     # This won't happen for RFC compliant messages (messages
-                    # containing only ASCII codepoints in the unicode input).
+                    # containing only ASCII code points in the unicode input).
                     # If it does happen, turn the string into bytes in a way
                     # guaranteed not to fail.
                     bpayload = payload.encode('raw-unicode-escape')
@@ -926,6 +927,18 @@ class Message:
         """
         return [part.get_content_charset(failobj) for part in self.walk()]
 
+    def get_content_disposition(self):
+        """Return the message's content-disposition if it exists, or None.
+
+        The return values can be either 'inline', 'attachment' or None
+        according to the rfc2183.
+        """
+        value = self.get('content-disposition')
+        if value is None:
+            return None
+        c_d = _splitparam(value)[0].lower()
+        return c_d
+
     # I.e. def walk(self): ...
     from email.iterators import walk
 
@@ -938,15 +951,12 @@ class MIMEPart(Message):
             policy = default
         Message.__init__(self, policy)
 
-    @property
     def is_attachment(self):
         c_d = self.get('content-disposition')
-        if c_d is None:
-            return False
-        return c_d.lower() == 'attachment'
+        return False if c_d is None else c_d.content_disposition == 'attachment'
 
     def _find_body(self, part, preferencelist):
-        if part.is_attachment:
+        if part.is_attachment():
             return
         maintype, subtype = part.get_content_type().split('/')
         if maintype == 'text':
@@ -1039,7 +1049,7 @@ class MIMEPart(Message):
         for part in parts:
             maintype, subtype = part.get_content_type().split('/')
             if ((maintype, subtype) in self._body_types and
-                    not part.is_attachment and subtype not in seen):
+                    not part.is_attachment() and subtype not in seen):
                 seen.append(subtype)
                 continue
             yield part

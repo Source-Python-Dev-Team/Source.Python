@@ -126,7 +126,7 @@ CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 	{
 		// Store the current command's help text and flags
 		szHelpTextCopy = strdup(pConCommand->GetHelpText());
-		iFlags = pConCommand->GetFlags();
+		iFlags = pConCommand->m_nFlags;
 
 		// Unregister the old command
 		g_pCVar->UnregisterConCommand(pConCommand);

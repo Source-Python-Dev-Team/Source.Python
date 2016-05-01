@@ -15,8 +15,6 @@ from _engines._server import server_game_dll
 #   Globals
 from _globals import MapLoadType
 from _globals import global_vars
-#   Memory
-from memory.manager import manager
 
 
 # =============================================================================
@@ -28,18 +26,5 @@ __all__ = ('ConnectionlessPacketHandler',
            'Server',
            'engine_server',
            'global_vars',
-           'server',
            'server_game_dll',
            )
-
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-try:
-    # Try to get the server using the exposed method. If that fails, because
-    # it isn't implemented for this game ...
-    server = engine_server.server
-except NotImplementedError:
-    # ... fall back to the sig-scanned server
-    server = manager.get_global_pointer('Server')

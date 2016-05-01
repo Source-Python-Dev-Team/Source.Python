@@ -182,14 +182,27 @@ void export_convar_interface(scope _cvars)
 //-----------------------------------------------------------------------------
 void export_convar(scope _cvars)
 {
-	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("_ConVar", no_init)
+	class_<ConVar, boost::shared_ptr<ConVar>, bases<ConCommandBase, IConVar>, boost::noncopyable>("ConVar", no_init)
+
 		.def("__init__",
 			make_constructor(&ConVarExt::__init__,
 				default_call_policies(),
-				("szName", arg("szDefaultValue")="", arg("szHelpString")="", arg("flags")=0,
-				arg("bMin")=false, arg("fMin")=0.0, arg("bMax")=false, arg("fMax")=0.0)
+				("name", arg("value")="", arg("description")="", arg("flags")=0,
+				arg("min_value")=object(), arg("max_value")=object())
 			),
-			"Creates a new server variable. If it already exists, the existing one will be returned."
+			"Called when a server-var is initilized.\n"
+			"\n"
+			"If the ConVar already exists, all other parameters\n"
+			"except ``name`` are inconsequential.\n"
+			"\n"
+			":param str name: The name of the ConVar.\n"
+			":param str value: The initial value of the\n"
+			"	ConVar if it doesn't already exist.\n"
+			":param str description: The description of the ConVar.\n"
+			":param ConVarFlags flags: The initial flags of the\n"
+			"	ConVar if it doesn't already exist.\n"
+			":param float min_value: The minimum value allowed for the ConVar.\n"
+			":param float max_value: The maximum value allowed for the ConVar.\n"
 		)
 
 		.def("get_float",
@@ -247,6 +260,17 @@ void export_convar(scope _cvars)
 			"Sets a bool value.",
 			args("value")
 		)
+
+		.def("make_public",
+			&ConVarExt::MakePublic,
+			"Set the notify flag and makes the cvar public."
+		)
+
+		.def("remove_public",
+			&ConVarExt::RemovePublic,
+			"Remove the notify flag and makes the cvar no longer public."
+		)
+			
 
 		ADD_MEM_TOOLS(ConVar)
 	;

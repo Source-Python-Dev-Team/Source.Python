@@ -41,6 +41,9 @@ using namespace boost::python;
 // Utilities
 #include "utilities/wrap_macros.h"
 
+// Must be included at last...
+#include "memory_exception.h"
+
 
 // ============================================================================
 // >> CPointer
@@ -88,15 +91,20 @@ public:
 	T Get(int iOffset = 0)
 	{
 		Validate();
-		return *(T *) (m_ulAddr + iOffset);
+		T result;
+		TRY_SEGV()
+			result = *(T *) (m_ulAddr + iOffset);
+		EXCEPT_SEGV()
+		return result;
 	}
 
 	template<class T>
 	void Set(T value, int iOffset = 0)
 	{
 		Validate();
-		unsigned long newAddr = m_ulAddr + iOffset;
-		*(T *) newAddr = value;
+		TRY_SEGV()
+			*(T *) (m_ulAddr + iOffset) = value;
+		EXCEPT_SEGV()
 	}
 
 	const char *        GetStringArray(int iOffset = 0);

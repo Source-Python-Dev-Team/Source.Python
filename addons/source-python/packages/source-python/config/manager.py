@@ -205,187 +205,24 @@ class ConfigManager(object):
 
             # Is there a header for the file?
             if self.header:
-
-                # Get the length of the header's separator
-                length = len(self.separator)
-
-                # Get the number of times to repeat the separator
-                times, remainder = divmod(
-                    self.max_line_length - (2 * self.indention), length)
-
-                # Get the string separator value
-                separator = (
-                    '//' + spaces + self.separator * times +
-                    self.separator[:remainder] + spaces + '//\n')
-
-                # Write the separator
-                open_file.write(separator)
-
-                # Is the header a TranslationStrings instance?
-                if isinstance(self.header, TranslationStrings):
-
-                    # Get the proper text for the header
-                    self.header = self.header.get_string()
-
-                # Loop through each line in the header
-                for lines in self.header.splitlines():
-
-                    # Loop through the current line to get valid
-                    # lines with length less than the max line length
-                    for line in self._get_lines(lines):
-
-                        # Strip the // and new line characters from the line
-                        line = line.lstrip('/ ').replace('\n', '')
-
-                        # Write the current line
-                        open_file.write('//{0}//\n'.format(
-                            line.center(self.max_line_length - 4)))
-
-                # Write the separator to end the header
-                open_file.write(separator)
+                self._write_header(open_file, spaces)
 
             # Loop through all sections in the file
             for section in self._sections:
 
                 # Is the current section a cvar?
                 if isinstance(section, _CvarManager):
-
-                    # Has any text been added to the file?
-                    if open_file.tell():
-
-                        # If so, add a blank line prior to section
-                        open_file.write('\n')
-
-                    # Loop through all lines in the section
-                    for lines, indent in section:
-
-                        # Loop through the current line to get valid
-                        # lines with length less than the max line length
-                        for line in self._get_lines(lines, indent):
-
-                            # Write the current line
-                            open_file.write(line + '\n')
-
-                    # Does the default value need written?
-                    if section.show_default:
-
-                        # Write the cvar's default value
-                        default = ' "{0}"\n' if isinstance(
-                            section.default, str) else ' {0}\n'
-                        open_file.write(
-                            '//' + spaces +
-                            _config_strings['Default'].get_string() +
-                            default.format(section.default))
-
-                    # Loop through the description to get valid
-                    # lines with length less than the max line length
-                    for line in self._get_lines(section.description):
-
-                        # Write the current line
-                        open_file.write(line + '\n')
-
-                    # Does the cvar exist in the old config file?
-                    if section.name in _old_config:
-
-                        # Write the old config file's value
-                        open_file.write(
-                            ' ' * self.indention +
-                            _old_config[section.name][0] + '\n\n')
-
-                        # Remove the cvar from the old config file dictionary
-                        del _old_config[section.name]
-
-                    # Does the cvar not exist in the old config file
-                    # and the value is a float or integer?
-                    elif isinstance(section.default, (float, int)):
-
-                        # Write the cvar line using the default value
-                        open_file.write(
-                            ' ' * self.indention + section.name +
-                            ' {0}\n\n'.format(section.default))
-
-                    # Does the cvar not exist in the old config file
-                    # And the value is not a float or integer?
-                    else:
-
-                        # Write the cvar line using the default
-                        # value with quotes around the value
-                        open_file.write(
-                            ' ' * self.indention + section.name +
-                            ' "{0}"\n\n'.format(section.default))
+                    self._write_cvar_section(
+                        open_file, section, _old_config, spaces)
 
                 # Is the current section a Section?
                 elif isinstance(section, _SectionManager):
-
-                    # Has any text been added to the file?
-                    if open_file.tell():
-
-                        # If so, add a blank line prior to section
-                        open_file.write('\n')
-
-                    # Get the length of the section's separator
-                    length = len(section.separator)
-
-                    # Get the number of times to repeat the separator
-                    times, remainder = divmod(
-                        self.max_line_length - (2 * self.indention), length)
-
-                    # Get the string separator value
-                    separator = (
-                        '//' + spaces + section.separator * times +
-                        section.separator[:remainder] + spaces + '//\n')
-
-                    # Write the separator
-                    open_file.write(separator)
-
-                    # Loop through each line in the section
-                    for lines in section.name.splitlines():
-
-                        # Loop through the current line to get valid
-                        # lines with length less than the max line length
-                        for line in self._get_lines(lines):
-
-                            # Strip the // from the line and remove newline
-                            line = line.lstrip('/ ').replace('\n', '')
-
-                            # Write the current line
-                            open_file.write('//{0}//\n'.format(
-                                line.center(self.max_line_length - 4)))
-
-                    # Write the separator to end the section
-                    open_file.write(separator)
+                    self._write_section(open_file, section, spaces)
 
                 # Is the current section a Command?
                 elif isinstance(section, _CommandManager):
-
-                    # Has any text been added to the file?
-                    if open_file.tell():
-
-                        # If so, add a blank line prior to section
-                        open_file.write('\n')
-
-                    # Does the command have a description?
-                    if section.description:
-
-                        # Loop through description to get valid lines
-                        # with length less than the max line length
-                        for line in self._get_lines(section.description):
-
-                            # Write the current line
-                            open_file.write(line + '\n')
-
-                    # Does the command exist in the old config file?
-                    if section.name in _old_config:
-
-                        # Loop through each line in the
-                        # old config for the command
-                        for line in _old_config[section.name]:
-
-                            # Write the line to the file
-                            open_file.write(line + '\n')
-
-                        # Remove the command from the old config
-                        del _old_config[section.name]
+                    self._write_command_section(
+                        open_file, section, _old_config)
 
                 # Is the current section a blank line?
                 elif not section:
@@ -507,13 +344,190 @@ class ConfigManager(object):
                 continue
 
             # Make sure the line has the proper number of quotes
-            line = line + ('"' if line.count('"') % 2 else '')
+            line += '"' if line.count('"') % 2 else ''
 
             # Add the line to the old config
             _old_config[name].append(line)
 
         # Return the dictionary
         return _old_config
+
+    def _write_header(self, open_file, spaces):
+        """Write the config's header."""
+        # Get the length of the header's separator
+        length = len(self.separator)
+
+        # Get the number of times to repeat the separator
+        times, remainder = divmod(
+            self.max_line_length - (2 * self.indention), length)
+
+        # Get the string separator value
+        separator = (
+            '//' + spaces + self.separator * times +
+            self.separator[:remainder] + spaces + '//\n')
+
+        # Write the separator
+        open_file.write(separator)
+
+        # Is the header a TranslationStrings instance?
+        if isinstance(self.header, TranslationStrings):
+
+            # Get the proper text for the header
+            self.header = self.header.get_string()
+
+        # Loop through each line in the header
+        for lines in self.header.splitlines():
+
+            # Loop through the current line to get valid
+            # lines with length less than the max line length
+            for line in self._get_lines(lines):
+
+                # Strip the // and new line characters from the line
+                line = line.lstrip('/ ').replace('\n', '')
+
+                # Write the current line
+                open_file.write('//{0}//\n'.format(
+                    line.center(self.max_line_length - 4)))
+
+        # Write the separator to end the header
+        open_file.write(separator)
+
+    def _write_cvar_section(self, open_file, section, _old_config, spaces):
+        """Write the Cvar section to the config file."""
+        # Has any text been added to the file?
+        if open_file.tell():
+
+            # If so, add a blank line prior to section
+            open_file.write('\n')
+
+        # Loop through all lines in the section
+        for lines, indent in section:
+
+            # Loop through the current line to get valid
+            # lines with length less than the max line length
+            for line in self._get_lines(lines, indent):
+
+                # Write the current line
+                open_file.write(line + '\n')
+
+        # Does the default value need written?
+        if section.show_default:
+
+            # Write the cvar's default value
+            default = ' "{0}"\n' if isinstance(
+                section.default, str) else ' {0}\n'
+            open_file.write(
+                '//' + spaces +
+                _config_strings['Default'].get_string() +
+                default.format(section.default))
+
+        # Loop through the description to get valid
+        # lines with length less than the max line length
+        for line in self._get_lines(section.description):
+
+            # Write the current line
+            open_file.write(line + '\n')
+
+        # Does the cvar exist in the old config file?
+        if section.name in _old_config:
+
+            # Write the old config file's value
+            open_file.write(
+                ' ' * self.indention +
+                _old_config[section.name][0] + '\n\n')
+
+            # Remove the cvar from the old config file dictionary
+            del _old_config[section.name]
+
+        # Does the cvar not exist in the old config file
+        # and the value is a float or integer?
+        elif isinstance(section.default, (float, int)):
+
+            # Write the cvar line using the default value
+            open_file.write(
+                ' ' * self.indention + section.name +
+                ' {0}\n\n'.format(section.default))
+
+        # Does the cvar not exist in the old config file
+        # And the value is not a float or integer?
+        else:
+
+            # Write the cvar line using the default
+            # value with quotes around the value
+            open_file.write(
+                ' ' * self.indention + section.name +
+                ' "{0}"\n\n'.format(section.default))
+
+    def _write_section(self, open_file, section, spaces):
+        """Write the section to the config file."""
+        # Has any text been added to the file?
+        if open_file.tell():
+
+            # If so, add a blank line prior to section
+            open_file.write('\n')
+
+        # Get the length of the section's separator
+        length = len(section.separator)
+
+        # Get the number of times to repeat the separator
+        times, remainder = divmod(
+            self.max_line_length - (2 * self.indention), length)
+
+        # Get the string separator value
+        separator = (
+            '//' + spaces + section.separator * times +
+            section.separator[:remainder] + spaces + '//\n')
+
+        # Write the separator
+        open_file.write(separator)
+
+        # Loop through each line in the section
+        for lines in section.name.splitlines():
+
+            # Loop through the current line to get valid
+            # lines with length less than the max line length
+            for line in self._get_lines(lines):
+
+                # Strip the // from the line and remove newline
+                line = line.lstrip('/ ').replace('\n', '')
+
+                # Write the current line
+                open_file.write('//{0}//\n'.format(
+                    line.center(self.max_line_length - 4)))
+
+        # Write the separator to end the section
+        open_file.write(separator)
+
+    def _write_command_section(self, open_file, section, _old_config):
+        """Write the Command section to the config file."""
+        # Has any text been added to the file?
+        if open_file.tell():
+
+            # If so, add a blank line prior to section
+            open_file.write('\n')
+
+        # Does the command have a description?
+        if section.description:
+
+            # Loop through description to get valid lines
+            # with length less than the max line length
+            for line in self._get_lines(section.description):
+
+                # Write the current line
+                open_file.write(line + '\n')
+
+        # Does the command exist in the old config file?
+        if section.name in _old_config:
+
+            # Loop through each line in the
+            # old config for the command
+            for line in _old_config[section.name]:
+
+                # Write the line to the file
+                open_file.write(line + '\n')
+
+            # Remove the command from the old config
+            del _old_config[section.name]
 
     def _get_lines(self, lines, indention=0):
         """Yield a list of lines less than the file's max line length."""

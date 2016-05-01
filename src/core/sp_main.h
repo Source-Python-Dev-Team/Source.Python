@@ -80,10 +80,11 @@ public:
 	// -------------------------------------------
 	// Alien Swarm.
 	// -------------------------------------------
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 	virtual void			ClientFullyConnect( edict_t *pEntity );
 #endif
-#if defined(ENGINE_CSGO) || defined(ENGINE_BMS)
+
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
 	virtual void			OnEdictAllocated( edict_t *edict );
 	virtual void			OnEdictFreed( const edict_t *edict );
 #endif

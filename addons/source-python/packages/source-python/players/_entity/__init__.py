@@ -75,17 +75,6 @@ class Player(Entity):
         return self._playerinfo
 
     @property
-    def instances(self):
-        """Yield the player's base instances.
-
-        Values yielded are the player's :class:`players.PlayerInfo`,
-        :class:`entities.Edict` and :class:`memory.Pointer` objects.
-        """
-        yield self.playerinfo
-        yield self.edict
-        yield self.pointer
-
-    @property
     def userid(self):
         """Return the player's userid.
 
@@ -125,14 +114,6 @@ class Player(Entity):
         return make_object(BaseClient, get_object_pointer(self.client) - 4)
 
     @property
-    def isdead(self):
-        """Return if the player is dead or alive.
-
-        :rtype: bool
-        """
-        return self.playerinfo.is_dead()
-
-    @property
     def uniqueid(self):
         """Return the player's uniqueid."""
         return uniqueid_from_playerinfo(self.playerinfo)
@@ -148,6 +129,41 @@ class Player(Entity):
         """
         return address_from_playerinfo(self.playerinfo)
 
+    def is_connected(self):
+        """Return whether the player is connected.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_connected()
+
+    def is_fake_client(self):
+        """Return whether the player is a fake client.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_fake_client()
+
+    def is_hltv(self):
+        """Return whether the player is HLTV.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_hltv()
+
+    def is_in_a_vehicle(self):
+        """Return whether the player is in a vehicle.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_in_a_vehicle()
+
+    def is_observer(self):
+        """Return whether the player is an observer.
+
+        :rtype: bool
+        """
+        return self.playerinfo.is_observer()
+
     def get_team(self):
         """Return the player's team.
 
@@ -157,7 +173,7 @@ class Player(Entity):
 
     def set_team(self, value):
         """Set the players team."""
-        self.playerinfo.team = team
+        self.playerinfo.team = value
 
     team = property(get_team, set_team)
 
@@ -302,15 +318,19 @@ class Player(Entity):
     @property
     def view_vector(self):
         """Return the view vector of the player.
-
         :rtype: Vector
         """
         eye_angle = self.eye_angle
-        return Vector(
-            math.cos(math.radians(eye_angle.y)),
-            math.sin(math.radians(eye_angle.y)),
-            -1 * math.sin(math.radians(self.eye_angle.x))
-        )
+
+        yaw = math.radians(eye_angle.y)
+        pitch = math.radians(eye_angle.x)
+
+        sy = math.sin(yaw)
+        cy = math.cos(yaw)
+        sp = math.sin(pitch)
+        cp = math.cos(pitch)
+
+        return Vector(cp * cy, cp * sy, -sp)
 
     def get_view_angle(self):
         """Return the player's view angle.
@@ -486,26 +506,26 @@ class Player(Entity):
 
     noblock = property(get_noblock, set_noblock)
 
-    def set_freeze(self, enable):
-        """Enable/disable freeze mode.
+    def set_frozen(self, enable):
+        """Enable/disable frozen mode.
 
-        Freeze mode makes the player unable to move, look and shoot.
+        Frozen mode makes the player unable to move, look and shoot.
 
-        :param bool enable: If True freeze mode will be enabled.
+        :param bool enable: If True frozen mode will be enabled.
         """
         if enable:
             self.flags |= PlayerStates.FROZEN
         else:
             self.flags &= ~PlayerStates.FROZEN
 
-    def get_freeze(self):
-        """Return whether freeze mode is enabled.
+    def get_frozen(self):
+        """Return whether frozen mode is enabled.
 
         :rtype: bool
         """
         return bool(self.flags & PlayerStates.FROZEN)
 
-    freeze = property(get_freeze, set_freeze)
+    frozen = property(get_frozen, set_frozen)
 
     def set_stuck(self, enable):
         """Enable/disable stuck mode.
@@ -682,6 +702,41 @@ class Player(Entity):
         :param str projectile: The name of the projectile to find indexes of.
         """
         self.weapon_indexes(weapon_manager[projectile].name)
+
+    def restrict_weapons(self, *weapons):
+        """Restrict the weapon for the player.
+        :param str weapons: A weapon or any number of weapons to add
+            as restricted for the player.
+        """
+        from weapons.restrictions import weapon_restriction_handler
+        weapon_restriction_handler.add_player_restrictions(self, *weapons)
+
+    def unrestrict_weapons(self, *weapons):
+        """Restrict the weapon for the player.
+        :param str weapons: A weapon or any number of weapons to remove
+            as restricted for the player.
+        """
+        from weapons.restrictions import weapon_restriction_handler
+        weapon_restriction_handler.remove_player_restrictions(self, *weapons)
+
+    def is_weapon_restricted(self, weapon):
+        """Return whether the player is restricted from the given weapon.
+        :param str weapon: The name of the weapon to check against restriction.
+        :rtype: bool
+        """
+        from weapons.restrictions import weapon_restriction_manager
+        return weapon_restriction_manager.is_player_restricted(self, weapon)
+
+    @property
+    def spectators(self):
+        """Return all players observing this player.
+        :return: The generator yields :class:`players.entity.Player` objects.
+        :rtype: generator
+        """
+        from filters.players import PlayerIter
+        for other in PlayerIter('dead'):
+            if self.inthandle == other.observer_target:
+                yield other
 
 
 # =============================================================================

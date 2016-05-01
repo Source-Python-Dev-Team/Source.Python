@@ -43,14 +43,11 @@
 #include "conventions/x86GccCdecl.h"
 #include "conventions/x86GccThiscall.h"
 
-// Utilities
-//#include "utilities/wrap_macros.h"
-
 
 // ============================================================================
 // >> EXTERNALS
 // ============================================================================
-extern std::map<CHook *, std::map<HookType_t, std::list<PyObject *> > > g_mapCallbacks;
+extern std::map<CHook *, std::map<HookType_t, std::list<object> > > g_mapCallbacks;
 
 
 // ============================================================================
@@ -190,6 +187,23 @@ bool CFunction::IsHooked()
 	return GetHookManager()->FindHook((void *) m_ulAddr) != NULL;
 }
 
+template<class ReturnType, class Function>
+ReturnType CallHelper(Function func, DCCallVM* vm, unsigned long addr)
+{
+	ReturnType result;
+	TRY_SEGV()
+		result = (ReturnType) func(vm, addr);
+	EXCEPT_SEGV()
+	return result;
+}
+
+void CallHelperVoid(DCCallVM* vm, unsigned long addr)
+{
+	TRY_SEGV()
+		dcCallVoid(vm, addr);
+	EXCEPT_SEGV()
+}
+
 object CFunction::Call(tuple args, dict kw)
 {
 	if (!IsCallable())
@@ -209,57 +223,60 @@ object CFunction::Call(tuple args, dict kw)
 		object arg = args[i];
 		switch(extract<DataType_t>(m_tArgs[i]))
 		{
-			case DATA_TYPE_BOOL:      dcArgBool(g_pCallVM, extract<bool>(arg)); break;
-			case DATA_TYPE_CHAR:      dcArgChar(g_pCallVM, extract<char>(arg)); break;
-			case DATA_TYPE_UCHAR:     dcArgChar(g_pCallVM, extract<unsigned char>(arg)); break;
-			case DATA_TYPE_SHORT:     dcArgShort(g_pCallVM, extract<short>(arg)); break;
-			case DATA_TYPE_USHORT:    dcArgShort(g_pCallVM, extract<unsigned short>(arg)); break;
-			case DATA_TYPE_INT:       dcArgInt(g_pCallVM, extract<int>(arg)); break;
-			case DATA_TYPE_UINT:      dcArgInt(g_pCallVM, extract<unsigned int>(arg)); break;
-			case DATA_TYPE_LONG:      dcArgLong(g_pCallVM, extract<long>(arg)); break;
-			case DATA_TYPE_ULONG:     dcArgLong(g_pCallVM, extract<unsigned long>(arg)); break;
-			case DATA_TYPE_LONG_LONG:  dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
-			case DATA_TYPE_ULONG_LONG: dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
-			case DATA_TYPE_FLOAT:     dcArgFloat(g_pCallVM, extract<float>(arg)); break;
-			case DATA_TYPE_DOUBLE:    dcArgDouble(g_pCallVM, extract<double>(arg)); break;
+			case DATA_TYPE_BOOL:		dcArgBool(g_pCallVM, extract<bool>(arg)); break;
+			case DATA_TYPE_CHAR:		dcArgChar(g_pCallVM, extract<char>(arg)); break;
+			case DATA_TYPE_UCHAR:		dcArgChar(g_pCallVM, extract<unsigned char>(arg)); break;
+			case DATA_TYPE_SHORT:		dcArgShort(g_pCallVM, extract<short>(arg)); break;
+			case DATA_TYPE_USHORT:		dcArgShort(g_pCallVM, extract<unsigned short>(arg)); break;
+			case DATA_TYPE_INT:			dcArgInt(g_pCallVM, extract<int>(arg)); break;
+			case DATA_TYPE_UINT:		dcArgInt(g_pCallVM, extract<unsigned int>(arg)); break;
+			case DATA_TYPE_LONG:		dcArgLong(g_pCallVM, extract<long>(arg)); break;
+			case DATA_TYPE_ULONG:		dcArgLong(g_pCallVM, extract<unsigned long>(arg)); break;
+			case DATA_TYPE_LONG_LONG:	dcArgLongLong(g_pCallVM, extract<long long>(arg)); break;
+			case DATA_TYPE_ULONG_LONG:	dcArgLongLong(g_pCallVM, extract<unsigned long long>(arg)); break;
+			case DATA_TYPE_FLOAT:		dcArgFloat(g_pCallVM, extract<float>(arg)); break;
+			case DATA_TYPE_DOUBLE:		dcArgDouble(g_pCallVM, extract<double>(arg)); break;
 			case DATA_TYPE_POINTER:
 			{
 				unsigned long ulAddr = 0;
 				if (arg.ptr() != Py_None)
 					ulAddr = ExtractPointer(arg)->m_ulAddr;
+
 				dcArgPointer(g_pCallVM, ulAddr);
-			} break;
-			case DATA_TYPE_STRING:    dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
-			default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown argument type.")
+				break;
+			} 
+			case DATA_TYPE_STRING:		dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
+			default:					BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown argument type.")
 		}
 	}
 
 	// Call the function
 	switch(m_eReturnType)
 	{
-		case DATA_TYPE_VOID:      dcCallVoid(g_pCallVM, m_ulAddr); break;
-		case DATA_TYPE_BOOL:      return object(dcCallBool(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_CHAR:      return object(dcCallChar(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_UCHAR:     return object((unsigned char) dcCallChar(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_SHORT:     return object(dcCallShort(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_USHORT:    return object((unsigned short) dcCallShort(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_INT:       return object(dcCallInt(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_UINT:      return object((unsigned int) dcCallInt(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_LONG:      return object(dcCallLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_ULONG:     return object((unsigned long) dcCallLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_LONG_LONG:  return object(dcCallLongLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_ULONG_LONG: return object((unsigned long long) dcCallLongLong(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_FLOAT:     return object(dcCallFloat(g_pCallVM, m_ulAddr));
-		case DATA_TYPE_DOUBLE:    return object(dcCallDouble(g_pCallVM, m_ulAddr));
+		case DATA_TYPE_VOID:		CallHelperVoid(g_pCallVM, m_ulAddr); break;
+		case DATA_TYPE_BOOL:		return object(CallHelper<bool>(dcCallBool, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_CHAR:		return object(CallHelper<char>(dcCallChar, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_UCHAR:		return object(CallHelper<unsigned char>(dcCallChar, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_SHORT:		return object(CallHelper<short>(dcCallShort, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_USHORT:		return object(CallHelper<unsigned short>(dcCallShort, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_INT:			return object(CallHelper<int>(dcCallInt, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_UINT:		return object(CallHelper<unsigned int>(dcCallInt, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_LONG:		return object(CallHelper<long>(dcCallLong, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_ULONG:		return object(CallHelper<unsigned long>(dcCallLong, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_LONG_LONG:	return object(CallHelper<long long>(dcCallLongLong, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_ULONG_LONG:	return object(CallHelper<unsigned long long>(dcCallLongLong, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_FLOAT:		return object(CallHelper<float>(dcCallFloat, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_DOUBLE:		return object(CallHelper<double>(dcCallDouble, g_pCallVM, m_ulAddr));
 		case DATA_TYPE_POINTER:
 		{
-			CPointer pPtr = CPointer(dcCallPointer(g_pCallVM, m_ulAddr));
+			CPointer pPtr = CPointer(CallHelper<unsigned long>(dcCallPointer, g_pCallVM, m_ulAddr));
 			if (!m_oConverter.is_none())
 				return m_oConverter(pPtr);
+
 			return object(pPtr);
 		}
-		case DATA_TYPE_STRING:    return object((const char *) dcCallPointer(g_pCallVM, m_ulAddr));
-		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
+		case DATA_TYPE_STRING:		return object(CallHelper<const char *>(dcCallPointer, g_pCallVM, m_ulAddr));
+		default:					BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown return type.")
 	}
 	return object();
 }
@@ -286,7 +303,16 @@ object CFunction::SkipHooks(tuple args, dict kw)
 	return Call(args, kw);
 }
 
-handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
+CHook* HookFunctionHelper(void* addr, ICallingConvention* pConv)
+{	
+	CHook* result;
+	TRY_SEGV()
+		result = GetHookManager()->HookFunction(addr, pConv);
+	EXCEPT_SEGV()
+	return result;
+}
+
+void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsHookable())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not hookable.")
@@ -294,15 +320,12 @@ handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 	Validate();
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook) {
-		pHook = GetHookManager()->HookFunction((void *) m_ulAddr, m_pCallingConvention);
+		pHook = HookFunctionHelper((void *) m_ulAddr, m_pCallingConvention);
 	}
 	
 	// Add the hook handler. If it's already added, it won't be added twice
 	pHook->AddCallback(eType, (HookHandlerFn *) (void *) &SP_HookHandler);
-	g_mapCallbacks[pHook][eType].push_back(pCallable);
-	
-	// Return the callback, so we can use this method as a decorator
-	return handle<>(borrowed(pCallable));
+	g_mapCallbacks[pHook][eType].push_back(object(handle<>(borrowed(pCallable))));
 }
 
 void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
@@ -312,7 +335,7 @@ void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
 	if (!pHook)
 		return;
 
-	g_mapCallbacks[pHook][eType].remove(pCallable);
+	g_mapCallbacks[pHook][eType].remove(object(handle<>(borrowed(pCallable))));
 }
 
 void CFunction::DeleteHook()

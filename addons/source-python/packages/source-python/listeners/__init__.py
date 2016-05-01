@@ -2,8 +2,6 @@
 
 """Provides listener based functionality."""
 
-# TODO: Fix name conflict with _ListenerManager
-
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -13,6 +11,7 @@ from urllib.error import URLError
 # Source.Python Imports
 #   Cvars
 from cvars import ConVar
+from cvars import cvar
 #   Core
 from core import AutoUnload
 from core.settings import _core_settings
@@ -21,6 +20,9 @@ from core.version import is_unversioned
 from core.version import VERSION
 #   Loggers
 from loggers import _sp_logger
+#   Memory
+import memory
+from memory.hooks import PreHook
 
 
 # =============================================================================
@@ -28,7 +30,7 @@ from loggers import _sp_logger
 # =============================================================================
 # Source.Python Imports
 #   Listeners
-from _listeners import _ListenerManager
+from _listeners import ListenerManager
 from _listeners import on_client_active_listener_manager
 from _listeners import on_client_connect_listener_manager
 from _listeners import on_client_disconnect_listener_manager
@@ -57,13 +59,16 @@ from listeners._entity_output import on_entity_output_listener_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('OnClientActive',
+__all__ = ('ListenerManager',
+           'ListenerManagerDecorator',
+           'OnClientActive',
            'OnClientConnect',
            'OnClientDisconnect',
            'OnClientFullyConnect',
            'OnClientPutInServer',
            'OnClientSettingsChanged',
            'OnCombinerPreCache',
+           'OnConVarChanged',
            'OnDataLoaded',
            'OnDataUnloaded',
            'OnEdictAllocated',
@@ -87,6 +92,7 @@ __all__ = ('OnClientActive',
            'on_client_put_in_server_listener_manager',
            'on_client_settings_changed_listener_manager',
            'on_combiner_pre_cache_listener_manager',
+           'on_convar_changed_listener_manager',
            'on_data_loaded_listener_manager',
            'on_data_unloaded_listener_manager',
            'on_edict_allocated_listener_manager',
@@ -111,7 +117,9 @@ __all__ = ('OnClientActive',
 # =============================================================================
 # Get the sp.listeners logger
 listeners_logger = _sp_logger.listeners
-on_version_update_listener_manager = _ListenerManager()
+
+on_version_update_listener_manager = ListenerManager()
+on_convar_changed_listener_manager = ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -129,13 +137,13 @@ _notify_on_update = ConVar(
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _ListenerManager(AutoUnload):
+class ListenerManagerDecorator(AutoUnload):
     """Base decorator class used to register/unregister a listener."""
 
     def __init__(self, callback):
         """Store the callback and register the listener."""
         # Log the <instance>.__init__ message
-        listeners_logger.log_info(
+        listeners_logger.log_debug(
             '{0}.__init__<{1}>'.format(self.name, callback))
 
         # Is the callback callable?
@@ -146,7 +154,7 @@ class _ListenerManager(AutoUnload):
                 "'" + type(callback).__name__ + "' object is not callable.")
 
         # Log the registering message
-        listeners_logger.log_info(
+        listeners_logger.log_debug(
             '{0}.__init__ - Registering'.format(self.name))
 
         # Store the callback
@@ -158,7 +166,7 @@ class _ListenerManager(AutoUnload):
     def __call__(self, *args):
         """Call the listener."""
         # Log the calling
-        listeners_logger.log_info(
+        listeners_logger.log_debug(
             '{0}.__call__<{1}>'.format(self.name, args))
 
         # Call the listener
@@ -171,13 +179,13 @@ class _ListenerManager(AutoUnload):
 
     @property
     def manager(self):
-        """Return a _ListenerManager object."""
+        """Return a :class:`ListenerManager` object."""
         raise NotImplementedError('Must be implemented by a subclass.')
 
     def _unload_instance(self):
         """Unregister the listener."""
         # Log the unregistering
-        listeners_logger.log_info(
+        listeners_logger.log_debug(
             '{0}._unload_instance - Unregistering <{1}>'.format(
                 self.name, self.callback))
 
@@ -185,142 +193,148 @@ class _ListenerManager(AutoUnload):
         self.manager.unregister_listener(self.callback)
 
 
-class OnClientActive(_ListenerManager):
+class OnClientActive(ListenerManagerDecorator):
     """Register/unregister a ClientActive listener."""
 
     manager = on_client_active_listener_manager
 
 
-class OnClientConnect(_ListenerManager):
+class OnClientConnect(ListenerManagerDecorator):
     """Register/unregister a ClientConnect listener."""
 
     manager = on_client_connect_listener_manager
 
 
-class OnClientDisconnect(_ListenerManager):
+class OnClientDisconnect(ListenerManagerDecorator):
     """Register/unregister a ClientDisconnect listener."""
 
     manager = on_client_disconnect_listener_manager
 
 
-class OnClientFullyConnect(_ListenerManager):
+class OnClientFullyConnect(ListenerManagerDecorator):
     """Register/unregister a ClientFullyConnect listener."""
 
     manager = on_client_fully_connect_listener_manager
 
 
-class OnClientPutInServer(_ListenerManager):
+class OnClientPutInServer(ListenerManagerDecorator):
     """Register/unregister a ClientPutInServer listener."""
 
     manager = on_client_put_in_server_listener_manager
 
 
-class OnClientSettingsChanged(_ListenerManager):
+class OnClientSettingsChanged(ListenerManagerDecorator):
     """Register/unregister a ClientSettingsChanged listener."""
 
     manager = on_client_settings_changed_listener_manager
 
 
-class OnEntityOutput(_ListenerManager):
+class OnEntityOutput(ListenerManagerDecorator):
     """Register/unregister an EntityOutput listener."""
 
     manager = on_entity_output_listener_manager
 
 
-class OnLevelInit(_ListenerManager):
+class OnLevelInit(ListenerManagerDecorator):
     """Register/unregister a LevelInit listener."""
 
     manager = on_level_init_listener_manager
 
 
-class OnLevelShutdown(_ListenerManager):
+class OnLevelShutdown(ListenerManagerDecorator):
     """Register/unregister a LevelShutdown listener."""
 
     manager = on_level_shutdown_listener_manager
 
 
-class OnNetworkidValidated(_ListenerManager):
+class OnNetworkidValidated(ListenerManagerDecorator):
     """Register/unregister a NetworkidValidated listener."""
 
     manager = on_network_id_validated_listener_manager
 
 
-class OnEdictAllocated(_ListenerManager):
+class OnEdictAllocated(ListenerManagerDecorator):
     """Register/unregister an OnEdictAllocated listener."""
 
     manager = on_edict_allocated_listener_manager
 
 
-class OnEdictFreed(_ListenerManager):
+class OnEdictFreed(ListenerManagerDecorator):
     """Register/unregister an OnEdictFreed listener."""
 
     manager = on_edict_freed_listener_manager
 
 
-class OnEntityPreSpawned(_ListenerManager):
+class OnEntityPreSpawned(ListenerManagerDecorator):
     """Register/unregister a OnEntityPreSpawned listener."""
 
     manager = on_entity_pre_spawned_listener_manager
 
 
-class OnEntityCreated(_ListenerManager):
+class OnEntityCreated(ListenerManagerDecorator):
     """Register/unregister a OnEntityCreated listener."""
 
     manager = on_entity_created_listener_manager
 
 
-class OnEntitySpawned(_ListenerManager):
+class OnEntitySpawned(ListenerManagerDecorator):
     """Register/unregister a OnEntitySpawned listener."""
 
     manager = on_entity_spawned_listener_manager
 
 
-class OnEntityDeleted(_ListenerManager):
+class OnEntityDeleted(ListenerManagerDecorator):
     """Register/unregister a OnEntityDeleted listener."""
 
     manager = on_entity_deleted_listener_manager
 
 
-class OnDataLoaded(_ListenerManager):
+class OnDataLoaded(ListenerManagerDecorator):
     """Register/unregister a OnDataLoaded listener."""
 
     manager = on_data_loaded_listener_manager
 
 
-class OnCombinerPreCache(_ListenerManager):
+class OnCombinerPreCache(ListenerManagerDecorator):
     """Register/unregister a OnCombinerPreCache listener."""
 
     manager = on_combiner_pre_cache_listener_manager
 
 
-class OnDataUnloaded(_ListenerManager):
+class OnDataUnloaded(ListenerManagerDecorator):
     """Register/unregister a OnDataUnloaded listener."""
 
     manager = on_data_unloaded_listener_manager
 
 
-class OnQueryCvarValueFinished(_ListenerManager):
+class OnQueryCvarValueFinished(ListenerManagerDecorator):
     """Register/unregister an OnQueryCvarValueFinished listener."""
 
     manager = on_query_cvar_value_finished_listener_manager
 
 
-class OnServerActivate(_ListenerManager):
+class OnServerActivate(ListenerManagerDecorator):
     """Register/unregister a ServerActivate listener."""
 
     manager = on_server_activate_listener_manager
 
 
-class OnTick(_ListenerManager):
+class OnTick(ListenerManagerDecorator):
     """Register/unregister a Tick listener."""
 
     manager = on_tick_listener_manager
 
 
-class OnVersionUpdate(_ListenerManager):
+class OnVersionUpdate(ListenerManagerDecorator):
     """Register/unregister a version update listener."""
 
     manager = on_version_update_listener_manager
+
+
+class OnConVarChanged(ListenerManagerDecorator):
+    """Register/unregister a ConVar listener."""
+
+    manager = on_convar_changed_listener_manager
 
 
 # =============================================================================
@@ -347,3 +361,11 @@ def _on_level_init(map_name):
 
     on_version_update_listener_manager.notify(
         VERSION, version, is_unversioned())
+
+
+@PreHook(memory.get_virtual_function(cvar, 'CallGlobalChangeCallbacks'))
+def _pre_call_global_change_callbacks(args):
+    """Called when a ConVar has been changed."""
+    convar = memory.make_object(ConVar, args[1])
+    old_value = args[2]
+    on_convar_changed_listener_manager.notify(convar, old_value)

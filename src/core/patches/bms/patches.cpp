@@ -25,13 +25,8 @@
 */
 
 #include "convar.h"
-#ifndef PATCH_CONVAR_H_REMOVE_FLAGS
-#error "Implement ConCommandBase::RemoveFlags in public/tier1/convar.h"
-#endif
-
-#include "convar.h"
-#ifndef PATCH_CONVAR_H_GET_FLAGS
-#error "Implement ConCommandBase::GetFlags in public/tier1/convar.h"
+#ifndef PATCH_CONVAR_H_PUBLIC_FLAGS
+#error "Make ConCommandBase::m_nFlags public."
 #endif
 
 #include "utilities/baseentity.h"

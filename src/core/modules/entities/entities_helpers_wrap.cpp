@@ -75,6 +75,14 @@ void export_entity_helper_functions(scope _helpers)
 		"Spawns the entity matching the given index.",
 		args("entity_index")
 	);
+
+	def("find_output_name",
+		&FindOutputName,
+		args("caller", "output"),
+		"Lookup the name of an output.\n"
+		"\n"
+		"If no name has been found, None will be returned."
+	);
 }
 
 

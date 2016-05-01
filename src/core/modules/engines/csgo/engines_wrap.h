@@ -266,6 +266,15 @@ T IVEngineServer_Visitor(T cls)
 			args("out")
 		)
 		*/
+
+		.add_property("achievement_mgr",
+			make_function(
+				&IVEngineServer::GetAchievementMgr,
+				reference_existing_object_policy()
+			),
+			&IVEngineServer::SetAchievementMgr,
+			"Return the achievement manager."
+		)
 	;
 
 	return cls;

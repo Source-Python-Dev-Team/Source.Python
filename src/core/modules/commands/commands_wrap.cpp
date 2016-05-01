@@ -33,6 +33,7 @@
 #include "commands_say.h"
 #include "commands.h"
 #include "commands_server.h"
+#include "sp_main.h"
 
 
 //-----------------------------------------------------------------------------
@@ -51,9 +52,11 @@ extern void UnregisterSayCommands();
 void InitCommands()
 {
 	// Register the say and say_team commands
+	DevMsg(1, MSG_PREFIX "Registering say and say_team commands...\n");
 	RegisterSayCommands();
 
-	// Register teh ConVar accessor.
+	// Register the ConVar accessor.
+	DevMsg(1, MSG_PREFIX "Registering ConVar accessor...\n");
 	InitServerCommands();
 }
 
@@ -162,19 +165,20 @@ void export_concommandbase(scope _commands)
 		)
 
 		.def("add_flags",
-			&ConCommandBase::AddFlags,
+			&ConCommandBaseExt::AddFlags,
 			"Adds the given flags to the ConVar.",
 			args("flag")
 		)
 
 		.def("remove_flags",
-			&ConCommandBase::RemoveFlags,
+			&ConCommandBaseExt::RemoveFlags,
 			"Removes the given flags from the ConVar.",
 			args("flag")
 		)
 		
 		.add_property("flags",
-			&ConCommandBase::GetFlags,
+			&ConCommandBaseExt::GetFlags,
+			&ConCommandBaseExt::SetFlags,
 			"Returns its flags."
 		)
 		

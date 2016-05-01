@@ -484,6 +484,10 @@ void export_function(scope _memory)
 		)
 
 		.def_readonly("return_type",
+			&CFunction::m_eReturnType
+		)
+
+		.def_readonly("converter",
 			&CFunction::m_oConverter
 		)
 

@@ -28,6 +28,12 @@
 #define _STEAM_WRAP_H
 
 //-----------------------------------------------------------------------------
+// INCLUDES
+//-----------------------------------------------------------------------------
+#include "strtools.h"
+
+
+//-----------------------------------------------------------------------------
 // CLASSES
 //-----------------------------------------------------------------------------
 class CSteamIDExt
@@ -44,7 +50,7 @@ public:
 
 		// Try SteamID2
 		if (sscanf(input, "STEAM_%u:%u:%u", &universe, &auth_server, &account_id) == 3) {
-			account_id = account_id * 2 | auth_server;
+			account_id = account_id << 1 | auth_server;
 
 			// Some games represent the public universe as 0, others as 1
 			if (universe == 0)
@@ -140,6 +146,81 @@ public:
 				return false;
 		}
 		return true;
+	}
+
+	static str ToSteamID2(CSteamID* pSteamID)
+	{
+		char buffer[32];
+		uint32 account_id = pSteamID->GetAccountID();
+		V_snprintf(buffer, 32, "STEAM_%u:%u:%u", pSteamID->GetEUniverse(), account_id & 1, account_id >> 1);
+		return str(buffer);
+	}
+
+	static bool AccountTypeToIdentifier(EAccountType account_type, EChatSteamIDInstanceFlags account_instance_flags, char& identifier)
+	{
+		switch (account_type)
+		{
+			case k_EAccountTypeInvalid:
+				identifier = 'I';
+				break;
+			case k_EAccountTypeIndividual:
+				identifier = 'U';
+				break;
+			case k_EAccountTypeMultiseat:
+				identifier = 'M';
+				break;
+			case k_EAccountTypeGameServer:
+				identifier = 'G';
+				break;
+			case k_EAccountTypeAnonGameServer:
+				identifier = 'A';
+				break;
+			case k_EAccountTypePending:
+				identifier = 'P';
+				break;
+			case k_EAccountTypeContentServer:
+				identifier = 'C';
+				break;
+			case k_EAccountTypeClan:
+				identifier = 'g';
+				break;
+			case k_EAccountTypeChat:
+				if (account_instance_flags == k_EChatInstanceFlagClan) {
+					identifier = 'c';
+				}
+				else if (account_instance_flags == k_EChatInstanceFlagLobby) {
+					identifier = 'L';
+				}
+				else if (account_instance_flags == 1) {
+					identifier = 'T';
+				}
+				else {
+					return false;
+				}
+				break;
+			case 10:
+				identifier = 'a';
+				break;
+			default:
+				return false;
+		}
+		return true;
+	}
+
+	static str ToSteamID3(CSteamID* pSteamID)
+	{
+		char buffer[32];
+
+		char account_type_identifier;
+		if (!AccountTypeToIdentifier(pSteamID->GetEAccountType(), (EChatSteamIDInstanceFlags) pSteamID->GetUnAccountInstance(), account_type_identifier))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid account type '%u'.", pSteamID->GetEAccountType())
+
+		if (pSteamID->GetUnAccountInstance() == 1)
+			V_snprintf(buffer, 32, "[%c:%u:%u]", account_type_identifier, pSteamID->GetEUniverse(), pSteamID->GetAccountID());
+		else 
+			V_snprintf(buffer, 32, "[%c:%u:%u:%u]", account_type_identifier, pSteamID->GetEUniverse(), pSteamID->GetAccountID(), pSteamID->GetUnAccountInstance());
+
+		return str(buffer);
 	}
 };
 

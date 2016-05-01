@@ -176,36 +176,29 @@ class PluginManager(OrderedDict):
         # Get the plugins import path
         base_name = self.base_import + plugin_name
 
-        # Loop through all loaded modules
+        # Remove modules from sys.modules
         for module in list(sys.modules):
+            if self._is_related_module(base_name, module):
+                del sys.modules[module]
 
-            # Is the current module not within the plugin?
-            if not module.startswith(base_name):
+        # Unload AutoUnload instances
+        for module, instances in list(_module_instances.items()):
+            if not self._is_related_module(base_name, module):
                 continue
 
-            # Does the current module have any AutoUnload objects?
-            if module in _module_instances:
+            for instance in instances:
+                try:
+                    instance._unload_instance()
+                except NotImplementedError:
+                    # Print the error to console, but allow all
+                    # other AutoUnload instances to be unloaded
+                    # and the plugin to be fully unloaded itself
+                    except_hooks.print_exception()
 
-                # Loop through all AutoUnload objects in the current module
-                for instance in _module_instances[module]:
+            del _module_instances[module]
 
-                    # Use try/except in-case the instance
-                    # does not have an _unload_instance method
-                    try:
-
-                        # Unload the object
-                        instance._unload_instance()
-
-                    # Was a NotImplementedError encountered?
-                    except NotImplementedError:
-
-                        # Print the error to console, but allow all
-                        # other AutoUnload instances to be unloaded
-                        # and the plugin to be fully unloaded itself
-                        except_hooks.print_exception()
-
-                # Remove the module from AutoUnload
-                del _module_instances[module]
-
-            # Delete the module
-            del sys.modules[module]
+    @staticmethod
+    def _is_related_module(base_name, module):
+        """Check if a plugin's base name is related to a module name."""
+        return (module.startswith('{}.'.format(base_name))
+            or module == base_name)

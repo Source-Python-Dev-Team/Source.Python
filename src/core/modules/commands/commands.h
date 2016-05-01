@@ -80,6 +80,34 @@ public:
 
 
 //-----------------------------------------------------------------------------
+// ConCommandBase extension class.
+//-----------------------------------------------------------------------------
+class ConCommandBaseExt
+{
+public:
+	static int GetFlags(ConCommandBase* command)
+	{
+		return command->m_nFlags;
+	}
+
+	static void SetFlags(ConCommandBase* command, int flags)
+	{
+		command->m_nFlags = flags;
+	}
+
+	static void AddFlags(ConCommandBase* command, int flags)
+	{
+		command->m_nFlags |= flags;
+	}
+
+	static void RemoveFlags(ConCommandBase* command, int flags)
+	{
+		command->m_nFlags &= ~flags;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // CommandGenerator template
 //-----------------------------------------------------------------------------
 template<class CommandMap>

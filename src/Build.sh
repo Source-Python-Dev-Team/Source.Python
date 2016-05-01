@@ -58,33 +58,9 @@ ChooseBranch () {
         BRANCH=${!branch}
 
         # Show the build-type options
-        ChooseBuildType
+        CloneRepo
 
     fi
-
-}
-
-
-# A function to choose the build type
-ChooseBuildType () {
-
-    # Print a menu for build type
-    echo "Select the build type:"
-    echo ""
-    echo -e "\t(1) Release"
-    echo -e "\t(2) Debug"
-    echo ""
-
-    # Request a choice in build type
-    read BUILD_TYPE
-
-    # Was the choice invalid?
-    if [ ! $BUILD_TYPE == "1" ] && [ ! $BUILD_TYPE == "2" ]; then
-        ChooseBuildType
-    fi
-
-    # If the choice was valid, create the clone, if it doesn't exist
-    CloneRepo
 
 }
 
@@ -162,15 +138,7 @@ CreateBuild () {
         mkdir -p "$BUILDDIR"
     fi
 
-    # Building for "Release"?
-    if [ $BUILD_TYPE == "1" ]; then
-        cmake . -B"$BUILDDIR" -DBRANCH=$BRANCH
-
-    # Building for "Debug"?
-    else
-        cmake . -B"$BUILDDIR" -DBRANCH=$BRANCH -DCMAKE_BUILD_TYPE=Debug
-
-    fi
+    cmake . -B"$BUILDDIR" -DBRANCH=$BRANCH
 
     # Navigate to the ../Builds/<Branch> directory
     cd "$BUILDDIR"
@@ -184,14 +152,9 @@ CreateBuild () {
     test ${PIPESTATUS[0]} -eq 0
 
 }
-if [ "$#" -gt "0" ]; then
+if [ "$#" -eq "1" ]; then
     BRANCH=$1
-    if [ "$#" -eq "2" ]; then
-        BUILD_TYPE=$2
-        CloneRepo
-    else
-        ChooseBuildType
-    fi
+    CloneRepo
 else
     ChooseBranch
 fi
