@@ -553,8 +553,14 @@ class _ServerClasses(TypeManager):
             # Is the property a native type?
             if native_type:
 
-                # Return the value
-                return getattr(ptr, 'get_' + type_name)(offset)
+                value = getattr(ptr, 'get_' + type_name)(offset)
+
+                # Does the value need cast to an integer?
+                if type_name == 'char':
+                    if value == '\x00':
+                        return 0
+                    return int(value)
+                return value
 
             # Return the value
             return self.convert(type_name, ptr + offset)
@@ -563,6 +569,12 @@ class _ServerClasses(TypeManager):
             """Set the property value and notify if networked."""
             # Is the property a native type?
             if native_type:
+
+                # Does the value need cast to a string?
+                if type_name == 'char':
+                    if not value:
+                        value = '\x00'
+                    value = str(value)
 
                 # Set the property
                 getattr(ptr, 'set_' + type_name)(value, offset)
