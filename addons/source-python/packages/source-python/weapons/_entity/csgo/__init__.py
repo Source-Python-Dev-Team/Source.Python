@@ -11,12 +11,6 @@ from weapons.manager import weapon_manager
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-_projectile_names = weapon_manager.projectiles.values()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class Weapon(_Weapon):
@@ -24,7 +18,7 @@ class Weapon(_Weapon):
     def get_ammo(self):
         """Return the amount of ammo the player has for the weapon."""
         # Is the weapon a projectile?
-        if weapon_manager[self.classname].basename in _projectile_names:
+        if 'grenade' in weapon_manager[self.classname].tags:
             return super(Weapon, self).get_ammo()
 
         return self.primary_ammo_count
@@ -32,7 +26,7 @@ class Weapon(_Weapon):
     def set_ammo(self, value):
         """Set the player's ammo property for the weapon."""
         # Is the weapon a projectile?
-        if weapon_manager[self.classname].basename in _projectile_names:
+        if 'grenade' in weapon_manager[self.classname].tags:
             super(Weapon, self).set_ammo(value)
             return
 
