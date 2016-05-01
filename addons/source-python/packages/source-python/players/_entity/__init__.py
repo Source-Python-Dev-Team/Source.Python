@@ -1,4 +1,4 @@
-# ../players/entity.py
+# ../players/_entity/__init__.py
 
 """Provides a class used to interact with a specific player."""
 
@@ -563,6 +563,17 @@ class Player(Entity):
         buffer.write_string(str(value))
         self.client.net_channel.send_data(buffer)
 
+    @property
+    def spectators(self):
+        """Return all players observing this player.
+        :return: The generator yields :class:`players.entity.Player` objects.
+        :rtype: generator
+        """
+        from filters.players import PlayerIter
+        for other in PlayerIter('dead'):
+            if self.inthandle == other.observer_target:
+                yield other
+
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
     # =========================================================================
@@ -647,11 +658,11 @@ class Player(Entity):
             # Try to get the index of the handle
             try:
                 index = index_from_inthandle(handle)
-            except:
+            except (ValueError, OverflowError):
                 continue
 
             # Get the weapon's classname
-            weapon_class = edict_from_index(index).get_class_name()
+            weapon_class = edict_from_index(index).classname
 
             # Was a classname given and the current
             # weapon is not of that classname?
@@ -726,17 +737,6 @@ class Player(Entity):
         """
         from weapons.restrictions import weapon_restriction_manager
         return weapon_restriction_manager.is_player_restricted(self, weapon)
-
-    @property
-    def spectators(self):
-        """Return all players observing this player.
-        :return: The generator yields :class:`players.entity.Player` objects.
-        :rtype: generator
-        """
-        from filters.players import PlayerIter
-        for other in PlayerIter('dead'):
-            if self.inthandle == other.observer_target:
-                yield other
 
 
 # =============================================================================

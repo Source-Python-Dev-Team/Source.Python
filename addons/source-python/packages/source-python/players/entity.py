@@ -1,6 +1,6 @@
-# 
+# ../players/entity.py
 
-""""""
+"""Provides a class used to interact with a specific player."""
 
 # =============================================================================
 # >> IMPORTS
@@ -23,10 +23,18 @@ __all__ = ('Player',
 # =============================================================================
 if SP_PACKAGES_PATH.joinpath(
         'players', '_entity', SOURCE_ENGINE, GAME_NAME + '.py').isfile():
+
+    # Import the game-specific 'Player' class
     Player = import_module('players._entity.{0}.{1}'.format(
         SOURCE_ENGINE, GAME_NAME)).Player
+
 elif SP_PACKAGES_PATH.joinpath(
         'players', '_entity', SOURCE_ENGINE, '__init__.py').isfile():
+
+    # Import the engine-specific 'Player' class
     Player = import_module('players._entity.{0}'.format(SOURCE_ENGINE)).Player
+
 else:
+
+    # Import the base 'Player' class
     from players._entity import Player
