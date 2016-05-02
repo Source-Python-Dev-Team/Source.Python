@@ -80,10 +80,12 @@ _supported_keyvalue_types = {
     FieldType.FLOAT: 'float',
     FieldType.INTEGER: 'int',
     FieldType.MODELNAME: 'string',
+    FieldType.POSITION_VECTOR: 'vector',
     FieldType.SHORT: 'int',
     FieldType.SOUNDNAME: 'string',
     FieldType.STRING: 'string',
     FieldType.TICK: 'int',
+    FieldType.TIME: 'float',
     FieldType.VECTOR: 'vector',
 }
 
