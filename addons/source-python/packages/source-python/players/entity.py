@@ -70,8 +70,11 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         """
         super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
-        self.permissions = auth_manager.get_player_permissions_from_steamid(
-            self.steamid)
+        
+    @property
+    def permissions(self):
+        """Return the player's :class:`auth.manager.PlayerPermissions` object."""
+        return auth_manager.get_player_permissions_from_steamid(self.steamid)
 
     @property
     def playerinfo(self):
