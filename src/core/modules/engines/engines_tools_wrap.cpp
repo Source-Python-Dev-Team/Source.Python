@@ -48,17 +48,17 @@ extern IEngineTool* enginetool;
 void export_engine_tool(scope);
 
 //---------------------------------------------------------------------------------
-// Declare the _tool module
+// Declare the _tools module
 //---------------------------------------------------------------------------------
-DECLARE_SP_SUBMODULE(_engines, _tool)
+DECLARE_SP_SUBMODULE(_engines, _tools)
 {
-	export_engine_tool(_tool);
+	export_engine_tool(_tools);
 }
 
 //---------------------------------------------------------------------------------
 // Exports IEngineTool
 //---------------------------------------------------------------------------------
-void export_engine_tool(scope _tool)
+void export_engine_tool(scope _tools)
 {
 	class_<IEngineTool, boost::noncopyable>("_EngineTool", no_init)
 		.def("get_sound_duration_by_path",
@@ -105,6 +105,6 @@ void export_engine_tool(scope _tool)
 		ADD_MEM_TOOLS(IEngineTool)
 	;
 
-	_tool.attr("engine_tool") = object(ptr(enginetool));
+	_tools.attr("engine_tool") = object(ptr(enginetool));
 }
 
