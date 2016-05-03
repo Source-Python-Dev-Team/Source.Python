@@ -389,6 +389,10 @@ class Entity(BaseEntity):
         """Return the short property."""
         return self._get_property(name, 'short')
 
+    def get_property_ushort(self, name):
+        """Return the ushort property."""
+        return self._get_property(name, 'ushort')
+
     def get_property_string(self, name):
         """Return the string property."""
         return self._get_property(name, 'string_array')
@@ -467,6 +471,10 @@ class Entity(BaseEntity):
     def set_property_short(self, name, value):
         """Set the short property."""
         self._set_property(name, 'short', value)
+
+    def set_property_ushort(self, name, value):
+        """Set the ushort property."""
+        self._set_property(name, 'ushort', value)
 
     def set_property_string(self, name, value):
         """Set the string property."""
