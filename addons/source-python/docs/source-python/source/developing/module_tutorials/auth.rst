@@ -45,6 +45,6 @@ Removing a permission is as easy as adding one.
 
     from filters.players import PlayerIter
 
-    # Loop through all human players and grant the permission 'my_plugin.something'
+    # Loop through all human players and remove the permission 'my_plugin.something'
     for player in PlayerIter('human'):
         player.permissions.remove('my_plugin.something')
