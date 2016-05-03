@@ -47,7 +47,7 @@
 // ============================================================================
 // >> EXTERNALS
 // ============================================================================
-extern std::map<CHook *, std::map<HookType_t, std::list<PyObject *> > > g_mapCallbacks;
+extern std::map<CHook *, std::map<HookType_t, std::list<object> > > g_mapCallbacks;
 
 
 // ============================================================================
@@ -312,7 +312,7 @@ CHook* HookFunctionHelper(void* addr, ICallingConvention* pConv)
 	return result;
 }
 
-handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
+void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsHookable())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not hookable.")
@@ -325,10 +325,7 @@ handle<> CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 	
 	// Add the hook handler. If it's already added, it won't be added twice
 	pHook->AddCallback(eType, (HookHandlerFn *) (void *) &SP_HookHandler);
-	g_mapCallbacks[pHook][eType].push_back(pCallable);
-	
-	// Return the callback, so we can use this method as a decorator
-	return handle<>(borrowed(pCallable));
+	g_mapCallbacks[pHook][eType].push_back(object(handle<>(borrowed(pCallable))));
 }
 
 void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
@@ -338,7 +335,7 @@ void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
 	if (!pHook)
 		return;
 
-	g_mapCallbacks[pHook][eType].remove(pCallable);
+	g_mapCallbacks[pHook][eType].remove(object(handle<>(borrowed(pCallable))));
 }
 
 void CFunction::DeleteHook()

@@ -145,7 +145,6 @@ void export_send_prop(scope _props)
 	SendProp_.NOT_IMPLEMENTED_ATTR("priority");
 	
 	// Methods...
-	SendProp_.add_property("offset", &SendProp::GetOffset);
 
 	SendProp_.def("is_signed", &SendProp::IsSigned);
 	SendProp_.def("is_exclude_prop", &SendProp::IsExcludeProp);

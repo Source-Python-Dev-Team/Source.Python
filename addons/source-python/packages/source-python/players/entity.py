@@ -330,11 +330,16 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         :rtype: Vector
         """
         eye_angle = self.eye_angle
-        return Vector(
-            math.cos(math.radians(eye_angle.y)),
-            math.sin(math.radians(eye_angle.y)),
-            -1 * math.sin(math.radians(self.eye_angle.x))
-        )
+
+        yaw = math.radians(eye_angle.y)
+        pitch = math.radians(eye_angle.x)
+
+        sy = math.sin(yaw)
+        cy = math.cos(yaw)
+        sp = math.sin(pitch)
+        cp = math.cos(pitch)
+
+        return Vector(cp * cy, cp * sy, -sp)
 
     def get_view_angle(self):
         """Return the player's view angle.

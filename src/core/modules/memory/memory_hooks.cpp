@@ -40,8 +40,8 @@ using namespace boost::python;
 // ============================================================================
 // >> GLOBAL VARIABLES
 // ============================================================================
-// g_mapCallbacks[<CHook *>][<HookType_t>] -> [<PyObject *>, <PyObject *>, ...]
-std::map<CHook *, std::map<HookType_t, std::list<PyObject *> > > g_mapCallbacks;
+// g_mapCallbacks[<CHook *>][<HookType_t>] -> [<object>, <object>, ...]
+std::map<CHook *, std::map<HookType_t, std::list<object> > > g_mapCallbacks;
 
 
 // ============================================================================
@@ -79,7 +79,7 @@ object GetArgument(CHook* pHook, int iIndex)
 // ============================================================================
 bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 {
-	std::list<PyObject *> callbacks = g_mapCallbacks[pHook][eHookType];
+	std::list<object> callbacks = g_mapCallbacks[pHook][eHookType];
 
 	// No need to do all this stuff, if there is no callback registered
 	if (callbacks.empty())
@@ -112,14 +112,14 @@ bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 	
 	CStackData stackdata = CStackData(pHook);
 	bool bOverride = false;
-	for (std::list<PyObject *>::iterator it=callbacks.begin(); it != callbacks.end(); it++)
+	for (std::list<object>::iterator it=callbacks.begin(); it != callbacks.end(); it++)
 	{
 		BEGIN_BOOST_PY()
 			object pyretval;
 			if (eHookType == HOOKTYPE_PRE)
-				pyretval = CALL_PY_FUNC(*it, stackdata);
+				pyretval = CALL_PY_FUNC((*it).ptr(), stackdata);
 			else
-				pyretval = CALL_PY_FUNC(*it, stackdata, retval);
+				pyretval = CALL_PY_FUNC((*it).ptr(), stackdata, retval);
 
 			if (!pyretval.is_none())
 			{
