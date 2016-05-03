@@ -14,6 +14,7 @@ from enum import Enum
 from core import AutoUnload
 #   Engines
 from engines import engines_logger
+from engines.tools import engine_tool
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
 #   Filters
@@ -178,7 +179,7 @@ class Sound(AutoUnload):
     @property
     def duration(self):
         """Return the duration of the sample."""
-        return engine_sound.get_sound_duration(self.sample)
+        return engine_tool.get_sound_duration_by_path(self.sample)
 
     def _unload_instance(self):
         """Remove the sample from the downloads list."""
