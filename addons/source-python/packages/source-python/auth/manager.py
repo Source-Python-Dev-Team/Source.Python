@@ -334,12 +334,12 @@ class _AuthManager(dict):
         """
         return self.parents[parent_name]
 
-    def is_parent_authorized(self, index, permission):
+    def is_parent_authorized(self, parent_name, permission):
         """Return True if the parent has been granted the given permission.
 
         :rtype: bool
         """
-        return permission in self.get_parent_permissions(index)
+        return permission in self.get_parent_permissions(parent_name)
 
     def targets_this_server(self, server_id):
         """Return whether the server ID targets this server.
