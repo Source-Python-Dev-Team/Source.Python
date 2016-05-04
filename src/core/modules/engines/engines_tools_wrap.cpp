@@ -63,43 +63,38 @@ void export_engine_tool(scope _tools)
 	class_<IEngineTool, boost::noncopyable>("_EngineTool", no_init)
 		.def("get_sound_duration_by_path",
 			GET_METHOD(float, IEngineTool, GetSoundDuration, const char*),
-			"Returns the duration of the given sound sample.",
-			args("sampleName")
+			"Return the duration of the given sound sample.",
+			args("sound_path")
 		)
 
 		.def("get_sound_duration_by_guid",
 			GET_METHOD(float, IEngineTool, GetSoundDuration, int),
-			"Returns the duration of the sound tied to the given GUID.",
+			"Return the duration of the sound tied to the given GUID.",
 			args("guid")
 		)
 
 		.def("is_sound_still_playing",
 			&IEngineTool::IsSoundStillPlaying,
-			"Returns true if the given sound is still playing",
+			"Return true if the given sound is still playing",
 			args("sound_guid")
 		)
 
 		.def("stop_sound_by_guid",
 			&IEngineTool::StopSoundByGuid,
-			"Stops a sound by GUID.",
+			"Stop a sound by GUID.",
 			args("guid")
 		)
 
 		.def("is_looping_sound",
 			&IEngineTool::IsLoopingSound,
-			"Returns true if the sound is looping.",
+			"Return true if the sound is looping.",
 			args("guid")
 		)
 
 		.def("reload_sound",
 			&IEngineTool::ReloadSound,
-			"Reloads the given sound from the disk.",
+			"Reload the given sound from the disk.",
 			args("sound_path")
-		)
-
-		.def("stop_all_sounds",
-			&IEngineTool::StopAllSounds,
-			"Stops all sounds that are currently playing."
 		)
 
 		ADD_MEM_TOOLS(IEngineTool)
