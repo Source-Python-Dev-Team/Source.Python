@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 #include <list>
 #include "export_main.h"
-#include "memory_tools.h"
+#include "memory_pointer.h"
 
 struct Signature_t
 {

@@ -33,6 +33,8 @@
 #include "memory_pointer.h"
 #include "memory_utilities.h"
 
+CPointer* ExtractPointer(object oPtr);
+
 
 // ============================================================================
 // >> GetObjectPointer
@@ -49,15 +51,16 @@ inline object GetObjectPointer(object obj)
 // ============================================================================
 // >> MakeObject
 // ============================================================================
-inline object MakeObject(object cls, CPointer* pPtr)
+inline object MakeObject(object cls, object oPtr)
 {
 	if (!PyObject_HasAttrString(cls.ptr(), GET_OBJ_NAME))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
 
+	CPointer* pPtr = ExtractPointer(oPtr);
 	if (!pPtr->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.");
 
-	return cls.attr(GET_OBJ_NAME)(ptr(pPtr));
+	return cls.attr(GET_OBJ_NAME)(pPtr);
 }
 
 
