@@ -321,7 +321,7 @@ class Entity(BaseEntity):
     def set_color(self, color):
         """Set the entity's color."""
         # Set the entity's render mode
-        self.render_mode |= RenderMode.TRANS_COLOR
+        self.render_mode = RenderMode.TRANS_COLOR
 
         # Set the entity's color
         self.render_color = color
@@ -388,6 +388,10 @@ class Entity(BaseEntity):
     def get_property_short(self, name):
         """Return the short property."""
         return self._get_property(name, 'short')
+
+    def get_property_ushort(self, name):
+        """Return the ushort property."""
+        return self._get_property(name, 'ushort')
 
     def get_property_string(self, name):
         """Return the string property."""
@@ -467,6 +471,10 @@ class Entity(BaseEntity):
     def set_property_short(self, name, value):
         """Set the short property."""
         self._set_property(name, 'short', value)
+
+    def set_property_ushort(self, name, value):
+        """Set the ushort property."""
+        self._set_property(name, 'ushort', value)
 
     def set_property_string(self, name, value):
         """Set the string property."""

@@ -91,14 +91,15 @@ class SimpleRadioMenu(_BaseMenu):
         :param iterable slots: Slots that should be enabled.
         :raise ValueError: Raised if a slot is out of range.
         """
-        result = 0
+        # Keys are enabled in that order: 0987654321
+        buffer = list('0000000000')
         for slot in slots:
             if 0 <= slot <= 9:
-                result |= 1 << slot
+                buffer[~(slot - 1)] = '1'
             else:
                 raise ValueError('Slot out of range: {}'.format(slot))
 
-        return result
+        return int(''.join(buffer), 2)
 
     def _select(self, player_index, choice_index):
         """See :meth:`menus.base._BaseMenu._select`."""
@@ -156,6 +157,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             the body.
         :param bool fill: If True the menu will be filled so that it will
             always have the same  size.
+        :param _BaseMenu parent_menu: A menu that will be displayed when
+            hitting 'Back' on the first page.
         """
         super().__init__(data, select_callback, build_callback)
 
@@ -310,6 +313,40 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         return super()._select(player_index, choice_index)
 
 
+class ListRadioMenu(PagedRadioMenu):
+    """Creates a list-like radio menu.
+
+    Navigation options are added automatically."""
+
+    def __init__(
+            self, data=None, select_callback=None, build_callback=None,
+            description=None, title=None, top_separator='-' * 30,
+            bottom_separator='-' * 30, fill=True, parent_menu=None,
+            items_per_page=10):
+        """Initialize the object.
+
+        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None select_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None build_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param str|None description: See :meth:`PagedRadioMenu.__init__`.
+        :param str|None title: See :meth:`PagedRadioMenu.__init__`.
+        :param str top_separator: See :meth:`PagedRadioMenu.__init__`.
+        :param str bottom_separator: See :meth:`PagedRadioMenu.__init__`.
+        :param bool fill: See :meth:`PagedRadioMenu.__init__`.
+        :param _BaseMenu parent_menu: See :meth:`PagedRadioMenu.__init__`.
+        :param int items_per_page: Number of options that should be displayed
+            on a single page.
+        """
+        super().__init__(data, select_callback, build_callback, description,
+            title, top_separator, bottom_separator, fill, parent_menu)
+        self.items_per_page = items_per_page
+
+    def _get_max_item_count(self):
+        return self.items_per_page
+
+
 class _BaseRadioOption(_BaseOption):
     """Base class for radio options."""
 
@@ -358,3 +395,28 @@ class PagedRadioOption(_BaseRadioOption):
             choice_index,
             _translate_text(self.text, player_index)
         )
+
+
+class ListRadioOption(PagedRadioOption):
+    """Provides options for :class:`ListRadioMenu` objects."""
+
+    def __init__(self, text, highlight=True, enumerated=True):
+        """Initialize the option.
+
+        :param str text: See :meth:`menus.base._BaseOption.__init__`.
+        :param bool hightlight: If True the text will be highlighted.
+        :param bool enumerated: If True the number of the option will be added
+            in front of the text.
+
+        .. note:: ``highlight`` only works if ``enumerated`` is set to True.
+        """
+        super().__init__(text, None, highlight, False)
+        self.enumerated = enumerated
+
+    def _render(self, player_index, choice_index):
+        """See :meth:`menus.base._MenuData._render`."""
+        if self.enumerated:
+            return super()._render(player_index, choice_index)
+
+        return '{}{}\n'.format(self._get_highlight_prefix(),
+            _translate_text(self.text, player_index))

@@ -804,6 +804,10 @@ void export_server_game_dll(scope _server)
 			reference_existing_object_policy()
 		)
 	);
+
+	BEGIN_CLASS_INFO(IServerGameDLL)
+		FUNCTION_INFO(GetGameDescription)
+	END_CLASS_INFO()
 	
 	// Add memory tools...
 	ServerGameDLL ADD_MEM_TOOLS(IServerGameDLL);

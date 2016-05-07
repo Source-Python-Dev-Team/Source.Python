@@ -315,7 +315,6 @@ template<> struct MFI_Impl<4*SH_PTRSIZE>   // THE BIGGEST ONE!!!1GABEN
 // ============================================================================
 #include "memory_signature.h"
 #include "memory_calling_convention.h"
-#include "memory_tools.h"
 
 #include "boost/python/signature.hpp"
 #include "boost/mpl/transform.hpp"

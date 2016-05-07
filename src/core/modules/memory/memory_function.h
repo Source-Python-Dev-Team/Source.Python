@@ -69,13 +69,13 @@ public:
 	object CallTrampoline(boost::python::tuple args, dict kw);
 	object SkipHooks(boost::python::tuple args, dict kw);
 	
-	handle<> AddHook(HookType_t eType, PyObject* pCallable);
+	void AddHook(HookType_t eType, PyObject* pCallable);
 	void RemoveHook(HookType_t eType, PyObject* pCallable);
     
-	handle<> AddPreHook(PyObject* pCallable)
+	void AddPreHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_PRE, pCallable); }
 
-	handle<> AddPostHook(PyObject* pCallable)
+	void AddPostHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_POST, pCallable); }
     
 	void RemovePreHook(PyObject* pCallable)
