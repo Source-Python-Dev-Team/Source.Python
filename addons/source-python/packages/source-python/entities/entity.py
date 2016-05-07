@@ -477,7 +477,7 @@ class Entity(BaseEntity):
         self._set_property(name, 'short', value)
 
     def set_property_ushort(self, name, value):
-        """Set the short property."""
+        """Set the ushort property."""
         self._set_property(name, 'ushort', value)
 
     def set_property_string(self, name, value):

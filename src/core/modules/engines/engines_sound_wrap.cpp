@@ -96,12 +96,6 @@ void export_engine_sound(scope _sound)
 			"Prefetches a sample."
 		)
 
-		.def("get_sound_duration",
-			&IEngineSound::GetSoundDuration,
-			args("sample"),
-			"Returns the sound duration."
-		)
-
 		.def("emit_sound",
 			&IEngineSoundExt::EmitSound,
 			("filter", "entity_index", "channel", "sample",

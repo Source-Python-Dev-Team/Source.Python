@@ -39,7 +39,6 @@
 #include "dynload.h"
 
 #include "memory_scanner.h"
-#include "memory_tools.h"
 #include "utilities/sp_util.h"
 #include "utilities/call_python.h"
 #include "sp_main.h"
