@@ -60,8 +60,6 @@
 #include "utilities/conversions.h"
 #include "modules/entities/entities_entity.h"
 
-#include "toolframework/ienginetool.h"
-
 
 //-----------------------------------------------------------------------------
 // Disable warnings.
@@ -94,7 +92,6 @@ IPhysicsSurfaceProps*	physprops			= NULL;
 IMDLCache*				modelcache			= NULL;
 IVoiceServer*			voiceserver			= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
-IEngineTool*			enginetool			= NULL;
 
 //-----------------------------------------------------------------------------
 // External globals
@@ -146,7 +143,6 @@ InterfaceHelper_t gEngineInterfaces[] = {
 	{VPHYSICS_SURFACEPROPS_INTERFACE_VERSION, (void **)&physprops},
 	{MDLCACHE_INTERFACE_VERSION, (void **)&modelcache},
 	{INTERFACEVERSION_VOICESERVER, (void **)&voiceserver},
-	{VENGINETOOL_INTERFACE_VERSION, (void **)&enginetool},
 
 	{NULL, NULL}
 };
@@ -158,6 +154,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
 	{NULL, NULL}
 };
+
 
 //-----------------------------------------------------------------------------
 // Get all engine interfaces.
