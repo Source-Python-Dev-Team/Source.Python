@@ -252,12 +252,12 @@ inline bool IsValidBaseEntityPointer(void* ptr)
 	if (!ptr)
 		return false;
 
-	CBaseEntity* pEntity = servertools->FirstEntity();
+	CBaseEntity* pEntity = (CBaseEntity*) servertools->FirstEntity();
 	while (pEntity) {
 		if (pEntity == ptr)
 			return true;
 
-		pEntity = servertools->NextEntity(pEntity);
+		pEntity = (CBaseEntity*) servertools->NextEntity(pEntity);
 	}
 	return false;
 }
