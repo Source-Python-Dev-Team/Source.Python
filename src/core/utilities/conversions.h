@@ -294,7 +294,7 @@ inline bool IsValidPlayerPointer(void* ptr)
 	if (!ptr)
 		return false;
 
-	for (int i=1; i < gpGlobals->maxClients; ++i)
+	for (int i=1; i <= gpGlobals->maxClients; ++i)
 	{
 		edict_t* pEdict = NULL;
 		if (!EdictFromIndex(i, pEdict))
