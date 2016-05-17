@@ -20,7 +20,7 @@ from platform import system
 #   Sys
 import sys
 #   Weakref
-import weakref
+from weakref import WeakValueDictionary
 
 # Site-Packages Imports
 #   ConfigObj
@@ -66,9 +66,6 @@ PLATFORM = system().lower()
 # Get the sp.core logger
 core_logger = _sp_logger.core
 
-# Create a dictionary to store AutoUnload object in
-_module_instances = defaultdict(list)
-
 
 # =============================================================================
 # >> CLASSES
@@ -78,6 +75,9 @@ class AutoUnload(object):
 
     Each inheriting class must implement an _unload_instance method.
     """
+
+    # Create a dictionary to store AutoUnload objects in
+    _module_instances = defaultdict(list)
 
     def __new__(cls, *args, **kwargs):
         """Overwrite __new__ to store the calling module."""
@@ -94,8 +94,8 @@ class AutoUnload(object):
         return self
 
     def _add_instance(self, caller):
-        """Add the instance to _module_instances."""
-        _module_instances[caller].append(self)
+        """Add the instance to self._module_instances."""
+        self._module_instances[caller].append(self)
 
     def _unload_instance(self):
         """Base _unload_instance implementation."""
@@ -112,9 +112,13 @@ class WeakAutoUnload(AutoUnload):
     references to the instance are deleted.
     """
 
+    # Create a dictionary to store AutoUnload objects in
+    _module_instances = defaultdict(WeakValueDictionary)
+
     def new(cls, *args, **kwargs):
+        """Overwrite __new__ to set instance unloaded state."""
         self = super().__new__(cls)
-        self.___unloaded = False
+        self._instance_unloaded = False
 
         return self
 
@@ -125,15 +129,13 @@ class WeakAutoUnload(AutoUnload):
         self._unload_instance()
 
     def _add_instance(self, caller):
-        """Add the instance to _module_instances."""
-        # Use a weakref proxy so that the instance will get garbage collected
-        # when this is the only reference left.
-        _module_instances[caller].append(weakref.proxy(self))
+        """Add the instance to self._module_instances."""
+        self._module_instances[caller][id(self)] = self
 
     def _unload_instance(self):
-        # Prevent unloading more than once.
-        if not self.___unloaded:
-            self.___unloaded = True
+        """Prevent unloading the instance more than once."""
+        if not self._instance_unloaded:
+            self._instance_unloaded = True
             super()._unload_instance(self)
 
 
