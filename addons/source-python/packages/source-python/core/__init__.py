@@ -46,6 +46,7 @@ from _core import SOURCE_ENGINE_BRANCH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('AutoUnload',
+           'WeakAutoUnload',
            'GAME_NAME',
            'PLATFORM',
            'SOURCE_ENGINE',
