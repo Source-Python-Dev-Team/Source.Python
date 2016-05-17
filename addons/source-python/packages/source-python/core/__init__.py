@@ -19,6 +19,8 @@ from path import Path
 from platform import system
 #   Sys
 import sys
+#   Weakref
+import weakref
 
 # Site-Packages Imports
 #   ConfigObj
@@ -85,11 +87,15 @@ class AutoUnload(object):
         # Get the calling module
         caller = getmodule(stack()[1][0])
 
-        # Set the _calling_module attribute for the instance
-        _module_instances[caller.__name__].append(self)
+        # Call class-specific logic for adding the instance.
+        self._add_instance(caller.__name__)
 
         # Return the instance
         return self
+
+    def _add_instance(self, caller):
+        """Add the instance to _module_instances."""
+        _module_instances[caller].append(self)
 
     def _unload_instance(self):
         """Base _unload_instance implementation."""
@@ -99,6 +105,36 @@ class AutoUnload(object):
                     self.__class__.__module__].__file__.split(
                     'plugins', 1)[1][1:]) +
             'have its own implementation of an _unload_instance method.')
+
+
+class WeakAutoUnload(AutoUnload):
+    """Subclass of AutoUnload used to unload specific instances when all
+    references to the instance are deleted.
+    """
+
+    def new(cls, *args, **kwargs):
+        self = super().__new__(cls)
+        self.___unloaded = False
+
+        return self
+
+    def __del__(self):
+        """Overwrite __del__ to automatically unload the instance when garbage
+        collected.
+        """
+        self._unload_instance()
+
+    def _add_instance(self, caller):
+        """Add the instance to _module_instances."""
+        # Use a weakref proxy so that the instance will get garbage collected
+        # when this is the only reference left.
+        _module_instances[caller].append(weakref.proxy(self))
+
+    def _unload_instance(self):
+        # Prevent unloading more than once.
+        if not self.___unloaded:
+            self.___unloaded = True
+            super()._unload_instance(self)
 
 
 class GameConfigObj(ConfigObj):
