@@ -115,28 +115,9 @@ class WeakAutoUnload(AutoUnload):
     # Create a dictionary to store AutoUnload objects in
     _module_instances = defaultdict(WeakValueDictionary)
 
-    def new(cls, *args, **kwargs):
-        """Overwrite __new__ to set instance unloaded state."""
-        self = super().__new__(cls)
-        self._instance_unloaded = False
-
-        return self
-
-    def __del__(self):
-        """Overwrite __del__ to automatically unload the instance when garbage
-        collected.
-        """
-        self._unload_instance()
-
     def _add_instance(self, caller):
         """Add the instance to self._module_instances."""
         self._module_instances[caller][id(self)] = self
-
-    def _unload_instance(self):
-        """Prevent unloading the instance more than once."""
-        if not self._instance_unloaded:
-            self._instance_unloaded = True
-            super()._unload_instance(self)
 
 
 class GameConfigObj(ConfigObj):
