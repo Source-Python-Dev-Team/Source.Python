@@ -189,6 +189,9 @@ class PluginManager(OrderedDict):
             for instance in instances:
                 try:
                     instance._unload_instance()
+                # Instance is an expired weak reference proxy.
+                except ReferenceError:
+                    pass
                 except NotImplementedError:
                     # Print the error to console, but allow all
                     # other AutoUnload instances to be unloaded
