@@ -109,9 +109,7 @@ class AutoUnload(object):
 
 
 class WeakAutoUnload(AutoUnload):
-    """Subclass of AutoUnload used to unload specific instances when all
-    references to the instance are deleted.
-    """
+    """Subclass of AutoUnload used to store weak references to instances."""
 
     # Create a dictionary to store AutoUnload objects in
     _module_instances = defaultdict(WeakValueDictionary)
