@@ -215,4 +215,3 @@ class PluginManager(OrderedDict):
                 # other AutoUnload instances to be unloaded
                 # and the plugin to be fully unloaded itself
                 except_hooks.print_exception()
-
