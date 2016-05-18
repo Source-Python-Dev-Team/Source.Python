@@ -111,7 +111,7 @@ class AutoUnload(object):
 class WeakAutoUnload(AutoUnload):
     """Subclass of AutoUnload used to store weak references to instances."""
 
-    # Create a dictionary to store AutoUnload objects in
+    # Create a dictionary to store WeakAutoUnload objects in
     _module_instances = defaultdict(WeakValueDictionary)
 
     def _add_instance(self, caller):

@@ -13,7 +13,8 @@ import sys
 
 # Source.Python Imports
 #   Core
-from core import AutoUnload, WeakAutoUnload
+from core import AutoUnload
+from core import WeakAutoUnload
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Plugins
@@ -187,16 +188,15 @@ class PluginManager(OrderedDict):
                 continue
 
             self._unload_auto_unload_instances(instances)
-
             del AutoUnload._module_instances[module]
 
         # Unload WeakAutoUnload instances
-        for module, instance_dict in list(WeakAutoUnload._module_instances.items()):
+        for module, instance_dict in list(
+                WeakAutoUnload._module_instances.items()):
             if not self._is_related_module(base_name, module):
                 continue
 
             self._unload_auto_unload_instances(instance_dict.values())
-
             del WeakAutoUnload._module_instances[module]
 
     @staticmethod
@@ -207,6 +207,7 @@ class PluginManager(OrderedDict):
 
     @staticmethod
     def _unload_auto_unload_instances(instances):
+        """Unload all given :class:`AutoUnload` instances."""
         for instance in instances:
             try:
                 instance._unload_instance()

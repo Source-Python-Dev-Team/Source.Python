@@ -16,7 +16,8 @@ import time
 
 # Source.Python Imports
 #   Core
-from core import AutoUnload, WeakAutoUnload
+from core import AutoUnload
+from core import WeakAutoUnload
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Listeners
