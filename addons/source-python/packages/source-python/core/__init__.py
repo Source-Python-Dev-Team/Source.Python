@@ -19,6 +19,8 @@ from path import Path
 from platform import system
 #   Sys
 import sys
+#   Weakref
+from weakref import WeakValueDictionary
 
 # Site-Packages Imports
 #   ConfigObj
@@ -44,6 +46,7 @@ from _core import SOURCE_ENGINE_BRANCH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('AutoUnload',
+           'WeakAutoUnload',
            'GAME_NAME',
            'PLATFORM',
            'SOURCE_ENGINE',
@@ -64,9 +67,6 @@ PLATFORM = system().lower()
 # Get the sp.core logger
 core_logger = _sp_logger.core
 
-# Create a dictionary to store AutoUnload object in
-_module_instances = defaultdict(list)
-
 
 # =============================================================================
 # >> CLASSES
@@ -77,6 +77,9 @@ class AutoUnload(object):
     Each inheriting class must implement an _unload_instance method.
     """
 
+    # Create a dictionary to store AutoUnload objects in
+    _module_instances = defaultdict(list)
+
     def __new__(cls, *args, **kwargs):
         """Overwrite __new__ to store the calling module."""
         # Get the class instance
@@ -85,11 +88,15 @@ class AutoUnload(object):
         # Get the calling module
         caller = getmodule(stack()[1][0])
 
-        # Set the _calling_module attribute for the instance
-        _module_instances[caller.__name__].append(self)
+        # Call class-specific logic for adding the instance.
+        self._add_instance(caller.__name__)
 
         # Return the instance
         return self
+
+    def _add_instance(self, caller):
+        """Add the instance to self._module_instances."""
+        self._module_instances[caller].append(self)
 
     def _unload_instance(self):
         """Base _unload_instance implementation."""
@@ -99,6 +106,17 @@ class AutoUnload(object):
                     self.__class__.__module__].__file__.split(
                     'plugins', 1)[1][1:]) +
             'have its own implementation of an _unload_instance method.')
+
+
+class WeakAutoUnload(AutoUnload):
+    """Subclass of AutoUnload used to store weak references to instances."""
+
+    # Create a dictionary to store AutoUnload objects in
+    _module_instances = defaultdict(WeakValueDictionary)
+
+    def _add_instance(self, caller):
+        """Add the instance to self._module_instances."""
+        self._module_instances[caller][id(self)] = self
 
 
 class GameConfigObj(ConfigObj):
