@@ -29,6 +29,15 @@ Include_Directories(
 # ------------------------------------------------------------------
 Add_Definitions(-DCOMPILER_MSVC -DCOMPILER_MSVC32 -D_WIN32)
 
+# Memory debugging (memdbgon.h) causes crashes when sending user
+# messages. Therefore it must be disabled by defining NO_MALLOC_OVERRIDE.
+# We also need to define MemAlloc_Alloc and MemAlloc_Free, because
+# they are not available when memory debugging is disabled on
+# Windows, but it's used in KeyValues.cpp.
+# See also:
+# https://github.com/Source-Python-Dev-Team/Source.Python/issues/124
+Add_Definitions(-DNO_MALLOC_OVERRIDE -DMemAlloc_Alloc=malloc -DMemAlloc_Free=free)
+
 # ------------------------------------------------------------------
 # Release flags.
 # ------------------------------------------------------------------
