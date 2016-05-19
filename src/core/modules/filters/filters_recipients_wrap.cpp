@@ -56,7 +56,7 @@ DECLARE_SP_SUBMODULE(_filters, _recipients)
 //-----------------------------------------------------------------------------
 void export_mrecipientfilter(scope _recipients)
 {
-	class_<IRecipientFilter, boost::shared_ptr<IRecipientFilter>, boost::noncopyable>("_IRecipientFilter", no_init)
+	class_<IRecipientFilter, IRecipientFilter*, boost::noncopyable>("_IRecipientFilter", no_init)
 		.def("is_reliable",
 			&IRecipientFilter::IsReliable,
 			"Whether this recipient filter will be network reliable (sent in-order)"
@@ -81,7 +81,7 @@ void export_mrecipientfilter(scope _recipients)
 		ADD_MEM_TOOLS(IRecipientFilter)
 	;
 
-	class_<MRecipientFilter, boost::shared_ptr<MRecipientFilter>, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
+	class_<MRecipientFilter, MRecipientFilter*, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
 		.def("add_all_players",
 			&MRecipientFilter::AddAllPlayers,
 			"Adds all the players on the server to the filter"
