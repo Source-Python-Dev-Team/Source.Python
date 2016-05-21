@@ -45,7 +45,7 @@ from players.helpers import uniqueid_from_playerinfo
 from players.games import _GamePlayer
 from players.voice import mute_manager
 from players.weapons import _PlayerWeapons
-#   Permissions
+#   Auth
 from auth.manager import auth_manager
 
 
