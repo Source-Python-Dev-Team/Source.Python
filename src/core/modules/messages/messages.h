@@ -328,13 +328,16 @@ public:
 
 public:
 	void Send();
-	int GetMessageIndex();
+	int GetMessageIndex()
+	{ return m_index; }
+
 	static bool IsProtobuf();
 
 private:
 	IRecipientFilter& m_recipients;
 	const char* m_message_name;
 	MESSAGE_BUFFER* m_buffer;
+	int m_index;
 };
 
 
@@ -342,5 +345,6 @@ private:
 // Functions.
 //-----------------------------------------------------------------------------
 void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
+int GetMessageIndex(const char* name);
 
 #endif // _MESSAGES_H

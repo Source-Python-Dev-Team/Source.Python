@@ -23,6 +23,7 @@ General
 
    general/installation
    general/updating
+   general/config-auth
    general/sp-commands
    general/known-issues
    general/credits

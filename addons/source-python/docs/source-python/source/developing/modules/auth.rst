@@ -1,23 +1,14 @@
 auth package
 =============
 
-Subpackages
------------
-
-.. toctree::
-    :titlesonly:
-
-    auth.providers
-
 Submodules
 ----------
 
 .. toctree::
    :titlesonly:
 
-   auth.commands
+   auth.base
    auth.manager
-   auth.paths
 
 Module contents
 ---------------

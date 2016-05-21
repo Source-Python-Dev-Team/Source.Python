@@ -22,7 +22,9 @@ from messages import ShowMenu
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PagedRadioMenu',
+__all__ = ('ListRadioMenu',
+           'ListRadioOption',
+           'PagedRadioMenu',
            'PagedRadioOption',
            'SimpleRadioMenu',
            'SimpleRadioOption',

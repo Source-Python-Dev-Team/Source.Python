@@ -27,7 +27,9 @@ from _messages import create_message
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PagedESCMenu',
+__all__ = ('ListESCMenu',
+           'ListESCOption',
+           'PagedESCMenu',
            'PagedESCOption',
            'SimpleESCMenu',
            'SimpleESCOption',
