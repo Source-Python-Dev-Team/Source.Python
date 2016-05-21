@@ -49,6 +49,8 @@ from players.voice import mute_manager
 from weapons.default import NoWeaponManager
 from weapons.entity import Weapon
 from weapons.manager import weapon_manager
+#   Auth
+from auth.manager import auth_manager
 
 
 # =============================================================================
@@ -65,6 +67,11 @@ class Player(Entity):
         """
         super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
+
+    @property
+    def permissions(self):
+        """Return the player's :class:`auth.manager.PlayerPermissions` object."""
+        return auth_manager.get_player_permissions_from_steamid(self.steamid)
 
     @property
     def playerinfo(self):

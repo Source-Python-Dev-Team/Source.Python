@@ -5,6 +5,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+#   Ast
+import ast
 # Site-Package Imports
 #   ConfigObj
 from configobj import ConfigObj
@@ -21,12 +24,15 @@ from paths import SP_DATA_PATH
 #   Players
 from players import PlayerGenerator
 from players.entity import Player
+from players.helpers import index_from_userid
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PlayerIter',
+__all__ = ('get_default_filters',
+           'parse_filter',
+           'PlayerIter',
            )
 
 
@@ -118,3 +124,52 @@ for _number, _team in enumerate(('un', 'spec', 't', 'ct')):
     # Register the filter
     PlayerIter.register_filter(
         _team, _player_teams[_team]._player_is_on_team)
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def parse_filter(expr, filters=None):
+    """Parse an expression and return a set containing :class:`Player` objects.
+
+    :param str expr: The expression to parse.
+    :param dict filters: Filters that should be used instead of the default
+        filters. All filter names must be lowercase.
+    :rtype: set
+    :raise SyntaxError: Raised if the expression is invalid.
+    :raise KeyError: Raised if an invalid filter was used.
+    :raise ValueError: Raised if the conversion from userid to index failed.
+    """
+    if filters is None:
+        filters = get_default_filters()
+
+    return _parse_node(ast.parse(expr, mode='eval').body, filters)
+
+def get_default_filters():
+    """Return the default filters (all available filters)."""
+    return dict((name, set(PlayerIter(name))) for name in PlayerIter.filters)
+
+def _parse_node(node, filters):
+    """Parse an ast node."""
+    # Userid?
+    if isinstance(node, ast.Num):
+        return set([Player(index_from_userid(node.n))])
+
+    # Filter?
+    if isinstance(node, ast.Name):
+        return filters[node.id.casefold()]
+
+    # + or -?
+    if isinstance(node.op, (ast.Add, ast.Sub)):
+        left = _parse_node(node.left, filters)
+        right = _parse_node(node.right, filters)
+
+        if isinstance(node.op, ast.Add):
+            return left | right
+
+        return left - right
+
+    # TODO:
+    # Figure out how to get the offset of the wrong node (for raising a better
+    # SyntaxError).
+    raise SyntaxError('Unsupported node type: {}'.format(type(node)))

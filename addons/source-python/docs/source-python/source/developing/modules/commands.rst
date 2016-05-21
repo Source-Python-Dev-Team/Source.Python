@@ -1,16 +1,6 @@
 commands package
 =================
 
-Subpackages
------------
-
-.. toctree::
-    :titlesonly:
-
-    commands.client
-    commands.say
-    commands.server
-
 Submodules
 ----------
 
@@ -18,10 +8,14 @@ Submodules
    :titlesonly:
 
    commands.auth
+   commands.client
    commands.command
    commands.filter
    commands.manager
    commands.player
+   commands.say
+   commands.server
+   commands.typed
 
 Module contents
 ---------------

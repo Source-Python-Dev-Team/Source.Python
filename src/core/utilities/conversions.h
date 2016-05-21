@@ -36,6 +36,7 @@
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
 #include "utilities/baseentity.h"
+#include "toolframework/itoolentity.h"
 
 BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
@@ -45,6 +46,7 @@ BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 extern IVEngineServer *engine;
 extern CGlobalVars *gpGlobals;
 extern IPlayerInfoManager *playerinfomanager;
+extern IServerTools *servertools;
 
 
 //-----------------------------------------------------------------------------
@@ -240,5 +242,73 @@ CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, IntHandle);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo);
+
+
+//-----------------------------------------------------------------------------
+// Helper functions
+//-----------------------------------------------------------------------------
+inline bool IsValidBaseEntityPointer(void* ptr)
+{
+	if (!ptr)
+		return false;
+
+	CBaseEntity* pEntity = (CBaseEntity*) servertools->FirstEntity();
+	while (pEntity) {
+		if (pEntity == ptr)
+			return true;
+
+		pEntity = (CBaseEntity*) servertools->NextEntity(pEntity);
+	}
+	return false;
+}
+
+inline bool IsValidBaseEntityPointer(CPointer* pPtr)
+{
+	return pPtr && IsValidBaseEntityPointer((void*) pPtr->m_ulAddr);
+}
+
+inline bool IsValidNetworkedEntityPointer(void* ptr)
+{
+	if (!ptr)
+		return false;
+
+    for (int i=0; i < gpGlobals->maxEntities; ++i)
+    {
+		edict_t* pEdict = NULL;
+		if (!EdictFromIndex(i, pEdict))
+			continue;
+
+		if (pEdict->GetUnknown()->GetBaseEntity() == ptr)
+			return true;
+	}
+	return false;
+}
+
+inline bool IsValidNetworkedEntityPointer(CPointer* pPtr)
+{
+	return pPtr && IsValidNetworkedEntityPointer((void*) pPtr->m_ulAddr);
+}
+
+inline bool IsValidPlayerPointer(void* ptr)
+{
+	if (!ptr)
+		return false;
+
+	for (int i=1; i <= gpGlobals->maxClients; ++i)
+	{
+		edict_t* pEdict = NULL;
+		if (!EdictFromIndex(i, pEdict))
+			continue;
+
+		if (pEdict->GetUnknown()->GetBaseEntity() == ptr)
+			return true;
+	}
+	return false;
+}
+
+inline bool IsValidPlayerPointer(CPointer* pPtr)
+{
+	return pPtr && IsValidPlayerPointer((void*) pPtr->m_ulAddr);
+}
 
 #endif // _CONVERSIONS_H

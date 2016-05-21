@@ -64,11 +64,10 @@ bool PlayerInfoFromBaseEntity( CBaseEntity *pBaseEntity, IPlayerInfo*& output)
 //-----------------------------------------------------------------------------
 bool PlayerInfoFromPointer( CPointer *pEntityPointer, IPlayerInfo*& output)
 {
-	CBaseEntity* pBaseEntity;
-	if (!BaseEntityFromPointer(pEntityPointer, pBaseEntity))
+	if (!IsValidPlayerPointer(pEntityPointer))
 		return false;
 
-	return PlayerInfoFromBaseEntity(pBaseEntity, output);
+	return PlayerInfoFromBaseEntity((CBaseEntity*) pEntityPointer->m_ulAddr, output);
 }
 
 

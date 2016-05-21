@@ -105,11 +105,10 @@ bool BaseHandleFromBaseEntity( CBaseEntity *pBaseEntity, CBaseHandle& output )
 //-----------------------------------------------------------------------------
 bool BaseHandleFromPointer( CPointer *pEntityPointer, CBaseHandle& output )
 {
-	CBaseEntity* pBaseEntity;
-	if (!BaseEntityFromPointer(pEntityPointer, pBaseEntity))
+	if (!IsValidNetworkedEntityPointer(pEntityPointer))
 		return false;
 
-	return BaseHandleFromBaseEntity(pBaseEntity, output);
+	return BaseHandleFromBaseEntity((CBaseEntity*) pEntityPointer->m_ulAddr, output);
 }
 
 
