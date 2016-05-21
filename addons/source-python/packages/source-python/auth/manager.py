@@ -126,7 +126,8 @@ class PermissionBase(dict):
     @staticmethod
     def _compile_permission(permission):
         """Compile a permission."""
-        return re.compile(permission.replace('.', '\\.').replace('*', '(.*)'))
+        return re.compile('^{}$'.format(
+            permission.replace('.', '\\.').replace('*', '(.*)')))
 
     def __contains__(self, permission):
         """Return True if the permission is granted by this object."""
