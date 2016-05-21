@@ -394,7 +394,17 @@ class CommandParser(Store):
 
 
 class CommandInfo(object):
+    """Stores command information for typed commands."""
+
     def __init__(self, command, index=None, team_only=None):
+        """Initializes the instance.
+
+        :param Command command: The actual Command instance.
+        :param int index: The index of the player that issued the command.
+            None, if it's a server command.
+        :param bool team_only: Indicates whether the command was issued in
+            team chat. None, if it's a server or client command.
+        """
         self.command = command
         self.index = index
         self.team_only = team_only
@@ -486,15 +496,6 @@ class _TypedCommand(AutoUnload):
         """Return the manager that registers the commands.
 
         :rtype: _BaseCommandManager
-        """
-        raise NotImplementedError('Needs to be implemented by a sub class.')
-
-    @property
-    def args_to_skip(self):
-        """Return the number of arguments to skip when getting the signature
-        of a function.
-
-        :rtype: int
         """
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
