@@ -199,15 +199,15 @@ Remove a parent from players.
 test
 ~~~~
 
-Test if players are granted a specific permission.
+Test which players are granted a specific permission.
 
 .. code-block:: none
 
     // Usage
-    // sp auth permission player test <players:filter_str> <permission>
+    // sp auth permission player test <permission>
 
     // Tests who has the permission 'my_plugin.something'
-    sp auth permission player test all my_plugin.something
+    sp auth permission player test my_plugin.something
 
 
 credits

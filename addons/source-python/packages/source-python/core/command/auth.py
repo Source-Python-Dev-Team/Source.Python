@@ -14,6 +14,8 @@ from commands.typed import TypedServerCommand
 #   Core
 from core.command import _core_command
 from core.command import core_command_logger
+#   Filters
+from filters.players import PlayerIter
 
 
 # =============================================================================
@@ -117,12 +119,12 @@ def _sp_auth_permission_player_remove_parent(
             'Removed parent "{}" from {}.'.format(parent, player.name))
 
 @_core_command.sub_command(['auth', 'permission', 'player', 'test'])
-def _sp_auth_permission_player_test(
-        command_info, players:filter_str, permission):
-    """Test if players are granted a permission."""
+def _sp_auth_permission_player_test(command_info, permission):
+    """Test which players are granted a permission."""
     logger.log_message(
         '"{}" is granted to the following players:'.format(permission))
-    for player in players:
+    count = 0
+    for player in PlayerIter('human'):
         if player.permissions is None:
             logger.log_message(
                 'Failed to retrieve permissions for {} ({}).'.format(
@@ -132,7 +134,11 @@ def _sp_auth_permission_player_test(
         if permission not in player.permissions:
             continue
 
+        count += 1
         logger.log_message('  {} ({})'.format(player.name, player.steamid))
+        
+    logger.log_message('{} players are granted the permission "{}".'.format(
+        count, permission))
 
 
 # =============================================================================
