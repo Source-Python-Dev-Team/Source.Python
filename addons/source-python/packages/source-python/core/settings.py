@@ -10,9 +10,8 @@
 from configobj import ConfigObj
 
 # Source.Python Imports
+#   Core
 from core import core_logger
-#   Auth
-from auth.paths import AUTH_PROVIDER_PATH
 #   Paths
 from paths import GAME_PATH
 from paths import CFG_PATH
@@ -25,11 +24,6 @@ from translations.strings import LangStrings
 # =============================================================================
 # Get the core settings language strings
 _core_strings = LangStrings('_core/core_settings_strings')
-
-# Get a list of auth providers
-_auth_providers = [
-    provider.namebase for provider in AUTH_PROVIDER_PATH.files() +
-    AUTH_PROVIDER_PATH.dirs() if not provider.namebase.startswith('__')]
 
 # Get the sp.core.settings logger
 core_settings_logger = core_logger.settings
@@ -46,6 +40,9 @@ class _CoreSettings(ConfigObj):
         # Import the file
         super().__init__(infile)
         self._language = None
+
+    def load(self):
+        """Load and update the core settings."""
         self._check_settings()
 
         # Add the initial comment
@@ -64,9 +61,9 @@ class _CoreSettings(ConfigObj):
         """Check all settings in the settings file."""
         self._check_base_settings()
         self._check_version_settings()
-        self._check_auth_settings()
         self._check_logging_settings()
         self._check_user_settings()
+        self._check_auth_settings()
 
     def _check_base_settings(self):
         """Add base settings if they are missing."""
@@ -105,28 +102,6 @@ class _CoreSettings(ConfigObj):
 
         self['VERSION_SETTINGS'].comments['notify_on_update'] = _core_strings[
             'notify_on_update'].get_string(self._language).splitlines()
-
-    def _check_auth_settings(self):
-        """Add auth settings if they are missing."""
-        # Are there any auth settings in the file?
-        if 'AUTH_SETTINGS' not in self:
-
-            # Add the auth settings
-            self['AUTH_SETTINGS'] = {}
-
-        # Is there a providers setting?
-        if 'providers' not in self['AUTH_SETTINGS']:
-
-            # Add the providers setting
-            self['AUTH_SETTINGS']['providers'] = ''
-
-        # Set the auth provider comments
-        self['AUTH_SETTINGS'].comments['providers'] = _core_strings[
-            'providers'].get_string(
-            self._language,
-            providers='\n'.join(_auth_providers),
-            single=_auth_providers[0],
-            multiple=' '.join(_auth_providers[:3])).splitlines()
 
     def _check_logging_settings(self):
         """Add logging settings if they are missing."""
@@ -193,6 +168,40 @@ class _CoreSettings(ConfigObj):
         # Set the client commands comments
         self['USER_SETTINGS'].comments['client_commands'] = _core_strings[
             'client_commands'].get_string(self._language).splitlines()
+
+    def _check_auth_settings(self):
+        """Add auth settings if they are missing."""
+        if 'AUTH_SETTINGS' not in self:
+            self['AUTH_SETTINGS'] = {}
+
+        if 'backend' not in self['AUTH_SETTINGS']:
+            self['AUTH_SETTINGS']['backend'] = 'flatfile'
+
+        if 'server_id' not in self['AUTH_SETTINGS']:
+            self['AUTH_SETTINGS']['server_id'] = '-1'
+
+        if 'BACKENDS' not in self['AUTH_SETTINGS']:
+            self['AUTH_SETTINGS']['BACKENDS'] = {}
+
+        self['AUTH_SETTINGS'].comments['BACKENDS'] = ['']
+
+        from auth.manager import auth_manager
+        auth_manager.find_and_add_available_backends()
+
+        for backend in auth_manager.values():
+            self._check_backend_settings(backend)
+
+    def _check_backend_settings(self, backend):
+        """Add settings for a backend if they are missing."""
+        if backend.name not in self['AUTH_SETTINGS']['BACKENDS']:
+            self['AUTH_SETTINGS']['BACKENDS'][backend.name] = {}
+
+        self['AUTH_SETTINGS']['BACKENDS'].comments[backend.name] = ['']
+        for option, value in backend.options.items():
+            if option in self['AUTH_SETTINGS']['BACKENDS'][backend.name]:
+                continue
+
+            self['AUTH_SETTINGS']['BACKENDS'][backend.name][option] = value
 
 # Get the _CoreSettings instance
 _core_settings = _CoreSettings(CFG_PATH / 'core_settings.ini')

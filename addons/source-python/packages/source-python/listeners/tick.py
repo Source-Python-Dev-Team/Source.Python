@@ -10,6 +10,8 @@
 from contextlib import suppress
 #   Enum
 from enum import IntEnum
+#   Threading
+from threading import Thread
 #   Time
 import bisect
 import time
@@ -29,6 +31,7 @@ from listeners import on_tick_listener_manager
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('Delay',
+           'GameThread',
            'TickRepeat',
            'TickRepeatStatus',
            )
@@ -39,6 +42,29 @@ __all__ = ('Delay',
 # =============================================================================
 # Get the sp.listeners.tick logger
 listeners_tick_logger = listeners_logger.tick
+
+
+# =============================================================================
+# >> THREAD WORKAROUND
+# =============================================================================
+class GameThread(Thread):
+    """Workaround for :class:`threading.Thread`."""
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        on_tick_listener_manager.register_listener(self._tick)
+        
+    def __del__(self):
+        on_tick_listener_manager.unregister_listener(self._tick)
+
+    def _bootstrap_inner(self):
+        try:
+            super()._bootstrap_inner()
+        finally:
+            on_tick_listener_manager.unregister_listener(self._tick)
+
+    def _tick(self):
+        pass
 
 
 # =============================================================================

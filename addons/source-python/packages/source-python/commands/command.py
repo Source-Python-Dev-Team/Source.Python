@@ -17,7 +17,13 @@ class _BaseCommand(AutoUnload):
     """Base decorator class used to register commands."""
 
     def __init__(self, names, *args, **kwargs):
-        """Store the base values for the decorator."""
+        """Store the base values for the decorator.
+
+        :param str/list/tuple names: Command name(s) to register.
+        :param *args: Additional arguments passed to the callback proxy.
+        :param **kwargs: Additional keyword arguments passed to the callback
+            proxy.
+        """
         self.names = names
         self.args = args
         self.kwargs = kwargs

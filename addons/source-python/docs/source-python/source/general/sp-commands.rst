@@ -1,49 +1,226 @@
 Console commands
 ================
 
-The core.command module registers the "sp" console commands and several sub-commands.
+This page provides a list of all "sp" sub-commands.
 
 
-load
+auth
 ----
 
-Load a plugin by name.
+Provide authorization specific commands.
 
 .. code-block:: none
 
     // Usage
-    // sp load <plugin>
-
-    // Load a plugin
-    sp load test
+    // sp auth <sub-command>
 
 
-unload
-------
+backend
+^^^^^^^
 
-Unload a plugin by name
+Provide backend specific commands.
 
 .. code-block:: none
 
     // Usage
-    // sp unload <plugin>
-
-    // Unload a plugin
-    sp unload test
+    // sp auth backend <sub-command>
 
 
-reload
-------
+set
+"""
 
-Reload a plugin by name
+Set the active backend.
 
 .. code-block:: none
 
     // Usage
-    // sp reload <plugin>
+    // sp auth backend set <backend>
 
-    // Reload a plugin
-    sp reload test
+    // Tell Source.Python to use the SQL backend
+    sp auth backend set sql
+
+
+list
+""""
+
+List all available backends and mark the active backend.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth backend list
+
+
+permission
+^^^^^^^^^^
+
+Provide permission specific commands.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission <sub-command>
+
+
+parent
+""""""
+
+Provide commands to modify parent permissions.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent <sub-command>
+
+
+add
+~~~
+
+Add a permission to a parent. If the given parent does not exist, it will be created.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent add <parent> <permission> [server_id:int=None]
+
+    // Add the permission 'my_plugin.something' to the 'administrator' parent
+    sp auth permission parent add administrator my_plugin.something
+
+
+add_parent
+~~~~~~~~~~
+
+Add a parent to a parent. If the given parents don't exist, they will be created.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent add_parent <parent> <parent_to_add>
+
+    // Add the parent 'moderator' to the 'administrator' parent
+    sp auth permission parent add_parent administrator moderator
+
+
+remove
+~~~~~~
+
+Remove a permission from a parent.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent remove <parent> <permission> [server_id:int=None]
+
+    // Remove the permissions 'my_plugin.something' from the 'administrator' parent
+    sp auth permission parent remove administrator my_plugin.something
+
+
+remove_parent
+~~~~~~~~~~~~~
+
+Remove a parent from a parent.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission parent remove_parent <parent> <parent_to_remove>
+
+    // Remove the parent 'moderator' from the 'administrator' parent
+    permission parent remove_parent administrator moderator
+
+
+player
+""""""
+
+Provide commands to modify player permissions.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player <sub-command>
+
+
+add
+~~~
+
+Grant a permission to players.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player add <players:filter_str> <permission> [server_id:int=None]
+
+    // Grant all players that are currently on the server the permission 'my_plugin.something'
+    sp auth permission player add all my_plugin.something
+
+
+add_parent
+~~~~~~~~~~
+
+Add a parent to players. If the parent does not exist, it will be created.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player add_parent <players:filter_str> <parent>
+
+    // Add the parent 'administrator' to all players that are currently on the server
+    sp auth permission player add_parent all administrator
+
+
+remove
+~~~~~~
+
+Remove a parent from players.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player remove <players:filter_str> <permission> [server_id:int=None]
+
+    // Remove the permission 'my_plugin.something' from all players that are currently on the server
+    sp auth permission player remove all my_plugin.something
+
+
+remove_parent
+~~~~~~~~~~~~~
+
+Remove a parent from players.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player remove_parent <players:filter_str> <parent>
+
+    // Remove the parent 'administrator' from all players that are currently on the server
+    sp auth permission player remove_parent all administrator
+
+
+test
+~~~~
+
+Test which players are granted a specific permission.
+
+.. code-block:: none
+
+    // Usage
+    // sp auth permission player test <permission>
+
+    // Tests who has the permission 'my_plugin.something'
+    sp auth permission player test my_plugin.something
+
+
+credits
+-------
+
+Display credits for the Source.Python plugin.
+
+.. code-block:: none
+
+    // Usage
+    // sp credits
+
+.. seealso:: :doc:`credits <credits>`
 
 
 delay
@@ -63,18 +240,172 @@ Execute a server command after the given delay.
     sp delay 2 bot_quota 5
 
 
-dump
+docs
 ----
 
-Dump data to log file. The filename given will be created at ../logs/source-python/<filename>.txt
+Create, generate or build a Sphinx project.
 
 .. code-block:: none
 
     // Usage
-    // sp dump <dump_type> <filename>
+    // sp docs <sub-command> <source-python/custom-package/plugin>
 
-    // Dump the StringTables
-    sp dump string_tables test
+
+build
+^^^^^
+
+Build a Sphinx project.
+
+.. code-block:: none
+
+    // Usage
+    // sp docs build <source-python/custom-package/plugin>
+
+    // Build the Source.Python documentation
+    sp docs build source-python
+
+    // Build documentation for a plugin
+    sp docs build my_plugin
+
+
+create
+^^^^^^
+
+Create a Sphinx project.
+
+.. code-block:: none
+
+    // Usage
+    // sp docs create <source-python/custom-package/plugin>
+
+    // Create documentation for a plugin
+    sp docs create my_plugin
+
+
+generate
+^^^^^^^^
+
+Generate a Sphinx project.
+
+.. code-block:: none
+
+    // Usage
+    // sp docs generate <source-python/custom-package/plugin>
+
+    // Generate documentation files for a plugin
+    sp docs generate my_plugin
+
+
+dump
+----
+
+Dump data to a file. The filename given will be created at ../logs/source-python/<filename>.txt
+
+.. code-block:: none
+
+    // Usage
+    // sp dump <sub-command>
+
+
+class_info
+^^^^^^^^^^
+
+Dump class information to a file.
+
+.. code-block:: none
+
+    // Usage
+    // sp dump class_info <file_name>
+
+    // Dump class information to ../logs/source-python/class_info.txt
+    sp dump class_info class_info
+
+
+convars
+^^^^^^^
+
+Dump console variables to a file.
+
+.. code-block:: none
+
+    // Usage
+    // sp dump convars <file_name>
+
+    // Dump console variables to ../logs/source-python/convars.txt
+    sp dump convars convars
+
+
+datamaps
+^^^^^^^^
+
+Dump datamaps to a file.
+
+.. code-block:: none
+
+    // Usage
+    // sp dump datamaps <file_name>
+
+    // Dump datamaps to ../logs/source-python/datamaps.txt
+    sp dump datamaps datamaps
+
+
+server_classes
+^^^^^^^^^^^^^^
+
+Dump server classes to a file.
+
+.. code-block:: none
+
+    // Usage
+    // sp dump server_classes <file_name>
+
+    // Dump server classes to ../logs/source-python/server_classes.txt
+    sp dump server_classes server_classes
+
+
+string_tables
+^^^^^^^^^^^^^
+
+Dump string tables to a file.
+
+.. code-block:: none
+
+    // Usage
+    // sp dump string_tables <file_name>
+
+    // Dump string tables to ../logs/source-python/string_tables.txt
+    sp dump string_tables string_tables
+
+
+weapon_scripts
+^^^^^^^^^^^^^^
+
+Dump weapon scripts to a file.
+
+.. code-block:: none
+
+    // Usage
+    // sp dump weapon_scripts <file_name>
+
+    // Dump weapon scripts to ../logs/source-python/weapon_scripts.txt
+    sp dump weapon_scripts weapon_scripts
+
+
+help
+----
+
+List all 'sp' sub-commands or provide help on server commands registered with Source.Python.
+
+.. code-block:: none
+
+    // Usage
+    // sp help [command=None] [*sub_commands]
+
+    // List all 'sp' sub-commands
+    sp help
+
+    // Print help on 'sp load'
+    sp help sp load
 
 
 list
@@ -87,8 +418,47 @@ List all currently loaded plugins.
     // Usage
     // sp list
 
-    // List all currently loaded plugins
-    sp list
+
+load
+----
+
+Load a plugin by name.
+
+.. code-block:: none
+
+    // Usage
+    // sp load <plugin>
+
+    // Load the plugin 'test'
+    sp load test
+
+
+reload
+------
+
+Reload a plugin by name.
+
+.. code-block:: none
+
+    // Usage
+    // sp reload <plugin>
+
+    // Reload the plugin 'test'
+    sp reload test
+
+
+unload
+------
+
+Unload a plugin by name.
+
+.. code-block:: none
+
+    // Usage
+    // sp unload <plugin>
+
+    // Unload the plugin 'test'
+    sp unload test
 
 
 version
@@ -100,139 +470,3 @@ Print Source.Python version information.
 
     // Usage
     // sp version
-
-    // Print the Source.Python version information
-    sp version
-
-
-credits
--------
-
-List all credits for the Source.Python plugin.
-
-.. code-block:: none
-
-    // Usage
-    // sp credits
-
-    // List all credits for the Source.Python plugin
-    sp credits
-
-
-help
-----
-
-List all 'sp' sub-commands.
-
-.. code-block:: none
-
-    // Usage
-    // sp help
-
-    // List all 'sp' sub-commands
-    sp help
-
-
-docs
-----
-
-Create, generate or build a Sphinx project.
-
-.. code-block:: none
-
-    // Usage
-    // sp docs <create/generate/build> <source-python/custom-package/plugin>
-
-    // Build the documentation for Source.Python
-    sp docs build source-python
-
-
-auth
-----
-
-The auth.commands module registers further sub-commands for the "auth" sub-command.
-
-
-load
-^^^^
-
-Loads the provided authorization service(s).
-
-.. code-block:: none
-
-    // Usage
-    // sp auth load <provider> [provider] ...
-
-    // Load one provider
-    sp auth load simple
-
-    // Multiples can be loaded at the same time.
-    // Note that currently only "simple" is included in Source.Python.
-    sp auth load simple sourcemod
-
-
-unload
-^^^^^^
-
-Unloads the provided authorization service(s).
-
-.. code-block:: none
-
-    // Usage
-    // sp auth unload <provider> [provider] ...
-
-    // Unload one provider
-    sp auth unload simple
-
-    // Multiples can be unloaded at the same time.
-    // Note that currently only "simple" is included in Source.Python.
-    sp auth unload simple sourcemod
-
-
-reload
-^^^^^^
-
-Reloads the provided authorization service(s). If no service(s) are provided, it will reload all currently loaded services.
-
-.. code-block:: none
-
-    // Usage
-    // sp auth reload [provider] [provider] ...
-
-    // Reload one provider
-    sp auth reload simple
-
-    // Multiples can be reloaded at the same time.
-    // Note that currently only "simple" is included in Source.Python.
-    sp auth reload simple sourcemod
-
-    // Reload all currently loaded authorization services
-    sp auth reload
-
-
-list
-^^^^
-
-List all currently loaded authorization services.
-
-.. code-block:: none
-
-    // Usage
-    // sp auth list
-
-    // List all currently loaded authorization services
-    sp auth list
-
-
-help
-^^^^
-
-List all 'sp auth' sub-commands.
-
-.. code-block:: none
-
-    // Usage
-    // sp auth help
-
-    // List all 'sp auth' sub-commands
-    sp auth help
