@@ -13,11 +13,8 @@ types that can have permissions:
 * Parents
 
 Parents can be used to create a set of permissions (like groups or roles).
-Both players and groups can inherit permissions from groups, allowing a
+Both, players and parents, can inherit permissions from parents, allowing a
 flexible and dynamic permission hierarchy.
-
-This system allows permissions to be added to all children entities easily
-when a new plugin is added.
 
 Before granting permissions and creating parents, you need to choose an
 authorization backend.
@@ -36,15 +33,34 @@ To define which backend should be used, please open ``core_settings.ini`` and
 specify the backend you want to use in the ``AUTH_SETTINGS`` section. Backend
 specific settings are provided in sub-sections within the ``BACKENDS`` section.
 
+Example/default settings:
+
+.. code-block:: ini
+
+    [AUTH_SETTINGS]
+    backend = flatfile
+    server_id = -1
+
+    [[BACKENDS]]
+
+    [[[flatfile]]]
+    player_config_path = ../cfg/source-python/auth/players.json
+    simple_config_path = ../cfg/source-python/auth/simple.txt
+    parent_config_path = ../cfg/source-python/auth/parents.json
+
+    [[[sql]]]
+    uri = sqlite:///../addons/source-python/data/source-python/permissions.db
+
 
 Flatfile
 ^^^^^^^^
 
-The flatfile backend is a very easy backend and is a good choice in the
+The flatfile backend is a very easy and simple backend. It's the
+pre-configured/default backend in Source.Python and a good choice in the
 following situations:
 
 * You only run a single server
-* You run multiple servers, but don't want cross-server permissions
+* You run multiple servers, but don't want cross-server permissions (each server has its own permissions)
 * You just want to quickly configure authorization
 
 The backend creates three files to store all the authorization related data:
@@ -57,9 +73,7 @@ The backend creates three files to store all the authorization related data:
 
     By default these files are created in ``../cfg/source-python/auth/``, but
     you can easily configure other locations in the ``AUTH_SETTINGS`` section
-    in ``core_settings.ini``. This makes sense if you run multiple srcds
-    instances on the same server and want to share permissions across the
-    servers.
+    in ``core_settings.ini``.
 
 The first file is used to grant players permissions and add parents to
 players. All data is stored in the JSON format.
@@ -242,4 +256,12 @@ Concrete example:
     [[[sql]]]
     uri = mysql+pymysql://user:1234@127.0.0.1/permissions
 
-Any number of servers can be pointed to the same database
+Any number of servers can be pointed to the same database.
+
+
+Adding, modifying and deleting permissions and parents
+------------------------------------------------------
+
+You can always add, modify and delete permissions and parents by accessing the
+JSON files or SQL database directly. However, Source.Python also provides
+server commands to do these tasks. :doc:`You might want to try them. <sp-commands>`

@@ -4,6 +4,17 @@ auth
 This page contains tutorials about the :mod:`auth` package.
 
 
+Naming convention on permissions
+--------------------------------
+
+Permissions should always start with the full name or short name of the plugin
+that defines the permission. This avoids name clashes with other plugins. E.g.
+if your plugin is called ``admin`` and you want to define the two permissions
+``kick`` and ``ban``, the names of the permissions should be ``admin.kick``
+and ``admin.ban``. This also allows server owners to grant people all
+permissions for your plugin by simply using ``admin.*``.
+
+
 Check if a player is granted a permission
 -----------------------------------------
 
