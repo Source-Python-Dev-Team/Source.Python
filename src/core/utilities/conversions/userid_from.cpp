@@ -117,9 +117,8 @@ bool UseridFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output )
 //-----------------------------------------------------------------------------
 bool UseridFromPointer( CPointer *pEntityPointer, unsigned int& output )
 {
-	CBaseEntity* pBaseEntity;
-	if (!BaseEntityFromPointer(pEntityPointer, pBaseEntity))
+	if (!IsValidPlayerPointer(pEntityPointer))
 		return false;
 
-	return UseridFromBaseEntity(pBaseEntity, output);
+	return UseridFromBaseEntity((CBaseEntity*) pEntityPointer->m_ulAddr, output);
 }

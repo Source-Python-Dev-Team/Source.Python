@@ -19,6 +19,7 @@ import time
 # Source.Python Imports
 #   Core
 from core import AutoUnload
+from core import WeakAutoUnload
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Listeners
@@ -104,7 +105,7 @@ class _DelayManager(list):
 _delay_manager = _DelayManager()
 
 
-class Delay(AutoUnload):
+class Delay(WeakAutoUnload):
     """Execute a callback after a given delay."""
 
     def __init__(self, delay, callback, *args, **kwargs):

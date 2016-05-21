@@ -52,7 +52,7 @@ bool BaseEntityFromEdict( edict_t *pEdict, CBaseEntity*& output )
 //-----------------------------------------------------------------------------
 bool BaseEntityFromPointer( CPointer *pEntityPointer, CBaseEntity*& output )
 {
-	if (!pEntityPointer || !pEntityPointer->IsValid())
+	if (!IsValidBaseEntityPointer(pEntityPointer))
 		return false;
 
 	output = (CBaseEntity *) pEntityPointer->m_ulAddr;

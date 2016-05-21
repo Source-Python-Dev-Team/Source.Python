@@ -136,8 +136,8 @@ bool EdictFromIntHandle( unsigned int iEntityHandle, edict_t*& output )
 //-----------------------------------------------------------------------------
 bool EdictFromPointer( CPointer *pEntityPointer, edict_t*& output )
 {
-	if (!pEntityPointer || !pEntityPointer->IsValid())
+	if (!IsValidNetworkedEntityPointer(pEntityPointer))
 		return false;
 
-	return EdictFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr, output);
+	return EdictFromBaseEntity((CBaseEntity *) pEntityPointer->m_ulAddr, output);
 }

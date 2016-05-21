@@ -78,10 +78,10 @@ bool IndexFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output )
 //-----------------------------------------------------------------------------
 bool IndexFromPointer( CPointer *pEntityPointer, unsigned int& output )
 {
-	if (!pEntityPointer || !pEntityPointer->IsValid())
+	if (!IsValidNetworkedEntityPointer(pEntityPointer))
 		return false;
 
-	return IndexFromBaseEntity((CBaseEntity *)pEntityPointer->m_ulAddr, output);
+	return IndexFromBaseEntity((CBaseEntity *) pEntityPointer->m_ulAddr, output);
 }
 
 

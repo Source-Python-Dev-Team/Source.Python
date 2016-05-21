@@ -179,9 +179,15 @@ void export_protobuf_message(scope _messages)
 void export_message_functions(scope _messages)
 {
 	def("create_message",
-		CreateMessage,
+		&CreateMessage,
 		"Creates an onscreen menu with various option buttons",
 		args("edict", "message_type", "data")
+	);
+
+	def("get_message_index",
+		&GetMessageIndex,
+		"Return the index of a user message. Return -1 if the user message wasn't found.",
+		args("name")
 	);
 }
 

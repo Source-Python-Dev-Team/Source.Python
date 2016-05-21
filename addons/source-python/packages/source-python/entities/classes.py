@@ -559,9 +559,7 @@ class _ServerClasses(TypeManager):
 
                 # Does the value need cast to an integer?
                 if type_name == 'char':
-                    if value == '\x00':
-                        return 0
-                    return int(value)
+                    return ord(value)
                 return value
 
             # Return the value
@@ -574,9 +572,7 @@ class _ServerClasses(TypeManager):
 
                 # Does the value need cast to a string?
                 if type_name == 'char':
-                    if not value:
-                        value = '\x00'
-                    value = str(value)
+                    value = chr(value)
 
                 # Set the property
                 getattr(ptr, 'set_' + type_name)(value, offset)

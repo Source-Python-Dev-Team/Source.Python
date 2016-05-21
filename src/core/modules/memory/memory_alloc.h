@@ -40,12 +40,16 @@
 // ============================================================================
 inline size_t UTIL_GetMemSize(void* ptr)
 {
-#ifdef _WIN32
+#ifndef NO_MALLOC_OVERRIDE
 	return g_pMemAlloc->GetSize(ptr);
-#elif defined(__linux__)
-	return malloc_usable_size(ptr);
 #else
-	#error "Unsupported platform."
+	#ifdef _WIN32
+		return _msize(ptr);
+	#elif defined(__linux__)
+		return malloc_usable_size(ptr);
+	#else
+		#error "Unsupported platform."
+	#endif
 #endif
 }
 
@@ -56,13 +60,13 @@ inline size_t UTIL_GetMemSize(void* ptr)
 inline void* UTIL_Alloc(size_t size)
 {
 	void* pPtr = NULL;
-#ifdef _WIN32
+
+#ifndef NO_MALLOC_OVERRIDE
 	pPtr = MemAlloc_Alloc(size);
-#elif defined(__linux__)
-	pPtr = malloc(size);
 #else
-	#error "Unsupported platform."
+	pPtr = malloc(size);
 #endif
+
 	memset(pPtr, 0, size);
 	return pPtr;
 }
@@ -74,13 +78,13 @@ inline void* UTIL_Alloc(size_t size)
 inline void* UTIL_Realloc(void* ptr, size_t size)
 {
 	void* pPtr = NULL;
-#ifdef _WIN32
+
+#ifndef NO_MALLOC_OVERRIDE
 	pPtr = g_pMemAlloc->Realloc(ptr, size);
-#elif defined(__linux__)
-	pPtr = realloc(ptr, size);
 #else
-	#error "Unsupported platform."
+	pPtr = realloc(ptr, size);
 #endif
+
 	return pPtr;
 }
 
@@ -90,12 +94,10 @@ inline void* UTIL_Realloc(void* ptr, size_t size)
 // ============================================================================
 inline void UTIL_Dealloc(void* ptr)
 {
-#ifdef _WIN32
+#ifndef NO_MALLOC_OVERRIDE
 	g_pMemAlloc->Free(ptr);
-#elif defined(__linux__)
-	free(ptr);
 #else
-	#error "Unsupported platform."
+	free(ptr);
 #endif
 }
 
