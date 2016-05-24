@@ -112,12 +112,6 @@ CSourcePython g_SourcePythonPlugin;
 EXPOSE_SINGLE_INTERFACE_GLOBALVAR(CSourcePython, IServerPluginCallbacks, INTERFACEVERSION_ISERVERPLUGINCALLBACKS, g_SourcePythonPlugin );
 
 //-----------------------------------------------------------------------------
-// Helper console variable to tell scripters what engine version we are running
-// on.
-//-----------------------------------------------------------------------------
-ConVar sp_engine_ver("sp_engine_ver", XSTRINGIFY(SOURCE_ENGINE), 0, "Version of the engine SP is running on");
-
-//-----------------------------------------------------------------------------
 // Interface helper class.
 //-----------------------------------------------------------------------------
 struct InterfaceHelper_t
@@ -316,7 +310,7 @@ void CSourcePython::UnPause( void )
 //-----------------------------------------------------------------------------
 const char *CSourcePython::GetPluginDescription( void )
 {
-	return "Source.Python, (C) 2012-2015, Source Python Team.";
+	return "Source.Python, (C) 2012-2016, Source Python Team.";
 }
 
 //-----------------------------------------------------------------------------
