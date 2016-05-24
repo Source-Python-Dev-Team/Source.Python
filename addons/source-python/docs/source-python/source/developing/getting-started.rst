@@ -124,6 +124,36 @@ Your plugin should now look like this.
         player.health += EXTRA_HP
 
 
+Alternatively, you can use the classmethod
+:meth:`players.entity.Player.from_userid`. It's a wrapper around
+:func:`players.helpers.index_from_userid` and will shorten your code in
+events.
+
+.. code-block:: python
+
+    from events import Event
+    from players.entity import Player
+    from players.helpers import index_from_userid
+    from messages import SayText2
+
+    # Extra amount of health every player should get on spawn
+    EXTRA_HP = 25
+
+    def load():
+        SayText2('Plugin has been loaded successfully!').send()
+
+    def unload():
+        SayText2('Plugin has been unloaded successfully!').send()
+
+    @Event('player_spawn')
+    def on_player_spawn(game_event):
+        # Create a Player object from the user ID...
+        player = Player.from_userid(game_event['userid'])
+
+        # ... and add some extra HP
+        player.health += EXTRA_HP
+
+
 What's next?
 ------------
 

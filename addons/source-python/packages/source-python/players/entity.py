@@ -41,6 +41,7 @@ from players.constants import PlayerStates
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
+from players.helpers import index_from_userid
 from players.helpers import uniqueid_from_playerinfo
 from players.games import _GamePlayer
 from players.voice import mute_manager
@@ -70,6 +71,15 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         """
         super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
+
+    @classmethod
+    def from_userid(cls, userid):
+        """Create an instance from a userid.
+
+        :param int userid: The userid.
+        :rtype: Player
+        """
+        return cls(index_from_userid(userid))
 
     @property
     def permissions(self):
