@@ -133,7 +133,6 @@ events.
 
     from events import Event
     from players.entity import Player
-    from players.helpers import index_from_userid
     from messages import SayText2
 
     # Extra amount of health every player should get on spawn
