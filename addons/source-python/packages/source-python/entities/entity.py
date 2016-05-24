@@ -25,7 +25,6 @@ from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import DamageTypes
 from entities.constants import RenderMode
-from entities.factories import factory_dictionary
 from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
@@ -207,6 +206,7 @@ class Entity(BaseEntity):
     @property
     def factory(self):
         """Return the entity's factory."""
+        from entities.factories import factory_dictionary
         return factory_dictionary.find_factory(self.classname)
 
     @property
