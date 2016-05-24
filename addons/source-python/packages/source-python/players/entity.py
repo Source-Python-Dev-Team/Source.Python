@@ -70,7 +70,7 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         """
         super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
-        
+
     @property
     def permissions(self):
         """Return the player's :class:`auth.manager.PlayerPermissions` object."""
@@ -630,6 +630,28 @@ class Player(Entity, _GamePlayer, _PlayerWeapons):
         for other in PlayerIter('dead'):
             if self.inthandle == other.observer_target:
                 yield other
+
+    def kick(self, message=''):
+        """Kick the player from the server.
+
+        :param str message: A message the kicked player will receive.
+        """
+        engine_server.server_command(
+            'kickid {} {}'.format(self.userid, message).rstrip())
+
+    def ban(self, duration=0, kick=True, write_ban=True):
+        """Ban a player from the server.
+
+        :param int duration: Duration of the ban in minutes. Use 0 for
+            permament.
+        :param bool kick: If True, the player will be kicked as well.
+        :param bool write_ban: If True, the ban will be written to
+            ``cfg/banned_users.cfg``.
+        """
+        engine_server.server_command('banid {} {} {}'.format(
+            duration, self.userid, 'kick' if kick else ''))
+        if write_ban:
+            engine_server.server_command('writeid')
 
 
 # =============================================================================
