@@ -10,6 +10,7 @@
 from entities.dictionary import EntityDictionary
 #   Players
 from players.entity import Player
+from players.helpers import index_from_userid
 
 
 # =============================================================================
@@ -28,3 +29,11 @@ class PlayerDictionary(EntityDictionary):
     def __init__(self, player_class=Player):
         """Initialize the dictionary."""
         super().__init__(player_class)
+
+    def from_userid(self, userid):
+        """Get a player instance from a userid.
+        
+        :param int userid: The userid.
+        :rtype: Player
+        """
+        return self[index_from_userid(userid)]
