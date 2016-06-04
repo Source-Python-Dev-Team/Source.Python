@@ -360,7 +360,7 @@ void CPointer::SetProtection(Protection_t prot, int size)
 
 void CPointer::Protect(int size)
 {
-	SetProtection(PROTECTION_NONE, size);
+	SetProtection(PROTECTION_READ, size);
 }
 
 void CPointer::UnProtect(int size)
