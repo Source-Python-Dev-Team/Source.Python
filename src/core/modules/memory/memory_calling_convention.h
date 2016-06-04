@@ -42,9 +42,9 @@
   #include <boost/preprocessor/repetition/enum_trailing_params.hpp>
 
   #ifdef _WIN32
-  #define CC_CDECL __cdecl
+  #define CALLING_CONVENTION_CDECL __cdecl
   #elif defined(__linux__)
-  #define CC_CDECL
+  #define CALLING_CONVENTION_CDECL
   #else
   #error "Unsupported platform."
   #endif
@@ -74,12 +74,12 @@
 
   // Handle function of the global scope
   template<typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
-  struct CallingConvention<R (CC_CDECL *)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A))>
+  struct CallingConvention<R (CALLING_CONVENTION_CDECL *)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A))>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
   // Handle variadic functions
   template<typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
-  struct CallingConvention<R (CC_CDECL *)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...)>
+  struct CallingConvention<R (CALLING_CONVENTION_CDECL *)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...)>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
   #ifdef _WIN32
@@ -91,20 +91,20 @@
 
   // Handle class methods
   template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
-  struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A))>
+  struct CallingConvention<R (CALLING_CONVENTION_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A))>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
   template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
-  struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A)) const>
+  struct CallingConvention<R (CALLING_CONVENTION_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A)) const>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
   // Handle variadic class methods
   template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
-  struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...)>
+  struct CallingConvention<R (CALLING_CONVENTION_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...)>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
   template<typename T, typename R BOOST_PP_ENUM_TRAILING_PARAMS(NUM_ARGS, typename A)>
-  struct CallingConvention<R (CC_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...) const>
+  struct CallingConvention<R (CALLING_CONVENTION_CDECL T::*)(BOOST_PP_ENUM_PARAMS(NUM_ARGS, A) ...) const>
     : boost::integral_constant<Convention_t, CONV_CDECL> {};
 
   #ifdef _WIN32
