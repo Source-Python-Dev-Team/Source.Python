@@ -34,6 +34,45 @@
 // Utilities
 #include "utilities/call_python.h"
 
+#ifdef _WIN32
+	#include <Windows.h>
+#else
+	#include <sys/mman.h>
+	#include <unistd.h>
+	int PAGE_SIZE = sysconf(_SC_PAGESIZE);
+	#define ALIGN(ar) ((void*) ((long) ar & ~(PAGE_SIZE-1)))
+#endif
+
+
+// ============================================================================
+// >> HELPER FUNCTIONS
+// ============================================================================
+inline int GetProtection(Protection_t prot)
+{
+	switch (prot)
+	{
+	#ifdef _WIN32
+		case PROTECTION_NONE:				return PAGE_NOACCESS;
+		case PROTECTION_READ:				return PAGE_READONLY;
+		case PROTECTION_READ_WRITE:			return PAGE_READWRITE;
+		case PROTECTION_EXECUTE:			return PAGE_EXECUTE;
+		case PROTECTION_EXECUTE_READ:		return PAGE_EXECUTE_READ;
+		case PROTECTION_EXECUTE_READ_WRITE:	return PAGE_EXECUTE_READWRITE;
+	#elif __linux__
+		case PROTECTION_NONE:				return PROT_NONE;
+		case PROTECTION_READ:				return PROT_READ;
+		case PROTECTION_READ_WRITE:			return PROT_READ | PROT_WRITE;
+		case PROTECTION_EXECUTE:			return PROT_EXEC;
+		case PROTECTION_EXECUTE_READ:		return PROT_EXEC | PROT_READ;
+		case PROTECTION_EXECUTE_READ_WRITE:	return PROT_EXEC | PROT_READ | PROT_WRITE;
+	#else
+		#error Unsupported platform.
+	#endif
+		default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported protection type.")
+	}
+	return -1; // To fix a warning...
+}
+
 
 // ============================================================================
 // >> CPointer
@@ -304,4 +343,27 @@ void CPointer::Validate()
 {
 	if (!IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+}
+
+void CPointer::SetProtection(Protection_t prot, int size)
+{
+#ifdef _WIN32
+	DWORD old_protect;
+	if (!VirtualProtect((void *) m_ulAddr, size, GetProtection(prot), &old_protect))
+#elif __linux__
+	if (mprotect(ALIGN(m_ulAddr), PAGE_SIZE, GetProtection(prot)) != 0)
+#else
+	#error Unsupported platform.
+#endif
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to set memory protection to %i (size=%i).", prot, size)
+}
+
+void CPointer::Protect(int size)
+{
+	SetProtection(PROTECTION_NONE, size);
+}
+
+void CPointer::UnProtect(int size)
+{
+	SetProtection(PROTECTION_EXECUTE_READ_WRITE, size);
 }

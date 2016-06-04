@@ -60,6 +60,7 @@ void export_registers(scope);
 void export_calling_convention(scope);
 void export_functions(scope);
 void export_global_variables(scope);
+void export_protection(scope);
 
 
 // ============================================================================
@@ -83,6 +84,7 @@ DECLARE_SP_MODULE(_memory)
 	export_calling_convention(_memory);
 	export_functions(_memory);
 	export_global_variables(_memory);
+	export_protection(_memory);
 }
 
 
@@ -301,6 +303,24 @@ void export_pointer(scope _memory)
 			&CPointer::Move,
 			"Copies <num_bytes> from <self> to the pointer <destination>. Overlapping is allowed!",
 			args("destination", "num_bytes")
+		)
+
+		.def("set_protection",
+			&CPointer::SetProtection,
+			"Set memory protection.",
+			args("protection", "size")
+		)
+
+		.def("protect",
+			&CPointer::Protect,
+			"Protect the memory block against any kind of access.",
+			args("size")
+		)
+
+		.def("unprotect",
+			&CPointer::UnProtect,
+			"Make the memory block read-, write- and executable.",
+			args("size")
 		)
 
 		// Special methods
@@ -948,4 +968,20 @@ void export_global_variables(scope _memory)
 
 	_memory.attr("NULL") = object(CPointer());
 
+}
+
+
+// ============================================================================
+// >> Protection_t
+// ============================================================================
+void export_protection(scope _memory)
+{
+	enum_<Protection_t> Protection("Protection");
+	
+	Protection.value("NONE", PROTECTION_NONE);
+	Protection.value("READ", PROTECTION_READ);
+	Protection.value("READ_WRITE", PROTECTION_READ_WRITE);
+	Protection.value("EXECUTE", PROTECTION_EXECUTE);
+	Protection.value("EXECUTE_READ", PROTECTION_EXECUTE_READ);
+	Protection.value("EXECUTE_READ_WRITE", PROTECTION_EXECUTE_READ_WRITE);
 }
