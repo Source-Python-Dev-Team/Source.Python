@@ -313,7 +313,7 @@ void export_pointer(scope _memory)
 
 		.def("protect",
 			&CPointer::Protect,
-			"Protect the memory block against any kind of access.",
+			"Make the memory block read-only.",
 			args("size")
 		)
 
