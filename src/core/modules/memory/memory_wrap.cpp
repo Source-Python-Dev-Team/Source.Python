@@ -145,6 +145,11 @@ void export_binary_file(scope _memory)
 			&CBinaryFile::m_ulSize,
 			"Size of the binary."
 		)
+
+		.add_property("symbols",
+			&CBinaryFile::GetSymbols,
+			"Return a list of all symbols."
+		)
 	;
 }
 
