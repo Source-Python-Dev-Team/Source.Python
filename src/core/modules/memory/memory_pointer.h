@@ -100,6 +100,21 @@ public:
 	bool operator!=(T const& rhs)
 	{ return m_ulAddr != rhs; }
 
+	template<class T>
+	bool operator<(T const& rhs)
+	{ return m_ulAddr < rhs; }
+
+	template<class T>
+	bool operator<=(T const& rhs)
+	{ return m_ulAddr <= rhs; }
+
+	template<class T>
+	bool operator>(T const& rhs)
+	{ return m_ulAddr > rhs; }
+
+	template<class T>
+	bool operator>=(T const& rhs)
+	{ return m_ulAddr >= rhs; }
 
 	template<class T>
 	T Get(int iOffset = 0)

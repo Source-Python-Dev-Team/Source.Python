@@ -341,6 +341,18 @@ void export_pointer(scope _memory)
 
         .def(self += int())
         .def(self += self)
+
+        .def(self < other<unsigned long>())
+        .def(self < self)
+
+        .def(self <= other<unsigned long>())
+        .def(self <= self)
+
+        .def(self > other<unsigned long>())
+        .def(self > self)
+
+        .def(self >= other<unsigned long>())
+        .def(self >= self)
 		
         .def("__add__", &CPointer::operator+<unsigned long>, manage_new_object_policy())
         .def("__add__", &CPointer::operator+<CPointer>, manage_new_object_policy())
