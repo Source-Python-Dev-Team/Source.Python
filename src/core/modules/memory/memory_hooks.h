@@ -49,8 +49,21 @@ public:
 
 	object		GetItem(unsigned int iIndex);
 	void		SetItem(unsigned int iIndex, object value);
-	CRegisters* GetRegisters() { return m_pHook->m_pRegisters; }
-	str			__repr__() { return str(tuple(ptr(this))); }
+
+	CRegisters* GetRegisters()
+	{ return m_pHook->m_pRegisters; }
+
+	str	__repr__()
+	{ return str(tuple(ptr(this))); }
+
+	void* GetReturnAddress()
+	{
+		void* pESP = m_pHook->m_pRegisters->m_esp->GetValue<void*>();
+		if (m_pHook->m_RetAddr.count(pESP) == 0) {
+			return NULL;
+		}
+		return m_pHook->m_RetAddr[pESP];
+	}
 
 protected:
 	CHook*                m_pHook;

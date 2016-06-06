@@ -331,9 +331,9 @@ CPointer* CBinaryFile::FindAddress(object oIdentifier)
 	return FindSymbol(extract<char*>(oIdentifier));
 }
 
-list CBinaryFile::GetSymbols()
+dict CBinaryFile::GetSymbols()
 {
-	list result;
+	dict result;
 #ifdef _WIN32
 	PIMAGE_DOS_HEADER dos_header = (PIMAGE_DOS_HEADER) m_ulAddr;
 	if (dos_header->e_magic != IMAGE_DOS_SIGNATURE)
@@ -356,7 +356,10 @@ list CBinaryFile::GetSymbols()
 	BYTE** symbols = (BYTE**)(m_ulAddr + exports->AddressOfNames);
 	for (DWORD i=0; i < exports->NumberOfNames; i++)
 	{
-		result.append((const char*) (m_ulAddr + symbols[i]));
+		const char* name = (const char*) (m_ulAddr + symbols[i]);
+
+		// TODO: Don't use GetProcAddress. There is probably a faster way
+		result[name] = CPointer((unsigned long) GetProcAddress((HMODULE) m_ulAddr, name));
 	}
 #elif __linux__
 	// TODO: Remove duplicated code. See also: FindSymbol()
@@ -437,7 +440,7 @@ list CBinaryFile::GetSymbols()
 		if (sym.st_shndx == SHN_UNDEF || (sym_type != STT_FUNC && sym_type != STT_OBJECT))
 			continue;
 
-		result.append(sym_name);
+		result[sym_name] = CPointer((unsigned long)(dlmap->l_addr + sym.st_value));
 	}
 
 	// Unmap the file now.

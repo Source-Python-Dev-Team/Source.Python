@@ -53,7 +53,7 @@ public:
 	CPointer* FindPointer(object oIdentifier, int iOffset, unsigned int iLevel);
 	CPointer* FindAddress(object oIdentifier);
 
-	list GetSymbols();
+	dict GetSymbols();
 
 private:
 	void AddSignatureToCache(unsigned char* sigstr, int iLength, unsigned int ulAddr);

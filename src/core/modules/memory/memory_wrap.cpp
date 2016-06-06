@@ -148,7 +148,7 @@ void export_binary_file(scope _memory)
 
 		.add_property("symbols",
 			&CBinaryFile::GetSymbols,
-			"Return a list of all symbols."
+			"Return a dict containing all symbols and their addresses."
 		)
 	;
 }
@@ -602,6 +602,11 @@ void export_stack_data(scope _memory)
 		.def("__setitem__",
 			&CStackData::SetItem,
 			"Sets the argument at the specified index."
+		)
+
+		.add_property("return_address",
+			make_function(&CStackData::GetReturnAddress, return_by_value_policy()),
+			"Return the 'return address' to which DynamicHooks will jump after the post-hook has finished."
 		)
 
 		.def("__repr__",

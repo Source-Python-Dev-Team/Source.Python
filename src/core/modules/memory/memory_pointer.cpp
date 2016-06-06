@@ -40,7 +40,7 @@
 	#include <sys/mman.h>
 	#include <unistd.h>
 	int PAGE_SIZE = sysconf(_SC_PAGESIZE);
-	#define ALIGN(ar) ((void*) ((long) ar & ~(PAGE_SIZE-1)))
+	#define ALIGN_PAGE(ar) ((void*) ((long) ar & ~(PAGE_SIZE-1)))
 #endif
 
 
@@ -71,6 +71,15 @@ inline int GetProtection(Protection_t prot)
 		default: BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported protection type.")
 	}
 	return -1; // To fix a warning...
+}
+
+inline int align(int value, int alignment)
+{
+	int unaligned = value % alignment;
+	if (unaligned == 0)
+		return value;
+
+	return value + alignment - unaligned;
 }
 
 
@@ -351,7 +360,8 @@ void CPointer::SetProtection(Protection_t prot, int size)
 	DWORD old_protect;
 	if (!VirtualProtect((void *) m_ulAddr, size, GetProtection(prot), &old_protect))
 #elif __linux__
-	if (mprotect(ALIGN(m_ulAddr), PAGE_SIZE, GetProtection(prot)) != 0)
+	unsigned long addr = (unsigned long) ALIGN_PAGE(m_ulAddr);
+	if (mprotect((void*) addr, align(size + m_ulAddr - addr, PAGE_SIZE), GetProtection(prot)) != 0)
 #else
 	#error Unsupported platform.
 #endif
