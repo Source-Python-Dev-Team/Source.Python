@@ -19,35 +19,26 @@ from entities.entity import Entity
 # =============================================================================
 # Source.Python Imports
 #   Effects
-from _effects import DispatchEffectData
-from _effects import PredictionSystem
 from _effects import ShatterSurface
+from _effects import BloodColor
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('DispatchEffectData',
-           'PredictionSystem',
+__all__ = ('BloodColor',
            'ShatterSurface',
            'ball',
            'beam',
            'box',
            'polygon',
            'square',
-           'temp_entities',
            )
 
 
 # ============================================================================
 # >> GLOBAL VARIABLES
 # ============================================================================
-# Get the temp_entities instance...
-try:
-    from _effects import temp_entities
-except ImportError:
-    temp_entities = manager.get_global_pointer('_TempEntities')
-
 # Get the first temp entity in the chain...
 try:
     from _effects._base import _first_temp_entity
@@ -69,6 +60,7 @@ def beam(
     If you set <parent> to True, the beam is parented to the given entity
     index(es).
     """
+    raise NotImplementedError('Currently not supported.')
     start_entity = -1
     start_vector = None
     end_entity = -1
@@ -109,6 +101,7 @@ def polygon(
 
     See beam() for more information.
     """
+    raise NotImplementedError('Currently not supported.')
     if len(points) < 3:
         raise ValueError('At least 3 points are required.')
 
@@ -127,6 +120,7 @@ def square(
         frame_rate, life, width, end_width, fade_length, amplitude, red,
         green, blue, alpha, speed):
     """Create a square by using _TempEntities.beam_points()."""
+    raise NotImplementedError('Currently not supported.')
     if not isinstance(start, Vector) or not isinstance(end, Vector):
         raise TypeError('"start" and "end" must be Vector objects.')
 
@@ -157,6 +151,7 @@ def box(
         frame_rate, life, width, end_width, fade_length, amplitude, red,
         green, blue, alpha, speed):
     """Create a box by using _TempEntities.beam_points()."""
+    raise NotImplementedError('Currently not supported.')
     if not isinstance(start, Vector) or not isinstance(end, Vector):
         raise TypeError('"start" and "end" must be Vector objects.')
 
@@ -210,6 +205,7 @@ def ball(
     The number of steps is used for the lower and upper half. So, if you define
     15 steps, 29 rings are created (the center ring is shared by both halves).
     """
+    raise NotImplementedError('Currently not supported.')
     if not isinstance(center, Vector):
         raise TypeError('"center" must be Vector object.')
 
