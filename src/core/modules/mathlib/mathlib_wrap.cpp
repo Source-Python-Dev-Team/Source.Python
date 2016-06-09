@@ -63,7 +63,17 @@ DECLARE_SP_MODULE(_mathlib)
 //-----------------------------------------------------------------------------
 void export_vector(scope _mathlib)
 {
+	struct vector_pickle_suite: pickle_suite
+	{
+		static tuple getinitargs(const Vector& vec)
+		{
+			return make_tuple(vec.x, vec.y, vec.z);
+		}
+	};
+
 	class_<Vector>("Vector", init<float, float, float>((arg("x")=0, arg("y")=0, arg("z")=0)))
+
+		.def_pickle(vector_pickle_suite())
 
 		.def("__repr__", &VectorExt::__repr__)
 
@@ -243,7 +253,17 @@ void export_vector(scope _mathlib)
 //-----------------------------------------------------------------------------
 void export_qangle(scope _mathlib)
 {
+	struct qangle_pickle_suite: pickle_suite
+	{
+		static tuple getinitargs(const QAngle& ang)
+		{
+			return make_tuple(ang.x, ang.y, ang.z);
+		}
+	};
+
 	class_<QAngle>("QAngle", init<float, float, float>((arg("x")=0, arg("y")=0, arg("z")=0)))
+
+		.def_pickle(qangle_pickle_suite())
 
 		.def("__repr__", &QAngleExt::__repr__)
 
@@ -318,8 +338,18 @@ void export_qangle(scope _mathlib)
 //-----------------------------------------------------------------------------
 void export_quaternion(scope _mathlib)
 {
+	struct quaternion_pickle_suite: pickle_suite
+	{
+		static tuple getinitargs(const Quaternion& quat)
+		{
+			return make_tuple(quat.x, quat.y, quat.z, quat.w);
+		}
+	};
+
 	class_<Quaternion>("Quaternion", init<float, float, float, float>((arg("x")=0, arg("y")=0, arg("z")=0, arg("w")=0)))
 		.def(init<RadianEuler>())
+
+		.def_pickle(quaternion_pickle_suite())
 
 		.def("__repr__", &QuaternionExt::__repr__)
 
@@ -400,9 +430,19 @@ void export_cplane_t(scope _mathlib)
 //-----------------------------------------------------------------------------
 void export_radian_euler(scope _mathlib)
 {
+	struct radian_euler_pickle_suite: pickle_suite
+	{
+		static tuple getinitargs(const RadianEuler& rad)
+		{
+			return make_tuple(rad.x, rad.y, rad.z);
+		}
+	};
+
 	class_<RadianEuler>("RadianEuler", init<float, float, float>((arg("x")=0, arg("y")=0, arg("z")=0)))
 		.def(init<Quaternion>())
 		.def(init<QAngle>())
+
+		.def_pickle(radian_euler_pickle_suite())
 
 		.def("__repr__", &RadianEulerExt::__repr__)
 

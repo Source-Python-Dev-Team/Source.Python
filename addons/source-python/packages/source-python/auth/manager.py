@@ -18,8 +18,6 @@ from configobj import ConfigObj
 from auth.base import Backend
 #   Core
 from core.settings import _core_settings
-#   Engines
-from engines.server import engine_server
 #   Paths
 from paths import BACKENDS_PATH
 #   Players

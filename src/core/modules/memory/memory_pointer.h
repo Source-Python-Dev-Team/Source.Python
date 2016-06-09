@@ -46,6 +46,20 @@ using namespace boost::python;
 
 
 // ============================================================================
+// >> Protection_t
+// ============================================================================
+enum Protection_t
+{
+	PROTECTION_NONE,
+	PROTECTION_READ,
+	PROTECTION_READ_WRITE,
+	PROTECTION_EXECUTE,
+	PROTECTION_EXECUTE_READ,
+	PROTECTION_EXECUTE_READ_WRITE
+};
+
+
+// ============================================================================
 // >> CPointer
 // ============================================================================
 class CFunction;
@@ -86,6 +100,21 @@ public:
 	bool operator!=(T const& rhs)
 	{ return m_ulAddr != rhs; }
 
+	template<class T>
+	bool operator<(T const& rhs)
+	{ return m_ulAddr < rhs; }
+
+	template<class T>
+	bool operator<=(T const& rhs)
+	{ return m_ulAddr <= rhs; }
+
+	template<class T>
+	bool operator>(T const& rhs)
+	{ return m_ulAddr > rhs; }
+
+	template<class T>
+	bool operator>=(T const& rhs)
+	{ return m_ulAddr >= rhs; }
 
 	template<class T>
 	T Get(int iOffset = 0)
@@ -134,6 +163,10 @@ public:
 	CFunction*			MakeFunction(object oCallingConvention, object args, object return_type);
 	CFunction*			MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type);
 	CFunction*			MakeVirtualFunction(CFunctionInfo& info);
+
+	void				SetProtection(Protection_t prot, int size);
+	void				Protect(int size);
+	void				UnProtect(int size);
 
 	static void         CallCallback(PyObject* self, char* szCallback);
 	static void         PreDealloc(PyObject* self);

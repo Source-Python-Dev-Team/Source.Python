@@ -81,6 +81,8 @@ __all__ = ('ListenerManager',
            'OnLevelInit',
            'OnLevelShutdown',
            'OnNetworkidValidated',
+           'OnPluginLoaded',
+           'OnPluginUnloaded',
            'OnQueryCvarValueFinished',
            'OnServerActivate',
            'OnTick',
@@ -105,6 +107,8 @@ __all__ = ('ListenerManager',
            'on_level_init_listener_manager',
            'on_level_shutdown_listener_manager',
            'on_network_id_validated_listener_manager',
+           'on_plugin_loaded_manager',
+           'on_plugin_unloaded_manager',
            'on_query_cvar_value_finished_listener_manager',
            'on_server_activate_listener_manager',
            'on_tick_listener_manager',
@@ -120,6 +124,8 @@ listeners_logger = _sp_logger.listeners
 
 on_version_update_listener_manager = ListenerManager()
 on_convar_changed_listener_manager = ListenerManager()
+on_plugin_loaded_manager = ListenerManager()
+on_plugin_unloaded_manager = ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -335,6 +341,18 @@ class OnConVarChanged(ListenerManagerDecorator):
     """Register/unregister a ConVar listener."""
 
     manager = on_convar_changed_listener_manager
+
+
+class OnPluginLoaded(ListenerManagerDecorator):
+    """Register/unregister a plugin loaded listener."""
+
+    manager = on_plugin_loaded_manager
+
+
+class OnPluginUnloaded(ListenerManagerDecorator):
+    """Register/unregister a plugin unloaded listener."""
+
+    manager = on_plugin_unloaded_manager
 
 
 # =============================================================================

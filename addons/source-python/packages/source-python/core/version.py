@@ -27,9 +27,8 @@ __all__ = ('VERSION',
 # =============================================================================
 VERSION = 'unversioned'
 
-# TODO: Update this url when the new subdomain has been created
 LAST_SUCCESSFUL_BUILD_NUMBER_URL = (
-    'http://build.affecta.net/job/Source.Python' +
+    'http://builds.sourcepython.com/job/Source.Python' +
     '/api/xml?xpath=/freeStyleProject/lastSuccessfulBuild/number')
 
 

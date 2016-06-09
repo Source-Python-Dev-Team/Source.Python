@@ -35,7 +35,9 @@
 #include "utilities/conversions.h"
 #include "utilities/wrap_macros.h"
 #include "toolframework/itoolentity.h"
-#include "entities.h"
+
+#include "entities_datamaps.h"
+#include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
 
 //-----------------------------------------------------------------------------
@@ -49,6 +51,32 @@
 //-----------------------------------------------------------------------------
 extern IServerTools* servertools;
 extern CGlobalVars *gpGlobals;
+
+
+//-----------------------------------------------------------------------------
+// IServerUnknown extension class.
+//-----------------------------------------------------------------------------
+class IServerUnknownExt
+{
+public:
+	static const char* GetClassname(IServerUnknown* pUnknown)
+	{
+		IServerNetworkable* pNetworkable = pUnknown->GetNetworkable();
+		if (!pNetworkable)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
+
+		return pNetworkable->GetClassName();
+	}
+
+	static bool IsNetworked(IServerUnknown* pUnknown)
+	{
+		IServerNetworkable *pServerNetworkable = pUnknown->GetNetworkable();
+		if (pServerNetworkable)
+			return pServerNetworkable->GetEdict() != NULL;
+
+		return false;
+	}
+};
 
 
 //-----------------------------------------------------------------------------
@@ -81,6 +109,25 @@ public:
 			(CBaseEntityWrapper *) pEntity,
 			&NeverDeleteDeleter<CBaseEntityWrapper *>
 		);
+	}
+
+	int FindOffset(const char* name)
+	{
+		datamap_t* datamap = GetDataDescMap();
+		if (!datamap)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve datamap.")
+
+		typedescription_t* desc = DataMapSharedExt::find(datamap, name);
+		if (!desc)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
+
+		return TypeDescriptionExt::get_offset(*desc);
+	}
+
+	template<class T>
+	T GetProperty(const char* name)
+	{
+		return *(T*) (((unsigned long) this) + FindOffset(name));
 	}
 
 	// TODO: Why doesn't implicit conversion work?

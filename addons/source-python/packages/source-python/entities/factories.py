@@ -26,13 +26,3 @@ __all__ = ('EntityFactory',
            'EntityFactoryDictionary',
            'factory_dictionary',
            )
-
-
-# ============================================================================
-# >> GLOBAL VARIABLES
-# ============================================================================
-# Get the factory_dictionary instance...
-try:
-    from _entities._factories import factory_dictionary
-except ImportError:
-    factory_dictionary = manager.get_global_pointer('EntityFactoryDictionary')

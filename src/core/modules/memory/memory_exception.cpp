@@ -50,8 +50,15 @@ int ExceptionHandler(_EXCEPTION_POINTERS* info, DWORD code)
 
 		if (record->ExceptionInformation[0] == 0)
 			exc_message = "Access violation while reading address '%u'.";
-		else 
+		else if (record->ExceptionInformation[0] == 1)
 			exc_message = "Access violation while writing address '%u'.";
+		else if (record->ExceptionInformation[0] == 8)
+			exc_message = "Access violation while executing address '%u'.";
+		else
+			BOOST_RAISE_EXCEPTION(
+				PyExc_RuntimeError,
+				"Unknown access violation '%i' at address '%u'.", 
+				record->ExceptionInformation[0], record->ExceptionInformation[1])
 
 		BOOST_RAISE_EXCEPTION(PyExc_RuntimeError, exc_message, record->ExceptionInformation[1])
 	}
