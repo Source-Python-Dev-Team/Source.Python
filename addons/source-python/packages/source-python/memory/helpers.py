@@ -249,7 +249,7 @@ class Array(BasePointer):
         """Return the offset of the given index."""
         # Pointer arrays always have every 4 bytes a new pointer
         if self._is_ptr:
-            return index * TYPE_SIZES[Type.POINTER]
+            return index * TYPE_SIZES['POINTER']
 
         # Every 1, 2, 4 or 8 bytes is a new value
         if Type.is_native(self._type_name):
