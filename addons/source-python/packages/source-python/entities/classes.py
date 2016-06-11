@@ -216,11 +216,8 @@ class _ServerClasses(TypeManager):
             # Yield the current baseclass
             yield _table_names[prop.data_table.name]
 
-            # Loop through all tables within the baseclass
-            for name in self._get_base_server_classes(prop.data_table):
-
-                # Yield any baseclasses within the baseclass
-                yield name
+            # Yield all tables within the baseclass
+            yield from self._get_base_server_classes(prop.data_table)
 
     def _get_server_class(self, class_name, datamap):
         """Retrieve values for the server class."""
@@ -392,13 +389,8 @@ class _ServerClasses(TypeManager):
 
             # Is the current property a datatable?
             if prop.type == SendPropType.DATATABLE:
-
-                # Loop through all properties in the datatable
-                for new_name, new_prop, new_offset in self._find_properties(
-                        prop.data_table, name + '.', offset):
-
-                    # Yield their values
-                    yield (new_name, new_prop, new_offset)
+                yield from self._find_properties(
+                    prop.data_table, name + '.', offset)
 
             # Is the current property not a datatable?
             else:
@@ -428,13 +420,8 @@ class _ServerClasses(TypeManager):
 
             # Is the current descriptor an embedded datamap table?
             if desc.type == FieldType.EMBEDDED:
-
-                # Loop through all descriptors for the embedded datamap table
-                for new_name, new_desc, new_offset in self._find_descriptors(
-                        desc.embedded_datamap, name + '.', offset):
-
-                    # Yield their values
-                    yield (new_name, new_desc, new_offset)
+                yield from self._find_descriptors(
+                    desc.embedded_datamap, name + '.', offset)
 
             # Is the current descriptor not an embedded datamap table?
             else:
