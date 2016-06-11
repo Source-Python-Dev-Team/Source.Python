@@ -26,3 +26,10 @@ __all__ = ('EntityFactory',
            'EntityFactoryDictionary',
            'factory_dictionary',
            )
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# The singleton object of the :class:`EntityFactoryDictionary` class.
+factory_dictionary = None
