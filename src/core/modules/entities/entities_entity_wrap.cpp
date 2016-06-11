@@ -235,6 +235,22 @@ void export_base_entity(scope _entity)
 		return_by_value_policy()
 	);
 
+	BaseEntity.def("get_datamap_property_vector",
+		&CBaseEntityWrapper::GetDatamapProperty<Vector>
+	);
+
+	BaseEntity.def("get_datamap_property_color",
+		&CBaseEntityWrapper::GetDatamapProperty<Color>
+	);
+
+	BaseEntity.def("get_datamap_property_interval",
+		&CBaseEntityWrapper::GetDatamapProperty<interval_t>
+	);
+
+	BaseEntity.def("get_datamap_property_quaternion",
+		&CBaseEntityWrapper::GetDatamapProperty<Quaternion>
+	);
+
 	// Datamap setter methods
 	BaseEntity.def("set_datamap_property_bool",
 		&CBaseEntityWrapper::SetDatamapProperty<bool>
@@ -298,6 +314,22 @@ void export_base_entity(scope _entity)
 
 	BaseEntity.def("set_datamap_property_pointer",
 		&CBaseEntityWrapper::SetDatamapProperty<void*>
+	);
+
+	BaseEntity.def("set_datamap_property_vector",
+		&CBaseEntityWrapper::SetDatamapProperty<Vector>
+	);
+
+	BaseEntity.def("set_datamap_property_color",
+		&CBaseEntityWrapper::SetDatamapProperty<Color>
+	);
+
+	BaseEntity.def("set_datamap_property_interval",
+		&CBaseEntityWrapper::SetDatamapProperty<interval_t>
+	);
+
+	BaseEntity.def("set_datamap_property_quaternion",
+		&CBaseEntityWrapper::SetDatamapProperty<Quaternion>
 	);
 
 	// Network property getters
@@ -366,6 +398,22 @@ void export_base_entity(scope _entity)
 		return_by_value_policy()
 	);
 
+	BaseEntity.def("get_network_property_vector",
+		&CBaseEntityWrapper::GetNetworkProperty<Vector>
+	);
+
+	BaseEntity.def("get_network_property_color",
+		&CBaseEntityWrapper::GetNetworkProperty<Color>
+	);
+
+	BaseEntity.def("get_network_property_interval",
+		&CBaseEntityWrapper::GetNetworkProperty<interval_t>
+	);
+
+	BaseEntity.def("get_network_property_quaternion",
+		&CBaseEntityWrapper::GetNetworkProperty<Quaternion>
+	);
+
 	// Network property setters
 	BaseEntity.def("set_network_property_bool",
 		&CBaseEntityWrapper::SetNetworkProperty<bool>
@@ -430,6 +478,22 @@ void export_base_entity(scope _entity)
 	BaseEntity.def("set_network_property_pointer",
 		&CBaseEntityWrapper::SetNetworkProperty<void*>,
 		return_by_value_policy()
+	);
+
+	BaseEntity.def("set_network_property_vector",
+		&CBaseEntityWrapper::SetNetworkProperty<Vector>
+	);
+
+	BaseEntity.def("set_network_property_color",
+		&CBaseEntityWrapper::SetNetworkProperty<Color>
+	);
+
+	BaseEntity.def("set_network_property_interval",
+		&CBaseEntityWrapper::SetNetworkProperty<interval_t>
+	);
+
+	BaseEntity.def("set_network_property_quaternion",
+		&CBaseEntityWrapper::SetNetworkProperty<Quaternion>
 	);
 
 	// Others
