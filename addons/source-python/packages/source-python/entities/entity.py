@@ -165,11 +165,9 @@ class Entity(BaseEntity):
         :return: Return the found entity.
         :rtype: Entity
         """
-        # Import this here to fix a circular import
-        from filters.entities import EntityIter
-
-        for entity in EntityIter(classname):
-            return entity
+        entity = BaseEntity.find(classname)
+        if entity is not None and entity.is_networked():
+            return Entity(entity.index)
 
         return None
 
