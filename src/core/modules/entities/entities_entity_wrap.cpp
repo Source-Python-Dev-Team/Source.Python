@@ -64,6 +64,21 @@ void export_base_entity(scope _entity)
 		)
 	);
 
+	BaseEntity.def("create",
+		&CBaseEntityWrapper::create,
+		return_by_value_policy()
+	).staticmethod("create");
+
+	BaseEntity.def("find",
+		&CBaseEntityWrapper::find,
+		return_by_value_policy()
+	).staticmethod("find");
+
+	BaseEntity.def("find_or_create",
+		&CBaseEntityWrapper::find_or_create,
+		return_by_value_policy()
+	).staticmethod("find_or_create");
+
 	// Properties...
 	BaseEntity.add_property("server_class",
 		make_function(&CBaseEntityWrapper::GetServerClass, reference_existing_object_policy()),
@@ -80,7 +95,7 @@ void export_base_entity(scope _entity)
 	BaseEntity.add_property("pointer", make_function(&CBaseEntityWrapper::GetPointer));
 	BaseEntity.add_property("inthandle", &CBaseEntityWrapper::GetIntHandle);
 
-	// Methods...
+	// KeyValue getter methods
 	BaseEntity.def("get_key_value_string",
 		&CBaseEntityWrapper::GetKeyValueString,
 		"Returns the value of the given field name.",
@@ -117,6 +132,7 @@ void export_base_entity(scope _entity)
 		args("field_name")
 	);
 
+	// KeyValue setter methods
 	BaseEntity.def("set_key_value_int",
 		&CBaseEntityWrapper::SetKeyValue<int>,
 		"Sets a field to the given value.",
@@ -153,6 +169,270 @@ void export_base_entity(scope _entity)
 		args("field_name", "value")
 	);
 
+	// Datamap getter methods
+	BaseEntity.def("get_datamap_property_bool",
+		&CBaseEntityWrapper::GetDatamapProperty<bool>
+	);
+
+	BaseEntity.def("get_datamap_property_char",
+		&CBaseEntityWrapper::GetDatamapProperty<char>
+	);
+
+	BaseEntity.def("get_datamap_property_uchar",
+		&CBaseEntityWrapper::GetDatamapProperty<unsigned char>
+	);
+
+	BaseEntity.def("get_datamap_property_short",
+		&CBaseEntityWrapper::GetDatamapProperty<short>
+	);
+
+	BaseEntity.def("get_datamap_property_ushort",
+		&CBaseEntityWrapper::GetDatamapProperty<unsigned short>
+	);
+
+	BaseEntity.def("get_datamap_property_int",
+		&CBaseEntityWrapper::GetDatamapProperty<int>
+	);
+
+	BaseEntity.def("get_datamap_property_uint",
+		&CBaseEntityWrapper::GetDatamapProperty<unsigned int>
+	);
+
+	BaseEntity.def("get_datamap_property_long",
+		&CBaseEntityWrapper::GetDatamapProperty<long>
+	);
+
+	BaseEntity.def("get_datamap_property_ulong",
+		&CBaseEntityWrapper::GetDatamapProperty<unsigned long>
+	);
+
+	BaseEntity.def("get_datamap_property_long_long",
+		&CBaseEntityWrapper::GetDatamapProperty<long long>
+	);
+
+	BaseEntity.def("get_datamap_property_ulong_long",
+		&CBaseEntityWrapper::GetDatamapProperty<unsigned long long>
+	);
+
+	BaseEntity.def("get_datamap_property_float",
+		&CBaseEntityWrapper::GetDatamapProperty<float>
+	);
+
+	BaseEntity.def("get_datamap_property_double",
+		&CBaseEntityWrapper::GetDatamapProperty<double>
+	);
+
+	BaseEntity.def("get_datamap_property_string",
+		&CBaseEntityWrapper::GetDatamapProperty<const char*>
+	);
+
+	BaseEntity.def("get_datamap_property_string_array",
+		&CBaseEntityWrapper::GetDatamapPropertyStringArray
+	);
+
+	BaseEntity.def("get_datamap_property_pointer",
+		&CBaseEntityWrapper::GetDatamapProperty<void*>,
+		return_by_value_policy()
+	);
+
+	// Datamap setter methods
+	BaseEntity.def("set_datamap_property_bool",
+		&CBaseEntityWrapper::SetDatamapProperty<bool>
+	);
+
+	BaseEntity.def("set_datamap_property_char",
+		&CBaseEntityWrapper::SetDatamapProperty<char>
+	);
+
+	BaseEntity.def("set_datamap_property_uchar",
+		&CBaseEntityWrapper::SetDatamapProperty<unsigned char>
+	);
+
+	BaseEntity.def("set_datamap_property_short",
+		&CBaseEntityWrapper::SetDatamapProperty<short>
+	);
+
+	BaseEntity.def("set_datamap_property_ushort",
+		&CBaseEntityWrapper::SetDatamapProperty<unsigned short>
+	);
+
+	BaseEntity.def("set_datamap_property_int",
+		&CBaseEntityWrapper::SetDatamapProperty<int>
+	);
+
+	BaseEntity.def("set_datamap_property_uint",
+		&CBaseEntityWrapper::SetDatamapProperty<unsigned int>
+	);
+
+	BaseEntity.def("set_datamap_property_long",
+		&CBaseEntityWrapper::SetDatamapProperty<long>
+	);
+
+	BaseEntity.def("set_datamap_property_ulong",
+		&CBaseEntityWrapper::SetDatamapProperty<unsigned long>
+	);
+
+	BaseEntity.def("set_datamap_property_long_long",
+		&CBaseEntityWrapper::SetDatamapProperty<long long>
+	);
+
+	BaseEntity.def("set_datamap_property_ulong_long",
+		&CBaseEntityWrapper::SetDatamapProperty<unsigned long long>
+	);
+
+	BaseEntity.def("set_datamap_property_float",
+		&CBaseEntityWrapper::SetDatamapProperty<float>
+	);
+
+	BaseEntity.def("set_datamap_property_double",
+		&CBaseEntityWrapper::SetDatamapProperty<double>
+	);
+
+	BaseEntity.def("set_datamap_property_string",
+		&CBaseEntityWrapper::SetDatamapProperty<const char*>
+	);
+
+	BaseEntity.def("set_datamap_property_string_array",
+		&CBaseEntityWrapper::SetDatamapPropertyStringArray
+	);
+
+	BaseEntity.def("set_datamap_property_pointer",
+		&CBaseEntityWrapper::SetDatamapProperty<void*>
+	);
+
+	// Network property getters
+	BaseEntity.def("get_network_property_bool",
+		&CBaseEntityWrapper::GetNetworkProperty<bool>
+	);
+
+	BaseEntity.def("get_network_property_char",
+		&CBaseEntityWrapper::GetNetworkProperty<char>
+	);
+
+	BaseEntity.def("get_network_property_uchar",
+		&CBaseEntityWrapper::GetNetworkProperty<unsigned char>
+	);
+
+	BaseEntity.def("get_network_property_short",
+		&CBaseEntityWrapper::GetNetworkProperty<short>
+	);
+
+	BaseEntity.def("get_network_property_ushort",
+		&CBaseEntityWrapper::GetNetworkProperty<unsigned short>
+	);
+
+	BaseEntity.def("get_network_property_int",
+		&CBaseEntityWrapper::GetNetworkProperty<int>
+	);
+
+	BaseEntity.def("get_network_property_uint",
+		&CBaseEntityWrapper::GetNetworkProperty<unsigned int>
+	);
+
+	BaseEntity.def("get_network_property_long",
+		&CBaseEntityWrapper::GetNetworkProperty<long>
+	);
+
+	BaseEntity.def("get_network_property_ulong",
+		&CBaseEntityWrapper::GetNetworkProperty<unsigned long>
+	);
+
+	BaseEntity.def("get_network_property_long_long",
+		&CBaseEntityWrapper::GetNetworkProperty<long long>
+	);
+
+	BaseEntity.def("get_network_property_ulong_long",
+		&CBaseEntityWrapper::GetNetworkProperty<unsigned long long>
+	);
+
+	BaseEntity.def("get_network_property_float",
+		&CBaseEntityWrapper::GetNetworkProperty<float>
+	);
+
+	BaseEntity.def("get_network_property_double",
+		&CBaseEntityWrapper::GetNetworkProperty<double>
+	);
+
+	BaseEntity.def("get_network_property_string",
+		&CBaseEntityWrapper::GetNetworkProperty<const char*>
+	);
+
+	BaseEntity.def("get_network_property_string_array",
+		&CBaseEntityWrapper::GetNetworkPropertyStringArray
+	);
+
+	BaseEntity.def("get_network_property_pointer",
+		&CBaseEntityWrapper::GetNetworkProperty<void*>,
+		return_by_value_policy()
+	);
+
+	// Network property setters
+	BaseEntity.def("set_network_property_bool",
+		&CBaseEntityWrapper::SetNetworkProperty<bool>
+	);
+
+	BaseEntity.def("set_network_property_char",
+		&CBaseEntityWrapper::SetNetworkProperty<char>
+	);
+
+	BaseEntity.def("set_network_property_uchar",
+		&CBaseEntityWrapper::SetNetworkProperty<unsigned char>
+	);
+
+	BaseEntity.def("set_network_property_short",
+		&CBaseEntityWrapper::SetNetworkProperty<short>
+	);
+
+	BaseEntity.def("set_network_property_ushort",
+		&CBaseEntityWrapper::SetNetworkProperty<unsigned short>
+	);
+
+	BaseEntity.def("set_network_property_int",
+		&CBaseEntityWrapper::SetNetworkProperty<int>
+	);
+
+	BaseEntity.def("set_network_property_uint",
+		&CBaseEntityWrapper::SetNetworkProperty<unsigned int>
+	);
+
+	BaseEntity.def("set_network_property_long",
+		&CBaseEntityWrapper::SetNetworkProperty<long>
+	);
+
+	BaseEntity.def("set_network_property_ulong",
+		&CBaseEntityWrapper::SetNetworkProperty<unsigned long>
+	);
+
+	BaseEntity.def("set_network_property_long_long",
+		&CBaseEntityWrapper::SetNetworkProperty<long long>
+	);
+
+	BaseEntity.def("set_network_property_ulong_long",
+		&CBaseEntityWrapper::SetNetworkProperty<unsigned long long>
+	);
+
+	BaseEntity.def("set_network_property_float",
+		&CBaseEntityWrapper::SetNetworkProperty<float>
+	);
+
+	BaseEntity.def("set_network_property_double",
+		&CBaseEntityWrapper::SetNetworkProperty<double>
+	);
+
+	BaseEntity.def("set_network_property_string",
+		&CBaseEntityWrapper::SetNetworkProperty<const char*>
+	);
+
+	BaseEntity.def("set_network_property_string_array",
+		&CBaseEntityWrapper::SetNetworkPropertyStringArray
+	);
+
+	BaseEntity.def("set_network_property_pointer",
+		&CBaseEntityWrapper::SetNetworkProperty<void*>,
+		return_by_value_policy()
+	);
+
+	// Others
 	BaseEntity.def("is_player",
 		&CBaseEntityWrapper::IsPlayer,
 		"Return True if the entity is a player."

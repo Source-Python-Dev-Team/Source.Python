@@ -43,14 +43,8 @@
 class SendTableSharedExt
 {
 public:
-	static SendProp *__getitem__(SendTable *pSendTable, int iIndex)
-	{
-		if (iIndex < 0 || iIndex > (pSendTable->m_nProps - 1))
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Invalid index.");
-		}
-		return pSendTable->GetProp(iIndex);
-	}
+	static SendProp *__getitem__(SendTable *pSendTable, int iIndex);
+	static int find_offset(SendTable* pTable, const char* name);
 };
 
 
@@ -60,16 +54,7 @@ public:
 class SendPropSharedExt
 {
 public:
-	static CFunction *get_proxy_function(SendProp *pSendProp, object oCallingConvention, object args, object oReturnType)
-	{
-		if (pSendProp->IsExcludeProp())
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is excluded.", pSendProp->GetName());
-
-		if (pSendProp->GetType() == DPT_DataTable)
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is a DataTable.", pSendProp->GetName());
-
-		return new CFunction((unsigned long)pSendProp->GetProxyFn(), oCallingConvention, args, oReturnType);
-	}
+	static CFunction *get_proxy_function(SendProp *pSendProp, object oCallingConvention, object args, object oReturnType);
 };
 
 
@@ -99,67 +84,14 @@ public:
 		pVariant->*member = value;
 	}
 
-	static const char *get_string(DVariant *pVariant)
-	{
-		if (pVariant->m_Type != DPT_String)
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
-		}
-		return pVariant->m_pString;
-	}
-
-	static void set_string(DVariant *pVariant, const char *pString)
-	{
-		pVariant->m_Type = DPT_String;
-		*(char**)&pVariant->m_pString = (char*)pString;
-	}
-
-	static int get_int(DVariant* pVariant)
-	{
-		if (pVariant->m_Type != DPT_Int)
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
-		}
-
-		return pVariant->m_Int;
-	}
-
-	static void set_int(DVariant* pVariant, int iValue)
-	{
-		if (pVariant->m_Type != DPT_Int)
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
-		}
-
-		pVariant->m_Int = iValue;
-	}
-
-	static CPointer *get_data(DVariant *pVariant)
-	{
-		return new CPointer((unsigned long)get_typed_value<DPT_DataTable, void *, &DVariant::m_pData>(pVariant));
-	}
-
-	static void set_data(DVariant *pVariant, CPointer *pData)
-	{
-		set_typed_value<DPT_DataTable, void *, &DVariant::m_pData>(pVariant, (void *)pData->m_ulAddr);
-	}
-
-	static Vector *get_vector(DVariant *pVariant)
-	{
-		if (pVariant->m_Type != DPT_Vector)
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to cast to the specified type.");
-		}
-		return new Vector(pVariant->m_Vector[0], pVariant->m_Vector[1], pVariant->m_Vector[2]);
-	}
-
-	static void set_vector(DVariant *pVariant, Vector *pVector)
-	{
-		pVariant->m_Type = DPT_Vector;
-		pVariant->m_Vector[0] = pVector->x;
-		pVariant->m_Vector[1] = pVector->y;
-		pVariant->m_Vector[2] = pVector->z;
-	}
+	static const char *get_string(DVariant *pVariant);
+	static void set_string(DVariant *pVariant, const char *pString);
+	static int get_int(DVariant* pVariant);
+	static void set_int(DVariant* pVariant, int iValue);
+	static CPointer *get_data(DVariant *pVariant);
+	static void set_data(DVariant *pVariant, CPointer *pData);
+	static Vector *get_vector(DVariant *pVariant);
+	static void set_vector(DVariant *pVariant, Vector *pVector);
 };
 
 

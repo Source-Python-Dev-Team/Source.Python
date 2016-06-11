@@ -98,133 +98,75 @@ public:
 	virtual datamap_t* GetDataDescMap() = 0;
 
 public:
-	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex)
+	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex);
+	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity);
+	static CBaseEntity* create(const char* name);
+	static CBaseEntity* find(const char* name);
+	static CBaseEntity* find_or_create(const char* name);
+
+	CBaseEntity* GetThis();
+
+	// Datamap methods
+	int FindDataMapOffset(const char* name);
+
+	template<class T>
+	T GetDatamapProperty(const char* name)
 	{
-		return CBaseEntityWrapper::wrap(ExcBaseEntityFromIndex(uiEntityIndex));
+		return *(T*) (((unsigned long) this) + FindDataMapOffset(name));
 	}
 
-	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity)
+	const char* GetDatamapPropertyStringArray(const char* name)
 	{
-		return boost::shared_ptr<CBaseEntityWrapper>(
-			(CBaseEntityWrapper *) pEntity,
-			&NeverDeleteDeleter<CBaseEntityWrapper *>
-		);
-	}
-
-	int FindOffset(const char* name)
-	{
-		datamap_t* datamap = GetDataDescMap();
-		if (!datamap)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve datamap.")
-
-		typedescription_t* desc = DataMapSharedExt::find(datamap, name);
-		if (!desc)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
-
-		return TypeDescriptionExt::get_offset(*desc);
+		return (const char*) (((unsigned long) this) + FindDataMapOffset(name));
 	}
 
 	template<class T>
-	T GetProperty(const char* name)
+	void SetDatamapProperty(const char* name, T value)
 	{
-		return *(T*) (((unsigned long) this) + FindOffset(name));
+		*(T*) (((unsigned long) this) + FindDataMapOffset(name)) = value;
 	}
 
-	// TODO: Why doesn't implicit conversion work?
-	// operaton CBaseEntity* () { return (CBaseEntity *) this; }
-	CBaseEntity* GetThis()
-	{ return (CBaseEntity *) this; }
-
-	void GetKeyValueStringRaw(const char* szName, char* szOut, int iLength)
+	void SetDatamapPropertyStringArray(const char* name, const char* value)
 	{
-		if (!servertools->GetKeyValue(GetThis(), szName, szOut, iLength))
-			BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
-				szName, GetDataDescMap()->dataClassName);
+		strcpy((char*) (((unsigned long) this) + FindDataMapOffset(name)), value);
 	}
 
-	str GetKeyValueString(const char* szName)
+	// Network property methods
+	int FindNetworkPropertyOffset(const char* name);
+
+	template<class T>
+	T GetNetworkProperty(const char* name)
 	{
-		char szResult[MAX_KEY_VALUE_LENGTH];
-		GetKeyValueStringRaw(szName, szResult, MAX_KEY_VALUE_LENGTH);
-
-		// Fix for field name "model". I think a string_t object is copied to szResult.
-		if (strcmp(szName, "model") == 0)
-			return *(char **) szResult;
-
-		return str(szResult);
+		return *(T *) (((unsigned long) this) + FindNetworkPropertyOffset(name));
 	}
 
-	long GetKeyValueInt(const char* szName)
+	const char* GetNetworkPropertyStringArray(const char* name)
 	{
-		char szResult[128];
-		GetKeyValueStringRaw(szName, szResult, 128);
-		
-		long iResult;
-		if (!sputils::UTIL_StringToLong(&iResult, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be an integer: '%s'.", szResult);
-
-		return iResult;
+		return (const char*) (((unsigned long) this) + FindNetworkPropertyOffset(name));
 	}
 
-	double GetKeyValueFloat(const char* szName)
+	template<class T>
+	void SetNetworkProperty(const char* name, T value)
 	{
-		char szResult[128];
-		GetKeyValueStringRaw(szName, szResult, 128);
-		
-		double dResult;
-		if (!sputils::UTIL_StringToDouble(&dResult, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a float: '%s'.", szResult);
-
-		return dResult;
+		*(T *) (((unsigned long) this) + FindNetworkPropertyOffset(name)) = value;
+		GetEdict()->StateChanged();
 	}
 
-	Vector GetKeyValueVector(const char* szName)
+	void SetNetworkPropertyStringArray(const char* name, const char* value)
 	{
-		char szResult[128];
-		GetKeyValueStringRaw(szName, szResult, 128);
-
-		float fResult[3];
-		if (!sputils::UTIL_StringToFloatArray(fResult, 3, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a vector: '%s'.", szResult);
-
-		return Vector(fResult[0], fResult[1], fResult[2]);
+		strcpy((char*) (((unsigned long) this) + FindNetworkPropertyOffset(name)), value);
+		GetEdict()->StateChanged();
 	}
 
-	bool GetKeyValueBool(const char* szName)
-	{
-		char szResult[3];
-		GetKeyValueStringRaw(szName, szResult, 3);
-		if (szResult[1] != '\0')
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a boolean: '%s'.", szResult);
-
-		if (szResult[0] == '1')
-			return true;
-		else if (szResult[0] == '0')
-			return false;
-		else
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid boolean value: '%c'.", szResult[0]);
-
-		return false; // to fix a warning.
-	}
-
-	Color GetKeyValueColor(const char* szName)
-	{
-		char szResult[128];
-		GetKeyValueStringRaw(szName, szResult, 128);
-
-		int iResult[4];
-		if (!sputils::UTIL_StringToIntArray(iResult, 4, szResult))
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a color: '%s'.", szResult);
-
-		return Color(iResult[0], iResult[1], iResult[2], iResult[3]);
-	}
-
-	void SetKeyValueColor(const char* szName, Color color)
-	{
-		char string[16];
-		Q_snprintf(string, sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
-		SetKeyValue(szName, string);
-	}
+	// KeyValue methods
+	void GetKeyValueStringRaw(const char* szName, char* szOut, int iLength);
+	str GetKeyValueString(const char* szName);
+	long GetKeyValueInt(const char* szName);
+	double GetKeyValueFloat(const char* szName);
+	Vector GetKeyValueVector(const char* szName);
+	bool GetKeyValueBool(const char* szName);
+	Color GetKeyValueColor(const char* szName);
+	void SetKeyValueColor(const char* szName, Color color);
 
 	template<class T>
 	void SetKeyValue(const char* szName, T value)
@@ -239,37 +181,14 @@ public:
 		servertools->SetKeyValue(GetThis(), szName, value);
 	}
 
-	edict_t* GetEdict()
-	{
-		return ExcEdictFromBaseEntity(GetThis());
-	}
-	
-	unsigned int GetIndex()
-	{
-		return ExcIndexFromBaseEntity(GetThis());
-	}
-	
-	CPointer GetPointer()
-	{
-		return ExcPointerFromBaseEntity(GetThis());
-	}
-	
-	unsigned int GetIntHandle()
-	{
-		return ExcIntHandleFromBaseEntity(GetThis());
-	}
+	// Conversion methods
+	edict_t* GetEdict();
+	unsigned int GetIndex();
+	CPointer GetPointer();
+	unsigned int GetIntHandle();
 
-	bool IsPlayer()
-	{
-		if (!IServerUnknownExt::IsNetworked(GetThis()))
-			return false;
-
-		unsigned int iEntityIndex;
-		if (!IndexFromBaseEntity(GetThis(), iEntityIndex)) 
-			return false;
-
-		return iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex <= (unsigned int) gpGlobals->maxClients;
-	}
+	// Other methods
+	bool IsPlayer();
 };
 
 

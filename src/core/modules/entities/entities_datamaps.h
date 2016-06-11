@@ -47,40 +47,9 @@
 class DataMapSharedExt
 {
 public:
-	static typedescription_t& __getitem__(const datamap_t& pDataMap, int iIndex)
-	{
-		if (iIndex < 0 || iIndex > (pDataMap.dataNumFields - 1))
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Invalid index.");
-		}
-		return pDataMap.dataDesc[iIndex];
-	}
-
-	static typedescription_t *find(datamap_t *pDataMap, const char *szName)
-	{
-		while (pDataMap)
-		{
-			for (int iCurrentIndex=0; iCurrentIndex < pDataMap->dataNumFields; iCurrentIndex++)
-			{
-				typedescription_t pCurrentDataDesc = pDataMap->dataDesc[iCurrentIndex];
-				if ((pCurrentDataDesc.fieldName && strcmp(szName, pCurrentDataDesc.fieldName) == 0) ||
-					(pCurrentDataDesc.externalName && strcmp(szName, pCurrentDataDesc.externalName) == 0))
-				{
-					return &(pDataMap->dataDesc[iCurrentIndex]);
-				}
-				else if (pCurrentDataDesc.fieldType == FIELD_EMBEDDED)
-				{
-					typedescription_t *pReturnValue = find(pCurrentDataDesc.td, szName);
-					if (pReturnValue)
-					{
-						return pReturnValue;
-					}
-				}
-			}
-			pDataMap = pDataMap->baseMap;
-		}
-		return NULL;
-	}
+	static typedescription_t& __getitem__(const datamap_t& pDataMap, int iIndex);
+	static typedescription_t* find(datamap_t* pDataMap, const char *szName);
+	static int find_offset(datamap_t* pDataMap, const char* name);
 };
 
 
