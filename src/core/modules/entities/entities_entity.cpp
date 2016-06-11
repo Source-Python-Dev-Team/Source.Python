@@ -31,6 +31,10 @@
 #include "entities_entity.h"
 #include "entities_props.h"
 #include "entities_factories.h"
+#include "utilities/conversions.h"
+
+#include "entities_datamaps.h"
+#include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
 
 // ============================================================================

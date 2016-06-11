@@ -31,13 +31,8 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "utilities/baseentity.h"
-#include "utilities/sp_util.h"
-#include "utilities/conversions.h"
-#include "utilities/wrap_macros.h"
 #include "toolframework/itoolentity.h"
-
-#include "entities_datamaps.h"
-#include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
+#include "modules/memory/memory_pointer.h"
 
 
 //-----------------------------------------------------------------------------
