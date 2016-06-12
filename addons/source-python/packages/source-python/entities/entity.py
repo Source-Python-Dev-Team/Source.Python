@@ -77,8 +77,6 @@ class Entity(BaseEntity):
 
         # Set the entity's base attributes
         object.__setattr__(self, '_index', index)
-        object.__setattr__(self, '_edict', None)
-        object.__setattr__(self, '_pointer', None)
 
     def __eq__(self, other):
         """Return True if both entities have the same index."""
@@ -201,113 +199,39 @@ class Entity(BaseEntity):
         return self._index
 
     @property
-    def edict(self):
-        """Return the entity's :class:`entities.Edict` instance."""
-        if self._edict is None:
-            edict = edict_from_index(self.index)
-            object.__setattr__(self, '_edict', edict)
-        return self._edict
-
-    @property
-    def pointer(self):
-        """Return the entity's :class:`memory.Pointer`."""
-        if self._pointer is None:
-            pointer = get_object_pointer(self)
-            object.__setattr__(self, '_pointer', pointer)
-        return self._pointer
-
-    @property
-    def inthandle(self):
-        """Return the entity's integer handle."""
-        return self.basehandle.to_int()
-
-    @property
-    def collideable(self):
-        """Return the entity's Collideable instance."""
-        return self.edict.collideable
-
-    @property
-    def networkable(self):
-        """Return the entity's Networkable instance."""
-        return self.edict.networkable
-
-    @property
-    def server_class(self):
-        """Return the entity's server class."""
-        return self.networkable.server_class
-
-    @property
     def server_classes(self):
         """Yield all server classes for the entity."""
-        # Loop through all server classes for the entity
-        for server_class in server_classes.get_entity_server_classes(self):
-
-            # Yield the server class
-            yield server_class
+        yield from server_classes.get_entity_server_classes(self)
 
     @property
     def properties(self):
-        """Iterate over all descriptors available for the entity.
-
-        This property is a helper for scripters
-            to know what descriptors an entity has available.
-        """
-        # Loop through each server class for the entity
+        """Iterate over all descriptors available for the entity."""
         for server_class in self.server_classes:
-
-            # Loop through the server class' descriptors
-            for name in server_class.properties:
-
-                # Yield the descriptor
-                yield name
+            yield from server_class.properties
 
     @property
     def inputs(self):
-        """Iterate over all inputs available for the entity.
-
-        This property is a helper for scripters
-            to know what inputs an entity has available.
-        """
-        # Loop through each server class for the entity
+        """Iterate over all inputs available for the entity."""
         for server_class in self.server_classes:
-
-            # Loop through the server class' inputs
-            for name in server_class.inputs:
-
-                # Yield the input
-                yield name
+            yield from server_class.inputs
 
     @property
     def outputs(self):
-        """Iterate over all outputs available for the entity.
-
-        This property is a helper for scripters
-            to know what outputs an entity has available.
-        """
-        # Loop through each server class for the entity
+        """Iterate over all outputs available for the entity."""
         for server_class in self.server_classes:
-
-            # Loop through the server class' outputs
-            for name in server_class.outputs:
-
-                # Yield the input
-                yield name
+            yield from server_class.outputs
 
     @property
     def keyvalues(self):
         """Iterate over all entity keyvalues available for the entity.
 
-        This property is a helper for scripters
-            to know what keyvalues an entity has available.
+        .. note::
+
+            An entity might also have hardcoded keyvalues that can't be listed
+            with this property.
         """
-        # Loop through each server class for the entity
         for server_class in self.server_classes:
-
-            # Loop through the server class' keyvalues
-            for keyvalue in server_class.keyvalues:
-
-                # Yield the keyvalue
-                yield keyvalue
+            yield from server_class.keyvalues
 
     def get_color(self):
         """Return the entity's color as a Color instance."""
