@@ -25,11 +25,9 @@ from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import DamageTypes
 from entities.constants import RenderMode
-from entities.helpers import create_entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
-from entities.helpers import spawn_entity
 #   Filters
 from filters.weapons import WeaponClassIter
 #   Memory
@@ -192,10 +190,6 @@ class Entity(BaseEntity):
             entity = cls.create(classname)
 
         return entity
-
-    def spawn(self):
-        """Spawn the entity."""
-        spawn_entity(self.index)
 
     @classmethod
     def _obj(cls, ptr):

@@ -90,6 +90,11 @@ void export_base_entity(scope _entity)
 		"Destroy the entity."
 	);
 
+	BaseEntity.def("spawn",
+		&CBaseEntityWrapper::spawn,
+		"Spawn the entity."
+	);
+
 	// Properties...
 	BaseEntity.add_property("server_class",
 		make_function(&CBaseEntityWrapper::GetServerClass, reference_existing_object_policy()),

@@ -103,6 +103,7 @@ public:
 	IEntityFactory* get_factory();
 	void destroy();
 	int get_size();
+	void spawn();
 
 	CBaseEntity* GetThis();
 

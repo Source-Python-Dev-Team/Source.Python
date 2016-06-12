@@ -117,6 +117,11 @@ int CBaseEntityWrapper::get_size()
 	return get_factory()->GetEntitySize();
 }
 
+void CBaseEntityWrapper::spawn()
+{
+	servertools->DispatchSpawn(GetThis());
+}
+
 int CBaseEntityWrapper::FindDataMapOffset(const char* name)
 {
 	datamap_t* datamap = GetDataDescMap();
