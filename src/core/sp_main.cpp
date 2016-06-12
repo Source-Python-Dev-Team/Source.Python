@@ -379,11 +379,7 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 //-----------------------------------------------------------------------------
 void CSourcePython::ClientPutInServer( edict_t *pEntity, char const *playername )
 {
-	unsigned int iEntityIndex;
-	if (!IndexFromEdict(pEntity, iEntityIndex))
-		return;
-
-	CALL_LISTENERS(OnClientPutInServer, iEntityIndex, playername);
+	CALL_LISTENERS(OnClientPutInServer, ptr(pEntity), playername);
 }
 
 //-----------------------------------------------------------------------------
@@ -411,13 +407,9 @@ void CSourcePython::ClientSettingsChanged( edict_t *pEdict )
 //-----------------------------------------------------------------------------
 PLUGIN_RESULT CSourcePython::ClientConnect( bool *bAllowConnect, edict_t *pEntity, const char *pszName, const char *pszAddress, char *reject, int maxrejectlen )
 {
-	unsigned int iEntityIndex;
-	if (!IndexFromEdict(pEntity, iEntityIndex))
-		return PLUGIN_CONTINUE;
-
 	CPointer allowConnect = CPointer((unsigned long) bAllowConnect);
 	CPointer rejectMessage = CPointer((unsigned long) reject);
-	CALL_LISTENERS(OnClientConnect, allowConnect, iEntityIndex, pszName, pszAddress, rejectMessage, maxrejectlen);
+	CALL_LISTENERS(OnClientConnect, allowConnect, ptr(pEntity), pszName, pszAddress, rejectMessage, maxrejectlen);
 	return PLUGIN_OVERRIDE;
 }
 

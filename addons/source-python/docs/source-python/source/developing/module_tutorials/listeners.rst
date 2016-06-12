@@ -29,7 +29,7 @@ can still be rejected.
     from listeners import OnClientConnect
 
     @OnClientConnect
-    def on_client_connect(allow_connect_ptr, index, name, address, reject_msg_ptr, reject_msg_len):
+    def on_client_connect(allow_connect_ptr, edict, name, address, reject_msg_ptr, reject_msg_len):
         if name != 'something_you_dont_like':
             return
 
@@ -80,7 +80,7 @@ Called when the client is put in the server. It gets called right before
     from listeners import OnClientPutInServer
 
     @OnClientPutInServer
-    def on_client_put_in_server(index, name):
+    def on_client_put_in_server(edict, name):
         pass
 
 
