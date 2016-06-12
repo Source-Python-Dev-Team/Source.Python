@@ -152,12 +152,11 @@ class Entity(BaseEntity):
     def create(cls, classname):
         """Create a new networked entity with the given classname."""
         entity = BaseEntity.create(classname)
-        if not entity.is_networked():
-            entity.destroy()
-            raise ValueError(
-                '"{}" is not a networked entity.'.format(classname))
+        if entity.is_networked():
+            return cls(entity.index)
 
-        return cls(entity.index)
+        entity.destroy()
+        raise ValueError('"{}" is not a networked entity.'.format(classname))
 
     @staticmethod
     def find(classname):
