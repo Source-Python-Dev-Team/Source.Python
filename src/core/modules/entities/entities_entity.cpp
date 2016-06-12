@@ -38,6 +38,26 @@
 
 
 // ============================================================================
+// >> GetEntityFactoryDictionary
+// ============================================================================
+// TODO: Move this to entities_factories.cpp
+CEntityFactoryDictionary* GetEntityFactoryDictionary()
+{
+	static CEntityFactoryDictionary* entity_factory_dictionary = NULL;
+	if (entity_factory_dictionary != NULL)
+		return entity_factory_dictionary;
+	
+	entity_factory_dictionary = extract<CEntityFactoryDictionary*>(
+		boost::python::import("entities.factories").attr("factory_dictionary"));
+
+	if (!entity_factory_dictionary)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "factory_dictionary is NULL.")
+
+	return entity_factory_dictionary;
+}
+
+
+// ============================================================================
 // >> CBaseEntityWrapper
 // ============================================================================
 boost::shared_ptr<CBaseEntityWrapper> CBaseEntityWrapper::__init__(unsigned int uiEntityIndex)
@@ -86,12 +106,7 @@ CBaseEntity* CBaseEntityWrapper::find_or_create(const char* name)
 
 IEntityFactory* CBaseEntityWrapper::get_factory(const char* name)
 {
-	IEntityFactoryDictionary* factories = extract<CEntityFactoryDictionary*>(
-		boost::python::import("entities.factories").attr("factory_dictionary"));
-	if (!factories)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "factory_dictionary is NULL.")
-
-	IEntityFactory* pFactory = factories->FindFactory(name);
+	IEntityFactory* pFactory = GetEntityFactoryDictionary()->FindFactory(name);
 	if (!pFactory)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'%s' is not a valid entity class name.", name)
 

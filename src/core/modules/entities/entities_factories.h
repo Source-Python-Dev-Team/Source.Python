@@ -46,6 +46,8 @@ public:
 	CUtlDict<IEntityFactory *, unsigned short> m_Factories;
 };
 
+CEntityFactoryDictionary* GetEntityFactoryDictionary();
+
 
 //-----------------------------------------------------------------------------
 // CEntityFactoryDictionary extension class.
