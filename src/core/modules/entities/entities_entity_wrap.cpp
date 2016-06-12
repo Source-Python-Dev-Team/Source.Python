@@ -243,7 +243,7 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::GetDatamapProperty<double>
 	);
 
-	BaseEntity.def("get_datamap_property_string",
+	BaseEntity.def("get_datamap_property_string_pointer",
 		&CBaseEntityWrapper::GetDatamapProperty<const char*>
 	);
 
@@ -325,7 +325,7 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::SetDatamapProperty<double>
 	);
 
-	BaseEntity.def("set_datamap_property_string",
+	BaseEntity.def("set_datamap_property_string_pointer",
 		&CBaseEntityWrapper::SetDatamapProperty<const char*>
 	);
 
@@ -406,7 +406,7 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::GetNetworkProperty<double>
 	);
 
-	BaseEntity.def("get_network_property_string",
+	BaseEntity.def("get_network_property_string_pointer",
 		&CBaseEntityWrapper::GetNetworkProperty<const char*>
 	);
 
@@ -488,7 +488,7 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::SetNetworkProperty<double>
 	);
 
-	BaseEntity.def("set_network_property_string",
+	BaseEntity.def("set_network_property_string_pointer",
 		&CBaseEntityWrapper::SetNetworkProperty<const char*>
 	);
 
