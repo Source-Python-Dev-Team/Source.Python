@@ -152,8 +152,14 @@ class Entity(BaseEntity):
 
     @classmethod
     def create(cls, classname):
-        """Create a new entity with the given classname."""
-        return cls(create_entity(classname))
+        """Create a new networked entity with the given classname."""
+        entity = BaseEntity.create(classname)
+        if not entity.is_networked():
+            entity.destroy()
+            raise ValueError(
+                '"{}" is not a networked entity.'.format(classname))
+
+        return cls(entity.index)
 
     @staticmethod
     def find(classname):
@@ -195,17 +201,6 @@ class Entity(BaseEntity):
     def _obj(cls, ptr):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))
-
-    @property
-    def _size(self):
-        """Return the entity's size."""
-        return self.factory.size
-
-    @property
-    def factory(self):
-        """Return the entity's factory."""
-        from entities.factories import factory_dictionary
-        return factory_dictionary.find_factory(self.classname)
 
     @property
     def index(self):

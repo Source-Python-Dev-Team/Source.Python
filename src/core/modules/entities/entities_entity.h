@@ -98,6 +98,11 @@ public:
 	static CBaseEntity* create(const char* name);
 	static CBaseEntity* find(const char* name);
 	static CBaseEntity* find_or_create(const char* name);
+	
+	static IEntityFactory* get_factory(const char* name);
+	IEntityFactory* get_factory();
+	void destroy();
+	int get_size();
 
 	CBaseEntity* GetThis();
 

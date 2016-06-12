@@ -79,6 +79,17 @@ void export_base_entity(scope _entity)
 		return_by_value_policy()
 	).staticmethod("find_or_create");
 
+	// Others
+	BaseEntity.def("is_player",
+		&CBaseEntityWrapper::IsPlayer,
+		"Return True if the entity is a player."
+	);
+
+	BaseEntity.def("destroy",
+		&CBaseEntityWrapper::destroy,
+		"Destroy the entity."
+	);
+
 	// Properties...
 	BaseEntity.add_property("server_class",
 		make_function(&CBaseEntityWrapper::GetServerClass, reference_existing_object_policy()),
@@ -88,6 +99,11 @@ void export_base_entity(scope _entity)
 	BaseEntity.add_property("datamap",
 		make_function(&CBaseEntityWrapper::GetDataDescMap, reference_existing_object_policy()),
 		"The DataMap instance of this entity (read-only)."
+	);
+
+	BaseEntity.add_property("factory",
+		make_function(GET_METHOD(IEntityFactory*, CBaseEntityWrapper, get_factory), reference_existing_object_policy()),
+		"Return the entity's factory."
 	);
 
 	BaseEntity.add_property("edict", make_function(&CBaseEntityWrapper::GetEdict, reference_existing_object_policy()));
@@ -496,12 +512,12 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::SetNetworkProperty<Quaternion>
 	);
 
-	// Others
-	BaseEntity.def("is_player",
-		&CBaseEntityWrapper::IsPlayer,
-		"Return True if the entity is a player."
-	);
-
 	// Add memory tools...
 	BaseEntity ADD_MEM_TOOLS(CBaseEntityWrapper);
+
+	// This must be after ADD_MEM_TOOLS, because it overrides the _size attribute
+	BaseEntity.add_property("_size",
+		&CBaseEntityWrapper::get_size,
+		"Return the entity's size."
+	);
 }

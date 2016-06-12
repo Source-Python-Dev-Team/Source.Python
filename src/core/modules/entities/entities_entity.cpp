@@ -55,15 +55,7 @@ boost::shared_ptr<CBaseEntityWrapper> CBaseEntityWrapper::wrap(CBaseEntity* pEnt
 
 CBaseEntity* CBaseEntityWrapper::create(const char* name)
 {
-	IEntityFactoryDictionary* factories = extract<CEntityFactoryDictionary*>(boost::python::import("entities.factories").attr("factory_dictionary"));
-	if (!factories)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "factory_dictionary is NULL.")
-
-	IEntityFactory* pFactory = factories->FindFactory(name);
-	if (!pFactory)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'%s' is not a valid entity class name.", name)
-
-	IServerNetworkable* pEntity = pFactory->Create(name);
+	IServerNetworkable* pEntity = get_factory(name)->Create(name);
 	if (!pEntity)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to create entity with class name '%s'.", name)
 
@@ -90,6 +82,39 @@ CBaseEntity* CBaseEntityWrapper::find_or_create(const char* name)
 		entity = create(name);
 
 	return entity;
+}
+
+IEntityFactory* CBaseEntityWrapper::get_factory(const char* name)
+{
+	IEntityFactoryDictionary* factories = extract<CEntityFactoryDictionary*>(
+		boost::python::import("entities.factories").attr("factory_dictionary"));
+	if (!factories)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "factory_dictionary is NULL.")
+
+	IEntityFactory* pFactory = factories->FindFactory(name);
+	if (!pFactory)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'%s' is not a valid entity class name.", name)
+
+	return pFactory;
+}
+
+IEntityFactory* CBaseEntityWrapper::get_factory()
+{
+	IServerNetworkable* pNetworkable = GetNetworkable();
+	if (!pNetworkable)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
+
+	return get_factory(pNetworkable->GetClassName());
+}
+
+void CBaseEntityWrapper::destroy()
+{
+	get_factory()->Destroy(GetNetworkable());
+}
+
+int CBaseEntityWrapper::get_size()
+{
+	return get_factory()->GetEntitySize();
 }
 
 int CBaseEntityWrapper::FindDataMapOffset(const char* name)
