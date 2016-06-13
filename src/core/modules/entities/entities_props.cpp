@@ -27,12 +27,12 @@
 // ============================================================================
 // >> INCLUDES
 // ============================================================================
+// Boost
+#include "boost/unordered_map.hpp"
+
 // Source.Python
 #include "entities_props.h"
 #include ENGINE_INCLUDE_PATH(entities_props.h)
-
-// Boost
-#include "boost/unordered_map.hpp"
 
 
 // ============================================================================

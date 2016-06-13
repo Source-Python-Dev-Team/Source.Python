@@ -210,6 +210,7 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
     core/modules/entities/entities_constants_wrap.cpp
     core/modules/entities/entities_helpers_wrap.cpp
     core/modules/entities/entities_wrap.cpp
+    core/modules/entities/entities_factories.cpp
     core/modules/entities/entities_factories_wrap.cpp
     core/modules/entities/entities_generator.cpp
     core/modules/entities/entities_datamaps.cpp

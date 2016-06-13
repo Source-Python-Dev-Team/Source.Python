@@ -87,7 +87,6 @@ private:
 public:
 	// We need to keep the order of these methods up-to-date and maybe we need
 	// to add new methods for other games.
-	// TODO: Do we want to do this? Or do we want to dynamically call the methods from Python?
 	virtual ServerClass* GetServerClass() = 0;
 	virtual int YouForgotToImplementOrDeclareServerClass() = 0;
 	virtual datamap_t* GetDataDescMap() = 0;

@@ -30,11 +30,11 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include "string_t.h"
 #include "dt_send.h"
 #include "game/shared/ehandle.h"
 #include "isaverestore.h"
-#include "modules/memory/memory_tools.h"
-#include "utilities/conversions.h"
+#include "modules/memory/memory_function.h"
 
 
 //-----------------------------------------------------------------------------
