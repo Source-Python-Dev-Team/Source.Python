@@ -35,7 +35,7 @@ can still be rejected.
 
         allow_connect_ptr.set_bool(False)
         reject_msg_ptr.set_string_array('Your name is not allowed'[:reject_msg_len])
-        
+
 .. warning:: The length of the reject message should never exceed the value of ``reject_msg_len``.
 
 
@@ -312,6 +312,11 @@ Called when a client has been authenticated.
     @OnNetworkidValidated
     def on_networkid_validated(name, steamid):
         pass
+
+.. note::
+
+    If your server can't establish a connection to the Steam servers, this
+    listener will never get called.
 
 
 OnPluginLoaded
