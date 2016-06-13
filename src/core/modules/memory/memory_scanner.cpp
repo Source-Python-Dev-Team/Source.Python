@@ -102,7 +102,7 @@ void CBinaryFile::AddSignatureToCache(unsigned char* sigstr, int iLength, unsign
 bool CBinaryFile::SearchSigInCache(unsigned char* sigstr, CPointer*& result)
 {
 	PythonLog(4, "Searching for a cached signature...");
-	for (std::list<Signature_t>::iterator iter=m_Signatures.begin(); iter != m_Signatures.end(); iter++)
+	for (std::list<Signature_t>::iterator iter=m_Signatures.begin(); iter != m_Signatures.end(); ++iter)
 	{
 		Signature_t sig = *iter;
 		if (strcmp((const char *) sig.m_szSignature, (const char *) sigstr) == 0)
@@ -501,7 +501,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	}
 
 	// Search for an existing BinaryFile object
-	for (std::list<CBinaryFile *>::iterator iter=m_Binaries.begin(); iter != m_Binaries.end(); iter++)
+	for (std::list<CBinaryFile *>::iterator iter=m_Binaries.begin(); iter != m_Binaries.end(); ++iter)
 	{
 		CBinaryFile* binary = *iter;
 		if (binary->m_ulAddr == ulAddr)

@@ -398,7 +398,7 @@ public:
 	boost::python::tuple GetArgumentTypes()
 	{
 		list argumentTypes;
-		for(std::vector<DataType_t>::iterator it=this->m_vecArgumentTypes.begin(); it != this->m_vecArgumentTypes.end(); it++)
+		for(std::vector<DataType_t>::iterator it=this->m_vecArgumentTypes.begin(); it != this->m_vecArgumentTypes.end(); ++it)
 		{
 			argumentTypes.append(*it);
 		}

@@ -183,6 +183,7 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 CSourcePython::CSourcePython()
 {
 	m_iClientCommandIndex = 0;
+	m_pOldMDLCacheNotifier = NULL;
 }
 
 CSourcePython::~CSourcePython()
