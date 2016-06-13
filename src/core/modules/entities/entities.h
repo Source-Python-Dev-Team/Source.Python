@@ -86,7 +86,7 @@ public:
 				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Attacker is not a player.");
 
 			// TODO: Don't hardcode m_hActiveWeapon
-			return ExcIndexFromIntHandle(attacker->GetProperty<unsigned int>("m_hActiveWeapon"));
+			return ExcIndexFromIntHandle(attacker->GetDatamapProperty<unsigned int>("m_hActiveWeapon"));
 		}
 		return get_inflictor();
 	}

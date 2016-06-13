@@ -108,6 +108,12 @@ void export_datamap(scope _datamaps)
 		reference_existing_object_policy()
 	);
 
+	DataMap.def("find_offset",
+		&DataMapSharedExt::find_offset,
+		args("name"),
+		"Return the offset of a named property. Return -1 if the property wasn't found."
+	);
+
 	// Engine specific stuff...
 	export_engine_specific_datamap(_datamaps, DataMap);
 
