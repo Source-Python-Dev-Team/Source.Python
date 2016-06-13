@@ -30,15 +30,19 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "modules/memory/memory_tools.h"
 #include "edict.h"
 #include "isaverestore.h"
 #include "datamap.h"
 #include "game/server/variant_t.h"
 #include "Color.h"
-#include "utilities/conversions.h"
 #include "tier0/basetypes.h"
 #include "utilities/baseentity.h"
+
+
+//-----------------------------------------------------------------------------
+// Forward declarations
+//-----------------------------------------------------------------------------
+class CFunction;
 
 
 //-----------------------------------------------------------------------------
@@ -59,13 +63,7 @@ public:
 class TypeDescriptionSharedExt
 {
 public:
-	static CFunction *get_input_function(const typedescription_t& pTypeDesc, object oCallingConvention, object args, object oReturnType)
-	{
-		if (!(pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE))
-			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);
-
-		return new CFunction((unsigned long)(void *&)pTypeDesc.inputFunc, oCallingConvention, args, oReturnType);
-	}
+	static CFunction* get_input_function(const typedescription_t& pTypeDesc, object oCallingConvention, object args, object oReturnType);
 };
 
 
@@ -75,43 +73,13 @@ public:
 class VariantSharedExt
 {
 public:
-	static const char *get_string(variant_t *pVariant)
-	{
-		return STRING(pVariant->StringID());
-	}
-
-	static void set_string(variant_t *pVariant, const char *szValue)
-	{
-		return pVariant->SetString(MAKE_STRING(szValue));
-	}
-
-	static Color *get_color(variant_t *pVariant)
-	{
-		color32 pColor32 = pVariant->Color32();
-		return new Color((int)pColor32.r, (int)pColor32.g, (int)pColor32.b, (int)pColor32.a);
-	}
-
-	static void set_color(variant_t *pVariant, Color *pColor)
-	{
-		pVariant->SetColor32(pColor->r(), pColor->g(), pColor->b(), pColor->a());
-	}
-
-	static Vector get_vector(variant_t *pVariant)
-	{
-		Vector pVector;
-		pVariant->Vector3D(pVector);
-		return pVector;
-	}
-
-	static unsigned int get_entity(variant_t *pVariant)
-	{
-		return ExcIndexFromBaseHandle(pVariant->Entity());
-	}
-
-	static void set_entity(variant_t *pVariant, unsigned int uiEntity)
-	{
-		pVariant->SetEntity(ExcBaseEntityFromIndex(uiEntity));
-	}
+	static const char* get_string(variant_t *pVariant);
+	static void set_string(variant_t *pVariant, const char *szValue);
+	static Color* get_color(variant_t *pVariant);
+	static void set_color(variant_t *pVariant, Color *pColor);
+	static Vector get_vector(variant_t *pVariant);
+	static unsigned int get_entity(variant_t *pVariant);
+	static void set_entity(variant_t *pVariant, unsigned int uiEntity);
 };
 
 
@@ -121,34 +89,11 @@ public:
 class InputDataSharedExt
 {
 public:
-	static inputdata_t *__init__()
-	{
-		inputdata_t *pInputData = new inputdata_t;
-		pInputData->pActivator = NULL;
-		pInputData->pCaller = NULL;
-		pInputData->nOutputID = 0;
-		return pInputData;
-	}
-
-	static unsigned int get_activator(const inputdata_t& pInputData)
-	{
-		return ExcIndexFromBaseEntity(pInputData.pActivator);
-	}
-
-	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator)
-	{
-		pInputData->pActivator = ExcBaseEntityFromIndex(uiActivator);
-	}
-
-	static unsigned int get_caller(const inputdata_t& pInputData)
-	{
-		return ExcIndexFromBaseEntity(pInputData.pCaller);
-	}
-	
-	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller)
-	{
-		pInputData->pCaller = ExcBaseEntityFromIndex(uiCaller);
-	}
+	static inputdata_t* __init__();
+	static unsigned int get_activator(const inputdata_t& pInputData);
+	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator);
+	static unsigned int get_caller(const inputdata_t& pInputData);
+	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller);
 };
 
 

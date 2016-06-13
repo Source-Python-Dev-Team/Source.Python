@@ -31,6 +31,7 @@
 #include "boost/unordered_map.hpp"
 
 // Source.Python
+#include "modules/memory/memory_function.h"
 #include "entities_props.h"
 #include ENGINE_INCLUDE_PATH(entities_props.h)
 

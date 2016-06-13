@@ -28,14 +28,34 @@
 // >> INCLUDES
 // ============================================================================
 // Source.Python
+#include "utilities/conversions.h"
 #include "entities_entity.h"
 #include "entities_props.h"
 #include "entities_factories.h"
-#include "utilities/conversions.h"
-
 #include "entities_datamaps.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
+
+// ============================================================================
+// >> CBaseEntityWrapper
+// ============================================================================
+const char* IServerUnknownExt::GetClassname(IServerUnknown* pUnknown)
+{
+	IServerNetworkable* pNetworkable = pUnknown->GetNetworkable();
+	if (!pNetworkable)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
+
+	return pNetworkable->GetClassName();
+}
+
+bool IServerUnknownExt::IsNetworked(IServerUnknown* pUnknown)
+{
+	IServerNetworkable *pServerNetworkable = pUnknown->GetNetworkable();
+	if (pServerNetworkable)
+		return pServerNetworkable->GetEdict() != NULL;
+
+	return false;
+}
 
 // ============================================================================
 // >> CBaseEntityWrapper

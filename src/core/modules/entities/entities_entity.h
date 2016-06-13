@@ -30,9 +30,18 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include "boost/shared_ptr.hpp"
+#include "boost/python/str.hpp"
+using namespace boost::python;
+
 #include "utilities/baseentity.h"
 #include "toolframework/itoolentity.h"
-#include "modules/memory/memory_pointer.h"
+
+
+//-----------------------------------------------------------------------------
+// Forward declarations
+//-----------------------------------------------------------------------------
+class CPointer;
 
 
 //-----------------------------------------------------------------------------
@@ -54,23 +63,8 @@ extern CGlobalVars *gpGlobals;
 class IServerUnknownExt
 {
 public:
-	static const char* GetClassname(IServerUnknown* pUnknown)
-	{
-		IServerNetworkable* pNetworkable = pUnknown->GetNetworkable();
-		if (!pNetworkable)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
-
-		return pNetworkable->GetClassName();
-	}
-
-	static bool IsNetworked(IServerUnknown* pUnknown)
-	{
-		IServerNetworkable *pServerNetworkable = pUnknown->GetNetworkable();
-		if (pServerNetworkable)
-			return pServerNetworkable->GetEdict() != NULL;
-
-		return false;
-	}
+	static const char* GetClassname(IServerUnknown* pUnknown);
+	static bool IsNetworked(IServerUnknown* pUnknown);
 };
 
 
