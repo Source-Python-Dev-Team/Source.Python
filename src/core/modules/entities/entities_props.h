@@ -38,9 +38,14 @@
 
 
 //-----------------------------------------------------------------------------
+// typedefs
+//-----------------------------------------------------------------------------
+BOOST_FUNCTION_TYPEDEF(void (const SendProp*, const void*, const void*, DVariant*, int, int), BoostSendVarProxyFn)
+
+
+//-----------------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------------
-class CFunction;
 class CPointer;
 
 
@@ -61,7 +66,7 @@ public:
 class SendPropSharedExt
 {
 public:
-	static CFunction *get_proxy_function(SendProp *pSendProp, object oCallingConvention, object args, object oReturnType);
+	static BoostSendVarProxyFn get_proxy_function(SendProp *pSendProp);
 };
 
 

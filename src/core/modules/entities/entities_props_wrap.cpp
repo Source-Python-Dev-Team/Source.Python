@@ -116,6 +116,8 @@ void export_send_table(scope _props)
 //-----------------------------------------------------------------------------
 void export_send_prop(scope _props)
 {
+	EXPOSE_FUNCTION_TYPEDEF(BoostSendVarProxyFn, "SendVarProxyFn")
+
 	class_<SendProp, SendProp *, boost::noncopyable> SendProp_("SendProp", no_init);
 	
 	// Properties...
@@ -140,6 +142,7 @@ void export_send_prop(scope _props)
 	);
 	
 	SendProp_.add_property("offset", &SendProp::GetOffset);
+	SendProp_.add_property("proxy_function", &SendPropSharedExt::get_proxy_function);
 	
 	// CS:GO specific properties...
 	SendProp_.NOT_IMPLEMENTED_ATTR("priority");
@@ -149,8 +152,6 @@ void export_send_prop(scope _props)
 	SendProp_.def("is_signed", &SendProp::IsSigned);
 	SendProp_.def("is_exclude_prop", &SendProp::IsExcludeProp);
 	SendProp_.def("is_inside_array", &SendProp::IsInsideArray);
-
-	SendProp_.def("get_proxy_function", &SendPropSharedExt::get_proxy_function, manage_new_object_policy());
 
 	// CS:GO specific methods...
 	SendProp_.NOT_IMPLEMENTED("get_priority");

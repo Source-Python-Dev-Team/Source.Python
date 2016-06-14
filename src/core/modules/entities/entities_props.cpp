@@ -31,7 +31,7 @@
 #include "boost/unordered_map.hpp"
 
 // Source.Python
-#include "modules/memory/memory_function.h"
+#include "modules/memory/memory_pointer.h"
 #include "entities_props.h"
 #include ENGINE_INCLUDE_PATH(entities_props.h)
 
@@ -136,7 +136,7 @@ int SendTableSharedExt::find_offset(SendTable* pTable, const char* name)
 // ============================================================================
 // >> SendPropSharedExt
 // ============================================================================
-CFunction* SendPropSharedExt::get_proxy_function(SendProp *pSendProp, object oCallingConvention, object args, object oReturnType)
+BoostSendVarProxyFn SendPropSharedExt::get_proxy_function(SendProp *pSendProp)
 {
 	if (pSendProp->IsExcludeProp())
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is excluded.", pSendProp->GetName());
@@ -144,7 +144,7 @@ CFunction* SendPropSharedExt::get_proxy_function(SendProp *pSendProp, object oCa
 	if (pSendProp->GetType() == DPT_DataTable)
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is a DataTable.", pSendProp->GetName());
 
-	return new CFunction((unsigned long)pSendProp->GetProxyFn(), oCallingConvention, args, oReturnType);
+	return BoostSendVarProxyFn(pSendProp->GetProxyFn());
 }
 
 

@@ -29,6 +29,7 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
+#include "boost/function.hpp"
 #include "boost/python.hpp"
 using namespace boost::python;
 
@@ -42,6 +43,23 @@ using namespace boost::python;
 #error("SOURCE_ENGINE_BRANCH define must be globally defined, did we forget?");
 #endif
 
+//---------------------------------------------------------------------------------
+// Macros to expose function typedefs
+//---------------------------------------------------------------------------------
+// Example typedef:
+// typedef int (*MultiplyFn)(int, int);
+// 
+// Example usage:
+// BOOST_FUNCTION_TYPEDEF(int (int, int), BoostMultiplyFn)
+#define BOOST_FUNCTION_TYPEDEF(sig, cpp_name) \
+	typedef boost::function< sig> cpp_name;
+
+// Example usage:
+// EXPOSE_FUNCTION_TYPEDEF(BoostMultiplyFn, "MultiplyFn")
+#define EXPOSE_FUNCTION_TYPEDEF(cpp_name, py_name) \
+	class_<cpp_name>(py_name, no_init) \
+		.def("__call__", &cpp_name::operator()) \
+	;
 
 //---------------------------------------------------------------------------------
 // Surround boost python statements with this macro in order to handle exceptions.
