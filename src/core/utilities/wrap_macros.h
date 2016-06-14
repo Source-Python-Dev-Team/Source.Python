@@ -65,7 +65,7 @@ inline void* GetFuncPtr(Function func)
 #define EXPOSE_FUNCTION_TYPEDEF(cpp_name, py_name) \
 	class_<cpp_name>(py_name, no_init) \
 		.def("__call__", &cpp_name::operator()) \
-		.def(GET_PTR_NAME, &GetFuncPtr<BoostSendVarProxyFn>, return_by_value_policy()) \
+		.def(GET_PTR_NAME, &GetFuncPtr<cpp_name>, return_by_value_policy()) \
 	;
 
 //---------------------------------------------------------------------------------
