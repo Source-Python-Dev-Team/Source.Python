@@ -37,12 +37,13 @@
 #include "Color.h"
 #include "tier0/basetypes.h"
 #include "utilities/baseentity.h"
+#include "utilities/conversions.h"
 
 
 //-----------------------------------------------------------------------------
-// Forward declarations
+// typedefs
 //-----------------------------------------------------------------------------
-class CFunction;
+BOOST_FUNCTION_TYPEDEF(void (CBaseEntity*, inputdata_t&), BoostInputFn)
 
 
 //-----------------------------------------------------------------------------
@@ -63,7 +64,7 @@ public:
 class TypeDescriptionSharedExt
 {
 public:
-	static CFunction* get_input_function(const typedescription_t& pTypeDesc, object oCallingConvention, object args, object oReturnType);
+	static BoostInputFn get_input_function(const typedescription_t& pTypeDesc);
 };
 
 

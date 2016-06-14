@@ -524,7 +524,10 @@ class _ServerClasses(TypeManager):
 
         def fget(pointer):
             """Retrieve the InputFunction instance."""
-            function = desc.get_input_function(
+            # TODO:
+            # Don't use make_function(), but use input_function directly. It's
+            # already callable.
+            function = get_object_pointer(desc.input_function).make_function(
                 Convention.THISCALL,
                 (DataType.POINTER, DataType.POINTER),
                 DataType.VOID)

@@ -160,12 +160,12 @@ int DataMapSharedExt::find_offset(datamap_t* pDataMap, const char* name)
 // ============================================================================
 // >> TypeDescriptionSharedExt
 // ============================================================================
-CFunction* TypeDescriptionSharedExt::get_input_function(const typedescription_t& pTypeDesc, object oCallingConvention, object args, object oReturnType)
+BoostInputFn TypeDescriptionSharedExt::get_input_function(const typedescription_t& pTypeDesc)
 {
 	if (!(pTypeDesc.flags & FTYPEDESC_INPUT || pTypeDesc.flags & FTYPEDESC_FUNCTIONTABLE))
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);
 
-	return new CFunction((unsigned long)(void *&)pTypeDesc.inputFunc, oCallingConvention, args, oReturnType);
+	return BoostInputFn(boost::bind(pTypeDesc.inputFunc, _1, _2));
 }
 
 
