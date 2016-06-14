@@ -46,6 +46,12 @@ using namespace boost::python;
 //---------------------------------------------------------------------------------
 // Macros to expose function typedefs
 //---------------------------------------------------------------------------------
+template<class Function>
+inline void* GetFuncPtr(Function func)
+{
+	return func.functor.func_ptr;
+}
+
 // Example typedef:
 // typedef int (*MultiplyFn)(int, int);
 // 
@@ -59,6 +65,7 @@ using namespace boost::python;
 #define EXPOSE_FUNCTION_TYPEDEF(cpp_name, py_name) \
 	class_<cpp_name>(py_name, no_init) \
 		.def("__call__", &cpp_name::operator()) \
+		.def(GET_PTR_NAME, &GetFuncPtr<BoostSendVarProxyFn>, return_by_value_policy()) \
 	;
 
 //---------------------------------------------------------------------------------
