@@ -37,6 +37,11 @@ using namespace boost::python;
 #include "utilities/baseentity.h"
 #include "toolframework/itoolentity.h"
 
+// Don't remove this! It's required for the
+// BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity) definition.
+// Otherwise you will get "undefined symbol: _ZTI11CBaseEntity".
+#include "utilities/conversions.h"
+
 
 //-----------------------------------------------------------------------------
 // Forward declarations
