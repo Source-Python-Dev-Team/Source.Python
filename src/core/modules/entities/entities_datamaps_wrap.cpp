@@ -139,6 +139,9 @@ void export_type_description(scope _datamaps)
 	TypeDescription.def_readonly("flags", &typedescription_t::flags);
 	TypeDescription.def_readonly("external_name", &typedescription_t::externalName);
 	TypeDescription.add_property("input_function", &TypeDescriptionSharedExt::get_input_function);
+	TypeDescription.add_property("function",
+		make_function(&TypeDescriptionSharedExt::get_function, return_by_value_policy())
+	);
 
 	// CS:GO properties...
 	TypeDescription.NOT_IMPLEMENTED_ATTR("flat_offset");

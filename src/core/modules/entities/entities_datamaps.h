@@ -65,6 +65,7 @@ class TypeDescriptionSharedExt
 {
 public:
 	static BoostInputFn get_input_function(const typedescription_t& pTypeDesc);
+	static void* get_function(const typedescription_t& pTypeDesc);
 };
 
 
