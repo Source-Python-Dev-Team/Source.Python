@@ -805,6 +805,12 @@ void export_server_game_dll(scope _server)
 		)
 	);
 
+	ServerGameDLL.add_property(
+		"game_description",
+		&IServerGameDLL::GetGameDescription,
+		"Return the game's description."
+	);
+
 	BEGIN_CLASS_INFO(IServerGameDLL)
 		FUNCTION_INFO(GetGameDescription)
 	END_CLASS_INFO()
