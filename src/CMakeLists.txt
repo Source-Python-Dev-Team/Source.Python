@@ -192,8 +192,6 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/entities.h
     core/modules/entities/${SOURCE_ENGINE}/entities.h
     core/modules/entities/entities_generator.h
-    core/modules/entities/entities_helpers.h
-    core/modules/entities/${SOURCE_ENGINE}/entities_helpers.h
     core/modules/entities/entities_factories.h
     core/modules/entities/${SOURCE_ENGINE}/entities_factories_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_wrap.h

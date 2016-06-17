@@ -30,41 +30,8 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "toolframework/itoolentity.h"
-#include "modules/memory/memory_tools.h"
-#include "utilities/conversions.h"
 #include "entities_entity.h"
-
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
-
-//-----------------------------------------------------------------------------
-// External variables.
-//-----------------------------------------------------------------------------
-extern IServerTools *servertools;
-
-
-//-----------------------------------------------------------------------------
-// Creates an entity of the given name and returns its index...
-//-----------------------------------------------------------------------------
-// TODO: This should return a BaseEntity object
-unsigned int create_entity(const char *szClassName)
-{
-	CBaseEntity *pBaseEntity = (CBaseEntity *)servertools->CreateEntityByName(szClassName);
-	if (!pBaseEntity)
-		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unable to create an entity of type \"%s\".", szClassName);
-
-	return ExcIndexFromBaseEntity(pBaseEntity);
-}
-
-
-//-----------------------------------------------------------------------------
-// Spawns the given entity index...
-//-----------------------------------------------------------------------------
-// TODO: This should accept a BaseEntity object
-void spawn_entity(unsigned int uiEntityIndex)
-{
-	servertools->DispatchSpawn(ExcBaseEntityFromIndex(uiEntityIndex));
-}
 
 
 //-----------------------------------------------------------------------------
