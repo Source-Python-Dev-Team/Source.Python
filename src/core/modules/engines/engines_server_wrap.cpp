@@ -556,7 +556,7 @@ void export_engine_server(scope _server)
 		)
 
 		.def("insert_server_command",
-			&IVEngineServer::InsertServerCommand,
+			&IVEngineServerExt::InsertServerCommand,
 			"Inserts a command into the server's command buffer.",
 			args("command_string")
 		)

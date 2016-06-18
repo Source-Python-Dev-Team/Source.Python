@@ -222,7 +222,7 @@ void export_concommandbase(scope _commands)
 //-----------------------------------------------------------------------------
 void export_concommand(scope _commands)
 {
-	class_<ConCommand, boost::noncopyable> _ConCommand("ConCommand", no_init);
+	class_<ConCommand, bases<ConCommandBase>, boost::noncopyable> _ConCommand("ConCommand", no_init);
 
 	_ConCommand.def(
 		"dispatch",
