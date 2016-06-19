@@ -26,9 +26,9 @@ __all__ = ('PlayerDictionary',
 class PlayerDictionary(EntityDictionary):
     """Helper class used to store player instances."""
 
-    def __init__(self, player_class=Player):
+    def __init__(self, player_class=Player, *args, **kwargs):
         """Initialize the dictionary."""
-        super().__init__(player_class)
+        super().__init__(player_class, *args, **kwargs)
 
     def from_userid(self, userid):
         """Get a player instance from a userid.
