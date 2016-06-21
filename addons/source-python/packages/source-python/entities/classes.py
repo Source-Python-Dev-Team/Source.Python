@@ -524,10 +524,15 @@ class _ServerClasses(TypeManager):
 
         def fget(pointer):
             """Retrieve the InputFunction instance."""
+            # Handle virtual inputs
+            func = desc.function
+            if func.address & 1:
+                func = pointer.get_virtual_func(int((func.address - 1) / 4))
+
             # TODO:
             # Don't use make_function(), but use input_function directly. It's
             # already callable.
-            function = get_object_pointer(desc.input_function).make_function(
+            function = func.make_function(
                 Convention.THISCALL,
                 (DataType.POINTER, DataType.POINTER),
                 DataType.VOID)
