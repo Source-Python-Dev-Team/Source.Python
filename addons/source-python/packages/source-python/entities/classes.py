@@ -19,6 +19,7 @@ from configobj import Section
 # Source.Python Imports
 #   Core
 from core import GameConfigObj
+from core import PLATFORM
 #   Entities
 from entities import ServerClassGenerator
 from entities.datamaps import _supported_input_types
@@ -524,10 +525,11 @@ class _ServerClasses(TypeManager):
 
         def fget(pointer):
             """Retrieve the InputFunction instance."""
-            # Handle virtual inputs
             func = desc.function
-            if func.address & 1:
-                func = pointer.get_virtual_func(int((func.address - 1) / 4))
+
+            # Handle virtual inputs on Linux
+            if PLATFORM == 'linux' and func.address & 1:
+                func = pointer.get_virtual_func((func.address - 1) // 4)
 
             # TODO:
             # Don't use make_function(), but use input_function directly. It's
