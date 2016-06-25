@@ -94,6 +94,9 @@ public:
 	static boost::shared_ptr<KeyValues> __init__5(const char *setName, const char *firstKey, int firstValue, const char *secondKey, int secondValue)
 	{ return boost::shared_ptr<KeyValues>(new KeyValues(setName, firstKey, firstValue, secondKey, secondValue), &__del__); }
 
+	static boost::shared_ptr<KeyValues> make_copy(KeyValues* pKeys)
+	{ return boost::shared_ptr<KeyValues>(pKeys->MakeCopy(), &__del__); }
+
 	static void __del__(KeyValues* pKeyValues)
 	{ pKeyValues->deleteThis(); }
 

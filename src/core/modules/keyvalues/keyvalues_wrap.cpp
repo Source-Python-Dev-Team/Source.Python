@@ -139,6 +139,7 @@ void export_keyvalues(scope _keyvalues)
 				&KeyValues::GetNextKey,
 				reference_existing_object_policy()
 			),
+			&KeyValues::SetNextKey,
 			"Returns the next subkey. Will iterate the keys AND the values."
 		)
 
@@ -172,6 +173,11 @@ void export_keyvalues(scope _keyvalues)
 				reference_existing_object_policy()
 			),
 			"Returns the next value in the tree."
+		)
+
+		.def("make_copy",
+			&KeyValuesExt::make_copy,
+			"Create a copy of the instance."
 		)
 
 		.def("get_int",
