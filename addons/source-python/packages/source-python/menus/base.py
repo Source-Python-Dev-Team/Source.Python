@@ -215,6 +215,7 @@ class _BaseMenu(AutoUnload, list):
                 3. The player's choice.
         """
         self.select_callback = callback
+        return callback
 
     def register_build_callback(self, callback):
         """Register a build callback for the menu.
@@ -229,6 +230,7 @@ class _BaseMenu(AutoUnload, list):
                 2. The index of the player who will recieve this menu.
         """
         self.build_callback = callback
+        return callback
 
 
 class _MenuData(object):
