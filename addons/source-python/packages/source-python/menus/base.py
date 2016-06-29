@@ -201,6 +201,35 @@ class _BaseMenu(AutoUnload, list):
         """
         raise NotImplementedError
 
+    def register_select_callback(self, callback):
+        """Register a select callback for the menu.
+        
+        Can and should be used as a decorator.
+        
+        :param callable callback: A function that gets called
+            whenever a selection was made.
+
+            The callback will recieve 3 parameters:
+                1. The instance of this menu.
+                2. The player's index who made the selection.
+                3. The player's choice.
+        """
+        self.select_callback = callback
+
+    def register_build_callback(self, callback):
+        """Register a build callback for the menu.
+        
+        Can and should be used as a decorator.
+        
+        :param callable callback: A function that gets called
+            before a menu is displayed.
+
+            The callback will recieve 2 parameters:
+                1. The instance of this menu.
+                2. The index of the player who will recieve this menu.
+        """
+        self.build_callback = callback
+
 
 class _MenuData(object):
     """Base class for menu data.
