@@ -186,6 +186,9 @@ tuple IPhysicsObjectWrapper::GetVelocity()
 void IPhysicsObjectWrapper::SetVelocity(Vector* velocity, AngularImpulse* angular_velocity)
 { GetWrapped()->SetVelocity(velocity, angular_velocity); }
 
+void IPhysicsObjectWrapper::SetVelocityInstantaneous(Vector* velocity, AngularImpulse* angular_velocity)
+{ GetWrapped()->SetVelocityInstantaneous(velocity, angular_velocity); }
+
 void IPhysicsObjectWrapper::ApplyForceCenter(Vector& vec)
 { GetWrapped()->ApplyForceCenter(vec); }
 
