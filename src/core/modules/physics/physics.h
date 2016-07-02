@@ -136,22 +136,17 @@ public:
 	boost::python::tuple GetPosition();
 	void SetPosition(Vector& position, QAngle& angles, bool teleport);
 
+	boost::python::tuple GetVelocity();
+	void SetVelocity(Vector* velocity, AngularImpulse* angular_velocity);
+
 	/*
 	// NOTE: This will teleport the object
 	virtual void			SetPositionMatrix( const matrix3x4_t&matrix, bool isTeleport ) = 0;
 
 	virtual void			GetPositionMatrix( matrix3x4_t *positionMatrix ) const = 0;
-	// force the velocity to a new value
-	// NOTE: velocity is in worldspace, angularVelocity is relative to the object's 
-	// local axes (just like pev->velocity, pev->avelocity)
-	virtual void			SetVelocity( const Vector *velocity, const AngularImpulse *angularVelocity ) = 0;
 
 	// like the above, but force the change into the simulator immediately
 	virtual void			SetVelocityInstantaneous( const Vector *velocity, const AngularImpulse *angularVelocity ) = 0;
-
-	// NOTE: velocity is in worldspace, angularVelocity is relative to the object's 
-	// local axes (just like pev->velocity, pev->avelocity)
-	virtual void			GetVelocity( Vector *velocity, AngularImpulse *angularVelocity ) const = 0;
 
 	// NOTE: These are velocities, not forces.  i.e. They will have the same effect regardless of
 	// the object's mass or inertia
@@ -224,9 +219,6 @@ public:
 	// used to iterate the contact points of an object
 	virtual IPhysicsFrictionSnapshot *CreateFrictionSnapshot() = 0;
 	virtual void DestroyFrictionSnapshot( IPhysicsFrictionSnapshot *pSnapshot ) = 0;
-
-	// dumps info about the object to Msg()
-	virtual void			OutputDebugInfo() const = 0;
 */
 	void OutputDebugInfo();
 };

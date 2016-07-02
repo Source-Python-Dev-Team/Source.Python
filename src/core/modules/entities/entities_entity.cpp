@@ -33,6 +33,7 @@
 #include "entities_props.h"
 #include "entities_factories.h"
 #include "entities_datamaps.h"
+#include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
 

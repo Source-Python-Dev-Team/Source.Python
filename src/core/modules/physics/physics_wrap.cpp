@@ -265,6 +265,13 @@ void export_physics_object(scope _physics)
 		"Return a tuple that contains the position and the angle of the object."
 	);
 
+	PhysicsObject.add_property(
+		"velocity",
+		&IPhysicsObjectWrapper::GetVelocity,
+		&IPhysicsObjectWrapper::SetVelocity,
+		"Return a tuple that contains the velocity in worldspace and relative to the object."
+	);
+
 
 
 	PhysicsObject.add_property(

@@ -175,6 +175,18 @@ tuple IPhysicsObjectWrapper::GetPosition()
 void IPhysicsObjectWrapper::SetPosition(Vector& position, QAngle& angles, bool teleport)
 { GetWrapped()->SetPosition(position, angles, teleport); }
 
+tuple IPhysicsObjectWrapper::GetVelocity()
+{
+	Vector velocity;
+	AngularImpulse angular_velocity;
+	GetWrapped()->GetVelocity(&velocity, &angular_velocity);
+	return make_tuple(velocity, angular_velocity);
+}
+
+void IPhysicsObjectWrapper::SetVelocity(Vector* velocity, AngularImpulse* angular_velocity)
+{ GetWrapped()->SetVelocity(velocity, angular_velocity); }
+
+
 
 const char* IPhysicsObjectWrapper::GetName()
 { return GetWrapped()->GetName(); }

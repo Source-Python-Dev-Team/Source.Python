@@ -31,6 +31,7 @@
 #include "export_main.h"
 #include "utilities/conversions.h"
 #include "entities_entity.h"
+#include "modules/physics/physics.h"
 
 
 //-----------------------------------------------------------------------------

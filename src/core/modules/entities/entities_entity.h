@@ -36,7 +36,6 @@ using namespace boost::python;
 
 #include "utilities/baseentity.h"
 #include "toolframework/itoolentity.h"
-#include "modules/physics/physics.h"
 
 // Don't remove this! It's required for the
 // BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity) definition.
@@ -48,6 +47,7 @@ using namespace boost::python;
 // Forward declarations
 //-----------------------------------------------------------------------------
 class CPointer;
+class IPhysicsObjectWrapper;
 
 
 //-----------------------------------------------------------------------------
