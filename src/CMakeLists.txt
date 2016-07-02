@@ -328,6 +328,7 @@ Set(SOURCEPYTHON_MESSAGES_MODULE_SOURCES
     core/modules/messages/messages.cpp
     core/modules/messages/messages_wrap.cpp
 )
+
 # ------------------------------------------------------------------
 # NetChannel module.
 # ------------------------------------------------------------------
@@ -336,6 +337,18 @@ Set(SOURCEPYTHON_NET_CHANNEL_MODULE_HEADERS
 
 Set(SOURCEPYTHON_NET_CHANNEL_MODULE_SOURCES
     core/modules/net_channel/net_channel_wrap.cpp
+)
+
+# ------------------------------------------------------------------
+# Physics module.
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_PHYSICS_MODULE_HEADERS
+    core/modules/physics/physics.h
+)
+
+Set(SOURCEPYTHON_PHYSICS_MODULE_SOURCES
+    core/modules/physics/physics.cpp
+    core/modules/physics/physics_wrap.cpp
 )
 
 # ------------------------------------------------------------------
@@ -413,7 +426,7 @@ Set(SOURCEPYTHON_MODULE_FILES
     # CFunctionInfo must be exposed at first
     ${SOURCEPYTHON_MEMORY_MODULE_HEADERS}
     ${SOURCEPYTHON_MEMORY_MODULE_SOURCES}
-    
+
     ${SOURCEPYTHON_BITBUFFERS_MODULE_HEADERS}
     ${SOURCEPYTHON_BITBUFFERS_MODULE_SOURCES}
 
@@ -462,6 +475,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_NET_CHANNEL_MODULE_HEADERS}
     ${SOURCEPYTHON_NET_CHANNEL_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_PHYSICS_MODULE_HEADERS}
+    ${SOURCEPYTHON_PHYSICS_MODULE_SOURCES}
+
     ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
     ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
 
@@ -505,6 +521,7 @@ Source_Group("Header Files\\Modules\\Mathlib"                FILES ${SOURCEPYTHO
 Source_Group("Header Files\\Modules\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\NetChannel"             FILES ${SOURCEPYTHON_NET_CHANNEL_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Physics"                FILES ${SOURCEPYTHON_PHYSICS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
@@ -532,6 +549,7 @@ Source_Group("Source Files\\Modules\\Mathlib"                FILES ${SOURCEPYTHO
 Source_Group("Source Files\\Modules\\Memory"                 FILES ${SOURCEPYTHON_MEMORY_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Messages"               FILES ${SOURCEPYTHON_MESSAGES_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\NetChannel"             FILES ${SOURCEPYTHON_NET_CHANNEL_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Physics"                FILES ${SOURCEPYTHON_PHYSICS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Steam"                  FILES ${SOURCEPYTHON_STEAM_MODULE_SOURCES})
@@ -589,5 +607,5 @@ Add_Definitions(
 # ------------------------------------------------------------------
 Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES})
 Target_Link_Libraries(core ${SOURCEPYTHON_LINK_LIBRARIES_RELEASE})
-    
+
 Target_Link_Libraries(source-python ${SOURCEPYTHON_LINK_LIBRARIES})
