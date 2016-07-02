@@ -40,6 +40,7 @@ extern IPhysics* physics;
 
 void export_physics(scope);
 void export_physics_environment(scope);
+void export_physics_object(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -49,6 +50,7 @@ DECLARE_SP_MODULE(_physics)
 {
 	export_physics(_physics);
 	export_physics_environment(_physics);
+	export_physics_object(_physics);
 }
 
 
@@ -90,5 +92,148 @@ void export_physics_environment(scope _physics)
 		&IPhysicsEnvironmentWrapper::SetAirDensity
 	);
 
+	PhysicsEnvironment.def(
+		"get_active_object_by_index",
+		&IPhysicsEnvironmentWrapper::GetActiveObjectByIndex,
+		manage_new_object_policy()
+	);
+
 	//PhysicsEnvironment ADD_MEM_TOOLS_WRAPPER(IPhysicsEnvironmentWrapper, IPhysicsEnvironment);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports IPhysicsObject.
+//-----------------------------------------------------------------------------
+void export_physics_object(scope _physics)
+{
+	class_<IPhysicsObjectWrapper, boost::noncopyable> PhysicsObject("PhysicsObject", no_init);
+
+	PhysicsObject.def(
+		"is_static",
+		&IPhysicsObjectWrapper::IsStatic,
+		"Return True if the object is static."
+	);
+
+	PhysicsObject.add_property(
+		"asleep",
+		&IPhysicsObjectWrapper::IsAsleep,
+		&IPhysicsObjectWrapper::EnableSleep,
+		"Return True if the object is asleep."
+	);
+
+	PhysicsObject.def(
+		"is_trigger",
+		&IPhysicsObjectWrapper::IsTrigger,
+		"Return True if the object is a trigger."
+	);
+
+	PhysicsObject.def(
+		"is_fluid",
+		&IPhysicsObjectWrapper::IsFluid,
+		"Return True if the object is fluid."
+	);
+
+	PhysicsObject.def(
+		"is_hinged",
+		&IPhysicsObjectWrapper::IsHinged,
+		"Return True if the object is hinged."
+	);
+
+	PhysicsObject.add_property(
+		"collision_enabled",
+		&IPhysicsObjectWrapper::IsCollisionEnabled,
+		&IPhysicsObjectWrapper::EnableCollisions,
+		"Return True if collisions are enabled."
+	);
+
+	PhysicsObject.add_property(
+		"gravity_enabled",
+		&IPhysicsObjectWrapper::IsGravityEnabled,
+		&IPhysicsObjectWrapper::EnableGravity,
+		"Return True if gravity is enabled."
+
+	);
+
+	PhysicsObject.add_property(
+		"drag_enabled",
+		&IPhysicsObjectWrapper::IsDragEnabled,
+		&IPhysicsObjectWrapper::EnableDrag,
+		"Return True if air fraction/drag is enabled."
+
+	);
+
+	PhysicsObject.add_property(
+		"motion_enabled",
+		&IPhysicsObjectWrapper::IsMotionEnabled,
+		&IPhysicsObjectWrapper::EnableMotion,
+		"Return True if motion is enabled."
+
+	);
+
+	PhysicsObject.def(
+		"is_moveable",
+		&IPhysicsObjectWrapper::IsMoveable
+	);
+
+	PhysicsObject.def(
+		"is_attached_to_constraint",
+		&IPhysicsObjectWrapper::IsAttachedToConstraint
+	);
+
+
+	PhysicsObject.add_property(
+		"game_data",
+		make_function(&IPhysicsObjectWrapper::GetGameData, return_by_value_policy()),
+		&IPhysicsObjectWrapper::SetGameData
+	);
+
+	PhysicsObject.add_property(
+		"game_flags",
+		&IPhysicsObjectWrapper::GetGameFlags,
+		&IPhysicsObjectWrapper::SetGameFlags
+	);
+
+	PhysicsObject.add_property(
+		"game_index",
+		&IPhysicsObjectWrapper::GetGameIndex,
+		&IPhysicsObjectWrapper::SetGameIndex
+	);
+
+	PhysicsObject.add_property(
+		"callback_flags",
+		&IPhysicsObjectWrapper::GetCallbackFlags,
+		&IPhysicsObjectWrapper::SetCallbackFlags
+	);
+
+	PhysicsObject.add_property(
+		"mass",
+		&IPhysicsObjectWrapper::GetMass,
+		&IPhysicsObjectWrapper::SetMass
+	);
+	
+	
+	PhysicsObject.def(
+		"recheck_collision_filter",
+		&IPhysicsObjectWrapper::RecheckCollisionFilter
+	);
+	
+	PhysicsObject.def(
+		"recheck_contact_points",
+		&IPhysicsObjectWrapper::RecheckContactPoints
+	);
+
+
+
+	PhysicsObject.add_property(
+		"name",
+		&IPhysicsObjectWrapper::GetName
+	);
+
+
+
+	PhysicsObject.def(
+		"output_debug_info",
+		&IPhysicsObjectWrapper::OutputDebugInfo
+	);
 }
