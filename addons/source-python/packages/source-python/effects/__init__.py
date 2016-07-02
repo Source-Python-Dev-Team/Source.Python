@@ -99,7 +99,7 @@ def beam(recipients, start, end, parent=False, **kwargs):
     for attr, value in kwargs.items():
         setattr(entity, attr, value)
 
-    entity.create()
+    entity.create(recipients)
 
 
 def polygon(recipients, points, parent=False, **kwargs):
@@ -157,7 +157,7 @@ def square(recipients, start, end, **kwargs):
         for attr, value in kwargs.items():
             setattr(entity, attr, value)
 
-        entity.create()
+        entity.create(recipients)
 
 
 def box(recipients, start, end, **kwargs):
@@ -211,7 +211,7 @@ def box(recipients, start, end, **kwargs):
         for attr, value in kwargs.items():
             setattr(entity, attr, value)
 
-        entity.create()
+        entity.create(recipients)
 
 
 def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True, **kwargs):
@@ -254,7 +254,7 @@ def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True,
             for attr, value in kwargs.items():
                 setattr(entity, attr, value)
 
-            entity.create()
+            entity.create(recipients)
 
         if x and lower_half:
             org.z -= 2 * dist
@@ -265,4 +265,4 @@ def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True,
             for attr, value in kwargs.items():
                 setattr(entity, attr, value)
 
-            entity.create()
+            entity.create(recipients)
