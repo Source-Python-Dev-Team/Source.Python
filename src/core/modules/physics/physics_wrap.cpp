@@ -261,15 +261,33 @@ void export_physics_object(scope _physics)
 	PhysicsObject.add_property(
 		"position",
 		&IPhysicsObjectWrapper::GetPosition,
-		&IPhysicsObjectWrapper::SetPosition,
 		"Return a tuple that contains the position and the angle of the object."
+	);
+
+	PhysicsObject.def(
+		"set_position",
+		&IPhysicsObjectWrapper::SetPosition
 	);
 
 	PhysicsObject.add_property(
 		"velocity",
 		&IPhysicsObjectWrapper::GetVelocity,
-		&IPhysicsObjectWrapper::SetVelocity,
 		"Return a tuple that contains the velocity in worldspace and relative to the object."
+	);
+
+	PhysicsObject.def(
+		"set_velocity",
+		&IPhysicsObjectWrapper::SetVelocity
+	);
+
+	PhysicsObject.def(
+		"set_velocity_instantaneous",
+		&IPhysicsObjectWrapper::SetVelocityInstantaneous
+	);
+
+	PhysicsObject.def(
+		"apply_force_center",
+		&IPhysicsObjectWrapper::ApplyForceCenter
 	);
 
 

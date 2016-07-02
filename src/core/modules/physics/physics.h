@@ -138,15 +138,17 @@ public:
 
 	boost::python::tuple GetVelocity();
 	void SetVelocity(Vector* velocity, AngularImpulse* angular_velocity);
+	void SetVelocityInstantaneous(Vector* velocity, AngularImpulse* angular_velocity);
+
+	void ApplyForceCenter(Vector& vec);
+
+
 
 	/*
 	// NOTE: This will teleport the object
 	virtual void			SetPositionMatrix( const matrix3x4_t&matrix, bool isTeleport ) = 0;
 
 	virtual void			GetPositionMatrix( matrix3x4_t *positionMatrix ) const = 0;
-
-	// like the above, but force the change into the simulator immediately
-	virtual void			SetVelocityInstantaneous( const Vector *velocity, const AngularImpulse *angularVelocity ) = 0;
 
 	// NOTE: These are velocities, not forces.  i.e. They will have the same effect regardless of
 	// the object's mass or inertia
@@ -168,7 +170,6 @@ public:
 	
 	// push on an object
 	// force vector is direction & magnitude of impulse kg in / s
-	virtual void			ApplyForceCenter( const Vector &forceVector ) = 0;
 	virtual void			ApplyForceOffset( const Vector &forceVector, const Vector &worldPosition ) = 0;
 	// apply torque impulse.  This will change the angular velocity on the object.
 	// HL Axes, kg degrees / s
