@@ -28,8 +28,10 @@
 // Includes.
 //-----------------------------------------------------------------------------
 // Source.Python
-#include "physics.h"
 #include "utilities/conversions.h"
+#include "physics.h"
+
+using namespace boost::python;
 
 
 //-----------------------------------------------------------------------------
@@ -94,44 +96,84 @@ void* IPhysicsObjectWrapper::GetGameData()
 { return GetWrapped()->GetGameData(); }
 
 void IPhysicsObjectWrapper::SetGameData(void* game_data)
-{ return GetWrapped()->SetGameData(game_data); }
+{ GetWrapped()->SetGameData(game_data); }
 
 
 unsigned short IPhysicsObjectWrapper::GetGameFlags()
 { return GetWrapped()->GetGameFlags(); }
 
 void IPhysicsObjectWrapper::SetGameFlags(unsigned short game_flags)
-{ return GetWrapped()->SetGameFlags(game_flags); }
+{ GetWrapped()->SetGameFlags(game_flags); }
 
 
 unsigned short IPhysicsObjectWrapper::GetGameIndex()
 { return GetWrapped()->GetGameIndex(); }
 
 void IPhysicsObjectWrapper::SetGameIndex(unsigned short game_index)
-{ return GetWrapped()->SetGameIndex(game_index); }
+{ GetWrapped()->SetGameIndex(game_index); }
 
 
 unsigned short IPhysicsObjectWrapper::GetCallbackFlags()
 { return GetWrapped()->GetCallbackFlags(); }
 
 void IPhysicsObjectWrapper::SetCallbackFlags(unsigned short callback_flags)
-{ return GetWrapped()->SetCallbackFlags(callback_flags); }
+{ GetWrapped()->SetCallbackFlags(callback_flags); }
 
 
 float IPhysicsObjectWrapper::GetMass()
 { return GetWrapped()->GetMass(); }
 
 void IPhysicsObjectWrapper::SetMass(float mass)
-{ return GetWrapped()->SetMass(mass); }
+{ GetWrapped()->SetMass(mass); }
 
 
 void IPhysicsObjectWrapper::RecheckCollisionFilter()
-{ return GetWrapped()->RecheckCollisionFilter(); }
+{ GetWrapped()->RecheckCollisionFilter(); }
 
 void IPhysicsObjectWrapper::RecheckContactPoints()
-{ return GetWrapped()->RecheckContactPoints(); }
+{ GetWrapped()->RecheckContactPoints(); }
 
 
+Vector IPhysicsObjectWrapper::GetInertia()
+{ return GetWrapped()->GetInertia(); }
+
+void IPhysicsObjectWrapper::SetInertia(Vector& inertia)
+{ GetWrapped()->SetInertia(inertia); }
+
+
+int IPhysicsObjectWrapper::GetMaterialIndex()
+{ return GetWrapped()->GetMaterialIndex(); }
+
+void IPhysicsObjectWrapper::SetMaterialIndex(int index)
+{ GetWrapped()->SetMaterialIndex(index); }
+
+
+unsigned int IPhysicsObjectWrapper::GetContents()
+{ return GetWrapped()->GetContents(); }
+
+void IPhysicsObjectWrapper::SetContents(unsigned int contents)
+{ GetWrapped()->SetContents(contents); }
+
+
+float IPhysicsObjectWrapper::GetSphereRadius()
+{ return GetWrapped()->GetSphereRadius(); }
+
+float IPhysicsObjectWrapper::GetEnergy()
+{ return GetWrapped()->GetEnergy(); }
+
+Vector IPhysicsObjectWrapper::GetMassCenterLocalSpace()
+{ return GetWrapped()->GetMassCenterLocalSpace(); }
+
+tuple IPhysicsObjectWrapper::GetPosition()
+{
+	Vector position;
+	QAngle angles;
+	GetWrapped()->GetPosition(&position, &angles);
+	return make_tuple(position, angles);
+}
+
+void IPhysicsObjectWrapper::SetPosition(Vector& position, QAngle& angles, bool teleport)
+{ GetWrapped()->SetPosition(position, angles, teleport); }
 
 
 const char* IPhysicsObjectWrapper::GetName()

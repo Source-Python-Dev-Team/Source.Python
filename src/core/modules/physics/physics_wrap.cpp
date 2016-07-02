@@ -224,6 +224,48 @@ void export_physics_object(scope _physics)
 	);
 
 
+	PhysicsObject.add_property(
+		"inertia",
+		&IPhysicsObjectWrapper::GetInertia,
+		&IPhysicsObjectWrapper::SetInertia
+	);
+
+	PhysicsObject.add_property(
+		"material_index",
+		&IPhysicsObjectWrapper::GetMaterialIndex,
+		&IPhysicsObjectWrapper::SetMaterialIndex
+	);
+
+	PhysicsObject.add_property(
+		"contents",
+		&IPhysicsObjectWrapper::GetContents,
+		&IPhysicsObjectWrapper::SetContents
+	);
+
+	PhysicsObject.add_property(
+		"sphere_radius",
+		&IPhysicsObjectWrapper::GetSphereRadius,
+		"Return the radius if this is a sphere object (zero if this is a polygonal mesh)."
+	);
+
+	PhysicsObject.add_property(
+		"energy",
+		&IPhysicsObjectWrapper::GetEnergy
+	);
+
+	PhysicsObject.add_property(
+		"mass_center_local_space",
+		&IPhysicsObjectWrapper::GetMassCenterLocalSpace
+	);
+
+	PhysicsObject.add_property(
+		"position",
+		&IPhysicsObjectWrapper::GetPosition,
+		&IPhysicsObjectWrapper::SetPosition,
+		"Return a tuple that contains the position and the angle of the object."
+	);
+
+
 
 	PhysicsObject.add_property(
 		"name",

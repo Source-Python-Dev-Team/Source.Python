@@ -115,6 +115,7 @@ void export_base_entity(scope _entity)
 	BaseEntity.add_property("index", &CBaseEntityWrapper::GetIndex);
 	BaseEntity.add_property("pointer", make_function(&CBaseEntityWrapper::GetPointer));
 	BaseEntity.add_property("inthandle", &CBaseEntityWrapper::GetIntHandle);
+	BaseEntity.add_property("physics_object", make_function(&CBaseEntityWrapper::GetPhysicsObject, manage_new_object_policy()));
 
 	// KeyValue getter methods
 	BaseEntity.def("get_key_value_string",

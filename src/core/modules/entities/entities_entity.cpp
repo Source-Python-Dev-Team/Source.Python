@@ -290,3 +290,8 @@ bool CBaseEntityWrapper::IsPlayer()
 
 	return iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex <= (unsigned int) gpGlobals->maxClients;
 }
+
+IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
+{
+	return Wrap<IPhysicsObjectWrapper>(GetDatamapProperty<IPhysicsObject*>("m_pPhysicsObject"));
+}

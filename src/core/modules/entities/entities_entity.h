@@ -36,6 +36,7 @@ using namespace boost::python;
 
 #include "utilities/baseentity.h"
 #include "toolframework/itoolentity.h"
+#include "modules/physics/physics.h"
 
 // Don't remove this! It's required for the
 // BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity) definition.
@@ -185,6 +186,7 @@ public:
 	unsigned int GetIndex();
 	CPointer GetPointer();
 	unsigned int GetIntHandle();
+	IPhysicsObjectWrapper* GetPhysicsObject();
 
 	// Other methods
 	bool IsPlayer();

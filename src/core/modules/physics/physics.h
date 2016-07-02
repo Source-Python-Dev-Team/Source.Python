@@ -27,6 +27,9 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// Boost
+#include "boost/python/tuple.hpp"
+
 // SDK
 #include "vphysics_interface.h"
 
@@ -108,41 +111,35 @@ public:
 
 	void RecheckCollisionFilter();
 	void RecheckContactPoints();
-	
 
+	Vector GetInertia();
+	void SetInertia(Vector& inertia);
 /*
-	// mass accessors
-	// get 1/mass (it's cached)
-	virtual float			GetInvMass( void ) const = 0;
-	virtual Vector			GetInertia( void ) const = 0;
-	virtual Vector			GetInvInertia( void ) const = 0;
-	virtual void			SetInertia( const Vector &inertia ) = 0;
-
 	virtual void			SetDamping( const float *speed, const float *rot ) = 0;
 	virtual void			GetDamping( float *speed, float *rot ) const = 0;
 
 	// coefficients are optional, pass either
 	virtual void			SetDragCoefficient( float *pDrag, float *pAngularDrag ) = 0;
 	virtual void			SetBuoyancyRatio( float ratio ) = 0;			// Override bouyancy
+*/
 
-	// material index
-	virtual int				GetMaterialIndex() const = 0;
-	virtual void			SetMaterialIndex( int materialIndex ) = 0;
+	int	GetMaterialIndex();
+	void SetMaterialIndex(int index);
 
-	// contents bits
-	virtual unsigned int	GetContents() const = 0;
-	virtual void			SetContents( unsigned int contents ) = 0;
+	unsigned int GetContents();
+	void SetContents(unsigned int contents);
+	
+	float GetSphereRadius();
+	float GetEnergy();
+	Vector GetMassCenterLocalSpace();
+	
+	boost::python::tuple GetPosition();
+	void SetPosition(Vector& position, QAngle& angles, bool teleport);
 
-	// Get the radius if this is a sphere object (zero if this is a polygonal mesh)
-	virtual float			GetSphereRadius() const = 0;
-	virtual float			GetEnergy() const = 0;
-	virtual Vector			GetMassCenterLocalSpace() const = 0;
-
+	/*
 	// NOTE: This will teleport the object
-	virtual void			SetPosition( const Vector &worldPosition, const QAngle &angles, bool isTeleport ) = 0;
 	virtual void			SetPositionMatrix( const matrix3x4_t&matrix, bool isTeleport ) = 0;
 
-	virtual void			GetPosition( Vector *worldPosition, QAngle *angles ) const = 0;
 	virtual void			GetPositionMatrix( matrix3x4_t *positionMatrix ) const = 0;
 	// force the velocity to a new value
 	// NOTE: velocity is in worldspace, angularVelocity is relative to the object's 
