@@ -8,6 +8,7 @@
 from _physics import physics
 from _physics import Physics
 from _physics import PhysicsEnvironment
+from _physics import PhysicsObject
 
 
 # =============================================================================
@@ -16,4 +17,5 @@ from _physics import PhysicsEnvironment
 __all__ = ('physics',
            'Physics',
            'PhysicsEnvironment',
+           'PhysicsObject',
            )
