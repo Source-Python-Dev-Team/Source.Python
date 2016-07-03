@@ -10,5 +10,6 @@ a list of points you should always try to provide:
 
 1. A precise description of the problem.
 2. A tested code snipped to reproduce the issue.
+3. The full traceback of the exception (if an exception was raised).
 
 Thank you!
