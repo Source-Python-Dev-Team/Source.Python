@@ -125,6 +125,7 @@ html_theme_options = {
     'footerbgcolor': '#002D00',
     'sidebarlinkcolor': '#DCFFDC',
     'linkcolor': '#007D00',
+    'visitedlinkcolor': '#007D00',
     'headtextcolor': '#003700'
 }
 

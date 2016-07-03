@@ -17,6 +17,9 @@ from core import AutoUnload
 from core import WeakAutoUnload
 #   Hooks
 from hooks.exceptions import except_hooks
+#   Listeners
+from listeners import on_plugin_loaded_manager
+from listeners import on_plugin_unloaded_manager
 #   Plugins
 from plugins import plugins_logger
 from plugins import _plugin_strings
@@ -114,8 +117,7 @@ class PluginManager(OrderedDict):
 
         # Add the plugin to the dictionary with its instance
         self[plugin_name] = instance
-
-        # Return the give instance
+        on_plugin_loaded_manager.notify(plugin_name)
         return instance
 
     def __delitem__(self, plugin_name):
@@ -151,6 +153,7 @@ class PluginManager(OrderedDict):
 
         # Remove the plugin from the dictionary
         super().__delitem__(plugin_name)
+        on_plugin_unloaded_manager.notify(plugin_name)
 
     @property
     def base_import(self):

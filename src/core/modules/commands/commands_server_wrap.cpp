@@ -75,7 +75,7 @@ DECLARE_SP_SUBMODULE(_commands, _server)
 //-----------------------------------------------------------------------------
 void export_server_command_manager(scope _server)
 {
-	class_<CServerCommandManager, bases<ConCommandBase>, boost::noncopyable>("ServerCommandDispatcher", no_init)
+	class_<CServerCommandManager, bases<ConCommand>, boost::noncopyable>("ServerCommandDispatcher", no_init)
 		.def("add_callback",
 			&CServerCommandManager::AddCallback,
 			"Adds a callback to the server command's list.",

@@ -40,6 +40,7 @@
 #include "datamap.h"
 #include "game/shared/takedamageinfo.h"
 #include "utilities/conversions.h"
+#include "entities_entity.h"
 
 
 //-----------------------------------------------------------------------------
@@ -70,7 +71,24 @@ public:
 	
 	unsigned int get_weapon()
 	{
-		return ExcIndexFromBaseHandle(m_hWeapon);
+		unsigned int index;
+		if (IndexFromBaseHandle(m_hWeapon, index))
+			return index;
+
+		if (m_hAttacker.ToInt() == m_hInflictor.ToInt())
+		{
+			CBaseEntity* _attacker;
+			if (!BaseEntityFromBaseHandle(m_hAttacker, _attacker))
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the attacker")
+
+			CBaseEntityWrapper* attacker = (CBaseEntityWrapper*) _attacker;
+			if (!attacker->IsPlayer())
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Attacker is not a player.");
+
+			// TODO: Don't hardcode m_hActiveWeapon
+			return ExcIndexFromIntHandle(attacker->GetDatamapProperty<unsigned int>("m_hActiveWeapon"));
+		}
+		return get_inflictor();
 	}
 	
 	void set_weapon(unsigned int uiWeapon)
@@ -153,32 +171,6 @@ public:
 	static void set_damaged_other_players(CTakeDamageInfo *pTakeDamageInfo, int iDamagedOtherPlayers)
 	{
 		((TakeDamageInfoBaseWrapper *)pTakeDamageInfo)->set_damaged_other_players(iDamagedOtherPlayers);
-	}
-};
-
-
-//-----------------------------------------------------------------------------
-// IServerUnknown extension class.
-//-----------------------------------------------------------------------------
-class IServerUnknownExt
-{
-public:
-	static const char* GetClassname(IServerUnknown* pUnknown)
-	{
-		IServerNetworkable* pNetworkable = pUnknown->GetNetworkable();
-		if (!pNetworkable)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
-
-		return pNetworkable->GetClassName();
-	}
-
-	static bool IsNetworked(IServerUnknown* pUnknown)
-	{
-		IServerNetworkable *pServerNetworkable = pUnknown->GetNetworkable();
-		if (pServerNetworkable)
-			return pServerNetworkable->GetEdict() != NULL;
-
-		return false;
 	}
 };
 

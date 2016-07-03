@@ -160,6 +160,15 @@ def setup_global_pointers():
     except NotImplementedError:
         server.server = manager.get_global_pointer('Server')
 
+    _sp_logger.log_debug('Setting up global "factory_dictionary" variables...')
+    from entities import factories
+    try:
+        from _entities._factories import factory_dictionary
+    except ImportError:
+        factory_dictionary = manager.get_global_pointer('EntityFactoryDictionary')
+
+    factories.factory_dictionary = factory_dictionary
+
 
 # =============================================================================
 # >> SP COMMAND

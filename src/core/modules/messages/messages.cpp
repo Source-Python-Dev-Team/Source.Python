@@ -48,6 +48,7 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 	m_recipients(recipients)
 {
 	m_message_name = message_name;
+	m_index = ::GetMessageIndex(message_name);
 
 	// Initialize buffer
 #ifdef USE_PROTOBUF
@@ -58,7 +59,6 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 
 	m_buffer = message->New();
 #else
-	int m_index = ::GetMessageIndex(message_name);
 	if (m_index == -1) {
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
 	}

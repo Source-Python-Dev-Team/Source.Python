@@ -24,46 +24,41 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifdef _WIN32
-
 // ============================================================================
 // >> INCLUDES
 // ============================================================================
-// Windows
-#include <Windows.h>
-
-// Memory
+// Source.Python
 #include "utilities/wrap_macros.h"
-
-// Utilities
-#include "memory_exception.h"
+#include "entities_factories.h"
 
 
 // ============================================================================
-// >> FUNCTIONS
+// >> GetEntityFactoryDictionary
 // ============================================================================
-int ExceptionHandler(_EXCEPTION_POINTERS* info, DWORD code)
+CEntityFactoryDictionary* GetEntityFactoryDictionary()
 {
-	if (code == EXCEPTION_ACCESS_VIOLATION) {
-		EXCEPTION_RECORD* record = info->ExceptionRecord;
-		char* exc_message;
+	static CEntityFactoryDictionary* entity_factory_dictionary = NULL;
+	if (entity_factory_dictionary != NULL)
+		return entity_factory_dictionary;
+	
+	entity_factory_dictionary = extract<CEntityFactoryDictionary*>(
+		import("entities.factories").attr("factory_dictionary"));
 
-		if (record->ExceptionInformation[0] == 0)
-			exc_message = "Access violation while reading address '%u'.";
-		else if (record->ExceptionInformation[0] == 1)
-			exc_message = "Access violation while writing address '%u'.";
-		else if (record->ExceptionInformation[0] == 8)
-			exc_message = "Access violation while executing address '%u'.";
-		else
-			BOOST_RAISE_EXCEPTION(
-				PyExc_RuntimeError,
-				"Unknown access violation '%i' at address '%u'.", 
-				record->ExceptionInformation[0], record->ExceptionInformation[1])
+	if (!entity_factory_dictionary)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "factory_dictionary is NULL.")
 
-		BOOST_RAISE_EXCEPTION(PyExc_RuntimeError, exc_message, record->ExceptionInformation[1])
-	}
-
-	return EXCEPTION_CONTINUE_SEARCH;
+	return entity_factory_dictionary;
 }
 
-#endif // _WIN32
+
+// ============================================================================
+// >> EntityFactoryDictionarySharedExt
+// ============================================================================
+const char* EntityFactoryDictionarySharedExt::__getitem__(CEntityFactoryDictionary *pEntityFactoryDictionary, int iIndex)
+{
+	if (!pEntityFactoryDictionary->m_Factories.IsValidIndex(iIndex))
+	{
+		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Invalid index.");
+	}
+	return pEntityFactoryDictionary->m_Factories.GetElementName(iIndex);
+}

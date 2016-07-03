@@ -60,6 +60,7 @@ void export_registers(scope);
 void export_calling_convention(scope);
 void export_functions(scope);
 void export_global_variables(scope);
+void export_protection(scope);
 
 
 // ============================================================================
@@ -83,6 +84,7 @@ DECLARE_SP_MODULE(_memory)
 	export_calling_convention(_memory);
 	export_functions(_memory);
 	export_global_variables(_memory);
+	export_protection(_memory);
 }
 
 
@@ -142,6 +144,11 @@ void export_binary_file(scope _memory)
 		.def_readwrite("size",
 			&CBinaryFile::m_ulSize,
 			"Size of the binary."
+		)
+
+		.add_property("symbols",
+			&CBinaryFile::GetSymbols,
+			"Return a dict containing all symbols and their addresses."
 		)
 	;
 }
@@ -303,6 +310,24 @@ void export_pointer(scope _memory)
 			args("destination", "num_bytes")
 		)
 
+		.def("set_protection",
+			&CPointer::SetProtection,
+			"Set memory protection.",
+			args("protection", "size")
+		)
+
+		.def("protect",
+			&CPointer::Protect,
+			"Make the memory block read-only.",
+			args("size")
+		)
+
+		.def("unprotect",
+			&CPointer::UnProtect,
+			"Make the memory block read-, write- and executable.",
+			args("size")
+		)
+
 		// Special methods
 		.def("__int__", make_getter(&CPointer::m_ulAddr))
 
@@ -316,6 +341,18 @@ void export_pointer(scope _memory)
 
         .def(self += int())
         .def(self += self)
+
+        .def(self < other<unsigned long>())
+        .def(self < self)
+
+        .def(self <= other<unsigned long>())
+        .def(self <= self)
+
+        .def(self > other<unsigned long>())
+        .def(self > self)
+
+        .def(self >= other<unsigned long>())
+        .def(self >= self)
 		
         .def("__add__", &CPointer::operator+<unsigned long>, manage_new_object_policy())
         .def("__add__", &CPointer::operator+<CPointer>, manage_new_object_policy())
@@ -565,6 +602,11 @@ void export_stack_data(scope _memory)
 		.def("__setitem__",
 			&CStackData::SetItem,
 			"Sets the argument at the specified index."
+		)
+
+		.add_property("return_address",
+			make_function(&CStackData::GetReturnAddress, return_by_value_policy()),
+			"Return the 'return address' to which DynamicHooks will jump after the post-hook has finished."
 		)
 
 		.def("__repr__",
@@ -948,4 +990,20 @@ void export_global_variables(scope _memory)
 
 	_memory.attr("NULL") = object(CPointer());
 
+}
+
+
+// ============================================================================
+// >> Protection_t
+// ============================================================================
+void export_protection(scope _memory)
+{
+	enum_<Protection_t> Protection("Protection");
+	
+	Protection.value("NONE", PROTECTION_NONE);
+	Protection.value("READ", PROTECTION_READ);
+	Protection.value("READ_WRITE", PROTECTION_READ_WRITE);
+	Protection.value("EXECUTE", PROTECTION_EXECUTE);
+	Protection.value("EXECUTE_READ", PROTECTION_EXECUTE_READ);
+	Protection.value("EXECUTE_READ_WRITE", PROTECTION_EXECUTE_READ_WRITE);
 }

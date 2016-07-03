@@ -10,7 +10,6 @@
 from core import GameConfigObj
 #   Effects
 from _effects._base import BaseTempEntity
-from effects import _first_temp_entity
 #   Entities
 from entities.classes import _supported_property_types
 from entities.classes import server_classes
@@ -192,6 +191,9 @@ class TempEntityTemplates(dict):
         :param str temp_entity_name: The name of the temp entity template
             requested.
         """
+        # Import this here to fix a cyclic import
+        from effects import _first_temp_entity
+
         # Get the first temp entity in the chain...
         temp_entity = _first_temp_entity
 

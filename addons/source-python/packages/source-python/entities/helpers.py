@@ -17,7 +17,6 @@ from _entities._helpers import basehandle_from_edict
 from _entities._helpers import basehandle_from_index
 from _entities._helpers import basehandle_from_inthandle
 from _entities._helpers import basehandle_from_pointer
-from _entities._helpers import create_entity
 from _entities._helpers import edict_from_baseentity
 from _entities._helpers import edict_from_basehandle
 from _entities._helpers import edict_from_index
@@ -39,8 +38,6 @@ from _entities._helpers import pointer_from_basehandle
 from _entities._helpers import pointer_from_edict
 from _entities._helpers import pointer_from_index
 from _entities._helpers import pointer_from_inthandle
-from _entities._helpers import remove_entity
-from _entities._helpers import spawn_entity
 
 
 # =============================================================================
@@ -56,7 +53,6 @@ __all__ = ('baseentity_from_basehandle',
            'basehandle_from_index',
            'basehandle_from_inthandle',
            'basehandle_from_pointer',
-           'create_entity',
            'edict_from_baseentity',
            'edict_from_basehandle',
            'edict_from_index',
@@ -78,6 +74,4 @@ __all__ = ('baseentity_from_basehandle',
            'pointer_from_edict',
            'pointer_from_index',
            'pointer_from_inthandle',
-           'remove_entity',
-           'spawn_entity',
            )

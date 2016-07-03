@@ -27,10 +27,14 @@ __all__ = ('EntityDictionary',
 class EntityDictionary(AutoUnload, dict):
     """Helper class used to store entity instances."""
 
-    def __init__(self, entity_class=Entity):
+    def __init__(self, entity_class=Entity, *args, **kwargs):
         """Initialize the dictionary."""
         # Store the given entity class...
         self._entity_class = entity_class
+
+        # Store given arguments/keywords
+        self._args = args
+        self._kwargs = kwargs
 
         # Register our OnEntityDeleted listener...
         on_entity_deleted_listener_manager.register_listener(
@@ -41,7 +45,7 @@ class EntityDictionary(AutoUnload, dict):
 
     def __missing__(self, index):
         """Add and return the entity instance for the given index."""
-        instance = self[index] = self._entity_class(index)
+        instance = self[index] = self._entity_class(index, *self._args, **self._kwargs)
         return instance
 
     def __delitem__(self, index):

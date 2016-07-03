@@ -22,6 +22,7 @@ Subpackages
     memory
     menus
     messages
+    physics
     players
     plugins
     settings
