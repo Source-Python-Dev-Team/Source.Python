@@ -43,6 +43,7 @@ from players.constants import PlayerStates
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
+from players.helpers import index_from_userid
 from players.helpers import uniqueid_from_playerinfo
 from players.voice import mute_manager
 #   Weapons
@@ -67,6 +68,15 @@ class Player(Entity):
         """
         super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
+
+    @classmethod
+    def from_userid(cls, userid):
+        """Create an instance from a userid.
+
+        :param int userid: The userid.
+        :rtype: Player
+        """
+        return cls(index_from_userid(userid))
 
     @property
     def permissions(self):
@@ -580,6 +590,28 @@ class Player(Entity):
         for other in PlayerIter('dead'):
             if self.inthandle == other.observer_target:
                 yield other
+
+    def kick(self, message=''):
+        """Kick the player from the server.
+
+        :param str message: A message the kicked player will receive.
+        """
+        engine_server.server_command(
+            'kickid {} {}'.format(self.userid, message).rstrip())
+
+    def ban(self, duration=0, kick=True, write_ban=True):
+        """Ban a player from the server.
+
+        :param int duration: Duration of the ban in minutes. Use 0 for
+            permament.
+        :param bool kick: If True, the player will be kicked as well.
+        :param bool write_ban: If True, the ban will be written to
+            ``cfg/banned_users.cfg``.
+        """
+        engine_server.server_command('banid {} {} {}'.format(
+            duration, self.userid, 'kick' if kick else ''))
+        if write_ban:
+            engine_server.server_command('writeid')
 
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
