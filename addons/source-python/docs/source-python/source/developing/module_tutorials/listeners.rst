@@ -29,13 +29,13 @@ can still be rejected.
     from listeners import OnClientConnect
 
     @OnClientConnect
-    def on_client_connect(allow_connect_ptr, index, name, address, reject_msg_ptr, reject_msg_len):
+    def on_client_connect(allow_connect_ptr, edict, name, address, reject_msg_ptr, reject_msg_len):
         if name != 'something_you_dont_like':
             return
 
         allow_connect_ptr.set_bool(False)
         reject_msg_ptr.set_string_array('Your name is not allowed'[:reject_msg_len])
-        
+
 .. warning:: The length of the reject message should never exceed the value of ``reject_msg_len``.
 
 
@@ -80,7 +80,7 @@ Called when the client is put in the server. It gets called right before
     from listeners import OnClientPutInServer
 
     @OnClientPutInServer
-    def on_client_put_in_server(index, name):
+    def on_client_put_in_server(edict, name):
         pass
 
 
@@ -312,6 +312,11 @@ Called when a client has been authenticated.
     @OnNetworkidValidated
     def on_networkid_validated(name, steamid):
         pass
+
+.. note::
+
+    If your server can't establish a connection to the Steam servers, this
+    listener will never get called.
 
 
 OnPluginLoaded

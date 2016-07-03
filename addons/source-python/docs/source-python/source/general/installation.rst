@@ -1,6 +1,15 @@
 Installation
 ============
 
+Requirements
+------------
+
+1. On Linux GLIBC 2.17 or later is required. Check your version by typing ``ld -version``.
+
+
+Installation steps
+------------------
+
 1. Download the latest Source.Python version from our `buildbot <http://build.affecta.net/job/Source.Python/lastSuccessfulBuild/>`_.
 2. Extract the archive in your server's game folder. E.g. ``../my_servers/css/cstrike/``
 3. Start/restart your server and validate the installation:

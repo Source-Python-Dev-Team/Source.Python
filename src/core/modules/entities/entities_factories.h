@@ -34,7 +34,6 @@
 #include "game/shared/shareddefs.h"
 #include "game/server/util.h"
 #include "tier1/utldict.h"
-#include "utilities/conversions.h"
 
 
 //-----------------------------------------------------------------------------
@@ -46,6 +45,8 @@ public:
 	CUtlDict<IEntityFactory *, unsigned short> m_Factories;
 };
 
+CEntityFactoryDictionary* GetEntityFactoryDictionary();
+
 
 //-----------------------------------------------------------------------------
 // CEntityFactoryDictionary extension class.
@@ -53,14 +54,7 @@ public:
 class EntityFactoryDictionarySharedExt
 {
 public:
-	static const char *__getitem__(CEntityFactoryDictionary *pEntityFactoryDictionary, int iIndex)
-	{
-		if (!pEntityFactoryDictionary->m_Factories.IsValidIndex(iIndex))
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Invalid index.");
-		}
-		return pEntityFactoryDictionary->m_Factories.GetElementName(iIndex);
-	}
+	static const char* __getitem__(CEntityFactoryDictionary *pEntityFactoryDictionary, int iIndex);
 };
 
 

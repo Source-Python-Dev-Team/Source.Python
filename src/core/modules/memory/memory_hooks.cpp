@@ -112,7 +112,7 @@ bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 	
 	CStackData stackdata = CStackData(pHook);
 	bool bOverride = false;
-	for (std::list<object>::iterator it=callbacks.begin(); it != callbacks.end(); it++)
+	for (std::list<object>::iterator it=callbacks.begin(); it != callbacks.end(); ++it)
 	{
 		BEGIN_BOOST_PY()
 			object pyretval;

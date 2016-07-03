@@ -80,6 +80,7 @@ void ClearAllCommands()
 void export_command(scope);
 void export_command_return(scope);
 void export_concommandbase(scope);
+void export_concommand(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -90,6 +91,7 @@ DECLARE_SP_MODULE(_commands)
 	export_command(_commands);
 	export_command_return(_commands);
 	export_concommandbase(_commands);
+	export_concommand(_commands);
 }
 
 
@@ -212,4 +214,21 @@ void export_concommandbase(scope _commands)
 
 		ADD_MEM_TOOLS(ConCommandBase)
 	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose ConCommand.
+//-----------------------------------------------------------------------------
+void export_concommand(scope _commands)
+{
+	class_<ConCommand, bases<ConCommandBase>, boost::noncopyable> _ConCommand("ConCommand", no_init);
+
+	_ConCommand.def(
+		"dispatch",
+		&ConCommand::Dispatch,
+		"Execute the command."
+	);
+
+	_ConCommand ADD_MEM_TOOLS(ConCommand);
 }

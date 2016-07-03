@@ -230,6 +230,15 @@ void export_client(scope _players)
 		)
 	);
 
+	Client.add_property(
+		"steamid",
+		&IClient::GetNetworkIDString
+	);
+
+	Client.def("disconnect",
+		&IClientExt::Disconnect
+	);
+
 	// TODO: Export more
 
 	Client ADD_MEM_TOOLS(IClient);

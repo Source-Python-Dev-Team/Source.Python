@@ -556,7 +556,7 @@ void export_engine_server(scope _server)
 		)
 
 		.def("insert_server_command",
-			&IVEngineServer::InsertServerCommand,
+			&IVEngineServerExt::InsertServerCommand,
 			"Inserts a command into the server's command buffer.",
 			args("command_string")
 		)
@@ -803,6 +803,12 @@ void export_server_game_dll(scope _server)
 			&IServerGameDLL::GetAllServerClasses,
 			reference_existing_object_policy()
 		)
+	);
+
+	ServerGameDLL.add_property(
+		"game_description",
+		&IServerGameDLL::GetGameDescription,
+		"Return the game's description."
 	);
 
 	BEGIN_CLASS_INFO(IServerGameDLL)

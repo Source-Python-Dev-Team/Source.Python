@@ -108,6 +108,12 @@ void export_datamap(scope _datamaps)
 		reference_existing_object_policy()
 	);
 
+	DataMap.def("find_offset",
+		&DataMapSharedExt::find_offset,
+		args("name"),
+		"Return the offset of a named property. Return -1 if the property wasn't found."
+	);
+
 	// Engine specific stuff...
 	export_engine_specific_datamap(_datamaps, DataMap);
 
@@ -121,6 +127,8 @@ void export_datamap(scope _datamaps)
 //-----------------------------------------------------------------------------
 void export_type_description(scope _datamaps)
 {
+	EXPOSE_FUNCTION_TYPEDEF(BoostInputFn, "InputFn")
+
 	class_<typedescription_t, typedescription_t *> TypeDescription("TypeDescription", no_init);
 
 	// Properties...
@@ -130,6 +138,10 @@ void export_type_description(scope _datamaps)
 	TypeDescription.def_readonly("size", &typedescription_t::fieldSize);
 	TypeDescription.def_readonly("flags", &typedescription_t::flags);
 	TypeDescription.def_readonly("external_name", &typedescription_t::externalName);
+	TypeDescription.add_property("input_function", &TypeDescriptionSharedExt::get_input_function);
+	TypeDescription.add_property("function",
+		make_function(&TypeDescriptionSharedExt::get_function, return_by_value_policy())
+	);
 
 	// CS:GO properties...
 	TypeDescription.NOT_IMPLEMENTED_ATTR("flat_offset");
@@ -137,8 +149,6 @@ void export_type_description(scope _datamaps)
 
 	// TODO: Expose ISaveRestoreOps...
 	TypeDescription.def_readonly("save_restore", &typedescription_t::pSaveRestoreOps);
-
-	TypeDescription.def("get_input_function", &TypeDescriptionSharedExt::get_input_function, manage_new_object_policy());
 
 	TypeDescription.def_readonly("embedded_datamap", &typedescription_t::td);
 	TypeDescription.def_readonly("size_in_bytes", &typedescription_t::fieldSizeInBytes);

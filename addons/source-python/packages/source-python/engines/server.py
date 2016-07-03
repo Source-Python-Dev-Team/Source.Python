@@ -24,7 +24,15 @@ __all__ = ('ConnectionlessPacketHandler',
            'MapLoadType',
            'QueryCvarStatus',
            'Server',
+           'server',
            'engine_server',
            'global_vars',
            'server_game_dll',
            )
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# The singleton object of the :class:`Server` class.
+server = None
