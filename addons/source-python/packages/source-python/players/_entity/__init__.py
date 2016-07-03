@@ -636,19 +636,15 @@ class Player(Entity):
     def active_weapon(self):
         """Return the player's active weapon.
 
+        :return: None if the player does not have an active weapon.
         :rtype: Weapon
         """
-        # Get the player's active weapon's index
-        index = index_from_inthandle(self.active_weapon_handle)
+        try:
+            index = index_from_inthandle(self.active_weapon_handle)
+        except (ValueError, OverflowError):
+            return None
 
-        # Does the player have an active weapon?
-        if index is not None:
-
-            # Return a Weapon instance for the player's active weapon
-            return Weapon(index)
-
-        # If no active weapon, return None
-        return None
+        return Weapon(index)
 
     def get_weapon(self, classname=None, is_filters=None, not_filters=None):
         """Return the first found weapon for the given arguments.

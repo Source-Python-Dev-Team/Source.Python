@@ -8,7 +8,6 @@
 # Source.Python Imports
 #   Entities
 from entities.entity import Entity
-from entities.helpers import index_from_inthandle
 #   Weapons
 from weapons.manager import weapon_manager
 
@@ -26,16 +25,6 @@ __all__ = ('Weapon',
 # =============================================================================
 class Weapon(Entity):
     """Allows easy usage of the weapon's attributes."""
-
-    @property
-    def current_owner(self):
-        """Return a Entity instance of the weapon's owner."""
-        # Does no player currently own the weapon?
-        if self.owner == -1:
-            return None
-
-        # Return a Entity instance of the owner
-        return Entity(index_from_inthandle(self.owner))
 
     def get_clip(self):
         """Return the amount of ammo in the weapon's clip."""
@@ -57,14 +46,14 @@ class Weapon(Entity):
                 'Unable to get ammoprop for {0}'.format(self.classname))
 
         # Get the owner of the weapon
-        player = self.current_owner
+        player = self.owner
 
         # Does no one currently own the weapon?
         if player is None:
             return
 
         # Return the ammo
-        return player.get_property_ushort(
+        return player.get_property_int(
             weapon_manager.ammoprop + '%03d' % self.ammoprop)
 
     def set_ammo(self, value):
@@ -75,14 +64,14 @@ class Weapon(Entity):
                 'Unable to set ammoprop for {0}'.format(self.classname))
 
         # Get the owner of the weapon
-        player = self.current_owner
+        player = self.owner
 
         # Does no one currently own the weapon?
         if player is None:
             return
 
         # Set the ammo
-        player.set_property_ushort(
+        player.set_property_int(
             weapon_manager.ammoprop + '%03d' % self.ammoprop, value)
 
     # Set the "ammo" property methods
@@ -112,14 +101,14 @@ class Weapon(Entity):
                     self.classname))
 
         # Get the owner of the weapon
-        player = self.current_owner
+        player = self.owner
 
         # Does no one currently own the weapon?
         if player is None:
             return
 
         # Return the ammo
-        return player.get_property_ushort(
+        return player.get_property_int(
             weapon_manager.ammoprop + '%03d' % self.secondary_fire_ammoprop)
 
     def set_secondary_fire_ammo(self, value):
@@ -131,14 +120,14 @@ class Weapon(Entity):
                     self.classname))
 
         # Get the owner of the weapon
-        player = self.current_owner
+        player = self.owner
 
         # Does no one currently own the weapon?
         if player is None:
             return
 
         # Set the ammo
-        player.set_property_ushort(
+        player.set_property_int(
             weapon_manager.ammoprop +
             '%03d' % self.secondary_fire_ammoprop, value)
 

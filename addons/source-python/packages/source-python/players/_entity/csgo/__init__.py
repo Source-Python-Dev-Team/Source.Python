@@ -87,7 +87,7 @@ class Player(_Player):
         for weapon in EntityIter('weapon_c4'):
 
             # Is the entity's "owner" the player?
-            if weapon.owner == self.inthandle:
+            if weapon.owner_handle == self.inthandle:
 
                 # Return True
                 return True
