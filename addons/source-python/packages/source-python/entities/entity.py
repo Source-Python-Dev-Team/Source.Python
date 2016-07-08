@@ -567,8 +567,8 @@ class Entity(BaseEntity):
         if attacker is not None and weapon is None:
 
             # Try to use the attacker's active weapon
-            with suppress(AttributeError, ValueError, OverflowError):
-                weapon = Weapon(index_from_inthandle(attacker.active_weapon))
+            with suppress(AttributeError):
+                weapon = attacker.active_weapon
 
         # Try to set the hitgroup
         with suppress(AttributeError):
