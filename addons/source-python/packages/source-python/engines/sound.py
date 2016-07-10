@@ -88,7 +88,7 @@ class Attenuation(float, Enum):
 # >> CLASSES
 # =============================================================================
 class _BaseSound(AutoUnload):
-    """Class used to interact with a specific sound file."""
+    """Base class for sound classes."""
 
     # Set the base _downloads attribute to know whether
     #   or not the sample was added to the downloadables
@@ -192,6 +192,15 @@ class _BaseSound(AutoUnload):
 
 
 class Sound(_BaseSound):
+    """Class used to interact with precached sounds.
+
+    .. note::
+
+       On some engines (e.g. CS:GO) server is unable to precache the sound,
+       thus the sound won't be played. StreamSound is recommended in that case.
+       However, sounds located in sound/music/ directory are always streamed
+       on those engines, and this class will be able to play them.
+    """
     def _play(self, recipients):
         """Play the sound (internal)."""
         engine_sound.emit_sound(
@@ -215,6 +224,19 @@ class Sound(_BaseSound):
 
 
 class StreamSound(_BaseSound):
+    """Class used to interact with streamed sounds.
+
+    .. note::
+
+       This class is a recommended choice on some engines (e.g. CS:GO),
+       however, it's unable to play *.wav-files.
+
+    .. note::
+
+        On some engines (e.g. CS:GO) files that are located in sound/music/
+        directory are already streamed, so simple Sound class can be used
+        instead.
+    """
     @property
     def _stream_sample(self):
         """Return the streamed sample path of the Sound instance."""
