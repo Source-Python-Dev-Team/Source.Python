@@ -1,4 +1,4 @@
-# ../engines/sound/__init__.py
+# ../engines/sound.py
 
 """Provides access to the Sound and StreamSound interfaces."""
 
