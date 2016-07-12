@@ -28,15 +28,20 @@ class Weapon(Entity):
 
     def get_clip(self):
         """Return the amount of ammo in the weapon's clip."""
-        return self.clip if self.clip != -1 else 0
+        return self._clip if self._clip != -1 else 0
 
     def set_clip(self, value):
         """Set the amount of ammo in the weapon's clip."""
         # Does the weapon have ammo?
-        if self.clip != -1:
+        if self._clip != -1:
 
             # Set the clip amount
-            self.clip = value
+            self._clip = value
+
+    # Set the "clip" property methods
+    clip = property(
+        get_clip, set_clip,
+        doc="""Property to get/set the weapon's clip.""")
 
     def get_ammo(self):
         """Return the amount of ammo the player has for the weapon."""
@@ -81,16 +86,27 @@ class Weapon(Entity):
 
     def get_secondary_fire_clip(self):
         """Return the amount of ammo in the weapon's secondary fire clip."""
-        return (
-            self.secondary_fire_clip if self.secondary_fire_clip != -1 else 0)
+        # Does the weapon have secondary fire ammo?
+        if self._secondary_fire_clip != -1:
+
+            # Return the secondary fire clip amount
+            return self._secondary_fire_clip
+
+        # If it doesn't, return zero
+        return 0
 
     def set_secondary_fire_clip(self, value):
         """Set the amount of ammo in the weapon's secondary fire clip."""
         # Does the weapon have secondary fire ammo?
-        if self.secondary_fire_clip != -1:
+        if self._secondary_fire_clip != -1:
 
             # Set the secondary fire clip amount
-            self.secondary_fire_clip = value
+            self._secondary_fire_clip = value
+
+    # Set the "secondary_fire_clip" property methods
+    secondary_fire_clip = property(
+        get_secondary_fire_clip, set_secondary_fire_clip,
+        doc="""Property to get/set the weapon's secondary fire clip.""")
 
     def get_secondary_fire_ammo(self):
         """Return the secondary fire ammo the player has for the weapon."""
