@@ -156,8 +156,8 @@ class Entity(BaseEntity):
         entity.destroy()
         raise ValueError('"{}" is not a networked entity.'.format(classname))
 
-    @staticmethod
-    def find(classname):
+    @classmethod
+    def find(cls, classname):
         """Try to find an entity with the given classname.
 
         If not entity has been found, None will be returned.
@@ -168,7 +168,7 @@ class Entity(BaseEntity):
         """
         entity = BaseEntity.find(classname)
         if entity is not None and entity.is_networked():
-            return Entity(entity.index)
+            return cls(entity.index)
 
         return None
 

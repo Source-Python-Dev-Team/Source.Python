@@ -1,6 +1,6 @@
 # ../engines/sound.py
 
-"""Provides access to the Sound interface."""
+"""Provides access to the Sound and StreamSound interfaces."""
 
 # =============================================================================
 # >> IMPORTS
@@ -63,6 +63,7 @@ __all__ = ('Attenuation',
            'SOUND_FROM_WORLD',
            'Sound',
            'SoundFlags',
+           'StreamSound',
            'VOL_NORM',
            'engine_sound',
            )
@@ -93,8 +94,8 @@ class Attenuation(float, Enum):
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Sound(AutoUnload):
-    """Class used to interact with a specific sound file."""
+class _BaseSound(AutoUnload):
+    """Base class for sound classes."""
 
     # Set the base _downloads attribute to know whether
     #   or not the sample was added to the downloadables
@@ -145,11 +146,7 @@ class Sound(AutoUnload):
             self.precache()
 
         # Play the sound
-        engine_sound.emit_sound(
-            recipients, self.index, self.channel, self.sample,
-            self.volume, self.attenuation, self.flags, self.pitch,
-            self.origin, self.direction, self.origins,
-            self.update_positions, self.sound_time, self.speaker_entity)
+        self._play(recipients)
 
     def stop(self, index=None, channel=None):
         """Stop a sound from being played."""
@@ -166,16 +163,24 @@ class Sound(AutoUnload):
             channel = self.channel
 
         # Stop the sound
-        engine_sound.stop_sound(index, channel, self.sample)
+        self._stop(index, channel)
+
+    def _play(self, recipients):
+        """Play the sound (internal)."""
+        raise NotImplementedError
+
+    def _stop(self, index, channel):
+        """Stop a sound from being played (internal)."""
+        raise NotImplementedError
 
     def precache(self):
         """Precache the sample."""
-        engine_sound.precache_sound(self.sample)
+        raise NotImplementedError
 
     @property
     def is_precached(self):
         """Return whether or not the sample is precached."""
-        return self.sample in string_tables.soundprecache
+        raise NotImplementedError
 
     @property
     def sample(self):
@@ -207,3 +212,77 @@ class Sound(AutoUnload):
         """Remove the sample from the downloads list."""
         if self._downloads is not None:
             self._downloads._unload_instance()
+
+
+class Sound(_BaseSound):
+    """Class used to interact with precached sounds.
+
+    .. note::
+
+       On some engines (e.g. CS:GO) server is unable to precache the sound,
+       thus the sound won't be played. StreamSound is recommended in that case.
+       However, sounds located in sound/music/ directory are always streamed
+       on those engines, and this class will be able to play them.
+    """
+    def _play(self, recipients):
+        """Play the sound (internal)."""
+        engine_sound.emit_sound(
+            recipients, self.index, self.channel, self.sample,
+            self.volume, self.attenuation, self.flags, self.pitch,
+            self.origin, self.direction, self.origins,
+            self.update_positions, self.sound_time, self.speaker_entity)
+
+    def _stop(self, index, channel):
+        """Stop a sound from being played (internal)."""
+        engine_sound.stop_sound(index, channel, self.sample)
+
+    def precache(self):
+        """Precache the sample."""
+        engine_sound.precache_sound(self.sample)
+
+    @property
+    def is_precached(self):
+        """Return whether or not the sample is precached."""
+        return self.sample in string_tables.soundprecache
+
+
+class StreamSound(_BaseSound):
+    """Class used to interact with streamed sounds.
+
+    .. note::
+
+       This class is a recommended choice on some engines (e.g. CS:GO),
+       however, it's unable to play *.wav-files.
+
+    .. note::
+
+        On some engines (e.g. CS:GO) files that are located in sound/music/
+        directory are already streamed, so simple Sound class can be used
+        instead.
+    """
+    @property
+    def _stream_sample(self):
+        """Return the streamed sample path of the Sound instance."""
+        return "*/{}".format(self.sample)
+
+    def _play(self, recipients):
+        """Play the sound (internal)."""
+        engine_sound.emit_sound(
+            recipients, self.index, self.channel, self._stream_sample,
+            self.volume, self.attenuation, self.flags, self.pitch,
+            self.origin, self.direction, self.origins,
+            self.update_positions, self.sound_time, self.speaker_entity)
+
+    def _stop(self, index, channel):
+        """Stop a sound from being played (internal)."""
+        engine_sound.stop_sound(index, channel, self._stream_sample)
+
+    def precache(self):
+        """Precache the sample."""
+        string_tables.soundprecache.add_string(
+            self._stream_sample, self._stream_sample)
+
+    @property
+    def is_precached(self):
+        """Return whether or not the sample is precached."""
+        return self._stream_sample in string_tables.soundprecache
