@@ -19,20 +19,7 @@ class Weapon(_Weapon):
         """Return the amount of ammo the player has for the weapon."""
         # Is the weapon a projectile?
         if 'grenade' in weapon_manager[self.classname].tags:
-
-            # Do we have a valid ammoprop?
-            if self.ammoprop == -1:
-                raise ValueError(
-                    'Unable to get ammoprop for {0}'.format(self.classname))
-
-            # Get the owner of the weapon
-            player = self.owner
-
-            # Does no one currently own the weapon?
-            if player is None:
-                return
-
-            # Return the ammo
+            player = self._validate_ammo()
             return player.get_property_ushort(
                 weapon_manager.ammoprop + '%03d' % self.ammoprop)
 
@@ -42,20 +29,7 @@ class Weapon(_Weapon):
         """Set the player's ammo property for the weapon."""
         # Is the weapon a projectile?
         if 'grenade' in weapon_manager[self.classname].tags:
-
-            # Do we have a valid ammoprop?
-            if self.ammoprop == -1:
-                raise ValueError(
-                    'Unable to set ammoprop for {0}'.format(self.classname))
-
-            # Get the owner of the weapon
-            player = self.owner
-
-            # Does no one currently own the weapon?
-            if player is None:
-                return
-
-            # Set the ammo
+            player = self._validate_ammo()
             player.set_property_ushort(
                 weapon_manager.ammoprop + '%03d' % self.ammoprop, value)
 
