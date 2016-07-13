@@ -113,7 +113,7 @@ typedescription_t* DataMapSharedExt::find(datamap_t* pDataMap, const char *szNam
 		{
 			for (int iCurrentIndex=0; iCurrentIndex < pDataMap->dataNumFields; iCurrentIndex++)
 			{
-				typedescription_t pCurrentDataDesc = pDataMap->dataDesc[iCurrentIndex];
+				typedescription_t& pCurrentDataDesc = pDataMap->dataDesc[iCurrentIndex];
 				if ((pCurrentDataDesc.fieldName && strcmp(szName, pCurrentDataDesc.fieldName) == 0) ||
 					(pCurrentDataDesc.externalName && strcmp(szName, pCurrentDataDesc.externalName) == 0))
 				{
