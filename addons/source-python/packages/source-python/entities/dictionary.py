@@ -27,10 +27,10 @@ __all__ = ('EntityDictionary',
 class EntityDictionary(AutoUnload, dict):
     """Helper class used to store entity instances."""
 
-    def __init__(self, entity_class=Entity, *args, **kwargs):
+    def __init__(self, factory=Entity, *args, **kwargs):
         """Initialize the dictionary."""
         # Store the given entity class...
-        self._entity_class = entity_class
+        self._factory = factory
 
         # Store given arguments/keywords
         self._args = args
@@ -45,7 +45,7 @@ class EntityDictionary(AutoUnload, dict):
 
     def __missing__(self, index):
         """Add and return the entity instance for the given index."""
-        instance = self[index] = self._entity_class(index, *self._args, **self._kwargs)
+        instance = self[index] = self._factory(index, *self._args, **self._kwargs)
         return instance
 
     def __delitem__(self, index):
