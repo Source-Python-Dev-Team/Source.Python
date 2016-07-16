@@ -25,6 +25,6 @@ __all__ = ('WeaponDictionary',
 class WeaponDictionary(EntityDictionary):
     """Helper class used to store weapon instances."""
 
-    def __init__(self, weapon_class=Weapon, *args, **kwargs):
+    def __init__(self, factory=Weapon, *args, **kwargs):
         """Initialize the dictionary."""
-        super().__init__(weapon_class, *args, **kwargs)
+        super().__init__(factory, *args, **kwargs)
