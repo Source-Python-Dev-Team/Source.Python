@@ -212,7 +212,6 @@ class _BaseSound(AutoUnload):
         created_file = False
         value = 0.0
         if not self.full_path.isfile():
-            # TODO: Handle sounds in vpk files
             for vpk_file in _all_vpks:
                 if not 'sound/' + self.sample in vpk_file:
                     continue
