@@ -210,7 +210,6 @@ class _BaseSound(AutoUnload):
         """Return the duration of the sample."""
         created_dir = False
         created_file = False
-        value = 0.0
         if not self.full_path.isfile():
             for vpk_file in _all_vpks:
                 if not 'sound/' + self.sample in vpk_file:
@@ -227,6 +226,14 @@ class _BaseSound(AutoUnload):
                     )
                 )
                 sound.close()
+                break
+            else:
+                raise FileNotFoundError(
+                    'Sound file "{sample}" not found on server.'.format(
+                        sample=self.sample,
+                    )
+                )
+        value = None
         if self.extension == 'ogg':
             value = oggvorbis.Open(self.full_path).info.length
         elif self.extension == 'mp3':
@@ -234,6 +241,12 @@ class _BaseSound(AutoUnload):
         elif self.extension == 'wav':
             with closing(wave.open(self.full_path)) as open_file:
                 value = open_file.getnframes() / open_file.getframerate()
+        else:
+            raise NotImplementedError(
+                'Sound extension "{extension}" is not supported.'.format(
+                    extension=self.extension,
+                )
+            )
         if created_file:
             self.full_path.remove()
             if created_dir:
