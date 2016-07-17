@@ -5,7 +5,7 @@
 
     Format colored console output.
 
-    :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
+    :copyright: Copyright 2007-2016 by the Sphinx team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -33,9 +33,7 @@ def get_terminal_width():
                            struct.pack('hhhh', 0, 0, 0, 0))
         height, width = struct.unpack('hhhh', call)[:2]
         terminal_width = width
-    except (SystemExit, KeyboardInterrupt):
-        raise
-    except:
+    except Exception:
         # FALLBACK
         terminal_width = int(os.environ.get('COLUMNS', 80)) - 1
     return terminal_width
