@@ -140,30 +140,10 @@ _core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 # =============================================================================
 # >> sp
 # =============================================================================
-@_core_command.sub_command(['load'])
-def _sp_load(command_info, plugin):
-    """Load a plugin."""
-    _core_command.load_plugin(plugin)
-
-@_core_command.sub_command(['unload'])
-def _sp_unload(command_info, plugin):
-    """Unload a plugin."""
-    _core_command.unload_plugin(plugin)
-
-@_core_command.sub_command(['reload'])
-def _sp_reload(command_info, plugin):
-    """Reload a plugin."""
-    _core_command.reload_plugin(plugin)
-
 @_core_command.sub_command(['delay'])
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
     Delay(delay, engine_server.server_command, command + ' ' + ' '.join(args))
-
-@_core_command.sub_command(['list'])
-def _sp_list(command_info):
-    """List all currently loaded plugins."""
-    _core_command.print_plugins()
 
 @_core_command.sub_command(['version'])
 def _sp_version(command_info):

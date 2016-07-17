@@ -177,7 +177,7 @@ def setup_sp_command():
     """Set up the 'sp' command."""
     _sp_logger.log_debug('Setting up the "sp" command...')
 
-    from core.command import auth, docs, dump
+    from core.command import auth, docs, dump, plugin
 
 
 # =============================================================================

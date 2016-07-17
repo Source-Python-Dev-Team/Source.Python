@@ -408,57 +408,68 @@ List all 'sp' sub-commands or provide help on server commands registered with So
     sp help sp load
 
 
+plugin
+------
+
+Provide plugin specific commands.
+
+.. code-block:: none
+
+    // Usage
+    // sp plugin <sub-command>
+
+
 list
-----
+^^^^
 
 List all currently loaded plugins.
 
 .. code-block:: none
 
     // Usage
-    // sp list
+    // sp plugin list
 
 
 load
-----
+^^^^
 
 Load a plugin by name.
 
 .. code-block:: none
 
     // Usage
-    // sp load <plugin>
+    // sp plugin load <plugin>
 
     // Load the plugin 'test'
-    sp load test
+    sp plugin load test
 
 
 reload
-------
+^^^^^^
 
 Reload a plugin by name.
 
 .. code-block:: none
 
     // Usage
-    // sp reload <plugin>
+    // sp plugin reload <plugin>
 
     // Reload the plugin 'test'
-    sp reload test
+    sp plugin reload test
 
 
 unload
-------
+^^^^^^
 
 Unload a plugin by name.
 
 .. code-block:: none
 
     // Usage
-    // sp unload <plugin>
+    // sp plugin unload <plugin>
 
     // Unload the plugin 'test'
-    sp unload test
+    sp plugin unload test
 
 
 version
