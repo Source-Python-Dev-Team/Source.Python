@@ -17,6 +17,7 @@ import wave
 #   Mutagen
 from mutagen import mp3
 from mutagen import oggvorbis
+import vpk
 
 # Source.Python Imports
 #   Core
@@ -78,6 +79,9 @@ __all__ = ('Attenuation',
 # =============================================================================
 # Get the sp.engines.sound logger
 engines_sound_logger = engines_logger.sound
+
+# Store all vpk files so we don't have to find them every time we need one
+_all_vpks = {vpk.open(x) for x in GAME_PATH.parent.walkfiles('*_dir.vpk')}
 
 
 # =============================================================================
@@ -204,17 +208,38 @@ class _BaseSound(AutoUnload):
     @property
     def duration(self):
         """Return the duration of the sample."""
+        created_dir = False
+        created_file = False
+        value = 0.0
         if not self.full_path.isfile():
             # TODO: Handle sounds in vpk files
-            return 0.0
+            for vpk_file in _all_vpks:
+                if not 'sound/' + self.sample in vpk_file:
+                    continue
+                created_file = True
+                sound = vpk_file['sound/' + self.sample]
+                if not self.full_path.parent.isdir():
+                    created_dir = True
+                    self.full_path.parent.makedirs()
+                sound.save(
+                    '{directory}/{file_name}'.format(
+                        directory=self.full_path.parent,
+                        file_name=self.full_path.name,
+                    )
+                )
+                sound.close()
         if self.extension == 'ogg':
-            return oggvorbis.Open(self.full_path).info.length
+            value = oggvorbis.Open(self.full_path).info.length
         elif self.extension == 'mp3':
-            return mp3.Open(self.full_path).info.length
+            value = mp3.Open(self.full_path).info.length
         elif self.extension == 'wav':
             with closing(wave.open(self.full_path)) as open_file:
-                return open_file.getnframes() / open_file.getframerate()
-        return 0.0
+                value = open_file.getnframes() / open_file.getframerate()
+        if created_file:
+            self.full_path.remove()
+            if created_dir:
+                self.full_path.parent.removedirs()
+        return value
 
     def _unload_instance(self):
         """Remove the sample from the downloads list."""
