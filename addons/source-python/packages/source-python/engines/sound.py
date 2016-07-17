@@ -6,8 +6,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Contextlib
+from contextlib import closing
 #   Enum
 from enum import Enum
+#   Wave
+import wave
 
 # Site Package Imports
 #   Mutagen
@@ -200,13 +204,17 @@ class _BaseSound(AutoUnload):
     @property
     def duration(self):
         """Return the duration of the sample."""
-        value = engine_sound.get_sound_duration(self.sample)
-        if not value:
-            if self.extension == 'ogg':
-                value = oggvorbis.Open(self.full_path).info.length
-            elif self.extension == 'mp3':
-                value = mp3.Open(self.full_path).info.length
-        return value
+        if not self.full_path.isfile():
+            # TODO: Handle sounds in vpk files
+            return 0.0
+        if self.extension == 'ogg':
+            return oggvorbis.Open(self.full_path).info.length
+        elif self.extension == 'mp3':
+            return mp3.Open(self.full_path).info.length
+        elif self.extension == 'wav':
+            with closing(wave.open(self.full_path)) as open_file:
+                return open_file.getnframes() / open_file.getframerate()
+        return 0.0
 
     def _unload_instance(self):
         """Remove the sample from the downloads list."""
