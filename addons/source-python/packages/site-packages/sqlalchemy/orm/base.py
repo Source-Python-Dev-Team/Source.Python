@@ -1,5 +1,5 @@
 # orm/base.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -344,7 +344,7 @@ def _attr_as_key(attr):
 
 def _orm_columns(entity):
     insp = inspection.inspect(entity, False)
-    if hasattr(insp, 'selectable'):
+    if hasattr(insp, 'selectable') and hasattr(insp.selectable, 'c'):
         return [c for c in insp.selectable.c]
     else:
         return [entity]
