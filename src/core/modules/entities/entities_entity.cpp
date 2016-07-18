@@ -37,19 +37,6 @@
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
 
-// TODO: Move this under the ../orangebox/ directory.
-#ifdef ENGINE_ORANGEBOX
-	#include "toolframework/itoolentity.h"
-
-// ============================================================================
-// >> External variables.
-// ============================================================================
-extern IServerTools *servertools;
-
-
-#endif // ENGINE_ORANGEBOX
-
-
 // ============================================================================
 // >> CBaseEntityWrapper
 // ============================================================================
@@ -138,10 +125,6 @@ IEntityFactory* CBaseEntityWrapper::get_factory()
 
 void CBaseEntityWrapper::remove()
 {
-// TODO: Move this under the ../orangebox/ directory.
-#ifdef ENGINE_ORANGEBOX
-	servertools->RemoveEntity(GetThis());
-#else
 	datamap_t* datamap = GetDataDescMap();
 	if (!datamap)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the datamap.")
@@ -164,7 +147,6 @@ void CBaseEntityWrapper::remove()
 	data.nOutputID = 0;
 
 	(pEntity->*pInputFunc)(data);
-#endif
 }
 
 int CBaseEntityWrapper::get_size()
