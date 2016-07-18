@@ -37,6 +37,19 @@
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
 
+// TODO: Move this under the ../orangebox/ directory.
+#ifdef ENGINE_ORANGEBOX
+	#include "toolframework/itoolentity.h"
+
+// ============================================================================
+// >> External variables.
+// ============================================================================
+extern IServerTools *servertools;
+
+
+#endif // ENGINE_ORANGEBOX
+
+
 // ============================================================================
 // >> CBaseEntityWrapper
 // ============================================================================
@@ -123,9 +136,35 @@ IEntityFactory* CBaseEntityWrapper::get_factory()
 	return get_factory(pNetworkable->GetClassName());
 }
 
-void CBaseEntityWrapper::destroy()
+void CBaseEntityWrapper::remove()
 {
-	get_factory()->Destroy(GetNetworkable());
+// TODO: Move this under the ../orangebox/ directory.
+#ifdef ENGINE_ORANGEBOX
+	servertools->RemoveEntity(GetThis());
+#else
+	datamap_t* datamap = GetDataDescMap();
+	if (!datamap)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the datamap.")
+
+	typedescription_t *pTypeDesc = DataMapSharedExt::find(datamap, "InputKill");
+	if (!pTypeDesc)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find the 'InputKill' descriptor.");
+
+	inputfunc_t pInputFunc = pTypeDesc->inputFunc;
+	if (!pInputFunc)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Input function is NULL.");
+
+	CBaseEntity *pEntity = GetThis();
+	inputdata_t data;
+	variant_t value;
+
+	data.pActivator = pEntity;
+	data.pCaller = pEntity;
+	data.value = value;
+	data.nOutputID = 0;
+
+	(pEntity->*pInputFunc)(data);
+#endif
 }
 
 int CBaseEntityWrapper::get_size()

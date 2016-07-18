@@ -86,9 +86,9 @@ void export_base_entity(scope _entity)
 		"Return True if the entity is a player."
 	);
 
-	BaseEntity.def("destroy",
-		&CBaseEntityWrapper::destroy,
-		"Destroy the entity."
+	BaseEntity.def("remove",
+		&CBaseEntityWrapper::remove,
+		"Remove the entity."
 	);
 
 	BaseEntity.def("spawn",

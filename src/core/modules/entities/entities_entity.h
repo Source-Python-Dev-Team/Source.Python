@@ -100,7 +100,7 @@ public:
 	
 	static IEntityFactory* get_factory(const char* name);
 	IEntityFactory* get_factory();
-	void destroy();
+	void remove();
 	int get_size();
 	void spawn();
 
