@@ -38,6 +38,12 @@
 
 
 // ============================================================================
+// >> GLOBAL VARIABLES
+// ============================================================================
+static inputfunc_t g_pInputKillFunc = NULL;
+
+
+// ============================================================================
 // >> CBaseEntityWrapper
 // ============================================================================
 const char* IServerUnknownExt::GetClassname(IServerUnknown* pUnknown)
@@ -125,17 +131,22 @@ IEntityFactory* CBaseEntityWrapper::get_factory()
 
 void CBaseEntityWrapper::remove()
 {
-	datamap_t* datamap = GetDataDescMap();
-	if (!datamap)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the datamap.")
+	if (!g_pInputKillFunc)
+	{
+		datamap_t* datamap = GetDataDescMap();
+		if (!datamap)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the datamap.")
 
-	typedescription_t *pTypeDesc = DataMapSharedExt::find(datamap, "InputKill");
-	if (!pTypeDesc)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find the 'InputKill' descriptor.");
+		typedescription_t *pTypeDesc = DataMapSharedExt::find(datamap, "InputKill");
+		if (!pTypeDesc)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find the 'InputKill' descriptor.");
 
-	inputfunc_t pInputFunc = pTypeDesc->inputFunc;
-	if (!pInputFunc)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Input function is NULL.");
+		inputfunc_t pInputFunc = pTypeDesc->inputFunc;
+		if (!pInputFunc)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Input function is NULL.");
+
+		g_pInputKillFunc = pInputFunc;
+	}
 
 	CBaseEntity *pEntity = GetThis();
 	inputdata_t data;
@@ -146,7 +157,7 @@ void CBaseEntityWrapper::remove()
 	data.value = value;
 	data.nOutputID = 0;
 
-	(pEntity->*pInputFunc)(data);
+	(pEntity->*g_pInputKillFunc)(data);
 }
 
 int CBaseEntityWrapper::get_size()
