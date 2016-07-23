@@ -33,8 +33,6 @@
 #include "entities_helpers.h"
 #include "entities_entity.h"
 
-#include ENGINE_INCLUDE_PATH(entities_helpers.h)
-
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -58,24 +56,6 @@ DECLARE_SP_SUBMODULE(_entities, _helpers)
 //-----------------------------------------------------------------------------
 void export_entity_helper_functions(scope _helpers)
 {
-	def("create_entity",
-		&create_entity,
-		"Creates an entity of the given name and returns its index.",
-		args("class_name")
-	);
-
-	def("remove_entity",
-		&remove_entity,
-		"Removes the entity matching the given index.",
-		args("entity_index")
-	);
-
-	def("spawn_entity",
-		&spawn_entity,
-		"Spawns the entity matching the given index.",
-		args("entity_index")
-	);
-
 	def("find_output_name",
 		&FindOutputName,
 		args("caller", "output"),

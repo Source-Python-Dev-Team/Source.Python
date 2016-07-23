@@ -52,7 +52,7 @@ int CSPModule::nextFreeModule = 0;
 //---------------------------------------------------------------------------------
 // Initializes all python modules
 //---------------------------------------------------------------------------------
-void modulsp_init( void )
+bool modulsp_init( void )
 {
 	// Disable C++ signature in doc strings
 	docstring_options local_docstring_options(true, true, false);
@@ -64,7 +64,7 @@ void modulsp_init( void )
 
 			// Break out if we are at the end.
 			if( !g_SourcePythonModules[i].szName ) {
-				return;
+				return true;
 			}
 
 			// Get the module name.
@@ -82,5 +82,6 @@ void modulsp_init( void )
 			// Run the module's init function.
 			g_SourcePythonModules[i].initFunc(moduleScope);
 		}
-	END_BOOST_PY_NORET()
+	END_BOOST_PY(false)
+	return true;
 }

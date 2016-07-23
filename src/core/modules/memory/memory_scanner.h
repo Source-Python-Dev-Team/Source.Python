@@ -32,7 +32,7 @@
 //-----------------------------------------------------------------------------
 #include <list>
 #include "export_main.h"
-#include "memory_tools.h"
+#include "memory_pointer.h"
 
 struct Signature_t
 {
@@ -53,6 +53,7 @@ public:
 	CPointer* FindPointer(object oIdentifier, int iOffset, unsigned int iLevel);
 	CPointer* FindAddress(object oIdentifier);
 
+	dict GetSymbols();
 
 private:
 	void AddSignatureToCache(unsigned char* sigstr, int iLength, unsigned int ulAddr);

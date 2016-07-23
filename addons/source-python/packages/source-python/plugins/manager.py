@@ -13,9 +13,13 @@ import sys
 
 # Source.Python Imports
 #   Core
-from core import _module_instances
+from core import AutoUnload
+from core import WeakAutoUnload
 #   Hooks
 from hooks.exceptions import except_hooks
+#   Listeners
+from listeners import on_plugin_loaded_manager
+from listeners import on_plugin_unloaded_manager
 #   Plugins
 from plugins import plugins_logger
 from plugins import _plugin_strings
@@ -113,8 +117,7 @@ class PluginManager(OrderedDict):
 
         # Add the plugin to the dictionary with its instance
         self[plugin_name] = instance
-
-        # Return the give instance
+        on_plugin_loaded_manager.notify(plugin_name)
         return instance
 
     def __delitem__(self, plugin_name):
@@ -150,6 +153,7 @@ class PluginManager(OrderedDict):
 
         # Remove the plugin from the dictionary
         super().__delitem__(plugin_name)
+        on_plugin_unloaded_manager.notify(plugin_name)
 
     @property
     def base_import(self):
@@ -182,23 +186,36 @@ class PluginManager(OrderedDict):
                 del sys.modules[module]
 
         # Unload AutoUnload instances
-        for module, instances in list(_module_instances.items()):
+        for module, instances in list(AutoUnload._module_instances.items()):
             if not self._is_related_module(base_name, module):
                 continue
 
-            for instance in instances:
-                try:
-                    instance._unload_instance()
-                except NotImplementedError:
-                    # Print the error to console, but allow all
-                    # other AutoUnload instances to be unloaded
-                    # and the plugin to be fully unloaded itself
-                    except_hooks.print_exception()
+            self._unload_auto_unload_instances(instances)
+            del AutoUnload._module_instances[module]
 
-            del _module_instances[module]
+        # Unload WeakAutoUnload instances
+        for module, instance_dict in list(
+                WeakAutoUnload._module_instances.items()):
+            if not self._is_related_module(base_name, module):
+                continue
+
+            self._unload_auto_unload_instances(instance_dict.values())
+            del WeakAutoUnload._module_instances[module]
 
     @staticmethod
     def _is_related_module(base_name, module):
         """Check if a plugin's base name is related to a module name."""
         return (module.startswith('{}.'.format(base_name))
             or module == base_name)
+
+    @staticmethod
+    def _unload_auto_unload_instances(instances):
+        """Unload all given :class:`AutoUnload` instances."""
+        for instance in instances:
+            try:
+                instance._unload_instance()
+            except NotImplementedError:
+                # Print the error to console, but allow all
+                # other AutoUnload instances to be unloaded
+                # and the plugin to be fully unloaded itself
+                except_hooks.print_exception()

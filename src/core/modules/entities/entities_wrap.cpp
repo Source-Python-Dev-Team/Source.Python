@@ -57,6 +57,7 @@ void export_entity_listener(scope);
 void export_check_transmit_info(scope);
 void export_baseentity_generator(scope);
 void export_server_class_generator(scope);
+void export_collideable(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -77,6 +78,7 @@ DECLARE_SP_MODULE(_entities)
 	export_check_transmit_info(_entities);
 	export_baseentity_generator(_entities);
 	export_server_class_generator(_entities);
+	export_collideable(_entities);
 }
 
 
@@ -553,4 +555,20 @@ void export_server_class_generator(scope _entities)
 		.def("__iter__", &CServerClassGenerator::iter)
 		.def("__next__", &CServerClassGenerator::next, reference_existing_object_policy())
 	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports ICollideable.
+//-----------------------------------------------------------------------------
+void export_collideable(scope _entities)
+{
+	class_<ICollideable, boost::noncopyable> Collideable("Collideable", no_init);
+
+	Collideable.add_property(
+		"entity_handle",
+		make_function(&ICollideable::GetEntityHandle, reference_existing_object_policy())
+	);
+
+	Collideable ADD_MEM_TOOLS(ICollideable);
 }

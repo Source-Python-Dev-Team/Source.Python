@@ -48,4 +48,18 @@ public:
 	}
 };
 
+
+//-----------------------------------------------------------------------------
+// IClient extension class
+//-----------------------------------------------------------------------------
+class IClientExt
+{
+public:
+	static void Disconnect(IClient* pClient, const char* reason)
+	{
+		pClient->Disconnect(reason);
+	}
+};
+
+
 #endif // _PLAYERS_WRAP_H

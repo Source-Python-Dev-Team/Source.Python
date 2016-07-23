@@ -19,6 +19,7 @@ from configobj import Section
 # Source.Python Imports
 #   Core
 from core import GameConfigObj
+from core import PLATFORM
 #   Entities
 from entities import ServerClassGenerator
 from entities.datamaps import _supported_input_types
@@ -80,10 +81,12 @@ _supported_keyvalue_types = {
     FieldType.FLOAT: 'float',
     FieldType.INTEGER: 'int',
     FieldType.MODELNAME: 'string',
+    FieldType.POSITION_VECTOR: 'vector',
     FieldType.SHORT: 'int',
     FieldType.SOUNDNAME: 'string',
     FieldType.STRING: 'string',
     FieldType.TICK: 'int',
+    FieldType.TIME: 'float',
     FieldType.VECTOR: 'vector',
 }
 
@@ -214,11 +217,8 @@ class _ServerClasses(TypeManager):
             # Yield the current baseclass
             yield _table_names[prop.data_table.name]
 
-            # Loop through all tables within the baseclass
-            for name in self._get_base_server_classes(prop.data_table):
-
-                # Yield any baseclasses within the baseclass
-                yield name
+            # Yield all tables within the baseclass
+            yield from self._get_base_server_classes(prop.data_table)
 
     def _get_server_class(self, class_name, datamap):
         """Retrieve values for the server class."""
@@ -390,13 +390,8 @@ class _ServerClasses(TypeManager):
 
             # Is the current property a datatable?
             if prop.type == SendPropType.DATATABLE:
-
-                # Loop through all properties in the datatable
-                for new_name, new_prop, new_offset in self._find_properties(
-                        prop.data_table, name + '.', offset):
-
-                    # Yield their values
-                    yield (new_name, new_prop, new_offset)
+                yield from self._find_properties(
+                    prop.data_table, name + '.', offset)
 
             # Is the current property not a datatable?
             else:
@@ -426,13 +421,8 @@ class _ServerClasses(TypeManager):
 
             # Is the current descriptor an embedded datamap table?
             if desc.type == FieldType.EMBEDDED:
-
-                # Loop through all descriptors for the embedded datamap table
-                for new_name, new_desc, new_offset in self._find_descriptors(
-                        desc.embedded_datamap, name + '.', offset):
-
-                    # Yield their values
-                    yield (new_name, new_desc, new_offset)
+                yield from self._find_descriptors(
+                    desc.embedded_datamap, name + '.', offset)
 
             # Is the current descriptor not an embedded datamap table?
             else:
@@ -535,7 +525,16 @@ class _ServerClasses(TypeManager):
 
         def fget(pointer):
             """Retrieve the InputFunction instance."""
-            function = desc.get_input_function(
+            func = desc.function
+
+            # Handle virtual inputs on Linux
+            if PLATFORM == 'linux' and func.address & 1:
+                func = pointer.get_virtual_func((func.address - 1) // 4)
+
+            # TODO:
+            # Don't use make_function(), but use input_function directly. It's
+            # already callable.
+            function = func.make_function(
                 Convention.THISCALL,
                 (DataType.POINTER, DataType.POINTER),
                 DataType.VOID)
@@ -553,8 +552,12 @@ class _ServerClasses(TypeManager):
             # Is the property a native type?
             if native_type:
 
-                # Return the value
-                return getattr(ptr, 'get_' + type_name)(offset)
+                value = getattr(ptr, 'get_' + type_name)(offset)
+
+                # Does the value need cast to an integer?
+                if type_name == 'char':
+                    return ord(value)
+                return value
 
             # Return the value
             return self.convert(type_name, ptr + offset)
@@ -563,6 +566,10 @@ class _ServerClasses(TypeManager):
             """Set the property value and notify if networked."""
             # Is the property a native type?
             if native_type:
+
+                # Does the value need cast to a string?
+                if type_name == 'char':
+                    value = chr(value)
 
                 # Set the property
                 getattr(ptr, 'set_' + type_name)(value, offset)

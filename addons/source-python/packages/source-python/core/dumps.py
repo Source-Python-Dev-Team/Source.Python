@@ -16,10 +16,8 @@ from cvars.flags import ConVarFlags
 #   Entities
 from entities import ServerClassGenerator
 from entities.datamaps import FieldType
-from entities.factories import factory_dictionary
+from entities.entity import BaseEntity
 from entities.props import SendPropType
-#   Filters
-from filters.entities import BaseEntityIter
 #   Memory
 from memory import CLASS_INFO
 from memory import Pointer
@@ -159,6 +157,7 @@ def _get_datamaps():
     The yielded values are two-tuples, which contain the data class name of
     the data map and the actual DataMap object.
     """
+    from entities.factories import factory_dictionary
     for classname in factory_dictionary:
         datamap = _get_datamap(classname)
         while datamap:
@@ -169,13 +168,14 @@ def _get_datamaps():
 def _get_datamap(classname):
     """Return the DataMap object for the given entity classname."""
     # Check existing entities at first
-    for base_entity in BaseEntityIter(classname):
-        return base_entity.datamap
+    entity = BaseEntity.find(classname)
+    if entity is not None:
+        return entity.datamap
 
     # We haven't found an entity. Let's create it temporarily
-    entity = factory_dictionary.create(classname)
-    datamap = entity.base_entity.datamap
-    factory_dictionary.destroy(classname, entity)
+    entity = BaseEntity.create(classname)
+    datamap = entity.datamap
+    entity.destroy()
     return datamap
 
 

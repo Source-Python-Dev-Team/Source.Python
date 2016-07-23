@@ -80,7 +80,10 @@ __all__ = ('ListenerManager',
            'OnEntitySpawned',
            'OnLevelInit',
            'OnLevelShutdown',
+           'OnMapEnd',
            'OnNetworkidValidated',
+           'OnPluginLoaded',
+           'OnPluginUnloaded',
            'OnQueryCvarValueFinished',
            'OnServerActivate',
            'OnTick',
@@ -102,9 +105,12 @@ __all__ = ('ListenerManager',
            'on_entity_output_listener_manager',
            'on_entity_pre_spawned_listener_manager',
            'on_entity_spawned_listener_manager',
+           'on_map_end_listener_manager',
            'on_level_init_listener_manager',
            'on_level_shutdown_listener_manager',
            'on_network_id_validated_listener_manager',
+           'on_plugin_loaded_manager',
+           'on_plugin_unloaded_manager',
            'on_query_cvar_value_finished_listener_manager',
            'on_server_activate_listener_manager',
            'on_tick_listener_manager',
@@ -120,6 +126,9 @@ listeners_logger = _sp_logger.listeners
 
 on_version_update_listener_manager = ListenerManager()
 on_convar_changed_listener_manager = ListenerManager()
+on_plugin_loaded_manager = ListenerManager()
+on_plugin_unloaded_manager = ListenerManager()
+on_map_end_listener_manager = ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -337,12 +346,35 @@ class OnConVarChanged(ListenerManagerDecorator):
     manager = on_convar_changed_listener_manager
 
 
+class OnPluginLoaded(ListenerManagerDecorator):
+    """Register/unregister a plugin loaded listener."""
+
+    manager = on_plugin_loaded_manager
+
+
+class OnPluginUnloaded(ListenerManagerDecorator):
+    """Register/unregister a plugin unloaded listener."""
+
+    manager = on_plugin_unloaded_manager
+
+
+class OnMapEnd(ListenerManagerDecorator):
+    """Register/unregister a map end listener."""
+
+    manager = on_map_end_listener_manager
+
+    # Guard variable to ensure this listener gets called only once per map.
+    _level_initialized = False
+
+
 # =============================================================================
 # >> CALLBACKS
 # =============================================================================
 @OnLevelInit
 def _on_level_init(map_name):
     """Called when a new map gets initialized."""
+    OnMapEnd._level_initialized = True
+
     if not _check_for_update.get_int():
         return
 
@@ -361,6 +393,20 @@ def _on_level_init(map_name):
 
     on_version_update_listener_manager.notify(
         VERSION, version, is_unversioned())
+
+
+@OnLevelShutdown
+def _on_level_shutdown():
+    """Called on level end."""
+    # Was no map initialized?
+    if not OnMapEnd._level_initialized:
+        return
+
+    # Notify all registred callbacks
+    on_map_end_listener_manager.notify()
+
+    # Make sure we don't get called more than once per map change
+    OnMapEnd._level_initialized = False
 
 
 @PreHook(memory.get_virtual_function(cvar, 'CallGlobalChangeCallbacks'))

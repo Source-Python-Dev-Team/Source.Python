@@ -81,16 +81,23 @@ void export_cvar_interface(scope _cvars)
 			args("con_command")
 		)
 
-		.def("find_command",
+		.def("find_base",
 			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char *),
-			"Returns a ConCommandBase instance for the given command, if it exists",
+			"Returns a ConCommandBase instance for the given command or variable, if it exists.",
+			args("name"),
+			reference_existing_object_policy()
+		)
+
+		.def("find_command",
+			GET_METHOD(ConCommand*, ICvar, FindCommand, const char *),
+			"Returns a ConCommand instance for the given command, if it exists.",
 			args("name"),
 			reference_existing_object_policy()
 		)
 
 		.def("find_var",
 			GET_METHOD(ConVar*, ICvar, FindVar, const char *),
-			"Returns a ConVar instance for the given cvar, if it exists",
+			"Returns a ConVar instance for the given variable, if it exists.",
 			args("name"),
 			reference_existing_object_policy()
 		)

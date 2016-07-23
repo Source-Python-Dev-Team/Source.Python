@@ -36,6 +36,8 @@
 #include "eiface.h"
 #include "public/game/server/iplayerinfo.h"
 #include "utilities/baseentity.h"
+#include "toolframework/itoolentity.h"
+#include "sp_util.h"
 
 BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 
@@ -45,7 +47,9 @@ BOOST_PYTHON_OPAQUE_SPECIALIZED_TYPE_ID(CBaseEntity)
 extern IVEngineServer *engine;
 extern CGlobalVars *gpGlobals;
 extern IPlayerInfoManager *playerinfomanager;
+extern IServerTools *servertools;
 
+class CBaseEntityWrapper;
 
 //-----------------------------------------------------------------------------
 // Constants.
@@ -71,7 +75,20 @@ extern IPlayerInfoManager *playerinfomanager;
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, XSTRINGIFY(Conversion from #from_name (%s) to #to_name failed.), str_value); \
 		} \
 		return result; \
-	} \
+	}
+
+#define CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(to_type, to_name, from_type, from_name) \
+	inline to_type Exc##to_name##From##from_name(from_type from) { \
+		to_type result; \
+		if (!to_name##From##from_name(from, result)) { \
+			const char* str_value = extract<const char*>(str( \
+				boost::shared_ptr<CBaseEntityWrapper>( \
+					(CBaseEntityWrapper *) from, \
+					&NeverDeleteDeleter<CBaseEntityWrapper *>))); \
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, XSTRINGIFY(Conversion from #from_name (%s) to #to_name failed.), str_value); \
+		} \
+		return result; \
+	}
 
 #define EXPORT_CONVERSION_FUNCTION(to_type, to_name, from_type, from_name, ...) \
 	def(extract<const char *>(str(XSTRINGIFY(to_name##_from_##from_name)).lower().ptr()), \
@@ -97,7 +114,7 @@ CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Index);
 CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, CBaseHandle, BaseHandle);
 CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, IntHandle);
 CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, CPointer *, Pointer);
-CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(edict_t *, Edict, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(edict_t *, Edict, IPlayerInfo *, PlayerInfo);
 
@@ -117,7 +134,7 @@ CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Index);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, edict_t *, Edict);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseHandle, BaseHandle);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, CPointer *, Pointer);
-CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(unsigned int, IntHandle, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, IntHandle, IPlayerInfo *, PlayerInfo);
 
@@ -159,7 +176,7 @@ CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, CBaseHandle, BaseHandle);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, unsigned int, IntHandle);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, CPointer *, Pointer);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, IPlayerInfo *, PlayerInfo);
-CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Userid, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(unsigned int, Userid, CBaseEntity *, BaseEntity);
 
 
 //-----------------------------------------------------------------------------
@@ -179,7 +196,7 @@ CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseHandle, BaseHandl
 CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, IntHandle);
 CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CPointer *, Pointer);
 CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, unsigned int, Userid);
-CREATE_EXC_CONVERSION_FUNCTION(IPlayerInfo *, PlayerInfo, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(IPlayerInfo *, PlayerInfo, CBaseEntity *, BaseEntity);
 
 
 //-----------------------------------------------------------------------------
@@ -197,7 +214,7 @@ CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, IntHandle);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer);
-CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(unsigned int, Index, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
 
@@ -217,7 +234,7 @@ CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Index);
 CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, edict_t *, Edict);
 CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, IntHandle);
 CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CPointer *, Pointer);
-CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(CBaseHandle, BaseHandle, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(CBaseHandle, BaseHandle, IPlayerInfo *, PlayerInfo);
 
@@ -237,8 +254,76 @@ CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Index);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, edict_t *, Edict);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, CBaseHandle, BaseHandle);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, IntHandle);
-CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, CBaseEntity *, BaseEntity);
+CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(CPointer, Pointer, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo);
+
+
+//-----------------------------------------------------------------------------
+// Helper functions
+//-----------------------------------------------------------------------------
+inline bool IsValidBaseEntityPointer(void* ptr)
+{
+	if (!ptr)
+		return false;
+
+	CBaseEntity* pEntity = (CBaseEntity*) servertools->FirstEntity();
+	while (pEntity) {
+		if (pEntity == ptr)
+			return true;
+
+		pEntity = (CBaseEntity*) servertools->NextEntity(pEntity);
+	}
+	return false;
+}
+
+inline bool IsValidBaseEntityPointer(CPointer* pPtr)
+{
+	return pPtr && IsValidBaseEntityPointer((void*) pPtr->m_ulAddr);
+}
+
+inline bool IsValidNetworkedEntityPointer(void* ptr)
+{
+	if (!ptr)
+		return false;
+
+    for (int i=0; i < gpGlobals->maxEntities; ++i)
+    {
+		edict_t* pEdict = NULL;
+		if (!EdictFromIndex(i, pEdict))
+			continue;
+
+		if (pEdict->GetUnknown()->GetBaseEntity() == ptr)
+			return true;
+	}
+	return false;
+}
+
+inline bool IsValidNetworkedEntityPointer(CPointer* pPtr)
+{
+	return pPtr && IsValidNetworkedEntityPointer((void*) pPtr->m_ulAddr);
+}
+
+inline bool IsValidPlayerPointer(void* ptr)
+{
+	if (!ptr)
+		return false;
+
+	for (int i=1; i <= gpGlobals->maxClients; ++i)
+	{
+		edict_t* pEdict = NULL;
+		if (!EdictFromIndex(i, pEdict))
+			continue;
+
+		if (pEdict->GetUnknown()->GetBaseEntity() == ptr)
+			return true;
+	}
+	return false;
+}
+
+inline bool IsValidPlayerPointer(CPointer* pPtr)
+{
+	return pPtr && IsValidPlayerPointer((void*) pPtr->m_ulAddr);
+}
 
 #endif // _CONVERSIONS_H

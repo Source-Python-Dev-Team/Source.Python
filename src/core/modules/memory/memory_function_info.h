@@ -315,7 +315,6 @@ template<> struct MFI_Impl<4*SH_PTRSIZE>   // THE BIGGEST ONE!!!1GABEN
 // ============================================================================
 #include "memory_signature.h"
 #include "memory_calling_convention.h"
-#include "memory_tools.h"
 
 #include "boost/python/signature.hpp"
 #include "boost/mpl/transform.hpp"
@@ -399,7 +398,7 @@ public:
 	boost::python::tuple GetArgumentTypes()
 	{
 		list argumentTypes;
-		for(std::vector<DataType_t>::iterator it=this->m_vecArgumentTypes.begin(); it != this->m_vecArgumentTypes.end(); it++)
+		for(std::vector<DataType_t>::iterator it=this->m_vecArgumentTypes.begin(); it != this->m_vecArgumentTypes.end(); ++it)
 		{
 			argumentTypes.append(*it);
 		}

@@ -27,7 +27,9 @@ from _messages import create_message
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('PagedESCMenu',
+__all__ = ('ListESCMenu',
+           'ListESCOption',
+           'PagedESCMenu',
            'PagedESCOption',
            'SimpleESCMenu',
            'SimpleESCOption',
@@ -178,6 +180,8 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         :param Color title_color: See :meth:`SimpleESCMenu.__init__`.
         :param bool fill: If True the menu will always have the same size by
             filling unused options.
+        :param _BaseMenu parent_menu: A menu that will be displayed when
+            hitting 'Back' on the first page.
         """
         super().__init__(
             data, select_callback, build_callback,
@@ -227,7 +231,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         # Fill the rest of the menu with empty options
         if self.fill:
             option_num = len(page.options)
-            for index in range(5 - option_num):
+            for index in range(self._get_max_item_count() - option_num):
                 index += option_num + 1
                 button = data.find_key(str(index), True)
                 button.set_string('msg', '')
@@ -301,6 +305,38 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         return super()._select(player_index, choice_index)
 
 
+class ListESCMenu(PagedESCMenu):
+    """Creates a list-like ESC menu.
+
+    Navigation options are added automatically."""
+
+    def __init__(
+            self, data=None, select_callback=None, build_callback=None,
+            description=None, title=None, title_color=WHITE, fill=True,
+            parent_menu=None, items_per_page=5):
+        """Initialize the object.
+
+        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None select_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None build_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param str|None description: See :meth:`SimpleESCMenu.__init__`.
+        :param str|None title: See :meth:`SimpleESCMenu.__init__`.
+        :param Color title_color: See :meth:`SimpleESCMenu.__init__`.
+        :param bool fill: See :meth:`PagedESCMenu.__init__`.
+        :param _BaseMenu parent_menu: See :meth:`PagedESCMenu.__init__`.
+        :param int items_per_page: Number of options that should be displayed
+            on a single page (5 is the maximum).
+        """
+        super().__init__(data, select_callback, build_callback, description,
+            title, title_color, fill, parent_menu)
+        self.items_per_page = items_per_page
+
+    def _get_max_item_count(self):
+        return self.items_per_page
+
+
 class SimpleESCOption(_BaseOption):
     """Provides options for :class:`SimpleESCMenu` objects."""
 
@@ -332,3 +368,25 @@ class PagedESCOption(_BaseOption):
         """See :meth:`menus.base._MenuData._render`."""
         return '{0}. {1}'.format(
             choice_index, _translate_text(self.text, player_index))
+
+
+class ListESCOption(PagedESCOption):
+    """Provides options for :class:`ListESCMenu` objects."""
+
+    def __init__(self, text, highlight=True, enumerated=True):
+        """Initialize the option.
+
+        :param str text: See :meth:`menus.base._BaseOption.__init__`.
+        :param bool hightlight: See :meth:`SimpleESCMenu.__init__`.
+        :param bool enumerated: If True the number of the option will be added
+            in front of the text.
+        """
+        super().__init__(text, None, highlight, False)
+        self.enumerated = enumerated
+
+    def _render(self, player_index, choice_index=None):
+        """See :meth:`menus.base._MenuData._render`."""
+        if self.enumerated:
+            return super()._render(player_index, choice_index)
+
+        return _translate_text(self.text, player_index)

@@ -6,11 +6,14 @@
 # >> IMPORTS
 # ============================================================================
 # Source.Python Imports
+#   Effects
+from effects.base import TempEntity
 #   Mathlib
 from mathlib import Vector
 #   Memory
 from memory.manager import manager
 #   Entities
+from entities.entity import BaseEntity
 from entities.entity import Entity
 
 
@@ -19,35 +22,26 @@ from entities.entity import Entity
 # =============================================================================
 # Source.Python Imports
 #   Effects
-from _effects import DispatchEffectData
-from _effects import PredictionSystem
 from _effects import ShatterSurface
+from _effects import BloodColor
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('DispatchEffectData',
-           'PredictionSystem',
+__all__ = ('BloodColor',
            'ShatterSurface',
            'ball',
            'beam',
            'box',
            'polygon',
            'square',
-           'temp_entities',
            )
 
 
 # ============================================================================
 # >> GLOBAL VARIABLES
 # ============================================================================
-# Get the temp_entities instance...
-try:
-    from _effects import temp_entities
-except ImportError:
-    temp_entities = manager.get_global_pointer('_TempEntities')
-
 # Get the first temp entity in the chain...
 try:
     from _effects._base import _first_temp_entity
@@ -58,56 +52,67 @@ except ImportError:
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def beam(
-        recipients, delay, start, end, model_index, halo_index, start_frame,
-        frame_rate, life, width, end_width, fade_length, amplitude, red,
-        green, blue, alpha, speed, parent=False):
-    """A simple wrapper for _TempEntities.beam_ent_point().
+def beam(recipients, start, end, parent=False, **kwargs):
+    """A simple wrapper for the temporary effect ``BeamEntPoint``.
 
-    <start> and <end> can be entity indexes or Vector objects.
-
-    If you set <parent> to True, the beam is parented to the given entity
-    index(es).
+    :param RecipientFilter recipients:
+        Players that should see the beam.
+    :param int/BaseEntity/Vector start:
+        The start location of the beam.
+    :param int/BaseEntity/Vector end:
+        The end location of the beam.
+    :param bool parent:
+        If True, the beam will be parented to the given entities.
+    :param kwargs:
+        Additional attributes that will be send to the effect.
     """
-    start_entity = -1
-    start_vector = None
-    end_entity = -1
-    end_vector = None
+    entity = TempEntity('BeamEntPoint')
 
-    # Check start point
-    if isinstance(start, int):
-        if parent:
-            start_entity = start
+    def get_vec(value):
+        if isinstance(value, int):
+            return Entity(value).origin
+        elif isinstance(value, BaseEntity):
+            return Entity(value.index).origin
         else:
-            start_vector = Entity(start).origin
-    else:
-        start_vector = start
+            return value
 
-    # Check end point
-    if isinstance(end, int):
-        if parent:
-            end_entity = end
+    if parent:
+        if isinstance(start, int):
+            entity.start_entity_index = start
+        elif isinstance(start, BaseEntity):
+            entity.start_entity_index = start.index
         else:
-            end_vector = Entity(end).origin
+            entity.start_point = start
     else:
-        end_vector = end
+        entity.start_point = get_vec(start)
 
-    # Create the effect
-    temp_entities.beam_ent_point(
-        recipients, delay, start_entity, start_vector, end_entity, end_vector,
-        model_index, halo_index, start_frame, frame_rate, life, width,
-        end_width, fade_length, amplitude, red, green, blue, alpha, speed)
+    if parent:
+        if isinstance(end, int):
+            entity.end_entity_index = end
+        elif isinstance(end, BaseEntity):
+            entity.end_entity_index = end.index
+        else:
+            entity.end_point = end
+    else:
+        entity.end_point = get_vec(end)
+
+    for attr, value in kwargs.items():
+        setattr(entity, attr, value)
+
+    entity.create(recipients)
 
 
-def polygon(
-        recipients, delay, points, model_index, halo_index, start_frame,
-        frame_rate, life, width, end_width, fade_length, amplitude, red,
-        green, blue, alpha, speed, parent=False):
-    """Create a polygon by using _TempEntities.beam_points().
+def polygon(recipients, points, parent=False, **kwargs):
+    """Create a polygon using :func:`beam`.
 
-    <points> must be an iterable with at least 3 elements.
-
-    See beam() for more information.
+    :param RecipientFilter recipients:
+        Players that should see the beam.
+    :param iterable points:
+        An iterable that contains at least 3 :class:`mathlib.Vector` instances.
+    :param bool parent:
+        If True, the beam will be parented to the given entities.
+    :param kwargs:
+        Additional attributes that will be send to the effect.
     """
     if len(points) < 3:
         raise ValueError('At least 3 points are required.')
@@ -115,23 +120,23 @@ def polygon(
     start = points[0]
     points = dict(enumerate(points))
     for index, point in points.items():
-        beam(
-            recipients, delay, point, points.get(index + 1, start),
-            model_index, halo_index, start_frame, frame_rate, life, width,
-            end_width, fade_length, amplitude, red, green, blue, alpha, speed,
-            parent)
+        beam(recipients, point, points.get(index + 1, start), parent, **kwargs)
 
 
-def square(
-        recipients, delay, start, end, model_index, halo_index, start_frame,
-        frame_rate, life, width, end_width, fade_length, amplitude, red,
-        green, blue, alpha, speed):
-    """Create a square by using _TempEntities.beam_points()."""
-    if not isinstance(start, Vector) or not isinstance(end, Vector):
-        raise TypeError('"start" and "end" must be Vector objects.')
+def square(recipients, start, end, **kwargs):
+    """Create a square using the temporary effect ``BeamPoints``.
 
-    x1, y1, z1 = tuple(start)
-    x2, y2, z2 = tuple(end)
+    :param RecipientFilter recipients:
+        Players that should see the beam.
+    :param Vector start:
+        Upper left corner of the square.
+    :param Vector end:
+        Lower right corner of the square.
+    :param kwargs:
+        Additional attributes that will be send to the effect.
+    """
+    x1, y1, z1 = start
+    x2, y2, z2 = end
 
     a = start
     b = Vector(x2, y2, z1)
@@ -146,22 +151,29 @@ def square(
     )
 
     for p1, p2 in lines:
-        temp_entities.beam_points(
-            recipients, delay, p1, p2, model_index,
-            halo_index, start_frame, frame_rate, life, width, end_width,
-            fade_length, amplitude, red, green, blue, alpha, speed)
+        entity = TempEntity('BeamPoints')
+        entity.start_point = p1
+        entity.end_point = p2
+        for attr, value in kwargs.items():
+            setattr(entity, attr, value)
+
+        entity.create(recipients)
 
 
-def box(
-        recipients, delay, start, end, model_index, halo_index, start_frame,
-        frame_rate, life, width, end_width, fade_length, amplitude, red,
-        green, blue, alpha, speed):
-    """Create a box by using _TempEntities.beam_points()."""
-    if not isinstance(start, Vector) or not isinstance(end, Vector):
-        raise TypeError('"start" and "end" must be Vector objects.')
+def box(recipients, start, end, **kwargs):
+    """Create a box using the temporary effect ``BeamPoints``.
 
-    x1, y1, z1 = tuple(start)
-    x2, y2, z2 = tuple(end)
+    :param RecipientFilter recipients:
+        Players that should see the beam.
+    :param Vector start:
+        Upper left corner of the box.
+    :param Vector end:
+        Lower right corner of the box.
+    :param kwargs:
+        Additional attributes that will be send to the effect.
+    """
+    x1, y1, z1 = start
+    x2, y2, z2 = end
 
     a = start
     b = Vector(x2, y1, z1)
@@ -193,25 +205,39 @@ def box(
     )
 
     for p1, p2 in lines:
-        temp_entities.beam_points(
-            recipients, delay, p1, p2, model_index,
-            halo_index, start_frame, frame_rate, life, width, end_width,
-            fade_length, amplitude, red, green, blue, alpha, speed)
+        entity = TempEntity('BeamPoints')
+        entity.start_point = p1
+        entity.end_point = p2
+        for attr, value in kwargs.items():
+            setattr(entity, attr, value)
+
+        entity.create(recipients)
 
 
-def ball(
-        recipients, delay, center, radius, model_index, halo_index,
-        start_frame, frame_rate, life, width, spread, amplitude, red, green,
-        blue, alpha, speed, flags, steps=15, upper_half=True,
-        lower_half=True):
-    """Create a ball by using _TempEntities.beam_ring_point().
+def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True, **kwargs):
+    """Create a ball by using the remporary effect ``BeamRingPoint``.
 
-    NOTE:
-    The number of steps is used for the lower and upper half. So, if you define
-    15 steps, 29 rings are created (the center ring is shared by both halves).
+    :param RecipientFilter recipients:
+        Players that should see the beam.
+    :param Vector center:
+        The center location of the ball.
+    :param float radius:
+        The radius of the ball.
+    :param int steps:
+        Number of rings that should be used to create the ball.
+    :param bool upper_half:
+        If False, the upper half of the ball isn't created.
+    :param bool lower_half:
+        If False, the lower half of the ball isn't created.
+
+    .. note::
+
+        The number of steps is used for the lower and upper half. So, if you
+        define 15 steps, 29 rings are created (the center ring is shared by
+        both halves).
     """
-    if not isinstance(center, Vector):
-        raise TypeError('"center" must be Vector object.')
+    # Make sure that at least one argument is True
+    assert not (upper_half == lower_half == False)
 
     step = float(radius) / steps
     for x in range(steps):
@@ -219,14 +245,24 @@ def ball(
         org = Vector(*center)
         org.z += dist
         rad = 2 * radius * (1 - (float(x) / steps) ** 2) ** 0.5
-        args = (
-            recipients, delay, org, rad, rad - 0.1, model_index,
-            halo_index, start_frame, frame_rate, life, width, spread,
-            amplitude, red, green, blue, alpha, speed, flags)
 
         if upper_half:
-            temp_entities.beam_ring_point(*args)
+            entity = TempEntity('BeamRingPoint')
+            entity.center = org
+            entity.start_radius = rad
+            entity.end_radius = rad - 0.1
+            for attr, value in kwargs.items():
+                setattr(entity, attr, value)
+
+            entity.create(recipients)
 
         if x and lower_half:
             org.z -= 2 * dist
-            temp_entities.beam_ring_point(*args)
+            entity = TempEntity('BeamRingPoint')
+            entity.center = org
+            entity.start_radius = rad
+            entity.end_radius = rad - 0.1
+            for attr, value in kwargs.items():
+                setattr(entity, attr, value)
+
+            entity.create(recipients)

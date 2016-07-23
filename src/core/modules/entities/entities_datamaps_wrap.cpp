@@ -108,6 +108,12 @@ void export_datamap(scope _datamaps)
 		reference_existing_object_policy()
 	);
 
+	DataMap.def("find_offset",
+		&DataMapSharedExt::find_offset,
+		args("name"),
+		"Return the offset of a named property. Return -1 if the property wasn't found."
+	);
+
 	// Engine specific stuff...
 	export_engine_specific_datamap(_datamaps, DataMap);
 
@@ -121,6 +127,8 @@ void export_datamap(scope _datamaps)
 //-----------------------------------------------------------------------------
 void export_type_description(scope _datamaps)
 {
+	EXPOSE_FUNCTION_TYPEDEF(BoostInputFn, "InputFn")
+
 	class_<typedescription_t, typedescription_t *> TypeDescription("TypeDescription", no_init);
 
 	// Properties...
@@ -130,6 +138,10 @@ void export_type_description(scope _datamaps)
 	TypeDescription.def_readonly("size", &typedescription_t::fieldSize);
 	TypeDescription.def_readonly("flags", &typedescription_t::flags);
 	TypeDescription.def_readonly("external_name", &typedescription_t::externalName);
+	TypeDescription.add_property("input_function", &TypeDescriptionSharedExt::get_input_function);
+	TypeDescription.add_property("function",
+		make_function(&TypeDescriptionSharedExt::get_function, return_by_value_policy())
+	);
 
 	// CS:GO properties...
 	TypeDescription.NOT_IMPLEMENTED_ATTR("flat_offset");
@@ -137,8 +149,6 @@ void export_type_description(scope _datamaps)
 
 	// TODO: Expose ISaveRestoreOps...
 	TypeDescription.def_readonly("save_restore", &typedescription_t::pSaveRestoreOps);
-
-	TypeDescription.def("get_input_function", &TypeDescriptionSharedExt::get_input_function, manage_new_object_policy());
 
 	TypeDescription.def_readonly("embedded_datamap", &typedescription_t::td);
 	TypeDescription.def_readonly("size_in_bytes", &typedescription_t::fieldSizeInBytes);
@@ -162,11 +172,11 @@ void export_input_data(scope _datamaps)
 	class_<inputdata_t, inputdata_t *> InputData("InputData");
 
 	// Initializers...
-	InputData.def("__init__", make_constructor(&InputDataSharedExt::__init__));
+	InputData.def("__init__", make_constructor(&InputDataExt::__init__));
 
 	// Properties...
-	InputData.add_property("activator", &InputDataSharedExt::get_activator, &InputDataSharedExt::set_activator);
-	InputData.add_property("caller", &InputDataSharedExt::get_caller, &InputDataSharedExt::set_caller);
+	InputData.def_readwrite("activator", &inputdata_t::pActivator);
+	InputData.def_readwrite("caller", &inputdata_t::pCaller);
 
 	InputData.def_readwrite("value", &inputdata_t::value);
 	InputData.def_readwrite("output_index", &inputdata_t::nOutputID);
@@ -188,26 +198,26 @@ void export_variant(scope _datamaps)
 
 	// Getters...
 	Variant.def("get_bool", &variant_t::Bool);
-	Variant.def("get_string", &VariantSharedExt::get_string);
+	Variant.def("get_string", &VariantExt::get_string);
 	Variant.def("get_int", &variant_t::Int);
 	Variant.def("get_float", &variant_t::Float);
 
 	Variant.def("get_color",
-		&VariantSharedExt::get_color,
+		&VariantExt::get_color,
 		manage_new_object_policy()
 	);
 
-	Variant.def("get_vector", &VariantSharedExt::get_vector);
-	Variant.def("get_entity", &VariantSharedExt::get_entity);
+	Variant.def("get_vector", &VariantExt::get_vector);
+	Variant.def("get_entity", &variant_t::Entity, reference_existing_object_policy());
 
 	// Setters...
 	Variant.def("set_bool", &variant_t::SetBool);
-	Variant.def("set_string", &VariantSharedExt::set_string);
+	Variant.def("set_string", &VariantExt::set_string);
 	Variant.def("set_int", &variant_t::SetInt);
 	Variant.def("set_float", &variant_t::SetFloat);
-	Variant.def("set_color", &VariantSharedExt::set_color);
+	Variant.def("set_color", &VariantExt::set_color);
 	Variant.def("set_vector", &variant_t::SetVector3D);
-	Variant.def("set_entity", &VariantSharedExt::set_entity);
+	Variant.def("set_entity", &variant_t::SetEntity);
 
 	// Add memory tools...
 	Variant ADD_MEM_TOOLS(variant_t);

@@ -1,162 +1,352 @@
 # ../auth/manager.py
 
-"""Contains a dictionary class which is used to store loaded Auth Providers."""
+"""Provides a singleton class to access player permissions."""
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Re
+import re
 #   Importlib
-from importlib import import_module
-
-# Source.Python imports
+from importlib.machinery import SourceFileLoader
+# Site-Package Imports
+#   Configobj
+from configobj import ConfigObj
+# Source.Python Imports
 #   Auth
-from auth import auth_logger
-from auth import _auth_strings
-from auth.providers import AuthBase
-from auth.paths import AUTH_PROVIDER_PATH
+from auth.base import Backend
+#   Core
+from core.settings import _core_settings
+#   Paths
+from paths import BACKENDS_PATH
 #   Players
-from players.helpers import uniqueid_from_playerinfo
+from players.helpers import playerinfo_from_index
+#   Steam
+from steam import SteamID
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('auth_manager',
-           )
-
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Get the sp.auth.manager logger
-auth_manager_logger = auth_logger.manager
+__all__ = ('_AuthManager',
+           'auth_manager',
+           'ParentPermissionDict',
+           'ParentPermissions',
+           'PermissionBase',
+           'PlayerPermissionDict',
+           'PlayerPermissions',
+    )
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _AuthManager(dict):
-    """Stores loaded auth providers."""
+class PermissionBase(dict):
+    """Base class for parent and player permissions."""
 
-    def load_auth(self, provider):
-        """Load the given provider."""
-        # Send a message that the auth provider is being loaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Loading'].get_string(provider=provider))
+    def __init__(self, name):
+        """Initialize the object."""
+        super().__init__()
+        self.parents = set()
+        self.name = name
 
-        # Is the provider loaded?
-        if provider in self:
+    def __hash__(self):
+        """Return a hash value based on the name."""
+        # This is required, because we are adding dicts to sets
+        return hash(self.name)
 
-            # If so, send a message that the provider is already loaded
-            auth_manager_logger.log_message(
-                '[SP Auth] ' + _auth_strings[
-                    'Already Loaded'].get_string(provider=provider))
+    def add(self, permission, server_id=None, update_backend=True):
+        """Add a permission.
 
-            # No need to go further
-            return
+        :param str permission: The permission to add.
+        :param int server_id: The server ID to which the permission should be
+            added. If no server ID is given, it will be only added to this
+            server.
+        :param bool update_backend: If True, the backend will be updated.
+        """
+        if (auth_manager.targets_this_server(server_id) and
+                permission not in self.keys()):
+            self[permission] = self._compile_permission(permission)
 
-        # Does the provider's file exist?
-        if not AUTH_PROVIDER_PATH.joinpath(provider + '.py').isfile():
+        if update_backend and auth_manager.active_backend is not None:
+            auth_manager.active_backend.permission_added(
+                self, permission, server_id)
 
-            # Send a message that the file does not exist
-            auth_manager_logger.log_message(
-                '[SP Auth] ' + _auth_strings[
-                    'No Module'].get_string(provider=provider))
+    def remove(self, permission, server_id=None, update_backend=True):
+        """Remove a permission.
 
-            # No need to go further
-            return
+        :param str permission: The permission to remove.
+        :param int server_id: The server ID from which the permission should
+            be removed. If no server ID is given, it will be only removed from
+            this server.
+        :param bool update_backend: If True, the backend will be updated.
+        """
+        if auth_manager.targets_this_server(server_id):
+            try:
+                del self[permission]
+            except KeyError:
+                pass
 
-        # Import the provider's module
-        module = import_module('auth.providers.{0}'.format(provider))
+        if update_backend and auth_manager.active_backend is not None:
+            auth_manager.active_backend.permission_removed(
+                self, permission, server_id)
 
-        # Loop through all objects in the module
-        for module_object in dir(module):
+    def add_parent(self, parent_name, update_backend=True):
+        """Add a parent.
 
-            # Get the object's instance
-            instance = getattr(module, module_object)
+        :param str parent_name: Name of the parent.
+        :param bool update_backend: If True, the backend will be updated.
+        """
+        parent = auth_manager.parents[parent_name]
+        if parent not in self.parents:
+            # TODO: Detect cycles
+            self.parents.add(parent)
+            parent.children.add(self)
 
-            # Is the current object a AuthBase instance?
-            if isinstance(instance, AuthBase):
+        if update_backend and auth_manager.active_backend is not None:
+            auth_manager.active_backend.parent_added(self, parent_name)
 
-                # Found the instance
-                break
+    def remove_parent(self, parent_name, update_backend=True):
+        """Remove a parent.
 
-        # Was no AuthBase instance found?
+        :param str parent_name: Name of the parent.
+        :param bool update_backend: If True, the backend will be updated.
+        """
+        parent = auth_manager.parents[parent_name]
+        if parent not in self.parents:
+            self.parents.remove(parent)
+            parent.children.remove(self)
+
+        if update_backend and auth_manager.active_backend is not None:
+            auth_manager.active_backend.parent_removed(self, parent_name)
+
+    @staticmethod
+    def _compile_permission(permission):
+        """Compile a permission."""
+        return re.compile('^{}$'.format(
+            permission.replace('.', '\\.').replace('*', '(.*)')))
+
+    def __contains__(self, permission):
+        """Return True if the permission is granted by this object."""
+        return self._has_permission(permission, [])
+
+    def _has_permission(self, permission, name_list):
+        # Checks to see if parents are recursive
+        if self.name in name_list:
+            # Break if recursive
+            return False
         else:
+            name_list.append(self.name)
 
-            # Raise an error that the object was not found
-            raise NotImplementedError(
-                'No AuthBase instance found in provider'
-                ' "{0}"'.format(provider))
-
-        # Attempt to call the provider's load function
-        instance.load()
-
-        # Add the provider to the dictionary
-        self[provider] = instance
-
-        # Send a message that the provider was loaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Load Successful'].get_string(provider=provider))
-
-    def unload_auth(self, provider):
-        """Unload the given provider."""
-        # Send a message that the auth provider is being unloaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Unloading'].get_string(provider=provider))
-
-        # Is the provider loaded?
-        if provider not in self:
-
-            # If not, send a message that the provider is not loaded
-            auth_manager_logger.log_message(
-                '[SP Auth] ' + _auth_strings[
-                    'Not Loaded'].get_string(provider=provider))
-
-            # No need to go further
-            return
-
-        # Call the providers unload method
-        self[provider].unload()
-
-        # Remove the provider
-        del self[provider]
-
-        # Send a message that the provider was unloaded
-        auth_manager_logger.log_message(
-            '[SP Auth] ' + _auth_strings[
-                'Unload Successful'].get_string(provider=provider))
-
-    def reload_auth(self, provider):
-        """Reload the given provider."""
-        # Unload the provider
-        self.unload_auth(provider)
-
-        # Load the provider
-        self.load_auth(provider)
-
-    def is_player_authorized(
-            self, playerinfo, level=None, permission=None, flag=None):
-        """Check to see if the player is authorized."""
-        # Get the player's uniqueid
-        uniqueid = uniqueid_from_playerinfo(playerinfo)
-
-        # Loop through all loaded auth providers
-        for provider in self:
-
-            # Is the player authorized?
-            if self[provider].is_player_authorized(
-                    uniqueid, level, permission, flag):
-
-                # If the player is authorized, return true
+        for re_perm in self.values():
+            if re_perm.match(permission):
                 return True
 
-        # If the player is not found authorized for any provider, return false
+        for parent in self.parents:
+            if parent._has_permission(permission, name_list):
+                return True
+
         return False
 
-# Get the _AuthManager instance
+    def flatten(self):
+        """Return all permissions flattened recursively.
+
+        :rtype: generator
+        """
+        yield from self
+        for parent in self.parents:
+            yield from parent
+
+    def clear(self):
+        super().clear()
+        self.parents.clear()
+
+
+class PlayerPermissions(PermissionBase):
+    """A container for player permissions."""
+
+    def __init__(self, name, steamid64):
+        """Initialize the object.
+
+        :param str name: A SteamID2, SteamID3 or SteamID64 value.
+        :param int steamid64: The SteamID64 value that was also used to store
+            the object in the :class:PlayerPermissionDict`` object.
+        """
+        super().__init__(name)
+        self.steamid64 = steamid64
+
+
+class ParentPermissions(PermissionBase):
+    """A container for parent permissions."""
+
+    def __init__(self, name):
+        """Initialize the object.
+
+        :param str name: Name of the parent.
+        """
+        super().__init__(name)
+        self.children = set()
+
+
+class _PermissionDict(dict):
+    """A permission storage."""
+
+    def clear(self):
+        for value in self.values():
+            value.clear()
+
+        super().clear()
+
+
+class ParentPermissionDict(_PermissionDict):
+    def __missing__(self, parent_name):
+        """Create, store and return a :class:`ParentPermissions` object.
+
+        :param str parent_name: The name of the parent to retrieve.
+        """
+        instance = self[parent_name] = ParentPermissions(parent_name)
+        return instance
+
+
+class PlayerPermissionDict(_PermissionDict):
+    def __missing__(self, steamid):
+        """Create, store and return a :class:`PlayerPermissions` object.
+
+        :param str/int steamid: A SteamID2, SteamID3 or SteamID64 value.
+        """
+        if not isinstance(steamid, int):
+            steamid64 = SteamID.parse(steamid).to_uint64()
+            if steamid64 in self:
+                return self[steamid64]
+
+            # We got a SteamID in a string format, so we can store it by using
+            # its SteamID64 value, but keep the original name.
+            instance = self[steamid64] = PlayerPermissions(steamid, steamid64)
+        else:
+            instance = self[steamid] = PlayerPermissions(steamid, steamid)
+
+        return instance
+
+
+class _AuthManager(dict):
+    """Manages backends and configuration files."""
+
+    def __init__(self):
+        """Initialize the object."""
+        self.parents = ParentPermissionDict()
+        self.players = PlayerPermissionDict()
+        self.active_backend = None
+        self.server_id = -1
+
+    def find_and_add_available_backends(self):
+        """Find and add all available backends.
+
+        :raise ValueError: Raised if no backend or multiple backends are found
+            within a single file.
+        """
+        for backend in BACKENDS_PATH.glob('*.py'):
+            name = 'auth.backend.' + backend.basename().splitext()[0]
+            loader = SourceFileLoader(name, str(backend))
+            module = loader.load_module(name)
+            for var in vars(module).values():
+                if isinstance(var, Backend):
+                    self[var.name.casefold()] = var
+                    break
+            else:
+                raise ValueError(
+                    'Found no backend or multiple backends in "{}".'.format(
+                        backend))
+
+    def load(self):
+        """Load the auth manager."""
+        self.server_id = int(_core_settings['AUTH_SETTINGS']['server_id'])
+        self.set_active_backend(_core_settings['AUTH_SETTINGS']['backend'])
+
+    def unload(self):
+        """Unload the auth manager."""
+        self._unload_active_backend()
+
+    def set_active_backend(self, backend_name):
+        """Set the active backend.
+
+        :param str backend_name: Name of the backend.
+        :raise ValueError: Raised if the backend does not exist.
+        """
+        try:
+            backend = self[backend_name.casefold()]
+        except KeyError:
+            raise ValueError(
+                'Backend "{}" does not exist.'.format(backend_name))
+
+        self._unload_active_backend()
+        backend.load()
+        self.active_backend = backend
+
+    def _unload_active_backend(self):
+        """Unload the active backend if there is one."""
+        if self.active_backend is not None:
+            self.active_backend.unload()
+            self.parents.clear()
+            self.players.clear()
+            self.active_backend = None
+
+    def is_backend_loaded(self, backend_name):
+        """Return True if the given backend is currently loaded.
+
+        :rtype: bool
+        """
+        return (self.active_backend is not None and
+            backend_name.casefold() == self.active_backend.name)
+
+    def get_player_permissions(self, index):
+        """.. seealso:: :meth:`get_player_permissions_from_steamid`"""
+        return self.get_player_permissions_from_steamid(
+            playerinfo_from_index(index).steamid)
+
+    def get_player_permissions_from_steamid(self, steamid):
+        """Return the permissions of a player.
+
+        :param str/int steamid: The SteamID2, SteamID3 or SteamID64 of a
+            player.
+        :return: If the given SteamID is invalid (e.g. 'BOT'), None will be
+            returned.
+        :rtype: PlayerPermissions
+        """
+        try:
+            return self.players[steamid]
+        except ValueError:
+            return None
+
+    def is_player_authorized(self, index, permission):
+        """Return True if the player has been granted the given permission.
+
+        :rtype: bool
+        """
+        return permission in self.get_player_permissions(index)
+
+    def get_parent_permissions(self, parent_name):
+        """Return the parent permissions.
+
+        :param str parent_name: Name of the parent.
+        :rtype: ParentPermissions
+        """
+        return self.parents[parent_name]
+
+    def is_parent_authorized(self, parent_name, permission):
+        """Return True if the parent has been granted the given permission.
+
+        :rtype: bool
+        """
+        return permission in self.get_parent_permissions(parent_name)
+
+    def targets_this_server(self, server_id):
+        """Return whether the server ID targets this server.
+
+        :param int server_id: A server ID to test.
+        :rtype: bool
+        """
+        return server_id in (-1, self.server_id, None)
+
+#: The singleton object of :class:`_AuthManager`.
 auth_manager = _AuthManager()

@@ -39,6 +39,7 @@ from loggers import _sp_logger  # It's save to import this here
 # =============================================================================
 def load():
     """Load Source.Python's Python side."""
+    setup_core_settings()
     setup_logging()
     setup_hooks()
     setup_translations()
@@ -55,17 +56,18 @@ def unload():
     """Unload Source.Python's Python side."""
     unload_plugins()
     remove_entities_listener()
+    unload_auth()
 
 
 # =============================================================================
-# >> HOOKS
+# >> CORE SETTINGS
 # =============================================================================
-def setup_hooks():
-    """Set up hooks."""
-    _sp_logger.log_debug('Setting up hooks...')
+def setup_core_settings():
+    """Setup core settings."""
+    _sp_logger.log_debug('Setting up core settings...')
 
-    from hooks.exceptions import except_hooks
-    from hooks.warnings import warning_hooks
+    from core.settings import _core_settings
+    _core_settings.load()
 
 
 # =============================================================================
@@ -111,6 +113,17 @@ def setup_logging():
 
 
 # =============================================================================
+# >> HOOKS
+# =============================================================================
+def setup_hooks():
+    """Set up hooks."""
+    _sp_logger.log_debug('Setting up hooks...')
+
+    from hooks.exceptions import except_hooks
+    from hooks.warnings import warning_hooks
+
+
+# =============================================================================
 # >> TRANSLATIONS
 # =============================================================================
 def setup_translations():
@@ -147,6 +160,15 @@ def setup_global_pointers():
     except NotImplementedError:
         server.server = manager.get_global_pointer('Server')
 
+    _sp_logger.log_debug('Setting up global "factory_dictionary" variables...')
+    from entities import factories
+    try:
+        from _entities._factories import factory_dictionary
+    except ImportError:
+        factory_dictionary = manager.get_global_pointer('EntityFactoryDictionary')
+
+    factories.factory_dictionary = factory_dictionary
+
 
 # =============================================================================
 # >> SP COMMAND
@@ -155,7 +177,7 @@ def setup_sp_command():
     """Set up the 'sp' command."""
     _sp_logger.log_debug('Setting up the "sp" command...')
 
-    from core.command import _core_command
+    from core.command import auth, docs, dump, plugin
 
 
 # =============================================================================
@@ -165,17 +187,15 @@ def setup_auth():
     """Set up authentification."""
     _sp_logger.log_debug('Setting up auth...')
 
-    from core.command import _core_command
-    from core.settings import _core_settings
+    from auth.manager import auth_manager
+    auth_manager.load()
 
-    # Get the auth providers that should be loaded
-    auth_providers = _core_settings['AUTH_SETTINGS']['providers'].split()
+def unload_auth():
+    """Unload authentification."""
+    _sp_logger.log_debug('Unloading auth...')
 
-    # Should any providers be loaded?
-    if auth_providers:
-
-        # Load the auth providers
-        _core_command['auth'].call_command(['load'] + auth_providers)
+    from auth.manager import auth_manager
+    auth_manager.unload()
 
 
 # =============================================================================

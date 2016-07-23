@@ -96,6 +96,6 @@ class CSPModule
 //---------------------------------------------------------------------------------
 // Exports everything we're exposing from boost to python.
 //---------------------------------------------------------------------------------
-extern void modulsp_init( void );
+extern bool modulsp_init( void );
 
 #endif // _EXPORT_MAIN_H

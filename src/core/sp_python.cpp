@@ -162,7 +162,11 @@ bool CPythonManager::Initialize( void )
 	InitConverters();
 
 	// Initialize all submodules
-	modulsp_init();
+	if (!modulsp_init())
+	{
+		Msg(MSG_PREFIX "Failed to initialize internal modules.\n");
+		return false;
+	}
 
 	// Import the main module file.
 	DevMsg(1, MSG_PREFIX "Loading main module...\n");

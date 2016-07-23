@@ -48,6 +48,7 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 	m_recipients(recipients)
 {
 	m_message_name = message_name;
+	m_index = ::GetMessageIndex(message_name);
 
 	// Initialize buffer
 #ifdef USE_PROTOBUF
@@ -58,15 +59,14 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 
 	m_buffer = message->New();
 #else
-	int index = GetMessageIndex();
-	if (index == -1) {
+	if (m_index == -1) {
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
 	}
 
 	#if defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
-		m_buffer = engine->UserMessageBegin(&recipients, index, message_name);
+		m_buffer = engine->UserMessageBegin(&recipients, m_index, message_name);
 	#else
-		m_buffer = engine->UserMessageBegin(&recipients, index);
+		m_buffer = engine->UserMessageBegin(&recipients, m_index);
 	#endif
 #endif
 }
@@ -87,26 +87,6 @@ void CUserMessage::Send()
 #endif
 }
 
-int CUserMessage::GetMessageIndex()
-{
-#ifdef USE_PROTOBUF
-	return g_Cstrike15UsermessageHelpers.GetIndex(m_message_name);
-#else
-	char sz_mname[256];
-	int sizereturn;
-	int index = 0;
-	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
-	{
-		if (V_strcasecmp(m_message_name, sz_mname) == 0)
-		{
-			return index;
-		}
-		index++;
-	}
-	return -1;
-#endif
-}
-
 bool CUserMessage::IsProtobuf()
 {
 #ifdef USE_PROTOBUF
@@ -122,4 +102,24 @@ bool CUserMessage::IsProtobuf()
 void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data )
 {
 	helpers->CreateMessage(pEdict, type, data, &g_SourcePythonPlugin);
+}
+
+int GetMessageIndex(const char* name)
+{
+#ifdef USE_PROTOBUF
+	return g_Cstrike15UsermessageHelpers.GetIndex(name);
+#else
+	char sz_mname[256];
+	int sizereturn;
+	int index = 0;
+	while (servergamedll->GetUserMessageInfo(index, sz_mname, 255, sizereturn))
+	{
+		if (V_strcasecmp(name, sz_mname) == 0)
+		{
+			return index;
+		}
+		index++;
+	}
+	return -1;
+#endif
 }
