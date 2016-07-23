@@ -22,7 +22,7 @@ class _C4(object):
         for weapon in EntityIter('weapon_c4'):
 
             # Is the entity's "owner" the player?
-            if weapon.owner == self.handle.to_int():
+            if weapon.owner_handle == self.inthandle:
 
                 # Return True
                 return True

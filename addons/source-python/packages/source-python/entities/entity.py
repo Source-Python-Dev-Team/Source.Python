@@ -197,6 +197,18 @@ class Entity(BaseEntity):
     def index(self):
         """Return the entity's index."""
         return self._index
+        
+    @property
+    def owner(self):
+        """Return the entity's owner.
+        
+        :return: None if the entity has no owner.
+        :rtype: Entity
+        """
+        try:
+            return Entity(index_from_inthandle(self.owner_handle))
+        except (ValueError, OverflowError):
+            return None
 
     @property
     def server_classes(self):
@@ -548,15 +560,15 @@ class Entity(BaseEntity):
 
             # Try to get the attacker based off of the weapon's owner
             with suppress(ValueError, OverflowError):
-                attacker_index = index_from_inthandle(weapon.current_owner)
+                attacker_index = index_from_inthandle(weapon.owner_handle)
                 attacker = Entity(attacker_index)
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:
 
             # Try to use the attacker's active weapon
-            with suppress(AttributeError, ValueError, OverflowError):
-                weapon = Weapon(index_from_inthandle(attacker.active_weapon))
+            with suppress(AttributeError):
+                weapon = attacker.active_weapon
 
         # Try to set the hitgroup
         with suppress(AttributeError):

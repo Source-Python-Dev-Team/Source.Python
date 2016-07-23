@@ -43,12 +43,15 @@ from players.constants import PlayerStates
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
+from players.helpers import index_from_userid
 from players.helpers import uniqueid_from_playerinfo
 from players.voice import mute_manager
 #   Weapons
 from weapons.default import NoWeaponManager
 from weapons.entity import Weapon
 from weapons.manager import weapon_manager
+#   Auth
+from auth.manager import auth_manager
 
 
 # =============================================================================
@@ -633,19 +636,15 @@ class Player(Entity):
     def active_weapon(self):
         """Return the player's active weapon.
 
+        :return: None if the player does not have an active weapon.
         :rtype: Weapon
         """
-        # Get the player's active weapon's index
-        index = index_from_inthandle(self.active_weapon_handle)
+        try:
+            index = index_from_inthandle(self.active_weapon_handle)
+        except (ValueError, OverflowError):
+            return None
 
-        # Does the player have an active weapon?
-        if index is not None:
-
-            # Return a Weapon instance for the player's active weapon
-            return Weapon(index)
-
-        # If no active weapon, return None
-        return None
+        return Weapon(index)
 
     def get_weapon(self, classname=None, is_filters=None, not_filters=None):
         """Return the first found weapon for the given arguments.
