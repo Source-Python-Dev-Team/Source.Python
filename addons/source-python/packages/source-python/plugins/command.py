@@ -6,8 +6,6 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   Collections
-from collections import OrderedDict
 #   Re
 import re
 #   TextWrap
@@ -47,7 +45,7 @@ plugins_command_logger = plugins_logger.command
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SubCommandManager(AutoUnload, OrderedDict):
+class SubCommandManager(AutoUnload, list):
     """Class used for executing sub-commands for the given console command."""
 
     # Set the default class values for base attributes
@@ -86,6 +84,10 @@ class SubCommandManager(AutoUnload, OrderedDict):
         # Set the instance class for the manager class
         self.manager.instance = self.instance
 
+    def _unload_instance(self):
+        for item in self:
+            item._unload_instance()
+
     def sub_command(self, commands):
         """Add a sub-command.
 
@@ -94,7 +96,10 @@ class SubCommandManager(AutoUnload, OrderedDict):
         if isinstance(commands, str):
             commands = [commands]
 
-        return TypedServerCommand([self._command] + list(commands))
+        command = TypedServerCommand([self._command] + list(commands))
+        self.append(command)
+
+        return command
 
     @property
     def manager(self):
