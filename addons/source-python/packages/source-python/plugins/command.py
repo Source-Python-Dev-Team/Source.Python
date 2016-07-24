@@ -8,17 +8,14 @@
 # Python Imports
 #   Re
 import re
-#   TextWrap
-from textwrap import TextWrapper
 
 # Source.Python Imports
 #   Commands
-from commands.typed import TypedServerCommand
+from commands.typed import (
+    TypedClientCommand, TypedSayCommand, TypedServerCommand,
+)
 #   Core
 from core import AutoUnload
-#   Messages
-from messages import HudDestination
-from messages import TextMsg
 #   Plugins
 from plugins import plugins_logger
 from plugins import _plugin_strings
@@ -88,17 +85,35 @@ class SubCommandManager(AutoUnload, list):
         for item in self:
             item._unload_instance()
 
-    def sub_command(self, commands):
+    def server_sub_command(self, *commands):
         """Add a sub-command.
 
         .. seealso:: :class:`commands.typed.TypedServerCommand`
         """
-        if isinstance(commands, str):
-            commands = [commands]
-
+        if not len(commands):
+            raise ValueError('No sub-commands were given.')
         command = TypedServerCommand([self._command] + list(commands))
         self.append(command)
+        return command
 
+    def client_sub_command(self, *commands, permission=None):
+        if not len(commands):
+            raise ValueError('No sub-commands were given.')
+        command = TypedClientCommand(
+            [self._command] + list(commands),
+            permission=permission,
+        )
+        self.append(command)
+        return command
+
+    def say_sub_command(self, *commands, permission=None):
+        if not len(commands):
+            raise ValueError('No sub-commands were given.')
+        command = TypedSayCommand(
+            [self._command] + list(commands),
+            permission=permission,
+        )
+        self.append(command)
         return command
 
     @property
