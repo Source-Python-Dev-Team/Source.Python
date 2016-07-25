@@ -36,13 +36,6 @@
 #include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
-
-// ============================================================================
-// >> GLOBAL VARIABLES
-// ============================================================================
-static inputfunc_t g_pInputKillFunc = NULL;
-
-
 // ============================================================================
 // >> CBaseEntityWrapper
 // ============================================================================
@@ -131,7 +124,8 @@ IEntityFactory* CBaseEntityWrapper::get_factory()
 
 void CBaseEntityWrapper::remove()
 {
-	if (!g_pInputKillFunc)
+	static inputfunc_t pInputKillFunc = NULL;
+	if (!pInputKillFunc)
 	{
 		datamap_t* datamap = GetDataDescMap();
 		if (!datamap)
@@ -145,7 +139,7 @@ void CBaseEntityWrapper::remove()
 		if (!pInputFunc)
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Input function is NULL.");
 
-		g_pInputKillFunc = pInputFunc;
+		pInputKillFunc = pInputFunc;
 	}
 
 	CBaseEntity *pEntity = GetThis();
@@ -157,7 +151,7 @@ void CBaseEntityWrapper::remove()
 	data.value = value;
 	data.nOutputID = 0;
 
-	(pEntity->*g_pInputKillFunc)(data);
+	(pEntity->*pInputKillFunc)(data);
 }
 
 int CBaseEntityWrapper::get_size()

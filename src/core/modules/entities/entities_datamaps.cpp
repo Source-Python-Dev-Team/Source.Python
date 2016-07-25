@@ -175,75 +175,45 @@ void* TypeDescriptionSharedExt::get_function(const typedescription_t& pTypeDesc)
 
 
 // ============================================================================
-// >> VariantSharedExt
+// >> VariantExt
 // ============================================================================
-const char* VariantSharedExt::get_string(variant_t *pVariant)
+const char* VariantExt::get_string(variant_t *pVariant)
 {
 	return STRING(pVariant->StringID());
 }
 
-void VariantSharedExt::set_string(variant_t *pVariant, const char *szValue)
+void VariantExt::set_string(variant_t *pVariant, const char *szValue)
 {
 	return pVariant->SetString(MAKE_STRING(szValue));
 }
 
-Color* VariantSharedExt::get_color(variant_t *pVariant)
+Color* VariantExt::get_color(variant_t *pVariant)
 {
 	color32 pColor32 = pVariant->Color32();
 	return new Color((int)pColor32.r, (int)pColor32.g, (int)pColor32.b, (int)pColor32.a);
 }
 
-void VariantSharedExt::set_color(variant_t *pVariant, Color *pColor)
+void VariantExt::set_color(variant_t *pVariant, Color *pColor)
 {
 	pVariant->SetColor32(pColor->r(), pColor->g(), pColor->b(), pColor->a());
 }
 
-Vector VariantSharedExt::get_vector(variant_t *pVariant)
+Vector VariantExt::get_vector(variant_t *pVariant)
 {
 	Vector pVector;
 	pVariant->Vector3D(pVector);
 	return pVector;
 }
 
-unsigned int VariantSharedExt::get_entity(variant_t *pVariant)
-{
-	return ExcIndexFromBaseHandle(pVariant->Entity());
-}
-
-void VariantSharedExt::set_entity(variant_t *pVariant, unsigned int uiEntity)
-{
-	pVariant->SetEntity(ExcBaseEntityFromIndex(uiEntity));
-}
-
 
 // ============================================================================
-// >> InputDataSharedExt
+// >> InputDataExt
 // ============================================================================
-inputdata_t* InputDataSharedExt::__init__()
+inputdata_t* InputDataExt::__init__()
 {
 	inputdata_t *pInputData = new inputdata_t;
 	pInputData->pActivator = NULL;
 	pInputData->pCaller = NULL;
 	pInputData->nOutputID = 0;
 	return pInputData;
-}
-
-unsigned int InputDataSharedExt::get_activator(const inputdata_t& pInputData)
-{
-	return ExcIndexFromBaseEntity(pInputData.pActivator);
-}
-
-void InputDataSharedExt::set_activator(inputdata_t *pInputData, unsigned int uiActivator)
-{
-	pInputData->pActivator = ExcBaseEntityFromIndex(uiActivator);
-}
-
-unsigned int InputDataSharedExt::get_caller(const inputdata_t& pInputData)
-{
-	return ExcIndexFromBaseEntity(pInputData.pCaller);
-}
-	
-void InputDataSharedExt::set_caller(inputdata_t *pInputData, unsigned int uiCaller)
-{
-	pInputData->pCaller = ExcBaseEntityFromIndex(uiCaller);
 }
