@@ -85,20 +85,20 @@ class SubCommandManager(AutoUnload, list):
         for item in self:
             item._unload_instance()
 
-    def server_sub_command(self, *commands):
+    def server_sub_command(self, commands):
         """Add a sub-command.
 
         .. seealso:: :class:`commands.typed.TypedServerCommand`
         """
-        if not len(commands):
-            raise ValueError('No sub-commands were given.')
+        if isinstance(commands, str):
+            commands = [commands]
         command = TypedServerCommand([self._command] + list(commands))
         self.append(command)
         return command
 
-    def client_sub_command(self, *commands, permission=None):
-        if not len(commands):
-            raise ValueError('No sub-commands were given.')
+    def client_sub_command(self, commands, permission=None):
+        if isinstance(commands, str):
+            commands = [commands]
         command = TypedClientCommand(
             [self._command] + list(commands),
             permission=permission,
@@ -106,9 +106,9 @@ class SubCommandManager(AutoUnload, list):
         self.append(command)
         return command
 
-    def say_sub_command(self, *commands, permission=None):
-        if not len(commands):
-            raise ValueError('No sub-commands were given.')
+    def say_sub_command(self, commands, permission=None):
+        if isinstance(commands, str):
+            commands = [commands]
         command = TypedSayCommand(
             [self._command] + list(commands),
             permission=permission,

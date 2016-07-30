@@ -140,23 +140,23 @@ _core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 # =============================================================================
 # >> sp
 # =============================================================================
-@_core_command.server_sub_command('delay')
+@_core_command.server_sub_command(['delay'])
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
     Delay(delay, engine_server.server_command, command + ' ' + ' '.join(args))
 
-@_core_command.server_sub_command('version')
+@_core_command.server_sub_command(['version'])
 def _sp_version(command_info):
     """Display Source.Python version information."""
     core_command_logger.log_message(
         'Current Source.Python version: {0}'.format(VERSION))
 
-@_core_command.server_sub_command('credits')
+@_core_command.server_sub_command(['credits'])
 def _sp_credits(command_info):
     """List all credits for Source.Python."""
     _core_command.print_credits()
 
-@_core_command.server_sub_command('help')
+@_core_command.server_sub_command(['help'])
 def _sp_help(command_info, command=None, *server_sub_commands):
     """Print all sp sub-commands or help for a specific command."""
     if command is None:
