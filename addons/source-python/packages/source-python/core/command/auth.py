@@ -27,7 +27,7 @@ logger = core_command_logger.auth
 # =============================================================================
 # >> sp auth backend
 # =============================================================================
-@_core_command.sub_command(['auth', 'backend', 'set'])
+@_core_command.server_sub_command(['auth', 'backend', 'set'])
 def _sp_auth_load(command_info, backend):
     """Set the active backend."""
     try:
@@ -38,7 +38,7 @@ def _sp_auth_load(command_info, backend):
         logger.log_message(
             'Backend "{}" has been loaded sucessfully!'.format(backend))
 
-@_core_command.sub_command(['auth', 'backend', 'list'])
+@_core_command.server_sub_command(['auth', 'backend', 'list'])
 def _sp_auth_list(command_info):
     """List all available backends and marks the active backend."""
     if not auth_manager:
@@ -57,7 +57,7 @@ def _sp_auth_list(command_info):
 # =============================================================================
 # >> sp auth permission player
 # =============================================================================
-@_core_command.sub_command(['auth', 'permission', 'player', 'add'])
+@_core_command.server_sub_command(['auth', 'permission', 'player', 'add'])
 def _sp_auth_permission_player_add(
         command_info, players:filter_str, permission, server_id:int=None):
     """Grant a permission to players."""
@@ -72,7 +72,7 @@ def _sp_auth_permission_player_add(
         logger.log_message('Granted permission "{}" to {}.'.format(
             permission, player.name))
 
-@_core_command.sub_command(['auth', 'permission', 'player', 'remove'])
+@_core_command.server_sub_command(['auth', 'permission', 'player', 'remove'])
 def _sp_auth_permission_player_remove(
         command_info, players:filter_str, permission, server_id:int=None):
     """Remove a permission from players."""
@@ -88,7 +88,9 @@ def _sp_auth_permission_player_remove(
             'Removed permission "{}" from {}.'.format(
                 permission, player.name))
 
-@_core_command.sub_command(['auth', 'permission', 'player', 'add_parent'])
+@_core_command.server_sub_command([
+    'auth', 'permission', 'player', 'add_parent'
+])
 def _sp_auth_permission_player_add_parent(
         command_info, players:filter_str, parent):
     """Add a parent to players."""
@@ -103,7 +105,9 @@ def _sp_auth_permission_player_add_parent(
         logger.log_message(
             'Added parent "{}" to {}.'.format(parent, player.name))
 
-@_core_command.sub_command(['auth', 'permission', 'player', 'remove_parent'])
+@_core_command.server_sub_command([
+    'auth', 'permission', 'player', 'remove_parent'
+])
 def _sp_auth_permission_player_remove_parent(
         command_info, players:filter_str, parent):
     """Remove a parent from players."""
@@ -118,7 +122,7 @@ def _sp_auth_permission_player_remove_parent(
         logger.log_message(
             'Removed parent "{}" from {}.'.format(parent, player.name))
 
-@_core_command.sub_command(['auth', 'permission', 'player', 'test'])
+@_core_command.server_sub_command(['auth', 'permission', 'player', 'test'])
 def _sp_auth_permission_player_test(command_info, permission):
     """Test which players are granted a permission."""
     logger.log_message(
@@ -144,7 +148,7 @@ def _sp_auth_permission_player_test(command_info, permission):
 # =============================================================================
 # >> sp auth permission parent
 # =============================================================================
-@_core_command.sub_command(['auth', 'permission', 'parent', 'add'])
+@_core_command.server_sub_command(['auth', 'permission', 'parent', 'add'])
 def _sp_auth_permission_parent_add(
         command_info, parent, permission, server_id:int=None):
     """Add a permission to a parent."""
@@ -152,7 +156,7 @@ def _sp_auth_permission_parent_add(
     logger.log_message(
         'Added permission "{}" to parent "{}".'.format(permission, parent))
 
-@_core_command.sub_command(['auth', 'permission', 'parent', 'remove'])
+@_core_command.server_sub_command(['auth', 'permission', 'parent', 'remove'])
 def _sp_auth_permission_parent_remove(
         command_info, parent, permission, server_id:int=None):
     """Remove a permission from a parent."""
@@ -160,7 +164,9 @@ def _sp_auth_permission_parent_remove(
     logger.log_message('Removed permission "{}" from parent "{}".'.format(
             permission, parent))
 
-@_core_command.sub_command(['auth', 'permission', 'parent', 'add_parent'])
+@_core_command.server_sub_command([
+    'auth', 'permission', 'parent', 'add_parent'
+])
 def _sp_auth_permission_parent_add_parent(
         command_info, parent, parent_to_add):
     """Add a parent to a parent."""
@@ -168,7 +174,9 @@ def _sp_auth_permission_parent_add_parent(
     logger.log_message(
         'Added parent "{}" to parent "{}".'.format(parent_to_add, parent))
 
-@_core_command.sub_command(['auth', 'permission', 'parent', 'remove_parent'])
+@_core_command.server_sub_command([
+    'auth', 'permission', 'parent', 'remove_parent'
+])
 def _sp_auth_permission_parent_remove_parent(
         command_info, parent, parent_to_remove):
     """Remove a parent from a parent."""

@@ -37,17 +37,17 @@ logger = core_command_logger.docs
 # =============================================================================
 # >> sp docs create/generate/build
 # =============================================================================
-@_core_command.sub_command(['docs', 'create'])
+@_core_command.server_sub_command(['docs', 'create'])
 def _sp_docs_create(command_info, package):
     """Create a Sphinx project."""
     _create_sphinx_project(package)
 
-@_core_command.sub_command(['docs', 'generate'])
+@_core_command.server_sub_command(['docs', 'generate'])
 def _sp_docs_generate(command_info, package):
     """Generate a Sphinx project."""
     _generate_sphinx_project(package)
 
-@_core_command.sub_command(['docs', 'build'])
+@_core_command.server_sub_command(['docs', 'build'])
 def _sp_docs_build(command_info, package):
     """Build a Sphinx project."""
     _build_sphinx_project(package)
