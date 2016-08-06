@@ -72,7 +72,7 @@ public:
 //-----------------------------------------------------------------------------
 // varian_t extension class.
 //-----------------------------------------------------------------------------
-class VariantSharedExt
+class VariantExt
 {
 public:
 	static const char* get_string(variant_t *pVariant);
@@ -80,22 +80,16 @@ public:
 	static Color* get_color(variant_t *pVariant);
 	static void set_color(variant_t *pVariant, Color *pColor);
 	static Vector get_vector(variant_t *pVariant);
-	static unsigned int get_entity(variant_t *pVariant);
-	static void set_entity(variant_t *pVariant, unsigned int uiEntity);
 };
 
 
 //-----------------------------------------------------------------------------
 // inputdata_t extension class.
 //-----------------------------------------------------------------------------
-class InputDataSharedExt
+class InputDataExt
 {
 public:
 	static inputdata_t* __init__();
-	static unsigned int get_activator(const inputdata_t& pInputData);
-	static void set_activator(inputdata_t *pInputData, unsigned int uiActivator);
-	static unsigned int get_caller(const inputdata_t& pInputData);
-	static void set_caller(inputdata_t *pInputData, unsigned int uiCaller);
 };
 
 

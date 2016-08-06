@@ -6,21 +6,16 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   Collections
-from collections import OrderedDict
 #   Re
 import re
-#   TextWrap
-from textwrap import TextWrapper
 
 # Source.Python Imports
 #   Commands
-from commands.typed import TypedServerCommand
+from commands.typed import (
+    TypedClientCommand, TypedSayCommand, TypedServerCommand,
+)
 #   Core
 from core import AutoUnload
-#   Messages
-from messages import HudDestination
-from messages import TextMsg
 #   Plugins
 from plugins import plugins_logger
 from plugins import _plugin_strings
@@ -47,7 +42,7 @@ plugins_command_logger = plugins_logger.command
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class SubCommandManager(AutoUnload, OrderedDict):
+class SubCommandManager(AutoUnload, list):
     """Class used for executing sub-commands for the given console command."""
 
     # Set the default class values for base attributes
@@ -86,15 +81,40 @@ class SubCommandManager(AutoUnload, OrderedDict):
         # Set the instance class for the manager class
         self.manager.instance = self.instance
 
-    def sub_command(self, commands):
+    def _unload_instance(self):
+        for item in self:
+            item._unload_instance()
+
+    def server_sub_command(self, commands):
         """Add a sub-command.
 
         .. seealso:: :class:`commands.typed.TypedServerCommand`
         """
         if isinstance(commands, str):
             commands = [commands]
+        command = TypedServerCommand([self._command] + list(commands))
+        self.append(command)
+        return command
 
-        return TypedServerCommand([self._command] + list(commands))
+    def client_sub_command(self, commands, permission=None):
+        if isinstance(commands, str):
+            commands = [commands]
+        command = TypedClientCommand(
+            [self._command] + list(commands),
+            permission=permission,
+        )
+        self.append(command)
+        return command
+
+    def say_sub_command(self, commands, permission=None):
+        if isinstance(commands, str):
+            commands = [commands]
+        command = TypedSayCommand(
+            [self._command] + list(commands),
+            permission=permission,
+        )
+        self.append(command)
+        return command
 
     @property
     def manager(self):

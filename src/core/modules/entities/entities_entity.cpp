@@ -36,7 +36,6 @@
 #include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
-
 // ============================================================================
 // >> CBaseEntityWrapper
 // ============================================================================
@@ -123,9 +122,36 @@ IEntityFactory* CBaseEntityWrapper::get_factory()
 	return get_factory(pNetworkable->GetClassName());
 }
 
-void CBaseEntityWrapper::destroy()
+void CBaseEntityWrapper::remove()
 {
-	get_factory()->Destroy(GetNetworkable());
+	static inputfunc_t pInputKillFunc = NULL;
+	if (!pInputKillFunc)
+	{
+		datamap_t* datamap = GetDataDescMap();
+		if (!datamap)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the datamap.")
+
+		typedescription_t *pTypeDesc = DataMapSharedExt::find(datamap, "InputKill");
+		if (!pTypeDesc)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find the 'InputKill' descriptor.");
+
+		inputfunc_t pInputFunc = pTypeDesc->inputFunc;
+		if (!pInputFunc)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Input function is NULL.");
+
+		pInputKillFunc = pInputFunc;
+	}
+
+	CBaseEntity *pEntity = GetThis();
+	inputdata_t data;
+	variant_t value;
+
+	data.pActivator = pEntity;
+	data.pCaller = pEntity;
+	data.value = value;
+	data.nOutputID = 0;
+
+	(pEntity->*pInputKillFunc)(data);
 }
 
 int CBaseEntityWrapper::get_size()
