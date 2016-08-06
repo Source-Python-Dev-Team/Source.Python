@@ -28,7 +28,10 @@ class Weapon(Entity):
 
     def _validate_clip(self):
         """Test if the weapon has a clip."""
-        if self._clip == -1:
+        if (
+            self.classname in weapon_manager and
+            weapon_manager[self.classname].clip is None
+        ) or self._clip == -1:
             raise ValueError('Weapon does not have a clip.')
 
     def get_clip(self):
@@ -48,9 +51,15 @@ class Weapon(Entity):
 
     def _validate_ammo(self):
         """Test if the weapon has a valid ammoprop and an owner."""
-        if self.ammoprop == -1:
+        if (
+            self.classname in weapon_manager and
+            weapon_manager[self.classname].ammoprop is None
+        ) or self.ammoprop == -1:
             raise ValueError(
-                'Unable to get ammoprop for {0}'.format(self.classname))
+                'Unable to get ammoprop for {weapon}'.format(
+                    weapon=self.classname
+                )
+            )
 
         player = self.owner
         if player is None:
@@ -62,13 +71,22 @@ class Weapon(Entity):
         """Return the amount of ammo the player has for the weapon."""
         player = self._validate_ammo()
         return player.get_property_int(
-            weapon_manager.ammoprop + '%03d' % self.ammoprop)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=self.ammoprop,
+            )
+        )
 
     def set_ammo(self, value):
         """Set the player's ammo property for the weapon."""
         player = self._validate_ammo()
         player.set_property_int(
-            weapon_manager.ammoprop + '%03d' % self.ammoprop, value)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=self.ammoprop,
+            ),
+            value,
+        )
 
     # Set the "ammo" property methods
     ammo = property(
@@ -112,14 +130,22 @@ class Weapon(Entity):
         """Return the secondary fire ammo the player has for the weapon."""
         player = self._validate_secondary_fire_ammo()
         return player.get_property_int(
-            weapon_manager.ammoprop + '%03d' % self.secondary_fire_ammoprop)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=self.secondary_fire_ammoprop,
+            )
+        )
 
     def set_secondary_fire_ammo(self, value):
         """Set the player's secondary fire ammo property for the weapon."""
         player = self._validate_secondary_fire_ammo()
         player.set_property_int(
-            weapon_manager.ammoprop +
-            '%03d' % self.secondary_fire_ammoprop, value)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=self.secondary_fire_ammoprop,
+            ),
+            value,
+        )
 
     # Set the "secondary_fire_ammo" property methods
     secondary_fire_ammo = property(
