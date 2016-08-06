@@ -12,6 +12,8 @@ import math
 # Source.Python Imports
 #   Bitbuffers
 from bitbuffers import BitBufferWrite
+#   Core
+from core import GAME_NAME
 #   Engines
 from engines.server import server
 from engines.server import engine_server
@@ -721,6 +723,12 @@ class Player(Entity):
 
             # Yield the index
             yield index
+
+    def has_c4(self):
+        """Raise an error because this method is game specific."""
+        raise NotImplementedError(
+            'Method not supported for game "{game}".'.format(game=GAME_NAME)
+        )
 
     def get_projectile_ammo(self, projectile):
         """Return the player's ammo value of the given projectile.
