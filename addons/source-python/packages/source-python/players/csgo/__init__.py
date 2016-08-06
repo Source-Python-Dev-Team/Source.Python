@@ -18,7 +18,7 @@ from memory.hooks import PreHook
 #   Messages
 from _messages import ProtobufMessage
 #   Players
-from players._entity import Player as _Player
+from players._base import Player as _Player
 
 
 # =============================================================================

@@ -7,7 +7,7 @@
 # =============================================================================
 # Source.Python Imports
 #   Players
-from players._entity import Player as _Player
+from players._base import Player as _Player
 
 
 # =============================================================================
