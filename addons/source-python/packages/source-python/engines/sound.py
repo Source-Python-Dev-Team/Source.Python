@@ -83,6 +83,10 @@ engines_sound_logger = engines_logger.sound
 # Store all vpk files so we don't have to find them every time we need one
 _all_vpks = {vpk.open(x) for x in GAME_PATH.parent.walkfiles('*_dir.vpk')}
 
+# Create a dictionary to store sounds so that we only have to get their
+#   duration once and not every time.
+_sound_durations = {}
+
 
 # =============================================================================
 # >> ENUMERATORS
@@ -208,6 +212,9 @@ class _BaseSound(AutoUnload):
     @property
     def duration(self):
         """Return the duration of the sample."""
+        if self.sample in _sound_durations:
+            return _sound_durations[self.sample]
+
         created_dir = False
         created_file = False
         if not self.full_path.isfile():
@@ -251,6 +258,8 @@ class _BaseSound(AutoUnload):
             self.full_path.remove()
             if created_dir:
                 self.full_path.parent.removedirs()
+
+        _sound_durations[self.sample] = value
         return value
 
     def _unload_instance(self):
