@@ -17,25 +17,35 @@ class Weapon(_Weapon):
     """Allows easy usage of the weapon's attributes."""
     def get_ammo(self):
         """Return the amount of ammo the player has for the weapon."""
-        # Is the weapon a projectile?
-        if 'grenade' in weapon_manager[self.classname].tags:
-            player = self._validate_ammo()
-            return player.get_property_ushort(
-                weapon_manager.ammoprop + '%03d' % self.ammoprop)
+        # Is the weapon not a grenade?
+        if 'grenade' not in weapon_manager[self.classname].tags:
+            return self.primary_ammo_count
 
-        return self.primary_ammo_count
+        player = self._validate_ammo()
+        return player.get_property_ushort(
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=self.ammoprop,
+            )
+        )
+
 
     def set_ammo(self, value):
         """Set the player's ammo property for the weapon."""
-        # Is the weapon a projectile?
-        if 'grenade' in weapon_manager[self.classname].tags:
-            player = self._validate_ammo()
-            player.set_property_ushort(
-                weapon_manager.ammoprop + '%03d' % self.ammoprop, value)
-
+        # Is the weapon not a grenade?
+        if 'grenade' not in weapon_manager[self.classname].tags:
+            self.primary_ammo_count = value
             return
 
-        self.primary_ammo_count = value
+        player = self._validate_ammo()
+        player.set_property_ushort(
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=self.ammoprop,
+            ),
+            value,
+        )
+
 
     # Set the "ammo" property methods
     ammo = property(

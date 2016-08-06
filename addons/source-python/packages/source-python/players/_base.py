@@ -692,7 +692,11 @@ class Player(Entity):
 
             # Get the player's current weapon at this offset
             handle = self.get_property_int(
-                weapon_manager.myweapons + '%03i' % offset)
+                '{base}{offset:03d}'.format(
+                    base=weapon_manager.myweapons,
+                    offset=offset,
+                )
+            )
 
             # Try to get the index of the handle
             try:
@@ -739,8 +743,11 @@ class Player(Entity):
         :rtype: int
         """
         return self.get_property_int(
-            weapon_manager.ammoprop +
-            '%03d' % weapon_manager[projectile].ammoprop)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=weapon_manager[projectile].ammoprop,
+            )
+        )
 
     def set_projectile_ammo(self, projectile, value):
         """Set the player's ammo value for the given projectile.
@@ -749,8 +756,12 @@ class Player(Entity):
         :param int value: The value to set the projectile's ammo to.
         """
         self.set_property_int(
-            weapon_manager.ammoprop +
-            '%03d' % weapon_manager[projectile].ammoprop, value)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=weapon_manager[projectile].ammoprop,
+            ),
+            value,
+        )
 
     def projectile_indexes(self, projectile):
         """Yield all indexes of the given projectile for the player.

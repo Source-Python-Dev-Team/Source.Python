@@ -58,6 +58,7 @@ class Player(_Player):
     def _set_assists(self, value):
         """Set the number of assists the player has."""
         self.increment_assists_count(value - self.assists)
+
     assists = property(
         _get_assists, _set_assists,
         doc="""The number of assists a player has.""")
@@ -104,8 +105,11 @@ class Player(_Player):
         :rtype: int
         """
         return self.get_property_ushort(
-            weapon_manager.ammoprop +
-            '%03d' % weapon_manager[projectile].ammoprop)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=weapon_manager[projectile].ammoprop,
+            )
+        )
 
     def set_projectile_ammo(self, projectile, value):
         """Set the player's ammo value for the given projectile.
@@ -114,8 +118,12 @@ class Player(_Player):
         :param int value: The value to set the projectile's ammo to.
         """
         self.set_property_ushort(
-            weapon_manager.ammoprop +
-            '%03d' % weapon_manager[projectile].ammoprop, value)
+            '{base}{prop:03d}'.format(
+                base=weapon_manager.ammoprop,
+                prop=weapon_manager[projectile].ammoprop,
+            ),
+            value,
+        )
 
 
 # =============================================================================
