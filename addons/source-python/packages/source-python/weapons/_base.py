@@ -1,4 +1,4 @@
-# ../weapons/_entity/__init__.py
+# ../weapons/_base.py
 
 """Provides simplified weapon functionality."""
 

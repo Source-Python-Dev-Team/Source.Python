@@ -1,4 +1,4 @@
-# ../weapons/_entity/__init__.py
+# ../weapons/engines/csgo/__init__.py
 
 """Provides CS:GO specific weapon functionality."""
 
@@ -6,7 +6,7 @@
 # >> IMPORTS
 # =============================================================================
 # Weapons
-from weapons._entity import Weapon as _Weapon
+from weapons._base import Weapon as _Weapon
 from weapons.manager import weapon_manager
 
 
