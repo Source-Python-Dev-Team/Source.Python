@@ -1,4 +1,4 @@
-# ../players/_entity/csgo/__init__.py
+# ../players/engines/csgo/__init__.py
 
 """Provides CS:GO specific Player based functionality."""
 

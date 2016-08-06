@@ -1,4 +1,4 @@
-# ../players/_entity/csgo/__init__.py
+# ../players/engines/orangebox/__init__.py
 
 """Provides Orangebox specific Player based functionality."""
 

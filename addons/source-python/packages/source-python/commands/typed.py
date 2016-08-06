@@ -1,3 +1,5 @@
+# ../commands/typed.py
+
 #: .. todo:: Add the ability to define prefixes for messages.
 #: .. todo:: Add callback to the Node class. It could be called when a sub-command is required.
 

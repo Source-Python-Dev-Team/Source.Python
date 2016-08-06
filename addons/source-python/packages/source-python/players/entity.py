@@ -40,7 +40,7 @@ elif SP_PACKAGES_PATH.joinpath(
     # Import the engine-specific 'Player' class
     Player = import_module(
         'players.engines.{engine}'.format(
-            engine=SOURCE_ENGINE
+            engine=SOURCE_ENGINE,
         )
     ).Player
 

@@ -1,4 +1,4 @@
-# ../players/_entity/__init__.py
+# ../players/_base.py
 
 """Provides a class used to interact with a specific player."""
 

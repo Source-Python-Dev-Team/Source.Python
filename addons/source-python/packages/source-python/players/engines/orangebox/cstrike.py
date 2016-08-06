@@ -1,4 +1,4 @@
-# ../players/_entity/orangebox/cstrike.py
+# ../players/engines/orangebox/cstrike.py
 
 """Provides CS:S specific Player based functionality."""
 
