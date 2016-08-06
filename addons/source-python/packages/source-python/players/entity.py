@@ -22,24 +22,24 @@ __all__ = ('Player',
 # >> GLOBAL VARIABLES
 # =============================================================================
 if SP_PACKAGES_PATH.joinpath(
-    'players', SOURCE_ENGINE, GAME_NAME + '.py'
+    'players', 'engines', SOURCE_ENGINE, GAME_NAME + '.py'
 ).isfile():
 
     # Import the game-specific 'Player' class
     Player = import_module(
-        'players.{engine}.{game}'.format(
+        'players.engines.{engine}.{game}'.format(
             engine=SOURCE_ENGINE,
             game=GAME_NAME,
         )
     ).Player
 
 elif SP_PACKAGES_PATH.joinpath(
-    'players', SOURCE_ENGINE, '__init__.py'
+    'players', 'engines', SOURCE_ENGINE, '__init__.py'
 ).isfile():
 
     # Import the engine-specific 'Player' class
     Player = import_module(
-        'players.{engine}'.format(
+        'players.engines.{engine}'.format(
             engine=SOURCE_ENGINE
         )
     ).Player
