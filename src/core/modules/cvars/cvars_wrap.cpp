@@ -69,13 +69,13 @@ DECLARE_SP_MODULE(_cvars)
 void export_cvar_interface(scope _cvars)
 {
 	class_<ICvar, boost::noncopyable>("_Cvar", no_init)
-		.def("register_command",
+		.def("register_base",
 			&ICvar::RegisterConCommand,
 			"Registers a console command.",
 			args("con_command")
 		)
 
-		.def("unregister_command",
+		.def("unregister_base",
 			&ICvar::UnregisterConCommand,
 			"Unregisters a console command.",
 			args("con_command")
