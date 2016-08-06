@@ -33,6 +33,8 @@ from entities.entity import Entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.props import SendPropType
+#   Filters
+from filters.entities import EntityIter
 #   Mathlib
 from mathlib import Vector
 from mathlib import QAngle
@@ -755,7 +757,12 @@ class Player(Entity):
 
         :param str projectile: The name of the projectile to find indexes of.
         """
-        self.weapon_indexes(weapon_manager[projectile].name)
+        if projectile in weapon_manager.projectiles:
+            for entity in EntityIter(projectile):
+                if entity.owner == self:
+                    yield entity.index
+        else:
+            yield from self.weapon_indexes(weapon_manager[projectile].name)
 
     def restrict_weapons(self, *weapons):
         """Restrict the weapon for the player.

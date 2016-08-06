@@ -19,6 +19,8 @@ from memory.hooks import PreHook
 from _messages import ProtobufMessage
 #   Players
 from players._base import Player as _Player
+#   Weapons
+from weapons.manager import weapon_manager
 
 
 # =============================================================================
@@ -101,7 +103,9 @@ class Player(_Player):
         :param str projectile: The name of the projectile to get the ammo of.
         :rtype: int
         """
-
+        return self.get_property_ushort(
+            weapon_manager.ammoprop +
+            '%03d' % weapon_manager[projectile].ammoprop)
 
     def set_projectile_ammo(self, projectile, value):
         """Set the player's ammo value for the given projectile.
@@ -109,12 +113,9 @@ class Player(_Player):
         :param str projectile: The name of the projectile to set the ammo of.
         :param int value: The value to set the projectile's ammo to.
         """
-
-    def projectile_indexes(self, projectile):
-        """Yield all indexes of the given projectile for the player.
-
-        :param str projectile: The name of the projectile to find indexes of.
-        """
+        self.set_property_ushort(
+            weapon_manager.ammoprop +
+            '%03d' % weapon_manager[projectile].ammoprop, value)
 
 
 # =============================================================================
