@@ -84,7 +84,7 @@ public:
 	virtual void			ClientFullyConnect( edict_t *pEntity );
 #endif
 
-#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE) || defined(ENGINE_SDK2013)
 	virtual void			OnEdictAllocated( edict_t *edict );
 	virtual void			OnEdictFreed( const edict_t *edict );
 #endif

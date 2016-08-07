@@ -39,7 +39,7 @@ bool IndexFromEdict( edict_t *pEdict, unsigned int& output )
 		return false;
 
 	int iEntityIndex;
-#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_SDK2013)
 	iEntityIndex = engine->IndexOfEdict(pEdict);
 #else
 	iEntityIndex = pEdict - gpGlobals->pEdicts;

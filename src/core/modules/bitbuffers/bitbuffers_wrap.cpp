@@ -91,7 +91,7 @@ void export_bf_write(scope _bitbuffers)
 			"Writes an unsigned integer with variable bit length."
 		)
 
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_SDK2013)
 		.def("write_var_int32",
 			&bf_write::WriteVarInt32
 		)

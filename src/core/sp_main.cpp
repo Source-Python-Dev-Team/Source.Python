@@ -459,7 +459,7 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 }
 #endif
 
-#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE) || defined(ENGINE_SDK2013)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	unsigned int iEntityIndex;
