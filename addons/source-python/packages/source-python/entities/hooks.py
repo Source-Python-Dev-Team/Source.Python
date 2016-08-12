@@ -110,7 +110,7 @@ class _EntityHook(AutoUnload):
         _waiting_entity_hooks.append(self)
 
         # Return the callback
-        return self.callback
+        return self
 
     @property
     def hook_type(self):
