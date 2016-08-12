@@ -137,7 +137,7 @@ class _EntityHook(AutoUnload):
         """Unload the hook."""
         if self.hooked_function is not None:
             self.hooked_function.remove_hook(self.hook_type, self.callback)
-        else:
+        elif self in _waiting_entity_hooks:
             # If the function is None, the hook wasn't initialized, so it's
             # still in the _waiting_entity_hooks dict
             _waiting_entity_hooks.remove(self)
