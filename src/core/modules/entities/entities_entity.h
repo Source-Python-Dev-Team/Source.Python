@@ -106,6 +106,8 @@ public:
 
 	CBaseEntity* GetThis();
 
+	bool operator==(object other);
+
 	// Datamap methods
 	int FindDataMapOffset(const char* name);
 

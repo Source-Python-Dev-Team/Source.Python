@@ -195,6 +195,19 @@ CBaseEntity* CBaseEntityWrapper::GetThis()
 	return (CBaseEntity *) this;
 }
 
+bool CBaseEntityWrapper::operator==(object other)
+{
+	CBaseEntity* pOther = NULL;
+	try {
+		pOther = extract<CBaseEntity*>(other);
+	}
+	catch(...) {
+		PyErr_Clear();
+		return false;
+	}
+	return GetThis() == pOther;
+}
+
 void CBaseEntityWrapper::GetKeyValueStringRaw(const char* szName, char* szOut, int iLength)
 {
 	if (!servertools->GetKeyValue(GetThis(), szName, szOut, iLength))
