@@ -149,7 +149,7 @@ class Entity(BaseEntity):
         if entity.is_networked():
             return cls(entity.index)
 
-        entity.destroy()
+        entity.remove()
         raise ValueError('"{}" is not a networked entity.'.format(classname))
 
     @classmethod
