@@ -275,6 +275,11 @@ T IVEngineServer_Visitor(T cls)
 			&IVEngineServer::SetAchievementMgr,
 			"Return the achievement manager."
 		)
+
+		.add_property("cluster_count",
+			&IVEngineServer::GetClusterCount,
+			"Returns total number of clusters."
+		)
 	;
 
 	return cls;

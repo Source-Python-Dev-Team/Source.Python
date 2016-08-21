@@ -235,6 +235,11 @@ T IVEngineServer_Visitor(T cls)
 			&IVEngineServer::GetClientCrossPlayPlatform,
 			args("ent_num")
 		)
+
+		.add_property("cluster_count",
+			&IVEngineServer::GetClusterCount,
+			"Returns total number of clusters."
+		)
 	;
 
 	return cls;

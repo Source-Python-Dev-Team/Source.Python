@@ -24,14 +24,13 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENGINES_WRAP_L4D2_H
-#define _ENGINES_WRAP_L4D2_H
+#ifndef _ENGINES_WRAP_GMOD_H
+#define _ENGINES_WRAP_GMOD_H
 
 //---------------------------------------------------------------------------------
 // Includes.
 //---------------------------------------------------------------------------------
 #include "eiface.h"
-#include "iachievementmgr.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 
@@ -48,6 +47,30 @@ extern IEngineTrace* enginetrace;
 template<class T>
 T IVEngineServer_Visitor(T cls)
 {
+	cls
+		.add_property("game_server_steamid",
+			make_function(
+				&IVEngineServer::GetGameServerSteamID,
+				reference_existing_object_policy()
+			),
+			"Returns the SteamID of the game server."
+		)
+
+		.def("multiplayer_end_game",
+			&IVEngineServer::MultiplayerEndGame,
+			"Matchmaking"
+		)
+
+		.add_property("achievement_mgr",
+			make_function(
+				&IVEngineServer::GetAchievementMgr,
+				reference_existing_object_policy()
+			),
+			&IVEngineServer::SetAchievementMgr,
+			"Return the achievement manager."
+		)
+	;
+
 	return cls;
 }
 
@@ -58,23 +81,7 @@ T IVEngineServer_Visitor(T cls)
 template<class T>
 T IEngineSound_Visitor(T cls)
 {
-	cls
-		.add_property("achievement_mgr",
-			make_function(
-				&IVEngineServer::GetAchievementMgr,
-				reference_existing_object_policy()
-			),
-			&IVEngineServer::SetAchievementMgr,
-			"Return the achievement manager."
-		)
-
-		.add_property("cluster_count",
-			&IVEngineServer::GetClusterCount,
-			"Returns total number of clusters."
-		)
-	;
-
 	return cls;
 }
 
-#endif // _ENGINES_WRAP_L4D2_H
+#endif // _ENGINES_WRAP_GMOD_H

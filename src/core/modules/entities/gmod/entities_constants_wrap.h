@@ -24,8 +24,8 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_BLADE_WRAP_H
-#define _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#ifndef _ENTITIES_CONSTANTS_GMOD_WRAP_H
+#define _ENTITIES_CONSTANTS_GMOD_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
@@ -39,7 +39,7 @@
 template<class T>
 void export_engine_specific_damage_types(T _constants)
 {
-	// Nothing specific to Blade...
+	// Nothing specific to GMod...
 }
 
 
@@ -49,8 +49,7 @@ void export_engine_specific_damage_types(T _constants)
 template<class T, class U>
 void export_engine_specific_solid_flags(T _constants, U SolidFlags)
 {
-	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
-	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
+	// Nothing specific to GMod...
 }
 
 
@@ -60,7 +59,7 @@ void export_engine_specific_solid_flags(T _constants, U SolidFlags)
 template<class T>
 void export_engine_specific_entity_effects(T _constants)
 {
-	// Nothing specific to Blade...
+	// Nothing specific to GMod...
 }
 
 
@@ -70,7 +69,7 @@ void export_engine_specific_entity_effects(T _constants)
 template<class T, class U>
 void export_engine_specific_render_mode(T _constants, U RenderEffects)
 {
-	// Nothing specific to Blade...
+	RenderEffects.value("TRANS_ALPHA_ADD", kRenderTransAlphaAdd);
 }
 
 
@@ -80,8 +79,14 @@ void export_engine_specific_render_mode(T _constants, U RenderEffects)
 template<class T, class U>
 void export_engine_specific_render_effects(T _constants, U RenderEffects)
 {
-	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
-	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
+	RenderEffects.value("DISTORT", kRenderFxDistort);
+	RenderEffects.value("HOLOGRAM", kRenderFxHologram);
+	RenderEffects.value("EXPLODE", kRenderFxExplode);
+	RenderEffects.value("CLAMP_MIN_SCALE", kRenderFxClampMinScale);
+	RenderEffects.value("ENV_RAIN", kRenderFxEnvRain);
+	RenderEffects.value("ENV_SNOW", kRenderFxEnvSnow);
+	RenderEffects.value("SPOTLIGHT", kRenderFxSpotlight);
+	RenderEffects.value("RAGDOLL", kRenderFxRagdoll);
 	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
 }
 
@@ -92,9 +97,8 @@ void export_engine_specific_render_effects(T _constants, U RenderEffects)
 template<class T, class U>
 void export_engine_specific_collision_group(T _constants, U CollisionGroup)
 {
-	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
-	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
+	// Nothing specific to GMod...
 }
 
 
-#endif // _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#endif // _ENTITIES_CONSTANTS_GMOD_WRAP_H
