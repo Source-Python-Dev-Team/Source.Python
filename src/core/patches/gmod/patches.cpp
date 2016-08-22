@@ -33,3 +33,8 @@
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."
 #endif
+
+#include "memalloc.h"
+#ifndef PATCH_MEM_ALLOC
+#error "Update ../tier0/memalloc.h"
+#endif
