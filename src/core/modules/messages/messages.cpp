@@ -63,7 +63,7 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
 	}
 
-	#if defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
+	#if defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE) || defined(ENGINE_INSURGENCY)
 		m_buffer = engine->UserMessageBegin(&recipients, m_index, message_name);
 	#else
 		m_buffer = engine->UserMessageBegin(&recipients, m_index);

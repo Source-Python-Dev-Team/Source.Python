@@ -309,7 +309,7 @@ void export_keyvalues_types(scope _keyvalues)
 	KeyValuesType.value("COLOR", KeyValues::TYPE_COLOR);
 	KeyValuesType.value("UNINT64", KeyValues::TYPE_UINT64);
 	
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_INSURGENCY)
 	// TODO: Move this to a engine specific file
 	KeyValuesType.value("COMPILED_INT_BYTE", KeyValues::TYPE_COMPILED_INT_BYTE);
 	KeyValuesType.value("COMPILED_INT_0", KeyValues::TYPE_COMPILED_INT_0);

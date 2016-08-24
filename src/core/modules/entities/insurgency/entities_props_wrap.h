@@ -24,80 +24,57 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_CSGO_WRAP_H
-#define _ENTITIES_CONSTANTS_CSGO_WRAP_H
+#ifndef _ENTITIES_PROPS_WRAP_INSURGENCY_H
+#define _ENTITIES_PROPS_WRAP_INSURGENCY_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/wrap_macros.h"
-#include "entities_constants.h"
+#include "dt_common.h"
+#include "dt_send.h"
+#include "entities_props.h"
 
 
 //-----------------------------------------------------------------------------
-// Exports damage types.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_damage_types(T _constants)
-{
-	_constants.attr("DMG_HEADSHOT") = DMG_HEADSHOT;
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports entity state flags.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_entity_state_flags(T _constants)
-{
-	// Nothing specific to CS:GO...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports SolidFlags_t.
+// Expose ServerClass.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_solid_flags(T _constants, U SolidFlags)
+void export_engine_specific_server_class(T _props, U ServerClass_)
 {
-	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
-	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
+	ServerClass_.add_property("name", &ServerClassExt::get_name);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports entity effects.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_entity_effects(T _constants)
-{
-	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = (long)EF_MARKED_FOR_FAST_REFLECTION;
-	_constants.attr("EF_NOSHADOWDEPTH") = (long)EF_NOSHADOWDEPTH;
-	_constants.attr("EF_NOFLASHLIGHT") = (long)EF_NOFLASHLIGHT;
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports RenderFx_t.
+// Expose SendProp.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_render_effects(T _constants, U RenderEffects)
+void export_engine_specific_send_prop(T _props, U SendProp_)
 {
-	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
-	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
-	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+	SendProp_.add_property("priority", &SendProp::GetPriority);
+	SendProp_.def("get_priority", &SendProp::GetPriority);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports Collision_Group_t.
+// Expose SendPropType.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_collision_group(T _constants, U CollisionGroup)
+void export_engine_specific_send_prop_types(T _props, U SendPropType_)
 {
-	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
-	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
+	SendPropType_.value("INT64", DPT_Int64);
 }
 
 
-#endif // _ENTITIES_CONSTANTS_CSGO_WRAP_H
+//-----------------------------------------------------------------------------
+// Expose SendPropVariant.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_send_prop_variant(T _props, U SendPropVariant)
+{
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+	SendPropVariant.def("get_int64", &SendPropVariantExt::get_typed_value<DPT_Int64, int64, &DVariant::m_Int64>);
+}
+
+
+#endif // _ENTITIES_PROPS_WRAP_INSURGENCY_H

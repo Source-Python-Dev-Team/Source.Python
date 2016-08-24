@@ -24,14 +24,13 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_CSGO_WRAP_H
-#define _ENTITIES_CONSTANTS_CSGO_WRAP_H
+#ifndef _ENTITIES_CONSTANTS_INSURGENCY_WRAP_H
+#define _ENTITIES_CONSTANTS_INSURGENCY_WRAP_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
-#include "entities_constants.h"
 
 
 //-----------------------------------------------------------------------------
@@ -40,7 +39,7 @@
 template<class T>
 void export_engine_specific_damage_types(T _constants)
 {
-	_constants.attr("DMG_HEADSHOT") = DMG_HEADSHOT;
+	// Nothing specific to Insurgency...
 }
 
 
@@ -50,7 +49,7 @@ void export_engine_specific_damage_types(T _constants)
 template<class T>
 void export_engine_specific_entity_state_flags(T _constants)
 {
-	// Nothing specific to CS:GO...
+	_constants.attr("FL_FREEZING") = FL_FREEZING;
 }
 
 
@@ -71,9 +70,7 @@ void export_engine_specific_solid_flags(T _constants, U SolidFlags)
 template<class T>
 void export_engine_specific_entity_effects(T _constants)
 {
-	_constants.attr("EF_MARKED_FOR_FAST_REFLECTION") = (long)EF_MARKED_FOR_FAST_REFLECTION;
-	_constants.attr("EF_NOSHADOWDEPTH") = (long)EF_NOSHADOWDEPTH;
-	_constants.attr("EF_NOFLASHLIGHT") = (long)EF_NOFLASHLIGHT;
+	// Nothing specific to Insurgency...
 }
 
 
@@ -100,4 +97,4 @@ void export_engine_specific_collision_group(T _constants, U CollisionGroup)
 }
 
 
-#endif // _ENTITIES_CONSTANTS_CSGO_WRAP_H
+#endif // _ENTITIES_CONSTANTS_INSURGENCY_WRAP_H

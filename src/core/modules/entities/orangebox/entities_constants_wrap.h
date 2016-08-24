@@ -47,6 +47,16 @@ void export_engine_specific_damage_types(T _constants)
 
 
 //-----------------------------------------------------------------------------
+// Exports entity state flags.
+//-----------------------------------------------------------------------------
+template<class T>
+void export_engine_specific_entity_state_flags(T _constants)
+{
+	// Nothing specific to OrangeBox...
+}
+
+
+//-----------------------------------------------------------------------------
 // Exports SolidFlags_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>

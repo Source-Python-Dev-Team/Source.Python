@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,77 +24,49 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_BLADE_WRAP_H
-#define _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#ifndef _ENTITIES_DATAMAPS_INSURGENCY_H
+#define _ENTITIES_DATAMAPS_INSURGENCY_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/wrap_macros.h"
+#include "entities_datamaps.h"
 
 
 //-----------------------------------------------------------------------------
-// Exports damage types.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_damage_types(T _constants)
-{
-	// Nothing specific to Blade...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports entity state flags.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_entity_state_flags(T _constants)
-{
-	// Nothing specific to Blade...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports SolidFlags_t.
+// Exports datamap_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_solid_flags(T _constants, U SolidFlags)
+void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
-	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
-	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
+	DataMap.def_readonly("packed_size", &datamap_t::m_nPackedSize);
+
+	// TODO: Expose optimized_datamap_t...
+	// DataMap.def_readonly("optimized_datamap", &datamap_t::m_pOptimizedDataMap);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports entity effects.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_entity_effects(T _constants)
-{
-	// Nothing specific to Blade...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports RenderFx_t.
+// Exports typedescription_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_render_effects(T _constants, U RenderEffects)
+void export_engine_specific_type_description(T _datamaps, U TypeDescription)
 {
-	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
-	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
-	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+	TypeDescription.add_property("flat_offset", &TypeDescriptionExt::get_flat_offset);
+	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset);
+	TypeDescription.def_readonly("flat_group", &typedescription_t::flatGroup);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports Collision_Group_t.
+// Exports fieldtype_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_collision_group(T _constants, U CollisionGroup)
+void export_engine_specific_field_types(T _datamaps, U FieldTypes)
 {
-	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
-	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
+	FieldTypes.value("INTEGER64", FIELD_INTEGER64);
+	FieldTypes.value("VECTOR4D", FIELD_VECTOR4D);
 }
 
 
-#endif // _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#endif // _ENTITIES_DATAMAPS_INSURGENCY_H

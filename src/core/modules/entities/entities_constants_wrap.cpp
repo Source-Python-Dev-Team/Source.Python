@@ -159,6 +159,12 @@ void export_entity_states(scope _constants)
 	_constants.attr("FL_DISSOLVING") = FL_DISSOLVING;
 	_constants.attr("FL_TRANSRAGDOLL") = FL_TRANSRAGDOLL;
 	_constants.attr("FL_UNBLOCKABLE_BY_PLAYER") = FL_UNBLOCKABLE_BY_PLAYER;
+
+	// Insurgency specific constants...
+	_constants.attr("FL_FREEZING") = -LONG_MAX;
+
+	// Engine specific stuff...
+	export_engine_specific_entity_state_flags(_constants);
 }
 
 
