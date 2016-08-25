@@ -579,6 +579,11 @@ void export_engine_server(scope _server)
 			args("benchmark_mode")
 		)
 
+		.add_property("cluster_count",
+			&IVEngineServer::GetClusterCount,
+			"Returns total number of clusters."
+		)
+
 		/*
 		.def("is_split_screen_player",
 			&IVEngineServer::SetDedicatedServerBenchmarkMode,
@@ -623,9 +628,6 @@ void export_engine_server(scope _server)
 
 		// Not in Blade
 		.NOT_IMPLEMENTED_ATTR("achievement_mgr")
-
-		// Not in GMod
-		.NOT_IMPLEMENTED_ATTR("cluster_count")
 
 		// Not on L4D2
 		.NOT_IMPLEMENTED_ATTR("server_version")
@@ -763,7 +765,7 @@ void export_engine_server(scope _server)
 		FUNCTION_INFO(GetPlayerInfo)
 		FUNCTION_INFO(IsClientFullyAuthenticated)
 		FUNCTION_INFO(SetDedicatedServerBenchmarkMode)
-		// FUNCTION_INFO(GetClusterCount)
+		FUNCTION_INFO(GetClusterCount)
 		FUNCTION_INFO(GetClientSteamID)
 		FUNCTION_INFO(ClientCommandKeyValues)
 	END_CLASS_INFO()
