@@ -67,7 +67,7 @@ public:
 			}
 		}
 		
-		pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, pOrigin, pDirection,
+		pEngineSound->EmitSound(filter, iEntIndex, iChannel, pSample, flVolume, flAttenuation, iFlags, iPitch, 0, pOrigin, pDirection,
 			pUtlVecOrigins, bUpdatePositions, soundtime, speakerentity);
 	}
 
