@@ -33,3 +33,8 @@
 #ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
 #error "We need the CNetworkHandle definition..."
 #endif
+
+#include "game/shared/collisionproperty.h"
+#ifndef COLLISION_PROPERTY_PATCH
+#error "Update ../game/shared/collisionproperty.h"
+#endif
