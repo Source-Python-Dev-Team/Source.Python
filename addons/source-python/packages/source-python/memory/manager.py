@@ -254,7 +254,7 @@ class TypeManager(dict):
 
     def create_pipe_from_file(self, f):
         """Create a pipe from a file or URL."""
-        return self.create_pipe_from_dict(GameConfigObj(f, file_error=True))
+        return self.create_pipe_from_dict(GameConfigObj(f))
 
     def create_pipe_from_dict(self, raw_data):
         """Create a pipe from a dictionary."""
@@ -300,7 +300,7 @@ class TypeManager(dict):
     def create_type_from_file(self, type_name, f, bases=(CustomType,)):
         """Create and registers a new type from a file or URL."""
         return self.create_type_from_dict(
-            type_name, GameConfigObj(f, file_error=True), bases)
+            type_name, GameConfigObj(f), bases)
 
     def create_type_from_dict(self, type_name, raw_data, bases=(CustomType,)):
         """Create and registers a new type from a dictionary."""
@@ -651,7 +651,7 @@ class TypeManager(dict):
     def create_function_typedefs_from_file(self, f):
         """Create function typedefs from a file."""
         # Read the data
-        raw_data = GameConfigObj(f, file_error=True)
+        raw_data = GameConfigObj(f)
 
         # Prepare typedefs
         typedefs = parse_data(
@@ -692,7 +692,7 @@ class TypeManager(dict):
         """Create global pointers from a file."""
         # Parse pointer data
         pointers = parse_data(
-            GameConfigObj(f, file_error=True),
+            GameConfigObj(f),
             (
                 (Key.BINARY, str, NO_DEFAULT),
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
