@@ -56,9 +56,19 @@ T IVEngineServer_Visitor(T cls)
 			"Returns the SteamID of the game server."
 		)
 
+		.def("server_version",
+			&IVEngineServer::GetServerVersion,
+			"Returns the version of the server."
+		)
+
 		.def("multiplayer_end_game",
 			&IVEngineServer::MultiplayerEndGame,
 			"Matchmaking"
+		)
+
+		.def("create_fake_client_ex",
+			&IVEngineServer::CreateFakeClientEx,
+			reference_existing_object_policy()
 		)
 
 		.add_property("achievement_mgr",
