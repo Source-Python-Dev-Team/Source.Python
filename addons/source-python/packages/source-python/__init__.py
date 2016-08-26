@@ -122,6 +122,17 @@ def setup_hooks():
     from hooks.exceptions import except_hooks
     from hooks.warnings import warning_hooks
 
+    # This is added to warn about BaseEntityOutput.fire_output.
+    # Sending the warning on its initial import will happen prior
+    #   to these hooks being setup.
+    from listeners._entity_output import _fire_output
+    if _fire_output is None:
+        from warnings import warn
+        warn(
+            'BaseEntityOutput.fire_output not found.  '
+            'OnEntityOutput listener will not fire.'
+        )
+
 
 # =============================================================================
 # >> TRANSLATIONS
@@ -146,6 +157,8 @@ def setup_global_pointers():
     """Set up global pointers."""
     _sp_logger.log_debug('Setting up global pointers...')
 
+    import sys
+    from warnings import warn
     from core import GameConfigObj
     from memory.manager import manager
     from paths import SP_DATA_PATH
@@ -158,16 +171,23 @@ def setup_global_pointers():
     try:
         server.server = server.engine_server.server
     except NotImplementedError:
-        server.server = manager.get_global_pointer('Server')
+        try:
+            server.server = manager.get_global_pointer('Server')
+        except NameError:
+            warn(str(sys.exc_info()[1]))
 
     _sp_logger.log_debug('Setting up global "factory_dictionary" variables...')
     from entities import factories
     try:
         from _entities._factories import factory_dictionary
     except ImportError:
-        factory_dictionary = manager.get_global_pointer('EntityFactoryDictionary')
-
-    factories.factory_dictionary = factory_dictionary
+        try:
+            factory_dictionary = manager.get_global_pointer(
+                'EntityFactoryDictionary'
+            )
+            factories.factory_dictionary = factory_dictionary
+        except NameError:
+            warn(str(sys.exc_info()[1]))
 
 
 # =============================================================================
@@ -242,11 +262,17 @@ def setup_entities_listener():
     """Set up entities listener."""
     _sp_logger.log_debug('Setting up entities listener...')
 
+    import sys
+    from warnings import warn
     from _core import _sp_plugin
     from memory.manager import manager
 
-    manager.get_global_pointer('GlobalEntityList').add_entity_listener(
-        _sp_plugin)
+    try:
+        manager.get_global_pointer('GlobalEntityList').add_entity_listener(
+            _sp_plugin
+        )
+    except NameError:
+        warn(str(sys.exc_info()[1]))
 
 
 def remove_entities_listener():
