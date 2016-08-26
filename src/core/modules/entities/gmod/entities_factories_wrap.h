@@ -48,7 +48,8 @@ extern IServerTools *servertools;
 template<class T, class U>
 void export_engine_specific_entity_factory_dictionary(T _factories, U EntityFactoryDictionary)
 {
-	// Nothing specific to GMod...
+	// Singleton...
+	_factories.attr("factory_dictionary") = object(ptr((CEntityFactoryDictionary *)servertools->GetEntityFactoryDictionary()));
 }
 
 
