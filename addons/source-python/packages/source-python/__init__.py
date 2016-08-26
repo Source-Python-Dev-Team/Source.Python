@@ -185,9 +185,11 @@ def setup_global_pointers():
             factory_dictionary = manager.get_global_pointer(
                 'EntityFactoryDictionary'
             )
-            factories.factory_dictionary = factory_dictionary
         except NameError:
             warn(str(sys.exc_info()[1]))
+            return
+
+    factories.factory_dictionary = factory_dictionary
 
 
 # =============================================================================
