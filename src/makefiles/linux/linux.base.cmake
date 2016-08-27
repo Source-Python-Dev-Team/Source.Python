@@ -63,7 +63,7 @@ EndIf()
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2")
+If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2" OR SOURCE_ENGINE MATCHES "gmod")
     # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
@@ -96,7 +96,7 @@ EndIf()
 # General definitions
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC")
 
-if(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "bms")
+if(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "bms" OR SOURCE_ENGINE MATCHES "gmod")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_MALLOC_OVERRIDE")
 Endif()
 
