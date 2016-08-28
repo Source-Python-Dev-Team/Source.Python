@@ -1,5 +1,5 @@
 # sql/operators.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -15,7 +15,7 @@ from .. import util
 
 from operator import (
     and_, or_, inv, add, mul, sub, mod, truediv, lt, le, ne, gt, ge, eq, neg,
-    getitem, lshift, rshift
+    getitem, lshift, rshift, contains
 )
 
 if util.py2k:
@@ -332,6 +332,9 @@ class ColumnOperators(Operators):
 
         """
         return self.operate(neg)
+
+    def __contains__(self, other):
+        return self.operate(contains, other)
 
     def __getitem__(self, index):
         """Implement the [] operator.

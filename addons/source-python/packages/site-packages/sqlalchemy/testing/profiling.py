@@ -1,5 +1,5 @@
 # testing/profiling.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -75,6 +75,11 @@ class ProfileStatsFile(object):
             platform_tokens.append("pypy")
         if win32:
             platform_tokens.append("win")
+        platform_tokens.append(
+            "nativeunicode"
+            if config.db.dialect.convert_unicode
+            else "dbapiunicode"
+        )
         _has_cext = config.requirements._has_cextensions()
         platform_tokens.append(_has_cext and "cextensions" or "nocextensions")
         return "_".join(platform_tokens)

@@ -1,5 +1,5 @@
 # util/compat.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -62,6 +62,7 @@ if py3k:
         )
 
     string_types = str,
+    binary_types = bytes,
     binary_type = bytes
     text_type = str
     int_types = int,
@@ -115,6 +116,7 @@ else:
     from cStringIO import StringIO as byte_buffer
 
     string_types = basestring,
+    binary_types = bytes,
     binary_type = str
     text_type = unicode
     int_types = int, long
@@ -177,27 +179,27 @@ from operator import attrgetter as dottedgetter
 if py3k:
     def reraise(tp, value, tb=None, cause=None):
         if cause is not None:
+            assert cause is not value, "Same cause emitted"
             value.__cause__ = cause
         if value.__traceback__ is not tb:
             raise value.with_traceback(tb)
         raise value
 
-    def raise_from_cause(exception, exc_info=None):
-        if exc_info is None:
-            exc_info = sys.exc_info()
-        exc_type, exc_value, exc_tb = exc_info
-        reraise(type(exception), exception, tb=exc_tb, cause=exc_value)
 else:
+    # not as nice as that of Py3K, but at least preserves
+    # the code line where the issue occurred
     exec("def reraise(tp, value, tb=None, cause=None):\n"
+         "    if cause is not None:\n"
+         "        assert cause is not value, 'Same cause emitted'\n"
          "    raise tp, value, tb\n")
 
-    def raise_from_cause(exception, exc_info=None):
-        # not as nice as that of Py3K, but at least preserves
-        # the code line where the issue occurred
-        if exc_info is None:
-            exc_info = sys.exc_info()
-        exc_type, exc_value, exc_tb = exc_info
-        reraise(type(exception), exception, tb=exc_tb)
+
+def raise_from_cause(exception, exc_info=None):
+    if exc_info is None:
+        exc_info = sys.exc_info()
+    exc_type, exc_value, exc_tb = exc_info
+    cause = exc_value if exc_value is not exception else None
+    reraise(type(exception), exception, tb=exc_tb, cause=cause)
 
 if py3k:
     exec_ = getattr(builtins, 'exec')

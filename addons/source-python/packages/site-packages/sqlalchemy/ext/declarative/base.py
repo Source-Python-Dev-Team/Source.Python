@@ -1,5 +1,5 @@
 # ext/declarative/base.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -351,7 +351,8 @@ class _MapperConfig(object):
                 util.warn(
                     "On class %r, Column object %r named "
                     "directly multiple times, "
-                    "only one will be used: %s" %
+                    "only one will be used: %s. "
+                    "Consider using orm.synonym instead" %
                     (self.classname, name, (", ".join(sorted(keys))))
                 )
 

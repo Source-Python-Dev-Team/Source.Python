@@ -1,5 +1,5 @@
 # schema.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -15,6 +15,7 @@ from .sql.base import (
 
 
 from .sql.schema import (
+    BLANK_SCHEMA,
     CheckConstraint,
     Column,
     ColumnDefault,

@@ -4,7 +4,7 @@
  *
  * Sphinx stylesheet -- agogo theme.
  *
- * :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2016 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -506,4 +506,14 @@ div.code-block-caption {
     color: #333;
     padding: 2px 5px;
     font-size: small;
+}
+
+/* -- math display ---------------------------------------------------------- */
+
+div.body div.math p {
+    text-align: center;
+}
+
+span.eqno {
+    float: right;
 }

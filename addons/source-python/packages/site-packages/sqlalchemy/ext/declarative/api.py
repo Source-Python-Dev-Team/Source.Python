@@ -1,5 +1,5 @@
 # ext/declarative/api.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -397,6 +397,15 @@ class ConcreteBase(object):
                             'polymorphic_identity':'manager',
                             'concrete':True}
 
+    .. seealso::
+
+        :class:`.AbstractConcreteBase`
+
+        :ref:`concrete_inheritance`
+
+        :ref:`inheritance_concrete_helpers`
+
+
     """
 
     @classmethod
@@ -495,6 +504,13 @@ class AbstractConcreteBase(ConcreteBase):
        have been reworked to support relationships established directly
        on the abstract base, without any special configurational steps.
 
+    .. seealso::
+
+        :class:`.ConcreteBase`
+
+        :ref:`concrete_inheritance`
+
+        :ref:`inheritance_concrete_helpers`
 
     """
 

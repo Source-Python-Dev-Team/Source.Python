@@ -198,10 +198,11 @@ class _CoreSettings(ConfigObj):
 
         self['AUTH_SETTINGS']['BACKENDS'].comments[backend.name] = ['']
         for option, value in backend.options.items():
-            if option in self['AUTH_SETTINGS']['BACKENDS'][backend.name]:
-                continue
-
-            self['AUTH_SETTINGS']['BACKENDS'][backend.name][option] = value
+            backend_settings = self['AUTH_SETTINGS']['BACKENDS'][backend.name]
+            if option in backend_settings:
+                backend.options[option] = backend_settings[option]
+            else:
+                backend_settings[option] = value
 
 # Get the _CoreSettings instance
 _core_settings = _CoreSettings(CFG_PATH / 'core_settings.ini')
