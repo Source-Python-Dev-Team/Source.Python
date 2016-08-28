@@ -13,7 +13,7 @@
 import sys
 import pytz
 import time
-from datetime import timedelta, datetime
+from datetime import timedelta
 from datetime import tzinfo
 from threading import RLock
 
@@ -26,9 +26,9 @@ else:
 _cached_tz = None
 _cache_lock = RLock()
 
-STDOFFSET = timedelta(seconds = -time.timezone)
+STDOFFSET = timedelta(seconds=-time.timezone)
 if time.daylight:
-    DSTOFFSET = timedelta(seconds = -time.altzone)
+    DSTOFFSET = timedelta(seconds=-time.altzone)
 else:
     DSTOFFSET = STDOFFSET
 

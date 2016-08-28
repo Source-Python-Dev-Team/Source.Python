@@ -175,7 +175,7 @@ def _get_datamap(classname):
     # We haven't found an entity. Let's create it temporarily
     entity = BaseEntity.create(classname)
     datamap = entity.datamap
-    entity.destroy()
+    entity.remove()
     return datamap
 
 

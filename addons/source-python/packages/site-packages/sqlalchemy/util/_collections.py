@@ -1,5 +1,5 @@
 # util/_collections.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -10,7 +10,8 @@
 from __future__ import absolute_import
 import weakref
 import operator
-from .compat import threading, itertools_filterfalse, string_types
+from .compat import threading, itertools_filterfalse, string_types, \
+    binary_types
 from . import py2k
 import types
 import collections
@@ -199,10 +200,10 @@ class Properties(object):
         self._data[key] = obj
 
     def __getstate__(self):
-        return {'_data': self.__dict__['_data']}
+        return {'_data': self._data}
 
     def __setstate__(self, state):
-        self.__dict__['_data'] = state['_data']
+        object.__setattr__(self, '_data', state['_data'])
 
     def __getattr__(self, key):
         try:
@@ -794,7 +795,8 @@ def coerce_generator_arg(arg):
 def to_list(x, default=None):
     if x is None:
         return default
-    if not isinstance(x, collections.Iterable) or isinstance(x, string_types):
+    if not isinstance(x, collections.Iterable) or \
+            isinstance(x, string_types + binary_types):
         return [x]
     elif isinstance(x, list):
         return x

@@ -1,5 +1,5 @@
 # orm/evaluator.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -130,5 +130,8 @@ class EvaluatorCompiler(object):
             (type(clause).__name__, clause.operator))
 
     def visit_bindparam(self, clause):
-        val = clause.value
+        if clause.callable:
+            val = clause.callable()
+        else:
+            val = clause.value
         return lambda obj: val
