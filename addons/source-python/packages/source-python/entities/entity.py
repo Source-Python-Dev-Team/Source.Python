@@ -78,10 +78,6 @@ class Entity(BaseEntity):
         # Set the entity's base attributes
         object.__setattr__(self, '_index', index)
 
-    def __eq__(self, other):
-        """Return True if both entities have the same index."""
-        return self.index == other.index
-
     def __hash__(self):
         """Return a hash value based on the entity index."""
         # Required for sets, because we have implemented __eq__
@@ -153,7 +149,7 @@ class Entity(BaseEntity):
         if entity.is_networked():
             return cls(entity.index)
 
-        entity.destroy()
+        entity.remove()
         raise ValueError('"{}" is not a networked entity.'.format(classname))
 
     @classmethod

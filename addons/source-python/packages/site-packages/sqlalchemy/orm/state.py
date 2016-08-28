@@ -1,5 +1,5 @@
 # orm/state.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -194,7 +194,7 @@ class InstanceState(interfaces.InspectionAttr):
         Returns ``None`` if the object has no primary key identity.
 
         .. note::
-            An object which is transient or pending
+            An object which is :term:`transient` or :term:`pending`
             does **not** have a mapped identity until it is flushed,
             even if its attributes include primary key values.
 

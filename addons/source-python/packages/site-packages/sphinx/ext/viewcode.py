@@ -5,7 +5,7 @@
 
     Add links to module code in Python object descriptions.
 
-    :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
+    :copyright: Copyright 2007-2016 by the Sphinx team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -139,7 +139,11 @@ def collect_pages(app):
         # construct a page name for the highlighted source
         pagename = '_modules/' + modname.replace('.', '/')
         # highlight the source using the builder's highlighter
-        highlighted = highlighter.highlight_block(code, 'python', linenos=False)
+        if env.config.highlight_language in ('python3', 'default'):
+            lexer = env.config.highlight_language
+        else:
+            lexer = 'python'
+        highlighted = highlighter.highlight_block(code, lexer, linenos=False)
         # split the code into lines
         lines = highlighted.splitlines()
         # split off wrap markup from the first line of the actual code

@@ -64,6 +64,12 @@ void export_base_entity(scope _entity)
 			args("entity_index")
 		)
 	);
+	
+	BaseEntity.def(
+		"__eq__", 
+		&CBaseEntityWrapper::operator==,
+		"Return True if both entities are the same."
+	);
 
 	BaseEntity.def("create",
 		&CBaseEntityWrapper::create,

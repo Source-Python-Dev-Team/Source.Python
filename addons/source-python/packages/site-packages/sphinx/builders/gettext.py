@@ -5,13 +5,13 @@
 
     The MessageCatalogBuilder class.
 
-    :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
+    :copyright: Copyright 2007-2016 by the Sphinx team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
 from __future__ import unicode_literals
 
-from os import path, walk
+from os import path, walk, getenv
 from codecs import open
 from time import time
 from datetime import datetime, tzinfo, timedelta
@@ -23,7 +23,7 @@ from six import iteritems
 from sphinx.builders import Builder
 from sphinx.util import split_index_msg
 from sphinx.util.nodes import extract_messages, traverse_translatable_index
-from sphinx.util.osutil import safe_relpath, ensuredir, SEP
+from sphinx.util.osutil import safe_relpath, ensuredir, canon_path
 from sphinx.util.i18n import find_catalog
 from sphinx.util.console import darkgreen, purple, bold
 from sphinx.locale import pairindextypes
@@ -117,7 +117,7 @@ class I18nBuilder(Builder):
         if 'index' in self.env.config.gettext_additional_targets:
             # Extract translatable messages from index entries.
             for node, entries in traverse_translatable_index(doctree):
-                for typ, msg, tid, main in entries:
+                for typ, msg, tid, main, key_ in entries:
                     for m in split_index_msg(typ, msg):
                         if typ == 'pair' and m in pairindextypes.values():
                             # avoid built-in translated message was incorporated
@@ -130,6 +130,12 @@ class I18nBuilder(Builder):
 timestamp = time()
 tzdelta = datetime.fromtimestamp(timestamp) - \
     datetime.utcfromtimestamp(timestamp)
+# set timestamp from SOURCE_DATE_EPOCH if set
+# see https://reproducible-builds.org/specs/source-date-epoch/
+source_date_epoch = getenv('SOURCE_DATE_EPOCH')
+if source_date_epoch is not None:
+    timestamp = float(source_date_epoch)
+    tzdelta = timedelta(0)
 
 
 class LocalTimeZone(tzinfo):
@@ -165,8 +171,7 @@ class MessageCatalogBuilder(I18nBuilder):
             for dirpath, dirs, files in walk(tmpl_abs_path):
                 for fn in files:
                     if fn.endswith('.html'):
-                        filename = path.join(dirpath, fn)
-                        filename = filename.replace(path.sep, SEP)
+                        filename = canon_path(path.join(dirpath, fn))
                         template_files.add(filename)
         return template_files
 
@@ -216,7 +221,8 @@ class MessageCatalogBuilder(I18nBuilder):
                     if self.config.gettext_location:
                         # generate "#: file1:line1\n#: file2:line2 ..."
                         pofile.write("#: %s\n" % "\n#: ".join(
-                            "%s:%s" % (safe_relpath(source, self.outdir), line)
+                            "%s:%s" % (canon_path(
+                                safe_relpath(source, self.outdir)), line)
                             for source, line, _ in positions))
                     if self.config.gettext_uuid:
                         # generate "# uuid1\n# uuid2\n ..."
