@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,31 +24,38 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _WEAPONS_SCRIPTS_GMOD_WRAP_H
-#define _WEAPONS_SCRIPTS_GMOD_WRAP_H
+#ifndef _WEAPONS_SCRIPTS_GMOD_H
+#define _WEAPONS_SCRIPTS_GMOD_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "weapons_scripts.h"
+#include "datamap.h"
+#include "game/shared/weapon_parse.h"
+#include "tier1/utldict.h"
+#include "utilities/wrap_macros.h"
 
 
 //-----------------------------------------------------------------------------
-// Exports WeaponDataBase_t.
+// WeaponDataBase_t declaration.
 //-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_weapon_database(T _scripts)
+typedef CUtlDict<FileWeaponInfo_t *, unsigned short> WeaponDataBase_t;
+
+
+//-----------------------------------------------------------------------------
+// WeaponDataBase_t extension class.
+//-----------------------------------------------------------------------------
+class WeaponDataBaseExt
 {
-	class_<WeaponDataBase_t, boost::noncopyable> _WeaponDatabase("_WeaponDatabase", no_init);
-	 
-	// Methods...
-	_WeaponDatabase.def("_find", &WeaponDataBaseExt::_find, manage_new_object_policy());
+public:
+	static CPointer *_find(WeaponDataBase_t *pWeaponDataBase, WEAPON_FILE_INFO_HANDLE uiIndex)
+	{
+		if (uiIndex >= pWeaponDataBase->Count())
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.");
 
-	// Properties...
-	_WeaponDatabase.add_property("_length", &WeaponDataBase_t::Count);
+		return new CPointer((unsigned long)(void *)pWeaponDataBase->Element(uiIndex));
+	}
+};
 
-	// Add memory tools...
-	_WeaponDatabase ADD_MEM_TOOLS(WeaponDataBase_t);
-}
 
-#endif // _WEAPONS_SCRIPTS_GMOD_WRAP_H
+#endif // _WEAPONS_SCRIPTS_GMOD_H
