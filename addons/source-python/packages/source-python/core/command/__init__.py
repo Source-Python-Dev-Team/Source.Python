@@ -1,4 +1,4 @@
-# ../core/commands/command.py
+# ../core/command/__init__.py
 
 """Registers the "sp" server command and all of its sub-commands."""
 
