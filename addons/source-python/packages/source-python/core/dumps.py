@@ -181,7 +181,9 @@ def _get_datamap(classname):
 
 def _dump_datamap(open_file, class_name, datamap):
     """Dump a DataMap object to the given file object."""
-    open_file.write('{0}\n'.format(class_name))
+    base = datamap.base
+    open_file.write('{} -> {}\n'.format(
+        class_name, base and base.class_name))
     for desc in datamap:
         _dump_type_description(open_file, desc)
 
@@ -216,11 +218,14 @@ def dump_server_classes(filename):
         # Loop through all server classes
         for server_class in ServerClassGenerator():
 
+            table = server_class.table
+
             # Print the server class' name to file
-            open_file.write('{0}\n'.format(server_class.name))
+            open_file.write('{} -> {}\n'.format(
+                server_class.name, _find_base_server_class_name(table)))
 
             # Get all items in the server class' table
-            _dump_server_class_table(server_class.table, open_file)
+            _dump_server_class_table(table, open_file)
 
             # Move to the next server class
             server_class = server_class.next
@@ -230,6 +235,22 @@ def dump_server_classes(filename):
 
                 # Write a separator line before the next server class output
                 open_file.write('\n')
+
+
+def _find_base_server_class_name(table):
+    """Return the name of table's base server class."""
+    for prop in table:
+        if prop.name != 'baseclass':
+            continue
+
+        base_name = prop.data_table.name
+        for server_class in ServerClassGenerator():
+            if server_class.table.name == base_name:
+                return server_class.name
+
+        return None
+
+    return None
 
 
 def _dump_server_class_table(table, open_file, level=1, offset=0):
