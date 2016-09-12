@@ -98,12 +98,12 @@ void export_source_file(scope _filesystem)
 
 	_SourceFile.def(
 		"writelines",
-		&SourceFile::Truncate
+		&SourceFile::Writelines
 	);
 
 	_SourceFile.def(
 		"truncate",
-		&SourceFile::Writelines,
+		&SourceFile::Truncate,
 		(arg("size")=-1)
 	);
 
@@ -112,7 +112,6 @@ void export_source_file(scope _filesystem)
 		&SourceFile::Close
 	);
 
-	// TODO Allow os.* constants?
 	_SourceFile.def(
 		"seek", 
 		&SourceFile::Seek,
@@ -168,6 +167,11 @@ void export_source_file(scope _filesystem)
 	_SourceFile.add_property(
 		"handle",
 		make_function(&SourceFile::GetHandle, return_by_value_policy())
+	);
+
+	_SourceFile.add_property(
+		"eof",
+		&SourceFile::EndOfFile
 	);
 	
 	_SourceFile.def(

@@ -45,9 +45,9 @@ public:
 
 	// File-like methods
 	PyObject*		Read(int size=-1);
-	int				Write(object data);
+	void			Write(PyObject* data);
 	void			Close();
-	void			Seek(int pos, FileSystemSeek_t seekType=FILESYSTEM_SEEK_HEAD);
+	void			Seek(int pos, int seekType=FILESYSTEM_SEEK_HEAD);
 	unsigned int	Tell();
 	unsigned int	Size();
 	void			Flush();
@@ -57,7 +57,7 @@ public:
 	bool			Closed();
 	bool			Readable();
 	bool			Writeable();
-	object			Readline(int size=-1);
+	PyObject*		Readline(int size=-1);
 	// TODO
 	//__iter__
 	// __next__
@@ -73,14 +73,18 @@ public:
 	// TODO
 	// void			Delete();
 	// void			Rename();
+	bool			EndOfFile();
 
 	static SourceFile* Open(const char* pFileName, const char* pMode, const char* pathID=0);
 
 private:
-	PyObject*		ConsumeBuffer(void* buffer, int bytesRead);
+	PyObject*		ConsumeBuffer(char* buffer, int bytesRead);
 	void			CheckClosed();
-	void			Writeline(object data);
+	void			WriteData(PyObject* data);
 	bool			IsBinaryMode();
+	void			CheckReadable();
+	void			CheckWriteable();
+	PyObject*		InternalReadline(bool binaryMode, int size, int& outBytesRead);
 
 private:
 	FileHandle_t m_handle;
