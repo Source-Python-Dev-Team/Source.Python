@@ -47,7 +47,7 @@ public:
 	PyObject*		Read(int size=-1);
 	int				Write(object data);
 	void			Close();
-	void			Seek(int pos, FileSystemSeek_t seekType=FILESYSTEM_SEEK_HEAD);
+	void			Seek(int pos, int seekType=FILESYSTEM_SEEK_HEAD);
 	unsigned int	Tell();
 	unsigned int	Size();
 	void			Flush();

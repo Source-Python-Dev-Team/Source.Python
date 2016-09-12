@@ -112,7 +112,6 @@ void export_source_file(scope _filesystem)
 		&SourceFile::Close
 	);
 
-	// TODO Allow os.* constants?
 	_SourceFile.def(
 		"seek", 
 		&SourceFile::Seek,

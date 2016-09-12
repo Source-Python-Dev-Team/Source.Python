@@ -176,10 +176,10 @@ void SourceFile::Close()
 	}
 }
 
-void SourceFile::Seek(int pos, FileSystemSeek_t seekType)
+void SourceFile::Seek(int pos, int seekType)
 {
 	CheckClosed();
-	filesystem->Seek(m_handle, pos, seekType);
+	filesystem->Seek(m_handle, pos, (FileSystemSeek_t) seekType);
 }
 
 unsigned int SourceFile::Tell()
