@@ -77,6 +77,7 @@ CSourcePython::~CSourcePython()
 //---------------------------------------------------------------------------------
 void* SPLoadLibrary( IVEngineServer* engine, const char* libraryPath )
 {
+	DevMsg(1, MSG_PREFIX "Loading library: %s\n", libraryPath);
 	char szFullPath[MAX_PATH_LENGTH];
 	char szGamePath[MAX_PATH_LENGTH];
 	char szError[MAX_PATH_LENGTH];
@@ -178,7 +179,9 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// ------------------------------------------------------------------
 	// Get the game directory.
 	// ------------------------------------------------------------------
+	DevMsg(1, MSG_PREFIX "Retrieving game directory...\n");
 	engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
+	DevMsg(1, MSG_PREFIX "Game directory: %s\n", szGameDir);
 	GenerateSymlink(szGameDir);
 
 	// ------------------------------------------------------------------
@@ -213,6 +216,10 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 #else
 	#error Unsupported platform.
 #endif
+	if (!pFunc) {
+		Msg(MSG_PREFIX "Failed to retrieve %s.\n", CREATEINTERFACE_PROCNAME);
+		return false;
+	}
 
 	m_pCorePlugin = static_cast<IServerPluginCallbacks*>(pFunc(INTERFACEVERSION_ISERVERPLUGINCALLBACKS, NULL));
 	if( !m_pCorePlugin ) {

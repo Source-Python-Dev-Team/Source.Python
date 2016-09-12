@@ -7,8 +7,7 @@ Subpackages
 .. toctree::
     :titlesonly:
 
-    players.games
-    players.weapons
+    players.engines
 
 Submodules
 ----------
@@ -16,6 +15,7 @@ Submodules
 .. toctree::
    :titlesonly:
 
+   players._base
    players.bots
    players.constants
    players.dictionary
