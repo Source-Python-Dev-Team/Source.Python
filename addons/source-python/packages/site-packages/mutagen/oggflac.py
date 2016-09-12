@@ -24,6 +24,7 @@ from ._compat import cBytesIO
 from mutagen import StreamInfo
 from mutagen.flac import StreamInfo as FLACStreamInfo, error as FLACError
 from mutagen._vorbis import VCommentDict
+from mutagen._util import loadfile, convert_error
 from mutagen.ogg import OggPage, OggFileType, error as OggError
 
 
@@ -36,16 +37,19 @@ class OggFLACHeaderError(error):
 
 
 class OggFLACStreamInfo(StreamInfo):
-    """Ogg FLAC stream info."""
+    """OggFLACStreamInfo()
+
+    Ogg FLAC stream info.
+
+    Attributes:
+        length (`float`): File length in seconds, as a float
+        channels (`float`): Number of channels
+        sample_rate (`int`): Sample rate in Hz"
+    """
 
     length = 0
-    """File length in seconds, as a float"""
-
     channels = 0
-    """Number of channels"""
-
     sample_rate = 0
-    """Sample rate in Hz"""
 
     def __init__(self, fileobj):
         page = OggPage(fileobj)
@@ -130,7 +134,17 @@ class OggFLACVComment(VCommentDict):
 
 
 class OggFLAC(OggFileType):
-    """An Ogg FLAC file."""
+    """OggFLAC(filething)
+
+    An Ogg FLAC file.
+
+    Arguments:
+        filething (filething)
+
+    Attributes:
+        info (`OggFLACStreamInfo`)
+        tags (`mutagen._vorbis.VCommentDict`)
+    """
 
     _Info = OggFLACStreamInfo
     _Tags = OggFLACVComment
@@ -138,13 +152,7 @@ class OggFLAC(OggFileType):
     _mimes = ["audio/x-oggflac"]
 
     info = None
-    """A `OggFLACStreamInfo`"""
-
     tags = None
-    """A `VCommentDict`"""
-
-    def save(self, filename=None):
-        return super(OggFLAC, self).save(filename)
 
     @staticmethod
     def score(filename, fileobj, header):
@@ -155,7 +163,19 @@ class OggFLAC(OggFileType):
 Open = OggFLAC
 
 
-def delete(filename):
-    """Remove tags from a file."""
+@convert_error(IOError, error)
+@loadfile(method=False, writable=True)
+def delete(filething):
+    """ delete(filething)
 
-    OggFLAC(filename).delete()
+    Arguments:
+        filething (filething)
+    Raises:
+        mutagen.MutagenError
+
+    Remove tags from a file.
+    """
+
+    t = OggFLAC(filething)
+    filething.fileobj.seek(0)
+    t.delete(filething)

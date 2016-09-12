@@ -18,16 +18,17 @@ from mutagen import StreamInfo, FileType
 
 from mutagen.id3 import ID3
 from mutagen.id3._util import ID3NoHeaderError, error as ID3Error
-from mutagen._util import resize_bytes, delete_bytes, MutagenError
+from mutagen._util import resize_bytes, delete_bytes, MutagenError, loadfile, \
+    convert_error
 
 __all__ = ["AIFF", "Open", "delete"]
 
 
-class error(MutagenError, RuntimeError):
+class error(MutagenError):
     pass
 
 
-class InvalidChunk(error, IOError):
+class InvalidChunk(error):
     pass
 
 
@@ -185,7 +186,7 @@ class IFFFile(object):
             return self.__chunks[id_]
         except KeyError:
             raise KeyError(
-                "%r has no %r chunk" % (self.__fileobj.name, id_))
+                "%r has no %r chunk" % (self.__fileobj, id_))
 
     def __delitem__(self, id_):
         """Remove a chunk from the IFF file"""
@@ -216,17 +217,18 @@ class IFFFile(object):
 
 
 class AIFFInfo(StreamInfo):
-    """AIFF audio stream information.
+    """AIFFInfo()
+
+    AIFF audio stream information.
 
     Information is parsed from the COMM chunk of the AIFF file
 
-    Useful attributes:
-
-    * length -- audio length, in seconds
-    * bitrate -- audio bitrate, in bits per second
-    * channels -- The number of audio channels
-    * sample_rate -- audio sample rate, in Hz
-    * sample_size -- The audio sample size
+    Attributes:
+        length (`float`): audio length, in seconds
+        bitrate (`int`): audio bitrate, in bits per second
+        channels (`int`): The number of audio channels
+        sample_rate (`int`): audio sample rate, in Hz
+        sample_size (`int`): The audio sample size
     """
 
     length = 0
@@ -234,7 +236,10 @@ class AIFFInfo(StreamInfo):
     channels = 0
     sample_rate = 0
 
+    @convert_error(IOError, error)
     def __init__(self, fileobj):
+        """Raises error"""
+
         iff = IFFFile(fileobj)
         try:
             common_chunk = iff[u'COMM']
@@ -242,6 +247,8 @@ class AIFFInfo(StreamInfo):
             raise error(str(e))
 
         data = common_chunk.read()
+        if len(data) < 18:
+            raise error
 
         info = struct.unpack('>hLh10s', data[:18])
         channels, frame_count, sample_size, sample_rate = info
@@ -266,61 +273,65 @@ class _IFFID3(ID3):
         except (InvalidChunk, KeyError):
             raise ID3NoHeaderError("No ID3 chunk")
 
-    def save(self, filename=None, v2_version=4, v23_sep='/', padding=None):
+    @convert_error(IOError, error)
+    @loadfile(writable=True)
+    def save(self, filething, v2_version=4, v23_sep='/', padding=None):
         """Save ID3v2 data to the AIFF file"""
 
-        if filename is None:
-            filename = self.filename
+        fileobj = filething.fileobj
 
-        # Unlike the parent ID3.save method, we won't save to a blank file
-        # since we would have to construct a empty AIFF file
-        with open(filename, 'rb+') as fileobj:
-            iff_file = IFFFile(fileobj)
+        iff_file = IFFFile(fileobj)
 
-            if u'ID3' not in iff_file:
-                iff_file.insert_chunk(u'ID3')
+        if u'ID3' not in iff_file:
+            iff_file.insert_chunk(u'ID3')
 
-            chunk = iff_file[u'ID3']
+        chunk = iff_file[u'ID3']
 
-            try:
-                data = self._prepare_data(
-                    fileobj, chunk.data_offset, chunk.data_size, v2_version,
-                    v23_sep, padding)
-            except ID3Error as e:
-                reraise(error, e, sys.exc_info()[2])
+        try:
+            data = self._prepare_data(
+                fileobj, chunk.data_offset, chunk.data_size, v2_version,
+                v23_sep, padding)
+        except ID3Error as e:
+            reraise(error, e, sys.exc_info()[2])
 
-            new_size = len(data)
-            new_size += new_size % 2  # pad byte
-            assert new_size % 2 == 0
-            chunk.resize(new_size)
-            data += (new_size - len(data)) * b'\x00'
-            assert new_size == len(data)
-            chunk.write(data)
+        new_size = len(data)
+        new_size += new_size % 2  # pad byte
+        assert new_size % 2 == 0
+        chunk.resize(new_size)
+        data += (new_size - len(data)) * b'\x00'
+        assert new_size == len(data)
+        chunk.write(data)
 
-    def delete(self, filename=None):
+    @loadfile(writable=True)
+    def delete(self, filething):
         """Completely removes the ID3 chunk from the AIFF file"""
 
-        if filename is None:
-            filename = self.filename
-        delete(filename)
+        delete(filething)
         self.clear()
 
 
-def delete(filename):
+@convert_error(IOError, error)
+@loadfile(method=False, writable=True)
+def delete(filething):
     """Completely removes the ID3 chunk from the AIFF file"""
 
-    with open(filename, "rb+") as file_:
-        try:
-            del IFFFile(file_)[u'ID3']
-        except KeyError:
-            pass
+    try:
+        del IFFFile(filething.fileobj)[u'ID3']
+    except KeyError:
+        pass
 
 
 class AIFF(FileType):
-    """An AIFF audio file.
+    """AIFF(filething)
 
-    :ivar info: :class:`AIFFInfo`
-    :ivar tags: :class:`ID3`
+    An AIFF audio file.
+
+    Arguments:
+        filething (filething)
+
+    Attributes:
+        tags (`mutagen.id3.ID3`)
+        info (`AIFFInfo`)
     """
 
     _mimes = ["audio/aiff", "audio/x-aiff"]
@@ -339,19 +350,24 @@ class AIFF(FileType):
         else:
             raise error("an ID3 tag already exists")
 
-    def load(self, filename, **kwargs):
+    @convert_error(IOError, error)
+    @loadfile()
+    def load(self, filething, **kwargs):
         """Load stream and tag information from a file."""
-        self.filename = filename
+
+        fileobj = filething.fileobj
 
         try:
-            self.tags = _IFFID3(filename, **kwargs)
+            self.tags = _IFFID3(fileobj, **kwargs)
         except ID3NoHeaderError:
             self.tags = None
         except ID3Error as e:
             raise error(e)
+        else:
+            self.tags.filename = self.filename
 
-        with open(filename, "rb") as fileobj:
-            self.info = AIFFInfo(fileobj)
+        fileobj.seek(0, 0)
+        self.info = AIFFInfo(fileobj)
 
 
 Open = AIFF

@@ -8,8 +8,20 @@
 # it under the terms of version 2 of the GNU General Public License as
 # published by the Free Software Foundation.
 
-from .._compat import long_, integer_types, PY3
-from .._util import MutagenError
+from mutagen._compat import long_, integer_types, PY3
+from mutagen._util import MutagenError
+
+
+def is_valid_frame_id(frame_id):
+    return frame_id.isalnum() and frame_id.isupper()
+
+
+class ID3SaveConfig(object):
+
+    def __init__(self, v2_version=4, v23_separator=None):
+        assert v2_version in (3, 4)
+        self.v2_version = v2_version
+        self.v23_separator = v23_separator
 
 
 class error(MutagenError):
@@ -28,7 +40,7 @@ class ID3EncryptionUnsupportedError(error, NotImplementedError):
     pass
 
 
-class ID3JunkFrameError(error, ValueError):
+class ID3JunkFrameError(error):
     pass
 
 
@@ -122,6 +134,8 @@ class BitPaddedInt(int, _BitPaddedMixin):
         shift = 0
 
         if isinstance(value, integer_types):
+            if value < 0:
+                raise ValueError
             while value:
                 numeric_value += (value & mask) << shift
                 value >>= 8

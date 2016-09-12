@@ -85,11 +85,34 @@ class HeaderObject(BaseObject):
 
         header = cls()
 
-        size, num_objects = cls.parse_size(fileobj)
+        remaining_header, num_objects = cls.parse_size(fileobj)
+        remaining_header -= 30
+
         for i in xrange(num_objects):
-            guid, size = struct.unpack("<16sQ", fileobj.read(24))
+            obj_header_size = 24
+            if remaining_header < obj_header_size:
+                raise ASFHeaderError("invalid header size")
+            data = fileobj.read(obj_header_size)
+            if len(data) != obj_header_size:
+                raise ASFHeaderError("truncated")
+            remaining_header -= obj_header_size
+
+            guid, size = struct.unpack("<16sQ", data)
             obj = BaseObject._get_object(guid)
-            data = fileobj.read(size - 24)
+
+            payload_size = size - obj_header_size
+            if remaining_header < payload_size:
+                raise ASFHeaderError("invalid object size")
+            remaining_header -= payload_size
+
+            try:
+                data = fileobj.read(payload_size)
+            except OverflowError:
+                # read doesn't take 64bit values
+                raise ASFHeaderError("invalid header size")
+            if len(data) != payload_size:
+                raise ASFHeaderError("truncated")
+
             obj.parse(asf, data)
             header.objects.append(obj)
 

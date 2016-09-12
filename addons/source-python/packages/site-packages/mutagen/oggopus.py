@@ -20,7 +20,7 @@ import struct
 
 from mutagen import StreamInfo
 from mutagen._compat import BytesIO
-from mutagen._util import get_size
+from mutagen._util import get_size, loadfile, convert_error
 from mutagen._tags import PaddingInfo
 from mutagen._vorbis import VCommentDict
 from mutagen.ogg import OggPage, OggFileType, error as OggError
@@ -35,13 +35,17 @@ class OggOpusHeaderError(error):
 
 
 class OggOpusInfo(StreamInfo):
-    """Ogg Opus stream information."""
+    """OggOpusInfo()
+
+    Ogg Opus stream information.
+
+    Attributes:
+        length (`float`): File length in seconds, as a float
+        channels (`int`): Number of channels
+    """
 
     length = 0
-    """File length in seconds, as a float"""
-
     channels = 0
-    """Number of channels"""
 
     def __init__(self, fileobj):
         page = OggPage(fileobj)
@@ -66,6 +70,8 @@ class OggOpusInfo(StreamInfo):
 
     def _post_tags(self, fileobj):
         page = OggPage.find_last(fileobj, self.serial)
+        if page is None:
+            raise OggOpusHeaderError
         self.length = (page.position - self.__pre_skip) / float(48000)
 
     def pprint(self):
@@ -131,7 +137,18 @@ class OggOpusVComment(VCommentDict):
 
 
 class OggOpus(OggFileType):
-    """An Ogg Opus file."""
+    """OggOpus(filething)
+
+    An Ogg Opus file.
+
+    Arguments:
+        filething (filething)
+
+    Attributes:
+        info (`OggOpusInfo`)
+        tags (`mutagen._vorbis.VCommentDict`)
+
+    """
 
     _Info = OggOpusInfo
     _Tags = OggOpusVComment
@@ -139,10 +156,7 @@ class OggOpus(OggFileType):
     _mimes = ["audio/ogg", "audio/ogg; codecs=opus"]
 
     info = None
-    """A `OggOpusInfo`"""
-
     tags = None
-    """A `VCommentDict`"""
 
     @staticmethod
     def score(filename, fileobj, header):
@@ -152,7 +166,19 @@ class OggOpus(OggFileType):
 Open = OggOpus
 
 
-def delete(filename):
-    """Remove tags from a file."""
+@convert_error(IOError, error)
+@loadfile(method=False, writable=True)
+def delete(filething):
+    """ delete(filething)
 
-    OggOpus(filename).delete()
+    Arguments:
+        filething (filething)
+    Raises:
+        mutagen.MutagenError
+
+    Remove tags from a file.
+    """
+
+    t = OggOpus(filething)
+    filething.fileobj.seek(0)
+    t.delete(filething)

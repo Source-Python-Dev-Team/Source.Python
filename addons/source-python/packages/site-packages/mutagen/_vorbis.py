@@ -20,7 +20,7 @@ import sys
 
 import mutagen
 from ._compat import reraise, BytesIO, text_type, xrange, PY3, PY2
-from mutagen._util import DictMixin, cdata
+from mutagen._util import DictMixin, cdata, MutagenError
 
 
 def is_valid_key(key):
@@ -45,7 +45,7 @@ def is_valid_key(key):
 istag = is_valid_key
 
 
-class error(IOError):
+class error(MutagenError):
     pass
 
 
@@ -57,7 +57,7 @@ class VorbisEncodingError(error):
     pass
 
 
-class VComment(mutagen.Metadata, list):
+class VComment(mutagen.Tags, list):
     """A Vorbis comment parser, accessor, and renderer.
 
     All comment ordering is preserved. A VComment is a list of
@@ -68,8 +68,7 @@ class VComment(mutagen.Metadata, list):
     file-like object, not a filename.
 
     Attributes:
-
-    * vendor -- the stream 'vendor' (i.e. writer); default 'Mutagen'
+        vendor (text): the stream 'vendor' (i.e. writer); default 'Mutagen'
     """
 
     vendor = u"Mutagen " + mutagen.version_string
@@ -91,12 +90,11 @@ class VComment(mutagen.Metadata, list):
     def load(self, fileobj, errors='replace', framing=True):
         """Parse a Vorbis comment from a file-like object.
 
-        Keyword arguments:
-
-        * errors:
-            'strict', 'replace', or 'ignore'. This affects Unicode decoding
-            and how other malformed content is interpreted.
-        * framing -- if true, fail if a framing bit is not present
+        Arguments:
+            errors (str): 'strict', 'replace', or 'ignore'.
+                This affects Unicode decoding and how other malformed content
+                is interpreted.
+            framing (bool): if true, fail if a framing bit is not present
 
         Framing bits are required by the Vorbis comment specification,
         but are not used in FLAC Vorbis comment blocks.
@@ -186,9 +184,8 @@ class VComment(mutagen.Metadata, list):
         Validation is always performed, so calling this function on
         invalid data may raise a ValueError.
 
-        Keyword arguments:
-
-        * framing -- if true, append a framing bit (see load)
+        Arguments:
+            framing (bool): if true, append a framing bit (see load)
         """
 
         self.validate()

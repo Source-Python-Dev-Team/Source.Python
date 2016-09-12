@@ -21,7 +21,7 @@ __all__ = ["WavPack", "Open", "delete"]
 
 from mutagen import StreamInfo
 from mutagen.apev2 import APEv2File, error, delete
-from mutagen._util import cdata
+from mutagen._util import cdata, convert_error
 
 
 class WavPackHeaderError(error):
@@ -47,6 +47,7 @@ class _WavPackHeader(object):
         self.crc = crc
 
     @classmethod
+    @convert_error(IOError, WavPackHeaderError)
     def from_fileobj(cls, fileobj):
         """A new _WavPackHeader or raises WavPackHeaderError"""
 
@@ -74,11 +75,10 @@ class WavPackInfo(StreamInfo):
     """WavPack stream information.
 
     Attributes:
-
-    * channels - number of audio channels (1 or 2)
-    * length - file length in seconds, as a float
-    * sample_rate - audio sampling rate in Hz
-    * version - WavPack stream version
+        channels (int): number of audio channels (1 or 2)
+        length (float: file length in seconds, as a float
+        sample_rate (int): audio sampling rate in Hz
+        version (int) WavPack stream version
     """
 
     def __init__(self, fileobj):

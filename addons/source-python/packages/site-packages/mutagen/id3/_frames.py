@@ -9,18 +9,17 @@
 import zlib
 from struct import unpack
 
-from ._util import ID3JunkFrameError, ID3EncryptionUnsupportedError, unsynch
-from ._specs import (
-    BinaryDataSpec, StringSpec, Latin1TextSpec, EncodedTextSpec, ByteSpec,
-    EncodingSpec, ASPIIndexSpec, SizedIntegerSpec, IntegerSpec,
-    VolumeAdjustmentsSpec, VolumePeakSpec, VolumeAdjustmentSpec,
-    ChannelSpec, MultiSpec, SynchronizedTextSpec, KeyEventSpec, TimeStampSpec,
-    EncodedNumericPartTextSpec, EncodedNumericTextSpec, SpecError)
-from .._compat import text_type, string_types, swap_to_string, iteritems, izip
-
-
-def is_valid_frame_id(frame_id):
-    return frame_id.isalnum() and frame_id.isupper()
+from ._util import ID3JunkFrameError, ID3EncryptionUnsupportedError, unsynch, \
+    ID3SaveConfig, error
+from ._specs import BinaryDataSpec, StringSpec, Latin1TextSpec, \
+    EncodedTextSpec, ByteSpec, EncodingSpec, ASPIIndexSpec, SizedIntegerSpec, \
+    IntegerSpec, Encoding, VolumeAdjustmentsSpec, VolumePeakSpec, \
+    VolumeAdjustmentSpec, ChannelSpec, MultiSpec, SynchronizedTextSpec, \
+    KeyEventSpec, TimeStampSpec, EncodedNumericPartTextSpec, \
+    EncodedNumericTextSpec, SpecError, PictureTypeSpec, ID3FramesSpec, \
+    Latin1TextListSpec, CTOCFlagsSpec, FrameIDSpec, RVASpec
+from .._compat import text_type, string_types, swap_to_string, iteritems, \
+    izip, itervalues
 
 
 def _bytes2key(b):
@@ -53,6 +52,7 @@ class Frame(object):
     FLAG24_DATALEN = 0x0001
 
     _framespec = []
+    _optionalspec = []
 
     def __init__(self, *args, **kwargs):
         if len(args) == 1 and len(kwargs) == 0 and \
@@ -62,14 +62,29 @@ class Frame(object):
             other._to_other(self)
         else:
             for checker, val in izip(self._framespec, args):
-                setattr(self, checker.name, checker.validate(self, val))
+                setattr(self, checker.name, val)
             for checker in self._framespec[len(args):]:
-                try:
-                    validated = checker.validate(
-                        self, kwargs.get(checker.name, None))
-                except ValueError as e:
-                    raise ValueError("%s: %s" % (checker.name, e))
-                setattr(self, checker.name, validated)
+                setattr(self, checker.name,
+                        kwargs.get(checker.name, checker.default))
+            for spec in self._optionalspec:
+                if spec.name in kwargs:
+                    setattr(self, spec.name, kwargs[spec.name])
+                else:
+                    break
+
+    def __setattr__(self, name, value):
+        for checker in self._framespec:
+            if checker.name == name:
+                self._setattr(name, checker.validate(self, value))
+                return
+        for checker in self._optionalspec:
+            if checker.name == name:
+                self._setattr(name, checker.validate(self, value))
+                return
+        super(Frame, self).__setattr__(name, value)
+
+    def _setattr(self, name, value):
+        self.__dict__[name] = value
 
     def _to_other(self, other):
         # this impl covers subclasses with the same framespec
@@ -77,7 +92,15 @@ class Frame(object):
             raise ValueError
 
         for checker in other._framespec:
-            setattr(other, checker.name, getattr(self, checker.name))
+            other._setattr(checker.name, getattr(self, checker.name))
+
+        # this impl covers subclasses with the same optionalspec
+        if other._optionalspec is not self._optionalspec:
+            raise ValueError
+
+        for checker in other._optionalspec:
+            if hasattr(self, checker.name):
+                other._setattr(checker.name, getattr(self, checker.name))
 
     def _get_v23_frame(self, **kwargs):
         """Returns a frame copy which is suitable for writing into a v2.3 tag.
@@ -90,6 +113,13 @@ class Frame(object):
             name = checker.name
             value = getattr(self, name)
             new_kwargs[name] = checker._validate23(self, value, **kwargs)
+
+        for checker in self._optionalspec:
+            name = checker.name
+            if hasattr(self, name):
+                value = getattr(self, name)
+                new_kwargs[name] = checker._validate23(self, value, **kwargs)
+
         return type(self)(**new_kwargs)
 
     @property
@@ -115,27 +145,64 @@ class Frame(object):
             # so repr works during __init__
             if hasattr(self, attr.name):
                 kw.append('%s=%r' % (attr.name, getattr(self, attr.name)))
+        for attr in self._optionalspec:
+            if hasattr(self, attr.name):
+                kw.append('%s=%r' % (attr.name, getattr(self, attr.name)))
         return '%s(%s)' % (type(self).__name__, ', '.join(kw))
 
-    def _readData(self, data):
+    def _readData(self, id3, data):
         """Raises ID3JunkFrameError; Returns leftover data"""
 
         for reader in self._framespec:
-            if len(data):
+            if len(data) or reader.handle_nodata:
                 try:
-                    value, data = reader.read(self, data)
+                    value, data = reader.read(id3, self, data)
                 except SpecError as e:
                     raise ID3JunkFrameError(e)
             else:
                 raise ID3JunkFrameError("no data left")
-            setattr(self, reader.name, value)
+            self._setattr(reader.name, value)
+
+        for reader in self._optionalspec:
+            if len(data) or reader.handle_nodata:
+                try:
+                    value, data = reader.read(id3, self, data)
+                except SpecError as e:
+                    raise ID3JunkFrameError(e)
+            else:
+                break
+            self._setattr(reader.name, value)
 
         return data
 
-    def _writeData(self):
+    def _writeData(self, config=None):
+        """Raises error"""
+
+        if config is None:
+            config = ID3SaveConfig()
+
+        if config.v2_version == 3:
+            frame = self._get_v23_frame(sep=config.v23_separator)
+        else:
+            frame = self
+
         data = []
         for writer in self._framespec:
-            data.append(writer.write(self, getattr(self, writer.name)))
+            try:
+                data.append(
+                    writer.write(config, frame, getattr(frame, writer.name)))
+            except SpecError as e:
+                raise error(e)
+
+        for writer in self._optionalspec:
+            try:
+                data.append(
+                    writer.write(config, frame, getattr(frame, writer.name)))
+            except AttributeError:
+                break
+            except SpecError as e:
+                raise error(e)
+
         return b''.join(data)
 
     def pprint(self):
@@ -146,7 +213,7 @@ class Frame(object):
         return "[unrepresentable data]"
 
     @classmethod
-    def _fromData(cls, id3, tflags, data):
+    def _fromData(cls, header, tflags, data):
         """Construct this ID3 frame from raw string data.
 
         Raises:
@@ -156,7 +223,7 @@ class Frame(object):
         ID3EncryptionUnsupportedError in case the frame is encrypted.
         """
 
-        if id3.version >= id3._V24:
+        if header.version >= header._V24:
             if tflags & (Frame.FLAG24_COMPRESS | Frame.FLAG24_DATALEN):
                 # The data length int is syncsafe in 2.4 (but not 2.3).
                 # However, we don't actually need the data length int,
@@ -164,14 +231,14 @@ class Frame(object):
                 # all we need are the raw bytes.
                 datalen_bytes = data[:4]
                 data = data[4:]
-            if tflags & Frame.FLAG24_UNSYNCH or id3.f_unsynch:
+            if tflags & Frame.FLAG24_UNSYNCH or header.f_unsynch:
                 try:
                     data = unsynch.decode(data)
                 except ValueError:
                     # Some things write synch-unsafe data with either the frame
                     # or global unsynch flag set. Try to load them as is.
-                    # https://bitbucket.org/lazka/mutagen/issue/210
-                    # https://bitbucket.org/lazka/mutagen/issue/223
+                    # https://github.com/quodlibet/mutagen/issues/210
+                    # https://github.com/quodlibet/mutagen/issues/223
                     pass
             if tflags & Frame.FLAG24_ENCRYPT:
                 raise ID3EncryptionUnsupportedError
@@ -188,7 +255,7 @@ class Frame(object):
                         raise ID3JunkFrameError(
                             'zlib: %s: %r' % (err, data))
 
-        elif id3.version >= id3._V23:
+        elif header.version >= header._V23:
             if tflags & Frame.FLAG23_COMPRESS:
                 usize, = unpack('>L', data[:4])
                 data = data[4:]
@@ -201,87 +268,93 @@ class Frame(object):
                     raise ID3JunkFrameError('zlib: %s: %r' % (err, data))
 
         frame = cls()
-        frame._readData(data)
+        frame._readData(header, data)
         return frame
 
     def __hash__(self):
         raise TypeError("Frame objects are unhashable")
 
 
-class FrameOpt(Frame):
-    """A frame with optional parts.
+class CHAP(Frame):
+    """Chapter"""
 
-    Some ID3 frames have optional data; this class extends Frame to
-    provide support for those parts.
-    """
+    _framespec = [
+        Latin1TextSpec("element_id"),
+        SizedIntegerSpec("start_time", 4, default=0),
+        SizedIntegerSpec("end_time", 4, default=0),
+        SizedIntegerSpec("start_offset", 4, default=0xffffffff),
+        SizedIntegerSpec("end_offset", 4, default=0xffffffff),
+        ID3FramesSpec("sub_frames"),
+    ]
 
-    _optionalspec = []
+    @property
+    def HashKey(self):
+        return '%s:%s' % (self.FrameID, self.element_id)
 
-    def __init__(self, *args, **kwargs):
-        super(FrameOpt, self).__init__(*args, **kwargs)
-        for spec in self._optionalspec:
-            if spec.name in kwargs:
-                validated = spec.validate(self, kwargs[spec.name])
-                setattr(self, spec.name, validated)
-            else:
-                break
+    def __eq__(self, other):
+        if not isinstance(other, CHAP):
+            return False
 
-    def _to_other(self, other):
-        super(FrameOpt, self)._to_other(other)
+        self_frames = self.sub_frames or {}
+        other_frames = other.sub_frames or {}
+        if sorted(self_frames.values()) != sorted(other_frames.values()):
+            return False
 
-        # this impl covers subclasses with the same optionalspec
-        if other._optionalspec is not self._optionalspec:
-            raise ValueError
+        return self.element_id == other.element_id and \
+            self.start_time == other.start_time and \
+            self.end_time == other.end_time and \
+            self.start_offset == other.start_offset and \
+            self.end_offset == other.end_offset
 
-        for checker in other._optionalspec:
-            if hasattr(self, checker.name):
-                setattr(other, checker.name, getattr(self, checker.name))
+    __hash__ = Frame.__hash__
 
-    def _readData(self, data):
-        """Raises ID3JunkFrameError; Returns leftover data"""
+    def _pprint(self):
+        frame_pprint = u""
+        for frame in itervalues(self.sub_frames):
+            for line in frame.pprint().splitlines():
+                frame_pprint += "\n" + " " * 4 + line
+        return u"%s time=%d..%d offset=%d..%d%s" % (
+            self.element_id, self.start_time, self.end_time,
+            self.start_offset, self.end_offset, frame_pprint)
 
-        for reader in self._framespec:
-            if len(data):
-                try:
-                    value, data = reader.read(self, data)
-                except SpecError as e:
-                    raise ID3JunkFrameError(e)
-            else:
-                raise ID3JunkFrameError("no data left")
-            setattr(self, reader.name, value)
 
-        if data:
-            for reader in self._optionalspec:
-                if len(data):
-                    try:
-                        value, data = reader.read(self, data)
-                    except SpecError as e:
-                        raise ID3JunkFrameError(e)
-                else:
-                    break
-                setattr(self, reader.name, value)
+class CTOC(Frame):
+    """Table of contents"""
 
-        return data
+    _framespec = [
+        Latin1TextSpec("element_id"),
+        CTOCFlagsSpec("flags", default=0),
+        Latin1TextListSpec("child_element_ids"),
+        ID3FramesSpec("sub_frames"),
+    ]
 
-    def _writeData(self):
-        data = []
-        for writer in self._framespec:
-            data.append(writer.write(self, getattr(self, writer.name)))
-        for writer in self._optionalspec:
-            try:
-                data.append(writer.write(self, getattr(self, writer.name)))
-            except AttributeError:
-                break
-        return b''.join(data)
+    @property
+    def HashKey(self):
+        return '%s:%s' % (self.FrameID, self.element_id)
 
-    def __repr__(self):
-        kw = []
-        for attr in self._framespec:
-            kw.append('%s=%r' % (attr.name, getattr(self, attr.name)))
-        for attr in self._optionalspec:
-            if hasattr(self, attr.name):
-                kw.append('%s=%r' % (attr.name, getattr(self, attr.name)))
-        return '%s(%s)' % (type(self).__name__, ', '.join(kw))
+    __hash__ = Frame.__hash__
+
+    def __eq__(self, other):
+        if not isinstance(other, CTOC):
+            return False
+
+        self_frames = self.sub_frames or {}
+        other_frames = other.sub_frames or {}
+        if sorted(self_frames.values()) != sorted(other_frames.values()):
+            return False
+
+        return self.element_id == other.element_id and \
+            self.flags == other.flags and \
+            self.child_element_ids == other.child_element_ids
+
+    def _pprint(self):
+        frame_pprint = u""
+        if getattr(self, "sub_frames", None):
+            frame_pprint += "\n" + "\n".join(
+                [" " * 4 + f.pprint() for f in self.sub_frames.values()])
+        return u"%s flags=%d child_element_ids=%s%s" % (
+            self.element_id, int(self.flags),
+            u",".join(self.child_element_ids), frame_pprint)
 
 
 @swap_to_string
@@ -301,8 +374,8 @@ class TextFrame(Frame):
     """
 
     _framespec = [
-        EncodingSpec('encoding'),
-        MultiSpec('text', EncodedTextSpec('text'), sep=u'\u0000'),
+        EncodingSpec('encoding', default=Encoding.UTF16),
+        MultiSpec('text', EncodedTextSpec('text'), sep=u'\u0000', default=[]),
     ]
 
     def __bytes__(self):
@@ -350,8 +423,9 @@ class NumericTextFrame(TextFrame):
     """
 
     _framespec = [
-        EncodingSpec('encoding'),
-        MultiSpec('text', EncodedNumericTextSpec('text'), sep=u'\u0000'),
+        EncodingSpec('encoding', default=Encoding.UTF16),
+        MultiSpec('text', EncodedNumericTextSpec('text'), sep=u'\u0000',
+                  default=[]),
     ]
 
     def __pos__(self):
@@ -370,8 +444,9 @@ class NumericPartTextFrame(TextFrame):
     """
 
     _framespec = [
-        EncodingSpec('encoding'),
-        MultiSpec('text', EncodedNumericPartTextSpec('text'), sep=u'\u0000'),
+        EncodingSpec('encoding', default=Encoding.UTF16),
+        MultiSpec('text', EncodedNumericPartTextSpec('text'), sep=u'\u0000',
+                  default=[]),
     ]
 
     def __pos__(self):
@@ -387,8 +462,8 @@ class TimeStampTextFrame(TextFrame):
     """
 
     _framespec = [
-        EncodingSpec('encoding'),
-        MultiSpec('text', TimeStampSpec('stamp'), sep=u','),
+        EncodingSpec('encoding', default=Encoding.UTF16),
+        MultiSpec('text', TimeStampSpec('stamp'), sep=u',', default=[]),
     ]
 
     def __bytes__(self):
@@ -414,7 +489,9 @@ class UrlFrame(Frame):
     ASCII.
     """
 
-    _framespec = [Latin1TextSpec('url')]
+    _framespec = [
+        Latin1TextSpec('url'),
+    ]
 
     def __bytes__(self):
         return self.url.encode('utf-8')
@@ -539,6 +616,14 @@ class TDEN(TimeStampTextFrame):
 
 class TDES(TextFrame):
     "iTunes Podcast Description"
+
+
+class TKWD(TextFrame):
+    "iTunes Podcast Keywords"
+
+
+class TCAT(TextFrame):
+    "iTunes Podcast Category"
 
 
 class TDOR(TimeStampTextFrame):
@@ -732,7 +817,7 @@ class TXXX(TextFrame):
     _framespec = [
         EncodingSpec('encoding'),
         EncodedTextSpec('desc'),
-        MultiSpec('text', EncodedTextSpec('text'), sep=u'\u0000'),
+        MultiSpec('text', EncodedTextSpec('text'), sep=u'\u0000', default=[]),
     ]
 
     @property
@@ -786,7 +871,7 @@ class WXXX(UrlFrame):
     """
 
     _framespec = [
-        EncodingSpec('encoding'),
+        EncodingSpec('encoding', default=Encoding.UTF16),
         EncodedTextSpec('desc'),
         Latin1TextSpec('url'),
     ]
@@ -809,10 +894,10 @@ class PairedTextFrame(Frame):
     """
 
     _framespec = [
-        EncodingSpec('encoding'),
+        EncodingSpec('encoding', default=Encoding.UTF16),
         MultiSpec('people',
                   EncodedTextSpec('involvement'),
-                  EncodedTextSpec('person'))
+                  EncodedTextSpec('person'), default=[])
     ]
 
     def __eq__(self, other):
@@ -839,7 +924,9 @@ class BinaryFrame(Frame):
     The 'data' attribute contains the raw byte string.
     """
 
-    _framespec = [BinaryDataSpec('data')]
+    _framespec = [
+        BinaryDataSpec('data'),
+    ]
 
     def __eq__(self, other):
         return self.data == other
@@ -855,8 +942,8 @@ class ETCO(Frame):
     """Event timing codes."""
 
     _framespec = [
-        ByteSpec("format"),
-        KeyEventSpec("events"),
+        ByteSpec("format", default=1),
+        KeyEventSpec("events", default=[]),
     ]
 
     def __eq__(self, other):
@@ -873,11 +960,11 @@ class MLLT(Frame):
     """
 
     _framespec = [
-        SizedIntegerSpec('frames', 2),
-        SizedIntegerSpec('bytes', 3),
-        SizedIntegerSpec('milliseconds', 3),
-        ByteSpec('bits_for_bytes'),
-        ByteSpec('bits_for_milliseconds'),
+        SizedIntegerSpec('frames', size=2, default=0),
+        SizedIntegerSpec('bytes', size=3, default=0),
+        SizedIntegerSpec('milliseconds', size=3, default=0),
+        ByteSpec('bits_for_bytes', default=0),
+        ByteSpec('bits_for_milliseconds', default=0),
         BinaryDataSpec('data'),
     ]
 
@@ -895,8 +982,8 @@ class SYTC(Frame):
     """
 
     _framespec = [
-        ByteSpec("format"),
-        BinaryDataSpec("data"),
+        ByteSpec("format", default=1),
+        BinaryDataSpec("data", default=b""),
     ]
 
     def __eq__(self, other):
@@ -914,8 +1001,8 @@ class USLT(Frame):
     """
 
     _framespec = [
-        EncodingSpec('encoding'),
-        StringSpec('lang', 3),
+        EncodingSpec('encoding', default=Encoding.UTF16),
+        StringSpec('lang', length=3, default=u"XXX"),
         EncodedTextSpec('desc'),
         EncodedTextSpec('text'),
     ]
@@ -942,9 +1029,9 @@ class SYLT(Frame):
 
     _framespec = [
         EncodingSpec('encoding'),
-        StringSpec('lang', 3),
-        ByteSpec('format'),
-        ByteSpec('type'),
+        StringSpec('lang', length=3, default=u"XXX"),
+        ByteSpec('format', default=1),
+        ByteSpec('type', default=0),
         EncodedTextSpec('desc'),
         SynchronizedTextSpec('text'),
     ]
@@ -974,9 +1061,9 @@ class COMM(TextFrame):
 
     _framespec = [
         EncodingSpec('encoding'),
-        StringSpec('lang', 3),
+        StringSpec('lang', length=3, default="XXX"),
         EncodedTextSpec('desc'),
-        MultiSpec('text', EncodedTextSpec('text'), sep=u'\u0000'),
+        MultiSpec('text', EncodedTextSpec('text'), sep=u'\u0000', default=[]),
     ]
 
     @property
@@ -1006,9 +1093,9 @@ class RVA2(Frame):
 
     _framespec = [
         Latin1TextSpec('desc'),
-        ChannelSpec('channel'),
-        VolumeAdjustmentSpec('gain'),
-        VolumePeakSpec('peak'),
+        ChannelSpec('channel', default=1),
+        VolumeAdjustmentSpec('gain', default=1),
+        VolumePeakSpec('peak', default=1),
     ]
 
     _channels = ["Other", "Master volume", "Front right", "Front left",
@@ -1046,9 +1133,9 @@ class EQU2(Frame):
     """
 
     _framespec = [
-        ByteSpec("method"),
+        ByteSpec("method", default=0),
         Latin1TextSpec("desc"),
-        VolumeAdjustmentsSpec("adjustments"),
+        VolumeAdjustmentsSpec("adjustments", default=[]),
     ]
 
     def __eq__(self, other):
@@ -1061,7 +1148,21 @@ class EQU2(Frame):
         return '%s:%s' % (self.FrameID, self.desc)
 
 
-# class RVAD: unsupported
+class RVAD(Frame):
+    """Relative volume adjustment"""
+
+    _framespec = [
+        RVASpec("adjustments", stereo_only=False),
+    ]
+
+    __hash__ = Frame.__hash__
+
+    def __eq__(self, other):
+        if not isinstance(other, RVAD):
+            return False
+        return self.adjustments == other.adjustments
+
+
 # class EQUA: unsupported
 
 
@@ -1069,16 +1170,16 @@ class RVRB(Frame):
     """Reverb."""
 
     _framespec = [
-        SizedIntegerSpec('left', 2),
-        SizedIntegerSpec('right', 2),
-        ByteSpec('bounce_left'),
-        ByteSpec('bounce_right'),
-        ByteSpec('feedback_ltl'),
-        ByteSpec('feedback_ltr'),
-        ByteSpec('feedback_rtr'),
-        ByteSpec('feedback_rtl'),
-        ByteSpec('premix_ltr'),
-        ByteSpec('premix_rtl'),
+        SizedIntegerSpec('left', size=2, default=0),
+        SizedIntegerSpec('right', size=2, default=0),
+        ByteSpec('bounce_left', default=0),
+        ByteSpec('bounce_right', default=0),
+        ByteSpec('feedback_ltl', default=0),
+        ByteSpec('feedback_ltr', default=0),
+        ByteSpec('feedback_rtr', default=0),
+        ByteSpec('feedback_rtl', default=0),
+        ByteSpec('premix_ltr', default=0),
+        ByteSpec('premix_rtl', default=0),
     ]
 
     def __eq__(self, other):
@@ -1104,7 +1205,7 @@ class APIC(Frame):
     _framespec = [
         EncodingSpec('encoding'),
         Latin1TextSpec('mime'),
-        ByteSpec('type'),
+        PictureTypeSpec('type'),
         EncodedTextSpec('desc'),
         BinaryDataSpec('data'),
     ]
@@ -1118,15 +1219,13 @@ class APIC(Frame):
     def HashKey(self):
         return '%s:%s' % (self.FrameID, self.desc)
 
-    def _validate_from_22(self, other, checker):
-        if checker.name == "mime":
-            self.mime = other.mime.decode("ascii", "ignore")
-        else:
-            super(APIC, self)._validate_from_22(other, checker)
-
     def _pprint(self):
-        return "%s (%s, %d bytes)" % (
-            self.desc, self.mime, len(self.data))
+        type_desc = text_type(self.type)
+        if hasattr(self.type, "_pprint"):
+            type_desc = self.type._pprint()
+
+        return "%s, %s (%s, %d bytes)" % (
+            type_desc, self.desc, self.mime, len(self.data))
 
 
 class PCNT(Frame):
@@ -1138,7 +1237,9 @@ class PCNT(Frame):
     This frame is basically obsoleted by POPM.
     """
 
-    _framespec = [IntegerSpec('count')]
+    _framespec = [
+        IntegerSpec('count', default=0),
+    ]
 
     def __eq__(self, other):
         return self.count == other
@@ -1152,7 +1253,26 @@ class PCNT(Frame):
         return text_type(self.count)
 
 
-class POPM(FrameOpt):
+class PCST(Frame):
+    """iTunes Podcast Flag"""
+
+    _framespec = [
+        IntegerSpec('value', default=0),
+    ]
+
+    def __eq__(self, other):
+        return self.value == other
+
+    __hash__ = Frame.__hash__
+
+    def __pos__(self):
+        return self.value
+
+    def _pprint(self):
+        return text_type(self.value)
+
+
+class POPM(Frame):
     """Popularimeter.
 
     This frame keys a rating (out of 255) and a play count to an email
@@ -1167,10 +1287,12 @@ class POPM(FrameOpt):
 
     _framespec = [
         Latin1TextSpec('email'),
-        ByteSpec('rating'),
+        ByteSpec('rating', default=0),
     ]
 
-    _optionalspec = [IntegerSpec('count')]
+    _optionalspec = [
+        IntegerSpec('count', default=0),
+    ]
 
     @property
     def HashKey(self):
@@ -1179,7 +1301,7 @@ class POPM(FrameOpt):
     def __eq__(self, other):
         return self.rating == other
 
-    __hash__ = FrameOpt.__hash__
+    __hash__ = Frame.__hash__
 
     def __pos__(self):
         return self.rating
@@ -1221,7 +1343,7 @@ class GEOB(Frame):
     __hash__ = Frame.__hash__
 
 
-class RBUF(FrameOpt):
+class RBUF(Frame):
     """Recommended buffer size.
 
     Attributes:
@@ -1233,24 +1355,26 @@ class RBUF(FrameOpt):
     Mutagen will not find the next tag itself.
     """
 
-    _framespec = [SizedIntegerSpec('size', 3)]
+    _framespec = [
+        SizedIntegerSpec('size', size=3, default=0),
+    ]
 
     _optionalspec = [
-        ByteSpec('info'),
-        SizedIntegerSpec('offset', 4),
+        ByteSpec('info', default=0),
+        SizedIntegerSpec('offset', size=4, default=0),
     ]
 
     def __eq__(self, other):
         return self.size == other
 
-    __hash__ = FrameOpt.__hash__
+    __hash__ = Frame.__hash__
 
     def __pos__(self):
         return self.size
 
 
 @swap_to_string
-class AENC(FrameOpt):
+class AENC(Frame):
     """Audio encryption.
 
     Attributes:
@@ -1265,11 +1389,13 @@ class AENC(FrameOpt):
 
     _framespec = [
         Latin1TextSpec('owner'),
-        SizedIntegerSpec('preview_start', 2),
-        SizedIntegerSpec('preview_length', 2),
+        SizedIntegerSpec('preview_start', size=2, default=0),
+        SizedIntegerSpec('preview_length', size=2, default=0),
     ]
 
-    _optionalspec = [BinaryDataSpec('data')]
+    _optionalspec = [
+        BinaryDataSpec('data'),
+    ]
 
     @property
     def HashKey(self):
@@ -1284,10 +1410,10 @@ class AENC(FrameOpt):
     def __eq__(self, other):
         return self.owner == other
 
-    __hash__ = FrameOpt.__hash__
+    __hash__ = Frame.__hash__
 
 
-class LINK(FrameOpt):
+class LINK(Frame):
     """Linked information.
 
     Attributes:
@@ -1298,7 +1424,7 @@ class LINK(FrameOpt):
     """
 
     _framespec = [
-        StringSpec('frameid', 4),
+        FrameIDSpec('frameid', length=4),
         Latin1TextSpec('url'),
     ]
 
@@ -1318,7 +1444,7 @@ class LINK(FrameOpt):
         except AttributeError:
             return (self.frameid, self.url) == other
 
-    __hash__ = FrameOpt.__hash__
+    __hash__ = Frame.__hash__
 
 
 class POSS(Frame):
@@ -1331,8 +1457,8 @@ class POSS(Frame):
     """
 
     _framespec = [
-        ByteSpec('format'),
-        IntegerSpec('position'),
+        ByteSpec('format', default=1),
+        IntegerSpec('position', default=0),
     ]
 
     def __pos__(self):
@@ -1355,7 +1481,7 @@ class UFID(Frame):
 
     _framespec = [
         Latin1TextSpec('owner'),
-        BinaryDataSpec('data'),
+        BinaryDataSpec('data', default=b""),
     ]
 
     @property
@@ -1387,7 +1513,7 @@ class USER(Frame):
 
     _framespec = [
         EncodingSpec('encoding'),
-        StringSpec('lang', 3),
+        StringSpec('lang', length=3, default=u"XXX"),
         EncodedTextSpec('text'),
     ]
 
@@ -1417,7 +1543,7 @@ class OWNE(Frame):
     _framespec = [
         EncodingSpec('encoding'),
         Latin1TextSpec('price'),
-        StringSpec('date', 8),
+        StringSpec('date', length=8, default=u"19700101"),
         EncodedTextSpec('seller'),
     ]
 
@@ -1433,15 +1559,15 @@ class OWNE(Frame):
     __hash__ = Frame.__hash__
 
 
-class COMR(FrameOpt):
+class COMR(Frame):
     """Commercial frame."""
 
     _framespec = [
         EncodingSpec('encoding'),
         Latin1TextSpec('price'),
-        StringSpec('valid_until', 8),
+        StringSpec('valid_until', length=8, default=u"19700101"),
         Latin1TextSpec('contact'),
-        ByteSpec('format'),
+        ByteSpec('format', default=0),
         EncodedTextSpec('seller'),
         EncodedTextSpec('desc'),
     ]
@@ -1458,7 +1584,7 @@ class COMR(FrameOpt):
     def __eq__(self, other):
         return self._writeData() == other._writeData()
 
-    __hash__ = FrameOpt.__hash__
+    __hash__ = Frame.__hash__
 
 
 @swap_to_string
@@ -1471,8 +1597,8 @@ class ENCR(Frame):
 
     _framespec = [
         Latin1TextSpec('owner'),
-        ByteSpec('method'),
-        BinaryDataSpec('data'),
+        ByteSpec('method', default=0x80),
+        BinaryDataSpec('data', default=b""),
     ]
 
     @property
@@ -1489,12 +1615,12 @@ class ENCR(Frame):
 
 
 @swap_to_string
-class GRID(FrameOpt):
+class GRID(Frame):
     """Group identification registration."""
 
     _framespec = [
         Latin1TextSpec('owner'),
-        ByteSpec('group'),
+        ByteSpec('group', default=0x80),
     ]
 
     _optionalspec = [BinaryDataSpec('data')]
@@ -1515,7 +1641,7 @@ class GRID(FrameOpt):
     def __eq__(self, other):
         return self.owner == other or self.group == other
 
-    __hash__ = FrameOpt.__hash__
+    __hash__ = Frame.__hash__
 
 
 @swap_to_string
@@ -1549,7 +1675,7 @@ class SIGN(Frame):
     """Signature frame."""
 
     _framespec = [
-        ByteSpec('group'),
+        ByteSpec('group', default=0x80),
         BinaryDataSpec('sig'),
     ]
 
@@ -1572,7 +1698,9 @@ class SEEK(Frame):
     Mutagen does not find tags at seek offsets.
     """
 
-    _framespec = [IntegerSpec('offset')]
+    _framespec = [
+        IntegerSpec('offset', default=0),
+    ]
 
     def __pos__(self):
         return self.offset
@@ -1589,12 +1717,13 @@ class ASPI(Frame):
     Attributes: S, L, N, b, and Fi. For the meaning of these, see
     the ID3v2.4 specification. Fi is a list of integers.
     """
+
     _framespec = [
-        SizedIntegerSpec("S", 4),
-        SizedIntegerSpec("L", 4),
-        SizedIntegerSpec("N", 2),
-        ByteSpec("b"),
-        ASPIIndexSpec("Fi"),
+        SizedIntegerSpec("S", size=4, default=0),
+        SizedIntegerSpec("L", size=4, default=0),
+        SizedIntegerSpec("N", size=2, default=0),
+        ByteSpec("b", default=0),
+        ASPIIndexSpec("Fi", default=[]),
     ]
 
     def __eq__(self, other):
@@ -1712,6 +1841,26 @@ class TEN(TENC):
     "Encoder"
 
 
+class TST(TSOT):
+    "Title Sort Order key"
+
+
+class TSA(TSOA):
+    "Album Sort Order key"
+
+
+class TS2(TSO2):
+    "iTunes Album Artist Sort"
+
+
+class TSP(TSOP):
+    "Perfomer Sort Order key"
+
+
+class TSC(TSOC):
+    "iTunes Composer Sort"
+
+
 class TSS(TSSE):
     "Encoder settings"
 
@@ -1816,7 +1965,19 @@ class COM(COMM):
     "Comment"
 
 
-# class RVA(RVAD)
+class RVA(RVAD):
+    "Relative volume adjustment"
+
+    _framespec = [
+        RVASpec("adjustments", stereo_only=True),
+    ]
+
+    def _to_other(self, other):
+        if not isinstance(other, RVAD):
+            raise TypeError
+
+        other.adjustments = list(self.adjustments)
+
 # class EQU(EQUA)
 
 
@@ -1833,10 +1994,10 @@ class PIC(APIC):
 
     _framespec = [
         EncodingSpec('encoding'),
-        StringSpec('mime', 3),
-        ByteSpec('type'),
+        StringSpec('mime', length=3, default="JPG"),
+        PictureTypeSpec('type'),
         EncodedTextSpec('desc'),
-        BinaryDataSpec('data')
+        BinaryDataSpec('data'),
     ]
 
     def _to_other(self, other):
@@ -1868,8 +2029,12 @@ class BUF(RBUF):
 
 class CRM(Frame):
     """Encrypted meta frame"""
-    _framespec = [Latin1TextSpec('owner'), Latin1TextSpec('desc'),
-                  BinaryDataSpec('data')]
+
+    _framespec = [
+        Latin1TextSpec('owner'),
+        Latin1TextSpec('desc'),
+        BinaryDataSpec('data'),
+    ]
 
     def __eq__(self, other):
         return self.data == other
@@ -1884,17 +2049,29 @@ class LNK(LINK):
     """Linked information"""
 
     _framespec = [
-        StringSpec('frameid', 3),
+        FrameIDSpec('frameid', length=3),
         Latin1TextSpec('url')
     ]
 
-    _optionalspec = [BinaryDataSpec('data')]
+    _optionalspec = [
+        BinaryDataSpec('data'),
+    ]
 
     def _to_other(self, other):
         if not isinstance(other, LINK):
             raise TypeError
 
-        other.frameid = self.frameid
+        if isinstance(other, LNK):
+            new_frameid = self.frameid
+        else:
+            try:
+                new_frameid = Frames_2_2[self.frameid].__bases__[0].__name__
+            except KeyError:
+                new_frameid = self.frameid.ljust(4)
+
+        # we could end up with invalid IDs here, so bypass the validation
+        other._setattr("frameid", new_frameid)
+
         other.url = self.url
         if hasattr(self, "data"):
             other.data = self.data
