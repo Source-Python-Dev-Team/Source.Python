@@ -1,4 +1,4 @@
-# ../effects.py
+# ../effects/__init__.py
 
 """Provides access to all effects within the engine."""
 

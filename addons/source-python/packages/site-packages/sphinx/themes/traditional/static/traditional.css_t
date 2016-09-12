@@ -4,7 +4,7 @@
  *
  * Sphinx stylesheet -- traditional docs.python.org theme.
  *
- * :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
+ * :copyright: Copyright 2007-2016 by the Sphinx team, see AUTHORS.
  * :license: BSD, see LICENSE for details.
  *
  */
@@ -735,4 +735,14 @@ div.figure p.caption span.caption-number {
 }
 
 div.figure p.caption span.caption-text {
+}
+
+/* :::: MATH DISPLAY :::: */
+
+div.body div.math p {
+    text-align: center;
+}
+
+span.eqno {
+    float: right;
 }

@@ -1,5 +1,5 @@
 # orm/session.py
-# Copyright (C) 2005-2015 the SQLAlchemy authors and contributors
+# Copyright (C) 2005-2016 the SQLAlchemy authors and contributors
 # <see AUTHORS file>
 #
 # This module is part of SQLAlchemy and is released under
@@ -412,23 +412,11 @@ class SessionTransaction(object):
             for subtransaction in stx._iterate_parents(upto=self):
                 subtransaction.close()
 
-        if _capture_exception:
-            captured_exception = sys.exc_info()[1]
-
         boundary = self
         if self._state in (ACTIVE, PREPARED):
             for transaction in self._iterate_parents():
                 if transaction._parent is None or transaction.nested:
-                    try:
-                        transaction._rollback_impl()
-                    except Exception:
-                        if _capture_exception:
-                            util.warn(
-                                "An exception raised during a Session "
-                                "persistence operation cannot be raised "
-                                "due to an additional ROLLBACK exception; "
-                                "the exception is: %s" % captured_exception)
-                        raise
+                    transaction._rollback_impl()
                     transaction._state = DEACTIVE
                     boundary = transaction
                     break
@@ -450,7 +438,7 @@ class SessionTransaction(object):
 
         self.close()
         if self._parent and _capture_exception:
-            self._parent._rollback_exception = captured_exception
+            self._parent._rollback_exception = sys.exc_info()[1]
 
         sess.dispatch.after_soft_rollback(sess, self)
 
@@ -1738,6 +1726,9 @@ class Session(_SessionClassMethods):
                     "all changes on mapped instances before merging with "
                     "load=False.")
             key = mapper._identity_key_from_state(state)
+            key_is_persistent = attributes.NEVER_SET not in key[1]
+        else:
+            key_is_persistent = True
 
         if key in self.identity_map:
             merged = self.identity_map[key]
@@ -1754,9 +1745,10 @@ class Session(_SessionClassMethods):
             self._update_impl(merged_state)
             new_instance = True
 
-        elif not _none_set.intersection(key[1]) or \
+        elif key_is_persistent and (
+            not _none_set.intersection(key[1]) or
             (mapper.allow_partial_pks and
-             not _none_set.issuperset(key[1])):
+             not _none_set.issuperset(key[1]))):
             merged = self.query(mapper.class_).get(key[1])
         else:
             merged = None
@@ -2706,18 +2698,49 @@ class sessionmaker(_SessionClassMethods):
 
 
 def make_transient(instance):
-    """Make the given instance 'transient'.
+    """Alter the state of the given instance so that it is :term:`transient`.
 
-    This will remove its association with any
-    session and additionally will remove its "identity key",
-    such that it's as though the object were newly constructed,
-    except retaining its values.   It also resets the
-    "deleted" flag on the state if this object
-    had been explicitly deleted by its session.
+    .. note::
 
-    Attributes which were "expired" or deferred at the
-    instance level are reverted to undefined, and
-    will not trigger any loads.
+        :func:`.make_transient` is a special-case function for
+        advanced use cases only.
+
+    The given mapped instance is assumed to be in the :term:`persistent` or
+    :term:`detached` state.   The function will remove its association with any
+    :class:`.Session` as well as its :attr:`.InstanceState.identity`. The
+    effect is that the object will behave as though it were newly constructed,
+    except retaining any attribute / collection values that were loaded at the
+    time of the call.   The :attr:`.InstanceState.deleted` flag is also reset
+    if this object had been deleted as a result of using
+    :meth:`.Session.delete`.
+
+    .. warning::
+
+        :func:`.make_transient` does **not** "unexpire" or otherwise eagerly
+        load ORM-mapped attributes that are not currently loaded at the time
+        the function is called.   This includes attributes which:
+
+        * were expired via :meth:`.Session.expire`
+
+        * were expired as the natural effect of committing a session
+          transaction, e.g. :meth:`.Session.commit`
+
+        * are normally :term:`lazy loaded` but are not currently loaded
+
+        * are "deferred" via :ref:`deferred` and are not yet loaded
+
+        * were not present in the query which loaded this object, such as that
+          which is common in joined table inheritance and other scenarios.
+
+        After :func:`.make_transient` is called, unloaded attributes such
+        as those above will normally resolve to the value ``None`` when
+        accessed, or an empty collection for a collection-oriented attribute.
+        As the object is transient and un-associated with any database
+        identity, it will no longer retrieve these values.
+
+    .. seealso::
+
+        :func:`.make_transient_to_detached`
 
     """
     state = attributes.instance_state(instance)
@@ -2739,7 +2762,12 @@ def make_transient(instance):
 
 
 def make_transient_to_detached(instance):
-    """Make the given transient instance 'detached'.
+    """Make the given transient instance :term:`detached`.
+
+    .. note::
+
+        :func:`.make_transient_to_detached` is a special-case function for
+        advanced use cases only.
 
     All attribute history on the given instance
     will be reset as though the instance were freshly loaded

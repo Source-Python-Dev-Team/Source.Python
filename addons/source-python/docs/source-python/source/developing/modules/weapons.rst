@@ -10,6 +10,7 @@ Submodules
    weapons.constants
    weapons.default
    weapons.dictionary
+   weapons.engines
    weapons.entity
    weapons.instance
    weapons.manager

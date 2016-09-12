@@ -71,7 +71,8 @@ class PermissionBase(dict):
 
         if update_backend and auth_manager.active_backend is not None:
             auth_manager.active_backend.permission_added(
-                self, permission, server_id)
+                self, permission,
+                auth_manager.server_id if server_id is None else server_id)
 
     def remove(self, permission, server_id=None, update_backend=True):
         """Remove a permission.
@@ -90,7 +91,8 @@ class PermissionBase(dict):
 
         if update_backend and auth_manager.active_backend is not None:
             auth_manager.active_backend.permission_removed(
-                self, permission, server_id)
+                self, permission,
+                auth_manager.server_id if server_id is None else server_id)
 
     def add_parent(self, parent_name, update_backend=True):
         """Add a parent.

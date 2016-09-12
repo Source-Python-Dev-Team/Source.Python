@@ -20,7 +20,7 @@ Source.Python is an open-source project that uses boost::python to allow scripte
       * __../custom/__ - Custom Packages
       * __../site-packages/__ - included site-packages
       * __../source-python/__ - Source.Python Python API
-    * __../plugins/__ - plugins (use "sp load <plugin>" in server console to load)
+    * __../plugins/__ - plugins (use "sp plugin load <plugin>" in server console to load)
     * __../Python3/__ - Python3.x base
 * __cfg/__
   * __../source-python/__ - configuration files

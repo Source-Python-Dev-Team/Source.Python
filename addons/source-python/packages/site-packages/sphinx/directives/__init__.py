@@ -5,7 +5,7 @@
 
     Handlers for additional ReST directives.
 
-    :copyright: Copyright 2007-2015 by the Sphinx team, see AUTHORS.
+    :copyright: Copyright 2007-2016 by the Sphinx team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -20,6 +20,7 @@ from sphinx.util.docfields import DocFieldTransformer
 # import and register directives
 from sphinx.directives.code import *   # noqa
 from sphinx.directives.other import *  # noqa
+from sphinx.directives.patches import *  # noqa
 
 
 # RE to strip backslash escapes

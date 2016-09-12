@@ -9,7 +9,7 @@ import pytest
 import argparse
 import inspect
 import collections
-import itertools
+import os
 
 try:
     import xdist  # noqa
@@ -43,6 +43,14 @@ def pytest_configure(config):
             config.slaveinput["follower_ident"]
         )
 
+        if config.option.write_idents:
+            with open(config.option.write_idents, "a") as file_:
+                file_.write(config.slaveinput["follower_ident"] + "\n")
+    else:
+        if config.option.write_idents and \
+                os.path.exists(config.option.write_idents):
+            os.remove(config.option.write_idents)
+
     plugin_base.pre_begin(config.option)
 
     plugin_base.set_coverage_flag(bool(getattr(config.option,
@@ -55,7 +63,7 @@ def pytest_sessionstart(session):
     plugin_base.post_begin()
 
 if has_xdist:
-    _follower_count = itertools.count(1)
+    import uuid
 
     def pytest_configure_node(node):
         # the master for each node fills slaveinput dictionary
@@ -63,7 +71,7 @@ if has_xdist:
 
         plugin_base.memoize_important_follower_config(node.slaveinput)
 
-        node.slaveinput["follower_ident"] = "test_%s" % next(_follower_count)
+        node.slaveinput["follower_ident"] = "test_%s" % uuid.uuid4().hex[0:12]
         from sqlalchemy.testing import provision
         provision.create_follower_db(node.slaveinput["follower_ident"])
 
