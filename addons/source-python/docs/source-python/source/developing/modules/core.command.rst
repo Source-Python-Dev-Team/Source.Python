@@ -10,6 +10,7 @@ Submodules
    core.command.auth
    core.command.docs
    core.command.dump
+   core.command.plugin
 
 Module contents
 ---------------
