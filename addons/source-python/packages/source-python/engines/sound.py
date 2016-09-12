@@ -10,6 +10,8 @@
 from contextlib import closing
 #   Enum
 from enum import Enum
+#   Os
+import os
 #   Wave
 import wave
 
@@ -17,7 +19,6 @@ import wave
 #   Mutagen
 from mutagen import mp3
 from mutagen import oggvorbis
-import vpk
 
 # Source.Python Imports
 #   Core
@@ -26,6 +27,8 @@ from core import AutoUnload
 from engines import engines_logger
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
+#   Filesystem
+from filesystem import SourceFile
 #   Filters
 from filters.recipients import RecipientFilter
 #   Mathlib
@@ -80,13 +83,6 @@ __all__ = ('Attenuation',
 # Get the sp.engines.sound logger
 engines_sound_logger = engines_logger.sound
 
-# Store all vpk files so we don't have to find them every time we need one
-_all_vpks = {vpk.open(x) for x in GAME_PATH.parent.walkfiles('*_dir.vpk')}
-
-# Create a dictionary to store sounds so that we only have to get their
-#   duration once and not every time.
-_sound_durations = {}
-
 
 # =============================================================================
 # >> ENUMERATORS
@@ -124,6 +120,8 @@ class _BaseSound(AutoUnload):
         # Set sample as a private attribute, since it should never change
         # Added replacing \ with / in paths for comformity
         self._sample = sample.replace('\\', '/')
+
+        self._duration = None
 
         # Set all the base attributes
         self.index = index
@@ -210,56 +208,32 @@ class _BaseSound(AutoUnload):
         return GAME_PATH / 'sound' / self.sample
 
     @property
+    def relative_path(self):
+        """Return the relative path to the file."""
+        return 'sound' + os.sep + self.sample
+
+    @property
     def duration(self):
         """Return the duration of the sample."""
-        if self.sample in _sound_durations:
-            return _sound_durations[self.sample]
+        if self._duration is not None:
+            return self._duration
 
-        created_dir = False
-        created_file = False
-        if not self.full_path.isfile():
-            for vpk_file in _all_vpks:
-                if not 'sound/' + self.sample in vpk_file:
-                    continue
-                created_file = True
-                sound = vpk_file['sound/' + self.sample]
-                if not self.full_path.parent.isdir():
-                    created_dir = True
-                    self.full_path.parent.makedirs()
-                sound.save(
-                    '{directory}/{file_name}'.format(
-                        directory=self.full_path.parent,
-                        file_name=self.full_path.name,
-                    )
-                )
-                sound.close()
-                break
+        with closing(SourceFile.open(self.relative_path, 'rb')) as f:
+            if self.extension == 'ogg':
+                value = oggvorbis.Open(f).info.length
+            elif self.extension == 'mp3':
+                value = mp3.Open(f).info.length
+            elif self.extension == 'wav':
+                with closing(wave.open(f)) as open_file:
+                    value = open_file.getnframes() / open_file.getframerate()
             else:
-                raise FileNotFoundError(
-                    'Sound file "{sample}" not found on server.'.format(
-                        sample=self.sample,
+                raise NotImplementedError(
+                    'Sound extension "{extension}" is not supported.'.format(
+                        extension=self.extension,
                     )
                 )
-        value = None
-        if self.extension == 'ogg':
-            value = oggvorbis.Open(self.full_path).info.length
-        elif self.extension == 'mp3':
-            value = mp3.Open(self.full_path).info.length
-        elif self.extension == 'wav':
-            with closing(wave.open(self.full_path)) as open_file:
-                value = open_file.getnframes() / open_file.getframerate()
-        else:
-            raise NotImplementedError(
-                'Sound extension "{extension}" is not supported.'.format(
-                    extension=self.extension,
-                )
-            )
-        if created_file:
-            self.full_path.remove()
-            if created_dir:
-                self.full_path.parent.removedirs()
 
-        _sound_durations[self.sample] = value
+        self._duration = value
         return value
 
     def _unload_instance(self):
