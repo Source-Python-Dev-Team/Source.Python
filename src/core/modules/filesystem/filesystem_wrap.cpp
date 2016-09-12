@@ -168,6 +168,11 @@ void export_source_file(scope _filesystem)
 		"handle",
 		make_function(&SourceFile::GetHandle, return_by_value_policy())
 	);
+
+	_SourceFile.add_property(
+		"eof",
+		&SourceFile::EndOfFile
+	);
 	
 	_SourceFile.def(
 		"open",

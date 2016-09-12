@@ -28,6 +28,7 @@
 // Includes.
 //---------------------------------------------------------------------------------
 // Source.Python
+#include "modules/memory/memory_alloc.h"
 #include "utilities/wrap_macros.h"
 #include "filesystem.h"
 
@@ -36,6 +37,9 @@
 // External variables.
 //---------------------------------------------------------------------------------
 extern IFileSystem* filesystem;
+
+// Chunk size for InternalReadline()
+#define CHUNK_SIZE 128
 
 
 //---------------------------------------------------------------------------------
@@ -96,18 +100,67 @@ PyObject* SourceFile::Read(int size)
 		size = filesystem->Size(m_handle);
 	}
 
-	void* pOutput = new char[size+1];
+	char* pOutput = new char[size+1];
 	int bytesRead = filesystem->Read(pOutput, size, m_handle);
 	return ConsumeBuffer(pOutput, bytesRead);
 }
 
-object SourceFile::Readline(int size)
+PyObject* SourceFile::Readline(int size)
 {
 	CheckClosed();
 	CheckReadable();
-	// TODO
-	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Not implemented yet.")
-	return object();
+
+	int bytesRead = 0;
+	return InternalReadline(IsBinaryMode(), size, bytesRead);
+}
+
+PyObject* SourceFile::InternalReadline(bool binaryMode, int size, int& outBytesRead)
+{
+	int bytesPut = 0;
+	char* buffer = (char*) UTIL_Alloc(CHUNK_SIZE);
+
+	while (size < 0 || bytesPut < size) {
+		char temp[1];
+
+		// EOF?
+		if (filesystem->Read(temp, 1, m_handle) != 1) {
+			break;
+		}
+
+		// Ignore \r in text mode
+		if (!binaryMode && temp[0] == '\r') {
+			continue;
+		}
+		
+		if (temp[0] == '\0') {
+			buffer[bytesPut] = '\n';
+		}
+		else {
+			buffer[bytesPut] = temp[0];
+		}
+		++bytesPut;
+		++outBytesRead;
+
+		if (temp[0] == '\n') {
+			break;
+		}
+
+		if (bytesPut >= CHUNK_SIZE) {
+			buffer = (char*) UTIL_Realloc(buffer, bytesPut + CHUNK_SIZE);
+			if (buffer == NULL)
+				BOOST_RAISE_EXCEPTION(PyExc_MemoryError, "Failed to reallocate the buffer.")
+		}
+	}
+	
+	PyObject* result = NULL;
+	if (IsBinaryMode()) {
+		result = PyBytes_FromStringAndSize(buffer, bytesPut);
+	}
+	else {
+		result = PyUnicode_FromStringAndSize(buffer, bytesPut);
+	}
+
+	return result;
 }
 
 list SourceFile::Readlines(int hint)
@@ -115,22 +168,31 @@ list SourceFile::Readlines(int hint)
 	CheckClosed();
 	CheckReadable();
 
+	bool binaryMode = IsBinaryMode();
+
 	list result;
 
-	// TODO
+	int bytesRead = 0;
+	while (true) {
+		PyObject* line = InternalReadline(binaryMode, -1, bytesRead);
+		result.append(handle<>(borrowed(line)));
+		if (EndOfFile() ||  (hint > 0 && bytesRead > hint)) {
+			break;
+		}
+	}
 
 	return result;
 }
 
 // internal
-PyObject* SourceFile::ConsumeBuffer(void* buffer, int bytesRead)
-{	
+PyObject* SourceFile::ConsumeBuffer(char* buffer, int bytesRead)
+{
 	PyObject* result = NULL;
 	if (IsBinaryMode()) {
-		result = PyBytes_FromStringAndSize((char*) buffer, bytesRead);
+		result = PyBytes_FromStringAndSize(buffer, bytesRead);
 	}
 	else {
-		result = PyUnicode_FromStringAndSize((char*) buffer, bytesRead);
+		result = PyUnicode_FromStringAndSize(buffer, bytesRead);
 	}
 
 	delete buffer;
@@ -276,6 +338,11 @@ int SourceFile::Fileno()
 bool SourceFile::Closed()
 {
 	return m_handle == NULL;
+}
+
+bool SourceFile::EndOfFile()
+{
+	return filesystem->EndOfFile(m_handle);
 }
 
 
