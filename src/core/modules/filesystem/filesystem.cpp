@@ -49,7 +49,7 @@ bool IsVPKFile(const char* file_path)
 
 
 //---------------------------------------------------------------------------------
-// SourceFile
+// SourceFile - constructor/destructor
 //---------------------------------------------------------------------------------
 SourceFile::SourceFile(FileHandle_t handle)
 {
@@ -75,26 +75,23 @@ SourceFile::~SourceFile()
 		free(m_mode);
 }
 
-void SourceFile::Save(const char* file_path)
+SourceFile* SourceFile::Open(const char* pFileName, const char* pMode, const char* pathID)
 {
-	CheckClosed();
-	FileHandle_t handle = filesystem->Open(file_path, "wb");
+	FileHandle_t handle = filesystem->Open(pFileName, pMode, pathID);
 	if (handle == FILESYSTEM_INVALID_HANDLE)
-		BOOST_RAISE_EXCEPTION(PyExc_IOError, "Failed to open file: %s", file_path)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to open file: %s", pFileName)
 
-	int size = Size();
-	void* buffer = new char[size+1];
-	int bytesRead = filesystem->Read(buffer, size, m_handle);
-
-	filesystem->Write(buffer, bytesRead, handle);
-	filesystem->Close(handle);
-
-	delete buffer;
+	return new SourceFile(handle, pMode);
 }
 
+
+//---------------------------------------------------------------------------------
+// SourceFile - reading
+//---------------------------------------------------------------------------------
 PyObject* SourceFile::Read(int size)
 {
 	CheckClosed();
+	CheckReadable();
 	if (size == -1) {
 		size = filesystem->Size(m_handle);
 	}
@@ -107,6 +104,7 @@ PyObject* SourceFile::Read(int size)
 object SourceFile::Readline(int size)
 {
 	CheckClosed();
+	CheckReadable();
 	// TODO
 	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Not implemented yet.")
 	return object();
@@ -115,11 +113,16 @@ object SourceFile::Readline(int size)
 list SourceFile::Readlines(int hint)
 {
 	CheckClosed();
+	CheckReadable();
+
+	list result;
+
 	// TODO
-	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Not implemented yet.")
-	return list();
+
+	return result;
 }
 
+// internal
 PyObject* SourceFile::ConsumeBuffer(void* buffer, int bytesRead)
 {	
 	PyObject* result = NULL;
@@ -134,10 +137,32 @@ PyObject* SourceFile::ConsumeBuffer(void* buffer, int bytesRead)
 	return result;
 }
 
-int SourceFile::Write(PyObject* data)
+
+//---------------------------------------------------------------------------------
+// SourceFile - writing
+//---------------------------------------------------------------------------------
+void SourceFile::Write(PyObject* data)
 {
 	CheckClosed();
+	CheckWriteable();
 
+	WriteData(data);
+}
+
+void SourceFile::Writelines(list lines)
+{
+	CheckClosed();
+	CheckWriteable();
+
+	for (int i=0; i < len(lines); ++i) {
+		object data = lines[i];
+		WriteData(data.ptr());
+	}
+}
+
+// internal
+void SourceFile::WriteData(PyObject* data)
+{	
 	char* input = NULL;
 	int size = 0;
 
@@ -158,33 +183,38 @@ int SourceFile::Write(PyObject* data)
 		input = (char *) PyUnicode_DATA(data);
 	}
 
-	return filesystem->Write((void *) input, size, m_handle);
-}
-
-void SourceFile::Writelines(list lines)
-{
-	CheckClosed();
-	for (int i=0; i < len(lines); ++i) {
-		Writeline(lines[i]);
-	}
-}
-
-bool SourceFile::IsBinaryMode()
-{
-	return !m_mode || strchr(m_mode, 'b');
-}
-
-void SourceFile::Writeline(object line)
-{
-	// TODO
-	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Not implemented yet.")
+	filesystem->Write((void *) input, size, m_handle);
 }
 
 int SourceFile::Truncate(int size)
 {
+	CheckClosed();
+	CheckWriteable();
+
 	// TODO
 	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Not implemented yet.")
 	return 0;
+}
+
+
+//---------------------------------------------------------------------------------
+// SourceFile - misc
+//---------------------------------------------------------------------------------
+void SourceFile::Save(const char* file_path)
+{
+	CheckClosed();
+	FileHandle_t handle = filesystem->Open(file_path, "wb");
+	if (handle == FILESYSTEM_INVALID_HANDLE)
+		BOOST_RAISE_EXCEPTION(PyExc_IOError, "Failed to open file: %s", file_path)
+
+	int size = Size();
+	void* buffer = new char[size+1];
+	int bytesRead = filesystem->Read(buffer, size, m_handle);
+
+	filesystem->Write(buffer, bytesRead, handle);
+	filesystem->Close(handle);
+
+	delete buffer;
 }
 
 void SourceFile::Close()
@@ -248,6 +278,35 @@ bool SourceFile::Closed()
 	return m_handle == NULL;
 }
 
+
+//---------------------------------------------------------------------------------
+// SourceFile - internal
+//---------------------------------------------------------------------------------
+void SourceFile::CheckReadable()
+{
+	if (!Readable()) {
+		BOOST_RAISE_EXCEPTION(PyExc_IOError, "not readable")
+	}
+}
+
+void SourceFile::CheckWriteable()
+{
+	if (!Writeable()) {
+		BOOST_RAISE_EXCEPTION(PyExc_IOError, "not writeable")
+	}
+}
+
+void SourceFile::CheckClosed()
+{
+	if (m_handle == FILESYSTEM_INVALID_HANDLE)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "File is already closed.")
+}
+
+bool SourceFile::IsBinaryMode()
+{
+	return !m_mode || strchr(m_mode, 'b');
+}
+
 bool SourceFile::Readable()
 {
 	return m_mode != NULL && (
@@ -264,19 +323,4 @@ bool SourceFile::Writeable()
 		|| strchr(m_mode, 'a') 
 		|| strchr(m_mode, '+')
 	);
-}
-
-void SourceFile::CheckClosed()
-{
-	if (m_handle == FILESYSTEM_INVALID_HANDLE)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "File is already closed.")
-}
-
-SourceFile* SourceFile::Open(const char* pFileName, const char* pMode, const char* pathID)
-{
-	FileHandle_t handle = filesystem->Open(pFileName, pMode, pathID);
-	if (handle == FILESYSTEM_INVALID_HANDLE)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to open file: %s", pFileName)
-
-	return new SourceFile(handle, pMode);
 }

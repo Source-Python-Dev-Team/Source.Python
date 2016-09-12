@@ -45,7 +45,7 @@ public:
 
 	// File-like methods
 	PyObject*		Read(int size=-1);
-	int				Write(PyObject* data);
+	void			Write(PyObject* data);
 	void			Close();
 	void			Seek(int pos, int seekType=FILESYSTEM_SEEK_HEAD);
 	unsigned int	Tell();
@@ -79,8 +79,10 @@ public:
 private:
 	PyObject*		ConsumeBuffer(void* buffer, int bytesRead);
 	void			CheckClosed();
-	void			Writeline(object data);
+	void			WriteData(PyObject* data);
 	bool			IsBinaryMode();
+	void			CheckReadable();
+	void			CheckWriteable();
 
 private:
 	FileHandle_t m_handle;

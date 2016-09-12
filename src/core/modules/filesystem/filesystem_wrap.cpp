@@ -98,12 +98,12 @@ void export_source_file(scope _filesystem)
 
 	_SourceFile.def(
 		"writelines",
-		&SourceFile::Truncate
+		&SourceFile::Writelines
 	);
 
 	_SourceFile.def(
 		"truncate",
-		&SourceFile::Writelines,
+		&SourceFile::Truncate,
 		(arg("size")=-1)
 	);
 
