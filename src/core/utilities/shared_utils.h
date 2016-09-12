@@ -36,10 +36,11 @@
 // Generates a symlink without the colon symbol (":").
 //
 // Thanks to Hedgehog for this!
-// http://forums.sourcepython.com/showthread.php?581-Server-crash-on-SP-loading&p=2967&viewfull=1#post2967
+// http://forums.sourcepython.com/viewtopic.php?p=2967#p2967
 //-----------------------------------------------------------------------------
 inline void _GenerateSymlink(char* path)
 {
+	DevMsg(1, MSG_PREFIX "Generating symlink: %s\n", path);
 #if __linux__
 	int pathLen = V_strlen(path) + 1;
 	char symlinkOrigin[pathLen];

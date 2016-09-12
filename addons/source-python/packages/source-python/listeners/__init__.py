@@ -80,7 +80,7 @@ __all__ = ('ListenerManager',
            'OnEntitySpawned',
            'OnLevelInit',
            'OnLevelShutdown',
-           'OnMapEnd',
+           'OnLevelEnd',
            'OnNetworkidValidated',
            'OnPluginLoaded',
            'OnPluginUnloaded',
@@ -358,7 +358,7 @@ class OnPluginUnloaded(ListenerManagerDecorator):
     manager = on_plugin_unloaded_manager
 
 
-class OnMapEnd(ListenerManagerDecorator):
+class OnLevelEnd(ListenerManagerDecorator):
     """Register/unregister a map end listener."""
 
     manager = on_map_end_listener_manager
@@ -373,7 +373,7 @@ class OnMapEnd(ListenerManagerDecorator):
 @OnLevelInit
 def _on_level_init(map_name):
     """Called when a new map gets initialized."""
-    OnMapEnd._level_initialized = True
+    OnLevelEnd._level_initialized = True
 
     if not _check_for_update.get_int():
         return
@@ -399,14 +399,14 @@ def _on_level_init(map_name):
 def _on_level_shutdown():
     """Called on level end."""
     # Was no map initialized?
-    if not OnMapEnd._level_initialized:
+    if not OnLevelEnd._level_initialized:
         return
 
     # Notify all registred callbacks
     on_map_end_listener_manager.notify()
 
     # Make sure we don't get called more than once per map change
-    OnMapEnd._level_initialized = False
+    OnLevelEnd._level_initialized = False
 
 
 @PreHook(memory.get_virtual_function(cvar, 'CallGlobalChangeCallbacks'))

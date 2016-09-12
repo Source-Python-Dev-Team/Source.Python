@@ -10,7 +10,7 @@
 from engines.server import engine_server
 #   Players
 from players import PlayerGenerator
-from players.games import get_client_language
+from players._language import get_client_language
 
 
 # =============================================================================

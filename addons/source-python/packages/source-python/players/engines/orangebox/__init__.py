@@ -1,15 +1,17 @@
-# ../players/games/base.py
+# ../players/engines/orangebox/__init__.py
 
-"""Provides base classes to be used when the game is not natively supported."""
+"""Provides Orangebox specific Player based functionality."""
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-from players._language import get_client_language
+# Source.Python Imports
+#   Players
+from players._base import Player as _Player
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _GamePlayer(object):
-    """Base class for game specific functionality."""
+class Player(_Player):
+    """Class used to interact directly with players."""
