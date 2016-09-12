@@ -83,7 +83,7 @@ void SourceFile::Save(const char* file_path)
 		BOOST_RAISE_EXCEPTION(PyExc_IOError, "Failed to open file: %s", file_path)
 
 	int size = Size();
-	void* buffer = new char[size];
+	void* buffer = new char[size+1];
 	int bytesRead = filesystem->Read(buffer, size, m_handle);
 
 	filesystem->Write(buffer, bytesRead, handle);
@@ -134,12 +134,31 @@ PyObject* SourceFile::ConsumeBuffer(void* buffer, int bytesRead)
 	return result;
 }
 
-int SourceFile::Write(object data)
+int SourceFile::Write(PyObject* data)
 {
 	CheckClosed();
-	// TODO
-	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Not implemented yet.")
-	return 0;
+
+	char* input = NULL;
+	int size = 0;
+
+	if (IsBinaryMode()) {
+		if (!PyBytes_Check(data)) {
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "a bytes-like object is required, not '%s'", data->ob_type->tp_name)
+		}
+
+		input = PyBytes_AsString(data);
+		size = PyBytes_Size(data);
+	}
+	else {
+		if (!PyUnicode_Check(data)) {
+			BOOST_RAISE_EXCEPTION(PyExc_TypeError, "write() argument must be str, not %s", data->ob_type->tp_name)
+		}
+
+		size = PyUnicode_GetLength(data);
+		input = (char *) PyUnicode_DATA(data);
+	}
+
+	return filesystem->Write((void *) input, size, m_handle);
 }
 
 void SourceFile::Writelines(list lines)

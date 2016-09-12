@@ -45,7 +45,7 @@ public:
 
 	// File-like methods
 	PyObject*		Read(int size=-1);
-	int				Write(object data);
+	int				Write(PyObject* data);
 	void			Close();
 	void			Seek(int pos, int seekType=FILESYSTEM_SEEK_HEAD);
 	unsigned int	Tell();
