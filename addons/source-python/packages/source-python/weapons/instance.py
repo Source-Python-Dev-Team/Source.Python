@@ -35,13 +35,13 @@ class WeaponClass(object):
         self._slot = properties.get('slot', None)
 
         # Store the weapon's max ammo amount
-        self._maxammo = properties.get('maxammo', 0)
+        self._maxammo = properties.get('maxammo', None)
 
         # Store the weapon's ammo property
         self._ammoprop = properties.get('ammoprop', None)
 
         # Store the weapon's clip amount
-        self._clip = properties.get('clip', 0)
+        self._clip = properties.get('clip', None)
 
         # Store the weapon's tags
         self._tags = properties.get('tags', 'all').split(',')

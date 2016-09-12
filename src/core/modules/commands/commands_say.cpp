@@ -27,6 +27,9 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// This is required for accessing m_nFlags without patching convar.h
+#define private public
+
 #include <iostream>
 #include <string>
 #include "commands_say.h"

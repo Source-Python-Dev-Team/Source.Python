@@ -193,6 +193,18 @@ class Entity(BaseEntity):
     def index(self):
         """Return the entity's index."""
         return self._index
+        
+    @property
+    def owner(self):
+        """Return the entity's owner.
+        
+        :return: None if the entity has no owner.
+        :rtype: Entity
+        """
+        try:
+            return Entity(index_from_inthandle(self.owner_handle))
+        except (ValueError, OverflowError):
+            return None
 
     @property
     def server_classes(self):
@@ -316,6 +328,10 @@ class Entity(BaseEntity):
         """Return the string property."""
         return self._get_property(name, 'string_pointer')
 
+    def get_property_char(self, name):
+        """Return the char property."""
+        return self._get_property(name, 'char')
+
     def get_property_uchar(self, name):
         """Return the uchar property."""
         return self._get_property(name, 'uchar')
@@ -398,6 +414,10 @@ class Entity(BaseEntity):
     def set_property_string_pointer(self, name, value):
         """Set the string property."""
         self._set_property(name, 'string_pointer', value)
+
+    def set_property_char(self, name, value):
+        """Set the char property."""
+        self._set_property(name, 'char', value)
 
     def set_property_uchar(self, name, value):
         """Set the uchar property."""
@@ -536,15 +556,15 @@ class Entity(BaseEntity):
 
             # Try to get the attacker based off of the weapon's owner
             with suppress(ValueError, OverflowError):
-                attacker_index = index_from_inthandle(weapon.current_owner)
+                attacker_index = index_from_inthandle(weapon.owner_handle)
                 attacker = Entity(attacker_index)
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:
 
             # Try to use the attacker's active weapon
-            with suppress(AttributeError, ValueError, OverflowError):
-                weapon = Weapon(index_from_inthandle(attacker.active_weapon))
+            with suppress(AttributeError):
+                weapon = attacker.active_weapon
 
         # Try to set the hitgroup
         with suppress(AttributeError):
