@@ -15,6 +15,7 @@ Submodules
 .. toctree::
    :titlesonly:
 
+   players._base
    players.bots
    players.constants
    players.dictionary
