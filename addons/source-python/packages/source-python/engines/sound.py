@@ -142,7 +142,7 @@ class _BaseSound(AutoUnload):
 
             # Add the sample to Downloadables
             self._downloads = Downloadables()
-            self._downloads.add('sound/{0}'.format(self.sample))
+            self._downloads.add(self.relative_path)
 
     def play(self, *recipients):
         """Play the sound."""
