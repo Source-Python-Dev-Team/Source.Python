@@ -160,6 +160,8 @@ PyObject* SourceFile::InternalReadline(bool binaryMode, int size, int& outBytesR
 		result = PyUnicode_FromStringAndSize(buffer, bytesPut);
 	}
 
+	UTIL_Dealloc(buffer);
+
 	return result;
 }
 

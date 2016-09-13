@@ -75,7 +75,7 @@ CloneRepo () {
     if [ ! -d "$BRANCHDIR" ]; then
         mkdir -p "$BRANCHDIR"
         cd "$BRANCHDIR"
-        git clone https://github.com/alliedmodders/hl2sdk.git .
+        git clone --depth 1 https://github.com/alliedmodders/hl2sdk.git .
     else
         cd "$BRANCHDIR"
     fi
