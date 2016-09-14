@@ -73,7 +73,7 @@ goto CloneRepo
     if not exist %BRANCHDIR% (
         mkdir %BRANCHDIR%
         cd %BRANCHDIR%
-        git clone --depth 1 https://github.com/alliedmodders/hl2sdk.git .
+        git clone https://github.com/alliedmodders/hl2sdk.git .
     ) else (
         cd %BRANCHDIR%
     )
