@@ -298,7 +298,7 @@ def unload_plugins():
     from core.manager import core_plugin_manager
     from core.command import _core_command
 
-    for plugin_name in core_plugin_manager:
+    for plugin_name in list(core_plugin_manager):
         _core_command.unload_plugin(plugin_name)
 
 
