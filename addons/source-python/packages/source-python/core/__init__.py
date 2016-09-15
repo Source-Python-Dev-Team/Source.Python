@@ -60,7 +60,7 @@ __all__ = ('AutoUnload',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # Get the specific game for the server
-GAME_NAME = GAME_PATH.rsplit(sep, 2)[1]
+GAME_NAME = GAME_PATH.namebase
 
 # Get the platform the server is on
 PLATFORM = system().lower()

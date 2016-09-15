@@ -41,7 +41,7 @@ __all__ = ('BASE_PATH',
 # >> GLOBAL VARIABLES
 # =============================================================================
 # ../<game>
-GAME_PATH = Path(Path(__file__).rsplit('addons', 1)[0])
+GAME_PATH = Path(Path(__file__).rsplit('addons', 1)[0][:~0])
 
 # ../addons/source-python
 BASE_PATH = GAME_PATH / 'addons' / 'source-python'
