@@ -111,12 +111,13 @@ class Delay(WeakAutoUnload):
     def __init__(self, delay, callback, *args, **kwargs):
         """Initialize the delay.
 
-        :param int delay: The delay in seconds.
+        :param float delay: The delay in seconds.
         :param callback: A callable object that should be called after the
             delay expired.
         :param args: Arguments that should be passed to the callback.
         :param kwargs: Keyword arguments that should be passed to the
             callback.
+        :raises ValueError: If the given callback is not callable.
         """
         if not callable(callback):
             raise ValueError('Given callback is not callable.')
@@ -151,11 +152,18 @@ class Delay(WeakAutoUnload):
 
     @property
     def running(self):
-        """Return True if the delay running."""
+        """Return True if the delay running.
+
+        :rtype: bool
+        """
         return self in _delay_manager
 
     @property
     def time_remaining(self):
+        """Return the remaining time (in seconds) until the Delay ends.
+
+        :rtype: float
+        """
         if not self.running:
             # TODO: what should we return here, or should we raise an error?
             return None
@@ -163,6 +171,10 @@ class Delay(WeakAutoUnload):
 
     @property
     def time_elapsed(self):
+        """Return the amount of time (in seconds) since the Delay started.
+
+        :rtype: float
+        """
         if not self.running:
             # TODO: what should we return here, or should we raise an error?
             return None
@@ -188,7 +200,14 @@ class Repeat(AutoUnload):
     """Class used to create and call repeats."""
 
     def __init__(self, callback, *args, **kwargs):
-        """Store all instance attributes."""
+        """Store all instance attributes.
+
+        :param callback: A callable object that should be called at the
+            end of each loop.
+        :param args: Arguments that should be passed to the callback.
+        :param kwargs: Keyword arguments that should be passed to the
+            callback.
+        """
         # Store the base attributes
         self.callback = callback
         self.args = args
@@ -209,7 +228,15 @@ class Repeat(AutoUnload):
         self._loop_time = None
 
     def start(self, interval, limit, execute_on_start=False):
-        """Start the repeat loop."""
+        """Start the repeat loop.
+
+        :param float interval: The time (in seconds) for each loop.
+        :param int limit: The maximum number of times to loop.  If 0 is
+            passed, there is no limit, and the Repeat will loop indefinitely.
+        :param bool execute_on_start: Whether to execute the callback when
+            the Repeat is started.  Note that this does not affect the 'limit'
+            as the number of loops will remain the same.
+        """
         # Log the start message
         listeners_tick_logger.log_debug(
             'Repeat.start: <{0}> <{1}>'.format(interval, limit))
@@ -344,7 +371,11 @@ class Repeat(AutoUnload):
         self._delay = Delay(self._loop_time, self._execute)
 
     def extend(self, adjustment):
-        """Add to the number of loops to be made."""
+        """Add to the number of loops to be made.
+
+        :param int adjustment: The number of loops to be added to the limit.
+        :raises ValueError: If given adjustment is not a positive integer.
+        """
         # Log the extend message
         listeners_tick_logger.log_debug('Repeat.extend')
 
@@ -359,7 +390,7 @@ class Repeat(AutoUnload):
             return
 
         # Was a positive integer given?
-        if adjustment < 1 or not isinstance(adjustment, int):
+        if not isinstance(adjustment, int) or adjustment < 1:
 
             # Raise an error
             raise ValueError('Adjusted value must be a positive integer')
@@ -368,7 +399,12 @@ class Repeat(AutoUnload):
         self._adjusted += adjustment
 
     def reduce(self, adjustment):
-        """Reduce the number of loops to be made."""
+        """Reduce the number of loops to be made.
+
+        :param int adjustment: The number of loops to be removed from
+            the limit.
+        :raises ValueError: If given adjustment is not a positive integer.
+        """
         # Log the reduce message
         listeners_tick_logger.log_debug('Repeat.reduce')
 
@@ -383,7 +419,7 @@ class Repeat(AutoUnload):
             return
 
         # Was a positive integer given?
-        if adjustment < 1 or not isinstance(adjustment, int):
+        if not isinstance(adjustment, int) or adjustment < 1:
 
             # Raise an error
             raise ValueError('Adjusted value must be a positive integer')
@@ -446,7 +482,10 @@ class Repeat(AutoUnload):
 
     @property
     def remaining_loops(self):
-        """Return the remaining number of loops in the repeat."""
+        """Return the remaining number of loops in the repeat.
+
+        :rtype: int
+        """
         # Is there no limit?
         if not self._limit:
 
@@ -458,12 +497,18 @@ class Repeat(AutoUnload):
 
     @property
     def loop_count(self):
-        """Return the current number of loops made in the repeat."""
+        """Return the current number of loops made in the repeat.
+
+        :rtype: int
+        """
         return self._count
 
     @property
     def loop_limit(self):
-        """Return the total number of loops to be made."""
+        """Return the total number of loops to be made.
+
+        :rtype: int
+        """
         # Is there no limit?
         if not self._limit:
 
@@ -475,7 +520,10 @@ class Repeat(AutoUnload):
 
     @property
     def time_left(self):
-        """Return the remaining time till the end of the repeat."""
+        """Return the remaining time till the end of the repeat.
+
+        :rtype: float
+        """
         return (
             self.remaining_loops * self._interval +
             self.delay_time_remaining
@@ -483,25 +531,42 @@ class Repeat(AutoUnload):
 
     @property
     def time_elapsed(self):
-        """Return the elapsed time since the repeat started."""
+        """Return the elapsed time since the repeat started.
+
+        :rtype: float
+        """
         return self.total_time - self.time_left
 
     @property
     def total_time(self):
-        """Return the total time it will take to complete the repeat."""
+        """Return the total time it will take to complete the repeat.
+
+        :rtype: float
+        """
         return self.loop_limit * self._interval
 
     @property
     def status(self):
-        """Return the status of the repeat."""
+        """Return the status of the repeat.
+
+        :rtype: RepeatStatus
+        """
         return self._status
 
     @property
     def delay_time_remaining(self):
+        """Return the time remaining in the current loop.
+
+        :rtype: float
+        """
         return self._delay.time_remaining
 
     @property
     def delay_time_elapsed(self):
+        """Return the time elapsed in the current loop.
+
+        :rtype: float
+        """
         return self._delay.time_elapsed
 
     def _unload_instance(self):
