@@ -110,7 +110,7 @@ class Delay(WeakAutoUnload):
     """Execute a callback after a given delay."""
 
     def __init__(
-        self, delay, callback, args=(), kwargs=None, cancel_on_map_end=False
+        self, delay, callback, args=(), kwargs=None, cancel_on_level_end=False
     ):
         """Initialize the delay.
 
@@ -120,7 +120,7 @@ class Delay(WeakAutoUnload):
         :param tuple args: Arguments that should be passed to the callback.
         :param dict kwargs: Keyword arguments that should be passed to the
             callback.
-        :param bool cancel_on_map_end: Whether or not to cancel the delay at
+        :param bool cancel_on_level_end: Whether or not to cancel the delay at
             the end of the map.
         :raises ValueError: If the given callback is not callable.
         """
@@ -133,7 +133,7 @@ class Delay(WeakAutoUnload):
         self.callback = callback
         self.args = args
         self.kwargs = kwargs if kwargs is not None else dict()
-        self.cancel_on_map_end = cancel_on_map_end
+        self.cancel_on_level_end = cancel_on_level_end
         _delay_manager.add(self)
 
     def __lt__(self, other):
@@ -206,7 +206,7 @@ class Repeat(AutoUnload):
     """Class used to create and call repeats."""
 
     def __init__(
-        self, callback, args=(), kwargs=None, cancel_on_map_end=False
+        self, callback, args=(), kwargs=None, cancel_on_level_end=False
     ):
         """Store all instance attributes.
 
@@ -215,14 +215,14 @@ class Repeat(AutoUnload):
         :param tuple args: Arguments that should be passed to the callback.
         :param dict kwargs: Keyword arguments that should be passed to the
             callback.
-        :param bool cancel_on_map_end: Whether or not to cancel the repeat at
+        :param bool cancel_on_level_end: Whether or not to cancel the repeat at
             the end of the map.
         """
         # Store the base attributes
         self.callback = callback
         self.args = args
         self.kwargs = kwargs if kwargs is not None else dict()
-        self.cancel_on_map_end = cancel_on_map_end
+        self.cancel_on_level_end = cancel_on_level_end
 
         # Log the __init__ message
         listeners_tick_logger.log_debug(
@@ -281,7 +281,7 @@ class Repeat(AutoUnload):
         # Start the delay
         self._delay = Delay(
             self._interval, self._execute,
-            cancel_on_map_end=self.cancel_on_map_end
+            cancel_on_level_end=self.cancel_on_level_end
         )
 
         # Call the callback if set to execute on start
@@ -384,7 +384,7 @@ class Repeat(AutoUnload):
         # Start the delay
         self._delay = Delay(
             self._loop_time, self._execute,
-            cancel_on_map_end=self.cancel_on_map_end
+            cancel_on_level_end=self.cancel_on_level_end
         )
 
     def extend(self, adjustment):
@@ -484,7 +484,7 @@ class Repeat(AutoUnload):
             # Call the delay again
             self._delay = Delay(
                 self._interval, self._execute,
-                cancel_on_map_end=self.cancel_on_map_end
+                cancel_on_level_end=self.cancel_on_level_end
             )
 
         # Are no more loops to be made?
@@ -600,5 +600,5 @@ class Repeat(AutoUnload):
 @OnLevelEnd
 def _cancel_delays_on_level_end():
     for delay in _delay_manager:
-        if delay.cancel_on_map_end:
+        if delay.cancel_on_level_end:
             delay.cancel()
