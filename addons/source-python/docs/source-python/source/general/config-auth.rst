@@ -271,5 +271,5 @@ Assigning permissions to guests
 -------------------------------
 
 There is a special parent called ``guest`` which can be used to assign
-permissions to anonymous players. Every player on the server is part of that
-group.
+permissions to anonymous players. Every player on the server is a member of
+that group.
