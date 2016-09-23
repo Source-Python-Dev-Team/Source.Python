@@ -265,3 +265,11 @@ Adding, modifying and deleting permissions and parents
 You can always add, modify and delete permissions and parents by accessing the
 JSON files or SQL database directly. However, Source.Python also provides
 server commands to do these tasks. :doc:`You might want to try them. <sp-commands>`
+
+
+Assigning permissions to guests
+-------------------------------
+
+There is a special parent called ``guest`` which can be used to assign
+permissions to anonymous players. Every player on the server is part of that
+group.
