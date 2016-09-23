@@ -146,13 +146,8 @@ class GameConfigObj(ConfigObj):
 # =============================================================================
 def echo_console(text):
     """Echo a message to the server's console."""
-    # Import engine_server
     # This is done here to fix an ImportError
-    from engines.server import engine_server
+    from engines.server import execute_server_command
 
-    # Loop through each line in the text
     for line in text.split('\n'):
-
-        # Echo the message
-        engine_server.server_command(
-            'echo "{0}"\n'.format(line.replace('"', "'")))
+        execute_server_command('echo', '"{0}"'.format(line.replace('"', "'")))
