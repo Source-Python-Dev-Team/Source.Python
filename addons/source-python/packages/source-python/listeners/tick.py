@@ -110,7 +110,7 @@ class Delay(WeakAutoUnload):
     """Execute a callback after a given delay."""
 
     def __init__(
-        self, delay, callback, cancel_on_map_end=False, *args, **kwargs
+        self, delay, callback, args=None, kwargs=None, cancel_on_map_end=False
     ):
         """Initialize the delay.
 
@@ -131,9 +131,9 @@ class Delay(WeakAutoUnload):
         self._start_time = time.time()
         self.exec_time = self._start_time + delay
         self.callback = callback
+        self.args = args if args is not None else tuple()
+        self.kwargs = kwargs if kwargs is not None else dict()
         self.cancel_on_map_end = cancel_on_map_end
-        self.args = args
-        self.kwargs = kwargs
         _delay_manager.add(self)
 
     def __lt__(self, other):
@@ -278,7 +278,8 @@ class Repeat(AutoUnload):
 
         # Start the delay
         self._delay = Delay(
-            self._interval, self._execute, self.cancel_on_map_end
+            self._interval, self._execute,
+            cancel_on_map_end=self.cancel_on_map_end
         )
 
         # Call the callback if set to execute on start
@@ -380,7 +381,8 @@ class Repeat(AutoUnload):
 
         # Start the delay
         self._delay = Delay(
-            self._loop_time, self._execute, self.cancel_on_map_end
+            self._loop_time, self._execute,
+            cancel_on_map_end=self.cancel_on_map_end
         )
 
     def extend(self, adjustment):
@@ -479,7 +481,8 @@ class Repeat(AutoUnload):
 
             # Call the delay again
             self._delay = Delay(
-                self._interval, self._execute, self.cancel_on_map_end
+                self._interval, self._execute,
+                cancel_on_map_end=self.cancel_on_map_end
             )
 
         # Are no more loops to be made?
