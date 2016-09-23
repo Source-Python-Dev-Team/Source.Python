@@ -40,6 +40,13 @@ __all__ = ('_AuthManager',
 
 
 # =============================================================================
+# >> CONSTANTS
+# =============================================================================
+# Name of the guest parent.
+GUEST_PARENT_NAME = 'guest'
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class PermissionBase(dict):
@@ -50,6 +57,8 @@ class PermissionBase(dict):
         super().__init__()
         self.parents = set()
         self.name = name
+        if self.name != GUEST_PARENT_NAME:
+            self.add_parent(GUEST_PARENT_NAME)
 
     def __hash__(self):
         """Return a hash value based on the name."""
