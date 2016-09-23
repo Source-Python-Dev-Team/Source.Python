@@ -143,7 +143,8 @@ _core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 @_core_command.server_sub_command(['delay'])
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
-    Delay(delay, engine_server.server_command, command + ' ' + ' '.join(args))
+    args_str = command + ' ' + ' '.join(args)
+    Delay(delay, engine_server.server_command, args=(args_str,))
 
 @_core_command.server_sub_command(['version'])
 def _sp_version(command_info):
