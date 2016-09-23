@@ -6,8 +6,19 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Contextlib
+from contextlib import closing
 #   Enum
 from enum import Enum
+#   Os
+import os
+#   Wave
+import wave
+
+# Site Package Imports
+#   Mutagen
+from mutagen import mp3
+from mutagen import oggvorbis
 
 # Source.Python Imports
 #   Core
@@ -16,10 +27,14 @@ from core import AutoUnload
 from engines import engines_logger
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
+#   Filesystem
+from filesystem import SourceFile
 #   Filters
 from filters.recipients import RecipientFilter
 #   Mathlib
 from mathlib import NULL_VECTOR
+#   Paths
+from paths import GAME_PATH
 #   Stringtables
 from stringtables import string_tables
 from stringtables.downloads import Downloadables
@@ -106,6 +121,8 @@ class _BaseSound(AutoUnload):
         # Added replacing \ with / in paths for comformity
         self._sample = sample.replace('\\', '/')
 
+        self._duration = None
+
         # Set all the base attributes
         self.index = index
         self.volume = volume
@@ -125,7 +142,7 @@ class _BaseSound(AutoUnload):
 
             # Add the sample to Downloadables
             self._downloads = Downloadables()
-            self._downloads.add('sound/{0}'.format(self.sample))
+            self._downloads.add(self.relative_path)
 
     def play(self, *recipients):
         """Play the sound."""
@@ -181,9 +198,43 @@ class _BaseSound(AutoUnload):
         return self._sample
 
     @property
+    def extension(self):
+        """Return the type of sound."""
+        return self.full_path.ext[1:]
+
+    @property
+    def full_path(self):
+        """Return the full path to the file."""
+        return GAME_PATH / 'sound' / self.sample
+
+    @property
+    def relative_path(self):
+        """Return the relative path to the file."""
+        return 'sound' + os.sep + self.sample
+
+    @property
     def duration(self):
         """Return the duration of the sample."""
-        return engine_sound.get_sound_duration(self.sample)
+        if self._duration is not None:
+            return self._duration
+
+        with closing(SourceFile.open(self.relative_path, 'rb')) as f:
+            if self.extension == 'ogg':
+                value = oggvorbis.Open(f).info.length
+            elif self.extension == 'mp3':
+                value = mp3.Open(f).info.length
+            elif self.extension == 'wav':
+                with closing(wave.open(f)) as open_file:
+                    value = open_file.getnframes() / open_file.getframerate()
+            else:
+                raise NotImplementedError(
+                    'Sound extension "{extension}" is not supported.'.format(
+                        extension=self.extension,
+                    )
+                )
+
+        self._duration = value
+        return value
 
     def _unload_instance(self):
         """Remove the sample from the downloads list."""
