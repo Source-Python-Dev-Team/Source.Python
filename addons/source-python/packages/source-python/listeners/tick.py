@@ -110,18 +110,18 @@ class Delay(WeakAutoUnload):
     """Execute a callback after a given delay."""
 
     def __init__(
-        self, delay, callback, args=None, kwargs=None, cancel_on_map_end=False
+        self, delay, callback, args=(), kwargs=None, cancel_on_map_end=False
     ):
         """Initialize the delay.
 
         :param float delay: The delay in seconds.
         :param callback: A callable object that should be called after the
             delay expired.
+        :param tuple args: Arguments that should be passed to the callback.
+        :param dict kwargs: Keyword arguments that should be passed to the
+            callback.
         :param bool cancel_on_map_end: Whether or not to cancel the delay at
             the end of the map.
-        :param args: Arguments that should be passed to the callback.
-        :param kwargs: Keyword arguments that should be passed to the
-            callback.
         :raises ValueError: If the given callback is not callable.
         """
         if not callable(callback):
@@ -131,7 +131,7 @@ class Delay(WeakAutoUnload):
         self._start_time = time.time()
         self.exec_time = self._start_time + delay
         self.callback = callback
-        self.args = args if args is not None else tuple()
+        self.args = args
         self.kwargs = kwargs if kwargs is not None else dict()
         self.cancel_on_map_end = cancel_on_map_end
         _delay_manager.add(self)
@@ -205,22 +205,24 @@ class RepeatStatus(IntEnum):
 class Repeat(AutoUnload):
     """Class used to create and call repeats."""
 
-    def __init__(self, callback, cancel_on_map_end=False, *args, **kwargs):
+    def __init__(
+        self, callback, args=(), kwargs=None, cancel_on_map_end=False
+    ):
         """Store all instance attributes.
 
         :param callback: A callable object that should be called at the
             end of each loop.
+        :param tuple args: Arguments that should be passed to the callback.
+        :param dict kwargs: Keyword arguments that should be passed to the
+            callback.
         :param bool cancel_on_map_end: Whether or not to cancel the repeat at
             the end of the map.
-        :param args: Arguments that should be passed to the callback.
-        :param kwargs: Keyword arguments that should be passed to the
-            callback.
         """
         # Store the base attributes
         self.callback = callback
-        self.cancel_on_map_end = cancel_on_map_end
         self.args = args
-        self.kwargs = kwargs
+        self.kwargs = kwargs if kwargs is not None else dict()
+        self.cancel_on_map_end = cancel_on_map_end
 
         # Log the __init__ message
         listeners_tick_logger.log_debug(
