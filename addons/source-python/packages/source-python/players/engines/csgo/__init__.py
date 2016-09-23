@@ -19,6 +19,7 @@ from memory.hooks import PreHook
 from _messages import ProtobufMessage
 #   Players
 from players._base import Player as _Player
+from players.constants import LifeState
 #   Weapons
 from weapons.manager import weapon_manager
 
@@ -124,6 +125,10 @@ class Player(_Player):
             ),
             value,
         )
+
+    def spawn(self):
+        """Spawn the player."""
+        self._spawn()
 
 
 # =============================================================================
