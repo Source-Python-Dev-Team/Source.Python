@@ -1,6 +1,6 @@
-# ../players/engines/orangebox/__init__.py
+# ../players/engines/bms/__init__.py
 
-"""Provides Orangebox specific Player based functionality."""
+"""Provides BM:S specific Player based functionality."""
 
 # =============================================================================
 # >> IMPORTS
@@ -19,6 +19,7 @@ class Player(_Player):
     """Class used to interact directly with players."""
 
     @wrap_entity_mem_func
-    def give_named_item(self, item, sub_type=0):
+    def give_named_item(self, item, sub_type=0, primary_ammo=-1,
+            secondary_ammo=-1):
         """Give the player a named item."""
-        return [item, sub_type]
+        return [item, sub_type, primary_ammo, secondary_ammo]
