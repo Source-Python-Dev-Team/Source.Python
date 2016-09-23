@@ -15,6 +15,7 @@ from memory import get_virtual_function
 from memory.hooks import PreHook
 #   Players
 from . import Player as _Player
+from players.constants import LifeState
 
 
 # =============================================================================
@@ -36,6 +37,12 @@ class Player(_Player):
 
         # If no c4 is owned by the player, return False
         return False
+
+    def spawn(self):
+        """Spawn the player."""
+        self.player_state = 0
+        self.life_state = LifeState.ALIVE
+        super().spawn()
 
 
 # =============================================================================

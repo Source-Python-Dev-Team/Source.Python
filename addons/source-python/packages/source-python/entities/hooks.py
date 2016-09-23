@@ -102,7 +102,7 @@ class _EntityHook(AutoUnload):
         for entity in EntityIter():
             if self.initialize(entity):
                 # Yay! The entity was the one we were looking for
-                return self
+                return self.callback
 
         # Initialization failed. There is currently no entity with the given
         # class name. So, we need to wait until such an entity has been
@@ -110,7 +110,7 @@ class _EntityHook(AutoUnload):
         _waiting_entity_hooks.append(self)
 
         # Return the callback
-        return self
+        return self.callback
 
     @property
     def hook_type(self):
