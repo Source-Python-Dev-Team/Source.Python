@@ -54,7 +54,7 @@ class GameThread(Thread):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         on_tick_listener_manager.register_listener(self._tick)
-        
+
     def __del__(self):
         on_tick_listener_manager.unregister_listener(self._tick)
 
@@ -109,7 +109,7 @@ _delay_manager = _DelayManager()
 class Delay(WeakAutoUnload):
     """Execute a callback after a given delay."""
 
-    def __init__(self, delay, callback, cancel_on_map_end=False, args=(), kwargs={}):
+    def __init__(self, delay, callback, args=(), kwargs={}, *, cancel_on_map_end=False):
         """Initialize the delay.
 
         :param float delay: The delay in seconds.
@@ -129,9 +129,9 @@ class Delay(WeakAutoUnload):
         self._start_time = time.time()
         self.exec_time = self._start_time + delay
         self.callback = callback
-        self.cancel_on_map_end = cancel_on_map_end
         self.args = tuple(args)
         self.kwargs = dict(kwargs)
+        self.cancel_on_map_end = cancel_on_map_end
         _delay_manager.add(self)
 
     def __lt__(self, other):
@@ -203,22 +203,22 @@ class RepeatStatus(IntEnum):
 class Repeat(AutoUnload):
     """Class used to create and call repeats."""
 
-    def __init__(self, callback, cancel_on_map_end=False, args=(), kwargs={}):
+    def __init__(self, callback, args=(), kwargs={}, *, cancel_on_map_end=False):
         """Store all instance attributes.
 
         :param callback: A callable object that should be called at the
             end of each loop.
-        :param bool cancel_on_map_end: Whether or not to cancel the repeat at
-            the end of the map.
         :param tuple args: Arguments that should be passed to the callback.
         :param dict kwargs: Keyword arguments that should be passed to the
             callback.
+        :param bool cancel_on_map_end: Whether or not to cancel the repeat at
+            the end of the map.
         """
         # Store the base attributes
         self.callback = callback
-        self.cancel_on_map_end = cancel_on_map_end
         self.args = tuple(args)
         self.kwargs = dict(kwargs)
+        self.cancel_on_map_end = cancel_on_map_end
 
         # Log the __init__ message
         listeners_tick_logger.log_debug(
@@ -276,7 +276,7 @@ class Repeat(AutoUnload):
 
         # Start the delay
         self._delay = Delay(
-            self._interval, self._execute, self.cancel_on_map_end
+            self._interval, self._execute, cancel_on_map_end=self.cancel_on_map_end
         )
 
         # Call the callback if set to execute on start
@@ -378,7 +378,7 @@ class Repeat(AutoUnload):
 
         # Start the delay
         self._delay = Delay(
-            self._loop_time, self._execute, self.cancel_on_map_end
+            self._loop_time, self._execute, cancel_on_map_end=self.cancel_on_map_end
         )
 
     def extend(self, adjustment):
@@ -477,7 +477,7 @@ class Repeat(AutoUnload):
 
             # Call the delay again
             self._delay = Delay(
-                self._interval, self._execute, self.cancel_on_map_end
+                self._interval, self._execute, cancel_on_map_end=self.cancel_on_map_end
             )
 
         # Are no more loops to be made?
