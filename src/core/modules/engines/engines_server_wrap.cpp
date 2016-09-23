@@ -32,6 +32,7 @@
 	#include <Windows.h>
 #endif
 
+#include "engines_server.h"
 #include "export_main.h"
 #include "utilities/conversions.h"
 
@@ -65,10 +66,11 @@ extern IServerGameDLL* servergamedll;
 //---------------------------------------------------------------------------------
 // Forward declarations.
 //---------------------------------------------------------------------------------
-void export_engine_server(scope);
-void export_query_cvar_status(scope);
-void export_server_game_dll(scope);
-void export_iserver(scope);
+static void export_engine_server(scope);
+static void export_query_cvar_status(scope);
+static void export_server_game_dll(scope);
+static void export_iserver(scope);
+static void export_functions(scope);
 
 
 //---------------------------------------------------------------------------------
@@ -80,13 +82,14 @@ DECLARE_SP_SUBMODULE(_engines, _server)
 	export_query_cvar_status(_server);
 	export_server_game_dll(_server);
 	export_iserver(_server);
+	export_functions(_server);
 }
 
 
 //---------------------------------------------------------------------------------
 // Exports IVEngineServer.
 //---------------------------------------------------------------------------------
-void export_engine_server(scope _server)
+static void export_engine_server(scope _server)
 {
 	// Call engine specific implementation function
 	IVEngineServer_Visitor(
@@ -246,17 +249,6 @@ void export_engine_server(scope _server)
 		.def("sentence_length",
 			&IVEngineServer::SentenceLength,
 			args("sentence_index")
-		)
-
-		.def("server_command",
-			&IVEngineServerExt::ServerCommand,
-			"Issues a command to the command parser as if it was typed at the server console.",
-			args("command")
-		)
-
-		.def("server_execute",
-			&IVEngineServer::ServerExecute,
-			"Executes any commands currently in the command parser immediately (instead of once per frame)."
 		)
 
 		.def("client_command",
@@ -555,12 +547,6 @@ void export_engine_server(scope _server)
 			args("edict", "cvar_name")
 		)
 
-		.def("insert_server_command",
-			&IVEngineServerExt::InsertServerCommand,
-			"Inserts a command into the server's command buffer.",
-			args("command_string")
-		)
-
 		.def("get_player_info",
 			&IVEngineServer::GetPlayerInfo,
 			"Fill in the player info structure for the specified player.",
@@ -777,7 +763,7 @@ void export_engine_server(scope _server)
 //---------------------------------------------------------------------------------
 // Exports EQueryCvarValueStatus.
 //---------------------------------------------------------------------------------
-void export_query_cvar_status(scope _server)
+static void export_query_cvar_status(scope _server)
 {
 	enum_<EQueryCvarValueStatus> QueryCvarStatus("QueryCvarStatus");
 
@@ -792,7 +778,7 @@ void export_query_cvar_status(scope _server)
 //-----------------------------------------------------------------------------
 // Exports IServerGameDLL.
 //-----------------------------------------------------------------------------
-void export_server_game_dll(scope _server)
+static void export_server_game_dll(scope _server)
 {
 	class_<IServerGameDLL, boost::noncopyable> ServerGameDLL("_ServerGameDLL", no_init);
 	
@@ -826,7 +812,7 @@ void export_server_game_dll(scope _server)
 //-----------------------------------------------------------------------------
 // Exports IServer.
 //-----------------------------------------------------------------------------
-void export_iserver(scope _server)
+static void export_iserver(scope _server)
 {
 	class_<IConnectionlessPacketHandler, IConnectionlessPacketHandler*, boost::noncopyable> _IConnectionlessPacketHandler("ConnectionlessPacketHandler", no_init);
 
@@ -1002,4 +988,24 @@ void export_iserver(scope _server)
 	);
 
 	_IServer ADD_MEM_TOOLS(IServer)
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports functions.
+//-----------------------------------------------------------------------------
+static void export_functions(scope _server)
+{
+	def("execute_server_command",
+		raw_function(execute_server_command, 1)
+	);
+
+	def("queue_server_command",
+		raw_function(queue_server_command, 1)
+	);
+
+	def("queue_command_string",
+		&queue_command_string,
+		"Queue a string for execution."
+	);
 }
