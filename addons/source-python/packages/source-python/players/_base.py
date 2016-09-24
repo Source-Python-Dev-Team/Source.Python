@@ -17,6 +17,7 @@ from core import GAME_NAME
 #   Engines
 from engines.server import server
 from engines.server import engine_server
+from engines.server import execute_server_command
 from engines.server import server_game_dll
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
@@ -32,6 +33,7 @@ from entities.constants import TakeDamage
 from entities.entity import Entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
+from entities.helpers import wrap_entity_mem_func
 from entities.props import SendPropType
 #   Filters
 from filters.entities import EntityIter
@@ -600,8 +602,7 @@ class Player(Entity):
 
         :param str message: A message the kicked player will receive.
         """
-        engine_server.server_command(
-            'kickid {} {}'.format(self.userid, message).rstrip())
+        execute_server_command('kickid', self.userid, message.rstrip())
 
     def ban(self, duration=0, kick=True, write_ban=True):
         """Ban a player from the server.
@@ -612,10 +613,10 @@ class Player(Entity):
         :param bool write_ban: If True, the ban will be written to
             ``cfg/banned_users.cfg``.
         """
-        engine_server.server_command('banid {} {} {}'.format(
-            duration, self.userid, 'kick' if kick else ''))
+        execute_server_command(
+            'banid', duration, self.userid, 'kick' if kick else '')
         if write_ban:
-            engine_server.server_command('writeid')
+            execute_server_command('writeid')
 
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
@@ -798,6 +799,19 @@ class Player(Entity):
         """
         from weapons.restrictions import weapon_restriction_manager
         return weapon_restriction_manager.is_player_restricted(self, weapon)
+
+    @wrap_entity_mem_func
+    def drop_weapon(self, weapon, target=None, velocity=None):
+        """Drop a weapon.
+
+        :param Pointer weapon:
+            Weapon to drop.
+        :param Vector target:
+            Target location to drop the weapon at.
+        :param Vector velocity:
+            Velocity to use to drop the weapon.
+        """
+        return [weapon, target, velocity]
 
 
 # =============================================================================
