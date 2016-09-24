@@ -113,4 +113,4 @@ def wrap_entity_mem_func(wrapper):
     def inner(wrapped_self):
         return EntityMemFuncWrapper(wrapped_self, wrapper)
 
-    return property(inner)
+    return property(inner, doc=wrapper.__doc__)

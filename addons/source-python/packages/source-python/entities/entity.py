@@ -28,6 +28,7 @@ from entities.constants import RenderMode
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
+from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.weapons import WeaponClassIter
 #   Memory
@@ -613,3 +614,16 @@ class Entity(BaseEntity):
             self.on_take_damage.skip_hooks(take_damage_info)
         else:
             self.on_take_damage(take_damage_info)
+            
+    @wrap_entity_mem_func
+    def teleport(self, origin=None, angle=None, velocity=None):
+        """Change the origin, angle and/or velocity of the entity.
+        
+        :param Vector origin:
+            New location of the entity.
+        :param QAngle angle:
+            New angle of the entity.
+        :param Vector velocity:
+            New velocity of the entity.
+        """
+        return [origin, angle, velocity]
