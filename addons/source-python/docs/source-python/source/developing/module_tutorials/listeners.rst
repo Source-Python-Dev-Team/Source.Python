@@ -291,12 +291,28 @@ OnLevelShutdown
 
 Called when a map ends e.g. due to a manual map change or time limit.
 
+.. note:: Can be called multiple times per map change! Use :class:`listeners.OnLevelEnd` if you want to make sure it's only getting called once per map change.
+
 .. code-block:: python
 
     from listeners import OnLevelShutdown
 
     @OnLevelShutdown
     def on_level_shutdown():
+        pass
+
+
+OnLevelEnd
+----------
+
+Called when a map ends e.g. due to a manual map change or time limit.
+
+.. code-block:: python
+
+    from listeners import OnLevelEnd
+
+    @OnLevelEnd
+    def on_level_end():
         pass
 
 
@@ -317,6 +333,39 @@ Called when a client has been authenticated.
 
     If your server can't establish a connection to the Steam servers, this
     listener will never get called.
+
+
+OnButtonStateChanged
+--------------------
+
+Called when the button state of a player changed.
+
+.. code-block:: python
+
+    from listeners import OnButtonStateChanged
+
+    @OnButtonStateChanged
+    def on_button_state_changed(player, old_buttons, new_buttons):
+        pass
+
+.. seealso::
+
+    Use :func:`listeners.get_button_combination_status` to check if a specific
+    button or button combination has been pressed or released.
+
+
+OnPlayerRunCommand
+--------------------
+
+Called when a player runs a command.
+
+.. code-block:: python
+
+    from listeners import OnPlayerRunCommand
+
+    @OnPlayerRunCommand
+    def on_player_run_command(player, user_cmd):
+        pass
 
 
 OnPluginLoaded
