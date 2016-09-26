@@ -599,6 +599,6 @@ class Repeat(AutoUnload):
 # =============================================================================
 @OnLevelEnd
 def _cancel_delays_on_level_end():
-    for delay in _delay_manager:
+    for delay in list(_delay_manager):
         if delay.cancel_on_level_end:
             delay.cancel()
