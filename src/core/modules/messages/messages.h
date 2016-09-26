@@ -346,5 +346,6 @@ private:
 //-----------------------------------------------------------------------------
 void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
 int GetMessageIndex(const char* name);
+object GetMessageName(int index);
 
 #endif // _MESSAGES_H
