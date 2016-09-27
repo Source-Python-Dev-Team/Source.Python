@@ -225,8 +225,8 @@ void export_hitbox(scope _studio)
 	Hitbox.def_readwrite("bone", &mstudiobbox_t::bone);
 	Hitbox.def_readwrite("group", &mstudiobbox_t::group);
 
-	Hitbox.add_property("min", make_getter(&mstudiobbox_t::bbmin, reference_existing_object_policy()), HitboxExt::set_bbmin);
-	Hitbox.add_property("max", make_getter(&mstudiobbox_t::bbmax, reference_existing_object_policy()), HitboxExt::set_bbmax);
+	Hitbox.def_readwrite("min", &mstudiobbox_t::bbmin);
+	Hitbox.def_readwrite("max", &mstudiobbox_t::bbmax);
 
 	// Add memory tools...
 	Hitbox ADD_MEM_TOOLS(mstudiobbox_t);
