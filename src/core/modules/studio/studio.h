@@ -98,6 +98,24 @@ public:
 
 
 //-----------------------------------------------------------------------------
+// mstudiobbox_t extension class.
+//-----------------------------------------------------------------------------
+class HitboxExt
+{
+public:
+	static void set_bbmin(mstudiobbox_t *pHitbox, Vector vecMin)
+	{
+		pHitbox->bbmin = vecMin;
+	}
+
+	static void set_bbmax(mstudiobbox_t *pHitbox, Vector vecMax)
+	{
+		pHitbox->bbmax = vecMax;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // mstudiohitboxset_t extension class.
 //-----------------------------------------------------------------------------
 class AnimationExt
