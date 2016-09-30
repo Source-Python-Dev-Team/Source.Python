@@ -72,7 +72,7 @@ public:
 class CBinaryManager
 {
 public:
-	CBinaryFile* FindBinary(char* szPath, bool bSrvCheck = true);
+	CBinaryFile* FindBinary(char* szPath, bool bSrvCheck = true, bool bCheckExtension = true);
 
 private:
 	std::list<CBinaryFile*> m_Binaries;
@@ -80,6 +80,6 @@ private:
 
 static CBinaryManager* s_pBinaryManager = new CBinaryManager();
 
-CBinaryFile* FindBinary(char* szPath, bool bSrvCheck = true);
+CBinaryFile* FindBinary(char* szPath, bool bSrvCheck = true, bool bCheckExtension = true);
 
 #endif // _MEMORY_SCANNER_H
