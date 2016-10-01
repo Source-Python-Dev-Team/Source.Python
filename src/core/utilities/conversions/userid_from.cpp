@@ -65,11 +65,12 @@ bool UseridFromIndex( unsigned int iEntityIndex, unsigned int& output )
 //-----------------------------------------------------------------------------
 bool UseridFromEdict( edict_t *pEdict, unsigned int& output )
 {
-	unsigned int iEntityIndex;
-	if (!IndexFromEdict(pEdict, iEntityIndex))
+	int result = engine->GetPlayerUserId(pEdict);
+	if (result == -1)
 		return false;
 
-	return UseridFromIndex(iEntityIndex, output);
+	output = (unsigned int) result;
+	return true;
 }
 
 
