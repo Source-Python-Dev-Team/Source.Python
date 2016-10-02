@@ -138,6 +138,7 @@ Set(SOURCEPYTHON_COMMANDS_MODULE_SOURCES
 # Core module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CORE_MODULE_HEADERS
+    core/modules/core/core.h
 )
 
 Set(SOURCEPYTHON_CORE_MODULE_SOURCES
