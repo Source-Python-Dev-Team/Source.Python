@@ -279,7 +279,7 @@ class Entity(BaseEntity):
     def model_header(self):
         """Return a ModelHeader instance of the current entity's model."""
         return model_cache.get_model_header(model_cache.find_model(
-            self.model.path))
+            self.model_name))
 
     def get_property_bool(self, name):
         """Return the boolean property."""
