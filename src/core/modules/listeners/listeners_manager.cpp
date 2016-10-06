@@ -72,3 +72,21 @@ void CListenerManager::Notify(tuple args, dict kwargs)
 		END_BOOST_PY_NORET()
 	}
 }
+
+
+//-----------------------------------------------------------------------------
+// Return the number of registered callbacks.
+//-----------------------------------------------------------------------------
+int CListenerManager::GetCount()
+{
+	return m_vecCallables.Count();
+}
+
+
+//-----------------------------------------------------------------------------
+// Return whether or not the given callback is registered.
+//-----------------------------------------------------------------------------
+bool CListenerManager::IsRegistered(object oCallback)
+{
+	return m_vecCallables.HasElement(oCallback);
+}
