@@ -72,6 +72,16 @@ public:
 
 	static str __repr__(Vector* pVector)
 	{ return str("Vector" + str(tuple(pVector))); }
+
+	static Vector Copy(Vector* pVec)
+	{ return *pVec; }
+
+	static Vector Normalized(Vector* pVec)
+	{
+		Vector copy = *pVec;
+		copy.NormalizeInPlace();
+		return copy;
+	}
 };
 
 

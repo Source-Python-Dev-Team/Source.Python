@@ -165,7 +165,17 @@ void export_vector(scope _mathlib)
 
 		.def("normalize",
 			&Vector::NormalizeInPlace,
-			"Normalizes the vector."
+			"Normalize the vector inplace and return its length before normalization."
+		)
+
+		.def("normalized",
+			&VectorExt::Normalized,
+			"Return a normalized copy of the vector."
+		)
+
+		.def("copy",
+			&VectorExt::Copy,
+			"Return a copy of the vector."
 		)
 
 		.def("is_length_greater_than",
