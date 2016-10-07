@@ -11,6 +11,15 @@ from weapons.manager import weapon_manager
 
 
 # =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+_item_definition_indexes = {
+    values['item_definition_index']: weapon
+    for weapon, values in weapon_manager.ini['weapons'].items()
+}
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class Weapon(_Weapon):
@@ -29,7 +38,6 @@ class Weapon(_Weapon):
             )
         )
 
-
     def set_ammo(self, value):
         """Set the player's ammo property for the weapon."""
         # Is the weapon not a grenade?
@@ -46,8 +54,14 @@ class Weapon(_Weapon):
             value,
         )
 
-
     # Set the "ammo" property methods
     ammo = property(
         get_ammo, set_ammo,
         doc="""Property to get/set the weapon's ammo.""")
+
+    def get_weapon_name(self):
+        """Return the full class name of the weapon."""
+        return _item_definition_indexes.get(
+            self.item_definition_index,
+            self.classname,
+        )

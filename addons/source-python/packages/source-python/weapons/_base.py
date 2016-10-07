@@ -151,3 +151,7 @@ class Weapon(Entity):
     secondary_fire_ammo = property(
         get_secondary_fire_ammo, set_secondary_fire_ammo,
         doc="""Property to get/set the weapon's secondary fire ammo.""")
+
+    def get_weapon_name(self):
+        """Return the full class name of the weapon."""
+        return self.classname
