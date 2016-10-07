@@ -14,8 +14,9 @@ from weapons.manager import weapon_manager
 # >> GLOBAL VARIABLES
 # =============================================================================
 _item_definition_indexes = {
-    values['item_definition_index']: weapon
+    values.get('item_definition_index'): weapon
     for weapon, values in weapon_manager.ini['weapons'].items()
+    if values.get('item_definition_index')
 }
 
 
