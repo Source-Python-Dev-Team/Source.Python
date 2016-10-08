@@ -101,8 +101,7 @@ class _ExceptHooks(_HookBase):
             line = line.rstrip()
 
             # Strip the GAME_PATH to make the exception shorter
-            line = line.replace(
-                GAME_PATH, '..{0}'.format(sep)).replace(sep + '.' + sep, sep)
+            line = line.replace(GAME_PATH, '..').replace(sep + '.' + sep, sep)
 
             # Add the current line to the message
             message += '\n' + line

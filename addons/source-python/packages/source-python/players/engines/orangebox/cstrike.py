@@ -42,7 +42,7 @@ class Player(_Player):
         """Spawn the player."""
         self.player_state = 0
         self.life_state = LifeState.ALIVE
-        super(Player, self).spawn()
+        super().spawn()
 
 
 # =============================================================================

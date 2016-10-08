@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,53 +24,75 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _LISTENERS_MANAGER_H
-#define _LISTENERS_MANAGER_H
-
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// Source.Python
+#include "engines_server.h"
 #include "utilities/wrap_macros.h"
-#include "utilities/call_python.h"
-#include "utlvector.h"
+
+// SDK
+#include "convar.h"
+#include "eiface.h"
 
 
 //-----------------------------------------------------------------------------
-// Helper macros.
+// Externals
 //-----------------------------------------------------------------------------
-// This creates a static manager and a function that returns a pointer to the
-// manager. Must be used in a *.cpp file!
-#define DEFINE_MANAGER_ACCESSOR(name) \
-	static CListenerManager s_##name; \
-	CListenerManager* Get##name##ListenerManager() \
-	{ return &s_##name; }
-
-// Calls all listeners of the given manager
-#define CALL_LISTENERS(name, ...) \
-	extern CListenerManager* Get##name##ListenerManager(); \
-	for(int i = 0; i < Get##name##ListenerManager()->m_vecCallables.Count(); i++) \
-	{ \
-		BEGIN_BOOST_PY() \
-			CALL_PY_FUNC(Get##name##ListenerManager()->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
-		END_BOOST_PY_NORET() \
-	}
+extern IVEngineServer* engine;
 
 
 //-----------------------------------------------------------------------------
-// CListenerManager class.
+// Commands to execute server commands
 //-----------------------------------------------------------------------------
-class CListenerManager
+void prepare_command(tuple args, dict kwargs, ConCommand** pCommandOut, std::string* szCommandOut)
 {
-public:
-	void RegisterListener(PyObject* pCallable);
-	void UnregisterListener(PyObject* pCallable);
-	void Notify(boost::python::tuple args, dict kwargs);
-	int GetCount();
-	bool IsRegistered(object oCallback);
+	if (kwargs)
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Function does not accept keywords.")
 
-public:
-	CUtlVector<object> m_vecCallables;
-};
+	const char* command = extract<const char*>(args[0]);
+	ConCommand* pCommand = cvar->FindCommand(command);
+	if (!pCommand)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find command '%s'.", command);
 
+	*pCommandOut = pCommand;
 
-#endif // _LISTENERS_MANAGER_H
+	*szCommandOut = "";
+	for(int i=0; i < len(args); ++i)
+	{
+		const char* temp = extract<const char*>(str(args[i]));
+		*szCommandOut += temp;
+		*szCommandOut += " ";
+	}
+}
+
+object execute_server_command(tuple args, dict kwargs)
+{
+	std::string szCommand;
+	ConCommand* pCommand;
+	prepare_command(args, kwargs, &pCommand, &szCommand);
+
+	CCommand c;
+	if (!c.Tokenize(szCommand.c_str()))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to tokenize '%s'.", szCommand.c_str())
+
+	pCommand->Dispatch(c);
+	return object();
+}
+
+object queue_server_command(tuple args, dict kwargs)
+{
+	std::string szCommand;
+	ConCommand* pCommand;
+	prepare_command(args, kwargs, &pCommand, &szCommand);
+	szCommand += ";";
+	engine->ServerCommand(szCommand.c_str());
+	return object();
+}
+
+void queue_command_string(const char* szCommand)
+{
+	std::string command = szCommand;
+	command += ";";
+	engine->ServerCommand(command.c_str());
+}

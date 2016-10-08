@@ -900,7 +900,7 @@ void export_functions(scope _memory)
 {
 	def("find_binary",
 		&FindBinary,
-		("path", arg("srv_check")=true),
+		("path", arg("srv_check")=true, arg("check_extension")=true),
 		"Search for a binary and return it as a :class:`BinaryFile` object.\n"
 		"\n"
 		":param str path: The path to the binary file (absolute, relative or just the name of the file if it's on the search path).\n"

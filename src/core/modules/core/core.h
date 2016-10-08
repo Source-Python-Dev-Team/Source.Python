@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,53 +24,22 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _LISTENERS_MANAGER_H
-#define _LISTENERS_MANAGER_H
+#ifndef _CORE_H
+#define _CORE_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/wrap_macros.h"
-#include "utilities/call_python.h"
-#include "utlvector.h"
+#include "dbg.h"
 
 
 //-----------------------------------------------------------------------------
-// Helper macros.
+// ConMsg wrapper
 //-----------------------------------------------------------------------------
-// This creates a static manager and a function that returns a pointer to the
-// manager. Must be used in a *.cpp file!
-#define DEFINE_MANAGER_ACCESSOR(name) \
-	static CListenerManager s_##name; \
-	CListenerManager* Get##name##ListenerManager() \
-	{ return &s_##name; }
-
-// Calls all listeners of the given manager
-#define CALL_LISTENERS(name, ...) \
-	extern CListenerManager* Get##name##ListenerManager(); \
-	for(int i = 0; i < Get##name##ListenerManager()->m_vecCallables.Count(); i++) \
-	{ \
-		BEGIN_BOOST_PY() \
-			CALL_PY_FUNC(Get##name##ListenerManager()->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
-		END_BOOST_PY_NORET() \
-	}
-
-
-//-----------------------------------------------------------------------------
-// CListenerManager class.
-//-----------------------------------------------------------------------------
-class CListenerManager
+inline void ConsoleMessage(const char* msg)
 {
-public:
-	void RegisterListener(PyObject* pCallable);
-	void UnregisterListener(PyObject* pCallable);
-	void Notify(boost::python::tuple args, dict kwargs);
-	int GetCount();
-	bool IsRegistered(object oCallback);
-
-public:
-	CUtlVector<object> m_vecCallables;
-};
+	ConMsg(msg);
+}
 
 
-#endif // _LISTENERS_MANAGER_H
+#endif // _CORE_H

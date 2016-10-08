@@ -10,6 +10,8 @@
 from bitbuffers import BitBufferWrite
 #   Engines
 from engines.server import engine_server
+#   Entities
+from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.entities import EntityIter
 #   Memory
@@ -129,6 +131,12 @@ class Player(_Player):
     def spawn(self):
         """Spawn the player."""
         self._spawn()
+
+    @wrap_entity_mem_func
+    def give_named_item(self, item, sub_type=0, econ_item_view=None, unk=False):
+        """Give the player a named item."""
+        # TODO: What's the last argument for?
+        return [item, sub_type, econ_item_view, unk]
 
 
 # =============================================================================

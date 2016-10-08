@@ -19,7 +19,7 @@ from config.command import _CommandManager
 #   Cvars
 from cvars import ConVar
 #   Engines
-from engines.server import engine_server
+from engines.server import queue_command_string
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Paths
@@ -291,7 +291,7 @@ class ConfigManager(object):
                 if name in self._commands:
 
                     # Execute the line
-                    engine_server.server_command(line + '\n')
+                    queue_command_string(line)
 
                 # Is this a cvar
                 else:

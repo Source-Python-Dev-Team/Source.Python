@@ -19,7 +19,8 @@ from core.version import VERSION
 #   Cvars
 from cvars import ConVar
 #   Engines
-from engines.server import engine_server
+from engines.server import execute_server_command
+from engines.server import queue_command_string
 #   Paths
 from paths import SP_DATA_PATH
 #   Plugins
@@ -141,9 +142,7 @@ _core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 @_core_command.server_sub_command(['delay'])
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
-    Delay(
-        delay, engine_server.server_command, (command + ' ' + ' '.join(args), )
-    )
+    Delay(delay, queue_command_string, (command + ' ' + ' '.join(args), ))
 
 
 @_core_command.server_sub_command(['version'])
@@ -163,7 +162,7 @@ def _sp_credits(command_info):
 def _sp_help(command_info, command=None, *server_sub_commands):
     """Print all sp sub-commands or help for a specific command."""
     if command is None:
-        engine_server.server_command('sp')
+        execute_server_command('sp')
         return
 
     commands = (command,) + server_sub_commands
