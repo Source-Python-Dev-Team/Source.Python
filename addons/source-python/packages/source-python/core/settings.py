@@ -46,7 +46,8 @@ class _CoreSettings(ConfigObj):
         self._check_settings()
 
         # Add the initial comment
-        self.initial_comment = ['../' + self.filename.replace(GAME_PATH, '')]
+        self.initial_comment = ['..' +
+            self.filename.replace(GAME_PATH, '').replace('\\', '/')]
 
         # Loop through all sections
         for section in self:
