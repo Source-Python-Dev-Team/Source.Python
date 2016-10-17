@@ -43,6 +43,17 @@ extern IVEngineServer* engine;
 
 
 //-----------------------------------------------------------------------------
+// Classes
+//-----------------------------------------------------------------------------
+tuple IServerExt::GetNetStats(IServer* pServer)
+{
+	float x, y;
+	pServer->GetNetStats(x, y);
+	return make_tuple(x, y);
+}
+
+
+//-----------------------------------------------------------------------------
 // Commands to execute server commands
 //-----------------------------------------------------------------------------
 void prepare_command(tuple args, dict kwargs, ConCommand** pCommandOut, std::string* szCommandOut)
