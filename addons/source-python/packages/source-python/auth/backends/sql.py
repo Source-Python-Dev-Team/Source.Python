@@ -127,7 +127,17 @@ class LoadThread(GameThread):
 
     def run(self):
         with session_scope() as session:
-            for node in session.query(PermissionObject).all():
+            try:
+                query = session.query(PermissionObject).all()
+            except:
+                raise
+            else:
+                # Only clear the manager if the query finished without any
+                # errors
+                auth_manager.parents.clear()
+                auth_manager.players.clear()
+
+            for node in query:
                 if not self._running:
                     break
 
@@ -157,10 +167,20 @@ class SQLBackend(Backend):
         self.engine = create_engine(self.options['uri'])
         Base.metadata.create_all(self.engine)
         Session.configure(bind=self.engine)
+        self.start_sync()
+
+    def unload(self):
+        self.stop_sync()
+
+    def sync(self):
+        self.stop_sync()
+        self.start_sync()
+
+    def start_sync(self):
         self.thread = LoadThread()
         self.thread.start()
 
-    def unload(self):
+    def stop_sync(self):
         self.thread.stop()
         self.thread.join()
 

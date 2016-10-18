@@ -18,6 +18,8 @@ from configobj import ConfigObj
 from auth.base import Backend
 #   Core
 from core.settings import _core_settings
+#   Listeners
+from listeners import OnLevelEnd
 #   Paths
 from paths import BACKENDS_PATH
 #   Players
@@ -58,7 +60,8 @@ class PermissionBase(dict):
         self.parents = set()
         self.name = name
         if self.name != GUEST_PARENT_NAME:
-            self.add_parent(GUEST_PARENT_NAME)
+            # Don't update the backend, because it's a hidden group
+            self.add_parent(GUEST_PARENT_NAME, update_backend=False)
 
     def __hash__(self):
         """Return a hash value based on the name."""
@@ -125,7 +128,7 @@ class PermissionBase(dict):
         :param bool update_backend: If True, the backend will be updated.
         """
         parent = auth_manager.parents[parent_name]
-        if parent not in self.parents:
+        if parent in self.parents:
             self.parents.remove(parent)
             parent.children.remove(self)
 
@@ -361,3 +364,9 @@ class _AuthManager(dict):
 
 #: The singleton object of :class:`_AuthManager`.
 auth_manager = _AuthManager()
+
+@OnLevelEnd
+def _on_level_end():
+    backend = auth_manager.active_backend
+    if backend is not None:
+        backend.sync()

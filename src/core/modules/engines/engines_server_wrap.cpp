@@ -906,10 +906,10 @@ static void export_iserver(scope _server)
 		&IServer::GetClassBits
 	);
 
-	_IServer.def(
-		"get_net_stats",
-		&IServer::GetNetStats,
-		"Total net in/out in bytes/sec."
+	_IServer.add_property(
+		"net_stats",
+		&IServerExt::GetNetStats,
+		"Return a tuple containing the total net in/out in bytes/sec."
 	);
 
 	_IServer.add_property(
