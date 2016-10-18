@@ -27,6 +27,7 @@ from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
 from entities.constants import CollisionGroup
+from entities.constants import EntityEffects
 from entities.constants import INVALID_ENTITY_INDEX
 from entities.constants import MoveType
 from entities.constants import TakeDamage
@@ -812,6 +813,28 @@ class Player(Entity):
             Velocity to use to drop the weapon.
         """
         return [weapon, target, velocity]
+
+    @property
+    def is_flashlight_on(self):
+        '''Return whether or not the flashlight of the player is turned on.'''
+        return bool(self.effects & EntityEffects.DIMLIGHT)
+
+    def turn_flashlight_on(self):
+        '''Turn on the flashlight of the player.'''
+        self.effects |= EntityEffects.DIMLIGHT
+
+    def turn_flashlight_off(self):
+        '''Turn off the flashlight of the player.'''
+        self.effects &= ~EntityEffects.DIMLIGHT
+
+    def set_flashlight(self, state):
+        '''Turn on/off the flashlight of the player.
+
+        :param bool: The state of the flashlight to set.'''
+        if state:
+            self.turn_flashlight_on()
+        else:
+            self.turn_flashlight_off()
 
 
 # =============================================================================
