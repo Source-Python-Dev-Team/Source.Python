@@ -816,21 +816,21 @@ class Player(Entity):
 
     @property
     def is_flashlight_on(self):
-        '''Return whether or not the flashlight of the player is turned on.'''
+        """Return whether or not the flashlight of the player is turned on."""
         return bool(self.effects & EntityEffects.DIMLIGHT)
 
     def turn_flashlight_on(self):
-        '''Turn on the flashlight of the player.'''
+        """Turn on the flashlight of the player."""
         self.effects |= EntityEffects.DIMLIGHT
 
     def turn_flashlight_off(self):
-        '''Turn off the flashlight of the player.'''
+        """Turn off the flashlight of the player."""
         self.effects &= ~EntityEffects.DIMLIGHT
 
     def set_flashlight(self, state):
-        '''Turn on/off the flashlight of the player.
+        """Turn on/off the flashlight of the player.
 
-        :param bool: The state of the flashlight to set.'''
+        :param bool: The state of the flashlight to set."""
         if state:
             self.turn_flashlight_on()
         else:
