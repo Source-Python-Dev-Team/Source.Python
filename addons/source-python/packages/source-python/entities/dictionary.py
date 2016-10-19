@@ -2,9 +2,9 @@
 
 """Provides helper class to store entity instances."""
 
-# =============================================================================
+# ============================================================================
 # >> IMPORTS
-# =============================================================================
+# ============================================================================
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -14,9 +14,9 @@ from entities.entity import Entity
 from listeners import on_entity_deleted_listener_manager
 
 
-# =============================================================================
+# ============================================================================
 # >> ALL DECLARATION
-# =============================================================================
+# ============================================================================
 __all__ = ('EntityDictionary',
            )
 
@@ -45,7 +45,8 @@ class EntityDictionary(AutoUnload, dict):
 
     def __missing__(self, index):
         """Add and return the entity instance for the given index."""
-        instance = self[index] = self._factory(index, *self._args, **self._kwargs)
+        instance = self[index] = self._factory(index, *self._args,
+            **self._kwargs)
         return instance
 
     def __delitem__(self, index):
@@ -62,8 +63,17 @@ class EntityDictionary(AutoUnload, dict):
     def on_automatically_removed(self, index):
         """Called when an index is automatically removed."""
 
-    def _on_entity_deleted(self, index):
+    def _on_entity_deleted(self, base_entity):
         """OnEntityDeleted listener callback."""
+        # Is the entity networkable?
+        if not base_entity.is_networked():
+
+            # No, so skip it...
+            return
+
+        # Get the index of the entity...
+        index = base_entity.index
+
         # Is the index not in the dictionary?
         if index not in self:
 
