@@ -62,7 +62,7 @@ class EntityDictionary(AutoUnload, dict):
     def on_automatically_removed(self, index):
         """Called when an index is automatically removed."""
 
-    def _on_entity_deleted(self, index, ptr):
+    def _on_entity_deleted(self, index):
         """OnEntityDeleted listener callback."""
         # Is the index not in the dictionary?
         if index not in self:
