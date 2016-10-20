@@ -1,4 +1,4 @@
-# ../entities/entity.py
+# ../entities/_base.py
 
 """Provides a base class to interact with a specific entity."""
 
@@ -20,42 +20,24 @@ from engines.trace import GameTrace
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
+from _entities._entity import BaseEntity
 from entities import BaseEntityGenerator
 from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import DamageTypes
 from entities.constants import RenderMode
-from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.weapons import WeaponClassIter
 #   Memory
-from memory import get_object_pointer
 from memory import make_object
 #   Players
 from players.constants import HitGroup
 #   Studio
 from studio.cache import model_cache
 from studio.constants import INVALID_ATTACHMENT_INDEX
-
-
-# =============================================================================
-# >> FORWARD IMPORTS
-# =============================================================================
-# Source.Python Imports
-#   Entities
-from _entities._entity import BaseEntity
-
-
-# =============================================================================
-# >> ALL DECLARATION
-# =============================================================================
-# Add all the global variables to __all__
-__all__ = ('BaseEntity',
-           'Entity',
-           )
 
 
 # =============================================================================
