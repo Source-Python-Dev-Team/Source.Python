@@ -140,7 +140,7 @@ def _sp_auth_permission_player_test(command_info, permission):
 
         count += 1
         logger.log_message('  {} ({})'.format(player.name, player.steamid))
-        
+
     logger.log_message('{} players are granted the permission "{}".'.format(
         count, permission))
 
@@ -185,6 +185,28 @@ def _sp_auth_permission_parent_remove_parent(
     logger.log_message(
         'Removed parent "{}" from parent "{}".'.format(
             parent_to_remove, parent))
+
+@_core_command.server_sub_command([
+    'auth', 'permission', 'parent', 'list'
+])
+def _sp_auth_permission_parent_list(
+        command_info, name=None):
+    """List all parents and permissions of a given parent or all parents."""
+    for parent in auth_manager.parents.values():
+        if name is not None and name != parent.name:
+            continue
+
+        logger.log_message('{}:'.format(parent.name))
+        logger.log_message('  Parents:')
+        for parent2 in parent.parents:
+            logger.log_message('    {}'.format(parent2.name))
+
+        logger.log_message('  Permissions:')
+        for permission in parent:
+            logger.log_message('    {}'.format(permission))
+
+    if not auth_manager.parents:
+        logger.log_message('No parents found.')
 
 
 # =============================================================================

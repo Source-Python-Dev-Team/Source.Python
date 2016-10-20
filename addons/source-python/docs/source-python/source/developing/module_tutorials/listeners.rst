@@ -198,10 +198,8 @@ Called when an entity has been created.
     from listeners import OnEntityCreated
 
     @OnEntityCreated
-    def on_entity_created(index, base_entity):
+    def on_entity_created(base_entity):
         pass
-
-.. note:: ``index`` is ``None`` if the created entity does not have an index (server-only entity).
 
 
 OnEntityDeleted
@@ -214,10 +212,8 @@ Called when an entity gets deleted.
     from listeners import OnEntityDeleted
 
     @OnEntityDeleted
-    def on_entity_deleted(index, base_entity):
+    def on_entity_deleted(base_entity):
         pass
-
-.. note:: ``index`` is ``None`` if the created entity does not have an index (server-only entity).
 
 
 OnEntityOutput
@@ -266,10 +262,8 @@ Called when an entity has been spawned.
     from listeners import OnEntitySpawned
 
     @OnEntitySpawned
-    def on_entity_spawned(index, base_entity):
+    def on_entity_spawned(base_entity):
         pass
-
-.. note:: ``index`` is ``None`` if the spawned entity does not have an index (server-only entity).
 
 
 OnLevelInit

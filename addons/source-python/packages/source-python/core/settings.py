@@ -35,10 +35,10 @@ core_settings_logger = core_logger.settings
 class _CoreSettings(ConfigObj):
     """Class used to store core settings."""
 
-    def __init__(self, infile):
+    def __init__(self, infile, *args, **kwargs):
         """Add missing items and set comments using the server's language."""
         # Import the file
-        super().__init__(infile)
+        super().__init__(infile, *args, **kwargs)
         self._language = None
 
     def load(self):
@@ -46,7 +46,8 @@ class _CoreSettings(ConfigObj):
         self._check_settings()
 
         # Add the initial comment
-        self.initial_comment = ['../' + self.filename.replace(GAME_PATH, '')]
+        self.initial_comment = ['..' +
+            self.filename.replace(GAME_PATH, '').replace('\\', '/')]
 
         # Loop through all sections
         for section in self:
@@ -205,4 +206,5 @@ class _CoreSettings(ConfigObj):
                 backend_settings[option] = value
 
 # Get the _CoreSettings instance
-_core_settings = _CoreSettings(CFG_PATH / 'core_settings.ini')
+_core_settings = _CoreSettings(CFG_PATH / 'core_settings.ini',
+    encoding='utf8')

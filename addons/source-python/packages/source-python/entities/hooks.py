@@ -178,7 +178,8 @@ _waiting_entity_hooks = _WaitingEntityHooks()
 # >> LISTENERS
 # =============================================================================
 @OnEntityCreated
-def on_entity_created(index, ptr):
+def on_entity_created(base_entity):
     """Called when a new entity has been created."""
-    if index is not None:
-        _waiting_entity_hooks.initialize(index)
+    if not base_entity.is_networked():
+        return
+    _waiting_entity_hooks.initialize(base_entity.index)

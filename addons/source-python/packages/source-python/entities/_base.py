@@ -261,7 +261,7 @@ class Entity(BaseEntity):
     def model_header(self):
         """Return a ModelHeader instance of the current entity's model."""
         return model_cache.get_model_header(model_cache.find_model(
-            self.model.path))
+            self.model_name))
 
     def get_property_bool(self, name):
         """Return the boolean property."""
@@ -596,7 +596,7 @@ class Entity(BaseEntity):
             self.on_take_damage.skip_hooks(take_damage_info)
         else:
             self.on_take_damage(take_damage_info)
-            
+
     @wrap_entity_mem_func
     def teleport(self, origin=None, angle=None, velocity=None):
         """Change the origin, angle and/or velocity of the entity.
@@ -609,3 +609,17 @@ class Entity(BaseEntity):
             New velocity of the entity.
         """
         return [origin, angle, velocity]
+
+    @wrap_entity_mem_func
+    def set_parent(self, parent, attachment=INVALID_ATTACHMENT_INDEX):
+        """Set the parent of the entity.
+
+        :param Pointer parent:
+            The parent.
+        :param str attachment:
+            The attachment name/index.
+        """
+        if not isinstance(attachment, int):
+            attachment = self.lookup_attachment(attachment)
+
+        return [parent, attachment]

@@ -113,7 +113,7 @@ __all__ = ('ButtonStatus',
            'on_entity_output_listener_manager',
            'on_entity_pre_spawned_listener_manager',
            'on_entity_spawned_listener_manager',
-           'on_map_end_listener_manager',
+           'on_level_end_listener_manager',
            'on_level_init_listener_manager',
            'on_level_shutdown_listener_manager',
            'on_network_id_validated_listener_manager',
@@ -136,7 +136,7 @@ on_version_update_listener_manager = ListenerManager()
 on_convar_changed_listener_manager = ListenerManager()
 on_plugin_loaded_manager = ListenerManager()
 on_plugin_unloaded_manager = ListenerManager()
-on_map_end_listener_manager = ListenerManager()
+on_level_end_listener_manager = ListenerManager()
 on_player_run_command_listener_manager = ListenerManager()
 on_button_state_changed_listener_manager = ListenerManager()
 
@@ -378,7 +378,7 @@ class OnPluginUnloaded(ListenerManagerDecorator):
 class OnLevelEnd(ListenerManagerDecorator):
     """Register/unregister a map end listener."""
 
-    manager = on_map_end_listener_manager
+    manager = on_level_end_listener_manager
 
     # Guard variable to ensure this listener gets called only once per map.
     _level_initialized = False
@@ -479,7 +479,7 @@ def _on_level_shutdown():
         return
 
     # Notify all registred callbacks
-    on_map_end_listener_manager.notify()
+    on_level_end_listener_manager.notify()
 
     # Make sure we don't get called more than once per map change
     OnLevelEnd._level_initialized = False
