@@ -677,7 +677,7 @@ class Player(Entity):
         """Stop the given sound from being played to the player.
 
         :param str sample: Sound file relative to the "sounds" directory.
-        :param Channel channel: Te channel of the sound.
+        :param Channel channel: The channel of the sound.
         """
         engine_sound.stop_sound(self.index, channel, sample)
 
