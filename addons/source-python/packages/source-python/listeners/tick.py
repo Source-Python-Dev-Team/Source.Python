@@ -578,6 +578,7 @@ def _cancel_delays_on_level_end():
         callback = delay.callback
         if (
             callback.__name__ == '_execute' and
+            hasattr(callback, '__self__') and
             isinstance(callback.__self__, Repeat)
         ):
             callback.__self__.stop()
