@@ -5,37 +5,31 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Contextlib
-from contextlib import suppress
-#   Enum
-from enum import IntEnum
-#   Threading
-from threading import Thread
-#   Time
+# Python
 import bisect
+from contextlib import suppress
+from enum import IntEnum
+import math
+from threading import Thread
 import time
 
-# Source.Python Imports
-#   Core
-from core import AutoUnload
-from core import WeakAutoUnload
-#   Hooks
+# Source.Python
+from core import AutoUnload, WeakAutoUnload
 from hooks.exceptions import except_hooks
-#   Listeners
-from listeners import listeners_logger
-from listeners import on_tick_listener_manager
-from listeners import OnLevelEnd
+from listeners import (
+    listeners_logger, on_tick_listener_manager, OnLevelEnd,
+)
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('Delay',
-           'GameThread',
-           'Repeat',
-           'RepeatStatus',
-           )
+__all__ = (
+    'Delay',
+    'GameThread',
+    'Repeat',
+    'RepeatStatus',
+)
 
 
 # =============================================================================
@@ -226,17 +220,21 @@ class Repeat(AutoUnload):
 
         # Log the __init__ message
         listeners_tick_logger.log_debug(
-            'Repeat.__init__: <{0}> <{1}> <{2}>'.format(
-                self.callback, self.args, self.kwargs))
+            'Repeat.__init__: <{self.callback}> <{self.args}>'
+            ' <{self.kwargs}>'.format(
+                self=self
+            )
+        )
 
         # Set up private attributes
         self._interval = 0
-        self._limit = 0
-        self._count = 0
-        self._adjusted = 0
+        self._total_loops = 0
+        self._loops_elapsed = 0
+        self._adjusted_loops = 0
         self._status = RepeatStatus.STOPPED
         self._delay = None
-        self._loop_time = None
+        self._loop_time_for_pause = None
+        self._original_start_time = None
 
     @property
     def loops_remaining(self):
@@ -244,14 +242,9 @@ class Repeat(AutoUnload):
 
         :rtype: int
         """
-        # Is there no limit?
-        if not self._limit:
-
-            # Return the limit
-            return self._limit
-
-        # Return the remaining number of loops
-        return self.total_loops - self._count
+        if not self.total_loops:
+            return math.inf
+        return self.total_loops - self.loops_elapsed
 
     @property
     def loops_elapsed(self):
@@ -259,7 +252,7 @@ class Repeat(AutoUnload):
 
         :rtype: int
         """
-        return self._count
+        return self._loops_elapsed
 
     @property
     def total_loops(self):
@@ -267,14 +260,9 @@ class Repeat(AutoUnload):
 
         :rtype: int
         """
-        # Is there no limit?
-        if not self._limit:
-
-            # Return the limit
-            return self._limit
-
-        # Return the adjusted limit
-        return self._limit + self._adjusted
+        if not self._total_loops:
+            return self._total_loops
+        return self._total_loops + self._adjusted_loops
 
     @property
     def total_time_remaining(self):
@@ -293,7 +281,7 @@ class Repeat(AutoUnload):
 
         :rtype: float
         """
-        return self.total_time - self.total_time_remaining
+        return time.time() - self._original_start_time
 
     @property
     def total_time(self):
@@ -301,6 +289,8 @@ class Repeat(AutoUnload):
 
         :rtype: float
         """
+        if not self.total_loops:
+            return math.inf
         return self.total_loops * self._interval
 
     @property
@@ -339,33 +329,34 @@ class Repeat(AutoUnload):
         """
         # Log the start message
         listeners_tick_logger.log_debug(
-            'Repeat.start: <{0}> <{1}>'.format(interval, limit))
+            'Repeat.start: <{interval}> <{limit}>'.format(
+                interval=interval,
+                limit=limit
+            )
+        )
 
         # Is the repeat already running?
         if self._status is RepeatStatus.RUNNING:
 
             # Log the status
             listeners_tick_logger.log_debug(
-                'Repeat.start - RepeatStatus.RUNNING')
+                'Repeat.start - RepeatStatus.RUNNING'
+            )
 
             # Do not start the repeat
             return
 
         # Log starting the repeat
         listeners_tick_logger.log_debug(
-            'Repeat.start - !RepeatStatus' +
-            '.RUNNING - Starting Repeat')
+            'Repeat.start - !RepeatStatus.RUNNING - Starting Repeat'
+        )
 
-        # Set the status to running
         self._status = RepeatStatus.RUNNING
-
-        # Set the given attributes
         self._interval = interval
-        self._limit = limit
-
-        # Reset base counting attributes
-        self._count = 0
-        self._adjusted = 0
+        self._total_loops = limit
+        self._loops_elapsed = 0
+        self._adjusted_loops = 0
+        self._original_start_time = time.time()
 
         # Start the delay
         self._delay = Delay(
@@ -387,14 +378,16 @@ class Repeat(AutoUnload):
 
             # Log the status
             listeners_tick_logger.log_debug(
-                'Repeat.stop - !RepeatStatus.RUNNING')
+                'Repeat.stop - !RepeatStatus.RUNNING'
+            )
 
             # No need to stop it
             return
 
         # Log stopping the repeat
         listeners_tick_logger.log_debug(
-            'Repeat.stop - RepeatStatus.RUNNING - Stopping Repeat')
+            'Repeat.stop - RepeatStatus.RUNNING - Stopping Repeat'
+        )
 
         # Set the status to stopped
         self._status = RepeatStatus.STOPPED
@@ -411,7 +404,10 @@ class Repeat(AutoUnload):
         self.stop()
 
         # Start the repeat
-        self.start(self._interval, self._limit)
+        self.start(
+            self._interval,
+            self.total_loops if self.total_loops is not math.inf else 0
+        )
 
     def pause(self):
         """Pause the repeat.
@@ -426,20 +422,22 @@ class Repeat(AutoUnload):
 
             # Log the status
             listeners_tick_logger.log_debug(
-                'Repeat.pause - !RepeatStatus.RUNNING')
+                'Repeat.pause - !RepeatStatus.RUNNING'
+            )
 
             # No need to pause
             return
 
         # Log pausing the repeat
         listeners_tick_logger.log_debug(
-            'Repeat.pause - RepeatStatus.RUNNING - Pausing Repeat')
+            'Repeat.pause - RepeatStatus.RUNNING - Pausing Repeat'
+        )
 
         # Set the status to paused
         self._status = RepeatStatus.PAUSED
 
         # Set the remaining time in the current loop
-        self._loop_time = self._delay.exec_time - time.time()
+        self._loop_time_for_pause = self._delay.time_remaining
 
         # Cancel the delay
         self._delay.cancel()
@@ -457,22 +455,23 @@ class Repeat(AutoUnload):
 
             # Log the status
             listeners_tick_logger.log_debug(
-                'Repeat.resume - !RepeatStatus.PAUSED')
+                'Repeat.resume - !RepeatStatus.PAUSED'
+            )
 
             # Do not resume
             return
 
         # Log resuming the repeat
         listeners_tick_logger.log_debug(
-            'Repeat.resume - RepeatStatus.' +
-            'PAUSED - Resuming Repeat')
+            'Repeat.resume - RepeatStatus.PAUSED - Resuming Repeat'
+        )
 
         # Set the status to running
         self._status = RepeatStatus.RUNNING
 
         # Start the delay
         self._delay = Delay(
-            self._loop_time, self._execute,
+            self._loop_time_for_pause, self._execute,
             cancel_on_level_end=self.cancel_on_level_end
         )
 
@@ -482,27 +481,21 @@ class Repeat(AutoUnload):
         :param int adjustment: The number of loops to be added to the limit.
         :raises ValueError: If given adjustment is not a positive integer.
         """
-        # Log the extend message
         listeners_tick_logger.log_debug('Repeat.extend')
 
-        # Is there a limit for this repeat?
+        # Is there no limit for this repeat?
         if not self.total_loops:
-
-            # Log a message about no reducing
             listeners_tick_logger.log_debug(
-                'Unable to extend, Repeat instance has no limit.')
-
-            # No need to go further
+                'Unable to extend, Repeat instance has no limit.'
+            )
             return
 
         # Was a positive integer given?
         if not isinstance(adjustment, int) or adjustment < 1:
-
-            # Raise an error
             raise ValueError('Adjusted value must be a positive integer')
 
         # Add to the adjusted number
-        self._adjusted += adjustment
+        self._adjusted_loops += adjustment
 
     def reduce(self, adjustment):
         """Reduce the number of loops to be made.
@@ -511,64 +504,46 @@ class Repeat(AutoUnload):
             the limit.
         :raises ValueError: If given adjustment is not a positive integer.
         """
-        # Log the reduce message
         listeners_tick_logger.log_debug('Repeat.reduce')
 
-        # Is there a limit for this repeat?
+        # Is there no limit for this repeat?
         if not self.total_loops:
-
-            # Log a message about no reducing
             listeners_tick_logger.log_debug(
-                'Unable to reduce, Repeat instance has no limit.')
-
-            # No need to go further
+                'Unable to reduce, Repeat instance has no limit.'
+            )
             return
 
         # Was a positive integer given?
         if not isinstance(adjustment, int) or adjustment < 1:
-
-            # Raise an error
             raise ValueError('Adjusted value must be a positive integer')
 
         # Subtract from the adjusted number
-        self._adjusted -= adjustment
+        self._adjusted_loops -= adjustment
 
-        # Are no more loops to be made?
-        if (self.loops_remaining <= 0 and
-                self.status is RepeatStatus.RUNNING):
-
-            # Log the reduce-stopping message
+        # Should the repeat be stopped?
+        if (
+            self.loops_remaining <= 0 and self.status is RepeatStatus.RUNNING
+        ):
             listeners_tick_logger.log_debug(
-                'Repeat.reduce - Reduce caused repeat to stop')
-
-            # Stop the repeat
+                'Repeat.reduce - Reduce caused repeat to stop'
+            )
             self.stop()
 
     def _execute(self):
         """Execute the repeat's callback with its arguments and keywords."""
-        # Log the _execute message
         listeners_tick_logger.log_debug('Repeat._execute')
-
-        # Add one to the current count
-        self._count += 1
+        self._loops_elapsed += 1
 
         # Are any more loops to be made?
-        if self.loops_remaining or not self._limit:
-
-            # Is there no limit?
-            if not self._limit:
-
-                # Log continuing the loop
-                listeners_tick_logger.log_debug(
-                    'Repeat._execute - No limit')
-
-            # Is there a limit?
+        if self.loops_remaining > 0:
+            if not self.total_loops:
+                listeners_tick_logger.log_debug('Repeat._execute - No limit')
             else:
-
-                # Log continuing the loop
                 listeners_tick_logger.log_debug(
-                    'Repeat._execute - Remaining - {0}'.format(
-                        self.loops_remaining))
+                    'Repeat._execute - Remaining - {remaining}'.format(
+                        remaining=self.loops_remaining
+                    )
+                )
 
             # Call the delay again
             self._delay = Delay(
@@ -576,17 +551,15 @@ class Repeat(AutoUnload):
                 cancel_on_level_end=self.cancel_on_level_end
             )
 
-        # Are no more loops to be made?
         else:
-
-            # Log stopping the repeat
             listeners_tick_logger.log_debug(
-                'Repeat._execute - Stopping the loop')
+                'Repeat._execute - Stopping the loop'
+            )
 
             # Set the status to stopped
             self._status = RepeatStatus.STOPPED
 
-        # Call the repeat's callback
+        # Call the repeat's callback for this loop
         self.callback(*self.args, **self.kwargs)
 
     def _unload_instance(self):
