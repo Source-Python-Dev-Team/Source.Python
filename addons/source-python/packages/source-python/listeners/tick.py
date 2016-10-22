@@ -573,5 +573,13 @@ class Repeat(AutoUnload):
 @OnLevelEnd
 def _cancel_delays_on_level_end():
     for delay in list(_delay_manager):
-        if delay.cancel_on_level_end:
+        if not delay.cancel_on_level_end:
+            continue
+        callback = delay.callback
+        if (
+            callback.__name__ == '_execute' and
+            isinstance(callback.__self__, Repeat)
+        ):
+            callback.__self__.stop()
+        else:
             delay.cancel()
