@@ -582,6 +582,25 @@ class Player(Entity):
 
     stuck = property(get_stuck, set_stuck)
 
+    def get_flashlight(self):
+        """Return whether or not the flashlight of the player is turned on.
+
+        :rtype: bool
+        """
+        return bool(self.effects & EntityEffects.DIMLIGHT)
+
+    def set_flashlight(self, enable):
+        """Turn on/off the flashlight of the player.
+
+        :param bool enable: True to turn on, False to turn off.
+        """
+        if enable:
+            self.effects |= EntityEffects.DIMLIGHT
+        else:
+            self.effects &= ~EntityEffects.DIMLIGHT
+
+    flashlight = property(get_flashlight, set_flashlight)
+
     def send_convar_value(self, cvar_name, value):
         """Send a convar value.
 
@@ -866,28 +885,6 @@ class Player(Entity):
             Velocity to use to drop the weapon.
         """
         return [weapon, target, velocity]
-
-    @property
-    def is_flashlight_on(self):
-        """Return whether or not the flashlight of the player is turned on."""
-        return bool(self.effects & EntityEffects.DIMLIGHT)
-
-    def turn_flashlight_on(self):
-        """Turn on the flashlight of the player."""
-        self.effects |= EntityEffects.DIMLIGHT
-
-    def turn_flashlight_off(self):
-        """Turn off the flashlight of the player."""
-        self.effects &= ~EntityEffects.DIMLIGHT
-
-    def set_flashlight(self, state):
-        """Turn on/off the flashlight of the player.
-
-        :param bool: The state of the flashlight to set."""
-        if state:
-            self.turn_flashlight_on()
-        else:
-            self.turn_flashlight_off()
 
 
 # =============================================================================
