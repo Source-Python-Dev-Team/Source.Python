@@ -238,6 +238,95 @@ class Repeat(AutoUnload):
         self._delay = None
         self._loop_time = None
 
+    @property
+    def loops_remaining(self):
+        """Return the remaining number of loops in the repeat.
+
+        :rtype: int
+        """
+        # Is there no limit?
+        if not self._limit:
+
+            # Return the limit
+            return self._limit
+
+        # Return the remaining number of loops
+        return self.total_loops - self._count
+
+    @property
+    def loops_elapsed(self):
+        """Return the current number of loops made in the repeat.
+
+        :rtype: int
+        """
+        return self._count
+
+    @property
+    def total_loops(self):
+        """Return the total number of loops to be made.
+
+        :rtype: int
+        """
+        # Is there no limit?
+        if not self._limit:
+
+            # Return the limit
+            return self._limit
+
+        # Return the adjusted limit
+        return self._limit + self._adjusted
+
+    @property
+    def total_time_remaining(self):
+        """Return the remaining time till the end of the repeat.
+
+        :rtype: float
+        """
+        return (
+            self.loops_remaining * self._interval +
+            self.delay_time_remaining
+        )
+
+    @property
+    def total_time_elapsed(self):
+        """Return the elapsed time since the repeat started.
+
+        :rtype: float
+        """
+        return self.total_time - self.total_time_remaining
+
+    @property
+    def total_time(self):
+        """Return the total time it will take to complete the repeat.
+
+        :rtype: float
+        """
+        return self.total_loops * self._interval
+
+    @property
+    def delay_time_remaining(self):
+        """Return the time remaining in the current loop.
+
+        :rtype: float
+        """
+        return self._delay.time_remaining
+
+    @property
+    def delay_time_elapsed(self):
+        """Return the time elapsed in the current loop.
+
+        :rtype: float
+        """
+        return self._delay.time_elapsed
+
+    @property
+    def status(self):
+        """Return the status of the repeat.
+
+        :rtype: RepeatStatus
+        """
+        return self._status
+
     def start(self, interval, limit, execute_on_start=False):
         """Start the repeat loop.
 
@@ -397,7 +486,7 @@ class Repeat(AutoUnload):
         listeners_tick_logger.log_debug('Repeat.extend')
 
         # Is there a limit for this repeat?
-        if not self.loop_limit:
+        if not self.total_loops:
 
             # Log a message about no reducing
             listeners_tick_logger.log_debug(
@@ -426,7 +515,7 @@ class Repeat(AutoUnload):
         listeners_tick_logger.log_debug('Repeat.reduce')
 
         # Is there a limit for this repeat?
-        if not self.loop_limit:
+        if not self.total_loops:
 
             # Log a message about no reducing
             listeners_tick_logger.log_debug(
@@ -445,7 +534,7 @@ class Repeat(AutoUnload):
         self._adjusted -= adjustment
 
         # Are no more loops to be made?
-        if (self.remaining_loops <= 0 and
+        if (self.loops_remaining <= 0 and
                 self.status is RepeatStatus.RUNNING):
 
             # Log the reduce-stopping message
@@ -464,7 +553,7 @@ class Repeat(AutoUnload):
         self._count += 1
 
         # Are any more loops to be made?
-        if self.remaining_loops or not self._limit:
+        if self.loops_remaining or not self._limit:
 
             # Is there no limit?
             if not self._limit:
@@ -479,7 +568,7 @@ class Repeat(AutoUnload):
                 # Log continuing the loop
                 listeners_tick_logger.log_debug(
                     'Repeat._execute - Remaining - {0}'.format(
-                        self.remaining_loops))
+                        self.loops_remaining))
 
             # Call the delay again
             self._delay = Delay(
@@ -499,95 +588,6 @@ class Repeat(AutoUnload):
 
         # Call the repeat's callback
         self.callback(*self.args, **self.kwargs)
-
-    @property
-    def remaining_loops(self):
-        """Return the remaining number of loops in the repeat.
-
-        :rtype: int
-        """
-        # Is there no limit?
-        if not self._limit:
-
-            # Return the limit
-            return self._limit
-
-        # Return the remaining number of loops
-        return self.loop_limit - self._count
-
-    @property
-    def loop_count(self):
-        """Return the current number of loops made in the repeat.
-
-        :rtype: int
-        """
-        return self._count
-
-    @property
-    def loop_limit(self):
-        """Return the total number of loops to be made.
-
-        :rtype: int
-        """
-        # Is there no limit?
-        if not self._limit:
-
-            # Return the limit
-            return self._limit
-
-        # Return the adjusted limit
-        return self._limit + self._adjusted
-
-    @property
-    def time_left(self):
-        """Return the remaining time till the end of the repeat.
-
-        :rtype: float
-        """
-        return (
-            self.remaining_loops * self._interval +
-            self.delay_time_remaining
-        )
-
-    @property
-    def time_elapsed(self):
-        """Return the elapsed time since the repeat started.
-
-        :rtype: float
-        """
-        return self.total_time - self.time_left
-
-    @property
-    def total_time(self):
-        """Return the total time it will take to complete the repeat.
-
-        :rtype: float
-        """
-        return self.loop_limit * self._interval
-
-    @property
-    def status(self):
-        """Return the status of the repeat.
-
-        :rtype: RepeatStatus
-        """
-        return self._status
-
-    @property
-    def delay_time_remaining(self):
-        """Return the time remaining in the current loop.
-
-        :rtype: float
-        """
-        return self._delay.time_remaining
-
-    @property
-    def delay_time_elapsed(self):
-        """Return the time elapsed in the current loop.
-
-        :rtype: float
-        """
-        return self._delay.time_elapsed
 
     def _unload_instance(self):
         """Stop the repeat with being unloaded."""
