@@ -39,6 +39,10 @@ class Backend(object):
         """Called when a group has been removed."""
         pass
 
+    def sync(self):
+        """Synchronize the auth_manager with the backend."""
+        raise NotImplementedError('Backend must define a sync method.')
+
     @property
     def name(self):
         """Return the name of the backend."""

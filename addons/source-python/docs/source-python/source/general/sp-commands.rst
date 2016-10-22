@@ -404,8 +404,8 @@ List all 'sp' sub-commands or provide help on server commands registered with So
     // List all 'sp' sub-commands
     sp help
 
-    // Print help on 'sp load'
-    sp help sp load
+    // Print help on 'sp plugin'
+    sp help sp plugin
 
 
 plugin

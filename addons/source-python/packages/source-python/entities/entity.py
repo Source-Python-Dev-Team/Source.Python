@@ -12,8 +12,18 @@ from contextlib import suppress
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
+#   Entities
+from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
+from engines.sound import Attenuation
+from engines.sound import engine_sound
+from engines.sound import Channel
+from engines.sound import Pitch
+from engines.sound import Sound
+from engines.sound import SoundFlags
+from engines.sound import StreamSound
+from engines.sound import VOL_NORM
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
 from engines.trace import GameTrace
@@ -31,6 +41,8 @@ from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.weapons import WeaponClassIter
+#   Mathlib
+from mathlib import NULL_VECTOR
 #   Memory
 from memory import get_object_pointer
 from memory import make_object
@@ -501,6 +513,60 @@ class Entity(BaseEntity):
 
         # No attachment found
         return INVALID_ATTACHMENT_INDEX
+
+    def emit_sound(
+            self, sample, recipients=(), volume=VOL_NORM,
+            attenuation=Attenuation.NONE, channel=Channel.AUTO,
+            flags=SoundFlags.NO_FLAGS, pitch=Pitch.NORMAL, origin=NULL_VECTOR,
+            direction=NULL_VECTOR, origins=(), update_positions=True,
+            sound_time=0.0, speaker_entity=INVALID_ENTITY_INDEX,
+            download=False, stream=False):
+        """Emit a sound from this entity.
+
+        :param str sample: Sound file relative to the "sounds" directory.
+        :param RecipientFilter recipients: Recipients to emit the sound to.
+        :param int index: Index of the entity to emit the sound from.
+        :param float volume: Volume of the sound.
+        :param Attenuation attenuation: How far the sound should reaches.
+        :param int channel: Channel to emit the sound with.
+        :param SoundFlags flags: Flags of the sound.
+        :param Pitch pitch: Pitch of the sound.
+        :param Vector origin: Origin of the sound.
+        :param Vector direction: Direction of the sound.
+        :param tuple origins: Origins of the sound.
+        :param bool update_positions: Whether or not the positions should be
+            updated.
+        :param float sound_time: Time to play the sound for.
+        :param int speaker_entity: Index of the speaker entity.
+        :param bool download: Whether or not the sample should be added to the
+            downloadables.
+        :param bool stream: Whether or not the sound should be streamed.
+        """
+        # Get the correct Sound class...
+        if not stream:
+            sound_class = Sound
+        else:
+            sound_class = StreamSound
+
+        # Get the sound...
+        sound = sound_class(sample, self.index, volume, attenuation, channel,
+            flags, pitch, origin, direction, origins, update_positions,
+            sound_time, speaker_entity, download)
+
+        # Make sure we have a tuple as recipients...
+        if not isinstance(recipients, tuple):
+            recipients = (recipients,)
+
+        # Emit the sound to the given recipients...
+        sound.play(*recipients)
+
+    def stop_sound(self, sample, channel=Channel.AUTO):
+        """Stop the given sound from being emitted by this entity.
+
+        :param str sample: Sound file relative to the "sounds" directory.
+        :param Channel channel: The channel of the sound.
+        """
+        engine_sound.stop_sound(self.index, channel, sample)
 
     def is_in_solid(
             self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
