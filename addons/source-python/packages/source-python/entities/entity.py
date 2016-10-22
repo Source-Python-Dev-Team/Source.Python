@@ -17,6 +17,7 @@ from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
 from engines.sound import Attenuation
+from engines.sound import engine_sound
 from engines.sound import Channel
 from engines.sound import Pitch
 from engines.sound import Sound
@@ -558,6 +559,14 @@ class Entity(BaseEntity):
 
         # Emit the sound to the given recipients...
         sound.play(*recipients)
+
+    def stop_sound(self, sample, channel=Channel.AUTO):
+        """Stop the given sound from being emitted by this entity.
+
+        :param str sample: Sound file relative to the "sounds" directory.
+        :param Channel channel: The channel of the sound.
+        """
+        engine_sound.stop_sound(self.index, channel, sample)
 
     def is_in_solid(
             self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):

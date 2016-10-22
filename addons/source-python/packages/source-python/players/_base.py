@@ -21,7 +21,6 @@ from engines.server import execute_server_command
 from engines.server import server_game_dll
 from engines.sound import Attenuation
 from engines.sound import Channel
-from engines.sound import engine_sound
 from engines.sound import Pitch
 from engines.sound import Sound
 from engines.sound import SoundFlags
@@ -672,14 +671,6 @@ class Player(Entity):
 
         # Play the sound to the player...
         sound.play(self.index)
-
-    def stop_sound(self, sample, channel=Channel.AUTO):
-        """Stop the given sound from being played to the player.
-
-        :param str sample: Sound file relative to the "sounds" directory.
-        :param Channel channel: Te channel of the sound.
-        """
-        engine_sound.stop_sound(self.index, channel, sample)
 
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
