@@ -29,8 +29,6 @@ from engines import engines_logger
 from entities.constants import INVALID_ENTITY_INDEX
 #   Filesystem
 from filesystem import SourceFile
-#   Filters
-from filters.recipients import RecipientFilter
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Paths
@@ -146,6 +144,9 @@ class _BaseSound(AutoUnload):
 
     def play(self, *recipients):
         """Play the sound."""
+        # Done here to fix a cyclic import...
+        from filters.recipients import RecipientFilter
+
         # Get the recipients to play the sound to
         recipients = RecipientFilter(*recipients)
 
