@@ -925,6 +925,3 @@ if not isinstance(weapon_manager, NoWeaponManager):
 
             # No need to continue looping
             break
-
-        # Move to the next ServerClass
-        _current_class = _current_class.next
