@@ -484,21 +484,26 @@ class Entity(BaseEntity):
             'Property "{0}" not found for entity type "{1}"'.format(
                 name, self.classname))
 
-    def delay(self, delay, callback, *args, **kwargs):
+    def delay(
+            self, delay, callback, args=(), kwargs=None,
+            cancel_on_level_end=False):
         """Execute a callback after the given delay.
 
-        :param int delay: The delay in seconds.
+        :param float delay: The delay in seconds.
         :param callback: A callable object that should be called after the
             delay expired.
-        :param args: Arguments that should be passed to the callback.
-        :param kwargs: Keyword arguments that should be passed to the
+        :param tuple args: Arguments that should be passed to the callback.
+        :param dict kwargs: Keyword arguments that should be passed to the
             callback.
+        :param bool cancel_on_level_end: Whether or not to cancel the delay at
+            the end of the map.
+        :raises ValueError: If the given callback is not callable.
 
         :return: The delay instance.
         :rtype: Delay
         """
         # Get the delay instance...
-        delay = Delay(delay, callback, *args, **kwargs)
+        delay = Delay(delay, callback, args, kwargs, cancel_on_level_end)
 
         # Add the delay to the dictionary...
         _entity_delays[self.index].add(delay)
