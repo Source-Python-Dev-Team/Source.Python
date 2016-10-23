@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Collections
+from collections import defaultdict
 #   Contextlib
 from contextlib import suppress
 
@@ -41,6 +43,9 @@ from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.weapons import WeaponClassIter
+#   Listeners
+from listeners import OnEntityDeleted
+from listeners.tick import Delay
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Memory
@@ -75,6 +80,9 @@ __all__ = ('BaseEntity',
 # =============================================================================
 # Get a list of projectiles for the game
 _projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
+
+# Get a dictionary to store the delays
+_entity_delays = defaultdict(set)
 
 
 # =============================================================================
@@ -476,6 +484,28 @@ class Entity(BaseEntity):
             'Property "{0}" not found for entity type "{1}"'.format(
                 name, self.classname))
 
+    def delay(self, delay, callback, *args, **kwargs):
+        """Execute a callback after the given delay.
+
+        :param int delay: The delay in seconds.
+        :param callback: A callable object that should be called after the
+            delay expired.
+        :param args: Arguments that should be passed to the callback.
+        :param kwargs: Keyword arguments that should be passed to the
+            callback.
+
+        :return: The delay instance.
+        :rtype: Delay
+        """
+        # Get the delay instance...
+        delay = Delay(delay, callback, *args, **kwargs)
+
+        # Add the delay to the dictionary...
+        _entity_delays[self.index].add(delay)
+
+        # Return the delay instance...
+        return delay
+
     def get_input(self, name):
         """Return the InputFunction instance for the given name."""
         # Loop through each server class for the entity
@@ -707,3 +737,37 @@ class Entity(BaseEntity):
             attachment = self.lookup_attachment(attachment)
 
         return [parent, attachment]
+
+
+# =============================================================================
+# >> LISTENERS
+# =============================================================================
+@OnEntityDeleted
+def _on_entity_deleted(base_entity):
+    """Called when an entity is removed.
+
+    :param BaseEntity base_entity: The removed entity.
+    """
+    # Make sure the entity is networkable...
+    if not base_entity.is_networked():
+        return
+
+    # Get the index of the entity...
+    index = base_entity.index
+
+    # Was no delay registered for this entity?
+    if index not in _entity_delays:
+        return
+
+    # Loop through all delays...
+    for delay in _entity_delays[index]:
+
+        # Make sure the delay is still running...
+        if not delay.running:
+            continue
+
+        # Cancel the delay...
+        delay.cancel()
+
+    # Remove the entity from the dictionary...
+    del _entity_delays[index]
