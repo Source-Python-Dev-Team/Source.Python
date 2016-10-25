@@ -172,6 +172,9 @@ class ListenerManagerDecorator(AutoUnload):
         listeners_logger.log_debug(
             '{0}.__init__<{1}>'.format(self.name, callback))
 
+        # Set the callback to None...
+        self.callback = None
+
         # Is the callback callable?
         if not callable(callback):
 
@@ -210,6 +213,10 @@ class ListenerManagerDecorator(AutoUnload):
 
     def _unload_instance(self):
         """Unregister the listener."""
+        # Was the callback registered?
+        if self.callback is None:
+            return
+
         # Log the unregistering
         listeners_logger.log_debug(
             '{0}._unload_instance - Unregistering <{1}>'.format(
