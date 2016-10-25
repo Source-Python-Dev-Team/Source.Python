@@ -231,7 +231,6 @@ class ShowMenu(UserMessageCreator):
         length = len(menu_string)
         _recipient_filter.update(*player_indexes)
         while True:
-            _recipient_filter.update()
             user_message = UserMessage(
                 _recipient_filter, self.message_name)
 
