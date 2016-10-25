@@ -497,8 +497,24 @@ class Entity(BaseEntity):
         :return: The delay instance.
         :rtype: Delay
         """
+        # TODO: Ideally, we want to subclass Delay and cleanup on cancel() too
+        #   in case the caller manually cancel the returned Delay.
+        def _callback(*args, **kwargs):
+            """Called when the delay is executed."""
+            # Remove the delay from the global dictionary...
+            _entity_delays[self.index].remove(delay)
+
+            # Was this the last pending delay for the entity?
+            if not _entity_delays[self.index]:
+
+                # Remove the entity from the dictionary...
+                del _entity_delays[self.index]
+
+            # Call the callback...
+            callback(*args, **kwargs)
+
         # Get the delay instance...
-        delay = Delay(delay, callback, *args, **kwargs)
+        delay = Delay(delay, _callback, *args, **kwargs)
 
         # Add the delay to the dictionary...
         _entity_delays[self.index].add(delay)
