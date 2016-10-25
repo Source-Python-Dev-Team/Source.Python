@@ -44,10 +44,10 @@ public:
 		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
 	}
 
-	static void SetLength(Vector& vec, int iLength)
+	static void SetLength(Vector& vec, float fLength)
 	{
 		vec.NormalizeInPlace();
-		vec *= iLength;
+		vec *= fLength;
 	}
 
 	static inline float GetLength(Vector& vec)
