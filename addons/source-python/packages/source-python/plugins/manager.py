@@ -214,7 +214,7 @@ class PluginManager(OrderedDict):
         for instance in instances:
             try:
                 instance._unload_instance()
-            except NotImplementedError:
+            except:
                 # Print the error to console, but allow all
                 # other AutoUnload instances to be unloaded
                 # and the plugin to be fully unloaded itself

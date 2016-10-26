@@ -46,6 +46,14 @@ from _effects._base import BaseTempEntity
 
 
 # =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+# Use a global RecipientFilter to prevent memory leaking...
+# See also: https://github.com/Source-Python-Dev-Team/Source.Python/issues/124
+_recipient_filter = RecipientFilter()
+
+
+# =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('BaseTempEntity',
@@ -551,7 +559,7 @@ class TempEntity(BaseTempEntity):
         """
         self._set_property(prop_name, SendPropType.VECTOR, value)
 
-    def create(self, recipients=None, delay=0.0, **aliases):
+    def create(self, *recipients, delay=0.0, **aliases):
         """Create the temp entity effect.
 
         :param RecipientFilter recipients: The recipient filter listing the
@@ -560,11 +568,8 @@ class TempEntity(BaseTempEntity):
         :param dict aliases: Any aliases to set before creating the temp entity
             effect.
         """
-        # Was no recipient filter given?
-        if recipients is None:
-
-            # Get a recipient filter containing all players...
-            recipients = RecipientFilter()
+        # Update the global recipient filter...
+        _recipient_filter.update(*recipients)
 
         # Loop trhough all given aliases...
         for alias, value in aliases.items():
@@ -573,7 +578,7 @@ class TempEntity(BaseTempEntity):
             setattr(self, alias, value)
 
         # Create the temp entity effect...
-        super().create(recipients, delay)
+        super().create(_recipient_filter, delay)
 
     @property
     def template(self):

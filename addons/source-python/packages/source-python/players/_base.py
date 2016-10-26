@@ -34,6 +34,7 @@ from engines.trace import MAX_TRACE_LENGTH
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
+from entities import ServerClassGenerator
 from entities.constants import CollisionGroup
 from entities.constants import EntityEffects
 from entities.constants import INVALID_ENTITY_INDEX
@@ -240,7 +241,7 @@ class Player(Entity):
         # Start the trace
         engine_trace.trace_ray(
             Ray(start_vec, end_vec), mask, TraceFilterSimple(
-                (self.index,)) if trace_filter is None else trace_filter,
+                (self,)) if trace_filter is None else trace_filter,
             trace
         )
 
@@ -913,11 +914,8 @@ _weapon_prop_length = None
 # Is the game supported?
 if not isinstance(weapon_manager, NoWeaponManager):
 
-    # Get the first ServerClass object
-    _current_class = server_game_dll.all_server_classes
-
-    # Use "while" to loop through all ServerClass objects
-    while _current_class:
+    # Loop through all ServerClass objects
+    for _current_class in ServerClassGenerator():
 
         # Loop through the ServerClass' props
         _weapon_prop_length = _find_weapon_prop_length(_current_class.table)
@@ -927,6 +925,3 @@ if not isinstance(weapon_manager, NoWeaponManager):
 
             # No need to continue looping
             break
-
-        # Move to the next ServerClass
-        _current_class = _current_class.next
