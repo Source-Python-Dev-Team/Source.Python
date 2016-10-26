@@ -617,6 +617,7 @@ EndIf()
 # Definitions
 # ------------------------------------------------------------------
 Add_Definitions(
+	-DGAME_DLL=1
     -DSOURCE_ENGINE=${SOURCE_ENGINE}
     -DSOURCE_ENGINE_BRANCH=${BRANCH}
     -DBOOST_PYTHON_MAX_ARITY=32
