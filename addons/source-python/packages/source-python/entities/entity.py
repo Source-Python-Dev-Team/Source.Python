@@ -625,7 +625,7 @@ class Entity(BaseEntity):
 
         # Do the trace
         engine_trace.trace_ray(ray, mask, TraceFilterSimple(
-            [entity.index for entity in generator()]), trace)
+            generator()), trace)
 
         # Return whether or not the trace did hit
         return trace.did_hit()

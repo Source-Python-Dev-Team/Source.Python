@@ -241,7 +241,7 @@ class Player(Entity):
         # Start the trace
         engine_trace.trace_ray(
             Ray(start_vec, end_vec), mask, TraceFilterSimple(
-                (self.index,)) if trace_filter is None else trace_filter,
+                (self,)) if trace_filter is None else trace_filter,
             trace
         )
 
