@@ -25,6 +25,6 @@
 */
 
 #include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
+#ifndef PATCH_NETWORK_HANDLE_BASE_CAST
+#error "Change static_cast to reinterpret_cast into CNetworkHandleBase::Get()."
 #endif
