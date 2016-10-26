@@ -24,6 +24,11 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#include "utilities/baseentity.h"
+#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
+#error "We need the CNetworkHandle definition..."
+#endif
+
 #include "public/tier0/threadtools.h"
 #ifndef PATCH_UPDATE_AUTO_LOCK
 // TODO: Create a real fix for this!
