@@ -80,11 +80,17 @@
 
 		static const google::protobuf::FieldDescriptor* GetFieldDescriptor(google::protobuf::Message* pMessage, const char* field_name)
 		{
-			const google::protobuf::FieldDescriptor* descriptor = pMessage->GetDescriptor()->FindFieldByName(field_name);
-			if (!descriptor) {
-				BOOST_RAISE_EXCEPTION(PyExc_NameError, "Unable to find field '%s'.", field_name);
+			const google::protobuf::Descriptor* descriptor = pMessage->GetDescriptor();
+
+			// For some reasons, FindFieldByName is causing a crash if the message has been initialized
+			//	by the server so let's look it up ourself...
+			for (int iCurrentIndex=0; iCurrentIndex < descriptor->field_count(); iCurrentIndex++)
+			{
+				const google::protobuf::FieldDescriptor *field_descriptor = descriptor->field(iCurrentIndex);
+				if (field_descriptor && strcmp(field_descriptor->name().c_str(), field_name) == 0)
+					return field_descriptor;
 			}
-			return descriptor;
+			return NULL;
 		}
 	
 		static const google::protobuf::EnumValueDescriptor* GetEnumValueDescriptor(google::protobuf::Message* pMessage, const char* field_name, int value)
@@ -105,7 +111,13 @@
 			google::protobuf::Message* pMessage,
 			T (google::protobuf::Reflection::*get_field_delegate)(const google::protobuf::Message& message, const google::protobuf::FieldDescriptor* field) const,
 			const char* field_name)
-		{ return (*pMessage->GetReflection().*get_field_delegate)(*pMessage, GetFieldDescriptor(pMessage, field_name)); }
+		{
+			const google::protobuf::FieldDescriptor* field_descriptor = GetFieldDescriptor(pMessage, field_name);
+			if (!field_descriptor)
+				BOOST_RAISE_EXCEPTION(PyExc_NameError, "Unable to find field '%s'.", field_name);
+
+			return (*pMessage->GetReflection().*get_field_delegate)(*pMessage, field_descriptor);
+		}
 
 		static int32 GetInt32(google::protobuf::Message* pMessage, const char* field_name)
 		{ return GetField<int32>(pMessage, &google::protobuf::Reflection::GetInt32, field_name); }
