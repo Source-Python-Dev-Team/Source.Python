@@ -137,7 +137,11 @@
 		{ return GetField<bool>(pMessage, &google::protobuf::Reflection::GetBool, field_name); }
 
 		static std::string GetString(google::protobuf::Message* pMessage, const char* field_name)
-		{ return GetField<std::string>(pMessage, &google::protobuf::Reflection::GetString, field_name); }
+		{
+			std::string return_value;
+			return_value = pMessage->GetReflection()->GetStringReference(*pMessage, GetFieldDescriptor(pMessage, field_name), &return_value);
+			return return_value;
+		}
 
 		static int GetEnum(google::protobuf::Message* pMessage, const char* field_name)
 		{ return GetField<const google::protobuf::EnumValueDescriptor*>(pMessage, &google::protobuf::Reflection::GetEnum, field_name)->number(); }
@@ -179,7 +183,11 @@
 		{ return GetRepeatedField<bool>(pMessage, &google::protobuf::Reflection::GetRepeatedBool, field_name, index); }
 
 		static std::string GetRepeatedString(google::protobuf::Message* pMessage, const char* field_name, int index)
-		{ return GetRepeatedField<std::string>(pMessage, &google::protobuf::Reflection::GetRepeatedString, field_name, index); }
+		{
+			std::string return_value;
+			return_value = pMessage->GetReflection()->GetRepeatedStringReference(*pMessage, GetFieldDescriptor(pMessage, field_name), index, &return_value);
+			return return_value;
+		}
 
 		static int GetRepeatedEnum(google::protobuf::Message* pMessage, const char* field_name, int index)
 		{ return GetRepeatedField<const google::protobuf::EnumValueDescriptor*>(pMessage, &google::protobuf::Reflection::GetRepeatedEnum, field_name, index)->number(); }
