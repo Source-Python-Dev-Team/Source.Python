@@ -44,6 +44,23 @@
 
 
 //-----------------------------------------------------------------------------
+// IServerEntity extension class.
+//-----------------------------------------------------------------------------
+class ServerEntityExt
+{
+public:
+	static void SetModelName(IServerEntity *pServerEntity, const char *szModelName)
+	{
+		CBaseEntity *pBaseEntity = pServerEntity->GetBaseEntity();
+		if (!pBaseEntity)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "BaseEntity is NULL.");
+
+		((CBaseEntityWrapper *)pBaseEntity)->SetKeyValue("model", szModelName);
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
 class TakeDamageInfoBaseWrapper: public CTakeDamageInfo

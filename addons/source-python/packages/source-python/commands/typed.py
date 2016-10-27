@@ -35,6 +35,28 @@ from messages import HudDestination
 
 
 # =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = ('SUPPORTED_KINDS',
+           'ArgumentError',
+           'ArgumentNumberMismatch',
+           'CommandInfo',
+           'CommandNode',
+           'CommandParser',
+           'filter_str',
+           'InvalidArgumentValue',
+           'Node',
+           'Store',
+           'SubCommandError',
+           'SubCommandExpectedError',
+           'SubCommandNotFound',
+           'TypedClientCommand',
+           'TypedSayCommand',
+           'TypedServerCommand',
+           )
+
+
+# =============================================================================
 # >> CONSTANTS
 # =============================================================================
 SUPPORTED_KINDS = (

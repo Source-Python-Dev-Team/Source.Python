@@ -289,7 +289,7 @@ class Entity(BaseEntity):
     def set_model(self, model):
         """Set the entity's model to the given model."""
         self.model_index = model.index
-        self.set_key_value_string('model', model.path)
+        self.model_name = model.path
 
     model = property(
         get_model, set_model,
