@@ -323,7 +323,7 @@ void export_edict(scope _entities)
 
 		.add_property("free",
 			&CBaseEdict::IsFree,
-			&CBaseEdict::SetFree
+			&_BaseEdictExt::set_free
 		)
 
 		.def("clear_free",

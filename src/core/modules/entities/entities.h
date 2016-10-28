@@ -61,6 +61,22 @@ public:
 
 
 //-----------------------------------------------------------------------------
+// CBaseEdict extension class.
+//-----------------------------------------------------------------------------
+class _BaseEdictExt
+{
+public:
+	static void set_free(CBaseEdict *pEdict, bool bState)
+	{
+		if (bState)
+			pEdict->SetFree();
+		else
+			pEdict->ClearFree();
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
 class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
