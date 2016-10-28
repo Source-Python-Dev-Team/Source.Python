@@ -140,8 +140,16 @@ class Player(_Player):
             value,
         )
 
-    def spawn(self):
-        """Spawn the player."""
+    def spawn(self, force=False):
+        """Spawn the player.
+
+        :param bool force: Whether or not the spawn should be forced.
+        """
+        # Is the player spawnable?
+        if not force and (self.team <= 1 or not self.dead):
+            return
+
+        # Spawn the player...
         self._spawn()
 
     def set_color(self, color):
