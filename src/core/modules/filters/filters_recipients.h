@@ -36,6 +36,40 @@
 #include "irecipientfilter.h"
 #include "bitvec.h"
 #include "tier1/utlvector.h"
+#include "modules/memory/memory_alloc.h"
+
+
+//---------------------------------------------------------------------------------
+// Patch for issue #124.
+//---------------------------------------------------------------------------------
+template<class T, class U = int>
+class CRecipientFilterAllocator : public CUtlMemory<T, U>
+{
+public:
+	CRecipientFilterAllocator(int nGrowSize = 0, int nInitSize = 0)
+	{
+		::CUtlMemory<T, U>(nGrowSize, nInitSize);
+	}
+
+	~CRecipientFilterAllocator() { m_nAllocationCount = 0; }
+
+	void *DetachAndReturn()
+	{
+		void *pMemory = m_pMemory;
+		m_pMemory = NULL;
+		return pMemory;
+	}
+};
+
+template<class T, class U = CRecipientFilterAllocator<T>>
+class CVecRecipients : public CUtlVector<T, U>
+{
+public:
+	~CVecRecipients()
+	{
+		UTIL_Dealloc(m_Memory.DetachAndReturn());
+	}
+};
 
 
 //---------------------------------------------------------------------------------
@@ -61,7 +95,7 @@ public:
 private:
 	bool				m_bReliable;
 	bool				m_bInitMessage;
-	CUtlVector< int >	m_Recipients;
+	CVecRecipients<int>	m_Recipients;
 	
 	// If using prediction rules, the filter itself suppresses local player
 	bool				m_bUsingPredictionRules;
