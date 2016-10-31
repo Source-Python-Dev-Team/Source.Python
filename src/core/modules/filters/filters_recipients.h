@@ -46,17 +46,15 @@ template<class T, class U = int>
 class CRecipientFilterAllocator : public CUtlMemory<T, U>
 {
 public:
-	CRecipientFilterAllocator(int nGrowSize = 0, int nInitSize = 0)
-	{
-		::CUtlMemory<T, U>(nGrowSize, nInitSize);
-	}
+	CRecipientFilterAllocator(int nGrowSize = 0, int nInitSize = 0):
+		CUtlMemory<T, U>(nGrowSize, nInitSize) {}
 
-	~CRecipientFilterAllocator() { m_nAllocationCount = 0; }
+	~CRecipientFilterAllocator() { this->m_nAllocationCount = 0; }
 
 	void *DetachAndReturn()
 	{
-		void *pMemory = m_pMemory;
-		m_pMemory = NULL;
+		void *pMemory = this->m_pMemory;
+		this->m_pMemory = NULL;
 		return pMemory;
 	}
 };
@@ -65,9 +63,12 @@ template<class T, class U = CRecipientFilterAllocator<T>>
 class CVecRecipients : public CUtlVector<T, U>
 {
 public:
+	CVecRecipients(int nGrowSize = 0, int nInitSize = 0):
+		CUtlVector<T, U>(nGrowSize, nInitSize) {}
+
 	~CVecRecipients()
 	{
-		UTIL_Dealloc(m_Memory.DetachAndReturn());
+		UTIL_Dealloc(this->m_Memory.DetachAndReturn());
 	}
 };
 
