@@ -543,7 +543,7 @@ static void export_engine_server(scope _server)
 
 		.def("start_query_cvar_value",
 			&IVEngineServerExt::StartQueryCvarValue,
-			"Returns the value of a cvar on the client.",
+			"Starts a query to retrieve the value of a client's console variable. Result of the query will be passed to the OnQueryCvarValueFinished listeners.",
 			args("edict", "cvar_name")
 		)
 
