@@ -96,8 +96,12 @@ public:
 private:
 	bool				m_bReliable;
 	bool				m_bInitMessage;
-	CVecRecipients<int>	m_Recipients;
-	
+#ifdef ENGINE_ORANGEBOX
+	CVecRecipients<int>		m_Recipients;
+#else
+	CUtlVector<int>			m_Recipients;
+#endif
+
 	// If using prediction rules, the filter itself suppresses local player
 	bool				m_bUsingPredictionRules;
 	// If ignoring prediction cull, then external systems can determine
