@@ -217,12 +217,6 @@ class LangStrings(dict):
         # Return the replaced string
         return given_string
 
-    def get_strings(self, key, **tokens):
-        """Return a TranslationStrings object with updated tokens."""
-        strings = self[key]
-        strings.tokens.update(tokens)
-        return strings
-
 
 class TranslationStrings(dict):
     """Stores and get language strings for a particular string."""
@@ -250,11 +244,39 @@ class TranslationStrings(dict):
             # Possibly raise an error silently here
             return ''
 
-        # Update the stored tokens with the given ones
-        self.tokens.update(tokens)
+        # Expose all TranslationStrings instances in self.tokens
+        exposed_tokens = {}
+        for token_name, token in self.tokens.items():
+            if isinstance(token, TranslationStrings):
+
+                # Pass additional tokens - these will be used to format
+                # the string
+                token = token.get_string(language, **tokens)
+
+            exposed_tokens[token_name] = token
+
+        # Expose all TranslationsStrings instances in **tokens
+        for token_name, token in tokens.items():
+            if isinstance(token, TranslationStrings):
+
+                # Don't pass any additional tokens, the token should either
+                # be trivial or rely on itself (self.tokens)
+                token = token.get_string(language)
+
+            exposed_tokens[token_name] = token
+
+        # Get the language shortname to be used
+        language = self.get_language(language)
+
+        # Was a valid language found?
+        if language is None:
+
+            # Return an empty string
+            # Possibly raise an error silently here
+            return ''
 
         # Return the formatted message
-        return self[language].format(**self.tokens)
+        return self[language].format(**exposed_tokens)
 
     def get_language(self, language):
         """Return the language to be used."""
@@ -290,6 +312,21 @@ class TranslationStrings(dict):
 
         # Return None as the language, as no language has been found
         return None
+
+    def tokenized(self, **tokens):
+        """Create a new TranslationStrings instance and store tokens in it.
+
+        :param dict tokens: Tokens to store in the instance.
+        :return: New TranslationStrings instance with tokens stored in it.
+        :rtype: TranslationStrings
+        """
+        result = TranslationStrings()
+        result.tokens.update(tokens)
+
+        for key, value in self.items():
+            result[key] = value
+
+        return result
 
 # Get the translations language strings
 _translation_strings = LangStrings('_core/translations_strings')
