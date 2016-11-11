@@ -265,16 +265,6 @@ class TranslationStrings(dict):
 
             exposed_tokens[token_name] = token
 
-        # Get the language shortname to be used
-        language = self.get_language(language)
-
-        # Was a valid language found?
-        if language is None:
-
-            # Return an empty string
-            # Possibly raise an error silently here
-            return ''
-
         # Return the formatted message
         return self[language].format(**exposed_tokens)
 
