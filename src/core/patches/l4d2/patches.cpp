@@ -24,11 +24,6 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#include "utilities/baseentity.h"
-#ifndef PATCH_NETWORK_HANDLE_BASE_DEFINITION
-#error "We need the CNetworkHandle definition..."
-#endif
-
 #include "game/shared/predictioncopy.h"
 #ifndef PATCH_PC_REDEFINITIONS
 #error "PC constants are redefined into datamap.h..."

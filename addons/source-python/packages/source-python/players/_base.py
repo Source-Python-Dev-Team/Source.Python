@@ -692,6 +692,18 @@ class Player(Entity):
         # Play the sound to the player...
         sound.play(self.index)
 
+    def spawn(self, force=False):
+        """Spawn the player.
+
+        :param bool force: Whether or not the spawn should be forced.
+        """
+        # Is the player spawnable?
+        if not force and (self.team <= 1 or not self.dead):
+            return
+
+        # Spawn the player...
+        super().spawn()
+
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
     # =========================================================================

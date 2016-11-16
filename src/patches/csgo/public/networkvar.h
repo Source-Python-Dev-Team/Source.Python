@@ -580,9 +580,8 @@ private:
 };
 
 
-#define PATCH_NETWORK_HANDLE_BASE_DEFINITION
 // Network ehandle wrapper.
-#if 1
+#if defined( CLIENT_DLL ) || defined( GAME_DLL )
 	template< class Type, class Changer >
 	class CNetworkHandleBase : public CNetworkVarBase< CBaseHandle, Changer >
 	{
@@ -621,6 +620,7 @@ private:
 		
 		Type* Get() const 
 		{ 
+#define PATCH_NETWORK_HANDLE_BASE_CAST
 			return reinterpret_cast< Type* >( CNetworkHandleBase<Type,Changer>::m_Value.Get() );
 		}
 

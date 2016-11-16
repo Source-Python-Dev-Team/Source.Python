@@ -32,14 +32,6 @@ from _messages import FadeFlags
 
 
 # =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-# Use a global RecipientFilter to prevent memory leaking...
-# See also: https://github.com/Source-Python-Dev-Team/Source.Python/issues/124
-_recipient_filter = RecipientFilter()
-
-
-# =============================================================================
 # >> CLASSES
 # =============================================================================
 class AttrDict(dict):
@@ -73,9 +65,9 @@ class UserMessageCreator(AttrDict):
 
     def send(self, *player_indexes, **tokens):
         """Send the user message."""
-        _recipient_filter.update(*player_indexes)
+        player_indexes = RecipientFilter(*player_indexes)
         for language, indexes in self._categorize_players_by_language(
-                _recipient_filter).items():
+                player_indexes).items():
             translated_kwargs = AttrDict(self)
             translated_kwargs.update(
                 self._get_translated_kwargs(language, tokens))
@@ -88,9 +80,8 @@ class UserMessageCreator(AttrDict):
             setting.
         :param AttrDict translated_kwargs: The translated arguments.
         """
-        _recipient_filter.update(*player_indexes)
-        user_message = UserMessage(
-            _recipient_filter, self.message_name)
+        recipients = RecipientFilter(*player_indexes)
+        user_message = UserMessage(recipients, self.message_name)
 
         if user_message.is_protobuf():
             self.protobuf(user_message.buffer, translated_kwargs)
@@ -211,9 +202,8 @@ class ShowMenu(UserMessageCreator):
         # differently, because the maximum size is 255. If the message exceeds
         # this length, we need to sent it in several parts.
         if UserMessage.is_protobuf():
-            _recipient_filter.update(*player_indexes)
-            user_message = UserMessage(
-                _recipient_filter, self.message_name)
+            recipients = RecipientFilter(*player_indexes)
+            user_message = UserMessage(recipients, self.message_name)
             self.protobuf(user_message.buffer, self)
             user_message.send()
         else:
@@ -229,10 +219,9 @@ class ShowMenu(UserMessageCreator):
         """Send the ShowMenu with bitbuf."""
         menu_string = kwargs.menu_string
         length = len(menu_string)
-        _recipient_filter.update(*player_indexes)
+        recipients = RecipientFilter(*player_indexes)
         while True:
-            user_message = UserMessage(
-                _recipient_filter, self.message_name)
+            user_message = UserMessage(recipients, self.message_name)
 
             buffer = user_message.buffer
             buffer.write_word(kwargs.valid_slots)
