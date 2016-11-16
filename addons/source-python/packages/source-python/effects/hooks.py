@@ -41,12 +41,19 @@ class _TempEntityHook(AutoUnload):
         # Store the given temp entity name...
         self.name = temp_entity_name
 
-        # Store the function to hook...
-        self.function = get_virtual_function(
-            temp_entity_templates[temp_entity_name], 'Create')
-
         # Set the callback to None...
         self._callback = None
+
+        try:
+            # Store the function to hook...
+            self.function = get_virtual_function(
+                temp_entity_templates[temp_entity_name], 'Create')
+        except NameError:
+            # Given name was invalid, set the function to None...
+            self.function = None
+
+            # Re-raise the error...
+            raise
 
     def __call__(self, callback):
         """Store the callback and try initialize the hook."""
@@ -78,6 +85,10 @@ class _TempEntityHook(AutoUnload):
 
     def _unload_instance(self):
         """Unload the hook."""
+        # Was no hook registered?
+        if self.function is None or self._callback is None:
+            return
+
         # Unregister the hook...
         self.function.remove_hook(self.hook_type, self._callback)
 

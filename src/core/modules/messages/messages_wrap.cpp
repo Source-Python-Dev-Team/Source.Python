@@ -189,6 +189,12 @@ void export_message_functions(scope _messages)
 		"Return the index of a user message. Return -1 if the user message wasn't found.",
 		args("name")
 	);
+
+	def("get_message_name",
+		&GetMessageName,
+		"Return the name of the user message. Return None if the user message wasn't found.",
+		args("index")
+	);
 }
 
 

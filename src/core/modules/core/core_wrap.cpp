@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "export_main.h"
 #include "sp_main.h"
+#include "core.h"
 
 
 //-----------------------------------------------------------------------------
@@ -40,7 +41,9 @@ extern CSourcePython g_SourcePythonPlugin;
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_source_python_plugin(scope);
+static void export_source_python_plugin(scope);
+static void export_constants(scope);
+static void export_functions(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -49,10 +52,8 @@ void export_source_python_plugin(scope);
 DECLARE_SP_MODULE(_core)
 {
 	export_source_python_plugin(_core);
-
-	// Constants...
-	_core.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
-	_core.attr("SOURCE_ENGINE_BRANCH") = XSTRINGIFY(SOURCE_ENGINE_BRANCH);
+	export_constants(_core);
+	export_functions(_core);
 }
 
 
@@ -65,4 +66,26 @@ void export_source_python_plugin(scope _core)
 
 	// Singleton...
 	_core.attr("_sp_plugin") = boost::ref(g_SourcePythonPlugin);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose constants.
+//-----------------------------------------------------------------------------
+void export_constants(scope _core)
+{
+	_core.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
+	_core.attr("SOURCE_ENGINE_BRANCH") = XSTRINGIFY(SOURCE_ENGINE_BRANCH);
+}
+
+//-----------------------------------------------------------------------------
+// Expose functions.
+//-----------------------------------------------------------------------------
+void export_functions(scope _core)
+{
+	def(
+		"console_message",
+		&ConsoleMessage,
+		"Output a message to the server console."
+	);
 }

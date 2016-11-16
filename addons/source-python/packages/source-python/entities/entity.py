@@ -6,14 +6,26 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Collections
+from collections import defaultdict
 #   Contextlib
 from contextlib import suppress
 
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
+#   Entities
+from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
+from engines.sound import Attenuation
+from engines.sound import engine_sound
+from engines.sound import Channel
+from engines.sound import Pitch
+from engines.sound import Sound
+from engines.sound import SoundFlags
+from engines.sound import StreamSound
+from engines.sound import VOL_NORM
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
 from engines.trace import GameTrace
@@ -28,8 +40,14 @@ from entities.constants import RenderMode
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
+from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.weapons import WeaponClassIter
+#   Listeners
+from listeners import OnEntityDeleted
+from listeners.tick import Delay
+#   Mathlib
+from mathlib import NULL_VECTOR
 #   Memory
 from memory import get_object_pointer
 from memory import make_object
@@ -63,12 +81,26 @@ __all__ = ('BaseEntity',
 # Get a list of projectiles for the game
 _projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
 
+# Get a dictionary to store the delays
+_entity_delays = defaultdict(set)
+
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
 class Entity(BaseEntity):
-    """Class used to interact directly with entities."""
+    """Class used to interact directly with entities.
+
+    Beside the standard way of doing stuff via methods and properties this
+    class also provides dynamic attributes that depend on the entity that is
+    being accessed with this class. You can print all dynamic properties by
+    iterating over the following generators:
+
+    1. :attr:`properties`
+    2. :attr:`inputs`
+    3. :attr:`outputs`
+    4. :attr:`keyvalues`
+    """
 
     def __init__(self, index):
         """Initialize the Entity object."""
@@ -144,7 +176,13 @@ class Entity(BaseEntity):
 
     @classmethod
     def create(cls, classname):
-        """Create a new networked entity with the given classname."""
+        """Create a new networked entity with the given classname.
+
+        :param str classname:
+            Classname of the entity to create.
+        :raise ValueError:
+            Raised if the given classname is not a networked entity.
+        """
         entity = BaseEntity.create(classname)
         if entity.is_networked():
             return cls(entity.index)
@@ -191,13 +229,16 @@ class Entity(BaseEntity):
 
     @property
     def index(self):
-        """Return the entity's index."""
+        """Return the entity's index.
+
+        :rtype: int
+        """
         return self._index
-        
+
     @property
     def owner(self):
         """Return the entity's owner.
-        
+
         :return: None if the entity has no owner.
         :rtype: Entity
         """
@@ -242,11 +283,18 @@ class Entity(BaseEntity):
             yield from server_class.keyvalues
 
     def get_color(self):
-        """Return the entity's color as a Color instance."""
+        """Return the entity's color.
+
+        :rtype: Color
+        """
         return self.render_color
 
     def set_color(self, color):
-        """Set the entity's color."""
+        """Set the entity's color.
+
+        :param Color color:
+            Color to set.
+        """
         # Set the entity's render mode
         self.render_mode = RenderMode.TRANS_COLOR
 
@@ -262,13 +310,20 @@ class Entity(BaseEntity):
         doc="""Property to get/set the entity's color values.""")
 
     def get_model(self):
-        """Return the entity's model."""
+        """Return the entity's model.
+
+        :rtype: Model
+        """
         return Model(self.model_name)
 
     def set_model(self, model):
-        """Set the entity's model to the given model."""
+        """Set the entity's model to the given model.
+
+        :param Model model:
+            The model to set.
+        """
         self.model_index = model.index
-        self.set_key_value_string('model', model.path)
+        self.model_name = model.path
 
     model = property(
         get_model, set_model,
@@ -278,7 +333,7 @@ class Entity(BaseEntity):
     def model_header(self):
         """Return a ModelHeader instance of the current entity's model."""
         return model_cache.get_model_header(model_cache.find_model(
-            self.model.path))
+            self.model_name))
 
     def get_property_bool(self, name):
         """Return the boolean property."""
@@ -463,8 +518,53 @@ class Entity(BaseEntity):
             'Property "{0}" not found for entity type "{1}"'.format(
                 name, self.classname))
 
+    def delay(self, delay, callback, *args, **kwargs):
+        """Execute a callback after the given delay.
+
+        :param int delay: The delay in seconds.
+        :param callback: A callable object that should be called after the
+            delay expired.
+        :param args: Arguments that should be passed to the callback.
+        :param kwargs: Keyword arguments that should be passed to the
+            callback.
+
+        :return: The delay instance.
+        :rtype: Delay
+        """
+        # TODO: Ideally, we want to subclass Delay and cleanup on cancel() too
+        #   in case the caller manually cancel the returned Delay.
+        def _callback(*args, **kwargs):
+            """Called when the delay is executed."""
+            # Remove the delay from the global dictionary...
+            _entity_delays[self.index].remove(delay)
+
+            # Was this the last pending delay for the entity?
+            if not _entity_delays[self.index]:
+
+                # Remove the entity from the dictionary...
+                del _entity_delays[self.index]
+
+            # Call the callback...
+            callback(*args, **kwargs)
+
+        # Get the delay instance...
+        delay = Delay(delay, _callback, *args, **kwargs)
+
+        # Add the delay to the dictionary...
+        _entity_delays[self.index].add(delay)
+
+        # Return the delay instance...
+        return delay
+
     def get_input(self, name):
-        """Return the InputFunction instance for the given name."""
+        """Return the input function matching the given name.
+
+        :parma str name:
+            Name of the input function.
+        :rtype: InputFunction
+        :raise ValueError:
+            Raised if the input function wasn't found.
+        """
         # Loop through each server class for the entity
         for server_class in self.server_classes:
 
@@ -481,11 +581,27 @@ class Entity(BaseEntity):
                 name, self.classname))
 
     def call_input(self, name, *args, **kwargs):
-        """Call the InputFunction instance for the given name."""
+        """Call the input function matching the given name.
+
+        :param str name:
+            Name of the input function.
+        :param args:
+            Optional arguments that should be passed to the input function.
+        :param kwargs:
+            Optional keyword arguments that should be passed to the input
+            function.
+        :raise ValueError:
+            Raised if the input function wasn't found.
+        """
         self.get_input(name)(*args, **kwargs)
 
     def lookup_attachment(self, name):
-        """Return the attachment index matching the given name."""
+        """Return the attachment index matching the given name.
+
+        :param str name:
+            The name of the attachment.
+        :rtype: int
+        """
         # Get the ModelHeader instance of the entity
         model_header = self.model_header
 
@@ -501,9 +617,87 @@ class Entity(BaseEntity):
         # No attachment found
         return INVALID_ATTACHMENT_INDEX
 
+    def emit_sound(
+            self, sample, recipients=(), volume=VOL_NORM,
+            attenuation=Attenuation.NONE, channel=Channel.AUTO,
+            flags=SoundFlags.NO_FLAGS, pitch=Pitch.NORMAL, origin=NULL_VECTOR,
+            direction=NULL_VECTOR, origins=(), update_positions=True,
+            sound_time=0.0, speaker_entity=INVALID_ENTITY_INDEX,
+            download=False, stream=False):
+        """Emit a sound from this entity.
+
+        :param str sample:
+            Sound file relative to the ``sounds`` directory.
+        :param RecipientFilter recipients:
+            Recipients to emit the sound to.
+        :param int index:
+            Index of the entity to emit the sound from.
+        :param float volume:
+            Volume of the sound.
+        :param Attenuation attenuation:
+            How far the sound should reaches.
+        :param int channel:
+            Channel to emit the sound with.
+        :param SoundFlags flags:
+            Flags of the sound.
+        :param Pitch pitch:
+            Pitch of the sound.
+        :param Vector origin:
+            Origin of the sound.
+        :param Vector direction:
+            Direction of the sound.
+        :param tuple origins:
+            Origins of the sound.
+        :param bool update_positions:
+            Whether or not the positions should be updated.
+        :param float sound_time:
+            Time to play the sound for.
+        :param int speaker_entity:
+            Index of the speaker entity.
+        :param bool download:
+            Whether or not the sample should be added to the downloadables.
+        :param bool stream:
+            Whether or not the sound should be streamed.
+        """
+        # Get the correct Sound class...
+        if not stream:
+            sound_class = Sound
+        else:
+            sound_class = StreamSound
+
+        # Get the sound...
+        sound = sound_class(sample, self.index, volume, attenuation, channel,
+            flags, pitch, origin, direction, origins, update_positions,
+            sound_time, speaker_entity, download)
+
+        # Make sure we have a tuple as recipients...
+        if not isinstance(recipients, tuple):
+            recipients = (recipients,)
+
+        # Emit the sound to the given recipients...
+        sound.play(*recipients)
+
+    def stop_sound(self, sample, channel=Channel.AUTO):
+        """Stop the given sound from being emitted by this entity.
+
+        :param str sample:
+            Sound file relative to the ``sounds`` directory.
+        :param Channel channel:
+            The channel of the sound.
+        """
+        engine_sound.stop_sound(self.index, channel, sample)
+
     def is_in_solid(
             self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
-        """Return whether or not the entity is in solid."""
+        """Return whether or not the entity is in solid.
+
+        :param ContentMasks mask:
+            Contents the ray can possibly collide with.
+        :param generator:
+            A callable that returns an iterable which contains
+            :class:`BaseEntity` instances that are ignored by the ray.
+        :rtype: bool
+        """
         # Get a Ray object of the entity physic box
         ray = Ray(self.origin, self.origin, self.mins, self.maxs)
 
@@ -512,7 +706,7 @@ class Entity(BaseEntity):
 
         # Do the trace
         engine_trace.trace_ray(ray, mask, TraceFilterSimple(
-            [entity.index for entity in generator()]), trace)
+            generator()), trace)
 
         # Return whether or not the trace did hit
         return trace.did_hit()
@@ -521,7 +715,24 @@ class Entity(BaseEntity):
             self, damage, damage_type=DamageTypes.GENERIC, attacker_index=None,
             weapon_index=None, hitgroup=HitGroup.GENERIC, skip_hooks=False,
             **kwargs):
-        """Method used to hurt the entity with the given arguments."""
+        """Deal damage to the entity.
+
+        :param int damage:
+            Amount of damage to deal.
+        :param DamageTypes damage_type:
+            Type of the dealed damage.
+        :param int attacker_index:
+            If not None, the index will be used as the attacker.
+        :param int weapon_index:
+            If not None, the index will be used as the weapon. This method
+            also tries to retrieve the attacker from the weapon, if
+            ``attacker_index`` wasn't set.
+        :param HitGroup hitgroup:
+            The hitgroup where the damage should be applied.
+        :param bool skip_hooks:
+            If True, the damage will be dealed directly by skipping any
+            registered hooks.
+        """
         # Import Entity classes
         # Doing this in the global scope causes cross import errors
         from weapons.entity import Weapon
@@ -613,3 +824,65 @@ class Entity(BaseEntity):
             self.on_take_damage.skip_hooks(take_damage_info)
         else:
             self.on_take_damage(take_damage_info)
+
+    @wrap_entity_mem_func
+    def teleport(self, origin=None, angle=None, velocity=None):
+        """Change the origin, angle and/or velocity of the entity.
+
+        :param Vector origin:
+            New location of the entity.
+        :param QAngle angle:
+            New angle of the entity.
+        :param Vector velocity:
+            New velocity of the entity.
+        """
+        return [origin, angle, velocity]
+
+    @wrap_entity_mem_func
+    def set_parent(self, parent, attachment=INVALID_ATTACHMENT_INDEX):
+        """Set the parent of the entity.
+
+        :param Pointer parent:
+            The parent.
+        :param str attachment:
+            The attachment name/index.
+        """
+        if not isinstance(attachment, int):
+            attachment = self.lookup_attachment(attachment)
+
+        return [parent, attachment]
+
+
+# =============================================================================
+# >> LISTENERS
+# =============================================================================
+@OnEntityDeleted
+def _on_entity_deleted(base_entity):
+    """Called when an entity is removed.
+
+    :param BaseEntity base_entity:
+        The removed entity.
+    """
+    # Make sure the entity is networkable...
+    if not base_entity.is_networked():
+        return
+
+    # Get the index of the entity...
+    index = base_entity.index
+
+    # Was no delay registered for this entity?
+    if index not in _entity_delays:
+        return
+
+    # Loop through all delays...
+    for delay in _entity_delays[index]:
+
+        # Make sure the delay is still running...
+        if not delay.running:
+            continue
+
+        # Cancel the delay...
+        delay.cancel()
+
+    # Remove the entity from the dictionary...
+    del _entity_delays[index]

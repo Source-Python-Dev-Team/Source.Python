@@ -5,11 +5,19 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Warnings
+from warnings import warn
+
 # Source.Python Imports
 #   Bitbuffers
 from bitbuffers import BitBufferWrite
+#   ConVars
+from cvars import ConVar
 #   Engines
 from engines.server import engine_server
+#   Entities
+from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.entities import EntityIter
 #   Memory
@@ -22,6 +30,12 @@ from players._base import Player as _Player
 from players.constants import LifeState
 #   Weapons
 from weapons.manager import weapon_manager
+
+
+# =============================================================================
+# >> GLOBAL VARIABLES
+# =============================================================================
+_disable_immunity_alpha = ConVar('sv_disable_immunity_alpha')
 
 
 # =============================================================================
@@ -126,9 +140,34 @@ class Player(_Player):
             value,
         )
 
-    def spawn(self):
-        """Spawn the player."""
+    def spawn(self, force=False):
+        """Spawn the player.
+
+        :param bool force: Whether or not the spawn should be forced.
+        """
+        # Is the player spawnable?
+        if not force and (self.team <= 1 or not self.dead):
+            return
+
+        # Spawn the player...
         self._spawn()
+
+    def set_color(self, color):
+        """Set the player's color."""
+        if not _disable_immunity_alpha.get_bool() and color.a != self.color.a:
+            warn(
+                'Changing the alpha of a player will have no effect unless ' +
+                '"sv_disable_immunity_alpha" is set to "1".'
+            )
+        super().set_color(color)
+
+    color = property(_Player.get_color, set_color)
+
+    @wrap_entity_mem_func
+    def give_named_item(self, item, sub_type=0, econ_item_view=None, unk=False):
+        """Give the player a named item."""
+        # TODO: What's the last argument for?
+        return [item, sub_type, econ_item_view, unk]
 
 
 # =============================================================================

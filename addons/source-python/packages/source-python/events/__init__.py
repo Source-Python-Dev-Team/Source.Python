@@ -45,6 +45,9 @@ class Event(AutoUnload):
 
     def __init__(self, *event_names):
         """Store the event names."""
+        self._event_names = ()
+        self.callback = None
+
         # Validate event names
         if not event_names:
             raise ValueError('At least one event name is required.')
@@ -54,7 +57,6 @@ class Event(AutoUnload):
                 raise ValueError('Event name must be a string.')
 
         self._event_names = event_names
-        self.callback = None
 
     def __call__(self, callback):
         """Store the callback and register the events."""
@@ -72,6 +74,10 @@ class Event(AutoUnload):
 
     def _unload_instance(self):
         """Unregister the events."""
+        # Was no callback registered?
+        if self.callback is None:
+            return
+
         # Loop through all event names
         for event_name in self._event_names:
 

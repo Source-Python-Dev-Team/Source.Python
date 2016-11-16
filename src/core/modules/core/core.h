@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -23,3 +23,23 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
+
+#ifndef _CORE_H
+#define _CORE_H
+
+//-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "dbg.h"
+
+
+//-----------------------------------------------------------------------------
+// ConMsg wrapper
+//-----------------------------------------------------------------------------
+inline void ConsoleMessage(const char* msg)
+{
+	ConMsg(msg);
+}
+
+
+#endif // _CORE_H

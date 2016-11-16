@@ -1,6 +1,6 @@
 # ../core/manager.py
 
-"""Provides access to all plugins loaded via "sp load"."""
+"""Provides access to all plugins loaded via "sp plugin load"."""
 
 # =============================================================================
 # >> IMPORTS

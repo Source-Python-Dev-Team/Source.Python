@@ -123,3 +123,21 @@ int GetMessageIndex(const char* name)
 	return -1;
 #endif
 }
+
+object GetMessageName(int index)
+{
+#ifdef USE_PROTOBUF
+	const char* name = g_Cstrike15UsermessageHelpers.GetName(index);
+	if (!name)
+		return object();
+
+	return str(name);
+#else
+	char result[256] = "";
+	int size = 0;
+	if (!servergamedll->GetUserMessageInfo(index, result, 255, size))
+		return object();
+
+	return str(result);
+#endif
+}

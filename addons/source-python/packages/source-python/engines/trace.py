@@ -11,7 +11,7 @@ from enum import IntEnum
 
 # Source.Python Imports
 #   Entities
-from entities.helpers import inthandle_from_index
+from entities.helpers import inthandle_from_baseentity
 
 
 # =============================================================================
@@ -202,7 +202,7 @@ class TraceFilterSimple(TraceFilter):
         """
         super().__init__()
         self.trace_type = trace_type
-        self.ignore = tuple(map(inthandle_from_index, ignore))
+        self.ignore = tuple(map(inthandle_from_baseentity, ignore))
 
     def should_hit_entity(self, entity, mask):
         """Called when a trace is about to hit an entity.

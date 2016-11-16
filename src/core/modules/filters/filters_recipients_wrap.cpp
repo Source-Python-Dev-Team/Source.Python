@@ -81,7 +81,7 @@ void export_mrecipientfilter(scope _recipients)
 		ADD_MEM_TOOLS(IRecipientFilter)
 	;
 
-	class_<MRecipientFilter, MRecipientFilter*, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
+	class_<MRecipientFilter, boost::shared_ptr<MRecipientFilter>, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
 		.def("add_all_players",
 			&MRecipientFilter::AddAllPlayers,
 			"Adds all the players on the server to the filter"

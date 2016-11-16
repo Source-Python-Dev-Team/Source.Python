@@ -17,7 +17,16 @@ from core import GAME_NAME
 #   Engines
 from engines.server import server
 from engines.server import engine_server
+from engines.server import execute_server_command
 from engines.server import server_game_dll
+from engines.sound import Attenuation
+from engines.sound import Channel
+from engines.sound import Pitch
+from engines.sound import Sound
+from engines.sound import SoundFlags
+from engines.sound import SOUND_FROM_WORLD
+from engines.sound import StreamSound
+from engines.sound import VOL_NORM
 from engines.trace import engine_trace
 from engines.trace import ContentMasks
 from engines.trace import GameTrace
@@ -25,17 +34,21 @@ from engines.trace import MAX_TRACE_LENGTH
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
+from entities import ServerClassGenerator
 from entities.constants import CollisionGroup
+from entities.constants import EntityEffects
 from entities.constants import INVALID_ENTITY_INDEX
 from entities.constants import MoveType
 from entities.constants import TakeDamage
 from entities.entity import Entity
 from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
+from entities.helpers import wrap_entity_mem_func
 from entities.props import SendPropType
 #   Filters
 from filters.entities import EntityIter
 #   Mathlib
+from mathlib import NULL_VECTOR
 from mathlib import Vector
 from mathlib import QAngle
 #   Memory
@@ -228,7 +241,7 @@ class Player(Entity):
         # Start the trace
         engine_trace.trace_ray(
             Ray(start_vec, end_vec), mask, TraceFilterSimple(
-                (self.index,)) if trace_filter is None else trace_filter,
+                (self,)) if trace_filter is None else trace_filter,
             trace
         )
 
@@ -570,6 +583,25 @@ class Player(Entity):
 
     stuck = property(get_stuck, set_stuck)
 
+    def get_flashlight(self):
+        """Return whether or not the flashlight of the player is turned on.
+
+        :rtype: bool
+        """
+        return bool(self.effects & EntityEffects.DIMLIGHT)
+
+    def set_flashlight(self, enable):
+        """Turn on/off the flashlight of the player.
+
+        :param bool enable: True to turn on, False to turn off.
+        """
+        if enable:
+            self.effects |= EntityEffects.DIMLIGHT
+        else:
+            self.effects &= ~EntityEffects.DIMLIGHT
+
+    flashlight = property(get_flashlight, set_flashlight)
+
     def send_convar_value(self, cvar_name, value):
         """Send a convar value.
 
@@ -600,8 +632,7 @@ class Player(Entity):
 
         :param str message: A message the kicked player will receive.
         """
-        engine_server.server_command(
-            'kickid {} {}'.format(self.userid, message).rstrip())
+        execute_server_command('kickid', self.userid, message.rstrip())
 
     def ban(self, duration=0, kick=True, write_ban=True):
         """Ban a player from the server.
@@ -612,10 +643,66 @@ class Player(Entity):
         :param bool write_ban: If True, the ban will be written to
             ``cfg/banned_users.cfg``.
         """
-        engine_server.server_command('banid {} {} {}'.format(
-            duration, self.userid, 'kick' if kick else ''))
+        execute_server_command(
+            'banid', duration, self.userid, 'kick' if kick else '')
         if write_ban:
-            engine_server.server_command('writeid')
+            execute_server_command('writeid')
+
+    def play_sound(
+            self, sample, volume=VOL_NORM, attenuation=Attenuation.NONE,
+            channel=Channel.AUTO, flags=SoundFlags.NO_FLAGS,
+            pitch=Pitch.NORMAL, origin=NULL_VECTOR, direction=NULL_VECTOR,
+            origins=(), update_positions=True, sound_time=0.0,
+            speaker_entity=INVALID_ENTITY_INDEX, download=False,
+            stream=False):
+        """Play a sound to the player.
+
+        :param str sample: Sound file relative to the "sounds" directory.
+        :param float volume: Volume of the sound.
+        :param Attenuation attenuation: How far the sound should reaches.
+        :param int channel: Channel to emit the sound with.
+        :param SoundFlags flags: Flags of the sound.
+        :param Pitch pitch: Pitch of the sound.
+        :param Vector origin: Origin of the sound.
+        :param Vector direction: Direction of the sound.
+        :param tuple origins: Origins of the sound.
+        :param bool update_positions: Whether or not the positions should be
+            updated.
+        :param float sound_time: Time to play the sound for.
+        :param int speaker_entity: Index of the speaker entity.
+        :param bool download: Whether or not the sample should be added to the
+            downloadables.
+        :param bool stream: Whether or not the sound should be streamed.
+        """
+        # Don't bother playing sounds to bots...
+        if self.is_fake_client():
+            return
+
+        # Get the correct Sound class...
+        if not stream:
+            sound_class = Sound
+        else:
+            sound_class = StreamSound
+
+        # Get the sound...
+        sound = sound_class(sample, SOUND_FROM_WORLD, volume, attenuation,
+            channel, flags, pitch, origin, direction, origins,
+            update_positions, sound_time, speaker_entity, download)
+
+        # Play the sound to the player...
+        sound.play(self.index)
+
+    def spawn(self, force=False):
+        """Spawn the player.
+
+        :param bool force: Whether or not the spawn should be forced.
+        """
+        # Is the player spawnable?
+        if not force and (self.team <= 1 or not self.dead):
+            return
+
+        # Spawn the player...
+        super().spawn()
 
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
@@ -799,6 +886,19 @@ class Player(Entity):
         from weapons.restrictions import weapon_restriction_manager
         return weapon_restriction_manager.is_player_restricted(self, weapon)
 
+    @wrap_entity_mem_func
+    def drop_weapon(self, weapon, target=None, velocity=None):
+        """Drop a weapon.
+
+        :param Pointer weapon:
+            Weapon to drop.
+        :param Vector target:
+            Target location to drop the weapon at.
+        :param Vector velocity:
+            Velocity to use to drop the weapon.
+        """
+        return [weapon, target, velocity]
+
 
 # =============================================================================
 # >> HELPER FUNCTIONS
@@ -826,11 +926,8 @@ _weapon_prop_length = None
 # Is the game supported?
 if not isinstance(weapon_manager, NoWeaponManager):
 
-    # Get the first ServerClass object
-    _current_class = server_game_dll.all_server_classes
-
-    # Use "while" to loop through all ServerClass objects
-    while _current_class:
+    # Loop through all ServerClass objects
+    for _current_class in ServerClassGenerator():
 
         # Loop through the ServerClass' props
         _weapon_prop_length = _find_weapon_prop_length(_current_class.table)
@@ -840,6 +937,3 @@ if not isinstance(weapon_manager, NoWeaponManager):
 
             # No need to continue looping
             break
-
-        # Move to the next ServerClass
-        _current_class = _current_class.next

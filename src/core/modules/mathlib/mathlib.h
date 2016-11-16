@@ -44,14 +44,44 @@ public:
 		return point.WithinAABox(corner1.Min(corner2), corner2.Max(corner1));
 	}
 
-	static void SetLength(Vector& vec, int iLength)
+	static void SetLength(Vector& vec, float fLength)
 	{
 		vec.NormalizeInPlace();
-		vec *= iLength;
+		vec *= fLength;
+	}
+
+	static inline float GetLength(Vector& vec)
+	{
+		// Workaround for https://github.com/Source-Python-Dev-Team/Source.Python/issues/150
+		#ifdef __linux__
+			return sqrt(vec.LengthSqr());
+		#else
+			return vec.Length();
+		#endif
+	}
+
+	static inline float GetLength2D(Vector& vec)
+	{
+		// Workaround for https://github.com/Source-Python-Dev-Team/Source.Python/issues/150
+		#ifdef __linux__
+			return sqrt(vec.Length2DSqr());
+		#else
+			return vec.Length2D();
+		#endif
 	}
 
 	static str __repr__(Vector* pVector)
 	{ return str("Vector" + str(tuple(pVector))); }
+
+	static Vector Copy(Vector* pVec)
+	{ return *pVec; }
+
+	static Vector Normalized(Vector* pVec)
+	{
+		Vector copy = *pVec;
+		copy.NormalizeInPlace();
+		return copy;
+	}
 };
 
 
