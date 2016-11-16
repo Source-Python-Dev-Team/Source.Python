@@ -5,6 +5,7 @@ Requirements
 ------------
 
 1. On Linux GLIBC 2.17 or later is required. Check your version by typing ``ld -version``.
+2. On Windows `Visual C++ Redistributable for Visual Studio 2015 <https://www.microsoft.com/en-us/download/details.aspx?id=48145>`_ is required. Most machines already have a redistributable installed, so you only need to install it if Source.Python didn't load properly due to the missing redistributable.
 
 
 Installation steps

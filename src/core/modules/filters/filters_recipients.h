@@ -36,6 +36,41 @@
 #include "irecipientfilter.h"
 #include "bitvec.h"
 #include "tier1/utlvector.h"
+#include "modules/memory/memory_alloc.h"
+
+
+//---------------------------------------------------------------------------------
+// Patch for issue #124.
+//---------------------------------------------------------------------------------
+template<class T, class U = int>
+class CRecipientFilterAllocator : public CUtlMemory<T, U>
+{
+public:
+	CRecipientFilterAllocator(int nGrowSize = 0, int nInitSize = 0):
+		CUtlMemory<T, U>(nGrowSize, nInitSize) {}
+
+	~CRecipientFilterAllocator() { this->m_nAllocationCount = 0; }
+
+	void *DetachAndReturn()
+	{
+		void *pMemory = this->m_pMemory;
+		this->m_pMemory = NULL;
+		return pMemory;
+	}
+};
+
+template<class T, class U = CRecipientFilterAllocator<T>>
+class CVecRecipients : public CUtlVector<T, U>
+{
+public:
+	CVecRecipients(int nGrowSize = 0, int nInitSize = 0):
+		CUtlVector<T, U>(nGrowSize, nInitSize) {}
+
+	~CVecRecipients()
+	{
+		UTIL_Dealloc(this->m_Memory.DetachAndReturn());
+	}
+};
 
 
 //---------------------------------------------------------------------------------
@@ -61,8 +96,12 @@ public:
 private:
 	bool				m_bReliable;
 	bool				m_bInitMessage;
-	CUtlVector< int >	m_Recipients;
-	
+#ifdef ENGINE_ORANGEBOX
+	CVecRecipients<int>		m_Recipients;
+#else
+	CUtlVector<int>			m_Recipients;
+#endif
+
 	// If using prediction rules, the filter itself suppresses local player
 	bool				m_bUsingPredictionRules;
 	// If ignoring prediction cull, then external systems can determine

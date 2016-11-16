@@ -16,9 +16,6 @@ import memory
 
 from memory.hooks import PreHook
 from memory.manager import manager
-#   Entity
-from entities.entity import BaseEntity
-from entities.entity import Entity
 from entities.datamaps import Variant
 from entities.helpers import find_output_name
 #   Listeners
@@ -58,11 +55,15 @@ if _fire_output is not None:
             # output name
             return
 
+        # Done here to fix cyclic import...
+        from entities.entity import BaseEntity
         caller = memory.make_object(BaseEntity, caller_ptr)
         output_name = find_output_name(caller, args[0])
         if output_name is None:
             return None
 
+        # Done here to fix cyclic import...
+        from entities.entity import Entity
         if caller.is_networked():
             caller = memory.make_object(Entity, caller_ptr)
 

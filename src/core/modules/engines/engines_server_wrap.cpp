@@ -543,7 +543,7 @@ static void export_engine_server(scope _server)
 
 		.def("start_query_cvar_value",
 			&IVEngineServerExt::StartQueryCvarValue,
-			"Returns the value of a cvar on the client.",
+			"Starts a query to retrieve the value of a client's console variable. Result of the query will be passed to the OnQueryCvarValueFinished listeners.",
 			args("edict", "cvar_name")
 		)
 
@@ -906,10 +906,10 @@ static void export_iserver(scope _server)
 		&IServer::GetClassBits
 	);
 
-	_IServer.def(
-		"get_net_stats",
-		&IServer::GetNetStats,
-		"Total net in/out in bytes/sec."
+	_IServer.add_property(
+		"net_stats",
+		&IServerExt::GetNetStats,
+		"Return a tuple containing the total net in/out in bytes/sec."
 	);
 
 	_IServer.add_property(

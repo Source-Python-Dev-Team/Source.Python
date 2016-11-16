@@ -202,6 +202,10 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 	return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulAddr, szSymbol));
 
 #elif defined(__linux__)
+	void* pResult = dlsym((void*) m_ulAddr, szSymbol);
+	if (pResult)
+		return new CPointer((unsigned long) pResult);
+
 	// -----------------------------------------
 	// We need to use mmap now that VALVe has
 	// made them all private!
@@ -466,14 +470,16 @@ bool str_ends_with(const char *szString, const char *szSuffix)
 	return strncmp(szString + stringlen - suffixlen, szSuffix, suffixlen) == 0;
 }
 
-CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true */)
+CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true */, bool bCheckExtension /* = true */)
 {
 	std::string szBinaryPath = szPath;
 #ifdef __linux__
-	if (bSrvCheck && !str_ends_with(szBinaryPath.data(), "_srv") && !str_ends_with(szBinaryPath.data(), ".so"))
-		szBinaryPath += "_srv.so";
-	else if (!str_ends_with(szBinaryPath.data(), ".so"))
-		szBinaryPath += ".so";
+	if (bCheckExtension) {
+		if (bSrvCheck && !str_ends_with(szBinaryPath.data(), "_srv") && !str_ends_with(szBinaryPath.data(), ".so"))
+			szBinaryPath += "_srv.so";
+		else if (!str_ends_with(szBinaryPath.data(), ".so"))
+			szBinaryPath += ".so";
+	}
 #endif
 
 	unsigned long ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
@@ -494,7 +500,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	{
 		szBinaryPath = "Unable to find " + szBinaryPath;
 		#ifdef _WIN32
-			if (!str_ends_with(szBinaryPath.data(), ".dll"))
+			if (bCheckExtension && !str_ends_with(szBinaryPath.data(), ".dll"))
 				szBinaryPath += ".dll";
 		#endif
 		BOOST_RAISE_EXCEPTION(PyExc_IOError, szBinaryPath.data())
@@ -520,15 +526,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	ulSize = nt->OptionalHeader.SizeOfImage;
 
 #elif defined(__linux__)
-	// TODO: Retrieve whole size
-	struct stat buf;
-	if (stat(szBinaryPath.data(), &buf) == -1)
-	{
-		dlFreeLibrary((DLLib *) ulAddr);
-		szBinaryPath = "Unable to retrieve the binary size for " + szBinaryPath;
-		BOOST_RAISE_EXCEPTION(PyExc_RuntimeError, szBinaryPath.data())
-	}
-	ulSize = buf.st_size;
+	ulSize = 0;
 
 #else
 #error "BinaryManager::FindBinary() is not implemented on this OS"
@@ -543,7 +541,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 //-----------------------------------------------------------------------------
 // Functions
 //-----------------------------------------------------------------------------
-CBinaryFile* FindBinary(char* szPath, bool bSrvCheck /* = true */)
+CBinaryFile* FindBinary(char* szPath, bool bSrvCheck /* = true */, bool bCheckExtension /* = true */)
 {
-	return s_pBinaryManager->FindBinary(szPath, bSrvCheck);
+	return s_pBinaryManager->FindBinary(szPath, bSrvCheck, bCheckExtension);
 }

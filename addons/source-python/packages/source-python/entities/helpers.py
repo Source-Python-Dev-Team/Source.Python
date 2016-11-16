@@ -38,6 +38,8 @@ from _entities._helpers import pointer_from_basehandle
 from _entities._helpers import pointer_from_edict
 from _entities._helpers import pointer_from_index
 from _entities._helpers import pointer_from_inthandle
+#   Memory
+from memory.manager import MemberFunction
 
 
 # =============================================================================
@@ -74,4 +76,41 @@ __all__ = ('baseentity_from_basehandle',
            'pointer_from_edict',
            'pointer_from_index',
            'pointer_from_inthandle',
+           'EntityMemFuncWrapper',
+           'wrap_entity_mem_func',
            )
+
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
+class EntityMemFuncWrapper(MemberFunction):
+    def __init__(self, wrapped_self, wrapper):
+        func = wrapped_self.__getattr__(wrapper.__name__)
+        super().__init__(func._manager, func._type_name, func, func._this)
+        self.wrapper = wrapper
+        self.wrapped_self = wrapped_self
+
+    def __call__(self, *args, **kwargs):
+        return super().__call__(
+            *self.wrapper(self.wrapped_self, *args, **kwargs))
+
+    def call_trampoline(self, *args, **kwargs):
+        return super().call_trampoline(
+            *self.wrapper(self.wrapped_self, *args, **kwargs))
+
+    def skip_hooks(self, *args, **kwargs):
+        return super().skip_hooks(
+            *self.wrapper(self.wrapped_self, *args, **kwargs))
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def wrap_entity_mem_func(wrapper):
+    """A decorator to wrap an entity memory function."""
+
+    def inner(wrapped_self):
+        return EntityMemFuncWrapper(wrapped_self, wrapper)
+
+    return property(inner, doc=wrapper.__doc__)

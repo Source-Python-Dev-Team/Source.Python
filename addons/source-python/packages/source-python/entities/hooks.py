@@ -96,6 +96,10 @@ class _EntityHook(AutoUnload):
 
     def __call__(self, callback):
         """Store the callback and try initializing the hook."""
+        # Validate the given callback...
+        if not callable(callback):
+            raise TypeError('Given callback is not callable.')
+
         self.callback = callback
 
         # Try initializing the hook...
@@ -135,11 +139,18 @@ class _EntityHook(AutoUnload):
 
     def _unload_instance(self):
         """Unload the hook."""
+        # Was a function hooked?
         if self.hooked_function is not None:
+
+            # Was no callback registered?
+            if self.callback is None:
+                return
+
+            # Unregister the hook...
             self.hooked_function.remove_hook(self.hook_type, self.callback)
+
+        # Otherwise, make sure the hook is still pending before removing it...
         elif self in _waiting_entity_hooks:
-            # If the function is None, the hook wasn't initialized, so it's
-            # still in the _waiting_entity_hooks dict
             _waiting_entity_hooks.remove(self)
 
 
@@ -178,7 +189,8 @@ _waiting_entity_hooks = _WaitingEntityHooks()
 # >> LISTENERS
 # =============================================================================
 @OnEntityCreated
-def on_entity_created(index, ptr):
+def on_entity_created(base_entity):
     """Called when a new entity has been created."""
-    if index is not None:
-        _waiting_entity_hooks.initialize(index)
+    if not base_entity.is_networked():
+        return
+    _waiting_entity_hooks.initialize(base_entity.index)

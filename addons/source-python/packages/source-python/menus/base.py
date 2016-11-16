@@ -113,12 +113,40 @@ class _BaseMenu(AutoUnload, list):
         if self.select_callback is not None:
             return self.select_callback(self, player_index, choice_index)
 
-    def send(self, *ply_indexes):
+    def send(self, *ply_indexes, **tokens):
         """Send the menu to the given player indexes.
 
         If no indexes were given, the menu will be sent to every player.
+
+        :param ply_indexes:
+            Player indexes that should recieve the menu.
+        :param tokens:
+            Translation tokens for menu options, title and description.
         """
-        ply_indexes = RecipientFilter(*ply_indexes)
+        ply_indexes = tuple(RecipientFilter(*ply_indexes))
+        if not ply_indexes:
+            return
+
+        # Update option tokens
+        for option in self:
+            try:
+                option.text.tokens.update(**tokens)
+            except AttributeError:
+                # Not a _MenuData or TranslationStrings instance
+                pass
+
+        # Update title if existant
+        try:
+            self.title.tokens.update(**tokens)
+        except AttributeError:
+            pass
+
+        # Update description if existant
+        try:
+            self.description.tokens.update(**tokens)
+        except AttributeError:
+            pass
+
         for player_index in ply_indexes:
             queue = self.get_user_queue(player_index)
             queue.append(self)
@@ -203,9 +231,9 @@ class _BaseMenu(AutoUnload, list):
 
     def register_select_callback(self, callback):
         """Register a select callback for the menu.
-        
+
         Can and should be used as a decorator.
-        
+
         :param callable callback: A function that gets called
             whenever a selection was made.
 
@@ -219,9 +247,9 @@ class _BaseMenu(AutoUnload, list):
 
     def register_build_callback(self, callback):
         """Register a build callback for the menu.
-        
+
         Can and should be used as a decorator.
-        
+
         :param callable callback: A function that gets called
             before a menu is displayed.
 

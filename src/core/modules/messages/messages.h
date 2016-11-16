@@ -80,11 +80,19 @@
 
 		static const google::protobuf::FieldDescriptor* GetFieldDescriptor(google::protobuf::Message* pMessage, const char* field_name)
 		{
-			const google::protobuf::FieldDescriptor* descriptor = pMessage->GetDescriptor()->FindFieldByName(field_name);
-			if (!descriptor) {
-				BOOST_RAISE_EXCEPTION(PyExc_NameError, "Unable to find field '%s'.", field_name);
+			const google::protobuf::Descriptor* descriptor = pMessage->GetDescriptor();
+
+			// For some reasons, FindFieldByName is causing a crash if the message has been initialized
+			//	by the server so let's look it up ourself...
+			for (int iCurrentIndex=0; iCurrentIndex < descriptor->field_count(); iCurrentIndex++)
+			{
+				const google::protobuf::FieldDescriptor *field_descriptor = descriptor->field(iCurrentIndex);
+				if (field_descriptor && strcmp(field_descriptor->name().c_str(), field_name) == 0)
+					return field_descriptor;
 			}
-			return descriptor;
+
+			BOOST_RAISE_EXCEPTION(PyExc_NameError, "Unable to find field '%s'.", field_name);
+			return NULL;
 		}
 	
 		static const google::protobuf::EnumValueDescriptor* GetEnumValueDescriptor(google::protobuf::Message* pMessage, const char* field_name, int value)
@@ -129,7 +137,11 @@
 		{ return GetField<bool>(pMessage, &google::protobuf::Reflection::GetBool, field_name); }
 
 		static std::string GetString(google::protobuf::Message* pMessage, const char* field_name)
-		{ return GetField<std::string>(pMessage, &google::protobuf::Reflection::GetString, field_name); }
+		{
+			std::string return_value;
+			return_value = pMessage->GetReflection()->GetStringReference(*pMessage, GetFieldDescriptor(pMessage, field_name), &return_value);
+			return return_value;
+		}
 
 		static int GetEnum(google::protobuf::Message* pMessage, const char* field_name)
 		{ return GetField<const google::protobuf::EnumValueDescriptor*>(pMessage, &google::protobuf::Reflection::GetEnum, field_name)->number(); }
@@ -171,7 +183,11 @@
 		{ return GetRepeatedField<bool>(pMessage, &google::protobuf::Reflection::GetRepeatedBool, field_name, index); }
 
 		static std::string GetRepeatedString(google::protobuf::Message* pMessage, const char* field_name, int index)
-		{ return GetRepeatedField<std::string>(pMessage, &google::protobuf::Reflection::GetRepeatedString, field_name, index); }
+		{
+			std::string return_value;
+			return_value = pMessage->GetReflection()->GetRepeatedStringReference(*pMessage, GetFieldDescriptor(pMessage, field_name), index, &return_value);
+			return return_value;
+		}
 
 		static int GetRepeatedEnum(google::protobuf::Message* pMessage, const char* field_name, int index)
 		{ return GetRepeatedField<const google::protobuf::EnumValueDescriptor*>(pMessage, &google::protobuf::Reflection::GetRepeatedEnum, field_name, index)->number(); }
@@ -346,5 +362,6 @@ private:
 //-----------------------------------------------------------------------------
 void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
 int GetMessageIndex(const char* name);
+object GetMessageName(int index);
 
 #endif // _MESSAGES_H

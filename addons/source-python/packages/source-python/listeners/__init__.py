@@ -7,6 +7,7 @@
 # =============================================================================
 # Python Imports
 import socket
+from enum import IntEnum
 from urllib.error import URLError
 # Source.Python Imports
 #   Cvars
@@ -18,10 +19,13 @@ from core.settings import _core_settings
 from core.version import is_newer_version_available
 from core.version import is_unversioned
 from core.version import VERSION
+#   Players
+from players.constants import PlayerButtons
 #   Loggers
 from loggers import _sp_logger
 #   Memory
-import memory
+from memory import get_virtual_function
+from memory import make_object
 from memory.hooks import PreHook
 
 
@@ -59,7 +63,8 @@ from listeners._entity_output import on_entity_output_listener_manager
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('ListenerManager',
+__all__ = ('ButtonStatus',
+           'ListenerManager',
            'ListenerManagerDecorator',
            'OnClientActive',
            'OnClientConnect',
@@ -82,12 +87,15 @@ __all__ = ('ListenerManager',
            'OnLevelShutdown',
            'OnLevelEnd',
            'OnNetworkidValidated',
+           'OnButtonStateChanged',
+           'OnPlayerRunCommand',
            'OnPluginLoaded',
            'OnPluginUnloaded',
            'OnQueryCvarValueFinished',
            'OnServerActivate',
            'OnTick',
            'OnVersionUpdate',
+           'get_button_combination_status',
            'on_client_active_listener_manager',
            'on_client_connect_listener_manager',
            'on_client_disconnect_listener_manager',
@@ -105,7 +113,7 @@ __all__ = ('ListenerManager',
            'on_entity_output_listener_manager',
            'on_entity_pre_spawned_listener_manager',
            'on_entity_spawned_listener_manager',
-           'on_map_end_listener_manager',
+           'on_level_end_listener_manager',
            'on_level_init_listener_manager',
            'on_level_shutdown_listener_manager',
            'on_network_id_validated_listener_manager',
@@ -128,7 +136,9 @@ on_version_update_listener_manager = ListenerManager()
 on_convar_changed_listener_manager = ListenerManager()
 on_plugin_loaded_manager = ListenerManager()
 on_plugin_unloaded_manager = ListenerManager()
-on_map_end_listener_manager = ListenerManager()
+on_level_end_listener_manager = ListenerManager()
+on_player_run_command_listener_manager = ListenerManager()
+on_button_state_changed_listener_manager = ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -146,6 +156,13 @@ _notify_on_update = ConVar(
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+class ButtonStatus(IntEnum):
+    """Indicate whether a button has been pressed or released."""
+
+    RELEASED = 0
+    PRESSED = 1
+
+
 class ListenerManagerDecorator(AutoUnload):
     """Base decorator class used to register/unregister a listener."""
 
@@ -154,6 +171,9 @@ class ListenerManagerDecorator(AutoUnload):
         # Log the <instance>.__init__ message
         listeners_logger.log_debug(
             '{0}.__init__<{1}>'.format(self.name, callback))
+
+        # Set the callback to None...
+        self.callback = None
 
         # Is the callback callable?
         if not callable(callback):
@@ -193,6 +213,10 @@ class ListenerManagerDecorator(AutoUnload):
 
     def _unload_instance(self):
         """Unregister the listener."""
+        # Was the callback registered?
+        if self.callback is None:
+            return
+
         # Log the unregistering
         listeners_logger.log_debug(
             '{0}._unload_instance - Unregistering <{1}>'.format(
@@ -361,10 +385,69 @@ class OnPluginUnloaded(ListenerManagerDecorator):
 class OnLevelEnd(ListenerManagerDecorator):
     """Register/unregister a map end listener."""
 
-    manager = on_map_end_listener_manager
+    manager = on_level_end_listener_manager
 
     # Guard variable to ensure this listener gets called only once per map.
     _level_initialized = False
+
+
+class OnPlayerRunCommand(ListenerManagerDecorator):
+    """Register/unregister a run command listener."""
+
+    manager = on_player_run_command_listener_manager
+
+
+class OnButtonStateChanged(ListenerManagerDecorator):
+    """Register/unregister a button state change listener."""
+
+    manager = on_button_state_changed_listener_manager
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def get_button_combination_status(old_buttons, new_buttons, combination):
+    """Return the status of a button combination.
+
+    :param PlayerButtons old_buttons:
+        Previously pressed buttons.
+    :param PlayerButtons new_buttons:
+        Now pressed buttons.
+    :param PlayerButtons combination:
+        Button combination to check.
+    :return:
+        Return the status of the button combination. If the combination was
+        neither pressed nor released, None will be returned.
+    :rtype: ButtonStatus
+
+    Example:
+
+    .. code:: python
+
+        @OnButtonStateChanged
+        def on_buttons_state_changed(player, old_buttons, new_buttons):
+            status = get_button_combination_status(old_buttons, new_buttons,
+                PlayerButtons.ATTACK|PlayerButtons.JUMP)
+
+            if status == ButtonStatus.PRESSED:
+                SayText2(
+                    '{} is jumping and attacking.'.format(player.name)).send()
+
+            elif status == ButtonStatus.RELEASED:
+                SayText2(
+                    '{} stopped jumping and attacking at the same time.'.format(
+                    player.name)).send()
+    """
+    previously_pressed = old_buttons & combination == combination
+    now_pressed = new_buttons & combination == combination
+
+    if not previously_pressed and now_pressed:
+        return ButtonStatus.PRESSED
+
+    elif previously_pressed and not now_pressed:
+        return ButtonStatus.RELEASED
+
+    return None
 
 
 # =============================================================================
@@ -403,15 +486,15 @@ def _on_level_shutdown():
         return
 
     # Notify all registred callbacks
-    on_map_end_listener_manager.notify()
+    on_level_end_listener_manager.notify()
 
     # Make sure we don't get called more than once per map change
     OnLevelEnd._level_initialized = False
 
 
-@PreHook(memory.get_virtual_function(cvar, 'CallGlobalChangeCallbacks'))
+@PreHook(get_virtual_function(cvar, 'CallGlobalChangeCallbacks'))
 def _pre_call_global_change_callbacks(args):
     """Called when a ConVar has been changed."""
-    convar = memory.make_object(ConVar, args[1])
+    convar = make_object(ConVar, args[1])
     old_value = args[2]
     on_convar_changed_listener_manager.notify(convar, old_value)
