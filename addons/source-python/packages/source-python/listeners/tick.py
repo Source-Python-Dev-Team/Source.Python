@@ -48,7 +48,7 @@ class GameThread(Thread):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         on_tick_listener_manager.register_listener(self._tick)
-        
+
     def __del__(self):
         on_tick_listener_manager.unregister_listener(self._tick)
 
@@ -92,7 +92,8 @@ class _DelayManager(list):
     def add(self, delay):
         """Add a delay to the list.
 
-        :param Delay delay: The delay to add.
+        :param Delay delay:
+            The delay to add.
         """
         self._register_if_empty()
         bisect.insort_left(self, delay)
@@ -108,39 +109,64 @@ class Delay(WeakAutoUnload):
     ):
         """Initialize the delay.
 
-        :param float delay: The delay in seconds.
-        :param callback: A callable object that should be called after the
-            delay expired.
-        :param tuple args: Arguments that should be passed to the callback.
-        :param dict kwargs: Keyword arguments that should be passed to the
-            callback.
-        :param bool cancel_on_level_end: Whether or not to cancel the delay at
-            the end of the map.
-        :raises ValueError: If the given callback is not callable.
+        :param float delay:
+            The delay in seconds.
+        :param callback:
+            A callable object that should be called after the delay expired.
+        :param tuple args:
+            Arguments that should be passed to the callback.
+        :param dict kwargs:
+            Keyword arguments that should be passed to the callback.
+        :param bool cancel_on_level_end:
+            Whether or not to cancel the delay at the end of the map.
+        :raise ValueError:
+            Raised if the given callback is not callable.
         """
         if not callable(callback):
             raise ValueError('Given callback is not callable.')
 
+        #: Delay in seconds.
         self.delay = delay
         self._start_time = time.time()
+        
+        #: Time when the delay will be executed.
         self.exec_time = self._start_time + delay
+        
+        #: Callback to call when the delay expired.
         self.callback = callback
+        
+        #: Arguments to pass to the callback.
         self.args = args
+        
+        #: Keyword arguments to pass to the callback.
         self.kwargs = kwargs if kwargs is not None else dict()
+        
+        #: Whether or not to cancel the delay at the end of the map.
         self.cancel_on_level_end = cancel_on_level_end
         _delay_manager.add(self)
 
     def __lt__(self, other):
-        """Return True if this :attr:`exec_time` is less than the other's."""
+        """Return True if this :attr:`exec_time` is less than the other's.
+
+        :rtype: bool
+        """
         return self.exec_time < other.exec_time
 
     def __call__(self):
-        """Cancel the delay and immediately call the callback."""
+        """Cancel the delay and immediately call the callback.
+
+        :return:
+            The result of :meth:`execute`.
+        """
         self.cancel()
         return self.execute()
 
     def execute(self):
-        """Call the callback."""
+        """Call the callback.
+
+        :return:
+            The result of :attr:`callback`.
+        """
         return self.callback(*self.args, **self.kwargs)
 
     def cancel(self):
@@ -204,14 +230,20 @@ class Repeat(AutoUnload):
     ):
         """Store all instance attributes.
 
-        :param callback: A callable object that should be called at the
-            end of each loop.
-        :param tuple args: Arguments that should be passed to the callback.
-        :param dict kwargs: Keyword arguments that should be passed to the
-            callback.
-        :param bool cancel_on_level_end: Whether or not to cancel the repeat at
-            the end of the map.
+        :param callback:
+            A callable object that should be called at the end of each loop.
+        :param tuple args:
+            Arguments that should be passed to the callback.
+        :param dict kwargs:
+            Keyword arguments that should be passed to the callback.
+        :param bool cancel_on_level_end:
+            Whether or not to cancel the repeat at the end of the map.
+        :raise ValueError:
+            Raised if the given callback is not callable.
         """
+        if not callable(callback):
+            raise ValueError('Given callback is not callable.')
+
         # Store the base attributes
         self.callback = callback
         self.args = args
@@ -320,12 +352,15 @@ class Repeat(AutoUnload):
     def start(self, interval, limit, execute_on_start=False):
         """Start the repeat loop.
 
-        :param float interval: The time (in seconds) for each loop.
-        :param int limit: The maximum number of times to loop.  If 0 is
-            passed, there is no limit, and the Repeat will loop indefinitely.
-        :param bool execute_on_start: Whether to execute the callback when
-            the Repeat is started.  Note that this does not affect the 'limit'
-            as the number of loops will remain the same.
+        :param float interval:
+            The time (in seconds) for each loop.
+        :param int limit:
+            The maximum number of times to loop. If 0 is passed, there is no
+            limit, and the Repeat will loop indefinitely.
+        :param bool execute_on_start:
+            Whether to execute the callback when the Repeat is started. Note
+            that this does not affect the 'limit' as the number of loops will
+            remain the same.
         """
         # Log the start message
         listeners_tick_logger.log_debug(
@@ -478,8 +513,10 @@ class Repeat(AutoUnload):
     def extend(self, adjustment):
         """Add to the number of loops to be made.
 
-        :param int adjustment: The number of loops to be added to the limit.
-        :raises ValueError: If given adjustment is not a positive integer.
+        :param int adjustment:
+            The number of loops to be added to the limit.
+        :raise ValueError:
+            Raised if given adjustment is not a positive integer.
         """
         listeners_tick_logger.log_debug('Repeat.extend')
 
@@ -500,9 +537,10 @@ class Repeat(AutoUnload):
     def reduce(self, adjustment):
         """Reduce the number of loops to be made.
 
-        :param int adjustment: The number of loops to be removed from
-            the limit.
-        :raises ValueError: If given adjustment is not a positive integer.
+        :param int adjustment:
+            The number of loops to be removed from the limit.
+        :raises ValueError:
+            Raised if given adjustment is not a positive integer.
         """
         listeners_tick_logger.log_debug('Repeat.reduce')
 
@@ -575,6 +613,7 @@ def _cancel_delays_on_level_end():
     for delay in list(_delay_manager):
         if not delay.cancel_on_level_end:
             continue
+
         callback = delay.callback
         if (
             callback.__name__ == '_execute' and
