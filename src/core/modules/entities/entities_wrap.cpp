@@ -206,6 +206,7 @@ void export_server_entity(scope _entities)
 
 		.add_property("model_name",
 			&IServerEntity::GetModelName,
+			&ServerEntityExt::SetModelName,
 			"Returns the name of the model this entity is using."
 		)
 
@@ -322,7 +323,7 @@ void export_edict(scope _entities)
 
 		.add_property("free",
 			&CBaseEdict::IsFree,
-			&CBaseEdict::SetFree
+			&_BaseEdictExt::set_free
 		)
 
 		.def("clear_free",

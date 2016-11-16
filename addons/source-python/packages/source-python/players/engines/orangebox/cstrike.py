@@ -8,6 +8,8 @@
 # Source.Python Imports
 #   Engines
 from engines.server import engine_server
+#   Entities
+from entities.entity import BaseEntity
 #   Filters
 from filters.entities import EntityIter
 #   Memory
@@ -38,11 +40,19 @@ class Player(_Player):
         # If no c4 is owned by the player, return False
         return False
 
-    def spawn(self):
-        """Spawn the player."""
+    def spawn(self, force=False):
+        """Spawn the player.
+
+        :param bool force: Whether or not the spawn should be forced.
+        """
+        # Is the player spawnable?
+        if not force and (self.team <= 1 or not self.dead):
+            return
+
+        # Spawn the player...
         self.player_state = 0
         self.life_state = LifeState.ALIVE
-        super().spawn()
+        BaseEntity.spawn(self)
 
 
 # =============================================================================

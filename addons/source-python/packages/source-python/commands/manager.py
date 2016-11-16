@@ -60,9 +60,11 @@ class _BaseCommandManager(object):
 
         # Register all command names
         for name in names:
-            # TODO: Server commands can also set a help text and flags.
-            #       This isn't considered here...
-            self._get_command(name).add_callback(callback)
+            self._register_command(name, callback, *args, **kwargs)
+            
+    def _register_command(self, name, callback, *args, **kwargs):
+        """Register a command."""
+        self._get_command(name).add_callback(callback)
 
     def unregister_commands(self, names, callback):
         """Unregister the given commands from the given callback."""

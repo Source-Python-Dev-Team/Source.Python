@@ -38,6 +38,7 @@ from paths import GAME_PATH
 # =============================================================================
 # Source.Python Imports
 #   Core
+from _core import console_message
 from _core import SOURCE_ENGINE
 from _core import SOURCE_ENGINE_BRANCH
 
@@ -52,6 +53,7 @@ __all__ = ('AutoUnload',
            'PLATFORM',
            'SOURCE_ENGINE',
            'SOURCE_ENGINE_BRANCH',
+           'console_message',
            'echo_console',
            )
 
@@ -146,8 +148,5 @@ class GameConfigObj(ConfigObj):
 # =============================================================================
 def echo_console(text):
     """Echo a message to the server's console."""
-    # This is done here to fix an ImportError
-    from engines.server import execute_server_command
-
     for line in text.split('\n'):
-        execute_server_command('echo', '"{0}"'.format(line.replace('"', "'")))
+        console_message(line + '\n')

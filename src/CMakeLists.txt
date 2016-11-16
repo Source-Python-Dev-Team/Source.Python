@@ -138,6 +138,7 @@ Set(SOURCEPYTHON_COMMANDS_MODULE_SOURCES
 # Core module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_CORE_MODULE_HEADERS
+    core/modules/core/core.h
 )
 
 Set(SOURCEPYTHON_CORE_MODULE_SOURCES
@@ -616,6 +617,7 @@ EndIf()
 # Definitions
 # ------------------------------------------------------------------
 Add_Definitions(
+    -DGAME_DLL=1
     -DSOURCE_ENGINE=${SOURCE_ENGINE}
     -DSOURCE_ENGINE_BRANCH=${BRANCH}
     -DBOOST_PYTHON_MAX_ARITY=32

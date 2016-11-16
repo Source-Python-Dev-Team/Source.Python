@@ -484,50 +484,23 @@ void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 {
-	unsigned int iEntityIndex;
-	object index;
-	if (!IndexFromBaseEntity(pEntity, iEntityIndex)) {
-		index = object();
-	}
-	else {
-		index = object(iEntityIndex);
-	}
-
 	edict_t *pEdict;
-	if (EdictFromIndex(iEntityIndex, pEdict)) {
+	if (EdictFromBaseEntity(pEntity, pEdict)) {
 		IServerUnknown* pServerUnknown = pEdict->GetUnknown();
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
 	}
-	CALL_LISTENERS(OnEntityCreated, index, ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntityCreated, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
-	unsigned int iEntityIndex;
-	object index;
-	if (!IndexFromBaseEntity(pEntity, iEntityIndex)) {
-		index = object();
-	}
-	else {
-		index = object(iEntityIndex);
-	}
-
-	CALL_LISTENERS(OnEntitySpawned, index, ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntitySpawned, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	unsigned int iEntityIndex;
-	object index;
-	if (!IndexFromBaseEntity(pEntity, iEntityIndex)) {
-		index = object();
-	}
-	else {
-		index = object(iEntityIndex);
-	}
-
-	CALL_LISTENERS(OnEntityDeleted, index, ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

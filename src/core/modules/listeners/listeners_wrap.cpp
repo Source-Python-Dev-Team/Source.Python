@@ -101,6 +101,11 @@ void export_listener_managers(scope _listeners)
 			&CListenerManager::GetCount,
 			"Return the number of registered listeners."
 		)
+
+		.def("__contains__",
+			&CListenerManager::IsRegistered,
+			"Return whether or not the given callback is registered."
+		)
 	;
 
 	_listeners.attr("on_client_active_listener_manager") = object(ptr(GetOnClientActiveListenerManager()));

@@ -223,6 +223,12 @@ void export_client(scope _players)
 	);
 
 	Client.add_property(
+		"userid",
+		&IClient::GetUserID,
+		"Return the client's userid."
+	);
+
+	Client.add_property(
 		"net_channel",
 		make_function(
 			&IClient::GetNetChannel,

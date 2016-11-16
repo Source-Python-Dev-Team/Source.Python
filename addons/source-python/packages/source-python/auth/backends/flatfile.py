@@ -49,6 +49,12 @@ class FlatfileBackend(Backend):
 
     def load(self):
         """Load the backend."""
+        self.sync()
+
+    def sync(self):
+        auth_manager.players.clear()
+        auth_manager.parents.clear()
+
         self.load_json_config(
             auth_manager.players, self.options['player_config_path'])
         self.load_json_config(
@@ -82,6 +88,7 @@ class FlatfileBackend(Backend):
 
                 parents = permissions.parents
                 if parents:
+                    # TODO: Except GUEST_PARENT_NAME
                     node['parents'] = list(
                         map(lambda parent: parent.name, parents))
 

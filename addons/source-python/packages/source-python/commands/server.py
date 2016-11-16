@@ -34,6 +34,9 @@ class _ServerCommandManager(_BaseCommandManager):
 
     # Store the base functions
     _get_command = staticmethod(get_server_command)
+    
+    def _register_command(self, name, callback, *args, **kwargs):
+        self._get_command(name, *args).add_callback(callback)
 
 # The singleton object of the :class:`_ServerCommandManager` class
 server_command_manager = _ServerCommandManager()

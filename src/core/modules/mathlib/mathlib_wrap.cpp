@@ -147,7 +147,7 @@ void export_vector(scope _mathlib)
 		)
 
 		.add_property("length",
-			&Vector::Length,
+			&VectorExt::GetLength,
 			&VectorExt::SetLength,
 			"Returns the vector's 3D length."
 		)
@@ -165,7 +165,17 @@ void export_vector(scope _mathlib)
 
 		.def("normalize",
 			&Vector::NormalizeInPlace,
-			"Normalizes the vector."
+			"Normalize the vector inplace and return its length before normalization."
+		)
+
+		.def("normalized",
+			&VectorExt::Normalized,
+			"Return a normalized copy of the vector."
+		)
+
+		.def("copy",
+			&VectorExt::Copy,
+			"Return a copy of the vector."
 		)
 
 		.def("is_length_greater_than",
@@ -209,7 +219,7 @@ void export_vector(scope _mathlib)
 		)
 
 		.add_property("length_2D",
-			&Vector::Length2D,
+			&VectorExt::GetLength2D,
 			"Returns the vector's 2D length."
 		)
 
