@@ -128,19 +128,19 @@ class Delay(WeakAutoUnload):
         #: Delay in seconds.
         self.delay = delay
         self._start_time = time.time()
-        
+
         #: Time when the delay will be executed.
         self.exec_time = self._start_time + delay
-        
+
         #: Callback to call when the delay expired.
         self.callback = callback
-        
+
         #: Arguments to pass to the callback.
         self.args = args
-        
+
         #: Keyword arguments to pass to the callback.
         self.kwargs = kwargs if kwargs is not None else dict()
-        
+
         #: Whether or not to cancel the delay at the end of the map.
         self.cancel_on_level_end = cancel_on_level_end
         _delay_manager.add(self)
@@ -260,7 +260,7 @@ class Repeat(AutoUnload):
 
         # Set up private attributes
         self._interval = 0
-        self._total_loops = 0
+        self._total_loops = math.inf
         self._loops_elapsed = 0
         self._adjusted_loops = 0
         self._status = RepeatStatus.STOPPED
@@ -274,8 +274,6 @@ class Repeat(AutoUnload):
 
         :rtype: int
         """
-        if not self.total_loops:
-            return math.inf
         return self.total_loops - self.loops_elapsed
 
     @property
@@ -292,8 +290,6 @@ class Repeat(AutoUnload):
 
         :rtype: int
         """
-        if not self._total_loops:
-            return self._total_loops
         return self._total_loops + self._adjusted_loops
 
     @property
@@ -321,8 +317,6 @@ class Repeat(AutoUnload):
 
         :rtype: float
         """
-        if not self.total_loops:
-            return math.inf
         return self.total_loops * self._interval
 
     @property
@@ -349,14 +343,14 @@ class Repeat(AutoUnload):
         """
         return self._status
 
-    def start(self, interval, limit, execute_on_start=False):
+    def start(self, interval, limit=math.inf, execute_on_start=False):
         """Start the repeat loop.
 
         :param float interval:
             The time (in seconds) for each loop.
         :param int limit:
-            The maximum number of times to loop. If 0 is passed, there is no
-            limit, and the Repeat will loop indefinitely.
+            The maximum number of times to loop. If :data:`math.inf` is
+            passed, there is no limit, and the Repeat will loop indefinitely.
         :param bool execute_on_start:
             Whether to execute the callback when the Repeat is started. Note
             that this does not affect the 'limit' as the number of loops will
@@ -439,10 +433,7 @@ class Repeat(AutoUnload):
         self.stop()
 
         # Start the repeat
-        self.start(
-            self._interval,
-            self.total_loops if self.total_loops is not math.inf else 0
-        )
+        self.start(self._interval, self.total_loops)
 
     def pause(self):
         """Pause the repeat.
@@ -521,7 +512,7 @@ class Repeat(AutoUnload):
         listeners_tick_logger.log_debug('Repeat.extend')
 
         # Is there no limit for this repeat?
-        if not self.total_loops:
+        if self.total_loops == math.inf:
             listeners_tick_logger.log_debug(
                 'Unable to extend, Repeat instance has no limit.'
             )
@@ -545,7 +536,7 @@ class Repeat(AutoUnload):
         listeners_tick_logger.log_debug('Repeat.reduce')
 
         # Is there no limit for this repeat?
-        if not self.total_loops:
+        if self.total_loops == math.inf:
             listeners_tick_logger.log_debug(
                 'Unable to reduce, Repeat instance has no limit.'
             )
@@ -574,14 +565,11 @@ class Repeat(AutoUnload):
 
         # Are any more loops to be made?
         if self.loops_remaining > 0:
-            if not self.total_loops:
-                listeners_tick_logger.log_debug('Repeat._execute - No limit')
-            else:
-                listeners_tick_logger.log_debug(
-                    'Repeat._execute - Remaining - {remaining}'.format(
-                        remaining=self.loops_remaining
-                    )
+            listeners_tick_logger.log_debug(
+                'Repeat._execute - Remaining - {remaining}'.format(
+                    remaining=self.loops_remaining
                 )
+            )
 
             # Call the delay again
             self._delay = Delay(

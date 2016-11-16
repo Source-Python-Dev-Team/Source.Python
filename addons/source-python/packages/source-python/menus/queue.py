@@ -188,7 +188,7 @@ class _QueueHolder(dict):
         if not self:
 
             # If so, start the refresh repeat...
-            self._repeat.start(1, 0)
+            self._repeat.start(1)
 
         obj = self[index] = self._cls(index)
         return obj
