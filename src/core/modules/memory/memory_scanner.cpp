@@ -34,6 +34,8 @@
 	#include <fcntl.h>
 	#include <link.h>
 	#include <sys/mman.h>
+	extern int PAGE_SIZE;
+	#define PAGE_ALIGN_UP(x) ((x + PAGE_SIZE - 1) & ~(PAGE_SIZE - 1))
 #endif
 
 #include "dynload.h"
@@ -327,10 +329,8 @@ CPointer* CBinaryFile::FindPointer(object oIdentifier, int iOffset, unsigned int
 
 CPointer* CBinaryFile::FindAddress(object oIdentifier)
 {
-#ifdef _WIN32
 	if(CheckClassname(oIdentifier, "bytes"))
 		return FindSignature(oIdentifier);
-#endif
 	
 	return FindSymbol(extract<char*>(oIdentifier));
 }
@@ -526,8 +526,64 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	ulSize = nt->OptionalHeader.SizeOfImage;
 
 #elif defined(__linux__)
-	ulSize = 0;
+	// Copied from here. Thanks!
+	// https://github.com/alliedmodders/sourcemod/blob/237db0504c7a59e394828446af3e8ca3d53ef647/core/logic/MemoryUtils.cpp#L486
 
+	Elf32_Ehdr *file;
+	Elf32_Phdr *phdr;
+	uint16_t phdrCount;
+
+	struct link_map *lm = (struct link_map*) ulAddr;
+	ulAddr = reinterpret_cast<uintptr_t>(lm->l_addr);
+	file = reinterpret_cast<Elf32_Ehdr *>(ulAddr);
+
+	/* Check ELF magic */
+	if (memcmp(ELFMAG, file->e_ident, SELFMAG) != 0)
+	{
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "ELF magic check failed.");
+	}
+
+	/* Check ELF version */
+	if (file->e_ident[EI_VERSION] != EV_CURRENT)
+	{
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "ELF version check failed.");
+	}
+
+	/* Check ELF architecture, which is 32-bit/x86 right now
+	 * Should change this for 64-bit if Valve gets their act together
+	 */
+	if (file->e_ident[EI_CLASS] != ELFCLASS32 || file->e_machine != EM_386 || file->e_ident[EI_DATA] != ELFDATA2LSB)
+	{
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "ELF architecture check failed.");
+	}
+
+	/* For our purposes, this must be a dynamic library/shared object */
+	if (file->e_type != ET_DYN)
+	{
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Library is not a dynamic or shared object.");
+	}
+
+	phdrCount = file->e_phnum;
+	phdr = reinterpret_cast<Elf32_Phdr *>(ulAddr + file->e_phoff);
+
+	for (uint16_t i = 0; i < phdrCount; i++)
+	{
+		Elf32_Phdr &hdr = phdr[i];
+
+		/* We only really care about the segment with executable code */
+		if (hdr.p_type == PT_LOAD && hdr.p_flags == (PF_X|PF_R))
+		{
+			/* From glibc, elf/dl-load.c:
+			 * c->mapend = ((ph->p_vaddr + ph->p_filesz + GLRO(dl_pagesize) - 1) 
+			 *             & ~(GLRO(dl_pagesize) - 1));
+			 *
+			 * In glibc, the segment file size is aligned up to the nearest page size and
+			 * added to the virtual address of the segment. We just want the size here.
+			 */
+			ulSize = PAGE_ALIGN_UP(hdr.p_filesz);
+			break;
+		}
+	}
 #else
 #error "BinaryManager::FindBinary() is not implemented on this OS"
 #endif
