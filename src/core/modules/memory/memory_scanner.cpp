@@ -56,9 +56,10 @@ extern IVEngineServer* engine;
 //-----------------------------------------------------------------------------
 // BinaryFile class
 //-----------------------------------------------------------------------------
-CBinaryFile::CBinaryFile(unsigned long ulAddr, unsigned long ulSize)
+CBinaryFile::CBinaryFile(unsigned long ulModule, unsigned long ulBase, unsigned long ulSize)
 {
-	m_ulAddr = ulAddr;
+	m_ulModule = ulModule;
+	m_ulBase = ulBase;
 	m_ulSize = ulSize;
 }
 
@@ -70,7 +71,7 @@ CPointer* CBinaryFile::FindSignatureRaw(object oSignature)
 
 	int iLength = len(oSignature);
 
-	unsigned char* base = (unsigned char *) m_ulAddr;
+	unsigned char* base = (unsigned char *) m_ulBase;
 	unsigned char* end  = (unsigned char *) (base + m_ulSize - iLength);
 
 	while(base < end)
@@ -151,7 +152,7 @@ bool CBinaryFile::SearchSigHooked(object oSignature, int iLength, unsigned char*
 	CPointer new_ptr = CPointer(pPtr->m_ulAddr + len(oSignature));
 
 	// Got another match after the first one?
-	CPointer* pNext = new_ptr.SearchBytes(oSignature, (m_ulAddr + m_ulSize) - new_ptr.m_ulAddr);
+	CPointer* pNext = new_ptr.SearchBytes(oSignature, (m_ulBase + m_ulSize) - new_ptr.m_ulAddr);
 	bool bIsValid = pNext->IsValid();
 	delete pNext;
 
@@ -201,10 +202,10 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 {
 #ifdef _WIN32
-	return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulAddr, szSymbol));
+	return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulModule, szSymbol));
 
 #elif defined(__linux__)
-	void* pResult = dlsym((void*) m_ulAddr, szSymbol);
+	void* pResult = dlsym((void*) m_ulModule, szSymbol);
 	if (pResult)
 		return new CPointer((unsigned long) pResult);
 
@@ -227,7 +228,7 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 	uint16_t section_count;
 	uint32_t symbol_count;
 
-	dlmap = (struct link_map *) m_ulAddr;
+	dlmap = (struct link_map *) m_ulModule;
 	symtab_hdr = NULL;
 	strtab_hdr = NULL;
 
@@ -339,11 +340,11 @@ dict CBinaryFile::GetSymbols()
 {
 	dict result;
 #ifdef _WIN32
-	PIMAGE_DOS_HEADER dos_header = (PIMAGE_DOS_HEADER) m_ulAddr;
+	PIMAGE_DOS_HEADER dos_header = (PIMAGE_DOS_HEADER) m_ulModule;
 	if (dos_header->e_magic != IMAGE_DOS_SIGNATURE)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve DOS header.")
 
-	PIMAGE_NT_HEADERS nt_headers = (PIMAGE_NT_HEADERS) ((BYTE *) m_ulAddr + dos_header->e_lfanew);
+	PIMAGE_NT_HEADERS nt_headers = (PIMAGE_NT_HEADERS) ((BYTE *) m_ulModule + dos_header->e_lfanew);
 	if (nt_headers->Signature != IMAGE_NT_SIGNATURE)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve NT headers.")
 
@@ -351,19 +352,19 @@ dict CBinaryFile::GetSymbols()
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid number of directories in the optional header.")
 
 	PIMAGE_EXPORT_DIRECTORY exports = (PIMAGE_EXPORT_DIRECTORY) (
-		(BYTE *) m_ulAddr
+		(BYTE *) m_ulModule
 		+ nt_headers->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT].VirtualAddress);
 
 	if (exports->AddressOfNames == NULL)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Address of names is NULL.")
 
-	BYTE** symbols = (BYTE**)(m_ulAddr + exports->AddressOfNames);
+	BYTE** symbols = (BYTE**)(m_ulModule + exports->AddressOfNames);
 	for (DWORD i=0; i < exports->NumberOfNames; i++)
 	{
-		const char* name = (const char*) (m_ulAddr + symbols[i]);
+		const char* name = (const char*) (m_ulModule + symbols[i]);
 
 		// TODO: Don't use GetProcAddress. There is probably a faster way
-		result[name] = CPointer((unsigned long) GetProcAddress((HMODULE) m_ulAddr, name));
+		result[name] = CPointer((unsigned long) GetProcAddress((HMODULE) m_ulModule, name));
 	}
 #elif __linux__
 	// TODO: Remove duplicated code. See also: FindSymbol()
@@ -379,7 +380,7 @@ dict CBinaryFile::GetSymbols()
 	uint16_t section_count;
 	uint32_t symbol_count;
 
-	dlmap = (struct link_map *) m_ulAddr;
+	dlmap = (struct link_map *) m_ulModule;
 	symtab_hdr = NULL;
 	strtab_hdr = NULL;
 
@@ -482,9 +483,10 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	}
 #endif
 
-	unsigned long ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
+	unsigned long ulModule = (unsigned long) dlLoadLibrary(szBinaryPath.data());
+	unsigned long ulBase = 0;
 #ifdef __linux__
-	if (!ulAddr)
+	if (!ulModule)
 	{
 		char szGameDir[MAX_PATH_LENGTH];
 		engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
@@ -492,11 +494,11 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 		// If the previous path failed, try the "bin" folder of the game.
 		// This will allow passing e.g. "server" to this function.
 		szBinaryPath = std::string(szGameDir) + "/bin/" + szBinaryPath;
-		ulAddr = (unsigned long) dlLoadLibrary(szBinaryPath.data());
+		ulModule = (unsigned long) dlLoadLibrary(szBinaryPath.data());
 	}
 #endif
 
-	if (!ulAddr)
+	if (!ulModule)
 	{
 		szBinaryPath = "Unable to find " + szBinaryPath;
 		#ifdef _WIN32
@@ -510,10 +512,10 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	for (std::list<CBinaryFile *>::iterator iter=m_Binaries.begin(); iter != m_Binaries.end(); ++iter)
 	{
 		CBinaryFile* binary = *iter;
-		if (binary->m_ulAddr == ulAddr)
+		if (binary->m_ulModule == ulModule)
 		{
 			// We don't need to open it several times
-			dlFreeLibrary((DLLib *) ulAddr);
+			dlFreeLibrary((DLLib *) ulModule);
 			return binary;
 		}
 	}
@@ -521,9 +523,10 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	unsigned long ulSize;
 
 #ifdef _WIN32
-	IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER *) ulAddr;
+	IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER *) ulModule;
 	IMAGE_NT_HEADERS* nt  = (IMAGE_NT_HEADERS *) ((BYTE *) dos + dos->e_lfanew);
 	ulSize = nt->OptionalHeader.SizeOfImage;
+	ulBase = ulModule;
 
 #elif defined(__linux__)
 	// Copied from here. Thanks!
@@ -533,9 +536,9 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	Elf32_Phdr *phdr;
 	uint16_t phdrCount;
 
-	struct link_map *lm = (struct link_map*) ulAddr;
-	ulAddr = reinterpret_cast<uintptr_t>(lm->l_addr);
-	file = reinterpret_cast<Elf32_Ehdr *>(ulAddr);
+	struct link_map *lm = (struct link_map*) ulModule;
+	ulBase = reinterpret_cast<uintptr_t>(lm->l_addr);
+	file = reinterpret_cast<Elf32_Ehdr *>(ulBase);
 
 	/* Check ELF magic */
 	if (memcmp(ELFMAG, file->e_ident, SELFMAG) != 0)
@@ -564,7 +567,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	}
 
 	phdrCount = file->e_phnum;
-	phdr = reinterpret_cast<Elf32_Phdr *>(ulAddr + file->e_phoff);
+	phdr = reinterpret_cast<Elf32_Phdr *>(ulBase + file->e_phoff);
 
 	for (uint16_t i = 0; i < phdrCount; i++)
 	{
@@ -589,7 +592,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 #endif
 
 	// Create a new Binary object and add it to the list
-	CBinaryFile* binary = new CBinaryFile(ulAddr, ulSize);
+	CBinaryFile* binary = new CBinaryFile(ulModule, ulBase, ulSize);
 	m_Binaries.push_front(binary);
 	return binary;
 }
