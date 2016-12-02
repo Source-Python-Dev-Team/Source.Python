@@ -44,7 +44,7 @@ struct Signature_t
 class CBinaryFile
 {
 public:
-	CBinaryFile(unsigned long ulAddr, unsigned long ulSize);
+	CBinaryFile(unsigned long ulModule, unsigned long ulBase, unsigned long ulSize);
 
 	CPointer* FindSignatureRaw(object oSignature);
 
@@ -63,9 +63,10 @@ private:
 	bool SearchSigHooked(object oSignature, int iLength, unsigned char* sigstr, CPointer*& result);
 
 public:
-	unsigned long          m_ulAddr;
-	unsigned long          m_ulSize;
-	std::list<Signature_t> m_Signatures;
+	unsigned long			m_ulModule;
+	unsigned long			m_ulBase;
+	unsigned long			m_ulSize;
+	std::list<Signature_t>	m_Signatures;
 };
 
 
