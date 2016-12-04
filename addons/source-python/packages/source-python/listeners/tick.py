@@ -260,13 +260,29 @@ class Repeat(AutoUnload):
 
         # Set up private attributes
         self._interval = 0
-        self._total_loops = math.inf
+        self._original_loops = math.inf
         self._loops_elapsed = 0
         self._adjusted_loops = 0
         self._status = RepeatStatus.STOPPED
         self._delay = None
         self._loop_time_for_pause = None
         self._original_start_time = None
+
+    @property
+    def interval(self):
+        """Return the interval in which the callback will be called.
+
+        :rtype: int
+        """
+        return self._interval
+
+    @property
+    def adjusted_loops(self):
+        """Return the number of loops that have been adjusted.
+
+        :rtype: int
+        """
+        return self._adjusted_loops
 
     @property
     def loops_remaining(self):
@@ -290,7 +306,15 @@ class Repeat(AutoUnload):
 
         :rtype: int
         """
-        return self._total_loops + self._adjusted_loops
+        return self._original_loops + self._adjusted_loops
+
+    @property
+    def original_loops(self):
+        """Return the number of loops the repeat has been started with.
+
+        :rtype: int
+        """
+        return self._original_loops
 
     @property
     def total_time_remaining(self):
@@ -301,7 +325,7 @@ class Repeat(AutoUnload):
         if self.delay_time_remaining is None:
             return None
         return (
-            self.loops_remaining * self._interval +
+            self.loops_remaining * self.interval +
             self.delay_time_remaining
         )
 
@@ -319,7 +343,7 @@ class Repeat(AutoUnload):
 
         :rtype: float
         """
-        return self.total_loops * self._interval
+        return self.total_loops * self.interval
 
     @property
     def delay_time_remaining(self):
@@ -384,14 +408,14 @@ class Repeat(AutoUnload):
 
         self._status = RepeatStatus.RUNNING
         self._interval = interval
-        self._total_loops = limit
+        self._original_loops = limit
         self._loops_elapsed = 0
         self._adjusted_loops = 0
         self._original_start_time = time.time()
 
         # Start the delay
         self._delay = Delay(
-            self._interval, self._execute,
+            self.interval, self._execute,
             cancel_on_level_end=self.cancel_on_level_end
         )
 
@@ -435,7 +459,7 @@ class Repeat(AutoUnload):
         self.stop()
 
         # Start the repeat
-        self.start(self._interval, self.total_loops)
+        self.start(self.interval, self.total_loops)
 
     def pause(self):
         """Pause the repeat.
@@ -575,7 +599,7 @@ class Repeat(AutoUnload):
 
             # Call the delay again
             self._delay = Delay(
-                self._interval, self._execute,
+                self.interval, self._execute,
                 cancel_on_level_end=self.cancel_on_level_end
             )
 
