@@ -6,7 +6,9 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
+# Python Imports
+#   Contextlib
+from contextlib import suppress
 #   Inspect
 import inspect
 from inspect import Parameter
@@ -30,6 +32,28 @@ from filters.players import parse_filter
 from messages import SayText2
 from messages import TextMsg
 from messages import HudDestination
+
+
+# =============================================================================
+# >> ALL DECLARATION
+# =============================================================================
+__all__ = ('SUPPORTED_KINDS',
+           'ArgumentError',
+           'ArgumentNumberMismatch',
+           'CommandInfo',
+           'CommandNode',
+           'CommandParser',
+           'filter_str',
+           'InvalidArgumentValue',
+           'Node',
+           'Store',
+           'SubCommandError',
+           'SubCommandExpectedError',
+           'SubCommandNotFound',
+           'TypedClientCommand',
+           'TypedSayCommand',
+           'TypedServerCommand',
+           )
 
 
 # =============================================================================
@@ -453,9 +477,10 @@ class _TypedCommand(AutoUnload):
         return callback
 
     def _unload_instance(self):
-        if self.parser.remove_command(self.commands):
-            self.manager.unregister_commands(
-                self.command.command_to_register, self.on_command)
+        with suppress(ValueError):
+            if self.parser.remove_command(self.commands):
+                self.manager.unregister_commands(
+                    self.command.command_to_register, self.on_command)
 
     @classmethod
     def on_command(cls, command, *args):

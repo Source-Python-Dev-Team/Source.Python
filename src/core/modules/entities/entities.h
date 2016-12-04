@@ -44,6 +44,39 @@
 
 
 //-----------------------------------------------------------------------------
+// IServerEntity extension class.
+//-----------------------------------------------------------------------------
+class ServerEntityExt
+{
+public:
+	static void SetModelName(IServerEntity *pServerEntity, const char *szModelName)
+	{
+		CBaseEntity *pBaseEntity = pServerEntity->GetBaseEntity();
+		if (!pBaseEntity)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "BaseEntity is NULL.");
+
+		((CBaseEntityWrapper *)pBaseEntity)->SetKeyValue("model", szModelName);
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// CBaseEdict extension class.
+//-----------------------------------------------------------------------------
+class _BaseEdictExt
+{
+public:
+	static void set_free(CBaseEdict *pEdict, bool bState)
+	{
+		if (bState)
+			pEdict->SetFree();
+		else
+			pEdict->ClearFree();
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // CTakeDamageInfo wrapper class.
 //-----------------------------------------------------------------------------
 class TakeDamageInfoBaseWrapper: public CTakeDamageInfo
