@@ -60,7 +60,8 @@ class Weapon(_Weapon):
         get_ammo, set_ammo,
         doc="""Property to get/set the weapon's ammo.""")
 
-    def get_weapon_name(self):
+    @property
+    def weapon_name(self):
         """Return the full class name of the weapon."""
         return _item_definition_indexes.get(
             self.item_definition_index,
