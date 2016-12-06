@@ -44,14 +44,22 @@ class Entity(_Entity):
 
     @classmethod
     def find(cls, classname):
-        from filters.entities import EntityIter
+        from filters.entities import BaseEntityIter
         index = _weapon_names_for_definition.get(classname)
         if classname in _weapon_parents and index is not None:
-            for entity in EntityIter(_weapon_parents[classname]):
-                if entity.item_definition_index == index:
-                    return entity
+            for entity in BaseEntityIter(_weapon_parents[classname]):
+                if not entity.is_networked():
+                    continue
+                if entity.get_network_property_int(
+                    'm_AttributeManager.m_Item.m_iItemDefinitionIndex'
+                ) == index:
+                    return cls(entity.index)
         elif classname in _parent_weapons:
-            for entity in EntityIter(classname):
-                if entity.item_definition_index in (index, 0):
-                    return entity
+            for entity in BaseEntityIter(classname):
+                if not entity.is_networked():
+                    continue
+                if entity.get_network_property_int(
+                    'm_AttributeManager.m_Item.m_iItemDefinitionIndex'
+                ) in (index, 0):
+                    return cls(entity.index)
         return super().find(classname)
