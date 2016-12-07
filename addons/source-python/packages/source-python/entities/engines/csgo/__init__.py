@@ -5,7 +5,8 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Source.Python Imports
+# Source.Python
+from entities import BaseEntityGenerator
 from entities._base import Entity as _Entity
 from weapons.manager import weapon_manager
 
@@ -44,10 +45,12 @@ class Entity(_Entity):
 
     @classmethod
     def find(cls, classname):
-        from filters.entities import BaseEntityIter
         index = _weapon_names_for_definition.get(classname)
         if classname in _weapon_parents and index is not None:
-            for entity in BaseEntityIter(_weapon_parents[classname]):
+            parent_classname = _weapon_parents[classname]
+            for entity in BaseEntityGenerator():
+                if entity.classname != parent_classname:
+                    continue
                 if not entity.is_networked():
                     continue
                 if entity.get_network_property_int(
@@ -55,7 +58,9 @@ class Entity(_Entity):
                 ) == index:
                     return cls(entity.index)
         elif classname in _parent_weapons:
-            for entity in BaseEntityIter(classname):
+            for entity in BaseEntityGenerator():
+                if entity.classname != classname:
+                    continue
                 if not entity.is_networked():
                     continue
                 if entity.get_network_property_int(
