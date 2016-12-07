@@ -541,6 +541,8 @@ void export_check_transmit_info(scope _entities)
 void export_baseentity_generator(scope _entities)
 {
 	class_<CBaseEntityGenerator>("BaseEntityGenerator")
+		.def(init<const char*>())
+		.def(init<const char*, bool>())
 		.def("__iter__", &CBaseEntityGenerator::iter)
 		.def("__next__", &CBaseEntityGenerator::next, reference_existing_object_policy())
 	;
