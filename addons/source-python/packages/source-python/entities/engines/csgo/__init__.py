@@ -48,9 +48,7 @@ class Entity(_Entity):
         index = _weapon_names_for_definition.get(classname)
         if classname in _weapon_parents and index is not None:
             parent_classname = _weapon_parents[classname]
-            for entity in BaseEntityGenerator():
-                if entity.classname != parent_classname:
-                    continue
+            for entity in BaseEntityGenerator(parent_classname, True):
                 if not entity.is_networked():
                     continue
                 if entity.get_network_property_int(
@@ -58,9 +56,7 @@ class Entity(_Entity):
                 ) == index:
                     return cls(entity.index)
         elif classname in _parent_weapons:
-            for entity in BaseEntityGenerator():
-                if entity.classname != classname:
-                    continue
+            for entity in BaseEntityGenerator(classname, True):
                 if not entity.is_networked():
                     continue
                 if entity.get_network_property_int(
