@@ -26,7 +26,10 @@ _item_definition_indexes = {
 class Weapon(_Weapon):
     """Allows easy usage of the weapon's attributes."""
     def get_ammo(self):
-        """Return the amount of ammo the player has for the weapon."""
+        """Return the amount of ammo the player has for the weapon.
+        
+        :rtype: int
+        """
         # Is the weapon not a grenade?
         if 'grenade' not in weapon_manager[self.classname].tags:
             return self.primary_ammo_count
@@ -62,7 +65,10 @@ class Weapon(_Weapon):
 
     @property
     def weapon_name(self):
-        """Return the full class name of the weapon."""
+        """Return the full class name of the weapon.
+        
+        :rtype: str
+        """
         return _item_definition_indexes.get(
             self.item_definition_index,
             self.classname,
