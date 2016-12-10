@@ -23,8 +23,6 @@ from engines.server import execute_server_command
 from engines.server import queue_command_string
 #   Paths
 from paths import SP_DATA_PATH
-#   Players
-from players.entity import Player
 #   Plugins
 from plugins import _plugin_strings
 from plugins.command import SubCommandManager
@@ -144,7 +142,8 @@ _core_command = _CoreCommandManager('sp', 'Source.Python base command.')
 @_core_command.server_sub_command(['delay'])
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
-    Delay(delay, queue_command_string, command + ' ' + ' '.join(args))
+    Delay(delay, queue_command_string, (command + ' ' + ' '.join(args), ))
+
 
 @_core_command.server_sub_command(['version'])
 def _sp_version(command_info):
@@ -152,10 +151,12 @@ def _sp_version(command_info):
     core_command_logger.log_message(
         'Current Source.Python version: {0}'.format(VERSION))
 
+
 @_core_command.server_sub_command(['credits'])
 def _sp_credits(command_info):
     """List all credits for Source.Python."""
     _core_command.print_credits()
+
 
 @_core_command.server_sub_command(['help'])
 def _sp_help(command_info, command=None, *server_sub_commands):

@@ -43,7 +43,7 @@ extern IServerGameDLL* servergamedll;
 
 
 // ----------------------------------------------------------------------------
-// CEntityGenerator Constructor.
+// CEntityGenerator
 // ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator( PyObject* self ):
 	IPythonGenerator<edict_t>(self),
@@ -54,9 +54,6 @@ CEntityGenerator::CEntityGenerator( PyObject* self ):
 {
 }
 
-// ----------------------------------------------------------------------------
-// CEntityGenerator Copy-Constructor.
-// ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs ):
 	IPythonGenerator<edict_t>(self),
 	m_pCurrentEntity(rhs.m_pCurrentEntity),
@@ -66,9 +63,6 @@ CEntityGenerator::CEntityGenerator( PyObject* self, const CEntityGenerator& rhs 
 	makeStringCopy(rhs.m_szClassName, m_uiClassNameLen);
 }
 
-// ----------------------------------------------------------------------------
-// CEntityGenerator Constructor (takes a filter string).
-// ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
 	IPythonGenerator<edict_t>(self),
 	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
@@ -78,9 +72,6 @@ CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName):
 	makeStringCopy(szClassName, m_uiClassNameLen);
 }
 
-// ----------------------------------------------------------------------------
-// CEntityGenerator Constructor (takes a filter string and a boolean flag).
-// ----------------------------------------------------------------------------
 CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName, bool bExactMatch):
 	IPythonGenerator<edict_t>(self),
 	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
@@ -90,17 +81,11 @@ CEntityGenerator::CEntityGenerator(PyObject* self, const char* szClassName, bool
 	makeStringCopy(szClassName, m_uiClassNameLen);
 }
 
-// ----------------------------------------------------------------------------
-// CEntityGenerator Destructor.
-// ----------------------------------------------------------------------------
 CEntityGenerator::~CEntityGenerator()
 {
 	delete[] m_szClassName;
 }
 
-// ----------------------------------------------------------------------------
-// Returns the next valid edict_t instance.
-// ----------------------------------------------------------------------------
 edict_t* CEntityGenerator::getNext()
 {
 	while (m_pCurrentEntity)
@@ -126,9 +111,6 @@ edict_t* CEntityGenerator::getNext()
 	return NULL;
 }
 
-//---------------------------------------------------------------------------------
-// Private function, creates a copy of the class name string.
-//---------------------------------------------------------------------------------
 void CEntityGenerator::makeStringCopy(const char* szClassName, unsigned int uiClassNameLen)
 {
 	if (uiClassNameLen > 0)
@@ -146,36 +128,88 @@ void CEntityGenerator::makeStringCopy(const char* szClassName, unsigned int uiCl
 
 
 // ----------------------------------------------------------------------------
-// CBaseEntityGenerator Constructor.
+// CBaseEntityGenerator
 // ----------------------------------------------------------------------------
 CBaseEntityGenerator::CBaseEntityGenerator( PyObject* self ):
-	IPythonGenerator<CBaseEntityWrapper>(self)
+	IPythonGenerator<CBaseEntityWrapper>(self),
+	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
+	m_szClassName(NULL),
+	m_uiClassNameLen(0),
+	m_bExactMatch(false)
 {
-	m_pCurrentEntity = (CBaseEntity *) servertools->FirstEntity();
 }
 
-// ----------------------------------------------------------------------------
-// CBaseEntityGenerator Copy-Constructor.
-// ----------------------------------------------------------------------------
 CBaseEntityGenerator::CBaseEntityGenerator( PyObject* self, const CBaseEntityGenerator& rhs ):
-	IPythonGenerator<CBaseEntityWrapper>(self)
+	IPythonGenerator<CBaseEntityWrapper>(self),
+	m_pCurrentEntity(rhs.m_pCurrentEntity),
+	m_uiClassNameLen(rhs.m_uiClassNameLen),
+	m_bExactMatch(rhs.m_bExactMatch)
 {
-	m_pCurrentEntity = rhs.m_pCurrentEntity;
+	makeStringCopy(rhs.m_szClassName, m_uiClassNameLen);
 }
 
-// ----------------------------------------------------------------------------
-// Returns the next valid CBaseEntity instance.
-// ----------------------------------------------------------------------------
+CBaseEntityGenerator::CBaseEntityGenerator(PyObject* self, const char* szClassName):
+	IPythonGenerator<CBaseEntityWrapper>(self),
+	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
+	m_uiClassNameLen(strlen(szClassName)),
+	m_bExactMatch(false)
+{
+	makeStringCopy(szClassName, m_uiClassNameLen);
+}
+
+CBaseEntityGenerator::CBaseEntityGenerator(PyObject* self, const char* szClassName, bool bExactMatch):
+	IPythonGenerator<CBaseEntityWrapper>(self),
+	m_pCurrentEntity((CBaseEntity *)servertools->FirstEntity()),
+	m_uiClassNameLen(strlen(szClassName)),
+	m_bExactMatch(bExactMatch)
+{
+	makeStringCopy(szClassName, m_uiClassNameLen);
+}
+
+void CBaseEntityGenerator::makeStringCopy(const char* szClassName, unsigned int uiClassNameLen)
+{
+	if (uiClassNameLen > 0)
+	{
+		char* szClassNameCopy = new char[uiClassNameLen + 1];
+		memcpy(szClassNameCopy, szClassName, uiClassNameLen);
+		szClassNameCopy[uiClassNameLen] = 0;
+		m_szClassName = szClassNameCopy;
+	}
+	else
+	{
+		m_szClassName = NULL;
+	}
+}
+
+CBaseEntityGenerator::~CBaseEntityGenerator()
+{
+	delete[] m_szClassName;
+}
+
 CBaseEntityWrapper* CBaseEntityGenerator::getNext()
 {
-	CBaseEntity* result = m_pCurrentEntity;
-	m_pCurrentEntity = (CBaseEntity *) servertools->NextEntity(m_pCurrentEntity);
-	return (CBaseEntityWrapper *) result;
+	CBaseEntity* result = NULL;
+	while (m_pCurrentEntity)
+	{
+		result = m_pCurrentEntity;
+		m_pCurrentEntity = (CBaseEntity *)servertools->NextEntity(m_pCurrentEntity);
+		if (result && m_uiClassNameLen && m_szClassName)
+		{
+			const char* szClassname = IServerUnknownExt::GetClassname(result);
+			if (!m_bExactMatch && strncmp(szClassname, m_szClassName, m_uiClassNameLen) != 0)
+				continue;
+
+			else if (m_bExactMatch && strcmp(szClassname, m_szClassName) != 0)
+				continue;
+		}
+		return (CBaseEntityWrapper*) result;
+	}
+	return NULL;
 }
 
 
 // ----------------------------------------------------------------------------
-// CServerClassGenerator Constructor.
+// CServerClassGenerator
 // ----------------------------------------------------------------------------
 CServerClassGenerator::CServerClassGenerator( PyObject* self ):
 	IPythonGenerator<ServerClass>(self)
@@ -183,18 +217,12 @@ CServerClassGenerator::CServerClassGenerator( PyObject* self ):
 	m_pCurrentServerClass = servergamedll->GetAllServerClasses();
 }
 
-// ----------------------------------------------------------------------------
-// CServerClassGenerator Copy-Constructor.
-// ----------------------------------------------------------------------------
 CServerClassGenerator::CServerClassGenerator( PyObject* self, const CServerClassGenerator& rhs ):
 	IPythonGenerator<ServerClass>(self)
 {
 	m_pCurrentServerClass = rhs.m_pCurrentServerClass;
 }
 
-// ----------------------------------------------------------------------------
-// Returns the next valid CBaseEntity instance.
-// ----------------------------------------------------------------------------
 ServerClass* CServerClassGenerator::getNext()
 {
 	if (!m_pCurrentServerClass)
