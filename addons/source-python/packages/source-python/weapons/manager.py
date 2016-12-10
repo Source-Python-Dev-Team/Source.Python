@@ -46,10 +46,10 @@ class _WeaponManager(dict):
         super().__init__()
 
         # Get the ConfigObj instance of the file
-        ini = ConfigObj(_gamepath, unrepr=True)
+        self.ini = ConfigObj(_gamepath, unrepr=True)
 
         # Get the "properties"
-        properties = ini['properties']
+        properties = self.ini['properties']
 
         # Get the game's weapon prefix
         self._prefix = properties['prefix']
@@ -61,22 +61,24 @@ class _WeaponManager(dict):
         self._myweapons = properties['myweapons']
 
         # Store any special names
-        self._special_names = ini.get('special names', {})
+        self._special_names = self.ini.get('special names', {})
 
         # Store projectile names
-        self._projectiles = ini.get('projectiles', {})
+        self._projectiles = self.ini.get('projectiles', {})
 
         # Store tags as a set
         self._tags = set()
 
         # Loop through all weapons
-        for basename in ini['weapons']:
+        for basename in self.ini['weapons']:
 
             # Get the weapon's full name
             name = self._format_name(basename)
 
             # Add the weapon to the dictionary
-            self[name] = WeaponClass(name, basename, ini['weapons'][basename])
+            self[name] = WeaponClass(
+                name, basename, self.ini['weapons'][basename]
+            )
 
             # Add the weapon's tags to the set of tags
             self._tags.update(self[name].tags)
