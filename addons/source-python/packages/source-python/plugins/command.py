@@ -55,17 +55,11 @@ class SubCommandManager(AutoUnload, list):
         super().__init__()
 
         # Does the class have a proper manager object assigned?
-        if not (hasattr(self, 'manager') and
-                isinstance(self.manager, PluginManager)):
-
-            # If not, raise an error
+        if not isinstance(self.manager, PluginManager):
             raise PluginManagerError(PluginManagerError.__doc__)
 
         # Does the class have a proper instance class assigned?
-        if not (hasattr(self, 'instance') and
-                issubclass(self.instance, LoadedPlugin)):
-
-            # If not, raise an error
+        if not issubclass(self.instance, LoadedPlugin):
             raise PluginInstanceError(PluginInstanceError.__doc__)
 
         # Store the command

@@ -50,20 +50,18 @@ class PluginManager(OrderedDict):
         """Called when the class instance is initialized."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
+        self.logger = None
+        self.translations = None
 
         # Store the base import path
         self._base_import = base_import
 
         # Does the object have a logger set?
-        if not hasattr(self, 'logger'):
-
-            # If not, set the default logger
+        if self.logger is None:
             self.logger = plugins_manager_logger
 
         # Does the object have a translations value set?
-        if not hasattr(self, 'translations'):
-
-            # If not, set the default translations
+        if self.translations is None:
             self.translations = _plugin_strings
 
     def __missing__(self, plugin_name):
@@ -157,15 +155,24 @@ class PluginManager(OrderedDict):
 
     @property
     def base_import(self):
-        """Return the base import path for the manager."""
+        """Return the base import path for the manager.
+        
+        :rtype: str
+        """
         return self._base_import
 
     def is_loaded(self, plugin_name):
-        """Return whether or not a plugin is loaded."""
+        """Return whether or not a plugin is loaded.
+        
+        :rtype: bool
+        """
         return plugin_name in self
 
     def get_plugin_instance(self, plugin_name):
-        """Return a plugin's instance, if it is loaded."""
+        """Return a plugin's instance, if it is loaded.
+        
+        :rtype: LoadedPlugin
+        """
         # Is the plugin loaded?
         if plugin_name in self:
 
@@ -204,7 +211,10 @@ class PluginManager(OrderedDict):
 
     @staticmethod
     def _is_related_module(base_name, module):
-        """Check if a plugin's base name is related to a module name."""
+        """Check if a plugin's base name is related to a module name.
+        
+        :rtype: bool
+        """
         return (module.startswith('{}.'.format(base_name))
             or module == base_name)
 
