@@ -56,6 +56,7 @@ class PluginInfo(dict):
             attributes to appear in the plugin listing, update
             :attr:`display_in_listing`.
         """
+        super().__init__(**kwargs)
         self._verbose_name = verbose_name
         self.author = author
         self.description = description
@@ -70,15 +71,12 @@ class PluginInfo(dict):
         #  ('test1.start_vote', 'Permission to start a vote.')]
         self.permissions = [] if permissions is None else permissions
         self.public_convar = public_convar
-        
+
         self.display_in_listing = [] if display_in_listing is None else display_in_listing
 
         # A reference to its LoadedPlugin instance. Will be set by the
         # LoadedPlugin instance itself
         self.plugin = None
-        
-        for key, value in kwargs.items():
-            self[key] = value
 
     def _create_public_convar(self):
         """Create a public convar if :attr:`public_convar` is set to True."""
