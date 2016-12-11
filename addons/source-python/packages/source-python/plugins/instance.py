@@ -40,12 +40,15 @@ plugins_instance_logger = plugins_logger.instance
 class LoadedPlugin(object):
     """Stores a plugin's instance."""
 
+    logger = None
+    translations = None
+    prefix = None
+
     def __init__(self, plugin_name, base_import):
         """Called when a plugin's instance is initialized."""
         self.file_path = None
         self.import_name = None
         self.globals = None
-        self.translations = None
         self.base_import = base_import
         self.plugin_name = plugin_name
 

@@ -46,6 +46,9 @@ plugins_manager_logger = plugins_logger.manager
 class PluginManager(OrderedDict):
     """Stores plugins and their instances."""
 
+    instance = None
+    prefix = None
+
     def __init__(self, base_import=''):
         """Called when the class instance is initialized."""
         # Re-call OrderedDict's __init__ to properly setup the object
@@ -156,21 +159,21 @@ class PluginManager(OrderedDict):
     @property
     def base_import(self):
         """Return the base import path for the manager.
-        
+
         :rtype: str
         """
         return self._base_import
 
     def is_loaded(self, plugin_name):
         """Return whether or not a plugin is loaded.
-        
+
         :rtype: bool
         """
         return plugin_name in self
 
     def get_plugin_instance(self, plugin_name):
         """Return a plugin's instance, if it is loaded.
-        
+
         :rtype: LoadedPlugin
         """
         # Is the plugin loaded?
@@ -212,7 +215,7 @@ class PluginManager(OrderedDict):
     @staticmethod
     def _is_related_module(base_name, module):
         """Check if a plugin's base name is related to a module name.
-        
+
         :rtype: bool
         """
         return (module.startswith('{}.'.format(base_name))

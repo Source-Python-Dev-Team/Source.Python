@@ -16,8 +16,6 @@ from commands.typed import TypedServerCommand
 from core import core_logger
 from core.manager import core_plugin_manager
 from core.version import VERSION
-#   Cvars
-from cvars import ConVar
 #   Engines
 from engines.server import execute_server_command
 from engines.server import queue_command_string
@@ -139,7 +137,7 @@ class _CoreCommandManager(SubCommandManager):
         self._log_message(message + '=' * 61 + '\n\n')
 
 # Get the _CoreCommandManager instance
-_core_command = _CoreCommandManager('sp', 'Source.Python base command.')
+_core_command = _CoreCommandManager('sp')
 
 
 # =============================================================================

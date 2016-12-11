@@ -49,7 +49,7 @@ class SubCommandManager(AutoUnload, list):
     logger = plugins_command_logger
     translations = _plugin_strings
 
-    def __init__(self, command, description='', prefix=''):
+    def __init__(self, command, prefix=''):
         """Called on instance initialization."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
