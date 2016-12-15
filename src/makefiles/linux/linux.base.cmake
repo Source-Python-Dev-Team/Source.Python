@@ -42,7 +42,7 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
 )
 
 
-If(SOURCE_ENGINE MATCHES "bms")
+If(SOURCE_ENGINE MATCHES "bms" OR SOURCE_ENGINE MATCHES "sdk2013")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
         ${SOURCESDK_LIB}/public/linux32/mathlib.a
@@ -96,12 +96,12 @@ EndIf()
 # General definitions
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC")
 
-if(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "bms")
+if(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "bms" OR SOURCE_ENGINE MATCHES "sdk2013")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_MALLOC_OVERRIDE")
 Endif()
 
 # Function alias
-If(NOT SOURCE_ENGINE MATCHES "bms")
+If(NOT SOURCE_ENGINE MATCHES "bms" OR NOT SOURCE_ENGINE MATCHES "sdk2013")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrnicmp=strncasecmp -D_snprintf=snprintf")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_vsnprintf=vsnprintf -D_alloca=alloca -Dstrcmpi=strcasecmp")
@@ -115,7 +115,7 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
 
 # Others
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v -fvisibility=hidden")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -static-libgcc -static-libstdc++ -fno-threadsafe-statics -v -fvisibility=hidden")
 
 
 # ------------------------------------------------------------------
