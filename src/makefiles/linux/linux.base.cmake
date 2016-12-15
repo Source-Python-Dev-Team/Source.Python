@@ -101,7 +101,7 @@ if(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "bms" OR SOURCE_EN
 Endif()
 
 # Function alias
-If(NOT SOURCE_ENGINE MATCHES "bms" OR NOT SOURCE_ENGINE MATCHES "sdk2013")
+If(NOT SOURCE_ENGINE MATCHES "bms" AND NOT SOURCE_ENGINE MATCHES "sdk2013")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstricmp=strcasecmp -D_stricmp=strcasecmp -D_strnicmp=strncasecmp")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Dstrnicmp=strncasecmp -D_snprintf=snprintf")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_vsnprintf=vsnprintf -D_alloca=alloca -Dstrcmpi=strcasecmp")
