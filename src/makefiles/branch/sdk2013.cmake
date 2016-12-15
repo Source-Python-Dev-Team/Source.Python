@@ -3,6 +3,9 @@
 # Purpose: This is the CMake file for the sdk2013 branch.
 # ------------------------------------------------------------------
 
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} \
+-DINTERFACEVERSION_SERVERGAMEDLL=\"ServerGameDLL010\"")
+
 # ------------------------------------------------------------------
 # Set the engine version.
 # ------------------------------------------------------------------
