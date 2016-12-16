@@ -62,9 +62,10 @@ class TempEntity(BaseTempEntity):
     def __init__(self, temp_entity, **aliases):
         """Initialize the temp entity instance.
 
-        :param str/Pointer temp_entity: The name of the temp entity to
-            initialize or the pointer to wrap.
-        :param dict aliases: Any alias to set on initialization.
+        :param str/Pointer temp_entity:
+            The name of the temp entity to initialize or the pointer to wrap.
+        :param aliases:
+            Any alias to set on initialization.
         """
         # Is the given name a Pointer instance?
         if isinstance(temp_entity, Pointer):
@@ -91,7 +92,8 @@ class TempEntity(BaseTempEntity):
     def _obj(cls, ptr):
         """Wrap the given pointer.
 
-        :param Pointer ptr: The pointer to wrap.
+        :param Pointer ptr:
+            The pointer to wrap.
         """
         return cls(ptr)
 
@@ -106,7 +108,8 @@ class TempEntity(BaseTempEntity):
     def __getattr__(self, name):
         """Return the value of the given alias.
 
-        :param str name: The alias name.
+        :param str name:
+            The alias name.
         :rtype: object
         """
         # Get the name of the prop...
@@ -192,8 +195,10 @@ class TempEntity(BaseTempEntity):
     def __setattr__(self, name, value):
         """Set the value of the given alias.
 
-        :param str name: The alias name.
-        :param object value: The value to set.
+        :param str name:
+            The alias name.
+        :param object value:
+            The value to set.
         """
         # Get the name of the prop...
         prop_name = self.template.aliases.get(name, None)
@@ -321,8 +326,10 @@ class TempEntity(BaseTempEntity):
     def _get_property(self, prop_name, prop_type):
         """Return the value of the given property name.
 
-        :param str prop_name: The name of the property.
-        :param SendPropType prop_type: The type of the property.
+        :param str prop_name:
+            The name of the property.
+        :param SendPropType prop_type:
+            The type of the property.
         """
         # Is the given property not valid?
         if prop_name not in self.template.properties:
@@ -376,7 +383,8 @@ class TempEntity(BaseTempEntity):
     def get_property_array(self, prop_name):
         """Return the value of the given property as an Array instance.
 
-        :param str prop_name: The name of the property.
+        :param str prop_name:
+            The name of the property.
         :rtype: Array
         """
         return self._get_property(prop_name, SendPropType.ARRAY)
@@ -384,7 +392,8 @@ class TempEntity(BaseTempEntity):
     def get_property_bool(self, prop_name):
         """Return the value of the given property as a boolean.
 
-        :param str prop_name: The name of the property.
+        :param str prop_name:
+            The name of the property.
         :rtype: bool
         """
         return bool(self._get_property(prop_name, SendPropType.INT))
@@ -392,7 +401,8 @@ class TempEntity(BaseTempEntity):
     def get_property_float(self, prop_name):
         """Return the value of the given property as a float.
 
-        :param str prop_name: The name of the property.
+        :param str prop_name:
+            The name of the property.
         :rtype: float
         """
         return self._get_property(prop_name, SendPropType.FLOAT)
@@ -400,7 +410,8 @@ class TempEntity(BaseTempEntity):
     def get_property_int(self, prop_name):
         """Return the value of the given property as an integer.
 
-        :param str prop_name: The name of the property.
+        :param str prop_name:
+            The name of the property.
         :rtype: int
         """
         return self._get_property(prop_name, SendPropType.INT)
@@ -408,7 +419,8 @@ class TempEntity(BaseTempEntity):
     def get_property_string(self, prop_name):
         """Return the value of the given property as a string.
 
-        :param str prop_name: The name of the property.
+        :param str prop_name:
+            The name of the property.
         :rtype: str
         """
         return self._get_property(prop_name, SendPropType.STRING)
@@ -416,7 +428,8 @@ class TempEntity(BaseTempEntity):
     def get_property_vector(self, prop_name):
         """Return the value of the given property as a string.
 
-        :param str prop_name: The name of the property.
+        :param str prop_name:
+            The name of the property.
         :rtype: Vector
         """
         return self._get_property(prop_name, SendPropType.VECTOR)
@@ -424,9 +437,12 @@ class TempEntity(BaseTempEntity):
     def _set_property(self, prop_name, prop_type, value):
         """Set the given property to the given value.
 
-        :param str prop_name: The name of the property.
-        :param SendPropType prop_type: The type of the property.
-        :param value object: To value to set to the given property.
+        :param str prop_name:
+            The name of the property.
+        :param SendPropType prop_type:
+            The type of the property.
+        :param value object:
+            To value to set to the given property.
         """
         # Is the given property not valid?
         if prop_name not in self.template.properties:
@@ -506,59 +522,72 @@ class TempEntity(BaseTempEntity):
     def set_property_array(self, prop_name, value):
         """Set the value of the given property as an Array instance.
 
-        :param str prop_name: The name of the property.
-        :param Array value: The value to set.
+        :param str prop_name:
+            The name of the property.
+        :param Array value:
+            The value to set.
         """
         self._set_property(prop_name, SendPropType.ARRAY, value)
 
     def set_property_bool(self, prop_name, value):
         """Set the value of the given property as a boolean.
 
-        :param str prop_name: The name of the property.
-        :param bool value: The value to set.
+        :param str prop_name:
+            The name of the property.
+        :param bool value:
+            The value to set.
         """
         self._set_property(prop_name, SendPropType.INT, int(value))
 
     def set_property_float(self, prop_name, value):
         """Set the value of the given property as a float.
 
-        :param str prop_name: The name of the property.
-        :param float value: The value to set.
+        :param str prop_name:
+            The name of the property.
+        :param float value:
+            The value to set.
         """
         self._set_property(prop_name, SendPropType.FLOAT, value)
 
     def set_property_int(self, prop_name, value):
         """Set the value of the given property as an integer.
 
-        :param str prop_name: The name of the property.
-        :param int value: The value to set.
+        :param str prop_name:
+            The name of the property.
+        :param int value:
+            The value to set.
         """
         self._set_property(prop_name, SendPropType.INT, value)
 
     def set_property_string(self, prop_name, value):
         """Set the value of the given property as a string.
 
-        :param str prop_name: The name of the property.
-        :param str value: The value to set.
+        :param str prop_name:
+            The name of the property.
+        :param str value:
+            The value to set.
         """
         self._set_property(prop_name, SendPropType.STRING, value)
 
     def set_property_vector(self, prop_name, value):
         """Set the value of the given property as a string.
 
-        :param str prop_name: The name of the property.
-        :param Vector value: The value to set.
+        :param str prop_name:
+            The name of the property.
+        :param Vector value:
+            The value to set.
         """
         self._set_property(prop_name, SendPropType.VECTOR, value)
 
     def create(self, *recipients, delay=0.0, **aliases):
         """Create the temp entity effect.
 
-        :param RecipientFilter recipients: The recipient filter listing the
-            players to send the effect to.
-        :param float delay: The delay before creating the effect.
-        :param dict aliases: Any aliases to set before creating the temp entity
-            effect.
+        :param RecipientFilter recipients:
+            The recipient filter listing the players to send the effect to.
+        :param float delay:
+            The delay before creating the effect.
+        :param dict aliases:
+            Any aliases to set before creating the temp entity effect.
         """
         # Get a recipient filter matching the given players...
         recipients = RecipientFilter(*recipients)

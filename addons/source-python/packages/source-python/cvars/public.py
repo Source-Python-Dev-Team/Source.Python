@@ -28,7 +28,22 @@ class PublicConVar(AutoUnload, ConVar):
     def __init__(
             self, name, value='0', description='',
             flags=0, min_value=None, max_value=None):
-        """Set the cvar's value and set the notify flag."""
+        """Set the cvar's value and set the notify flag.
+
+        :param str name:
+            Name of the console variable.
+        :param object default:
+            A default value for the console variable. It will be converted to
+            a string.
+        :param str/TranslationStrings description:
+            A description of the console variable.
+        :param ConVarFlags flags:
+            Flags that should be used for the console variable.
+        :param float min_value:
+            Minimum value.
+        :param float max_value:
+            Maximum value.
+        """
         super().__init__(
             name, value, description, flags, min_value, max_value)
         self.set_string(value)

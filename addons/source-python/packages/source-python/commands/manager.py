@@ -23,8 +23,12 @@ class _BaseCommandManager(object):
     def _prepare_command_names(self, names):
         """Validate and prepare the given command names.
 
-        The given argument can be a string, list or tuple. A TypeError is
-        raised if it does not meet the requirements.
+        :param str/list/tuple names:
+            A single command or multiple commands that should be validated.
+        :raise TypeError:
+            Raised if ``names`` is not a :class:`str`, :class:`list` or
+            class:`tuple`.
+        :rtype: tuple
         """
         # Was a single command name given?
         if isinstance(names, str):
@@ -36,12 +40,15 @@ class _BaseCommandManager(object):
                 '{0} commands must be passed as a list, tuple, or string,'
                 ' not "{1}"'.format(type(self).__name__, type(names).__name__))
 
-        return names
+        return tuple(names)
 
     def _get_command_proxy(self, callback):
         """Return the command proxy for the given callback.
 
-        Raise a ValueError when the proxy wasn't found.
+        :param callable callback:
+            The callback that should be used to search the proxy.
+        :raise ValueError:
+            Raised if the proxy wasn't found.
         """
         for proxy in self._callback_proxies:
             if proxy.callback == callback:
@@ -50,7 +57,20 @@ class _BaseCommandManager(object):
         raise ValueError('Unable to find a proxy for the given callback.')
 
     def register_commands(self, names, callback, *args, **kwargs):
-        """Register the given commands to the given callback."""
+        """Register the given commands to the given callback.
+
+        :param str/list/tuple names:
+            Command names that should be registered.
+        :param callable callback:
+            A callback that should get called when one of the commands were
+            issued.
+        :param args:
+            Additional arguments that get passed to the proxy (if existant)
+            and to :meth:`_register_command`.
+        :param kwargs:
+            Additional keywords that get passed to the proxy (if existant)
+            and to :meth:`_register_command`.
+        """
         names = self._prepare_command_names(names)
 
         if self._callback_proxy is not None:
@@ -61,13 +81,29 @@ class _BaseCommandManager(object):
         # Register all command names
         for name in names:
             self._register_command(name, callback, *args, **kwargs)
-            
+
     def _register_command(self, name, callback, *args, **kwargs):
-        """Register a command."""
+        """Register a command.
+
+        :param str name:
+            A single command name that should be registred.
+        :param callable callback:
+            The callback that should get called when the command has been issued.
+        :param args:
+            Additional arguments passed from :meth:`register_commands`.
+        :param kwargs:
+            Additional keywords passed from :meth:`register_commands`.
+        """
         self._get_command(name).add_callback(callback)
 
     def unregister_commands(self, names, callback):
-        """Unregister the given commands from the given callback."""
+        """Unregister the given commands from the given callback.
+
+        :param str/list/tuple names:
+            Command names to unregister.
+        :param callable callback:
+            The callback that was registered for the commands.
+        """
         names = self._prepare_command_names(names)
 
         if self._callback_proxy is not None:

@@ -62,7 +62,13 @@ class _LogInstance(dict):
     """Base logging class used to create child logging instances."""
 
     def __init__(self, parent=None, name=None):
-        """Store the parent and gets a child of the parent."""
+        """Store the parent and gets a child of the parent.
+
+        :param _LogInstance parent:
+            A parent logger or None.
+        :param str name:
+            A name for the logger or None.
+        """
         # Initialize the dictionary
         super().__init__()
 
@@ -76,7 +82,10 @@ class _LogInstance(dict):
             self._logger = self.parent.logger.getChild(name)
 
     def __missing__(self, item):
-        """Add new items as logging instances."""
+        """Add new items as logging instances.
+
+        :rtype: _LogInstance
+        """
         # Get the new logging instance
         value = self[item] = _LogInstance(self, item)
 
@@ -84,7 +93,10 @@ class _LogInstance(dict):
         return value
 
     def __getattr__(self, attr):
-        """Call __getitem__ to return the item in the dictionary."""
+        """Return the logger with the specified name.
+
+        :rtype: _LogInstance
+        """
         return self[attr]
 
     def __delitem__(self, item):
@@ -104,31 +116,89 @@ class _LogInstance(dict):
             del self[item]
 
     def log_critical(self, msg, *args, **kwargs):
-        """Use to call a critical message."""
+        """Use to call a critical message.
+
+        :param str msg:
+            Message to log.
+        :param args:
+            Additional arguments that are used for formatting purpose.
+        :param kwargs:
+            Additional keywords that are used for formatting purpose.
+        """
         self._log(CRITICAL, msg, *args, **kwargs)
 
     def log_debug(self, msg, *args, **kwargs):
-        """Use to call a debug message."""
+        """Use to call a debug message.
+
+        :param str msg:
+            Message to log.
+        :param args:
+            Additional arguments that are used for formatting purpose.
+        :param kwargs:
+            Additional keywords that are used for formatting purpose.
+        """
         self._log(DEBUG, msg, *args, **kwargs)
 
     def log_exception(self, msg, *args, **kwargs):
-        """Use to call an exception message."""
+        """Use to call an exception message.
+
+        :param str msg:
+            Message to log.
+        :param args:
+            Additional arguments that are used for formatting purpose.
+        :param kwargs:
+            Additional keywords that are used for formatting purpose.
+        """
         self._log(EXCEPTION, msg, *args, **kwargs)
 
     def log_info(self, msg, *args, **kwargs):
-        """Use to call a basic info message."""
+        """Use to call a basic info message.
+
+        :param str msg:
+            Message to log.
+        :param args:
+            Additional arguments that are used for formatting purpose.
+        :param kwargs:
+            Additional keywords that are used for formatting purpose.
+        """
         self._log(INFO, msg, *args, **kwargs)
 
     def log_warning(self, msg, *args, **kwargs):
-        """Use to call a warning message."""
+        """Use to call a warning message.
+
+        :param str msg:
+            Message to log.
+        :param args:
+            Additional arguments that are used for formatting purpose.
+        :param kwargs:
+            Additional keywords that are used for formatting purpose.
+        """
         self._log(WARNING, msg, *args, **kwargs)
 
     def log_message(self, msg, *args, **kwargs):
-        """Use to call a message that should always print."""
+        """Use to call a message that should always print.
+
+        :param str msg:
+            Message to log.
+        :param args:
+            Additional arguments that are used for formatting purpose.
+        :param kwargs:
+            Additional keywords that are used for formatting purpose.
+        """
         self._log(MESSAGE, msg, *args, **kwargs)
 
     def log(self, level, msg, *args, **kwargs):
-        """Use to call a message with the given logging level."""
+        """Use to call a message with the given logging level.
+
+        :param int level:
+            Level of the message to log.
+        :param str msg:
+            Message to log.
+        :param args:
+            Additional arguments that are used for formatting purpose.
+        :param kwargs:
+            Additional keywords that are used for formatting purpose.
+        """
         # Get the value of the given level
         level = self._get_level_value(level)
 
@@ -187,12 +257,18 @@ class _LogInstance(dict):
 
     @staticmethod
     def _get_level_value(level):
-        """Return a level value used by the logging package."""
+        """Return a level value used by the logging package.
+
+        :rtype: int
+        """
         return 50 - (10 * level)
 
     @property
     def root(self):
-        """Return the root class."""
+        """Return the root logger.
+
+        :rtype: _LogInstance
+        """
         # Store the current instance
         instance = self
 
@@ -207,22 +283,34 @@ class _LogInstance(dict):
 
     @property
     def areas(self):
-        """Return the root's areas value."""
+        """Return the root's areas value.
+
+        :rtype: int
+        """
         return self.root.areas
 
     @property
     def level(self):
-        """Return the root's level value."""
+        """Return the root's level value.
+
+        :rtype: int
+        """
         return self.root.level
 
     @property
     def formatter(self):
-        """Return the root's formatter."""
+        """Return the root's formatter.
+
+        :rtype: Formatter
+        """
         return self.root._formatter
 
     @property
     def logger(self):
-        """Return the instance's logger."""
+        """Return the instance's logger.
+
+        :rtype: logging.Logger
+        """
         return self._logger
 
 
@@ -232,7 +320,22 @@ class LogManager(_LogInstance):
     def __init__(
             self, name, level, areas, filepath=None,
             log_format=None, date_format=None):
-        """Store the base values and creates the logger."""
+        """Store the base values and creates the logger.
+
+        :param str name:
+            Name of the base logger.
+        :param ConVar level:
+            A console variable that defines required level to log a message.
+        :param ConVar areas:
+            A console variable that defines the areas where messages are
+            getting logged.
+        :param str filepath:
+            A file where messages are getting logged.
+        :param str log_format:
+            A custom log format that defines the appearance of the messages.
+        :param str date_format:
+            A custom date format that defines how the date is printed.
+        """
         # Initialize the dictionary
         super().__init__()
 
@@ -271,12 +374,18 @@ class LogManager(_LogInstance):
 
     @property
     def level(self):
-        """Return the needed level value."""
+        """Return the needed level value.
+
+        :rtype: int
+        """
         return 50 - (self._level.get_int() * 10)
 
     @property
     def areas(self):
-        """Return the areas to print messages to."""
+        """Return the areas to print messages to.
+
+        :rtype: int
+        """
         return self._areas.get_int()
 
 # Set the core ConVars
@@ -289,7 +398,7 @@ _areas = ConVar(
 _sp_logger = LogManager(
     'sp', _level, _areas,
     'source-python.{0}'.format(date.today().strftime('%Y-%m-%d')),
-    '%(asctime)s - %(name)s\t-\t%(levelname)s\t%(message)s',
+    '%(asctime)s - %(name)s\t-\t%(levelname)s\t{message}',
     '%Y-%m-%d %H:%M:%S')
 
 # Set the parent logger level to allow all message types

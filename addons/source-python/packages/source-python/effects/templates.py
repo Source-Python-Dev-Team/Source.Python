@@ -45,8 +45,8 @@ class TempEntityTemplate(BaseTempEntity):
     def __init__(self, temp_entity):
         """Initialize the instance.
 
-        :param BaseTempEntity temp_entity: The base entity instance to copy
-            the base from.
+        :param BaseTempEntity temp_entity:
+            The base entity instance to copy the base from.
         """
         # Store the size of the temp entity...
         self._size = get_size(BaseTempEntity)
@@ -79,7 +79,8 @@ class TempEntityTemplate(BaseTempEntity):
     def _add_properties(self, send_table):
         """Parse the given send table and add all properties to the dictionary.
 
-        :param SendTable send_table: The send table instance to parse.
+        :param SendTable send_table:
+            The send table instance to parse.
         """
         # Loop through all properties...
         for name, prop, offset in server_classes._find_properties(send_table):
@@ -140,7 +141,8 @@ class TempEntityTemplate(BaseTempEntity):
     def _get_type_size(type_name):
         """Helper method returning the size of the given type.
 
-        :param str type_name: The name of the type.
+        :param str type_name:
+            The name of the type.
         """
         # Is the type native?
         if Type.is_native(type_name):
@@ -188,8 +190,10 @@ class TempEntityTemplates(dict):
     def __missing__(self, temp_entity_name):
         """Called when a temp entity template is requested but missing.
 
-        :param str temp_entity_name: The name of the temp entity template
-            requested.
+        :param str temp_entity_name:
+            The name of the temp entity template requested.
+        :raise NameError:
+            Raised if the given name is not a valid temp entity name.
         """
         # Import this here to fix a cyclic import
         from effects import _first_temp_entity

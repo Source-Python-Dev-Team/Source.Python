@@ -17,7 +17,13 @@ class _CommandManager(object):
     """Class used to store a command instance."""
 
     def __init__(self, name, description):
-        """Called on instantiation."""
+        """Initialize the instance.
+
+        :param str name:
+            Name of the command.
+        :param str/TranslationStrings description:
+            A description of the command.
+        """
         # Is the given description a TranslationStrings instance?
         if isinstance(description, TranslationStrings):
 
@@ -30,10 +36,16 @@ class _CommandManager(object):
 
     @property
     def name(self):
-        """Return the command's name."""
+        """Return the command's name.
+
+        :rtype str
+        """
         return self._name
 
     @property
     def description(self):
-        """Return the command's description."""
+        """Return the command's description.
+
+        :rtype: str
+        """
         return self._description

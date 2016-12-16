@@ -44,8 +44,8 @@ _sp_version = PublicConVar('sp_version', str(VERSION), 'Source.Python version')
 def get_last_successful_build_number(timeout=3):
     """Return the latest successful build number as an integer.
 
-    :param float timeout: Number of seconds that need to pass until a timeout
-        occurs.
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
     :rtype: int
     """
     with urlopen(LAST_SUCCESSFUL_BUILD_NUMBER_URL, timeout=timeout) as url:

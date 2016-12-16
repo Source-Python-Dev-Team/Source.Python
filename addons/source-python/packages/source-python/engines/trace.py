@@ -196,9 +196,11 @@ class TraceFilterSimple(TraceFilter):
     def __init__(self, ignore=(), trace_type=TraceType.EVERYTHING):
         """Initialize the filter.
 
-        :param iterable ignore: An iterable of entity indexes to ignore. The
-            trace will not hit these entities.
-        :param TraceType trace_type: The trace type that should be used.
+        :param iterable ignore:
+            An iterable of entity indexes to ignore. The trace will not hit
+            these entities.
+        :param TraceType trace_type:
+            The trace type that should be used.
         """
         super().__init__()
         self.trace_type = trace_type
@@ -207,8 +209,11 @@ class TraceFilterSimple(TraceFilter):
     def should_hit_entity(self, entity, mask):
         """Called when a trace is about to hit an entity.
 
-        :param HandleEntity entity: The entity that should be hit.
-        :param int mask: The mask that was used to intialize the trace.
+        :param HandleEntity entity:
+            The entity that should be hit.
+        :param int mask:
+            The mask that was used to intialize the trace.
+        :rtype: bool
         """
         entity_inthandle = entity.basehandle.to_int()
 
@@ -220,5 +225,8 @@ class TraceFilterSimple(TraceFilter):
         return True
 
     def get_trace_type(self):
-        """Return the trace type."""
+        """Return the trace type.
+
+        :rtype: TraceType
+        """
         return self.trace_type
