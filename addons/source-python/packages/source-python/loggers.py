@@ -289,8 +289,8 @@ _areas = ConVar(
 _sp_logger = LogManager(
     'sp', _level, _areas,
     'source-python.{0}'.format(date.today().strftime('%Y-%m-%d')),
-    '%(asctime)s - %(name)s\t-\t%(levelname)s\n\t%(message)s',
-    '%m-%d-%Y %H:%M:%S')
+    '%(asctime)s - %(name)s\t-\t%(levelname)s\t%(message)s',
+    '%Y-%m-%d %H:%M:%S')
 
 # Set the parent logger level to allow all message types
 _sp_logger.logger.parent.level = DEBUG
