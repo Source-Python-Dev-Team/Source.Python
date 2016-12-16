@@ -37,7 +37,8 @@ class Downloadables(AutoUnload, set):
     def add(self, item):
         """Add an item to the downloadables for a script.
 
-        :param str item: The path to add to the downloadables.
+        :param str item:
+            The path to add to the downloadables.
         """
         # Is the item already in the list?
         if item in self:
@@ -54,18 +55,23 @@ class Downloadables(AutoUnload, set):
     def add_directory(self, directory):
         """Add all files in the given directory to the downloadables.
 
-        :param str directory: The directory to add to the downloadables.
+        :param str directory:
+            The directory to add to the downloadables.
+        :return:
+            Return the number of files that have been added.
+        :rtype: int
         """
-        # Loop through all files in the directory
-        for file in GAME_PATH.joinpath(directory).walkfiles():
-
-            # Add the current file to the downloadables
+        index = 0
+        for index, file in enumerate(GAME_PATH.joinpath(directory).walkfiles(), 1):
             self.add(file.replace(GAME_PATH, '').replace('\\', '/'))
+
+        return index
 
     def remove_directory(self, directory):
         """Remove all files in the given directory from the downloadables.
 
-        :param str directory: The directory to remove from the downloadables.
+        :param str directory:
+            The directory to remove from the downloadables.
         """
         # Convert slashes
         directory = directory.replace('\\', '/')
