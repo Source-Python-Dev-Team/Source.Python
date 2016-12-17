@@ -85,7 +85,11 @@ class Entity(BaseEntity):
     """
 
     def __init__(self, index):
-        """Initialize the Entity object."""
+        """Initialize the Entity instance.
+
+        :param int index:
+            The entity index to wrap.
+        """
         # Initialize the object
         super().__init__(index)
 
@@ -178,8 +182,10 @@ class Entity(BaseEntity):
 
         If not entity has been found, None will be returned.
 
-        :param str classname: The classname of the entity.
-        :return: Return the found entity.
+        :param str classname:
+            The classname of the entity.
+        :return:
+            Return the found entity.
         :rtype: Entity
         """
         entity = BaseEntity.find(classname)
@@ -194,8 +200,10 @@ class Entity(BaseEntity):
 
         If no entity has been found, it will be created.
 
-        :param str classname: The classname of the entity.
-        :return: Return the found or created entity.
+        :param str classname:
+            The classname of the entity.
+        :return:
+            Return the found or created entity.
         :rtype: Entity
         """
         entity = cls.find(classname)
@@ -216,12 +224,13 @@ class Entity(BaseEntity):
         :rtype: int
         """
         return self._index
-        
+
     @property
     def owner(self):
         """Return the entity's owner.
-        
-        :return: None if the entity has no owner.
+
+        :return:
+            None if the entity has no owner.
         :rtype: Entity
         """
         try:
@@ -313,72 +322,155 @@ class Entity(BaseEntity):
 
     @property
     def model_header(self):
-        """Return a ModelHeader instance of the current entity's model."""
+        """Return the entity's model header.
+
+        :rtype: ModelHeader
+        """
         return model_cache.get_model_header(model_cache.find_model(
             self.model_name))
 
     def get_property_bool(self, name):
-        """Return the boolean property."""
+        """Return the boolean property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: bool
+        """
         return self._get_property(name, 'bool')
 
     def get_property_color(self, name):
-        """Return the Color property."""
+        """Return the Color property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: Color
+        """
         return self._get_property(name, 'Color')
 
     def get_property_edict(self, name):
-        """Return the Edict property."""
+        """Return the Edict property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: Edict
+        """
         return self._get_property(name, 'Edict')
 
     def get_property_float(self, name):
-        """Return the float property."""
+        """Return the float property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: float
+        """
         return self._get_property(name, 'float')
 
     def get_property_int(self, name):
-        """Return the integer property."""
+        """Return the integer property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: int
+        """
         return self._get_property(name, 'int')
 
     def get_property_interval(self, name):
-        """Return the Interval property."""
+        """Return the Interval property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: Interval
+        """
         return self._get_property(name, 'Interval')
 
     def get_property_pointer(self, name):
-        """Return the pointer property."""
+        """Return the pointer property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: Pointer
+        """
         return self._get_property(name, 'pointer')
 
     def get_property_quaternion(self, name):
-        """Return the Quaternion property."""
+        """Return the Quaternion property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: Quaternion
+        """
         return self._get_property(name, 'Quaternion')
 
     def get_property_short(self, name):
-        """Return the short property."""
+        """Return the short property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: int
+        """
         return self._get_property(name, 'short')
 
     def get_property_ushort(self, name):
-        """Return the ushort property."""
+        """Return the ushort property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: int
+        """
         return self._get_property(name, 'ushort')
 
     def get_property_string(self, name):
-        """Return the string property."""
+        """Return the string property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: str
+        """
         return self._get_property(name, 'string_array')
 
     def get_property_string_pointer(self, name):
-        """Return the string property."""
+        """Return the string property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: str
+        """
         return self._get_property(name, 'string_pointer')
 
     def get_property_char(self, name):
-        """Return the char property."""
+        """Return the char property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: str
+        """
         return self._get_property(name, 'char')
 
     def get_property_uchar(self, name):
-        """Return the uchar property."""
+        """Return the uchar property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: int
+        """
         return self._get_property(name, 'uchar')
 
     def get_property_uint(self, name):
-        """Return the uint property."""
+        """Return the uint property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: int
+        """
         return self._get_property(name, 'uint')
 
     def get_property_vector(self, name):
-        """Return the Vector property."""
+        """Return the Vector property.
+
+        :param str name:
+            Name of the property to retrieve.
+        :rtype: Vector
+        """
         return self._get_property(name, 'Vector')
 
     def _get_property(self, name, prop_type):
@@ -405,67 +497,163 @@ class Entity(BaseEntity):
                 name, self.classname))
 
     def set_property_bool(self, name, value):
-        """Set the boolean property."""
+        """Set the boolean property.
+
+        :param str name:
+            Name of the property to set.
+        :param bool value:
+            The value to set.
+        """
         self._set_property(name, 'bool', value)
 
     def set_property_color(self, name, value):
-        """Set the Color property."""
+        """Set the Color property.
+
+        :param str name:
+            Name of the property to set.
+        :param Color value:
+            The value to set.
+        """
         self._set_property(name, 'Color', value)
 
     def set_property_edict(self, name, value):
-        """Set the Edict property."""
+        """Set the Edict property.
+
+        :param str name:
+            Name of the property to set.
+        :param Edict value:
+            The value to set.
+        """
         self._set_property(name, 'Edict', value)
 
     def set_property_float(self, name, value):
-        """Set the float property."""
+        """Set the float property.
+
+        :param str name:
+            Name of the property to set.
+        :param float value:
+            The value to set.
+        """
         self._set_property(name, 'float', value)
 
     def set_property_int(self, name, value):
-        """Set the integer property."""
+        """Set the integer property.
+
+        :param str name:
+            Name of the property to set.
+        :param int value:
+            The value to set.
+        """
         self._set_property(name, 'int', value)
 
     def set_property_interval(self, name, value):
-        """Set the Interval property."""
+        """Set the Interval property.
+
+        :param str name:
+            Name of the property to set.
+        :param Interval value:
+            The value to set.
+        """
         self._set_property(name, 'Interval', value)
 
     def set_property_pointer(self, name, value):
-        """Set the pointer property."""
+        """Set the pointer property.
+
+        :param str name:
+            Name of the property to set.
+        :param Pointer value:
+            The value to set.
+        """
         self._set_property(name, 'pointer', value)
 
     def set_property_quaternion(self, name, value):
-        """Set the Quaternion property."""
+        """Set the Quaternion property.
+
+        :param str name:
+            Name of the property to set.
+        :param Quaternion value:
+            The value to set.
+        """
         self._set_property(name, 'Quaternion', value)
 
     def set_property_short(self, name, value):
-        """Set the short property."""
+        """Set the short property.
+
+        :param str name:
+            Name of the property to set.
+        :param int value:
+            The value to set.
+        """
         self._set_property(name, 'short', value)
 
     def set_property_ushort(self, name, value):
-        """Set the ushort property."""
+        """Set the ushort property.
+
+        :param str name:
+            Name of the property to set.
+        :param int value:
+            The value to set.
+        """
         self._set_property(name, 'ushort', value)
 
     def set_property_string(self, name, value):
-        """Set the string property."""
+        """Set the string property.
+
+        :param str name:
+            Name of the property to set.
+        :param str value:
+            The value to set.
+        """
         self._set_property(name, 'string_array', value)
 
     def set_property_string_pointer(self, name, value):
-        """Set the string property."""
+        """Set the string property.
+
+        :param str name:
+            Name of the property to set.
+        :param str value:
+            The value to set.
+        """
         self._set_property(name, 'string_pointer', value)
 
     def set_property_char(self, name, value):
-        """Set the char property."""
+        """Set the char property.
+
+        :param str name:
+            Name of the property to set.
+        :param str value:
+            The value to set.
+        """
         self._set_property(name, 'char', value)
 
     def set_property_uchar(self, name, value):
-        """Set the uchar property."""
+        """Set the uchar property.
+
+        :param str name:
+            Name of the property to set.
+        :param int value:
+            The value to set.
+        """
         self._set_property(name, 'uchar', value)
 
     def set_property_uint(self, name, value):
-        """Set the uint property."""
+        """Set the uint property.
+
+        :param str name:
+            Name of the property to set.
+        :param int value:
+            The value to set.
+        """
         self._set_property(name, 'uint', value)
 
     def set_property_vector(self, name, value):
-        """Set the Vector property."""
+        """Set the Vector property.
+
+        :param str name:
+            Name of the property to set.
+        :param Vector value:
+            The value to set.
+        """
         self._set_property(name, 'Vector', value)
 
     def _set_property(self, name, prop_type, value):
@@ -505,17 +693,20 @@ class Entity(BaseEntity):
             cancel_on_level_end=False):
         """Execute a callback after the given delay.
 
-        :param float delay: The delay in seconds.
-        :param callback: A callable object that should be called after the
-            delay expired.
-        :param tuple args: Arguments that should be passed to the callback.
-        :param dict kwargs: Keyword arguments that should be passed to the
-            callback.
-        :param bool cancel_on_level_end: Whether or not to cancel the delay at
-            the end of the map.
-        :raises ValueError: If the given callback is not callable.
-
-        :return: The delay instance.
+        :param float delay:
+            The delay in seconds.
+        :param callback:
+            A callable object that should be called after the delay expired.
+        :param tuple args:
+            Arguments that should be passed to the callback.
+        :param dict kwargs:
+            Keyword arguments that should be passed to the callback.
+        :param bool cancel_on_level_end:
+            Whether or not to cancel the delay at the end of the map.
+        :raise ValueError:
+            If the given callback is not callable.
+        :return:
+            The delay instance.
         :rtype: Delay
         """
         # TODO: Ideally, we want to subclass Delay and cleanup on cancel() too
@@ -815,7 +1006,7 @@ class Entity(BaseEntity):
     @wrap_entity_mem_func
     def teleport(self, origin=None, angle=None, velocity=None):
         """Change the origin, angle and/or velocity of the entity.
-        
+
         :param Vector origin:
             New location of the entity.
         :param QAngle angle:

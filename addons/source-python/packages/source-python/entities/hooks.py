@@ -10,7 +10,7 @@
 from core import AutoUnload
 #   Entities
 #   Memory
-from _memory import HookType
+from memory.hooks import HookType
 #   Filters
 from filters.entities import EntityIter
 #   Listeners
@@ -38,39 +38,53 @@ class EntityCondition(object):
 
     @staticmethod
     def is_player(entity):
-        """Return True if the entity is a player."""
+        """Return ``True`` if the entity is a player.
+
+        :rtype: bool
+        """
         return entity.is_player()
 
     @staticmethod
     def is_not_player(entity):
-        """Return True if the entity is not a player."""
+        """Return ``True`` if the entity is not a player.
+
+        :rtype: bool
+        """
         return not entity.is_player()
 
     @staticmethod
     def is_human_player(entity):
-        """Return True if the entity is a human player."""
+        """Return ``True`` if the entity is a human player.
+
+        :rtype: bool
+        """
         return entity.is_player() and Player(entity.index).steamid != 'BOT'
 
     @staticmethod
     def is_bot_player(entity):
-        """Return True if the entity is a bot."""
+        """Return ``True`` if the entity is a bot.
+
+        :rtype: bool
+        """
         return entity.is_player() and Player(entity.index).steamid == 'BOT'
 
     @staticmethod
     def equals_entity_classname(*classnames):
-        """Return a function that requires an Entity object.
-
-        The function returns True if the entity's
+        """Return a function that requires an :class:`entities.entity.Entity``
+        instace. The returned function returns ``True`` if the entity's
         classname equals one of the passed classnames.
+
+        :rtype: lambda
         """
         return lambda entity: entity.classname in classnames
 
     @staticmethod
     def equals_datamap_classname(*classnames):
-        """Return a function that requires an Entity object.
-
-        The function returns True if the entity's
+        """Return a function that requires an :class:`entities.entity.Entity``
+        instance. The returned function returns ``True`` if the entity's
         datamap classname equals one of the passed classnames.
+
+        :rtype: lambda
         """
         return lambda entity: entity.datamap.class_name in classnames
 
@@ -81,13 +95,14 @@ class _EntityHook(AutoUnload):
     def __init__(self, test_function, function):
         """Initialize the hook object.
 
-        :param callable test_function: A callable object that accepts an
-            Entity object as a parameter. The function should return True if
+        :param callable test_function:
+            A callable object that accepts an :class:`entities.entity.Entity`
+            instance as a parameter. The function should return ``True`` if
             the entity matches the required one.
-        :param str/callable function: This is the function to hook. It can be
-            either a string that defines the name of a function of the entity
-            or a callable object that returns a :class:`memory.Function`
-            object.
+        :param str/callable function:
+            This is the function to hook. It can be either a string that
+            defines the name of a function of the entity or a callable object
+            that returns a :class:`memory.Function` instance.
         """
         self.test_function = test_function
         self.function = function
@@ -95,7 +110,14 @@ class _EntityHook(AutoUnload):
         self.callback = None
 
     def __call__(self, callback):
-        """Store the callback and try initializing the hook."""
+        """Store the callback and try initializing the hook.
+
+        :param callable callback:
+            The callback to store.
+        :return:
+            The passed callback.
+        :rtype: callable
+        """
         # Validate the given callback...
         if not callable(callback):
             raise TypeError('Given callback is not callable.')
@@ -118,13 +140,18 @@ class _EntityHook(AutoUnload):
 
     @property
     def hook_type(self):
-        """Raise an error if the inheriting class does not have their own."""
+        """Return the hook type of the decorator.
+
+        :rtype: HookType
+        """
         raise NotImplementedError('No hook_type defined for class.')
 
     def initialize(self, entity):
         """Initialize the hook.
 
-        Return True if the initialization was successful.
+        Return ``True`` if the initialization was successful.
+
+        :rtype: bool
         """
         if not self.test_function(entity):
             return False
@@ -170,7 +197,11 @@ class _WaitingEntityHooks(list):
     """A dictionary to store hooks waiting for intialization."""
 
     def initialize(self, index):
-        """Initialize all hooks waiting for the given entity."""
+        """Initialize all hooks waiting for the given entity.
+
+        :param int index:
+            Index of the entity that should be used to initialize the hooks.
+        """
         # There is nothing to do if no hook is waiting
         if not self:
             return
