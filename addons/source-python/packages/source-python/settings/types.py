@@ -5,23 +5,17 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Collections
+# Python
 from collections import OrderedDict
-#   Contextlib
 from contextlib import suppress
 
-# Source.Python Imports
-#   Engines
+# Source.Python
+from cvars import ConVar
 from engines.server import engine_server
-#   Menus
 from menus import PagedMenu
 from menus import PagedOption
-#   Messages
 from messages import SayText
-#   Players
 from players.helpers import uniqueid_from_index
-#   Settings
 from settings import _settings_strings
 from settings.storage import _player_settings_storage
 
@@ -103,6 +97,16 @@ class _SettingsType(object):
         """Return the setting's menu."""
         return self._menu
 
+    @property
+    def _type(self):
+        """Inheriting class must define attribute."""
+        raise NotImplementedError('No _type defined for class.')
+
+    @property
+    def _is_valid_setting(self):
+        """Inheriting class must define method."""
+        raise NotImplementedError('No _is_valid_setting defined for class.')
+
     def get_setting(self, index):
         """Return the setting value for the given player index."""
         # Get the client's convar value
@@ -112,7 +116,7 @@ class _SettingsType(object):
         with suppress(ValueError):
 
             # Typecast the given value
-            value = self._type(value)
+            value = self._typecase_value(value)
 
             # Is the given value a proper one for the convar?
             if self._is_valid_setting(value):
@@ -136,7 +140,7 @@ class _SettingsType(object):
                 with suppress(ValueError):
 
                     # Typecast the given value
-                    value = self._type(value)
+                    value = self._typecast_value(value)
 
                     # Is the given value a proper one for the convar?
                     if self._is_valid_setting(value):
@@ -145,7 +149,22 @@ class _SettingsType(object):
                         return value
 
         # Return the default value
+        if isinstance(self.default, ConVar):
+            return self._typecast_default_convar()
         return self.default
+
+    def _typecast_value(self, value):
+        """Cast the value to the proper type."""
+        return self._type(value)
+
+    def _typecast_default_convar(self):
+        """Return the typecasted value of the default ConVar."""
+        return getattr(
+            self.default,
+            'get_{value_type}'.format(
+                value_type=str(self._type)
+            )
+        )()
 
     def _menu_build(self, menu, index):
         """Set the default value in the menu description."""
@@ -210,6 +229,24 @@ class _IntegerSetting(_NumericalSetting):
     """Class used to store integer value settings."""
 
     _type = int
+
+
+class _BoolSetting(_SettingsType):
+    """Class used to store boolean value settings."""
+
+    _type = bool
+
+    def _typecast_value(self, value):
+        """Cast the given value to a boolean."""
+        try:
+            value = int(value)
+            return bool(value)
+        except ValueError:
+            return ''
+
+    def _is_valid_setting(self, value):
+        """Return whether the given value is a valid boolean value."""
+        return isinstance(value, self._type)
 
 
 class _StringSetting(_SettingsType):

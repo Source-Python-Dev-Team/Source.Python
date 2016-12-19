@@ -5,22 +5,16 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Collections
+# Python
 from collections import OrderedDict
 
-# Source.Python Imports
-#   Core
+# Source.Python
 from core import AutoUnload
-#   Menus
-from menus import PagedMenu
-from menus import PagedOption
-#   Settings
+from menus import PagedMenu, PagedOption
 from settings.menu import _player_settings
-from settings.types import _SettingsType
-from settings.types import _FloatSetting
-from settings.types import _IntegerSetting
-from settings.types import _StringSetting
+from settings.types import (
+    _BoolSetting, _FloatSetting, _IntegerSetting, _SettingsType, _StringSetting
+)
 
 
 # =============================================================================
@@ -129,6 +123,9 @@ class _SettingsDictionary(OrderedDict):
 
         # Return the setting
         return self[name]
+
+    def add_bool_setting(self, name, default, text=None):
+        self[name] = _BoolSetting(name, default, text)
 
     def add_string_setting(self, name, default, text=None):
         """Add a new string setting to the dictionary."""
