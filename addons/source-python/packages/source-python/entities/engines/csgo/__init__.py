@@ -16,12 +16,12 @@ from weapons.manager import weapon_manager
 # =============================================================================
 _weapon_names_for_definition = {
     weapon_manager[weapon].name: values.get('item_definition_index')
-    for weapon, values in weapon_manager.ini['weapons'].items()
+    for weapon, values in weapon_manager.ini.get('weapons', {}).items()
     if values.get('item_definition_index')
 }
 _weapon_parents = {
     weapon_manager[weapon].name: values.get('parent_class')
-    for weapon, values in weapon_manager.ini['weapons'].items()
+    for weapon, values in weapon_manager.ini.get('weapons', {}).items()
     if values.get('parent_class')
 }
 _parent_weapons = set(_weapon_parents.values())
