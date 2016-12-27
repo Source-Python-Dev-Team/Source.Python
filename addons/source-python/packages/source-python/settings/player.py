@@ -13,7 +13,7 @@ from core import AutoUnload
 from menus import PagedMenu, PagedOption
 from settings.menu import _player_settings
 from settings.types import (
-    _BoolSetting, _FloatSetting, _IntegerSetting, _SettingsType, _StringSetting
+    BoolSetting, FloatSetting, IntegerSetting, SettingsType, StringSetting
 )
 
 
@@ -40,11 +40,11 @@ class _SettingsDictionary(OrderedDict):
                 'Given name "{0}" is not valid'.format(name))
 
         # Set the base attributes
-        self._name = name
-        self._text = text
+        self.name = name
+        self.text = text
 
         # Create the instance's menu
-        self._menu = PagedMenu(
+        self.menu = PagedMenu(
             select_callback=self._chosen_item,
             title=name if text is None else text)
 
@@ -54,7 +54,7 @@ class _SettingsDictionary(OrderedDict):
     def __setitem__(self, item, value):
         """Validate the given value and its type before setting the item."""
         # Is the given value a proper type?
-        if not isinstance(value, (_SettingsDictionary, _SettingsType)):
+        if not isinstance(value, (_SettingsDictionary, SettingsType)):
 
             # Raise an error
             raise ValueError(
@@ -74,43 +74,23 @@ class _SettingsDictionary(OrderedDict):
         value = self[item]
 
         # Set the item's prefix
-        value._prefix = self.prefix + '_'
+        value.prefix = self.prefix + '_'
 
         # Does the section's name need added to the prefix?
         if not isinstance(self, PlayerSettings):
 
             # Add the section's name to the prefix
-            value._prefix += self.name.lower().replace(' ', '_') + '_'
+            value.prefix += self.name.lower().replace(' ', '_') + '_'
 
         # Add the option to the menu
         self.menu.append(PagedOption(
             value.name if value.text is None else value.text, value))
 
-    @property
-    def name(self):
-        """Return the name of the _SettingsDictionary instance."""
-        return self._name
-
-    @property
-    def text(self):
-        """Return the text of the _SettingsDictionary instance."""
-        return self._text
-
-    @property
-    def prefix(self):
-        """Return the prefix of the _SettingsDictionary instance."""
-        return self._prefix
-
-    @property
-    def menu(self):
-        """Return the instance's menu object."""
-        return self._menu
-
     def add_float_setting(
             self, name, default, text=None, min_value=None, max_value=None):
         """Add a new float setting to the dictionary."""
         # Add the new float setting to the dictionary
-        self[name] = _FloatSetting(name, default, text, min_value, max_value)
+        self[name] = FloatSetting(name, default, text, min_value, max_value)
 
         # Return the setting
         return self[name]
@@ -119,18 +99,18 @@ class _SettingsDictionary(OrderedDict):
             self, name, default, text=None, min_value=None, max_value=None):
         """Add a new integer setting to the dictionary."""
         # Add the new integer setting to the dictionary
-        self[name] = _IntegerSetting(name, default, text, min_value, max_value)
+        self[name] = IntegerSetting(name, default, text, min_value, max_value)
 
         # Return the setting
         return self[name]
 
     def add_bool_setting(self, name, default, text=None):
-        self[name] = _BoolSetting(name, default, text)
+        self[name] = BoolSetting(name, default, text)
 
     def add_string_setting(self, name, default, text=None):
         """Add a new string setting to the dictionary."""
         # Add the new string setting to the dictionary
-        self[name] = _StringSetting(name, default, text)
+        self[name] = StringSetting(name, default, text)
 
         # Return the setting
         return self[name]
@@ -183,7 +163,7 @@ class PlayerSettings(AutoUnload, _SettingsDictionary):
         super().__init__(name, text)
 
         # Set the prefix for the settings
-        self._prefix = prefix.lower()
+        self.prefix = prefix.lower()
 
         # Add the instance to the main dictionary
         _player_settings[name] = self
