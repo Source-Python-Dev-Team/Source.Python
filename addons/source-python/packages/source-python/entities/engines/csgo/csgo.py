@@ -1,13 +1,13 @@
-# ../engines/engines/csgo/csgo.py
+# ../entities/engines/csgo/csgo.py
 
-"""Provides CS:GO specific Entity based functionality."""
+"""Provides CS:GO game specific Entity based functionality."""
 
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
 # Source.Python
 from entities import BaseEntityGenerator
-from entities._base import Entity as _Entity
+from . import Entity as _Entity
 from weapons.manager import weapon_manager
 
 
