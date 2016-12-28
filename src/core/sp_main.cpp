@@ -536,4 +536,17 @@ bool CSourcePython::ShouldSupressLoadWarning(MDLHandle_t handle)
 
 	return result;
 }
+
+bool CSourcePython::BNetworkCryptKeyCheckRequired( uint32 unFromIP, uint16 usFromPort,
+	uint32 unAccountIdProvidedByClient, bool bClientWantsToUseCryptKey )
+{
+	return false;
+}
+
+bool CSourcePython::BNetworkCryptKeyValidate( uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient,
+	int nEncryptionKeyIndexFromClient, int numEncryptedBytesFromClient, byte *pbEncryptedBufferFromClient,
+	byte *pbPlainTextKeyForNetchan )
+{
+	return false;
+}
 #endif
