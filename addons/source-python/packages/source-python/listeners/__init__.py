@@ -16,7 +16,7 @@ from cvars import cvar
 #   Core
 from core import AutoUnload
 from core.settings import _core_settings
-from core.version import is_newer_version_available
+from core.version import get_last_successful_build_number
 from core.version import is_unversioned
 from core.version import VERSION
 #   Players
@@ -458,15 +458,19 @@ def _on_level_init(map_name):
     """Called when a new map gets initialized."""
     OnLevelEnd._level_initialized = True
 
+    # Don't check if it's an unversioned build (dev version)
+    if is_unversioned():
+        return
+
     if not _check_for_update.get_int():
         return
 
     try:
-        update_available, version = is_newer_version_available()
+        latest_version = get_last_successful_build_number()
     except (URLError, socket.timeout):
         return
 
-    if not update_available:
+    if VERSION >= latest_version:
         return
 
     if _notify_on_update.get_int():
@@ -474,8 +478,7 @@ def _on_level_init(map_name):
         listeners_logger.log_warning(
             'A new Source.Python version is available!')
 
-    on_version_update_listener_manager.notify(
-        VERSION, version, is_unversioned())
+    on_version_update_listener_manager.notify(VERSION, latest_version)
 
 
 @OnLevelShutdown
