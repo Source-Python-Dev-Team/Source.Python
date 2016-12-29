@@ -360,6 +360,9 @@ def setup_stdout_redirect():
     # useful in some cases (e.g. generating the wiki).
     # Thus, we only redirect sys.stdout if it's None for now, which only seems
     # to happen on Windows 10. Otherwise, print() wouldn't output anything.
+    # See also:
+    # https://github.com/Source-Python-Dev-Team/Source.Python/issues/151
+    # https://github.com/Source-Python-Dev-Team/Source.Python/issues/175
     if sys.stdout is not None:
         return
 
@@ -367,10 +370,12 @@ def setup_stdout_redirect():
     warn(
         'sys.stdout is None. All data will be redirected through '
         'core.console_message() instead. If you receive this warning, please '
-        'notify us and tell us your operating system. Source.Python should '
-        'continue working, but we would like to figure out in which '
-        'situations sys.stdout is None to fix this issue instead of applying '
-        'a workaround.')
+        'notify us and tell us your operating system, game and Source.Python '
+        'version. The information can be posted here: '
+        'https://github.com/Source-Python-Dev-Team/Source.Python/issues/175. '
+        'Source.Python should continue working, but we would like to figure '
+        'out in which situations sys.stdout is None to be able to fix this '
+        'issue instead of applying a workaround.')
 
     _sp_logger.log_debug('Setting up sys.stdout redirect...')
 
