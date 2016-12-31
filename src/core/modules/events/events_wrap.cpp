@@ -31,6 +31,7 @@
 #include "modules/memory/memory_tools.h"
 #include "events.h"
 #include "igameevents.h"
+#include "events_generator.h"
 
 
 //-----------------------------------------------------------------------------
@@ -42,9 +43,12 @@ extern IGameEventManager2* gameeventmanager;
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-void export_igameevent(scope);
-void export_igameeventlistener(scope);
-void export_igameeventmanager(scope);
+static void export_igameevent(scope);
+static void export_igameeventlistener(scope);
+static void export_igameeventmanager(scope);
+static void export_gameeventdescriptor_iter(scope);
+static void export_gameeventdescriptor(scope);
+static void export_eventvartype(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -55,13 +59,16 @@ DECLARE_SP_MODULE(_events)
 	export_igameevent(_events);
 	export_igameeventlistener(_events);
 	export_igameeventmanager(_events);
+	export_gameeventdescriptor_iter(_events);
+	export_gameeventdescriptor(_events);
+	export_eventvartype(_events);
 }
 
 
 //-----------------------------------------------------------------------------
 // Exports IGameEvent.
 //-----------------------------------------------------------------------------
-void export_igameevent(scope _events)
+static void export_igameevent(scope _events)
 {
 	class_<IGameEvent, boost::noncopyable>("GameEvent", no_init)
 		.add_property("name",
@@ -168,7 +175,7 @@ void export_igameevent(scope _events)
 //-----------------------------------------------------------------------------
 // Exports CGameEventListener2.
 //-----------------------------------------------------------------------------
-void export_igameeventlistener(scope _events)
+static void export_igameeventlistener(scope _events)
 {
 	class_<CGameEventListener2, boost::noncopyable>("GameEventListener")
 		.def("fire_game_event",
@@ -196,7 +203,7 @@ void export_igameeventlistener(scope _events)
 //-----------------------------------------------------------------------------
 BOOST_PYTHON_MEMBER_FUNCTION_OVERLOADS(create_event_overload, CreateEvent, 2, 2);
 
-void export_igameeventmanager(scope _events)
+static void export_igameeventmanager(scope _events)
 {
 	class_<IGameEventManager2, boost::noncopyable>("_GameEventManager", no_init)
 		.def("load_events_from_file",
@@ -268,6 +275,11 @@ void export_igameeventmanager(scope _events)
 			args("game_event")
 		)
 
+		.add_property("events",
+			make_function(&IGameEventManager2Ext::GetGameEvents, manage_new_object_policy()),
+			"Return a generator that allows you to iterate over all registered events."
+		)
+
 		ADD_MEM_TOOLS(IGameEventManager2)
 	;
 
@@ -290,4 +302,80 @@ void export_igameeventmanager(scope _events)
 	END_CLASS_INFO()
 
 	_events.attr("game_event_manager") = object(ptr(gameeventmanager));
+}
+
+
+//---------------------------------------------------------------------------------
+// Exports CGameEventDescriptor.
+//---------------------------------------------------------------------------------
+static void export_gameeventdescriptor(scope _events)
+{
+	class_<CGameEventDescriptor, boost::noncopyable> GameEventDescriptor("GameEventDescriptor", no_init);
+
+	GameEventDescriptor.add_property(
+		"name",
+		&CGameEventDescriptor::GetName,
+		"Return the name of the event."
+	);
+
+	GameEventDescriptor.def_readwrite(
+		"event_id",
+		&CGameEventDescriptor::eventid,
+		"Return the ID of the event."
+	);
+
+	GameEventDescriptor.add_property(
+		"variables",
+		make_getter(&CGameEventDescriptor::keys, reference_existing_object_policy()),
+		"Return the variables of the event."
+	);
+
+	GameEventDescriptor.def_readwrite(
+		"local",
+		&CGameEventDescriptor::local,
+		"Return True if the event is local only (server only)."
+	);
+
+	GameEventDescriptor.def_readwrite(
+		"reliable",
+		&CGameEventDescriptor::reliable,
+		"Return True if the event is sent as a reliable message."
+	);
+
+	GameEventDescriptor ADD_MEM_TOOLS(CGameEventDescriptor)
+}
+
+
+//---------------------------------------------------------------------------------
+// Exports CGameEventDescriptorIter.
+//---------------------------------------------------------------------------------
+static void export_gameeventdescriptor_iter(scope _events)
+{
+	class_<CGameEventDescriptorIter> GameEventDescriptorIter("GameEventDescriptorIter", no_init);
+
+	GameEventDescriptorIter.def("__iter__",
+		&CGameEventDescriptorIter::__iter__
+	);
+
+	GameEventDescriptorIter.def(
+		"__next__",
+		&CGameEventDescriptorIter::__next__,
+		reference_existing_object_policy()
+	);
+}
+
+
+//---------------------------------------------------------------------------------
+// Exports EventVarType.
+//---------------------------------------------------------------------------------
+static void export_eventvartype(scope _events)
+{
+	enum_<EventVarType> _EventVarType("EventVarType");
+	_EventVarType.value("LOCAL", TYPE_LOCAL);
+	_EventVarType.value("STRING", TYPE_STRING);
+	_EventVarType.value("FLOAT", TYPE_FLOAT);
+	_EventVarType.value("LONG", TYPE_LONG);
+	_EventVarType.value("SHORT", TYPE_SHORT);
+	_EventVarType.value("BYTE", TYPE_BYTE);
+	_EventVarType.value("BOOL", TYPE_BOOL);
 }

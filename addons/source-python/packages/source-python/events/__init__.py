@@ -19,14 +19,18 @@ from loggers import _sp_logger
 # =============================================================================
 # Source.Python Imports
 #   Events
+from _events import EventVarType
 from _events import GameEvent
+from _events import GameEventDescriptor
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('Event',
+           'EventVarType',
            'GameEvent',
+           'GameEventDescriptor',
            )
 
 
