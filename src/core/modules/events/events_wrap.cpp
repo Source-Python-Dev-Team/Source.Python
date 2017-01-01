@@ -378,4 +378,6 @@ static void export_eventvartype(scope _events)
 	_EventVarType.value("SHORT", TYPE_SHORT);
 	_EventVarType.value("BYTE", TYPE_BYTE);
 	_EventVarType.value("BOOL", TYPE_BOOL);
+	_EventVarType.value("UINT64", TYPE_UINT64);
+	_EventVarType.value("WSTRING", TYPE_WSTRING);
 }

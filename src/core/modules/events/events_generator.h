@@ -63,7 +63,9 @@ enum EventVarType
 	TYPE_LONG,		// signed int 32 bit
 	TYPE_SHORT,		// signed int 16 bit
 	TYPE_BYTE,		// unsigned int 8 bit
-	TYPE_BOOL		// unsigned int 1 bit
+	TYPE_BOOL,		// unsigned int 1 bit
+	TYPE_UINT64,
+	TYPE_WSTRING
 };
 
 
