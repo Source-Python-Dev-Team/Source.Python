@@ -54,13 +54,13 @@ class PluginManager(OrderedDict):
 
     instance = None
     prefix = None
+    logger = None
+    translations = None
 
     def __init__(self, base_import=''):
         """Called when the class instance is initialized."""
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
-        self.logger = None
-        self.translations = None
         self._base_import = base_import
 
         # Does the object have a logger set?
@@ -71,19 +71,30 @@ class PluginManager(OrderedDict):
         if self.translations is None:
             self.translations = _plugin_strings
 
+    def _create_plugin_instance(self, plugin_name):
+        """Create a new plugin instance.
+
+        :rtype: LoadedPlugin
+        """
+        # TODO:
+        # Rename "instance" to a better name? Perphaps completely remove it?
+        # Subclasses should implement this method instead.
+        return self.instance(plugin_name, self)
+
     def __missing__(self, plugin_name):
         """Try to load a plugin that is not loaded."""
         # Try to get the plugin's instance
         try:
+            instance = self._create_plugin_instance(plugin_name)
 
-            # Get the plugin's instance
-            instance = self.instance(plugin_name, self)
+            # Add the instance here, so we can use get_plugin_instance() etc.
+            # within the plugin itself before the plugin has been fully
+            # loaded. This is also required e.g. for retrieving the PluginInfo
+            # instance.
+            self[plugin_name] = instance
 
-            # Does the plugin have a load function?
-            if 'load' in instance.globals:
-
-                # Call the plugin's load function
-                instance.globals['load']()
+            # Actually load the plugin
+            instance._load()
 
         # Was the file not found?
         # We use this check because we already printed the error to console
@@ -94,6 +105,10 @@ class PluginManager(OrderedDict):
 
         # Was a different error encountered?
         except:
+            try:
+                super().__delitem__(plugin_name)
+            except KeyError:
+                pass
 
             # Get the error
             error = sys.exc_info()
@@ -120,8 +135,6 @@ class PluginManager(OrderedDict):
             # Return None as the value to show the addon was not loaded
             return None
 
-        # Add the plugin to the dictionary with its instance
-        self[plugin_name] = instance
         on_plugin_loaded_manager.notify(plugin_name)
         return instance
 
@@ -129,29 +142,13 @@ class PluginManager(OrderedDict):
         """Remove a plugin from the manager."""
         # Is the plugin in the dictionary?
         if plugin_name not in self:
-
-            # Do nothing
             return
 
         # Print a message about the plugin being unloaded
         self.logger.log_message(self.prefix + self.translations[
             'Unloading'].get_string(plugin=plugin_name))
 
-        # Does the plugin have an unload function?
-        if 'unload' in self[plugin_name].globals:
-
-            # Use a try/except here to still allow the plugin to be unloaded
-            try:
-
-                # Call the plugin's unload function
-                self[plugin_name].globals['unload']()
-
-            # Was an exception raised?
-            except:
-
-                # Print the error to console, but
-                # allow the plugin to still be unloaded
-                except_hooks.print_exception()
+        self[plugin_name]._unload()
 
         # Remove all modules from sys.modules
         self._remove_modules(plugin_name)

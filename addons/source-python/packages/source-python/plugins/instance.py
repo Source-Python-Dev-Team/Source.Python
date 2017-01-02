@@ -59,6 +59,9 @@ class LoadedPlugin(object):
         self.plugin_name = plugin_name
         self.directory = self.manager.get_plugin_directory(plugin_name)
         self.file_path = self.directory / plugin_name + '.py'
+        self.info = self.manager._create_plugin_info(self.plugin_name)
+        self.info._create_public_convar()
+        self._plugin = None
 
         # Fall back to the default logger if none was set
         if self.logger is None:
@@ -86,16 +89,23 @@ class LoadedPlugin(object):
             raise PluginFileNotFoundError
 
         # Get the import name
-        self.import_name = (self.manager.base_import + plugin_name + 
+        self.import_name = (self.manager.base_import + plugin_name +
                             '.' + plugin_name)
 
-        # Import the plugin
+    def _load(self):
+        """Actually load the plugin."""
         self._plugin = import_module(self.import_name)
-
-        # Set the globals value
         self.globals = {
             x: getattr(self._plugin, x) for x in dir(self._plugin)}
 
-        # Add this instance to the plugin info for easier access
-        self.info = self.manager._create_plugin_info(self.plugin_name)
-        self.info._create_public_convar()
+        if 'load' in self.globals:
+            self.globals['load']()
+
+    def _unload(self):
+        """Actually unload the plugin."""
+        if 'unload' in self.globals:
+            # Use a try/except here to still allow the plugin to be unloaded
+            try:
+                self.globals['unload']()
+            except:
+                except_hooks.print_exception()
