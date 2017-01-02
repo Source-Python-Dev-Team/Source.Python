@@ -39,6 +39,7 @@ from loggers import _sp_logger  # It's save to import this here
 # =============================================================================
 def load():
     """Load Source.Python's Python side."""
+    setup_stdout_redirect()
     setup_core_settings()
     setup_logging()
     setup_hooks()
@@ -343,3 +344,50 @@ def setup_sqlite():
     # memory using its absolute path.
     # Using RPATH might be a better solution, but I don't get it working...
     ctypes.cdll.LoadLibrary(BASE_PATH / 'Python3/plat-linux/libsqlite3.so.0')
+
+
+# =============================================================================
+# >> STDOUT
+# =============================================================================
+def setup_stdout_redirect():
+    """Setup sys.stdout redirect."""
+    import sys
+
+    # The idea is to always redirect sys.stdout, because this allows us to use
+    # print(), which will also print the output to the client console, if it
+    # has been triggered via RCON or on a listen server. However, the downside
+    # of this is that we can't flush the console anymore, which is quite
+    # useful in some cases (e.g. generating the wiki).
+    # Thus, we only redirect sys.stdout if it's None for now, which only seems
+    # to happen on Windows 10. Otherwise, print() wouldn't output anything.
+    # See also:
+    # https://github.com/Source-Python-Dev-Team/Source.Python/issues/151
+    # https://github.com/Source-Python-Dev-Team/Source.Python/issues/175
+    if sys.stdout is not None:
+        return
+
+    from warnings import warn
+    warn(
+        'sys.stdout is None. All data will be redirected through '
+        'core.console_message() instead. If you receive this warning, please '
+        'notify us and tell us your operating system, game and Source.Python '
+        'version. The information can be posted here: '
+        'https://github.com/Source-Python-Dev-Team/Source.Python/issues/175. '
+        'Source.Python should continue working, but we would like to figure '
+        'out in which situations sys.stdout is None to be able to fix this '
+        'issue instead of applying a workaround.')
+
+    _sp_logger.log_debug('Setting up sys.stdout redirect...')
+
+    from core import console_message
+
+    class StdoutRedirect(object):
+        def write(self, data):
+            console_message(data)
+            return len(data)
+
+        def flush(self):
+            # We can't flush anymore...
+            pass
+
+    sys.stdout = StdoutRedirect()

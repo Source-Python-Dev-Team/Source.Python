@@ -32,6 +32,7 @@
 //-----------------------------------------------------------------------------
 #include "igameevents.h"
 #include "modules/keyvalues/keyvalues.h"
+#include "events_generator.h"
 
 
 //-----------------------------------------------------------------------------
@@ -74,6 +75,7 @@ public:
 	KeyValues* m_pVariables;
 };
 
+
 //-----------------------------------------------------------------------------
 // IGameEventListener2 wrapper class.
 //-----------------------------------------------------------------------------
@@ -90,6 +92,20 @@ public:
 	virtual int GetEventDebugID()
 	{
 		return EVENT_DEBUG_ID_INIT;
+	}
+};
+
+
+//-----------------------------------------------------------------------------
+// IGameEventManager2 extension class.
+//-----------------------------------------------------------------------------
+class IGameEventManager2Ext
+{
+public:
+	static CGameEventDescriptorIter* GetGameEvents(IGameEventManager2* _manager)
+	{
+		CGameEventManager2* manager = (CGameEventManager2*) _manager;
+		return new CGameEventDescriptorIter(&manager->game_events);
 	}
 };
 

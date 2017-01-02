@@ -456,3 +456,28 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 	}
 }
 #endif
+
+#if defined(ENGINE_CSGO)
+bool CSourcePython::BNetworkCryptKeyCheckRequired( uint32 unFromIP, uint16 usFromPort,
+	uint32 unAccountIdProvidedByClient, bool bClientWantsToUseCryptKey )
+{
+	if (m_pCorePlugin != NULL)
+	{
+		return m_pCorePlugin->BNetworkCryptKeyCheckRequired(unFromIP, usFromPort, unAccountIdProvidedByClient, bClientWantsToUseCryptKey);
+	}
+	return false;
+}
+
+bool CSourcePython::BNetworkCryptKeyValidate( uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient,
+	int nEncryptionKeyIndexFromClient, int numEncryptedBytesFromClient, byte *pbEncryptedBufferFromClient,
+	byte *pbPlainTextKeyForNetchan )
+{
+	if (m_pCorePlugin != NULL)
+	{
+		return m_pCorePlugin->BNetworkCryptKeyValidate( unFromIP, usFromPort, unAccountIdProvidedByClient,
+			nEncryptionKeyIndexFromClient, numEncryptedBytesFromClient, pbEncryptedBufferFromClient,
+			pbPlainTextKeyForNetchan );
+	}
+	return false;
+}
+#endif
