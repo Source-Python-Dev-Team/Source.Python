@@ -176,6 +176,8 @@ class PluginManager(OrderedDict):
     def is_loaded(self, plugin_name):
         """Return whether or not a plugin is loaded.
 
+        :param str plugin_name:
+            The plugin to check.
         :rtype: bool
         """
         return plugin_name in self
@@ -183,6 +185,8 @@ class PluginManager(OrderedDict):
     def plugin_exists(self, plugin_name):
         """Return whether of not a plugin exists.
 
+        :param str plugin_name:
+            The plugin to check.
         :rtype: bool
         """
         return self.get_plugin_directory(plugin_name).isdir()
@@ -190,8 +194,16 @@ class PluginManager(OrderedDict):
     def get_plugin_instance(self, plugin_name):
         """Return a plugin's instance, if it is loaded.
 
+        :param str plugin_name:
+            The plugin to check. You can pass ``__name__`` from one of your
+            plugin files to retrieve its own plugin instance.
         :rtype: LoadedPlugin
         """
+        # This allows passing __name__ to this method
+        if plugin_name.startswith(self.base_import):
+            plugin_name = plugin_name.replace(
+                self.base_import, '', 1).split('.', 1)[0]
+
         if plugin_name in self:
             return self[plugin_name]
 
@@ -207,6 +219,9 @@ class PluginManager(OrderedDict):
     def get_plugin_info(self, plugin_name):
         """Return information about the given plugin.
 
+        :param str plugin_name:
+            The plugin to check. You can pass ``__name__`` from one of your
+            plugin files to retrieve its own plugin instance.
         :rtype: PluginInfo
         """
         plugin = self.get_plugin_instance(plugin_name)
