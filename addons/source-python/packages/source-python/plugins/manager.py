@@ -8,6 +8,9 @@
 # Python Imports
 #   Collections
 from collections import OrderedDict
+#   Configobj
+from configobj import ConfigObj
+from configobj import Section
 #   Sys
 import sys
 
@@ -20,10 +23,13 @@ from hooks.exceptions import except_hooks
 #   Listeners
 from listeners import on_plugin_loaded_manager
 from listeners import on_plugin_unloaded_manager
+#   Paths
+from paths import PLUGIN_PATH
 #   Plugins
 from plugins import plugins_logger
 from plugins import _plugin_strings
 from plugins.errors import PluginFileNotFoundError
+from plugins.info import PluginInfo
 
 
 # =============================================================================
@@ -55,8 +61,6 @@ class PluginManager(OrderedDict):
         super().__init__()
         self.logger = None
         self.translations = None
-
-        # Store the base import path
         self._base_import = base_import
 
         # Does the object have a logger set?
@@ -73,7 +77,7 @@ class PluginManager(OrderedDict):
         try:
 
             # Get the plugin's instance
-            instance = self.instance(plugin_name, self.base_import)
+            instance = self.instance(plugin_name, self)
 
             # Does the plugin have a load function?
             if 'load' in instance.globals:
@@ -164,6 +168,14 @@ class PluginManager(OrderedDict):
         """
         return self._base_import
 
+    @property
+    def plugins_directory(self):
+        """Return the directory where the plugins are stored.
+
+        :rtype: path.Path
+        """
+        return PLUGIN_PATH.joinpath(*tuple(self.base_import.split('.')[:~0]))
+
     def is_loaded(self, plugin_name):
         """Return whether or not a plugin is loaded.
 
@@ -171,19 +183,87 @@ class PluginManager(OrderedDict):
         """
         return plugin_name in self
 
+    def plugin_exists(self, plugin_name):
+        """Return whether of not a plugin exists.
+
+        :rtype: bool
+        """
+        return self.get_plugin_directory(plugin_name).isdir()
+
     def get_plugin_instance(self, plugin_name):
         """Return a plugin's instance, if it is loaded.
 
         :rtype: LoadedPlugin
         """
-        # Is the plugin loaded?
         if plugin_name in self:
-
-            # Return the plugin's instance
             return self[plugin_name]
 
-        # Return None if the plugin is not loaded
         return None
+
+    def get_plugin_directory(self, plugin_name):
+        """Return the directory of the given plugin.
+
+        :rtype: path.Path
+        """
+        return self.plugins_directory / plugin_name
+
+    def get_plugin_info(self, plugin_name):
+        """Return information about the given plugin.
+
+        :rtype: PluginInfo
+        """
+        plugin = self.get_plugin_instance(plugin_name)
+        if plugin is not None:
+            return plugin.info
+
+        return self._create_plugin_info(plugin_name)
+
+    def _create_plugin_info(self, plugin_name):
+        """Create a new :class:`plugins.info.PluginInfo` instance.
+
+        :param str plugin_name:
+            Name of the plugin whose plugin info should be created.
+        :rtype: PluginInfo
+        """
+        if not self.plugin_exists(plugin_name):
+            raise ValueError(
+                'Plugin "{}" does not exist.'.format(plugin_name))
+
+        info_file = self.get_plugin_directory(plugin_name) / 'info.ini'
+        if not info_file.isfile():
+            # Just return an "empty" PluginInfo instance. We don't have more
+            # information.
+            return PluginInfo(plugin_name)
+
+        info = ConfigObj(info_file)
+        return PluginInfo(
+            plugin_name,
+            info.pop('verbose_name', None),
+            info.pop('author', None),
+            info.pop('description', None),
+            info.pop('version', None),
+            info.pop('url', None),
+            tuple(info.pop('permissions', dict()).items()),
+            self._get_public_convar_from_info_file(info),
+            self._get_display_in_listing_from_info_file(info),
+            **info.dict()
+        )
+
+    @staticmethod
+    def _get_public_convar_from_info_file(info):
+        data = info.pop('public_convar', True)
+        if isinstance(data, Section):
+            return data.dict()
+
+        return data
+
+    @staticmethod
+    def _get_display_in_listing_from_info_file(info):
+        data = info.pop('display_in_listing', [])
+        if isinstance(data, (tuple, list)):
+            return list(data)
+
+        return [data]
 
     def _remove_modules(self, plugin_name):
         """Remove all modules from the plugin."""

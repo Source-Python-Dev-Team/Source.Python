@@ -44,13 +44,21 @@ class LoadedPlugin(object):
     translations = None
     prefix = None
 
-    def __init__(self, plugin_name, base_import):
-        """Called when a plugin's instance is initialized."""
+    def __init__(self, plugin_name, manager):
+        """Called when a plugin's instance is initialized.
+
+        :param str plugin_name:
+            Name of the plugin to load.
+        :param PluginManager manager:
+            A plugin manager instance.
+        """
+        self.manager = manager
         self.file_path = None
         self.import_name = None
         self.globals = None
-        self.base_import = base_import
         self.plugin_name = plugin_name
+        self.directory = self.manager.get_plugin_directory(plugin_name)
+        self.file_path = self.directory / plugin_name + '.py'
 
         # Fall back to the default logger if none was set
         if self.logger is None:
@@ -63,10 +71,6 @@ class LoadedPlugin(object):
         # Print message that the plugin is going to be loaded
         self.logger.log_message(self.prefix + self.translations[
             'Loading'].get_string(plugin=plugin_name))
-
-        # Get the plugin's main file
-        self.file_path = PLUGIN_PATH.joinpath(*tuple(
-            base_import.split('.')[:~0] + [plugin_name, plugin_name + '.py']))
 
         # Does the plugin's main file exist?
         if not self.file_path.isfile():
@@ -81,8 +85,9 @@ class LoadedPlugin(object):
             # is not added to the PluginManager
             raise PluginFileNotFoundError
 
-        # Get the base import
-        self.import_name = base_import + plugin_name + '.' + plugin_name
+        # Get the import name
+        self.import_name = (self.manager.base_import + plugin_name + 
+                            '.' + plugin_name)
 
         # Import the plugin
         self._plugin = import_module(self.import_name)
@@ -92,21 +97,5 @@ class LoadedPlugin(object):
             x: getattr(self._plugin, x) for x in dir(self._plugin)}
 
         # Add this instance to the plugin info for easier access
-        info = self.info
-        if info is not None:
-            info.plugin = self
-            info._create_public_convar()
-
-    @property
-    def info(self):
-        """Return the plugin's PluginInfo instance.
-
-        If no PluginInfo was found, None will be returned.
-
-        :rtype: PluginInfo
-        """
-        for obj in self.globals.values():
-            if isinstance(obj, PluginInfo):
-                return obj
-
-        return None
+        self.info = self.manager._create_plugin_info(self.plugin_name)
+        self.info._create_public_convar()
