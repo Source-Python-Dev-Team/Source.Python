@@ -263,11 +263,12 @@ class PluginManager(OrderedDict):
 
     @staticmethod
     def _get_public_convar_from_info_file(info):
-        data = info.pop('public_convar', True)
+        data = info.pop('public_convar', 'True')
         if isinstance(data, Section):
             return data.dict()
 
-        return data
+        # False and 0 result in False, everything else is True
+        return data.lower() not in ('false', '0')
 
     @staticmethod
     def _get_display_in_listing_from_info_file(info):
