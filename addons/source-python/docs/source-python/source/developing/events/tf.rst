@@ -1,7 +1,7 @@
 Team Fortress 2
-======================
+===============
 
-This is a summary of all known GAME events.
+This is a summary of all known Team Fortress 2 events.
 
 
 achievement_earned

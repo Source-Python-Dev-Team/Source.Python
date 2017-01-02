@@ -1,7 +1,7 @@
 Day of Defeat: Source
 =====================
 
-This is a summary of all known GAME events.
+This is a summary of all known Day of Defeat: Source events.
 
 
 achievement_earned
