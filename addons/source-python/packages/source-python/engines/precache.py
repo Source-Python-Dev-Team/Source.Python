@@ -48,7 +48,16 @@ class _PrecacheBase(AutoUnload):
     _downloads = None
 
     def __init__(self, path, preload=False, download=False):
-        """Add the file to downloadables if download is True."""
+        """Add the file to downloadables if download is True.
+
+        :param str path:
+            Path to file to use.
+        :param bool preload:
+            If ``True`` the file will be pre-loaded.
+        :param bool download:
+            If ``True`` the file will be added to the ``downloadables`` string
+            table.
+        """
         # Save the path that should be precached
         self._path = path
 
@@ -73,9 +82,12 @@ class _PrecacheBase(AutoUnload):
 
     @property
     def index(self):
-        """Return the precached index of the object."""
+        """Return the precached index of the object.
+
+        :rtype: int
+        """
         # Get the index of the object in its precache table
-        index = string_tables[self._precache_table][self._path]
+        index = string_tables[self.precache_table][self._path]
 
         # Is the object precached?
         if index != INVALID_STRING_INDEX:
@@ -86,11 +98,14 @@ class _PrecacheBase(AutoUnload):
         # If the object was not precached, raise an error
         raise PrecacheError(
             '"{0}" was not able to be precached due to the "{1}" table '
-            'reaching its limit.'.format(self._path, self._precache_table))
+            'reaching its limit.'.format(self._path, self.precache_table))
 
     @property
     def path(self):
-        """Return the path."""
+        """Return the path.
+
+        :rtype: str
+        """
         return self._path
 
     def _precache(self):
@@ -111,13 +126,16 @@ class _PrecacheBase(AutoUnload):
         event_manager.unregister_for_event('server_spawn', self._server_spawn)
 
     @property
-    def _precache_table(self):
-        """Should define the name of the precache table."""
-        raise NotImplementedError('No _precache_table defined for class.')
+    def precache_table(self):
+        """Return the name of the precache table.
+
+        :rtype: str
+        """
+        raise NotImplementedError('No precache_table defined for class.')
 
     @property
     def _precache_method(self):
-        """Should define the method to be used to precache the path."""
+        """Return a method to precache the file."""
         raise NotImplementedError('No _precache_method defined for class.')
 
 
@@ -125,7 +143,7 @@ class Decal(_PrecacheBase):
     """Class used to handle a specific decal."""
 
     # Set the base attributes
-    _precache_table = 'decalprecache'
+    precache_table = 'decalprecache'
     _precache_method = engine_server.precache_decal
 
 
@@ -133,7 +151,7 @@ class Generic(_PrecacheBase):
     """Class used to handle generic precaching."""
 
     # Set the base attributes
-    _precache_table = 'genericprecache'
+    precache_table = 'genericprecache'
     _precache_method = engine_server.precache_generic
 
 
@@ -141,5 +159,5 @@ class Model(_PrecacheBase):
     """Class used to handle a specific model."""
 
     # Set the base attributes
-    _precache_table = 'modelprecache'
+    precache_table = 'modelprecache'
     _precache_method = engine_server.precache_model

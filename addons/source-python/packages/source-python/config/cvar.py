@@ -22,7 +22,22 @@ class _CvarManager(dict):
 
     def __init__(
             self, name, default, description, flags, min_value, max_value):
-        """Called on instantiation."""
+        """Called on instantiation.
+
+        :param str name:
+            Name of the console variable.
+        :param object default:
+            A default value for the console variable. It will be converted to
+            a string.
+        :param str/TranslationStrings description:
+            A description of the console variable.
+        :param ConVarFlags flags:
+            Flags that should be used for the console variable.
+        :param float min_value:
+            Minimum value.
+        :param float max_value:
+            Maximum value.
+        """
         # Initialize the dictionary
         super().__init__()
 
@@ -75,7 +90,10 @@ class _CvarManager(dict):
         super().__setattr__(attr, value)
 
     def __missing__(self, item):
-        """Create the item as a _ListManager instance."""
+        """Create the item as a _ListManager instance.
+
+        :rtype: _ListManager
+        """
         # Get the _ListManager instance for the given item
         value = self[item] = _ListManager(item)
 
@@ -123,7 +141,11 @@ class _CvarManager(dict):
         return True
 
     def text(self, text):
-        """Add simple text or a TranslationStrings instance to the list."""
+        """Add a text to the list.
+
+        :param str/TranslationStrings text:
+            The text to add.
+        """
         # Is the item a TranslationStrings instance?
         if isinstance(text, TranslationStrings):
 
@@ -135,22 +157,34 @@ class _CvarManager(dict):
 
     @property
     def name(self):
-        """Return the cvar's name."""
+        """Return the cvar's name.
+
+        :rtype: str
+        """
         return self._name
 
     @property
     def default(self):
-        """Return the cvar's default value."""
+        """Return the cvar's default value.
+
+        :rtype: str
+        """
         return self._default
 
     @property
     def description(self):
-        """Return the cvar's description."""
+        """Return the cvar's description.
+
+        :rtype: str
+        """
         return self._description
 
     @property
     def cvar(self):
-        """Return the cvar's ConVar instance."""
+        """Return the cvar's :class:`cvars.ConVar` instance.
+
+        :rtype: ConVar
+        """
         return self._cvar
 
 
@@ -175,7 +209,10 @@ class _ListManager(list):
 
     @property
     def name(self):
-        """Return the name of the list."""
+        """Return the name of the list.
+
+        :rtype: str
+        """
         return self._name
 
     def append(self, text):

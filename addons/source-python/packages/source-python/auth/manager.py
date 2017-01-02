@@ -71,11 +71,13 @@ class PermissionBase(dict):
     def add(self, permission, server_id=None, update_backend=True):
         """Add a permission.
 
-        :param str permission: The permission to add.
-        :param int server_id: The server ID to which the permission should be
-            added. If no server ID is given, it will be only added to this
-            server.
-        :param bool update_backend: If True, the backend will be updated.
+        :param str permission:
+            The permission to add.
+        :param int server_id:
+            The server ID to which the permission should be added. If no
+            server ID is given, it will be only added to this server.
+        :param bool update_backend:
+            If True, the backend will be updated.
         """
         if (auth_manager.targets_this_server(server_id) and
                 permission not in self.keys()):
@@ -89,11 +91,13 @@ class PermissionBase(dict):
     def remove(self, permission, server_id=None, update_backend=True):
         """Remove a permission.
 
-        :param str permission: The permission to remove.
-        :param int server_id: The server ID from which the permission should
-            be removed. If no server ID is given, it will be only removed from
-            this server.
-        :param bool update_backend: If True, the backend will be updated.
+        :param str permission:
+            The permission to remove.
+        :param int server_id:
+            The server ID from which the permission should be removed. If no
+            server ID is given, it will be only removed from this server.
+        :param bool update_backend:
+            If True, the backend will be updated.
         """
         if auth_manager.targets_this_server(server_id):
             try:
@@ -109,8 +113,10 @@ class PermissionBase(dict):
     def add_parent(self, parent_name, update_backend=True):
         """Add a parent.
 
-        :param str parent_name: Name of the parent.
-        :param bool update_backend: If True, the backend will be updated.
+        :param str parent_name:
+            Name of the parent.
+        :param bool update_backend:
+            If True, the backend will be updated.
         """
         parent = auth_manager.parents[parent_name]
         if parent not in self.parents:
@@ -124,8 +130,10 @@ class PermissionBase(dict):
     def remove_parent(self, parent_name, update_backend=True):
         """Remove a parent.
 
-        :param str parent_name: Name of the parent.
-        :param bool update_backend: If True, the backend will be updated.
+        :param str parent_name:
+            Name of the parent.
+        :param bool update_backend:
+            If True, the backend will be updated.
         """
         parent = auth_manager.parents[parent_name]
         if parent in self.parents:
@@ -142,7 +150,10 @@ class PermissionBase(dict):
             permission.replace('.', '\\.').replace('*', '(.*)')))
 
     def __contains__(self, permission):
-        """Return True if the permission is granted by this object."""
+        """Return True if the permission is granted by this object.
+
+        :rtype: bool
+        """
         return self._has_permission(permission, [])
 
     def _has_permission(self, permission, name_list):
@@ -173,6 +184,7 @@ class PermissionBase(dict):
             yield from parent
 
     def clear(self):
+        """Removes all permissions stored in this object and its parents."""
         super().clear()
         self.parents.clear()
 
@@ -183,9 +195,11 @@ class PlayerPermissions(PermissionBase):
     def __init__(self, name, steamid64):
         """Initialize the object.
 
-        :param str name: A SteamID2, SteamID3 or SteamID64 value.
-        :param int steamid64: The SteamID64 value that was also used to store
-            the object in the :class:PlayerPermissionDict`` object.
+        :param str name:
+            A SteamID2, SteamID3 or SteamID64 value.
+        :param int steamid64:
+            The SteamID64 value that was also used to store the object in the
+            :class:PlayerPermissionDict`` object.
         """
         super().__init__(name)
         self.steamid64 = steamid64
@@ -197,7 +211,8 @@ class ParentPermissions(PermissionBase):
     def __init__(self, name):
         """Initialize the object.
 
-        :param str name: Name of the parent.
+        :param str name:
+            Name of the parent.
         """
         super().__init__(name)
         self.children = set()
@@ -217,7 +232,9 @@ class ParentPermissionDict(_PermissionDict):
     def __missing__(self, parent_name):
         """Create, store and return a :class:`ParentPermissions` object.
 
-        :param str parent_name: The name of the parent to retrieve.
+        :param str parent_name:
+            The name of the parent to retrieve.
+        :rtype: ParentPermissions
         """
         instance = self[parent_name] = ParentPermissions(parent_name)
         return instance
@@ -227,7 +244,9 @@ class PlayerPermissionDict(_PermissionDict):
     def __missing__(self, steamid):
         """Create, store and return a :class:`PlayerPermissions` object.
 
-        :param str/int steamid: A SteamID2, SteamID3 or SteamID64 value.
+        :param str/int steamid:
+            A SteamID2, SteamID3 or SteamID64 value.
+        :rtype: PlayerPermissions
         """
         if not isinstance(steamid, int):
             steamid64 = SteamID.parse(steamid).to_uint64()
@@ -256,8 +275,9 @@ class _AuthManager(dict):
     def find_and_add_available_backends(self):
         """Find and add all available backends.
 
-        :raise ValueError: Raised if no backend or multiple backends are found
-            within a single file.
+        :raise ValueError:
+            Raised if no backend or multiple backends are found within a
+            single file.
         """
         for backend in BACKENDS_PATH.glob('*.py'):
             name = 'auth.backend.' + backend.basename().splitext()[0]
@@ -284,8 +304,10 @@ class _AuthManager(dict):
     def set_active_backend(self, backend_name):
         """Set the active backend.
 
-        :param str backend_name: Name of the backend.
-        :raise ValueError: Raised if the backend does not exist.
+        :param str backend_name:
+            Name of the backend.
+        :raise ValueError:
+            Raised if the backend does not exist.
         """
         try:
             backend = self[backend_name.casefold()]
@@ -321,9 +343,10 @@ class _AuthManager(dict):
     def get_player_permissions_from_steamid(self, steamid):
         """Return the permissions of a player.
 
-        :param str/int steamid: The SteamID2, SteamID3 or SteamID64 of a
-            player.
-        :return: If the given SteamID is invalid (e.g. 'BOT'), None will be
+        :param str/int steamid:
+            The SteamID2, SteamID3 or SteamID64 of a player.
+        :return:
+            If the given SteamID is invalid (e.g. 'BOT'), None will be
             returned.
         :rtype: PlayerPermissions
         """
@@ -342,7 +365,8 @@ class _AuthManager(dict):
     def get_parent_permissions(self, parent_name):
         """Return the parent permissions.
 
-        :param str parent_name: Name of the parent.
+        :param str parent_name:
+            Name of the parent.
         :rtype: ParentPermissions
         """
         return self.parents[parent_name]
@@ -357,7 +381,8 @@ class _AuthManager(dict):
     def targets_this_server(self, server_id):
         """Return whether the server ID targets this server.
 
-        :param int server_id: A server ID to test.
+        :param int server_id:
+            A server ID to test.
         :rtype: bool
         """
         return server_id in (-1, self.server_id, None)

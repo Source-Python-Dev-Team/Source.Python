@@ -51,7 +51,19 @@ class ConfigManager(object):
 
     def __init__(
             self, filepath, cvar_prefix='', indention=3, max_line_length=79):
-        """Called on instantiation."""
+        """Initialized the configuration manager.
+
+        :param str filepath:
+            Location where the configuration should be stored. The extension
+            ``.cfg`` can be skipped. It will be added automatically.
+        :param str cvar_prefix:
+            A prefix that should be added to every console variable.
+        :param int indention:
+            Number of spaces used to indent values within the configuration
+            file.
+        :param int max_line_length:
+            Maximum line length within the configuration file.
+        """
         # Does the filepath contain the extension?
         if filepath.endswith('.cfg'):
 
@@ -81,33 +93,68 @@ class ConfigManager(object):
 
     @property
     def filepath(self):
-        """Return the file path for the config file."""
+        """Return the file path for the config file.
+
+        The path does not include the ``.cfg`` file extension.
+
+        :rtype: str
+        """
         return self._filepath
 
     @property
     def cvar_prefix(self):
-        """Return the convar prefix for the config file."""
+        """Return the convar prefix for the config file.
+
+        :rtype: str
+        """
         return self._cvar_prefix
 
     @property
     def indention(self):
-        """Return the indention value for the config file."""
+        """Return the indention value for the config file.
+
+        :rtype: int
+        """
         return self._indention
 
     @property
     def max_line_length(self):
-        """Return the max line length for the config file."""
+        """Return the max line length for the config file.
+
+        :rtype: int
+        """
         return self._max_line_length
 
     @property
     def fullpath(self):
-        """Return the "path" instance of the full path to the file."""
+        """Return the full path to the configuration file.
+
+        The path include the ``.cfg`` file extension.
+
+        :rtype: path.Path
+        """
         return CFG_PATH / self.filepath + '.cfg'
 
     def cvar(
             self, name, default=0, description='',
             flags=0, min_value=None, max_value=None):
-        """Add/return a cvar instance to add to the config file."""
+        """Add/return a cvar instance to add to the config file.
+
+        :param str name:
+            Name of the console variable.
+        :param object default:
+            A default value for the console variable. It will be converted to
+            a string.
+        :param str/TranslationStrings description:
+            A description of the console variable.
+        :param ConVarFlags flags:
+            Flags that should be used for the console variable.
+        :param float min_value:
+            Minimum value.
+        :param float max_value:
+            Maximum value.
+        :rtype: _CvarManager
+        """
         # Add the stored prefix to the given name...
         name = self.cvar_prefix + name
 
@@ -125,7 +172,14 @@ class ConfigManager(object):
         return section
 
     def section(self, name, separator='#'):
-        """Add/return a section instance to add to the config file."""
+        """Add/return a section instance to add to the config file.
+
+        :param str/TranslationStrings name:
+            Name of the section to add.
+        :param str separator:
+            A single separator character to use to separate the section.
+        :rtype: _SectionManager
+        """
         # Get the _SectionManager instance for the given arguments
         section = _SectionManager(name, separator)
 
@@ -136,7 +190,14 @@ class ConfigManager(object):
         return section
 
     def command(self, name, description=''):
-        """Add/return a command instance to add to the config file."""
+        """Add/return a command instance to add to the config file.
+
+        :param str name:
+            Name of the command to add.
+        :param str/TranslationString description:
+            Description of the command.
+        :rtype: _CommandManager
+        """
         # Get the _CommandManager instance for the given arguments
         section = _CommandManager(name, description)
 
@@ -150,7 +211,11 @@ class ConfigManager(object):
         return section
 
     def text(self, text):
-        """Add text to the config file."""
+        """Add text to the config file.
+
+        :param str/TranslationStrings text:
+            The text to add.
+        """
         # Is the given text a TranslationStrings instance?
         if isinstance(text, TranslationStrings):
 

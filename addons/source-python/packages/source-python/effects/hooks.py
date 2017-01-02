@@ -36,7 +36,8 @@ class _TempEntityHook(AutoUnload):
     def __init__(self, temp_entity_name):
         """Initialize the hook object.
 
-        :param str temp_entity_name: The name of the temp entity to hook.
+        :param str temp_entity_name:
+            The name of the temp entity to hook.
         """
         # Store the given temp entity name...
         self.name = temp_entity_name

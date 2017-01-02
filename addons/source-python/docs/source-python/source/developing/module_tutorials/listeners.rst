@@ -449,7 +449,10 @@ checked once per map.
     from listeners import OnVersionUpdate
 
     @OnVersionUpdate
-    def on_version_update(old_version, new_version, currently_unversioned):
+    def on_version_update(old_version, new_version):
         pass
 
-.. note:: This requires ``sp_check_for_update`` to be set to ``1``.
+.. note::
+
+    This requires ``sp_check_for_update`` to be set to ``1`` and the current
+    installation has to be versioned (no build from source).

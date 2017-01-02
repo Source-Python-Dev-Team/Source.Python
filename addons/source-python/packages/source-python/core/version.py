@@ -17,7 +17,6 @@ from cvars.public import PublicConVar
 # =============================================================================
 __all__ = ('VERSION',
            'get_last_successful_build_number',
-           'is_newer_version_available',
            'is_unversioned',
            )
 
@@ -44,8 +43,8 @@ _sp_version = PublicConVar('sp_version', str(VERSION), 'Source.Python version')
 def get_last_successful_build_number(timeout=3):
     """Return the latest successful build number as an integer.
 
-    :param float timeout: Number of seconds that need to pass until a timeout
-        occurs.
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
     :rtype: int
     """
     with urlopen(LAST_SUCCESSFUL_BUILD_NUMBER_URL, timeout=timeout) as url:
@@ -59,18 +58,3 @@ def is_unversioned():
     :rtype: bool
     """
     return VERSION == 'unversioned'
-
-
-def is_newer_version_available():
-    """Return whether a newer version of Source.Python is available.
-
-    The return value is a tuple containing a boolean (whether there is
-    a newer version) and an integer (the build number of the newest build).
-
-    If the current version is set to 'unversioned', it will return True for
-    the first value.
-
-    :rtype: tuple
-    """
-    build_number = get_last_successful_build_number()
-    return (is_unversioned() or VERSION < build_number, build_number)

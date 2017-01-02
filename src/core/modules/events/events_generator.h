@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,75 +24,117 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _EVENTS_GENERATOR_H
+#define _EVENTS_GENERATOR_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "export_main.h"
-#include "sp_main.h"
-#include "core.h"
+// Boost.Python
+#include "boost/python/object.hpp"
+using namespace boost::python;
+
+// SDK
+#include "igameevents.h"
+#include "tier1/utlmap.h"
+#include "tier1/utlvector.h"
 
 
 //-----------------------------------------------------------------------------
-// External variables.
+// Definitions.
 //-----------------------------------------------------------------------------
-extern CSourcePython g_SourcePythonPlugin;
+#define MAX_EVENT_NAME_LENGTH 32
 
 
 //-----------------------------------------------------------------------------
-// Forward declarations.
+// Externals.
 //-----------------------------------------------------------------------------
-static void export_source_python_plugin(scope);
-static void export_constants(scope);
-static void export_functions(scope);
+extern IGameEventManager2* gameeventmanager;
 
 
 //-----------------------------------------------------------------------------
-// Declare the _core module.
+// EventVarType.
 //-----------------------------------------------------------------------------
-DECLARE_SP_MODULE(_core)
+enum EventVarType
 {
-	export_source_python_plugin(_core);
-	export_constants(_core);
-	export_functions(_core);
-}
+	TYPE_LOCAL = 0,	// not networked
+	TYPE_STRING,	// zero terminated ASCII string
+	TYPE_FLOAT,		// float 32 bit
+	TYPE_LONG,		// signed int 32 bit
+	TYPE_SHORT,		// signed int 16 bit
+	TYPE_BYTE,		// unsigned int 8 bit
+	TYPE_BOOL,		// unsigned int 1 bit
+	TYPE_UINT64,
+	TYPE_WSTRING
+};
 
 
 //-----------------------------------------------------------------------------
-// Expose CSourcePython.
+// CGameEventCallback
 //-----------------------------------------------------------------------------
-void export_source_python_plugin(scope _core)
+class CGameEventCallback
 {
-	class_<CSourcePython, bases<IEntityListener>, boost::noncopyable>("_SourcePythonPlugin", no_init);
-
-	// Singleton...
-	_core.attr("_sp_plugin") = boost::ref(g_SourcePythonPlugin);
-}
+public:
+	void*		m_pCallback;		// callback pointer
+	int			m_nListenerType;	// client or server side ?
+};
 
 
 //-----------------------------------------------------------------------------
-// Expose constants.
+// CGameEventDescriptor
 //-----------------------------------------------------------------------------
-void export_constants(scope _core)
+class CGameEventDescriptor
 {
-	_core.attr("SOURCE_ENGINE") = XSTRINGIFY(SOURCE_ENGINE);
-	_core.attr("SOURCE_ENGINE_BRANCH") = XSTRINGIFY(SOURCE_ENGINE_BRANCH);
-}
+public:
+#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
+	int			eventid;	// 0 - Same like name_index
+	int			name_index; // 4
+	KeyValues	*keys;		// 8
+    CUtlVector<CGameEventCallback*>	listeners;	// 12
+	bool		local;		// 32
+	bool		reliable;	// 33
+	char		unknown[18]; // 34
+	// Total size: 52
+#else
+	char		name[MAX_EVENT_NAME_LENGTH];	// 0
+	int			eventid;	// 32
+	KeyValues	*keys;		// 36
+	bool		local;		// 40
+	bool		reliable;	// 42
+    CUtlVector<CGameEventCallback*>	listeners;	// 44
+	// Total size: 64
+#endif
+
+	const char* GetName();
+};
 
 //-----------------------------------------------------------------------------
-// Expose functions.
+// CGameEventManager2
 //-----------------------------------------------------------------------------
-void export_functions(scope _core)
+class CGameEventManager2: public IGameEventManager2
 {
-	def(
-		"console_message",
-		&ConsoleMessage,
-		"Output a message to the server console."
-	);
+public:
+	CUtlVector<CGameEventDescriptor> game_events;
+#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
+	char unknown[96];
+	CUtlRBTree< CUtlMap<const char*, int, int>::Node_t, int > event_names;
+#endif
+};
 
-	def(
-		"get_interface",
-		&GetInterface,
-		return_by_value_policy(),
-		"Retrieve an interface from a library."
-	);
-}
+
+//-----------------------------------------------------------------------------
+// CGameEventDescriptorIter
+//-----------------------------------------------------------------------------
+class CGameEventDescriptorIter
+{
+public:
+	CGameEventDescriptorIter(CUtlVector<CGameEventDescriptor>* game_events);
+	static object			__iter__(PyObject* self);
+	CGameEventDescriptor&	__next__();
+
+private:
+	CUtlVector<CGameEventDescriptor>* game_events;
+	int current_index;
+};
+
+#endif // _EVENTS_GENERATOR_H

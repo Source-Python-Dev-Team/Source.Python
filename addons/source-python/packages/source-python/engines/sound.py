@@ -114,7 +114,36 @@ class _BaseSound(AutoUnload):
             origin=NULL_VECTOR, direction=NULL_VECTOR, origins=(),
             update_positions=True, sound_time=0.0,
             speaker_entity=INVALID_ENTITY_INDEX, download=False):
-        """Store all the given attributes and set the module for unloading."""
+        """Store all the given attributes and set the module for unloading.
+
+        :param str sample:
+            Path to the sound file.
+        :param int index:
+            An entity index to play the sound from. Use
+            :data:`SOUND_FROM_WORLD` if you want to play the sound from the
+            world.
+        :param float volume:
+            Volume to play the sound with.
+        :param Attenuation attenuation:
+            Define how the sound attenuates.
+        :param Channel channel:
+            Channel to use when playing the sound.
+        :param SoundFlags flags:
+        :param Pitch pitch:
+            Pitch of the sound.
+        :param Vector origin:
+            Location to play the sound from.
+        :param Vector direction:
+            Direction to play the sound.
+        :param tuple origins:
+            Locations to play the sound from.
+        :param bool update_positions:
+        :param float sound_time:
+        :param int speaker_entity:
+        :param bool download:
+            If ``True`` the sound file will be added to the ``downloadables``
+            list.
+        """
         # Set sample as a private attribute, since it should never change
         # Added replacing \ with / in paths for comformity
         self._sample = sample.replace('\\', '/')
@@ -143,7 +172,11 @@ class _BaseSound(AutoUnload):
             self._downloads.add(self.relative_path)
 
     def play(self, *recipients):
-        """Play the sound."""
+        """Play the sound.
+
+        :param recipients:
+            Players who will hear the sound.
+        """
         # Done here to fix a cyclic import...
         from filters.recipients import RecipientFilter
 
@@ -195,27 +228,42 @@ class _BaseSound(AutoUnload):
 
     @property
     def sample(self):
-        """Return the filename of the Sound instance."""
+        """Return the filename of the Sound instance.
+
+        :rtype: str
+        """
         return self._sample
 
     @property
     def extension(self):
-        """Return the type of sound."""
+        """Return the type of sound.
+
+        :rtype: str
+        """
         return self.full_path.ext[1:]
 
     @property
     def full_path(self):
-        """Return the full path to the file."""
+        """Return the full path to the file.
+
+        :rtype: path.Path
+        """
         return GAME_PATH / 'sound' / self.sample
 
     @property
     def relative_path(self):
-        """Return the relative path to the file."""
+        """Return the relative path to the file.
+
+        :rtype: str
+        """
         return 'sound' + os.sep + self.sample
 
     @property
     def duration(self):
-        """Return the duration of the sample."""
+        """Return the duration of the sample.
+
+        :rtype: float
+        """
         if self._duration is not None:
             return self._duration
 
@@ -271,7 +319,10 @@ class Sound(_BaseSound):
 
     @property
     def is_precached(self):
-        """Return whether or not the sample is precached."""
+        """Return whether or not the sample is precached.
+
+        :rtype: bool
+        """
         return self.sample in string_tables.soundprecache
 
 
@@ -313,5 +364,8 @@ class StreamSound(_BaseSound):
 
     @property
     def is_precached(self):
-        """Return whether or not the sample is precached."""
+        """Return whether or not the sample is precached.
+
+        :rtype: bool
+        """
         return self._stream_sample in string_tables.soundprecache

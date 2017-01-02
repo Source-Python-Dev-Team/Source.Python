@@ -123,7 +123,16 @@ class _ServerClasses(TypeManager):
         self._entity_server_classes = defaultdict(list)
 
     def get_entity_server_classes(self, entity):
-        """Retrieve the first server class."""
+        """Return the entity's server classes.
+
+        :param BaseEntity entity:
+            The entity whose server classes should be retrieved.
+        :return:
+            A list containing :class:`memory.manager.CustomType` instances
+            that have been created based on the entity files stored in
+            :data:`paths.SP_DATA_PATH`.
+        :rtype: list
+        """
         # Is the entity type already stored?
         if entity.classname in self._entity_server_classes:
 
