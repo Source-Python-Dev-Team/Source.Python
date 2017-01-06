@@ -141,15 +141,23 @@ static void export_igameevent(scope _events)
 		)
 
 		.add_property("variables",
-			make_function(IGameEventExt::GetVariables, reference_existing_object_policy())
+			make_function(IGameEventExt::GetVariables, reference_existing_object_policy()),
+			"Return all event variables as a KeyValues instance."
+		)
+
+		.add_property("descriptor",
+			make_function(&IGameEventExt::GetDescriptor, reference_existing_object_policy()),
+			"Return the event's descriptor."
 		)
 
 		.def("__getitem__",
-			&IGameEventExt::__getitem__
+			&IGameEventExt::__getitem__,
+			"Return an event variables in its proper data type."
 		)
 
 		.def("__setitem__",
-			&IGameEventExt::__setitem__
+			&IGameEventExt::__setitem__,
+			"Sets an event variable."
 		)
 
 		ADD_MEM_TOOLS(IGameEvent)

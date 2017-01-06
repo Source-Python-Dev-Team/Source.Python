@@ -70,8 +70,13 @@ public:
 		KeyValuesExt::__setitem__(GetVariables(pEvent), item, value);
 	}
 
+	static CGameEventDescriptor* GetDescriptor(IGameEvent* pEvent)
+	{
+		return ((IGameEventExt *) pEvent)->m_pDescriptor;
+	}
+
 public:
-	void* m_pDescriptor;
+	CGameEventDescriptor* m_pDescriptor;
 	KeyValues* m_pVariables;
 };
 
