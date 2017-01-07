@@ -171,11 +171,12 @@ class PlayerSettings(AutoUnload, _SettingsDictionary):
         _player_settings[name] = self
 
         # Add the settings instance to the main settings menu
-        _player_settings.menu.append(
-            PagedOption(name if text is None else text, self))
+        self.option = PagedOption(name if text is None else text, self)
+        _player_settings.menu.append(self.option)
 
     def unregister_settings(self):
         """Unregister the given settings from the dictionary."""
+        _player_settings.menu.remove(self.option)
         del _player_settings[self.name]
 
     def _unload_instance(self):
