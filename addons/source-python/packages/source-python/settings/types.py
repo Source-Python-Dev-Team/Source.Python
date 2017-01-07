@@ -205,6 +205,13 @@ class BoolSetting(SettingsType):
 
     _type = bool
 
+    def __init__(self, *args, **kwargs):
+        # TODO: add translations
+        for value, name in enumerate(['Yes', 'No']):
+            self.menu.append(
+                PagedOption(name, not value)
+            )
+
     def _typecast_value(self, value):
         """Cast the given value to a boolean."""
         try:

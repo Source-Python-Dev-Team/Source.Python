@@ -74,7 +74,9 @@ class _SettingsDictionary(OrderedDict):
         value = self[item]
 
         # Set the item's prefix
-        value.prefix = self.prefix + '_'
+        value.prefix = self.prefix
+        if not value.prefix.endswith('_'):
+            value.prefix += '_'
 
         # Does the section's name need added to the prefix?
         if not isinstance(self, PlayerSettings):
