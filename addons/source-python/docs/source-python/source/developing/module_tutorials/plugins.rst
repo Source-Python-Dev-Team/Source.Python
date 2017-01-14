@@ -156,4 +156,115 @@ other sub-modules or sub-packages).
 Adding sub-plugins
 ------------------
 
-.. todo:: Show how to add sub-plugins
+Adding sub-plugins to your plugin is done a very few steps. All you actually
+need is a new instance of the :class:`plugins.manager.PluginManager` class.
+This instance allows you to load plugins from a specifc directory.
+
+Imagine your plugin resides in ``../addons/source-python/plugins/my_plugin``
+and within that directory you have created a new directory called ``plugins``,
+which should contain all sub-plugins of ``my_plugin``. Then the plugin manager
+could be created using the following code:
+
+.. code:: python
+
+    from plugins.manager import PluginManager
+
+    my_plugin_manager = PluginManager('my_plugin.plugins.')
+
+
+That's all you need! Now you can load sub-plugins using ``my_plugin_manager``
+from your sub-plugins directory with the following code:
+
+.. code:: python
+
+    # Load the plugin 'my_sub_plugin' from
+    # ../addons/source-python/plugins/my_plugin/plugins
+    my_plugin_manager.load('my_sub_plugin')
+
+
+However, this doesn't print any messages like Source.Python does when you load
+a plugin via ``sp plugin load``. If you would like to have those messages as
+well, without implementing them on your own, you can simply create an instance
+of ``plugins.command.SubCommandManager``.
+
+.. code:: python
+
+    from plugins.command import SubCommandManager
+
+    my_sub_command_manager = SubCommandManager(
+        # Tell the sub command manager to use this plugin manager to load plugins
+        my_plugin_manager,
+
+        # If you create sub-commands, they will use 'my_plugin' as the base
+        # command like Source.Python uses 'sp'
+        'my_plugin'
+    )
+
+
+Now, you can load your sub-plugin using the following code:
+
+.. code:: python
+
+    my_sub_command_manager.load_plugin('my_sub_plugin')
+
+
+So far, so good. But what if you want to load your plugins via a server
+command? Well, just add it using the following code:
+
+.. code:: python
+
+    @my_sub_command_manager.server_sub_command(['plugin', 'load'])
+    def plugin_load(command_info, plugin):
+        my_sub_command_manager.load_plugin(plugin)
+
+    @my_sub_command_manager.server_sub_command(['plugin', 'unload'])
+    def plugin_unload(command_info, plugin):
+        my_sub_command_manager.unload_plugin(plugin)
+
+
+Now you can also load your sub-plugins using ``my_plugin plugin load`` and
+unload them using ``my_plugin plugin unload``.
+
+There is only one last thing left to do. If your main plugin is being
+unloaded, you should also unload all of your sub-plugins. It doesn't cause any
+problems with Source.Python if you don't do that, because Source.Python also
+unloads all :class:`core.AutoUnload` and :class:`core.WeakAutoUnload`
+instances of your sub-plugins. But if you don't do that the ``unload``
+functions of your sub-plugins are never getting called. To avoid this issue
+use the following code:
+
+.. code:: python
+
+    def unload():
+        for plugin in tuple(my_plugin_manager.values()):
+            plugin.unload()
+
+
+Here is the full example code to implement sub-plugins:
+
+.. code:: python
+
+    from plugins.manager import PluginManager
+    from plugins.command import SubCommandManager
+
+    my_plugin_manager = PluginManager('my_plugin.plugins.')
+    my_sub_command_manager = SubCommandManager(
+        # Tell the sub command manager to use this plugin manager to load plugins
+        my_plugin_manager,
+
+        # If you create sub-commands, they will use 'my_plugin' as the base
+        # command like Source.Python uses 'sp'
+        'my_plugin'
+    )
+
+    @my_sub_command_manager.server_sub_command(['plugin', 'load'])
+    def plugin_load(command_info, plugin):
+        my_sub_command_manager.load_plugin(plugin)
+
+    @my_sub_command_manager.server_sub_command(['plugin', 'unload'])
+    def plugin_unload(command_info, plugin):
+        my_sub_command_manager.unload_plugin(plugin)
+
+    def unload():
+        for plugin in tuple(my_plugin_manager.values()):
+            plugin.unload()
