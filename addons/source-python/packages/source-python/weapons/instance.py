@@ -48,24 +48,38 @@ class WeaponClass(object):
 
     @property
     def name(self):
-        """Return the classname of the weapon."""
+        """Return the entity classname of the weapon (e.g. 'weapon_knife').
+
+        :rtype: str
+        """
         return self._name
 
     @property
     def basename(self):
-        """Return the basename of the weapon."""
+        """Return the basename of the weapon (e.g. 'knife').
+
+        :rtype: str
+        """
         return self._basename
 
     @property
     def slot(self):
-        """Return the slot of the weapon."""
+        """Return the slot of the weapon.
+
+        :rtype: int
+        """
         return self._slot
 
     @property
     def maxammo(self):
-        """Return the maxammo amount for the weapon."""
+        """Return the maxammo amount for the weapon.
+
+        :return:
+            None if the weapon doesn't have ammo.
+        :rtype: int
+        """
         # Is the stored maxammo an integer?
-        if isinstance(self._maxammo, int):
+        if self._maxammo is None or isinstance(self._maxammo, int):
 
             # Return the value
             return self._maxammo
@@ -75,15 +89,28 @@ class WeaponClass(object):
 
     @property
     def ammoprop(self):
-        """Return the ammoprop of the weapon."""
+        """Return the ammoprop of the weapon.
+
+        :return:
+            None if the weapon doesn't have ammo.
+        :rtype: int
+        """
         return self._ammoprop
 
     @property
     def clip(self):
-        """Return the clip value of the weapon."""
+        """Return the clip value of the weapon.
+
+        :return:
+            None if the weapon doesn't have ammo.
+        :rtype: int
+        """
         return self._clip
 
     @property
     def tags(self):
-        """Return the tags of the weapon."""
+        """Return the tags of the weapon.
+
+        :rtype: list
+        """
         return self._tags

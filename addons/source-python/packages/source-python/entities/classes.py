@@ -123,7 +123,16 @@ class _ServerClasses(TypeManager):
         self._entity_server_classes = defaultdict(list)
 
     def get_entity_server_classes(self, entity):
-        """Retrieve the first server class."""
+        """Return the entity's server classes.
+
+        :param BaseEntity entity:
+            The entity whose server classes should be retrieved.
+        :return:
+            A list containing :class:`memory.manager.CustomType` instances
+            that have been created based on the entity files stored in
+            :data:`paths.SP_DATA_PATH`.
+        :rtype: list
+        """
         # Is the entity type already stored?
         if entity.classname in self._entity_server_classes:
 
@@ -150,57 +159,41 @@ class _ServerClasses(TypeManager):
             entity_datamaps[datamap.class_name] = datamap
             datamap = datamap.base
 
-        # Find if there are ServerClasses that are not in the DataMaps
-        difference = set(
-            entity_server_classes).difference(set(entity_datamaps))
+        # Find the differences
+        server_no_data = set(entity_server_classes).difference(entity_datamaps)
+        data_no_server = set(entity_datamaps).difference(entity_server_classes)
 
-        # Find if there are ServerClasses that are also in the DataMaps
-        intersection = set(
-            entity_server_classes).intersection(set(entity_datamaps))
+        # Set the order for the classes to be stored/iterated
+        if not data_no_server:
+            order = entity_server_classes
+        elif not server_no_data:
+            order = entity_datamaps
+        else:
+            order = []
+            for class_name in list(entity_datamaps):
+                if class_name in entity_server_classes:
+                    index = entity_server_classes.index(class_name)
+                    order.extend(entity_server_classes[:index + 1])
+                    del entity_server_classes[:index + 1]
+                else:
+                    order.append(class_name)
+            order.extend(entity_server_classes)
 
-        # Take care of special cases
-        if not intersection or (difference and intersection):
+        for class_name in order:
+            # Is the current class already known?
+            if class_name in self:
+                self._entity_server_classes[entity.classname].append(
+                    self[class_name]
+                )
+                continue
 
-            # Loop through all ServerClass names
-            for class_name in entity_server_classes:
-
-                # Has the current ServerClass name already been added?
-                if class_name in self:
-
-                    # Add the instance to the classname's list
-                    self._entity_server_classes[entity.classname].append(
-                        self[class_name])
-
-                    # No need to go further
-                    continue
-
-                # Retrieve all objects for the ServerClass and
-                #   add it to the classname's list
-                self._entity_server_classes[
-                    entity.classname].append(self._get_server_class(
-                        class_name, entity_datamaps.get(class_name, {})))
-
-        # Take care of normal cases
-        if not (difference and intersection):
-
-            # Loop through all DataMap names
-            for class_name in entity_datamaps:
-
-                # Has the current DataMap name already been added?
-                if class_name in self:
-
-                    # Add the instance to the classname's list
-                    self._entity_server_classes[entity.classname].append(
-                        self[class_name])
-
-                    # No need to go further
-                    continue
-
-                # Retrieve all objects for the ServerClass and
-                #   add it to the classname's list
-                self._entity_server_classes[
-                    entity.classname].append(self._get_server_class(
-                        class_name, entity_datamaps[class_name]))
+            # Add the class
+            self._entity_server_classes[entity.classname].append(
+                self._get_server_class(
+                    class_name=class_name,
+                    datamap=entity_datamaps.get(class_name, {}),
+                )
+            )
 
         # Return the server classes
         return self._entity_server_classes[entity.classname]

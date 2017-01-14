@@ -31,6 +31,8 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "dbg.h"
+#include "interface.h"
+#include "dynload.h"
 
 
 //-----------------------------------------------------------------------------
@@ -41,5 +43,24 @@ inline void ConsoleMessage(const char* msg)
 	ConMsg(msg);
 }
 
+inline void* GetInterface(const char* library, const char* interface_name)
+{
+	DLLib* lib = dlLoadLibrary(library);
+	if (!lib)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to load library '%s'.", library)
+
+	CreateInterfaceFn pCreateInterface = (CreateInterfaceFn) dlFindSymbol(lib, CREATEINTERFACE_PROCNAME);
+	dlFreeLibrary(lib);
+
+	if (!pCreateInterface)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve interface function'%s'.", CREATEINTERFACE_PROCNAME)
+
+	int return_code;
+	void* result = pCreateInterface(interface_name, &return_code);
+	if (!result)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find interface '%s'. Return code: %i.", interface_name, return_code)
+
+	return result;
+}
 
 #endif // _CORE_H

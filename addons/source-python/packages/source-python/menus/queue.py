@@ -15,7 +15,7 @@ from commands import CommandReturn
 from commands.client import ClientCommand
 #   Listeners
 from listeners import OnClientDisconnect
-from listeners.tick import TickRepeat
+from listeners.tick import Repeat
 #   Menus
 from menus.base import _BaseMenu
 
@@ -173,7 +173,7 @@ class _QueueHolder(dict):
 
         :param _UserQueue cls: The queue to hold.
         :param repeat: Global refresh repeat object.
-        :type repeat: :class:`listeners.tick.TickRepeat`
+        :type repeat: :class:`listeners.tick.Repeat`
         """
         super().__init__()
         self._cls = cls
@@ -188,7 +188,7 @@ class _QueueHolder(dict):
         if not self:
 
             # If so, start the refresh repeat...
-            self._repeat.start(1, 0)
+            self._repeat.start(1)
 
         obj = self[index] = self._cls(index)
         return obj
@@ -232,14 +232,14 @@ def _validate_selection(command, index, valid_choices):
 # =============================================================================
 # >> REPEATS
 # =============================================================================
-@TickRepeat
+@Repeat
 def _radio_refresh():
     """Update every queue in the queue dict."""
     for queue in _radio_queues.values():
         queue._refresh()
 
 
-@TickRepeat
+@Repeat
 def _esc_refresh():
     """Update every queue in the queue dict."""
     for queue in _esc_queues.values():

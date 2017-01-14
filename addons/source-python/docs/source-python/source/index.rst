@@ -48,6 +48,7 @@ Contributing to Source.Python
    :maxdepth: 2
    :glob:
    
+   contributing/building
    contributing/contributing
    contributing/coding-conventions
    contributing/reporting-a-bug
