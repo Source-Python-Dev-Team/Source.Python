@@ -34,7 +34,7 @@ from paths import PLUGIN_PATH
 #   Plugins
 from plugins import plugins_logger
 from plugins.info import PluginInfo
-from plugins.instance import LoadedPlugin
+from plugins.instance import Plugin
 
 
 # =============================================================================
@@ -87,12 +87,11 @@ class PluginManager(OrderedDict):
     def _create_plugin_instance(self, plugin_name):
         """Create a new plugin instance.
 
-        Overwrite this method if you wish to use your own LoadedPlugin
-        subclass.
+        Overwrite this method if you wish to use your own Plugin subclass.
 
-        :rtype: LoadedPlugin
+        :rtype: Plugin
         """
-        return LoadedPlugin(plugin_name, self)
+        return Plugin(plugin_name, self)
 
     @property
     def base_import(self):
@@ -143,7 +142,7 @@ class PluginManager(OrderedDict):
             Raised if the plugin has the name of a built-in module.
         :raise Exception:
             Any other exceptions raised by the plugin during the load process.
-        :rtype: LoadedPlugin
+        :rtype: Plugin
         """
         if self.is_loaded(plugin_name):
             raise PluginAlreadyLoaded(
@@ -219,7 +218,7 @@ class PluginManager(OrderedDict):
             Raised if the plugin has the name of a built-in module.
         :raise Exception:
             Any other exceptions raised by the plugin during the load process.
-        :rtype: LoadedPlugin
+        :rtype: Plugin
         """
         self.unload(plugin_name)
         return self.load(plugin_name)
@@ -257,7 +256,7 @@ class PluginManager(OrderedDict):
         :param str plugin_name:
             The plugin to check. You can pass ``__name__`` from one of your
             plugin files to retrieve its own plugin instance.
-        :rtype: LoadedPlugin
+        :rtype: Plugin
         """
         plugin_name = self.get_plugin_name(plugin_name)
         if self.is_loaded(plugin_name):

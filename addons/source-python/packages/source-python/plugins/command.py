@@ -153,7 +153,7 @@ class SubCommandManager(AutoUnload, list):
             Name of the plugin to load.
         :return:
             Return the loaded plugin. Return ``None`` on failure.
-        :rtype: LoadedPlugin
+        :rtype: Plugin
         """
         plugin = None
         self.log_message(self.translations[
@@ -212,7 +212,7 @@ class SubCommandManager(AutoUnload, list):
             Name of the plugin to reload.
         :return:
             Return the loaded plugin. Return ``None`` on failure.
-        :rtype: LoadedPlugin
+        :rtype: Plugin
         """
         self.unload_plugin(plugin_name)
         return self.load_plugin(plugin_name)

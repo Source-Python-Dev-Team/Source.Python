@@ -18,7 +18,7 @@ from plugins.info import PluginInfo
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('LoadedPlugin',
+__all__ = ('Plugin',
            )
 
 
@@ -32,7 +32,7 @@ plugins_instance_logger = plugins_logger.instance
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class LoadedPlugin(object):
+class Plugin(object):
     """Stores a plugin's instance."""
 
     def __init__(self, plugin_name, manager):
