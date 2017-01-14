@@ -43,37 +43,31 @@ class LoadedPlugin(object):
         :param PluginManager manager:
             A plugin manager instance.
         """
+        self.module = None
         self.manager = manager
-        self.globals = None
         self.name = plugin_name
         self.directory = self.manager.get_plugin_directory(plugin_name)
         self.file_path = self.manager.get_plugin_file_path(plugin_name)
         self.info = self.manager._create_plugin_info(plugin_name)
-        self._plugin = None
         self.import_name = (self.manager.base_import + plugin_name +
                             '.' + plugin_name)
 
     def unload(self):
         """Unload the plugin."""
-        # Convenience method
         self.manager.unload(self.name)
 
     def reload(self):
         """Reload the plugin."""
-        # Convenience method
         self.manager.reload(self.name)
 
     def _load(self):
         """Actually load the plugin."""
         self.info._create_public_convar()
-        self._plugin = import_module(self.import_name)
-        self.globals = {
-            x: getattr(self._plugin, x) for x in dir(self._plugin)}
-
-        if 'load' in self.globals:
-            self.globals['load']()
+        self.module = import_module(self.import_name)
+        if hasattr(self.module, 'load'):
+            self.module.load()
 
     def _unload(self):
         """Actually unload the plugin."""
-        if 'unload' in self.globals:
-            self.globals['unload']()
+        if hasattr(self.module, 'unload'):
+            self.module.unload()
