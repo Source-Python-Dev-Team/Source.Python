@@ -202,7 +202,7 @@ class PluginManager(OrderedDict):
 
         self._remove_modules(plugin_name)
         del self[plugin_name]
-        on_plugin_unloaded_manager.notify(plugin_name)
+        on_plugin_unloaded_manager.notify(plugin)
 
     def reload(self, plugin_name):
         """Reload a plugin by name.

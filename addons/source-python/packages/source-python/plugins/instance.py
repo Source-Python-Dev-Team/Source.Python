@@ -46,6 +46,7 @@ class LoadedPlugin(object):
         self.module = None
         self.manager = manager
         self.name = plugin_name
+        self.sub_plugin = manager.base_import != ''
         self.directory = self.manager.get_plugin_directory(plugin_name)
         self.file_path = self.manager.get_plugin_file_path(plugin_name)
         self.info = self.manager._create_plugin_info(plugin_name)
@@ -71,3 +72,5 @@ class LoadedPlugin(object):
         """Actually unload the plugin."""
         if hasattr(self.module, 'unload'):
             self.module.unload()
+
+        self.module = None

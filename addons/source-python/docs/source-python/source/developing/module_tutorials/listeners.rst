@@ -401,7 +401,7 @@ Called when a plugin has been unloaded sucessfully.
     from listeners import OnPluginUnloaded
 
     @OnPluginUnloaded
-    def on_plugin_unloaded(plugin_name):
+    def on_plugin_unloaded(plugin):
         pass
 
 
