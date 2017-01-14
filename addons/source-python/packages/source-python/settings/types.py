@@ -15,6 +15,7 @@ from engines.server import engine_server
 from menus import PagedMenu
 from menus import PagedOption
 from messages import SayText
+from players.entity import Player
 from players.helpers import uniqueid_from_index
 from settings import _settings_strings
 from settings.storage import _player_settings_storage
@@ -88,6 +89,9 @@ class SettingsType(object):
 
     def get_setting(self, index):
         """Return the setting value for the given player index."""
+        if Player(index).is_fake_client():
+            return self._get_default_value()
+
         # Get the client's convar value
         value = engine_server.get_client_convar_value(index, self.convar)
 
@@ -128,6 +132,9 @@ class SettingsType(object):
                         return value
 
         # Return the default value
+        self._get_default_value()
+
+    def _get_default_value(self):
         if isinstance(self.default, ConVar):
             return self._typecast_default_convar()
         return self.default
