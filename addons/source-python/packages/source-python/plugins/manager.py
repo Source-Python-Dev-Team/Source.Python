@@ -137,11 +137,14 @@ class PluginManager(OrderedDict):
 
         plugin = self._create_plugin_instance(plugin_name)
         if not plugin.file_path.isfile():
-            raise PluginFileNotFoundError
+            raise PluginFileNotFoundError(
+                'File {} does not exist.'.format(plugin.file_path))
 
         spec = find_spec(plugin.import_name)
         if spec is None or spec.origin != plugin.file_path:
-            raise PluginHasBuiltInName
+            raise PluginHasBuiltInName(
+                'Plugin "{}" has the name of a built-in module.'.format(
+                    plugin_name))
 
         # Add the instance here, so we can use get_plugin_instance() etc.
         # within the plugin itself before the plugin has been fully loaded.
