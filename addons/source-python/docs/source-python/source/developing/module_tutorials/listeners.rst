@@ -372,14 +372,29 @@ Called when a plugin has been loaded successfully.
     from listeners import OnPluginLoaded
 
     @OnPluginLoaded
-    def on_plugin_loaded(plugin_name):
+    def on_plugin_loaded(plugin):
+        pass
+
+
+OnPluginLoading
+---------------
+
+Called right before a plugin is imported and loaded. All checks (e.g. plugin
+file exists, etc.) have been done at this point.
+
+.. code-block:: python
+
+    from listeners import OnPluginLoading
+
+    @OnPluginLoading
+    def on_plugin_loading(plugin):
         pass
 
 
 OnPluginUnloaded
 ----------------
 
-Called when a plugin has been unloaded.
+Called when a plugin has been unloaded sucessfully.
 
 .. code-block:: python
 
@@ -387,6 +402,20 @@ Called when a plugin has been unloaded.
 
     @OnPluginUnloaded
     def on_plugin_unloaded(plugin_name):
+        pass
+
+
+OnPluginUnloading
+-----------------
+
+Called right before a loaded plugin is unloaded.
+
+.. code-block:: python
+
+    from listeners import OnPluginUnloading
+
+    @OnPluginUnloading
+    def on_plugin_unloading(plugin):
         pass
 
 
