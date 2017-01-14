@@ -132,7 +132,7 @@ class SettingsType(object):
                         return value
 
         # Return the default value
-        self._get_default_value()
+        return self._get_default_value()
 
     def _get_default_value(self):
         if isinstance(self.default, ConVar):
