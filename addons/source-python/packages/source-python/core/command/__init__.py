@@ -65,38 +65,30 @@ class CoreCommandManager(SubCommandManager):
         for plugin_name in sorted(self.manager):
             info = self.manager[plugin_name].info
 
-            # Was an PluginInfo instance found?
-            if info is not None:
-                message += plugin_name + ' ({}):\n'.format(info.verbose_name)
+            message += plugin_name + ' ({}):\n'.format(info.verbose_name)
 
-                if info.author is not None:
-                    message += '   author:          {}\n'.format(info.author)
+            if info.author is not None:
+                message += '   author:          {}\n'.format(info.author)
 
-                if info.description is not None:
-                    message += '   description:     {}\n'.format(info.description)
+            if info.description is not None:
+                message += '   description:     {}\n'.format(info.description)
 
-                if info.version != 'unversioned':
-                    message += '   version:         {}\n'.format(info.version)
+            if info.version != 'unversioned':
+                message += '   version:         {}\n'.format(info.version)
 
-                if info.url is not None:
-                    message += '   url:             {}\n'.format(info.url)
+            if info.url is not None:
+                message += '   url:             {}\n'.format(info.url)
 
-                if info.permissions:
-                    message += '   permissions:\n'
-                    for permission, description in info.permissions:
-                        message += '      {}:'.format(permission).ljust(30) + description + '\n'
+            if info.permissions:
+                message += '   permissions:\n'
+                for permission, description in info.permissions:
+                    message += '      {}:'.format(permission).ljust(30) + description + '\n'
 
-                if info.public_convar is not None:
-                    message += '   public convar:   {}\n'.format(info.public_convar.name)
+            if info.public_convar is not None:
+                message += '   public convar:   {}\n'.format(info.public_convar.name)
 
-                for attr in info.display_in_listing:
-                    message += '   {}:'.format(attr).ljust(20) + str(getattr(info, attr)) + '\n'
-
-            # Was no PluginInfo instance found?
-            else:
-
-                # Add message with the current plugin's name
-                message += plugin_name + '\n'
+            for attr in info.display_in_listing:
+                message += '   {}:'.format(attr).ljust(20) + str(getattr(info, attr)) + '\n'
 
             # Add 1 blank line between each plugin
             message += '\n'
