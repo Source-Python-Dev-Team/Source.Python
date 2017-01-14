@@ -110,6 +110,24 @@ class PluginManager(OrderedDict):
         """
         return PLUGIN_PATH.joinpath(*tuple(self.base_import.split('.')[:~0]))
 
+    @property
+    def plugins(self):
+        """Return a generator to iterate over all existing plugins.
+
+        :return:
+            The generator yields the plugin names.
+        :rtype: generator
+        """
+        for path in self.plugins_directory.dirs():
+            plugin_name = path.namebase
+            if not self.is_valid_plugin_name(plugin_name):
+                continue
+
+            if not self.plugin_exists(plugin_name):
+                continue
+
+            yield plugin_name
+
     def load(self, plugin_name):
         """Load a plugin by name.
 
@@ -227,14 +245,11 @@ class PluginManager(OrderedDict):
     def plugin_exists(self, plugin_name):
         """Return whether of not a plugin exists.
 
-        This method only checks for the existance of the plugin directory, but
-        not for the existance of the main plugin file.
-
         :param str plugin_name:
             The plugin to check.
         :rtype: bool
         """
-        return self.get_plugin_directory(plugin_name).isdir()
+        return self.get_plugin_file_path(plugin_name).isfile()
 
     def get_plugin_instance(self, plugin_name):
         """Return a plugin's instance, if it is loaded.
@@ -299,7 +314,7 @@ class PluginManager(OrderedDict):
         :param str plugin_name:
             Name of the plugin whose plugin info should be created.
         :raise PluginFileNotFoundError:
-            Raised if the plugin's main directory wasn't found.
+            Raised if the plugin's main file wasn't found.
         :rtype: PluginInfo
         """
         if not self.plugin_exists(plugin_name):
