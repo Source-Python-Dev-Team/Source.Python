@@ -49,56 +49,6 @@ core_command_logger = core_logger.command
 class CoreCommandManager(SubCommandManager):
     """Class used for executing "sp" sub-command functionality."""
 
-    manager = plugin_manager
-    logger = core_command_logger
-
-    def print_plugins(self):
-        """List all currently loaded plugins.
-
-        .. todo:: Move this to :class:`plugins.command.SubCommandManager`?
-        """
-        # Get header messages
-        message = _plugin_strings[
-            'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
-
-        # Loop through all loaded plugins
-        for plugin_name in sorted(self.manager):
-            info = self.manager[plugin_name].info
-
-            message += plugin_name + ' ({}):\n'.format(info.verbose_name)
-
-            if info.author is not None:
-                message += '   author:          {}\n'.format(info.author)
-
-            if info.description is not None:
-                message += '   description:     {}\n'.format(info.description)
-
-            if info.version != 'unversioned':
-                message += '   version:         {}\n'.format(info.version)
-
-            if info.url is not None:
-                message += '   url:             {}\n'.format(info.url)
-
-            if info.permissions:
-                message += '   permissions:\n'
-                for permission, description in info.permissions:
-                    message += '      {}:'.format(permission).ljust(30) + description + '\n'
-
-            if info.public_convar is not None:
-                message += '   public convar:   {}\n'.format(info.public_convar.name)
-
-            for attr in info.display_in_listing:
-                message += '   {}:'.format(attr).ljust(20) + str(getattr(info, attr)) + '\n'
-
-            # Add 1 blank line between each plugin
-            message += '\n'
-
-        # Add the ending separator
-        message += '=' * 61
-
-        # Print the message
-        self.log_message(message)
-
     def print_credits(self):
         """List all credits for Source.Python."""
         # Get header messages
@@ -128,7 +78,8 @@ class CoreCommandManager(SubCommandManager):
         # Print the message
         self.log_message(message + '=' * 61 + '\n\n')
 
-core_command = CoreCommandManager('sp')
+core_command = CoreCommandManager(
+    plugin_manager, 'sp', logger=core_command_logger)
 
 
 # =============================================================================

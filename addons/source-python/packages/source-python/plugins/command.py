@@ -46,31 +46,42 @@ plugins_command_logger = plugins_logger.command
 class SubCommandManager(AutoUnload, list):
     """Class used for executing sub-commands for the given console command."""
 
-    # Set the default class values for base attributes
-    logger = plugins_command_logger
-    translations = _plugin_strings
-
-    def __init__(self, command, prefix=''):
+    def __init__(self, manager, command, prefix='',
+            logger=plugins_command_logger, translations=_plugin_strings):
         """Initializes the sub-command manager.
 
+        :param PluginManager manager:
+            A plugin manager.
         :param str command:
             Command to register.
         :param str prefix:
-            Prefix used for printing to the console.
+            Prefix used for printing messages to the console.
+        :param Logger logger:
+            A logger that is used for printing messages to the console.
+        :param LangStrings translations:
+            Translations used for printing messages to the console. The
+            translations have to define the following messages:
+
+            * Loading
+            * Invalid Name
+            * Already Loaded
+            * No Module
+            * Built-in
+            * Unable to Load
+            * Successful Load
+            * Unloading
+            * Not Loaded
+            * Successful Unload
+            * Plugins
         """
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
+        self.manager = manager
         self._command = command
         self._prefix = prefix if prefix else '[{0}] '.format(
             self.command.upper())
-
-    @property
-    def manager(self):
-        """Return a plugin manager.
-
-        :rtype: PluginManager
-        """
-        raise NotImplementedError('No manager attribute defined for class.')
+        self.logger = logger
+        self.translations = translations
 
     def _unload_instance(self):
         """Unload all sub-commands."""
@@ -207,18 +218,47 @@ class SubCommandManager(AutoUnload, list):
         return self.load_plugin(plugin_name)
 
     def print_plugins(self):
-        """Print all currently loaded plugins."""
-        # Get the header message
+        """List all currently loaded plugins."""
+        # Get header messages
         message = self.translations[
-            'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n\t'
+            'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
 
-        # Add all loaded plugins to the message
-        message += '\n\t'.join(self.manager)
+        # Loop through all loaded plugins
+        for plugin_name in sorted(self.manager):
+            info = self.manager[plugin_name].info
 
-        # Add a breaker at the end of the message
-        message += '\n\n' + '=' * 61
+            message += plugin_name + ' ({}):\n'.format(info.verbose_name)
 
-        # Send the message
+            if info.author is not None:
+                message += '   author:          {}\n'.format(info.author)
+
+            if info.description is not None:
+                message += '   description:     {}\n'.format(info.description)
+
+            if info.version != 'unversioned':
+                message += '   version:         {}\n'.format(info.version)
+
+            if info.url is not None:
+                message += '   url:             {}\n'.format(info.url)
+
+            if info.permissions:
+                message += '   permissions:\n'
+                for permission, description in info.permissions:
+                    message += '      {}:'.format(permission).ljust(30) + description + '\n'
+
+            if info.public_convar is not None:
+                message += '   public convar:   {}\n'.format(info.public_convar.name)
+
+            for attr in info.display_in_listing:
+                message += '   {}:'.format(attr).ljust(20) + str(getattr(info, attr)) + '\n'
+
+            # Add 1 blank line between each plugin
+            message += '\n'
+
+        # Add the ending separator
+        message += '=' * 61
+
+        # Print the message
         self.log_message(message)
 
     def log_message(self, message):
