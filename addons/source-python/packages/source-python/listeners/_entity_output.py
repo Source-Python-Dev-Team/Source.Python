@@ -29,7 +29,12 @@ BaseEntityOutput = manager.create_type_from_dict(
     'BaseEntityOutput', GameConfigObj(
         SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
-_fire_output = getattr(BaseEntityOutput, 'fire_output', None)
+try:
+    _fire_output = getattr(BaseEntityOutput, 'fire_output', None)
+except ValueError:
+    # In case the pointer wasn't found
+    _fire_output = None
+    
 on_entity_output_listener_manager = (
     None if _fire_output is None else ListenerManager()
 )

@@ -71,7 +71,8 @@ class CBaseEntityWrapper;
 	inline to_type Exc##to_name##From##from_name(from_type from) { \
 		to_type result; \
 		if (!to_name##From##from_name(from, result)) { \
-			const char* str_value = extract<const char*>(str(from)); \
+			str str_from = str(from); \
+			const char* str_value = extract<const char*>(str_from); \
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, XSTRINGIFY(Conversion from #from_name (%s) to #to_name failed.), str_value); \
 		} \
 		return result; \
@@ -81,10 +82,11 @@ class CBaseEntityWrapper;
 	inline to_type Exc##to_name##From##from_name(from_type from) { \
 		to_type result; \
 		if (!to_name##From##from_name(from, result)) { \
-			const char* str_value = extract<const char*>(str( \
+			str str_from = str( \
 				boost::shared_ptr<CBaseEntityWrapper>( \
 					(CBaseEntityWrapper *) from, \
-					&NeverDeleteDeleter<CBaseEntityWrapper *>))); \
+					&NeverDeleteDeleter<CBaseEntityWrapper *>)); \
+			const char* str_value = extract<const char*>(str_from); \
 			BOOST_RAISE_EXCEPTION(PyExc_ValueError, XSTRINGIFY(Conversion from #from_name (%s) to #to_name failed.), str_value); \
 		} \
 		return result; \

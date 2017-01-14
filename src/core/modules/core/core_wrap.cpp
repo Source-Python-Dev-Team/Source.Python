@@ -88,4 +88,11 @@ void export_functions(scope _core)
 		&ConsoleMessage,
 		"Output a message to the server console."
 	);
+
+	def(
+		"get_interface",
+		&GetInterface,
+		return_by_value_policy(),
+		"Retrieve an interface from a library."
+	);
 }

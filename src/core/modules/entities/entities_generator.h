@@ -75,13 +75,19 @@ class CBaseEntityGenerator: public IPythonGenerator<CBaseEntityWrapper>
 public:
 	CBaseEntityGenerator(PyObject* self);
 	CBaseEntityGenerator(PyObject* self, const CBaseEntityGenerator& rhs);
-	virtual ~CBaseEntityGenerator() {}
+	CBaseEntityGenerator(PyObject* self, const char* szClassName);
+	CBaseEntityGenerator(PyObject* self, const char* szClassName, bool exactMatch);
+	virtual ~CBaseEntityGenerator();
 
 protected:
 	virtual CBaseEntityWrapper* getNext();
 
 private:
 	CBaseEntity* m_pCurrentEntity;
+	void makeStringCopy(const char* szClassName, unsigned int uiClassNameLen);
+	const char* m_szClassName;
+	unsigned int m_uiClassNameLen;
+	bool m_bExactMatch;
 };
 
 BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CBaseEntityGenerator)

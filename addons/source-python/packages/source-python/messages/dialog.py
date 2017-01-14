@@ -109,7 +109,7 @@ class _DialogBase(object):
         _player_levels[userid].add(level)
 
         # Remove the level after the time is up
-        Delay(self.time, _player_levels[userid].remove, level)
+        Delay(self.time, _player_levels[userid].remove, (level, ))
 
         # Return the level
         return level

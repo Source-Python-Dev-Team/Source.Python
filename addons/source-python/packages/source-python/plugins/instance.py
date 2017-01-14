@@ -40,64 +40,72 @@ plugins_instance_logger = plugins_logger.instance
 class LoadedPlugin(object):
     """Stores a plugin's instance."""
 
-    def __init__(self, plugin_name, base_import):
-        """Called when a plugin's instance is initialized."""
-        # Does the object have a logger set?
-        if not hasattr(self, 'logger'):
+    logger = None
+    translations = None
+    prefix = None
 
-            # If not, set the default logger
+    def __init__(self, plugin_name, manager):
+        """Called when a plugin's instance is initialized.
+
+        :param str plugin_name:
+            Name of the plugin to load.
+        :param PluginManager manager:
+            A plugin manager instance.
+        """
+        self.manager = manager
+        self.file_path = None
+        self.import_name = None
+        self.globals = None
+        self.plugin_name = plugin_name
+        self.directory = self.manager.get_plugin_directory(plugin_name)
+        self.file_path = self.directory / plugin_name + '.py'
+        self.info = self.manager._create_plugin_info(self.plugin_name)
+        self.info._create_public_convar()
+        self._plugin = None
+
+        # Fall back to the default logger if none was set
+        if self.logger is None:
             self.logger = plugins_instance_logger
 
-        # Does the object have a translations value set?
-        if not hasattr(self, 'translations'):
-
-            # If not, set the default translations
+        # Fall back to the default translations if none was set
+        if self.translations is None:
             self.translations = _plugin_strings
 
         # Print message that the plugin is going to be loaded
         self.logger.log_message(self.prefix + self.translations[
             'Loading'].get_string(plugin=plugin_name))
 
-        # Get the plugin's main file
-        file_path = PLUGIN_PATH.joinpath(*tuple(
-            base_import.split('.')[:~0] + [plugin_name, plugin_name + '.py']))
-
         # Does the plugin's main file exist?
-        if not file_path.isfile():
+        if not self.file_path.isfile():
 
             # Print a message that the plugin's main file was not found
             self.logger.log_message(self.prefix + self.translations[
                 'No Module'].get_string(
-                plugin=plugin_name, file=file_path.replace(
+                plugin=plugin_name, file=self.file_path.replace(
                     GAME_PATH, '').replace('\\', '/')))
 
             # Raise an error so that the plugin
             # is not added to the PluginManager
             raise PluginFileNotFoundError
 
-        # Get the base import
-        import_name = base_import + plugin_name + '.' + plugin_name
+        # Get the import name
+        self.import_name = (self.manager.base_import + plugin_name +
+                            '.' + plugin_name)
 
-        # Import the plugin
-        self._plugin = import_module(import_name)
-
-        # Set the globals value
-        self._globals = {
+    def _load(self):
+        """Actually load the plugin."""
+        self._plugin = import_module(self.import_name)
+        self.globals = {
             x: getattr(self._plugin, x) for x in dir(self._plugin)}
 
-    @property
-    def globals(self):
-        """Return the plugin's globals."""
-        return self._globals
+        if 'load' in self.globals:
+            self.globals['load']()
 
-    @property
-    def info(self):
-        """Return the plugin's PluginInfo object.
-
-        If no PluginInfo was found, None will be returned.
-        """
-        for obj in self.globals.values():
-            if isinstance(obj, PluginInfo):
-                return obj
-
-        return None
+    def _unload(self):
+        """Actually unload the plugin."""
+        if 'unload' in self.globals:
+            # Use a try/except here to still allow the plugin to be unloaded
+            try:
+                self.globals['unload']()
+            except:
+                except_hooks.print_exception()

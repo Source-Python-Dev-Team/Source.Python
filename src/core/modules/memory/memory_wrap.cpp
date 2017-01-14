@@ -136,8 +136,13 @@ void export_binary_file(scope _memory)
 		)
 	
 		// Attributes
-		.def_readwrite("address",
-			&CBinaryFile::m_ulAddr,
+		.def_readwrite("module",
+			&CBinaryFile::m_ulModule,
+			"Handle of the binary."
+		)
+
+		.def_readwrite("base",
+			&CBinaryFile::m_ulBase,
 			"Base address of the binary."
 		)
 

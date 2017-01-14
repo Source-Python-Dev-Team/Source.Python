@@ -27,7 +27,8 @@ class _SVTags(ConVar):
     def add(self, tag):
         """Add the given tag to sv_tags.
 
-        :param str tag: The tag to add to the sv_tags ConVar value.
+        :param str tag:
+            The tag to add to the sv_tags ConVar value.
         """
         tags = set(self.get_string().split(','))
         tags.add(tag)
@@ -36,7 +37,8 @@ class _SVTags(ConVar):
     def remove(self, tag):
         """Remove the given tag from sv_tags.
 
-        :param str tag: The tag to remove from the sv_tags ConVar value.
+        :param str tag:
+            The tag to remove from the sv_tags ConVar value.
         """
         tags = set(self.get_string().split(','))
         tags.discard(tag)

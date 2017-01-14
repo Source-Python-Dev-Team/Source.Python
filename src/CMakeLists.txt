@@ -227,9 +227,11 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_EVENTS_MODULE_HEADERS
     core/modules/events/events.h
+    core/modules/events/events_generator.h
 )
 
 Set(SOURCEPYTHON_EVENTS_MODULE_SOURCES
+    core/modules/events/events_generator.cpp
     core/modules/events/events_wrap.cpp
 )
 

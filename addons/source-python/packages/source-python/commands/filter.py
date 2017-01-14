@@ -17,7 +17,11 @@ class _BaseFilter(AutoUnload):
     """Class used to register a filter."""
 
     def __init__(self, callback):
-        """Store the callback and registers the filter."""
+        """Store the callback and registers the filter.
+        
+        :param callable callback:
+            A callback that does filter logic.
+        """
         # Is the callback callable?
         if not callable(callback):
 
