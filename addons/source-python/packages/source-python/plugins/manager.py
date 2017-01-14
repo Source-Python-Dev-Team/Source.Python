@@ -11,8 +11,12 @@ from collections import OrderedDict
 #   Configobj
 from configobj import ConfigObj
 from configobj import Section
+#   Importlib
+from importlib.util import find_spec
 #   Sys
 import sys
+#   Re
+import re
 
 # Source.Python Imports
 #   Core
@@ -23,13 +27,14 @@ from hooks.exceptions import except_hooks
 #   Listeners
 from listeners import on_plugin_loaded_manager
 from listeners import on_plugin_unloaded_manager
+from listeners import on_plugin_loading_manager
+from listeners import on_plugin_unloading_manager
 #   Paths
 from paths import PLUGIN_PATH
 #   Plugins
 from plugins import plugins_logger
-from plugins import _plugin_strings
-from plugins.errors import PluginFileNotFoundError
 from plugins.info import PluginInfo
+from plugins.instance import LoadedPlugin
 
 
 # =============================================================================
@@ -49,13 +54,29 @@ plugins_manager_logger = plugins_logger.manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
+class PluginError(ValueError):
+    pass
+
+class PluginFileNotFoundError(PluginError):
+    pass
+
+class InvalidPluginName(PluginError):
+    pass
+
+class PluginAlreadyLoaded(PluginError):
+    pass
+
+class PluginHasBuiltInName(PluginError):
+    pass
+
+class PluginNotLoaded(PluginError):
+    pass
+
+
 class PluginManager(OrderedDict):
     """Stores plugins and their instances."""
 
-    instance = None
-    prefix = None
-    logger = None
-    translations = None
+    RE_VALID_PLUGIN = re.compile('^([A-Za-z][A-Za-z0-9_]*[A-Za-z0-9])$')
 
     def __init__(self, base_import=''):
         """Called when the class instance is initialized."""
@@ -63,99 +84,15 @@ class PluginManager(OrderedDict):
         super().__init__()
         self._base_import = base_import
 
-        # Does the object have a logger set?
-        if self.logger is None:
-            self.logger = plugins_manager_logger
-
-        # Does the object have a translations value set?
-        if self.translations is None:
-            self.translations = _plugin_strings
-
     def _create_plugin_instance(self, plugin_name):
         """Create a new plugin instance.
 
+        Overwrite this method if you wish to use your own LoadedPlugin
+        subclass.
+
         :rtype: LoadedPlugin
         """
-        # TODO:
-        # Rename "instance" to a better name? Perphaps completely remove it?
-        # Subclasses should implement this method instead.
-        return self.instance(plugin_name, self)
-
-    def __missing__(self, plugin_name):
-        """Try to load a plugin that is not loaded."""
-        # Try to get the plugin's instance
-        try:
-            instance = self._create_plugin_instance(plugin_name)
-
-            # Add the instance here, so we can use get_plugin_instance() etc.
-            # within the plugin itself before the plugin has been fully
-            # loaded. This is also required e.g. for retrieving the PluginInfo
-            # instance.
-            self[plugin_name] = instance
-
-            # Actually load the plugin
-            instance._load()
-
-        # Was the file not found?
-        # We use this check because we already printed the error to console
-        except PluginFileNotFoundError:
-
-            # Return None as the value to show the plugin was not loaded
-            return None
-
-        # Was a different error encountered?
-        except:
-            try:
-                super().__delitem__(plugin_name)
-            except KeyError:
-                pass
-
-            # Get the error
-            error = sys.exc_info()
-
-            # Is the error due to "No module named '<plugin>.<plugin>'"?
-            if (len(error[1].args) and error[1].args[0] ==
-                    "No module named '{0}.{0}'".format(plugin_name)):
-
-                # Print a message about not using built-in module names
-                # We already know the path exists, so the only way this error
-                # could occur is if it shares its name with a built-in module
-                self.logger.log_message(self.prefix + self.translations[
-                    'Built-in'].get_string(plugin=plugin_name))
-
-            # Otherwise
-            else:
-
-                # Print the exception to the console
-                except_hooks.print_exception(*error)
-
-                # Remove all modules from sys.modules
-                self._remove_modules(plugin_name)
-
-            # Return None as the value to show the addon was not loaded
-            return None
-
-        on_plugin_loaded_manager.notify(plugin_name)
-        return instance
-
-    def __delitem__(self, plugin_name):
-        """Remove a plugin from the manager."""
-        # Is the plugin in the dictionary?
-        if plugin_name not in self:
-            return
-
-        # Print a message about the plugin being unloaded
-        self.logger.log_message(self.prefix + self.translations[
-            'Unloading'].get_string(plugin=plugin_name))
-
-        self[plugin_name]._unload()
-
-        # Remove all modules from sys.modules
-        self._remove_modules(plugin_name)
-
-        # Remove the plugin from the dictionary
-        super().__delitem__(plugin_name)
-        on_plugin_unloaded_manager.notify(plugin_name)
+        return LoadedPlugin(plugin_name, self)
 
     @property
     def base_import(self):
@@ -173,6 +110,108 @@ class PluginManager(OrderedDict):
         """
         return PLUGIN_PATH.joinpath(*tuple(self.base_import.split('.')[:~0]))
 
+    def load(self, plugin_name):
+        """Load a plugin by name.
+
+        :param str plugin_name:
+            Name of the plugin to load.
+        :raise InvalidPluginName:
+            Raised if the given plugin name is invalid.
+        :raise PluginAlreadyLoaded:
+            Raised if the plugin was already loaded.
+        :raise PluginFileNotFoundError:
+            Raised if the plugin's main file wasn't found.
+        :raise PluginHasBuiltInName:
+            Raised if the plugin has the name of a built-in module.
+        :raise Exception:
+            Any other exceptions raised by the plugin during the load process.
+        :rtype: LoadedPlugin
+        """
+        if self.is_loaded(plugin_name):
+            raise PluginAlreadyLoaded(
+                'Plugin "{}" is already loaded.'.format(plugin_name))
+
+        if not self.is_valid_plugin_name(plugin_name):
+            raise InvalidPluginName(
+                '"{}" is an invalid plugin name.'.format(plugin_name))
+
+        plugin = self._create_plugin_instance(plugin_name)
+        if not plugin.file_path.isfile():
+            raise PluginFileNotFoundError
+
+        spec = find_spec(plugin.import_name)
+        if spec is None or spec.origin != plugin.file_path:
+            raise PluginHasBuiltInName
+
+        # Add the instance here, so we can use get_plugin_instance() etc.
+        # within the plugin itself before the plugin has been fully loaded.
+        # This is also required e.g. for retrieving the PluginInfo instance.
+        self[plugin_name] = plugin
+        on_plugin_loading_manager.notify(plugin)
+
+        try:
+            # Actually load the plugin
+            plugin._load()
+        except:
+            self.pop(plugin_name, 0)
+            self._remove_modules(plugin_name)
+            raise
+
+        on_plugin_loaded_manager.notify(plugin)
+        return plugin
+
+    def unload(self, plugin_name):
+        """Unload a plugin by name.
+
+        :param str plugin_name:
+            Name of the plugin to unload.
+        :raise PluginNotLoaded:
+            Raised if the plugin is not loaded.
+        """
+        if not self.is_loaded(plugin_name):
+            raise PluginNotLoaded(
+                'Plugin "{}" is not loaded.'.format(plugin_name))
+
+        plugin = self[plugin_name]
+        on_plugin_unloading_manager.notify(plugin)
+        try:
+            plugin._unload()
+        except:
+            except_hooks.print_exceptions()
+
+        self._remove_modules(plugin_name)
+        del self[plugin_name]
+        on_plugin_unloaded_manager.notify(plugin_name)
+
+    def reload(self, plugin_name):
+        """Reload a plugin by name.
+
+        :param str plugin_name:
+            Name of the plugin to reload.
+        :raise PluginNotLoaded:
+            Raised if the plugin is not loaded.
+        :raise InvalidPluginName:
+            Raised if the given plugin name is invalid.
+        :raise PluginFileNotFoundError:
+            Raised if the plugin's main file wasn't found.
+        :raise PluginHasBuiltInName:
+            Raised if the plugin has the name of a built-in module.
+        :raise Exception:
+            Any other exceptions raised by the plugin during the load process.
+        :rtype: LoadedPlugin
+        """
+        self.unload(plugin_name)
+        return self.load(plugin_name)
+
+    def is_valid_plugin_name(self, plugin_name):
+        """Return whether or not the given plugin name is valid.
+
+        :param str plugin_name:
+            Name to check.
+        :rtype: bool
+        """
+        return self.RE_VALID_PLUGIN.match(plugin_name) is not None
+
     def is_loaded(self, plugin_name):
         """Return whether or not a plugin is loaded.
 
@@ -184,6 +223,9 @@ class PluginManager(OrderedDict):
 
     def plugin_exists(self, plugin_name):
         """Return whether of not a plugin exists.
+
+        This method only checks for the existance of the plugin directory, but
+        not for the existance of the main plugin file.
 
         :param str plugin_name:
             The plugin to check.
@@ -199,15 +241,24 @@ class PluginManager(OrderedDict):
             plugin files to retrieve its own plugin instance.
         :rtype: LoadedPlugin
         """
-        # This allows passing __name__ to this method
-        if plugin_name.startswith(self.base_import):
-            plugin_name = plugin_name.replace(
-                self.base_import, '', 1).split('.', 1)[0]
-
-        if plugin_name in self:
+        plugin_name = self.get_plugin_name(plugin_name)
+        if self.is_loaded(plugin_name):
             return self[plugin_name]
 
         return None
+
+    def get_plugin_name(self, plugin_name):
+        """Return the plugin's name.
+
+        :param str plugin_name:
+            The plugin's real name (will be passed through) or the
+            ``__name__`` variable of one of the plugin's files.
+        :rtype: str
+        """
+        if not plugin_name.startswith(self.base_import):
+            return plugin_name
+
+        return plugin_name.replace(self.base_import, '', 1).split('.', 1)[0]
 
     def get_plugin_directory(self, plugin_name):
         """Return the directory of the given plugin.
@@ -215,6 +266,15 @@ class PluginManager(OrderedDict):
         :rtype: path.Path
         """
         return self.plugins_directory / plugin_name
+
+    def get_plugin_file_path(self, plugin_name):
+        """Return the path to the plugin's main file.
+
+        :param str plugin_name:
+            Name of the plugin.
+        :rtype: path.Path
+        """
+        return self.get_plugin_directory(plugin_name) / plugin_name + '.py'
 
     def get_plugin_info(self, plugin_name):
         """Return information about the given plugin.
@@ -235,10 +295,12 @@ class PluginManager(OrderedDict):
 
         :param str plugin_name:
             Name of the plugin whose plugin info should be created.
+        :raise PluginFileNotFoundError:
+            Raised if the plugin's main directory wasn't found.
         :rtype: PluginInfo
         """
         if not self.plugin_exists(plugin_name):
-            raise ValueError(
+            raise PluginFileNotFoundError(
                 'Plugin "{}" does not exist.'.format(plugin_name))
 
         info_file = self.get_plugin_directory(plugin_name) / 'info.ini'
@@ -325,3 +387,6 @@ class PluginManager(OrderedDict):
                 # other AutoUnload instances to be unloaded
                 # and the plugin to be fully unloaded itself
                 except_hooks.print_exception()
+
+# The singleton instance of the :class:`PluginManager` class
+plugin_manager = PluginManager()
