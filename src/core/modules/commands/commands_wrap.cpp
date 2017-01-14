@@ -233,5 +233,11 @@ void export_concommand(scope _commands)
 		"Execute the command."
 	);
 
+	_ConCommand.def(
+		"__call__",
+		raw_method(&ConCommandExt::__call__),
+		"Execute the command."
+	);
+
 	_ConCommand ADD_MEM_TOOLS(ConCommand);
 }

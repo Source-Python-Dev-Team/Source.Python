@@ -108,6 +108,34 @@ public:
 
 
 //-----------------------------------------------------------------------------
+// ConCommand extension class.
+//-----------------------------------------------------------------------------
+class ConCommandExt
+{
+public:
+	static void __call__(ConCommand& command, boost::python::tuple args, dict kwargs)
+	{
+		if (kwargs)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Keywords are not supported.")
+
+		std::string szCommand = command.GetName();
+		szCommand += " ";
+		for(int i=0; i < len(args); ++i)
+		{
+			const char* temp = extract<const char*>(str(args[i]));
+			szCommand += temp;
+			szCommand += " ";
+		}
+		CCommand c;
+		if (!c.Tokenize(szCommand.c_str()))
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to tokenize '%s'.", szCommand.c_str())
+
+		command.Dispatch(c);
+	}
+};
+
+
+//-----------------------------------------------------------------------------
 // CommandGenerator template
 //-----------------------------------------------------------------------------
 template<class CommandMap>

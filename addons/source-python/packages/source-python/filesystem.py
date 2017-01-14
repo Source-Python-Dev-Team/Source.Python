@@ -75,7 +75,10 @@ def source_file(file_path):
 # >> FUNCTIONS
 # =============================================================================
 def _get_temp_file_name():
-    """Generate a temporary file name with an absolute path."""
+    """Generate a temporary file name with an absolute path.
+    
+    :rtype: str
+    """
     return (tempfile._get_default_tempdir()
         + os.sep
         + next(tempfile._get_candidate_names()))

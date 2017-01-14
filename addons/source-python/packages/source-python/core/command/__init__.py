@@ -16,8 +16,6 @@ from commands.typed import TypedServerCommand
 from core import core_logger
 from core.manager import core_plugin_manager
 from core.version import VERSION
-#   Cvars
-from cvars import ConVar
 #   Engines
 from engines.server import execute_server_command
 from engines.server import queue_command_string
@@ -56,7 +54,7 @@ class _CoreCommandManager(SubCommandManager):
 
     def print_plugins(self):
         """List all currently loaded plugins.
-        
+
         .. todo:: Move this to :class:`plugins.command.SubCommandManager`?
         """
         # Get header messages
@@ -69,24 +67,30 @@ class _CoreCommandManager(SubCommandManager):
 
             # Was an PluginInfo instance found?
             if info is not None:
+                message += plugin_name + ' ({}):\n'.format(info.verbose_name)
 
-                # Add message with the current plugin's name
-                message += plugin_name + ':\n'
+                if info.author is not None:
+                    message += '   author:          {}\n'.format(info.author)
 
-                # Loop through all items in the PluginInfo instance
-                for item, value in info.items():
+                if info.description is not None:
+                    message += '   description:     {}\n'.format(info.description)
 
-                    # Is the value a ConVar?
-                    if isinstance(value, ConVar):
+                if info.version != 'unversioned':
+                    message += '   version:         {}\n'.format(info.version)
 
-                        # Get the ConVar's text
-                        value = '{0}:\n\t\t\t{1}: {2}'.format(
-                            value.name,
-                            value.help_text,
-                            value.get_string())
+                if info.url is not None:
+                    message += '   url:             {}\n'.format(info.url)
 
-                    # Add message for the current item and its value
-                    message += '\t{0}:\n\t\t{1}\n'.format(item, value)
+                if info.permissions:
+                    message += '   permissions:\n'
+                    for permission, description in info.permissions:
+                        message += '      {}:'.format(permission).ljust(30) + description + '\n'
+
+                if info.public_convar is not None:
+                    message += '   public convar:   {}\n'.format(info.public_convar.name)
+
+                for attr in info.display_in_listing:
+                    message += '   {}:'.format(attr).ljust(20) + str(getattr(info, attr)) + '\n'
 
             # Was no PluginInfo instance found?
             else:
@@ -133,7 +137,7 @@ class _CoreCommandManager(SubCommandManager):
         self._log_message(message + '=' * 61 + '\n\n')
 
 # Get the _CoreCommandManager instance
-_core_command = _CoreCommandManager('sp', 'Source.Python base command.')
+_core_command = _CoreCommandManager('sp')
 
 
 # =============================================================================

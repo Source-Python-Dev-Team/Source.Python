@@ -39,6 +39,7 @@ from paths import GAME_PATH
 # Source.Python Imports
 #   Core
 from _core import console_message
+from _core import get_interface
 from _core import SOURCE_ENGINE
 from _core import SOURCE_ENGINE_BRANCH
 
@@ -55,6 +56,7 @@ __all__ = ('AutoUnload',
            'SOURCE_ENGINE_BRANCH',
            'console_message',
            'echo_console',
+           'get_interface',
            )
 
 
@@ -147,6 +149,10 @@ class GameConfigObj(ConfigObj):
 # >> FUNCTIONS
 # =============================================================================
 def echo_console(text):
-    """Echo a message to the server's console."""
+    """Echo a message to the server's console.
+
+    :param str text:
+        Message to print to the console.
+    """
     for line in text.split('\n'):
         console_message(line + '\n')

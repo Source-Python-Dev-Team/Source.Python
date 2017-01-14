@@ -103,6 +103,10 @@ class Node(object):
 
     @property
     def signature(self):
+        """Return the signature of the node.
+
+        :rtype: str
+        """
         raise NotImplementedError('Must be implemented by a sub class.')
 
 
@@ -112,10 +116,18 @@ class Store(Node, dict):
 
     @property
     def signature(self):
+        """Return the signature of the node.
+
+        :rtype: str
+        """
         return ' '.join(self.commands) + ' <sub-command>'
 
     @property
     def help_text(self):
+        """Return the help text of the node.
+
+        :rtype: str
+        """
         wrapper = textwrap.TextWrapper(
             40, subsequent_indent='  ', break_long_words=True)
 
@@ -203,13 +215,18 @@ class CommandParser(Store):
             permission=None, fail_callback=None):
         """Add a command to the parser.
 
-        :param str/list/tuple commands: Command to register.
-        :param iterable params: Parameters of the command.
-        :param callable callback: The callback for the command.
-        :param str description: Description of the command.
-        :param str permission: Required permission to use the command.
-        :param callable fail_callback: Callback that gets called if
-            authorization failed.
+        :param str/list/tuple commands:
+            Command to register.
+        :param iterable params:
+            Parameters of the command.
+        :param callable callback:
+            The callback for the command.
+        :param str description:
+            Description of the command.
+        :param str permission:
+            Required permission to use the command.
+        :param callable fail_callback:
+            Callback that gets called if authorization failed.
         :rtype: CommandNode
         """
         commands = self._validate_commands(commands)
@@ -249,7 +266,8 @@ class CommandParser(Store):
     def remove_command(self, commands):
         """Remove a command.
 
-        :param str/list/tuple: Command to remove.
+        :param str/list/tuple:
+            Command to remove.
 
         .. seealso:: :meth:`_remove_command`
         .. seealso:: :meth:`_validate_commands`
@@ -259,10 +277,13 @@ class CommandParser(Store):
     def _remove_command(self, commands):
         """Remove a command.
 
-        :param list commands: Command to remove.
-        :return: Return whether the base command needs to be unregistered.
+        :param list commands:
+            Command to remove.
+        :raise ValueError:
+            Raised if the node does not exist.
+        :return:
+            Return whether the base command needs to be unregistered.
         :rtype: bool
-        :raise ValueError: Raised if the node does not exist.
         """
         store = self
         for command_name in commands[:-1]:
@@ -283,9 +304,11 @@ class CommandParser(Store):
     def get_node(self, commands):
         """Return a node.
 
-        :param str/list/tuple: Node to seach.
+        :param str/list/tuple:
+            Node to seach.
+        :raise ValueError:
+            Raised if the node does not exist.
         :rtype: Node
-        :raise ValueError: Raised if the node does not exist.
 
         .. seealso:: :meth:`_validate_command`
         """
@@ -302,7 +325,8 @@ class CommandParser(Store):
     def get_command(self, commands):
         """Return a command.
 
-        :param str/list/tuple: Command to search.
+        :param str/list/tuple:
+            Command to search.
         :rtype: CommandNode
 
         .. seealso:: :meth:`get_node`
@@ -314,9 +338,12 @@ class CommandParser(Store):
     def _validate_commands(self, commands):
         """Validate a string, list or tuple of commands.
 
-        :param str/list/tuple: The command name or command path to validate.
-        :raise TypeError: Raised if ``commands`` is not a str, list or tuple.
-        :raise ValueError: Raised if ``commands`` is an empty list or tuple.
+        :param str/list/tuple:
+            The command name or command path to validate.
+        :raise TypeError:
+            Raised if ``commands`` is not a str, list or tuple.
+        :raise ValueError:
+            Raised if ``commands`` is an empty list or tuple.
 
         .. seealso:: :meth:`_validate_command`
         """
@@ -336,8 +363,10 @@ class CommandParser(Store):
     def _validate_command(self, command_name):
         """Validate a command name.
 
-        :param str command_name: The command name to check.
-        :raise ValueError: Raised if the command name is invalid.
+        :param str command_name:
+            The command name to check.
+        :raise ValueError:
+            Raised if the command name is invalid.
         """
         if not command_name:
             raise ValueError('Command name cannot be empty.')
@@ -349,12 +378,13 @@ class CommandParser(Store):
         """Clean a command and its passed arguments.
 
         :param CommandNode command:
-        :param iterable args: The arguments to clean.
+        :param iterable args:
+            The arguments to clean.
         :rtype: list
-        :raise InvalidArgumentValue: Raised if the value is invalid for an
-            argument.
-        :raise ArgumentNumberMismatch: Raised if too many/less arguments have
-            been passed.
+        :raise InvalidArgumentValue:
+            Raised if the value is invalid for an argument.
+        :raise ArgumentNumberMismatch:
+            Raised if too many/less arguments have been passed.
         """
         result = []
         params = list(command.params)
@@ -396,10 +426,13 @@ class CommandParser(Store):
 
         Splits the command into the actual command and its arguments.
 
-        :param Command command: A command to parse.
-        :raise SubCommandNotFound: Raised if a sub command was not found.
-        :raise SubCommandExpected: Raised if a sub command was expected, but
-            more arguments have been passed.
+        :param Command command:
+            A command to parse.
+        :raise SubCommandNotFound:
+            Raised if a sub command was not found.
+        :raise SubCommandExpected:
+            Raised if a sub command was expected, but more arguments have been
+            passed.
         :rtype: tuple
         """
         args = list(command)
@@ -425,11 +458,14 @@ class CommandInfo(object):
     def __init__(self, command, index=None, team_only=None):
         """Initializes the instance.
 
-        :param Command command: The actual Command instance.
-        :param int index: The index of the player that issued the command.
-            None, if it's a server command.
-        :param bool team_only: Indicates whether the command was issued in
-            team chat. None, if it's a server or client command.
+        :param Command command:
+            The actual Command instance.
+        :param int index:
+            The index of the player that issued the command. None, if it's a
+            server command.
+        :param bool team_only:
+            Indicates whether the command was issued in team chat. None, if
+            it's a server or client command.
         """
         self.command = command
         self.index = index
@@ -447,12 +483,13 @@ class _TypedCommand(AutoUnload):
     def __init__(self, commands, permission=None, fail_callback=None):
         """Register a typed command callback.
 
-        :param str/list/tuple commands: (Sub-) command to register.
-        :param str/bool permission: A permission that is required to execute
-            the command. If True, the permission string will be generated from
-            the given command.
-        :param callable fail_callback: Called when the executer does not have
-            the required permission.
+        :param str/list/tuple commands:
+            (Sub-) command to register.
+        :param str/bool permission:
+            A permission that is required to execute the command. If True, the
+            permission string will be generated from the given command.
+        :param callable fail_callback:
+            Called when the executer does not have the required permission.
         """
         self.commands = commands
         self.permission = permission
@@ -460,7 +497,17 @@ class _TypedCommand(AutoUnload):
         self.command = None
 
     def __call__(self, callback):
-        """Finish registering a typed command callback."""
+        """Finish registering a typed command callback.
+
+        :param callable callback:
+            A callback that get called when the command has been issued.
+        :raise ValueError:
+            Raised if the callback does not accept at least one argument
+            (command info).
+        :return:
+            Return the passed callback.
+        :rtype: callable
+        """
         params = tuple(inspect.signature(callback).parameters.values())
         if not params:
             raise ValueError(

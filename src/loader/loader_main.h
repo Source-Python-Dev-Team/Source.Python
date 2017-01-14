@@ -101,6 +101,14 @@ public:
 	virtual void			OnEdictFreed( const edict_t *edict );
 #endif
 
+#if defined(ENGINE_CSGO)
+	virtual bool			BNetworkCryptKeyCheckRequired( uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient,
+								bool bClientWantsToUseCryptKey );
+	virtual bool			BNetworkCryptKeyValidate( uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient,
+								int nEncryptionKeyIndexFromClient, int numEncryptedBytesFromClient, byte *pbEncryptedBufferFromClient,
+								byte *pbPlainTextKeyForNetchan );
+#endif
+
 	virtual PLUGIN_RESULT	NetworkIDValidated( const char *pszUserName, const char *pszNetworkID );
 	virtual void			OnQueryCvarValueFinished( QueryCvarCookie_t iCookie, edict_t *pPlayerEntity,
 		EQueryCvarValueStatus eStatus, const char *pCvarName, const char *pCvarValue );
