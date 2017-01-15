@@ -308,11 +308,10 @@ def unload_plugins():
     """Unload all plugins."""
     _sp_logger.log_debug('Unloading plugins...')
 
-    from core.manager import core_plugin_manager
-    from core.command import _core_command
+    from plugins.manager import plugin_manager
 
-    for plugin_name in list(core_plugin_manager):
-        _core_command.unload_plugin(plugin_name)
+    for plugin in list(plugin_manager.values()):
+        plugin.unload()
 
 
 # =============================================================================

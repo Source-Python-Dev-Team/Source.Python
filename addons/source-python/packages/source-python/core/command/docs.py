@@ -15,7 +15,7 @@ from autodoc import SphinxProject
 #   Commands
 from commands.typed import TypedServerCommand
 #   Core
-from core.command import _core_command
+from core.command import core_command
 from core.command import core_command_logger
 from core.version import VERSION
 #   Paths
@@ -37,17 +37,17 @@ logger = core_command_logger.docs
 # =============================================================================
 # >> sp docs create/generate/build
 # =============================================================================
-@_core_command.server_sub_command(['docs', 'create'])
+@core_command.server_sub_command(['docs', 'create'])
 def _sp_docs_create(command_info, package):
     """Create a Sphinx project."""
     _create_sphinx_project(package)
 
-@_core_command.server_sub_command(['docs', 'generate'])
+@core_command.server_sub_command(['docs', 'generate'])
 def _sp_docs_generate(command_info, package):
     """Generate a Sphinx project."""
     _generate_sphinx_project(package)
 
-@_core_command.server_sub_command(['docs', 'build'])
+@core_command.server_sub_command(['docs', 'build'])
 def _sp_docs_build(command_info, package):
     """Build a Sphinx project."""
     _build_sphinx_project(package)
@@ -429,5 +429,5 @@ def is_plugin(package):
 # =============================================================================
 # >> DESCRIPTIONS
 # =============================================================================
-_sp_docs = TypedServerCommand.parser.get_node(['sp', 'docs'])
-_sp_docs.description = 'Documentation specific commands.'
+TypedServerCommand.parser.set_node_description(
+    ['sp', 'docs'], 'Documentation specific commands.')
