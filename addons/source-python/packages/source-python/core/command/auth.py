@@ -12,7 +12,7 @@ from auth.manager import auth_manager
 from commands.typed import filter_str
 from commands.typed import TypedServerCommand
 #   Core
-from core.command import _core_command
+from core.command import core_command
 from core.command import core_command_logger
 #   Filters
 from filters.players import PlayerIter
@@ -27,7 +27,7 @@ logger = core_command_logger.auth
 # =============================================================================
 # >> sp auth backend
 # =============================================================================
-@_core_command.server_sub_command(['auth', 'backend', 'set'])
+@core_command.server_sub_command(['auth', 'backend', 'set'])
 def _sp_auth_load(command_info, backend):
     """Set the active backend."""
     try:
@@ -38,7 +38,7 @@ def _sp_auth_load(command_info, backend):
         logger.log_message(
             'Backend "{}" has been loaded sucessfully!'.format(backend))
 
-@_core_command.server_sub_command(['auth', 'backend', 'list'])
+@core_command.server_sub_command(['auth', 'backend', 'list'])
 def _sp_auth_list(command_info):
     """List all available backends and marks the active backend."""
     if not auth_manager:
@@ -57,7 +57,7 @@ def _sp_auth_list(command_info):
 # =============================================================================
 # >> sp auth permission player
 # =============================================================================
-@_core_command.server_sub_command(['auth', 'permission', 'player', 'add'])
+@core_command.server_sub_command(['auth', 'permission', 'player', 'add'])
 def _sp_auth_permission_player_add(
         command_info, players:filter_str, permission, server_id:int=None):
     """Grant a permission to players."""
@@ -72,7 +72,7 @@ def _sp_auth_permission_player_add(
         logger.log_message('Granted permission "{}" to {}.'.format(
             permission, player.name))
 
-@_core_command.server_sub_command(['auth', 'permission', 'player', 'remove'])
+@core_command.server_sub_command(['auth', 'permission', 'player', 'remove'])
 def _sp_auth_permission_player_remove(
         command_info, players:filter_str, permission, server_id:int=None):
     """Remove a permission from players."""
@@ -88,7 +88,7 @@ def _sp_auth_permission_player_remove(
             'Removed permission "{}" from {}.'.format(
                 permission, player.name))
 
-@_core_command.server_sub_command([
+@core_command.server_sub_command([
     'auth', 'permission', 'player', 'add_parent'
 ])
 def _sp_auth_permission_player_add_parent(
@@ -105,7 +105,7 @@ def _sp_auth_permission_player_add_parent(
         logger.log_message(
             'Added parent "{}" to {}.'.format(parent, player.name))
 
-@_core_command.server_sub_command([
+@core_command.server_sub_command([
     'auth', 'permission', 'player', 'remove_parent'
 ])
 def _sp_auth_permission_player_remove_parent(
@@ -122,7 +122,7 @@ def _sp_auth_permission_player_remove_parent(
         logger.log_message(
             'Removed parent "{}" from {}.'.format(parent, player.name))
 
-@_core_command.server_sub_command(['auth', 'permission', 'player', 'test'])
+@core_command.server_sub_command(['auth', 'permission', 'player', 'test'])
 def _sp_auth_permission_player_test(command_info, permission):
     """Test which players are granted a permission."""
     logger.log_message(
@@ -148,7 +148,7 @@ def _sp_auth_permission_player_test(command_info, permission):
 # =============================================================================
 # >> sp auth permission parent
 # =============================================================================
-@_core_command.server_sub_command(['auth', 'permission', 'parent', 'add'])
+@core_command.server_sub_command(['auth', 'permission', 'parent', 'add'])
 def _sp_auth_permission_parent_add(
         command_info, parent, permission, server_id:int=None):
     """Add a permission to a parent."""
@@ -156,7 +156,7 @@ def _sp_auth_permission_parent_add(
     logger.log_message(
         'Added permission "{}" to parent "{}".'.format(permission, parent))
 
-@_core_command.server_sub_command(['auth', 'permission', 'parent', 'remove'])
+@core_command.server_sub_command(['auth', 'permission', 'parent', 'remove'])
 def _sp_auth_permission_parent_remove(
         command_info, parent, permission, server_id:int=None):
     """Remove a permission from a parent."""
@@ -164,7 +164,7 @@ def _sp_auth_permission_parent_remove(
     logger.log_message('Removed permission "{}" from parent "{}".'.format(
             permission, parent))
 
-@_core_command.server_sub_command([
+@core_command.server_sub_command([
     'auth', 'permission', 'parent', 'add_parent'
 ])
 def _sp_auth_permission_parent_add_parent(
@@ -174,7 +174,7 @@ def _sp_auth_permission_parent_add_parent(
     logger.log_message(
         'Added parent "{}" to parent "{}".'.format(parent_to_add, parent))
 
-@_core_command.server_sub_command([
+@core_command.server_sub_command([
     'auth', 'permission', 'parent', 'remove_parent'
 ])
 def _sp_auth_permission_parent_remove_parent(
@@ -186,7 +186,7 @@ def _sp_auth_permission_parent_remove_parent(
         'Removed parent "{}" from parent "{}".'.format(
             parent_to_remove, parent))
 
-@_core_command.server_sub_command([
+@core_command.server_sub_command([
     'auth', 'permission', 'parent', 'list'
 ])
 def _sp_auth_permission_parent_list(
@@ -212,21 +212,22 @@ def _sp_auth_permission_parent_list(
 # =============================================================================
 # >> DESCRIPTIONS
 # =============================================================================
-_sp_auth = TypedServerCommand.parser.get_node(['sp', 'auth'])
-_sp_auth.description = 'Authorization specific commands.'
+TypedServerCommand.parser.set_node_description(
+    ['sp', 'auth'],
+    'Authorization specific commands.')
 
-_sp_auth_backend = TypedServerCommand.parser.get_node(
-    ['sp', 'auth', 'backend'])
-_sp_auth_backend.description = 'Authorization backend specific commands.'
+TypedServerCommand.parser.set_node_description(
+    ['sp', 'auth', 'backend'],
+    'Authorization backend specific commands.')
 
-_sp_auth_permission = TypedServerCommand.parser.get_node(
-    ['sp', 'auth', 'permission'])
-_sp_auth_permission.description = 'Commands to modify permissions.'
+TypedServerCommand.parser.set_node_description(
+    ['sp', 'auth', 'permission'],
+    'Commands to modify permissions.')
 
-_sp_auth_permission_parent = TypedServerCommand.parser.get_node(
-    ['sp', 'auth', 'permission', 'parent'])
-_sp_auth_permission_parent.description = 'Commands to modify parent permissions.'
+TypedServerCommand.parser.set_node_description(
+    ['sp', 'auth', 'permission', 'parent'],
+    'Commands to modify parent permissions.')
 
-_sp_auth_permission_player = TypedServerCommand.parser.get_node(
-    ['sp', 'auth', 'permission', 'player'])
-_sp_auth_permission_player.description = 'Commands to modify player permissions.'
+TypedServerCommand.parser.set_node_description(
+    ['sp', 'auth', 'permission', 'player'],
+    'Commands to modify player permissions.')

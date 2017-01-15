@@ -9,7 +9,6 @@ Submodules
 
    core.command
    core.dumps
-   core.manager
    core.settings
    core.table
    core.version
