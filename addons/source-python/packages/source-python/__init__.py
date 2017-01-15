@@ -310,7 +310,7 @@ def unload_plugins():
 
     from plugins.manager import plugin_manager
 
-    for plugin in list(plugin_manager.values()):
+    for plugin in plugin_manager.loaded_plugins:
         plugin.unload()
 
 
