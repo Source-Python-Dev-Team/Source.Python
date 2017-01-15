@@ -38,9 +38,18 @@ from plugins.instance import Plugin
 
 
 # =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+from _plugins import ServerPluginManager
+from _plugins import server_plugin_manager
+
+
+# =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('PluginManager',
+           'ServerPluginManager',
+           'server_plugin_manager'
            )
 
 
