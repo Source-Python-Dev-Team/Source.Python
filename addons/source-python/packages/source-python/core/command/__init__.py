@@ -5,6 +5,12 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Datetime
+from datetime import datetime
+#   Platform
+import platform
+
 # Site-Package Imports
 #   Configobj
 from configobj import ConfigObj
@@ -14,6 +20,7 @@ from configobj import ConfigObj
 from commands.typed import TypedServerCommand
 #   Core
 from core import core_logger
+from core import SOURCE_ENGINE_BRANCH
 from core.version import VERSION
 #   Engines
 from engines.server import execute_server_command
@@ -24,6 +31,7 @@ from paths import SP_DATA_PATH
 from plugins import _plugin_strings
 from plugins.command import SubCommandManager
 from plugins.manager import plugin_manager
+from plugins.manager import server_plugin_manager
 #   Tick
 from listeners.tick import Delay
 
@@ -91,13 +99,6 @@ def _sp_delay(command_info, delay:float, command, *args):
     Delay(delay, queue_command_string, (command + ' ' + ' '.join(args), ))
 
 
-@core_command.server_sub_command(['version'])
-def _sp_version(command_info):
-    """Display Source.Python version information."""
-    core_command_logger.log_message(
-        'Current Source.Python version: {0}'.format(VERSION))
-
-
 @core_command.server_sub_command(['credits'])
 def _sp_credits(command_info):
     """List all credits for Source.Python."""
@@ -122,6 +123,32 @@ def _sp_help(command_info, command=None, *server_sub_commands):
     core_command_logger.log_message(node.signature)
     if node.description is not None:
         core_command_logger.log_message('  ' + node.description)
+
+
+@core_command.server_sub_command(['info'])
+def print_info(info):
+    """Print information about OS, SP and installed plugins."""
+    result = '\nDate          : {}'.format(datetime.utcnow())
+    result += '\nOS            : {}'.format(platform.platform())
+    result += '\nGame          : {}'.format(SOURCE_ENGINE_BRANCH)
+    result += '\nSP version    : {}'.format(VERSION)
+    result += '\nServer plugins:'
+    for index, plugin in enumerate(server_plugin_manager.loaded_plugins):
+        result += '\n   {:02d}: {}'.format(index, plugin.name)
+
+    result += '\nSP plugins:'
+    for index, plugin in enumerate(plugin_manager.loaded_plugins):
+        result += '\n   {:02d}: {}'.format(index, plugin.name)
+        info = plugin.info
+        if info.version != 'unversioned':
+            result += ', {}'.format(info.version)
+
+        if info.url is not None:
+            result += ', {}'.format(info.url)
+
+    result += '\n'
+
+    core_command_logger.log_message(result)
 
 
 # =============================================================================

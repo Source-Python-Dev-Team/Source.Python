@@ -38,9 +38,18 @@ from plugins.instance import Plugin
 
 
 # =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+from _plugins import ServerPluginManager
+from _plugins import server_plugin_manager
+
+
+# =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('PluginManager',
+           'ServerPluginManager',
+           'server_plugin_manager'
            )
 
 
@@ -126,6 +135,16 @@ class PluginManager(OrderedDict):
                 continue
 
             yield plugin_name
+            
+    @property
+    def loaded_plugins(self):
+        """Return a tuple containing all loaded plugins.
+        
+        :return:
+            The tuple contains :class:`plugins.instance.Plugin` instances.
+        :rtype: tuple
+        """
+        return tuple(self.values())
 
     def load(self, plugin_name):
         """Load a plugin by name.
