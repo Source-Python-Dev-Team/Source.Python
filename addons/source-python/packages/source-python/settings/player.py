@@ -91,38 +91,28 @@ class _SettingsDictionary(OrderedDict):
     def add_float_setting(
             self, name, default, text=None, min_value=None, max_value=None):
         """Add a new float setting to the dictionary."""
-        # Add the new float setting to the dictionary
         self[name] = FloatSetting(name, default, text, min_value, max_value)
-
-        # Return the setting
         return self[name]
 
     def add_int_setting(
             self, name, default, text=None, min_value=None, max_value=None):
         """Add a new integer setting to the dictionary."""
-        # Add the new integer setting to the dictionary
         self[name] = IntegerSetting(name, default, text, min_value, max_value)
-
-        # Return the setting
         return self[name]
 
     def add_bool_setting(self, name, default, text=None):
+        """Add a new boolean setting to the dictionary."""
         self[name] = BoolSetting(name, default, text)
+        return self[name]
 
     def add_string_setting(self, name, default, text=None):
         """Add a new string setting to the dictionary."""
-        # Add the new string setting to the dictionary
         self[name] = StringSetting(name, default, text)
-
-        # Return the setting
         return self[name]
 
     def add_section(self, name, text=None):
         """Add a new section to the dictionary."""
-        # Add the new section to the dictionary
         self[name] = _SettingsDictionary(name, text)
-
-        # Return the section
         return self[name]
 
     @staticmethod
