@@ -69,24 +69,7 @@ public:
 		}
 		catch(...)
 		{
-			KeyValues *field = NULL;
-			CGameEventManager2 *manager = (CGameEventManager2 *)gameeventmanager;
-			for (int i=0; i < manager->game_events.Count(); i++)
-			{
-				CGameEventDescriptor &descriptor = manager->game_events.Element(i);
-
-#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
-				const char *name = manager->event_names[descriptor.name_index].key;
-#else
-				const char *name = descriptor.name;
-#endif
-				if (strcmp(pEvent->GetName(), name) == 0)
-				{
-					field = descriptor.keys->FindKey(item);
-					break;
-				}
-			}
-
+			KeyValues *field = ((IGameEventExt *)pEvent)->m_pDescriptor->keys->FindKey(item);
 			if (field != NULL)
 			{
 				switch ((EventVarType)atoi(field->GetString()))
