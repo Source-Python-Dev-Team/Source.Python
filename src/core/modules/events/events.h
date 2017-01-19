@@ -62,7 +62,60 @@ public:
 
 	static object __getitem__(IGameEvent* pEvent, const char* item)
 	{
-		return KeyValuesExt::__getitem__(GetVariables(pEvent), item);
+		object return_value = object();
+		try
+		{
+			return KeyValuesExt::__getitem__(GetVariables(pEvent), item);
+		}
+		catch(...)
+		{
+			KeyValues *field = NULL;
+			CGameEventManager2 *manager = (CGameEventManager2 *)gameeventmanager;
+			for (int i=0; i < manager->game_events.Count(); i++)
+			{
+				CGameEventDescriptor &descriptor = manager->game_events.Element(i);
+
+#if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
+				const char *name = manager->event_names[descriptor.name_index].key;
+#else
+				const char *name = descriptor.name;
+#endif
+				if (strcmp(pEvent->GetName(), name) == 0)
+				{
+					field = descriptor.keys->FindKey(item);
+					break;
+				}
+			}
+
+			if (field != NULL)
+			{
+				switch ((EventVarType)atoi(field->GetString()))
+				{
+					case TYPE_STRING:
+					case TYPE_WSTRING:
+						return_value = object("");
+						break;
+					case TYPE_FLOAT:
+						return_value = object(0.0f);
+						break;
+					case TYPE_LONG:
+					case TYPE_SHORT:
+					case TYPE_BYTE:
+					case TYPE_UINT64:
+						return_value = object(0);
+						break;
+					case TYPE_BOOL:
+						return_value = object(false);
+						break;
+				}
+			}
+
+			if (return_value.ptr() == Py_None)
+				PyErr_Print();
+
+			PyErr_Clear();
+		}
+		return return_value;
 	}
 
 	static void __setitem__(IGameEvent* pEvent, const char* item, object value)
