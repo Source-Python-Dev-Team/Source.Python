@@ -69,7 +69,7 @@ public:
 		}
 		catch(...)
 		{
-			KeyValues *field = ((IGameEventExt *)pEvent)->m_pDescriptor->keys->FindKey(item);
+			KeyValues *field = GetDescriptor(pEvent)->keys->FindKey(item);
 			if (field != NULL)
 			{
 				switch ((EventVarType)atoi(field->GetString()))
@@ -93,8 +93,8 @@ public:
 				}
 			}
 
-			if (return_value.ptr() == Py_None)
-				PyErr_Print();
+			if (return_value.ptr() == Py_None && PyErr_Occurred())
+				throw_error_already_set();
 
 			PyErr_Clear();
 		}
