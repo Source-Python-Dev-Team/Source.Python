@@ -106,6 +106,12 @@ class RecipientFilter(_RecipientFilter):
                     # Add the current filter as an index
                     self.add_recipient(filter_)
 
+                # Otherwise, is the current filter a Player instance?
+                elif isinstance(filter_, Player):
+
+                    # Add the player to the recipient filter...
+                    self.add_recipient(filter_.index)
+
                 # Otherwise
                 else:
 
