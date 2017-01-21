@@ -56,7 +56,7 @@ DECLARE_SP_SUBMODULE(_filters, _recipients)
 //-----------------------------------------------------------------------------
 void export_mrecipientfilter(scope _recipients)
 {
-	class_<IRecipientFilter, IRecipientFilter*, boost::noncopyable>("_IRecipientFilter", no_init)
+	class_<IRecipientFilter, IRecipientFilter*, boost::noncopyable>("BaseRecipientFilter", no_init)
 		.def("is_reliable",
 			&IRecipientFilter::IsReliable,
 			"Whether this recipient filter will be network reliable (sent in-order)"
