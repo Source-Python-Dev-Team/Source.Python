@@ -8,6 +8,7 @@
 # Source.Python Imports
 #   Filters
 from _filters._recipients import _RecipientFilter
+from _filters._recipients import BaseRecipientFilter
 #   Players
 from players.entity import Player
 
@@ -16,6 +17,7 @@ from players.entity import Player
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('RecipientFilter',
+           'BaseRecipientFilter',
            )
 
 
