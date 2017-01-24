@@ -206,11 +206,16 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 {
 #ifdef _WIN32
-	return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulModule, szSymbol));
+	void* pAddr = GetProcAddress((HMODULE) m_ulModule, szSymbol);
+	if (!pAddr)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Could not find symbol: %s", szSymbol)
+
+	return new CPointer((unsigned long) pAddr);
 
 #elif defined(__linux__)
+	dlerror();
 	void* pResult = dlsym((void*) m_ulModule, szSymbol);
-	if (pResult)
+	if (!dlerror())
 		return new CPointer((unsigned long) pResult);
 
 	// -----------------------------------------
@@ -240,23 +245,20 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 	if (dlfile == -1 || fstat(dlfile, &dlstat) == -1)
 	{
 		close(dlfile);
-		return new CPointer();
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to open file. Symbol: %s", szSymbol)
 	}
 
 	/* Map library file into memory */
 	file_hdr = (Elf32_Ehdr *)mmap(NULL, dlstat.st_size, PROT_READ, MAP_PRIVATE, dlfile, 0);
 	map_base = (uintptr_t)file_hdr;
-	if (file_hdr == MAP_FAILED)
-	{
-		close(dlfile);
-		return new CPointer();
-	}
 	close(dlfile);
+	if (file_hdr == MAP_FAILED)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to map file. Symbol: %s", szSymbol)
 
 	if (file_hdr->e_shoff == 0 || file_hdr->e_shstrndx == SHN_UNDEF)
 	{
 		munmap(file_hdr, dlstat.st_size);
-		return new CPointer();
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "No section header string table has been found. Symbol: %s", szSymbol)
 	}
 
 	sections = (Elf32_Shdr *)(map_base + file_hdr->e_shoff);
@@ -282,13 +284,12 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 	if (symtab_hdr == NULL || strtab_hdr == NULL)
 	{
 		munmap(file_hdr, dlstat.st_size);
-		return new CPointer();
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "No symbol table or string table found. Symbol: %s", szSymbol)
 	}
 
 	symtab = (Elf32_Sym *)(map_base + symtab_hdr->sh_offset);
 	strtab = (const char *)(map_base + strtab_hdr->sh_offset);
 	symbol_count = symtab_hdr->sh_size / symtab_hdr->sh_entsize;
-	void* sym_addr = NULL;
 
 	/* Iterate symbol table starting from the position we were at last time */
 	for (uint32_t i = 0; i < symbol_count; i++)
@@ -303,15 +304,17 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 
 		if (strcmp(szSymbol, sym_name) == 0)
 		{
-			sym_addr = (void *)(dlmap->l_addr + sym.st_value);
+			pResult = (void *)(dlmap->l_addr + sym.st_value);
 			break;
 		}
 	}
 
 	// Unmap the file now.
 	munmap(file_hdr, dlstat.st_size);
-	return new CPointer((unsigned long) sym_addr);
+	if (!pResult)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Could not find symbol: %s", szSymbol)
 
+	return new CPointer((unsigned long) pResult);
 #else
 #error "BinaryFile::FindSymbol() is not implemented on this OS"
 #endif
