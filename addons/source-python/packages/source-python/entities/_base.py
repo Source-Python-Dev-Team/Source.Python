@@ -335,7 +335,7 @@ class Entity(BaseEntity):
         # Return the parent of the entity...
         return Entity(index_from_inthandle(parent_inthandle))
 
-    def set_parent(self, parent):
+    def _set_parent(self, parent):
         """Set the parent of the entity.
 
         :param Entity parent:
@@ -344,7 +344,7 @@ class Entity(BaseEntity):
         self.set_parent(parent)
 
     parent = property(
-        get_parent, set_parent,
+        get_parent, _set_parent,
         doc="""Property to get/set the parent of the entity.""")
 
     @property
