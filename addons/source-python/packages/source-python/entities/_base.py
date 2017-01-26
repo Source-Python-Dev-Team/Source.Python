@@ -339,8 +339,13 @@ class Entity(BaseEntity):
         """Set the parent of the entity.
 
         :param Entity parent:
-            The parent of the entity.
+            The parent of the entity. If None, actual parent will be cleared.
         """
+        # Clear the actual parent if None was given...
+        if parent is None:
+            self.clear_parent()
+
+        # Set the parent of the entity...
         self.set_parent(parent)
 
     parent = property(
