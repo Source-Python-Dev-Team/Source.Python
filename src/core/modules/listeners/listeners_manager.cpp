@@ -90,3 +90,11 @@ bool CListenerManager::IsRegistered(object oCallback)
 {
 	return m_vecCallables.HasElement(oCallback);
 }
+
+object CListenerManager::__getitem__(unsigned int index)
+{
+	if (index >= (unsigned int) m_vecCallables.Count())
+		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
+
+	return m_vecCallables[index];
+}
