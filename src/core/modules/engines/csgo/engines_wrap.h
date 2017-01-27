@@ -277,6 +277,10 @@ T IVEngineServer_Visitor(T cls)
 		)
 	;
 
+	BEGIN_CLASS_INFO(IVEngineServer)
+		FUNCTION_INFO(SendUserMessage)
+	END_CLASS_INFO()
+
 	return cls;
 }
 

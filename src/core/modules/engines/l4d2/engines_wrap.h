@@ -48,6 +48,11 @@ extern IEngineTrace* enginetrace;
 template<class T>
 T IVEngineServer_Visitor(T cls)
 {
+	BEGIN_CLASS_INFO(IVEngineServer)
+		FUNCTION_INFO(UserMessageBegin)
+		FUNCTION_INFO(MessageEnd)
+	END_CLASS_INFO()
+    
 	return cls;
 }
 
