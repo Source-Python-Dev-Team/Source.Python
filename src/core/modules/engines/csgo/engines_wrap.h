@@ -34,6 +34,7 @@
 #include "ispsharedmemory.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
+#include "google/protobuf/message.h"
 
 
 //---------------------------------------------------------------------------------
