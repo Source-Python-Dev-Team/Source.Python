@@ -62,7 +62,43 @@ public:
 
 	static object __getitem__(IGameEvent* pEvent, const char* item)
 	{
-		return KeyValuesExt::__getitem__(GetVariables(pEvent), item);
+		object return_value = object();
+		try
+		{
+			return KeyValuesExt::__getitem__(GetVariables(pEvent), item);
+		}
+		catch(...)
+		{
+			KeyValues *field = GetDescriptor(pEvent)->keys->FindKey(item);
+			if (field != NULL)
+			{
+				switch ((EventVarType)atoi(field->GetString()))
+				{
+					case TYPE_STRING:
+					case TYPE_WSTRING:
+						return_value = object("");
+						break;
+					case TYPE_FLOAT:
+						return_value = object(0.0f);
+						break;
+					case TYPE_LONG:
+					case TYPE_SHORT:
+					case TYPE_BYTE:
+					case TYPE_UINT64:
+						return_value = object(0);
+						break;
+					case TYPE_BOOL:
+						return_value = object(false);
+						break;
+				}
+			}
+
+			if (return_value.ptr() == Py_None && PyErr_Occurred())
+				throw_error_already_set();
+
+			PyErr_Clear();
+		}
+		return return_value;
 	}
 
 	static void __setitem__(IGameEvent* pEvent, const char* item, object value)

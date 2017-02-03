@@ -191,7 +191,10 @@ END_CLASS_INFO()
 		typedef classname functionInfoClass; \
 		extern dict g_oClassInfo; \
 		dict classInfoDict; \
-		g_oClassInfo[ #classname ] = classInfoDict;
+		if (g_oClassInfo.contains( #classname )) \
+			classInfoDict = extract<dict>(g_oClassInfo[ #classname ]); \
+		else \
+			g_oClassInfo[ #classname ] = classInfoDict;
 
 // Finish a class info dictionary
 #define END_CLASS_INFO() \

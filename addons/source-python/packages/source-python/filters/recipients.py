@@ -8,6 +8,7 @@
 # Source.Python Imports
 #   Filters
 from _filters._recipients import _RecipientFilter
+from _filters._recipients import BaseRecipientFilter
 #   Players
 from players.entity import Player
 
@@ -16,6 +17,7 @@ from players.entity import Player
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('RecipientFilter',
+           'BaseRecipientFilter',
            )
 
 
@@ -105,6 +107,12 @@ class RecipientFilter(_RecipientFilter):
 
                     # Add the current filter as an index
                     self.add_recipient(filter_)
+
+                # Otherwise, is the current filter a Player instance?
+                elif isinstance(filter_, Player):
+
+                    # Add the player to the recipient filter...
+                    self.add_recipient(filter_.index)
 
                 # Otherwise
                 else:

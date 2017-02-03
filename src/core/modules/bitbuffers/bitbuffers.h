@@ -31,6 +31,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "tier1/bitbuf.h"
+#include "utilities/sp_util.h"
 
 
 //-----------------------------------------------------------------------------
@@ -57,12 +58,23 @@ public:
 class BitBufferReadExt
 {
 public:
-	static boost::shared_ptr<bf_read> __init__(bf_write& buffer)
+	static boost::shared_ptr<bf_read> __init__(bf_write& buffer, bool create_copy)
 	{
 		int size = buffer.GetNumBytesWritten();
-		void* pData = new unsigned char[size];
-		memcpy(pData, buffer.GetData(), size);
-		return boost::shared_ptr<bf_read>(new bf_read(pData, size), &__del__);
+		if (create_copy)
+		{
+			void* pData = new unsigned char[size];
+			memcpy(pData, buffer.GetData(), size);
+			return boost::shared_ptr<bf_read>(
+				new bf_read(pData, size),
+				&__del__);
+		}
+		else
+		{
+			return boost::shared_ptr<bf_read>(
+				new bf_read(buffer.GetData(), size),
+				&NeverDeleteDeleter<bf_read*>);
+		}
 	}
 
 	static void __del__(bf_read* buffer)
