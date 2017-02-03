@@ -34,6 +34,7 @@
 #include "ispsharedmemory.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
+#include "google/protobuf/message.h"
 
 
 //---------------------------------------------------------------------------------
@@ -276,6 +277,10 @@ T IVEngineServer_Visitor(T cls)
 			"Return the achievement manager."
 		)
 	;
+
+	BEGIN_CLASS_INFO(IVEngineServer)
+		FUNCTION_INFO(SendUserMessage)
+	END_CLASS_INFO()
 
 	return cls;
 }

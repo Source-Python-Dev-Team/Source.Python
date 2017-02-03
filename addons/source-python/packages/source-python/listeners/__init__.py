@@ -90,7 +90,9 @@ __all__ = ('ButtonStatus',
            'OnButtonStateChanged',
            'OnPlayerRunCommand',
            'OnPluginLoaded',
+           'OnPluginLoading',
            'OnPluginUnloaded',
+           'OnPluginUnloading',
            'OnQueryCvarValueFinished',
            'OnServerActivate',
            'OnTick',
@@ -118,7 +120,9 @@ __all__ = ('ButtonStatus',
            'on_level_shutdown_listener_manager',
            'on_network_id_validated_listener_manager',
            'on_plugin_loaded_manager',
+           'on_plugin_loading_manager',
            'on_plugin_unloaded_manager',
+           'on_plugin_unloading_manager',
            'on_query_cvar_value_finished_listener_manager',
            'on_server_activate_listener_manager',
            'on_tick_listener_manager',
@@ -136,6 +140,8 @@ on_version_update_listener_manager = ListenerManager()
 on_convar_changed_listener_manager = ListenerManager()
 on_plugin_loaded_manager = ListenerManager()
 on_plugin_unloaded_manager = ListenerManager()
+on_plugin_loading_manager = ListenerManager()
+on_plugin_unloading_manager = ListenerManager()
 on_level_end_listener_manager = ListenerManager()
 on_player_run_command_listener_manager = ListenerManager()
 on_button_state_changed_listener_manager = ListenerManager()
@@ -376,10 +382,22 @@ class OnPluginLoaded(ListenerManagerDecorator):
     manager = on_plugin_loaded_manager
 
 
+class OnPluginLoading(ListenerManagerDecorator):
+    """Register/unregister a plugin loading listener."""
+
+    manager = on_plugin_loading_manager
+
+
 class OnPluginUnloaded(ListenerManagerDecorator):
     """Register/unregister a plugin unloaded listener."""
 
     manager = on_plugin_unloaded_manager
+
+
+class OnPluginUnloading(ListenerManagerDecorator):
+    """Register/unregister a plugin unloading listener."""
+
+    manager = on_plugin_unloading_manager
 
 
 class OnLevelEnd(ListenerManagerDecorator):

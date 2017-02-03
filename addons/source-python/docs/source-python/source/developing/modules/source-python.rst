@@ -40,6 +40,7 @@ Submodules
    bitbuffers
    colors
    effects
+   filesystem
    keyvalues
    loggers
    mathlib

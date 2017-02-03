@@ -388,6 +388,18 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Plugins module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_PLUGINS_MODULE_HEADERS
+    core/modules/plugins/plugins.h
+)
+
+Set(SOURCEPYTHON_PLUGINS_MODULE_SOURCES
+    core/modules/plugins/plugins.cpp
+    core/modules/plugins/plugins_wrap.cpp
+)
+
+# ------------------------------------------------------------------
 # Steam module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STEAM_MODULE_HEADERS
@@ -498,6 +510,9 @@ Set(SOURCEPYTHON_MODULE_FILES
     ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS}
     ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES}
 
+    ${SOURCEPYTHON_PLUGINS_MODULE_HEADERS}
+    ${SOURCEPYTHON_PLUGINS_MODULE_SOURCES}
+
     ${SOURCEPYTHON_FILTERS_MODULE_HEADERS}
     ${SOURCEPYTHON_FILTERS_MODULE_SOURCES}
 
@@ -543,6 +558,7 @@ Source_Group("Header Files\\Modules\\Messages"               FILES ${SOURCEPYTHO
 Source_Group("Header Files\\Modules\\NetChannel"             FILES ${SOURCEPYTHON_NET_CHANNEL_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Physics"                FILES ${SOURCEPYTHON_PHYSICS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_HEADERS})
+Source_Group("Header Files\\Modules\\Plugins"                FILES ${SOURCEPYTHON_PLUGINS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Filesystem"             FILES ${SOURCEPYTHON_FILESYSTEM_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_HEADERS})
 Source_Group("Header Files\\Modules\\StringTables"           FILES ${SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS})
@@ -572,6 +588,7 @@ Source_Group("Source Files\\Modules\\Messages"               FILES ${SOURCEPYTHO
 Source_Group("Source Files\\Modules\\NetChannel"             FILES ${SOURCEPYTHON_NET_CHANNEL_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Physics"                FILES ${SOURCEPYTHON_PHYSICS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Players"                FILES ${SOURCEPYTHON_PLAYERS_MODULE_SOURCES})
+Source_Group("Source Files\\Modules\\Plugins"                FILES ${SOURCEPYTHON_PLUGINS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Filesystem"             FILES ${SOURCEPYTHON_FILESYSTEM_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Filters"                FILES ${SOURCEPYTHON_FILTERS_MODULE_SOURCES})
 Source_Group("Source Files\\Modules\\Steam"                  FILES ${SOURCEPYTHON_STEAM_MODULE_SOURCES})

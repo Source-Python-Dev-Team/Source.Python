@@ -320,6 +320,38 @@ class Entity(BaseEntity):
         get_model, set_model,
         doc="""Property to get/set the entity's model.""")
 
+    def get_parent(self):
+        """Return the entity's parent.
+
+        :rtype: Entity
+        """
+        # Get the parent handle...
+        parent_inthandle = self.parent_inthandle
+
+        # Does the entity have no parent?
+        if parent_inthandle == -1:
+            return None
+
+        # Return the parent of the entity...
+        return Entity(index_from_inthandle(parent_inthandle))
+
+    def _set_parent(self, parent):
+        """Set the parent of the entity.
+
+        :param Entity parent:
+            The parent of the entity. If None, actual parent will be cleared.
+        """
+        # Clear the actual parent if None was given...
+        if parent is None:
+            self.clear_parent()
+
+        # Set the parent of the entity...
+        self.set_parent(parent)
+
+    parent = property(
+        get_parent, _set_parent,
+        doc="""Property to get/set the parent of the entity.""")
+
     @property
     def model_header(self):
         """Return the entity's model header.

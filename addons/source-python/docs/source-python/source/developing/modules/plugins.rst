@@ -8,7 +8,6 @@ Submodules
    :titlesonly:
 
    plugins.command
-   plugins.errors
    plugins.info
    plugins.instance
    plugins.manager

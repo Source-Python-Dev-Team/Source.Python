@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2017 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -27,74 +27,93 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "listeners_manager.h"
+// Source.Python
+#include "export_main.h"
+#include "modules/memory/memory_utilities.h"
+#include "plugins.h"
 
 
 //-----------------------------------------------------------------------------
-// Adds a callable to the end of the CListenerManager vector.
+// Forward declarations.
 //-----------------------------------------------------------------------------
-void CListenerManager::RegisterListener(PyObject* pCallable)
+static void export_plugin(scope);
+static void export_server_plugin(scope);
+static void export_plugin_iter(scope);
+
+
+//-----------------------------------------------------------------------------
+// Declare the _plugins module.
+//-----------------------------------------------------------------------------
+DECLARE_SP_MODULE(_plugins)
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
+	export_plugin(_plugins);
+	export_server_plugin(_plugins);
+	export_plugin_iter(_plugins);
 
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
-	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
-	}
+	_plugins.attr("server_plugin_manager") = ptr(GetServerPlugin());
 }
 
 
 //-----------------------------------------------------------------------------
-// Removes all instances of a callable from the CListenerManager vector.
+// Exports CPlugin.
 //-----------------------------------------------------------------------------
-void CListenerManager::UnregisterListener(PyObject* pCallable)
+void export_plugin(scope _plugins)
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
+	class_<CPlugin, boost::noncopyable> ServerPlugin("ServerPlugin", no_init);
 
-	// Remove the callback from the ServerCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
+	ServerPlugin.add_property(
+		"name",
+		&CPlugin::GetName,
+		"Return the name/description of the plugin."
+	);
+
+	ServerPlugin.add_property(
+		"module_name",
+		&CPlugin::GetModuleName,
+		"Return the path to the plugin's shared library."
+	);
+
+	ServerPlugin.def_readwrite(
+		"interface_version",
+		&CPlugin::m_iPluginInterfaceVersion,
+		"Return the version of the IServerPluginCallbacks interface the plugin is built on."
+	);
+		
+	ServerPlugin ADD_MEM_TOOLS(CPlugin);
 }
 
 
 //-----------------------------------------------------------------------------
-// Notifies all registered callbacks.
+// Exports CServerPlugin.
 //-----------------------------------------------------------------------------
-void CListenerManager::Notify(tuple args, dict kwargs)
+void export_server_plugin(scope _plugins)
 {
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-			eval("lambda func, args, kwargs: func(*args, **kwargs)")(m_vecCallables[i], args, kwargs);
-		END_BOOST_PY_NORET()
-	}
+	class_<CServerPlugin, boost::noncopyable> ServerPluginManager("ServerPluginManager", no_init);
+
+	ServerPluginManager.add_property(
+		"loaded_plugins",
+		make_function(&CServerPlugin::GetLoadedPlugins, manage_new_object_policy()),
+		"Return a generator to iterate over all loaded server plugins."
+	);
+		
+	ServerPluginManager ADD_MEM_TOOLS(CServerPlugin);
 }
 
 
 //-----------------------------------------------------------------------------
-// Return the number of registered callbacks.
+// Exports CPluginIter.
 //-----------------------------------------------------------------------------
-int CListenerManager::GetCount()
+void export_plugin_iter(scope _plugins)
 {
-	return m_vecCallables.Count();
-}
+	class_<CPluginIter> PluginIter("PluginIter", no_init);
 
+	PluginIter.def("__iter__",
+		&CPluginIter::__iter__
+	);
 
-//-----------------------------------------------------------------------------
-// Return whether or not the given callback is registered.
-//-----------------------------------------------------------------------------
-bool CListenerManager::IsRegistered(object oCallback)
-{
-	return m_vecCallables.HasElement(oCallback);
-}
-
-object CListenerManager::__getitem__(unsigned int index)
-{
-	if (index >= (unsigned int) m_vecCallables.Count())
-		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
-
-	return m_vecCallables[index];
+	PluginIter.def(
+		"__next__",
+		&CPluginIter::__next__,
+		reference_existing_object_policy()
+	);
 }
