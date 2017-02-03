@@ -178,6 +178,10 @@ class _ServerClasses(TypeManager):
                 else:
                     order.append(class_name)
             order.extend(entity_server_classes)
+            last_key = 'CBaseEntity'
+            if last_key in order and order[~0] != last_key:
+                order.remove(last_key)
+                order.append(last_key)
 
         for class_name in order:
             # Is the current class already known?

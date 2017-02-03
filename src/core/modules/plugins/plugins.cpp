@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2017 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -27,74 +27,88 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "listeners_manager.h"
+// C++
+#ifdef _WIN32
+	#include "Windows.h"
+#else
+	#include "link.h"
+#endif
+
+// Source.Python
+#include "plugins.h"
 
 
 //-----------------------------------------------------------------------------
-// Adds a callable to the end of the CListenerManager vector.
+// Externals.
 //-----------------------------------------------------------------------------
-void CListenerManager::RegisterListener(PyObject* pCallable)
+extern IServerPluginHelpers* helpers;
+
+
+//-----------------------------------------------------------------------------
+// GetServerPlugin.
+//-----------------------------------------------------------------------------
+CServerPlugin* GetServerPlugin()
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
+	static CServerPlugin* plugin = dynamic_cast<CServerPlugin*>(helpers);
+	if (!plugin)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve CServerPlugin singleton.")
 
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
-	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
-	}
+	return plugin;
 }
 
 
 //-----------------------------------------------------------------------------
-// Removes all instances of a callable from the CListenerManager vector.
+// CPlugin.
 //-----------------------------------------------------------------------------
-void CListenerManager::UnregisterListener(PyObject* pCallable)
+object CPlugin::GetModuleName()
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
+	static object Path = import("path").attr("Path");
 
-	// Remove the callback from the ServerCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
+#ifdef _WIN32
+	char file_name[1024];
+	if (!GetModuleFileName((HMODULE) m_pPluginModule, file_name, 1024))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve module file name.")
+
+	return Path(str(file_name));
+#else
+	link_map* dlmap = (link_map*) m_pPluginModule;
+	return Path(str((const char*) dlmap->l_name));
+#endif
+}
+
+const char* CPlugin::GetName()
+{
+	return m_szName;
 }
 
 
 //-----------------------------------------------------------------------------
-// Notifies all registered callbacks.
+// CPluginPlugin.
 //-----------------------------------------------------------------------------
-void CListenerManager::Notify(tuple args, dict kwargs)
+CPluginIter* CServerPlugin::GetLoadedPlugins()
 {
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-			eval("lambda func, args, kwargs: func(*args, **kwargs)")(m_vecCallables[i], args, kwargs);
-		END_BOOST_PY_NORET()
-	}
+	return new CPluginIter(&m_Plugins);
 }
 
 
 //-----------------------------------------------------------------------------
-// Return the number of registered callbacks.
+// CPluginIter
 //-----------------------------------------------------------------------------
-int CListenerManager::GetCount()
+CPluginIter::CPluginIter(CUtlVector<CPlugin*>* plugins) 
 {
-	return m_vecCallables.Count();
+	this->plugins = plugins;
+	this->current_index = 0;
 }
 
-
-//-----------------------------------------------------------------------------
-// Return whether or not the given callback is registered.
-//-----------------------------------------------------------------------------
-bool CListenerManager::IsRegistered(object oCallback)
+object CPluginIter::__iter__(PyObject* self)
 {
-	return m_vecCallables.HasElement(oCallback);
+	return object(handle<>(borrowed(self)));
 }
 
-object CListenerManager::__getitem__(unsigned int index)
+CPlugin* CPluginIter::__next__()
 {
-	if (index >= (unsigned int) m_vecCallables.Count())
-		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
-
-	return m_vecCallables[index];
+	if (current_index >= plugins->Count())
+		BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "No more plugins.")
+		
+	return plugins->Element(current_index++);
 }

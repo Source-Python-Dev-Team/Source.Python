@@ -5,10 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Re
-import re
-
 # Source.Python Imports
 #   Commands
 from commands.typed import (
@@ -16,13 +12,18 @@ from commands.typed import (
 )
 #   Core
 from core import AutoUnload
+#   Hooks
+from hooks.exceptions import except_hooks
+#   Paths
+from paths import GAME_PATH
 #   Plugins
 from plugins import plugins_logger
 from plugins import _plugin_strings
-from plugins.errors import PluginInstanceError
-from plugins.errors import PluginManagerError
-from plugins.instance import LoadedPlugin
-from plugins.manager import PluginManager
+from plugins.manager import PluginFileNotFoundError
+from plugins.manager import InvalidPluginName
+from plugins.manager import PluginAlreadyLoaded
+from plugins.manager import PluginHasBuiltInName
+from plugins.manager import PluginNotLoaded
 
 
 # =============================================================================
@@ -45,42 +46,53 @@ plugins_command_logger = plugins_logger.command
 class SubCommandManager(AutoUnload, list):
     """Class used for executing sub-commands for the given console command."""
 
-    # Set the default class values for base attributes
-    logger = plugins_command_logger
-    translations = _plugin_strings
+    def __init__(self, manager, command, prefix='',
+            logger=plugins_command_logger, translations=_plugin_strings):
+        """Initializes the sub-command manager.
 
-    def __init__(self, command, prefix=''):
-        """Called on instance initialization."""
+        :param PluginManager manager:
+            A plugin manager.
+        :param str command:
+            Command to register.
+        :param str prefix:
+            Prefix used for printing messages to the console.
+        :param Logger logger:
+            A logger that is used for printing messages to the console.
+        :param LangStrings translations:
+            Translations used for printing messages to the console. The
+            translations have to define the following messages:
+
+            * Loading
+            * Invalid Name
+            * Already Loaded
+            * No Module
+            * Built-in
+            * Unable to Load
+            * Successful Load
+            * Unloading
+            * Not Loaded
+            * Successful Unload
+            * Plugins
+        """
         # Re-call OrderedDict's __init__ to properly setup the object
         super().__init__()
-
-        # Does the class have a proper manager object assigned?
-        if not isinstance(self.manager, PluginManager):
-            raise PluginManagerError(PluginManagerError.__doc__)
-
-        # Does the class have a proper instance class assigned?
-        if not issubclass(self.instance, LoadedPlugin):
-            raise PluginInstanceError(PluginInstanceError.__doc__)
-
-        # Store the command
+        self.manager = manager
         self._command = command
-
-        # Store the prefix
         self._prefix = prefix if prefix else '[{0}] '.format(
             self.command.upper())
-
-        # Set the prefix for the manager and instance classes
-        self.manager.prefix = self.instance.prefix = self.prefix
-
-        # Set the instance class for the manager class
-        self.manager.instance = self.instance
+        self.logger = logger
+        self.translations = translations
 
     def _unload_instance(self):
+        """Unload all sub-commands."""
         for item in self:
             item._unload_instance()
 
+        # Probably not necessary, but just in case...
+        self.clear()
+
     def server_sub_command(self, commands):
-        """Add a sub-command.
+        """Add a server sub-command.
 
         .. seealso:: :class:`commands.typed.TypedServerCommand`
         """
@@ -91,6 +103,10 @@ class SubCommandManager(AutoUnload, list):
         return command
 
     def client_sub_command(self, commands, permission=None):
+        """Add a client sub-command.
+
+        .. seealso:: :class:`commands.typed.TypedClientCommand`
+        """
         if isinstance(commands, str):
             commands = [commands]
         command = TypedClientCommand(
@@ -101,6 +117,10 @@ class SubCommandManager(AutoUnload, list):
         return command
 
     def say_sub_command(self, commands, permission=None):
+        """Add a say sub-command.
+
+        .. seealso:: :class:`commands.typed.TypedSayCommand`
+        """
         if isinstance(commands, str):
             commands = [commands]
         command = TypedSayCommand(
@@ -111,136 +131,140 @@ class SubCommandManager(AutoUnload, list):
         return command
 
     @property
-    def manager(self):
-        """Raise an error if the inheriting class does not have their own."""
-        raise NotImplementedError('No manager attribute defined for class.')
-
-    @property
-    def instance(self):
-        """Raise an error if the inheriting class does not have their own."""
-        raise NotImplementedError('No instance attribute defined for class.')
-
-    @property
     def command(self):
-        """Return the server command registered to the class."""
+        """Return the server command registered to the class.
+
+        :rtype: str
+        """
         return self._command
 
     @property
     def prefix(self):
-        """Return the prefix to use in log messages."""
+        """Return the prefix to use in log messages.
+
+        :rtype: str
+        """
         return self._prefix
 
     def load_plugin(self, plugin_name):
-        """Load a plugin by name."""
-        # Is the given plugin name a proper name?
-        if not self._is_valid_plugin_name(plugin_name):
+        """Load a plugin by name.
 
-            # Log a message that the given name is invalid
-            self._log_message(self.prefix + self.translations[
+        :param str plugin_name:
+            Name of the plugin to load.
+        :return:
+            Return the loaded plugin. Return ``None`` on failure.
+        :rtype: Plugin
+        """
+        plugin = None
+        self.log_message(self.translations[
+            'Loading'].get_string(plugin=plugin_name))
+        try:
+            plugin = self.manager.load(plugin_name)
+        except InvalidPluginName:
+            self.log_message(self.translations[
                 'Invalid Name'].get_string(plugin=plugin_name))
-
-            # No need to go further
-            return
-
-        # Is the plugin already loaded?
-        if plugin_name in self.manager:
-
-            # Log a message that the plugin is already loaded
-            self._log_message(self.prefix + self.translations[
+        except PluginAlreadyLoaded:
+            self.log_message(self.translations[
                 'Already Loaded'].get_string(plugin=plugin_name))
-
-            # No need to go further
-            return
-
-        # Load the plugin and get its instance
-        plugin = self.manager[plugin_name]
-
-        # Was the plugin unable to be loaded?
-        if plugin is None:
-
-            # Log a message that the plugin was not loaded
-            self._log_message(self.prefix + self.translations[
+        except PluginFileNotFoundError:
+            self.log_message(self.translations[
+                'No Module'].get_string(
+                    plugin=plugin_name, file=GAME_PATH.relpathto(
+                        self.manager.get_plugin_file_path(
+                            plugin_name)).replace('\\', '/')))
+        except PluginHasBuiltInName:
+            self.log_message(self.translations[
+                'Built-in'].get_string(plugin=plugin_name))
+        except:
+            except_hooks.print_exception()
+            self.log_message(self.translations[
                 'Unable to Load'].get_string(plugin=plugin_name))
+        else:
+            self.log_message(self.translations[
+                'Successful Load'].get_string(plugin=plugin_name))
 
-            # No need to go further
-            return
-
-        # Log a message that the plugin was loaded
-        self._log_message(self.prefix + self.translations[
-            'Successful Load'].get_string(plugin=plugin_name))
+        return plugin
 
     def unload_plugin(self, plugin_name):
-        """Unload a plugin by name."""
-        # Is the given plugin name a proper name?
-        if not self._is_valid_plugin_name(plugin_name):
+        """Unload a plugin by name.
 
-            # Send a message that the given name is invalid
-            self._log_message(self.prefix + self.translations[
+        :param str plugin_name:
+            Name of the plugin to unload.
+        """
+        self.log_message(self.translations[
+            'Unloading'].get_string(plugin=plugin_name))
+        try:
+            self.manager.unload(plugin_name)
+        except InvalidPluginName:
+            self.log_message(self.translations[
                 'Invalid Name'].get_string(plugin=plugin_name))
-
-            # No need to go further
-            return
-
-        # Is the plugin loaded?
-        if plugin_name not in self.manager:
-
-            # Send a message that the plugin is not loaded
-            self._log_message(self.prefix + self.translations[
+        except PluginNotLoaded:
+            self.log_message(self.translations[
                 'Not Loaded'].get_string(plugin=plugin_name))
-
-            # No need to go further
-            return
-
-        # Unload the plugin
-        del self.manager[plugin_name]
-
-        # Send a message that the plugin was unloaded
-        self._log_message(self.prefix + self.translations[
-            'Successful Unload'].get_string(plugin=plugin_name))
+        else:
+            self.log_message(self.translations[
+                'Successful Unload'].get_string(plugin=plugin_name))
 
     def reload_plugin(self, plugin_name):
-        """Reload a plugin by name."""
-        # Is the given plugin name a proper name?
-        if not self._is_valid_plugin_name(plugin_name):
+        """Reload a plugin by name.
 
-            # Send a message that the given name is invalid
-            self._log_message(self.prefix + self.translations[
-                'Invalid Name'].get_string(plugin=plugin_name))
-
-            # No need to go further
-            return
-
-        # Unload the plugin
+        :param str plugin_name:
+            Name of the plugin to reload.
+        :return:
+            Return the loaded plugin. Return ``None`` on failure.
+        :rtype: Plugin
+        """
         self.unload_plugin(plugin_name)
-
-        # Load the plugin
-        self.load_plugin(plugin_name)
+        return self.load_plugin(plugin_name)
 
     def print_plugins(self):
-        """Print all currently loaded plugins."""
-        # Get the header message
-        message = self.prefix + self.translations[
-            'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n\t'
+        """List all currently loaded plugins."""
+        # Get header messages
+        message = self.translations[
+            'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
 
-        # Add all loaded plugins to the message
-        message += '\n\t'.join(self.manager)
+        # Loop through all loaded plugins
+        for plugin_name in sorted(self.manager):
+            info = self.manager[plugin_name].info
 
-        # Add a breaker at the end of the message
-        message += '\n\n' + '=' * 61
+            message += plugin_name + ' ({}):\n'.format(info.verbose_name)
 
-        # Send the message
-        self._log_message(message)
+            if info.author is not None:
+                message += '   author:          {}\n'.format(info.author)
 
-    def _log_message(self, message):
-        """Log a message."""
-        # Log the message
-        self.logger.log_message(message)
+            if info.description is not None:
+                message += '   description:     {}\n'.format(info.description)
 
-    @staticmethod
-    def _is_valid_plugin_name(plugin_name):
-        """Return whether or not the given plugin name is valid."""
-        # Get the regular expression match for the given plugin name
-        match = re.match('([A-Za-z][A-Za-z0-9_]*[A-Za-z0-9])$', plugin_name)
+            if info.version != 'unversioned':
+                message += '   version:         {}\n'.format(info.version)
 
-        # Return whether it is valid or not
-        return False if match is None else match.group() == plugin_name
+            if info.url is not None:
+                message += '   url:             {}\n'.format(info.url)
+
+            if info.permissions:
+                message += '   permissions:\n'
+                for permission, description in info.permissions:
+                    message += '      {}:'.format(permission).ljust(30) + description + '\n'
+
+            if info.public_convar is not None:
+                message += '   public convar:   {}\n'.format(info.public_convar.name)
+
+            for attr in info.display_in_listing:
+                message += '   {}:'.format(attr).ljust(20) + str(getattr(info, attr)) + '\n'
+
+            # Add 1 blank line between each plugin
+            message += '\n'
+
+        # Add the ending separator
+        message += '=' * 61
+
+        # Print the message
+        self.log_message(message)
+
+    def log_message(self, message):
+        """Log a message. The prefix will be added automatically.
+
+        :param str message:
+            Message to log.
+        """
+        self.logger.log_message(self.prefix + message)

@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2017 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,80 +24,69 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _BITBUFFERS_H
-#define _BITBUFFERS_H
+#ifndef _PLUGINS_H
+#define _PLUGINS_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "tier1/bitbuf.h"
-#include "utilities/sp_util.h"
+// Source.Python
+#include "utilities/wrap_macros.h"
+
+// SDK
+#include "eiface.h"
 
 
 //-----------------------------------------------------------------------------
-// bf_write extension class.
+// CPlugin.
 //-----------------------------------------------------------------------------
-class BitBufferWriteExt
+class CPlugin
 {
 public:
-	static boost::shared_ptr<bf_write> __init__(int buffer_size)
-	{
-		return boost::shared_ptr<bf_write>(new bf_write(new unsigned char[buffer_size], buffer_size), &__del__);
-	}
+	char m_szName[128];
+	bool m_bDisable;
+	IServerPluginCallbacks* m_pPlugin;
+	int	m_iPluginInterfaceVersion;
+	CSysModule* m_pPluginModule;
 
-	static void __del__(bf_write* buffer)
-	{
-		delete buffer->GetData();
-	}
+	object GetModuleName();
+	const char* GetName();
 };
 
 
 //-----------------------------------------------------------------------------
-// bf_read extension class.
+// CServerPlugin.
 //-----------------------------------------------------------------------------
-class BitBufferReadExt
+class CPluginIter;
+
+class CServerPlugin: public IServerPluginHelpers
 {
 public:
-	static boost::shared_ptr<bf_read> __init__(bf_write& buffer, bool create_copy)
-	{
-		int size = buffer.GetNumBytesWritten();
-		if (create_copy)
-		{
-			void* pData = new unsigned char[size];
-			memcpy(pData, buffer.GetData(), size);
-			return boost::shared_ptr<bf_read>(
-				new bf_read(pData, size),
-				&__del__);
-		}
-		else
-		{
-			return boost::shared_ptr<bf_read>(
-				new bf_read(buffer.GetData(), size),
-				&NeverDeleteDeleter<bf_read*>);
-		}
-	}
+	CUtlVector<CPlugin*> m_Plugins;
 
-	static void __del__(bf_read* buffer)
-	{
-		delete buffer->GetBasePointer();
-	}
-
-	static int GetNumBytesRead(bf_read& buffer)
-	{
-		return BitByte(buffer.GetNumBitsRead());
-	}
-
-	static str ReadString(bf_read& buffer)
-	{
-		char* pStr = new char[buffer.m_nDataBytes];
-		buffer.ReadString(pStr, buffer.m_nDataBytes);
-
-		// Let Boost handle deallocating the string
-		str result = str((const char *) pStr);
-		delete pStr;
-		return result;
-	}
+	CPluginIter* GetLoadedPlugins();
 };
 
 
-#endif // _BITBUFFERS_H
+//-----------------------------------------------------------------------------
+// CPluginIter.
+//-----------------------------------------------------------------------------
+class CPluginIter
+{
+public:
+	CPluginIter(CUtlVector<CPlugin*>* plugins);
+	static object	__iter__(PyObject* self);
+	CPlugin*		__next__();
+
+private:
+	CUtlVector<CPlugin*>* plugins;
+	int current_index;
+};
+
+
+//-----------------------------------------------------------------------------
+// GetServerPlugin.
+//-----------------------------------------------------------------------------
+CServerPlugin* GetServerPlugin();
+
+#endif // _PLUGINS_H

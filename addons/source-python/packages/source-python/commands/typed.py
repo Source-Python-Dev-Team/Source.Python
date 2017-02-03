@@ -322,6 +322,16 @@ class CommandParser(Store):
 
         return store
 
+    def set_node_description(self, commands, description):
+        """Set the description of a node.
+
+        :param str/list/tuple:
+            Node to seach.
+        :raise ValueError:
+            Raised if the node does not exist.
+        """
+        self.get_node(commands).description = description
+
     def get_command(self, commands):
         """Return a command.
 
