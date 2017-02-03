@@ -106,6 +106,11 @@ void export_listener_managers(scope _listeners)
 			&CListenerManager::IsRegistered,
 			"Return whether or not the given callback is registered."
 		)
+
+		.def("__getitem__",
+			&CListenerManager::__getitem__,
+			"Return the callback at the given index."
+		)
 	;
 
 	_listeners.attr("on_client_active_listener_manager") = object(ptr(GetOnClientActiveListenerManager()));

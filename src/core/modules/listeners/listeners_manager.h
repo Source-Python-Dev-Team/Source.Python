@@ -67,6 +67,7 @@ public:
 	void Notify(boost::python::tuple args, dict kwargs);
 	int GetCount();
 	bool IsRegistered(object oCallback);
+	object __getitem__(unsigned int index);
 
 public:
 	CUtlVector<object> m_vecCallables;

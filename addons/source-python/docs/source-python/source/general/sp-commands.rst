@@ -404,8 +404,31 @@ List all 'sp' sub-commands or provide help on server commands registered with So
     // List all 'sp' sub-commands
     sp help
 
-    // Print help on 'sp plugin'
-    sp help sp plugin
+    // Print help on 'sp load'
+    sp help sp load
+    
+    
+info
+----
+
+Print information about the server's operating system, Source.Python and installed plugins.
+
+.. code-block:: none
+
+    // Usage
+    // sp info
+    
+    // Example output
+    Date          : 2017-01-15 17:11:05.553293
+    OS            : Windows-7-6.1.7601-SP1
+    Game          : css
+    SP version    : 528
+    Server plugins:
+       00: Mattie's EventScripts, http://www.eventscripts.com, Version:2.1.1.379
+       01: Metamod:Source 1.10.6
+       02: Source.Python, (C) 2012-2016, Source.Python Team.
+    SP plugins:
+       00: paintball, 1.3, http://forums.sourcepython.com/viewtopic.php?f=7&t=502
 
 
 plugin
@@ -470,14 +493,3 @@ Unload a plugin by name.
 
     // Unload the plugin 'test'
     sp plugin unload test
-
-
-version
--------
-
-Print Source.Python version information.
-
-.. code-block:: none
-
-    // Usage
-    // sp version

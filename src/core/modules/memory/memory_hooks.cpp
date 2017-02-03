@@ -28,6 +28,7 @@
 // >> INCLUDES
 // ============================================================================
 #include "memory_hooks.h"
+#include "memory_utilities.h"
 #include "memory_pointer.h"
 #include "utilities/wrap_macros.h"
 #include "utilities/call_python.h"
@@ -220,7 +221,7 @@ void CStackData::SetItem(unsigned int iIndex, object value)
 		case DATA_TYPE_DOUBLE:		SetArgument<double>(m_pHook, iIndex, value); break;
 		case DATA_TYPE_POINTER:
 		{
-			CPointer* pPtr = extract<CPointer*>(value);
+			CPointer* pPtr = ExtractPointer(value);
 			SetArgument<unsigned long>(m_pHook, iIndex, object(pPtr->m_ulAddr));
 		} break;
 		case DATA_TYPE_STRING:		SetArgument<const char *>(m_pHook, iIndex, value); break;

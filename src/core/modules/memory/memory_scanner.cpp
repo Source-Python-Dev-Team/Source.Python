@@ -178,35 +178,44 @@ CPointer* CBinaryFile::FindSignature(object oSignature)
 	int iLength = len(oSignature);
 	if (SearchSigInBinary(oSignature, iLength, sigstr, result))
 		return result;
+
+	object oHexSig = oSignature.attr("hex")();
+	const char* szHexSig = extract<const char*>(oHexSig);
 	
 	PythonLog(4, "Searching for a hooked signature (relative jump)...");
 	if (iLength <= 6)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Signature is too short to search for a hooked signature (relative jump).");
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Signature is too short to search for a hooked signature (relative jump): %s", szHexSig);
 
-	oSignature = import("binascii").attr("unhexlify")("E92A2A2A2A") + oSignature.slice(5, _);
+	static object unhexlify = import("binascii").attr("unhexlify");
+	oSignature = unhexlify("E92A2A2A2A") + oSignature.slice(5, _);
 	if (SearchSigHooked(oSignature, iLength, sigstr, result))
 		return result;
 	
 	PythonLog(4, "Searching for a hooked signature (absolute jump)...");
 	if (iLength <= 7)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Signature is too short to search for a hooked signature (absolute jump).");
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Signature is too short to search for a hooked signature (absolute jump): %s", szHexSig);
 
 	oSignature = import("binascii").attr("unhexlify")("FF252A2A2A2A") + oSignature.slice(6, _);
 	if (SearchSigHooked(oSignature, iLength, sigstr, result))
 		return result;
-
-	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Could not find signature.");
+	
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Could not find signature: %s", szHexSig);
 	return new CPointer(); // To fix a warning. This will never get called.
 }
 
 CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 {
 #ifdef _WIN32
-	return new CPointer((unsigned long) GetProcAddress((HMODULE) m_ulModule, szSymbol));
+	void* pAddr = GetProcAddress((HMODULE) m_ulModule, szSymbol);
+	if (!pAddr)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Could not find symbol: %s", szSymbol)
+
+	return new CPointer((unsigned long) pAddr);
 
 #elif defined(__linux__)
+	dlerror();
 	void* pResult = dlsym((void*) m_ulModule, szSymbol);
-	if (pResult)
+	if (!dlerror())
 		return new CPointer((unsigned long) pResult);
 
 	// -----------------------------------------
@@ -236,23 +245,20 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 	if (dlfile == -1 || fstat(dlfile, &dlstat) == -1)
 	{
 		close(dlfile);
-		return new CPointer();
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to open file. Symbol: %s", szSymbol)
 	}
 
 	/* Map library file into memory */
 	file_hdr = (Elf32_Ehdr *)mmap(NULL, dlstat.st_size, PROT_READ, MAP_PRIVATE, dlfile, 0);
 	map_base = (uintptr_t)file_hdr;
-	if (file_hdr == MAP_FAILED)
-	{
-		close(dlfile);
-		return new CPointer();
-	}
 	close(dlfile);
+	if (file_hdr == MAP_FAILED)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to map file. Symbol: %s", szSymbol)
 
 	if (file_hdr->e_shoff == 0 || file_hdr->e_shstrndx == SHN_UNDEF)
 	{
 		munmap(file_hdr, dlstat.st_size);
-		return new CPointer();
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "No section header string table has been found. Symbol: %s", szSymbol)
 	}
 
 	sections = (Elf32_Shdr *)(map_base + file_hdr->e_shoff);
@@ -278,13 +284,12 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 	if (symtab_hdr == NULL || strtab_hdr == NULL)
 	{
 		munmap(file_hdr, dlstat.st_size);
-		return new CPointer();
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "No symbol table or string table found. Symbol: %s", szSymbol)
 	}
 
 	symtab = (Elf32_Sym *)(map_base + symtab_hdr->sh_offset);
 	strtab = (const char *)(map_base + strtab_hdr->sh_offset);
 	symbol_count = symtab_hdr->sh_size / symtab_hdr->sh_entsize;
-	void* sym_addr = NULL;
 
 	/* Iterate symbol table starting from the position we were at last time */
 	for (uint32_t i = 0; i < symbol_count; i++)
@@ -299,15 +304,17 @@ CPointer* CBinaryFile::FindSymbol(char* szSymbol)
 
 		if (strcmp(szSymbol, sym_name) == 0)
 		{
-			sym_addr = (void *)(dlmap->l_addr + sym.st_value);
+			pResult = (void *)(dlmap->l_addr + sym.st_value);
 			break;
 		}
 	}
 
 	// Unmap the file now.
 	munmap(file_hdr, dlstat.st_size);
-	return new CPointer((unsigned long) sym_addr);
+	if (!pResult)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Could not find symbol: %s", szSymbol)
 
+	return new CPointer((unsigned long) pResult);
 #else
 #error "BinaryFile::FindSymbol() is not implemented on this OS"
 #endif

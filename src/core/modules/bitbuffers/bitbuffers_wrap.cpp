@@ -228,7 +228,10 @@ void export_bf_read(scope _bitbuffers)
 {
 	class_<bf_read>("BitBufferRead", init<void*, int, optional<int> >())
 		.def("__init__",
-			make_constructor(&BitBufferReadExt::__init__)
+			make_constructor(
+				&BitBufferReadExt::__init__,
+				default_call_policies(),
+				("buffer_write", arg("create_copy")=true))
 		)
 
 		.def("read_one_bit",
@@ -335,7 +338,7 @@ void export_bf_read(scope _bitbuffers)
 			&bf_read::IsOverflowed
 		)
 
-		.def("seek",
+		.def("seek_to_bit",
 			&bf_read::Seek
 		)
 

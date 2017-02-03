@@ -73,14 +73,14 @@ class TempEntity(BaseTempEntity):
             # Wrap the given pointer...
             super()._wrap_ptr(temp_entity)
 
-            # No need to go further...
-            return
+        # Otherwise...
+        else:
 
-        # Get the template of the temp entity...
-        template = temp_entity_templates[temp_entity]
+            # Get the template of the temp entity...
+            template = temp_entity_templates[temp_entity]
 
-        # Initialize the temp entity...
-        super()._copy_base(template, template.size)
+            # Initialize the temp entity...
+            super()._copy_base(template, template.size)
 
         # Loop through all given aliases...
         for alias, value in aliases.items():
@@ -125,7 +125,7 @@ class TempEntity(BaseTempEntity):
                 if prop_name['type'] == Decal.__name__:
 
                     # Return the decal instance...
-                    return Decal(string_tables[Decal._precache_table][
+                    return Decal(string_tables[Decal.precache_table][
                         getattr(self, prop_name['name'])])
 
                 # Otherwise, is the alias an entity?
@@ -144,7 +144,7 @@ class TempEntity(BaseTempEntity):
                 elif prop_name['type'] == Model.__name__:
 
                     # Get the name of the model...
-                    model_name = string_tables[Model._precache_table][
+                    model_name = string_tables[Model.precache_table][
                         getattr(self, prop_name['name'])]
 
                     # Was the model not precached?
