@@ -539,12 +539,24 @@ else:
     # To remind us to add newly supported engines...
     raise NotImplementedError('No hibernation function exposed.')
 
-
 @PreHook(get_virtual_function(server_game_dll, _hibernation_function_name))
-def _pre_hineration_function(stack_data):
+def _pre_hibernation_function(stack_data):
     """Called when the server is hibernating."""
     if not stack_data[1]:
         return
+
+    # Disconnect all bots...
+    _disconnect_bots()
+
+
+@OnLevelEnd
+def _on_level_end():
+    """Disconnect all bots on level end."""
+    _disconnect_bots()
+
+
+def _disconnect_bots():
+    """Disconnect all bots."""
 
     # Cyclic import...
     from filters.players import PlayerIter
