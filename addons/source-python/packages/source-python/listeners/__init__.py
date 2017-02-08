@@ -9,16 +9,22 @@
 import socket
 from enum import IntEnum
 from urllib.error import URLError
+
 # Source.Python Imports
-#   Cvars
-from cvars import ConVar
-from cvars import cvar
 #   Core
 from core import AutoUnload
+from core import SOURCE_ENGINE
 from core.settings import _core_settings
 from core.version import get_last_successful_build_number
 from core.version import is_unversioned
 from core.version import VERSION
+#   Cvars
+from cvars import ConVar
+from cvars import cvar
+#   Engines
+from engines.server import server_game_dll
+#   Memory
+from memory import get_virtual_function
 #   Players
 from players.constants import PlayerButtons
 #   Loggers
@@ -519,3 +525,30 @@ def _pre_call_global_change_callbacks(args):
     convar = make_object(ConVar, args[1])
     old_value = args[2]
     on_convar_changed_listener_manager.notify(convar, old_value)
+
+
+# ============================================================================
+# >> Fix for issue #181.
+# ============================================================================
+# Get the function name to hook...
+if SOURCE_ENGINE in ('bms', 'orangebox'):
+    _hibernation_function_name = 'SetServerHibernation'
+elif SOURCE_ENGINE in ('blade', 'csgo', 'l4d2'):
+    _hibernation_function_name = 'ServerHibernationUpdate'
+else:
+    # To remind us to add newly supported engines...
+    raise NotImplementedError('No hibernation function exposed.')
+
+
+@PreHook(get_virtual_function(server_game_dll, _hibernation_function_name))
+def _pre_hineration_function(stack_data):
+    """Called when the server is hibernating."""
+    if not stack_data[1]:
+        return
+
+    # Cyclic import...
+    from filters.players import PlayerIter
+
+    # Notify OnClientDisconnect listener for all bots...
+    for bot in PlayerIter('bot'):
+        on_client_disconnect_listener_manager.notify(bot.index)
