@@ -77,4 +77,20 @@ T IEngineSound_Visitor(T cls)
 	return cls;
 }
 
+
+//-----------------------------------------------------------------------------
+// Exports IServerGameDLL.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_server_game_dll(T _server, U ServerGameDLL)
+{
+	// Methods...
+	ServerGameDLL.def("server_hibernation_update", &IServerGameDLL::ServerHibernationUpdate);
+
+	// Class info...
+	BEGIN_CLASS_INFO(IServerGameDLL)
+		FUNCTION_INFO(ServerHibernationUpdate)
+	END_CLASS_INFO()
+}
+
 #endif // _ENGINES_WRAP_L4D2_H
