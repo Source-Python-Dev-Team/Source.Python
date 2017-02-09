@@ -203,8 +203,11 @@ class WeaponRestrictionHandler(AutoUnload):
 
     def clear(self):
         """Remove all team and player restrictions."""
-        self.team_restrictions.clear()
+        for x in self.team_restrictions.values():
+            x.clear()
+
         self.player_restrictions.clear()
+        self.team_restrictions.clear()
 
     def add_player_restrictions(self, player, *weapons):
         """Add the weapons to the player's restriction set.
