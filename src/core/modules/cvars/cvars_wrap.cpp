@@ -197,7 +197,7 @@ void export_convar(scope _cvars)
 		.def("__init__",
 			make_constructor(&ConVarExt::__init__,
 				default_call_policies(),
-				("name", arg("value")="", arg("description")="", arg("flags")=0,
+				(arg("name"), arg("value")="", arg("description")="", arg("flags")=0,
 				arg("min_value")=object(), arg("max_value")=object())
 			),
 			"Called when a server-var is initilized.\n"
