@@ -74,6 +74,21 @@ public:
 
 
 //---------------------------------------------------------------------------------
+// IRecipientFilter extension class
+//---------------------------------------------------------------------------------
+class IRecipientFilterExt
+{
+public:
+	static int __getitem__(IRecipientFilter* pFilter, unsigned index)
+	{
+		if (index >= pFilter->GetRecipientCount())
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
+
+		return pFilter->GetRecipientIndex(index);
+	}
+};
+
+//---------------------------------------------------------------------------------
 // Recipient filter class.
 //---------------------------------------------------------------------------------
 class MRecipientFilter : public IRecipientFilter
