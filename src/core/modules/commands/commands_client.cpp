@@ -63,19 +63,18 @@ static CListenerManager s_ClientCommandFilters;
 //-----------------------------------------------------------------------------
 CClientCommandManager* GetClientCommand(const char* szName)
 {
-	// Find if the given name is a registered client command
-	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szName);
-	if( commandMapIter == g_ClientCommandMap.end())
+	CClientCommandManager* manager = NULL;
+	ClientCommandMap::iterator iter;
+	if (!find_manager<ClientCommandMap, ClientCommandMap::iterator>(g_ClientCommandMap, szName, iter))
 	{
-		// If the command is not already registered, add the name and the CClientCommandManager instance to the mapping
-		g_ClientCommandMap.insert(std::make_pair(szName, new CClientCommandManager(szName)));
-
-		// Get the client command in the mapping
-		commandMapIter = g_ClientCommandMap.find(szName);
+		manager = new CClientCommandManager(szName);
+		g_ClientCommandMap.insert(std::make_pair(szName, manager));
 	}
-
-	// Return the CClientCommandManager instance for the command
-	return commandMapIter->second;
+	else
+	{
+		manager = iter->second;
+	}
+	return manager;
 }
 
 //-----------------------------------------------------------------------------
@@ -83,14 +82,11 @@ CClientCommandManager* GetClientCommand(const char* szName)
 //-----------------------------------------------------------------------------
 void RemoveCClientCommandManager(const char* szName)
 {
-	// Find if the given name is a registered client command
-	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szName);
-	if( commandMapIter != g_ClientCommandMap.end())
+	ClientCommandMap::iterator iter;
+	if (find_manager<ClientCommandMap, ClientCommandMap::iterator>(g_ClientCommandMap, szName, iter))
 	{
-		// If the command is registered, delete the CClientCommandManager instance
-		//		and remove the command from the mapping
-		delete commandMapIter->second;
-		g_ClientCommandMap.erase(commandMapIter);
+		delete iter->second;
+		g_ClientCommandMap.erase(iter);
 	}
 }
 
@@ -140,24 +136,15 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 		END_BOOST_PY_NORET()
 	}
 
-	// Get the command's name
-	const char* szCommand = command.Arg(0);
-
-	// Find if the command exists in the mapping
-	ClientCommandMap::iterator commandMapIter = g_ClientCommandMap.find(szCommand);
-	if( commandMapIter != g_ClientCommandMap.end() )
+	ClientCommandMap::iterator iter;
+	if (find_manager<ClientCommandMap, ClientCommandMap::iterator>(g_ClientCommandMap, command.Arg(0), iter))
 	{
-		// If the command exists, get the CClientCommandManager instance and call its Dispatch method
-		CClientCommandManager* pCClientCommandManager = commandMapIter->second;
-
-		// Does the command need to be blocked?
-		if( !pCClientCommandManager->Dispatch(command, iIndex))
+		if( !iter->second->Dispatch(command, iIndex))
 		{
 			// Block the command
 			return PLUGIN_STOP;
 		}
 	}
-
 	return PLUGIN_CONTINUE;
 }
 
@@ -238,4 +225,9 @@ CommandReturn CClientCommandManager::Dispatch( const CCommand& command, int iInd
 	}
 
 	return CONTINUE;
+}
+
+const char* CClientCommandManager::GetName()
+{
+	return m_Name;
 }

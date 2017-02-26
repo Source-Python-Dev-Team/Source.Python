@@ -46,6 +46,26 @@ enum CommandReturn
 
 
 //-----------------------------------------------------------------------------
+// Functions.
+//-----------------------------------------------------------------------------
+template<class InputMap, class Result>
+bool find_manager(InputMap input, const char* name, Result& result)
+{
+	InputMap::iterator iter = input.begin();
+	while (iter != input.end())
+	{
+		// TODO: Doesn't not work for multi-byte characters
+		if (V_stricmp(iter->second->GetName(), name) == 0) {
+			result = iter;
+			return true;
+		}
+		++iter;
+	}
+	return false;
+}
+
+
+//-----------------------------------------------------------------------------
 // CCommand extension class.
 //-----------------------------------------------------------------------------
 class CCommandExt
