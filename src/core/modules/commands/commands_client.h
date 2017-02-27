@@ -54,6 +54,8 @@ public:
 
 	CommandReturn Dispatch(const CCommand& ccommand, int iIndex);
 
+	const char* GetName();
+
 private:
 	CUtlVector<object> m_vecCallables;
 	const char* m_Name;

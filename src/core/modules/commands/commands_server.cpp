@@ -82,19 +82,18 @@ ServerCommandMap g_ServerCommandMap;
 CServerCommandManager* GetServerCommand(const char* szName,
 	const char* szHelpText = 0, int iFlags = 0)
 {
-	// Find if the given name is a registered server command
-	ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.find(szName);
-	if( commandMapIter == g_ServerCommandMap.end())
+	CServerCommandManager* manager = NULL;
+	ServerCommandMap::iterator iter;
+	if (!find_manager<ServerCommandMap, ServerCommandMap::iterator>(g_ServerCommandMap, szName, iter))
 	{
-		// If the command is not already registered, add the name and the CServerCommandManager instance to the mapping
-		g_ServerCommandMap.insert(std::make_pair(szName, CServerCommandManager::CreateCommand(szName, szHelpText, iFlags)));
-
-		// Get the server command in the mapping
-		commandMapIter = g_ServerCommandMap.find(szName);
+		manager = CServerCommandManager::CreateCommand(szName, szHelpText, iFlags);
+		g_ServerCommandMap.insert(std::make_pair(szName, manager));
 	}
-
-	// Return the CServerCommandManager instance for the command
-	return commandMapIter->second;
+	else
+	{
+		manager = iter->second;
+	}
+	return manager;
 }
 
 //-----------------------------------------------------------------------------
@@ -102,14 +101,11 @@ CServerCommandManager* GetServerCommand(const char* szName,
 //-----------------------------------------------------------------------------
 void RemoveCServerCommandManager(const char* szName)
 {
-	// Find if the given name is a registered server command
-	ServerCommandMap::iterator commandMapIter = g_ServerCommandMap.find(szName);
-	if( commandMapIter != g_ServerCommandMap.end())
+	ServerCommandMap::iterator iter;
+	if (find_manager<ServerCommandMap, ServerCommandMap::iterator>(g_ServerCommandMap, szName, iter))
 	{
-		// If the command is registered, delete the CServerCommandManager instance
-		//		and remove the command from the mapping
-		delete commandMapIter->second;
-		g_ServerCommandMap.erase(commandMapIter);
+		delete iter->second;
+		g_ServerCommandMap.erase(iter);
 	}
 }
 
