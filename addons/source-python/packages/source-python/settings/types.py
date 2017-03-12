@@ -12,8 +12,8 @@ from contextlib import suppress
 # Source.Python
 from cvars import ConVar
 from engines.server import engine_server
-from menus import PagedMenu
-from menus import PagedOption
+from menus import PagedMenu, SimpleMenu
+from menus import PagedOption, SimpleOption
 from messages import SayText
 from players.entity import Player
 from players.helpers import uniqueid_from_index
@@ -55,20 +55,23 @@ class SettingsType(object):
         # Get the new object instance
         self = object.__new__(cls)
 
-        # Store the base attributes
+        # Return the instance
+        return self
+
+    def __init__(self, name, default, text=None, *args):
+        """Store the base attributes and create the menu."""
         self.name = name
         self.default = default
         self.text = text
+        self._create_menu()
 
-        # Store a menu for the object
+    def _create_menu(self):
         self.menu = PagedMenu(
             select_callback=self._chosen_value,
             build_callback=self._menu_build,
-            title=name if text is None else text,
-            description=_settings_strings['Description'])
-
-        # Return the instance
-        return self
+            title=self.name if self.text is None else self.text,
+            description=_settings_strings['Description']
+        )
 
     @property
     def convar(self):
@@ -158,24 +161,117 @@ class SettingsType(object):
 
     def _chosen_value(self, menu, index, option):
         """Store the player's chosen value for the setting."""
-        # Get the client's uniqueid
-        uniqueid = uniqueid_from_index(index)
-
         # Set the player's setting
+        uniqueid = uniqueid_from_index(index)
         _player_settings_storage[uniqueid][self.convar] = option.value
 
         # Send the player a message about their changed setting
         _message.send(index, convar=self.convar, value=option.value)
 
 
-class _NumericalSetting(SettingsType):
-    """Class used to store integer/float settings with min/max values."""
+class IntegerSetting(SettingsType):
+    """Class used to store integer value settings."""
+
+    _type = int
 
     def __init__(
-            self, name, default, text=None, min_value=None, max_value=None):
+        self, name, default, text=None, min_value=None, max_value=None
+    ):
         """Store the base attributes on instantiation."""
+        super().__init__(name=name, default=default, text=text)
+        if min_value is not None and max_value is not None:
+            if min_value >= max_value:
+                raise ValueError(
+                    'min_value ({min_value}) must be less than max_value '
+                    '({max_value}).'.format(
+                        min_value=min_value,
+                        max_value=max_value,
+                    )
+                )
         self.min = self._type(min_value) if min_value is not None else None
         self.max = self._type(max_value) if max_value is not None else None
+        self.current_values = {}
+
+    def _create_menu(self):
+        self.menu = SimpleMenu(
+            select_callback=self._chosen_value,
+            build_callback=self._menu_build,
+        )
+
+    def _menu_build(self, menu, index):
+        """Build the menu."""
+        self.menu.clear()
+        self.menu.append(self.name if self.text is None else self.text)
+
+        # Get the player's information
+        player = Player(index)
+        uniqueid = player.uniqueid
+        current_value = self.get_setting(index)
+
+        description = _settings_strings['Description'].get_string(
+            language=player.language,
+            value=current_value,
+        )
+        self.menu.append(description)
+        self.menu.append('-' * len(description))
+        counter = 1
+        if self.min is None or self.max is None or self.max - self.min > 100:
+            for value in (100, -100):
+                self._add_option(choice_index=counter, value=value)
+                counter += 1
+
+        if self.min is None or self.max is None or self.max - self.min > 10:
+            for value in (10, -10):
+                self._add_option(choice_index=counter, value=value)
+                counter += 1
+
+        for value in (1, -1):
+            self._add_option(choice_index=counter, value=value)
+            counter += 1
+
+        if uniqueid not in self.current_values:
+            self.current_values[uniqueid] = current_value
+
+        self.menu.append(
+            SimpleOption(
+                choice_index=counter,
+                text='Save ({current_value})'.format(
+                    current_value=self.current_values[uniqueid],
+                ),
+                value='Save',
+            )
+        )
+
+    def _add_option(self, choice_index, value):
+        """Add the value to the menu."""
+        self.menu.append(
+            SimpleOption(
+                choice_index=choice_index,
+                text='{:+d}'.format(value),
+                value=value,
+            )
+        )
+
+    def _chosen_value(self, menu, index, option):
+        """Store the player's chosen value for the setting."""
+        uniqueid = uniqueid_from_index(index)
+
+        if option.value == 'Save':
+            value = self.current_values[uniqueid]
+
+            # Set the player's setting
+            _player_settings_storage[uniqueid][self.convar] = value
+            _message.send(index, convar=self.convar, value=value)
+            del self.current_values[uniqueid]
+            return
+
+        new_value = self.current_values[uniqueid] + option.value
+        if self.min is not None:
+            new_value = max(new_value, self.min)
+        if self.max is not None:
+            new_value = min(new_value, self.max)
+        self.current_values[uniqueid] = new_value
+        self.menu.send()
 
     def _is_valid_setting(self, value):
         """Return whether the given value is a valid value for the setting."""
@@ -195,18 +291,6 @@ class _NumericalSetting(SettingsType):
         return True
 
 
-class FloatSetting(_NumericalSetting):
-    """Class used to store float value settings."""
-
-    _type = float
-
-
-class IntegerSetting(_NumericalSetting):
-    """Class used to store integer value settings."""
-
-    _type = int
-
-
 class BoolSetting(SettingsType):
     """Class used to store boolean value settings."""
 
@@ -216,7 +300,10 @@ class BoolSetting(SettingsType):
         # TODO: add translations
         for value, name in enumerate(['Yes', 'No']):
             self.menu.append(
-                PagedOption(name, not value)
+                PagedOption(
+                    text=name,
+                    value=not value,
+                )
             )
 
     def _typecast_value(self, value):
@@ -252,7 +339,9 @@ class StringSetting(SettingsType):
 
         # Store the option
         option = self.options[name] = PagedOption(
-            name if text is None else text, name)
+            text=name if text is None else text,
+            value=name,
+        )
 
         # Add the option to the menu
         self.menu.append(option)
@@ -267,6 +356,7 @@ class StringSetting(SettingsType):
                 'Given name "{0}" is not an option'.format(name))
 
         # Delete the option
+        self.menu.remove(self.options[name])
         del self.options[name]
 
     def _is_valid_setting(self, value):

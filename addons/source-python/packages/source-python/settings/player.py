@@ -13,7 +13,7 @@ from core import AutoUnload
 from menus import PagedMenu, PagedOption
 from settings.menu import _player_settings
 from settings.types import (
-    BoolSetting, FloatSetting, IntegerSetting, SettingsType, StringSetting
+    BoolSetting, IntegerSetting, SettingsType, StringSetting
 )
 
 
@@ -87,12 +87,6 @@ class _SettingsDictionary(OrderedDict):
         # Add the option to the menu
         self.menu.append(PagedOption(
             value.name if value.text is None else value.text, value))
-
-    def add_float_setting(
-            self, name, default, text=None, min_value=None, max_value=None):
-        """Add a new float setting to the dictionary."""
-        self[name] = FloatSetting(name, default, text, min_value, max_value)
-        return self[name]
 
     def add_int_setting(
             self, name, default, text=None, min_value=None, max_value=None):
