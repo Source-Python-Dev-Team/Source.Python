@@ -190,6 +190,10 @@ class _TeamRestrictions(dict):
         raise KeyError(
             '"{0}" is neither a team number nor an alias.'.format(item))
 
+    def clear(self):
+        for x in self.values():
+            x.clear()
+
 
 class WeaponRestrictionHandler(AutoUnload):
     """Class used to handle player and team restrictions."""
@@ -203,8 +207,8 @@ class WeaponRestrictionHandler(AutoUnload):
 
     def clear(self):
         """Remove all team and player restrictions."""
-        self.team_restrictions.clear()
         self.player_restrictions.clear()
+        self.team_restrictions.clear()
 
     def add_player_restrictions(self, player, *weapons):
         """Add the weapons to the player's restriction set.

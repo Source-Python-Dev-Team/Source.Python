@@ -106,4 +106,20 @@ T IEngineSound_Visitor(T cls)
 	return cls;
 }
 
+
+//-----------------------------------------------------------------------------
+// Exports IServerGameDLL.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_server_game_dll(T _server, U ServerGameDLL)
+{
+	// Methods...
+	ServerGameDLL.def("set_server_hibernation", &IServerGameDLL::SetServerHibernation);
+
+	// Class info...
+	BEGIN_CLASS_INFO(IServerGameDLL)
+		FUNCTION_INFO(SetServerHibernation)
+	END_CLASS_INFO()
+}
+
 #endif // _ENGINES_WRAP_BMS_H

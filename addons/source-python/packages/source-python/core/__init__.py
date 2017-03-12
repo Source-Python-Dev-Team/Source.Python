@@ -6,8 +6,12 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+#   Codecs
+import codecs
 #   Collections
 from collections import defaultdict
+#   Contextlib
+from contextlib import contextmanager
 #   Inspect
 from inspect import getmodule
 from inspect import stack
@@ -31,6 +35,7 @@ from configobj import ConfigObj
 from loggers import _sp_logger
 #   Paths
 from paths import GAME_PATH
+
 
 
 # =============================================================================
@@ -57,6 +62,7 @@ __all__ = ('AutoUnload',
            'console_message',
            'echo_console',
            'get_interface',
+           'ignore_unicode_errors',
            )
 
 
@@ -156,3 +162,44 @@ def echo_console(text):
     """
     for line in text.split('\n'):
         console_message(line + '\n')
+
+@contextmanager
+def ignore_unicode_errors(errors='ignore'):
+    """Overwrite the ``strict`` codecs error handler temporarily.
+
+    This is useful e.g. if the engine truncates a string, which results in a
+    string that contains a splitted multi-byte character at the end of the
+    string.
+
+    :param str errors:
+        Error handler that will be looked up via :func:`codecs.lookup_error`.
+    :raise LookupError:
+        Raised if the error handler was not found.
+
+    Example:
+
+    .. code:: python
+
+        import memory
+
+        # Allocate four bytes to create an erroneous string
+        ptr = memory.alloc(4)
+
+        # Write data to the memory that will usually result in a
+        # UnicodeDecodeError
+        ptr.set_uchar(ord('a'), 0)
+        ptr.set_uchar(ord('b'), 1)
+        ptr.set_uchar(226, 2) # Add the invalid byte
+        ptr.set_uchar(0, 3) # Indicate the end of the string
+
+        with ignore_unicode_errors():
+            # Read the data as a string. Now, it will only print 'ab', because
+            # the invalid byte has been removed/ignored.
+            print(ptr.get_string_array())
+    """
+    old_handler = codecs.lookup_error('strict')
+    codecs.register_error('strict', codecs.lookup_error(errors))
+    try:
+        yield
+    finally:
+        codecs.register_error('strict', old_handler)
