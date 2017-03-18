@@ -58,7 +58,7 @@ class SettingsType(object):
         # Return the instance
         return self
 
-    def __init__(self, name, default, text=None, *args):
+    def __init__(self, name, default, text=None):
         """Store the base attributes and create the menu."""
         self.name = name
         self.default = default
@@ -178,7 +178,7 @@ class IntegerSetting(SettingsType):
         self, name, default, text=None, min_value=None, max_value=None
     ):
         """Store the base attributes on instantiation."""
-        super().__init__(name=name, default=default, text=text)
+        super().__init__(name, default, text)
         if min_value is not None and max_value is not None:
             if min_value >= max_value:
                 raise ValueError(
@@ -296,7 +296,8 @@ class BoolSetting(SettingsType):
 
     _type = bool
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, name, default, text=None):
+        super().__init__(name, default, text)
         # TODO: add translations
         for value, name in enumerate(['Yes', 'No']):
             self.menu.append(
@@ -326,6 +327,7 @@ class StringSetting(SettingsType):
 
     def __init__(self, name, default, text=None):
         """Store the base attributes on instatiation."""
+        super().__init__(name, default, text)
         self.options = OrderedDict()
 
     def add_option(self, name, text=None):
