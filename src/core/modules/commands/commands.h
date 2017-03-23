@@ -49,7 +49,7 @@ enum CommandReturn
 // Functions.
 //-----------------------------------------------------------------------------
 template<class InputMap, class Result>
-bool find_manager(InputMap input, const char* name, Result& result)
+bool find_manager(InputMap& input, const char* name, Result& result)
 {
 	typename InputMap::iterator iter = input.begin();
 	while (iter != input.end())
