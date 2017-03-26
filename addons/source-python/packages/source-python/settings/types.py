@@ -19,6 +19,7 @@ from players.entity import Player
 from players.helpers import uniqueid_from_index
 from settings import _settings_strings
 from settings.storage import _player_settings_storage
+from translations.strings import TranslationStrings
 
 
 # =============================================================================
@@ -164,9 +165,11 @@ class SettingsType(object):
         # Set the player's setting
         uniqueid = uniqueid_from_index(index)
         _player_settings_storage[uniqueid][self.convar] = option.value
+        self._send_chosen_message(index, option.value)
 
-        # Send the player a message about their changed setting
-        _message.send(index, convar=self.convar, value=option.value)
+    def _send_chosen_message(self, index, value):
+        """Send message about choice made for setting change."""
+        _message.send(index, convar=self.convar, value=value)
 
 
 class IntegerSetting(SettingsType):
@@ -261,7 +264,7 @@ class IntegerSetting(SettingsType):
 
             # Set the player's setting
             _player_settings_storage[uniqueid][self.convar] = value
-            _message.send(index, convar=self.convar, value=value)
+            self._send_chosen_message(index, value)
             del self.current_values[uniqueid]
             return
 
@@ -298,12 +301,11 @@ class BoolSetting(SettingsType):
 
     def __init__(self, name, default, text=None):
         super().__init__(name, default, text)
-        # TODO: add translations
-        for value, name in enumerate(['Yes', 'No']):
+        for item in [True, False]:
             self.menu.append(
                 PagedOption(
-                    text=name,
-                    value=not value,
+                    text=item,
+                    value=item,
                 )
             )
 
@@ -371,3 +373,11 @@ class StringSetting(SettingsType):
 
         # If the given value is not in the options, return False
         return False
+
+    def _send_chosen_message(self, index, value):
+        """Send message about choice made for setting change."""
+        value = self.options[value].text
+        if isinstance(value, TranslationStrings):
+            player = Player(index)
+            value = value.get_string(player.language)
+        _message.send(index, convar=self.convar, value=value)
