@@ -41,8 +41,10 @@ void CListenerManager::RegisterListener(PyObject* pCallable)
 	// Is the callable already in the vector?
 	if( !m_vecCallables.HasElement(oCallable) )
 	{
-		// Add the callable to the vector
 		m_vecCallables.AddToTail(oCallable);
+	}
+	else {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback already registered.")
 	}
 }
 
@@ -55,8 +57,14 @@ void CListenerManager::UnregisterListener(PyObject* pCallable)
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
 
-	// Remove the callback from the ServerCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
+	int index = m_vecCallables.Find(oCallable);
+
+	if (index == -1) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback not registered.")
+	}
+	else {
+		m_vecCallables.Remove(index);
+	}
 }
 
 
@@ -97,4 +105,9 @@ object CListenerManager::__getitem__(unsigned int index)
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
 
 	return m_vecCallables[index];
+}
+
+void CListenerManager::clear()
+{
+	m_vecCallables.RemoveAll();
 }

@@ -111,6 +111,11 @@ void export_listener_managers(scope _listeners)
 			&CListenerManager::__getitem__,
 			"Return the callback at the given index."
 		)
+
+		.def("clear",
+			&CListenerManager::clear,
+			"Remove all registered callbacks."
+		)
 	;
 
 	_listeners.attr("on_client_active_listener_manager") = object(ptr(GetOnClientActiveListenerManager()));

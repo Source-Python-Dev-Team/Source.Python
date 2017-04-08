@@ -68,6 +68,7 @@ public:
 	int GetCount();
 	bool IsRegistered(object oCallback);
 	object __getitem__(unsigned int index);
+	void clear();
 
 public:
 	CUtlVector<object> m_vecCallables;
