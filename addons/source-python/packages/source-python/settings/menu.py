@@ -21,14 +21,9 @@ class _AvailableSettings(dict):
     def __init__(self):
         """Create the main settings menu on instantiation."""
         super().__init__()
-        self._menu = PagedMenu(
+        self.menu = PagedMenu(
             select_callback=self._chosen_item,
             title=_settings_strings['Main Title'])
-
-    @property
-    def menu(self):
-        """Return the main settings menu instance."""
-        return self._menu
 
     def _private_send_menu(self, *args):
         """Called when a private say command is used for sending the menu."""
