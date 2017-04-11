@@ -64,6 +64,8 @@ void export_keyvalues(scope _keyvalues)
 		.def("__init__", make_constructor(&KeyValuesExt::__init__4))
 		.def("__init__", make_constructor(&KeyValuesExt::__init__5))
 
+		.def("from_dict", &KeyValuesExt::from_dict).staticmethod("from_dict")
+
 		.add_property("name",
 			&KeyValues::GetName,
 			&KeyValues::SetName,
