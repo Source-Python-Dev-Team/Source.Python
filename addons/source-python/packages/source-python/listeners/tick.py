@@ -68,6 +68,10 @@ class GameThread(Thread):
 class _DelayManager(list):
     """A class that is responsible for executing delays."""
 
+    def __init__(self):
+        super().__init__()
+        on_tick_listener_manager.register_listener(self._tick)
+
     def _tick(self):
         """Internal tick listener."""
         current_time = time.time()
@@ -77,25 +81,12 @@ class _DelayManager(list):
             except:
                 except_hooks.print_exception()
 
-        self._unregister_if_empty()
-
-    def _register_if_empty(self):
-        """Register the internal tick listener if the list is empty."""
-        if not self:
-            on_tick_listener_manager.register_listener(self._tick)
-
-    def _unregister_if_empty(self):
-        """Unregister the internal tick listener if the list is empty."""
-        if not self:
-            on_tick_listener_manager.unregister_listener(self._tick)
-
     def add(self, delay):
         """Add a delay to the list.
 
         :param Delay delay:
             The delay to add.
         """
-        self._register_if_empty()
         bisect.insort_left(self, delay)
 
 _delay_manager = _DelayManager()
