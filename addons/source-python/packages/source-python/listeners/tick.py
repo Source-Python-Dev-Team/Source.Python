@@ -45,21 +45,23 @@ listeners_tick_logger = listeners_logger.tick
 class GameThread(Thread):
     """Workaround for :class:`threading.Thread`."""
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        on_tick_listener_manager.register_listener(self._tick)
-
-    def __del__(self):
-        on_tick_listener_manager.unregister_listener(self._tick)
-
-    def _bootstrap_inner(self):
-        try:
-            super()._bootstrap_inner()
-        finally:
-            on_tick_listener_manager.unregister_listener(self._tick)
-
-    def _tick(self):
-        pass
+    # Since _delay_manager now always registers a tick listener, we probably
+    # don't need this anymore.
+    #def __init__(self, *args, **kwargs):
+    #    super().__init__(*args, **kwargs)
+    #    on_tick_listener_manager.register_listener(self._tick)
+    #
+    #def __del__(self):
+    #    on_tick_listener_manager.unregister_listener(self._tick)
+    #
+    #def _bootstrap_inner(self):
+    #    try:
+    #        super()._bootstrap_inner()
+    #    finally:
+    #        on_tick_listener_manager.unregister_listener(self._tick)
+    #
+    #def _tick(self):
+    #    pass
 
 
 # =============================================================================
