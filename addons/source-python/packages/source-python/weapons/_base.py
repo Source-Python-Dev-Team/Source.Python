@@ -34,6 +34,14 @@ class Weapon(Entity):
         ) or self._clip == -1:
             raise ValueError('Weapon does not have a clip.')
 
+    def has_clip(self):
+        """Check if the weapon has a clip."""
+        try:
+            self._validate_clip()
+        except ValueError:
+            return False
+        return True
+
     def get_clip(self):
         """Return the amount of ammo in the weapon's clip."""
         self._validate_clip()
@@ -67,6 +75,14 @@ class Weapon(Entity):
 
         return player
 
+    def has_ammo(self):
+        """Check if the weapon has a valid ammoprop and an owner."""
+        try:
+            self._validate_ammo()
+        except ValueError:
+            return False
+        return True
+
     def get_ammo(self):
         """Return the amount of ammo the player has for the weapon."""
         player = self._validate_ammo()
@@ -98,6 +114,14 @@ class Weapon(Entity):
         if self._secondary_fire_clip == -1:
             raise ValueError('Weapon does not have a secondary fire clip.')
 
+    def has_secondary_fire_clip(self):
+        """Check if the weapon has a secondary fire clip."""
+        try:
+            self._validate_secondary_fire_clip()
+        except ValueError:
+            return False
+        return True
+
     def get_secondary_fire_clip(self):
         """Return the amount of ammo in the weapon's secondary fire clip."""
         self._validate_secondary_fire_clip()
@@ -114,7 +138,8 @@ class Weapon(Entity):
         doc="""Property to get/set the weapon's secondary fire clip.""")
 
     def _validate_secondary_fire_ammo(self):
-        """Test if the weapon has a valid secondary fire ammoprop and an owner."""
+        """Test if the weapon has a valid secondary fire ammoprop
+        and an owner."""
         if self.secondary_fire_ammoprop == -1:
             raise ValueError(
                 'Unable to get secondary fire ammoprop for {0}'.format(
@@ -125,6 +150,15 @@ class Weapon(Entity):
             raise ValueError('Unable to get the owner of the weapon.')
 
         return player
+
+    def has_secondary_fire_ammo(self):
+        """Check if the weapon has a valid secondary fire ammoprop
+        and an owner."""
+        try:
+            self._validate_secondary_fire_ammo()
+        except ValueError:
+            return False
+        return True
 
     def get_secondary_fire_ammo(self):
         """Return the secondary fire ammo the player has for the weapon."""
