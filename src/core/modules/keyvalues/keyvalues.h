@@ -106,8 +106,15 @@ public:
 	static void SetBool(KeyValues* pKeyValues, const char * szName, bool bValue)
 	{ pKeyValues->SetInt(szName, bValue); }
 
-	static bool LoadFromFile(KeyValues* pKeyValues, const char * szFile)
-	{ return pKeyValues->LoadFromFile(filesystem, szFile); }
+	static boost::shared_ptr<KeyValues> LoadFromFile(const char * szFile)
+	{ 
+		KeyValues* pKeyValues = new KeyValues("");
+		if (!pKeyValues->LoadFromFile(filesystem, szFile)) {
+			pKeyValues->deleteThis();
+			return NULL;
+		}
+		return boost::shared_ptr<KeyValues>(pKeyValues, &__del__);
+	}
 
 	static bool SaveToFile(KeyValues* pKeyValues, const char * szFile)
 	{ return pKeyValues->SaveToFile(filesystem, szFile); }

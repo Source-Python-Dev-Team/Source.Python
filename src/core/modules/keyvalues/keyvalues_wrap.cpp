@@ -85,9 +85,9 @@ void export_keyvalues(scope _keyvalues)
 
 		.def("load_from_file",
 			&KeyValuesExt::LoadFromFile,
-			"Loads KeyValues data from a file into this KeyValues instance.",
+			"Load KeyValues data from a file and return a new KeyValues instance on success.",
 			args("file_name")
-		)
+		).staticmethod("load_from_file")
 
 		.def("save_to_file",
 			&KeyValuesExt::SaveToFile,
