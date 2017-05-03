@@ -723,8 +723,7 @@ class Player(Entity):
         """
         return self.get_weapon(is_filters='secondary')
 
-    @property
-    def active_weapon(self):
+    def get_active_weapon(self):
         """Return the player's active weapon.
 
         :return: None if the player does not have an active weapon.
@@ -736,6 +735,15 @@ class Player(Entity):
             return None
 
         return Weapon(index)
+
+    def set_active_weapon(self, weapon):
+        """Set the player's active weapon.
+
+        :param Weapon weapon: The weapon to set as active.
+        """
+        self.active_weapon_handle = weapon.inthandle
+
+    active_weapon = property(get_active_weapon, set_active_weapon)
 
     def get_weapon(self, classname=None, is_filters=None, not_filters=None):
         """Return the first found weapon for the given arguments.
