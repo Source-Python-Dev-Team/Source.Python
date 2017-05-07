@@ -94,8 +94,8 @@ class _Team(object):
 # =============================================================================
 # Register the filter functions
 PlayerIter.register_filter('all', lambda player: True)
-PlayerIter.register_filter('bot', lambda player: player.is_fake_client())
-PlayerIter.register_filter('human', lambda player: not player.is_fake_client())
+PlayerIter.register_filter('bot', lambda player: player.is_bot())
+PlayerIter.register_filter('human', lambda player: not player.is_bot())
 PlayerIter.register_filter('alive', lambda player: not player.dead)
 PlayerIter.register_filter('dead', lambda player: player.dead)
 
