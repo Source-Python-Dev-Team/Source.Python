@@ -250,11 +250,27 @@ class TranslationStrings(dict):
             # Possibly raise an error silently here
             return ''
 
-        # Update the stored tokens with the given ones
-        self.tokens.update(tokens)
+        # Expose all TranslationStrings instances in self.tokens
+        exposed_tokens = {}
+
+        # Pass additional kwargs - these will be used to format the string
+        self._update_exposed_tokens(
+            exposed_tokens, language, self.tokens, **tokens)
+
+        # Don't pass any additional kwargs, each token should either
+        # be trivial or rely on itself (self.tokens)
+        self._update_exposed_tokens(exposed_tokens, language, tokens)
 
         # Return the formatted message
-        return self[language].format(**self.tokens)
+        return self[language].format(**exposed_tokens)
+
+    @staticmethod
+    def _update_exposed_tokens(exposed_tokens, language, tokens, **kwargs):
+        for token_name, token in tokens.items():
+            if isinstance(token, TranslationStrings):
+                token = token.get_string(language, **kwargs)
+
+            exposed_tokens[token_name] = token
 
     def get_language(self, language):
         """Return the language to be used."""
@@ -290,6 +306,20 @@ class TranslationStrings(dict):
 
         # Return None as the language, as no language has been found
         return None
+
+    def tokenized(self, **tokens):
+        """Create a new TranslationStrings instance and store tokens in it.
+
+        :param dict tokens: Tokens to store in the instance.
+        :return: New TranslationStrings instance with tokens stored in it.
+        :rtype: TranslationStrings
+        """
+        result = TranslationStrings()
+        result.tokens.update(tokens)
+
+        result.update(self)
+
+        return result
 
 # Get the translations language strings
 _translation_strings = LangStrings('_core/translations_strings')
