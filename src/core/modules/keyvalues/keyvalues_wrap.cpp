@@ -138,7 +138,7 @@ void export_keyvalues(scope _keyvalues)
 
 		.add_property("next_key",
 			make_function(
-				&KeyValues::GetNextKey,
+				GET_METHOD(KeyValues *, KeyValues, GetNextKey, void),
 				reference_existing_object_policy()
 			),
 			&KeyValues::SetNextKey,
