@@ -448,6 +448,27 @@ Called when a map starts and the server is ready to accept clients.
         pass
 
 
+OnServerOutput
+----------------
+
+Called when something is printed to the console. You can decide whether the
+message is logged/printed or not.
+
+.. code-block:: python
+
+    from listeners import OnServerOutput
+    from core import OutputReturn
+
+    @OnServerOutput
+    def on_server_output(severity, msg):
+        # Block everything starting with 'sv_' or 'mp_' from being logged.
+        # This keeps the console clean in CS:GO.
+        if msg.startswith(('sv_', 'mp_')):
+            return OutputReturn.BLOCK
+
+        return OutputReturn.CONTINUE
+
+
 OnTick
 ------
 
