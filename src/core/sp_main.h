@@ -127,7 +127,7 @@ public:
 	int m_iClientCommandIndex;
 	IMDLCacheNotify* m_pOldMDLCacheNotifier;
 
-#if defined(ENGINE_ORANGEBOX)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
 	SpewOutputFunc_t m_pOldSpewOutputFunc;
 #endif
 };

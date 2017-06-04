@@ -182,7 +182,7 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 //-----------------------------------------------------------------------------
 // Server output hook.
 //-----------------------------------------------------------------------------
-#if defined(ENGINE_ORANGEBOX)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
 SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
 {
 	extern CListenerManager* GetOnServerOutputListenerManager();
@@ -243,8 +243,12 @@ public:
 					pMessage);
 
 			// Create a new logging state with only our listener being active
+#if defined(ENGINE_LEFT4DEAD2)
+			LoggingSystem_PushLoggingState(false);
+#else
 			LoggingSystem_PushLoggingState(false, true);
-			LoggingSystem_RegisterLoggingListener(&g_LoggingListener);
+#endif
+			LoggingSystem_RegisterLoggingListener(this);
 
 		}
 	}
@@ -260,7 +264,7 @@ CSourcePython::CSourcePython()
 	m_iClientCommandIndex = 0;
 	m_pOldMDLCacheNotifier = NULL;
 
-#if defined(ENGINE_ORANGEBOX)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
 	m_pOldSpewOutputFunc = NULL;
 #endif
 }
@@ -317,7 +321,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-#if defined(ENGINE_ORANGEBOX)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
 	DevMsg(1, MSG_PREFIX "Retrieving old output function...\n");
 	m_pOldSpewOutputFunc = GetSpewOutputFunc();
 
@@ -325,7 +329,11 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	SpewOutputFunc(SP_SpewOutput);
 #else
 	DevMsg(1, MSG_PREFIX "Registering logging listener...\n");
+#if defined(ENGINE_LEFT4DEAD2)
+	LoggingSystem_PushLoggingState(false);
+#else
 	LoggingSystem_PushLoggingState(false, true);
+#endif
 	LoggingSystem_RegisterLoggingListener(&g_LoggingListener);
 #endif
 
@@ -356,7 +364,7 @@ void CSourcePython::Unload( void )
 	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
 	GetHookManager()->UnhookAllFunctions();
 
-#if defined(ENGINE_ORANGEBOX)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
 	if (m_pOldSpewOutputFunc)
 	{
 		DevMsg(1, MSG_PREFIX "Restoring old output function...\n");
