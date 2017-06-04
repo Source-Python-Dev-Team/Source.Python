@@ -53,7 +53,6 @@
 #include "vphysics_interface.h"
 #include "datacache/imdlcache.h"
 #include "ivoiceserver.h"
-#include "logging.h"
 
 #include "manager.h"
 
