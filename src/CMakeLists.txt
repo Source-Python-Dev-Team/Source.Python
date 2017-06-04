@@ -279,7 +279,6 @@ Set(SOURCEPYTHON_KEYVALUES_MODULE_HEADERS
 
 Set(SOURCEPYTHON_KEYVALUES_MODULE_SOURCES
     core/modules/keyvalues/keyvalues_wrap.cpp
-    ${SOURCESDK}/public/tier1/KeyValues.h
 )
 
 # ------------------------------------------------------------------
