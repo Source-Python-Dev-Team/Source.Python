@@ -84,6 +84,8 @@ public:
 
 	CommandReturn Dispatch(const CCommand& ccommand, int iIndex, bool bTeamOnly);
 
+	const char* GetName();
+
 private:
 	const char* m_Name;
 	CUtlVector<object> m_vecCallables;

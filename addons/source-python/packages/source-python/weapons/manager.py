@@ -84,20 +84,32 @@ class _WeaponManager(dict):
             self._tags.update(self[name].tags)
 
     def __getitem__(self, item):
-        """Return the WeaponClass instance for the given weapon."""
-        # Format the weapon's name
-        name = self._format_name(item)
+        """Return the :class:`weapons.instance.WeaponClass` for the weapon.
 
-        # Return the weapon's instance
-        return self.get(name, None)
+        :param str item: The weapon to retrieve the instance of.
+        :rtype: WeaponClass
+        """
+        name = self._format_name(item)
+        return super().__getitem__(name)
 
     def __contains__(self, item):
-        """Format the given name."""
-        # Format the weapon's name
-        name = self._format_name(item)
+        """Return whether the weapon is in the manager.
 
-        # Return whether the weapon is in the dictionary
+        :param str item: The weapon to retrieve the instance of.
+        :rtype: WeaponClass
+        """
+        name = self._format_name(item)
         return super().__contains__(name)
+
+    def get(self, item, default=None):
+        """Return the :class:`weapons.instance.WeaponClass` for the weapon.
+
+        :param str item: The weapon to retrieve the instance of.
+        :param default: The value to return if the item is not found.
+        :rtype: WeaponClass
+        """
+        name = self._format_name(item)
+        return super().get(name, default)
 
     def _format_name(self, item):
         """Format the name to include the game's weapon prefix."""

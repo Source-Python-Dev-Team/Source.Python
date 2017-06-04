@@ -360,7 +360,11 @@ class _AuthManager(dict):
 
         :rtype: bool
         """
-        return permission in self.get_player_permissions(index)
+        permissions = self.get_player_permissions(index)
+        if permissions is None:
+            return False
+
+        return permission in permissions
 
     def get_parent_permissions(self, parent_name):
         """Return the parent permissions.

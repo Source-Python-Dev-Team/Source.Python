@@ -5,22 +5,16 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Collections
+# Python
 from collections import OrderedDict
 
-# Source.Python Imports
-#   Core
+# Source.Python
 from core import AutoUnload
-#   Menus
-from menus import PagedMenu
-from menus import PagedOption
-#   Settings
+from menus import PagedMenu, PagedOption
 from settings.menu import _player_settings
-from settings.types import _SettingsType
-from settings.types import _FloatSetting
-from settings.types import _IntegerSetting
-from settings.types import _StringSetting
+from settings.types import (
+    BoolSetting, IntegerSetting, SettingsType, StringSetting
+)
 
 
 # =============================================================================
@@ -46,11 +40,11 @@ class _SettingsDictionary(OrderedDict):
                 'Given name "{0}" is not valid'.format(name))
 
         # Set the base attributes
-        self._name = name
-        self._text = text
+        self.name = name
+        self.text = text
 
         # Create the instance's menu
-        self._menu = PagedMenu(
+        self.menu = PagedMenu(
             select_callback=self._chosen_item,
             title=name if text is None else text)
 
@@ -60,7 +54,7 @@ class _SettingsDictionary(OrderedDict):
     def __setitem__(self, item, value):
         """Validate the given value and its type before setting the item."""
         # Is the given value a proper type?
-        if not isinstance(value, (_SettingsDictionary, _SettingsType)):
+        if not isinstance(value, (_SettingsDictionary, SettingsType)):
 
             # Raise an error
             raise ValueError(
@@ -80,70 +74,39 @@ class _SettingsDictionary(OrderedDict):
         value = self[item]
 
         # Set the item's prefix
-        value._prefix = self.prefix + '_'
+        value.prefix = self.prefix
+        if not value.prefix.endswith('_'):
+            value.prefix += '_'
 
         # Does the section's name need added to the prefix?
         if not isinstance(self, PlayerSettings):
 
             # Add the section's name to the prefix
-            value._prefix += self.name.lower().replace(' ', '_') + '_'
+            value.prefix += self.name.lower().replace(' ', '_') + '_'
 
         # Add the option to the menu
         self.menu.append(PagedOption(
             value.name if value.text is None else value.text, value))
 
-    @property
-    def name(self):
-        """Return the name of the _SettingsDictionary instance."""
-        return self._name
-
-    @property
-    def text(self):
-        """Return the text of the _SettingsDictionary instance."""
-        return self._text
-
-    @property
-    def prefix(self):
-        """Return the prefix of the _SettingsDictionary instance."""
-        return self._prefix
-
-    @property
-    def menu(self):
-        """Return the instance's menu object."""
-        return self._menu
-
-    def add_float_setting(
-            self, name, default, text=None, min_value=None, max_value=None):
-        """Add a new float setting to the dictionary."""
-        # Add the new float setting to the dictionary
-        self[name] = _FloatSetting(name, default, text, min_value, max_value)
-
-        # Return the setting
-        return self[name]
-
     def add_int_setting(
             self, name, default, text=None, min_value=None, max_value=None):
         """Add a new integer setting to the dictionary."""
-        # Add the new integer setting to the dictionary
-        self[name] = _IntegerSetting(name, default, text, min_value, max_value)
+        self[name] = IntegerSetting(name, default, text, min_value, max_value)
+        return self[name]
 
-        # Return the setting
+    def add_bool_setting(self, name, default, text=None):
+        """Add a new boolean setting to the dictionary."""
+        self[name] = BoolSetting(name, default, text)
         return self[name]
 
     def add_string_setting(self, name, default, text=None):
         """Add a new string setting to the dictionary."""
-        # Add the new string setting to the dictionary
-        self[name] = _StringSetting(name, default, text)
-
-        # Return the setting
+        self[name] = StringSetting(name, default, text)
         return self[name]
 
     def add_section(self, name, text=None):
         """Add a new section to the dictionary."""
-        # Add the new section to the dictionary
         self[name] = _SettingsDictionary(name, text)
-
-        # Return the section
         return self[name]
 
     @staticmethod
@@ -186,17 +149,18 @@ class PlayerSettings(AutoUnload, _SettingsDictionary):
         super().__init__(name, text)
 
         # Set the prefix for the settings
-        self._prefix = prefix.lower()
+        self.prefix = prefix.lower()
 
         # Add the instance to the main dictionary
         _player_settings[name] = self
 
         # Add the settings instance to the main settings menu
-        _player_settings.menu.append(
-            PagedOption(name if text is None else text, self))
+        self.option = PagedOption(name if text is None else text, self)
+        _player_settings.menu.append(self.option)
 
     def unregister_settings(self):
         """Unregister the given settings from the dictionary."""
+        _player_settings.menu.remove(self.option)
         del _player_settings[self.name]
 
     def _unload_instance(self):

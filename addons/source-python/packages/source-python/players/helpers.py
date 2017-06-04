@@ -163,7 +163,7 @@ def uniqueid_from_playerinfo(playerinfo):
     :rtype: str
     """
     # Is the player a Bot?
-    if playerinfo.is_fake_client():
+    if playerinfo.is_fake_client() or 'BOT' in playerinfo.steamid:
 
         # Return the bot's UniqueID
         return 'BOT_{0}'.format(playerinfo.name)
@@ -205,7 +205,7 @@ def address_from_playerinfo(playerinfo):
     :rtype: str
     """
     # Is the player a bot?
-    if playerinfo.is_fake_client():
+    if playerinfo.is_fake_client() or 'BOT' in playerinfo.steamid:
 
         # Return an empty string, since using <netinfo>.address crashes
         # with bots

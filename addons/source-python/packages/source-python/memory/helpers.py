@@ -95,7 +95,7 @@ class Key(object):
     DOC = 'doc'
 
     @staticmethod
-    def as_bool(value):
+    def as_bool(manager, value):
         """Convert a string to a boolean.
 
         Raises a ValueError if the string doesn't represent such a value.
@@ -111,7 +111,7 @@ class Key(object):
             'Cannot convert "{0}" to a boolean value.'.format(value))
 
     @staticmethod
-    def as_args_tuple(value):
+    def as_args_tuple(manager, value):
         """Convert a string into a tuple containing <DataType> elements."""
         if isinstance(value, str):
             return (DataType.names[value], )
@@ -119,7 +119,7 @@ class Key(object):
         return tuple(DataType.names[item] for item in value)
 
     @staticmethod
-    def as_return_type(value):
+    def as_return_type(manager, value):
         """Convert a string into a <Return> object.
 
         If the conversion fails, the string itself will be returned.
@@ -127,7 +127,7 @@ class Key(object):
         return DataType.names.get(value, value)
 
     @staticmethod
-    def as_identifier(value):
+    def as_identifier(manager, value):
         """Convert a string into a byte string.
 
         If no spaces in the string, the string itself will be returned.
@@ -138,17 +138,30 @@ class Key(object):
         return value
 
     @staticmethod
-    def as_convention(value):
+    def as_convention(manager, value):
         """Convert a string into a <Convention> object."""
-        return Convention.names[value]
+        try:
+            return Convention.names[value]
+        except KeyError:
+            return manager.custom_conventions[value]
 
     @staticmethod
-    def as_attribute_type(value):
+    def as_attribute_type(manager, value):
         """Convert a string into a <Type> value."""
         if Type.is_native(value):
             return getattr(Type, value)
 
         return value
+
+    @staticmethod
+    def as_str(manager, value):
+        """Convert the value to a string."""
+        return str(value)
+
+    @staticmethod
+    def as_int(manager, value):
+        """Convert the value to an integer."""
+        return int(value)
 
 
 # =============================================================================
@@ -329,7 +342,7 @@ class MemberFunction(Function):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def parse_data(raw_data, keys):
+def parse_data(manager, raw_data, keys):
     """Parse the data dictionary.
 
     Parses by converting the values of the given keys into
@@ -340,28 +353,33 @@ def parse_data(raw_data, keys):
 
     <keys> must have the following structure:
     ((<key name>, <converter>, <default value>), ...)
+    
+    The convert function must accept 2 arguments:
+    
+    1. An instance of the TypeManager class
+    2. The value to convert
 
 
     Information about data that comes from a file:
 
-    You can specialize every key by adding "_nt" (for Windows) or "_posix"
-    (for Linux) to the end a key.
+    You can specialize every key by adding ''_windows'' (for Windows) or
+    ''_linux'' (for Linux) to the end a key.
 
     For example:
     If you are using a signature on Windows, but a symbol on Linux, you have
     three possibilities to do that:
 
     1.
-    identifier_nt    = <signature for Windows>
-    identifier       = <symbol for Linux>
+    identifier_windows = <signature for Windows>
+    identifier         = <symbol for Linux>
 
     2.
-    identifier       = <signature for Windows>
-    identifier_posix = <symbol for Linux>
+    identifier         = <signature for Windows>
+    identifier_linux   = <symbol for Linux>
 
     3.
-    identifier_nt    = <signature for Windows>
-    identifier_posix = <symbol for Linux>
+    identifier_windows = <signature for Windows>
+    identifier_linux   = <symbol for Linux>
     """
     for name, data in raw_data.items():
         temp_data = []
@@ -375,7 +393,8 @@ def parse_data(raw_data, keys):
                 raise KeyError(
                     'Missing information for key "{0}".'.format(key))
 
-            temp_data.append(value if value is default else converter(value))
+            temp_data.append(
+                value if value is default else converter(manager, value))
 
         yield (name, temp_data)
 
