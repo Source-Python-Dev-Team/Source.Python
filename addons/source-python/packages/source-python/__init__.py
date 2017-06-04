@@ -367,25 +367,15 @@ def setup_stdout_redirect():
     # See also:
     # https://github.com/Source-Python-Dev-Team/Source.Python/issues/151
     # https://github.com/Source-Python-Dev-Team/Source.Python/issues/175
-    if sys.stdout is not None:
+    # https://github.com/Source-Python-Dev-Team/Source.Python/issues/193
+    if sys.stdout is not None and sys.stderr is not None:
         return
 
-    from warnings import warn
-    warn(
-        'sys.stdout is None. All data will be redirected through '
-        'core.console_message() instead. If you receive this warning, please '
-        'notify us and tell us your operating system, game and Source.Python '
-        'version. The information can be posted here: '
-        'https://github.com/Source-Python-Dev-Team/Source.Python/issues/175. '
-        'Source.Python should continue working, but we would like to figure '
-        'out in which situations sys.stdout is None to be able to fix this '
-        'issue instead of applying a workaround.')
-
-    _sp_logger.log_debug('Setting up sys.stdout redirect...')
+    _sp_logger.log_debug('Setting up sys.stdout/sys.stderr redirect...')
 
     from core import console_message
 
-    class StdoutRedirect(object):
+    class OutputRedirect(object):
         def write(self, data):
             console_message(data)
             return len(data)
@@ -394,4 +384,19 @@ def setup_stdout_redirect():
             # We can't flush anymore...
             pass
 
-    sys.stdout = StdoutRedirect()
+    if sys.stdout is None:
+        sys.stdout = OutputRedirect()
+
+    if sys.stderr is None:
+        sys.stderr = OutputRedirect()
+
+    from warnings import warn
+    warn(
+        'sys.stdout and/or sys.stderr is None. All data will be redirected through '
+        'core.console_message() instead. If you receive this warning, please '
+        'notify us and tell us your operating system, game and Source.Python '
+        'version. The information can be posted here: '
+        'https://github.com/Source-Python-Dev-Team/Source.Python/issues/175. '
+        'Source.Python should continue working, but we would like to figure '
+        'out in which situations sys.stdout is None to be able to fix this '
+        'issue instead of applying a workaround.')

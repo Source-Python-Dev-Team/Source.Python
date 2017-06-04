@@ -212,6 +212,10 @@ void CopyHelper(void* dest, void* source, unsigned long length)
 void CPointer::Copy(object oDest, unsigned long ulNumBytes)
 {
 	Validate();
+	if (ulNumBytes == 0) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'num_bytes' must be greater than 0.")
+	}
+
 	CPointer* pDest = ExtractPointer(oDest);
 	pDest->Validate();
 
@@ -231,6 +235,10 @@ void MoveHelper(void* dest, void* source, unsigned long length)
 void CPointer::Move(object oDest, unsigned long ulNumBytes)
 {
 	Validate();
+	if (ulNumBytes == 0) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'num_bytes' must be greater than 0.")
+	}
+
 	CPointer* pDest = ExtractPointer(oDest);
 	pDest->Validate();
 	MoveHelper((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);

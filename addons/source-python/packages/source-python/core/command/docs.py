@@ -26,6 +26,8 @@ from paths import PLUGIN_DOCS_PATH
 from paths import SP_PACKAGES_PATH
 from paths import CUSTOM_PACKAGES_PATH
 from paths import PLUGIN_PATH
+#   Plugins
+from plugins.manager import plugin_manager
 
 
 # =============================================================================
@@ -42,10 +44,12 @@ def _sp_docs_create(command_info, package):
     """Create a Sphinx project."""
     _create_sphinx_project(package)
 
+
 @core_command.server_sub_command(['docs', 'generate'])
 def _sp_docs_generate(command_info, package):
     """Generate a Sphinx project."""
     _generate_sphinx_project(package)
+
 
 @core_command.server_sub_command(['docs', 'build'])
 def _sp_docs_build(command_info, package):
@@ -70,6 +74,7 @@ def _create_sphinx_project(package):
             '  Project name must be source-python, ' +
             'a custom package name, or a plugin name.')
 
+
 def _create_source_python_docs():
     """Create a Sphinx project for Source.Python."""
     project = SphinxProject(SP_PACKAGES_PATH, SP_DOCS_PATH)
@@ -87,6 +92,7 @@ def _create_source_python_docs():
         else:
             logger.log_message(
                 'Sphinx project has been created for Source.Python.')
+
 
 def _create_custom_package_docs(package):
     """Create a Sphinx project for a custom package."""
@@ -108,6 +114,7 @@ def _create_custom_package_docs(package):
             logger.log_message(
                 'Sphinx project has been created for' +
                 ' custom package "{0}".'.format(package))
+
 
 def _create_plugin_docs(package):
     """Create a Sphinx project for a plugin."""
@@ -147,6 +154,7 @@ def _generate_sphinx_project(package):
             '  Project name must be source-python, ' +
             'a custom package name, or a plugin name.')
 
+
 def _generate_source_python_docs():
     """Generate Sphinx project files for Source.Python."""
     project = SphinxProject(SP_PACKAGES_PATH, SP_DOCS_PATH)
@@ -168,6 +176,7 @@ def _generate_source_python_docs():
     else:
         logger.log_message(
             'Sphinx project does not exist for Source.Python.')
+
 
 def _prepare_generated_source_python_file(file_path):
     """Rename the generated file if it wasn't already renamed.
@@ -224,6 +233,7 @@ def _prepare_generated_source_python_file(file_path):
             else:
                 f.write(line)
 
+
 def _generate_custom_package_docs(package):
     """Generate Sphinx project files for a custom package."""
     project = SphinxProject(
@@ -244,6 +254,7 @@ def _generate_custom_package_docs(package):
         logger.log_message(
             'Sphinx project does not exist for ' +
             'custom package "{0}".'.format(package))
+
 
 def _generate_plugin_docs(package):
     """Generate Sphinx project files for a plugin."""
@@ -282,6 +293,7 @@ def _build_sphinx_project(package):
             'Invalid project name: "{0}".'.format(package) +
             '  Project name must be source-python, ' +
             'a custom package name, or a plugin name.')
+
 
 def _build_source_python_docs():
     """Build Sphinx project files for Source.Python."""
@@ -322,6 +334,7 @@ def _build_source_python_docs():
         logger.log_message(
             'Sphinx project does not exist for Source.Python.')
 
+
 def _get_updated_credits_wiki():
     """Return the content for the credits.rst."""
     groups = ConfigObj(
@@ -361,6 +374,7 @@ def _get_updated_credits_wiki():
 
     return output
 
+
 def _build_custom_package_docs(package):
     """Build Sphinx project files for a custom package."""
     project = SphinxProject(
@@ -382,12 +396,13 @@ def _build_custom_package_docs(package):
             'Sphinx project does not exist for ' +
             'custom package "{0}".'.format(package))
 
+
 def _build_plugin_docs(package):
     """Build Sphinx project files for a plugin."""
     project = SphinxProject(
         PLUGIN_PATH / package, PLUGIN_DOCS_PATH / package)
     if project.project_exists():
-        if not manager.is_loaded(package):
+        if not plugin_manager.is_loaded(package):
             logger.log_message(
                 'Plugin must be loaded to build the project files.')
             return
@@ -415,10 +430,12 @@ def is_source_python(package):
     """Return True if the given package name is source-python."""
     return package == 'source-python'
 
+
 def is_custom_package(package):
     """Return True if the given package name is a custom package."""
     return package in map(
         lambda path: str(path.namebase), CUSTOM_PACKAGES_PATH.listdir())
+
 
 def is_plugin(package):
     """Return True if the given package name is a plugin."""

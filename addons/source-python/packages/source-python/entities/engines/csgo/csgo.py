@@ -36,8 +36,9 @@ class Entity(_Entity):
     @classmethod
     def create(cls, classname):
         index = _weapon_names_for_definition.get(classname)
-        if classname in _weapon_parents and index is not None:
-            entity = super().create(_weapon_parents[classname])
+        if index is not None:
+            parent_class = _weapon_parents.get(classname)
+            entity = super().create(parent_class or classname)
             entity.item_definition_index = index
         else:
             entity = super().create(classname)

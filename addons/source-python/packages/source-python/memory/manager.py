@@ -163,6 +163,9 @@ class TypeManager(dict):
         # Stores function typedefs
         self.function_typedefs = {}
 
+        # Storage for custom calling conventions
+        self.custom_conventions = {}
+
     def __call__(self, name, bases, cls_dict):
         """Create and registers a new class."""
         # Set the manager attribute. This is required, so CustomType.__init__
@@ -180,6 +183,41 @@ class TypeManager(dict):
 
         self[name] = cls
         return cls
+
+    def custom_calling_convention(self, cls):
+        """Register a custom calling convention class by its name.
+
+        Example:
+
+        .. code:: python
+
+            @manager.custom_calling_convention
+            class MyCustomCallingConvention(CallingConvention):
+                pass
+
+            # Equals to...
+            class MyCustomCallingConvention(CallingConvention):
+                pass
+
+            manager.register_convention(
+                'MyCustomCallingConvention',
+                MyCustomCallingConvention)
+        """
+        self.register_convention(cls.__name__, cls)
+
+    def register_convention(self, name, convention):
+        """Register a custom calling convention.
+
+        :param str name:
+            Name of the custom calling convention.
+        :param CallingConvention convention:
+            The custom calling convention.
+        """
+        self.custom_conventions[name] = convention
+
+    def unregister_convention(self, name):
+        """Unregister a custom calling convention."""
+        self.custom_conventions.pop(name, None)
 
     def register_converter(self, name, obj):
         """Register a callable object as a converter.
@@ -260,15 +298,16 @@ class TypeManager(dict):
         """Create a pipe from a dictionary."""
         # Prepare functions
         funcs = parse_data(
+            self,
             raw_data,
             (
-                (Key.BINARY, str, NO_DEFAULT),
+                (Key.BINARY, Key.as_str, NO_DEFAULT),
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
                 (Key.ARGS, Key.as_args_tuple, ()),
                 (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.CDECL),
                 (Key.SRV_CHECK, Key.as_bool, True),
-                (Key.DOC, str, None)
+                (Key.DOC, Key.as_str, None)
             )
         )
 
@@ -306,14 +345,15 @@ class TypeManager(dict):
         """Create and registers a new type from a dictionary."""
         # Prepare general type information
         data = tuple(parse_data(
+            self,
             # Discard all subkeys and add the new dict to a another dict to
             # make it work with parse_data(). Okay, this can be improved...
             {0: dict((k, v) for k, v in raw_data.items() if not isinstance(
                 v, dict))},
             (
-                (Key.BINARY, str, CustomType._binary),
+                (Key.BINARY, Key.as_str, CustomType._binary),
                 (Key.SRV_CHECK, Key.as_bool, CustomType._srv_check),
-                (Key.SIZE, int, CustomType._size)
+                (Key.SIZE, Key.as_int, CustomType._size)
             )
         ))[0][1]
 
@@ -322,11 +362,12 @@ class TypeManager(dict):
         # Prepare pointer and instance attributes
         for method in (self.instance_attribute, self.pointer_attribute):
             attributes = parse_data(
+                self,
                 raw_data.get(method.__name__, {}),
                 (
                     (Key.TYPE_NAME, Key.as_attribute_type, NO_DEFAULT),
-                    (Key.OFFSET, int, NO_DEFAULT),
-                    (Key.DOC, str, None)
+                    (Key.OFFSET, Key.as_int, NO_DEFAULT),
+                    (Key.DOC, Key.as_str, None)
                 )
             )
 
@@ -341,12 +382,13 @@ class TypeManager(dict):
                 self.static_pointer_array,
                 self.dynamic_pointer_array):
             arrays = parse_data(
+                self,
                 raw_data.get(method.__name__, {}),
                 (
                     (Key.TYPE_NAME, Key.as_attribute_type, NO_DEFAULT),
-                    (Key.OFFSET, int, NO_DEFAULT),
-                    (Key.LENGTH, int, None),
-                    (Key.DOC, str, None)
+                    (Key.OFFSET, Key.as_int, NO_DEFAULT),
+                    (Key.LENGTH, Key.as_int, None),
+                    (Key.DOC, Key.as_str, None)
                 )
             )
 
@@ -356,13 +398,14 @@ class TypeManager(dict):
 
         # Prepare virtual functions
         vfuncs = parse_data(
+            self,
             raw_data.get('virtual_function', {}),
             (
-                (Key.OFFSET, int, NO_DEFAULT),
+                (Key.OFFSET, Key.as_int, NO_DEFAULT),
                 (Key.ARGS, Key.as_args_tuple, ()),
                 (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.THISCALL),
-                (Key.DOC, str, None)
+                (Key.DOC, Key.as_str, None)
             )
         )
 
@@ -372,13 +415,14 @@ class TypeManager(dict):
 
         # Prepare functions
         funcs = parse_data(
+            self,
             raw_data.get('function', {}),
             (
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
                 (Key.ARGS, Key.as_args_tuple, ()),
                 (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.THISCALL),
-                (Key.DOC, str, None)
+                (Key.DOC, Key.as_str, None)
             )
         )
 
@@ -655,12 +699,13 @@ class TypeManager(dict):
 
         # Prepare typedefs
         typedefs = parse_data(
+            self,
             raw_data,
             (
                 (Key.ARGS, Key.as_args_tuple, ()),
                 (Key.RETURN_TYPE, Key.as_return_type, DataType.VOID),
                 (Key.CONVENTION, Key.as_convention, Convention.CDECL),
-                (Key.DOC, str, None)
+                (Key.DOC, Key.as_str, None)
             )
         )
 
@@ -692,12 +737,13 @@ class TypeManager(dict):
         """Create global pointers from a file."""
         # Parse pointer data
         pointers = parse_data(
+            self,
             GameConfigObj(f),
             (
-                (Key.BINARY, str, NO_DEFAULT),
+                (Key.BINARY, Key.as_str, NO_DEFAULT),
                 (Key.IDENTIFIER, Key.as_identifier, NO_DEFAULT),
-                (Key.OFFSET, int, 0),
-                (Key.LEVEL, int, 0),
+                (Key.OFFSET, Key.as_int, 0),
+                (Key.LEVEL, Key.as_int, 0),
                 (Key.SRV_CHECK, Key.as_bool, True),
             )
         )

@@ -48,7 +48,7 @@ class _BaseMenu(AutoUnload, list):
         :param callable|None select_callback: A function that gets called
             whenever a selection was made.
 
-            The callback will recieve 3 parameters:
+            The callback will receive 3 parameters:
                 1. The instance of this menu.
                 2. The player's index who made the selection.
                 3. The player's choice.
@@ -56,9 +56,9 @@ class _BaseMenu(AutoUnload, list):
         :param callable|None build_callback: A function that gets called
             before a menu is displayed.
 
-            The callback will recieve 2 parameters:
+            The callback will receive 2 parameters:
                 1. The instance of this menu.
-                2. The index of the player who will recieve this menu.
+                2. The index of the player who will receive this menu.
         """
         super().__init__(list() if data is None else data)
 
@@ -119,7 +119,7 @@ class _BaseMenu(AutoUnload, list):
         If no indexes were given, the menu will be sent to every player.
 
         :param ply_indexes:
-            Player indexes that should recieve the menu.
+            Player indexes that should receive the menu.
         :param tokens:
             Translation tokens for menu options, title and description.
         """
@@ -237,7 +237,7 @@ class _BaseMenu(AutoUnload, list):
         :param callable callback: A function that gets called
             whenever a selection was made.
 
-            The callback will recieve 3 parameters:
+            The callback will receive 3 parameters:
                 1. The instance of this menu.
                 2. The player's index who made the selection.
                 3. The player's choice.
@@ -253,9 +253,9 @@ class _BaseMenu(AutoUnload, list):
         :param callable callback: A function that gets called
             before a menu is displayed.
 
-            The callback will recieve 2 parameters:
+            The callback will receive 2 parameters:
                 1. The instance of this menu.
-                2. The index of the player who will recieve this menu.
+                2. The index of the player who will receive this menu.
         """
         self.build_callback = callback
         return callback

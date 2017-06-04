@@ -106,8 +106,15 @@ public:
 	static void SetBool(KeyValues* pKeyValues, const char * szName, bool bValue)
 	{ pKeyValues->SetInt(szName, bValue); }
 
-	static bool LoadFromFile(KeyValues* pKeyValues, const char * szFile)
-	{ return pKeyValues->LoadFromFile(filesystem, szFile); }
+	static boost::shared_ptr<KeyValues> LoadFromFile(const char * szFile)
+	{ 
+		KeyValues* pKeyValues = new KeyValues("");
+		if (!pKeyValues->LoadFromFile(filesystem, szFile)) {
+			pKeyValues->deleteThis();
+			return NULL;
+		}
+		return boost::shared_ptr<KeyValues>(pKeyValues, &__del__);
+	}
 
 	static bool SaveToFile(KeyValues* pKeyValues, const char * szFile)
 	{ return pKeyValues->SaveToFile(filesystem, szFile); }
@@ -222,6 +229,76 @@ public:
 		}
 
 		return result;
+	}
+
+	static boost::shared_ptr<KeyValues> from_dict(const char* name, dict source)
+	{
+		KeyValues* root = new KeyValues(name);
+		AddDict(root, source);
+		return boost::shared_ptr<KeyValues>(root, &__del__);
+	}
+
+	static void AddDict(KeyValues* key, dict source)
+	{
+		list keys = source.keys();
+		for (int i=0; i < len(keys); ++i) {
+			const char* key_name = extract<const char*>(keys[i]);
+			object value = source[key_name];
+
+			if (PyLong_Check(value.ptr())) {
+				int overflow;
+				long long_result = PyLong_AsLongAndOverflow(value.ptr(), &overflow);
+				if (overflow == 0) {
+					key->SetInt(key_name, long_result);
+					continue;
+				}
+
+				PY_LONG_LONG long_long_result = PyLong_AsLongLong(value.ptr());
+				if (long_long_result < 0) {
+					// KeyValues can't handle negative long long values.
+					BOOST_RAISE_EXCEPTION(PyExc_OverflowError, "%lli is too big.", long_long_result)
+				}
+
+				key->SetUint64(key_name, long_long_result);
+				continue;
+			}
+
+			extract<float> get_float(value);
+			if (get_float.check()) {
+				key->SetFloat(key_name, get_float());
+				continue;
+			}
+
+			extract<const char*> get_string(value);
+			if (get_string.check()) {
+				key->SetString(key_name, get_string());
+				continue;
+			}
+
+			extract<Color> get_color(value);
+			if (get_color.check()) {
+				key->SetColor(key_name, get_color());
+				continue;
+			}
+
+			extract<CPointer*> get_ptr(value);
+			if (get_ptr.check()) {
+				key->SetPtr(key_name, (void*) get_ptr()->m_ulAddr);
+				continue;
+			}
+
+			extract<dict> get_dict(value);
+			if (get_dict.check()) {
+				AddDict(key->FindKey(key_name, true), get_dict());
+				continue;
+			}
+
+			object type_name = value.attr("__class__").attr("__name__");
+			object py_value_str = str(value);
+			const char* type_name_str = extract<const char*>(type_name);
+			const char* value_str = extract<const char*>(py_value_str);
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid type (%s) of value '%s'", type_name_str, value_str)
+		}
 	}
 };
 

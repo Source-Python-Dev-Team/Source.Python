@@ -68,10 +68,19 @@ public:
 	int GetCount();
 	bool IsRegistered(object oCallback);
 	object __getitem__(unsigned int index);
+	void clear();
+
+	int FindCallback(object oCallback);
 
 public:
 	CUtlVector<object> m_vecCallables;
 };
+
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
+bool is_same_func(object f1, object f2);
 
 
 #endif // _LISTENERS_MANAGER_H

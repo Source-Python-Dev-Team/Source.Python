@@ -26,6 +26,7 @@ General
    general/config-auth
    general/sp-commands
    general/known-issues
+   general/reporting-a-bug
    general/credits
    
 
@@ -51,7 +52,6 @@ Contributing to Source.Python
    contributing/building
    contributing/contributing
    contributing/coding-conventions
-   contributing/reporting-a-bug
    contributing/todos
 
 
