@@ -122,7 +122,10 @@ class UserMessageCreator(AttrDict):
         if isinstance(value, TranslationStrings):
             return value.get_string(language, **tokens)
 
-        return value
+        try:
+            return value.format(**tokens)
+        except (KeyError, AttributeError):
+            return value
 
     def protobuf(self, buffer, translated_kwargs):
         """Protobuf implementation of this user message."""

@@ -78,6 +78,12 @@ void export_mrecipientfilter(scope _recipients)
 			args("slot")
 		)
 
+		.def("__getitem__",
+			&IRecipientFilterExt::__getitem__,
+			"Obtains the player index at the slot in the filter",
+			args("index")
+		)
+
 		ADD_MEM_TOOLS(IRecipientFilter)
 	;
 

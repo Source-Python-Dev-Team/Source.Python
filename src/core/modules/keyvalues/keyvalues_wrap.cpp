@@ -64,6 +64,8 @@ void export_keyvalues(scope _keyvalues)
 		.def("__init__", make_constructor(&KeyValuesExt::__init__4))
 		.def("__init__", make_constructor(&KeyValuesExt::__init__5))
 
+		.def("from_dict", &KeyValuesExt::from_dict).staticmethod("from_dict")
+
 		.add_property("name",
 			&KeyValues::GetName,
 			&KeyValues::SetName,
@@ -83,9 +85,9 @@ void export_keyvalues(scope _keyvalues)
 
 		.def("load_from_file",
 			&KeyValuesExt::LoadFromFile,
-			"Loads KeyValues data from a file into this KeyValues instance.",
+			"Load KeyValues data from a file and return a new KeyValues instance on success.",
 			args("file_name")
-		)
+		).staticmethod("load_from_file")
 
 		.def("save_to_file",
 			&KeyValuesExt::SaveToFile,

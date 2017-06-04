@@ -41,7 +41,7 @@ class _UniqueSettings(dict):
         super().__init__()
 
         # Store the given uniqueid
-        self._uniqueid = uniqueid
+        self.uniqueid = uniqueid
 
         # If _player_settings_storage is initializing, don't try to call it
         if _IN_INITIALIZATION:
@@ -73,11 +73,6 @@ class _UniqueSettings(dict):
             """WHERE variables.name=? AND players.uniqueid=?""",
             (value, variable, self.uniqueid))
 
-    @property
-    def uniqueid(self):
-        """Return the instance's uniqueid."""
-        return self._uniqueid
-
 
 class _PlayerSettingsDictionary(dict):
     """Dictionary class used to store user specific settings values."""
@@ -88,13 +83,13 @@ class _PlayerSettingsDictionary(dict):
         super().__init__()
 
         # Connect to the database
-        self._connection = connect(_STORAGE_PATH)
+        self.connection = connect(_STORAGE_PATH)
 
         # Set the text factory
         self.connection.text_factory = str
 
         # Get the cursor instance
-        self._cursor = self.connection.cursor()
+        self.cursor = self.connection.cursor()
 
         # Create the variables table if it does not exist
         self.cursor.execute(
@@ -139,16 +134,6 @@ class _PlayerSettingsDictionary(dict):
 
         # Return the _UniqueSettings instance
         return value
-
-    @property
-    def connection(self):
-        """Return the connection to the database."""
-        return self._connection
-
-    @property
-    def cursor(self):
-        """Return the cursor instance."""
-        return self._cursor
 
     def on_level_shutdown(self):
         """Store the dictionary to the database on map change."""

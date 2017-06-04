@@ -97,19 +97,18 @@ void BaseSayCommand::UnregisterCommands()
 //-----------------------------------------------------------------------------
 CSayCommandManager* GetSayCommand(const char* szName)
 {
-	// Find if the given name is a registered say command
-	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szName);
-	if( commandMapIter == g_SayCommandMap.end())
+	CSayCommandManager* manager = NULL;
+	SayCommandMap::iterator iter;
+	if (!find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, szName, iter))
 	{
-		// If the command is not already registered, add the name and the CSayCommandManager instance to the mapping
-		g_SayCommandMap.insert(std::make_pair(szName, new CSayCommandManager(szName)));
-
-		// Get the say command in the mapping
-		commandMapIter = g_SayCommandMap.find(szName);
+		manager = new CSayCommandManager(szName);
+		g_SayCommandMap.insert(std::make_pair(szName, manager));
 	}
-
-	// Return the CSayCommandManager instance for the command
-	return commandMapIter->second;
+	else
+	{
+		manager = iter->second;
+	}
+	return manager;
 }
 
 //-----------------------------------------------------------------------------
@@ -117,14 +116,11 @@ CSayCommandManager* GetSayCommand(const char* szName)
 //-----------------------------------------------------------------------------
 void RemoveCSayCommandManager(const char* szName)
 {
-	// Find if the given name is a registered say command
-	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(szName);
-	if( commandMapIter != g_SayCommandMap.end() )
+	SayCommandMap::iterator iter;
+	if (find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, szName, iter))
 	{
-		// If the command is registered, delete the CSayCommandManager instance
-		//		and remove the command from the mapping
-		delete commandMapIter->second;
-		g_SayCommandMap.erase(commandMapIter);
+		delete iter->second;
+		g_SayCommandMap.erase(iter);
 	}
 }
 
@@ -268,15 +264,11 @@ void SayConCommand::Dispatch( const CCommand& command )
 		END_BOOST_PY_NORET()
 	}
 
-	// Find if the command is registered
-	SayCommandMap::iterator commandMapIter = g_SayCommandMap.find(stripped_command[0]);
-	if( commandMapIter != g_SayCommandMap.end() )
+	
+	SayCommandMap::iterator iter;
+	if (find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, stripped_command[0], iter))
 	{
-		// Get the CSayCommandManager instance for the command
-		CSayCommandManager* pCSayCommandManager = commandMapIter->second;
-		
-		// Call the command and see it wants to block the command
-		if( pCSayCommandManager->Dispatch(stripped_command, iIndex, bTeamOnly)  == BLOCK)
+		if(iter->second->Dispatch(stripped_command, iIndex, bTeamOnly)  == BLOCK)
 		{
 			// Block the command
 			return;
@@ -368,6 +360,11 @@ CommandReturn CSayCommandManager::Dispatch( const CCommand& command, int iIndex,
 	}
 
 	return CONTINUE;
+}
+
+const char* CSayCommandManager::GetName()
+{
+	return m_Name;
 }
 
 //-----------------------------------------------------------------------------

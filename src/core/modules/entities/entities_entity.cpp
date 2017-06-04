@@ -220,9 +220,11 @@ str CBaseEntityWrapper::GetKeyValueString(const char* szName)
 	char szResult[MAX_KEY_VALUE_LENGTH];
 	GetKeyValueStringRaw(szName, szResult, MAX_KEY_VALUE_LENGTH);
 
+	// TODO: Don't hardcode this
 	// Fix for field name "model". I think a string_t object is copied to szResult.
-	if (strcmp(szName, "model") == 0)
-		return *(char **) szResult;
+	// https://developer.valvesoftware.com/wiki/Team_train_watcher
+	if (strcmp(szName, "model") == 0 || strcmp(szName, "train") == 0)
+		return str(*(char **) szResult);
 
 	return str(szResult);
 }

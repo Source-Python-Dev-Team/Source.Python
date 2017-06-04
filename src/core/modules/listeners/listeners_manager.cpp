@@ -39,10 +39,12 @@ void CListenerManager::RegisterListener(PyObject* pCallable)
 	object oCallable = object(handle<>(borrowed(pCallable)));
 
 	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
+	if( !IsRegistered(oCallable) )
 	{
-		// Add the callable to the vector
 		m_vecCallables.AddToTail(oCallable);
+	}
+	else {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback already registered.")
 	}
 }
 
@@ -55,8 +57,14 @@ void CListenerManager::UnregisterListener(PyObject* pCallable)
 	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
 
-	// Remove the callback from the ServerCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
+	int index = FindCallback(oCallable); //m_vecCallables.Find(oCallable);
+
+	if (index == -1) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback not registered.")
+	}
+	else {
+		m_vecCallables.Remove(index);
+	}
 }
 
 
@@ -88,7 +96,19 @@ int CListenerManager::GetCount()
 //-----------------------------------------------------------------------------
 bool CListenerManager::IsRegistered(object oCallback)
 {
-	return m_vecCallables.HasElement(oCallback);
+	return FindCallback(oCallback) != -1;
+	//return m_vecCallables.HasElement(oCallback);
+}
+
+int CListenerManager::FindCallback(object oCallback)
+{
+	for (int i=0; i < m_vecCallables.Count(); ++i) {
+		object oCurrent  = m_vecCallables[i];
+		if (is_same_func(oCallback, oCurrent)) {
+			return i;
+		}
+	}
+	return -1;
 }
 
 object CListenerManager::__getitem__(unsigned int index)
@@ -97,4 +117,35 @@ object CListenerManager::__getitem__(unsigned int index)
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
 
 	return m_vecCallables[index];
+}
+
+void CListenerManager::clear()
+{
+	m_vecCallables.RemoveAll();
+}
+
+
+//-----------------------------------------------------------------------------
+// Functions
+//-----------------------------------------------------------------------------
+bool is_same_func(object f1, object f2)
+{
+	object self1, self2;
+	try {
+		self1 = f1.attr("__self__");
+	}
+	catch (...) {
+		PyErr_Clear();
+		return f1 == f2;
+	}
+
+	try {
+		self2 = f2.attr("__self__");
+	}
+	catch (...) {
+		PyErr_Clear();
+		return f1 == f2;
+	}
+
+	return self1.ptr() == self2.ptr() && f1.attr("__func__") == f2.attr("__func__");
 }

@@ -797,10 +797,20 @@ static void export_server_game_dll(scope _server)
 		"Return the game's description."
 	);
 
+	// Black Mesa and Orangebox specific methods...
+	ServerGameDLL.NOT_IMPLEMENTED("set_server_hibernation");
+
+	// Blade, CS:GO and Left 4 Dead 2 specific methods...
+	ServerGameDLL.NOT_IMPLEMENTED("server_hibernation_update");
+
+	// Class info...
 	BEGIN_CLASS_INFO(IServerGameDLL)
 		FUNCTION_INFO(GetGameDescription)
 	END_CLASS_INFO()
-	
+
+	// Engine specific stuff...
+	export_engine_specific_server_game_dll(_server, ServerGameDLL);
+
 	// Add memory tools...
 	ServerGameDLL ADD_MEM_TOOLS(IServerGameDLL);
 	
