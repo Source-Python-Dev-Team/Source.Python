@@ -53,12 +53,14 @@
 #include "vphysics_interface.h"
 #include "datacache/imdlcache.h"
 #include "ivoiceserver.h"
+#include "logging.h"
 
 #include "manager.h"
 
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
 #include "modules/entities/entities_entity.h"
+#include "modules/core/core.h"
 
 
 //-----------------------------------------------------------------------------
@@ -177,6 +179,80 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 	return true;
 }
 
+
+//-----------------------------------------------------------------------------
+// Server output hook.
+//-----------------------------------------------------------------------------
+#if defined(ENGINE_ORANGEBOX)
+SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
+{
+	extern CListenerManager* GetOnServerOutputListenerManager();
+	bool block = false;
+
+	for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
+	{
+		BEGIN_BOOST_PY() 
+			object return_value = CALL_PY_FUNC(
+				GetOnServerOutputListenerManager()->m_vecCallables[i].ptr(),
+				(MessageSeverity) spewType, 
+				pMsg);
+
+		if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
+				block = true;
+
+		END_BOOST_PY_NORET()
+	}
+
+	if (!block && g_SourcePythonPlugin.m_pOldSpewOutputFunc)
+		return g_SourcePythonPlugin.m_pOldSpewOutputFunc(spewType, pMsg);
+
+	return SPEW_CONTINUE;
+}
+#else
+class SPLoggingListener: public ILoggingListener
+{
+public:
+	virtual void Log( const LoggingContext_t *pContext, const tchar *pMessage )
+	{
+		extern CListenerManager* GetOnServerOutputListenerManager();
+		bool block = false;
+
+		for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
+		{
+			BEGIN_BOOST_PY() 
+				object return_value = CALL_PY_FUNC(
+					GetOnServerOutputListenerManager()->m_vecCallables[i].ptr(),
+					(MessageSeverity) pContext->m_Severity, 
+					pMessage);
+
+			if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
+					block = true;
+
+			END_BOOST_PY_NORET()
+		}
+
+		if (!block)
+		{
+			// Restore the old logging state before SP has been loaded
+			LoggingSystem_PopLoggingState(false);
+
+			// Resend the log message. Out listener won't get called anymore
+			LoggingSystem_Log(
+					pContext->m_ChannelID,
+					pContext->m_Severity,
+					pContext->m_Color,
+					pMessage);
+
+			// Create a new logging state with only our listener being active
+			LoggingSystem_PushLoggingState(false, true);
+			LoggingSystem_RegisterLoggingListener(&g_LoggingListener);
+
+		}
+	}
+} g_LoggingListener;
+
+#endif
+
 //-----------------------------------------------------------------------------
 // Purpose: constructor/destructor
 //-----------------------------------------------------------------------------
@@ -184,6 +260,10 @@ CSourcePython::CSourcePython()
 {
 	m_iClientCommandIndex = 0;
 	m_pOldMDLCacheNotifier = NULL;
+
+#if defined(ENGINE_ORANGEBOX)
+	m_pOldSpewOutputFunc = NULL;
+#endif
 }
 
 CSourcePython::~CSourcePython()
@@ -238,6 +318,18 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
+#if defined(ENGINE_ORANGEBOX)
+	DevMsg(1, MSG_PREFIX "Retrieving old output function...\n");
+	m_pOldSpewOutputFunc = GetSpewOutputFunc();
+
+	DevMsg(1, MSG_PREFIX "Setting new output function...\n");
+	SpewOutputFunc(SP_SpewOutput);
+#else
+	DevMsg(1, MSG_PREFIX "Registering logging listener...\n");
+	LoggingSystem_PushLoggingState(false, true);
+	LoggingSystem_RegisterLoggingListener(&g_LoggingListener);
+#endif
+
 	// TODO: Don't hardcode the 64 bytes offset
 #ifdef ENGINE_LEFT4DEAD2
 	#define CACHE_NOTIFY_OFFSET 68
@@ -264,6 +356,17 @@ void CSourcePython::Unload( void )
 	
 	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
 	GetHookManager()->UnhookAllFunctions();
+
+#if defined(ENGINE_ORANGEBOX)
+	if (m_pOldSpewOutputFunc)
+	{
+		DevMsg(1, MSG_PREFIX "Restoring old output function...\n");
+		SpewOutputFunc(m_pOldSpewOutputFunc);
+	}
+#else
+	DevMsg(1, MSG_PREFIX "Restoring old logging state...\n");
+	LoggingSystem_PopLoggingState(false);
+#endif
 	
 	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
 	g_PythonManager.Shutdown();
