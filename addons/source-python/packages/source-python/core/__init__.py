@@ -23,6 +23,8 @@ from path import Path
 from platform import system
 #   Sys
 import sys
+#   Urllib
+from urllib.request import urlopen
 #   Weakref
 from weakref import WeakValueDictionary
 
@@ -62,6 +64,7 @@ __all__ = ('AutoUnload',
            'console_message',
            'echo_console',
            'get_interface',
+           'get_public_ip',
            'ignore_unicode_errors',
            )
 
@@ -203,3 +206,15 @@ def ignore_unicode_errors(errors='ignore'):
         yield
     finally:
         codecs.register_error('strict', old_handler)
+
+
+def get_public_ip():
+    """Return the server's public IPv4.
+
+    :rtype: str
+
+    .. note::
+
+        This functions makes a call to http://ip.42.pl/raw to retrieve the public IP.
+    """
+    return urlopen('http://ip.42.pl/raw').read().decode()
