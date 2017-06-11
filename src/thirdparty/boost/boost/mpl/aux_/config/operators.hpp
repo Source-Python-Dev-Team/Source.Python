@@ -10,18 +10,21 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: operators.hpp 86260 2013-10-12 10:19:11Z skelly $
-// $Date: 2013-10-12 06:19:11 -0400 (Sat, 12 Oct 2013) $
-// $Revision: 86260 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/gcc.hpp>
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
 
 #if !defined(BOOST_MPL_CFG_USE_OPERATORS_OVERLOADING) \
-    && ( BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x610)) \
+    && ( BOOST_WORKAROUND(BOOST_MSVC, <= 1300) \
+        || BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x610)) \
         || BOOST_WORKAROUND(__EDG_VERSION__, <= 245) \
+        || BOOST_WORKAROUND(BOOST_MPL_CFG_GCC, <= 0x0295) \
         || BOOST_WORKAROUND(__IBMCPP__, BOOST_TESTED_AT(600)) \
+        || BOOST_WORKAROUND(__NVCC__, BOOST_TESTED_AT(1)) \
         )
 
 #   define BOOST_MPL_CFG_USE_OPERATORS_OVERLOADING

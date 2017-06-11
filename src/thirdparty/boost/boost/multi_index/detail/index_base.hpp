@@ -1,4 +1,4 @@
-/* Copyright 2003-2013 Joaquin M Lopez Munoz.
+/* Copyright 2003-2014 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -220,6 +220,9 @@ protected:
   std::pair<final_node_type*,bool> final_insert_rv_(const value_type& x)
     {return final().insert_rv_(x);}
   template<typename T>
+  std::pair<final_node_type*,bool> final_insert_ref_(const T& t)
+    {return final().insert_ref_(t);}
+  template<typename T>
   std::pair<final_node_type*,bool> final_insert_ref_(T& t)
     {return final().insert_ref_(t);}
 
@@ -236,6 +239,10 @@ protected:
   std::pair<final_node_type*,bool> final_insert_rv_(
     const value_type& x,final_node_type* position)
     {return final().insert_rv_(x,position);}
+  template<typename T>
+  std::pair<final_node_type*,bool> final_insert_ref_(
+    const T& t,final_node_type* position)
+    {return final().insert_ref_(t,position);}
   template<typename T>
   std::pair<final_node_type*,bool> final_insert_ref_(
     T& t,final_node_type* position)

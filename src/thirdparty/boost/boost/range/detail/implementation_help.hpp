@@ -21,13 +21,13 @@
 #include <wchar.h>
 #endif
 
-namespace boost 
+namespace boost
 {
     namespace range_detail
     {
         template <typename T>
         inline void boost_range_silence_warning( const T& ) { }
-        
+
         /////////////////////////////////////////////////////////////////////
         // end() help
         /////////////////////////////////////////////////////////////////////
@@ -36,7 +36,7 @@ namespace boost
         {
             return s + strlen( s );
         }
-        
+
 #ifndef BOOST_NO_CWCHAR
         inline const wchar_t* str_end( const wchar_t* s, const wchar_t* )
         {
@@ -51,7 +51,7 @@ namespace boost
                 ;
             return s;
         }
-#endif         
+#endif
 
         template< class Char >
         inline Char* str_end( Char* s )
@@ -64,7 +64,7 @@ namespace boost
         {
             return boost_range_array + sz;
         }
-        
+
         template< class T, std::size_t sz >
         inline const T* array_end( const T BOOST_RANGE_ARRAY_REF()[sz] )
         {
@@ -74,7 +74,7 @@ namespace boost
         /////////////////////////////////////////////////////////////////////
         // size() help
         /////////////////////////////////////////////////////////////////////
-        
+
         template< class Char >
         inline std::size_t str_size( const Char* const& s )
         {
@@ -95,8 +95,19 @@ namespace boost
             return sz;
         }
 
+        inline bool is_same_address(const void* l, const void* r)
+        {
+            return l == r;
+        }
+
+        template<class T1, class T2>
+        inline bool is_same_object(const T1& l, const T2& r)
+        {
+            return range_detail::is_same_address(&l, &r);
+        }
+
     } // namespace 'range_detail'
-    
+
 } // namespace 'boost'
 
 

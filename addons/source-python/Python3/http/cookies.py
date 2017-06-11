@@ -156,7 +156,7 @@ class CookieError(Exception):
 # a two-way quoting algorithm.  Any non-text character is translated
 # into a 4 character sequence: a forward-slash followed by the
 # three-digit octal equivalent of the character.  Any '\' or '"' is
-# quoted with a preceeding '\' slash.
+# quoted with a preceding '\' slash.
 # Because of the way browsers really handle cookies (as opposed to what
 # the RFC says) we also encode "," and ";".
 #
@@ -174,7 +174,7 @@ _Translator.update({
     ord('\\'): '\\\\',
 })
 
-_is_legal_key = re.compile('[%s]+' % _LegalChars).fullmatch
+_is_legal_key = re.compile('[%s]+' % re.escape(_LegalChars)).fullmatch
 
 def _quote(str):
     r"""Quote a string for use in a cookie header.
@@ -456,9 +456,8 @@ class Morsel(dict):
 #
 
 _LegalKeyChars  = r"\w\d!#%&'~_`><@,:/\$\*\+\-\.\^\|\)\(\?\}\{\="
-_LegalValueChars = _LegalKeyChars + '\[\]'
+_LegalValueChars = _LegalKeyChars + r'\[\]'
 _CookiePattern = re.compile(r"""
-    (?x)                           # This is a verbose pattern
     \s*                            # Optional whitespace at start of cookie
     (?P<key>                       # Start of group 'key'
     [""" + _LegalKeyChars + r"""]+?   # Any word of at least one letter
@@ -475,7 +474,7 @@ _CookiePattern = re.compile(r"""
     )?                             # End of optional value group
     \s*                            # Any number of spaces.
     (\s+|;|$)                      # Ending either at space, semicolon, or EOS.
-    """, re.ASCII)                 # May be removed if safe.
+    """, re.ASCII | re.VERBOSE)    # re.ASCII may be removed if safe.
 
 
 # At long last, here is the cookie class.  Using this class is almost just like

@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -15,7 +15,7 @@
 //  http://www.boost.org/LICENSE_1_0.txt)
 //
 
-#include <boost/detail/interlocked.hpp>
+#include <boost/smart_ptr/detail/sp_interlocked.hpp>
 #include <boost/smart_ptr/detail/yield_k.hpp>
 
 // BOOST_COMPILER_FENCE
@@ -59,7 +59,7 @@ public:
 
     bool try_lock()
     {
-        long r = BOOST_INTERLOCKED_EXCHANGE( &v_, 1 );
+        long r = BOOST_SP_INTERLOCKED_EXCHANGE( &v_, 1 );
 
         BOOST_COMPILER_FENCE
 

@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -26,7 +26,7 @@ namespace boost
 namespace detail
 {
 
-#if defined( __clang__ ) && !defined( _LIBCPP_VERSION ) && !defined( BOOST_NO_CXX11_DECLTYPE )
+#if !defined( BOOST_NO_CXX11_DECLTYPE ) && ( ( defined( __clang__ ) && !defined( _LIBCPP_VERSION ) ) || defined( __INTEL_COMPILER ) )
 
     typedef decltype(nullptr) sp_nullptr_t;
 

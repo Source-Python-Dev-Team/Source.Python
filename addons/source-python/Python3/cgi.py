@@ -45,7 +45,7 @@ import tempfile
 
 __all__ = ["MiniFieldStorage", "FieldStorage",
            "parse", "parse_qs", "parse_qsl", "parse_multipart",
-           "parse_header", "print_exception", "print_environ",
+           "parse_header", "test", "print_exception", "print_environ",
            "print_form", "print_directory", "print_arguments",
            "print_environ_usage", "escape"]
 
@@ -184,7 +184,7 @@ def parse(fp=None, environ=os.environ, keep_blank_values=0, strict_parsing=0):
 
 
 # parse query string function called from urlparse,
-# this is done in order to maintain backward compatiblity.
+# this is done in order to maintain backward compatibility.
 
 def parse_qs(qs, keep_blank_values=0, strict_parsing=0):
     """Parse a query given as a string argument."""

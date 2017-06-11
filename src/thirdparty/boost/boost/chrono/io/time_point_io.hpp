@@ -36,13 +36,18 @@
 
 #define  BOOST_CHRONO_INTERNAL_TIMEGM \
      ( defined BOOST_WINDOWS && ! defined(__CYGWIN__) )  \
-  || ( (defined(sun) || defined(__sun)) && defined __GNUC__) \
-  || (defined __IBMCPP__)
+  || (defined(sun) || defined(__sun)) \
+  || (defined __IBMCPP__) \
+  || defined __ANDROID__ \
+  || defined __QNXNTO__ \
+  || (defined(_AIX) && defined __GNUC__)
 
 #define  BOOST_CHRONO_INTERNAL_GMTIME \
      (defined BOOST_WINDOWS && ! defined(__CYGWIN__)) \
   || ( (defined(sun) || defined(__sun)) && defined __GNUC__) \
-  || (defined __IBMCPP__)
+  || (defined __IBMCPP__) \
+  || defined __ANDROID__ \
+  || (defined(_AIX) && defined __GNUC__)
 
 #define  BOOST_CHRONO_USES_INTERNAL_TIME_GET
 
@@ -120,9 +125,9 @@ namespace boost
             std::ios_base::iostate& err,
             const std::ctype<char_type>& ct) const
         {
-            int t = get_up_to_n_digits(b, e, err, ct, 2) - 1;
-            if (!(err & std::ios_base::failbit) && t <= 11)
-                m = t;
+            int t = get_up_to_n_digits(b, e, err, ct, 2);
+            if (!(err & std::ios_base::failbit) && 1 <= t && t <= 12)
+                m = --t;
             else
                 err |= std::ios_base::failbit;
         }
@@ -219,8 +224,8 @@ namespace boost
                                                              const std::ctype<char_type>& ct) const
         {
             int t = get_up_to_n_digits(b, e, err, ct, 3);
-            if (!(err & std::ios_base::failbit) && t <= 365)
-                d = t;
+            if (!(err & std::ios_base::failbit) && 1 <= t && t <= 366)
+                d = --t;
             else
                 err |= std::ios_base::failbit;
         }
@@ -522,7 +527,9 @@ namespace boost
     {
 
       //! the type of the state to restore
-      typedef std::basic_ostream<CharT, Traits> state_type;
+      //typedef std::basic_ostream<CharT, Traits> state_type;
+      typedef std::ios_base state_type;
+
       //! the type of aspect to save
       typedef std::basic_string<CharT, Traits> aspect_type;
 
@@ -532,7 +539,7 @@ namespace boost
        * Store a reference to the i/o stream and the value of the associated @c time format .
        */
       explicit time_fmt_io_saver(state_type &s) :
-        s_save_(s), a_save_(get_time_fmt(s_save_))
+        s_save_(s), a_save_(get_time_fmt<CharT>(s_save_))
       {
       }
 
@@ -542,8 +549,9 @@ namespace boost
        * Stores a reference to the i/o stream and the value @c new_value to restore given as parameter.
        */
       time_fmt_io_saver(state_type &s, aspect_type new_value) :
-        s_save_(s), a_save_(new_value)
+        s_save_(s), a_save_(get_time_fmt<CharT>(s_save_))
       {
+        set_time_fmt(s_save_, new_value);
       }
 
       /**
@@ -561,7 +569,7 @@ namespace boost
        */
       void restore()
       {
-        set_time_fmt(a_save_, a_save_);
+        set_time_fmt(s_save_, a_save_);
       }
     private:
       state_type& s_save_;
@@ -597,8 +605,9 @@ namespace boost
        * Stores a reference to the i/o stream and the value @c new_value to restore given as parameter.
        */
       timezone_io_saver(state_type &s, aspect_type new_value) :
-        s_save_(s), a_save_(new_value)
+        s_save_(s), a_save_(get_timezone(s_save_))
       {
+        set_timezone(s_save_, new_value);
       }
 
       /**

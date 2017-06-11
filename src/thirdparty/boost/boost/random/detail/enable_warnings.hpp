@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: enable_warnings.hpp 57008 2009-10-19 22:53:04Z steven_watanabe $
+ * $Id$
  *
  */
 
@@ -15,4 +15,8 @@
 
 #ifdef BOOST_MSVC
 #pragma warning(pop)
+#endif
+
+#if defined(BOOST_GCC) && BOOST_GCC >= 40600
+#pragma GCC diagnostic pop
 #endif

@@ -6,9 +6,10 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland
- * $Date: 2009-09-24 16:21:37 -0400 (Thu, 24 Sep 2009) $
+ * $Date$
  */
 
+#include <boost/date_time/compiler_config.hpp>
 
 namespace boost {
 namespace date_time {
@@ -25,7 +26,7 @@ namespace date_time {
     @param date_int_type_ Underlying type for the date count.  Must be an arithmetic type.
   */
   template<typename ymd_type_, typename date_int_type_>
-  class gregorian_calendar_base {
+  class BOOST_SYMBOL_VISIBLE gregorian_calendar_base {
   public:
     //! define a type a date split into components
     typedef ymd_type_  ymd_type;

@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: xor_combine.hpp 78512 2012-05-19 13:39:30Z steven_watanabe $
+ * $Id$
  *
  */
 

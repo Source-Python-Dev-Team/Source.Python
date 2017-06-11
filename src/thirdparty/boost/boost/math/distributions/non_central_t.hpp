@@ -90,7 +90,7 @@ namespace boost
                betaf -= xtermf;
                T term = poisf * betaf;
                sum += term;
-               if((fabs(last_term) > fabs(term)) && (fabs(term/sum) < errtol))
+               if((fabs(last_term) >= fabs(term)) && (fabs(term/sum) < errtol))
                   break;
                last_term = term;
                ++count;
@@ -358,7 +358,7 @@ namespace boost
                s = boost::math::sign(pzero - q);
             if(s != boost::math::sign(guess))
             {
-               guess = s;
+               guess = static_cast<T>(s);
             }
 
             value_type result = detail::generic_quantile(
@@ -647,7 +647,7 @@ namespace boost
             RealType result = ir.first + (ir.second - ir.first) / 2;
             if(max_iter >= policies::get_max_root_iterations<Policy>())
             {
-               policies::raise_evaluation_error<RealType>(function, "Unable to locate solution in a reasonable time:"
+               return policies::raise_evaluation_error<RealType>(function, "Unable to locate solution in a reasonable time:"
                   " or there is no answer to problem.  Current best guess is %1%", result, Policy());
             }
             return result;
@@ -705,7 +705,7 @@ namespace boost
             RealType result = ir.first + (ir.second - ir.first) / 2;
             if(max_iter >= policies::get_max_root_iterations<Policy>())
             {
-               policies::raise_evaluation_error<RealType>(function, "Unable to locate solution in a reasonable time:"
+               return policies::raise_evaluation_error<RealType>(function, "Unable to locate solution in a reasonable time:"
                   " or there is no answer to problem.  Current best guess is %1%", result, Policy());
             }
             return result;

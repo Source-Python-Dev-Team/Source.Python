@@ -138,7 +138,7 @@
 // this here, in addition the feature pack for VC9
 // provides a more or less full TR1 implementation:
 //
-#  if defined(_HAS_TR1) && (_HAS_TR1 + 0)
+#  if (defined(_HAS_TR1) && (_HAS_TR1 + 0)) || (_CPPLIB_VER >= 540)
 #    define BOOST_HAS_TR1_ARRAY
 #    define BOOST_HAS_TR1_REFERENCE_WRAPPER
 #    define BOOST_HAS_TR1_RESULT_OF

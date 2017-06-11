@@ -12,7 +12,7 @@
 
 //  Comeau C++ compiler setup:
 
-#include "boost/config/compiler/common_edg.hpp"
+#include <boost/config/compiler/common_edg.hpp>
 
 #if (__COMO_VERSION__ <= 4245)
 
@@ -34,7 +34,7 @@
 //
 // enable __int64 support in VC emulation mode
 //
-#  if defined(_MSC_VER)
+#  if defined(_MSC_VER) && (_MSC_VER >= 1200)
 #     define BOOST_HAS_MS_INT64
 #  endif
 

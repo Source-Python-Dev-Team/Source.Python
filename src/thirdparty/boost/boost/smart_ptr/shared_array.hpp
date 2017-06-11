@@ -16,10 +16,6 @@
 
 #include <boost/config.hpp>   // for broken compiler workarounds
 
-#if defined(BOOST_NO_MEMBER_TEMPLATES) && !defined(BOOST_MSVC6_MEMBER_TEMPLATES)
-#include <boost/smart_ptr/detail/shared_array_nmt.hpp>
-#else
-
 #include <memory>             // TR1 cyclic inclusion fix
 
 #include <boost/assert.hpp>
@@ -28,6 +24,7 @@
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/detail/shared_count.hpp>
 #include <boost/smart_ptr/detail/sp_nullptr_t.hpp>
+#include <boost/smart_ptr/detail/sp_noexcept.hpp>
 #include <boost/detail/workaround.hpp>
 
 #include <cstddef>            // for std::ptrdiff_t
@@ -57,9 +54,17 @@ public:
 
     typedef T element_type;
 
-    shared_array() BOOST_NOEXCEPT : px( 0 ), pn()
+    shared_array() BOOST_SP_NOEXCEPT : px( 0 ), pn()
     {
     }
+
+#if !defined( BOOST_NO_CXX11_NULLPTR )
+
+    shared_array( boost::detail::sp_nullptr_t ) BOOST_SP_NOEXCEPT : px( 0 ), pn()
+    {
+    }
+
+#endif
 
     template<class Y>
     explicit shared_array( Y * p ): px( p ), pn( p, checked_array_deleter<Y>() )
@@ -91,11 +96,11 @@ public:
 
 // ... except in C++0x, move disables the implicit copy
 
-    shared_array( shared_array const & r ) BOOST_NOEXCEPT : px( r.px ), pn( r.pn )
+    shared_array( shared_array const & r ) BOOST_SP_NOEXCEPT : px( r.px ), pn( r.pn )
     {
     }
 
-    shared_array( shared_array && r ) BOOST_NOEXCEPT : px( r.px ), pn()
+    shared_array( shared_array && r ) BOOST_SP_NOEXCEPT : px( r.px ), pn()
     {
         pn.swap( r.pn );
         r.px = 0;
@@ -129,7 +134,7 @@ public:
 
     // assignment
 
-    shared_array & operator=( shared_array const & r ) BOOST_NOEXCEPT
+    shared_array & operator=( shared_array const & r ) BOOST_SP_NOEXCEPT
     {
         this_type( r ).swap( *this );
         return *this;
@@ -148,7 +153,7 @@ public:
 
 #if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
 
-    shared_array & operator=( shared_array && r ) BOOST_NOEXCEPT
+    shared_array & operator=( shared_array && r ) BOOST_SP_NOEXCEPT
     {
         this_type( static_cast< shared_array && >( r ) ).swap( *this );
         return *this;
@@ -284,7 +289,5 @@ template< class D, class T > D * get_deleter( shared_array<T> const & p )
 }
 
 } // namespace boost
-
-#endif  // #if defined(BOOST_NO_MEMBER_TEMPLATES) && !defined(BOOST_MSVC6_MEMBER_TEMPLATES)
 
 #endif  // #ifndef BOOST_SMART_PTR_SHARED_ARRAY_HPP_INCLUDED

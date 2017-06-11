@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: vector_io.hpp 68070 2011-01-12 19:53:31Z steven_watanabe $
+ * $Id$
  */
 
 #ifndef BOOST_RANDOM_DETAIL_VECTOR_IO_HPP

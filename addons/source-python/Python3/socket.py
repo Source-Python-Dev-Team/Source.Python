@@ -50,7 +50,7 @@ import _socket
 from _socket import *
 
 import os, sys, io, selectors
-from enum import IntEnum
+from enum import IntEnum, IntFlag
 
 try:
     import errno
@@ -79,6 +79,16 @@ IntEnum._convert(
         'SocketKind',
         __name__,
         lambda C: C.isupper() and C.startswith('SOCK_'))
+
+IntFlag._convert(
+        'MsgFlag',
+        __name__,
+        lambda C: C.isupper() and C.startswith('MSG_'))
+
+IntFlag._convert(
+        'AddressInfo',
+        __name__,
+        lambda C: C.isupper() and C.startswith('AI_'))
 
 _LOCALHOST    = '127.0.0.1'
 _LOCALHOST_V6 = '::1'
@@ -209,10 +219,10 @@ class socket(_socket.socket):
                  encoding=None, errors=None, newline=None):
         """makefile(...) -> an I/O stream connected to the socket
 
-        The arguments are as for io.open() after the filename,
-        except the only mode characters supported are 'r', 'w' and 'b'.
-        The semantics are similar too.  (XXX refactor to share code?)
+        The arguments are as for io.open() after the filename, except the only
+        supported mode values are 'r' (default), 'w' and 'b'.
         """
+        # XXX refactor to share code?
         if not set(mode) <= {"r", "w", "b"}:
             raise ValueError("invalid mode %r (only r, w, b allowed)" % (mode,))
         writing = "w" in mode
@@ -258,7 +268,7 @@ class socket(_socket.socket):
                 raise _GiveupOnSendfile(err)  # not a regular file
             try:
                 fsize = os.fstat(fileno).st_size
-            except OSError:
+            except OSError as err:
                 raise _GiveupOnSendfile(err)  # not a regular file
             if not fsize:
                 return 0  # empty file
@@ -519,6 +529,7 @@ else:
         finally:
             lsock.close()
         return (ssock, csock)
+    __all__.append("socketpair")
 
 socketpair.__doc__ = """socketpair([family[, type[, proto]]]) -> (socket object, socket object)
 Create a pair of socket objects from the sockets returned by the platform
@@ -685,7 +696,7 @@ def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT,
     global default timeout setting returned by :func:`getdefaulttimeout`
     is used.  If *source_address* is set it must be a tuple of (host, port)
     for the socket to bind as a source address before making the connection.
-    An host of '' or port 0 tells the OS to use the default.
+    A host of '' or port 0 tells the OS to use the default.
     """
 
     host, port = address

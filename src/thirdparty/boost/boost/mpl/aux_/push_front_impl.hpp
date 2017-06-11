@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: push_front_impl.hpp 55672 2009-08-19 22:52:27Z steven_watanabe $
-// $Date: 2009-08-19 18:52:27 -0400 (Wed, 19 Aug 2009) $
-// $Revision: 55672 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/push_front_fwd.hpp>
 #include <boost/mpl/assert.hpp>

@@ -1,4 +1,4 @@
-/* Copyright 2003-2013 Joaquin M Lopez Munoz.
+/* Copyright 2003-2014 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -44,6 +44,7 @@ class hashed_index_iterator:
     const typename Node::value_type&>
 {
 public:
+  /* coverity[uninit_ctor]: suppress warning */
   hashed_index_iterator(){}
   hashed_index_iterator(Node* node_):node(node_){}
 
@@ -103,7 +104,7 @@ public:
     if(version<1){
       BucketArray* buckets;
       ar>>serialization::make_nvp("pointer",buckets);
-      if(buckets&&node&&node->impl()==buckets->end()->next()->next()){
+      if(buckets&&node&&node->impl()==buckets->end()->prior()){
         /* end local_iterators used to point to end node, now they are null */
         node=0;
       }

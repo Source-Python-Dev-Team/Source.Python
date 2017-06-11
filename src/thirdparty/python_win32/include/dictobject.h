@@ -22,8 +22,21 @@ typedef struct _dictkeysobject PyDictKeysObject;
  */
 typedef struct {
     PyObject_HEAD
+
+    /* Number of items in the dictionary */
     Py_ssize_t ma_used;
+
+    /* Dictionary version: globally unique, value change each time
+       the dictionary is modified */
+    uint64_t ma_version_tag;
+
     PyDictKeysObject *ma_keys;
+
+    /* If ma_values is NULL, the table is "combined": keys and values
+       are stored in ma_keys.
+
+       If ma_values is not NULL, the table is splitted:
+       keys are stored in ma_keys and values are stored in ma_values */
     PyObject **ma_values;
 } PyDictObject;
 
@@ -60,9 +73,9 @@ PyAPI_FUNC(PyObject *) _PyDict_GetItem_KnownHash(PyObject *mp, PyObject *key,
                                        Py_hash_t hash);
 #endif
 PyAPI_FUNC(PyObject *) PyDict_GetItemWithError(PyObject *mp, PyObject *key);
+#ifndef Py_LIMITED_API
 PyAPI_FUNC(PyObject *) _PyDict_GetItemIdWithError(PyObject *dp,
                                                   struct _Py_Identifier *key);
-#ifndef Py_LIMITED_API
 PyAPI_FUNC(PyObject *) PyDict_SetDefault(
     PyObject *mp, PyObject *key, PyObject *defaultobj);
 #endif
@@ -75,6 +88,8 @@ PyAPI_FUNC(int) PyDict_DelItem(PyObject *mp, PyObject *key);
 #ifndef Py_LIMITED_API
 PyAPI_FUNC(int) _PyDict_DelItem_KnownHash(PyObject *mp, PyObject *key,
                                           Py_hash_t hash);
+PyAPI_FUNC(int) _PyDict_DelItemIf(PyObject *mp, PyObject *key,
+                                  int (*predicate)(PyObject *value));
 #endif
 PyAPI_FUNC(void) PyDict_Clear(PyObject *mp);
 PyAPI_FUNC(int) PyDict_Next(
@@ -98,8 +113,9 @@ PyAPI_FUNC(PyObject *) _PyDict_NewPresized(Py_ssize_t minused);
 PyAPI_FUNC(void) _PyDict_MaybeUntrack(PyObject *mp);
 PyAPI_FUNC(int) _PyDict_HasOnlyStringKeys(PyObject *mp);
 Py_ssize_t _PyDict_KeysSize(PyDictKeysObject *keys);
-PyObject *_PyDict_SizeOf(PyDictObject *);
-PyObject *_PyDict_Pop(PyDictObject *, PyObject *, PyObject *);
+Py_ssize_t _PyDict_SizeOf(PyDictObject *);
+PyAPI_FUNC(PyObject *) _PyDict_Pop(PyObject *, PyObject *, PyObject *);
+PyObject *_PyDict_Pop_KnownHash(PyObject *, PyObject *, Py_hash_t, PyObject *);
 PyObject *_PyDict_FromKeys(PyObject *, PyObject *, PyObject *);
 #define _PyDict_HasSplitTable(d) ((d)->ma_values != NULL)
 
@@ -119,6 +135,12 @@ PyAPI_FUNC(int) PyDict_Merge(PyObject *mp,
                                    int override);
 
 #ifndef Py_LIMITED_API
+/* Like PyDict_Merge, but override can be 0, 1 or 2.  If override is 0,
+   the first occurrence of a key wins, if override is 1, the last occurrence
+   of a key wins, if override is 2, a KeyError with conflicting key as
+   argument is raised.
+*/
+PyAPI_FUNC(int) _PyDict_MergeEx(PyObject *mp, PyObject *other, int override);
 PyAPI_FUNC(PyObject *) _PyDictView_Intersect(PyObject* self, PyObject *other);
 #endif
 
@@ -132,9 +154,13 @@ PyAPI_FUNC(int) PyDict_MergeFromSeq2(PyObject *d,
                                            int override);
 
 PyAPI_FUNC(PyObject *) PyDict_GetItemString(PyObject *dp, const char *key);
+#ifndef Py_LIMITED_API
 PyAPI_FUNC(PyObject *) _PyDict_GetItemId(PyObject *dp, struct _Py_Identifier *key);
+#endif /* !Py_LIMITED_API */
 PyAPI_FUNC(int) PyDict_SetItemString(PyObject *dp, const char *key, PyObject *item);
+#ifndef Py_LIMITED_API
 PyAPI_FUNC(int) _PyDict_SetItemId(PyObject *dp, struct _Py_Identifier *key, PyObject *item);
+#endif /* !Py_LIMITED_API */
 PyAPI_FUNC(int) PyDict_DelItemString(PyObject *dp, const char *key);
 
 #ifndef Py_LIMITED_API

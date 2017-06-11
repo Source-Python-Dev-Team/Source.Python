@@ -5,7 +5,8 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
-// The following code has been updated to be able to get the signature of
+// Ayuto:
+// The following code has been updated to be able to get the signature of		
 // variadic methods.
 ///////////////////////////////////////////////////////////////////////////////
 #if !defined(BOOST_PP_IS_ITERATING)
@@ -44,7 +45,7 @@ template <class C1, class C2>
 struct most_derived
 {
     typedef typename boost::mpl::if_<
-		boost::is_convertible<C1*,C2*>
+        boost::is_convertible<C1*,C2*>
       , C1
       , C2
     >::type type;
@@ -113,6 +114,7 @@ struct most_derived
 // 'default' calling convention
 
 #  define BOOST_PYTHON_FN_CC
+#  define BOOST_PYTHON_FN_CC_IS_DEFAULT
 
 #  define BOOST_PP_ITERATION_PARAMS_1                                   \
     (3, (0, BOOST_PYTHON_MAX_ARITY, "modules/memory/memory_signature.h"))
@@ -120,6 +122,7 @@ struct most_derived
 #  include BOOST_PP_ITERATE()
 
 #  undef BOOST_PYTHON_FN_CC
+#  undef BOOST_PYTHON_FN_CC_IS_DEFAULT
 
 // __cdecl calling convention
 
@@ -143,6 +146,7 @@ struct most_derived
 #  if defined(BOOST_PYTHON_ENABLE_STDCALL)
 
 #   define BOOST_PYTHON_FN_CC __stdcall
+#   define BOOST_PYTHON_FN_CC_IS_STDCALL
 
 #   define BOOST_PP_ITERATION_PARAMS_1                                   \
      (3, (0, BOOST_PYTHON_MAX_ARITY, "modules/memory/memory_signature.h"))
@@ -150,6 +154,7 @@ struct most_derived
 #   include BOOST_PP_ITERATE()
 
 #   undef BOOST_PYTHON_FN_CC
+#   undef BOOST_PYTHON_FN_CC_IS_STDCALL
 
 #  endif // defined(BOOST_PYTHON_ENABLE_STDCALL)
 
@@ -158,12 +163,14 @@ struct most_derived
 #  if defined(BOOST_PYTHON_ENABLE_FASTCALL)
 
 #   define BOOST_PYTHON_FN_CC __fastcall
+#   define BOOST_PYTHON_FN_CC_IS_FASTCALL
 
 #   define BOOST_PP_ITERATION_PARAMS_1                                   \
      (3, (0, BOOST_PYTHON_MAX_ARITY, "modules/memory/memory_signature.h"))
 
 #   include BOOST_PP_ITERATE()
 
+#   undef BOOST_PYTHON_FN_CC_IS_FASTCALL
 #   undef BOOST_PYTHON_FN_CC
 
 #  endif // defined(BOOST_PYTHON_ENABLE_FASTCALL)
@@ -186,8 +193,8 @@ struct most_derived
 
    // as 'get_signature(RT(*)(T0...TN), void* = 0)' is the same
    // function as 'get_signature(RT(__cdecl *)(T0...TN), void* = 0)',
-   // we don't define it twice
-#  if !defined(BOOST_PYTHON_FN_CC_IS_CDECL)
+   // we don't define it multiple times (i.e. for __cdecl, __stdcall ...)
+#  if defined(BOOST_PYTHON_FN_CC_IS_DEFAULT)
 
 template <
     class RT BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class T)>
@@ -201,30 +208,32 @@ get_signature(RT(BOOST_PYTHON_FN_CC *)(BOOST_PP_ENUM_PARAMS_Z(1, N, T)), void* =
 }
 
 // Variadic methods
-// TODO: qualifiers?
-template <
-    class RT, class ClassT BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class T)>
-inline BOOST_PYTHON_LIST_INC(BOOST_PP_INC(N))<
-    RT, ClassT& BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, T)>
-get_signature(RT(BOOST_PYTHON_FN_CC ClassT::*)(BOOST_PP_ENUM_PARAMS_Z(1, N, T) ...))
-{
-    return BOOST_PYTHON_LIST_INC(BOOST_PP_INC(N))<
-            RT, ClassT& BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, T)
-        >();
+// TODO: qualifiers?		
+template <		
+	class RT, class ClassT BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class T)>		
+inline BOOST_PYTHON_LIST_INC(BOOST_PP_INC(N))<		
+	RT, ClassT& BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, T)>		
+get_signature(RT(BOOST_PYTHON_FN_CC ClassT::*)(BOOST_PP_ENUM_PARAMS_Z(1, N, T) ...))		
+{		
+	return BOOST_PYTHON_LIST_INC(BOOST_PP_INC(N))<		
+	        RT, ClassT& BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, T)		
+	    >();		
 }
 
-#  endif // !defined(BOOST_PYTHON_FN_CC_IS_CDECL)
+#  endif  // BOOST_PYTHON_FN_CC_IS_DEFAULT
 
 # undef N
 
 # define BOOST_PP_ITERATION_PARAMS_2 \
-    (3, (0, 3, <boost/python/signature.hpp>))
+    (3, (0, 3, "modules/memory/memory_signature.h"))
 # include BOOST_PP_ITERATE()
 
-#else
+#else  // BOOST_PP_ITERATION_DEPTH() != 1
 
 # define N BOOST_PP_RELATIVE_ITERATION(1)
 # define Q BOOST_PYTHON_CV_QUALIFIER(BOOST_PP_ITERATION())
+
+#  if defined(BOOST_PYTHON_FN_CC_IS_DEFAULT)
 
 template <
     class RT, class ClassT BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, class T)>
@@ -259,6 +268,8 @@ get_signature(
         BOOST_PP_ENUM_TRAILING_PARAMS_Z(1, N, T)
     >();
 }
+
+#  endif  // BOOST_PYTHON_FN_CC_IS_DEFAULT
 
 # undef Q
 # undef N

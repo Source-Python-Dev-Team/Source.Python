@@ -12,7 +12,13 @@
 #define BOOST_LAMBDA_OPERATOR_RETURN_TYPE_TRAITS_HPP
 
 #include "boost/lambda/detail/is_instance_of.hpp"
-#include "boost/type_traits/same_traits.hpp"
+#include "boost/type_traits/is_same.hpp"
+#include "boost/type_traits/is_pointer.hpp"
+#include "boost/type_traits/is_float.hpp"
+#include "boost/type_traits/is_convertible.hpp"
+#include "boost/type_traits/remove_pointer.hpp"
+#include "boost/type_traits/remove_const.hpp"
+#include "boost/type_traits/remove_reference.hpp"
 
 #include "boost/indirect_reference.hpp"
 #include "boost/detail/container_fwd.hpp"

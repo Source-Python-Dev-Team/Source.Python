@@ -1,8 +1,14 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
-// Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
-// Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
+// Copyright (c) 2007-2015 Barend Gehrels, Amsterdam, the Netherlands.
+// Copyright (c) 2008-2015 Bruno Lalande, Paris, France.
+// Copyright (c) 2009-2015 Mateusz Loskot, London, UK.
+// Copyright (c) 2014-2015 Adam Wulkiewicz, Lodz, Poland.
+
+// This file was modified by Oracle on 2015.
+// Modifications copyright (c) 2015, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -19,24 +25,26 @@
 
 #include <boost/array.hpp>
 #include <boost/range.hpp>
-#include <boost/typeof/typeof.hpp>
 
+#include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/variant_fwd.hpp>
+
+#include <boost/geometry/algorithms/detail/interior_iterator.hpp>
 #include <boost/geometry/algorithms/assign.hpp>
 #include <boost/geometry/algorithms/convert.hpp>
+#include <boost/geometry/algorithms/detail/disjoint/point_point.hpp>
 #include <boost/geometry/algorithms/not_implemented.hpp>
 #include <boost/geometry/core/exterior_ring.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
 #include <boost/geometry/core/ring_type.hpp>
-#include <boost/geometry/algorithms/disjoint.hpp>
+#include <boost/geometry/core/tags.hpp>
 
 #include <boost/geometry/geometries/concepts/check.hpp>
 #include <boost/geometry/geometries/ring.hpp>
 
 #include <boost/geometry/io/wkt/detail/prefix.hpp>
 
-#include <boost/variant/apply_visitor.hpp>
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/variant_fwd.hpp>
 
 namespace boost { namespace geometry
 {
@@ -147,7 +155,7 @@ struct wkt_range
         // optionally, close range to ring by repeating the first point
         if (force_closed 
             && boost::size(range) > 1
-            && geometry::disjoint(*begin, *(end - 1)))
+            && detail::disjoint::disjoint_point_point(*begin, *(end - 1)))
         {
             os << ",";
             stream_type::apply(os, *begin);
@@ -196,13 +204,41 @@ struct wkt_poly
         os << "(";
         wkt_sequence<ring>::apply(os, exterior_ring(poly), force_closed);
 
-        typename interior_return_type<Polygon const>::type rings
-                    = interior_rings(poly);
-        for (BOOST_AUTO_TPL(it, boost::begin(rings)); it != boost::end(rings); ++it)
+        typename interior_return_type<Polygon const>::type
+            rings = interior_rings(poly);
+        for (typename detail::interior_iterator<Polygon const>::type
+                it = boost::begin(rings); it != boost::end(rings); ++it)
         {
             os << ",";
             wkt_sequence<ring>::apply(os, *it, force_closed);
         }
+        os << ")";
+    }
+};
+
+template <typename Multi, typename StreamPolicy, typename PrefixPolicy>
+struct wkt_multi
+{
+    template <typename Char, typename Traits>
+    static inline void apply(std::basic_ostream<Char, Traits>& os,
+                Multi const& geometry)
+    {
+        os << PrefixPolicy::apply();
+        // TODO: check EMPTY here
+        os << "(";
+
+        for (typename boost::range_iterator<Multi const>::type
+                    it = boost::begin(geometry);
+            it != boost::end(geometry);
+            ++it)
+        {
+            if (it != boost::begin(geometry))
+            {
+                os << ",";
+            }
+            StreamPolicy::apply(os, *it);
+        }
+
         os << ")";
     }
 };
@@ -336,6 +372,47 @@ struct wkt<Polygon, polygon_tag>
         >
 {};
 
+template <typename Multi>
+struct wkt<Multi, multi_point_tag>
+    : detail::wkt::wkt_multi
+        <
+            Multi,
+            detail::wkt::wkt_point
+                <
+                    typename boost::range_value<Multi>::type,
+                    detail::wkt::prefix_null
+                >,
+            detail::wkt::prefix_multipoint
+        >
+{};
+
+template <typename Multi>
+struct wkt<Multi, multi_linestring_tag>
+    : detail::wkt::wkt_multi
+        <
+            Multi,
+            detail::wkt::wkt_sequence
+                <
+                    typename boost::range_value<Multi>::type
+                >,
+            detail::wkt::prefix_multilinestring
+        >
+{};
+
+template <typename Multi>
+struct wkt<Multi, multi_polygon_tag>
+    : detail::wkt::wkt_multi
+        <
+            Multi,
+            detail::wkt::wkt_poly
+                <
+                    typename boost::range_value<Multi>::type,
+                    detail::wkt::prefix_null
+                >,
+            detail::wkt::prefix_multipolygon
+        >
+{};
+
 
 template <typename Geometry>
 struct devarianted_wkt
@@ -372,7 +449,7 @@ struct devarianted_wkt<variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
         variant<BOOST_VARIANT_ENUM_PARAMS(T)> const& geometry
     )
     {
-        apply_visitor(visitor<OutputStream>(os), geometry);
+        boost::apply_visitor(visitor<OutputStream>(os), geometry);
     }
 };
 
@@ -416,18 +493,15 @@ private:
 
 /*!
 \brief Main WKT-streaming function
+\tparam Geometry \tparam_geometry
+\param geometry \param_geometry
 \ingroup wkt
-\par Example:
-Small example showing how to use the wkt helper function
-\dontinclude doxygen_1.cpp
-\skip example_as_wkt_vector
-\line {
-\until }
+\qbk{[include reference/io/wkt.qbk]}
 */
 template <typename Geometry>
 inline wkt_manipulator<Geometry> wkt(Geometry const& geometry)
 {
-    concept::check<Geometry const>();
+    concepts::check<Geometry const>();
 
     return wkt_manipulator<Geometry>(geometry);
 }

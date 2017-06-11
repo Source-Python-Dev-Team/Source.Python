@@ -6,8 +6,9 @@
  Implementaiton of the Burlish-Stoer method with dense output
  [end_description]
 
- Copyright 2009-2011 Karsten Ahnert
- Copyright 2009-2011 Mario Mulansky
+ Copyright 2011-2015 Mario Mulansky
+ Copyright 2011-2013 Karsten Ahnert
+ Copyright 2012 Christoph Koke
 
  Distributed under the Boost Software License, Version 1.0.
  (See accompanying file LICENSE_1_0.txt or
@@ -34,11 +35,15 @@
 #include <boost/numeric/odeint/stepper/controlled_step_result.hpp>
 #include <boost/numeric/odeint/algebra/range_algebra.hpp>
 #include <boost/numeric/odeint/algebra/default_operations.hpp>
+#include <boost/numeric/odeint/algebra/algebra_dispatcher.hpp>
+#include <boost/numeric/odeint/algebra/operations_dispatcher.hpp>
 
 #include <boost/numeric/odeint/util/state_wrapper.hpp>
 #include <boost/numeric/odeint/util/is_resizeable.hpp>
 #include <boost/numeric/odeint/util/resizer.hpp>
 #include <boost/numeric/odeint/util/unit_helper.hpp>
+
+#include <boost/numeric/odeint/integrate/max_step_checker.hpp>
 
 #include <boost/type_traits.hpp>
 
@@ -52,8 +57,8 @@ template<
     class Value = double ,
     class Deriv = State ,
     class Time = Value ,
-    class Algebra = range_algebra ,
-    class Operations = default_operations ,
+    class Algebra = typename algebra_dispatcher< State >::algebra_type ,
+    class Operations = typename operations_dispatcher< State >::operations_type ,
     class Resizer = initially_resizer
     >
 class bulirsch_stoer_dense_out {
@@ -94,8 +99,10 @@ public:
     bulirsch_stoer_dense_out(
         value_type eps_abs = 1E-6 , value_type eps_rel = 1E-6 ,
         value_type factor_x = 1.0 , value_type factor_dxdt = 1.0 ,
+        time_type max_dt = static_cast<time_type>(0) ,
         bool control_interpolation = false )
-        : m_error_checker( eps_abs , eps_rel , factor_x, factor_dxdt ) , 
+        : m_error_checker( eps_abs , eps_rel , factor_x, factor_dxdt ) ,
+          m_max_dt(max_dt) ,
           m_control_interpolation( control_interpolation) ,
           m_last_step_rejected( false ) , m_first( true ) ,
           m_current_state_x1( true ) ,
@@ -106,7 +113,7 @@ public:
           m_table( m_k_max ) ,
           m_mp_states( m_k_max+1 ) ,
           m_derivs( m_k_max+1 ) ,
-          m_diffs( 2*m_k_max+1 ) ,
+          m_diffs( 2*m_k_max+2 ) ,
           STEPFAC1( 0.65 ) , STEPFAC2( 0.94 ) , STEPFAC3( 0.02 ) , STEPFAC4( 4.0 ) , KFAC1( 0.8 ) , KFAC2( 0.9 )
     {
         BOOST_USING_STD_MIN();
@@ -136,7 +143,7 @@ public:
             */
         }
         int num = 1;
-        for( int i = 2*(m_k_max) ; i >=0  ; i-- )
+        for( int i = 2*(m_k_max)+1 ; i >=0  ; i-- )
         {
             m_diffs[i].resize( num );
             num += (i+1)%2;
@@ -146,13 +153,19 @@ public:
     template< class System , class StateIn , class DerivIn , class StateOut , class DerivOut >
     controlled_step_result try_step( System system , const StateIn &in , const DerivIn &dxdt , time_type &t , StateOut &out , DerivOut &dxdt_new , time_type &dt )
     {
+        if( m_max_dt != static_cast<time_type>(0) && detail::less_with_sign(m_max_dt, dt, dt) )
+        {
+            // given step size is bigger then max_dt
+            // set limit and return fail
+            dt = m_max_dt;
+            return fail;
+        }
+
         BOOST_USING_STD_MIN();
         BOOST_USING_STD_MAX();
         using std::pow;
         
         static const value_type val1( 1.0 );
-
-        typename odeint::unwrap_reference< System >::type &sys = system;
 
         bool reject( true );
 
@@ -169,11 +182,11 @@ public:
             m_midpoint.set_steps( m_interval_sequence[k] );
             if( k == 0 )
             {
-                m_midpoint.do_step( sys , in , dxdt , t , out , dt , m_mp_states[k].m_v , m_derivs[k]);
+                m_midpoint.do_step( system , in , dxdt , t , out , dt , m_mp_states[k].m_v , m_derivs[k]);
             }
             else
             {
-                m_midpoint.do_step( sys , in , dxdt , t , m_table[k-1].m_v , dt , m_mp_states[k].m_v , m_derivs[k] );
+                m_midpoint.do_step( system , in , dxdt , t , m_table[k-1].m_v , dt , m_mp_states[k].m_v , m_derivs[k] );
                 extrapolate( k , m_table , m_coeff , out );
                 // get error estimate
                 m_algebra.for_each3( m_err.m_v , out , m_table[0].m_v ,
@@ -258,6 +271,7 @@ public:
         {
 
             //calculate dxdt for next step and dense output
+            typename odeint::unwrap_reference< System >::type &sys = system;
             sys( out , dxdt_new , t+dt );
 
             //prepare dense output
@@ -273,7 +287,14 @@ public:
         }
         //set next stepsize
         if( !m_last_step_rejected || (new_h < dt) )
+        {
+            // limit step size
+            if( m_max_dt != static_cast<time_type>(0) )
+            {
+                new_h = detail::min_abs(m_max_dt, new_h);
+            }
             dt = new_h;
+        }
 
         m_last_step_rejected = reject;
         if( reject )
@@ -299,23 +320,20 @@ public:
     template< class System >
     std::pair< time_type , time_type > do_step( System system )
     {
-        const size_t max_count = 1000;
-
         if( m_first )
         {
             typename odeint::unwrap_reference< System >::type &sys = system;
             sys( get_current_state() , get_current_deriv() , m_t );
         }
 
+        failed_step_checker fail_checker;  // to throw a runtime_error if step size adjustment fails
         controlled_step_result res = fail;
         m_t_last = m_t;
-        size_t count = 0;
         while( res == fail )
         {
             res = try_step( system , get_current_state() , get_current_deriv() , m_t , get_old_state() , get_old_deriv() , m_dt );
             m_first = false;
-            if( count++ == max_count )
-                throw std::overflow_error( "bulirsch_stoer : too much iterations!");
+            fail_checker();  // check for overflow of failed steps
         }
         toggle_current_state();
         return std::make_pair( m_t_last , m_t );
@@ -364,7 +382,7 @@ public:
     void adjust_size( const StateIn &x )
     {
         resize_impl( x );
-        m_midpoint.adjust_size();
+        m_midpoint.adjust_size( x );
     }
 
 
@@ -410,15 +428,15 @@ private:
         BOOST_USING_STD_MAX();
         using std::pow;
 
-        value_type expo=1.0/(m_interval_sequence[k-1]);
+        value_type expo = static_cast<value_type>(1)/(m_interval_sequence[k-1]);
         value_type facmin = pow BOOST_PREVENT_MACRO_SUBSTITUTION( STEPFAC3 , expo );
         value_type fac;
         if (error == 0.0)
-            fac=1.0/facmin;
+            fac = static_cast<value_type>(1)/facmin;
         else
         {
             fac = STEPFAC2 / pow BOOST_PREVENT_MACRO_SUBSTITUTION( error / STEPFAC1 , expo );
-            fac = max BOOST_PREVENT_MACRO_SUBSTITUTION( facmin/STEPFAC4 , min BOOST_PREVENT_MACRO_SUBSTITUTION( 1.0/facmin , fac ) );
+            fac = max BOOST_PREVENT_MACRO_SUBSTITUTION( static_cast<value_type>( facmin/STEPFAC4 ) , min BOOST_PREVENT_MACRO_SUBSTITUTION( static_cast<value_type>(static_cast<value_type>(1)/facmin) , fac ) );
         }
         return h*fac;
     }
@@ -585,7 +603,7 @@ private:
         for( size_t i = 0 ; i < m_k_max+1 ; ++i )
             for( size_t j = 0 ; j < m_derivs[i].size() ; ++j )
                 resized |= adjust_size_by_resizeability( m_derivs[i][j] , x , typename is_resizeable<deriv_type>::type() );
-        for( size_t i = 0 ; i < 2*m_k_max+1 ; ++i )
+        for( size_t i = 0 ; i < 2*m_k_max+2 ; ++i )
             for( size_t j = 0 ; j < m_diffs[i].size() ; ++j )
                 resized |= adjust_size_by_resizeability( m_diffs[i][j] , x , typename is_resizeable<deriv_type>::type() );
 
@@ -644,6 +662,8 @@ private:
     default_error_checker< value_type, algebra_type , operations_type > m_error_checker;
     modified_midpoint_dense_out< state_type , value_type , deriv_type , time_type , algebra_type , operations_type , resizer_type > m_midpoint;
 
+    time_type m_max_dt;
+
     bool m_control_interpolation;
 
     bool m_last_step_rejected;
@@ -682,7 +702,7 @@ private:
 
     //wrapped_state_type m_a1 , m_a2 , m_a3 , m_a4;
 
-    const value_type STEPFAC1 , STEPFAC2 , STEPFAC3 , STEPFAC4 , KFAC1 , KFAC2;
+    value_type STEPFAC1 , STEPFAC2 , STEPFAC3 , STEPFAC4 , KFAC1 , KFAC2;
 };
 
 

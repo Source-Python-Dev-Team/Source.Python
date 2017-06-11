@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: iterator.hpp 86244 2013-10-11 23:15:00Z skelly $
-// $Date: 2013-10-11 19:15:00 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86244 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/iterator_tags.hpp>
 #include <boost/mpl/advance_fwd.hpp>
@@ -33,8 +33,13 @@ template< typename N > struct r_iter
     typedef random_access_iterator_tag category;
     typedef N type;
 
+#if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
+    typedef r_iter< typename mpl::next<N>::type > next;
+    typedef r_iter< typename mpl::prior<N>::type > prior;
+#endif
 };
 
+#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template<
       typename N
@@ -52,6 +57,7 @@ struct prior< r_iter<N> >
     typedef r_iter< typename mpl::prior<N>::type > type;
 };
 
+#endif
 
 
 template<> struct advance_impl<aux::r_iter_tag>
@@ -59,7 +65,12 @@ template<> struct advance_impl<aux::r_iter_tag>
     template< typename Iter, typename Dist > struct apply
     {
         typedef typename deref<Iter>::type n_;
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+        typedef typename plus_impl<integral_c_tag,integral_c_tag>
+            ::template apply<n_,Dist>::type m_;
+#else
         typedef typename plus<n_,Dist>::type m_;
+#endif
         // agurt, 10/nov/04: to be generic, the code have to do something along
         // the lines below...
         //

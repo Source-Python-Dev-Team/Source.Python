@@ -10,11 +10,12 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: tag.hpp 85961 2013-09-26 14:10:37Z skelly $
-// $Date: 2013-09-26 10:10:37 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85961 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/typeof.hpp>
+#include <boost/mpl/aux_/nttp_decl.hpp>
 
 namespace boost { namespace mpl { namespace aux {
 
@@ -23,7 +24,7 @@ struct v_iter_tag;
 #if defined(BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES)
 struct vector_tag;
 #else
-template< long N > struct vector_tag;
+template< BOOST_MPL_AUX_NTTP_DECL(long, N) > struct vector_tag;
 #endif
 
 }}}

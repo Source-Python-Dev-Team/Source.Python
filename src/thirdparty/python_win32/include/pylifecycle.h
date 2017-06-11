@@ -27,6 +27,7 @@ PyAPI_FUNC(void) Py_InitializeEx(int);
 PyAPI_FUNC(void) _Py_InitializeEx_Private(int, int);
 #endif
 PyAPI_FUNC(void) Py_Finalize(void);
+PyAPI_FUNC(int) Py_FinalizeEx(void);
 PyAPI_FUNC(int) Py_IsInitialized(void);
 PyAPI_FUNC(PyThreadState *) Py_NewInterpreter(void);
 PyAPI_FUNC(void) Py_EndInterpreter(PyThreadState *);
@@ -69,8 +70,8 @@ PyAPI_FUNC(const char *) Py_GetCopyright(void);
 PyAPI_FUNC(const char *) Py_GetCompiler(void);
 PyAPI_FUNC(const char *) Py_GetBuildInfo(void);
 #ifndef Py_LIMITED_API
-PyAPI_FUNC(const char *) _Py_hgidentifier(void);
-PyAPI_FUNC(const char *) _Py_hgversion(void);
+PyAPI_FUNC(const char *) _Py_gitidentifier(void);
+PyAPI_FUNC(const char *) _Py_gitversion(void);
 #endif
 
 /* Internal -- various one-time initializations */
@@ -106,6 +107,7 @@ PyAPI_FUNC(void) _PyGC_Fini(void);
 PyAPI_FUNC(void) PySlice_Fini(void);
 PyAPI_FUNC(void) _PyType_Fini(void);
 PyAPI_FUNC(void) _PyRandom_Fini(void);
+PyAPI_FUNC(void) PyAsyncGen_Fini(void);
 
 PyAPI_DATA(PyThreadState *) _Py_Finalizing;
 #endif
@@ -115,8 +117,11 @@ typedef void (*PyOS_sighandler_t)(int);
 PyAPI_FUNC(PyOS_sighandler_t) PyOS_getsig(int);
 PyAPI_FUNC(PyOS_sighandler_t) PyOS_setsig(int, PyOS_sighandler_t);
 
+#ifndef Py_LIMITED_API
 /* Random */
-PyAPI_FUNC(int) _PyOS_URandom (void *buffer, Py_ssize_t size);
+PyAPI_FUNC(int) _PyOS_URandom(void *buffer, Py_ssize_t size);
+PyAPI_FUNC(int) _PyOS_URandomNonblock(void *buffer, Py_ssize_t size);
+#endif /* !Py_LIMITED_API */
 
 #ifdef __cplusplus
 }

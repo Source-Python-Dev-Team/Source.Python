@@ -1,4 +1,4 @@
-/* Copyright 2003-2013 Joaquin M Lopez Munoz.
+/* Copyright 2003-2015 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -77,12 +77,13 @@ template<bool _=true> /* templatized to have in-header static var defs */
 class bucket_array_base:private noncopyable
 {
 protected:
-  static const std::size_t sizes[];
+  static const std::size_t sizes[
+    BOOST_PP_SEQ_SIZE(BOOST_MULTI_INDEX_BA_SIZES)];
 
   static std::size_t size_index(std::size_t n)
   {
     const std::size_t *bound=std::lower_bound(sizes,sizes+sizes_length,n);
-    if(bound==sizes+sizes_length)bound--;
+    if(bound==sizes+sizes_length)--bound;
     return bound-sizes;
   }
 
@@ -160,9 +161,9 @@ public:
 
   void clear(pointer end_)
   {
-    for(base_pointer x=begin(),y=end();x!=y;++x)x->next()=pointer(0);
-    end()->next()=end_->next()=end_;
-    end_->prior()=end();
+    for(base_pointer x=begin(),y=end();x!=y;++x)x->prior()=pointer(0);
+    end()->prior()=end_->prior()=end_;
+    end_->next()=end();
  }
 
   void swap(bucket_array& x)

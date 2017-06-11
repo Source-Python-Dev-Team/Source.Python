@@ -233,6 +233,7 @@ public:
     const_iterator find(const element_type& key_value)const
     { 
         return icl::find(*this, key_value);
+        //CL return this->_set.find(icl::singleton<segment_type>(key)); 
     }
 
     /** Find the first interval, that collides with interval \c key_interval */
@@ -498,6 +499,7 @@ inline typename interval_base_set<SubType,DomainT,Compare,Interval,Alloc>::itera
     interval_base_set<SubType,DomainT,Compare,Interval,Alloc>
     ::_add(const segment_type& addend)
 {
+    typedef typename interval_base_set<SubType,DomainT,Compare,Interval,Alloc>::iterator iterator;
     if(icl::is_empty(addend)) 
         return this->_set.end();
 
@@ -506,7 +508,10 @@ inline typename interval_base_set<SubType,DomainT,Compare,Interval,Alloc>::itera
     if(insertion.second)
         return that()->handle_inserted(insertion.first);
     else
-        return that()->add_over(addend, insertion.first);
+    {
+        iterator last_ = prior(this->_set.upper_bound(addend));
+        return that()->add_over(addend, last_);
+    }
 }
 
 template <class SubType, class DomainT, ICL_COMPARE Compare, ICL_INTERVAL(ICL_COMPARE) Interval, ICL_ALLOC Alloc>
@@ -514,7 +519,8 @@ inline typename interval_base_set<SubType,DomainT,Compare,Interval,Alloc>::itera
     interval_base_set<SubType,DomainT,Compare,Interval,Alloc>
     ::_add(iterator prior_, const segment_type& addend)
 {
-    if(icl::is_empty(addend)) 
+    typedef typename interval_base_set<SubType,DomainT,Compare,Interval,Alloc>::iterator iterator;
+    if(icl::is_empty(addend))
         return prior_;
 
     iterator insertion = this->_set.insert(prior_, addend);
@@ -522,7 +528,10 @@ inline typename interval_base_set<SubType,DomainT,Compare,Interval,Alloc>::itera
     if(*insertion == addend)
         return that()->handle_inserted(insertion);
     else
-        return that()->add_over(addend);
+    {
+        iterator last_ = prior(this->_set.upper_bound(addend));
+        return that()->add_over(addend, last_);
+    }
 }
 
 //==============================================================================

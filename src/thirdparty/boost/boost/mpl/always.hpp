@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: always.hpp 71163 2011-04-10 11:27:54Z jfalcou $
-// $Date: 2011-04-10 07:27:54 -0400 (Sun, 10 Apr 2011) $
-// $Revision: 71163 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/preprocessor/default_params.hpp>
 #include <boost/mpl/aux_/na.hpp>

@@ -328,7 +328,6 @@ inline sequence<BidiIter> make_assert_end_line
 template<typename BidiIter, typename Cond, typename Traits>
 inline sequence<BidiIter> make_assert_word(Cond, Traits const &tr)
 {
-    typedef typename iterator_value<BidiIter>::type char_type;
     return detail::make_dynamic<BidiIter>
     (
         detail::assert_word_matcher<Cond, Traits>(tr)

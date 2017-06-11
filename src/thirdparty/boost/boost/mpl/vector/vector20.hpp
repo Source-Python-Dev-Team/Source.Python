@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: vector20.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id$
+// $Date$
+// $Revision$
 
 #if !defined(BOOST_MPL_PREPROCESSING_MODE)
 #   include <boost/mpl/vector/vector10.hpp>

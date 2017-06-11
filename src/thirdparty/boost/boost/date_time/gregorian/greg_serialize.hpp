@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2012-09-27 10:24:15 -0400 (Thu, 27 Sep 2012) $
+ * $Date$
  */
 
 #include "boost/date_time/gregorian/gregorian_types.hpp"
@@ -34,6 +34,11 @@ BOOST_SERIALIZATION_SPLIT_FREE(::boost::gregorian::first_kday_before)
 BOOST_SERIALIZATION_SPLIT_FREE(::boost::gregorian::first_kday_after)
 
 namespace boost {
+
+  namespace gregorian {
+    std::string to_iso_string(const date&);
+  }
+
 namespace serialization {
 
 /*! Method that does serialization for gregorian::date -- splits to load/save

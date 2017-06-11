@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: weibull_distribution.hpp 68070 2011-01-12 19:53:31Z steven_watanabe $
+ * $Id$
  */
 
 #ifndef BOOST_RANDOM_WEIBULL_DISTRIBUTION_HPP

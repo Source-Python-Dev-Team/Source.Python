@@ -10,12 +10,11 @@ Copyright (c) 1999-2006: Cortex Software GmbH, Kantstrasse 57, Berlin
 #define BOOST_ICL_INTERVAL_BASE_MAP_HPP_JOFA_990223
 
 #include <limits>
-#include <boost/type_traits/ice.hpp>
 #include <boost/mpl/and.hpp>
 #include <boost/mpl/or.hpp>
 #include <boost/mpl/not.hpp>
 
-#include <boost/icl/detail/notate.hpp>
+#include <boost/icl/detail/notate.hpp> 
 #include <boost/icl/detail/design_config.hpp>
 #include <boost/icl/detail/on_absorbtion.hpp>
 #include <boost/icl/detail/interval_map_algo.hpp>
@@ -847,7 +846,7 @@ inline void interval_base_map<SubType,DomainT,CodomainT,Traits,Compare,Combine,S
     {
         // [lead_gap--- . . .
         //          [-- it_ ...
-        iterator prior_ = prior(it_); 
+        iterator prior_ = it_==this->_map.begin()? it_ : prior(it_); 
         iterator inserted_ = this->template gap_insert<Combiner>(prior_, lead_gap, co_val);
         that()->handle_inserted(prior_, inserted_);
     }
@@ -959,7 +958,7 @@ inline typename interval_base_map<SubType,DomainT,CodomainT,Traits,Compare,Combi
     {
         // Detect the first and the end iterator of the collision sequence
         iterator first_ = this->_map.lower_bound(inter_val),
-                 last_  = insertion.first;
+                 last_  = prior(this->_map.upper_bound(inter_val));
         //assert(end_ == this->_map.upper_bound(inter_val));
         iterator it_ = first_;
         interval_type rest_interval = inter_val;
@@ -1098,9 +1097,7 @@ inline void interval_base_map<SubType,DomainT,CodomainT,Traits,Compare,Combine,S
                   iterator& it_, const iterator& last_)
 {
     iterator end_   = boost::next(last_);
-    iterator prior_ = it_, inserted_;
-    if(prior_ != this->_map.end())
-        --prior_;
+    iterator prior_ = cyclic_prior(*this,it_), inserted_;
     interval_type rest_interval = inter_val, left_gap, cur_itv;
     interval_type last_interval = last_ ->first;
 
@@ -1154,7 +1151,7 @@ inline typename interval_base_map<SubType,DomainT,CodomainT,Traits,Compare,Combi
     {
         // Detect the first and the end iterator of the collision sequence
         iterator first_ = this->_map.lower_bound(inter_val),
-                 last_  = insertion.first;
+                 last_  = prior(this->_map.upper_bound(inter_val));
         //assert((++last_) == this->_map.upper_bound(inter_val));
         iterator it_ = first_;
         insert_main(inter_val, co_val, it_, last_);

@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: filter_params.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id$
+// $Date$
+// $Revision$
 
 #define BOOST_MPL_PP_FILTER_PARAMS_0(p1,p2,p3,p4,p5,p6,p7,p8,p9) 
 #define BOOST_MPL_PP_FILTER_PARAMS_1(p1,p2,p3,p4,p5,p6,p7,p8,p9) p1

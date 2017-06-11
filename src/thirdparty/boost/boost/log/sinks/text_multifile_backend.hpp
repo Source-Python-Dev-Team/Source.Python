@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -113,6 +113,9 @@ namespace file {
 
     /*!
      * The function adopts a log record formatter into a file name generator
+     *
+     * \param fmt The formatter function object to adopt
+     * \param loc The locale to use to character code conversion and formatting
      */
     template< typename FormatterT >
     inline file_name_composer_adapter< FormatterT > as_file_name_composer(

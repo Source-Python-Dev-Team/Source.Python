@@ -10,18 +10,18 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: numeric_cast.hpp 85956 2013-09-26 13:05:50Z skelly $
-// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85956 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
 
-// agurt 21/sep/04: portability macro for the sake of Borland;
+// agurt 21/sep/04: portability macro for the sake of MSVC 6.x-7.0;
 // resolves conflicts with 'boost::numeric_cast' function template.
 // use it in your own code _only_ if you care about compatibility with
 // these outdated compilers!
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x570) )
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300) || BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x570) )
 #   define BOOST_MPL_AUX_NUMERIC_CAST numeric_cast_
 #else
 #   define BOOST_MPL_AUX_NUMERIC_CAST numeric_cast

@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: compiler.hpp 86242 2013-10-11 23:11:35Z skelly $
-// $Date: 2013-10-11 19:11:35 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86242 $
+// $Id$
+// $Date$
+// $Revision$
 
 #if !defined(BOOST_MPL_CFG_COMPILER_DIR)
 
@@ -23,7 +23,13 @@
 #   include <boost/mpl/aux_/config/gcc.hpp>
 #   include <boost/mpl/aux_/config/workaround.hpp>
 
-#   if BOOST_WORKAROUND(BOOST_MPL_CFG_GCC, BOOST_TESTED_AT(0x0304))
+#   if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+#       define BOOST_MPL_CFG_COMPILER_DIR msvc60
+
+#   elif BOOST_WORKAROUND(BOOST_MSVC, == 1300)
+#       define BOOST_MPL_CFG_COMPILER_DIR msvc70
+
+#   elif BOOST_WORKAROUND(BOOST_MPL_CFG_GCC, BOOST_TESTED_AT(0x0304))
 #       define BOOST_MPL_CFG_COMPILER_DIR gcc
 
 #   elif BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x610))
@@ -44,6 +50,9 @@
 #       else
 #           define BOOST_MPL_CFG_COMPILER_DIR plain
 #       endif
+
+#   elif defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
+#       define BOOST_MPL_CFG_COMPILER_DIR no_ctps
 
 #   elif defined(BOOST_MPL_CFG_NO_TEMPLATE_TEMPLATE_PARAMETERS)
 #       define BOOST_MPL_CFG_COMPILER_DIR no_ttp

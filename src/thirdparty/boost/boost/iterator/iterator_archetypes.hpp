@@ -31,6 +31,7 @@
 #include <cstddef>
 
 namespace boost {
+namespace iterators {
 
 template <class Value, class AccessCategory>
 struct access_archetype;
@@ -38,7 +39,7 @@ struct access_archetype;
 template <class Derived, class Value, class AccessCategory, class TraversalCategory>
 struct traversal_archetype;
 
-namespace iterator_archetypes
+namespace archetypes
 {
   enum {
       readable_iterator_bit = 1
@@ -50,19 +51,19 @@ namespace iterator_archetypes
   // Not quite tags, since dispatching wouldn't work.
   typedef mpl::int_<readable_iterator_bit>::type readable_iterator_t;
   typedef mpl::int_<writable_iterator_bit>::type writable_iterator_t;
-  
+
   typedef mpl::int_<
       (readable_iterator_bit|writable_iterator_bit)
           >::type readable_writable_iterator_t;
-  
+
   typedef mpl::int_<
       (readable_iterator_bit|lvalue_iterator_bit)
           >::type readable_lvalue_iterator_t;
-  
+
   typedef mpl::int_<
       (lvalue_iterator_bit|writable_iterator_bit)
           >::type writable_lvalue_iterator_t;
-  
+
   typedef mpl::int_<swappable_iterator_bit>::type swappable_iterator_t;
   typedef mpl::int_<lvalue_iterator_bit>::type lvalue_iterator_t;
 
@@ -121,15 +122,15 @@ namespace detail
     : mpl::eval_if<
           is_convertible<TraversalCategory, random_access_traversal_tag>
         , mpl::eval_if<
-              iterator_archetypes::has_access<
+              archetypes::has_access<
                   AccessCategory
-                , iterator_archetypes::writable_iterator_t
+                , archetypes::writable_iterator_t
               >
             , mpl::identity<writable_operator_brackets<Value> >
             , mpl::if_<
-                  iterator_archetypes::has_access<
+                  archetypes::has_access<
                       AccessCategory
-                    , iterator_archetypes::readable_iterator_t
+                    , archetypes::readable_iterator_t
                   >
                 , readable_operator_brackets<Value>
                 , no_operator_brackets
@@ -138,7 +139,7 @@ namespace detail
         , mpl::identity<no_operator_brackets>
       >::type
   {};
-  
+
   template <class TraversalCategory>
   struct traversal_archetype_impl
   {
@@ -156,11 +157,11 @@ namespace detail
       typedef typename
         traversal_archetype_impl<TraversalCategory>::template archetype<Derived,Value>
       base;
-      
+
       traversal_archetype_() {}
 
       traversal_archetype_(ctor_arg arg)
-        : base(arg) 
+        : base(arg)
       {}
   };
 
@@ -191,7 +192,7 @@ namespace detail
           explicit archetype(ctor_arg arg)
             : traversal_archetype_<Derived, Value, incrementable_traversal_tag>(arg)
           {}
-          
+
           typedef std::ptrdiff_t difference_type;
       };
   };
@@ -199,7 +200,7 @@ namespace detail
   template <class Derived, class Value>
   bool operator==(traversal_archetype_<Derived, Value, single_pass_traversal_tag> const&,
                   traversal_archetype_<Derived, Value, single_pass_traversal_tag> const&) { return true; }
-  
+
   template <>
   struct traversal_archetype_impl<forward_traversal_tag>
   {
@@ -207,7 +208,7 @@ namespace detail
       struct archetype
         : public traversal_archetype_<Derived, Value, single_pass_traversal_tag>
       {
-          archetype() 
+          archetype()
             : traversal_archetype_<Derived, Value, single_pass_traversal_tag>(ctor_arg())
           {}
       };
@@ -230,7 +231,7 @@ namespace detail
   {
       template<class Derived, class Value>
       struct archetype
-        : public traversal_archetype_<Derived, Value, bidirectional_traversal_tag> 
+        : public traversal_archetype_<Derived, Value, bidirectional_traversal_tag>
       {
           Derived& operator+=(std::ptrdiff_t) { return static_object<Derived>::get(); }
           Derived& operator-=(std::ptrdiff_t) { return static_object<Derived>::get(); }
@@ -289,7 +290,7 @@ namespace detail
 
 
 template <class> struct undefined;
-  
+
 template <class AccessCategory>
 struct iterator_access_archetype_impl
 {
@@ -306,7 +307,7 @@ struct iterator_access_archetype
 
 template <>
 struct iterator_access_archetype_impl<
-    iterator_archetypes::readable_iterator_t
+    archetypes::readable_iterator_t
 >
 {
     template <class Value>
@@ -324,7 +325,7 @@ struct iterator_access_archetype_impl<
 
 template <>
 struct iterator_access_archetype_impl<
-    iterator_archetypes::writable_iterator_t
+    archetypes::writable_iterator_t
 >
 {
     template <class Value>
@@ -341,13 +342,13 @@ struct iterator_access_archetype_impl<
 
 template <>
 struct iterator_access_archetype_impl<
-    iterator_archetypes::readable_writable_iterator_t
+    archetypes::readable_writable_iterator_t
 >
 {
     template <class Value>
     struct archetype
       : public virtual iterator_access_archetype<
-            Value, iterator_archetypes::readable_iterator_t
+            Value, archetypes::readable_iterator_t
         >
     {
         typedef detail::read_write_proxy<Value>    reference;
@@ -357,12 +358,12 @@ struct iterator_access_archetype_impl<
 };
 
 template <>
-struct iterator_access_archetype_impl<iterator_archetypes::readable_lvalue_iterator_t>
+struct iterator_access_archetype_impl<archetypes::readable_lvalue_iterator_t>
 {
     template <class Value>
     struct archetype
       : public virtual iterator_access_archetype<
-            Value, iterator_archetypes::readable_iterator_t
+            Value, archetypes::readable_iterator_t
         >
     {
         typedef Value&    reference;
@@ -371,26 +372,26 @@ struct iterator_access_archetype_impl<iterator_archetypes::readable_lvalue_itera
         Value* operator->() const { return 0; }
     };
 };
-  
+
 template <>
-struct iterator_access_archetype_impl<iterator_archetypes::writable_lvalue_iterator_t>
+struct iterator_access_archetype_impl<archetypes::writable_lvalue_iterator_t>
 {
     template <class Value>
     struct archetype
       : public virtual iterator_access_archetype<
-            Value, iterator_archetypes::readable_lvalue_iterator_t
+            Value, archetypes::readable_lvalue_iterator_t
         >
     {
         BOOST_STATIC_ASSERT((!is_const<Value>::value));
     };
 };
-  
+
 
 template <class Value, class AccessCategory, class TraversalCategory>
 struct iterator_archetype;
-  
+
 template <class Value, class AccessCategory, class TraversalCategory>
-struct traversal_archetype_base 
+struct traversal_archetype_base
   : detail::operator_brackets<
         typename remove_cv<Value>::type
       , AccessCategory
@@ -412,12 +413,12 @@ namespace detail
     , traversal_archetype_base<Value, AccessCategory, TraversalCategory>
   {
       typedef iterator_access_archetype<Value, AccessCategory> access;
-      
+
       typedef typename detail::facade_iterator_category<
           TraversalCategory
         , typename mpl::eval_if<
-              iterator_archetypes::has_access<
-                  AccessCategory, iterator_archetypes::writable_iterator_t
+              archetypes::has_access<
+                  AccessCategory, archetypes::writable_iterator_t
               >
             , remove_const<Value>
             , add_const<Value>
@@ -450,18 +451,18 @@ struct iterator_archetype
   , public detail::iterator_archetype_base<
         Value, AccessCategory, TraversalCategory
     >::workaround_iterator_base
-# endif 
+# endif
 {
     // Derivation from std::iterator above caused references to nested
     // types to be ambiguous, so now we have to redeclare them all
     // here.
 # if BOOST_WORKAROUND(BOOST_DINKUMWARE_STDLIB, < 310)           \
     || BOOST_WORKAROUND(_RWSTD_VER, BOOST_TESTED_AT(0x20101))
-    
+
     typedef detail::iterator_archetype_base<
         Value,AccessCategory,TraversalCategory
     > base;
-    
+
     typedef typename base::value_type value_type;
     typedef typename base::reference reference;
     typedef typename base::pointer pointer;
@@ -492,7 +493,17 @@ struct iterator_archetype
 # endif
 };
 
-} // namespace boost
+} // namespace iterators
 
+// Backward compatibility names
+namespace iterator_archetypes = iterators::archetypes;
+using iterators::access_archetype;
+using iterators::traversal_archetype;
+using iterators::iterator_archetype;
+using iterators::undefined;
+using iterators::iterator_access_archetype_impl;
+using iterators::traversal_archetype_base;
+
+} // namespace boost
 
 #endif // BOOST_ITERATOR_ARCHETYPES_HPP

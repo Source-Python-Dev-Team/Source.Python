@@ -25,7 +25,7 @@ namespace archive {
 
 typedef detail::polymorphic_oarchive_route<
     binary_oarchive_impl<
-        naked_binary_oarchive, 
+        binary_oarchive, 
         std::ostream::char_type, 
         std::ostream::traits_type
     >
