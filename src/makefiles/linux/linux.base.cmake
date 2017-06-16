@@ -83,6 +83,15 @@ If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
     )
 EndIf()
 
+If(SOURCE_ENGINE MATCHES "insurgency")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+         ${SOURCESDK_LIB}/linux/interfaces_i486.a
+         ${SOURCESDK_LIB}/linux/libtier0_srv.so
+         ${SOURCESDK_LIB}/linux/libvstdlib_srv.so
+    )
+EndIf()
+
 If(SOURCE_ENGINE MATCHES "csgo")
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
