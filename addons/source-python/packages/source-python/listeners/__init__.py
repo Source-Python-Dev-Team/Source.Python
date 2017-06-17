@@ -533,7 +533,7 @@ def _pre_call_global_change_callbacks(args):
 # Get the function name to hook...
 if SOURCE_ENGINE in ('bms', 'orangebox'):
     _hibernation_function_name = 'SetServerHibernation'
-elif SOURCE_ENGINE in ('blade', 'csgo', 'l4d2'):
+elif SOURCE_ENGINE in ('blade', 'csgo', 'l4d2', 'insurgency'):
     _hibernation_function_name = 'ServerHibernationUpdate'
 else:
     # To remind us to add newly supported engines...
