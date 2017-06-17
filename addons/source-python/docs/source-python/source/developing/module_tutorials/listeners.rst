@@ -454,6 +454,12 @@ OnServerOutput
 Called when something is printed to the console. You can decide whether the
 message is logged/printed or not.
 
+.. warning::
+
+    Be careful when printing something within this listener. It can easily
+    result into a recursion, which results into a crash of the server.
+
+
 .. code-block:: python
 
     from listeners import OnServerOutput
