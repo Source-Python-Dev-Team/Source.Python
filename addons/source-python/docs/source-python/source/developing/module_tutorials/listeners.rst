@@ -111,7 +111,7 @@ Called when a combined model gets precached.
     def on_combiner_precache(cache_data_type, model_handle):
         pass
 
-.. note:: This listener only gets called in CS:GO.
+.. note:: This listener only gets called in CS:GO and Insurgency.
 
 
 OnConVarChanged

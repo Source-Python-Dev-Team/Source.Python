@@ -519,7 +519,7 @@ void CSourcePython::OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle 
 	CALL_LISTENERS(OnDataUnloaded, type, handle);
 }
 	
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_INSURGENCY)
 void CSourcePython::OnCombinerPreCache(MDLCacheDataType_t type, MDLHandle_t handle )
 {
 	if (m_pOldMDLCacheNotifier)
@@ -536,7 +536,9 @@ bool CSourcePython::ShouldSupressLoadWarning(MDLHandle_t handle)
 
 	return result;
 }
+#endif
 
+#if defined(ENGINE_CSGO)
 bool CSourcePython::BNetworkCryptKeyCheckRequired( uint32 unFromIP, uint16 usFromPort,
 	uint32 unAccountIdProvidedByClient, bool bClientWantsToUseCryptKey )
 {
