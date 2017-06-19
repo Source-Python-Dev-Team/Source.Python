@@ -182,7 +182,7 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 //-----------------------------------------------------------------------------
 // Server output hook.
 //-----------------------------------------------------------------------------
-#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
 {
 	extern CListenerManager* GetOnServerOutputListenerManager();
@@ -264,7 +264,7 @@ CSourcePython::CSourcePython()
 	m_iClientCommandIndex = 0;
 	m_pOldMDLCacheNotifier = NULL;
 
-#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 	m_pOldSpewOutputFunc = NULL;
 #endif
 }
@@ -321,7 +321,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 	DevMsg(1, MSG_PREFIX "Retrieving old output function...\n");
 	m_pOldSpewOutputFunc = GetSpewOutputFunc();
 
@@ -364,7 +364,7 @@ void CSourcePython::Unload( void )
 	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
 	GetHookManager()->UnhookAllFunctions();
 
-#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS)
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 	if (m_pOldSpewOutputFunc)
 	{
 		DevMsg(1, MSG_PREFIX "Restoring old output function...\n");
