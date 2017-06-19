@@ -66,8 +66,8 @@ inline void split_free(
     T & t, 
     const unsigned int file_version
 ){
-    typedef BOOST_DEDUCED_TYPENAME mpl::eval_if<
-        BOOST_DEDUCED_TYPENAME Archive::is_saving,
+    typedef typename mpl::eval_if<
+        typename Archive::is_saving,
         mpl::identity</* detail:: */ free_saver<Archive, T> >, 
         mpl::identity</* detail:: */ free_loader<Archive, T> >
     >::type typex;

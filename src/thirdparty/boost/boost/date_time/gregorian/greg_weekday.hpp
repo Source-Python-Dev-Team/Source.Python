@@ -6,12 +6,12 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2008-06-24 04:35:07 -0400 (Tue, 24 Jun 2008) $
+ * $Date$
  */
 
-#include "boost/date_time/constrained_value.hpp"
-#include "boost/date_time/date_defs.hpp"
-#include "boost/date_time/compiler_config.hpp"
+#include <boost/date_time/constrained_value.hpp>
+#include <boost/date_time/date_defs.hpp>
+#include <boost/date_time/compiler_config.hpp>
 #include <stdexcept>
 #include <string>
 
@@ -29,7 +29,7 @@ namespace gregorian {
 
 
   //! Exception that flags that a weekday number is incorrect
-  struct bad_weekday : public std::out_of_range
+  struct BOOST_SYMBOL_VISIBLE bad_weekday : public std::out_of_range
   {
     bad_weekday() : std::out_of_range(std::string("Weekday is out of range 0..6")) {}
   };

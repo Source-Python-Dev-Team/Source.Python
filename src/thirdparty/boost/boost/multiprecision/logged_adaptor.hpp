@@ -139,6 +139,22 @@ public:
       ar & m_value;
       log_postfix_event(m_value, "serialize");
    }
+   static unsigned default_precision() BOOST_NOEXCEPT
+   {
+      return Backend::default_precision();
+   }
+   static void default_precision(unsigned v) BOOST_NOEXCEPT
+   {
+      Backend::default_precision(v);
+   }
+   unsigned precision()const BOOST_NOEXCEPT
+   {
+      return value().precision();
+   }
+   void precision(unsigned digits10) BOOST_NOEXCEPT
+   {
+      value().precision(digits10);
+   }
 };
 
 template <class T>
@@ -286,6 +302,23 @@ inline void eval_ldexp(logged_adaptor<Backend>& result, const logged_adaptor<Bac
    log_prefix_event(arg.value(), "ldexp");
    eval_ldexp(result.value(), arg.value(), exp);
    log_postfix_event(result.value(), exp, "ldexp");
+}
+
+template <class Backend, class Exp>
+inline void eval_scalbn(logged_adaptor<Backend>& result, const logged_adaptor<Backend>& arg, Exp exp)
+{
+   log_prefix_event(arg.value(), "scalbn");
+   eval_scalbn(result.value(), arg.value(), exp);
+   log_postfix_event(result.value(), exp, "scalbn");
+}
+
+template <class Backend>
+inline typename Backend::exponent_type eval_ilogb(const logged_adaptor<Backend>& arg)
+{
+   log_prefix_event(arg.value(), "ilogb");
+   typename Backend::exponent_type r = eval_ilogb(arg.value());
+   log_postfix_event(arg.value(), "ilogb");
+   return r;
 }
 
 NON_MEMBER_OP2(floor, "floor");
@@ -468,9 +501,23 @@ NON_MEMBER_OP2(atan, "atan");
 NON_MEMBER_OP2(sinh, "sinh");
 NON_MEMBER_OP2(cosh, "cosh");
 NON_MEMBER_OP2(tanh, "tanh");
+NON_MEMBER_OP2(logb, "logb");
 NON_MEMBER_OP3(fmod, "fmod");
 NON_MEMBER_OP3(pow, "pow");
 NON_MEMBER_OP3(atan2, "atan2");
+
+template <class Backend>
+int eval_signbit(const logged_adaptor<Backend>& val)
+{
+   using default_ops::eval_signbit;
+   return eval_signbit(val.value());
+}
+
+template <class Backend>
+std::size_t hash_value(const logged_adaptor<Backend>& val)
+{
+   return hash_value(val.value());
+}
 
 } // namespace backends
 

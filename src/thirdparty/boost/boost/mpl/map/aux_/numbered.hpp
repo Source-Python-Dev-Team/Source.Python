@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: numbered.hpp 86245 2013-10-11 23:17:48Z skelly $
-// $Date: 2013-10-11 19:17:48 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86245 $
+// $Id$
+// $Date$
+// $Revision$
 
 #else
 
@@ -49,6 +49,7 @@ struct BOOST_PP_CAT(map,i_)
 
 #else // "brute force" implementation
 
+#   if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template< typename Map>
 struct m_at<Map,BOOST_PP_DEC(i_)>
@@ -63,6 +64,28 @@ struct m_item<i_,Key,T,Base>
     typedef pair<Key,T> BOOST_PP_CAT(item,BOOST_PP_DEC(i_));
 };
 
+#   else
+
+template<>
+struct m_at_impl<BOOST_PP_DEC(i_)>
+{
+    template< typename Map > struct result_
+    {
+        typedef typename Map::BOOST_PP_CAT(item,BOOST_PP_DEC(i_)) type;
+    };
+};
+
+template<>
+struct m_item_impl<i_>
+{
+    template< typename Key, typename T, typename Base > struct result_
+        : m_item_<Key,T,Base>
+    {
+        typedef pair<Key,T> BOOST_PP_CAT(item,BOOST_PP_DEC(i_));
+    };
+};
+
+#   endif
 
 template<
       BOOST_PP_ENUM_PARAMS(i_, typename P)

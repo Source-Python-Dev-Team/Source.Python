@@ -8,7 +8,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: variate_generator.hpp 69975 2011-03-14 19:42:32Z steven_watanabe $
+ * $Id$
  *
  */
 

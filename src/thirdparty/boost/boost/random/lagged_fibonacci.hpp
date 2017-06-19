@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: lagged_fibonacci.hpp 86321 2013-10-15 14:08:57Z mgaunard $
+ * $Id$
  *
  * Revision history
  *  2013-10-14  fixed some warnings with Wshadow (mgaunard)

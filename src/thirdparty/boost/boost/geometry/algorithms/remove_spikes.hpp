@@ -3,7 +3,7 @@
 // Copyright (c) 2007-2013 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2013 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2013 Mateusz Loskot, London, UK.
-// Copyright (c) 2013 Adam Wulkiewicz, Lodz, Poland.
+// Copyright (c) 2013-2014 Adam Wulkiewicz, Lodz, Poland.
 
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -15,18 +15,26 @@
 #include <deque>
 
 #include <boost/range.hpp>
-#include <boost/typeof/typeof.hpp>
-#include <boost/variant/static_visitor.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+
 #include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
 #include <boost/variant/variant_fwd.hpp>
 
 #include <boost/geometry/core/closure.hpp>
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
+#include <boost/geometry/core/point_order.hpp>
+#include <boost/geometry/core/tags.hpp>
+
 #include <boost/geometry/geometries/concepts/check.hpp>
+
 #include <boost/geometry/algorithms/detail/point_is_spike_or_equal.hpp>
+#include <boost/geometry/algorithms/detail/interior_iterator.hpp>
 #include <boost/geometry/algorithms/clear.hpp>
+
+#include <boost/geometry/util/condition.hpp>
 
 
 /*
@@ -69,16 +77,14 @@ struct range_remove_spikes
         std::size_t const min_num_points = core_detail::closure::minimum_ring_size
             <
                 geometry::closure<Range>::value
-            >::value;
+            >::value - 1; // subtract one: a polygon with only one spike should result into one point
         if (n < min_num_points)
         {
             return;
         }
 
-        typedef typename boost::range_iterator<Range>::type iterator;
-
         std::deque<point_type> cleaned;
-        for (typename boost::range_iterator<Range const>::type it = boost::begin(range); 
+        for (typename boost::range_iterator<Range const>::type it = boost::begin(range);
             it != boost::end(range); ++it)
         {
             // Add point
@@ -93,7 +99,7 @@ struct range_remove_spikes
         }
 
         // For a closed-polygon, remove closing point, this makes checking first point(s) easier and consistent
-        if (geometry::closure<Range>::value == geometry::closed)
+        if ( BOOST_GEOMETRY_CONDITION(geometry::closure<Range>::value == geometry::closed) )
         {
             cleaned.pop_back();
         }
@@ -104,13 +110,13 @@ struct range_remove_spikes
             found = false;
             // Check for spike in first point
             int const penultimate = 2;
-            while(cleaned.size() > 3 && detail::point_is_spike_or_equal(cleaned.front(), *(cleaned.end() - penultimate), cleaned.back()))
+            while(cleaned.size() >= 3 && detail::point_is_spike_or_equal(cleaned.front(), *(cleaned.end() - penultimate), cleaned.back()))
             {
                 cleaned.pop_back();
                 found = true;
             }
             // Check for spike in second point
-            while(cleaned.size() > 3 && detail::point_is_spike_or_equal(*(cleaned.begin() + 1), cleaned.back(), cleaned.front()))
+            while(cleaned.size() >= 3 && detail::point_is_spike_or_equal(*(cleaned.begin() + 1), cleaned.back(), cleaned.front()))
             {
                 cleaned.pop_front();
                 found = true;
@@ -118,15 +124,22 @@ struct range_remove_spikes
         }
         while (found);
 
+        if (cleaned.size() == 2)
+        {
+            // Ticket #9871: open polygon with only two points.
+            // the second point forms, by definition, a spike
+            cleaned.pop_back();
+        }
+
         // Close if necessary
-        if (geometry::closure<Range>::value == geometry::closed)
+        if ( BOOST_GEOMETRY_CONDITION(geometry::closure<Range>::value == geometry::closed) )
         {
             cleaned.push_back(cleaned.front());
         }
 
         // Copy output
         geometry::clear(range);
-        std::copy(cleaned.begin(), cleaned.end(), std::back_inserter(range));
+        std::copy(cleaned.begin(), cleaned.end(), range::back_inserter(range));
     }
 };
 
@@ -141,11 +154,29 @@ struct polygon_remove_spikes
         typedef range_remove_spikes<ring_type> per_range;
         per_range::apply(exterior_ring(polygon));
 
-        typename interior_return_type<Polygon>::type rings
-                    = interior_rings(polygon);
-        for (BOOST_AUTO_TPL(it, boost::begin(rings)); it != boost::end(rings); ++it)
+        typename interior_return_type<Polygon>::type
+            rings = interior_rings(polygon);
+
+        for (typename detail::interior_iterator<Polygon>::type
+                it = boost::begin(rings); it != boost::end(rings); ++it)
         {
             per_range::apply(*it);
+        }
+    }
+};
+
+
+template <typename MultiGeometry, typename SingleVersion>
+struct multi_remove_spikes
+{
+    static inline void apply(MultiGeometry& multi)
+    {
+        for (typename boost::range_iterator<MultiGeometry>::type
+                it = boost::begin(multi);
+            it != boost::end(multi);
+            ++it)
+        {
+            SingleVersion::apply(*it);
         }
     }
 };
@@ -186,6 +217,18 @@ struct remove_spikes<Polygon, polygon_tag>
 {};
 
 
+template <typename MultiPolygon>
+struct remove_spikes<MultiPolygon, multi_polygon_tag>
+    : detail::remove_spikes::multi_remove_spikes
+        <
+            MultiPolygon,
+            detail::remove_spikes::polygon_remove_spikes
+            <
+                typename boost::range_value<MultiPolygon>::type
+            >
+        >
+{};
+
 
 } // namespace dispatch
 #endif
@@ -198,7 +241,7 @@ struct remove_spikes
 {
     static void apply(Geometry& geometry)
     {
-        concept::check<Geometry>();
+        concepts::check<Geometry>();
         dispatch::remove_spikes<Geometry>::apply(geometry);
     }
 };

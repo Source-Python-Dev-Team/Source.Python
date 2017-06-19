@@ -10,18 +10,17 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: empty_base.hpp 85956 2013-09-26 13:05:50Z skelly $
-// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85956 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/bool.hpp>
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
+#include <boost/mpl/aux_/lambda_support.hpp>
 
+#include <boost/type_traits/integral_constant.hpp>
 #include <boost/type_traits/is_empty.hpp>
-
-// should be always the last #include directive
-#include <boost/type_traits/detail/bool_trait_def.hpp>
 
 namespace boost { namespace mpl {
 
@@ -34,20 +33,31 @@ template< typename T >
 struct is_empty_base
     : false_
 {
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+    using false_::value;
+#endif
 };
 
 template<>
 struct is_empty_base<empty_base>
     : true_
 {
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+    using true_::value;
+#endif
 };
 
 }}
 
 namespace boost {
-BOOST_TT_AUX_BOOL_TRAIT_SPEC1(is_empty, mpl::empty_base, true)
-}
 
-#include <boost/type_traits/detail/bool_trait_undef.hpp>
+template<> struct is_empty< mpl::empty_base >
+    : public ::boost::integral_constant<bool,true>
+{
+public:
+    BOOST_MPL_AUX_LAMBDA_SUPPORT_SPEC(1,is_empty,(mpl::empty_base))
+};
+
+}
 
 #endif // BOOST_MPL_EMPTY_BASE_HPP_INCLUDED

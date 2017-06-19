@@ -24,6 +24,7 @@
 #include <boost/multiprecision/traits/is_restricted_conversion.hpp>
 #include <istream>  // stream operators
 #include <cstdio>   // EOF
+#include <cctype>   // isspace
 
 namespace boost{ namespace multiprecision{
 
@@ -31,7 +32,7 @@ namespace boost{ namespace multiprecision{
 // warning C4127: conditional expression is constant
 // warning C4714: function marked as __forceinline not inlined
 #pragma warning(push)
-#pragma warning(disable:4127 4714)
+#pragma warning(disable:4127 4714 6326)
 #endif
 
 template <class Backend, expression_template_option ExpressionTemplates>
@@ -40,8 +41,8 @@ class number
    typedef number<Backend, ExpressionTemplates> self_type;
 public:
    typedef Backend backend_type;
-   BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number() BOOST_NOEXCEPT_IF(noexcept(Backend())) {}
-   BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number(const number& e) BOOST_NOEXCEPT_IF(noexcept(Backend(static_cast<const Backend&>(std::declval<Backend>())))) : m_backend(e.m_backend){}
+   BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number() BOOST_MP_NOEXCEPT_IF(noexcept(Backend())) {}
+   BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number(const number& e) BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<Backend const&>()))) : m_backend(e.m_backend){}
    template <class V>
    BOOST_MP_FORCEINLINE number(const V& v, typename boost::enable_if_c<
             (boost::is_arithmetic<V>::value || is_same<std::string, V>::value || is_convertible<V, const char*>::value)
@@ -55,16 +56,21 @@ public:
    BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number(const V& v, typename boost::enable_if_c<
             is_convertible<typename detail::canonical<V, Backend>::type, Backend>::value
             && !detail::is_restricted_conversion<typename detail::canonical<V, Backend>::type, Backend>::value
-         >::type* = 0)
+   >::type* = 0) 
+#ifndef BOOST_INTEL
+          BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<typename detail::canonical<V, Backend>::type const&>())))
+#endif
       : m_backend(canonical_value(v)) {}
-   BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number(const number& e, unsigned digits10)
+   BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number(const number& e, unsigned digits10) 
+      BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<Backend const&>(), std::declval<unsigned>())))
       : m_backend(e.m_backend, digits10){}
    template <class V>
    explicit BOOST_MP_FORCEINLINE number(const V& v, typename boost::enable_if_c<
             (boost::is_arithmetic<V>::value || is_same<std::string, V>::value || is_convertible<V, const char*>::value)
             && !detail::is_explicitly_convertible<typename detail::canonical<V, Backend>::type, Backend>::value
             && detail::is_restricted_conversion<typename detail::canonical<V, Backend>::type, Backend>::value
-         >::type* = 0)
+         >::type* = 0) 
+         BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<Backend&>() = std::declval<typename detail::canonical<V, Backend>::type const&>()))
    {
       m_backend = canonical_value(v);
    }
@@ -74,6 +80,7 @@ public:
             && (detail::is_restricted_conversion<typename detail::canonical<V, Backend>::type, Backend>::value
                 || !is_convertible<typename detail::canonical<V, Backend>::type, Backend>::value)
          >::type* = 0)
+         BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<typename detail::canonical<V, Backend>::type const&>())))
       : m_backend(canonical_value(v)) {}
    /*
    //
@@ -89,12 +96,12 @@ public:
    */
    template<expression_template_option ET>
    BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number(const number<Backend, ET>& val)
-      BOOST_NOEXCEPT_IF(noexcept(Backend(static_cast<const Backend&>(std::declval<Backend>())))) : m_backend(val.backend()) {}
+      BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<Backend const&>()))) : m_backend(val.backend()) {}
 
    template <class Other, expression_template_option ET>
    BOOST_MP_FORCEINLINE number(const number<Other, ET>& val,
          typename boost::enable_if_c<(boost::is_convertible<Other, Backend>::value && !detail::is_restricted_conversion<Other, Backend>::value)>::type* = 0)
-      BOOST_NOEXCEPT_IF(noexcept(Backend(static_cast<const Other&>(std::declval<Other>()))))
+      BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<Other const&>())))
       : m_backend(val.backend()) {}
 
    template <class Other, expression_template_option ET>
@@ -105,13 +112,14 @@ public:
       //
       // Attempt a generic interconvertion:
       //
-      detail::generic_interconvert(backend(), val.backend(), number_category<Backend>(), number_category<Other>());
+      using detail::generic_interconvert;
+      generic_interconvert(backend(), val.backend(), number_category<Backend>(), number_category<Other>());
    }
    template <class Other, expression_template_option ET>
    explicit BOOST_MP_FORCEINLINE number(const number<Other, ET>& val, typename boost::enable_if_c<
          (detail::is_explicitly_convertible<Other, Backend>::value
             && (detail::is_restricted_conversion<Other, Backend>::value || !boost::is_convertible<Other, Backend>::value))
-         >::type* = 0) BOOST_NOEXCEPT_IF(noexcept(Backend(static_cast<const Other&>(std::declval<Other>()))))
+         >::type* = 0) BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<Other const&>())))
       : m_backend(val.backend()) {}
 
    template <class V>
@@ -143,7 +151,7 @@ public:
    }
 
    BOOST_MP_FORCEINLINE number& operator=(const number& e)
-      BOOST_NOEXCEPT_IF(noexcept(std::declval<Backend>() = static_cast<const Backend&>(std::declval<Backend>())))
+      BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<Backend&>() = std::declval<Backend const&>()))
    {
       m_backend = e.m_backend;
       return *this;
@@ -152,14 +160,14 @@ public:
    template <class V>
    BOOST_MP_FORCEINLINE typename boost::enable_if<is_convertible<V, self_type>, number<Backend, ExpressionTemplates>& >::type
       operator=(const V& v)
-      BOOST_NOEXCEPT_IF(noexcept(std::declval<Backend>() = static_cast<typename boost::multiprecision::detail::canonical<V, Backend>::type const&>(std::declval<typename boost::multiprecision::detail::canonical<V, Backend>::type>())))
+      BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<Backend&>() = std::declval<const typename detail::canonical<V, Backend>::type&>()))
    {
       m_backend = canonical_value(v);
       return *this;
    }
    template <class V>
    BOOST_MP_FORCEINLINE number<Backend, ExpressionTemplates>& assign(const V& v)
-      BOOST_NOEXCEPT_IF(noexcept(std::declval<Backend>() = static_cast<typename boost::multiprecision::detail::canonical<V, Backend>::type const&>(std::declval<typename boost::multiprecision::detail::canonical<V, Backend>::type>())))
+      BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<Backend&>() = std::declval<const typename detail::canonical<V, Backend>::type&>()))
    {
       m_backend = canonical_value(v);
       return *this;
@@ -171,7 +179,8 @@ public:
       //
       // Attempt a generic interconvertion:
       //
-      detail::generic_interconvert(backend(), v.backend(), number_category<Backend>(), number_category<Other>());
+      using detail::generic_interconvert;
+      generic_interconvert(backend(), v.backend(), number_category<Backend>(), number_category<Other>());
       return *this;
    }
 
@@ -190,9 +199,9 @@ public:
 
 #ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
    BOOST_MP_FORCEINLINE BOOST_CONSTEXPR number(number&& r)
-      BOOST_NOEXCEPT_IF(noexcept(Backend(std::declval<Backend>())))
+      BOOST_MP_NOEXCEPT_IF(noexcept(Backend(std::declval<Backend>())))
       : m_backend(static_cast<Backend&&>(r.m_backend)){}
-   BOOST_MP_FORCEINLINE number& operator=(number&& r) BOOST_NOEXCEPT
+   BOOST_MP_FORCEINLINE number& operator=(number&& r) BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<Backend&>() = std::declval<Backend>()))
    {
       m_backend = static_cast<Backend&&>(r.m_backend);
       return *this;
@@ -206,7 +215,7 @@ public:
    }
 
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator+=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator+=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       // Create a copy if e contains this, but not if we're just doing a
       //    x += x
@@ -249,7 +258,7 @@ public:
    }
 
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator-=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator-=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       // Create a copy if e contains this:
       if(contains_self(e))
@@ -292,7 +301,7 @@ public:
    }
 
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator*=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator*=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       // Create a temporary if the RHS references *this, but not
       // if we're just doing an   x *= x;
@@ -324,7 +333,7 @@ public:
       return *this;
    }
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator%=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator%=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       BOOST_STATIC_ASSERT_MSG(number_category<Backend>::value == number_kind_integer, "The modulus operation is only valid for integer types");
       // Create a temporary if the RHS references *this:
@@ -412,7 +421,7 @@ public:
    }
 
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator/=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator/=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       // Create a temporary if the RHS references *this:
       if(contains_self(e))
@@ -444,7 +453,7 @@ public:
    }
 
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator&=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator&=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       BOOST_STATIC_ASSERT_MSG(number_category<Backend>::value == number_kind_integer, "The bitwise & operation is only valid for integer types");
       // Create a temporary if the RHS references *this, but not
@@ -479,7 +488,7 @@ public:
    }
 
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator|=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator|=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       BOOST_STATIC_ASSERT_MSG(number_category<Backend>::value == number_kind_integer, "The bitwise | operation is only valid for integer types");
       // Create a temporary if the RHS references *this, but not
@@ -514,7 +523,7 @@ public:
    }
 
    template <class tag, class Arg1, class Arg2, class Arg3, class Arg4>
-   number& operator^=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
+   typename boost::enable_if<is_convertible<typename detail::expression<tag, Arg1, Arg2, Arg3, Arg4>::result_type, self_type>, number&>::type operator^=(const detail::expression<tag, Arg1, Arg2, Arg3, Arg4>& e)
    {
       BOOST_STATIC_ASSERT_MSG(number_category<Backend>::value == number_kind_integer, "The bitwise ^ operation is only valid for integer types");
       if(contains_self(e))
@@ -541,7 +550,7 @@ public:
    //
    // swap:
    //
-   BOOST_MP_FORCEINLINE void swap(self_type& other) BOOST_NOEXCEPT
+   BOOST_MP_FORCEINLINE void swap(self_type& other) BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<Backend>().swap(std::declval<Backend&>())))
    {
       m_backend.swap(other.backend());
    }
@@ -597,8 +606,8 @@ public:
    //
    // Use in boolean context, and explicit conversion operators:
    //
-#ifndef BOOST_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
-#  if defined(__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ < 7)
+#ifndef BOOST_MP_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
+#  if (defined(__GNUC__) && (__GNUC__ == 4) && (__GNUC_MINOR__ < 7)) || (defined(BOOST_INTEL) && (BOOST_INTEL <= 1500))
    //
    // Horrible workaround for gcc-4.6.x which always prefers the template
    // operator bool() rather than the non-template operator when converting to
@@ -625,7 +634,9 @@ public:
    {
       return !is_zero();
    }
-   explicit operator void()const {}
+#if BOOST_WORKAROUND(BOOST_GCC_VERSION, < 40800)
+   BOOST_MP_FORCEINLINE explicit operator void()const {}
+#endif
 #  endif
 #else
    typedef bool (self_type::*unmentionable_type)()const;
@@ -658,7 +669,7 @@ public:
    // Comparison:
    //
    BOOST_MP_FORCEINLINE int compare(const number<Backend, ExpressionTemplates>& o)const
-      BOOST_NOEXCEPT_IF(noexcept(std::declval<Backend>().compare(std::declval<Backend>())))
+      BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<Backend>().compare(std::declval<Backend>())))
    {
       return m_backend.compare(o.m_backend);
    }
@@ -752,7 +763,12 @@ private:
       bool bl = contains_self(e.left());
       bool br = contains_self(e.right());
 
-      if(bl && is_self(e.left()))
+      if(bl && br)
+      {
+         self_type temp(e);
+         temp.m_backend.swap(this->m_backend);
+      }
+      else if(bl && is_self(e.left()))
       {
          // Ignore the left node, it's *this, just add the right:
          do_add(e.right(), typename right_type::tag_type());
@@ -761,11 +777,6 @@ private:
       {
          // Ignore the right node, it's *this, just add the left:
          do_add(e.left(), typename left_type::tag_type());
-      }
-      else if(bl && br)
-      {
-         self_type temp(e);
-         temp.m_backend.swap(this->m_backend);
       }
       else if(!br && (bl || (left_depth >= right_depth)))
       { // br is always false, but if bl is true we must take the this branch:
@@ -790,7 +801,12 @@ private:
       bool bl = contains_self(e.left());
       bool br = contains_self(e.right());
 
-      if(bl && is_self(e.left()))
+      if(bl && br)
+      {
+         self_type temp(e);
+         temp.m_backend.swap(this->m_backend);
+      }
+      else if(bl && is_self(e.left()))
       {
          // Ignore the left node, it's *this, just subtract the right:
          do_subtract(e.right(), typename right_type::tag_type());
@@ -800,11 +816,6 @@ private:
          // Ignore the right node, it's *this, just subtract the left and negate the result:
          do_subtract(e.left(), typename left_type::tag_type());
          m_backend.negate();
-      }
-      else if(bl && br)
-      {
-         self_type temp(e);
-         temp.m_backend.swap(this->m_backend);
       }
       else if(!br && (bl || (left_depth >= right_depth)))
       { // br is always false, but if bl is true we must take the this branch:
@@ -830,7 +841,12 @@ private:
       bool bl = contains_self(e.left());
       bool br = contains_self(e.right());
 
-      if(bl && is_self(e.left()))
+      if(bl && br)
+      {
+         self_type temp(e);
+         temp.m_backend.swap(this->m_backend);
+      }
+      else if(bl && is_self(e.left()))
       {
          // Ignore the left node, it's *this, just add the right:
          do_multiplies(e.right(), typename right_type::tag_type());
@@ -839,11 +855,6 @@ private:
       {
          // Ignore the right node, it's *this, just add the left:
          do_multiplies(e.left(), typename left_type::tag_type());
-      }
-      else if(bl && br)
-      {
-         self_type temp(e);
-         temp.m_backend.swap(this->m_backend);
       }
       else if(!br && (bl || (left_depth >= right_depth)))
       { // br is always false, but if bl is true we must take the this branch:
@@ -1382,9 +1393,13 @@ private:
       do_multiplies(e.left(), typename left_type::tag_type());
       do_multiplies(e.right(), typename right_type::tag_type());
    }
-
+   //
+   // This rearrangement is disabled for integer types, the test on sizeof(Exp) is simply to make
+   // the disable_if dependent on the template argument (the size of 1 can never occur in practice).
+   //
    template <class Exp>
-   void do_multiplies(const Exp& e, const detail::divides&)
+   typename boost::disable_if_c<boost::multiprecision::number_category<self_type>::value == boost::multiprecision::number_kind_integer || sizeof(Exp) == 1>::type 
+      do_multiplies(const Exp& e, const detail::divides&)
    {
       typedef typename Exp::left_type left_type;
       typedef typename Exp::right_type right_type;
@@ -1399,8 +1414,13 @@ private:
       eval_multiply(m_backend, canonical_value(e.left().value()));
       eval_multiply(m_backend, canonical_value(e.right().value()));
    }
+   //
+   // This rearrangement is disabled for integer types, the test on sizeof(Exp) is simply to make
+   // the disable_if dependent on the template argument (the size of 1 can never occur in practice).
+   //
    template <class Exp>
-   void do_multiplies(const Exp& e, const detail::divide_immediates&)
+   typename boost::disable_if_c<boost::multiprecision::number_category<self_type>::value == boost::multiprecision::number_kind_integer || sizeof(Exp) == 1>::type
+      do_multiplies(const Exp& e, const detail::divide_immediates&)
    {
       using default_ops::eval_multiply;
       using default_ops::eval_divide;
@@ -1429,34 +1449,51 @@ private:
       do_divide(e.left(), typename left_type::tag_type());
       m_backend.negate();
    }
-
+   //
+   // This rearrangement is disabled for integer types, the test on sizeof(Exp) is simply to make
+   // the disable_if dependent on the template argument (the size of 1 can never occur in practice).
+   //
    template <class Exp>
-   void do_divide(const Exp& e, const detail::multiplies&)
+   typename boost::disable_if_c<boost::multiprecision::number_category<self_type>::value == boost::multiprecision::number_kind_integer || sizeof(Exp) == 1>::type
+      do_divide(const Exp& e, const detail::multiplies&)
    {
       typedef typename Exp::left_type left_type;
       typedef typename Exp::right_type right_type;
       do_divide(e.left(), typename left_type::tag_type());
       do_divide(e.right(), typename right_type::tag_type());
    }
-
+   //
+   // This rearrangement is disabled for integer types, the test on sizeof(Exp) is simply to make
+   // the disable_if dependent on the template argument (the size of 1 can never occur in practice).
+   //
    template <class Exp>
-   void do_divide(const Exp& e, const detail::divides&)
+   typename boost::disable_if_c<boost::multiprecision::number_category<self_type>::value == boost::multiprecision::number_kind_integer || sizeof(Exp) == 1>::type
+      do_divide(const Exp& e, const detail::divides&)
    {
       typedef typename Exp::left_type left_type;
       typedef typename Exp::right_type right_type;
       do_divide(e.left(), typename left_type::tag_type());
       do_multiplies(e.right(), typename right_type::tag_type());
    }
-
+   //
+   // This rearrangement is disabled for integer types, the test on sizeof(Exp) is simply to make
+   // the disable_if dependent on the template argument (the size of 1 can never occur in practice).
+   //
    template <class Exp>
-   void do_divides(const Exp& e, const detail::multiply_immediates&)
+   typename boost::disable_if_c<boost::multiprecision::number_category<self_type>::value == boost::multiprecision::number_kind_integer || sizeof(Exp) == 1>::type
+      do_divides(const Exp& e, const detail::multiply_immediates&)
    {
       using default_ops::eval_divide;
       eval_divide(m_backend, canonical_value(e.left().value()));
       eval_divide(m_backend, canonical_value(e.right().value()));
    }
+   //
+   // This rearrangement is disabled for integer types, the test on sizeof(Exp) is simply to make
+   // the disable_if dependent on the template argument (the size of 1 can never occur in practice).
+   //
    template <class Exp>
-   void do_divides(const Exp& e, const detail::divide_immediates&)
+   typename boost::disable_if_c<boost::multiprecision::number_category<self_type>::value == boost::multiprecision::number_kind_integer || sizeof(Exp) == 1>::type
+      do_divides(const Exp& e, const detail::divide_immediates&)
    {
       using default_ops::eval_multiply;
       using default_ops::eval_divide;
@@ -1660,7 +1697,7 @@ inline std::ostream& operator << (std::ostream& os, const number<Backend, Expres
       if((os.flags() & std::ios_base::left) == std::ios_base::left)
          s.append(static_cast<std::string::size_type>(ss - s.size()), fill);
       else
-         s.insert(0, static_cast<std::string::size_type>(ss - s.size()), fill);
+         s.insert(static_cast<std::string::size_type>(0), static_cast<std::string::size_type>(ss - s.size()), fill);
    }
    return os << s;
 }
@@ -1674,6 +1711,48 @@ inline std::ostream& operator << (std::ostream& os, const expression<tag, A1, A2
    value_type temp(r);
    return os << temp;
 }
+//
+// What follows is the input streaming code: this is not "proper" iostream code at all
+// but that's fiendishly hard to write when dealing with multiple backends all
+// with different requirements... yes we could deligate this to the backend author...
+// but we really want backends to be EASY to write!
+// For now just pull in all the characters that could possibly form the number
+// and let the backend's string parser make use of it.  This fixes most use cases
+// including CSV type formats such as those used by the Random lib.
+//
+inline std::string read_string_while(std::istream& is, std::string const& permitted_chars)
+{
+   std::ios_base::iostate state = std::ios_base::goodbit;
+   const std::istream::sentry sentry_check(is);
+   std::string result;
+
+   if(sentry_check)
+   {
+      int c = is.rdbuf()->sgetc();
+
+      for(;; c = is.rdbuf()->snextc())
+         if(std::istream::traits_type::eq_int_type(std::istream::traits_type::eof(), c))
+         { // end of file:
+            state |= std::ios_base::eofbit;
+            break;
+         }
+         else if(permitted_chars.find_first_of(std::istream::traits_type::to_char_type(c)) == std::string::npos)
+         {
+            // Invalid numeric character, stop reading:
+            //is.rdbuf()->sputbackc(static_cast<char>(c));
+            break;
+         }
+         else
+         {
+            result.append(1, std::istream::traits_type::to_char_type(c));
+         }
+   }
+
+   if(!result.size())
+      state |= std::ios_base::failbit;
+   is.setstate(state);
+   return result;
+}
 
 } // namespace detail
 
@@ -1683,19 +1762,48 @@ inline std::istream& operator >> (std::istream& is, number<Backend, ExpressionTe
    bool hex_format = (is.flags() & std::ios_base::hex) == std::ios_base::hex;
    bool oct_format = (is.flags() & std::ios_base::oct) == std::ios_base::oct;
    std::string s;
-   is >> s;
-   if(hex_format && (number_category<Backend>::value == number_kind_integer) && ((s[0] != '0') || (s[1] != 'x')))
-      s.insert(s.find_first_not_of("+-"), "0x");
-   if(oct_format && (number_category<Backend>::value == number_kind_integer) && (s[0] != '0'))
-      s.insert(s.find_first_not_of("+-"), "0");
-   r.assign(s);
+   switch(boost::multiprecision::number_category<number<Backend, ExpressionTemplates> >::value)
+   {
+   case boost::multiprecision::number_kind_integer:
+      if(oct_format)
+         s = detail::read_string_while(is, "+-01234567");
+      else if(hex_format)
+         s = detail::read_string_while(is, "+-xXabcdefABCDEF0123456789");
+      else
+         s = detail::read_string_while(is, "+-0123456789");
+      break;
+   case boost::multiprecision::number_kind_floating_point:
+      s = detail::read_string_while(is, "+-eE.0123456789infINFnanNANinfinityINFINITY");
+      break;
+   default:
+      is >> s;
+   }
+   if(s.size())
+   {
+      if(hex_format && (number_category<Backend>::value == number_kind_integer) && ((s[0] != '0') || (s[1] != 'x')))
+         s.insert(s.find_first_not_of("+-"), "0x");
+      if(oct_format && (number_category<Backend>::value == number_kind_integer) && (s[0] != '0'))
+         s.insert(s.find_first_not_of("+-"), "0");
+      r.assign(s);
+   }
+   else if(!is.fail())
+      is.setstate(std::istream::failbit);
    return is;
 }
 
 template <class Backend, expression_template_option ExpressionTemplates>
-BOOST_MP_FORCEINLINE void swap(number<Backend, ExpressionTemplates>& a, number<Backend, ExpressionTemplates>& b)
+BOOST_MP_FORCEINLINE void swap(number<Backend, ExpressionTemplates>& a, number<Backend, ExpressionTemplates>& b) 
+   BOOST_MP_NOEXCEPT_IF(noexcept(std::declval<number<Backend, ExpressionTemplates>&>() = std::declval<number<Backend, ExpressionTemplates>&>()))
 {
    a.swap(b);
+}
+//
+// Boost.Hash support, just call hash_value for the backend, which may or may not be supported:
+//
+template <class Backend, expression_template_option ExpressionTemplates>
+inline std::size_t hash_value(const number<Backend, ExpressionTemplates>& val)
+{
+   return hash_value(val.backend());
 }
 
 }  // namespace multiprecision
@@ -1721,9 +1829,9 @@ inline std::istream& operator >> (std::istream& is, rational<multiprecision::num
       is.get();
    }
    if(hex_format && ((s1[0] != '0') || (s1[1] != 'x')))
-      s1.insert(0, "0x");
+      s1.insert(static_cast<std::string::size_type>(0), "0x");
    if(oct_format && (s1[0] != '0'))
-      s1.insert(0, "0");
+      s1.insert(static_cast<std::string::size_type>(0), "0");
    v1.assign(s1);
    s1.erase();
    if(c == '/')
@@ -1737,39 +1845,15 @@ inline std::istream& operator >> (std::istream& is, rational<multiprecision::num
          is.get();
       }
       if(hex_format && ((s1[0] != '0') || (s1[1] != 'x')))
-         s1.insert(0, "0x");
+         s1.insert(static_cast<std::string::size_type>(0), "0x");
       if(oct_format && (s1[0] != '0'))
-         s1.insert(0, "0");
+         s1.insert(static_cast<std::string::size_type>(0), "0");
       v2.assign(s1);
    }
    else
       v2 = 1;
    r.assign(v1, v2);
    return is;
-}
-
-template <class T, multiprecision::expression_template_option ExpressionTemplates, class Arithmetic>
-typename boost::enable_if<boost::is_arithmetic<Arithmetic>, bool>::type operator == (const rational<multiprecision::number<T, ExpressionTemplates> >& a, const Arithmetic& b)
-{
-   return a == multiprecision::number<T, ExpressionTemplates>(b);
-}
-
-template <class T, multiprecision::expression_template_option ExpressionTemplates, class Arithmetic>
-typename boost::enable_if<boost::is_arithmetic<Arithmetic>, bool>::type operator == (const Arithmetic& b, const rational<multiprecision::number<T, ExpressionTemplates> >& a)
-{
-   return a == multiprecision::number<T, ExpressionTemplates>(b);
-}
-
-template <class T, multiprecision::expression_template_option ExpressionTemplates, class Arithmetic>
-typename boost::enable_if<boost::is_arithmetic<Arithmetic>, bool>::type operator != (const rational<multiprecision::number<T, ExpressionTemplates> >& a, const Arithmetic& b)
-{
-   return a != multiprecision::number<T, ExpressionTemplates>(b);
-}
-
-template <class T, multiprecision::expression_template_option ExpressionTemplates, class Arithmetic>
-typename boost::enable_if<boost::is_arithmetic<Arithmetic>, bool>::type operator != (const Arithmetic& b, const rational<multiprecision::number<T, ExpressionTemplates> >& a)
-{
-   return a != multiprecision::number<T, ExpressionTemplates>(b);
 }
 
 template <class T, multiprecision::expression_template_option ExpressionTemplates>
@@ -1784,11 +1868,38 @@ inline multiprecision::number<T, ExpressionTemplates> denominator(const rational
    return a.denominator();
 }
 
+namespace multiprecision
+{
+
+template <class I>
+struct component_type<boost::rational<I> >
+{
+   typedef I type;
+};
+
+}
+
 #ifdef BOOST_MSVC
 #pragma warning(pop)
 #endif
 
 } // namespaces
+
+#ifndef BOOST_NO_CXX11_HDR_FUNCTIONAL
+
+#include <functional>
+
+namespace std {
+
+   template <class Backend, boost::multiprecision::expression_template_option ExpressionTemplates>
+   struct hash<boost::multiprecision::number<Backend, ExpressionTemplates> >
+   {
+      std::size_t operator()(const boost::multiprecision::number<Backend, ExpressionTemplates>& val)const { return hash_value(val); }
+   };
+
+}
+
+#endif
 
 #include <boost/multiprecision/detail/ublas_interop.hpp>
 

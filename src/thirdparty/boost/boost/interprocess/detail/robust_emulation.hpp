@@ -11,7 +11,11 @@
 #ifndef BOOST_INTERPROCESS_ROBUST_EMULATION_HPP
 #define BOOST_INTERPROCESS_ROBUST_EMULATION_HPP
 
-#if defined(_MSC_VER)
+#ifndef BOOST_CONFIG_HPP
+#  include <boost/config.hpp>
+#endif
+#
+#if defined(BOOST_HAS_PRAGMA_ONCE)
 #pragma once
 #endif
 
@@ -21,8 +25,9 @@
 #include <boost/interprocess/sync/interprocess_recursive_mutex.hpp>
 #include <boost/interprocess/detail/atomic.hpp>
 #include <boost/interprocess/detail/os_file_functions.hpp>
-#include <boost/interprocess/detail/tmp_dir_helpers.hpp>
+#include <boost/interprocess/detail/shared_dir_helpers.hpp>
 #include <boost/interprocess/detail/intermodule_singleton.hpp>
+#include <boost/interprocess/detail/portable_intermodule_singleton.hpp>
 #include <boost/interprocess/exceptions.hpp>
 #include <boost/interprocess/sync/spin/wait.hpp>
 #include <boost/interprocess/sync/detail/common_algorithms.hpp>
@@ -63,7 +68,7 @@ inline const char *robust_lock_prefix()
 
 inline void robust_lock_path(std::string &s)
 {
-   tmp_folder(s);
+   get_shared_dir(s);
    s += "/";
    s += robust_lock_subdir_path();
 }
@@ -345,7 +350,7 @@ inline bool robust_spin_mutex<Mutex>::previous_owner_dead()
 {
    //Notifies if a owner recovery has been performed in the last lock()
    return atomic_read32(&this->state) == fixing_state;
-};
+}
 
 template<class Mutex>
 inline void robust_spin_mutex<Mutex>::unlock()

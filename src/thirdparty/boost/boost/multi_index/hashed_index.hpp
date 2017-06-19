@@ -1,4 +1,4 @@
-/* Copyright 2003-2013 Joaquin M Lopez Munoz.
+/* Copyright 2003-2015 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -32,6 +32,7 @@
 #include <boost/multi_index/detail/hash_index_iterator.hpp>
 #include <boost/multi_index/detail/index_node_base.hpp>
 #include <boost/multi_index/detail/modify_key_adaptor.hpp>
+#include <boost/multi_index/detail/promotes_arg.hpp>
 #include <boost/multi_index/detail/safe_mode.hpp>
 #include <boost/multi_index/detail/scope_guard.hpp>
 #include <boost/multi_index/detail/vartempl_support.hpp>
@@ -41,6 +42,7 @@
 #include <cmath>
 #include <cstddef>
 #include <functional>
+#include <iterator>
 #include <utility>
 
 #if !defined(BOOST_NO_CXX11_HDR_INITIALIZER_LIST)
@@ -226,9 +228,9 @@ public:
   /* iterators */
 
   iterator begin()BOOST_NOEXCEPT
-    {return make_iterator(node_type::from_impl(header()->next()));}
+    {return make_iterator(node_type::from_impl(header()->next()->prior()));}
   const_iterator begin()const BOOST_NOEXCEPT
-    {return make_iterator(node_type::from_impl(header()->next()));}
+    {return make_iterator(node_type::from_impl(header()->next()->prior()));}
   iterator       end()BOOST_NOEXCEPT{return make_iterator(header());}
   const_iterator end()const BOOST_NOEXCEPT{return make_iterator(header());}
   const_iterator cbegin()const BOOST_NOEXCEPT{return begin();}
@@ -314,25 +316,21 @@ public:
   {
     BOOST_MULTI_INDEX_HASHED_INDEX_CHECK_INVARIANT;
 
-    std::size_t       buc=buckets.position(hash_(k));
-    node_impl_pointer x=buckets.at(buc)->next();
-    if(x!=node_impl_pointer(0)){
-      x=x->next();
-      do{
-        if(eq_(k,key(node_type::from_impl(x)->value()))){
-          node_impl_pointer y=end_of_range(x);
-          size_type         s=0;
-          do{
-            node_impl_pointer z=node_alg::after(x);
-            this->final_erase_(
-              static_cast<final_node_type*>(node_type::from_impl(x)));
-            x=z;
-            ++s;
-          }while(x!=y);
-          return s;
-        }
-        x=node_alg::next_to_inspect(x);
-      }while(x!=node_impl_pointer(0));
+    std::size_t buc=buckets.position(hash_(k));
+    for(node_impl_pointer x=buckets.at(buc)->prior();
+        x!=node_impl_pointer(0);x=node_alg::next_to_inspect(x)){
+      if(eq_(k,key(node_type::from_impl(x)->value()))){
+        node_impl_pointer y=end_of_range(x);
+        size_type         s=0;
+        do{
+          node_impl_pointer z=node_alg::after(x);
+          this->final_erase_(
+            static_cast<final_node_type*>(node_type::from_impl(x)));
+          x=z;
+          ++s;
+        }while(x!=y);
+        return s;
+      }
     }
     return 0;
   }
@@ -462,6 +460,11 @@ public:
    * type as iterator.
    */
 
+  /* Implementation note: When CompatibleKey is consistently promoted to
+   * KeyFromValue::result_type for equality comparison, the promotion is made
+   * once in advance to increase efficiency.
+   */
+
   template<typename CompatibleKey>
   iterator find(const CompatibleKey& k)const
   {
@@ -475,18 +478,8 @@ public:
     const CompatibleKey& k,
     const CompatibleHash& hash,const CompatiblePred& eq)const
   {
-    std::size_t       buc=buckets.position(hash(k));
-    node_impl_pointer x=buckets.at(buc)->next();
-    if(x!=node_impl_pointer(0)){
-      x=x->next();
-      do{
-        if(eq(k,key(node_type::from_impl(x)->value()))){
-          return make_iterator(node_type::from_impl(x));
-        }
-        x=node_alg::next_to_inspect(x);
-      }while(x!=node_impl_pointer(0));
-    }
-    return end();
+    return find(
+      k,hash,eq,promotes_1st_arg<CompatiblePred,CompatibleKey,key_type>());
   }
 
   template<typename CompatibleKey>
@@ -502,24 +495,8 @@ public:
     const CompatibleKey& k,
     const CompatibleHash& hash,const CompatiblePred& eq)const
   {
-    std::size_t       buc=buckets.position(hash(k));
-    node_impl_pointer x=buckets.at(buc)->next();
-    if(x!=node_impl_pointer(0)){
-      x=x->next();
-      do{
-        if(eq(k,key(node_type::from_impl(x)->value()))){
-          size_type         res=0;
-          node_impl_pointer y=end_of_range(x);
-          do{
-            ++res;
-            x=node_alg::after(x);
-          }while(x!=y);
-          return res;
-        }
-        x=node_alg::next_to_inspect(x);
-      }while(x!=node_impl_pointer(0));
-    }
-    return 0;
+    return count(
+      k,hash,eq,promotes_1st_arg<CompatiblePred,CompatibleKey,key_type>());
   }
 
   template<typename CompatibleKey>
@@ -535,20 +512,8 @@ public:
     const CompatibleKey& k,
     const CompatibleHash& hash,const CompatiblePred& eq)const
   {
-    std::size_t       buc=buckets.position(hash(k));
-    node_impl_pointer x=buckets.at(buc)->next();
-    if(x!=node_impl_pointer(0)){
-      x=x->next();
-      do{
-        if(eq(k,key(node_type::from_impl(x)->value()))){
-          return std::pair<iterator,iterator>(
-            make_iterator(node_type::from_impl(x)),
-            make_iterator(node_type::from_impl(end_of_range(x))));
-        }
-        x=node_alg::next_to_inspect(x);
-      }while(x!=node_impl_pointer(0));
-    }
-    return std::pair<iterator,iterator>(end(),end());
+    return equal_range(
+      k,hash,eq,promotes_1st_arg<CompatiblePred,CompatibleKey,key_type>());
   }
 
   /* bucket interface */
@@ -558,14 +523,10 @@ public:
 
   size_type bucket_size(size_type n)const
   {
-    size_type         res=0;
-    node_impl_pointer x=buckets.at(n)->next();
-    if(x!=node_impl_pointer(0)){
-      x=x->next();
-      do{
-        ++res;
-        x=node_alg::after(x);
-      }while(!node_alg::is_first_of_bucket(x));
+    size_type res=0;
+    for(node_impl_pointer x=buckets.at(n)->prior();
+        x!=node_impl_pointer(0);x=node_alg::after_local(x)){
+      ++res;
     }
     return res;
   }
@@ -582,9 +543,9 @@ public:
 
   const_local_iterator begin(size_type n)const
   {
-    node_impl_pointer x=buckets.at(n)->next();
+    node_impl_pointer x=buckets.at(n)->prior();
     if(x==node_impl_pointer(0))return end(n);
-    return make_local_iterator(node_type::from_impl(x->next()));
+    return make_local_iterator(node_type::from_impl(x));
   }
 
   local_iterator end(size_type n)
@@ -739,23 +700,23 @@ BOOST_MULTI_INDEX_PROTECTED_IF_MEMBER_TEMPLATE_FRIENDS:
                         org=end_org,
                         cpy=header()->impl();
       do{
-        node_impl_pointer next_org=org->next(),
-                          next_cpy=
+        node_impl_pointer prev_org=org->prior(),
+                          prev_cpy=
           static_cast<node_type*>(map.find(static_cast<final_node_type*>(
-            node_type::from_impl(next_org))))->impl();
-        cpy->next()=next_cpy;
-        if(node_alg::is_first_of_bucket(next_org)){
-          node_impl_base_pointer buc_org=next_org->prior(),
+            node_type::from_impl(prev_org))))->impl();
+        cpy->prior()=prev_cpy;
+        if(node_alg::is_first_of_bucket(org)){
+          node_impl_base_pointer buc_org=prev_org->next(),
                                  buc_cpy=
             buckets.begin()+(buc_org-x.buckets.begin());
-          next_cpy->prior()=buc_cpy;
-          buc_cpy->next()=cpy;
+          prev_cpy->next()=buc_cpy;
+          buc_cpy->prior()=cpy;
         }
         else{
-          next_cpy->prior()=node_impl_type::base_pointer_from(cpy);
+          prev_cpy->next()=node_impl_type::base_pointer_from(cpy);
         }
-        org=next_org;
-        cpy=next_cpy;
+        org=prev_org;
+        cpy=prev_cpy;
       }while(org!=end_org);
     }
 
@@ -775,32 +736,34 @@ BOOST_MULTI_INDEX_PROTECTED_IF_MEMBER_TEMPLATE_FRIENDS:
                           next_cpy=
           static_cast<node_type*>(map.find(static_cast<final_node_type*>(
             node_type::from_impl(next_org))))->impl();
-        if(org->next()==next_org){
-          cpy->next()=next_cpy;
-          if(node_alg::is_first_of_bucket(next_org)){
-            node_impl_base_pointer buc_org=next_org->prior(),
-                                   buc_cpy=
-              buckets.begin()+(buc_org-x.buckets.begin());
-            next_cpy->prior()=buc_cpy;
-            buc_cpy->next()=cpy;
+        if(node_alg::is_first_of_bucket(next_org)){
+          node_impl_base_pointer buc_org=org->next(),
+                                 buc_cpy=
+            buckets.begin()+(buc_org-x.buckets.begin());
+          cpy->next()=buc_cpy;
+          buc_cpy->prior()=next_cpy;
+          next_cpy->prior()=cpy;
+        }
+        else{
+          if(org->next()==node_impl_type::base_pointer_from(next_org)){
+            cpy->next()=node_impl_type::base_pointer_from(next_cpy);
           }
-          else if(next_org->prior()!=node_impl_type::base_pointer_from(org)){
-            next_cpy->prior()=
+          else{
+            cpy->next()=
               node_impl_type::base_pointer_from(
                 static_cast<node_type*>(map.find(static_cast<final_node_type*>(
                   node_type::from_impl(
-                    node_impl_type::pointer_from(next_org->prior())
-                  ))))->impl());
+                    node_impl_type::pointer_from(org->next())))))->impl());
+          }
+
+          if(next_org->prior()!=org){
+            next_cpy->prior()=
+              static_cast<node_type*>(map.find(static_cast<final_node_type*>(
+                node_type::from_impl(next_org->prior()))))->impl();
           }
           else{
-            next_cpy->prior()=node_impl_type::base_pointer_from(cpy);
+            next_cpy->prior()=cpy;
           }
-        }
-        else{
-          cpy->next()=
-            static_cast<node_type*>(map.find(static_cast<final_node_type*>(
-              node_type::from_impl(org->next()))))->impl();
-          next_cpy->prior()=node_impl_type::base_pointer_from(cpy);
         }
         org=next_org;
         cpy=next_cpy;
@@ -863,8 +826,8 @@ BOOST_MULTI_INDEX_PROTECTED_IF_MEMBER_TEMPLATE_FRIENDS:
 
   void delete_all_nodes_(hashed_unique_tag)
   {
-    for(node_impl_pointer x_end=header()->impl(),x=x_end->next();x!=x_end;){
-      node_impl_pointer y=x->next();
+    for(node_impl_pointer x_end=header()->impl(),x=x_end->prior();x!=x_end;){
+      node_impl_pointer y=x->prior();
       this->final_delete_node_(
         static_cast<final_node_type*>(node_type::from_impl(x)));
       x=y;
@@ -873,17 +836,16 @@ BOOST_MULTI_INDEX_PROTECTED_IF_MEMBER_TEMPLATE_FRIENDS:
 
   void delete_all_nodes_(hashed_non_unique_tag)
   {
-    for(node_impl_pointer x_end=header()->impl(),x=x_end->next();x!=x_end;){
-      node_impl_pointer y=x->next();
-      if(node_alg::is_first_of_group(x)){
-        /* Make the n-1 node next() pointer forward-linked so that it won't
+    for(node_impl_pointer x_end=header()->impl(),x=x_end->prior();x!=x_end;){
+      node_impl_pointer y=x->prior();
+      if(y->next()!=node_impl_type::base_pointer_from(x)&&
+         y->next()->prior()!=x){ /* n-1 of group */
+        /* Make the second node prior() pointer back-linked so that it won't
          * refer to a deleted node when the time for its own destruction comes.
-         * Relies on is_first_of_group(x) not visiting nodes previous to x.
          */
 
-        node_impl_pointer last=
-          node_impl_type::pointer_from(x->next()->prior());
-        last->prior()->next()=last;
+        node_impl_pointer first=node_impl_type::pointer_from(y->next());
+        first->next()->prior()=first;
       }
       this->final_delete_node_(
         static_cast<final_node_type*>(node_type::from_impl(x)));
@@ -1047,6 +1009,60 @@ BOOST_MULTI_INDEX_PROTECTED_IF_MEMBER_TEMPLATE_FRIENDS:
     BOOST_CATCH_END
   }
 
+  /* comparison */
+
+#if !defined(BOOST_NO_MEMBER_TEMPLATE_FRIENDS)
+  /* defect macro refers to class, not function, templates, but anyway */
+
+  template<typename K,typename H,typename P,typename S,typename T,typename C>
+  friend bool operator==(
+    const hashed_index<K,H,P,S,T,C>&,const hashed_index<K,H,P,S,T,C>& y);
+#endif
+
+  bool equals(const hashed_index& x)const{return equals(x,Category());}
+
+  bool equals(const hashed_index& x,hashed_unique_tag)const
+  {
+    if(size()!=x.size())return false;
+    for(const_iterator it=begin(),it_end=end(),it2_end=x.end();
+        it!=it_end;++it){
+      const_iterator it2=x.find(key(*it));
+      if(it2==it2_end||!(*it==*it2))return false;
+    }
+    return true;
+  }
+
+  bool equals(const hashed_index& x,hashed_non_unique_tag)const
+  {
+    if(size()!=x.size())return false;
+    for(const_iterator it=begin(),it_end=end();it!=it_end;){
+      const_iterator it2,it2_last;
+      boost::tie(it2,it2_last)=x.equal_range(key(*it));
+      if(it2==it2_last)return false;
+
+      const_iterator it_last=make_iterator(
+        node_type::from_impl(end_of_range(it.get_node()->impl())));
+      if(std::distance(it,it_last)!=std::distance(it2,it2_last))return false;
+
+      /* From is_permutation code in
+       * http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3068.pdf
+       */
+
+      for(;it!=it_last;++it,++it2){
+        if(!(*it==*it2))break;
+      }
+      if(it!=it_last){
+        for(const_iterator scan=it;scan!=it_last;++scan){
+          if(std::find(it,scan,*scan)!=scan)continue;
+          std::ptrdiff_t matches=std::count(it2,it2_last,*scan);
+          if(matches==0||matches!=std::count(scan,it_last,*scan))return false;
+        }
+        it=it_last;
+      }
+    }
+    return true;
+  }
+
 #if !defined(BOOST_MULTI_INDEX_DISABLE_SERIALIZATION)
   /* serialization */
 
@@ -1134,15 +1150,12 @@ private:
   bool link_point(
     value_param_type v,node_impl_base_pointer& pos,hashed_unique_tag)
   {
-    if(pos->next()!=node_impl_pointer(0)){
-      node_impl_pointer x=pos->next()->next();
-      do{
-        if(eq_(key(v),key(node_type::from_impl(x)->value()))){
-          pos=node_impl_type::base_pointer_from(x);
-          return false;
-        }
-        x=node_alg::next_to_inspect(x);
-      }while(x!=node_impl_pointer(0));
+    for(node_impl_pointer x=pos->prior();x!=node_impl_pointer(0);
+        x=node_alg::after_local(x)){
+      if(eq_(key(v),key(node_type::from_impl(x)->value()))){
+        pos=node_impl_type::base_pointer_from(x);
+        return false;
+      }
     }
     return true;
   }
@@ -1150,16 +1163,13 @@ private:
   bool link_point(
     value_param_type v,link_info_non_unique& pos,hashed_non_unique_tag)
   {
-    if(pos.first->next()!=node_impl_pointer(0)){
-      node_impl_pointer x=pos.first->next()->next();
-      do{
-        if(eq_(key(v),key(node_type::from_impl(x)->value()))){
-          pos.first=node_impl_type::base_pointer_from(x);
-          pos.last=node_impl_type::base_pointer_from(last_of_range(x));
-          return true;
-        }
-        x=node_alg::next_to_inspect(x);
-      }while(x!=node_impl_pointer(0));
+    for(node_impl_pointer x=pos.first->prior();x!=node_impl_pointer(0);
+        x=node_alg::next_to_inspect(x)){
+      if(eq_(key(v),key(node_type::from_impl(x)->value()))){
+        pos.first=node_impl_type::base_pointer_from(x);
+        pos.last=node_impl_type::base_pointer_from(last_of_range(x));
+        return true;
+      }
     }
     return true;
   }
@@ -1177,23 +1187,51 @@ private:
   node_impl_pointer last_of_range(
     node_impl_pointer x,hashed_non_unique_tag)const
   {
-    node_impl_pointer      y=x->next();
-    node_impl_base_pointer z=y->prior();
-    if(z->next()==x)return x;                       /* last of bucket */
-    else if(z!=node_impl_type::base_pointer_from(x)){
-      return node_impl_type::pointer_from(z);      /* group of size>2 */
-    }
-    else{
-      return                                  /* range of size 1 or 2 */
+    node_impl_base_pointer y=x->next();
+    node_impl_pointer      z=y->prior();
+    if(z==x){                      /* range of size 1 or 2 */
+      node_impl_pointer yy=node_impl_type::pointer_from(y);
+      return
         eq_(
           key(node_type::from_impl(x)->value()),
-          key(node_type::from_impl(y)->value()))?y:x;
+          key(node_type::from_impl(yy)->value()))?yy:x;
     }
+    else if(z->prior()==x)               /* last of bucket */
+      return x;
+    else                                /* group of size>2 */        
+      return z;
   }
 
   node_impl_pointer end_of_range(node_impl_pointer x)const
   {
-    return last_of_range(x)->next();
+    return end_of_range(x,Category());
+  }
+
+  node_impl_pointer end_of_range(node_impl_pointer x,hashed_unique_tag)const
+  {
+    return node_alg::after(last_of_range(x));
+  }
+
+  node_impl_pointer end_of_range(
+    node_impl_pointer x,hashed_non_unique_tag)const
+  {
+    node_impl_base_pointer y=x->next();
+    node_impl_pointer      z=y->prior();
+    if(z==x){                      /* range of size 1 or 2 */
+      node_impl_pointer yy=node_impl_type::pointer_from(y);
+      if(!eq_(
+           key(node_type::from_impl(x)->value()),
+           key(node_type::from_impl(yy)->value())))yy=x;
+      return yy->next()->prior()==yy?
+               node_impl_type::pointer_from(yy->next()):
+               yy->next()->prior();
+    }
+    else if(z->prior()==x)               /* last of bucket */
+      return z;
+    else                                /* group of size>2 */        
+      return z->next()->prior()==z?
+               node_impl_type::pointer_from(z->next()):
+               z->next()->prior();
   }
 
   void link(node_type* x,const link_info& pos)
@@ -1233,7 +1271,7 @@ private:
 
   void calculate_max_load()
   {
-    float fml=static_cast<float>(mlf*bucket_count());
+    float fml=static_cast<float>(mlf*static_cast<float>(bucket_count()));
     max_load=(std::numeric_limits<size_type>::max)();
     if(max_load>fml)max_load=static_cast<size_type>(fml);
   }
@@ -1254,33 +1292,50 @@ private:
   {
     node_impl_type    cpy_end_node;
     node_impl_pointer cpy_end=node_impl_pointer(&cpy_end_node),
-                      begin_=header()->next(),
                       end_=header()->impl();
     bucket_array_type buckets_cpy(get_allocator(),cpy_end,n);
 
     if(size()!=0){
-      auto_space<std::size_t,allocator_type> hashes(get_allocator(),size());
+      auto_space<
+        std::size_t,allocator_type>       hashes(get_allocator(),size());
+      auto_space<
+        node_impl_pointer,allocator_type> node_ptrs(get_allocator(),size());
+      std::size_t                         i=0,size_=size();
+      bool                                within_bucket=false;
+      BOOST_TRY{
+        for(;i!=size_;++i){
+          node_impl_pointer x=end_->prior();
 
-      std::size_t       i=0;
-      node_impl_pointer x=header()->next();
-      while(x!=end_){
-        hashes.data()[i++]=hash_(key(node_type::from_impl(x)->value()));
-        x=x->next();
-      }
+          /* only this can possibly throw */
+          std::size_t h=hash_(key(node_type::from_impl(x)->value()));
 
-      i=0;
-      x=begin_;
-      while(x!=end_){
-        std::size_t h=hashes.data()[i++];
-        node_impl_pointer y=x->next();
-        node_alg::link(x,buckets_cpy.at(buckets_cpy.position(h)),cpy_end);
-        x=y;
+          hashes.data()[i]=h;
+          node_ptrs.data()[i]=x;
+          within_bucket=!node_alg::unlink_last(end_);
+          node_alg::link(x,buckets_cpy.at(buckets_cpy.position(h)),cpy_end);
+        }
       }
+      BOOST_CATCH(...){
+        if(i!=0){
+          std::size_t prev_buc=buckets.position(hashes.data()[i-1]);
+          if(!within_bucket)prev_buc=~prev_buc;
+
+          for(std::size_t j=i;j--;){
+            std::size_t       buc=buckets.position(hashes.data()[j]);
+            node_impl_pointer x=node_ptrs.data()[j];
+            if(buc==prev_buc)node_alg::append(x,end_);
+            else node_alg::link(x,buckets.at(buc),end_);
+            prev_buc=buc;
+          }
+        }
+        BOOST_RETHROW;
+      }
+      BOOST_CATCH_END
     }
 
-    end_->next()=cpy_end->next()!=cpy_end?cpy_end->next():end_;
-    end_->prior()=cpy_end->prior();
-    end_->next()->prior()->next()=end_->prior()->next()->next()=end_;
+    end_->prior()=cpy_end->prior()!=cpy_end?cpy_end->prior():end_;
+    end_->next()=cpy_end->next();
+    end_->prior()->next()->prior()=end_->next()->prior()->prior()=end_;
     buckets.swap(buckets_cpy);
     calculate_max_load();
   }
@@ -1289,41 +1344,59 @@ private:
   {
     node_impl_type    cpy_end_node;
     node_impl_pointer cpy_end=node_impl_pointer(&cpy_end_node),
-                      begin_=header()->next(),
                       end_=header()->impl();
     bucket_array_type buckets_cpy(get_allocator(),cpy_end,n);
 
     if(size()!=0){
       auto_space<
-        std::size_t,allocator_type> hashes(get_allocator(),size());
+        std::size_t,allocator_type>       hashes(get_allocator(),size());
       auto_space<
-        node_impl_pointer,
-        allocator_type>             range_lasts(get_allocator(),size());
+        node_impl_pointer,allocator_type> node_ptrs(get_allocator(),size());
+      std::size_t                         i=0;
+      bool                                within_bucket=false;
+      BOOST_TRY{
+        for(;;++i){
+          node_impl_pointer x=end_->prior();
+          if(x==end_)break;
 
-      std::size_t       i=0;
-      node_impl_pointer x=begin_;
-      while(x!=end_){
-        hashes.data()[i]=hash_(key(node_type::from_impl(x)->value()));
-        x=last_of_range(x);
-        range_lasts.data()[i++]=x;
-        x=x->next();
-      }
+          /* only this can possibly throw */
+          std::size_t h=hash_(key(node_type::from_impl(x)->value()));
 
-      i=0;
-      x=begin_;
-      while(x!=end_){
-        std::size_t       h=hashes.data()[i];
-        node_impl_pointer last=range_lasts.data()[i++],
-                          y=last->next();
-        node_alg::link_range(
-          x,last,buckets_cpy.at(buckets_cpy.position(h)),cpy_end);
-        x=y;
+          hashes.data()[i]=h;
+          node_ptrs.data()[i]=x;
+          std::pair<node_impl_pointer,bool> p=
+            node_alg::unlink_last_group(end_);
+          node_alg::link_range(
+            p.first,x,buckets_cpy.at(buckets_cpy.position(h)),cpy_end);
+          within_bucket=!(p.second);
+        }
       }
+      BOOST_CATCH(...){
+        if(i!=0){
+          std::size_t prev_buc=buckets.position(hashes.data()[i-1]);
+          if(!within_bucket)prev_buc=~prev_buc;
+
+          for(std::size_t j=i;j--;){
+            std::size_t       buc=buckets.position(hashes.data()[j]);
+            node_impl_pointer x=node_ptrs.data()[j],
+                              y=
+              x->prior()->next()!=node_impl_type::base_pointer_from(x)&&
+              x->prior()->next()->prior()!=x?
+                node_impl_type::pointer_from(x->prior()->next()):x;
+            node_alg::unlink_range(y,x);
+            if(buc==prev_buc)node_alg::append_range(y,x,end_);
+            else node_alg::link_range(y,x,buckets.at(buc),end_);
+            prev_buc=buc;
+          }
+        }
+        BOOST_RETHROW;
+      }
+      BOOST_CATCH_END
     }
 
-    end_->next()=cpy_end->next()!=cpy_end?cpy_end->next():end_;
-    end_->prior()=cpy_end->prior();
-    end_->next()->prior()->next()=end_->prior()->next()->next()=end_;
+    end_->prior()=cpy_end->prior()!=cpy_end?cpy_end->prior():end_;
+    end_->next()=cpy_end->next();
+    end_->prior()->next()->prior()=end_->next()->prior()->prior()=end_;
     buckets.swap(buckets_cpy);
     calculate_max_load();
   }
@@ -1337,15 +1410,11 @@ private:
     node_impl_pointer x,key_param_type k,std::size_t buc,
     hashed_unique_tag)const
   {
-    bool              found=false;
-    node_impl_pointer y=buckets.at(buc)->next();
-    if(y!=node_impl_pointer(0)){
-      y=y->next();
-      do{
-        if(y==x)found=true;
-        else if(eq_(k,key(node_type::from_impl(y)->value())))return false;
-        y=y->next();
-      }while(!node_alg::is_first_of_bucket(y));
+    bool found=false;
+    for(node_impl_pointer y=buckets.at(buc)->prior();
+        y!=node_impl_pointer(0);y=node_alg::after_local(y)){
+      if(y==x)found=true;
+      else if(eq_(k,key(node_type::from_impl(y)->value())))return false;
     }
     return found;
   }
@@ -1354,55 +1423,55 @@ private:
     node_impl_pointer x,key_param_type k,std::size_t buc,
     hashed_non_unique_tag)const
   {
-    bool              found=false;
-    node_impl_pointer y=buckets.at(buc)->next();
-    if(y!=node_impl_pointer(0)){
-      int range_size=0;
-      y=y->next();
-      do{
-        if(node_alg::is_first_of_group(y)){ /* group of 3 or more */
-          if(y==x){
-            /* in place <-> equal to some other member of the group */
-            return eq_(k,key(node_type::from_impl(y->next())->value()));
-          }
-          else{
-            node_impl_pointer z=y->next()->prior()->next(); /* end of range */
-            if(eq_(k,key(node_type::from_impl(y)->value()))){
-              if(found)return false; /* x lies outside */
-              do{
-                if(y==x)return true;
-                y=node_alg::after(y);
-              }while(y!=z);
-              return false; /* x not found */
-            }
-            else{
-              if(range_size==1&&!found)return false;
-              if(range_size==2)return found;
-              range_size=0;
-              y=z; /* skip range (and potentially x, too, which is fine) */
-            }
-          }
+    bool found=false;
+    int  range_size=0;
+    for(node_impl_pointer y=buckets.at(buc)->prior();y!=node_impl_pointer(0);){
+      if(node_alg::is_first_of_group(y)){ /* group of 3 or more */
+        if(y==x){
+          /* in place <-> equal to some other member of the group */
+          return eq_(
+            k,
+            key(node_type::from_impl(
+              node_impl_type::pointer_from(y->next()))->value()));
         }
-        else{ /* group of 1 or 2 */
-          if(y==x){
-            if(range_size==1)return true;
-            range_size=1;
-            found=true;
-          }
-          else if(eq_(k,key(node_type::from_impl(y)->value()))){
-            if(range_size==0&&found)return false;
-            if(range_size==1&&!found)return false;
-            if(range_size==2)return false;
-            ++range_size;
+        else{
+          node_impl_pointer z=
+            node_alg::after_local(y->next()->prior()); /* end of range */
+          if(eq_(k,key(node_type::from_impl(y)->value()))){
+            if(found)return false; /* x lies outside */
+            do{
+              if(y==x)return true;
+              y=node_alg::after_local(y);
+            }while(y!=z);
+            return false; /* x not found */
           }
           else{
             if(range_size==1&&!found)return false;
             if(range_size==2)return found;
             range_size=0;
+            y=z; /* skip range (and potentially x, too, which is fine) */
           }
-          y=y->next(); /* ~ y=node_alg::after(y) outside groups of 3 or more */
         }
-      }while(!node_alg::is_first_of_bucket(y));
+      }
+      else{ /* group of 1 or 2 */
+        if(y==x){
+          if(range_size==1)return true;
+          range_size=1;
+          found=true;
+        }
+        else if(eq_(k,key(node_type::from_impl(y)->value()))){
+          if(range_size==0&&found)return false;
+          if(range_size==1&&!found)return false;
+          if(range_size==2)return false;
+          ++range_size;
+        }
+        else{
+          if(range_size==1&&!found)return false;
+          if(range_size==2)return found;
+          range_size=0;
+        }
+        y=node_alg::after_local(y);
+      }
     }
     return found;
   }
@@ -1438,6 +1507,95 @@ private:
     return make_iterator(p.first);
   }
 
+  template<
+    typename CompatibleHash,typename CompatiblePred
+  >
+  iterator find(
+    const key_type& k,
+    const CompatibleHash& hash,const CompatiblePred& eq,mpl::true_)const
+  {
+    return find(k,hash,eq,mpl::false_());
+  }
+
+  template<
+    typename CompatibleKey,typename CompatibleHash,typename CompatiblePred
+  >
+  iterator find(
+    const CompatibleKey& k,
+    const CompatibleHash& hash,const CompatiblePred& eq,mpl::false_)const
+  {
+    std::size_t buc=buckets.position(hash(k));
+    for(node_impl_pointer x=buckets.at(buc)->prior();
+        x!=node_impl_pointer(0);x=node_alg::next_to_inspect(x)){
+      if(eq(k,key(node_type::from_impl(x)->value()))){
+        return make_iterator(node_type::from_impl(x));
+      }
+    }
+    return end();
+  }
+
+  template<
+    typename CompatibleHash,typename CompatiblePred
+  >
+  size_type count(
+    const key_type& k,
+    const CompatibleHash& hash,const CompatiblePred& eq,mpl::true_)const
+  {
+    return count(k,hash,eq,mpl::false_());
+  }
+
+  template<
+    typename CompatibleKey,typename CompatibleHash,typename CompatiblePred
+  >
+  size_type count(
+    const CompatibleKey& k,
+    const CompatibleHash& hash,const CompatiblePred& eq,mpl::false_)const
+  {
+    std::size_t buc=buckets.position(hash(k));
+    for(node_impl_pointer x=buckets.at(buc)->prior();
+        x!=node_impl_pointer(0);x=node_alg::next_to_inspect(x)){
+      if(eq(k,key(node_type::from_impl(x)->value()))){
+        size_type         res=0;
+        node_impl_pointer y=end_of_range(x);
+        do{
+          ++res;
+          x=node_alg::after(x);
+        }while(x!=y);
+        return res;
+      }
+    }
+    return 0;
+  }
+
+  template<
+    typename CompatibleHash,typename CompatiblePred
+  >
+  std::pair<iterator,iterator> equal_range(
+    const key_type& k,
+    const CompatibleHash& hash,const CompatiblePred& eq,mpl::true_)const
+  {
+    return equal_range(k,hash,eq,mpl::false_());
+  }
+
+  template<
+    typename CompatibleKey,typename CompatibleHash,typename CompatiblePred
+  >
+  std::pair<iterator,iterator> equal_range(
+    const CompatibleKey& k,
+    const CompatibleHash& hash,const CompatiblePred& eq,mpl::false_)const
+  {
+    std::size_t buc=buckets.position(hash(k));
+    for(node_impl_pointer x=buckets.at(buc)->prior();
+        x!=node_impl_pointer(0);x=node_alg::next_to_inspect(x)){
+      if(eq(k,key(node_type::from_impl(x)->value()))){
+        return std::pair<iterator,iterator>(
+          make_iterator(node_type::from_impl(x)),
+          make_iterator(node_type::from_impl(end_of_range(x))));
+      }
+    }
+    return std::pair<iterator,iterator>(end(),end());
+  }
+
   key_from_value               key;
   hasher                       hash_;
   key_equal                    eq_;
@@ -1450,6 +1608,30 @@ private:
 #pragma parse_mfunc_templ reset
 #endif
 };
+
+/* comparison */
+
+template<
+  typename KeyFromValue,typename Hash,typename Pred,
+  typename SuperMeta,typename TagList,typename Category
+>
+bool operator==(
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& x,
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& y)
+{
+  return x.equals(y);
+}
+
+template<
+  typename KeyFromValue,typename Hash,typename Pred,
+  typename SuperMeta,typename TagList,typename Category
+>
+bool operator!=(
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& x,
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& y)
+{
+  return !(x==y);
+}
 
 /*  specialized algorithms */
 
@@ -1532,7 +1714,7 @@ template<
 inline boost::mpl::true_* boost_foreach_is_noncopyable(
   boost::multi_index::detail::hashed_index<
     KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>*&,
-  boost::foreach::tag)
+  boost_foreach_argument_dependent_lookup_hack)
 {
   return 0;
 }

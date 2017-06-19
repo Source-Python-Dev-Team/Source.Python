@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: bitand.hpp 86682 2013-11-13 17:38:31Z eldiener $
-// $Date: 2013-11-13 12:38:31 -0500 (Wed, 13 Nov 2013) $
-// $Revision: 86682 $
+// $Id$
+// $Date$
+// $Revision$
 
 // agurt, 23/jan/10: workaround a conflict with <iso646.h> header's 
 // macros, see http://tinyurl.com/ycwdxco; 'defined(bitand)'

@@ -28,43 +28,6 @@
 namespace boost { 
 namespace archive {
 
-// same as binary_wiarchive below - without the shared_ptr_helper
-class naked_binary_wiarchive : 
-    public binary_iarchive_impl<
-        boost::archive::naked_binary_wiarchive, 
-        std::wistream::char_type, 
-        std::wistream::traits_type
-    >
-{
-public:
-    naked_binary_wiarchive(std::wistream & is, unsigned int flags = 0) :
-        binary_iarchive_impl<
-            naked_binary_wiarchive, 
-            std::wistream::char_type, 
-            std::wistream::traits_type
-        >(is, flags)
-    {}
-    naked_binary_wiarchive(std::wstreambuf & bsb, unsigned int flags = 0) :
-        binary_iarchive_impl<
-            naked_binary_wiarchive, 
-            std::wistream::char_type, 
-            std::wistream::traits_type
-        >(bsb, flags)
-    {}
-};
-
-} // namespace archive
-} // namespace boost
-
-// note special treatment of shared_ptr. This type needs a special
-// structure associated with every archive.  We created a "mix-in"
-// class to provide this functionality.  Since shared_ptr holds a
-// special esteem in the boost library - we included it here by default.
-#include <boost/archive/shared_ptr_helper.hpp>
-
-namespace boost { 
-namespace archive {
-
 class binary_wiarchive : 
     public binary_iarchive_impl<
         binary_wiarchive, std::wistream::char_type, std::wistream::traits_type

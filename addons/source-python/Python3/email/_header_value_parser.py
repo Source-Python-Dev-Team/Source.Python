@@ -439,7 +439,7 @@ class UnstructuredTokenList(TokenList):
                 if folded.append_if_fits(part):
                     continue
             if part.has_fws:
-                part.fold(folded)
+                part._fold(folded)
                 continue
             # It can't be split...we just have to put it on its own line.
             folded.append(tstr)
@@ -460,7 +460,7 @@ class UnstructuredTokenList(TokenList):
                     last_ew = len(res)
                 else:
                     tl = get_unstructured(''.join(res[last_ew:] + [spart]))
-                    res.append(tl.as_encoded_word())
+                    res.append(tl.as_encoded_word(charset))
         return ''.join(res)
 
 
@@ -652,8 +652,8 @@ class Comment(WhiteSpaceTokenList):
         if value.token_type == 'comment':
             return str(value)
         return str(value).replace('\\', '\\\\').replace(
-                                  '(', '\(').replace(
-                                  ')', '\)')
+                                  '(', r'\(').replace(
+                                  ')', r'\)')
 
     @property
     def content(self):
@@ -1356,15 +1356,15 @@ RouteComponentMarker = ValueTerminal('@', 'route-component-marker')
 
 _wsp_splitter = re.compile(r'([{}]+)'.format(''.join(WSP))).split
 _non_atom_end_matcher = re.compile(r"[^{}]+".format(
-    ''.join(ATOM_ENDS).replace('\\','\\\\').replace(']','\]'))).match
+    ''.join(ATOM_ENDS).replace('\\','\\\\').replace(']',r'\]'))).match
 _non_printable_finder = re.compile(r"[\x00-\x20\x7F]").findall
 _non_token_end_matcher = re.compile(r"[^{}]+".format(
-    ''.join(TOKEN_ENDS).replace('\\','\\\\').replace(']','\]'))).match
+    ''.join(TOKEN_ENDS).replace('\\','\\\\').replace(']',r'\]'))).match
 _non_attribute_end_matcher = re.compile(r"[^{}]+".format(
-    ''.join(ATTRIBUTE_ENDS).replace('\\','\\\\').replace(']','\]'))).match
+    ''.join(ATTRIBUTE_ENDS).replace('\\','\\\\').replace(']',r'\]'))).match
 _non_extended_attribute_end_matcher = re.compile(r"[^{}]+".format(
     ''.join(EXTENDED_ATTRIBUTE_ENDS).replace(
-                                    '\\','\\\\').replace(']','\]'))).match
+                                    '\\','\\\\').replace(']',r'\]'))).match
 
 def _validate_xtext(xtext):
     """If input token contains ASCII non-printables, register a defect."""
@@ -1517,12 +1517,12 @@ def get_unstructured(value):
     return unstructured
 
 def get_qp_ctext(value):
-    """ctext = <printable ascii except \ ( )>
+    r"""ctext = <printable ascii except \ ( )>
 
     This is not the RFC ctext, since we are handling nested comments in comment
     and unquoting quoted-pairs here.  We allow anything except the '()'
     characters, but if we find any ASCII other than the RFC defined printable
-    ASCII an NonPrintableDefect is added to the token's defects list.  Since
+    ASCII, a NonPrintableDefect is added to the token's defects list.  Since
     quoted pairs are converted to their unquoted values, what is returned is
     a 'ptext' token.  In this case it is a WhiteSpaceTerminal, so it's value
     is ' '.
@@ -1537,7 +1537,7 @@ def get_qcontent(value):
     """qcontent = qtext / quoted-pair
 
     We allow anything except the DQUOTE character, but if we find any ASCII
-    other than the RFC defined printable ASCII an NonPrintableDefect is
+    other than the RFC defined printable ASCII, a NonPrintableDefect is
     added to the token's defects list.  Any quoted pairs are converted to their
     unquoted values, so what is returned is a 'ptext' token.  In this case it
     is a ValueTerminal.
@@ -1878,11 +1878,11 @@ def get_obs_local_part(value):
     return obs_local_part, value
 
 def get_dtext(value):
-    """ dtext = <printable ascii except \ [ ]> / obs-dtext
+    r""" dtext = <printable ascii except \ [ ]> / obs-dtext
         obs-dtext = obs-NO-WS-CTL / quoted-pair
 
     We allow anything except the excluded characters, but if we find any
-    ASCII other than the RFC defined printable ASCII an NonPrintableDefect is
+    ASCII other than the RFC defined printable ASCII, a NonPrintableDefect is
     added to the token's defects list.  Quoted pairs are converted to their
     unquoted values, so what is returned is a ptext token, in this case a
     ValueTerminal.  If there were quoted-printables, an ObsoleteHeaderDefect is
@@ -2872,7 +2872,7 @@ def parse_content_type_header(value):
         _find_mime_parameters(ctype, value)
         return ctype
     ctype.append(token)
-    # XXX: If we really want to follow the formal grammer we should make
+    # XXX: If we really want to follow the formal grammar we should make
     # mantype and subtype specialized TokenLists here.  Probably not worth it.
     if not value or value[0] != '/':
         ctype.defects.append(errors.InvalidHeaderDefect(

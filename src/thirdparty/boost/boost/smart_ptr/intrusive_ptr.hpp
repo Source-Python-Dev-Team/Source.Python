@@ -19,6 +19,7 @@
 #include <boost/detail/workaround.hpp>
 #include <boost/smart_ptr/detail/sp_convertible.hpp>
 #include <boost/smart_ptr/detail/sp_nullptr_t.hpp>
+#include <boost/smart_ptr/detail/sp_noexcept.hpp>
 
 #include <boost/config/no_tr1/functional.hpp>           // for std::less
 
@@ -59,7 +60,7 @@ public:
 
     typedef T element_type;
 
-    intrusive_ptr() BOOST_NOEXCEPT : px( 0 )
+    BOOST_CONSTEXPR intrusive_ptr() BOOST_SP_NOEXCEPT : px( 0 )
     {
     }
 
@@ -111,14 +112,38 @@ public:
 
 #if !defined( BOOST_NO_CXX11_RVALUE_REFERENCES )
 
-    intrusive_ptr(intrusive_ptr && rhs) BOOST_NOEXCEPT : px( rhs.px )
+    intrusive_ptr(intrusive_ptr && rhs) BOOST_SP_NOEXCEPT : px( rhs.px )
     {
         rhs.px = 0;
     }
 
-    intrusive_ptr & operator=(intrusive_ptr && rhs) BOOST_NOEXCEPT
+    intrusive_ptr & operator=(intrusive_ptr && rhs) BOOST_SP_NOEXCEPT
     {
         this_type( static_cast< intrusive_ptr && >( rhs ) ).swap(*this);
+        return *this;
+    }
+
+    template<class U> friend class intrusive_ptr;
+
+    template<class U>
+#if !defined( BOOST_SP_NO_SP_CONVERTIBLE )
+
+    intrusive_ptr(intrusive_ptr<U> && rhs, typename boost::detail::sp_enable_if_convertible<U,T>::type = boost::detail::sp_empty())
+
+#else
+
+    intrusive_ptr(intrusive_ptr<U> && rhs)
+
+#endif        
+    : px( rhs.px )
+    {
+        rhs.px = 0;
+    }
+
+    template<class U>
+    intrusive_ptr & operator=(intrusive_ptr<U> && rhs) BOOST_NOEXCEPT
+    {
+        this_type( static_cast< intrusive_ptr<U> && >( rhs ) ).swap(*this);
         return *this;
     }
 
@@ -146,9 +171,21 @@ public:
         this_type( rhs ).swap( *this );
     }
 
+    void reset( T * rhs, bool add_ref )
+    {
+        this_type( rhs, add_ref ).swap( *this );
+    }
+
     T * get() const BOOST_NOEXCEPT
     {
         return px;
+    }
+
+    T * detach() BOOST_NOEXCEPT
+    {
+        T * ret = px;
+        px = 0;
+        return ret;
     }
 
     T & operator*() const
@@ -207,6 +244,17 @@ template<class T, class U> inline bool operator!=(T * a, intrusive_ptr<U> const 
 {
     return a != b.get();
 }
+
+#if __GNUC__ == 2 && __GNUC_MINOR__ <= 96
+
+// Resolve the ambiguity between our op!= and the one in rel_ops
+
+template<class T> inline bool operator!=(intrusive_ptr<T> const & a, intrusive_ptr<T> const & b)
+{
+    return a.get() != b.get();
+}
+
+#endif
 
 #if !defined( BOOST_NO_CXX11_NULLPTR )
 
@@ -268,16 +316,34 @@ template<class T, class U> intrusive_ptr<T> dynamic_pointer_cast(intrusive_ptr<U
 
 #if !defined(BOOST_NO_IOSTREAM)
 
+#if defined(BOOST_NO_TEMPLATED_IOSTREAMS) || ( defined(__GNUC__) &&  (__GNUC__ < 3) )
+
+template<class Y> std::ostream & operator<< (std::ostream & os, intrusive_ptr<Y> const & p)
+{
+    os << p.get();
+    return os;
+}
+
+#else
+
 // in STLport's no-iostreams mode no iostream symbols can be used
 #ifndef _STLP_NO_IOSTREAMS
 
+# if defined(BOOST_MSVC) && BOOST_WORKAROUND(BOOST_MSVC, < 1300 && __SGI_STL_PORT)
+// MSVC6 has problems finding std::basic_ostream through the using declaration in namespace _STL
+using std::basic_ostream;
+template<class E, class T, class Y> basic_ostream<E, T> & operator<< (basic_ostream<E, T> & os, intrusive_ptr<Y> const & p)
+# else
 template<class E, class T, class Y> std::basic_ostream<E, T> & operator<< (std::basic_ostream<E, T> & os, intrusive_ptr<Y> const & p)
+# endif 
 {
     os << p.get();
     return os;
 }
 
 #endif // _STLP_NO_IOSTREAMS
+
+#endif // __GNUC__ < 3
 
 #endif // !defined(BOOST_NO_IOSTREAM)
 

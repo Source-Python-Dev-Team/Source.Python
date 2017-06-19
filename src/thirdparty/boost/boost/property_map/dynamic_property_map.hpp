@@ -340,7 +340,7 @@ get(const std::string& name, const dynamic_properties& dp, const Key& key)
 
 // The easy way to ignore properties.
 inline
-boost::shared_ptr<boost::dynamic_property_map> 
+boost::shared_ptr<boost::dynamic_property_map>
 ignore_other_properties(const std::string&,
                         const boost::any&,
                         const boost::any&) {

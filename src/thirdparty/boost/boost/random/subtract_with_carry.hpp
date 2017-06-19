@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: subtract_with_carry.hpp 82664 2013-01-30 06:42:36Z marshall $
+ * $Id$
  *
  * Revision history
  *  2002-03-02  created
@@ -402,7 +402,7 @@ public:
                                       SeedSeq, seq)
     {
         detail::seed_array_real<w>(seq, x);
-        carry = (x[long_lag-1] ? 0 : 1 / _modulus);
+        carry = (x[long_lag-1] ? result_type(0) : result_type(1 / _modulus));
         k = 0;
     }
 
@@ -416,7 +416,7 @@ public:
     void seed(It& first, It last)
     {
         detail::fill_array_real<w>(first, last, x);
-        carry = (x[long_lag-1] ? 0 : 1 / _modulus);
+        carry = (x[long_lag-1] ? result_type(0) : result_type(1 / _modulus));
         k = 0;
     }
 

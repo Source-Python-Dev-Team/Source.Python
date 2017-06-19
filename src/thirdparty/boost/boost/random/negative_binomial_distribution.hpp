@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: negative_binomial_distribution.hpp 68822 2011-02-13 03:28:59Z steven_watanabe $
+ * $Id$
  */
 
 #ifndef BOOST_RANDOM_NEGATIVE_BINOMIAL_DISTRIBUTION_HPP_INCLUDED

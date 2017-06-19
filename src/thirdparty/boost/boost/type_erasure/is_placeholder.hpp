@@ -6,7 +6,7 @@
 // accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
-// $Id: is_placeholder.hpp 78453 2012-05-13 15:24:00Z steven_watanabe $
+// $Id$
 
 #ifndef BOOST_TYPE_ERASURE_DETAIL_IS_PLACEHOLDER_HPP_INCLUDED
 #define BOOST_TYPE_ERASURE_DETAIL_IS_PLACEHOLDER_HPP_INCLUDED
@@ -17,18 +17,11 @@
 
 namespace boost {
 
-/** INTERNAL ONLY */
-struct use_default;
-
 namespace type_erasure {
 
 /** A metafunction that indicates whether a type is a @ref placeholder. */
 template<class T>
 struct is_placeholder : ::boost::is_base_and_derived<placeholder, T> {};
-
-/** INTERNAL ONLY */
-template<>
-struct is_placeholder< ::boost::use_default> : ::boost::mpl::false_ {};
 
 }
 }

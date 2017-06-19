@@ -8,7 +8,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: shuffle_order.hpp 81442 2012-11-20 19:44:24Z marshall $
+ * $Id$
  *
  */
 
@@ -130,7 +130,7 @@ public:
     result_type operator()() {
         // calculating the range every time may seem wasteful.  However, this
         // makes the information locally available for the optimizer.
-        typedef typename make_unsigned<result_type>::type base_unsigned;
+        typedef typename boost::random::traits::make_unsigned<result_type>::type base_unsigned;
         const base_unsigned brange =
             detail::subtract<result_type>()((max)(), (min)());
         const base_unsigned off =

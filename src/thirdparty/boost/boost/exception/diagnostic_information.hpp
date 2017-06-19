@@ -5,7 +5,7 @@
 
 #ifndef UUID_0552D49838DD11DD90146B8956D89593
 #define UUID_0552D49838DD11DD90146B8956D89593
-#if defined(__GNUC__) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
+#if (__GNUC__*100+__GNUC_MINOR__>301) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
 #pragma GCC system_header
 #endif
 #if defined(_MSC_VER) && !defined(BOOST_EXCEPTION_ENABLE_WARNINGS)
@@ -16,9 +16,9 @@
 #include <boost/exception/get_error_info.hpp>
 #include <boost/exception/info.hpp>
 #include <boost/utility/enable_if.hpp>
-//#ifndef BOOST_NO_RTTI
-//#include <boost/units/detail/utility.hpp>
-//#endif
+#ifndef BOOST_NO_RTTI
+#include <boost/core/demangle.hpp>
+#endif
 #include <exception>
 #include <sstream>
 #include <string>
@@ -151,7 +151,7 @@ boost
 #ifndef BOOST_NO_RTTI
             if ( verbose )
                 tmp << std::string("Dynamic exception type: ") <<
-                    /*units::detail::demangle*/((be?(BOOST_EXCEPTION_DYNAMIC_TYPEID(*be)):(BOOST_EXCEPTION_DYNAMIC_TYPEID(*se))).type_->name()) << '\n';
+                    core::demangle((be?(BOOST_EXCEPTION_DYNAMIC_TYPEID(*be)):(BOOST_EXCEPTION_DYNAMIC_TYPEID(*se))).type_->name()) << '\n';
 #endif
             if( with_what && se && verbose )
                 tmp << "std::exception::what: " << wh << '\n';

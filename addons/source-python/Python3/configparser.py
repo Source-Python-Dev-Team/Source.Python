@@ -143,6 +143,7 @@ from collections import OrderedDict as _default_dict, ChainMap as _ChainMap
 import functools
 import io
 import itertools
+import os
 import re
 import sys
 import warnings
@@ -687,7 +688,7 @@ class RawConfigParser(MutableMapping):
 
         Return list of successfully read files.
         """
-        if isinstance(filenames, str):
+        if isinstance(filenames, (str, os.PathLike)):
             filenames = [filenames]
         read_ok = []
         for filename in filenames:
@@ -696,6 +697,8 @@ class RawConfigParser(MutableMapping):
                     self._read(fp, filename)
             except OSError:
                 continue
+            if isinstance(filename, os.PathLike):
+                filename = os.fspath(filename)
             read_ok.append(filename)
         return read_ok
 
@@ -1102,10 +1105,10 @@ class RawConfigParser(MutableMapping):
                         # raised at the end of the file and will contain a
                         # list of all bogus lines
                         e = self._handle_error(e, fpname, lineno, line)
+        self._join_multiline_values()
         # if any parsing errors occurred, raise an exception
         if e:
             raise e
-        self._join_multiline_values()
 
     def _join_multiline_values(self):
         defaults = self.default_section, self._defaults

@@ -818,7 +818,7 @@ struct funptr_predicate<void**>
     BOOST_PARAMETER_MEMBER_FUNCTION_STATIC(name) \
     ResultType BOOST_PARAMETER_FUNCTION_DEFAULT_NAME(name)( \
         ResultType(*)() \
-      , Args const& args \
+      , Args const& \
       , int \
         BOOST_PARAMETER_FUNCTION_DEFAULT_ARGUMENTS( \
             BOOST_PARAMETER_FUNCTION_DEFAULT_FUNCTION_ARG \

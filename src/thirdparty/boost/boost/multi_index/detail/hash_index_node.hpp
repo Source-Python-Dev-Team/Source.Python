@@ -1,4 +1,4 @@
-/* Copyright 2003-2013 Joaquin M Lopez Munoz.
+/* Copyright 2003-2015 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -15,6 +15,8 @@
 
 #include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
 #include <boost/detail/allocator_utilities.hpp>
+#include <boost/multi_index/detail/raw_ptr.hpp>
+#include <utility>
 
 namespace boost{
 
@@ -29,53 +31,56 @@ namespace detail{
  * values, we use an alternative structure providing unconditional O(1)
  * manipulation, even in situations of unfair hash distribution, plus some
  * lookup speedups. For unique indices we maintain a doubly linked list of
- * nodes except that the first node N of a bucket is back-linked to its bucket
- * node, and this bucket node forward links to the node preceding N.
+ * nodes except that if N is the first node of a bucket its associated
+ * bucket node is embedded between N and the preceding node in the following
+ * manner:
  *
  *        +---+   +---+       +---+   +---+
- *        |   +-->|   +-->    |   +-->|   +-->
+ *     <--+   |<--+   |    <--+   |<--+   |
  *   ...  | B0|   | B1|  ...  | B1|   | B2|  ...
- *     <--+   | +-+   |    <--+   | +-+   |
- *        +---+ | +---+       +---+ | +---+
- *          ^   |               ^   |
- *          |   |               |   |
- *          +-+ |               +-+ |
- *            | |                 | |
- *            + v                 + v
- *     --+---+---+---+--   --+---+---+---+--
- *   ... |   | B1|   |  ...  |   | B2|   | ...
- *     --+---+---+---+--   --+---+---+---+--
+ *        |   |-+ |   +-->    |   |-+ |   +-->
+ *        +-+-+ | +---+       +-+-+ | +---+
+ *              |   ^               |   ^
+ *              |   |               |   |
+ *              | +-+               | +-+
+ *              | |                 | |
+ *              v |                 v |  
+ *       --+---+---+---+--   --+---+---+---+--
+ *     ... |   | B1|   |  ...  |   | B2|   | ...
+ *       --+---+---+---+--   --+---+---+---+--
+ *
  *
  * The fist and last nodes of buckets can be checked with
  *
  *   first node of a bucket: Npn != N
  *   last node of a bucket:  Nnp != N
  *
- * (n and p short for ->next(), ->prior()). Pure insert and erase (without
- * lookup) can be unconditionally done in O(1).
+ * (n and p short for ->next(), ->prior(), bucket nodes have prior pointers
+ * only). Pure insert and erase (without lookup) can be unconditionally done
+ * in O(1).
  * For non-unique indices we add the following additional complexity: when
  * there is a group of 3 or more equivalent elements, they are linked as
  * follows:
  *
- *     +-----------------------+
- *     v                       |
- *   +---+   +---+       +---+ | +---+
- *   |   +-->|   |       |   +-+ |   |
- *   | F |   | S |  ...  | P |   | L |
- *   |   | +-+   |       |   |<--+   |
- *   +---+ | +---+       +---+   +---+
- *         |                       ^
  *         +-----------------------+
+ *         |                       v
+ *   +---+ | +---+       +---+   +---+
+ *   |   | +-+   |       |   |<--+   |
+ *   | F |   | S |  ...  | P |   | L |
+ *   |   +-->|   |       |   +-+ |   |
+ *   +---+   +---+       +---+ | +---+
+ *     ^                       |
+ *     +-----------------------+
  * 
  * F, S, P and L are the first, second, penultimate and last node in the
  * group, respectively (S and P can coincide if the group has size 3.) This
  * arrangement is used to skip equivalent elements in O(1) when doing lookup,
  * while preserving O(1) insert/erase. The following invariants identify
  * special positions (some of the operations have to be carefully implemented
- * as Xpp is not valid if Xp points to a bucket):
+ * as Xnn is not valid if Xn points to a bucket):
  *
- *   first node of a bucket: Npnn  == N
- *   last node of a bucket:  Nnpn  == N
+ *   first node of a bucket: Npnp  == N
+ *   last node of a bucket:  Nnpp  == N
  *   first node of a group:  Nnp != N && Nnppn == N
  *   second node of a group: Npn != N && Nppnn == N
  *   n-1 node of a group:    Nnp != N && Nnnpp == N
@@ -89,7 +94,7 @@ namespace detail{
 template<typename Allocator>
 struct hashed_index_node_impl;
 
-/* half-header (only next() pointer) to use for the bucket array */
+/* half-header (only prior() pointer) to use for the bucket array */
 
 template<typename Allocator>
 struct hashed_index_base_node_impl
@@ -113,14 +118,14 @@ struct hashed_index_base_node_impl
     hashed_index_node_impl<Allocator>
   >::type::const_pointer                    const_pointer;
 
-  pointer& next(){return next_;}
-  pointer  next()const{return next_;}
+  pointer& prior(){return prior_;}
+  pointer  prior()const{return prior_;}
 
 private:
-  pointer next_;
+  pointer prior_;
 };
 
-/* full header (next() and prior()) for the nodes */
+/* full header (prior() and next()) for the nodes */
 
 template<typename Allocator>
 struct hashed_index_node_impl:hashed_index_base_node_impl<Allocator>
@@ -134,21 +139,24 @@ public:
   typedef typename super::pointer                pointer;
   typedef typename super::const_pointer          const_pointer;
 
-  base_pointer& prior(){return prior_;}
-  base_pointer  prior()const{return prior_;}
+  base_pointer& next(){return next_;}
+  base_pointer  next()const{return next_;}
 
   static pointer pointer_from(base_pointer x)
   {
-    return static_cast<pointer>(static_cast<hashed_index_node_impl*>(&*x));
+    return static_cast<pointer>(
+      static_cast<hashed_index_node_impl*>(
+        raw_ptr<super*>(x)));
   }
 
   static base_pointer base_pointer_from(pointer x)
   {
-    return static_cast<base_pointer>(&*x);
+    return static_cast<base_pointer>(
+      raw_ptr<hashed_index_node_impl*>(x));
   }
 
 private:
-  base_pointer prior_;
+  base_pointer next_;
 };
 
 /* Boost.MultiIndex requires machinery to reverse unlink operations. A simple
@@ -231,42 +239,40 @@ struct hashed_index_node_alg<Node,hashed_unique_tag>
 
   static bool is_first_of_bucket(pointer x)
   {
-    return x->prior()->next()!=x;
+    return x->prior()->next()!=base_pointer_from(x);
   }
 
   static pointer after(pointer x)
   {
-    return x->next();
+    return is_last_of_bucket(x)?x->next()->prior():pointer_from(x->next());
   }
 
   static pointer after_local(pointer x)
   {
-    return is_last_of_bucket(x)?pointer(0):after(x);
+    return is_last_of_bucket(x)?pointer(0):pointer_from(x->next());
   }
 
   static pointer next_to_inspect(pointer x)
   {
-    pointer y=x->next();
-    if(y->prior()==base_pointer_from(x))return y;
-    else return pointer(0); /* x last of bucket, bucket finished */
+    return is_last_of_bucket(x)?pointer(0):pointer_from(x->next());
   }
 
   static void link(pointer x,base_pointer buc,pointer end)
   {
-    if(buc->next()==pointer(0)){ /* empty bucket */
-      x->next()=end->next();
-      x->next()->prior()->next()=x;
-      x->prior()=buc;
-      buc->next()=end;
-      end->next()=x;
+    if(buc->prior()==pointer(0)){ /* empty bucket */
+      x->prior()=end->prior();
+      x->next()=end->prior()->next();
+      x->prior()->next()=buc;
+      buc->prior()=x;
+      end->prior()=x;
     }
     else{
-      x->next()=buc->next()->next();
-      x->next()->prior()=base_pointer_from(x);
-      x->prior()=buc;
-      buc->next()->next()=x;
+      x->prior()=buc->prior()->prior();
+      x->next()=base_pointer_from(buc->prior());
+      buc->prior()=x;
+      x->next()->prior()=x;
     }
-  };
+  }
 
   static void unlink(pointer x)
   {
@@ -281,22 +287,50 @@ struct hashed_index_node_alg<Node,hashed_unique_tag>
   {
     if(is_first_of_bucket(x)){
       if(is_last_of_bucket(x)){
-        assign(x->prior()->next()->next(),x->next());
-        assign(x->next()->prior()->next(),x->prior()->next());
-        assign(x->prior()->next(),pointer(0));
+        assign(x->prior()->next()->prior(),pointer(0));
+        assign(x->prior()->next(),x->next());
+        assign(x->next()->prior()->prior(),x->prior());
       }
       else{
-        assign(x->prior()->next()->next(),x->next());
+        assign(x->prior()->next()->prior(),pointer_from(x->next()));
         assign(x->next()->prior(),x->prior());
       }
     }
     else if(is_last_of_bucket(x)){
       assign(x->prior()->next(),x->next());
-      assign(x->next()->prior()->next(),pointer_from(x->prior()));
+      assign(x->next()->prior()->prior(),x->prior());
     }
     else{
       assign(x->prior()->next(),x->next());
       assign(x->next()->prior(),x->prior());
+    }
+  }
+
+  /* used only at rehashing */
+
+  static void append(pointer x,pointer end)
+  {
+    x->prior()=end->prior();
+    x->next()=end->prior()->next();
+    x->prior()->next()=base_pointer_from(x);
+    end->prior()=x;
+  }
+
+  static bool unlink_last(pointer end)
+  {
+    /* returns true iff bucket is emptied */
+
+    pointer x=end->prior();
+    if(x->prior()->next()==base_pointer_from(x)){
+      x->prior()->next()=x->next();
+      end->prior()=x->prior();
+      return false;
+    }
+    else{
+      x->prior()->next()->prior()=pointer(0);
+      x->prior()->next()=x->next();
+      end->prior()=x->prior();
+      return true;
     }
   }
 
@@ -313,7 +347,7 @@ private:
 
   static bool is_last_of_bucket(pointer x)
   {
-    return x->next()->prior()!=base_pointer_from(x);
+    return x->next()->prior()!=x;
   }
 };
 
@@ -327,102 +361,84 @@ struct hashed_index_node_alg<Node,hashed_non_unique_tag>
 
   static bool is_first_of_bucket(pointer x)
   {
-    return x->prior()->next()->next()==x;
+    return x->prior()->next()->prior()==x;
   }
 
   static bool is_first_of_group(pointer x)
   {
     return
-      x->next()->prior()!=base_pointer_from(x)&&
-      !is_first_of_bucket(x->next())&&
-      pointer_from(x->next()->prior())->prior()->next()==base_pointer_from(x);
+      x->next()->prior()!=x&&
+      x->next()->prior()->prior()->next()==base_pointer_from(x);
   }
 
   static pointer after(pointer x)
   {
-    if(is_last_but_one_of_group(x)){
-      return pointer_from(x->next()->next()->prior());
-    }
-    else{
-      return x->next();
-    }
+    if(x->next()->prior()==x)return pointer_from(x->next());
+    if(x->next()->prior()->prior()==x)return x->next()->prior();
+    if(x->next()->prior()->prior()->next()==base_pointer_from(x))
+      return pointer_from(x->next());
+    return pointer_from(x->next())->next()->prior();
   }
 
   static pointer after_local(pointer x)
   {
-    return is_last_of_bucket(x)?pointer(0):after(x);
+    if(x->next()->prior()==x)return pointer_from(x->next());
+    if(x->next()->prior()->prior()==x)return pointer(0);
+    if(x->next()->prior()->prior()->next()==base_pointer_from(x))
+      return pointer_from(x->next());
+    return pointer_from(x->next())->next()->prior();
   }
 
   static pointer next_to_inspect(pointer x)
   {
-    pointer y=x->next();
-    if(y->prior()==base_pointer_from(x))return y;
-    pointer z=y->prior()->next();
-    if(z==x||                      /* x last of bucket */
-       z->prior()->next()!=z)      /* group(x) last of bucket */
-      return pointer(0);           /* bucket finished */
-    else return z;
+    if(x->next()->prior()==x)return pointer_from(x->next());
+    if(x->next()->prior()->prior()==x)return pointer(0);
+    if(x->next()->prior()->next()->prior()!=x->next()->prior())
+      return pointer(0);
+    return pointer_from(x->next()->prior()->next());
   }
 
   static void link(pointer x,base_pointer buc,pointer end)
   {
-    if(buc->next()==pointer(0)){ /* empty bucket */
-      x->next()=end->next();
-      x->next()->prior()->next()=x;
-      x->prior()=buc;
-      buc->next()=end;
-      end->next()=x;
+    if(buc->prior()==pointer(0)){ /* empty bucket */
+      x->prior()=end->prior();
+      x->next()=end->prior()->next();
+      x->prior()->next()=buc;
+      buc->prior()=x;
+      end->prior()=x;
     }
     else{
-      x->next()=buc->next()->next();
-      x->next()->prior()=base_pointer_from(x);
-      x->prior()=buc;
-      buc->next()->next()=x;
+      x->prior()=buc->prior()->prior();
+      x->next()=base_pointer_from(buc->prior());
+      buc->prior()=x;
+      x->next()->prior()=x;
     }
   };
 
   static void link(pointer x,pointer first,pointer last)
   {
     x->prior()=first->prior();
-    x->next()=first;
+    x->next()=base_pointer_from(first);
     if(is_first_of_bucket(first)){
-      x->prior()->next()->next()=x;
+      x->prior()->next()->prior()=x;
     }
     else{
-      x->prior()->next()=x;
+      x->prior()->next()=base_pointer_from(x);
     }
 
     if(first==last){
-      last->prior()=base_pointer_from(x);
+      last->prior()=x;
     }
-    else if(first->next()==last){
-      first->prior()=base_pointer_from(last);
-      first->next()=x;
-    }
-    else{
-      pointer second=first->next(),
-              lastbutone=pointer_from(last->prior());
-      second->prior()=base_pointer_from(first);
-      first->prior()=base_pointer_from(last);
-      lastbutone->next()=x;
-    }
-  }
-
-  static void link_range(
-    pointer first,pointer last,base_pointer buc,pointer cend)
-  {
-    if(buc->next()==pointer(0)){ /* empty bucket */
-      last->next()=cend->next();
-      last->next()->prior()->next()=last;
-      first->prior()=buc;
-      buc->next()=cend;
-      cend->next()=first;
+    else if(first->next()==base_pointer_from(last)){
+      first->prior()=last;
+      first->next()=base_pointer_from(x);
     }
     else{
-      last->next()=buc->next()->next();
-      last->next()->prior()=base_pointer_from(last);
-      first->prior()=buc;
-      buc->next()->next()=first;
+      pointer second=pointer_from(first->next()),
+              lastbutone=last->prior();
+      second->prior()=first;
+      first->prior()=last;
+      lastbutone->next()=base_pointer_from(x);
     }
   }
 
@@ -437,58 +453,134 @@ struct hashed_index_node_alg<Node,hashed_non_unique_tag>
   template<typename Assigner>
   static void unlink(pointer x,Assigner& assign)
   {
-    if(x->prior()->next()==x){
-      if(x->next()->prior()==base_pointer_from(x)){
+    if(x->prior()->next()==base_pointer_from(x)){
+      if(x->next()->prior()==x){
         left_unlink(x,assign);
         right_unlink(x,assign);
       }
-      else if(x->next()->prior()->next()==x){            /* last of bucket */
+      else if(x->next()->prior()->prior()==x){           /* last of bucket */
         left_unlink(x,assign);
         right_unlink_last_of_bucket(x,assign);
       }
-      else if(x->next()->next()==x){             /* first of group size==3 */
+      else if(x->next()->prior()->prior()->next()==
+              base_pointer_from(x)){                /* first of group size */
         left_unlink(x,assign);
-        assign(x->next()->next(),pointer_from(x->next()->prior()));
-        right_unlink(x,assign);
+        right_unlink_first_of_group(x,assign);
       }
-      else if(
-        x->next()->next()->prior()==
-          base_pointer_from(x->next())){          /* first of group size>3 */
-        left_unlink(x,assign);
-        right_unlink_first_of_group_gt_3(x,assign);
-      }
-      else{                                         /* n-1 of group size>3 */
-        unlink_last_but_one_of_group_gt_3(x,assign);
+      else{                                                /* n-1 of group */
+        unlink_last_but_one_of_group(x,assign);
       }
     }
-    else if(x->prior()->next()->next()==x){             /* first of bucket */
-      if(x->next()->prior()==base_pointer_from(x)){
+    else if(x->prior()->next()->prior()==x){            /* first of bucket */
+      if(x->next()->prior()==x){
         left_unlink_first_of_bucket(x,assign);
         right_unlink(x,assign);
       }
-      else if(x->next()->prior()->next()==x){            /* last of bucket */
-        left_unlink_first_of_bucket(x,assign);
-        assign(x->next()->prior()->next(),x->prior()->next());
-        assign(x->prior()->next(),pointer(0));
+      else if(x->next()->prior()->prior()==x){           /* last of bucket */
+        assign(x->prior()->next()->prior(),pointer(0));
+        assign(x->prior()->next(),x->next());
+        assign(x->next()->prior()->prior(),x->prior());
       }
       else{                                              /* first of group */
         left_unlink_first_of_bucket(x,assign);
         right_unlink_first_of_group(x,assign);
       }
     }
-    else if(x->prior()->next()->next()->prior()==
-            base_pointer_from(x)){                        /* last of group */
-      if(x->next()->prior()==base_pointer_from(x)){ 
-        left_unlink_last_of_group(x,assign);
-        right_unlink(x,assign);
+    else if(x->next()->prior()->prior()==x){   /* last of group and bucket */
+      left_unlink_last_of_group(x,assign);
+      right_unlink_last_of_bucket(x,assign);
+    }
+    else if(pointer_from(x->prior()->prior()->next())
+            ->next()==base_pointer_from(x)){            /* second of group */
+      unlink_second_of_group(x,assign);
+    }
+    else{                              /* last of group, ~(last of bucket) */
+      left_unlink_last_of_group(x,assign);
+      right_unlink(x,assign);
+    }
+  }
+
+  /* used only at rehashing */
+
+  static void link_range(
+    pointer first,pointer last,base_pointer buc,pointer cend)
+  {
+    if(buc->prior()==pointer(0)){ /* empty bucket */
+      first->prior()=cend->prior();
+      last->next()=cend->prior()->next();
+      first->prior()->next()=buc;
+      buc->prior()=first;
+      cend->prior()=last;
+    }
+    else{
+      first->prior()=buc->prior()->prior();
+      last->next()=base_pointer_from(buc->prior());
+      buc->prior()=first;
+      last->next()->prior()=last;
+    }
+  }
+
+  static void append_range(pointer first,pointer last,pointer cend)
+  {
+    first->prior()=cend->prior();
+    last->next()=cend->prior()->next();
+    first->prior()->next()=base_pointer_from(first);
+    cend->prior()=last;
+  }
+
+  static std::pair<pointer,bool> unlink_last_group(pointer end)
+  {
+    /* returns first of group true iff bucket is emptied */
+
+    pointer x=end->prior();
+    if(x->prior()->next()==base_pointer_from(x)){
+      x->prior()->next()=x->next();
+      end->prior()=x->prior();
+      return std::make_pair(x,false);
+    }
+    else if(x->prior()->next()->prior()==x){
+      x->prior()->next()->prior()=pointer(0);
+      x->prior()->next()=x->next();
+      end->prior()=x->prior();
+      return std::make_pair(x,true);
+    }
+    else{
+      pointer y=pointer_from(x->prior()->next());
+
+      if(y->prior()->next()==base_pointer_from(y)){
+        y->prior()->next()=x->next();
+        end->prior()=y->prior();
+        return std::make_pair(y,false);
       }
-      else{                                              /* last of bucket */
-        left_unlink_last_of_group(x,assign);
-        right_unlink_last_of_bucket(x,assign);
+      else{
+        y->prior()->next()->prior()=pointer(0);
+        y->prior()->next()=x->next();
+        end->prior()=y->prior();
+        return std::make_pair(y,true);
       }
     }
-    else{                                               /* second of group */
-      unlink_second_of_group(x,assign);
+  }
+
+  static void unlink_range(pointer first,pointer last)
+  {
+    if(is_first_of_bucket(first)){
+      if(is_last_of_bucket(last)){
+        first->prior()->next()->prior()=pointer(0);
+        first->prior()->next()=last->next();
+        last->next()->prior()->prior()=first->prior();
+      }
+      else{
+        first->prior()->next()->prior()=pointer_from(last->next());
+        last->next()->prior()=first->prior();
+      }
+    }
+    else if(is_last_of_bucket(last)){
+      first->prior()->next()=last->next();
+      last->next()->prior()->prior()=first->prior();
+    }
+    else{
+      first->prior()->next()=last->next();
+      last->next()->prior()=first->prior();
     }
   }
 
@@ -505,15 +597,7 @@ private:
 
   static bool is_last_of_bucket(pointer x)
   {
-    return x->next()->prior()->next()==x;
-  }
-
-  static bool is_last_but_one_of_group(pointer x)
-  {
-    return
-      x->next()->prior()!=base_pointer_from(x)&&
-      !is_last_of_bucket(x->next())&&
-      pointer_from(x->next()->next()->prior())->prior()==base_pointer_from(x);
+    return x->next()->prior()->prior()==x;
   }
 
   template<typename Assigner>
@@ -531,83 +615,78 @@ private:
   template<typename Assigner>
   static void left_unlink_first_of_bucket(pointer x,Assigner& assign)
   {
-    assign(x->prior()->next()->next(),x->next());
+    assign(x->prior()->next()->prior(),pointer_from(x->next()));
   }
 
   template<typename Assigner>
   static void right_unlink_last_of_bucket(pointer x,Assigner& assign)
   {
-    assign(x->next()->prior()->next(),pointer_from(x->prior()));
+    assign(x->next()->prior()->prior(),x->prior());
   }
 
   template<typename Assigner>
   static void right_unlink_first_of_group(pointer x,Assigner& assign)
   {
-    pointer second=x->next(),
-            last=pointer_from(second->prior()),
-            lastbutone=pointer_from(last->prior());
+    pointer second=pointer_from(x->next()),
+            last=second->prior(),
+            lastbutone=last->prior();
     if(second==lastbutone){
-      assign(second->next(),last);
+      assign(second->next(),base_pointer_from(last));
       assign(second->prior(),x->prior());
     }
     else{
-      assign(lastbutone->next(),second);
-      assign(second->next()->prior(),base_pointer_from(last));
+      assign(lastbutone->next(),base_pointer_from(second));
+      assign(second->next()->prior(),last);
       assign(second->prior(),x->prior());
     }
-  }
-
-  template<typename Assigner>
-  static void right_unlink_first_of_group_gt_3(pointer x,Assigner& assign)
-  {
-    pointer second=x->next(),
-            last=pointer_from(second->prior()),
-            lastbutone=pointer_from(last->prior());
-    assign(lastbutone->next(),second);
-    assign(second->next()->prior(),base_pointer_from(last));
-    assign(second->prior(),x->prior());
   }
 
   template<typename Assigner>
   static void left_unlink_last_of_group(pointer x,Assigner& assign)
   {
-    pointer lastbutone=pointer_from(x->prior()),
-            first=lastbutone->next(),
-            second=first->next();
+    pointer lastbutone=x->prior(),
+            first=pointer_from(lastbutone->next()),
+            second=pointer_from(first->next());
     if(lastbutone==second){
-      assign(lastbutone->prior(),base_pointer_from(first));
+      assign(lastbutone->prior(),first);
       assign(lastbutone->next(),x->next());
     }
     else{
-      assign(second->prior(),base_pointer_from(lastbutone));
-      assign(lastbutone->prior()->next(),first);
+      assign(second->prior(),lastbutone);
+      assign(lastbutone->prior()->next(),base_pointer_from(first));
       assign(lastbutone->next(),x->next());
     }
   }
 
   template<typename Assigner>
-  static void unlink_last_but_one_of_group_gt_3(pointer x,Assigner& assign)
+  static void unlink_last_but_one_of_group(pointer x,Assigner& assign)
   {
-    pointer first=x->next(),
-            second=first->next(),
-            last=pointer_from(second->prior());
-    assign(last->prior(),x->prior());
-    assign(x->prior()->next(),first);
+    pointer first=pointer_from(x->next()),
+            second=pointer_from(first->next()),
+            last=second->prior();
+    if(second==x){
+      assign(last->prior(),first);
+      assign(first->next(),base_pointer_from(last));
+    }
+    else{
+      assign(last->prior(),x->prior());
+      assign(x->prior()->next(),base_pointer_from(first));
+    }
   }
 
   template<typename Assigner>
   static void unlink_second_of_group(pointer x,Assigner& assign)
   {
-    pointer last=pointer_from(x->prior()),
-            lastbutone=pointer_from(last->prior()),
-            first=lastbutone->next();
+    pointer last=x->prior(),
+            lastbutone=last->prior(),
+            first=pointer_from(lastbutone->next());
     if(lastbutone==x){
-      assign(first->next(),last);
-      assign(last->prior(),base_pointer_from(first));
+      assign(first->next(),base_pointer_from(last));
+      assign(last->prior(),first);
     }
     else{
       assign(first->next(),x->next());
-      assign(x->next()->prior(),base_pointer_from(last));
+      assign(x->next()->prior(),last);
     }
   }
 };
@@ -644,10 +723,10 @@ public:
   typedef typename trampoline::pointer            impl_pointer;
   typedef typename trampoline::const_pointer      const_impl_pointer;
 
-  impl_pointer&      next(){return trampoline::next();}
-  impl_pointer       next()const{return trampoline::next();}
-  impl_base_pointer& prior(){return trampoline::prior();}
-  impl_base_pointer  prior()const{return trampoline::prior();}
+  impl_pointer&      prior(){return trampoline::prior();}
+  impl_pointer       prior()const{return trampoline::prior();}
+  impl_base_pointer& next(){return trampoline::next();}
+  impl_base_pointer  next()const{return trampoline::next();}
 
   impl_pointer impl()
   {
@@ -663,14 +742,18 @@ public:
 
   static hashed_index_node* from_impl(impl_pointer x)
   {
-    return static_cast<hashed_index_node*>(
-      static_cast<trampoline*>(&*x));
+    return
+      static_cast<hashed_index_node*>(
+        static_cast<trampoline*>(
+          raw_ptr<impl_type*>(x)));
   }
 
   static const hashed_index_node* from_impl(const_impl_pointer x)
   {
-    return static_cast<const hashed_index_node*>(
-      static_cast<const trampoline*>(&*x));
+    return 
+      static_cast<const hashed_index_node*>(
+        static_cast<const trampoline*>(
+          raw_ptr<const impl_type*>(x)));
   }
 
   /* interoperability with hashed_index_iterator */

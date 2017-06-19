@@ -1,5 +1,5 @@
 //  Boost config.hpp configuration header file  ------------------------------//
-//	boostinspect:ndprecated_macros	-- tell the inspect tool to ignore this file
+//  boostinspect:ndprecated_macros -- tell the inspect tool to ignore this file
 
 //  Copyright (c) 2001-2003 John Maddock
 //  Copyright (c) 2001 Darin Adler
@@ -119,6 +119,39 @@
 #  if !defined(BOOST_NO_MEMBER_TEMPLATES) \
        && !defined(BOOST_MSVC6_MEMBER_TEMPLATES)
 #     define BOOST_MSVC6_MEMBER_TEMPLATES
+#  endif
+
+//
+// Without partial specialization, can't test for partial specialisation bugs:
+//
+#  if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+      && !defined(BOOST_BCB_PARTIAL_SPECIALIZATION_BUG)
+#     define BOOST_BCB_PARTIAL_SPECIALIZATION_BUG
+#  endif
+
+//
+// Without partial specialization, we can't have array-type partial specialisations:
+//
+#  if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+      && !defined(BOOST_NO_ARRAY_TYPE_SPECIALIZATIONS)
+#     define BOOST_NO_ARRAY_TYPE_SPECIALIZATIONS
+#  endif
+
+//
+// Without partial specialization, std::iterator_traits can't work:
+//
+#  if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+      && !defined(BOOST_NO_STD_ITERATOR_TRAITS)
+#     define BOOST_NO_STD_ITERATOR_TRAITS
+#  endif
+
+//
+// Without partial specialization, partial
+// specialization with default args won't work either:
+//
+#  if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+      && !defined(BOOST_NO_PARTIAL_SPECIALIZATION_IMPLICIT_DEFAULT_ARGS)
+#     define BOOST_NO_PARTIAL_SPECIALIZATION_IMPLICIT_DEFAULT_ARGS
 #  endif
 
 //
@@ -411,10 +444,12 @@ namespace std {
 // is defined, in which case it evaluates to return x; Use when you have a return
 // statement that can never be reached.
 
-#ifdef BOOST_NO_UNREACHABLE_RETURN_DETECTION
-#  define BOOST_UNREACHABLE_RETURN(x) return x;
-#else
-#  define BOOST_UNREACHABLE_RETURN(x)
+#ifndef BOOST_UNREACHABLE_RETURN
+#  ifdef BOOST_NO_UNREACHABLE_RETURN_DETECTION
+#     define BOOST_UNREACHABLE_RETURN(x) return x;
+#  else
+#     define BOOST_UNREACHABLE_RETURN(x)
+#  endif
 #endif
 
 // BOOST_DEDUCED_TYPENAME workaround ------------------------------------------//
@@ -465,6 +500,16 @@ namespace boost{
 #  else
    typedef __int128 int128_type;
    typedef unsigned __int128 uint128_type;
+#  endif
+}
+#endif
+// same again for __float128:
+#if defined(BOOST_HAS_FLOAT128) && defined(__cplusplus)
+namespace boost {
+#  ifdef __GNUC__
+   __extension__ typedef __float128 float128_type;
+#  else
+   typedef __float128 float128_type;
 #  endif
 }
 #endif
@@ -538,6 +583,25 @@ namespace std{ using ::type_info; }
 #  define BOOST_GPU_ENABLED
 #  endif
 
+// BOOST_RESTRICT ---------------------------------------------//
+// Macro to use in place of 'restrict' keyword variants
+#if !defined(BOOST_RESTRICT)
+#  if defined(_MSC_VER)
+#    define BOOST_RESTRICT __restrict
+#    if !defined(BOOST_NO_RESTRICT_REFERENCES) && (_MSC_FULL_VER < 190023026)
+#      define BOOST_NO_RESTRICT_REFERENCES
+#    endif
+#  elif defined(__GNUC__) && __GNUC__ > 3
+     // Clang also defines __GNUC__ (as 4)
+#    define BOOST_RESTRICT __restrict__
+#  else
+#    define BOOST_RESTRICT
+#    if !defined(BOOST_NO_RESTRICT_REFERENCES)
+#      define BOOST_NO_RESTRICT_REFERENCES
+#    endif
+#  endif
+#endif
+
 // BOOST_FORCEINLINE ---------------------------------------------//
 // Macro to use in place of 'inline' to force a function to be inline
 #if !defined(BOOST_FORCEINLINE)
@@ -558,10 +622,41 @@ namespace std{ using ::type_info; }
 #    define BOOST_NOINLINE __declspec(noinline)
 #  elif defined(__GNUC__) && __GNUC__ > 3
      // Clang also defines __GNUC__ (as 4)
-#    define BOOST_NOINLINE __attribute__ ((__noinline__))
+#    if defined(__CUDACC__)
+       // nvcc doesn't always parse __noinline__,
+       // see: https://svn.boost.org/trac/boost/ticket/9392
+#      define BOOST_NOINLINE __attribute__ ((noinline))
+#    else
+#      define BOOST_NOINLINE __attribute__ ((__noinline__))
+#    endif
 #  else
 #    define BOOST_NOINLINE
 #  endif
+#endif
+
+// BOOST_NORETURN ---------------------------------------------//
+// Macro to use before a function declaration/definition to designate
+// the function as not returning normally (i.e. with a return statement
+// or by leaving the function scope, if the function return type is void).
+#if !defined(BOOST_NORETURN)
+#  if defined(_MSC_VER)
+#    define BOOST_NORETURN __declspec(noreturn)
+#  elif defined(__GNUC__)
+#    define BOOST_NORETURN __attribute__ ((__noreturn__))
+#  elif defined(__has_attribute) && defined(__SUNPRO_CC)
+#    if __has_attribute(noreturn)
+#      define BOOST_NORETURN [[noreturn]]
+#    endif
+#  elif defined(__has_cpp_attribute) 
+#    if __has_cpp_attribute(noreturn)
+#      define BOOST_NORETURN [[noreturn]]
+#    endif
+#  endif
+#endif
+
+#if !defined(BOOST_NORETURN)
+#  define BOOST_NO_NORETURN
+#  define BOOST_NORETURN
 #endif
 
 // Branch prediction hints
@@ -590,6 +685,11 @@ namespace std{ using ::type_info; }
 #else
 #  define BOOST_NO_ALIGNMENT
 #  define BOOST_ALIGNMENT(x)
+#endif
+
+// Lack of non-public defaulted functions is implied by the lack of any defaulted functions
+#if !defined(BOOST_NO_CXX11_NON_PUBLIC_DEFAULTED_FUNCTIONS) && defined(BOOST_NO_CXX11_DEFAULTED_FUNCTIONS)
+#  define BOOST_NO_CXX11_NON_PUBLIC_DEFAULTED_FUNCTIONS
 #endif
 
 // Defaulted and deleted function declaration helpers
@@ -627,7 +727,7 @@ namespace std{ using ::type_info; }
 // Set BOOST_NO_DECLTYPE_N3276 when BOOST_NO_DECLTYPE is defined
 //
 #if defined(BOOST_NO_CXX11_DECLTYPE) && !defined(BOOST_NO_CXX11_DECLTYPE_N3276)
-#define	BOOST_NO_CXX11_DECLTYPE_N3276 BOOST_NO_CXX11_DECLTYPE
+#define BOOST_NO_CXX11_DECLTYPE_N3276 BOOST_NO_CXX11_DECLTYPE
 #endif
 
 //  -------------------- Deprecated macros for 1.50 ---------------------------
@@ -880,6 +980,18 @@ namespace std{ using ::type_info; }
 #define BOOST_CONSTEXPR constexpr
 #define BOOST_CONSTEXPR_OR_CONST constexpr
 #endif
+#if defined(BOOST_NO_CXX14_CONSTEXPR)
+#define BOOST_CXX14_CONSTEXPR
+#else
+#define BOOST_CXX14_CONSTEXPR constexpr
+#endif
+
+//
+// Unused variable/typedef workarounds:
+//
+#ifndef BOOST_ATTRIBUTE_UNUSED
+#  define BOOST_ATTRIBUTE_UNUSED
+#endif
 
 #define BOOST_STATIC_CONSTEXPR  static BOOST_CONSTEXPR_OR_CONST
 
@@ -903,6 +1015,22 @@ namespace std{ using ::type_info; }
 #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_HAS_VARIADIC_TMPL)
 #define BOOST_HAS_VARIADIC_TMPL
 #endif
+//
+// Set BOOST_NO_CXX11_FIXED_LENGTH_VARIADIC_TEMPLATE_EXPANSION_PACKS when
+// BOOST_NO_CXX11_VARIADIC_TEMPLATES is set:
+//
+#if defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && !defined(BOOST_NO_CXX11_FIXED_LENGTH_VARIADIC_TEMPLATE_EXPANSION_PACKS)
+#  define BOOST_NO_CXX11_FIXED_LENGTH_VARIADIC_TEMPLATE_EXPANSION_PACKS
+#endif
 
+//
+// Finish off with checks for macros that are depricated / no longer supported,
+// if any of these are set then it's very likely that much of Boost will no
+// longer work.  So stop with a #error for now, but give the user a chance
+// to continue at their own risk if they really want to:
+//
+#if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) && !defined(BOOST_CONFIG_ALLOW_DEPRECATED)
+#  error "You are using a compiler which lacks features which are now a minimum requirement in order to use Boost, define BOOST_CONFIG_ALLOW_DEPRECATED if you want to continue at your own risk!!!"
+#endif
 
 #endif

@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: pop_front_impl.hpp 85956 2013-09-26 13:05:50Z skelly $
-// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85956 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/pop_front_fwd.hpp>
 #include <boost/mpl/aux_/traits_lambda_spec.hpp>
@@ -26,7 +26,15 @@ namespace boost { namespace mpl {
 template< typename Tag >
 struct pop_front_impl
 {
-    template< typename Sequence > struct apply;
+    template< typename Sequence > struct apply
+    // conservatively placed, but maybe should go outside surrounding
+    // braces.
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300) 
+    {
+        typedef int type;
+    }
+#endif
+    ;
 };
 
 BOOST_MPL_ALGORITM_TRAITS_LAMBDA_SPEC(1, pop_front_impl)

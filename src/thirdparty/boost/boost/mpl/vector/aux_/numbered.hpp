@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: numbered.hpp 86249 2013-10-11 23:22:36Z skelly $
-// $Date: 2013-10-11 19:22:36 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86249 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/preprocessor/enum_params.hpp>
 #include <boost/preprocessor/enum_shifted_params.hpp>
@@ -125,7 +125,8 @@ struct pop_back_impl< aux::vector_tag<i_> >
 
 #   endif // i_ > 0
 
-#   if !defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
+#   if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+    && !defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
 
 template< typename V >
 struct v_at<V,i_>
@@ -208,7 +209,7 @@ struct clear_impl< aux::vector_tag<i_> >
     };
 };
 
-#   endif // BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC
+#   endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 #endif // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 

@@ -8,7 +8,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: poisson_distribution.hpp 70017 2011-03-16 03:24:42Z steven_watanabe $
+ * $Id$
  *
  */
 

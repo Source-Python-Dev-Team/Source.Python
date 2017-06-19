@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -31,7 +31,7 @@ namespace boost
 namespace detail
 {
 
-template< int I > class spinlock_pool
+template< int M > class spinlock_pool
 {
 private:
 
@@ -72,7 +72,7 @@ public:
     };
 };
 
-template< int I > spinlock spinlock_pool< I >::pool_[ 41 ] =
+template< int M > spinlock spinlock_pool< M >::pool_[ 41 ] =
 {
     BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, 
     BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, BOOST_DETAIL_SPINLOCK_INIT, 

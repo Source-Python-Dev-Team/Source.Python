@@ -18,12 +18,13 @@
 #include <iterator>
 
 #include <boost/concept_check.hpp>
+#include <boost/core/ignore_unused.hpp>
 
 #include <boost/geometry/geometries/point.hpp>
 #include <boost/geometry/strategies/concepts/distance_concept.hpp>
 
 
-namespace boost { namespace geometry { namespace concept
+namespace boost { namespace geometry { namespace concepts
 {
 
 
@@ -62,7 +63,7 @@ private :
 
             BOOST_CONCEPT_ASSERT
                 (
-                    (concept::PointSegmentDistanceStrategy<ds_type, Point, Point>)
+                    (concepts::PointSegmentDistanceStrategy<ds_type, Point, Point>)
                 );
 
             Strategy *str = 0;
@@ -75,7 +76,8 @@ private :
             //    - floating point value
             str->apply(*v1, std::back_inserter(*v2), 1.0);
 
-            boost::ignore_unused_variable_warning(str);
+            boost::ignore_unused<parameter_types, base_index>();
+            boost::ignore_unused(str);
         }
     };
 
@@ -89,6 +91,6 @@ public :
 
 
 
-}}} // namespace boost::geometry::concept
+}}} // namespace boost::geometry::concepts
 
 #endif // BOOST_GEOMETRY_STRATEGIES_CONCEPTS_SIMPLIFY_CONCEPT_HPP

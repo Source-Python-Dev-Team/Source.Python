@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: clear.hpp 86244 2013-10-11 23:15:00Z skelly $
-// $Date: 2013-10-11 19:15:00 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86244 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/clear_fwd.hpp>
 #include <boost/mpl/vector/aux_/vector0.hpp>
@@ -35,6 +35,7 @@ struct clear_impl< aux::vector_tag >
 
 #else
 
+#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template< long N >
 struct clear_impl< aux::vector_tag<N> >
@@ -45,6 +46,7 @@ struct clear_impl< aux::vector_tag<N> >
     };
 };
 
+#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 #endif // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 

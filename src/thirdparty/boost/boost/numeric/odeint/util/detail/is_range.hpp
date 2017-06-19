@@ -6,7 +6,8 @@
  is_range implementation. Taken from the boost::range library.
  [end_description]
 
- Copyright Thorsten Ottosen 2003-2004
+ Copyright 2011-2013 Karsten Ahnert
+ Copyright 2011-2013 Thorsten Ottosen
 
 
 
@@ -20,7 +21,7 @@
 #define BOOST_NUMERIC_ODEINT_UTIL_DETAIL_IS_RANGE_HPP_INCLUDED
 
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif
 

@@ -132,7 +132,7 @@ public:
     {}
 
     /// Move assignment operator
-    split_interval_set& operator = (split_interval_set&& src)
+    split_interval_set& operator = (split_interval_set src)
     { 
         base_type::operator=(boost::move(src));
         return *this;

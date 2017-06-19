@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: zip_view.hpp 60888 2010-03-28 14:23:38Z agurtovoy $
-// $Date: 2010-03-28 10:23:38 -0400 (Sun, 28 Mar 2010) $
-// $Revision: 60888 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/transform.hpp>
 #include <boost/mpl/begin_end.hpp>

@@ -14,9 +14,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: quote.hpp 86261 2013-10-12 10:32:40Z skelly $
-// $Date: 2013-10-12 06:32:40 -0400 (Sat, 12 Oct 2013) $
-// $Revision: 86261 $
+// $Id$
+// $Date$
+// $Revision$
 
 #if !defined(BOOST_MPL_PREPROCESSING_MODE)
 #   include <boost/mpl/void.hpp>
@@ -58,25 +58,23 @@
 
 namespace boost { namespace mpl {
 
+#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template< typename T, bool has_type_ >
 struct quote_impl
-// GCC had a problem with metafunction forwarding when T is a
-// specialization of a template called 'type'. It is unknown which release
-// fixed this, but it was previously tested to be broken with GCC 4.0.2.
-// It certainly works with 4.6.4 and has not been tested with intermediate
-// versions.
-# if BOOST_WORKAROUND(__GNUC__, <= 4) \
-    && BOOST_WORKAROUND(__GNUC_MINOR__, <= 6) \
-    && BOOST_WORKAROUND(__GNUC_PATCHLEVEL__, <= 4)
+// GCC has a problem with metafunction forwarding when T is a
+// specialization of a template called 'type'.
+# if BOOST_WORKAROUND(__GNUC__, BOOST_TESTED_AT(4)) \
+    && BOOST_WORKAROUND(__GNUC_MINOR__, BOOST_TESTED_AT(0)) \
+    && BOOST_WORKAROUND(__GNUC_PATCHLEVEL__, BOOST_TESTED_AT(2))
 {
     typedef typename T::type type;
 };
-# else
+# else 
     : T
 {
 };
-# endif
+# endif 
 
 template< typename T >
 struct quote_impl<T,false>
@@ -84,6 +82,25 @@ struct quote_impl<T,false>
     typedef T type;
 };
 
+#else // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+
+template< bool > struct quote_impl
+{
+    template< typename T > struct result_
+        : T
+    {
+    };
+};
+
+template<> struct quote_impl<false>
+{
+    template< typename T > struct result_
+    {
+        typedef T type;
+    };
+};
+
+#endif 
 
 #define BOOST_PP_ITERATION_PARAMS_1 \
     (3,(1, BOOST_MPL_LIMIT_METAFUNCTION_ARITY, <boost/mpl/quote.hpp>))
@@ -115,11 +132,16 @@ struct BOOST_PP_CAT(quote,i_)
             , aux::has_type< F< BOOST_MPL_PP_PARAMS(i_, U) > >::value
             >::type type;
     };
-#else
+#elif !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
         : quote_impl<
               F< BOOST_MPL_PP_PARAMS(i_, U) >
             , aux::has_type< F< BOOST_MPL_PP_PARAMS(i_, U) > >::value
             >
+    {
+    };
+#else
+        : quote_impl< aux::has_type< F< BOOST_MPL_PP_PARAMS(i_, U) > >::value >
+            ::template result_< F< BOOST_MPL_PP_PARAMS(i_, U) > >
     {
     };
 #endif

@@ -21,20 +21,12 @@ struct lanczos<multiprecision::number<Backend, ExpressionTemplates>, Policy>
 {
    typedef typename boost::math::policies::precision<multiprecision::number<Backend, ExpressionTemplates>, Policy>::type precision_type;
    typedef typename mpl::if_c<
-      precision_type::value <= 73,
+      precision_type::value && (precision_type::value <= 73),
       lanczos13UDT,
       typename mpl::if_c<
-         precision_type::value <= 122,
+      precision_type::value&& (precision_type::value <= 122),
          lanczos22UDT,
-         typename mpl::if_c<
-            precision_type::value <= 172,
-            lanczos31UDT,
-            typename mpl::if_c<
-               precision_type::value <= 372,
-               lanczos61UDT,
-               undefined_lanczos
-            >::type
-         >::type
+         undefined_lanczos
       >::type
    >::type type;
 };
@@ -44,3 +36,4 @@ struct lanczos<multiprecision::number<Backend, ExpressionTemplates>, Policy>
 }} // namespaces
 
 #endif
+

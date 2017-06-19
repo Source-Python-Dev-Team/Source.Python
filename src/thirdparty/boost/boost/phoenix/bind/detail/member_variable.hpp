@@ -43,8 +43,8 @@ namespace boost { namespace phoenix { namespace detail {
                 type;
             };
 
-            member_variable(MP mp)
-                : mp(mp) {}
+            member_variable(MP mp_)
+                : mp(mp_) {}
 
             template <typename Class>
             RT& operator()(Class& obj) const

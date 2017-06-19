@@ -26,7 +26,6 @@
 #include <boost/assert.hpp>
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
-#include <boost/serialization/pfto.hpp>
 
 #include <boost/integer.hpp>
 #include <boost/integer_traits.hpp>
@@ -59,16 +58,26 @@ namespace detail {
 // does have the virtue of buiding the smalles archive in the minimum amount
 // of time.  So under some circumstances it may be he right choice.
 template<class Archive>
-class basic_binary_oarchive : 
-    public archive::detail::common_oarchive<Archive>
+class BOOST_SYMBOL_VISIBLE basic_binary_oarchive : 
+    public detail::common_oarchive<Archive>
 {
+#ifdef BOOST_NO_MEMBER_TEMPLATE_FRIENDS
+public:
+#else
 protected:
-    friend class detail::interface_oarchive<Archive>;
+    #if BOOST_WORKAROUND(BOOST_MSVC, < 1500)
+        // for some inexplicable reason insertion of "class" generates compile erro
+        // on msvc 7.1
+        friend detail::interface_oarchive<Archive>;
+    #else
+        friend class detail::interface_oarchive<Archive>;
+    #endif
+#endif
     // any datatype not specifed below will be handled by base class
     typedef detail::common_oarchive<Archive> detail_common_oarchive;
     template<class T>
-    void save_override(const T & t, BOOST_PFTO int version){
-      this->detail_common_oarchive::save_override(t, static_cast<int>(version));
+    void save_override(const T & t){
+      this->detail_common_oarchive::save_override(t);
     }
 
     // include these to trap a change in binary format which
@@ -82,14 +91,14 @@ protected:
     BOOST_STATIC_ASSERT(sizeof(object_reference_type) == sizeof(uint_least32_t));
 
     // binary files don't include the optional information 
-    void save_override(const class_id_optional_type & /* t */, int){}
+    void save_override(const class_id_optional_type & /* t */){}
 
     // enable this if we decide to support generation of previous versions
     #if 0
-    void save_override(const boost::archive::version_type & t, int version){
+    void save_override(const boost::archive::version_type & t){
         library_version_type lvt = this->get_library_version();
         if(boost::archive::library_version_type(7) < lvt){
-            this->detail_common_oarchive::save_override(t, version);
+            this->detail_common_oarchive::save_override(t);
         }
         else
         if(boost::archive::library_version_type(6) < lvt){
@@ -101,10 +110,10 @@ protected:
             * this->This() << x;
         }
     }
-    void save_override(const boost::serialization::item_version_type & t, int version){
+    void save_override(const boost::serialization::item_version_type & t){
         library_version_type lvt = this->get_library_version();
         if(boost::archive::library_version_type(7) < lvt){
-            this->detail_common_oarchive::save_override(t, version);
+            this->detail_common_oarchive::save_override(t);
         }
         else
         if(boost::archive::library_version_type(6) < lvt){
@@ -117,10 +126,10 @@ protected:
         }
     }
 
-    void save_override(class_id_type & t, int version){
+    void save_override(class_id_type & t){
         library_version_type lvt = this->get_library_version();
         if(boost::archive::library_version_type(7) < lvt){
-            this->detail_common_oarchive::save_override(t, version);
+            this->detail_common_oarchive::save_override(t);
         }
         else
         if(boost::archive::library_version_type(6) < lvt){
@@ -132,20 +141,20 @@ protected:
             * this->This() << x;
         }
     }
-    void save_override(class_id_reference_type & t, int version){
-        save_override(static_cast<class_id_type &>(t), version);
+    void save_override(class_id_reference_type & t){
+        save_override(static_cast<class_id_type &>(t));
     }
 
     #endif
 
     // explicitly convert to char * to avoid compile ambiguities
-    void save_override(const class_name_type & t, int){
+    void save_override(const class_name_type & t){
         const std::string s(t);
         * this->This() << s;
     }
 
     #if 0
-    void save_override(const serialization::collection_size_type & t, int){
+    void save_override(const serialization::collection_size_type & t){
         if (get_library_version() < boost::archive::library_version_type(6)){
             unsigned int x=0;
             * this->This() >> x;
@@ -156,7 +165,7 @@ protected:
         }
     }
     #endif
-    BOOST_ARCHIVE_OR_WARCHIVE_DECL(void)
+    BOOST_ARCHIVE_OR_WARCHIVE_DECL void
     init();
 
     basic_binary_oarchive(unsigned int flags) :

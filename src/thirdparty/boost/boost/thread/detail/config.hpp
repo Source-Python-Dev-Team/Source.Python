@@ -12,6 +12,8 @@
 #include <boost/detail/workaround.hpp>
 #include <boost/thread/detail/platform.hpp>
 
+//#define BOOST_THREAD_USEFIXES_TIMESPEC
+//#define BOOST_THREAD_HAS_CONDATTR_SET_CLOCK_MONOTONIC
 //#define BOOST_THREAD_DONT_PROVIDE_INTERRUPTIONS
 // ATTRIBUTE_MAY_ALIAS
 
@@ -100,8 +102,8 @@
 #if !defined BOOST_THREAD_VERSION
 #define BOOST_THREAD_VERSION 2
 #else
-#if BOOST_THREAD_VERSION!=2  && BOOST_THREAD_VERSION!=3 && BOOST_THREAD_VERSION!=4
-#error "BOOST_THREAD_VERSION must be 2, 3 or 4"
+#if BOOST_THREAD_VERSION!=2  && BOOST_THREAD_VERSION!=3 && BOOST_THREAD_VERSION!=4 && BOOST_THREAD_VERSION!=5
+#error "BOOST_THREAD_VERSION must be 2, 3, 4 or 5"
 #endif
 #endif
 
@@ -239,13 +241,29 @@
     ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
     ! defined(BOOST_NO_CXX11_DECLTYPE) && \
     ! defined(BOOST_NO_CXX11_DECLTYPE_N3276) && \
-    ! defined(BOOST_NO_CXX11_AUTO) && \
+    ! defined(BOOST_NO_CXX11_TRAILING_RESULT_TYPES) && \
     ! defined(BOOST_NO_CXX11_RVALUE_REFERENCES) && \
     ! defined(BOOST_NO_CXX11_HDR_TUPLE)
 
 #define BOOST_THREAD_PROVIDES_VARIADIC_THREAD
 #endif
 #endif
+
+#if ! defined BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY \
+ && ! defined BOOST_THREAD_DONT_PROVIDE_FUTURE_WHEN_ALL_WHEN_ANY
+
+#if ! defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) && \
+    ! defined(BOOST_NO_CXX11_HDR_TUPLE)
+
+#define BOOST_THREAD_PROVIDES_FUTURE_WHEN_ALL_WHEN_ANY
+#endif
+#endif
+
+//    ! defined(BOOST_NO_SFINAE_EXPR) &&
+//    ! defined(BOOST_NO_CXX11_RVALUE_REFERENCES) &&
+//    ! defined(BOOST_NO_CXX11_AUTO) &&
+//    ! defined(BOOST_NO_CXX11_DECLTYPE) &&
+//    ! defined(BOOST_NO_CXX11_DECLTYPE_N3276) &&
 
 
 // MAKE_READY_AT_THREAD_EXIT
@@ -288,6 +306,13 @@
 
 #endif // BOOST_THREAD_VERSION>=4
 
+
+#if BOOST_THREAD_VERSION>=5
+//#define BOOST_THREAD_FUTURE_BLOCKING
+#else
+//#define BOOST_THREAD_FUTURE_BLOCKING
+#define BOOST_THREAD_ASYNC_FUTURE_WAITS
+#endif
 // INTERRUPTIONS
 #if ! defined BOOST_THREAD_PROVIDES_INTERRUPTIONS \
  && ! defined BOOST_THREAD_DONT_PROVIDE_INTERRUPTIONS
@@ -337,6 +362,12 @@
 
 #endif
 
+
+//#if ! defined BOOST_NO_CXX11_RVALUE_REFERENCES || defined BOOST_THREAD_USES_MOVE
+#if ! defined BOOST_NO_CXX11_RVALUE_REFERENCES
+#define BOOST_THREAD_FUTURE_USES_OPTIONAL
+#endif
+
 #if BOOST_WORKAROUND(__BORLANDC__, < 0x600)
 #  pragma warn -8008 // Condition always true/false
 #  pragma warn -8080 // Identifier declared but never used
@@ -362,7 +393,9 @@
 // compatibility with the rest of Boost's auto-linking code:
 #if defined(BOOST_THREAD_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)
 # undef  BOOST_THREAD_USE_LIB
-# define BOOST_THREAD_USE_DLL
+# if !defined(BOOST_THREAD_USE_DLL)
+#  define BOOST_THREAD_USE_DLL
+# endif
 #endif
 
 #if defined(BOOST_THREAD_BUILD_DLL)   //Build dll

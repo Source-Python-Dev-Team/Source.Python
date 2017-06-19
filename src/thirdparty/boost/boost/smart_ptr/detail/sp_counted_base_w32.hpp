@@ -3,7 +3,7 @@
 
 // MS compatible compilers support #pragma once
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1020)
 # pragma once
 #endif
 
@@ -24,7 +24,7 @@
 //  formulation
 //
 
-#include <boost/detail/interlocked.hpp>
+#include <boost/smart_ptr/detail/sp_interlocked.hpp>
 #include <boost/detail/workaround.hpp>
 #include <boost/detail/sp_typeinfo.hpp>
 
@@ -71,7 +71,7 @@ public:
 
     void add_ref_copy()
     {
-        BOOST_INTERLOCKED_INCREMENT( &use_count_ );
+        BOOST_SP_INTERLOCKED_INCREMENT( &use_count_ );
     }
 
     bool add_ref_lock() // true on success
@@ -80,13 +80,25 @@ public:
         {
             long tmp = static_cast< long const volatile& >( use_count_ );
             if( tmp == 0 ) return false;
-            if( BOOST_INTERLOCKED_COMPARE_EXCHANGE( &use_count_, tmp + 1, tmp ) == tmp ) return true;
+
+#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, == 1200 )
+
+            // work around a code generation bug
+
+            long tmp2 = tmp + 1;
+            if( BOOST_SP_INTERLOCKED_COMPARE_EXCHANGE( &use_count_, tmp2, tmp ) == tmp2 - 1 ) return true;
+
+#else
+
+            if( BOOST_SP_INTERLOCKED_COMPARE_EXCHANGE( &use_count_, tmp + 1, tmp ) == tmp ) return true;
+
+#endif
         }
     }
 
     void release() // nothrow
     {
-        if( BOOST_INTERLOCKED_DECREMENT( &use_count_ ) == 0 )
+        if( BOOST_SP_INTERLOCKED_DECREMENT( &use_count_ ) == 0 )
         {
             dispose();
             weak_release();
@@ -95,12 +107,12 @@ public:
 
     void weak_add_ref() // nothrow
     {
-        BOOST_INTERLOCKED_INCREMENT( &weak_count_ );
+        BOOST_SP_INTERLOCKED_INCREMENT( &weak_count_ );
     }
 
     void weak_release() // nothrow
     {
-        if( BOOST_INTERLOCKED_DECREMENT( &weak_count_ ) == 0 )
+        if( BOOST_SP_INTERLOCKED_DECREMENT( &weak_count_ ) == 0 )
         {
             destroy();
         }

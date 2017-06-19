@@ -2,8 +2,8 @@
 //
 // Copyright Vicente J. Botet Escriba 2010
 //
-// Distributed under the Boost Software License, Version 1.0. 
-// (See accompanying file LICENSE_1_0.txt or copy at 
+// Distributed under the Boost Software License, Version 1.0.
+// (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 //
 // See http://www.boost.org/libs/mpl for documentation.
@@ -20,6 +20,7 @@
 
 #if    !defined(BOOST_MPL_CFG_NO_NESTED_VALUE_ARITHMETIC_2) \
     && !defined(BOOST_MPL_PREPROCESSING_MODE) \
+    && !defined(__CUDACC__) \
     && ( defined(BOOST_MSVC) \
         || BOOST_WORKAROUND(__EDG_VERSION__, <= 238) \
         )
@@ -78,7 +79,7 @@ struct abs_impl<integral_c_tag>
 #else
     template< typename N > struct apply
         : integral_c< typename N::value_type, ((N::value < 0) ? (-N::value) : N::value ) >
-#endif    
+#endif
     {
     };
 };

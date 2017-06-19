@@ -10,16 +10,18 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: arrays.hpp 85956 2013-09-26 13:05:50Z skelly $
-// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85956 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/msvc.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
 
 #if    !defined(BOOST_MPL_CFG_NO_DEPENDENT_ARRAY_TYPES) \
     && !defined(BOOST_MPL_PREPROCESSING_MODE) \
-    && BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x610))
+    && ( BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x610)) \
+        || BOOST_WORKAROUND(BOOST_MSVC, <= 1300) \
+        )
 
 #   define BOOST_MPL_CFG_NO_DEPENDENT_ARRAY_TYPES
 
