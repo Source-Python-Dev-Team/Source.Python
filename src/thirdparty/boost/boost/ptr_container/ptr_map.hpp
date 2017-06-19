@@ -12,7 +12,7 @@
 #ifndef BOOST_PTR_CONTAINER_PTR_MAP_HPP
 #define BOOST_PTR_CONTAINER_PTR_MAP_HPP
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif
 
@@ -31,12 +31,10 @@ namespace boost
         class Allocator      = std::allocator< std::pair<const Key,void*> >
     >
     class ptr_map : 
-        public ptr_map_adapter<T,std::map<Key,
-            typename ptr_container_detail::void_ptr<T>::type,
+        public ptr_map_adapter<T,std::map<Key,void*,
                                Compare,Allocator>,CloneAllocator>
     {
-        typedef ptr_map_adapter<T,std::map<Key,
-            typename ptr_container_detail::void_ptr<T>::type,
+        typedef ptr_map_adapter<T,std::map<Key,void*,
                                 Compare,Allocator>,CloneAllocator>
             base_type;
 

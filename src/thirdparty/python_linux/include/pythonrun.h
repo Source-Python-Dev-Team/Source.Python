@@ -66,8 +66,8 @@ PyAPI_FUNC(struct _mod *) PyParser_ASTFromFile(
     const char *filename,       /* decoded from the filesystem encoding */
     const char* enc,
     int start,
-    char *ps1,
-    char *ps2,
+    const char *ps1,
+    const char *ps2,
     PyCompilerFlags *flags,
     int *errcode,
     PyArena *arena);
@@ -76,8 +76,8 @@ PyAPI_FUNC(struct _mod *) PyParser_ASTFromFileObject(
     PyObject *filename,
     const char* enc,
     int start,
-    char *ps1,
-    char *ps2,
+    const char *ps1,
+    const char *ps2,
     PyCompilerFlags *flags,
     int *errcode,
     PyArena *arena);
@@ -91,9 +91,11 @@ PyAPI_FUNC(struct _mod *) PyParser_ASTFromFileObject(
 #endif
 PyAPI_FUNC(struct _node *) PyParser_SimpleParseStringFlags(const char *, int,
                                                            int);
+#if !defined(Py_LIMITED_API) || Py_LIMITED_API+0 >= 0x03030000
 PyAPI_FUNC(struct _node *) PyParser_SimpleParseStringFlagsFilename(const char *,
                                                                    const char *,
                                                                    int, int);
+#endif
 PyAPI_FUNC(struct _node *) PyParser_SimpleParseFileFlags(FILE *, const char *,
                                                          int, int);
 
@@ -176,7 +178,7 @@ PyAPI_DATA(PyThreadState*) _PyOS_ReadlineTState;
 
 /* Stack size, in "pointers" (so we get extra safety margins
    on 64-bit platforms).  On a 32-bit platform, this translates
-   to a 8k margin. */
+   to an 8k margin. */
 #define PYOS_STACK_MARGIN 2048
 
 #if defined(WIN32) && !defined(MS_WIN64) && defined(_MSC_VER) && _MSC_VER >= 1300

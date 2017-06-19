@@ -32,14 +32,6 @@
 #include <boost/mpl/size.hpp>
 
 namespace boost { namespace gil {
-
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) 
-#pragma warning(push) 
-#pragma warning(disable:4510) //default constructor could not be generated
-#pragma warning(disable:4512) //assignment operator could not be generated
-#pragma warning(disable:4610) //can never be instantiated - user defined constructor required
-#endif
-
 template <typename T> struct channel_traits;
 template <typename P> struct is_pixel;
 template <typename dstT, typename srcT>
@@ -280,7 +272,8 @@ struct PointNDConcept {
         LT lt=axis_value<N-1>(point);
         axis_value<N-1>(point)=lt;
     
-//        value_type v=point[0];  ignore_unused_variable_warning(v);
+        value_type v=point[0];  ignore_unused_variable_warning(v);
+        point[0]=point[0];
     }
     P point;
 };
@@ -463,12 +456,11 @@ namespace detail {
     template <typename T>
     struct ChannelIsMutableConcept {
         void constraints() {
-            c1=c2;
+            c=c;
             using std::swap;
-            swap(c1,c2);
+            swap(c,c);
         }
-        T c1;
-        T c2;
+        T c;
     };
 }
 
@@ -626,7 +618,7 @@ struct ColorBaseConcept {
         typedef typename kth_element_const_reference_type<ColorBase,num_elements-1>::type CR; 
 
 #if !defined(_MSC_VER) || _MSC_VER > 1310
-        CR cr=gil::at_c<num_elements-1>(cb);  ignore_unused_variable_warning(cr);
+        CR cr=at_c<num_elements-1>(cb);  ignore_unused_variable_warning(cr);
 #endif
 
         // functions that work for every pixel (no need to require them)
@@ -663,8 +655,8 @@ struct MutableColorBaseConcept {
         typedef typename kth_element_reference_type<ColorBase, 0>::type CR; 
 
 #if !defined(_MSC_VER) || _MSC_VER > 1310
-        CR r=gil::at_c<0>(cb);
-        gil::at_c<0>(cb)=r;
+        CR r=at_c<0>(cb);
+        at_c<0>(cb)=r;
 #endif
     }
 
@@ -959,10 +951,8 @@ struct MutableHomogeneousPixelConcept {
     void constraints() {
         gil_function_requires<HomogeneousPixelConcept<P> >();
         gil_function_requires<MutableHomogeneousColorBaseConcept<P> >();
-        p[0]=v;
-        v=p[0];
+        p[0]=p[0];
     }
-    typename P::template element_type<P>::type v;
     P p;
 };
 
@@ -2190,10 +2180,6 @@ struct ImageConcept {
     }
     Img img;
 };
-
-#if BOOST_WORKAROUND(BOOST_MSVC, >= 1400) 
-#pragma warning(pop) 
-#endif 
 
 
 } }  // namespace boost::gil

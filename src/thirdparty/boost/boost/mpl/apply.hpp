@@ -14,9 +14,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: apply.hpp 86245 2013-10-11 23:17:48Z skelly $
-// $Date: 2013-10-11 19:17:48 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86245 $
+// $Id$
+// $Date$
+// $Revision$
 
 #if !defined(BOOST_MPL_PREPROCESSING_MODE)
 #   include <boost/mpl/apply_fwd.hpp>
@@ -44,6 +44,8 @@
 #   include <boost/mpl/aux_/preprocessor/enum.hpp>
 #   include <boost/mpl/aux_/config/lambda.hpp>
 #   include <boost/mpl/aux_/config/dtp.hpp>
+#   include <boost/mpl/aux_/nttp_decl.hpp>
+#   include <boost/mpl/aux_/config/eti.hpp>
 #   include <boost/mpl/aux_/config/msvc.hpp>
 #   include <boost/mpl/aux_/config/workaround.hpp>
 
@@ -93,7 +95,31 @@ namespace boost { namespace mpl {
     (3,(0, BOOST_MPL_LIMIT_METAFUNCTION_ARITY, <boost/mpl/apply.hpp>))
 #include BOOST_PP_ITERATE()
 
+#   if !defined(BOOST_MPL_CFG_NO_APPLY_TEMPLATE)
 // real C++ version is already taken care of
+#   if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
+
+namespace aux {
+// apply_count_args
+#define AUX778076_COUNT_ARGS_PREFIX apply
+#define AUX778076_COUNT_ARGS_DEFAULT na
+#define AUX778076_COUNT_ARGS_ARITY BOOST_MPL_LIMIT_METAFUNCTION_ARITY
+#include <boost/mpl/aux_/count_args.hpp>
+}
+
+
+template<
+      typename F, AUX778076_APPLY_DEF_PARAMS(typename T, na)
+    >
+struct apply
+    : aux::apply_chooser< 
+          aux::apply_count_args< AUX778076_APPLY_PARAMS(T) >::value
+        >::template result_< F, AUX778076_APPLY_PARAMS(T) >::type
+{
+};
+
+#   endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+#   endif // BOOST_MPL_CFG_NO_APPLY_TEMPLATE
 
 #   undef AUX778076_APPLY_N_SPEC_PARAMS
 #   undef AUX778076_APPLY_N_PARTIAL_SPEC_PARAMS
@@ -120,11 +146,19 @@ template<
       typename F AUX778076_APPLY_N_COMMA_PARAMS(i_, typename T)
     >
 struct BOOST_PP_CAT(apply,i_)
+#if !BOOST_WORKAROUND(BOOST_MSVC, < 1300)
     : BOOST_PP_CAT(apply_wrap,i_)< 
           typename lambda<F>::type
         AUX778076_APPLY_N_COMMA_PARAMS(i_, T)
         >
 {
+#else
+{
+    typedef typename BOOST_PP_CAT(apply_wrap,i_)< 
+          typename lambda<F>::type
+        AUX778076_APPLY_N_COMMA_PARAMS(i_, T)
+        >::type type;
+#endif
     BOOST_MPL_AUX_LAMBDA_SUPPORT(
           BOOST_PP_INC(i_)
         , BOOST_PP_CAT(apply,i_)
@@ -133,7 +167,17 @@ struct BOOST_PP_CAT(apply,i_)
 };
 
 
+#if defined(BOOST_MPL_CFG_MSVC_ETI_BUG)
+/// workaround for ETI bug
+template<>
+struct BOOST_PP_CAT(apply,i_)<AUX778076_APPLY_N_SPEC_PARAMS(i_, int)>
+{
+    typedef int type;
+};
+#endif
 
+#   if !defined(BOOST_MPL_CFG_NO_APPLY_TEMPLATE)
+#   if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 #if i_ == BOOST_MPL_LIMIT_METAFUNCTION_ARITY
 /// primary template (not a specialization!)
@@ -154,6 +198,30 @@ struct apply< F AUX778076_APPLY_N_PARTIAL_SPEC_PARAMS(i_, T, na) >
 };
 #endif
 
+#   else // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+
+#if !defined(BOOST_MPL_CFG_NO_APPLY_TEMPLATE)
+namespace aux {
+
+template<>
+struct apply_chooser<i_>
+{
+    template<
+          typename F, AUX778076_APPLY_PARAMS(typename T)
+        >
+    struct result_
+    {
+        typedef BOOST_PP_CAT(apply,i_)<
+              F AUX778076_APPLY_N_COMMA_PARAMS(i_, T)
+            > type;
+    };
+};
+
+} // namespace aux
+#endif
+
+#   endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+#   endif // BOOST_MPL_CFG_NO_APPLY_TEMPLATE
 
 #   undef i_
 

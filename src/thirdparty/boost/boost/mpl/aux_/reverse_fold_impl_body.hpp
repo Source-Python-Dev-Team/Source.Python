@@ -11,13 +11,14 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: reverse_fold_impl_body.hpp 86249 2013-10-11 23:22:36Z skelly $
-// $Date: 2013-10-11 19:22:36 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86249 $
+// $Id$
+// $Date$
+// $Revision$
 
 #   include <boost/mpl/limits/unrolling.hpp>
 #   include <boost/mpl/aux_/preprocessor/repeat.hpp>
 #   include <boost/mpl/aux_/config/ctps.hpp>
+#   include <boost/mpl/aux_/nttp_decl.hpp>
 
 #   include <boost/preprocessor/arithmetic/sub.hpp>
 #   include <boost/preprocessor/iterate.hpp>
@@ -67,7 +68,7 @@ namespace boost { namespace mpl { namespace aux {
 
 /// forward declaration
 template<
-      long N
+      BOOST_MPL_AUX_NTTP_DECL(long, N)
     , typename First
     , typename Last
     , typename State
@@ -76,7 +77,8 @@ template<
     > 
 struct AUX778076_FOLD_IMPL_NAME;
 
-#if !defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
+#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+    && !defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
 
 #   define BOOST_PP_ITERATION_PARAMS_1 \
     (3,(0, BOOST_MPL_LIMIT_UNROLLING, <boost/mpl/aux_/reverse_fold_impl_body.hpp>))
@@ -84,7 +86,7 @@ struct AUX778076_FOLD_IMPL_NAME;
 
 // implementation for N that exceeds BOOST_MPL_LIMIT_UNROLLING
 template<
-      long N
+      BOOST_MPL_AUX_NTTP_DECL(long, N)
     , typename First
     , typename Last
     , typename State
@@ -163,9 +165,9 @@ struct AUX778076_FOLD_IMPL_NAME<-1,Last,Last,State,BackwardOp,ForwardOp>
     typedef Last iterator;
 };
 
-#else // BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC
+#else // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
-template< long N >
+template< BOOST_MPL_AUX_NTTP_DECL(long, N) >
 struct AUX778076_FOLD_CHUNK_NAME;
 
 #   define BOOST_PP_ITERATION_PARAMS_1 \
@@ -173,7 +175,7 @@ struct AUX778076_FOLD_CHUNK_NAME;
 #   include BOOST_PP_ITERATE()
 
 // implementation for N that exceeds BOOST_MPL_LIMIT_UNROLLING
-template< long N > 
+template< BOOST_MPL_AUX_NTTP_DECL(long, N) > 
 struct AUX778076_FOLD_CHUNK_NAME
 {
     template<
@@ -258,6 +260,14 @@ struct AUX778076_FOLD_CHUNK_NAME<-1>
         typedef typename res_::iterator iterator;
     };
 
+#if defined(BOOST_MPL_CFG_MSVC_60_ETI_BUG)
+    /// ETI workaround
+    template<> struct result_<int,int,int,int,int>
+    {
+        typedef int state;
+        typedef int iterator;
+    };
+#endif
 };
 
 template<
@@ -287,7 +297,7 @@ struct BOOST_PP_CAT(AUX778076_FOLD_IMPL_NAME_PREFIX,_step)
 };
 
 template<
-      long N
+      BOOST_MPL_AUX_NTTP_DECL(long, N)
     , typename First
     , typename Last
     , typename State
@@ -300,7 +310,7 @@ struct AUX778076_FOLD_IMPL_NAME
 {
 };
 
-#endif // BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC
+#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 }}}
 
@@ -318,7 +328,8 @@ struct AUX778076_FOLD_IMPL_NAME
 
 #   define n_ BOOST_PP_FRAME_ITERATION(1)
 
-#if !defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
+#if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+    && !defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
 
 template<
       typename First
@@ -384,9 +395,17 @@ template<> struct AUX778076_FOLD_CHUNK_NAME<n_>
         typedef BOOST_PP_CAT(iter,n_) iterator;
     };
 
+#if defined(BOOST_MPL_CFG_MSVC_60_ETI_BUG)
+    /// ETI workaround
+    template<> struct result_<int,int,int,int,int>
+    {
+        typedef int state;
+        typedef int iterator;
+    };
+#endif
 };
 
-#endif // BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC
+#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
 
 #   undef n_
 

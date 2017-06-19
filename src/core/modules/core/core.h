@@ -34,13 +34,46 @@
 #include "interface.h"
 #include "dynload.h"
 
+// Maximum console message size including null terminating char
+#define MAX_CON_MSG 1024
+
+
+//-----------------------------------------------------------------------------
+// MessageSeverity
+//-----------------------------------------------------------------------------
+enum MessageSeverity
+{
+	SEVERITY_MESSAGE = 0,
+	SEVERITY_WARNING,
+	SEVERITY_ASSERT,
+	SEVERITY_ERROR,
+	SEVERITY_LOG,
+};
+
+
+//-----------------------------------------------------------------------------
+// OutputReturn
+//-----------------------------------------------------------------------------
+enum OutputReturn
+{
+	OUTPUT_BLOCK = 0,
+	OUTPUT_CONTINUE
+};
+
 
 //-----------------------------------------------------------------------------
 // ConMsg wrapper
 //-----------------------------------------------------------------------------
 inline void ConsoleMessage(const char* msg)
 {
-	ConMsg(msg);
+	char* pMsg = (char*) msg;
+	int iLen = strlen(msg);
+
+	while(iLen > 0) {
+		ConMsg(pMsg);
+		pMsg += MAX_CON_MSG-1;
+		iLen -= MAX_CON_MSG-1;
+	}
 }
 
 inline void* GetInterface(const char* library, const char* interface_name)

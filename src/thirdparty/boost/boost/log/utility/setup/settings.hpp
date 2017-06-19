@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -28,7 +28,7 @@
 #include <boost/log/detail/native_typeof.hpp>
 #include <boost/utility/explicit_operator_bool.hpp>
 #if !defined(BOOST_LOG_TYPEOF)
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #endif
 #if defined(BOOST_LOG_TYPEOF) && defined(BOOST_NO_CXX11_TRAILING_RESULT_TYPES)
 #include <boost/utility/declval.hpp>
@@ -254,7 +254,7 @@ private:
         }
 
         template< typename T >
-        typename enable_if< boost::property_tree::detail::is_character< T >, std::basic_string< T > >::type
+        typename boost::enable_if_c< boost::property_tree::detail::is_character< T >::value, std::basic_string< T > >::type
         or_default(const T* def_value) const
         {
             if (m_section.m_ptree)
@@ -368,12 +368,12 @@ public:
     /*!
      * Checks if the section refers to the container.
      */
-    BOOST_EXPLICIT_OPERATOR_BOOL()
+    BOOST_EXPLICIT_OPERATOR_BOOL_NOEXCEPT()
 
     /*!
      * Checks if the section refers to the container.
      */
-    bool operator! () const { return !m_ptree; }
+    bool operator! () const BOOST_NOEXCEPT { return !m_ptree; }
 
     /*!
      * Returns an iterator over the nested subsections and parameters.

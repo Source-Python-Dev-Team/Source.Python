@@ -214,7 +214,6 @@ public:
     template<typename Sink>
     void close(Sink& dest, BOOST_IOS::openmode)
     {
-        typedef typename iostreams::category_of<Sink>::type category;
         if ((flags_ & f_write) != 0 && (flags_ & f_has_CR) != 0)
             newline_if_sink(dest);
         flags_ &= ~f_has_LF; // Restore original flags.

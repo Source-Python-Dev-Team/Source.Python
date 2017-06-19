@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: large_arithmetic.hpp 82940 2013-02-16 22:15:31Z steven_watanabe $
+ * $Id$
  */
 
 #ifndef BOOST_RANDOM_DETAIL_LARGE_ARITHMETIC_HPP

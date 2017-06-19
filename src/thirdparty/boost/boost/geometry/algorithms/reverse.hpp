@@ -3,6 +3,7 @@
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
+// Copyright (c) 2014 Adam Wulkiewicz, Lodz, Poland.
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -17,12 +18,16 @@
 #include <algorithm>
 
 #include <boost/range.hpp>
-#include <boost/typeof/typeof.hpp>
-#include <boost/variant/static_visitor.hpp>
+#include <boost/type_traits/remove_reference.hpp>
+
 #include <boost/variant/apply_visitor.hpp>
+#include <boost/variant/static_visitor.hpp>
 #include <boost/variant/variant_fwd.hpp>
 
+#include <boost/geometry/algorithms/detail/interior_iterator.hpp>
+#include <boost/geometry/algorithms/detail/multi_modify.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
+#include <boost/geometry/core/tags.hpp>
 #include <boost/geometry/geometries/concepts/check.hpp>
 
 
@@ -50,13 +55,13 @@ struct polygon_reverse: private range_reverse
     template <typename Polygon>
     static inline void apply(Polygon& polygon)
     {
-        typedef typename geometry::ring_type<Polygon>::type ring_type;
-
         range_reverse::apply(exterior_ring(polygon));
 
-        typename interior_return_type<Polygon>::type rings
-                    = interior_rings(polygon);
-        for (BOOST_AUTO_TPL(it, boost::begin(rings)); it != boost::end(rings); ++it)
+        typename interior_return_type<Polygon>::type
+            rings = interior_rings(polygon);
+
+        for (typename detail::interior_iterator<Polygon>::type
+                it = boost::begin(rings); it != boost::end(rings); ++it)
         {
             range_reverse::apply(*it);
         }
@@ -99,6 +104,27 @@ struct reverse<Polygon, polygon_tag>
 {};
 
 
+template <typename Geometry>
+struct reverse<Geometry, multi_linestring_tag>
+    : detail::multi_modify
+        <
+            Geometry,
+            detail::reverse::range_reverse
+        >
+{};
+
+
+template <typename Geometry>
+struct reverse<Geometry, multi_polygon_tag>
+    : detail::multi_modify
+        <
+            Geometry,
+            detail::reverse::polygon_reverse
+        >
+{};
+
+
+
 } // namespace dispatch
 #endif
 
@@ -107,11 +133,11 @@ namespace resolve_variant
 {
 
 template <typename Geometry>
-struct reverse 
+struct reverse
 {
     static void apply(Geometry& geometry)
     {
-        concept::check<Geometry>();
+        concepts::check<Geometry>();
         dispatch::reverse<Geometry>::apply(geometry);
     }
 };

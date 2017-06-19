@@ -123,9 +123,13 @@ public:
 	virtual bool ShouldSupressLoadWarning(MDLHandle_t handle);
 #endif
 
-private:
+public:
 	int m_iClientCommandIndex;
 	IMDLCacheNotify* m_pOldMDLCacheNotifier;
+
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
+	SpewOutputFunc_t m_pOldSpewOutputFunc;
+#endif
 };
 
 

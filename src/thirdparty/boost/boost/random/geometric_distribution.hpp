@@ -8,7 +8,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: geometric_distribution.hpp 82939 2013-02-16 21:48:20Z steven_watanabe $
+ * $Id$
  *
  * Revision history
  *  2001-02-18  moved to individual header files

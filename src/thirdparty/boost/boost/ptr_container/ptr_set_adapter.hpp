@@ -12,7 +12,7 @@
 #ifndef BOOST_PTR_CONTAINER_PTR_SET_ADAPTER_HPP
 #define BOOST_PTR_CONTAINER_PTR_SET_ADAPTER_HPP
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif
 
@@ -323,7 +323,7 @@ namespace ptr_container_detail
             while( first != last )                                            
             {           
                 if( this->find( *first ) == this->end() )
-                    insert( this->null_policy_allocate_clone_from_iterator( first ) ); // strong, commit
+                    insert( CloneAllocator::allocate_clone( *first ) ); // strong, commit
                 ++first;                                                      
             }                                                                 
         }                         
@@ -346,14 +346,6 @@ namespace ptr_container_detail
             BOOST_ASSERT( this->empty() ); 
         }
 
-        template< class SizeType, class Hash, class Pred, class Allocator >
-        ptr_set_adapter( SizeType n,
-                         const Hash& hash,
-                         const Pred& pred,
-                         const Allocator& a )
-         : base_type( n, hash, pred, a )
-        { }
-        
         template< class Hash, class Pred, class Allocator >
         ptr_set_adapter( const Hash& hash,
                          const Pred& pred,
@@ -415,7 +407,7 @@ namespace ptr_container_detail
         {       
             this->enforce_null_policy( x, "Null pointer in 'ptr_set::insert()'" );
             
-            auto_type ptr( x, *this );                                
+            auto_type ptr( x );                                
             std::pair<BOOST_DEDUCED_TYPENAME base_type::ptr_iterator,bool>
                  res = this->base().insert( x );       
             if( res.second )                                                 
@@ -434,7 +426,7 @@ namespace ptr_container_detail
         {
             this->enforce_null_policy( x, "Null pointer in 'ptr_set::insert()'" );
 
-            auto_type ptr( x, *this );                                
+            auto_type ptr( x );                                
             BOOST_DEDUCED_TYPENAME base_type::ptr_iterator 
                 res = this->base().insert( where.base(), x );
             if( *res == x )                                                 
@@ -538,7 +530,7 @@ namespace ptr_container_detail
         {               
             while( first != last )                                            
             {           
-                insert( this->null_policy_allocate_clone_from_iterator( first ) ); // strong, commit                              
+                insert( CloneAllocator::allocate_clone( *first ) ); // strong, commit                              
                 ++first;                                                     
             }                                                                 
         }                         
@@ -626,7 +618,7 @@ namespace ptr_container_detail
         {   
             this->enforce_null_policy( x, "Null pointer in 'ptr_multiset::insert()'" );
     
-            auto_type ptr( x, *this );                                
+            auto_type ptr( x );                                
             BOOST_DEDUCED_TYPENAME base_type::ptr_iterator
                  res = this->base().insert( x );                         
             ptr.release();                                                      

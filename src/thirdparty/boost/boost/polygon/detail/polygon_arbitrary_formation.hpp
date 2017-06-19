@@ -326,23 +326,16 @@ namespace boost { namespace polygon{
           } else if(elm1y == elm2y) {
             if(elm1 == elm2)
               return false;
-            typedef typename coordinate_traits<Unit>::manhattan_area_type at;
-            at dx1 = at(elm1.second.get(HORIZONTAL)) - at(elm1.first.get(HORIZONTAL));
-            at dy1 = at(elm1.second.get(VERTICAL)) - at(elm1.first.get(VERTICAL));
-            at dx2 = at(elm2.second.get(HORIZONTAL)) - at(elm2.first.get(HORIZONTAL));
-            at dy2 = at(elm2.second.get(VERTICAL)) - at(elm2.first.get(VERTICAL));
-            retval = ((*justBefore_) != 0) ^ less_slope(dx1, dy1, dx2, dy2);
+            retval = less_slope(elm1.second.get(HORIZONTAL) - elm1.first.get(HORIZONTAL),
+                                     elm1.second.get(VERTICAL) - elm1.first.get(VERTICAL),
+                                     elm2.second.get(HORIZONTAL) - elm2.first.get(HORIZONTAL),
+                                     elm2.second.get(VERTICAL) - elm2.first.get(VERTICAL));
+            retval = ((*justBefore_) != 0) ^ retval;
           }
         }
         return retval;
       }
     };
-
-    template <typename unsigned_product_type>
-    static inline void unsigned_mod(unsigned_product_type& result, int& result_sign, unsigned_product_type a, int a_sign, unsigned_product_type b, int b_sign) {
-      result = a % b;
-      result_sign = a_sign;
-    }
 
     template <typename unsigned_product_type>
     static inline void unsigned_add(unsigned_product_type& result, int& result_sign, unsigned_product_type a, int a_sign, unsigned_product_type b, int b_sign) {
@@ -740,13 +733,9 @@ namespace boost { namespace polygon{
       inline vertex_half_edge(const vertex_half_edge& vertex) : pt(vertex.pt), other_pt(vertex.other_pt), count(vertex.count) {}
       inline vertex_half_edge& operator=(const vertex_half_edge& vertex){
         pt = vertex.pt; other_pt = vertex.other_pt; count = vertex.count; return *this; }
-      inline vertex_half_edge(const std::pair<Point, Point>& vertex) : pt(), other_pt(), count() {}
-      inline vertex_half_edge& operator=(const std::pair<Point, Point>& vertex){ return *this; }
       inline bool operator==(const vertex_half_edge& vertex) const {
         return pt == vertex.pt && other_pt == vertex.other_pt && count == vertex.count; }
       inline bool operator!=(const vertex_half_edge& vertex) const { return !((*this) == vertex); }
-      inline bool operator==(const std::pair<Point, Point>& vertex) const { return false; }
-      inline bool operator!=(const std::pair<Point, Point>& vertex) const { return !((*this) == vertex); }
       inline bool operator<(const vertex_half_edge& vertex) const {
         if(pt.get(HORIZONTAL) < vertex.pt.get(HORIZONTAL)) return true;
         if(pt.get(HORIZONTAL) == vertex.pt.get(HORIZONTAL)) {
@@ -827,12 +816,11 @@ namespace boost { namespace polygon{
           } else if(elm1y == elm2y) {
             if(elm1.pt == elm2.pt && elm1.other_pt == elm2.other_pt)
               return false;
-            typedef typename coordinate_traits<Unit>::manhattan_area_type at;
-            at dx1 = at(elm1.other_pt.get(HORIZONTAL)) - at(elm1.pt.get(HORIZONTAL));
-            at dy1 = at(elm1.other_pt.get(VERTICAL)) - at(elm1.pt.get(VERTICAL));
-            at dx2 = at(elm2.other_pt.get(HORIZONTAL)) - at(elm2.pt.get(HORIZONTAL));
-            at dy2 = at(elm2.other_pt.get(VERTICAL)) - at(elm2.pt.get(VERTICAL));
-            retval = ((*justBefore_) != 0) ^ less_slope(dx1, dy1, dx2, dy2);
+            retval = less_slope(elm1.other_pt.get(HORIZONTAL) - elm1.pt.get(HORIZONTAL),
+                                     elm1.other_pt.get(VERTICAL) - elm1.pt.get(VERTICAL),
+                                     elm2.other_pt.get(HORIZONTAL) - elm2.pt.get(HORIZONTAL),
+                                     elm2.other_pt.get(VERTICAL) - elm2.pt.get(VERTICAL));
+            retval = ((*justBefore_) != 0) ^ retval;
           }
         }
         return retval;
@@ -1126,7 +1114,6 @@ namespace boost { namespace polygon{
             //std::cout << poly << "\n";
             //std::cout << "test3\n";
             typedef typename cT::value_type result_type;
-            typedef typename geometry_concept<result_type>::type result_concept;
             output.push_back(result_type());
             assign(output.back(), polyData);
             //std::cout << "test4\n";
@@ -1235,11 +1222,10 @@ namespace boost { namespace polygon{
       inline less_incoming_count(Point point) : pt_(point) {}
       inline bool operator () (const std::pair<std::pair<std::pair<Point, Point>, int>, active_tail_arbitrary*>& elm1,
                                const std::pair<std::pair<std::pair<Point, Point>, int>, active_tail_arbitrary*>& elm2) const {
-        typedef typename coordinate_traits<Unit>::manhattan_area_type at;
-        at dx1 = at(elm1.first.first.first.get(HORIZONTAL)) - at(elm1.first.first.second.get(HORIZONTAL));
-        at dx2 = at(elm2.first.first.first.get(HORIZONTAL)) - at(elm2.first.first.second.get(HORIZONTAL));
-        at dy1 = at(elm1.first.first.first.get(VERTICAL)) - at(elm1.first.first.second.get(VERTICAL));
-        at dy2 = at(elm2.first.first.first.get(VERTICAL)) - at(elm2.first.first.second.get(VERTICAL));
+        Unit dx1 = elm1.first.first.first.get(HORIZONTAL) - elm1.first.first.second.get(HORIZONTAL);
+        Unit dx2 = elm2.first.first.first.get(HORIZONTAL) - elm2.first.first.second.get(HORIZONTAL);
+        Unit dy1 = elm1.first.first.first.get(VERTICAL) - elm1.first.first.second.get(VERTICAL);
+        Unit dy2 = elm2.first.first.first.get(VERTICAL) - elm2.first.first.second.get(VERTICAL);
         return scanline_base<Unit>::less_slope(dx1, dy1, dx2, dy2);
       }
     };
@@ -1287,13 +1273,9 @@ namespace boost { namespace polygon{
       inline vertex_arbitrary_compact(const vertex_arbitrary_compact& vertex) : pt(vertex.pt), count(vertex.count) {}
       inline vertex_arbitrary_compact& operator=(const vertex_arbitrary_compact& vertex){
         pt = vertex.pt; count = vertex.count; return *this; }
-      //inline vertex_arbitrary_compact(const std::pair<Point, Point>& vertex) {}
-      inline vertex_arbitrary_compact& operator=(const std::pair<Point, Point>& vertex){ return *this; }
       inline bool operator==(const vertex_arbitrary_compact& vertex) const {
         return pt == vertex.pt && count == vertex.count; }
       inline bool operator!=(const vertex_arbitrary_compact& vertex) const { return !((*this) == vertex); }
-      inline bool operator==(const std::pair<Point, Point>& vertex) const { return false; }
-      inline bool operator!=(const std::pair<Point, Point>& vertex) const { return !((*this) == vertex); }
       inline bool operator<(const vertex_arbitrary_compact& vertex) const {
         if(pt.get(HORIZONTAL) < vertex.pt.get(HORIZONTAL)) return true;
         if(pt.get(HORIZONTAL) == vertex.pt.get(HORIZONTAL)) {
@@ -2144,19 +2126,7 @@ namespace boost { namespace polygon{
     //use default copy and assign
     inline iterator begin() const { return p_->getTail()->begin(); }
     inline iterator end() const { return p_->getTail()->end(); }
-    //inline compact_iterator_type begin_compact() const { return compact_iterator_type(begin()); }
-    //inline compact_iterator_type end_compact() const { return compact_iterator_type(end()); }
     inline std::size_t size() const { return 0; }
-    template<class iT>
-    inline poly_line_arbitrary_hole_data& set(iT inputBegin, iT inputEnd) {
-      //assert this is not called
-      return *this;
-    }
-    template<class iT>
-    inline poly_line_arbitrary_hole_data& set_compact(iT inputBegin, iT inputEnd) {
-      //assert this is not called
-      return *this;
-    }
   };
 
   template <typename Unit>
@@ -2223,18 +2193,6 @@ namespace boost { namespace polygon{
     //stub out these four required functions that will not be used but are needed for the interface
     inline std::size_t size_holes() const { return 0; }
     inline std::size_t size() const { return 0; }
-    template<class iT>
-    inline poly_line_arbitrary_polygon_data& set(iT inputBegin, iT inputEnd) {
-      return *this;
-    }
-    template<class iT>
-    inline poly_line_arbitrary_polygon_data& set_compact(iT inputBegin, iT inputEnd) {
-      return *this;
-    }
-    template<class iT>
-    inline poly_line_arbitrary_polygon_data& set_holes(iT inputBegin, iT inputEnd) {
-      return *this;
-    }
   };
 
   template <typename Unit>
@@ -2633,7 +2591,7 @@ namespace boost { namespace polygon{
 
     template <class cT, class iT>
     inline iT processEvent_(cT& output, iT inputBegin, iT inputEnd) {
-      typedef typename high_precision_type<Unit>::type high_precision;
+      //typedef typename high_precision_type<Unit>::type high_precision;
       //std::cout << "processEvent_\n";
       polygon_arbitrary_formation<Unit>::justBefore_ = true;
       //collect up all elements from the tree that are at the y

@@ -7,6 +7,7 @@
 #if !defined(BOOST_FUSION_BUILD_MAP_02042013_1448)
 #define BOOST_FUSION_BUILD_MAP_02042013_1448
 
+#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/iterator/equal_to.hpp>
 #include <boost/fusion/iterator/next.hpp>
 #include <boost/fusion/iterator/value_of.hpp>
@@ -27,6 +28,7 @@ namespace boost { namespace fusion { namespace detail
     struct build_map<First, Last, is_assoc, true>
     {
         typedef map<> type;
+        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         call(First const&, Last const&)
         {
@@ -42,6 +44,7 @@ namespace boost { namespace fusion { namespace detail
     {
         typedef map<T, Rest...> type;
 
+        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         call(T const& first, map<Rest...> const& rest)
         {
@@ -63,6 +66,7 @@ namespace boost { namespace fusion { namespace detail
 
         typedef typename push_front::type type;
 
+        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static type
         call(First const& f, Last const& l)
         {

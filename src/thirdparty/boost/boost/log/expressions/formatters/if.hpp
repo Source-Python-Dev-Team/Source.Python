@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -48,30 +48,21 @@ private:
     typedef if_output_terminal this_type;
 
 public:
+#ifndef BOOST_LOG_DOXYGEN_PASS
     //! Internal typedef for type categorization
     typedef void _is_boost_log_terminal;
+#endif
 
     //! Result type definition
     template< typename >
     struct result;
 
-    template< typename ContextT >
-    struct result< this_type(ContextT) >
+    template< typename ThisT, typename ContextT >
+    struct result< ThisT(ContextT) >
     {
         typedef typename remove_cv< typename remove_reference< ContextT >::type >::type context_type;
         typedef typename phoenix::evaluator::impl<
             typename LeftT::proto_base_expr&,
-            context_type,
-            phoenix::unused
-        >::result_type type;
-    };
-
-    template< typename ContextT >
-    struct result< const this_type(ContextT) >
-    {
-        typedef typename remove_cv< typename remove_reference< ContextT >::type >::type context_type;
-        typedef typename phoenix::evaluator::impl<
-            typename LeftT::proto_base_expr const&,
             context_type,
             phoenix::unused
         >::result_type type;
@@ -124,30 +115,21 @@ private:
     typedef if_else_output_terminal this_type;
 
 public:
+#ifndef BOOST_LOG_DOXYGEN_PASS
     //! Internal typedef for type categorization
     typedef void _is_boost_log_terminal;
+#endif
 
     //! Result type definition
     template< typename >
     struct result;
 
-    template< typename ContextT >
-    struct result< this_type(ContextT) >
+    template< typename ThisT, typename ContextT >
+    struct result< ThisT(ContextT) >
     {
         typedef typename remove_cv< typename remove_reference< ContextT >::type >::type context_type;
         typedef typename phoenix::evaluator::impl<
             typename LeftT::proto_base_expr&,
-            context_type,
-            phoenix::unused
-        >::result_type type;
-    };
-
-    template< typename ContextT >
-    struct result< const this_type(ContextT) >
-    {
-        typedef typename remove_cv< typename remove_reference< ContextT >::type >::type context_type;
-        typedef typename phoenix::evaluator::impl<
-            typename LeftT::proto_base_expr const&,
             context_type,
             phoenix::unused
         >::result_type type;

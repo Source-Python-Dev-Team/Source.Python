@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: item.hpp 85956 2013-09-26 13:05:50Z skelly $
-// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85956 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/long.hpp>
 #include <boost/mpl/list/aux_/tag.hpp>
@@ -28,6 +28,10 @@ template<
     >
 struct l_item
 {
+// agurt, 17/jul/03: to facilitate the deficient 'is_sequence' implementation 
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+    typedef int begin;
+#endif
     typedef aux::list_tag tag;
     typedef l_item type;
 
@@ -38,6 +42,9 @@ struct l_item
 
 struct l_end
 {
+#if BOOST_WORKAROUND(BOOST_MSVC, <= 1300)
+    typedef int begin;
+#endif
     typedef aux::list_tag tag;
     typedef l_end type;
     typedef long_<0> size;

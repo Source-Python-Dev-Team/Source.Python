@@ -10,14 +10,15 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: arity.hpp 85961 2013-09-26 14:10:37Z skelly $
-// $Date: 2013-09-26 10:10:37 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85961 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/dtp.hpp>
 
 #if defined(BOOST_MPL_CFG_BROKEN_DEFAULT_PARAMETERS_IN_NESTED_TEMPLATES)
 
+#   include <boost/mpl/aux_/nttp_decl.hpp>
 #   include <boost/mpl/aux_/config/static_constant.hpp>
 
 namespace boost { namespace mpl { namespace aux {
@@ -25,7 +26,7 @@ namespace boost { namespace mpl { namespace aux {
 // agurt, 15/mar/02: it's possible to implement the template so that it will 
 // "just work" and do not require any specialization, but not on the compilers
 // that require the arity workaround in the first place
-template< typename F, int N >
+template< typename F, BOOST_MPL_AUX_NTTP_DECL(int, N) >
 struct arity
 {
     BOOST_STATIC_CONSTANT(int, value = N);

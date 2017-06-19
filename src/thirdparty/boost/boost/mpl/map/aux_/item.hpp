@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: item.hpp 86245 2013-10-11 23:17:48Z skelly $
-// $Date: 2013-10-11 19:17:48 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86245 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/void.hpp>
 #include <boost/mpl/pair.hpp>
@@ -40,6 +40,7 @@ struct m_item
     typedef Key         key_;
     typedef pair<Key,T> item;
     typedef Base        base;
+    typedef m_item      type;
     
     typedef typename next< typename Base::size >::type  size;
     typedef typename next< typename Base::order >::type order;
@@ -62,6 +63,7 @@ struct m_mask
 {
     typedef void_   key_;
     typedef Base    base;
+    typedef m_mask  type;
 
     typedef typename prior< typename Base::size >::type  size;
     typedef typename x_order_impl<Base,Key>::type key_order_;
@@ -73,10 +75,28 @@ struct m_mask
 #else // BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES
 
 
+#   if !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 
 template< long n, typename Key, typename T, typename Base >
 struct m_item;
 
+#   else
+
+template< long n >
+struct m_item_impl
+{
+    template< typename Key, typename T, typename Base >
+    struct result_;
+};
+
+template< long n, typename Key, typename T, typename Base >
+struct m_item
+    : m_item_impl<n>::result_<Key,T,Base>
+{
+};
+
+
+#   endif
 
 
 template< typename Key, typename T, typename Base >
@@ -105,6 +125,7 @@ struct m_mask
 {
     typedef void_   key_;
     typedef Base    base;
+    typedef m_mask  type;
 
     typedef typename prior< typename Base::size >::type  size;
     typedef typename x_order_impl<Base,Key>::type key_order_;

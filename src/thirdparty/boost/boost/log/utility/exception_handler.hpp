@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -15,17 +15,17 @@
 #ifndef BOOST_LOG_UTILITY_EXCEPTION_HANDLER_HPP_INCLUDED_
 #define BOOST_LOG_UTILITY_EXCEPTION_HANDLER_HPP_INCLUDED_
 
-#include <exception>
+#include <new> // std::nothrow_t
 #include <boost/mpl/bind.hpp>
 #include <boost/mpl/quote.hpp>
 #include <boost/mpl/fold.hpp>
 #include <boost/mpl/placeholders.hpp>
 #include <boost/mpl/has_xxx.hpp>
 #include <boost/mpl/vector.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
 #include <boost/preprocessor/repetition/repeat_from_to.hpp>
-#include <boost/utility/enable_if.hpp>
 #include <boost/log/detail/config.hpp>
 #include <boost/log/utility/functional/nop.hpp>
 #include <boost/log/detail/header.hpp>
@@ -228,8 +228,8 @@ inline nop make_exception_suppressor()
 #ifndef BOOST_LOG_DOXYGEN_PASS
 
 template< typename HandlerT >
-inline typename lazy_enable_if<
-    aux::has_exception_types< HandlerT >,
+inline typename boost::lazy_enable_if_c<
+    aux::has_exception_types< HandlerT >::value,
     aux::make_self_contained_exception_handler< exception_handler, HandlerT >
 >::type make_exception_handler(HandlerT const& handler)
 {
@@ -238,8 +238,8 @@ inline typename lazy_enable_if<
 }
 
 template< typename HandlerT >
-inline typename lazy_enable_if<
-    aux::has_exception_types< HandlerT >,
+inline typename boost::lazy_enable_if_c<
+    aux::has_exception_types< HandlerT >::value,
     aux::make_self_contained_exception_handler< nothrow_exception_handler, HandlerT >
 >::type make_exception_handler(HandlerT const& handler, std::nothrow_t const&)
 {

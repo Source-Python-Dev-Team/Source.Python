@@ -5,6 +5,11 @@
 // Copyright (c) 2009-2013 Mateusz Loskot, London, UK.
 // Copyright (c) 2013 Adam Wulkiewicz, Lodz, Poland.
 
+// This file was modified by Oracle on 2014.
+// Modifications copyright (c) 2014 Oracle and/or its affiliates.
+
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -53,7 +58,7 @@ struct specific_coordinate_first
         CoordinateType const lh = geometry::get<Dimension>(lhs);
         CoordinateType const rh = geometry::get<Dimension>(rhs);
 
-        // If both lhs and rhs equal m_value_to_be_first, 
+        // If both lhs and rhs equal m_value_to_be_first,
         // we should handle conform if lh < rh = FALSE
         // The first condition meets that, keep it first
         if (geometry::math::equals(rh, m_value_to_be_first))
@@ -142,61 +147,28 @@ struct min_of_intruder
     }
 };
 
-template <typename Point, typename Segments>
-inline void calculate_centroid(Point& point, Segments const& segments)
+
+template <typename Point, typename P>
+inline void calculate_average(Point& point, std::vector<P> const& points)
 {
-    if (segments.size() == 3)
-    {
-        // In almost all cases, the segments do have 3 values. In that case we use another
-        // centroid calculation, which should be slightly faster 
-        // and is more precise (case #geos_1_test_overlay => normal centroid is outside! TODO)
+    typedef typename geometry::coordinate_type<Point>::type coordinate_type;
+    typedef typename std::vector<P>::const_iterator iterator_type;
+    typedef typename std::vector<P>::size_type size_type;
 
-        typedef typename geometry::coordinate_type<Point>::type coordinate_type;
-        coordinate_type const three = 3.0;
-        coordinate_type const sx = geometry::get<0>(segments[0]) + geometry::get<0>(segments[1]) + geometry::get<0>(segments[2]);
-        coordinate_type const sy = geometry::get<1>(segments[0]) + geometry::get<1>(segments[1]) + geometry::get<1>(segments[2]);
-        geometry::set<0>(point, sx / three);
-        geometry::set<1>(point, sy / three);
-        return;
+    coordinate_type x = 0;
+    coordinate_type y = 0;
+
+    iterator_type end = points.end();
+    for ( iterator_type it = points.begin() ; it != end ; ++it)
+    {
+        x += geometry::get<0>(*it);
+        y += geometry::get<1>(*it);
     }
 
-    // For 4 or more segments, we use normal centroid calculation
-
-    // Specify centroid, it should have "areal_tag" to have correct calculation
-    typedef typename strategy::centroid::services::default_strategy
-        <
-            typename cs_tag<Point>::type,
-            areal_tag,
-            dimension<Point>::type::value,
-            Point,
-            Point
-        >::type strategy_type;
-
-    strategy_type strategy;
-
-
-    // Ignore warning (because using static method sometimes) on strategy
-    boost::ignore_unused_variable_warning(strategy);
-
-
-    typename strategy_type::state_type state;
-
-    typedef typename boost::range_iterator<Segments const>::type iterator_type;
-
-    iterator_type begin = boost::begin(segments);
-    iterator_type end = boost::end(segments);
-    iterator_type it = begin;
-    iterator_type previous = it++;
-    for (; it != end; ++previous, ++it)
-    {
-        strategy.apply(*previous, *it, state);
-    }
-    // Close it explicitly:
-    strategy.apply(*previous, *begin, state);
-
-    strategy.result(state, point);
+    size_type const count = points.size();
+    geometry::set<0>(point, x / count);
+    geometry::set<1>(point, y / count);
 }
-
 
 
 template <int Dimension, typename Extremes, typename Intruders, typename CoordinateType>
@@ -229,7 +201,7 @@ inline void replace_extremes_for_self_tangencies(Extremes& extremes, Intruders& 
 
     // Then intruders (here "i1" but there may be more) are sorted from left to right
     // Finally points "a","b" and "c" (in this order) are selected as a new triangle.
-    // This triangle will have a centroid which is inside (assumed that intruders left segment 
+    // This triangle will have a centroid which is inside (assumed that intruders left segment
     // is not equal to extremes left segment, but that polygon would be invalid)
 
     // Find highest non-self tangent intrusion, if any
@@ -264,7 +236,7 @@ inline void replace_extremes_for_self_tangencies(Extremes& extremes, Intruders& 
     // (alternatively we could use the last two points of extremes, and first point of last intruder...):
     //// ALTERNATIVE: std::copy(extremes.rbegin(), extremes.rbegin() + 2, std::back_inserter(triangle));
     //// ALTERNATIVE: triangle.push_back(intruders.back().front());
-    
+
     // Now replace extremes with this smaller subset, a triangle, such that centroid calculation will result in a point inside
     extremes = triangle;
 }
@@ -304,8 +276,8 @@ inline bool calculate_point_on_surface(Geometry const& geometry, Point& point)
         }
     }
 
-    // Now calculate the centroid of the (possibly adapted) extremes
-    calculate_centroid(point, extremes);
+    // Now calculate the average/centroid of the (possibly adapted) extremes
+    calculate_average(point, extremes);
 
     return true;
 }
@@ -315,16 +287,16 @@ inline bool calculate_point_on_surface(Geometry const& geometry, Point& point)
 
 
 /*!
-\brief Returns point guaranteed to lie on the surface
+\brief Assigns a Point guaranteed to lie on the surface of the Geometry
 \tparam Geometry geometry type. This also defines the type of the output point
-\param point to assign
-\param geometry geometry to take point from
+\param geometry Geometry to take point from
+\param point Point to assign
  */
 template <typename Geometry, typename Point>
-inline void point_on_surface(Geometry const& geometry, Point& point)
+inline void point_on_surface(Geometry const& geometry, Point & point)
 {
-    concept::check<Point>();
-    concept::check<Geometry const>();
+    concepts::check<Point>();
+    concepts::check<Geometry const>();
 
     // First try in Y-direction (which should always succeed for valid polygons)
     if (! detail::point_on_surface::calculate_point_on_surface<1>(geometry, point))
@@ -334,12 +306,18 @@ inline void point_on_surface(Geometry const& geometry, Point& point)
     }
 }
 
-
+/*!
+\brief Returns point guaranteed to lie on the surface of the Geometry
+\tparam Geometry geometry type. This also defines the type of the output point
+\param geometry Geometry to take point from
+\return The Point guaranteed to lie on the surface of the Geometry
+ */
 template<typename Geometry>
-inline typename geometry::point_type<Geometry>::type return_point_on_surface(Geometry const& geometry)
+inline typename geometry::point_type<Geometry>::type
+return_point_on_surface(Geometry const& geometry)
 {
     typename geometry::point_type<Geometry>::type result;
-    point_on_surface(geometry, result);
+    geometry::point_on_surface(geometry, result);
     return result;
 }
 

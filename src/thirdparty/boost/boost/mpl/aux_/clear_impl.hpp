@@ -10,12 +10,13 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: clear_impl.hpp 85945 2013-09-26 09:46:46Z skelly $
-// $Date: 2013-09-26 05:46:46 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85945 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/clear_fwd.hpp>
 #include <boost/mpl/aux_/traits_lambda_spec.hpp>
+#include <boost/mpl/aux_/config/eti.hpp>
 
 namespace boost { namespace mpl {
 

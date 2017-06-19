@@ -565,17 +565,17 @@ static void export_engine_server(scope _server)
 			args("benchmark_mode")
 		)
 
+		.add_property("cluster_count",
+			&IVEngineServer::GetClusterCount,
+			"Returns total number of clusters."
+		)
+
 		/*
 		.def("is_split_screen_player",
 			&IVEngineServer::SetDedicatedServerBenchmarkMode,
 			args("ent_num")
 		)
 		*/
-
-		.add_property("cluster_count",
-			&IVEngineServer::GetClusterCount,
-			"Returns total number of clusters."
-		)
 
 		/*
 		TODO: Create a wrapper that requires a list or tuple with bbox_t elements

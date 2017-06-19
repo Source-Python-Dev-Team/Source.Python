@@ -11,12 +11,13 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: protect.hpp 85961 2013-09-26 14:10:37Z skelly $
-// $Date: 2013-09-26 10:10:37 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85961 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/arity.hpp>
 #include <boost/mpl/aux_/config/dtp.hpp>
+#include <boost/mpl/aux_/nttp_decl.hpp>
 #include <boost/mpl/aux_/na_spec.hpp>
 
 namespace boost { namespace mpl {
@@ -36,7 +37,7 @@ struct protect : T
 
 #if defined(BOOST_MPL_CFG_BROKEN_DEFAULT_PARAMETERS_IN_NESTED_TEMPLATES)
 namespace aux { 
-template< int N, typename T >
+template< BOOST_MPL_AUX_NTTP_DECL(int, N), typename T >
 struct arity< protect<T>, N > 
     : arity<T,N>
 { 

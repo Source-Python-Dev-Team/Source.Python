@@ -48,6 +48,7 @@ typedef struct _symtable_entry {
     unsigned ste_child_free : 1;  /* true if a child block has free vars,
                                      including free refs to globals */
     unsigned ste_generator : 1;   /* true if namespace is a generator */
+    unsigned ste_coroutine : 1;   /* true if namespace is a coroutine */
     unsigned ste_varargs : 1;     /* true if block has varargs */
     unsigned ste_varkeywords : 1; /* true if block has varkeywords */
     unsigned ste_returns_value : 1;  /* true if namespace uses return with
@@ -91,6 +92,7 @@ PyAPI_FUNC(void) PySymtable_Free(struct symtable *);
 #define DEF_FREE 2<<4          /* name used but not defined in nested block */
 #define DEF_FREE_CLASS 2<<5    /* free variable from class's method */
 #define DEF_IMPORT 2<<6        /* assignment occurred via import */
+#define DEF_ANNOT 2<<7         /* this name is annotated */
 
 #define DEF_BOUND (DEF_LOCAL | DEF_PARAM | DEF_IMPORT)
 

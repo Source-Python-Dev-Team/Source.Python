@@ -35,7 +35,7 @@ namespace boost
         typedef T type;
       };
     };
-    
+
     //
     // For compilers that don't support "Substitution Failure Is Not An Error"
     // enable_if falls back to always enabled. See comments
@@ -70,7 +70,7 @@ namespace boost
       : enabled<(Cond::value)>::template base<Return>
 # else
       : mpl::identity<Return>
-# endif 
+# endif
     {
     };
 

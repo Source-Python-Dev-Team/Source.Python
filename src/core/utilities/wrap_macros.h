@@ -49,7 +49,7 @@ using namespace boost::python;
 template<class Function>
 inline void* GetFuncPtr(Function func)
 {
-	return (void*) func.functor.func_ptr;
+	return (void*) func.functor.members.func_ptr;
 }
 
 // Example typedef:

@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: uniform_real.hpp 82937 2013-02-16 21:14:23Z steven_watanabe $
+ * $Id$
  *
  * Revision history
  *  2001-04-08  added min<max assertion (N. Becker)

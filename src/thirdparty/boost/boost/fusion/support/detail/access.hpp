@@ -7,6 +7,7 @@
 #if !defined(FUSION_ACCESS_04182005_0737)
 #define FUSION_ACCESS_04182005_0737
 
+#include <boost/fusion/support/config.hpp>
 #include <boost/type_traits/add_const.hpp>
 #include <boost/type_traits/add_reference.hpp>
 

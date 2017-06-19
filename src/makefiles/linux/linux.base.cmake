@@ -63,7 +63,7 @@ EndIf()
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2")
+If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2" OR SOURCE_ENGINE MATCHES "gmod")
     # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
@@ -96,7 +96,7 @@ EndIf()
 # General definitions
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_LINUX -DPOSIX -DLINUX -DGNUC -DCOMPILER_GCC")
 
-if(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "bms" OR SOURCE_ENGINE MATCHES "sdk2013")
+if(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "bms" OR SOURCE_ENGINE MATCHES "gmod" OR SOURCE_ENGINE MATCHES "sdk2013")
     Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DNO_MALLOC_OVERRIDE")
 Endif()
 
@@ -134,9 +134,9 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_NDEBUG")
 # correctly...
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    ${PYTHONSDK_LIB}/libpython3.5m.a
+    ${PYTHONSDK_LIB}/libpython3.6m.a
     ${BOOSTSDK_LIB}/libboost_python.a
-    ${PYTHONSDK_LIB}/libpython3.5m.so.1.0
+    ${PYTHONSDK_LIB}/libpython3.6m.so.1.0
     ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
     ${ASMJITSDK_LIB}/libAsmJit.a
 )

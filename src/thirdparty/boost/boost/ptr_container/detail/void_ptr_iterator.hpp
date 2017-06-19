@@ -12,7 +12,7 @@
 #ifndef BOOST_PTR_CONTAINER_DETAIL_VOID_PTR_ITERATOR_HPP
 #define BOOST_PTR_CONTAINER_DETAIL_VOID_PTR_ITERATOR_HPP
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif
 
@@ -161,22 +161,8 @@ namespace boost
             return r;
         }
 
-
-        namespace ptr_container_detail
-        {
-            template<typename T, typename U>
-            struct is_compatible
-            {
-                static const bool value = boost::is_same< typename boost::remove_const<T>::type, typename boost::remove_const<U>::type >::value;
-            };
-        }
-
-          
         template< class VoidIter, class T, class VoidIterU, class U >
-        inline BOOST_DEDUCED_TYPENAME boost::enable_if<
-            ptr_container_detail::is_compatible<T, U>,
-            BOOST_DEDUCED_TYPENAME void_ptr_iterator<VoidIter,T>::difference_type
-        >::type
+        inline BOOST_DEDUCED_TYPENAME void_ptr_iterator<VoidIter,T>::difference_type
         operator-( void_ptr_iterator<VoidIter,T> l,
                    void_ptr_iterator<VoidIterU,U> r ) 
 
@@ -187,11 +173,7 @@ namespace boost
 
 
         template< class VoidIterT, class T, class VoidIterU, class U >
-        inline BOOST_DEDUCED_TYPENAME boost::enable_if<
-            ptr_container_detail::is_compatible<T, U>,
-            bool
-        >::type
-        operator==( const void_ptr_iterator<VoidIterT,T>& l,
+        inline bool operator==( const void_ptr_iterator<VoidIterT,T>& l,
                                 const void_ptr_iterator<VoidIterU,U>& r )
         {
             return l.base() == r.base();
@@ -200,11 +182,7 @@ namespace boost
 
         
         template< class VoidIterT, class T, class VoidIterU, class U >
-        inline BOOST_DEDUCED_TYPENAME boost::enable_if<
-            ptr_container_detail::is_compatible<T, U>,
-            bool
-        >::type
-        operator!=( const void_ptr_iterator<VoidIterT,T>& l,
+        inline bool operator!=( const void_ptr_iterator<VoidIterT,T>& l,
                                 const void_ptr_iterator<VoidIterU,U>& r )
         {
             return l.base() != r.base();
@@ -213,11 +191,7 @@ namespace boost
 
 
         template< class VoidIterT, class T, class VoidIterU, class U >
-        inline BOOST_DEDUCED_TYPENAME boost::enable_if<
-            ptr_container_detail::is_compatible<T, U>,
-            bool
-        >::type
-        operator<( const void_ptr_iterator<VoidIterT,T>& l,
+        inline bool operator<( const void_ptr_iterator<VoidIterT,T>& l,
                                const void_ptr_iterator<VoidIterU,U>& r )
         {
             return l.base() < r.base();
@@ -226,11 +200,7 @@ namespace boost
 
         
         template< class VoidIterT, class T, class VoidIterU, class U >
-        inline BOOST_DEDUCED_TYPENAME boost::enable_if<
-            ptr_container_detail::is_compatible<T, U>,
-            bool
-        >::type
-        operator<=( const void_ptr_iterator<VoidIterT,T>& l,
+        inline bool operator<=( const void_ptr_iterator<VoidIterT,T>& l,
                                const void_ptr_iterator<VoidIterU,U>& r )
         {
             return l.base() <= r.base();
@@ -239,11 +209,7 @@ namespace boost
 
         
         template< class VoidIterT, class T, class VoidIterU, class U >
-        inline BOOST_DEDUCED_TYPENAME boost::enable_if<
-            ptr_container_detail::is_compatible<T, U>,
-            bool
-        >::type
-        operator>( const void_ptr_iterator<VoidIterT,T>& l,
+        inline bool operator>( const void_ptr_iterator<VoidIterT,T>& l,
                                const void_ptr_iterator<VoidIterU,U>& r )
         {
             return l.base() > r.base();
@@ -252,11 +218,7 @@ namespace boost
 
         
         template< class VoidIterT, class T, class VoidIterU, class U >
-        inline BOOST_DEDUCED_TYPENAME boost::enable_if<
-            ptr_container_detail::is_compatible<T, U>,
-            bool
-        >::type
-        operator>=( const void_ptr_iterator<VoidIterT,T>& l,
+        inline bool operator>=( const void_ptr_iterator<VoidIterT,T>& l,
                                const void_ptr_iterator<VoidIterU,U>& r )
         {
             return l.base() >= r.base();

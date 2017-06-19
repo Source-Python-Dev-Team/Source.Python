@@ -17,9 +17,10 @@
 
 #include <cstddef>
 
+#include <boost/core/ignore_unused.hpp>
 #include <boost/mpl/assert.hpp>
-#include <boost/concept_check.hpp>
 #include <boost/type_traits/is_pointer.hpp>
+#include <boost/type_traits/remove_pointer.hpp>
 
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/core/point_type.hpp>
@@ -271,7 +272,7 @@ inline typename coordinate_type<Geometry>::type get(Geometry const& geometry
 #endif
         )
 {
-    boost::ignore_unused_variable_warning(dummy);
+    boost::ignore_unused(dummy);
 
     typedef core_dispatch::access
         <
@@ -303,10 +304,10 @@ inline void set(Geometry& geometry
         , typename coordinate_type<Geometry>::type const& value
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
         , detail::signature_getset_dimension* dummy = 0
-#endif        
+#endif
         )
 {
-    boost::ignore_unused_variable_warning(dummy);
+    boost::ignore_unused(dummy);
 
     typedef core_dispatch::access
         <
@@ -338,10 +339,10 @@ template <std::size_t Index, std::size_t Dimension, typename Geometry>
 inline typename coordinate_type<Geometry>::type get(Geometry const& geometry
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
         , detail::signature_getset_index_dimension* dummy = 0
-#endif        
+#endif
         )
 {
-    boost::ignore_unused_variable_warning(dummy);
+    boost::ignore_unused(dummy);
 
     typedef core_dispatch::indexed_access
         <
@@ -378,11 +379,11 @@ inline void set(Geometry& geometry
 #endif
         )
 {
-    boost::ignore_unused_variable_warning(dummy);
+    boost::ignore_unused(dummy);
 
     typedef core_dispatch::indexed_access
         <
-            typename tag<Geometry>::type, 
+            typename tag<Geometry>::type,
             typename geometry::util::bare_type<Geometry>::type,
             typename coordinate_type<Geometry>::type,
             Index,

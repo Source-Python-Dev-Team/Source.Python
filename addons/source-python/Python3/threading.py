@@ -22,9 +22,11 @@ except ImportError:
 # with the multiprocessing module, which doesn't provide the old
 # Java inspired names.
 
-__all__ = ['active_count', 'Condition', 'current_thread', 'enumerate', 'Event',
-           'Lock', 'RLock', 'Semaphore', 'BoundedSemaphore', 'Thread', 'Barrier',
-           'Timer', 'ThreadError', 'setprofile', 'settrace', 'local', 'stack_size']
+__all__ = ['get_ident', 'active_count', 'Condition', 'current_thread',
+           'enumerate', 'main_thread', 'TIMEOUT_MAX',
+           'Event', 'Lock', 'RLock', 'Semaphore', 'BoundedSemaphore', 'Thread',
+           'Barrier', 'BrokenBarrierError', 'Timer', 'ThreadError',
+           'setprofile', 'settrace', 'local', 'stack_size']
 
 # Rename some stuff so "from threading import *" is safe
 _start_new_thread = _thread.start_new_thread
@@ -639,7 +641,7 @@ class Barrier:
             self._break()
             raise
 
-    # Wait in the barrier until we are relased.  Raise an exception
+    # Wait in the barrier until we are released.  Raise an exception
     # if the barrier is reset or broken.
     def _wait(self, timeout):
         if not self._cond.wait_for(lambda : self._state != 0, timeout):
@@ -921,7 +923,7 @@ class Thread:
                 # self.
                 if _sys and _sys.stderr is not None:
                     print("Exception in thread %s:\n%s" %
-                          (self.name, _format_exc()), file=self._stderr)
+                          (self.name, _format_exc()), file=_sys.stderr)
                 elif self._stderr is not None:
                     # Do the best job possible w/o a huge amt. of code to
                     # approximate a traceback (code ideas from
@@ -1061,7 +1063,7 @@ class Thread:
         # Issue #18808: wait for the thread state to be gone.
         # At the end of the thread's life, after all knowledge of the thread
         # is removed from C data structures, C code releases our _tstate_lock.
-        # This method passes its arguments to _tstate_lock.aquire().
+        # This method passes its arguments to _tstate_lock.acquire().
         # If the lock is acquired, the C code is done, and self._stop() is
         # called.  That sets ._is_stopped to True, and ._tstate_lock to None.
         lock = self._tstate_lock
@@ -1214,6 +1216,10 @@ class _DummyThread(Thread):
 
     def _stop(self):
         pass
+
+    def is_alive(self):
+        assert not self._is_stopped and self._started.is_set()
+        return True
 
     def join(self, timeout=None):
         assert False, "cannot join a dummy thread"

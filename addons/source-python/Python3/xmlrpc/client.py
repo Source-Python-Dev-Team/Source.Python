@@ -132,6 +132,7 @@ import base64
 import sys
 import time
 from datetime import datetime
+from decimal import Decimal
 import http.client
 import urllib.parse
 from xml.parsers import expat
@@ -151,7 +152,7 @@ def escape(s):
     return s.replace(">", "&gt;",)
 
 # used in User-Agent header sent
-__version__ = sys.version[:3]
+__version__ = '%d.%d' % sys.version_info[:2]
 
 # xmlrpc integer limits
 MAXINT =  2**31-1
@@ -640,6 +641,7 @@ class Unmarshaller:
         self._stack = []
         self._marks = []
         self._data = []
+        self._value = False
         self._methodname = None
         self._encoding = "utf-8"
         self.append = self._stack.append
@@ -666,9 +668,13 @@ class Unmarshaller:
 
     def start(self, tag, attrs):
         # prepare to handle this element
+        if ':' in tag:
+            tag = tag.split(':')[-1]
         if tag == "array" or tag == "struct":
             self._marks.append(len(self._stack))
         self._data = []
+        if self._value and tag not in self.dispatch:
+            raise ResponseError("unknown tag %r" % tag)
         self._value = (tag == "value")
 
     def data(self, text):
@@ -679,9 +685,13 @@ class Unmarshaller:
         try:
             f = self.dispatch[tag]
         except KeyError:
-            pass # unknown tag ?
-        else:
-            return f(self, "".join(self._data))
+            if ':' not in tag:
+                return # unknown tag ?
+            try:
+                f = self.dispatch[tag.split(':')[-1]]
+            except KeyError:
+                return # unknown tag ?
+        return f(self, "".join(self._data))
 
     #
     # accelerator support
@@ -691,9 +701,13 @@ class Unmarshaller:
         try:
             f = self.dispatch[tag]
         except KeyError:
-            pass # unknown tag ?
-        else:
-            return f(self, data)
+            if ':' not in tag:
+                return # unknown tag ?
+            try:
+                f = self.dispatch[tag.split(':')[-1]]
+            except KeyError:
+                return # unknown tag ?
+        return f(self, data)
 
     #
     # element decoders
@@ -718,14 +732,23 @@ class Unmarshaller:
     def end_int(self, data):
         self.append(int(data))
         self._value = 0
+    dispatch["i1"] = end_int
+    dispatch["i2"] = end_int
     dispatch["i4"] = end_int
     dispatch["i8"] = end_int
     dispatch["int"] = end_int
+    dispatch["biginteger"] = end_int
 
     def end_double(self, data):
         self.append(float(data))
         self._value = 0
     dispatch["double"] = end_double
+    dispatch["float"] = end_double
+
+    def end_bigdecimal(self, data):
+        self.append(Decimal(data))
+        self._value = 0
+    dispatch["bigdecimal"] = end_bigdecimal
 
     def end_string(self, data):
         if self._encoding:
@@ -955,8 +978,6 @@ def dumps(params, methodname=None, methodresponse=None, encoding=None,
     # standard XML-RPC wrappings
     if methodname:
         # a method call
-        if not isinstance(methodname, str):
-            methodname = methodname.encode(encoding)
         data = (
             xmlheader,
             "<methodCall>\n"
@@ -1131,12 +1152,12 @@ class Transport:
         for i in (0, 1):
             try:
                 return self.single_request(host, handler, request_body, verbose)
+            except http.client.RemoteDisconnected:
+                if i:
+                    raise
             except OSError as e:
                 if i or e.errno not in (errno.ECONNRESET, errno.ECONNABORTED,
                                         errno.EPIPE):
-                    raise
-            except http.client.RemoteDisconnected:
-                if i:
                     raise
 
     def single_request(self, host, handler, request_body, verbose=False):
@@ -1422,7 +1443,7 @@ class ServerProxy:
         # call a method on the remote server
 
         request = dumps(params, methodname, encoding=self.__encoding,
-                        allow_none=self.__allow_none).encode(self.__encoding)
+                        allow_none=self.__allow_none).encode(self.__encoding, 'xmlcharrefreplace')
 
         response = self.__transport.request(
             self.__host,
@@ -1448,7 +1469,7 @@ class ServerProxy:
         # magic method dispatcher
         return _Method(self.__request, name)
 
-    # note: to call a remote object with an non-standard name, use
+    # note: to call a remote object with a non-standard name, use
     # result getattr(server, "strange-python-name")(args)
 
     def __call__(self, attr):

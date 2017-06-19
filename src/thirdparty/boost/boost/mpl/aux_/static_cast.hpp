@@ -10,13 +10,14 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: static_cast.hpp 86070 2013-09-30 15:59:23Z skelly $
-// $Date: 2013-09-30 11:59:23 -0400 (Mon, 30 Sep 2013) $
-// $Revision: 86070 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/workaround.hpp>
 
 #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x561)) \
+ || BOOST_WORKAROUND(__GNUC__, < 3) \
  || BOOST_WORKAROUND(__MWERKS__, <= 0x3001)
 #   define BOOST_MPL_AUX_STATIC_CAST(T, expr) (T)(expr)
 #else

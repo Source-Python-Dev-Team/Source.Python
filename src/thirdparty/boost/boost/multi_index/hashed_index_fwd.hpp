@@ -31,6 +31,22 @@ template<
   typename KeyFromValue,typename Hash,typename Pred,
   typename SuperMeta,typename TagList,typename Category
 >
+bool operator==(
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& x,
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& y);
+
+template<
+  typename KeyFromValue,typename Hash,typename Pred,
+  typename SuperMeta,typename TagList,typename Category
+>
+bool operator!=(
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& x,
+  const hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& y);
+
+template<
+  typename KeyFromValue,typename Hash,typename Pred,
+  typename SuperMeta,typename TagList,typename Category
+>
 void swap(
   hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& x,
   hashed_index<KeyFromValue,Hash,Pred,SuperMeta,TagList,Category>& y);

@@ -67,14 +67,14 @@ const std::streamsize default_increment = 5;
 #if !BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x564)) && \
     !BOOST_WORKAROUND(__MWERKS__, <= 0x3003) \
     /**/
-    std::streamsize rand(int inc)
+    std::streamsize rand(std::streamsize inc)
     {
         static rand48                random_gen;
-        static uniform_smallint<int> random_dist(0, inc);
+        static uniform_smallint<int> random_dist(0, static_cast<int>(inc));
         return random_dist(random_gen);
     }
 #else
-    std::streamsize rand(int inc) 
+    std::streamsize rand(std::streamsize inc) 
     { 
         return (std::rand() * inc + 1) / RAND_MAX; 
     }
@@ -93,13 +93,14 @@ public:
         { }
     std::streamsize read(char* s, std::streamsize n)
     {
-        if (pos_ == static_cast<std::streamsize>(data_.size()))
+        using namespace std;
+        if (pos_ == static_cast<streamsize>(data_.size()))
             return -1;
-        std::streamsize avail = 
-            (std::min) (n, static_cast<std::streamsize>(data_.size() - pos_));
-        std::streamsize amt = (std::min) (rand(inc_), avail);
+        streamsize avail = 
+            (std::min) (n, static_cast<streamsize>(data_.size() - pos_));
+        streamsize amt = (std::min) (rand(inc_), avail);
         if (amt)
-            std::memcpy(s, data_.c_str() + pos_, amt);
+            memcpy(s, data_.c_str() + pos_, static_cast<size_t>(amt));
         pos_ += amt;
         return amt;
     }
@@ -107,7 +108,7 @@ public:
     bool putback(char c)
     {
         if (pos_ > 0) {
-            data_[--pos_] = c;
+            data_[static_cast<std::string::size_type>(--pos_)] = c;
             return true;
         }
         return false;

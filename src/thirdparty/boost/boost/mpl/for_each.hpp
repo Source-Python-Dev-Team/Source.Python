@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: for_each.hpp 69601 2011-03-06 11:09:13Z jfalcou $
-// $Date: 2011-03-06 06:09:13 -0500 (Sun, 06 Mar 2011) $
-// $Revision: 69601 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/begin_end.hpp>
@@ -22,6 +22,7 @@
 #include <boost/mpl/deref.hpp>
 #include <boost/mpl/identity.hpp>
 #include <boost/mpl/assert.hpp>
+#include <boost/mpl/aux_/config/gpu.hpp>
 #include <boost/mpl/aux_/unwrap.hpp>
 
 #include <boost/type_traits/is_same.hpp>
@@ -40,6 +41,7 @@ struct for_each_impl
         , typename TransformFunc
         , typename F
         >
+    BOOST_MPL_CFG_GPU_ENABLED
     static void execute(
           Iterator*
         , LastIterator*
@@ -59,6 +61,7 @@ struct for_each_impl<false>
         , typename TransformFunc
         , typename F
         >
+    BOOST_MPL_CFG_GPU_ENABLED
     static void execute(
           Iterator*
         , LastIterator*
@@ -89,6 +92,7 @@ template<
     , typename TransformOp
     , typename F
     >
+BOOST_MPL_CFG_GPU_ENABLED
 inline
 void for_each(F f, Sequence* = 0, TransformOp* = 0)
 {
@@ -105,6 +109,7 @@ template<
       typename Sequence
     , typename F
     >
+BOOST_MPL_CFG_GPU_ENABLED
 inline
 void for_each(F f, Sequence* = 0)
 {

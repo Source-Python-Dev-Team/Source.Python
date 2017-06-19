@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -29,7 +29,7 @@
 #include <cstddef>
 #include <boost/aligned_storage.hpp>
 #include <boost/move/core.hpp>
-#include <boost/move/utility.hpp>
+#include <boost/move/utility_core.hpp>
 #include <boost/type_traits/alignment_of.hpp>
 #include <boost/type_traits/type_with_alignment.hpp>
 #include <boost/log/detail/header.hpp>
@@ -43,12 +43,7 @@ namespace aux {
 //! Base class for the thread-safe queue implementation
 struct threadsafe_queue_impl
 {
-    struct
-#if defined(__GNUC__)
-        // Explicitly mark the type so that it may alias other types
-        __attribute__ ((__may_alias__))
-#endif
-        pointer_storage
+    struct BOOST_LOG_MAY_ALIAS pointer_storage
     {
         union
         {
@@ -246,7 +241,7 @@ public:
         threadsafe_queue_impl::node_base *dealloc, *destr;
         if (m_pImpl->try_pop(dealloc, destr))
         {
-            register node* p = static_cast< node* >(destr);
+            node* p = static_cast< node* >(destr);
             auto_deallocate guard(static_cast< base_type* >(this), static_cast< node* >(dealloc), p);
             value = boost::move(p->value());
             return true;

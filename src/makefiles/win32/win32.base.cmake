@@ -82,8 +82,8 @@ Endif()
 # Release link libraries
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    optimized ${PYTHONSDK_LIB}/python35.lib
-    optimized ${BOOSTSDK_LIB}/libboost_python-vc100-mt-1_55.lib
+    optimized ${PYTHONSDK_LIB}/python36.lib
+    optimized ${BOOSTSDK_LIB}/libboost_python3-vc100-mt-1_64.lib
 )
 
 If( SOURCE_ENGINE MATCHES "csgo" )

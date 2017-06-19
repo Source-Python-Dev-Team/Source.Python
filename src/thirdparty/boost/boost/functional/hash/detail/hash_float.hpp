@@ -68,7 +68,7 @@ namespace boost
             std::size_t seed = 0;
 
             if (length >= sizeof(std::size_t)) {
-                seed = *(std::size_t*) ptr;
+                std::memcpy(&seed, ptr, sizeof(std::size_t));
                 length -= sizeof(std::size_t);
                 ptr += sizeof(std::size_t);
 
@@ -179,7 +179,7 @@ namespace boost
                 hash_float_combine(seed, part);
             }
 
-            hash_float_combine(seed, exp);
+            hash_float_combine(seed, static_cast<std::size_t>(exp));
 
             return seed;
         }

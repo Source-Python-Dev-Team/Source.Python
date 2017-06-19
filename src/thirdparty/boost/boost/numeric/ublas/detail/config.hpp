@@ -28,6 +28,20 @@
 #include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 
+// C++11
+#if defined(__cplusplus) && __cplusplus >= 201103L
+
+#define BOOST_UBLAS_CPP_GE_2011
+
+#elif BOOST_MSVC >= 1800
+
+#define BOOST_UBLAS_CPP_GE_2011
+
+#else
+
+#undef BOOST_UBLAS_CPP_GE_2011 // Make sure no one defined it
+
+#endif
 
 // Microsoft Visual C++
 #if defined (BOOST_MSVC) && ! defined (BOOST_STRICT_CONFIG)
@@ -287,3 +301,4 @@ bool disable_type_check<Dummy>::value = false;
 
 
 #endif
+

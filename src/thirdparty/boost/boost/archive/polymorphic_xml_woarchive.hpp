@@ -28,7 +28,7 @@ namespace boost {
 namespace archive {
 
 typedef detail::polymorphic_oarchive_route<
-        xml_woarchive_impl<naked_xml_woarchive> 
+        xml_woarchive_impl<xml_woarchive> 
 > polymorphic_xml_woarchive;
 
 } // namespace archive

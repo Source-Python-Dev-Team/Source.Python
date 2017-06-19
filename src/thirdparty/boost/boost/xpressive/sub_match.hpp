@@ -23,6 +23,8 @@
 #include <boost/mpl/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/iterator/iterator_traits.hpp>
+#include <boost/range/const_iterator.hpp>
+#include <boost/range/mutable_iterator.hpp>
 #include <boost/xpressive/detail/detail_fwd.hpp>
 
 //{{AFX_DOC_COMMENT
@@ -440,21 +442,11 @@ namespace boost
 {
     /// INTERNAL ONLY
     ///
-    template<typename Range>
-    struct range_mutable_iterator;
-
-    /// INTERNAL ONLY
-    ///
     template<typename BidiIter>
     struct range_mutable_iterator<xpressive::sub_match<BidiIter> >
     {
         typedef BidiIter type;
     };
-
-    /// INTERNAL ONLY
-    ///
-    template<typename Range>
-    struct range_const_iterator;
 
     /// INTERNAL ONLY
     ///

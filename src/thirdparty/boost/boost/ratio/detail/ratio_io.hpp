@@ -39,11 +39,6 @@ struct ratio_string
 #include <string>
 #include <sstream>
 
-#ifdef BOOST_RATIO_HAS_STATIC_STRING
-#include <boost/ratio/ratio_static_string.hpp>
-#include <boost/static_string/static_string.hpp>
-#endif
-
 #if defined(BOOST_NO_CXX11_UNICODE_LITERALS) || defined(BOOST_NO_CXX11_CHAR16_T) || defined(BOOST_NO_CXX11_CHAR32_T) || defined(BOOST_NO_CXX11_U16STRING) || defined(BOOST_NO_CXX11_U32STRING)
 #if defined BOOST_RATIO_HAS_UNICODE_SUPPORT
 #undef BOOST_RATIO_HAS_UNICODE_SUPPORT

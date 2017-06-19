@@ -8,7 +8,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: linear_feedback_shift.hpp 69976 2011-03-14 20:09:37Z steven_watanabe $
+ * $Id$
  *
  */
 

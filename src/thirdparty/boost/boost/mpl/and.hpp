@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: and.hpp 86682 2013-11-13 17:38:31Z eldiener $
-// $Date: 2013-11-13 12:38:31 -0500 (Wed, 13 Nov 2013) $
-// $Revision: 86682 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/use_preprocessed.hpp>
 

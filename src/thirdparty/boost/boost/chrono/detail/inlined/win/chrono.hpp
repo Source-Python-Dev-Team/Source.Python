@@ -14,7 +14,8 @@
 
 #include <boost/detail/winapi/time.hpp>
 #include <boost/detail/winapi/timers.hpp>
-#include <boost/detail/winapi/GetLastError.hpp>
+#include <boost/detail/winapi/get_last_error.hpp>
+#include <boost/assert.hpp>
 
 namespace boost
 {
@@ -35,14 +36,22 @@ namespace chrono_detail
 
   steady_clock::time_point steady_clock::now() BOOST_NOEXCEPT
   {
-    static double nanosecs_per_tic = chrono_detail::get_nanosecs_per_tic();
+    double nanosecs_per_tic = chrono_detail::get_nanosecs_per_tic();
 
     boost::detail::winapi::LARGE_INTEGER_ pcount;
-    if ( (nanosecs_per_tic <= 0.0L) ||
-            (!boost::detail::winapi::QueryPerformanceCounter( &pcount )) )
+    if ( nanosecs_per_tic <= 0.0L )
     {
-      BOOST_ASSERT(0 && "Boost::Chrono - Internal Error");
+      BOOST_ASSERT(0 && "Boost::Chrono - get_nanosecs_per_tic Internal Error");
       return steady_clock::time_point();
+    }
+    unsigned times=0;
+    while ( ! boost::detail::winapi::QueryPerformanceCounter( &pcount ) )
+    {
+      if ( ++times > 3 )
+      {
+        BOOST_ASSERT(0 && "Boost::Chrono - QueryPerformanceCounter Internal Error");
+        return steady_clock::time_point();
+      }
     }
 
     return steady_clock::time_point(steady_clock::duration(
@@ -53,7 +62,7 @@ namespace chrono_detail
 #if !defined BOOST_CHRONO_DONT_PROVIDE_HYBRID_ERROR_HANDLING
   steady_clock::time_point steady_clock::now( system::error_code & ec )
   {
-    static double nanosecs_per_tic = chrono_detail::get_nanosecs_per_tic();
+    double nanosecs_per_tic = chrono_detail::get_nanosecs_per_tic();
 
     boost::detail::winapi::LARGE_INTEGER_ pcount;
     if ( (nanosecs_per_tic <= 0.0L)

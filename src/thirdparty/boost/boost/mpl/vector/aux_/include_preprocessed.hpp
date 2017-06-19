@@ -9,9 +9,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: include_preprocessed.hpp 86249 2013-10-11 23:22:36Z skelly $
-// $Date: 2013-10-11 19:22:36 -0400 (Fri, 11 Oct 2013) $
-// $Revision: 86249 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/typeof.hpp>
 #include <boost/mpl/aux_/config/ctps.hpp>
@@ -23,7 +23,8 @@
 
 #if defined(BOOST_MPL_CFG_TYPEOF_BASED_SEQUENCES)
 #   define AUX778076_INCLUDE_DIR typeof_based
-#elif defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
+#elif defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION) \
+   || defined(BOOST_MPL_CFG_NO_NONTYPE_TEMPLATE_PARTIAL_SPEC)
 #   define AUX778076_INCLUDE_DIR no_ctps
 #else
 #   define AUX778076_INCLUDE_DIR plain
