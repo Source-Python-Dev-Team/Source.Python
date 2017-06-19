@@ -10,15 +10,16 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: erase.hpp 85956 2013-09-26 13:05:50Z skelly $
-// $Date: 2013-09-26 09:05:50 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85956 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/erase_fwd.hpp>
 #include <boost/mpl/sequence_tag.hpp>
 #include <boost/mpl/aux_/erase_impl.hpp>
 #include <boost/mpl/aux_/na_spec.hpp>
 #include <boost/mpl/aux_/lambda_support.hpp>
+#include <boost/mpl/aux_/config/msvc_typename.hpp>
 
 namespace boost { namespace mpl {
 

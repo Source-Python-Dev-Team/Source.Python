@@ -41,24 +41,24 @@ template<class T>
 struct tracking_level_impl {
     template<class U>
     struct traits_class_tracking {
-        typedef BOOST_DEDUCED_TYPENAME U::tracking type;
+        typedef typename U::tracking type;
     };
     typedef mpl::integral_c_tag tag;
     // note: at least one compiler complained w/o the full qualification
     // on basic traits below
     typedef
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             is_base_and_derived<boost::serialization::basic_traits, T>,
             traits_class_tracking< T >,
         //else
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             is_pointer< T >,
             // pointers are not tracked by default
             mpl::int_<track_never>,
         //else
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             // for primitives
-            BOOST_DEDUCED_TYPENAME mpl::equal_to<
+            typename mpl::equal_to<
                 implementation_level< T >,
                 mpl::int_<primitive_type> 
             >,

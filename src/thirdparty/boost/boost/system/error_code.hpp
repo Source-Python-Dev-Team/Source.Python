@@ -8,13 +8,12 @@
 
 //  See library home page at http://www.boost.org/libs/system
 
-#ifndef BOOST_ERROR_CODE_HPP
-#define BOOST_ERROR_CODE_HPP
+#ifndef BOOST_SYSTEM_ERROR_CODE_HPP
+#define BOOST_SYSTEM_ERROR_CODE_HPP
 
 #include <boost/system/config.hpp>
 #include <boost/cstdint.hpp>
 #include <boost/assert.hpp>
-#include <boost/operators.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/utility/enable_if.hpp>
 #include <ostream>
@@ -40,8 +39,9 @@ namespace boost
   namespace system
   {
 
-    class error_code;
-    class error_condition;
+    class error_code;         // values defined by the operating system
+    class error_condition;    // portable generic values defined below, but ultimately
+                              // based on the POSIX standard
 
     //  "Concept" helpers  ---------------------------------------------------//
 
@@ -219,9 +219,9 @@ namespace boost
     inline const error_category &  get_system_category() { return system_category(); }
     inline const error_category &  get_generic_category() { return generic_category(); }
     inline const error_category &  get_posix_category() { return generic_category(); }
-    static const error_category &  posix_category = generic_category();
-    static const error_category &  errno_ecat     = generic_category();
-    static const error_category &  native_ecat    = system_category();
+    static const error_category &  posix_category BOOST_ATTRIBUTE_UNUSED = generic_category();
+    static const error_category &  errno_ecat     BOOST_ATTRIBUTE_UNUSED = generic_category();
+    static const error_category &  native_ecat    BOOST_ATTRIBUTE_UNUSED = system_category();
 # endif
 
     //  class error_condition  -----------------------------------------------//
@@ -270,12 +270,6 @@ namespace boost
       const error_category &  category() const BOOST_SYSTEM_NOEXCEPT { return *m_cat; }
       std::string             message() const  { return m_cat->message(value()); }
 
-#   ifndef BOOST_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
-      explicit operator bool() const BOOST_SYSTEM_NOEXCEPT
-      {
-        return m_val != 0;
-      }
-#   else
       typedef void (*unspecified_bool_type)();
       static void unspecified_bool_true() {}
 
@@ -288,7 +282,6 @@ namespace boost
       {
         return m_val == 0;
       }
-#   endif
 
       // relationals:
       //  the more symmetrical non-member syntax allows enum
@@ -364,12 +357,6 @@ namespace boost
       error_condition         default_error_condition() const BOOST_SYSTEM_NOEXCEPT  { return m_cat->default_error_condition(value()); }
       std::string             message() const  { return m_cat->message(value()); }
 
-#   ifndef BOOST_NO_CXX11_EXPLICIT_CONVERSION_OPERATORS
-      explicit operator bool() const BOOST_SYSTEM_NOEXCEPT
-      {
-        return m_val != 0;
-      }
-#   else
       typedef void (*unspecified_bool_type)();
       static void unspecified_bool_true() {}
 
@@ -382,7 +369,6 @@ namespace boost
       {
         return m_val == 0;
       }
-#   endif 
 
       // relationals:
       inline friend bool operator==( const error_code & lhs,
@@ -527,9 +513,9 @@ namespace boost
 #include <boost/config/abi_suffix.hpp> // pops abi_prefix.hpp pragmas
 
 # ifdef BOOST_ERROR_CODE_HEADER_ONLY
-#   include <boost/../libs/system/src/error_code.cpp>
+#   include <boost/system/detail/error_code.ipp>
 # endif
 
-#endif // BOOST_ERROR_CODE_HPP
+#endif // BOOST_SYSTEM_ERROR_CODE_HPP
 
 

@@ -13,16 +13,12 @@ functions and constants
 extern "C" {
 #endif
 
-#ifdef PY_INT64_T
 /* _PyTime_t: Python timestamp with subsecond precision. It can be used to
    store a duration, and so indirectly a date (related to another date, like
    UNIX epoch). */
-typedef PY_INT64_T _PyTime_t;
+typedef int64_t _PyTime_t;
 #define _PyTime_MIN PY_LLONG_MIN
 #define _PyTime_MAX PY_LLONG_MAX
-#else
-#  error "_PyTime_t need signed 64-bit integer type"
-#endif
 
 typedef enum {
     /* Round towards minus infinity (-inf).
@@ -30,7 +26,10 @@ typedef enum {
     _PyTime_ROUND_FLOOR=0,
     /* Round towards infinity (+inf).
        For example, used for timeout to wait "at least" N seconds. */
-    _PyTime_ROUND_CEILING
+    _PyTime_ROUND_CEILING=1,
+    /* Round to nearest with ties going to nearest even integer.
+       For example, used to round from a Python float. */
+    _PyTime_ROUND_HALF_EVEN
 } _PyTime_round_t;
 
 /* Convert a time_t to a PyLong. */
@@ -75,7 +74,7 @@ PyAPI_FUNC(_PyTime_t) _PyTime_FromSeconds(int seconds);
             ((_PyTime_t)(seconds) * (1000 * 1000 * 1000))
 
 /* Create a timestamp from a number of nanoseconds. */
-PyAPI_FUNC(_PyTime_t) _PyTime_FromNanoseconds(PY_LONG_LONG ns);
+PyAPI_FUNC(_PyTime_t) _PyTime_FromNanoseconds(long long ns);
 
 /* Convert a number of seconds (Python float or int) to a timetamp.
    Raise an exception and return -1 on error, return 0 on success. */
@@ -184,6 +183,14 @@ PyAPI_FUNC(int) _PyTime_GetMonotonicClockWithInfo(
 /* Initialize time.
    Return 0 on success, raise an exception and return -1 on error. */
 PyAPI_FUNC(int) _PyTime_Init(void);
+
+/* Converts a timestamp to the Gregorian time, using the local time zone.
+   Return 0 on success, raise an exception and return -1 on error. */
+PyAPI_FUNC(int) _PyTime_localtime(time_t t, struct tm *tm);
+
+/* Converts a timestamp to the Gregorian time, assuming UTC.
+   Return 0 on success, raise an exception and return -1 on error. */
+PyAPI_FUNC(int) _PyTime_gmtime(time_t t, struct tm *tm);
 
 #ifdef __cplusplus
 }

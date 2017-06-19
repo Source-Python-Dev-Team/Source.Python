@@ -42,40 +42,32 @@ template<class T>
 struct implementation_level_impl {
     template<class U>
     struct traits_class_level {
-        typedef BOOST_DEDUCED_TYPENAME U::level type;
+        typedef typename U::level type;
     };
 
     typedef mpl::integral_c_tag tag;
     // note: at least one compiler complained w/o the full qualification
     // on basic traits below
     typedef
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             is_base_and_derived<boost::serialization::basic_traits, T>,
             traits_class_level< T >,
         //else
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             is_fundamental< T >,
             mpl::int_<primitive_type>,
         //else
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             is_class< T >,
             mpl::int_<object_class_info>,
         //else
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             is_array< T >,
-            #if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x560))
-                mpl::int_<not_serializable>,
-            #else
                 mpl::int_<object_serializable>,
-            #endif
         //else
-        BOOST_DEDUCED_TYPENAME mpl::eval_if<
+        typename mpl::eval_if<
             is_enum< T >,
-            //#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x560))
-            //    mpl::int_<not_serializable>,
-            //#else
                 mpl::int_<primitive_type>,
-            //#endif
         //else
             mpl::int_<not_serializable>
         >

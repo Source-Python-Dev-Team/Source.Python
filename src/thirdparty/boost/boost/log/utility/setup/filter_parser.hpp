@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -21,7 +21,7 @@
 #include <boost/smart_ptr/make_shared_object.hpp>
 #include <boost/phoenix/operator/comparison.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/log/detail/setup_config.hpp>
 #include <boost/log/detail/code_conversion.hpp>
 #include <boost/log/exceptions.hpp>
@@ -77,7 +77,7 @@ struct filter_factory
     virtual filter on_equality_relation(attribute_name const& name, string_type const& arg)
     {
         BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The equality attribute value relation is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
     /*!
      * The callback for inequality relation filter
@@ -85,7 +85,7 @@ struct filter_factory
     virtual filter on_inequality_relation(attribute_name const& name, string_type const& arg)
     {
         BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The inequality attribute value relation is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
     /*!
      * The callback for less relation filter
@@ -93,7 +93,7 @@ struct filter_factory
     virtual filter on_less_relation(attribute_name const& name, string_type const& arg)
     {
         BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The less attribute value relation is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
     /*!
      * The callback for greater relation filter
@@ -101,7 +101,7 @@ struct filter_factory
     virtual filter on_greater_relation(attribute_name const& name, string_type const& arg)
     {
         BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The greater attribute value relation is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
     /*!
      * The callback for less or equal relation filter
@@ -109,7 +109,7 @@ struct filter_factory
     virtual filter on_less_or_equal_relation(attribute_name const& name, string_type const& arg)
     {
         BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The less-or-equal attribute value relation is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
     /*!
      * The callback for greater or equal relation filter
@@ -117,7 +117,7 @@ struct filter_factory
     virtual filter on_greater_or_equal_relation(attribute_name const& name, string_type const& arg)
     {
         BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The greater-or-equal attribute value relation is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
 
     /*!
@@ -125,8 +125,8 @@ struct filter_factory
      */
     virtual filter on_custom_relation(attribute_name const& name, string_type const& rel, string_type const& arg)
     {
-        BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The custom attribute value relation \"" + boost::log::aux::to_narrow(arg) + "\" is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The custom attribute value relation \"" + boost::log::aux::to_narrow(rel) + "\" is not supported", (name));
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
 
     BOOST_DELETED_FUNCTION(filter_factory(filter_factory const&))
@@ -208,8 +208,8 @@ public:
      */
     virtual filter on_custom_relation(attribute_name const& name, string_type const& rel, string_type const& arg)
     {
-        BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The custom attribute value relation \"" + boost::log::aux::to_narrow(arg) + "\" is not supported", (name));
-        BOOST_LOG_UNREACHABLE();
+        BOOST_LOG_THROW_DESCR_PARAMS(parse_error, "The custom attribute value relation \"" + boost::log::aux::to_narrow(rel) + "\" is not supported", (name));
+        BOOST_LOG_UNREACHABLE_RETURN(filter());
     }
 
     /*!
@@ -242,8 +242,8 @@ BOOST_LOG_SETUP_API void register_filter_factory(
  * \param factory The filter factory
  */
 template< typename FactoryT >
-inline typename enable_if<
-    is_base_and_derived< filter_factory< typename FactoryT::char_type >, FactoryT >
+inline typename boost::enable_if_c<
+    is_base_and_derived< filter_factory< typename FactoryT::char_type >, FactoryT >::value
 >::type register_filter_factory(attribute_name const& name, shared_ptr< FactoryT > const& factory)
 {
     typedef filter_factory< typename FactoryT::char_type > factory_base;

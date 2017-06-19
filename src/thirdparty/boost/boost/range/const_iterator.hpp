@@ -17,9 +17,10 @@
 
 #include <boost/range/config.hpp>
 
-
+#include <boost/range/range_fwd.hpp>
 #include <boost/range/detail/extract_optional_type.hpp>
 #include <boost/type_traits/remove_const.hpp>
+#include <boost/type_traits/remove_reference.hpp>
 #include <cstddef>
 #include <utility>
 
@@ -29,33 +30,45 @@ namespace boost
     // default
     //////////////////////////////////////////////////////////////////////////
     
-    namespace range_detail {
-        BOOST_RANGE_EXTRACT_OPTIONAL_TYPE( const_iterator )
-    }
-
-    template< typename C >
-    struct range_const_iterator : range_detail::extract_const_iterator<C>
-    {};
-    
-    //////////////////////////////////////////////////////////////////////////
-    // pair
-    //////////////////////////////////////////////////////////////////////////
-
-    template< typename Iterator >
-    struct range_const_iterator< std::pair<Iterator,Iterator> >
+    namespace range_detail
     {
-        typedef Iterator type;
-    };
-    
-    //////////////////////////////////////////////////////////////////////////
-    // array
-    //////////////////////////////////////////////////////////////////////////
 
-    template< typename T, std::size_t sz >
-    struct range_const_iterator< T[sz] >
-    {
-        typedef const T* type;
-    };
+BOOST_RANGE_EXTRACT_OPTIONAL_TYPE( const_iterator )
+
+template< typename C >
+struct range_const_iterator_helper
+        : extract_const_iterator<C>
+{};
+
+//////////////////////////////////////////////////////////////////////////
+// pair
+//////////////////////////////////////////////////////////////////////////
+
+template< typename Iterator >
+struct range_const_iterator_helper<std::pair<Iterator,Iterator> >
+{
+    typedef Iterator type;
+};
+
+//////////////////////////////////////////////////////////////////////////
+// array
+//////////////////////////////////////////////////////////////////////////
+
+template< typename T, std::size_t sz >
+struct range_const_iterator_helper< T[sz] >
+{
+    typedef const T* type;
+};
+
+    } // namespace range_detail
+
+template<typename C, typename Enabler=void>
+struct range_const_iterator
+        : range_detail::range_const_iterator_helper<
+            BOOST_DEDUCED_TYPENAME remove_reference<C>::type
+        >
+{
+};
 
 } // namespace boost
 

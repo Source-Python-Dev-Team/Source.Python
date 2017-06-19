@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: distance.hpp 85945 2013-09-26 09:46:46Z skelly $
-// $Date: 2013-09-26 05:46:46 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85945 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/distance_fwd.hpp>
 #include <boost/mpl/iter_fold.hpp>
@@ -21,6 +21,7 @@
 #include <boost/mpl/next.hpp>
 #include <boost/mpl/tag.hpp>
 #include <boost/mpl/apply_wrap.hpp>
+#include <boost/mpl/aux_/msvc_eti_base.hpp>
 #include <boost/mpl/aux_/value_wknd.hpp>
 #include <boost/mpl/aux_/na_spec.hpp>
 #include <boost/mpl/aux_/config/forwarding.hpp>
@@ -34,11 +35,11 @@ template< typename Tag > struct distance_impl
 {
     template< typename First, typename Last > struct apply
 #if !defined(BOOST_MPL_CFG_NO_NESTED_FORWARDING)
-        : iter_fold<
+        : aux::msvc_eti_base< typename iter_fold<
               iterator_range<First,Last>
             , mpl::long_<0>
             , next<>
-            >::type
+            >::type >
     {
 #else
     {

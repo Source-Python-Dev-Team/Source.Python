@@ -14,6 +14,10 @@ printable -- a string containing all ASCII characters considered printable
 
 """
 
+__all__ = ["ascii_letters", "ascii_lowercase", "ascii_uppercase", "capwords",
+           "digits", "hexdigits", "octdigits", "printable", "punctuation",
+           "whitespace", "Formatter", "Template"]
+
 import _string
 
 # Some strings for ctype-style character classification
@@ -24,7 +28,7 @@ ascii_letters = ascii_lowercase + ascii_uppercase
 digits = '0123456789'
 hexdigits = digits + 'abcdef' + 'ABCDEF'
 octdigits = '01234567'
-punctuation = """!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
+punctuation = r"""!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~"""
 printable = digits + ascii_letters + punctuation + whitespace
 
 # Functions which aren't available as string methods.
@@ -46,7 +50,7 @@ def capwords(s, sep=None):
 
 ####################################################################
 import re as _re
-from collections import ChainMap
+from collections import ChainMap as _ChainMap
 
 class _TemplateMetaclass(type):
     pattern = r"""
@@ -104,7 +108,7 @@ class Template(metaclass=_TemplateMetaclass):
         if not args:
             mapping = kws
         elif kws:
-            mapping = ChainMap(kws, args[0])
+            mapping = _ChainMap(kws, args[0])
         else:
             mapping = args[0]
         # Helper function for .sub()
@@ -112,10 +116,7 @@ class Template(metaclass=_TemplateMetaclass):
             # Check the most common path first.
             named = mo.group('named') or mo.group('braced')
             if named is not None:
-                val = mapping[named]
-                # We use this idiom instead of str() because the latter will
-                # fail if val is a Unicode containing non-ASCII characters.
-                return '%s' % (val,)
+                return str(mapping[named])
             if mo.group('escaped') is not None:
                 return self.delimiter
             if mo.group('invalid') is not None:
@@ -134,7 +135,7 @@ class Template(metaclass=_TemplateMetaclass):
         if not args:
             mapping = kws
         elif kws:
-            mapping = ChainMap(kws, args[0])
+            mapping = _ChainMap(kws, args[0])
         else:
             mapping = args[0]
         # Helper function for .sub()
@@ -142,9 +143,7 @@ class Template(metaclass=_TemplateMetaclass):
             named = mo.group('named') or mo.group('braced')
             if named is not None:
                 try:
-                    # We use this idiom instead of str() because the latter
-                    # will fail if val is a Unicode containing non-ASCII
-                    return '%s' % (mapping[named],)
+                    return str(mapping[named])
                 except KeyError:
                     return mo.group()
             if mo.group('escaped') is not None:

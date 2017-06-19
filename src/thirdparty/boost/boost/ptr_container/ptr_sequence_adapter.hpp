@@ -12,7 +12,7 @@
 #ifndef BOOST_PTR_CONTAINER_PTR_SEQUENCE_ADAPTER_HPP
 #define BOOST_PTR_CONTAINER_PTR_SEQUENCE_ADAPTER_HPP
 
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) && (_MSC_VER >= 1200)
 # pragma once
 #endif
 
@@ -244,7 +244,8 @@ namespace ptr_container_detail
         void push_back( value_type x )  // strong               
         {
             this->enforce_null_policy( x, "Null pointer in 'push_back()'" );
-            auto_type ptr( x, *this );    // notrow
+
+            auto_type ptr( x );           // notrow
             this->base().push_back( x );  // strong, commit
             ptr.release();                // nothrow
         }
@@ -258,7 +259,8 @@ namespace ptr_container_detail
         void push_front( value_type x )                
         {
             this->enforce_null_policy( x, "Null pointer in 'push_front()'" );
-            auto_type ptr( x, *this );    // nothrow            
+
+            auto_type ptr( x );           // nothrow
             this->base().push_front( x ); // strong, commit
             ptr.release();                // nothrow
         }
@@ -273,7 +275,7 @@ namespace ptr_container_detail
         {
             BOOST_ASSERT( !this->empty() && 
                           "'pop_back()' on empty container" );
-            auto_type ptr( static_cast<value_type>(this->base().back()), *this );      
+            auto_type ptr( static_cast<value_type>( this->base().back() ) );      
                                                        // nothrow
             this->base().pop_back();                   // nothrow
             return ptr_container_detail::move( ptr );  // nothrow
@@ -283,7 +285,7 @@ namespace ptr_container_detail
         {
             BOOST_ASSERT( !this->empty() &&
                           "'pop_front()' on empty container" ); 
-            auto_type ptr( static_cast<value_type>(this->base().front()), *this ); 
+            auto_type ptr( static_cast<value_type>( this->base().front() ) ); 
                                          // nothrow 
             this->base().pop_front();    // nothrow
             return ptr_container_detail::move( ptr ); 
@@ -394,7 +396,7 @@ namespace ptr_container_detail
         {
             if( first == last ) 
                 return;
-            scoped_deleter sd( *this, first, last );         // strong
+            scoped_deleter sd( first, last );                // strong
             this->insert_clones_and_release( sd, before );   // strong, commit 
         }
 
@@ -480,7 +482,7 @@ namespace ptr_container_detail
             if( delete_from )
             {
                 BOOST_DEDUCED_TYPENAME base_type::scoped_deleter 
-                    deleter( *this, from, size );                         // nothrow
+                    deleter( from, size );                                // nothrow
                 this->base().insert( before.base(), from, from + size );  // strong
                 deleter.release();                                        // nothrow
             }
@@ -662,7 +664,7 @@ namespace ptr_container_detail
             
         }
 
-        void range_check_impl( iterator, iterator, 
+        void range_check_impl( iterator first, iterator last, 
                                std::bidirectional_iterator_tag )
         { /* do nothing */ }
 

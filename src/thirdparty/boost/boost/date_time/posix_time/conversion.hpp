@@ -6,7 +6,7 @@
  * Boost Software License, Version 1.0. (See accompanying
  * file LICENSE_1_0.txt or http://www.boost.org/LICENSE_1_0.txt)
  * Author: Jeff Garland, Bart Garst
- * $Date: 2013-05-15 05:14:11 -0400 (Wed, 15 May 2013) $
+ * $Date$
  */
 
 #include <cstring>
@@ -32,11 +32,11 @@ namespace posix_time {
 
   //! Function that converts a ptime into a time_t
   inline
-  std::time_t to_time_t(ptime pt) {
+  std::time_t to_time_t(ptime pt)
+  {
     time_duration dur = pt - ptime(gregorian::date(1970,1,1));
-    return std::time_t(dur.total_seconds ());
+    return std::time_t(dur.total_seconds());
   }
-
 
   //! Convert a time to a tm structure truncating any fractional seconds
   inline

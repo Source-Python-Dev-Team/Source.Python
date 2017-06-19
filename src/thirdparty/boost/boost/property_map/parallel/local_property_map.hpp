@@ -36,15 +36,15 @@ namespace boost {
 
     local_property_map() { }
 
-    local_property_map(const ProcessGroup& process_group, 
+    local_property_map(const ProcessGroup& process_group,
                        const GlobalMap& global, const StorageMap& storage)
       : process_group_(process_group), global_(global), storage(storage) { }
 
-    reference operator[](const key_type& key) 
-    { 
+    reference operator[](const key_type& key)
+    {
       owner_local_pair p = get(global_, key);
       BOOST_ASSERT(p.first == process_id(process_group_));
-      return storage[p.second]; 
+      return storage[p.second];
     }
 
     GlobalMap& global() const { return global_; }
@@ -62,7 +62,7 @@ namespace boost {
   template<typename ProcessGroup, typename GlobalMap, typename StorageMap>
   inline
   typename local_property_map<ProcessGroup, GlobalMap, StorageMap>::reference
-  get(const local_property_map<ProcessGroup, GlobalMap, StorageMap>& pm, 
+  get(const local_property_map<ProcessGroup, GlobalMap, StorageMap>& pm,
       typename local_property_map<ProcessGroup, GlobalMap, StorageMap>::key_type
         const & key)
 
@@ -73,7 +73,7 @@ namespace boost {
 
   template<typename ProcessGroup, typename GlobalMap, typename StorageMap>
   inline void
-  put(const local_property_map<ProcessGroup, GlobalMap, StorageMap>& pm, 
+  put(const local_property_map<ProcessGroup, GlobalMap, StorageMap>& pm,
       typename local_property_map<ProcessGroup, GlobalMap, StorageMap>
                  ::key_type const & key,
       typename local_property_map<ProcessGroup, GlobalMap, StorageMap>

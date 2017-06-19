@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -17,7 +17,7 @@
 
 #include <string>
 #include <boost/move/core.hpp>
-#include <boost/move/utility.hpp>
+#include <boost/move/utility_core.hpp>
 #include <boost/mpl/has_xxx.hpp>
 #include <boost/phoenix/core/actor.hpp>
 #include <boost/phoenix/core/terminal_fwd.hpp>
@@ -53,8 +53,10 @@ private:
     typedef wrapped_formatter_output_terminal< LeftT, FunT > this_type;
 
 public:
+#ifndef BOOST_LOG_DOXYGEN_PASS
     //! Internal typedef for type categorization
     typedef void _is_boost_log_terminal;
+#endif
 
     //! Wrapped function type
     typedef FunT function_type;
@@ -63,23 +65,12 @@ public:
     template< typename >
     struct result;
 
-    template< typename ContextT >
-    struct result< this_type(ContextT) >
+    template< typename ThisT, typename ContextT >
+    struct result< ThisT(ContextT) >
     {
         typedef typename remove_cv< typename remove_reference< ContextT >::type >::type context_type;
         typedef typename phoenix::evaluator::impl<
             typename LeftT::proto_base_expr&,
-            context_type,
-            phoenix::unused
-        >::result_type type;
-    };
-
-    template< typename ContextT >
-    struct result< const this_type(ContextT) >
-    {
-        typedef typename remove_cv< typename remove_reference< ContextT >::type >::type context_type;
-        typedef typename phoenix::evaluator::impl<
-            typename LeftT::proto_base_expr const&,
             context_type,
             phoenix::unused
         >::result_type type;
@@ -167,8 +158,10 @@ template< typename FunT, typename CharT >
 class wrapped_formatter_terminal
 {
 public:
+#ifndef BOOST_LOG_DOXYGEN_PASS
     //! Internal typedef for type categorization
     typedef void _is_boost_log_terminal;
+#endif
 
     //! Character type
     typedef CharT char_type;
@@ -210,7 +203,7 @@ public:
         stream_type strm(str);
         m_fun(fusion::at_c< 0 >(phoenix::env(ctx).args()), strm);
         strm.flush();
-        return boost::move(str);
+        return BOOST_LOG_NRVO_RESULT(str);
     }
 
     //! Invokation operator
@@ -221,7 +214,7 @@ public:
         stream_type strm(str);
         m_fun(fusion::at_c< 0 >(phoenix::env(ctx).args()), strm);
         strm.flush();
-        return boost::move(str);
+        return BOOST_LOG_NRVO_RESULT(str);
     }
 };
 

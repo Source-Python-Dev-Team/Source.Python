@@ -71,12 +71,14 @@ class initialized
 #endif 
       remove_const<T>::type data;
 
+      BOOST_GPU_ENABLED
       wrapper()
       :
       data()
       {
       }
 
+      BOOST_GPU_ENABLED
       wrapper(T const & arg)
       :
       data(arg)
@@ -90,6 +92,7 @@ class initialized
 #endif 
       aligned_storage<sizeof(wrapper), alignment_of<wrapper>::value>::type x;
 
+    BOOST_GPU_ENABLED
     wrapper * wrapper_address() const
     {
       return static_cast<wrapper *>( static_cast<void*>(&x));
@@ -97,6 +100,7 @@ class initialized
 
   public :
 
+    BOOST_GPU_ENABLED
     initialized()
     {
 #if BOOST_DETAIL_VALUE_INIT_WORKAROUND
@@ -105,16 +109,19 @@ class initialized
       new (wrapper_address()) wrapper();
     }
 
+    BOOST_GPU_ENABLED
     initialized(initialized const & arg)
     {
       new (wrapper_address()) wrapper( static_cast<wrapper const &>(*(arg.wrapper_address())));
     }
 
+    BOOST_GPU_ENABLED
     explicit initialized(T const & arg)
     {
       new (wrapper_address()) wrapper(arg);
     }
 
+    BOOST_GPU_ENABLED
     initialized & operator=(initialized const & arg)
     {
       // Assignment is only allowed when T is non-const.
@@ -123,31 +130,37 @@ class initialized
       return *this;
     }
 
+    BOOST_GPU_ENABLED
     ~initialized()
     {
       wrapper_address()->wrapper::~wrapper();
     }
 
+    BOOST_GPU_ENABLED
     T const & data() const
     {
       return wrapper_address()->data;
     }
 
+    BOOST_GPU_ENABLED
     T& data()
     {
       return wrapper_address()->data;
     }
 
+    BOOST_GPU_ENABLED
     void swap(initialized & arg)
     {
       ::boost::swap( this->data(), arg.data() );
     }
 
+    BOOST_GPU_ENABLED
     operator T const &() const
     {
       return wrapper_address()->data;
     }
 
+    BOOST_GPU_ENABLED
     operator T&()
     {
       return wrapper_address()->data;
@@ -156,18 +169,21 @@ class initialized
 } ;
 
 template<class T>
+BOOST_GPU_ENABLED
 T const& get ( initialized<T> const& x )
 {
   return x.data() ;
 }
 
 template<class T>
+BOOST_GPU_ENABLED
 T& get ( initialized<T>& x )
 {
   return x.data() ;
 }
 
 template<class T>
+BOOST_GPU_ENABLED
 void swap ( initialized<T> & lhs, initialized<T> & rhs )
 {
   lhs.swap(rhs) ;
@@ -183,31 +199,37 @@ class value_initialized
 
   public :
     
+    BOOST_GPU_ENABLED
     value_initialized()
     :
     m_data()
     { }
     
+    BOOST_GPU_ENABLED
     T const & data() const
     {
       return m_data.data();
     }
 
+    BOOST_GPU_ENABLED
     T& data()
     {
       return m_data.data();
     }
 
+    BOOST_GPU_ENABLED
     void swap(value_initialized & arg)
     {
       m_data.swap(arg.m_data);
     }
 
+    BOOST_GPU_ENABLED
     operator T const &() const
     {
       return m_data;
     }
 
+    BOOST_GPU_ENABLED
     operator T&()
     {
       return m_data;
@@ -216,18 +238,21 @@ class value_initialized
 
 
 template<class T>
+BOOST_GPU_ENABLED
 T const& get ( value_initialized<T> const& x )
 {
   return x.data() ;
 }
 
 template<class T>
+BOOST_GPU_ENABLED
 T& get ( value_initialized<T>& x )
 {
   return x.data() ;
 }
 
 template<class T>
+BOOST_GPU_ENABLED
 void swap ( value_initialized<T> & lhs, value_initialized<T> & rhs )
 {
   lhs.swap(rhs) ;
@@ -238,7 +263,7 @@ class initialized_value_t
 {
   public :
     
-    template <class T> operator T() const
+    template <class T> BOOST_GPU_ENABLED operator T() const
     {
       return initialized<T>().data();
     }

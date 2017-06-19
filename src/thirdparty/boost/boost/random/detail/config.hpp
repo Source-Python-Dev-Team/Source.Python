@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: config.hpp 51413 2009-02-23 15:48:27Z steven_watanabe $
+ * $Id$
  */
 
 #include <boost/config.hpp>

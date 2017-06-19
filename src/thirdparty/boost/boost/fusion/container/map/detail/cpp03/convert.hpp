@@ -7,6 +7,7 @@
 #if !defined(FUSION_CONVERT_09232005_1340)
 #define FUSION_CONVERT_09232005_1340
 
+#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/container/map/detail/cpp03/as_map.hpp>
 #include <boost/fusion/container/map/detail/cpp03/convert_impl.hpp>
 #include <boost/fusion/container/map/detail/cpp03/map.hpp>
@@ -35,6 +36,7 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence>
+    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::as_map<Sequence>::type
     as_map(Sequence& seq)
     {
@@ -43,6 +45,7 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence>
+    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::as_map<Sequence const>::type
     as_map(Sequence const& seq)
     {

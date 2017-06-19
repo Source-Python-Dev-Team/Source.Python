@@ -7,6 +7,7 @@
 #if !defined(FUSION_CONVERT_MAIN_09232005_1340)
 #define FUSION_CONVERT_MAIN_09232005_1340
 
+#include <boost/fusion/support/config.hpp>
 #include <boost/fusion/container/map/map.hpp>
 
 namespace boost { namespace fusion { namespace detail
@@ -16,6 +17,7 @@ namespace boost { namespace fusion { namespace detail
     {
         typedef typename result_of::value_of<It>::type type;
 
+        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static inline type call(It const& it)
         {
             return *it;
@@ -29,6 +31,7 @@ namespace boost { namespace fusion { namespace detail
         typedef typename result_of::value_of_data<It>::type data_type;
         typedef typename fusion::pair<key_type, data_type> type;
 
+        BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         static inline type call(It const& it)
         {
             return type(deref_data(it));
@@ -66,6 +69,7 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence>
+    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::as_map<Sequence>::type
     as_map(Sequence& seq)
     {
@@ -74,6 +78,7 @@ namespace boost { namespace fusion
     }
 
     template <typename Sequence>
+    BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
     inline typename result_of::as_map<Sequence const>::type
     as_map(Sequence const& seq)
     {
@@ -96,6 +101,7 @@ namespace boost { namespace fusion
                     result_of::as_map<Sequence>::type
                 type;
 
+                BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
                 static type call(Sequence& seq)
                 {
                     typedef result_of::as_map<Sequence> gen;

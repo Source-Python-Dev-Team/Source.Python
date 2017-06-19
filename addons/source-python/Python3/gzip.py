@@ -49,7 +49,7 @@ def open(filename, mode="rb", compresslevel=9,
             raise ValueError("Argument 'newline' not supported in binary mode")
 
     gz_mode = mode.replace("t", "")
-    if isinstance(filename, (str, bytes)):
+    if isinstance(filename, (str, bytes, os.PathLike)):
         binary_file = GzipFile(filename, gz_mode, compresslevel)
     elif hasattr(filename, "read") or hasattr(filename, "write"):
         binary_file = GzipFile(None, gz_mode, compresslevel, filename)
@@ -133,7 +133,7 @@ class GzipFile(_compression.BaseStream):
         a file object.
 
         When fileobj is not None, the filename argument is only used to be
-        included in the gzip file header, which may includes the original
+        included in the gzip file header, which may include the original
         filename of the uncompressed file.  It defaults to the filename of
         fileobj, if discernible; otherwise, it defaults to the empty string,
         and in this case the original filename is not included in the header.
@@ -165,6 +165,8 @@ class GzipFile(_compression.BaseStream):
             filename = getattr(fileobj, 'name', '')
             if not isinstance(filename, (str, bytes)):
                 filename = ''
+        else:
+            filename = os.fspath(filename)
         if mode is None:
             mode = getattr(fileobj, 'mode', 'rb')
 
@@ -210,7 +212,7 @@ class GzipFile(_compression.BaseStream):
 
     def _init_write(self, filename):
         self.name = filename
-        self.crc = zlib.crc32(b"") & 0xffffffff
+        self.crc = zlib.crc32(b"")
         self.size = 0
         self.writebuf = []
         self.bufsize = 0
@@ -261,7 +263,7 @@ class GzipFile(_compression.BaseStream):
         if length > 0:
             self.fileobj.write(self.compress.compress(data))
             self.size += length
-            self.crc = zlib.crc32(data, self.crc) & 0xffffffff
+            self.crc = zlib.crc32(data, self.crc)
             self.offset += length
 
         return length
@@ -357,10 +359,10 @@ class GzipFile(_compression.BaseStream):
             if offset < self.offset:
                 raise OSError('Negative seek in write mode')
             count = offset - self.offset
-            chunk = bytes(1024)
+            chunk = b'\0' * 1024
             for i in range(count // 1024):
                 self.write(chunk)
-            self.write(bytes(count % 1024))
+            self.write(b'\0' * (count % 1024))
         elif self.mode == READ:
             self._check_not_closed()
             return self._buffer.seek(offset, whence)
@@ -381,7 +383,7 @@ class _GzipReader(_compression.DecompressReader):
         self._last_mtime = None
 
     def _init_read(self):
-        self._crc = zlib.crc32(b"") & 0xffffffff
+        self._crc = zlib.crc32(b"")
         self._stream_size = 0  # Decompressed size of unconcatenated stream
 
     def _read_exact(self, n):
@@ -485,7 +487,7 @@ class _GzipReader(_compression.DecompressReader):
         return uncompress
 
     def _add_read_data(self, data):
-        self._crc = zlib.crc32(data, self._crc) & 0xffffffff
+        self._crc = zlib.crc32(data, self._crc)
         self._stream_size = self._stream_size + len(data)
 
     def _read_eof(self):

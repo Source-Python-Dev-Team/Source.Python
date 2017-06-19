@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: set0_c.hpp 49239 2008-10-10 09:10:26Z agurtovoy $
-// $Date: 2008-10-10 05:10:26 -0400 (Fri, 10 Oct 2008) $
-// $Revision: 49239 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/set/set0.hpp>
 #include <boost/mpl/integral_c.hpp>

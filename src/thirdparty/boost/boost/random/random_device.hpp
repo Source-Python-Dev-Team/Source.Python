@@ -6,7 +6,7 @@
  * accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
  *
- * $Id: random_device.hpp 68872 2011-02-14 21:31:10Z steven_watanabe $
+ * $Id$
  *
  * Revision history
  *  2000-02-18  Portability fixes (thanks to Beman Dawes)
@@ -22,6 +22,7 @@
 #include <boost/config.hpp>
 #include <boost/noncopyable.hpp>
 #include <boost/random/detail/auto_link.hpp>
+#include <boost/system/config.hpp> // force autolink to find Boost.System
 
 namespace boost {
 namespace random {

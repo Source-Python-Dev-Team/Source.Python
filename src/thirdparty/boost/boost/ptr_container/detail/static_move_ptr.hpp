@@ -76,8 +76,8 @@ public:
             }
     
     template<typename TT>
-    static_move_ptr(TT* tt, Deleter del) 
-        : impl_(tt, del) 
+    explicit static_move_ptr(TT* tt) 
+        : impl_(tt, Deleter()) 
         { }
 
         // Destructor
@@ -131,7 +131,13 @@ public:
         }
 
     template<typename TT>
-    void reset(TT* tt, Deleter dd) 
+    void reset(TT* tt) 
+        {
+            static_move_ptr(tt).swap(*this);
+        }
+
+    template<typename TT, typename DD>
+    void reset(TT* tt, DD dd) 
         {
             static_move_ptr(tt, dd).swap(*this);
         }
@@ -145,7 +151,7 @@ public:
     deleter_const_reference get_deleter() const { return impl_.second(); }
 private:
     template<typename TT, typename DD>
-    void check(const static_move_ptr<TT, DD>&)
+    void check(const static_move_ptr<TT, DD>& ptr)
         {
             typedef move_ptrs::is_smart_ptr_convertible<TT, T> convertible;
             BOOST_STATIC_ASSERT(convertible::value);

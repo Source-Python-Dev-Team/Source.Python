@@ -8,9 +8,11 @@
 # include <boost/detail/iterator.hpp>
 # include <boost/detail/workaround.hpp>
 
-namespace boost { 
+namespace boost {
+namespace iterators {
 
-// Obsolete. Remove.
+// Macro for supporting old compilers, no longer needed but kept
+// for backwards compatibility (it was documented).
 #define BOOST_ITERATOR_CATEGORY iterator_category
 
 
@@ -19,20 +21,20 @@ struct iterator_value
 {
     typedef typename boost::detail::iterator_traits<Iterator>::value_type type;
 };
-  
+
 template <class Iterator>
 struct iterator_reference
 {
     typedef typename boost::detail::iterator_traits<Iterator>::reference type;
 };
-  
-  
+
+
 template <class Iterator>
 struct iterator_pointer
 {
     typedef typename boost::detail::iterator_traits<Iterator>::pointer type;
 };
-  
+
 template <class Iterator>
 struct iterator_difference
 {
@@ -45,6 +47,14 @@ struct iterator_category
     typedef typename boost::detail::iterator_traits<Iterator>::iterator_category type;
 };
 
-} // namespace boost::iterator
+} // namespace iterators
+
+using iterators::iterator_value;
+using iterators::iterator_reference;
+using iterators::iterator_pointer;
+using iterators::iterator_difference;
+using iterators::iterator_category;
+
+} // namespace boost
 
 #endif // ITERATOR_TRAITS_DWA200347_HPP

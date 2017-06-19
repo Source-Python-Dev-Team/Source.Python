@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -21,8 +21,8 @@
 #include <ostream>
 #include <boost/assert.hpp>
 #include <boost/move/core.hpp>
-#include <boost/move/utility.hpp>
-#include <boost/utility/addressof.hpp>
+#include <boost/move/utility_core.hpp>
+#include <boost/core/addressof.hpp>
 #include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/facilities/identity.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
@@ -100,7 +100,7 @@ public:
     //! Lock requirement for the remove_all_attributes_unlocked method
     typedef boost::log::aux::exclusive_lock_guard< threading_model > remove_all_attributes_lock;
     //! Lock requirement for the get_attributes method
-    typedef boost::log::aux::shared_lock_guard< threading_model > get_attributes_lock;
+    typedef boost::log::aux::shared_lock_guard< const threading_model > get_attributes_lock;
     //! Lock requirement for the open_record_unlocked method
     typedef boost::log::aux::shared_lock_guard< threading_model > open_record_lock;
     //! Lock requirement for the set_attributes method
@@ -110,7 +110,7 @@ public:
     typedef no_lock< threading_model > add_attribute_lock;
     typedef no_lock< threading_model > remove_attribute_lock;
     typedef no_lock< threading_model > remove_all_attributes_lock;
-    typedef no_lock< threading_model > get_attributes_lock;
+    typedef no_lock< const threading_model > get_attributes_lock;
     typedef no_lock< threading_model > open_record_lock;
     typedef no_lock< threading_model > set_attributes_lock;
 #endif

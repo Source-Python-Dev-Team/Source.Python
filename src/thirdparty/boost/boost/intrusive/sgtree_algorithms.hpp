@@ -1,6 +1,6 @@
 /////////////////////////////////////////////////////////////////////////////
 //
-// (C) Copyright Ion Gaztanaga 2007-2013
+// (C) Copyright Ion Gaztanaga 2007-2014
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -18,14 +18,15 @@
 #define BOOST_INTRUSIVE_SGTREE_ALGORITHMS_HPP
 
 #include <boost/intrusive/detail/config_begin.hpp>
+#include <boost/intrusive/intrusive_fwd.hpp>
 
 #include <cstddef>
-#include <boost/intrusive/intrusive_fwd.hpp>
-#include <boost/intrusive/detail/assert.hpp>
-#include <boost/intrusive/detail/utilities.hpp>
+#include <boost/intrusive/detail/algo_type.hpp>
 #include <boost/intrusive/bstree_algorithms.hpp>
-#include <boost/intrusive/pointer_traits.hpp>
 
+#if defined(BOOST_HAS_PRAGMA_ONCE)
+#  pragma once
+#endif
 
 namespace boost {
 namespace intrusive {
@@ -137,7 +138,6 @@ class sgtree_algorithms
    template<class AlphaByMaxSize>
    static node_ptr erase(const node_ptr & header, const node_ptr & z, std::size_t tree_size, std::size_t &max_tree_size, AlphaByMaxSize alpha_by_maxsize)
    {
-      //typename bstree_algo::data_for_rebalance info;
       bstree_algo::erase(header, z);
       --tree_size;
       if (tree_size > 0 &&
@@ -187,6 +187,7 @@ class sgtree_algorithms
    //! @copydoc ::boost::intrusive::bstree_algorithms::count(const const_node_ptr&,const KeyType&,KeyNodePtrCompare)
    template<class KeyType, class KeyNodePtrCompare>
    static std::size_t count(const const_node_ptr & header, const KeyType &key, KeyNodePtrCompare comp);
+
    #endif   //#ifdef BOOST_INTRUSIVE_DOXYGEN_INVOKED
 
    //! @copydoc ::boost::intrusive::bstree_algorithms::insert_equal_upper_bound(const node_ptr&,const node_ptr&,NodePtrCompare)
@@ -286,12 +287,38 @@ class sgtree_algorithms
 
    //! @copydoc ::boost::intrusive::bstree_algorithms::insert_unique_commit(const node_ptr&,const node_ptr&,const insert_commit_data&)
    template<class H_Alpha>
-   static void insert_unique_commit
+   BOOST_INTRUSIVE_FORCEINLINE static void insert_unique_commit
       (const node_ptr & header, const node_ptr & new_value, const insert_commit_data &commit_data
       ,std::size_t tree_size, H_Alpha h_alpha, std::size_t &max_tree_size)
+   {  return insert_commit(header, new_value, commit_data, tree_size, h_alpha, max_tree_size);  }
+
+   //! @copydoc ::boost::intrusive::bstree_algorithms::transfer_unique
+   template<class NodePtrCompare, class H_Alpha, class AlphaByMaxSize>
+   static bool transfer_unique
+      ( const node_ptr & header1, NodePtrCompare comp, std::size_t tree1_size, std::size_t &max_tree1_size
+      , const node_ptr &header2, const node_ptr & z,   std::size_t tree2_size, std::size_t &max_tree2_size
+      ,H_Alpha h_alpha, AlphaByMaxSize alpha_by_maxsize)
    {
-      bstree_algo::insert_unique_commit(header, new_value, commit_data);
-      rebalance_after_insertion(new_value, commit_data.depth, tree_size+1, h_alpha, max_tree_size);
+      insert_commit_data commit_data;
+      bool const transferable = insert_unique_check(header1, z, comp, commit_data).second;
+      if(transferable){
+         erase(header2, z, tree2_size, max_tree2_size, alpha_by_maxsize);
+         insert_commit(header1, z, commit_data, tree1_size, h_alpha, max_tree1_size);
+      }
+      return transferable;
+   }
+
+   //! @copydoc ::boost::intrusive::bstree_algorithms::transfer_equal
+   template<class NodePtrCompare, class H_Alpha, class AlphaByMaxSize>
+   static void transfer_equal
+      ( const node_ptr & header1, NodePtrCompare comp, std::size_t tree1_size, std::size_t &max_tree1_size
+      , const node_ptr &header2, const node_ptr & z,   std::size_t tree2_size, std::size_t &max_tree2_size
+      ,H_Alpha h_alpha, AlphaByMaxSize alpha_by_maxsize)
+   {
+      insert_commit_data commit_data;
+      insert_equal_upper_bound_check(header1, z, comp, commit_data);
+      erase(header2, z, tree2_size, max_tree2_size, alpha_by_maxsize);
+      insert_commit(header1, z, commit_data, tree1_size, h_alpha, max_tree1_size);
    }
 
    #ifdef BOOST_INTRUSIVE_DOXYGEN_INVOKED
@@ -308,6 +335,25 @@ class sgtree_algorithms
    /// @cond
    private:
 
+   template<class KeyType, class KeyNodePtrCompare>
+   static void insert_equal_upper_bound_check
+      (const node_ptr & header,  const KeyType &key
+      ,KeyNodePtrCompare comp, insert_commit_data &commit_data)
+   {
+      std::size_t depth;
+      bstree_algo::insert_equal_upper_bound_check(header, key, comp, commit_data, &depth);
+      commit_data.depth = depth;
+   }
+
+   template<class H_Alpha>
+   static void insert_commit
+      (const node_ptr & header, const node_ptr & new_value, const insert_commit_data &commit_data
+      ,std::size_t tree_size, H_Alpha h_alpha, std::size_t &max_tree_size)
+   {
+      bstree_algo::insert_unique_commit(header, new_value, commit_data);
+      rebalance_after_insertion(new_value, commit_data.depth, tree_size+1, h_alpha, max_tree_size);
+   }
+
    template<class H_Alpha>
    static void rebalance_after_insertion
       (const node_ptr &x, std::size_t depth
@@ -316,12 +362,12 @@ class sgtree_algorithms
       if(tree_size > max_tree_size)
          max_tree_size = tree_size;
 
-      if(tree_size > 2 && //Nothing to do with only the root 
+      if(tree_size > 2 && //Nothing to do with only the root
          //Check if the root node is unbalanced
          //Scapegoat paper depth counts root depth as zero and "depth" counts root as 1,
          //but since "depth" is the depth of the ancestor of x, i == depth
          depth > h_alpha(tree_size)){
-                                          
+
          //Find the first non height-balanced node
          //as described in the section 4.2 of the paper.
          //This method is the alternative method described
@@ -330,25 +376,21 @@ class sgtree_algorithms
          //than the weight balanced method.
          node_ptr s = x;
          std::size_t size = 1;
-         for(std::size_t ancestor = 1; true; ++ancestor){
-            if(ancestor == depth){ //Check if whole tree must be rebuilt
-               max_tree_size = tree_size;
-               bstree_algo::rebalance_subtree(NodeTraits::get_parent(s));
-               break;
-            }
-            else{ //Go to the next scapegoat candidate
-               const node_ptr s_parent = NodeTraits::get_parent(s);
-               const node_ptr s_parent_left = NodeTraits::get_left(s_parent);
-               //Obtain parent's size (previous size + parent + sibling tree)
-               const node_ptr s_sibling = s_parent_left == s ? NodeTraits::get_right(s_parent) : s_parent_left;
-               size += 1 + bstree_algo::subtree_size(s_sibling);
-               s = s_parent;
-               if(ancestor > h_alpha(size)){ //is 's' scapegoat?
-                  bstree_algo::rebalance_subtree(s);
-                  break;
-               }
+         for(std::size_t ancestor = 1; ancestor != depth; ++ancestor){
+            const node_ptr s_parent = NodeTraits::get_parent(s);
+            const node_ptr s_parent_left = NodeTraits::get_left(s_parent);
+            //Obtain parent's size (previous size + parent + sibling tree)
+            const node_ptr s_sibling = s_parent_left == s ? NodeTraits::get_right(s_parent) : s_parent_left;
+            size += 1 + bstree_algo::subtree_size(s_sibling);
+            s = s_parent;
+            if(ancestor > h_alpha(size)){ //is 's' scapegoat?
+               bstree_algo::rebalance_subtree(s);
+               return;
             }
          }
+         //The whole tree must be rebuilt
+         max_tree_size = tree_size;
+         bstree_algo::rebalance_subtree(NodeTraits::get_parent(s));
       }
    }
    /// @endcond
@@ -360,6 +402,12 @@ template<class NodeTraits>
 struct get_algo<SgTreeAlgorithms, NodeTraits>
 {
    typedef sgtree_algorithms<NodeTraits> type;
+};
+
+template <class ValueTraits, class NodePtrCompare, class ExtraChecker>
+struct get_node_checker<SgTreeAlgorithms, ValueTraits, NodePtrCompare, ExtraChecker>
+{
+   typedef detail::bstree_node_checker<ValueTraits, NodePtrCompare, ExtraChecker> type;
 };
 
 /// @endcond

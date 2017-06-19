@@ -15,16 +15,12 @@
 #define BOOST_GEOMETRY_STRATEGIES_CARTESIAN_DISTANCE_PYTHAGORAS_HPP
 
 
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits.hpp>
-
 #include <boost/geometry/core/access.hpp>
 
 #include <boost/geometry/strategies/distance.hpp>
 
+#include <boost/geometry/util/math.hpp>
 #include <boost/geometry/util/calculation_type.hpp>
-
-
 
 
 namespace boost { namespace geometry
@@ -85,7 +81,9 @@ public :
           <
               Point1,
               Point2,
-              CalculationType
+              CalculationType,
+              double,
+              double
           >
     {};
 
@@ -93,8 +91,8 @@ public :
     static inline typename calculation_type<Point1, Point2>::type
     apply(Point1 const& p1, Point2 const& p2)
     {
-        BOOST_CONCEPT_ASSERT( (concept::ConstPoint<Point1>) );
-        BOOST_CONCEPT_ASSERT( (concept::ConstPoint<Point2>) );
+        BOOST_CONCEPT_ASSERT( (concepts::ConstPoint<Point1>) );
+        BOOST_CONCEPT_ASSERT( (concepts::ConstPoint<Point2>) );
 
         // Calculate distance using Pythagoras
         // (Leave comment above for Doxygen)
@@ -155,9 +153,8 @@ public :
     static inline typename calculation_type<P1, P2>::type
     apply(P1 const& p1, P2 const& p2)
     {
-        // Don't add std:: for ttmath 
         // The cast is necessary for MSVC which considers sqrt __int64 as an ambiguous call
-        return sqrt
+        return math::sqrt
             (
                  boost::numeric_cast<typename calculation_type<P1, P2>::type>
                     (
@@ -269,7 +266,10 @@ public :
 
 
 template <typename Point1, typename Point2>
-struct default_strategy<point_tag, Point1, Point2, cartesian_tag, cartesian_tag, void>
+struct default_strategy
+    <
+        point_tag, point_tag, Point1, Point2, cartesian_tag, cartesian_tag
+    >
 {
     typedef pythagoras<> type;
 };

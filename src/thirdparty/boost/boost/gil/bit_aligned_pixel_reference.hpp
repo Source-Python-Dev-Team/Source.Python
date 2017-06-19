@@ -23,8 +23,6 @@
 ////////////////////////////////////////////////////////////////////////////////////////
 
 #include <functional>
-
-#include <boost/config/suffix.hpp>
 #include <boost/mpl/accumulate.hpp>
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/bool.hpp>
@@ -32,7 +30,6 @@
 #include <boost/mpl/plus.hpp>
 #include <boost/mpl/push_back.hpp>
 #include <boost/mpl/vector.hpp>
-
 #include "gil_config.hpp"
 #include "pixel.hpp"
 #include "channel.hpp"

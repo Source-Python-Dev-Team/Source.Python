@@ -10,12 +10,14 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: deref.hpp 85945 2013-09-26 09:46:46Z skelly $
-// $Date: 2013-09-26 05:46:46 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85945 $
+// $Id$
+// $Date$
+// $Revision$
 
+#include <boost/mpl/aux_/msvc_type.hpp>
 #include <boost/mpl/aux_/na_spec.hpp>
 #include <boost/mpl/aux_/lambda_support.hpp>
+#include <boost/mpl/aux_/config/eti.hpp>
 
 namespace boost { namespace mpl {
 
@@ -24,7 +26,11 @@ template<
     >
 struct deref
 {
+#if !defined(BOOST_MPL_CFG_MSVC_70_ETI_BUG)
     typedef typename Iterator::type type;
+#else
+    typedef typename aux::msvc_type<Iterator>::type type;
+#endif
     BOOST_MPL_AUX_LAMBDA_SUPPORT(1,deref,(Iterator))
 };
 

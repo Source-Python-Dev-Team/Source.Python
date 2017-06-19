@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: ptr_helper.hpp 86246 2013-10-11 23:19:17Z skelly $
+ * $Id$
  *
  */
 

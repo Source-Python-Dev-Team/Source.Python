@@ -33,8 +33,10 @@ except ImportError:
     _winreg = None
 
 __all__ = [
-    "guess_type","guess_extension","guess_all_extensions",
-    "add_type","read_mime_types","init"
+    "knownfiles", "inited", "MimeTypes",
+    "guess_type", "guess_all_extensions", "guess_extension",
+    "add_type", "init", "read_mime_types",
+    "suffix_map", "encodings_map", "types_map", "common_types"
 ]
 
 knownfiles = [
@@ -416,6 +418,7 @@ def _default_mime_types():
         '.cpio'   : 'application/x-cpio',
         '.csh'    : 'application/x-csh',
         '.css'    : 'text/css',
+        '.csv'    : 'text/csv',
         '.dll'    : 'application/octet-stream',
         '.doc'    : 'application/msword',
         '.dot'    : 'application/msword',
@@ -513,6 +516,7 @@ def _default_mime_types():
         '.ustar'  : 'application/x-ustar',
         '.vcf'    : 'text/x-vcard',
         '.wav'    : 'audio/x-wav',
+        '.webm'   : 'video/webm',
         '.wiz'    : 'application/msword',
         '.wsdl'   : 'application/xml',
         '.xbm'    : 'image/x-xbitmap',

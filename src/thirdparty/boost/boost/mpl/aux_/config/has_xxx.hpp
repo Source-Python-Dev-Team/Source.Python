@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: has_xxx.hpp 86070 2013-09-30 15:59:23Z skelly $
-// $Date: 2013-09-30 11:59:23 -0400 (Mon, 30 Sep 2013) $
-// $Revision: 86070 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/aux_/config/overload_resolution.hpp>
 #include <boost/mpl/aux_/config/workaround.hpp>
@@ -22,6 +22,7 @@
 
 #if !defined(BOOST_MPL_CFG_NO_HAS_XXX) \
     && (   defined(BOOST_MPL_CFG_BROKEN_OVERLOAD_RESOLUTION) \
+        || BOOST_WORKAROUND(__GNUC__, <= 2) \
         || BOOST_WORKAROUND(__DMC__, BOOST_TESTED_AT(0x840)) \
         )
 

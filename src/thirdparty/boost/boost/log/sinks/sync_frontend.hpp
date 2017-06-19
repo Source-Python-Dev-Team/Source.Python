@@ -1,5 +1,5 @@
 /*
- *          Copyright Andrey Semashev 2007 - 2013.
+ *          Copyright Andrey Semashev 2007 - 2015.
  * Distributed under the Boost Software License, Version 1.0.
  *    (See accompanying file LICENSE_1_0.txt or copy at
  *          http://www.boost.org/LICENSE_1_0.txt)
@@ -28,7 +28,9 @@
 #include <boost/static_assert.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/make_shared_object.hpp>
-#include <boost/thread/mutex.hpp>
+#include <boost/preprocessor/control/if.hpp>
+#include <boost/preprocessor/comparison/equal.hpp>
+#include <boost/thread/recursive_mutex.hpp>
 #include <boost/log/detail/locking_ptr.hpp>
 #include <boost/log/detail/parameter_tools.hpp>
 #include <boost/log/core/record_view.hpp>
@@ -44,11 +46,20 @@ namespace sinks {
 
 #ifndef BOOST_LOG_DOXYGEN_PASS
 
-#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL(z, n, data)\
+#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_1(n, data)\
+    template< typename T0 >\
+    explicit synchronous_sink(T0 const& arg0, typename boost::log::aux::enable_if_named_parameters< T0, boost::log::aux::sfinae_dummy >::type = boost::log::aux::sfinae_dummy()) :\
+        base_type(false),\
+        m_pBackend(boost::make_shared< sink_backend_type >(arg0)) {}
+
+#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_N(n, data)\
     template< BOOST_PP_ENUM_PARAMS(n, typename T) >\
     explicit synchronous_sink(BOOST_PP_ENUM_BINARY_PARAMS(n, T, const& arg)) :\
         base_type(false),\
         m_pBackend(boost::make_shared< sink_backend_type >(BOOST_PP_ENUM_PARAMS(n, arg))) {}
+
+#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL(z, n, data)\
+    BOOST_PP_IF(BOOST_PP_EQUAL(n, 1), BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_1, BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_N)(n, data)
 
 #endif // BOOST_LOG_DOXYGEN_PASS
 
@@ -59,14 +70,13 @@ namespace sinks {
  */
 template< typename SinkBackendT >
 class synchronous_sink :
-    public aux::make_sink_frontend_base< SinkBackendT >::type,
-    private boost::log::aux::locking_ptr_counter_base
+    public aux::make_sink_frontend_base< SinkBackendT >::type
 {
     typedef typename aux::make_sink_frontend_base< SinkBackendT >::type base_type;
 
 private:
     //! Synchronization mutex type
-    typedef boost::mutex backend_mutex_type;
+    typedef boost::recursive_mutex backend_mutex_type;
 
 public:
     //! Sink implementation type
@@ -78,7 +88,7 @@ public:
 #ifndef BOOST_LOG_DOXYGEN_PASS
 
     //! A pointer type that locks the backend until it's destroyed
-    typedef boost::log::aux::locking_ptr< sink_backend_type > locked_backend_ptr;
+    typedef boost::log::aux::locking_ptr< sink_backend_type, backend_mutex_type > locked_backend_ptr;
 
 #else // BOOST_LOG_DOXYGEN_PASS
 
@@ -116,17 +126,23 @@ public:
     {
     }
 
-    // Constructors that pass arbitrary parameters to the backend constructor
+    /*!
+     * Constructor that passes arbitrary named parameters to the interprocess sink backend constructor.
+     * Refer to the backend documentation for the list of supported parameters.
+     */
+#ifndef BOOST_LOG_DOXYGEN_PASS
     BOOST_LOG_PARAMETRIZED_CONSTRUCTORS_GEN(BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL, ~)
+#else
+    template< typename... Args >
+    explicit synchronous_sink(Args&&... args);
+#endif
 
     /*!
      * Locking accessor to the attached backend
      */
     locked_backend_ptr locked_backend()
     {
-        return locked_backend_ptr(
-            m_pBackend,
-            static_cast< boost::log::aux::locking_ptr_counter_base& >(*this));
+        return locked_backend_ptr(m_pBackend, m_BackendMutex);
     }
 
     /*!
@@ -154,16 +170,10 @@ public:
     {
         base_type::flush_backend(m_BackendMutex, *m_pBackend);
     }
-
-private:
-#ifndef BOOST_LOG_DOXYGEN_PASS
-    // locking_ptr_counter_base methods
-    void lock() { m_BackendMutex.lock(); }
-    bool try_lock() { return m_BackendMutex.try_lock(); }
-    void unlock() { m_BackendMutex.unlock(); }
-#endif // BOOST_LOG_DOXYGEN_PASS
 };
 
+#undef BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_1
+#undef BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_N
 #undef BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL
 
 } // namespace sinks

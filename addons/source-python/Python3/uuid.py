@@ -131,7 +131,8 @@ class UUID(object):
         """
 
         if [hex, bytes, bytes_le, fields, int].count(None) != 4:
-            raise TypeError('need one of hex, bytes, bytes_le, fields, or int')
+            raise TypeError('one of the hex, bytes, bytes_le, fields, '
+                            'or int arguments must be given')
         if hex is not None:
             hex = hex.replace('urn:', '').replace('uuid:', '')
             hex = hex.strip('{}').replace('-', '')
@@ -486,7 +487,6 @@ try:
     # Assume that the uuid_generate functions are broken from 10.5 onward,
     # the test can be adjusted when a later version is fixed.
     if sys.platform == 'darwin':
-        import os
         if int(os.uname().release.split('.')[0]) >= 9:
             _uuid_generate_time = None
 

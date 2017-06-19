@@ -6,7 +6,7 @@
 // Boost functional.hpp header file
 // See http://www.boost.org/libs/functional for documentation.
 // ------------------------------------------------------------------------------
-// $Id: functional.hpp 86245 2013-10-11 23:17:48Z skelly $
+// $Id$
 // ------------------------------------------------------------------------------
 
 #ifndef BOOST_FUNCTIONAL_HPP
@@ -18,6 +18,37 @@
 
 namespace boost
 {
+    namespace functional
+    {
+        namespace detail {
+#if defined(_HAS_AUTO_PTR_ETC) && !_HAS_AUTO_PTR_ETC
+            // std::unary_function and std::binary_function were both removed
+            // in C++17.
+
+            template <typename Arg1, typename Result>
+            struct unary_function
+            {
+                typedef Arg1 argument_type;
+                typedef Result result_type;
+            };
+
+            template <typename Arg1, typename Arg2, typename Result>
+            struct binary_function
+            {
+                typedef Arg1 first_argument_type;
+                typedef Arg2 second_argument_type;
+                typedef Result result_type;
+            };
+#else
+            // Use the standard objects when we have them.
+
+            using std::unary_function;
+            using std::binary_function;
+#endif
+        }
+    }
+
+#ifndef BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
     // --------------------------------------------------------------------------
     // The following traits classes allow us to avoid the need for ptr_fun
     // because the types of arguments and the result of a function can be 
@@ -115,13 +146,38 @@ namespace boost
         typedef A1 first_argument_type;
         typedef A2 second_argument_type;
     };
+#else // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
+    // --------------------------------------------------------------------------
+    // If we have no partial specialisation available, decay to a situation
+    // that is no worse than in the Standard, i.e., ptr_fun will be required.
+    // --------------------------------------------------------------------------
+
+    template <class Operation>
+    struct unary_traits
+    {
+        typedef Operation                         function_type;
+        typedef const Operation&                  param_type;
+        typedef typename Operation::result_type   result_type;
+        typedef typename Operation::argument_type argument_type;
+    }; 
+    
+    template <class Operation>
+    struct binary_traits
+    {
+        typedef Operation                                function_type;
+        typedef const Operation &                        param_type;
+        typedef typename Operation::result_type          result_type;
+        typedef typename Operation::first_argument_type  first_argument_type;
+        typedef typename Operation::second_argument_type second_argument_type;
+    };    
+#endif // BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION
     
     // --------------------------------------------------------------------------
     // unary_negate, not1
     // --------------------------------------------------------------------------
     template <class Predicate>
     class unary_negate
-        : public std::unary_function<typename unary_traits<Predicate>::argument_type,bool>
+        : public boost::functional::detail::unary_function<typename unary_traits<Predicate>::argument_type,bool>
     {
       public:
         explicit unary_negate(typename unary_traits<Predicate>::param_type x)
@@ -155,7 +211,8 @@ namespace boost
     // --------------------------------------------------------------------------
     template <class Predicate>
     class binary_negate
-        : public std::binary_function<typename binary_traits<Predicate>::first_argument_type,
+        : public boost::functional::detail::binary_function<
+                                      typename binary_traits<Predicate>::first_argument_type,
                                       typename binary_traits<Predicate>::second_argument_type,
                                       bool>
     {
@@ -192,7 +249,8 @@ namespace boost
     // --------------------------------------------------------------------------
     template <class Operation>
     class binder1st
-        : public std::unary_function<typename binary_traits<Operation>::second_argument_type,
+        : public boost::functional::detail::unary_function<
+                                     typename binary_traits<Operation>::second_argument_type,
                                      typename binary_traits<Operation>::result_type>
     {       
       public:
@@ -238,7 +296,8 @@ namespace boost
     // --------------------------------------------------------------------------
     template <class Operation>
     class binder2nd
-        : public std::unary_function<typename binary_traits<Operation>::first_argument_type,
+        : public boost::functional::detail::unary_function<
+                                     typename binary_traits<Operation>::first_argument_type,
                                      typename binary_traits<Operation>::result_type>
     {
       public:
@@ -283,7 +342,7 @@ namespace boost
     // mem_fun, etc
     // --------------------------------------------------------------------------
     template <class S, class T>
-    class mem_fun_t : public std::unary_function<T*, S>
+    class mem_fun_t : public boost::functional::detail::unary_function<T*, S>
     {
       public:
         explicit mem_fun_t(S (T::*p)())
@@ -299,7 +358,7 @@ namespace boost
     };
 
     template <class S, class T, class A>
-    class mem_fun1_t : public std::binary_function<T*, A, S>
+    class mem_fun1_t : public boost::functional::detail::binary_function<T*, A, S>
     {
       public:   
         explicit mem_fun1_t(S (T::*p)(A))
@@ -315,7 +374,7 @@ namespace boost
     };
 
     template <class S, class T>
-    class const_mem_fun_t : public std::unary_function<const T*, S>
+    class const_mem_fun_t : public boost::functional::detail::unary_function<const T*, S>
     {
       public:
         explicit const_mem_fun_t(S (T::*p)() const)
@@ -331,7 +390,7 @@ namespace boost
     };
 
     template <class S, class T, class A>
-    class const_mem_fun1_t : public std::binary_function<const T*, A, S>
+    class const_mem_fun1_t : public boost::functional::detail::binary_function<const T*, A, S>
     {
       public:
         explicit const_mem_fun1_t(S (T::*p)(A) const)
@@ -376,7 +435,7 @@ namespace boost
     // mem_fun_ref, etc
     // --------------------------------------------------------------------------
     template <class S, class T>
-    class mem_fun_ref_t : public std::unary_function<T&, S>
+    class mem_fun_ref_t : public boost::functional::detail::unary_function<T&, S>
     {
       public:
         explicit mem_fun_ref_t(S (T::*p)())
@@ -392,7 +451,7 @@ namespace boost
     };
 
     template <class S, class T, class A>
-    class mem_fun1_ref_t : public std::binary_function<T&, A, S>
+    class mem_fun1_ref_t : public boost::functional::detail::binary_function<T&, A, S>
     {
       public:
         explicit mem_fun1_ref_t(S (T::*p)(A))
@@ -408,7 +467,7 @@ namespace boost
     };
     
     template <class S, class T>
-    class const_mem_fun_ref_t : public std::unary_function<const T&, S>
+    class const_mem_fun_ref_t : public boost::functional::detail::unary_function<const T&, S>
     {
       public:
         explicit const_mem_fun_ref_t(S (T::*p)() const)
@@ -425,7 +484,7 @@ namespace boost
     };
 
     template <class S, class T, class A>
-    class const_mem_fun1_ref_t : public std::binary_function<const T&, A, S>
+    class const_mem_fun1_ref_t : public boost::functional::detail::binary_function<const T&, A, S>
     {
       public:
         explicit const_mem_fun1_ref_t(S (T::*p)(A) const)
@@ -471,7 +530,7 @@ namespace boost
     // ptr_fun
     // --------------------------------------------------------------------------
     template <class Arg, class Result>
-    class pointer_to_unary_function : public std::unary_function<Arg,Result>
+    class pointer_to_unary_function : public boost::functional::detail::unary_function<Arg,Result>
     {
       public:
         explicit pointer_to_unary_function(Result (*f)(Arg))
@@ -495,7 +554,7 @@ namespace boost
     }
 
     template <class Arg1, class Arg2, class Result>
-    class pointer_to_binary_function : public std::binary_function<Arg1,Arg2,Result>
+    class pointer_to_binary_function : public boost::functional::detail::binary_function<Arg1,Arg2,Result>
     {
       public:
         explicit pointer_to_binary_function(Result (*f)(Arg1, Arg2))

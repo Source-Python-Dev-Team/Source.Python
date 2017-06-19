@@ -1,4 +1,4 @@
-/* Copyright 2003-2013 Joaquin M Lopez Munoz.
+/* Copyright 2003-2015 Joaquin M Lopez Munoz.
  * Distributed under the Boost Software License, Version 1.0.
  * (See accompanying file LICENSE_1_0.txt or copy at
  * http://www.boost.org/LICENSE_1_0.txt)
@@ -14,6 +14,7 @@
 #endif
 
 #include <boost/config.hpp> /* keep it first to prevent nasty warns in MSVC */
+#include <boost/bind.hpp>
 #include <boost/call_traits.hpp>
 #include <boost/detail/allocator_utilities.hpp>
 #include <boost/detail/no_exceptions_support.hpp>
@@ -221,13 +222,13 @@ public:
   const_iterator
     end()const BOOST_NOEXCEPT{return make_iterator(header());}
   reverse_iterator
-    rbegin()BOOST_NOEXCEPT{return make_reverse_iterator(end());}
+    rbegin()BOOST_NOEXCEPT{return boost::make_reverse_iterator(end());}
   const_reverse_iterator
-    rbegin()const BOOST_NOEXCEPT{return make_reverse_iterator(end());}
+    rbegin()const BOOST_NOEXCEPT{return boost::make_reverse_iterator(end());}
   reverse_iterator
-    rend()BOOST_NOEXCEPT{return make_reverse_iterator(begin());}
+    rend()BOOST_NOEXCEPT{return boost::make_reverse_iterator(begin());}
   const_reverse_iterator
-    rend()const BOOST_NOEXCEPT{return make_reverse_iterator(begin());}
+    rend()const BOOST_NOEXCEPT{return boost::make_reverse_iterator(begin());}
   const_iterator
     cbegin()const BOOST_NOEXCEPT{return begin();}
   const_iterator
@@ -516,7 +517,8 @@ public:
   void remove(value_param_type value)
   {
     sequenced_index_remove(
-      *this,std::bind2nd(std::equal_to<value_type>(),value));
+      *this,
+      ::boost::bind(std::equal_to<value_type>(),::boost::arg<1>(),value));
   }
 
   template<typename Predicate>
@@ -785,7 +787,8 @@ BOOST_MULTI_INDEX_PROTECTED_IF_MEMBER_TEMPLATE_FRIENDS:
     Archive& ar,const unsigned int version,const index_loader_type& lm)
   {
     lm.load(
-      ::boost::bind(&sequenced_index::rearranger,this,_1,_2),
+      ::boost::bind(
+        &sequenced_index::rearranger,this,::boost::arg<1>(),::boost::arg<2>()),
       ar,version);
     super::load_(ar,version,lm);
   }
@@ -1048,7 +1051,7 @@ struct sequenced
 template<typename SuperMeta,typename TagList>
 inline boost::mpl::true_* boost_foreach_is_noncopyable(
   boost::multi_index::detail::sequenced_index<SuperMeta,TagList>*&,
-  boost::foreach::tag)
+  boost_foreach_argument_dependent_lookup_hack)
 {
   return 0;
 }

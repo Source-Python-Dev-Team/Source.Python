@@ -29,11 +29,11 @@ namespace boost {
 namespace archive {
 
 class polymorphic_xml_iarchive : 
-    public detail::polymorphic_iarchive_route<naked_xml_iarchive>
+    public detail::polymorphic_iarchive_route<xml_iarchive>
 {
 public:
     polymorphic_xml_iarchive(std::istream & is, unsigned int flags = 0) :
-        detail::polymorphic_iarchive_route<naked_xml_iarchive>(is, flags)
+        detail::polymorphic_iarchive_route<xml_iarchive>(is, flags)
     {}
     ~polymorphic_xml_iarchive(){}
 };

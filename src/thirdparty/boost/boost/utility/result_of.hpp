@@ -73,7 +73,10 @@ namespace detail {
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(result_type)
 
+// Work around a nvcc bug by only defining has_result when it's needed.
+#ifdef BOOST_RESULT_OF_USE_TR1_WITH_DECLTYPE_FALLBACK
 BOOST_MPL_HAS_XXX_TEMPLATE_DEF(result)
+#endif
 
 template<typename F, typename FArgs, bool HasResultType> struct tr1_result_of_impl;
 

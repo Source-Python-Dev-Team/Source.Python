@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Id: traits_lambda_spec.hpp 85945 2013-09-26 09:46:46Z skelly $
-// $Date: 2013-09-26 05:46:46 -0400 (Thu, 26 Sep 2013) $
-// $Revision: 85945 $
+// $Id$
+// $Date$
+// $Revision$
 
 #include <boost/mpl/sequence_tag_fwd.hpp>
 #include <boost/mpl/void.hpp>
@@ -23,6 +23,17 @@
 
 #   define BOOST_MPL_ALGORITM_TRAITS_LAMBDA_SPEC_IMPL(i, trait) /**/
 
+#elif !defined(BOOST_MPL_CFG_MSVC_ETI_BUG)
+
+#   define BOOST_MPL_ALGORITM_TRAITS_LAMBDA_SPEC_IMPL(i, trait) \
+template<> struct trait<void_> \
+{ \
+    template< BOOST_MPL_PP_PARAMS(i, typename T) > struct apply \
+    { \
+    }; \
+}; \
+/**/
+
 #else
 
 #   define BOOST_MPL_ALGORITM_TRAITS_LAMBDA_SPEC_IMPL(i, trait) \
@@ -30,6 +41,13 @@ template<> struct trait<void_> \
 { \
     template< BOOST_MPL_PP_PARAMS(i, typename T) > struct apply \
     { \
+    }; \
+}; \
+template<> struct trait<int> \
+{ \
+    template< BOOST_MPL_PP_PARAMS(i, typename T) > struct apply \
+    { \
+        typedef int type; \
     }; \
 }; \
 /**/

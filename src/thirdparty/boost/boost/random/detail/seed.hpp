@@ -7,7 +7,7 @@
  *
  * See http://www.boost.org for most recent version including documentation.
  *
- * $Id: seed.hpp 63217 2010-06-22 02:30:09Z steven_watanabe $
+ * $Id$
  */
 
 #ifndef BOOST_RANDOM_DETAIL_SEED_HPP
@@ -21,6 +21,7 @@
 
 #include <boost/utility/enable_if.hpp>
 #include <boost/type_traits/is_arithmetic.hpp>
+#include <boost/mpl/bool.hpp>
 
 namespace boost {
 namespace random {

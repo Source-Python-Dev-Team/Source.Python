@@ -143,9 +143,9 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_NDEBUG")
 # correctly...
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    ${PYTHONSDK_LIB}/libpython3.5m.a
+    ${PYTHONSDK_LIB}/libpython3.6m.a
     ${BOOSTSDK_LIB}/libboost_python.a
-    ${PYTHONSDK_LIB}/libpython3.5m.so.1.0
+    ${PYTHONSDK_LIB}/libpython3.6m.so.1.0
     ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
     ${ASMJITSDK_LIB}/libAsmJit.a
 )
