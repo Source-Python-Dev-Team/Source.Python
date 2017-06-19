@@ -74,6 +74,16 @@ void export_engine_specific_entity_effects(T _constants)
 
 
 //-----------------------------------------------------------------------------
+// Exports RenderMode_t.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_render_mode(T _constants, U RenderEffects)
+{
+	// Nothing specific to Left4Dead2...
+}
+
+
+//-----------------------------------------------------------------------------
 // Exports RenderFx_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>

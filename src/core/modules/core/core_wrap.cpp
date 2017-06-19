@@ -42,6 +42,8 @@ extern CSourcePython g_SourcePythonPlugin;
 // Forward declarations.
 //-----------------------------------------------------------------------------
 static void export_source_python_plugin(scope);
+static void export_message_severity(scope);
+static void export_output_return(scope);
 static void export_constants(scope);
 static void export_functions(scope);
 
@@ -52,6 +54,8 @@ static void export_functions(scope);
 DECLARE_SP_MODULE(_core)
 {
 	export_source_python_plugin(_core);
+	export_message_severity(_core);
+	export_output_return(_core);
 	export_constants(_core);
 	export_functions(_core);
 }
@@ -66,6 +70,33 @@ void export_source_python_plugin(scope _core)
 
 	// Singleton...
 	_core.attr("_sp_plugin") = boost::ref(g_SourcePythonPlugin);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose MessageSeverity.
+//-----------------------------------------------------------------------------
+void export_message_severity(scope _core)
+{
+	enum_<MessageSeverity> _MessageSeverity("MessageSeverity");
+	
+	_MessageSeverity.value("MESSAGE", SEVERITY_MESSAGE);
+	_MessageSeverity.value("WARNING", SEVERITY_WARNING);
+	_MessageSeverity.value("ASSERT", SEVERITY_ASSERT);
+	_MessageSeverity.value("ERROR", SEVERITY_ERROR);
+	_MessageSeverity.value("LOG", SEVERITY_LOG);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose OutputReturn.
+//-----------------------------------------------------------------------------
+void export_output_return(scope _core)
+{
+	enum_<OutputReturn> _OutputReturn("OutputReturn");
+	
+	_OutputReturn.value("BLOCK", OUTPUT_BLOCK);
+	_OutputReturn.value("CONTINUE", OUTPUT_CONTINUE);
 }
 
 
