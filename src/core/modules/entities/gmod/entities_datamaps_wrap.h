@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2014 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,77 +24,45 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_BLADE_WRAP_H
-#define _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#ifndef _ENTITIES_DATAMAPS_GMOD_H
+#define _ENTITIES_DATAMAPS_GMOD_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/wrap_macros.h"
+#include "entities_datamaps.h"
 
 
 //-----------------------------------------------------------------------------
-// Exports damage types.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_damage_types(T _constants)
-{
-	// Nothing specific to Blade...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports SolidFlags_t.
+// Exports datamap_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_solid_flags(T _constants, U SolidFlags)
+void export_engine_specific_datamap(T _datamaps, U DataMap)
 {
-	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
-	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
+	DataMap.def_readonly("chains_validated", &datamap_t::chains_validated);
+	DataMap.def_readonly("packed_offsets_computed", &datamap_t::packed_offsets_computed);
+	DataMap.def_readonly("packed_size", &datamap_t::packed_size);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports entity effects.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_entity_effects(T _constants)
-{
-	// Nothing specific to Blade...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports RenderMode_t.
+// Exports typedescription_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_render_mode(T _constants, U RenderEffects)
+void export_engine_specific_type_description(T _datamaps, U TypeDescription)
 {
-	// Nothing specific to Blade...
+	TypeDescription.add_property("packed_offset", &TypeDescriptionExt::get_packed_offset)	;
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports RenderFx_t.
+// Exports fieldtype_t.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_render_effects(T _constants, U RenderEffects)
+void export_engine_specific_field_types(T _datamaps, U FieldTypes)
 {
-	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
-	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
-	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+	// Nothing specific to GMod...
 }
 
 
-//-----------------------------------------------------------------------------
-// Exports Collision_Group_t.
-//-----------------------------------------------------------------------------
-template<class T, class U>
-void export_engine_specific_collision_group(T _constants, U CollisionGroup)
-{
-	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
-	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
-}
-
-
-#endif // _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#endif // _ENTITIES_DATAMAPS_GMOD_H

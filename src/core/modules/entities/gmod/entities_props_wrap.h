@@ -24,77 +24,56 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _ENTITIES_CONSTANTS_BLADE_WRAP_H
-#define _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#ifndef _ENTITIES_PROPS_WRAP_GMOD_H
+#define _ENTITIES_PROPS_WRAP_GMOD_H
 
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "utilities/wrap_macros.h"
+#include "dt_send.h"
+#include "server_class.h"
+#include "entities_props_wrap.h"
 
 
 //-----------------------------------------------------------------------------
-// Exports damage types.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_damage_types(T _constants)
-{
-	// Nothing specific to Blade...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports SolidFlags_t.
+// Expose ServerClass.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_solid_flags(T _constants, U SolidFlags)
+void export_engine_specific_server_class(T _props, U ServerClass_)
 {
-	SolidFlags.value("TRIGGER_TOUCH_PLAYER", FSOLID_TRIGGER_TOUCH_PLAYER);
-	SolidFlags.value("NOT_MOVEABLE", FSOLID_NOT_MOVEABLE);
+	// Properties...
+	ServerClass_.def_readonly("name", &ServerClass::m_pNetworkName);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports entity effects.
-//-----------------------------------------------------------------------------
-template<class T>
-void export_engine_specific_entity_effects(T _constants)
-{
-	// Nothing specific to Blade...
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports RenderMode_t.
+// Expose SendProp.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_render_mode(T _constants, U RenderEffects)
+void export_engine_specific_send_prop(T _props, U SendProp_)
 {
-	// Nothing specific to Blade...
+	// Nothing specific to GMod...
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports RenderFx_t.
+// Expose SendPropType.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_render_effects(T _constants, U RenderEffects)
+void export_engine_specific_send_prop_types(T _props, U SendPropType_)
 {
-	RenderEffects.value("FADE_OUT", kRenderFxFadeOut);
-	RenderEffects.value("FADE_IN", kRenderFxFadeIn);
-	RenderEffects.value("PULSE_FAST_WIDER", kRenderFxPulseFastWider);
+	// Nothing specific to GMod...
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports Collision_Group_t.
+// Expose SendPropVariant.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_collision_group(T _constants, U CollisionGroup)
+void export_engine_specific_send_prop_variant(T _props, U SendPropVariant)
 {
-	CollisionGroup.value("PZ_CLIP", COLLISION_GROUP_PZ_CLIP);
-	CollisionGroup.value("DEBRIS_BLOCK_PROJECTILE", COLLISION_GROUP_DEBRIS_BLOCK_PROJECTILE);
+	// Nothing specific to GMod...
 }
 
 
-#endif // _ENTITIES_CONSTANTS_BLADE_WRAP_H
+#endif // _ENTITIES_PROPS_WRAP_GMOD_H

@@ -291,6 +291,12 @@ void export_render_mode(scope _constants)
 	RenderMode.value("TRANS_ADD_FRAME_BLEND", kRenderTransAddFrameBlend);
 	RenderMode.value("WORLD_GLOW", kRenderWorldGlow);
 	RenderMode.value("NONE", kRenderNone);
+
+	// GMod specific values...
+	NOT_IMPLEMENTED_VALUE(RenderMode_t, "TRANS_ALPHA_ADD");
+
+	// Engine specific stuff...
+	export_engine_specific_render_mode(_constants, RenderMode);
 }
 
 

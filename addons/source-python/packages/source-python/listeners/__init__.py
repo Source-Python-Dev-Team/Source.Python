@@ -540,7 +540,7 @@ def _pre_call_global_change_callbacks(args):
 # >> Fix for issue #181.
 # ============================================================================
 # Get the function name to hook...
-if SOURCE_ENGINE in ('bms', 'orangebox'):
+if SOURCE_ENGINE in ('bms', 'orangebox', 'gmod'):
     _hibernation_function_name = 'SetServerHibernation'
 elif SOURCE_ENGINE in ('blade', 'csgo', 'l4d2'):
     _hibernation_function_name = 'ServerHibernationUpdate'
