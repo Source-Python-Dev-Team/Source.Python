@@ -57,6 +57,7 @@ DEFINE_MANAGER_ACCESSOR(OnEntityDeleted)
 DEFINE_MANAGER_ACCESSOR(OnDataLoaded)
 DEFINE_MANAGER_ACCESSOR(OnCombinerPreCache)
 DEFINE_MANAGER_ACCESSOR(OnDataUnloaded)
+DEFINE_MANAGER_ACCESSOR(OnServerOutput)
 
 
 //-----------------------------------------------------------------------------
@@ -147,4 +148,6 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_data_loaded_listener_manager") = object(ptr(GetOnDataLoadedListenerManager()));
 	_listeners.attr("on_combiner_pre_cache_listener_manager") = object(ptr(GetOnCombinerPreCacheListenerManager()));
 	_listeners.attr("on_data_unloaded_listener_manager") = object(ptr(GetOnDataUnloadedListenerManager()));
+	
+	_listeners.attr("on_server_output_listener_manager") = object(ptr(GetOnServerOutputListenerManager()));
 }

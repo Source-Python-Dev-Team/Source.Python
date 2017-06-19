@@ -23,6 +23,8 @@ from path import Path
 from platform import system
 #   Sys
 import sys
+#   Urllib
+from urllib.request import urlopen
 #   Weakref
 from weakref import WeakValueDictionary
 
@@ -45,6 +47,7 @@ from paths import GAME_PATH
 #   Core
 from _core import console_message
 from _core import get_interface
+from _core import OutputReturn
 from _core import SOURCE_ENGINE
 from _core import SOURCE_ENGINE_BRANCH
 
@@ -56,13 +59,16 @@ __all__ = ('AutoUnload',
            'GameConfigObj',
            'WeakAutoUnload',
            'GAME_NAME',
+           'OutputReturn',
            'PLATFORM',
            'SOURCE_ENGINE',
            'SOURCE_ENGINE_BRANCH',
            'console_message',
            'echo_console',
            'get_interface',
+           'get_public_ip',
            'ignore_unicode_errors',
+           'server_output',
            )
 
 
@@ -163,6 +169,7 @@ def echo_console(text):
     for line in text.split('\n'):
         console_message(line + '\n')
 
+
 @contextmanager
 def ignore_unicode_errors(errors='ignore'):
     """Overwrite the ``strict`` codecs error handler temporarily.
@@ -203,3 +210,74 @@ def ignore_unicode_errors(errors='ignore'):
         yield
     finally:
         codecs.register_error('strict', old_handler)
+
+
+def get_public_ip():
+    """Return the server's public IPv4.
+
+    :rtype: str
+
+    .. note::
+
+        This functions makes a call to http://ip.42.pl/raw to retrieve the public IP.
+    """
+    return urlopen('http://ip.42.pl/raw').read().decode()
+
+
+@contextmanager
+def server_output(action=OutputReturn.CONTINUE):
+    """Gather all server output sent during the execution of the with-statement.
+
+    :param OutputReturn action:
+        Determines what happens with the output.
+    :rtype: list
+    :return:
+        A list that will be filled with a tuple for every line that is being
+        logged. The tuple contains the severity and the message.
+
+    Example:
+
+    .. code:: python
+
+        from cvars import cvar
+        from core import server_output
+        from core import OutputReturn
+
+        status = cvar.find_command('status')
+
+        with server_output(OutputReturn.BLOCK) as output:
+            status()
+
+        # Print everything that was logged by the 'status' command
+        print(output)
+
+
+    Output:
+
+    .. code:: python
+
+        [(_core.MessageSeverity.MESSAGE, 'hostname: Counter-Strike: Global Offensive\\n'),
+         (_core.MessageSeverity.MESSAGE, 'version : 1.35.8.4/13584 513/6771 secure  [A:1:2435270659:8640] \\n'),
+         (_core.MessageSeverity.MESSAGE, 'udp/ip  : 192.168.178.60:27015  (public ip: 46.83.158.27)\\n'),
+         (_core.MessageSeverity.MESSAGE, 'os      :  Windows\\n'),
+         (_core.MessageSeverity.MESSAGE, 'type    :  community dedicated\\n'),
+         (_core.MessageSeverity.MESSAGE, 'players : 0 humans, 0 bots (20/0 max) (hibernating)\\n\\n'),
+         (_core.MessageSeverity.MESSAGE, '# userid name uniqueid connected ping loss state rate'),
+         (_core.MessageSeverity.MESSAGE, ' adr'),
+         (_core.MessageSeverity.MESSAGE, '\\n'),
+         (_core.MessageSeverity.MESSAGE, '#end\\n')]
+    """
+    # Import this here to fix a cyclic import
+    from listeners import OnServerOutput
+
+    msg_buffer = []
+
+    def intercepter(severity, msg):
+        msg_buffer.append((severity, msg))
+        return action
+
+    OnServerOutput.manager.register_listener(intercepter)
+    try:
+        yield msg_buffer
+    finally:
+        OnServerOutput.manager.unregister_listener(intercepter)

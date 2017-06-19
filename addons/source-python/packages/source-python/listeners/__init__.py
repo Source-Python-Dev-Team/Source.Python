@@ -62,6 +62,7 @@ from _listeners import on_data_unloaded_listener_manager
 from _listeners import on_query_cvar_value_finished_listener_manager
 from _listeners import on_server_activate_listener_manager
 from _listeners import on_tick_listener_manager
+from _listeners import on_server_output_listener_manager
 #   Entity output
 from listeners._entity_output import on_entity_output_listener_manager
 
@@ -103,6 +104,7 @@ __all__ = ('ButtonStatus',
            'OnServerActivate',
            'OnTick',
            'OnVersionUpdate',
+           'OnServerOutput',
            'get_button_combination_status',
            'on_client_active_listener_manager',
            'on_client_connect_listener_manager',
@@ -133,6 +135,7 @@ __all__ = ('ButtonStatus',
            'on_server_activate_listener_manager',
            'on_tick_listener_manager',
            'on_version_update_listener_manager',
+           'on_server_output_listener_manager',
            )
 
 
@@ -425,6 +428,12 @@ class OnButtonStateChanged(ListenerManagerDecorator):
     """Register/unregister a button state change listener."""
 
     manager = on_button_state_changed_listener_manager
+
+
+class OnServerOutput(ListenerManagerDecorator):
+    """Register/unregister a server output listener."""
+
+    manager = on_server_output_listener_manager
 
 
 # =============================================================================
