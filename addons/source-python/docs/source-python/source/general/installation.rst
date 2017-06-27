@@ -4,8 +4,25 @@ Installation
 Requirements
 ------------
 
-1. On Linux GLIBC 2.17 or later is required. Check your version by typing ``ld -version``.
-2. On Windows `Visual C++ Redistributable for Visual Studio 2015 <https://www.microsoft.com/en-us/download/details.aspx?id=48145>`_ is required. Most machines already have a redistributable installed, so you only need to install it if Source.Python didn't load properly due to the missing redistributable.
+Linux
+^^^^^
+
+1. GLIBC 2.17 or later is required. Check your version by typing ``ld -version``.
+2. The 32 bit version of ``libz.so.1`` and ``libffi.so.6`` is required. See the table below to install the proper packages.
+
+================================= ================================== ======================================
+Distribution                      libz.so.1                          libffi.so.6
+================================= ================================== ======================================
+Debian/Ubuntu 32 bit              apt-get install zlib1g             apt-get install libffi6
+Debian/Ubuntu 64 bit              apt-get install zlib1g:i386        apt-get install libffi6:i386
+================================= ================================== ======================================
+
+
+
+Windows
+^^^^^^^
+
+1. `Visual C++ Redistributable for Visual Studio 2015 <https://www.microsoft.com/en-us/download/details.aspx?id=48145>`_ is required. Most machines already have a redistributable installed, so you only need to install it if Source.Python didn't load properly due to the missing redistributable.
 
 
 Installation steps
