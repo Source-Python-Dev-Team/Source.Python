@@ -45,12 +45,17 @@ if LOG_FILE_OPERATIONS:
     from paths import SP_DATA_PATH
     from paths import LOG_PATH
 
+    LOG_FILE = LOG_PATH.joinpath('file_access.log')
+
+    # Clear log file
+    LOG_FILE.open('w').close()
+
     old_open = builtins.open
 
     def new_open(f, *args, **kwargs):
         if isinstance(f, str) and f.startswith(SP_DATA_PATH):
             print(f)
-            with LOG_PATH.joinpath('file_access.log').open('a') as log_f:
+            with LOG_FILE.open('a') as log_f:
                 log_f.write('File access: {}\n'.format(f))
                 traceback.print_stack(file=log_f)
                 log_f.write('\n\n')
