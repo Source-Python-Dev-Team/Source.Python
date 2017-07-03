@@ -85,9 +85,10 @@ def load():
     setup_stdout_redirect()
     setup_core_settings()
     setup_logging()
+    setup_exception_hooks()
     setup_data_updater()
-    setup_hooks()
     setup_translations()
+    setup_data()
     setup_global_pointers()
     setup_sp_command()
     setup_auth()
@@ -134,6 +135,35 @@ def setup_data_updater():
     except:
         _sp_logger.log_exception(
             'An error occured during the data update.', exc_info=True)
+
+def setup_data():
+    """Setup data."""
+    _sp_logger.log_debug('Setting up data...')
+
+    from core import GameConfigObj
+    from memory.manager import manager
+    from paths import SP_DATA_PATH
+
+    import players
+    players.BaseClient = manager.create_type_from_dict(
+        'BaseClient',
+        GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
+
+    import listeners
+    listeners.BaseEntityOutput = manager.create_type_from_dict(
+        'BaseEntityOutput',
+        GameConfigObj(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
+
+    try:
+        _fire_output = listeners.BaseEntityOutput.fire_output
+    except ValueError:
+        from warnings import warn
+        warn(
+            'BaseEntityOutput.fire_output not found.  '
+            'OnEntityOutput listener will not fire.'
+        )
+    else:
+        _fire_output.add_pre_hook(listeners._pre_fire_output)
 
 
 # =============================================================================
@@ -192,23 +222,12 @@ def setup_logging():
 # =============================================================================
 # >> HOOKS
 # =============================================================================
-def setup_hooks():
+def setup_exception_hooks():
     """Set up hooks."""
-    _sp_logger.log_debug('Setting up hooks...')
+    _sp_logger.log_debug('Setting up exception hooks...')
 
     from hooks.exceptions import except_hooks
     from hooks.warnings import warning_hooks
-
-    # This is added to warn about BaseEntityOutput.fire_output.
-    # Sending the warning on its initial import will happen prior
-    #   to these hooks being setup.
-    from listeners._entity_output import _fire_output
-    if _fire_output is None:
-        from warnings import warn
-        warn(
-            'BaseEntityOutput.fire_output not found.  '
-            'OnEntityOutput listener will not fire.'
-        )
 
 
 # =============================================================================
