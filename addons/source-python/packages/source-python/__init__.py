@@ -26,6 +26,40 @@
 # all respects for all other code used.  Additionally, the Source.Python
 # Development Team grants this exception to all derivative works.
 
+
+# =============================================================================
+# >> FILE ACCESS LOGGER
+# =============================================================================
+# If True, all calls to open() with a path to a Source.Python data file will be
+# logged in ../logs/file_access.log. The log entry will contain the file that
+# is being accessed and a full stack trace. The logger will be removed as soon
+# as setup_data_updater() is called.
+# This is a debug option to ensure that no data files are being accessed before
+# the data has been updated. Release builds should have this option set to
+# False.
+LOG_FILE_OPERATIONS = False
+
+if LOG_FILE_OPERATIONS:
+    import builtins
+    import traceback
+    from paths import SP_DATA_PATH
+    from paths import LOG_PATH
+
+    old_open = builtins.open
+
+    def new_open(f, *args, **kwargs):
+        if isinstance(f, str) and f.startswith(SP_DATA_PATH):
+            print(f)
+            with LOG_PATH.joinpath('file_access.log').open('a') as log_f:
+                log_f.write('File access: {}\n'.format(f))
+                traceback.print_stack(file=log_f)
+                log_f.write('\n\n')
+
+        return old_open(f, *args, **kwargs)
+
+    builtins.open = new_open
+
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -46,6 +80,7 @@ def load():
     setup_stdout_redirect()
     setup_core_settings()
     setup_logging()
+    setup_data_updater()
     setup_hooks()
     setup_translations()
     setup_global_pointers()
@@ -63,6 +98,37 @@ def unload():
     unload_plugins()
     remove_entities_listener()
     unload_auth()
+
+
+# =============================================================================
+# >> DATA UPDATER
+# =============================================================================
+def setup_data_updater():
+    """Setup data updater."""
+    _sp_logger.log_debug('Setting up data updater...')
+
+    if LOG_FILE_OPERATIONS:
+        builtins.open = old_open
+
+    from core.settings import _core_settings
+
+    if not _core_settings.auto_data_update:
+        _sp_logger.log_debug('Automatic data updates are disable.')
+        return
+
+    _sp_logger.log_info('Checking for data updates...')
+
+    from core.updater import is_new_data_available, update_data
+
+    try:
+        if is_new_data_available():
+            _sp_logger.log_info('New data is available. Downloading...')
+            update_data()
+        else:
+            _sp_logger.log_info('No new data is available.')
+    except:
+        _sp_logger.log_exception(
+            'An error occured during the data update.', exc_info=True)
 
 
 # =============================================================================
