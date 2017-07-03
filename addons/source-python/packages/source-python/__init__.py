@@ -45,7 +45,7 @@ if LOG_FILE_OPERATIONS:
     from paths import SP_DATA_PATH
     from paths import LOG_PATH
 
-    LOG_FILE = LOG_PATH.joinpath('file_access.log')
+    LOG_FILE = LOG_PATH / 'file_access.log'
 
     # Clear log file
     LOG_FILE.open('w').close()
