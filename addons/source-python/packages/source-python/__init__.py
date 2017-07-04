@@ -33,7 +33,7 @@
 # If True, all calls to open() with a path to a Source.Python data file will be
 # logged in ../logs/file_access.log. The log entry will contain the file that
 # is being accessed and a full stack trace. The logger will be removed as soon
-# as setup_data_updater() is called.
+# as setup_data_update() is called.
 # This is a debug option to ensure that no data files are being accessed before
 # the data has been updated. Release builds should have this option set to
 # False.
@@ -86,7 +86,7 @@ def load():
     setup_core_settings()
     setup_logging()
     setup_exception_hooks()
-    setup_data_updater()
+    setup_data_update()
     setup_translations()
     setup_data()
     setup_global_pointers()
@@ -107,11 +107,11 @@ def unload():
 
 
 # =============================================================================
-# >> DATA UPDATER
+# >> DATA UPDATE
 # =============================================================================
-def setup_data_updater():
-    """Setup data updater."""
-    _sp_logger.log_debug('Setting up data updater...')
+def setup_data_update():
+    """Setup data update."""
+    _sp_logger.log_debug('Setting up data update...')
 
     if LOG_FILE_OPERATIONS:
         builtins.open = old_open
@@ -124,7 +124,7 @@ def setup_data_updater():
 
     _sp_logger.log_info('Checking for data updates...')
 
-    from core.updater import is_new_data_available, update_data
+    from core.update import is_new_data_available, update_data
 
     try:
         if is_new_data_available():

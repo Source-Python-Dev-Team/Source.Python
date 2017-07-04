@@ -1,4 +1,4 @@
-# ../core/updater.py
+# ../core/update.py
 
 """Provides functions to update Source.Python's data files."""
 
