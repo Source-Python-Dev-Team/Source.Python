@@ -156,10 +156,10 @@ def setup_data():
 
     try:
         _fire_output = listeners.BaseEntityOutput.fire_output
-    except ValueError:
+    except AttributeError:
         from warnings import warn
         warn(
-            'BaseEntityOutput.fire_output not found.  '
+            'BaseEntityOutput.fire_output not found. '
             'OnEntityOutput listener will not fire.'
         )
     else:
