@@ -12,6 +12,9 @@ from zipfile import ZipFile
 from urllib.request import urlopen
 
 # Source.Python Imports
+#   Core
+from core import core_logger
+#   Paths
 from paths import DATA_PATH
 from paths import SP_DATA_PATH
 
@@ -20,13 +23,13 @@ from paths import SP_DATA_PATH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'CHECKSUM_URL', 
-    'DATA_URL', 
-    'DATA_ZIP_FILE', 
+    'CHECKSUM_URL',
+    'DATA_URL',
+    'DATA_ZIP_FILE',
     'download_latest_data',
     'get_latest_data_checksum',
-    'is_new_data_available', 
-    'unpack_data', 
+    'is_new_data_available',
+    'unpack_data',
     'update_data'
 )
 
@@ -34,6 +37,9 @@ __all__ = (
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
+# Don't use __getattr__ here. 'update' is a method of the _LogInstance class.
+update_logger = core_logger['update']
+
 DATA_ZIP_FILE = DATA_PATH / 'source-python-data.zip'
 CHECKSUM_URL = 'http://data.sourcepython.com/checksum.txt'
 DATA_URL = 'http://data.sourcepython.com/source-python-data.zip'
@@ -58,6 +64,7 @@ def download_latest_data(timeout=3):
     :param float timeout:
         Number of seconds that need to pass until a timeout occurs.
     """
+    update_logger.log_debug('Downloading data to {} ...'.format(DATA_ZIP_FILE))
     with urlopen(DATA_URL, timeout=timeout) as url:
         data = url.read()
 
@@ -66,6 +73,7 @@ def download_latest_data(timeout=3):
 
 def unpack_data():
     """Unpack ``source-python-data.zip``."""
+    update_logger.log_debug('Extracting data in {} ...'.format(DATA_PATH))
     with ZipFile(DATA_ZIP_FILE) as zip:
         zip.extractall(DATA_PATH)
 
@@ -77,6 +85,7 @@ def update_data(timeout=3):
     """
     download_latest_data(timeout)
     if SP_DATA_PATH.isdir():
+        update_logger.log_debug('Removing {} ...'.format(SP_DATA_PATH))
         SP_DATA_PATH.rmtree()
 
     unpack_data()
