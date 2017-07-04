@@ -125,11 +125,16 @@ def setup_data_update():
     _sp_logger.log_info('Checking for data updates...')
 
     from core.update import is_new_data_available, update_data
+    from translations.manager import language_manager
 
     try:
         if is_new_data_available():
             _sp_logger.log_info('New data is available. Downloading...')
             update_data()
+
+            # languages.ini is loaded before the data has been updated. Thus,
+            # we need to reload the file.
+            language_manager.reload()
         else:
             _sp_logger.log_info('No new data is available.')
     except:
