@@ -40,6 +40,7 @@ class _CoreSettings(ConfigObj):
         # Import the file
         super().__init__(infile, *args, **kwargs)
         self._language = None
+        self.auto_data_update = True
 
     def load(self):
         """Load and update the core settings."""
@@ -86,6 +87,15 @@ class _CoreSettings(ConfigObj):
         # Set the language comments
         self['BASE_SETTINGS'].comments['language'] = _core_strings[
             'language'].get_string(self._language).splitlines()
+
+        # Auto data update
+        if 'auto_data_update' not in self['BASE_SETTINGS']:
+            self['BASE_SETTINGS']['auto_data_update'] = '1'
+
+        self.auto_data_update = self['BASE_SETTINGS']['auto_data_update'] == '1'
+
+        self['BASE_SETTINGS'].comments['auto_data_update'] = _core_strings[
+            'auto_data_update'].get_string(self._language).splitlines()
 
     def _check_version_settings(self):
         """Add version settings if they are missing."""

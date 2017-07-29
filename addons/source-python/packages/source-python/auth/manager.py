@@ -10,9 +10,6 @@
 import re
 #   Importlib
 from importlib.machinery import SourceFileLoader
-# Site-Package Imports
-#   Configobj
-from configobj import ConfigObj
 # Source.Python Imports
 #   Auth
 from auth.base import Backend

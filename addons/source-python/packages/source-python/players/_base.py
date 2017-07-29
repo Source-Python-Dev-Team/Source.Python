@@ -55,7 +55,6 @@ from mathlib import QAngle
 from memory import get_object_pointer
 from memory import make_object
 #   Players
-from players import BaseClient
 from players.constants import PlayerStates
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
@@ -145,6 +144,7 @@ class Player(Entity):
     @property
     def base_client(self):
         """Return the player's :class:`players.BaseClient` object."""
+        from players import BaseClient
         return make_object(BaseClient, get_object_pointer(self.client) - 4)
 
     @property
