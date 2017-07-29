@@ -6,8 +6,6 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-import hashlib
-
 from zipfile import ZipFile
 from urllib.request import urlopen
 
