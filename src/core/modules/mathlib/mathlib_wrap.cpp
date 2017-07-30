@@ -132,14 +132,29 @@ void export_vector(scope _mathlib)
 
 		.def(self == self)
 		.def(self != self)
+
 		.def(self += self)
 		.def(self -= self)
 		.def(self *= self)
-		.def(self *= float())
 		.def(self /= self)
-		.def(self /= float())
+		
 		.def(self += float())
 		.def(self -= float())
+		.def(self *= float())
+		.def(self /= float())
+
+		.def(self + self)
+		.def(self - self)
+		.def(self * self)
+		.def(self / self)
+		
+		.def("__add__", &VectorExt::__add__)
+		.def("__sub__", &VectorExt::__sub__)
+		.def(self * float())
+		.def(self / float())
+		
+		.def("__radd__", &VectorExt::__add__)
+		.def(float() * self)
 
 		.def("negate",
 			&Vector::Negate,
@@ -227,13 +242,6 @@ void export_vector(scope _mathlib)
 			&Vector::Length2DSqr,
 			"Returns the vector's 2D length as a square product."
 		)
-
-		.def(self + self)
-		.def(self - self)
-		.def(self * self)
-		.def(self / self)
-		.def(self * float())
-		.def(self / float())
 
 		.def("cross",
 			&Vector::Cross,

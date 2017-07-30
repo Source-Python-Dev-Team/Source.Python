@@ -82,6 +82,18 @@ public:
 		copy.NormalizeInPlace();
 		return copy;
 	}
+
+	static inline Vector __add__(Vector vecCopy, float val)
+	{
+		vecCopy += val;
+		return vecCopy;
+	}
+
+	static inline Vector __sub__(Vector vecCopy, float val)
+	{
+		vecCopy -= val;
+		return vecCopy;
+	}
 };
 
 
