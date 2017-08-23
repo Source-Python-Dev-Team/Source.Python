@@ -12,6 +12,7 @@ from collections import defaultdict
 # Source.Python Imports
 #   Core
 from core import AutoUnload
+from core import SOURCE_ENGINE
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
 from entities.helpers import edict_from_pointer
@@ -391,8 +392,14 @@ def _on_weapon_bump(args):
 @EntityPreHook(EntityCondition.is_player, 'buy_internal')
 def _on_weapon_purchase(args):
     """Return whether the player is allowed to purchase the weapon."""
+    # TODO:
+    # In CS:GO it seems like the weapon isn't passed as a string anymore.
+    # Instead it's rather a pointer that might be NULL. If it's not NULL, the
+    # function sets it to some value:
+    #if ( a3 )
+    #        *(_DWORD *)a3 = v16;
     return weapon_restriction_manager.on_player_purchasing_weapon(
-        make_object(Player, args[0]), args[1])
+        make_object(Player, args[0]), args[1 if SOURCE_ENGINE != 'csgo' else 2])
 
 
 # =============================================================================
