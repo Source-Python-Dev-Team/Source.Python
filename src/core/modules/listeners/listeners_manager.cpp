@@ -73,10 +73,11 @@ void CListenerManager::UnregisterListener(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 void CListenerManager::Notify(tuple args, dict kwargs)
 {
+	static object callback_caller = eval("lambda func, args, kwargs: func(*args, **kwargs)");
 	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY()
-			eval("lambda func, args, kwargs: func(*args, **kwargs)")(m_vecCallables[i], args, kwargs);
+			callback_caller(m_vecCallables[i], args, kwargs);
 		END_BOOST_PY_NORET()
 	}
 }
