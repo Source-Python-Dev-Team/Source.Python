@@ -14,12 +14,6 @@ from loggers import _sp_logger
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Core
-from core import GameConfigObj
-#   Memory
-from memory.manager import manager
-#   Paths
-from paths import SP_DATA_PATH
 #   Players
 from _players import Client
 from _players import PlayerGenerator
@@ -44,5 +38,5 @@ __all__ = ('BaseClient',
 # Get the sp.players logger
 players_logger = _sp_logger.players
 
-BaseClient = manager.create_type_from_dict(
-    'BaseClient', GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
+# Will be loaded by a setup routine
+BaseClient = None

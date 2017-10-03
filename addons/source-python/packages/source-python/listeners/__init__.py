@@ -14,6 +14,7 @@ from urllib.error import URLError
 #   Core
 from core import AutoUnload
 from core import SOURCE_ENGINE
+from core import PLATFORM
 from core.settings import _core_settings
 from core.version import get_last_successful_build_number
 from core.version import is_unversioned
@@ -23,6 +24,8 @@ from cvars import ConVar
 from cvars import cvar
 #   Engines
 from engines.server import server_game_dll
+from entities.datamaps import Variant
+from entities.helpers import find_output_name
 #   Memory
 from memory import get_virtual_function
 #   Players
@@ -63,8 +66,6 @@ from _listeners import on_query_cvar_value_finished_listener_manager
 from _listeners import on_server_activate_listener_manager
 from _listeners import on_tick_listener_manager
 from _listeners import on_server_output_listener_manager
-#   Entity output
-from listeners._entity_output import on_entity_output_listener_manager
 
 
 # =============================================================================
@@ -154,6 +155,7 @@ on_plugin_unloading_manager = ListenerManager()
 on_level_end_listener_manager = ListenerManager()
 on_player_run_command_listener_manager = ListenerManager()
 on_button_state_changed_listener_manager = ListenerManager()
+on_entity_output_listener_manager = ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -534,6 +536,47 @@ def _pre_call_global_change_callbacks(args):
     convar = make_object(ConVar, args[1])
     old_value = args[2]
     on_convar_changed_listener_manager.notify(convar, old_value)
+
+
+def _pre_fire_output(args):
+    """Called when an output is about to be fired."""
+    if not on_entity_output_listener_manager:
+        return
+
+    # Windows is a bit weird: the function takes 4 additional arguments...
+    if PLATFORM == 'windows':
+        args = (args[0],) + tuple(args)[5:]
+
+    caller_ptr = args[3]
+    if not caller_ptr:
+        # If we don't know the caller, we won't be able to retrieve the
+        # output name
+        return
+
+    # Done here to fix cyclic import...
+    from entities.entity import BaseEntity
+    caller = make_object(BaseEntity, caller_ptr)
+    output_name = find_output_name(caller, args[0])
+    if output_name is None:
+        return None
+
+    # Done here to fix cyclic import...
+    from entities.entity import Entity
+    if caller.is_networked():
+        caller = make_object(Entity, caller_ptr)
+
+    value_ptr = args[1]
+    value = (value_ptr or None) and make_object(Variant, value_ptr)
+
+    activator_ptr = args[2]
+    activator = ((activator_ptr or None) and make_object(
+        BaseEntity, activator_ptr))
+    if activator is not None and activator.is_networked():
+        activator = make_object(Entity, activator_ptr)
+
+    delay = args[4]
+    on_entity_output_listener_manager.notify(
+        output_name, activator, caller, value, delay)
 
 
 # ============================================================================
