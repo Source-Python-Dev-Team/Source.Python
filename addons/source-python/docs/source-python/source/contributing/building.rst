@@ -47,7 +47,7 @@ To build Source.Python on Windows, you need the following requirements:
 
 * `CMake 2.8 or later <https://cmake.org/download/>`_
 * `Git <https://git-scm.com/downloads>`_
-* `Visual C++ 2010 <http://download.microsoft.com/download/1/E/5/1E5F1C0A-0D5B-426A-A603-1798B951DDAE/VS2010Express1.iso>`_
+* `Visual C++ 2010 <https://my.visualstudio.com/Downloads?q=visual%20studio%202010&wt.mc_id=o~msft~vscom~older-downloads>`_
 * `Microsoft Build Tools (optional, to build directly via Build.bat) <https://www.microsoft.com/en-us/download/details.aspx?id=48159>`_
 
 Once you have installed the requirements, follow these steps to build Source.Python:
