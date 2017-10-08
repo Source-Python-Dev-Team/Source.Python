@@ -168,6 +168,41 @@ bool CPythonManager::Initialize( void )
 		return false;
 	}
 
+// Patch for issues #175.
+// For unknown reasons the streams might be unable to connect due to io.OpenWrapper failing
+//	to get their handle from their fileno and internally raise an "OSError":
+//
+//	[WinError 6] The handle is invalid"...
+//
+// Same error occurs when trying to retrieve a python file object from their descriptor
+//	using PyFile_FromFd. This is kinda weird since GetStdHandle is returning valid handles for them
+//	but oh well... reconnecting them seems to fix the issues from my testings.
+#ifdef _WIN32
+	object sys = python::import("sys");
+	object io_open = python::import("io").attr("open");
+	
+	object stdin_ = sys.attr("stdin");
+	if (stdin_.is_none())
+	{
+		DevMsg(1, MSG_PREFIX "stdin is None... reconnecting.\n");
+		sys.attr("stdin") = sys.attr("__stdin__") = io_open("CONIN$", "rt");
+	}
+
+	object stdout_ = sys.attr("stdout");
+	if (stdout_.is_none())
+	{
+		DevMsg(1, MSG_PREFIX "stdout is None... reconnecting.\n");
+		sys.attr("stdout") = sys.attr("__stdout__") = io_open("CONOUT$", "wt");
+	}
+
+	object stderr_ = sys.attr("stderr");
+	if (stderr_.is_none())
+	{
+		DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
+		sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONERR$", "wt");
+	}
+#endif
+
 	// Import the main module file.
 	DevMsg(1, MSG_PREFIX "Loading main module...\n");
 
