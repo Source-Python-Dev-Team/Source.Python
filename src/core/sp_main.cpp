@@ -61,6 +61,10 @@
 #include "modules/entities/entities_entity.h"
 #include "modules/core/core.h"
 
+#ifdef _WIN32
+	#include "Windows.h"
+#endif
+
 
 //-----------------------------------------------------------------------------
 // Disable warnings.
@@ -374,6 +378,9 @@ void CSourcePython::Unload( void )
 	DevMsg(1, MSG_PREFIX "Restoring old logging state...\n");
 	LoggingSystem_PopLoggingState(false);
 #endif
+
+	DevMsg(1, MSG_PREFIX "Resetting cache notifier...\n");
+	modelcache->SetCacheNotify(m_pOldMDLCacheNotifier);
 	
 	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
 	g_PythonManager.Shutdown();
@@ -396,10 +403,12 @@ void CSourcePython::Unload( void )
 	DisconnectTier1Libraries( );
 #endif
 
-	DevMsg(1, MSG_PREFIX "Resetting cache notifier...\n");
-	modelcache->SetCacheNotify(m_pOldMDLCacheNotifier);
-
 	Msg(MSG_PREFIX "Unloaded successfully.\n");
+
+#ifdef _WIN32
+	// This "fixes" a crash after SP has been unloaded.
+	Sleep(1000);
+#endif
 }
 
 //-----------------------------------------------------------------------------
