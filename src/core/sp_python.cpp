@@ -178,28 +178,31 @@ bool CPythonManager::Initialize( void )
 //	using PyFile_FromFd. This is kinda weird since GetStdHandle is returning valid handles for them
 //	but oh well... reconnecting them seems to fix the issues from my testings.
 #ifdef _WIN32
-	object sys = python::import("sys");
-	object io_open = python::import("io").attr("open");
+	// This fix currently only works for dedicated servers, but crashes on listen servers.
+	if (engine->IsDedicatedServer()) {
+		object sys = python::import("sys");
+		object io_open = python::import("io").attr("open");
 	
-	object stdin_ = sys.attr("stdin");
-	if (stdin_.is_none())
-	{
-		DevMsg(1, MSG_PREFIX "stdin is None... reconnecting.\n");
-		sys.attr("stdin") = sys.attr("__stdin__") = io_open("CONIN$", "rt");
-	}
+		object stdin_ = sys.attr("stdin");
+		if (stdin_.is_none())
+		{
+			DevMsg(1, MSG_PREFIX "stdin is None... reconnecting.\n");
+			sys.attr("stdin") = sys.attr("__stdin__") = io_open("CONIN$", "rt");
+		}
 
-	object stdout_ = sys.attr("stdout");
-	if (stdout_.is_none())
-	{
-		DevMsg(1, MSG_PREFIX "stdout is None... reconnecting.\n");
-		sys.attr("stdout") = sys.attr("__stdout__") = io_open("CONOUT$", "wt");
-	}
+		object stdout_ = sys.attr("stdout");
+		if (stdout_.is_none())
+		{
+			DevMsg(1, MSG_PREFIX "stdout is None... reconnecting.\n");
+			sys.attr("stdout") = sys.attr("__stdout__") = io_open("CONOUT$", "wt");
+		}
 
-	object stderr_ = sys.attr("stderr");
-	if (stderr_.is_none())
-	{
-		DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
-		sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONERR$", "wt");
+		object stderr_ = sys.attr("stderr");
+		if (stderr_.is_none())
+		{
+			DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
+			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONERR$", "wt");
+		}
 	}
 #endif
 
