@@ -7,14 +7,17 @@
 # =============================================================================
 # Python
 import bisect
-from contextlib import suppress
-from enum import IntEnum
 import math
-from threading import Thread
 import time
 
+from contextlib import suppress
+from enum import IntEnum
+from threading import Thread
+from warnings import warn
+
 # Source.Python
-from core import AutoUnload, WeakAutoUnload
+from core import AutoUnload
+from core import WeakAutoUnload
 from hooks.exceptions import except_hooks
 from listeners import (
     listeners_logger, on_tick_listener_manager, OnLevelEnd,
@@ -42,26 +45,21 @@ listeners_tick_logger = listeners_logger.tick
 # =============================================================================
 # >> THREAD WORKAROUND
 # =============================================================================
-class GameThread(Thread):
-    """Workaround for :class:`threading.Thread`."""
+class GameThread(WeakAutoUnload, Thread):
+    """A subclass of :class:`threading.Thread` that throws a warning if the
+    plugin that created the thread has been unloaded while the thread is still
+    running.
+    """
 
-    # Since _delay_manager now always registers a tick listener, we probably
-    # don't need this anymore.
-    #def __init__(self, *args, **kwargs):
-    #    super().__init__(*args, **kwargs)
-    #    on_tick_listener_manager.register_listener(self._tick)
-    #
-    #def __del__(self):
-    #    on_tick_listener_manager.unregister_listener(self._tick)
-    #
-    #def _bootstrap_inner(self):
-    #    try:
-    #        super()._bootstrap_inner()
-    #    finally:
-    #        on_tick_listener_manager.unregister_listener(self._tick)
-    #
-    #def _tick(self):
-    #    pass
+    def _add_instance(self, caller):
+        super()._add_instance(caller)
+        self._caller = caller
+
+    def _unload_instance(self):
+        if self.is_alive():
+            warn(
+                f'Thread "{self.name}" ({self.ident}) from "{self._caller}" '
+                f'is running even though its plugin has been unloaded!')
 
 
 # =============================================================================
