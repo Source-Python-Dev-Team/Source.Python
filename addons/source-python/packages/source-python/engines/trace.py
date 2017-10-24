@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
-from enum import IntEnum
+from enum import IntFlag
 
 # Source.Python Imports
 #   Entities
@@ -124,7 +124,7 @@ __all__ = ('BaseTrace',
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class ContentFlags(IntEnum):
+class ContentFlags(IntFlag):
     """Content flags wrapper enumerator."""
 
     EMPTY = CONTENTS_EMPTY
@@ -162,7 +162,7 @@ class ContentFlags(IntEnum):
     HITBOX = CONTENTS_HITBOX
 
 
-class ContentMasks(IntEnum):
+class ContentMasks(IntFlag):
     """Content masks wrapper enumerator."""
 
     ALL = MASK_ALL

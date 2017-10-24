@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
-from enum import IntEnum
+from enum import IntFlag
 
 
 # =============================================================================
@@ -53,7 +53,7 @@ __all__ = ('SendProp',
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class SendPropFlags(IntEnum):
+class SendPropFlags(IntFlag):
     """SendProp flags wrapper enumerator."""
 
     UNSIGNED = SPROP_UNSIGNED

@@ -8,6 +8,7 @@
 # Python Imports
 #   Enum
 from enum import IntEnum
+from enum import IntFlag
 
 
 # =============================================================================
@@ -161,7 +162,7 @@ __all__ = ('BASEDAMAGE_NOT_SPECIFIED',
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class DamageTypes(IntEnum):
+class DamageTypes(IntFlag):
     """Damage types wrapper enumerator."""
 
     GENERIC = DMG_GENERIC
@@ -199,7 +200,7 @@ class DamageTypes(IntEnum):
     HEADSHOT = DMG_HEADSHOT
 
 
-class EntityStates(IntEnum):
+class EntityStates(IntFlag):
     """Entity state flags wrapper enumerator."""
 
     FLY = FL_FLY
@@ -225,7 +226,7 @@ class EntityStates(IntEnum):
     UNBLOCKABLE_BY_PLAYER = FL_UNBLOCKABLE_BY_PLAYER
 
 
-class EntityEffects(IntEnum):
+class EntityEffects(IntFlag):
     """Entity effects wrapper enumerator."""
 
     BONEMERGE = EF_BONEMERGE
@@ -261,7 +262,7 @@ class TakeDamage(IntEnum):
     AIM = DAMAGE_AIM
 
 
-class EntityFlags(IntEnum):
+class EntityFlags(IntFlag):
     """Entity flags wrapper enumerator."""
 
     KILLME = EFL_KILLME
