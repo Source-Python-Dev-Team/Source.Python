@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
-from enum import IntEnum
+from enum import IntFlag
 
 # Source.Python Imports
 #   Memory
@@ -73,7 +73,7 @@ _supported_input_types = {
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class TypeDescriptionFlags(IntEnum):
+class TypeDescriptionFlags(IntFlag):
     """TypeDescription flags wrapper enumerator."""
 
     GLOBAL = FTYPEDESC_GLOBAL

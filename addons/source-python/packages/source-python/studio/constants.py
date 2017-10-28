@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
-from enum import IntEnum
+from enum import IntFlag
 
 
 # =============================================================================
@@ -48,7 +48,7 @@ INVALID_ATTACHMENT_INDEX = -1
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class StudioFlags(IntEnum):
+class StudioFlags(IntFlag):
     """Studio flags wrapper enumerator."""
 
     NONE = STUDIO_NONE
