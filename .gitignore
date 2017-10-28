@@ -30,6 +30,7 @@ addons/source-python/bin/
 addons/source-python/data/custom/
 addons/source-python/data/plugins/
 addons/source-python/data/source-python/settings/
+addons/source-python/data/source-python-data.zip
 addons/source-python/packages/custom/
 addons/source-python/plugins/
 cfg/source-python/*
