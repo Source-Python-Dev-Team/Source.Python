@@ -213,9 +213,28 @@ bool CPythonManager::Initialize( void )
 		python::import("__init__").attr("load")();
 	}
 	catch( ... ) {
-		PyErr_Print();
-		PyErr_Clear();
-		Msg(MSG_PREFIX "Failed to load the main module.\n");
+		Msg(MSG_PREFIX "Failed to load the main module due to following exception:\n");
+
+		// Don't use PyErr_Print() here because our sys.excepthook has not been installed
+		// yet so let's just format and output to the console ourself.
+		if (PyErr_Occurred())
+		{
+			PyObject *pType;
+			PyObject *pValue;
+			PyObject *pTraceback;
+			PyErr_Fetch(&pType, &pValue, &pTraceback);
+			PyErr_NormalizeException(&pType, &pValue, &pTraceback);
+
+			handle<> hType(pType);
+			handle<> hValue(allow_null(pValue));
+			handle<> hTraceback(allow_null(pTraceback));
+
+			object format_exception = import("traceback").attr("format_exception");
+			Msg(extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback))));
+
+			PyErr_Clear();
+		}
+
 		return false;
 	}
 
