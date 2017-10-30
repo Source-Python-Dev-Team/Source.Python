@@ -485,6 +485,15 @@ def setup_stdout_redirect():
     if sys.stderr is None:
         sys.stderr = OutputRedirect()
 
+    from engines.server import engine_server
+
+    if not engine_server.is_dedicated_server():
+        # Return here for listen servers, because we only want to see the
+        # warning if reconnecting the output streams failed, which is only
+        # done on dedicated servers. For listen servers creating OutputRedirect
+        # instances is the proper fix.
+        return
+
     from warnings import warn
     warn(
         'sys.stdout and/or sys.stderr is None. All data will be redirected through '
