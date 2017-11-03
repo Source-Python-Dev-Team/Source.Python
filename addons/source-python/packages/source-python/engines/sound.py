@@ -34,7 +34,7 @@ from mathlib import NULL_VECTOR
 #   Paths
 from paths import GAME_PATH
 #   Stringtables
-from stringtables import string_tables
+from stringtables import INVALID_STRING_INDEX, string_tables
 from stringtables.downloads import Downloadables
 
 
@@ -323,7 +323,9 @@ class Sound(_BaseSound):
 
         :rtype: bool
         """
-        return self.sample in string_tables.soundprecache
+        # We can't use engine_sound.is_sound_precached here because it always
+        #   returns True.
+        return string_tables.soundprecache[self.sample] != INVALID_STRING_INDEX
 
 
 class StreamSound(_BaseSound):
@@ -368,4 +370,7 @@ class StreamSound(_BaseSound):
 
         :rtype: bool
         """
-        return self._stream_sample in string_tables.soundprecache
+        # We can't use engine_sound.is_sound_precached here because it always
+        #   returns True.
+        index = string_tables.soundprecache[self._stream_sample]
+        return index != INVALID_STRING_INDEX
