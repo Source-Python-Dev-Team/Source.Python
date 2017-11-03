@@ -323,6 +323,8 @@ class Sound(_BaseSound):
 
         :rtype: bool
         """
+        # We can't use engine_sound.is_sound_precached here because it always
+        #   returns True.
         return string_tables.soundprecache[self.sample] != INVALID_STRING_INDEX
 
 
@@ -368,5 +370,7 @@ class StreamSound(_BaseSound):
 
         :rtype: bool
         """
+        # We can't use engine_sound.is_sound_precached here because it always
+        #   returns True.
         index = string_tables.soundprecache[self._stream_sample]
         return index != INVALID_STRING_INDEX
