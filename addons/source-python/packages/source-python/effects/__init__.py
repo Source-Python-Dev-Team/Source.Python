@@ -266,7 +266,6 @@ def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True,
         rad = 2 * radius * (1 - (float(x) / steps) ** 2) ** 0.5
 
         if upper_half:
-            entity = TempEntity('BeamRingPoint')
             entity.center = org
             entity.start_radius = rad
             entity.end_radius = rad - 0.1
@@ -275,7 +274,6 @@ def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True,
 
         if x and lower_half:
             org.z -= 2 * dist
-            entity = TempEntity('BeamRingPoint')
             entity.center = org
             entity.start_radius = rad
             entity.end_radius = rad - 0.1
