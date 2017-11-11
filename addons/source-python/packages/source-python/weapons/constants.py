@@ -8,6 +8,7 @@
 # Python Imports
 #   Enum
 from enum import IntEnum
+from enum import IntFlag
 
 # Source.Python Imports
 #   Core
@@ -73,7 +74,7 @@ WeaponSlot = IntEnum('WeaponSlot', GameConfigObj(_path / 'WeaponSlot.ini'))
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class ItemFlags(IntEnum):
+class ItemFlags(IntFlag):
     """Item flags wrapper enumerator."""
 
     SELECTONEMPTY = ITEM_FLAG_SELECTONEMPTY

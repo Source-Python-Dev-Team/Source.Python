@@ -63,7 +63,7 @@ class Downloadables(AutoUnload, set):
         """
         index = 0
         for index, file in enumerate(GAME_PATH.joinpath(directory).walkfiles(), 1):
-            self.add(file.replace(GAME_PATH, '').replace('\\', '/'))
+            self.add(file.replace(GAME_PATH, '').replace('\\', '/').lstrip('/'))
 
         return index
 

@@ -298,7 +298,9 @@ class Entity(BaseEntity):
     # Set the "color" property for Entity
     color = property(
         get_color, set_color,
-        doc="""Property to get/set the entity's color values.""")
+        doc="""Property to get/set the entity's color values.
+
+        .. seealso:: :meth:`get_color` and :meth:`set_color`""")
 
     def get_model(self):
         """Return the entity's model.
@@ -318,7 +320,9 @@ class Entity(BaseEntity):
 
     model = property(
         get_model, set_model,
-        doc="""Property to get/set the entity's model.""")
+        doc="""Property to get/set the entity's model.
+
+        .. seealso:: :meth:`get_model` and :meth:`set_model`""")
 
     def get_parent(self):
         """Return the entity's parent.
@@ -350,7 +354,9 @@ class Entity(BaseEntity):
 
     parent = property(
         get_parent, _set_parent,
-        doc="""Property to get/set the parent of the entity.""")
+        doc="""Property to get/set the parent of the entity.
+
+        .. seealso:: :meth:`get_parent` and :meth:`set_parent`""")
 
     @property
     def model_header(self):

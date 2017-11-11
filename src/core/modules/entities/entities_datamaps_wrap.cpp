@@ -86,10 +86,23 @@ void export_datamap(scope _datamaps)
 	class_<datamap_t, datamap_t *> DataMap("DataMap", no_init);
 
 	// Properties...
-	DataMap.def_readonly("description", &datamap_t::dataDesc);
-	DataMap.def_readonly("length", &datamap_t::dataNumFields);
-	DataMap.def_readonly("class_name", &datamap_t::dataClassName);
-	DataMap.def_readonly("base", &datamap_t::baseMap);
+	DataMap.def_readonly(
+		"length", 
+		&datamap_t::dataNumFields,
+		"Return the number of type descriptions hold by this data map.\n\n"
+		":rtype: int");
+
+	DataMap.def_readonly(
+		"class_name", 
+		&datamap_t::dataClassName,
+		"Return the name of the class described by this data map.\n\n"
+		":rtype: str");
+
+	DataMap.def_readonly(
+		"base", 
+		&datamap_t::baseMap,
+		"Return the next data map in the class hierarchy.\n\n"
+		":rtype: DataMap");
 
 	// CS:GO properties...
 	DataMap.NOT_IMPLEMENTED_ATTR("optimized_datamap");
@@ -99,19 +112,31 @@ void export_datamap(scope _datamaps)
 	DataMap.NOT_IMPLEMENTED_ATTR("packed_offsets_computed");
 
 	// Special methods...
-	DataMap.def("__len__", make_getter(&datamap_t::dataNumFields));
-	DataMap.def("__getitem__", &DataMapSharedExt::__getitem__, reference_existing_object_policy());
+	DataMap.def(
+		"__len__", 
+		make_getter(&datamap_t::dataNumFields),
+		"Return the number of type descriptions hold by this data map.\n\n"
+		"rtype: int");
+
+	DataMap.def(
+		"__getitem__", 
+		&DataMapSharedExt::__getitem__,
+		reference_existing_object_policy(),
+		"Return the type description at the given index.\n\n"
+		":rtype: TypeDescription");
 
 	// Helper methods...
 	DataMap.def("find",
 		&DataMapSharedExt::find,
-		reference_existing_object_policy()
-	);
+		reference_existing_object_policy(),
+		"Find a type description based on its field name or external name.\n\n"
+		":rtype: TypeDescription");
 
 	DataMap.def("find_offset",
 		&DataMapSharedExt::find_offset,
 		args("name"),
-		"Return the offset of a named property. Return -1 if the property wasn't found."
+		"Return the offset of a type description by searching for its name. Return -1 if the property wasn't found.\n\n"
+		":rtype: int"
 	);
 
 	// Engine specific stuff...
@@ -132,16 +157,52 @@ void export_type_description(scope _datamaps)
 	class_<typedescription_t, typedescription_t *> TypeDescription("TypeDescription", no_init);
 
 	// Properties...
-	TypeDescription.add_property("offset", &TypeDescriptionExt::get_offset);
-	TypeDescription.def_readonly("type", &typedescription_t::fieldType);
-	TypeDescription.def_readonly("name", &typedescription_t::fieldName);
-	TypeDescription.def_readonly("size", &typedescription_t::fieldSize);
-	TypeDescription.def_readonly("flags", &typedescription_t::flags);
-	TypeDescription.def_readonly("external_name", &typedescription_t::externalName);
-	TypeDescription.add_property("input_function", &TypeDescriptionSharedExt::get_input_function);
-	TypeDescription.add_property("function",
-		make_function(&TypeDescriptionSharedExt::get_function, return_by_value_policy())
-	);
+	TypeDescription.add_property(
+		"offset", 
+		&TypeDescriptionExt::get_offset,
+		"Return the offset of the field.\n\n"
+		":rtype: int");
+
+	TypeDescription.def_readonly(
+		"type", 
+		&typedescription_t::fieldType,
+		"Return the type of the field.\n\n"
+		":rtype: FieldType");
+
+	TypeDescription.def_readonly(
+		"name",
+		&typedescription_t::fieldName,
+		"Return the name of the field.\n\n"
+		":rtype: str");
+
+	TypeDescription.def_readonly(
+		"size", 
+		&typedescription_t::fieldSize,
+		"Return the size of the field.\n\n"
+		":rtype: int");
+
+	TypeDescription.def_readonly(
+		"flags",
+		&typedescription_t::flags,
+		"Return the flags of the field.\n\n"
+		":rtype: int");
+
+	TypeDescription.def_readonly(
+		"external_name", 
+		&typedescription_t::externalName,
+		"Return the external name of the field.\n\n"
+		":rtype: str");
+
+	TypeDescription.add_property(
+		"input_function", 
+		&TypeDescriptionSharedExt::get_input_function,
+		"Return a callable function if the field is an input function.");
+
+	TypeDescription.add_property(
+		"function",
+		make_function(&TypeDescriptionSharedExt::get_function, return_by_value_policy()),
+		"Return the input function as a pointer.\n\n"
+		":rtype: Pointer");
 
 	// CS:GO properties...
 	TypeDescription.NOT_IMPLEMENTED_ATTR("flat_offset");
@@ -175,11 +236,29 @@ void export_input_data(scope _datamaps)
 	InputData.def("__init__", make_constructor(&InputDataExt::__init__));
 
 	// Properties...
-	InputData.def_readwrite("activator", &inputdata_t::pActivator);
-	InputData.def_readwrite("caller", &inputdata_t::pCaller);
+	InputData.def_readwrite(
+		"activator",
+		&inputdata_t::pActivator,
+		"Return the activator.\n\n"
+		":rtype: BaseEntity");
 
-	InputData.def_readwrite("value", &inputdata_t::value);
-	InputData.def_readwrite("output_index", &inputdata_t::nOutputID);
+	InputData.def_readwrite(
+		"caller",
+		&inputdata_t::pCaller,
+		"Return the caller.\n\n"
+		":rtype: BaseEntity");
+
+	InputData.def_readwrite(
+		"value",
+		&inputdata_t::value,
+		"Return the value.\n\n"
+		":rtype: Variant");
+
+	InputData.def_readwrite(
+		"output_index", 
+		&inputdata_t::nOutputID,
+		"Return the output index.\n\n"
+		":rtype: int");
 
 	// Add memory tools...
 	InputData ADD_MEM_TOOLS(inputdata_t);
@@ -194,30 +273,91 @@ void export_variant(scope _datamaps)
 	class_<variant_t, variant_t *> Variant("Variant");
 
 	// Properties...
-	Variant.add_property("type", &variant_t::FieldType);
+	Variant.add_property(
+		"type",
+		&variant_t::FieldType,
+		"Return the type of the value.\n\n"
+		":rtype: FieldType");
 
 	// Getters...
-	Variant.def("get_bool", &variant_t::Bool);
-	Variant.def("get_string", &VariantExt::get_string);
-	Variant.def("get_int", &variant_t::Int);
-	Variant.def("get_float", &variant_t::Float);
+	Variant.def(
+		"get_bool", 
+		&variant_t::Bool,
+		"Return the value as a boolean.\n\n"
+		":rtype: bool");
+
+	Variant.def(
+		"get_string",
+		&VariantExt::get_string,
+		"Return the value as a string.\n\n"
+		":rtype: str");
+
+	Variant.def(
+		"get_int", 
+		&variant_t::Int,
+		"Return the value as an integer.\n\n"
+		":rtype: int");
+
+	Variant.def(
+		"get_float", 
+		&variant_t::Float,
+		"Return the value as a floating value.\n\n"
+		":rtype: float");
 
 	Variant.def("get_color",
 		&VariantExt::get_color,
-		manage_new_object_policy()
-	);
+		manage_new_object_policy(),
+		"Return the value as a color.\n\n"
+		":rtype: Color");
 
-	Variant.def("get_vector", &VariantExt::get_vector);
-	Variant.def("get_entity", &variant_t::Entity, reference_existing_object_policy());
+	Variant.def(
+		"get_vector", 
+		&VariantExt::get_vector,
+		"Return the value as a vector.\n\n"
+		":rtype: Value");
+
+	Variant.def(
+		"get_entity", 
+		&variant_t::Entity, 
+		reference_existing_object_policy(),
+		"Return the value as a handle.\n\n"
+		":rtype: BaseHandle");
 
 	// Setters...
-	Variant.def("set_bool", &variant_t::SetBool);
-	Variant.def("set_string", &VariantExt::set_string);
-	Variant.def("set_int", &variant_t::SetInt);
-	Variant.def("set_float", &variant_t::SetFloat);
-	Variant.def("set_color", &VariantExt::set_color);
-	Variant.def("set_vector", &variant_t::SetVector3D);
-	Variant.def("set_entity", &variant_t::SetEntity);
+	Variant.def(
+		"set_bool", 
+		&variant_t::SetBool,
+		"Set the value as a boolean.");
+
+	Variant.def(
+		"set_string", 
+		&VariantExt::set_string,
+		"Set the value as a string.");
+
+	Variant.def(
+		"set_int", 
+		&variant_t::SetInt,
+		"Set the value as an integer.");
+
+	Variant.def(
+		"set_float",
+		&variant_t::SetFloat,
+		"Set the value as a floating value.");
+
+	Variant.def(
+		"set_color",
+		&VariantExt::set_color,
+		"Set the value as a color.");
+
+	Variant.def(
+		"set_vector", 
+		&variant_t::SetVector3D,
+		"Set the value as a Vector.");
+
+	Variant.def(
+		"set_entity", 
+		&variant_t::SetEntity,
+		"Set the value as an entity.");
 
 	// Add memory tools...
 	Variant ADD_MEM_TOOLS(variant_t);

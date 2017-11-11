@@ -78,6 +78,8 @@ def unpack_data():
 def update_data(timeout=3):
     """Download and unpack the latest data from the build server.
 
+    Old data gets deleted before unpacking.
+
     :param float timeout:
         Number of seconds that need to pass until a timeout occurs.
     """

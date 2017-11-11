@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Enum
-from enum import IntEnum
+from enum import IntFlag
 
 
 # =============================================================================
@@ -50,7 +50,7 @@ __all__ = ('ConVarFlags',
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class ConVarFlags(IntEnum):
+class ConVarFlags(IntFlag):
     """ConVar's flags wrapper enumerator."""
 
     NONE = FCVAR_NONE

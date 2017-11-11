@@ -66,7 +66,13 @@ def beam(recipients, start, end, parent=False, **kwargs):
     :param kwargs:
         Additional attributes that will be send to the effect.
     """
-    entity = TempEntity('BeamEntPoint')
+    _entity = kwargs.pop('_entity', None)
+    if _entity is None:
+        entity = TempEntity('BeamEntPoint')
+        for attr, value in kwargs.items():
+            setattr(entity, attr, value)
+    else:
+        entity = _entity
 
     def get_vec(value):
         if isinstance(value, int):
@@ -119,8 +125,15 @@ def polygon(recipients, points, parent=False, **kwargs):
 
     start = points[0]
     points = dict(enumerate(points))
+
+    entity = TempEntity('BeamEntPoint')
+    for attr, value in kwargs.items():
+        setattr(entity, attr, value)
+
     for index, point in points.items():
-        beam(recipients, point, points.get(index + 1, start), parent, **kwargs)
+        beam(
+            recipients, point, points.get(index + 1, start), parent,
+            _entity=entity, **kwargs)
 
 
 def square(recipients, start, end, **kwargs):
@@ -150,12 +163,13 @@ def square(recipients, start, end, **kwargs):
         (c, a),
     )
 
+    entity = TempEntity('BeamPoints')
+    for attr, value in kwargs.items():
+        setattr(entity, attr, value)
+
     for p1, p2 in lines:
-        entity = TempEntity('BeamPoints')
         entity.start_point = p1
         entity.end_point = p2
-        for attr, value in kwargs.items():
-            setattr(entity, attr, value)
 
         entity.create(recipients)
 
@@ -204,12 +218,13 @@ def box(recipients, start, end, **kwargs):
         (d, h)
     )
 
+    entity = TempEntity('BeamPoints')
+    for attr, value in kwargs.items():
+        setattr(entity, attr, value)
+
     for p1, p2 in lines:
-        entity = TempEntity('BeamPoints')
         entity.start_point = p1
         entity.end_point = p2
-        for attr, value in kwargs.items():
-            setattr(entity, attr, value)
 
         entity.create(recipients)
 
@@ -239,6 +254,10 @@ def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True,
     # Make sure that at least one argument is True
     assert not (upper_half == lower_half == False)
 
+    entity = TempEntity('BeamRingPoint')
+    for attr, value in kwargs.items():
+        setattr(entity, attr, value)
+
     step = float(radius) / steps
     for x in range(steps):
         dist = step * x
@@ -247,22 +266,16 @@ def ball(recipients, center, radius, steps=15, upper_half=True, lower_half=True,
         rad = 2 * radius * (1 - (float(x) / steps) ** 2) ** 0.5
 
         if upper_half:
-            entity = TempEntity('BeamRingPoint')
             entity.center = org
             entity.start_radius = rad
             entity.end_radius = rad - 0.1
-            for attr, value in kwargs.items():
-                setattr(entity, attr, value)
 
             entity.create(recipients)
 
         if x and lower_half:
             org.z -= 2 * dist
-            entity = TempEntity('BeamRingPoint')
             entity.center = org
             entity.start_radius = rad
             entity.end_radius = rad - 0.1
-            for attr, value in kwargs.items():
-                setattr(entity, attr, value)
 
             entity.create(recipients)
