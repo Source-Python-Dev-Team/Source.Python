@@ -75,6 +75,11 @@ boost::shared_ptr<CBaseEntityWrapper> CBaseEntityWrapper::wrap(CBaseEntity* pEnt
 
 CBaseEntity* CBaseEntityWrapper::create(const char* name)
 {
+#ifdef ENGINE_CSGO
+	void *pItem = servertools->CreateItemEntityByName(name);
+	if (pItem)
+		return (CBaseEntity *)pItem;
+#endif
 	IServerNetworkable* pEntity = get_factory(name)->Create(name);
 	if (!pEntity)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to create entity with class name '%s'.", name)

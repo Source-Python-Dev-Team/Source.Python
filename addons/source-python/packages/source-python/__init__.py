@@ -26,6 +26,45 @@
 # all respects for all other code used.  Additionally, the Source.Python
 # Development Team grants this exception to all derivative works.
 
+
+# =============================================================================
+# >> FILE ACCESS LOGGER
+# =============================================================================
+# If True, all calls to open() with a path to a Source.Python data file will be
+# logged in ../logs/file_access.log. The log entry will contain the file that
+# is being accessed and a full stack trace. The logger will be removed as soon
+# as setup_data_update() is called.
+# This is a debug option to ensure that no data files are being accessed before
+# the data has been updated. Release builds should have this option set to
+# False.
+LOG_FILE_OPERATIONS = False
+
+if LOG_FILE_OPERATIONS:
+    import builtins
+    import traceback
+    from paths import SP_DATA_PATH
+    from paths import LOG_PATH
+
+    LOG_FILE = LOG_PATH / 'file_access.log'
+
+    # Clear log file
+    LOG_FILE.open('w').close()
+
+    old_open = builtins.open
+
+    def new_open(f, *args, **kwargs):
+        if isinstance(f, str) and f.startswith(SP_DATA_PATH):
+            print(f)
+            with LOG_FILE.open('a') as log_f:
+                log_f.write('File access: {}\n'.format(f))
+                traceback.print_stack(file=log_f)
+                log_f.write('\n\n')
+
+        return old_open(f, *args, **kwargs)
+
+    builtins.open = new_open
+
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -46,8 +85,10 @@ def load():
     setup_stdout_redirect()
     setup_core_settings()
     setup_logging()
-    setup_hooks()
+    setup_exception_hooks()
+    setup_data_update()
     setup_translations()
+    setup_data()
     setup_global_pointers()
     setup_sp_command()
     setup_auth()
@@ -63,6 +104,71 @@ def unload():
     unload_plugins()
     remove_entities_listener()
     unload_auth()
+
+
+# =============================================================================
+# >> DATA UPDATE
+# =============================================================================
+def setup_data_update():
+    """Setup data update."""
+    _sp_logger.log_debug('Setting up data update...')
+
+    if LOG_FILE_OPERATIONS:
+        builtins.open = old_open
+
+    from core.settings import _core_settings
+
+    if not _core_settings.auto_data_update:
+        _sp_logger.log_debug('Automatic data updates are disable.')
+        return
+
+    _sp_logger.log_info('Checking for data updates...')
+
+    from core.update import is_new_data_available, update_data
+    from translations.manager import language_manager
+
+    try:
+        if is_new_data_available():
+            _sp_logger.log_info('New data is available. Downloading...')
+            update_data()
+
+            # languages.ini is loaded before the data has been updated. Thus,
+            # we need to reload the file.
+            language_manager.reload()
+        else:
+            _sp_logger.log_info('No new data is available.')
+    except:
+        _sp_logger.log_exception(
+            'An error occured during the data update.', exc_info=True)
+
+def setup_data():
+    """Setup data."""
+    _sp_logger.log_debug('Setting up data...')
+
+    from core import GameConfigObj
+    from memory.manager import manager
+    from paths import SP_DATA_PATH
+
+    import players
+    players.BaseClient = manager.create_type_from_dict(
+        'BaseClient',
+        GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
+
+    import listeners
+    listeners.BaseEntityOutput = manager.create_type_from_dict(
+        'BaseEntityOutput',
+        GameConfigObj(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
+
+    try:
+        _fire_output = listeners.BaseEntityOutput.fire_output
+    except AttributeError:
+        from warnings import warn
+        warn(
+            'BaseEntityOutput.fire_output not found. '
+            'OnEntityOutput listener will not fire.'
+        )
+    else:
+        _fire_output.add_pre_hook(listeners._pre_fire_output)
 
 
 # =============================================================================
@@ -121,23 +227,12 @@ def setup_logging():
 # =============================================================================
 # >> HOOKS
 # =============================================================================
-def setup_hooks():
+def setup_exception_hooks():
     """Set up hooks."""
-    _sp_logger.log_debug('Setting up hooks...')
+    _sp_logger.log_debug('Setting up exception hooks...')
 
     from hooks.exceptions import except_hooks
     from hooks.warnings import warning_hooks
-
-    # This is added to warn about BaseEntityOutput.fire_output.
-    # Sending the warning on its initial import will happen prior
-    #   to these hooks being setup.
-    from listeners._entity_output import _fire_output
-    if _fire_output is None:
-        from warnings import warn
-        warn(
-            'BaseEntityOutput.fire_output not found.  '
-            'OnEntityOutput listener will not fire.'
-        )
 
 
 # =============================================================================
@@ -389,6 +484,15 @@ def setup_stdout_redirect():
 
     if sys.stderr is None:
         sys.stderr = OutputRedirect()
+
+    from engines.server import engine_server
+
+    if not engine_server.is_dedicated_server():
+        # Return here for listen servers, because we only want to see the
+        # warning if reconnecting the output streams failed, which is only
+        # done on dedicated servers. For listen servers creating OutputRedirect
+        # instances is the proper fix.
+        return
 
     from warnings import warn
     warn(

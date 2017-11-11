@@ -8,6 +8,7 @@
 # Python Imports
 #   Enum
 from enum import IntEnum
+from enum import IntFlag
 
 
 # =============================================================================
@@ -106,7 +107,7 @@ __all__ = ('HideHudFlags',
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
-class PlayerStates(IntEnum):
+class PlayerStates(IntFlag):
     """Player states wrapper enumerator."""
 
     ONGROUND = FL_ONGROUND
@@ -131,7 +132,7 @@ class LifeState(IntEnum):
     DISCARDBODY = LIFE_DISCARDBODY
 
 
-class PlayerButtons(IntEnum):
+class PlayerButtons(IntFlag):
     """Player buttons wrapper enumerator."""
 
     ATTACK = IN_ATTACK
@@ -162,7 +163,7 @@ class PlayerButtons(IntEnum):
     LOOKSPIN = IN_LOOKSPIN
 
 
-class HideHudFlags(IntEnum):
+class HideHudFlags(IntFlag):
     """Hide hud flags wrapper enumerator."""
 
     WEAPONSELECTION = HIDEHUD_WEAPONSELECTION

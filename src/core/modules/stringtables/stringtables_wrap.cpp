@@ -151,6 +151,14 @@ int GetStringUserDataLength( INetworkStringTable *pTable, const char *string )
 }
 
 //---------------------------------------------------------------------------------
+// Returns whether or not the given string is in the table
+//---------------------------------------------------------------------------------
+bool __contains__( INetworkStringTable *pTable, const char *string )
+{
+	return pTable->FindStringIndex(string) != INVALID_STRING_INDEX;
+}
+
+//---------------------------------------------------------------------------------
 // Exposes INetworkStringTable.
 //---------------------------------------------------------------------------------
 class INetworkStringTableExt
@@ -184,6 +192,11 @@ void export_stringtable(scope _stringtables)
 			"Returns the length of the table."
 		)
 		
+		.def("__contains__",
+			&__contains__,
+			"Returns whether or not the given string is contained in the table."
+		)
+
 		.add_property("max_strings",
 			&INetworkStringTable::GetMaxStrings,
 			"Returns the max length of the table (read-only)."

@@ -43,6 +43,9 @@
 #include "conventions/x86GccCdecl.h"
 #include "conventions/x86GccThiscall.h"
 
+// Source.Python
+#include "utilities/call_python.h"
+
 
 // ============================================================================
 // >> EXTERNALS
@@ -304,7 +307,7 @@ object CFunction::SkipHooks(tuple args, dict kw)
 }
 
 CHook* HookFunctionHelper(void* addr, ICallingConvention* pConv)
-{	
+{
 	CHook* result;
 	TRY_SEGV()
 		result = GetHookManager()->HookFunction(addr, pConv);
@@ -319,6 +322,35 @@ void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 		
 	Validate();
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	
+	// Prepare arguments for log message
+	str type = str(eType);
+	const char* szType = extract<const char*>(type);
+
+	str convention = str(m_eCallingConvention);
+	const char* szConvention = extract<const char*>(convention);
+
+	str args = str(m_tArgs);
+	const char* szArgs = extract<const char*>(args);
+
+	str return_type = str(m_eReturnType);
+	const char* szReturnType = extract<const char*>(return_type);
+
+	object oCallback = object(handle<>(borrowed(pCallable)));
+	str callback = str(oCallback);
+	const char* szCallback = extract<const char*>(callback);
+
+	PythonLog(
+		4,
+		"Hooking function: type=%s, addr=%u, conv=%s, args=%s, rtype=%s, callback=%s",
+		szType,
+		m_ulAddr,
+		szConvention,
+		szArgs,
+		szReturnType,
+		szCallback
+	);
+
 	if (!pHook) {
 		pHook = HookFunctionHelper((void *) m_ulAddr, m_pCallingConvention);
 	}

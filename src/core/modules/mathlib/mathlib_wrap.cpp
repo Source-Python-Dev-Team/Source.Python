@@ -43,6 +43,7 @@ void export_qangle(scope);
 void export_quaternion(scope);
 void export_cplane_t(scope);
 void export_radian_euler(scope);
+void export_matrix3x4_t(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -55,6 +56,7 @@ DECLARE_SP_MODULE(_mathlib)
 	export_quaternion(_mathlib);
 	export_cplane_t(_mathlib);
 	export_radian_euler(_mathlib);
+	export_matrix3x4_t(_mathlib);
 }
 
 
@@ -132,14 +134,29 @@ void export_vector(scope _mathlib)
 
 		.def(self == self)
 		.def(self != self)
+
 		.def(self += self)
 		.def(self -= self)
 		.def(self *= self)
-		.def(self *= float())
 		.def(self /= self)
-		.def(self /= float())
+		
 		.def(self += float())
 		.def(self -= float())
+		.def(self *= float())
+		.def(self /= float())
+
+		.def(self + self)
+		.def(self - self)
+		.def(self * self)
+		.def(self / self)
+		
+		.def("__add__", &VectorExt::__add__)
+		.def("__sub__", &VectorExt::__sub__)
+		.def(self * float())
+		.def(self / float())
+		
+		.def("__radd__", &VectorExt::__add__)
+		.def(float() * self)
 
 		.def("negate",
 			&Vector::Negate,
@@ -227,13 +244,6 @@ void export_vector(scope _mathlib)
 			&Vector::Length2DSqr,
 			"Returns the vector's 2D length as a square product."
 		)
-
-		.def(self + self)
-		.def(self - self)
-		.def(self * self)
-		.def(self / self)
-		.def(self * float())
-		.def(self / float())
 
 		.def("cross",
 			&Vector::Cross,
@@ -494,5 +504,79 @@ void export_radian_euler(scope _mathlib)
 		)
 
 		ADD_MEM_TOOLS(RadianEuler)
+	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports matrix3x4_t.
+//-----------------------------------------------------------------------------
+void export_matrix3x4_t(scope _mathlib)
+{
+	// TODO:
+	// - Add support for e.g. matrix[0] = (1, 2, 3, 4)
+	class_<matrix3x4_t>("Matrix3x4")
+		.def(init<
+			float, float, float, float,
+			float, float, float, float,
+			float, float, float, float>(
+			"Create a new 3x4 matrix.\n\n"
+			".. note:: The matrix is not initialized with ``0.0``."))
+
+		.def(init<matrix3x4_t&>(
+			"Copy an existing matrix."))
+
+		.def(init<const Vector&, const Vector&, const Vector&, const Vector&>())
+		.def("__repr__", &matrix3x4_tExt::__repr__)
+
+		.def(
+			"invalidate",
+			&matrix3x4_t::Invalidate,
+			"Invalidate the the matrix (set all values to ``nan``).")
+
+		.def(
+			"__getitem__",
+			&matrix3x4_tExt::__getitem__,
+			manage_new_object_policy(),
+			"Return a single row of the matrix (0 - 2).\n\n"
+			":rtype: tuple")
+			
+		.add_property(
+			"position",
+			make_function(&matrix3x4_tExt::get_position, manage_new_object_policy()),
+			"Extract the position from the matrix.\n\n"
+			":rtype: Vector")
+
+		.add_property(
+			"angles",
+			make_function(&matrix3x4_tExt::get_angles, manage_new_object_policy()),
+			"Extract the angles from the matrix.\n\n"
+			":rtype: QAngle")
+
+		ADD_MEM_TOOLS(matrix3x4_t)
+	;
+
+	class_<Matrix3x4Row>("Matrix3x4Row", no_init)
+		.def("__repr__", &Matrix3x4Row::__repr__)
+
+		.def(
+			"__getitem__", 
+			&GetItemIndexer<Matrix3x4Row, float, 0, 3>,
+			(arg("index")),
+			"Return the value of a column (0 - 3).\n"
+			"\n"
+			":param int index: An index between 0 and 3 that identifies the column.\n"
+			":rtype: float"
+		)
+
+		.def(
+			"__setitem__", 
+			&SetItemIndexer<Matrix3x4Row, float, 0, 3>,
+			(arg("index"), arg("value")),
+			"Set the value of a column.\n"
+			"\n"
+			":param int index: An index between 0 and 3 that identifies the column.\n"
+			":param float value: The value to set."
+		)
 	;
 }

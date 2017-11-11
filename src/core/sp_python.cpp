@@ -168,6 +168,44 @@ bool CPythonManager::Initialize( void )
 		return false;
 	}
 
+// Patch for issues #175.
+// For unknown reasons the streams might be unable to connect due to io.OpenWrapper failing
+//	to get their handle from their fileno and internally raise an "OSError":
+//
+//	[WinError 6] The handle is invalid"...
+//
+// Same error occurs when trying to retrieve a python file object from their descriptor
+//	using PyFile_FromFd. This is kinda weird since GetStdHandle is returning valid handles for them
+//	but oh well... reconnecting them seems to fix the issues from my testings.
+#ifdef _WIN32
+	// This fix currently only works for dedicated servers, but crashes on listen servers.
+	if (engine->IsDedicatedServer()) {
+		object sys = python::import("sys");
+		object io_open = python::import("io").attr("open");
+	
+		object stdin_ = sys.attr("stdin");
+		if (stdin_.is_none())
+		{
+			DevMsg(1, MSG_PREFIX "stdin is None... reconnecting.\n");
+			sys.attr("stdin") = sys.attr("__stdin__") = io_open("CONIN$", "rt");
+		}
+
+		object stdout_ = sys.attr("stdout");
+		if (stdout_.is_none())
+		{
+			DevMsg(1, MSG_PREFIX "stdout is None... reconnecting.\n");
+			sys.attr("stdout") = sys.attr("__stdout__") = io_open("CONOUT$", "wt");
+		}
+
+		object stderr_ = sys.attr("stderr");
+		if (stderr_.is_none())
+		{
+			DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
+			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONERR$", "wt");
+		}
+	}
+#endif
+
 	// Import the main module file.
 	DevMsg(1, MSG_PREFIX "Loading main module...\n");
 
@@ -175,9 +213,28 @@ bool CPythonManager::Initialize( void )
 		python::import("__init__").attr("load")();
 	}
 	catch( ... ) {
-		PyErr_Print();
-		PyErr_Clear();
-		Msg(MSG_PREFIX "Failed to load the main module.\n");
+		Msg(MSG_PREFIX "Failed to load the main module due to following exception:\n");
+
+		// Don't use PyErr_Print() here because our sys.excepthook has not been installed
+		// yet so let's just format and output to the console ourself.
+		if (PyErr_Occurred())
+		{
+			PyObject *pType;
+			PyObject *pValue;
+			PyObject *pTraceback;
+			PyErr_Fetch(&pType, &pValue, &pTraceback);
+			PyErr_NormalizeException(&pType, &pValue, &pTraceback);
+
+			handle<> hType(pType);
+			handle<> hValue(allow_null(pValue));
+			handle<> hTraceback(allow_null(pTraceback));
+
+			object format_exception = import("traceback").attr("format_exception");
+			Msg(extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback))));
+
+			PyErr_Clear();
+		}
+
 		return false;
 	}
 

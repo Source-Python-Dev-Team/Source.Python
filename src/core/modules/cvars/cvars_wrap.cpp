@@ -281,6 +281,26 @@ void export_convar(scope _cvars)
 			"Remove the notify flag and makes the cvar no longer public."
 		)
 			
+		// Special methods...
+		.def("__float__",
+			&ConVar::GetFloat,
+			"Returns the value as a float."
+		)
+
+		.def("__int__",
+			&ConVar::GetInt,
+			"Returns the value as an int."
+		)
+
+		.def("__bool__",
+			&ConVar::GetBool,
+			"Returns the value as a bool."
+		)
+
+		.def("__str__",
+			&ConVar::GetString,
+			"Returns the value as a string."
+		)
 
 		ADD_MEM_TOOLS(ConVar)
 	;

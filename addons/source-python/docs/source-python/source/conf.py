@@ -310,9 +310,7 @@ intersphinx_mapping = {'python': ('https://docs.python.org/3.5', None)}
 autodoc_member_order = 'groupwise'
 
 # Directives that should be used by default
-autodoc_default_flags = [
-    'private-members',
-]
+# autodoc_default_flags = []
 
 # Add names (e.g. magic methods) you always want to skip
 names_to_skip = [

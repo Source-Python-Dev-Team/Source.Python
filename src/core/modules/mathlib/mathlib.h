@@ -82,6 +82,18 @@ public:
 		copy.NormalizeInPlace();
 		return copy;
 	}
+
+	static inline Vector __add__(Vector vecCopy, float val)
+	{
+		vecCopy += val;
+		return vecCopy;
+	}
+
+	static inline Vector __sub__(Vector vecCopy, float val)
+	{
+		vecCopy -= val;
+		return vecCopy;
+	}
 };
 
 
@@ -115,6 +127,68 @@ class RadianEulerExt
 public:
 	static str __repr__(RadianEuler* pRadianEuler)
 	{ return str("RadianEuler" + str(tuple(pRadianEuler))); }
+};
+
+
+//-----------------------------------------------------------------------------
+// matrix3x4_t extension class.
+//-----------------------------------------------------------------------------
+class Matrix3x4Row
+{
+public:
+	Matrix3x4Row(float* row)
+	{
+		m_row = row;
+	}
+
+	float& operator[](unsigned int index)
+	{
+		return m_row[index];
+	}
+
+	str __repr__()
+	{
+		return str(tuple(*this)); 
+	}
+
+public:
+	float* m_row;
+};
+
+
+class matrix3x4_tExt
+{
+public:
+	static Matrix3x4Row* __getitem__(matrix3x4_t& matrix, unsigned int index)
+	{
+		if (index >= 3) {
+			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range (%d)", index)
+		}
+
+		return new Matrix3x4Row(matrix[index]);
+	}
+
+	static str __repr__(matrix3x4_t& matrix)
+	{
+		return str("["
+			+ str(__getitem__(matrix, 0)) + ",\n"
+			+ str(__getitem__(matrix, 1)) + ",\n"
+			+ str(__getitem__(matrix, 2)) + "]");
+	}
+
+	static Vector* get_position(matrix3x4_t& matrix)
+	{
+		Vector* result = new Vector();
+		MatrixPosition(matrix, *result);
+		return result;
+	}
+
+	static QAngle* get_angles(matrix3x4_t& matrix)
+	{
+		QAngle* result = new QAngle();
+		MatrixAngles(matrix, *result);
+		return result;
+	}
 };
 
 #endif // _MATHLIB_H
