@@ -175,6 +175,20 @@ public:
 			+ str(__getitem__(matrix, 1)) + ",\n"
 			+ str(__getitem__(matrix, 2)) + "]");
 	}
+
+	static Vector* get_position(matrix3x4_t& matrix)
+	{
+		Vector* result = new Vector();
+		MatrixPosition(matrix, *result);
+		return result;
+	}
+
+	static QAngle* get_angles(matrix3x4_t& matrix)
+	{
+		QAngle* result = new QAngle();
+		MatrixAngles(matrix, *result);
+		return result;
+	}
 };
 
 #endif // _MATHLIB_H

@@ -540,6 +540,18 @@ void export_matrix3x4_t(scope _mathlib)
 			manage_new_object_policy(),
 			"Return a single row of the matrix (0 - 2).\n\n"
 			":rtype: tuple")
+			
+		.add_property(
+			"position",
+			make_function(&matrix3x4_tExt::get_position, manage_new_object_policy()),
+			"Extract the position from the matrix.\n\n"
+			":rtype: Vector")
+
+		.add_property(
+			"angles",
+			make_function(&matrix3x4_tExt::get_angles, manage_new_object_policy()),
+			"Extract the angles from the matrix.\n\n"
+			":rtype: QAngle")
 
 		ADD_MEM_TOOLS(matrix3x4_t)
 	;
