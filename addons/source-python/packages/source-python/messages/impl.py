@@ -173,6 +173,7 @@ class SayText2Impl(UserMessageImpl):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
+#: A dictionary that contains all implemented user messages.
 implemented_usermessages = {
     get_message_index('SayText2'): SayText2Impl
 }

@@ -67,7 +67,18 @@ _user_message_data = None
 # >> CLASSES
 # =============================================================================
 class HookUserMessageCreatedBase(AutoUnload):
+    """Base decorator for user message hooks."""
+
     def __init__(self, user_message):
+        """Create a new user message hook.
+
+        :param int/str user_message:
+            The user message index or name to hook.
+        :raise TypeError:
+            Raised if ``user_message`` is not and int or str.
+        :raise ValueError:
+            Raised if the user message does not exist.
+        """
         if isinstance(user_message, int):
             index = user_message
         elif isinstance(user_message, str):
@@ -84,15 +95,24 @@ class HookUserMessageCreatedBase(AutoUnload):
         if self.message_name is None:
             raise ValueError(f'Invalid user message: {user_message}')
 
-
     def __call__(self, callback):
+        """Finalize the hook registration by registering the callback.
+
+        :param object callback:
+            A callable object that will be called when a user message is
+            created.
+        :return:
+            The callback that has been passed.
+        """
         if not callable(callback):
             raise ValueError('Callback must be callable.')
 
         self.callback = callback
         self.hooks[self.message_index].register_listener(callback)
+        return self.callback
 
     def _unload_instance(self):
+        """Unregister the user message hook."""
         if self.callback is None:
             return
 
@@ -125,6 +145,14 @@ class HookUserMessage(HookUserMessageCreatedBase):
     hooks = defaultdict(ListenerManager)
 
     def __init__(self, user_message):
+        """Create a new user message hook.
+
+        :raise NotImplementedError:
+            Raised if the user message has not been implemented yet in
+            Source.Python.
+
+        .. seealso:: :meth:`HookUserMessageCreatedBase.__init__`
+        """
         super().__init__(user_message)
 
         # Verify that the user message is supported/implemented. This will
