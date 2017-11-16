@@ -50,7 +50,7 @@ if UserMessage.is_protobuf():
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = (
-    'HookUserMessageCreatedBase',
+    'HookUserMessageBase',
     'HookBitBufferUserMessage',
     'HookProtobufUserMessage',
     'HookUserMessage',
@@ -66,7 +66,7 @@ _user_message_data = None
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class HookUserMessageCreatedBase(AutoUnload):
+class HookUserMessageBase(AutoUnload):
     """Base decorator for user message hooks."""
 
     def __init__(self, user_message):
@@ -127,19 +127,19 @@ class HookUserMessageCreatedBase(AutoUnload):
         raise NotImplementedError('Must be implemented by a subclass.')
 
 
-class HookBitBufferUserMessage(HookUserMessageCreatedBase):
+class HookBitBufferUserMessage(HookUserMessageBase):
     """Decorator to register a raw user message hook for bitbuffer messages."""
 
     hooks = defaultdict(ListenerManager)
 
 
-class HookProtobufUserMessage(HookUserMessageCreatedBase):
+class HookProtobufUserMessage(HookUserMessageBase):
     """Decorator to register a raw user message hook for protobuf messages."""
 
     hooks = defaultdict(ListenerManager)
 
 
-class HookUserMessage(HookUserMessageCreatedBase):
+class HookUserMessage(HookUserMessageBase):
     """Decorator to register a convenient user message hook."""
 
     hooks = defaultdict(ListenerManager)
@@ -151,7 +151,7 @@ class HookUserMessage(HookUserMessageCreatedBase):
             Raised if the user message has not been implemented yet in
             Source.Python.
 
-        .. seealso:: :meth:`HookUserMessageCreatedBase.__init__`
+        .. seealso:: :meth:`HookUserMessageBase.__init__`
         """
         super().__init__(user_message)
 
