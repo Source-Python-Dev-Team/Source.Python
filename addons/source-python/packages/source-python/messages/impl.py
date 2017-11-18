@@ -2,6 +2,9 @@
 
 """Provides user message implementations."""
 
+# TODO:
+# - Clear ProtobufMessage before rewriting it
+
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
@@ -170,12 +173,62 @@ class SayText2Impl(UserMessageImpl):
         buffer.write_string(data.param4)
 
 
+class VGUIMenuImpl(UserMessageImpl):
+    """VGUIMenu implementation."""
+
+    @staticmethod
+    def read_protobuf(buffer):
+        subkeys = {}
+        for index in range(buffer.get_field_count('subkeys')):
+            message = buffer.get_repeated_message('subkeys', index)
+            subkeys[message.get_string('name')] = message.get_string('str')
+
+        return UserMessageData(
+            name=buffer.get_string('name'),
+            show=buffer.get_bool('show'),
+            subkeys=subkeys)
+
+    @staticmethod
+    def write_protobuf(buffer, data):
+        buffer.set_string('name', data.name)
+        buffer.set_bool('show', data.show)
+        for key, value in data.subkeys.items():
+            temp_buffer = buffer.add_message('subkeys')
+            temp_buffer.set_string('name', key)
+            temp_buffer.set_string('str', value)
+
+    @staticmethod
+    def read_bitbuffer(buffer):
+        name = buffer.read_string()
+        show = buffer.read_byte()
+        length = buffer.read_byte()
+
+        subkeys = {}
+        for index in range(length):
+            subkeys[buffer.read_string()] = buffer.read_string()
+
+        return UserMessageData(
+            name=name,
+            show=show,
+            subkeys=subkeys)
+
+    @staticmethod
+    def write_bitbuffer(buffer, data):
+        buffer.write_string(data.name)
+        buffer.write_byte(data.show)
+        buffer.write_byte(len(data.subkeys))
+        for key, value in data.subkeys.items():
+            buffer.write_string(key)
+            buffer.write_string(value)
+
+
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
 #: A dictionary that contains all implemented user messages.
 implemented_usermessages = {
-    get_message_index('SayText2'): SayText2Impl
+    get_message_index('SayText2'): SayText2Impl,
+    get_message_index('VGUIMenu'): VGUIMenuImpl,
 }
 
 def get_user_message_impl(msg_index):
