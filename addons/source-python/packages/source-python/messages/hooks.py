@@ -4,13 +4,7 @@
 
 # TODO:
 # - Implement more user messages
-# - Integrate all of this into the messages package. Also use the message
-#   implementations for the UserMessageCreator subclasses.
-# - Add the possibility to modify the recipients. This will require us to
-#   replace the original recipient filter due to two reasons:
-#   1. Modifying the recipient filter crashes on CS:GO
-#   2. Modifying the recipient filter will crash if our MRecipientFilter
-#      implementation doesn't match the passed recipient filter structure
+# - Use these message implementations for the UserMessageCreator subclasses.
 
 # =============================================================================
 # >> IMPORTS
