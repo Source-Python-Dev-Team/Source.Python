@@ -26,6 +26,7 @@ from core import AutoUnload
 from engines.server import engine_server
 #   Filters
 from filters.recipients import BaseRecipientFilter
+from filters.recipients import RecipientFilter
 #   Bitbuffers
 from bitbuffers import BitBufferWrite
 from bitbuffers import BitBufferRead
@@ -61,6 +62,7 @@ __all__ = (
 # >> GLOBAL VARIABLES
 # =============================================================================
 _user_message_data = None
+_recipients = RecipientFilter()
 
 
 # =============================================================================
@@ -175,10 +177,14 @@ if UserMessage.is_protobuf():
         if not user_message_hooks and not protobuf_user_message_hooks:
             return
 
-        recipients = make_object(BaseRecipientFilter, args[1])
+        # Replace original recipients filter
+        tmp_recipients = make_object(BaseRecipientFilter, args[1])
+        _recipients.update(*tuple(tmp_recipients), clear=True)
+        args[1] = _recipients
+
         buffer = make_object(ProtobufMessage, args[3])
 
-        protobuf_user_message_hooks.notify(recipients, buffer)
+        protobuf_user_message_hooks.notify(_recipients, buffer)
 
         # No need to do anything behind this if no listener is registered
         if not user_message_hooks:
@@ -190,17 +196,24 @@ if UserMessage.is_protobuf():
             return
 
         data = impl.read(buffer)
-        user_message_hooks.notify(recipients, data)
+        user_message_hooks.notify(_recipients, data)
 
         # Update buffer if data has been changed
         if data.has_been_changed():
             impl.write(buffer, data)
 
 else:
+    @PreHook(get_virtual_function(engine_server, 'UserMessageBegin'))
+    def _pre_user_message_begin(args):
+        # Replace original recipients filter
+        tmp_recipients = make_object(BaseRecipientFilter, args[1])
+        _recipients.update(*tuple(tmp_recipients), clear=True)
+        args[1] = _recipients
+
     @PostHook(get_virtual_function(engine_server, 'UserMessageBegin'))
     def _post_user_message_begin(args, return_value):
         global _user_message_data
-        _user_message_data = (args[1], args[2], return_value)
+        _user_message_data = (args[2], return_value)
 
     @PreHook(get_virtual_function(engine_server, 'MessageEnd'))
     def _pre_message_end(args):
@@ -209,7 +222,7 @@ else:
         if _user_message_data is None:
             return
 
-        recipients_ptr, message_index, buffer_write_ptr = _user_message_data
+        message_index, buffer_write_ptr = _user_message_data
 
         # Retrieve the ListenerManager instances
         user_message_hooks = HookUserMessage.hooks[message_index]
@@ -219,7 +232,6 @@ else:
         if not user_message_hooks and not bitbuffer_user_message_hooks:
             return
 
-        recipients = make_object(BaseRecipientFilter, recipients_ptr)
         buffer_write = make_object(BitBufferWrite, buffer_write_ptr)
         buffer_read = BitBufferRead(buffer_write, False)
 
@@ -228,7 +240,7 @@ else:
         for callback in bitbuffer_user_message_hooks:
             buffer_read.seek_to_bit(0)
             buffer_write.seek_to_bit(0)
-            callback(recipients, buffer_read, buffer_write)
+            callback(_recipients, buffer_read, buffer_write)
 
         # No need to do anything behind this if no listener is registered
         if not user_message_hooks:
@@ -241,7 +253,7 @@ else:
 
         buffer_read.seek_to_bit(0)
         data = impl.read(buffer_read)
-        user_message_hooks.notify(recipients, data)
+        user_message_hooks.notify(_recipients, data)
 
         # Update buffer if data has been changed
         if data.has_been_changed():
