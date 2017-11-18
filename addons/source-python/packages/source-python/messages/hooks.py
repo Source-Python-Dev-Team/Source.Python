@@ -161,7 +161,7 @@ class HookUserMessage(HookUserMessageBase):
 # =============================================================================
 if UserMessage.is_protobuf():
     @PreHook(get_virtual_function(engine_server, 'SendUserMessage'))
-    def _pre_message_end(args):
+    def _pre_send_user_message(args):
         message_index = args[2]
 
         user_message_hooks = HookUserMessage.hooks[message_index]
