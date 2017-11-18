@@ -2,9 +2,6 @@
 
 """Provides user message implementations."""
 
-# TODO:
-# - Clear ProtobufMessage before rewriting it
-
 # =============================================================================
 # >> IMPORTS
 # =============================================================================

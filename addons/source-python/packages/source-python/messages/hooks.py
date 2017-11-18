@@ -194,6 +194,7 @@ if UserMessage.is_protobuf():
 
         # Update buffer if data has been changed
         if data.has_been_changed():
+            buffer.clear()
             impl.write(buffer, data)
 
 else:
