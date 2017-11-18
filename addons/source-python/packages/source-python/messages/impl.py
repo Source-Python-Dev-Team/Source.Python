@@ -17,6 +17,7 @@ __all__ = (
     'UserMessageData',
     'UserMessageImpl',
     'SayText2Impl',
+    'VGUIMenuImpl',
     'implemented_usermessages',
     'get_user_message_impl',
 )
