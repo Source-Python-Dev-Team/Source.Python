@@ -229,12 +229,19 @@ else:
         buffer_write = make_object(BitBufferWrite, buffer_write_ptr)
         buffer_read = BitBufferRead(buffer_write, False)
 
+        org_current_bit = buffer_write.current_bit
+
         # For bitbuffers we need to make sure every callback starts reading and
         # writing from the very first bit.
         for callback in bitbuffer_user_message_hooks:
             buffer_read.seek_to_bit(0)
             buffer_write.seek_to_bit(0)
             callback(_recipients, buffer_read, buffer_write)
+
+        # If none of the above callbacks wrote to the buffer, we need to restore
+        # the current_bit to the original value.
+        if buffer_write.current_bit == 0:
+            buffer_write.seek_to_bit(org_current_bit)
 
         # No need to do anything behind this if no listener is registered
         if not user_message_hooks:
