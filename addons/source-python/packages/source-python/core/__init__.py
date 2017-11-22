@@ -103,7 +103,7 @@ class AutoUnload(object):
         self = super().__new__(cls)
 
         # Get the calling module
-        caller = getmodule(stack()[1][0])
+        caller = getmodule(stack(0)[1][0])
 
         # Call class-specific logic for adding the instance.
         self._add_instance(caller.__name__)
