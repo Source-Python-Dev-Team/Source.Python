@@ -17,7 +17,8 @@ Their information is shared with all players on the server. Some common examples
 for those entities are players, weapons, barrels or trigger entities.
 Non-networked entities are entities that only exist on the server or client, but
 not on both sides. Entities are uniquely identified by an index that
-starts at 0 and can go up to the `entity limit <http://forums.sourcepython.com/>`_.
+starts at 0 and can go up to the
+`entity limit <https://developer.valvesoftware.com/wiki/Entity_limit>`_.
 
 .. note::
 
