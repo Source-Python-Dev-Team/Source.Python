@@ -103,6 +103,11 @@
 			}
 			return enum_value;
 		}
+
+		static int GetFieldCount(google::protobuf::Message* pMessage, const char* field_name)
+		{
+			return pMessage->GetReflection()->FieldSize(*pMessage, GetFieldDescriptor(pMessage, field_name));
+		}
 		
 
 		// ====================================================================

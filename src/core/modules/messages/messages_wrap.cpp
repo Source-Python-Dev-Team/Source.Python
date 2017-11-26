@@ -163,6 +163,16 @@ void export_protobuf_message(scope _messages)
 	
 	ProtobufMessage.def("serialize_to_array", &google::protobuf::Message::SerializeToArray);
 	ProtobufMessage.def("parse_from_array", &google::protobuf::Message::ParseFromArray);
+	ProtobufMessage.def(
+		"get_field_count",
+		&CProtobufMessageExt::GetFieldCount,
+		"Return the number of elements of a repeated field.\n\n"
+		":rtype: int");
+
+	ProtobufMessage.def(
+		"clear",
+		&google::protobuf::Message::Clear,
+		"Clear the message.");
 
 	ProtobufMessage.add_property("name", &google::protobuf::Message::GetTypeName);
 	ProtobufMessage.add_property("debug_string", &google::protobuf::Message::DebugString);
