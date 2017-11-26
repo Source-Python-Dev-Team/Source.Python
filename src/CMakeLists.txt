@@ -14,6 +14,7 @@ include("makefiles/shared.cmake")
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LOADER_HEADERS
     loader/loader_main.h
+    loader/definitions.h
 )
 
 Set(SOURCEPYTHON_LOADER_SOURCES

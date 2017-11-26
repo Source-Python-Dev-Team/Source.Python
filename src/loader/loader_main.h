@@ -35,28 +35,8 @@
 //---------------------------------------------------------------------------------
 // Definitions
 //---------------------------------------------------------------------------------
-#define PYLIB_NAME_WIN32	"Python3/plat-win/python36.dll"
-#define PYLIB_NAME_LINUX	"Python3/plat-linux/libpython3.6m.so.1.0"
+#include "definitions.h"
 
-#define CORE_NAME_WIN32		"bin/core.dll"
-#define CORE_NAME_LINUX		"bin/core.so"
-
-#if defined(_WIN32)
-#	define CORE_NAME  CORE_NAME_WIN32
-#else
-#	define CORE_NAME  CORE_NAME_LINUX
-#endif
-
-#if defined(_WIN32)
-#	define PYLIB_NAME PYLIB_NAME_WIN32
-#	define VCRUNTIME_LIB "Python3/plat-win/vcruntime140.dll"
-#elif defined(LINUX)
-#	define PYLIB_NAME PYLIB_NAME_LINUX
-#endif
-
-#define MAX_PATH_LENGTH 1024
-#define MAX_ERROR_LENGTH 1024
-#define MSG_PREFIX "[Source.Python] "
 
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class
