@@ -637,9 +637,14 @@ class Player(Entity):
     def kick(self, message=''):
         """Kick the player from the server.
 
-        :param str message: A message the kicked player will receive.
+        :param str message:
+            A message the kicked player will receive.
         """
-        execute_server_command('kickid', self.userid, message.rstrip())
+        message = message.rstrip()
+        if message:
+            self.client.disconnect(message)
+        else:
+            execute_server_command('kickid', self.userid, message)
 
     def ban(self, duration=0, kick=True, write_ban=True):
         """Ban a player from the server.
