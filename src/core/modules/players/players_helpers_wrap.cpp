@@ -57,6 +57,7 @@ void export_player_conversion_functions(scope _helpers)
 	// To Index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, const char *, Name);
 
 	// To Edict conversions...
 	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Userid, reference_existing_object_policy());

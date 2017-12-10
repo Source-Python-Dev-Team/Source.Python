@@ -54,6 +54,33 @@ bool IndexFromEdict( edict_t *pEdict, unsigned int& output )
 
 
 //-----------------------------------------------------------------------------
+// Returns an index from the given player name.
+//-----------------------------------------------------------------------------
+bool IndexFromName(const char* szName, unsigned int& output )
+{
+	if (!szName || szName[0] == '\0')
+		return false;
+
+	int iEntityIndex = 0;
+	IPlayerInfo* pInfo = NULL;
+	while(iEntityIndex < gpGlobals->maxClients)
+	{
+		iEntityIndex++;
+		if (!PlayerInfoFromIndex(iEntityIndex, pInfo))
+			continue;
+
+		if (V_strcmp(pInfo->GetName(), szName) == 0)
+		{
+			output = iEntityIndex;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+//-----------------------------------------------------------------------------
 // Returns an index from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
 bool IndexFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output )

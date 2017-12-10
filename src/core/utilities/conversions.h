@@ -211,6 +211,7 @@ bool IndexFromBaseHandle( CBaseHandle hBaseHandle, unsigned int& output );
 bool IndexFromIntHandle( unsigned int iEntityHandle, unsigned int& output );
 bool IndexFromUserid( unsigned int iUserID, unsigned int& output );
 bool IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output );
+bool IndexFromName( const char *szName, unsigned int& output );
 
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);
@@ -219,6 +220,7 @@ CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer);
 CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(unsigned int, Index, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, const char *, Name);
 
 
 //-----------------------------------------------------------------------------
