@@ -98,6 +98,14 @@ class Player(Entity):
         return cls(index_from_userid(userid))
 
     @property
+    def raw_steamid(self):
+        """Return the player's unformatted SteamID.
+
+        :rtype: SteamID
+        """
+        return engine_server.get_client_steamid(self.edict)
+
+    @property
     def permissions(self):
         """Return the player's permissions.
 
