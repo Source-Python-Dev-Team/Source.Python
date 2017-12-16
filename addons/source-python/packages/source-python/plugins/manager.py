@@ -216,7 +216,7 @@ class PluginManager(OrderedDict):
         try:
             plugin._unload()
         except:
-            except_hooks.print_exceptions()
+            except_hooks.print_exception()
 
         self._remove_modules(plugin_name)
         del self[plugin_name]
