@@ -49,7 +49,7 @@ class SimpleESCMenu(_BaseMenu):
     """This class creates basic ESC menus."""
 
     def __init__(
-            self, data=None, select_callback=None, build_callback=None,
+            self, data=None, select_callback=None, build_callback=None, close_callback=None,
             description=None, title=None, title_color=WHITE):
         """Initialize the object.
 
@@ -58,13 +58,15 @@ class SimpleESCMenu(_BaseMenu):
             :meth:`menus.base._BaseMenu.__init__`.
         :param callable|None build_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None close_callback: See
+            :meth:`menus.base._BaseMenu.__init__`
         :param str|None description: A description that is displayed under the
             title.
         :param str|None title: A title that is displayed at the top of the
             menu.
         :param Color title_color: The color of the title.
         """
-        super().__init__(data, select_callback, build_callback)
+        super().__init__(data, select_callback, build_callback, close_callback)
         self.description = description
         self.title = title
         self.title_color = title_color
@@ -109,7 +111,7 @@ class SimpleESCMenu(_BaseMenu):
     def _select(self, player_index, choice_index):
         """See :meth:`menus.base._BaseMenu._select`."""
         if choice_index == 0:
-            return None
+            return self._select_close(player_index)
 
         option = self._player_pages[player_index].options[choice_index]
         if not option.selectable:
@@ -165,7 +167,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
     """
 
     def __init__(
-            self, data=None, select_callback=None, build_callback=None,
+            self, data=None, select_callback=None, build_callback=None, close_callback=None,
             description=None, title=None, title_color=WHITE, fill=True,
             parent_menu=None):
         """Initialize the object.
@@ -174,6 +176,8 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         :param callable|None select_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
         :param callable|None build_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None close_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
         :param str|None description: See :meth:`SimpleESCMenu.__init__`.
         :param str|None title: See :meth:`SimpleESCMenu.__init__`.
@@ -184,7 +188,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             hitting 'Back' on the first page.
         """
         super().__init__(
-            data, select_callback, build_callback,
+            data, select_callback, build_callback, close_callback,
             description, title, title_color)
         self.fill = fill
         self.parent_menu = parent_menu
@@ -280,10 +284,9 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
 
     def _select(self, player_index, choice_index):
         """See :meth:`menus.base._BaseMenu._select`."""
-        # Do nothing if the menu is being closed
         if choice_index == 0:
             del self._player_pages[player_index]
-            return None
+            return self._select_close(player_index)
 
         # Get the player's current page
         page_index = self.get_player_page(player_index)
@@ -311,7 +314,7 @@ class ListESCMenu(PagedESCMenu):
     Navigation options are added automatically."""
 
     def __init__(
-            self, data=None, select_callback=None, build_callback=None,
+            self, data=None, select_callback=None, build_callback=None, close_callback=None,
             description=None, title=None, title_color=WHITE, fill=True,
             parent_menu=None, items_per_page=5):
         """Initialize the object.
@@ -321,6 +324,8 @@ class ListESCMenu(PagedESCMenu):
             :meth:`menus.base._BaseMenu.__init__`.
         :param callable|None build_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None close_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
         :param str|None description: See :meth:`SimpleESCMenu.__init__`.
         :param str|None title: See :meth:`SimpleESCMenu.__init__`.
         :param Color title_color: See :meth:`SimpleESCMenu.__init__`.
@@ -329,7 +334,7 @@ class ListESCMenu(PagedESCMenu):
         :param int items_per_page: Number of options that should be displayed
             on a single page (5 is the maximum).
         """
-        super().__init__(data, select_callback, build_callback, description,
+        super().__init__(data, select_callback, build_callback, close_callback, description,
             title, title_color, fill, parent_menu)
         self.items_per_page = items_per_page
 

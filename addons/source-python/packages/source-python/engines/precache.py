@@ -109,8 +109,8 @@ class _PrecacheBase(AutoUnload):
         return self._path
 
     def _precache(self):
-        """Precache the path."""
-        self._precache_method(self._path, self._preload)
+        """Precache the file."""
+        raise NotImplementedError('Must be implemented by a subclass.')
 
     def _server_spawn(self, game_event):
         """Precache the object on map change."""
@@ -133,18 +133,15 @@ class _PrecacheBase(AutoUnload):
         """
         raise NotImplementedError('No precache_table defined for class.')
 
-    @property
-    def _precache_method(self):
-        """Return a method to precache the file."""
-        raise NotImplementedError('No _precache_method defined for class.')
-
 
 class Decal(_PrecacheBase):
     """Class used to handle a specific decal."""
 
     # Set the base attributes
     precache_table = 'decalprecache'
-    _precache_method = engine_server.precache_decal
+
+    def _precache(self):
+        return engine_server.precache_decal(self._path, self._preload)
 
 
 class Generic(_PrecacheBase):
@@ -152,7 +149,9 @@ class Generic(_PrecacheBase):
 
     # Set the base attributes
     precache_table = 'genericprecache'
-    _precache_method = engine_server.precache_generic
+
+    def _precache(self):
+        return engine_server.precache_generic(self._path, self._preload)
 
 
 class Model(_PrecacheBase):
@@ -160,4 +159,6 @@ class Model(_PrecacheBase):
 
     # Set the base attributes
     precache_table = 'modelprecache'
-    _precache_method = engine_server.precache_model
+
+    def _precache(self):
+        return engine_server.precache_model(self._path, self._preload)

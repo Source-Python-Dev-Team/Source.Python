@@ -41,7 +41,7 @@ class _BaseMenu(AutoUnload, list):
 
     _instances = {}
 
-    def __init__(self, data=None, select_callback=None, build_callback=None):
+    def __init__(self, data=None, select_callback=None, build_callback=None, close_callback=None):
         """Initialize the menu.
 
         :param iterable|None data: Data that should be added to the menu.
@@ -59,11 +59,19 @@ class _BaseMenu(AutoUnload, list):
             The callback will receive 2 parameters:
                 1. The instance of this menu.
                 2. The index of the player who will receive this menu.
+
+        :param callable|None close_callback: A function that gets called
+            when a menu is closed by a player.
+
+            The callback will receive 2 parameters:
+                1. The instance of this menu.
+                2. The index of the player who will close this menu.
         """
         super().__init__(list() if data is None else data)
 
         self.select_callback = select_callback
         self.build_callback = build_callback
+        self.close_callback = close_callback
         self._player_pages = defaultdict(_PlayerPage)
         self._instances[id(self)] = self
 
@@ -112,6 +120,15 @@ class _BaseMenu(AutoUnload, list):
         """
         if self.select_callback is not None:
             return self.select_callback(self, player_index, choice_index)
+
+    def _select_close(self, player_index):
+        """Handle the close menu selection.
+
+        :param int player_index: The index of the player who made the
+            selection.
+        """
+        if self.close_callback is not None:
+            return self.close_callback(self, player_index)
 
     def send(self, *ply_indexes, **tokens):
         """Send the menu to the given player indexes.
@@ -258,6 +275,21 @@ class _BaseMenu(AutoUnload, list):
                 2. The index of the player who will receive this menu.
         """
         self.build_callback = callback
+        return callback
+
+    def register_close_callback(self, callback):
+        """Register a close callback for the menu.
+
+        Can and should be used as a decorator.
+
+        :param callable callback: A function that gets called
+            when a menu is closed by a player.
+
+            The callback will receive 2 parameters:
+                1. The instance of this menu.
+                2. The index of the player who will receive this menu.
+        """
+        self.close_callback = callback
         return callback
 
 

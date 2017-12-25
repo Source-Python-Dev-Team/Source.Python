@@ -102,9 +102,19 @@ bool CPythonManager::Initialize( void )
 	wchar_t wszPythonHome[MAX_PATH_LENGTH];
 	V_strtowcs(szPythonHome, -1, wszPythonHome, MAX_PATH_LENGTH);
 
+	// Get the full path to the shared python library
+	char szProgramName[MAX_PATH_LENGTH];
+	V_snprintf(szProgramName, MAX_PATH_LENGTH, "%s/%s", GetSourcePythonDir(), PYLIB_NAME);
+	V_FixSlashes(szProgramName);
+	DevMsg(1, MSG_PREFIX "sys.executable set to %s\n", szProgramName);
+
+	// Convert to wide char for python.
+	wchar_t wszProgramName[MAX_PATH_LENGTH];
+	V_strtowcs(szProgramName, -1, wszProgramName, MAX_PATH_LENGTH);
+
 	// Set that as the python home directory.
  	Py_SetPythonHome(wszPythonHome);
- 	Py_SetProgramName(wszPythonHome);
+ 	Py_SetProgramName(wszProgramName);
 	Py_SetPath(wszPythonHome);
 
 	// Initialize python and its namespaces.

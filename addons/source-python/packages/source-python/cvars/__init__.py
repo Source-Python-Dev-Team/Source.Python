@@ -8,6 +8,7 @@
 # Source.Python Imports
 #   Cvars
 from _cvars import ConVar
+from _cvars import _Cvar
 from cvars.flags import ConVarFlags
 
 

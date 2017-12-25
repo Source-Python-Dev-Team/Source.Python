@@ -788,13 +788,16 @@ static void export_server_game_dll(scope _server)
 		make_function(
 			&IServerGameDLL::GetAllServerClasses,
 			reference_existing_object_policy()
-		)
+		),
+		"Return the first server class. This base can be used to iterate through all server classes.\n\n"
+		":rtype: ServerClass"
 	);
 
 	ServerGameDLL.add_property(
 		"game_description",
 		&IServerGameDLL::GetGameDescription,
-		"Return the game's description."
+		"Return the game's description.\n\n"
+		":rtype: str"
 	);
 
 	// Black Mesa and Orangebox specific methods...
@@ -831,135 +834,160 @@ static void export_iserver(scope _server)
 	_IServer.add_property(
 		"num_clients",
 		&IServer::GetNumClients,
-		"Return the current number of clients."
+		"Return the current number of clients.\n\n"
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"num_proxies",
 		&IServer::GetNumProxies,
-		"Return the number of attached HLTV proxies."
+		"Return the number of attached HLTV proxies.\n\n"
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"num_fake_clients",
 		&IServer::GetNumFakeClients,
-		"Return the number of fake clients."
+		"Return the number of fake clients.\n\n"
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"max_clients",
 		&IServer::GetMaxClients,
-		"Return the current client limit."
+		"Return the current client limit.\n\n"
+		":rtype: int"
 	);
 
 	_IServer.def(
 		"get_client",
 		&IServer::GetClient,
-		"Return the interface to a client.",
+		"Return the interface to a client.\n\n"
+		":rtype: Client",
 		reference_existing_object_policy()
 	);
 
 	_IServer.add_property(
 		"client_count",
 		&IServer::GetClientCount,
-		"Return the number of client slots (used and unused)."
+		"Return the number of client slots (used and unused).\n\n"
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"udp_port",
 		&IServer::GetUDPPort,
-		"Return the currently used UDP port."
+		"Return the currently used UDP port.\n\n"
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"time",
 		&IServer::GetTime,
-		"Return the game world time."
+		"Return the game world time.\n\n"
+		":rtype: float"
 	);
 
 	_IServer.add_property(
 		"tick",
 		&IServer::GetTick,
-		"Return the game world tick."
+		"Return the game world tick.\n\n"
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"tick_interval",
 		&IServer::GetTickInterval,
-		"Return the tick interval in seconds."
+		"Return the tick interval in seconds.\n\n"
+		":rtype: float"
 	);
 
 	_IServer.add_property(
 		"name",
 		&IServer::GetName,
-		"Return the public server name"
+		"Return the public server name.\n\n"
+		":rtype: str"
 	);
 
 	_IServer.add_property(
 		"map_name",
 		&IServer::GetMapName,
-		"Return the current map name."
+		"Return the current map name.\n\n"
+		":rtype: str"
 	);
 
 	_IServer.add_property(
 		"spawn_count",
-		&IServer::GetSpawnCount
+		&IServer::GetSpawnCount,
+		"Return the spawn count.\n\n"
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"num_classes",
-		&IServer::GetNumClasses
+		&IServer::GetNumClasses,
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"class_bits",
-		&IServer::GetClassBits
+		&IServer::GetClassBits,
+		":rtype: int"
 	);
 
 	_IServer.add_property(
 		"net_stats",
 		&IServerExt::GetNetStats,
-		"Return a tuple containing the total net in/out in bytes/sec."
+		"Return a tuple containing the total net in/out in bytes/sec.\n\n"
+		":rtype: tuple"
 	);
 
 	_IServer.add_property(
 		"num_players",
-		&IServer::GetNumPlayers
+		&IServer::GetNumPlayers,
+		":rtype: int"
 	);
 
 	_IServer.def(
 		"get_player_info",
-		&IServer::GetPlayerInfo
+		&IServer::GetPlayerInfo,
+		":rtype: bool"
 	);
 
 	_IServer.def(
 		"is_active",
-		&IServer::IsActive
+		&IServer::IsActive,
+		":rtype: bool"
 	);
 
 	_IServer.def(
 		"is_loading",
-		&IServer::IsLoading
+		&IServer::IsLoading,
+		":rtype: bool"
 	);
 
 	_IServer.def(
 		"is_dedicated",
-		&IServer::IsDedicated
+		&IServer::IsDedicated,
+		":rtype: bool"
 	);
 
 	_IServer.def(
 		"is_multiplayer",
-		&IServer::IsMultiplayer
+		&IServer::IsMultiplayer,
+		":rtype: bool"
 	);
 
 	_IServer.def(
 		"is_pausable",
-		&IServer::IsPausable
+		&IServer::IsPausable,
+		":rtype: bool"
 	);
 
 	_IServer.def(
 		"is_hltv",
-		&IServer::IsHLTV
+		&IServer::IsHLTV,
+		":rtype: bool"
 	);
 
 	/*
@@ -973,13 +1001,15 @@ static void export_iserver(scope _server)
 		"password",
 		&IServer::GetPassword,
 		&IServer::SetPassword,
-		"Return the server password."
+		"Return the server password.\n\n"
+		":rtype: str"
 	);
 
 	_IServer.add_property(
 		"paused",
 		&IServer::IsPaused,
-		&IServer::SetPaused
+		&IServer::SetPaused,
+		":rtype: bool"
 	);
 
 	_IServer.def(
@@ -1009,13 +1039,22 @@ static void export_functions(scope _server)
 	def("execute_server_command",
 		raw_function(execute_server_command, 1)
 	);
+	// Passing the doc string in combination with raw_function causes compiler errors :(
+	_server.attr("execute_server_command").attr("__doc__") = "Execute a server command immediately.\n\n"
+		"Additional arguments can be passed.\n\n"
+		":param str command: Command to execute.\n"
+		":param *args: Additional arguments that should be passed to the command.\n"
+		":raise TypeError: Raised if keyword arguments have been passed.\n"
+		":raise ValueError: Raised if the command has not been found or if the command couldn't be tokenized.";
 
 	def("queue_server_command",
 		raw_function(queue_server_command, 1)
 	);
+	_server.attr("queue_server_command").attr("__doc__") = "Same as :func:`execute_server_command`, but does not execute the server command immediately. "
+		"Instead it is added to the server command queue. Thus, it can be executed with a little delay.";
 
 	def("queue_command_string",
 		&queue_command_string,
-		"Queue a string for execution."
+		"Adds a string to the server command queue. It's the same like typing something into the server console."
 	);
 }

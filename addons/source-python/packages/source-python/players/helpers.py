@@ -26,6 +26,7 @@ from _players._helpers import edict_from_playerinfo
 from _players._helpers import edict_from_userid
 from _players._helpers import index_from_playerinfo
 from _players._helpers import index_from_userid
+from _players._helpers import index_from_name
 from _players._helpers import inthandle_from_playerinfo
 from _players._helpers import inthandle_from_userid
 from _players._helpers import playerinfo_from_baseentity
@@ -130,28 +131,6 @@ def index_from_uniqueid(uniqueid):
 
     raise ValueError(
         'Conversion from "UniqueID" ({}) to "Index" failed.'.format(uniqueid))
-
-
-def index_from_name(name):
-    """Return an index from the given player name.
-
-    :param str name: The player name to get the index of.
-    :rtype: int
-    """
-    # Loop through all players on the server
-    for edict in PlayerGenerator():
-
-        # Get the PlayerInfo instance of the player...
-        playerinfo = playerinfo_from_edict(edict)
-
-        # Is the current player's name the same as the one given?
-        if playerinfo.name == name:
-
-            # Return the index of the current player
-            return index_from_playerinfo(playerinfo)
-
-    raise ValueError(
-        'Conversion from "Name" ({}) to "Index" failed.'.format(name))
 
 
 def uniqueid_from_playerinfo(playerinfo):

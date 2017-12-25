@@ -193,8 +193,14 @@ class _PreEventList(list):
 @PreHook(get_virtual_function(game_event_manager, 'FireEvent'))
 def _pre_game_event(args):
     """Call pre-event functions if the event is registered."""
+    # Crashfix for CS:GO:
+    # https://github.com/Source-Python-Dev-Team/Source.Python/issues/230
+    game_event_ptr = args[1]
+    if not game_event_ptr:
+        return False
+
     # Get the GameEvent object
-    game_event = make_object(GameEvent, args[1])
+    game_event = make_object(GameEvent, game_event_ptr)
 
     # Get the name of the event
     event_name = game_event.name
