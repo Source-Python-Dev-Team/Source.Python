@@ -38,6 +38,7 @@ using namespace boost::python;
 #include "igameevents.h"
 #include "tier1/utlmap.h"
 #include "tier1/utlvector.h"
+#include "tier1/utldict.h"
 
 
 //-----------------------------------------------------------------------------
@@ -95,6 +96,15 @@ public:
 	bool		reliable;	// 33
 	char		unknown[18]; // 34
 	// Total size: 52
+#elif defined(ENGINE_INSURGENCY)
+	int			eventid;	// 0 - Same like name_index - OK
+	int			name_index; // 4 - OK
+	KeyValues	*keys;		// 8 - OK
+    CUtlVector<CGameEventCallback*>	listeners;	// 12
+	bool		local;		// 32
+	bool		reliable;	// 33
+	char		unknown[22]; // 34
+	// Total size: 56
 #else
 	char		name[MAX_EVENT_NAME_LENGTH];	// 0
 	int			eventid;	// 32
@@ -118,6 +128,9 @@ public:
 #if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
 	char unknown[96];
 	CUtlRBTree< CUtlMap<const char*, int, int>::Node_t, int > event_names;
+#elif defined (ENGINE_INSURGENCY)
+	char unknown[96];
+	CUtlDict<int, int> events;
 #endif
 };
 

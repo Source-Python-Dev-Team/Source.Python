@@ -40,6 +40,9 @@ const char* CGameEventDescriptor::GetName()
 #if defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2) || defined(ENGINE_BLADE)
 	CGameEventManager2* manager = (CGameEventManager2*) gameeventmanager;
 	return manager->event_names[name_index].key;
+#elif defined(ENGINE_INSURGENCY)
+	CGameEventManager2* manager = (CGameEventManager2*) gameeventmanager;
+	return manager->events.GetElementName(this->eventid);
 #else
 	return name;
 #endif
