@@ -802,28 +802,6 @@ class Entity(BaseEntity):
         """
         self.get_input(name)(*args, **kwargs)
 
-    def lookup_attachment(self, name):
-        """Return the attachment index matching the given name.
-
-        :param str name:
-            The name of the attachment.
-        :rtype: int
-        """
-        # Get the ModelHeader instance of the entity
-        model_header = self.model_header
-
-        # Loop through all attachments
-        for index in range(model_header.attachments_count):
-
-            # Are the names matching?
-            if name == model_header.get_attachment(index).name:
-
-                # Return the current index
-                return index
-
-        # No attachment found
-        return INVALID_ATTACHMENT_INDEX
-
     def emit_sound(
             self, sample, recipients=(), volume=VOL_NORM,
             attenuation=Attenuation.NONE, channel=Channel.AUTO,

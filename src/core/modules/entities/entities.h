@@ -52,6 +52,7 @@ public:
 	static void SetModelName(IServerEntity *pServerEntity, const char *szModelName);
 	static MDLHandle_t get_model_handle(IServerEntity *pServerEntity);
 	static studiohdr_t* get_model_header(IServerEntity *pServerEntity);
+	static int ServerEntityExt::lookup_attachment(IServerEntity* pEntity, const char* name);
 };
 
 

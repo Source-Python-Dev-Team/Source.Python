@@ -224,6 +224,14 @@ void export_server_entity(scope _entities)
 			":rtype: ModelHeader"
 		)
 
+		.def("lookup_attachment",
+			&ServerEntityExt::lookup_attachment,
+			"Return the attachment index matching the given name.\n\n"
+			":param str name:\n"
+			"	The name of the attachment.\n"
+			":rtype: int"
+		)
+
 		ADD_MEM_TOOLS(IServerEntity)
 	;
 }
