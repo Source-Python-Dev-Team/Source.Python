@@ -36,26 +36,12 @@
 #include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
+
 // ============================================================================
-// >> CBaseEntityWrapper
+// >> External variables
 // ============================================================================
-const char* IServerUnknownExt::GetClassname(IServerUnknown* pUnknown)
-{
-	IServerNetworkable* pNetworkable = pUnknown->GetNetworkable();
-	if (!pNetworkable)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
+extern IMDLCache *modelcache;
 
-	return pNetworkable->GetClassName();
-}
-
-bool IServerUnknownExt::IsNetworked(IServerUnknown* pUnknown)
-{
-	IServerNetworkable *pServerNetworkable = pUnknown->GetNetworkable();
-	if (pServerNetworkable)
-		return pServerNetworkable->GetEdict() != NULL;
-
-	return false;
-}
 
 // ============================================================================
 // >> CBaseEntityWrapper

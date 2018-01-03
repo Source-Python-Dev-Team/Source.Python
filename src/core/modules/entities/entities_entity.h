@@ -192,6 +192,10 @@ public:
 
 	// Other methods
 	bool IsPlayer();
+
+	// Model stuff
+	MDLHandle_t get_model_handle();
+	studiohdr_t* get_model_header();
 };
 
 

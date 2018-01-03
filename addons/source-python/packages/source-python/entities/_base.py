@@ -358,15 +358,6 @@ class Entity(BaseEntity):
 
         .. seealso:: :meth:`get_parent` and :meth:`set_parent`""")
 
-    @property
-    def model_header(self):
-        """Return the entity's model header.
-
-        :rtype: ModelHeader
-        """
-        return model_cache.get_model_header(model_cache.find_model(
-            self.model_name))
-
     def get_property_bool(self, name):
         """Return the boolean property.
 

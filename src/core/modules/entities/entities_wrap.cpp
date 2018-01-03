@@ -201,13 +201,27 @@ void export_server_entity(scope _entities)
 		.add_property("model_index",
 			&IServerEntity::GetModelIndex,
 			&IServerEntity::SetModelIndex,
-			"Returns the model index for this entity."
+			"Returns the model index for this entity.\n\n"
+			":rtype: int"
 		)
 
 		.add_property("model_name",
 			&IServerEntity::GetModelName,
 			&ServerEntityExt::SetModelName,
-			"Returns the name of the model this entity is using."
+			"Return the name of the model this entity is using.\n\n"
+			":rtype: str"
+		)
+
+		.add_property("model_handle",
+			&ServerEntityExt::get_model_handle,
+			"Return the handle of the entity's model.\n\n"
+			":rtype: int"
+		)
+
+		.add_property("model_header",
+			make_function(&ServerEntityExt::get_model_header, reference_existing_object_policy()),
+			"Return the entity's model header.\n\n"
+			":rtype: ModelHeader"
 		)
 
 		ADD_MEM_TOOLS(IServerEntity)

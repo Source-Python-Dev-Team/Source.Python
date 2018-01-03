@@ -209,6 +209,7 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
+    core/modules/entities/entities.cpp
     core/modules/entities/entities_constants_wrap.cpp
     core/modules/entities/entities_helpers_wrap.cpp
     core/modules/entities/entities_wrap.cpp

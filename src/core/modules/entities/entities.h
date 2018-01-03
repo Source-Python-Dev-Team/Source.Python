@@ -49,14 +49,9 @@
 class ServerEntityExt
 {
 public:
-	static void SetModelName(IServerEntity *pServerEntity, const char *szModelName)
-	{
-		CBaseEntity *pBaseEntity = pServerEntity->GetBaseEntity();
-		if (!pBaseEntity)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "BaseEntity is NULL.");
-
-		((CBaseEntityWrapper *)pBaseEntity)->SetKeyValue("model", szModelName);
-	}
+	static void SetModelName(IServerEntity *pServerEntity, const char *szModelName);
+	static MDLHandle_t get_model_handle(IServerEntity *pServerEntity);
+	static studiohdr_t* get_model_header(IServerEntity *pServerEntity);
 };
 
 
