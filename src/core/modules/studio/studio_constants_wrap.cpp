@@ -47,6 +47,7 @@ DECLARE_SP_SUBMODULE(_studio, _constants)
 	export_studio_flags(_constants);
 
 	_constants.attr("INVALID_ATTACHMENT_INDEX") = INVALID_ATTACHMENT_INDEX;
+	_constants.attr("INVALID_BONE_INDEX") = INVALID_BONE_INDEX;
 }
 
 

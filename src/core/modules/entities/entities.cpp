@@ -108,3 +108,19 @@ int ServerEntityExt::lookup_attachment(IServerEntity* pEntity, const char* name)
 
 	return INVALID_ATTACHMENT_INDEX;
 }
+
+int ServerEntityExt::lookup_bone(IServerEntity* pEntity, const char* name)
+{
+	studiohdr_t* header = get_model_header(pEntity);
+	if (!header)
+		return INVALID_BONE_INDEX;
+
+	for (int i=0; i < header->numbones; ++i)
+	{
+		mstudiobone_t* bone = header->pBone(i);
+		if (V_strcmp(bone->pszName(), name) == 0)
+			return i;
+	}
+
+	return INVALID_BONE_INDEX;
+}

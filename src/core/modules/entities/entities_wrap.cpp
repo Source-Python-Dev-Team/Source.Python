@@ -232,6 +232,14 @@ void export_server_entity(scope _entities)
 			":rtype: int"
 		)
 
+		.def("lookup_bone",
+			&ServerEntityExt::lookup_bone,
+			"Return the bone index matching the given name.\n\n"
+			":param str name:\n"
+			"	The name of the bone.\n"
+			":rtype: int"
+		)
+
 		ADD_MEM_TOOLS(IServerEntity)
 	;
 }

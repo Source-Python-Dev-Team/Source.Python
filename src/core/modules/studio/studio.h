@@ -47,6 +47,7 @@ extern IMDLCache *modelcache;
 // DEFINES
 //-----------------------------------------------------------------------------
 #define INVALID_ATTACHMENT_INDEX -1
+#define INVALID_BONE_INDEX -1
 
 
 //-----------------------------------------------------------------------------
