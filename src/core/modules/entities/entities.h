@@ -29,18 +29,21 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// Source.Python
+#include "modules/memory/memory_tools.h"
+#include "utilities/conversions.h"
+#include "entities_entity.h"
+
+// SDK
 #include "edict.h"
 #include "server_class.h"
 #include <cstdint>
-#include "modules/memory/memory_tools.h"
 #include "string_t.h"
 #include "dt_send.h"
 #include "game/shared/ehandle.h"
 #include "isaverestore.h"
 #include "datamap.h"
 #include "game/shared/takedamageinfo.h"
-#include "utilities/conversions.h"
-#include "entities_entity.h"
 
 
 //-----------------------------------------------------------------------------

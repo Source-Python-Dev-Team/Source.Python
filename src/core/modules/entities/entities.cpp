@@ -31,9 +31,6 @@
 #include "entities.h"
 #include "../../modules/studio/studio.h"
 
-// SDK
-#include "strtools.h"
-
 
 // ============================================================================
 // >> External variables
