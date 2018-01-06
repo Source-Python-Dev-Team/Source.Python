@@ -146,6 +146,7 @@ object GetMessageSize(int index)
 {
 #ifdef USE_PROTOBUF
 	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "")
+	return object();
 #else
 	char result[256];
 	int size;
