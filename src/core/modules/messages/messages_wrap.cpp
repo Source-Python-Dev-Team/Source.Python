@@ -205,6 +205,12 @@ void export_message_functions(scope _messages)
 		"Return the name of the user message. Return None if the user message wasn't found.",
 		args("index")
 	);
+
+	def("get_message_size",
+		&GetMessageSize,
+		"Return the size of the user message. Return None if the user message wasn't found.",
+		args("index")
+	);
 }
 
 

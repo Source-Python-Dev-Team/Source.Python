@@ -382,8 +382,9 @@ private:
 //-----------------------------------------------------------------------------
 // Functions.
 //-----------------------------------------------------------------------------
-void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
-int GetMessageIndex(const char* name);
-object GetMessageName(int index);
+void	CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
+int		GetMessageIndex(const char* name);
+object	GetMessageName(int index);
+object	GetMessageSize(int index);
 
 #endif // _MESSAGES_H
