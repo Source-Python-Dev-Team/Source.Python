@@ -90,7 +90,7 @@ void export_keyvalues(scope _keyvalues)
 		).staticmethod("load_from_file")
 
 		.def("load_from_file2",
-			&KeyValues::LoadFromFile,
+			&KeyValuesExt::LoadFromFile2,
 			"Load KeyValues data from a file into an existing KeyValues instance.",
 			(arg("file_name"))
 		)
