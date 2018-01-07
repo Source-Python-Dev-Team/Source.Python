@@ -117,6 +117,12 @@ public:
 		return *(T*) (((unsigned long) this) + FindDataMapOffset(name));
 	}
 
+	template<class T>
+	T GetDatamapPropertyByOffset(int offset)
+	{
+		return *(T*) (((unsigned long) this) + offset);
+	}
+
 	const char* GetDatamapPropertyStringArray(const char* name)
 	{
 		return (const char*) (((unsigned long) this) + FindDataMapOffset(name));
@@ -126,6 +132,12 @@ public:
 	void SetDatamapProperty(const char* name, T value)
 	{
 		*(T*) (((unsigned long) this) + FindDataMapOffset(name)) = value;
+	}
+
+	template<class T>
+	void SetDatamapPropertyByOffset(int offset, T value)
+	{
+		*(T*) (((unsigned long) this) + offset) = value;
 	}
 
 	void SetDatamapPropertyStringArray(const char* name, const char* value)
@@ -192,6 +204,9 @@ public:
 
 	// Other methods
 	bool IsPlayer();
+
+	Vector GetOrigin();
+	void SetOrigin(Vector& vec);
 
 	// Model stuff
 	MDLHandle_t get_model_handle();

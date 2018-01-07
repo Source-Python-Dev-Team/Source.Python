@@ -99,6 +99,14 @@ void export_base_entity(scope _entity)
 		":rtype: bool"
 	);
 
+	BaseEntity.add_property(
+		"origin",
+		&CBaseEntityWrapper::GetOrigin,
+		&CBaseEntityWrapper::SetOrigin,
+		"Get/set the entity's origin.\n\n"
+		":rtype: Vector"
+	);
+
 	BaseEntity.def("remove",
 		&CBaseEntityWrapper::remove,
 		"Remove the entity."
