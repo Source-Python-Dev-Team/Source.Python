@@ -305,8 +305,13 @@ class Entity(BaseEntity):
     def get_model(self):
         """Return the entity's model.
 
+        :return:
+            ``None`` if the entity has no model.
         :rtype: Model
         """
+        if not self.model_name:
+            return None
+
         return Model(self.model_name)
 
     def set_model(self, model):
