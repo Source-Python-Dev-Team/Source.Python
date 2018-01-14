@@ -378,7 +378,7 @@ class Player(Entity):
         """Set the player's eye location."""
         self.teleport(eye_location - self.view_offset, None, None)
 
-    eye_location = property(get_eye_location, set_eye_location)
+    eye_location = property(Entity.get_eye_location, set_eye_location)
 
     @property
     def view_vector(self):
