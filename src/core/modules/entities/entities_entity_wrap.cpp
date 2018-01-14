@@ -290,7 +290,8 @@ void export_base_entity(scope _entity)
 		"gravity",
 		&CBaseEntityWrapper::GetGravity,
 		&CBaseEntityWrapper::SetGravity,
-		"Get/set the entity's gravity.\n\n"
+		"Get/set the entity's gravity. This is a multiplicator of ``sv_gravity``.\n"
+		"E. g. set the value to ``0.0`` or ``1.0`` for normal gravity. ``0.5`` halves the gravity.\n\n"
 		":rtype: float"
 	);
 
@@ -298,7 +299,7 @@ void export_base_entity(scope _entity)
 		"hammerid",
 		&CBaseEntityWrapper::GetHammerID,
 		&CBaseEntityWrapper::SetHammerID,
-		"Get/set the entity's hammer ID.\n\n"
+		"Get/set the entity's Hammer ID.\n\n"
 		":rtype: int"
 	);
 
@@ -387,6 +388,11 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::GetWaterLevel,
 		&CBaseEntityWrapper::SetWaterLevel,
 		"Get/set the entity's water level.\n\n"
+		"The water level is a value between 0 - 3 and indicates how far the entity is covered with water:\n\n"
+		"1. Entity is completely dry.\n"
+		"2. Entity has contact with water.\n"
+		"3. Entity is half inside of water.\n"
+		"4. Entity is completely under water.\n\n"
 		":rtype: int"
 	);
 
@@ -401,7 +407,7 @@ void export_base_entity(scope _entity)
 	BaseEntity.def(
 		"stop_sound",
 		&CBaseEntityWrapper::StopSound,
-		(arg("sample"), arg("channel")=CHAN_AUTO),
+		(arg("sample"), arg("channel")=(int)CHAN_AUTO),
 		"Stop the given sound from being emitted by this entity.\n\n"
 		":param str sample: Sound file relative to the ``sounds`` directory.\n"
         ":param Channel channel: The channel of the sound."
