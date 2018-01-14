@@ -355,99 +355,100 @@ Vector CBaseEntityWrapper::GetOrigin()
 
 void CBaseEntityWrapper::SetOrigin(Vector& vec)
 {
-	static int offset = FindDataMapOffset("m_vecOrigin");
-	SetDatamapPropertyByOffset<Vector>(offset, vec);
+	// Use KeyValue method, because it does a lot more under the rug than
+	// just setting m_vecOrigin
+	SetKeyValue<Vector>("origin", vec);
 }
 
 
 Vector CBaseEntityWrapper::GetMaxs()
 {
-	static int offset = FindDataMapOffset("m_Collision.m_vecMaxs");
-	return GetDatamapPropertyByOffset<Vector>(offset);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMaxs");
+	return GetNetworkPropertyByOffset<Vector>(offset);
 }
 
 void CBaseEntityWrapper::SetMaxs(Vector& vec)
 {
-	static int offset = FindDataMapOffset("m_Collision.m_vecMaxs");
-	SetDatamapPropertyByOffset<Vector>(offset, vec);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMaxs");
+	SetNetworkPropertyByOffset<Vector>(offset, vec);
 }
 
 
 Vector CBaseEntityWrapper::GetMins()
 {
-	static int offset = FindDataMapOffset("m_Collision.m_vecMins");
-	return GetDatamapPropertyByOffset<Vector>(offset);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMins");
+	return GetNetworkPropertyByOffset<Vector>(offset);
 }
 
 void CBaseEntityWrapper::SetMins(Vector& vec)
 {
-	static int offset = FindDataMapOffset("m_Collision.m_vecMins");
-	SetDatamapPropertyByOffset<Vector>(offset, vec);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMins");
+	SetNetworkPropertyByOffset<Vector>(offset, vec);
 }
 
 
 SolidType_t CBaseEntityWrapper::GetSolidType()
 {
-	static int offset = FindDataMapOffset("m_Collision.m_nSolidType");
-	return (SolidType_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_nSolidType");
+	return (SolidType_t) GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
 void CBaseEntityWrapper::SetSolidType(SolidType_t type)
 {
-	static int offset = FindDataMapOffset("m_Collision.m_nSolidType");
-	SetDatamapPropertyByOffset<unsigned char>(offset, type);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_nSolidType");
+	SetNetworkPropertyByOffset<unsigned char>(offset, type);
 }
 
 
 SolidFlags_t CBaseEntityWrapper::GetSolidFlags()
 {
-	static int offset = FindDataMapOffset("m_Collision.m_usSolidFlags");
-	return (SolidFlags_t) GetDatamapPropertyByOffset<unsigned short>(offset);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_usSolidFlags");
+	return (SolidFlags_t) GetNetworkPropertyByOffset<unsigned short>(offset);
 }
 
 void CBaseEntityWrapper::SetSolidFlags(SolidFlags_t flags)
 {
-	static int offset = FindDataMapOffset("m_Collision.m_usSolidFlags");
-	SetDatamapPropertyByOffset<unsigned short>(offset, flags);
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_usSolidFlags");
+	SetNetworkPropertyByOffset<unsigned short>(offset, flags);
 }
 
 
 Collision_Group_t CBaseEntityWrapper::GetCollisionGroup()
 {
-	static int offset = FindDataMapOffset("m_CollisionGroup");
-	return GetDatamapPropertyByOffset<Collision_Group_t>(offset);
+	static int offset = FindNetworkPropertyOffset("m_CollisionGroup");
+	return GetNetworkPropertyByOffset<Collision_Group_t>(offset);
 }
 
 void CBaseEntityWrapper::SetCollisionGroup(Collision_Group_t group)
 {
-	static int offset = FindDataMapOffset("m_CollisionGroup");
-	SetDatamapPropertyByOffset<Collision_Group_t>(offset, group);
+	static int offset = FindNetworkPropertyOffset("m_CollisionGroup");
+	SetNetworkPropertyByOffset<Collision_Group_t>(offset, group);
 }
 
 
 Color CBaseEntityWrapper::GetRenderColor()
 {
-	static int offset = FindDataMapOffset("m_clrRender");
-	return GetDatamapPropertyByOffset<Color>(offset);
+	static int offset = FindNetworkPropertyOffset("m_clrRender");
+	return GetNetworkPropertyByOffset<Color>(offset);
 }
 
 void CBaseEntityWrapper::SetRenderColor(Color& color)
 {
-	static int offset = FindDataMapOffset("m_clrRender");
-	SetDatamapPropertyByOffset<Color>(offset, color);
+	static int offset = FindNetworkPropertyOffset("m_clrRender");
+	SetNetworkPropertyByOffset<Color>(offset, color);
 }
 
 
 float CBaseEntityWrapper::GetElasticity()
 {
-	static int offset = FindDataMapOffset("m_flElasticity");
-	return GetDatamapPropertyByOffset<float>(offset);
+	static int offset = FindNetworkPropertyOffset("m_flElasticity");
+	return GetNetworkPropertyByOffset<float>(offset);
 }
 
 void CBaseEntityWrapper::SetElasticity(float elasticity)
 {
-	static int offset = FindDataMapOffset("m_flElasticity");
-	SetDatamapPropertyByOffset<float>(offset, elasticity);
+	static int offset = FindNetworkPropertyOffset("m_flElasticity");
+	SetNetworkPropertyByOffset<float>(offset, elasticity);
 }
 
 
@@ -466,53 +467,53 @@ void CBaseEntityWrapper::SetGroundEntity(int entity)
 
 int CBaseEntityWrapper::GetTeamIndex()
 {
-	static int offset = FindDataMapOffset("m_iTeamNum");
-	return GetDatamapPropertyByOffset<int>(offset);
+	static int offset = FindNetworkPropertyOffset("m_iTeamNum");
+	return GetNetworkPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetTeamIndex(int team)
 {
-	static int offset = FindDataMapOffset("m_iTeamNum");
-	SetDatamapPropertyByOffset<int>(offset, team);
+	static int offset = FindNetworkPropertyOffset("m_iTeamNum");
+	SetNetworkPropertyByOffset<int>(offset, team);
 }
 
 
 RenderFx_t CBaseEntityWrapper::GetRenderFx()
 {
-	static int offset = FindDataMapOffset("m_nRenderFX");
-	return (RenderFx_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+	static int offset = FindNetworkPropertyOffset("m_nRenderFX");
+	return (RenderFx_t) GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
 void CBaseEntityWrapper::SetRenderFx(RenderFx_t fx)
 {
-	static int offset = FindDataMapOffset("m_nRenderFX");
-	SetDatamapPropertyByOffset<unsigned char>(offset, fx);
+	static int offset = FindNetworkPropertyOffset("m_nRenderFX");
+	SetNetworkPropertyByOffset<unsigned char>(offset, fx);
 }
 
 
 RenderMode_t CBaseEntityWrapper::GetRenderMode()
 {
-	static int offset = FindDataMapOffset("m_nRenderMode");
-	return (RenderMode_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+	static int offset = FindNetworkPropertyOffset("m_nRenderMode");
+	return (RenderMode_t) GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
 void CBaseEntityWrapper::SetRenderMode(RenderMode_t mode)
 {
-	static int offset = FindDataMapOffset("m_nRenderMode");
-	SetDatamapPropertyByOffset<unsigned char>(offset, mode);
+	static int offset = FindNetworkPropertyOffset("m_nRenderMode");
+	SetNetworkPropertyByOffset<unsigned char>(offset, mode);
 }
 
 
 MoveType_t CBaseEntityWrapper::GetMoveType()
 {
-	static int offset = FindDataMapOffset("m_MoveType");
-	return (MoveType_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+	static int offset = FindNetworkPropertyOffset("movetype");
+	return (MoveType_t) GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
 void CBaseEntityWrapper::SetMoveType(MoveType_t type)
 {
-	static int offset = FindDataMapOffset("m_MoveType");
-	SetDatamapPropertyByOffset<unsigned char>(offset, type);
+	static int offset = FindNetworkPropertyOffset("movetype");
+	SetNetworkPropertyByOffset<unsigned char>(offset, type);
 }
 
 
@@ -549,7 +550,6 @@ void CBaseEntityWrapper::SetTargetName(const char* name)
 {
 	SetKeyValue("targetname", name);
 }
-
 
 
 int CBaseEntityWrapper::GetOwnerHandle()
@@ -623,14 +623,14 @@ void CBaseEntityWrapper::SetDamageFilter(const char* filter)
 
 int CBaseEntityWrapper::GetEffects()
 {
-	static int offset = FindDataMapOffset("m_fEffects");
-	return GetDatamapPropertyByOffset<int>(offset);
+	static int offset = FindNetworkPropertyOffset("m_fEffects");
+	return GetNetworkPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetEffects(int effects)
 {
-	static int offset = FindDataMapOffset("m_fEffects");
-	SetDatamapPropertyByOffset<int>(offset, effects);
+	static int offset = FindNetworkPropertyOffset("m_fEffects");
+	SetNetworkPropertyByOffset<int>(offset, effects);
 }
 
 
