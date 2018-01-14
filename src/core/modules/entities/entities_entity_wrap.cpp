@@ -403,6 +403,13 @@ void export_base_entity(scope _entity)
 		"Get/set the entity's color.\n\n"
 		":rtype: Color"
 	);
+
+	BaseEntity.def(
+		"get_eye_location",
+		&CBaseEntityWrapper::GetEyeLocation,
+		"Return the entitiy's eye location.\n\n"
+		":rtype: Vector"
+	);
 	
 	BaseEntity.def(
 		"stop_sound",

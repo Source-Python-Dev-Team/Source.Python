@@ -849,6 +849,12 @@ void CBaseEntityWrapper::SetColor(Color& color)
 }
 
 
+Vector CBaseEntityWrapper::GetEyeLocation()
+{
+	return GetOrigin() + GetViewOffset();
+}
+
+
 void CBaseEntityWrapper::StopSound(const char* sample, int channel)
 {
 	IEngineSoundExt::StopSound(enginesound, GetIndex(), channel, sample);

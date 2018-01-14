@@ -350,6 +350,8 @@ public:
 	Color GetColor();
 	void SetColor(Color& color);
 
+	Vector GetEyeLocation();
+
 	void StopSound(const char* sample, int channel);
 
 	// Model stuff

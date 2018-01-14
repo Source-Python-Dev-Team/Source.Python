@@ -374,13 +374,6 @@ class Player(Entity):
 
     view_player = property(get_view_player, set_view_player)
 
-    def get_eye_location(self):
-        """Return the player's eye location.
-
-        :rtype: Vector
-        """
-        return self.view_offset + self.origin
-
     def set_eye_location(self, eye_location):
         """Set the player's eye location."""
         self.teleport(eye_location - self.view_offset, None, None)
