@@ -238,6 +238,158 @@ void export_base_entity(scope _entity)
 		":rtype: int"
 	);
 
+	BaseEntity.add_property(
+		"avelocity",
+		&CBaseEntityWrapper::GetAvelocity,
+		&CBaseEntityWrapper::SetAvelocity,
+		"Get/set the entity's avelocity.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"base_velocity",
+		&CBaseEntityWrapper::GetBaseVelocity,
+		&CBaseEntityWrapper::SetBaseVelocity,
+		"Get/set the entity's base velocity.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"damage_filter",
+		&CBaseEntityWrapper::GetDamageFilter,
+		&CBaseEntityWrapper::SetDamageFilter,
+		"Get/set the entity's damage filter.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"effects",
+		&CBaseEntityWrapper::GetEffects,
+		&CBaseEntityWrapper::SetEffects,
+		"Get/set the entity's effects.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"friction",
+		&CBaseEntityWrapper::GetFriction,
+		&CBaseEntityWrapper::SetFriction,
+		"Get/set the entity's friction.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"global_name",
+		&CBaseEntityWrapper::GetGlobalName,
+		&CBaseEntityWrapper::SetGlobalName,
+		"Get/set the entity's global name.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"gravity",
+		&CBaseEntityWrapper::GetGravity,
+		&CBaseEntityWrapper::SetGravity,
+		"Get/set the entity's gravity.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"hammerid",
+		&CBaseEntityWrapper::GetHammerID,
+		&CBaseEntityWrapper::SetHammerID,
+		"Get/set the entity's hammer ID.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"health",
+		&CBaseEntityWrapper::GetHealth,
+		&CBaseEntityWrapper::SetHealth,
+		"Get/set the entity's health.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"local_time",
+		&CBaseEntityWrapper::GetLocalTime,
+		&CBaseEntityWrapper::SetLocalTime,
+		"Get/set the entity's local time.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"max_health",
+		&CBaseEntityWrapper::GetMaxHealth,
+		&CBaseEntityWrapper::SetMaxHealth,
+		"Get/set the entity's maximum health.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"shadow_cast_distance",
+		&CBaseEntityWrapper::GetShadowCastDistance,
+		&CBaseEntityWrapper::SetShadowCastDistance,
+		"Get/set the entity's shadow cast distance.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"local_time",
+		&CBaseEntityWrapper::GetLocalTime,
+		&CBaseEntityWrapper::SetLocalTime,
+		"Get/set the entity's local time.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"spawn_flags",
+		&CBaseEntityWrapper::GetSpawnFlags,
+		&CBaseEntityWrapper::SetSpawnFlags,
+		"Get/set the entity's spawn flags.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"speed",
+		&CBaseEntityWrapper::GetSpeed,
+		&CBaseEntityWrapper::SetSpeed,
+		"Get/set the entity's speed.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"target",
+		&CBaseEntityWrapper::GetTarget,
+		&CBaseEntityWrapper::SetTarget,
+		"Get/set the entity's target.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"velocity",
+		&CBaseEntityWrapper::GetVelocity,
+		&CBaseEntityWrapper::SetVelocity,
+		"Get/set the entity's velocity.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"view_offset",
+		&CBaseEntityWrapper::GetViewOffset,
+		&CBaseEntityWrapper::SetViewOffset,
+		"Get/set the entity's view offset.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"water_level",
+		&CBaseEntityWrapper::GetWaterLevel,
+		&CBaseEntityWrapper::SetWaterLevel,
+		"Get/set the entity's water level.\n\n"
+		":rtype: int"
+	);
+
 	BaseEntity.def("remove",
 		&CBaseEntityWrapper::remove,
 		"Remove the entity."

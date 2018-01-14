@@ -582,3 +582,242 @@ void CBaseEntityWrapper::SetOwnerHandle(int entity)
 
 	return SetDatamapPropertyByOffset<int>(offset, entity);
 }
+
+
+Vector CBaseEntityWrapper::GetAvelocity()
+{
+	static int offset = FindDataMapOffset("m_vecAngVelocity");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetAvelocity(Vector& vec)
+{
+	static int offset = FindDataMapOffset("m_vecAngVelocity");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+Vector CBaseEntityWrapper::GetBaseVelocity()
+{
+	static int offset = FindDataMapOffset("m_vecBaseVelocity");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetBaseVelocity(Vector& vec)
+{
+	static int offset = FindDataMapOffset("m_vecBaseVelocity");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+str CBaseEntityWrapper::GetDamageFilter()
+{
+	return GetKeyValueString("damagefilter");
+}
+
+void CBaseEntityWrapper::SetDamageFilter(const char* filter)
+{
+	SetKeyValue("damagefilter", filter);
+}
+
+
+int CBaseEntityWrapper::GetEffects()
+{
+	static int offset = FindDataMapOffset("m_fEffects");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetEffects(int effects)
+{
+	static int offset = FindDataMapOffset("m_fEffects");
+	SetDatamapPropertyByOffset<int>(offset, effects);
+}
+
+
+float CBaseEntityWrapper::GetFriction()
+{
+	static int offset = FindDataMapOffset("m_flFriction");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetFriction(float friction)
+{
+	static int offset = FindDataMapOffset("m_flFriction");
+	SetDatamapPropertyByOffset<float>(offset, friction);
+}
+
+
+str CBaseEntityWrapper::GetGlobalName()
+{
+	return GetKeyValueString("globalname");
+}
+
+void CBaseEntityWrapper::SetGlobalName(const char* name)
+{
+	SetKeyValue("globalname", name);
+}
+
+
+float CBaseEntityWrapper::GetGravity()
+{
+	static int offset = FindDataMapOffset("m_flGravity");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetGravity(float gravity)
+{
+	static int offset = FindDataMapOffset("m_flGravity");
+	SetDatamapPropertyByOffset<float>(offset, gravity);
+}
+
+
+int CBaseEntityWrapper::GetHammerID()
+{
+	static int offset = FindDataMapOffset("m_iHammerID");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetHammerID(int id)
+{
+	static int offset = FindDataMapOffset("m_iHammerID");
+	SetDatamapPropertyByOffset<int>(offset, id);
+}
+
+
+int CBaseEntityWrapper::GetHealth()
+{
+	static int offset = FindDataMapOffset("m_iHealth");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetHealth(int health)
+{
+	static int offset = FindDataMapOffset("m_iHealth");
+	SetDatamapPropertyByOffset<int>(offset, health);
+}
+
+
+float CBaseEntityWrapper::GetLocalTime()
+{
+	static int offset = FindDataMapOffset("m_flLocalTime");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetLocalTime(float time)
+{
+	static int offset = FindDataMapOffset("m_flLocalTime");
+	SetDatamapPropertyByOffset<float>(offset, time);
+}
+
+
+int CBaseEntityWrapper::GetMaxHealth()
+{
+	static int offset = FindDataMapOffset("m_iMaxHealth");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetMaxHealth(int max_health)
+{
+	static int offset = FindDataMapOffset("m_iMaxHealth");
+	SetDatamapPropertyByOffset<int>(offset, max_health);
+}
+
+
+str CBaseEntityWrapper::GetParentName()
+{
+	return GetKeyValueString("parentname");
+}
+
+void CBaseEntityWrapper::SetParentName(const char* name)
+{
+	SetKeyValue("parentname", name);
+}
+
+
+float CBaseEntityWrapper::GetShadowCastDistance()
+{
+	static int offset = FindDataMapOffset("m_flShadowCastDistance");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetShadowCastDistance(float distance)
+{
+	static int offset = FindDataMapOffset("m_flShadowCastDistance");
+	SetDatamapPropertyByOffset<float>(offset, distance);
+}
+
+
+int CBaseEntityWrapper::GetSpawnFlags()
+{
+	static int offset = FindDataMapOffset("m_spawnflags");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetSpawnFlags(int spawn_flags)
+{
+	static int offset = FindDataMapOffset("m_spawnflags");
+	SetDatamapPropertyByOffset<int>(offset, spawn_flags);
+}
+
+
+float CBaseEntityWrapper::GetSpeed()
+{
+	// Use KeyValue method for speed, because the offset somehow differs for some entities.
+	// Not sure how this is possible...
+	return GetKeyValueFloat("speed");
+}
+
+void CBaseEntityWrapper::SetSpeed(float speed)
+{
+	SetKeyValue("speed", speed);
+}
+
+
+str CBaseEntityWrapper::GetTarget()
+{
+	return GetKeyValueString("target");
+}
+
+void CBaseEntityWrapper::SetTarget(const char* target)
+{
+	SetKeyValue("target", target);
+}
+
+
+Vector CBaseEntityWrapper::GetVelocity()
+{
+	static int offset = FindDataMapOffset("m_vecVelocity");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetVelocity(Vector& vec)
+{
+	static int offset = FindDataMapOffset("m_vecVelocity");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+Vector CBaseEntityWrapper::GetViewOffset()
+{
+	static int offset = FindDataMapOffset("m_vecViewOffset");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetViewOffset(Vector& view_offset)
+{
+	static int offset = FindDataMapOffset("m_vecViewOffset");
+	SetDatamapPropertyByOffset<Vector>(offset, view_offset);
+}
+
+
+unsigned char CBaseEntityWrapper::GetWaterLevel()
+{
+	static int offset = FindDataMapOffset("m_nWaterLevel");
+	return GetDatamapPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetWaterLevel(unsigned char water_level)
+{
+	static int offset = FindDataMapOffset("m_nWaterLevel");
+	SetDatamapPropertyByOffset<unsigned char>(offset, water_level);
+}

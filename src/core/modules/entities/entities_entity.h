@@ -290,6 +290,63 @@ public:
 	int GetOwnerHandle();
 	void SetOwnerHandle(int entity);
 
+	Vector GetAvelocity();
+	void SetAvelocity(Vector& avelocity);
+
+	Vector GetBaseVelocity();
+	void SetBaseVelocity(Vector& base_velocity);
+
+	str GetDamageFilter();
+	void SetDamageFilter(const char* filter);
+
+	int GetEffects();
+	void SetEffects(int effects);
+
+	float GetFriction();
+	void SetFriction(float friction);
+
+	str GetGlobalName();
+	void SetGlobalName(const char* name);
+
+	float GetGravity();
+	void SetGravity(float gravity);
+
+	int GetHammerID();
+	void SetHammerID(int id);
+
+	int GetHealth();
+	void SetHealth(int health);
+
+	float GetLocalTime();
+	void SetLocalTime(float time);
+
+	int GetMaxHealth();
+	void SetMaxHealth(int max_health);
+
+	str GetParentName();
+	void SetParentName(const char* name);
+
+	float GetShadowCastDistance();
+	void SetShadowCastDistance(float distance);
+
+	int GetSpawnFlags();
+	void SetSpawnFlags(int spawn_flags);
+
+	float GetSpeed();
+	void SetSpeed(float speed);
+
+	str GetTarget();
+	void SetTarget(const char* target);
+
+	Vector GetVelocity();
+	void SetVelocity(Vector& velocity);
+
+	Vector GetViewOffset();
+	void SetViewOffset(Vector& view_offset);
+
+	unsigned char GetWaterLevel();
+	void SetWaterLevel(unsigned char water_level);
+
 	// Model stuff
 	MDLHandle_t get_model_handle();
 	studiohdr_t* get_model_header();
