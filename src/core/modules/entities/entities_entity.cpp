@@ -844,6 +844,14 @@ Color CBaseEntityWrapper::GetColor()
 
 void CBaseEntityWrapper::SetColor(Color& color)
 {
+#if defined(ENGINE_CSGO)
+	ConVar* var = cvar->FindVar("sv_disable_immunity_alpha");
+	if (var && !var->GetBool() && color.a() != GetColor().a() && IsPlayer()) {
+		static object warn = import("warnings").attr("warn");
+		warn("Changing the alpha of a player will have no effect unless 'sv_disable_immunity_alpha' is set to '1'.");
+	}
+#endif
+
 	SetRenderMode(kRenderTransColor);
 	SetRenderColor(color);
 }
