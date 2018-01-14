@@ -225,7 +225,7 @@ bool CPythonManager::Initialize( void )
 	catch( ... ) {
 		Msg(MSG_PREFIX "Failed to load the main module due to following exception:\n");
 
-		// Don't use PyErr_Print() here because our sys.excepthook has not been installed
+		// Don't use PyErr_Print() here because our sys.excepthook (might) has not been installed
 		// yet so let's just format and output to the console ourself.
 		if (PyErr_Occurred())
 		{
@@ -240,7 +240,10 @@ bool CPythonManager::Initialize( void )
 			handle<> hTraceback(allow_null(pTraceback));
 
 			object format_exception = import("traceback").attr("format_exception");
-			Msg(extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback))));
+			const char* pMsg = extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback)));
+
+			// Send the message in chunks, because it can get quite big.
+			ChunkedMsg(pMsg);
 
 			PyErr_Clear();
 		}
