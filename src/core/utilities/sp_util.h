@@ -31,13 +31,32 @@
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
 #include "boost/python.hpp"
-#include "strtools.h"
 
+// SDK
+#include "strtools.h"
+#include "dbg.h"
 
 //-----------------------------------------------------------------------------
 // Namespaces to use
 //-----------------------------------------------------------------------------
 using namespace boost::python;
+
+//-----------------------------------------------------------------------------
+// Send a message in chunks
+//-----------------------------------------------------------------------------
+#define MAX_CHUNK 1024
+
+inline void ChunkedMsg(const char* msg)
+{
+	char* pMsg = (char*) msg;
+	int iLen = strlen(msg);
+
+	while(iLen > 0) {
+		Msg(pMsg);
+		pMsg += MAX_CHUNK-1;
+		iLen -= MAX_CHUNK-1;
+	}
+}
 
 //-----------------------------------------------------------------------------
 // Returns True if the class name of the given object equals the given string.
