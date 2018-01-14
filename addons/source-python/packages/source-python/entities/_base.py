@@ -273,32 +273,6 @@ class Entity(BaseEntity):
         for server_class in self.server_classes:
             yield from server_class.keyvalues
 
-    def get_color(self):
-        """Return the entity's color.
-
-        :rtype: Color
-        """
-        return self.render_color
-
-    def set_color(self, color):
-        """Set the entity's color.
-
-        :param Color color:
-            Color to set.
-        """
-        # Set the entity's render mode
-        self.render_mode = RenderMode.TRANS_COLOR
-
-        # Set the entity's color
-        self.render_color = color
-
-    # Set the "color" property for Entity
-    color = property(
-        get_color, set_color,
-        doc="""Property to get/set the entity's color values.
-
-        .. seealso:: :meth:`get_color` and :meth:`set_color`""")
-
     def get_model(self):
         """Return the entity's model.
 

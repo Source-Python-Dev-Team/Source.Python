@@ -390,6 +390,14 @@ void export_base_entity(scope _entity)
 		":rtype: int"
 	);
 
+	BaseEntity.add_property(
+		"color",
+		&CBaseEntityWrapper::GetColor,
+		&CBaseEntityWrapper::SetColor,
+		"Get/set the entity's color.\n\n"
+		":rtype: Color"
+	);
+
 	BaseEntity.def("remove",
 		&CBaseEntityWrapper::remove,
 		"Remove the entity."

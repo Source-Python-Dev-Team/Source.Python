@@ -835,3 +835,15 @@ void CBaseEntityWrapper::SetWaterLevel(unsigned char water_level)
 	static int offset = FindDataMapOffset("m_nWaterLevel");
 	SetDatamapPropertyByOffset<unsigned char>(offset, water_level);
 }
+
+
+Color CBaseEntityWrapper::GetColor()
+{
+	return GetRenderColor();
+}
+
+void CBaseEntityWrapper::SetColor(Color& color)
+{
+	SetRenderMode(kRenderTransColor);
+	SetRenderColor(color);
+}

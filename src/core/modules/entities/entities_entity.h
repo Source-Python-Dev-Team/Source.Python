@@ -347,6 +347,9 @@ public:
 	unsigned char GetWaterLevel();
 	void SetWaterLevel(unsigned char water_level);
 
+	Color GetColor();
+	void SetColor(Color& color);
+
 	// Model stuff
 	MDLHandle_t get_model_handle();
 	studiohdr_t* get_model_header();
