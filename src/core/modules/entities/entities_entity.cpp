@@ -256,6 +256,18 @@ Vector CBaseEntityWrapper::GetKeyValueVector(const char* szName)
 	return Vector(fResult[0], fResult[1], fResult[2]);
 }
 
+QAngle CBaseEntityWrapper::GetKeyValueQAngle(const char* szName)
+{
+	char szResult[128];
+	GetKeyValueStringRaw(szName, szResult, 128);
+
+	float fResult[3];
+	if (!sputils::UTIL_StringToFloatArray(fResult, 3, szResult))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be an angle: '%s'.", szResult);
+
+	return QAngle(fResult[0], fResult[1], fResult[2]);
+}
+
 bool CBaseEntityWrapper::GetKeyValueBool(const char* szName)
 {
 	char szResult[3];
@@ -285,11 +297,16 @@ Color CBaseEntityWrapper::GetKeyValueColor(const char* szName)
 	return Color(iResult[0], iResult[1], iResult[2], iResult[3]);
 }
 
-void CBaseEntityWrapper::SetKeyValueColor(const char* szName, Color color)
+void CBaseEntityWrapper::SetKeyValueColor(const char* szName, Color& color)
 {
 	char string[16];
 	Q_snprintf(string, sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
 	SetKeyValue(szName, string);
+}
+
+void CBaseEntityWrapper::SetKeyValueQAngle(const char* szName, QAngle& angles)
+{
+	SetKeyValue(szName, (Vector&) angles);
 }
 
 edict_t* CBaseEntityWrapper::GetEdict()
@@ -509,4 +526,15 @@ void CBaseEntityWrapper::SetParentHandle(int entity)
 {
 	static int offset = FindDataMapOffset("m_pParent");
 	SetDatamapPropertyByOffset<int>(offset, entity);
+}
+
+
+QAngle CBaseEntityWrapper::GetAngles()
+{
+	return GetKeyValueQAngle("angles");
+}
+
+void CBaseEntityWrapper::SetAngles(QAngle& angles)
+{
+	SetKeyValueQAngle("angles", angles);
 }

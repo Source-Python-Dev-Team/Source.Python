@@ -168,7 +168,7 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::GetGroundEntity,
 		&CBaseEntityWrapper::SetGroundEntity,
 		"Get/set the entity's ground entity.\n\n"
-		":return: ``-1`` if the entity has no ground entity (does not stand on an entity). The returned value is an int handle."
+		":return: ``-1`` if the entity has no ground entity (does not stand on an entity). The returned value is an int handle.\n"
 		":rtype: int"
 	);
 
@@ -209,8 +209,16 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::GetParentHandle,
 		&CBaseEntityWrapper::SetParentHandle,
 		"Get/set the entity's parent handle.\n\n"
-		":return: ``-1`` if the entity has no parent entity. The returned value is an int handle."
+		":return: ``-1`` if the entity has no parent entity. The returned value is an int handle.\n"
 		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"angles",
+		&CBaseEntityWrapper::GetAngles,
+		&CBaseEntityWrapper::SetAngles,
+		"Get/set the entity's angles.\n\n"
+		":rtype: QAngle"
 	);
 
 	BaseEntity.def("remove",
@@ -302,6 +310,13 @@ void export_base_entity(scope _entity)
 		args("field_name")
 	);
 
+	BaseEntity.def("get_key_value_qangle",
+		&CBaseEntityWrapper::GetKeyValueQAngle,
+		"Returns the value of the given field name.\n\n"
+		":rtype: QAngle",
+		args("field_name")
+	);
+
 	BaseEntity.def("get_key_value_bool",
 		&CBaseEntityWrapper::GetKeyValueBool,
 		"Returns the value of the given field name.\n\n"
@@ -349,6 +364,12 @@ void export_base_entity(scope _entity)
 
 	BaseEntity.def("set_key_value_color",
 		&CBaseEntityWrapper::SetKeyValueColor,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
+	BaseEntity.def("set_key_value_qangle",
+		&CBaseEntityWrapper::SetKeyValueQAngle,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);

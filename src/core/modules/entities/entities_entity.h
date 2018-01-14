@@ -210,9 +210,11 @@ public:
 	long GetKeyValueInt(const char* szName);
 	double GetKeyValueFloat(const char* szName);
 	Vector GetKeyValueVector(const char* szName);
+	QAngle GetKeyValueQAngle(const char* szName);
 	bool GetKeyValueBool(const char* szName);
 	Color GetKeyValueColor(const char* szName);
-	void SetKeyValueColor(const char* szName, Color color);
+	void SetKeyValueColor(const char* szName, Color& color);
+	void SetKeyValueQAngle(const char* szName, QAngle& angles);
 
 	template<class T>
 	void SetKeyValue(const char* szName, T value)
@@ -278,6 +280,9 @@ public:
 
 	int GetParentHandle();
 	void SetParentHandle(int entity);
+
+	QAngle GetAngles();
+	void SetAngles(QAngle& angles);
 
 	// Model stuff
 	MDLHandle_t get_model_handle();
