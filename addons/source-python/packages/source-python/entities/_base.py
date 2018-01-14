@@ -292,9 +292,6 @@ class Entity(BaseEntity):
         # Set the entity's color
         self.render_color = color
 
-        # Set the entity's alpha
-        self.render_amt = color.a
-
     # Set the "color" property for Entity
     color = property(
         get_color, set_color,
