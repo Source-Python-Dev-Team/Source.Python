@@ -109,12 +109,12 @@ public:
 	bool operator==(object other);
 
 	// Datamap methods
-	int FindDataMapOffset(const char* name);
+	int FindDatamapPropertyOffset(const char* name);
 
 	template<class T>
 	T GetDatamapProperty(const char* name)
 	{
-		return GetDatamapPropertyByOffset<T>(FindDataMapOffset(name));
+		return GetDatamapPropertyByOffset<T>(FindDatamapPropertyOffset(name));
 	}
 
 	template<class T>
@@ -125,7 +125,7 @@ public:
 
 	const char* GetDatamapPropertyStringArray(const char* name)
 	{
-		return GetDatamapPropertyStringArrayByOffset(FindDataMapOffset(name));
+		return GetDatamapPropertyStringArrayByOffset(FindDatamapPropertyOffset(name));
 	}
 
 	const char* GetDatamapPropertyStringArrayByOffset(int offset)
@@ -136,7 +136,7 @@ public:
 	template<class T>
 	void SetDatamapProperty(const char* name, T value)
 	{
-		SetDatamapPropertyByOffset<T>(FindDataMapOffset(name), value);
+		SetDatamapPropertyByOffset<T>(FindDatamapPropertyOffset(name), value);
 	}
 
 	template<class T>
@@ -147,7 +147,7 @@ public:
 
 	void SetDatamapPropertyStringArray(const char* name, const char* value)
 	{
-		SetDatamapPropertyStringArrayByOffset(FindDataMapOffset(name), value);
+		SetDatamapPropertyStringArrayByOffset(FindDatamapPropertyOffset(name), value);
 	}
 
 	void SetDatamapPropertyStringArrayByOffset(int offset, const char* value)

@@ -155,7 +155,7 @@ void CBaseEntityWrapper::spawn()
 	servertools->DispatchSpawn(GetThis());
 }
 
-int CBaseEntityWrapper::FindDataMapOffset(const char* name)
+int CBaseEntityWrapper::FindDatamapPropertyOffset(const char* name)
 {
 	datamap_t* datamap = GetDataDescMap();
 	if (!datamap)
@@ -349,7 +349,7 @@ IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
 
 Vector CBaseEntityWrapper::GetOrigin()
 {
-	static int offset = FindDataMapOffset("m_vecOrigin");
+	static int offset = FindDatamapPropertyOffset("m_vecOrigin");
 	return GetDatamapPropertyByOffset<Vector>(offset);
 }
 
@@ -454,13 +454,13 @@ void CBaseEntityWrapper::SetElasticity(float elasticity)
 
 int CBaseEntityWrapper::GetGroundEntity()
 {
-	static int offset = FindDataMapOffset("m_hGroundEntity");
+	static int offset = FindDatamapPropertyOffset("m_hGroundEntity");
 	return GetDatamapPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetGroundEntity(int entity)
 {
-	static int offset = FindDataMapOffset("m_hGroundEntity");
+	static int offset = FindDatamapPropertyOffset("m_hGroundEntity");
 	SetDatamapPropertyByOffset<int>(offset, entity);
 }
 
@@ -519,13 +519,13 @@ void CBaseEntityWrapper::SetMoveType(MoveType_t type)
 
 int CBaseEntityWrapper::GetParentHandle()
 {
-	static int offset = FindDataMapOffset("m_pParent");
+	static int offset = FindDatamapPropertyOffset("m_pParent");
 	return GetDatamapPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetParentHandle(int entity)
 {
-	static int offset = FindDataMapOffset("m_pParent");
+	static int offset = FindDatamapPropertyOffset("m_pParent");
 	SetDatamapPropertyByOffset<int>(offset, entity);
 }
 
@@ -554,14 +554,14 @@ void CBaseEntityWrapper::SetTargetName(const char* name)
 
 int CBaseEntityWrapper::GetOwnerHandle()
 {
-	static int offset_fallback = FindDataMapOffset("m_hOwnerEntity");
+	static int offset_fallback = FindDatamapPropertyOffset("m_hOwnerEntity");
 	int offset = offset_fallback;
 
 	try {
 		// TODO:
 		// Might use something that doesn't throw Python exceptions.
 		// That will speed things up again.
-		offset = FindDataMapOffset("m_hOwner");
+		offset = FindDatamapPropertyOffset("m_hOwner");
 	} catch( ... ) {
 		PyErr_Clear();
 	}
@@ -571,11 +571,11 @@ int CBaseEntityWrapper::GetOwnerHandle()
 
 void CBaseEntityWrapper::SetOwnerHandle(int entity)
 {
-	static int offset_fallback = FindDataMapOffset("m_hOwnerEntity");
+	static int offset_fallback = FindDatamapPropertyOffset("m_hOwnerEntity");
 	int offset = offset_fallback;
 
 	try {
-		offset = FindDataMapOffset("m_hOwner");
+		offset = FindDatamapPropertyOffset("m_hOwner");
 	} catch( ... ) {
 		PyErr_Clear();
 	}
@@ -586,26 +586,26 @@ void CBaseEntityWrapper::SetOwnerHandle(int entity)
 
 Vector CBaseEntityWrapper::GetAvelocity()
 {
-	static int offset = FindDataMapOffset("m_vecAngVelocity");
+	static int offset = FindDatamapPropertyOffset("m_vecAngVelocity");
 	return GetDatamapPropertyByOffset<Vector>(offset);
 }
 
 void CBaseEntityWrapper::SetAvelocity(Vector& vec)
 {
-	static int offset = FindDataMapOffset("m_vecAngVelocity");
+	static int offset = FindDatamapPropertyOffset("m_vecAngVelocity");
 	SetDatamapPropertyByOffset<Vector>(offset, vec);
 }
 
 
 Vector CBaseEntityWrapper::GetBaseVelocity()
 {
-	static int offset = FindDataMapOffset("m_vecBaseVelocity");
+	static int offset = FindDatamapPropertyOffset("m_vecBaseVelocity");
 	return GetDatamapPropertyByOffset<Vector>(offset);
 }
 
 void CBaseEntityWrapper::SetBaseVelocity(Vector& vec)
 {
-	static int offset = FindDataMapOffset("m_vecBaseVelocity");
+	static int offset = FindDatamapPropertyOffset("m_vecBaseVelocity");
 	SetDatamapPropertyByOffset<Vector>(offset, vec);
 }
 
@@ -636,13 +636,13 @@ void CBaseEntityWrapper::SetEffects(int effects)
 
 float CBaseEntityWrapper::GetFriction()
 {
-	static int offset = FindDataMapOffset("m_flFriction");
+	static int offset = FindDatamapPropertyOffset("m_flFriction");
 	return GetDatamapPropertyByOffset<float>(offset);
 }
 
 void CBaseEntityWrapper::SetFriction(float friction)
 {
-	static int offset = FindDataMapOffset("m_flFriction");
+	static int offset = FindDatamapPropertyOffset("m_flFriction");
 	SetDatamapPropertyByOffset<float>(offset, friction);
 }
 
@@ -660,65 +660,65 @@ void CBaseEntityWrapper::SetGlobalName(const char* name)
 
 float CBaseEntityWrapper::GetGravity()
 {
-	static int offset = FindDataMapOffset("m_flGravity");
+	static int offset = FindDatamapPropertyOffset("m_flGravity");
 	return GetDatamapPropertyByOffset<float>(offset);
 }
 
 void CBaseEntityWrapper::SetGravity(float gravity)
 {
-	static int offset = FindDataMapOffset("m_flGravity");
+	static int offset = FindDatamapPropertyOffset("m_flGravity");
 	SetDatamapPropertyByOffset<float>(offset, gravity);
 }
 
 
 int CBaseEntityWrapper::GetHammerID()
 {
-	static int offset = FindDataMapOffset("m_iHammerID");
+	static int offset = FindDatamapPropertyOffset("m_iHammerID");
 	return GetDatamapPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetHammerID(int id)
 {
-	static int offset = FindDataMapOffset("m_iHammerID");
+	static int offset = FindDatamapPropertyOffset("m_iHammerID");
 	SetDatamapPropertyByOffset<int>(offset, id);
 }
 
 
 int CBaseEntityWrapper::GetHealth()
 {
-	static int offset = FindDataMapOffset("m_iHealth");
+	static int offset = FindDatamapPropertyOffset("m_iHealth");
 	return GetDatamapPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetHealth(int health)
 {
-	static int offset = FindDataMapOffset("m_iHealth");
+	static int offset = FindDatamapPropertyOffset("m_iHealth");
 	SetDatamapPropertyByOffset<int>(offset, health);
 }
 
 
 float CBaseEntityWrapper::GetLocalTime()
 {
-	static int offset = FindDataMapOffset("m_flLocalTime");
+	static int offset = FindDatamapPropertyOffset("m_flLocalTime");
 	return GetDatamapPropertyByOffset<float>(offset);
 }
 
 void CBaseEntityWrapper::SetLocalTime(float time)
 {
-	static int offset = FindDataMapOffset("m_flLocalTime");
+	static int offset = FindDatamapPropertyOffset("m_flLocalTime");
 	SetDatamapPropertyByOffset<float>(offset, time);
 }
 
 
 int CBaseEntityWrapper::GetMaxHealth()
 {
-	static int offset = FindDataMapOffset("m_iMaxHealth");
+	static int offset = FindDatamapPropertyOffset("m_iMaxHealth");
 	return GetDatamapPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetMaxHealth(int max_health)
 {
-	static int offset = FindDataMapOffset("m_iMaxHealth");
+	static int offset = FindDatamapPropertyOffset("m_iMaxHealth");
 	SetDatamapPropertyByOffset<int>(offset, max_health);
 }
 
@@ -736,26 +736,26 @@ void CBaseEntityWrapper::SetParentName(const char* name)
 
 float CBaseEntityWrapper::GetShadowCastDistance()
 {
-	static int offset = FindDataMapOffset("m_flShadowCastDistance");
-	return GetDatamapPropertyByOffset<float>(offset);
+	static int offset = FindNetworkPropertyOffset("m_flShadowCastDistance");
+	return GetNetworkPropertyByOffset<float>(offset);
 }
 
 void CBaseEntityWrapper::SetShadowCastDistance(float distance)
 {
-	static int offset = FindDataMapOffset("m_flShadowCastDistance");
-	SetDatamapPropertyByOffset<float>(offset, distance);
+	static int offset = FindNetworkPropertyOffset("m_flShadowCastDistance");
+	SetNetworkPropertyByOffset<float>(offset, distance);
 }
 
 
 int CBaseEntityWrapper::GetSpawnFlags()
 {
-	static int offset = FindDataMapOffset("m_spawnflags");
+	static int offset = FindDatamapPropertyOffset("m_spawnflags");
 	return GetDatamapPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetSpawnFlags(int spawn_flags)
 {
-	static int offset = FindDataMapOffset("m_spawnflags");
+	static int offset = FindDatamapPropertyOffset("m_spawnflags");
 	SetDatamapPropertyByOffset<int>(offset, spawn_flags);
 }
 
@@ -800,39 +800,39 @@ void CBaseEntityWrapper::SetTarget(const char* target)
 
 Vector CBaseEntityWrapper::GetVelocity()
 {
-	static int offset = FindDataMapOffset("m_vecVelocity");
+	static int offset = FindDatamapPropertyOffset("m_vecVelocity");
 	return GetDatamapPropertyByOffset<Vector>(offset);
 }
 
 void CBaseEntityWrapper::SetVelocity(Vector& vec)
 {
-	static int offset = FindDataMapOffset("m_vecVelocity");
+	static int offset = FindDatamapPropertyOffset("m_vecVelocity");
 	SetDatamapPropertyByOffset<Vector>(offset, vec);
 }
 
 
 Vector CBaseEntityWrapper::GetViewOffset()
 {
-	static int offset = FindDataMapOffset("m_vecViewOffset");
+	static int offset = FindDatamapPropertyOffset("m_vecViewOffset");
 	return GetDatamapPropertyByOffset<Vector>(offset);
 }
 
 void CBaseEntityWrapper::SetViewOffset(Vector& view_offset)
 {
-	static int offset = FindDataMapOffset("m_vecViewOffset");
+	static int offset = FindDatamapPropertyOffset("m_vecViewOffset");
 	SetDatamapPropertyByOffset<Vector>(offset, view_offset);
 }
 
 
 unsigned char CBaseEntityWrapper::GetWaterLevel()
 {
-	static int offset = FindDataMapOffset("m_nWaterLevel");
+	static int offset = FindDatamapPropertyOffset("m_nWaterLevel");
 	return GetDatamapPropertyByOffset<unsigned char>(offset);
 }
 
 void CBaseEntityWrapper::SetWaterLevel(unsigned char water_level)
 {
-	static int offset = FindDataMapOffset("m_nWaterLevel");
+	static int offset = FindDatamapPropertyOffset("m_nWaterLevel");
 	SetDatamapPropertyByOffset<unsigned char>(offset, water_level);
 }
 
