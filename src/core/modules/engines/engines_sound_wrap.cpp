@@ -110,7 +110,7 @@ void export_engine_sound(scope _sound)
 
 		.def("stop_sound",
 			&IEngineSoundExt::StopSound,
-			args("entity_index", "channel", "sample"),
+			(arg("entity_index"), arg("channel"), arg("sample")),
 			"Stops a sound from being emitted from an entity."
 		)
 

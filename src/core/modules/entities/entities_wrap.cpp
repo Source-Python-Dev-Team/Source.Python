@@ -183,6 +183,12 @@ void export_server_unknown(scope _entities)
 			"Return the entity's classname."
 		)
 
+		// For compatibility (for now). Either classname or class_name should be removed.
+		.add_property("class_name",
+			&IServerUnknownExt::GetClassname,
+			"Return the entity's classname."
+		)
+
 		.def("is_networked",
 			&IServerUnknownExt::IsNetworked,
 			"Return True if the entity is networked."

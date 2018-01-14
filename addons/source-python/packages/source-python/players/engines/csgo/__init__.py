@@ -5,10 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Warnings
-from warnings import warn
-
 # Source.Python Imports
 #   Bitbuffers
 from bitbuffers import BitBufferWrite
@@ -151,17 +147,6 @@ class Player(_Player):
 
         # Spawn the player...
         self._spawn()
-
-    def set_color(self, color):
-        """Set the player's color."""
-        if not _disable_immunity_alpha.get_bool() and color.a != self.color.a:
-            warn(
-                'Changing the alpha of a player will have no effect unless ' +
-                '"sv_disable_immunity_alpha" is set to "1".'
-            )
-        super().set_color(color)
-
-    color = property(_Player.get_color, set_color)
 
     @wrap_entity_mem_func
     def give_named_item(self, item, sub_type=0, econ_item_view=None, unk=False):
