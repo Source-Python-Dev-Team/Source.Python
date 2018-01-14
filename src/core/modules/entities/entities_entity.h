@@ -350,6 +350,8 @@ public:
 	Color GetColor();
 	void SetColor(Color& color);
 
+	void StopSound(const char* sample, int channel);
+
 	// Model stuff
 	MDLHandle_t get_model_handle();
 	studiohdr_t* get_model_header();

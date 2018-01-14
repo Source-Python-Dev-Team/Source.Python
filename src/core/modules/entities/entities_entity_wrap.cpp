@@ -397,6 +397,15 @@ void export_base_entity(scope _entity)
 		"Get/set the entity's color.\n\n"
 		":rtype: Color"
 	);
+	
+	BaseEntity.def(
+		"stop_sound",
+		&CBaseEntityWrapper::StopSound,
+		(arg("sample"), arg("channel")=CHAN_AUTO),
+		"Stop the given sound from being emitted by this entity.\n\n"
+		":param str sample: Sound file relative to the ``sounds`` directory.\n"
+        ":param Channel channel: The channel of the sound."
+	);
 
 	BaseEntity.def("remove",
 		&CBaseEntityWrapper::remove,

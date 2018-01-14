@@ -35,7 +35,7 @@
 #include "entities_datamaps.h"
 #include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
-
+#include "../engines/engines.h"
 
 // ============================================================================
 // >> External variables
@@ -846,4 +846,10 @@ void CBaseEntityWrapper::SetColor(Color& color)
 {
 	SetRenderMode(kRenderTransColor);
 	SetRenderColor(color);
+}
+
+
+void CBaseEntityWrapper::StopSound(const char* sample, int channel)
+{
+	IEngineSoundExt::StopSound(enginesound, GetIndex(), channel, sample);
 }

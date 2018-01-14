@@ -276,8 +276,13 @@ class Entity(BaseEntity):
     def get_model(self):
         """Return the entity's model.
 
+        :return:
+            ``None`` if the entity has no model.
         :rtype: Model
         """
+        if not self.model_name:
+            return None
+
         return Model(self.model_name)
 
     def set_model(self, model):
@@ -832,16 +837,6 @@ class Entity(BaseEntity):
 
         # Emit the sound to the given recipients...
         sound.play(*recipients)
-
-    def stop_sound(self, sample, channel=Channel.AUTO):
-        """Stop the given sound from being emitted by this entity.
-
-        :param str sample:
-            Sound file relative to the ``sounds`` directory.
-        :param Channel channel:
-            The channel of the sound.
-        """
-        engine_sound.stop_sound(self.index, channel, sample)
 
     def is_in_solid(
             self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
