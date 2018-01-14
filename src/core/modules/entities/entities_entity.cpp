@@ -329,6 +329,7 @@ IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
 	return Wrap<IPhysicsObjectWrapper>(GetDatamapProperty<IPhysicsObject*>("m_pPhysicsObject"));
 }
 
+
 Vector CBaseEntityWrapper::GetOrigin()
 {
 	static int offset = FindDataMapOffset("m_vecOrigin");
@@ -339,4 +340,173 @@ void CBaseEntityWrapper::SetOrigin(Vector& vec)
 {
 	static int offset = FindDataMapOffset("m_vecOrigin");
 	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+Vector CBaseEntityWrapper::GetMaxs()
+{
+	static int offset = FindDataMapOffset("m_Collision.m_vecMaxs");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetMaxs(Vector& vec)
+{
+	static int offset = FindDataMapOffset("m_Collision.m_vecMaxs");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+Vector CBaseEntityWrapper::GetMins()
+{
+	static int offset = FindDataMapOffset("m_Collision.m_vecMins");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetMins(Vector& vec)
+{
+	static int offset = FindDataMapOffset("m_Collision.m_vecMins");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+SolidType_t CBaseEntityWrapper::GetSolidType()
+{
+	static int offset = FindDataMapOffset("m_Collision.m_nSolidType");
+	return (SolidType_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetSolidType(SolidType_t type)
+{
+	static int offset = FindDataMapOffset("m_Collision.m_nSolidType");
+	SetDatamapPropertyByOffset<unsigned char>(offset, type);
+}
+
+
+SolidFlags_t CBaseEntityWrapper::GetSolidFlags()
+{
+	static int offset = FindDataMapOffset("m_Collision.m_usSolidFlags");
+	return (SolidFlags_t) GetDatamapPropertyByOffset<unsigned short>(offset);
+}
+
+void CBaseEntityWrapper::SetSolidFlags(SolidFlags_t flags)
+{
+	static int offset = FindDataMapOffset("m_Collision.m_usSolidFlags");
+	SetDatamapPropertyByOffset<unsigned short>(offset, flags);
+}
+
+
+Collision_Group_t CBaseEntityWrapper::GetCollisionGroup()
+{
+	static int offset = FindDataMapOffset("m_CollisionGroup");
+	return GetDatamapPropertyByOffset<Collision_Group_t>(offset);
+}
+
+void CBaseEntityWrapper::SetCollisionGroup(Collision_Group_t group)
+{
+	static int offset = FindDataMapOffset("m_CollisionGroup");
+	SetDatamapPropertyByOffset<Collision_Group_t>(offset, group);
+}
+
+
+Color CBaseEntityWrapper::GetRenderColor()
+{
+	static int offset = FindDataMapOffset("m_clrRender");
+	return GetDatamapPropertyByOffset<Color>(offset);
+}
+
+void CBaseEntityWrapper::SetRenderColor(Color& color)
+{
+	static int offset = FindDataMapOffset("m_clrRender");
+	SetDatamapPropertyByOffset<Color>(offset, color);
+}
+
+
+float CBaseEntityWrapper::GetElasticity()
+{
+	static int offset = FindDataMapOffset("m_flElasticity");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetElasticity(float elasticity)
+{
+	static int offset = FindDataMapOffset("m_flElasticity");
+	SetDatamapPropertyByOffset<float>(offset, elasticity);
+}
+
+
+int CBaseEntityWrapper::GetGroundEntity()
+{
+	static int offset = FindDataMapOffset("m_hGroundEntity");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetGroundEntity(int entity)
+{
+	static int offset = FindDataMapOffset("m_hGroundEntity");
+	SetDatamapPropertyByOffset<int>(offset, entity);
+}
+
+
+int CBaseEntityWrapper::GetTeamIndex()
+{
+	static int offset = FindDataMapOffset("m_iTeamNum");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetTeamIndex(int team)
+{
+	static int offset = FindDataMapOffset("m_iTeamNum");
+	SetDatamapPropertyByOffset<int>(offset, team);
+}
+
+
+RenderFx_t CBaseEntityWrapper::GetRenderFx()
+{
+	static int offset = FindDataMapOffset("m_nRenderFX");
+	return (RenderFx_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetRenderFx(RenderFx_t fx)
+{
+	static int offset = FindDataMapOffset("m_nRenderFX");
+	SetDatamapPropertyByOffset<unsigned char>(offset, fx);
+}
+
+
+RenderMode_t CBaseEntityWrapper::GetRenderMode()
+{
+	static int offset = FindDataMapOffset("m_nRenderMode");
+	return (RenderMode_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetRenderMode(RenderMode_t mode)
+{
+	static int offset = FindDataMapOffset("m_nRenderMode");
+	SetDatamapPropertyByOffset<unsigned char>(offset, mode);
+}
+
+
+MoveType_t CBaseEntityWrapper::GetMoveType()
+{
+	static int offset = FindDataMapOffset("m_MoveType");
+	return (MoveType_t) GetDatamapPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetMoveType(MoveType_t type)
+{
+	static int offset = FindDataMapOffset("m_MoveType");
+	SetDatamapPropertyByOffset<unsigned char>(offset, type);
+}
+
+
+int CBaseEntityWrapper::GetParentHandle()
+{
+	static int offset = FindDataMapOffset("m_pParent");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetParentHandle(int entity)
+{
+	static int offset = FindDataMapOffset("m_pParent");
+	SetDatamapPropertyByOffset<int>(offset, entity);
 }

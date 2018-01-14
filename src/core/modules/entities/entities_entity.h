@@ -114,7 +114,7 @@ public:
 	template<class T>
 	T GetDatamapProperty(const char* name)
 	{
-		return *(T*) (((unsigned long) this) + FindDataMapOffset(name));
+		return GetDatamapPropertyByOffset<T>(FindDataMapOffset(name));
 	}
 
 	template<class T>
@@ -125,13 +125,18 @@ public:
 
 	const char* GetDatamapPropertyStringArray(const char* name)
 	{
-		return (const char*) (((unsigned long) this) + FindDataMapOffset(name));
+		return GetDatamapPropertyStringArrayByOffset(FindDataMapOffset(name));
+	}
+
+	const char* GetDatamapPropertyStringArrayByOffset(int offset)
+	{
+		return (const char*) (((unsigned long) this) + offset);
 	}
 
 	template<class T>
 	void SetDatamapProperty(const char* name, T value)
 	{
-		*(T*) (((unsigned long) this) + FindDataMapOffset(name)) = value;
+		SetDatamapPropertyByOffset<T>(FindDataMapOffset(name), value);
 	}
 
 	template<class T>
@@ -142,7 +147,12 @@ public:
 
 	void SetDatamapPropertyStringArray(const char* name, const char* value)
 	{
-		strcpy((char*) (((unsigned long) this) + FindDataMapOffset(name)), value);
+		SetDatamapPropertyStringArrayByOffset(FindDataMapOffset(name), value);
+	}
+
+	void SetDatamapPropertyStringArrayByOffset(int offset, const char* value)
+	{
+		strcpy((char*) (((unsigned long) this) + offset), value);
 	}
 
 	// Network property methods
@@ -151,24 +161,46 @@ public:
 	template<class T>
 	T GetNetworkProperty(const char* name)
 	{
-		return *(T *) (((unsigned long) this) + FindNetworkPropertyOffset(name));
+		return GetNetworkPropertyByOffset<T>(FindNetworkPropertyOffset(name));
+	}
+
+	template<class T>
+	T GetNetworkPropertyByOffset(int offset)
+	{
+		return *(T *) (((unsigned long) this) + offset);
 	}
 
 	const char* GetNetworkPropertyStringArray(const char* name)
 	{
-		return (const char*) (((unsigned long) this) + FindNetworkPropertyOffset(name));
+		return GetNetworkPropertyStringArrayByOffset(FindNetworkPropertyOffset(name));
+	}
+
+	const char* GetNetworkPropertyStringArrayByOffset(int offset)
+	{
+		return (const char*) (((unsigned long) this) + offset);
 	}
 
 	template<class T>
 	void SetNetworkProperty(const char* name, T value)
 	{
-		*(T *) (((unsigned long) this) + FindNetworkPropertyOffset(name)) = value;
+		SetNetworkPropertyByOffset<T>(FindNetworkPropertyOffset(name), value);
+	}
+
+	template<class T>
+	void SetNetworkPropertyByOffset(int offset, T value)
+	{
+		*(T *) (((unsigned long) this) + offset) = value;
 		GetEdict()->StateChanged();
 	}
 
 	void SetNetworkPropertyStringArray(const char* name, const char* value)
 	{
-		strcpy((char*) (((unsigned long) this) + FindNetworkPropertyOffset(name)), value);
+		SetNetworkPropertyStringArrayByOffset(FindNetworkPropertyOffset(name), value);
+	}
+
+	void SetNetworkPropertyStringArrayByOffset(int offset, const char* value)
+	{
+		strcpy((char*) (((unsigned long) this) + offset), value);
 		GetEdict()->StateChanged();
 	}
 
@@ -207,6 +239,45 @@ public:
 
 	Vector GetOrigin();
 	void SetOrigin(Vector& vec);
+
+	Vector GetMaxs();
+	void SetMaxs(Vector& maxs);
+
+	Vector GetMins();
+	void SetMins(Vector& mins);
+
+	SolidType_t GetSolidType();
+	void SetSolidType(SolidType_t type);
+
+	SolidFlags_t GetSolidFlags();
+	void SetSolidFlags(SolidFlags_t type);
+
+	Collision_Group_t GetCollisionGroup();
+	void SetCollisionGroup(Collision_Group_t group);
+
+	Color GetRenderColor();
+	void SetRenderColor(Color& color);
+
+	float GetElasticity();
+	void SetElasticity(float elasticity);
+
+	int GetGroundEntity();
+	void SetGroundEntity(int entity);
+
+	int GetTeamIndex();
+	void SetTeamIndex(int team);
+
+	RenderFx_t GetRenderFx();
+	void SetRenderFx(RenderFx_t fx);
+
+	RenderMode_t GetRenderMode();
+	void SetRenderMode(RenderMode_t mode);
+
+	MoveType_t GetMoveType();
+	void SetMoveType(MoveType_t type);
+
+	int GetParentHandle();
+	void SetParentHandle(int entity);
 
 	// Model stuff
 	MDLHandle_t get_model_handle();
