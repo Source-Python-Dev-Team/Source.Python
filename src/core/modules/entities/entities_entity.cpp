@@ -762,6 +762,13 @@ void CBaseEntityWrapper::SetSpawnFlags(int spawn_flags)
 
 float CBaseEntityWrapper::GetSpeed()
 {
+	try {
+		return GetDatamapProperty<float>("m_flLaggedMovementValue");
+	}
+	catch (...) {
+		PyErr_Clear();
+	}
+
 	// Use KeyValue method for speed, because the offset somehow differs for some entities.
 	// Not sure how this is possible...
 	return GetKeyValueFloat("speed");
@@ -769,6 +776,13 @@ float CBaseEntityWrapper::GetSpeed()
 
 void CBaseEntityWrapper::SetSpeed(float speed)
 {
+	try {
+		SetDatamapProperty<float>("m_flLaggedMovementValue", speed);
+	}
+	catch (...) {
+		PyErr_Clear();
+	}
+
 	SetKeyValue("speed", speed);
 }
 
