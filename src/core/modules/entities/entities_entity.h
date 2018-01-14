@@ -284,6 +284,12 @@ public:
 	QAngle GetAngles();
 	void SetAngles(QAngle& angles);
 
+	str GetTargetName();
+	void SetTargetName(const char* name);
+
+	int GetOwnerHandle();
+	void SetOwnerHandle(int entity);
+
 	// Model stuff
 	MDLHandle_t get_model_handle();
 	studiohdr_t* get_model_header();

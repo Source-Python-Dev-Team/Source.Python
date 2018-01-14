@@ -221,6 +221,23 @@ void export_base_entity(scope _entity)
 		":rtype: QAngle"
 	);
 
+	BaseEntity.add_property(
+		"target_name",
+		&CBaseEntityWrapper::GetTargetName,
+		&CBaseEntityWrapper::SetTargetName,
+		"Get/set the entity's target name.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"owner_handle",
+		&CBaseEntityWrapper::GetOwnerHandle,
+		&CBaseEntityWrapper::SetOwnerHandle,
+		"Get/set the entity's owner handle.\n\n"
+		":return: ``-1`` if the entity has no owner entity. The returned value is an int handle.\n"
+		":rtype: int"
+	);
+
 	BaseEntity.def("remove",
 		&CBaseEntityWrapper::remove,
 		"Remove the entity."

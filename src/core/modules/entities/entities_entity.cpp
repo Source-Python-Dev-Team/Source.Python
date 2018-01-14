@@ -538,3 +538,47 @@ void CBaseEntityWrapper::SetAngles(QAngle& angles)
 {
 	SetKeyValueQAngle("angles", angles);
 }
+
+
+str CBaseEntityWrapper::GetTargetName()
+{
+	return GetKeyValueString("targetname");
+}
+
+void CBaseEntityWrapper::SetTargetName(const char* name)
+{
+	SetKeyValue("targetname", name);
+}
+
+
+
+int CBaseEntityWrapper::GetOwnerHandle()
+{
+	static int offset_fallback = FindDataMapOffset("m_hOwnerEntity");
+	int offset = offset_fallback;
+
+	try {
+		// TODO:
+		// Might use something that doesn't throw Python exceptions.
+		// That will speed things up again.
+		offset = FindDataMapOffset("m_hOwner");
+	} catch( ... ) {
+		PyErr_Clear();
+	}
+
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetOwnerHandle(int entity)
+{
+	static int offset_fallback = FindDataMapOffset("m_hOwnerEntity");
+	int offset = offset_fallback;
+
+	try {
+		offset = FindDataMapOffset("m_hOwner");
+	} catch( ... ) {
+		PyErr_Clear();
+	}
+
+	return SetDatamapPropertyByOffset<int>(offset, entity);
+}
