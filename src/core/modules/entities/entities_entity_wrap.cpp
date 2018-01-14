@@ -275,7 +275,7 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::GetFriction,
 		&CBaseEntityWrapper::SetFriction,
 		"Get/set the entity's friction.\n\n"
-		":rtype: int"
+		":rtype: float"
 	);
 
 	BaseEntity.add_property(
