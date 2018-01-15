@@ -404,6 +404,14 @@ void export_base_entity(scope _entity)
 		":rtype: Color"
 	);
 
+	BaseEntity.add_property(
+		"rotation",
+		&CBaseEntityWrapper::GetRotation,
+		&CBaseEntityWrapper::SetRotation,
+		"Get/set the entity's rotation.\n\n"
+		":rtype: QAngle"
+	);
+
 	BaseEntity.def(
 		"get_eye_location",
 		&CBaseEntityWrapper::GetEyeLocation,

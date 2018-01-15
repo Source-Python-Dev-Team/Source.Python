@@ -350,6 +350,9 @@ public:
 	Color GetColor();
 	void SetColor(Color& color);
 
+	QAngle GetRotation();
+	void SetRotation(QAngle& rotation);
+
 	Vector GetEyeLocation();
 
 	void StopSound(const char* sample, int channel);

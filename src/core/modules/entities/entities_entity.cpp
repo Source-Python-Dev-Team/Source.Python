@@ -857,6 +857,19 @@ void CBaseEntityWrapper::SetColor(Color& color)
 }
 
 
+QAngle CBaseEntityWrapper::GetRotation()
+{
+	static int offset = FindDatamapPropertyOffset("m_angRotation");
+	return GetNetworkPropertyByOffset<QAngle>(offset);
+}
+
+void CBaseEntityWrapper::SetRotation(QAngle& rotation)
+{
+	static int offset = FindDatamapPropertyOffset("m_angRotation");
+	SetNetworkPropertyByOffset<QAngle>(offset, rotation);
+}
+
+
 Vector CBaseEntityWrapper::GetEyeLocation()
 {
 	return GetOrigin() + GetViewOffset();
