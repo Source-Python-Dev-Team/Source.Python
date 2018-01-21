@@ -211,7 +211,10 @@ bool CPythonManager::Initialize( void )
 		if (stderr_.is_none())
 		{
 			DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
-			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONERR$", "wt");
+
+			// Use CONOUT$, because CONERR$ has no effect:
+			// https://github.com/Source-Python-Dev-Team/Source.Python/issues/237
+			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONOUT$", "wt");
 		}
 	}
 #endif
