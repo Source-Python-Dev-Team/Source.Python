@@ -20,6 +20,7 @@ from configobj import ConfigObj
 from commands.typed import TypedServerCommand
 #   Core
 from core import core_logger
+from core import create_checksum
 from core import SOURCE_ENGINE_BRANCH
 from core.version import VERSION
 from core.version import GIT_COMMIT
@@ -148,9 +149,13 @@ def print_info(info):
         if info.url is not None:
             result += ', {}'.format(info.url)
 
-    result += '\n'
-
-    core_command_logger.log_message(result)
+    # Create a checksum for all the the essential information (from 'Date' to
+    # the last SP plugin)
+    checksum = create_checksum(result)
+    sep = '-' * 56
+    core_command_logger.log_message(
+        f'\nIMPORTANT: Please copy the full output.\n{sep}\n'
+        f'Checksum      : {checksum}{result}\n{sep}\n')
 
 
 # =============================================================================
