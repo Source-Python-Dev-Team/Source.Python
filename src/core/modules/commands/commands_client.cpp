@@ -153,7 +153,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 //-----------------------------------------------------------------------------
 CClientCommandManager::CClientCommandManager(const char* szName)
 {
-	m_Name = szName;
+	m_Name = strdup(szName);
 }
 
 //-----------------------------------------------------------------------------
@@ -161,6 +161,7 @@ CClientCommandManager::CClientCommandManager(const char* szName)
 //-----------------------------------------------------------------------------
 CClientCommandManager::~CClientCommandManager()
 {
+	free(m_Name);
 }
 
 //-----------------------------------------------------------------------------

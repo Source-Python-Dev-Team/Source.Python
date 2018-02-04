@@ -148,7 +148,7 @@ CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
 	ConCommand(szName, (FnCommandCallback_t)NULL, szHelpText, iFlags),
 	m_pOldCommand(pConCommand)
 {
-	m_Name = szName;
+	m_Name = strdup(szName);
 }
 
 //-----------------------------------------------------------------------------
@@ -168,6 +168,8 @@ CServerCommandManager::~CServerCommandManager()
 		// Re-register the old command instance
 		g_pCVar->RegisterConCommand(m_pOldCommand);
 	}
+
+	free(m_Name);
 }
 
 //-----------------------------------------------------------------------------
