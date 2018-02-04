@@ -161,7 +161,7 @@ CClientCommandManager::CClientCommandManager(const char* szName)
 //-----------------------------------------------------------------------------
 CClientCommandManager::~CClientCommandManager()
 {
-	free(m_Name);
+	free((char*)m_Name);
 }
 
 //-----------------------------------------------------------------------------

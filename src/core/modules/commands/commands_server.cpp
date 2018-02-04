@@ -169,7 +169,7 @@ CServerCommandManager::~CServerCommandManager()
 		g_pCVar->RegisterConCommand(m_pOldCommand);
 	}
 
-	free(m_Name);
+	free((char*)m_Name);
 }
 
 //-----------------------------------------------------------------------------

@@ -296,7 +296,7 @@ CSayCommandManager::CSayCommandManager(const char* szName)
 //-----------------------------------------------------------------------------
 CSayCommandManager::~CSayCommandManager()
 {
-	free(m_Name);
+	free((char*)m_Name);
 }
 
 //-----------------------------------------------------------------------------
