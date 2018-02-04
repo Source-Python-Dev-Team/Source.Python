@@ -99,10 +99,11 @@ CSayCommandManager* GetSayCommand(const char* szName)
 {
 	CSayCommandManager* manager = NULL;
 	SayCommandMap::iterator iter;
-	if (!find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, szName, iter))
+	char* szNameCopy = strdup(szName);
+	if (!find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, szNameCopy, iter))
 	{
-		manager = new CSayCommandManager(szName);
-		g_SayCommandMap.insert(std::make_pair(szName, manager));
+		manager = new CSayCommandManager(szNameCopy);
+		g_SayCommandMap.insert(std::make_pair(szNameCopy, manager));
 	}
 	else
 	{
