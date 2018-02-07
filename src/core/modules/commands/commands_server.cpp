@@ -87,7 +87,7 @@ CServerCommandManager* GetServerCommand(const char* szName,
 	if (!find_manager<ServerCommandMap, ServerCommandMap::iterator>(g_ServerCommandMap, szName, iter))
 	{
 		manager = CServerCommandManager::CreateCommand(szName, szHelpText, iFlags);
-		g_ServerCommandMap.insert(std::make_pair(szName, manager));
+		g_ServerCommandMap.insert(std::make_pair(manager->m_Name, manager));
 	}
 	else
 	{
@@ -148,7 +148,7 @@ CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
 	ConCommand(szName, (FnCommandCallback_t)NULL, szHelpText, iFlags),
 	m_pOldCommand(pConCommand)
 {
-	m_Name = szName;
+	m_Name = strdup(szName);
 }
 
 //-----------------------------------------------------------------------------
@@ -168,6 +168,8 @@ CServerCommandManager::~CServerCommandManager()
 		// Re-register the old command instance
 		g_pCVar->RegisterConCommand(m_pOldCommand);
 	}
+
+	free((char*)m_Name);
 }
 
 //-----------------------------------------------------------------------------
