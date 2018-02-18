@@ -201,9 +201,12 @@ bool CBaseEntityWrapper::operator==(object other)
 
 void CBaseEntityWrapper::GetKeyValueStringRaw(const char* szName, char* szOut, int iLength)
 {
+	servertools->GetKeyValue(GetThis(), szName, szOut, iLength);
+	/*
 	if (!servertools->GetKeyValue(GetThis(), szName, szOut, iLength))
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
 			szName, GetDataDescMap()->dataClassName);
+	*/
 }
 
 str CBaseEntityWrapper::GetKeyValueString(const char* szName)
