@@ -201,6 +201,7 @@ bool CBaseEntityWrapper::operator==(object other)
 
 void CBaseEntityWrapper::GetKeyValueStringRaw(const char* szName, char* szOut, int iLength)
 {
+	*szOut = NULL;
 	servertools->GetKeyValue(GetThis(), szName, szOut, iLength);
 	/*
 	if (!servertools->GetKeyValue(GetThis(), szName, szOut, iLength))
