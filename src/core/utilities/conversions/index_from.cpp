@@ -205,3 +205,30 @@ bool IndexFromSteamID( const char* szSteamID, unsigned int& output )
 
 	return false;
 }
+
+
+//-----------------------------------------------------------------------------
+// Returns an index instance from the given SteamID.
+//-----------------------------------------------------------------------------
+bool IndexFromUniqueID( const char* szUniqueID, unsigned int& output )
+{
+	for (unsigned int i=1; i <= (unsigned int) gpGlobals->maxClients; ++i)
+	{
+		IPlayerInfo* pInfo = NULL;
+		if (!PlayerInfoFromIndex(i, pInfo))
+			continue;
+		
+		char szTempUniqueID[UNIQUE_ID_SIZE] = "";
+		char* pTempUniqueID = (char*) szTempUniqueID;
+		if (!UniqueIDFromPlayerInfo2(pInfo, pTempUniqueID))
+			continue;
+
+		if (V_strcmp(szUniqueID, pTempUniqueID) == 0)
+		{
+			output = i;
+			return true;
+		}
+	}
+
+	return false;
+}

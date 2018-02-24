@@ -65,6 +65,8 @@ Set(SOURCEPYTHON_UTILITIES_SOURCES
     core/utilities/conversions/playerinfo_from.cpp
     core/utilities/conversions/pointer_from.cpp
     core/utilities/conversions/userid_from.cpp
+    core/utilities/conversions/address_from.cpp
+    core/utilities/conversions/uniqueid_from.cpp
 )
 
 Set(SOURCEPYTHON_UTILITIES_FILES
