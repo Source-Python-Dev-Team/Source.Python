@@ -182,3 +182,26 @@ bool IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output )
 
 	return IndexFromEdict(pEdict, output);
 }
+
+
+//-----------------------------------------------------------------------------
+// Returns an index instance from the given SteamID.
+//-----------------------------------------------------------------------------
+bool IndexFromSteamID( const char* szSteamID, unsigned int& output )
+{
+	IPlayerInfo* pInfo = NULL;
+
+	for (unsigned int i=1; i <= (unsigned int) gpGlobals->maxClients; ++i)
+	{
+		if (!PlayerInfoFromIndex(i, pInfo))
+			continue;
+
+		if (V_strcmp(pInfo->GetNetworkIDString(), szSteamID) == 0)
+		{
+			output = i;
+			return true;
+		}
+	}
+
+	return false;
+}
