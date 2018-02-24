@@ -270,9 +270,10 @@ CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo);
 //-----------------------------------------------------------------------------
 // AddressFrom* declarations
 //-----------------------------------------------------------------------------
-bool AddressFromPlayerInfo( IPlayerInfo* pInfo, const char*& output );
+bool AddressFromPlayerInfo2( IPlayerInfo* pInfo, const char*& output );
+bool AddressFromPlayerInfo( IPlayerInfo* pInfo, str& output );
 
-CREATE_EXC_CONVERSION_FUNCTION(const char*, Address, IPlayerInfo *, PlayerInfo);
+CREATE_EXC_CONVERSION_FUNCTION(str, Address, IPlayerInfo *, PlayerInfo);
 
 
 //-----------------------------------------------------------------------------

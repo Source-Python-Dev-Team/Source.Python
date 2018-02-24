@@ -53,7 +53,7 @@ bool UniqueIDFromPlayerInfo2( IPlayerInfo* pInfo, char*& output )
 	}
 
 	const char* szAddr = NULL;
-	if (!AddressFromPlayerInfo(pInfo, szAddr))
+	if (!AddressFromPlayerInfo2(pInfo, szAddr))
 		return false;
 
 	sprintf(output, "LAN_%s", szAddr);

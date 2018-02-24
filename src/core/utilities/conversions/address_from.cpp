@@ -34,7 +34,7 @@
 //-----------------------------------------------------------------------------
 // Returns an address from the given PlayerInfo instance.
 //-----------------------------------------------------------------------------
-bool AddressFromPlayerInfo( IPlayerInfo* pInfo, const char*& output )
+bool AddressFromPlayerInfo2( IPlayerInfo* pInfo, const char*& output )
 {
 	if (!pInfo)
 		return false;
@@ -54,5 +54,15 @@ bool AddressFromPlayerInfo( IPlayerInfo* pInfo, const char*& output )
 		return false;
 
 	output = netinfo->GetAddress();
+	return true;
+}
+
+bool AddressFromPlayerInfo( IPlayerInfo* pInfo, str& output )
+{
+	const char* result = NULL;
+	if (!AddressFromPlayerInfo2(pInfo, result))
+		return false;
+
+	output = str(result);
 	return true;
 }

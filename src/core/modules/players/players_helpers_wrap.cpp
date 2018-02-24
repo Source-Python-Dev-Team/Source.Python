@@ -100,7 +100,7 @@ void export_player_conversion_functions(scope _helpers)
 	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, IPlayerInfo *, PlayerInfo, return_by_value_policy());
 
 	// To Address conversions...
-	EXPORT_CONVERSION_FUNCTION(const char *, Address, IPlayerInfo *, PlayerInfo);
+	EXPORT_CONVERSION_FUNCTION(str, Address, IPlayerInfo *, PlayerInfo);
 
 	// To UniqueID conversions...
 	EXPORT_CONVERSION_FUNCTION(str, UniqueID, IPlayerInfo *, PlayerInfo);
