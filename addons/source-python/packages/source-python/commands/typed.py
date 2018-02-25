@@ -53,6 +53,7 @@ __all__ = ('SUPPORTED_KINDS',
            'TypedClientCommand',
            'TypedSayCommand',
            'TypedServerCommand',
+           'ValidationError'
            )
 
 

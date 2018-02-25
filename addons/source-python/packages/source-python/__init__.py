@@ -234,6 +234,23 @@ def setup_exception_hooks():
     from hooks.exceptions import except_hooks
     from hooks.warnings import warning_hooks
 
+    # Temporary workaround for sys.excepthook bug:
+    # https://bugs.python.org/issue1230540
+    import sys
+    import threading
+
+    run_old = threading.Thread.run
+
+    def run(*args, **kwargs):
+        try:
+            run_old(*args, **kwargs)
+        except (KeyboardInterrupt, SystemExit):
+            raise
+        except:
+            sys.excepthook(*sys.exc_info())
+
+    threading.Thread.run = run
+
 
 # =============================================================================
 # >> TRANSLATIONS

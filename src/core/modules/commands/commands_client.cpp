@@ -68,7 +68,7 @@ CClientCommandManager* GetClientCommand(const char* szName)
 	if (!find_manager<ClientCommandMap, ClientCommandMap::iterator>(g_ClientCommandMap, szName, iter))
 	{
 		manager = new CClientCommandManager(szName);
-		g_ClientCommandMap.insert(std::make_pair(szName, manager));
+		g_ClientCommandMap.insert(std::make_pair(manager->m_Name, manager));
 	}
 	else
 	{
@@ -153,7 +153,7 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 //-----------------------------------------------------------------------------
 CClientCommandManager::CClientCommandManager(const char* szName)
 {
-	m_Name = szName;
+	m_Name = strdup(szName);
 }
 
 //-----------------------------------------------------------------------------
@@ -161,6 +161,7 @@ CClientCommandManager::CClientCommandManager(const char* szName)
 //-----------------------------------------------------------------------------
 CClientCommandManager::~CClientCommandManager()
 {
+	free((char*)m_Name);
 }
 
 //-----------------------------------------------------------------------------

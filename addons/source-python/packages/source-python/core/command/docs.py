@@ -18,6 +18,7 @@ from commands.typed import TypedServerCommand
 from core.command import core_command
 from core.command import core_command_logger
 from core.version import VERSION
+from core.version import is_unversioned
 #   Paths
 from paths import SP_DATA_PATH
 from paths import SP_DOCS_PATH
@@ -305,8 +306,7 @@ def _build_source_python_docs():
             lines = f.readlines()
 
         # Get the version string
-        version = VERSION if VERSION == 'unversioned' else (
-            'v{0}'.format(VERSION))
+        version = '' if is_unversioned() else f'v{VERSION}'
 
         with conf_file.open('w') as f:
             for line in lines:

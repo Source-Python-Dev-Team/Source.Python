@@ -211,7 +211,10 @@ bool CPythonManager::Initialize( void )
 		if (stderr_.is_none())
 		{
 			DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
-			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONERR$", "wt");
+
+			// Use CONOUT$, because CONERR$ has no effect:
+			// https://github.com/Source-Python-Dev-Team/Source.Python/issues/237
+			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONOUT$", "wt");
 		}
 	}
 #endif
@@ -225,7 +228,7 @@ bool CPythonManager::Initialize( void )
 	catch( ... ) {
 		Msg(MSG_PREFIX "Failed to load the main module due to following exception:\n");
 
-		// Don't use PyErr_Print() here because our sys.excepthook has not been installed
+		// Don't use PyErr_Print() here because our sys.excepthook (might) has not been installed
 		// yet so let's just format and output to the console ourself.
 		if (PyErr_Occurred())
 		{
@@ -240,7 +243,10 @@ bool CPythonManager::Initialize( void )
 			handle<> hTraceback(allow_null(pTraceback));
 
 			object format_exception = import("traceback").attr("format_exception");
-			Msg(extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback))));
+			const char* pMsg = extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback)));
+
+			// Send the message in chunks, because it can get quite big.
+			ChunkedMsg(pMsg);
 
 			PyErr_Clear();
 		}

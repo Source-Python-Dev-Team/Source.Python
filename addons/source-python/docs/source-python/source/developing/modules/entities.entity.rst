@@ -1,12 +1,7 @@
 entities.entity module
 =======================
-
-.. autoclass:: _entities._entity.BaseEntity
-    :members:
-    :undoc-members:
-    :show-inheritance:
     
-.. automodule:: entities._base
+.. automodule:: entities.entity
     :members:
     :undoc-members:
     :show-inheritance:

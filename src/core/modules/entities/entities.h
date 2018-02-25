@@ -29,18 +29,21 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// Source.Python
+#include "modules/memory/memory_tools.h"
+#include "utilities/conversions.h"
+#include "entities_entity.h"
+
+// SDK
 #include "edict.h"
 #include "server_class.h"
 #include <cstdint>
-#include "modules/memory/memory_tools.h"
 #include "string_t.h"
 #include "dt_send.h"
 #include "game/shared/ehandle.h"
 #include "isaverestore.h"
 #include "datamap.h"
 #include "game/shared/takedamageinfo.h"
-#include "utilities/conversions.h"
-#include "entities_entity.h"
 
 
 //-----------------------------------------------------------------------------
@@ -49,14 +52,11 @@
 class ServerEntityExt
 {
 public:
-	static void SetModelName(IServerEntity *pServerEntity, const char *szModelName)
-	{
-		CBaseEntity *pBaseEntity = pServerEntity->GetBaseEntity();
-		if (!pBaseEntity)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "BaseEntity is NULL.");
-
-		((CBaseEntityWrapper *)pBaseEntity)->SetKeyValue("model", szModelName);
-	}
+	static void SetModelName(IServerEntity *pServerEntity, const char *szModelName);
+	static MDLHandle_t get_model_handle(IServerEntity *pServerEntity);
+	static studiohdr_t* get_model_header(IServerEntity *pServerEntity);
+	static int lookup_attachment(IServerEntity* pEntity, const char* name);
+	static int lookup_bone(IServerEntity* pEntity, const char* name);
 };
 
 

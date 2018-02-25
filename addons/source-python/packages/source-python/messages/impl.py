@@ -144,10 +144,10 @@ class SayText2Impl(UserMessageImpl):
         buffer.set_string('msg_name', data.message)
         buffer.set_bool('chat', data.chat)
         buffer.set_int32('ent_idx', data.index)
-        buffer.set_repeated_string('params', 0, data.param1)
-        buffer.set_repeated_string('params', 1, data.param2)
-        buffer.set_repeated_string('params', 2, data.param3)
-        buffer.set_repeated_string('params', 3, data.param4)
+        buffer.add_string('params', data.param1)
+        buffer.add_string('params', data.param2)
+        buffer.add_string('params', data.param3)
+        buffer.add_string('params', data.param4)
 
     @staticmethod
     def read_bitbuffer(buffer):

@@ -262,6 +262,7 @@ void export_server_class(scope _props)
 	ServerClass_.def_readonly("table", &ServerClass::m_pTable);
 	ServerClass_.def_readonly("next", &ServerClass::m_pNext);
 	ServerClass_.def_readonly("class_index", &ServerClass::m_ClassID);
+	ServerClass_.def_readonly("instance_baseline_index", &ServerClass::m_InstanceBaselineIndex);
 	
 	// Engine specific stuff...
 	export_engine_specific_server_class(_props, ServerClass_);

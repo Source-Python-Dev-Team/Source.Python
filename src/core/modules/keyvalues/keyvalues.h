@@ -115,6 +115,11 @@ public:
 		}
 		return boost::shared_ptr<KeyValues>(pKeyValues, &__del__);
 	}
+	
+	static bool LoadFromFile2(KeyValues* pKeyValues, const char * szFile)
+	{ 
+		return pKeyValues->LoadFromFile(filesystem, szFile);
+	}
 
 	static bool SaveToFile(KeyValues* pKeyValues, const char * szFile)
 	{ return pKeyValues->SaveToFile(filesystem, szFile); }

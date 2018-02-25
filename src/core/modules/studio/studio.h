@@ -30,10 +30,13 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "public/studio.h"
+// Source.Python
 #include "modules/memory/memory_tools.h"
 #include "utilities/wrap_macros.h"
 #include "utilities/sp_util.h"
+
+// SDK
+#include "public/studio.h"
 #include "datacache/imdlcache.h"
 
 
@@ -41,6 +44,13 @@
 // External variables.
 //-----------------------------------------------------------------------------
 extern IMDLCache *modelcache;
+
+
+//-----------------------------------------------------------------------------
+// DEFINES
+//-----------------------------------------------------------------------------
+#define INVALID_ATTACHMENT_INDEX -1
+#define INVALID_BONE_INDEX -1
 
 
 //-----------------------------------------------------------------------------

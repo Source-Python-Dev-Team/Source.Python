@@ -35,27 +35,13 @@
 #include "entities_datamaps.h"
 #include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
+#include "../engines/engines.h"
 
 // ============================================================================
-// >> CBaseEntityWrapper
+// >> External variables
 // ============================================================================
-const char* IServerUnknownExt::GetClassname(IServerUnknown* pUnknown)
-{
-	IServerNetworkable* pNetworkable = pUnknown->GetNetworkable();
-	if (!pNetworkable)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the IServerNetworkable pointer.");
+extern IMDLCache *modelcache;
 
-	return pNetworkable->GetClassName();
-}
-
-bool IServerUnknownExt::IsNetworked(IServerUnknown* pUnknown)
-{
-	IServerNetworkable *pServerNetworkable = pUnknown->GetNetworkable();
-	if (pServerNetworkable)
-		return pServerNetworkable->GetEdict() != NULL;
-
-	return false;
-}
 
 // ============================================================================
 // >> CBaseEntityWrapper
@@ -169,7 +155,7 @@ void CBaseEntityWrapper::spawn()
 	servertools->DispatchSpawn(GetThis());
 }
 
-int CBaseEntityWrapper::FindDataMapOffset(const char* name)
+int CBaseEntityWrapper::FindDatamapPropertyOffset(const char* name)
 {
 	datamap_t* datamap = GetDataDescMap();
 	if (!datamap)
@@ -215,9 +201,13 @@ bool CBaseEntityWrapper::operator==(object other)
 
 void CBaseEntityWrapper::GetKeyValueStringRaw(const char* szName, char* szOut, int iLength)
 {
+	*szOut = NULL;
+	servertools->GetKeyValue(GetThis(), szName, szOut, iLength);
+	/*
 	if (!servertools->GetKeyValue(GetThis(), szName, szOut, iLength))
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "\"%s\" is not a valid KeyValue for entity class \"%s\".",
 			szName, GetDataDescMap()->dataClassName);
+	*/
 }
 
 str CBaseEntityWrapper::GetKeyValueString(const char* szName)
@@ -270,6 +260,18 @@ Vector CBaseEntityWrapper::GetKeyValueVector(const char* szName)
 	return Vector(fResult[0], fResult[1], fResult[2]);
 }
 
+QAngle CBaseEntityWrapper::GetKeyValueQAngle(const char* szName)
+{
+	char szResult[128];
+	GetKeyValueStringRaw(szName, szResult, 128);
+
+	float fResult[3];
+	if (!sputils::UTIL_StringToFloatArray(fResult, 3, szResult))
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be an angle: '%s'.", szResult);
+
+	return QAngle(fResult[0], fResult[1], fResult[2]);
+}
+
 bool CBaseEntityWrapper::GetKeyValueBool(const char* szName)
 {
 	char szResult[3];
@@ -299,11 +301,16 @@ Color CBaseEntityWrapper::GetKeyValueColor(const char* szName)
 	return Color(iResult[0], iResult[1], iResult[2], iResult[3]);
 }
 
-void CBaseEntityWrapper::SetKeyValueColor(const char* szName, Color color)
+void CBaseEntityWrapper::SetKeyValueColor(const char* szName, Color& color)
 {
 	char string[16];
 	Q_snprintf(string, sizeof(string), "%i %i %i %i", color.r(), color.g(), color.b(), color.a());
 	SetKeyValue(szName, string);
+}
+
+void CBaseEntityWrapper::SetKeyValueQAngle(const char* szName, QAngle& angles)
+{
+	SetKeyValue(szName, (Vector&) angles);
 }
 
 edict_t* CBaseEntityWrapper::GetEdict()
@@ -341,4 +348,539 @@ bool CBaseEntityWrapper::IsPlayer()
 IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
 {
 	return Wrap<IPhysicsObjectWrapper>(GetDatamapProperty<IPhysicsObject*>("m_pPhysicsObject"));
+}
+
+
+Vector CBaseEntityWrapper::GetOrigin()
+{
+	static int offset = FindDatamapPropertyOffset("m_vecOrigin");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetOrigin(Vector& vec)
+{
+	// Use KeyValue method, because it does a lot more under the rug than
+	// just setting m_vecOrigin
+	SetKeyValue<Vector>("origin", vec);
+}
+
+
+Vector CBaseEntityWrapper::GetMaxs()
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMaxs");
+	return GetNetworkPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetMaxs(Vector& vec)
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMaxs");
+	SetNetworkPropertyByOffset<Vector>(offset, vec);
+}
+
+
+Vector CBaseEntityWrapper::GetMins()
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMins");
+	return GetNetworkPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetMins(Vector& vec)
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_vecMins");
+	SetNetworkPropertyByOffset<Vector>(offset, vec);
+}
+
+
+SolidType_t CBaseEntityWrapper::GetSolidType()
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_nSolidType");
+	return (SolidType_t) GetNetworkPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetSolidType(SolidType_t type)
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_nSolidType");
+	SetNetworkPropertyByOffset<unsigned char>(offset, type);
+}
+
+
+SolidFlags_t CBaseEntityWrapper::GetSolidFlags()
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_usSolidFlags");
+	return (SolidFlags_t) GetNetworkPropertyByOffset<unsigned short>(offset);
+}
+
+void CBaseEntityWrapper::SetSolidFlags(SolidFlags_t flags)
+{
+	static int offset = FindNetworkPropertyOffset("m_Collision.m_usSolidFlags");
+	SetNetworkPropertyByOffset<unsigned short>(offset, flags);
+}
+
+
+Collision_Group_t CBaseEntityWrapper::GetCollisionGroup()
+{
+	static int offset = FindNetworkPropertyOffset("m_CollisionGroup");
+	return GetNetworkPropertyByOffset<Collision_Group_t>(offset);
+}
+
+void CBaseEntityWrapper::SetCollisionGroup(Collision_Group_t group)
+{
+	static int offset = FindNetworkPropertyOffset("m_CollisionGroup");
+	SetNetworkPropertyByOffset<Collision_Group_t>(offset, group);
+}
+
+
+Color CBaseEntityWrapper::GetRenderColor()
+{
+	static int offset = FindNetworkPropertyOffset("m_clrRender");
+	return GetNetworkPropertyByOffset<Color>(offset);
+}
+
+void CBaseEntityWrapper::SetRenderColor(Color& color)
+{
+	static int offset = FindNetworkPropertyOffset("m_clrRender");
+	SetNetworkPropertyByOffset<Color>(offset, color);
+}
+
+
+float CBaseEntityWrapper::GetElasticity()
+{
+	static int offset = FindNetworkPropertyOffset("m_flElasticity");
+	return GetNetworkPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetElasticity(float elasticity)
+{
+	static int offset = FindNetworkPropertyOffset("m_flElasticity");
+	SetNetworkPropertyByOffset<float>(offset, elasticity);
+}
+
+
+int CBaseEntityWrapper::GetGroundEntity()
+{
+	static int offset = FindDatamapPropertyOffset("m_hGroundEntity");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetGroundEntity(int entity)
+{
+	static int offset = FindDatamapPropertyOffset("m_hGroundEntity");
+	SetDatamapPropertyByOffset<int>(offset, entity);
+}
+
+
+int CBaseEntityWrapper::GetTeamIndex()
+{
+	static int offset = FindNetworkPropertyOffset("m_iTeamNum");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetTeamIndex(int team)
+{
+	static int offset = FindNetworkPropertyOffset("m_iTeamNum");
+	SetNetworkPropertyByOffset<int>(offset, team);
+}
+
+
+RenderFx_t CBaseEntityWrapper::GetRenderFx()
+{
+	static int offset = FindNetworkPropertyOffset("m_nRenderFX");
+	return (RenderFx_t) GetNetworkPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetRenderFx(RenderFx_t fx)
+{
+	static int offset = FindNetworkPropertyOffset("m_nRenderFX");
+	SetNetworkPropertyByOffset<unsigned char>(offset, fx);
+}
+
+
+RenderMode_t CBaseEntityWrapper::GetRenderMode()
+{
+	static int offset = FindNetworkPropertyOffset("m_nRenderMode");
+	return (RenderMode_t) GetNetworkPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetRenderMode(RenderMode_t mode)
+{
+	static int offset = FindNetworkPropertyOffset("m_nRenderMode");
+	SetNetworkPropertyByOffset<unsigned char>(offset, mode);
+}
+
+
+MoveType_t CBaseEntityWrapper::GetMoveType()
+{
+	static int offset = FindNetworkPropertyOffset("movetype");
+	return (MoveType_t) GetNetworkPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetMoveType(MoveType_t type)
+{
+	static int offset = FindNetworkPropertyOffset("movetype");
+	SetNetworkPropertyByOffset<unsigned char>(offset, type);
+}
+
+
+int CBaseEntityWrapper::GetParentHandle()
+{
+	static int offset = FindDatamapPropertyOffset("m_pParent");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetParentHandle(int entity)
+{
+	static int offset = FindDatamapPropertyOffset("m_pParent");
+	SetDatamapPropertyByOffset<int>(offset, entity);
+}
+
+
+QAngle CBaseEntityWrapper::GetAngles()
+{
+	return GetKeyValueQAngle("angles");
+}
+
+void CBaseEntityWrapper::SetAngles(QAngle& angles)
+{
+	SetKeyValueQAngle("angles", angles);
+}
+
+
+str CBaseEntityWrapper::GetTargetName()
+{
+	return GetKeyValueString("targetname");
+}
+
+void CBaseEntityWrapper::SetTargetName(const char* name)
+{
+	SetKeyValue("targetname", name);
+}
+
+
+int CBaseEntityWrapper::GetOwnerHandle()
+{
+	static int offset_fallback = FindDatamapPropertyOffset("m_hOwnerEntity");
+	int offset = offset_fallback;
+
+	try {
+		// TODO:
+		// Might use something that doesn't throw Python exceptions.
+		// That will speed things up again.
+		offset = FindDatamapPropertyOffset("m_hOwner");
+	} catch( ... ) {
+		PyErr_Clear();
+	}
+
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetOwnerHandle(int entity)
+{
+	static int offset_fallback = FindDatamapPropertyOffset("m_hOwnerEntity");
+	int offset = offset_fallback;
+
+	try {
+		offset = FindDatamapPropertyOffset("m_hOwner");
+	} catch( ... ) {
+		PyErr_Clear();
+	}
+
+	return SetDatamapPropertyByOffset<int>(offset, entity);
+}
+
+
+Vector CBaseEntityWrapper::GetAvelocity()
+{
+	static int offset = FindDatamapPropertyOffset("m_vecAngVelocity");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetAvelocity(Vector& vec)
+{
+	static int offset = FindDatamapPropertyOffset("m_vecAngVelocity");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+Vector CBaseEntityWrapper::GetBaseVelocity()
+{
+	static int offset = FindDatamapPropertyOffset("m_vecBaseVelocity");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetBaseVelocity(Vector& vec)
+{
+	static int offset = FindDatamapPropertyOffset("m_vecBaseVelocity");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+str CBaseEntityWrapper::GetDamageFilter()
+{
+	return GetKeyValueString("damagefilter");
+}
+
+void CBaseEntityWrapper::SetDamageFilter(const char* filter)
+{
+	SetKeyValue("damagefilter", filter);
+}
+
+
+int CBaseEntityWrapper::GetEffects()
+{
+	static int offset = FindNetworkPropertyOffset("m_fEffects");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetEffects(int effects)
+{
+	static int offset = FindNetworkPropertyOffset("m_fEffects");
+	SetNetworkPropertyByOffset<int>(offset, effects);
+}
+
+
+float CBaseEntityWrapper::GetFriction()
+{
+	static int offset = FindDatamapPropertyOffset("m_flFriction");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetFriction(float friction)
+{
+	static int offset = FindDatamapPropertyOffset("m_flFriction");
+	SetDatamapPropertyByOffset<float>(offset, friction);
+}
+
+
+str CBaseEntityWrapper::GetGlobalName()
+{
+	return GetKeyValueString("globalname");
+}
+
+void CBaseEntityWrapper::SetGlobalName(const char* name)
+{
+	SetKeyValue("globalname", name);
+}
+
+
+float CBaseEntityWrapper::GetGravity()
+{
+	static int offset = FindDatamapPropertyOffset("m_flGravity");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetGravity(float gravity)
+{
+	static int offset = FindDatamapPropertyOffset("m_flGravity");
+	SetDatamapPropertyByOffset<float>(offset, gravity);
+}
+
+
+int CBaseEntityWrapper::GetHammerID()
+{
+	static int offset = FindDatamapPropertyOffset("m_iHammerID");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetHammerID(int id)
+{
+	static int offset = FindDatamapPropertyOffset("m_iHammerID");
+	SetDatamapPropertyByOffset<int>(offset, id);
+}
+
+
+int CBaseEntityWrapper::GetHealth()
+{
+	static int offset = FindDatamapPropertyOffset("m_iHealth");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetHealth(int health)
+{
+	static int offset = FindDatamapPropertyOffset("m_iHealth");
+	SetDatamapPropertyByOffset<int>(offset, health);
+}
+
+
+float CBaseEntityWrapper::GetLocalTime()
+{
+	static int offset = FindDatamapPropertyOffset("m_flLocalTime");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetLocalTime(float time)
+{
+	static int offset = FindDatamapPropertyOffset("m_flLocalTime");
+	SetDatamapPropertyByOffset<float>(offset, time);
+}
+
+
+int CBaseEntityWrapper::GetMaxHealth()
+{
+	static int offset = FindDatamapPropertyOffset("m_iMaxHealth");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetMaxHealth(int max_health)
+{
+	static int offset = FindDatamapPropertyOffset("m_iMaxHealth");
+	SetDatamapPropertyByOffset<int>(offset, max_health);
+}
+
+
+str CBaseEntityWrapper::GetParentName()
+{
+	return GetKeyValueString("parentname");
+}
+
+void CBaseEntityWrapper::SetParentName(const char* name)
+{
+	SetKeyValue("parentname", name);
+}
+
+
+float CBaseEntityWrapper::GetShadowCastDistance()
+{
+	static int offset = FindNetworkPropertyOffset("m_flShadowCastDistance");
+	return GetNetworkPropertyByOffset<float>(offset);
+}
+
+void CBaseEntityWrapper::SetShadowCastDistance(float distance)
+{
+	static int offset = FindNetworkPropertyOffset("m_flShadowCastDistance");
+	SetNetworkPropertyByOffset<float>(offset, distance);
+}
+
+
+int CBaseEntityWrapper::GetSpawnFlags()
+{
+	static int offset = FindDatamapPropertyOffset("m_spawnflags");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetSpawnFlags(int spawn_flags)
+{
+	static int offset = FindDatamapPropertyOffset("m_spawnflags");
+	SetDatamapPropertyByOffset<int>(offset, spawn_flags);
+}
+
+
+float CBaseEntityWrapper::GetSpeed()
+{
+	try {
+		return GetDatamapProperty<float>("m_flLaggedMovementValue");
+	}
+	catch (...) {
+		PyErr_Clear();
+	}
+
+	// Use KeyValue method for speed, because the offset somehow differs for some entities.
+	// Not sure how this is possible...
+	return GetKeyValueFloat("speed");
+}
+
+void CBaseEntityWrapper::SetSpeed(float speed)
+{
+	try {
+		SetDatamapProperty<float>("m_flLaggedMovementValue", speed);
+	}
+	catch (...) {
+		PyErr_Clear();
+	}
+
+	SetKeyValue("speed", speed);
+}
+
+
+str CBaseEntityWrapper::GetTarget()
+{
+	return GetKeyValueString("target");
+}
+
+void CBaseEntityWrapper::SetTarget(const char* target)
+{
+	SetKeyValue("target", target);
+}
+
+
+Vector CBaseEntityWrapper::GetVelocity()
+{
+	static int offset = FindDatamapPropertyOffset("m_vecVelocity");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetVelocity(Vector& vec)
+{
+	static int offset = FindDatamapPropertyOffset("m_vecVelocity");
+	SetDatamapPropertyByOffset<Vector>(offset, vec);
+}
+
+
+Vector CBaseEntityWrapper::GetViewOffset()
+{
+	static int offset = FindDatamapPropertyOffset("m_vecViewOffset");
+	return GetDatamapPropertyByOffset<Vector>(offset);
+}
+
+void CBaseEntityWrapper::SetViewOffset(Vector& view_offset)
+{
+	static int offset = FindDatamapPropertyOffset("m_vecViewOffset");
+	SetDatamapPropertyByOffset<Vector>(offset, view_offset);
+}
+
+
+unsigned char CBaseEntityWrapper::GetWaterLevel()
+{
+	static int offset = FindDatamapPropertyOffset("m_nWaterLevel");
+	return GetDatamapPropertyByOffset<unsigned char>(offset);
+}
+
+void CBaseEntityWrapper::SetWaterLevel(unsigned char water_level)
+{
+	static int offset = FindDatamapPropertyOffset("m_nWaterLevel");
+	SetDatamapPropertyByOffset<unsigned char>(offset, water_level);
+}
+
+
+Color CBaseEntityWrapper::GetColor()
+{
+	return GetRenderColor();
+}
+
+void CBaseEntityWrapper::SetColor(Color& color)
+{
+#if defined(ENGINE_CSGO)
+	ConVar* var = cvar->FindVar("sv_disable_immunity_alpha");
+	if (var && !var->GetBool() && color.a() != GetColor().a() && IsPlayer()) {
+		static object warn = import("warnings").attr("warn");
+		warn("Changing the alpha of a player will have no effect unless 'sv_disable_immunity_alpha' is set to '1'.");
+	}
+#endif
+
+	SetRenderMode(kRenderTransColor);
+	SetRenderColor(color);
+}
+
+
+QAngle CBaseEntityWrapper::GetRotation()
+{
+	static int offset = FindDatamapPropertyOffset("m_angRotation");
+	return GetNetworkPropertyByOffset<QAngle>(offset);
+}
+
+void CBaseEntityWrapper::SetRotation(QAngle& rotation)
+{
+	static int offset = FindDatamapPropertyOffset("m_angRotation");
+	SetNetworkPropertyByOffset<QAngle>(offset, rotation);
+}
+
+
+Vector CBaseEntityWrapper::GetEyeLocation()
+{
+	return GetOrigin() + GetViewOffset();
+}
+
+
+void CBaseEntityWrapper::StopSound(const char* sample, int channel)
+{
+	IEngineSoundExt::StopSound(enginesound, GetIndex(), channel, sample);
 }

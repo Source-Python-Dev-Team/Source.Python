@@ -374,18 +374,11 @@ class Player(Entity):
 
     view_player = property(get_view_player, set_view_player)
 
-    def get_eye_location(self):
-        """Return the player's eye location.
-
-        :rtype: Vector
-        """
-        return self.view_offset + self.origin
-
     def set_eye_location(self, eye_location):
         """Set the player's eye location."""
         self.teleport(eye_location - self.view_offset, None, None)
 
-    eye_location = property(get_eye_location, set_eye_location)
+    eye_location = property(Entity.get_eye_location, set_eye_location)
 
     @property
     def view_vector(self):
@@ -410,9 +403,10 @@ class Player(Entity):
 
         :rtype: QAngle
         """
-        eye_angle_y = self.eye_angle.y
+        eye_angle = self.eye_angle
+        eye_angle_y = eye_angle.y
         eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
-        return QAngle(self.eye_angle.x, eye_angle_y, self.rotation.z)
+        return QAngle(eye_angle.x, eye_angle_y, self.rotation.z)
 
     def set_view_angle(self, angle):
         """Set the player's view angle."""

@@ -2,6 +2,12 @@
 
 """Provides a base class for registering commands and filters."""
 
+# =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Python
+from collections import defaultdict
+
 
 # =============================================================================
 # >> CLASSES
@@ -18,7 +24,7 @@ class _BaseCommandManager(object):
     def __init__(self):
         """Initialize the command manager."""
         # This will store all created callback proxies
-        self._callback_proxies = []
+        self._callback_proxies = defaultdict(list)
 
     def _prepare_command_names(self, names):
         """Validate and prepare the given command names.
@@ -42,15 +48,17 @@ class _BaseCommandManager(object):
 
         return tuple(names)
 
-    def _get_command_proxy(self, callback):
+    def _get_command_proxy(self, name, callback):
         """Return the command proxy for the given callback.
 
+        :param str name:
+            Name of the command.
         :param callable callback:
             The callback that should be used to search the proxy.
         :raise ValueError:
             Raised if the proxy wasn't found.
         """
-        for proxy in self._callback_proxies:
+        for proxy in self._callback_proxies.get(name, ()):
             if proxy.callback == callback:
                 return proxy
 
@@ -73,14 +81,15 @@ class _BaseCommandManager(object):
         """
         names = self._prepare_command_names(names)
 
-        if self._callback_proxy is not None:
-            # Create a new callback proxy for this callback
-            callback = self._callback_proxy(callback, *args, **kwargs)
-            self._callback_proxies.append(callback)
+        if self._callback_proxy is None:
+            for name in names:
+                self._register_command(name, callback, *args, **kwargs)
+        else:
+            proxy = self._callback_proxy(callback, *args, **kwargs)
 
-        # Register all command names
-        for name in names:
-            self._register_command(name, callback, *args, **kwargs)
+            for name in names:
+                self._callback_proxies[name].append(proxy)
+                self._register_command(name, proxy, *args, **kwargs)
 
     def _register_command(self, name, callback, *args, **kwargs):
         """Register a command.
@@ -106,10 +115,25 @@ class _BaseCommandManager(object):
         """
         names = self._prepare_command_names(names)
 
-        if self._callback_proxy is not None:
-            callback = self._get_command_proxy(callback)
-            self._callback_proxies.remove(callback)
+        if self._callback_proxy is None:
+            for name in names:
+                self._unregister_command(name, callback)
+        else:
+            for name in names:
+                proxy = self._get_command_proxy(name, callback)
+                self._callback_proxies[name].remove(proxy)
 
-        # Unregister all command names
-        for name in names:
-            self._get_command(name).remove_callback(callback)
+                if not self._callback_proxies[name]:
+                    del self._callback_proxies[name]
+
+                self._unregister_command(name, proxy)
+
+    def _unregister_command(self, name, callback):
+        """Unregister a command.
+
+        :param str name:
+            Name of the command to unregister.
+        :param callable callback:
+            The callback that is assigned to the command.
+        """
+        self._get_command(name).remove_callback(callback)

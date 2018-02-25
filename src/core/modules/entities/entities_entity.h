@@ -109,28 +109,50 @@ public:
 	bool operator==(object other);
 
 	// Datamap methods
-	int FindDataMapOffset(const char* name);
+	int FindDatamapPropertyOffset(const char* name);
 
 	template<class T>
 	T GetDatamapProperty(const char* name)
 	{
-		return *(T*) (((unsigned long) this) + FindDataMapOffset(name));
+		return GetDatamapPropertyByOffset<T>(FindDatamapPropertyOffset(name));
+	}
+
+	template<class T>
+	T GetDatamapPropertyByOffset(int offset)
+	{
+		return *(T*) (((unsigned long) this) + offset);
 	}
 
 	const char* GetDatamapPropertyStringArray(const char* name)
 	{
-		return (const char*) (((unsigned long) this) + FindDataMapOffset(name));
+		return GetDatamapPropertyStringArrayByOffset(FindDatamapPropertyOffset(name));
+	}
+
+	const char* GetDatamapPropertyStringArrayByOffset(int offset)
+	{
+		return (const char*) (((unsigned long) this) + offset);
 	}
 
 	template<class T>
 	void SetDatamapProperty(const char* name, T value)
 	{
-		*(T*) (((unsigned long) this) + FindDataMapOffset(name)) = value;
+		SetDatamapPropertyByOffset<T>(FindDatamapPropertyOffset(name), value);
+	}
+
+	template<class T>
+	void SetDatamapPropertyByOffset(int offset, T value)
+	{
+		*(T*) (((unsigned long) this) + offset) = value;
 	}
 
 	void SetDatamapPropertyStringArray(const char* name, const char* value)
 	{
-		strcpy((char*) (((unsigned long) this) + FindDataMapOffset(name)), value);
+		SetDatamapPropertyStringArrayByOffset(FindDatamapPropertyOffset(name), value);
+	}
+
+	void SetDatamapPropertyStringArrayByOffset(int offset, const char* value)
+	{
+		strcpy((char*) (((unsigned long) this) + offset), value);
 	}
 
 	// Network property methods
@@ -139,24 +161,46 @@ public:
 	template<class T>
 	T GetNetworkProperty(const char* name)
 	{
-		return *(T *) (((unsigned long) this) + FindNetworkPropertyOffset(name));
+		return GetNetworkPropertyByOffset<T>(FindNetworkPropertyOffset(name));
+	}
+
+	template<class T>
+	T GetNetworkPropertyByOffset(int offset)
+	{
+		return *(T *) (((unsigned long) this) + offset);
 	}
 
 	const char* GetNetworkPropertyStringArray(const char* name)
 	{
-		return (const char*) (((unsigned long) this) + FindNetworkPropertyOffset(name));
+		return GetNetworkPropertyStringArrayByOffset(FindNetworkPropertyOffset(name));
+	}
+
+	const char* GetNetworkPropertyStringArrayByOffset(int offset)
+	{
+		return (const char*) (((unsigned long) this) + offset);
 	}
 
 	template<class T>
 	void SetNetworkProperty(const char* name, T value)
 	{
-		*(T *) (((unsigned long) this) + FindNetworkPropertyOffset(name)) = value;
+		SetNetworkPropertyByOffset<T>(FindNetworkPropertyOffset(name), value);
+	}
+
+	template<class T>
+	void SetNetworkPropertyByOffset(int offset, T value)
+	{
+		*(T *) (((unsigned long) this) + offset) = value;
 		GetEdict()->StateChanged();
 	}
 
 	void SetNetworkPropertyStringArray(const char* name, const char* value)
 	{
-		strcpy((char*) (((unsigned long) this) + FindNetworkPropertyOffset(name)), value);
+		SetNetworkPropertyStringArrayByOffset(FindNetworkPropertyOffset(name), value);
+	}
+
+	void SetNetworkPropertyStringArrayByOffset(int offset, const char* value)
+	{
+		strcpy((char*) (((unsigned long) this) + offset), value);
 		GetEdict()->StateChanged();
 	}
 
@@ -166,9 +210,11 @@ public:
 	long GetKeyValueInt(const char* szName);
 	double GetKeyValueFloat(const char* szName);
 	Vector GetKeyValueVector(const char* szName);
+	QAngle GetKeyValueQAngle(const char* szName);
 	bool GetKeyValueBool(const char* szName);
 	Color GetKeyValueColor(const char* szName);
-	void SetKeyValueColor(const char* szName, Color color);
+	void SetKeyValueColor(const char* szName, Color& color);
+	void SetKeyValueQAngle(const char* szName, QAngle& angles);
 
 	template<class T>
 	void SetKeyValue(const char* szName, T value)
@@ -192,6 +238,128 @@ public:
 
 	// Other methods
 	bool IsPlayer();
+
+	Vector GetOrigin();
+	void SetOrigin(Vector& vec);
+
+	Vector GetMaxs();
+	void SetMaxs(Vector& maxs);
+
+	Vector GetMins();
+	void SetMins(Vector& mins);
+
+	SolidType_t GetSolidType();
+	void SetSolidType(SolidType_t type);
+
+	SolidFlags_t GetSolidFlags();
+	void SetSolidFlags(SolidFlags_t type);
+
+	Collision_Group_t GetCollisionGroup();
+	void SetCollisionGroup(Collision_Group_t group);
+
+	Color GetRenderColor();
+	void SetRenderColor(Color& color);
+
+	float GetElasticity();
+	void SetElasticity(float elasticity);
+
+	int GetGroundEntity();
+	void SetGroundEntity(int entity);
+
+	int GetTeamIndex();
+	void SetTeamIndex(int team);
+
+	RenderFx_t GetRenderFx();
+	void SetRenderFx(RenderFx_t fx);
+
+	RenderMode_t GetRenderMode();
+	void SetRenderMode(RenderMode_t mode);
+
+	MoveType_t GetMoveType();
+	void SetMoveType(MoveType_t type);
+
+	int GetParentHandle();
+	void SetParentHandle(int entity);
+
+	QAngle GetAngles();
+	void SetAngles(QAngle& angles);
+
+	str GetTargetName();
+	void SetTargetName(const char* name);
+
+	int GetOwnerHandle();
+	void SetOwnerHandle(int entity);
+
+	Vector GetAvelocity();
+	void SetAvelocity(Vector& avelocity);
+
+	Vector GetBaseVelocity();
+	void SetBaseVelocity(Vector& base_velocity);
+
+	str GetDamageFilter();
+	void SetDamageFilter(const char* filter);
+
+	int GetEffects();
+	void SetEffects(int effects);
+
+	float GetFriction();
+	void SetFriction(float friction);
+
+	str GetGlobalName();
+	void SetGlobalName(const char* name);
+
+	float GetGravity();
+	void SetGravity(float gravity);
+
+	int GetHammerID();
+	void SetHammerID(int id);
+
+	int GetHealth();
+	void SetHealth(int health);
+
+	float GetLocalTime();
+	void SetLocalTime(float time);
+
+	int GetMaxHealth();
+	void SetMaxHealth(int max_health);
+
+	str GetParentName();
+	void SetParentName(const char* name);
+
+	float GetShadowCastDistance();
+	void SetShadowCastDistance(float distance);
+
+	int GetSpawnFlags();
+	void SetSpawnFlags(int spawn_flags);
+
+	float GetSpeed();
+	void SetSpeed(float speed);
+
+	str GetTarget();
+	void SetTarget(const char* target);
+
+	Vector GetVelocity();
+	void SetVelocity(Vector& velocity);
+
+	Vector GetViewOffset();
+	void SetViewOffset(Vector& view_offset);
+
+	unsigned char GetWaterLevel();
+	void SetWaterLevel(unsigned char water_level);
+
+	Color GetColor();
+	void SetColor(Color& color);
+
+	QAngle GetRotation();
+	void SetRotation(QAngle& rotation);
+
+	Vector GetEyeLocation();
+
+	void StopSound(const char* sample, int channel);
+
+	// Model stuff
+	MDLHandle_t get_model_handle();
+	studiohdr_t* get_model_header();
 };
 
 

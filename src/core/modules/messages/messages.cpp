@@ -141,3 +141,18 @@ object GetMessageName(int index)
 	return str(result);
 #endif
 }
+
+object GetMessageSize(int index)
+{
+#ifdef USE_PROTOBUF
+	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "")
+	return object();
+#else
+	char result[256];
+	int size;
+	if (!servergamedll->GetUserMessageInfo(index, result, 255, size))
+		return object();
+
+	return object(size);
+#endif
+}
