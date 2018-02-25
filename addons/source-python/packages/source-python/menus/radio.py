@@ -106,7 +106,7 @@ class SimpleRadioMenu(_BaseMenu):
     def _select(self, player_index, choice_index):
         """See :meth:`menus.base._BaseMenu._select`."""
         if choice_index == BUTTON_CLOSE:
-            return None
+            return self._select_close(player_index)
 
         return super()._select(
             player_index,
@@ -139,7 +139,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
     def __init__(
             self, data=None, select_callback=None,
-            build_callback=None, description=None,
+            build_callback=None, close_callback=None, description=None,
             title=None, top_separator='-' * 30, bottom_separator='-' * 30,
             fill=True, parent_menu=None):
         """Initialize the object.
@@ -148,6 +148,8 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         :param callable|None select_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
         :param callable|None build_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None close_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
         :param str|None description: A description that is displayed under the
             title.
@@ -162,7 +164,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         :param _BaseMenu parent_menu: A menu that will be displayed when
             hitting 'Back' on the first page.
         """
-        super().__init__(data, select_callback, build_callback)
+        super().__init__(data, select_callback, build_callback, close_callback)
 
         self.title = title
         self.description = description
@@ -290,10 +292,9 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
 
     def _select(self, player_index, choice_index):
         """See :meth:`menus.base._BaseMenu._select`."""
-        # Do nothing if the menu is being closed
         if choice_index == BUTTON_CLOSE:
             del self._player_pages[player_index]
-            return None
+            return self._select_close(player_index)
 
         # Get the player's current page
         page = self._player_pages[player_index]
@@ -321,7 +322,7 @@ class ListRadioMenu(PagedRadioMenu):
     Navigation options are added automatically."""
 
     def __init__(
-            self, data=None, select_callback=None, build_callback=None,
+            self, data=None, select_callback=None, build_callback=None, close_callback=None,
             description=None, title=None, top_separator='-' * 30,
             bottom_separator='-' * 30, fill=True, parent_menu=None,
             items_per_page=10):
@@ -332,6 +333,8 @@ class ListRadioMenu(PagedRadioMenu):
             :meth:`menus.base._BaseMenu.__init__`.
         :param callable|None build_callback: See
             :meth:`menus.base._BaseMenu.__init__`.
+        :param callable|None close_callback: See
+            :meth:`menus.base._BaseMenu.__init__`.
         :param str|None description: See :meth:`PagedRadioMenu.__init__`.
         :param str|None title: See :meth:`PagedRadioMenu.__init__`.
         :param str top_separator: See :meth:`PagedRadioMenu.__init__`.
@@ -341,7 +344,7 @@ class ListRadioMenu(PagedRadioMenu):
         :param int items_per_page: Number of options that should be displayed
             on a single page.
         """
-        super().__init__(data, select_callback, build_callback, description,
+        super().__init__(data, select_callback, build_callback, close_callback, description,
             title, top_separator, bottom_separator, fill, parent_menu)
         self.items_per_page = items_per_page
 

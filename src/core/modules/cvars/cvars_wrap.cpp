@@ -74,41 +74,50 @@ void export_cvar_interface(scope _cvars)
 	class_<ICvar, boost::noncopyable>("_Cvar", no_init)
 		.def("register_base",
 			&ICvar::RegisterConCommand,
-			"Registers a console command.",
-			args("con_command")
+			"Register a console command.",
+			arg("con_command")
 		)
 
 		.def("unregister_base",
 			&ICvar::UnregisterConCommand,
-			"Unregisters a console command.",
-			args("con_command")
+			"Unregister a console command.",
+			arg("con_command")
 		)
 
 		.def("find_base",
 			GET_METHOD(ConCommandBase *, ICvar, FindCommandBase, const char *),
-			"Returns a ConCommandBase instance for the given command or variable, if it exists.",
-			args("name"),
+			"Find the ConCommandBase instance of a server command or console variable.\n\n"
+			":return: Return ``None`` if the command or variable was not found.\n"
+			":rtype: ConCommandBase",
+			arg("name"),
 			reference_existing_object_policy()
 		)
 
 		.def("find_command",
 			GET_METHOD(ConCommand*, ICvar, FindCommand, const char *),
-			"Returns a ConCommand instance for the given command, if it exists.",
-			args("name"),
+			"Find the ConCommand instance of a server command.\n\n"
+			":return: Return ``None`` if the command was not found.\n"
+			":rtype: ConCommand",
+			arg("name"),
 			reference_existing_object_policy()
 		)
 
 		.def("find_var",
 			GET_METHOD(ConVar*, ICvar, FindVar, const char *),
-			"Returns a ConVar instance for the given variable, if it exists.",
-			args("name"),
+			"Find the ConVar instance of console variable.\n\n"
+			":return: Return ``None`` if the console variable was not found.\n"
+			":rtype: ConVar",
+			arg("name"),
 			reference_existing_object_policy()
 		)
 
 		.def("call_global_change_callbacks",
 			&ICvar::CallGlobalChangeCallbacks,
-			"Calls global change callbacks.",
-			args("cvar", "old_string", "old_float")
+			"Call all global change callbacks.\n\n"
+			":param ConVar cvar: The console variable that has changed.\n"
+			":param str old_string: The old value of the variable as a string.\n"
+			":param float old_value: The old value of the variable as a float.",
+			(arg("cvar"), arg("old_string"), arg("old_float"))
 		)
 
 		.add_property("commands",
@@ -116,7 +125,8 @@ void export_cvar_interface(scope _cvars)
 				ICVarExt::GetCommands,
 				reference_existing_object_policy()
 			),
-			"Get first ConCommandBase to allow iteration."
+			"Return the first ConCommandBase instance that can be used to iterate through all ConCommandBase instances\n\n."
+			":rtype: ConCommandBase"
 		)
 
 		ADD_MEM_TOOLS(ICvar)
@@ -217,89 +227,102 @@ void export_convar(scope _cvars)
 
 		.def("get_float",
 			&ConVar::GetFloat,
-			"Returns the value as a float."
+			"Return the value as a float.\n\n"
+			":rtype: float"
 		)
 
 		.def("get_int",
 			&ConVar::GetInt,
-			"Returns the value as an int."
+			"Return the value as an int.\n\n"
+			":rtype: int"
 		)
 
 		.def("get_bool",
 			&ConVar::GetBool,
-			"Returns the value as a bool."
+			"Return the value as a bool.\n\n"
+			":rtype: bool"
 		)
 
 		.def("get_string",
 			&ConVar::GetString,
-			"Returns the value as a string."
+			"Return the value as a string.\n\n"
+			":rtype: str"
 		)
 
 		.def("revert",
 			&ConVar::Revert,
-			"Resets to default value."
+			"Reset the console variable to its default value."
 		)
 
 		.add_property("default",
 			&ConVar::GetDefault,
-			"Returns the default value."
+			"Return the default value.\n\n"
+			":rtype: str"
 		)
 
 		.def("has_min",
 			&ConVarExt::HasMin,
-			"Returns wether the ConVar has a minimum value."
+			"Return wether the ConVar has a minimum value.\n\n"
+			":rtype: bool"
 		)
 
 		.def("has_max",
 			&ConVarExt::HasMax,
-			"Returns wether the ConVar has a maximum value."
+			"Returns wether the ConVar has a maximum value.\n\n"
+			":rtype: bool"
 		)
 
 		.add_property("min",
 			&ConVarExt::GetMin,
-			"Returns the minimum value."
+			"Return the minimum value.\n\n"
+			":rtype: float"
 		)
 
 		.add_property("max",
 			&ConVarExt::GetMax,
-			"Returns the maximum value."
+			"Return the maximum value.\n\n"
+			":rtype: float"
 		)
 
 		.def("set_bool",
 			&ConVarExt::SetValue,
-			"Sets a bool value.",
-			args("value")
+			"Set the console variable to a boolean value.",
+			arg("value")
 		)
 
 		.def("make_public",
 			&ConVarExt::MakePublic,
-			"Set the notify flag and makes the cvar public."
+			"Set the notify flag and make the console variable public."
 		)
 
 		.def("remove_public",
 			&ConVarExt::RemovePublic,
-			"Remove the notify flag and makes the cvar no longer public."
+			"Remove the notify flag and make the console variable no longer public."
 		)
 			
 		// Special methods...
 		.def("__float__",
 			&ConVar::GetFloat,
-			"Returns the value as a float."
+			"Return the value as a float.\n\n"
+			":rtype: float"
 		)
 
 		.def("__int__",
 			&ConVar::GetInt,
-			"Returns the value as an int."
+			"Return the value as an int.\n\n"
+			":rtype: int"
 		)
 
 		.def("__bool__",
 			&ConVar::GetBool,
-			"Returns the value as a bool."
+			"Return the value as a bool.\n\n"
+			":rtype: bool"
 		)
 
 		.def("__str__",
 			&ConVar::GetString,
-			"Returns the value as a string."
+			"Return the value as a string.\n\n"
+			":rtype: str"
 		)
 
 		ADD_MEM_TOOLS(ConVar)

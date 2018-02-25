@@ -53,7 +53,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = ' Source.Python'
-copyright = '2015,  Source.Python Development Team'
+copyright = '2018,  Source.Python Development Team'
 author = ' Source.Python Development Team'
 
 # The version info for the project you're documenting, acts as replacement for

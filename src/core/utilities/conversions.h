@@ -211,6 +211,9 @@ bool IndexFromBaseHandle( CBaseHandle hBaseHandle, unsigned int& output );
 bool IndexFromIntHandle( unsigned int iEntityHandle, unsigned int& output );
 bool IndexFromUserid( unsigned int iUserID, unsigned int& output );
 bool IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output );
+bool IndexFromName( const char *szName, unsigned int& output );
+bool IndexFromSteamID( const char* szSteamID, unsigned int& output );
+bool IndexFromUniqueID( const char* szUniqueID, unsigned int& output );
 
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, edict_t *, Edict);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CBaseHandle, BaseHandle);
@@ -219,6 +222,9 @@ CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, CPointer *, Pointer);
 CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(unsigned int, Index, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, const char *, Name);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, const char *, SteamID);
+CREATE_EXC_CONVERSION_FUNCTION(unsigned int, Index, const char *, UniqueID);
 
 
 //-----------------------------------------------------------------------------
@@ -259,6 +265,28 @@ CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, IntHandle);
 CREATE_EXC_CONVERSION_FUNCTION_BASE_ENTITY(CPointer, Pointer, CBaseEntity *, BaseEntity);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, unsigned int, Userid);
 CREATE_EXC_CONVERSION_FUNCTION(CPointer, Pointer, IPlayerInfo *, PlayerInfo);
+
+
+//-----------------------------------------------------------------------------
+// AddressFrom* declarations
+//-----------------------------------------------------------------------------
+bool AddressFromPlayerInfo2( IPlayerInfo* pInfo, const char*& output );
+bool AddressFromPlayerInfo( IPlayerInfo* pInfo, str& output );
+
+CREATE_EXC_CONVERSION_FUNCTION(str, Address, IPlayerInfo *, PlayerInfo);
+
+
+//-----------------------------------------------------------------------------
+// UniqueIDFrom* declarations
+//-----------------------------------------------------------------------------
+#define UNIQUE_ID_SIZE 128
+
+bool UniqueIDFromPlayerInfo2( IPlayerInfo* pInfo, char*& output );
+bool UniqueIDFromPlayerInfo( IPlayerInfo* pInfo, str& output );
+bool UniqueIDFromIndex( unsigned int iIndex, str& output );
+
+CREATE_EXC_CONVERSION_FUNCTION(str, UniqueID, IPlayerInfo *, PlayerInfo);
+CREATE_EXC_CONVERSION_FUNCTION(str, UniqueID, unsigned int, Index);
 
 
 //-----------------------------------------------------------------------------

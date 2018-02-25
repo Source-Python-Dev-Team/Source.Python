@@ -80,18 +80,24 @@ void export_keyvalues(scope _keyvalues)
 		.def("uses_escape_sequences",
 			&KeyValues::UsesEscapeSequences,
 			"Sets whether or not this keyvalues object uses escape sequences.",
-			args("uses_escape_sequences")
+			(arg("uses_escape_sequences"))
 		)
 
 		.def("load_from_file",
 			&KeyValuesExt::LoadFromFile,
 			"Load KeyValues data from a file and return a new KeyValues instance on success.",
-			args("file_name")
+			(arg("file_name"))
 		).staticmethod("load_from_file")
+
+		.def("load_from_file2",
+			&KeyValuesExt::LoadFromFile2,
+			"Load KeyValues data from a file into an existing KeyValues instance.",
+			(arg("file_name"))
+		)
 
 		.def("save_to_file",
 			&KeyValuesExt::SaveToFile,
-			args("file_name"),
+			(arg("file_name")),
 			"Saves the data in this KeyValues instance to the given file path."
 		)
 
@@ -105,7 +111,7 @@ void export_keyvalues(scope _keyvalues)
 		.def("find_key_by_symbol",
 			GET_CONST_METHOD(KeyValues*, KeyValues, FindKey, int),
 			"Finds a subkey by an integer identifier.",
-			args("key"),
+			(arg("key")),
 			reference_existing_object_policy()
 		)
 
@@ -119,13 +125,13 @@ void export_keyvalues(scope _keyvalues)
 		.def("add_sub_key",
 			&KeyValues::AddSubKey,
 			"Adds a sub key. Make sure the subkey isn't a child of some other KeyValues.",
-			args("sub_key")
+			(arg("sub_key"))
 		)
 
 		.def("remove_sub_key",
 			&KeyValues::RemoveSubKey,
 			"Removes a subkey from the list. DOES NOT DELETE IT!",
-			args("sub_key")
+			(arg("sub_key"))
 		)
 
 		.add_property("first_sub_key",
@@ -227,37 +233,37 @@ void export_keyvalues(scope _keyvalues)
 		.def("set_string",
 			&KeyValues::SetString,
 			"Sets the given key's string value.",
-			args("key_name", "value")
+			(arg("key_name"), arg("value"))
 		)
 
 		.def("set_int",
 			&KeyValues::SetInt,
 			"Sets the given key's integer value.",
-			args("key_name", "value")
+			(arg("key_name"), arg("value"))
 		)
 
 		.def("set_uint64",
 			&KeyValues::SetUint64,
 			"Sets the given key's 64-bit integer value.",
-			args("key_name", "value")
+			(arg("key_name"), arg("value"))
 		)
 
 		.def("set_float",
 			&KeyValues::SetFloat,
 			"Sets the given key's floating point value.",
-			args("key_name", "value")
+			(arg("key_name"), arg("value"))
 		)
 
 		.def("set_color",
 			&KeyValues::SetColor,
 			"Sets the given key's color value.",
-			args("key_name", "value")
+			(arg("key_name"), arg("value"))
 		)
 
 		.def("set_bool",
 			&KeyValuesExt::SetBool,
 			"Sets the given key's boolean value.",
-			args("key_name", "value")
+			(arg("key_name"), arg("value"))
 		)
 
 		.def("get_data_type",

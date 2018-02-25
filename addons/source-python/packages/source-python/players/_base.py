@@ -79,8 +79,10 @@ class Player(Entity):
     def __init__(self, index):
         """Initialize the object.
 
-        :param int index: A valid player index.
-        :raise ValueError: Raised if the index is invalid.
+        :param int index:
+            A valid player index.
+        :raise ValueError:
+            Raised if the index is invalid.
         """
         super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
@@ -89,19 +91,34 @@ class Player(Entity):
     def from_userid(cls, userid):
         """Create an instance from a userid.
 
-        :param int userid: The userid.
+        :param int userid:
+            The userid.
         :rtype: Player
         """
         return cls(index_from_userid(userid))
 
     @property
+    def raw_steamid(self):
+        """Return the player's unformatted SteamID.
+
+        :rtype: SteamID
+        """
+        return engine_server.get_client_steamid(self.edict)
+
+    @property
     def permissions(self):
-        """Return the player's :class:`auth.manager.PlayerPermissions` object."""
+        """Return the player's permissions.
+
+        :rtype: PlayerPermissions
+        """
         return auth_manager.get_player_permissions_from_steamid(self.steamid)
 
     @property
     def playerinfo(self):
-        """Return the player's :class:`PlayerInfo` object."""
+        """Return player information.
+
+        :rtype: PlayerInfo
+        """
         if self._playerinfo is None:
             playerinfo = playerinfo_from_index(self.index)
             object.__setattr__(self, '_playerinfo', playerinfo)
@@ -138,18 +155,27 @@ class Player(Entity):
 
     @property
     def client(self):
-        """Return the player's :class:`players.Client` object."""
+        """Return the player's client instance.
+
+        :rtype: Client
+        """
         return server.get_client(self.index - 1)
 
     @property
     def base_client(self):
-        """Return the player's :class:`players.BaseClient` object."""
+        """Return the player's base client instance.
+
+        :rtype: BaseClient
+        """
         from players import BaseClient
         return make_object(BaseClient, get_object_pointer(self.client) - 4)
 
     @property
     def uniqueid(self):
-        """Return the player's uniqueid."""
+        """Return the player's unique ID.
+
+        :rtype: str
+        """
         return uniqueid_from_playerinfo(self.playerinfo)
 
     @property
@@ -158,7 +184,8 @@ class Player(Entity):
 
         If the player is a bot, an empty string will be returned.
 
-        :return: The IP address. E.g. '127.0.0.1:27015'
+        :return:
+            The IP address. E.g. '127.0.0.1:27015'
         :rtype: str
         """
         return address_from_playerinfo(self.playerinfo)
@@ -231,9 +258,11 @@ class Player(Entity):
     def get_trace_ray(self, mask=ContentMasks.ALL, trace_filter=None):
         """Return the player's current trace data.
 
-        :param ContentMasks mask: Will be passed to the trace filter.
-        :param TraceFilter trace_filter: The trace filter to use. If None was
-            given :class:`engines.trace.TraceFilterSimple` will be used.
+        :param ContentMasks mask:
+            Will be passed to the trace filter.
+        :param TraceFilter trace_filter:
+            The trace filter to use. If ``None`` was given
+            :class:`engines.trace.TraceFilterSimple` will be used.
         :rtype: GameTrace
         """
         # Get the eye location of the player
@@ -271,7 +300,8 @@ class Player(Entity):
     def set_view_coordinates(self, coords):
         """Force the player to look at the given coordinates.
 
-        :param Vector coords: The coordinates the player should look at.
+        :param Vector coords:
+            The coordinates the player should look at.
         """
         coord_eye_vec = coords - self.eye_location
 
@@ -313,7 +343,8 @@ class Player(Entity):
     def set_view_entity(self, entity):
         """Force the player to look at the origin of the given entity.
 
-        :param Entity entity: The entity the player should look at.
+        :param Entity entity:
+            The entity the player should look at.
         """
         self.view_coordinates = entity.origin
 
@@ -343,22 +374,16 @@ class Player(Entity):
 
     view_player = property(get_view_player, set_view_player)
 
-    def get_eye_location(self):
-        """Return the player's eye location.
-
-        :rtype: Vector
-        """
-        return self.view_offset + self.origin
-
     def set_eye_location(self, eye_location):
         """Set the player's eye location."""
         self.teleport(eye_location - self.view_offset, None, None)
 
-    eye_location = property(get_eye_location, set_eye_location)
+    eye_location = property(Entity.get_eye_location, set_eye_location)
 
     @property
     def view_vector(self):
         """Return the view vector of the player.
+
         :rtype: Vector
         """
         eye_angle = self.eye_angle
@@ -378,9 +403,10 @@ class Player(Entity):
 
         :rtype: QAngle
         """
-        eye_angle_y = self.eye_angle.y
+        eye_angle = self.eye_angle
+        eye_angle_y = eye_angle.y
         eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
-        return QAngle(self.eye_angle.x, eye_angle_y, self.rotation.z)
+        return QAngle(eye_angle.x, eye_angle_y, self.rotation.z)
 
     def set_view_angle(self, angle):
         """Set the player's view angle."""
@@ -394,10 +420,13 @@ class Player(Entity):
     def push(self, horiz_mul, vert_mul, vert_override=False):
         """Push the player along his view vector.
 
-        :param float horiz_mul: Horizontal multiplier.
-        :param float vert_mul: Vertical multiplier.
-        :param bool vert_override: If True ``vert_mul`` will be used as a
-            static value and not as a multiplier.
+        :param float horiz_mul:
+            Horizontal multiplier.
+        :param float vert_mul:
+            Vertical multiplier.
+        :param bool vert_override:
+            If ``True``, ``vert_mul`` will be used as a static value and not
+            as a multiplier.
         """
         x, y, z = tuple(self.view_vector)
         self.base_velocity = Vector(
@@ -407,9 +436,10 @@ class Player(Entity):
     def client_command(self, command, server_side=False):
         """Execute a command on the client.
 
-        :param str command: The command to execute.
-        :param bool server_side: If True the command will be emulated by the
-            server.
+        :param str command:
+            The command to execute.
+        :param bool server_side:
+            If ``True`` the command will be emulated by the server.
         """
         engine_server.client_command(self.edict, command, server_side)
 
@@ -420,14 +450,16 @@ class Player(Entity):
     def say(self, message):
         """Force the player to say something in the global chat.
 
-        :param str message: The text the player should say.
+        :param str message:
+            The text the player should say.
         """
         self.client_command('say {0}'.format(message), True)
 
     def say_team(self, message):
         """Force the player to say something in the team chat.
 
-        :param str message: The text the player should say.
+        :param str message:
+            The text the player should say.
         """
         self.client_command('say_team {0}'.format(message), True)
 
@@ -457,7 +489,8 @@ class Player(Entity):
 
         Noclip mode gives the player the ability to fly through the map.
 
-        :param bool enable: If True noclip mode will be enabled.
+        :param bool enable:
+            If ``True`` noclip mode will be enabled.
         """
         if enable:
             self.move_type = MoveType.NOCLIP
@@ -478,7 +511,8 @@ class Player(Entity):
 
         Jetpack mode gives the player the ability to use a jetpack.
 
-        :param bool enable: If True jetpack mode will be enabled.
+        :param bool enable:
+            If ``True`` jetpack mode will be enabled.
         """
         if enable:
             self.move_type = MoveType.FLY
@@ -499,7 +533,8 @@ class Player(Entity):
 
         Godmode makes the player invulnerable.
 
-        :param bool enable: If True god mode will be enabled.
+        :param bool enable:
+            If ``True`` god mode will be enabled.
 
         .. todo::
 
@@ -531,7 +566,8 @@ class Player(Entity):
         Noblock mode assigns a new collision group to the player that doesn't
         block other players. That means players can run through each other.
 
-        :param bool enable: If True noblock mode will be enabled.
+        :param bool enable:
+            If ``True`` noblock mode will be enabled.
         """
         if enable:
             self.collision_group = CollisionGroup.DEBRIS_TRIGGER
@@ -552,7 +588,8 @@ class Player(Entity):
 
         Frozen mode makes the player unable to move, look and shoot.
 
-        :param bool enable: If True frozen mode will be enabled.
+        :param bool enable:
+            If ``True`` frozen mode will be enabled.
         """
         if enable:
             self.flags |= PlayerStates.FROZEN
@@ -574,7 +611,8 @@ class Player(Entity):
         Stuck mode forces the player to stay exactly at his current position
         even if he is currently in the air. He's still able to look and shoot.
 
-        :param bool enable: If True stuck mode will be enabled.
+        :param bool enable:
+            If ``True`` stuck mode will be enabled.
         """
         if enable:
             self.move_type = MoveType.NONE
@@ -600,7 +638,8 @@ class Player(Entity):
     def set_flashlight(self, enable):
         """Turn on/off the flashlight of the player.
 
-        :param bool enable: True to turn on, False to turn off.
+        :param bool enable:
+            ``True`` to turn on, ``False`` to turn off.
         """
         if enable:
             self.effects |= EntityEffects.DIMLIGHT
@@ -612,8 +651,10 @@ class Player(Entity):
     def send_convar_value(self, cvar_name, value):
         """Send a convar value.
 
-        :param str cvar_name: Name of the convar.
-        :param str value: Value to send.
+        :param str cvar_name:
+            Name of the convar.
+        :param str value:
+            Value to send.
         """
         buffer_size = 256
         buffer = BitBufferWrite(buffer_size)
@@ -626,7 +667,9 @@ class Player(Entity):
     @property
     def spectators(self):
         """Return all players observing this player.
-        :return: The generator yields :class:`players.entity.Player` objects.
+
+        :return:
+            The generator yields :class:`players.entity.Player` objects.
         :rtype: generator
         """
         from filters.players import PlayerIter
@@ -637,18 +680,24 @@ class Player(Entity):
     def kick(self, message=''):
         """Kick the player from the server.
 
-        :param str message: A message the kicked player will receive.
+        :param str message:
+            A message the kicked player will receive.
         """
-        execute_server_command('kickid', self.userid, message.rstrip())
+        message = message.rstrip()
+        if message:
+            self.client.disconnect(message)
+        else:
+            execute_server_command('kickid', self.userid, message)
 
     def ban(self, duration=0, kick=True, write_ban=True):
         """Ban a player from the server.
 
-        :param int duration: Duration of the ban in minutes. Use 0 for
-            permament.
-        :param bool kick: If True, the player will be kicked as well.
-        :param bool write_ban: If True, the ban will be written to
-            ``cfg/banned_users.cfg``.
+        :param int duration:
+            Duration of the ban in minutes. Use 0 for permament.
+        :param bool kick:
+            If ``True``, the player will be kicked as well.
+        :param bool write_ban:
+            If ``True``, the ban will be written to ``cfg/banned_users.cfg``.
         """
         execute_server_command(
             'banid', duration, self.userid, 'kick' if kick else '')
@@ -664,22 +713,34 @@ class Player(Entity):
             stream=False):
         """Play a sound to the player.
 
-        :param str sample: Sound file relative to the "sounds" directory.
-        :param float volume: Volume of the sound.
-        :param Attenuation attenuation: How far the sound should reaches.
-        :param int channel: Channel to emit the sound with.
-        :param SoundFlags flags: Flags of the sound.
-        :param Pitch pitch: Pitch of the sound.
-        :param Vector origin: Origin of the sound.
-        :param Vector direction: Direction of the sound.
-        :param tuple origins: Origins of the sound.
-        :param bool update_positions: Whether or not the positions should be
-            updated.
-        :param float sound_time: Time to play the sound for.
-        :param int speaker_entity: Index of the speaker entity.
-        :param bool download: Whether or not the sample should be added to the
-            downloadables.
-        :param bool stream: Whether or not the sound should be streamed.
+        :param str sample:
+            Sound file relative to the ``sounds`` directory.
+        :param float volume:
+            Volume of the sound.
+        :param Attenuation attenuation:
+            How far the sound should reaches.
+        :param int channel:
+            Channel to emit the sound with.
+        :param SoundFlags flags:
+            Flags of the sound.
+        :param Pitch pitch:
+            Pitch of the sound.
+        :param Vector origin:
+            Origin of the sound.
+        :param Vector direction:
+            Direction of the sound.
+        :param tuple origins:
+            Origins of the sound.
+        :param bool update_positions:
+            Whether or not the positions should be updated.
+        :param float sound_time:
+            Time to play the sound for.
+        :param int speaker_entity:
+            Index of the speaker entity.
+        :param bool download:
+            Whether or not the sample should be added to the downloadables.
+        :param bool stream:
+            Whether or not the sound should be streamed.
         """
         # Don't bother playing sounds to bots...
         if self.is_fake_client():
@@ -702,7 +763,8 @@ class Player(Entity):
     def spawn(self, force=False):
         """Spawn the player.
 
-        :param bool force: Whether or not the spawn should be forced.
+        :param bool force:
+            Whether or not the spawn should be forced.
         """
         # Is the player spawnable?
         if not force and (self.team <= 1 or not self.dead):
@@ -733,7 +795,8 @@ class Player(Entity):
     def get_active_weapon(self):
         """Return the player's active weapon.
 
-        :return: None if the player does not have an active weapon.
+        :return:
+            ``None`` if the player does not have an active weapon.
         :rtype: Weapon
         """
         try:
@@ -746,7 +809,8 @@ class Player(Entity):
     def set_active_weapon(self, weapon):
         """Set the player's active weapon.
 
-        :param Weapon weapon: The weapon to set as active.
+        :param Weapon weapon:
+            The weapon to set as active.
         """
         self.active_weapon_handle = weapon.inthandle
 
@@ -769,7 +833,8 @@ class Player(Entity):
     def weapons(self, classname=None, is_filters=None, not_filters=None):
         """Iterate over the player's weapons for the given arguments.
 
-        :return: A generator of :class:`weapons.entity.Weapon` objects
+        :return:
+            A generator of :class:`weapons.entity.Weapon` objects.
         :rtype: generator
         """
         # Loop through all the players weapons for the given arguments
@@ -782,7 +847,8 @@ class Player(Entity):
             self, classname=None, is_filters=None, not_filters=None):
         """Iterate over the player's weapon indexes for the given arguments.
 
-        :return: A generator of indexes
+        :return:
+            A generator of indexes.
         :rtype: generator
         """
         # Is the weapon array supported for the current game?
@@ -841,7 +907,8 @@ class Player(Entity):
     def get_projectile_ammo(self, projectile):
         """Return the player's ammo value of the given projectile.
 
-        :param str projectile: The name of the projectile to get the ammo of.
+        :param str projectile:
+            The name of the projectile to get the ammo of.
         :rtype: int
         """
         return self.get_property_int(
@@ -854,8 +921,10 @@ class Player(Entity):
     def set_projectile_ammo(self, projectile, value):
         """Set the player's ammo value for the given projectile.
 
-        :param str projectile: The name of the projectile to set the ammo of.
-        :param int value: The value to set the projectile's ammo to.
+        :param str projectile:
+            The name of the projectile to set the ammo of.
+        :param int value:
+            The value to set the projectile's ammo to.
         """
         self.set_property_int(
             '{base}{prop:03d}'.format(
@@ -868,7 +937,8 @@ class Player(Entity):
     def projectile_indexes(self, projectile):
         """Yield all indexes of the given projectile for the player.
 
-        :param str projectile: The name of the projectile to find indexes of.
+        :param str projectile:
+            The name of the projectile to find indexes of.
         """
         if projectile in weapon_manager.projectiles:
             for entity in EntityIter(projectile):
@@ -879,23 +949,29 @@ class Player(Entity):
 
     def restrict_weapons(self, *weapons):
         """Restrict the weapon for the player.
-        :param str weapons: A weapon or any number of weapons to add
-            as restricted for the player.
+
+        :param str weapons:
+            A weapon or any number of weapons to add as restricted for the
+            player.
         """
         from weapons.restrictions import weapon_restriction_handler
         weapon_restriction_handler.add_player_restrictions(self, *weapons)
 
     def unrestrict_weapons(self, *weapons):
         """Restrict the weapon for the player.
-        :param str weapons: A weapon or any number of weapons to remove
-            as restricted for the player.
+
+        :param str weapons:
+            A weapon or any number of weapons to remove as restricted for the
+            player.
         """
         from weapons.restrictions import weapon_restriction_handler
         weapon_restriction_handler.remove_player_restrictions(self, *weapons)
 
     def is_weapon_restricted(self, weapon):
         """Return whether the player is restricted from the given weapon.
-        :param str weapon: The name of the weapon to check against restriction.
+
+        :param str weapon:
+            The name of the weapon to check against restriction.
         :rtype: bool
         """
         from weapons.restrictions import weapon_restriction_manager
@@ -919,7 +995,10 @@ class Player(Entity):
 # >> HELPER FUNCTIONS
 # =============================================================================
 def _find_weapon_prop_length(table):
-    """Loop through a prop table to find the myweapons property length."""
+    """Loop through a prop table to find the myweapons property length.
+
+    :rtype: int
+    """
     # Loop through the props in the table
     for item in table:
 

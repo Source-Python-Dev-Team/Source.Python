@@ -273,40 +273,16 @@ class Entity(BaseEntity):
         for server_class in self.server_classes:
             yield from server_class.keyvalues
 
-    def get_color(self):
-        """Return the entity's color.
-
-        :rtype: Color
-        """
-        return self.render_color
-
-    def set_color(self, color):
-        """Set the entity's color.
-
-        :param Color color:
-            Color to set.
-        """
-        # Set the entity's render mode
-        self.render_mode = RenderMode.TRANS_COLOR
-
-        # Set the entity's color
-        self.render_color = color
-
-        # Set the entity's alpha
-        self.render_amt = color.a
-
-    # Set the "color" property for Entity
-    color = property(
-        get_color, set_color,
-        doc="""Property to get/set the entity's color values.
-
-        .. seealso:: :meth:`get_color` and :meth:`set_color`""")
-
     def get_model(self):
         """Return the entity's model.
 
+        :return:
+            ``None`` if the entity has no model.
         :rtype: Model
         """
+        if not self.model_name:
+            return None
+
         return Model(self.model_name)
 
     def set_model(self, model):
@@ -357,15 +333,6 @@ class Entity(BaseEntity):
         doc="""Property to get/set the parent of the entity.
 
         .. seealso:: :meth:`get_parent` and :meth:`set_parent`""")
-
-    @property
-    def model_header(self):
-        """Return the entity's model header.
-
-        :rtype: ModelHeader
-        """
-        return model_cache.get_model_header(model_cache.find_model(
-            self.model_name))
 
     def get_property_bool(self, name):
         """Return the boolean property.
@@ -811,28 +778,6 @@ class Entity(BaseEntity):
         """
         self.get_input(name)(*args, **kwargs)
 
-    def lookup_attachment(self, name):
-        """Return the attachment index matching the given name.
-
-        :param str name:
-            The name of the attachment.
-        :rtype: int
-        """
-        # Get the ModelHeader instance of the entity
-        model_header = self.model_header
-
-        # Loop through all attachments
-        for index in range(model_header.attachments_count):
-
-            # Are the names matching?
-            if name == model_header.get_attachment(index).name:
-
-                # Return the current index
-                return index
-
-        # No attachment found
-        return INVALID_ATTACHMENT_INDEX
-
     def emit_sound(
             self, sample, recipients=(), volume=VOL_NORM,
             attenuation=Attenuation.NONE, channel=Channel.AUTO,
@@ -892,16 +837,6 @@ class Entity(BaseEntity):
 
         # Emit the sound to the given recipients...
         sound.play(*recipients)
-
-    def stop_sound(self, sample, channel=Channel.AUTO):
-        """Stop the given sound from being emitted by this entity.
-
-        :param str sample:
-            Sound file relative to the ``sounds`` directory.
-        :param Channel channel:
-            The channel of the sound.
-        """
-        engine_sound.stop_sound(self.index, channel, sample)
 
     def is_in_solid(
             self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):

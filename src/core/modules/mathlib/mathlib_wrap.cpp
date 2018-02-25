@@ -315,6 +315,12 @@ void export_qangle(scope _mathlib)
 			"Invalidates the angle."
 		)
 
+		.def("get_angle_vectors",
+			GET_FUNCTION(void, AngleVectors, const QAngle &, Vector *, Vector *, Vector *),
+			"Euler QAngle -> Basis Vectors.  Each vector is optional",
+			(arg("forward")=NULL, arg("right")=NULL, arg("up")=NULL)
+		)
+
 		.def("__getitem__",
 			&GetItemIndexer<QAngle, float, 0, 2>,
 			"Returns the value at the given index."

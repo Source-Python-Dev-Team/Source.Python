@@ -12,9 +12,11 @@ import codecs
 from collections import defaultdict
 #   Contextlib
 from contextlib import contextmanager
+#   Hashlib
+import hashlib
 #   Inspect
 from inspect import getmodule
-from inspect import stack
+from inspect import currentframe
 #   OS
 from os import sep
 #   Path
@@ -63,7 +65,9 @@ __all__ = ('AutoUnload',
            'PLATFORM',
            'SOURCE_ENGINE',
            'SOURCE_ENGINE_BRANCH',
+           'check_info_output',
            'console_message',
+           'create_checksum',
            'echo_console',
            'get_interface',
            'get_public_ip',
@@ -103,7 +107,7 @@ class AutoUnload(object):
         self = super().__new__(cls)
 
         # Get the calling module
-        caller = getmodule(stack()[1][0])
+        caller = getmodule(currentframe().f_back)
 
         # Call class-specific logic for adding the instance.
         self._add_instance(caller.__name__)
@@ -281,3 +285,47 @@ def server_output(action=OutputReturn.CONTINUE):
         yield msg_buffer
     finally:
         OnServerOutput.manager.unregister_listener(intercepter)
+
+def create_checksum(data, ignore_wchars=True):
+    """Create an MD5 checksum for the given string.
+
+    :param str data:
+        The string for which a checksum should be created.
+    :param bool ignore_wchars:
+        If ``True`` whitespace characters are ignored.
+    :rtype: str
+    """
+    if ignore_wchars:
+        data = ''.join(data.split())
+
+    return hashlib.new('md5', bytes(data, encoding='utf-8')).hexdigest()
+
+def check_info_output(output):
+    """Return whether the output of ``sp info`` has been modified.
+
+    :param str output:
+        The output of ``sp info``.
+    :raise ValueError:
+        Raised if the checksum was not found in the output.
+    :return:
+        ``True`` if the output has been modified.
+    :rtype: bool
+    """
+    checksum = None
+    lines = output.strip().split('\n')
+
+    # Search the checksum entry
+    while lines:
+        line = lines.pop(0)
+        if line.startswith('Checksum'):
+            checksum = line.split(':', 1)[1].strip()
+            break
+
+    if checksum is None:
+        raise ValueError('Checksum not found.')
+
+    # Ignore last line if it's the separator
+    if lines[-1].startswith('-'):
+        lines.pop()
+
+    return create_checksum(''.join(lines)) != checksum

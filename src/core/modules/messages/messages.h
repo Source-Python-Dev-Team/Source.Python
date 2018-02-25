@@ -103,6 +103,11 @@
 			}
 			return enum_value;
 		}
+
+		static int GetFieldCount(google::protobuf::Message* pMessage, const char* field_name)
+		{
+			return pMessage->GetReflection()->FieldSize(*pMessage, GetFieldDescriptor(pMessage, field_name));
+		}
 		
 
 		// ====================================================================
@@ -159,7 +164,16 @@
 			T (google::protobuf::Reflection::*get_repeated_field_delegate)(const google::protobuf::Message& message, const google::protobuf::FieldDescriptor* field, int index) const,
 			const char* field_name,
 			int index)
-		{ return (*pMessage->GetReflection().*get_repeated_field_delegate)(*pMessage, GetFieldDescriptor(pMessage, field_name), index); }
+		{
+			
+			const google::protobuf::FieldDescriptor* descriptor = GetFieldDescriptor(pMessage, field_name);
+			if (index >= pMessage->GetReflection()->FieldSize(*pMessage, descriptor))
+			{
+				BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index (%d) out of range.", index)
+			}
+
+			return (*pMessage->GetReflection().*get_repeated_field_delegate)(*pMessage, GetFieldDescriptor(pMessage, field_name), index);
+		}
 
 		static int32 GetRepeatedInt32(google::protobuf::Message* pMessage, const char* field_name, int index)
 		{ return GetRepeatedField<int32>(pMessage, &google::protobuf::Reflection::GetRepeatedInt32, field_name, index); }
@@ -248,7 +262,15 @@
 			const char* field_name,
 			int index,
 			T value)
-		{ (*pMessage->GetReflection().*set_repeated_field_delegate)(pMessage, GetFieldDescriptor(pMessage, field_name), index, value); }
+		{
+			const google::protobuf::FieldDescriptor* descriptor = GetFieldDescriptor(pMessage, field_name);
+			if (index >= pMessage->GetReflection()->FieldSize(*pMessage, descriptor))
+			{
+				BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index (%d) out of range.", index)
+			}
+
+			(*pMessage->GetReflection().*set_repeated_field_delegate)(pMessage, descriptor, index, value); 
+		}
 
 		static void SetRepeatedInt32(google::protobuf::Message* pMessage, const char* field_name, int index, int32 value)
 		{ SetRepeatedField<int32>(pMessage, &google::protobuf::Reflection::SetRepeatedInt32, field_name, index, value); }
@@ -360,8 +382,9 @@ private:
 //-----------------------------------------------------------------------------
 // Functions.
 //-----------------------------------------------------------------------------
-void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
-int GetMessageIndex(const char* name);
-object GetMessageName(int index);
+void	CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data );
+int		GetMessageIndex(const char* name);
+object	GetMessageName(int index);
+object	GetMessageSize(int index);
 
 #endif // _MESSAGES_H

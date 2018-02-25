@@ -15,6 +15,8 @@ from enum import IntFlag
 # =============================================================================
 # Source.Python Imports
 #   Studio
+from _studio._constants import INVALID_ATTACHMENT_INDEX
+from _studio._constants import INVALID_BONE_INDEX
 from _studio._constants import ModelType
 from _studio._constants import STUDIO_NONE
 from _studio._constants import STUDIO_RENDER
@@ -34,15 +36,10 @@ from _studio._constants import STUDIO_SHADOWDEPTHTEXTURE
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('INVALID_ATTACHMENT_INDEX',
+           'INVALID_BONE_INDEX',
            'ModelType',
            'StudioFlags',
            )
-
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-INVALID_ATTACHMENT_INDEX = -1
 
 
 # =============================================================================

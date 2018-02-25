@@ -16,6 +16,7 @@ from cvars.public import PublicConVar
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('VERSION',
+           'GIT_COMMIT',
            'get_last_successful_build_number',
            'is_unversioned',
            )
@@ -24,7 +25,11 @@ __all__ = ('VERSION',
 # =============================================================================
 # >> CONSTANTS
 # =============================================================================
-VERSION = 'unversioned'
+#: Version of the Source.Python intallation.
+VERSION = None
+
+#: The Github commit this Source.Python version was built with.
+GIT_COMMIT = None
 
 LAST_SUCCESSFUL_BUILD_NUMBER_URL = (
     'http://builds.sourcepython.com/job/Source.Python' +
@@ -53,8 +58,13 @@ def get_last_successful_build_number(timeout=3):
 
 
 def is_unversioned():
-    """Return True if the current version is set to 'unversioned'.
+    """Return ``True`` if this Source.Python installation has no version.
+
+    This can happen in multiple cases:
+
+    * This is an unofficial build (not a build from the build server).
+    * The Python files have been updated directly from the repository.
 
     :rtype: bool
     """
-    return VERSION == 'unversioned'
+    return VERSION is None

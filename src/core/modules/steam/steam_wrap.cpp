@@ -58,10 +58,17 @@ DECLARE_SP_MODULE(_steam)
 //-----------------------------------------------------------------------------
 void export_steamid(scope _steam)
 {
-	//-----------------------------------------------------------------------------
-	// Purpose: Constructor
-	//-----------------------------------------------------------------------------
+	struct steamid_pickle_suite: pickle_suite
+	{
+		static tuple getinitargs(const CSteamID& steamid)
+		{
+			return make_tuple(steamid.ConvertToUint64());
+		}
+	};
+
 	class_<CSteamID, CSteamID*> SteamID("SteamID");
+
+	SteamID.def_pickle(steamid_pickle_suite());
 	
 	// Constructors
 

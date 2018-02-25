@@ -54,6 +54,33 @@ bool IndexFromEdict( edict_t *pEdict, unsigned int& output )
 
 
 //-----------------------------------------------------------------------------
+// Returns an index from the given player name.
+//-----------------------------------------------------------------------------
+bool IndexFromName(const char* szName, unsigned int& output )
+{
+	if (!szName || szName[0] == '\0')
+		return false;
+
+	int iEntityIndex = 0;
+	IPlayerInfo* pInfo = NULL;
+	while(iEntityIndex < gpGlobals->maxClients)
+	{
+		iEntityIndex++;
+		if (!PlayerInfoFromIndex(iEntityIndex, pInfo))
+			continue;
+
+		if (V_strcmp(pInfo->GetName(), szName) == 0)
+		{
+			output = iEntityIndex;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+//-----------------------------------------------------------------------------
 // Returns an index from the given BaseEntity instance.
 //-----------------------------------------------------------------------------
 bool IndexFromBaseEntity( CBaseEntity *pBaseEntity, unsigned int& output )
@@ -154,4 +181,54 @@ bool IndexFromPlayerInfo( IPlayerInfo *pPlayerInfo, unsigned int& output )
 		return false;
 
 	return IndexFromEdict(pEdict, output);
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns an index instance from the given SteamID.
+//-----------------------------------------------------------------------------
+bool IndexFromSteamID( const char* szSteamID, unsigned int& output )
+{
+	IPlayerInfo* pInfo = NULL;
+
+	for (unsigned int i=1; i <= (unsigned int) gpGlobals->maxClients; ++i)
+	{
+		if (!PlayerInfoFromIndex(i, pInfo))
+			continue;
+
+		if (V_strcmp(pInfo->GetNetworkIDString(), szSteamID) == 0)
+		{
+			output = i;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns an index instance from the given SteamID.
+//-----------------------------------------------------------------------------
+bool IndexFromUniqueID( const char* szUniqueID, unsigned int& output )
+{
+	for (unsigned int i=1; i <= (unsigned int) gpGlobals->maxClients; ++i)
+	{
+		IPlayerInfo* pInfo = NULL;
+		if (!PlayerInfoFromIndex(i, pInfo))
+			continue;
+		
+		char szTempUniqueID[UNIQUE_ID_SIZE] = "";
+		char* pTempUniqueID = (char*) szTempUniqueID;
+		if (!UniqueIDFromPlayerInfo2(pInfo, pTempUniqueID))
+			continue;
+
+		if (V_strcmp(szUniqueID, pTempUniqueID) == 0)
+		{
+			output = i;
+			return true;
+		}
+	}
+
+	return false;
 }

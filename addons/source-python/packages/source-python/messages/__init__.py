@@ -39,6 +39,7 @@ from _messages import HudDestination
 from _messages import FadeFlags
 from _messages import get_message_index
 from _messages import get_message_name
+from _messages import get_message_size
 
 
 # =============================================================================
@@ -54,6 +55,7 @@ __all__ = ('DialogAskConnect',
            'FadeFlags',
            'get_message_index',
            'get_message_name',
+           'get_message_size',
            'HintText',
            'HudDestination',
            'HudMsg',

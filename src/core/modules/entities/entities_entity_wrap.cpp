@@ -99,6 +99,335 @@ void export_base_entity(scope _entity)
 		":rtype: bool"
 	);
 
+	BaseEntity.add_property(
+		"origin",
+		&CBaseEntityWrapper::GetOrigin,
+		&CBaseEntityWrapper::SetOrigin,
+		"Get/set the entity's origin.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"maxs",
+		&CBaseEntityWrapper::GetMaxs,
+		&CBaseEntityWrapper::SetMaxs,
+		"Get/set the entity's maximum dimension.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"mins",
+		&CBaseEntityWrapper::GetMins,
+		&CBaseEntityWrapper::SetMins,
+		"Get/set the entity's minimum dimension.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"solid_type",
+		&CBaseEntityWrapper::GetSolidType,
+		&CBaseEntityWrapper::SetSolidType,
+		"Get/set the entity's solid type.\n\n"
+		":rtype: SolidType"
+	);
+
+	BaseEntity.add_property(
+		"solid_flags",
+		&CBaseEntityWrapper::GetSolidFlags,
+		&CBaseEntityWrapper::SetSolidFlags,
+		"Get/set the entity's solid flags.\n\n"
+		":rtype: SolidFlags"
+	);
+
+	BaseEntity.add_property(
+		"collision_group",
+		&CBaseEntityWrapper::GetCollisionGroup,
+		&CBaseEntityWrapper::SetCollisionGroup,
+		"Get/set the entity's collision group.\n\n"
+		":rtype: CollisionGroup"
+	);
+
+	BaseEntity.add_property(
+		"render_color",
+		&CBaseEntityWrapper::GetRenderColor,
+		&CBaseEntityWrapper::SetRenderColor,
+		"Get/set the entity's render color.\n\n"
+		":rtype: Color"
+	);
+
+	BaseEntity.add_property(
+		"elasticity",
+		&CBaseEntityWrapper::GetElasticity,
+		&CBaseEntityWrapper::SetElasticity,
+		"Get/set the entity's elasticity.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"ground_entity",
+		&CBaseEntityWrapper::GetGroundEntity,
+		&CBaseEntityWrapper::SetGroundEntity,
+		"Get/set the entity's ground entity.\n\n"
+		":return: ``-1`` if the entity has no ground entity (does not stand on an entity). The returned value is an int handle.\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"team_index",
+		&CBaseEntityWrapper::GetTeamIndex,
+		&CBaseEntityWrapper::SetTeamIndex,
+		"Get/set the entity's team index.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"render_fx",
+		&CBaseEntityWrapper::GetRenderFx,
+		&CBaseEntityWrapper::SetRenderFx,
+		"Get/set the entity's render effects.\n\n"
+		":rtype: RenderEffects"
+	);
+
+	BaseEntity.add_property(
+		"render_mode",
+		&CBaseEntityWrapper::GetRenderMode,
+		&CBaseEntityWrapper::SetRenderMode,
+		"Get/set the entity's render mode.\n\n"
+		":rtype: RenderMode"
+	);
+
+	BaseEntity.add_property(
+		"move_type",
+		&CBaseEntityWrapper::GetMoveType,
+		&CBaseEntityWrapper::SetMoveType,
+		"Get/set the entity's move type.\n\n"
+		":rtype: MoveType"
+	);
+
+	BaseEntity.add_property(
+		"parent_inthandle", // TODO: Rename this for consistency to parent_handle
+		&CBaseEntityWrapper::GetParentHandle,
+		&CBaseEntityWrapper::SetParentHandle,
+		"Get/set the entity's parent handle.\n\n"
+		":return: ``-1`` if the entity has no parent entity. The returned value is an int handle.\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"angles",
+		&CBaseEntityWrapper::GetAngles,
+		&CBaseEntityWrapper::SetAngles,
+		"Get/set the entity's angles.\n\n"
+		":rtype: QAngle"
+	);
+
+	BaseEntity.add_property(
+		"target_name",
+		&CBaseEntityWrapper::GetTargetName,
+		&CBaseEntityWrapper::SetTargetName,
+		"Get/set the entity's target name.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"owner_handle",
+		&CBaseEntityWrapper::GetOwnerHandle,
+		&CBaseEntityWrapper::SetOwnerHandle,
+		"Get/set the entity's owner handle.\n\n"
+		":return: ``-1`` if the entity has no owner entity. The returned value is an int handle.\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"avelocity",
+		&CBaseEntityWrapper::GetAvelocity,
+		&CBaseEntityWrapper::SetAvelocity,
+		"Get/set the entity's avelocity.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"base_velocity",
+		&CBaseEntityWrapper::GetBaseVelocity,
+		&CBaseEntityWrapper::SetBaseVelocity,
+		"Get/set the entity's base velocity.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"damage_filter",
+		&CBaseEntityWrapper::GetDamageFilter,
+		&CBaseEntityWrapper::SetDamageFilter,
+		"Get/set the entity's damage filter.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"effects",
+		&CBaseEntityWrapper::GetEffects,
+		&CBaseEntityWrapper::SetEffects,
+		"Get/set the entity's effects.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"friction",
+		&CBaseEntityWrapper::GetFriction,
+		&CBaseEntityWrapper::SetFriction,
+		"Get/set the entity's friction.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"global_name",
+		&CBaseEntityWrapper::GetGlobalName,
+		&CBaseEntityWrapper::SetGlobalName,
+		"Get/set the entity's global name.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"gravity",
+		&CBaseEntityWrapper::GetGravity,
+		&CBaseEntityWrapper::SetGravity,
+		"Get/set the entity's gravity. This is a multiplicator of ``sv_gravity``.\n"
+		"E. g. set the value to ``0.0`` or ``1.0`` for normal gravity. ``0.5`` halves the gravity.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"hammerid",
+		&CBaseEntityWrapper::GetHammerID,
+		&CBaseEntityWrapper::SetHammerID,
+		"Get/set the entity's Hammer ID.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"health",
+		&CBaseEntityWrapper::GetHealth,
+		&CBaseEntityWrapper::SetHealth,
+		"Get/set the entity's health.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"local_time",
+		&CBaseEntityWrapper::GetLocalTime,
+		&CBaseEntityWrapper::SetLocalTime,
+		"Get/set the entity's local time.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"max_health",
+		&CBaseEntityWrapper::GetMaxHealth,
+		&CBaseEntityWrapper::SetMaxHealth,
+		"Get/set the entity's maximum health.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"shadow_cast_distance",
+		&CBaseEntityWrapper::GetShadowCastDistance,
+		&CBaseEntityWrapper::SetShadowCastDistance,
+		"Get/set the entity's shadow cast distance.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"local_time",
+		&CBaseEntityWrapper::GetLocalTime,
+		&CBaseEntityWrapper::SetLocalTime,
+		"Get/set the entity's local time.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"spawn_flags",
+		&CBaseEntityWrapper::GetSpawnFlags,
+		&CBaseEntityWrapper::SetSpawnFlags,
+		"Get/set the entity's spawn flags.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"speed",
+		&CBaseEntityWrapper::GetSpeed,
+		&CBaseEntityWrapper::SetSpeed,
+		"Get/set the entity's speed.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.add_property(
+		"target",
+		&CBaseEntityWrapper::GetTarget,
+		&CBaseEntityWrapper::SetTarget,
+		"Get/set the entity's target.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
+		"velocity",
+		&CBaseEntityWrapper::GetVelocity,
+		&CBaseEntityWrapper::SetVelocity,
+		"Get/set the entity's velocity.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"view_offset",
+		&CBaseEntityWrapper::GetViewOffset,
+		&CBaseEntityWrapper::SetViewOffset,
+		"Get/set the entity's view offset.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.add_property(
+		"water_level",
+		&CBaseEntityWrapper::GetWaterLevel,
+		&CBaseEntityWrapper::SetWaterLevel,
+		"Get/set the entity's water level.\n\n"
+		"The water level is a value between 0 - 3 and indicates how far the entity is covered with water:\n\n"
+		"1. Entity is completely dry.\n"
+		"2. Entity has contact with water.\n"
+		"3. Entity is half inside of water.\n"
+		"4. Entity is completely under water.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
+		"color",
+		&CBaseEntityWrapper::GetColor,
+		&CBaseEntityWrapper::SetColor,
+		"Get/set the entity's color.\n\n"
+		":rtype: Color"
+	);
+
+	BaseEntity.add_property(
+		"rotation",
+		&CBaseEntityWrapper::GetRotation,
+		&CBaseEntityWrapper::SetRotation,
+		"Get/set the entity's rotation.\n\n"
+		":rtype: QAngle"
+	);
+
+	BaseEntity.def(
+		"get_eye_location",
+		&CBaseEntityWrapper::GetEyeLocation,
+		"Return the entitiy's eye location.\n\n"
+		":rtype: Vector"
+	);
+	
+	BaseEntity.def(
+		"stop_sound",
+		&CBaseEntityWrapper::StopSound,
+		(arg("sample"), arg("channel")=(int)CHAN_AUTO),
+		"Stop the given sound from being emitted by this entity.\n\n"
+		":param str sample: Sound file relative to the ``sounds`` directory.\n"
+        ":param Channel channel: The channel of the sound."
+	);
+
 	BaseEntity.def("remove",
 		&CBaseEntityWrapper::remove,
 		"Remove the entity."
@@ -188,6 +517,13 @@ void export_base_entity(scope _entity)
 		args("field_name")
 	);
 
+	BaseEntity.def("get_key_value_qangle",
+		&CBaseEntityWrapper::GetKeyValueQAngle,
+		"Returns the value of the given field name.\n\n"
+		":rtype: QAngle",
+		args("field_name")
+	);
+
 	BaseEntity.def("get_key_value_bool",
 		&CBaseEntityWrapper::GetKeyValueBool,
 		"Returns the value of the given field name.\n\n"
@@ -235,6 +571,12 @@ void export_base_entity(scope _entity)
 
 	BaseEntity.def("set_key_value_color",
 		&CBaseEntityWrapper::SetKeyValueColor,
+		"Sets a field to the given value.",
+		args("field_name", "value")
+	);
+
+	BaseEntity.def("set_key_value_qangle",
+		&CBaseEntityWrapper::SetKeyValueQAngle,
 		"Sets a field to the given value.",
 		args("field_name", "value")
 	);

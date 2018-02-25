@@ -57,6 +57,9 @@ void export_player_conversion_functions(scope _helpers)
 	// To Index conversions...
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, unsigned int, Userid);
 	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, IPlayerInfo *, PlayerInfo);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, const char *, Name);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, const char *, SteamID);
+	EXPORT_CONVERSION_FUNCTION(unsigned int, Index, const char *, UniqueID);
 
 	// To Edict conversions...
 	EXPORT_CONVERSION_FUNCTION(edict_t *, Edict, unsigned int, Userid, reference_existing_object_policy());
@@ -95,4 +98,11 @@ void export_player_conversion_functions(scope _helpers)
 	// To BaseEntity conversions...
 	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, unsigned int, Userid, return_by_value_policy());
 	EXPORT_CONVERSION_FUNCTION(CBaseEntity *, BaseEntity, IPlayerInfo *, PlayerInfo, return_by_value_policy());
+
+	// To Address conversions...
+	EXPORT_CONVERSION_FUNCTION(str, Address, IPlayerInfo *, PlayerInfo);
+
+	// To UniqueID conversions...
+	EXPORT_CONVERSION_FUNCTION(str, UniqueID, IPlayerInfo *, PlayerInfo);
+	EXPORT_CONVERSION_FUNCTION(str, UniqueID, unsigned int, Index);
 }

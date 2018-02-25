@@ -14,6 +14,7 @@ include("makefiles/shared.cmake")
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LOADER_HEADERS
     loader/loader_main.h
+    loader/definitions.h
 )
 
 Set(SOURCEPYTHON_LOADER_SOURCES
@@ -64,6 +65,8 @@ Set(SOURCEPYTHON_UTILITIES_SOURCES
     core/utilities/conversions/playerinfo_from.cpp
     core/utilities/conversions/pointer_from.cpp
     core/utilities/conversions/userid_from.cpp
+    core/utilities/conversions/address_from.cpp
+    core/utilities/conversions/uniqueid_from.cpp
 )
 
 Set(SOURCEPYTHON_UTILITIES_FILES
@@ -208,6 +211,7 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
+    core/modules/entities/entities.cpp
     core/modules/entities/entities_constants_wrap.cpp
     core/modules/entities/entities_helpers_wrap.cpp
     core/modules/entities/entities_wrap.cpp

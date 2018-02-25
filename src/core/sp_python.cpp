@@ -102,9 +102,19 @@ bool CPythonManager::Initialize( void )
 	wchar_t wszPythonHome[MAX_PATH_LENGTH];
 	V_strtowcs(szPythonHome, -1, wszPythonHome, MAX_PATH_LENGTH);
 
+	// Get the full path to the shared python library
+	char szProgramName[MAX_PATH_LENGTH];
+	V_snprintf(szProgramName, MAX_PATH_LENGTH, "%s/%s", GetSourcePythonDir(), PYLIB_NAME);
+	V_FixSlashes(szProgramName);
+	DevMsg(1, MSG_PREFIX "sys.executable set to %s\n", szProgramName);
+
+	// Convert to wide char for python.
+	wchar_t wszProgramName[MAX_PATH_LENGTH];
+	V_strtowcs(szProgramName, -1, wszProgramName, MAX_PATH_LENGTH);
+
 	// Set that as the python home directory.
  	Py_SetPythonHome(wszPythonHome);
- 	Py_SetProgramName(wszPythonHome);
+ 	Py_SetProgramName(wszProgramName);
 	Py_SetPath(wszPythonHome);
 
 	// Initialize python and its namespaces.
@@ -201,7 +211,10 @@ bool CPythonManager::Initialize( void )
 		if (stderr_.is_none())
 		{
 			DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
-			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONERR$", "wt");
+
+			// Use CONOUT$, because CONERR$ has no effect:
+			// https://github.com/Source-Python-Dev-Team/Source.Python/issues/237
+			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONOUT$", "wt");
 		}
 	}
 #endif
@@ -215,7 +228,7 @@ bool CPythonManager::Initialize( void )
 	catch( ... ) {
 		Msg(MSG_PREFIX "Failed to load the main module due to following exception:\n");
 
-		// Don't use PyErr_Print() here because our sys.excepthook has not been installed
+		// Don't use PyErr_Print() here because our sys.excepthook (might) has not been installed
 		// yet so let's just format and output to the console ourself.
 		if (PyErr_Occurred())
 		{
@@ -230,7 +243,10 @@ bool CPythonManager::Initialize( void )
 			handle<> hTraceback(allow_null(pTraceback));
 
 			object format_exception = import("traceback").attr("format_exception");
-			Msg(extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback))));
+			const char* pMsg = extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback)));
+
+			// Send the message in chunks, because it can get quite big.
+			ChunkedMsg(pMsg);
 
 			PyErr_Clear();
 		}
