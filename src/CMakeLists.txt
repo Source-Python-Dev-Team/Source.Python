@@ -81,12 +81,14 @@ Set(SOURCEPYTHON_CORE_HEADERS
     core/sp_python.h
     core/sp_main.h
     core/export_main.h
+    core/sp_hooks.h
 )
 
 Set(SOURCEPYTHON_CORE_SOURCES
     core/sp_python.cpp
     core/sp_main.cpp
     core/export_main.cpp
+    core/sp_hooks.cpp
 )
 
 Set(SOURCEPYTHON_CORE_FILES
