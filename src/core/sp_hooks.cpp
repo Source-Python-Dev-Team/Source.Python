@@ -81,12 +81,12 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 		pHook = GetHookManager()->HookFunction(
 			(void*) func->m_ulAddr,
 			func->m_pCallingConvention);
-	}
 
-	if (!pHook)
-	{
-		PythonLog(0, "Could not find or create a hook.");
-		return false;
+		if (!pHook)
+		{
+			PythonLog(0, "Could create a hook.");
+			return false;
+		}
 	}
 
 	if (this->pre)
