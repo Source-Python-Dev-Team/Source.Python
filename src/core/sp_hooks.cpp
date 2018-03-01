@@ -31,11 +31,16 @@
 #include "boost/python.hpp"
 using namespace boost::python;
 
+// SDK
+#include "edict.h"
+#include "game/shared/usercmd.h"
+
 // Source.Python
 #include "sp_hooks.h"
 #include "utilities/conversions.h"
 #include "utilities/call_python.h"
 #include "modules/entities/entities_entity.h"
+#include "modules/listeners/listeners_manager.h"
 
 
 //---------------------------------------------------------------------------------
@@ -161,7 +166,43 @@ void InitHooks(CBaseEntity* pEntity)
 //---------------------------------------------------------------------------------
 bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 {
-	// Test
-	puts("PrePlayerRunCommand");
+	GET_LISTENER_MANAGER(OnPlayerRunCommand, run_command_manager);
+	GET_LISTENER_MANAGER(OnButtonStateChanged, button_state_manager);
+
+	if (!run_command_manager->GetCount() && !button_state_manager->GetCount())
+		return false;
+
+	static object Player = import("players.entity").attr("Player");
+
+	CBaseEntity* pEntity = pHook->GetArgument<CBaseEntity*>(0);
+	unsigned int index;
+	if (!IndexFromBaseEntity(pEntity, index))
+		return false;
+	
+	// https://github.com/Source-Python-Dev-Team/Source.Python/issues/149
+#if defined(ENGINE_BRANCH_TF2)
+	CUserCmd cmd = *pHook->GetArgument<CUserCmd*>(1);
+	CUserCmd* pCmd = &cmd;
+#else
+	CUserCmd* pCmd = pHook->GetArgument<CUserCmd*>(1);
+#endif
+
+	object player = Player(index);
+	CALL_LISTENERS(OnPlayerRunCommand, player, ptr(pCmd));
+
+	if (button_state_manager->GetCount())
+	{
+		int buttons = extract<int>(player.attr("buttons"));
+		if (buttons != pCmd->buttons)
+		{
+			CALL_LISTENERS(OnButtonStateChanged, player, buttons, pCmd->buttons);
+		}
+	}
+	
+#if defined(ENGINE_BRANCH_TF2)
+	CUserCmd* pRealCmd = pHook->GetArgument<CUserCmd*>(1);
+	memcpy(pRealCmd, pCmd, sizeof(CUserCmd));
+#endif
+
 	return false;
 }

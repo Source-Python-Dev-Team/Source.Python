@@ -7,4 +7,4 @@
 # Set the engine version.
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "bms")
-add_definitions(-DENGINE_BMS)
+add_definitions(-DENGINE_BMS -DENGINE_BRANCH_BMS)

@@ -55,6 +55,10 @@
 		END_BOOST_PY_NORET() \
 	}
 
+#define GET_LISTENER_MANAGER(name, ret_var) \
+	extern CListenerManager* Get##name##ListenerManager(); \
+	CListenerManager* ret_var = Get##name##ListenerManager();
+
 
 //-----------------------------------------------------------------------------
 // CListenerManager class.
