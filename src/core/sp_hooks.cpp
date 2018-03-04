@@ -75,10 +75,23 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 	
 	PythonLog(3, "Initializing core hook (%s)...", this->func_name);
 
-	static object Entity = import("entities.entity").attr("Entity");
+	CFunction* func = NULL;
+	try
+	{
+		static object Entity = import("entities.entity").attr("Entity");
 
-	object entity = Entity(index);
-	CFunction* func = extract<CFunction*>(entity.attr(this->func_name));
+		object entity = Entity(index);
+		func = extract<CFunction*>(entity.attr(this->func_name));
+	}
+	catch (...)
+	{
+		PyErr_Print();
+		PyErr_Clear();
+
+		PythonLog(0, "Failed to initialize the core hook.");
+
+		return true;
+	}
 
 	CHook* pHook = GetHookManager()->FindHook((void*) func->m_ulAddr);
 	if (!pHook)
