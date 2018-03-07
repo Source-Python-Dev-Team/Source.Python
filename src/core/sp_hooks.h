@@ -48,7 +48,8 @@ public:
 	*  that are created. If true is returned, this object is removed from the
 	*  queue and deleted.
 	*/
-	virtual bool Initialize(CBaseEntity* pEntity) = NULL;
+	virtual bool Initialize(CBaseEntity* pEntity) = 0;
+	virtual ~IEntityHook() {}
 };
 
 extern std::vector<IEntityHook*> g_EntityHooks;
@@ -62,7 +63,7 @@ public:
 	ISimpleEntityHook(const char* func_name, HookHandlerFn* hook_handler, HookType_t hook_type);
 	
 	virtual bool Initialize(CBaseEntity* pEntity);
-	virtual bool Test(CBaseEntity* pEntity) = NULL;
+	virtual bool Test(CBaseEntity* pEntity) = 0;
 
 public:
 	const char* func_name;

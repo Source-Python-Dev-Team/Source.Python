@@ -33,6 +33,7 @@ using namespace boost::python;
 
 // SDK
 #include "edict.h"
+#include "game/shared/shareddefs.h"
 #include "game/shared/usercmd.h"
 
 // Source.Python
