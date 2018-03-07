@@ -44,6 +44,10 @@ class CBaseEntity;
 class IEntityHook
 {
 public:
+	/* This method is called for every existing entity and all future entities
+	*  that are created. If true is returned, this object is removed from the
+	*  queue and deleted.
+	*/
 	virtual bool Initialize(CBaseEntity* pEntity) = NULL;
 };
 
@@ -55,7 +59,7 @@ extern std::vector<IEntityHook*> g_EntityHooks;
 class ISimpleEntityHook: public IEntityHook
 {
 public:
-	ISimpleEntityHook(const char* func_name, HookHandlerFn* hook_handler, bool pre, bool post);
+	ISimpleEntityHook(const char* func_name, HookHandlerFn* hook_handler, HookType_t hook_type);
 	
 	virtual bool Initialize(CBaseEntity* pEntity);
 	virtual bool Test(CBaseEntity* pEntity) = NULL;
@@ -63,8 +67,7 @@ public:
 public:
 	const char* func_name;
 	HookHandlerFn* hook_handler;
-	bool pre;
-	bool post;
+	HookType_t hook_type;
 };
 
 //---------------------------------------------------------------------------------
@@ -73,7 +76,7 @@ public:
 class PlayerHook: public ISimpleEntityHook
 {
 public:
-	PlayerHook(const char* func_name, HookHandlerFn* hook_handler, bool pre, bool post);
+	PlayerHook(const char* func_name, HookHandlerFn* hook_handler, HookType_t hook_type);
 
 	virtual bool Test(CBaseEntity* pEntity);
 };

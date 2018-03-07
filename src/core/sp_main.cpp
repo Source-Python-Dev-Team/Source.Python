@@ -358,7 +358,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	g_EntityHooks.push_back(new PlayerHook(
 		"run_command",
 		(HookHandlerFn*) (void*) &PrePlayerRunCommand,
-		true, false));
+		HOOKTYPE_PRE));
 
 	InitHooks();
 	

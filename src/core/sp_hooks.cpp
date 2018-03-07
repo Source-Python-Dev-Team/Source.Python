@@ -52,12 +52,11 @@ std::vector<IEntityHook*> g_EntityHooks;
 //---------------------------------------------------------------------------------
 // ISimpleEntityHook
 //---------------------------------------------------------------------------------
-ISimpleEntityHook::ISimpleEntityHook(const char* func_name, HookHandlerFn* hook_handler, bool pre, bool post)
+ISimpleEntityHook::ISimpleEntityHook(const char* func_name, HookHandlerFn* hook_handler, HookType_t hook_type)
 {
 	this->func_name = func_name;
 	this->hook_handler = hook_handler;
-	this->pre = pre;
-	this->post = post;
+	this->hook_type = hook_type;
 }
 
 bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
@@ -73,7 +72,7 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 		return false;
 	}
 	
-	PythonLog(3, "Initializing core hook (%s)...", this->func_name);
+	PythonLog(4, "Initializing core hook (%s)...", this->func_name);
 
 	CFunction* func = NULL;
 	try
@@ -88,8 +87,7 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 		PyErr_Print();
 		PyErr_Clear();
 
-		PythonLog(0, "Failed to initialize the core hook.");
-
+		PythonLog(0, "Failed to import entities.entity.Entity or to retrieve %s.", this->func_name);
 		return true;
 	}
 
@@ -102,24 +100,14 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 
 		if (!pHook)
 		{
-			PythonLog(0, "Could create a hook.");
-			return false;
+			PythonLog(0, "Could not create a hook for %s.", this->func_name);
+			return true;
 		}
 	}
 
-	if (this->pre)
-	{
-		PythonLog(4, "Adding a pre hook.");
-		pHook->AddCallback(HOOKTYPE_PRE, this->hook_handler);
-	}
-
-	if (this->post)
-	{
-		PythonLog(4, "Adding a post hook.");
-		pHook->AddCallback(HOOKTYPE_POST, this->hook_handler);
-	}
+	pHook->AddCallback(this->hook_type, this->hook_handler);
 	
-	PythonLog(3, "Core hook has been initialized.");
+	PythonLog(3, "Core hook (%s) has been initialized.", this->func_name);
 	return true;
 }
 
@@ -127,8 +115,8 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 //---------------------------------------------------------------------------------
 // PlayerHook
 //---------------------------------------------------------------------------------
-PlayerHook::PlayerHook(const char* func_name, HookHandlerFn* hook_handler, bool pre, bool post)
-	:ISimpleEntityHook(func_name, hook_handler, pre, post)
+PlayerHook::PlayerHook(const char* func_name, HookHandlerFn* hook_handler, HookType_t hook_type)
+	:ISimpleEntityHook(func_name, hook_handler, hook_type)
 {
 }
 
@@ -205,7 +193,10 @@ bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 
 	if (button_state_manager->GetCount())
 	{
-		int buttons = extract<int>(player.attr("buttons"));
+		CBaseEntityWrapper* pWrapper = (CBaseEntityWrapper*) pEntity;
+		static int offset = pWrapper->FindDatamapPropertyOffset("m_nButtons");
+
+		int buttons = pWrapper->GetDatamapPropertyByOffset<int>(offset);
 		if (buttons != pCmd->buttons)
 		{
 			CALL_LISTENERS(OnButtonStateChanged, player, buttons, pCmd->buttons);
