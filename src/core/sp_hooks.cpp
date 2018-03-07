@@ -66,13 +66,14 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 		return false;
 	}
 
+	PythonLog(4, "Initializing core hook (%s)...", this->func_name);
+
 	unsigned int index;
 	if (!IndexFromBaseEntity(pEntity, index))
 	{
-		return false;
+		PythonLog(0, "Failed to convert the entity pointer to an index (%s)", this->func_name);
+		return true;
 	}
-	
-	PythonLog(4, "Initializing core hook (%s)...", this->func_name);
 
 	CFunction* func = NULL;
 	try
