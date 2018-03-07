@@ -28,9 +28,11 @@
 // Source includes
 //---------------------------------------------------------------------------------
 #include "loader_main.h"
+#include "updater.h"
 #include "interface.h"
 #include "eiface.h"
 #include "strtools.h"
+#include "filesystem.h"
 #ifdef _WIN32
 #	include <windows.h>
 #endif
@@ -51,6 +53,8 @@
 // Interfaces.
 //---------------------------------------------------------------------------------
 ICvar* g_pCVar = NULL; // This is required for linux linking..
+IFileSystem* filesystem = NULL;
+IVEngineServer* engine = NULL;
 
 //
 // The plugin is a static singleton that is exported as an interface
@@ -162,12 +166,19 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 {
 	Msg(MSG_PREFIX "Loading...\n");
 
-	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
+	engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
 	// Was the IVEngineServer interface retrieved properly?
 	if (!engine)
 	{
 		Msg(MSG_PREFIX "Unable to retrieve IVEngineServer interface.\n");
+		return false;
+	}
+
+	filesystem = (IFileSystem*) interfaceFactory(FILESYSTEM_INTERFACE_VERSION, NULL);
+	if (!filesystem)
+	{
+		Msg(MSG_PREFIX "Unable to retrieve IFileSystem interface.\n");
 		return false;
 	}
 
@@ -183,6 +194,11 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
 	DevMsg(1, MSG_PREFIX "Game directory: %s\n", szGameDir);
 	GenerateSymlink(szGameDir);
+
+	if (UpdateAvailable())
+	{
+		ApplyUpdateStage2();
+	}
 
 	// ------------------------------------------------------------------
 	// Load windows dependencies.

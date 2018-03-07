@@ -14,11 +14,13 @@ include("makefiles/shared.cmake")
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LOADER_HEADERS
     loader/loader_main.h
+    loader/updater.h
     loader/definitions.h
 )
 
 Set(SOURCEPYTHON_LOADER_SOURCES
     loader/loader_main.cpp
+    loader/updater.cpp
 )
 
 Set(SOURCEPYTHON_LOADER_FILES
