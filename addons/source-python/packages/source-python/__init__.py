@@ -94,7 +94,6 @@ def load():
     setup_auth()
     setup_user_settings()
     setup_entities_listener()
-    setup_run_command_listener()
     setup_versioning()
     setup_sqlite()
 
@@ -405,17 +404,6 @@ def remove_entities_listener():
     with suppress(NameError):
         manager.get_global_pointer('GlobalEntityList').remove_entity_listener(
             _sp_plugin)
-
-
-# =============================================================================
-# >> RUN COMMAND LISTENER
-# =============================================================================
-def setup_run_command_listener():
-    """Set up the run command listener."""
-    _sp_logger.log_debug('Setting up run command listener...')
-
-    # This is done here to fix a cyclic import
-    import listeners._run_command
 
 
 # =============================================================================

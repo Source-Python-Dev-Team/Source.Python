@@ -65,6 +65,7 @@
 	#include "Windows.h"
 #endif
 
+#include "sp_hooks.h"
 
 //-----------------------------------------------------------------------------
 // Disable warnings.
@@ -353,6 +354,13 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	DevMsg(1, MSG_PREFIX "Setting the new cache notifier...\n");
 	modelcache->SetCacheNotify(this);
+
+	g_EntityHooks.push_back(new PlayerHook(
+		"run_command",
+		(HookHandlerFn*) (void*) &PrePlayerRunCommand,
+		HOOKTYPE_PRE));
+
+	InitHooks();
 	
 	Msg(MSG_PREFIX "Loaded successfully.\n");
 	return true;
@@ -609,6 +617,9 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 		if (pServerUnknown)
 			pEdict->m_pNetworkable = pServerUnknown->GetNetworkable();
 	}
+
+	InitHooks(pEntity);
+
 	CALL_LISTENERS(OnEntityCreated, ptr((CBaseEntityWrapper*) pEntity));
 }
 
