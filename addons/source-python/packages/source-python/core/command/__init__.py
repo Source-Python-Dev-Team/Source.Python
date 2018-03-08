@@ -168,7 +168,7 @@ def update_sp(info):
     """Update Source.Python to the latest version. A restart of the server is
     required.
     """
-    if not is_unversioned() and get_last_successful_build_number() >= VERSION:
+    if not is_unversioned() and VERSION >= get_last_successful_build_number():
         core_command_logger.log_message('No new version available.')
         return
         

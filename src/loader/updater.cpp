@@ -80,7 +80,7 @@ void DeleteDirectory(const char* szDirectory)
 		}
 		else
 		{
-			DevMsg(5, "Deleting '%s'...\n", tmpFile);
+			DevMsg(5, MSG_PREFIX "Deleting '%s'...\n", tmpFile);
 			filesystem->RemoveFile(tmpFile);
 		}
 
@@ -89,7 +89,7 @@ void DeleteDirectory(const char* szDirectory)
 
 	filesystem->FindClose(findHandle);
 	
-	DevMsg(5, "Deleting '%s'...\n", szDirectory);
+	DevMsg(5, MSG_PREFIX "Deleting '%s'...\n", szDirectory);
 	RemoveEmptyDir(szDirectory);
 }
 
@@ -185,7 +185,7 @@ void MergeDirectories(const char* szSourceDir, const char* szDestDir)
 		}
 		else
 		{
-			DevMsg(5, "Moving '%s' to '%s'...\n", tmpUpdateFile, tmpRealFile);
+			DevMsg(5, MSG_PREFIX "Moving '%s' to '%s'...\n", tmpUpdateFile, tmpRealFile);
 			if (filesystem->FileExists(tmpRealFile))
 			{
 				filesystem->RemoveFile(tmpRealFile);
