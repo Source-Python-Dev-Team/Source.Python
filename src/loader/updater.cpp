@@ -80,7 +80,7 @@ void DeleteDirectory(const char* szDirectory)
 		}
 		else
 		{
-			DevMsg(5, MSG_PREFIX "Deleting '%s'...\n", tmpFile);
+			DevMsg(5, MSG_PREFIX "Deleting \"%s\"...\n", tmpFile);
 			filesystem->RemoveFile(tmpFile);
 		}
 
@@ -89,7 +89,7 @@ void DeleteDirectory(const char* szDirectory)
 
 	filesystem->FindClose(findHandle);
 	
-	DevMsg(5, MSG_PREFIX "Deleting '%s'...\n", szDirectory);
+	DevMsg(5, MSG_PREFIX "Deleting \"%s\"...\n", szDirectory);
 	RemoveEmptyDir(szDirectory);
 }
 
@@ -146,7 +146,7 @@ void ApplyUpdateStage2()
 	char szUpdateDir[MAX_PATH_LENGTH];
 	V_snprintf(szUpdateDir, sizeof(szUpdateDir), "%s/%s", szGameDir, SP_UPDATE_PATH);
 
-	DevMsg(1, MSG_PREFIX "Merging '%s' into '%s'...\n", szUpdateDir, szGameDir);
+	DevMsg(1, MSG_PREFIX "Merging \"%s\" into \"%s\"...\n", szUpdateDir, szGameDir);
 	MergeDirectories(szUpdateDir, szGameDir);
 
 	// Delete update dir, because it now contains a bunch of empty directories
@@ -185,7 +185,7 @@ void MergeDirectories(const char* szSourceDir, const char* szDestDir)
 		}
 		else
 		{
-			DevMsg(5, MSG_PREFIX "Moving '%s' to '%s'...\n", tmpUpdateFile, tmpRealFile);
+			DevMsg(5, MSG_PREFIX "Moving \"%s\" to \"%s\"...\n", tmpUpdateFile, tmpRealFile);
 			if (filesystem->FileExists(tmpRealFile))
 			{
 				filesystem->RemoveFile(tmpRealFile);
@@ -193,7 +193,7 @@ void MergeDirectories(const char* szSourceDir, const char* szDestDir)
 
 			if (!filesystem->RenameFile(tmpUpdateFile, tmpRealFile))
 			{
-				Msg(MSG_PREFIX "Failed to move file '%s' to '%s'!\n", tmpUpdateFile, tmpRealFile);
+				Msg(MSG_PREFIX "Failed to move file \"%s\" to \"%s\"!\n", tmpUpdateFile, tmpRealFile);
 			}
 		}
 
