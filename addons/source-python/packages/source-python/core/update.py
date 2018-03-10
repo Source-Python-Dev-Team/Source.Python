@@ -36,10 +36,16 @@ __all__ = (
     'CHECKSUM_URL',
     'DATA_URL',
     'DATA_ZIP_FILE',
-    'download_latest_data',
-    'get_latest_data_checksum',
-    'is_new_data_available',
-    'unpack_data',
+    'apply_update_stage1'
+    'clean_update_dir'
+    'download_file'
+    'download_latest_data'
+    'download_latest_version'
+    'get_artifacts'
+    'get_download_url'
+    'get_latest_data_checksum'
+    'is_new_data_available'
+    'unpack_data'
     'update_data'
 )
 
@@ -58,6 +64,7 @@ SP_VDF2 = 'addons/source-python2'
 DATA_ZIP_FILE = DATA_PATH / 'source-python-data.zip'
 UPDATE_ZIP_FILE = UPDATE_PATH / 'source-python.zip'
 VDF_FILE = ADDONS_PATH / 'source-python.vdf'
+LOADER_FILE = ADDONS_PATH / f'source-python.{BINARY_EXT}'
 LOADER_UPDATE_FILE = UPDATE_PATH / 'addons' / f'source-python.{BINARY_EXT}'
 VDF_UPDATE_FILE = UPDATE_PATH / 'addons' / 'source-python.vdf'
 
@@ -177,33 +184,57 @@ def apply_update_stage1():
         zip.extractall(UPDATE_PATH)
 
     UPDATE_ZIP_FILE.remove()
-
-    if not VDF_FILE.isfile():
-        # TODO: Improve this step to update everything except the loader.
-        raise ValueError(
-            'source-python.vdf does not exist. Update cannot be applied if '
-            'Source.Python is not loaded via the VDF file. Please copy the '
-            'files from the update directory on your own.')
-
-    update_logger.log_debug('Determining current VDF entry...')
-    kv = KeyValues.load_from_file(VDF_FILE)
-
-    # Get the current and new entry for the VDF file
-    current_entry = kv.get_string('file')
-    if current_entry == SP_VDF2:
-        new_entry = SP_VDF1
-    elif current_entry == SP_VDF1:
-        new_entry = SP_VDF2
-    else:
-        raise ValueError(f'Unexpected entry in VDF: {current_entry}')
-
-    update_logger.log_debug('Moving new loader binary to game directory...')
-
     VDF_UPDATE_FILE.remove()
-    LOADER_UPDATE_FILE.move(GAME_PATH / f'{new_entry}.{BINARY_EXT}')
 
-    kv.set_string('file', new_entry)
-    kv.save_to_file(VDF_FILE)
-    
+    if PLATFORM == 'windows':
+        _apply_update_stage1_windows()
+    else:
+        _apply_update_stage1_linux()
+
+def _apply_update_stage1_windows():
+    """Apply the Windows specific part of stage 1.
+
+    On Windows files that are currently in use (``source-python.dll``) can't be
+    replaced. Thus, this function checks if ``source-python.vdf`` exists. If it
+    does, the new ``source-python.dll`` is copied to the addons directory with
+    a new name (``source-python2.dll``). After that the VDF entry is modified
+    to point to the new loader.
+    If ``source-python.vdf`` does not exist, manual action is required.
+    """
+    if not VDF_FILE.isfile():
+        update_logger.log_message(
+            f'Stage 1 has been applied. Please shutdown your server and move '
+            f'(do not copy) {LOADER_UPDATE_FILE} to {LOADER_FILE}. After that '
+            f'start your server to apply stage 2.')
+    else:
+        update_logger.log_debug('Determining current VDF entry...')
+        kv = KeyValues.load_from_file(VDF_FILE)
+
+        # Get the current and new entry for the VDF file
+        current_entry = kv.get_string('file')
+        if current_entry == SP_VDF2:
+            new_entry = SP_VDF1
+        elif current_entry == SP_VDF1:
+            new_entry = SP_VDF2
+        else:
+            raise ValueError(f'Unexpected entry in VDF: {current_entry}')
+
+        update_logger.log_debug(f'Current VDF entry: {current_entry}')
+        update_logger.log_debug(f'New VDF entry: {new_entry}')
+
+        update_logger.log_debug('Moving new loader binary to game directory...')
+        LOADER_UPDATE_FILE.move(GAME_PATH / f'{new_entry}.{BINARY_EXT}')
+
+        kv.set_string('file', new_entry)
+        kv.save_to_file(VDF_FILE)
+
+        update_logger.log_message(
+            'Stage 1 has been applied. Restart your server to apply stage 2.')
+
+def _apply_update_stage1_linux():
+    """Apply the Linux specific part of stage 1."""
+    update_logger.log_debug('Moving new loader binary to game directory...')
+    LOADER_UPDATE_FILE.move(LOADER_FILE)
+
     update_logger.log_message(
         'Stage 1 has been applied. Restart your server to apply stage 2.')
