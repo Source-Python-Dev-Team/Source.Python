@@ -493,3 +493,15 @@ Unload a plugin by name.
 
     // Unload the plugin 'test'
     sp plugin unload test
+
+
+update
+------
+
+Update Source.Python to the latest version. A restart of the server is required
+to apply the new update.
+
+.. code-block:: none
+
+    // Usage
+    // sp update
