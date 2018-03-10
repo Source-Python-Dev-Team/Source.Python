@@ -27,14 +27,6 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-// C++
-#if defined(_WIN32)
-	#include <direct.h>
-	#define RemoveEmptyDir _rmdir
-#else
-	#define RemoveEmptyDir rmdir
-#endif
-
 // SDK
 #include "eiface.h"
 
