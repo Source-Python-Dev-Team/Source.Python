@@ -135,7 +135,7 @@ def get_artifacts():
         data = json.loads(url.read())
 
         for d in data['artifacts']:
-            yield d.popitem()[1]
+            yield d['relativePath']
 
 def get_download_url(game=SOURCE_ENGINE_BRANCH):
     """Get the latest download URL for a specific game."""
