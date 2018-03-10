@@ -32,12 +32,12 @@
 #include "interface.h"
 #include "eiface.h"
 #include "strtools.h"
-#include "filesystem.h"
 #ifdef _WIN32
 #	include <windows.h>
 #endif
 
 #include "../core/utilities/shared_utils.h"
+#include <exception>
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -53,7 +53,6 @@
 // Interfaces.
 //---------------------------------------------------------------------------------
 ICvar* g_pCVar = NULL; // This is required for linux linking..
-IFileSystem* filesystem = NULL;
 IVEngineServer* engine = NULL;
 
 //
@@ -175,13 +174,6 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
-	filesystem = (IFileSystem*) interfaceFactory(FILESYSTEM_INTERFACE_VERSION, NULL);
-	if (!filesystem)
-	{
-		Msg(MSG_PREFIX "Unable to retrieve IFileSystem interface.\n");
-		return false;
-	}
-
 	// ------------------------------------------------------------------
 	// Build path to python engines directory.
 	// ------------------------------------------------------------------
@@ -197,7 +189,14 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	if (UpdateAvailable())
 	{
-		ApplyUpdateStage2();
+		try
+		{
+			ApplyUpdateStage2();
+		}
+		catch (const std::exception& e)
+		{
+			Msg(MSG_PREFIX "An error occured during update stage 2:\n%s\n", e.what());
+		}
 	}
 
 	// ------------------------------------------------------------------

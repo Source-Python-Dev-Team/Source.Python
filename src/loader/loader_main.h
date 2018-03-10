@@ -37,9 +37,6 @@
 //---------------------------------------------------------------------------------
 #include "definitions.h"
 
-class IFileSystem;
-extern IFileSystem* filesystem;
-
 
 //---------------------------------------------------------------------------------
 // Purpose: a sample 3rd party plugin class

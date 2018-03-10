@@ -36,169 +36,88 @@
 #endif
 
 // SDK
-#include "filesystem.h"
 #include "eiface.h"
 
 // Source.Python
 #include "updater.h"
 #include "definitions.h"
 
+// Boost
+#include "boost/filesystem.hpp"
+namespace bfs = boost::filesystem;
+
 
 //---------------------------------------------------------------------------------
 // Declarations
 //---------------------------------------------------------------------------------
-extern IFileSystem* filesystem;
 extern IVEngineServer* engine;
 
 
 //---------------------------------------------------------------------------------
 // Functions
 //---------------------------------------------------------------------------------
-void DeleteDirectory(const char* szDirectory)
-{
-	char szFilePattern[MAX_PATH_LENGTH];
-	V_snprintf(szFilePattern, sizeof(szFilePattern), "%s/*", szDirectory);
-
-	FileFindHandle_t findHandle;
-	const char *pRelativeFileName = filesystem->FindFirst(szFilePattern, &findHandle);
-	while( pRelativeFileName )
-	{
-		// Skip . and ..
-		if (strcmp(pRelativeFileName, ".") == 0 || strcmp(pRelativeFileName, "..") == 0)
-		{
-			pRelativeFileName = filesystem->FindNext( findHandle );
-			continue;
-		}
-
-		// Construct an absolute path
-		char tmpFile[MAX_PATH_LENGTH];
-		V_snprintf(tmpFile, sizeof(tmpFile), "%s/%s", szDirectory, pRelativeFileName);
-
-		if( filesystem->FindIsDirectory( findHandle ) )
-		{
-			DeleteDirectory(tmpFile);
-		}
-		else
-		{
-			DevMsg(5, MSG_PREFIX "Deleting \"%s\"...\n", tmpFile);
-			filesystem->RemoveFile(tmpFile);
-		}
-
-		pRelativeFileName = filesystem->FindNext( findHandle );
-	}
-
-	filesystem->FindClose(findHandle);
-	
-	DevMsg(5, MSG_PREFIX "Deleting \"%s\"...\n", szDirectory);
-	RemoveEmptyDir(szDirectory);
-}
-
 bool UpdateAvailable()
 {
+	DevMsg(1, MSG_PREFIX "Checking if update stage 2 can be applied... ");
+
 	char szGameDir[MAX_PATH_LENGTH];
 	engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
 
-	char szFilePattern[MAX_PATH_LENGTH];
-	V_snprintf(szFilePattern, sizeof(szFilePattern), "%s/%s/*", szGameDir, SP_UPDATE_PATH);
+	bfs::path updateDir = bfs::path(szGameDir) / SP_UPDATE_PATH;
+	bool result = bfs::is_directory(updateDir) && !bfs::is_empty(updateDir);
 
-	bool found = false;
-	FileFindHandle_t findHandle;
-	const char *pRelativeFileName = filesystem->FindFirst(szFilePattern, &findHandle);
-	while( pRelativeFileName )
-	{
-		// Skip . and ..
-		if (strcmp(pRelativeFileName, ".") == 0 || strcmp(pRelativeFileName, "..") == 0)
+	DevMsg(1, "%s.\n", result ? "Yes" : "No");
+	return result;
+}
+
+static void DeleteDir(bfs::path dir)
+{
+	DevMsg(1, MSG_PREFIX "Deleting %s...\n", dir.string().c_str());
+	bfs::remove_all(dir);
+}
+
+static void MergeDirectories(const bfs::path& src, const bfs::path& dst)
+{
+	if (bfs::is_directory(src)) {
+		bfs::create_directories(dst);
+
+		bfs::directory_iterator end_iter;
+		for (bfs::directory_iterator iter(src); iter != end_iter; ++iter)
 		{
-			pRelativeFileName = filesystem->FindNext( findHandle );
-			continue;
+			MergeDirectories(iter->path(), dst/iter->path().filename());
 		}
-
-		found = true;
-		break;
+	} 
+	else if (bfs::is_regular_file(src))
+	{
+		DevMsg(5, MSG_PREFIX "Merging %s into %s...\n", src.string().c_str(), dst.string().c_str());
+		bfs::rename(src, dst);
+	} 
+	else
+	{
+		Msg(MSG_PREFIX "%s is not a file or directory. Doing nothing...\n", dst.string().c_str());
 	}
-
-	filesystem->FindClose(findHandle);
-	return found;
 }
 
 void ApplyUpdateStage2()
 {
-	Msg(MSG_PREFIX "Applying Source.Python update stage 2...\n");
+	Msg(MSG_PREFIX "Applying update stage 2...\n");
 
 	char szGameDir[MAX_PATH_LENGTH];
 	engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
 
-	// Delete SP package dir
-	char szSPPackageDir[MAX_PATH_LENGTH];
-	V_snprintf(szSPPackageDir, sizeof(szSPPackageDir), "%s/%s", szGameDir, SP_PACKAGE_PATH);
-
-	DevMsg(1, MSG_PREFIX "Deleting %s...\n", szSPPackageDir);
-	DeleteDirectory(szSPPackageDir);
-
-	// Delete SP data dir
-	char szSPDataDir[MAX_PATH_LENGTH];
-	V_snprintf(szSPDataDir, sizeof(szSPDataDir), "%s/%s", szGameDir, SP_DATA_PATH);
-
-	DevMsg(1, MSG_PREFIX "Deleting %s...\n", szSPDataDir);
-	DeleteDirectory(szSPPackageDir);
+	// Delete old directories
+	DeleteDir(bfs::path(szGameDir) / SP_PACKAGE_PATH);
+	DeleteDir(bfs::path(szGameDir) / SP_DATA_PATH);
+	DeleteDir(bfs::path(szGameDir) / SP_DOCS_PATH);
+	DeleteDir(bfs::path(szGameDir) / PYTHON3_PATH);
 
 	// Move files from update dir to real dir
-	char szUpdateDir[MAX_PATH_LENGTH];
-	V_snprintf(szUpdateDir, sizeof(szUpdateDir), "%s/%s", szGameDir, SP_UPDATE_PATH);
-
-	DevMsg(1, MSG_PREFIX "Merging \"%s\" into \"%s\"...\n", szUpdateDir, szGameDir);
-	MergeDirectories(szUpdateDir, szGameDir);
+	bfs::path updateDir = bfs::path(szGameDir) / SP_UPDATE_PATH;
+	DevMsg(1, MSG_PREFIX "Merging \"%s\" into \"%s\"...\n", updateDir.string().c_str(), szGameDir);
+	MergeDirectories(updateDir, szGameDir);
 
 	// Delete update dir, because it now contains a bunch of empty directories
-	DevMsg(1, MSG_PREFIX "Deleting %s...\n", szUpdateDir);
-	DeleteDirectory(szUpdateDir);
+	DeleteDir(updateDir);
 
 	Msg(MSG_PREFIX "Stage 2 has been applied.\n");
-}
-
-void MergeDirectories(const char* szSourceDir, const char* szDestDir)
-{
-	char szFilePattern[MAX_PATH_LENGTH];
-	V_snprintf(szFilePattern, sizeof(szFilePattern), "%s/*", szSourceDir);
-
-	FileFindHandle_t findHandle;
-	const char *pRelativeFileName = filesystem->FindFirst(szFilePattern, &findHandle);
-	while( pRelativeFileName )
-	{
-		// Skip . and ..
-		if (strcmp(pRelativeFileName, ".") == 0 || strcmp(pRelativeFileName, "..") == 0)
-		{
-			pRelativeFileName = filesystem->FindNext( findHandle );
-			continue;
-		}
-
-		// Construct an absolute path
-		char tmpUpdateFile[MAX_PATH_LENGTH];
-		V_snprintf(tmpUpdateFile, sizeof(tmpUpdateFile), "%s/%s", szSourceDir, pRelativeFileName);
-
-		char tmpRealFile[MAX_PATH_LENGTH];
-		V_snprintf(tmpRealFile, sizeof(tmpRealFile), "%s/%s", szDestDir, pRelativeFileName);
-
-		if( filesystem->FindIsDirectory( findHandle ) )
-		{
-			MergeDirectories(tmpUpdateFile, tmpRealFile);
-		}
-		else
-		{
-			DevMsg(5, MSG_PREFIX "Moving \"%s\" to \"%s\"...\n", tmpUpdateFile, tmpRealFile);
-			if (filesystem->FileExists(tmpRealFile))
-			{
-				filesystem->RemoveFile(tmpRealFile);
-			}
-
-			if (!filesystem->RenameFile(tmpUpdateFile, tmpRealFile))
-			{
-				Msg(MSG_PREFIX "Failed to move file \"%s\" to \"%s\"!\n", tmpUpdateFile, tmpRealFile);
-			}
-		}
-
-		pRelativeFileName = filesystem->FindNext( findHandle );
-	}
-
-	filesystem->FindClose(findHandle);
 }

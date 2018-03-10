@@ -33,21 +33,17 @@
 #define SP_UPDATE_PATH "addons/source-python/update"
 #define SP_PACKAGE_PATH "addons/source-python/packages/source-python"
 #define SP_DATA_PATH "addons/source-python/data/source-python"
+#define SP_DOCS_PATH "addons/source-python/docs/source-python"
+#define PYTHON3_PATH "addons/source-python/Python3"
 
 
 //---------------------------------------------------------------------------------
 // Functions
 //---------------------------------------------------------------------------------
-// Recursively delete a directory.
-void DeleteDirectory(const char* szDirectory);
-
 // Returns true if there is at least one file in the update directory
 bool UpdateAvailable();
 
 // Applies stage 2 of the update process
 void ApplyUpdateStage2();
-
-// Merge two directories
-void MergeDirectories(const char* szSourceDir, const char* szDestDir);
 
 #endif // _UPDATER_H
