@@ -62,7 +62,7 @@ bool UpdateAvailable()
 	return result;
 }
 
-static void DeleteDir(bfs::path dir)
+static void DeleteDir(const bfs::path& dir)
 {
 	DevMsg(1, MSG_PREFIX "Deleting %s...\n", dir.string().c_str());
 	bfs::remove_all(dir);
