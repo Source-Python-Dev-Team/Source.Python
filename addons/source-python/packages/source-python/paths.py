@@ -13,7 +13,8 @@ from path import Path
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('BASE_PATH',
+__all__ = ('ADDONS_PATH',
+           'BASE_PATH',
            'CFG_PATH',
            'CUSTOM_DATA_PATH',
            'CUSTOM_PACKAGES_DOCS_PATH',
@@ -34,6 +35,7 @@ __all__ = ('BASE_PATH',
            'TRANSLATION_PATH',
            'AUTH_CFG_PATH',
            'BACKENDS_PATH',
+           'UPDATE_PATH'
            )
 
 
@@ -43,8 +45,14 @@ __all__ = ('BASE_PATH',
 # ../<game>
 GAME_PATH = Path(Path(__file__).rsplit('addons', 1)[0][:~0])
 
+# ../addons
+ADDONS_PATH = GAME_PATH / 'addons'
+
 # ../addons/source-python
-BASE_PATH = GAME_PATH / 'addons' / 'source-python'
+BASE_PATH = ADDONS_PATH / 'source-python'
+
+# ../addons/source-python/update
+UPDATE_PATH = BASE_PATH / 'update'
 
 # ../addons/source-python/docs
 DOCS_PATH = BASE_PATH / 'docs'
