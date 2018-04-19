@@ -600,9 +600,12 @@ static void export_engine_server(scope _server)
 		*/
 
 		.def("get_client_steamid",
-			&IVEngineServer::GetClientSteamID,
-			"Returns the SteamID of the specified player. Returns NULL if the player isn't authenticated.",
-			args("client"),
+			&IVEngineServerExt::GetClientSteamID,
+			"Get the SteamID of the specified player.\n\n"
+			":param Edict client: The target player.\n"
+			":param bool validated_id_only: If ``True`` only validated IDs are returned. Otherwise it's ``None``. This parameter only has an effect in CS:GO.\n"
+			":rtype: SteamID",
+			(arg("client"), arg("validated_id_only")=false),
 			reference_existing_object_policy()
 		)
 

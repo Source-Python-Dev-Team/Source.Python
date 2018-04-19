@@ -43,6 +43,11 @@ public:
 	{
 		return pServer->IsMapValid(map_name);
 	}
+
+	static const CSteamID* GetClientSteamID(IVEngineServer* pEngine, edict_t *pPlayerEdict, bool bValidatedIDOnly=false)
+	{
+		return pEngine->GetClientSteamID(pPlayerEdict);
+	}
 };
 
 
