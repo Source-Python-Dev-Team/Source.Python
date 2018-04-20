@@ -27,9 +27,6 @@
 //---------------------------------------------------------------------------------
 // Includes
 //---------------------------------------------------------------------------------
-// SDK
-#include "eiface.h"
-
 // Source.Python
 #include "updater.h"
 #include "definitions.h"
@@ -37,6 +34,9 @@
 // Boost
 #include "boost/filesystem.hpp"
 namespace bfs = boost::filesystem;
+
+// SDK
+#include "eiface.h"
 
 
 //---------------------------------------------------------------------------------
