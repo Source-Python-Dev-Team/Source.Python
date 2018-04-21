@@ -1,6 +1,6 @@
 # ../core/update.py
 
-"""Provides functions to update Source.Python's data files."""
+"""Provides functions to update Source.Python and its data files."""
 
 # =============================================================================
 # >> IMPORTS
@@ -36,17 +36,13 @@ __all__ = (
     'CHECKSUM_URL',
     'DATA_URL',
     'DATA_ZIP_FILE',
-    'apply_update_stage1'
-    'clean_update_dir'
-    'download_file'
-    'download_latest_data'
-    'download_latest_version'
-    'get_artifacts'
-    'get_download_url'
-    'get_latest_data_checksum'
-    'is_new_data_available'
-    'unpack_data'
-    'update_data'
+    'download_file',
+    'get_build_artifacts',
+    'get_download_url',
+    'get_latest_data_checksum',
+    'is_new_data_available',
+    'update_in_progress',
+    'update_data',
 )
 
 
@@ -72,81 +68,25 @@ CHECKSUM_URL = 'http://data.sourcepython.com/checksum.txt'
 DATA_URL = 'http://data.sourcepython.com/source-python-data.zip'
 ARTIFACTS_URL = 'http://builds.sourcepython.com/job/Source.Python/lastSuccessfulBuild/api/json?tree=artifacts[relativePath]'
 BASE_DOWNLOAD_URL = 'http://builds.sourcepython.com/job/Source.Python/lastSuccessfulBuild/artifact/'
+DEFAULT_TIMEOUT = 3
+
+#: Indicates, whether an update is in progress (stage 1 has been applied).
+update_in_progress = False
 
 
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
-def get_latest_data_checksum(timeout=3):
-    """Return the MD5 checksum of the latest data from the build server.
-
-    :param float timeout:
-        Number of seconds that need to pass until a timeout occurs.
-    :rtype: str
-    """
-    with urlopen(CHECKSUM_URL, timeout=timeout) as url:
-        return url.read().decode()
-
-def download_latest_data(timeout=3):
-    """Download the latest data from the build server.
-
-    :param float timeout:
-        Number of seconds that need to pass until a timeout occurs.
-    """
-    download_file(DATA_URL, DATA_ZIP_FILE, timeout)
-
-def unpack_data():
-    """Unpack ``source-python-data.zip``."""
-    update_logger.log_debug('Extracting data in {} ...'.format(DATA_PATH))
-    with ZipFile(DATA_ZIP_FILE) as zip:
-        zip.extractall(DATA_PATH)
-
-def update_data(timeout=3):
-    """Download and unpack the latest data from the build server.
-
-    Old data gets deleted before unpacking.
-
-    :param float timeout:
-        Number of seconds that need to pass until a timeout occurs.
-    """
-    download_latest_data(timeout)
-    if SP_DATA_PATH.isdir():
-        update_logger.log_debug('Removing {} ...'.format(SP_DATA_PATH))
-        SP_DATA_PATH.rmtree()
-
-    unpack_data()
-
-def is_new_data_available(timeout=3):
-    """Return ``True`` if new data is available.
-
-    :param float timeout:
-        Number of seconds that need to pass until a timeout occurs.
-    :rtype: bool
-    """
-    if not DATA_ZIP_FILE.isfile():
-        return True
-
-    return DATA_ZIP_FILE.read_hexhash('md5') != get_latest_data_checksum(timeout)
-
-def get_artifacts():
-    """Return the artifacts of the latest build."""
-    update_logger.log_debug('Getting artifacts...')
-    with urlopen(ARTIFACTS_URL) as url:
-        data = json.loads(url.read())
-
-        for d in data['artifacts']:
-            yield d['relativePath']
-
-def get_download_url(game=SOURCE_ENGINE_BRANCH):
-    """Get the latest download URL for a specific game."""
-    for relative_path in get_artifacts():
-        if f'-{game}-' in relative_path:
-            return BASE_DOWNLOAD_URL + relative_path
-
-    raise ValueError(f'Unable to find a download URL for game "{game}".')
-
 def download_file(url_path, file_path, timeout=3):
-    """Download a file from an URL to a specific file."""
+    """Download a file from an URL to a specific file.
+
+    :param str url_path:
+        The URL that should be opened.
+    :param str file_path:
+        The file where the content of the URL should be stored.
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    """
     update_logger.log_debug(f'Downloading file ({url_path}) to {file_path} ...')
     now = time.time()
 
@@ -160,7 +100,68 @@ def download_file(url_path, file_path, timeout=3):
         'File has been downloaded. Time elapsed: {:0.2f} seconds'.format(
             time.time()-now))
 
-def clean_update_dir():
+
+# =============================================================================
+# >> FULL SP UPDATE
+# =============================================================================
+def do_full_update(timeout=DEFAULT_TIMEOUT):
+    """Starts a full update of Source.Python.
+
+    A restart of the server and possibly manual work is required. Please see
+    the Source.Python log for the instructions.
+
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    """
+    global update_in_progress
+    if update_in_progress:
+        update_logger.log_message(
+            'An update is already in progress. Please follow the instructions '
+            'in the log.')
+        return
+
+    # Make sure there is a clean update directory
+    _clean_update_dir()
+    try:
+        _download_latest_version(timeout)
+        _apply_update_stage1()
+        update_in_progress = True
+    except:
+        # Make sure to leave a clean update directory, so the loader doesn't
+        # get confused.
+        _clean_update_dir()
+        raise
+
+def get_build_artifacts(timeout=DEFAULT_TIMEOUT):
+    """Return the artifacts of the latest Source.Python build.
+
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    """
+    update_logger.log_debug('Getting artifacts...')
+    with urlopen(ARTIFACTS_URL, timeout=timeout) as url:
+        data = json.loads(url.read())
+        for d in data['artifacts']:
+            yield d['relativePath']
+
+def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
+    """Get the latest Source.Python download URL for a specific game.
+
+    :param str game:
+        The game game to look for (e.g. ``css``).
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    :rtype: str
+    :raise ValueError:
+        Raised if the game wasn't found.
+    """
+    for relative_path in get_build_artifacts(timeout):
+        if f'-{game}-' in relative_path:
+            return BASE_DOWNLOAD_URL + relative_path
+
+    raise ValueError(f'Unable to find a download URL for game "{game}".')
+
+def _clean_update_dir():
     """Clear or create the update directory."""
     if UPDATE_PATH.exists():
         for f in UPDATE_PATH.listdir():
@@ -171,11 +172,15 @@ def clean_update_dir():
     else:
         UPDATE_PATH.mkdir()
 
-def download_latest_version(timeout=3):
-    """Download the latest version."""
+def _download_latest_version(timeout=DEFAULT_TIMEOUT):
+    """Download the latest Source.Python version.
+
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+        """
     download_file(get_download_url(), UPDATE_ZIP_FILE, timeout)
 
-def apply_update_stage1():
+def _apply_update_stage1():
     """Apply stage 1 of the version update."""
     update_logger.log_message('Applying Source.Python update stage 1...')
 
@@ -238,3 +243,58 @@ def _apply_update_stage1_linux():
 
     update_logger.log_message(
         'Stage 1 has been applied. Restart your server to apply stage 2.')
+
+
+# =============================================================================
+# >> SP DATA UPDATE
+# =============================================================================
+def update_data(timeout=DEFAULT_TIMEOUT):
+    """Download and unpack the latest data from the build server.
+
+    Old data gets deleted before unpacking.
+
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    """
+    _download_latest_data(timeout)
+    if SP_DATA_PATH.isdir():
+        update_logger.log_debug('Removing {} ...'.format(SP_DATA_PATH))
+        SP_DATA_PATH.rmtree()
+
+    _unpack_data()
+
+def is_new_data_available(timeout=DEFAULT_TIMEOUT):
+    """Return ``True`` if new data is available.
+
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    :rtype: bool
+    """
+    if not DATA_ZIP_FILE.isfile():
+        return True
+
+    return DATA_ZIP_FILE.read_hexhash('md5') != get_latest_data_checksum(timeout)
+
+def get_latest_data_checksum(timeout=DEFAULT_TIMEOUT):
+    """Return the MD5 checksum of the latest data from the build server.
+
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    :rtype: str
+    """
+    with urlopen(CHECKSUM_URL, timeout=timeout) as url:
+        return url.read().decode()
+
+def _download_latest_data(timeout=DEFAULT_TIMEOUT):
+    """Download the latest data from the build server.
+
+    :param float timeout:
+        Number of seconds that need to pass until a timeout occurs.
+    """
+    download_file(DATA_URL, DATA_ZIP_FILE, timeout)
+
+def _unpack_data():
+    """Unpack ``source-python-data.zip``."""
+    update_logger.log_debug('Extracting data in {} ...'.format(DATA_PATH))
+    with ZipFile(DATA_ZIP_FILE) as zip:
+        zip.extractall(DATA_PATH)

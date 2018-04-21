@@ -22,9 +22,7 @@ from commands.typed import TypedServerCommand
 from core import core_logger
 from core import create_checksum
 from core import SOURCE_ENGINE_BRANCH
-from core.update import clean_update_dir
-from core.update import download_latest_version
-from core.update import apply_update_stage1
+from core.update import do_full_update
 from core.version import get_last_successful_build_number
 from core.version import is_unversioned
 from core.version import VERSION
@@ -172,16 +170,7 @@ def update_sp(info):
         core_command_logger.log_message('No new version available.')
         return
         
-    # Make sure there is a clean update directory
-    clean_update_dir()
-    try:
-        download_latest_version()
-        apply_update_stage1()
-    except:
-        # Make sure to leave a clean update directory, so the loader doesn't
-        # get confused.
-        clean_update_dir()
-        raise
+    do_full_update()
     
 
 # =============================================================================
