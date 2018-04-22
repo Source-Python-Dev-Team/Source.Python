@@ -17,6 +17,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 #   Commands
+from commands.typed import TypedClientCommand
 from commands.typed import TypedServerCommand
 #   Core
 from core import core_logger
@@ -99,18 +100,21 @@ core_command = CoreCommandManager(
 # >> sp
 # =============================================================================
 @core_command.server_sub_command(['delay'])
+@core_command.client_sub_command(['delay'], 'sp.delay')
 def _sp_delay(command_info, delay:float, command, *args):
     """Execute a command after a given delay."""
     Delay(delay, queue_command_string, (command + ' ' + ' '.join(args), ))
 
 
 @core_command.server_sub_command(['credits'])
+@core_command.client_sub_command(['credits'], 'sp.credits')
 def _sp_credits(command_info):
     """List all credits for Source.Python."""
     core_command.print_credits()
 
 
 @core_command.server_sub_command(['help'])
+@core_command.client_sub_command(['help'], 'sp.help')
 def _sp_help(command_info, command=None, *server_sub_commands):
     """Print all sp sub-commands or help for a specific command."""
     if command is None:
@@ -131,6 +135,7 @@ def _sp_help(command_info, command=None, *server_sub_commands):
 
 
 @core_command.server_sub_command(['info'])
+@core_command.client_sub_command(['info'], 'sp.info')
 def print_info(info):
     """Print information about OS, SP and installed plugins."""
     result = '\nDate          : {}'.format(datetime.utcnow())
@@ -162,6 +167,7 @@ def print_info(info):
 
 
 @core_command.server_sub_command(['update'])
+@core_command.client_sub_command(['update'], 'sp.update')
 def update_sp(info):
     """Update Source.Python to the latest version. A restart of the server is
     required.
@@ -169,12 +175,14 @@ def update_sp(info):
     if not is_unversioned() and VERSION >= get_last_successful_build_number():
         core_command_logger.log_message('No new version available.')
         return
-        
+
     do_full_update()
-    
+
 
 # =============================================================================
 # >> DESCRIPTION
 # =============================================================================
 TypedServerCommand.parser.set_node_description(
+    'sp', 'Source.Python main command.')
+TypedClientCommand.parser.set_node_description(
     'sp', 'Source.Python main command.')
