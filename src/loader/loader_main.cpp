@@ -196,6 +196,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		catch (const std::exception& e)
 		{
 			Msg(MSG_PREFIX "An error occured during update stage 2:\n%s\n", e.what());
+			return false;
 		}
 	}
 
