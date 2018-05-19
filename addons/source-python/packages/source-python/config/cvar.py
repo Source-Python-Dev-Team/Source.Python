@@ -140,6 +140,34 @@ class _CvarManager(dict):
         # Return
         return True
 
+    def __bool__(self):
+        """Return the boolean value of the ConVar.
+
+        :rtype: bool
+        """
+        return bool(self.cvar)
+
+    def __int__(self):
+        """Return the integer value of the ConVar.
+
+        :rtype: int
+        """
+        return int(self.cvar)
+
+    def __float__(self):
+        """Return the floating point value of the ConVar.
+
+        :rtype: float
+        """
+        return float(self.cvar)
+
+    def __str__(self):
+        """Return the string value of the ConVar.
+
+        :rtype: str
+        """
+        return str(self.cvar)
+
     def text(self, text):
         """Add a text to the list.
 
