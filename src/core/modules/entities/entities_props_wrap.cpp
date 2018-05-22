@@ -142,7 +142,10 @@ void export_send_prop(scope _props)
 	);
 	
 	SendProp_.add_property("offset", &SendProp::GetOffset);
+
+	// TODO: Rename proxy_function to send_var_proxy_function
 	SendProp_.add_property("proxy_function", &SendPropSharedExt::get_proxy_function);
+	SendProp_.add_property("data_table_proxy_function", &SendPropSharedExt::get_data_table_proxy_function);
 	
 	// CS:GO specific properties...
 	SendProp_.NOT_IMPLEMENTED_ATTR("priority");
