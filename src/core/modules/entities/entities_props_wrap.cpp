@@ -117,6 +117,7 @@ void export_send_table(scope _props)
 void export_send_prop(scope _props)
 {
 	EXPOSE_FUNCTION_TYPEDEF(BoostSendVarProxyFn, "SendVarProxyFn")
+	EXPOSE_FUNCTION_TYPEDEF(BoostDataTableProxyFn, "DataTableProxyFn")
 
 	class_<SendProp, SendProp *, boost::noncopyable> SendProp_("SendProp", no_init);
 	
