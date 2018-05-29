@@ -353,8 +353,7 @@ IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
 
 Vector CBaseEntityWrapper::GetOrigin()
 {
-	static int offset = FindDatamapPropertyOffset("m_vecOrigin");
-	return GetDatamapPropertyByOffset<Vector>(offset);
+	return GetKeyValueVector("origin");
 }
 
 void CBaseEntityWrapper::SetOrigin(Vector& vec)
