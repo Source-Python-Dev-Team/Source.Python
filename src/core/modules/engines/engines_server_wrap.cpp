@@ -812,6 +812,7 @@ static void export_server_game_dll(scope _server)
 	// Class info...
 	BEGIN_CLASS_INFO(IServerGameDLL)
 		FUNCTION_INFO(GetGameDescription)
+		FUNCTION_INFO(LevelInit)
 	END_CLASS_INFO()
 
 	// Engine specific stuff...
