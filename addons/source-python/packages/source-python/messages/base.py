@@ -65,22 +65,34 @@ class UserMessageCreator(AttrDict):
 
     def send(self, *player_indexes, **tokens):
         """Send the user message."""
+        self._categorize_and_send(player_indexes, tokens, False)
+
+    def send_reliable(self, *player_indexes, **tokens):
+        """Send the user message using reliable stream.
+
+        Use this if you need to guarantee transmission of the message.
+        """
+        self._categorize_and_send(player_indexes, tokens, True)
+
+    def _categorize_and_send(self, player_indexes, tokens, reliable):
         player_indexes = RecipientFilter(*player_indexes)
         for language, indexes in self._categorize_players_by_language(
                 player_indexes).items():
             translated_kwargs = AttrDict(self)
             translated_kwargs.update(
                 self._get_translated_kwargs(language, tokens))
-            self._send(indexes, translated_kwargs)
+            self._send(indexes, translated_kwargs, reliable)
 
-    def _send(self, player_indexes, translated_kwargs):
+    def _send(self, player_indexes, translated_kwargs, reliable):
         """Send the user message to the given players.
 
         :param iterable player_indexes: All players with the same language
             setting.
         :param AttrDict translated_kwargs: The translated arguments.
+        :param bool reliable: Whether to set `RecipientFilter.reliable`.
         """
         recipients = RecipientFilter(*player_indexes)
+        recipients.reliable = reliable
         user_message = UserMessage(recipients, self.message_name)
 
         if user_message.is_protobuf():
@@ -201,11 +213,22 @@ class ShowMenu(UserMessageCreator):
 
     def send(self, *player_indexes):
         """Send the user message."""
+        self._send(player_indexes, False)
+
+    def send_reliable(self, *player_indexes):
+        """Send the user message using reliable stream.
+
+        Use this if you need to guarantee transmission of the message."""
+        self._send(player_indexes, True)
+
+    def _send(self, player_indexes, reliable):
+        """Send the user message."""
         # We need to handle the ShowMenu user message with bitbuffers
         # differently, because the maximum size is 255. If the message exceeds
         # this length, we need to sent it in several parts.
         if UserMessage.is_protobuf():
             recipients = RecipientFilter(*player_indexes)
+            recipients.reliable = reliable
             user_message = UserMessage(recipients, self.message_name)
             self.protobuf(user_message.buffer, self)
             user_message.send()
