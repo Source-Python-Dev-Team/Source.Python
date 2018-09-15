@@ -50,7 +50,8 @@ class ConfigManager(object):
     """Config Management class used to create a config file."""
 
     def __init__(
-            self, filepath, cvar_prefix='', indention=3, max_line_length=79, encoding='utf-8'):
+            self, filepath, cvar_prefix='', indention=3,
+            max_line_length=79, encoding='utf-8'):
         """Initialized the configuration manager.
 
         :param str filepath:
