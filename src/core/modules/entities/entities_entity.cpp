@@ -218,8 +218,8 @@ str CBaseEntityWrapper::GetKeyValueString(const char* szName)
 	// TODO: Don't hardcode this
 	// Fix for field name "model". I think a string_t object is copied to szResult.
 	// https://developer.valvesoftware.com/wiki/Team_train_watcher
-	if (strcmp(szName, "model") == 0 || strcmp(szName, "train") == 0)
-		return str(*(char **) szResult);
+	if (strcmp(szName, "model") == 0 || strcmp(szName, "train") == 0 || strcmp(szName, "LightningStart") == 0)
+		return str(*(const char **) szResult);
 
 	return str(szResult);
 }
