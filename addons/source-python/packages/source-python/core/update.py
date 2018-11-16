@@ -70,7 +70,7 @@ DATA_URL = f'{BASE_DATA_URL}/source-python-data.zip'
 
 BASE_DOWNLOAD_URL = 'http://downloads.sourcepython.com'
 ARTIFACTS_URL = f'{BASE_DOWNLOAD_URL}/release/artifacts.txt'
-UPDATING_URL = f'{BASE_DOWNLOAD_URL}/release/artifacts.txt'
+UPDATING_URL = f'{BASE_DOWNLOAD_URL}/updating.txt'
 
 DEFAULT_TIMEOUT = 3
 
