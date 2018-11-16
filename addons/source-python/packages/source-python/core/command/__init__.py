@@ -24,6 +24,7 @@ from core import create_checksum
 from core import SOURCE_ENGINE_BRANCH
 from core.update import do_full_update
 from core.version import get_last_successful_build_number
+from core.version import is_download_page_updating
 from core.version import is_unversioned
 from core.version import VERSION
 from core.version import GIT_COMMIT
@@ -166,6 +167,11 @@ def update_sp(info):
     """Update Source.Python to the latest version. A restart of the server is
     required.
     """
+    if is_download_page_updating():
+        core_command_logger.log_message(
+            'Download page is currently being updated. Please try again later.')
+        return
+
     if not is_unversioned() and VERSION >= get_last_successful_build_number():
         core_command_logger.log_message('No new version available.')
         return

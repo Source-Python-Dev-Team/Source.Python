@@ -64,10 +64,14 @@ LOADER_FILE = ADDONS_PATH / f'source-python.{BINARY_EXT}'
 LOADER_UPDATE_FILE = UPDATE_PATH / 'addons' / f'source-python.{BINARY_EXT}'
 VDF_UPDATE_FILE = UPDATE_PATH / 'addons' / 'source-python.vdf'
 
-CHECKSUM_URL = 'http://data.sourcepython.com/checksum.txt'
-DATA_URL = 'http://data.sourcepython.com/source-python-data.zip'
-ARTIFACTS_URL = 'http://builds.sourcepython.com/job/Source.Python/lastSuccessfulBuild/api/json?tree=artifacts[relativePath]'
-BASE_DOWNLOAD_URL = 'http://builds.sourcepython.com/job/Source.Python/lastSuccessfulBuild/artifact/'
+BASE_DATA_URL = 'http://data.sourcepython.com'
+CHECKSUM_URL = f'{BASE_DATA_URL}/checksum.txt'
+DATA_URL = f'{BASE_DATA_URL}/source-python-data.zip'
+
+BASE_DOWNLOAD_URL = 'http://downloads.sourcepython.com'
+ARTIFACTS_URL = f'{BASE_DOWNLOAD_URL}/release/artifacts.txt'
+UPDATING_URL = f'{BASE_DOWNLOAD_URL}/release/artifacts.txt'
+
 DEFAULT_TIMEOUT = 3
 
 #: Indicates, whether an update is in progress (stage 1 has been applied).
@@ -140,9 +144,7 @@ def get_build_artifacts(timeout=DEFAULT_TIMEOUT):
     """
     update_logger.log_debug('Getting artifacts...')
     with urlopen(ARTIFACTS_URL, timeout=timeout) as url:
-        data = json.loads(url.read())
-        for d in data['artifacts']:
-            yield d['relativePath']
+        return url.read().decode('utf-8').split('\n')
 
 def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
     """Get the latest Source.Python download URL for a specific game.
@@ -157,7 +159,7 @@ def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
     """
     for relative_path in get_build_artifacts(timeout):
         if f'-{game}-' in relative_path:
-            return BASE_DOWNLOAD_URL + relative_path
+            return f'{BASE_DOWNLOAD_URL}/{relative_path}'
 
     raise ValueError(f'Unable to find a download URL for game "{game}".')
 
