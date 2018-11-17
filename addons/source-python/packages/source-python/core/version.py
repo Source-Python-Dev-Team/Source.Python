@@ -18,7 +18,6 @@ from cvars.public import PublicConVar
 __all__ = ('VERSION',
            'GIT_COMMIT',
            'get_last_successful_build_number',
-           'is_download_page_updating',
            'is_unversioned',
            )
 
@@ -34,8 +33,6 @@ GIT_COMMIT = None
 
 LAST_SUCCESSFUL_BUILD_NUMBER_URL = (
     'http://downloads.sourcepython.com/release/version.txt')
-
-UPDATING_STATUS_URL = 'http://downloads.sourcepython.com/updating.txt'
 
 
 # =============================================================================
@@ -53,19 +50,9 @@ def get_last_successful_build_number(timeout=3):
     :param float timeout:
         Number of seconds that need to pass until a timeout occurs.
     :rtype: int
-    :raise urllib.error.HTTPError:
-        Raised if the download page is currently being updated.
     """
     with urlopen(LAST_SUCCESSFUL_BUILD_NUMBER_URL, timeout=timeout) as url:
         return int(url.read().decode('utf-8'))
-
-def is_download_page_updating(timeout=3):
-    """Return ``True`` if the download page is currently being updated.
-
-    :rtype: bool
-    """
-    with urlopen(UPDATING_STATUS_URL, timeout=timeout) as url:
-        return url.read().decode('utf-8') == '1'
 
 def is_unversioned():
     """Return ``True`` if this Source.Python installation has no version.
