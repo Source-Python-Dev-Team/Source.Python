@@ -32,7 +32,7 @@ VERSION = None
 GIT_COMMIT = None
 
 LAST_SUCCESSFUL_BUILD_NUMBER_URL = (
-    'http://downloads.sourcepython.com/release/version.txt')
+    'http://downloads.sourcepython.com/version.txt')
 
 
 # =============================================================================
