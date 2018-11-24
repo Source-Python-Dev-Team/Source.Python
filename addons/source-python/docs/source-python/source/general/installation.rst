@@ -30,7 +30,7 @@ Installation steps
 
 1. Download the latest Source.Python version from our `buildbot <http://builds.sourcepython.com/job/Source.Python/lastSuccessfulBuild/>`_.
 2. Extract the archive in your server's game folder. E.g. ``../my_servers/css/cstrike/``
-3. Start/restart your server and validate the installation by typing ``sp info`` into the server console. It should print something like this:
+3. Start/restart your server and validate the installation by typing ``sp info`` into the server console (use ``rcon`` if you are not working directly on your server). It should print something like this:
 
 .. code-block:: none
 

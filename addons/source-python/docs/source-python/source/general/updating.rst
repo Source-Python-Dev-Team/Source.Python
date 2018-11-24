@@ -14,4 +14,4 @@ Manually
 Automatically
 -------------
 
-1. Run the command ``sp update`` and follow the instructions printed to the console (mostly, it's just a restart).
+1. Run the command ``sp update`` in your server console (use ``rcon`` if you are not working directly on your server) and follow the instructions printed to the console (mostly, it's just a restart).
