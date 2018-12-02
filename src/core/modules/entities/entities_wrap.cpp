@@ -32,6 +32,7 @@
 #include "utilities/baseentity.h"
 #include "game/shared/entitylist_base.h"
 #include "game/server/entitylist.h"
+#include "game/server/entityoutput.h"
 
 #include "modules/memory/memory_tools.h"
 #include "export_main.h"
@@ -58,6 +59,7 @@ void export_check_transmit_info(scope);
 void export_baseentity_generator(scope);
 void export_server_class_generator(scope);
 void export_collideable(scope);
+void export_event_action(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -79,6 +81,7 @@ DECLARE_SP_MODULE(_entities)
 	export_baseentity_generator(_entities);
 	export_server_class_generator(_entities);
 	export_collideable(_entities);
+	export_event_action(_entities);
 }
 
 
@@ -610,4 +613,54 @@ void export_collideable(scope _entities)
 	);
 
 	Collideable ADD_MEM_TOOLS(ICollideable);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CEventAction.
+//-----------------------------------------------------------------------------
+void export_event_action(scope _entities)
+{
+	class_<CEventAction, boost::noncopyable> EventAction("EventAction", no_init);
+
+	EventAction.add_property(
+		"target",
+		&EventActionExt::get_target, &EventActionExt::set_target,
+		"Name of the entity(s) to cause the action in."
+	);
+
+	EventAction.add_property(
+		"target_input",
+		&EventActionExt::get_target_input, &EventActionExt::set_target_input,
+		"The name of the action to fire."
+	);
+
+	EventAction.add_property(
+		"parameter",
+		&EventActionExt::get_parameter, &EventActionExt::set_parameter,
+		"Parameter to send, 0 if none."
+	);
+
+	EventAction.def_readwrite("delay",
+		&CEventAction::m_flDelay,
+		"The number of seconds to wait before firing the action."
+	);
+
+	EventAction.def_readwrite("times_to_fire",
+		&CEventAction::m_nTimesToFire,
+		"The number of times to fire this event, or EVENT_FIRE_ALWAYS."
+	);
+
+	EventAction.def_readwrite("id_stamp",
+		&CEventAction::m_iIDStamp,
+		"Unique identifier stamp."
+	);
+
+	EventAction.add_property(
+		"next",
+		make_getter(&CEventAction::m_pNext, reference_existing_object_policy()),
+		"The next action in the linked list."
+	);
+
+	EventAction ADD_MEM_TOOLS(CEventAction);
 }

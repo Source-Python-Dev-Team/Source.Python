@@ -153,13 +153,13 @@ def setup_data():
         'BaseClient',
         GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
 
-    import listeners
-    listeners.BaseEntityOutput = manager.create_type_from_dict(
+    import entities
+    entities.BaseEntityOutput = manager.create_type_from_dict(
         'BaseEntityOutput',
         GameConfigObj(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
     try:
-        _fire_output = listeners.BaseEntityOutput.fire_output
+        _fire_output = entities.BaseEntityOutput.fire_output
     except AttributeError:
         from warnings import warn
         warn(
@@ -167,6 +167,7 @@ def setup_data():
             'OnEntityOutput listener will not fire.'
         )
     else:
+        import listeners
         _fire_output.add_pre_hook(listeners._pre_fire_output)
 
 
