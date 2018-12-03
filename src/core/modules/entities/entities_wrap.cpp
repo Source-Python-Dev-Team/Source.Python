@@ -60,6 +60,8 @@ void export_baseentity_generator(scope);
 void export_server_class_generator(scope);
 void export_collideable(scope);
 void export_event_action(scope);
+void export_event_action_generator(scope);
+void export_base_entity_output(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -82,6 +84,8 @@ DECLARE_SP_MODULE(_entities)
 	export_server_class_generator(_entities);
 	export_collideable(_entities);
 	export_event_action(_entities);
+	export_event_action_generator(_entities);
+	export_base_entity_output(_entities);
 }
 
 
@@ -663,4 +667,57 @@ void export_event_action(scope _entities)
 	);
 
 	EventAction ADD_MEM_TOOLS(CEventAction);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CEventActionGenerator.
+//-----------------------------------------------------------------------------
+void export_event_action_generator(scope _entities)
+{
+	class_<CEventActionGenerator>("EventActionGenerator", init<CEventAction *>())
+
+		.def("__iter__",
+			&CEventActionGenerator::iter,
+			"Returns the iterable object."
+		)
+
+		.def("__next__",
+			&CEventActionGenerator::next,
+			"Returns the next valid instance.",
+			reference_existing_object_policy()
+		)
+	;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CBaseEntityOutput.
+//-----------------------------------------------------------------------------
+void export_base_entity_output(scope _entities)
+{
+	class_<CBaseEntityOutputWrapper, boost::noncopyable> BaseEntityOutput("BaseEntityOutput", no_init);
+
+	BaseEntityOutput.def_readwrite(
+		"variant",
+		&CBaseEntityOutputWrapper::m_Value,
+		"Current variant value for this output."
+	);
+
+	BaseEntityOutput.add_property(
+		"event_action",
+		make_function(&CBaseEntityOutputWrapper::get_event_action, reference_existing_object_policy()),
+		&CBaseEntityOutputWrapper::set_event_action,
+		"Linked list of registered event actions for this output."
+	);
+
+	BaseEntityOutput.add_property(
+		"event_actions",
+		&CBaseEntityOutputWrapper::get_event_actions,
+		"Returns a generator iterating over registered event actions for this output."
+	);
+
+	BaseEntityOutput.NOT_IMPLEMENTED("fire_output");
+
+	BaseEntityOutput ADD_MEM_TOOLS(CBaseEntityOutputWrapper);
 }

@@ -95,6 +95,31 @@ CBaseEntity* CBaseEntityWrapper::find_or_create(const char* name)
 	return entity;
 }
 
+CBaseEntityOutputWrapper* CBaseEntityWrapper::get_output(const char* name)
+{
+	// TODO: Caching?
+	datamap_t* pDatamap = GetDataDescMap();
+	while (pDatamap)
+	{
+		for (int iCurrentIndex=0; iCurrentIndex < pDatamap->dataNumFields; ++iCurrentIndex)
+		{
+			typedescription_t& pCurrentDataDesc = pDatamap->dataDesc[iCurrentIndex];
+			if (pCurrentDataDesc.externalName && strcmp(name, pCurrentDataDesc.externalName) == 0)
+			{
+				if (!(pCurrentDataDesc.flags & FTYPEDESC_OUTPUT))
+					BOOST_RAISE_EXCEPTION(PyExc_TypeError, "'%s' is not a valid output.", name);
+
+				return (CBaseEntityOutputWrapper *)((unsigned long)this + TypeDescriptionExt::get_offset(pCurrentDataDesc));
+			}
+		}
+
+		pDatamap = pDatamap->baseMap;
+	}
+
+	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve offset of '%s'.", name);
+	return NULL;
+}
+
 IEntityFactory* CBaseEntityWrapper::get_factory(const char* name)
 {
 	IEntityFactory* pFactory = GetEntityFactoryDictionary()->FindFactory(name);

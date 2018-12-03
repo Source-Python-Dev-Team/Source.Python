@@ -33,6 +33,7 @@
 #include "modules/memory/memory_tools.h"
 #include "utilities/conversions.h"
 #include "entities_entity.h"
+#include "entities_generator.h"
 
 // SDK
 #include "edict.h"
@@ -244,6 +245,33 @@ public:
     {
         pEventAction->m_iParameter = MAKE_STRING(szParameter);
     }
+};
+
+
+//-----------------------------------------------------------------------------
+// CBaseEntityOutput wrapper class.
+//-----------------------------------------------------------------------------
+class CBaseEntityOutputWrapper: public CBaseEntityOutput
+{
+public:
+	static CEventAction *get_event_action(CBaseEntityOutputWrapper *pBaseEntityOutput)
+	{
+		return pBaseEntityOutput->m_ActionList;
+	}
+
+	static void set_event_action(CBaseEntityOutputWrapper *pBaseEntityOutput, CEventAction *pEventAction)
+	{
+		pBaseEntityOutput->m_ActionList = pEventAction;
+	}
+
+	static object get_event_actions(CBaseEntityOutputWrapper *pBaseEntityOutput)
+	{
+		return import("_entities").attr("EventActionGenerator")(boost::ref(pBaseEntityOutput->m_ActionList));
+	}
+
+public:
+	using CBaseEntityOutput::m_Value;
+	using CBaseEntityOutput::m_ActionList;
 };
 
 #endif // _ENTITIES_H

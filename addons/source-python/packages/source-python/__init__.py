@@ -154,12 +154,15 @@ def setup_data():
         GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
 
     import entities
-    entities.BaseEntityOutput = manager.create_type_from_dict(
+    entities._BaseEntityOutput = manager.create_type_from_dict(
         'BaseEntityOutput',
         GameConfigObj(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
     try:
-        _fire_output = entities.BaseEntityOutput.fire_output
+        _fire_output = entities._BaseEntityOutput.fire_output
+
+        from _entities import BaseEntityOutput
+        BaseEntityOutput.fire_output = _fire_output
     except AttributeError:
         from warnings import warn
         warn(

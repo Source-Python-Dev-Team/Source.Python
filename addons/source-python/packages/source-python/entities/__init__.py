@@ -17,12 +17,14 @@ from loggers import _sp_logger
 #   Entities
 from _entities import BaseEntityGenerator
 from _entities import BaseEntityHandle
+from _entities import BaseEntityOutput
 from _entities import CheckTransmitInfo
 from _entities import Collideable
 from _entities import Edict
 from _entities import EntityGenerator
 from _entities import EntityListener
 from _entities import EventAction
+from _entities import EventActionGenerator
 from _entities import GlobalEntityList
 from _entities import HandleEntity
 from _entities import ServerClassGenerator
@@ -44,6 +46,7 @@ __all__ = ('BaseEntityGenerator',
            'EntityGenerator',
            'EntityListener',
            'EventAction',
+           'EventActionGenerator',
            'GlobalEntityList',
            'HandleEntity',
            'ServerClassGenerator',
