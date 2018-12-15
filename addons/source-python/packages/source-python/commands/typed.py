@@ -466,11 +466,13 @@ class CommandParser(Store):
 class CommandInfo(object):
     """Stores command information for typed commands."""
 
-    def __init__(self, command, index=None, team_only=None):
+    def __init__(self, command, typed_command_cls, index=None, team_only=None):
         """Initializes the instance.
 
         :param Command command:
             The actual Command instance.
+        :param _TypedCommand typed_command_cls:
+            Command this instance belongs to.
         :param int index:
             The index of the player that issued the command. None, if it's a
             server command.
@@ -479,8 +481,17 @@ class CommandInfo(object):
             it's a server or client command.
         """
         self.command = command
+        self.typed_command_cls = typed_command_cls
         self.index = index
         self.team_only = team_only
+
+    def reply(self, msg):
+        """Reply to the command issuer.
+
+        :param str msg:
+            Message to send.
+        """
+        self.typed_command_cls.send_message(self, msg)
 
 
 # We can't integrate this into SayCommand, ServerCommand and ClientCommand,
@@ -547,13 +558,13 @@ class _TypedCommand(AutoUnload):
         Parse the command, clean its arguments and execute the callback.
         """
         # TODO: Translations!
-        command_info = CommandInfo(command, *args)
+        command_info = CommandInfo(command, cls, *args)
         try:
             command_node, args = cls.parser.parse_command(
                 command_info.command)
             result = cls.on_clean_command(command_info, command_node, args)
         except ValidationError as e:
-            cls.send_message(command_info, e.message)
+            command_info.reply(e.message)
         else:
             return result
 
