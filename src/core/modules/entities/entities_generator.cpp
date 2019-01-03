@@ -33,6 +33,7 @@
 #include "utilities/conversions.h"
 #include "toolframework/itoolentity.h"
 #include "eiface.h"
+#include "game/server/entityoutput.h"
 
 
 //-----------------------------------------------------------------------------
@@ -230,5 +231,31 @@ ServerClass* CServerClassGenerator::getNext()
 
 	ServerClass* result = m_pCurrentServerClass;
 	m_pCurrentServerClass = m_pCurrentServerClass->m_pNext;
+	return result;
+}
+
+
+// ----------------------------------------------------------------------------
+// CEventActionGenerator
+// ----------------------------------------------------------------------------
+CEventActionGenerator::CEventActionGenerator( PyObject* self, CEventAction *pFirstEventAction ):
+	IPythonGenerator<CEventAction>(self)
+{
+	m_pCurrentEventAction = pFirstEventAction;
+}
+
+CEventActionGenerator::CEventActionGenerator( PyObject* self, const CEventActionGenerator& rhs ):
+	IPythonGenerator<CEventAction>(self)
+{
+	m_pCurrentEventAction = rhs.m_pCurrentEventAction;
+}
+
+CEventAction* CEventActionGenerator::getNext()
+{
+	if (!m_pCurrentEventAction)
+		return NULL;
+
+	CEventAction* result = m_pCurrentEventAction;
+	m_pCurrentEventAction = m_pCurrentEventAction->m_pNext;
 	return result;
 }

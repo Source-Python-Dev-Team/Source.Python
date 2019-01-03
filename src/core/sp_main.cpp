@@ -240,8 +240,8 @@ public:
 			// Restore the old logging state before SP has been loaded
 			LoggingSystem_PopLoggingState(false);
 
-			// Resend the log message. Out listener won't get called anymore
-			LoggingSystem_Log(
+			// Resend the log message. Our listener won't get called anymore
+			LoggingSystem_LogDirect(
 					pContext->m_ChannelID,
 					pContext->m_Severity,
 					pContext->m_Color,

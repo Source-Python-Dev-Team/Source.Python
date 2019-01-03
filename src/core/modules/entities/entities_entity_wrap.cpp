@@ -32,6 +32,7 @@
 #include "utilities/conversions.h"
 #include "entities_entity.h"
 #include "modules/physics/physics.h"
+#include "entities.h"
 
 
 //-----------------------------------------------------------------------------
@@ -449,6 +450,14 @@ void export_base_entity(scope _entity)
 		make_function(&CBaseEntityWrapper::GetDataDescMap, reference_existing_object_policy()),
 		"The data map of this entity (read-only).\n\n"
 		":rtype: DataMap"
+	);
+
+	BaseEntity.def("get_output",
+		&CBaseEntityWrapper::get_output,
+		"Return the output instance matching the given name.\n\n"
+		":param str name: The name of the output.\n"
+		":rtype: BaseEntityOutput",
+		reference_existing_object_policy()
 	);
 
 	BaseEntity.add_property("factory",

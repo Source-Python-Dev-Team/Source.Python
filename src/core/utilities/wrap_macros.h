@@ -68,6 +68,12 @@ inline void* GetFuncPtr(Function func)
 		.def(GET_PTR_NAME, &GetFuncPtr<cpp_name>, return_by_value_policy()) \
 	;
 
+#define EXPOSE_FUNCTION_TYPEDEF_RET(cpp_name, py_name, policy) \
+	class_<cpp_name>(py_name, no_init) \
+		.def("__call__", &cpp_name::operator(), policy) \
+		.def(GET_PTR_NAME, &GetFuncPtr<cpp_name>, return_by_value_policy()) \
+	;
+
 //---------------------------------------------------------------------------------
 // Surround boost python statements with this macro in order to handle exceptions.
 //---------------------------------------------------------------------------------

@@ -60,4 +60,10 @@ object queue_server_command(tuple args, dict kwargs);
 // Example: queue_command_string('blah hi 123 4.5')
 void queue_command_string(const char* szCommand);
 
+// Example: insert_server_command('echo', 'hi', 123, 4.5)
+object insert_server_command(tuple args, dict kwargs);
+
+// Example: insert_command_string('blah hi 123 4.5')
+void insert_command_string(const char* szCommand);
+
 #endif // _ENGINES_SERVER_H

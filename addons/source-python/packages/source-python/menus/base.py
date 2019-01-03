@@ -386,8 +386,8 @@ class _BaseOption(_MenuData):
         :param str text: The text that should be displayed.
         :param value: The value that should be passed to the menu's
             selection callback.
-        :param bool hightlight: Set this to true if the text should be
-            hightlighted.
+        :param bool highlight: Set this to true if the text should be
+            highlighted.
         :param bool selectable: Set this to True if the option should be
             selectable.
         """

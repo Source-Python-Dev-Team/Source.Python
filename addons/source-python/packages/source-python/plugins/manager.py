@@ -49,6 +49,7 @@ from _plugins import server_plugin_manager
 # =============================================================================
 __all__ = ('PluginManager',
            'ServerPluginManager',
+           'plugin_manager',
            'server_plugin_manager'
            )
 

@@ -17,7 +17,7 @@ from core import GAME_NAME
 #   Engines
 from engines.server import server
 from engines.server import engine_server
-from engines.server import execute_server_command
+from engines.server import queue_server_command
 from engines.server import server_game_dll
 from engines.sound import Attenuation
 from engines.sound import Channel
@@ -687,7 +687,7 @@ class Player(Entity):
         if message:
             self.client.disconnect(message)
         else:
-            execute_server_command('kickid', self.userid, message)
+            queue_server_command('kickid', self.userid, message)
 
     def ban(self, duration=0, kick=True, write_ban=True):
         """Ban a player from the server.
@@ -699,10 +699,10 @@ class Player(Entity):
         :param bool write_ban:
             If ``True``, the ban will be written to ``cfg/banned_users.cfg``.
         """
-        execute_server_command(
+        queue_server_command(
             'banid', duration, self.userid, 'kick' if kick else '')
         if write_ban:
-            execute_server_command('writeid')
+            queue_server_command('writeid')
 
     def play_sound(
             self, sample, volume=VOL_NORM, attenuation=Attenuation.NONE,

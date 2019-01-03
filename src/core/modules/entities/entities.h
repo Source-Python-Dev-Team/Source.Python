@@ -33,6 +33,7 @@
 #include "modules/memory/memory_tools.h"
 #include "utilities/conversions.h"
 #include "entities_entity.h"
+#include "entities_generator.h"
 
 // SDK
 #include "edict.h"
@@ -44,6 +45,7 @@
 #include "isaverestore.h"
 #include "datamap.h"
 #include "game/shared/takedamageinfo.h"
+#include "game/server/entityoutput.h"
 
 
 //-----------------------------------------------------------------------------
@@ -207,5 +209,69 @@ public:
 	}
 };
 
+
+//-----------------------------------------------------------------------------
+// CEventAction extension class.
+//-----------------------------------------------------------------------------
+class EventActionExt
+{
+public:
+    static const char *get_target(CEventAction *pEventAction)
+    {
+        return STRING(pEventAction->m_iTarget);
+    }
+    
+    static void set_target(CEventAction *pEventAction, const char *szTarget)
+    {
+        pEventAction->m_iTarget = MAKE_STRING(szTarget);
+    }
+
+    static const char *get_target_input(CEventAction *pEventAction)
+    {
+        return STRING(pEventAction->m_iTargetInput);
+    }
+
+    static void set_target_input(CEventAction *pEventAction, const char *szTargetInput)
+    {
+        pEventAction->m_iTargetInput = MAKE_STRING(szTargetInput);
+    }
+
+    static const char *get_parameter(CEventAction *pEventAction)
+    {
+        return STRING(pEventAction->m_iParameter);
+    }
+    
+    static void set_parameter(CEventAction *pEventAction, const char *szParameter)
+    {
+        pEventAction->m_iParameter = MAKE_STRING(szParameter);
+    }
+};
+
+
+//-----------------------------------------------------------------------------
+// CBaseEntityOutput wrapper class.
+//-----------------------------------------------------------------------------
+class CBaseEntityOutputWrapper: public CBaseEntityOutput
+{
+public:
+	static CEventAction *get_event_action(CBaseEntityOutputWrapper *pBaseEntityOutput)
+	{
+		return pBaseEntityOutput->m_ActionList;
+	}
+
+	static void set_event_action(CBaseEntityOutputWrapper *pBaseEntityOutput, CEventAction *pEventAction)
+	{
+		pBaseEntityOutput->m_ActionList = pEventAction;
+	}
+
+	static object get_event_actions(CBaseEntityOutputWrapper *pBaseEntityOutput)
+	{
+		return import("_entities").attr("EventActionGenerator")(boost::ref(pBaseEntityOutput->m_ActionList));
+	}
+
+public:
+	using CBaseEntityOutput::m_Value;
+	using CBaseEntityOutput::m_ActionList;
+};
 
 #endif // _ENTITIES_H
