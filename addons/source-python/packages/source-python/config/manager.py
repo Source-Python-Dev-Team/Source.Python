@@ -50,7 +50,8 @@ class ConfigManager(object):
     """Config Management class used to create a config file."""
 
     def __init__(
-            self, filepath, cvar_prefix='', indention=3, max_line_length=79):
+            self, filepath, cvar_prefix='', indention=3,
+            max_line_length=79, encoding='utf-8'):
         """Initialized the configuration manager.
 
         :param str filepath:
@@ -75,6 +76,7 @@ class ConfigManager(object):
         self._cvar_prefix = cvar_prefix
         self._indention = indention
         self._max_line_length = max_line_length
+        self._encoding = encoding
 
         # Store the header and separator
         self.header = ''
@@ -263,7 +265,7 @@ class ConfigManager(object):
             self.fullpath.parent.makedirs()
 
         # Open/close the file to write to it
-        with self.fullpath.open('w') as open_file:
+        with self.fullpath.open('w', encoding=self._encoding) as open_file:
 
             # Get the number of spaces to indent after //
             spaces = ' ' * (self.indention - 2)
@@ -329,7 +331,7 @@ class ConfigManager(object):
                     self.fullpath))
 
         # Open/close the file
-        with self.fullpath.open() as open_file:
+        with self.fullpath.open(encoding=self._encoding) as open_file:
 
             # Loop through all lines in the file
             for line in open_file.readlines():
@@ -385,7 +387,7 @@ class ConfigManager(object):
             return _old_config
 
         # Open/close the file
-        with self.fullpath.open() as open_file:
+        with self.fullpath.open(encoding=self._encoding) as open_file:
 
             # Get all lines from the file
             _all_lines = [line.strip() for line in open_file.readlines()]

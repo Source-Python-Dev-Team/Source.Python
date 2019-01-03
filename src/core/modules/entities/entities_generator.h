@@ -35,6 +35,7 @@
 #include "utilities/baseentity.h"
 #include "entities_entity.h"
 #include "eiface.h"
+#include "game/server/entityoutput.h"
 
 // ----------------------------------------------------------------------------
 // Forward declaration.
@@ -111,5 +112,25 @@ private:
 };
 
 BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CServerClassGenerator)
+
+
+// ----------------------------------------------------------------------------
+// CEventActionGenerator
+// ----------------------------------------------------------------------------
+class CEventActionGenerator: public IPythonGenerator<CEventAction>
+{
+public:
+	CEventActionGenerator(PyObject* self, CEventAction *pFirstEventAction);
+	CEventActionGenerator(PyObject* self, const CEventActionGenerator& rhs);
+	virtual ~CEventActionGenerator() {}
+
+protected:
+	virtual CEventAction* getNext();
+
+private:
+	CEventAction* m_pCurrentEventAction;
+};
+
+BOOST_SPECIALIZE_HAS_BACK_REFERENCE(CEventActionGenerator)
 
 #endif // _ENTITIES_GENERATOR_H

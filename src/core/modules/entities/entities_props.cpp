@@ -147,6 +147,17 @@ BoostSendVarProxyFn SendPropSharedExt::get_proxy_function(SendProp *pSendProp)
 	return BoostSendVarProxyFn(pSendProp->GetProxyFn());
 }
 
+BoostDataTableProxyFn SendPropSharedExt::get_data_table_proxy_function(SendProp *pSendProp)
+{
+	if (pSendProp->IsExcludeProp())
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is excluded.", pSendProp->GetName());
+
+	if (pSendProp->GetType() != DPT_DataTable)
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is not a DataTable.", pSendProp->GetName());
+
+	return BoostDataTableProxyFn(pSendProp->GetDataTableProxyFn());
+}
+
 
 // ============================================================================
 // >> SendPropVariantExt

@@ -48,6 +48,7 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 class CPointer;
 class IPhysicsObjectWrapper;
+class CBaseEntityOutputWrapper;
 
 
 //-----------------------------------------------------------------------------
@@ -98,6 +99,7 @@ public:
 	static CBaseEntity* find(const char* name);
 	static CBaseEntity* find_or_create(const char* name);
 	
+	CBaseEntityOutputWrapper* get_output(const char* name);
 	static IEntityFactory* get_factory(const char* name);
 	IEntityFactory* get_factory();
 	void remove();

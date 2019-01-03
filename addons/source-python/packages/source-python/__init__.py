@@ -94,7 +94,6 @@ def load():
     setup_auth()
     setup_user_settings()
     setup_entities_listener()
-    setup_run_command_listener()
     setup_versioning()
     setup_sqlite()
 
@@ -154,13 +153,16 @@ def setup_data():
         'BaseClient',
         GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
 
-    import listeners
-    listeners.BaseEntityOutput = manager.create_type_from_dict(
+    import entities
+    entities._BaseEntityOutput = manager.create_type_from_dict(
         'BaseEntityOutput',
         GameConfigObj(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
     try:
-        _fire_output = listeners.BaseEntityOutput.fire_output
+        _fire_output = entities._BaseEntityOutput.fire_output
+
+        from _entities import BaseEntityOutput
+        BaseEntityOutput.fire_output = _fire_output
     except AttributeError:
         from warnings import warn
         warn(
@@ -168,6 +170,7 @@ def setup_data():
             'OnEntityOutput listener will not fire.'
         )
     else:
+        import listeners
         _fire_output.add_pre_hook(listeners._pre_fire_output)
 
 
@@ -405,17 +408,6 @@ def remove_entities_listener():
     with suppress(NameError):
         manager.get_global_pointer('GlobalEntityList').remove_entity_listener(
             _sp_plugin)
-
-
-# =============================================================================
-# >> RUN COMMAND LISTENER
-# =============================================================================
-def setup_run_command_listener():
-    """Set up the run command listener."""
-    _sp_logger.log_debug('Setting up run command listener...')
-
-    # This is done here to fix a cyclic import
-    import listeners._run_command
 
 
 # =============================================================================

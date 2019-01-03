@@ -7,4 +7,4 @@
 # Set the engine version.
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "gmod")
-add_definitions(-DENGINE_GMOD)
+add_definitions(-DENGINE_GMOD -DENGINE_BRANCH_GMOD)

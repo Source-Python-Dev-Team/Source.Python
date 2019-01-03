@@ -37,7 +37,8 @@ from messages import HudDestination
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('SUPPORTED_KINDS',
+__all__ = ('PRIVATE_COMMAND_PREFIX',
+           'SUPPORTED_KINDS',
            'ArgumentError',
            'ArgumentNumberMismatch',
            'CommandInfo',
@@ -68,6 +69,8 @@ SUPPORTED_KINDS = (
     Parameter.POSITIONAL_OR_KEYWORD,
     Parameter.VAR_POSITIONAL,
 )
+
+PRIVATE_COMMAND_PREFIX = '/'
 
 
 # =============================================================================
@@ -466,11 +469,13 @@ class CommandParser(Store):
 class CommandInfo(object):
     """Stores command information for typed commands."""
 
-    def __init__(self, command, index=None, team_only=None):
+    def __init__(self, command, typed_command_cls, index=None, team_only=None):
         """Initializes the instance.
 
         :param Command command:
             The actual Command instance.
+        :param _TypedCommand typed_command_cls:
+            Command this instance belongs to.
         :param int index:
             The index of the player that issued the command. None, if it's a
             server command.
@@ -479,8 +484,39 @@ class CommandInfo(object):
             it's a server or client command.
         """
         self.command = command
+        self.typed_command_cls = typed_command_cls
         self.index = index
         self.team_only = team_only
+
+    def reply(self, msg):
+        """Reply to the command issuer.
+
+        :param str msg:
+            Message to send.
+        """
+        self.typed_command_cls.send_message(self, msg)
+
+    def is_private_command(self):
+        """Return ``True`` if it's a private command.
+
+        :rtype: bool
+        """
+        return self.command[0].startswith(PRIVATE_COMMAND_PREFIX)
+
+    @property
+    def auto_command_return(self):
+        """Determine the probably most desired ``CommandReturn`` value.
+
+        For server commands it will always return ``CommandReturn.CONTINUE``.
+        Client commands will always use ``CommandReturn.BLOCK``. For say
+        commands it's determined by checking the prefix. If the command starts
+        with a slash (``/``) it's handled as a private command. Thus,
+        ``CommandReturn.BLOCK`` is returned. Otherwise
+        ``CommandReturn.CONTINUE`` is used.
+
+        :rtype: CommandReturn
+        """
+        return self.typed_command_cls.get_auto_command_return(self)
 
 
 # We can't integrate this into SayCommand, ServerCommand and ClientCommand,
@@ -547,14 +583,16 @@ class _TypedCommand(AutoUnload):
         Parse the command, clean its arguments and execute the callback.
         """
         # TODO: Translations!
-        command_info = CommandInfo(command, *args)
+        info = CommandInfo(command, cls, *args)
         try:
-            command_node, args = cls.parser.parse_command(
-                command_info.command)
-            result = cls.on_clean_command(command_info, command_node, args)
+            command_node, args = cls.parser.parse_command(info.command)
+            result = cls.on_clean_command(info, command_node, args)
         except ValidationError as e:
-            cls.send_message(command_info, e.message)
+            info.reply(e.message)
         else:
+            if result is None:
+                return info.auto_command_return
+
             return result
 
         return CommandReturn.CONTINUE
@@ -589,6 +627,14 @@ class _TypedCommand(AutoUnload):
         """Send a message."""
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
+    @classmethod
+    def get_auto_command_return(cls, info):
+        """Return the most desired ``CommandReturn`` value.
+
+        :rtype: CommandReturn
+        """
+        raise NotImplementedError('Needs to be implemented by a sub class.')
+
 
 class TypedServerCommand(_TypedCommand):
     """Decorator class to create typed server commands."""
@@ -599,6 +645,10 @@ class TypedServerCommand(_TypedCommand):
     @staticmethod
     def send_message(command_info, message):
         logger.log_message(message)
+
+    @classmethod
+    def get_auto_command_return(cls, info):
+        return CommandReturn.CONTINUE
 
 
 class _TypedPlayerCommand(_TypedCommand):
@@ -637,6 +687,10 @@ class TypedClientCommand(_TypedPlayerCommand):
     def send_message(command_info, message):
         TextMsg(message, HudDestination.CONSOLE).send(command_info.index)
 
+    @classmethod
+    def get_auto_command_return(cls, info):
+        return CommandReturn.BLOCK
+
 
 class TypedSayCommand(_TypedPlayerCommand):
     """Decorator class to create typed say commands."""
@@ -647,6 +701,13 @@ class TypedSayCommand(_TypedPlayerCommand):
     @staticmethod
     def send_message(command_info, message):
         SayText2(message).send(command_info.index)
+
+    @classmethod
+    def get_auto_command_return(cls, info):
+        if info.is_private_command():
+            return CommandReturn.BLOCK
+
+        return CommandReturn.CONTINUE
 
 
 # =============================================================================

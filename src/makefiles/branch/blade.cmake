@@ -7,4 +7,4 @@
 # Set the engine version.
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "blade")
-add_definitions(-DENGINE_BLADE)
+add_definitions(-DENGINE_BLADE -DENGINE_BRANCH_BLADE)

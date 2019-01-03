@@ -223,9 +223,9 @@ def get_public_ip():
 
     .. note::
 
-        This functions makes a call to http://ip.42.pl/raw to retrieve the public IP.
+        This functions makes a call to ``http://api.ipify.org`` to retrieve the public IP.
     """
-    return urlopen('http://ip.42.pl/raw').read().decode()
+    return urlopen('http://api.ipify.org/').read().decode()
 
 
 @contextmanager

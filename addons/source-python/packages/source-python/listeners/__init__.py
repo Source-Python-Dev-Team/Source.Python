@@ -66,6 +66,8 @@ from _listeners import on_query_cvar_value_finished_listener_manager
 from _listeners import on_server_activate_listener_manager
 from _listeners import on_tick_listener_manager
 from _listeners import on_server_output_listener_manager
+from _listeners import on_player_run_command_listener_manager
+from _listeners import on_button_state_changed_listener_manager
 
 
 # =============================================================================
@@ -137,6 +139,8 @@ __all__ = ('ButtonStatus',
            'on_tick_listener_manager',
            'on_version_update_listener_manager',
            'on_server_output_listener_manager',
+           'on_player_run_command_listener_manager',
+           'on_button_state_changed_listener_manager',
            )
 
 
@@ -153,8 +157,6 @@ on_plugin_unloaded_manager = ListenerManager()
 on_plugin_loading_manager = ListenerManager()
 on_plugin_unloading_manager = ListenerManager()
 on_level_end_listener_manager = ListenerManager()
-on_player_run_command_listener_manager = ListenerManager()
-on_button_state_changed_listener_manager = ListenerManager()
 on_entity_output_listener_manager = ListenerManager()
 
 _check_for_update = ConVar(

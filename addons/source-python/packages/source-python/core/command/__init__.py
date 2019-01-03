@@ -22,6 +22,9 @@ from commands.typed import TypedServerCommand
 from core import core_logger
 from core import create_checksum
 from core import SOURCE_ENGINE_BRANCH
+from core.update import do_full_update
+from core.version import get_last_successful_build_number
+from core.version import is_unversioned
 from core.version import VERSION
 from core.version import GIT_COMMIT
 #   Engines
@@ -157,6 +160,18 @@ def print_info(info):
         f'\nIMPORTANT: Please copy the full output.\n{sep}\n'
         f'Checksum      : {checksum}{result}\n{sep}\n')
 
+
+@core_command.server_sub_command(['update'])
+def update_sp(info):
+    """Update Source.Python to the latest version. A restart of the server is
+    required.
+    """
+    if not is_unversioned() and VERSION >= get_last_successful_build_number():
+        core_command_logger.log_message('No new version available.')
+        return
+        
+    do_full_update()
+    
 
 # =============================================================================
 # >> DESCRIPTION

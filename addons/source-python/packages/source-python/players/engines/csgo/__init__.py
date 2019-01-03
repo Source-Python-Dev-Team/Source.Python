@@ -17,6 +17,7 @@ from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.entities import EntityIter
 #   Memory
+from memory import NULL
 from memory import get_virtual_function
 from memory.hooks import PreHook
 #   Messages
@@ -77,8 +78,10 @@ class Player(_Player):
     def send_convar_value(self, cvar_name, value):
         """Send a convar value.
 
-        :param str cvar_name: Name of the convar.
-        :param str value: Value to send.
+        :param str cvar_name:
+            Name of the convar.
+        :param str value:
+            Value to send.
         """
         buffer_size = 256
         buffer = BitBufferWrite(buffer_size)
@@ -112,7 +115,8 @@ class Player(_Player):
     def get_projectile_ammo(self, projectile):
         """Return the player's ammo value of the given projectile.
 
-        :param str projectile: The name of the projectile to get the ammo of.
+        :param str projectile:
+            The name of the projectile to get the ammo of.
         :rtype: int
         """
         return self.get_property_ushort(
@@ -125,8 +129,10 @@ class Player(_Player):
     def set_projectile_ammo(self, projectile, value):
         """Set the player's ammo value for the given projectile.
 
-        :param str projectile: The name of the projectile to set the ammo of.
-        :param int value: The value to set the projectile's ammo to.
+        :param str projectile:
+            The name of the projectile to set the ammo of.
+        :param int value:
+            The value to set the projectile's ammo to.
         """
         self.set_property_ushort(
             '{base}{prop:03d}'.format(
@@ -139,7 +145,8 @@ class Player(_Player):
     def spawn(self, force=False):
         """Spawn the player.
 
-        :param bool force: Whether or not the spawn should be forced.
+        :param bool force:
+            Whether or not the spawn should be forced.
         """
         # Is the player spawnable?
         if not force and (self.team <= 1 or not self.dead):
@@ -149,10 +156,11 @@ class Player(_Player):
         self._spawn()
 
     @wrap_entity_mem_func
-    def give_named_item(self, item, sub_type=0, econ_item_view=None, unk=False):
+    def give_named_item(self, item, sub_type=0, econ_item_view=None, unk=False, unk2=NULL):
         """Give the player a named item."""
-        # TODO: What's the last argument for?
-        return [item, sub_type, econ_item_view, unk]
+        # TODO: What's the unk argument for?
+        # unk2 is a Vector (position)? Should do some tests...
+        return [item, sub_type, econ_item_view, unk, unk2]
 
 
 # =============================================================================

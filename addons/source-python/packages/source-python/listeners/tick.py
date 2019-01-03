@@ -87,7 +87,7 @@ class _DelayManager(list):
         :param Delay delay:
             The delay to add.
         """
-        bisect.insort_left(self, delay)
+        bisect.insort_right(self, delay)
 
 _delay_manager = _DelayManager()
 

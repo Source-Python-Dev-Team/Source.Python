@@ -1,9 +1,10 @@
 Getting started
 ===============
 
-If you are new to Source.Python this is the right place for you!
+If you would like to start developing server plugins with Source.Python this is
+the right place for you!
 
-In order to use Source.Python you need to install it on your game server. To
+In order to use Source.Python you first need to install it on your game server. To
 do so, please follow the instructions described :doc:`here <../general/installation>`.
 
 As soon as you have successfully installed Source.Python you can start writing
@@ -20,14 +21,14 @@ To do so, please create a directory in Source.Python's plugin directory
 (``../addons/source-python/plugins``). All plugins will be located in this
 directory and must have their own sub-directory. Give the new created
 directory an abitrary name (e.g. test1). Now, you need to create the actual
-plugin file. It must be named after its directory. So, if you have created a
+plugin file. It must be named like its directory. So, if you have created a
 ``test1`` directory, you have to create a ``test1.py`` in that directory.
 
 The first plugin should simply print a message to the server console, when the
 plugin has been loaded and another message when the plugin has been unloaded.
 You can easily do that by adding a ``load`` and an ``unload`` function to your
 plugin file. These two functions will be called by Source.Python when the
-plugin has been loaded or unloaded.
+plugin is loaded or unloaded.
 
 To print a message to the console you can use Python's
 `print <https://docs.python.org/3.4/library/functions.html#print>`_ function.
@@ -44,6 +45,14 @@ Your plugin should now look like this.
 
     def unload():
         print('Plugin has been unloaded successfully!')
+
+
+To load your plugin enter ``sp plugin load test1`` in your server console. To
+unload or reload it, you can use ``sp plugin reload test1`` or
+``sp plugin unload test1``.
+Source.Python plugins are not getting loaded automatically. Thus, you need to
+add the statement ``sp plugin load test1`` to your ``autoexec.cfg`` if you wish
+this behaviour.
 
 
 Modifying your first plugin
@@ -157,7 +166,7 @@ What's next?
 ------------
 
 You should definitely take a look at the :doc:`module tutorials section <module_tutorials>`.
-It contains detailed tutorials about Source.Python modules/packages.
+It contains detailed tutorials about some Source.Python modules/packages.
 
 Moreover, you should take a look at the :ref:`modindex`. It's a list of all
 Source.Python modules/packages and contains the API documentation.

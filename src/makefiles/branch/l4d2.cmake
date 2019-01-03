@@ -7,4 +7,4 @@
 # Set the engine version.
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "l4d2")
-add_definitions(-DENGINE_LEFT4DEAD2)
+add_definitions(-DENGINE_LEFT4DEAD2 -DENGINE_BRANCH_L4D2)

@@ -115,7 +115,12 @@ void export_mrecipientfilter(scope _recipients)
 			"Return True if the given index is in the recipient filter.",
 			args("index")
 		)
-			
+		
+		.def_readwrite("reliable",
+			&MRecipientFilter::m_bReliable,
+			"Get/set whether or not the filter is reliable.\n\n"
+			":rtype: bool"
+		)
 
 		ADD_MEM_TOOLS(MRecipientFilter)
 	;
