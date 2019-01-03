@@ -49,6 +49,11 @@ public:
 		delete szMapName;
 		return result;
 	}
+
+	static const CSteamID* GetClientSteamID(IVEngineServer* pEngine, edict_t *pPlayerEdict, bool bValidatedIDOnly=false)
+	{
+		return pEngine->GetClientSteamID(pPlayerEdict);
+	}
 };
 
 

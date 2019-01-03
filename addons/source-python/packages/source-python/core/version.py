@@ -32,8 +32,7 @@ VERSION = None
 GIT_COMMIT = None
 
 LAST_SUCCESSFUL_BUILD_NUMBER_URL = (
-    'http://builds.sourcepython.com/job/Source.Python' +
-    '/api/xml?xpath=/freeStyleProject/lastSuccessfulBuild/number')
+    'http://downloads.sourcepython.com/version.txt')
 
 
 # =============================================================================
@@ -53,9 +52,7 @@ def get_last_successful_build_number(timeout=3):
     :rtype: int
     """
     with urlopen(LAST_SUCCESSFUL_BUILD_NUMBER_URL, timeout=timeout) as url:
-        # Remove the <number></number> tags, so we just have the build number
-        return int(url.read()[8:-9])
-
+        return int(url.read().decode('utf-8'))
 
 def is_unversioned():
     """Return ``True`` if this Source.Python installation has no version.

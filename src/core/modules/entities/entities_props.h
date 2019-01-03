@@ -41,6 +41,7 @@
 // typedefs
 //-----------------------------------------------------------------------------
 BOOST_FUNCTION_TYPEDEF(void (const SendProp*, const void*, const void*, DVariant*, int, int), BoostSendVarProxyFn)
+BOOST_FUNCTION_TYPEDEF(void* (const SendProp*, const void*, const void*, CSendProxyRecipients*, int), BoostDataTableProxyFn)
 
 
 //-----------------------------------------------------------------------------
@@ -67,6 +68,7 @@ class SendPropSharedExt
 {
 public:
 	static BoostSendVarProxyFn get_proxy_function(SendProp *pSendProp);
+	static BoostDataTableProxyFn get_data_table_proxy_function(SendProp *pSendProp);
 };
 
 

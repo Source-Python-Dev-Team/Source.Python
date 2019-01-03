@@ -117,6 +117,7 @@ void export_send_table(scope _props)
 void export_send_prop(scope _props)
 {
 	EXPOSE_FUNCTION_TYPEDEF(BoostSendVarProxyFn, "SendVarProxyFn")
+	EXPOSE_FUNCTION_TYPEDEF_RET(BoostDataTableProxyFn, "DataTableProxyFn", return_by_value_policy())
 
 	class_<SendProp, SendProp *, boost::noncopyable> SendProp_("SendProp", no_init);
 	
@@ -142,7 +143,10 @@ void export_send_prop(scope _props)
 	);
 	
 	SendProp_.add_property("offset", &SendProp::GetOffset);
+
+	// TODO: Rename proxy_function to send_var_proxy_function
 	SendProp_.add_property("proxy_function", &SendPropSharedExt::get_proxy_function);
+	SendProp_.add_property("data_table_proxy_function", &SendPropSharedExt::get_data_table_proxy_function);
 	
 	// CS:GO specific properties...
 	SendProp_.NOT_IMPLEMENTED_ATTR("priority");

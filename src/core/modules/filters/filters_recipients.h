@@ -108,7 +108,7 @@ public:
 	void RemoveAllPlayers();
 	bool HasRecipient(int iPlayer);
 
-private:
+public:
 	bool				m_bReliable;
 	bool				m_bInitMessage;
 #ifdef ENGINE_ORANGEBOX

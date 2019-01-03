@@ -14,11 +14,13 @@ include("makefiles/shared.cmake")
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LOADER_HEADERS
     loader/loader_main.h
+    loader/updater.h
     loader/definitions.h
 )
 
 Set(SOURCEPYTHON_LOADER_SOURCES
     loader/loader_main.cpp
+    loader/updater.cpp
 )
 
 Set(SOURCEPYTHON_LOADER_FILES
@@ -81,12 +83,14 @@ Set(SOURCEPYTHON_CORE_HEADERS
     core/sp_python.h
     core/sp_main.h
     core/export_main.h
+    core/sp_hooks.h
 )
 
 Set(SOURCEPYTHON_CORE_SOURCES
     core/sp_python.cpp
     core/sp_main.cpp
     core/export_main.cpp
+    core/sp_hooks.cpp
 )
 
 Set(SOURCEPYTHON_CORE_FILES

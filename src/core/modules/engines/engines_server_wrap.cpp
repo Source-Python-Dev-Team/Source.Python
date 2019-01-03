@@ -600,9 +600,12 @@ static void export_engine_server(scope _server)
 		*/
 
 		.def("get_client_steamid",
-			&IVEngineServer::GetClientSteamID,
-			"Returns the SteamID of the specified player. Returns NULL if the player isn't authenticated.",
-			args("client"),
+			&IVEngineServerExt::GetClientSteamID,
+			"Get the SteamID of the specified player.\n\n"
+			":param Edict client: The target player.\n"
+			":param bool validated_id_only: If ``True`` only validated IDs are returned. Otherwise it's ``None``. This parameter only has an effect in CS:GO.\n"
+			":rtype: SteamID",
+			(arg("client"), arg("validated_id_only")=false),
 			reference_existing_object_policy()
 		)
 
@@ -809,6 +812,7 @@ static void export_server_game_dll(scope _server)
 	// Class info...
 	BEGIN_CLASS_INFO(IServerGameDLL)
 		FUNCTION_INFO(GetGameDescription)
+		FUNCTION_INFO(LevelInit)
 	END_CLASS_INFO()
 
 	// Engine specific stuff...
@@ -1045,16 +1049,34 @@ static void export_functions(scope _server)
 		":param str command: Command to execute.\n"
 		":param *args: Additional arguments that should be passed to the command.\n"
 		":raise TypeError: Raised if keyword arguments have been passed.\n"
-		":raise ValueError: Raised if the command has not been found or if the command couldn't be tokenized.";
+		":raise ValueError: Raised if the server command was not found or if the command couldn't be tokenized.";
+
 
 	def("queue_server_command",
 		raw_function(queue_server_command, 1)
 	);
-	_server.attr("queue_server_command").attr("__doc__") = "Same as :func:`execute_server_command`, but does not execute the server command immediately. "
-		"Instead it is added to the server command queue. Thus, it can be executed with a little delay.";
+	_server.attr("queue_server_command").attr("__doc__") =
+		"Same as :func:`execute_server_command`, but does not execute the server command immediately. "
+		"Instead it is added to the server command queue. Thus, it can be executed with a little delay.\n\n"
+		":raise ValueError: Raised if the server command was not found.";
+
 
 	def("queue_command_string",
 		&queue_command_string,
-		"Adds a string to the server command queue. It's the same like typing something into the server console."
+		"Adds a string to the end of the server command queue. It's the same like typing something into the server console."
+	);
+
+
+	def("insert_server_command",
+		raw_function(insert_server_command, 1)
+	);
+	_server.attr("insert_server_command").attr("__doc__") =
+		"Same as :func:`queue_server_command`, but inserts the command at the beginning of the server command queue.\n\n"
+		":raise ValueError: Raised if the server command was not found.";
+
+
+	def("insert_command_string",
+		&insert_command_string,
+		"Same like :func:`queue_command_string`, but inserts the command at the beginning of the server command queue."
 	);
 }

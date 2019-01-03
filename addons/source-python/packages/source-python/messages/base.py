@@ -42,7 +42,12 @@ class AttrDict(dict):
 
 
 class UserMessageCreator(AttrDict):
-    """Provide an easy interface to create user messages."""
+    """Provide an easy interface to create user messages.
+
+    :attr bool reliable: Whether to send message using reliable channel.
+    """
+
+    reliable = False
 
     def __init__(self, **kwargs):
         """Initialize the usermessage creator.
@@ -81,6 +86,7 @@ class UserMessageCreator(AttrDict):
         :param AttrDict translated_kwargs: The translated arguments.
         """
         recipients = RecipientFilter(*player_indexes)
+        recipients.reliable = self.reliable
         user_message = UserMessage(recipients, self.message_name)
 
         if user_message.is_protobuf():
@@ -206,6 +212,7 @@ class ShowMenu(UserMessageCreator):
         # this length, we need to sent it in several parts.
         if UserMessage.is_protobuf():
             recipients = RecipientFilter(*player_indexes)
+            recipients.reliable = self.reliable
             user_message = UserMessage(recipients, self.message_name)
             self.protobuf(user_message.buffer, self)
             user_message.send()
@@ -223,6 +230,7 @@ class ShowMenu(UserMessageCreator):
         menu_string = kwargs.menu_string
         length = len(menu_string)
         recipients = RecipientFilter(*player_indexes)
+        recipients.reliable = self.reliable
         while True:
             user_message = UserMessage(recipients, self.message_name)
 
@@ -246,6 +254,7 @@ class SayText2(UserMessageCreator):
 
     message_name = 'SayText2'
     translatable_fields = ['message', 'param1', 'param2', 'param3', 'param4']
+    reliable = True
 
     def __init__(
             self, message, index=0, chat=False,
@@ -301,6 +310,7 @@ class SayText(UserMessageCreator):
 
     message_name = 'SayText'
     translatable_fields = ['message']
+    reliable = True
 
     def __init__(self, message, index=0, chat=False):
         """Initialize the SayText instance."""
@@ -372,6 +382,7 @@ class TextMsg(UserMessageCreator):
 
     message_name = 'TextMsg'
     translatable_fields = ['message', 'param1', 'param2', 'param3', 'param4']
+    reliable = True
 
     def __init__(
             self, message, destination=HudDestination.CENTER,

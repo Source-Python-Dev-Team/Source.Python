@@ -58,6 +58,8 @@ DEFINE_MANAGER_ACCESSOR(OnDataLoaded)
 DEFINE_MANAGER_ACCESSOR(OnCombinerPreCache)
 DEFINE_MANAGER_ACCESSOR(OnDataUnloaded)
 DEFINE_MANAGER_ACCESSOR(OnServerOutput)
+DEFINE_MANAGER_ACCESSOR(OnPlayerRunCommand)
+DEFINE_MANAGER_ACCESSOR(OnButtonStateChanged)
 
 
 //-----------------------------------------------------------------------------
@@ -150,4 +152,7 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_data_unloaded_listener_manager") = object(ptr(GetOnDataUnloadedListenerManager()));
 	
 	_listeners.attr("on_server_output_listener_manager") = object(ptr(GetOnServerOutputListenerManager()));
+	
+	_listeners.attr("on_player_run_command_listener_manager") = object(ptr(GetOnPlayerRunCommandListenerManager()));
+	_listeners.attr("on_button_state_changed_listener_manager") = object(ptr(GetOnButtonStateChangedListenerManager()));
 }

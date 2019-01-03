@@ -28,6 +28,7 @@
 // Source includes
 //---------------------------------------------------------------------------------
 #include "loader_main.h"
+#include "updater.h"
 #include "interface.h"
 #include "eiface.h"
 #include "strtools.h"
@@ -36,6 +37,7 @@
 #endif
 
 #include "../core/utilities/shared_utils.h"
+#include <exception>
 
 //---------------------------------------------------------------------------------
 // Disable warnings.
@@ -51,6 +53,7 @@
 // Interfaces.
 //---------------------------------------------------------------------------------
 ICvar* g_pCVar = NULL; // This is required for linux linking..
+IVEngineServer* engine = NULL;
 
 //
 // The plugin is a static singleton that is exported as an interface
@@ -162,7 +165,7 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 {
 	Msg(MSG_PREFIX "Loading...\n");
 
-	IVEngineServer* engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
+	engine = (IVEngineServer*)interfaceFactory(INTERFACEVERSION_VENGINESERVER, NULL);
 
 	// Was the IVEngineServer interface retrieved properly?
 	if (!engine)
@@ -183,6 +186,19 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	engine->GetGameDir(szGameDir, MAX_PATH_LENGTH);
 	DevMsg(1, MSG_PREFIX "Game directory: %s\n", szGameDir);
 	GenerateSymlink(szGameDir);
+
+	if (UpdateAvailable())
+	{
+		try
+		{
+			ApplyUpdateStage2();
+		}
+		catch (const std::exception& e)
+		{
+			Msg(MSG_PREFIX "An error occured during update stage 2:\n%s\n", e.what());
+			return false;
+		}
+	}
 
 	// ------------------------------------------------------------------
 	// Load windows dependencies.

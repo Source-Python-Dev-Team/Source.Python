@@ -107,3 +107,20 @@ void queue_command_string(const char* szCommand)
 	command += ";";
 	engine->ServerCommand(command.c_str());
 }
+
+object insert_server_command(tuple args, dict kwargs)
+{
+	std::string szCommand;
+	ConCommand* pCommand;
+	prepare_command(args, kwargs, &pCommand, &szCommand);
+	szCommand += ";";
+	engine->InsertServerCommand(szCommand.c_str());
+	return object();
+}
+
+void insert_command_string(const char* szCommand)
+{
+	std::string command = szCommand;
+	command += ";";
+	engine->InsertServerCommand(command.c_str());
+}
