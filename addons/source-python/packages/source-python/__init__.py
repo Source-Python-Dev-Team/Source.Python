@@ -163,6 +163,12 @@ def setup_data():
 
         from _entities import BaseEntityOutput
         BaseEntityOutput.fire_output = _fire_output
+    except ValueError:
+        from warnings import warn
+        warn(
+            'Did not find address for BaseEntityOutput.fire_output. '
+            'OnEntityOutput listener will not fire.'
+        )
     except AttributeError:
         from warnings import warn
         warn(
