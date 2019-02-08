@@ -8,6 +8,7 @@
 # Source.Python Imports
 #   Entities
 from entities.entity import Entity
+from entities.helpers import index_from_inthandle
 #   Weapons
 from weapons.manager import weapon_manager
 
@@ -25,6 +26,15 @@ __all__ = ('Weapon',
 # =============================================================================
 class Weapon(Entity):
     """Allows easy usage of the weapon's attributes."""
+
+    @classmethod
+    def from_inthandle(cls, inthandle):
+        """Create an instance from an inthandle.
+        :param int inthandle:
+            The inthandle.
+        :rtype: Weapon
+        """
+        return cls(index_from_inthandle(inthandle))
 
     def _validate_clip(self):
         """Test if the weapon has a clip."""
