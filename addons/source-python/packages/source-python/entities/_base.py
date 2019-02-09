@@ -213,6 +213,15 @@ class Entity(BaseEntity):
         return entity
 
     @classmethod
+    def from_inthandle(cls, inthandle):
+        """Create an entity instance from an inthandle.
+        :param int inthandle:
+            The inthandle.
+        :rtype: Entity
+        """
+        return cls(index_from_inthandle(inthandle))
+
+    @classmethod
     def _obj(cls, ptr):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))

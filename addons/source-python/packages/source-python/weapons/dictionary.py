@@ -8,7 +8,6 @@
 # Source.Python Imports
 #   Entities
 from entities.dictionary import EntityDictionary
-from entities.helpers import index_from_inthandle
 #   Weapons
 from weapons.entity import Weapon
 
@@ -29,11 +28,3 @@ class WeaponDictionary(EntityDictionary):
     def __init__(self, factory=Weapon, *args, **kwargs):
         """Initialize the dictionary."""
         super().__init__(factory, *args, **kwargs)
-
-    def from_inthandle(self, inthandle):
-        """Get a weapon instance from an inthandle.
-        
-        :param int inthandle: The inthandle.
-        :rtype: Weapon
-        """
-        return self[index_from_inthandle(inthandle)]
