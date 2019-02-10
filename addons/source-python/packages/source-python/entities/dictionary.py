@@ -10,6 +10,7 @@
 from core import AutoUnload
 #   Entities
 from entities.entity import Entity
+from entities.helpers import index_from_inthandle
 #   Listeners
 from listeners import on_entity_deleted_listener_manager
 
@@ -59,6 +60,14 @@ class EntityDictionary(AutoUnload, dict):
 
         # Remove the given index from the dictionary...
         super().__delitem__(index)
+
+    def from_inthandle(self, inthandle):
+        """Get an entity instance from an inthandle.
+        
+        :param int inthandle: The inthandle.
+        :rtype: Entity
+        """
+        return self[index_from_inthandle(inthandle)]
 
     def on_automatically_removed(self, index):
         """Called when an index is automatically removed."""
