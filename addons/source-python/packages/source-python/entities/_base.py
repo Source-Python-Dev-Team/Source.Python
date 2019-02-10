@@ -215,6 +215,7 @@ class Entity(BaseEntity):
     @classmethod
     def from_inthandle(cls, inthandle):
         """Create an entity instance from an inthandle.
+
         :param int inthandle:
             The inthandle.
         :rtype: Entity

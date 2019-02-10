@@ -64,7 +64,8 @@ class EntityDictionary(AutoUnload, dict):
     def from_inthandle(self, inthandle):
         """Get an entity instance from an inthandle.
         
-        :param int inthandle: The inthandle.
+        :param int inthandle:
+            The inthandle.
         :rtype: Entity
         """
         return self[index_from_inthandle(inthandle)]
