@@ -11,12 +11,16 @@ from core import AutoUnload
 #   Effects
 from effects.base import TempEntity
 from effects.templates import temp_entity_templates
+#   Engines
+from engines.server import engine_server
 #   Filters
 from filters.recipients import RecipientFilter
 #   Memory
 from memory import get_virtual_function
 from memory import make_object
 from memory.hooks import HookType
+from memory.hooks import PreHook
+from memory.hooks import PostHook
 
 
 # =============================================================================
@@ -42,42 +46,22 @@ class _TempEntityHook(AutoUnload):
         # Store the given temp entity name...
         self.name = temp_entity_name
 
+        # Get and store the temp entity template...
+        self.template = temp_entity_templates[temp_entity_name]
+
         # Set the callback to None...
-        self._callback = None
-
-        try:
-            # Store the function to hook...
-            self.function = get_virtual_function(
-                temp_entity_templates[temp_entity_name], 'Create')
-        except NameError:
-            # Given name was invalid, set the function to None...
-            self.function = None
-
-            # Re-raise the error...
-            raise
+        self.callback = None
 
     def __call__(self, callback):
         """Store the callback and try initialize the hook."""
-        def _callback(stack_data, *args):
-            """Called when the hooked method is called."""
-            # Get the temp entity instance...
-            temp_entity = make_object(TempEntity, stack_data[0])
-
-            # Are we looking for that temp entity?
-            if temp_entity.name == self.name:
-
-                # Call the registered callback...
-                return callback(temp_entity, make_object(
-                    RecipientFilter, stack_data[1]))
-
         # Store the callback...
-        self._callback = _callback
+        self.callback = callback
 
         # Initialize the hook...
-        self.function.add_hook(self.hook_type, self._callback)
+        self.template.add_hook(self.hook_type, callback)
 
         # Return the callback...
-        return _callback
+        return callback
 
     @property
     def hook_type(self):
@@ -86,12 +70,7 @@ class _TempEntityHook(AutoUnload):
 
     def _unload_instance(self):
         """Unload the hook."""
-        # Was no hook registered?
-        if self.function is None or self._callback is None:
-            return
-
-        # Unregister the hook...
-        self.function.remove_hook(self.hook_type, self._callback)
+        self.template.remove_hook(self.hook_type, self.callback)
 
 
 class TempEntityPreHook(_TempEntityHook):
@@ -104,3 +83,21 @@ class TempEntityPostHook(_TempEntityHook):
     """Decorator used to create temp entity post hooks that auto unload."""
 
     hook_type = HookType.POST
+
+
+# =============================================================================
+# >> HOOKS
+# =============================================================================
+@PreHook(get_virtual_function(engine_server, 'PlaybackTempEntity'))
+def pre_playback_temp_entity(stack_data):
+    """Handle pre hooks."""
+    temp_entity = TempEntity(stack_data[3])
+    return temp_entity.template.handle_hook(HookType.PRE, temp_entity,
+        make_object(RecipientFilter, stack_data[1]))
+
+@PostHook(get_virtual_function(engine_server, 'PlaybackTempEntity'))
+def post_playback_temp_entity(stack_data, return_value):
+    """Handle post hooks."""
+    temp_entity = TempEntity(stack_data[3])
+    return temp_entity.template.handle_hook(HookType.POST, temp_entity,
+        make_object(RecipientFilter, stack_data[1]))
