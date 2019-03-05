@@ -75,7 +75,7 @@ class TempEntityTemplate(BaseTempEntity):
             self._add_properties(prop.data_table)
 
         # Get a dictionary to store our hooks...
-        self._hooks = {HookType.PRE: set(), HookType.POST: set()}
+        self._hooks = {HookType.PRE: list(), HookType.POST: list()}
 
         # Initialize the base class...
         super()._copy_base(temp_entity, self.size)
@@ -182,8 +182,12 @@ class TempEntityTemplate(BaseTempEntity):
         if not callable(callback):
             raise TypeError('The given callback is not callable.')
 
+        # Is the callback already registered?
+        if callback in hooks:
+            raise ValueError('The given callback is already registered.')
+
         # Register the hook...
-        self.hooks[hook_type].add(callback)
+        hooks.append(callback)
 
     def remove_hook(self, hook_type, callback):
         """Unregister a hook for this temp entity.
@@ -201,7 +205,7 @@ class TempEntityTemplate(BaseTempEntity):
             raise TypeError('The given hook type is invalid.')
 
         # Unregister the hook...
-        self.hooks[hook_type].discard(callback)
+        hooks.remove(callback)
 
     def handle_hook(self, hook_type, temp_entity, recipient_filter):
         """Call the registered callbacks.
@@ -215,9 +219,8 @@ class TempEntityTemplate(BaseTempEntity):
 
         :rtype: bool
         """
-        # Flag variable to determine whether or not any callback wants to
-        #   block the original call...
-        block = False
+        # Set the default return value to None...
+        return_value = None
 
         # Loop through all registered hooks for this temp entity...
         for callback in self.hooks[hook_type]:
@@ -225,17 +228,14 @@ class TempEntityTemplate(BaseTempEntity):
             # Call the callback and store the value it returned...
             ret = callback(temp_entity, recipient_filter)
 
-            # Is the returned value not None and evaluate to False?
-            if ret is not None and not ret:
+            # Did the callback return anything?
+            if ret is not None:
 
-                # This callback wants to block the original call...
-                block = True
+                # Yes, so override the return value...
+                return_value = ret
 
-        # Does any callback wanted to block the original call?
-        if block:
-
-            # Yes, so block it...
-            return False
+        # Return the return value...
+        return return_value
 
     @property
     def aliases(self):
