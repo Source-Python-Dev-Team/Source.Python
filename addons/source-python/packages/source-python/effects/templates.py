@@ -18,6 +18,7 @@ from entities.props import SendPropType
 from memory import TYPE_SIZES
 from memory import get_size
 from memory.helpers import Type
+from memory.hooks import HookType
 from memory.manager import manager
 #   Paths
 from paths import SP_DATA_PATH
@@ -72,6 +73,9 @@ class TempEntityTemplate(BaseTempEntity):
 
             # Add the current table to the properties...
             self._add_properties(prop.data_table)
+
+        # Get a dictionary to store our hooks...
+        self._hooks = {HookType.PRE: set(), HookType.POST: set()}
 
         # Initialize the base class...
         super()._copy_base(temp_entity, self.size)
@@ -159,6 +163,80 @@ class TempEntityTemplate(BaseTempEntity):
         # Raise an exception...
         raise ValueError('"{}" is not a supported type.'.format(type_name))
 
+    def add_hook(self, hook_type, callback):
+        """Register a hook for this temp entity.
+
+        :param HookType hook_type:
+            The type of the hook to register.
+        :param function callback:
+            The callback function to register.
+        """
+        # Get the set associated with the given hook type...
+        hooks = self.hooks.get(hook_type, None)
+
+        # Was the given hook type invalid?
+        if hooks is None:
+            raise TypeError('The given hook type is invalid.')
+
+        # Is the given callback not callable?
+        if not callable(callback):
+            raise TypeError('The given callback is not callable.')
+
+        # Register the hook...
+        self.hooks[hook_type].add(callback)
+
+    def remove_hook(self, hook_type, callback):
+        """Unregister a hook for this temp entity.
+
+        :param HookType hook_type:
+            The type of the hook to unregister.
+        :param function callback:
+            The callback function to unregister.
+        """
+        # Get the set associated with the given hook type...
+        hooks = self.hooks.get(hook_type, None)
+
+        # Was the given hook type invalid?
+        if hooks is None:
+            raise TypeError('The given hook type is invalid.')
+
+        # Unregister the hook...
+        self.hooks[hook_type].discard(callback)
+
+    def handle_hook(self, hook_type, temp_entity, recipient_filter):
+        """Call the registered callbacks.
+
+        :param HookType hook_type:
+            The type of the hook to handle.
+        :param TempEntity temp_entity:
+            The TempEntity instance.
+        :param RecipientFilter recipient_filter:
+            The RecipientFilter instance.
+
+        :rtype: bool
+        """
+        # Flag variable to determine whether or not any callback wants to
+        #   block the original call...
+        block = False
+
+        # Loop through all registered hooks for this temp entity...
+        for callback in self.hooks[hook_type]:
+
+            # Call the callback and store the value it returned...
+            ret = callback(temp_entity, recipient_filter)
+
+            # Is the returned value not None and evaluate to False?
+            if ret is not None and not ret:
+
+                # This callback wants to block the original call...
+                block = True
+
+        # Does any callback wanted to block the original call?
+        if block:
+
+            # Yes, so block it...
+            return False
+
     @property
     def aliases(self):
         """Return the aliases of the temp entity.
@@ -166,6 +244,14 @@ class TempEntityTemplate(BaseTempEntity):
         :rtype: GameConfigObj
         """
         return self._aliases
+
+    @property
+    def hooks(self):
+        """Return the registered hooks for this temp entity.
+
+        :rtype: dict
+        """
+        return self._hooks
 
     @property
     def properties(self):
