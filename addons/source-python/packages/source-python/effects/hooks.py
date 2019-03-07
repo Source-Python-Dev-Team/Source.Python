@@ -34,8 +34,8 @@ __all__ = ('TempEntityPostHook',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _TempEntityHook(AutoUnload):
-    """Create temp entity pre and post hooks that auto unload."""
+class TempEntityPreHook(AutoUnload):
+    """Decorator used to create temp entity pre hooks that auto unload."""
 
     def __init__(self, temp_entity_name):
         """Initialize the hook object.
@@ -43,9 +43,6 @@ class _TempEntityHook(AutoUnload):
         :param str temp_entity_name:
             The name of the temp entity to hook.
         """
-        # Store the given temp entity name...
-        self.name = temp_entity_name
-
         # Get and store the temp entity template...
         self.template = temp_entity_templates[temp_entity_name]
 
@@ -58,31 +55,38 @@ class _TempEntityHook(AutoUnload):
         self.callback = callback
 
         # Initialize the hook...
-        self.template.add_hook(self.hook_type, callback)
+        self.template.add_hook(callback)
 
         # Return the callback...
         return callback
 
-    @property
-    def hook_type(self):
-        """Raise an error if the inheriting class does not have their own."""
-        raise NotImplementedError('No hook_type defined for class.')
-
     def _unload_instance(self):
         """Unload the hook."""
-        self.template.remove_hook(self.hook_type, self.callback)
+        # Exit the call if the callback wasn't registered...
+        if self.callback is None:
+            return
+
+        # Unregister the hook...
+        self.template.remove_hook(self.callback)
 
 
-class TempEntityPreHook(_TempEntityHook):
-    """Decorator used to create temp entity pre hooks that auto unload."""
-
-    hook_type = HookType.PRE
-
-
-class TempEntityPostHook(_TempEntityHook):
+class TempEntityPostHook(TempEntityPreHook):
     """Decorator used to create temp entity post hooks that auto unload."""
 
-    hook_type = HookType.POST
+    def __init__(self, temp_entity_name):
+        """Initialize the hook object.
+
+        :param str temp_entity_name:
+            The name of the temp entity to hook.
+        """
+        from warnings import warn
+        warn(
+            'TempEntityPostHook has been deprecated and will be entirely '
+            'unsupported in a future update. Use TempEntityPreHook instead '
+            'or register your own post hook on '
+            'CEngineServer::PlaybackTempEntity/CBaseTempEntity::Create.')
+
+        super().__init__(temp_entity_name)
 
 
 # =============================================================================
@@ -92,12 +96,5 @@ class TempEntityPostHook(_TempEntityHook):
 def pre_playback_temp_entity(stack_data):
     """Handle pre hooks."""
     temp_entity = TempEntity(stack_data[3])
-    return temp_entity.template.handle_hook(HookType.PRE, temp_entity,
-        make_object(RecipientFilter, stack_data[1]))
-
-@PostHook(get_virtual_function(engine_server, 'PlaybackTempEntity'))
-def post_playback_temp_entity(stack_data, return_value):
-    """Handle post hooks."""
-    temp_entity = TempEntity(stack_data[3])
-    return temp_entity.template.handle_hook(HookType.POST, temp_entity,
+    return temp_entity.template.handle_hook(temp_entity,
         make_object(RecipientFilter, stack_data[1]))
