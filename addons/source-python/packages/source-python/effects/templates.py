@@ -74,8 +74,8 @@ class TempEntityTemplate(BaseTempEntity):
             # Add the current table to the properties...
             self._add_properties(prop.data_table)
 
-        # Get a dictionary to store our hooks...
-        self._hooks = {HookType.PRE: list(), HookType.POST: list()}
+        # Get a list to store our hooks...
+        self._hooks = list()
 
         # Initialize the base class...
         super()._copy_base(temp_entity, self.size)
@@ -163,55 +163,39 @@ class TempEntityTemplate(BaseTempEntity):
         # Raise an exception...
         raise ValueError('"{}" is not a supported type.'.format(type_name))
 
-    def add_hook(self, hook_type, callback):
+    def add_hook(self, callback):
         """Register a hook for this temp entity.
 
-        :param HookType hook_type:
-            The type of the hook to register.
         :param function callback:
             The callback function to register.
         """
-        # Get the set associated with the given hook type...
-        hooks = self.hooks.get(hook_type, None)
-
-        # Was the given hook type invalid?
-        if hooks is None:
-            raise TypeError('The given hook type is invalid.')
-
         # Is the given callback not callable?
         if not callable(callback):
             raise TypeError('The given callback is not callable.')
 
         # Is the callback already registered?
-        if callback in hooks:
+        if callback in self.hooks:
             raise ValueError('The given callback is already registered.')
 
         # Register the hook...
-        hooks.append(callback)
+        self.hooks.append(callback)
 
-    def remove_hook(self, hook_type, callback):
+    def remove_hook(self, callback):
         """Unregister a hook for this temp entity.
 
-        :param HookType hook_type:
-            The type of the hook to unregister.
         :param function callback:
             The callback function to unregister.
         """
-        # Get the set associated with the given hook type...
-        hooks = self.hooks.get(hook_type, None)
-
-        # Was the given hook type invalid?
-        if hooks is None:
-            raise TypeError('The given hook type is invalid.')
+        # Raise an exception if the given callback isn't registered...
+        if callback not in self.hooks:
+            raise ValueError('The given callback is not registered.')
 
         # Unregister the hook...
-        hooks.remove(callback)
+        self.hooks.remove(callback)
 
-    def handle_hook(self, hook_type, temp_entity, recipient_filter):
+    def handle_hook(self, temp_entity, recipient_filter):
         """Call the registered callbacks.
 
-        :param HookType hook_type:
-            The type of the hook to handle.
         :param TempEntity temp_entity:
             The TempEntity instance.
         :param RecipientFilter recipient_filter:
@@ -223,16 +207,16 @@ class TempEntityTemplate(BaseTempEntity):
         return_value = None
 
         # Loop through all registered hooks for this temp entity...
-        for callback in self.hooks[hook_type]:
+        for callback in self.hooks:
 
             # Call the callback and store the value it returned...
-            ret = callback(temp_entity, recipient_filter)
+            returned_value = callback(temp_entity, recipient_filter)
 
             # Did the callback return anything?
-            if ret is not None:
+            if returned_value is not None:
 
                 # Yes, so override the return value...
-                return_value = ret
+                return_value = returned_value
 
         # Return the return value...
         return return_value
