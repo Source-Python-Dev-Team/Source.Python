@@ -20,14 +20,12 @@ from memory import get_virtual_function
 from memory import make_object
 from memory.hooks import HookType
 from memory.hooks import PreHook
-from memory.hooks import PostHook
 
 
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('TempEntityPostHook',
-           'TempEntityPreHook',
+__all__ = ('TempEntityPreHook',
            )
 
 
