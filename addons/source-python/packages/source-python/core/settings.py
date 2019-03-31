@@ -136,7 +136,7 @@ class _CoreSettings(ConfigObj):
         if 'areas' not in self['LOG_SETTINGS']:
 
             # Add the logging areas setting
-            self['LOG_SETTINGS']['areas'] = '1'
+            self['LOG_SETTINGS']['areas'] = '5'
 
         # Set the logging areas comments
         self['LOG_SETTINGS'].comments['areas'] = ['\n\n'] + _core_strings[
