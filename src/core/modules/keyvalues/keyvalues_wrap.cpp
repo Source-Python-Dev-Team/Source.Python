@@ -29,7 +29,42 @@
 //---------------------------------------------------------------------------------
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
+
+
+
+// Really hacky way to access the private member function RecursiveCopyKeyValues.
+// It's done by replacing the declaration of RecursiveCopyKeyValues with a dummy
+// method, a friend function declaration and the actual declaration that got
+// replaced.
+// This is done, so we don't need to patch KeyValues.h. #define private public
+// doesn't work here, because of undefined symbols (KeyValues.cpp compiles the
+// function as a private symbol name, and keyvalues_wrap.cpp would try to look up
+// the function using its public symbol name).
+/*
+	void RecursiveCopyKeyValues( KeyValues& src );
+
+	REPLACED BY:
+
+	void JustFinishTheDeclaration() {} 
+	friend void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src); 
+	void RecursiveCopyKeyValues( KeyValues& src );
+*/
+#define RecursiveCopyKeyValues \
+	JustFinishTheDeclaration() {} \
+	friend void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src); \
+	void RecursiveCopyKeyValues
+
 #include "tier1/KeyValues.h"
+
+// Now, remove the replacement, so the friend function can call the member function.
+#define RecursiveCopyKeyValues RecursiveCopyKeyValues
+void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src)
+{
+	pThis->RecursiveCopyKeyValues(src);
+}
+
+
+
 #include "modules/keyvalues/keyvalues.h"
 
 
@@ -294,6 +329,11 @@ void export_keyvalues(scope _keyvalues)
 		.def("as_dict",
 			&KeyValuesExt::as_dict,
 			"Return the KeyValues object as a dict."
+		)
+
+		.def("recursive_copy",
+			&RecursiveCopyKeyValuesHack,
+			"Recursively copy the given KeyValues into this KeyValues instance."
 		)
 
 		ADD_MEM_TOOLS(KeyValues)
