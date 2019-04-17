@@ -381,6 +381,7 @@ Set(SOURCEPYTHON_PHYSICS_MODULE_SOURCES
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
     core/modules/players/players_wrap.h
+    core/modules/players/players_entity.h
     core/modules/players/players_generator.h
     core/modules/players/${SOURCE_ENGINE}/players_constants_wrap.h
     core/modules/players/${SOURCE_ENGINE}/players_wrap.h
@@ -389,6 +390,7 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
     core/modules/players/players_bots_wrap.cpp
     core/modules/players/players_constants_wrap.cpp
+    core/modules/players/players_entity.cpp
     core/modules/players/players_helpers_wrap.cpp
     core/modules/players/players_wrap.cpp
     core/modules/players/players_generator.cpp

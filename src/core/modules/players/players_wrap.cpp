@@ -38,6 +38,7 @@
 #include "inetchannelinfo.h"
 #include "inetchannel.h"
 #include "players_wrap.h"
+#include "players_entity.h"
 
 #include ENGINE_INCLUDE_PATH(players_wrap.h)
 
@@ -49,6 +50,7 @@ void export_playerinfo(scope);
 void export_player_generator(scope);
 void export_client(scope);
 void export_user_cmd(scope);
+void export_player_wrapper(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -60,6 +62,7 @@ DECLARE_SP_MODULE(_players)
 	export_player_generator(_players);
 	export_client(_players);
 	export_user_cmd(_players);
+	export_player_wrapper(_players);
 }
 
 
@@ -346,4 +349,208 @@ void export_user_cmd(scope _players)
 	export_engine_specific_user_cmd(_players, UserCmd);
 
 	UserCmd ADD_MEM_TOOLS(CUserCmd);
+}
+
+void export_player_wrapper(scope _players)
+{
+	class_<PlayerWrapper, bases<CBaseEntityWrapper>, boost::noncopyable> _PlayerWrapper("_Player", no_init);
+
+	_PlayerWrapper.def("__init__",
+		make_constructor(
+			&PlayerWrapper::__init__,
+			default_call_policies(),
+			args("entity_index")
+		)
+	);
+
+	_PlayerWrapper.add_property(
+		"speed",
+		&PlayerWrapper::GetSpeed,
+		&PlayerWrapper::SetSpeed,
+		"Get/set the player's speed.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper.add_property(
+		"is_ducked",
+		&PlayerWrapper::GetIsDucked,
+		&PlayerWrapper::SetIsDucked,
+		"Return whether the player is ducked.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"is_ducking",
+		&PlayerWrapper::GetIsDucked,
+		&PlayerWrapper::SetIsDucked,
+		"Return whether the player is duckeding.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"flags",
+		&PlayerWrapper::GetFlags,
+		&PlayerWrapper::SetFlags,
+		"Get/set the player's flags.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"last_weapon",
+		&PlayerWrapper::GetLastWeapon,
+		&PlayerWrapper::SetLastWeapon,
+		"Get/set the player's last weapon.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"observer_target",
+		&PlayerWrapper::GetObserverTarget,
+		&PlayerWrapper::SetObserverTarget,
+		"Get/set the player's observer target.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"deaths",
+		&PlayerWrapper::GetDeaths,
+		&PlayerWrapper::SetDeaths,
+		"Get/set the player's death count.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"kills",
+		&PlayerWrapper::GetKills,
+		&PlayerWrapper::SetKills,
+		"Get/set the player's kill count.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"observer_mode",
+		&PlayerWrapper::GetObserverMode,
+		&PlayerWrapper::SetObserverMode,
+		"Get/set the player's observer mode.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"life_state",
+		&PlayerWrapper::GetLifeState,
+		&PlayerWrapper::SetLifeState,
+		"Get/set the player's life state.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"place",
+		&PlayerWrapper::GetPlace,
+		&PlayerWrapper::SetPlace,
+		"Get/set the player's current place.\n\n"
+		":rtype: str");
+
+	_PlayerWrapper.add_property(
+		"dead",
+		&PlayerWrapper::GetDead,
+		&PlayerWrapper::SetDead,
+		"Return whether the player is dead.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"fall_velocity",
+		&PlayerWrapper::GetFallVelocity,
+		&PlayerWrapper::SetFallVelocity,
+		"Get/set the player's fall velocity.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper.add_property(
+		"buttons",
+		&PlayerWrapper::GetButtons,
+		&PlayerWrapper::SetButtons,
+		"Get/set the player's currently pressed buttons.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper.add_property(
+		"hidden_huds",
+		&PlayerWrapper::GetHiddenHUDs,
+		&PlayerWrapper::SetHiddenHUDs,
+		"Get/set the player's hidden HUDs.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"draw_view_model",
+		&PlayerWrapper::GetDrawViewModel,
+		&PlayerWrapper::SetDrawViewModel,
+		"Get/set the player's draw view model.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"fov",
+		&PlayerWrapper::GetFOV,
+		&PlayerWrapper::SetFOV,
+		"Get/set the player's field of view (FOV).\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"fov_start",
+		&PlayerWrapper::GetFOVStart,
+		&PlayerWrapper::SetFOVStart,
+		"Get/set the player's field of view (FOV) start.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"fov_time",
+		&PlayerWrapper::GetFOVTime,
+		&PlayerWrapper::SetFOVTime,
+		"Get/set the player's field of view (FOV) time.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper.add_property(
+		"default_fov",
+		&PlayerWrapper::GetDefaultFOV,
+		&PlayerWrapper::SetDefaultFOV,
+		"Get/set the player's default field of view (FOV).\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"default_fov",
+		&PlayerWrapper::GetDefaultFOV,
+		&PlayerWrapper::SetDefaultFOV,
+		"Get/set the player's default field of view (FOV).\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"fov_rate",
+		&PlayerWrapper::GetFOVRate,
+		&PlayerWrapper::SetFOVRate,
+		"Get/set the player's field of view (FOV) rate.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper.add_property(
+		"gun_offset",
+		&PlayerWrapper::GetGunOffset,
+		&PlayerWrapper::SetGunOffset,
+		"Get/set the player's gun offset.\n\n"
+		":rtype: Vector");
+
+	_PlayerWrapper.add_property(
+		"last_hitgroup",
+		&PlayerWrapper::GetLastHitgroup,
+		&PlayerWrapper::SetLastHitgroup,
+		"Get/set the player's last hitgroup.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"active_weapon_handle",
+		&PlayerWrapper::GetLastHitgroup,
+		&PlayerWrapper::SetLastHitgroup,
+		"Get/set the player's active weapon_handle.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"relationship",
+		&PlayerWrapper::GetRelationship,
+		&PlayerWrapper::SetRelationship,
+		"Get/set the player's relationship.\n\n"
+		":rtype: str");
+
+	_PlayerWrapper.add_property(
+		"phys_damage_scale",
+		&PlayerWrapper::GetPhysDamageScale,
+		&PlayerWrapper::SetPhysDamageScale,
+		"Get/set the player's physical damage scale.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper ADD_MEM_TOOLS(PlayerWrapper);
 }
