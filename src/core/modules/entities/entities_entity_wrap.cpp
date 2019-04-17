@@ -333,7 +333,7 @@ void export_base_entity(scope _entity)
 		&CBaseEntityWrapper::GetParentName,
 		&CBaseEntityWrapper::SetParentName,
 		"Get/set the entity's parent name.\n\n"
-		":rtype: int"
+		":rtype: str"
 	);
 
 	BaseEntity.add_property(
