@@ -392,9 +392,10 @@ QAngle PlayerWrapper::GetEyeAngle()
 {
 	static int offset_x = FindNetworkPropertyOffset(EYE_ANGLE_PROPERTY(0));
 	static int offset_y = FindNetworkPropertyOffset(EYE_ANGLE_PROPERTY(1));
-	float x =  GetNetworkPropertyByOffset<float>(offset_x);
-	float y =  GetNetworkPropertyByOffset<float>(offset_y);
-	return QAngle(x, y, 0);
+	return QAngle(
+		GetNetworkPropertyByOffset<float>(offset_x),
+		GetNetworkPropertyByOffset<float>(offset_y),
+		0);
 }
 
 void PlayerWrapper::SetEyeAngle(QAngle& value)
@@ -423,4 +424,19 @@ Vector PlayerWrapper::GetViewVector()
 void PlayerWrapper::SetViewVector(Vector& value)
 {
 	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Setting view_vector is not implemented.");
+}
+
+
+QAngle PlayerWrapper::GetViewAngle()
+{
+	QAngle eye_angle = GetEyeAngle();
+	return QAngle(
+		eye_angle.x,
+		eye_angle.y < 0 ? eye_angle.y + 360 : eye_angle.y,
+		GetRotation().z);
+}
+
+void PlayerWrapper::SetViewAngle(QAngle& value)
+{
+	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Setting view_angle is not implemented.");
 }

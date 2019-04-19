@@ -148,6 +148,9 @@ public:
 
 	Vector GetViewVector();
 	void SetViewVector(Vector& value);
+
+	QAngle GetViewAngle();
+	void SetViewAngle(QAngle& value);
 };
 
 

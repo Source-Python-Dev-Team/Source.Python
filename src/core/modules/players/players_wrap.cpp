@@ -566,5 +566,12 @@ void export_player_wrapper(scope _players)
 		"Get/set the player's view vector.\n\n"
 		":rtype: Vector");
 
+	_PlayerWrapper.add_property(
+		"view_angle",
+		&PlayerWrapper::GetViewAngle,
+		&PlayerWrapper::SetViewAngle,
+		"Get/set the player's view angle.\n\n"
+		":rtype: QAngle");
+
 	_PlayerWrapper ADD_MEM_TOOLS(PlayerWrapper);
 }
