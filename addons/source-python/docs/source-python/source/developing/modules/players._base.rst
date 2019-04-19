@@ -5,3 +5,8 @@ players._base module
     :members:
     :undoc-members:
     :show-inheritance:
+
+.. autoclass:: _players.PlayerMixin
+    :members:
+    :undoc-members:
+    :show-inheritance:

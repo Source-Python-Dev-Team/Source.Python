@@ -353,7 +353,7 @@ void export_user_cmd(scope _players)
 
 void export_player_wrapper(scope _players)
 {
-	class_<PlayerWrapper, bases<CBaseEntityWrapper>, boost::noncopyable> _PlayerWrapper("_Player", no_init);
+	class_<PlayerWrapper, bases<CBaseEntityWrapper>, boost::noncopyable> _PlayerWrapper("PlayerMixin", no_init);
 
 	_PlayerWrapper.def("__init__",
 		make_constructor(
@@ -586,6 +586,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetStamina,
 		&PlayerWrapper::SetStamina,
 		"Get/set the player's stamina.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: float");
 
 	_PlayerWrapper.add_property(
@@ -593,6 +594,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetShotsFired,
 		&PlayerWrapper::SetShotsFired,
 		"Get/set the the number of shots fired by the player.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: int");
 
 	_PlayerWrapper.add_property(
@@ -600,6 +602,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetArmor,
 		&PlayerWrapper::SetArmor,
 		"Get/set the player's armor.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: int");
 
 	_PlayerWrapper.add_property(
@@ -607,6 +610,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetHasDefuser,
 		&PlayerWrapper::SetHasDefuser,
 		"Get/set whether the player has a defuser.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: bool");
 
 	_PlayerWrapper.add_property(
@@ -614,6 +618,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetHasHelmet,
 		&PlayerWrapper::SetHasHelmet,
 		"Get/set whether the player has a helmet.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: bool");
 
 	_PlayerWrapper.add_property(
@@ -621,6 +626,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetIsInBombZone,
 		&PlayerWrapper::SetIsInBombZone,
 		"Get/set whether the player is in a bomb zone.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: bool");
 
 	_PlayerWrapper.add_property(
@@ -628,6 +634,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetIsInBuyZone,
 		&PlayerWrapper::SetIsInBuyZone,
 		"Get/set whether the player is in a buy zone.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: bool");
 
 	_PlayerWrapper.add_property(
@@ -635,6 +642,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetIsInHostageRescueZone,
 		&PlayerWrapper::SetIsInHostageRescueZone,
 		"Get/set whether the player is in a hostage rescue zone.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: bool");
 
 	_PlayerWrapper.add_property(
@@ -642,6 +650,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetIsDefusing,
 		&PlayerWrapper::SetIsDefusing,
 		"Get/set whether the player is currently defusing the bomb.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: bool");
 
 	_PlayerWrapper.add_property(
@@ -649,6 +658,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetNightvisionOn,
 		&PlayerWrapper::SetNightvisionOn,
 		"Get/set whether the player is currently using nightvision.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: bool");
 
 	_PlayerWrapper.add_property(
@@ -656,6 +666,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetFlashDuration,
 		&PlayerWrapper::SetFlashDuration,
 		"Get/set the player's flash duration.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: int");
 
 	_PlayerWrapper.add_property(
@@ -663,6 +674,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetFlashAlpha,
 		&PlayerWrapper::SetFlashAlpha,
 		"Get/set the player's flash alpha.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: int");
 
 	_PlayerWrapper.add_property(
@@ -670,6 +682,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetCash,
 		&PlayerWrapper::SetCash,
 		"Get/set the player's cash.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
 		":rtype: int");
 
 	_PlayerWrapper.add_property(
@@ -698,6 +711,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetActiveDevices,
 		&PlayerWrapper::SetActiveDevices,
 		"Get/set the player's active devices.\n\n"
+		".. note:: Only available in HL2.\n\n"
 		":rtype: int");
 
 	_PlayerWrapper.add_property(
@@ -705,6 +719,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetSuitPowerLoad,
 		&PlayerWrapper::SetSuitPowerLoad,
 		"Get/set the player's suit power load.\n\n"
+		".. note:: Only available in HL2.\n\n"
 		":rtype: float");
 
 	_PlayerWrapper.add_property(
@@ -712,6 +727,7 @@ void export_player_wrapper(scope _players)
 		&PlayerWrapper::GetDesiredPlayerClass,
 		&PlayerWrapper::SetDesiredPlayerClass,
 		"Get/set the player's desired player class.\n\n"
+		".. note:: Only available in TF2.\n\n"
 		":rtype: int");
 
 	_PlayerWrapper ADD_MEM_TOOLS(PlayerWrapper);

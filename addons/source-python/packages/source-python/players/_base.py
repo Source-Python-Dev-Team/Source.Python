@@ -55,7 +55,7 @@ from mathlib import QAngle
 from memory import get_object_pointer
 from memory import make_object
 #   Players
-from _players import _Player # Mixin class to speed up things
+from _players import PlayerMixin
 from players.constants import PlayerStates
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
@@ -74,7 +74,7 @@ from auth.manager import auth_manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(Entity, _Player):
+class Player(Entity, PlayerMixin):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
