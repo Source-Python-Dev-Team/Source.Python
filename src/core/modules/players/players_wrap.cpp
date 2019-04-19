@@ -573,5 +573,146 @@ void export_player_wrapper(scope _players)
 		"Get/set the player's view angle.\n\n"
 		":rtype: QAngle");
 
+	_PlayerWrapper.add_property(
+		"view_offset",
+		&PlayerWrapper::GetViewOffset,
+		&PlayerWrapper::SetViewOffset,
+		"Get/set the player's view offset.\n\n"
+		":rtype: Vector");
+
+	// Game specific
+	_PlayerWrapper.add_property(
+		"stamina",
+		&PlayerWrapper::GetStamina,
+		&PlayerWrapper::SetStamina,
+		"Get/set the player's stamina.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper.add_property(
+		"shots_fired",
+		&PlayerWrapper::GetShotsFired,
+		&PlayerWrapper::SetShotsFired,
+		"Get/set the the number of shots fired by the player.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"armor",
+		&PlayerWrapper::GetArmor,
+		&PlayerWrapper::SetArmor,
+		"Get/set the player's armor.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"has_defuser",
+		&PlayerWrapper::GetHasDefuser,
+		&PlayerWrapper::SetHasDefuser,
+		"Get/set whether the player has a defuser.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"has_helmet",
+		&PlayerWrapper::GetHasHelmet,
+		&PlayerWrapper::SetHasHelmet,
+		"Get/set whether the player has a helmet.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"in_bomb_zone",
+		&PlayerWrapper::GetIsInBombZone,
+		&PlayerWrapper::SetIsInBombZone,
+		"Get/set whether the player is in a bomb zone.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"in_buy_zone",
+		&PlayerWrapper::GetIsInBuyZone,
+		&PlayerWrapper::SetIsInBuyZone,
+		"Get/set whether the player is in a buy zone.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"in_rescue_zone",
+		&PlayerWrapper::GetIsInHostageRescueZone,
+		&PlayerWrapper::SetIsInHostageRescueZone,
+		"Get/set whether the player is in a hostage rescue zone.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"is_defusing",
+		&PlayerWrapper::GetIsDefusing,
+		&PlayerWrapper::SetIsDefusing,
+		"Get/set whether the player is currently defusing the bomb.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"nightvision_on",
+		&PlayerWrapper::GetNightvisionOn,
+		&PlayerWrapper::SetNightvisionOn,
+		"Get/set whether the player is currently using nightvision.\n\n"
+		":rtype: bool");
+
+	_PlayerWrapper.add_property(
+		"flash_duration",
+		&PlayerWrapper::GetFlashDuration,
+		&PlayerWrapper::SetFlashDuration,
+		"Get/set the player's flash duration.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"flash_alpha",
+		&PlayerWrapper::GetFlashAlpha,
+		&PlayerWrapper::SetFlashAlpha,
+		"Get/set the player's flash alpha.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"cash",
+		&PlayerWrapper::GetCash,
+		&PlayerWrapper::SetCash,
+		"Get/set the player's cash.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"player_class",
+		&PlayerWrapper::GetPlayerClass,
+		&PlayerWrapper::SetPlayerClass,
+		"Get/set the player's player class.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"player_state",
+		&PlayerWrapper::GetPlayerState,
+		&PlayerWrapper::SetPlayerState,
+		"Get/set the player's player state.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"ragdoll",
+		&PlayerWrapper::GetRagdoll,
+		&PlayerWrapper::SetRagdoll,
+		"Get/set the player's ragdoll.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"active_devices",
+		&PlayerWrapper::GetActiveDevices,
+		&PlayerWrapper::SetActiveDevices,
+		"Get/set the player's active devices.\n\n"
+		":rtype: int");
+
+	_PlayerWrapper.add_property(
+		"suit_power_load",
+		&PlayerWrapper::GetSuitPowerLoad,
+		&PlayerWrapper::SetSuitPowerLoad,
+		"Get/set the player's suit power load.\n\n"
+		":rtype: float");
+
+	_PlayerWrapper.add_property(
+		"desired_player_class",
+		&PlayerWrapper::GetDesiredPlayerClass,
+		&PlayerWrapper::SetDesiredPlayerClass,
+		"Get/set the player's desired player class.\n\n"
+		":rtype: int");
+
 	_PlayerWrapper ADD_MEM_TOOLS(PlayerWrapper);
 }

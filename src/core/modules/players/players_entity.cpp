@@ -440,3 +440,263 @@ void PlayerWrapper::SetViewAngle(QAngle& value)
 {
 	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Setting view_angle is not implemented.");
 }
+
+
+float PlayerWrapper::GetStamina()
+{
+	static int offset = FindNetworkPropertyOffset("cslocaldata.m_flStamina");
+	return GetNetworkPropertyByOffset<float>(offset);
+}
+
+void PlayerWrapper::SetStamina(float value)
+{
+	static int offset = FindNetworkPropertyOffset("cslocaldata.m_flStamina");
+	SetNetworkPropertyByOffset<float>(offset, value);
+}
+
+
+int PlayerWrapper::GetShotsFired()
+{
+	static int offset = FindNetworkPropertyOffset("cslocaldata.m_iShotsFired");
+	return GetNetworkPropertyByOffset<float>(offset);
+}
+
+void PlayerWrapper::SetShotsFired(int value)
+{
+	static int offset = FindNetworkPropertyOffset("cslocaldata.m_iShotsFired");
+	SetNetworkPropertyByOffset<float>(offset, value);
+}
+
+
+int PlayerWrapper::GetArmor()
+{
+	static int offset = FindNetworkPropertyOffset("m_ArmorValue");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void PlayerWrapper::SetArmor(int value)
+{
+	static int offset = FindNetworkPropertyOffset("m_ArmorValue");
+	SetNetworkPropertyByOffset<int>(offset, value);
+}
+
+
+bool PlayerWrapper::GetHasDefuser()
+{
+	static int offset = FindNetworkPropertyOffset("m_bHasDefuser");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetHasDefuser(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bHasDefuser");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+bool PlayerWrapper::GetHasHelmet()
+{
+	static int offset = FindNetworkPropertyOffset("m_bHasHelmet");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetHasHelmet(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bHasHelmet");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+bool PlayerWrapper::GetHasNightvision()
+{
+	static int offset = FindNetworkPropertyOffset("m_bHasNightVision");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetHasNightvision(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bHasNightVision");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+bool PlayerWrapper::GetIsInBombZone()
+{
+	static int offset = FindNetworkPropertyOffset("m_bInBombZone");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetIsInBombZone(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bInBombZone");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+bool PlayerWrapper::GetIsInBuyZone()
+{
+	static int offset = FindNetworkPropertyOffset("m_bInBuyZone");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetIsInBuyZone(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bInBuyZone");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+bool PlayerWrapper::GetIsInHostageRescueZone()
+{
+	static int offset = FindNetworkPropertyOffset("m_bInHostageRescueZone");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetIsInHostageRescueZone(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bInHostageRescueZone");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+bool PlayerWrapper::GetIsDefusing()
+{
+	static int offset = FindNetworkPropertyOffset("m_bIsDefusing");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetIsDefusing(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bIsDefusing");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+bool PlayerWrapper::GetNightvisionOn()
+{
+	static int offset = FindNetworkPropertyOffset("m_bNightVisionOn");
+	return GetNetworkPropertyByOffset<bool>(offset);
+}
+
+void PlayerWrapper::SetNightvisionOn(bool value)
+{
+	static int offset = FindNetworkPropertyOffset("m_bNightVisionOn");
+	SetNetworkPropertyByOffset<bool>(offset, value);
+}
+
+
+float PlayerWrapper::GetFlashDuration()
+{
+	static int offset = FindNetworkPropertyOffset("m_flFlashDuration");
+	return GetNetworkPropertyByOffset<float>(offset);
+}
+
+void PlayerWrapper::SetFlashDuration(float value)
+{
+	static int offset = FindNetworkPropertyOffset("m_flFlashDuration");
+	SetNetworkPropertyByOffset<float>(offset, value);
+}
+
+
+float PlayerWrapper::GetFlashAlpha()
+{
+	static int offset = FindNetworkPropertyOffset("m_flFlashMaxAlpha");
+	return GetNetworkPropertyByOffset<float>(offset);
+}
+
+void PlayerWrapper::SetFlashAlpha(float value)
+{
+	static int offset = FindNetworkPropertyOffset("m_flFlashMaxAlpha");
+	SetNetworkPropertyByOffset<float>(offset, value);
+}
+
+
+int PlayerWrapper::GetCash()
+{
+	static int offset = FindNetworkPropertyOffset("m_iAccount");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void PlayerWrapper::SetCash(int value)
+{
+	static int offset = FindNetworkPropertyOffset("m_iAccount");
+	SetNetworkPropertyByOffset<int>(offset, value);
+}
+
+
+int PlayerWrapper::GetPlayerClass()
+{
+	static int offset = FindNetworkPropertyOffset(PLAYER_CLASS_PROPERTY);
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void PlayerWrapper::SetPlayerClass(int value)
+{
+	static int offset = FindNetworkPropertyOffset(PLAYER_CLASS_PROPERTY);
+	SetNetworkPropertyByOffset<int>(offset, value);
+}
+
+
+int PlayerWrapper::GetPlayerState()
+{
+	static int offset = FindNetworkPropertyOffset("m_iPlayerState");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void PlayerWrapper::SetPlayerState(int value)
+{
+	static int offset = FindNetworkPropertyOffset("m_iPlayerState");
+	SetNetworkPropertyByOffset<int>(offset, value);
+}
+
+
+int PlayerWrapper::GetRagdoll()
+{
+	static int offset = FindNetworkPropertyOffset("m_hRagdoll");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void PlayerWrapper::SetRagdoll(int value)
+{
+	static int offset = FindNetworkPropertyOffset("m_hRagdoll");
+	SetNetworkPropertyByOffset<int>(offset, value);
+}
+
+
+int PlayerWrapper::GetActiveDevices()
+{
+	static int offset = FindNetworkPropertyOffset("m_HL2Local.m_bitsActiveDevices");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void PlayerWrapper::SetActiveDevices(int value)
+{
+	static int offset = FindNetworkPropertyOffset("m_HL2Local.m_bitsActiveDevices");
+	SetNetworkPropertyByOffset<int>(offset, value);
+}
+
+
+float PlayerWrapper::GetSuitPowerLoad()
+{
+	static int offset = FindNetworkPropertyOffset("m_flSuitPowerLoad");
+	return GetNetworkPropertyByOffset<float>(offset);
+}
+
+void PlayerWrapper::SetSuitPowerLoad(float value)
+{
+	static int offset = FindNetworkPropertyOffset("m_flSuitPowerLoad");
+	SetNetworkPropertyByOffset<float>(offset, value);
+}
+
+
+int PlayerWrapper::GetDesiredPlayerClass()
+{
+	static int offset = FindNetworkPropertyOffset("m_Shared.m_iDesiredPlayerClass");
+	return GetNetworkPropertyByOffset<int>(offset);
+}
+
+void PlayerWrapper::SetDesiredPlayerClass(int value)
+{
+	static int offset = FindNetworkPropertyOffset("m_Shared.m_iDesiredPlayerClass");
+	SetNetworkPropertyByOffset<int>(offset, value);
+}

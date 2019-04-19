@@ -39,6 +39,7 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 // MACROS
 //-----------------------------------------------------------------------------
+// Eye angle property
 #if defined(ENGINE_BRANCH_TF2)
 	#define EYE_ANGLE_PROPERTY(index) "tfnonlocaldata.m_angEyeAngles[" #index "]"
 #elif defined(ENGINE_BRANCH_BMS)
@@ -47,6 +48,13 @@ using namespace boost::python;
 	#define EYE_ANGLE_PROPERTY(index) "hl2mplocaldata.m_angEyeAngles[" #index "]"
 #else 
 	#define EYE_ANGLE_PROPERTY(index) "m_angEyeAngles[" #index "]"
+#endif
+
+// Player class property
+#if defined(ENGINE_BRANCH_TF2)
+	#define PLAYER_CLASS_PROPERTY "m_PlayerClass.m_iClass"
+#else
+	#define PLAYER_CLASS_PROPERTY "m_iClass"
 #endif
 
 
@@ -151,6 +159,71 @@ public:
 
 	QAngle GetViewAngle();
 	void SetViewAngle(QAngle& value);
+
+	// Game specific
+	// CS:S, CS:GO
+	float GetStamina();
+	void SetStamina(float value);
+
+	int GetShotsFired();
+	void SetShotsFired(int value);
+
+	int GetArmor();
+	void SetArmor(int value);
+
+	bool GetHasDefuser();
+	void SetHasDefuser(bool value);
+
+	bool GetHasHelmet();
+	void SetHasHelmet(bool value);
+
+	bool GetHasNightvision();
+	void SetHasNightvision(bool value);
+
+	bool GetIsInBombZone();
+	void SetIsInBombZone(bool value);
+
+	bool GetIsInBuyZone();
+	void SetIsInBuyZone(bool value);
+
+	bool GetIsInHostageRescueZone();
+	void SetIsInHostageRescueZone(bool value);
+
+	bool GetIsDefusing();
+	void SetIsDefusing(bool value);
+
+	bool GetNightvisionOn();
+	void SetNightvisionOn(bool value);
+
+	float GetFlashDuration();
+	void SetFlashDuration(float value);
+
+	float GetFlashAlpha();
+	void SetFlashAlpha(float value);
+
+	int GetCash();
+	void SetCash(int value);
+
+	int GetPlayerClass();
+	void SetPlayerClass(int value);
+
+	int GetPlayerState();
+	void SetPlayerState(int value);
+
+	int GetRagdoll();
+	void SetRagdoll(int value);
+
+	// HL2
+	int GetActiveDevices();
+	void SetActiveDevices(int value);
+
+	// HL2
+	float GetSuitPowerLoad();
+	void SetSuitPowerLoad(float value);
+
+	// TF2
+	int GetDesiredPlayerClass();
+	void SetDesiredPlayerClass(int value);
 };
 
 
