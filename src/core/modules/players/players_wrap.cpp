@@ -552,5 +552,19 @@ void export_player_wrapper(scope _players)
 		"Get/set the player's physical damage scale.\n\n"
 		":rtype: float");
 
+	_PlayerWrapper.add_property(
+		"eye_angle",
+		&PlayerWrapper::GetEyeAngle,
+		&PlayerWrapper::SetEyeAngle,
+		"Get/set the player's eye angle.\n\n"
+		":rtype: QAngle");
+
+	_PlayerWrapper.add_property(
+		"view_vector",
+		&PlayerWrapper::GetViewVector,
+		&PlayerWrapper::SetViewVector,
+		"Get/set the player's view vector.\n\n"
+		":rtype: Vector");
+
 	_PlayerWrapper ADD_MEM_TOOLS(PlayerWrapper);
 }

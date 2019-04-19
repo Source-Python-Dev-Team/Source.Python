@@ -386,3 +386,41 @@ void PlayerWrapper::SetPhysDamageScale(float value)
 {
 	SetKeyValue("physdamagescale", value);
 }
+
+
+QAngle PlayerWrapper::GetEyeAngle()
+{
+	static int offset_x = FindNetworkPropertyOffset(EYE_ANGLE_PROPERTY(0));
+	static int offset_y = FindNetworkPropertyOffset(EYE_ANGLE_PROPERTY(1));
+	float x =  GetNetworkPropertyByOffset<float>(offset_x);
+	float y =  GetNetworkPropertyByOffset<float>(offset_y);
+	return QAngle(x, y, 0);
+}
+
+void PlayerWrapper::SetEyeAngle(QAngle& value)
+{
+	static int offset_x = FindNetworkPropertyOffset(EYE_ANGLE_PROPERTY(0));
+	static int offset_y = FindNetworkPropertyOffset(EYE_ANGLE_PROPERTY(1));
+	SetNetworkPropertyByOffset<float>(offset_x, value.x);
+	SetNetworkPropertyByOffset<float>(offset_y, value.y);
+}
+
+
+Vector PlayerWrapper::GetViewVector()
+{
+	QAngle eye_angle = GetEyeAngle();
+
+	float yaw = DEG2RAD(eye_angle.y);
+	float pitch = DEG2RAD(eye_angle.x);
+
+	float sy, cy, sp, cp;
+	SinCos(yaw, &sy, &cy);
+	SinCos(pitch, &sp, &cp);
+
+	return Vector(cp * cy, cp * sy, -sp);
+}
+
+void PlayerWrapper::SetViewVector(Vector& value)
+{
+	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Setting view_vector is not implemented.");
+}

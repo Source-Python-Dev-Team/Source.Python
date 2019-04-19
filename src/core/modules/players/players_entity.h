@@ -36,6 +36,19 @@ using namespace boost::python;
 #include "modules/entities/entities_entity.h"
 
 
+//-----------------------------------------------------------------------------
+// MACROS
+//-----------------------------------------------------------------------------
+#if defined(ENGINE_BRANCH_TF2)
+	#define EYE_ANGLE_PROPERTY(index) "tfnonlocaldata.m_angEyeAngles[" #index "]"
+#elif defined(ENGINE_BRANCH_BMS)
+	#define EYE_ANGLE_PROPERTY(index) "blackmesalocaldata.m_angEyeAngles[" #index "]"
+#elif defined(ENGINE_BRANCH_GMOD)
+	#define EYE_ANGLE_PROPERTY(index) "hl2mplocaldata.m_angEyeAngles[" #index "]"
+#else 
+	#define EYE_ANGLE_PROPERTY(index) "m_angEyeAngles[" #index "]"
+#endif
+
 
 //-----------------------------------------------------------------------------
 // CBaseEntity extension class for players.
@@ -129,6 +142,12 @@ public:
 
 	float GetPhysDamageScale();
 	void SetPhysDamageScale(float value);
+
+	QAngle GetEyeAngle();
+	void SetEyeAngle(QAngle& value);
+
+	Vector GetViewVector();
+	void SetViewVector(Vector& value);
 };
 
 

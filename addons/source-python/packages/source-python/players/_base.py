@@ -381,24 +381,6 @@ class Player(Entity, _Player):
 
     eye_location = property(Entity.get_eye_location, set_eye_location)
 
-    @property
-    def view_vector(self):
-        """Return the view vector of the player.
-
-        :rtype: Vector
-        """
-        eye_angle = self.eye_angle
-
-        yaw = math.radians(eye_angle.y)
-        pitch = math.radians(eye_angle.x)
-
-        sy = math.sin(yaw)
-        cy = math.cos(yaw)
-        sp = math.sin(pitch)
-        cp = math.cos(pitch)
-
-        return Vector(cp * cy, cp * sy, -sp)
-
     def get_view_angle(self):
         """Return the player's view angle.
 
