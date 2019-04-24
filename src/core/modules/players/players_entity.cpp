@@ -61,7 +61,7 @@ float PlayerWrapper::GetSpeed()
 
 void PlayerWrapper::SetSpeed(float value)
 {
-	static int offset = FindNetworkPropertyOffset("m_Local.m_bDucked");
+	static int offset = FindNetworkPropertyOffset("localdata.m_flLaggedMovementValue");
 	SetNetworkPropertyByOffset<float>(offset, value);
 }
 
