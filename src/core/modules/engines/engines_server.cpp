@@ -68,7 +68,7 @@ void prepare_command(tuple args, dict kwargs, ConCommand** pCommandOut, std::str
 
 	*pCommandOut = pCommand;
 
-	*szCommandOut = "";
+	szCommandOut->clear();
 	for(int i=0; i < len(args); ++i)
 	{
 		const char* temp = extract<const char*>(str(args[i]));

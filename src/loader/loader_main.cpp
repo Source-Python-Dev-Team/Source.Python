@@ -68,6 +68,7 @@ CSourcePython::CSourcePython()
 {
 	m_iClientCommandIndex = 0;
 	m_pCore = NULL;
+	m_pCorePlugin = NULL;
 }
 
 CSourcePython::~CSourcePython()

@@ -46,7 +46,7 @@ public:
 		char* szMapName = new char[iLength];
 		V_snprintf(szMapName, iLength, "maps/%s.bsp", map_name);
 		bool result = pServer->IsMapValid(szMapName);
-		delete szMapName;
+		delete [] szMapName;
 		return result;
 	}
 

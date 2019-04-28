@@ -166,7 +166,7 @@ public:
 				entities.append(ptr(ppEntities[i]));
 			}
 		}
-		delete ppEntities;
+		delete [] ppEntities;
 		return make_tuple(iMask, entities);
 	}
 
