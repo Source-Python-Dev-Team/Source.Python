@@ -86,7 +86,7 @@ inline void* GetInterface(const char* library, const char* interface_name)
 	dlFreeLibrary(lib);
 
 	if (!pCreateInterface)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve interface function'%s'.", CREATEINTERFACE_PROCNAME)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve interface function '%s'.", CREATEINTERFACE_PROCNAME)
 
 	int return_code;
 	void* result = pCreateInterface(interface_name, &return_code);
