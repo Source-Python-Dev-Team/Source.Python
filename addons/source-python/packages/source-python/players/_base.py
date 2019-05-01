@@ -55,6 +55,7 @@ from mathlib import QAngle
 from memory import get_object_pointer
 from memory import make_object
 #   Players
+from _players import PlayerMixin
 from players.constants import PlayerStates
 from players.helpers import address_from_playerinfo
 from players.helpers import get_client_language
@@ -73,7 +74,7 @@ from auth.manager import auth_manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(Entity):
+class Player(Entity, PlayerMixin):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
@@ -380,33 +381,12 @@ class Player(Entity):
 
     eye_location = property(Entity.get_eye_location, set_eye_location)
 
-    @property
-    def view_vector(self):
-        """Return the view vector of the player.
-
-        :rtype: Vector
-        """
-        eye_angle = self.eye_angle
-
-        yaw = math.radians(eye_angle.y)
-        pitch = math.radians(eye_angle.x)
-
-        sy = math.sin(yaw)
-        cy = math.cos(yaw)
-        sp = math.sin(pitch)
-        cp = math.cos(pitch)
-
-        return Vector(cp * cy, cp * sy, -sp)
-
     def get_view_angle(self):
         """Return the player's view angle.
 
         :rtype: QAngle
         """
-        eye_angle = self.eye_angle
-        eye_angle_y = eye_angle.y
-        eye_angle_y = (eye_angle_y + 360) if eye_angle_y < 0 else eye_angle_y
-        return QAngle(eye_angle.x, eye_angle_y, self.rotation.z)
+        return super().view_angle
 
     def set_view_angle(self, angle):
         """Set the player's view angle."""

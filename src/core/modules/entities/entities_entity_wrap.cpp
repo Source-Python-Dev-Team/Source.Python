@@ -329,6 +329,14 @@ void export_base_entity(scope _entity)
 	);
 
 	BaseEntity.add_property(
+		"parent_name",
+		&CBaseEntityWrapper::GetParentName,
+		&CBaseEntityWrapper::SetParentName,
+		"Get/set the entity's parent name.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.add_property(
 		"shadow_cast_distance",
 		&CBaseEntityWrapper::GetShadowCastDistance,
 		&CBaseEntityWrapper::SetShadowCastDistance,

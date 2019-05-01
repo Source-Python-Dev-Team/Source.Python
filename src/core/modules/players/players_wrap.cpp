@@ -38,6 +38,7 @@
 #include "inetchannelinfo.h"
 #include "inetchannel.h"
 #include "players_wrap.h"
+#include "players_entity.h"
 
 #include ENGINE_INCLUDE_PATH(players_wrap.h)
 
@@ -49,6 +50,7 @@ void export_playerinfo(scope);
 void export_player_generator(scope);
 void export_client(scope);
 void export_user_cmd(scope);
+void export_player_wrapper(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -60,6 +62,7 @@ DECLARE_SP_MODULE(_players)
 	export_player_generator(_players);
 	export_client(_players);
 	export_user_cmd(_players);
+	export_player_wrapper(_players);
 }
 
 
@@ -346,4 +349,386 @@ void export_user_cmd(scope _players)
 	export_engine_specific_user_cmd(_players, UserCmd);
 
 	UserCmd ADD_MEM_TOOLS(CUserCmd);
+}
+
+void export_player_wrapper(scope _players)
+{
+	class_<PlayerMixin, bases<CBaseEntityWrapper>, boost::noncopyable> _PlayerMixin("PlayerMixin", no_init);
+
+	_PlayerMixin.def("__init__",
+		make_constructor(
+			&PlayerMixin::__init__,
+			default_call_policies(),
+			args("entity_index")
+		)
+	);
+
+	_PlayerMixin.add_property(
+		"speed",
+		&PlayerMixin::GetSpeed,
+		&PlayerMixin::SetSpeed,
+		"Get/set the player's speed.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"is_ducked",
+		&PlayerMixin::GetIsDucked,
+		&PlayerMixin::SetIsDucked,
+		"Return whether the player is ducked.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"is_ducking",
+		&PlayerMixin::GetIsDucked,
+		&PlayerMixin::SetIsDucked,
+		"Return whether the player is duckeding.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"flags",
+		&PlayerMixin::GetFlags,
+		&PlayerMixin::SetFlags,
+		"Get/set the player's flags.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"last_weapon",
+		&PlayerMixin::GetLastWeapon,
+		&PlayerMixin::SetLastWeapon,
+		"Get/set the player's last weapon.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"observer_target",
+		&PlayerMixin::GetObserverTarget,
+		&PlayerMixin::SetObserverTarget,
+		"Get/set the player's observer target.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"deaths",
+		&PlayerMixin::GetDeaths,
+		&PlayerMixin::SetDeaths,
+		"Get/set the player's death count.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"kills",
+		&PlayerMixin::GetKills,
+		&PlayerMixin::SetKills,
+		"Get/set the player's kill count.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"observer_mode",
+		&PlayerMixin::GetObserverMode,
+		&PlayerMixin::SetObserverMode,
+		"Get/set the player's observer mode.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"life_state",
+		&PlayerMixin::GetLifeState,
+		&PlayerMixin::SetLifeState,
+		"Get/set the player's life state.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"place",
+		&PlayerMixin::GetPlace,
+		&PlayerMixin::SetPlace,
+		"Get/set the player's current place.\n\n"
+		":rtype: str");
+
+	_PlayerMixin.add_property(
+		"dead",
+		&PlayerMixin::GetDead,
+		&PlayerMixin::SetDead,
+		"Return whether the player is dead.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"fall_velocity",
+		&PlayerMixin::GetFallVelocity,
+		&PlayerMixin::SetFallVelocity,
+		"Get/set the player's fall velocity.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"buttons",
+		&PlayerMixin::GetButtons,
+		&PlayerMixin::SetButtons,
+		"Get/set the player's currently pressed buttons.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"hidden_huds",
+		&PlayerMixin::GetHiddenHUDs,
+		&PlayerMixin::SetHiddenHUDs,
+		"Get/set the player's hidden HUDs.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"draw_view_model",
+		&PlayerMixin::GetDrawViewModel,
+		&PlayerMixin::SetDrawViewModel,
+		"Get/set the player's draw view model.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"fov",
+		&PlayerMixin::GetFOV,
+		&PlayerMixin::SetFOV,
+		"Get/set the player's field of view (FOV).\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"fov_start",
+		&PlayerMixin::GetFOVStart,
+		&PlayerMixin::SetFOVStart,
+		"Get/set the player's field of view (FOV) start.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"fov_time",
+		&PlayerMixin::GetFOVTime,
+		&PlayerMixin::SetFOVTime,
+		"Get/set the player's field of view (FOV) time.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"default_fov",
+		&PlayerMixin::GetDefaultFOV,
+		&PlayerMixin::SetDefaultFOV,
+		"Get/set the player's default field of view (FOV).\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"default_fov",
+		&PlayerMixin::GetDefaultFOV,
+		&PlayerMixin::SetDefaultFOV,
+		"Get/set the player's default field of view (FOV).\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"fov_rate",
+		&PlayerMixin::GetFOVRate,
+		&PlayerMixin::SetFOVRate,
+		"Get/set the player's field of view (FOV) rate.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"gun_offset",
+		&PlayerMixin::GetGunOffset,
+		&PlayerMixin::SetGunOffset,
+		"Get/set the player's gun offset.\n\n"
+		":rtype: Vector");
+
+	_PlayerMixin.add_property(
+		"last_hitgroup",
+		&PlayerMixin::GetLastHitgroup,
+		&PlayerMixin::SetLastHitgroup,
+		"Get/set the player's last hitgroup.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"active_weapon_handle",
+		&PlayerMixin::GetLastHitgroup,
+		&PlayerMixin::SetLastHitgroup,
+		"Get/set the player's active weapon_handle.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"relationship",
+		&PlayerMixin::GetRelationship,
+		&PlayerMixin::SetRelationship,
+		"Get/set the player's relationship.\n\n"
+		":rtype: str");
+
+	_PlayerMixin.add_property(
+		"phys_damage_scale",
+		&PlayerMixin::GetPhysDamageScale,
+		&PlayerMixin::SetPhysDamageScale,
+		"Get/set the player's physical damage scale.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"eye_angle",
+		&PlayerMixin::GetEyeAngle,
+		&PlayerMixin::SetEyeAngle,
+		"Get/set the player's eye angle.\n\n"
+		":rtype: QAngle");
+
+	_PlayerMixin.add_property(
+		"view_vector",
+		&PlayerMixin::GetViewVector,
+		&PlayerMixin::SetViewVector,
+		"Get/set the player's view vector.\n\n"
+		":rtype: Vector");
+
+	_PlayerMixin.add_property(
+		"view_angle",
+		&PlayerMixin::GetViewAngle,
+		&PlayerMixin::SetViewAngle,
+		"Get/set the player's view angle.\n\n"
+		":rtype: QAngle");
+
+	_PlayerMixin.add_property(
+		"view_offset",
+		&PlayerMixin::GetViewOffset,
+		&PlayerMixin::SetViewOffset,
+		"Get/set the player's view offset.\n\n"
+		":rtype: Vector");
+
+	// Game specific
+	_PlayerMixin.add_property(
+		"stamina",
+		&PlayerMixin::GetStamina,
+		&PlayerMixin::SetStamina,
+		"Get/set the player's stamina.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"shots_fired",
+		&PlayerMixin::GetShotsFired,
+		&PlayerMixin::SetShotsFired,
+		"Get/set the the number of shots fired by the player.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"armor",
+		&PlayerMixin::GetArmor,
+		&PlayerMixin::SetArmor,
+		"Get/set the player's armor.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"has_defuser",
+		&PlayerMixin::GetHasDefuser,
+		&PlayerMixin::SetHasDefuser,
+		"Get/set whether the player has a defuser.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"has_helmet",
+		&PlayerMixin::GetHasHelmet,
+		&PlayerMixin::SetHasHelmet,
+		"Get/set whether the player has a helmet.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"in_bomb_zone",
+		&PlayerMixin::GetIsInBombZone,
+		&PlayerMixin::SetIsInBombZone,
+		"Get/set whether the player is in a bomb zone.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"in_buy_zone",
+		&PlayerMixin::GetIsInBuyZone,
+		&PlayerMixin::SetIsInBuyZone,
+		"Get/set whether the player is in a buy zone.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"in_rescue_zone",
+		&PlayerMixin::GetIsInHostageRescueZone,
+		&PlayerMixin::SetIsInHostageRescueZone,
+		"Get/set whether the player is in a hostage rescue zone.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"is_defusing",
+		&PlayerMixin::GetIsDefusing,
+		&PlayerMixin::SetIsDefusing,
+		"Get/set whether the player is currently defusing the bomb.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"nightvision_on",
+		&PlayerMixin::GetNightvisionOn,
+		&PlayerMixin::SetNightvisionOn,
+		"Get/set whether the player is currently using nightvision.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"flash_duration",
+		&PlayerMixin::GetFlashDuration,
+		&PlayerMixin::SetFlashDuration,
+		"Get/set the player's flash duration.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"flash_alpha",
+		&PlayerMixin::GetFlashAlpha,
+		&PlayerMixin::SetFlashAlpha,
+		"Get/set the player's flash alpha.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"cash",
+		&PlayerMixin::GetCash,
+		&PlayerMixin::SetCash,
+		"Get/set the player's cash.\n\n"
+		".. note:: Only available in CS:GO and CS:S.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"player_class",
+		&PlayerMixin::GetPlayerClass,
+		&PlayerMixin::SetPlayerClass,
+		"Get/set the player's player class.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"player_state",
+		&PlayerMixin::GetPlayerState,
+		&PlayerMixin::SetPlayerState,
+		"Get/set the player's player state.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"ragdoll",
+		&PlayerMixin::GetRagdoll,
+		&PlayerMixin::SetRagdoll,
+		"Get/set the player's ragdoll.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"active_devices",
+		&PlayerMixin::GetActiveDevices,
+		&PlayerMixin::SetActiveDevices,
+		"Get/set the player's active devices.\n\n"
+		".. note:: Only available in HL2.\n\n"
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"suit_power_load",
+		&PlayerMixin::GetSuitPowerLoad,
+		&PlayerMixin::SetSuitPowerLoad,
+		"Get/set the player's suit power load.\n\n"
+		".. note:: Only available in HL2.\n\n"
+		":rtype: float");
+
+	_PlayerMixin.add_property(
+		"desired_player_class",
+		&PlayerMixin::GetDesiredPlayerClass,
+		&PlayerMixin::SetDesiredPlayerClass,
+		"Get/set the player's desired player class.\n\n"
+		".. note:: Only available in TF2.\n\n"
+		":rtype: int");
+
+	_PlayerMixin ADD_MEM_TOOLS(PlayerMixin);
 }

@@ -80,7 +80,7 @@ public:
 //-----------------------------------------------------------------------------
 class CBaseEntityWrapper: public IServerEntity
 {
-private:
+protected:
 	// Make sure that nobody can call the constructor/destructor
 	CBaseEntityWrapper() {}
 	~CBaseEntityWrapper() {}
