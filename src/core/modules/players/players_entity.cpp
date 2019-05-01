@@ -38,7 +38,7 @@ boost::shared_ptr<PlayerWrapper> PlayerWrapper::__init__(unsigned int uiEntityIn
 {
 	CBaseEntityWrapper* pEntity = (CBaseEntityWrapper*) ExcBaseEntityFromIndex(uiEntityIndex);
 	if (!pEntity->IsPlayer())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Index '%d' is not a valid player.");
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Index '%d' is not a valid player.", uiEntityIndex);
 
 	return PlayerWrapper::wrap(pEntity->GetBaseEntity());
 }
