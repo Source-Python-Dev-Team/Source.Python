@@ -61,11 +61,11 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 // CBaseEntity extension class for players.
 //-----------------------------------------------------------------------------
-class PlayerWrapper: public CBaseEntityWrapper
+class PlayerMixin: public CBaseEntityWrapper
 {
 public:
-	static boost::shared_ptr<PlayerWrapper> __init__(unsigned int uiEntityIndex);
-	static boost::shared_ptr<PlayerWrapper> wrap(CBaseEntity* pEntity);
+	static boost::shared_ptr<PlayerMixin> __init__(unsigned int uiEntityIndex);
+	static boost::shared_ptr<PlayerMixin> wrap(CBaseEntity* pEntity);
 	
 	// CBasePlayer
 	// TODO: Return for some of these the proper entity class instead of a handle/index
