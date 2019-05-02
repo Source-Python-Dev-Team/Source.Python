@@ -133,6 +133,7 @@ void export_weapon_entity(scope _entity)
 		&WeaponMixin::GetPrimaryAmmoCount,
 		&WeaponMixin::SetPrimaryAmmoCount,
 		"Get/set the weapons's primary ammo count.\n\n"
+		".. note:: Only available in CS:GO.\n\n"
 		":rtype: int");
 
 	_WeaponMixin.add_property(
@@ -140,6 +141,7 @@ void export_weapon_entity(scope _entity)
 		&WeaponMixin::GetSecondaryAmmoCount,
 		&WeaponMixin::SetSecondaryAmmoCount,
 		"Get/set the weapons's secondary ammo count.\n\n"
+		".. note:: Only available in CS:GO.\n\n"
 		":rtype: int");
 
 

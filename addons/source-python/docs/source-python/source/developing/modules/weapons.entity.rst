@@ -5,3 +5,8 @@ weapons.entity module
     :members:
     :undoc-members:
     :show-inheritance:
+    
+.. autoclass:: _weapons._entity.WeaponMixin
+    :members:
+    :undoc-members:
+    :show-inheritance:
