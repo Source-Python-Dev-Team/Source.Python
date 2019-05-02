@@ -72,7 +72,7 @@ void export_weapon_entity(scope _entity)
 		":rtype: float");
 
 	_WeaponMixin.add_property(
-		"next_attack",
+		"next_secondary_fire_attack",
 		&WeaponMixin::GetNextSecondaryFireAttack,
 		&WeaponMixin::SetNextSecondaryFireAttack,
 		"Get/set the weapons's next secondary fire attack time.\n\n"
