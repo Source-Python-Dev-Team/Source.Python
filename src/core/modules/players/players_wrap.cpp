@@ -379,8 +379,8 @@ void export_player_wrapper(scope _players)
 
 	_PlayerMixin.add_property(
 		"is_ducking",
-		&PlayerMixin::GetIsDucked,
-		&PlayerMixin::SetIsDucked,
+		&PlayerMixin::GetIsDucking,
+		&PlayerMixin::SetIsDucking,
 		"Return whether the player is duckeding.\n\n"
 		":rtype: bool");
 
@@ -533,8 +533,8 @@ void export_player_wrapper(scope _players)
 
 	_PlayerMixin.add_property(
 		"active_weapon_handle",
-		&PlayerMixin::GetLastHitgroup,
-		&PlayerMixin::SetLastHitgroup,
+		&PlayerMixin::GetActiveWeaponHandle,
+		&PlayerMixin::SetActiveWeaponHandle,
 		"Get/set the player's active weapon_handle.\n\n"
 		":rtype: int");
 
