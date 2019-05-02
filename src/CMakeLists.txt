@@ -451,11 +451,14 @@ Set(SOURCEPYTHON_STUDIO_MODULE_SOURCES
 Set(SOURCEPYTHON_WEAPONS_MODULE_HEADERS
     core/modules/weapons/${SOURCE_ENGINE}/weapons_constants_wrap.h
     core/modules/weapons/${SOURCE_ENGINE}/weapons_scripts_wrap.h
+    core/modules/weapons/weapons_entity.h
 )
 
 Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
     core/modules/weapons/weapons_constants_wrap.cpp
     core/modules/weapons/weapons_scripts_wrap.cpp
+    core/modules/weapons/weapons_entity.cpp
+    core/modules/weapons/weapons_entity_wrap.cpp
 )
 
 # ------------------------------------------------------------------

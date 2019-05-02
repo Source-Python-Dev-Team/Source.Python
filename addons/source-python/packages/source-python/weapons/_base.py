@@ -9,6 +9,7 @@
 #   Entities
 from entities.entity import Entity
 #   Weapons
+from _weapons._entity import WeaponMixin
 from weapons.manager import weapon_manager
 
 
@@ -23,7 +24,7 @@ __all__ = ('Weapon',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Weapon(Entity):
+class Weapon(WeaponMixin, Entity):
     """Allows easy usage of the weapon's attributes."""
 
     def _validate_clip(self):

@@ -74,7 +74,7 @@ from auth.manager import auth_manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(Entity, PlayerMixin):
+class Player(PlayerMixin, Entity):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
