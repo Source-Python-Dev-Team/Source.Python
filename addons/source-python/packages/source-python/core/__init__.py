@@ -49,6 +49,7 @@ from paths import GAME_PATH
 #   Core
 from _core import console_message
 from _core import get_interface
+from _core import get_core_modules
 from _core import OutputReturn
 from _core import SOURCE_ENGINE
 from _core import SOURCE_ENGINE_BRANCH
@@ -69,6 +70,7 @@ __all__ = ('AutoUnload',
            'console_message',
            'create_checksum',
            'echo_console',
+           'get_core_modules',
            'get_interface',
            'get_public_ip',
            'ignore_unicode_errors',

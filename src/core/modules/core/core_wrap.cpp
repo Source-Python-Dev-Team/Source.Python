@@ -126,4 +126,10 @@ void export_functions(scope _core)
 		return_by_value_policy(),
 		"Retrieve an interface from a library."
 	);
+
+	def(
+		"get_core_modules",
+		&GetCoreModules,
+		"Return a list of all modules exposed by Source.Python's core.\n\n"
+		":rtype: list");
 }

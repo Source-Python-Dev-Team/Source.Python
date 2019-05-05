@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2016 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,51 +24,57 @@
 * Development Team grants this exception to all derivative works.
 */
 
-#ifndef _CORE_H
-#define _CORE_H
-
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "dbg.h"
-#include "interface.h"
-#include "dynload.h"
-#include "boost/python/list.hpp"
-using namespace boost::python;
-
-// Maximum console message size including null terminating char
-#define MAX_CON_MSG 1024
+#include "core.h"
+#include "export_main.h"
 
 
-//-----------------------------------------------------------------------------
-// MessageSeverity
-//-----------------------------------------------------------------------------
-enum MessageSeverity
+void ConsoleMessage(const char* msg)
 {
-	SEVERITY_MESSAGE = 0,
-	SEVERITY_WARNING,
-	SEVERITY_ASSERT,
-	SEVERITY_ERROR,
-	SEVERITY_LOG,
-};
+	char* pMsg = (char*) msg;
+	int iLen = strlen(msg);
 
+	while(iLen > 0) {
+		ConMsg(pMsg);
+		pMsg += MAX_CON_MSG-1;
+		iLen -= MAX_CON_MSG-1;
+	}
+}
 
-//-----------------------------------------------------------------------------
-// OutputReturn
-//-----------------------------------------------------------------------------
-enum OutputReturn
+void* GetInterface(const char* library, const char* interface_name)
 {
-	OUTPUT_BLOCK = 0,
-	OUTPUT_CONTINUE
-};
+	DLLib* lib = dlLoadLibrary(library);
+	if (!lib)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to load library '%s'.", library)
 
+	CreateInterfaceFn pCreateInterface = (CreateInterfaceFn) dlFindSymbol(lib, CREATEINTERFACE_PROCNAME);
+	dlFreeLibrary(lib);
 
-//-----------------------------------------------------------------------------
-// ConMsg wrapper
-//-----------------------------------------------------------------------------
-void ConsoleMessage(const char* msg);
-void* GetInterface(const char* library, const char* interface_name);
-list GetCoreModules();
+	if (!pCreateInterface)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve interface function '%s'.", CREATEINTERFACE_PROCNAME)
 
+	int return_code;
+	void* result = pCreateInterface(interface_name, &return_code);
+	if (!result)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find interface '%s'. Return code: %i.", interface_name, return_code)
 
-#endif // _CORE_H
+	return result;
+}
+
+list GetCoreModules()
+{
+	list result;
+
+	for (int i=0; i < MAX_SOURCEPYTHON_MODULES; ++i)
+	{
+		const char* module = g_SourcePythonModules[i].szName;
+		if (!module)
+			break;
+
+		result.append(module);
+	}
+
+	return result;
+}

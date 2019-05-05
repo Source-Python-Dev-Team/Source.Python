@@ -149,6 +149,7 @@ Set(SOURCEPYTHON_CORE_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_CORE_MODULE_SOURCES
+    core/modules/core/core.cpp
     core/modules/core/core_wrap.cpp
 )
 
