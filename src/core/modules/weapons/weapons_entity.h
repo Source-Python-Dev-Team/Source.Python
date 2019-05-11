@@ -52,33 +52,33 @@ public:
 	float GetNextSecondaryFireAttack();
 	void SetNextSecondaryFireAttack(float value);
 
-	int GetAmmoProp();
-	void SetAmmoProp(int value);
+	short GetAmmoProp();
+	void SetAmmoProp(short value);
 
-	int GetSecondaryFireAmmoProp();
-	void SetSecondaryFireAmmoProp(int value);
+	short GetSecondaryFireAmmoProp();
+	void SetSecondaryFireAmmoProp(short value);
 
 	int GetOwnerHandle();
 	void SetOwnerHandle(int value);
 
-	int GetClip();
-	void SetClip(int value);
+	unsigned char GetClip();
+	void SetClip(unsigned char value);
 
-	int GetSecondaryFireClip();
-	void SetSecondaryFireClip(int value);
+	unsigned char GetSecondaryFireClip();
+	void SetSecondaryFireClip(unsigned char value);
 
-	int GetFlipViewModel();
-	void SetFlipViewModel(int value);
+	short GetFlipViewModel();
+	void SetFlipViewModel(short value);
 
-	int GetWorldModelIndex();
-	void SetWorldModelIndex(int value);
+	short GetWorldModelIndex();
+	void SetWorldModelIndex(short value);
 
 	// CS:GO
-	int GetPrimaryAmmoCount();
-	void SetPrimaryAmmoCount(int value);
+	short GetPrimaryAmmoCount();
+	void SetPrimaryAmmoCount(short value);
 
-	int GetSecondaryAmmoCount();
-	void SetSecondaryAmmoCount(int value);
+	short GetSecondaryAmmoCount();
+	void SetSecondaryAmmoCount(short value);
 
 };
 

@@ -79,8 +79,8 @@ public:
 	bool GetIsDucking();
 	void SetIsDucking(bool value);
 
-	int GetFlags();
-	void SetFlags(int value);
+	unsigned short GetFlags();
+	void SetFlags(unsigned short value);
 
 	int GetLastWeapon();
 	void SetLastWeapon(int value);
@@ -95,12 +95,12 @@ public:
 	void SetKills(int value);
 
 	// TODO: Return ObserverMode enum
-	int GetObserverMode();
-	void SetObserverMode(int value);
+	unsigned char GetObserverMode();
+	void SetObserverMode(unsigned char value);
 
 	// TODO: Return LifeState enum
-	int GetLifeState();
-	void SetLifeState(int value);
+	unsigned char GetLifeState();
+	void SetLifeState(unsigned char value);
 
 	str GetPlace();
 	void SetPlace(const char* value);
@@ -120,17 +120,17 @@ public:
 	int GetDrawViewModel();
 	void SetDrawViewModel(int value);
 
-	int GetFOV();
-	void SetFOV(int value);
+	unsigned char GetFOV();
+	void SetFOV(unsigned char value);
 
-	int GetFOVStart();
-	void SetFOVStart(int value);
+	unsigned char GetFOVStart();
+	void SetFOVStart(unsigned char value);
 
 	float GetFOVTime();
 	void SetFOVTime(float value);
 
-	int GetDefaultFOV();
-	void SetDefaultFOV(int value);
+	unsigned char GetDefaultFOV();
+	void SetDefaultFOV(unsigned char value);
 
 	float GetFOVRate();
 	void SetFOVRate(float value);
@@ -165,11 +165,12 @@ public:
 	float GetStamina();
 	void SetStamina(float value);
 
-	int GetShotsFired();
-	void SetShotsFired(int value);
+	unsigned char GetShotsFired();
+	void SetShotsFired(unsigned char value);
 
-	int GetArmor();
-	void SetArmor(int value);
+	// It's char actually, but Boost.Python converts a char to a Python string
+	short GetArmor();
+	void SetArmor(short value);
 
 	bool GetHasDefuser();
 	void SetHasDefuser(bool value);
@@ -201,29 +202,29 @@ public:
 	float GetFlashAlpha();
 	void SetFlashAlpha(float value);
 
-	int GetCash();
-	void SetCash(int value);
+	unsigned short GetCash();
+	void SetCash(unsigned short value);
 
-	int GetPlayerClass();
-	void SetPlayerClass(int value);
+	unsigned char GetPlayerClass();
+	void SetPlayerClass(unsigned char value);
 
-	int GetPlayerState();
-	void SetPlayerState(int value);
+	unsigned char GetPlayerState();
+	void SetPlayerState(unsigned char value);
 
 	int GetRagdoll();
 	void SetRagdoll(int value);
 
 	// HL2
-	int GetActiveDevices();
-	void SetActiveDevices(int value);
+	unsigned char GetActiveDevices();
+	void SetActiveDevices(unsigned char value);
 
 	// HL2
 	float GetSuitPowerLoad();
 	void SetSuitPowerLoad(float value);
 
 	// TF2
-	int GetDesiredPlayerClass();
-	void SetDesiredPlayerClass(int value);
+	unsigned char GetDesiredPlayerClass();
+	void SetDesiredPlayerClass(unsigned char value);
 };
 
 

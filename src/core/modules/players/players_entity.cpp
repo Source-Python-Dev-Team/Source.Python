@@ -92,16 +92,16 @@ void PlayerMixin::SetIsDucking(bool value)
 }
 
 
-int PlayerMixin::GetFlags()
+unsigned short PlayerMixin::GetFlags()
 {
 	static int offset = FindNetworkPropertyOffset("m_fFlags");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned short>(offset);
 }
 
-void PlayerMixin::SetFlags(int value)
+void PlayerMixin::SetFlags(unsigned short value)
 {
 	static int offset = FindNetworkPropertyOffset("m_fFlags");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned short>(offset, value);
 }
 
 
@@ -157,29 +157,29 @@ void PlayerMixin::SetKills(int value)
 }
 
 
-int PlayerMixin::GetObserverMode()
+unsigned char PlayerMixin::GetObserverMode()
 {
 	static int offset = FindNetworkPropertyOffset("m_iObserverMode");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetObserverMode(int value)
+void PlayerMixin::SetObserverMode(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iObserverMode");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
-int PlayerMixin::GetLifeState()
+unsigned char PlayerMixin::GetLifeState()
 {
 	static int offset = FindNetworkPropertyOffset("m_lifeState");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetLifeState(int value)
+void PlayerMixin::SetLifeState(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_lifeState");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
@@ -261,29 +261,29 @@ void PlayerMixin::SetDrawViewModel(int value)
 }
 
 
-int PlayerMixin::GetFOV()
+unsigned char PlayerMixin::GetFOV()
 {
 	static int offset = FindNetworkPropertyOffset("m_iFOV");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetFOV(int value)
+void PlayerMixin::SetFOV(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iFOV");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
-int PlayerMixin::GetFOVStart()
+unsigned char PlayerMixin::GetFOVStart()
 {
 	static int offset = FindNetworkPropertyOffset("m_iFOVStart");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetFOVStart(int value)
+void PlayerMixin::SetFOVStart(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iFOVStart");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
@@ -300,16 +300,16 @@ void PlayerMixin::SetFOVTime(float value)
 }
 
 
-int PlayerMixin::GetDefaultFOV()
+unsigned char PlayerMixin::GetDefaultFOV()
 {
 	static int offset = FindNetworkPropertyOffset("m_iDefaultFOV");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetDefaultFOV(int value)
+void PlayerMixin::SetDefaultFOV(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iDefaultFOV");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
@@ -455,29 +455,29 @@ void PlayerMixin::SetStamina(float value)
 }
 
 
-int PlayerMixin::GetShotsFired()
+unsigned char PlayerMixin::GetShotsFired()
 {
 	static int offset = FindNetworkPropertyOffset("cslocaldata.m_iShotsFired");
-	return GetNetworkPropertyByOffset<float>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetShotsFired(int value)
+void PlayerMixin::SetShotsFired(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("cslocaldata.m_iShotsFired");
-	SetNetworkPropertyByOffset<float>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
-int PlayerMixin::GetArmor()
+short PlayerMixin::GetArmor()
 {
 	static int offset = FindNetworkPropertyOffset("m_ArmorValue");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<char>(offset);
 }
 
-void PlayerMixin::SetArmor(int value)
+void PlayerMixin::SetArmor(short value)
 {
 	static int offset = FindNetworkPropertyOffset("m_ArmorValue");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<char>(offset, value);
 }
 
 
@@ -611,42 +611,42 @@ void PlayerMixin::SetFlashAlpha(float value)
 }
 
 
-int PlayerMixin::GetCash()
+unsigned short PlayerMixin::GetCash()
 {
 	static int offset = FindNetworkPropertyOffset("m_iAccount");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned short>(offset);
 }
 
-void PlayerMixin::SetCash(int value)
+void PlayerMixin::SetCash(unsigned short value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iAccount");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned short>(offset, value);
 }
 
 
-int PlayerMixin::GetPlayerClass()
+unsigned char PlayerMixin::GetPlayerClass()
 {
 	static int offset = FindNetworkPropertyOffset(PLAYER_CLASS_PROPERTY);
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetPlayerClass(int value)
+void PlayerMixin::SetPlayerClass(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset(PLAYER_CLASS_PROPERTY);
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
-int PlayerMixin::GetPlayerState()
+unsigned char PlayerMixin::GetPlayerState()
 {
 	static int offset = FindNetworkPropertyOffset("m_iPlayerState");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetPlayerState(int value)
+void PlayerMixin::SetPlayerState(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iPlayerState");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
@@ -663,16 +663,16 @@ void PlayerMixin::SetRagdoll(int value)
 }
 
 
-int PlayerMixin::GetActiveDevices()
+unsigned char PlayerMixin::GetActiveDevices()
 {
 	static int offset = FindNetworkPropertyOffset("m_HL2Local.m_bitsActiveDevices");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetActiveDevices(int value)
+void PlayerMixin::SetActiveDevices(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_HL2Local.m_bitsActiveDevices");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
@@ -689,14 +689,14 @@ void PlayerMixin::SetSuitPowerLoad(float value)
 }
 
 
-int PlayerMixin::GetDesiredPlayerClass()
+unsigned char PlayerMixin::GetDesiredPlayerClass()
 {
 	static int offset = FindNetworkPropertyOffset("m_Shared.m_iDesiredPlayerClass");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void PlayerMixin::SetDesiredPlayerClass(int value)
+void PlayerMixin::SetDesiredPlayerClass(unsigned char value)
 {
 	static int offset = FindNetworkPropertyOffset("m_Shared.m_iDesiredPlayerClass");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }

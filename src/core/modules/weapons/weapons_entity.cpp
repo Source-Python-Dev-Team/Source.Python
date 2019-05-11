@@ -81,29 +81,29 @@ void WeaponMixin::SetNextSecondaryFireAttack(float value)
 }
 
 
-int WeaponMixin::GetAmmoProp()
+short WeaponMixin::GetAmmoProp()
 {
 	static int offset = FindNetworkPropertyOffset("LocalWeaponData.m_iPrimaryAmmoType");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<char>(offset);
 }
 
-void WeaponMixin::SetAmmoProp(int value)
+void WeaponMixin::SetAmmoProp(short value)
 {
 	static int offset = FindNetworkPropertyOffset("LocalWeaponData.m_iPrimaryAmmoType");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<char>(offset, value);
 }
 
 
-int WeaponMixin::GetSecondaryFireAmmoProp()
+short WeaponMixin::GetSecondaryFireAmmoProp()
 {
 	static int offset = FindNetworkPropertyOffset("LocalWeaponData.m_iSecondaryAmmoType");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<char>(offset);
 }
 
-void WeaponMixin::SetSecondaryFireAmmoProp(int value)
+void WeaponMixin::SetSecondaryFireAmmoProp(short value)
 {
 	static int offset = FindNetworkPropertyOffset("LocalWeaponData.m_iSecondaryAmmoType");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<char>(offset, value);
 }
 
 
@@ -120,80 +120,80 @@ void WeaponMixin::SetOwnerHandle(int value)
 }
 
 
-int WeaponMixin::GetClip()
+unsigned char WeaponMixin::GetClip()
 {
 	static int offset = FindDatamapPropertyOffset("m_iClip1");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void WeaponMixin::SetClip(int value)
+void WeaponMixin::SetClip(unsigned char value)
 {
 	static int offset = FindDatamapPropertyOffset("m_iClip1");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
-int WeaponMixin::GetSecondaryFireClip()
+unsigned char WeaponMixin::GetSecondaryFireClip()
 {
 	static int offset = FindDatamapPropertyOffset("m_iClip2");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
-void WeaponMixin::SetSecondaryFireClip(int value)
+void WeaponMixin::SetSecondaryFireClip(unsigned char value)
 {
 	static int offset = FindDatamapPropertyOffset("m_iClip2");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
 
 
-int WeaponMixin::GetFlipViewModel()
+short WeaponMixin::GetFlipViewModel()
 {
 	static int offset = FindNetworkPropertyOffset("LocalWeaponData.m_bFlipViewModel");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<char>(offset);
 }
 
-void WeaponMixin::SetFlipViewModel(int value)
+void WeaponMixin::SetFlipViewModel(short value)
 {
 	static int offset = FindNetworkPropertyOffset("LocalWeaponData.m_bFlipViewModel");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<char>(offset, value);
 }
 
 
-int WeaponMixin::GetWorldModelIndex()
+short WeaponMixin::GetWorldModelIndex()
 {
 	static int offset = FindNetworkPropertyOffset("m_iWorldModelIndex");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<short>(offset);
 }
 
-void WeaponMixin::SetWorldModelIndex(int value)
+void WeaponMixin::SetWorldModelIndex(short value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iWorldModelIndex");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<short>(offset, value);
 }
 
 
 // CS:GO
-int WeaponMixin::GetPrimaryAmmoCount()
+short WeaponMixin::GetPrimaryAmmoCount()
 {
 	static int offset = FindNetworkPropertyOffset("m_iPrimaryReserveAmmoCount");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<short>(offset);
 }
 
-void WeaponMixin::SetPrimaryAmmoCount(int value)
+void WeaponMixin::SetPrimaryAmmoCount(short value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iPrimaryReserveAmmoCount");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<short>(offset, value);
 }
 
 
-int WeaponMixin::GetSecondaryAmmoCount()
+short WeaponMixin::GetSecondaryAmmoCount()
 {
 	static int offset = FindNetworkPropertyOffset("m_iSecondaryReserveAmmoCount");
-	return GetNetworkPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<short>(offset);
 }
 
-void WeaponMixin::SetSecondaryAmmoCount(int value)
+void WeaponMixin::SetSecondaryAmmoCount(short value)
 {
 	static int offset = FindNetworkPropertyOffset("m_iSecondaryReserveAmmoCount");
-	SetNetworkPropertyByOffset<int>(offset, value);
+	SetNetworkPropertyByOffset<short>(offset, value);
 }
