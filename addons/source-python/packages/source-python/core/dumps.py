@@ -295,19 +295,42 @@ def _dump_server_class_table(table, open_file, level=1, offset=0):
                 new_table, open_file, level + 1, new_offset)
 
         # Was there an offset passed?
-        elif offset:
-
-            # Write the property and its values to file
-            open_file.write('{0}{1} {2} (offset {3} - {4})\n'.format(
-                '    ' * level, prop.type, prop.name,
-                prop.offset, prop.offset + offset))
-
-        # Was no offset passed?
         else:
+            real_prop_type = _get_real_prop_type(prop)
 
-            # Write the property and its values to file
-            open_file.write('{0}{1} {2} (offset {3})\n'.format(
-                '    ' * level, prop.type, prop.name, prop.offset))
+            if offset:
+
+                # Write the property and its values to file
+                open_file.write('{0}{1} {2} (offset {3} - {4})\n'.format(
+                    '    ' * level, real_prop_type, prop.name,
+                    prop.offset, prop.offset + offset))
+
+            # Was no offset passed?
+            else:
+
+                # Write the property and its values to file
+                open_file.write('{0}{1} {2} (offset {3})\n'.format(
+                    '    ' * level, real_prop_type, prop.name, prop.offset))
+
+def _get_real_prop_type(prop):
+    """Return the real property type name of the given prop."""
+    if prop.type != SendPropType.INT:
+        return str(prop.type)
+
+    bit_count = prop.bits
+    if bit_count < 1:
+        return str(prop.type)
+
+    if bit_count >= 17:
+        return 'INT'
+
+    if bit_count >= 9:
+        return '{}SHORT'.format('' if prop.is_signed() else 'U')
+
+    if bit_count >= 2:
+        return '{}CHAR'.format('' if prop.is_signed() else 'U')
+
+    return 'BOOL'
 
 
 # =============================================================================
