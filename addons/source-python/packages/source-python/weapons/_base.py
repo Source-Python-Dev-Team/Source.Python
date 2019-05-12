@@ -24,7 +24,7 @@ __all__ = ('Weapon',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Weapon(WeaponMixin, Entity):
+class Weapon(Entity, WeaponMixin):
     """Allows easy usage of the weapon's attributes."""
 
     def _validate_clip(self):
