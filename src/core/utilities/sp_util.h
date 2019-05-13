@@ -52,7 +52,7 @@ inline void ChunkedMsg(const char* msg)
 	int iLen = strlen(msg);
 
 	while(iLen > 0) {
-		Msg(pMsg);
+		Msg("%s", pMsg);
 		pMsg += MAX_CHUNK-1;
 		iLen -= MAX_CHUNK-1;
 	}
