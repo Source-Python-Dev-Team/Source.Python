@@ -33,7 +33,8 @@
 
 void ConsoleMessage(const char* msg)
 {
-	char* pMsg = (char*) msg;
+	// Ensure all formatting specifiers are escaped to prevent a crash (fix for issue #275).
+	char* pMsg = (char*) extract<char *>(str(msg).replace("%", "%%"));
 	int iLen = strlen(msg);
 
 	while(iLen > 0) {
