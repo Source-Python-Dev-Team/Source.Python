@@ -168,9 +168,8 @@ public:
 	unsigned char GetShotsFired();
 	void SetShotsFired(unsigned char value);
 
-	// It's char actually, but Boost.Python converts a char to a Python string
-	short GetArmor();
-	void SetArmor(short value);
+	int GetArmor();
+	void SetArmor(int value);
 
 	bool GetHasDefuser();
 	void SetHasDefuser(bool value);

@@ -468,16 +468,26 @@ void PlayerMixin::SetShotsFired(unsigned char value)
 }
 
 
-short PlayerMixin::GetArmor()
+int PlayerMixin::GetArmor()
 {
+#if defined(ENGINE_BRANCH_HL2DM)
+	static int offset = FindDatamapPropertyOffset("m_ArmorValue");
+	return GetDatamapPropertyByOffset<int>(offset);
+#else
 	static int offset = FindNetworkPropertyOffset("m_ArmorValue");
 	return GetNetworkPropertyByOffset<char>(offset);
+#endif
 }
 
-void PlayerMixin::SetArmor(short value)
+void PlayerMixin::SetArmor(int value)
 {
+#if defined(ENGINE_BRANCH_HL2DM)
+	static int offset = FindDatamapPropertyOffset("m_ArmorValue");
+	SetDatamapPropertyByOffset<int>(offset, value);
+#else
 	static int offset = FindNetworkPropertyOffset("m_ArmorValue");
 	SetNetworkPropertyByOffset<char>(offset, value);
+#endif
 }
 
 
