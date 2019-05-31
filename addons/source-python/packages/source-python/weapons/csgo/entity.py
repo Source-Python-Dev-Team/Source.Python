@@ -1,14 +1,6 @@
-# ../weapons/engines/csgo/csgo.py
+# ../weapons/csgo/entity.py
 
 """Provides CS:GO game specific weapon functionality."""
-
-# =============================================================================
-# >> IMPORTS
-# =============================================================================
-# Source.Python
-from . import Weapon as _Weapon
-from weapons.manager import weapon_manager
-
 
 # =============================================================================
 # >> GLOBAL VARIABLES
@@ -23,7 +15,7 @@ _item_definition_indexes = {
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Weapon(_Weapon):
+class Weapon(Weapon):
     """Allows easy usage of the weapon's attributes."""
 
     def get_ammo(self):

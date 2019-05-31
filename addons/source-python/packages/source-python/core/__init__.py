@@ -12,17 +12,23 @@ import codecs
 from collections import defaultdict
 #   Contextlib
 from contextlib import contextmanager
+#   Functools
+from functools import update_wrapper
 #   Hashlib
 import hashlib
 #   Inspect
-from inspect import getmodule
 from inspect import currentframe
+from inspect import getmodule
+from inspect import isclass
+from inspect import isfunction
 #   OS
 from os import sep
 #   Path
 from path import Path
 #   Platform
 from platform import system
+#   Runpy
+from runpy import run_path
 #   Sys
 import sys
 #   Urllib
@@ -70,9 +76,11 @@ __all__ = ('AutoUnload',
            'console_message',
            'create_checksum',
            'echo_console',
+           'engine_import',
            'get_core_modules',
            'get_interface',
            'get_public_ip',
+           'get_wrapped',
            'ignore_unicode_errors',
            'server_output',
            )
@@ -331,3 +339,61 @@ def check_info_output(output):
         lines.pop()
 
     return create_checksum(''.join(lines)) != checksum
+
+
+def engine_import():
+    """Import engine/game specific objects.
+
+    :raise ImportError:
+        If it was not called from global scope.
+    """
+    f = currentframe().f_back
+    if f.f_locals is not f.f_globals:
+        raise ImportError(
+            '"engine_import" must only be called from global scopes.')
+    caller = getmodule(f)
+    directory, name = Path(caller.__file__).splitpath()
+    for subfolder in (SOURCE_ENGINE, GAME_NAME):
+        directory /= subfolder
+        if not directory.isdir():
+            break
+        path = directory / name
+        if not path.isfile():
+            continue
+        for attr, obj in run_path(path, f.f_globals, caller.__name__).items():
+            if isclass(obj):
+                base = obj.__base__
+                if (obj.__name__ == base.__name__ and
+                        base.__module__ == caller.__name__):
+                    for k, v in obj.__dict__.items():
+                        if (k == '__doc__' and
+                                getattr(base, '__doc__', None) is not None):
+                            continue
+                        if isfunction(v) and hasattr(base, k):
+                            func = getattr(base, k)
+                            if isfunction(func):
+                                update_wrapper(v, func)
+                        setattr(base, k, v)
+                    continue
+            if hasattr(caller, attr):
+                o = getattr(caller, attr)
+                if o is obj:
+                    continue
+                elif isfunction(o):
+                    update_wrapper(obj, o)
+            setattr(caller, attr, obj)
+
+def get_wrapped(func):
+    """Returns the wrapped function of a wrapper function.
+
+    :param function func:
+        The wrapper function to get the wrapped function from.
+    :raise TypeError:
+        If the given wrapper is not a function.
+    :return:
+        The wrapped function or ``None`` if the given wrapper is not wrapping
+        any function.
+    """
+    if not isfunction(func):
+        raise TypeError(f'"{func}" is not a function.')
+    return getattr(func, '__wrapped__', None)

@@ -1,4 +1,4 @@
-# ../entities/engines/csgo/csgo.py
+# ../entities/csgo/entity.py
 
 """Provides CS:GO game specific Entity based functionality."""
 
@@ -6,8 +6,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python
-from entities import BaseEntityGenerator
-from . import Entity as _Entity
+#   Weapons
 from weapons.manager import weapon_manager
 
 
@@ -30,7 +29,7 @@ _parent_weapons = set(_weapon_parents.values())
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Entity(_Entity):
+class Entity(Entity):
     """Class used to interact directly with entities."""
 
     @classmethod

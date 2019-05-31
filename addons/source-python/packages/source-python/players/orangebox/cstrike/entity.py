@@ -1,4 +1,4 @@
-# ../players/engines/orangebox/cstrike.py
+# ../players/orangebox/cstrike/entity.py
 
 """Provides CS:S specific Player based functionality."""
 
@@ -6,24 +6,19 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Engines
-from engines.server import engine_server
 #   Entities
 from entities.entity import BaseEntity
-#   Filters
-from filters.entities import EntityIter
 #   Memory
 from memory import get_virtual_function
 from memory.hooks import PreHook
 #   Players
-from . import Player as _Player
 from players.constants import LifeState
 
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(_Player):
+class Player(Player):
     """Class used to interact directly with players."""
 
     def has_c4(self):

@@ -1,4 +1,4 @@
-# ../players/engines/csgo/__init__.py
+# ../players/csgo/entity.py
 
 """Provides CS:GO specific Player based functionality."""
 
@@ -6,16 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Bitbuffers
-from bitbuffers import BitBufferWrite
 #   ConVars
 from cvars import ConVar
-#   Engines
-from engines.server import engine_server
-#   Entities
-from entities.helpers import wrap_entity_mem_func
-#   Filters
-from filters.entities import EntityIter
 #   Memory
 from memory import NULL
 from memory import get_virtual_function
@@ -23,10 +15,7 @@ from memory.hooks import PreHook
 #   Messages
 from _messages import ProtobufMessage
 #   Players
-from players._base import Player as _Player
 from players.constants import LifeState
-#   Weapons
-from weapons.manager import weapon_manager
 
 
 # =============================================================================
@@ -38,7 +27,7 @@ _disable_immunity_alpha = ConVar('sv_disable_immunity_alpha')
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(_Player):
+class Player(Player):
     """Class used to interact directly with players."""
 
     def _get_kills(self):
