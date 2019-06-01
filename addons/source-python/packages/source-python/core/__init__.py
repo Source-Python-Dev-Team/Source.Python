@@ -69,6 +69,7 @@ __all__ = ('AutoUnload',
            'WeakAutoUnload',
            'GAME_NAME',
            'OutputReturn',
+           'ENGINE_IMPORT_SKIPPABLES',
            'PLATFORM',
            'SOURCE_ENGINE',
            'SOURCE_ENGINE_BRANCH',
@@ -97,6 +98,16 @@ PLATFORM = system().lower()
 
 # Get the sp.core logger
 core_logger = _sp_logger.core
+
+# Names to always skip when loading engine/game specific files.
+ENGINE_IMPORT_SKIPPABLES = (
+    '__builtins__',
+    '__cached__',
+    '__file__',
+    '__loader__',
+    '__package__',
+    '__spec__'
+)
 
 
 # =============================================================================
@@ -341,9 +352,13 @@ def check_info_output(output):
     return create_checksum(''.join(lines)) != checksum
 
 
-def engine_import():
+def engine_import(skippables=(), skip_privates=True):
     """Import engine/game specific objects.
 
+    :param tuple skippables:
+        Names to skip when loading engine/game specific files.
+    :param bool skip_privates:
+        Whether or not private names should be skipped.
     :raise ImportError:
         If it was not called from global scope.
     """
@@ -351,6 +366,7 @@ def engine_import():
     if f.f_locals is not f.f_globals:
         raise ImportError(
             '"engine_import" must only be called from global scopes.')
+    skippables = ENGINE_IMPORT_SKIPPABLES + skippables
     caller = getmodule(f)
     directory, name = Path(caller.__file__).splitpath()
     for subfolder in (SOURCE_ENGINE, GAME_NAME):
@@ -361,11 +377,23 @@ def engine_import():
         if not path.isfile():
             continue
         for attr, obj in run_path(path, f.f_globals, caller.__name__).items():
-            if isclass(obj):
+            if attr in skippables:
+                continue
+            if (attr == '__doc__' and
+                    getattr(caller, '__doc__', None) is not None):
+                continue
+            if attr == '__all__':
+                if hasattr(caller, '__all__'):
+                    obj = tuple(sorted(set(obj + getattr(caller, '__all__'))))
+            elif skip_privates and attr.startswith('_'):
+                continue
+            elif isclass(obj):
                 base = obj.__base__
                 if (obj.__name__ == base.__name__ and
                         base.__module__ == caller.__name__):
                     for k, v in obj.__dict__.items():
+                        if f'{attr}.{k}' in skippables:
+                            continue
                         if (k == '__doc__' and
                                 getattr(base, '__doc__', None) is not None):
                             continue
