@@ -688,14 +688,14 @@ void PlayerMixin::SetActiveDevices(unsigned char value)
 
 float PlayerMixin::GetSuitPowerLoad()
 {
-	static int offset = FindNetworkPropertyOffset("m_flSuitPowerLoad");
-	return GetNetworkPropertyByOffset<float>(offset);
+	static int offset = FindDatamapPropertyOffset("m_flSuitPowerLoad");
+	return GetDatamapPropertyByOffset<float>(offset);
 }
 
 void PlayerMixin::SetSuitPowerLoad(float value)
 {
-	static int offset = FindNetworkPropertyOffset("m_flSuitPowerLoad");
-	SetNetworkPropertyByOffset<float>(offset, value);
+	static int offset = FindDatamapPropertyOffset("m_flSuitPowerLoad");
+	SetDatamapPropertyByOffset<float>(offset, value);
 }
 
 
