@@ -166,14 +166,14 @@ class GameConfigObj(ConfigObj):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
+# TODO: Remove; this is redundant.
 def echo_console(text):
     """Echo a message to the server's console.
 
     :param str text:
         Message to print to the console.
     """
-    for line in text.split('\n'):
-        console_message(line + '\n')
+    console_message(text)
 
 
 @contextmanager
