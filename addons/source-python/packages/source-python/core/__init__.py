@@ -361,6 +361,57 @@ def engine_import(skippables=(), skip_privates=True):
         Whether or not private names should be skipped.
     :raise ImportError:
         If it was not called from global scope.
+
+    For example you have the following files:
+
+        ``../packages/some_module.py``
+            .. code:: python
+
+                class SomeClass(object):
+                    def some_method(self):
+                        raise NotImplementedError('Not implemented on this game.')
+
+                engine_import()
+
+        ``../packages/orangebox/some_module.py``
+            .. code:: python
+
+                from some_module import SomeClass
+
+                class SomeClass(SomeClass):
+                    def some_method(self):
+                        return 'OrangeBox'
+
+        ``../packages/orangebox/cstrike/some_module.py``
+
+            .. code:: python
+
+                from some_module import SomeClass
+
+                class SomeClass(SomeClass):
+                    def some_method(self):
+                        return 'Counter-Strike: Source'
+
+        ``../plugins/plugin/plugin.py``
+            .. code:: python
+
+                from some_module import SomeClass
+
+                print(SomeClass().some_method())
+
+    Loading the `plugin` plugin would prints the following for
+    ``Counter-Strike: Source``:
+        .. code:: python
+
+            Counter-Strike: Source
+
+    The following for every other ``OrangeBox`` games:
+        .. code:: python
+
+            OrangeBox
+
+    And would raise a ``NotImplementedError`` error by default
+    for any other games.
     """
     f = currentframe().f_back
     if f.f_locals is not f.f_globals:
