@@ -20,7 +20,7 @@ import hashlib
 from inspect import currentframe
 from inspect import getmodule
 from inspect import isclass
-from inspect import isfunction
+from inspect import isroutine
 #   OS
 from os import sep
 #   Path
@@ -470,18 +470,18 @@ def engine_import(skippables=(), skip_privates=True):
                         if (k == '__doc__' and
                                 getattr(base, '__doc__', None) is not None):
                             continue
-                        if isfunction(v) and hasattr(base, k):
+                        if isroutine(v) and hasattr(base, k):
                             func = getattr(base, k)
-                            if isfunction(func):
-                                update_wrapper(v, func)
+                            if isroutine(func):
+                                update_wrapper(getattr(v, '__func__', v), func)
                         setattr(base, k, v)
                     continue
             if hasattr(caller, attr):
                 o = getattr(caller, attr)
                 if o is obj:
                     continue
-                elif isfunction(o):
-                    update_wrapper(obj, o)
+                elif isroutine(o):
+                    update_wrapper(getattr(obj, '__func__', obj), o)
             setattr(caller, attr, obj)
 
 def get_wrapped(func):
@@ -495,6 +495,6 @@ def get_wrapped(func):
         The wrapped function or ``None`` if the given wrapper is not wrapping
         any function.
     """
-    if not isfunction(func):
+    if not isroutine(func):
         raise TypeError(f'"{func}" is not a function.')
-    return getattr(func, '__wrapped__', None)
+    return getattr(getattr(func, '__func__', func), '__wrapped__', None)

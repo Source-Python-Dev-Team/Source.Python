@@ -6,6 +6,8 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python
+#   Core
+from core import get_wrapped
 #   Weapons
 from weapons.manager import weapon_manager
 
@@ -37,10 +39,10 @@ class Entity(Entity):
         index = _weapon_names_for_definition.get(classname)
         if index is not None:
             parent_class = _weapon_parents.get(classname)
-            entity = super().create(parent_class or classname)
+            entity = get_wrapped(Entity.create)(parent_class or classname)
             entity.item_definition_index = index
         else:
-            entity = super().create(classname)
+            entity = get_wrapped(Entity.create)(classname)
         return entity
 
     @classmethod
@@ -63,4 +65,4 @@ class Entity(Entity):
                     'm_AttributeManager.m_Item.m_iItemDefinitionIndex'
                 ) in (index, 0):
                     return cls(entity.index)
-        return super().find(classname)
+        return get_wrapped(Entity.find)(classname)

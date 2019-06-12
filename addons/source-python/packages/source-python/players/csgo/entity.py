@@ -32,7 +32,7 @@ class Player(Player):
 
     def _get_kills(self):
         """Return the number of kills the player has."""
-        return super().kills
+        return self.__getattr__('kills')
 
     def _set_kills(self, value):
         """Set the number of kills the player has."""
@@ -43,7 +43,7 @@ class Player(Player):
 
     def _get_deaths(self):
         """Return the number of deaths the player has."""
-        return super().deaths
+        return self.__getattr__('deaths')
 
     def _set_deaths(self, value):
         """Set the number of deaths the player has."""
@@ -54,7 +54,7 @@ class Player(Player):
 
     def _get_assists(self):
         """Return the number of assists the player has."""
-        return super().assists
+        return self.__getattr__('assists')
 
     def _set_assists(self, value):
         """Set the number of assists the player has."""
