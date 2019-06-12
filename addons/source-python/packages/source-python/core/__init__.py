@@ -380,8 +380,6 @@ def engine_import(skippables=(), skip_privates=True):
         ``../packages/orangebox/some_module.py``
             .. code:: python
 
-                from some_module import SomeClass
-
                 class SomeClass(SomeClass):
                     def some_method(self):
                         return 'OrangeBox'
@@ -389,8 +387,6 @@ def engine_import(skippables=(), skip_privates=True):
         ``../packages/orangebox/cstrike/some_module.py``
 
             .. code:: python
-
-                from some_module import SomeClass
 
                 class SomeClass(SomeClass):
                     def some_method(self):
