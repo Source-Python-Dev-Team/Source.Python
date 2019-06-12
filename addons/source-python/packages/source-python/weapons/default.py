@@ -23,12 +23,22 @@ __all__ = ('NoWeaponManager',
 class NoWeaponManager(dict):
     """Default class to use if no game specific weapon ini file is found."""
 
-    def __getattribute__(self, attr):
+    def __getattr__(self, attr):
         """Raise an error when trying to get an attribute."""
         raise NotImplementedError(
             'No support for game "{0}"'.format(GAME_NAME))
 
     def __setattr__(self, attr, value):
+        """Raise an error when trying to set an attribute."""
+        raise NotImplementedError(
+            'No support for game "{0}"'.format(GAME_NAME))
+
+    def __getitem__(self, item):
+        """Raise an error when trying to get an attribute."""
+        raise NotImplementedError(
+            'No support for game "{0}"'.format(GAME_NAME))
+
+    def __setitem__(self, item, value):
         """Raise an error when trying to set an attribute."""
         raise NotImplementedError(
             'No support for game "{0}"'.format(GAME_NAME))
