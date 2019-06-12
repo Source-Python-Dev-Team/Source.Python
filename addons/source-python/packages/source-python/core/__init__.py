@@ -31,6 +31,8 @@ from platform import system
 from runpy import run_path
 #   Sys
 import sys
+#   Types
+from types import MethodType
 #   Urllib
 from urllib.request import urlopen
 #   Weakref
@@ -484,11 +486,13 @@ def engine_import(skippables=(), skip_privates=True):
                     update_wrapper(getattr(obj, '__func__', obj), o)
             setattr(caller, attr, obj)
 
-def get_wrapped(func):
+def get_wrapped(func, self=None):
     """Returns the wrapped function of a wrapper function.
 
     :param function func:
         The wrapper function to get the wrapped function from.
+    :param object self:
+        Object or class to bind the wrapped method to.
     :raise TypeError:
         If the given wrapper is not a function.
     :return:
@@ -497,4 +501,7 @@ def get_wrapped(func):
     """
     if not isroutine(func):
         raise TypeError(f'"{func}" is not a function.')
-    return getattr(getattr(func, '__func__', func), '__wrapped__', None)
+    wrapped = getattr(getattr(func, '__func__', func), '__wrapped__', None)
+    if isinstance(wrapped, MethodType) and self is not None:
+        wrapped = MethodType(getattr(wrapped, '__func__', wrapped), self)
+    return wrapped

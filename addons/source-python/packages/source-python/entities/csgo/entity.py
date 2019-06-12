@@ -39,10 +39,10 @@ class Entity(Entity):
         index = _weapon_names_for_definition.get(classname)
         if index is not None:
             parent_class = _weapon_parents.get(classname)
-            entity = get_wrapped(Entity.create)(parent_class or classname)
+            entity = get_wrapped(Entity.create, cls)(parent_class or classname)
             entity.item_definition_index = index
         else:
-            entity = get_wrapped(Entity.create)(classname)
+            entity = get_wrapped(Entity.create, cls)(classname)
         return entity
 
     @classmethod
@@ -65,4 +65,4 @@ class Entity(Entity):
                     'm_AttributeManager.m_Item.m_iItemDefinitionIndex'
                 ) in (index, 0):
                     return cls(entity.index)
-        return get_wrapped(Entity.find)(classname)
+        return get_wrapped(Entity.find, cls)(classname)
