@@ -460,7 +460,7 @@ Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
     core/modules/weapons/weapons_scripts_wrap.cpp
     core/modules/weapons/weapons_entity.cpp
     core/modules/weapons/weapons_entity_wrap.cpp
-	core/modules/weapons/weapons_wrap.cpp
+    core/modules/weapons/weapons_wrap.cpp
 )
 
 # ------------------------------------------------------------------
