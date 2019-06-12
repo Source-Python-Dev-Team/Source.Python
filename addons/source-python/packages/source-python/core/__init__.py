@@ -188,11 +188,15 @@ class GameConfigObj(ConfigObj):
 def echo_console(text):
     """Echo a message to the server's console.
 
+    .. note::
+
+        Unlike ``console_message``, this function automatically adds a newline
+        at the end of the message.
+
     :param str text:
         Message to print to the console.
     """
-    for line in text.split('\n'):
-        console_message(line + '\n')
+    console_message(text + '\n')
 
 
 @contextmanager
