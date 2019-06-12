@@ -412,6 +412,28 @@ def engine_import(skippables=(), skip_privates=True):
 
     And would raise a ``NotImplementedError`` error by default
     for any other games.
+
+    It is important to keep in mind that the extension classes are not added
+    to the base class hierarchy. Every attributes are dynamically injected
+    into the original class meaning that you cannot use tools such as
+    ``super``. To call the wrapped method you need to use the ``get_wrapped``
+    function. Based on the example given above, if you had the following file:
+
+        ``../packages/orangebox/cstrike/some_module.py``
+
+            .. code:: python
+
+                from core import get_wrapped
+
+                class SomeClass(SomeClass):
+                    def some_method(self):
+                        engine = get_wrapped(SomeClass.some_method)(self)
+                        return f'Counter-Strike: Source is an {engine} game.'
+
+    This would prints the following on ``Counter-Strike: Source``:
+        .. code:: python
+
+            Counter-Strike: Source is an OrangeBox game.
     """
     f = currentframe().f_back
     if f.f_locals is not f.f_globals:
