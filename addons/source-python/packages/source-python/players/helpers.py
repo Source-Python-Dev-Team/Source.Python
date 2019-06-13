@@ -100,7 +100,6 @@ def get_client_language(index):
 
     :param int index: Index of the client.
     """
-    from players.helpers import playerinfo_from_index
     playerinfo = playerinfo_from_index(index)
     if playerinfo.is_fake_client() or 'BOT' in playerinfo.steamid:
         return ''
