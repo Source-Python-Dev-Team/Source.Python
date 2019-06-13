@@ -459,7 +459,9 @@ def engine_import(skippables=(), skip_privates=True):
                 continue
             if attr == '__all__':
                 if hasattr(caller, '__all__'):
-                    obj = tuple(sorted(set(obj + getattr(caller, '__all__'))))
+                    a = getattr(caller, '__all__')
+                    t = type(a)
+                    obj = t(sorted(set(t(obj) + a)))
             elif skip_privates and attr.startswith('_'):
                 continue
             elif isclass(obj):
