@@ -972,6 +972,54 @@ class Player(Entity, PlayerMixin):
         """
         return [weapon, target, velocity]
 
+    def give_named_item(self, item, *args, **kwargs):
+        """Give the player a named item.
+
+        :param str item:
+            The name of the item to give to the player.
+        :param tuple *args:
+            Various arguments specific to the current game.
+        :param dict **kwargs:
+            Various keyword arguments specific to the current game.
+        :return:
+            The pointer of the given item.
+        :rtype: Pointer
+
+        :raise NotImplementedError:
+            If this method is not available for the current game.
+
+        .. note::
+
+            This method is only available for the following games:
+
+                * Black Mesa: Source
+                * Counter-Strike: Global Offensive
+                * Couter-Strike: Source
+                * Day of Defeat: Source
+                * Left 4 Dead 2
+                * Team Fortress 2
+        """
+        raise NotImplementedError(
+            'No support for game "{0}"'.format(GAME_NAME))
+
+    def has_c4(self):
+        """Return whether or not the player is carrying C4.
+
+        :rtype: bool
+
+        :raise NotImplementedError:
+            If this method is not available for the current game.
+
+        .. note::
+
+            This method is only available for the following games:
+
+                * Counter-Strike: Global Offensive
+                * Couter-Strike: Source
+        """
+        raise NotImplementedError(
+            'No support for game "{0}"'.format(GAME_NAME))
+
 
 # =============================================================================
 # >> HELPER FUNCTIONS

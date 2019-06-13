@@ -12,6 +12,7 @@ import codecs
 from collections import defaultdict
 #   Contextlib
 from contextlib import contextmanager
+from contextlib import suppress
 #   Functools
 from functools import update_wrapper
 #   Hashlib
@@ -474,10 +475,18 @@ def engine_import(skippables=(), skip_privates=True):
                         if (k == '__doc__' and
                                 getattr(base, '__doc__', None) is not None):
                             continue
-                        if isroutine(v) and hasattr(base, k):
-                            func = getattr(base, k)
-                            if isroutine(func):
-                                update_wrapper(getattr(v, '__func__', v), func)
+                        if hasattr(base, k):
+                            if isroutine(v):
+                                func = getattr(base, k)
+                                if isroutine(func):
+                                    update_wrapper(
+                                        getattr(v, '__func__', v), func)
+                            elif hasattr(v, '__doc__'):
+                                doc = getattr(
+                                    getattr(base, k), '__doc__', None)
+                                if doc is not None:
+                                    with suppress(AttributeError):
+                                        setattr(v, '__doc__', doc)
                         setattr(base, k, v)
                     continue
             if hasattr(caller, attr):
