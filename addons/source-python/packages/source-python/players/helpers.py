@@ -6,11 +6,12 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
+#   Core
+from core import engine_import
 #   Engines
 from engines.server import engine_server
 #   Players
 from players import PlayerGenerator
-from players._language import get_client_language
 
 
 # =============================================================================
@@ -89,3 +90,25 @@ __all__ = ('address_from_playerinfo',
            'userid_from_playerinfo',
            'userid_from_pointer',
            )
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def get_client_language(index):
+    """Return the language of the given client.
+
+    :param int index: Index of the client.
+    """
+    from players.helpers import playerinfo_from_index
+    playerinfo = playerinfo_from_index(index)
+    if playerinfo.is_fake_client() or 'BOT' in playerinfo.steamid:
+        return ''
+
+    return engine_server.get_client_convar_value(index, 'cl_language')
+
+
+# =============================================================================
+# >> ENGINE/GAME IMPORTS
+# =============================================================================
+engine_import()

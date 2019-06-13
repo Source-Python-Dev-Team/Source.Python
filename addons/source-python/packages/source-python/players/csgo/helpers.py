@@ -1,4 +1,4 @@
-# ../players/_language/cache.py
+# ../players/csgo/helpers.py
 
 """Provides a way to get a player's language using a cache."""
 
