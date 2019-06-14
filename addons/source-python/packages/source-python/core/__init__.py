@@ -442,7 +442,7 @@ def engine_import(skippables=(), skip_privates=True):
     if f.f_locals is not f.f_globals:
         raise ImportError(
             '"engine_import" must only be called from global scopes.')
-    skippables = ENGINE_IMPORT_SKIPPABLES + skippables
+    skippables = ENGINE_IMPORT_SKIPPABLES + tuple(skippables)
     caller = getmodule(f)
     directory, name = Path(caller.__file__).splitpath()
     for subfolder in (SOURCE_ENGINE, GAME_NAME):
