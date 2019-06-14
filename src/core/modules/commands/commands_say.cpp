@@ -268,7 +268,7 @@ void SayConCommand::Dispatch( const CCommand& command )
 	SayCommandMap::iterator iter;
 	if (find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, stripped_command[0], iter))
 	{
-		if(iter->second->Dispatch(stripped_command, iIndex, bTeamOnly)  == BLOCK)
+		if(iter->second->Dispatch(stripped_command, iIndex, bTeamOnly) == BLOCK)
 		{
 			// Block the command
 			return;

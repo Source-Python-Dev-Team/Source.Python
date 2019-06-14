@@ -149,6 +149,9 @@ CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
 	m_pOldCommand(pConCommand)
 {
 	m_Name = strdup(szName);
+	
+	m_vecCallables[HOOKTYPE_PRE] = new CUtlVector<object>();
+	m_vecCallables[HOOKTYPE_POST] = new CUtlVector<object>();
 }
 
 //-----------------------------------------------------------------------------
@@ -170,6 +173,9 @@ CServerCommandManager::~CServerCommandManager()
 	}
 
 	free((char*)m_Name);
+
+	delete m_vecCallables[HOOKTYPE_PRE];
+	delete m_vecCallables[HOOKTYPE_POST];
 }
 
 //-----------------------------------------------------------------------------
@@ -183,34 +189,24 @@ void CServerCommandManager::Init()
 //-----------------------------------------------------------------------------
 // Adds a callable to a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
-void CServerCommandManager::AddCallback( PyObject* pCallable )
+void CServerCommandManager::AddCallback( PyObject* pCallable, HookType_t type )
 {
-	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
+	if( !m_vecCallables[type]->HasElement(oCallable) )
 	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
+		m_vecCallables[type]->AddToTail(oCallable);
 	}
 }
 
 //-----------------------------------------------------------------------------
 // Removes a callable from a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
-void CServerCommandManager::RemoveCallback( PyObject* pCallable )
+void CServerCommandManager::RemoveCallback( PyObject* pCallable, HookType_t type )
 {
-	// Get the object instance of the callable
 	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Remove the callback from the CServerCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
-
-	// Are there any more callbacks registered for this command?
-	if( !m_vecCallables.Count() )
+	m_vecCallables[type]->FindAndRemove(oCallable);
+	if( !m_vecCallables[HOOKTYPE_PRE]->Count() && !m_vecCallables[HOOKTYPE_POST]->Count() )
 	{
-		// Remove the CServerCommandManager instance
 		RemoveCServerCommandManager(m_Name);
 	}
 }
@@ -220,39 +216,41 @@ void CServerCommandManager::RemoveCallback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 void CServerCommandManager::Dispatch( const CCommand& command )
 {
-	// Loop through all registered callbacks for the command
-	// (use equals also to know when to call the old callback)
-	for(int i = 0; i <= m_vecCallables.Count(); i++)
+	bool block = false;
+
+	// Pre hook callbacks
+	for(int i = 0; i < m_vecCallables[HOOKTYPE_PRE]->Count(); i++)
 	{
+		BEGIN_BOOST_PY()
 
-		// Is the current iteration for a registered callback?
-		if( i < m_vecCallables.Count() )
-		{
-			
-			BEGIN_BOOST_PY()
+			PyObject* pCallable = m_vecCallables[HOOKTYPE_PRE]->Element(i).ptr();
+			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command));
 
-				// Get the PyObject instance of the callable
-				PyObject* pCallable = m_vecCallables[i].ptr();
+			// Does the callable wish to block the command?
+			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
+			{
+				block = true;
+				break;
+			}
 
-				// Call the callable and store its return value
-				object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command));
+		END_BOOST_PY_NORET()
+	}
 
-				// Does the callable wish to block the command?
-				if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
-				{
-					// Block the command
-					break;
-				}
+	// Was the command previously registered?
+	if(!block && m_pOldCommand)
+	{
+		m_pOldCommand->Dispatch(command);
+	}
 
-			END_BOOST_PY_NORET()
-		}
+	// Post hook callbacks
+	for(int i = 0; i < m_vecCallables[HOOKTYPE_POST]->Count(); i++)
+	{
+		BEGIN_BOOST_PY()
 
-		// Was the command previously registered?
-		else if(m_pOldCommand)
-		{
-			// Call the old callback
-			m_pOldCommand->Dispatch(command);
-		}
+			PyObject* pCallable = m_vecCallables[HOOKTYPE_POST]->Element(i).ptr();
+			CALL_PY_FUNC(pCallable, boost::ref(command));
+
+		END_BOOST_PY_NORET()
 	}
 }
 

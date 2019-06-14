@@ -32,6 +32,8 @@
 #include "utlvector.h"
 #include "convar.h"
 
+#include "hook.h"
+
 //-----------------------------------------------------------------------------
 // Server Command Manager class.
 //-----------------------------------------------------------------------------
@@ -42,15 +44,15 @@ public:
 	~CServerCommandManager();
 	virtual void Init();
 
-	void AddCallback(PyObject* pCallable);
-	void RemoveCallback(PyObject* pCallable);
+	void AddCallback(PyObject* pCallable, HookType_t type);
+	void RemoveCallback(PyObject* pCallable, HookType_t type);
 
 protected:
 	void Dispatch( const CCommand& command);
 
 private:
 	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	CUtlVector<object> m_vecCallables;
+	std::map< HookType_t, CUtlVector<object>* > m_vecCallables;
 	const char* m_Name;
 	ConCommand* m_pOldCommand;
 };

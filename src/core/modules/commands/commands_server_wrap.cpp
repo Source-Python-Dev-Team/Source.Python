@@ -82,13 +82,13 @@ void export_server_command_manager(scope _server)
 		.def("add_callback",
 			&CServerCommandManager::AddCallback,
 			"Adds a callback to the server command's list.",
-			args("callable")
+			(arg("callable"), arg("hook_type")=HOOKTYPE_PRE)
 		)
 
 		.def("remove_callback",
 			&CServerCommandManager::RemoveCallback,
 			"Removes a callback from the server command's list.",
-			args("callable")
+			(arg("callable"), arg("hook_type")=HOOKTYPE_PRE)
 		)
 
 		ADD_MEM_TOOLS(CServerCommandManager)
