@@ -471,7 +471,9 @@ def engine_import(skippables=(), skip_privates=True):
                         base.__module__ == caller.__name__):
                     for k, v in obj.__dict__.items():
                         if (f'{attr}.{k}' in skippables or
-                                (skip_privates and k.startswith('_'))):
+                                (skip_privates and k.startswith('_') and
+                                    not (k.startswith('__') and
+                                        k.endswith('__')))):
                             continue
                         if (k == '__doc__' and
                                 getattr(base, '__doc__', None) is not None):
