@@ -38,9 +38,11 @@
 #include "utilities/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
+#include "boost/unordered_map.hpp"
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
 #include "convar.h"
+
 
 //-----------------------------------------------------------------------------
 // Global say command mapping.
@@ -243,37 +245,35 @@ void SayConCommand::Dispatch( const CCommand& command )
 		return;
 	}
 
+	bool block = false;
+
 	// Loop through all registered Say Filter callbacks
-	for(int i = 0; i < s_SayFilters.m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
+	CListenerManager* mngr = &s_SayFilters;
+	FOREACH_CALLBACK_WITH_MNGR(
+		mngr,
+		object returnValue,
+		if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
+		{
+			block = true;
+		},
+		boost::ref(stripped_command), iIndex, bTeamOnly
+	)
 
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = s_SayFilters.m_vecCallables[i].ptr();
+	if (block)
+		return;
 
-			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(stripped_command), iIndex, bTeamOnly);
-
-			// Does the current Say Filter wish to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
-			{
-				// Block the command
-				return;
-			}
-
-		END_BOOST_PY_NORET()
-	}
-
-	
+	block = false;
 	SayCommandMap::iterator iter;
 	if (find_manager<SayCommandMap, SayCommandMap::iterator>(g_SayCommandMap, stripped_command[0], iter))
 	{
 		if(iter->second->Dispatch(stripped_command, iIndex, bTeamOnly) == BLOCK)
 		{
-			// Block the command
-			return;
+			block = true;
 		}
 	}
+
+	if (block)
+		return;
 	
 	// Was the command previously registered?
 	if( m_pOldCommand )
@@ -304,15 +304,7 @@ CSayCommandManager::~CSayCommandManager()
 //-----------------------------------------------------------------------------
 void CSayCommandManager::AddCallback( PyObject* pCallable )
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
-	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
-	}
+	m_vecCallables.RegisterListener(pCallable);
 }
 
 //-----------------------------------------------------------------------------
@@ -320,14 +312,10 @@ void CSayCommandManager::AddCallback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 void CSayCommandManager::RemoveCallback( PyObject* pCallable )
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Remove the callback from the CSayCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
+	m_vecCallables.UnregisterListener(pCallable);
 
 	// Are there any more callbacks registered for this command?
-	if( !m_vecCallables.Count() )
+	if( !m_vecCallables.GetCount() )
 	{
 		// Remove the CSayCommandManager instance
 		RemoveCSayCommandManager(m_Name);
@@ -339,26 +327,21 @@ void CSayCommandManager::RemoveCallback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 CommandReturn CSayCommandManager::Dispatch( const CCommand& command, int iIndex, bool bTeamOnly)
 {
-	// Loop through all callables registered for the CSayCommandManager instance
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
+	bool block = false;
 
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
+	CListenerManager* mngr = &m_vecCallables;
+	FOREACH_CALLBACK_WITH_MNGR(
+		mngr,
+		object returnValue,
+		if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
+		{
+			block = true;
+		},
+		boost::ref(command), iIndex, bTeamOnly
+	)
 
-			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command), iIndex, bTeamOnly);
-
-			// Does the callable wish to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
-			{
-				// Block the command
-				return BLOCK;
-			}
-
-		END_BOOST_PY_NORET()
-	}
+	if (block)
+		return BLOCK;
 
 	return CONTINUE;
 }

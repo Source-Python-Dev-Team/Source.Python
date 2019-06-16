@@ -48,10 +48,26 @@
 // Calls all listeners of the given manager
 #define CALL_LISTENERS(name, ...) \
 	extern CListenerManager* Get##name##ListenerManager(); \
-	for(int i = 0; i < Get##name##ListenerManager()->m_vecCallables.Count(); i++) \
+	CALL_LISTENERS_WITH_MNGR(Get##name##ListenerManager(), ##__VA_ARGS__)
+
+#define CALL_LISTENERS_WITH_MNGR(mngr, ...) \
+	for(int i = 0; i < mngr->m_vecCallables.Count(); i++) \
 	{ \
 		BEGIN_BOOST_PY() \
-			CALL_PY_FUNC(Get##name##ListenerManager()->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
+			CALL_PY_FUNC(mngr->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
+		END_BOOST_PY_NORET() \
+	}
+
+#define FOREACH_CALLBACK(name, return_var, action, ...) \
+	extern CListenerManager* Get##name##ListenerManager(); \
+	FOREACH_CALLBACK_WITH_MNGR(Get##name##ListenerManager(), return_var, action, ##__VA_ARGS__)
+
+#define FOREACH_CALLBACK_WITH_MNGR(mngr, return_var, action, ...) \
+	for(int i = 0; i < mngr->m_vecCallables.Count(); i++) \
+	{ \
+		BEGIN_BOOST_PY() \
+			return_var = CALL_PY_FUNC(mngr->m_vecCallables[i].ptr(), ##__VA_ARGS__); \
+			action \
 		END_BOOST_PY_NORET() \
 	}
 

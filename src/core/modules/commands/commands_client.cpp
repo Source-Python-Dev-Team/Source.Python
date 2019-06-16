@@ -30,6 +30,7 @@
 // This is required for accessing m_nFlags without patching convar.h
 #define private public
 
+#include "boost/unordered_map.hpp"
 #include "commands_client.h"
 #include "commands.h"
 #include "edict.h"
@@ -115,36 +116,35 @@ PLUGIN_RESULT DispatchClientCommand(edict_t* pEntity, const CCommand &command)
 	if (!IndexFromEdict(pEntity, iIndex))
 		return PLUGIN_CONTINUE;
 
-	// Loop through all registered Client Command Filters
-	for(int i = 0; i < s_ClientCommandFilters.m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
+	bool block = false;
+	
+	CListenerManager* mngr = &s_ClientCommandFilters;
+	FOREACH_CALLBACK_WITH_MNGR(
+		mngr,
+		object returnValue,
+		if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
+		{
+			block = true;
+		},
+		boost::ref(command), iIndex
+	)
 
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = s_ClientCommandFilters.m_vecCallables[i].ptr();
+	if (block)
+		return PLUGIN_STOP;
 
-			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command), iIndex);
-
-			// Does the Client Command Filter want to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int)BLOCK)
-			{
-				// Block the command
-				return PLUGIN_STOP;
-			}
-
-		END_BOOST_PY_NORET()
-	}
-
+	block = false;
 	ClientCommandMap::iterator iter;
 	if (find_manager<ClientCommandMap, ClientCommandMap::iterator>(g_ClientCommandMap, command.Arg(0), iter))
 	{
 		if( !iter->second->Dispatch(command, iIndex))
 		{
-			// Block the command
-			return PLUGIN_STOP;
+			block = true;
 		}
 	}
+
+	if (block)
+		return PLUGIN_STOP;
+
 	return PLUGIN_CONTINUE;
 }
 
@@ -169,15 +169,7 @@ CClientCommandManager::~CClientCommandManager()
 //-----------------------------------------------------------------------------
 void CClientCommandManager::AddCallback( PyObject* pCallable )
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Is the callable already in the vector?
-	if( !m_vecCallables.HasElement(oCallable) )
-	{
-		// Add the callable to the vector
-		m_vecCallables.AddToTail(oCallable);
-	}
+	m_vecCallables.RegisterListener(pCallable);
 }
 
 //-----------------------------------------------------------------------------
@@ -185,14 +177,10 @@ void CClientCommandManager::AddCallback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 void CClientCommandManager::RemoveCallback( PyObject* pCallable )
 {
-	// Get the object instance of the callable
-	object oCallable = object(handle<>(borrowed(pCallable)));
-
-	// Remove the callback from the CClientCommandManager instance
-	m_vecCallables.FindAndRemove(oCallable);
+	m_vecCallables.UnregisterListener(pCallable);
 
 	// Are there any more callbacks registered for this command?
-	if( !m_vecCallables.Count() )
+	if( !m_vecCallables.GetCount() )
 	{
 		// Remove the CClientCommandManager instance
 		RemoveCClientCommandManager(m_Name);
@@ -204,26 +192,21 @@ void CClientCommandManager::RemoveCallback( PyObject* pCallable )
 //-----------------------------------------------------------------------------
 CommandReturn CClientCommandManager::Dispatch( const CCommand& command, int iIndex )
 {
-	// Loop through all callables registered for the CClientCommandManager instance
-	for(int i = 0; i < m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY()
+	bool block = false;
+	
+	CListenerManager* mngr = &m_vecCallables;
+	FOREACH_CALLBACK_WITH_MNGR(
+		mngr,
+		object returnValue,
+		if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
+		{
+			block = true;
+		},
+		boost::ref(command), iIndex
+	)
 
-			// Get the PyObject instance of the callable
-			PyObject* pCallable = m_vecCallables[i].ptr();
-
-			// Call the callable and store its return value
-			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command), iIndex);
-
-			// Does the callable wish to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
-			{
-				// Block the command
-				return BLOCK;
-			}
-
-		END_BOOST_PY_NORET()
-	}
+	if (block)
+		return BLOCK;
 
 	return CONTINUE;
 }

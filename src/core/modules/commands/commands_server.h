@@ -29,9 +29,9 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "utlvector.h"
 #include "convar.h"
 
+#include "modules/listeners/listeners_manager.h"
 #include "hook.h"
 
 //-----------------------------------------------------------------------------
@@ -52,7 +52,7 @@ protected:
 
 private:
 	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
-	std::map< HookType_t, CUtlVector<object>* > m_vecCallables;
+	std::map< HookType_t, CListenerManager* > m_vecCallables;
 	const char* m_Name;
 	ConCommand* m_pOldCommand;
 };

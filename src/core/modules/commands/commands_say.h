@@ -29,12 +29,12 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "boost/unordered_map.hpp"
 #include "utilities/sp_util.h"
 #include "commands.h"
-#include "utlvector.h"
 #include "edict.h"
 #include "game/server/iplayerinfo.h"
+
+#include "modules/listeners/listeners_manager.h"
 
 
 //-----------------------------------------------------------------------------
@@ -88,7 +88,7 @@ public:
 
 private:
 	const char* m_Name;
-	CUtlVector<object> m_vecCallables;
+	CListenerManager m_vecCallables;
 };
 
 #endif // _COMMANDS_SAY_H

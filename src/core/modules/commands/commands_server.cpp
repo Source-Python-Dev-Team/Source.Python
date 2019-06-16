@@ -150,8 +150,8 @@ CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
 {
 	m_Name = strdup(szName);
 	
-	m_vecCallables[HOOKTYPE_PRE] = new CUtlVector<object>();
-	m_vecCallables[HOOKTYPE_POST] = new CUtlVector<object>();
+	m_vecCallables[HOOKTYPE_PRE] = new CListenerManager();
+	m_vecCallables[HOOKTYPE_POST] = new CListenerManager();
 }
 
 //-----------------------------------------------------------------------------
@@ -191,11 +191,7 @@ void CServerCommandManager::Init()
 //-----------------------------------------------------------------------------
 void CServerCommandManager::AddCallback( PyObject* pCallable, HookType_t type )
 {
-	object oCallable = object(handle<>(borrowed(pCallable)));
-	if( !m_vecCallables[type]->HasElement(oCallable) )
-	{
-		m_vecCallables[type]->AddToTail(oCallable);
-	}
+	m_vecCallables[type]->RegisterListener(pCallable);
 }
 
 //-----------------------------------------------------------------------------
@@ -204,8 +200,8 @@ void CServerCommandManager::AddCallback( PyObject* pCallable, HookType_t type )
 void CServerCommandManager::RemoveCallback( PyObject* pCallable, HookType_t type )
 {
 	object oCallable = object(handle<>(borrowed(pCallable)));
-	m_vecCallables[type]->FindAndRemove(oCallable);
-	if( !m_vecCallables[HOOKTYPE_PRE]->Count() && !m_vecCallables[HOOKTYPE_POST]->Count() )
+	m_vecCallables[type]->UnregisterListener(pCallable);
+	if( !m_vecCallables[HOOKTYPE_PRE]->GetCount() && !m_vecCallables[HOOKTYPE_POST]->GetCount() )
 	{
 		RemoveCServerCommandManager(m_Name);
 	}
@@ -219,39 +215,27 @@ void CServerCommandManager::Dispatch( const CCommand& command )
 	bool block = false;
 
 	// Pre hook callbacks
-	for(int i = 0; i < m_vecCallables[HOOKTYPE_PRE]->Count(); i++)
-	{
-		BEGIN_BOOST_PY()
+	FOREACH_CALLBACK_WITH_MNGR(
+		m_vecCallables[HOOKTYPE_PRE],
+		object returnValue,
+		if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
+		{
+			block = true;
+		},
+		boost::ref(command)
+	)
 
-			PyObject* pCallable = m_vecCallables[HOOKTYPE_PRE]->Element(i).ptr();
-			object returnValue = CALL_PY_FUNC(pCallable, boost::ref(command));
-
-			// Does the callable wish to block the command?
-			if( !returnValue.is_none() && extract<int>(returnValue) == (int) BLOCK)
-			{
-				block = true;
-				break;
-			}
-
-		END_BOOST_PY_NORET()
-	}
+	if (block)
+		return;
 
 	// Was the command previously registered?
-	if(!block && m_pOldCommand)
+	if(m_pOldCommand)
 	{
 		m_pOldCommand->Dispatch(command);
 	}
 
 	// Post hook callbacks
-	for(int i = 0; i < m_vecCallables[HOOKTYPE_POST]->Count(); i++)
-	{
-		BEGIN_BOOST_PY()
-
-			PyObject* pCallable = m_vecCallables[HOOKTYPE_POST]->Element(i).ptr();
-			CALL_PY_FUNC(pCallable, boost::ref(command));
-
-		END_BOOST_PY_NORET()
-	}
+	CALL_LISTENERS_WITH_MNGR(m_vecCallables[HOOKTYPE_POST], boost::ref(command))
 }
 
 //-----------------------------------------------------------------------------
