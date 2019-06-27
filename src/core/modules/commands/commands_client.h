@@ -29,15 +29,15 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-#include "boost/unordered_map.hpp"
 #include "sp_python.h"
 #include "utilities/sp_util.h"
 #include "utilities/wrap_macros.h"
-#include "utlvector.h"
 #include "edict.h"
 #include "convar.h"
 #include "commands.h"
 #include "game/server/iplayerinfo.h"
+
+#include "modules/listeners/listeners_manager.h"
 
 
 //-----------------------------------------------------------------------------
@@ -57,7 +57,7 @@ public:
 	const char* GetName();
 
 private:
-	CUtlVector<object> m_vecCallables;
+	CListenerManager m_vecCallables;
 	const char* m_Name;
 };
 
