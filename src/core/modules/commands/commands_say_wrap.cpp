@@ -30,11 +30,11 @@
 // This is required for accessing m_nFlags without patching convar.h
 #define private public
 
-#include "commands_say.h"
 #include "export_main.h"
 #include "utilities/wrap_macros.h"
 #include "modules/memory/memory_tools.h"
 #include "boost/unordered_map.hpp"
+#include "commands_say.h"
 
 
 //-----------------------------------------------------------------------------

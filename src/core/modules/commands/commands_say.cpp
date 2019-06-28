@@ -32,9 +32,6 @@
 
 #include <iostream>
 #include <string>
-#include "commands_say.h"
-#include "commands_server.h"
-#include "commands.h"
 #include "utilities/call_python.h"
 #include "boost/python/call.hpp"
 #include "boost/shared_array.hpp"
@@ -42,6 +39,9 @@
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
 #include "convar.h"
+
+#include "commands_say.h"
+#include "commands.h"
 
 
 //-----------------------------------------------------------------------------
