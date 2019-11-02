@@ -143,7 +143,7 @@ bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 					case DATA_TYPE_DOUBLE:		SetReturnValue<double>(pHook, pyretval); break;
 					case DATA_TYPE_POINTER:
 					{
-						CPointer* pPtr = extract<CPointer *>(pyretval);
+						CPointer* pPtr = ExtractPointer(pyretval);
 						pHook->SetReturnValue<unsigned long>(pPtr->m_ulAddr);
 					} break;
 					case DATA_TYPE_STRING:		SetReturnValue<const char*>(pHook, pyretval); break;
