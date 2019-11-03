@@ -339,7 +339,7 @@ Called when the button state of a player changed.
     from listeners import OnButtonStateChanged
 
     @OnButtonStateChanged
-    def on_button_state_changed(player, old_buttons, new_buttons):
+    def on_button_state_changed(index, old_buttons, new_buttons):
         pass
 
 .. seealso::
@@ -358,7 +358,7 @@ Called when a player runs a command.
     from listeners import OnPlayerRunCommand
 
     @OnPlayerRunCommand
-    def on_player_run_command(player, user_cmd):
+    def on_player_run_command(index, user_cmd):
         pass
 
 

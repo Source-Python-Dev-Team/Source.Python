@@ -462,10 +462,11 @@ def get_button_combination_status(old_buttons, new_buttons, combination):
     .. code:: python
 
         @OnButtonStateChanged
-        def on_buttons_state_changed(player, old_buttons, new_buttons):
+        def on_buttons_state_changed(index, old_buttons, new_buttons):
             status = get_button_combination_status(old_buttons, new_buttons,
                 PlayerButtons.ATTACK|PlayerButtons.JUMP)
-
+            player = Player(index)
+            
             if status == ButtonStatus.PRESSED:
                 SayText2(
                     '{} is jumping and attacking.'.format(player.name)).send()

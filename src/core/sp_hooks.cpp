@@ -175,7 +175,6 @@ bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 	if (!run_command_manager->GetCount() && !button_state_manager->GetCount())
 		return false;
 
-	static object Player = import("players.entity").attr("Player");
 
 	CBaseEntity* pEntity = pHook->GetArgument<CBaseEntity*>(0);
 	unsigned int index;
@@ -190,8 +189,7 @@ bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 	CUserCmd* pCmd = pHook->GetArgument<CUserCmd*>(1);
 #endif
 
-	object player = Player(index);
-	CALL_LISTENERS(OnPlayerRunCommand, player, ptr(pCmd));
+	CALL_LISTENERS(OnPlayerRunCommand, index, ptr(pCmd));
 
 	if (button_state_manager->GetCount())
 	{
@@ -201,7 +199,7 @@ bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 		int buttons = pWrapper->GetDatamapPropertyByOffset<int>(offset);
 		if (buttons != pCmd->buttons)
 		{
-			CALL_LISTENERS(OnButtonStateChanged, player, buttons, pCmd->buttons);
+			CALL_LISTENERS(OnButtonStateChanged, index, buttons, pCmd->buttons);
 		}
 	}
 	
