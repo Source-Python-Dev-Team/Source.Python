@@ -145,5 +145,8 @@ void export_weapon_entity(scope _entity)
 		":rtype: int");
 
 
-	_WeaponMixin ADD_MEM_TOOLS(WeaponMixin);
+	CLASSMETHOD(_WeaponMixin, GET_OBJ_NAME, &WeaponMixin::_obj)
+	ADD_PTR(WeaponMixin)
+	ADD_SIZE(WeaponMixin)
+	STORE_CLASS("WeaponMixin", "WeaponMixin")
 }

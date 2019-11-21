@@ -730,5 +730,8 @@ void export_player_wrapper(scope _players)
 		".. note:: Only available in TF2.\n\n"
 		":rtype: int");
 
-	_PlayerMixin ADD_MEM_TOOLS(PlayerMixin);
+	CLASSMETHOD(_PlayerMixin, GET_OBJ_NAME, &PlayerMixin::_obj)
+	ADD_PTR(PlayerMixin)
+	ADD_SIZE(PlayerMixin)
+	STORE_CLASS("PlayerMixin", "PlayerMixin")
 }

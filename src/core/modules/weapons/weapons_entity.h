@@ -44,6 +44,7 @@ class WeaponMixin: public CBaseEntityWrapper
 public:
 	static boost::shared_ptr<WeaponMixin> __init__(unsigned int uiEntityIndex);
 	static boost::shared_ptr<WeaponMixin> wrap(CBaseEntity* pEntity);
+	static object _obj(object cls, CPointer *pPtr);
 
 
 	float GetNextAttack();
