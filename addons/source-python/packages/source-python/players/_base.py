@@ -74,7 +74,7 @@ from auth.manager import auth_manager
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Player(PlayerMixin, Entity):
+class Player(Entity, PlayerMixin):
     """Class used to interact directly with players."""
 
     def __init__(self, index):
@@ -85,8 +85,7 @@ class Player(PlayerMixin, Entity):
         :raise ValueError:
             Raised if the index is invalid.
         """
-        PlayerMixin.__init__(self, index)
-        Entity.__init__(self, index)
+        super().__init__(index)
         object.__setattr__(self, '_playerinfo', None)
 
     @classmethod

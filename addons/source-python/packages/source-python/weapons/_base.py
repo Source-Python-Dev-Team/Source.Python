@@ -24,19 +24,8 @@ __all__ = ('Weapon',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Weapon(WeaponMixin, Entity):
+class Weapon(Entity, WeaponMixin):
     """Allows easy usage of the weapon's attributes."""
-
-    def __init__(self, index):
-        """Initialize the object.
-
-        :param int index:
-            A valid weapon index.
-        :raise ValueError:
-            Raised if the index is invalid.
-        """
-        WeaponMixin.__init__(self, index)
-        Entity.__init__(self, index)
 
     def _validate_clip(self):
         """Test if the weapon has a clip."""
