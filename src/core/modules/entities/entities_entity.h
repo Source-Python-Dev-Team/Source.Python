@@ -240,6 +240,7 @@ public:
 
 	// Other methods
 	bool IsPlayer();
+	bool IsWeapon();
 
 	Vector GetOrigin();
 	void SetOrigin(Vector& vec);

@@ -38,9 +38,8 @@ boost::shared_ptr<WeaponMixin> WeaponMixin::__init__(unsigned int uiEntityIndex)
 {
 	CBaseEntityWrapper* pEntity = (CBaseEntityWrapper*) ExcBaseEntityFromIndex(uiEntityIndex);
 
-	// TODO
-	//if (!pEntity->IsPlayer())
-	//	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Index '%d' is not a valid weapon.", uiEntityIndex);
+	if (!pEntity->IsWeapon())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Index '%d' is not a valid weapon.", uiEntityIndex);
 
 	return WeaponMixin::wrap(pEntity->GetBaseEntity());
 }

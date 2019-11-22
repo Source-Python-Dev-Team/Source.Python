@@ -100,6 +100,12 @@ void export_base_entity(scope _entity)
 		":rtype: bool"
 	);
 
+	BaseEntity.def("is_weapon",
+		&CBaseEntityWrapper::IsWeapon,
+		"Return True if the entity is a weapon.\n\n"
+		":rtype: bool"
+	);
+
 	BaseEntity.add_property(
 		"origin",
 		&CBaseEntityWrapper::GetOrigin,

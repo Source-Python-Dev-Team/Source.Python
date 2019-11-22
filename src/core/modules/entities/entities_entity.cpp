@@ -370,6 +370,18 @@ bool CBaseEntityWrapper::IsPlayer()
 	return iEntityIndex > WORLD_ENTITY_INDEX && iEntityIndex <= (unsigned int) gpGlobals->maxClients;
 }
 
+bool CBaseEntityWrapper::IsWeapon()
+{
+	datamap_t *pDatamap = GetDataDescMap();
+	while (pDatamap)
+	{
+		if (strcmp(pDatamap->dataClassName, "CBaseCombatWeapon") == 0)
+			return true;
+		pDatamap = pDatamap->baseMap;
+	}
+	return false;
+}
+
 IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
 {
 	return Wrap<IPhysicsObjectWrapper>(GetDatamapProperty<IPhysicsObject*>("m_pPhysicsObject"));
