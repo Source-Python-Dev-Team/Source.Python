@@ -53,6 +53,11 @@ boost::shared_ptr<WeaponMixin> WeaponMixin::wrap(CBaseEntity* pEntity)
 	);
 }
 
+object WeaponMixin::_obj(object cls, CPointer *pPtr)
+{
+	return cls(object(ExcIndexFromPointer(pPtr)));
+}
+
 
 // CBaseCombatWeapon
 float WeaponMixin::GetNextAttack()

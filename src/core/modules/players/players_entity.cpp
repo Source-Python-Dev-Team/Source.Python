@@ -51,6 +51,11 @@ boost::shared_ptr<PlayerMixin> PlayerMixin::wrap(CBaseEntity* pEntity)
 	);
 }
 
+object PlayerMixin::_obj(object cls, CPointer *pPtr)
+{
+	return cls(object(ExcIndexFromPointer(pPtr)));
+}
+
 
 // CBasePlayer
 float PlayerMixin::GetSpeed()

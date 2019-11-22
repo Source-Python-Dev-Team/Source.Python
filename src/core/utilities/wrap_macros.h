@@ -125,6 +125,24 @@ inline void* GetFuncPtr(Function func)
 
 
 //---------------------------------------------------------------------------------
+// Use these to declare classmethod wrappers.
+//---------------------------------------------------------------------------------
+#define CLASSMETHOD(cls, name, ...) \
+	classmethod(cls.def(name, __VA_ARGS__), name)
+
+template<typename T>
+T classmethod(T cls, const char *szName)
+{
+	PyTypeObject *self = downcast<PyTypeObject>(cls.ptr());
+	PyDict_SetItemString(
+		self->tp_dict, szName,
+		PyClassMethod_New(PyDict_GetItemString(self->tp_dict, szName))
+	);
+	return cls;
+};
+
+
+//---------------------------------------------------------------------------------
 // Use this template to create variadic class methods
 //---------------------------------------------------------------------------------
 template<class T>
