@@ -53,11 +53,6 @@ boost::shared_ptr<PlayerMixin> PlayerMixin::wrap(CBaseEntity* pEntity)
 
 object PlayerMixin::_obj(object cls, CPointer *pPtr)
 {
-	static PyTypeObject *type = converter::registry::query(typeid(PlayerMixin))->m_class_object;
-
-	if (type == downcast<PyTypeObject>(cls.ptr()))
-		return object(__init__(ExcIndexFromPointer(pPtr)));
-
 	return cls(object(ExcIndexFromPointer(pPtr)));
 }
 

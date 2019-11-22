@@ -55,11 +55,6 @@ boost::shared_ptr<WeaponMixin> WeaponMixin::wrap(CBaseEntity* pEntity)
 
 object WeaponMixin::_obj(object cls, CPointer *pPtr)
 {
-	static PyTypeObject *type = converter::registry::query(typeid(WeaponMixin))->m_class_object;
-
-	if (type == downcast<PyTypeObject>(cls.ptr()))
-		return object(__init__(ExcIndexFromPointer(pPtr)));
-
 	return cls(object(ExcIndexFromPointer(pPtr)));
 }
 
