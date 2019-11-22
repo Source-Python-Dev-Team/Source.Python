@@ -719,5 +719,5 @@ void export_base_entity_output(scope _entities)
 
 	BaseEntityOutput.NOT_IMPLEMENTED("fire_output");
 
-	BaseEntityOutput ADD_MEM_TOOLS(CBaseEntityOutputWrapper);
+	BaseEntityOutput ADD_MEM_TOOLS_WRAPPER(CBaseEntityOutputWrapper, CBaseEntityOutput);
 }

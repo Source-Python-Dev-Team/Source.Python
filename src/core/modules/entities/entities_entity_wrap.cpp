@@ -1052,7 +1052,7 @@ void export_base_entity(scope _entity)
 	);
 
 	// Add memory tools...
-	BaseEntity ADD_MEM_TOOLS(CBaseEntityWrapper);
+	BaseEntity ADD_MEM_TOOLS_WRAPPER(CBaseEntityWrapper, CBaseEntity);
 
 	// This must be after ADD_MEM_TOOLS, because it overrides the _size attribute
 	BaseEntity.add_property("_size",
