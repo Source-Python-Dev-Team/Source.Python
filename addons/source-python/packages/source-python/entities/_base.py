@@ -111,7 +111,7 @@ class EntityCaching(BaseEntity.__class__):
 
             # Successively initialize the base classes
             # This is required, because Boost's construction happens there
-            for base in (self,) + bases:
+            for base in dict.fromkeys((self,) + bases + self.__bases__):
                 getattr(
                     base.__init__, '__wrapped__', base.__init__)(
                         obj, index
