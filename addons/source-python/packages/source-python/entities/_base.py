@@ -10,6 +10,10 @@
 from collections import defaultdict
 #   Contextlib
 from contextlib import suppress
+#   FuncTools
+from functools import update_wrapper
+#   WeakRef
+from weakref import WeakKeyDictionary
 
 # Source.Python Imports
 #   Core
@@ -70,7 +74,62 @@ _entity_delays = defaultdict(set)
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Entity(BaseEntity):
+class EntityCaching(BaseEntity.__class__):
+    """Metaclass used to cache entity instances."""
+
+    # Internal cache dictionary
+    # Release the cached instances if the stored classes are garbage collected
+    # E.g. Subclasses from plugins that are unloaded, etc.
+    cache = WeakKeyDictionary()
+
+    def __new__(metaclass, classname, bases, attributes, caching=True):
+        """Creates a new entity class that will cache its instances."""
+        cls = super().__new__(
+            metaclass, classname, bases, attributes
+        )
+
+        # New instances of this class will be cached in that dictionary
+        if caching:
+            metaclass.cache[cls] = {}
+
+        def __init__(self, index):
+            # Does nothing, so we don't re-initialize cached instances, etc.
+            return
+        update_wrapper(__init__, cls.__init__)
+        cls.__init__ = __init__
+
+        def __new__(self, index):
+            # Let's first lookup for a cached instance
+            caching = self in metaclass.cache
+            if caching:
+                cache = metaclass.cache[self]
+                if index in cache:
+                    return cache[index]
+
+            # Nothing in cache, let's create a new instance
+            obj = cls.__base__.__new__(self, index)
+
+            # Successively initialize the base classes
+            # This is required, because Boost's construction happens there
+            for base in (self,) + bases:
+                getattr(
+                    base.__init__, '__wrapped__', base.__init__)(
+                        obj, index
+                    )
+
+            # Let's cache the new instance we just created
+            if caching:
+                cache[index] = obj
+
+            # We are done, let's return the instance
+            return obj
+        update_wrapper(__new__, cls.__new__)
+        cls.__new__ = __new__
+
+        return cls
+
+
+class Entity(BaseEntity, metaclass=EntityCaching):
     """Class used to interact directly with entities.
 
     Beside the standard way of doing stuff via methods and properties this
@@ -1030,6 +1089,10 @@ def _on_entity_deleted(base_entity):
 
     # Get the index of the entity...
     index = base_entity.index
+
+    # Cleanup the internal cache
+    for objects in EntityCaching.cache.values():
+        objects.pop(index, None)
 
     # Was no delay registered for this entity?
     if index not in _entity_delays:
