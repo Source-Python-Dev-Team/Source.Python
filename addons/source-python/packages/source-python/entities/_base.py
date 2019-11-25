@@ -100,11 +100,11 @@ class EntityCaching(BaseEntity.__class__):
 
         def __new__(self, index):
             # Let's first lookup for a cached instance
-            caching = self in metaclass.cache
-            if caching:
-                cache = metaclass.cache[self]
-                if index in cache:
-                    return cache[index]
+            cache = metaclass.cache.get(self, None)
+            if cache is not None:
+                obj = cache.get(index, None)
+                if obj is not None:
+                    return obj
 
             # Nothing in cache, let's create a new instance
             obj = cls.__base__.__new__(self, index)
@@ -118,7 +118,7 @@ class EntityCaching(BaseEntity.__class__):
                     )
 
             # Let's cache the new instance we just created
-            if caching:
+            if cache is not None:
                 cache[index] = obj
 
             # We are done, let's return the instance
