@@ -10,10 +10,8 @@
 from collections import defaultdict
 #   Contextlib
 from contextlib import suppress
-#   FuncTools
-from functools import update_wrapper
 #   WeakRef
-from weakref import WeakKeyDictionary
+from weakref import finalize
 
 # Source.Python Imports
 #   Core
@@ -49,6 +47,7 @@ from entities.helpers import wrap_entity_mem_func
 from filters.weapons import WeaponClassIter
 #   Listeners
 from listeners import OnEntityDeleted
+from listeners import on_entity_deleted_listener_manager
 from listeners.tick import Delay
 #   Mathlib
 from mathlib import NULL_VECTOR
@@ -77,59 +76,55 @@ _entity_delays = defaultdict(set)
 class EntityCaching(BaseEntity.__class__):
     """Metaclass used to cache entity instances."""
 
-    # Internal cache dictionary
-    # Release the cached instances if the stored classes are garbage collected
-    # E.g. Subclasses from plugins that are unloaded, etc.
-    cache = WeakKeyDictionary()
-
-    def __new__(metaclass, classname, bases, attributes, caching=True):
-        """Creates a new entity class that will cache its instances."""
-        cls = super().__new__(
-            metaclass, classname, bases, attributes
-        )
-        # No need to override the instance creation/initialisation if we
-        #   are not caching them
-        if not caching:
-            return cls
-
+    def __init__(cls, classname, bases, attributes):
+        """Initializes the class."""
         # New instances of this class will be cached in that dictionary
-        metaclass.cache[cls] = {}
+        cls._cache = {}
+        on_entity_deleted_listener_manager.register_listener(
+            cls.on_entity_deleted
+        )
+        # Unregister the listener when the class is being garbage collected
+        finalize(
+            cls,
+            on_entity_deleted_listener_manager.unregister_listener,
+            cls.on_entity_deleted
+        )
 
-        def __init__(self, index):
-            # Does nothing, so we don't re-initialize cached instances, etc.
+    def __call__(cls, index, caching=True):
+        """Called when a new instance of this class is requested.
+
+        :param int index:
+            The index of the entity instance requested.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
+        """
+        # Let's first lookup for a cached instance
+        if caching:
+            obj = cls.cache.get(index, None)
+            if obj is not None:
+                return obj
+
+        # Nothing in cache, let's create a new instance
+        obj = super().__call__(index)
+
+        # Let's cache the new instance we just created
+        if caching:
+            cls.cache[index] = obj
+
+        # We are done, let's return the instance
+        return obj
+
+    @property
+    def cache(self):
+        return self._cache
+
+    def on_entity_deleted(cls, base_entity):
+        """Called when an entity is deleted."""
+        if not base_entity.is_networked():
             return
-        update_wrapper(__init__, cls.__init__)
-        cls.__init__ = __init__
 
-        def __new__(self, index):
-            # Let's first lookup for a cached instance
-            cache = metaclass.cache.get(self, None)
-            if cache is not None:
-                obj = cache.get(index, None)
-                if obj is not None:
-                    return obj
-
-            # Nothing in cache, let's create a new instance
-            obj = cls.__base__.__new__(self, index)
-
-            # Successively initialize the base classes
-            # This is required, because Boost's construction happens there
-            for base in dict.fromkeys((self,) + bases + self.__bases__):
-                getattr(
-                    base.__init__, '__wrapped__', base.__init__)(
-                        obj, index
-                    )
-
-            # Let's cache the new instance we just created
-            if cache is not None:
-                cache[index] = obj
-
-            # We are done, let's return the instance
-            return obj
-        update_wrapper(__new__, cls.__new__)
-        cls.__new__ = __new__
-
-        return cls
+        # Cleanup the cache
+        cls.cache.pop(base_entity.index, None)
 
 
 class Entity(BaseEntity, metaclass=EntityCaching):
@@ -1092,10 +1087,6 @@ def _on_entity_deleted(base_entity):
 
     # Get the index of the entity...
     index = base_entity.index
-
-    # Cleanup the internal cache
-    for objects in EntityCaching.cache.values():
-        objects.pop(index, None)
 
     # Was no delay registered for this entity?
     if index not in _entity_delays:
