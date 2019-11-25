@@ -73,21 +73,24 @@ _entity_delays = defaultdict(set)
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class EntityCaching(BaseEntity.__class__):
+class _EntityCaching(BaseEntity.__class__):
     """Metaclass used to cache entity instances."""
 
     def __init__(cls, classname, bases, attributes):
         """Initializes the class."""
         # New instances of this class will be cached in that dictionary
         cls._cache = {}
+
+        # Listen for entity deletions for cleanup purposes
         on_entity_deleted_listener_manager.register_listener(
-            cls.on_entity_deleted
+            cls._on_entity_deleted
         )
+
         # Unregister the listener when the class is being garbage collected
         finalize(
             cls,
             on_entity_deleted_listener_manager.unregister_listener,
-            cls.on_entity_deleted
+            cls._on_entity_deleted
         )
 
     def __call__(cls, index, caching=True):
@@ -118,7 +121,7 @@ class EntityCaching(BaseEntity.__class__):
     def cache(self):
         return self._cache
 
-    def on_entity_deleted(cls, base_entity):
+    def _on_entity_deleted(cls, base_entity):
         """Called when an entity is deleted."""
         if not base_entity.is_networked():
             return
@@ -127,7 +130,7 @@ class EntityCaching(BaseEntity.__class__):
         cls.cache.pop(base_entity.index, None)
 
 
-class Entity(BaseEntity, metaclass=EntityCaching):
+class Entity(BaseEntity, metaclass=_EntityCaching):
     """Class used to interact directly with entities.
 
     Beside the standard way of doing stuff via methods and properties this
@@ -141,11 +144,13 @@ class Entity(BaseEntity, metaclass=EntityCaching):
     4. :attr:`keyvalues`
     """
 
-    def __init__(self, index):
+    def __init__(self, index, caching=True):
         """Initialize the Entity instance.
 
         :param int index:
             The entity index to wrap.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
         """
         # Initialize the object
         super().__init__(index)
