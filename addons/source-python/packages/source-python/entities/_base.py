@@ -87,10 +87,13 @@ class EntityCaching(BaseEntity.__class__):
         cls = super().__new__(
             metaclass, classname, bases, attributes
         )
+        # No need to override the instance creation/initialisation if we
+        #   are not caching them
+        if not caching:
+            return cls
 
         # New instances of this class will be cached in that dictionary
-        if caching:
-            metaclass.cache[cls] = {}
+        metaclass.cache[cls] = {}
 
         def __init__(self, index):
             # Does nothing, so we don't re-initialize cached instances, etc.
