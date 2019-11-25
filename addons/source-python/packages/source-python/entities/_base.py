@@ -103,7 +103,7 @@ class _EntityCaching(BaseEntity.__class__):
         """
         # Let's first lookup for a cached instance
         if caching:
-            obj = cls.cache.get(index, None)
+            obj = cls._cache.get(index, None)
             if obj is not None:
                 return obj
 
@@ -112,14 +112,10 @@ class _EntityCaching(BaseEntity.__class__):
 
         # Let's cache the new instance we just created
         if caching:
-            cls.cache[index] = obj
+            cls._cache[index] = obj
 
         # We are done, let's return the instance
         return obj
-
-    @property
-    def cache(self):
-        return self._cache
 
     def _on_entity_deleted(cls, base_entity):
         """Called when an entity is deleted."""
@@ -127,7 +123,7 @@ class _EntityCaching(BaseEntity.__class__):
             return
 
         # Cleanup the cache
-        cls.cache.pop(base_entity.index, None)
+        cls._cache.pop(base_entity.index, None)
 
 
 class Entity(BaseEntity, metaclass=_EntityCaching):
@@ -288,6 +284,14 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     def _obj(cls, ptr):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))
+
+    @property
+    def cache(self):
+        """Returns the cached instances of this class.
+
+        :rtype: dict
+        """
+        return self._cache
 
     @property
     def index(self):
