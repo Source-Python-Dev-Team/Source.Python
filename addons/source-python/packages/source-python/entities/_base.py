@@ -11,7 +11,7 @@ from collections import defaultdict
 #   Contextlib
 from contextlib import suppress
 #   WeakRef
-from weakref import finalize
+from weakref import WeakSet
 
 # Source.Python Imports
 #   Core
@@ -69,6 +69,9 @@ _projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
 # Get a dictionary to store the delays
 _entity_delays = defaultdict(set)
 
+# Get a set to store the registered entity classes
+_entity_classes = WeakSet()
+
 
 # =============================================================================
 # >> CLASSES
@@ -81,17 +84,8 @@ class _EntityCaching(BaseEntity.__class__):
         # New instances of this class will be cached in that dictionary
         cls._cache = {}
 
-        # Listen for entity deletions for cleanup purposes
-        on_entity_deleted_listener_manager.register_listener(
-            cls._on_entity_deleted
-        )
-
-        # Unregister the listener when the class is being garbage collected
-        finalize(
-            cls,
-            on_entity_deleted_listener_manager.unregister_listener,
-            cls._on_entity_deleted
-        )
+        # Add the class to the registered classes
+        _entity_classes.add(cls)
 
     def __call__(cls, index, caching=True):
         """Called when a new instance of this class is requested.
@@ -117,13 +111,13 @@ class _EntityCaching(BaseEntity.__class__):
         # We are done, let's return the instance
         return obj
 
-    def _on_entity_deleted(cls, base_entity):
-        """Called when an entity is deleted."""
-        if not base_entity.is_networked():
-            return
+    @property
+    def cache(cls):
+        """Returns the cached instances of this class.
 
-        # Cleanup the cache
-        cls._cache.pop(base_entity.index, None)
+        :rtype: dict
+        """
+        return cls._cache
 
 
 class Entity(BaseEntity, metaclass=_EntityCaching):
@@ -138,6 +132,14 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     2. :attr:`inputs`
     3. :attr:`outputs`
     4. :attr:`keyvalues`
+
+    :var cache:
+        A read-only attribute that returns a dictionary containing the cached
+        instances of this class.
+
+        .. note::
+            This is not an instance property, so it can only be
+            accessed through the class itself.
     """
 
     def __init__(self, index, caching=True):
@@ -284,14 +286,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     def _obj(cls, ptr):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))
-
-    @property
-    def cache(self):
-        """Returns the cached instances of this class.
-
-        :rtype: dict
-        """
-        return self._cache
 
     @property
     def index(self):
@@ -1096,6 +1090,10 @@ def _on_entity_deleted(base_entity):
 
     # Get the index of the entity...
     index = base_entity.index
+
+    # Cleanup the cache
+    for cls in _entity_classes:
+        cls.cache.pop(index, None)
 
     # Was no delay registered for this entity?
     if index not in _entity_delays:
