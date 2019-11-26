@@ -64,6 +64,27 @@ void export_weapon_entity(scope _entity)
 		)
 	);
 
+	_WeaponMixin.def(
+		"is_networked",
+		&WeaponMixin::IsNetworked,
+		"Return True if the entity is networked.\n\n"
+		":rtype: bool"
+	);
+
+	_WeaponMixin.def(
+		"is_player",
+		&WeaponMixin::IsPlayer,
+		"Return True if the entity is a player.\n\n"
+		":rtype: bool"
+	);
+
+	_WeaponMixin.def(
+		"is_weapon",
+		&WeaponMixin::IsWeapon,
+		"Return True if the entity is a weapon.\n\n"
+		":rtype: bool"
+	);
+
 	_WeaponMixin.add_property(
 		"next_attack",
 		&WeaponMixin::GetNextAttack,

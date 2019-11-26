@@ -57,6 +57,20 @@ object WeaponMixin::_obj(object cls, CPointer *pPtr)
 	return cls(object(ExcIndexFromPointer(pPtr)));
 }
 
+bool WeaponMixin::IsNetworked()
+{
+	return true;
+}
+
+bool WeaponMixin::IsPlayer()
+{
+	return false;
+}
+
+bool WeaponMixin::IsWeapon()
+{
+	return true;
+}
 
 // CBaseCombatWeapon
 float WeaponMixin::GetNextAttack()

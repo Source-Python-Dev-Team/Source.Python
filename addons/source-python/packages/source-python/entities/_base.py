@@ -287,6 +287,13 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """Return an entity instance of the given pointer."""
         return cls(index_from_pointer(ptr))
 
+    def is_networked(self):
+        """Return True if the entity is networked.
+
+        :rtype: bool
+        """
+        return True
+
     @property
     def index(self):
         """Return the entity's index.

@@ -46,6 +46,9 @@ public:
 	static boost::shared_ptr<WeaponMixin> wrap(CBaseEntity* pEntity);
 	static object _obj(object cls, CPointer *pPtr);
 
+	bool IsNetworked();
+	bool IsPlayer();
+	bool IsWeapon();
 
 	float GetNextAttack();
 	void SetNextAttack(float value);

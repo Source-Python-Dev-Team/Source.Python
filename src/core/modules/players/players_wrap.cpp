@@ -363,6 +363,27 @@ void export_player_wrapper(scope _players)
 		)
 	);
 
+	_PlayerMixin.def(
+		"is_networked",
+		&PlayerMixin::IsNetworked,
+		"Return True if the entity is networked.\n\n"
+		":rtype: bool"
+	);
+
+	_PlayerMixin.def(
+		"is_player",
+		&PlayerMixin::IsPlayer,
+		"Return True if the entity is a player.\n\n"
+		":rtype: bool"
+	);
+
+	_PlayerMixin.def(
+		"is_weapon",
+		&PlayerMixin::IsWeapon,
+		"Return True if the entity is a weapon.\n\n"
+		":rtype: bool"
+	);
+
 	_PlayerMixin.add_property(
 		"speed",
 		&PlayerMixin::GetSpeed,
