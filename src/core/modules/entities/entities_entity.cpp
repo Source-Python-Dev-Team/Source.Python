@@ -360,9 +360,6 @@ unsigned int CBaseEntityWrapper::GetIntHandle()
 
 bool CBaseEntityWrapper::IsPlayer()
 {
-	if (!IServerUnknownExt::IsNetworked(GetThis()))
-		return false;
-
 	unsigned int iEntityIndex;
 	if (!IndexFromBaseEntity(GetThis(), iEntityIndex)) 
 		return false;
