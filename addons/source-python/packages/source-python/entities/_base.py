@@ -10,6 +10,8 @@
 from collections import defaultdict
 #   Contextlib
 from contextlib import suppress
+#   WeakRef
+from weakref import WeakSet
 
 # Source.Python Imports
 #   Core
@@ -45,6 +47,7 @@ from entities.helpers import wrap_entity_mem_func
 from filters.weapons import WeaponClassIter
 #   Listeners
 from listeners import OnEntityDeleted
+from listeners import on_entity_deleted_listener_manager
 from listeners.tick import Delay
 #   Mathlib
 from mathlib import NULL_VECTOR
@@ -66,11 +69,58 @@ _projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
 # Get a dictionary to store the delays
 _entity_delays = defaultdict(set)
 
+# Get a set to store the registered entity classes
+_entity_classes = WeakSet()
+
 
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class Entity(BaseEntity):
+class _EntityCaching(BaseEntity.__class__):
+    """Metaclass used to cache entity instances."""
+
+    def __init__(cls, classname, bases, attributes):
+        """Initializes the class."""
+        # New instances of this class will be cached in that dictionary
+        cls._cache = {}
+
+        # Add the class to the registered classes
+        _entity_classes.add(cls)
+
+    def __call__(cls, index, caching=True):
+        """Called when a new instance of this class is requested.
+
+        :param int index:
+            The index of the entity instance requested.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
+        """
+        # Let's first lookup for a cached instance
+        if caching:
+            obj = cls._cache.get(index, None)
+            if obj is not None:
+                return obj
+
+        # Nothing in cache, let's create a new instance
+        obj = super().__call__(index)
+
+        # Let's cache the new instance we just created
+        if caching:
+            cls._cache[index] = obj
+
+        # We are done, let's return the instance
+        return obj
+
+    @property
+    def cache(cls):
+        """Returns the cached instances of this class.
+
+        :rtype: dict
+        """
+        return cls._cache
+
+
+class Entity(BaseEntity, metaclass=_EntityCaching):
     """Class used to interact directly with entities.
 
     Beside the standard way of doing stuff via methods and properties this
@@ -82,13 +132,23 @@ class Entity(BaseEntity):
     2. :attr:`inputs`
     3. :attr:`outputs`
     4. :attr:`keyvalues`
+
+    :var cache:
+        A read-only attribute that returns a dictionary containing the cached
+        instances of this class.
+
+        .. note::
+            This is not an instance property, so it can only be
+            accessed through the class itself.
     """
 
-    def __init__(self, index):
+    def __init__(self, index, caching=True):
         """Initialize the Entity instance.
 
         :param int index:
             The entity index to wrap.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
         """
         # Initialize the object
         super().__init__(index)
@@ -1030,6 +1090,10 @@ def _on_entity_deleted(base_entity):
 
     # Get the index of the entity...
     index = base_entity.index
+
+    # Cleanup the cache
+    for cls in _entity_classes:
+        cls.cache.pop(index, None)
 
     # Was no delay registered for this entity?
     if index not in _entity_delays:

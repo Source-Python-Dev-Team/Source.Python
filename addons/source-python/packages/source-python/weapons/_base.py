@@ -27,11 +27,13 @@ __all__ = ('Weapon',
 class Weapon(WeaponMixin, Entity):
     """Allows easy usage of the weapon's attributes."""
 
-    def __init__(self, index):
+    def __init__(self, index, caching=True):
         """Initialize the object.
 
         :param int index:
             A valid weapon index.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
         :raise ValueError:
             Raised if the index is invalid.
         """
