@@ -16,6 +16,7 @@ from weakref import WeakSet
 # Source.Python Imports
 #   Core
 from core import GAME_NAME
+from core import BoostPythonClass
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
@@ -76,7 +77,7 @@ _entity_classes = WeakSet()
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _EntityCaching(BaseEntity.__class__):
+class _EntityCaching(BoostPythonClass):
     """Metaclass used to cache entity instances."""
 
     def __init__(cls, classname, bases, attributes):

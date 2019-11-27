@@ -58,6 +58,8 @@ DECLARE_SP_MODULE(_core)
 	export_output_return(_core);
 	export_constants(_core);
 	export_functions(_core);
+
+	scope().attr("BoostPythonClass") = objects::class_metatype();
 }
 
 
