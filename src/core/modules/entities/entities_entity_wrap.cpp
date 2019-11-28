@@ -459,12 +459,14 @@ void export_base_entity(scope _entity)
 		"The server class of this entity (read-only).\n\n"
 		":rtype: ServerClass"
 	);
+	cached_property(BaseEntity, "server_class");
 
 	BaseEntity.add_property("datamap",
 		make_function(&CBaseEntityWrapper::GetDataDescMap, reference_existing_object_policy()),
 		"The data map of this entity (read-only).\n\n"
 		":rtype: DataMap"
 	);
+	cached_property(BaseEntity, "datamap");
 
 	BaseEntity.def("get_output",
 		&CBaseEntityWrapper::get_output,
@@ -479,12 +481,14 @@ void export_base_entity(scope _entity)
 		"Return the entity's factory.\n\n"
 		":rtype: EntityFactory"
 	);
+	cached_property(BaseEntity, "factory");
 
 	BaseEntity.add_property(
 		"edict", 
 		make_function(&CBaseEntityWrapper::GetEdict, reference_existing_object_policy()),
 		"Return the edict of the entity.\n\n"
 		":rtype: Edict");
+	cached_property(BaseEntity, "edict");
 
 	BaseEntity.add_property(
 		"index",
@@ -492,24 +496,28 @@ void export_base_entity(scope _entity)
 		"Return the index of the entity.\n\n"
 		":raise ValueError: Raised if the entity does not have an index.\n"
 		":rtype: int");
+	cached_property(BaseEntity, "index");
 
 	BaseEntity.add_property(
 		"pointer",
 		make_function(&CBaseEntityWrapper::GetPointer),
 		"Return the pointer of the entity.\n\n"
 		":rtype: Pointer");
+	cached_property(BaseEntity, "pointer");
 
 	BaseEntity.add_property(
 		"inthandle",
 		&CBaseEntityWrapper::GetIntHandle,
 		"Return the handle of the entity.\n\n"
 		":rtype: int");
+	cached_property(BaseEntity, "inthandle");
 
 	BaseEntity.add_property(
 		"physics_object",
 		make_function(&CBaseEntityWrapper::GetPhysicsObject, manage_new_object_policy()),
 		"Return the physics object of the entity.\n\n"
 		":rtype: PhysicsObject");
+	cached_property(BaseEntity, "physics_object");
 
 	// KeyValue getter methods
 	BaseEntity.def("get_key_value_string",
@@ -1060,4 +1068,5 @@ void export_base_entity(scope _entity)
 		"Return the entity's size.\n\n"
 		":rtype: int"
 	);
+	cached_property(BaseEntity, "_size");
 }

@@ -17,6 +17,7 @@ from weakref import WeakSet
 #   Core
 from core import GAME_NAME
 from core import BoostPythonClass
+from core.cache import cached_property
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
@@ -295,7 +296,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """
         return True
 
-    @property
+    @cached_property
     def index(self):
         """Return the entity's index.
 
@@ -316,30 +317,30 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         except (ValueError, OverflowError):
             return None
 
-    @property
+    @cached_property
     def server_classes(self):
         """Yield all server classes for the entity."""
         yield from server_classes.get_entity_server_classes(self)
 
-    @property
+    @cached_property
     def properties(self):
         """Iterate over all descriptors available for the entity."""
         for server_class in self.server_classes:
             yield from server_class.properties
 
-    @property
+    @cached_property
     def inputs(self):
         """Iterate over all inputs available for the entity."""
         for server_class in self.server_classes:
             yield from server_class.inputs
 
-    @property
+    @cached_property
     def outputs(self):
         """Iterate over all outputs available for the entity."""
         for server_class in self.server_classes:
             yield from server_class.outputs
 
-    @property
+    @cached_property
     def keyvalues(self):
         """Iterate over all entity keyvalues available for the entity.
 

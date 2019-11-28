@@ -14,6 +14,7 @@ import math
 from bitbuffers import BitBufferWrite
 #   Core
 from core import GAME_NAME
+from core.cache import cached_property
 #   Engines
 from engines.server import server
 from engines.server import engine_server
@@ -89,7 +90,6 @@ class Player(PlayerMixin, Entity):
         """
         PlayerMixin.__init__(self, index)
         Entity.__init__(self, index)
-        object.__setattr__(self, '_playerinfo', None)
 
     @classmethod
     def from_userid(cls, userid):
@@ -101,7 +101,7 @@ class Player(PlayerMixin, Entity):
         """
         return cls(index_from_userid(userid))
 
-    @property
+    @cached_property
     def raw_steamid(self):
         """Return the player's unformatted SteamID.
 
@@ -117,18 +117,15 @@ class Player(PlayerMixin, Entity):
         """
         return auth_manager.get_player_permissions_from_steamid(self.steamid)
 
-    @property
+    @cached_property
     def playerinfo(self):
         """Return player information.
 
         :rtype: PlayerInfo
         """
-        if self._playerinfo is None:
-            playerinfo = playerinfo_from_index(self.index)
-            object.__setattr__(self, '_playerinfo', playerinfo)
-        return self._playerinfo
+        return playerinfo_from_index(self.index)
 
-    @property
+    @cached_property
     def userid(self):
         """Return the player's userid.
 
@@ -136,7 +133,7 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.userid
 
-    @property
+    @cached_property
     def steamid(self):
         """Return the player's SteamID.
 
@@ -157,7 +154,7 @@ class Player(PlayerMixin, Entity):
 
     name = property(get_name, set_name)
 
-    @property
+    @cached_property
     def client(self):
         """Return the player's client instance.
 
@@ -165,7 +162,7 @@ class Player(PlayerMixin, Entity):
         """
         return server.get_client(self.index - 1)
 
-    @property
+    @cached_property
     def base_client(self):
         """Return the player's base client instance.
 
@@ -174,7 +171,7 @@ class Player(PlayerMixin, Entity):
         from players import BaseClient
         return make_object(BaseClient, get_object_pointer(self.client) - 4)
 
-    @property
+    @cached_property
     def uniqueid(self):
         """Return the player's unique ID.
 
@@ -182,7 +179,7 @@ class Player(PlayerMixin, Entity):
         """
         return uniqueid_from_playerinfo(self.playerinfo)
 
-    @property
+    @cached_property
     def address(self):
         """Return the player's IP address and port.
 
@@ -208,6 +205,7 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.is_fake_client()
 
+    @cached_property
     def is_hltv(self):
         """Return whether the player is HLTV.
 
@@ -215,6 +213,7 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.is_hltv()
 
+    @cached_property
     def is_bot(self):
         """Return whether the player is a bot.
 
@@ -249,7 +248,7 @@ class Player(PlayerMixin, Entity):
 
     team = property(get_team, set_team)
 
-    @property
+    @cached_property
     def language(self):
         """Return the player's language.
 
