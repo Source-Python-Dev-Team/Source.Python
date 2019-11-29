@@ -60,6 +60,13 @@ object CCachedProperty::_callable_check(object function, const char *szName)
 	return function;
 }
 
+object CCachedProperty::_prepare_value(object value)
+{
+	if (PyGen_Check(value.ptr()))
+		value = object(CCachedGenerator(value));
+	return value;
+}
+
 
 object CCachedProperty::get_getter()
 {
@@ -146,9 +153,11 @@ object CCachedProperty::__get__(object instance, object owner=object())
 		);
 
 	dict cache = extract<dict>(pCache);
-	cache[m_name] = m_fget(
-		*(make_tuple(handle<>(borrowed(instance.ptr()))) + m_args),
-		**m_kwargs
+	cache[m_name] = _prepare_value(
+		m_fget(
+			*(make_tuple(handle<>(borrowed(instance.ptr()))) + m_args),
+			**m_kwargs
+		)
 	);
 
 	return cache[m_name];
@@ -170,7 +179,7 @@ void CCachedProperty::__set__(object instance, object value)
 
 	dict cache = extract<dict>(instance.attr("__dict__"));
 	if (!result.is_none())
-		cache[m_name] = result;
+		cache[m_name] = _prepare_value(result);
 	else
 		PyDict_DelItemString(cache.ptr(), extract<const char *>(m_name));
 }
@@ -208,4 +217,58 @@ CCachedProperty *CCachedProperty::wrap_descriptor(object descriptor, object owne
 	pProperty->__set_name__(owner, name);
 
 	return pProperty;
+}
+
+
+//-----------------------------------------------------------------------------
+// CCachedGenerator class.
+//-----------------------------------------------------------------------------
+CCachedGenerator::CCachedGenerator(object generator)
+{
+	if (!PyGen_Check(generator.ptr()))
+		BOOST_RAISE_EXCEPTION(
+			PyExc_TypeError,
+			"The given generator is invalid."
+		);
+
+	object frame = generator.attr("gi_frame");
+	if (frame.is_none())
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"The given generator is exhausted."
+		);
+
+	m_generator = generator;
+}
+
+
+object CCachedGenerator::get_generator()
+{
+	return m_generator;
+}
+
+
+object CCachedGenerator::__iter__()
+{
+	return m_generator.is_none() ? m_generated_values.attr("__iter__")() : object(ptr(this));
+}
+
+
+object CCachedGenerator::__next__()
+{
+	object value;
+	if (!m_generator.is_none())
+	{
+		try
+		{
+			value = m_generator.attr("__next__")();
+			m_generated_values.append(value);
+		}
+		catch(...)
+		{
+			m_generator = object();
+			BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "StopIteration");
+		}
+	}
+	return value;
 }

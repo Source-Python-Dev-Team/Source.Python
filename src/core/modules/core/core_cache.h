@@ -43,6 +43,7 @@ public:
 	CCachedProperty(object fget, object fset, object fdel, const char *doc, boost::python::tuple args, dict kwargs);
 
 	static object _callable_check(object function, const char *szName);
+	static object _prepare_value(object value);
 
 	object get_getter();
 	object set_getter(object fget);
@@ -78,6 +79,25 @@ public:
 
 	boost::python::tuple m_args;
 	dict m_kwargs;
+};
+
+
+//-----------------------------------------------------------------------------
+// CCachedGenerator class.
+//-----------------------------------------------------------------------------
+class CCachedGenerator
+{
+public:
+	CCachedGenerator(object generator);
+
+	object get_generator();
+
+	object __iter__();
+	object __next__();
+
+private:
+	object m_generator;
+	list m_generated_values;
 };
 
 
