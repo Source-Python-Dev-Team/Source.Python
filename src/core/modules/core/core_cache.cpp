@@ -250,25 +250,17 @@ object CCachedGenerator::get_generator()
 
 object CCachedGenerator::__iter__()
 {
-	return m_generator.is_none() ? m_generated_values.attr("__iter__")() : object(ptr(this));
-}
-
-
-object CCachedGenerator::__next__()
-{
-	object value;
-	if (!m_generator.is_none())
+	while(!m_generator.is_none())
 	{
 		try
 		{
-			value = m_generator.attr("__next__")();
-			m_generated_values.append(value);
+			m_generated_values.append(m_generator.attr("__next__")());
 		}
 		catch(...)
 		{
 			m_generator = object();
-			BOOST_RAISE_EXCEPTION(PyExc_StopIteration, "StopIteration");
+			PyErr_Clear();
 		}
 	}
-	return value;
+	return m_generated_values.attr("__iter__")();
 }

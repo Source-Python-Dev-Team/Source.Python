@@ -314,10 +314,4 @@ void export_cached_generator(scope _cache)
 		&CCachedGenerator::__iter__,
 		"Returns an iterator iterating over the generated values of the wrapped generator."
 	);
-
-	CachedGenerator.def(
-		"__next__",
-		&CCachedGenerator::__next__,
-		"Returns the next value from the current iteration."
-	);
 }

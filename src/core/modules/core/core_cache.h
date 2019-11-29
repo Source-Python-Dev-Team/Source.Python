@@ -93,7 +93,6 @@ public:
 	object get_generator();
 
 	object __iter__();
-	object __next__();
 
 private:
 	object m_generator;
