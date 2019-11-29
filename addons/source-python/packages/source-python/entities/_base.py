@@ -55,6 +55,7 @@ from listeners.tick import Delay
 from mathlib import NULL_VECTOR
 #   Memory
 from memory import make_object
+from memory.helpers import MemberFunction
 #   Players
 from players.constants import HitGroup
 #   Studio
@@ -171,8 +172,18 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             # Does the current server class contain the given attribute?
             if hasattr(server_class, attr):
 
+                # Get the attribute's value
+                value = getattr(make_object(server_class, self.pointer), attr)
+
+                # Is the value a dynamic function?
+                if isinstance(value, MemberFunction):
+
+                    # Cache the value
+                    with suppress(AttributeError):
+                        object.__setattr__(self, attr, value)
+
                 # Return the attribute's value
-                return getattr(make_object(server_class, self.pointer), attr)
+                return value
 
         # If the attribute is not found, raise an error
         raise AttributeError('Attribute "{0}" not found'.format(attr))

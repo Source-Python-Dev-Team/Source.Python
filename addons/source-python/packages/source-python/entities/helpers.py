@@ -3,6 +3,14 @@
 """Provides helper functions to convert from one type to another."""
 
 # =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Core
+from core.cache import CachedProperty
+
+
+# =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
@@ -84,24 +92,38 @@ __all__ = ('baseentity_from_basehandle',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class EntityMemFuncWrapper(MemberFunction):
-    def __init__(self, wrapped_self, wrapper):
-        func = wrapped_self.__getattr__(wrapper.__name__)
-        super().__init__(func._manager, func._type_name, func, func._this)
-        self.wrapper = wrapper
+class EntityMemFuncWrapper(MemberFunction, CachedProperty):
+    def __init__(self, wrapper):
+        self.__func__ = wrapper
+        CachedProperty.__init__(self)
+
+    def __get__(self, wrapped_self, objtype):
+        if wrapped_self is None:
+            return self.__func__
+        func = wrapped_self.__dict__.get(self.name, None)
+        if func is not None:
+            return func
         self.wrapped_self = wrapped_self
+        func = wrapped_self.__getattr__(self.__func__.__name__)
+        MemberFunction.__init__(
+            self, func._manager, func._type_name, func, func._this
+        )
+        return self
+
+    def __set__(self, wrapped_self, value):
+        wrapped_self.__dict__[self.name] = value
 
     def __call__(self, *args, **kwargs):
         return super().__call__(
-            *self.wrapper(self.wrapped_self, *args, **kwargs))
+            *self.__func__(self.wrapped_self, *args, **kwargs))
 
     def call_trampoline(self, *args, **kwargs):
         return super().call_trampoline(
-            *self.wrapper(self.wrapped_self, *args, **kwargs))
+            *self.__func__(self.wrapped_self, *args, **kwargs))
 
     def skip_hooks(self, *args, **kwargs):
         return super().skip_hooks(
-            *self.wrapper(self.wrapped_self, *args, **kwargs))
+            *self.__func__(self.wrapped_self, *args, **kwargs))
 
 
 # =============================================================================
@@ -109,8 +131,4 @@ class EntityMemFuncWrapper(MemberFunction):
 # =============================================================================
 def wrap_entity_mem_func(wrapper):
     """A decorator to wrap an entity memory function."""
-
-    def inner(wrapped_self):
-        return EntityMemFuncWrapper(wrapped_self, wrapper)
-
-    return property(inner, doc=wrapper.__doc__)
+    return EntityMemFuncWrapper(wrapper)
