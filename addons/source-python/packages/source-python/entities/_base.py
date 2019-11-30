@@ -167,23 +167,23 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
         # Loop through all of the entity's server classes
-        for server_class in self.server_classes:
+        for instance in self.instances.values():
 
-            # Does the current server class contain the given attribute?
-            if hasattr(server_class, attr):
-
+            try:
                 # Get the attribute's value
-                value = getattr(make_object(server_class, self.pointer), attr)
+                value = getattr(instance, attr)
+            except AttributeError:
+                continue
 
-                # Is the value a dynamic function?
-                if isinstance(value, MemberFunction):
+            # Is the value a dynamic function?
+            if isinstance(value, MemberFunction):
 
-                    # Cache the value
-                    with suppress(AttributeError):
-                        object.__setattr__(self, attr, value)
+                # Cache the value
+                with suppress(AttributeError):
+                    object.__setattr__(self, attr, value)
 
-                # Return the attribute's value
-                return value
+            # Return the attribute's value
+            return value
 
         # If the attribute is not found, raise an error
         raise AttributeError('Attribute "{0}" not found'.format(attr))
@@ -327,6 +327,17 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             return Entity(index_from_inthandle(self.owner_handle))
         except (ValueError, OverflowError):
             return None
+
+    @cached_property
+    def instances(self):
+        """Return the cached instances of this entity.
+
+        :rtype: dict
+        """
+        instances = {}
+        for server_class in self.server_classes:
+            instances[server_class] = make_object(server_class, self.pointer)
+        return instances
 
     @cached_property
     def server_classes(self):
