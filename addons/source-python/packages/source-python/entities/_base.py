@@ -167,7 +167,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
         # Loop through all of the entity's server classes
-        for instance in self.instances.values():
+        for instance in self.server_classes.values():
 
             try:
                 # Get the attribute's value
@@ -329,20 +329,12 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             return None
 
     @cached_property
-    def instances(self):
-        """Return the cached instances of this entity.
-
-        :rtype: dict
-        """
-        instances = {}
-        for server_class in self.server_classes:
-            instances[server_class] = make_object(server_class, self.pointer)
-        return instances
-
-    @cached_property
     def server_classes(self):
         """Yield all server classes for the entity."""
-        yield from server_classes.get_entity_server_classes(self)
+        return {
+            server_class: make_object(server_class, self.pointer) for
+            server_class in server_classes.get_entity_server_classes(self)
+        }
 
     @cached_property
     def properties(self):
@@ -353,14 +345,25 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     @cached_property
     def inputs(self):
         """Iterate over all inputs available for the entity."""
-        for server_class in self.server_classes:
-            yield from server_class.inputs
+        inputs = {}
+        for server_class in self.server_classes.values():
+            for input in server_class.inputs:
+                inputs[input] = getattr(
+                    make_object(
+                        server_class._inputs, self.pointer                 
+                    ),
+                    input
+                )
+        return inputs
 
     @cached_property
     def outputs(self):
         """Iterate over all outputs available for the entity."""
+        outputs = {}
         for server_class in self.server_classes:
-            yield from server_class.outputs
+            for output in server_class.outputs:
+                outputs[output] = super().get_output(output)
+        return outputs
 
     @cached_property
     def keyvalues(self):
@@ -840,29 +843,27 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         # Return the delay instance...
         return delay
 
+    def get_output(self, name):
+        """Return the output instance matching the given name.
+
+        :parma str name:
+            Name of the output.
+        :rtype: BaseEntityOutput
+        :raise KeyError:
+            Raised if the output instance wasn't found.
+        """
+        return self.outputs[name]
+
     def get_input(self, name):
         """Return the input function matching the given name.
 
         :parma str name:
             Name of the input function.
         :rtype: InputFunction
-        :raise ValueError:
+        :raise KeyError:
             Raised if the input function wasn't found.
         """
-        # Loop through each server class for the entity
-        for server_class in self.server_classes:
-
-            # Does the current server class contain the input?
-            if name in server_class.inputs:
-
-                # Return the InputFunction instance for the given input name
-                return getattr(
-                    make_object(server_class._inputs, self.pointer), name)
-
-        # If no server class contains the input, raise an error
-        raise ValueError(
-            'Unknown input "{0}" for entity type "{1}".'.format(
-                name, self.classname))
+        return self.inputs[name]
 
     def call_input(self, name, *args, **kwargs):
         """Call the input function matching the given name.
