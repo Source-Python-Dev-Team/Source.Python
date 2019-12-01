@@ -52,13 +52,15 @@ enum Convention_t
 // ============================================================================
 // >> CFunction
 // ============================================================================
-class CFunction: public CPointer
+class CFunction: public CPointer, private boost::noncopyable
 {
 public:
 	CFunction(unsigned long ulAddr, object oCallingConvention, object oArgs, object oReturnType);
 	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
 		ICallingConvention* pCallingConvention, boost::python::tuple tArgs,
 		DataType_t eReturnType, object oConverter);
+
+	~CFunction();
 
 	bool IsCallable();
 	bool IsHookable();
@@ -99,6 +101,7 @@ public:
 
 	// DynamicHooks calling convention (built-in and custom)
 	ICallingConvention*		m_pCallingConvention;
+	bool					m_bAllocatedCallingConvention;
 };
 
 

@@ -328,7 +328,7 @@ CPointer* CBinaryFile::FindPointer(object oIdentifier, int iOffset, unsigned int
 		ptr->m_ulAddr += iOffset;
 		while (iLevel > 0)
 		{
-			ptr = ptr->GetPtr();
+			ptr->m_ulAddr = GetPtrHelper(ptr->m_ulAddr);
 			iLevel = iLevel - 1;
 		}
 	}

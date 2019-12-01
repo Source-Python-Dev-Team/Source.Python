@@ -190,4 +190,16 @@ inline CPointer* Alloc(int iSize, bool bAutoDealloc = true)
 	return new CPointer((unsigned long) UTIL_Alloc(iSize), bAutoDealloc);
 }
 
+
+// ============================================================================
+// >> GetPtrHelper
+// ============================================================================
+inline unsigned long GetPtrHelper(unsigned long addr)
+{
+	TRY_SEGV()
+		return *(unsigned long *) addr;
+	EXCEPT_SEGV()
+	return 0;
+}
+
 #endif // _MEMORY_POINTER_H

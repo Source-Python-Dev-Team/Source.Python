@@ -127,7 +127,11 @@ class InputFunction(Function):
 
     def __init__(self, name, argument_type, function, this):
         """Instantiate the function instance and store the base attributes."""
-        super().__init__(function)
+        self._function = function
+        super().__init__(
+            function.address, function.convention, function.arguments,
+            function.return_type
+        )
 
         self._name = name
         self._argument_type = argument_type

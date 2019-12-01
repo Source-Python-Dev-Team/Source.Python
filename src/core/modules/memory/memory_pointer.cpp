@@ -109,14 +109,6 @@ void CPointer::SetStringArray(char* szText, int iOffset /* = 0 */)
 	EXCEPT_SEGV()
 }
 
-unsigned long GetPtrHelper(unsigned long addr)
-{
-	TRY_SEGV()
-		return *(unsigned long *) addr;
-	EXCEPT_SEGV()
-	return 0;
-}
-
 CPointer* CPointer::GetPtr(int iOffset /* = 0 */)
 {
 	Validate();
@@ -286,7 +278,10 @@ CFunction* CPointer::MakeFunction(object oCallingConvention, object oArgs, objec
 
 CFunction* CPointer::MakeVirtualFunction(int iIndex, object oCallingConvention, object args, object return_type)
 {
-	return GetVirtualFunc(iIndex)->MakeFunction(oCallingConvention, args, return_type);
+	CPointer *pPtr = GetVirtualFunc(iIndex);
+	CFunction *pFunc = pPtr->MakeFunction(oCallingConvention, args, return_type);
+	delete pPtr;
+	return pFunc;
 }
 
 CFunction* CPointer::MakeVirtualFunction(CFunctionInfo& info)

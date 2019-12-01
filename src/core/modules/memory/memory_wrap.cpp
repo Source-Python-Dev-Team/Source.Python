@@ -452,7 +452,8 @@ void export_type_info_iter(scope _memory)
 void export_function(scope _memory)
 {
 	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, object, object, object>())
-		.def(init<CFunction&>())
+		// Don't allow copies, because they will hold references to our calling convention.
+		// .def(init<CFunction&>())
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
@@ -817,7 +818,7 @@ void export_registers(scope _memory)
 // ============================================================================
 void export_calling_convention(scope _memory)
 {
-	class_<ICallingConventionWrapper, boost::noncopyable>(
+	class_<ICallingConventionWrapper, ICallingConventionWrapper *, boost::noncopyable>(
 		"CallingConvention",
 		"An an abstract class that is used to create custom calling "
 		"conventions (only available for hooking function and not for"

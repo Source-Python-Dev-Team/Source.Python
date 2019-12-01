@@ -339,8 +339,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     @cached_property
     def properties(self):
         """Iterate over all descriptors available for the entity."""
+        properties = {}
         for server_class in self.server_classes:
-            yield from server_class.properties
+            for prop, data in server_class.properties.items():
+                properties[prop] = data
+        return properties
 
     @cached_property
     def inputs(self):
@@ -374,8 +377,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             An entity might also have hardcoded keyvalues that can't be listed
             with this property.
         """
+        keyvalues = {}
         for server_class in self.server_classes:
-            yield from server_class.keyvalues
+            for keyvalue, data in server_class.keyvalues.items():
+                keyvalues[keyvalue] = data
+        return keyvalues
 
     def get_model(self):
         """Return the entity's model.
