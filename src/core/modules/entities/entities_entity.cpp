@@ -187,7 +187,7 @@ int CBaseEntityWrapper::FindDatamapPropertyOffset(const char* name)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the datamap.")
 
 	int offset = DataMapSharedExt::find_offset(datamap, name);
-	if (offset == -1)
+	if (offset == -1 || offset == 0)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
 
 	return offset;
@@ -199,9 +199,14 @@ int CBaseEntityWrapper::FindNetworkPropertyOffset(const char* name)
 	if (!pServerClass)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the server class.")
 
-	int offset = SendTableSharedExt::find_offset(pServerClass->m_pTable, name);
+	int offset;
+	offset = SendTableSharedExt::find_offset(pServerClass->m_pTable, name);
 	if (offset == -1)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
+
+	// TODO: Proxied RecvTables/Arrays
+	if (offset == 0)
+		offset = FindDatamapPropertyOffset(name);
 
 	return offset;
 }

@@ -375,7 +375,10 @@ class _ServerClasses(TypeManager):
         for prop in table:
 
             # Is the property a base class or excluded?
-            if prop.name == 'baseclass' or prop.flags & SendPropFlags.EXCLUDE:
+            if (prop.name == 'baseclass' or
+                prop.is_exclude_prop() or
+                prop.flags & SendPropFlags.COLLAPSIBLE
+            ):
                 continue
 
             # Get the name of the property using the given base name

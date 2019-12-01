@@ -17,6 +17,7 @@ from cvars.flags import ConVarFlags
 from entities import ServerClassGenerator
 from entities.datamaps import FieldType
 from entities.entity import BaseEntity
+from entities.props import SendPropFlags
 from entities.props import SendPropType
 #   Memory
 from memory import CLASS_INFO
@@ -259,7 +260,10 @@ def _dump_server_class_table(table, open_file, level=1, offset=0):
     for prop in table:
 
         # Skip all baseclasses
-        if prop.name == 'baseclass':
+        if (prop.name == 'baseclass' or
+            prop.is_exclude_prop() or
+            prop.flags & SendPropFlags.COLLAPSIBLE
+        ):
             continue
 
         # Get the current offset in case this

@@ -70,7 +70,10 @@ void AddSendTable(SendTable* pTable, OffsetsMap& offsets, int offset=0, const ch
 	for (int i=0; i < pTable->GetNumProps(); ++i)
 	{
 		SendProp* pProp = pTable->GetProp(i);
-		if (strcmp(pProp->GetName(), "baseclass") == 0)
+		if (strcmp(pProp->GetName(), "baseclass") == 0 ||
+			pProp->IsExcludeProp() ||
+			pProp->GetFlags() & SPROP_COLLAPSIBLE
+		)
 			continue;
 
 		int currentOffset = offset + pProp->GetOffset();

@@ -445,7 +445,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: bool
         """
-        return self._get_property(name, 'bool')
+        try:
+            return self.get_network_property_bool(name)
+        except ValueError:
+            return self.get_datamap_property_bool(name)
 
     def get_property_color(self, name):
         """Return the Color property.
@@ -454,7 +457,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: Color
         """
-        return self._get_property(name, 'Color')
+        try:
+            return self.get_network_property_color(name)
+        except ValueError:
+            return self.get_datamap_property_color(name)
 
     def get_property_edict(self, name):
         """Return the Edict property.
@@ -472,7 +478,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: float
         """
-        return self._get_property(name, 'float')
+        try:
+            return self.get_network_property_float(name)
+        except ValueError:
+            return self.get_datamap_property_float(name)
 
     def get_property_int(self, name):
         """Return the integer property.
@@ -481,7 +490,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: int
         """
-        return self._get_property(name, 'int')
+        try:
+            return self.get_network_property_int(name)
+        except ValueError:
+            return self.get_datamap_property_int(name)
 
     def get_property_interval(self, name):
         """Return the Interval property.
@@ -490,7 +502,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: Interval
         """
-        return self._get_property(name, 'Interval')
+        try:
+            return self.get_network_property_interval(name)
+        except ValueError:
+            return self.get_datamap_property_interval(name)
 
     def get_property_pointer(self, name):
         """Return the pointer property.
@@ -499,7 +514,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: Pointer
         """
-        return self._get_property(name, 'pointer')
+        try:
+            return self.get_network_property_pointer(name)
+        except ValueError:
+            return self.get_datamap_property_pointer(name)
 
     def get_property_quaternion(self, name):
         """Return the Quaternion property.
@@ -508,7 +526,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: Quaternion
         """
-        return self._get_property(name, 'Quaternion')
+        try:
+            return self.get_network_property_quaternion(name)
+        except ValueError:
+            return self.get_datamap_property_quaternion(name)
 
     def get_property_short(self, name):
         """Return the short property.
@@ -517,7 +538,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: int
         """
-        return self._get_property(name, 'short')
+        try:
+            return self.get_network_property_short(name)
+        except ValueError:
+            return self.get_datamap_property_short(name)
 
     def get_property_ushort(self, name):
         """Return the ushort property.
@@ -526,7 +550,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: int
         """
-        return self._get_property(name, 'ushort')
+        try:
+            return self.get_network_property_ushort(name)
+        except ValueError:
+            return self.get_datamap_property_ushort(name)
 
     def get_property_string(self, name):
         """Return the string property.
@@ -535,7 +562,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: str
         """
-        return self._get_property(name, 'string_array')
+        try:
+            return self.get_network_property_string_array(name)
+        except ValueError:
+            return self.get_datamap_property_string_array(name)
 
     def get_property_string_pointer(self, name):
         """Return the string property.
@@ -544,7 +574,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: str
         """
-        return self._get_property(name, 'string_pointer')
+        try:
+            return self.get_network_property_pointer(name)
+        except ValueError:
+            return self.get_datamap_property_pointer(name)
 
     def get_property_char(self, name):
         """Return the char property.
@@ -553,7 +586,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: str
         """
-        return self._get_property(name, 'char')
+        try:
+            return self.get_network_property_char(name)
+        except ValueError:
+            return self.get_datamap_property_char(name)
 
     def get_property_uchar(self, name):
         """Return the uchar property.
@@ -562,7 +598,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: int
         """
-        return self._get_property(name, 'uchar')
+        try:
+            return self.get_network_property_uchar(name)
+        except ValueError:
+            return self.get_datamap_property_uchar(name)
 
     def get_property_uint(self, name):
         """Return the uint property.
@@ -571,7 +610,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: int
         """
-        return self._get_property(name, 'uint')
+        try:
+            return self.get_network_property_uint(name)
+        except ValueError:
+            return self.get_datamap_property_uint(name)
 
     def get_property_vector(self, name):
         """Return the Vector property.
@@ -580,7 +622,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: Vector
         """
-        return self._get_property(name, 'Vector')
+        try:
+            return self.get_network_property_vector(name)
+        except ValueError:
+            return self.get_datamap_property_vector(name)
 
     def _get_property(self, name, prop_type):
         """Verify the type and return the property."""
@@ -613,7 +658,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param bool value:
             The value to set.
         """
-        self._set_property(name, 'bool', value)
+        try:
+            self.set_network_property_bool(name, value)
+        except ValueError:
+            self.set_datamap_property_bool(name, value)
 
     def set_property_color(self, name, value):
         """Set the Color property.
@@ -623,7 +671,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param Color value:
             The value to set.
         """
-        self._set_property(name, 'Color', value)
+        try:
+            self.set_network_property_color(name, value)
+        except ValueError:
+            self.set_datamap_property_color(name, value)
 
     def set_property_edict(self, name, value):
         """Set the Edict property.
@@ -643,7 +694,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param float value:
             The value to set.
         """
-        self._set_property(name, 'float', value)
+        try:
+            self.set_network_property_float(name, value)
+        except ValueError:
+            self.set_datamap_property_float(name, value)
 
     def set_property_int(self, name, value):
         """Set the integer property.
@@ -653,7 +707,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int value:
             The value to set.
         """
-        self._set_property(name, 'int', value)
+        try:
+            self.set_network_property_int(name, value)
+        except ValueError:
+            self.set_datamap_property_int(name, value)
 
     def set_property_interval(self, name, value):
         """Set the Interval property.
@@ -663,7 +720,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param Interval value:
             The value to set.
         """
-        self._set_property(name, 'Interval', value)
+        try:
+            self.set_network_property_interval(name, value)
+        except ValueError:
+            self.set_datamap_property_interval(name, value)
 
     def set_property_pointer(self, name, value):
         """Set the pointer property.
@@ -673,7 +733,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param Pointer value:
             The value to set.
         """
-        self._set_property(name, 'pointer', value)
+        try:
+            self.set_network_property_pointer(name, value)
+        except ValueError:
+            self.set_datamap_property_pointer(name, value)
 
     def set_property_quaternion(self, name, value):
         """Set the Quaternion property.
@@ -683,7 +746,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param Quaternion value:
             The value to set.
         """
-        self._set_property(name, 'Quaternion', value)
+        try:
+            self.set_network_property_quaternion(name, value)
+        except ValueError:
+            self.set_datamap_property_quaternion(name, value)
 
     def set_property_short(self, name, value):
         """Set the short property.
@@ -693,7 +759,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int value:
             The value to set.
         """
-        self._set_property(name, 'short', value)
+        try:
+            self.set_network_property_short(name, value)
+        except ValueError:
+            self.set_datamap_property_short(name, value)
 
     def set_property_ushort(self, name, value):
         """Set the ushort property.
@@ -703,7 +772,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int value:
             The value to set.
         """
-        self._set_property(name, 'ushort', value)
+        try:
+            self.set_network_property_ushort(name, value)
+        except ValueError:
+            self.set_datamap_property_ushort(name, value)
 
     def set_property_string(self, name, value):
         """Set the string property.
@@ -713,7 +785,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param str value:
             The value to set.
         """
-        self._set_property(name, 'string_array', value)
+        try:
+            self.set_network_property_string_array(name, value)
+        except ValueError:
+            self.set_datamap_property_string_array(name, value)
 
     def set_property_string_pointer(self, name, value):
         """Set the string property.
@@ -723,7 +798,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param str value:
             The value to set.
         """
-        self._set_property(name, 'string_pointer', value)
+        try:
+            self.set_network_property_string_pointer(name, value)
+        except ValueError:
+            self.set_datamap_property_string_pointer(name, value)
 
     def set_property_char(self, name, value):
         """Set the char property.
@@ -733,7 +811,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param str value:
             The value to set.
         """
-        self._set_property(name, 'char', value)
+        try:
+            self.set_network_property_char(name, value)
+        except ValueError:
+            self.set_datamap_property_char(name, value)
 
     def set_property_uchar(self, name, value):
         """Set the uchar property.
@@ -743,7 +824,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int value:
             The value to set.
         """
-        self._set_property(name, 'uchar', value)
+        try:
+            self.set_network_property_uchar(name, value)
+        except ValueError:
+            self.set_datamap_property_uchar(name, value)
 
     def set_property_uint(self, name, value):
         """Set the uint property.
@@ -753,7 +837,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int value:
             The value to set.
         """
-        self._set_property(name, 'uint', value)
+        try:
+            self.set_network_property_uint(name, value)
+        except ValueError:
+            self.set_datamap_property_uint(name, value)
 
     def set_property_vector(self, name, value):
         """Set the Vector property.
@@ -763,7 +850,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param Vector value:
             The value to set.
         """
-        self._set_property(name, 'Vector', value)
+        try:
+            self.set_network_property_vector(name, value)
+        except ValueError:
+            self.set_datamap_property_vector(name, value)
 
     def _set_property(self, name, prop_type, value):
         """Verify the type and set the property."""
