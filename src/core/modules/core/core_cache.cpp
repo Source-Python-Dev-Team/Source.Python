@@ -62,9 +62,30 @@ object CCachedProperty::_callable_check(object function, const char *szName)
 
 object CCachedProperty::_prepare_value(object value)
 {
-	if (PyGen_Check(value.ptr()))
-		value = object(CCachedGenerator(value));
-	return value;
+	if (!PyGen_Check(value.ptr()))
+		return value;
+
+	if (getattr(value, "gi_frame").is_none())
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"The given generator is exhausted."
+		);
+
+	list values;
+	while (true)
+	{
+		try
+		{
+			values.append(value.attr("__next__")());
+		}
+		catch(...)
+		{
+			PyErr_Clear();
+			break;
+		}
+	}
+
+	return values;
 }
 
 
@@ -76,7 +97,7 @@ object CCachedProperty::get_getter()
 object CCachedProperty::set_getter(object fget)
 {
 	m_fget = _callable_check(fget, "getter");
-	return object(ptr(this));
+	return fget;
 }
 
 
@@ -88,7 +109,7 @@ object CCachedProperty::get_setter()
 object CCachedProperty::set_setter(object fset)
 {
 	m_fset = _callable_check(fset, "setter");
-	return object(ptr(this));
+	return fset;
 }
 
 
@@ -100,7 +121,7 @@ object CCachedProperty::get_deleter()
 object CCachedProperty::set_deleter(object fdel)
 {
 	m_fdel = _callable_check(fdel, "deleter");
-	return object(ptr(this));
+	return fdel;
 }
 
 
@@ -121,44 +142,43 @@ void CCachedProperty::__set_name__(object owner, str name)
 	m_name = name;
 }
 
-
 object CCachedProperty::__get__(object instance, object owner=object())
 {
 	if (instance.is_none())
 		return object(ptr(this));
 
-	if (!m_name)
+	if (m_name.is_none())
 		BOOST_RAISE_EXCEPTION(
 			PyExc_AttributeError,
 			"Unable to retrieve the value of an unbound property."
 		);
 
-	PyObject *pCache = PyObject_GetAttrString(instance.ptr(), "__dict__");
+	object cache = extract<dict>(instance.attr("__dict__"));
 
-	if (!PyDict_Check(pCache))
-		BOOST_RAISE_EXCEPTION(
-			PyExc_ValueError,
-			"Cache dictionary is invalid."
+	try
+	{
+		return cache[m_name];
+	}
+	catch (...)
+	{
+		if (!PyErr_ExceptionMatches(PyExc_KeyError))
+			throw_error_already_set();
+
+		PyErr_Clear();
+
+		if (m_fget.is_none())
+			BOOST_RAISE_EXCEPTION(
+				PyExc_AttributeError,
+				"Unable to retrieve the value of a property that have no getter function."
+			);
+
+		cache[m_name] = _prepare_value(
+			m_fget(
+				*(make_tuple(handle<>(borrowed(instance.ptr()))) + m_args),
+				**m_kwargs
+			)
 		);
-
-	Py_DECREF(pCache);
-	PyObject *pValue = PyDict_GetItemString(pCache, extract<const char *>(m_name));
-	if (pValue)
-		return object(handle<>(borrowed(pValue)));
-
-	if (m_fget.is_none())
-		BOOST_RAISE_EXCEPTION(
-			PyExc_AttributeError,
-			"Unable to retrieve the value of a property that have no getter function."
-		);
-
-	dict cache = extract<dict>(pCache);
-	cache[m_name] = _prepare_value(
-		m_fget(
-			*(make_tuple(handle<>(borrowed(instance.ptr()))) + m_args),
-			**m_kwargs
-		)
-	);
+	}
 
 	return cache[m_name];
 }
@@ -181,7 +201,7 @@ void CCachedProperty::__set__(object instance, object value)
 	if (!result.is_none())
 		cache[m_name] = _prepare_value(result);
 	else
-		PyDict_DelItemString(cache.ptr(), extract<const char *>(m_name));
+		cache[m_name].del();
 }
 
 void CCachedProperty::__delete__(object instance)
@@ -193,7 +213,13 @@ void CCachedProperty::__delete__(object instance)
 		);
 
 	dict cache = extract<dict>(instance.attr("__dict__"));
-	PyDict_DelItemString(cache.ptr(), extract<const char *>(m_name));
+	cache[m_name].del();
+}
+
+object CCachedProperty::__call__(object fget)
+{
+	m_fget = _callable_check(fget, "getter");
+	return object(ptr(this));
 }
 
 object CCachedProperty::__getitem__(str item)
@@ -217,50 +243,4 @@ CCachedProperty *CCachedProperty::wrap_descriptor(object descriptor, object owne
 	pProperty->__set_name__(owner, name);
 
 	return pProperty;
-}
-
-
-//-----------------------------------------------------------------------------
-// CCachedGenerator class.
-//-----------------------------------------------------------------------------
-CCachedGenerator::CCachedGenerator(object generator)
-{
-	if (!PyGen_Check(generator.ptr()))
-		BOOST_RAISE_EXCEPTION(
-			PyExc_TypeError,
-			"The given generator is invalid."
-		);
-
-	object frame = generator.attr("gi_frame");
-	if (frame.is_none())
-		BOOST_RAISE_EXCEPTION(
-			PyExc_ValueError,
-			"The given generator is exhausted."
-		);
-
-	m_generator = generator;
-}
-
-
-object CCachedGenerator::get_generator()
-{
-	return m_generator;
-}
-
-
-object CCachedGenerator::__iter__()
-{
-	while(!m_generator.is_none())
-	{
-		try
-		{
-			m_generated_values.append(m_generator.attr("__next__")());
-		}
-		catch(...)
-		{
-			m_generator = object();
-			PyErr_Clear();
-		}
-	}
-	return m_generated_values.attr("__iter__")();
 }

@@ -61,6 +61,7 @@ public:
 	object __get__(object instance, object owner);
 	void __set__(object instance, object value);
 	void __delete__(object instance);
+	object __call__(object fget);
 	object __getitem__(str item);
 	void __setitem__(str item, object value);
 
@@ -79,24 +80,6 @@ public:
 
 	boost::python::tuple m_args;
 	dict m_kwargs;
-};
-
-
-//-----------------------------------------------------------------------------
-// CCachedGenerator class.
-//-----------------------------------------------------------------------------
-class CCachedGenerator
-{
-public:
-	CCachedGenerator(object generator);
-
-	object get_generator();
-
-	object __iter__();
-
-private:
-	object m_generator;
-	list m_generated_values;
 };
 
 

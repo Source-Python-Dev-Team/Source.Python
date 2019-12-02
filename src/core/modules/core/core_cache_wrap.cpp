@@ -36,7 +36,6 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 static void export_cached_property(scope);
-static void export_cached_generator(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -45,7 +44,6 @@ static void export_cached_generator(scope);
 DECLARE_SP_SUBMODULE(_core, _cache)
 {
 	export_cached_property(_cache);
-	export_cached_generator(_cache);
 }
 
 
@@ -237,7 +235,7 @@ void export_cached_property(scope _cache)
 
 	CachedProperty.def(
 		"__call__",
-		&CCachedProperty::set_getter,
+		&CCachedProperty::__call__,
 		"Decorator used to register the getter function for this property.\n"
 		"\n"
 		":param function fget:\n"
@@ -267,7 +265,7 @@ void export_cached_property(scope _cache)
 		":param str item:\n"
 		"	The name of the keyword.\n"
 		":param object value:\n"
-		"	The value to assigne to the given keyword."
+		"	The value to assign to the given keyword."
 	);
 
 	CachedProperty.def(
@@ -280,38 +278,4 @@ void export_cached_property(scope _cache)
 	.staticmethod("wrap_descriptor");
 
 	scope().attr("cached_property") = scope().attr("CachedProperty");
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports CCachedGenerator.
-//-----------------------------------------------------------------------------
-void export_cached_generator(scope _cache)
-{
-	class_<CCachedGenerator, CCachedGenerator *> CachedGenerator("CachedGenerator",
-		init<object>(
-			(
-				arg("generator")
-			),
-			"Represents a cached generator.\n"
-			"If a :class:`core.cache.CachedProperty` returns a generator, it"
-			" is being cached as an instance of this class. Then, when"
-			" this instance is iterated over for the first time, the original"
-			" generator is processed and the generated values are cached.\n"
-			"\n"
-			":param generator generator:\n"
-			"	The wrapped generator instance.\n"
-			"\n"
-			":raises TypeError:\n"
-			"	If the given generator is invalid.\n"
-			":raises ValueError:\n"
-			"	If the given generator is exhausted."
-		)
-	);
-
-	CachedGenerator.def(
-		"__iter__",
-		&CCachedGenerator::__iter__,
-		"Returns an iterator iterating over the generated values of the wrapped generator."
-	);
 }

@@ -12,7 +12,6 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from _core._cache import CachedGenerator
 from _core._cache import CachedProperty
 from _core._cache import cached_property
 
@@ -21,7 +20,6 @@ from _core._cache import cached_property
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'CachedGenerator',
     'CachedProperty',
     'cached_property'
 ]
