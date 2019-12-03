@@ -92,26 +92,19 @@ __all__ = ('baseentity_from_basehandle',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class EntityMemFuncWrapper(MemberFunction, CachedProperty):
+class EntityMemFuncWrapper(MemberFunction):
     def __init__(self, wrapper):
         self.__func__ = wrapper
-        CachedProperty.__init__(self)
 
     def __get__(self, wrapped_self, objtype):
         if wrapped_self is None:
             return self.__func__
-        func = wrapped_self.__dict__.get(self.name, None)
-        if func is not None:
-            return func
         self.wrapped_self = wrapped_self
         func = wrapped_self.__getattr__(self.__func__.__name__)
         MemberFunction.__init__(
             self, func._manager, func._type_name, func, func._this
         )
         return self
-
-    def __set__(self, wrapped_self, value):
-        wrapped_self.__dict__[self.name] = value
 
     def __call__(self, *args, **kwargs):
         return super().__call__(
