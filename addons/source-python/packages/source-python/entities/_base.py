@@ -20,6 +20,7 @@ from core import BoostPythonClass
 from core.cache import cached_property
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
+from entities.constants import EntityFlags
 #   Engines
 from engines.precache import Model
 from engines.sound import Attenuation
@@ -109,7 +110,13 @@ class _EntityCaching(BoostPythonClass):
 
         # Let's cache the new instance we just created
         if caching:
-            cls._cache[index] = obj
+
+            # Only cache entities that are not marked for deletion.
+            # This is required, because if someone request an entity instance
+            # after we invalidated our cache but before the engine processed
+            # the deletion we would now have an invalid instance in the cache.
+            if not obj.entity_flags & EntityFlags.KILLME:
+                cls._cache[index] = obj
 
         # We are done, let's return the instance
         return obj

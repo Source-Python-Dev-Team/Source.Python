@@ -96,6 +96,9 @@ class EntityMemFuncWrapper(MemberFunction):
     def __init__(self, wrapper):
         self.__func__ = wrapper
 
+    def __set_name__(self, owner, name):
+        self.name = name
+
     def __get__(self, wrapped_self, objtype):
         if wrapped_self is None:
             return self.__func__
@@ -104,6 +107,7 @@ class EntityMemFuncWrapper(MemberFunction):
         MemberFunction.__init__(
             self, func._manager, func._type_name, func, func._this
         )
+        wrapped_self.__dict__[self.name] = self
         return self
 
     def __call__(self, *args, **kwargs):

@@ -131,6 +131,14 @@ void export_base_entity(scope _entity)
 	);
 
 	BaseEntity.add_property(
+		"entity_flags",
+		&CBaseEntityWrapper::GetEntityFlags,
+		&CBaseEntityWrapper::SetEntityFlags,
+		"Get/set the entity's flags.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.add_property(
 		"solid_type",
 		&CBaseEntityWrapper::GetSolidType,
 		&CBaseEntityWrapper::SetSolidType,

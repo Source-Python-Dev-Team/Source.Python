@@ -206,14 +206,28 @@ class Player(PlayerMixin, Entity):
         return self.playerinfo.is_fake_client()
 
     @cached_property
-    def is_hltv(self):
+    def _is_hltv(self):
         """Return whether the player is HLTV.
 
         :rtype: bool
         """
         return self.playerinfo.is_hltv()
 
+    def is_hltv(self):
+        """Return whether the player is HLTV.
+
+        :rtype: bool
+        """
+        return self._is_hltv
+
     @cached_property
+    def _is_bot(self):
+        """Return whether the player is a bot.
+
+        :rtype: bool
+        """
+        return self._is_bot
+
     def is_bot(self):
         """Return whether the player is a bot.
 

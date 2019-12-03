@@ -428,6 +428,17 @@ void CBaseEntityWrapper::SetMins(Vector& vec)
 	SetNetworkPropertyByOffset<Vector>(offset, vec);
 }
 
+int CBaseEntityWrapper::GetEntityFlags()
+{
+	static int offset = FindDatamapPropertyOffset("m_iEFlags");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetEntityFlags(int flags)
+{
+	static int offset = FindDatamapPropertyOffset("m_iEFlags");
+	SetDatamapPropertyByOffset<int>(offset, flags);
+}
 
 SolidType_t CBaseEntityWrapper::GetSolidType()
 {

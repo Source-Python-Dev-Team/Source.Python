@@ -251,6 +251,9 @@ public:
 	Vector GetMins();
 	void SetMins(Vector& mins);
 
+	int GetEntityFlags();
+	void SetEntityFlags(int flags);
+
 	SolidType_t GetSolidType();
 	void SetSolidType(SolidType_t type);
 
