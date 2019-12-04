@@ -198,7 +198,16 @@ void CCachedProperty::__set__(object instance, object value)
 	if (!result.is_none())
 		cache[m_name] = _prepare_value(result);
 	else
-		cache[m_name].del();
+	{
+		try
+		{
+			cache[m_name].del();
+		}
+		catch (...)
+		{
+			PyErr_Clear();
+		}
+	}
 }
 
 void CCachedProperty::__delete__(object instance)
@@ -210,7 +219,14 @@ void CCachedProperty::__delete__(object instance)
 		);
 
 	dict cache = extract<dict>(instance.attr("__dict__"));
-	cache[m_name].del();
+	try
+	{
+		cache[m_name].del();
+	}
+	catch (...)
+	{
+		PyErr_Clear();
+	}
 }
 
 object CCachedProperty::__call__(object self, object fget)
