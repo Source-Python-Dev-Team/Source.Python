@@ -5,6 +5,10 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   WeakRef
+from weakref import ref
+
 # Source.Python Imports
 #   Core
 from core.cache import CachedProperty
@@ -97,7 +101,11 @@ class EntityMemFuncWrapper(MemberFunction):
         func = wrapped_self.__getattr__(wrapper.__name__)
         super().__init__(func._manager, func._type_name, func, func._this)
         self.wrapper = wrapper
-        self.wrapped_self = wrapped_self
+
+        # Don't store a strong reference to the wrapped instance.
+        # If we do, we will ends with a circular reference preventing itself,
+        # along with everything it refers, to ever be garbage collected.
+        self.wrapped_self = ref(wrapped_self)
 
     def __call__(self, *args, **kwargs):
         return super().__call__(
