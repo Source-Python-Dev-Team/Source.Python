@@ -89,7 +89,11 @@ void export_cached_property(scope _cache)
 			"	Extra keyword arguments passed to the getter, setter and deleter functions.\n"
 			"\n"
 			":raises TypeError:\n"
-			"	If the given getter, setter or deleter is not callable."
+			"	If the given getter, setter or deleter is not callable.\n"
+			"\n"
+			".. warning ::\n"
+			"	If a cached object hold a strong reference of the instance it belongs to,"
+			"	this will result in a circular reference preventing their garbage collection."
 		)
 	);
 
@@ -185,13 +189,19 @@ void export_cached_property(scope _cache)
 	CachedProperty.def_readwrite(
 		"args",
 		&CCachedProperty::m_args,
-		"The extra arguments passed to the getter, setter and deleter functions."
+		"The extra arguments passed to the getter, setter and deleter functions.\n"
+		"\n"
+		":rtype:\n"
+		"	tuple"
 	);
 
 	CachedProperty.def_readwrite(
 		"kwargs",
 		&CCachedProperty::m_kwargs,
-		"The extra keyword arguments passed to the getter, setter and deleter functions."
+		"The extra keyword arguments passed to the getter, setter and deleter functions.\n"
+		"\n"
+		":rtype:\n"
+		"	dict"
 	);
 
 	CachedProperty.def(
@@ -263,7 +273,21 @@ void export_cached_property(scope _cache)
 		"wrap_descriptor",
 		&CCachedProperty::wrap_descriptor,
 		manage_new_object_policy(),
-		"Wraps a descriptor as a cached property.",
+		"Wraps a descriptor as a cached property.\n"
+		"\n"
+		":param property descriptor:\n"
+		"	Property descriptor to wrap.\n"
+		"	Must have a __get__, __set__ and a __del__ methods bound to it, either"
+		"	callable or set to None.\n"
+		":param class owner:\n"
+		"	The class the wrapped property should be bound to.\n"
+		":param str name:\n"
+		"	The name of this property.\n"
+		"\n"
+		":raises AttributeError:\n"
+		"	If the given descriptor doesn't have the required methods.\n"
+		":raises TypeError:\n"
+		"	If the getter, setter or deleter are not callable.",
 		("descriptor", arg("owner")=object(), arg("name")=str())
 	)
 	.staticmethod("wrap_descriptor");
