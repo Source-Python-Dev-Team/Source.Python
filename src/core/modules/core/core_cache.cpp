@@ -125,11 +125,6 @@ object CCachedProperty::set_deleter(object fdel)
 }
 
 
-object CCachedProperty::get_owner()
-{
-	return m_owner;
-}
-
 str CCachedProperty::get_name()
 {
 	return m_name;
@@ -138,7 +133,6 @@ str CCachedProperty::get_name()
 
 void CCachedProperty::__set_name__(object owner, str name)
 {
-	m_owner = owner;
 	m_name = name;
 }
 

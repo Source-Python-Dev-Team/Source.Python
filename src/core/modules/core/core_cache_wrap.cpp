@@ -174,15 +174,6 @@ void export_cached_property(scope _cache)
 
 
 	CachedProperty.add_property(
-		"owner",
-		&CCachedProperty::get_owner,
-		"The owner class this property attribute was bound to.\n"
-		"\n"
-		":rtype:\n"
-		"	type"
-	);
-
-	CachedProperty.add_property(
 		"name",
 		&CCachedProperty::get_name,
 		"The name this property is registered as.\n"

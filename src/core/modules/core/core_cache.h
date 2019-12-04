@@ -54,7 +54,6 @@ public:
 	object get_deleter();
 	object set_deleter(object fget);
 
-	object get_owner();
 	str get_name();
 
 	void __set_name__(object owner, str name);
@@ -72,7 +71,6 @@ private:
 	object m_fset;
 	object m_fdel;
 
-	object m_owner;
 	str m_name;
 
 public:
