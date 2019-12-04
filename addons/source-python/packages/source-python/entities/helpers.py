@@ -126,4 +126,7 @@ class EntityMemFuncWrapper(MemberFunction):
 def wrap_entity_mem_func(wrapper):
     """A decorator to wrap an entity memory function."""
 
-    return CachedProperty(lambda self: EntityMemFuncWrapper(self, wrapper))
+    return CachedProperty(
+        lambda self: EntityMemFuncWrapper(self, wrapper),
+        doc=wrapper.__doc__
+    )
