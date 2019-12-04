@@ -5,10 +5,15 @@
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
+# Python Imports
+#   ContextLib
+from contextlib import suppress
+
 # Source.Python Imports
 #   Core
 from core import AutoUnload
 #   Entities
+from entities.constants import EntityFlags
 from entities.entity import Entity
 from entities.helpers import index_from_inthandle
 #   Listeners
@@ -46,8 +51,15 @@ class EntityDictionary(AutoUnload, dict):
 
     def __missing__(self, index):
         """Add and return the entity instance for the given index."""
-        instance = self[index] = self._factory(index, *self._args,
-            **self._kwargs)
+        instance = self._factory(index, *self._args, **self._kwargs)
+
+        # Only cache entities that are not marked for deletion.
+        # This is required, because if someone request an entity instance
+        # after we invalidated our cache but before the engine processed
+        # the deletion we would now have an invalid instance in the cache.
+        if not instance.entity_flags & EntityFlags.KILLME:
+            self[index] = instance
+
         return instance
 
     def __delitem__(self, index):
