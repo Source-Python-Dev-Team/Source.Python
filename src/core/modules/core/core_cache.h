@@ -57,10 +57,10 @@ public:
 	str get_name();
 
 	void __set_name__(object owner, str name);
-	object __get__(object instance, object owner);
+	static object __get__(object self, object instance, object owner);
 	void __set__(object instance, object value);
 	void __delete__(object instance);
-	object __call__(object fget);
+	static object __call__(object self, object fget);
 	object __getitem__(str item);
 	void __setitem__(str item, object value);
 

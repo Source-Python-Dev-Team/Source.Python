@@ -136,12 +136,14 @@ void CCachedProperty::__set_name__(object owner, str name)
 	m_name = name;
 }
 
-object CCachedProperty::__get__(object instance, object owner=object())
+object CCachedProperty::__get__(object self, object instance, object owner=object())
 {
+	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
 	if (instance.is_none())
-		return object(ptr(this));
+		return self;
 
-	if (m_name.is_none())
+	object name = pSelf.get_name();
+	if (name.is_none())
 		BOOST_RAISE_EXCEPTION(
 			PyExc_AttributeError,
 			"Unable to retrieve the value of an unbound property."
@@ -151,7 +153,7 @@ object CCachedProperty::__get__(object instance, object owner=object())
 
 	try
 	{
-		return cache[m_name];
+		return cache[name];
 	}
 	catch (...)
 	{
@@ -160,21 +162,22 @@ object CCachedProperty::__get__(object instance, object owner=object())
 
 		PyErr_Clear();
 
-		if (m_fget.is_none())
+		object getter = pSelf.get_getter();
+		if (getter.is_none())
 			BOOST_RAISE_EXCEPTION(
 				PyExc_AttributeError,
 				"Unable to retrieve the value of a property that have no getter function."
 			);
 
-		cache[m_name] = _prepare_value(
-			m_fget(
-				*(make_tuple(handle<>(borrowed(instance.ptr()))) + m_args),
-				**m_kwargs
+		cache[name] = pSelf._prepare_value(
+			getter(
+				*(make_tuple(handle<>(borrowed(instance.ptr()))) + pSelf.m_args),
+				**pSelf.m_kwargs
 			)
 		);
 	}
 
-	return cache[m_name];
+	return cache[name];
 }
 
 
@@ -210,10 +213,11 @@ void CCachedProperty::__delete__(object instance)
 	cache[m_name].del();
 }
 
-object CCachedProperty::__call__(object fget)
+object CCachedProperty::__call__(object self, object fget)
 {
-	m_fget = _callable_check(fget, "getter");
-	return object(ptr(this));
+	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
+	pSelf.set_getter(fget);
+	return self;
 }
 
 object CCachedProperty::__getitem__(str item)
