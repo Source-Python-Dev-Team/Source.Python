@@ -126,6 +126,17 @@ inline void* GetFuncPtr(Function func)
 
 
 //---------------------------------------------------------------------------------
+// Use this to transfer ownership of a pointer to Python.
+//---------------------------------------------------------------------------------
+template <typename T>
+object transfer_ownership_to_python(T *pPtr)
+{
+  typename manage_new_object::apply<T*>::type holder;
+  return object(handle<>(holder(*pPtr)));
+};
+
+
+//---------------------------------------------------------------------------------
 // Use these to declare classmethod wrappers.
 //---------------------------------------------------------------------------------
 #define CLASSMETHOD(cls, name, ...) \
@@ -152,7 +163,9 @@ T classmethod(T cls, const char *szName)
 template<typename T>
 T cached_property(T cls, const char *szName)
 {
-	cls.attr(szName) = ptr(CCachedProperty::wrap_descriptor(cls.attr(szName), cls, szName));
+	cls.attr(szName) = transfer_ownership_to_python(
+		CCachedProperty::wrap_descriptor(cls.attr(szName), cls, szName)
+	);
 	return cls;
 };
 
