@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   WeakRef
-from weakref import ref
+from weakref import proxy
 
 # Source.Python Imports
 #   Core
@@ -105,7 +105,7 @@ class EntityMemFuncWrapper(MemberFunction):
         # Don't store a strong reference to the wrapped instance.
         # If we do, we will ends with a circular reference preventing itself,
         # along with everything it refers, to ever be garbage collected.
-        self.wrapped_self = ref(wrapped_self)
+        self.wrapped_self = proxy(wrapped_self)
 
     def __call__(self, *args, **kwargs):
         return super().__call__(

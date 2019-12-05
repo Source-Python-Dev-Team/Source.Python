@@ -208,13 +208,13 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             return
 
         # Loop through all of the entity's server classes
-        for server_class in self.server_classes:
+        for server_class, instance in self.server_classes.items():
 
             # Does the current server class contain the given attribute?
             if hasattr(server_class, attr):
 
                 # Set the attribute's value
-                setattr(server_class(self.pointer, wrap=True), attr, value)
+                setattr(instance, attr, value)
 
                 # No need to go further
                 return
@@ -1219,30 +1219,23 @@ def _on_entity_deleted(base_entity):
     :param BaseEntity base_entity:
         The removed entity.
     """
-    # Make sure the entity is networkable...
-    if not base_entity.is_networked():
+    try:
+        # Get the index of the entity...
+        index = base_entity.index
+    except ValueError:
         return
-
-    # Get the index of the entity...
-    index = base_entity.index
 
     # Cleanup the cache
     for cls in _entity_classes:
         cls.cache.pop(index, None)
 
-    # Was no delay registered for this entity?
-    if index not in _entity_delays:
-        return
+    with suppress(KeyError):
+        # Loop through all delays...
+        for delay in _entity_delays[index]:
 
-    # Loop through all delays...
-    for delay in _entity_delays[index]:
+            # Cancel the delay...
+            with suppress(ValueError):
+                delay.cancel()
 
-        # Make sure the delay is still running...
-        if not delay.running:
-            continue
-
-        # Cancel the delay...
-        delay.cancel()
-
-    # Remove the entity from the dictionary...
-    del _entity_delays[index]
+        # Remove the entity from the dictionary...
+        del _entity_delays[index]
