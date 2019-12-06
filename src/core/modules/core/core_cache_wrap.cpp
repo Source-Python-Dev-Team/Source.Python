@@ -56,7 +56,7 @@ void export_cached_property(scope _cache)
 		"CachedProperty",
 		init<object, object, object, const char *, bool, boost::python::tuple, dict>(
 			(
-				arg("fget")=object(), arg("fset")=object(), arg("fdel")=object(), arg("doc")=object(),
+				arg("self"), arg("fget")=object(), arg("fset")=object(), arg("fdel")=object(), arg("doc")=object(),
 				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
 			),
 			"Represents a property attribute that is only"
@@ -83,10 +83,10 @@ void export_cached_property(scope _cache)
 			"	Deleter signature: self, *args, **kwargs\n"
 			":param str doc:\n"
 			"	Documentation string for this property.\n"
-			":param bool unbound\n"
+			":param bool unbound:\n"
 			"	Whether the cached objects should be independently maintained rather than bound to"
 			" the instance they belong to. The cache will be slightly slower to lookup, but this can"
-			" be required in certain cases to prevent circular references/memory leak.\n"
+			" be required for instances that do not have a `__dict__` attribute.\n"
 			":param tuple args:\n"
 			"	Extra arguments passed to the getter, setter and deleter functions.\n"
 			":param dict kwargs:\n"
@@ -111,7 +111,8 @@ void export_cached_property(scope _cache)
 		"	The function to register as getter function.\n"
 		"\n"
 		":rtype:\n"
-		"	function"
+		"	function",
+		args("self", "fget")
 	);
 
 	CachedProperty.add_property(
@@ -134,7 +135,8 @@ void export_cached_property(scope _cache)
 		"	The function to register as setter function.\n"
 		"\n"
 		":rtype:\n"
-		"	function"
+		"	function",
+		args("self", "fset")
 	);
 
 	CachedProperty.add_property(
@@ -157,7 +159,8 @@ void export_cached_property(scope _cache)
 		"	The function to register as deleter function.\n"
 		"\n"
 		":rtype:\n"
-		"	function"
+		"	function",
+		args("self", "fdel")
 	);
 
 	CachedProperty.add_property(
@@ -190,6 +193,16 @@ void export_cached_property(scope _cache)
 		"	str"
 	);
 
+	CachedProperty.add_property(
+		"owner",
+		&CCachedProperty::get_owner,
+		"The owner class this property attribute was bound to.\n"
+		"\n"
+		":rtype:\n"
+		"	type"
+	);
+
+
 	CachedProperty.def_readwrite(
 		"args",
 		&CCachedProperty::m_args,
@@ -212,6 +225,12 @@ void export_cached_property(scope _cache)
 		"__set_name__",
 		&CCachedProperty::__set_name__,
 		"Called when this property is being bound to a class.\n"
+		"\n"
+		":param class owner:\n"
+		"	The class this property is being bound to.\n"
+		":param str name:\n"
+		"	The name this property is being bound as.",
+		args("self", "owner", "name")
 	);
 
 	CachedProperty.def(
@@ -219,8 +238,14 @@ void export_cached_property(scope _cache)
 		&CCachedProperty::__get__,
 		"Retrieves the value of this property.\n"
 		"\n"
+		":param object instance:\n"
+		"	The instance for which this property is retrieved.\n"
+		":param class owner:\n"
+		"	The class for which this property is retrieved.\n"
+		"\n"
 		":rtype:\n"
-		"	object"
+		"	object",
+		("self", "instance", arg("owner")=object())
 	);
 
 	CachedProperty.def(
@@ -228,14 +253,23 @@ void export_cached_property(scope _cache)
 		&CCachedProperty::__set__,
 		"Assigns the value of this property.\n"
 		"\n"
+		":param object instance:\n"
+		"	The instance this property is being assigned to.\n"
+		":param object value:\n"
+		"	The value assigned to this property.\n"
 		":rtype:\n"
-		"	object"
+		"	object",
+		args("self", "instance", "value")
 	);
 
 	CachedProperty.def(
 		"__delete__",
 		&CCachedProperty::__delete__,
-		"Deletes this property and invalidates its cached value."
+		"Deletes this property and invalidates its cached value.\n"
+		"\n"
+		":param object instance:\n"
+		"	The instance for which this property if being deleted.",
+		args("self", "instance")
 	);
 
 	CachedProperty.def(
@@ -247,7 +281,8 @@ void export_cached_property(scope _cache)
 		"	The function to register as getter function.\n"
 		"\n"
 		":rtype:\n"
-		"	function"
+		"	function",
+		args("self", "fget")
 	);
 
 	CachedProperty.def(
@@ -259,7 +294,8 @@ void export_cached_property(scope _cache)
 		"	The name of the keyword.\n"
 		"\n"
 		":rtype:"
-		"	object"
+		"	object",
+		args("self", "item")
 	);
 
 	CachedProperty.def(
@@ -270,7 +306,8 @@ void export_cached_property(scope _cache)
 		":param str item:\n"
 		"	The name of the keyword.\n"
 		":param object value:\n"
-		"	The value to assign to the given keyword."
+		"	The value to assign to the given keyword.",
+		args("self", "item", "value")
 	);
 
 	CachedProperty.def(
@@ -292,7 +329,7 @@ void export_cached_property(scope _cache)
 		"	If the given descriptor doesn't have the required methods.\n"
 		":raises TypeError:\n"
 		"	If the getter, setter or deleter are not callable.",
-		("descriptor", arg("owner")=object(), arg("name")=str())
+		("descriptor", arg("owner")=object(), arg("name")=str(), arg("unbound")=false)
 	)
 	.staticmethod("wrap_descriptor");
 

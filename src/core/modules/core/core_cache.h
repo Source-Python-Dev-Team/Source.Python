@@ -61,6 +61,7 @@ public:
 	object set_deleter(object fget);
 
 	str get_name();
+	object get_owner();
 
 	void __set_name__(object owner, str name);
 	static object __get__(object self, object instance, object owner);
@@ -70,7 +71,7 @@ public:
 	object __getitem__(str item);
 	void __setitem__(str item, object value);
 
-	static CCachedProperty *wrap_descriptor(object descriptor, object owner, str name);
+	static CCachedProperty *wrap_descriptor(object descriptor, object owner, str name, bool unbound);
 
 private:
 	object m_fget;
@@ -78,6 +79,7 @@ private:
 	object m_fdel;
 
 	str m_name;
+	object m_owner;
 
 	bool m_bUnbound;
 	dict m_cache;

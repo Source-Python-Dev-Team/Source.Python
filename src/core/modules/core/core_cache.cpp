@@ -191,10 +191,16 @@ str CCachedProperty::get_name()
 	return m_name;
 }
 
+object CCachedProperty::get_owner()
+{
+	return m_owner();
+}
+
 
 void CCachedProperty::__set_name__(object owner, str name)
 {
 	m_name = name;
+	m_owner = object(handle<>(PyWeakref_NewRef(owner.ptr(), NULL)));
 }
 
 object CCachedProperty::__get__(object self, object instance, object owner=object())
@@ -302,13 +308,14 @@ void CCachedProperty::__setitem__(str item, object value)
 }
 
 
-CCachedProperty *CCachedProperty::wrap_descriptor(object descriptor, object owner=object(), str name=str())
+CCachedProperty *CCachedProperty::wrap_descriptor(
+	object descriptor, object owner=object(), str name=str(), bool unbound=false)
 {
 	CCachedProperty *pProperty = new CCachedProperty(
-		descriptor.attr("__get__"), descriptor.attr("__set__"), descriptor.attr("__delete__")
+		descriptor.attr("__get__"), descriptor.attr("__set__"), descriptor.attr("__delete__"),
+		extract<const char *>(descriptor.attr("__doc__")), unbound
 	);
 
-	pProperty->m_szDocString = extract<const char *>(descriptor.attr("__doc__"));
 	pProperty->__set_name__(owner, name);
 
 	return pProperty;
