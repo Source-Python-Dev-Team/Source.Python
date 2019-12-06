@@ -40,10 +40,16 @@ using namespace boost::python;
 class CCachedProperty
 {
 public:
-	CCachedProperty(object fget, object fset, object fdel, const char *doc, boost::python::tuple args, dict kwargs);
+	CCachedProperty(
+		object fget, object fset, object fdel, const char *doc, bool unbound,
+		boost::python::tuple args, dict kwargs
+	);
 
 	static object _callable_check(object function, const char *szName);
 	static object _prepare_value(object value);
+	void _invalidate_cache(PyObject *pRef);
+	void _update_cache(object instance, object value);
+	void _delete_cache(object instance);
 
 	object get_getter();
 	object set_getter(object fget);
@@ -72,6 +78,9 @@ private:
 	object m_fdel;
 
 	str m_name;
+
+	bool m_bUnbound;
+	dict m_cache;
 
 public:
 	const char *m_szDocString;

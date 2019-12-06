@@ -54,10 +54,10 @@ void export_cached_property(scope _cache)
 {
 	class_<CCachedProperty, CCachedProperty *> CachedProperty(
 		"CachedProperty",
-		init<object, object, object, const char *, boost::python::tuple, dict>(
+		init<object, object, object, const char *, bool, boost::python::tuple, dict>(
 			(
 				arg("fget")=object(), arg("fset")=object(), arg("fdel")=object(), arg("doc")=object(),
-				arg("args")=boost::python::tuple(), arg("kwargs")=dict()
+				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
 			),
 			"Represents a property attribute that is only"
 			" computed once and cached.\n"
@@ -83,6 +83,10 @@ void export_cached_property(scope _cache)
 			"	Deleter signature: self, *args, **kwargs\n"
 			":param str doc:\n"
 			"	Documentation string for this property.\n"
+			":param bool unbound\n"
+			"	Whether the cached objects should be independently maintained rather than bound to"
+			" the instance they belong to. The cache will be slightly slower to lookup, but this can"
+			" be required in certain cases to prevent circular references/memory leak.\n"
 			":param tuple args:\n"
 			"	Extra arguments passed to the getter, setter and deleter functions.\n"
 			":param dict kwargs:\n"

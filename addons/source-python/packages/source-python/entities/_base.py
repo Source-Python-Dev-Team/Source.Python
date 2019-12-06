@@ -169,7 +169,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     def __hash__(self):
         """Return a hash value based on the entity index."""
         # Required for sets, because we have implemented __eq__
-        return hash(self.index)
+        return hash(self.inthandle)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""

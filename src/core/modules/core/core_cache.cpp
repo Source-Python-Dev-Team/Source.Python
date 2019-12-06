@@ -36,13 +36,14 @@
 //-----------------------------------------------------------------------------
 CCachedProperty::CCachedProperty(
 	object fget=object(), object fset=object(), object fdel=object(), const char *doc=NULL,
-	boost::python::tuple args=boost::python::tuple(), dict kwargs=dict())
+	bool unbound=false, boost::python::tuple args=boost::python::tuple(), dict kwargs=dict())
 {
 	set_getter(fget);
 	set_setter(fset);
 	set_deleter(fdel);
 
 	m_szDocString = doc;
+	m_bUnbound = unbound;
 
 	m_args = args;
 	m_kwargs = kwargs;
@@ -86,6 +87,66 @@ object CCachedProperty::_prepare_value(object value)
 	}
 
 	return values;
+}
+
+void CCachedProperty::_invalidate_cache(PyObject *pRef)
+{
+	try
+	{
+		m_cache[handle<>(pRef)].del();
+	}
+	catch (...)
+	{
+		if (!PyErr_ExceptionMatches(PyExc_KeyError))
+			throw_error_already_set();
+
+		PyErr_Clear();
+	}
+}
+
+void CCachedProperty::_update_cache(object instance, object value)
+{
+	if (m_bUnbound)
+		m_cache[handle<>(
+			PyWeakref_NewRef(
+				instance.ptr(),
+				make_function(
+					boost::bind(&CCachedProperty::_invalidate_cache, this, _1),
+					default_call_policies(),
+					boost::mpl::vector2<void, PyObject *>()
+				).ptr()
+			)
+		)] = value;
+	else
+	{
+		dict cache = extract<dict>(instance.attr("__dict__"));
+		cache[m_name] = value;
+	}
+}
+
+void CCachedProperty::_delete_cache(object instance)
+{
+	try
+	{
+		if (m_bUnbound)
+			m_cache[
+				handle<>(
+					PyWeakref_NewRef(instance.ptr(), NULL)
+				)
+			].del();
+		else
+		{
+			dict cache = extract<dict>(instance.attr("__dict__"));
+			cache[m_name].del();
+		}
+	}
+	catch (...)
+	{
+		if (!PyErr_ExceptionMatches(PyExc_KeyError))
+			throw_error_already_set();
+
+		PyErr_Clear();
+	}
 }
 
 
@@ -149,11 +210,21 @@ object CCachedProperty::__get__(object self, object instance, object owner=objec
 			"Unable to retrieve the value of an unbound property."
 		);
 
-	object cache = extract<dict>(instance.attr("__dict__"));
+	object value;
 
 	try
 	{
-		return cache[name];
+		if (pSelf.m_bUnbound)
+			return pSelf.m_cache[
+				handle<>(
+					PyWeakref_NewRef(instance.ptr(), NULL)
+				)
+			];
+		else
+		{
+			dict cache = extract<dict>(instance.attr("__dict__"));
+			return cache[name];
+		}
 	}
 	catch (...)
 	{
@@ -169,15 +240,17 @@ object CCachedProperty::__get__(object self, object instance, object owner=objec
 				"Unable to retrieve the value of a property that have no getter function."
 			);
 
-		cache[name] = pSelf._prepare_value(
+		value = pSelf._prepare_value(
 			getter(
 				*(make_tuple(handle<>(borrowed(instance.ptr()))) + pSelf.m_args),
 				**pSelf.m_kwargs
 			)
 		);
+
+		pSelf._update_cache(instance, value);
 	}
 
-	return cache[name];
+	return value;
 }
 
 
@@ -194,20 +267,10 @@ void CCachedProperty::__set__(object instance, object value)
 		**m_kwargs
 	);
 
-	dict cache = extract<dict>(instance.attr("__dict__"));
 	if (!result.is_none())
-		cache[m_name] = _prepare_value(result);
+		_update_cache(instance, _prepare_value(result));
 	else
-	{
-		try
-		{
-			cache[m_name].del();
-		}
-		catch (...)
-		{
-			PyErr_Clear();
-		}
-	}
+		_delete_cache(instance);
 }
 
 void CCachedProperty::__delete__(object instance)
@@ -218,15 +281,7 @@ void CCachedProperty::__delete__(object instance)
 			**m_kwargs
 		);
 
-	dict cache = extract<dict>(instance.attr("__dict__"));
-	try
-	{
-		cache[m_name].del();
-	}
-	catch (...)
-	{
-		PyErr_Clear();
-	}
+	_delete_cache(instance);
 }
 
 object CCachedProperty::__call__(object self, object fget)
