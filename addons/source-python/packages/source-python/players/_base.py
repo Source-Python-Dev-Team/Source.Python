@@ -226,14 +226,14 @@ class Player(PlayerMixin, Entity):
 
         :rtype: bool
         """
-        return self._is_bot
+        return self.is_fake_client() or self.steamid == 'BOT'
 
     def is_bot(self):
         """Return whether the player is a bot.
 
         :rtype: bool
         """
-        return self.is_fake_client() or self.steamid == 'BOT'
+        return self._is_bot
 
     def is_in_a_vehicle(self):
         """Return whether the player is in a vehicle.
