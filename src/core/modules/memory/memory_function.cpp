@@ -381,6 +381,9 @@ void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 
 	if (!pHook) {
 		pHook = HookFunctionHelper((void *) m_ulAddr, m_pCallingConvention);
+
+		// DynamicHooks will handle our convention from there, regardless if we allocated it or not.
+		m_bAllocatedCallingConvention = false;
 	}
 	
 	// Add the hook handler. If it's already added, it won't be added twice
