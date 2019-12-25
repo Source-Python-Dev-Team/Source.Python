@@ -101,9 +101,10 @@ class _EntityCaching(BoostPythonClass):
         """
         # Let's first lookup for a cached instance
         if caching:
-            obj = cls._cache.get(index, None)
-            if obj is not None:
-                return obj
+            try:
+                return cls._cache[index]
+            except KeyError:
+                pass
 
         # Nothing in cache, let's create a new instance
         obj = super().__call__(index)
@@ -128,6 +129,17 @@ class _EntityCaching(BoostPythonClass):
         :rtype: dict
         """
         return cls._cache
+
+    @staticmethod
+    def _invalidate_cache(base_entity):
+        """Invalidates the cache for the given entity."""
+        try:
+            index = base_entity.index
+        except ValueError:
+            return
+
+        for cls in _entity_classes:
+            cls.cache.pop(index, None)
 
 
 class Entity(BaseEntity, metaclass=_EntityCaching):
@@ -1224,10 +1236,6 @@ def _on_entity_deleted(base_entity):
         index = base_entity.index
     except ValueError:
         return
-
-    # Cleanup the cache
-    for cls in _entity_classes:
-        cls.cache.pop(index, None)
 
     with suppress(KeyError):
         # Loop through all delays...

@@ -88,7 +88,7 @@ class EntityDictionary(AutoUnload, dict):
         except ValueError:
             return
 
-        with suppress(KeyError):
+        if index in self:
             # Call the deletion callback for the index...
             self.on_automatically_removed(index)
 
