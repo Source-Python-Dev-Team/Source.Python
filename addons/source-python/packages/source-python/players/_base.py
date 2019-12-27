@@ -102,6 +102,17 @@ class Player(PlayerMixin, Entity):
         return cls(index_from_userid(userid))
 
     @property
+    def net_info(self):
+        """Return the player's network channel information.
+
+        :return:
+            ``None`` if no network channel information exists. E. g. if the
+            player is a bot.
+        :rtype: NetChannelInfo
+        """
+        return engine_server.get_player_net_info(self.index)
+
+    @property
     def raw_steamid(self):
         """Return the player's unformatted SteamID.
 
