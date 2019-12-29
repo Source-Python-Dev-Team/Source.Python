@@ -831,10 +831,13 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Arguments that should be passed to the callback.
         :param dict kwargs:
             Keyword arguments that should be passed to the callback.
-        :raise ValueError:
-            Raised if the given callback is not callable.
         :param bool cancel_on_level_end:
             Whether or not to cancel the delay at the end of the map.
+        :raise ValueError:
+            Raised if the given callback is not callable.
+        :return:
+            The repeat instance.
+        :rtype: Repeat
         """
 
         # Get the repeat instance...
