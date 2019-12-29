@@ -10,6 +10,8 @@
 from collections import defaultdict
 #   Contextlib
 from contextlib import suppress
+#   Inspect
+from inspect import signature
 #   WeakRef
 from weakref import WeakSet
 
@@ -85,10 +87,18 @@ class _EntityCaching(BoostPythonClass):
         # New instances of this class will be cached in that dictionary
         cls._cache = {}
 
+        # Set whether or not this class is caching its instances by default
+        try:
+            cls._caching = signature(
+                cls.__init__
+            ).parameters['caching'].default
+        except KeyError:
+            cls._caching = True
+
         # Add the class to the registered classes
         _entity_classes.add(cls)
 
-    def __call__(cls, index, caching=True):
+    def __call__(cls, index, caching=None):
         """Called when a new instance of this class is requested.
 
         :param int index:
@@ -96,6 +106,10 @@ class _EntityCaching(BoostPythonClass):
         :param bool caching:
             Whether to lookup the cache for an existing instance or not.
         """
+        # Get whether or not we should lookup for a cached instance
+        if caching is None:
+            caching = cls._caching
+
         # Let's first lookup for a cached instance
         if caching:
             obj = cls._cache.get(index, None)
@@ -111,6 +125,14 @@ class _EntityCaching(BoostPythonClass):
 
         # We are done, let's return the instance
         return obj
+
+    @property
+    def caching(cls):
+        """Returns whether this class is caching its instances by default.
+
+        :rtype: bool
+        """
+        return cls._caching
 
     @property
     def cache(cls):
@@ -141,6 +163,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         .. note::
             This is not an instance property, so it can only be
             accessed through the class itself.
+
+    :var caching:
+        A read-only attribute that returns whether this class is caching its
+        instances by default.
     """
 
     def __init__(self, index, caching=True):
