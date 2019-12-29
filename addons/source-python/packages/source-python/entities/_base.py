@@ -822,8 +822,8 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         # Return the delay instance...
         return delay
 
-    def register_repeat(self, callback, args=(), kwargs=None):
-        """Register a repeat which will be deleted and canceled after removing the entity.
+    def repeat(self, callback, args=(), kwargs=None):
+        """Create a repeat which will be stopped after removing the entity.
 
         :param callback:
             A callable object that should be called at the end of each loop.
@@ -836,7 +836,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """
 
         # Get the repeat instance...
-        repeat = Repeat(_callback, args, kwargs)
+        repeat = Repeat(callback, args, kwargs)
 
         # Add the repeat to the dictionary...
         _entity_repeats[self.index].add(repeat)
@@ -1149,7 +1149,7 @@ def _on_entity_deleted(base_entity):
     # Was repeat registered for this entity?
     if index in _entity_repeats:
         # Loop through all repeats...
-        for repeat in entity_repeats[index]:
+        for repeat in _entity_repeats[index]:
 
             # Stop the repeat if running
             if repeat.status is RepeatStatus.RUNNING:
