@@ -844,7 +844,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         # Return the repeat instance...
         return repeat
 
-
     def get_input(self, name):
         """Return the input function matching the given name.
 
