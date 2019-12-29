@@ -779,7 +779,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     def delay(
             self, delay, callback, args=(), kwargs=None,
             cancel_on_level_end=False):
-        """Execute a callback after the given delay.
+        """Create the delay which will be stopped after removing the entity.
 
         :param float delay:
             The delay in seconds.
@@ -822,8 +822,8 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         # Return the delay instance...
         return delay
 
-    def repeat(self, callback, args=(), kwargs=None):
-        """Create a repeat which will be stopped after removing the entity.
+    def repeat(self, callback, args=(), kwargs=None, cancel_on_level_end=False):
+        """Create the repeat which will be stopped after removing the entity.
 
         :param callback:
             A callable object that should be called at the end of each loop.
@@ -833,10 +833,12 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Keyword arguments that should be passed to the callback.
         :raise ValueError:
             Raised if the given callback is not callable.
+        :param bool cancel_on_level_end:
+            Whether or not to cancel the delay at the end of the map.
         """
 
         # Get the repeat instance...
-        repeat = Repeat(callback, args, kwargs)
+        repeat = Repeat(callback, args, kwargs, cancel_on_level_end)
 
         # Add the repeat to the dictionary...
         _entity_repeats[self.index].add(repeat)
