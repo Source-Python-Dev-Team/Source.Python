@@ -9,7 +9,6 @@
 import bisect
 import math
 import time
-import weakref
 
 from contextlib import suppress
 from enum import IntEnum
@@ -237,9 +236,9 @@ class Repeat(AutoUnload):
             raise ValueError('Given callback is not callable.')
 
         # Store the base attributes
-        self.callback = weakref.ref(callback)
+        self.callback = callback
         self.args = args
-        self.kwargs = WeakValueDictionary(kwargs) if kwargs is not None else dict()
+        self.kwargs = kwargs if kwargs is not None else dict()
         self.cancel_on_level_end = cancel_on_level_end
 
         # Log the __init__ message
