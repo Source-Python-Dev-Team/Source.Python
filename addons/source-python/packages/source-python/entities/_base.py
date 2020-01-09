@@ -94,11 +94,13 @@ class _EntityCaching(BoostPythonClass):
 
         # Set whether or not this class is caching its instances by default
         try:
-            cls._caching = signature(
-                cls.__init__
-            ).parameters['caching'].default
+            cls._caching = bool(
+                signature(
+                    vars(cls)['__init__']
+                ).parameters['caching'].default
+            )
         except KeyError:
-            cls._caching = True
+            cls._caching = bool(vars(cls).get('caching', False))
 
         # Add the class to the registered classes
         _entity_classes.add(cls)
@@ -305,14 +307,16 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         return entity
 
     @classmethod
-    def from_inthandle(cls, inthandle):
+    def from_inthandle(cls, inthandle, caching=None):
         """Create an entity instance from an inthandle.
 
         :param int inthandle:
             The inthandle.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
         :rtype: Entity
         """
-        return cls(index_from_inthandle(inthandle))
+        return cls(index_from_inthandle(inthandle), caching=caching)
 
     @classmethod
     def _obj(cls, ptr):
