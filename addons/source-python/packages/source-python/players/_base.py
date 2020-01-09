@@ -92,14 +92,16 @@ class Player(PlayerMixin, Entity):
         Entity.__init__(self, index)
 
     @classmethod
-    def from_userid(cls, userid):
+    def from_userid(cls, userid, caching=None):
         """Create an instance from a userid.
 
         :param int userid:
             The userid.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
         :rtype: Player
         """
-        return cls(index_from_userid(userid))
+        return cls(index_from_userid(userid), caching=caching)
 
     @cached_property
     def net_info(self):

@@ -54,6 +54,8 @@ from filters.weapons import WeaponClassIter
 from listeners import OnEntityDeleted
 from listeners import on_entity_deleted_listener_manager
 from listeners.tick import Delay
+from listeners.tick import Repeat
+from listeners.tick import RepeatStatus
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Memory
@@ -75,6 +77,9 @@ _projectile_weapons = [weapon.name for weapon in WeaponClassIter('grenade')]
 # Get a dictionary to store the delays
 _entity_delays = defaultdict(set)
 
+# Get a dictionary to store the repeats
+_entity_repeats = defaultdict(set)
+
 # Get a set to store the registered entity classes
 _entity_classes = WeakSet()
 
@@ -92,11 +97,13 @@ class _EntityCaching(BoostPythonClass):
 
         # Set whether or not this class is caching its instances by default
         try:
-            cls._caching = signature(
-                cls.__init__
-            ).parameters['caching'].default
+            cls._caching = bool(
+                signature(
+                    vars(cls)['__init__']
+                ).parameters['caching'].default
+            )
         except KeyError:
-            cls._caching = True
+            cls._caching = bool(vars(cls).get('caching', False))
 
         # Add the class to the registered classes
         _entity_classes.add(cls)
@@ -331,14 +338,16 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         return entity
 
     @classmethod
-    def from_inthandle(cls, inthandle):
+    def from_inthandle(cls, inthandle, caching=None):
         """Create an entity instance from an inthandle.
 
         :param int inthandle:
             The inthandle.
+        :param bool caching:
+            Whether to lookup the cache for an existing instance or not.
         :rtype: Entity
         """
-        return cls(index_from_inthandle(inthandle))
+        return cls(index_from_inthandle(inthandle), caching=caching)
 
     @classmethod
     def _obj(cls, ptr):
@@ -941,7 +950,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     def delay(
             self, delay, callback, args=(), kwargs=None,
             cancel_on_level_end=False):
-        """Execute a callback after the given delay.
+        """Create the delay which will be stopped after removing the entity.
 
         :param float delay:
             The delay in seconds.
@@ -983,6 +992,34 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
         # Return the delay instance...
         return delay
+
+    def repeat(
+            self, callback, args=(), kwargs=None,
+            cancel_on_level_end=False):
+        """Create the repeat which will be stopped after removing the entity.
+        :param callback:
+            A callable object that should be called at the end of each loop.
+        :param tuple args:
+            Arguments that should be passed to the callback.
+        :param dict kwargs:
+            Keyword arguments that should be passed to the callback.
+        :param bool cancel_on_level_end:
+            Whether or not to cancel the delay at the end of the map.
+        :raise ValueError:
+            Raised if the given callback is not callable.
+        :return:
+            The repeat instance.
+        :rtype: Repeat
+        """
+
+        # Get the repeat instance...
+        repeat = Repeat(callback, args, kwargs, cancel_on_level_end)
+
+        # Add the repeat to the dictionary...
+        _entity_repeats[self.index].add(repeat)
+
+        # Return the repeat instance...
+        return repeat
 
     def get_output(self, name):
         """Return the output instance matching the given name.
@@ -1263,13 +1300,22 @@ def _on_entity_deleted(base_entity):
     except ValueError:
         return
 
-    with suppress(KeyError):
-        # Loop through all delays...
-        for delay in _entity_delays[index]:
+    # Get the registered delays for this entity
+    delays = _entity_delays.pop(index, ())
 
-            # Cancel the delay...
-            with suppress(ValueError):
-                delay.cancel()
+    # Loop through all delays...
+    for delay in delays:
 
-        # Remove the entity from the dictionary...
-        del _entity_delays[index]
+        # Cancel the delay...
+        with suppress(ValueError):
+            delay.cancel()
+
+    # Get the registered repeats for this entity
+    repeats = _entity_repeats.pop(index, ())
+
+    # Loop through all repeats...
+    for repeat in repeats:
+
+        # Stop the repeat if running
+        if repeat.status is RepeatStatus.RUNNING:
+            repeat.stop()
