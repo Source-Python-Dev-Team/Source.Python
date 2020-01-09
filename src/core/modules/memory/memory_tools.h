@@ -41,10 +41,17 @@ CPointer* ExtractPointer(object oPtr);
 // ============================================================================
 inline object GetObjectPointer(object obj)
 {
-	if (!PyObject_HasAttrString(obj.ptr(), GET_PTR_NAME))
+	object _ptr;
+	try
+	{
+		_ptr = obj.attr(GET_PTR_NAME);
+	}
+	catch (...)
+	{
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve a pointer of this object.");
+	}
 
-	return obj.attr(GET_PTR_NAME)();
+	return _ptr();
 }
 
 
@@ -53,14 +60,21 @@ inline object GetObjectPointer(object obj)
 // ============================================================================
 inline object MakeObject(object cls, object oPtr)
 {
-	if (!PyObject_HasAttrString(cls.ptr(), GET_OBJ_NAME))
+	object _obj;
+	try
+	{
+		_obj = cls.attr(GET_OBJ_NAME);
+	}
+	catch (...)
+	{
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
+	}
 
 	CPointer* pPtr = ExtractPointer(oPtr);
 	if (!pPtr->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.");
 
-	return cls.attr(GET_OBJ_NAME)(pPtr);
+	return _obj(pPtr);
 }
 
 
@@ -69,10 +83,17 @@ inline object MakeObject(object cls, object oPtr)
 // ============================================================================
 inline object GetSize(object cls)
 {
-	if (!PyObject_HasAttrString(cls.ptr(), GET_SIZE_NAME))
+	object _size;
+	try
+	{
+		_size = cls.attr(GET_SIZE_NAME);
+	}
+	catch (...)
+	{
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to retrieve the size of this class.");
+	}
 
-	return cls.attr(GET_SIZE_NAME);
+	return _size;
 }
 
 
