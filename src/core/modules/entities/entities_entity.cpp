@@ -369,14 +369,8 @@ bool CBaseEntityWrapper::IsPlayer()
 
 bool CBaseEntityWrapper::IsWeapon()
 {
-	datamap_t *pDatamap = GetDataDescMap();
-	while (pDatamap)
-	{
-		if (strcmp(pDatamap->dataClassName, "CBaseCombatWeapon") == 0)
-			return true;
-		pDatamap = pDatamap->baseMap;
-	}
-	return false;
+	static object is_weapon = import("weapons").attr("manager").attr("weapon_manager").attr("__contains__");
+	return is_weapon(str(IServerUnknownExt::GetClassname(GetThis())));
 }
 
 IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
