@@ -55,9 +55,21 @@ public:
 class IClientExt
 {
 public:
+	static void disconnect(IClient* pClient, const char* reason)
+	{
+		pClient->Disconnect("%s", reason);
+	}
+
 	static void Disconnect(IClient* pClient, const char* reason)
 	{
-		pClient->Disconnect(reason);
+		static object disconnect = make_function(&IClientExt::disconnect);
+		static object Player = import("players").attr("entity").attr("Player");
+
+		Player.attr("from_userid")(pClient->GetUserID()).attr("delay")(
+			0,
+			disconnect,
+			make_tuple(ptr(pClient), reason)
+		);
 	}
 };
 
