@@ -57,7 +57,7 @@ class IClientExt
 public:
 	static void disconnect(IClient* pClient, const char* reason)
 	{
-		pClient->Disconnect("%s", reason);
+		pClient->Disconnect(reason);
 	}
 
 	static void Disconnect(IClient* pClient, const char* reason)
