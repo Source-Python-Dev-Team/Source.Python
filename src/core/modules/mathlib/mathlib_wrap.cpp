@@ -211,6 +211,12 @@ void export_vector(scope _mathlib)
 			"Returns True if the vector is within the given box coordinates."
 		)
 
+		.def("get_vector_angles",
+			GET_FUNCTION(void, VectorAngles, const Vector &, QAngle &),
+			"Forward direction vector -> Euler angles",
+			arg("angles")
+		)
+
 		.def("get_distance",
 			&Vector::DistTo,
 			args("other"),
