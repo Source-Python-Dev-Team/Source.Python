@@ -57,7 +57,12 @@ class IClientExt
 public:
 	static void disconnect(IClient* pClient, const char* reason)
 	{
+// TODO: Get rid of this preproc and move that to their respective engine files.
+#ifdef ENGINE_CSGO
+		pClient->Disconnect(reason);
+#else
 		pClient->Disconnect("%s", reason);
+#endif
 	}
 
 	static void Disconnect(IClient* pClient, const char* reason)
