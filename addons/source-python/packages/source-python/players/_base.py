@@ -645,7 +645,7 @@ class Player(PlayerMixin, Entity):
     flashlight = property(get_flashlight, set_flashlight)
 
     def send_convar_value(self, cvar_name, value):
-        """Send a convar value.
+        """Send a server convar value to the client.
 
         :param str cvar_name:
             Name of the convar.
@@ -659,6 +659,10 @@ class Player(PlayerMixin, Entity):
         buffer.write_string(cvar_name)
         buffer.write_string(str(value))
         self.client.net_channel.send_data(buffer)
+
+    def get_client_convar_value(self, name):
+        """Wrapper for :meth:`engines.server.engine_server.get_client_convar_value`."""
+        return engine_server.get_client_convar_value(self.index, name)
 
     @property
     def spectators(self):
