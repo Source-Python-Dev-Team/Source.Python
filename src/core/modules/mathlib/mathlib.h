@@ -94,6 +94,12 @@ public:
 		vecCopy -= val;
 		return vecCopy;
 	}
+
+	static inline Vector __neg__(Vector vecCopy)
+	{
+		vecCopy.Negate();
+		return vecCopy;
+	}
 };
 
 

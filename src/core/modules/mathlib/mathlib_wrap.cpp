@@ -158,6 +158,8 @@ void export_vector(scope _mathlib)
 		.def("__radd__", &VectorExt::__add__)
 		.def(float() * self)
 
+		.def("__neg__", &VectorExt::__neg__)
+
 		.def("negate",
 			&Vector::Negate,
 			"Negates the vector."
