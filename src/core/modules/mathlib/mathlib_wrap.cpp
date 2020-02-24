@@ -211,10 +211,21 @@ void export_vector(scope _mathlib)
 			"Returns True if the vector is within the given box coordinates."
 		)
 
+		.def("get_vector_vectors",
+			&VectorVectors,
+			(arg("right"), arg("up"))
+		)
+
 		.def("get_vector_angles",
 			GET_FUNCTION(void, VectorAngles, const Vector &, QAngle &),
-			"Forward direction vector -> Euler angles",
-			arg("angles")
+			arg("angles"),
+			"Forward direction vector -> Euler angles."
+		)
+
+		.def("get_vector_angles",
+			GET_FUNCTION(void, VectorAngles, const Vector &, const Vector &, QAngle &),
+			(arg("pseudoup"), arg("angles")),
+			"Forward direction vector with a reference up vector -> Euler angles."
 		)
 
 		.def("get_distance",
