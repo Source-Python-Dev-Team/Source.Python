@@ -158,6 +158,8 @@ void export_vector(scope _mathlib)
 		.def("__radd__", &VectorExt::__add__)
 		.def(float() * self)
 
+		.def("__neg__", &VectorExt::__neg__)
+
 		.def("negate",
 			&Vector::Negate,
 			"Negates the vector."
@@ -209,6 +211,23 @@ void export_vector(scope _mathlib)
 			&VectorExt::IsWithinBox,
 			args("corner1", "corner2"),
 			"Returns True if the vector is within the given box coordinates."
+		)
+
+		.def("get_vector_vectors",
+			&VectorVectors,
+			(arg("right"), arg("up"))
+		)
+
+		.def("get_vector_angles",
+			GET_FUNCTION(void, VectorAngles, const Vector &, QAngle &),
+			arg("angles"),
+			"Forward direction vector -> Euler angles."
+		)
+
+		.def("get_vector_angles",
+			GET_FUNCTION(void, VectorAngles, const Vector &, const Vector &, QAngle &),
+			(arg("pseudoup"), arg("angles")),
+			"Forward direction vector with a reference up vector -> Euler angles."
 		)
 
 		.def("get_distance",
