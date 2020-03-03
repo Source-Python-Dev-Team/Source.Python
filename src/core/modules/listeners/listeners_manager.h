@@ -92,6 +92,12 @@ public:
 
 	int FindCallback(object oCallback);
 
+	// Lazy-loading support
+	static void register_listener(object self, PyObject *pCallable);
+	static void unregister_listener(object self, PyObject *pCallable);
+	void initialize() {};
+	void finalize() {};
+
 public:
 	CUtlVector<object> m_vecCallables;
 };

@@ -48,6 +48,13 @@ void CListenerManager::RegisterListener(PyObject* pCallable)
 	}
 }
 
+void CListenerManager::register_listener(object self, PyObject *pCallable)
+{
+	CListenerManager &pSelf = extract<CListenerManager &>(self);
+	if (!pSelf.GetCount()) self.attr("initialize")();
+	pSelf.RegisterListener(pCallable);
+}
+
 
 //-----------------------------------------------------------------------------
 // Removes all instances of a callable from the CListenerManager vector.
@@ -65,6 +72,13 @@ void CListenerManager::UnregisterListener(PyObject* pCallable)
 	else {
 		m_vecCallables.Remove(index);
 	}
+}
+
+void CListenerManager::unregister_listener(object self, PyObject *pCallable)
+{
+	CListenerManager &pSelf = extract<CListenerManager &>(self);
+	pSelf.UnregisterListener(pCallable);
+	if (!pSelf.GetCount()) self.attr("finalize")();
 }
 
 
