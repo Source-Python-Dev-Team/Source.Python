@@ -93,6 +93,7 @@ __all__ = ('ButtonStatus',
            'OnEntityCreated',
            'OnEntityDeleted',
            'OnEntityOutput',
+           'OnEntityOutputListenerManager',
            'OnEntityPreSpawned',
            'OnEntitySpawned',
            'OnLevelInit',
@@ -282,7 +283,7 @@ class OnClientSettingsChanged(ListenerManagerDecorator):
     manager = on_client_settings_changed_listener_manager
 
 
-class OnEntityOutpuListenerManager(ListenerManager):
+class OnEntityOutputListenerManager(ListenerManager):
     """Register/unregister an EntityOutput listener."""
 
     def initialize(self):
@@ -309,7 +310,7 @@ class OnEntityOutpuListenerManager(ListenerManager):
         # Unregister the hook on fire_output
         fire_output.remove_pre_hook(_pre_fire_output)
 
-on_entity_output_listener_manager = OnEntityOutpuListenerManager()
+on_entity_output_listener_manager = OnEntityOutputListenerManager()
 
 
 class OnEntityOutput(ListenerManagerDecorator):
