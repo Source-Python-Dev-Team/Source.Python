@@ -169,5 +169,5 @@ void export_weapon_entity(scope _entity)
 	CLASSMETHOD(_WeaponMixin, GET_OBJ_NAME, &WeaponMixin::_obj)
 	ADD_PTR(WeaponMixin)
 	ADD_SIZE(WeaponMixin)
-	STORE_CLASS("WeaponMixin", "WeaponMixin")
+	STORE_CLASS(WeaponMixin, "WeaponMixin")
 }
