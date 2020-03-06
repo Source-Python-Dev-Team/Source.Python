@@ -754,5 +754,5 @@ void export_player_wrapper(scope _players)
 	CLASSMETHOD(_PlayerMixin, GET_OBJ_NAME, &PlayerMixin::_obj)
 	ADD_PTR(PlayerMixin)
 	ADD_SIZE(PlayerMixin)
-	STORE_CLASS("PlayerMixin", "PlayerMixin")
+	STORE_CLASS(PlayerMixin, "PlayerMixin")
 }
