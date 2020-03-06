@@ -30,6 +30,7 @@
 #include "export_main.h"
 #include "sp_main.h"
 #include "core.h"
+#include "utilities/array.h"
 
 
 //-----------------------------------------------------------------------------
@@ -46,6 +47,7 @@ static void export_message_severity(scope);
 static void export_output_return(scope);
 static void export_constants(scope);
 static void export_functions(scope);
+static void export_arrays(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -58,6 +60,7 @@ DECLARE_SP_MODULE(_core)
 	export_output_return(_core);
 	export_constants(_core);
 	export_functions(_core);
+	export_arrays(_core);
 
 	scope().attr("BoostPythonClass") = objects::class_metatype();
 }
@@ -134,4 +137,66 @@ void export_functions(scope _core)
 		&GetCoreModules,
 		"Return a list of all modules exposed by Source.Python's core.\n\n"
 		":rtype: list");
+}
+
+//-----------------------------------------------------------------------------
+// Expose functions.
+//-----------------------------------------------------------------------------
+void export_arrays(scope _core)
+{
+	class_< Array<bool> >( "BoolArray" )
+		.def(array_indexing_suite< Array<bool> >())
+    ;
+
+	class_< Array<char> >( "CharArray" )
+		.def(array_indexing_suite< Array<char> >())
+    ;
+
+	class_< Array<unsigned char> >( "UCharArray" )
+		.def(array_indexing_suite< Array<unsigned char> >())
+    ;
+
+	class_< Array<unsigned short> >( "UShortArray" )
+		.def(array_indexing_suite< Array<unsigned short> >())
+    ;
+
+	class_< Array<short> >( "ShortArray" )
+		.def(array_indexing_suite< Array<short> >())
+    ;
+
+	class_< Array<int> >( "IntArray" )
+		.def(array_indexing_suite< Array<int> >())
+    ;
+
+	class_< Array<unsigned int> >( "UIntArray" )
+		.def(array_indexing_suite< Array<unsigned int> >())
+    ;
+
+	class_< Array<long> >( "LongArray" )
+		.def(array_indexing_suite< Array<long> >())
+    ;
+
+	class_< Array<unsigned long> >( "ULongArray" )
+		.def(array_indexing_suite< Array<unsigned long> >())
+    ;
+
+	class_< Array<long long> >( "LongLongArray" )
+		.def(array_indexing_suite< Array<long long> >())
+    ;
+
+	class_< Array<unsigned long long> >( "ULongLongArray" )
+		.def(array_indexing_suite< Array<unsigned long long> >())
+    ;
+
+	class_< Array<float> >( "FloatArray" )
+		.def(array_indexing_suite< Array<float> >())
+    ;
+
+	class_< Array<double> >( "DoubleArray" )
+		.def(array_indexing_suite< Array<double> >())
+    ;
+
+	//class_< Array<const char*> >( "StringArray" )
+	//	.def(array_indexing_suite< Array<const char*> >())
+    //;
 }

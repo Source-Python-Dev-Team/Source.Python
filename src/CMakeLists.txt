@@ -56,6 +56,7 @@ Set(SOURCEPYTHON_UTILITIES_HEADERS
     core/utilities/wrap_macros.h
     core/utilities/conversions.h
     core/utilities/ipythongenerator.h
+    core/utilities/array.h
 )
 
 Set(SOURCEPYTHON_UTILITIES_SOURCES
