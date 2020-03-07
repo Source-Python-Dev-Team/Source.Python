@@ -79,7 +79,7 @@
 //-----------------------------------------------------------------------------
 // CListenerManager class.
 //-----------------------------------------------------------------------------
-class CListenerManager
+class CListenerManager: public wrapper<CListenerManager>
 {
 public:
 	void RegisterListener(PyObject* pCallable);
@@ -90,13 +90,10 @@ public:
 	object __getitem__(unsigned int index);
 	void clear();
 
-	int FindCallback(object oCallback);
+	virtual void Initialize();
+	virtual void Finalize();
 
-	// Lazy-loading support
-	static void register_listener(object self, PyObject *pCallable);
-	static void unregister_listener(object self, PyObject *pCallable);
-	void initialize() {};
-	void finalize() {};
+	int FindCallback(object oCallback);
 
 public:
 	CUtlVector<object> m_vecCallables;

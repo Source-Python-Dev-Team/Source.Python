@@ -292,7 +292,7 @@ class OnEntityOutputListenerManager(ListenerManager):
         fire_output = BaseEntityOutput.fire_output
 
         # If the fire_output method is not implemented, exit the call
-        if BaseEntityOutput.fire_output is NotImplemented:
+        if fire_output is NotImplemented:
             return
 
         # Register the hook on fire_output
@@ -304,7 +304,7 @@ class OnEntityOutputListenerManager(ListenerManager):
         fire_output = BaseEntityOutput.fire_output
 
         # If the fire_output method is not implemented, exit the call
-        if BaseEntityOutput.fire_output is NotImplemented:
+        if fire_output is NotImplemented:
             return
 
         # Unregister the hook on fire_output

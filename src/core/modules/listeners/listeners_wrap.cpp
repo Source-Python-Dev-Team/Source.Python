@@ -84,13 +84,13 @@ void export_listener_managers(scope _listeners)
 {
 	class_<CListenerManager, boost::noncopyable>("ListenerManager")
 		.def("register_listener",
-			&CListenerManager::register_listener,
+			&CListenerManager::RegisterListener,
 			"Registers a callable object. If it was already registered it will be ignored.",
 			args("callable")
 		)
 
 		.def("unregister_listener",
-			&CListenerManager::unregister_listener,
+			&CListenerManager::UnregisterListener,
 			"Removes a callable object. If it was not registered nothing will happen.",
 			args("callable")
 		)
@@ -121,12 +121,12 @@ void export_listener_managers(scope _listeners)
 		)
 
 		.def("initialize",
-			&CListenerManager::initialize,
+			&CListenerManager::Initialize,
 			"Called when the first callback is being registered."
 		)
 
 		.def("finalize",
-			&CListenerManager::finalize,
+			&CListenerManager::Finalize,
 			"Called when the last callback is being unregistered."
 		)
 	;
