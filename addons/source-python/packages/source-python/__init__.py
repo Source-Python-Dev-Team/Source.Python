@@ -158,10 +158,10 @@ def setup_data():
         'BaseEntityOutput',
         GameConfigObj(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini'))
 
+    from _entities import BaseEntityOutput
     try:
         _fire_output = entities._BaseEntityOutput.fire_output
 
-        from _entities import BaseEntityOutput
         BaseEntityOutput.fire_output = _fire_output
     except ValueError:
         from warnings import warn
@@ -169,15 +169,14 @@ def setup_data():
             'Did not find address for BaseEntityOutput.fire_output. '
             'OnEntityOutput listener will not fire.'
         )
+        BaseEntityOutput.fire_output = NotImplemented
     except AttributeError:
         from warnings import warn
         warn(
             'BaseEntityOutput.fire_output not found. '
             'OnEntityOutput listener will not fire.'
         )
-    else:
-        import listeners
-        _fire_output.add_pre_hook(listeners._pre_fire_output)
+        BaseEntityOutput.fire_output = NotImplemented
 
 
 # =============================================================================

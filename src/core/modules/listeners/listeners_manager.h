@@ -79,7 +79,7 @@
 //-----------------------------------------------------------------------------
 // CListenerManager class.
 //-----------------------------------------------------------------------------
-class CListenerManager
+class CListenerManager: public wrapper<CListenerManager>
 {
 public:
 	void RegisterListener(PyObject* pCallable);
@@ -89,6 +89,9 @@ public:
 	bool IsRegistered(object oCallback);
 	object __getitem__(unsigned int index);
 	void clear();
+
+	virtual void Initialize();
+	virtual void Finalize();
 
 	int FindCallback(object oCallback);
 

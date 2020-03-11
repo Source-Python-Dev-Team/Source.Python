@@ -41,6 +41,9 @@ void CListenerManager::RegisterListener(PyObject* pCallable)
 	// Is the callable already in the vector?
 	if( !IsRegistered(oCallable) )
 	{
+		if (!GetCount())
+			Initialize();
+
 		m_vecCallables.AddToTail(oCallable);
 	}
 	else {
@@ -64,6 +67,9 @@ void CListenerManager::UnregisterListener(PyObject* pCallable)
 	}
 	else {
 		m_vecCallables.Remove(index);
+
+		if (!GetCount())
+			Finalize();
 	}
 }
 
@@ -73,11 +79,10 @@ void CListenerManager::UnregisterListener(PyObject* pCallable)
 //-----------------------------------------------------------------------------
 void CListenerManager::Notify(tuple args, dict kwargs)
 {
-	static object callback_caller = eval("lambda func, args, kwargs: func(*args, **kwargs)");
 	for(int i = 0; i < m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY()
-			callback_caller(m_vecCallables[i], args, kwargs);
+			m_vecCallables[i](*args, **kwargs);
 		END_BOOST_PY_NORET()
 	}
 }
@@ -89,6 +94,28 @@ void CListenerManager::Notify(tuple args, dict kwargs)
 int CListenerManager::GetCount()
 {
 	return m_vecCallables.Count();
+}
+
+
+//-----------------------------------------------------------------------------
+// Called when the first callback is being registered.
+//-----------------------------------------------------------------------------
+void CListenerManager::Initialize()
+{
+	override initialize = get_override("initialize");
+	if (!initialize.is_none())
+		initialize();
+}
+
+
+//-----------------------------------------------------------------------------
+// Called when the last callback is being unregistered.
+//-----------------------------------------------------------------------------
+void CListenerManager::Finalize()
+{
+	override finalize = get_override("finalize");
+	if (!finalize.is_none())
+		finalize();
 }
 
 

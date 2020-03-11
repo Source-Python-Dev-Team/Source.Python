@@ -24,6 +24,8 @@ from cvars import ConVar
 from cvars import cvar
 #   Engines
 from engines.server import server_game_dll
+#   Entities
+from entities import BaseEntityOutput
 from entities.datamaps import Variant
 from entities.helpers import find_output_name
 #   Memory
@@ -91,6 +93,7 @@ __all__ = ('ButtonStatus',
            'OnEntityCreated',
            'OnEntityDeleted',
            'OnEntityOutput',
+           'OnEntityOutputListenerManager',
            'OnEntityPreSpawned',
            'OnEntitySpawned',
            'OnLevelInit',
@@ -157,7 +160,6 @@ on_plugin_unloaded_manager = ListenerManager()
 on_plugin_loading_manager = ListenerManager()
 on_plugin_unloading_manager = ListenerManager()
 on_level_end_listener_manager = ListenerManager()
-on_entity_output_listener_manager = ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -279,6 +281,36 @@ class OnClientSettingsChanged(ListenerManagerDecorator):
     """Register/unregister a ClientSettingsChanged listener."""
 
     manager = on_client_settings_changed_listener_manager
+
+
+class OnEntityOutputListenerManager(ListenerManager):
+    """Register/unregister an EntityOutput listener."""
+
+    def initialize(self):
+        """Called when the first callback is being registered."""
+        # Get the fire_output method
+        fire_output = BaseEntityOutput.fire_output
+
+        # If the fire_output method is not implemented, exit the call
+        if fire_output is NotImplemented:
+            return
+
+        # Register the hook on fire_output
+        fire_output.add_pre_hook(_pre_fire_output)
+
+    def finalize(self):
+        """Called when the last callback is being unregistered."""
+        # Get the fire_output method
+        fire_output = BaseEntityOutput.fire_output
+
+        # If the fire_output method is not implemented, exit the call
+        if fire_output is NotImplemented:
+            return
+
+        # Unregister the hook on fire_output
+        fire_output.remove_pre_hook(_pre_fire_output)
+
+on_entity_output_listener_manager = OnEntityOutputListenerManager()
 
 
 class OnEntityOutput(ListenerManagerDecorator):

@@ -55,9 +55,26 @@ public:
 class IClientExt
 {
 public:
+	static void disconnect(IClient* pClient, const char* reason)
+	{
+// TODO: Get rid of this preproc and move that to their respective engine files.
+#ifdef ENGINE_CSGO
+		pClient->Disconnect(reason);
+#else
+		pClient->Disconnect("%s", reason);
+#endif
+	}
+
 	static void Disconnect(IClient* pClient, const char* reason)
 	{
-		pClient->Disconnect(reason);
+		static object disconnect = make_function(&IClientExt::disconnect);
+		static object Player = import("players").attr("entity").attr("Player");
+
+		Player.attr("from_userid")(pClient->GetUserID()).attr("delay")(
+			0,
+			disconnect,
+			make_tuple(ptr(pClient), reason)
+		);
 	}
 };
 

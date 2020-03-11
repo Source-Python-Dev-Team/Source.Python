@@ -119,6 +119,16 @@ void export_listener_managers(scope _listeners)
 			&CListenerManager::clear,
 			"Remove all registered callbacks."
 		)
+
+		.def("initialize",
+			&CListenerManager::Initialize,
+			"Called when the first callback is being registered."
+		)
+
+		.def("finalize",
+			&CListenerManager::Finalize,
+			"Called when the last callback is being unregistered."
+		)
 	;
 
 	_listeners.attr("on_client_active_listener_manager") = object(ptr(GetOnClientActiveListenerManager()));
