@@ -73,7 +73,8 @@ class _IterObject(metaclass=_IterObjectMeta):
         for filter_name in self.is_filters:
 
             # Does the item pass this filter?
-            if not self._filters[filter_name](item):
+            if (filter_name not in self._filters or not
+                    self._filters[filter_name](item)):
 
                 # If not, return False
                 return False
