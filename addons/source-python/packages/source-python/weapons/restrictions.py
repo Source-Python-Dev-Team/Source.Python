@@ -219,7 +219,7 @@ class WeaponRestrictionHandler(AutoUnload):
             as restricted for the player.
         """
         # Get the player's current restrictions
-        current_restrictions = self.player_restrictions[player.userid]
+        current_restrictions = self.player_restrictions[player.userid].copy()
 
         # Add the weapons to the player's restrictions
         self.player_restrictions[player.userid].update([
