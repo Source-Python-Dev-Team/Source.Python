@@ -81,6 +81,9 @@ object CCachedProperty::_prepare_value(object value)
 		}
 		catch(...)
 		{
+			if (!PyErr_ExceptionMatches(PyExc_StopIteration))
+				throw_error_already_set();
+
 			PyErr_Clear();
 			break;
 		}
