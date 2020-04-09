@@ -26,6 +26,9 @@ from players.constants import LifeState
 class Player(_Player):
     """Class used to interact directly with players."""
 
+    # Instances of this class will be cached by default
+    caching = True
+
     def has_c4(self):
         """Return whether or not the player is carrying C4."""
         # Loop through all c4 entities on the server

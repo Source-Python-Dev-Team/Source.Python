@@ -33,6 +33,9 @@ _parent_weapons = set(_weapon_parents.values())
 class Entity(_Entity):
     """Class used to interact directly with entities."""
 
+    # Instances of this class will be cached by default
+    caching = True
+
     @classmethod
     def create(cls, classname):
         index = _weapon_names_for_definition.get(classname)
