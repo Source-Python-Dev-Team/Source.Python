@@ -41,6 +41,9 @@ _disable_immunity_alpha = ConVar('sv_disable_immunity_alpha')
 class Player(_Player):
     """Class used to interact directly with players."""
 
+    # Instances of this class will be cached by default
+    caching = True
+
     def _get_kills(self):
         """Return the number of kills the player has."""
         return super().kills

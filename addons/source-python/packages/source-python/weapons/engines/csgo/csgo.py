@@ -26,6 +26,9 @@ _item_definition_indexes = {
 class Weapon(_Weapon):
     """Allows easy usage of the weapon's attributes."""
 
+    # Instances of this class will be cached by default
+    caching = True
+
     def get_ammo(self):
         """Return the amount of ammo the player has for the weapon.
         

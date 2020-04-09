@@ -18,6 +18,9 @@ from players._base import Player as _Player
 class Player(_Player):
     """Class used to interact directly with players."""
 
+    # Instances of this class will be cached by default
+    caching = True
+
     @wrap_entity_mem_func
     def give_named_item(self, item, sub_type=0, unk1=False, unk2=None):
         """Give the player a named item."""
