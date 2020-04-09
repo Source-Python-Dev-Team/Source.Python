@@ -312,11 +312,12 @@ void CCachedProperty::__setitem__(str item, object value)
 
 
 CCachedProperty *CCachedProperty::wrap_descriptor(
-	object descriptor, object owner=object(), str name=str(), bool unbound=false)
+	object descriptor, object owner, str name,
+	bool unbound, boost::python::tuple args, dict kwargs)
 {
 	CCachedProperty *pProperty = new CCachedProperty(
 		descriptor.attr("__get__"), descriptor.attr("__set__"), descriptor.attr("__delete__"),
-		extract<const char *>(descriptor.attr("__doc__")), unbound
+		extract<const char *>(descriptor.attr("__doc__")), unbound, args, kwargs
 	);
 
 	pProperty->__set_name__(owner, name);

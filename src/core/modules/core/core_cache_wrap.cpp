@@ -324,12 +324,19 @@ void export_cached_property(scope _cache)
 		"	The class the wrapped property should be bound to.\n"
 		":param str name:\n"
 		"	The name of this property.\n"
+		":param tuple args:\n"
+		"	Extra arguments passed to the getter, setter and deleter functions.\n"
+		":param dict kwargs:\n"
+		"	Extra keyword arguments passed to the getter, setter and deleter functions.\n"
 		"\n"
 		":raises AttributeError:\n"
 		"	If the given descriptor doesn't have the required methods.\n"
 		":raises TypeError:\n"
 		"	If the getter, setter or deleter are not callable.",
-		("descriptor", arg("owner")=object(), arg("name")=str(), arg("unbound")=false)
+		(
+			"descriptor", arg("owner")=object(), arg("name")=str(),
+			arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
+		)
 	)
 	.staticmethod("wrap_descriptor");
 

@@ -164,7 +164,7 @@ template<typename T>
 T cached_property(T cls, const char *szName)
 {
 	cls.attr(szName) = transfer_ownership_to_python(
-		CCachedProperty::wrap_descriptor(cls.attr(szName), cls, szName, false)
+		CCachedProperty::wrap_descriptor(cls.attr(szName), cls, szName)
 	);
 	return cls;
 };

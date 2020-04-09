@@ -71,7 +71,10 @@ public:
 	object __getitem__(str item);
 	void __setitem__(str item, object value);
 
-	static CCachedProperty *wrap_descriptor(object descriptor, object owner, str name, bool unbound);
+	static CCachedProperty *wrap_descriptor(
+		object descriptor, object owner=object(), str name=str(),
+		bool unbound=false, boost::python::tuple args=boost::python::tuple(), dict kwargs=dict()
+	);
 
 private:
 	object m_fget;
