@@ -246,7 +246,7 @@ class CommandParser(Store):
         parsed_commands = []
         store = self
         while commands:
-            command_name = commands.pop(0)
+            command_name = commands.pop(0).lower()
             parsed_commands.append(command_name)
             if command_name in store:
                 store = store[command_name]
@@ -452,7 +452,7 @@ class CommandParser(Store):
         args = list(command)
         store = self
         while args and isinstance(store, Store):
-            sub_command = args.pop(0)
+            sub_command = args.pop(0).lower()
             try:
                 store = store[sub_command]
             except KeyError:
