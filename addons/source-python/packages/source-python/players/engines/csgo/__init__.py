@@ -159,11 +159,27 @@ class Player(_Player):
         self._spawn()
 
     @wrap_entity_mem_func
-    def give_named_item(self, item, sub_type=0, econ_item_view=None, unk=False, unk2=NULL):
+    def give_named_item(
+            self, item, sub_type=0, econ_item_view=None, unk=False, unk2=NULL):
         """Give the player a named item."""
         # TODO: What's the unk argument for?
         # unk2 is a Vector (position)? Should do some tests...
         return [item, sub_type, econ_item_view, unk, unk2]
+
+    @wrap_entity_mem_func
+    def is_in_field_of_view(self, target):
+        """Checks if the given position is within the player's field of view.
+        
+        .. note::
+            This function does not check if the player's view of the given 
+            position is blocked by something (brush, prop, another entity).
+
+        :param Vector target:
+            A valid point (x, y, z) within the game world.
+
+        :rtype: bool
+        """
+        return [target]
 
 
 # =============================================================================
