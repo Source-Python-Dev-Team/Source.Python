@@ -159,7 +159,8 @@ class Player(_Player):
         self._spawn()
 
     @wrap_entity_mem_func
-    def give_named_item(self, item, sub_type=0, econ_item_view=None, unk=False, unk2=NULL):
+    def give_named_item(
+            self, item, sub_type=0, econ_item_view=None, unk=False, unk2=NULL):
         """Give the player a named item."""
         # TODO: What's the unk argument for?
         # unk2 is a Vector (position)? Should do some tests...
