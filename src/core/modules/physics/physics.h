@@ -55,6 +55,20 @@ public:
 	operator T*()
 	{ return GetWrapped(); }
 
+	template<class U>
+	static U *_obj(CPointer *pPtr)
+	{
+		if (!pPtr->IsValid())
+			return NULL;
+
+		return Wrap<U>((T *)pPtr->m_ulAddr);
+	}
+
+	template<class U>
+	static CPointer *_ptr(U *pSelf)
+	{
+		return new CPointer((unsigned long)pSelf->GetWrapped());
+	}
 private:
 	T* m_pWrapped;
 };
