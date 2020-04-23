@@ -57,18 +57,11 @@ public:
 
 	template<class U>
 	static U *_obj(CPointer *pPtr)
-	{
-		if (!pPtr->IsValid())
-			return NULL;
-
-		return Wrap<U>((T *)pPtr->m_ulAddr);
-	}
+	{ return Wrap<U>(__obj__<T>(pPtr)); }
 
 	template<class U>
 	static CPointer *_ptr(U *pSelf)
-	{
-		return new CPointer((unsigned long)pSelf->GetWrapped());
-	}
+	{ return __ptr__<T>(pSelf->GetWrapped()); }
 private:
 	T* m_pWrapped;
 };

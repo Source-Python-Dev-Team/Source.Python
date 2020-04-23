@@ -319,6 +319,6 @@ void export_physics_object(scope _physics)
 		manage_new_object_policy()
 	);
 
-	PhysicsObject.attr(GET_SIZE_NAME) = sizeof(IPhysicsObject);
+	PhysicsObject ADD_SIZE(IPhysicsObject)
 	STORE_CLASS(IPhysicsObject, "PhysicsObject")
 }
