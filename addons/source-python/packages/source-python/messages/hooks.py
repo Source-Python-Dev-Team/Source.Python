@@ -28,6 +28,8 @@ from bitbuffers import BitBufferRead
 from listeners import ListenerManager
 #   Memory
 from memory import make_object
+from memory import get_object_pointer
+from memory import get_size
 from memory import get_virtual_function
 from memory.hooks import PreHook
 from memory.hooks import PostHook
@@ -171,9 +173,16 @@ if UserMessage.is_protobuf():
         if not user_message_hooks and not protobuf_user_message_hooks:
             return
 
-        # Replace original recipients filter
-        tmp_recipients = make_object(BaseRecipientFilter, args[1])
-        _recipients.update(*tuple(tmp_recipients), clear=True)
+        try:
+            # Replace original recipients filter
+            tmp_recipients = make_object(BaseRecipientFilter, args[1])
+            _recipients.update(*tuple(tmp_recipients), clear=True)
+        except RuntimeError:
+            # Patch for issue #314
+            tmp_recipients = RecipientFilter()
+            (args[1] + 4).copy(get_object_pointer(tmp_recipients) + 4,
+                get_size(RecipientFilter) - 4)
+            _recipients.update(*tuple(tmp_recipients), clear=True)
         args[1] = _recipients
 
         buffer = make_object(ProtobufMessage, args[3])
@@ -200,9 +209,16 @@ if UserMessage.is_protobuf():
 else:
     @PreHook(get_virtual_function(engine_server, 'UserMessageBegin'))
     def _pre_user_message_begin(args):
-        # Replace original recipients filter
-        tmp_recipients = make_object(BaseRecipientFilter, args[1])
-        _recipients.update(*tuple(tmp_recipients), clear=True)
+        try:
+            # Replace original recipients filter
+            tmp_recipients = make_object(BaseRecipientFilter, args[1])
+            _recipients.update(*tuple(tmp_recipients), clear=True)
+        except RuntimeError:
+            # Patch for issue #314
+            tmp_recipients = RecipientFilter()
+            (args[1] + 4).copy(get_object_pointer(tmp_recipients) + 4,
+                get_size(RecipientFilter) - 4)
+            _recipients.update(*tuple(tmp_recipients), clear=True)
         args[1] = _recipients
 
     @PostHook(get_virtual_function(engine_server, 'UserMessageBegin'))
