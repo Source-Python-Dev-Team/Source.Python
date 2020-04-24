@@ -303,4 +303,22 @@ void export_physics_object(scope _physics)
 		"output_debug_info",
 		&IPhysicsObjectWrapper::OutputDebugInfo
 	);
+
+
+	// Add memory tools...
+	// TODO: Add a macro to wrap these.
+	PhysicsObject.def(
+		GET_OBJ_NAME,
+		&IPhysicsObjectWrapper::_obj<IPhysicsObjectWrapper>,
+		manage_new_object_policy()
+	);
+
+	PhysicsObject.def(
+		GET_PTR_NAME,
+		&IPhysicsObjectWrapper::_ptr<IPhysicsObjectWrapper>,
+		manage_new_object_policy()
+	);
+
+	PhysicsObject ADD_SIZE(IPhysicsObject)
+	STORE_CLASS(IPhysicsObject, "PhysicsObject")
 }

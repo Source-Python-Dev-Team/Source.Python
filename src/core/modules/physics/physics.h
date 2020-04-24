@@ -55,6 +55,13 @@ public:
 	operator T*()
 	{ return GetWrapped(); }
 
+	template<class U>
+	static U *_obj(CPointer *pPtr)
+	{ return Wrap<U>(__obj__<T>(pPtr)); }
+
+	template<class U>
+	static CPointer *_ptr(U *pSelf)
+	{ return __ptr__<T>(pSelf->GetWrapped()); }
 private:
 	T* m_pWrapped;
 };
