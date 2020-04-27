@@ -391,8 +391,8 @@ class LogManager(AutoUnload, _LogInstance):
         return self._areas.get_int()
 
     def _unload_instance(self):
-        """Remove the handler from the logger."""
-        self.logger.removeHandler(self._handler)
+        """Remove the logger from logging manager."""
+        self.logger.manager.loggerDict.pop(self.logger.name, None)
 
 # Set the core ConVars
 _level = ConVar(
