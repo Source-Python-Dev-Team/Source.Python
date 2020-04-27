@@ -19,9 +19,9 @@ from configobj import ConfigObj
 #   Commands
 from commands.typed import TypedServerCommand
 #   Core
-from core.logger import core_logger
 from core import create_checksum
 from core import SOURCE_ENGINE_BRANCH
+from core.logger import core_logger
 from core.update import do_full_update
 from core.version import get_last_successful_build_number
 from core.version import is_unversioned

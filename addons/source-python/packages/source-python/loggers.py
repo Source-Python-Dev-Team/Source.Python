@@ -394,7 +394,6 @@ class LogManager(AutoUnload, _LogInstance):
         """Remove the handler from the logger."""
         self.logger.removeHandler(self._handler)
 
-
 # Set the core ConVars
 _level = ConVar(
     'sp_logging_level', '0', 'The Source.Python base logging level')
