@@ -15,7 +15,7 @@ from urllib.request import urlopen
 # Source.Python Imports
 #   Core
 from core import PLATFORM
-from core import core_logger
+from core.logger import core_logger
 from core import SOURCE_ENGINE_BRANCH
 #   Paths
 from paths import ADDONS_PATH

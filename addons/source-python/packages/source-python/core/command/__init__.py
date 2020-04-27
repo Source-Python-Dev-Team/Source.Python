@@ -19,7 +19,7 @@ from configobj import ConfigObj
 #   Commands
 from commands.typed import TypedServerCommand
 #   Core
-from core import core_logger
+from core.logger import core_logger
 from core import create_checksum
 from core import SOURCE_ENGINE_BRANCH
 from core.update import do_full_update
