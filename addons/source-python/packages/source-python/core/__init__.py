@@ -35,8 +35,6 @@ from weakref import WeakValueDictionary
 from configobj import ConfigObj
 
 # Source.Python Imports
-#   Loggers
-from loggers import _sp_logger
 #   Paths
 from paths import GAME_PATH
 
@@ -88,9 +86,6 @@ GAME_NAME = GAME_PATH.namebase
 
 # Get the platform the server is on
 PLATFORM = system().lower()
-
-# Get the sp.core logger
-core_logger = _sp_logger.core
 
 
 # =============================================================================

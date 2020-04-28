@@ -20,6 +20,8 @@ from logging import addLevelName
 from logging import getLogger
 
 # Source.Python Imports
+#   Core
+from core import AutoUnload
 #   Cvars
 from cvars import ConVar
 #   Paths
@@ -314,7 +316,7 @@ class _LogInstance(dict):
         return self._logger
 
 
-class LogManager(_LogInstance):
+class LogManager(AutoUnload, _LogInstance):
     """Main log class used as a root to create children instances."""
 
     def __init__(
@@ -387,6 +389,10 @@ class LogManager(_LogInstance):
         :rtype: int
         """
         return self._areas.get_int()
+
+    def _unload_instance(self):
+        """Remove the logger from logging manager."""
+        self.logger.manager.loggerDict.pop(self.logger.name, None)
 
 # Set the core ConVars
 _level = ConVar(

@@ -11,7 +11,7 @@ from configobj import ConfigObj
 
 # Source.Python Imports
 #   Core
-from core import core_logger
+from core.logger import core_logger
 #   Paths
 from paths import GAME_PATH
 from paths import CFG_PATH
