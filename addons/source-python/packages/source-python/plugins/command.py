@@ -12,6 +12,8 @@ from commands.typed import (
 )
 #   Core
 from core import AutoUnload
+#   Cvars
+from cvars.public import PublicConVar
 #   Hooks
 from hooks.exceptions import except_hooks
 #   Paths
@@ -246,7 +248,7 @@ class SubCommandManager(AutoUnload, list):
                 for permission, description in info.permissions:
                     message += '      {}:'.format(permission).ljust(30) + description + '\n'
 
-            if info.public_convar:
+            if isinstance(info.public_convar, PublicConVar):
                 message += '   public convar:   {}\n'.format(info.public_convar.name)
 
             for attr in info.display_in_listing:
