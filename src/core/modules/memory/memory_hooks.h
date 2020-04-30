@@ -76,4 +76,16 @@ protected:
 //---------------------------------------------------------------------------------
 bool SP_HookHandler(HookType_t eHookType, CHook* pHook);
 
+extern bool g_HooksDisabled;
+
+inline void SetHooksDisabled(bool value)
+{
+	g_HooksDisabled = value;
+}
+
+inline bool GetHooksDisabled()
+{
+	return g_HooksDisabled;
+}
+
 #endif // MEMORY_HOOKS_H

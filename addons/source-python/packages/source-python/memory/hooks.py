@@ -5,11 +5,16 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python
+from contextlib import contextmanager
+
 # Source.Python Imports
 #   Core
 from core import AutoUnload
 #   Memory
 from _memory import HookType
+from _memory import set_hooks_disabled
+from _memory import get_hooks_disabled
 from memory import Function
 
 
@@ -19,6 +24,9 @@ from memory import Function
 __all__ = ('HookType',
            'PostHook',
            'PreHook',
+           'set_hooks_disabled',
+           'get_hooks_disabled',
+           'hooks_disabled'
            )
 
 
@@ -73,3 +81,18 @@ class PostHook(_Hook):
     """Decorator class used to create post hooks that auto unload."""
 
     hook_type = HookType.POST
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+@contextmanager
+def hooks_disabled(disabled=True):
+    """Temporarily disable or enable all hook callbacks. If the context ends,
+    the original value is restored."""
+    old = get_hooks_disabled()
+    set_hooks_disabled(disabled)
+    try:
+        yield
+    finally:
+        set_hooks_disabled(old)
