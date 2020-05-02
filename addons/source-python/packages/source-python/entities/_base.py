@@ -39,8 +39,8 @@ from engines.trace import GameTrace
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
-from _entities._entity import BaseEntity
 from entities import BaseEntityGenerator
+from entities import Edict
 from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import DamageTypes
@@ -59,6 +59,7 @@ from listeners.tick import RepeatStatus
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Memory
+from memory import get_object_pointer
 from memory import make_object
 from memory.helpers import MemberFunction
 #   Players
@@ -66,6 +67,14 @@ from players.constants import HitGroup
 #   Studio
 from studio.cache import model_cache
 from studio.constants import INVALID_ATTACHMENT_INDEX
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Entities
+from _entities._entity import BaseEntity
 
 
 # =============================================================================
@@ -529,7 +538,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Name of the property to retrieve.
         :rtype: Edict
         """
-        return self._get_property(name, 'Edict')
+        return make_object(Edict, self.get_property_pointer(name))
 
     def get_property_float(self, name):
         """Return the float property.
@@ -687,29 +696,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         except ValueError:
             return self.get_datamap_property_vector(name)
 
-    def _get_property(self, name, prop_type):
-        """Verify the type and return the property."""
-        # Loop through all entity server classes
-        for server_class in self.server_classes:
-
-            # Is the name a member of the current server class?
-            if name not in server_class.properties:
-                continue
-
-            # Is the type the correct type?
-            if prop_type != server_class.properties[name].prop_type:
-                raise TypeError('Property "{0}" is of type {1} not {2}'.format(
-                    name, server_class.properties[name].prop_type, prop_type))
-
-            # Return the property for the entity
-            return getattr(
-                make_object(server_class._properties, self.pointer), name)
-
-        # Raise an error if the property name was not found
-        raise ValueError(
-            'Property "{0}" not found for entity type "{1}"'.format(
-                name, self.classname))
-
     def set_property_bool(self, name, value):
         """Set the boolean property.
 
@@ -744,7 +730,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param Edict value:
             The value to set.
         """
-        self._set_property(name, 'Edict', value)
+        if not isinstance(value, Edict):
+            raise TypeError(
+                f'"{value}" of type "{type(value)}" is not a valid Edict.'
+            )
+        self.set_property_pointer(name, get_object_pointer(value))
 
     def set_property_float(self, name, value):
         """Set the float property.
@@ -914,38 +904,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             self.set_network_property_vector(name, value)
         except ValueError:
             self.set_datamap_property_vector(name, value)
-
-    def _set_property(self, name, prop_type, value):
-        """Verify the type and set the property."""
-        # Loop through all entity server classes
-        for server_class in self.server_classes:
-
-            # Is the name a member of the current server class?
-            if name not in server_class.properties:
-                continue
-
-            # Is the type the correct type?
-            if prop_type != server_class.properties[name].prop_type:
-                raise TypeError('Property "{0}" is of type {1} not {2}'.format(
-                    name, server_class.properties[name].prop_type, prop_type))
-
-            # Set the property for the entity
-            setattr(make_object(
-                server_class._properties, self.pointer), name, value)
-
-            # Is the property networked?
-            if server_class.properties[name].networked:
-
-                # Notify the change of state
-                self.edict.state_changed()
-
-            # No need to go further
-            return
-
-        # Raise an error if the property name was not found
-        raise ValueError(
-            'Property "{0}" not found for entity type "{1}"'.format(
-                name, self.classname))
 
     def delay(
             self, delay, callback, args=(), kwargs=None,
