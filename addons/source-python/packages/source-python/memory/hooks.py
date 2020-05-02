@@ -88,8 +88,34 @@ class PostHook(_Hook):
 # =============================================================================
 @contextmanager
 def hooks_disabled(disabled=True):
-    """Temporarily disable or enable all hook callbacks. If the context ends,
-    the original value is restored."""
+    """Temporarily disable or enable all hook callbacks. By default hooks are
+    enabled. Thus, this context manager is mainly used to temporarily disable
+    hook callbacks. If the context ends, the original value is restored. This
+    can be used e. g. to avoid recursive calls when damaging a player in a
+    ``on_take_damage`` hook or ``player_hurt`` event.
+
+    .. note::
+
+        This would only disable hooks created with Source.Python. Hooks that
+        have been created by other server plugins will still be called.
+
+    Example:
+
+    .. code:: python
+
+        from players.entity import Player
+        from memory.hooks import hooks_disabled
+
+        # Get a Player instance of the player with index 1
+        player = Player(1)
+
+        # Damage the player. This would call e. g. on_take_damage hooks
+        player.take_damage(5)
+
+        # To avoid calling the on_take_damage hooks, use the following:
+        with hooks_disabled()
+            player.take_damage(5)
+    """
     old = get_hooks_disabled()
     set_hooks_disabled(disabled)
     try:
