@@ -82,10 +82,13 @@ object GetArgument(CHook* pHook, int iIndex)
 // ============================================================================
 bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 {
+	if (g_HooksDisabled)
+		return false;
+
 	std::list<object> callbacks = g_mapCallbacks[pHook][eHookType];
 
 	// No need to do all this stuff, if there is no callback registered
-	if (g_HooksDisabled || callbacks.empty())
+	if (callbacks.empty())
 		return false;
 
 	object retval;
