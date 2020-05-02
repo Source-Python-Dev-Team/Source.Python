@@ -208,10 +208,10 @@ void CCachedProperty::__set_name__(object owner, str name)
 
 object CCachedProperty::__get__(object self, object instance, object owner=object())
 {
-	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
 	if (instance.is_none())
 		return self;
 
+	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
 	object name = pSelf.get_name();
 	if (name.is_none())
 		BOOST_RAISE_EXCEPTION(
