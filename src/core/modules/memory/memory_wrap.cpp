@@ -68,6 +68,8 @@ void export_protection(scope);
 // ============================================================================
 DECLARE_SP_MODULE(_memory)
 {
+	SetHooksDisabled(false);
+
 	export_function_info(_memory);
 	export_binary_file(_memory);
 	export_pointer(_memory);
@@ -956,6 +958,18 @@ void export_functions(scope _memory)
 		":param DataType data_type: The data type you would like to get the size of.\n"
 		":param int alignment: The alignment that should be used."
 	);
+
+	def("get_hooks_disabled",
+		&GetHooksDisabled,
+		"Return whether or not hook callbacks are disabled.\n"
+		"\n"
+		":rtype: bool");
+
+	def("set_hooks_disabled",
+		&SetHooksDisabled,
+		"Set whether or not hook callbacks are disabled.\n"
+		"\n"
+		":param bool disabled: If ``True``, hook callbacks are disabled.");
 }
 
 
