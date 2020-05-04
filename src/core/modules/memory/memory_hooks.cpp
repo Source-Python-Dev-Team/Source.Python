@@ -44,6 +44,8 @@ using namespace boost::python;
 // g_mapCallbacks[<CHook *>][<HookType_t>] -> [<object>, <object>, ...]
 std::map<CHook *, std::map<HookType_t, std::list<object> > > g_mapCallbacks;
 
+bool g_HooksDisabled;
+
 
 // ============================================================================
 // >> HELPER FUNCTIONS
@@ -80,6 +82,9 @@ object GetArgument(CHook* pHook, int iIndex)
 // ============================================================================
 bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 {
+	if (g_HooksDisabled)
+		return false;
+
 	std::list<object> callbacks = g_mapCallbacks[pHook][eHookType];
 
 	// No need to do all this stuff, if there is no callback registered
