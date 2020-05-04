@@ -22,7 +22,7 @@ from mutagen import oggvorbis
 
 # Source.Python Imports
 #   Core
-from core import AutoUnload
+from core import WeakAutoUnload
 #   Engines
 from engines import engines_logger
 #   Entities
@@ -100,7 +100,7 @@ class Attenuation(float, Enum):
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _BaseSound(AutoUnload):
+class _BaseSound(WeakAutoUnload):
     """Base class for sound classes."""
 
     # Set the base _downloads attribute to know whether
