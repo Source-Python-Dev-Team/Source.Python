@@ -321,7 +321,7 @@ class LogManager(AutoUnload, _LogInstance):
 
     def __init__(
             self, name, level, areas, filepath=None,
-            log_format=None, date_format=None):
+            log_format=None, date_format=None, encoding='utf-8'):
         """Store the base values and creates the logger.
 
         :param str name:
@@ -370,7 +370,7 @@ class LogManager(AutoUnload, _LogInstance):
                 log_path.parent.makedirs()
 
             # Create the handler an add it to the logger
-            self._handler = FileHandler(log_path)
+            self._handler = FileHandler(log_path, encoding=encoding)
             self._handler.setFormatter(self.formatter)
             self.logger.addHandler(self._handler)
 
