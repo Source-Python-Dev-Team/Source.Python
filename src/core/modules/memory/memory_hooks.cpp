@@ -31,7 +31,6 @@
 #include "memory_utilities.h"
 #include "memory_pointer.h"
 #include "utilities/wrap_macros.h"
-#include "utilities/call_python.h"
 #include "utilities/sp_util.h"
 
 #include "boost/python.hpp"
@@ -123,9 +122,9 @@ bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 		BEGIN_BOOST_PY()
 			object pyretval;
 			if (eHookType == HOOKTYPE_PRE)
-				pyretval = CALL_PY_FUNC((*it).ptr(), stackdata);
+				pyretval = (*it)(stackdata);
 			else
-				pyretval = CALL_PY_FUNC((*it).ptr(), stackdata, retval);
+				pyretval = (*it)(stackdata, retval);
 
 			if (!pyretval.is_none())
 			{

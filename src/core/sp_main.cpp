@@ -196,8 +196,7 @@ SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
 	for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY() 
-			object return_value = CALL_PY_FUNC(
-				GetOnServerOutputListenerManager()->m_vecCallables[i].ptr(),
+			object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
 				(MessageSeverity) spewType, 
 				pMsg);
 
@@ -224,8 +223,7 @@ public:
 		for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
 		{
 			BEGIN_BOOST_PY() 
-				object return_value = CALL_PY_FUNC(
-					GetOnServerOutputListenerManager()->m_vecCallables[i].ptr(),
+				object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
 					(MessageSeverity) pContext->m_Severity, 
 					pMessage);
 
