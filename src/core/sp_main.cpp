@@ -630,11 +630,12 @@ void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
+	object oEntity(ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntityDeleted, oEntity);
 
 	// Invalidate the internal entity cache once all callbacks have been called.
-	static object oCacheInvalidator = import("entities").attr("_base").attr("_EntityCaching").attr("_invalidate_cache");
-	oCacheInvalidator(ptr((CBaseEntityWrapper*) pEntity));
+	static object _on_entity_deleted = import("entities").attr("_base").attr("_on_entity_deleted");
+	_on_entity_deleted(oEntity);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

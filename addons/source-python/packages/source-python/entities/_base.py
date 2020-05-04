@@ -51,8 +51,6 @@ from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.weapons import WeaponClassIter
 #   Listeners
-from listeners import OnEntityDeleted
-from listeners import on_entity_deleted_listener_manager
 from listeners.tick import Delay
 from listeners.tick import Repeat
 from listeners.tick import RepeatStatus
@@ -167,17 +165,6 @@ class _EntityCaching(BoostPythonClass):
         :rtype: dict
         """
         return cls._cache
-
-    @staticmethod
-    def _invalidate_cache(base_entity):
-        """Invalidates the cache for the given entity."""
-        try:
-            index = base_entity.index
-        except ValueError:
-            return
-
-        for cls in _entity_classes:
-            cls.cache.pop(index, None)
 
 
 class Entity(BaseEntity, metaclass=_EntityCaching):
@@ -1245,7 +1232,8 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 # =============================================================================
 # >> LISTENERS
 # =============================================================================
-@OnEntityDeleted
+# NOTE: This callback is called by sp_main.cpp after all registered entity
+#       deletion listeners have been called.
 def _on_entity_deleted(base_entity):
     """Called when an entity is removed.
 
@@ -1258,22 +1246,20 @@ def _on_entity_deleted(base_entity):
     except ValueError:
         return
 
-    # Get the registered delays for this entity
-    delays = _entity_delays.pop(index, ())
-
     # Loop through all delays...
-    for delay in delays:
+    for delay in _entity_delays.pop(index, ()):
 
         # Cancel the delay...
         with suppress(ValueError):
             delay.cancel()
 
-    # Get the registered repeats for this entity
-    repeats = _entity_repeats.pop(index, ())
-
     # Loop through all repeats...
-    for repeat in repeats:
+    for repeat in _entity_repeats.pop(index, ()):
 
         # Stop the repeat if running
         if repeat.status is RepeatStatus.RUNNING:
             repeat.stop()
+
+    # Invalidate the internal entity caches for this entity
+    for cls in _entity_classes:
+        cls.cache.pop(index, None)
