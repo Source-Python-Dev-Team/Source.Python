@@ -274,8 +274,7 @@ class Player(PlayerMixin, Entity):
 
     team = property(get_team, set_team)
 
-    @cached_property
-    def language(self):
+    def get_language(self):
         """Return the player's language.
 
         If the player is a bot, an empty string will be returned.
@@ -283,6 +282,12 @@ class Player(PlayerMixin, Entity):
         :rtype: str
         """
         return get_client_language(self.index)
+
+    # Only cache the language property for games it is already cached
+    if GAME_NAME in ('csgo',):
+        language = cached_property(get_language, doc=get_language.__doc__)
+    else:
+        language = property(get_language, doc=get_language.__doc__)
 
     def get_trace_ray(self, mask=ContentMasks.ALL, trace_filter=None):
         """Return the player's current trace data.
