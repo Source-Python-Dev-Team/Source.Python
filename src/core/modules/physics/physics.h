@@ -35,6 +35,13 @@
 
 
 //-----------------------------------------------------------------------------
+// Forward declarations.
+//-----------------------------------------------------------------------------
+template<class WrapperType>
+WrapperType* Wrap(typename WrapperType::wrapped_type* pWrapped);
+
+
+//-----------------------------------------------------------------------------
 // WRAPPER BASE CLASS
 //-----------------------------------------------------------------------------
 // TODO: _obj, _ptr and _size need to be implemented differently for wrapped classes.
