@@ -206,6 +206,75 @@ public:
 		GetEdict()->StateChanged();
 	}
 
+	// Generic property getter/setter methods
+	template<class T>
+	T GetProperty(const char *name)
+	{
+		try
+		{
+			return GetNetworkProperty<T>(name);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			return GetDatamapProperty<T>(name);
+		}
+	}
+
+	const char* GetPropertyStringArray(const char* name)
+	{
+		try
+		{
+			return GetNetworkPropertyStringArray(name);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			return GetDatamapPropertyStringArray(name);
+		}
+	}
+
+	template<class T>
+	void SetProperty(const char *name, T value)
+	{
+		try
+		{
+			// Let's first lookup a networked property so we update its state, etc.
+			SetNetworkProperty<T>(name, value);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			SetDatamapProperty<T>(name, value);
+		}
+	}
+
+	void SetPropertyStringArray(const char* name, const char* value)
+	{
+		try
+		{
+			// Let's first lookup a networked property so we update its state, etc.
+			SetNetworkPropertyStringArray(name, value);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			SetDatamapPropertyStringArray(name, value);
+		}
+	}
+
 	// KeyValue methods
 	void GetKeyValueStringRaw(const char* szName, char* szOut, int iLength);
 	str GetKeyValueString(const char* szName);

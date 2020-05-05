@@ -742,6 +742,13 @@ void export_base_entity(scope _entity)
 		":rtype: Quaternion"
 	);
 
+	BaseEntity.def("get_datamap_property_edict",
+		&CBaseEntityWrapper::GetDatamapProperty<edict_t *>,
+		return_by_value_policy(),
+		"Return the value of the given data map field name.\n\n"
+		":rtype: Edict"
+	);
+
 	// Datamap setter methods
 	BaseEntity.def("set_datamap_property_bool",
 		&CBaseEntityWrapper::SetDatamapProperty<bool>,
@@ -840,6 +847,11 @@ void export_base_entity(scope _entity)
 
 	BaseEntity.def("set_datamap_property_quaternion",
 		&CBaseEntityWrapper::SetDatamapProperty<Quaternion>,
+		"Set the value of the given data map field name."
+	);
+
+	BaseEntity.def("set_datamap_property_edict",
+		&CBaseEntityWrapper::SetDatamapProperty<edict_t *>,
 		"Set the value of the given data map field name."
 	);
 
@@ -965,6 +977,13 @@ void export_base_entity(scope _entity)
 		":rtype: Quaternion"
 	);
 
+	BaseEntity.def("get_network_property_edict",
+		&CBaseEntityWrapper::GetNetworkProperty<edict_t *>,
+		return_by_value_policy(),
+		"Return the value of the given server class field name.\n\n"
+		":rtype: Edict"
+	);
+
 	// Network property setters
 	BaseEntity.def("set_network_property_bool",
 		&CBaseEntityWrapper::SetNetworkProperty<bool>,
@@ -1065,6 +1084,253 @@ void export_base_entity(scope _entity)
 	BaseEntity.def("set_network_property_quaternion",
 		&CBaseEntityWrapper::SetNetworkProperty<Quaternion>,
 		"Set the value of the given server class field name."
+	);
+
+	BaseEntity.def("set_network_property_edict",
+		&CBaseEntityWrapper::SetNetworkProperty<edict_t *>,
+		"Set the value of the given server class field name."
+	);
+
+	// Generic property getters
+	BaseEntity.def("get_property_bool",
+		&CBaseEntityWrapper::GetProperty<bool>,
+		"Return the value of the given field name.\n\n"
+		":rtype: bool"
+	);
+
+	BaseEntity.def("get_property_char",
+		&CBaseEntityWrapper::GetProperty<char>,
+		"Return the value of the given field name.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.def("get_property_uchar",
+		&CBaseEntityWrapper::GetProperty<unsigned char>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_short",
+		&CBaseEntityWrapper::GetProperty<short>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_ushort",
+		&CBaseEntityWrapper::GetProperty<unsigned short>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_int",
+		&CBaseEntityWrapper::GetProperty<int>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_uint",
+		&CBaseEntityWrapper::GetProperty<unsigned int>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_long",
+		&CBaseEntityWrapper::GetProperty<long>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_ulong",
+		&CBaseEntityWrapper::GetProperty<unsigned long>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_long_long",
+		&CBaseEntityWrapper::GetProperty<long long>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_ulong_long",
+		&CBaseEntityWrapper::GetProperty<unsigned long long>,
+		"Return the value of the given field name.\n\n"
+		":rtype: int"
+	);
+
+	BaseEntity.def("get_property_float",
+		&CBaseEntityWrapper::GetProperty<float>,
+		"Return the value of the given field name.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.def("get_property_double",
+		&CBaseEntityWrapper::GetProperty<double>,
+		"Return the value of the given field name.\n\n"
+		":rtype: float"
+	);
+
+	BaseEntity.def("get_property_string_pointer",
+		&CBaseEntityWrapper::GetProperty<const char*>,
+		"Return the value of the given field name.\n\n"
+		":rtype: str"
+	);
+
+	BaseEntity.def("get_property_string_array",
+		&CBaseEntityWrapper::GetPropertyStringArray,
+		"Return the value of the given field name.\n\n"
+		":rtype: str"
+	);
+
+	// Backward compatibility
+	BaseEntity.attr("get_property_string") = BaseEntity.attr("get_property_string_array");
+
+	BaseEntity.def("get_property_pointer",
+		&CBaseEntityWrapper::GetProperty<void*>,
+		return_by_value_policy(),
+		"Return the value of the given field name.\n\n"
+		":rtype: Pointer"
+	);
+
+	BaseEntity.def("get_property_vector",
+		&CBaseEntityWrapper::GetProperty<Vector>,
+		"Return the value of the given field name.\n\n"
+		":rtype: Vector"
+	);
+
+	BaseEntity.def("get_property_color",
+		&CBaseEntityWrapper::GetProperty<Color>,
+		"Return the value of the given field name.\n\n"
+		":rtype: Color"
+	);
+
+	BaseEntity.def("get_property_interval",
+		&CBaseEntityWrapper::GetProperty<interval_t>,
+		"Return the value of the given field name.\n\n"
+		":rtype: Interval"
+	);
+
+	BaseEntity.def("get_property_quaternion",
+		&CBaseEntityWrapper::GetProperty<Quaternion>,
+		"Return the value of the given field name.\n\n"
+		":rtype: Quaternion"
+	);
+
+	BaseEntity.def("get_property_edict",
+		&CBaseEntityWrapper::GetProperty<edict_t *>,
+		return_by_value_policy(),
+		"Return the value of the given field name.\n\n"
+		":rtype: Edict"
+	);
+
+	// Generic property setters
+	BaseEntity.def("set_property_bool",
+		&CBaseEntityWrapper::SetProperty<bool>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_char",
+		&CBaseEntityWrapper::SetProperty<char>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_uchar",
+		&CBaseEntityWrapper::SetProperty<unsigned char>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_short",
+		&CBaseEntityWrapper::SetProperty<short>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_ushort",
+		&CBaseEntityWrapper::SetProperty<unsigned short>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_int",
+		&CBaseEntityWrapper::SetProperty<int>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_uint",
+		&CBaseEntityWrapper::SetProperty<unsigned int>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_long",
+		&CBaseEntityWrapper::SetProperty<long>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_ulong",
+		&CBaseEntityWrapper::SetProperty<unsigned long>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_long_long",
+		&CBaseEntityWrapper::SetProperty<long long>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_ulong_long",
+		&CBaseEntityWrapper::SetProperty<unsigned long long>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_float",
+		&CBaseEntityWrapper::SetProperty<float>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_double",
+		&CBaseEntityWrapper::SetProperty<double>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_string_pointer",
+		&CBaseEntityWrapper::SetProperty<const char*>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_string_array",
+		&CBaseEntityWrapper::SetPropertyStringArray,
+		"Set the value of the given field name."
+	);
+
+	// Backward compatibility
+	BaseEntity.attr("set_property_string") = BaseEntity.attr("set_property_string_array");
+
+	BaseEntity.def("set_property_pointer",
+		&CBaseEntityWrapper::SetProperty<void*>,
+		return_by_value_policy(),
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_vector",
+		&CBaseEntityWrapper::SetProperty<Vector>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_color",
+		&CBaseEntityWrapper::SetProperty<Color>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_interval",
+		&CBaseEntityWrapper::SetProperty<interval_t>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_quaternion",
+		&CBaseEntityWrapper::SetProperty<Quaternion>,
+		"Set the value of the given field name."
+	);
+
+	BaseEntity.def("set_property_edict",
+		&CBaseEntityWrapper::SetProperty<edict_t *>,
+		"Set the value of the given field name."
 	);
 
 	// Add memory tools...
