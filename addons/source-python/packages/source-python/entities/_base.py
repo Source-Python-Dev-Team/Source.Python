@@ -43,6 +43,7 @@ from entities import BaseEntityGenerator
 from entities import Edict
 from entities import TakeDamageInfo
 from entities.classes import server_classes
+from entities.constants import WORLD_ENTITY_INDEX
 from entities.constants import DamageTypes
 from entities.constants import RenderMode
 from entities.helpers import index_from_inthandle
@@ -1064,7 +1065,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         sound.play(*recipients)
 
     def is_in_solid(
-            self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
+            self, mask=ContentMasks.ALL, generator=None):
         """Return whether or not the entity is in solid.
 
         :param ContentMasks mask:
@@ -1081,8 +1082,16 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         trace = GameTrace()
 
         # Do the trace
-        engine_trace.trace_ray(ray, mask, TraceFilterSimple(
-            generator()), trace)
+        if generator is None:
+
+            # No need to trace against anything but the world if we are going
+            # to filter out everything regardless.
+            engine_trace.clip_ray_to_entity(
+                ray, mask, BaseEntity(WORLD_ENTITY_INDEX), trace
+            )
+        else:
+            engine_trace.trace_ray(ray, mask, TraceFilterSimple(
+                generator()), trace)
 
         # Return whether or not the trace did hit
         return trace.did_hit()
