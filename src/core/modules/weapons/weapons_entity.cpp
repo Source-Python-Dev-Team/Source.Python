@@ -125,19 +125,6 @@ void WeaponMixin::SetSecondaryFireAmmoProp(short value)
 }
 
 
-int WeaponMixin::GetOwnerHandle()
-{
-	static int offset = FindNetworkPropertyOffset("m_hOwner");
-	return GetNetworkPropertyByOffset<int>(offset);
-}
-
-void WeaponMixin::SetOwnerHandle(int value)
-{
-	static int offset = FindNetworkPropertyOffset("m_hOwner");
-	SetNetworkPropertyByOffset<int>(offset, value);
-}
-
-
 unsigned char WeaponMixin::GetClip()
 {
 	static int offset = FindDatamapPropertyOffset("m_iClip1");
