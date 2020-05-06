@@ -215,7 +215,7 @@ class TraceFilterSimple(TraceFilter):
             The mask that was used to intialize the trace.
         :rtype: bool
         """
-        return entity.basehandle.to_int() in self.ignore
+        return entity.basehandle.to_int() not in self.ignore
 
     def get_trace_type(self):
         """Return the trace type.
