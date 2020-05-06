@@ -62,9 +62,6 @@ public:
 	short GetSecondaryFireAmmoProp();
 	void SetSecondaryFireAmmoProp(short value);
 
-	int GetOwnerHandle();
-	void SetOwnerHandle(int value);
-
 	unsigned char GetClip();
 	void SetClip(unsigned char value);
 
