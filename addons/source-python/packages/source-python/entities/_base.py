@@ -283,58 +283,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         return sorted(attributes)
 
     @classmethod
-    def create(cls, classname):
-        """Create a new networked entity with the given classname.
-
-        :param str classname:
-            Classname of the entity to create.
-        :raise ValueError:
-            Raised if the given classname is not a networked entity.
-        """
-        entity = BaseEntity.create(classname)
-        if entity.is_networked():
-            return cls(entity.index)
-
-        entity.remove()
-        raise ValueError('"{}" is not a networked entity.'.format(classname))
-
-    @classmethod
-    def find(cls, classname):
-        """Try to find an entity with the given classname.
-
-        If not entity has been found, None will be returned.
-
-        :param str classname:
-            The classname of the entity.
-        :return:
-            Return the found entity.
-        :rtype: Entity
-        """
-        entity = BaseEntity.find(classname)
-        if entity is not None and entity.is_networked():
-            return cls(entity.index)
-
-        return None
-
-    @classmethod
-    def find_or_create(cls, classname):
-        """Try to find an entity with the given classname.
-
-        If no entity has been found, it will be created.
-
-        :param str classname:
-            The classname of the entity.
-        :return:
-            Return the found or created entity.
-        :rtype: Entity
-        """
-        entity = cls.find(classname)
-        if entity is None:
-            entity = cls.create(classname)
-
-        return entity
-
-    @classmethod
     def from_inthandle(cls, inthandle, caching=None):
         """Create an entity instance from an inthandle.
 
@@ -346,10 +294,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """
         return cls(index_from_inthandle(inthandle), caching=caching)
 
-    @classmethod
-    def _obj(cls, ptr):
-        """Return an entity instance of the given pointer."""
-        return cls(index_from_pointer(ptr))
+    # @classmethod
+    # def _obj(cls, ptr):
+        # """Return an entity instance of the given pointer."""
+        # return cls(index_from_pointer(ptr))
 
     def is_networked(self):
         """Return True if the entity is networked.

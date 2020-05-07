@@ -96,8 +96,11 @@ public:
 	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex);
 	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity);
 	static CBaseEntity* create(const char* name);
+	static object create(object cls, const char* name);
 	static CBaseEntity* find(const char* name);
+	static object find(object cls, const char* name);
 	static CBaseEntity* find_or_create(const char* name);
+	static object find_or_create(object cls, const char* name);
 	
 	CBaseEntityOutputWrapper* get_output(const char* name);
 	static IEntityFactory* get_factory(const char* name);

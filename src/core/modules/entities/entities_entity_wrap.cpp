@@ -72,26 +72,29 @@ void export_base_entity(scope _entity)
 		"Return True if both entities are the same."
 	);
 
-	BaseEntity.def("create",
-		&CBaseEntityWrapper::create,
-		return_by_value_policy(),
+	CLASSMETHOD(
+		BaseEntity, 
+		"create", 
+		GET_FUNCTION(object, CBaseEntityWrapper::create, object, const char *),
 		"Create an entity by its class name.\n\n"
 		":rtype: BaseEntity"
-	).staticmethod("create");
+	);
 
-	BaseEntity.def("find",
-		&CBaseEntityWrapper::find,
-		return_by_value_policy(),
+	CLASSMETHOD(
+		BaseEntity,
+		"find",
+		GET_FUNCTION(object, CBaseEntityWrapper::find, object, const char *),
 		"Return the first entity that has a matching class name.\n\n"
 		":rtype: BaseEntity"
-	).staticmethod("find");
+	);
 
-	BaseEntity.def("find_or_create",
-		&CBaseEntityWrapper::find_or_create,
-		return_by_value_policy(),
+	CLASSMETHOD(
+		BaseEntity,
+		"find_or_create",
+		GET_FUNCTION(object, CBaseEntityWrapper::find_or_create, object, const char *),
 		"Try to find an entity that has a matching class name. If no entity has been found, it will be created.\n\n"
 		":rtype: BaseEntity"
-	).staticmethod("find_or_create");
+	);
 
 	// Others
 	BaseEntity.def("is_player",

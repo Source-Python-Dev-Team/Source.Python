@@ -73,6 +73,28 @@ CBaseEntity* CBaseEntityWrapper::create(const char* name)
 	return pEntity->GetBaseEntity();
 }
 
+object CBaseEntityWrapper::create(object cls, const char *name)
+{
+	object entity = object();
+	CBaseEntityWrapper *pEntity = (CBaseEntityWrapper *)create(name);
+	try
+	{
+		entity = cls(pEntity->GetIndex());
+	}
+	catch (...)
+	{
+		pEntity->remove();
+
+		const char *classname = extract<const char *>(cls.attr("__qualname__"));
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"Unable to make a '%s' instance out of this '%s' entity.",
+			classname, name
+		)
+	}
+	return entity;
+}
+
 CBaseEntity* CBaseEntityWrapper::find(const char* name)
 {
 	CBaseEntity* pEntity = (CBaseEntity *) servertools->FirstEntity();
@@ -86,11 +108,33 @@ CBaseEntity* CBaseEntityWrapper::find(const char* name)
 	return NULL;
 }
 
+object CBaseEntityWrapper::find(object cls, const char *name)
+{
+	try
+	{
+		return cls(((CBaseEntityWrapper *)find(name))->GetIndex());
+	}
+	catch (...)
+	{
+		PyErr_Clear();
+	}
+	return object();
+}
+
 CBaseEntity* CBaseEntityWrapper::find_or_create(const char* name)
 {
 	CBaseEntity* entity = find(name);
 	if (!entity)
 		entity = create(name);
+
+	return entity;
+}
+
+object CBaseEntityWrapper::find_or_create(object cls, const char *name)
+{
+	object entity = find(cls, name);
+	if (entity.is_none())
+		return create(cls, name);
 
 	return entity;
 }
