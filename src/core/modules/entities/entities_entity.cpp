@@ -85,7 +85,7 @@ object CBaseEntityWrapper::create(object cls, const char *name)
 	{
 		try
 		{
-			entity = MakeObject(cls, object(pEntity->GetPointer()));
+			entity = MakeObject(cls, &pEntity->GetPointer());
 		}
 		catch (...)
 		{
@@ -128,7 +128,7 @@ object CBaseEntityWrapper::find(object cls, const char *name)
 		{
 			try
 			{
-				return MakeObject(cls, object(pEntity->GetPointer()));
+				return MakeObject(cls, &pEntity->GetPointer());
 			}
 			catch (...)
 			{

@@ -58,7 +58,7 @@ inline object GetObjectPointer(object obj)
 // ============================================================================
 // >> MakeObject
 // ============================================================================
-inline object MakeObject(object cls, object oPtr)
+inline object MakeObject(object cls, CPointer *pPtr)
 {
 	object _obj;
 	try
@@ -70,11 +70,15 @@ inline object MakeObject(object cls, object oPtr)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to make an object using this class.");
 	}
 
-	CPointer* pPtr = ExtractPointer(oPtr);
 	if (!pPtr->IsValid())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.");
 
 	return _obj(pPtr);
+}
+
+inline object MakeObject(object cls, object oPtr)
+{
+	return MakeObject(cls, ExtractPointer(oPtr));
 }
 
 

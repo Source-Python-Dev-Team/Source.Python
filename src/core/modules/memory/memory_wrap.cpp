@@ -935,7 +935,16 @@ void export_functions(scope _memory)
 	);
 
 	def("make_object",
-		&MakeObject,
+		GET_FUNCTION(object, MakeObject, object, object),
+		(arg("cls"), arg("ptr")),
+		"Wrap a pointer using an exposed class.\n"
+		"\n"
+		":param cls: The class that should be used to wrap the pointer.\n"
+		":param Pointer ptr: The pointer that should be wrapped."
+	);
+
+	def("make_object",
+		GET_FUNCTION(object, MakeObject, object, CPointer *),
 		(arg("cls"), arg("ptr")),
 		"Wrap a pointer using an exposed class.\n"
 		"\n"
