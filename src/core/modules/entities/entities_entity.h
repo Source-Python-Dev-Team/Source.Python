@@ -106,6 +106,7 @@ public:
 	static IEntityFactory* get_factory(const char* name);
 	IEntityFactory* get_factory();
 	void remove();
+	bool is_marked_for_deletion();
 	int get_size();
 	void spawn();
 

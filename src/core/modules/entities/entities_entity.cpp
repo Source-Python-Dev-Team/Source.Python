@@ -232,6 +232,11 @@ void CBaseEntityWrapper::remove()
 	(pEntity->*pInputKillFunc)(data);
 }
 
+bool CBaseEntityWrapper::is_marked_for_deletion()
+{
+	return GetEntityFlags() & FL_KILLME;
+}
+
 int CBaseEntityWrapper::get_size()
 {
 	return get_factory()->GetEntitySize();

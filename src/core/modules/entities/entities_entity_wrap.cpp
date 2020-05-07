@@ -459,6 +459,12 @@ void export_base_entity(scope _entity)
 		"Remove the entity."
 	);
 
+	BaseEntity.def("is_marked_for_deletion",
+		&CBaseEntityWrapper::is_marked_for_deletion,
+		"Returns whether the entity is marked for deletion.\n\n"
+		":rtype: bool"
+	);
+
 	BaseEntity.def("spawn",
 		&CBaseEntityWrapper::spawn,
 		"Spawn the entity."

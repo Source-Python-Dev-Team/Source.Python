@@ -13,7 +13,6 @@ from contextlib import suppress
 #   Core
 from core import AutoUnload
 #   Entities
-from entities.constants import EntityFlags
 from entities.entity import Entity
 from entities.helpers import index_from_inthandle
 #   Listeners
@@ -57,7 +56,7 @@ class EntityDictionary(AutoUnload, dict):
         # This is required, because if someone request an entity instance
         # after we invalidated our cache but before the engine processed
         # the deletion we would now have an invalid instance in the cache.
-        if not instance.entity_flags & EntityFlags.KILLME:
+        if not instance.is_marked_for_deletion():
             self[index] = instance
 
         return instance

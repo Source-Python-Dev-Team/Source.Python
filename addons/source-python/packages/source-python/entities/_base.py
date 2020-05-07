@@ -22,7 +22,6 @@ from core import BoostPythonClass
 from core.cache import cached_property
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
-from entities.constants import EntityFlags
 #   Engines
 from engines.precache import Model
 from engines.sound import Attenuation
@@ -145,7 +144,7 @@ class _EntityCaching(BoostPythonClass):
             # This is required, because if someone request an entity instance
             # after we invalidated our cache but before the engine processed
             # the deletion we would now have an invalid instance in the cache.
-            if not obj.entity_flags & EntityFlags.KILLME:
+            if not obj.is_marked_for_deletion():
                 cls._cache[index] = obj
 
         # We are done, let's return the instance
