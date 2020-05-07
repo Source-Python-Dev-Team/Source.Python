@@ -294,10 +294,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """
         return cls(index_from_inthandle(inthandle), caching=caching)
 
-    # @classmethod
-    # def _obj(cls, ptr):
-        # """Return an entity instance of the given pointer."""
-        # return cls(index_from_pointer(ptr))
+    @classmethod
+    def _obj(cls, ptr):
+        """Return an entity instance of the given pointer."""
+        return cls(index_from_pointer(ptr))
 
     def is_networked(self):
         """Return True if the entity is networked.
