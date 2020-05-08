@@ -10,10 +10,12 @@
 from collections import defaultdict
 #   Math
 import math
+#   Weakref
+from weakref import WeakValueDictionary
 
 # Source.Python Imports
 #   Core
-from core import AutoUnload
+from core import WeakAutoUnload
 #   Filters
 from filters.recipients import RecipientFilter
 #   Listeners
@@ -36,10 +38,10 @@ class _PlayerPage(object):
         self.options = {}
 
 
-class _BaseMenu(AutoUnload, list):
+class _BaseMenu(WeakAutoUnload, list):
     """The base menu. Every menu class should inherit from this class."""
 
-    _instances = {}
+    _instances = WeakValueDictionary()
 
     def __init__(self, data=None, select_callback=None, build_callback=None, close_callback=None):
         """Initialize the menu.
