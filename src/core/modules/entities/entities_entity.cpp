@@ -514,13 +514,13 @@ void CBaseEntityWrapper::SetSolidType(SolidType_t type)
 }
 
 
-SolidFlags_t CBaseEntityWrapper::GetSolidFlags()
+unsigned short CBaseEntityWrapper::GetSolidFlags()
 {
 	static int offset = FindNetworkPropertyOffset("m_Collision.m_usSolidFlags");
-	return (SolidFlags_t) GetNetworkPropertyByOffset<unsigned short>(offset);
+	return GetNetworkPropertyByOffset<unsigned short>(offset);
 }
 
-void CBaseEntityWrapper::SetSolidFlags(SolidFlags_t flags)
+void CBaseEntityWrapper::SetSolidFlags(unsigned short flags)
 {
 	static int offset = FindNetworkPropertyOffset("m_Collision.m_usSolidFlags");
 	SetNetworkPropertyByOffset<unsigned short>(offset, flags);
