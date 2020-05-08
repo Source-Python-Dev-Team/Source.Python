@@ -234,7 +234,7 @@ void CBaseEntityWrapper::remove()
 
 bool CBaseEntityWrapper::is_marked_for_deletion()
 {
-	return GetEntityFlags() & FL_KILLME;
+	return GetEntityFlags() & EFL_KILLME;
 }
 
 int CBaseEntityWrapper::get_size()
