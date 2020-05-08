@@ -254,8 +254,8 @@ public:
 	SolidType_t GetSolidType();
 	void SetSolidType(SolidType_t type);
 
-	SolidFlags_t GetSolidFlags();
-	void SetSolidFlags(SolidFlags_t type);
+	unsigned short GetSolidFlags();
+	void SetSolidFlags(unsigned short type);
 
 	Collision_Group_t GetCollisionGroup();
 	void SetCollisionGroup(Collision_Group_t group);
