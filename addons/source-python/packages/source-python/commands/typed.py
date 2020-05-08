@@ -32,6 +32,8 @@ from filters.players import parse_filter
 from messages import SayText2
 from messages import TextMsg
 from messages import HudDestination
+#   Translations
+from translations.strings import TranslationStrings
 
 
 # =============================================================================
@@ -644,6 +646,10 @@ class TypedServerCommand(_TypedCommand):
 
     @staticmethod
     def send_message(command_info, message):
+        # Translate the message if it's a :class:`TranslationStrings` object.
+        if isinstance(message, TranslationStrings):
+            message = message.get_string()
+
         logger.log_message(message)
 
     @classmethod
