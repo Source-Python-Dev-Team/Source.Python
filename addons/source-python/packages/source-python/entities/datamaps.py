@@ -49,8 +49,10 @@ from _entities._datamaps import Variant
 # =============================================================================
 # Set all to an empty list
 __all__ = ('DataMap',
+           'EntityProperty',
            'FieldType',
            'InputData',
+           'InputFunction',
            'Interval',
            'TypeDescription',
            'TypeDescriptionFlags',

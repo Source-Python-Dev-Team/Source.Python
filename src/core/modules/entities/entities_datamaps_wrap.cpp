@@ -236,14 +236,34 @@ void export_input_function(scope _datamaps)
 		"InputFunction",
 		init<typedescription_t, CBaseEntity*>(
 			args("self", "desc", "entity"),
-			"Represents a property attribute that is only"
+			"Instantiate the function instance and store the base attributes.\n"
+			"\n"
+			":param TypeDescription desc:\n"
+			"	The descriptor of the input bound to this instance.\n"
+			":param BaseEntity entity:\n"
+			"	The entity this input is bound to.\n"
+			"\n"
+			":raises TypeError:\n"
+			"	If the given descriptor is not an input."
 		)
 	);
 
 	InputFunction.def(
 		"__call__",
 		&CInputFunction::__call__,
-		"Call the stored function with the values given.",
+		"Call the stored function with the values given.\n"
+		"\n"
+		":param object value:\n"
+		"	The value to pass to the input function.\n"
+		":param BaseEntity activator:\n"
+		"	The activator entity.\n"
+		":param BaseEntity caller:\n"
+		"	The caller entity.\n"
+		"\n"
+		":raises ValueError:\n"
+		"	If the given value is not valid for that input.\n"
+		":raises TypeError:\n"
+		"	If the type of the input is unsupported.",
 		("self", arg("value")=object(), arg("activator")=object(), arg("caller")=object())
 	);
 }

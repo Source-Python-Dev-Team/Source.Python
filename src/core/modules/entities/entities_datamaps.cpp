@@ -217,6 +217,9 @@ CInputFunction::CInputFunction(typedescription_t pTypeDesc, CBaseEntity *pBaseEn
 		object(DATA_TYPE_VOID)
 	)
 {
+	if (!(pTypeDesc.flags & FTYPEDESC_INPUT))
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);
+
 	m_pTypeDesc = pTypeDesc;
 	m_pBaseEntity = pBaseEntity;
 }
