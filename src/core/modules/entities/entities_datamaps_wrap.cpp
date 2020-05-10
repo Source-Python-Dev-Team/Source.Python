@@ -41,6 +41,7 @@
 void export_interval(scope);
 void export_datamap(scope);
 void export_type_description(scope);
+void export_input_function(scope);
 void export_input_data(scope);
 void export_variant(scope);
 void export_field_types(scope);
@@ -55,6 +56,7 @@ DECLARE_SP_SUBMODULE(_entities, _datamaps)
 	export_interval(_datamaps);
 	export_datamap(_datamaps);
 	export_type_description(_datamaps);
+	export_input_function(_datamaps);
 	export_input_data(_datamaps);
 	export_variant(_datamaps);
 	export_field_types(_datamaps);
@@ -222,6 +224,28 @@ void export_type_description(scope _datamaps)
 
 	// Add memory tools...
 	TypeDescription ADD_MEM_TOOLS(typedescription_t);
+}
+
+
+//-----------------------------------------------------------------------------
+// Export CInputFunction.
+//-----------------------------------------------------------------------------
+void export_input_function(scope _datamaps)
+{
+	class_<CInputFunction, bases<CFunction>, boost::noncopyable> InputFunction(
+		"InputFunction",
+		init<typedescription_t, CBaseEntity*>(
+			args("self", "desc", "entity"),
+			"Represents a property attribute that is only"
+		)
+	);
+
+	InputFunction.def(
+		"__call__",
+		&CInputFunction::__call__,
+		"Call the stored function with the values given.",
+		("self", arg("value")=object(), arg("activator")=object(), arg("caller")=object())
+	);
 }
 
 
