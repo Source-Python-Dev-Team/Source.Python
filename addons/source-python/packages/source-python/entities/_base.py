@@ -25,7 +25,6 @@ from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
 from engines.sound import Attenuation
-from engines.sound import engine_sound
 from engines.sound import Channel
 from engines.sound import Pitch
 from engines.sound import Sound
@@ -38,13 +37,10 @@ from engines.trace import GameTrace
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
-from entities import BaseEntityGenerator
-from entities import Edict
 from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import WORLD_ENTITY_INDEX
 from entities.constants import DamageTypes
-from entities.constants import RenderMode
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
@@ -57,13 +53,11 @@ from listeners.tick import RepeatStatus
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Memory
-from memory import get_object_pointer
 from memory import make_object
 from memory.helpers import MemberFunction
 #   Players
 from players.constants import HitGroup
 #   Studio
-from studio.cache import model_cache
 from studio.constants import INVALID_ATTACHMENT_INDEX
 
 
