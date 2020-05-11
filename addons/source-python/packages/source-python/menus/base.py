@@ -80,10 +80,12 @@ class _BaseMenu(WeakAutoUnload, list):
     def _unload_instance(self):
         """Close this menu object for every player."""
         # Just close all open menus, which will remove all instances from the
-        # queues
+        # queues.
         self.close()
 
-        # Also remove the instance from the _instances dict
+        # Also remove the instance from the _instances dict.
+        # This process is necessary because there is no guarantee that
+        # the instance will be destroyed when the plugin is unloaded.
         del self._instances[id(self)]
 
     def _unload_player(self, player_index):
