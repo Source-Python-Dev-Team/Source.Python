@@ -490,13 +490,17 @@ class CommandInfo(object):
         self.index = index
         self.team_only = team_only
 
-    def reply(self, msg):
+    def reply(self, msg, language=None, **tokens):
         """Reply to the command issuer.
 
-        :param str msg:
+        :param str/TranslationStrings msg:
             Message to send.
+        :param str language:
+            Language to be used.
+        :param tokens:
+            Translation tokens for message.
         """
-        self.typed_command_cls.send_message(self, msg)
+        self.typed_command_cls.send_message(self, msg, language, **tokens)
 
     def is_private_command(self):
         """Return ``True`` if it's a private command.
@@ -625,7 +629,7 @@ class _TypedCommand(AutoUnload):
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
     @staticmethod
-    def send_message(command_info, message):
+    def send_message(command_info, message, language=None, **tokens):
         """Send a message."""
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
@@ -645,10 +649,10 @@ class TypedServerCommand(_TypedCommand):
     manager = server_command_manager
 
     @staticmethod
-    def send_message(command_info, message):
+    def send_message(command_info, message, language=None, **tokens):
         # Translate the message if it's a :class:`TranslationStrings` object.
         if isinstance(message, TranslationStrings):
-            message = message.get_string()
+            message = message.get_string(language, **tokens)
 
         logger.log_message(message)
 
@@ -690,8 +694,8 @@ class TypedClientCommand(_TypedPlayerCommand):
     manager = client_command_manager
 
     @staticmethod
-    def send_message(command_info, message):
-        TextMsg(message, HudDestination.CONSOLE).send(command_info.index)
+    def send_message(command_info, message, language=None, **tokens):
+        TextMsg(message, HudDestination.CONSOLE).send(command_info.index, **tokens)
 
     @classmethod
     def get_auto_command_return(cls, info):
@@ -705,8 +709,8 @@ class TypedSayCommand(_TypedPlayerCommand):
     manager = say_command_manager
 
     @staticmethod
-    def send_message(command_info, message):
-        SayText2(message).send(command_info.index)
+    def send_message(command_info, message, language=None, **tokens):
+        SayText2(message).send(command_info.index, **tokens)
 
     @classmethod
     def get_auto_command_return(cls, info):
