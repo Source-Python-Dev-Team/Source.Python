@@ -474,7 +474,7 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 }
 #endif
 
-#if defined(ENGINE_CSGO)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 bool CSourcePython::BNetworkCryptKeyCheckRequired( uint32 unFromIP, uint16 usFromPort,
 	uint32 unAccountIdProvidedByClient, bool bClientWantsToUseCryptKey )
 {

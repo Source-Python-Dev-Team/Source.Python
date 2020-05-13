@@ -52,7 +52,7 @@ CUserMessage::CUserMessage(IRecipientFilter& recipients, const char* message_nam
 
 	// Initialize buffer
 #ifdef USE_PROTOBUF
-	const google::protobuf::Message* message = g_Cstrike15UsermessageHelpers.GetPrototype(message_name);
+	const google::protobuf::Message* message = protobuf_helpers.GetPrototype(message_name);
 	if (!message) {
 		BOOST_RAISE_EXCEPTION(PyExc_NameError, "Invalid message name: '%s'.", message_name);
 	}
@@ -107,7 +107,7 @@ void CreateMessage( edict_t *pEdict, DIALOG_TYPE type, KeyValues *data )
 int GetMessageIndex(const char* name)
 {
 #ifdef USE_PROTOBUF
-	return g_Cstrike15UsermessageHelpers.GetIndex(name);
+	return protobuf_helpers.GetIndex(name);
 #else
 	char sz_mname[256];
 	int sizereturn;
@@ -127,7 +127,7 @@ int GetMessageIndex(const char* name)
 object GetMessageName(int index)
 {
 #ifdef USE_PROTOBUF
-	const char* name = g_Cstrike15UsermessageHelpers.GetName(index);
+	const char* name = protobuf_helpers.GetName(index);
 	if (!name)
 		return object();
 

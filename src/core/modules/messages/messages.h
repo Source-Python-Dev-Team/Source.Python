@@ -38,8 +38,18 @@
 
 
 #ifdef USE_PROTOBUF
-	#include "game/shared/csgo/protobuf/cstrike15_usermessages.pb.h"
-	#include "public/game/shared/csgo/protobuf/cstrike15_usermessage_helpers.h"
+	#if defined(ENGINE_CSGO)
+		#include "game/shared/csgo/protobuf/cstrike15_usermessages.pb.h"
+		#include "public/game/shared/csgo/protobuf/cstrike15_usermessage_helpers.h"
+		#define protobuf_helpers g_Cstrike15UsermessageHelpers
+	#elif defined(ENGINE_BLADE)
+		#include "game/shared/berimbau/protobuf/berimbau_usermessages.pb.h"
+		#include "public/game/shared/berimbau/protobuf/berimbau_usermessage_helpers.h"
+		#define protobuf_helpers g_BerimbauUsermessageHelpers
+	#else
+		#error TODO
+	#endif
+
 	#define MESSAGE_BUFFER google::protobuf::Message
 #else
 	#define MESSAGE_BUFFER bf_write

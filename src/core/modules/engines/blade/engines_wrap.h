@@ -32,7 +32,6 @@
 //---------------------------------------------------------------------------------
 #include "eiface.h"
 #include "ispsharedmemory.h"
-#include "modules/messages/messages.h"
 #include "engine/IEngineSound.h"
 #include "engine/IEngineTrace.h"
 
@@ -78,7 +77,7 @@ T IVEngineServer_Visitor(T cls)
 
 		.add_property("timescale",
 			&IVEngineServer::GetTimescale,
-			&IVEngineServer::SetTimescale
+			&IVEngineServer::SetGameTimescale
 		)
 
 		.def("is_level_main_menu_background",
@@ -236,10 +235,9 @@ T IVEngineServer_Visitor(T cls)
 			args("ent_num")
 		)
 	;
-
+		
 	BEGIN_CLASS_INFO(IVEngineServer)
-		FUNCTION_INFO(UserMessageBegin)
-		FUNCTION_INFO(MessageEnd)
+		FUNCTION_INFO(SendUserMessage)
 	END_CLASS_INFO()
 
 	return cls;
