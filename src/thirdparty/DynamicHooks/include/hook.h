@@ -178,7 +178,7 @@ public:
 	// New return address
 	void* m_pNewRetAddr;
 
-	std::map<void*, void*> m_RetAddr;
+	std::map<void*, std::vector<void*> > m_RetAddr;
 };
 
 #endif // _HOOK_H
