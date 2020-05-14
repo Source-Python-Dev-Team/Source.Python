@@ -652,7 +652,7 @@ void CSourcePython::OnDataUnloaded( MDLCacheDataType_t type, MDLHandle_t handle 
 	CALL_LISTENERS(OnDataUnloaded, type, handle);
 }
 	
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 void CSourcePython::OnCombinerPreCache(MDLCacheDataType_t type, MDLHandle_t handle )
 {
 	if (m_pOldMDLCacheNotifier)

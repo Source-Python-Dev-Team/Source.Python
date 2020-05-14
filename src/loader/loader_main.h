@@ -81,7 +81,7 @@ public:
 	virtual void			OnEdictFreed( const edict_t *edict );
 #endif
 
-#if defined(ENGINE_CSGO)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 	virtual bool			BNetworkCryptKeyCheckRequired( uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient,
 								bool bClientWantsToUseCryptKey );
 	virtual bool			BNetworkCryptKeyValidate( uint32 unFromIP, uint16 usFromPort, uint32 unAccountIdProvidedByClient,

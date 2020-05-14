@@ -58,7 +58,7 @@ public:
 	static void disconnect(IClient* pClient, const char* reason)
 	{
 // TODO: Get rid of this preproc and move that to their respective engine files.
-#ifdef ENGINE_CSGO
+#if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 		pClient->Disconnect(reason);
 #else
 		pClient->Disconnect("%s", reason);

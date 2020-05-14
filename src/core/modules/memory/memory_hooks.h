@@ -62,7 +62,7 @@ public:
 		if (m_pHook->m_RetAddr.count(pESP) == 0) {
 			return NULL;
 		}
-		return m_pHook->m_RetAddr[pESP];
+		return m_pHook->m_RetAddr[pESP].back();
 	}
 
 protected:
