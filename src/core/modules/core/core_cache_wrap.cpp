@@ -54,7 +54,7 @@ void export_cached_property(scope _cache)
 {
 	class_<CCachedProperty, CCachedProperty *> CachedProperty(
 		"CachedProperty",
-		init<object, object, object, const char *, bool, boost::python::tuple, dict>(
+		init<object, object, object, object, bool, boost::python::tuple, dict>(
 			(
 				arg("self"), arg("fget")=object(), arg("fset")=object(), arg("fdel")=object(), arg("doc")=object(),
 				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
@@ -216,7 +216,7 @@ void export_cached_property(scope _cache)
 
 	CachedProperty.def_readwrite(
 		"__doc__",
-		&CCachedProperty::m_szDocString,
+		&CCachedProperty::m_doc,
 		"Documentation string for this property.\n"
 		"\n"
 		":rtype:\n"

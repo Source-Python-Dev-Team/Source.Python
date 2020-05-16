@@ -41,7 +41,7 @@ class CCachedProperty
 {
 public:
 	CCachedProperty(
-		object fget, object fset, object fdel, const char *doc, bool unbound,
+		object fget, object fset, object fdel, object doc, bool unbound,
 		boost::python::tuple args, dict kwargs
 	);
 
@@ -88,7 +88,7 @@ private:
 	dict m_cache;
 
 public:
-	const char *m_szDocString;
+	object m_doc;
 
 	boost::python::tuple m_args;
 	dict m_kwargs;

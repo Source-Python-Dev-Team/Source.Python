@@ -35,14 +35,14 @@
 // CCachedProperty class.
 //-----------------------------------------------------------------------------
 CCachedProperty::CCachedProperty(
-	object fget=object(), object fset=object(), object fdel=object(), const char *doc=NULL,
+	object fget=object(), object fset=object(), object fdel=object(), object doc=object(),
 	bool unbound=false, boost::python::tuple args=boost::python::tuple(), dict kwargs=dict())
 {
 	set_getter(fget);
 	set_setter(fset);
 	set_deleter(fdel);
 
-	m_szDocString = doc;
+	m_doc = doc;
 	m_bUnbound = unbound;
 
 	m_args = args;
@@ -317,7 +317,7 @@ CCachedProperty *CCachedProperty::wrap_descriptor(
 {
 	CCachedProperty *pProperty = new CCachedProperty(
 		descriptor.attr("__get__"), descriptor.attr("__set__"), descriptor.attr("__delete__"),
-		extract<const char *>(descriptor.attr("__doc__")), unbound, args, kwargs
+		descriptor.attr("__doc__"), unbound, args, kwargs
 	);
 
 	pProperty->__set_name__(owner, name);

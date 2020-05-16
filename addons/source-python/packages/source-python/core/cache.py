@@ -8,7 +8,7 @@
 
 
 # =============================================================================
-# >> FORWARD IMPORTS
+# >> IMPORTS
 # =============================================================================
 # Python Imports
 #   FuncTools
@@ -16,6 +16,10 @@ from functools import wraps
 #   Types
 from types import MethodType
 
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
 # Source.Python Imports
 #   Core
 from _core._cache import CachedProperty

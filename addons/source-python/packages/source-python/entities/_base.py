@@ -199,10 +199,10 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         super().__init__(index)
 
         # Set the entity's base attributes
-        object.__setattr__(self, '_index', index)
+        vars(self)['index'] = index
 
     def __hash__(self):
-        """Return a hash value based on the entity index."""
+        """Return a hash value based on the entity inthandle."""
         # Required for sets, because we have implemented __eq__
         return hash(self.inthandle)
 
@@ -231,7 +231,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         raise AttributeError('Attribute "{0}" not found'.format(attr))
 
     def __setattr__(self, attr, value):
-        """Find if the attribute is value and sets its value."""
+        """Find if the attribute is valid and sets its value."""
         # Is the given attribute a property?
         if (attr in super().__dir__() and isinstance(
                 getattr(self.__class__, attr, None), property)):
@@ -298,14 +298,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :rtype: bool
         """
         return True
-
-    @cached_property
-    def index(self):
-        """Return the entity's index.
-
-        :rtype: int
-        """
-        return self._index
 
     @property
     def owner(self):
