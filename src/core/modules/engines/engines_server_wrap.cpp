@@ -324,6 +324,7 @@ static void export_engine_server(scope _server)
 			args("client_index", "name")
 		)
 
+#if !defined(ENGINE_BLADE)
 		.def("reset_pvs",
 			&IVEngineServer::ResetPVS,
 			"Resets the potentially visible set. pvssize is the size in bytes of the buffer pointed to by pvs.",
@@ -335,6 +336,7 @@ static void export_engine_server(scope _server)
 			"Merge the pvs bits into the current accumulated pvs based on the specified origin.",
 			args("origin")
 		)
+#endif
 
 		.def("set_area_portal_state",
 			&IVEngineServer::SetAreaPortalState,
@@ -353,24 +355,28 @@ static void export_engine_server(scope _server)
 			"Given a node number and the specified PVS, return with the node is in the PVS.",
 			args("nodenum", "pvs", "vissize")
 		)
-
+		
+#if !defined(ENGINE_BLADE)
 		.def("check_areas_connected",
 			&IVEngineServer::CheckAreasConnected,
 			"Using area bits, check whether area 1 flows into area 2 and vice versa (depends on portal state)",
 			args("area1", "area2")
 		)
+#endif
 
 		.def("get_area",
 			&IVEngineServer::GetArea,
 			"Given an origin, determine which area index the origin is within.",
 			args("origin")
 		)
-
+		
+#if !defined(ENGINE_BLADE)
 		.def("get_area_bits",
 			&IVEngineServer::GetAreaBits,
 			"Get area portal bit set.",
 			args("area", "bits", "buflen")
 		)
+#endif
 
 		.def("get_area_portal_plane",
 			&IVEngineServer::GetAreaPortalPlane,
@@ -483,12 +489,13 @@ static void export_engine_server(scope _server)
 			"Marks the material (vmt file) for consistency checking.",
 			args("s")
 		)
-
+#if !defined(ENGINE_BLADE)
 		.def("set_area_portal_states",
 			&IVEngineServer::SetAreaPortalStates,
 			"Mark some area portals as open/closed.",
 			args("portal_numbers", "is_open", "portals")
 		)
+#endif
 
 		.def("notify_edict_flags_change",
 			&IVEngineServer::NotifyEdictFlagsChange,
