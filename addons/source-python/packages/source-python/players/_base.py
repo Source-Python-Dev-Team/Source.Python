@@ -15,6 +15,7 @@ from bitbuffers import BitBufferWrite
 #   Core
 from core import GAME_NAME
 from core.cache import cached_property
+from core.cache import cached_result
 #   Engines
 from engines.server import server
 from engines.server import engine_server
@@ -217,35 +218,21 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.is_fake_client()
 
-    @cached_property
-    def _is_hltv(self):
+    @cached_result
+    def is_hltv(self):
         """Return whether the player is HLTV.
 
         :rtype: bool
         """
         return self.playerinfo.is_hltv()
 
-    def is_hltv(self):
-        """Return whether the player is HLTV.
-
-        :rtype: bool
-        """
-        return self._is_hltv
-
-    @cached_property
-    def _is_bot(self):
-        """Return whether the player is a bot.
-
-        :rtype: bool
-        """
-        return self.is_fake_client() or self.steamid == 'BOT'
-
+    @cached_result
     def is_bot(self):
         """Return whether the player is a bot.
 
         :rtype: bool
         """
-        return self._is_bot
+        return self.is_fake_client() or self.steamid == 'BOT'
 
     def is_in_a_vehicle(self):
         """Return whether the player is in a vehicle.
