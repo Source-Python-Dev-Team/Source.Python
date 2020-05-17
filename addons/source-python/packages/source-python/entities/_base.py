@@ -199,7 +199,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         super().__init__(index)
 
         # Set the entity's base attributes
-        vars(self)['index'] = index
+        type(self).index.set_cached_value(self, index)
 
     def __hash__(self):
         """Return a hash value based on the entity inthandle."""

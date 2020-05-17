@@ -107,26 +107,6 @@ void CCachedProperty::_invalidate_cache(PyObject *pRef)
 	}
 }
 
-void CCachedProperty::_update_cache(object instance, object value)
-{
-	if (m_bUnbound)
-		m_cache[handle<>(
-			PyWeakref_NewRef(
-				instance.ptr(),
-				make_function(
-					boost::bind(&CCachedProperty::_invalidate_cache, this, _1),
-					default_call_policies(),
-					boost::mpl::vector2<void, PyObject *>()
-				).ptr()
-			)
-		)] = value;
-	else
-	{
-		dict cache = extract<dict>(instance.attr("__dict__"));
-		cache[m_name] = value;
-	}
-}
-
 void CCachedProperty::_delete_cache(object instance)
 {
 	try
@@ -200,6 +180,46 @@ object CCachedProperty::get_owner()
 }
 
 
+object CCachedProperty::get_cached_value(object instance)
+{
+	object value;
+
+	if (m_bUnbound)
+		value = m_cache[
+			handle<>(
+				PyWeakref_NewRef(instance.ptr(), NULL)
+			)
+		];
+	else
+	{
+		dict cache = extract<dict>(instance.attr("__dict__"));
+		value = cache[m_name];
+	}
+
+	return value;
+}
+
+void CCachedProperty::set_cached_value(object instance, object value)
+{
+	if (m_bUnbound)
+		m_cache[handle<>(
+			PyWeakref_NewRef(
+				instance.ptr(),
+				make_function(
+					boost::bind(&CCachedProperty::_invalidate_cache, this, _1),
+					default_call_policies(),
+					boost::mpl::vector2<void, PyObject *>()
+				).ptr()
+			)
+		)] = value;
+	else
+	{
+		dict cache = extract<dict>(instance.attr("__dict__"));
+		cache[m_name] = value;
+	}
+}
+
+
 void CCachedProperty::__set_name__(object owner, str name)
 {
 	m_name = name;
@@ -223,17 +243,7 @@ object CCachedProperty::__get__(object self, object instance, object owner=objec
 
 	try
 	{
-		if (pSelf.m_bUnbound)
-			return pSelf.m_cache[
-				handle<>(
-					PyWeakref_NewRef(instance.ptr(), NULL)
-				)
-			];
-		else
-		{
-			dict cache = extract<dict>(instance.attr("__dict__"));
-			return cache[name];
-		}
+		value = pSelf.get_cached_value(instance);
 	}
 	catch (...)
 	{
@@ -256,7 +266,7 @@ object CCachedProperty::__get__(object self, object instance, object owner=objec
 			)
 		);
 
-		pSelf._update_cache(instance, value);
+		pSelf.set_cached_value(instance, value);
 	}
 
 	return value;
@@ -277,7 +287,7 @@ void CCachedProperty::__set__(object instance, object value)
 	);
 
 	if (!result.is_none())
-		_update_cache(instance, _prepare_value(result));
+		set_cached_value(instance, _prepare_value(result));
 	else
 		_delete_cache(instance);
 }

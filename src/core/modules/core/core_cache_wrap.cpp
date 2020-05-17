@@ -351,6 +351,34 @@ void export_cached_property(scope _cache)
 	);
 
 	CachedProperty.def(
+		"get_cached_value",
+		&CCachedProperty::get_cached_value,
+		"Returns the cached value for the given instance.\n"
+		"\n"
+		":param object instance:\n"
+		"	The instance to get the cached value for.\n"
+		"\n"
+		":raises KeyError:\n"
+		"	If the given instance didn't have a cached value.\n"
+		"\n"
+		":rtype:"
+		"	object",
+		args("self", "instance")
+	);
+
+	CachedProperty.def(
+		"set_cached_value",
+		&CCachedProperty::set_cached_value,
+		"Sets the cached value for the given instance.\n"
+		"\n"
+		":param object instance:\n"
+		"	The instance to set the cached value for.\n"
+		":param object value:\n"
+		"	The value to set as cached value.\n",
+		args("self", "instance", "value")
+	);
+
+	CachedProperty.def(
 		"wrap_descriptor",
 		&CCachedProperty::wrap_descriptor,
 		manage_new_object_policy(),
