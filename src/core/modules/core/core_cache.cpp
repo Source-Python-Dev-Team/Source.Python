@@ -182,6 +182,12 @@ object CCachedProperty::get_owner()
 
 object CCachedProperty::get_cached_value(object instance)
 {
+	if (!m_name)
+		BOOST_RAISE_EXCEPTION(
+			PyExc_AttributeError,
+			"Unable to retrieve the value of an unbound property."
+		);
+
 	object value;
 
 	if (m_bUnbound)
@@ -201,6 +207,12 @@ object CCachedProperty::get_cached_value(object instance)
 
 void CCachedProperty::set_cached_value(object instance, object value)
 {
+	if (!m_name)
+		BOOST_RAISE_EXCEPTION(
+			PyExc_AttributeError,
+			"Unable to assign the value of an unbound property."
+		);
+
 	if (m_bUnbound)
 		m_cache[handle<>(
 			PyWeakref_NewRef(
@@ -211,11 +223,11 @@ void CCachedProperty::set_cached_value(object instance, object value)
 					boost::mpl::vector2<void, PyObject *>()
 				).ptr()
 			)
-		)] = value;
+		)] = _prepare_value(value);
 	else
 	{
 		dict cache = extract<dict>(instance.attr("__dict__"));
-		cache[m_name] = value;
+		cache[m_name] = _prepare_value(value);
 	}
 }
 
@@ -232,13 +244,6 @@ object CCachedProperty::__get__(object self, object instance, object owner=objec
 		return self;
 
 	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
-	object name = pSelf.get_name();
-	if (name.is_none())
-		BOOST_RAISE_EXCEPTION(
-			PyExc_AttributeError,
-			"Unable to retrieve the value of an unbound property."
-		);
-
 	object value;
 
 	try
@@ -259,11 +264,9 @@ object CCachedProperty::__get__(object self, object instance, object owner=objec
 				"Unable to retrieve the value of a property that have no getter function."
 			);
 
-		value = pSelf._prepare_value(
-			getter(
-				*(make_tuple(handle<>(borrowed(instance.ptr()))) + pSelf.m_args),
-				**pSelf.m_kwargs
-			)
+		value = getter(
+			*(make_tuple(handle<>(borrowed(instance.ptr()))) + pSelf.m_args),
+			**pSelf.m_kwargs
 		);
 
 		pSelf.set_cached_value(instance, value);
@@ -287,7 +290,7 @@ void CCachedProperty::__set__(object instance, object value)
 	);
 
 	if (!result.is_none())
-		set_cached_value(instance, _prepare_value(result));
+		set_cached_value(instance, result);
 	else
 		_delete_cache(instance);
 }
