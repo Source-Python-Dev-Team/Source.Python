@@ -374,10 +374,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             ``None`` if the entity has no model.
         :rtype: Model
         """
-        if not self.model_name:
+        model_name = self.model_name
+        if not model_name:
             return None
 
-        return Model(self.model_name)
+        return Model(model_name)
 
     def set_model(self, model):
         """Set the entity's model to the given model.
@@ -449,18 +450,21 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             The delay instance.
         :rtype: Delay
         """
+        # Get the index of the entity
+        index = self.index
+
         # TODO: Ideally, we want to subclass Delay and cleanup on cancel() too
         #   in case the caller manually cancel the returned Delay.
         def _callback(*args, **kwargs):
             """Called when the delay is executed."""
             # Remove the delay from the global dictionary...
-            _entity_delays[self.index].remove(delay)
+            _entity_delays[index].remove(delay)
 
             # Was this the last pending delay for the entity?
-            if not _entity_delays[self.index]:
+            if not _entity_delays[index]:
 
                 # Remove the entity from the dictionary...
-                del _entity_delays[self.index]
+                del _entity_delays[index]
 
             # Call the callback...
             callback(*args, **kwargs)
@@ -469,7 +473,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         delay = Delay(delay, _callback, args, kwargs, cancel_on_level_end)
 
         # Add the delay to the dictionary...
-        _entity_delays[self.index].add(delay)
+        _entity_delays[index].add(delay)
 
         # Return the delay instance...
         return delay
@@ -610,8 +614,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             :class:`BaseEntity` instances that are ignored by the ray.
         :rtype: bool
         """
+        # Get the entity's origin
+        origin = self.origin
+
         # Get a Ray object of the entity physic box
-        ray = Ray(self.origin, self.origin, self.mins, self.maxs)
+        ray = Ray(origin, origin, self.mins, self.maxs)
 
         # Get a new GameTrace instance
         trace = GameTrace()
