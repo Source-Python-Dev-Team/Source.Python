@@ -84,11 +84,11 @@ logger = commands_logger.typed
 # =============================================================================
 # >> EXCEPTIONS
 # =============================================================================
-# TODO:
-# We probably need to update these exceptions if we want to add translations.
 class ValidationError(Exception):
-    def __init__(self, message=''):
+    def __init__(self, message='', language=None, **tokens):
         self.message = message
+        self.language = language
+        self.tokens = tokens
 
 class ArgumentError(ValidationError): pass
 class ArgumentNumberMismatch(ArgumentError): pass
@@ -588,13 +588,12 @@ class _TypedCommand(AutoUnload):
 
         Parse the command, clean its arguments and execute the callback.
         """
-        # TODO: Translations!
         info = CommandInfo(command, cls, *args)
         try:
             command_node, args = cls.parser.parse_command(info.command)
             result = cls.on_clean_command(info, command_node, args)
         except ValidationError as e:
-            info.reply(e.message)
+            info.reply(e.message, e.language, **e.tokens)
         else:
             if result is None:
                 return info.auto_command_return
