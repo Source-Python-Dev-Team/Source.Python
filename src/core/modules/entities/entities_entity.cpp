@@ -442,7 +442,24 @@ bool CBaseEntityWrapper::IsPlayer()
 bool CBaseEntityWrapper::IsWeapon()
 {
 	static object is_weapon = import("weapons").attr("manager").attr("weapon_manager").attr("__contains__");
-	return is_weapon(str(IServerUnknownExt::GetClassname(GetThis())));
+
+	bool result = is_weapon(str(IServerUnknownExt::GetClassname(GetThis())));
+
+	// If the manager does not know about this classname, let's see if the
+	// entity inherits from the base weapon class instead. This can happens
+	// when a plugin change the classname of a valid weapon.
+	if (!result)
+	{
+		datamap_t *pDatamap = GetDataDescMap();
+		while (pDatamap)
+		{
+			if (strcmp(pDatamap->dataClassName, "CBaseCombatWeapon") == 0)
+				return true;
+			pDatamap = pDatamap->baseMap;
+		}
+	}
+
+	return result;
 }
 
 IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
