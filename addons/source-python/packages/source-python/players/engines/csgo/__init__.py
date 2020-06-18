@@ -78,6 +78,13 @@ class Player(_Player):
         _get_assists, _set_assists,
         doc="""The number of assists a player has.""")
 
+    @_Player.godmode.getter
+    def godmode(self):
+        """Return whether god mode is enabled.
+        :rtype: bool
+        """
+        return super().get_godmode() or self.gungame_immunity
+
     def send_convar_value(self, cvar_name, value):
         """Send a convar value.
 
