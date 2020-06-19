@@ -32,6 +32,8 @@ from filters.players import parse_filter
 from messages import SayText2
 from messages import TextMsg
 from messages import HudDestination
+#   Translations
+from translations.strings import TranslationStrings
 
 
 # =============================================================================
@@ -82,11 +84,11 @@ logger = commands_logger.typed
 # =============================================================================
 # >> EXCEPTIONS
 # =============================================================================
-# TODO:
-# We probably need to update these exceptions if we want to add translations.
 class ValidationError(Exception):
-    def __init__(self, message=''):
+    def __init__(self, message='', language=None, **tokens):
         self.message = message
+        self.language = language
+        self.tokens = tokens
 
 class ArgumentError(ValidationError): pass
 class ArgumentNumberMismatch(ArgumentError): pass
@@ -488,13 +490,17 @@ class CommandInfo(object):
         self.index = index
         self.team_only = team_only
 
-    def reply(self, msg):
+    def reply(self, msg, language=None, **tokens):
         """Reply to the command issuer.
 
-        :param str msg:
+        :param str/TranslationStrings msg:
             Message to send.
+        :param str language:
+            Language to be used.
+        :param tokens:
+            Translation tokens for message.
         """
-        self.typed_command_cls.send_message(self, msg)
+        self.typed_command_cls.send_message(self, msg, language, **tokens)
 
     def is_private_command(self):
         """Return ``True`` if it's a private command.
@@ -582,13 +588,12 @@ class _TypedCommand(AutoUnload):
 
         Parse the command, clean its arguments and execute the callback.
         """
-        # TODO: Translations!
         info = CommandInfo(command, cls, *args)
         try:
             command_node, args = cls.parser.parse_command(info.command)
             result = cls.on_clean_command(info, command_node, args)
         except ValidationError as e:
-            info.reply(e.message)
+            info.reply(e.message, e.language, **e.tokens)
         else:
             if result is None:
                 return info.auto_command_return
@@ -623,7 +628,7 @@ class _TypedCommand(AutoUnload):
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
     @staticmethod
-    def send_message(command_info, message):
+    def send_message(command_info, message, language=None, **tokens):
         """Send a message."""
         raise NotImplementedError('Needs to be implemented by a sub class.')
 
@@ -643,7 +648,11 @@ class TypedServerCommand(_TypedCommand):
     manager = server_command_manager
 
     @staticmethod
-    def send_message(command_info, message):
+    def send_message(command_info, message, language=None, **tokens):
+        # Translate the message if it's a :class:`TranslationStrings` object.
+        if isinstance(message, TranslationStrings):
+            message = message.get_string(language, **tokens)
+
         logger.log_message(message)
 
     @classmethod
@@ -684,8 +693,8 @@ class TypedClientCommand(_TypedPlayerCommand):
     manager = client_command_manager
 
     @staticmethod
-    def send_message(command_info, message):
-        TextMsg(message, HudDestination.CONSOLE).send(command_info.index)
+    def send_message(command_info, message, language=None, **tokens):
+        TextMsg(message, HudDestination.CONSOLE).send(command_info.index, **tokens)
 
     @classmethod
     def get_auto_command_return(cls, info):
@@ -699,8 +708,8 @@ class TypedSayCommand(_TypedPlayerCommand):
     manager = say_command_manager
 
     @staticmethod
-    def send_message(command_info, message):
-        SayText2(message).send(command_info.index)
+    def send_message(command_info, message, language=None, **tokens):
+        SayText2(message).send(command_info.index, **tokens)
 
     @classmethod
     def get_auto_command_return(cls, info):
