@@ -21,6 +21,7 @@ from configobj import Section
 from core import GameConfigObj
 from core import PLATFORM
 #   Entities
+from _entities._entity import BaseEntity
 from entities import ServerClassGenerator
 from entities.datamaps import _supported_input_types
 from entities.datamaps import EntityProperty
@@ -35,6 +36,7 @@ from entities.props import SendPropType
 from memory import Convention
 from memory import DataType
 from memory import get_object_pointer
+from memory import make_object
 from memory.helpers import Type
 from memory.manager import CustomType
 from memory.manager import TypeManager
@@ -375,7 +377,10 @@ class _ServerClasses(TypeManager):
         for prop in table:
 
             # Is the property a base class or excluded?
-            if prop.name == 'baseclass' or prop.flags & SendPropFlags.EXCLUDE:
+            if (prop.name == 'baseclass' or
+                prop.is_exclude_prop() or
+                prop.flags & SendPropFlags.COLLAPSIBLE
+            ):
                 continue
 
             # Get the name of the property using the given base name
@@ -456,7 +461,7 @@ class _ServerClasses(TypeManager):
             return
 
         # Add the input to the inputs dictionary
-        instance.inputs[name] = self.input(name, desc)
+        instance.inputs[name] = self.input(desc)
 
         # Is the input a named input?
         if name in contents:
@@ -516,10 +521,8 @@ class _ServerClasses(TypeManager):
         return property(fget, fset)
 
     @staticmethod
-    def input(name, desc):
+    def input(desc):
         """Input type DataMap object."""
-        argument_type = desc.type
-
         def fget(pointer):
             """Retrieve the InputFunction instance."""
             func = desc.function
@@ -536,7 +539,7 @@ class _ServerClasses(TypeManager):
                 (DataType.POINTER, DataType.POINTER),
                 DataType.VOID)
 
-            return InputFunction(name, argument_type, function, pointer)
+            return InputFunction(desc, make_object(BaseEntity, pointer))
 
         return property(fget)
 

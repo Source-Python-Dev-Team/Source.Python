@@ -38,6 +38,7 @@ from _entities._datamaps import FTYPEDESC_VIEW_OTHER_PLAYER
 from _entities._datamaps import FTYPEDESC_VIEW_OWN_TEAM
 from _entities._datamaps import FTYPEDESC_VIEW_NEVER
 from _entities._datamaps import InputData
+from _entities._datamaps import InputFunction
 from _entities._datamaps import Interval
 from _entities._datamaps import TypeDescription
 from _entities._datamaps import Variant
@@ -48,8 +49,10 @@ from _entities._datamaps import Variant
 # =============================================================================
 # Set all to an empty list
 __all__ = ('DataMap',
+           'EntityProperty',
            'FieldType',
            'InputData',
+           'InputFunction',
            'Interval',
            'TypeDescription',
            'TypeDescriptionFlags',
@@ -120,51 +123,3 @@ class EntityProperty(object):
     def networked(self):
         """Return whether the property is networked."""
         return self._networked
-
-
-class InputFunction(Function):
-    """Class used to create and call an Input type function."""
-
-    def __init__(self, name, argument_type, function, this):
-        """Instantiate the function instance and store the base attributes."""
-        super().__init__(function)
-
-        self._name = name
-        self._argument_type = argument_type
-        self._this = this
-
-    def __call__(self, value=None, caller=None, activator=None):
-        """Call the stored function with the values given."""
-        # Is the type not VOID but no value was given?
-        if value is None and self._argument_type != FieldType.VOID:
-            raise ValueError(
-                'Must provide a value for {0}'.format(self._name))
-
-        # Is the type VOID but a value was given?
-        if value is not None and self._argument_type == FieldType.VOID:
-            raise ValueError(
-                '{0} is type Void.  Do not pass a value.'.format(
-                    self._name))
-
-        # Get an InputData instance
-        inputdata = InputData()
-
-        # Does the caller need set?
-        if caller is not None:
-            inputdata.caller = caller
-
-        # Does the activator need set?
-        if activator is not None:
-            inputdata.activator = activator
-
-        # Does the function require a value?
-        if self._argument_type != FieldType.VOID:
-
-            # Set the value
-            getattr(
-                inputdata.value,
-                'set_{0}'.format(_supported_input_types[
-                    self._argument_type]))(value)
-
-        # Call the function
-        super().__call__(self._this, inputdata)

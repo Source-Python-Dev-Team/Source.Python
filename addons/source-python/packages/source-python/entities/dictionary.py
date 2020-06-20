@@ -5,6 +5,10 @@
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
+# Python Imports
+#   ContextLib
+from contextlib import suppress
+
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -46,20 +50,22 @@ class EntityDictionary(AutoUnload, dict):
 
     def __missing__(self, index):
         """Add and return the entity instance for the given index."""
-        instance = self[index] = self._factory(index, *self._args,
-            **self._kwargs)
+        instance = self._factory(index, *self._args, **self._kwargs)
+
+        # Only cache entities that are not marked for deletion.
+        # This is required, because if someone request an entity instance
+        # after we invalidated our cache but before the engine processed
+        # the deletion we would now have an invalid instance in the cache.
+        if not instance.is_marked_for_deletion():
+            self[index] = instance
+
         return instance
 
     def __delitem__(self, index):
         """Remove the given index from the dictionary."""
-        # Is the given index not in the dictionary?
-        if index not in self:
-
-            # If so, no need to go further...
-            return
-
         # Remove the given index from the dictionary...
-        super().__delitem__(index)
+        with suppress(KeyError):
+            super().__delitem__(index)
 
     def from_inthandle(self, inthandle):
         """Get an entity instance from an inthandle.
@@ -75,26 +81,18 @@ class EntityDictionary(AutoUnload, dict):
 
     def _on_entity_deleted(self, base_entity):
         """OnEntityDeleted listener callback."""
-        # Is the entity networkable?
-        if not base_entity.is_networked():
-
-            # No, so skip it...
+        try:
+            # Get the index of the entity...
+            index = base_entity.index
+        except ValueError:
             return
 
-        # Get the index of the entity...
-        index = base_entity.index
+        if index in self:
+            # Call the deletion callback for the index...
+            self.on_automatically_removed(index)
 
-        # Is the index not in the dictionary?
-        if index not in self:
-
-            # No need to go further...
-            return
-
-        # Call the deletion callback for the index...
-        self.on_automatically_removed(index)
-
-        # Remove the index from the dictionary...
-        super().__delitem__(index)
+            # Remove the index from the dictionary...
+            super().__delitem__(index)
 
     def _unload_instance(self):
         """Unregister our OnEntityDeleted listener."""

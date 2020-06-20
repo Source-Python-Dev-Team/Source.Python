@@ -196,8 +196,7 @@ SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
 	for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
 	{
 		BEGIN_BOOST_PY() 
-			object return_value = CALL_PY_FUNC(
-				GetOnServerOutputListenerManager()->m_vecCallables[i].ptr(),
+			object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
 				(MessageSeverity) spewType, 
 				pMsg);
 
@@ -224,8 +223,7 @@ public:
 		for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
 		{
 			BEGIN_BOOST_PY() 
-				object return_value = CALL_PY_FUNC(
-					GetOnServerOutputListenerManager()->m_vecCallables[i].ptr(),
+				object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
 					(MessageSeverity) pContext->m_Severity, 
 					pMessage);
 
@@ -630,7 +628,12 @@ void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
+	object oEntity(ptr((CBaseEntityWrapper*) pEntity));
+	CALL_LISTENERS(OnEntityDeleted, oEntity);
+
+	// Invalidate the internal entity cache once all callbacks have been called.
+	static object _on_entity_deleted = import("entities").attr("_base").attr("_on_entity_deleted");
+	_on_entity_deleted(oEntity);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

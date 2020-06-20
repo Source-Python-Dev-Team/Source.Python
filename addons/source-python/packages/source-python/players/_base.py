@@ -14,6 +14,8 @@ import math
 from bitbuffers import BitBufferWrite
 #   Core
 from core import GAME_NAME
+from core.cache import cached_property
+from core.cache import cached_result
 #   Engines
 from engines.server import server
 from engines.server import engine_server
@@ -89,7 +91,6 @@ class Player(PlayerMixin, Entity):
         """
         PlayerMixin.__init__(self, index)
         Entity.__init__(self, index)
-        object.__setattr__(self, '_playerinfo', None)
 
     @classmethod
     def from_userid(cls, userid, caching=None):
@@ -103,10 +104,9 @@ class Player(PlayerMixin, Entity):
         """
         return cls(index_from_userid(userid), caching=caching)
 
-    @property
+    @cached_property
     def net_info(self):
         """Return the player's network channel information.
-
         :return:
             ``None`` if no network channel information exists. E. g. if the
             player is a bot.
@@ -114,7 +114,7 @@ class Player(PlayerMixin, Entity):
         """
         return engine_server.get_player_net_info(self.index)
 
-    @property
+    @cached_property
     def raw_steamid(self):
         """Return the player's unformatted SteamID.
 
@@ -130,18 +130,15 @@ class Player(PlayerMixin, Entity):
         """
         return auth_manager.get_player_permissions_from_steamid(self.steamid)
 
-    @property
+    @cached_property
     def playerinfo(self):
         """Return player information.
 
         :rtype: PlayerInfo
         """
-        if self._playerinfo is None:
-            playerinfo = playerinfo_from_index(self.index)
-            object.__setattr__(self, '_playerinfo', playerinfo)
-        return self._playerinfo
+        return playerinfo_from_index(self.index)
 
-    @property
+    @cached_property
     def userid(self):
         """Return the player's userid.
 
@@ -149,7 +146,7 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.userid
 
-    @property
+    @cached_property
     def steamid(self):
         """Return the player's SteamID.
 
@@ -170,7 +167,7 @@ class Player(PlayerMixin, Entity):
 
     name = property(get_name, set_name)
 
-    @property
+    @cached_property
     def client(self):
         """Return the player's client instance.
 
@@ -178,7 +175,7 @@ class Player(PlayerMixin, Entity):
         """
         return server.get_client(self.index - 1)
 
-    @property
+    @cached_property
     def base_client(self):
         """Return the player's base client instance.
 
@@ -187,7 +184,7 @@ class Player(PlayerMixin, Entity):
         from players import BaseClient
         return make_object(BaseClient, get_object_pointer(self.client) - 4)
 
-    @property
+    @cached_property
     def uniqueid(self):
         """Return the player's unique ID.
 
@@ -195,7 +192,7 @@ class Player(PlayerMixin, Entity):
         """
         return uniqueid_from_playerinfo(self.playerinfo)
 
-    @property
+    @cached_property
     def address(self):
         """Return the player's IP address and port.
 
@@ -221,6 +218,7 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.is_fake_client()
 
+    @cached_result
     def is_hltv(self):
         """Return whether the player is HLTV.
 
@@ -228,6 +226,7 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.is_hltv()
 
+    @cached_result
     def is_bot(self):
         """Return whether the player is a bot.
 
@@ -262,8 +261,7 @@ class Player(PlayerMixin, Entity):
 
     team = property(get_team, set_team)
 
-    @property
-    def language(self):
+    def get_language(self):
         """Return the player's language.
 
         If the player is a bot, an empty string will be returned.
@@ -271,6 +269,12 @@ class Player(PlayerMixin, Entity):
         :rtype: str
         """
         return get_client_language(self.index)
+
+    # Only cache the language property for games it is already cached
+    if GAME_NAME in ('csgo',):
+        language = cached_property(get_language, doc=get_language.__doc__)
+    else:
+        language = property(get_language, doc=get_language.__doc__)
 
     def get_trace_ray(self, mask=ContentMasks.ALL, trace_filter=None):
         """Return the player's current trace data.

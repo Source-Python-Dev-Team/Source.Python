@@ -59,6 +59,33 @@ inline void ChunkedMsg(const char* msg)
 }
 
 //-----------------------------------------------------------------------------
+// Prints and clear the current exception.
+//-----------------------------------------------------------------------------
+inline void PrintCurrentException()
+{
+	if (PyErr_Occurred())
+	{
+		PyObject *pType;
+		PyObject *pValue;
+		PyObject *pTraceback;
+		PyErr_Fetch(&pType, &pValue, &pTraceback);
+		PyErr_NormalizeException(&pType, &pValue, &pTraceback);
+
+		handle<> hType(pType);
+		handle<> hValue(allow_null(pValue));
+		handle<> hTraceback(allow_null(pTraceback));
+
+		object format_exception = import("traceback").attr("format_exception");
+		const char* pMsg = extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback)));
+
+		// Send the message in chunks, because it can get quite big.
+		ChunkedMsg(pMsg);
+
+		PyErr_Clear();
+	}
+}
+
+//-----------------------------------------------------------------------------
 // Returns True if the class name of the given object equals the given string.
 //-----------------------------------------------------------------------------
 inline bool CheckClassname(object obj, char* name)

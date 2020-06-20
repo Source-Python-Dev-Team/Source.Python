@@ -33,6 +33,7 @@
 #include "boost/python.hpp"
 using namespace boost::python;
 
+#include "modules/core/core_cache.h"
 
 //---------------------------------------------------------------------------------
 // Define checks
@@ -125,6 +126,17 @@ inline void* GetFuncPtr(Function func)
 
 
 //---------------------------------------------------------------------------------
+// Use this to transfer ownership of a pointer to Python.
+//---------------------------------------------------------------------------------
+template <typename T>
+object transfer_ownership_to_python(T *pPtr)
+{
+  typename manage_new_object::apply<T*>::type holder;
+  return object(handle<>(holder(*pPtr)));
+};
+
+
+//---------------------------------------------------------------------------------
 // Use these to declare classmethod wrappers.
 //---------------------------------------------------------------------------------
 #define CLASSMETHOD(cls, name, ...) \
@@ -133,10 +145,26 @@ inline void* GetFuncPtr(Function func)
 template<typename T>
 T classmethod(T cls, const char *szName)
 {
-	PyTypeObject *self = downcast<PyTypeObject>(cls.ptr());
+	PyTypeObject *type = downcast<PyTypeObject>(cls.ptr());
 	PyDict_SetItemString(
-		self->tp_dict, szName,
-		PyClassMethod_New(PyDict_GetItemString(self->tp_dict, szName))
+		type->tp_dict, szName,
+		PyClassMethod_New(PyDict_GetItemString(type->tp_dict, szName))
+	);
+	return cls;
+};
+
+
+//---------------------------------------------------------------------------------
+// Use these to declare cached properties.
+//---------------------------------------------------------------------------------
+#define CACHED_PROPERTY(cls, name, ...) \
+	cached_property(cls.add_property(name, __VA_ARGS__), name)
+
+template<typename T>
+T cached_property(T cls, const char *szName)
+{
+	cls.attr(szName) = transfer_ownership_to_python(
+		CCachedProperty::wrap_descriptor(cls.attr(szName), cls, szName)
 	);
 	return cls;
 };

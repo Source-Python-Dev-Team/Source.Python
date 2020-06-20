@@ -41,6 +41,7 @@
 void export_interval(scope);
 void export_datamap(scope);
 void export_type_description(scope);
+void export_input_function(scope);
 void export_input_data(scope);
 void export_variant(scope);
 void export_field_types(scope);
@@ -55,6 +56,7 @@ DECLARE_SP_SUBMODULE(_entities, _datamaps)
 	export_interval(_datamaps);
 	export_datamap(_datamaps);
 	export_type_description(_datamaps);
+	export_input_function(_datamaps);
 	export_input_data(_datamaps);
 	export_variant(_datamaps);
 	export_field_types(_datamaps);
@@ -222,6 +224,48 @@ void export_type_description(scope _datamaps)
 
 	// Add memory tools...
 	TypeDescription ADD_MEM_TOOLS(typedescription_t);
+}
+
+
+//-----------------------------------------------------------------------------
+// Export CInputFunction.
+//-----------------------------------------------------------------------------
+void export_input_function(scope _datamaps)
+{
+	class_<CInputFunction, bases<CFunction>, boost::noncopyable> InputFunction(
+		"InputFunction",
+		init<typedescription_t, CBaseEntity*>(
+			args("self", "desc", "entity"),
+			"Instantiate the function instance and store the base attributes.\n"
+			"\n"
+			":param TypeDescription desc:\n"
+			"	The descriptor of the input bound to this instance.\n"
+			":param BaseEntity entity:\n"
+			"	The entity this input is bound to.\n"
+			"\n"
+			":raises TypeError:\n"
+			"	If the given descriptor is not an input."
+		)
+	);
+
+	InputFunction.def(
+		"__call__",
+		&CInputFunction::__call__,
+		"Call the stored function with the values given.\n"
+		"\n"
+		":param object value:\n"
+		"	The value to pass to the input function.\n"
+		":param BaseEntity activator:\n"
+		"	The activator entity.\n"
+		":param BaseEntity caller:\n"
+		"	The caller entity.\n"
+		"\n"
+		":raises ValueError:\n"
+		"	If the given value is not valid for that input.\n"
+		":raises TypeError:\n"
+		"	If the type of the input is unsupported.",
+		("self", arg("value")=object(), arg("activator")=object(), arg("caller")=object())
+	);
 }
 
 

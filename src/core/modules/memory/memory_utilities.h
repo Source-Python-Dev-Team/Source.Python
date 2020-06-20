@@ -57,6 +57,13 @@
 // Memory
 #include "memory_function_info.h"
 #include "memory_pointer.h"
+#include "memory_tools.h"
+
+
+// ============================================================================
+// >> FORWARD DECLARATIONS
+// ============================================================================
+object GetObjectPointer(object obj);
 
 
 // ============================================================================
@@ -64,8 +71,14 @@
 // ============================================================================
 inline CPointer* ExtractPointer(object oPtr)
 {
-	if(PyObject_HasAttrString(oPtr.ptr(), GET_PTR_NAME))
-		oPtr = oPtr.attr(GET_PTR_NAME)();
+	try
+	{
+		oPtr = GetObjectPointer(oPtr);
+	}
+	catch (...)
+	{
+		PyErr_Clear();
+	}
 
 	CPointer* pPtr = extract<CPointer *>(oPtr);
 	return pPtr;

@@ -84,6 +84,21 @@ public:
 
 
 //-----------------------------------------------------------------------------
+// CInputFunction.
+//-----------------------------------------------------------------------------
+class CInputFunction: public CFunction
+{
+public:
+	CInputFunction(typedescription_t pTypeDesc, CBaseEntity *pBaseEntity);
+	void CInputFunction::__call__(object value, CBaseEntity *pActivator, CBaseEntity *pCaller);
+
+public:
+	typedescription_t m_pTypeDesc;
+	CBaseEntity *m_pBaseEntity;
+};
+
+
+//-----------------------------------------------------------------------------
 // inputdata_t extension class.
 //-----------------------------------------------------------------------------
 class InputDataExt

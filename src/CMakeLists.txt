@@ -153,6 +153,15 @@ Set(SOURCEPYTHON_CORE_MODULE_SOURCES
     core/modules/core/core_wrap.cpp
 )
 
+Set(SOURCEPYTHON_CORE_CACHE_MODULE_HEADERS
+    core/modules/core/core_cache.h
+)
+
+Set(SOURCEPYTHON_CORE_CACHE_MODULE_SOURCES
+    core/modules/core/core_cache.cpp
+    core/modules/core/core_cache_wrap.cpp
+)
+
 # ------------------------------------------------------------------
 # Cvars module.
 # ------------------------------------------------------------------
@@ -466,6 +475,9 @@ Set(SOURCEPYTHON_WEAPONS_MODULE_SOURCES
 # All module source files
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_MODULE_FILES
+    ${SOURCEPYTHON_CORE_CACHE_MODULE_HEADERS}
+    ${SOURCEPYTHON_CORE_CACHE_MODULE_SOURCES}
+
     # CFunctionInfo must be exposed at first
     ${SOURCEPYTHON_MEMORY_MODULE_HEADERS}
     ${SOURCEPYTHON_MEMORY_MODULE_SOURCES}

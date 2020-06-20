@@ -207,6 +207,72 @@ Vector VariantExt::get_vector(variant_t *pVariant)
 
 
 // ============================================================================
+// >> CInputFunction
+// ============================================================================
+CInputFunction::CInputFunction(typedescription_t pTypeDesc, CBaseEntity *pBaseEntity)
+	:CFunction(
+		(unsigned long)TypeDescriptionSharedExt::get_function(pTypeDesc),
+		object(CONV_THISCALL),
+		make_tuple(DATA_TYPE_POINTER, DATA_TYPE_POINTER),
+		object(DATA_TYPE_VOID)
+	)
+{
+	if (!(pTypeDesc.flags & FTYPEDESC_INPUT))
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);
+
+	m_pTypeDesc = pTypeDesc;
+	m_pBaseEntity = pBaseEntity;
+}
+
+
+void CInputFunction::__call__(object value, CBaseEntity *pActivator, CBaseEntity *pCaller)
+{
+	inputdata_t pInputData;
+
+	if (m_pTypeDesc.fieldType != FIELD_VOID)
+	{
+		if (value.is_none())
+			BOOST_RAISE_EXCEPTION(
+				PyExc_ValueError,
+				"Must provide a value for \"%s\".", m_pTypeDesc.externalName
+			);
+
+		switch (m_pTypeDesc.fieldType)
+		{
+			case FIELD_BOOLEAN:
+				pInputData.value.SetBool(extract<bool>(value));
+				break;
+			case FIELD_COLOR32:
+				VariantExt::set_color(&pInputData.value, extract<Color *>(value));
+				break;
+			case FIELD_FLOAT:
+				pInputData.value.SetFloat(extract<float>(value));
+				break;
+			case FIELD_INTEGER:
+				pInputData.value.SetInt(extract<int>(value));
+				break;
+			case FIELD_STRING:
+				VariantExt::set_string(&pInputData.value, extract<const char *>(value));
+				break;
+			case FIELD_CLASSPTR:
+				pInputData.value.SetEntity(extract<CBaseEntity *>(value));
+				break;
+			default:
+				BOOST_RAISE_EXCEPTION(
+					PyExc_TypeError,
+					"Unsupported type for input \"%s\".", m_pTypeDesc.externalName
+				);
+		}
+	}
+
+	pInputData.pActivator = pActivator;
+	pInputData.pCaller = pCaller;
+
+	(m_pBaseEntity->*m_pTypeDesc.inputFunc)(pInputData);
+}
+
+
+// ============================================================================
 // >> InputDataExt
 // ============================================================================
 inputdata_t* InputDataExt::__init__()

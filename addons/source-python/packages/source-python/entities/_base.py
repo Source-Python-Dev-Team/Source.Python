@@ -19,12 +19,12 @@ from weakref import WeakSet
 #   Core
 from core import GAME_NAME
 from core import BoostPythonClass
+from core.cache import cached_property
 #   Entities
 from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
 from engines.sound import Attenuation
-from engines.sound import engine_sound
 from engines.sound import Channel
 from engines.sound import Pitch
 from engines.sound import Sound
@@ -37,20 +37,16 @@ from engines.trace import GameTrace
 from engines.trace import Ray
 from engines.trace import TraceFilterSimple
 #   Entities
-from _entities._entity import BaseEntity
-from entities import BaseEntityGenerator
 from entities import TakeDamageInfo
 from entities.classes import server_classes
+from entities.constants import WORLD_ENTITY_INDEX
 from entities.constants import DamageTypes
-from entities.constants import RenderMode
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
 #   Filters
 from filters.weapons import WeaponClassIter
 #   Listeners
-from listeners import OnEntityDeleted
-from listeners import on_entity_deleted_listener_manager
 from listeners.tick import Delay
 from listeners.tick import Repeat
 from listeners.tick import RepeatStatus
@@ -58,11 +54,19 @@ from listeners.tick import RepeatStatus
 from mathlib import NULL_VECTOR
 #   Memory
 from memory import make_object
+from memory.helpers import MemberFunction
 #   Players
 from players.constants import HitGroup
 #   Studio
-from studio.cache import model_cache
 from studio.constants import INVALID_ATTACHMENT_INDEX
+
+
+# =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Entities
+from _entities._entity import BaseEntity
 
 
 # =============================================================================
@@ -119,16 +123,23 @@ class _EntityCaching(BoostPythonClass):
 
         # Let's first lookup for a cached instance
         if caching:
-            obj = cls._cache.get(index, None)
-            if obj is not None:
-                return obj
+            try:
+                return cls._cache[index]
+            except KeyError:
+                pass
 
         # Nothing in cache, let's create a new instance
         obj = super().__call__(index)
 
         # Let's cache the new instance we just created
         if caching:
-            cls._cache[index] = obj
+
+            # Only cache entities that are not marked for deletion.
+            # This is required, because if someone request an entity instance
+            # after we invalidated our cache but before the engine processed
+            # the deletion we would now have an invalid instance in the cache.
+            if not obj.is_marked_for_deletion():
+                cls._cache[index] = obj
 
         # We are done, let's return the instance
         return obj
@@ -188,29 +199,39 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         super().__init__(index)
 
         # Set the entity's base attributes
-        object.__setattr__(self, '_index', index)
+        type(self).index.set_cached_value(self, index)
 
     def __hash__(self):
-        """Return a hash value based on the entity index."""
+        """Return a hash value based on the entity inthandle."""
         # Required for sets, because we have implemented __eq__
-        return hash(self.index)
+        return hash(self.inthandle)
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
         # Loop through all of the entity's server classes
-        for server_class in self.server_classes:
+        for instance in self.server_classes.values():
 
-            # Does the current server class contain the given attribute?
-            if hasattr(server_class, attr):
+            try:
+                # Get the attribute's value
+                value = getattr(instance, attr)
+            except AttributeError:
+                continue
 
-                # Return the attribute's value
-                return getattr(make_object(server_class, self.pointer), attr)
+            # Is the value a dynamic function?
+            if isinstance(value, MemberFunction):
+
+                # Cache the value
+                with suppress(AttributeError):
+                    object.__setattr__(self, attr, value)
+
+            # Return the attribute's value
+            return value
 
         # If the attribute is not found, raise an error
         raise AttributeError('Attribute "{0}" not found'.format(attr))
 
     def __setattr__(self, attr, value):
-        """Find if the attribute is value and sets its value."""
+        """Find if the attribute is valid and sets its value."""
         # Is the given attribute a property?
         if (attr in super().__dir__() and isinstance(
                 getattr(self.__class__, attr, None), property)):
@@ -222,13 +243,13 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             return
 
         # Loop through all of the entity's server classes
-        for server_class in self.server_classes:
+        for server_class, instance in self.server_classes.items():
 
             # Does the current server class contain the given attribute?
             if hasattr(server_class, attr):
 
                 # Set the attribute's value
-                setattr(server_class(self.pointer, wrap=True), attr, value)
+                setattr(instance, attr, value)
 
                 # No need to go further
                 return
@@ -255,58 +276,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         return sorted(attributes)
 
     @classmethod
-    def create(cls, classname):
-        """Create a new networked entity with the given classname.
-
-        :param str classname:
-            Classname of the entity to create.
-        :raise ValueError:
-            Raised if the given classname is not a networked entity.
-        """
-        entity = BaseEntity.create(classname)
-        if entity.is_networked():
-            return cls(entity.index)
-
-        entity.remove()
-        raise ValueError('"{}" is not a networked entity.'.format(classname))
-
-    @classmethod
-    def find(cls, classname):
-        """Try to find an entity with the given classname.
-
-        If not entity has been found, None will be returned.
-
-        :param str classname:
-            The classname of the entity.
-        :return:
-            Return the found entity.
-        :rtype: Entity
-        """
-        entity = BaseEntity.find(classname)
-        if entity is not None and entity.is_networked():
-            return cls(entity.index)
-
-        return None
-
-    @classmethod
-    def find_or_create(cls, classname):
-        """Try to find an entity with the given classname.
-
-        If no entity has been found, it will be created.
-
-        :param str classname:
-            The classname of the entity.
-        :return:
-            Return the found or created entity.
-        :rtype: Entity
-        """
-        entity = cls.find(classname)
-        if entity is None:
-            entity = cls.create(classname)
-
-        return entity
-
-    @classmethod
     def from_inthandle(cls, inthandle, caching=None):
         """Create an entity instance from an inthandle.
 
@@ -331,14 +300,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         return True
 
     @property
-    def index(self):
-        """Return the entity's index.
-
-        :rtype: int
-        """
-        return self._index
-
-    @property
     def owner(self):
         """Return the entity's owner.
 
@@ -351,30 +312,47 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         except (ValueError, OverflowError):
             return None
 
-    @property
+    @cached_property
     def server_classes(self):
         """Yield all server classes for the entity."""
-        yield from server_classes.get_entity_server_classes(self)
+        return {
+            server_class: make_object(server_class, self.pointer) for
+            server_class in server_classes.get_entity_server_classes(self)
+        }
 
-    @property
+    @cached_property
     def properties(self):
         """Iterate over all descriptors available for the entity."""
+        properties = {}
         for server_class in self.server_classes:
-            yield from server_class.properties
+            for prop, data in server_class.properties.items():
+                properties[prop] = data
+        return properties
 
-    @property
+    @cached_property
     def inputs(self):
         """Iterate over all inputs available for the entity."""
-        for server_class in self.server_classes:
-            yield from server_class.inputs
+        inputs = {}
+        for server_class in self.server_classes.values():
+            for input in server_class.inputs:
+                inputs[input] = getattr(
+                    make_object(
+                        server_class._inputs, self.pointer                 
+                    ),
+                    input
+                )
+        return inputs
 
-    @property
+    @cached_property
     def outputs(self):
         """Iterate over all outputs available for the entity."""
+        outputs = {}
         for server_class in self.server_classes:
-            yield from server_class.outputs
+            for output in server_class.outputs:
+                outputs[output] = super().get_output(output)
+        return outputs
 
-    @property
+    @cached_property
     def keyvalues(self):
         """Iterate over all entity keyvalues available for the entity.
 
@@ -383,8 +361,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             An entity might also have hardcoded keyvalues that can't be listed
             with this property.
         """
+        keyvalues = {}
         for server_class in self.server_classes:
-            yield from server_class.keyvalues
+            for keyvalue, data in server_class.keyvalues.items():
+                keyvalues[keyvalue] = data
+        return keyvalues
 
     def get_model(self):
         """Return the entity's model.
@@ -393,10 +374,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             ``None`` if the entity has no model.
         :rtype: Model
         """
-        if not self.model_name:
+        model_name = self.model_name
+        if not model_name:
             return None
 
-        return Model(self.model_name)
+        return Model(model_name)
 
     def set_model(self, model):
         """Set the entity's model to the given model.
@@ -447,365 +429,6 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
         .. seealso:: :meth:`get_parent` and :meth:`set_parent`""")
 
-    def get_property_bool(self, name):
-        """Return the boolean property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: bool
-        """
-        return self._get_property(name, 'bool')
-
-    def get_property_color(self, name):
-        """Return the Color property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: Color
-        """
-        return self._get_property(name, 'Color')
-
-    def get_property_edict(self, name):
-        """Return the Edict property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: Edict
-        """
-        return self._get_property(name, 'Edict')
-
-    def get_property_float(self, name):
-        """Return the float property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: float
-        """
-        return self._get_property(name, 'float')
-
-    def get_property_int(self, name):
-        """Return the integer property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: int
-        """
-        return self._get_property(name, 'int')
-
-    def get_property_interval(self, name):
-        """Return the Interval property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: Interval
-        """
-        return self._get_property(name, 'Interval')
-
-    def get_property_pointer(self, name):
-        """Return the pointer property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: Pointer
-        """
-        return self._get_property(name, 'pointer')
-
-    def get_property_quaternion(self, name):
-        """Return the Quaternion property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: Quaternion
-        """
-        return self._get_property(name, 'Quaternion')
-
-    def get_property_short(self, name):
-        """Return the short property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: int
-        """
-        return self._get_property(name, 'short')
-
-    def get_property_ushort(self, name):
-        """Return the ushort property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: int
-        """
-        return self._get_property(name, 'ushort')
-
-    def get_property_string(self, name):
-        """Return the string property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: str
-        """
-        return self._get_property(name, 'string_array')
-
-    def get_property_string_pointer(self, name):
-        """Return the string property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: str
-        """
-        return self._get_property(name, 'string_pointer')
-
-    def get_property_char(self, name):
-        """Return the char property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: str
-        """
-        return self._get_property(name, 'char')
-
-    def get_property_uchar(self, name):
-        """Return the uchar property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: int
-        """
-        return self._get_property(name, 'uchar')
-
-    def get_property_uint(self, name):
-        """Return the uint property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: int
-        """
-        return self._get_property(name, 'uint')
-
-    def get_property_vector(self, name):
-        """Return the Vector property.
-
-        :param str name:
-            Name of the property to retrieve.
-        :rtype: Vector
-        """
-        return self._get_property(name, 'Vector')
-
-    def _get_property(self, name, prop_type):
-        """Verify the type and return the property."""
-        # Loop through all entity server classes
-        for server_class in self.server_classes:
-
-            # Is the name a member of the current server class?
-            if name not in server_class.properties:
-                continue
-
-            # Is the type the correct type?
-            if prop_type != server_class.properties[name].prop_type:
-                raise TypeError('Property "{0}" is of type {1} not {2}'.format(
-                    name, server_class.properties[name].prop_type, prop_type))
-
-            # Return the property for the entity
-            return getattr(
-                make_object(server_class._properties, self.pointer), name)
-
-        # Raise an error if the property name was not found
-        raise ValueError(
-            'Property "{0}" not found for entity type "{1}"'.format(
-                name, self.classname))
-
-    def set_property_bool(self, name, value):
-        """Set the boolean property.
-
-        :param str name:
-            Name of the property to set.
-        :param bool value:
-            The value to set.
-        """
-        self._set_property(name, 'bool', value)
-
-    def set_property_color(self, name, value):
-        """Set the Color property.
-
-        :param str name:
-            Name of the property to set.
-        :param Color value:
-            The value to set.
-        """
-        self._set_property(name, 'Color', value)
-
-    def set_property_edict(self, name, value):
-        """Set the Edict property.
-
-        :param str name:
-            Name of the property to set.
-        :param Edict value:
-            The value to set.
-        """
-        self._set_property(name, 'Edict', value)
-
-    def set_property_float(self, name, value):
-        """Set the float property.
-
-        :param str name:
-            Name of the property to set.
-        :param float value:
-            The value to set.
-        """
-        self._set_property(name, 'float', value)
-
-    def set_property_int(self, name, value):
-        """Set the integer property.
-
-        :param str name:
-            Name of the property to set.
-        :param int value:
-            The value to set.
-        """
-        self._set_property(name, 'int', value)
-
-    def set_property_interval(self, name, value):
-        """Set the Interval property.
-
-        :param str name:
-            Name of the property to set.
-        :param Interval value:
-            The value to set.
-        """
-        self._set_property(name, 'Interval', value)
-
-    def set_property_pointer(self, name, value):
-        """Set the pointer property.
-
-        :param str name:
-            Name of the property to set.
-        :param Pointer value:
-            The value to set.
-        """
-        self._set_property(name, 'pointer', value)
-
-    def set_property_quaternion(self, name, value):
-        """Set the Quaternion property.
-
-        :param str name:
-            Name of the property to set.
-        :param Quaternion value:
-            The value to set.
-        """
-        self._set_property(name, 'Quaternion', value)
-
-    def set_property_short(self, name, value):
-        """Set the short property.
-
-        :param str name:
-            Name of the property to set.
-        :param int value:
-            The value to set.
-        """
-        self._set_property(name, 'short', value)
-
-    def set_property_ushort(self, name, value):
-        """Set the ushort property.
-
-        :param str name:
-            Name of the property to set.
-        :param int value:
-            The value to set.
-        """
-        self._set_property(name, 'ushort', value)
-
-    def set_property_string(self, name, value):
-        """Set the string property.
-
-        :param str name:
-            Name of the property to set.
-        :param str value:
-            The value to set.
-        """
-        self._set_property(name, 'string_array', value)
-
-    def set_property_string_pointer(self, name, value):
-        """Set the string property.
-
-        :param str name:
-            Name of the property to set.
-        :param str value:
-            The value to set.
-        """
-        self._set_property(name, 'string_pointer', value)
-
-    def set_property_char(self, name, value):
-        """Set the char property.
-
-        :param str name:
-            Name of the property to set.
-        :param str value:
-            The value to set.
-        """
-        self._set_property(name, 'char', value)
-
-    def set_property_uchar(self, name, value):
-        """Set the uchar property.
-
-        :param str name:
-            Name of the property to set.
-        :param int value:
-            The value to set.
-        """
-        self._set_property(name, 'uchar', value)
-
-    def set_property_uint(self, name, value):
-        """Set the uint property.
-
-        :param str name:
-            Name of the property to set.
-        :param int value:
-            The value to set.
-        """
-        self._set_property(name, 'uint', value)
-
-    def set_property_vector(self, name, value):
-        """Set the Vector property.
-
-        :param str name:
-            Name of the property to set.
-        :param Vector value:
-            The value to set.
-        """
-        self._set_property(name, 'Vector', value)
-
-    def _set_property(self, name, prop_type, value):
-        """Verify the type and set the property."""
-        # Loop through all entity server classes
-        for server_class in self.server_classes:
-
-            # Is the name a member of the current server class?
-            if name not in server_class.properties:
-                continue
-
-            # Is the type the correct type?
-            if prop_type != server_class.properties[name].prop_type:
-                raise TypeError('Property "{0}" is of type {1} not {2}'.format(
-                    name, server_class.properties[name].prop_type, prop_type))
-
-            # Set the property for the entity
-            setattr(make_object(
-                server_class._properties, self.pointer), name, value)
-
-            # Is the property networked?
-            if server_class.properties[name].networked:
-
-                # Notify the change of state
-                self.edict.state_changed()
-
-            # No need to go further
-            return
-
-        # Raise an error if the property name was not found
-        raise ValueError(
-            'Property "{0}" not found for entity type "{1}"'.format(
-                name, self.classname))
-
     def delay(
             self, delay, callback, args=(), kwargs=None,
             cancel_on_level_end=False):
@@ -827,18 +450,21 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             The delay instance.
         :rtype: Delay
         """
+        # Get the index of the entity
+        index = self.index
+
         # TODO: Ideally, we want to subclass Delay and cleanup on cancel() too
         #   in case the caller manually cancel the returned Delay.
         def _callback(*args, **kwargs):
             """Called when the delay is executed."""
             # Remove the delay from the global dictionary...
-            _entity_delays[self.index].remove(delay)
+            _entity_delays[index].remove(delay)
 
             # Was this the last pending delay for the entity?
-            if not _entity_delays[self.index]:
+            if not _entity_delays[index]:
 
                 # Remove the entity from the dictionary...
-                del _entity_delays[self.index]
+                del _entity_delays[index]
 
             # Call the callback...
             callback(*args, **kwargs)
@@ -847,14 +473,15 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         delay = Delay(delay, _callback, args, kwargs, cancel_on_level_end)
 
         # Add the delay to the dictionary...
-        _entity_delays[self.index].add(delay)
+        _entity_delays[index].add(delay)
 
         # Return the delay instance...
         return delay
 
-    def repeat(self, callback, args=(), kwargs=None, cancel_on_level_end=False):
+    def repeat(
+            self, callback, args=(), kwargs=None,
+            cancel_on_level_end=False):
         """Create the repeat which will be stopped after removing the entity.
-
         :param callback:
             A callable object that should be called at the end of each loop.
         :param tuple args:
@@ -879,29 +506,27 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         # Return the repeat instance...
         return repeat
 
+    def get_output(self, name):
+        """Return the output instance matching the given name.
+
+        :parma str name:
+            Name of the output.
+        :rtype: BaseEntityOutput
+        :raise KeyError:
+            Raised if the output instance wasn't found.
+        """
+        return self.outputs[name]
+
     def get_input(self, name):
         """Return the input function matching the given name.
 
         :parma str name:
             Name of the input function.
         :rtype: InputFunction
-        :raise ValueError:
+        :raise KeyError:
             Raised if the input function wasn't found.
         """
-        # Loop through each server class for the entity
-        for server_class in self.server_classes:
-
-            # Does the current server class contain the input?
-            if name in server_class.inputs:
-
-                # Return the InputFunction instance for the given input name
-                return getattr(
-                    make_object(server_class._inputs, self.pointer), name)
-
-        # If no server class contains the input, raise an error
-        raise ValueError(
-            'Unknown input "{0}" for entity type "{1}".'.format(
-                name, self.classname))
+        return self.inputs[name]
 
     def call_input(self, name, *args, **kwargs):
         """Call the input function matching the given name.
@@ -979,7 +604,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         sound.play(*recipients)
 
     def is_in_solid(
-            self, mask=ContentMasks.ALL, generator=BaseEntityGenerator):
+            self, mask=ContentMasks.ALL, generator=None):
         """Return whether or not the entity is in solid.
 
         :param ContentMasks mask:
@@ -989,15 +614,26 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             :class:`BaseEntity` instances that are ignored by the ray.
         :rtype: bool
         """
+        # Get the entity's origin
+        origin = self.origin
+
         # Get a Ray object of the entity physic box
-        ray = Ray(self.origin, self.origin, self.mins, self.maxs)
+        ray = Ray(origin, origin, self.mins, self.maxs)
 
         # Get a new GameTrace instance
         trace = GameTrace()
 
         # Do the trace
-        engine_trace.trace_ray(ray, mask, TraceFilterSimple(
-            generator()), trace)
+        if generator is None:
+
+            # No need to trace against anything but the world if we are going
+            # to filter out everything regardless.
+            engine_trace.clip_ray_to_entity(
+                ray, mask, BaseEntity(WORLD_ENTITY_INDEX), trace
+            )
+        else:
+            engine_trace.trace_ray(ray, mask, TraceFilterSimple(
+                generator()), trace)
 
         # Return whether or not the trace did hit
         return trace.did_hit()
@@ -1147,48 +783,34 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 # =============================================================================
 # >> LISTENERS
 # =============================================================================
-@OnEntityDeleted
+# NOTE: This callback is called by sp_main.cpp after all registered entity
+#       deletion listeners have been called.
 def _on_entity_deleted(base_entity):
     """Called when an entity is removed.
 
     :param BaseEntity base_entity:
         The removed entity.
     """
-    # Make sure the entity is networkable...
-    if not base_entity.is_networked():
+    try:
+        # Get the index of the entity...
+        index = base_entity.index
+    except ValueError:
         return
 
-    # Get the index of the entity...
-    index = base_entity.index
+    # Loop through all delays...
+    for delay in _entity_delays.pop(index, ()):
 
-    # Cleanup the cache
-    for cls in _entity_classes:
-        cls.cache.pop(index, None)
-
-    # Was delay registered for this entity?
-    if index in _entity_delays:
-        # Loop through all delays...
-        for delay in _entity_delays[index]:
-
-            # Make sure the delay is still running...
-            if not delay.running:
-                continue
-
-            # Cancel the delay...
+        # Cancel the delay...
+        with suppress(ValueError):
             delay.cancel()
 
-        # Remove the entity from the dictionary...
-        del _entity_delays[index]
+    # Loop through all repeats...
+    for repeat in _entity_repeats.pop(index, ()):
 
-    # Was repeat registered for this entity?
-    if index in _entity_repeats:
-        # Loop through all repeats...
-        for repeat in _entity_repeats[index]:
+        # Stop the repeat if running
+        if repeat.status is RepeatStatus.RUNNING:
+            repeat.stop()
 
-            # Stop the repeat if running
-            if repeat.status is RepeatStatus.RUNNING:
-                repeat.stop()
-
-        # Remove the entity from the dictionary...
-        del _entity_repeats[index]
-            
+    # Invalidate the internal entity caches for this entity
+    for cls in _entity_classes:
+        cls.cache.pop(index, None)

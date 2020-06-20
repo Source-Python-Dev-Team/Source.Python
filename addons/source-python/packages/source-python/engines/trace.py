@@ -204,7 +204,7 @@ class TraceFilterSimple(TraceFilter):
         """
         super().__init__()
         self.trace_type = trace_type
-        self.ignore = tuple(map(inthandle_from_baseentity, ignore))
+        self.ignore = set(map(inthandle_from_baseentity, ignore))
 
     def should_hit_entity(self, entity, mask):
         """Called when a trace is about to hit an entity.
@@ -215,14 +215,7 @@ class TraceFilterSimple(TraceFilter):
             The mask that was used to intialize the trace.
         :rtype: bool
         """
-        entity_inthandle = entity.basehandle.to_int()
-
-        # Check for entities to ignore
-        for ignore_inthandle in self.ignore:
-            if ignore_inthandle == entity_inthandle:
-                return False
-
-        return True
+        return entity.basehandle.to_int() not in self.ignore
 
     def get_trace_type(self):
         """Return the trace type.

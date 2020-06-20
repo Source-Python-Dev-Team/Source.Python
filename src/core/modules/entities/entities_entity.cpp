@@ -73,6 +73,35 @@ CBaseEntity* CBaseEntityWrapper::create(const char* name)
 	return pEntity->GetBaseEntity();
 }
 
+object CBaseEntityWrapper::create(object cls, const char *name)
+{
+	object entity = object();
+	CBaseEntityWrapper *pEntity = (CBaseEntityWrapper *)create(name);
+	try
+	{
+		entity = cls(pEntity->GetIndex());
+	}
+	catch (...)
+	{
+		try
+		{
+			entity = MakeObject(cls, &pEntity->GetPointer());
+		}
+		catch (...)
+		{
+			pEntity->remove();
+
+			const char *classname = extract<const char *>(cls.attr("__qualname__"));
+			BOOST_RAISE_EXCEPTION(
+				PyExc_ValueError,
+				"Unable to make a '%s' instance out of this '%s' entity.",
+				classname, name
+			)
+		}
+	}
+	return entity;
+}
+
 CBaseEntity* CBaseEntityWrapper::find(const char* name)
 {
 	CBaseEntity* pEntity = (CBaseEntity *) servertools->FirstEntity();
@@ -86,11 +115,44 @@ CBaseEntity* CBaseEntityWrapper::find(const char* name)
 	return NULL;
 }
 
+object CBaseEntityWrapper::find(object cls, const char *name)
+{
+	CBaseEntityWrapper *pEntity = (CBaseEntityWrapper *)find(name);
+	if (pEntity)
+	{
+		try
+		{
+			return cls(pEntity->GetIndex());
+		}
+		catch (...)
+		{
+			try
+			{
+				return MakeObject(cls, &pEntity->GetPointer());
+			}
+			catch (...)
+			{
+				PyErr_Clear();
+			}
+		}
+	}
+	return object();
+}
+
 CBaseEntity* CBaseEntityWrapper::find_or_create(const char* name)
 {
 	CBaseEntity* entity = find(name);
 	if (!entity)
 		entity = create(name);
+
+	return entity;
+}
+
+object CBaseEntityWrapper::find_or_create(object cls, const char *name)
+{
+	object entity = find(cls, name);
+	if (entity.is_none())
+		return create(cls, name);
 
 	return entity;
 }
@@ -170,6 +232,11 @@ void CBaseEntityWrapper::remove()
 	(pEntity->*pInputKillFunc)(data);
 }
 
+bool CBaseEntityWrapper::is_marked_for_deletion()
+{
+	return GetEntityFlags() & EFL_KILLME;
+}
+
 int CBaseEntityWrapper::get_size()
 {
 	return get_factory()->GetEntitySize();
@@ -187,7 +254,7 @@ int CBaseEntityWrapper::FindDatamapPropertyOffset(const char* name)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the datamap.")
 
 	int offset = DataMapSharedExt::find_offset(datamap, name);
-	if (offset == -1)
+	if (offset == -1 || offset == 0)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
 
 	return offset;
@@ -199,9 +266,14 @@ int CBaseEntityWrapper::FindNetworkPropertyOffset(const char* name)
 	if (!pServerClass)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the server class.")
 
-	int offset = SendTableSharedExt::find_offset(pServerClass->m_pTable, name);
+	int offset;
+	offset = SendTableSharedExt::find_offset(pServerClass->m_pTable, name);
 	if (offset == -1)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
+
+	// TODO: Proxied RecvTables/Arrays
+	if (offset == 0)
+		offset = FindDatamapPropertyOffset(name);
 
 	return offset;
 }
@@ -434,6 +506,17 @@ void CBaseEntityWrapper::SetMins(Vector& vec)
 	SetNetworkPropertyByOffset<Vector>(offset, vec);
 }
 
+int CBaseEntityWrapper::GetEntityFlags()
+{
+	static int offset = FindDatamapPropertyOffset("m_iEFlags");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void CBaseEntityWrapper::SetEntityFlags(int flags)
+{
+	static int offset = FindDatamapPropertyOffset("m_iEFlags");
+	SetDatamapPropertyByOffset<int>(offset, flags);
+}
 
 SolidType_t CBaseEntityWrapper::GetSolidType()
 {

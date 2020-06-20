@@ -175,6 +175,7 @@ bool CPythonManager::Initialize( void )
 	if (!modulsp_init())
 	{
 		Msg(MSG_PREFIX "Failed to initialize internal modules.\n");
+		PrintCurrentException();
 		return false;
 	}
 
@@ -230,26 +231,7 @@ bool CPythonManager::Initialize( void )
 
 		// Don't use PyErr_Print() here because our sys.excepthook (might) has not been installed
 		// yet so let's just format and output to the console ourself.
-		if (PyErr_Occurred())
-		{
-			PyObject *pType;
-			PyObject *pValue;
-			PyObject *pTraceback;
-			PyErr_Fetch(&pType, &pValue, &pTraceback);
-			PyErr_NormalizeException(&pType, &pValue, &pTraceback);
-
-			handle<> hType(pType);
-			handle<> hValue(allow_null(pValue));
-			handle<> hTraceback(allow_null(pTraceback));
-
-			object format_exception = import("traceback").attr("format_exception");
-			const char* pMsg = extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback)));
-
-			// Send the message in chunks, because it can get quite big.
-			ChunkedMsg(pMsg);
-
-			PyErr_Clear();
-		}
+		PrintCurrentException();
 
 		return false;
 	}
@@ -268,9 +250,8 @@ bool CPythonManager::Shutdown( void )
 		python::import("__init__").attr("unload")();
 	}
 	catch( ... ) {
-		PyErr_Print();
-		PyErr_Clear();
 		Msg(MSG_PREFIX "Failed to unload the main module.\n");
+		PrintCurrentException();
 		return false;
 	}
 	return true;

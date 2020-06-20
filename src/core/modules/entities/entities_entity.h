@@ -96,13 +96,17 @@ public:
 	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex);
 	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity);
 	static CBaseEntity* create(const char* name);
+	static object create(object cls, const char* name);
 	static CBaseEntity* find(const char* name);
+	static object find(object cls, const char* name);
 	static CBaseEntity* find_or_create(const char* name);
+	static object find_or_create(object cls, const char* name);
 	
 	CBaseEntityOutputWrapper* get_output(const char* name);
 	static IEntityFactory* get_factory(const char* name);
 	IEntityFactory* get_factory();
 	void remove();
+	bool is_marked_for_deletion();
 	int get_size();
 	void spawn();
 
@@ -206,6 +210,75 @@ public:
 		GetEdict()->StateChanged();
 	}
 
+	// Generic property getter/setter methods
+	template<class T>
+	T GetProperty(const char *name)
+	{
+		try
+		{
+			return GetNetworkProperty<T>(name);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			return GetDatamapProperty<T>(name);
+		}
+	}
+
+	const char* GetPropertyStringArray(const char* name)
+	{
+		try
+		{
+			return GetNetworkPropertyStringArray(name);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			return GetDatamapPropertyStringArray(name);
+		}
+	}
+
+	template<class T>
+	void SetProperty(const char *name, T value)
+	{
+		try
+		{
+			// Let's first lookup a networked property so we update its state, etc.
+			SetNetworkProperty<T>(name, value);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			SetDatamapProperty<T>(name, value);
+		}
+	}
+
+	void SetPropertyStringArray(const char* name, const char* value)
+	{
+		try
+		{
+			// Let's first lookup a networked property so we update its state, etc.
+			SetNetworkPropertyStringArray(name, value);
+		}
+		catch (...)
+		{
+			if (!PyErr_ExceptionMatches(PyExc_ValueError))
+				throw_error_already_set();
+
+			PyErr_Clear();
+			SetDatamapPropertyStringArray(name, value);
+		}
+	}
+
 	// KeyValue methods
 	void GetKeyValueStringRaw(const char* szName, char* szOut, int iLength);
 	str GetKeyValueString(const char* szName);
@@ -250,6 +323,9 @@ public:
 
 	Vector GetMins();
 	void SetMins(Vector& mins);
+
+	int GetEntityFlags();
+	void SetEntityFlags(int flags);
 
 	SolidType_t GetSolidType();
 	void SetSolidType(SolidType_t type);
