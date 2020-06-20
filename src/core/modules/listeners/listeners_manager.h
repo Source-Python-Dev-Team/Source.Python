@@ -53,7 +53,7 @@
 	for(int i = 0; i < mngr->m_vecCallables.Count(); i++) \
 	{ \
 		BEGIN_BOOST_PY() \
-			mngr->m_vecCallables[i](##__VA_ARGS__); \
+			mngr->m_vecCallables[i]( #__VA_ARGS__ ); \
 		END_BOOST_PY_NORET() \
 	}
 
@@ -65,7 +65,7 @@
 	for(int i = 0; i < mngr->m_vecCallables.Count(); i++) \
 	{ \
 		BEGIN_BOOST_PY() \
-			return_var = mngr->m_vecCallables[i](##__VA_ARGS__); \
+			return_var = mngr->m_vecCallables[i]( #__VA_ARGS__ ); \
 			action \
 		END_BOOST_PY_NORET() \
 	}
