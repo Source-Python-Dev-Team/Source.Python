@@ -19,32 +19,31 @@ class Player(_Player):
     
     # Team
     _team_data = ConfigObj(SP_DATA_PATH / 'teams' / GAME_NAME + '.ini', unrepr=True)
-    teams_by_name = _team_data.get('names')
-    teams_by_number = {number: alias for alias, number in teams_by_name.items()}
+
+    _teams_names = _team_data.get('names')
+    _class_names = _team_data.get('classes')
 
     @property
     def team_name(self):
-        return self.teams_by_number[self.team]
+        teams_by_number = dict(zip(self._teams_names.values(), self._teams_names.keys()))
+        return teams_by_number[self.team]
     
     @team_name.setter
     def team_name(self, team_name):
-        if team_id not in self.team_by_name.keys():
+        if team_id not in self._teams_names:
             raise ValueError(f"Invalid team_name: {team_name}")
         
-        self.team = self.teams_by_name[team_name]
-
-    # Mercanary class
-    class_by_name = _team_data.get('classes')
-    class_by_number = {number: alias for alias, number in class_by_name.items()}
+        self.team = self._teams_names[team_name]
     
     @property
     def player_class_name(self):
-        return self.class_by_number[self.player_class]
+        class_by_number = dict(zip(self._class_names.values(), self._class_names.keys()))
+        return class_by_number[self.player_class]
 
     @player_class_name.setter
     def player_class_name(self, class_name):
-        if team_id not in self.class_by_name.keys():
+        if team_id not in self._class_names:
             raise ValueError(f"Invalid class_name: {class_name}")
         
-        # Does this need to be desired_player_class?
-        self.player_class = self.class_by_name[team_name]
+        # Does this need to be desired_player_class or should there be a setter for desired class?
+        self.player_class = self._class_names[team_name]
