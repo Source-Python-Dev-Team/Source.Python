@@ -30,7 +30,7 @@ class Player(_Player):
     
     @team_name.setter
     def team_name(self, team_name):
-        if team_id not in self._teams_names:
+        if team_name not in self._teams_names:
             raise ValueError(f"Invalid team_name: {team_name}")
         
         self.team = self._teams_names[team_name]
@@ -42,8 +42,8 @@ class Player(_Player):
 
     @player_class_name.setter
     def player_class_name(self, class_name):
-        if team_id not in self._class_names:
+        if class_name not in self._class_names:
             raise ValueError(f"Invalid class_name: {class_name}")
         
-        # Does this need to be desired_player_class or should there be a setter for desired class?
-        self.player_class = self._class_names[team_name]
+        # Does this need to be desired_player_class or should there b a setter for desired class?
+        self.player_class = self._class_names[class_name]
