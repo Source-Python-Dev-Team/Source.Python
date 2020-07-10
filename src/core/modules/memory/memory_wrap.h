@@ -115,10 +115,15 @@ public:
 		return_ptr_changed(ptr(pRegisters), CPointer((unsigned long) pReturnPtr));
 	}
 
-public:
 	tuple GetArgTypes()
 	{
-		return tuple(m_vecArgTypes);
+		list argumentTypes;
+		for(std::vector<DataType_t>::iterator it=this->m_vecArgTypes.begin(); it != this->m_vecArgTypes.end(); ++it)
+		{
+			argumentTypes.append(*it);
+		}
+
+		return tuple(argumentTypes);
 	}
 };
 
