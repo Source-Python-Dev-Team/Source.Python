@@ -83,6 +83,7 @@ object CBaseEntityWrapper::create(object cls, const char *name)
 	}
 	catch (...)
 	{
+		PyErr_Clear();
 		try
 		{
 			CPointer tmp = pEntity->GetPointer();
@@ -127,6 +128,7 @@ object CBaseEntityWrapper::find(object cls, const char *name)
 		}
 		catch (...)
 		{
+			PyErr_Clear();
 			try
 			{
 				CPointer tmp = pEntity->GetPointer();
