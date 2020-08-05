@@ -35,6 +35,7 @@
 #include "memory_function.h"
 #include "memory_utilities.h"
 #include "memory_hooks.h"
+#include "memory_wrap.h"
 
 // DynamicHooks
 #include "conventions/x86MsCdecl.h"
@@ -149,17 +150,17 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 	catch( ... )
 	{
 		PyErr_Clear();
-	
+
 		// A custom calling convention will be used...
 		m_eCallingConvention = CONV_CUSTOM;
-		object _oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
+		m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
 
 		// FIXME:
 		// This is required to fix a crash, but it will also cause a memory leak,
 		// because no calling convention object that is created via this method will ever be deleted.
 		// TODO: Pretty sure this was required due to the missing held type definition. It was added, but wasn't tested yet.
-		Py_INCREF(_oCallingConvention.ptr());
-		m_pCallingConvention = extract<ICallingConvention*>(_oCallingConvention);
+		Py_INCREF(m_oCallingConvention.ptr());
+		m_pCallingConvention = extract<ICallingConvention*>(m_oCallingConvention);
 
 		// We didn't allocate the calling convention, someone else is responsible for it.
 		m_bAllocatedCallingConvention = false;
@@ -188,6 +189,24 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 
 CFunction::~CFunction()
 {
+	// If we created custom calling convention, clean it up.
+	// This does not apply to hooked calling convention.
+	if (!m_oCallingConvention.is_none())
+	{
+		CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+		if (!pHook || pHook->m_pCallingConvention != m_pCallingConvention)
+		{
+			ICallingConventionWrapper* _pCallingConventionWrapper = extract<ICallingConventionWrapper*>(m_oCallingConvention);
+
+			Py_DECREF(m_oCallingConvention.ptr());
+
+			delete _pCallingConventionWrapper;
+			m_pCallingConvention = NULL;
+		}
+
+		return;
+	}
+
 	// If we didn't allocate the calling convention, then it is not our responsibility.
 	if (!m_bAllocatedCallingConvention)
 		return;

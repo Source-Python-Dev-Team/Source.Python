@@ -102,6 +102,9 @@ public:
 	// DynamicHooks calling convention (built-in and custom)
 	ICallingConvention*		m_pCallingConvention;
 	bool					m_bAllocatedCallingConvention;
+
+	// Custom calling convention
+	object					m_oCallingConvention = object();
 };
 
 

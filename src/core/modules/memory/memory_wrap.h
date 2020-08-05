@@ -32,6 +32,14 @@
 // ============================================================================
 // DynamicHooks
 #include "convention.h"
+#include "conventions/x86MsCdecl.h"
+#include "conventions/x86MsThiscall.h"
+#include "conventions/x86MsStdcall.h"
+#include "conventions/x86GccCdecl.h"
+#include "conventions/x86GccThiscall.h"
+
+// Memory
+#include "memory_function.h"
 
 // Utilities
 #include "memory_utilities.h"
@@ -48,14 +56,55 @@ using namespace boost::python;
 class ICallingConventionWrapper: public ICallingConvention, public wrapper<ICallingConvention>
 {
 public:
-	ICallingConventionWrapper(object oArgTypes, DataType_t returnType, int iAlignment=4)
+	ICallingConventionWrapper(object oArgTypes, DataType_t returnType, int iAlignment=4, Convention_t eDefaultConv=CONV_CUSTOM)
 		:ICallingConvention(ObjectToDataTypeVector(oArgTypes), returnType, iAlignment)
 	{
+#ifdef _WIN32
+		switch (eDefaultConv)
+		{
+		case CONV_CUSTOM:
+			break;
+		case CONV_CDECL:
+			m_pCallingConvention = new x86MsCdecl(m_vecArgTypes, m_returnType, m_iAlignment);
+			break;
+		case CONV_THISCALL:
+			m_pCallingConvention = new x86MsThiscall(m_vecArgTypes, m_returnType, m_iAlignment);
+			break;
+		case CONV_STDCALL:
+			m_pCallingConvention = new x86MsStdcall(m_vecArgTypes, m_returnType, m_iAlignment);
+			break;
+		default:
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+		}
+#else
+		switch (eDefaultConv)
+		{
+		case CONV_CUSTOM:
+			break;
+		case CONV_CDECL:
+			m_pCallingConvention = new x86GccCdecl(m_vecArgTypes, m_returnType, m_iAlignment);
+			break;
+		case CONV_THISCALL:
+			m_pCallingConvention = new x86GccThiscall(m_vecArgTypes, m_returnType, m_iAlignment);
+			break;
+		default:
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+		}
+#endif
+	}
+
+	~ICallingConventionWrapper()
+	{
+		delete m_pCallingConvention;
+		m_pCallingConvention = nullptr;
 	}
 
 	virtual std::list<Register_t> GetRegisters()
 	{
 		override get_registers = get_override("get_registers");
+		if (!get_registers && m_pCallingConvention) {
+			return m_pCallingConvention->GetRegisters();
+		}
 		CHECK_OVERRIDE(get_registers);
 
 		object registers = get_registers();
@@ -71,47 +120,60 @@ public:
 	virtual int GetPopSize()
 	{
 		override get_pop_size = get_override("get_pop_size");
+		if (!get_pop_size && m_pCallingConvention) {
+			return m_pCallingConvention->GetPopSize();
+		}
 		CHECK_OVERRIDE(get_pop_size);
+
 		return get_pop_size();
 	}
-	
+
 	virtual void* GetArgumentPtr(int iIndex, CRegisters* pRegisters)
 	{
-		CPointer* ptr = extract<CPointer*>(GetArgumentPtrWrapper(iIndex, pRegisters));
-		return (void *) ptr->m_ulAddr;
-	}
-
-	object GetArgumentPtrWrapper(int iIndex, CRegisters* pRegisters)
-	{
 		override get_argument_ptr = get_override("get_argument_ptr");
+		if (!get_argument_ptr && m_pCallingConvention) {
+			return m_pCallingConvention->GetArgumentPtr(iIndex, pRegisters);
+		}
 		CHECK_OVERRIDE(get_argument_ptr);
-		return get_argument_ptr(iIndex, ptr(pRegisters));
+
+		object argument_ptr = get_argument_ptr(iIndex, ptr(pRegisters));
+		CPointer* _ptr = extract<CPointer*>(argument_ptr);
+		return (void *) _ptr->m_ulAddr;
 	}
 
 	virtual void ArgumentPtrChanged(int iIndex, CRegisters* pRegisters, void* pArgumentPtr)
 	{
 		override argument_ptr_changed = get_override("argument_ptr_changed");
+		if (!argument_ptr_changed && m_pCallingConvention) {
+			m_pCallingConvention->ArgumentPtrChanged(iIndex, pRegisters, pArgumentPtr);
+			return;
+		}
 		CHECK_OVERRIDE(argument_ptr_changed);
 		argument_ptr_changed(iIndex, ptr(pRegisters), CPointer((unsigned long) pArgumentPtr));
 	}
 
 	virtual void* GetReturnPtr(CRegisters* pRegisters)
 	{
-		CPointer* ptr = extract<CPointer*>(GetReturnPtrWrapper(pRegisters));
-		return (void *) ptr->m_ulAddr;
-	}
-
-	object GetReturnPtrWrapper(CRegisters* pRegisters)
-	{
 		override get_return_ptr = get_override("get_return_ptr");
-		CHECK_OVERRIDE(get_return_ptr);
-		return get_return_ptr(ptr(pRegisters));
+		if (!get_return_ptr && m_pCallingConvention) {
+			return m_pCallingConvention->GetReturnPtr(pRegisters);
+		}
+		CHECK_OVERRIDE(get_return_ptr)
+
+		object return_ptr = get_return_ptr(ptr(pRegisters));
+		CPointer* _ptr = extract<CPointer*>(return_ptr);
+		return (void *) _ptr->m_ulAddr;
 	}
 
 	virtual void ReturnPtrChanged(CRegisters* pRegisters, void* pReturnPtr)
 	{
 		override return_ptr_changed = get_override("return_ptr_changed");
+		if (!return_ptr_changed && m_pCallingConvention) {
+			m_pCallingConvention->ReturnPtrChanged(pRegisters, pReturnPtr);
+			return;
+		}
 		CHECK_OVERRIDE(return_ptr_changed);
+
 		return_ptr_changed(ptr(pRegisters), CPointer((unsigned long) pReturnPtr));
 	}
 
@@ -125,6 +187,9 @@ public:
 
 		return tuple(argumentTypes);
 	}
+
+public:
+	ICallingConvention* m_pCallingConvention = nullptr;
 };
 
 

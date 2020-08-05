@@ -825,13 +825,14 @@ void export_calling_convention(scope _memory)
 		"An an abstract class that is used to create custom calling "
 		"conventions (only available for hooking function and not for"
 		" calling functions).\n",
-		init< object, DataType_t, optional<int> >(
-			(arg("arg_types"), arg("return_type"), arg("alignment")),
+		init< object, DataType_t, optional<int, Convention_t> >(
+			(arg("arg_types"), arg("return_type"), arg("alignment")=4, arg("default_convention")=CONV_CUSTOM),
 			"Initialize the calling convention.\n"
 			"\n"
 			":param iterable arg_types: A list of :class:`DataType` values that define the argument types of a function.\n"
 			":param DataType return_type: The return type of a function.\n"
-			":param int alignment: The stack alignment."
+			":param int alignment: The stack alignment.\n"
+			":param Convention_t default_convention: The default convention for un override function."
 			)
 		)
 
@@ -844,14 +845,15 @@ void export_calling_convention(scope _memory)
 			&ICallingConventionWrapper::GetPopSize,
 			"Return the number of bytes that should be added to the stack to clean up."
 		)
-		
+
 		.def("get_argument_ptr",
-			&ICallingConventionWrapper::GetArgumentPtrWrapper,
+			&ICallingConventionWrapper::GetArgumentPtr,
 			(arg("index"), arg("registers")),
 			"Return a pointer to the argument at the given index.\n"
 			"\n"
 			":param int index: The index of the argument.\n"
-			":param Registers registers: A snapshot of all saved registers."
+			":param Registers registers: A snapshot of all saved registers.",
+			return_by_value_policy()
 		)
 
 		.def("argument_ptr_changed",
@@ -865,11 +867,12 @@ void export_calling_convention(scope _memory)
 		)
 
 		.def("get_return_ptr",
-			&ICallingConventionWrapper::GetReturnPtrWrapper,
+			&ICallingConventionWrapper::GetReturnPtr,
 			(arg("registers")),
 			"Return a pointer to the return value.\n"
 			"\n"
-			":param Registers registers: A snapshot of all saved registers."
+			":param Registers registers: A snapshot of all saved registers.",
+			return_by_value_policy()
 		)
 
 		.def("return_ptr_changed",
