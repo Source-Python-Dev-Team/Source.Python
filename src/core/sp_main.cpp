@@ -91,6 +91,7 @@ IEngineSound*			enginesound			= NULL;
 CGlobalVars*			gpGlobals			= NULL;
 IFileSystem*			filesystem			= NULL;
 IServerGameDLL*			servergamedll		= NULL;
+IServerGameEnts*		gameents			= NULL; // Interface to get at server entities
 IServerTools*			servertools			= NULL;
 IPhysics*				physics				= NULL;
 IPhysicsCollision*		physcollision		= NULL;
@@ -151,6 +152,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERINFOMANAGER, (void **)&playerinfomanager},
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
 	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
+	{INTERFACEVERSION_SERVERGAMEENTS, (void **)&gameents},
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
 	{NULL, NULL}
 };
