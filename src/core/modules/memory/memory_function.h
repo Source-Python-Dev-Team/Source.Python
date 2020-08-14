@@ -108,4 +108,9 @@ public:
 };
 
 
+//---------------------------------------------------------------------------------
+// Functions
+//---------------------------------------------------------------------------------
+ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4);
+
 #endif // _MEMORY_FUNCTION_H

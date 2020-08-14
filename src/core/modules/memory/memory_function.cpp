@@ -88,7 +88,7 @@ int GetDynCallConvention(Convention_t eConv)
 // ============================================================================
 // >> MakeDynamicHooksConvention
 // ============================================================================
-ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4)
+ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment)
 {
 #ifdef _WIN32
 	switch (eConv)

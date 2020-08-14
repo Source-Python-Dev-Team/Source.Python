@@ -59,38 +59,9 @@ public:
 	ICallingConventionWrapper(object oArgTypes, DataType_t returnType, int iAlignment=4, Convention_t eDefaultConv=CONV_CUSTOM)
 		:ICallingConvention(ObjectToDataTypeVector(oArgTypes), returnType, iAlignment)
 	{
-#ifdef _WIN32
-		switch (eDefaultConv)
-		{
-		case CONV_CUSTOM:
-			break;
-		case CONV_CDECL:
-			m_pCallingConvention = new x86MsCdecl(m_vecArgTypes, m_returnType, m_iAlignment);
-			break;
-		case CONV_THISCALL:
-			m_pCallingConvention = new x86MsThiscall(m_vecArgTypes, m_returnType, m_iAlignment);
-			break;
-		case CONV_STDCALL:
-			m_pCallingConvention = new x86MsStdcall(m_vecArgTypes, m_returnType, m_iAlignment);
-			break;
-		default:
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
+		if (eDefaultConv != CONV_CUSTOM) {
+			m_pCallingConvention = MakeDynamicHooksConvention(eDefaultConv, m_vecArgTypes, m_returnType, m_iAlignment);
 		}
-#else
-		switch (eDefaultConv)
-		{
-		case CONV_CUSTOM:
-			break;
-		case CONV_CDECL:
-			m_pCallingConvention = new x86GccCdecl(m_vecArgTypes, m_returnType, m_iAlignment);
-			break;
-		case CONV_THISCALL:
-			m_pCallingConvention = new x86GccThiscall(m_vecArgTypes, m_returnType, m_iAlignment);
-			break;
-		default:
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
-		}
-#endif
 	}
 
 	~ICallingConventionWrapper()
