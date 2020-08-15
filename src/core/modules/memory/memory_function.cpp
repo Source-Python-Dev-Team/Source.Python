@@ -197,6 +197,7 @@ CFunction::~CFunction()
 		if (!pHook || pHook->m_pCallingConvention != m_pCallingConvention)
 		{
 			Py_DECREF(m_oCallingConvention.ptr());
+			m_pCallingConvention = NULL;
 		}
 
 		return;
