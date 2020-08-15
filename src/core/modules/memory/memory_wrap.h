@@ -60,21 +60,21 @@ public:
 		:ICallingConvention(ObjectToDataTypeVector(oArgTypes), returnType, iAlignment)
 	{
 		if (eDefaultConv != CONV_CUSTOM) {
-			m_pCallingConvention = MakeDynamicHooksConvention(eDefaultConv, m_vecArgTypes, m_returnType, m_iAlignment);
+			m_pDefaultCallingConvention = MakeDynamicHooksConvention(eDefaultConv, m_vecArgTypes, m_returnType, m_iAlignment);
 		}
 	}
 
 	~ICallingConventionWrapper()
 	{
-		delete m_pCallingConvention;
-		m_pCallingConvention = nullptr;
+		delete m_pDefaultCallingConvention;
+		m_pDefaultCallingConvention = nullptr;
 	}
 
 	virtual std::list<Register_t> GetRegisters()
 	{
 		override get_registers = get_override("get_registers");
-		if (!get_registers && m_pCallingConvention) {
-			return m_pCallingConvention->GetRegisters();
+		if (!get_registers && m_pDefaultCallingConvention) {
+			return m_pDefaultCallingConvention->GetRegisters();
 		}
 		CHECK_OVERRIDE(get_registers);
 
@@ -91,8 +91,8 @@ public:
 	virtual int GetPopSize()
 	{
 		override get_pop_size = get_override("get_pop_size");
-		if (!get_pop_size && m_pCallingConvention) {
-			return m_pCallingConvention->GetPopSize();
+		if (!get_pop_size && m_pDefaultCallingConvention) {
+			return m_pDefaultCallingConvention->GetPopSize();
 		}
 		CHECK_OVERRIDE(get_pop_size);
 
@@ -102,8 +102,8 @@ public:
 	virtual void* GetArgumentPtr(int iIndex, CRegisters* pRegisters)
 	{
 		override get_argument_ptr = get_override("get_argument_ptr");
-		if (!get_argument_ptr && m_pCallingConvention) {
-			return m_pCallingConvention->GetArgumentPtr(iIndex, pRegisters);
+		if (!get_argument_ptr && m_pDefaultCallingConvention) {
+			return m_pDefaultCallingConvention->GetArgumentPtr(iIndex, pRegisters);
 		}
 		CHECK_OVERRIDE(get_argument_ptr);
 
@@ -115,8 +115,8 @@ public:
 	virtual void ArgumentPtrChanged(int iIndex, CRegisters* pRegisters, void* pArgumentPtr)
 	{
 		override argument_ptr_changed = get_override("argument_ptr_changed");
-		if (!argument_ptr_changed && m_pCallingConvention) {
-			m_pCallingConvention->ArgumentPtrChanged(iIndex, pRegisters, pArgumentPtr);
+		if (!argument_ptr_changed && m_pDefaultCallingConvention) {
+			m_pDefaultCallingConvention->ArgumentPtrChanged(iIndex, pRegisters, pArgumentPtr);
 			return;
 		}
 		CHECK_OVERRIDE(argument_ptr_changed);
@@ -126,8 +126,8 @@ public:
 	virtual void* GetReturnPtr(CRegisters* pRegisters)
 	{
 		override get_return_ptr = get_override("get_return_ptr");
-		if (!get_return_ptr && m_pCallingConvention) {
-			return m_pCallingConvention->GetReturnPtr(pRegisters);
+		if (!get_return_ptr && m_pDefaultCallingConvention) {
+			return m_pDefaultCallingConvention->GetReturnPtr(pRegisters);
 		}
 		CHECK_OVERRIDE(get_return_ptr)
 
@@ -139,8 +139,8 @@ public:
 	virtual void ReturnPtrChanged(CRegisters* pRegisters, void* pReturnPtr)
 	{
 		override return_ptr_changed = get_override("return_ptr_changed");
-		if (!return_ptr_changed && m_pCallingConvention) {
-			m_pCallingConvention->ReturnPtrChanged(pRegisters, pReturnPtr);
+		if (!return_ptr_changed && m_pDefaultCallingConvention) {
+			m_pDefaultCallingConvention->ReturnPtrChanged(pRegisters, pReturnPtr);
 			return;
 		}
 		CHECK_OVERRIDE(return_ptr_changed);
@@ -160,7 +160,7 @@ public:
 	}
 
 public:
-	ICallingConvention* m_pCallingConvention = nullptr;
+	ICallingConvention* m_pDefaultCallingConvention = nullptr;
 };
 
 
