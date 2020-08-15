@@ -196,12 +196,7 @@ CFunction::~CFunction()
 		CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 		if (!pHook || pHook->m_pCallingConvention != m_pCallingConvention)
 		{
-			ICallingConventionWrapper* _pCallingConventionWrapper = extract<ICallingConventionWrapper*>(m_oCallingConvention);
-
 			Py_DECREF(m_oCallingConvention.ptr());
-
-			delete _pCallingConventionWrapper;
-			m_pCallingConvention = NULL;
 		}
 
 		return;
