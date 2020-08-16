@@ -198,7 +198,11 @@ CFunction::~CFunction()
 	}
 	else
 	{
+		ICallingConventionWrapper* _pCallingConventionWrapper = extract<ICallingConventionWrapper*>(m_oCallingConvention);
+
 		Py_DECREF(m_oCallingConvention.ptr());
+
+		delete _pCallingConventionWrapper;
 	}
 
 	m_pCallingConvention = NULL;

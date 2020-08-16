@@ -820,7 +820,7 @@ void export_registers(scope _memory)
 // ============================================================================
 void export_calling_convention(scope _memory)
 {
-	class_<ICallingConventionWrapper, boost::noncopyable>(
+	class_<ICallingConventionWrapper, ICallingConventionWrapper *, boost::noncopyable>(
 		"CallingConvention",
 		"An an abstract class that is used to create custom calling "
 		"conventions (only available for hooking function and not for"
