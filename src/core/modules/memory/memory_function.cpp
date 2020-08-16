@@ -79,7 +79,7 @@ int GetDynCallConvention(Convention_t eConv)
 		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
 #endif
 	}
-	
+
 	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")
 	return -1;
 }
@@ -143,9 +143,6 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 		// If this line succeeds the user wants to create a function with the built-in calling conventions
 		m_eCallingConvention = extract<Convention_t>(oCallingConvention);
 		m_pCallingConvention = MakeDynamicHooksConvention(m_eCallingConvention, ObjectToDataTypeVector(m_tArgs), m_eReturnType);
-
-		// We allocated the calling convention, we are responsible to cleanup.
-		m_bAllocatedCallingConvention = true;
 	}
 	catch( ... )
 	{
@@ -161,13 +158,13 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 		// TODO: Pretty sure this was required due to the missing held type definition. It was added, but wasn't tested yet.
 		Py_INCREF(m_oCallingConvention.ptr());
 		m_pCallingConvention = extract<ICallingConvention*>(m_oCallingConvention);
-
-		// We didn't allocate the calling convention, someone else is responsible for it.
-		m_bAllocatedCallingConvention = false;
 	}
 
 	// Step 4: Get the DynCall calling convention
 	m_iCallingConvention = GetDynCallConvention(m_eCallingConvention);
+
+	// We allocated the calling convention, we are responsible to cleanup.
+	m_bAllocatedCallingConvention = true;
 }
 
 CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
@@ -189,32 +186,21 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 
 CFunction::~CFunction()
 {
-	// If we created custom calling convention, clean it up.
-	// This does not apply to hooked calling convention.
-	if (!m_oCallingConvention.is_none())
-	{
-		CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
-		if (!pHook || pHook->m_pCallingConvention != m_pCallingConvention)
-		{
-			Py_DECREF(m_oCallingConvention.ptr());
-			m_pCallingConvention = NULL;
-		}
-
-		return;
-	}
-
 	// If we didn't allocate the calling convention, then it is not our responsibility.
 	if (!m_bAllocatedCallingConvention)
 		return;
 
-	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	// If we created calling convention, clean it up.
+	// This does not apply to hooked calling convention.
+	if (m_oCallingConvention.is_none())
+	{
+		delete m_pCallingConvention;
+	}
+	else
+	{
+		Py_DECREF(m_oCallingConvention.ptr());
+	}
 
-	// DynamicHooks will take care of it for us from there.
-	if (pHook && pHook->m_pCallingConvention == m_pCallingConvention)
-		return;
-
-	// Cleanup.
-	delete m_pCallingConvention;
 	m_pCallingConvention = NULL;
 }
 
@@ -290,7 +276,7 @@ object CFunction::Call(tuple args, dict kw)
 
 				dcArgPointer(g_pCallVM, ulAddr);
 				break;
-			} 
+			}
 			case DATA_TYPE_STRING:		dcArgPointer(g_pCallVM, (unsigned long) (void *) extract<char *>(arg)); break;
 			default:					BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unknown argument type.")
 		}
@@ -362,10 +348,10 @@ void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 {
 	if (!IsHookable())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not hookable.")
-		
+
 	Validate();
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
-	
+
 	// Prepare arguments for log message
 	str type = str(eType);
 	const char* szType = extract<const char*>(type);
@@ -400,7 +386,7 @@ void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 		// DynamicHooks will handle our convention from there, regardless if we allocated it or not.
 		m_bAllocatedCallingConvention = false;
 	}
-	
+
 	// Add the hook handler. If it's already added, it won't be added twice
 	pHook->AddCallback(eType, (HookHandlerFn *) (void *) &SP_HookHandler);
 	g_mapCallbacks[pHook][eType].push_back(object(handle<>(borrowed(pCallable))));
