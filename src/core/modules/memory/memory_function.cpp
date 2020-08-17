@@ -334,6 +334,15 @@ object CFunction::SkipHooks(tuple args, dict kw)
 	return Call(args, kw);
 }
 
+unsigned long CFunction::GetTrampolineAddress()
+{
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	if (pHook)
+		return (unsigned long) pHook->m_pTrampoline;
+
+	return m_ulAddr;
+}
+
 CHook* HookFunctionHelper(void* addr, ICallingConvention* pConv)
 {
 	CHook* result;

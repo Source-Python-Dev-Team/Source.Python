@@ -66,20 +66,22 @@ public:
 	bool IsHookable();
 
 	bool IsHooked();
-    
+
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
 	object SkipHooks(boost::python::tuple args, dict kw);
-	
+
+	unsigned long GetTrampolineAddress();
+
 	void AddHook(HookType_t eType, PyObject* pCallable);
 	void RemoveHook(HookType_t eType, PyObject* pCallable);
-    
+
 	void AddPreHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_PRE, pCallable); }
 
 	void AddPostHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_POST, pCallable); }
-    
+
 	void RemovePreHook(PyObject* pCallable)
 	{ RemoveHook(HOOKTYPE_PRE, pCallable); }
 
@@ -87,7 +89,7 @@ public:
 	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
 
 	void DeleteHook();
-    
+
 public:
 	boost::python::tuple	m_tArgs;
 	object					m_oConverter;

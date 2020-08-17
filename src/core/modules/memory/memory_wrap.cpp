@@ -539,6 +539,12 @@ void export_function(scope _memory)
 		.def_readonly("convention",
 			&CFunction::m_eCallingConvention
 		)
+
+		// Properties
+		.add_property("trampoline_address",
+			&CFunction::GetTrampolineAddress,
+			"Return the trampoline address if the function is hooked, otherwise return the function address."
+		)
 	;
 }
 
