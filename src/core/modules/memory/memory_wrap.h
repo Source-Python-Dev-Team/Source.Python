@@ -32,11 +32,6 @@
 // ============================================================================
 // DynamicHooks
 #include "convention.h"
-#include "conventions/x86MsCdecl.h"
-#include "conventions/x86MsThiscall.h"
-#include "conventions/x86MsStdcall.h"
-#include "conventions/x86GccCdecl.h"
-#include "conventions/x86GccThiscall.h"
 
 // Memory
 #include "memory_function.h"
