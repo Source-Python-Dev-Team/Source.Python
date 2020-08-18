@@ -399,6 +399,19 @@ Color CBaseEntityWrapper::GetKeyValueColor(const char* szName)
 	if (!sputils::UTIL_StringToIntArray(iResult, 4, szResult))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "KeyValue does not seem to be a color: '%s'.", szResult);
 
+	// Fix for issue #346
+	// https://github.com/Source-Python-Dev-Team/Source.Python/issues/346
+	// If we got values bigger than 255, it's not a hard-coded keyvalue, but one that is read
+	// from the datamap. Those are incorrectly parsed by the SDK (int* should be unsiged char*):
+	// https://github.com/alliedmodders/hl2sdk/blob/0ef5d3d482157bc0bb3aafd37c08961373f87bfd/game/server/saverestore_gamedll.cpp#L205-L211
+	if (iResult[0] > 255 || iResult[1] > 255 || iResult[2] > 255 || iResult[3] > 255) {
+		return Color(
+				iResult[0] & 0xff,
+				(iResult[0] & 0xff00) >> 8,
+				(iResult[0] & 0xff0000) >> 16,
+				(iResult[0] & 0xff000000) >> 24);
+	}
+
 	return Color(iResult[0], iResult[1], iResult[2], iResult[3]);
 }
 

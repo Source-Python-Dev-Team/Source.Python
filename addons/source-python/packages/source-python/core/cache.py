@@ -74,4 +74,4 @@ def cached_result(fget):
         return MethodType(wrapper, self)
 
     # Return a cached property bound to the getter function
-    return CachedProperty(getter, doc=fget.__doc__)
+    return CachedProperty(getter, doc=fget.__doc__, unbound=True)

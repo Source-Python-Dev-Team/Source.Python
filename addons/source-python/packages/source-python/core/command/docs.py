@@ -19,6 +19,8 @@ from core.command import core_command
 from core.command import core_command_logger
 from core.version import VERSION
 from core.version import is_unversioned
+#   Hooks
+from hooks.exceptions import except_hooks
 #   Paths
 from paths import SP_DATA_PATH
 from paths import SP_DOCS_PATH
@@ -87,6 +89,7 @@ def _create_source_python_docs():
             project.create(
                 'Source.Python Development Team', 'Source.Python', VERSION)
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while creating Sphinx ' +
                 'project for Source.Python.')
@@ -108,6 +111,7 @@ def _create_custom_package_docs(package):
         try:
             project.create('Unknown')
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while creating Sphinx project for ' +
                 'custom package "{0}".'.format(package))
@@ -129,6 +133,7 @@ def _create_plugin_docs(package):
         try:
             project.create('Unknown')
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while creating Sphinx project ' +
                 'for plugin "{0}".'.format(package))
@@ -163,6 +168,7 @@ def _generate_source_python_docs():
         try:
             project.generate_project_files('developing/modules')
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while generating ' +
                 'project files for Source.Python')
@@ -244,6 +250,7 @@ def _generate_custom_package_docs(package):
         try:
             project.generate_project_files()
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while generating project ' +
                 'files for custom package "{0}".'.format(package))
@@ -265,6 +272,7 @@ def _generate_plugin_docs(package):
         try:
             project.generate_project_files()
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while generating project ' +
                 'files for plugin "{0}".'.format(package))
@@ -324,6 +332,7 @@ def _build_source_python_docs():
         try:
             project.build()
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while building ' +
                 'project files for Source.Python.')
@@ -384,6 +393,7 @@ def _build_custom_package_docs(package):
         try:
             project.build()
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while building project ' +
                 'files for custom package "{0}".'.format(package))
@@ -410,6 +420,7 @@ def _build_plugin_docs(package):
         try:
             project.build()
         except:
+            except_hooks.print_exception()
             logger.log_message(
                 'An error occured while building project ' +
                 'files for plugin "{0}".'.format(package))
