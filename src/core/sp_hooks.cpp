@@ -106,6 +106,7 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 			return true;
 		}
 	}
+	func->m_bAllocatedCallingConvention = false;
 
 	pHook->AddCallback(this->hook_type, this->hook_handler);
 	
