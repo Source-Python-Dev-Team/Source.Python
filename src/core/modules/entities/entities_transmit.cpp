@@ -42,97 +42,51 @@ extern IServerGameEnts *gameents;
 
 
 //-----------------------------------------------------------------------------
-// CBaseTransmitCriteria class.
+// Static variables.
 //-----------------------------------------------------------------------------
-CBaseTransmitCriteria::CBaseTransmitCriteria(ETransmitTarget eTarget)
-{
-	m_eTarget = eTarget;
-}
-
-
-//-----------------------------------------------------------------------------
-// CBaseTransmitFilter class.
-//-----------------------------------------------------------------------------
-CBaseTransmitFilter::CBaseTransmitFilter(ETransmitType eType, CBaseTransmitCriteria *pCriteria, object oOverride):
-	m_oCallback(object()),
-	m_bHasOverride(false)
-{
-	m_eType = eType;
-	m_pCriteria = pCriteria;
-
-	set_override(oOverride);
-}
-
-
-object CBaseTransmitFilter::get_callback()
-{
-	return m_oCallback;
-}
-
-void CBaseTransmitFilter::set_callback(object oCallback)
-{
-	if (!oCallback.is_none() && !PyCallable_Check(oCallback.ptr()))
-		BOOST_RAISE_EXCEPTION(
-			PyExc_TypeError,
-			"The given function is not callable."
-		);
-
-	m_oCallback = oCallback;
-}
-
-
-bool CBaseTransmitFilter::get_override()
-{
-	return m_bOverride;
-}
-
-void CBaseTransmitFilter::set_override(object oOverride)
-{
-	if (oOverride.is_none())
-	{
-		m_bOverride = oOverride;
-		m_bHasOverride = false;
-	}
-	else
-	{
-		extract<bool> extract_override(oOverride);
-		if (!extract_override.check())
-			BOOST_RAISE_EXCEPTION(
-				PyExc_TypeError,
-				"The given override couldn't be evaluated as a boolean."
-			);
-
-		m_bOverride = extract_override();
-		m_bHasOverride = true;
-	}
-}
-
-bool CBaseTransmitFilter::has_override()
-{
-	return m_bHasOverride;
-}
+std::once_flag CTransmitManager::init_flag;
+CTransmitManager* CTransmitManager::instance = nullptr;
 
 
 //-----------------------------------------------------------------------------
 // CTransmitManager class.
 //-----------------------------------------------------------------------------
-CTransmitManager::CTransmitManager():
-	m_bInitialized(false)
+CTransmitManager::CTransmitManager()
 {
+	initialize();
+
+	for( auto& filters: m_vecFilters)
+	{
+		filters.first.SetAll();
+	}
 }
 
-CTransmitManager *CTransmitManager::GetSingleton()
+
+CTransmitManager* CTransmitManager::get_instance()
 {
-	static CTransmitManager *s_pManager = new CTransmitManager;
-	return s_pManager;
+	std::call_once(init_flag, create);
+	return instance;
+}
+
+
+void CTransmitManager::create()
+{
+	instance = new CTransmitManager;
+}
+
+
+void CTransmitManager::destroy()
+{
+	if(instance)
+		instance->finalize();
+
+	delete instance;
+	instance = nullptr;
 }
 
 
 void CTransmitManager::initialize()
 {
-	if (m_bInitialized)
-		return;
-
 	CFunctionInfo *pInfo = GetFunctionInfo(&IServerGameEnts::CheckTransmit);
 	if (!pInfo)
 		BOOST_RAISE_EXCEPTION(
@@ -149,11 +103,11 @@ void CTransmitManager::initialize()
 			"CheckTransmit is invalid or not hookable."
 		)
 
-	void *pAddr = (void *)pFunc->m_ulAddr;
-	CHook *pHook = GetHookManager()->FindHook(pAddr);
+	m_pCheckTransmit = (void *)pFunc->m_ulAddr;
+	CHook *pHook = GetHookManager()->FindHook(m_pCheckTransmit);
 	if (!pHook)
 	{
-		pHook = GetHookManager()->HookFunction(pAddr, pFunc->m_pCallingConvention);
+		pHook = GetHookManager()->HookFunction(m_pCheckTransmit, pFunc->m_pCallingConvention);
 		if (!pHook)
 			BOOST_RAISE_EXCEPTION(
 				PyExc_ValueError,
@@ -161,123 +115,174 @@ void CTransmitManager::initialize()
 			)
 	}
 
+	pFunc->m_bAllocatedCallingConvention = false;
 	delete pFunc;
+
 	pHook->AddCallback(
 		HOOKTYPE_POST,
 		(HookHandlerFn *)&CTransmitManager::_post_check_transmit
 	);
-
-	m_bInitialized = true;
 }
 
 
-void CTransmitManager::register_filter(CBaseTransmitFilter *pFilter)
+void CTransmitManager::finalize()
 {
-	if (m_vecFilters.HasElement(pFilter))
-		BOOST_RAISE_EXCEPTION(
-			PyExc_ValueError,
-			"The given filter is already registered."
-		);
-
-	initialize();
-	m_vecFilters.AddToTail(pFilter);
-}
-
-void CTransmitManager::unregister_filter(CBaseTransmitFilter *pFilter)
-{
-	m_vecFilters.FindAndRemove(pFilter);
-}
-
-
-bool CTransmitManager::handle_filters(ETransmitType eType, int iIndex, unsigned int uiPlayer)
-{
-	static object Entity = import("entities.entity").attr("Entity");
-	object entity = Entity(iIndex);
-
-	static object Player = import("players.entity").attr("Player");
-	object player = Player(uiPlayer);
-
-	for (int i=0;i < m_vecFilters.Count();i++)
+	CHook *pHook = GetHookManager()->FindHook(m_pCheckTransmit);
+	if (pHook)
 	{
-		CBaseTransmitFilter *pFilter = m_vecFilters[i];
+		pHook->RemoveCallback(
+			HOOKTYPE_POST,
+			(HookHandlerFn *)&CTransmitManager::_post_check_transmit
+		);
+	}
+}
 
-		if (pFilter->m_eType != eType)
+
+void CTransmitManager::hide(int entity_index)
+{
+	if (entity_index == 0)
+		return;
+
+    for(int i = 0; i < m_vecFilters.size(); ++i)
+    {
+		if ((i+1) == entity_index)
 			continue;
 
-		if (pFilter->m_pCriteria)
-		{
-			switch (pFilter->m_pCriteria->m_eTarget)
-			{
-				case TRANSMIT_TARGET_ENTITY:
-				{
-					if (!pFilter->m_pCriteria->IsBitSet(iIndex))
-						continue;
-					break;
-				}
-				case TRANSMIT_TARGET_PLAYER:
-				{
-					if (!pFilter->m_pCriteria->IsBitSet((int)uiPlayer))
-						continue;
-					break;
-				}
-				default:
-					continue;
-			}
-		}
+		filter_pair& filters = m_vecFilters[i];
 
-		if (pFilter->has_override())
-			return pFilter->get_override();
-
-		object callback = pFilter->get_callback();
-		if (!callback.is_none() && callback(entity, player))
-			return true;
-	}
-
-	return false;
+		filters.first.Set(entity_index, false);
+		filters.second.Set(entity_index, false);
+    }
 }
 
 
-bool CTransmitManager::_post_check_transmit(HookType_t eHookType, CHook *pHook)
+void CTransmitManager::hide_from(int entity_index, int player_index)
 {
-	static CTransmitManager *pManager = GetTransmitManager();
-	if (!pManager->m_vecFilters.Count())
-		return false;
+	if (entity_index == 0)
+		return;
 
+	player_index -= 1;
+
+	if (entity_index == player_index)
+		return;
+
+	filter_pair& filters  = m_vecFilters[player_index];
+
+	filters.first.Set(entity_index, false);
+	filters.second.Set(entity_index, false);
+}
+
+
+void CTransmitManager::unhide(int entity_index)
+{
+	for( auto& filters: m_vecFilters)
+	{
+		filters.first.Set(entity_index, true);
+		filters.second.Set(entity_index, true);
+	}
+}
+
+
+void CTransmitManager::unhide_from(int entity_index, int player_index)
+{
+	player_index -= 1;
+
+	filter_pair& filters = m_vecFilters[player_index];
+
+	filters.first.Set(entity_index, true);
+	filters.second.Set(entity_index, true);
+}
+
+
+void CTransmitManager::reset(int entity_index)
+{
+	for( auto& filters: m_vecFilters)
+	{
+		filters.first.Set(entity_index, true);
+		filters.second.Set(entity_index, false);
+	}
+}
+
+
+void CTransmitManager::reset_from(int entity_index, int player_index)
+{
+	player_index -= 1;
+	m_vecFilters[player_index].first.Set(entity_index, true);
+	m_vecFilters[player_index].second.Set(entity_index, false);
+}
+
+
+void CTransmitManager::reset_all()
+{
+	for( auto& filters: m_vecFilters)
+	{
+		filters.first.SetAll();
+		filters.second.ClearAll();
+	}
+}
+
+
+bool CTransmitManager::is_hidden(int entity_index)
+{
+	bool hidden_state = false;
+
+	for( auto& filters: m_vecFilters)
+	{
+		hidden_state |= (!filters.first.IsBitSet(entity_index));
+	}
+
+	return hidden_state;
+}
+
+
+bool CTransmitManager::is_hidden_from(int entity_index, int player_index)
+{
+	player_index -= 1;
+
+	return (!m_vecFilters[player_index].first.IsBitSet(entity_index));
+}
+
+
+tuple CTransmitManager::get_hidden_states(int entity_index)
+{
+	list player_list;
+
+    for(int i = 0; i < m_vecFilters.size(); ++i)
+    {
+        if (!m_vecFilters[i].first.IsBitSet(entity_index))
+			player_list.append(i+1);
+    }
+
+	return tuple(player_list);
+}
+
+
+void CTransmitManager::handle_filters(CCheckTransmitInfo* pInfo, unsigned int player_index)
+{
+	player_index -= 1;
+
+	TransmitStates_t* transmit_edict = pInfo->m_pTransmitEdict;
+	filter_pair& filters = m_vecFilters[player_index];
+
+	transmit_edict->And(filters.first, transmit_edict);
+	transmit_edict->Or(filters.second, transmit_edict);
+}
+
+
+bool CTransmitManager::_post_check_transmit(HookType_t eHookType, CHook* pHook)
+{
 	int nEdicts = pHook->GetArgument<int>(3);
 	if (!nEdicts)
 		return false;
 
-	CCheckTransmitInfo *pInfo = pHook->GetArgument<CCheckTransmitInfo *>(1);
+	CCheckTransmitInfo* pInfo = pHook->GetArgument<CCheckTransmitInfo*>(1);
 
-	unsigned int uiIndex;
-	if (!IndexFromEdict(pInfo->m_pClientEnt, uiIndex))
+	unsigned int player_index;
+	if (!IndexFromEdict(pInfo->m_pClientEnt, player_index))
 		return false;
 
-	static object Player = import("players.entity").attr("Player");
-	object player = Player(uiIndex);
-
-	unsigned short *pIndexes = pHook->GetArgument<unsigned short *>(2);
-
-	for (int i=0; i < nEdicts; i++)
-	{
-		BEGIN_BOOST_PY()
-			int iIndex = pIndexes[i];
-			if (iIndex == WORLD_ENTITY_INDEX)
-				continue;
-
-			unsigned int uiPlayer;
-			IndexFromEdict(pInfo->m_pClientEnt, uiPlayer);
-
-			if (uiPlayer == iIndex)
-				continue;
-
-			ETransmitType eType = pInfo->m_pTransmitEdict->IsBitSet(iIndex) ? TRANSMIT_OUT : TRANSMIT_IN;
-			if (!pManager->handle_filters(eType, iIndex, uiPlayer))
-				continue;
-
-			pInfo->m_pTransmitEdict->Set(iIndex, !pInfo->m_pTransmitEdict->Get(iIndex));
-		END_BOOST_PY_NORET()
-	}
+	instance->handle_filters(pInfo, player_index);
 
 	return false;
 }
+

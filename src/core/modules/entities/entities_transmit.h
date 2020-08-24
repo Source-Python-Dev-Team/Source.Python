@@ -30,79 +30,28 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+#include <mutex>
+#include <vector>
+#include <utility>
+
 #include "public/const.h"
 #include "public/bitvec.h"
 #include "public/tier1/utlvector.h"
 
+#include "utilities/baseentity.h"
+
 #include "modules/listeners/listeners_manager.h"
 #include "modules/memory/memory_function.h"
+
+// Boost.Python
+#include "boost/python.hpp"
+using namespace boost::python;
 
 
 //-----------------------------------------------------------------------------
 // TransmitStates_t definition.
 //-----------------------------------------------------------------------------
 typedef CBitVec<MAX_EDICTS> TransmitStates_t;
-
-
-//-----------------------------------------------------------------------------
-// ETransmitTarget enumeration.
-//-----------------------------------------------------------------------------
-enum ETransmitTarget
-{
-	TRANSMIT_TARGET_ENTITY,
-	TRANSMIT_TARGET_PLAYER
-};
-
-
-//-----------------------------------------------------------------------------
-// CBaseTransmitCriteria class.
-//-----------------------------------------------------------------------------
-class CBaseTransmitCriteria: public TransmitStates_t
-{
-public:
-	CBaseTransmitCriteria(ETransmitTarget eTarget = TRANSMIT_TARGET_ENTITY);
-
-public:
-	ETransmitTarget m_eTarget;
-};
-
-
-//-----------------------------------------------------------------------------
-// ETransmitType enumeration.
-//-----------------------------------------------------------------------------
-enum ETransmitType
-{
-	TRANSMIT_IN,
-	TRANSMIT_OUT
-};
-
-
-//-----------------------------------------------------------------------------
-// CBaseTransmitFilter class.
-//-----------------------------------------------------------------------------
-class CBaseTransmitFilter
-{
-public:
-	CBaseTransmitFilter(ETransmitType eType = TRANSMIT_OUT, CBaseTransmitCriteria *pCriteria = NULL, object oOverride = object());
-
-public:
-	bool get_override();
-	void set_override(object oOverride);
-	bool has_override();
-
-	object get_callback();
-	void set_callback(object oCallback);
-
-private:
-	bool m_bOverride;
-	bool m_bHasOverride;
-
-	object m_oCallback;
-
-public:
-	ETransmitType m_eType;
-	CBaseTransmitCriteria *m_pCriteria;
-};
 
 
 //-----------------------------------------------------------------------------
@@ -113,23 +62,45 @@ class CTransmitManager
 private:
 	CTransmitManager();
 
-private:
 	void initialize();
+	void finalize();
+
+	void handle_filters(CCheckTransmitInfo* pInfo, unsigned int player_index);
 	static bool _post_check_transmit(HookType_t eHookType, CHook *pHook);
-	bool handle_filters(ETransmitType eType, int iIndex, unsigned int uiPlayer);
 
 public:
-	static CTransmitManager *GetSingleton();
+	using filter_pair = std::pair<TransmitStates_t, TransmitStates_t>;
 
-	void register_filter(CBaseTransmitFilter *pFilter);
-	void unregister_filter(CBaseTransmitFilter *pFilter);
+	static CTransmitManager* get_instance();
+
+	static void create();
+	static void destroy();
+
+	void hide(int entity_index);
+	void hide_from(int entity_index, int player_index);
+
+	void unhide(int entity_index);
+	void unhide_from(int entity_index, int player_index);
+
+	void reset(int entity_index);
+	void reset_from(int entity_index, int player_index);
+	void reset_all();
+
+	bool is_hidden(int entity_index);
+	bool is_hidden_from(int entity_index, int player_index);
+
+	tuple get_hidden_states(int entity_index);
 
 private:
-	bool m_bInitialized;
-	CUtlVector<CBaseTransmitFilter *> m_vecFilters;
+    static std::once_flag init_flag;
+    static CTransmitManager* instance;
+
+	void* m_pCheckTransmit = nullptr;
+
+	std::vector<std::pair<TransmitStates_t, TransmitStates_t>> m_vecFilters = decltype(m_vecFilters)(ABSOLUTE_PLAYER_LIMIT);
 };
 
-inline CTransmitManager *GetTransmitManager() { return CTransmitManager::GetSingleton(); }
+inline CTransmitManager *GetTransmitManager() { return CTransmitManager::get_instance(); }
 
 
 #endif // _ENTITIES_TRANSMIT_H

@@ -36,11 +36,6 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-static void export_transmit_states(scope);
-static void export_transmit_target(scope);
-static void export_transmit_type(scope);
-static void export_base_transmit_criteria(scope);
-static void export_base_transmit_filter(scope);
 static void export_transmit_manager(scope);
 
 
@@ -49,102 +44,7 @@ static void export_transmit_manager(scope);
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _transmit)
 {
-	export_transmit_states(_transmit);
-	export_transmit_target(_transmit);
-	export_transmit_type(_transmit);
-	export_base_transmit_criteria(_transmit);
-	export_base_transmit_filter(_transmit);
 	export_transmit_manager(_transmit);
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports TransmitStates_t.
-//-----------------------------------------------------------------------------
-void export_transmit_states(scope _transmit)
-{
-	class_<TransmitStates_t> TransmitStates("TransmitStates");
-
-	// Special methods...
-	TransmitStates.def("__delitem__", GET_METHOD(void, TransmitStates_t, Clear, int));
-	TransmitStates.def("__getitem__", &TransmitStates_t::IsBitSet);
-	TransmitStates.def("__setitem__", GET_METHOD(void, TransmitStates_t, Set, int, bool));
-
-	// Add memory tools...
-	TransmitStates ADD_MEM_TOOLS(TransmitStates_t);
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports ETransmitTarget.
-//-----------------------------------------------------------------------------
-void export_transmit_target(scope _transmit)
-{
-	enum_<ETransmitTarget> TransmitTarget("TransmitTarget");
-
-	// Values...
-	TransmitTarget.value("ENTITY", TRANSMIT_TARGET_ENTITY);
-	TransmitTarget.value("PLAYER", TRANSMIT_TARGET_PLAYER);
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports ETransmitType.
-//-----------------------------------------------------------------------------
-void export_transmit_type(scope _transmit)
-{
-	enum_<ETransmitType> TransmitType("TransmitType");
-
-	// Values...
-	TransmitType.value("IN", TRANSMIT_IN);
-	TransmitType.value("OUT", TRANSMIT_OUT);
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports CBaseTransmitCriteria.
-//-----------------------------------------------------------------------------
-void export_base_transmit_criteria(scope _transmit)
-{
-	class_<CBaseTransmitCriteria, CBaseTransmitCriteria *, bases<TransmitStates_t> > BaseTransmitCriteria(
-		"BaseTransmitCriteria",
-		init<ETransmitTarget>(
-			(
-				arg("self"), arg("target")=TRANSMIT_TARGET_ENTITY
-			)
-		)
-	);
-
-	// Properties...
-	BaseTransmitCriteria.def_readwrite("target", &CBaseTransmitCriteria::m_eTarget);
-
-	// Add memory tools...
-	BaseTransmitCriteria ADD_MEM_TOOLS(CBaseTransmitCriteria);
-}
-
-
-//-----------------------------------------------------------------------------
-// Exports CBaseTransmitFilter.
-//-----------------------------------------------------------------------------
-void export_base_transmit_filter(scope _transmit)
-{
-	class_<CBaseTransmitFilter, CBaseTransmitFilter *> BaseTransmitFilter(
-		"BaseTransmitFilter",
-		init<ETransmitType, CBaseTransmitCriteria *, object>(
-			(
-				arg("self"), arg("type")=TRANSMIT_OUT, arg("criteria")=object(), arg("override")=object()
-			)
-		)
-	);
-
-	// Properties...
-	BaseTransmitFilter.def_readwrite("type", &CBaseTransmitFilter::m_eType);
-	BaseTransmitFilter.def_readwrite("criteria", &CBaseTransmitFilter::m_pCriteria);
-	BaseTransmitFilter.add_property("override", &CBaseTransmitFilter::get_override, &CBaseTransmitFilter::set_override);
-	BaseTransmitFilter.add_property("callback", &CBaseTransmitFilter::get_callback, &CBaseTransmitFilter::set_callback);
-
-	// Add memory tools...
-	BaseTransmitFilter ADD_MEM_TOOLS(CBaseTransmitFilter);
 }
 
 
@@ -153,14 +53,75 @@ void export_base_transmit_filter(scope _transmit)
 //-----------------------------------------------------------------------------
 void export_transmit_manager(scope _transmit)
 {
-	class_<CTransmitManager, CTransmitManager *, boost::noncopyable> TransmitManager("TransmitManager", no_init);
+	class_<CTransmitManager, CTransmitManager *, boost::noncopyable>("TransmitManager", no_init)
 
-	// Methods...
-	TransmitManager.def("register_filter", &CTransmitManager::register_filter);
-	TransmitManager.def("unregister_filter", &CTransmitManager::unregister_filter);
+		// Class methods
+		.def("hide",
+			&CTransmitManager::hide,
+			"",
+			("entity_index")
+		)
 
-	// Add memory tools...
-	TransmitManager ADD_MEM_TOOLS(CTransmitManager);
+		.def("hide_from",
+			&CTransmitManager::hide_from,
+			"",
+			("entity_index", "player_index")
+		)
+
+
+		.def("unhide",
+			&CTransmitManager::unhide,
+			"",
+			("entity_index")
+		)
+
+		.def("unhide_from",
+			&CTransmitManager::unhide_from,
+			"",
+			("entity_index", "player_index")
+		)
+
+
+		.def("reset",
+			&CTransmitManager::reset,
+			"",
+			("entity_index")
+		)
+
+		.def("reset_from",
+			&CTransmitManager::reset_from,
+			"",
+			("entity_index", "player_index")
+		)
+
+		.def("reset_all",
+			&CTransmitManager::reset_all,
+			""
+		)
+
+
+		.def("is_hidden",
+			&CTransmitManager::is_hidden,
+			"",
+			("entity_index")
+		)
+
+		.def("is_hidden_from",
+			&CTransmitManager::is_hidden_from,
+			"",
+			("entity_index", "player_index")
+		)
+
+		.def("get_hidden_states",
+			&CTransmitManager::get_hidden_states,
+			"",
+			("entity_index")
+		)
+
+
+		// Add memory tools...
+		ADD_MEM_TOOLS(CTransmitManager)
+	;
 
 	// Singleton...
 	_transmit.attr("transmit_manager") = object(ptr(GetTransmitManager()));
