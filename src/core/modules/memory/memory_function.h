@@ -104,7 +104,7 @@ public:
 	bool					m_bAllocatedCallingConvention;
 
 	// Custom calling convention
-	object					m_oCallingConvention = object();
+	object					m_oCallingConvention;
 };
 
 

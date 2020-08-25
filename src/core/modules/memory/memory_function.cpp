@@ -143,6 +143,7 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 		// If this line succeeds the user wants to create a function with the built-in calling conventions
 		m_eCallingConvention = extract<Convention_t>(oCallingConvention);
 		m_pCallingConvention = MakeDynamicHooksConvention(m_eCallingConvention, ObjectToDataTypeVector(m_tArgs), m_eReturnType);
+		m_oCallingConvention = object();
 	}
 	catch( ... )
 	{
@@ -175,6 +176,7 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 	m_eCallingConvention = eCallingConvention;
 	m_iCallingConvention = iCallingConvention;
 	m_pCallingConvention = pCallingConvention;
+	m_oCallingConvention = object();
 
 	// We didn't allocate the calling convention, someone else is responsible for it.
 	m_bAllocatedCallingConvention = false;
