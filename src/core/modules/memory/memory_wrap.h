@@ -57,6 +57,9 @@ public:
 		if (eDefaultConv != CONV_CUSTOM) {
 			m_pDefaultCallingConvention = MakeDynamicHooksConvention(eDefaultConv, m_vecArgTypes, m_returnType, m_iAlignment);
 		}
+		else {
+			m_pDefaultCallingConvention = nullptr;
+		}
 	}
 
 	~ICallingConventionWrapper()
@@ -155,7 +158,7 @@ public:
 	}
 
 public:
-	ICallingConvention* m_pDefaultCallingConvention = nullptr;
+	ICallingConvention* m_pDefaultCallingConvention;
 };
 
 
