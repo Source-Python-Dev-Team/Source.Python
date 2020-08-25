@@ -579,6 +579,7 @@ void export_convention_t(scope _memory)
 		.value("CDECL", CONV_CDECL)
 		.value("STDCALL", CONV_STDCALL)
 		.value("THISCALL", CONV_THISCALL)
+		.value("FASTCALL", CONV_FASTCALL)
 	;
 }
 
