@@ -98,7 +98,7 @@ int x86MsFastcall::GetPopSize()
 {
 	int iPopSize = 0;
 
-	for(unsigned int i=2; i <= m_vecArgTypes.size() - 1; i++)
+	for(unsigned int i=2; i < m_vecArgTypes.size(); i++)
 	{
 		iPopSize += GetDataTypeSize(m_vecArgTypes[i], m_iAlignment);
 	}
