@@ -398,6 +398,27 @@ void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 	g_mapCallbacks[pHook][eType].push_back(object(handle<>(borrowed(pCallable))));
 }
 
+bool CFunction::AddHook(HookType_t eType, HookHandlerFn* pFunc)
+{
+	if (!IsHookable())
+		return false;
+
+	CHook* pHook = GetHookManager()->FindHook((void*) m_ulAddr);
+
+	if (!pHook) {
+		pHook = GetHookManager()->HookFunction((void*) m_ulAddr, m_pCallingConvention);
+
+		if (!pHook)
+			return false;
+
+		// DynamicHooks will handle our convention from there, regardless if we allocated it or not.
+		m_bAllocatedCallingConvention = false;
+	}
+
+	pHook->AddCallback(eType, pFunc);
+	return true;
+}
+
 void CFunction::RemoveHook(HookType_t eType, PyObject* pCallable)
 {
 	Validate();

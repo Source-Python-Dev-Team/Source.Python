@@ -487,7 +487,7 @@ void export_function(scope _memory)
 		)
 
 		.def("add_hook",
-			&CFunction::AddHook,
+			GET_METHOD(void, CFunction, AddHook, HookType_t eType, PyObject*),
 			"Adds a hook callback.",
 			args("hook_type", "callback")
 		)
