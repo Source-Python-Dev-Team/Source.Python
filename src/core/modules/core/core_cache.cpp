@@ -232,6 +232,15 @@ void CCachedProperty::set_cached_value(object instance, object value)
 }
 
 
+object CCachedProperty::bind(object self, object owner, str name)
+{
+	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
+	owner.attr(name) = self;
+	pSelf.__set_name__(owner, name);
+	return self;
+}
+
+
 void CCachedProperty::__set_name__(object owner, str name)
 {
 	m_name = name;

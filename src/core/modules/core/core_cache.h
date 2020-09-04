@@ -65,6 +65,8 @@ public:
 	object get_cached_value(object instance);
 	void set_cached_value(object instance, object value);
 
+	static object bind(object self, object owner, str name);
+
 	void __set_name__(object owner, str name);
 	static object __get__(object self, object instance, object owner);
 	void __set__(object instance, object value);

@@ -156,7 +156,7 @@ def setup_data():
     from core.cache import CachedProperty
     from memory import get_function_info
     from memory.helpers import MemberFunction
-    players.BaseClient.fire_game_event = CachedProperty(
+    CachedProperty(
         lambda self, info: MemberFunction(
             manager,
             info.return_type,
@@ -169,10 +169,7 @@ def setup_data():
             The game event instance to fire.
         """,
         args=(get_function_info('IGameEventListener2', 'FireGameEvent'),)
-    )
-    players.BaseClient.fire_game_event.__set_name__(
-        players.BaseClient, 'fire_game_event'
-    )
+    ).bind(players.BaseClient, 'fire_game_event')
 
     import entities
     entities._BaseEntityOutput = manager.create_type_from_dict(

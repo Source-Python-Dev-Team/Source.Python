@@ -379,6 +379,21 @@ void export_cached_property(scope _cache)
 	);
 
 	CachedProperty.def(
+		"bind",
+		&CCachedProperty::bind,
+		"Binds this property to the given class as the given name.\n"
+		"\n"
+		":param class owner:\n"
+		"	The class the wrapped property should be bound to.\n"
+		":param str name:\n"
+		"	The name of this property.\n"
+		"\n"
+		":rtype:\n"
+		"	CachedProperty",
+		args("self", "owner", "name")
+	);
+
+	CachedProperty.def(
 		"wrap_descriptor",
 		&CCachedProperty::wrap_descriptor,
 		manage_new_object_policy(),
