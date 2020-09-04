@@ -42,7 +42,7 @@ class CCachedProperty
 public:
 	CCachedProperty(
 		object fget, object fset, object fdel, object doc, bool unbound,
-		boost::python::tuple args, dict kwargs
+		boost::python::tuple args, object kwargs
 	);
 
 	static object _callable_check(object function, const char *szName);
@@ -77,7 +77,7 @@ public:
 
 	static CCachedProperty *wrap_descriptor(
 		object descriptor, object owner=object(), str name=str(),
-		bool unbound=false, boost::python::tuple args=boost::python::tuple(), dict kwargs=dict()
+		bool unbound=false, boost::python::tuple args=boost::python::tuple(), object kwargs=object()
 	);
 
 private:

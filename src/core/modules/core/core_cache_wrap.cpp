@@ -54,10 +54,10 @@ void export_cached_property(scope _cache)
 {
 	class_<CCachedProperty, CCachedProperty *> CachedProperty(
 		"CachedProperty",
-		init<object, object, object, object, bool, boost::python::tuple, dict>(
+		init<object, object, object, object, bool, boost::python::tuple, object>(
 			(
 				arg("self"), arg("fget")=object(), arg("fset")=object(), arg("fdel")=object(), arg("doc")=object(),
-				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
+				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=object()
 			),
 			"Represents a property attribute that is only"
 			" computed once and cached.\n"

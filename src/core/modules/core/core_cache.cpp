@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 CCachedProperty::CCachedProperty(
 	object fget=object(), object fset=object(), object fdel=object(), object doc=object(),
-	bool unbound=false, boost::python::tuple args=boost::python::tuple(), dict kwargs=dict())
+	bool unbound=false, boost::python::tuple args=boost::python::tuple(), object kwargs=object())
 {
 	set_getter(fget);
 	set_setter(fset);
@@ -46,7 +46,11 @@ CCachedProperty::CCachedProperty(
 	m_bUnbound = unbound;
 
 	m_args = args;
-	m_kwargs = kwargs;
+
+	if (!kwargs.is_none())
+		m_kwargs = extract<dict>(kwargs);
+	else
+		m_kwargs = dict();
 }
 
 
@@ -335,7 +339,7 @@ void CCachedProperty::__setitem__(str item, object value)
 
 CCachedProperty *CCachedProperty::wrap_descriptor(
 	object descriptor, object owner, str name,
-	bool unbound, boost::python::tuple args, dict kwargs)
+	bool unbound, boost::python::tuple args, object kwargs)
 {
 	CCachedProperty *pProperty = new CCachedProperty(
 		descriptor.attr("__get__"), descriptor.attr("__set__"), descriptor.attr("__delete__"),
