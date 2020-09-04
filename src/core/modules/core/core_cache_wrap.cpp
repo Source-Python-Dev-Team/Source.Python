@@ -269,7 +269,10 @@ void export_cached_property(scope _cache)
 		":param class owner:\n"
 		"	The class this property is being bound to.\n"
 		":param str name:\n"
-		"	The name this property is being bound as.",
+		"	The name this property is being bound as."
+		"\n"
+		":raises RuntimeError:\n"
+		"	If this property was already bound to a class.",
 		args("self", "owner", "name")
 	);
 

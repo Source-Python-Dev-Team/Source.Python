@@ -247,6 +247,16 @@ object CCachedProperty::bind(object self, object owner, str name)
 
 void CCachedProperty::__set_name__(object owner, str name)
 {
+	if (m_name && !m_owner.is_none())
+	{
+		const char *szName = extract<const char *>(str(".").join(make_tuple(m_owner().attr("__qualname__"), m_name)));
+		BOOST_RAISE_EXCEPTION(
+			PyExc_RuntimeError,
+			"This property was already bound as \"%s\".",
+			szName
+		)
+	}
+
 	m_name = name;
 	m_owner = object(handle<>(PyWeakref_NewRef(owner.ptr(), NULL)));
 }
