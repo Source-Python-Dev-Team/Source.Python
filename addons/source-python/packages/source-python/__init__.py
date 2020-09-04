@@ -153,6 +153,27 @@ def setup_data():
         'BaseClient',
         GameConfigObj(SP_DATA_PATH / 'client' / 'CBaseClient.ini'))
 
+    from core.cache import CachedProperty
+    from memory import get_function_info
+    from memory.helpers import MemberFunction
+    players.BaseClient.fire_game_event = CachedProperty(
+        lambda self, info: MemberFunction(
+            manager,
+            info.return_type,
+            self.make_virtual_function(info),
+            self
+        ),
+        doc="""Fires the given game event to this client.
+
+        :param GameEvent game_event:
+            The game event instance to fire.
+        """,
+        args=(get_function_info('IGameEventListener2', 'FireGameEvent'),)
+    )
+    players.BaseClient.fire_game_event.__set_name__(
+        players.BaseClient, 'fire_game_event'
+    )
+
     import entities
     entities._BaseEntityOutput = manager.create_type_from_dict(
         'BaseEntityOutput',
