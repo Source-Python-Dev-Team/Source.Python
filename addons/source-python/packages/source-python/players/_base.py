@@ -800,6 +800,9 @@ class Player(PlayerMixin, Entity):
         # Fire the event
         self.base_client.fire_game_event(game_event)
 
+        # Free the event
+        game_event_manager.free_event(game_event)
+
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
     # =========================================================================
