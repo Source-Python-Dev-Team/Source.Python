@@ -30,22 +30,24 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include <mutex>
-#include <vector>
+#include <algorithm>
+#include <array>
 #include <utility>
+#include <vector>
 
-#include "public/const.h"
+#ifdef _WIN32
+	#include <intrin.h>
+#endif
+
+// Source SDK
 #include "public/bitvec.h"
-#include "public/tier1/utlvector.h"
 
+// Source.Python
 #include "utilities/baseentity.h"
-
-#include "modules/listeners/listeners_manager.h"
 #include "modules/memory/memory_function.h"
 
 // Boost.Python
 #include "boost/python.hpp"
-using namespace boost::python;
 
 
 //-----------------------------------------------------------------------------
@@ -55,52 +57,99 @@ typedef CBitVec<MAX_EDICTS> TransmitStates_t;
 
 
 //-----------------------------------------------------------------------------
+// Filter struct.
+//-----------------------------------------------------------------------------
+struct Filter{
+	TransmitStates_t hide;
+	TransmitStates_t show;
+};
+
+
+//-----------------------------------------------------------------------------
 // CTransmitManager class.
 //-----------------------------------------------------------------------------
 class CTransmitManager
 {
 private:
 	CTransmitManager();
+	~CTransmitManager();
 
-	void initialize();
-	void finalize();
-
-	void handle_filters(CCheckTransmitInfo* pInfo, unsigned int player_index);
+	void handle_filters(TransmitStates_t* pTransmitEdict, unsigned int player_index);
 	static bool _post_check_transmit(HookType_t eHookType, CHook *pHook);
 
 public:
-	using filter_pair = std::pair<TransmitStates_t, TransmitStates_t>;
-
 	static CTransmitManager* get_instance();
 
 	static void create();
-	static void destroy();
+	//static void destroy();
 
-	void hide(int entity_index);
-	void hide_from(int entity_index, int player_index);
+	void add_player(edict_t* pEdict, unsigned int player_index);
+	void remove_player(edict_t* pEdict, unsigned int player_index);
 
-	void unhide(int entity_index);
-	void unhide_from(int entity_index, int player_index);
+	void hide(unsigned int entity_index);
+	void hide_from(unsigned int entity_index, unsigned int player_index);
 
-	void reset(int entity_index);
-	void reset_from(int entity_index, int player_index);
+	void show(unsigned int entity_index);
+	void show_from(unsigned int entity_index, unsigned int player_index);
+
+	void reset(unsigned int entity_index);
+	void reset_from(unsigned int entity_index, unsigned int player_index);
+	void reset_player(unsigned int player_index);
 	void reset_all();
 
-	bool is_hidden(int entity_index);
-	bool is_hidden_from(int entity_index, int player_index);
+	bool is_hidden(unsigned int entity_index);
+	bool is_hidden_from(unsigned int entity_index, unsigned int player_index);
 
-	tuple get_hidden_states(int entity_index);
+	boost::python::tuple get_hidden_player(unsigned int entity_index);
+	boost::python::tuple get_hidden_entity(unsigned int player_index);
+
+	inline bool find_filter_index(unsigned int player_index, unsigned char& filter_index)
+	{
+		for (unsigned int i = 1; i <= m_arrayFilterIndexes.size(); ++i)
+		{
+			auto it = std::find(m_arrayFilterIndexes.begin(), m_arrayFilterIndexes.end(), i);
+			if (it == m_arrayFilterIndexes.end())
+			{
+				filter_index = i;
+				return true;
+			}
+		}
+		return false;
+	}
+
+	inline bool get_filter_index(unsigned int player_index, unsigned char& filter_index)
+	{
+		filter_index = m_arrayFilterIndexes[player_index-1];
+		if (filter_index)
+			return true;
+		else
+			return false;
+	}
 
 private:
-    static std::once_flag init_flag;
-    static CTransmitManager* instance;
+	static CTransmitManager* instance;
 
-	void* m_pCheckTransmit = nullptr;
+	//void* m_pCheckTransmit;
 
-	std::vector<std::pair<TransmitStates_t, TransmitStates_t>> m_vecFilters = decltype(m_vecFilters)(ABSOLUTE_PLAYER_LIMIT);
+	unsigned int current_clients;
+	std::vector<Filter> m_vecFilters;
+	std::array<unsigned char, 64> m_arrayFilterIndexes;
 };
 
-inline CTransmitManager *GetTransmitManager() { return CTransmitManager::get_instance(); }
+
+//-----------------------------------------------------------------------------
+// Functions.
+//-----------------------------------------------------------------------------
+inline unsigned int bit_ceil(unsigned int x)
+{
+#ifdef _WIN32
+	unsigned long ret;
+	_BitScanReverse(&ret, (x-1));
+	return 1 << (32 - (31 ^ ret));//(1 << (32 - __lzcnt(x))))
+#else
+	return 1 << (32 - __builtin_clz(x-1));
+#endif
+}
 
 
 #endif // _ENTITIES_TRANSMIT_H

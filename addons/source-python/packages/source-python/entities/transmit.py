@@ -15,7 +15,6 @@ from entities.hooks import EntityCondition
 from filters.entities import EntityIter
 #   Listeners
 from listeners import on_entity_created_listener_manager
-from listeners import on_entity_deleted_listener_manager
 
 
 # ============================================================================
@@ -23,18 +22,27 @@ from listeners import on_entity_deleted_listener_manager
 # ============================================================================
 # Source.Python
 #   Entities
-from _entities._transmit import transmit_manager
+from _entities._transmit import TransmitManager
 
 
 # ============================================================================
 # >> ALL DECLARATION
 # ============================================================================
 __all__ = (
-    'transmit_manager',
+    'TransmitManager',
+    'reset_hidden_state',
 )
 
 
 # ============================================================================
 # >> CLASSES
 # ============================================================================
+
+
+# =============================================================================
+# >> FUNCTIONS
+# =============================================================================
+def reset_hidden_state():
+    """Reset all entities' hidden/shown state."""
+    TransmitManager.reset_all()
 

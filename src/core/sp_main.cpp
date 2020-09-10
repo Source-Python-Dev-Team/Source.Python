@@ -60,6 +60,7 @@
 #include "utilities/conversions.h"
 #include "modules/entities/entities_entity.h"
 #include "modules/core/core.h"
+#include "modules/entities/entities_transmit.h"
 
 #ifdef _WIN32
 	#include "Windows.h"
@@ -487,6 +488,9 @@ void CSourcePython::ClientActive( edict_t *pEntity )
 	if (!IndexFromEdict(pEntity, iEntityIndex))
 		return;
 
+	static CTransmitManager* transmit_manager = CTransmitManager::get_instance();
+	transmit_manager->add_player(pEntity, iEntityIndex);
+
 	CALL_LISTENERS(OnClientActive, iEntityIndex);
 }
 
@@ -500,6 +504,9 @@ void CSourcePython::ClientDisconnect( edict_t *pEntity )
 		return;
 
 	CALL_LISTENERS(OnClientDisconnect, iEntityIndex);
+
+	static CTransmitManager* transmit_manager = CTransmitManager::get_instance();
+	transmit_manager->remove_player(pEntity, iEntityIndex);
 }
 
 //-----------------------------------------------------------------------------

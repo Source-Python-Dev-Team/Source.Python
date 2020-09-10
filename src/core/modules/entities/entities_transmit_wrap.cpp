@@ -58,64 +58,77 @@ void export_transmit_manager(scope _transmit)
 		// Class methods
 		.def("hide",
 			&CTransmitManager::hide,
-			"",
+			"Hide the entity from all players.",
 			("entity_index")
 		)
 
 		.def("hide_from",
 			&CTransmitManager::hide_from,
-			"",
+			"Hide the entity from player.",
 			("entity_index", "player_index")
 		)
 
 
-		.def("unhide",
-			&CTransmitManager::unhide,
-			"",
+		.def("show",
+			&CTransmitManager::show,
+			"Show the entity to all players.",
 			("entity_index")
 		)
 
-		.def("unhide_from",
-			&CTransmitManager::unhide_from,
-			"",
+		.def("show_from",
+			&CTransmitManager::show_from,
+			"Show the entity to player.",
 			("entity_index", "player_index")
 		)
 
 
 		.def("reset",
 			&CTransmitManager::reset,
-			"",
+			"Reset the entity's hidden/shown state.",
 			("entity_index")
 		)
 
 		.def("reset_from",
 			&CTransmitManager::reset_from,
-			"",
+			"Reset the player's entity hidden/shown state.",
 			("entity_index", "player_index")
+		)
+
+		.def("reset_player",
+			&CTransmitManager::reset_player,
+			"Reset the player's hidden/shown state on all entities.",
+			("player_index")
 		)
 
 		.def("reset_all",
 			&CTransmitManager::reset_all,
-			""
+			"Reset all entities' hidden/shown state."
 		)
 
 
 		.def("is_hidden",
 			&CTransmitManager::is_hidden,
-			"",
+			"Return True if the entity is hidden from any player.",
 			("entity_index")
 		)
 
 		.def("is_hidden_from",
 			&CTransmitManager::is_hidden_from,
-			"",
+			"Return True if the entity is hidden from the player.",
 			("entity_index", "player_index")
 		)
 
-		.def("get_hidden_states",
-			&CTransmitManager::get_hidden_states,
-			"",
+
+		.def("get_hidden_player",
+			&CTransmitManager::get_hidden_player,
+			"Get the players where the entity is hidden.",
 			("entity_index")
+		)
+
+		.def("get_hidden_entity",
+			&CTransmitManager::get_hidden_entity,
+			"Get the entities that are hidden from the player.",
+			("player_index")
 		)
 
 
@@ -124,6 +137,6 @@ void export_transmit_manager(scope _transmit)
 	;
 
 	// Singleton...
-	_transmit.attr("transmit_manager") = object(ptr(GetTransmitManager()));
+	_transmit.attr("TransmitManager") = object(ptr(CTransmitManager::get_instance()));
 }
 

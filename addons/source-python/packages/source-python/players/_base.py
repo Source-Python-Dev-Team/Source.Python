@@ -74,6 +74,14 @@ from auth.manager import auth_manager
 
 
 # =============================================================================
+# >> FORWARD IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Entities
+from _entities._transmit import TransmitManager
+
+
+# =============================================================================
 # >> CLASSES
 # =============================================================================
 class Player(PlayerMixin, Entity):
@@ -993,6 +1001,56 @@ class Player(PlayerMixin, Entity):
             Velocity to use to drop the weapon.
         """
         return [weapon, target, velocity]
+
+    # =========================================================================
+    # >> PLAYER TRANSMIT FUNCTIONALITY
+    # =========================================================================
+    def hide_entity(self, entity_index):
+        """Hide the entity from player.
+
+        :param int entity_index:
+            The target entity index to hide from the player.
+        """
+        TransmitManager.hide_from(entity_index, self.index)
+
+    def show_entity(self, entity_index):
+        """Show the entity to player.
+
+        :param int entity_index:
+            The target entity index to show the entity to player.
+        """
+        TransmitManager.show_from(entity_index, self.index)
+
+    def reset_entity(self, entity_index):
+        """Reset the player's entity hidden/shown state.
+
+        :param int entity_index:
+            The target entity_index to reset the player's hidden/shown state.
+        """
+        TransmitManager.reset_from(entity_index, self.index)
+
+    def reset_player(self):
+        """Reset the player's hidden/shown state on all entities."""
+        TransmitManager.reset_player(self.index)
+
+    def is_entity_hidden(self, entity_index):
+        """Return True if the entity is hidden from the player.
+
+        :param int entity_index:
+            The target entity index to check if the entity is hidden.
+        :rtype: bool
+        """
+        return TransmitManager.is_hidden_from(entity_index, self.index)
+
+    def get_hidden_entity(self):
+        """Get the entities that are hidden from the player.
+
+        :return:
+            A tuple containing :class:`entities.entity.Entity` instances
+            that are hidden from the player.
+        :rtype: tuple
+        """
+        return TransmitManager.get_hidden_entity(self.index)
 
 
 # =============================================================================

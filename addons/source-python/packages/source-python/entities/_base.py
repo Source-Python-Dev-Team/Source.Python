@@ -67,6 +67,7 @@ from studio.constants import INVALID_ATTACHMENT_INDEX
 # Source.Python Imports
 #   Entities
 from _entities._entity import BaseEntity
+from _entities._transmit import TransmitManager
 
 
 # =============================================================================
@@ -779,6 +780,71 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
         return [parent, attachment]
 
+    # =========================================================================
+    # >> ENTITY TRANSMIT FUNCTIONALITY
+    # =========================================================================
+    def hide(self):
+        """Hide the entity from all players."""
+        TransmitManager.hide(self.index)
+
+    def hide_from(self, player_index):
+        """Hide the entity from player.
+
+        :param int player_index:
+            The target player index to hide this entity.
+        """
+        TransmitManager.hide_from(self.index, player_index)
+
+    def show(self):
+        """Show the entity to all players."""
+        TransmitManager.show(self.index)
+
+    def show_from(self, player_index):
+        """Show the entity to player.
+
+        :param int player_index:
+            The target player index to show this entity.
+        """
+        TransmitManager.show_from(self.index, player_index)
+
+    def reset(self):
+        """Reset the entity's hidden/shown state."""
+        TransmitManager.reset(self.index)
+
+    def reset_from(self, player_index):
+        """Reset the player's entity hidden/shown state.
+
+        :param int player_index:
+            The target player index to reset the player's hidden/shown state.
+        """
+        TransmitManager.reset_from(self.index, player_index)
+
+    def is_hidden(self):
+        """Return True if the entity is hidden from any player.
+
+        :rtype: bool
+        """
+        return TransmitManager.is_hidden(self.index)
+
+    def is_hidden_from(self, player_index):
+        """Return True if the entity is hidden from the player.
+
+        :param int player_index:
+            The target player index to check if the entity is hidden.
+        :rtype: bool
+        """
+        return TransmitManager.is_hidden_from(self.index, player_index)
+
+    def get_hidden_player(self):
+        """Get the players where the entity is hidden.
+
+        :return:
+            A tuple containing :class:`players.entity.Player` instances
+            in which the entity is hidden.
+        :rtype: tuple
+        """
+        return TransmitManager.get_hidden_player(self.index)
+
 
 # =============================================================================
 # >> LISTENERS
@@ -814,3 +880,6 @@ def _on_entity_deleted(base_entity):
     # Invalidate the internal entity caches for this entity
     for cls in _entity_classes:
         cls.cache.pop(index, None)
+
+    # Reset the entity's hidden state.
+    TransmitManager.reset(index)
