@@ -95,13 +95,17 @@ CTransmitManager::CTransmitManager()
 	current_clients = 0;
 
 	IPlayerInfo* pPlayerInfo = nullptr;
+	ConVar* sv_replaybots = cvar->FindVar("sv_replaybots");
+	ConVar* sv_stressbots = cvar->FindVar("sv_stressbots");
 
 	for (unsigned int i=1; i <= (unsigned int) gpGlobals->maxClients; ++i)
 	{
 		if (!PlayerInfoFromIndex(i, pPlayerInfo))
 			continue;
 
-		if (pPlayerInfo->IsFakeClient() || V_strstr(pPlayerInfo->GetNetworkIDString(), "BOT"))
+		if ((pPlayerInfo->IsFakeClient() || V_strstr(pPlayerInfo->GetNetworkIDString(), "BOT")) && (
+			(!sv_replaybots || !sv_replaybots->GetBool()) ||
+			(!sv_stressbots || !sv_stressbots->GetBool())))
 			continue;
 
 		++current_clients;
