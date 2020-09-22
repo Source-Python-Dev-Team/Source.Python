@@ -58,9 +58,13 @@ from _listeners import on_network_id_validated_listener_manager
 from _listeners import on_edict_allocated_listener_manager
 from _listeners import on_edict_freed_listener_manager
 from _listeners import on_entity_pre_spawned_listener_manager
+from _listeners import on_networked_entity_pre_spawned_listener_manager
 from _listeners import on_entity_created_listener_manager
+from _listeners import on_networked_entity_created_listener_manager
 from _listeners import on_entity_spawned_listener_manager
+from _listeners import on_networked_entity_spawned_listener_manager
 from _listeners import on_entity_deleted_listener_manager
+from _listeners import on_networked_entity_deleted_listener_manager
 from _listeners import on_data_loaded_listener_manager
 from _listeners import on_combiner_pre_cache_listener_manager
 from _listeners import on_data_unloaded_listener_manager
@@ -355,10 +359,22 @@ class OnEntityPreSpawned(ListenerManagerDecorator):
     manager = on_entity_pre_spawned_listener_manager
 
 
+class OnNetworkedEntityPreSpawned(ListenerManagerDecorator):
+    """Register/unregister a OnNetworkedEntityPreSpawned listener."""
+
+    manager = on_networked_entity_pre_spawned_listener_manager
+
+
 class OnEntityCreated(ListenerManagerDecorator):
     """Register/unregister a OnEntityCreated listener."""
 
     manager = on_entity_created_listener_manager
+
+
+class OnNetworkedEntityCreated(ListenerManagerDecorator):
+    """Register/unregister a OnNetworkedEntityCreated listener."""
+
+    manager = on_networked_entity_created_listener_manager
 
 
 class OnEntitySpawned(ListenerManagerDecorator):
@@ -367,10 +383,22 @@ class OnEntitySpawned(ListenerManagerDecorator):
     manager = on_entity_spawned_listener_manager
 
 
+class OnNetworkedEntitySpawned(ListenerManagerDecorator):
+    """Register/unregister a OnNetworkedEntitySpawned listener."""
+
+    manager = on_networked_entity_spawned_listener_manager
+
+
 class OnEntityDeleted(ListenerManagerDecorator):
     """Register/unregister a OnEntityDeleted listener."""
 
     manager = on_entity_deleted_listener_manager
+
+
+class OnNetworkedEntityDeleted(ListenerManagerDecorator):
+    """Register/unregister a OnNetworkedEntityDeleted listener."""
+
+    manager = on_networked_entity_deleted_listener_manager
 
 
 class OnDataLoaded(ListenerManagerDecorator):

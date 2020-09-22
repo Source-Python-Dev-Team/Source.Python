@@ -604,6 +604,12 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 {
 	CALL_LISTENERS(OnEntityPreSpawned, ptr((CBaseEntityWrapper*) pEntity));
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	CALL_LISTENERS(OnEntityPreSpawned, uiIndex);
 }
 #endif
 
@@ -619,11 +625,23 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 	InitHooks(pEntity);
 
 	CALL_LISTENERS(OnEntityCreated, ptr((CBaseEntityWrapper*) pEntity));
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	CALL_LISTENERS(OnNetworkedEntityCreated, uiIndex);
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
 	CALL_LISTENERS(OnEntitySpawned, ptr((CBaseEntityWrapper*) pEntity));
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	CALL_LISTENERS(OnNetworkedEntitySpawned, uiIndex);
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
@@ -631,9 +649,15 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 	object oEntity(ptr((CBaseEntityWrapper*) pEntity));
 	CALL_LISTENERS(OnEntityDeleted, oEntity);
 
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	CALL_LISTENERS(OnNetworkedEntityDeleted, uiIndex);
+
 	// Invalidate the internal entity cache once all callbacks have been called.
-	static object _on_entity_deleted = import("entities").attr("_base").attr("_on_entity_deleted");
-	_on_entity_deleted(oEntity);
+	static object _on_networked_entity_deleted = import("entities").attr("_base").attr("_on_networked_entity_deleted");
+	_on_networked_entity_deleted(uiIndex);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
