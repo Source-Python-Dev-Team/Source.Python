@@ -220,6 +220,6 @@ _waiting_entity_hooks = _WaitingEntityHooks()
 # >> LISTENERS
 # =============================================================================
 @OnNetworkedEntityCreated
-def on_networked_entity_created(index):
+def on_networked_entity_created(entity):
     """Called when a new networked entity has been created."""
-    _waiting_entity_hooks.initialize(index)
+    _waiting_entity_hooks.initialize(entity.index)

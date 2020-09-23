@@ -212,7 +212,7 @@ Called when a networked entity has been created.
     from listeners import OnNetworkedEntityCreated
 
     @OnNetworkedEntityCreated
-    def on_networked_entity_created(index):
+    def on_networked_entity_created(entity):
         pass
 
 
@@ -240,7 +240,7 @@ Called when a networked entity gets deleted.
     from listeners import OnNetworkedEntityDeleted
 
     @OnNetworkedEntityDeleted
-    def on_networked_entity_deleted(index):
+    def on_networked_entity_deleted(entity):
         pass
 
 
@@ -290,7 +290,7 @@ Called before a networked entity has been spawned.
     from listeners import OnNetworkedEntityPreSpawned
 
     @OnNetworkedEntityPreSpawned
-    def on_networked_entity_pre_spawned(index):
+    def on_networked_entity_pre_spawned(entity):
         pass
 
 .. note:: This listener gets only called in Black Mesa: Source.
@@ -320,7 +320,7 @@ Called when a networked entity has been spawned.
     from listeners import OnNetworkedEntitySpawned
 
     @OnNetworkedEntitySpawned
-    def on_networked_entity_spawned(index):
+    def on_networked_entity_spawned(entity):
         pass
 
 

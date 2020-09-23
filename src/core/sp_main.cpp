@@ -609,7 +609,8 @@ void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 	if (!IndexFromBaseEntity(pEntity, uiIndex))
 		return;
 
-	CALL_LISTENERS(OnEntityPreSpawned, uiIndex);
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS(OnEntityPreSpawned, Entity(uiIndex));
 }
 #endif
 
@@ -630,7 +631,8 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 	if (!IndexFromBaseEntity(pEntity, uiIndex))
 		return;
 
-	CALL_LISTENERS(OnNetworkedEntityCreated, uiIndex);
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS(OnNetworkedEntityCreated, Entity(uiIndex));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
@@ -641,19 +643,20 @@ void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 	if (!IndexFromBaseEntity(pEntity, uiIndex))
 		return;
 
-	CALL_LISTENERS(OnNetworkedEntitySpawned, uiIndex);
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS(OnNetworkedEntitySpawned, Entity(uiIndex));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	object oEntity(ptr((CBaseEntityWrapper*) pEntity));
-	CALL_LISTENERS(OnEntityDeleted, oEntity);
+	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
 
 	unsigned int uiIndex;
 	if (!IndexFromBaseEntity(pEntity, uiIndex))
 		return;
 
-	CALL_LISTENERS(OnNetworkedEntityDeleted, uiIndex);
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS(OnNetworkedEntityDeleted, Entity(uiIndex));
 
 	// Invalidate the internal entity cache once all callbacks have been called.
 	static object _on_networked_entity_deleted = import("entities").attr("_base").attr("_on_networked_entity_deleted");
