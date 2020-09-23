@@ -76,10 +76,10 @@ class EntityDictionary(AutoUnload, dict):
         """
         return self[index_from_inthandle(inthandle)]
 
-    def on_automatically_removed(self, entity):
+    def on_automatically_removed(self, index):
         """Called when an index is automatically removed."""
 
-    def _on_networked_entity_deleted(self, index):
+    def _on_networked_entity_deleted(self, entity):
         """Internal networked entity deletion callback.
 
         :param Entity entity:
