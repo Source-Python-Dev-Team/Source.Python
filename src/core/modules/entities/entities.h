@@ -49,6 +49,12 @@
 
 
 //-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern CGlobalVars *gpGlobals;
+
+
+//-----------------------------------------------------------------------------
 // IServerEntity extension class.
 //-----------------------------------------------------------------------------
 class ServerEntityExt
@@ -96,12 +102,40 @@ public:
 	
 	unsigned int get_attacker()
 	{
+#if defined(ENGINE_CSGO)
+		return ExcIndexFromBaseHandle(m_CSGOAttacker.m_hHndl);
+#else
 		return ExcIndexFromBaseHandle(m_hAttacker);
+#endif
 	}
 	
 	void set_attacker(unsigned int uiAttacker)
 	{
+#if defined(ENGINE_CSGO)
+		m_CSGOAttacker.m_bNeedInit = false;
+		m_CSGOAttacker.m_hHndl = ExcBaseHandleFromIndex(uiAttacker);
+		m_CSGOAttacker.m_bIsWorld = true;
+
+		if (uiAttacker > WORLD_ENTITY_INDEX &&
+			uiAttacker <= (unsigned int) gpGlobals->maxClients)
+		{
+			m_CSGOAttacker.m_bIsWorld = false;
+			m_CSGOAttacker.m_bIsPlayer = true;
+			m_CSGOAttacker.m_iClientIndex = (int)uiAttacker;
+
+			IPlayerInfo* pPlayerInfo;
+			if (PlayerInfoFromIndex(uiAttacker, pPlayerInfo))
+			{
+				m_CSGOAttacker.m_iUserId = pPlayerInfo->GetUserID();
+
+				int iTeamIndex = pPlayerInfo->GetTeamIndex();
+				m_CSGOAttacker.m_iTeamChecked = iTeamIndex;
+				m_CSGOAttacker.m_iTeamNum = iTeamIndex;
+			}
+		}
+#else
 		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
+#endif
 	}
 	
 	unsigned int get_weapon()
