@@ -476,11 +476,6 @@ void export_function(scope _memory)
 			"Return True if the function is hooked."
 		)
 
-		.def("call_trampoline",
-			raw_method(&CFunction::CallTrampoline),
-			"Calls the trampoline function dynamically."
-		)
-
 		.def("skip_hooks",
 			raw_method(&CFunction::SkipHooks),
 			"Call the function, but skip hooks if there are any."
@@ -541,9 +536,9 @@ void export_function(scope _memory)
 		)
 
 		// Properties
-		.add_property("trampoline_address",
-			&CFunction::GetTrampolineAddress,
-			"Return the trampoline address if the function is hooked, otherwise return the function address."
+		.add_property("trampoline",
+			make_function(&CFunction::GetTrampoline, manage_new_object_policy()),
+			"Return the trampoline function if the function is hooked."
 		)
 	;
 }

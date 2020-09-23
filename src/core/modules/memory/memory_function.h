@@ -57,8 +57,7 @@ class CFunction: public CPointer, private boost::noncopyable
 public:
 	CFunction(unsigned long ulAddr, object oCallingConvention, object oArgs, object oReturnType);
 	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
-		ICallingConvention* pCallingConvention, boost::python::tuple tArgs,
-		DataType_t eReturnType, object oConverter);
+		boost::python::tuple tArgs, DataType_t eReturnType, object oConverter);
 
 	~CFunction();
 
@@ -67,11 +66,10 @@ public:
 
 	bool IsHooked();
 
-	object Call(boost::python::tuple args, dict kw);
-	object CallTrampoline(boost::python::tuple args, dict kw);
-	object SkipHooks(boost::python::tuple args, dict kw);
+	CFunction* GetTrampoline();
 
-	unsigned long GetTrampolineAddress();
+	object Call(boost::python::tuple args, dict kw);
+	object SkipHooks(boost::python::tuple args, dict kw);
 
 	void AddHook(HookType_t eType, PyObject* pCallable);
 	void RemoveHook(HookType_t eType, PyObject* pCallable);
