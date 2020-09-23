@@ -137,6 +137,6 @@ void export_transmit_manager(scope _transmit)
 	;
 
 	// Singleton...
-	_transmit.attr("TransmitManager") = object(ptr(CTransmitManager::get_instance()));
+	_transmit.attr("transmit_manager") = object(ptr(CTransmitManager::get_instance()));
 }
 

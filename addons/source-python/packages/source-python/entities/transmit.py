@@ -2,41 +2,22 @@
 
 """Provides entity transmission filtering."""
 
-# ============================================================================
-# >> IMPORTS
-# ============================================================================
-# Source.Python
-#   Core
-from core import AutoUnload
-#   Entities
-from entities.entity import Entity
-from entities.hooks import EntityCondition
-#   Filters
-from filters.entities import EntityIter
-#   Listeners
-from listeners import on_entity_created_listener_manager
-
 
 # ============================================================================
 # >> FORWARD IMPORTS
 # ============================================================================
 # Source.Python
 #   Entities
-from _entities._transmit import TransmitManager
+from _entities._transmit import transmit_manager
 
 
 # ============================================================================
 # >> ALL DECLARATION
 # ============================================================================
 __all__ = (
-    'TransmitManager',
+    'transmit_manager',
     'reset_hidden_state',
 )
-
-
-# ============================================================================
-# >> CLASSES
-# ============================================================================
 
 
 # =============================================================================
@@ -44,5 +25,5 @@ __all__ = (
 # =============================================================================
 def reset_hidden_state():
     """Reset all entities' hidden/shown state."""
-    TransmitManager.reset_all()
+    transmit_manager.reset_all()
 

@@ -67,7 +67,7 @@ from studio.constants import INVALID_ATTACHMENT_INDEX
 # Source.Python Imports
 #   Entities
 from _entities._entity import BaseEntity
-from _entities._transmit import TransmitManager
+from _entities._transmit import transmit_manager
 
 
 # =============================================================================
@@ -785,7 +785,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
     # =========================================================================
     def hide(self):
         """Hide the entity from all players."""
-        TransmitManager.hide(self.index)
+        transmit_manager.hide(self.index)
 
     def hide_from(self, player_index):
         """Hide the entity from player.
@@ -793,11 +793,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int player_index:
             The target player index to hide this entity.
         """
-        TransmitManager.hide_from(self.index, player_index)
+        transmit_manager.hide_from(self.index, player_index)
 
     def show(self):
         """Show the entity to all players."""
-        TransmitManager.show(self.index)
+        transmit_manager.show(self.index)
 
     def show_from(self, player_index):
         """Show the entity to player.
@@ -805,11 +805,11 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int player_index:
             The target player index to show this entity.
         """
-        TransmitManager.show_from(self.index, player_index)
+        transmit_manager.show_from(self.index, player_index)
 
     def reset(self):
         """Reset the entity's hidden/shown state."""
-        TransmitManager.reset(self.index)
+        transmit_manager.reset(self.index)
 
     def reset_from(self, player_index):
         """Reset the player's entity hidden/shown state.
@@ -817,14 +817,14 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         :param int player_index:
             The target player index to reset the player's hidden/shown state.
         """
-        TransmitManager.reset_from(self.index, player_index)
+        transmit_manager.reset_from(self.index, player_index)
 
     def is_hidden(self):
         """Return True if the entity is hidden from any player.
 
         :rtype: bool
         """
-        return TransmitManager.is_hidden(self.index)
+        return transmit_manager.is_hidden(self.index)
 
     def is_hidden_from(self, player_index):
         """Return True if the entity is hidden from the player.
@@ -833,7 +833,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             The target player index to check if the entity is hidden.
         :rtype: bool
         """
-        return TransmitManager.is_hidden_from(self.index, player_index)
+        return transmit_manager.is_hidden_from(self.index, player_index)
 
     def get_hidden_player(self):
         """Get the players where the entity is hidden.
@@ -843,7 +843,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             in which the entity is hidden.
         :rtype: tuple
         """
-        return TransmitManager.get_hidden_player(self.index)
+        return transmit_manager.get_hidden_player(self.index)
 
 
 # =============================================================================
@@ -882,4 +882,4 @@ def _on_entity_deleted(base_entity):
         cls.cache.pop(index, None)
 
     # Reset the entity's hidden state.
-    TransmitManager.reset(index)
+    transmit_manager.reset(index)
