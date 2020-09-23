@@ -176,7 +176,6 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 	m_eCallingConvention = eCallingConvention;
 	m_iCallingConvention = iCallingConvention;
 	m_pCallingConvention = NULL;
-	m_oCallingConvention = object();
 
 	// We didn't allocate the calling convention, someone else is responsible for it.
 	m_bAllocatedCallingConvention = false;
