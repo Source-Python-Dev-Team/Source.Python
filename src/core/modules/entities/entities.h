@@ -103,7 +103,7 @@ public:
 	unsigned int get_attacker()
 	{
 #if defined(ENGINE_CSGO)
-		return ExcIndexFromBaseHandle(m_CSGOAttacker.m_hHndl);
+		return (unsigned int)m_CSGOAttacker.m_iClientIndex;
 #else
 		return ExcIndexFromBaseHandle(m_hAttacker);
 #endif
@@ -112,8 +112,8 @@ public:
 	void set_attacker(unsigned int uiAttacker)
 	{
 #if defined(ENGINE_CSGO)
-		m_CSGOAttacker.m_bNeedInit = false;
 		m_CSGOAttacker.m_hHndl = ExcBaseHandleFromIndex(uiAttacker);
+		m_CSGOAttacker.m_bNeedInit = false;
 		m_CSGOAttacker.m_bIsWorld = true;
 
 		if (uiAttacker > WORLD_ENTITY_INDEX &&
