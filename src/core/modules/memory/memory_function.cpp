@@ -337,10 +337,10 @@ object CFunction::SkipHooks(tuple args, dict kw)
 unsigned long CFunction::GetTrampolineAddress()
 {
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
-	if (pHook)
-		return (unsigned long) pHook->m_pTrampoline;
+	if (!pHook)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
-	return m_ulAddr;
+	return (unsigned long) pHook->m_pTrampoline;
 }
 
 CHook* HookFunctionHelper(void* addr, ICallingConvention* pConv)
