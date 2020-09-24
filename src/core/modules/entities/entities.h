@@ -114,24 +114,29 @@ public:
 #if defined(ENGINE_CSGO)
 		m_CSGOAttacker.m_hHndl = ExcBaseHandleFromIndex(uiAttacker);
 		m_CSGOAttacker.m_bNeedInit = false;
-		m_CSGOAttacker.m_bIsWorld = true;
+		m_CSGOAttacker.m_bIsWorld = false;
+		m_CSGOAttacker.m_iClientIndex = (int)uiAttacker;
 
-		if (uiAttacker > WORLD_ENTITY_INDEX &&
-			uiAttacker <= (unsigned int) gpGlobals->maxClients)
+		IPlayerInfo* pPlayerInfo;
+		if (PlayerInfoFromIndex(uiAttacker, pPlayerInfo))
 		{
-			m_CSGOAttacker.m_bIsWorld = false;
 			m_CSGOAttacker.m_bIsPlayer = true;
-			m_CSGOAttacker.m_iClientIndex = (int)uiAttacker;
 
-			IPlayerInfo* pPlayerInfo;
-			if (PlayerInfoFromIndex(uiAttacker, pPlayerInfo))
+			int iTeamIndex = pPlayerInfo->GetTeamIndex();
+			m_CSGOAttacker.m_iTeamChecked = iTeamIndex;
+			m_CSGOAttacker.m_iTeamNum = iTeamIndex;
+			m_CSGOAttacker.m_iUserId = pPlayerInfo->GetUserID();
+		}
+		else
+		{
+			if (uiAttacker == 0)
 			{
-				m_CSGOAttacker.m_iUserId = pPlayerInfo->GetUserID();
-
-				int iTeamIndex = pPlayerInfo->GetTeamIndex();
-				m_CSGOAttacker.m_iTeamChecked = iTeamIndex;
-				m_CSGOAttacker.m_iTeamNum = iTeamIndex;
+				m_CSGOAttacker.m_bIsWorld = true;
 			}
+			m_CSGOAttacker.m_bIsPlayer = false;
+			m_CSGOAttacker.m_iTeamChecked = -1;
+			m_CSGOAttacker.m_iTeamNum = -1;
+			m_CSGOAttacker.m_iUserId = -1;
 		}
 #else
 		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
