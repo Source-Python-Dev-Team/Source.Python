@@ -476,6 +476,11 @@ void export_function(scope _memory)
 			"Return True if the function is hooked."
 		)
 
+		.def("call_trampoline",
+			raw_method(&CFunction::CallTrampoline),
+			"Calls the trampoline function dynamically."
+		)
+
 		.def("skip_hooks",
 			raw_method(&CFunction::SkipHooks),
 			"Call the function, but skip hooks if there are any."

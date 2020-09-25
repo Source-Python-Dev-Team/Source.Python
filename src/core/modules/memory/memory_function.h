@@ -69,6 +69,7 @@ public:
 	CFunction* GetTrampoline();
 
 	object Call(boost::python::tuple args, dict kw);
+	object CallTrampoline(boost::python::tuple args, dict kw);
 	object SkipHooks(boost::python::tuple args, dict kw);
 
 	void AddHook(HookType_t eType, PyObject* pCallable);

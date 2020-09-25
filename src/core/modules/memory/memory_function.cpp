@@ -321,6 +321,16 @@ object CFunction::Call(tuple args, dict kw)
 	return object();
 }
 
+object CFunction::CallTrampoline(tuple args, dict kw)
+{
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	if (!pHook)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
+
+	return CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
+		m_iCallingConvention, m_tArgs, m_eReturnType, m_oConverter).Call(args, kw);
+}
+
 object CFunction::SkipHooks(tuple args, dict kw)
 {
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
