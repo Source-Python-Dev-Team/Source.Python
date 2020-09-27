@@ -43,7 +43,7 @@ if SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the game-specific 'Entity' class
-    Entity = entities._base = import_module(
+    Entity = entities._base.Entity = import_module(
         'entities.engines.{engine}.{game}'.format(
             engine=SOURCE_ENGINE,
             game=GAME_NAME,
@@ -55,7 +55,7 @@ elif SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the engine-specific 'Entity' class
-    Entity = entities._base = import_module(
+    Entity = entities._base.Entity = import_module(
         'entities.engines.{engine}'.format(
             engine=SOURCE_ENGINE,
         )

@@ -34,7 +34,7 @@ if SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the game-specific 'Weapon' class
-    Weapon = weapons._base = import_module(
+    Weapon = weapons._base.Weapon = import_module(
         'weapons.engines.{engine}.{game}'.format(
             engine=SOURCE_ENGINE,
             game=GAME_NAME,
@@ -46,7 +46,7 @@ elif SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the engine-specific 'Weapon' class
-    Weapon = weapons._base = import_module(
+    Weapon = weapons._base.Weapon = import_module(
         'weapons.engines.{engine}'.format(
             engine=SOURCE_ENGINE,
         )
