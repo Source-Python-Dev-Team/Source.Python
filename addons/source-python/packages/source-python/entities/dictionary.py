@@ -50,7 +50,18 @@ class EntityDictionary(AutoUnload, dict):
 
     def __missing__(self, index):
         """Add and return the entity instance for the given index."""
-        instance = self._factory(index, *self._args, **self._kwargs)
+        # Get the factory
+        factory = self._factory
+
+        # Let's mimic dict's behaviour if the factory is set to None
+        if factory is None:
+            raise KeyError(index)
+
+        # For uniformity reasons, ensure we only raise a KeyError
+        try:
+            instance = factory(index, *self._args, **self._kwargs)
+        except Exception as e:
+            raise KeyError(str(e))
 
         # Only cache entities that are not marked for deletion.
         # This is required, because if someone request an entity instance
