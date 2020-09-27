@@ -16,7 +16,7 @@ from core import AutoUnload
 from entities.entity import Entity
 from entities.helpers import index_from_inthandle
 #   Listeners
-from listeners import on_entity_deleted_listener_manager
+from listeners import on_networked_entity_deleted_listener_manager
 
 
 # ============================================================================
@@ -42,8 +42,8 @@ class EntityDictionary(AutoUnload, dict):
         self._kwargs = kwargs
 
         # Register our OnEntityDeleted listener...
-        on_entity_deleted_listener_manager.register_listener(
-            self._on_entity_deleted)
+        on_networked_entity_deleted_listener_manager.register_listener(
+            self._on_networked_entity_deleted)
 
         # Initialize the dictionary...
         super().__init__()
@@ -79,22 +79,27 @@ class EntityDictionary(AutoUnload, dict):
     def on_automatically_removed(self, index):
         """Called when an index is automatically removed."""
 
-    def _on_entity_deleted(self, base_entity):
-        """OnEntityDeleted listener callback."""
-        try:
-            # Get the index of the entity...
-            index = base_entity.index
-        except ValueError:
+    def _on_networked_entity_deleted(self, entity):
+        """Internal networked entity deletion callback.
+
+        :param Entity entity:
+            The networked entity being removed.
+        """
+        # Get the index of the entity
+        index = entity.index
+
+        # No need to go further if there is no object associated to this index
+        if index not in self:
             return
 
-        if index in self:
+        try:
             # Call the deletion callback for the index...
             self.on_automatically_removed(index)
-
+        finally:
             # Remove the index from the dictionary...
             super().__delitem__(index)
 
     def _unload_instance(self):
-        """Unregister our OnEntityDeleted listener."""
-        on_entity_deleted_listener_manager.unregister_listener(
-            self._on_entity_deleted)
+        """Unregister our networked entity deletion listener."""
+        on_networked_entity_deleted_listener_manager.unregister_listener(
+            self._on_networked_entity_deleted)

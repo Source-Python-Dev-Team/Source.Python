@@ -785,18 +785,12 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 # =============================================================================
 # NOTE: This callback is called by sp_main.cpp after all registered entity
 #       deletion listeners have been called.
-def _on_entity_deleted(base_entity):
-    """Called when an entity is removed.
+def _on_networked_entity_deleted(index):
+    """Called when a networked entity is removed.
 
-    :param BaseEntity base_entity:
-        The removed entity.
+    :param int index:
+        The removed entity index.
     """
-    try:
-        # Get the index of the entity...
-        index = base_entity.index
-    except ValueError:
-        return
-
     # Loop through all delays...
     for delay in _entity_delays.pop(index, ()):
 
