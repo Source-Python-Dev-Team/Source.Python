@@ -203,7 +203,7 @@ Called when an entity has been created.
 
 
 OnNetworkedEntityCreated
----------------
+------------------------
 
 Called when a networked entity has been created.
 
@@ -231,7 +231,7 @@ Called when an entity gets deleted.
 
 
 OnNetworkedEntityDeleted
----------------
+------------------------
 
 Called when a networked entity gets deleted.
 
@@ -281,7 +281,7 @@ Called before an entity has been spawned.
 
 
 OnNetworkedEntityPreSpawned
-------------------
+---------------------------
 
 Called before a networked entity has been spawned.
 
@@ -311,7 +311,7 @@ Called when an entity has been spawned.
 
 
 OnNetworkedEntitySpawned
----------------
+------------------------
 
 Called when a networked entity has been spawned.
 
