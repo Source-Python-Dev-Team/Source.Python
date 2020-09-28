@@ -170,13 +170,12 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 }
 
 CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
-	int iCallingConvention, ICallingConvention* pCallingConvention, tuple tArgs,
-	DataType_t eReturnType, object oConverter)
+	int iCallingConvention, tuple tArgs, DataType_t eReturnType, object oConverter)
 	:CPointer(ulAddr)
 {
 	m_eCallingConvention = eCallingConvention;
 	m_iCallingConvention = iCallingConvention;
-	m_pCallingConvention = pCallingConvention;
+	m_pCallingConvention = NULL;
 
 	// We didn't allocate the calling convention, someone else is responsible for it.
 	m_bAllocatedCallingConvention = false;
@@ -216,6 +215,16 @@ bool CFunction::IsHookable()
 bool CFunction::IsHooked()
 {
 	return GetHookManager()->FindHook((void *) m_ulAddr) != NULL;
+}
+
+CFunction* CFunction::GetTrampoline()
+{
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	if (!pHook)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
+
+	return new CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
+		m_iCallingConvention, m_tArgs, m_eReturnType, m_oConverter);
 }
 
 template<class ReturnType, class Function>
@@ -314,22 +323,20 @@ object CFunction::Call(tuple args, dict kw)
 
 object CFunction::CallTrampoline(tuple args, dict kw)
 {
-	if (!IsCallable())
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
-
-	Validate();
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function was not hooked.")
 
 	return CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
-		m_iCallingConvention, m_pCallingConvention, m_tArgs, m_eReturnType, m_oConverter).Call(args, kw);
+		m_iCallingConvention, m_tArgs, m_eReturnType, m_oConverter).Call(args, kw);
 }
 
 object CFunction::SkipHooks(tuple args, dict kw)
 {
-	if (IsHooked())
-		return CallTrampoline(args, kw);
+	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
+	if (pHook)
+		return CFunction((unsigned long) pHook->m_pTrampoline, m_eCallingConvention,
+			m_iCallingConvention, m_tArgs, m_eReturnType, m_oConverter).Call(args, kw);
 
 	return Call(args, kw);
 }

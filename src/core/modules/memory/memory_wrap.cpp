@@ -539,6 +539,12 @@ void export_function(scope _memory)
 		.def_readonly("convention",
 			&CFunction::m_eCallingConvention
 		)
+
+		// Properties
+		.add_property("trampoline",
+			make_function(&CFunction::GetTrampoline, manage_new_object_policy()),
+			"Return the trampoline function if the function is hooked."
+		)
 	;
 }
 

@@ -57,8 +57,7 @@ class CFunction: public CPointer, private boost::noncopyable
 public:
 	CFunction(unsigned long ulAddr, object oCallingConvention, object oArgs, object oReturnType);
 	CFunction(unsigned long ulAddr, Convention_t eCallingConvention, int iCallingConvention,
-		ICallingConvention* pCallingConvention, boost::python::tuple tArgs,
-		DataType_t eReturnType, object oConverter);
+		boost::python::tuple tArgs, DataType_t eReturnType, object oConverter);
 
 	~CFunction();
 
@@ -66,20 +65,22 @@ public:
 	bool IsHookable();
 
 	bool IsHooked();
-    
+
+	CFunction* GetTrampoline();
+
 	object Call(boost::python::tuple args, dict kw);
 	object CallTrampoline(boost::python::tuple args, dict kw);
 	object SkipHooks(boost::python::tuple args, dict kw);
-	
+
 	void AddHook(HookType_t eType, PyObject* pCallable);
 	void RemoveHook(HookType_t eType, PyObject* pCallable);
-    
+
 	void AddPreHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_PRE, pCallable); }
 
 	void AddPostHook(PyObject* pCallable)
 	{ return AddHook(HOOKTYPE_POST, pCallable); }
-    
+
 	void RemovePreHook(PyObject* pCallable)
 	{ RemoveHook(HOOKTYPE_PRE, pCallable); }
 
@@ -87,7 +88,7 @@ public:
 	{ RemoveHook(HOOKTYPE_POST, pCallable);	}
 
 	void DeleteHook();
-    
+
 public:
 	boost::python::tuple	m_tArgs;
 	object					m_oConverter;
