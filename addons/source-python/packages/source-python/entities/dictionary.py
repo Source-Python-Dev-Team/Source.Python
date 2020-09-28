@@ -33,7 +33,18 @@ class EntityDictionary(AutoUnload, dict):
     """Helper class used to store entity instances."""
 
     def __init__(self, factory=Entity, *args, **kwargs):
-        """Initialize the dictionary."""
+        """Initializes the dictionary.
+
+        :param callable factory:
+            Factory class or function used to create missing instances. Set to
+            `None` to disable this feature.
+
+            Factory signature: index, *args, **kwargs
+        :param tuple args:
+            Arguments passed to the factory class or function.
+        :param dict kwargs:
+            Keyword arguments passed to the factory class or function.
+        """
         # Store the given entity class...
         self._factory = factory
 
@@ -41,7 +52,7 @@ class EntityDictionary(AutoUnload, dict):
         self._args = args
         self._kwargs = kwargs
 
-        # Register our OnEntityDeleted listener...
+        # Register our networked entity deletion listener...
         on_networked_entity_deleted_listener_manager.register_listener(
             self._on_networked_entity_deleted)
 
@@ -49,7 +60,15 @@ class EntityDictionary(AutoUnload, dict):
         super().__init__()
 
     def __missing__(self, index):
-        """Add and return the entity instance for the given index."""
+        """Called when an instance is requested but missing.
+
+        :param int index:
+            The index of the entity instance requested.
+
+        :raises KeyError:
+            If the auto-construction of missing instances is disabled or the
+            factory class or function fails to return an instance.
+        """
         # Get the factory
         factory = self._factory
 
@@ -61,7 +80,7 @@ class EntityDictionary(AutoUnload, dict):
         try:
             instance = factory(index, *self._args, **self._kwargs)
         except Exception as e:
-            raise KeyError(str(e))
+            raise KeyError(e).with_traceback(e.__traceback__) from None
 
         # Only cache entities that are not marked for deletion.
         # This is required, because if someone request an entity instance
@@ -73,13 +92,17 @@ class EntityDictionary(AutoUnload, dict):
         return instance
 
     def __delitem__(self, index):
-        """Remove the given index from the dictionary."""
+        """Removes the given index from the dictionary.
+
+        :param int index:
+            The index of the entity instance being removed.
+        """
         # Remove the given index from the dictionary...
         with suppress(KeyError):
             super().__delitem__(index)
 
     def from_inthandle(self, inthandle):
-        """Get an entity instance from an inthandle.
+        """Returns an entity instance from an inthandle.
         
         :param int inthandle:
             The inthandle.
@@ -88,7 +111,11 @@ class EntityDictionary(AutoUnload, dict):
         return self[index_from_inthandle(inthandle)]
 
     def on_automatically_removed(self, index):
-        """Called when an index is automatically removed."""
+        """Called when an index is automatically removed.
+
+        :param int index:
+            The index of the entity instance being removed.
+        """
 
     def _on_networked_entity_deleted(self, entity):
         """Internal networked entity deletion callback.
