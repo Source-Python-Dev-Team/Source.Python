@@ -40,6 +40,7 @@
 #include "conventions/x86MsCdecl.h"
 #include "conventions/x86MsThiscall.h"
 #include "conventions/x86MsStdcall.h"
+#include "conventions/x86MsFastcall.h"
 #include "conventions/x86GccCdecl.h"
 #include "conventions/x86GccThiscall.h"
 
@@ -76,6 +77,7 @@ int GetDynCallConvention(Convention_t eConv)
 			#endif
 #ifdef _WIN32
 		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
+		case CONV_FASTCALL: return DC_CALL_C_X86_WIN32_FAST_MS;
 #endif
 	}
 	
@@ -95,6 +97,7 @@ ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<D
 	case CONV_CDECL: return new x86MsCdecl(vecArgTypes, returnType, iAlignment);
 	case CONV_THISCALL: return new x86MsThiscall(vecArgTypes, returnType, iAlignment);
 	case CONV_STDCALL: return new x86MsStdcall(vecArgTypes, returnType, iAlignment);
+	case CONV_FASTCALL: return new x86MsFastcall(vecArgTypes, returnType, iAlignment);
 	}
 #else
 	switch (eConv)
