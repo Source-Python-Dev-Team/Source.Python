@@ -604,6 +604,17 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 {
 	CALL_LISTENERS(OnEntityPreSpawned, ptr((CBaseEntityWrapper*) pEntity));
+
+	GET_LISTENER_MANAGER(OnNetworkedEntityPreSpawned, on_networked_entity_pre_spawned_manager);
+	if (!on_networked_entity_pre_spawned_manager->GetCount())
+		return;
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS_WITH_MNGR(on_networked_entity_pre_spawned_manager, Entity(uiIndex));
 }
 #endif
 
@@ -619,21 +630,53 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 	InitHooks(pEntity);
 
 	CALL_LISTENERS(OnEntityCreated, ptr((CBaseEntityWrapper*) pEntity));
+
+	GET_LISTENER_MANAGER(OnNetworkedEntityCreated, on_networked_entity_created_manager);
+	if (!on_networked_entity_created_manager->GetCount())
+		return;
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS_WITH_MNGR(on_networked_entity_created_manager, Entity(uiIndex));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
 	CALL_LISTENERS(OnEntitySpawned, ptr((CBaseEntityWrapper*) pEntity));
+
+	GET_LISTENER_MANAGER(OnNetworkedEntitySpawned, on_networked_entity_spawned_manager);
+	if (!on_networked_entity_spawned_manager->GetCount())
+		return;
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS_WITH_MNGR(on_networked_entity_spawned_manager, Entity(uiIndex));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	object oEntity(ptr((CBaseEntityWrapper*) pEntity));
-	CALL_LISTENERS(OnEntityDeleted, oEntity);
+	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	GET_LISTENER_MANAGER(OnNetworkedEntityDeleted, on_networked_entity_deleted_manager);
+	if (on_networked_entity_deleted_manager->GetCount())
+	{
+		static object Entity = import("entities").attr("entity").attr("Entity");
+		CALL_LISTENERS_WITH_MNGR(on_networked_entity_deleted_manager, Entity(uiIndex));
+	}
 
 	// Invalidate the internal entity cache once all callbacks have been called.
-	static object _on_entity_deleted = import("entities").attr("_base").attr("_on_entity_deleted");
-	_on_entity_deleted(oEntity);
+	static object _on_networked_entity_deleted = import("entities").attr("_base").attr("_on_networked_entity_deleted");
+	_on_networked_entity_deleted(uiIndex);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

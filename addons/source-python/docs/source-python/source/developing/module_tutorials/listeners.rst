@@ -202,6 +202,20 @@ Called when an entity has been created.
         pass
 
 
+OnNetworkedEntityCreated
+------------------------
+
+Called when a networked entity has been created.
+
+.. code-block:: python
+
+    from listeners import OnNetworkedEntityCreated
+
+    @OnNetworkedEntityCreated
+    def on_networked_entity_created(entity):
+        pass
+
+
 OnEntityDeleted
 ---------------
 
@@ -213,6 +227,20 @@ Called when an entity gets deleted.
 
     @OnEntityDeleted
     def on_entity_deleted(base_entity):
+        pass
+
+
+OnNetworkedEntityDeleted
+------------------------
+
+Called when a networked entity gets deleted.
+
+.. code-block:: python
+
+    from listeners import OnNetworkedEntityDeleted
+
+    @OnNetworkedEntityDeleted
+    def on_networked_entity_deleted(entity):
         pass
 
 
@@ -252,6 +280,22 @@ Called before an entity has been spawned.
 .. note:: This listener gets only called in Black Mesa: Source.
 
 
+OnNetworkedEntityPreSpawned
+---------------------------
+
+Called before a networked entity has been spawned.
+
+.. code-block:: python
+
+    from listeners import OnNetworkedEntityPreSpawned
+
+    @OnNetworkedEntityPreSpawned
+    def on_networked_entity_pre_spawned(entity):
+        pass
+
+.. note:: This listener gets only called in Black Mesa: Source.
+
+
 OnEntitySpawned
 ---------------
 
@@ -263,6 +307,20 @@ Called when an entity has been spawned.
 
     @OnEntitySpawned
     def on_entity_spawned(base_entity):
+        pass
+
+
+OnNetworkedEntitySpawned
+------------------------
+
+Called when a networked entity has been spawned.
+
+.. code-block:: python
+
+    from listeners import OnNetworkedEntitySpawned
+
+    @OnNetworkedEntitySpawned
+    def on_networked_entity_spawned(entity):
         pass
 
 

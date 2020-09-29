@@ -5,10 +5,18 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Importlib
 from importlib import import_module
+
+# Source.Python Imports
+#   Core
 from core import GAME_NAME
 from core import SOURCE_ENGINE
+#   Paths
 from paths import SP_PACKAGES_PATH
+#   Weapons
+import weapons._base
 
 
 # =============================================================================
@@ -26,7 +34,7 @@ if SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the game-specific 'Weapon' class
-    Weapon = import_module(
+    Weapon = weapons._base.Weapon = import_module(
         'weapons.engines.{engine}.{game}'.format(
             engine=SOURCE_ENGINE,
             game=GAME_NAME,
@@ -38,7 +46,7 @@ elif SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the engine-specific 'Weapon' class
-    Weapon = import_module(
+    Weapon = weapons._base.Weapon = import_module(
         'weapons.engines.{engine}'.format(
             engine=SOURCE_ENGINE,
         )
@@ -47,4 +55,4 @@ elif SP_PACKAGES_PATH.joinpath(
 else:
 
     # Import the base 'Weapon' class
-    from weapons._base import Weapon
+    Weapon = weapons._base.Weapon

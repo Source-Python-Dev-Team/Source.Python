@@ -47,8 +47,12 @@ from entities.helpers import edict_from_index
 from entities.helpers import index_from_inthandle
 from entities.helpers import wrap_entity_mem_func
 from entities.props import SendPropType
+#   Events
+from events.manager import game_event_manager
 #   Filters
 from filters.entities import EntityIter
+#   KeyValues
+from keyvalues import KeyValues
 #   Mathlib
 from mathlib import NULL_VECTOR
 from mathlib import Vector
@@ -776,6 +780,28 @@ class Player(PlayerMixin, Entity):
 
         # Spawn the player...
         super().spawn()
+
+    def fire_game_event(self, event_name, **kwargs):
+        """Creates and fires an event to this player.
+
+        :param str event_name:
+            The name of the event to create and fire.
+        :param dict kwargs:
+            The variables to set to the event.
+        """
+        # Create the event
+        game_event = game_event_manager.create_event(event_name, True)
+
+        # Set the variables
+        game_event.variables.recursive_copy(
+            KeyValues.from_dict(event_name, kwargs)
+        )
+
+        # Fire the event
+        self.base_client.fire_game_event(game_event)
+
+        # Free the event
+        game_event_manager.free_event(game_event)
 
     # =========================================================================
     # >> PLAYER WEAPON FUNCTIONALITY
