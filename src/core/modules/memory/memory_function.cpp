@@ -191,7 +191,7 @@ CFunction::~CFunction()
 		if (m_oCallingConvention.is_none())
 			delete m_pCallingConvention;
 		// Otherwise, just release our reference and let Python take care of it.
-		else
+		else if (Py_REFCNT(m_oCallingConvention.ptr()) > 1)
 			Py_DECREF(m_oCallingConvention.ptr());
 	}
 
@@ -427,6 +427,9 @@ void CFunction::DeleteHook()
 
 	g_mapCallbacks.erase(pHook);
 
+	// Flag the convention as no longer hooked and being taken care of by DynamicHooks.
+	pHook->m_pCallingConvention->m_bHooked = false;
+
 	// Release the Python reference we reserved for DynamicHooks.
 	ICallingConventionWrapper *pConv = dynamic_cast<ICallingConventionWrapper *>(pHook->m_pCallingConvention);
 	if (pConv)
@@ -435,8 +438,6 @@ void CFunction::DeleteHook()
 		if (pOwner && Py_REFCNT(pOwner))
 			Py_DECREF(pOwner);
 	}
-	// Flag the convention as no longer hooked and being taken care of by DynamicHooks.
-	pHook->m_pCallingConvention->m_bHooked = false;
 
 	// Set the calling convention to NULL, because DynamicHooks will delete it otherwise.
 	pHook->m_pCallingConvention = NULL;
