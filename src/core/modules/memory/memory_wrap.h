@@ -62,10 +62,37 @@ public:
 		}
 	}
 
-	~ICallingConventionWrapper()
+	virtual ~ICallingConventionWrapper()
 	{
+		// If we are still flagged as hooked, then that means DynamicHooks is done with us.
+		if (m_bHooked)
+		{
+			// Release the Python reference we reserved for DynamicHooks.
+			PyObject *pOwner = detail::wrapper_base_::owner(this);
+			if (pOwner && Py_REFCNT(pOwner))
+				Py_DECREF(pOwner);
+		}
+
 		delete m_pDefaultCallingConvention;
 		m_pDefaultCallingConvention = nullptr;
+	}
+
+	static void Deleter(ICallingConventionWrapper *pThis)
+	{
+		// If we are still hooked, DynamicHooks will take care of us.
+		if (pThis->m_bHooked)
+			return;
+
+		// We are not hooked, nor referenced anymore so we can be deleted.
+		delete pThis;
+	}
+
+	static boost::shared_ptr<ICallingConventionWrapper> __init__(
+		object oArgTypes, DataType_t returnType, int iAlignment=4, Convention_t eDefaultConv=CONV_CUSTOM)
+	{
+		return boost::shared_ptr<ICallingConventionWrapper>(
+			new ICallingConventionWrapper(oArgTypes, returnType, iAlignment, eDefaultConv), &Deleter
+		);
 	}
 
 	virtual std::list<Register_t> GetRegisters()

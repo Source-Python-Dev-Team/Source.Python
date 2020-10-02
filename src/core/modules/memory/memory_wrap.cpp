@@ -827,20 +827,24 @@ void export_registers(scope _memory)
 // ============================================================================
 void export_calling_convention(scope _memory)
 {
-	class_<ICallingConventionWrapper, ICallingConventionWrapper *, boost::noncopyable>(
+	class_<ICallingConventionWrapper, boost::shared_ptr<ICallingConventionWrapper>, boost::noncopyable>(
 		"CallingConvention",
 		"An an abstract class that is used to create custom calling "
 		"conventions (only available for hooking function and not for"
 		" calling functions).\n",
-		init< object, DataType_t, optional<int, Convention_t> >(
-			(arg("arg_types"), arg("return_type"), arg("alignment")=4, arg("default_convention")=CONV_CUSTOM),
+		no_init)
+
+		.def("__init__",
+			make_constructor(&ICallingConventionWrapper::__init__,
+				default_call_policies(),
+				(arg("arg_types"), arg("return_type"), arg("alignment")=4, arg("default_convention")=CONV_CUSTOM)
+			),
 			"Initialize the calling convention.\n"
 			"\n"
 			":param iterable arg_types: A list of :class:`DataType` values that define the argument types of a function.\n"
 			":param DataType return_type: The return type of a function.\n"
 			":param int alignment: The stack alignment.\n"
 			":param Convention_t default_convention: The default convention for un override function."
-			)
 		)
 
 		.def("get_registers",
