@@ -143,7 +143,13 @@ public:
 		m_vecArgTypes = vecArgTypes;
 		m_returnType = returnType;
 		m_iAlignment = iAlignment;
+		m_bHooked = false;
 	}
+
+	/*
+	Destructs the calling convention.
+	*/
+	virtual ~ICallingConvention() {};
 
 	/*
 	This should return a list of Register_t values. These registers will be
@@ -187,6 +193,7 @@ public:
 	std::vector<DataType_t> m_vecArgTypes;
 	DataType_t m_returnType;
 	int m_iAlignment;
+	bool m_bHooked;
 };
 
 #endif // _CONVENTION_H

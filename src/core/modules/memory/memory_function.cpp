@@ -155,20 +155,17 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 		// A custom calling convention will be used...
 		m_eCallingConvention = CONV_CUSTOM;
 		m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
-
-		// FIXME:
-		// This is required to fix a crash, but it will also cause a memory leak,
-		// because no calling convention object that is created via this method will ever be deleted.
-		// TODO: Pretty sure this was required due to the missing held type definition. It was added, but wasn't tested yet.
-		Py_INCREF(m_oCallingConvention.ptr());
 		m_pCallingConvention = extract<ICallingConvention*>(m_oCallingConvention);
+
+		// Reserve a Python reference for DynamicHooks.
+		Py_INCREF(m_oCallingConvention.ptr());
+
+		// Initialize our wrapper so that Python overrides are properly resolved.
+		detail::initialize_wrapper(m_oCallingConvention.ptr(), get_pointer((ICallingConventionWrapper *)m_pCallingConvention));
 	}
 
 	// Step 4: Get the DynCall calling convention
 	m_iCallingConvention = GetDynCallConvention(m_eCallingConvention);
-
-	// We allocated the calling convention, we are responsible to cleanup.
-	m_bAllocatedCallingConvention = true;
 }
 
 CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
@@ -180,9 +177,6 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 	m_pCallingConvention = NULL;
 	m_oCallingConvention = object();
 
-	// We didn't allocate the calling convention, someone else is responsible for it.
-	m_bAllocatedCallingConvention = false;
-
 	m_tArgs = tArgs;
 	m_eReturnType = eReturnType;
 	m_oConverter = oConverter;
@@ -190,23 +184,15 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 
 CFunction::~CFunction()
 {
-	// If we didn't allocate the calling convention, then it is not our responsibility.
-	if (!m_bAllocatedCallingConvention)
-		return;
-
-	// If we created calling convention, clean it up.
-	// This does not apply to hooked calling convention.
-	if (m_oCallingConvention.is_none())
+	// If the convention isn't flagged as hooked, then we need to take care of it.
+	if (m_pCallingConvention && !m_pCallingConvention->m_bHooked)
 	{
-		delete m_pCallingConvention;
-	}
-	else
-	{
-		ICallingConventionWrapper* _pCallingConventionWrapper = extract<ICallingConventionWrapper*>(m_oCallingConvention);
-
-		Py_DECREF(m_oCallingConvention.ptr());
-
-		delete _pCallingConventionWrapper;
+		// If we don't have a Python instance, then we can safely delete it.
+		if (m_oCallingConvention.is_none())
+			delete m_pCallingConvention;
+		// Otherwise, just release our reference and let Python take care of it.
+		else if (Py_REFCNT(m_oCallingConvention.ptr()) > 1)
+			Py_DECREF(m_oCallingConvention.ptr());
 	}
 
 	m_pCallingConvention = NULL;
@@ -398,9 +384,6 @@ void CFunction::AddHook(HookType_t eType, PyObject* pCallable)
 
 	if (!pHook) {
 		pHook = HookFunctionHelper((void *) m_ulAddr, m_pCallingConvention);
-
-		// DynamicHooks will handle our convention from there, regardless if we allocated it or not.
-		m_bAllocatedCallingConvention = false;
 	}
 
 	// Add the hook handler. If it's already added, it won't be added twice
@@ -420,9 +403,6 @@ bool CFunction::AddHook(HookType_t eType, HookHandlerFn* pFunc)
 
 		if (!pHook)
 			return false;
-
-		// DynamicHooks will handle our convention from there, regardless if we allocated it or not.
-		m_bAllocatedCallingConvention = false;
 	}
 
 	pHook->AddCallback(eType, pFunc);
@@ -446,6 +426,19 @@ void CFunction::DeleteHook()
 		return;
 
 	g_mapCallbacks.erase(pHook);
+
+	// Flag the convention as no longer hooked and being taken care of by DynamicHooks.
+	pHook->m_pCallingConvention->m_bHooked = false;
+
+	// Release the Python reference we reserved for DynamicHooks.
+	ICallingConventionWrapper *pConv = dynamic_cast<ICallingConventionWrapper *>(pHook->m_pCallingConvention);
+	if (pConv)
+	{
+		PyObject *pOwner = detail::wrapper_base_::owner(pConv);
+		if (pOwner && Py_REFCNT(pOwner))
+			Py_DECREF(pOwner);
+	}
+
 	// Set the calling convention to NULL, because DynamicHooks will delete it otherwise.
 	pHook->m_pCallingConvention = NULL;
 	GetHookManager()->UnhookFunction((void *) m_ulAddr);
