@@ -95,6 +95,30 @@ public:
 		);
 	}
 
+	void Initialize(object self, object oArgTypes, DataType_t returnType, int iAlignment=4, Convention_t eDefaultConv=CONV_CUSTOM)
+	{
+		// Initialize our wrapper so that Python overrides are properly resolved.
+		detail::initialize_wrapper(self.ptr(), this);
+
+		// If we didn't receive a default convention on construction, try to resolve one from the Python instance.
+		if (!m_pDefaultCallingConvention)
+		{
+			try
+			{
+				m_pDefaultCallingConvention = MakeDynamicHooksConvention(
+					extract<Convention_t>(self.attr("default_convention")), m_vecArgTypes, m_returnType, m_iAlignment
+				);
+			}
+			catch (error_already_set &)
+			{
+				if (!PyErr_ExceptionMatches(PyExc_AttributeError))
+					throw_error_already_set();
+
+				PyErr_Clear();
+			}
+		}
+	}
+
 	virtual std::list<Register_t> GetRegisters()
 	{
 		override get_registers = get_override("get_registers");
