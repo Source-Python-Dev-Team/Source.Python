@@ -154,7 +154,19 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 
 		// A custom calling convention will be used...
 		m_eCallingConvention = CONV_CUSTOM;
-		m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
+
+		// Check if default_convention is defined.
+		if (PyObject_HasAttrString(oCallingConvention.ptr(), "default_convention"))
+		{
+			// Extract default_convention and pass it to oCallingConvention.
+			Convention_t eCallingConvention = extract<Convention_t>(oCallingConvention.attr("default_convention"));
+			m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType, 4, eCallingConvention);
+		}
+		else
+		{
+			m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
+		}
+
 		m_pCallingConvention = extract<ICallingConvention*>(m_oCallingConvention);
 
 		// Reserve a Python reference for DynamicHooks.
