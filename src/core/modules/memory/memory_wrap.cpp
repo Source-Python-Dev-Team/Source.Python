@@ -540,6 +540,10 @@ void export_function(scope _memory)
 			&CFunction::m_eCallingConvention
 		)
 
+		.def_readonly("custom_convention",
+			&CFunction::m_oCallingConvention
+		)
+
 		// Properties
 		.add_property("trampoline",
 			make_function(&CFunction::GetTrampoline, manage_new_object_policy()),
