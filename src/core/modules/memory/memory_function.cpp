@@ -154,26 +154,11 @@ CFunction::CFunction(unsigned long ulAddr, object oCallingConvention, object oAr
 
 		// A custom calling convention will be used...
 		m_eCallingConvention = CONV_CUSTOM;
-
-		// Check if default_convention is defined.
-		if (PyObject_HasAttrString(oCallingConvention.ptr(), "default_convention"))
-		{
-			// Extract default_convention and pass it to oCallingConvention.
-			Convention_t eCallingConvention = extract<Convention_t>(oCallingConvention.attr("default_convention"));
-			m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType, 4, eCallingConvention);
-		}
-		else
-		{
-			m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
-		}
-
+		m_oCallingConvention = oCallingConvention(m_tArgs, m_eReturnType);
 		m_pCallingConvention = extract<ICallingConvention*>(m_oCallingConvention);
 
 		// Reserve a Python reference for DynamicHooks.
 		Py_INCREF(m_oCallingConvention.ptr());
-
-		// Initialize our wrapper so that Python overrides are properly resolved.
-		detail::initialize_wrapper(m_oCallingConvention.ptr(), get_pointer((ICallingConventionWrapper *)m_pCallingConvention));
 	}
 
 	// Step 4: Get the DynCall calling convention
@@ -196,8 +181,11 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 
 CFunction::~CFunction()
 {
+	if (!m_pCallingConvention)
+		return;
+
 	// If the convention isn't flagged as hooked, then we need to take care of it.
-	if (m_pCallingConvention && !m_pCallingConvention->m_bHooked)
+	if (!m_pCallingConvention->m_bHooked)
 	{
 		// If we don't have a Python instance, then we can safely delete it.
 		if (m_oCallingConvention.is_none())
@@ -206,6 +194,10 @@ CFunction::~CFunction()
 		else if (Py_REFCNT(m_oCallingConvention.ptr()) > 1)
 			Py_DECREF(m_oCallingConvention.ptr());
 	}
+	// If we are using a built-in convention that is currently hooked, let's flag it as no longer hooked
+	// so that we know we are not bound to a CFunction anymore and can be deleted.
+	else if (m_eCallingConvention != CONV_CUSTOM && !dynamic_cast<ICallingConventionWrapper *>(m_pCallingConvention))
+		m_pCallingConvention->m_bHooked = false;
 
 	m_pCallingConvention = NULL;
 }
@@ -439,17 +431,24 @@ void CFunction::DeleteHook()
 
 	g_mapCallbacks.erase(pHook);
 
-	// Flag the convention as no longer hooked and being taken care of by DynamicHooks.
-	pHook->m_pCallingConvention->m_bHooked = false;
-
-	// Release the Python reference we reserved for DynamicHooks.
 	ICallingConventionWrapper *pConv = dynamic_cast<ICallingConventionWrapper *>(pHook->m_pCallingConvention);
 	if (pConv)
 	{
-		PyObject *pOwner = detail::wrapper_base_::owner(pConv);
-		if (pOwner && Py_REFCNT(pOwner))
-			Py_DECREF(pOwner);
+		if (pConv->m_bHooked)
+		{
+			// Flag the convention as no longer hooked and being taken care of by DynamicHooks.
+			pHook->m_pCallingConvention->m_bHooked = false;
+
+			// Release the Python reference we reserved for DynamicHooks.
+			PyObject *pOwner = detail::wrapper_base_::owner(pConv);
+			if (pOwner && Py_REFCNT(pOwner))
+				Py_DECREF(pOwner);
+		}
 	}
+	// If we are a built-in convention bound to a CHook instance but not flagged as hooked anymore, then that
+	// means we are no longer bound to a CFunction instance and can be safely deleted.
+	else if (!pHook->m_pCallingConvention->m_bHooked)
+		delete pHook->m_pCallingConvention;
 
 	// Set the calling convention to NULL, because DynamicHooks will delete it otherwise.
 	pHook->m_pCallingConvention = NULL;

@@ -839,9 +839,18 @@ void export_calling_convention(scope _memory)
 		no_init)
 
 		.def("__init__",
-			make_constructor(&ICallingConventionWrapper::__init__,
-				default_call_policies(),
-				(arg("arg_types"), arg("return_type"), arg("alignment")=4, arg("default_convention")=CONV_CUSTOM)
+			make_constructor(
+				&ICallingConventionWrapper::__init__,
+				post_constructor_policies<
+					initialize_wrapper_policies<boost::shared_ptr<ICallingConventionWrapper> >
+				>(
+					make_function(
+						&ICallingConventionWrapper::Initialize,
+						default_call_policies(),
+						args("self", "arg_types", "return_type", "alignment", "default_convention")
+					)
+				),
+				("arg_types", "return_type", arg("alignment")=4, arg("default_convention")=CONV_CUSTOM)
 			),
 			"Initialize the calling convention.\n"
 			"\n"
