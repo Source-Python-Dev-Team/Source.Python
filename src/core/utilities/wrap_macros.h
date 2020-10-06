@@ -257,8 +257,8 @@ struct initialize_wrapper_policies : BasePolicies
 	template<typename ArgumentPackage>
 	static PyObject *postcall(const ArgumentPackage &args, PyObject *pResult)
 	{
-		PyObject *pSelf = detail::get(boost::mpl::int_<iSelf>(), args);
-		detail::initialize_wrapper(
+		PyObject *pSelf = boost::python::detail::get(boost::mpl::int_<iSelf>(), args);
+		boost::python::detail::initialize_wrapper(
 			pSelf,
 			get_pointer((HeldType)extract<HeldType>(pSelf))
 		);
@@ -284,8 +284,8 @@ public:
 	{
 		BasePolicies::postcall(args, pResult);
 		m_initializer(
-			*(make_tuple(
-				object(handle<>(incref(detail::get(boost::mpl::int_<iSelf>(), args))))) +
+			*(boost::python::make_tuple(
+				object(handle<>(incref(boost::python::detail::get(boost::mpl::int_<iSelf>(), args))))) +
 				boost::python::tuple(handle<>(args.base))
 			)
 		);
