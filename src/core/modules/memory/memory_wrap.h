@@ -95,11 +95,8 @@ public:
 		);
 	}
 
-	void Initialize(object self, object oArgTypes, DataType_t returnType, int iAlignment=4, Convention_t eDefaultConv=CONV_CUSTOM)
+	void Initialize(object self, object oArgTypes, DataType_t returnType, int iAlignment, Convention_t eDefaultConv)
 	{
-		// Initialize our wrapper so that Python overrides are properly resolved.
-		detail::initialize_wrapper(self.ptr(), this);
-
 		// If we didn't receive a default convention on construction, try to resolve one from the Python instance.
 		if (!m_pDefaultCallingConvention)
 		{

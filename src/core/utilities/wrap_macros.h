@@ -249,46 +249,53 @@ typedef return_value_policy<copy_const_reference> copy_const_reference_policy;
 typedef return_value_policy<return_by_value> return_by_value_policy;
 
 //---------------------------------------------------------------------------------
-// Provides post-construction initialization support of the Python instances.
+// Call policies that initializes the wrapper hierarchy.
 //---------------------------------------------------------------------------------
-template<typename BasePolicies = default_call_policies>
-struct initializer_call_policies : BasePolicies
+template<typename HeldType, typename BasePolicies = default_call_policies, int iSelf = -1>
+struct initialize_wrapper_policies : BasePolicies
 {
 	template<typename ArgumentPackage>
 	static PyObject *postcall(const ArgumentPackage &args, PyObject *pResult)
 	{
-		return incref(Py_None); // __init__ should always return None
+		PyObject *pSelf = detail::get(boost::mpl::int_<iSelf>(), args);
+		detail::initialize_wrapper(
+			pSelf,
+			get_pointer((HeldType)extract<HeldType>(pSelf))
+		);
+
+		return BasePolicies::postcall(args, pResult);
 	}
 };
 
-template<typename Constructor, typename Initializer>
-struct constructor_initializer
+//---------------------------------------------------------------------------------
+// Provides post-construction initialization support of the Python instances.
+//---------------------------------------------------------------------------------
+template<typename BasePolicies = default_call_policies, int iSelf = -1>
+struct post_constructor_policies : BasePolicies
 {
 public:
-	constructor_initializer(Constructor constructor, Initializer initializer):
-		m_constructor(constructor),
+	post_constructor_policies(object initializer):
 		m_initializer(initializer)
 	{
 	}
 
-	object operator()(boost::python::tuple args, dict kwargs)
+	template<typename ArgumentPackage>
+	PyObject *postcall(const ArgumentPackage &args, PyObject *pResult)
 	{
-		m_constructor(*args, **kwargs);
-		return m_initializer(*(make_tuple(args[0]) + args), **kwargs);
+		BasePolicies::postcall(args, pResult);
+		m_initializer(
+			*(make_tuple(
+				object(handle<>(incref(detail::get(boost::mpl::int_<iSelf>(), args))))) +
+				boost::python::tuple(handle<>(args.base))
+			)
+		);
+
+		decref(pResult);
+		return incref(Py_None); // __init__ should always return None
 	}
 
 private:
-	object m_constructor;
 	object m_initializer;
-};
-
-template<typename Constructor, typename Initializer>
-object make_constructor_initializer(Constructor constructor, Initializer initializer)
-{
-	return raw_function(
-		constructor_initializer<Constructor, Initializer>(constructor, initializer),
-		1 // self
-	);
 };
 
 #endif // _WRAP_MACROS_H
