@@ -534,7 +534,6 @@ void export_base_entity(scope _entity)
 		make_function(&CBaseEntityWrapper::GetPhysicsObject, manage_new_object_policy()),
 		"Return the physics object of the entity.\n\n"
 		":rtype: PhysicsObject");
-	cached_property(BaseEntity, "physics_object");
 
 	// KeyValue getter methods
 	BaseEntity.def("get_key_value_string",
