@@ -431,7 +431,7 @@ void export_cached_property(scope _cache)
 		"	If the getter, setter or deleter are not callable.",
 		(
 			"descriptor", arg("owner")=object(), arg("name")=str(),
-			arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
+			arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=object()
 		)
 	)
 	.staticmethod("wrap_descriptor");
