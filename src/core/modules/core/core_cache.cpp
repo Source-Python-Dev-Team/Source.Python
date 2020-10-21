@@ -111,31 +111,6 @@ void CCachedProperty::_invalidate_cache(PyObject *pRef)
 	}
 }
 
-void CCachedProperty::_delete_cache(object instance)
-{
-	try
-	{
-		if (m_bUnbound)
-			m_cache[
-				handle<>(
-					PyWeakref_NewRef(instance.ptr(), NULL)
-				)
-			].del();
-		else
-		{
-			dict cache = extract<dict>(instance.attr("__dict__"));
-			cache[m_name].del();
-		}
-	}
-	catch (...)
-	{
-		if (!PyErr_ExceptionMatches(PyExc_KeyError))
-			throw_error_already_set();
-
-		PyErr_Clear();
-	}
-}
-
 
 object CCachedProperty::get_getter()
 {
@@ -235,6 +210,31 @@ void CCachedProperty::set_cached_value(object instance, object value)
 	}
 }
 
+void CCachedProperty::delete_cached_value(object instance)
+{
+	try
+	{
+		if (m_bUnbound)
+			m_cache[
+				handle<>(
+					PyWeakref_NewRef(instance.ptr(), NULL)
+				)
+			].del();
+		else
+		{
+			dict cache = extract<dict>(instance.attr("__dict__"));
+			cache[m_name].del();
+		}
+	}
+	catch (...)
+	{
+		if (!PyErr_ExceptionMatches(PyExc_KeyError))
+			throw_error_already_set();
+
+		PyErr_Clear();
+	}
+}
+
 
 object CCachedProperty::bind(object self, object owner, str name)
 {
@@ -315,7 +315,7 @@ void CCachedProperty::__set__(object instance, object value)
 	if (!result.is_none())
 		set_cached_value(instance, result);
 	else
-		_delete_cache(instance);
+		delete_cached_value(instance);
 }
 
 void CCachedProperty::__delete__(object instance)
@@ -326,7 +326,7 @@ void CCachedProperty::__delete__(object instance)
 			**m_kwargs
 		);
 
-	_delete_cache(instance);
+	delete_cached_value(instance);
 }
 
 object CCachedProperty::__call__(object self, object fget)

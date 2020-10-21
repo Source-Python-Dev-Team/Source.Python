@@ -48,7 +48,6 @@ public:
 	static object _callable_check(object function, const char *szName);
 	static object _prepare_value(object value);
 	void _invalidate_cache(PyObject *pRef);
-	void _delete_cache(object instance);
 
 	object get_getter();
 	object set_getter(object fget);
@@ -64,6 +63,7 @@ public:
 
 	object get_cached_value(object instance);
 	void set_cached_value(object instance, object value);
+	void delete_cached_value(object instance);
 
 	static object bind(object self, object owner, str name);
 
