@@ -91,17 +91,47 @@ void export_net_channel(scope _net_channel)
 	);
 
 	NetChannel.def(
+		"set_data_rate",
+		&INetChannel::SetDataRate
+	);
+
+#if defined(ENGINE_BLADE) || defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2)
+	NetChannel.def(
 		"send_file",
-		&INetChannel::SendFile
+		&INetChannel::SendFile,
+		(arg("file_name"), arg("transfer_id"), arg("is_replay_demo")=false)
+	);
+
+	NetChannel.def(
+		"deny_file",
+		&INetChannel::DenyFile,
+		(arg("file_name"), arg("transfer_id"), arg("is_replay_demo")=false)
 	);
 
 	NetChannel.def(
 		"request_file",
-		&INetChannel::RequestFile);
+		&INetChannel::RequestFile,
+		(arg("file_name"), arg("is_replay_demo")=false)
+	);
+#else
+	NetChannel.def(
+		"send_file",
+		&INetChannel::SendFile,
+		(arg("file_name"), arg("transfer_id"))
+	);
 
 	NetChannel.def(
 		"deny_file",
-		&INetChannel::DenyFile);
+		&INetChannel::DenyFile,
+		(arg("file_name"), arg("transfer_id"))
+	);
+
+	NetChannel.def(
+		"request_file",
+		&INetChannel::RequestFile,
+		(arg("file_name"))
+	);
+#endif
 
 	NetChannel.def(
 		"send_data",
