@@ -61,27 +61,15 @@
 
 
 // ============================================================================
-// >> FORWARD DECLARATIONS
-// ============================================================================
-object GetObjectPointer(object obj);
-
-
-// ============================================================================
 // >> ExtractPointer
 // ============================================================================
 inline CPointer* ExtractPointer(object oPtr)
 {
-	try
-	{
-		oPtr = GetObjectPointer(oPtr);
-	}
-	catch (...)
-	{
-		PyErr_Clear();
-	}
+	extract<CPointer *> extractor(oPtr);
+	if (!extractor.check())
+		return extract<CPointer *>(oPtr.attr(GET_PTR_NAME)());
 
-	CPointer* pPtr = extract<CPointer *>(oPtr);
-	return pPtr;
+	return extractor();
 }
 
 
