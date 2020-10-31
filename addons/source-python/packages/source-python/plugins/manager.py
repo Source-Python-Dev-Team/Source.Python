@@ -13,6 +13,7 @@ from configobj import ConfigObj
 from configobj import Section
 #   Importlib
 from importlib.util import find_spec
+from importlib.util import spec_from_file_location
 #   Sys
 import sys
 #   Re
@@ -177,8 +178,20 @@ class PluginManager(OrderedDict):
             raise PluginFileNotFoundError(
                 'File {} does not exist.'.format(plugin.file_path))
 
-        spec = find_spec(plugin.import_name)
-        if spec is None or spec.origin != plugin.file_path:
+        spec = None
+        if plugin_name not in sys.builtin_module_names:
+            try:
+                spec = find_spec(plugin.import_name)
+            # AttributeError:
+            #   An existing .py module that do not have a __path__ attribute.
+            # ValueError:
+            #   An existing .pyc/.pyd package that have its __spec__ attribute
+            #   set to None.
+            except (AttributeError, ValueError):
+                pass
+
+        if spec is None or spec != spec_from_file_location(
+                plugin.import_name, plugin.file_path):
             raise PluginHasBuiltInName(
                 'Plugin "{}" has the name of a built-in module.'.format(
                     plugin_name))
