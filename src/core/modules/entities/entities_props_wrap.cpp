@@ -50,6 +50,7 @@ void export_send_prop_types(scope);
 void export_send_prop_flags(scope);
 void export_send_prop_variant(scope);
 void export_server_class(scope);
+void export_send_proxy_recipients(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -63,6 +64,7 @@ DECLARE_SP_SUBMODULE(_entities, _props)
 	export_send_prop_flags(_props);
 	export_send_prop_variant(_props);
 	export_server_class(_props);
+	export_send_proxy_recipients(_props);
 }
 
 
@@ -273,4 +275,34 @@ void export_server_class(scope _props)
 	
 	// Add memory tools...
 	ServerClass_ ADD_MEM_TOOLS(ServerClass);
+}
+
+
+//-----------------------------------------------------------------------------
+// Expose SendProxyRecipients.
+//-----------------------------------------------------------------------------
+void export_send_proxy_recipients(scope _props)
+{
+	class_<CSendProxyRecipients> SendProxyRecipients("SendProxyRecipients");
+	
+	SendProxyRecipients.def(
+		"set_all_recipients",
+		&CSendProxyRecipients::SetAllRecipients);
+	
+	SendProxyRecipients.def(
+		"clear_all_recipients",
+		&CSendProxyRecipients::ClearAllRecipients);
+	
+	SendProxyRecipients.def(
+		"set_recipient",
+		&CSendProxyRecipients::SetRecipient);
+	
+	SendProxyRecipients.def(
+		"set_only",
+		&CSendProxyRecipients::SetOnly);
+
+	// TODO: m_Bits
+	
+	// Add memory tools...
+	SendProxyRecipients ADD_MEM_TOOLS(CSendProxyRecipients);
 }
