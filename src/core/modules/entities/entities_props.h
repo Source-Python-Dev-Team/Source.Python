@@ -42,6 +42,7 @@
 //-----------------------------------------------------------------------------
 BOOST_FUNCTION_TYPEDEF(void (const SendProp*, const void*, const void*, DVariant*, int, int), BoostSendVarProxyFn)
 BOOST_FUNCTION_TYPEDEF(void* (const SendProp*, const void*, const void*, CSendProxyRecipients*, int), BoostDataTableProxyFn)
+BOOST_FUNCTION_TYPEDEF(int (const void *pStruct, int objectID), BoostArrayLengthProxyFn)
 
 
 //-----------------------------------------------------------------------------
@@ -69,6 +70,7 @@ class SendPropSharedExt
 public:
 	static BoostSendVarProxyFn get_proxy_function(SendProp *pSendProp);
 	static BoostDataTableProxyFn get_data_table_proxy_function(SendProp *pSendProp);
+	static BoostArrayLengthProxyFn get_array_length_proxy_function(SendProp *pSendProp);
 };
 
 

@@ -169,6 +169,21 @@ BoostDataTableProxyFn SendPropSharedExt::get_data_table_proxy_function(SendProp 
 	return BoostDataTableProxyFn(pSendProp->GetDataTableProxyFn());
 }
 
+BoostArrayLengthProxyFn SendPropSharedExt::get_array_length_proxy_function(SendProp *pSendProp)
+{
+	if (pSendProp->IsExcludeProp())
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is excluded.", pSendProp->GetName());
+
+	if (pSendProp->GetType() != DPT_Array)
+		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is not an array.", pSendProp->GetName());
+
+	if (!pSendProp->GetArrayLengthProxy()) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "%s has no array length proxy function.", pSendProp->GetName());
+	}
+
+	return BoostArrayLengthProxyFn(pSendProp->GetArrayLengthProxy());
+}
+
 
 // ============================================================================
 // >> SendPropVariantExt
