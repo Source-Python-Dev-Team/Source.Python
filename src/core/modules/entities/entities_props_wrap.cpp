@@ -295,6 +295,8 @@ void export_send_proxy_recipients(scope _props)
 		"clear_all_recipients",
 		&CSendProxyRecipients::ClearAllRecipients);
 	
+	/*
+	// These two are not implemented in the header in some games (e. g. CS:GO).
 	SendProxyRecipients.def(
 		"set_recipient",
 		&CSendProxyRecipients::SetRecipient);
@@ -302,6 +304,7 @@ void export_send_proxy_recipients(scope _props)
 	SendProxyRecipients.def(
 		"set_only",
 		&CSendProxyRecipients::SetOnly);
+	*/
 
 	// TODO: m_Bits
 	
