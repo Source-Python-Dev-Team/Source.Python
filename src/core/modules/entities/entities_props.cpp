@@ -147,6 +147,10 @@ BoostSendVarProxyFn SendPropSharedExt::get_proxy_function(SendProp *pSendProp)
 	if (pSendProp->GetType() == DPT_DataTable)
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is a DataTable.", pSendProp->GetName());
 
+	if (!pSendProp->GetProxyFn()) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "%s has no proxy function.", pSendProp->GetName());
+	}
+
 	return BoostSendVarProxyFn(pSendProp->GetProxyFn());
 }
 
@@ -157,6 +161,10 @@ BoostDataTableProxyFn SendPropSharedExt::get_data_table_proxy_function(SendProp 
 
 	if (pSendProp->GetType() != DPT_DataTable)
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "%s is not a DataTable.", pSendProp->GetName());
+
+	if (!pSendProp->GetDataTableProxyFn()) {
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "%s has no data table proxy function.", pSendProp->GetName());
+	}
 
 	return BoostDataTableProxyFn(pSendProp->GetDataTableProxyFn());
 }
