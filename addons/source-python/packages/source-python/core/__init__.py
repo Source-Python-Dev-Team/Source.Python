@@ -114,8 +114,13 @@ class AutoUnload(object):
         path = frame.f_code.co_filename
 
         # Don't keep hostage instances that will never be unloaded
-        if not path.startswith(PLUGIN_PATH):
-            return self
+        while not path.startswith(PLUGIN_PATH):
+            frame = frame.f_back
+            if frame is None:
+                return self
+            path = frame.f_code.co_filename
+            if path.startswith('<frozen'):
+                return self
 
         # Resolve the calling module name
         try:
