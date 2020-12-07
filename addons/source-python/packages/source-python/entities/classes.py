@@ -37,6 +37,7 @@ from memory import Convention
 from memory import DataType
 from memory import get_object_pointer
 from memory import make_object
+from memory.helpers import Key
 from memory.helpers import Type
 from memory.manager import CustomType
 from memory.manager import TypeManager
@@ -332,6 +333,23 @@ class _ServerClasses(TypeManager):
                     instance, name, offset, property_contents,
                     _supported_descriptor_types[desc.type])
 
+        # Loop through all instance properties
+        for name, data in manager_contents.get(
+            'instance_property', {}).items():
+
+            # Register the property
+            setattr(instance, name, getattr(
+                self, data.get('method', 'instance_attribute')
+                )(
+                    Key.as_attribute_type(self, data['type']),
+                    instance.properties[data['base']].offset + Key.as_int(
+                        self, data.get(
+                            'offset_' + PLATFORM, data.get('offset', 0))
+                        ),
+                    data.get('doc', None)
+                )
+            )
+
         # Get a list of all properties for the current server class
         properties = list(instance.properties)
 
@@ -485,7 +503,8 @@ class _ServerClasses(TypeManager):
         value = self.instance_attribute(prop_type, offset)
 
         # Add the property to the properties dictionary
-        instance.properties[name] = EntityProperty(value, prop_type, networked)
+        instance.properties[name] = EntityProperty(
+            value, prop_type, networked, offset)
 
         # Is the property not a named property?
         if name not in contents:
