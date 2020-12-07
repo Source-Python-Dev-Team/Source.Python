@@ -342,10 +342,13 @@ class _ServerClasses(TypeManager):
                 self, data.get('method', 'instance_attribute')
                 )(
                     Key.as_attribute_type(self, data['type']),
-                    instance.properties[data['base']].offset + Key.as_int(
+                    instance.properties[
+                        data.get('base_' + PLATFORM, data.get('base'))
+                    ].offset + Key.as_int(
                         self, data.get(
-                            'offset_' + PLATFORM, data.get('offset', 0))
-                        ),
+                            'offset_' + PLATFORM, data.get('offset', 0)
+                        )
+                    ),
                     data.get('doc', None)
                 )
             )
