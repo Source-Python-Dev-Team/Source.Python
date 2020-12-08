@@ -74,5 +74,5 @@ class Entity(_Entity):
 
     thrower = property(
         lambda self: self.__getattr__('thrower'),
-        lambda self, value: self.set_attacker(pointer_from_inthandle(value))
+        lambda self, inthandle: self.set_attacker(pointer_from_inthandle(inthandle))
     )
