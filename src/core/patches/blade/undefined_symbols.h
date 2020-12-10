@@ -56,4 +56,25 @@ CTakeDamageInfo::CTakeDamageInfo()
 	m_iAmmoType = -1;
 }
 
+
+//-----------------------------------------------------------------------------
+// CSendProxyRecipients function definitions.
+//-----------------------------------------------------------------------------
+void CSendProxyRecipients::SetRecipient( int iClient )
+{
+	m_Bits.Set( iClient );
+}
+
+void CSendProxyRecipients::ClearRecipient( int iClient )
+{
+	m_Bits.Clear( iClient );
+}
+
+void CSendProxyRecipients::SetOnly( int iClient )
+{
+	m_Bits.ClearAll();
+	m_Bits.Set( iClient );
+}
+
+
 #endif // _UNDEFINED_SYMBOLS_BLADE_H
