@@ -38,8 +38,11 @@
 #include "boost/python.hpp"
 using namespace boost::python;
 
-// SDK
-#include "strtools.h"
+
+//---------------------------------------------------------------------------------
+// External variables to use.
+//---------------------------------------------------------------------------------
+extern INetworkStringTableContainer *networkstringtable;
 
 
 //-----------------------------------------------------------------------------
@@ -47,16 +50,9 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 int find_game_rules_property_offset(const char* name)
 {
-	// TODO: I guess it's save to cache the server class...
+	ServerClass* cls = ServerClassExt::find_server_class(find_game_rules_proxy_name());
+	int offset = SendTableSharedExt::find_offset(cls->m_pTable, name);
 
-	CBaseEntityWrapper* proxy = (CBaseEntityWrapper*) CBaseEntityWrapper::find_or_create(find_game_rules_proxy_name());
-
-	ServerClass* cls = proxy->GetServerClass();
-	if (!cls)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to retrieve the server class.")
-
-	int offset;
-	offset = SendTableSharedExt::find_offset(cls->m_pTable, name);
 	if (offset == -1)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
 
@@ -66,65 +62,43 @@ int find_game_rules_property_offset(const char* name)
 const char* find_game_rules_proxy_name()
 {
 	static const char* s_proxy_name = NULL;
-	int i = 0;
 
-	if (s_proxy_name)
-	{
-		return s_proxy_name;
-	}
 
-	CEntityFactoryDictionary* factory_dictionary = GetEntityFactoryDictionary();
-	
-	while (factory_dictionary->m_Factories.IsValidIndex(i))
+
+	return NULL;
+}
+
+SendTableProxyFn find_game_rules_proxy_function()
+{
+	SendTableProxyFn s_proxy_func = NULL;
+	if (s_proxy_func)
+		return s_proxy_func;
+
+	ServerClass* cls = ServerClassExt::find_server_class(find_game_rules_proxy_name());
+	SendTable* table = cls->m_pTable;
+
+	for (int i=0; i < table->GetNumProps(); i++)
 	{
-		const char* classname = factory_dictionary->m_Factories.GetElementName(i);
-		if (V_stristr(classname, "gamerules"))
+		SendProp* prop = table->GetProp(i);
+		if (!V_stristr(prop->GetName(), "gamerules_data"))
 		{
-			// Cache the result
-			s_proxy_name = classname;
-			return classname;
+			continue;
 		}
 
-		++i;
+		SendTableProxyFn s_proxy_func = prop->GetDataTableProxyFn();
+		if (!s_proxy_func)
+		{
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Game rules proxy function is NULL.");
+		}
 	}
 
-	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find game rules proxy name.");
 	return NULL;
 }
 
 CGameRulesWrapper* find_game_rules()
 {
-	// TODO: Can we cache the result?
+	SendTableProxyFn proxy_func = find_game_rules_proxy_function();
+	static CSendProxyRecipients recipients;
 
-	CBaseEntityWrapper* proxy = (CBaseEntityWrapper*) CBaseEntityWrapper::find_or_create(find_game_rules_proxy_name());
-
-	ServerClass* cls = proxy->GetServerClass();
-	while (cls)
-	{
-		SendTable* table = cls->m_pTable;
-		for (int i=0; i < table->GetNumProps(); i++)
-		{
-			SendProp* prop = table->GetProp(i);
-			if (!V_stristr(prop->GetName(), "gamerules_data"))
-			{
-				continue;
-			}
-
-			SendTableProxyFn proxy_func = prop->GetDataTableProxyFn();
-			if (!proxy_func)
-			{
-				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Found game rules proxy entity, but proxy function is NULL.");
-			}
-
-			// Pass the recipients. Some game's proxy functions require it for
-			// the game rules proxy.
-			CSendProxyRecipients recipients;
-			return (CGameRulesWrapper*) proxy_func(NULL, NULL, NULL, &recipients, 0);
-		}
-
-		cls = cls->m_pNext;
-	}
-
-	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Found game rules proxy entity, but proxy function is NULL.");
-	return NULL;
+	return (CGameRulesWrapper*) proxy_func(NULL, NULL, NULL, &recipients, 0);
 }
