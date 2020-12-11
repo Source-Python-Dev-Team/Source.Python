@@ -113,7 +113,7 @@ CGameRulesWrapper* find_game_rules()
 	
 	CGameRulesWrapper* game_rules = (CGameRulesWrapper*) proxy_func(NULL, NULL, NULL, &recipients, 0);
 	if (!game_rules)
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Game rules pointer is NULL.");
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Game rules pointer is NULL.");
 
 	return game_rules;
 }
