@@ -438,9 +438,11 @@ Set(SOURCEPYTHON_STEAM_MODULE_SOURCES
 # StringTables module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_STRINGTABLES_MODULE_HEADERS
+    core/modules/stringtables/stringtables.h
 )
 
 Set(SOURCEPYTHON_STRINGTABLES_MODULE_SOURCES
+    core/modules/stringtables/stringtables.cpp
     core/modules/stringtables/stringtables_wrap.cpp
 )
 
