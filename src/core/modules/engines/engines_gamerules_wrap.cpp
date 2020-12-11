@@ -33,21 +33,11 @@
 #include "engines_gamerules.h"
 
 // SDK
-// CS:GO doesn't compile without the next two lines
-#if defined(ENGINE_CSGO)
-	#include "baseanimating.h"
-	IUniformRandomStream* random;
-#endif
 #include "game/shared/gamerules.h"
-
 
 //---------------------------------------------------------------------------------
 // Forward declarations.
 //---------------------------------------------------------------------------------
-void export_game_system(scope);
-void export_game_system_per_frame(scope);
-void export_base_game_system_per_frame(scope);
-void export_auto_game_system_per_frame(scope);
 void export_game_rules(scope);
 
 
@@ -59,12 +49,12 @@ DECLARE_SP_SUBMODULE(_engines, _gamerules)
 	def(
 		"find_game_rules_property_offset",
 		&find_game_rules_property_offset,
-		"Find the ooffset of a game rule property.\n\n"
+		"Find the offset of a game rules property.\n\n"
 		":rtype: int");
 	def(
 		"find_game_rules_proxy_name",
 		&find_game_rules_proxy_name,
-		"Find the entity name that proxies the game rules (e. g. ``cs_gamerules``).\n\n"
+		"Find the server class of the game rules proxy entity (e. g. ``CCSGameRulesProxy``).\n\n"
 		":raise ValueError:\n"
 		"	Raised if the game rules proxy name wasn't found.\n"
 		":rtype: str");
@@ -78,63 +68,7 @@ DECLARE_SP_SUBMODULE(_engines, _gamerules)
 		":rtype: GameRules\n",
 		reference_existing_object_policy());
 
-	export_game_system(_gamerules);
-	export_game_system_per_frame(_gamerules);
-	export_base_game_system_per_frame(_gamerules);
-	export_auto_game_system_per_frame(_gamerules);
 	export_game_rules(_gamerules);
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose GameSystem.
-//-----------------------------------------------------------------------------
-void export_game_system(scope _gamerules)
-{
-	//class_<IGameSystem, boost::noncopyable> GameSystem("GameSystem", no_init);
-	//
-	//GameSystem.add_property(
-	//	"name", 
-	//	&IGameSystem::Name);
-
-	//GameSystem ADD_MEM_TOOLS(IGameSystem);
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose GameSystemPerFrame.
-//-----------------------------------------------------------------------------
-void export_game_system_per_frame(scope _gamerules)
-{
-	//class_<IGameSystemPerFrame, bases<IGameSystem>, boost::noncopyable> GameSystemPerFrame("GameSystemPerFrame", no_init);
-
-	//GameSystemPerFrame ADD_MEM_TOOLS(IGameSystemPerFrame);
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose BaseGameSystemPerFrame.
-//-----------------------------------------------------------------------------
-void export_base_game_system_per_frame(scope _gamerules)
-{
-	//class_<CBaseGameSystemPerFrame, bases<IGameSystemPerFrame>, boost::noncopyable> BaseGameSystemPerFrame("BaseGameSystemPerFrame", no_init);
-
-	//BaseGameSystemPerFrame ADD_MEM_TOOLS(CBaseGameSystemPerFrame);
-}
-
-
-//-----------------------------------------------------------------------------
-// Expose AutoGameSystemPerFrame.
-//-----------------------------------------------------------------------------
-void export_auto_game_system_per_frame(scope _gamerules)
-{
-	//class_<CAutoGameSystemPerFrame, bases<CBaseGameSystemPerFrame>, boost::noncopyable> AutoGameSystemPerFrame("AutoGameSystemPerFrame", no_init);
-
-	//AutoGameSystemPerFrame.add_property(
-	//	"next", 
-	//	make_getter(&CAutoGameSystemPerFrame::m_pNext, reference_existing_object_policy()));
-
-	//AutoGameSystemPerFrame ADD_MEM_TOOLS(CAutoGameSystemPerFrame);
 }
 
 
@@ -144,18 +78,6 @@ void export_auto_game_system_per_frame(scope _gamerules)
 void export_game_rules(scope _gamerules)
 {
 	class_<CGameRulesWrapper, boost::noncopyable> GameRules("GameRules", no_init);
-
-	//GameRules.add_property(
-	//	"game_description",
-	//	&CGameRulesWrapper::GetGameDescription);
-
-	//GameRules.def(
-	//	"should_collide",
-	//	&CGameRulesWrapper::ShouldCollide);
-
-	//GameRules.def(
-	//	"get_tagged_convar_list",
-	//	&CGameRulesWrapper::GetTaggedConVarList);
 
 	// Generic property getters
 	GameRules.def("get_property_bool",

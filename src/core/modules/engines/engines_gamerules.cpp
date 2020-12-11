@@ -29,14 +29,16 @@
 //-----------------------------------------------------------------------------
 // Source.Python
 #include "engines_gamerules.h"
-#include "modules/entities/entities_factories.h"
-#include "modules/entities/entities_entity.h"
 #include "modules/entities/entities_props.h"
+#include "modules/stringtables/stringtables.h"
 #include "utilities/wrap_macros.h"
 
 // Boost.Python
 #include "boost/python.hpp"
 using namespace boost::python;
+
+// SDK
+#include "server_class.h"
 
 
 //---------------------------------------------------------------------------------
@@ -61,17 +63,28 @@ int find_game_rules_property_offset(const char* name)
 
 const char* find_game_rules_proxy_name()
 {
-	static const char* s_proxy_name = NULL;
+	static std::string s_proxy_name;
+	if (!s_proxy_name.empty())
+		// Use cache
+		return s_proxy_name.c_str();
 
+	INetworkStringTable* table = networkstringtable->FindTable("GameRulesCreation");
+	if (!table)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find string table 'GameRulesCreation'.")
 
+	s_proxy_name = INetworkStringTableExt::GetStringUserData(table, "classname");
+	if (s_proxy_name.empty())
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'classname' of string table 'GameRulesCreation' is NULL.")
 
-	return NULL;
+	s_proxy_name += "Proxy";
+	return s_proxy_name.c_str();
 }
 
 SendTableProxyFn find_game_rules_proxy_function()
 {
 	SendTableProxyFn s_proxy_func = NULL;
 	if (s_proxy_func)
+		// Use cache
 		return s_proxy_func;
 
 	ServerClass* cls = ServerClassExt::find_server_class(find_game_rules_proxy_name());
@@ -81,24 +94,26 @@ SendTableProxyFn find_game_rules_proxy_function()
 	{
 		SendProp* prop = table->GetProp(i);
 		if (!V_stristr(prop->GetName(), "gamerules_data"))
-		{
 			continue;
-		}
 
-		SendTableProxyFn s_proxy_func = prop->GetDataTableProxyFn();
-		if (!s_proxy_func)
-		{
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Game rules proxy function is NULL.");
-		}
+		s_proxy_func = prop->GetDataTableProxyFn();
+		break;
 	}
 
-	return NULL;
+	if (!s_proxy_func)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Game rules proxy function is NULL.");
+
+	return s_proxy_func;
 }
 
 CGameRulesWrapper* find_game_rules()
 {
 	SendTableProxyFn proxy_func = find_game_rules_proxy_function();
 	static CSendProxyRecipients recipients;
+	
+	CGameRulesWrapper* game_rules = (CGameRulesWrapper*) proxy_func(NULL, NULL, NULL, &recipients, 0);
+	if (!game_rules)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Game rules pointer is NULL.");
 
-	return (CGameRulesWrapper*) proxy_func(NULL, NULL, NULL, &recipients, 0);
+	return game_rules;
 }
