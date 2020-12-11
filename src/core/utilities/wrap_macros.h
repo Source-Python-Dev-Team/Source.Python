@@ -248,4 +248,54 @@ typedef return_value_policy<copy_const_reference> copy_const_reference_policy;
 
 typedef return_value_policy<return_by_value> return_by_value_policy;
 
+//---------------------------------------------------------------------------------
+// Call policies that initializes the wrapper hierarchy.
+//---------------------------------------------------------------------------------
+template<typename HeldType, typename BasePolicies = default_call_policies, int iSelf = -1>
+struct initialize_wrapper_policies : BasePolicies
+{
+	template<typename ArgumentPackage>
+	static PyObject *postcall(const ArgumentPackage &args, PyObject *pResult)
+	{
+		PyObject *pSelf = boost::python::detail::get(boost::mpl::int_<iSelf>(), args);
+		boost::python::detail::initialize_wrapper(
+			pSelf,
+			get_pointer((HeldType)extract<HeldType>(pSelf))
+		);
+
+		return BasePolicies::postcall(args, pResult);
+	}
+};
+
+//---------------------------------------------------------------------------------
+// Provides post-construction initialization support of the Python instances.
+//---------------------------------------------------------------------------------
+template<typename BasePolicies = default_call_policies, int iSelf = -1>
+struct post_constructor_policies : BasePolicies
+{
+public:
+	post_constructor_policies(object initializer):
+		m_initializer(initializer)
+	{
+	}
+
+	template<typename ArgumentPackage>
+	PyObject *postcall(const ArgumentPackage &args, PyObject *pResult)
+	{
+		BasePolicies::postcall(args, pResult);
+		m_initializer(
+			*(boost::python::make_tuple(
+				object(handle<>(incref(boost::python::detail::get(boost::mpl::int_<iSelf>(), args))))) +
+				boost::python::tuple(handle<>(args.base))
+			)
+		);
+
+		decref(pResult);
+		return incref(Py_None); // __init__ should always return None
+	}
+
+private:
+	object m_initializer;
+};
+
 #endif // _WRAP_MACROS_H

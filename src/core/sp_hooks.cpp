@@ -93,22 +93,12 @@ bool ISimpleEntityHook::Initialize(CBaseEntity* pEntity)
 		return true;
 	}
 
-	CHook* pHook = GetHookManager()->FindHook((void*) func->m_ulAddr);
-	if (!pHook)
+	if (!func->AddHook(this->hook_type, this->hook_handler))
 	{
-		pHook = GetHookManager()->HookFunction(
-			(void*) func->m_ulAddr,
-			func->m_pCallingConvention);
-
-		if (!pHook)
-		{
-			PythonLog(0, "Could not create a hook for %s.", this->func_name);
-			return true;
-		}
+		PythonLog(0, "Could not create a hook for %s.", this->func_name);
+		return true;
 	}
 
-	pHook->AddCallback(this->hook_type, this->hook_handler);
-	
 	PythonLog(3, "Core hook (%s) has been initialized.", this->func_name);
 	return true;
 }

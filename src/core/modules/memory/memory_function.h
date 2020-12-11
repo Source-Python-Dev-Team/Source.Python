@@ -90,6 +90,8 @@ public:
 
 	void DeleteHook();
 
+	bool AddHook(HookType_t eType, HookHandlerFn* pFunc);
+
 public:
 	boost::python::tuple	m_tArgs;
 	object					m_oConverter;
@@ -104,7 +106,15 @@ public:
 	// DynamicHooks calling convention (built-in and custom)
 	ICallingConvention*		m_pCallingConvention;
 	bool					m_bAllocatedCallingConvention;
+
+	// Custom calling convention
+	object					m_oCallingConvention;
 };
 
+
+//---------------------------------------------------------------------------------
+// Functions
+//---------------------------------------------------------------------------------
+ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment=4);
 
 #endif // _MEMORY_FUNCTION_H

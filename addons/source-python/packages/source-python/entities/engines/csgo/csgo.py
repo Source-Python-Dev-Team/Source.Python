@@ -6,8 +6,11 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python
-from entities import BaseEntityGenerator
+#   Entities
 from . import Entity as _Entity
+from entities import BaseEntityGenerator
+from entities.helpers import pointer_from_inthandle
+#   Weapons
 from weapons.manager import weapon_manager
 
 
@@ -68,3 +71,8 @@ class Entity(_Entity):
                 ) in (index, 0):
                     return cls(entity.index)
         return super().find(classname)
+
+    thrower = property(
+        lambda self: self.__getattr__('thrower'),
+        lambda self, inthandle: self.set_attacker(pointer_from_inthandle(inthandle))
+    )
