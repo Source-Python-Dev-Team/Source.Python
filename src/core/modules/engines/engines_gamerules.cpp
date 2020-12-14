@@ -52,8 +52,14 @@ extern INetworkStringTableContainer *networkstringtable;
 //-----------------------------------------------------------------------------
 int find_game_rules_property_offset(const char* name)
 {
-	ServerClass* cls = ServerClassExt::find_server_class(find_game_rules_proxy_name());
-	int offset = SendTableSharedExt::find_offset(cls->m_pTable, name);
+	static SendTable* s_table = NULL;
+	if (!s_table) 
+	{
+		ServerClass* cls = ServerClassExt::find_server_class(find_game_rules_proxy_name());
+		s_table = cls->m_pTable;
+	}
+
+	int offset = SendTableSharedExt::find_offset(s_table, name);
 
 	if (offset == -1)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
