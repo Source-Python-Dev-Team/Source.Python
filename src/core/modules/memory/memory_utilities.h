@@ -66,8 +66,10 @@
 inline CPointer* ExtractPointer(object oPtr)
 {
 	extract<CPointer *> extractor(oPtr);
-	if (!extractor.check())
-		return extract<CPointer *>(oPtr.attr(GET_PTR_NAME)());
+	if (!extractor.check()){
+		oPtr = oPtr.attr(GET_PTR_NAME)();
+		return extract<CPointer *>(oPtr);
+	}
 
 	return extractor();
 }

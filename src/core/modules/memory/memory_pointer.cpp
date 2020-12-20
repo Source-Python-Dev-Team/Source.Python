@@ -125,8 +125,7 @@ void SetPtrHelper(unsigned long addr, unsigned long ptr)
 void CPointer::SetPtr(object oPtr, int iOffset /* = 0 */)
 {
 	Validate();
-	CPointer* pPtr = ExtractPointer(oPtr);
-	SetPtrHelper(m_ulAddr + iOffset, pPtr->m_ulAddr);
+	SetPtrHelper(m_ulAddr + iOffset, ExtractPointer(oPtr)->m_ulAddr);
 }
 
 int CompareHelper(void* first, void* second, unsigned long length)
@@ -140,18 +139,18 @@ int CompareHelper(void* first, void* second, unsigned long length)
 int CPointer::Compare(object oOther, unsigned long ulNum)
 {
 	Validate();
-	CPointer* pOther = ExtractPointer(oOther);
-	pOther->Validate();
-	return CompareHelper((void *) m_ulAddr, (void *) pOther->m_ulAddr, ulNum);
+	CPointer pOther = CPointer(ExtractPointer(oOther)->m_ulAddr);
+	pOther.Validate();
+	return CompareHelper((void *) m_ulAddr, (void *) pOther.m_ulAddr, ulNum);
 }
 
 bool CPointer::IsOverlapping(object oOther, unsigned long ulNumBytes)
 {
-	CPointer* pOther = ExtractPointer(oOther);
-	if (m_ulAddr <= pOther->m_ulAddr)
-		return m_ulAddr + ulNumBytes > pOther->m_ulAddr;
-       
-	return pOther->m_ulAddr + ulNumBytes > m_ulAddr;
+	unsigned long ulOther = ExtractPointer(oOther)->m_ulAddr;
+	if (m_ulAddr <= ulOther)
+		return m_ulAddr + ulNumBytes > ulOther;
+
+	return ulOther + ulNumBytes > m_ulAddr;
 }
 
 void* SearchBytesHelper(unsigned char* base, unsigned char* end, unsigned char* bytes, unsigned long length)
@@ -208,13 +207,13 @@ void CPointer::Copy(object oDest, unsigned long ulNumBytes)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'num_bytes' must be greater than 0.")
 	}
 
-	CPointer* pDest = ExtractPointer(oDest);
-	pDest->Validate();
+	CPointer pDest = CPointer(ExtractPointer(oDest)->m_ulAddr);
+	pDest.Validate();
 
 	if (IsOverlapping(oDest, ulNumBytes))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointers are overlapping!")
 
-	CopyHelper((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
+	CopyHelper((void *) pDest.m_ulAddr, (void *) m_ulAddr, ulNumBytes);
 }
 
 void MoveHelper(void* dest, void* source, unsigned long length)
@@ -231,9 +230,9 @@ void CPointer::Move(object oDest, unsigned long ulNumBytes)
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "'num_bytes' must be greater than 0.")
 	}
 
-	CPointer* pDest = ExtractPointer(oDest);
-	pDest->Validate();
-	MoveHelper((void *) pDest->m_ulAddr, (void *) m_ulAddr, ulNumBytes);
+	CPointer pDest = CPointer(ExtractPointer(oDest)->m_ulAddr);
+	pDest.Validate();
+	MoveHelper((void *) pDest.m_ulAddr, (void *) m_ulAddr, ulNumBytes);
 }
 
 unsigned long GetVirtualFuncHelper(unsigned long addr, int index)
