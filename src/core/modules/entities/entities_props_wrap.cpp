@@ -265,6 +265,13 @@ void export_send_prop_variant(scope _props)
 void export_server_class(scope _props)
 {
 	class_<ServerClass, ServerClass *> ServerClass_("ServerClass", no_init);
+
+	ServerClass_.def(
+		"find_server_class",
+		&ServerClassExt::find_server_class,
+		"Lookup a ServerClass by its name\n\n"
+		":rtype: str",
+		reference_existing_object_policy()).staticmethod("find_server_class");
 	
 	// Properties...
 	ServerClass_.def_readonly("table", &ServerClass::m_pTable);

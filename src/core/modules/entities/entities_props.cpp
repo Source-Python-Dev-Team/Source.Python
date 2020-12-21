@@ -35,6 +35,16 @@
 #include "entities_props.h"
 #include ENGINE_INCLUDE_PATH(entities_props.h)
 
+// SDK
+#include "eiface.h"
+#include "public/server_class.h"
+
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern IServerGameDLL* servergamedll;
+
 
 // ============================================================================
 // >> TYPEDEFS
@@ -97,6 +107,27 @@ void AddSendTable(SendTable* pTable, OffsetsMap& offsets, int offset=0, const ch
 			offsets.insert(std::make_pair(currentName, currentOffset));
 		}
 	}
+}
+
+
+// ============================================================================
+// >> ServerClassExt
+// ============================================================================
+ServerClass* ServerClassExt::find_server_class(const char* name)
+{
+	ServerClass* current = servergamedll->GetAllServerClasses();
+	while (current)
+	{
+		if (V_strcmp(current->GetName(), name) == 0)
+		{
+			return current;
+		}
+
+		current = current->m_pNext;
+	}
+
+	BOOST_RAISE_EXCEPTION(PyExc_NameError, "Unable to find server class %s.", name);
+	return NULL;
 }
 
 

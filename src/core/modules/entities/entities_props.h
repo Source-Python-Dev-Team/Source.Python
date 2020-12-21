@@ -49,6 +49,17 @@ BOOST_FUNCTION_TYPEDEF(int (const void *pStruct, int objectID), BoostArrayLength
 // Forward declarations
 //-----------------------------------------------------------------------------
 class CPointer;
+class ServerClass;
+
+
+//-----------------------------------------------------------------------------
+// ServerClass extension class.
+//-----------------------------------------------------------------------------
+class ServerClassExt
+{
+public:
+	static ServerClass* find_server_class(const char* name);
+};
 
 
 //-----------------------------------------------------------------------------
