@@ -37,6 +37,7 @@ from memory import Convention
 from memory import DataType
 from memory import get_object_pointer
 from memory import make_object
+from memory.helpers import Key
 from memory.helpers import Type
 from memory.manager import CustomType
 from memory.manager import TypeManager
@@ -332,6 +333,38 @@ class _ServerClasses(TypeManager):
                     instance, name, offset, property_contents,
                     _supported_descriptor_types[desc.type])
 
+        # Loop through all based attributes
+        for name, data in manager_contents.get('based_attribute', {}).items():
+
+            # Resolve the method to register this attribute
+            method = getattr(self, data.get('method', 'instance_attribute'))
+
+            # Resolve the offset of this attribute
+            offset = Key.as_int(
+                self,
+                data.get('offset_' + PLATFORM, data.get('offset', 0))
+            )
+
+            # Resolve the base offset of this attribute
+            base = data.get('base_' + PLATFORM, data.get('base'))
+            try:
+                offset += instance.properties[base].offset
+            except KeyError:
+                raise NameError(
+                    f'"{base}" is not a valid property ' +
+                    f'for attribute "{class_name}.{name}".'
+                )
+
+            # Generate the attribute
+            attribute = method(
+                Key.as_attribute_type(self, data['type']),
+                offset,
+                data.get('doc')
+            )
+
+            # Assign the attribute to the instance
+            setattr(instance, name, attribute)
+
         # Get a list of all properties for the current server class
         properties = list(instance.properties)
 
@@ -485,7 +518,8 @@ class _ServerClasses(TypeManager):
         value = self.instance_attribute(prop_type, offset)
 
         # Add the property to the properties dictionary
-        instance.properties[name] = EntityProperty(value, prop_type, networked)
+        instance.properties[name] = EntityProperty(
+            value, prop_type, networked, offset)
 
         # Is the property not a named property?
         if name not in contents:
