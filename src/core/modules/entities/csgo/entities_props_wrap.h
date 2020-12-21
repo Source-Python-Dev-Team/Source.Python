@@ -41,7 +41,7 @@
 template<class T, class U>
 void export_engine_specific_server_class(T _props, U ServerClass_)
 {
-	ServerClass_.add_property("name", &ServerClassExt::get_name);
+	ServerClass_.add_property("name", &ServerClassSpecificExt::get_name);
 }
 
 
