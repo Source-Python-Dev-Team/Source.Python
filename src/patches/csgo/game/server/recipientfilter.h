@@ -13,7 +13,8 @@
 
 #include "irecipientfilter.h"
 #include "const.h"
-//#include "player.h"
+// Commented out to avoid numerous errors. #376
+// #include "player.h"
 #include "bitvec.h"
 
 //-----------------------------------------------------------------------------
