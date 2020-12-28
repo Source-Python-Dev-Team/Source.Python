@@ -33,8 +33,6 @@
 #include "memory_pointer.h"
 #include "memory_utilities.h"
 
-CPointer* ExtractPointer(object oPtr);
-
 
 // ============================================================================
 // >> GetObjectPointer
@@ -78,7 +76,20 @@ inline object MakeObject(object cls, CPointer *pPtr)
 
 inline object MakeObject(object cls, object oPtr)
 {
-	return MakeObject(cls, ExtractPointer(oPtr));
+	CPointer *pPtr;
+
+	extract<CPointer *> extractor(oPtr);
+	if (!extractor.check())
+	{
+		oPtr = oPtr.attr(GET_PTR_NAME)();
+		pPtr = extract<CPointer *>(oPtr);
+	}
+	else
+	{
+		pPtr = extractor();
+	}
+
+	return MakeObject(cls, pPtr);
 }
 
 
