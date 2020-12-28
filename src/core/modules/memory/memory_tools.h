@@ -76,18 +76,8 @@ inline object MakeObject(object cls, CPointer *pPtr)
 
 inline object MakeObject(object cls, object oPtr)
 {
-	CPointer *pPtr;
-
-	extract<CPointer *> extractor(oPtr);
-	if (!extractor.check())
-	{
-		oPtr = oPtr.attr(GET_PTR_NAME)();
-		pPtr = extract<CPointer *>(oPtr);
-	}
-	else
-	{
-		pPtr = extractor();
-	}
+	oPtr = oPtr.attr(GET_PTR_NAME)();
+	CPointer *pPtr = extract<CPointer *>(oPtr);
 
 	return MakeObject(cls, pPtr);
 }
