@@ -33,6 +33,12 @@
 #include "engines_gamerules.h"
 
 // SDK
+// CS:GO/Blade doesn't compile without the next two lines
+#if defined(ENGINE_CSGO) | defined(ENGINE_BLADE)
+	#include "baseanimating.h"
+	extern IUniformRandomStream* randomStr;
+	#define random randomStr
+#endif
 #include "game/shared/gamerules.h"
 
 //---------------------------------------------------------------------------------
