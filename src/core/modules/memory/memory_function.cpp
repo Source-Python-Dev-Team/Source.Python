@@ -280,7 +280,7 @@ object CFunction::Call(tuple args, dict kw)
 			{
 				unsigned long ulAddr = 0;
 				if (arg.ptr() != Py_None)
-					ulAddr = ExtractPointer(arg)->m_ulAddr;
+					ulAddr = ExtractAddress(arg);
 
 				dcArgPointer(g_pCallVM, ulAddr);
 				break;

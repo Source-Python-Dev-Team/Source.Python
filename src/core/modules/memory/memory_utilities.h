@@ -61,15 +61,27 @@
 
 
 // ============================================================================
-// >> ExtractPointer
+// >> ExtractAddress
 // ============================================================================
-inline CPointer* ExtractPointer(object oPtr)
+inline unsigned long ExtractAddress(object oPtr, bool bValidate = false)
 {
+	CPointer* pPtr;
+
 	extract<CPointer *> extractor(oPtr);
 	if (!extractor.check())
-		return extract<CPointer *>(oPtr.attr(GET_PTR_NAME)());
+	{
+		oPtr = oPtr.attr(GET_PTR_NAME)();
+		pPtr = extract<CPointer *>(oPtr);
+	}
+	else
+	{
+		pPtr = extractor();
+	}
 
-	return extractor();
+	if (bValidate)
+		pPtr->Validate();
+
+	return pPtr->m_ulAddr;
 }
 
 

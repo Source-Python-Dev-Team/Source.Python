@@ -147,8 +147,7 @@ bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 					case DATA_TYPE_DOUBLE:		SetReturnValue<double>(pHook, pyretval); break;
 					case DATA_TYPE_POINTER:
 					{
-						CPointer* pPtr = ExtractPointer(pyretval);
-						pHook->SetReturnValue<unsigned long>(pPtr->m_ulAddr);
+						pHook->SetReturnValue<unsigned long>(ExtractAddress(pyretval));
 					} break;
 					case DATA_TYPE_STRING:		SetReturnValue<const char*>(pHook, pyretval); break;
 					default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
@@ -225,8 +224,7 @@ void CStackData::SetItem(unsigned int iIndex, object value)
 		case DATA_TYPE_DOUBLE:		SetArgument<double>(m_pHook, iIndex, value); break;
 		case DATA_TYPE_POINTER:
 		{
-			CPointer* pPtr = ExtractPointer(value);
-			SetArgument<unsigned long>(m_pHook, iIndex, object(pPtr->m_ulAddr));
+			SetArgument<unsigned long>(m_pHook, iIndex, object(ExtractAddress(value)));
 		} break;
 		case DATA_TYPE_STRING:		SetArgument<const char *>(m_pHook, iIndex, value); break;
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
