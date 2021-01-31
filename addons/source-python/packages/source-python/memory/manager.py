@@ -204,6 +204,7 @@ class TypeManager(dict):
                 MyCustomCallingConvention)
         """
         self.register_convention(cls.__name__, cls)
+        return cls
 
     def register_convention(self, name, convention):
         """Register a custom calling convention.
