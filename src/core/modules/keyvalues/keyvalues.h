@@ -111,6 +111,7 @@ public:
 		KeyValues* pKeyValues = new KeyValues("");
 		if (!pKeyValues->LoadFromFile(filesystem, szFile)) {
 			pKeyValues->deleteThis();
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to load from file.")
 			return NULL;
 		}
 		return boost::shared_ptr<KeyValues>(pKeyValues, &__del__);
@@ -119,6 +120,22 @@ public:
 	static bool LoadFromFile2(KeyValues* pKeyValues, const char * szFile)
 	{ 
 		return pKeyValues->LoadFromFile(filesystem, szFile);
+	}
+
+	static boost::shared_ptr<KeyValues> LoadFromBuffer(const char * buffer)
+	{ 
+		KeyValues* pKeyValues = new KeyValues("");
+		if (!pKeyValues->LoadFromBuffer("", buffer, filesystem)) {
+			pKeyValues->deleteThis();
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to load from buffer.")
+			return NULL;
+		}
+		return boost::shared_ptr<KeyValues>(pKeyValues, &__del__);
+	}
+	
+	static bool LoadFromBuffer2(KeyValues* pKeyValues, const char * buffer)
+	{ 
+		return pKeyValues->LoadFromBuffer("", buffer, filesystem);
 	}
 
 	static bool SaveToFile(KeyValues* pKeyValues, const char * szFile)

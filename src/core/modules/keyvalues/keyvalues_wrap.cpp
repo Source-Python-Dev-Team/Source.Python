@@ -130,6 +130,18 @@ void export_keyvalues(scope _keyvalues)
 			(arg("file_name"))
 		)
 
+		.def("load_from_buffer",
+			&KeyValuesExt::LoadFromBuffer,
+			"Load KeyValues data from a buffer and return a new KeyValues instance on success.",
+			(arg("buffer"))
+		).staticmethod("load_from_buffer")
+
+		.def("load_from_buffer2",
+			&KeyValuesExt::LoadFromBuffer2,
+			"Load KeyValues data from a buffer into an existing KeyValues instance.",
+			(arg("buffer"))
+		)
+
 		.def("save_to_file",
 			&KeyValuesExt::SaveToFile,
 			(arg("file_name")),
