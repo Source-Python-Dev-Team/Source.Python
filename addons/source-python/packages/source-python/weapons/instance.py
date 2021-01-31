@@ -43,6 +43,12 @@ class WeaponClass(object):
         # Store the weapon's clip amount
         self._clip = properties.get('clip', None)
 
+        # Store the weapon's cost
+        self._cost = properties.get('cost', None)
+
+        # Store the weapon's item definition index
+        self._item_definition_index = properties.get('item_definition_index', None)
+
         # Store the weapon's tags
         self._tags = properties.get('tags', 'all').split(',')
 
@@ -106,6 +112,26 @@ class WeaponClass(object):
         :rtype: int
         """
         return self._clip
+
+    @property
+    def cost(self):
+        """Return the cost of the weapon.
+
+        :return:
+            None if the cost data is missing.
+        :rtype: int
+        """
+        return self._cost
+
+    @property
+    def item_definition_index(self):
+        """Return the item definition index of the weapon.
+
+        :return:
+            None if the item defition index data is missing.
+        :rtype: int
+        """
+        return self._item_definition_index
 
     @property
     def tags(self):
