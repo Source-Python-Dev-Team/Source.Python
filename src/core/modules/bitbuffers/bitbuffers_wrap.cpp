@@ -60,6 +60,11 @@ void export_bf_write(scope _bitbuffers)
 			make_constructor(&BitBufferWriteExt::__init__)
 		)
 
+		.def("reset",
+			&bf_write::Reset,
+			"Reset the buffer."
+		)
+
 		.def("seek_to_bit",
 			&bf_write::SeekToBit,
 			"Seeks to a specific position."

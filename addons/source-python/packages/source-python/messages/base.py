@@ -91,10 +91,24 @@ class UserMessageCreator(AttrDict):
 
         if user_message.is_protobuf():
             self.protobuf(user_message.buffer, translated_kwargs)
+            user_message.send()
         else:
-            self.bitbuf(user_message.buffer, translated_kwargs)
+            try:
+                self.bitbuf(user_message.buffer, translated_kwargs)
+            except:
+                # In case of an error during writing to the buffer (e. g. by using
+                # the wrong data type for the write_* methods) reset the buffer
+                # and send the message. This causes the engine to silently ignore
+                # the user message and the server doesn't crash upon creating
+                # another user message.
+                # See also:
+                # https://github.com/Source-Python-Dev-Team/Source.Python/issues/315
+                user_message.buffer.reset()
 
-        user_message.send()
+                # Re-raise the exception to make the user aware of the problem
+                raise
+            finally:
+                user_message.send()
 
     @staticmethod
     def _categorize_players_by_language(player_indexes):
