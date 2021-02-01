@@ -192,15 +192,15 @@ class ShowMenuImpl(UserMessageImpl):
     @staticmethod
     def read_bitbuffer(buffer):
         return UserMessageData(
-            valid_slots=buffer.read_byte(),
-            display_time=buffer.read_byte(),
+            valid_slots=buffer.read_word(),
+            display_time=buffer.read_char(),
             menu_string=buffer.read_string()
         )
 
     @staticmethod
     def write_bitbuffer(buffer, data):
-        buffer.write_byte(data.valid_slots)
-        buffer.write_byte(data.display_time)
+        buffer.write_word(data.valid_slots)
+        buffer.write_char(data.display_time)
         buffer.write_string(data.menu_string)
 
 
