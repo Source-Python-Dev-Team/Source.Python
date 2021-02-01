@@ -194,6 +194,7 @@ class ShowMenuImpl(UserMessageImpl):
         return UserMessageData(
             valid_slots=buffer.read_word(),
             display_time=buffer.read_char(),
+            chunked=buffer.read_byte(),
             menu_string=buffer.read_string()
         )
 
@@ -201,6 +202,7 @@ class ShowMenuImpl(UserMessageImpl):
     def write_bitbuffer(buffer, data):
         buffer.write_word(data.valid_slots)
         buffer.write_char(data.display_time)
+        buffer.write_byte(data.chunked)
         buffer.write_string(data.menu_string)
 
 
