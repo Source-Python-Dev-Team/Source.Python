@@ -17,6 +17,7 @@ __all__ = (
     'UserMessageData',
     'UserMessageImpl',
     'SayText2Impl',
+    'ShowMenuImpl',
     'VGUIMenuImpl',
     'implemented_usermessages',
     'get_user_message_impl',
@@ -171,6 +172,38 @@ class SayText2Impl(UserMessageImpl):
         buffer.write_string(data.param4)
 
 
+class ShowMenuImpl(UserMessageImpl):
+    """ShowMenu implementation."""
+
+    @staticmethod
+    def read_protobuf(buffer):
+        return UserMessageData(
+            valid_slots=buffer.get_int32('bits_valid_slots'),
+            display_time=buffer.get_int32('display_time'),
+            menu_string=buffer.get_string('menu_string')
+        )
+
+    @staticmethod
+    def write_protobuf(buffer, data):
+        buffer.set_int32('bits_valid_slots', data.valid_slots)
+        buffer.set_int32('display_time', data.display_time)
+        buffer.set_string('menu_string', data.menu_string)
+
+    @staticmethod
+    def read_bitbuffer(buffer):
+        return UserMessageData(
+            valid_slots=buffer.read_byte(),
+            display_time=buffer.read_byte(),
+            menu_string=buffer.read_string()
+        )
+
+    @staticmethod
+    def write_bitbuffer(buffer, data):
+        buffer.write_byte(data.valid_slots)
+        buffer.write_byte(data.display_time)
+        buffer.write_string(data.menu_string)
+
+
 class VGUIMenuImpl(UserMessageImpl):
     """VGUIMenu implementation."""
 
@@ -226,8 +259,10 @@ class VGUIMenuImpl(UserMessageImpl):
 #: A dictionary that contains all implemented user messages.
 implemented_usermessages = {
     get_message_index('SayText2'): SayText2Impl,
-    get_message_index('VGUIMenu'): VGUIMenuImpl,
+    get_message_index('ShowMenu'): ShowMenuImpl,
+    get_message_index('VGUIMenu'): VGUIMenuImpl
 }
+
 
 def get_user_message_impl(msg_index):
     """Return the user message implementation for the given message index.
