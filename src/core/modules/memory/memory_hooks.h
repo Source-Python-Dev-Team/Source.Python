@@ -51,18 +51,28 @@ public:
 	void		SetItem(unsigned int iIndex, object value);
 
 	CRegisters* GetRegisters()
-	{ return m_pHook->m_pRegisters; }
+	{ return m_pHook->GetRegisters(); }
 
 	str	__repr__()
 	{ return str(tuple(ptr(this))); }
 
 	void* GetReturnAddress()
 	{
-		void* pESP = m_pHook->m_pRegisters->m_esp->GetValue<void*>();
+		void* pESP = m_pHook->GetRegisters()->m_esp->GetValue<void*>();
 		if (m_pHook->m_RetAddr.count(pESP) == 0) {
 			return NULL;
 		}
 		return m_pHook->m_RetAddr[pESP].back();
+	}
+
+	bool GetUsePreRegister()
+	{
+		return m_pHook->m_bUsePreRegisters;
+	}
+
+	void SetUsePreRegisters(bool value)
+	{
+		m_pHook->m_bUsePreRegisters = value;
 	}
 
 protected:
