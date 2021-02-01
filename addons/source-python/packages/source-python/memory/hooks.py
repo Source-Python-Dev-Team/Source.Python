@@ -26,7 +26,8 @@ __all__ = ('HookType',
            'PreHook',
            'set_hooks_disabled',
            'get_hooks_disabled',
-           'hooks_disabled'
+           'hooks_disabled',
+           'use_pre_registers',
            )
 
 
@@ -86,6 +87,56 @@ class PostHook(_Hook):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
+@contextmanager
+def use_pre_registers(stack_data, value=True):
+    """Temporarily set ``StackData.use_pre_registers`` to the given value.
+    When the context ends, the previous value is restored.
+
+    Some functions overwrite CPU registers during their execution with values
+    from their internal calculations. In a post-hook, you have access to the
+    modified CPU registers, but in some cases you might want to access the
+    registers that were saved before the pre-hook was called. In that case you
+    can use this context manager to get access to the previous state of the
+    registers. On Windows this is often required when hooking THISCALL
+    functions, because the this-pointer is saved in the CPU register ``ECX``,
+    but gets overwritten during the execution of the hooked function. So, in a
+    post-hook you won't have access to the this-pointer anymore.
+
+    Example (CS:S/Windows):
+
+    .. code:: python
+
+        from entities.hooks import EntityCondition
+        from entities.hooks import EntityPostHook
+        from entities.hooks import EntityPreHook
+
+        from memory.hooks import use_pre_registers
+
+        @EntityPreHook(EntityCondition.is_player, 'drop_weapon')
+        def pre_on_drop_weapon(stack_data):
+            print(f'PRE: this = {stack_data[0].address}')
+
+        @EntityPostHook(EntityCondition.is_player, 'drop_weapon')
+        def post_on_drop_weapon(stack_data, ret_val):
+            print(f'POST FALSE: this = {stack_data[0].address}')
+            with use_pre_registers(stack_data):
+                print(f'POST CORRECT: this = {stack_data[0].address}')
+
+    Output:
+
+    .. code::
+
+        PRE: this = 546778280
+        POST FALSE: this = 16439007
+        POST CORRECT: this = 546778280
+    """
+    old = stack_data.use_pre_registers
+    stack_data.use_pre_registers = value
+    try:
+        yield
+    finally:
+        stack_data.use_pre_registers = old
+
 @contextmanager
 def hooks_disabled(disabled=True):
     """Temporarily disable or enable all hook callbacks. By default hooks are
