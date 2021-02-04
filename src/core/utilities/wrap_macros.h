@@ -173,10 +173,32 @@ T cached_property(T cls, const char *szName)
 //---------------------------------------------------------------------------------
 // Use this template to create variadic class methods
 //---------------------------------------------------------------------------------
-template<class T>
-object raw_method(T method)
+struct raw_method_dispatcher
 {
-	return eval("lambda method: lambda *args, **kw: method(args[0], args[1:], kw)")(make_function(method));
+public:
+	raw_method_dispatcher(object func):
+		func(func) 
+	{
+	}
+
+	object operator()(object args, object kwargs)
+	{
+		object self = args[0];
+		args = boost::python::tuple(args.slice(1, _));
+		return func(self, args, kwargs);
+	}
+
+private:
+	object func;
+};
+
+template<class T>
+object raw_method(T func, int min_args = 0)
+{
+	return raw_function(
+		raw_method_dispatcher(make_function(func)),
+		min_args + 1
+	);
 }
 
 //---------------------------------------------------------------------------------
