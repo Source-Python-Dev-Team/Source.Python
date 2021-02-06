@@ -635,6 +635,11 @@ void export_stack_data(scope _memory)
 		.add_property("registers",
 			make_function(&CStackData::GetRegisters, reference_existing_object_policy())
 		)
+
+		.add_property(
+			"use_pre_registers",
+			&CStackData::GetUsePreRegister,
+			&CStackData::SetUsePreRegisters)
 	;
 }
 
