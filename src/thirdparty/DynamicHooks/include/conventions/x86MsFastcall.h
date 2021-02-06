@@ -78,6 +78,7 @@ public:
 
 private:
 	void* m_pReturnBuffer;
+	int* m_pOffsets;
 };
 
 #endif // _X86_MS_FASTCALL_H
