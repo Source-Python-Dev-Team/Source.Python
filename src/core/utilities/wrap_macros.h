@@ -181,11 +181,21 @@ public:
 	{
 	}
 
-	object operator()(object args, object kwargs)
+	PyObject *operator()(PyObject *args, PyObject *kwargs)
 	{
-		object self = args[0];
-		args = boost::python::tuple(args.slice(1, _));
-		return func(self, args, kwargs);
+		return incref(
+			object(
+				func(
+					object(object(boost::python::detail::borrowed_reference(args))[0]),
+					object(
+						boost::python::tuple(
+							boost::python::detail::borrowed_reference(args)
+						).slice(1, _)
+					),
+					kwargs ? dict(boost::python::detail::borrowed_reference(kwargs)) : dict()
+				)
+			).ptr()
+		);
 	}
 
 private:
@@ -195,9 +205,13 @@ private:
 template<class T>
 object raw_method(T func, int min_args = 0)
 {
-	return raw_function(
-		raw_method_dispatcher(make_function(func)),
-		min_args + 1
+	return boost::python::detail::make_raw_function(
+		objects::py_function(
+			raw_method_dispatcher(make_function(func)),
+			boost::mpl::vector1<PyObject *>(),
+			min_args + 1,
+			(std::numeric_limits<unsigned>::max)()
+		)
 	);
 }
 
