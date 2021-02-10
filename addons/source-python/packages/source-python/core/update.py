@@ -214,7 +214,7 @@ def _apply_update_stage1_windows():
             f'start your server to apply stage 2.')
     else:
         update_logger.log_debug('Determining current VDF entry...')
-        kv = KeyValues.load_from_file(VDF_FILE)
+        kv = KeyValues.from_file(VDF_FILE)
 
         # Get the current and new entry for the VDF file
         current_entry = kv.get_string('file')
