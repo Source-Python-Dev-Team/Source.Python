@@ -370,9 +370,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 void CSourcePython::Unload( void )
 {
 	Msg(MSG_PREFIX "Unloading...\n");
-	
-	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
-	GetHookManager()->UnhookAllFunctions();
 
 #if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 	if (m_pOldSpewOutputFunc)
@@ -387,9 +384,12 @@ void CSourcePython::Unload( void )
 
 	DevMsg(1, MSG_PREFIX "Resetting cache notifier...\n");
 	modelcache->SetCacheNotify(m_pOldMDLCacheNotifier);
-	
+
 	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
 	g_PythonManager.Shutdown();
+
+	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
+	GetHookManager()->UnhookAllFunctions();
 
 	DevMsg(1, MSG_PREFIX "Clearing all commands...\n");
 	ClearAllCommands();
