@@ -176,13 +176,10 @@ if UserMessage.is_protobuf():
         try:
             # Replace original recipients filter
             tmp_recipients = make_object(BaseRecipientFilter, args[1])
-            _recipients.update(*tuple(tmp_recipients), clear=True)
         except RuntimeError:
             # Patch for issue #314
-            tmp_recipients = RecipientFilter()
-            (args[1] + 4).copy(get_object_pointer(tmp_recipients) + 4,
-                get_size(RecipientFilter) - 4)
-            _recipients.update(*tuple(tmp_recipients), clear=True)
+            tmp_recipients = RecipientFilter.from_abstract_pointer(args[1])
+        _recipients.update(*tuple(tmp_recipients), clear=True)
         args[1] = _recipients
 
         buffer = make_object(ProtobufMessage, args[3])
@@ -212,13 +209,10 @@ else:
         try:
             # Replace original recipients filter
             tmp_recipients = make_object(BaseRecipientFilter, args[1])
-            _recipients.update(*tuple(tmp_recipients), clear=True)
         except RuntimeError:
             # Patch for issue #314
-            tmp_recipients = RecipientFilter()
-            (args[1] + 4).copy(get_object_pointer(tmp_recipients) + 4,
-                get_size(RecipientFilter) - 4)
-            _recipients.update(*tuple(tmp_recipients), clear=True)
+            tmp_recipients = RecipientFilter.from_abstract_pointer(args[1])
+        _recipients.update(*tuple(tmp_recipients), clear=True)
         args[1] = _recipients
 
     @PostHook(get_virtual_function(engine_server, 'UserMessageBegin'))

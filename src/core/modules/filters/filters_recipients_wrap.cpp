@@ -39,6 +39,7 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
+void export_irecipientfilter(scope);
 void export_mrecipientfilter(scope);
 
 
@@ -47,7 +48,55 @@ void export_mrecipientfilter(scope);
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_filters, _recipients)
 {
+	export_irecipientfilter(_recipients);
 	export_mrecipientfilter(_recipients);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports IRecipientFilter
+//-----------------------------------------------------------------------------
+void export_irecipientfilter(scope _recipients)
+{
+	class_<IRecipientFilter, IRecipientFilter*, boost::noncopyable> BaseRecipientFilter("BaseRecipientFilter", no_init);
+
+	// Special methods...
+	BaseRecipientFilter.def("__len__",
+		&IRecipientFilter::GetRecipientCount,
+		"Return the recipient count."
+	);
+
+	BaseRecipientFilter.def("get_recipient_index",
+		&IRecipientFilter::GetRecipientIndex,
+		"Obtains the player index at the slot in the filter",
+		args("slot")
+	);
+
+	BaseRecipientFilter.def("__getitem__",
+		&IRecipientFilterExt::__getitem__,
+		"Obtains the player index at the slot in the filter",
+		args("index")
+	);
+
+	// Methods...
+	BaseRecipientFilter.def("is_reliable",
+		&IRecipientFilter::IsReliable,
+		"Whether this recipient filter will be network reliable (sent in-order)"
+	);
+
+	BaseRecipientFilter.def("is_init_message",
+		&IRecipientFilter::IsInitMessage,
+		"Whether the message has been initialised?"
+	);
+
+	BaseRecipientFilter.def("get_recipient_index",
+		&IRecipientFilter::GetRecipientIndex,
+		"Obtains the player index at the slot in the filter",
+		args("slot")
+	);
+
+	// Add memory tools...
+	BaseRecipientFilter ADD_MEM_TOOLS(IRecipientFilter);
 }
 
 
@@ -56,72 +105,57 @@ DECLARE_SP_SUBMODULE(_filters, _recipients)
 //-----------------------------------------------------------------------------
 void export_mrecipientfilter(scope _recipients)
 {
-	class_<IRecipientFilter, IRecipientFilter*, boost::noncopyable>("BaseRecipientFilter", no_init)
-		.def("is_reliable",
-			&IRecipientFilter::IsReliable,
-			"Whether this recipient filter will be network reliable (sent in-order)"
-		)
+	class_<MRecipientFilter, boost::shared_ptr<MRecipientFilter>, bases<IRecipientFilter>, boost::noncopyable > _RecipientFilter("_RecipientFilter");
 
-		.def("is_init_message",
-			&IRecipientFilter::IsInitMessage,
-			"Whether the message has been initialised?"
-		)
+	// Constructors...
+	CLASSMETHOD(_RecipientFilter,
+		"from_abstract_pointer",
+		&MRecipientFilter::from_abstract_pointer,
+		"Returns a new recipient filter instance filled with the indexes contained in the given IRecipientFilter pointer.\n"
+		"\n"
+		".. note::\n"
+		"	No checks is done on the given pointer and it is assumed to be valid. Do not use this "
+		"	constructor if you don't know what you are doing. This should really only be used to wrap "
+		"	the content of recipient filters that do not have RTTI data (e.g. during the execution of certain hooks, etc.).",
+		args("cls", "pointer")
+	);
 
-		.def("__len__",
-			&IRecipientFilter::GetRecipientCount,
-			"Return the recipient count."
-		)
+	// Special methods...
+	_RecipientFilter.def("__contains__",
+		&MRecipientFilter::HasRecipient,
+		"Return True if the given index is in the recipient filter.",
+		args("index")
+	);
 
-		.def("get_recipient_index",
-			&IRecipientFilter::GetRecipientIndex,
-			"Obtains the player index at the slot in the filter",
-			args("slot")
-		)
+	// Methods...
+	_RecipientFilter.def("add_all_players",
+		&MRecipientFilter::AddAllPlayers,
+		"Adds all the players on the server to the filter"
+	);
 
-		.def("__getitem__",
-			&IRecipientFilterExt::__getitem__,
-			"Obtains the player index at the slot in the filter",
-			args("index")
-		)
+	_RecipientFilter.def("add_recipient",
+		&MRecipientFilter::AddRecipient,
+		"Adds the index of the player to the filter",
+		args("index")
+	);
 
-		ADD_MEM_TOOLS(IRecipientFilter)
-	;
+	_RecipientFilter.def("remove_all_players",
+		&MRecipientFilter::RemoveAllPlayers,
+		"Removes all the players on the server from the filter"
+	);
 
-	class_<MRecipientFilter, boost::shared_ptr<MRecipientFilter>, bases<IRecipientFilter>, boost::noncopyable >("_RecipientFilter")
-		.def("add_all_players",
-			&MRecipientFilter::AddAllPlayers,
-			"Adds all the players on the server to the filter"
-		)
+	_RecipientFilter.def("remove_recipient",
+		&MRecipientFilter::RemoveRecipient,
+		"Removes the index of the player from the filter",
+		args("index")
+	);
 
-		.def("add_recipient",
-			&MRecipientFilter::AddRecipient,
-			"Adds the index of the player to the filter",
-			args("index")
-		)
+	_RecipientFilter.def_readwrite("reliable",
+		&MRecipientFilter::m_bReliable,
+		"Get/set whether or not the filter is reliable.\n\n"
+		":rtype: bool"
+	);
 
-		.def("remove_all_players",
-			&MRecipientFilter::RemoveAllPlayers,
-			"Removes all the players on the server from the filter"
-		)
-
-		.def("remove_recipient",
-			&MRecipientFilter::RemoveRecipient,
-			"Removes the index of the player from the filter",
-			args("index")
-		)
-
-		.def("__contains__",
-			&MRecipientFilter::HasRecipient,
-			"Return True if the given index is in the recipient filter.",
-			args("index")
-		)
-		
-		.def_readwrite("reliable",
-			&MRecipientFilter::m_bReliable,
-			"Get/set whether or not the filter is reliable.\n\n"
-			":rtype: bool"
-		)
-
-		ADD_MEM_TOOLS(MRecipientFilter)
-	;
+	// Add memory tools...
+	_RecipientFilter ADD_MEM_TOOLS(MRecipientFilter);
 }
