@@ -112,7 +112,6 @@ public:
 	static object from_abstract_pointer(object cls, object oPtr)
 	{
 		object self = cls();
-		MRecipientFilter *pSelf = extract<MRecipientFilter *>(self);
 		object add_recipient = self.attr("add_recipient");
 
 		IRecipientFilter *pFilter = (IRecipientFilter *)ExtractAddress(oPtr);

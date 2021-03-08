@@ -66,12 +66,6 @@ void export_irecipientfilter(scope _recipients)
 		"Return the recipient count."
 	);
 
-	BaseRecipientFilter.def("get_recipient_index",
-		&IRecipientFilter::GetRecipientIndex,
-		"Obtains the player index at the slot in the filter",
-		args("slot")
-	);
-
 	BaseRecipientFilter.def("__getitem__",
 		&IRecipientFilterExt::__getitem__,
 		"Obtains the player index at the slot in the filter",
