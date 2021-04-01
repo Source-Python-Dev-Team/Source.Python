@@ -497,7 +497,8 @@ class TypeManager(dict):
             """Set the pointer attribute value."""
             # Handle custom type
             if not native_type:
-                ptr.set_pointer(value)
+                # Set the pointer
+                ptr.set_pointer(value, offset)
 
                 # Make sure the value will not deallocate as long as it is
                 # part of this object
