@@ -232,7 +232,7 @@ class _ServerClasses(TypeManager):
             manager_contents['binary'] = 'server'
 
         # Get a TypeManager instance for the current datamap
-        instance = self.create_type_from_file(class_name, manager_contents)
+        instance = self.create_type_from_dict(class_name, manager_contents)
 
         # Get the specific types of values to use
         input_contents = dict(map(
