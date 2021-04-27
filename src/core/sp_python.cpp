@@ -192,30 +192,34 @@ bool CPythonManager::Initialize( void )
 	// This fix currently only works for dedicated servers, but crashes on listen servers.
 	if (engine->IsDedicatedServer()) {
 		object sys = python::import("sys");
-		object io_open = python::import("io").attr("open");
-	
-		object stdin_ = sys.attr("stdin");
-		if (stdin_.is_none())
-		{
-			DevMsg(1, MSG_PREFIX "stdin is None... reconnecting.\n");
-			sys.attr("stdin") = sys.attr("__stdin__") = io_open("CONIN$", "rt");
-		}
 
-		object stdout_ = sys.attr("stdout");
-		if (stdout_.is_none())
-		{
-			DevMsg(1, MSG_PREFIX "stdout is None... reconnecting.\n");
-			sys.attr("stdout") = sys.attr("__stdout__") = io_open("CONOUT$", "wt");
-		}
+		// Only reconnect the streams if the server was launched with a console (issue #392).
+		if (extract<bool>(sys.attr("argv").attr("__contains__")(str("-console")))) {
+			object io_open = python::import("io").attr("open");
+		
+			object stdin_ = sys.attr("stdin");
+			if (stdin_.is_none())
+			{
+				DevMsg(1, MSG_PREFIX "stdin is None... reconnecting.\n");
+				sys.attr("stdin") = sys.attr("__stdin__") = io_open("CONIN$", "rt");
+			}
 
-		object stderr_ = sys.attr("stderr");
-		if (stderr_.is_none())
-		{
-			DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
+			object stdout_ = sys.attr("stdout");
+			if (stdout_.is_none())
+			{
+				DevMsg(1, MSG_PREFIX "stdout is None... reconnecting.\n");
+				sys.attr("stdout") = sys.attr("__stdout__") = io_open("CONOUT$", "wt");
+			}
 
-			// Use CONOUT$, because CONERR$ has no effect:
-			// https://github.com/Source-Python-Dev-Team/Source.Python/issues/237
-			sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONOUT$", "wt");
+			object stderr_ = sys.attr("stderr");
+			if (stderr_.is_none())
+			{
+				DevMsg(1, MSG_PREFIX "stderr is None... reconnecting.\n");
+
+				// Use CONOUT$, because CONERR$ has no effect:
+				// https://github.com/Source-Python-Dev-Team/Source.Python/issues/237
+				sys.attr("stderr") = sys.attr("__stderr__") = io_open("CONOUT$", "wt");
+			}
 		}
 	}
 #endif
