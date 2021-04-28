@@ -194,7 +194,7 @@ bool CPythonManager::Initialize( void )
 		object sys = python::import("sys");
 
 		// Only reconnect the streams if the server was launched with a console (issue #392).
-		if (extract<bool>(sys.attr("argv").attr("__contains__")(str("-console")))) {
+		if (pCommandLine->FindParm("-console")) {
 			object io_open = python::import("io").attr("open");
 		
 			object stdin_ = sys.attr("stdin");
