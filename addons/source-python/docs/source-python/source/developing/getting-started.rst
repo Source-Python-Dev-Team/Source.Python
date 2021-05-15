@@ -20,7 +20,7 @@ have to create the plugin files.
 To do so, please create a directory in Source.Python's plugin directory
 (``../addons/source-python/plugins``). All plugins will be located in this
 directory and must have their own sub-directory. Give the new created
-directory an abitrary name (e.g. test1). Now, you need to create the actual
+directory an arbitrary name (e.g. test1). Now, you need to create the actual
 plugin file. It must be named like its directory. So, if you have created a
 ``test1`` directory, you have to create a ``test1.py`` in that directory.
 
