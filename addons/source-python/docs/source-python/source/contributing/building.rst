@@ -29,7 +29,7 @@ Once you have installed the requirements, follow these steps to build Source.Pyt
     By default only one CPU core is used to build the binaries. If you wish to
     use more, set the variable ``NUM_CORES`` to the number of core you would
     like to use. This will speed up the build process, but also requires more
-    ressoures.
+    resources.
 
 You can shorten these steps by simply passing the game's name to the script
 e.g. ``./Build.sh css``.

@@ -452,7 +452,7 @@ file exists, etc.) have been done at this point.
 OnPluginUnloaded
 ----------------
 
-Called when a plugin has been unloaded sucessfully.
+Called when a plugin has been unloaded successfully.
 
 .. code-block:: python
 

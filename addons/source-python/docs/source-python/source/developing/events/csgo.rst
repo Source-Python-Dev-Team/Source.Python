@@ -1593,12 +1593,16 @@ avenger_id         The userid of the player that killed their teammate's killer.
 
 player_blind
 ------------
+This event is fired when a player gets flashed.
 
-======  ====================================================  =======
-Name    Description                                           Type   
-======  ====================================================  =======
-userid                                                        short  
-======  ====================================================  =======
+==============  ==================================================  =====
+Name            Description                                         Type 
+==============  ==================================================  =====
+userid          The userid of the player that got flashed.          short
+attacker        The userid of the player that threw the flashbang.  short
+entityid        The entity index of the flashbang that went off.    short
+blind_duration  Duration of the flashed effect.                     float
+==============  ==================================================  =====
 
 
 player_changename
