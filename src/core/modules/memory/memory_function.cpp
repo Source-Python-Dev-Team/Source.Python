@@ -179,6 +179,29 @@ CFunction::CFunction(unsigned long ulAddr, Convention_t eCallingConvention,
 	m_oConverter = oConverter;
 }
 
+CFunction::CFunction(const CFunction& obj)
+	:CPointer(obj)
+{
+	m_tArgs = obj.m_tArgs;
+	m_eReturnType = obj.m_eReturnType;
+	m_oConverter = obj.m_oConverter;
+
+	m_eCallingConvention = obj.m_eCallingConvention;
+	m_iCallingConvention = obj.m_iCallingConvention;
+
+	if (m_eCallingConvention != CONV_CUSTOM)
+	{
+		m_pCallingConvention = MakeDynamicHooksConvention(m_eCallingConvention, ObjectToDataTypeVector(m_tArgs), m_eReturnType);
+		m_oCallingConvention = object();
+	}
+	else
+	{
+		m_pCallingConvention = obj.m_pCallingConvention;
+		m_oCallingConvention = obj.m_oCallingConvention;
+		Py_INCREF(m_oCallingConvention.ptr());
+	}
+}
+
 CFunction::~CFunction()
 {
 	if (!m_pCallingConvention)
