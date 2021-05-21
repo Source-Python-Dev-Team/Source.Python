@@ -316,9 +316,7 @@ class MemberFunction(Function):
     def __init__(self, manager, return_type, func, this):
         """Initialize the instance."""
         self._function = func
-        super().__init__(
-            func.address, func.convention, func.arguments, func.return_type
-        )
+        super().__init__(func)
 
         # This should always hold a TypeManager instance
         self._manager = manager

@@ -453,9 +453,9 @@ void export_type_info_iter(scope _memory)
 // ============================================================================
 void export_function(scope _memory)
 {
-	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, object, object, object>())
-		// Don't allow copies, because they will hold references to our calling convention.
-		// .def(init<CFunction&>())
+	class_<CFunction, bases<CPointer> >("Function", init<unsigned long, object, object, object>())
+		.def(init<CFunction&>())
+
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
