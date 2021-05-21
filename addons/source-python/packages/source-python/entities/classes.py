@@ -573,7 +573,7 @@ class _ServerClasses(TypeManager):
                 (DataType.POINTER, DataType.POINTER),
                 DataType.VOID)
 
-            return InputFunction(desc, make_object(BaseEntity, pointer))
+            return InputFunction(desc, function, make_object(BaseEntity, pointer))
 
         return property(fget)
 
