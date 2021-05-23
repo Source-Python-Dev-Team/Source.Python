@@ -105,7 +105,21 @@ void export_protobuf_message(scope _messages)
 	class_<google::protobuf::Message, boost::shared_ptr<google::protobuf::Message>, boost::noncopyable> ProtobufMessage("ProtobufMessage", no_init);
 
 	ProtobufMessage.def("__init__", make_constructor(&CProtobufMessageExt::__init__));
-	
+	ProtobufMessage.def(
+		"from_abstract_pointer",
+		&CProtobufMessageExt::from_abstract_pointer,
+		"Returns a new protobuf message instance filled with the fields contained in the given ProtobufMessage pointer.\n"
+		"\n"
+		":param object pointer:"
+		"	The pointer of the message to merge the fields from.\n"
+		"\n"
+		".. note::\n"
+		"	No checks is done on the given pointer and it is assumed to be valid. Do not use this "
+		"	constructor if you don't know what you are doing. This should really only be used to wrap "
+		"	the content of protobuf messages that do not have RTTI data (e.g. during the execution of certain hooks, etc.).",
+		args("pointer")
+	).staticmethod("from_abstract_pointer");
+
 	ProtobufMessage.def("get_int32", &CProtobufMessageExt::GetInt32);
 	ProtobufMessage.def("get_int64", &CProtobufMessageExt::GetInt64);
 	ProtobufMessage.def("get_uint32", &CProtobufMessageExt::GetUInt32);

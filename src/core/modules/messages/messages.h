@@ -36,6 +36,7 @@
 #include "public/engine/iserverplugin.h"
 #include "bitbuf.h"
 
+#include "modules/memory/memory_utilities.h"
 
 #ifdef USE_PROTOBUF
 	#if defined(ENGINE_CSGO)
@@ -86,6 +87,14 @@
 			}
 
 			return boost::shared_ptr<google::protobuf::Message>(message->New());
+		}
+
+		static boost::shared_ptr<google::protobuf::Message> from_abstract_pointer(object oPtr)
+		{
+			google::protobuf::Message *pMessage = (google::protobuf::Message *)ExtractAddress(oPtr, true);
+			boost::shared_ptr<google::protobuf::Message> spMessage = __init__(pMessage->GetDescriptor()->name().c_str());
+			boost::get_pointer(spMessage)->ParseFromString(pMessage->SerializeAsString());
+			return spMessage;
 		}
 
 		static const google::protobuf::FieldDescriptor* GetFieldDescriptor(google::protobuf::Message* pMessage, const char* field_name)
