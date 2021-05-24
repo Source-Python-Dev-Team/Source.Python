@@ -120,6 +120,16 @@ void export_protobuf_message(scope _messages)
 		args("pointer")
 	).staticmethod("from_abstract_pointer");
 
+	ProtobufMessage.def(
+		"parse_to_abstract_pointer",
+		&CProtobufMessageExt::parse_to_abstract_pointer,
+		"Parses this message into the given abstract pointer.\n"
+		"\n"
+		".. note::\n"
+		"	No checks is done on the given pointer and it is assumed to be valid. Do not use this "
+		"	method if you don't know what you are doing."
+	);
+
 	ProtobufMessage.def("get_int32", &CProtobufMessageExt::GetInt32);
 	ProtobufMessage.def("get_int64", &CProtobufMessageExt::GetInt64);
 	ProtobufMessage.def("get_uint32", &CProtobufMessageExt::GetUInt32);

@@ -97,6 +97,11 @@
 			return spMessage;
 		}
 
+		static void parse_to_abstract_pointer(google::protobuf::Message *pMessage, object oPtr)
+		{
+			((google::protobuf::Message *)ExtractAddress(oPtr, true))->ParseFromString(pMessage->SerializeAsString());
+		}
+
 		static const google::protobuf::FieldDescriptor* GetFieldDescriptor(google::protobuf::Message* pMessage, const char* field_name)
 		{
 			const google::protobuf::Descriptor* descriptor = pMessage->GetDescriptor();
