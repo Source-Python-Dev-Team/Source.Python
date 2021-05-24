@@ -186,14 +186,7 @@ if UserMessage.is_protobuf():
             buffer = make_object(ProtobufMessage, args[3])
         except RuntimeError:
             # Patch for issue #390 - UserMessage was created by another plugin.
-            buffer = UserMessage(
-                _recipients, get_message_name(message_index)).buffer
-            buffer_ptr = get_object_pointer(buffer)
-            buffer_size = get_size(buffer)
-
-            orig_buffer_ptr = args[3]
-            orig_buffer_ptr.copy(buffer_ptr, buffer_size)
-            buffer_ptr.copy(orig_buffer_ptr, buffer_size)
+            buffer = ProtobufMessage.from_abstract_pointer(args[3])
 
         protobuf_user_message_hooks.notify(_recipients, buffer)
 
