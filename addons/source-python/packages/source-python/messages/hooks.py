@@ -182,7 +182,11 @@ if UserMessage.is_protobuf():
         _recipients.update(*tuple(tmp_recipients), clear=True)
         args[1] = _recipients
 
-        buffer = make_object(ProtobufMessage, args[3])
+        try:
+            buffer = make_object(ProtobufMessage, args[3])
+        except RuntimeError:
+            # Patch for issue #390 - UserMessage was created by another plugin.
+            buffer = ProtobufMessage.from_abstract_pointer(args[3])
 
         protobuf_user_message_hooks.notify(_recipients, buffer)
 
