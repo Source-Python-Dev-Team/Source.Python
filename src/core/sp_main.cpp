@@ -436,7 +436,7 @@ void CSourcePython::UnPause( void )
 //-----------------------------------------------------------------------------
 const char *CSourcePython::GetPluginDescription( void )
 {
-	return "Source.Python, (C) 2012-2020, Source.Python Team.";
+	return "Source.Python, (C) 2012-2021, Source.Python Team.";
 }
 
 //-----------------------------------------------------------------------------
