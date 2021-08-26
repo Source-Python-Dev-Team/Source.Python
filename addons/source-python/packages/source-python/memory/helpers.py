@@ -161,7 +161,10 @@ class Key(object):
     @staticmethod
     def as_int(manager, value):
         """Convert the value to an integer."""
-        return int(value)
+        try:
+            return int(value)
+        except ValueError:
+            return int(value, 16)
 
 
 # =============================================================================
