@@ -102,12 +102,16 @@ class _LogInstance(dict):
         return self[attr]
 
     def __delitem__(self, item):
-        """Remove all children of the instance and closes the logger."""
-        # Remove all children
-        self[item].clear()
+        """Remove all children of the instance and
+        remove the logger from logging manager.
+        """
+        instance = self.pop(item)
 
-        # Close the logger
-        self.logger.close()
+        # Remove all children
+        instance.clear()
+
+        # Remove the logger from logging manager
+        self.logger.manager.loggerDict.pop(instance.logger.name, None)
 
     def clear(self):
         """Delete each item individually to close all loggers."""
@@ -391,8 +395,14 @@ class LogManager(AutoUnload, _LogInstance):
         return self._areas.get_int()
 
     def _unload_instance(self):
-        """Remove the logger from logging manager."""
+        """Remove the logger from logging manager and close it."""
+        self.clear()
         self.logger.manager.loggerDict.pop(self.logger.name, None)
+
+        for handler in self.logger.handlers[:]:
+            self.logger.removeHandler(handler)
+            handler.close()
+
 
 # Set the core ConVars
 _level = ConVar(
