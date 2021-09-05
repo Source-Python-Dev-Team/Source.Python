@@ -53,6 +53,7 @@
 #include "vphysics_interface.h"
 #include "datacache/imdlcache.h"
 #include "ivoiceserver.h"
+#include "tier0/threadtools.h"
 
 #include "manager.h"
 
@@ -190,20 +191,24 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 #if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
 {
-	extern CListenerManager* GetOnServerOutputListenerManager();
 	bool block = false;
 
-	for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY() 
-			object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
-				(MessageSeverity) spewType, 
-				pMsg);
+	// Only filter outputs from the main thread. See issues #400 and #404.
+	if (ThreadInMainThread()) {
+		extern CListenerManager* GetOnServerOutputListenerManager();
 
-		if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
-				block = true;
+		for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
+		{
+			BEGIN_BOOST_PY() 
+				object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
+					(MessageSeverity) spewType, 
+					pMsg);
 
-		END_BOOST_PY_NORET()
+			if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
+					block = true;
+
+			END_BOOST_PY_NORET()
+		}
 	}
 
 	if (!block && g_SourcePythonPlugin.m_pOldSpewOutputFunc)
@@ -217,20 +222,24 @@ class SPLoggingListener: public ILoggingListener
 public:
 	virtual void Log( const LoggingContext_t *pContext, const tchar *pMessage )
 	{
-		extern CListenerManager* GetOnServerOutputListenerManager();
 		bool block = false;
 
-		for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
-		{
-			BEGIN_BOOST_PY() 
-				object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
-					(MessageSeverity) pContext->m_Severity, 
-					pMessage);
+		// Only filter outputs from the main thread. See issues #400 and #404.
+		if (ThreadInMainThread()) {
+			extern CListenerManager* GetOnServerOutputListenerManager();
 
-			if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
-					block = true;
+			for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
+			{
+				BEGIN_BOOST_PY() 
+					object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
+						(MessageSeverity) pContext->m_Severity, 
+						pMessage);
 
-			END_BOOST_PY_NORET()
+				if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
+						block = true;
+
+				END_BOOST_PY_NORET()
+			}
 		}
 
 		if (!block)
