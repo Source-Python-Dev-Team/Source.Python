@@ -266,5 +266,5 @@ Here is the full example code to implement sub-plugins:
         my_sub_command_manager.unload_plugin(plugin)
 
     def unload():
-        for plugin in my_plugin_manager.loaded_plugins):
+        for plugin in my_plugin_manager.loaded_plugins:
             plugin.unload()
