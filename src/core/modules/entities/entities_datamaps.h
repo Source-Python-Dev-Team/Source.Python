@@ -89,7 +89,7 @@ public:
 class CInputFunction: public CFunction
 {
 public:
-	CInputFunction(typedescription_t pTypeDesc, CBaseEntity *pBaseEntity);
+	CInputFunction(typedescription_t pTypeDesc, CFunction &pFunc, CBaseEntity *pBaseEntity);
 	void __call__(object value, CBaseEntity *pActivator, CBaseEntity *pCaller);
 
 public:

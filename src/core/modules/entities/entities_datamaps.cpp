@@ -209,13 +209,8 @@ Vector VariantExt::get_vector(variant_t *pVariant)
 // ============================================================================
 // >> CInputFunction
 // ============================================================================
-CInputFunction::CInputFunction(typedescription_t pTypeDesc, CBaseEntity *pBaseEntity)
-	:CFunction(
-		(unsigned long)TypeDescriptionSharedExt::get_function(pTypeDesc),
-		object(CONV_THISCALL),
-		make_tuple(DATA_TYPE_POINTER, DATA_TYPE_POINTER),
-		object(DATA_TYPE_VOID)
-	)
+CInputFunction::CInputFunction(typedescription_t pTypeDesc, CFunction &pFunc, CBaseEntity *pBaseEntity)
+	:CFunction(pFunc)
 {
 	if (!(pTypeDesc.flags & FTYPEDESC_INPUT))
 		BOOST_RAISE_EXCEPTION(PyExc_TypeError, "\"%s\" is not an input.", pTypeDesc.fieldName);

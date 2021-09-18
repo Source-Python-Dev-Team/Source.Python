@@ -27,11 +27,22 @@ class PlayerDictionary(EntityDictionary):
     """Helper class used to store player instances."""
 
     def __init__(self, factory=Player, *args, **kwargs):
-        """Initialize the dictionary."""
+        """Initializes the dictionary.
+
+        :param callable factory:
+            Factory class or function used to create missing instances. Set to
+            `None` to disable this feature.
+
+            Factory signature: index, *args, **kwargs
+        :param tuple args:
+            Arguments passed to the factory class or function.
+        :param dict kwargs:
+            Keyword arguments passed to the factory class or function.
+        """
         super().__init__(factory, *args, **kwargs)
 
     def from_userid(self, userid):
-        """Get a player instance from a userid.
+        """Returns a player instance from a userid.
         
         :param int userid: The userid.
         :rtype: Player

@@ -51,9 +51,13 @@ DEFINE_MANAGER_ACCESSOR(OnQueryCvarValueFinished)
 DEFINE_MANAGER_ACCESSOR(OnServerActivate)
 DEFINE_MANAGER_ACCESSOR(OnTick)
 DEFINE_MANAGER_ACCESSOR(OnEntityPreSpawned)
+DEFINE_MANAGER_ACCESSOR(OnNetworkedEntityPreSpawned)
 DEFINE_MANAGER_ACCESSOR(OnEntityCreated)
+DEFINE_MANAGER_ACCESSOR(OnNetworkedEntityCreated)
 DEFINE_MANAGER_ACCESSOR(OnEntitySpawned)
+DEFINE_MANAGER_ACCESSOR(OnNetworkedEntitySpawned)
 DEFINE_MANAGER_ACCESSOR(OnEntityDeleted)
+DEFINE_MANAGER_ACCESSOR(OnNetworkedEntityDeleted)
 DEFINE_MANAGER_ACCESSOR(OnDataLoaded)
 DEFINE_MANAGER_ACCESSOR(OnCombinerPreCache)
 DEFINE_MANAGER_ACCESSOR(OnDataUnloaded)
@@ -153,9 +157,13 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_tick_listener_manager") = object(ptr(GetOnTickListenerManager()));
 	
 	_listeners.attr("on_entity_pre_spawned_listener_manager") = object(ptr(GetOnEntityPreSpawnedListenerManager()));
+	_listeners.attr("on_networked_entity_pre_spawned_listener_manager") = object(ptr(GetOnNetworkedEntityPreSpawnedListenerManager()));
 	_listeners.attr("on_entity_created_listener_manager") = object(ptr(GetOnEntityCreatedListenerManager()));
+	_listeners.attr("on_networked_entity_created_listener_manager") = object(ptr(GetOnNetworkedEntityCreatedListenerManager()));
 	_listeners.attr("on_entity_spawned_listener_manager") = object(ptr(GetOnEntitySpawnedListenerManager()));
+	_listeners.attr("on_networked_entity_spawned_listener_manager") = object(ptr(GetOnNetworkedEntitySpawnedListenerManager()));
 	_listeners.attr("on_entity_deleted_listener_manager") = object(ptr(GetOnEntityDeletedListenerManager()));
+	_listeners.attr("on_networked_entity_deleted_listener_manager") = object(ptr(GetOnNetworkedEntityDeletedListenerManager()));
 
 	_listeners.attr("on_data_loaded_listener_manager") = object(ptr(GetOnDataLoadedListenerManager()));
 	_listeners.attr("on_combiner_pre_cache_listener_manager") = object(ptr(GetOnCombinerPreCacheListenerManager()));

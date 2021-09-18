@@ -531,7 +531,7 @@ void export_global_entity_list(scope _entities)
 		)
 
 		.def("remove_entity_listener",
-			&CGlobalEntityList::AddListenerEntity
+			&CGlobalEntityList::RemoveListenerEntity
 		)
 
 		ADD_MEM_TOOLS(CGlobalEntityList);

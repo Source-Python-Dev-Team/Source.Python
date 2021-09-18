@@ -61,27 +61,27 @@
 
 
 // ============================================================================
-// >> FORWARD DECLARATIONS
+// >> ExtractAddress
 // ============================================================================
-object GetObjectPointer(object obj);
-
-
-// ============================================================================
-// >> ExtractPointer
-// ============================================================================
-inline CPointer* ExtractPointer(object oPtr)
+inline unsigned long ExtractAddress(object oPtr, bool bValidate = false)
 {
-	try
+	CPointer* pPtr;
+
+	extract<CPointer *> extractor(oPtr);
+	if (!extractor.check())
 	{
-		oPtr = GetObjectPointer(oPtr);
+		oPtr = oPtr.attr(GET_PTR_NAME)();
+		pPtr = extract<CPointer *>(oPtr);
 	}
-	catch (...)
+	else
 	{
-		PyErr_Clear();
+		pPtr = extractor();
 	}
 
-	CPointer* pPtr = extract<CPointer *>(oPtr);
-	return pPtr;
+	if (bValidate)
+		pPtr->Validate();
+
+	return pPtr->m_ulAddr;
 }
 
 

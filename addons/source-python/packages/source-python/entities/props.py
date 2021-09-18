@@ -20,6 +20,7 @@ from _entities._props import SendPropType
 from _entities._props import SendPropVariant
 from _entities._props import SendTable
 from _entities._props import ServerClass
+from _entities._props import SendProxyRecipients
 from _entities._props import SPROP_UNSIGNED
 from _entities._props import SPROP_COORD
 from _entities._props import SPROP_NOSCALE
@@ -47,6 +48,7 @@ __all__ = ('SendProp',
            'SendPropVariant',
            'SendTable',
            'ServerClass',
+           'SendProxyRecipients',
            )
 
 

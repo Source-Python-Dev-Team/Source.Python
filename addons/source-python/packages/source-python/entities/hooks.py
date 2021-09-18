@@ -14,7 +14,7 @@ from memory.hooks import HookType
 #   Filters
 from filters.entities import EntityIter
 #   Listeners
-from listeners import OnEntityCreated
+from listeners import OnNetworkedEntityCreated
 #   Entities
 from entities.entity import Entity
 #   Players
@@ -219,9 +219,7 @@ _waiting_entity_hooks = _WaitingEntityHooks()
 # =============================================================================
 # >> LISTENERS
 # =============================================================================
-@OnEntityCreated
-def on_entity_created(base_entity):
-    """Called when a new entity has been created."""
-    if not base_entity.is_networked():
-        return
-    _waiting_entity_hooks.initialize(base_entity.index)
+@OnNetworkedEntityCreated
+def on_networked_entity_created(entity):
+    """Called when a new networked entity has been created."""
+    _waiting_entity_hooks.initialize(entity.index)

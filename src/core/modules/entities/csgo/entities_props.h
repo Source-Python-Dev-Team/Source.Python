@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 // ServerClass extension class.
 //-----------------------------------------------------------------------------
-class ServerClassExt
+class ServerClassSpecificExt
 {
 public:
 	static const char *get_name(ServerClass *pServerClass)

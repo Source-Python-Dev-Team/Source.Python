@@ -42,12 +42,24 @@
 //-----------------------------------------------------------------------------
 BOOST_FUNCTION_TYPEDEF(void (const SendProp*, const void*, const void*, DVariant*, int, int), BoostSendVarProxyFn)
 BOOST_FUNCTION_TYPEDEF(void* (const SendProp*, const void*, const void*, CSendProxyRecipients*, int), BoostDataTableProxyFn)
+BOOST_FUNCTION_TYPEDEF(int (const void *pStruct, int objectID), BoostArrayLengthProxyFn)
 
 
 //-----------------------------------------------------------------------------
 // Forward declarations
 //-----------------------------------------------------------------------------
 class CPointer;
+class ServerClass;
+
+
+//-----------------------------------------------------------------------------
+// ServerClass extension class.
+//-----------------------------------------------------------------------------
+class ServerClassExt
+{
+public:
+	static ServerClass* find_server_class(const char* name);
+};
 
 
 //-----------------------------------------------------------------------------
@@ -69,6 +81,7 @@ class SendPropSharedExt
 public:
 	static BoostSendVarProxyFn get_proxy_function(SendProp *pSendProp);
 	static BoostDataTableProxyFn get_data_table_proxy_function(SendProp *pSendProp);
+	static BoostArrayLengthProxyFn get_array_length_proxy_function(SendProp *pSendProp);
 };
 
 

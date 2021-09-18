@@ -118,16 +118,28 @@ void export_keyvalues(scope _keyvalues)
 			(arg("uses_escape_sequences"))
 		)
 
-		.def("load_from_file",
-			&KeyValuesExt::LoadFromFile,
+		.def("from_file",
+			&KeyValuesExt::FromFile,
 			"Load KeyValues data from a file and return a new KeyValues instance on success.",
-			(arg("file_name"))
-		).staticmethod("load_from_file")
+			(arg("file_name"), arg("encoding")="utf-8", arg("errors")="strict", arg("uses_escape_sequences")=false)
+		).staticmethod("from_file")
 
-		.def("load_from_file2",
-			&KeyValuesExt::LoadFromFile2,
+		.def("from_file_in_place",
+			&KeyValuesExt::FromFileInPlace,
 			"Load KeyValues data from a file into an existing KeyValues instance.",
-			(arg("file_name"))
+			(arg("file_name"), arg("encoding")="utf-8", arg("errors")="strict")
+		)
+
+		.def("from_buffer",
+			&KeyValuesExt::FromBuffer,
+			"Load KeyValues data from a buffer and return a new KeyValues instance on success.",
+			(arg("buffer"))
+		).staticmethod("from_buffer")
+
+		.def("from_buffer_in_place",
+			&KeyValuesExt::FromBufferInPlace,
+			"Load KeyValues data from a buffer into an existing KeyValues instance.",
+			(arg("buffer"))
 		)
 
 		.def("save_to_file",

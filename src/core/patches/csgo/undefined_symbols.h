@@ -63,4 +63,24 @@ CTakeDamageInfo::CTakeDamageInfo()
 }
 
 
+//-----------------------------------------------------------------------------
+// CSendProxyRecipients function definitions.
+//-----------------------------------------------------------------------------
+void CSendProxyRecipients::SetRecipient( int iClient )
+{
+	m_Bits.Set( iClient );
+}
+
+void CSendProxyRecipients::ClearRecipient( int iClient )
+{
+	m_Bits.Clear( iClient );
+}
+
+void CSendProxyRecipients::SetOnly( int iClient )
+{
+	m_Bits.ClearAll();
+	m_Bits.Set( iClient );
+}
+
+
 #endif // UNDEFINED_SYMBOLS_CSGO_H

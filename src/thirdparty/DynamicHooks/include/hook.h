@@ -114,42 +114,51 @@ public:
 	@param pFunc The hook handler that should be checked.
 	*/
 	bool IsCallbackRegistered(HookType_t type, HookHandlerFn* pFunc);
+	
+	
+	/*
+	Return the CRegisters pointer based on m_bUsePreRegister. It returns
+	m_pRegisterPre in a pre-hook and m_pRegisterPost in a post-hook.
+	*/
+	CRegisters* GetRegisters();
 
 	template<class T>
 	T GetArgument(int iIndex)
 	{
-		return *(T *) m_pCallingConvention->GetArgumentPtr(iIndex, m_pRegisters);
+		return *(T *) m_pCallingConvention->GetArgumentPtr(iIndex, GetRegisters());
 	}
 
 	template<class T>
 	void SetArgument(int iIndex, T value)
 	{
-		void* pPtr = m_pCallingConvention->GetArgumentPtr(iIndex, m_pRegisters);
+		CRegisters* pRegisters = GetRegisters();
+		void* pPtr = m_pCallingConvention->GetArgumentPtr(iIndex, pRegisters);
 		*(T *) pPtr = value;
-		m_pCallingConvention->ArgumentPtrChanged(iIndex, m_pRegisters, pPtr);
+		m_pCallingConvention->ArgumentPtrChanged(iIndex, pRegisters, pPtr);
 	}
 
 	template<class T>
 	T GetReturnValue()
 	{
-		return *(T *)  m_pCallingConvention->GetReturnPtr(m_pRegisters);
+		return *(T *)  m_pCallingConvention->GetReturnPtr(GetRegisters());
 	}
 
 	template<class T>
 	void SetReturnValue(T value)
 	{
-		void* pPtr = m_pCallingConvention->GetReturnPtr(m_pRegisters);
+		CRegisters* pRegisters = GetRegisters();
+		void* pPtr = m_pCallingConvention->GetReturnPtr(pRegisters);
 		*(T *)  pPtr = value;
-		m_pCallingConvention->ReturnPtrChanged(m_pRegisters, pPtr);
+		m_pCallingConvention->ReturnPtrChanged(pRegisters, pPtr);
 	}
 
 private:
 	void* CreateBridge();
 
 	void Write_ModifyReturnAddress(Assembler& a);
-	void Write_CallHandler(Assembler& a, HookType_t type);
-	void Write_SaveRegisters(Assembler& a);
-	void Write_RestoreRegisters(Assembler& a);
+	void Write_CallHandler(Assembler& a, HookType_t type, CRegisters* pRegisters);
+	void Write_SaveRegisters(Assembler& a, CRegisters* pRegisters);
+	void Write_RestoreRegisters(Assembler& a, CRegisters* pRegisters);
 
 	void* CreatePostCallback();
 
@@ -173,12 +182,15 @@ public:
 	void* m_pTrampoline;
 
 	// Register storage
-	CRegisters* m_pRegisters;
+	CRegisters* m_pRegistersPre;
+	CRegisters* m_pRegistersPost;
 
 	// New return address
 	void* m_pNewRetAddr;
 
 	std::map<void*, std::vector<void*> > m_RetAddr;
+
+	bool m_bUsePreRegisters;
 };
 
 #endif // _HOOK_H

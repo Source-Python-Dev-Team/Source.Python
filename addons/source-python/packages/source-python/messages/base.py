@@ -91,10 +91,24 @@ class UserMessageCreator(AttrDict):
 
         if user_message.is_protobuf():
             self.protobuf(user_message.buffer, translated_kwargs)
+            user_message.send()
         else:
-            self.bitbuf(user_message.buffer, translated_kwargs)
+            try:
+                self.bitbuf(user_message.buffer, translated_kwargs)
+            except:
+                # In case of an error during writing to the buffer (e. g. by using
+                # the wrong data type for the write_* methods) reset the buffer
+                # and send the message. This causes the engine to silently ignore
+                # the user message and the server doesn't crash upon creating
+                # another user message.
+                # See also:
+                # https://github.com/Source-Python-Dev-Team/Source.Python/issues/315
+                user_message.buffer.reset()
 
-        user_message.send()
+                # Re-raise the exception to make the user aware of the problem
+                raise
+            finally:
+                user_message.send()
 
     @staticmethod
     def _categorize_players_by_language(player_indexes):
@@ -258,15 +272,18 @@ class SayText2(UserMessageCreator):
 
     def __init__(
             self, message, index=0, chat=False,
-            param1='', param2='', param3='', param4=''):
+            param1='', param2='', param3='', param4='',
+            color=(' \x01' if UserMessage.is_protobuf() else '\x01')):
         """Initialize the SayText2 instance."""
         super().__init__(
             message=message, index=index, chat=chat,
             param1=param1, param2=param2, param3=param3, param4=param4)
 
+        super(AttrDict, self).__setattr__("color", color)
+
     def protobuf(self, buffer, kwargs):
         """Send the SayText2 with protobuf."""
-        buffer.set_string('msg_name', ' \x01' + kwargs.message)
+        buffer.set_string('msg_name', self.color + kwargs.message)
         buffer.set_bool('chat', kwargs.chat)
         buffer.set_int32('ent_idx', kwargs.index)
         buffer.add_string('params', kwargs.param1)
@@ -279,7 +296,7 @@ class SayText2(UserMessageCreator):
         """Send the SayText2 with bitbuf."""
         buffer.write_byte(kwargs.index)
         buffer.write_byte(kwargs.chat)
-        buffer.write_string('\x01' + kwargs.message)
+        buffer.write_string(self.color + kwargs.message)
         buffer.write_string(kwargs.param1)
         buffer.write_string(kwargs.param2)
         buffer.write_string(kwargs.param3)
@@ -312,20 +329,24 @@ class SayText(UserMessageCreator):
     translatable_fields = ['message']
     reliable = True
 
-    def __init__(self, message, index=0, chat=False):
+    def __init__(
+            self, message, index=0, chat=False,
+            color=(' \x01' if UserMessage.is_protobuf() else '\x01')):
         """Initialize the SayText instance."""
         super().__init__(message=message, index=index, chat=chat)
+
+        super(AttrDict, self).__setattr__("color", color)
 
     def protobuf(self, buffer, kwargs):
         """Send the SayText with protobuf."""
         buffer.set_int32('ent_idx', kwargs.index)
         buffer.set_bool('chat', kwargs.chat)
-        buffer.set_string('text', ' \x01' + kwargs.message)
+        buffer.set_string('text', self.color + kwargs.message)
 
     def bitbuf(self, buffer, kwargs):
         """Send the SayText with bitbuf."""
         buffer.write_byte(kwargs.index)
-        buffer.write_string('\x01' + kwargs.message)
+        buffer.write_string(self.color + kwargs.message)
         buffer.write_byte(kwargs.chat)
 
 

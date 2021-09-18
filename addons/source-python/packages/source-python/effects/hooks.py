@@ -94,5 +94,10 @@ class TempEntityPostHook(TempEntityPreHook):
 def pre_playback_temp_entity(stack_data):
     """Handle pre hooks."""
     temp_entity = TempEntity(stack_data[3])
-    return temp_entity.template.handle_hook(temp_entity,
-        make_object(RecipientFilter, stack_data[1]))
+    try:
+        recipients = make_object(RecipientFilter, stack_data[1])
+    except RuntimeError:
+        global _recipients
+        _recipients = RecipientFilter.from_abstract_pointer(stack_data[1])
+        stack_data[1] = recipients = _recipients
+    return temp_entity.template.handle_hook(temp_entity, recipients)

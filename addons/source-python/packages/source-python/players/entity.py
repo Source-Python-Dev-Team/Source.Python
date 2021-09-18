@@ -5,10 +5,18 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
+# Python Imports
+#   Importlib
 from importlib import import_module
+
+# Source.Python Imports
+#   Core
 from core import GAME_NAME
 from core import SOURCE_ENGINE
+#   Paths
 from paths import SP_PACKAGES_PATH
+#   Players
+import players._base
 
 
 # =============================================================================
@@ -26,7 +34,7 @@ if SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the game-specific 'Player' class
-    Player = import_module(
+    Player = players._base.Player = import_module(
         'players.engines.{engine}.{game}'.format(
             engine=SOURCE_ENGINE,
             game=GAME_NAME,
@@ -38,7 +46,7 @@ elif SP_PACKAGES_PATH.joinpath(
 ).isfile():
 
     # Import the engine-specific 'Player' class
-    Player = import_module(
+    Player = players._base.Player = import_module(
         'players.engines.{engine}'.format(
             engine=SOURCE_ENGINE,
         )
@@ -47,4 +55,4 @@ elif SP_PACKAGES_PATH.joinpath(
 else:
 
     # Import the base 'Player' class
-    from players._base import Player
+    Player = players._base.Player

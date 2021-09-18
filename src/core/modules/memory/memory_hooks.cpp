@@ -147,8 +147,7 @@ bool SP_HookHandler(HookType_t eHookType, CHook* pHook)
 					case DATA_TYPE_DOUBLE:		SetReturnValue<double>(pHook, pyretval); break;
 					case DATA_TYPE_POINTER:
 					{
-						CPointer* pPtr = ExtractPointer(pyretval);
-						pHook->SetReturnValue<unsigned long>(pPtr->m_ulAddr);
+						pHook->SetReturnValue<unsigned long>(ExtractAddress(pyretval));
 					} break;
 					case DATA_TYPE_STRING:		SetReturnValue<const char*>(pHook, pyretval); break;
 					default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")
@@ -174,9 +173,10 @@ object CStackData::GetItem(unsigned int iIndex)
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
 
 	// Argument already cached?
-	object retval = m_mapCache[iIndex];
-	if (retval)
-		return retval;
+	object retval;
+	//object retval = m_mapCache[iIndex];
+	//if (retval)
+	//	return retval;
 
 	switch(m_pHook->m_pCallingConvention->m_vecArgTypes[iIndex])
 	{
@@ -197,7 +197,7 @@ object CStackData::GetItem(unsigned int iIndex)
 		case DATA_TYPE_STRING:		retval = GetArgument<const char *>(m_pHook, iIndex); break;
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.") break;
 	}
-	m_mapCache[iIndex] = retval;
+	//m_mapCache[iIndex] = retval;
 	return retval;
 }
 
@@ -207,7 +207,7 @@ void CStackData::SetItem(unsigned int iIndex, object value)
 		BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
 
 	// Update cache
-	m_mapCache[iIndex] = value;
+	//m_mapCache[iIndex] = value;
 	switch(m_pHook->m_pCallingConvention->m_vecArgTypes[iIndex])
 	{
 		case DATA_TYPE_BOOL:		SetArgument<bool>(m_pHook, iIndex, value); break;
@@ -225,8 +225,7 @@ void CStackData::SetItem(unsigned int iIndex, object value)
 		case DATA_TYPE_DOUBLE:		SetArgument<double>(m_pHook, iIndex, value); break;
 		case DATA_TYPE_POINTER:
 		{
-			CPointer* pPtr = ExtractPointer(value);
-			SetArgument<unsigned long>(m_pHook, iIndex, object(pPtr->m_ulAddr));
+			SetArgument<unsigned long>(m_pHook, iIndex, object(ExtractAddress(value)));
 		} break;
 		case DATA_TYPE_STRING:		SetArgument<const char *>(m_pHook, iIndex, value); break;
 		default: BOOST_RAISE_EXCEPTION(PyExc_TypeError, "Unknown type.")

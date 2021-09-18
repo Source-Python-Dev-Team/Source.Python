@@ -204,6 +204,7 @@ class TypeManager(dict):
                 MyCustomCallingConvention)
         """
         self.register_convention(cls.__name__, cls)
+        return cls
 
     def register_convention(self, name, convention):
         """Register a custom calling convention.
@@ -496,7 +497,8 @@ class TypeManager(dict):
             """Set the pointer attribute value."""
             # Handle custom type
             if not native_type:
-                ptr.set_pointer(value)
+                # Set the pointer
+                ptr.set_pointer(value, offset)
 
                 # Make sure the value will not deallocate as long as it is
                 # part of this object

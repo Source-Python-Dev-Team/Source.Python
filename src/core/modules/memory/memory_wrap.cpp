@@ -453,9 +453,9 @@ void export_type_info_iter(scope _memory)
 // ============================================================================
 void export_function(scope _memory)
 {
-	class_<CFunction, bases<CPointer>, boost::noncopyable >("Function", init<unsigned long, object, object, object>())
-		// Don't allow copies, because they will hold references to our calling convention.
-		// .def(init<CFunction&>())
+	class_<CFunction, bases<CPointer> >("Function", init<unsigned long, object, object, object>())
+		.def(init<CFunction&>())
+
 		.def("__call__",
 			raw_method(&CFunction::Call),
 			"Calls the function dynamically."
@@ -487,7 +487,7 @@ void export_function(scope _memory)
 		)
 
 		.def("add_hook",
-			&CFunction::AddHook,
+			GET_METHOD(void, CFunction, AddHook, HookType_t eType, PyObject*),
 			"Adds a hook callback.",
 			args("hook_type", "callback")
 		)
@@ -539,6 +539,16 @@ void export_function(scope _memory)
 		.def_readonly("convention",
 			&CFunction::m_eCallingConvention
 		)
+
+		.def_readonly("custom_convention",
+			&CFunction::m_oCallingConvention
+		)
+
+		// Properties
+		.add_property("trampoline",
+			make_function(&CFunction::GetTrampoline, manage_new_object_policy()),
+			"Return the trampoline function if the function is hooked."
+		)
 	;
 }
 
@@ -579,6 +589,7 @@ void export_convention_t(scope _memory)
 		.value("CDECL", CONV_CDECL)
 		.value("STDCALL", CONV_STDCALL)
 		.value("THISCALL", CONV_THISCALL)
+		.value("FASTCALL", CONV_FASTCALL)
 	;
 }
 
@@ -624,6 +635,11 @@ void export_stack_data(scope _memory)
 		.add_property("registers",
 			make_function(&CStackData::GetRegisters, reference_existing_object_policy())
 		)
+
+		.add_property(
+			"use_pre_registers",
+			&CStackData::GetUsePreRegister,
+			&CStackData::SetUsePreRegisters)
 	;
 }
 
@@ -820,19 +836,33 @@ void export_registers(scope _memory)
 // ============================================================================
 void export_calling_convention(scope _memory)
 {
-	class_<ICallingConventionWrapper, ICallingConventionWrapper *, boost::noncopyable>(
+	class_<ICallingConventionWrapper, boost::shared_ptr<ICallingConventionWrapper>, boost::noncopyable>(
 		"CallingConvention",
 		"An an abstract class that is used to create custom calling "
 		"conventions (only available for hooking function and not for"
 		" calling functions).\n",
-		init< object, DataType_t, optional<int> >(
-			(arg("arg_types"), arg("return_type"), arg("alignment")),
+		no_init)
+
+		.def("__init__",
+			make_constructor(
+				&ICallingConventionWrapper::__init__,
+				post_constructor_policies<
+					initialize_wrapper_policies<boost::shared_ptr<ICallingConventionWrapper> >
+				>(
+					make_function(
+						&ICallingConventionWrapper::Initialize,
+						default_call_policies(),
+						args("self", "arg_types", "return_type", "alignment", "default_convention")
+					)
+				),
+				("arg_types", "return_type", arg("alignment")=4, arg("default_convention")=CONV_CUSTOM)
+			),
 			"Initialize the calling convention.\n"
 			"\n"
 			":param iterable arg_types: A list of :class:`DataType` values that define the argument types of a function.\n"
 			":param DataType return_type: The return type of a function.\n"
-			":param int alignment: The stack alignment."
-			)
+			":param int alignment: The stack alignment.\n"
+			":param Convention_t default_convention: The default convention for un override function."
 		)
 
 		.def("get_registers",
@@ -844,14 +874,15 @@ void export_calling_convention(scope _memory)
 			&ICallingConventionWrapper::GetPopSize,
 			"Return the number of bytes that should be added to the stack to clean up."
 		)
-		
+
 		.def("get_argument_ptr",
-			&ICallingConventionWrapper::GetArgumentPtrWrapper,
+			&ICallingConventionWrapper::GetArgumentPtr,
 			(arg("index"), arg("registers")),
 			"Return a pointer to the argument at the given index.\n"
 			"\n"
 			":param int index: The index of the argument.\n"
-			":param Registers registers: A snapshot of all saved registers."
+			":param Registers registers: A snapshot of all saved registers.",
+			return_by_value_policy()
 		)
 
 		.def("argument_ptr_changed",
@@ -865,11 +896,12 @@ void export_calling_convention(scope _memory)
 		)
 
 		.def("get_return_ptr",
-			&ICallingConventionWrapper::GetReturnPtrWrapper,
+			&ICallingConventionWrapper::GetReturnPtr,
 			(arg("registers")),
 			"Return a pointer to the return value.\n"
 			"\n"
-			":param Registers registers: A snapshot of all saved registers."
+			":param Registers registers: A snapshot of all saved registers.",
+			return_by_value_policy()
 		)
 
 		.def("return_ptr_changed",

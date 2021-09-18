@@ -58,6 +58,7 @@ class LangStrings(dict):
 
         # Get the path to the given file
         self._mainfile = TRANSLATION_PATH / infile + '.ini'
+        self._encoding = encoding
 
         # Does the file exist?
         if not self._mainfile.isfile():
@@ -168,7 +169,7 @@ class LangStrings(dict):
     def _create_server_file(self):
         """Create a server specific langstrings file."""
         # Get the server specific file's ConfigObj instance
-        server_file = GameConfigObj(self._serverfile)
+        server_file = GameConfigObj(self._serverfile, encoding=self._encoding)
 
         # Set the initial comments to explain what the file is for
         server_file.initial_comment = _translation_strings[

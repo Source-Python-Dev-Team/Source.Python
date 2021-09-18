@@ -53,6 +53,7 @@
 #include "vphysics_interface.h"
 #include "datacache/imdlcache.h"
 #include "ivoiceserver.h"
+#include "tier0/threadtools.h"
 
 #include "manager.h"
 
@@ -193,20 +194,24 @@ bool GetInterfaces( InterfaceHelper_t* pInterfaceList, CreateInterfaceFn factory
 #if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
 {
-	extern CListenerManager* GetOnServerOutputListenerManager();
 	bool block = false;
 
-	for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
-	{
-		BEGIN_BOOST_PY() 
-			object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
-				(MessageSeverity) spewType, 
-				pMsg);
+	// Only filter outputs from the main thread. See issues #400 and #404.
+	if (ThreadInMainThread()) {
+		extern CListenerManager* GetOnServerOutputListenerManager();
 
-		if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
-				block = true;
+		for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
+		{
+			BEGIN_BOOST_PY() 
+				object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
+					(MessageSeverity) spewType, 
+					pMsg);
 
-		END_BOOST_PY_NORET()
+			if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
+					block = true;
+
+			END_BOOST_PY_NORET()
+		}
 	}
 
 	if (!block && g_SourcePythonPlugin.m_pOldSpewOutputFunc)
@@ -220,20 +225,24 @@ class SPLoggingListener: public ILoggingListener
 public:
 	virtual void Log( const LoggingContext_t *pContext, const tchar *pMessage )
 	{
-		extern CListenerManager* GetOnServerOutputListenerManager();
 		bool block = false;
 
-		for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
-		{
-			BEGIN_BOOST_PY() 
-				object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
-					(MessageSeverity) pContext->m_Severity, 
-					pMessage);
+		// Only filter outputs from the main thread. See issues #400 and #404.
+		if (ThreadInMainThread()) {
+			extern CListenerManager* GetOnServerOutputListenerManager();
 
-			if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
-					block = true;
+			for(int i = 0; i < GetOnServerOutputListenerManager()->m_vecCallables.Count(); i++)
+			{
+				BEGIN_BOOST_PY() 
+					object return_value = GetOnServerOutputListenerManager()->m_vecCallables[i](
+						(MessageSeverity) pContext->m_Severity, 
+						pMessage);
 
-			END_BOOST_PY_NORET()
+				if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
+						block = true;
+
+				END_BOOST_PY_NORET()
+			}
 		}
 
 		if (!block)
@@ -373,9 +382,6 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 void CSourcePython::Unload( void )
 {
 	Msg(MSG_PREFIX "Unloading...\n");
-	
-	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
-	GetHookManager()->UnhookAllFunctions();
 
 #if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
 	if (m_pOldSpewOutputFunc)
@@ -390,9 +396,12 @@ void CSourcePython::Unload( void )
 
 	DevMsg(1, MSG_PREFIX "Resetting cache notifier...\n");
 	modelcache->SetCacheNotify(m_pOldMDLCacheNotifier);
-	
+
 	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
 	g_PythonManager.Shutdown();
+
+	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
+	GetHookManager()->UnhookAllFunctions();
 
 	DevMsg(1, MSG_PREFIX "Clearing all commands...\n");
 	ClearAllCommands();
@@ -439,7 +448,7 @@ void CSourcePython::UnPause( void )
 //-----------------------------------------------------------------------------
 const char *CSourcePython::GetPluginDescription( void )
 {
-	return "Source.Python, (C) 2012-2020, Source.Python Team.";
+	return "Source.Python, (C) 2012-2021, Source.Python Team.";
 }
 
 //-----------------------------------------------------------------------------
@@ -613,6 +622,17 @@ void CSourcePython::OnEdictFreed( const edict_t *edict )
 void CSourcePython::OnEntityPreSpawned( CBaseEntity *pEntity )
 {
 	CALL_LISTENERS(OnEntityPreSpawned, ptr((CBaseEntityWrapper*) pEntity));
+
+	GET_LISTENER_MANAGER(OnNetworkedEntityPreSpawned, on_networked_entity_pre_spawned_manager);
+	if (!on_networked_entity_pre_spawned_manager->GetCount())
+		return;
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS_WITH_MNGR(on_networked_entity_pre_spawned_manager, Entity(uiIndex));
 }
 #endif
 
@@ -628,21 +648,53 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 	InitHooks(pEntity);
 
 	CALL_LISTENERS(OnEntityCreated, ptr((CBaseEntityWrapper*) pEntity));
+
+	GET_LISTENER_MANAGER(OnNetworkedEntityCreated, on_networked_entity_created_manager);
+	if (!on_networked_entity_created_manager->GetCount())
+		return;
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS_WITH_MNGR(on_networked_entity_created_manager, Entity(uiIndex));
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 {
 	CALL_LISTENERS(OnEntitySpawned, ptr((CBaseEntityWrapper*) pEntity));
+
+	GET_LISTENER_MANAGER(OnNetworkedEntitySpawned, on_networked_entity_spawned_manager);
+	if (!on_networked_entity_spawned_manager->GetCount())
+		return;
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	static object Entity = import("entities").attr("entity").attr("Entity");
+	CALL_LISTENERS_WITH_MNGR(on_networked_entity_spawned_manager, Entity(uiIndex));
 }
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
-	object oEntity(ptr((CBaseEntityWrapper*) pEntity));
-	CALL_LISTENERS(OnEntityDeleted, oEntity);
+	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
+
+	unsigned int uiIndex;
+	if (!IndexFromBaseEntity(pEntity, uiIndex))
+		return;
+
+	GET_LISTENER_MANAGER(OnNetworkedEntityDeleted, on_networked_entity_deleted_manager);
+	if (on_networked_entity_deleted_manager->GetCount())
+	{
+		static object Entity = import("entities").attr("entity").attr("Entity");
+		CALL_LISTENERS_WITH_MNGR(on_networked_entity_deleted_manager, Entity(uiIndex));
+	}
 
 	// Invalidate the internal entity cache once all callbacks have been called.
-	static object _on_entity_deleted = import("entities").attr("_base").attr("_on_entity_deleted");
-	_on_entity_deleted(oEntity);
+	static object _on_networked_entity_deleted = import("entities").attr("_base").attr("_on_networked_entity_deleted");
+	_on_networked_entity_deleted(uiIndex);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

@@ -36,7 +36,7 @@
 //-----------------------------------------------------------------------------
 CCachedProperty::CCachedProperty(
 	object fget=object(), object fset=object(), object fdel=object(), object doc=object(),
-	bool unbound=false, boost::python::tuple args=boost::python::tuple(), dict kwargs=dict())
+	bool unbound=false, boost::python::tuple args=boost::python::tuple(), object kwargs=object())
 {
 	set_getter(fget);
 	set_setter(fset);
@@ -46,7 +46,11 @@ CCachedProperty::CCachedProperty(
 	m_bUnbound = unbound;
 
 	m_args = args;
-	m_kwargs = kwargs;
+
+	if (!kwargs.is_none())
+		m_kwargs = extract<dict>(kwargs);
+	else
+		m_kwargs = dict();
 }
 
 
@@ -97,31 +101,6 @@ void CCachedProperty::_invalidate_cache(PyObject *pRef)
 	try
 	{
 		m_cache[handle<>(pRef)].del();
-	}
-	catch (...)
-	{
-		if (!PyErr_ExceptionMatches(PyExc_KeyError))
-			throw_error_already_set();
-
-		PyErr_Clear();
-	}
-}
-
-void CCachedProperty::_delete_cache(object instance)
-{
-	try
-	{
-		if (m_bUnbound)
-			m_cache[
-				handle<>(
-					PyWeakref_NewRef(instance.ptr(), NULL)
-				)
-			].del();
-		else
-		{
-			dict cache = extract<dict>(instance.attr("__dict__"));
-			cache[m_name].del();
-		}
 	}
 	catch (...)
 	{
@@ -231,9 +210,53 @@ void CCachedProperty::set_cached_value(object instance, object value)
 	}
 }
 
+void CCachedProperty::delete_cached_value(object instance)
+{
+	try
+	{
+		if (m_bUnbound)
+			m_cache[
+				handle<>(
+					PyWeakref_NewRef(instance.ptr(), NULL)
+				)
+			].del();
+		else
+		{
+			dict cache = extract<dict>(instance.attr("__dict__"));
+			cache[m_name].del();
+		}
+	}
+	catch (...)
+	{
+		if (!PyErr_ExceptionMatches(PyExc_KeyError))
+			throw_error_already_set();
+
+		PyErr_Clear();
+	}
+}
+
+
+object CCachedProperty::bind(object self, object owner, str name)
+{
+	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
+	owner.attr(name) = self;
+	pSelf.__set_name__(owner, name);
+	return self;
+}
+
 
 void CCachedProperty::__set_name__(object owner, str name)
 {
+	if (m_name && !m_owner.is_none())
+	{
+		const char *szName = extract<const char *>(str(".").join(make_tuple(m_owner().attr("__qualname__"), m_name)));
+		BOOST_RAISE_EXCEPTION(
+			PyExc_RuntimeError,
+			"This property was already bound as \"%s\".",
+			szName
+		)
+	}
+
 	m_name = name;
 	m_owner = object(handle<>(PyWeakref_NewRef(owner.ptr(), NULL)));
 }
@@ -292,7 +315,7 @@ void CCachedProperty::__set__(object instance, object value)
 	if (!result.is_none())
 		set_cached_value(instance, result);
 	else
-		_delete_cache(instance);
+		delete_cached_value(instance);
 }
 
 void CCachedProperty::__delete__(object instance)
@@ -303,7 +326,7 @@ void CCachedProperty::__delete__(object instance)
 			**m_kwargs
 		);
 
-	_delete_cache(instance);
+	delete_cached_value(instance);
 }
 
 object CCachedProperty::__call__(object self, object fget)
@@ -326,7 +349,7 @@ void CCachedProperty::__setitem__(str item, object value)
 
 CCachedProperty *CCachedProperty::wrap_descriptor(
 	object descriptor, object owner, str name,
-	bool unbound, boost::python::tuple args, dict kwargs)
+	bool unbound, boost::python::tuple args, object kwargs)
 {
 	CCachedProperty *pProperty = new CCachedProperty(
 		descriptor.attr("__get__"), descriptor.attr("__set__"), descriptor.attr("__delete__"),

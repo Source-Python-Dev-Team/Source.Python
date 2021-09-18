@@ -158,7 +158,7 @@ Adding sub-plugins
 
 Adding sub-plugins to your plugin is done a very few steps. All you actually
 need is a new instance of the :class:`plugins.manager.PluginManager` class.
-This instance allows you to load plugins from a specifc directory.
+This instance allows you to load plugins from a specific directory.
 
 Imagine your plugin resides in ``../addons/source-python/plugins/my_plugin``
 and within that directory you have created a new directory called ``plugins``,
@@ -266,5 +266,5 @@ Here is the full example code to implement sub-plugins:
         my_sub_command_manager.unload_plugin(plugin)
 
     def unload():
-        for plugin in my_plugin_manager.loaded_plugins):
+        for plugin in my_plugin_manager.loaded_plugins:
             plugin.unload()

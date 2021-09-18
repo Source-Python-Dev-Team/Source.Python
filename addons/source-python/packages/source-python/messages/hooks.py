@@ -176,35 +176,43 @@ if UserMessage.is_protobuf():
         try:
             # Replace original recipients filter
             tmp_recipients = make_object(BaseRecipientFilter, args[1])
-            _recipients.update(*tuple(tmp_recipients), clear=True)
         except RuntimeError:
             # Patch for issue #314
-            tmp_recipients = RecipientFilter()
-            (args[1] + 4).copy(get_object_pointer(tmp_recipients) + 4,
-                get_size(RecipientFilter) - 4)
-            _recipients.update(*tuple(tmp_recipients), clear=True)
+            tmp_recipients = RecipientFilter.from_abstract_pointer(args[1])
+        _recipients.update(*tuple(tmp_recipients), clear=True)
         args[1] = _recipients
 
-        buffer = make_object(ProtobufMessage, args[3])
+        try:
+            buffer = make_object(ProtobufMessage, args[3])
+            wrapped_from_abstract = False
+        except RuntimeError:
+            # Patch for issue #390 - UserMessage was created by another plugin.
+            buffer = ProtobufMessage.from_abstract_pointer(args[3])
+            wrapped_from_abstract = True
 
         protobuf_user_message_hooks.notify(_recipients, buffer)
 
         # No need to do anything behind this if no listener is registered
-        if not user_message_hooks:
-            return
+        if user_message_hooks:
+            try:
+                impl = get_user_message_impl(message_index)
+            except NotImplementedError:
+                impl = None
 
-        try:
-            impl = get_user_message_impl(message_index)
-        except NotImplementedError:
-            return
+            if impl is not None:
+                data = impl.read(buffer)
+                user_message_hooks.notify(_recipients, data)
 
-        data = impl.read(buffer)
-        user_message_hooks.notify(_recipients, data)
+                # Update buffer if data has been changed
+                if data.has_been_changed():
+                    buffer.clear()
+                    impl.write(buffer, data)
 
-        # Update buffer if data has been changed
-        if data.has_been_changed():
-            buffer.clear()
-            impl.write(buffer, data)
+        # If we wrapped the buffer from an abstract pointer, make sure to
+        #   apply any changes that may have been made back into the original.
+        if wrapped_from_abstract:
+            buffer.parse_to_abstract_pointer(args[3])
+
 
 else:
     @PreHook(get_virtual_function(engine_server, 'UserMessageBegin'))
@@ -212,13 +220,10 @@ else:
         try:
             # Replace original recipients filter
             tmp_recipients = make_object(BaseRecipientFilter, args[1])
-            _recipients.update(*tuple(tmp_recipients), clear=True)
         except RuntimeError:
             # Patch for issue #314
-            tmp_recipients = RecipientFilter()
-            (args[1] + 4).copy(get_object_pointer(tmp_recipients) + 4,
-                get_size(RecipientFilter) - 4)
-            _recipients.update(*tuple(tmp_recipients), clear=True)
+            tmp_recipients = RecipientFilter.from_abstract_pointer(args[1])
+        _recipients.update(*tuple(tmp_recipients), clear=True)
         args[1] = _recipients
 
     @PostHook(get_virtual_function(engine_server, 'UserMessageBegin'))

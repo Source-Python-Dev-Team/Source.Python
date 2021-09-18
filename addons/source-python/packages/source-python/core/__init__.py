@@ -16,6 +16,7 @@ from contextlib import contextmanager
 import hashlib
 #   Inspect
 from inspect import getmodule
+from inspect import getmodulename
 from inspect import currentframe
 #   OS
 from os import sep
@@ -37,6 +38,7 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Paths
 from paths import GAME_PATH
+from paths import PLUGIN_PATH
 
 
 
@@ -105,11 +107,33 @@ class AutoUnload(object):
         # Get the class instance
         self = super().__new__(cls)
 
-        # Get the calling module
-        caller = getmodule(currentframe().f_back)
+        # Get the calling frame
+        frame = currentframe().f_back
+
+        # Get the calling path
+        path = frame.f_code.co_filename
+
+        # Don't keep hostage instances that will never be unloaded
+        while not path.startswith(PLUGIN_PATH):
+            frame = frame.f_back
+            if frame is None:
+                return self
+            path = frame.f_code.co_filename
+            if path.startswith('<frozen'):
+                return self
+
+        # Resolve the calling module name
+        try:
+            name = frame.f_globals['__name__']
+        except KeyError:
+            try:
+                name = getmodule(frame).__name__
+            except AttributeError:
+                name = getmodulename(path)
 
         # Call class-specific logic for adding the instance.
-        self._add_instance(caller.__name__)
+        if name is not None:
+            self._add_instance(name)
 
         # Return the instance
         return self

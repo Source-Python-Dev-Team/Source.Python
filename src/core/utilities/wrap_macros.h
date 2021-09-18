@@ -173,10 +173,46 @@ T cached_property(T cls, const char *szName)
 //---------------------------------------------------------------------------------
 // Use this template to create variadic class methods
 //---------------------------------------------------------------------------------
-template<class T>
-object raw_method(T method)
+struct raw_method_dispatcher
 {
-	return eval("lambda method: lambda *args, **kw: method(args[0], args[1:], kw)")(make_function(method));
+public:
+	raw_method_dispatcher(object func):
+		func(func) 
+	{
+	}
+
+	PyObject *operator()(PyObject *args, PyObject *kwargs)
+	{
+		return incref(
+			object(
+				func(
+					object(object(boost::python::detail::borrowed_reference(args))[0]),
+					object(
+						boost::python::tuple(
+							boost::python::detail::borrowed_reference(args)
+						).slice(1, _)
+					),
+					kwargs ? dict(boost::python::detail::borrowed_reference(kwargs)) : dict()
+				)
+			).ptr()
+		);
+	}
+
+private:
+	object func;
+};
+
+template<class T>
+object raw_method(T func, int min_args = 0)
+{
+	return boost::python::detail::make_raw_function(
+		objects::py_function(
+			raw_method_dispatcher(make_function(func)),
+			boost::mpl::vector1<PyObject *>(),
+			min_args + 1,
+			(std::numeric_limits<unsigned>::max)()
+		)
+	);
 }
 
 //---------------------------------------------------------------------------------
@@ -247,5 +283,55 @@ typedef return_value_policy<reference_existing_object> reference_existing_object
 typedef return_value_policy<copy_const_reference> copy_const_reference_policy;
 
 typedef return_value_policy<return_by_value> return_by_value_policy;
+
+//---------------------------------------------------------------------------------
+// Call policies that initializes the wrapper hierarchy.
+//---------------------------------------------------------------------------------
+template<typename HeldType, typename BasePolicies = default_call_policies, int iSelf = -1>
+struct initialize_wrapper_policies : BasePolicies
+{
+	template<typename ArgumentPackage>
+	static PyObject *postcall(const ArgumentPackage &args, PyObject *pResult)
+	{
+		PyObject *pSelf = boost::python::detail::get(boost::mpl::int_<iSelf>(), args);
+		boost::python::detail::initialize_wrapper(
+			pSelf,
+			get_pointer((HeldType)extract<HeldType>(pSelf))
+		);
+
+		return BasePolicies::postcall(args, pResult);
+	}
+};
+
+//---------------------------------------------------------------------------------
+// Provides post-construction initialization support of the Python instances.
+//---------------------------------------------------------------------------------
+template<typename BasePolicies = default_call_policies, int iSelf = -1>
+struct post_constructor_policies : BasePolicies
+{
+public:
+	post_constructor_policies(object initializer):
+		m_initializer(initializer)
+	{
+	}
+
+	template<typename ArgumentPackage>
+	PyObject *postcall(const ArgumentPackage &args, PyObject *pResult)
+	{
+		BasePolicies::postcall(args, pResult);
+		m_initializer(
+			*(boost::python::make_tuple(
+				object(handle<>(incref(boost::python::detail::get(boost::mpl::int_<iSelf>(), args))))) +
+				boost::python::tuple(handle<>(args.base))
+			)
+		);
+
+		decref(pResult);
+		return incref(Py_None); // __init__ should always return None
+	}
+
+private:
+	object m_initializer;
+};
 
 #endif // _WRAP_MACROS_H

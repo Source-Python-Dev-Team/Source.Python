@@ -26,5 +26,16 @@ class WeaponDictionary(EntityDictionary):
     """Helper class used to store weapon instances."""
 
     def __init__(self, factory=Weapon, *args, **kwargs):
-        """Initialize the dictionary."""
+        """Initializes the dictionary.
+
+        :param callable factory:
+            Factory class or function used to create missing instances. Set to
+            `None` to disable this feature.
+
+            Factory signature: index, *args, **kwargs
+        :param tuple args:
+            Arguments passed to the factory class or function.
+        :param dict kwargs:
+            Keyword arguments passed to the factory class or function.
+        """
         super().__init__(factory, *args, **kwargs)

@@ -42,13 +42,12 @@ class CCachedProperty
 public:
 	CCachedProperty(
 		object fget, object fset, object fdel, object doc, bool unbound,
-		boost::python::tuple args, dict kwargs
+		boost::python::tuple args, object kwargs
 	);
 
 	static object _callable_check(object function, const char *szName);
 	static object _prepare_value(object value);
 	void _invalidate_cache(PyObject *pRef);
-	void _delete_cache(object instance);
 
 	object get_getter();
 	object set_getter(object fget);
@@ -64,6 +63,9 @@ public:
 
 	object get_cached_value(object instance);
 	void set_cached_value(object instance, object value);
+	void delete_cached_value(object instance);
+
+	static object bind(object self, object owner, str name);
 
 	void __set_name__(object owner, str name);
 	static object __get__(object self, object instance, object owner);
@@ -75,7 +77,7 @@ public:
 
 	static CCachedProperty *wrap_descriptor(
 		object descriptor, object owner=object(), str name=str(),
-		bool unbound=false, boost::python::tuple args=boost::python::tuple(), dict kwargs=dict()
+		bool unbound=false, boost::python::tuple args=boost::python::tuple(), object kwargs=object()
 	);
 
 private:

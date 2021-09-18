@@ -54,10 +54,10 @@ void export_cached_property(scope _cache)
 {
 	class_<CCachedProperty, CCachedProperty *> CachedProperty(
 		"CachedProperty",
-		init<object, object, object, object, bool, boost::python::tuple, dict>(
+		init<object, object, object, object, bool, boost::python::tuple, object>(
 			(
 				arg("self"), arg("fget")=object(), arg("fset")=object(), arg("fdel")=object(), arg("doc")=object(),
-				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
+				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=object()
 			),
 			"Represents a property attribute that is only"
 			" computed once and cached.\n"
@@ -269,7 +269,10 @@ void export_cached_property(scope _cache)
 		":param class owner:\n"
 		"	The class this property is being bound to.\n"
 		":param str name:\n"
-		"	The name this property is being bound as.",
+		"	The name this property is being bound as."
+		"\n"
+		":raises RuntimeError:\n"
+		"	If this property was already bound to a class.",
 		args("self", "owner", "name")
 	);
 
@@ -374,8 +377,33 @@ void export_cached_property(scope _cache)
 		":param object instance:\n"
 		"	The instance to set the cached value for.\n"
 		":param object value:\n"
-		"	The value to set as cached value.\n",
+		"	The value to set as cached value.",
 		args("self", "instance", "value")
+	);
+
+	CachedProperty.def(
+		"delete_cached_value",
+		&CCachedProperty::delete_cached_value,
+		"Deletes the cached value for the given instance.\n"
+		"\n"
+		":param object instance:\n"
+		"	The instance to delete the cached value for.",
+		args("self", "instance")
+	);
+
+	CachedProperty.def(
+		"bind",
+		&CCachedProperty::bind,
+		"Binds this property to the given class as the given name.\n"
+		"\n"
+		":param class owner:\n"
+		"	The class the property should be bound to.\n"
+		":param str name:\n"
+		"	The name of this property.\n"
+		"\n"
+		":rtype:\n"
+		"	CachedProperty",
+		args("self", "owner", "name")
 	);
 
 	CachedProperty.def(
@@ -386,7 +414,7 @@ void export_cached_property(scope _cache)
 		"\n"
 		":param property descriptor:\n"
 		"	Property descriptor to wrap.\n"
-		"	Must have a __get__, __set__ and a __del__ methods bound to it, either"
+		"	Must have a __get__, __set__ and a __delete__ methods bound to it, either"
 		"	callable or set to None.\n"
 		":param class owner:\n"
 		"	The class the wrapped property should be bound to.\n"
@@ -403,7 +431,7 @@ void export_cached_property(scope _cache)
 		"	If the getter, setter or deleter are not callable.",
 		(
 			"descriptor", arg("owner")=object(), arg("name")=str(),
-			arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=dict()
+			arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=object()
 		)
 	)
 	.staticmethod("wrap_descriptor");

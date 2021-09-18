@@ -108,6 +108,20 @@ public:
 	void RemoveAllPlayers();
 	bool HasRecipient(int iPlayer);
 
+	// Patch for issue #314.
+	static object from_abstract_pointer(object cls, object oPtr)
+	{
+		object self = cls();
+		object add_recipient = self.attr("add_recipient");
+
+		IRecipientFilter *pFilter = (IRecipientFilter *)ExtractAddress(oPtr);
+		for (int i=0; i < pFilter->GetRecipientCount(); i++) {
+			add_recipient(pFilter->GetRecipientIndex(i));
+		}
+
+		return self;
+	}
+
 public:
 	bool				m_bReliable;
 	bool				m_bInitMessage;

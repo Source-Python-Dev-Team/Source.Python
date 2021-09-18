@@ -30,8 +30,12 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// SDK
 #include "tier1/KeyValues.h"
 #include "filesystem.h"
+
+// Source.Python
+#include "modules/filesystem/filesystem.h"
 
 
 //---------------------------------------------------------------------------------
@@ -106,19 +110,60 @@ public:
 	static void SetBool(KeyValues* pKeyValues, const char * szName, bool bValue)
 	{ pKeyValues->SetInt(szName, bValue); }
 
-	static boost::shared_ptr<KeyValues> LoadFromFile(const char * szFile)
+	static boost::shared_ptr<KeyValues> FromFile(const char *szFile, const char *szEncoding = "utf-8", const char *szErrors = "strict", bool bUsesEscapeSequences = false)
+	{
+		KeyValues* pKeyValues = new KeyValues("");
+		pKeyValues->UsesEscapeSequences(bUsesEscapeSequences);
+
+		try {
+			FromFileInPlace(pKeyValues, szFile, szEncoding, szErrors);
+		}
+		catch (error_already_set &) {
+			pKeyValues->deleteThis();
+			throw_error_already_set();
+		}
+
+		return boost::shared_ptr<KeyValues>(pKeyValues, &__del__);
+	}
+
+	static bool FromFileInPlace(KeyValues* pKeyValues, const char *szFile, const char *szEncoding = "utf-8", const char *szErrors = "strict")
+	{
+		SourceFile *pFile = SourceFile::Open(szFile, "rb");
+
+		bool bResult;
+		try {
+			object content = object(handle<>(pFile->Read(-1))).attr("decode")(szEncoding, szErrors);
+			bResult = KeyValuesExt::FromBufferInPlace(pKeyValues, extract<const char *>(content));
+		}
+		catch (error_already_set &) {
+			bResult = false;
+		}
+
+		pFile->Close();
+		delete pFile;
+
+		if (PyErr_Occurred())
+			throw_error_already_set();
+		else if (!bResult)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to load from file.")
+
+		return bResult;
+	}
+
+	static boost::shared_ptr<KeyValues> FromBuffer(const char * buffer)
 	{ 
 		KeyValues* pKeyValues = new KeyValues("");
-		if (!pKeyValues->LoadFromFile(filesystem, szFile)) {
+		if (!pKeyValues->LoadFromBuffer("", buffer, filesystem)) {
 			pKeyValues->deleteThis();
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to load from buffer.")
 			return NULL;
 		}
 		return boost::shared_ptr<KeyValues>(pKeyValues, &__del__);
 	}
 	
-	static bool LoadFromFile2(KeyValues* pKeyValues, const char * szFile)
+	static bool FromBufferInPlace(KeyValues* pKeyValues, const char * buffer)
 	{ 
-		return pKeyValues->LoadFromFile(filesystem, szFile);
+		return pKeyValues->LoadFromBuffer(pKeyValues->GetName(), buffer, filesystem);
 	}
 
 	static bool SaveToFile(KeyValues* pKeyValues, const char * szFile)

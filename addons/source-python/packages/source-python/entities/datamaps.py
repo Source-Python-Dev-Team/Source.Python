@@ -103,11 +103,12 @@ class TypeDescriptionFlags(IntFlag):
 class EntityProperty(object):
     """Class used to store property information for verification."""
 
-    def __init__(self, instance, prop_type, networked):
+    def __init__(self, instance, prop_type, networked, offset):
         """Store the base attributes on instantiation."""
         self._instance = instance
         self._prop_type = prop_type
         self._networked = networked
+        self._offset = offset
 
     @property
     def instance(self):
@@ -123,3 +124,9 @@ class EntityProperty(object):
     def networked(self):
         """Return whether the property is networked."""
         return self._networked
+
+    @property
+    def offset(self):
+        """Returns the offset of the property."""
+        return self._offset
+

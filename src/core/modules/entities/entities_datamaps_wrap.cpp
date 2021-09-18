@@ -234,12 +234,14 @@ void export_input_function(scope _datamaps)
 {
 	class_<CInputFunction, bases<CFunction>, boost::noncopyable> InputFunction(
 		"InputFunction",
-		init<typedescription_t, CBaseEntity*>(
-			args("self", "desc", "entity"),
+		init<typedescription_t, CFunction &, CBaseEntity*>(
+			args("self", "desc", "function", "entity"),
 			"Instantiate the function instance and store the base attributes.\n"
 			"\n"
 			":param TypeDescription desc:\n"
 			"	The descriptor of the input bound to this instance.\n"
+			":param Function function:\n"
+			"	The function of the input.\n"
 			":param BaseEntity entity:\n"
 			"	The entity this input is bound to.\n"
 			"\n"

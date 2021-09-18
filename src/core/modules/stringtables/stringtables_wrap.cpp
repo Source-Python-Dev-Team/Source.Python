@@ -29,22 +29,20 @@
 //---------------------------------------------------------------------------------
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
-
-#include "utilities/wrap_macros.h"
-#include "networkstringtabledefs.h"
-#include "eiface.h"
+#include "stringtables.h"
 
 //---------------------------------------------------------------------------------
 // External variables to use.
 //---------------------------------------------------------------------------------
 extern INetworkStringTableContainer *networkstringtable;
-extern IVEngineServer* engine;
+
 
 //---------------------------------------------------------------------------------
 // Forward declarations.
 //---------------------------------------------------------------------------------
 void export_stringtable(scope);
 void export_stringtable_container(scope);
+
 
 //---------------------------------------------------------------------------------
 // Declares the stringtables_c module.
@@ -59,120 +57,8 @@ DECLARE_SP_MODULE(_stringtables)
 }
 
 //---------------------------------------------------------------------------------
-// Add a string to the specified table.
-//---------------------------------------------------------------------------------
-int AddString( INetworkStringTable *pTable, const char *string, const char *user_data, int length, bool is_server, bool auto_unlock )
-{
-	int index = INVALID_STRING_INDEX;
-	bool locked = false;
-	if (auto_unlock)
-	{
-		locked = engine->LockNetworkStringTables(false);
-	}
-	if (user_data && pTable->FindStringIndex(string) == INVALID_STRING_INDEX && length == -1)
-	{
-		length = strlen(user_data) + 1;
-	}
-	index = pTable->AddString(is_server, string, length, (const void *)user_data);
-	if (locked && auto_unlock)
-	{
-		engine->LockNetworkStringTables(locked);
-	}
-	return index;
-}
-
-//---------------------------------------------------------------------------------
-// Sets the user data of the given string index.
-//---------------------------------------------------------------------------------
-void SetStringIndexUserData( INetworkStringTable *pTable, int string_index, const char *user_data, int length )
-{
-	if (length == -1)
-	{
-		length = strlen(user_data) + 1;
-	}
-	pTable->SetStringUserData(string_index, length, user_data);
-}
-
-//---------------------------------------------------------------------------------
-// Sets the user data of the given string.
-//---------------------------------------------------------------------------------
-void SetStringUserData( INetworkStringTable *pTable, const char *string, const char *user_data, int length )
-{
-	int string_index = pTable->FindStringIndex(string);
-	if (string_index == INVALID_STRING_INDEX)
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Given string not found.")
-	}
-	SetStringIndexUserData(pTable, string_index, user_data, length);
-}
-
-//---------------------------------------------------------------------------------
-// Returns the user data of the given string index.
-//---------------------------------------------------------------------------------
-const char *GetStringIndexUserData( INetworkStringTable *pTable, int string_index )
-{
-	return (const char *)pTable->GetStringUserData(string_index, NULL);
-}
-
-//---------------------------------------------------------------------------------
-// Returns the user data of the given string.
-//---------------------------------------------------------------------------------
-const char *GetStringUserData( INetworkStringTable *pTable, const char *string )
-{
-	int index = pTable->FindStringIndex(string);
-	if (index == INVALID_STRING_INDEX)
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Given string not found.")
-	}
-	return GetStringIndexUserData(pTable, index);
-}
-
-//---------------------------------------------------------------------------------
-// Returns the length of the user data of the given string index.
-//---------------------------------------------------------------------------------
-int GetStringIndexUserDataLength( INetworkStringTable *pTable, int string_index )
-{
-	int length = 0;
-	const void * user_data = pTable->GetStringUserData(string_index, &length);
-	return length;
-}
-
-//---------------------------------------------------------------------------------
-// Returns the user data of the given string.
-//---------------------------------------------------------------------------------
-int GetStringUserDataLength( INetworkStringTable *pTable, const char *string )
-{
-	int index = pTable->FindStringIndex(string);
-	if (index == INVALID_STRING_INDEX)
-	{
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Given string not found.")
-	}
-	return GetStringIndexUserDataLength(pTable, index);
-}
-
-//---------------------------------------------------------------------------------
-// Returns whether or not the given string is in the table
-//---------------------------------------------------------------------------------
-bool __contains__( INetworkStringTable *pTable, const char *string )
-{
-	return pTable->FindStringIndex(string) != INVALID_STRING_INDEX;
-}
-
-//---------------------------------------------------------------------------------
 // Exposes INetworkStringTable.
 //---------------------------------------------------------------------------------
-class INetworkStringTableExt
-{
-public:
-	static const char* GetString(INetworkStringTable& table, int index)
-	{
-		if ((index < 0) || (index >= table.GetNumStrings()))
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
-
-		return table.GetString(index);
-	}
-};
-
 void export_stringtable(scope _stringtables)
 {
 	class_<INetworkStringTable, boost::noncopyable>("StringTable", no_init)
@@ -193,7 +79,7 @@ void export_stringtable(scope _stringtables)
 		)
 		
 		.def("__contains__",
-			&__contains__,
+			&INetworkStringTableExt::__contains__,
 			"Returns whether or not the given string is contained in the table."
 		)
 
@@ -214,13 +100,13 @@ void export_stringtable(scope _stringtables)
 		)
 		
 		.def("changed_since_tick",
-			&INetworkStringTable::SetTick,
+			&INetworkStringTable::ChangedSinceTick,
 			"Returns True if the table has been modified since the given tick, False otherwise.",
 			("tick")
 		)
 		
 		.def("add_string",
-			&AddString,
+			&INetworkStringTableExt::AddString,
 			"Adds the given string to the table.",
 			("string", arg("user_data")=object(), arg("length")=-1, arg("is_server")=true, arg("auto_unlock")=true)
 		)
@@ -232,25 +118,25 @@ void export_stringtable(scope _stringtables)
 		)
 		
 		.def("set_user_data",
-			&SetStringIndexUserData,
+			&INetworkStringTableExt::SetStringIndexUserData,
 			"Sets the user data of the given string index.",
 			("string_index", "user_data", arg("length")=-1)
 		)
 		
 		.def("set_user_data",
-			&SetStringUserData,
+			&INetworkStringTableExt::SetStringUserData,
 			"Sets the user data of the given string.",
 			("string", "user_data", arg("length")=-1)
 		)
 		
 		.def("get_user_data",
-			&GetStringIndexUserData,
+			&INetworkStringTableExt::GetStringIndexUserData,
 			"Returns the user data of the given string index.",
 			("string_index")
 		)
 		
 		.def("get_user_data",
-			&GetStringUserData,
+			&INetworkStringTableExt::GetStringUserData,
 			"Returns the user data of the given string.",
 			("string")
 		)
@@ -262,13 +148,13 @@ void export_stringtable(scope _stringtables)
 		)
 		
 		.def("get_user_data_length",
-			&GetStringIndexUserDataLength,
+			&INetworkStringTableExt::GetStringIndexUserDataLength,
 			"Returns the length of the user data of the given string index.",
 			("string_index")
 		)
 		
 		.def("get_user_data_length",
-			&GetStringUserDataLength,
+			&INetworkStringTableExt::GetStringUserDataLength,
 			"Returns the length of the user data of the given string.",
 			("string")
 		)
@@ -280,18 +166,6 @@ void export_stringtable(scope _stringtables)
 //---------------------------------------------------------------------------------
 // Exposes INetworkStringTableContainer.
 //---------------------------------------------------------------------------------
-class INetworkStringTableContainerExt
-{
-public:
-	static INetworkStringTable* GetTable(INetworkStringTableContainer& table_container, TABLEID table_id)
-	{
-		if ((table_id < 0) || (table_id >= table_container.GetNumTables()))
-			BOOST_RAISE_EXCEPTION(PyExc_IndexError, "Index out of range.")
-
-		return table_container.GetTable(table_id);
-	}
-};
-
 void export_stringtable_container(scope _stringtables)
 {
 	class_<INetworkStringTableContainer, boost::noncopyable>("_StringTables", no_init)
