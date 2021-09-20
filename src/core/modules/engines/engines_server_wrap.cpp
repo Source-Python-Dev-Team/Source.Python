@@ -521,13 +521,6 @@ static void export_engine_server(scope _server)
 			"Tells the engine we can immediately re-use all the edict indices."
 		)
 
-#if !defined (ENGINE_BRANCH_TF2)
-		.def("is_internal_build",
-			&IVEngineServer::IsInternalBuild,
-			"Returns true if the engine is an internal build."
-		)
-#endif
-
 		.def("get_change_accessor",
 			&IVEngineServer::GetChangeAccessor,
 			args("edict"),
@@ -753,9 +746,6 @@ static void export_engine_server(scope _server)
 		FUNCTION_INFO(GetPrevCheckTransmitInfo)
 		FUNCTION_INFO(GetSharedEdictChangeInfo)
 		FUNCTION_INFO(AllowImmediateEdictReuse)
-#if !defined (ENGINE_BRANCH_TF2)
-		FUNCTION_INFO(IsInternalBuild)
-#endif
 		FUNCTION_INFO(GetChangeAccessor)
 		FUNCTION_INFO(CleanUpEntityClusterList)
 		FUNCTION_INFO(GetAppID)
@@ -888,15 +878,6 @@ static void export_iserver(scope _server)
 		"Return the number of client slots (used and unused).\n\n"
 		":rtype: int"
 	);
-
-#if defined(ENGINE_BRANCH_TF2)
-	_IServer.add_property(
-		"public_address",
-		&IServer::GetPublicAddress,
-		"Return the currently used public address.\n\n"
-		":rtype: NetAdr" // TODO
-	);
-#endif
 
 	_IServer.add_property(
 		"udp_port",
