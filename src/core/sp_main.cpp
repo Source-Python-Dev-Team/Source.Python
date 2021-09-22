@@ -111,6 +111,7 @@ extern ICvar* g_pCVar;
 extern void InitCommands();
 extern void ClearAllCommands();
 extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &command);
+extern CConVarChangedListenerManager* GetOnConVarChangedListenerManager();
 
 //-----------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -396,6 +397,9 @@ void CSourcePython::Unload( void )
 
 	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
 	g_PythonManager.Shutdown();
+
+	DevMsg(1, MSG_PREFIX "Clearing convar changed listener...\n");
+	GetOnConVarChangedListenerManager()->clear();
 
 	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
 	GetHookManager()->UnhookAllFunctions();

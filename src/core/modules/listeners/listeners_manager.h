@@ -33,6 +33,11 @@
 #include "utilities/wrap_macros.h"
 #include "utlvector.h"
 
+// This is required for accessing m_nFlags without patching convar.h
+#define private public
+#include "convar.h"
+#undef private
+
 
 //-----------------------------------------------------------------------------
 // Helper macros.
@@ -96,6 +101,17 @@ public:
 
 public:
 	CUtlVector<object> m_vecCallables;
+};
+
+
+//-----------------------------------------------------------------------------
+// CConVarChangedListenerManager class.
+//-----------------------------------------------------------------------------
+class CConVarChangedListenerManager: public CListenerManager
+{
+public:
+	virtual void Initialize();
+	virtual void Finalize();
 };
 
 
