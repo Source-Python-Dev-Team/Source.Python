@@ -259,6 +259,15 @@ void CallHelperVoid(DCCallVM* vm, unsigned long addr)
 	EXCEPT_SEGV()
 }
 
+bool CallHelperBool(DCCallVM* vm, unsigned long addr)
+{
+	bool result;
+	TRY_SEGV()
+		result = dcCallBool(vm, addr) & 1;
+	EXCEPT_SEGV()
+	return result;
+}
+
 object CFunction::Call(tuple args, dict kw)
 {
 	if (!IsCallable())
@@ -309,7 +318,7 @@ object CFunction::Call(tuple args, dict kw)
 	switch(m_eReturnType)
 	{
 		case DATA_TYPE_VOID:		CallHelperVoid(g_pCallVM, m_ulAddr); break;
-		case DATA_TYPE_BOOL:		return object(CallHelper<bool>(dcCallBool, g_pCallVM, m_ulAddr));
+		case DATA_TYPE_BOOL:		return object(CallHelperBool(g_pCallVM, m_ulAddr));
 		case DATA_TYPE_CHAR:		return object(CallHelper<char>(dcCallChar, g_pCallVM, m_ulAddr));
 		case DATA_TYPE_UCHAR:		return object(CallHelper<unsigned char>(dcCallChar, g_pCallVM, m_ulAddr));
 		case DATA_TYPE_SHORT:		return object(CallHelper<short>(dcCallShort, g_pCallVM, m_ulAddr));
