@@ -173,7 +173,7 @@ void CListenerManager::clear()
 //-----------------------------------------------------------------------------
 void ConVarChangedCallback(IConVar* var, const char* pOldValue, float flOldValue)
 {
-	CConVarChangedListenerManager* on_convar_changed_listener_manager = GetOnConVarChangedListenerManager();
+	static CConVarChangedListenerManager* on_convar_changed_listener_manager = GetOnConVarChangedListenerManager();
 	CALL_LISTENERS_WITH_MNGR(on_convar_changed_listener_manager, ptr(static_cast<ConVar*>(var)), pOldValue);
 }
 
