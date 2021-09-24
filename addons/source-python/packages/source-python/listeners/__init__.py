@@ -21,7 +21,6 @@ from core.version import is_unversioned
 from core.version import VERSION
 #   Cvars
 from cvars import ConVar
-from cvars import cvar
 #   Engines
 from engines.server import server_game_dll
 #   Entities
@@ -52,6 +51,7 @@ from _listeners import on_client_disconnect_listener_manager
 from _listeners import on_client_fully_connect_listener_manager
 from _listeners import on_client_put_in_server_listener_manager
 from _listeners import on_client_settings_changed_listener_manager
+from _listeners import on_convar_changed_listener_manager
 from _listeners import on_level_init_listener_manager
 from _listeners import on_level_shutdown_listener_manager
 from _listeners import on_network_id_validated_listener_manager
@@ -166,7 +166,6 @@ __all__ = ('ButtonStatus',
 listeners_logger = _sp_logger.listeners
 
 on_version_update_listener_manager = ListenerManager()
-on_convar_changed_listener_manager = ListenerManager()
 on_plugin_loaded_manager = ListenerManager()
 on_plugin_unloaded_manager = ListenerManager()
 on_plugin_loading_manager = ListenerManager()
@@ -598,14 +597,6 @@ def _on_level_shutdown():
 
     # Make sure we don't get called more than once per map change
     OnLevelEnd._level_initialized = False
-
-
-@PreHook(get_virtual_function(cvar, 'CallGlobalChangeCallbacks'))
-def _pre_call_global_change_callbacks(args):
-    """Called when a ConVar has been changed."""
-    convar = make_object(ConVar, args[1])
-    old_value = args[2]
-    on_convar_changed_listener_manager.notify(convar, old_value)
 
 
 def _pre_fire_output(args):
