@@ -21,6 +21,8 @@ from core.logger import core_logger
 from paths import ADDONS_PATH
 from paths import GAME_PATH
 from paths import UPDATE_PATH
+from paths import UPDATE_DATA_PATH
+from paths import UPDATE_SP_DATA_PATH
 from paths import DATA_PATH
 from paths import SP_DATA_PATH
 #   KeyValues
@@ -197,6 +199,18 @@ def _apply_update_stage1():
     else:
         _apply_update_stage1_linux()
 
+    # Apply latest data update
+    if not DATA_ZIP_FILE.isfile():
+        return
+
+    update_logger.log_debug('Applying latest data update...')
+
+    if UPDATE_SP_DATA_PATH.isdir():
+        update_logger.log_debug(f'Removing {UPDATE_SP_DATA_PATH} ...')
+        UPDATE_SP_DATA_PATH.rmtree()
+
+    _unpack_data(UPDATE_DATA_PATH)
+
 def _apply_update_stage1_windows():
     """Apply the Windows specific part of stage 1.
 
@@ -262,7 +276,7 @@ def update_data(timeout=DEFAULT_TIMEOUT):
         update_logger.log_debug('Removing {} ...'.format(SP_DATA_PATH))
         SP_DATA_PATH.rmtree()
 
-    _unpack_data()
+    _unpack_data(DATA_PATH)
 
 def is_new_data_available(timeout=DEFAULT_TIMEOUT):
     """Return ``True`` if new data is available.
@@ -294,8 +308,12 @@ def _download_latest_data(timeout=DEFAULT_TIMEOUT):
     """
     download_file(DATA_URL, DATA_ZIP_FILE, timeout)
 
-def _unpack_data():
-    """Unpack ``source-python-data.zip``."""
-    update_logger.log_debug('Extracting data in {} ...'.format(DATA_PATH))
+def _unpack_data(path):
+    """Unpack ``source-python-data.zip`` into the given path.
+
+    :param Path path:
+        The path the data file should be unpacked into.
+    """
+    update_logger.log_debug(f'Extracting data in {path} ...')
     with ZipFile(DATA_ZIP_FILE) as zip:
-        zip.extractall(DATA_PATH)
+        zip.extractall(path)

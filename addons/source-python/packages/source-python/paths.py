@@ -35,7 +35,9 @@ __all__ = ('ADDONS_PATH',
            'TRANSLATION_PATH',
            'AUTH_CFG_PATH',
            'BACKENDS_PATH',
-           'UPDATE_PATH'
+           'UPDATE_PATH',
+           'UPDATE_DATA_PATH',
+           'UPDATE_SP_DATA_PATH'
            )
 
 
@@ -53,6 +55,12 @@ BASE_PATH = ADDONS_PATH / 'source-python'
 
 # ../addons/source-python/update
 UPDATE_PATH = BASE_PATH / 'update'
+
+# ../addons/source-python/update/addons/source-python/data/
+UPDATE_DATA_PATH = UPDATE_PATH / 'addons' / 'source-python' / 'data'
+
+# ../addons/source-python/update/addons/source-python/data/source-python
+UPDATE_SP_DATA_PATH = UPDATE_DATA_PATH / 'source-python'
 
 # ../addons/source-python/docs
 DOCS_PATH = BASE_PATH / 'docs'
