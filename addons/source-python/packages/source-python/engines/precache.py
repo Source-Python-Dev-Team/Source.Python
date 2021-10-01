@@ -5,10 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Contextlib
-from contextlib import suppress
-
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -119,8 +115,10 @@ class _PrecacheBase(AutoUnload):
     def _unload_instance(self):
         """Remove from the downloads list and unregister server_spawn."""
         # Remove the path from the downloads list
-        with suppress(AttributeError):
+        try:
             self._downloads._unload_instance()
+        except AttributeError:
+            pass
 
         # Unregister the server_spawn event
         event_manager.unregister_for_event('server_spawn', self._server_spawn)

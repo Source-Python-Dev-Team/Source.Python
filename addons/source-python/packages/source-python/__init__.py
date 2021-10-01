@@ -68,10 +68,6 @@ if LOG_FILE_OPERATIONS:
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   Context
-from contextlib import suppress
-
 # Source.Python Imports
 #   Loggers
 from loggers import _sp_logger  # It's save to import this here
@@ -428,9 +424,11 @@ def remove_entities_listener():
     from _core import _sp_plugin
     from memory.manager import manager
 
-    with suppress(NameError):
+    try:
         manager.get_global_pointer('GlobalEntityList').remove_entity_listener(
             _sp_plugin)
+    except NameError:
+        pass
 
 
 # =============================================================================

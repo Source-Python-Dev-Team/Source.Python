@@ -7,8 +7,6 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
-#   Contextlib
-from contextlib import suppress
 #   Inspect
 import inspect
 from inspect import Parameter
@@ -577,10 +575,12 @@ class _TypedCommand(AutoUnload):
         return callback
 
     def _unload_instance(self):
-        with suppress(ValueError):
+        try:
             if self.parser.remove_command(self.commands):
                 self.manager.unregister_commands(
                     self.command.command_to_register, self.on_command)
+        except ValueError:
+            pass
 
     @classmethod
     def on_command(cls, command, *args):

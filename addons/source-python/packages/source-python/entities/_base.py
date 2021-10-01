@@ -8,8 +8,6 @@
 # Python Imports
 #   Collections
 from collections import defaultdict
-#   Contextlib
-from contextlib import suppress
 #   Inspect
 from inspect import signature
 #   WeakRef
@@ -227,15 +225,19 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             raise AttributeError('Attribute "{0}" not found'.format(attr))
 
         # Is the attribute a property descriptor?
-        with suppress(AttributeError):
+        try:
             value = value.__get__(instance)
+        except AttributeError:
+            pass
 
         # Is the value a dynamic function?
         if isinstance(value, (MemberFunction, InputFunction)):
 
             # Cache the value
-            with suppress(AttributeError):
+            try:
                 object.__setattr__(self, attr, value)
+            except AttributeError:
+                pass
 
         return value
 
@@ -253,7 +255,8 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
             # Try to resolve a dynamic attribute
             try:
-                self, setter = self.dynamic_attributes[attr].__set__
+                self, setter = self.dynamic_attributes[attr]
+                setter = setter.__set__
 
             # KeyError:
             #   The attribute does not exist.
@@ -334,7 +337,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
     @cached_property
     def dynamic_attributes(self):
-        """Returns the dynamic attributes for this entities."""
+        """Returns the dynamic attributes for this entity."""
         attributes = {}
         for cls, instance in self.server_classes.items():
             attributes.update(
@@ -701,34 +704,44 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         if attacker_index is not None:
 
             # Try to get the Entity instance of the attacker
-            with suppress(ValueError):
+            try:
                 attacker = Entity(attacker_index)
+            except ValueError:
+                pass
 
         # Was a weapon given?
         if weapon_index is not None:
 
             # Try to get the Weapon instance of the weapon
-            with suppress(ValueError):
+            try:
                 weapon = Weapon(weapon_index)
+            except ValueError:
+                pass
 
         # Is there a weapon but no attacker?
         if attacker is None and weapon is not None:
 
             # Try to get the attacker based off of the weapon's owner
-            with suppress(ValueError, OverflowError):
+            try:
                 attacker_index = index_from_inthandle(weapon.owner_handle)
                 attacker = Entity(attacker_index)
+            except (ValueError, OverflowError):
+                pass
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:
 
             # Try to use the attacker's active weapon
-            with suppress(AttributeError):
+            try:
                 weapon = attacker.active_weapon
+            except AttributeError:
+                pass
 
         # Try to set the hitgroup
-        with suppress(AttributeError):
+        try:
             self.hitgroup = hitgroup
+        except AttributeError:
+            pass
 
         # Get a TakeDamageInfo instance
         take_damage_info = TakeDamageInfo()
@@ -817,8 +830,10 @@ def _on_networked_entity_deleted(index):
     for delay in _entity_delays.pop(index, ()):
 
         # Cancel the delay...
-        with suppress(ValueError):
+        try:
             delay.cancel()
+        except ValueError:
+            pass
 
     # Loop through all repeats...
     for repeat in _entity_repeats.pop(index, ()):
