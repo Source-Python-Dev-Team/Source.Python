@@ -41,6 +41,7 @@ from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import WORLD_ENTITY_INDEX
 from entities.constants import DamageTypes
+from entities.datamaps import InputFunction
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
@@ -230,7 +231,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             value = value.__get__(instance)
 
         # Is the value a dynamic function?
-        if isinstance(value, MemberFunction):
+        if isinstance(value, (MemberFunction, InputFunction)):
 
             # Cache the value
             with suppress(AttributeError):
