@@ -389,7 +389,7 @@ def _on_weapon_bump(args):
         make_object(Player, args[0]), edict_from_pointer(args[1]).classname)
 
 
-if GAME_NAME in ('css', 'csgo'):
+if GAME_NAME in ('cstrike', 'csgo'):
     @EntityPreHook(EntityCondition.is_player, 'buy_internal')
     def _on_weapon_purchase(args):
         """Return whether the player is allowed to purchase the weapon."""
