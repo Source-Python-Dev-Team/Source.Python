@@ -144,6 +144,17 @@ class _EntityCaching(BoostPythonClass):
         # We are done, let's return the instance
         return obj
 
+    @cached_property(unbound=True)
+    def attributes(cls):
+        """Returns all the attributes available for this class.
+
+        :rtype: dict
+        """
+        attributes = {}
+        for cls in reversed(cls.mro()):
+            attributes.update(vars(cls))
+        return attributes
+
     @property
     def caching(cls):
         """Returns whether this class is caching its instances by default.
@@ -208,54 +219,52 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
-        # Loop through all of the entity's server classes
-        for instance in self.server_classes.values():
+        # Try to resolve the dynamic attribute
+        try:
+            instance, value = self.dynamic_attributes[attr]
+        except KeyError:
+            raise AttributeError('Attribute "{0}" not found'.format(attr))
 
-            try:
-                # Get the attribute's value
-                value = getattr(instance, attr)
-            except AttributeError:
-                continue
+        # Is the attribute a property descriptor?
+        with suppress(AttributeError):
+            value = value.__get__(instance)
 
-            # Is the value a dynamic function?
-            if isinstance(value, MemberFunction):
+        # Is the value a dynamic function?
+        if isinstance(value, MemberFunction):
 
-                # Cache the value
-                with suppress(AttributeError):
-                    object.__setattr__(self, attr, value)
+            # Cache the value
+            with suppress(AttributeError):
+                object.__setattr__(self, attr, value)
 
-            # Return the attribute's value
-            return value
-
-        # If the attribute is not found, raise an error
-        raise AttributeError('Attribute "{0}" not found'.format(attr))
+        return value
 
     def __setattr__(self, attr, value):
         """Find if the attribute is valid and sets its value."""
         # Is the given attribute a property?
-        if (attr in super().__dir__() and isinstance(
-                getattr(self.__class__, attr, None), property)):
+        try:
+            setter = type(self).attributes[attr].__set__
 
-            # Set the property's value
-            object.__setattr__(self, attr, value)
+        # KeyError:
+        #   The attribute does not exist.
+        # AttributeError:
+        #   The attribute is not a descriptor.
+        except (KeyError, AttributeError):
 
-            # No need to go further
-            return
+            # Try to resolve a dynamic attribute
+            try:
+                self, setter = self.dynamic_attributes[attr].__set__
 
-        # Loop through all of the entity's server classes
-        for server_class, instance in self.server_classes.items():
+            # KeyError:
+            #   The attribute does not exist.
+            # AttributeError:
+            #   The attribute is not a descriptor.
+            except (KeyError, AttributeError):
 
-            # Does the current server class contain the given attribute?
-            if hasattr(server_class, attr):
+                # Set the attribute to the given value
+                return object.__setattr__(self, attr, value)
 
-                # Set the attribute's value
-                setattr(instance, attr, value)
-
-                # No need to go further
-                return
-
-        # If the attribute is not found, just set the attribute
-        super().__setattr__(attr, value)
+        # Set the attribute's value
+        setter(self, value)
 
     def __dir__(self):
         """Return an alphabetized list of attributes for the instance."""
@@ -317,8 +326,20 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """Yield all server classes for the entity."""
         return {
             server_class: make_object(server_class, self.pointer) for
-            server_class in server_classes.get_entity_server_classes(self)
+            server_class in reversed(
+                server_classes.get_entity_server_classes(self)
+            )
         }
+
+    @cached_property
+    def dynamic_attributes(self):
+        """Returns the dynamic attributes for this entities."""
+        attributes = {}
+        for cls, instance in self.server_classes.items():
+            attributes.update(
+                {attr:(instance, getattr(cls, attr)) for attr in dir(cls)}
+            )
+        return attributes
 
     @cached_property
     def properties(self):
