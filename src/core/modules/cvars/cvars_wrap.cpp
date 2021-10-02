@@ -46,6 +46,12 @@ extern ICvar* g_pCVar;
 
 
 //-----------------------------------------------------------------------------
+// ConVar extension definition.
+//-----------------------------------------------------------------------------
+bool ConVarExt::installed = false;
+
+
+//-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
 void export_cvar_interface(scope);
@@ -299,7 +305,19 @@ void export_convar(scope _cvars)
 			&ConVarExt::RemovePublic,
 			"Remove the notify flag and make the console variable no longer public."
 		)
-			
+
+		.def("add_changed_callback",
+			&ConVarExt::AddChangedCallback,
+			"Add a callable object that will be called when the ConVar is changed.",
+			args("callable")
+		)
+
+		.def("remove_changed_callback",
+			&ConVarExt::RemoveChangedCallback,
+			"Remove a callable object that will be called when the ConVar is changed.",
+			args("callable")
+		)
+
 		// Special methods...
 		.def("__float__",
 			&ConVar::GetFloat,

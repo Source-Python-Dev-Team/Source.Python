@@ -30,8 +30,22 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// C++
+#include <unordered_map>
+#include <vector>
+
 #include "convar.h"
+
 #include "utilities/sp_util.h"
+#include "modules/listeners/listeners_manager.h"
+
+
+//-----------------------------------------------------------------------------
+// Global ConVar changed callback mapping.
+//-----------------------------------------------------------------------------
+typedef std::vector<object> ChangedCallbacks;
+typedef std::unordered_map<std::string, ChangedCallbacks> ConVarMap;
+ConVarMap g_ConVarMap;
 
 
 //-----------------------------------------------------------------------------
@@ -117,6 +131,88 @@ public:
 		pConVar->m_nFlags &= ~FCVAR_NOTIFY;
 		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
+
+	static void ChangedCallback(IConVar* var, const char* pOldValue, float flOldValue)
+	{
+		ConVarMap::iterator map_it = g_ConVarMap.find(var->GetName());
+		if (map_it == g_ConVarMap.end())
+			return;
+
+		ConVar* pConVar = static_cast<ConVar*>(var);
+
+		ChangedCallbacks& callables = map_it->second;
+		for (ChangedCallbacks::iterator it = callables.begin(); it != callables.end(); ++it)
+		{
+			BEGIN_BOOST_PY()
+				(*it)(ptr(pConVar), pOldValue, pConVar->GetString());
+			END_BOOST_PY_NORET()
+		}
+	}
+
+	static void AddChangedCallback(ConVar* pConVar, PyObject* pCallable)
+	{
+		// Get the object instance of the callable
+		object oCallable = object(handle<>(borrowed(pCallable)));
+
+		ChangedCallbacks& callables = g_ConVarMap[pConVar->GetName()];
+		if (!callables.size())
+		{
+			if (!installed)
+			{
+				g_pCVar->InstallGlobalChangeCallback(ChangedCallback);
+				installed = true;
+			}
+		}
+		else
+		{
+			for (ChangedCallbacks::iterator it = callables.begin(); it != callables.end(); ++it)
+			{
+				if (is_same_func(oCallable, *it))
+					BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback already registered.")
+			}
+		}
+
+		callables.push_back(oCallable);
+	}
+
+	static void RemoveChangedCallback(ConVar* pConVar, PyObject* pCallable)
+	{
+		ConVarMap::iterator map_it = g_ConVarMap.find(pConVar->GetName());
+		if (map_it == g_ConVarMap.end())
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback not registered.")
+
+		// Get the object instance of the callable
+		object oCallable = object(handle<>(borrowed(pCallable)));
+
+		ChangedCallbacks& callables = map_it->second;
+		for (ChangedCallbacks::iterator it = callables.begin();;)
+		{
+			if(it == callables.end())
+				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback not registered.")
+
+			if (is_same_func(oCallable, *it))
+			{
+				callables.erase(it);
+				break;
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		if (!callables.size())
+		{
+			g_ConVarMap.erase(map_it);
+			if (!g_ConVarMap.size())
+			{
+				g_pCVar->RemoveGlobalChangeCallback(ChangedCallback);
+				installed = false;
+			}
+		}
+	}
+
+	static bool installed;
 };
 
 
