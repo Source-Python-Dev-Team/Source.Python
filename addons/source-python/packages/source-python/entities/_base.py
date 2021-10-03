@@ -8,8 +8,6 @@
 # Python Imports
 #   Collections
 from collections import defaultdict
-#   Contextlib
-from contextlib import suppress
 #   Inspect
 from inspect import signature
 #   WeakRef
@@ -41,6 +39,7 @@ from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import WORLD_ENTITY_INDEX
 from entities.constants import DamageTypes
+from entities.datamaps import InputFunction
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
@@ -144,6 +143,17 @@ class _EntityCaching(BoostPythonClass):
         # We are done, let's return the instance
         return obj
 
+    @cached_property(unbound=True)
+    def attributes(cls):
+        """Returns all the attributes available for this class.
+
+        :rtype: dict
+        """
+        attributes = {}
+        for cls in reversed(cls.mro()):
+            attributes.update(vars(cls))
+        return attributes
+
     @property
     def caching(cls):
         """Returns whether this class is caching its instances by default.
@@ -208,54 +218,57 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
-        # Loop through all of the entity's server classes
-        for instance in self.server_classes.values():
+        # Try to resolve the dynamic attribute
+        try:
+            instance, value = self.dynamic_attributes[attr]
+        except KeyError:
+            raise AttributeError('Attribute "{0}" not found'.format(attr))
 
+        # Is the attribute a property descriptor?
+        try:
+            value = value.__get__(instance)
+        except AttributeError:
+            pass
+
+        # Is the value a dynamic function?
+        if isinstance(value, (MemberFunction, InputFunction)):
+
+            # Cache the value
             try:
-                # Get the attribute's value
-                value = getattr(instance, attr)
+                object.__setattr__(self, attr, value)
             except AttributeError:
-                continue
+                pass
 
-            # Is the value a dynamic function?
-            if isinstance(value, MemberFunction):
-
-                # Cache the value
-                with suppress(AttributeError):
-                    object.__setattr__(self, attr, value)
-
-            # Return the attribute's value
-            return value
-
-        # If the attribute is not found, raise an error
-        raise AttributeError('Attribute "{0}" not found'.format(attr))
+        return value
 
     def __setattr__(self, attr, value):
         """Find if the attribute is valid and sets its value."""
         # Is the given attribute a property?
-        if (attr in super().__dir__() and isinstance(
-                getattr(self.__class__, attr, None), property)):
+        try:
+            setter = type(self).attributes[attr].__set__
 
-            # Set the property's value
-            object.__setattr__(self, attr, value)
+        # KeyError:
+        #   The attribute does not exist.
+        # AttributeError:
+        #   The attribute is not a descriptor.
+        except (KeyError, AttributeError):
 
-            # No need to go further
-            return
+            # Try to resolve a dynamic attribute
+            try:
+                self, setter = self.dynamic_attributes[attr]
+                setter = setter.__set__
 
-        # Loop through all of the entity's server classes
-        for server_class, instance in self.server_classes.items():
+            # KeyError:
+            #   The attribute does not exist.
+            # AttributeError:
+            #   The attribute is not a descriptor.
+            except (KeyError, AttributeError):
 
-            # Does the current server class contain the given attribute?
-            if hasattr(server_class, attr):
+                # Set the attribute to the given value
+                return object.__setattr__(self, attr, value)
 
-                # Set the attribute's value
-                setattr(instance, attr, value)
-
-                # No need to go further
-                return
-
-        # If the attribute is not found, just set the attribute
-        super().__setattr__(attr, value)
+        # Set the attribute's value
+        setter(self, value)
 
     def __dir__(self):
         """Return an alphabetized list of attributes for the instance."""
@@ -317,8 +330,20 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """Yield all server classes for the entity."""
         return {
             server_class: make_object(server_class, self.pointer) for
-            server_class in server_classes.get_entity_server_classes(self)
+            server_class in reversed(
+                server_classes.get_entity_server_classes(self)
+            )
         }
+
+    @cached_property
+    def dynamic_attributes(self):
+        """Returns the dynamic attributes for this entity."""
+        attributes = {}
+        for cls, instance in self.server_classes.items():
+            attributes.update(
+                {attr:(instance, getattr(cls, attr)) for attr in dir(cls)}
+            )
+        return attributes
 
     @cached_property
     def properties(self):
@@ -679,34 +704,44 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         if attacker_index is not None:
 
             # Try to get the Entity instance of the attacker
-            with suppress(ValueError):
+            try:
                 attacker = Entity(attacker_index)
+            except ValueError:
+                pass
 
         # Was a weapon given?
         if weapon_index is not None:
 
             # Try to get the Weapon instance of the weapon
-            with suppress(ValueError):
+            try:
                 weapon = Weapon(weapon_index)
+            except ValueError:
+                pass
 
         # Is there a weapon but no attacker?
         if attacker is None and weapon is not None:
 
             # Try to get the attacker based off of the weapon's owner
-            with suppress(ValueError, OverflowError):
+            try:
                 attacker_index = index_from_inthandle(weapon.owner_handle)
                 attacker = Entity(attacker_index)
+            except (ValueError, OverflowError):
+                pass
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:
 
             # Try to use the attacker's active weapon
-            with suppress(AttributeError):
+            try:
                 weapon = attacker.active_weapon
+            except AttributeError:
+                pass
 
         # Try to set the hitgroup
-        with suppress(AttributeError):
+        try:
             self.hitgroup = hitgroup
+        except AttributeError:
+            pass
 
         # Get a TakeDamageInfo instance
         take_damage_info = TakeDamageInfo()
@@ -795,8 +830,10 @@ def _on_networked_entity_deleted(index):
     for delay in _entity_delays.pop(index, ()):
 
         # Cancel the delay...
-        with suppress(ValueError):
+        try:
             delay.cancel()
+        except ValueError:
+            pass
 
     # Loop through all repeats...
     for repeat in _entity_repeats.pop(index, ()):
