@@ -587,10 +587,22 @@ void export_player_wrapper(scope _players)
 		"Get/set the player's view vector.\n\n"
 		":rtype: Vector");
 
+	_PlayerMixin.def(
+		"get_view_angle",
+		&PlayerMixin::GetViewAngle,
+		"Returns the player's view angle.\n\n"
+		":rtype: QAngle");
+
+	_PlayerMixin.def(
+		"set_view_angle",
+		&PlayerMixin::SetViewAngle,
+		"Sets the player's view angle.",
+		("self", "angle", arg("fixangle")=FIXANGLE_ABSOLUTE));
+
 	_PlayerMixin.add_property(
 		"view_angle",
 		&PlayerMixin::GetViewAngle,
-		&PlayerMixin::SetViewAngle,
+		_PlayerMixin.attr("set_view_angle"),
 		"Get/set the player's view angle.\n\n"
 		":rtype: QAngle");
 
