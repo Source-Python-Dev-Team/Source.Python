@@ -58,6 +58,7 @@
 #include "manager.h"
 
 #include "modules/listeners/listeners_manager.h"
+#include "modules/cvars/cvars.h"
 #include "utilities/conversions.h"
 #include "modules/entities/entities_entity.h"
 #include "modules/core/core.h"
@@ -400,6 +401,9 @@ void CSourcePython::Unload( void )
 
 	DevMsg(1, MSG_PREFIX "Clearing convar changed listener...\n");
 	GetOnConVarChangedListenerManager()->clear();
+
+	DevMsg(1, MSG_PREFIX "Clearing convar changed callbacks...\n");
+	ConVarExt::ClearCallback();
 
 	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
 	GetHookManager()->UnhookAllFunctions();

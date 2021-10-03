@@ -34,18 +34,13 @@
 #include <unordered_map>
 #include <vector>
 
+// This is required for accessing m_nFlags without patching convar.h
+#define private public
 #include "convar.h"
+#undef private
 
 #include "utilities/sp_util.h"
 #include "modules/listeners/listeners_manager.h"
-
-
-//-----------------------------------------------------------------------------
-// Global ConVar changed callback mapping.
-//-----------------------------------------------------------------------------
-typedef std::vector<object> ChangedCallbacks;
-typedef std::unordered_map<std::string, ChangedCallbacks> ConVarMap;
-ConVarMap g_ConVarMap;
 
 
 //-----------------------------------------------------------------------------
@@ -55,162 +50,23 @@ class ConVarExt
 {
 public:
 	static boost::shared_ptr<ConVar> __init__(const char* name, const char* value,
-		const char* description, int flags, object min_value, object max_value)
-	{
-		if (!name || name[0] == '\0')
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "An empty string is not a valid ConVar name.")
+		const char* description, int flags, object min_value, object max_value);
 
-		float fMin = 0;
-		float fMax = 0;
+	static bool HasMin(ConVar* pConVar);
+	static bool HasMax(ConVar* pConVar);
 
-		try {
-			fMin = extract<float>(min_value);
-		}
-		catch (...) {
-			PyErr_Clear();
-		}
+	static float GetMin(ConVar* pConVar);
+	static float GetMax(ConVar* pConVar);
 
-		try {
-			fMax = extract<float>(max_value);
-		}
-		catch (...) {
-			PyErr_Clear();
-		}
+	static void SetValue(ConVar* pConVar, bool bValue);
 
-		ConVar *pConVar = g_pCVar->FindVar(name);
-		if (!pConVar)
-		{
-			ConVar* pConVar = new ConVar(strdup(name), strdup(value), flags,
-				strdup(description), !min_value.is_none(), fMin, !max_value.is_none(), fMax);
+	static void MakePublic(ConVar* pConVar);
+	static void RemovePublic(ConVar* pConVar);
 
-			return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
-		}
-
-		return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
-	}
-
-	static bool HasMin(ConVar* pConVar)
-	{
-		float fMin;
-		return pConVar->GetMin(fMin);
-	}
-
-	static bool HasMax(ConVar* pConVar)
-	{
-		float fMax;
-		return pConVar->GetMax(fMax);
-	}
-
-	static float GetMin(ConVar* pConVar)
-	{
-		float fMin;
-		pConVar->GetMin(fMin);
-		return fMin;
-	}
-
-	static float GetMax(ConVar* pConVar)
-	{
-		float fMax;
-		pConVar->GetMax(fMax);
-		return fMax;
-	}
-
-	static void SetValue(ConVar* pConVar, bool bValue)
-	{
-		pConVar->SetValue(bValue);
-	}
-
-	static void MakePublic(ConVar* pConVar)
-	{
-		pConVar->m_nFlags |= FCVAR_NOTIFY;
-		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
-	}
-
-	static void RemovePublic(ConVar* pConVar)
-	{
-		pConVar->m_nFlags &= ~FCVAR_NOTIFY;
-		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
-	}
-
-	static void ChangedCallback(IConVar* var, const char* pOldValue, float flOldValue)
-	{
-		ConVarMap::iterator map_it = g_ConVarMap.find(var->GetName());
-		if (map_it == g_ConVarMap.end())
-			return;
-
-		ConVar* pConVar = static_cast<ConVar*>(var);
-
-		ChangedCallbacks& callables = map_it->second;
-		for (ChangedCallbacks::iterator it = callables.begin(); it != callables.end(); ++it)
-		{
-			BEGIN_BOOST_PY()
-				(*it)(ptr(pConVar), pOldValue, pConVar->GetString());
-			END_BOOST_PY_NORET()
-		}
-	}
-
-	static void AddChangedCallback(ConVar* pConVar, PyObject* pCallable)
-	{
-		// Get the object instance of the callable
-		object oCallable = object(handle<>(borrowed(pCallable)));
-
-		ChangedCallbacks& callables = g_ConVarMap[pConVar->GetName()];
-		if (!callables.size())
-		{
-			if (!installed)
-			{
-				g_pCVar->InstallGlobalChangeCallback(ChangedCallback);
-				installed = true;
-			}
-		}
-		else
-		{
-			for (ChangedCallbacks::iterator it = callables.begin(); it != callables.end(); ++it)
-			{
-				if (is_same_func(oCallable, *it))
-					BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback already registered.")
-			}
-		}
-
-		callables.push_back(oCallable);
-	}
-
-	static void RemoveChangedCallback(ConVar* pConVar, PyObject* pCallable)
-	{
-		ConVarMap::iterator map_it = g_ConVarMap.find(pConVar->GetName());
-		if (map_it == g_ConVarMap.end())
-			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback not registered.")
-
-		// Get the object instance of the callable
-		object oCallable = object(handle<>(borrowed(pCallable)));
-
-		ChangedCallbacks& callables = map_it->second;
-		for (ChangedCallbacks::iterator it = callables.begin();;)
-		{
-			if(it == callables.end())
-				BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Callback not registered.")
-
-			if (is_same_func(oCallable, *it))
-			{
-				callables.erase(it);
-				break;
-			}
-			else
-			{
-				++it;
-			}
-		}
-
-		if (!callables.size())
-		{
-			g_ConVarMap.erase(map_it);
-			if (!g_ConVarMap.size())
-			{
-				g_pCVar->RemoveGlobalChangeCallback(ChangedCallback);
-				installed = false;
-			}
-		}
-	}
+	static void ChangedCallback(IConVar* var, const char* pOldValue, float flOldValue);
+	static void AddChangedCallback(ConVar* pConVar, PyObject* pCallable);
+	static void RemoveChangedCallback(ConVar* pConVar, PyObject* pCallable);
+	static void ClearCallback();
 
 	static bool installed;
 };
