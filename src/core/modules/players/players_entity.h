@@ -163,7 +163,7 @@ public:
 	void SetViewVector(Vector& value);
 
 	QAngle GetViewAngle();
-	void SetViewAngle(QAngle& value);
+	void SetViewAngle(QAngle& value, int fixangle = FIXANGLE_ABSOLUTE);
 
 	// Game specific
 	// CS:S, CS:GO
