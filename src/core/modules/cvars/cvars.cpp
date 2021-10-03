@@ -201,9 +201,12 @@ void ConVarExt::RemoveChangedCallback(ConVar* pConVar, PyObject* pCallable)
 
 void ConVarExt::ClearCallback()
 {
-	g_ConVarMap.clear();
 	if (installed)
+	{
+		g_ConVarMap.clear();
 		g_pCVar->RemoveGlobalChangeCallback(ChangedCallback);
+		installed = false;
+	}
 }
 
 bool ConVarExt::installed = false;
