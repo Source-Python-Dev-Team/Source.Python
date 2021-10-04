@@ -171,6 +171,7 @@ Set(SOURCEPYTHON_CVARS_MODULE_HEADERS
 )
 
 Set(SOURCEPYTHON_CVARS_MODULE_SOURCES
+    core/modules/cvars/cvars.cpp
     core/modules/cvars/cvars_wrap.cpp
 )
 
