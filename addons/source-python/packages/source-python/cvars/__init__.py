@@ -64,6 +64,10 @@ class ConVarChanged(AutoUnload):
 
     def __call__(self, callback):
         """Store the callback and add it to convars."""
+        # Is the callback callable?
+        if not callable(callback):
+            raise ValueError('Given callback is not callable.')
+
         # Store the callback
         self.callback = callback
 
