@@ -35,6 +35,16 @@
 
 
 //-----------------------------------------------------------------------------
+// Returns Source.Python's DLL identifier.
+//-----------------------------------------------------------------------------
+inline CVarDLLIdentifier_t CVarDLLIdentifier()
+{
+	static CVarDLLIdentifier_t s_nDLLIdentifier = ConCommandBase().GetDLLIdentifier();
+	return s_nDLLIdentifier;
+}
+
+
+//-----------------------------------------------------------------------------
 // ConVar extension class.
 //-----------------------------------------------------------------------------
 class ConVarExt

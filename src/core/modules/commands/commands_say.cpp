@@ -42,6 +42,7 @@
 
 #include "commands_say.h"
 #include "commands.h"
+#include "modules/cvars/cvars.h"
 
 
 //-----------------------------------------------------------------------------
@@ -191,8 +192,12 @@ SayConCommand::~SayConCommand()
 	// Get the ConCommand instance
 	ConCommand* pConCommand = g_pCVar->FindCommand(m_Name);
 
-	// Unregister the ConCommand
-	g_pCVar->UnregisterConCommand(pConCommand);
+	// Was the command overwritten as a ConVar or by another DLL?
+	if (pConCommand && pConCommand->GetDLLIdentifier() == CVarDLLIdentifier())
+	{
+		// Unregister the ConCommand
+		g_pCVar->UnregisterConCommand(pConCommand);
+	}
 
 	// Was the command registered before we registered it?
 	if( m_pOldCommand )

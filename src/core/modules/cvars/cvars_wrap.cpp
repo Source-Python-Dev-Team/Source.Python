@@ -63,6 +63,9 @@ DECLARE_SP_MODULE(_cvars)
 	export_convar_interface(_cvars);
 	export_convar(_cvars);
 	export_convar_flags(_cvars);
+
+	// Constants...
+	_cvars.attr("SP_CVAR_DLL_IDENTIFIER") = object(CVarDLLIdentifier());
 }
 
 

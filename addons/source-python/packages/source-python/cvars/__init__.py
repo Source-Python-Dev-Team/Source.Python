@@ -8,6 +8,7 @@
 # Source.Python Imports
 #   Cvars
 from _cvars import ConVar
+from _cvars import SP_CVAR_DLL_IDENTIFIER
 from _cvars import _Cvar
 from cvars.flags import ConVarFlags
 
@@ -24,5 +25,6 @@ from _cvars import cvar
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('ConVar',
+           'SP_CVAR_DLL_IDENTIFIER',
            'cvar',
            )
