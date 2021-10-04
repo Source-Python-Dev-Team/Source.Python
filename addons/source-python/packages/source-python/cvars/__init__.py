@@ -48,16 +48,15 @@ class ConVarChanged(AutoUnload):
 
         _convars = []
         for convar in convars:
-            if isinstance(convar, str):
-                convar_name = convar
-            elif isinstance(convar, ConVar):
-                convar_name = convar.name
-            else:
+            if not isinstance(convar, (str, ConVar)):
                 raise ValueError('Given convar is not ConVar or ConVar name.')
 
-            convar = cvar.find_var(convar_name)
-            if convar is None:
-                raise ValueError(f'"{convar_name}" is not a valid ConVar.')
+            elif isinstance(convar, str):
+                convar_name = convar
+                convar = cvar.find_var(convar_name)
+                if convar is None:
+                    raise ValueError(
+                        f'"{convar_name}" is not a valid ConVar name.')
 
             _convars.append(convar)
 
