@@ -67,6 +67,11 @@ boost::shared_ptr<ConVar> ConVarExt::__init__(const char* name, const char* valu
 	ConVar *pConVar = g_pCVar->FindVar(name);
 	if (!pConVar)
 	{
+		// Find if the command already exists
+		ConCommand* pConCommand = g_pCVar->FindCommand(name);
+		if (pConCommand)
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "ConCommand already exists.")
+
 		ConVar* pConVar = new ConVar(strdup(name), strdup(value), flags,
 			strdup(description), !min_value.is_none(), fMin, !max_value.is_none(), fMax);
 
