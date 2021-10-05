@@ -384,6 +384,16 @@ void export_player_wrapper(scope _players)
 		":rtype: bool"
 	);
 
+	_PlayerMixin.def(
+		"snap_to_position",
+		&PlayerMixin::SnapToPosition,
+		"Teleports the player at the given position and angles.\n\n"
+		":param Vector origin:\n"
+		"	The coordinates to teleport the player at.\n"
+		":param QAngle angles:\n"
+		"	The angles to set the player's view to.",
+		("self", arg("origin")=object(), arg("angles")=object()));
+
 	_PlayerMixin.add_property(
 		"speed",
 		&PlayerMixin::GetSpeed,

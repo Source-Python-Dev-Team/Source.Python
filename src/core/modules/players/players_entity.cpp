@@ -39,6 +39,7 @@
 // >> EXTERNALS
 // ============================================================================
 extern IServerGameClients *servergameclients;
+extern IServerTools *servertools;
 
 
 // ============================================================================
@@ -79,6 +80,15 @@ bool PlayerMixin::IsPlayer()
 bool PlayerMixin::IsWeapon()
 {
 	return false;
+}
+
+void PlayerMixin::SnapToPosition(Vector *pOrigin, QAngle *pAngles)
+{
+	servertools->SnapPlayerToPosition(
+		(pOrigin ? *pOrigin : GetOrigin()) + GetViewOffset(),
+		pAngles ? *pAngles : GetViewAngle(),
+		(IClientEntity *)GetEdict()->GetIServerEntity()
+	);
 }
 
 // CBasePlayer

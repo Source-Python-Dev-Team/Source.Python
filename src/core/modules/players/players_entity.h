@@ -72,6 +72,8 @@ public:
 	bool IsPlayer();
 	bool IsWeapon();
 
+	void SnapToPosition(Vector *pOrigin = NULL, QAngle *pAngles = NULL);
+
 	// CBasePlayer
 	// TODO: Return for some of these the proper entity class instead of a handle/index
 	// E. g. BaseEntity, Entity, Weapon, Player, etc.
