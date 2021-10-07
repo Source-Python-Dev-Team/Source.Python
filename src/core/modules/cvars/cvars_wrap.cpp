@@ -27,13 +27,10 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
 #include "icvar.h"
-#include "convar.h"
+#include "utilities/convar.h"
 #include "cvars.h"
 
 #include ENGINE_INCLUDE_PATH(cvars.h)
@@ -78,7 +75,7 @@ void export_cvar_interface(scope _cvars)
 		.def("register_base",
 			&ICvar::RegisterConCommand,
 			"Register a console command.",
-			arg("con_command")
+			(arg("con_command")=true)
 		)
 
 		.def("unregister_base",
@@ -106,7 +103,7 @@ void export_cvar_interface(scope _cvars)
 		)
 
 		.def("find_var",
-			GET_METHOD(ConVar*, ICvar, FindVar, const char *),
+			&ICVarSharedExt::FindVar,
 			"Find the ConVar instance of console variable.\n\n"
 			":return: Return ``None`` if the console variable was not found.\n"
 			":rtype: ConVar",

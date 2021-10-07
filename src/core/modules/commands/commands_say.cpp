@@ -27,9 +27,6 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-
 #include <iostream>
 #include <string>
 #include "utilities/call_python.h"
@@ -38,7 +35,7 @@
 #include "boost/unordered_map.hpp"
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
-#include "convar.h"
+#include "utilities/convar.h"
 
 #include "commands_say.h"
 #include "commands.h"
@@ -158,7 +155,7 @@ SayConCommand* SayConCommand::CreateCommand(const char* szName, const char* szHe
 	{
 		// Store the current command's help text and flags
 		szHelpTextCopy = strdup(pConCommand->GetHelpText());
-		iFlags = pConCommand->m_nFlags;
+		iFlags = GetConCommandFlags(pConCommand);
 
 		// Unregister the old command
 		g_pCVar->UnregisterConCommand(pConCommand);
@@ -192,8 +189,8 @@ SayConCommand::~SayConCommand()
 	// Get the ConCommand instance
 	ConCommand* pConCommand = g_pCVar->FindCommand(m_Name);
 
-	// Was the command overwritten as a ConVar or by another DLL?
-	if (pConCommand && pConCommand->GetDLLIdentifier() == CVarDLLIdentifier())
+	// Make sure we only unregister ourselves
+	if (pConCommand == this)
 	{
 		// Unregister the ConCommand
 		g_pCVar->UnregisterConCommand(pConCommand);

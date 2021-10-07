@@ -69,11 +69,14 @@ void prepare_command(tuple args, dict kwargs, ConCommand** pCommandOut, std::str
 	*pCommandOut = pCommand;
 
 	szCommandOut->clear();
-	for(int i=0; i < len(args); ++i)
+
+	int length = len(args);
+	for(int i=0; i < length; ++i)
 	{
 		const char* temp = extract<const char*>(str(args[i]));
 		*szCommandOut += temp;
-		*szCommandOut += " ";
+		if ((i + 1) < length)
+			*szCommandOut += " ";
 	}
 }
 

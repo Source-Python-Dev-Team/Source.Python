@@ -30,18 +30,37 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "convar.h"
+#include "icvar.h"
+#include "utilities/convar.h"
 #include "utilities/sp_util.h"
+#include "modules/commands/commands_server.h"
 
 
 //-----------------------------------------------------------------------------
-// Returns Source.Python's DLL identifier.
+// ICvar shared extension class.
 //-----------------------------------------------------------------------------
-inline CVarDLLIdentifier_t CVarDLLIdentifier()
+class ICVarSharedExt
 {
-	static CVarDLLIdentifier_t s_nDLLIdentifier = ConCommandBase().GetDLLIdentifier();
-	return s_nDLLIdentifier;
-}
+public:
+	static ConVar *FindVar(ICvar *pCVar, const char *szName)
+	{
+		ConCommandBase *pBase = pCVar->FindCommandBase(szName);
+		if (pBase)
+		{
+			if (pBase->IsCommand()) {
+				CServerCommandManager *pManager = dynamic_cast<CServerCommandManager *>(pBase);
+				if (pManager && pManager->m_pOldCommand && !pManager->m_pOldCommand->IsCommand()) {
+					return static_cast<ConVar *>(pManager->m_pOldCommand);
+				}
+			}
+			else {
+				return static_cast<ConVar *>(pBase);
+			}
+		}
+
+		return NULL;
+	};
+};
 
 
 //-----------------------------------------------------------------------------
@@ -73,16 +92,32 @@ public:
 			PyErr_Clear();
 		}
 
-		ConVar *pConVar = g_pCVar->FindVar(name);
+		ConVar *pConVar = ICVarSharedExt::FindVar(g_pCVar, name);
 		if (!pConVar)
 		{
 			ConVar* pConVar = new ConVar(strdup(name), strdup(value), flags,
 				strdup(description), !min_value.is_none(), fMin, !max_value.is_none(), fMax);
 
-			return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
+			return boost::shared_ptr<ConVar>(pConVar, &Deleter);
 		}
 
 		return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
+	}
+
+	static void Deleter(ConVar *pConVar)
+	{
+		ConCommandBase *pBase = g_pCVar->FindCommandBase(pConVar->GetName());
+		if (pBase) {
+			CServerCommandManager *pManager = dynamic_cast<CServerCommandManager *>(pBase);
+			if (pManager && pManager->m_pOldCommand == pConVar) {
+				pManager->m_pOldCommand = NULL;
+			}
+			else if (pBase == pConVar) {
+				g_pCVar->UnregisterConCommand(pConVar);
+			}
+		}
+
+		delete pConVar;
 	}
 
 	static bool HasMin(ConVar* pConVar)
@@ -118,13 +153,13 @@ public:
 
 	static void MakePublic(ConVar* pConVar)
 	{
-		pConVar->m_nFlags |= FCVAR_NOTIFY;
+		AddConCommandFlags(pConVar, FCVAR_NOTIFY);
 		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
 
 	static void RemovePublic(ConVar* pConVar)
 	{
-		pConVar->m_nFlags &= ~FCVAR_NOTIFY;
+		RemoveConCommandFlags(pConVar, FCVAR_NOTIFY);
 		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
 };

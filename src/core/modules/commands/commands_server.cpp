@@ -27,9 +27,6 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-
 #include "utilities/call_python.h"
 
 #include "boost/unordered_map.hpp"
@@ -56,8 +53,12 @@ class CPluginConVarAccessor : public IConCommandBaseAccessor
 public:
 	virtual bool RegisterConCommandBase(ConCommandBase* pCommand)
 	{
-		g_pCVar->RegisterConCommand(pCommand);
-		return true;
+		if (!g_pCVar->FindCommandBase(pCommand->GetName())) {
+			g_pCVar->RegisterConCommand(pCommand);
+			return true;
+		}
+
+		return false;
 	}
 };
 
@@ -121,15 +122,17 @@ CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 	char* szHelpTextCopy = NULL;
 
 	// FInd if the command already exists
-	ConCommand* pConCommand = g_pCVar->FindCommand(szName);
+	ConCommandBase* pConCommand = g_pCVar->FindCommandBase(szName);
 	if( pConCommand )
 	{
 		// Store the current command's help text and flags
 		szHelpTextCopy = strdup(pConCommand->GetHelpText());
-		iFlags = pConCommand->m_nFlags;
+		iFlags = GetConCommandFlags(pConCommand);
 
 		// Unregister the old command
-		g_pCVar->UnregisterConCommand(pConCommand);
+		if (pConCommand->IsRegistered()) {
+			g_pCVar->UnregisterConCommand(pConCommand);
+		}
 	}
 	else if( szHelpText != NULL )
 	{
@@ -144,7 +147,7 @@ CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 //-----------------------------------------------------------------------------
 // CServerCommandManager constructor.
 //-----------------------------------------------------------------------------
-CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
+CServerCommandManager::CServerCommandManager(ConCommandBase* pConCommand,
 		const char* szName, const char* szHelpText, int iFlags):
 	ConCommand(szName, (FnCommandCallback_t)NULL, szHelpText, iFlags),
 	m_pOldCommand(pConCommand)
@@ -163,8 +166,8 @@ CServerCommandManager::~CServerCommandManager()
 	// Get the ConCommand instance
 	ConCommand* pConCommand = g_pCVar->FindCommand(m_Name);
 
-	// Was the command overwritten as a ConVar or by another DLL?
-	if (pConCommand && pConCommand->GetDLLIdentifier() == CVarDLLIdentifier())
+	// Make sure we only unregister ourselves
+	if (pConCommand == this)
 	{
 		// Unregister the ConCommand
 		g_pCVar->UnregisterConCommand(pConCommand);
@@ -236,7 +239,12 @@ void CServerCommandManager::Dispatch( const CCommand& command )
 	// Was the command previously registered?
 	if(m_pOldCommand)
 	{
-		m_pOldCommand->Dispatch(command);
+		if (m_pOldCommand->IsCommand()) {
+			static_cast<ConCommand *>(m_pOldCommand)->Dispatch(command);
+		}
+		else {
+			static_cast<ConVar *>(m_pOldCommand)->SetValue(command.ArgS());
+		}
 	}
 
 	// Post hook callbacks
