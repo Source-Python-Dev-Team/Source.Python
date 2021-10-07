@@ -143,6 +143,24 @@ class _EntityCaching(BoostPythonClass):
         # We are done, let's return the instance
         return obj
 
+    def __setattr__(cls, attr, value):
+        """Sets an attribute to the given value and invalidate the cache.
+
+        :param str attr:
+            The name of the attribute to assign.
+        :param object value:
+            The value to assign to the attribute mathing the given name.
+        """
+        super().__setattr__(attr, value)
+
+        # Invalidate the attributes cache.
+        # We don't simply assign the value ourselves for 2 reasons:
+        #   1. We don't want to compute the attributes on class definition
+        #       and want to do so only when explicitely requested.
+        #   2. The value we currently have may have been transformed if the
+        #       assigned attribute is a descriptor defined by a subclass.
+        del cls.attributes
+
     @cached_property(unbound=True)
     def attributes(cls):
         """Returns all the attributes available for this class.
