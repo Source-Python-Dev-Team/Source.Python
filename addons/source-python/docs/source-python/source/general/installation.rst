@@ -22,7 +22,7 @@ Debian/Ubuntu 64 bit              apt-get install zlib1g:i386        apt-get ins
 Windows
 ^^^^^^^
 
-1. `Visual C++ Redistributable for Visual Studio 2010 (x86) <https://www.microsoft.com/en-US/download/details.aspx?id=5555>`_ is required. Most machines already have a redistributable installed, so you only need to install it if Source.Python didn't load properly due to the missing redistributable.
+1. `Visual C++ Redistributable for Visual Studio 2010 (x86) <https://download.microsoft.com/download/C/6/D/C6D0FD4E-9E53-4897-9B91-836EBA2AACD3/vcredist_x86.exe>`_ is required. Most machines already have a redistributable installed, so you only need to install it if Source.Python didn't load properly due to the missing redistributable.
 
 
 Installation steps
