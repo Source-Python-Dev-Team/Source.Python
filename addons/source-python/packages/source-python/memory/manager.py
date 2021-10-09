@@ -647,7 +647,13 @@ class TypeManager(dict):
             return_type = self.create_converter(return_type)
 
         class fget(object):
-            def __get__(fget_self, obj, cls):
+            def __get__(fget_self, obj, cls=None):
+                if cls is None:
+                    if obj is None:
+                        return fget_self
+                    else:
+                        cls = obj.__class__
+
                 if cls._binary is None:
                     raise ValueError('_binary was not specified.')
 

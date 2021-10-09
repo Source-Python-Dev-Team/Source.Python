@@ -359,7 +359,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         attributes = {}
         for cls, instance in self.server_classes.items():
             attributes.update(
-                {attr:(instance, getattr(cls, attr)) for attr in dir(cls)}
+                {attr:(instance, value) for attr, value in vars(cls).items()}
             )
         return attributes
 
