@@ -409,9 +409,6 @@ void CSourcePython::Unload( void )
 	DevMsg(1, MSG_PREFIX "Clearing all commands...\n");
 	ClearAllCommands();
 
-	DevMsg(1, MSG_PREFIX "Unregistering ConVar...\n");
-	ConVar_Unregister( );
-
 	// New in CSGO...
 #if defined(ENGINE_CSGO) || defined(ENGINE_BLADE)
 	DevMsg(1, MSG_PREFIX "Disconnecting interfaces...\n");
