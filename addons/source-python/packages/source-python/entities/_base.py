@@ -52,6 +52,7 @@ from listeners.tick import RepeatStatus
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Memory
+from memory import Pointer
 from memory import make_object
 from memory.helpers import MemberFunction
 #   Players
@@ -189,7 +190,7 @@ class _EntityCaching(BoostPythonClass):
         return cls._cache
 
 
-class Entity(BaseEntity, metaclass=_EntityCaching):
+class Entity(BaseEntity, Pointer, metaclass=_EntityCaching):
     """Class used to interact directly with entities.
 
     Beside the standard way of doing stuff via methods and properties this
@@ -224,7 +225,8 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Whether to lookup the cache for an existing instance or not.
         """
         # Initialize the object
-        super().__init__(index)
+        BaseEntity.__init__(self, index)
+        Pointer.__init__(self, self.pointer)
 
         # Set the entity's base attributes
         type(self).index.set_cached_value(self, index)
