@@ -61,7 +61,13 @@ void export_base_entity(scope _entity)
 	BaseEntity.def("__init__",
 		make_constructor(
 			&CBaseEntityWrapper::__init__,
-			default_call_policies(),
+			post_constructor_policies<default_call_policies>(
+				make_function(
+					&CBaseEntityWrapper::Initialize,
+					default_call_policies(),
+					args("self", "entity_index")
+				)
+			),
 			args("entity_index")
 		)
 	);

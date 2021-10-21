@@ -36,6 +36,7 @@
 #include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 #include "../engines/engines.h"
+#include "modules/core/core_cache.h"
 
 // ============================================================================
 // >> External variables
@@ -57,6 +58,12 @@ boost::shared_ptr<CBaseEntityWrapper> CBaseEntityWrapper::wrap(CBaseEntity* pEnt
 		(CBaseEntityWrapper *) pEntity,
 		&NeverDeleteDeleter<CBaseEntityWrapper *>
 	);
+}
+
+void CBaseEntityWrapper::Initialize(object self, unsigned int uiEntityIndex)
+{
+	static CCachedProperty *pointer = extract<CCachedProperty *>(get_class_object<CBaseEntityWrapper>().attr("pointer"));
+	pointer->set_cached_value(self, object(GetPointer()));
 }
 
 CBaseEntity* CBaseEntityWrapper::create(const char* name)

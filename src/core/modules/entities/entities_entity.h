@@ -94,6 +94,7 @@ public:
 
 public:
 	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex);
+	void Initialize(object self, unsigned int uiEntityIndex);
 	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity);
 	static CBaseEntity* create(const char* name);
 	static object create(object cls, const char* name);
