@@ -93,7 +93,7 @@ PLATFORM = system().lower()
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class AutoUnload(object):
+class AutoUnload:
     """Class used to auto unload specific instances.
 
     Each inheriting class must implement an _unload_instance method.
@@ -144,12 +144,6 @@ class AutoUnload(object):
 
     def _unload_instance(self):
         """Base _unload_instance implementation."""
-        raise NotImplementedError(
-            'Class "{0}" from file "{1}" does not '.format(
-                self.__class__.__name__, sys.modules[
-                    self.__class__.__module__].__file__.split(
-                    'plugins', 1)[1][1:]) +
-            'have its own implementation of an _unload_instance method.')
 
 
 class WeakAutoUnload(AutoUnload):
