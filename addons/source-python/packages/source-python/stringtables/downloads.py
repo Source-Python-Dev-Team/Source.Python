@@ -15,6 +15,10 @@ from paths import GAME_PATH
 #   Stringtables
 from stringtables import string_tables
 
+# Site-Package Imports
+#   Path
+from path import Path
+
 
 # =============================================================================
 # >> ALL DECLARATION
@@ -29,10 +33,16 @@ __all__ = ('Downloadables',
 class Downloadables(AutoUnload, set):
     """Class used to store downloadables for a script."""
 
-    def __init__(self):
-        """Add the instance to the downloadables list."""
-        super().__init__()
+    def __init__(self, *items):
+        """Add the instance to the downloadables list.
+
+        :param iterable items:
+            The paths to add to the downloadables.
+        """
+        super().__init__(*items)
         _downloadables_list.append(self)
+
+        self._set_all_downloads()
 
     def add(self, item):
         """Add an item to the downloadables for a script.
@@ -51,6 +61,25 @@ class Downloadables(AutoUnload, set):
 
         # Add the item to the script's downloadables
         super().add(item)
+
+    def update(self, items=None):
+        """Add an items to the downloadables.
+
+        :param iterable items:
+            The paths to add to the downloadables.
+        """
+        if items is None:
+            return
+
+        for item in items:
+            # Is the item not in the list?
+            if item not in self:
+
+                # Add the item to the downloadables stringtable
+                _downloadables_list._add_to_download_table(item)
+
+        # Add the items to the downloadables
+        super().update(items)
 
     def add_directory(self, directory):
         """Add all files in the given directory to the downloadables.
@@ -84,6 +113,50 @@ class Downloadables(AutoUnload, set):
 
                 # Remove the item from the set
                 self.remove(item)
+
+    def add_from_file(self, file_path):
+        """Add all the paths listed in the file to the downloadables.
+
+        :param str file_path:
+            The file that contains the paths to add to the downloadables.
+            Lines that starts with '#' or '//' will be ignored.
+        :return:
+            Return the number of files that have been added.
+        :rtype: int
+        """
+        file_path = Path(file_path)
+        if not file_path.exists():
+            with_game_path = GAME_PATH.joinpath(file_path)
+            if with_game_path.exists():
+                file_path = with_game_path
+
+        with open(file_path, 'r') as file:
+            lines = file.read().splitlines()
+
+        # Remove comments and empty lines
+        items = list(
+            filter(lambda x:x and not x.startswith(('#', '//')), lines))
+
+        self.update(items)
+
+        return len(items)
+
+    def remove_from_file(self, file_path):
+        """Remove all the paths listed in the file from the downloadables.
+
+        :param str file_path:
+            The file that contains the paths to remove from the downloadables.
+        """
+        file_path = Path(file_path)
+        if not file_path.exists():
+            with_game_path = GAME_PATH.joinpath(file_path)
+            if with_game_path.exists():
+                file_path = with_game_path
+
+        with open(file_path, 'r') as file:
+            lines = file.read().splitlines()
+
+        self.difference_update(lines)
 
     def _set_all_downloads(self):
         """Add all downloadables for the script on level init."""
