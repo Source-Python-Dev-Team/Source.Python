@@ -431,8 +431,7 @@ class Entity(BaseEntity, Pointer, metaclass=_EntityCaching):
         :param Model model:
             The model to set.
         """
-        self.model_index = model.index
-        self.model_name = model.path
+        self._set_model(model.path)
 
     model = property(
         get_model, set_model,
