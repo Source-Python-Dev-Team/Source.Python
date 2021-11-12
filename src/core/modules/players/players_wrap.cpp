@@ -220,6 +220,12 @@ void export_client(scope _players)
 	class_<IClient, IClient*, bases<INetChannelHandler>, boost::noncopyable> Client("Client", no_init);
 
 	Client.add_property(
+		"slot",
+		&IClient::GetPlayerSlot,
+		"Return the client's slot.(usually entity number-1)"
+	);
+
+	Client.add_property(
 		"name",
 		&IClient::GetClientName,
 		"Return the client's name."
@@ -246,6 +252,52 @@ void export_client(scope _players)
 
 	Client.def("disconnect",
 		&IClientExt::Disconnect
+	);
+
+	Client.def("is_connected",
+		&IClient::IsConnected,
+		"Return True if client has established network channels."
+	);
+
+	Client.def("is_spawned",
+		&IClient::IsSpawned,
+		"Return True if client is downloading signon data."
+	);
+
+	Client.def("is_active",
+		&IClient::IsActive,
+		"Return True if client active is ingame, receiving snapshots."
+	);
+
+	Client.def("is_fake_client",
+		&IClient::IsFakeClient,
+		"Return True if client is not a real player."
+	);
+
+	Client.def("is_hltv",
+		&IClient::IsHLTV,
+		"Return True if client is a HLTV proxy."
+	);
+
+	Client.def("is_human_player",
+#if defined(ENGINE_BLADE) || defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2)
+		&IClient::IsHumanPlayer,
+#else
+		&IClientExt::IsHumanPlayer,
+#endif
+		"Return True if client is not a fake client and is not a HLTV proxy."
+	);
+
+	Client.def("is_hearing_client",
+		&IClient::IsHearingClient,
+		"Return True if client hears this player.",
+		args("index")
+	);
+
+	Client.def("is_proximity_hearing_client",
+		&IClient::IsProximityHearingClient,
+		"Return True if client hears this player by proximity.",
+		args("index")
 	);
 
 	// TODO: Export more

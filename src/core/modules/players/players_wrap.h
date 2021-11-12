@@ -76,6 +76,16 @@ public:
 			make_tuple(ptr(pClient), reason)
 		);
 	}
+
+#if !defined(ENGINE_BLADE) && !defined(ENGINE_CSGO) && !defined(ENGINE_LEFT4DEAD2)
+	static bool IsHumanPlayer(IClient* pClient)
+	{
+		if (!pClient->IsConnected() || pClient->IsFakeClient() || pClient->IsHLTV())
+			return false;
+
+		return true;
+	}
+#endif
 };
 
 
