@@ -11,6 +11,7 @@ from bitbuffers import BitBufferWrite
 #   ConVars
 from cvars import ConVar
 #   Engines
+from engines.precache import Model
 from engines.server import engine_server
 #   Entities
 from entities.helpers import wrap_entity_mem_func
@@ -77,6 +78,33 @@ class Player(_Player):
     assists = property(
         _get_assists, _set_assists,
         doc="""The number of assists a player has.""")
+
+    def get_arms_model(self):
+        """Return the player's arms model.
+
+        :return:
+            ``None`` if the player has no arms model.
+        :rtype: Model
+        """
+        arms_model_name = self.arms_model_name
+        if not arms_model_name:
+            return None
+
+        return Model(arms_model_name)
+
+    def set_arms_model(self, model):
+        """Set the player's arms model to the given model.
+
+        :param Model model:
+            The model to set.
+        """
+        self.arms_model_name = model.path
+
+    arms_model = property(
+        get_arms_model, set_arms_model,
+        doc="""Property to get/set the player's arms model.
+
+        .. seealso:: :meth:`get_arms_model` and :meth:`set_arms_model`""")
 
     @_Player.godmode.getter
     def godmode(self):
