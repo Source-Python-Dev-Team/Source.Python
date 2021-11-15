@@ -114,7 +114,7 @@ class Downloadables(AutoUnload, set):
                 # Remove the item from the set
                 self.remove(item)
 
-    def add_from_file(self, file_path):
+    def add_from_file(self, file_path, encoding='utf-8'):
         """Add all the paths listed in the file to the downloadables.
 
         :param str file_path:
@@ -124,14 +124,7 @@ class Downloadables(AutoUnload, set):
             Return the number of files that have been added.
         :rtype: int
         """
-        file_path = Path(file_path)
-        if not file_path.exists():
-            with_game_path = GAME_PATH.joinpath(file_path)
-            if with_game_path.exists():
-                file_path = with_game_path
-
-        with open(file_path, 'r') as file:
-            lines = file.read().splitlines()
+        lines = self._get_lines_from_file(file_path, encoding)
 
         # Remove comments and empty lines
         items = list(
@@ -141,20 +134,13 @@ class Downloadables(AutoUnload, set):
 
         return len(items)
 
-    def remove_from_file(self, file_path):
+    def remove_from_file(self, file_path, encoding='utf-8'):
         """Remove all the paths listed in the file from the downloadables.
 
         :param str file_path:
             The file that contains the paths to remove from the downloadables.
         """
-        file_path = Path(file_path)
-        if not file_path.exists():
-            with_game_path = GAME_PATH.joinpath(file_path)
-            if with_game_path.exists():
-                file_path = with_game_path
-
-        with open(file_path, 'r') as file:
-            lines = file.read().splitlines()
+        lines = self._get_lines_from_file(file_path, encoding)
 
         self.difference_update(lines)
 
@@ -165,6 +151,27 @@ class Downloadables(AutoUnload, set):
 
             # Add the item to the downloadables stringtable
             _downloadables_list._add_to_download_table(item)
+
+    @classmethod
+    def _get_lines_from_file(cls, file_path, encoding):
+        """Checks the file path and then return the lines."""
+        file_path = Path(file_path)
+
+        # If the file or directory exists, ignore it
+        if not file_path.exists():
+
+            # File does not exist, search for it with GAME_PATH
+            with_game_path = GAME_PATH / file_path
+            if with_game_path.exists():
+                file_path = with_game_path
+
+        if not file_path.isfile():
+            raise FileNotFoundError(f'No file found at "{file_path}"')
+
+        with file_path.open('r', encoding=encoding) as file:
+            lines = [line.strip() for line in file.readlines()]
+
+        return lines
 
     def _unload_instance(self):
         """Remove the instance from the downloadables list."""
