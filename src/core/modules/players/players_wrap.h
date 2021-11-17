@@ -86,6 +86,22 @@ public:
 		return true;
 	}
 #endif
+
+	static bool IsHearingClient(IClient* pClient, IClient* pSender)
+	{
+		if (!pSender)
+			return false;
+
+		return pClient->IsHearingClient(pSender->GetPlayerSlot());
+	}
+
+	static bool IsProximityHearingClient(IClient* pClient, IClient* pSender)
+	{
+		if (!pSender)
+			return false;
+
+		return pClient->IsProximityHearingClient(pSender->GetPlayerSlot());
+	}
 };
 
 

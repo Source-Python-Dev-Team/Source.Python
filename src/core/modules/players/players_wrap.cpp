@@ -289,15 +289,15 @@ void export_client(scope _players)
 	);
 
 	Client.def("is_hearing_client",
-		&IClient::IsHearingClient,
+		&IClientExt::IsHearingClient,
 		"Return True if client hears this player.",
-		args("index")
+		args("sender")
 	);
 
 	Client.def("is_proximity_hearing_client",
-		&IClient::IsProximityHearingClient,
+		&IClientExt::IsProximityHearingClient,
 		"Return True if client hears this player by proximity.",
-		args("index")
+		args("sender")
 	);
 
 	// TODO: Export more
