@@ -425,16 +425,21 @@ class Entity(BaseEntity, Pointer, metaclass=_EntityCaching):
 
         return Model(model_name)
 
+    @wrap_entity_mem_func
     def set_model(self, model):
         """Set the entity's model to the given model.
 
-        :param Model model:
-            The model to set.
+        :param str/Model model:
+            The model path or model to set.
         """
-        self._set_model(model.path)
+        if isinstance(model, Model):
+            model = model.path
+
+        return [model]
 
     model = property(
-        get_model, set_model,
+        get_model,
+        lambda self, model: self.set_model(model),
         doc="""Property to get/set the entity's model.
 
         .. seealso:: :meth:`get_model` and :meth:`set_model`""")
