@@ -22,6 +22,7 @@ from core.cache import cached_property
 from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
+from engines.server import engine_server
 from engines.sound import Attenuation
 from engines.sound import Channel
 from engines.sound import Pitch
@@ -434,6 +435,9 @@ class Entity(BaseEntity, Pointer, metaclass=_EntityCaching):
         """
         if isinstance(model, Model):
             model = model.path
+        elif isinstance(model, str):
+            if not engine_server.is_model_precached(model):
+                raise ValueError(f'Model is not precached: {model}')
 
         return [model]
 
