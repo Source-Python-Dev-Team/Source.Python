@@ -13,7 +13,7 @@ from collections import defaultdict
 #    Engines
 from engines.server import global_vars
 #    Listeners
-from listeners import OnClientDisconnect
+from listeners import on_client_disconnect_listener_manager
 #    Memory
 from memory import get_virtual_function
 from memory.hooks import HookType
@@ -52,6 +52,8 @@ class _MuteManager(defaultdict):
         function.add_hook(HookType.PRE, _pre_set_client_listening)
 
         cls._set_client_listening = function
+
+        on_client_disconnect_listener_manager.register_listener(_on_client_disconnect)
 
     @staticmethod
     def _get_receivers(receivers):
@@ -100,10 +102,6 @@ class _MuteManager(defaultdict):
         tuple that contains the player indexes that should hear the sender
         again.
         """
-        # No muted players, return it
-        if self._set_client_listening is None:
-            return
-
         for receiver in self._get_receivers(receivers):
             self[receiver].discard(sender)
 
@@ -137,7 +135,6 @@ def _pre_set_client_listening(args):
         args[3] = False
 
 
-@OnClientDisconnect
 def _on_client_disconnect(index):
     """Called when a player left the server."""
     # Unmute the player, so the next player who gets this index won't be muted
