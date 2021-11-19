@@ -6,18 +6,17 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-import collections
+# Python Imports
+from collections import defaultdict
 
-# Source.Python
+# Source.Python Imports
 #    Engines
 from engines.server import global_vars
 #    Listeners
 from listeners import OnClientDisconnect
 #    Memory
-import memory
-
-from memory.hooks import PreHook
+from memory import get_virtual_function
+from memory.hooks import HookType
 
 
 # =============================================================================
@@ -40,8 +39,19 @@ __all__ = ('_MuteManager',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _MuteManager(collections.defaultdict):
+class _MuteManager(defaultdict):
     """A singleton that manages muting players."""
+    _set_client_listening = None
+
+    @classmethod
+    def _hook_set_client_listening(cls):
+        if cls._set_client_listening is not None:
+            return
+
+        function = get_virtual_function(voice_server, 'SetClientListening')
+        function.add_hook(HookType.PRE, _pre_set_client_listening)
+
+        cls._set_client_listening = function
 
     @staticmethod
     def _get_receivers(receivers):
@@ -75,6 +85,8 @@ class _MuteManager(collections.defaultdict):
         that contains the player indexes that shouldn't hear the sender
         anymore.
         """
+        self._hook_set_client_listening()
+
         for receiver in self._get_receivers(receivers):
             self[receiver].add(sender)
 
@@ -88,6 +100,10 @@ class _MuteManager(collections.defaultdict):
         tuple that contains the player indexes that should hear the sender
         again.
         """
+        # No muted players, return it
+        if self._set_client_listening is None:
+            return
+
         for receiver in self._get_receivers(receivers):
             self[receiver].discard(sender)
 
@@ -111,7 +127,6 @@ mute_manager = _MuteManager(set)
 # =============================================================================
 # >> CALLBACKS
 # =============================================================================
-@PreHook(memory.get_virtual_function(voice_server, 'SetClientListening'))
 def _pre_set_client_listening(args):
     """Called before IVoiceServer::SetClientListening is called."""
     receiver = args[1]
