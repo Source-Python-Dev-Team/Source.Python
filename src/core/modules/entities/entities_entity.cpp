@@ -279,11 +279,9 @@ int CBaseEntityWrapper::FindNetworkPropertyOffset(const char* name)
 
 	int offset;
 	offset = SendTableSharedExt::find_offset(pServerClass->m_pTable, name);
-	if (offset == -1)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
 
 	// TODO: Proxied RecvTables/Arrays
-	if (offset == 0)
+	if (offset == -1 || offset == 0)
 		offset = FindDatamapPropertyOffset(name);
 
 	return offset;
