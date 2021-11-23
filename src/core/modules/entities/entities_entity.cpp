@@ -279,9 +279,11 @@ int CBaseEntityWrapper::FindNetworkPropertyOffset(const char* name)
 
 	int offset;
 	offset = SendTableSharedExt::find_offset(pServerClass->m_pTable, name);
+	if (offset == -1)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unable to find property '%s'.", name)
 
 	// TODO: Proxied RecvTables/Arrays
-	if (offset == -1 || offset == 0)
+	if (offset == 0)
 		offset = FindDatamapPropertyOffset(name);
 
 	return offset;
@@ -776,14 +778,14 @@ void CBaseEntityWrapper::SetDamageFilter(const char* filter)
 
 int CBaseEntityWrapper::GetEffects()
 {
-	static int offset = FindNetworkPropertyOffset("m_fEffects");
-	return GetNetworkPropertyByOffset<int>(offset);
+	static int offset = FindDatamapPropertyOffset("m_fEffects");
+	return GetDatamapPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetEffects(int effects)
 {
-	static int offset = FindNetworkPropertyOffset("m_fEffects");
-	SetNetworkPropertyByOffset<int>(offset, effects);
+	static int offset = FindDatamapPropertyOffset("m_fEffects");
+	SetDatamapPropertyByOffset<int>(offset, effects);
 }
 
 
