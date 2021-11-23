@@ -386,10 +386,12 @@ weapon_restriction_handler = WeaponRestrictionHandler()
 def _on_weapon_bump(args):
     """Return whether the player is allowed to pickup the weapon."""
     return weapon_restriction_manager.on_player_bumping_weapon(
-        make_object(Player, args[0]), edict_from_pointer(args[1]).classname)
+        make_object(Player, args[0]),
+        make_object(Weapon, args[1]).weapon_name
+    )
 
 
-if GAME_NAME in ('css', 'csgo'):
+if GAME_NAME in ('cstrike', 'csgo'):
     @EntityPreHook(EntityCondition.is_player, 'buy_internal')
     def _on_weapon_purchase(args):
         """Return whether the player is allowed to purchase the weapon."""

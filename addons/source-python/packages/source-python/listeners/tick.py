@@ -10,7 +10,6 @@ import bisect
 import math
 import time
 
-from contextlib import suppress
 from enum import IntEnum
 from threading import Thread
 from warnings import warn
@@ -198,8 +197,10 @@ class Delay(WeakAutoUnload):
         return time.time() - self._start_time
 
     def _unload_instance(self):
-        with suppress(ValueError):
+        try:
             self.cancel()
+        except ValueError:
+            pass
 
 
 # =============================================================================

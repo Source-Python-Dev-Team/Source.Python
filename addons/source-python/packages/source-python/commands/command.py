@@ -53,4 +53,12 @@ class _BaseCommand(AutoUnload):
 
     def _unload_instance(self):
         """Unregister the commands."""
-        self._manager_class.unregister_commands(self.names, self.callback)
+        # Get the registered callback
+        callback = self.callback
+
+        # Was no callback registered?
+        if callback is None:
+            return
+
+        # Unregister the commands
+        self._manager_class.unregister_commands(self.names, callback)

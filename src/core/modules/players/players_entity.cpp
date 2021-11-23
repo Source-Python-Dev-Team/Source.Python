@@ -30,6 +30,17 @@
 // Source.Python
 #include "players_entity.h"
 
+// SDK
+#include "eiface.h"
+#include "public/PlayerState.h"
+
+
+// ============================================================================
+// >> EXTERNALS
+// ============================================================================
+extern IServerGameClients *servergameclients;
+extern IServerTools *servertools;
+
 
 // ============================================================================
 // >> PlayerMixin
@@ -69,6 +80,15 @@ bool PlayerMixin::IsPlayer()
 bool PlayerMixin::IsWeapon()
 {
 	return false;
+}
+
+void PlayerMixin::SnapToPosition(Vector *pOrigin, QAngle *pAngles)
+{
+	servertools->SnapPlayerToPosition(
+		(pOrigin ? *pOrigin : GetOrigin()) + GetViewOffset(),
+		pAngles ? *pAngles : GetViewAngle(),
+		(IClientEntity *)GetEdict()->GetIServerEntity()
+	);
 }
 
 // CBasePlayer
@@ -448,16 +468,21 @@ void PlayerMixin::SetViewVector(Vector& value)
 
 QAngle PlayerMixin::GetViewAngle()
 {
-	QAngle eye_angle = GetEyeAngle();
-	return QAngle(
-		eye_angle.x,
-		eye_angle.y < 0 ? eye_angle.y + 360 : eye_angle.y,
-		GetRotation().z);
+	CPlayerState *pState = servergameclients->GetPlayerState(GetEdict());
+	if (!pState)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the player state instance for this player.")
+
+	return pState->v_angle;
 }
 
-void PlayerMixin::SetViewAngle(QAngle& value)
+void PlayerMixin::SetViewAngle(QAngle& value, int fixangle)
 {
-	BOOST_RAISE_EXCEPTION(PyExc_NotImplementedError, "Setting view_angle is not implemented.");
+	CPlayerState *pState = servergameclients->GetPlayerState(GetEdict());
+	if (!pState)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Failed to get the player state instance for this player.")
+
+	pState->v_angle = value;
+	pState->fixangle = fixangle;
 }
 
 

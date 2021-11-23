@@ -7,7 +7,6 @@
 # =============================================================================
 # Python
 from collections import OrderedDict
-from contextlib import suppress
 
 # Source.Python
 from cvars import ConVar
@@ -100,7 +99,7 @@ class SettingsType(object):
         value = engine_server.get_client_convar_value(index, self.convar)
 
         # Try to typecast the value, suppressing ValueErrors
-        with suppress(ValueError):
+        try:
 
             # Typecast the given value
             value = self._typecast_value(value)
@@ -110,6 +109,9 @@ class SettingsType(object):
 
                 # If so, return the value
                 return value
+
+        except ValueError:
+            pass
 
         # Get the client's uniqueid
         uniqueid = uniqueid_from_index(index)
@@ -124,7 +126,7 @@ class SettingsType(object):
                 value = _player_settings_storage[uniqueid][self.convar]
 
                 # Try to typecast the value, suppressing ValueErrors
-                with suppress(ValueError):
+                try:
 
                     # Typecast the given value
                     value = self._typecast_value(value)
@@ -134,6 +136,9 @@ class SettingsType(object):
 
                         # Return the value
                         return value
+
+                except ValueError:
+                    pass
 
         # Return the default value
         return self._get_default_value()

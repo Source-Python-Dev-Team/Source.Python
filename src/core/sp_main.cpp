@@ -94,6 +94,7 @@ CGlobalVars*			gpGlobals			= NULL;
 IFileSystem*			filesystem			= NULL;
 IServerGameDLL*			servergamedll		= NULL;
 IServerGameEnts*		gameents			= NULL; // Interface to get at server entities
+IServerGameClients*		servergameclients	= NULL;
 IServerTools*			servertools			= NULL;
 IPhysics*				physics				= NULL;
 IPhysicsCollision*		physcollision		= NULL;
@@ -113,6 +114,7 @@ extern ICvar* g_pCVar;
 extern void InitCommands();
 extern void ClearAllCommands();
 extern PLUGIN_RESULT DispatchClientCommand(edict_t *pEntity, const CCommand &command);
+extern CConVarChangedListenerManager* GetOnConVarChangedListenerManager();
 
 //-----------------------------------------------------------------------------
 // The plugin is a static singleton that is exported as an interface
@@ -155,6 +157,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_PLAYERBOTMANAGER, (void **)&botmanager},
 	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
 	{INTERFACEVERSION_SERVERGAMEENTS, (void **)&gameents},
+	{INTERFACEVERSION_SERVERGAMECLIENTS, (void **)&servergameclients},
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
 	{NULL, NULL}
 };
@@ -399,6 +402,9 @@ void CSourcePython::Unload( void )
 
 	DevMsg(1, MSG_PREFIX "Shutting down python...\n");
 	g_PythonManager.Shutdown();
+
+	DevMsg(1, MSG_PREFIX "Clearing convar changed listener...\n");
+	GetOnConVarChangedListenerManager()->clear();
 
 	DevMsg(1, MSG_PREFIX "Unhooking all functions...\n");
 	GetHookManager()->UnhookAllFunctions();

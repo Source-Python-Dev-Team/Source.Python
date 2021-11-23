@@ -72,6 +72,8 @@ public:
 	bool IsPlayer();
 	bool IsWeapon();
 
+	void SnapToPosition(Vector *pOrigin = NULL, QAngle *pAngles = NULL);
+
 	// CBasePlayer
 	// TODO: Return for some of these the proper entity class instead of a handle/index
 	// E. g. BaseEntity, Entity, Weapon, Player, etc.
@@ -163,7 +165,7 @@ public:
 	void SetViewVector(Vector& value);
 
 	QAngle GetViewAngle();
-	void SetViewAngle(QAngle& value);
+	void SetViewAngle(QAngle& value, int fixangle = FIXANGLE_ABSOLUTE);
 
 	// Game specific
 	// CS:S, CS:GO

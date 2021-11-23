@@ -413,22 +413,6 @@ class Player(PlayerMixin, Entity):
 
     eye_location = property(Entity.get_eye_location, set_eye_location)
 
-    def get_view_angle(self):
-        """Return the player's view angle.
-
-        :rtype: QAngle
-        """
-        return super().view_angle
-
-    def set_view_angle(self, angle):
-        """Set the player's view angle."""
-        # Make sure that only QAngle objects are passed. Otherwise you can
-        # easily crash the server or cause unexpected behaviour
-        assert isinstance(angle, QAngle)
-        self.teleport(None, angle, None)
-
-    view_angle = property(get_view_angle, set_view_angle)
-
     def push(self, horiz_mul, vert_mul, vert_override=False):
         """Push the player along his view vector.
 

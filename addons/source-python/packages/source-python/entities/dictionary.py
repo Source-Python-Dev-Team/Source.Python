@@ -5,10 +5,6 @@
 # ============================================================================
 # >> IMPORTS
 # ============================================================================
-# Python Imports
-#   ContextLib
-from contextlib import suppress
-
 # Source.Python Imports
 #   Core
 from core import AutoUnload
@@ -98,8 +94,10 @@ class EntityDictionary(AutoUnload, dict):
             The index of the entity instance being removed.
         """
         # Remove the given index from the dictionary...
-        with suppress(KeyError):
+        try:
             super().__delitem__(index)
+        except KeyError:
+            pass
 
     def from_inthandle(self, inthandle):
         """Returns an entity instance from an inthandle.

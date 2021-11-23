@@ -94,6 +94,19 @@ inline bool CheckClassname(object obj, char* name)
 }
 
 //-----------------------------------------------------------------------------
+// Returns the registered python class for T.
+//-----------------------------------------------------------------------------
+template<class T>
+inline object get_class_object()
+{
+	const converter::registration *pRegistration = converter::registry::query(typeid(T));
+	if (!pRegistration || !pRegistration->m_class_object)
+		return object();
+	
+	return object(handle<>(borrowed(upcast<PyObject>(pRegistration->m_class_object))));
+}
+
+//-----------------------------------------------------------------------------
 // Helper template methods for __getitem__ and __setitem__
 //-----------------------------------------------------------------------------
 template<class cls, class return_type, int iMin, int iMax>

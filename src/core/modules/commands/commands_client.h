@@ -56,7 +56,7 @@ public:
 
 	const char* GetName();
 
-private:
+public:
 	CListenerManager m_vecCallables;
 	const char* m_Name;
 };

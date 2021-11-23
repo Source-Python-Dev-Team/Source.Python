@@ -521,11 +521,6 @@ static void export_engine_server(scope _server)
 			"Tells the engine we can immediately re-use all the edict indices."
 		)
 
-		.def("is_internal_build",
-			&IVEngineServer::IsInternalBuild,
-			"Returns true if the engine is an internal build."
-		)
-
 		.def("get_change_accessor",
 			&IVEngineServer::GetChangeAccessor,
 			args("edict"),
@@ -751,7 +746,6 @@ static void export_engine_server(scope _server)
 		FUNCTION_INFO(GetPrevCheckTransmitInfo)
 		FUNCTION_INFO(GetSharedEdictChangeInfo)
 		FUNCTION_INFO(AllowImmediateEdictReuse)
-		FUNCTION_INFO(IsInternalBuild)
 		FUNCTION_INFO(GetChangeAccessor)
 		FUNCTION_INFO(CleanUpEntityClusterList)
 		FUNCTION_INFO(GetAppID)
@@ -887,7 +881,11 @@ static void export_iserver(scope _server)
 
 	_IServer.add_property(
 		"udp_port",
+#if defined(ENGINE_BRANCH_TF2)
+		&IServer::GetLocalUDPPort,
+#else
 		&IServer::GetUDPPort,
+#endif
 		"Return the currently used UDP port.\n\n"
 		":rtype: int"
 	);

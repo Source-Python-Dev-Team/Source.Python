@@ -8,8 +8,6 @@
 # Python Imports
 #   Collections
 from collections import defaultdict
-#   Contextlib
-from contextlib import suppress
 #   Inspect
 from inspect import signature
 #   WeakRef
@@ -24,6 +22,7 @@ from core.cache import cached_property
 from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
+from engines.server import engine_server
 from engines.sound import Attenuation
 from engines.sound import Channel
 from engines.sound import Pitch
@@ -41,6 +40,7 @@ from entities import TakeDamageInfo
 from entities.classes import server_classes
 from entities.constants import WORLD_ENTITY_INDEX
 from entities.constants import DamageTypes
+from entities.datamaps import InputFunction
 from entities.helpers import index_from_inthandle
 from entities.helpers import index_from_pointer
 from entities.helpers import wrap_entity_mem_func
@@ -53,6 +53,7 @@ from listeners.tick import RepeatStatus
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Memory
+from memory import Pointer
 from memory import make_object
 from memory.helpers import MemberFunction
 #   Players
@@ -145,6 +146,35 @@ class _EntityCaching(BoostPythonClass):
         # We are done, let's return the instance
         return obj
 
+    def __setattr__(cls, attr, value):
+        """Sets an attribute to the given value and invalidate the cache.
+
+        :param str attr:
+            The name of the attribute to assign.
+        :param object value:
+            The value to assign to the attribute mathing the given name.
+        """
+        super().__setattr__(attr, value)
+
+        # Invalidate the attributes cache.
+        # We don't simply assign the value ourselves for 2 reasons:
+        #   1. We don't want to compute the attributes on class definition
+        #       and want to do so only when explicitely requested.
+        #   2. The value we currently have may have been transformed if the
+        #       assigned attribute is a descriptor defined by a subclass.
+        del cls.attributes
+
+    @cached_property(unbound=True)
+    def attributes(cls):
+        """Returns all the attributes available for this class.
+
+        :rtype: dict
+        """
+        attributes = {}
+        for cls in reversed(cls.mro()):
+            attributes.update(vars(cls))
+        return attributes
+
     @property
     def caching(cls):
         """Returns whether this class is caching its instances by default.
@@ -162,7 +192,7 @@ class _EntityCaching(BoostPythonClass):
         return cls._cache
 
 
-class Entity(BaseEntity, metaclass=_EntityCaching):
+class Entity(BaseEntity, Pointer, metaclass=_EntityCaching):
     """Class used to interact directly with entities.
 
     Beside the standard way of doing stuff via methods and properties this
@@ -197,7 +227,8 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Whether to lookup the cache for an existing instance or not.
         """
         # Initialize the object
-        super().__init__(index)
+        BaseEntity.__init__(self, index)
+        Pointer.__init__(self, self.pointer)
 
         # Set the entity's base attributes
         type(self).index.set_cached_value(self, index)
@@ -209,54 +240,57 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
     def __getattr__(self, attr):
         """Find if the attribute is valid and returns the appropriate value."""
-        # Loop through all of the entity's server classes
-        for instance in self.server_classes.values():
+        # Try to resolve the dynamic attribute
+        try:
+            instance, value = self.dynamic_attributes[attr]
+        except KeyError:
+            raise AttributeError('Attribute "{0}" not found'.format(attr))
 
+        # Is the attribute a property descriptor?
+        try:
+            value = value.__get__(instance)
+        except AttributeError:
+            pass
+
+        # Is the value a dynamic function?
+        if isinstance(value, (MemberFunction, InputFunction)):
+
+            # Cache the value
             try:
-                # Get the attribute's value
-                value = getattr(instance, attr)
+                object.__setattr__(self, attr, value)
             except AttributeError:
-                continue
+                pass
 
-            # Is the value a dynamic function?
-            if isinstance(value, MemberFunction):
-
-                # Cache the value
-                with suppress(AttributeError):
-                    object.__setattr__(self, attr, value)
-
-            # Return the attribute's value
-            return value
-
-        # If the attribute is not found, raise an error
-        raise AttributeError('Attribute "{0}" not found'.format(attr))
+        return value
 
     def __setattr__(self, attr, value):
         """Find if the attribute is valid and sets its value."""
         # Is the given attribute a property?
-        if (attr in super().__dir__() and isinstance(
-                getattr(self.__class__, attr, None), property)):
+        try:
+            setter = type(self).attributes[attr].__set__
 
-            # Set the property's value
-            object.__setattr__(self, attr, value)
+        # KeyError:
+        #   The attribute does not exist.
+        # AttributeError:
+        #   The attribute is not a descriptor.
+        except (KeyError, AttributeError):
 
-            # No need to go further
-            return
+            # Try to resolve a dynamic attribute
+            try:
+                self, setter = self.dynamic_attributes[attr]
+                setter = setter.__set__
 
-        # Loop through all of the entity's server classes
-        for server_class, instance in self.server_classes.items():
+            # KeyError:
+            #   The attribute does not exist.
+            # AttributeError:
+            #   The attribute is not a descriptor.
+            except (KeyError, AttributeError):
 
-            # Does the current server class contain the given attribute?
-            if hasattr(server_class, attr):
+                # Set the attribute to the given value
+                return object.__setattr__(self, attr, value)
 
-                # Set the attribute's value
-                setattr(instance, attr, value)
-
-                # No need to go further
-                return
-
-        # If the attribute is not found, just set the attribute
-        super().__setattr__(attr, value)
+        # Set the attribute's value
+        setter(self, value)
 
     def __dir__(self):
         """Return an alphabetized list of attributes for the instance."""
@@ -318,8 +352,20 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         """Yield all server classes for the entity."""
         return {
             server_class: make_object(server_class, self.pointer) for
-            server_class in server_classes.get_entity_server_classes(self)
+            server_class in reversed(
+                server_classes.get_entity_server_classes(self)
+            )
         }
+
+    @cached_property
+    def dynamic_attributes(self):
+        """Returns the dynamic attributes for this entity."""
+        attributes = {}
+        for cls, instance in self.server_classes.items():
+            attributes.update(
+                {attr:(instance, value) for attr, value in vars(cls).items()}
+            )
+        return attributes
 
     @cached_property
     def properties(self):
@@ -381,17 +427,24 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
         return Model(model_name)
 
+    @wrap_entity_mem_func
     def set_model(self, model):
         """Set the entity's model to the given model.
 
-        :param Model model:
-            The model to set.
+        :param str/Model model:
+            The model path or model to set.
         """
-        self.model_index = model.index
-        self.model_name = model.path
+        if isinstance(model, Model):
+            model = model.path
+        elif isinstance(model, str):
+            if not engine_server.is_model_precached(model):
+                raise ValueError(f'Model is not precached: {model}')
+
+        return [model]
 
     model = property(
-        get_model, set_model,
+        get_model,
+        lambda self, model: self.set_model(model),
         doc="""Property to get/set the entity's model.
 
         .. seealso:: :meth:`get_model` and :meth:`set_model`""")
@@ -680,34 +733,44 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         if attacker_index is not None:
 
             # Try to get the Entity instance of the attacker
-            with suppress(ValueError):
+            try:
                 attacker = Entity(attacker_index)
+            except ValueError:
+                pass
 
         # Was a weapon given?
         if weapon_index is not None:
 
             # Try to get the Weapon instance of the weapon
-            with suppress(ValueError):
+            try:
                 weapon = Weapon(weapon_index)
+            except ValueError:
+                pass
 
         # Is there a weapon but no attacker?
         if attacker is None and weapon is not None:
 
             # Try to get the attacker based off of the weapon's owner
-            with suppress(ValueError, OverflowError):
+            try:
                 attacker_index = index_from_inthandle(weapon.owner_handle)
                 attacker = Entity(attacker_index)
+            except (ValueError, OverflowError):
+                pass
 
         # Is there an attacker but no weapon?
         if attacker is not None and weapon is None:
 
             # Try to use the attacker's active weapon
-            with suppress(AttributeError):
+            try:
                 weapon = attacker.active_weapon
+            except AttributeError:
+                pass
 
         # Try to set the hitgroup
-        with suppress(AttributeError):
+        try:
             self.hitgroup = hitgroup
+        except AttributeError:
+            pass
 
         # Get a TakeDamageInfo instance
         take_damage_info = TakeDamageInfo()
@@ -861,8 +924,10 @@ def _on_networked_entity_deleted(index):
     for delay in _entity_delays.pop(index, ()):
 
         # Cancel the delay...
-        with suppress(ValueError):
+        try:
             delay.cancel()
+        except ValueError:
+            pass
 
     # Loop through all repeats...
     for repeat in _entity_repeats.pop(index, ()):

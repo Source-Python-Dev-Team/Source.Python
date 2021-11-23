@@ -384,6 +384,16 @@ void export_player_wrapper(scope _players)
 		":rtype: bool"
 	);
 
+	_PlayerMixin.def(
+		"snap_to_position",
+		&PlayerMixin::SnapToPosition,
+		"Teleports the player at the given position and angles.\n\n"
+		":param Vector origin:\n"
+		"	The coordinates to teleport the player at.\n"
+		":param QAngle angles:\n"
+		"	The angles to set the player's view to.",
+		("self", arg("origin")=object(), arg("angles")=object()));
+
 	_PlayerMixin.add_property(
 		"speed",
 		&PlayerMixin::GetSpeed,
@@ -587,10 +597,22 @@ void export_player_wrapper(scope _players)
 		"Get/set the player's view vector.\n\n"
 		":rtype: Vector");
 
+	_PlayerMixin.def(
+		"get_view_angle",
+		&PlayerMixin::GetViewAngle,
+		"Returns the player's view angle.\n\n"
+		":rtype: QAngle");
+
+	_PlayerMixin.def(
+		"set_view_angle",
+		&PlayerMixin::SetViewAngle,
+		"Sets the player's view angle.",
+		("self", "angle", arg("fixangle")=FIXANGLE_ABSOLUTE));
+
 	_PlayerMixin.add_property(
 		"view_angle",
 		&PlayerMixin::GetViewAngle,
-		&PlayerMixin::SetViewAngle,
+		_PlayerMixin.attr("set_view_angle"),
 		"Get/set the player's view angle.\n\n"
 		":rtype: QAngle");
 

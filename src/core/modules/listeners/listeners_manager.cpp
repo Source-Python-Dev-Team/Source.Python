@@ -31,6 +31,18 @@
 
 
 //-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern ICvar* g_pCVar;
+
+
+//-----------------------------------------------------------------------------
+// Extern functions
+//-----------------------------------------------------------------------------
+extern CConVarChangedListenerManager* GetOnConVarChangedListenerManager();
+
+
+//-----------------------------------------------------------------------------
 // Adds a callable to the end of the CListenerManager vector.
 //-----------------------------------------------------------------------------
 void CListenerManager::RegisterListener(PyObject* pCallable)
@@ -149,7 +161,38 @@ object CListenerManager::__getitem__(unsigned int index)
 
 void CListenerManager::clear()
 {
-	m_vecCallables.RemoveAll();
+	if (GetCount()) {
+		m_vecCallables.RemoveAll();
+		Finalize();
+	}
+}
+
+
+//-----------------------------------------------------------------------------
+// Convar changed callback.
+//-----------------------------------------------------------------------------
+void ConVarChangedCallback(IConVar* var, const char* pOldValue, float flOldValue)
+{
+	static CConVarChangedListenerManager* on_convar_changed_listener_manager = GetOnConVarChangedListenerManager();
+	CALL_LISTENERS_WITH_MNGR(on_convar_changed_listener_manager, ptr(static_cast<ConVar*>(var)), pOldValue);
+}
+
+
+//-----------------------------------------------------------------------------
+// Called when the first callback is being registered.
+//-----------------------------------------------------------------------------
+void CConVarChangedListenerManager::Initialize()
+{
+	g_pCVar->InstallGlobalChangeCallback(ConVarChangedCallback);
+}
+
+
+//-----------------------------------------------------------------------------
+// Called when the last callback is being unregistered.
+//-----------------------------------------------------------------------------
+void CConVarChangedListenerManager::Finalize()
+{
+	g_pCVar->RemoveGlobalChangeCallback(ConVarChangedCallback);
 }
 
 

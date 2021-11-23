@@ -65,6 +65,12 @@ DEFINE_MANAGER_ACCESSOR(OnServerOutput)
 DEFINE_MANAGER_ACCESSOR(OnPlayerRunCommand)
 DEFINE_MANAGER_ACCESSOR(OnButtonStateChanged)
 
+static CConVarChangedListenerManager s_OnConVarChanged;
+CConVarChangedListenerManager* GetOnConVarChangedListenerManager()
+{
+	return &s_OnConVarChanged;
+}
+
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
@@ -141,6 +147,8 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_client_fully_connect_listener_manager") = object(ptr(GetOnClientFullyConnectListenerManager()));
 	_listeners.attr("on_client_put_in_server_listener_manager") = object(ptr(GetOnClientPutInServerListenerManager()));
 	_listeners.attr("on_client_settings_changed_listener_manager") = object(ptr(GetOnClientSettingsChangedListenerManager()));
+
+	_listeners.attr("on_convar_changed_listener_manager") = object(ptr((CListenerManager *)GetOnConVarChangedListenerManager()));
 
 	_listeners.attr("on_level_init_listener_manager") = object(ptr(GetOnLevelInitListenerManager()));
 	_listeners.attr("on_level_shutdown_listener_manager") = object(ptr(GetOnLevelShutdownListenerManager()));
