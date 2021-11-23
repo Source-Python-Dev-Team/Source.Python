@@ -779,13 +779,13 @@ void CBaseEntityWrapper::SetDamageFilter(const char* filter)
 int CBaseEntityWrapper::GetEffects()
 {
 	static int offset = FindDatamapPropertyOffset("m_fEffects");
-	return GetDatamapPropertyByOffset<int>(offset);
+	return GetNetworkPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetEffects(int effects)
 {
 	static int offset = FindDatamapPropertyOffset("m_fEffects");
-	SetDatamapPropertyByOffset<int>(offset, effects);
+	SetNetworkPropertyByOffset<int>(offset, effects);
 }
 
 
