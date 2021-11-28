@@ -65,6 +65,7 @@ from _listeners import on_entity_spawned_listener_manager
 from _listeners import on_networked_entity_spawned_listener_manager
 from _listeners import on_entity_deleted_listener_manager
 from _listeners import on_networked_entity_deleted_listener_manager
+from _listeners import on_entity_collision_listener_manager
 from _listeners import on_data_loaded_listener_manager
 from _listeners import on_combiner_pre_cache_listener_manager
 from _listeners import on_data_unloaded_listener_manager
@@ -98,6 +99,7 @@ __all__ = ('ButtonStatus',
            'OnNetworkedEntityCreated',
            'OnEntityDeleted',
            'OnNetworkedEntityDeleted',
+           'OnEntityCollision',
            'OnEntityOutput',
            'OnEntityOutputListenerManager',
            'OnEntityPreSpawned',
@@ -136,6 +138,7 @@ __all__ = ('ButtonStatus',
            'on_networked_entity_created_listener_manager',
            'on_entity_deleted_listener_manager',
            'on_networked_entity_deleted_listener_manager',
+           'on_entity_collision_listener_manager',
            'on_entity_output_listener_manager',
            'on_entity_pre_spawned_listener_manager',
            'on_networked_entity_pre_spawned_listener_manager',
@@ -406,6 +409,12 @@ class OnNetworkedEntityDeleted(ListenerManagerDecorator):
     """Register/unregister a OnNetworkedEntityDeleted listener."""
 
     manager = on_networked_entity_deleted_listener_manager
+
+
+class OnEntityCollision(ListenerManagerDecorator):
+    """Register/unregister a OnEntityCollision listener."""
+
+    manager = on_entity_collision_listener_manager
 
 
 class OnDataLoaded(ListenerManagerDecorator):
