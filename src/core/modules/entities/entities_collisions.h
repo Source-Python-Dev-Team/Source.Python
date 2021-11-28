@@ -154,24 +154,46 @@ public:
 			(HookHandlerFn *)&CEntityCollisionListenerManager::_pre_trace_ray
 		);
 
+		m_pHook->RemoveCallback(
+			HOOKTYPE_POST,
+			(HookHandlerFn *)&CEntityCollisionListenerManager::_post_trace_ray
+		);
+
 		m_pHook = NULL;
 	}
 
-	static bool _pre_trace_ray(HookType_t eHookType, CHook *pHook)
+	static bool _extract_and_validate_filter(CHook *pHook, CTraceFilterSimpleWrapper *&pResult)
 	{
 		CTraceFilterSimple *pFilter = dynamic_cast<CTraceFilterSimple *>(pHook->GetArgument<ITraceFilter *>(3));
-		if (!pFilter || !((CTraceFilterSimpleWrapper *)pFilter)->m_pPassEnt) {
+		if (!pFilter) {
 			return false;
 		}
 
-		const CBaseHandle &pHandle = ((CTraceFilterSimpleWrapper *)pFilter)->m_pPassEnt->GetRefEHandle();
+		CTraceFilterSimpleWrapper *pWrapper = (CTraceFilterSimpleWrapper *)pFilter;
+		if (!pWrapper->m_pPassEnt) {
+			return false;
+		}
+
+		const CBaseHandle &pHandle = pWrapper->m_pPassEnt->GetRefEHandle();
 		if (!pHandle.IsValid()) {
 			return false;
 		}
 
+		pResult = pWrapper;
+		return true;
+	}
+
+	static bool _pre_trace_ray(HookType_t eHookType, CHook *pHook)
+	{
+		
+		CTraceFilterSimpleWrapper *pFilter;
+		if (!_extract_and_validate_filter(pHook, pFilter)) {
+			return false;
+		}
+
 		TraceRayScope_t scope;
-		scope.m_uiIndex = pHandle.GetEntryIndex();
-		scope.m_pFilter = (CTraceFilterSimpleWrapper *)pFilter;
+		scope.m_uiIndex = pFilter->m_pPassEnt->GetRefEHandle().GetEntryIndex();
+		scope.m_pFilter = pFilter;
 		scope.m_pExtraShouldHitCheckFunction = scope.m_pFilter->m_pExtraShouldHitCheckFunction;
 		scope.m_pFilter->m_pExtraShouldHitCheckFunction = (ShouldHitFunc_t)CEntityCollisionListenerManager::_should_collide;
 
@@ -223,6 +245,11 @@ public:
 	{
 		static CEntityCollisionListenerManager *pManager = GetOnEntityCollisionListenerManager();
 		if (pManager->m_vecScopes.empty()) {
+			return false;
+		}
+
+		CTraceFilterSimpleWrapper *pFilter;
+		if (!_extract_and_validate_filter(pHook, pFilter)) {
 			return false;
 		}
 
