@@ -259,7 +259,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	}
 
 	scope.m_pFilter = pWrapper;
-	scope.m_uiIndex = pHandle.GetEntryIndex();
+	scope.m_uiIndex = uiIndex;
 	scope.m_pExtraShouldHitCheckFunction = pWrapper->m_pExtraShouldHitCheckFunction;
 	scope.m_pFilter->m_pExtraShouldHitCheckFunction = (ShouldHitFunc_t)CCollisionManager::ShouldHitEntity;
 
