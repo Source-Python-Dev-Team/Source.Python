@@ -243,6 +243,7 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
     core/modules/entities/entities_entity.cpp
     core/modules/entities/entities_entity_wrap.cpp
     core/modules/entities/entities_collisions.cpp
+    core/modules/entities/entities_collisions_wrap.cpp
 )
 
 # ------------------------------------------------------------------

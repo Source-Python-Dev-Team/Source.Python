@@ -32,32 +32,26 @@
 //-----------------------------------------------------------------------------
 // Source.Python
 #include "sp_main.h"
-#include "utilities/wrap_macros.h"
 #include "modules/listeners/listeners_manager.h"
-#include "modules/memory/memory_pointer.h"
-#include "modules/memory/memory_function_info.h"
+#include "modules/physics/physics.h"
+#include "modules/memory/memory_hooks.h"
+
+// Boost
+#include "boost/unordered_map.hpp"
 
 // SDK
-#include "engine/IEngineTrace.h"
-
-
-//---------------------------------------------------------------------------------
-// Externals.
-//---------------------------------------------------------------------------------
-extern IEngineTrace *enginetrace;
+#include "vphysics/object_hash.h"
+#include "tier1/utlmap.h"
 
 
 //-----------------------------------------------------------------------------
 // Typedefs.
 //-----------------------------------------------------------------------------
-typedef bool (*ShouldHitFunc_t)(IHandleEntity *pEntity, int iMask);
+#if !defined(ENGINE_CSGO) && !defined(ENGINE_BLADE) && !defined(ENGINE_BMS)
+	typedef bool (*ShouldHitFunc_t)( IHandleEntity *pHandleEntity, int contentsMask );
+#endif
 
-
-//-----------------------------------------------------------------------------
-// Forward declarations.
-//-----------------------------------------------------------------------------
-class CEntityCollisionListenerManager;
-CEntityCollisionListenerManager *GetOnEntityCollisionListenerManager();
+typedef boost::unordered_map<CHook *, unsigned int> CollisionHooksMap_t;
 
 
 //-----------------------------------------------------------------------------
@@ -73,14 +67,90 @@ public:
 
 
 //-----------------------------------------------------------------------------
-// TraceRayScope_t structure.
+// CollisionScope_t structure.
 //-----------------------------------------------------------------------------
-struct TraceRayScope_t
+struct CollisionScope_t
 {
+	bool m_bSkip;
 	unsigned int m_uiIndex;
 	CTraceFilterSimpleWrapper *m_pFilter;
 	ShouldHitFunc_t m_pExtraShouldHitCheckFunction;
 };
+
+
+//-----------------------------------------------------------------------------
+// CCollisionHash class.
+//-----------------------------------------------------------------------------
+class CCollisionHash
+{
+public:
+	CCollisionHash();
+	~CCollisionHash();
+
+	void AddPair(void *pObject, void *pOther);
+	void RemovePair(void *pObject, void *pOther);
+	void RemovePairs(void *pObject);
+
+	bool IsInHash(void *pObject);
+	bool IsPairInHash(void *pObject, void *pOther);
+
+	list GetPairs(void *pObject);
+
+private:
+	IPhysicsObjectPairHash *m_pHash;
+};
+
+
+//-----------------------------------------------------------------------------
+// CCollisionManager class.
+//-----------------------------------------------------------------------------
+class CCollisionManager
+{
+public:
+	friend class CEntityCollisionListenerManager;
+
+public:
+	CCollisionManager();
+
+	void Initialize();
+	void Finalize();
+
+	void RegisterHash(CCollisionHash *pHash);
+	void UnregisterHash(CCollisionHash *pHash);
+
+protected:
+	void IncRef();
+	void DecRef();
+
+private:
+	template<typename T>
+	CHook *GetHook(T tFunc, const char *szDebugName);
+
+	template<typename T>
+	void RegisterHook(T tFunc, unsigned int uiFilterIndex, const char *szDebugName);
+
+	template<typename T>
+	void UnregisterHook(T tFunc, const char *szDebugName);
+
+	static bool EnterScope(HookType_t eHookType, CHook *pHook);
+	static bool ExitScope(HookType_t eHookType, CHook *pHook);
+
+	static bool ShouldHitEntity(IHandleEntity *pHandleEntity, int contentsMask);
+
+private:
+	bool m_bInitialized;
+	unsigned int m_uiRefCount;
+	CUtlVector<CCollisionHash *> m_vecHashes;
+	CollisionHooksMap_t m_mapHooks;
+	std::vector<CollisionScope_t> m_vecScopes;
+};
+
+// Singleton accessor.
+inline CCollisionManager *GetCollisionManager()
+{
+	static CCollisionManager *s_pEntityCollisionManager = new CCollisionManager;
+	return s_pEntityCollisionManager;
+}
 
 
 //-----------------------------------------------------------------------------
@@ -89,188 +159,23 @@ struct TraceRayScope_t
 class CEntityCollisionListenerManager: public CListenerManager
 {
 public:
-	CEntityCollisionListenerManager():
-		m_pHook(NULL)
-	{
+	CEntityCollisionListenerManager();
 
-	}
+	void Initialize();
+	void Finalize();
 
-	virtual void Initialize()
-	{
-		if (m_pHook) {
-			return;
-		}
-
-		CFunctionInfo *pInfo = GetFunctionInfo(&IEngineTrace::TraceRay);
-		if (!pInfo) {
-			BOOST_RAISE_EXCEPTION(
-				PyExc_ValueError,
-				"Failed to retrieve IEngineTrace::TraceRay's info."
-			)
-		}
-
-		CFunction *pFunc = CPointer((unsigned long)((void *)enginetrace)).MakeVirtualFunction(*pInfo);
-		delete pInfo;
-
-		if (!pFunc || !pFunc->IsHookable()) {
-			BOOST_RAISE_EXCEPTION(
-				PyExc_ValueError,
-				"IEngineTrace::TraceRay's function is invalid or not hookable."
-			)
-		}
-
-		void *pAddr = (void *)pFunc->m_ulAddr;
-		m_pHook = GetHookManager()->FindHook(pAddr);
-		if (!m_pHook) {
-			m_pHook = GetHookManager()->HookFunction(pAddr, pFunc->m_pCallingConvention);
-			if (!m_pHook) {
-				BOOST_RAISE_EXCEPTION(
-					PyExc_ValueError,
-					"Failed to hook IEngineTrace::TraceRay."
-				)
-			}
-		}
-
-		delete pFunc;
-		m_pHook->AddCallback(
-			HOOKTYPE_PRE,
-			(HookHandlerFn *)&CEntityCollisionListenerManager::_pre_trace_ray
-		);
-
-		m_pHook->AddCallback(
-			HOOKTYPE_POST,
-			(HookHandlerFn *)&CEntityCollisionListenerManager::_post_trace_ray
-		);
-	}
-
-	virtual void Finalize()
-	{
-		if (!m_pHook) {
-			return;
-		}
-
-		m_pHook->RemoveCallback(
-			HOOKTYPE_PRE,
-			(HookHandlerFn *)&CEntityCollisionListenerManager::_pre_trace_ray
-		);
-
-		m_pHook->RemoveCallback(
-			HOOKTYPE_POST,
-			(HookHandlerFn *)&CEntityCollisionListenerManager::_post_trace_ray
-		);
-
-		m_pHook = NULL;
-	}
-
-	static bool _extract_and_validate_filter(CHook *pHook, CTraceFilterSimpleWrapper *&pResult)
-	{
-		CTraceFilterSimple *pFilter = dynamic_cast<CTraceFilterSimple *>(pHook->GetArgument<ITraceFilter *>(3));
-		if (!pFilter) {
-			return false;
-		}
-
-		CTraceFilterSimpleWrapper *pWrapper = (CTraceFilterSimpleWrapper *)pFilter;
-		if (!pWrapper->m_pPassEnt) {
-			return false;
-		}
-
-		const CBaseHandle &pHandle = pWrapper->m_pPassEnt->GetRefEHandle();
-		if (!pHandle.IsValid()) {
-			return false;
-		}
-
-		pResult = pWrapper;
-		return true;
-	}
-
-	static bool _pre_trace_ray(HookType_t eHookType, CHook *pHook)
-	{
-		
-		CTraceFilterSimpleWrapper *pFilter;
-		if (!_extract_and_validate_filter(pHook, pFilter)) {
-			return false;
-		}
-
-		TraceRayScope_t scope;
-		scope.m_uiIndex = pFilter->m_pPassEnt->GetRefEHandle().GetEntryIndex();
-		scope.m_pFilter = pFilter;
-		scope.m_pExtraShouldHitCheckFunction = scope.m_pFilter->m_pExtraShouldHitCheckFunction;
-		scope.m_pFilter->m_pExtraShouldHitCheckFunction = (ShouldHitFunc_t)CEntityCollisionListenerManager::_should_collide;
-
-		static CEntityCollisionListenerManager *pManager = GetOnEntityCollisionListenerManager();
-		pManager->m_vecScopes.push_back(scope);
-
-		return false;
-	}
-
-	static bool _should_collide(IHandleEntity *pHandleEntity, int iMask)
-	{
-		static CEntityCollisionListenerManager *pManager = GetOnEntityCollisionListenerManager();
-		if (pManager->m_vecScopes.empty()) {
-			return true;
-		}
-
-		const CBaseHandle &pHandle = pHandleEntity->GetRefEHandle();
-		if (!pHandle.IsValid()) {
-			return true;
-		}
-
-		TraceRayScope_t scope = pManager->m_vecScopes.back();
-		if (scope.m_pExtraShouldHitCheckFunction) {
-			if (scope.m_pExtraShouldHitCheckFunction != scope.m_pFilter->m_pExtraShouldHitCheckFunction) {
-				if (!(scope.m_pExtraShouldHitCheckFunction(pHandleEntity, iMask))) {
-					return false;
-				}
-			}
-		}
-
-		static object Entity = import("entities").attr("entity").attr("Entity");
-		object oEntity = Entity(scope.m_uiIndex);
-		object oOther = Entity(pHandle.GetEntryIndex());
-
-		bool bResult = true;
-		FOR_EACH_VEC(pManager->m_vecCallables, i) {
-			BEGIN_BOOST_PY()
-				object oResult = pManager->m_vecCallables[i](oEntity, oOther);
-				if (!oResult.is_none() && !extract<bool>(oResult)) {
-					bResult = false;
-				}
-			END_BOOST_PY_NORET()
-		}
-
-		return bResult;
-	}
-
-	static bool _post_trace_ray(HookType_t eHookType, CHook *pHook)
-	{
-		static CEntityCollisionListenerManager *pManager = GetOnEntityCollisionListenerManager();
-		if (pManager->m_vecScopes.empty()) {
-			return false;
-		}
-
-		CTraceFilterSimpleWrapper *pFilter;
-		if (!_extract_and_validate_filter(pHook, pFilter)) {
-			return false;
-		}
-
-		TraceRayScope_t scope = pManager->m_vecScopes.back();
-		pManager->m_vecScopes.pop_back();
-
-		if (scope.m_pExtraShouldHitCheckFunction) {
-			scope.m_pFilter->m_pExtraShouldHitCheckFunction = scope.m_pExtraShouldHitCheckFunction;
-			scope.m_pExtraShouldHitCheckFunction = NULL;
-		}
-
-		return false;
-	}
-
-public:
-	CHook *m_pHook;
-	std::vector<TraceRayScope_t> m_vecScopes;
+private:
+	bool m_bInitialized;
 };
 
 // Singleton accessor.
 CEntityCollisionListenerManager *GetOnEntityCollisionListenerManager();
+
+
+//-----------------------------------------------------------------------------
+// Returns the current collision hash.
+//-----------------------------------------------------------------------------
+IPhysicsObjectPairHash *GetCollisionHash();
 
 
 #endif // _ENTITIES_COLLISIONS_H
