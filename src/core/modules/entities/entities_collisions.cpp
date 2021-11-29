@@ -322,7 +322,7 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	}
 
 	FOR_EACH_VEC(pManager->m_vecHashes, i) {
-		if (pManager->m_vecHashes[i]->IsPairInHash((void *)scope.m_pFilter->m_pPassEnt, (void *)pHandleEntity)) {
+		if (pManager->m_vecHashes[i]->HasPair((void *)scope.m_pFilter->m_pPassEnt, (void *)pHandleEntity)) {
 			return false;
 		}
 	}
@@ -389,7 +389,7 @@ bool CCollisionHash::IsInHash(void *pObject)
 	return m_pHash->IsObjectInHash(pObject);
 }
 
-bool CCollisionHash::IsPairInHash(void *pObject, void *pOther)
+bool CCollisionHash::HasPair(void *pObject, void *pOther)
 {
 	return m_pHash->IsObjectPairInHash(pObject, pOther);
 }

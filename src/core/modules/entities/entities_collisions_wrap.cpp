@@ -74,8 +74,8 @@ void export_entity_collision_hash(scope _collisions)
 	);
 
 	CollisionHash.def(
-		"is_pair_in_hash",
-		&CCollisionHash::IsPairInHash,
+		"has_pair",
+		&CCollisionHash::HasPair,
 		"Returns whether the given pairs is in the hash."
 	);
 

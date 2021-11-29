@@ -92,7 +92,7 @@ public:
 	void RemovePairs(void *pObject);
 
 	bool IsInHash(void *pObject);
-	bool IsPairInHash(void *pObject, void *pOther);
+	bool HasPair(void *pObject, void *pOther);
 
 	list GetPairs(void *pObject);
 
@@ -170,12 +170,6 @@ private:
 
 // Singleton accessor.
 CEntityCollisionListenerManager *GetOnEntityCollisionListenerManager();
-
-
-//-----------------------------------------------------------------------------
-// Returns the current collision hash.
-//-----------------------------------------------------------------------------
-IPhysicsObjectPairHash *GetCollisionHash();
 
 
 #endif // _ENTITIES_COLLISIONS_H
