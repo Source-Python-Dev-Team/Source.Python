@@ -41,7 +41,12 @@
 
 // SDK
 #include "vphysics/object_hash.h"
-#include "tier1/utlmap.h"
+
+
+//-----------------------------------------------------------------------------
+// Forward declarations.
+//-----------------------------------------------------------------------------
+struct CollisionHookData_t;
 
 
 //-----------------------------------------------------------------------------
@@ -51,7 +56,7 @@
 	typedef bool (*ShouldHitFunc_t)( IHandleEntity *pHandleEntity, int contentsMask );
 #endif
 
-typedef boost::unordered_map<CHook *, unsigned int> CollisionHooksMap_t;
+typedef boost::unordered_map<CHook *, CollisionHookData_t> CollisionHooksMap_t;
 
 
 //-----------------------------------------------------------------------------
@@ -79,6 +84,16 @@ struct CollisionScope_t
 
 
 //-----------------------------------------------------------------------------
+// CollisionHookData_t structure.
+//-----------------------------------------------------------------------------
+struct CollisionHookData_t
+{
+	unsigned int m_uiFilterIndex;
+	unsigned int m_uiMaskIndex;
+};
+
+
+//-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
 class CCollisionHash
@@ -94,7 +109,10 @@ public:
 	bool IsInHash(void *pObject);
 	bool HasPair(void *pObject, void *pOther);
 
+	int GetCount(void *pObject);
 	list GetPairs(void *pObject);
+
+	void UnloadInstance();
 
 private:
 	IPhysicsObjectPairHash *m_pHash;
@@ -124,10 +142,10 @@ protected:
 
 private:
 	template<typename T>
-	CHook *GetHook(T tFunc, const char *szDebugName);
+	static CHook *GetHook(T tFunc, const char *szDebugName);
 
 	template<typename T>
-	void RegisterHook(T tFunc, unsigned int uiFilterIndex, const char *szDebugName);
+	void RegisterHook(T tFunc, unsigned int uiFilterIndex, unsigned int nMaskIndex, const char *szDebugName);
 
 	template<typename T>
 	void UnregisterHook(T tFunc, const char *szDebugName);

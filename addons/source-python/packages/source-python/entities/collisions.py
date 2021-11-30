@@ -3,6 +3,14 @@
 """Provides entity collisions functionality."""
 
 # =============================================================================
+# >> IMPORTS
+# =============================================================================
+# Source.Python Imports
+#   Core
+from core import AutoUnload
+
+
+# =============================================================================
 # >> FORWARD IMPORTS
 # =============================================================================
 # Source.Python Imports
@@ -16,3 +24,10 @@ from _entities._collisions import CollisionHash
 __all__ = [
     'CollisionHash',
 ]
+
+
+# =============================================================================
+# >> INITIALIZATION
+# =============================================================================
+# Inject AutoUnload into CollisionHash's hierarchy.
+CollisionHash.__bases__ = (AutoUnload,) + CollisionHash.__bases__

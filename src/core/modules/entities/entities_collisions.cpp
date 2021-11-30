@@ -63,7 +63,7 @@ void CCollisionManager::IncRef()
 
 void CCollisionManager::DecRef()
 {
-	if (m_uiRefCount <= 0) {
+	if (!m_uiRefCount) {
 		return;
 	}
 
@@ -80,9 +80,9 @@ void CCollisionManager::Initialize()
 		return;
 	}
 
-	RegisterHook(&IEngineTrace::TraceRay, 3, "TraceRay");
-	RegisterHook(&IEngineTrace::TraceRayAgainstLeafAndEntityList, 4, "TraceRayAgainstLeafAndEntityList");
-	RegisterHook(&IEngineTrace::SweepCollideable, 6, "SweepCollideable");
+	RegisterHook(&IEngineTrace::TraceRay, 3, 2, "TraceRay");
+	RegisterHook(&IEngineTrace::TraceRayAgainstLeafAndEntityList, 4, 3, "TraceRayAgainstLeafAndEntityList");
+	RegisterHook(&IEngineTrace::SweepCollideable, 6, 5, "SweepCollideable");
 
 	m_bInitialized = true;
 }
@@ -115,7 +115,10 @@ void CCollisionManager::RegisterHash(CCollisionHash *pHash)
 
 void CCollisionManager::UnregisterHash(CCollisionHash *pHash)
 {
-	m_vecHashes.FindAndRemove(pHash);
+	if (!m_vecHashes.FindAndRemove(pHash)) {
+		return;
+	}
+
 	DecRef();
 }
 
@@ -142,10 +145,11 @@ CHook *CCollisionManager::GetHook(T tFunc, const char *szDebugName)
 		)
 	}
 
+	static CHookManager *pHookManager = GetHookManager();
 	void *pAddr = (void *)pFunc->m_ulAddr;
-	CHook *pHook = GetHookManager()->FindHook(pAddr);
+	CHook *pHook = pHookManager->FindHook(pAddr);
 	if (!pHook) {
-		pHook = GetHookManager()->HookFunction(pAddr, pFunc->m_pCallingConvention);
+		pHook = pHookManager->HookFunction(pAddr, pFunc->m_pCallingConvention);
 		if (!pHook) {
 			BOOST_RAISE_EXCEPTION(
 				PyExc_ValueError,
@@ -160,7 +164,7 @@ CHook *CCollisionManager::GetHook(T tFunc, const char *szDebugName)
 }
 
 template<typename T>
-void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, const char *szDebugName)
+void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, unsigned int uiMaskIndex, const char *szDebugName)
 {
 	CHook *pHook = GetHook(tFunc, szDebugName);
 	CollisionHooksMap_t::const_iterator it = m_mapHooks.find(pHook);
@@ -172,7 +176,10 @@ void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, const 
 		)
 	}
 
-	m_mapHooks[pHook] = uiFilterIndex;
+	CollisionHookData_t hookData;
+	hookData.m_uiFilterIndex = uiFilterIndex;
+	hookData.m_uiMaskIndex = uiMaskIndex;
+	m_mapHooks[pHook] = hookData;
 
 	pHook->AddCallback(
 		HOOKTYPE_PRE,
@@ -218,8 +225,16 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	CollisionScope_t scope;
 	scope.m_bSkip = true;
 
+	CollisionHookData_t hookData = pManager->m_mapHooks[pHook];
+
+	int nMask = pHook->GetArgument<int>(hookData.m_uiMaskIndex);
+	if (nMask != MASK_SOLID && nMask != MASK_PLAYERSOLID && nMask != MASK_NPCSOLID) {
+		pManager->m_vecScopes.push_back(scope);
+		return false;
+	}
+
 	CTraceFilterSimpleWrapper *pWrapper = NULL;
-	ITraceFilter *pFilter = pHook->GetArgument<ITraceFilter *>(pManager->m_mapHooks[pHook]);
+	ITraceFilter *pFilter = pHook->GetArgument<ITraceFilter *>(hookData.m_uiFilterIndex);
 
 #ifdef _WIN32
 	pWrapper = (CTraceFilterSimpleWrapper *)dynamic_cast<CTraceFilterSimple *>(pFilter);
@@ -261,7 +276,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	scope.m_pFilter = pWrapper;
 	scope.m_uiIndex = uiIndex;
 	scope.m_pExtraShouldHitCheckFunction = pWrapper->m_pExtraShouldHitCheckFunction;
-	scope.m_pFilter->m_pExtraShouldHitCheckFunction = (ShouldHitFunc_t)CCollisionManager::ShouldHitEntity;
+	pWrapper->m_pExtraShouldHitCheckFunction = (ShouldHitFunc_t)CCollisionManager::ShouldHitEntity;
 
 	scope.m_bSkip = false;
 	pManager->m_vecScopes.push_back(scope);
@@ -328,6 +343,10 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	}
 
 	static CEntityCollisionListenerManager *pListener = GetOnEntityCollisionListenerManager();
+	if (!pListener->GetCount()) {
+		return true;
+	}
+
 	static object Entity = import("entities").attr("entity").attr("Entity");
 
 	object oEntity = Entity(scope.m_uiIndex);
@@ -360,12 +379,18 @@ CCollisionHash::CCollisionHash()
 		)
 	}
 
-	GetCollisionManager()->RegisterHash(this);
+	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->RegisterHash(this);
 }
 
 CCollisionHash::~CCollisionHash()
 {
-	GetCollisionManager()->UnregisterHash(this);
+	if (!m_pHash) {
+		return;
+	}
+
+	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->UnregisterHash(this);
 	physics->DestroyObjectPairHash(m_pHash);
 }
 
@@ -394,6 +419,11 @@ bool CCollisionHash::HasPair(void *pObject, void *pOther)
 	return m_pHash->IsObjectPairInHash(pObject, pOther);
 }
 
+int CCollisionHash::GetCount(void *pObject)
+{
+	return m_pHash->GetPairCountForObject(pObject);
+}
+
 list CCollisionHash::GetPairs(void *pObject)
 {
 	list oObjects;
@@ -416,6 +446,12 @@ list CCollisionHash::GetPairs(void *pObject)
 	}
 
 	return oObjects;
+}
+
+void CCollisionHash::UnloadInstance()
+{
+	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->UnregisterHash(this);
 }
 
 

@@ -80,6 +80,12 @@ void export_entity_collision_hash(scope _collisions)
 	);
 
 	CollisionHash.def(
+		"get_count",
+		&CCollisionHash::GetCount,
+		"Returns the amount of pairs associated with the given object."
+	);
+
+	CollisionHash.def(
 		"get_pairs",
 		&CCollisionHash::GetPairs,
 		"Returns a list of all objects associated with the given object."
@@ -90,5 +96,12 @@ void export_entity_collision_hash(scope _collisions)
 		"__contains__",
 		&CCollisionHash::IsInHash,
 		"Returns whether the given object is in the hash."
+	);
+
+	// AutoUnload...
+	CollisionHash.def(
+		"_unload_instance",
+		&CCollisionHash::UnloadInstance,
+		"Called when an instance is being unloaded."
 	);
 }
