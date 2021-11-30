@@ -230,7 +230,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	int nMask = pHook->GetArgument<int>(hookData.m_uiMaskIndex);
 
 #if defined(ENGINE_CSGO)
-	if (nMask & CONTENTS_EMPTY ||
+	if ((nMask & CONTENTS_EMPTY ||
 		nMask & CONTENTS_AUX ||
 		nMask & CONTENTS_SLIME ||
 		nMask & CONTENTS_WATER ||
@@ -238,11 +238,11 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 		nMask & CONTENTS_OPAQUE ||
 		nMask & CONTENTS_IGNORE_NODRAW_OPAQUE ||
 		nMask & CONTENTS_CURRENT_0 || // CONTENTS_BRUSH_PAINT
-		nMask & CONTENTS_CURRENT_90 || // CONTENTS_GRENADECLIP
 		nMask & CONTENTS_DEBRIS ||
 		nMask & CONTENTS_DETAIL ||
 		nMask & CONTENTS_TRANSLUCENT ||
-		nMask & CONTENTS_HITBOX
+		nMask & CONTENTS_HITBOX) &&
+		!(nMask & CONTENTS_CURRENT_90) // CONTENTS_GRENADECLIP
 	) {
 #else
 	if (nMask != MASK_SOLID &&
