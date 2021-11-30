@@ -228,7 +228,28 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	CollisionHookData_t hookData = pManager->m_mapHooks[pHook];
 
 	int nMask = pHook->GetArgument<int>(hookData.m_uiMaskIndex);
-	if (nMask != MASK_SOLID && nMask != MASK_PLAYERSOLID && nMask != MASK_NPCSOLID) {
+
+#if defined(ENGINE_CSGO)
+	if (nMask & CONTENTS_EMPTY ||
+		nMask & CONTENTS_AUX ||
+		nMask & CONTENTS_SLIME ||
+		nMask & CONTENTS_WATER ||
+		nMask & CONTENTS_BLOCKLOS ||
+		nMask & CONTENTS_OPAQUE ||
+		nMask & CONTENTS_IGNORE_NODRAW_OPAQUE ||
+		nMask & CONTENTS_CURRENT_0 || // CONTENTS_BRUSH_PAINT
+		nMask & CONTENTS_CURRENT_90 || // CONTENTS_GRENADECLIP
+		nMask & CONTENTS_DEBRIS ||
+		nMask & CONTENTS_DETAIL ||
+		nMask & CONTENTS_TRANSLUCENT ||
+		nMask & CONTENTS_HITBOX
+	) {
+#else
+	if (nMask != MASK_SOLID &&
+		nMask != MASK_PLAYERSOLID &&
+		nMask != MASK_NPCSOLID
+	) {
+#endif
 		pManager->m_vecScopes.push_back(scope);
 		return false;
 	}
