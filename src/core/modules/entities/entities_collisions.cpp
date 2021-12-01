@@ -251,10 +251,15 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	void *pTable = *(void **)pFilter;
 	boost::unordered_map<void *, bool>::const_iterator it = s_mapTables.find(pTable);
 	if (it == s_mapTables.end()) {
-		s_mapTables[pTable] = GetType(pFilter)->IsDerivedFrom("CTraceFilterSimple");
+		if (GetType(pFilter)->IsDerivedFrom("CTraceFilterSimple")) {
+			s_mapTables[pTable] = true;
+			pWrapper = reinterpret_cast<CTraceFilterSimpleWrapper *>(pFilter);
+		}
+		else {
+			s_mapTables[pTable] = false;
+		}
 	}
-
-	if (s_mapTables[pTable]) {
+	else if (it->second) {
 		pWrapper = reinterpret_cast<CTraceFilterSimpleWrapper *>(pFilter);
 	}
 #endif
