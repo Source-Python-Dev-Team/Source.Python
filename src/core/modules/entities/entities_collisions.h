@@ -86,6 +86,8 @@ struct CollisionScope_t
 	CTraceFilterSimpleWrapper *m_pFilter;
 	ShouldHitFunc_t m_pExtraShouldHitCheckFunction;
 	CCollisionCache *m_pCache;
+	int m_nMask;
+	bool m_bSolidContents;
 };
 
 
@@ -167,11 +169,14 @@ private:
 class CCollisionManager
 {
 public:
+	friend CCollisionManager *GetCollisionManager();
 	friend class CEntityCollisionListenerManager;
 
-public:
+private:
 	CCollisionManager();
+	~CCollisionManager();
 
+public:
 	void Initialize();
 	void Finalize();
 
@@ -179,6 +184,9 @@ public:
 	void UnregisterHash(ICollisionHash *pHash);
 
 	void OnNetworkedEntityDeleted(CBaseEntity *pEntity);
+
+	void RegisterCollisionHook(object oCallback);
+	void UnregisterCollisionHook(object oCallback);
 
 protected:
 	void IncRef();
@@ -205,6 +213,8 @@ private:
 
 	int m_nTickCount;
 	CollisionCacheMap_t m_mapCache;
+
+	CListenerManager *m_pCollisionListener;
 };
 
 // Singleton accessor.

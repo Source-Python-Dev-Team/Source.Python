@@ -17,6 +17,8 @@ from core import AutoUnload
 #   Entities
 from _entities._collisions import BaseCollisionHash
 from _entities._collisions import CollisionHash
+from _entities._collisions import CollisionManager
+from _entities._collisions import collision_manager
 
 
 # =============================================================================
@@ -25,6 +27,9 @@ from _entities._collisions import CollisionHash
 __all__ = [
     'BaseCollisionHash',
     'CollisionHash',
+    'CollisionHook',
+    'CollisionManager',
+    'collision_manager',
 ]
 
 
@@ -33,3 +38,19 @@ __all__ = [
 # =============================================================================
 # Inject AutoUnload into BaseCollisionHash's hierarchy.
 BaseCollisionHash.__bases__ = (AutoUnload,) + BaseCollisionHash.__bases__
+
+
+# =============================================================================
+# >> CLASSES
+# =============================================================================
+class CollisionHook(AutoUnload):
+    """Decorator used to create collision hooks that auto unload."""
+
+    def __init__(self, callback):
+        """Registers the collision hook."""
+        self.callback = callback
+        collision_manager.register_hook(callback)
+
+    def _unload_instance(self):
+        """Unregisters the collision hook."""
+        collision_manager.unregister_hook(self.callback)

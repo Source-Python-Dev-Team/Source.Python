@@ -35,7 +35,9 @@
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
-static void export_entity_collision_hash(scope);
+static void export_collision_manager(scope);
+static void export_base_collision_hash(scope);
+static void export_collision_hash(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -43,14 +45,41 @@ static void export_entity_collision_hash(scope);
 //-----------------------------------------------------------------------------
 DECLARE_SP_SUBMODULE(_entities, _collisions)
 {
-	export_entity_collision_hash(_collisions);
+	export_collision_manager(_collisions);
+	export_base_collision_hash(_collisions);
+	export_collision_hash(_collisions);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports CCollisionHash.
+// Exports ICollisionHash.
 //-----------------------------------------------------------------------------
-void export_entity_collision_hash(scope _collisions)
+void export_collision_manager(scope _collisions)
+{
+	class_<CCollisionManager, boost::noncopyable> CollisionManager("CollisionManager", no_init);
+
+	// Methods...
+	CollisionManager.def(
+		"register_hook",
+		&CCollisionManager::RegisterCollisionHook,
+		"Registers a collision hook."
+	);
+
+	CollisionManager.def(
+		"unregister_hook",
+		&CCollisionManager::UnregisterCollisionHook,
+		"Unregisters a collision hook."
+	);
+
+	// Singleton...
+	_collisions.attr("collision_manager") = object(ptr(GetCollisionManager()));
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports ICollisionHash.
+//-----------------------------------------------------------------------------
+void export_base_collision_hash(scope _collisions)
 {
 	class_<ICollisionHash, boost::noncopyable> BaseCollisionHash("BaseCollisionHash", no_init);
 
@@ -104,7 +133,13 @@ void export_entity_collision_hash(scope _collisions)
 		&ICollisionHash::UnloadInstance,
 		"Called when an instance is being unloaded."
 	);
+}
 
-	// CCollisionHash...
+
+//-----------------------------------------------------------------------------
+// Exports CCollisionHash.
+//-----------------------------------------------------------------------------
+void export_collision_hash(scope _collisions)
+{
 	class_<CCollisionHash, bases<ICollisionHash> >("CollisionHash");
 }

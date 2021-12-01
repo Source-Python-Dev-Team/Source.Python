@@ -52,7 +52,12 @@ CCollisionManager::CCollisionManager():
 	m_uiRefCount(0),
 	m_nTickCount(-1)
 {
+	m_pCollisionListener = new CListenerManager();
+}
 
+CCollisionManager::~CCollisionManager()
+{
+	delete m_pCollisionListener;
 }
 
 void CCollisionManager::IncRef()
@@ -141,6 +146,18 @@ void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
 	}
 }
 
+void CCollisionManager::RegisterCollisionHook(object oCallback)
+{
+	m_pCollisionListener->RegisterListener(oCallback.ptr());
+	IncRef();
+}
+
+void CCollisionManager::UnregisterCollisionHook(object oCallback)
+{
+	m_pCollisionListener->UnregisterListener(oCallback.ptr());
+	DecRef();
+}
+
 template<typename T>
 void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, unsigned int uiMaskIndex, const char *szDebugName)
 {
@@ -217,6 +234,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 
 	int nMask = pHook->GetArgument<int>(hookData.m_uiMaskIndex);
 
+	bool bSolidContents = true;
 #if defined(ENGINE_CSGO)
 	if ((nMask & CONTENTS_EMPTY ||
 		nMask & CONTENTS_AUX ||
@@ -240,8 +258,12 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 		nMask != MASK_NPCSOLID
 	) {
 #endif
-		pManager->m_vecScopes.push_back(scope);
-		return false;
+		if (!pManager->m_pCollisionListener->GetCount()) {
+			pManager->m_vecScopes.push_back(scope);
+			return false;
+		}
+
+		bSolidContents = false;
 	}
 
 	CTraceFilterSimpleWrapper *pWrapper = NULL;
@@ -290,6 +312,8 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	}
 
 	scope.m_pFilter = pWrapper;
+	scope.m_nMask = nMask;
+	scope.m_bSolidContents = bSolidContents;
 	scope.m_uiIndex = uiIndex;
 	scope.m_pCache = pManager->GetCache(uiIndex);
 	scope.m_pExtraShouldHitCheckFunction = pWrapper->m_pExtraShouldHitCheckFunction;
@@ -353,8 +377,34 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		}
 	}
 
+	static object Entity = import("entities").attr("entity").attr("Entity");
+
+	object oEntity;
+	object oOther;
+
+	if (pManager->m_pCollisionListener->GetCount()) {
+		oEntity = Entity(scope.m_uiIndex);
+		oOther = Entity(uiIndex);
+
+		object oFilter = object(ptr((ITraceFilter *)scope.m_pFilter));
+
+		FOR_EACH_VEC(pManager->m_pCollisionListener->m_vecCallables, i) {
+			BEGIN_BOOST_PY()
+				object oResult = pManager->m_pCollisionListener->m_vecCallables[i](oEntity, oOther, oFilter, scope.m_nMask);
+				if (!oResult.is_none() && !extract<bool>(oResult)) {
+					scope.m_pCache->SetResult(uiIndex, false);
+					return false;
+				}
+			END_BOOST_PY_NORET()
+		}
+	}
+
 	if (scope.m_pCache->HasResult(uiIndex)) {
 		return scope.m_pCache->GetResult(uiIndex);
+	}
+
+	if (!scope.m_bSolidContents) {
+		return true;
 	}
 
 	FOR_EACH_VEC(pManager->m_vecHashes, i) {
@@ -370,10 +420,13 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		return true;
 	}
 
-	static object Entity = import("entities").attr("entity").attr("Entity");
+	if (oEntity.is_none()) {
+		oEntity = Entity(scope.m_uiIndex);
+	}
 
-	object oEntity = Entity(scope.m_uiIndex);
-	object oOther = Entity(uiIndex);
+	if (oOther.is_none()) {
+		oOther = Entity(uiIndex);
+	}
 
 	FOR_EACH_VEC(pListener->m_vecCallables, i) {
 		BEGIN_BOOST_PY()
