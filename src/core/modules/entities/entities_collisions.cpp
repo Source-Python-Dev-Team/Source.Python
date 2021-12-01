@@ -29,6 +29,7 @@
 //-----------------------------------------------------------------------------
 // Source.Python
 #include "modules/entities/entities_collisions.h"
+#include "utilities/conversions.h"
 
 #ifdef __linux__
 	#include "modules/memory/memory_rtti.h"
@@ -129,6 +130,13 @@ void CCollisionManager::UnregisterHash(ICollisionHash *pHash)
 	}
 
 	DecRef();
+}
+
+void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
+{
+	FOR_EACH_VEC(m_vecHashes, i) {
+		m_vecHashes[i]->RemovePairs((void *)pEntity);
+	}
 }
 
 template<typename T>
@@ -412,6 +420,13 @@ CCollisionHash::~CCollisionHash()
 
 void CCollisionHash::AddPair(void *pObject, void *pOther)
 {
+	if (!IsValidNetworkedEntityPointer(pObject) || !IsValidNetworkedEntityPointer(pOther)) {
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"Given entity pointer invalid or not networked."
+		)
+	}
+
 	m_pHash->AddObjectPair(pObject, pOther);
 }
 

@@ -157,6 +157,8 @@ public:
 	void RegisterHash(ICollisionHash *pHash);
 	void UnregisterHash(ICollisionHash *pHash);
 
+	void OnNetworkedEntityDeleted(CBaseEntity *pEntity);
+
 protected:
 	void IncRef();
 	void DecRef();

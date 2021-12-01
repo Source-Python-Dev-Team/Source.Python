@@ -60,6 +60,7 @@
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
 #include "modules/entities/entities_entity.h"
+#include "modules/entities/entities_collisions.h"
 #include "modules/core/core.h"
 
 #ifdef _WIN32
@@ -692,6 +693,10 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 	// Invalidate the internal entity cache once all callbacks have been called.
 	static object _on_networked_entity_deleted = import("entities").attr("_base").attr("_on_networked_entity_deleted");
 	_on_networked_entity_deleted(uiIndex);
+
+	// Cleanup active collision hashes.
+	static CCollisionManager *pCollisionManager = GetCollisionManager();
+	pCollisionManager->OnNetworkedEntityDeleted(pEntity);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
