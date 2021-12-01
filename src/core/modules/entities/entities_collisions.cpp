@@ -41,6 +41,7 @@
 //-----------------------------------------------------------------------------
 extern IEngineTrace *enginetrace;
 extern IPhysics *physics;
+extern CGlobalVars *gpGlobals;
 
 
 //-----------------------------------------------------------------------------
@@ -48,7 +49,8 @@ extern IPhysics *physics;
 //-----------------------------------------------------------------------------
 CCollisionManager::CCollisionManager():
 	m_bInitialized(false),
-	m_uiRefCount(0)
+	m_uiRefCount(0),
+	m_nTickCount(-1)
 {
 
 }
@@ -206,6 +208,7 @@ void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, unsign
 bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 {
 	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->RefreshCache();
 
 	CollisionScope_t scope;
 	scope.m_bSkip = true;
@@ -288,6 +291,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 
 	scope.m_pFilter = pWrapper;
 	scope.m_uiIndex = uiIndex;
+	scope.m_pCache = pManager->GetCache(uiIndex);
 	scope.m_pExtraShouldHitCheckFunction = pWrapper->m_pExtraShouldHitCheckFunction;
 	pWrapper->m_pExtraShouldHitCheckFunction = (ShouldHitFunc_t)CCollisionManager::ShouldHitEntity;
 
@@ -349,14 +353,20 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		}
 	}
 
+	if (scope.m_pCache->HasResult(uiIndex)) {
+		return scope.m_pCache->GetResult(uiIndex);
+	}
+
 	FOR_EACH_VEC(pManager->m_vecHashes, i) {
 		if (pManager->m_vecHashes[i]->HasPair((void *)scope.m_pFilter->m_pPassEnt, (void *)pHandleEntity)) {
+			scope.m_pCache->SetResult(uiIndex, false);
 			return false;
 		}
 	}
 
 	static CEntityCollisionListenerManager *pListener = GetOnEntityCollisionListenerManager();
 	if (!pListener->GetCount()) {
+		scope.m_pCache->SetResult(uiIndex, true);
 		return true;
 	}
 
@@ -369,12 +379,41 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		BEGIN_BOOST_PY()
 			object oResult = pListener->m_vecCallables[i](oEntity, oOther);
 			if (!oResult.is_none() && !extract<bool>(oResult)) {
+				scope.m_pCache->SetResult(uiIndex, false);
 				return false;
 			}
 		END_BOOST_PY_NORET()
 	}
 
+	scope.m_pCache->SetResult(uiIndex, true);
 	return true;
+}
+
+void CCollisionManager::RefreshCache()
+{
+	if (gpGlobals->tickcount == m_nTickCount) {
+		return;
+	}
+
+	for (CollisionCacheMap_t::const_iterator it = m_mapCache.begin(); it != m_mapCache.end(); it++) {
+		delete it->second;
+	}
+
+	m_mapCache.clear();
+	m_nTickCount = gpGlobals->tickcount;
+}
+
+CCollisionCache *CCollisionManager::GetCache(unsigned int uiIndex)
+{
+	CollisionCacheMap_t::const_iterator it = m_mapCache.find(uiIndex);
+	if (it != m_mapCache.end()) {
+		return it->second;
+	}
+
+	CCollisionCache *pCache = new CCollisionCache();
+	m_mapCache[uiIndex] = pCache;
+
+	return pCache;
 }
 
 
@@ -396,6 +435,26 @@ void ICollisionHash::UnloadInstance()
 {
 	static CCollisionManager *pManager = GetCollisionManager();
 	pManager->UnregisterHash(this);
+}
+
+
+//-----------------------------------------------------------------------------
+// CCollisionCache class.
+//-----------------------------------------------------------------------------
+bool CCollisionCache::HasResult(unsigned int uiIndex)
+{
+	return IsBitSet(uiIndex);
+}
+
+bool CCollisionCache::GetResult(unsigned int uiIndex)
+{
+	return m_vecCache.IsBitSet(uiIndex);
+}
+
+void CCollisionCache::SetResult(unsigned int uiIndex, bool bResult)
+{
+	Set(uiIndex);
+	m_vecCache.Set((int)uiIndex, bResult);
 }
 
 

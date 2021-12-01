@@ -41,12 +41,14 @@
 
 // SDK
 #include "vphysics/object_hash.h"
+#include "bitvec.h"
 
 
 //-----------------------------------------------------------------------------
 // Forward declarations.
 //-----------------------------------------------------------------------------
 struct CollisionHookData_t;
+class CCollisionCache;
 
 
 //-----------------------------------------------------------------------------
@@ -57,6 +59,9 @@ struct CollisionHookData_t;
 #endif
 
 typedef boost::unordered_map<CHook *, CollisionHookData_t> CollisionHooksMap_t;
+
+typedef CBitVec<MAX_EDICTS> CollisionCache_t;
+typedef boost::unordered_map<unsigned int, CCollisionCache *> CollisionCacheMap_t;
 
 
 //-----------------------------------------------------------------------------
@@ -80,6 +85,7 @@ struct CollisionScope_t
 	unsigned int m_uiIndex;
 	CTraceFilterSimpleWrapper *m_pFilter;
 	ShouldHitFunc_t m_pExtraShouldHitCheckFunction;
+	CCollisionCache *m_pCache;
 };
 
 
@@ -141,6 +147,21 @@ private:
 
 
 //-----------------------------------------------------------------------------
+// CCollisionCache class.
+//-----------------------------------------------------------------------------
+class CCollisionCache : private CollisionCache_t
+{
+public:
+	bool HasResult(unsigned int uiIndex);
+	bool GetResult(unsigned int uiIndex);
+	void SetResult(unsigned int uiIndex, bool bResult);
+
+private:
+	CollisionCache_t m_vecCache;
+};
+
+
+//-----------------------------------------------------------------------------
 // CCollisionManager class.
 //-----------------------------------------------------------------------------
 class CCollisionManager
@@ -172,12 +193,18 @@ private:
 
 	static bool ShouldHitEntity(IHandleEntity *pHandleEntity, int contentsMask);
 
+	void RefreshCache();
+	CCollisionCache *GetCache(unsigned int uiIndex);
+
 private:
 	bool m_bInitialized;
 	unsigned int m_uiRefCount;
 	CUtlVector<ICollisionHash *> m_vecHashes;
 	CollisionHooksMap_t m_mapHooks;
 	std::vector<CollisionScope_t> m_vecScopes;
+
+	int m_nTickCount;
+	CollisionCacheMap_t m_mapCache;
 };
 
 // Singleton accessor.
