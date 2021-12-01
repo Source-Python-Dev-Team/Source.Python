@@ -52,56 +52,59 @@ DECLARE_SP_SUBMODULE(_entities, _collisions)
 //-----------------------------------------------------------------------------
 void export_entity_collision_hash(scope _collisions)
 {
-	class_<CCollisionHash> CollisionHash("CollisionHash");
+	class_<ICollisionHash, boost::noncopyable> BaseCollisionHash("BaseCollisionHash", no_init);
 
 	// Methods...
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"add_pair",
-		&CCollisionHash::AddPair,
+		&ICollisionHash::AddPair,
 		"Adds the given pair to the hash."
 	);
 
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"remove_pair",
-		&CCollisionHash::RemovePair,
+		&ICollisionHash::RemovePair,
 		"Removes the given pair from the hash."
 	);
 
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"remove_pairs",
-		&CCollisionHash::RemovePairs,
+		&ICollisionHash::RemovePairs,
 		"Removes all pair associated with the given object."
 	);
 
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"has_pair",
-		&CCollisionHash::HasPair,
+		&ICollisionHash::HasPair,
 		"Returns whether the given pairs is in the hash."
 	);
 
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"get_count",
-		&CCollisionHash::GetCount,
+		&ICollisionHash::GetCount,
 		"Returns the amount of pairs associated with the given object."
 	);
 
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"get_pairs",
-		&CCollisionHash::GetPairs,
+		&ICollisionHash::GetPairs,
 		"Returns a list of all objects associated with the given object."
 	);
 
 	// Special methods...
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"__contains__",
-		&CCollisionHash::IsInHash,
+		&ICollisionHash::IsInHash,
 		"Returns whether the given object is in the hash."
 	);
 
 	// AutoUnload...
-	CollisionHash.def(
+	BaseCollisionHash.def(
 		"_unload_instance",
-		&CCollisionHash::UnloadInstance,
+		&ICollisionHash::UnloadInstance,
 		"Called when an instance is being unloaded."
 	);
+
+	// CCollisionHash...
+	class_<CCollisionHash, bases<ICollisionHash> >("CollisionHash");
 }

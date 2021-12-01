@@ -100,7 +100,7 @@ void CCollisionManager::Finalize()
 	m_bInitialized = false;
 }
 
-void CCollisionManager::RegisterHash(CCollisionHash *pHash)
+void CCollisionManager::RegisterHash(ICollisionHash *pHash)
 {
 	if (m_vecHashes.HasElement(pHash)) {
 		BOOST_RAISE_EXCEPTION(
@@ -113,7 +113,7 @@ void CCollisionManager::RegisterHash(CCollisionHash *pHash)
 	m_vecHashes.AddToTail(pHash);
 }
 
-void CCollisionManager::UnregisterHash(CCollisionHash *pHash)
+void CCollisionManager::UnregisterHash(ICollisionHash *pHash)
 {
 	if (!m_vecHashes.FindAndRemove(pHash)) {
 		return;
@@ -389,6 +389,27 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 
 
 //-----------------------------------------------------------------------------
+// ICollisionHash class.
+//-----------------------------------------------------------------------------
+ICollisionHash::ICollisionHash()
+{
+	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->RegisterHash(this);
+}
+
+ICollisionHash::~ICollisionHash()
+{
+	UnloadInstance();
+}
+
+void ICollisionHash::UnloadInstance()
+{
+	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->UnregisterHash(this);
+}
+
+
+//-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
 CCollisionHash::CCollisionHash()
@@ -401,9 +422,6 @@ CCollisionHash::CCollisionHash()
 			"Failed to create a collision hash."
 		)
 	}
-
-	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->RegisterHash(this);
 }
 
 CCollisionHash::~CCollisionHash()
@@ -412,8 +430,6 @@ CCollisionHash::~CCollisionHash()
 		return;
 	}
 
-	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->UnregisterHash(this);
 	physics->DestroyObjectPairHash(m_pHash);
 }
 
@@ -469,12 +485,6 @@ list CCollisionHash::GetPairs(void *pObject)
 	}
 
 	return oObjects;
-}
-
-void CCollisionHash::UnloadInstance()
-{
-	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->UnregisterHash(this);
 }
 
 

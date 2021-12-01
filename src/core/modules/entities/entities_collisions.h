@@ -94,9 +94,32 @@ struct CollisionHookData_t
 
 
 //-----------------------------------------------------------------------------
+// ICollisionHash class.
+//-----------------------------------------------------------------------------
+class ICollisionHash
+{
+public:
+	ICollisionHash();
+	virtual ~ICollisionHash();
+
+	virtual void AddPair(void *pObject, void *pOther) = 0;
+	virtual void RemovePair(void *pObject, void *pOther) = 0;
+	virtual void RemovePairs(void *pObject) = 0;
+
+	virtual bool IsInHash(void *pObject) = 0;
+	virtual bool HasPair(void *pObject, void *pOther) = 0;
+
+	virtual int GetCount(void *pObject) = 0;
+	virtual list GetPairs(void *pObject) = 0;
+
+	void UnloadInstance();
+};
+
+
+//-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
-class CCollisionHash
+class CCollisionHash : public ICollisionHash
 {
 public:
 	CCollisionHash();
@@ -111,8 +134,6 @@ public:
 
 	int GetCount(void *pObject);
 	list GetPairs(void *pObject);
-
-	void UnloadInstance();
 
 private:
 	IPhysicsObjectPairHash *m_pHash;
@@ -133,8 +154,8 @@ public:
 	void Initialize();
 	void Finalize();
 
-	void RegisterHash(CCollisionHash *pHash);
-	void UnregisterHash(CCollisionHash *pHash);
+	void RegisterHash(ICollisionHash *pHash);
+	void UnregisterHash(ICollisionHash *pHash);
 
 protected:
 	void IncRef();
@@ -158,7 +179,7 @@ private:
 private:
 	bool m_bInitialized;
 	unsigned int m_uiRefCount;
-	CUtlVector<CCollisionHash *> m_vecHashes;
+	CUtlVector<ICollisionHash *> m_vecHashes;
 	CollisionHooksMap_t m_mapHooks;
 	std::vector<CollisionScope_t> m_vecScopes;
 };

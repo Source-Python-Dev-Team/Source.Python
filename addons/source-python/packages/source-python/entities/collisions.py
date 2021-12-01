@@ -15,6 +15,7 @@ from core import AutoUnload
 # =============================================================================
 # Source.Python Imports
 #   Entities
+from _entities._collisions import BaseCollisionHash
 from _entities._collisions import CollisionHash
 
 
@@ -22,6 +23,7 @@ from _entities._collisions import CollisionHash
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
+    'BaseCollisionHash',
     'CollisionHash',
 ]
 
@@ -29,5 +31,5 @@ __all__ = [
 # =============================================================================
 # >> INITIALIZATION
 # =============================================================================
-# Inject AutoUnload into CollisionHash's hierarchy.
-CollisionHash.__bases__ = (AutoUnload,) + CollisionHash.__bases__
+# Inject AutoUnload into BaseCollisionHash's hierarchy.
+BaseCollisionHash.__bases__ = (AutoUnload,) + BaseCollisionHash.__bases__
