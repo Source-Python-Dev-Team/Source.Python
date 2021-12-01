@@ -232,6 +232,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 #if defined(ENGINE_CSGO)
 	if ((nMask & CONTENTS_EMPTY ||
 		nMask & CONTENTS_AUX ||
+		nMask & CONTENTS_GRATE ||
 		nMask & CONTENTS_SLIME ||
 		nMask & CONTENTS_WATER ||
 		nMask & CONTENTS_BLOCKLOS ||
@@ -242,7 +243,8 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 		nMask & CONTENTS_DETAIL ||
 		nMask & CONTENTS_TRANSLUCENT ||
 		nMask & CONTENTS_HITBOX) &&
-		!(nMask & CONTENTS_CURRENT_90) // CONTENTS_GRENADECLIP
+		!(nMask & CONTENTS_CURRENT_90 || // CONTENTS_GRENADECLIP
+		nMask & CONTENTS_PLAYERCLIP)
 	) {
 #else
 	if (nMask != MASK_SOLID &&
