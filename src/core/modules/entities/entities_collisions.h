@@ -163,13 +163,7 @@ protected:
 
 private:
 	template<typename T>
-	static CHook *GetHook(T tFunc, const char *szDebugName);
-
-	template<typename T>
 	void RegisterHook(T tFunc, unsigned int uiFilterIndex, unsigned int nMaskIndex, const char *szDebugName);
-
-	template<typename T>
-	void UnregisterHook(T tFunc, const char *szDebugName);
 
 	static bool EnterScope(HookType_t eHookType, CHook *pHook);
 	static bool ExitScope(HookType_t eHookType, CHook *pHook);

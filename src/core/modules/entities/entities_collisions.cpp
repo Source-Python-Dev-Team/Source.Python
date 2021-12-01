@@ -93,10 +93,19 @@ void CCollisionManager::Finalize()
 		return;
 	}
 
-	UnregisterHook(&IEngineTrace::TraceRay, "TraceRay");
-	UnregisterHook(&IEngineTrace::TraceRayAgainstLeafAndEntityList, "TraceRayAgainstLeafAndEntityList");
-	UnregisterHook(&IEngineTrace::SweepCollideable, "SweepCollideable");
+	for (CollisionHooksMap_t::const_iterator it = m_mapHooks.begin(); it != m_mapHooks.end(); it++) {
+		it->first->RemoveCallback(
+			HOOKTYPE_PRE,
+			(HookHandlerFn *)&CCollisionManager::EnterScope
+		);
 
+		it->first->RemoveCallback(
+			HOOKTYPE_POST,
+			(HookHandlerFn *)&CCollisionManager::ExitScope
+		);
+	}
+
+	m_mapHooks.clear();
 	m_bInitialized = false;
 }
 
@@ -123,7 +132,7 @@ void CCollisionManager::UnregisterHash(ICollisionHash *pHash)
 }
 
 template<typename T>
-CHook *CCollisionManager::GetHook(T tFunc, const char *szDebugName)
+void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, unsigned int uiMaskIndex, const char *szDebugName)
 {
 	CFunctionInfo *pInfo = GetFunctionInfo(tFunc);
 	if (!pInfo) {
@@ -160,13 +169,7 @@ CHook *CCollisionManager::GetHook(T tFunc, const char *szDebugName)
 	}
 
 	delete pFunc;
-	return pHook;
-}
 
-template<typename T>
-void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, unsigned int uiMaskIndex, const char *szDebugName)
-{
-	CHook *pHook = GetHook(tFunc, szDebugName);
 	CollisionHooksMap_t::const_iterator it = m_mapHooks.find(pHook);
 	if (it != m_mapHooks.end()) {
 		BOOST_RAISE_EXCEPTION(
@@ -190,32 +193,6 @@ void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, unsign
 		HOOKTYPE_POST,
 		(HookHandlerFn *)&CCollisionManager::ExitScope
 	);
-}
-
-template<typename T>
-void CCollisionManager::UnregisterHook(T tFunc, const char *szDebugName)
-{
-	CHook *pHook = GetHook(tFunc, szDebugName);
-	CollisionHooksMap_t::const_iterator it = m_mapHooks.find(pHook);
-	if (it == m_mapHooks.end()) {
-		BOOST_RAISE_EXCEPTION(
-			PyExc_RuntimeError,
-			"Collision hook \"%s\" is not registered.",
-			szDebugName
-		)
-	}
-
-	pHook->RemoveCallback(
-		HOOKTYPE_PRE,
-		(HookHandlerFn *)&CCollisionManager::EnterScope
-	);
-
-	pHook->RemoveCallback(
-		HOOKTYPE_POST,
-		(HookHandlerFn *)&CCollisionManager::ExitScope
-	);
-
-	m_mapHooks.erase(it);
 }
 
 bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
