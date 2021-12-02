@@ -38,6 +38,7 @@
 
 // Boost
 #include "boost/unordered_map.hpp"
+#include "boost/unordered_set.hpp"
 
 // SDK
 #include "vphysics/object_hash.h"
@@ -110,15 +111,15 @@ public:
 	ICollisionHash();
 	virtual ~ICollisionHash();
 
-	virtual void AddPair(void *pObject, void *pOther) = 0;
-	virtual void RemovePair(void *pObject, void *pOther) = 0;
-	virtual void RemovePairs(void *pObject) = 0;
+	virtual void AddPair(void *pEntity, void *pOther) = 0;
+	virtual void RemovePair(void *pEntity, void *pOther) = 0;
+	virtual void RemovePairs(void *pEntity) = 0;
 
-	virtual bool IsInHash(void *pObject) = 0;
-	virtual bool HasPair(void *pObject, void *pOther) = 0;
+	virtual bool Contains(void *pEntity) = 0;
+	virtual bool HasPair(void *pEntity, void *pOther) = 0;
 
-	virtual int GetCount(void *pObject) = 0;
-	virtual list GetPairs(void *pObject) = 0;
+	virtual int GetCount(void *pEntity) = 0;
+	virtual list GetPairs(void *pEntity) = 0;
 
 	void UnloadInstance();
 };
@@ -133,15 +134,15 @@ public:
 	CCollisionHash();
 	~CCollisionHash();
 
-	void AddPair(void *pObject, void *pOther);
-	void RemovePair(void *pObject, void *pOther);
-	void RemovePairs(void *pObject);
+	void AddPair(void *pEntity, void *pOther);
+	void RemovePair(void *pEntity, void *pOther);
+	void RemovePairs(void *pEntity);
 
-	bool IsInHash(void *pObject);
-	bool HasPair(void *pObject, void *pOther);
+	bool Contains(void *pEntity);
+	bool HasPair(void *pEntity, void *pOther);
 
-	int GetCount(void *pObject);
-	list GetPairs(void *pObject);
+	int GetCount(void *pEntity);
+	list GetPairs(void *pEntity);
 
 private:
 	IPhysicsObjectPairHash *m_pHash;
@@ -201,7 +202,6 @@ private:
 
 	static bool ShouldHitEntity(IHandleEntity *pHandleEntity, int contentsMask);
 
-	void RefreshCache();
 	CCollisionCache *GetCache(unsigned int uiIndex);
 
 private:
@@ -211,10 +211,12 @@ private:
 	CollisionHooksMap_t m_mapHooks;
 	std::vector<CollisionScope_t> m_vecScopes;
 
+	boost::unordered_set<unsigned long> m_setSolidMasks;
+
 	int m_nTickCount;
 	CollisionCacheMap_t m_mapCache;
 
-	CListenerManager *m_pCollisionListener;
+	CListenerManager *m_pCollisionHooks;
 };
 
 // Singleton accessor.

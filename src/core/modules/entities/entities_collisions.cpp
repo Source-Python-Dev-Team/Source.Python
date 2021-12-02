@@ -52,12 +52,12 @@ CCollisionManager::CCollisionManager():
 	m_uiRefCount(0),
 	m_nTickCount(-1)
 {
-	m_pCollisionListener = new CListenerManager();
+	m_pCollisionHooks = new CListenerManager();
 }
 
 CCollisionManager::~CCollisionManager()
 {
-	delete m_pCollisionListener;
+	delete m_pCollisionHooks;
 }
 
 void CCollisionManager::IncRef()
@@ -88,6 +88,13 @@ void CCollisionManager::Initialize()
 		return;
 	}
 
+	BEGIN_BOOST_PY()
+		static boost::python::tuple oSolidMasks(import("entities.collisions").attr("SOLID_MASKS"));
+		for (int i = 0; i < len(oSolidMasks); i++) {
+			m_setSolidMasks.insert(extract<unsigned long>(object(oSolidMasks[i])));
+		}
+	END_BOOST_PY()
+
 	RegisterHook(&IEngineTrace::TraceRay, 3, 2, "TraceRay");
 	RegisterHook(&IEngineTrace::TraceRayAgainstLeafAndEntityList, 4, 3, "TraceRayAgainstLeafAndEntityList");
 	RegisterHook(&IEngineTrace::SweepCollideable, 6, 5, "SweepCollideable");
@@ -114,6 +121,8 @@ void CCollisionManager::Finalize()
 	}
 
 	m_mapHooks.clear();
+	m_setSolidMasks.clear();
+
 	m_bInitialized = false;
 }
 
@@ -148,13 +157,13 @@ void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
 
 void CCollisionManager::RegisterCollisionHook(object oCallback)
 {
-	m_pCollisionListener->RegisterListener(oCallback.ptr());
+	m_pCollisionHooks->RegisterListener(oCallback.ptr());
 	IncRef();
 }
 
 void CCollisionManager::UnregisterCollisionHook(object oCallback)
 {
-	m_pCollisionListener->UnregisterListener(oCallback.ptr());
+	m_pCollisionHooks->UnregisterListener(oCallback.ptr());
 	DecRef();
 }
 
@@ -225,7 +234,6 @@ void CCollisionManager::RegisterHook(T tFunc, unsigned int uiFilterIndex, unsign
 bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 {
 	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->RefreshCache();
 
 	CollisionScope_t scope;
 	scope.m_bSkip = true;
@@ -235,30 +243,8 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	int nMask = pHook->GetArgument<int>(hookData.m_uiMaskIndex);
 
 	bool bSolidContents = true;
-#if defined(ENGINE_CSGO)
-	if ((nMask & CONTENTS_EMPTY ||
-		nMask & CONTENTS_AUX ||
-		nMask & CONTENTS_GRATE ||
-		nMask & CONTENTS_SLIME ||
-		nMask & CONTENTS_WATER ||
-		nMask & CONTENTS_BLOCKLOS ||
-		nMask & CONTENTS_OPAQUE ||
-		nMask & CONTENTS_IGNORE_NODRAW_OPAQUE ||
-		nMask & CONTENTS_CURRENT_0 || // CONTENTS_BRUSH_PAINT
-		nMask & CONTENTS_DEBRIS ||
-		nMask & CONTENTS_DETAIL ||
-		nMask & CONTENTS_TRANSLUCENT ||
-		nMask & CONTENTS_HITBOX) &&
-		!(nMask & CONTENTS_CURRENT_90 || // CONTENTS_GRENADECLIP
-		nMask & CONTENTS_PLAYERCLIP)
-	) {
-#else
-	if (nMask != MASK_SOLID &&
-		nMask != MASK_PLAYERSOLID &&
-		nMask != MASK_NPCSOLID
-	) {
-#endif
-		if (!pManager->m_pCollisionListener->GetCount()) {
+	if (pManager->m_setSolidMasks.find(nMask) == pManager->m_setSolidMasks.end()) {
+		if (!pManager->m_pCollisionHooks->GetCount()) {
 			pManager->m_vecScopes.push_back(scope);
 			return false;
 		}
@@ -382,15 +368,15 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	object oEntity;
 	object oOther;
 
-	if (pManager->m_pCollisionListener->GetCount()) {
+	if (pManager->m_pCollisionHooks->GetCount()) {
 		oEntity = Entity(scope.m_uiIndex);
 		oOther = Entity(uiIndex);
 
 		object oFilter = object(ptr((ITraceFilter *)scope.m_pFilter));
 
-		FOR_EACH_VEC(pManager->m_pCollisionListener->m_vecCallables, i) {
+		FOR_EACH_VEC(pManager->m_pCollisionHooks->m_vecCallables, i) {
 			BEGIN_BOOST_PY()
-				object oResult = pManager->m_pCollisionListener->m_vecCallables[i](oEntity, oOther, oFilter, scope.m_nMask);
+				object oResult = pManager->m_pCollisionHooks->m_vecCallables[i](oEntity, oOther, oFilter, scope.m_nMask);
 				if (!oResult.is_none() && !extract<bool>(oResult)) {
 					scope.m_pCache->SetResult(uiIndex, false);
 					return false;
@@ -442,22 +428,17 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	return true;
 }
 
-void CCollisionManager::RefreshCache()
-{
-	if (gpGlobals->tickcount == m_nTickCount) {
-		return;
-	}
-
-	for (CollisionCacheMap_t::const_iterator it = m_mapCache.begin(); it != m_mapCache.end(); it++) {
-		delete it->second;
-	}
-
-	m_mapCache.clear();
-	m_nTickCount = gpGlobals->tickcount;
-}
-
 CCollisionCache *CCollisionManager::GetCache(unsigned int uiIndex)
 {
+	if (gpGlobals->tickcount != m_nTickCount) {
+		for (CollisionCacheMap_t::const_iterator it = m_mapCache.begin(); it != m_mapCache.end(); it++) {
+			delete it->second;
+		}
+
+		m_mapCache.clear();
+		m_nTickCount = gpGlobals->tickcount;
+	}
+
 	CollisionCacheMap_t::const_iterator it = m_mapCache.find(uiIndex);
 	if (it != m_mapCache.end()) {
 		return it->second;
@@ -535,65 +516,65 @@ CCollisionHash::~CCollisionHash()
 	physics->DestroyObjectPairHash(m_pHash);
 }
 
-void CCollisionHash::AddPair(void *pObject, void *pOther)
+void CCollisionHash::AddPair(void *pEntity, void *pOther)
 {
-	if (!IsValidNetworkedEntityPointer(pObject) || !IsValidNetworkedEntityPointer(pOther)) {
+	if (!IsValidNetworkedEntityPointer(pEntity) || !IsValidNetworkedEntityPointer(pOther)) {
 		BOOST_RAISE_EXCEPTION(
 			PyExc_ValueError,
 			"Given entity pointer invalid or not networked."
 		)
 	}
 
-	m_pHash->AddObjectPair(pObject, pOther);
+	m_pHash->AddObjectPair(pEntity, pOther);
 }
 
-void CCollisionHash::RemovePair(void *pObject, void *pOther)
+void CCollisionHash::RemovePair(void *pEntity, void *pOther)
 {
-	m_pHash->RemoveObjectPair(pObject, pOther);
+	m_pHash->RemoveObjectPair(pEntity, pOther);
 }
 
-void CCollisionHash::RemovePairs(void *pObject)
+void CCollisionHash::RemovePairs(void *pEntity)
 {
-	m_pHash->RemoveAllPairsForObject(pObject);
+	m_pHash->RemoveAllPairsForObject(pEntity);
 }
 
-bool CCollisionHash::IsInHash(void *pObject)
+bool CCollisionHash::Contains(void *pEntity)
 {
-	return m_pHash->IsObjectInHash(pObject);
+	return m_pHash->IsObjectInHash(pEntity);
 }
 
-bool CCollisionHash::HasPair(void *pObject, void *pOther)
+bool CCollisionHash::HasPair(void *pEntity, void *pOther)
 {
-	return m_pHash->IsObjectPairInHash(pObject, pOther);
+	return m_pHash->IsObjectPairInHash(pEntity, pOther);
 }
 
-int CCollisionHash::GetCount(void *pObject)
+int CCollisionHash::GetCount(void *pEntity)
 {
-	return m_pHash->GetPairCountForObject(pObject);
+	return m_pHash->GetPairCountForObject(pEntity);
 }
 
-list CCollisionHash::GetPairs(void *pObject)
+list CCollisionHash::GetPairs(void *pEntity)
 {
-	list oObjects;
-	int nCount = m_pHash->GetPairCountForObject(pObject);
+	list oEntities;
+	int nCount = m_pHash->GetPairCountForObject(pEntity);
 
 	if (!nCount) {
-		return oObjects;
+		return oEntities;
 	}
 
-	void **ppObjects = (void **)stackalloc(nCount * sizeof(void *));
-	m_pHash->GetPairListForObject(pObject, nCount, ppObjects);
+	void **ppEntities = (void **)stackalloc(nCount * sizeof(void *));
+	m_pHash->GetPairListForObject(pEntity, nCount, ppEntities);
 
 	for (int i = 0; i < nCount; ++i) {
-		pObject = ppObjects[i];
-		if (!pObject) {
+		pEntity = ppEntities[i];
+		if (!pEntity) {
 			continue;
 		}
 
-		oObjects.append(pObject);
+		oEntities.append(pEntity);
 	}
 
-	return oObjects;
+	return oEntities;
 }
 
 

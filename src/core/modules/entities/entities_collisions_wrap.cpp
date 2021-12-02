@@ -87,7 +87,7 @@ void export_base_collision_hash(scope _collisions)
 	BaseCollisionHash.def(
 		"add_pair",
 		&ICollisionHash::AddPair,
-		"Adds the given pair to the hash."
+		"Adds the given entity pair to the hash."
 	);
 
 	BaseCollisionHash.def(
@@ -99,32 +99,32 @@ void export_base_collision_hash(scope _collisions)
 	BaseCollisionHash.def(
 		"remove_pairs",
 		&ICollisionHash::RemovePairs,
-		"Removes all pair associated with the given object."
+		"Removes all pairs associated with the given entity."
 	);
 
 	BaseCollisionHash.def(
 		"has_pair",
 		&ICollisionHash::HasPair,
-		"Returns whether the given pairs is in the hash."
+		"Returns whether the given pair is in the hash."
 	);
 
 	BaseCollisionHash.def(
 		"get_count",
 		&ICollisionHash::GetCount,
-		"Returns the amount of pairs associated with the given object."
+		"Returns the amount of pairs associated with the given entity."
 	);
 
 	BaseCollisionHash.def(
 		"get_pairs",
 		&ICollisionHash::GetPairs,
-		"Returns a list of all objects associated with the given object."
+		"Returns a list of all entities associated with the given entity."
 	);
 
 	// Special methods...
 	BaseCollisionHash.def(
 		"__contains__",
-		&ICollisionHash::IsInHash,
-		"Returns whether the given object is in the hash."
+		&ICollisionHash::Contains,
+		"Returns whether the given entity is in the hash."
 	);
 
 	// AutoUnload...

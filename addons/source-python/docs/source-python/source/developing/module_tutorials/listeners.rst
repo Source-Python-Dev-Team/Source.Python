@@ -324,6 +324,23 @@ Called when a networked entity has been spawned.
         pass
 
 
+OnEntityCollision
+-----------------
+
+Called when an entity is about to collide with another.
+
+.. note:: This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash` if you don't have dynamic conditions to test for.
+
+.. code-block:: python
+
+    from listeners import OnEntityCollision
+
+    @OnEntityCollision
+    def on_entity_collision(entity, other):
+        # Disable teammates collisions
+        return entity.team_index != other.team_index
+
+
 OnLevelInit
 -----------
 
