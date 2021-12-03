@@ -28,12 +28,15 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "listeners_manager.h"
+#include "sp_main.h"
+#include "utilities/sp_util.h"
 
 
 //-----------------------------------------------------------------------------
 // External variables.
 //-----------------------------------------------------------------------------
 extern ICvar* g_pCVar;
+extern CServerOutputListenerManager* GetOnServerOutputListenerManager();
 
 
 //-----------------------------------------------------------------------------
@@ -193,6 +196,128 @@ void CConVarChangedListenerManager::Initialize()
 void CConVarChangedListenerManager::Finalize()
 {
 	g_pCVar->RemoveGlobalChangeCallback(ConVarChangedCallback);
+}
+
+
+//-----------------------------------------------------------------------------
+// Server output hook.
+//-----------------------------------------------------------------------------
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
+SpewRetval_t SP_SpewOutput( SpewType_t spewType, const tchar *pMsg )
+{
+	static CServerOutputListenerManager *pManager = GetOnServerOutputListenerManager();
+
+	if (!pManager->CallCallbacks((MessageSeverity)spewType, pMsg) && pManager->m_pOldSpewOutputFunc) {
+		return pManager->m_pOldSpewOutputFunc(spewType, pMsg);
+	}
+
+	return SPEW_CONTINUE;
+}
+#else
+class SPLoggingListener: public ILoggingListener
+{
+public:
+	virtual void Log( const LoggingContext_t *pContext, const tchar *pMessage )
+	{
+		static CServerOutputListenerManager *pManager = GetOnServerOutputListenerManager();
+
+		if (!pManager->CallCallbacks((MessageSeverity)pContext->m_Severity, pMessage))
+		{
+			// Restore the old logging state before SP has been loaded
+			LoggingSystem_PopLoggingState(false);
+
+			// Resend the log message. Our listener won't get called anymore
+			LoggingSystem_LogDirect(
+					pContext->m_ChannelID,
+					pContext->m_Severity,
+					pContext->m_Color,
+					pMessage);
+
+			// Create a new logging state with only our listener being active
+#if defined(ENGINE_LEFT4DEAD2)
+			LoggingSystem_PushLoggingState(false);
+#else
+			LoggingSystem_PushLoggingState(false, true);
+#endif
+			LoggingSystem_RegisterLoggingListener(this);
+
+		}
+	}
+} g_LoggingListener;
+
+#endif
+
+
+//-----------------------------------------------------------------------------
+// CServerOutputListenerManager constructor.
+//-----------------------------------------------------------------------------
+CServerOutputListenerManager::CServerOutputListenerManager()
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
+	:m_pOldSpewOutputFunc(NULL)
+#endif
+{
+}
+
+
+//-----------------------------------------------------------------------------
+// Called when the first callback is being registered.
+//-----------------------------------------------------------------------------
+void CServerOutputListenerManager::Initialize()
+{
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
+	DevMsg(1, MSG_PREFIX "Retrieving old output function...\n");
+	m_pOldSpewOutputFunc = GetSpewOutputFunc();
+
+	DevMsg(1, MSG_PREFIX "Setting new output function...\n");
+	SpewOutputFunc(SP_SpewOutput);
+#else
+	DevMsg(1, MSG_PREFIX "Registering logging listener...\n");
+#if defined(ENGINE_LEFT4DEAD2)
+	LoggingSystem_PushLoggingState(false);
+#else
+	LoggingSystem_PushLoggingState(false, true);
+#endif
+	LoggingSystem_RegisterLoggingListener(&g_LoggingListener);
+#endif
+}
+
+
+//-----------------------------------------------------------------------------
+// Called when the last callback is being unregistered.
+//-----------------------------------------------------------------------------
+void CServerOutputListenerManager::Finalize()
+{
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
+	if (m_pOldSpewOutputFunc) {
+		DevMsg(1, MSG_PREFIX "Restoring old output function...\n");
+		SpewOutputFunc(m_pOldSpewOutputFunc);
+	}
+#else
+	DevMsg(1, MSG_PREFIX "Restoring old logging state...\n");
+	LoggingSystem_PopLoggingState(false);
+#endif
+}
+
+
+//-----------------------------------------------------------------------------
+// Calls all registered server output callbacks.
+//-----------------------------------------------------------------------------
+bool CServerOutputListenerManager::CallCallbacks(MessageSeverity severity, const tchar *pMsg)
+{
+	bool block = false;
+	m_Mutex.Lock(); {
+		FOR_EACH_VEC(m_vecCallables, i) {
+			try {
+				object return_value = m_vecCallables[i](severity, pMsg);
+
+				if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
+					block = true;
+			} catch (...) {
+				PrintCurrentException(false);
+			}
+		}
+	} m_Mutex.Unlock();
+	return block;
 }
 
 

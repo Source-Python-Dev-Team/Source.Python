@@ -46,13 +46,16 @@ using namespace boost::python;
 //-----------------------------------------------------------------------------
 #define MAX_CHUNK 1024
 
-inline void ChunkedMsg(const char* msg)
+inline void ChunkedMsg(const char* msg, bool bLogged = true)
 {
 	char* pMsg = (char*) msg;
 	int iLen = strlen(msg);
 
 	while(iLen > 0) {
-		Msg("%s", pMsg);
+		if (bLogged)
+			Msg("%s", pMsg);
+		else
+			printf("%s", pMsg);
 		pMsg += MAX_CHUNK-1;
 		iLen -= MAX_CHUNK-1;
 	}
@@ -61,7 +64,7 @@ inline void ChunkedMsg(const char* msg)
 //-----------------------------------------------------------------------------
 // Prints and clear the current exception.
 //-----------------------------------------------------------------------------
-inline void PrintCurrentException()
+inline void PrintCurrentException(bool bLogged = true)
 {
 	if (PyErr_Occurred())
 	{
@@ -79,7 +82,7 @@ inline void PrintCurrentException()
 		const char* pMsg = extract<const char *>(str("\n").join(format_exception(hType, hValue, hTraceback)));
 
 		// Send the message in chunks, because it can get quite big.
-		ChunkedMsg(pMsg);
+		ChunkedMsg(pMsg, bLogged);
 
 		PyErr_Clear();
 	}

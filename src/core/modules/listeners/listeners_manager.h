@@ -30,10 +30,16 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// Source.Python
 #include "utilities/wrap_macros.h"
-#include "utlvector.h"
+#include "utilities/baseentity.h"
+#include "modules/core/core.h"
 
+// SDK
+#include "utlvector.h"
 #include "convar.h"
+#include "dbg.h"
+#include "tier0/threadtools.h"
 
 
 //-----------------------------------------------------------------------------
@@ -109,6 +115,28 @@ class CConVarChangedListenerManager: public CListenerManager
 public:
 	virtual void Initialize();
 	virtual void Finalize();
+};
+
+
+//-----------------------------------------------------------------------------
+// CServerOutputListenerManager class.
+//-----------------------------------------------------------------------------
+class CServerOutputListenerManager: public CListenerManager
+{
+public:
+	CServerOutputListenerManager();
+
+	virtual void Initialize();
+	virtual void Finalize();
+
+	bool CallCallbacks(MessageSeverity severity, const tchar *pMsg);
+
+public:
+	CThreadMutex m_Mutex;
+
+#if defined(ENGINE_ORANGEBOX) || defined(ENGINE_BMS) || defined(ENGINE_GMOD)
+	SpewOutputFunc_t m_pOldSpewOutputFunc;
+#endif
 };
 
 
