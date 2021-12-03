@@ -76,6 +76,32 @@ public:
 			make_tuple(ptr(pClient), reason)
 		);
 	}
+
+#if !defined(ENGINE_BLADE) && !defined(ENGINE_CSGO) && !defined(ENGINE_LEFT4DEAD2)
+	static bool IsHumanPlayer(IClient* pClient)
+	{
+		if (!pClient->IsConnected() || pClient->IsFakeClient() || pClient->IsHLTV())
+			return false;
+
+		return true;
+	}
+#endif
+
+	static bool IsHearingClient(IClient* pClient, IClient* pSender)
+	{
+		if (!pSender)
+			return false;
+
+		return pClient->IsHearingClient(pSender->GetPlayerSlot());
+	}
+
+	static bool IsProximityHearingClient(IClient* pClient, IClient* pSender)
+	{
+		if (!pSender)
+			return false;
+
+		return pClient->IsProximityHearingClient(pSender->GetPlayerSlot());
+	}
 };
 
 
