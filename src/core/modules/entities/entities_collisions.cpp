@@ -301,6 +301,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	scope.m_nMask = nMask;
 	scope.m_bSolidContents = bSolidContents;
 	scope.m_uiIndex = uiIndex;
+	scope.m_bIsPlayer = ((CBaseEntityWrapper *)pWrapper->m_pPassEnt)->IsPlayer();
 	scope.m_pCache = pManager->GetCache(uiIndex);
 	scope.m_pExtraShouldHitCheckFunction = pWrapper->m_pExtraShouldHitCheckFunction;
 	pWrapper->m_pExtraShouldHitCheckFunction = (ShouldHitFunc_t)CCollisionManager::ShouldHitEntity;
@@ -400,8 +401,31 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		}
 	}
 
-	static CEntityCollisionListenerManager *pListener = GetOnEntityCollisionListenerManager();
-	if (!pListener->GetCount()) {
+	if (scope.m_bIsPlayer) {
+		static CPlayerCollisionListenerManager *OnPlayerCollision = GetOnPlayerCollisionListenerManager();
+		if (!OnPlayerCollision->GetCount()) {
+			scope.m_pCache->SetResult(uiIndex, true);
+			return true;
+		}
+
+		static object Player = import("players.entity").attr("Player");
+		object oPlayer = Player(scope.m_uiIndex);
+
+		if (oOther.is_none()) {
+			oOther = Entity(uiIndex);
+		}
+
+		if (!OnPlayerCollision->CallCallbacks(oPlayer, oOther)) {
+			scope.m_pCache->SetResult(uiIndex, false);
+			return false;
+		}
+
+		scope.m_pCache->SetResult(uiIndex, true);
+		return true;
+	}
+
+	static CEntityCollisionListenerManager *OnEntityCollision = GetOnEntityCollisionListenerManager();
+	if (!OnEntityCollision->GetCount()) {
 		scope.m_pCache->SetResult(uiIndex, true);
 		return true;
 	}
@@ -414,14 +438,9 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		oOther = Entity(uiIndex);
 	}
 
-	FOR_EACH_VEC(pListener->m_vecCallables, i) {
-		BEGIN_BOOST_PY()
-			object oResult = pListener->m_vecCallables[i](oEntity, oOther);
-			if (!oResult.is_none() && !extract<bool>(oResult)) {
-				scope.m_pCache->SetResult(uiIndex, false);
-				return false;
-			}
-		END_BOOST_PY_NORET()
+	if (!OnEntityCollision->CallCallbacks(oEntity, oOther)) {
+		scope.m_pCache->SetResult(uiIndex, false);
+		return false;
 	}
 
 	scope.m_pCache->SetResult(uiIndex, true);
@@ -579,15 +598,15 @@ list CCollisionHash::GetPairs(void *pEntity)
 
 
 //-----------------------------------------------------------------------------
-// CEntityCollisionListenerManager class.
+// CCollisionListenerManager class.
 //-----------------------------------------------------------------------------
-CEntityCollisionListenerManager::CEntityCollisionListenerManager():
+CCollisionListenerManager::CCollisionListenerManager():
 	m_bInitialized(false)
 {
 
 }
 
-void CEntityCollisionListenerManager::Initialize()
+void CCollisionListenerManager::Initialize()
 {
 	if (m_bInitialized) {
 		return;
@@ -597,7 +616,7 @@ void CEntityCollisionListenerManager::Initialize()
 	m_bInitialized = true;
 }
 
-void CEntityCollisionListenerManager::Finalize()
+void CCollisionListenerManager::Finalize()
 {
 	if (!m_bInitialized) {
 		return;
@@ -607,9 +626,36 @@ void CEntityCollisionListenerManager::Finalize()
 	m_bInitialized = false;
 }
 
-// Singleton accessor.
+bool CCollisionListenerManager::CallCallbacks(object oEntity, object oOther)
+{
+	FOR_EACH_VEC(m_vecCallables, i) {
+		BEGIN_BOOST_PY()
+			object oResult = m_vecCallables[i](oEntity, oOther);
+			if (!oResult.is_none() && !extract<bool>(oResult)) {
+				return false;
+			}
+		END_BOOST_PY_NORET()
+	}
+
+	return true;
+}
+
+
+//-----------------------------------------------------------------------------
+// CEntityCollisionListenerManager singleton accessor.
+//-----------------------------------------------------------------------------
 static CEntityCollisionListenerManager s_OnEntityCollision;
 CEntityCollisionListenerManager *GetOnEntityCollisionListenerManager()
 {
 	return &s_OnEntityCollision;
+}
+
+
+//-----------------------------------------------------------------------------
+// CPlayerCollisionListenerManager singleton accessor.
+//-----------------------------------------------------------------------------
+static CPlayerCollisionListenerManager s_OnPlayerCollision;
+CPlayerCollisionListenerManager *GetOnPlayerCollisionListenerManager()
+{
+	return &s_OnPlayerCollision;
 }

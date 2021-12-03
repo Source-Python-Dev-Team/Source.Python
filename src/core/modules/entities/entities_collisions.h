@@ -33,6 +33,7 @@
 // Source.Python
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
+#include "modules/entities/entities_entity.h"
 #include "modules/physics/physics.h"
 #include "modules/memory/memory_hooks.h"
 
@@ -84,6 +85,7 @@ struct CollisionScope_t
 {
 	bool m_bSkip;
 	unsigned int m_uiIndex;
+	bool m_bIsPlayer;
 	CTraceFilterSimpleWrapper *m_pFilter;
 	ShouldHitFunc_t m_pExtraShouldHitCheckFunction;
 	CCollisionCache *m_pCache;
@@ -171,7 +173,7 @@ class CCollisionManager
 {
 public:
 	friend CCollisionManager *GetCollisionManager();
-	friend class CEntityCollisionListenerManager;
+	friend class CCollisionListenerManager;
 
 private:
 	CCollisionManager();
@@ -228,22 +230,45 @@ inline CCollisionManager *GetCollisionManager()
 
 
 //-----------------------------------------------------------------------------
-// CEntityCollisionListenerManager class.
+// CCollisionListenerManager class.
 //-----------------------------------------------------------------------------
-class CEntityCollisionListenerManager: public CListenerManager
+class CCollisionListenerManager : public CListenerManager
 {
 public:
-	CEntityCollisionListenerManager();
+	CCollisionListenerManager();
 
 	void Initialize();
 	void Finalize();
+
+	bool CallCallbacks(object oEntity, object oOther);
 
 private:
 	bool m_bInitialized;
 };
 
+
+//-----------------------------------------------------------------------------
+// CEntityCollisionListenerManager class.
+//-----------------------------------------------------------------------------
+class CEntityCollisionListenerManager: public CCollisionListenerManager
+{
+
+};
+
 // Singleton accessor.
 CEntityCollisionListenerManager *GetOnEntityCollisionListenerManager();
+
+
+//-----------------------------------------------------------------------------
+// CPlayerCollisionListenerManager class.
+//-----------------------------------------------------------------------------
+class CPlayerCollisionListenerManager: public CCollisionListenerManager
+{
+
+};
+
+// Singleton accessor.
+CPlayerCollisionListenerManager *GetOnPlayerCollisionListenerManager();
 
 
 #endif // _ENTITIES_COLLISIONS_H

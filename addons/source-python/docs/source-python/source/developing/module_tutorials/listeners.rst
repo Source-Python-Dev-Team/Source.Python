@@ -327,7 +327,7 @@ Called when a networked entity has been spawned.
 OnEntityCollision
 -----------------
 
-Called when an entity is about to collide with another.
+Called when a non-player entity is about to collide with another entity.
 
 .. note:: This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash` if you don't have dynamic conditions to test for.
 
@@ -337,8 +337,8 @@ Called when an entity is about to collide with another.
 
     @OnEntityCollision
     def on_entity_collision(entity, other):
-        # Disable teammates collisions
-        return entity.team_index != other.team_index
+        # Disable weapons/projectiles collisions with everything except players
+        return not (entity.is_weapon() and not other.is_player())
 
 
 OnLevelInit
@@ -421,6 +421,25 @@ Called when the button state of a player changed.
 
     Use :func:`listeners.get_button_combination_status` to check if a specific
     button or button combination has been pressed or released.
+
+
+OnPlayerCollision
+-----------------
+
+Called when a player is about to collide with an entity.
+
+.. note:: This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash` if you don't have dynamic conditions to test for.
+
+.. code-block:: python
+
+    from listeners import OnPlayerCollision
+
+    @OnPlayerCollision
+    def on_player_collision(player, entity):
+        # Disable teammates collisions
+        if not entity.is_player():
+            return
+        return player.team_index != entity.team_index
 
 
 OnPlayerRunCommand
