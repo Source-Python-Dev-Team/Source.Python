@@ -18,6 +18,7 @@ import textwrap
 from auth.manager import auth_manager
 #   Core
 from core import AutoUnload
+from core import Tokenize
 #   Commands
 from commands import commands_logger
 from commands import CommandReturn
@@ -449,7 +450,7 @@ class CommandParser(Store):
             passed.
         :rtype: tuple
         """
-        args = list(command)
+        args = Tokenize(command.command_string)
         store = self
         while args and isinstance(store, Store):
             sub_command = args.pop(0).lower()
