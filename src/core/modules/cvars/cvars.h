@@ -37,33 +37,6 @@
 
 
 //-----------------------------------------------------------------------------
-// ICvar shared extension class.
-//-----------------------------------------------------------------------------
-class ICVarSharedExt
-{
-public:
-	static ConVar *FindVar(ICvar *pCVar, const char *szName)
-	{
-		ConCommandBase *pBase = pCVar->FindCommandBase(szName);
-		if (pBase)
-		{
-			if (pBase->IsCommand()) {
-				CServerCommandManager *pManager = dynamic_cast<CServerCommandManager *>(pBase);
-				if (pManager && pManager->m_pOldCommand && !pManager->m_pOldCommand->IsCommand()) {
-					return static_cast<ConVar *>(pManager->m_pOldCommand);
-				}
-			}
-			else {
-				return static_cast<ConVar *>(pBase);
-			}
-		}
-
-		return NULL;
-	};
-};
-
-
-//-----------------------------------------------------------------------------
 // ConVar extension class.
 //-----------------------------------------------------------------------------
 class ConVarExt
@@ -92,32 +65,25 @@ public:
 			PyErr_Clear();
 		}
 
-		ConVar *pConVar = ICVarSharedExt::FindVar(g_pCVar, name);
+		ConCommandBase *pBase = g_pCVar->FindCommandBase(name);
+		if (pBase && pBase->IsCommand()) {
+			BOOST_RAISE_EXCEPTION(
+				PyExc_ValueError,
+				"Failed to create ConVar(\"%s\") because a ConCommand with the same name already exists.",
+				name
+			)
+		}
+
+		ConVar *pConVar = static_cast<ConVar *>(pBase);
 		if (!pConVar)
 		{
 			ConVar* pConVar = new ConVar(strdup(name), strdup(value), flags,
 				strdup(description), !min_value.is_none(), fMin, !max_value.is_none(), fMax);
 
-			return boost::shared_ptr<ConVar>(pConVar, &Deleter);
+			return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
 		}
 
 		return boost::shared_ptr<ConVar>(pConVar, &NeverDeleteDeleter<ConVar *>);
-	}
-
-	static void Deleter(ConVar *pConVar)
-	{
-		ConCommandBase *pBase = g_pCVar->FindCommandBase(pConVar->GetName());
-		if (pBase) {
-			CServerCommandManager *pManager = dynamic_cast<CServerCommandManager *>(pBase);
-			if (pManager && pManager->m_pOldCommand == pConVar) {
-				pManager->m_pOldCommand = NULL;
-			}
-			else if (pBase == pConVar) {
-				g_pCVar->UnregisterConCommand(pConVar);
-			}
-		}
-
-		delete pConVar;
 	}
 
 	static bool HasMin(ConVar* pConVar)
