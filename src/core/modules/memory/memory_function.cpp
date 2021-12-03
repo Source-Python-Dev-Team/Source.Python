@@ -259,13 +259,13 @@ void CallHelperVoid(DCCallVM* vm, unsigned long addr)
 	EXCEPT_SEGV()
 }
 
-object CFunction::Call(tuple args, dict kw)
+object CFunction::Call(PyObject *args, PyObject *kw)
 {
 	if (!IsCallable())
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Function is not callable.")
 
 	Validate();
-	if (len(args) != len(m_tArgs))
+	if (PyTuple_GET_SIZE(args) - 1 != len(m_tArgs))
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Number of passed arguments is not equal to the required number.")
 
 	// Reset VM and set the calling convention
@@ -273,10 +273,10 @@ object CFunction::Call(tuple args, dict kw)
 	dcMode(g_pCallVM, m_iCallingConvention);
 
 	// Loop through all passed arguments and add them to the VM
-	for(int i=0; i < len(args); i++)
+	for(int i=1; i < PyTuple_GET_SIZE(args); i++)
 	{
-		object arg = args[i];
-		switch(extract<DataType_t>(m_tArgs[i]))
+		PyObject *arg = PyTuple_GET_ITEM(args, i);
+		switch(extract<DataType_t>(m_tArgs[i - 1]))
 		{
 			case DATA_TYPE_BOOL:		dcArgBool(g_pCallVM, extract<bool>(arg)); break;
 			case DATA_TYPE_CHAR:		dcArgChar(g_pCallVM, extract<char>(arg)); break;
@@ -294,8 +294,8 @@ object CFunction::Call(tuple args, dict kw)
 			case DATA_TYPE_POINTER:
 			{
 				unsigned long ulAddr = 0;
-				if (arg.ptr() != Py_None)
-					ulAddr = ExtractAddress(arg);
+				if (arg != Py_None)
+					ulAddr = ExtractAddress(object(handle<>(borrowed(arg))));
 
 				dcArgPointer(g_pCallVM, ulAddr);
 				break;
@@ -336,7 +336,7 @@ object CFunction::Call(tuple args, dict kw)
 	return object();
 }
 
-object CFunction::CallTrampoline(tuple args, dict kw)
+object CFunction::CallTrampoline(PyObject *args, PyObject *kw)
 {
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (!pHook)
@@ -346,7 +346,7 @@ object CFunction::CallTrampoline(tuple args, dict kw)
 		m_iCallingConvention, m_tArgs, m_eReturnType, m_oConverter).Call(args, kw);
 }
 
-object CFunction::SkipHooks(tuple args, dict kw)
+object CFunction::SkipHooks(PyObject *args, PyObject *kw)
 {
 	CHook* pHook = GetHookManager()->FindHook((void *) m_ulAddr);
 	if (pHook)

@@ -30,6 +30,7 @@
 // Includes
 //---------------------------------------------------------------------------------
 #include "boost/function.hpp"
+#include "boost/function_types/parameter_types.hpp"
 #include "boost/python.hpp"
 using namespace boost::python;
 
@@ -208,6 +209,39 @@ object raw_method(T func, int min_args = 0)
 	return boost::python::detail::make_raw_function(
 		objects::py_function(
 			raw_method_dispatcher(make_function(func)),
+			boost::mpl::vector1<PyObject *>(),
+			min_args + 1,
+			(std::numeric_limits<unsigned>::max)()
+		)
+	);
+}
+
+template<class T, typename U>
+struct very_raw_method_dispatcher
+{
+public:
+	very_raw_method_dispatcher(T func):
+		func(func)
+	{
+	}
+
+	PyObject *operator()(PyObject *args, PyObject *kwargs)
+	{
+		return incref((extract<U &>(PyTuple_GET_ITEM(args, 0))().*func)(args, kwargs).ptr());
+	}
+
+private:
+	T func;
+};
+
+template<class T>
+object very_raw_method(T func, int min_args = 0)
+{
+	return boost::python::detail::make_raw_function(
+		objects::py_function(
+			very_raw_method_dispatcher<
+				T, boost::mpl::at_c<boost::function_types::parameter_types<T>, 0>::type
+			>(func),
 			boost::mpl::vector1<PyObject *>(),
 			min_args + 1,
 			(std::numeric_limits<unsigned>::max)()
