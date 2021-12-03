@@ -29,7 +29,6 @@ from _entities._collisions import collision_manager
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'SOLID_MASKS',
     'BaseCollisionHash',
     'CollisionHash',
     'CollisionHook',
@@ -44,30 +43,6 @@ __all__ = [
 # Inject AutoUnload into BaseCollisionHash's hierarchy.
 if not issubclass(BaseCollisionHash, AutoUnload):
     BaseCollisionHash.__bases__ = (AutoUnload,) + BaseCollisionHash.__bases__
-
-
-# =============================================================================
-# >> GLOBAL VARIABLES
-# =============================================================================
-#: Masks that are considered solid.
-SOLID_MASKS = (
-    ContentMasks.SOLID,
-    ContentMasks.PLAYER_SOLID,
-    ContentMasks.NPC_SOLID,
-
-    # Teams
-    ContentMasks.PLAYER_SOLID | ContentFlags.TEAM1,
-    ContentMasks.PLAYER_SOLID | ContentFlags.TEAM2,
-)
-
-# Assign masks that are considered solid for the current game.
-if GAME_NAME == 'csgo':
-    SOLID_MASKS += (
-        # Projectiles
-        (ContentFlags.CURRENT_90 | ContentMasks.SOLID |
-            ContentMasks.VISIBLE_AND_NPCS | ContentFlags.HITBOX
-        ) & ~ContentFlags.DEBRIS,
-    )
 
 
 # =============================================================================

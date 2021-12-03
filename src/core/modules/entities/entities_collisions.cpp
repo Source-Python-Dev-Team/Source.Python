@@ -88,13 +88,6 @@ void CCollisionManager::Initialize()
 		return;
 	}
 
-	BEGIN_BOOST_PY()
-		static boost::python::tuple oSolidMasks(import("entities.collisions").attr("SOLID_MASKS"));
-		for (int i = 0; i < len(oSolidMasks); i++) {
-			m_setSolidMasks.insert(extract<unsigned long>(object(oSolidMasks[i])));
-		}
-	END_BOOST_PY()
-
 	RegisterHook(&IEngineTrace::TraceRay, 3, 2, "TraceRay");
 	RegisterHook(&IEngineTrace::TraceRayAgainstLeafAndEntityList, 4, 3, "TraceRayAgainstLeafAndEntityList");
 	RegisterHook(&IEngineTrace::SweepCollideable, 6, 5, "SweepCollideable");
@@ -121,7 +114,6 @@ void CCollisionManager::Finalize()
 	}
 
 	m_mapHooks.clear();
-	m_setSolidMasks.clear();
 
 	m_bInitialized = false;
 }
@@ -148,6 +140,18 @@ void CCollisionManager::UnregisterHash(ICollisionHash *pHash)
 	DecRef();
 }
 
+void CCollisionManager::OnNetworkedEntityCreated(object oEntity)
+{
+	BEGIN_BOOST_PY()
+		unsigned int uiMask = extract<unsigned long>(oEntity.attr("get_solid_mask")());
+		if (m_setSolidMasks.find(uiMask) == m_setSolidMasks.end()) {
+			m_setSolidMasks.insert(uiMask);
+			m_setSolidMasks.insert(uiMask | CONTENTS_TEAM1);
+			m_setSolidMasks.insert(uiMask | CONTENTS_TEAM2);
+		}
+	END_BOOST_PY()
+}
+
 void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
 {
 	FOR_EACH_VEC(m_vecHashes, i) {
@@ -165,6 +169,22 @@ void CCollisionManager::UnregisterCollisionHook(object oCallback)
 {
 	m_pCollisionHooks->UnregisterListener(oCallback.ptr());
 	DecRef();
+}
+
+list CCollisionManager::GetSolidMasks()
+{
+	list oMasks;
+
+	if (!m_setSolidMasks.size()) {
+		return oMasks;
+	}
+
+	static object ContentFlags = import("engines").attr("trace").attr("ContentFlags");
+	for (boost::unordered_set<unsigned long>::const_iterator it=m_setSolidMasks.begin(); it != m_setSolidMasks.end(); it++) {
+		oMasks.append(ContentFlags(*it));
+	}
+
+	return oMasks;
 }
 
 template<typename T>

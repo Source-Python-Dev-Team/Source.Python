@@ -647,16 +647,20 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 
 	CALL_LISTENERS(OnEntityCreated, ptr((CBaseEntityWrapper*) pEntity));
 
-	GET_LISTENER_MANAGER(OnNetworkedEntityCreated, on_networked_entity_created_manager);
-	if (!on_networked_entity_created_manager->GetCount())
-		return;
-
 	unsigned int uiIndex;
 	if (!IndexFromBaseEntity(pEntity, uiIndex))
 		return;
 
 	static object Entity = import("entities").attr("entity").attr("Entity");
-	CALL_LISTENERS_WITH_MNGR(on_networked_entity_created_manager, Entity(uiIndex));
+	object oEntity = Entity(uiIndex);
+	
+	GET_LISTENER_MANAGER(OnNetworkedEntityCreated, on_networked_entity_created_manager);
+	if (on_networked_entity_created_manager->GetCount()) {
+		CALL_LISTENERS_WITH_MNGR(on_networked_entity_created_manager, oEntity);
+	}
+
+	static CCollisionManager *pCollisionManager = GetCollisionManager();
+	pCollisionManager->OnNetworkedEntityCreated(oEntity);
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )

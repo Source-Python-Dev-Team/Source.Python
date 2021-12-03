@@ -186,10 +186,13 @@ public:
 	void RegisterHash(ICollisionHash *pHash);
 	void UnregisterHash(ICollisionHash *pHash);
 
+	void OnNetworkedEntityCreated(object oEntity);
 	void OnNetworkedEntityDeleted(CBaseEntity *pEntity);
 
 	void RegisterCollisionHook(object oCallback);
 	void UnregisterCollisionHook(object oCallback);
+
+	list GetSolidMasks();
 
 protected:
 	void IncRef();

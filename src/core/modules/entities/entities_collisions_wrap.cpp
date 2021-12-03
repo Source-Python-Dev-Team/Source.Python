@@ -71,6 +71,13 @@ void export_collision_manager(scope _collisions)
 		"Unregisters a collision hook."
 	);
 
+	// Properties...
+	CollisionManager.add_property(
+		"solid_masks",
+		&CCollisionManager::GetSolidMasks,
+		"Returns a list containing the masks that are currently considered solid."
+	);
+
 	// Singleton...
 	_collisions.attr("collision_manager") = object(ptr(GetCollisionManager()));
 }
