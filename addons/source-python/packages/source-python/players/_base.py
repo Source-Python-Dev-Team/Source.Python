@@ -222,7 +222,6 @@ class Player(PlayerMixin, Entity):
         """
         return self.playerinfo.is_fake_client()
 
-    @cached_result
     def is_hltv(self):
         """Return whether the player is HLTV.
 
