@@ -240,7 +240,7 @@ object very_raw_method(T func, int min_args = 0)
 	return boost::python::detail::make_raw_function(
 		objects::py_function(
 			very_raw_method_dispatcher<
-				T, boost::mpl::at_c<boost::function_types::parameter_types<T>, 0>::type
+				T, typename boost::mpl::at_c<boost::function_types::parameter_types<T>, 0>::type
 			>(func),
 			boost::mpl::vector1<PyObject *>(),
 			min_args + 1,
