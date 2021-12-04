@@ -6,12 +6,7 @@
 # >> IMPORTS
 # =============================================================================
 # Source.Python Imports
-#   Core
-from core import AutoUnload
 #   Cvars
-from _cvars import ConVar
-from _cvars import SP_CVAR_DLL_IDENTIFIER
-from _cvars import _Cvar
 from cvars.flags import ConVarFlags
 
 
@@ -21,6 +16,9 @@ from cvars.flags import ConVarFlags
 # Source.Python Imports
 #   Cvars
 from _cvars import cvar
+from _cvars import ConVar
+from _cvars import SP_CVAR_DLL_IDENTIFIER
+from _cvars import _Cvar
 
 
 # =============================================================================
@@ -30,11 +28,3 @@ __all__ = ('ConVar',
            'SP_CVAR_DLL_IDENTIFIER',
            'cvar',
            )
-
-
-# =============================================================================
-# >> INITIALIZATION
-# =============================================================================
-# Inject AutoUnload into ConVar's inheritance tree so that custom instances
-#   are kept alive until the plugin creating them remains loaded.
-ConVar.__bases__ = (AutoUnload,) + ConVar.__bases__
