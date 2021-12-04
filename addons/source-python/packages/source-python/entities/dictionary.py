@@ -82,7 +82,8 @@ class EntityDictionary(AutoUnload, dict):
         # This is required, because if someone request an entity instance
         # after we invalidated our cache but before the engine processed
         # the deletion we would now have an invalid instance in the cache.
-        if not instance.is_marked_for_deletion():
+        if (not isinstance(instance, Entity) or
+                not instance.is_marked_for_deletion()):
             self[index] = instance
 
         return instance
