@@ -50,6 +50,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 struct CollisionHookData_t;
+class CCollisionTable;
 class CCollisionCache;
 
 
@@ -61,6 +62,9 @@ class CCollisionCache;
 #endif
 
 typedef boost::unordered_map<CHook *, CollisionHookData_t> CollisionHooksMap_t;
+
+typedef CBitVec<MAX_EDICTS> CollisionTable_t;
+typedef boost::unordered_map<unsigned int, boost::shared_ptr<CCollisionTable>> CollisionHashMap_t;
 
 typedef CBitVec<MAX_EDICTS> CollisionCache_t;
 typedef boost::unordered_map<unsigned int, CCollisionCache *> CollisionCacheMap_t;
@@ -105,49 +109,70 @@ struct CollisionHookData_t
 
 
 //-----------------------------------------------------------------------------
-// ICollisionHash class.
+// CCollisionTable class.
 //-----------------------------------------------------------------------------
-class ICollisionHash
+class CCollisionTable : public CollisionTable_t
 {
 public:
-	ICollisionHash();
-	virtual ~ICollisionHash();
+	CCollisionTable(unsigned int uiActivatorIndex, CBaseEntity *pActivator);
 
-	virtual void AddPair(void *pEntity, void *pOther) = 0;
-	virtual void RemovePair(void *pEntity, void *pOther) = 0;
-	virtual void RemovePairs(void *pEntity) = 0;
+	bool __getitem__(unsigned int uiIndex);
+	bool __setitem__(unsigned int uiIndex, bool bDisable);
 
-	virtual bool Contains(void *pEntity) = 0;
-	virtual bool HasPair(void *pEntity, void *pOther) = 0;
+	void Disable(CBaseEntity *pEntity);
+	void Reset(CBaseEntity *pEntity);
+	bool IsDisabled(CBaseEntity *pEntity);
 
-	virtual int GetCount(void *pEntity) = 0;
-	virtual list GetPairs(void *pEntity) = 0;
+	void DisableAll();
 
-	void UnloadInstance();
+	int Count();
+	list GetDisabled();
+
+	unsigned int m_uiActivatorIndex;
+	object m_oActivator;
 };
 
 
 //-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
-class CCollisionHash : public ICollisionHash
+class CCollisionHash
 {
 public:
 	CCollisionHash();
 	~CCollisionHash();
 
-	void AddPair(void *pEntity, void *pOther);
-	void RemovePair(void *pEntity, void *pOther);
-	void RemovePairs(void *pEntity);
+	boost::shared_ptr<CCollisionTable> GetCollisionTable(CBaseEntity *pActivator);
+	boost::shared_ptr<CCollisionTable> GetCollisionTable(unsigned int uiActivatorIndex);
 
-	bool Contains(void *pEntity);
-	bool HasPair(void *pEntity, void *pOther);
+	void DisableFrom(CBaseEntity *pEntity, CBaseEntity *pActivator);
+	void ResetFrom(CBaseEntity *pEntity, CBaseEntity *pActivator);
+	bool IsDisabledFrom(CBaseEntity *pEntity, CBaseEntity *pActivator);
 
-	int GetCount(void *pEntity);
-	list GetPairs(void *pEntity);
+	void Disable(CBaseEntity *pEntity);
+	void Reset(CBaseEntity *pEntity);
+	bool IsDisabled(CBaseEntity *pEntity);
+
+	int CountDisabled(CBaseEntity *pEntity);
+	list GetDisabledActivator(CBaseEntity *pEntity);
+
+	void AddPair(CBaseEntity *pEntity, CBaseEntity *pOther);
+	void RemovePair(CBaseEntity *pEntity, CBaseEntity *pOther);
+	bool HasPair(CBaseEntity *pEntity, CBaseEntity *pOther);
+
+	void RemovePairs(CBaseEntity *pEntity);
+	int CountPairs(CBaseEntity *pEntity);
+	list GetPairs(CBaseEntity *pEntity);
+
+	void Clear();
+
+	bool IsSet(unsigned int uiActivatorIndex, unsigned int uiOtherIndex);
+	void Erase(CBaseEntity *pEntity);
+
+	void UnloadInstance();
 
 private:
-	IPhysicsObjectPairHash *m_pHash;
+	CollisionHashMap_t m_mapHash;
 };
 
 
@@ -183,8 +208,8 @@ public:
 	void Initialize();
 	void Finalize();
 
-	void RegisterHash(ICollisionHash *pHash);
-	void UnregisterHash(ICollisionHash *pHash);
+	void RegisterHash(CCollisionHash *pHash);
+	void UnregisterHash(CCollisionHash *pHash);
 
 	void OnNetworkedEntityCreated(object oEntity);
 	void OnNetworkedEntityDeleted(CBaseEntity *pEntity);
@@ -212,7 +237,7 @@ private:
 private:
 	bool m_bInitialized;
 	unsigned int m_uiRefCount;
-	CUtlVector<ICollisionHash *> m_vecHashes;
+	CUtlVector<CCollisionHash *> m_vecHashes;
 	CollisionHooksMap_t m_mapHooks;
 	std::vector<CollisionScope_t> m_vecScopes;
 

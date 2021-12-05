@@ -36,7 +36,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 static void export_collision_manager(scope);
-static void export_base_collision_hash(scope);
+static void export_collision_table(scope);
 static void export_collision_hash(scope);
 
 
@@ -46,7 +46,7 @@ static void export_collision_hash(scope);
 DECLARE_SP_SUBMODULE(_entities, _collisions)
 {
 	export_collision_manager(_collisions);
-	export_base_collision_hash(_collisions);
+	export_collision_table(_collisions);
 	export_collision_hash(_collisions);
 }
 
@@ -84,61 +84,78 @@ void export_collision_manager(scope _collisions)
 
 
 //-----------------------------------------------------------------------------
-// Exports ICollisionHash.
+// Exports CCollisionTable.
 //-----------------------------------------------------------------------------
-void export_base_collision_hash(scope _collisions)
+void export_collision_table(scope _collisions)
 {
-	class_<ICollisionHash, boost::noncopyable> BaseCollisionHash("BaseCollisionHash", no_init);
+	class_<CCollisionTable, boost::shared_ptr<CCollisionTable>, boost::noncopyable> CollisionTable("CollisionTable", no_init);
 
 	// Methods...
-	BaseCollisionHash.def(
-		"add_pair",
-		&ICollisionHash::AddPair,
-		"Adds the given entity pair to the hash."
+	CollisionTable.def(
+		"disable",
+		&CCollisionTable::Disable,
+		"Disables collision with the given entity."
 	);
 
-	BaseCollisionHash.def(
-		"remove_pair",
-		&ICollisionHash::RemovePair,
-		"Removes the given pair from the hash."
+	CollisionTable.def(
+		"reset",
+		&CCollisionTable::Reset,
+		"Resets collision with the given entity."
 	);
 
-	BaseCollisionHash.def(
-		"remove_pairs",
-		&ICollisionHash::RemovePairs,
-		"Removes all pairs associated with the given entity."
+	CollisionTable.def(
+		"is_disabled",
+		&CCollisionTable::IsDisabled,
+		"Returns whether collision with the given entity is disabled."
 	);
 
-	BaseCollisionHash.def(
-		"has_pair",
-		&ICollisionHash::HasPair,
-		"Returns whether the given pair is in the hash."
+	CollisionTable.def(
+		"disable_all",
+		&CCollisionTable::DisableAll,
+		"Disables collision with all entities."
 	);
 
-	BaseCollisionHash.def(
-		"get_count",
-		&ICollisionHash::GetCount,
-		"Returns the amount of pairs associated with the given entity."
+	CollisionTable.def(
+		"clear",
+		&CCollisionTable::ClearAll,
+		"Resets collision with all entities."
 	);
 
-	BaseCollisionHash.def(
-		"get_pairs",
-		&ICollisionHash::GetPairs,
-		"Returns a list of all entities associated with the given entity."
+	CollisionTable.def(
+		"get_disabled",
+		&CCollisionTable::GetDisabled,
+		"Returns a list of entities with collision disabled."
+	);
+
+	CollisionTable.add_property(
+		"count",
+		&CCollisionTable::Count,
+		"Returns the amount of entities with collision disabled."
+	);
+
+	CollisionTable.def_readonly(
+		"activator",
+		&CCollisionTable::m_oActivator,
+		"Returns the activator entity that will disable collision."
 	);
 
 	// Special methods...
-	BaseCollisionHash.def(
-		"__contains__",
-		&ICollisionHash::Contains,
-		"Returns whether the given entity is in the hash."
+	CollisionTable.def(
+		"__getitem__",
+		&CCollisionTable::__getitem__,
+		"Returns whether collision is disabled by an entity index."
 	);
 
-	// AutoUnload...
-	BaseCollisionHash.def(
-		"_unload_instance",
-		&ICollisionHash::UnloadInstance,
-		"Called when an instance is being unloaded."
+	CollisionTable.def(
+		"__setitem__",
+		&CCollisionTable::__setitem__,
+		"Set collision by entity index."
+	);
+
+	CollisionTable.def(
+		"__contains__",
+		&CCollisionTable::IsDisabled,
+		"Returns whether collision with the given entity is disabled."
 	);
 }
 
@@ -148,5 +165,116 @@ void export_base_collision_hash(scope _collisions)
 //-----------------------------------------------------------------------------
 void export_collision_hash(scope _collisions)
 {
-	class_<CCollisionHash, bases<ICollisionHash> >("CollisionHash");
+	class_<CCollisionHash, boost::noncopyable> CollisionHash("CollisionHash");
+
+	// Methods...
+	CollisionHash.def(
+		"get_collision_table",
+		GET_METHOD(boost::shared_ptr<CCollisionTable>, CCollisionHash, GetCollisionTable, CBaseEntity *),
+		"Returns the CollisionTable for the given activator entity."
+	);
+
+	CollisionHash.def(
+		"disable_from",
+		&CCollisionHash::DisableFrom,
+		"Disables collision of the given entity from the activator entity."
+	);
+
+	CollisionHash.def(
+		"reset_from",
+		&CCollisionHash::ResetFrom,
+		"Resets collision of the given entity from the activator entity."
+	);
+
+	CollisionHash.def(
+		"is_disabled_from",
+		&CCollisionHash::IsDisabledFrom,
+		"Returns whether collision of the given entity is disabled from the activator entity."
+	);
+
+	CollisionHash.def(
+		"disable",
+		&CCollisionHash::Disable,
+		"Disables collision of the given entity in all activator entities."
+	);
+
+	CollisionHash.def(
+		"reset",
+		&CCollisionHash::Reset,
+		"Resets collision of the given entity in all activator entities."
+	);
+
+	CollisionHash.def(
+		"is_disabled",
+		&CCollisionHash::IsDisabled,
+		"Returns whether collision of the given entity has been disabled for any activator entity."
+	);
+
+	CollisionHash.def(
+		"get_disabled_activator",
+		&CCollisionHash::GetDisabledActivator,
+		"Returns a list of activator entities with collision disabled for the given entity."
+	);
+
+	CollisionHash.def(
+		"add_pair",
+		&CCollisionHash::AddPair,
+		"Adds the given entity pair to the hash."
+	);
+
+	CollisionHash.def(
+		"remove_pair",
+		&CCollisionHash::RemovePair,
+		"Removes the given pair from the hash."
+	);
+
+	CollisionHash.def(
+		"has_pair",
+		&CCollisionHash::HasPair,
+		"Returns whether the given pair is in the hash."
+	);
+
+	CollisionHash.def(
+		"remove_pairs",
+		&CCollisionHash::RemovePairs,
+		"Removes all pairs associated with the given entity."
+	);
+
+	CollisionHash.def(
+		"count_pairs",
+		&CCollisionHash::CountPairs,
+		"Returns the amount of pairs associated with the given entity."
+	);
+
+	CollisionHash.def(
+		"get_pairs",
+		&CCollisionHash::GetPairs,
+		"Returns a list of all entities associated with the given entity."
+	);
+
+	CollisionHash.def(
+		"clear",
+		&CCollisionHash::Clear,
+		"Resets collision across all entities in all activator entities."
+	);
+
+	// Special methods...
+	CollisionHash.def(
+		"__getitem__",
+		GET_METHOD(boost::shared_ptr<CCollisionTable>, CCollisionHash, GetCollisionTable, unsigned int),
+		"Returns the CollisionTable for the given activator entity index."
+	);
+
+	CollisionHash.def(
+		"__contains__",
+		&CCollisionHash::IsDisabled,
+		"Returns whether collision of the given entity has been disabled for any activator entity."
+	);
+
+	// AutoUnload...
+	CollisionHash.def(
+		"_unload_instance",
+		&CCollisionHash::UnloadInstance,
+		"Called when an instance is being unloaded."
+	);
 }
