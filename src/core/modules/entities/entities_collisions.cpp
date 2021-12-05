@@ -142,14 +142,19 @@ void CCollisionManager::UnregisterHash(ICollisionHash *pHash)
 
 void CCollisionManager::OnNetworkedEntityCreated(object oEntity)
 {
+	unsigned int uiMask;
+
 	BEGIN_BOOST_PY()
-		unsigned int uiMask = extract<unsigned long>(oEntity.attr("get_solid_mask")());
-		if (m_setSolidMasks.find(uiMask) == m_setSolidMasks.end()) {
-			m_setSolidMasks.insert(uiMask);
-			m_setSolidMasks.insert(uiMask | CONTENTS_TEAM1);
-			m_setSolidMasks.insert(uiMask | CONTENTS_TEAM2);
-		}
+		uiMask = extract<unsigned long>(oEntity.attr("get_solid_mask")());
 	END_BOOST_PY()
+
+	if (m_setSolidMasks.find(uiMask) != m_setSolidMasks.end()) {
+		return;
+	}
+
+	m_setSolidMasks.insert(uiMask);
+	m_setSolidMasks.insert(uiMask | CONTENTS_TEAM1);
+	m_setSolidMasks.insert(uiMask | CONTENTS_TEAM2);
 }
 
 void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
@@ -344,7 +349,6 @@ bool CCollisionManager::ExitScope(HookType_t eHookType, CHook *pHook)
 
 	if (!scope.m_bSkip && scope.m_pExtraShouldHitCheckFunction) {
 		scope.m_pFilter->m_pExtraShouldHitCheckFunction = scope.m_pExtraShouldHitCheckFunction;
-		scope.m_pExtraShouldHitCheckFunction = NULL;
 	}
 
 	return false;
@@ -395,9 +399,12 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 
 		object oFilter = object(ptr((ITraceFilter *)scope.m_pFilter));
 
+		static object ContentFlags = import("engines").attr("trace").attr("ContentFlags");
+		object oMask = ContentFlags(scope.m_nMask);
+
 		FOR_EACH_VEC(pManager->m_pCollisionHooks->m_vecCallables, i) {
 			BEGIN_BOOST_PY()
-				object oResult = pManager->m_pCollisionHooks->m_vecCallables[i](oEntity, oOther, oFilter, scope.m_nMask);
+				object oResult = pManager->m_pCollisionHooks->m_vecCallables[i](oEntity, oOther, oFilter, oMask);
 				if (!oResult.is_none() && !extract<bool>(oResult)) {
 					scope.m_pCache->SetResult(uiIndex, false);
 					return false;
@@ -477,10 +484,11 @@ CCollisionCache *CCollisionManager::GetCache(unsigned int uiIndex)
 		m_mapCache.clear();
 		m_nTickCount = gpGlobals->tickcount;
 	}
-
-	CollisionCacheMap_t::const_iterator it = m_mapCache.find(uiIndex);
-	if (it != m_mapCache.end()) {
-		return it->second;
+	else {
+		CollisionCacheMap_t::const_iterator it = m_mapCache.find(uiIndex);
+		if (it != m_mapCache.end()) {
+			return it->second;
+		}
 	}
 
 	CCollisionCache *pCache = new CCollisionCache();
@@ -632,7 +640,8 @@ void CCollisionListenerManager::Initialize()
 		return;
 	}
 
-	GetCollisionManager()->IncRef();
+	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->IncRef();
 	m_bInitialized = true;
 }
 
@@ -642,7 +651,8 @@ void CCollisionListenerManager::Finalize()
 		return;
 	}
 
-	GetCollisionManager()->DecRef();
+	static CCollisionManager *pManager = GetCollisionManager();
+	pManager->DecRef();
 	m_bInitialized = false;
 }
 
