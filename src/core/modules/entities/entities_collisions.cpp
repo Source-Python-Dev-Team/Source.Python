@@ -118,22 +118,22 @@ void CCollisionManager::Finalize()
 	m_bInitialized = false;
 }
 
-void CCollisionManager::RegisterHash(ICollisionHash *pHash)
+void CCollisionManager::RegisterRules(ICollisionRules *pRules)
 {
-	if (m_vecHashes.HasElement(pHash)) {
+	if (m_vecRules.HasElement(pRules)) {
 		BOOST_RAISE_EXCEPTION(
 			PyExc_ValueError,
-			"The given hash is already registered."
+			"The given rules are already registered."
 		);
 	}
 
 	IncRef();
-	m_vecHashes.AddToTail(pHash);
+	m_vecRules.AddToTail(pRules);
 }
 
-void CCollisionManager::UnregisterHash(ICollisionHash *pHash)
+void CCollisionManager::UnregisterRules(ICollisionRules *pRules)
 {
-	if (!m_vecHashes.FindAndRemove(pHash)) {
+	if (!m_vecRules.FindAndRemove(pRules)) {
 		return;
 	}
 
@@ -159,8 +159,8 @@ void CCollisionManager::OnNetworkedEntityCreated(object oEntity)
 
 void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
 {
-	FOR_EACH_VEC(m_vecHashes, i) {
-		m_vecHashes[i]->RemovePairs((void *)pEntity);
+	FOR_EACH_VEC(m_vecRules, i) {
+		m_vecRules[i]->OnEntityDeleted((void *)pEntity);
 	}
 }
 
@@ -421,8 +421,8 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		return true;
 	}
 
-	FOR_EACH_VEC(pManager->m_vecHashes, i) {
-		if (pManager->m_vecHashes[i]->HasPair((void *)scope.m_pFilter->m_pPassEnt, (void *)pHandleEntity)) {
+	FOR_EACH_VEC(pManager->m_vecRules, i) {
+		if (!pManager->m_vecRules[i]->ShouldHitEntity((void *)scope.m_pFilter->m_pPassEnt, (void *)pHandleEntity)) {
 			scope.m_pCache->SetResult(uiIndex, false);
 			return false;
 		}
@@ -499,23 +499,23 @@ CCollisionCache *CCollisionManager::GetCache(unsigned int uiIndex)
 
 
 //-----------------------------------------------------------------------------
-// ICollisionHash class.
+// ICollisionRules class.
 //-----------------------------------------------------------------------------
-ICollisionHash::ICollisionHash()
+ICollisionRules::ICollisionRules()
 {
 	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->RegisterHash(this);
+	pManager->RegisterRules(this);
 }
 
-ICollisionHash::~ICollisionHash()
+ICollisionRules::~ICollisionRules()
 {
 	UnloadInstance();
 }
 
-void ICollisionHash::UnloadInstance()
+void ICollisionRules::UnloadInstance()
 {
 	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->UnregisterHash(this);
+	pManager->UnregisterRules(this);
 }
 
 
@@ -561,6 +561,16 @@ CCollisionHash::~CCollisionHash()
 	}
 
 	physics->DestroyObjectPairHash(m_pHash);
+}
+
+void CCollisionHash::OnEntityDeleted(void *pEntity)
+{
+	RemovePairs(pEntity);
+}
+
+bool CCollisionHash::ShouldHitEntity(void *pEntity, void *pOther)
+{
+	return !HasPair(pEntity, pOther);
 }
 
 void CCollisionHash::AddPair(void *pEntity, void *pOther)

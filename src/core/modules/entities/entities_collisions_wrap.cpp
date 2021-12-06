@@ -36,7 +36,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 static void export_collision_manager(scope);
-static void export_base_collision_hash(scope);
+static void export_collision_rules(scope);
 static void export_collision_hash(scope);
 
 
@@ -46,13 +46,13 @@ static void export_collision_hash(scope);
 DECLARE_SP_SUBMODULE(_entities, _collisions)
 {
 	export_collision_manager(_collisions);
-	export_base_collision_hash(_collisions);
+	export_collision_rules(_collisions);
 	export_collision_hash(_collisions);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports ICollisionHash.
+// Exports CCollisionManager.
 //-----------------------------------------------------------------------------
 void export_collision_manager(scope _collisions)
 {
@@ -84,60 +84,23 @@ void export_collision_manager(scope _collisions)
 
 
 //-----------------------------------------------------------------------------
-// Exports ICollisionHash.
+// Exports ICollisionRules.
 //-----------------------------------------------------------------------------
-void export_base_collision_hash(scope _collisions)
+void export_collision_rules(scope _collisions)
 {
-	class_<ICollisionHash, boost::noncopyable> BaseCollisionHash("BaseCollisionHash", no_init);
+	class_<ICollisionRules, boost::noncopyable> CollisionRules("CollisionRules", no_init);
 
 	// Methods...
-	BaseCollisionHash.def(
-		"add_pair",
-		&ICollisionHash::AddPair,
-		"Adds the given entity pair to the hash."
-	);
-
-	BaseCollisionHash.def(
-		"remove_pair",
-		&ICollisionHash::RemovePair,
-		"Removes the given pair from the hash."
-	);
-
-	BaseCollisionHash.def(
-		"remove_pairs",
-		&ICollisionHash::RemovePairs,
-		"Removes all pairs associated with the given entity."
-	);
-
-	BaseCollisionHash.def(
-		"has_pair",
-		&ICollisionHash::HasPair,
-		"Returns whether the given pair is in the hash."
-	);
-
-	BaseCollisionHash.def(
-		"get_count",
-		&ICollisionHash::GetCount,
-		"Returns the amount of pairs associated with the given entity."
-	);
-
-	BaseCollisionHash.def(
-		"get_pairs",
-		&ICollisionHash::GetPairs,
-		"Returns a list of all entities associated with the given entity."
-	);
-
-	// Special methods...
-	BaseCollisionHash.def(
-		"__contains__",
-		&ICollisionHash::Contains,
-		"Returns whether the given entity is in the hash."
+	CollisionRules.def(
+		"should_hit_entity",
+		&ICollisionRules::ShouldHitEntity,
+		"Returns whether the given entities should collide with each other."
 	);
 
 	// AutoUnload...
-	BaseCollisionHash.def(
+	CollisionRules.def(
 		"_unload_instance",
-		&ICollisionHash::UnloadInstance,
+		&ICollisionRules::UnloadInstance,
 		"Called when an instance is being unloaded."
 	);
 }
@@ -148,5 +111,49 @@ void export_base_collision_hash(scope _collisions)
 //-----------------------------------------------------------------------------
 void export_collision_hash(scope _collisions)
 {
-	class_<CCollisionHash, bases<ICollisionHash> >("CollisionHash");
+	class_<CCollisionHash, bases<ICollisionRules> > CollisionHash("CollisionHash");
+
+	// Methods...
+	CollisionHash.def(
+		"add_pair",
+		&CCollisionHash::AddPair,
+		"Adds the given entity pair to the hash."
+	);
+
+	CollisionHash.def(
+		"remove_pair",
+		&CCollisionHash::RemovePair,
+		"Removes the given pair from the hash."
+	);
+
+	CollisionHash.def(
+		"remove_pairs",
+		&CCollisionHash::RemovePairs,
+		"Removes all pairs associated with the given entity."
+	);
+
+	CollisionHash.def(
+		"has_pair",
+		&CCollisionHash::HasPair,
+		"Returns whether the given pair is in the hash."
+	);
+
+	CollisionHash.def(
+		"get_count",
+		&CCollisionHash::GetCount,
+		"Returns the amount of pairs associated with the given entity."
+	);
+
+	CollisionHash.def(
+		"get_pairs",
+		&CCollisionHash::GetPairs,
+		"Returns a list of all entities associated with the given entity."
+	);
+
+	// Special methods...
+	CollisionHash.def(
+		"__contains__",
+		&CCollisionHash::Contains,
+		"Returns whether the given entity is in the hash."
+	);
 }

@@ -7,11 +7,8 @@
 # =============================================================================
 # Source.Python Imports
 #   Core
-from core import GAME_NAME
 from core import AutoUnload
-#   Engines
-from engines.trace import ContentFlags
-from engines.trace import ContentMasks
+from core import WeakAutoUnload
 
 
 # =============================================================================
@@ -19,9 +16,9 @@ from engines.trace import ContentMasks
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from _entities._collisions import BaseCollisionHash
 from _entities._collisions import CollisionHash
 from _entities._collisions import CollisionManager
+from _entities._collisions import CollisionRules
 from _entities._collisions import collision_manager
 
 
@@ -29,10 +26,10 @@ from _entities._collisions import collision_manager
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = [
-    'BaseCollisionHash',
     'CollisionHash',
     'CollisionHook',
     'CollisionManager',
+    'CollisionRules',
     'collision_manager',
 ]
 
@@ -40,9 +37,9 @@ __all__ = [
 # =============================================================================
 # >> INITIALIZATION
 # =============================================================================
-# Inject AutoUnload into BaseCollisionHash's hierarchy.
-if not issubclass(BaseCollisionHash, AutoUnload):
-    BaseCollisionHash.__bases__ = (AutoUnload,) + BaseCollisionHash.__bases__
+# Inject WeakAutoUnload into CollisionRules's hierarchy.
+if not issubclass(CollisionRules, WeakAutoUnload):
+    CollisionRules.__bases__ = (WeakAutoUnload,) + CollisionRules.__bases__
 
 
 # =============================================================================

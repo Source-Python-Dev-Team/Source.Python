@@ -105,36 +105,32 @@ struct CollisionHookData_t
 
 
 //-----------------------------------------------------------------------------
-// ICollisionHash class.
+// ICollisionRules class.
 //-----------------------------------------------------------------------------
-class ICollisionHash
+class ICollisionRules
 {
 public:
-	ICollisionHash();
-	virtual ~ICollisionHash();
+	ICollisionRules();
+	virtual ~ICollisionRules();
 
-	virtual void AddPair(void *pEntity, void *pOther) = 0;
-	virtual void RemovePair(void *pEntity, void *pOther) = 0;
-	virtual void RemovePairs(void *pEntity) = 0;
+	virtual void OnEntityDeleted(void *pEntity) = 0;
+	virtual bool ShouldHitEntity(void *pEntity, void *pOther) = 0;
 
-	virtual bool Contains(void *pEntity) = 0;
-	virtual bool HasPair(void *pEntity, void *pOther) = 0;
-
-	virtual int GetCount(void *pEntity) = 0;
-	virtual list GetPairs(void *pEntity) = 0;
-
-	void UnloadInstance();
+	virtual void UnloadInstance();
 };
 
 
 //-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
-class CCollisionHash : public ICollisionHash
+class CCollisionHash : public ICollisionRules
 {
 public:
 	CCollisionHash();
 	~CCollisionHash();
+
+	void OnEntityDeleted(void *pEntity);
+	bool ShouldHitEntity(void *pEntity, void *pOther);
 
 	void AddPair(void *pEntity, void *pOther);
 	void RemovePair(void *pEntity, void *pOther);
@@ -183,8 +179,8 @@ public:
 	void Initialize();
 	void Finalize();
 
-	void RegisterHash(ICollisionHash *pHash);
-	void UnregisterHash(ICollisionHash *pHash);
+	void RegisterRules(ICollisionRules *pRules);
+	void UnregisterRules(ICollisionRules *pRules);
 
 	void OnNetworkedEntityCreated(object oEntity);
 	void OnNetworkedEntityDeleted(CBaseEntity *pEntity);
@@ -212,7 +208,7 @@ private:
 private:
 	bool m_bInitialized;
 	unsigned int m_uiRefCount;
-	CUtlVector<ICollisionHash *> m_vecHashes;
+	CUtlVector<ICollisionRules *> m_vecRules;
 	CollisionHooksMap_t m_mapHooks;
 	std::vector<CollisionScope_t> m_vecScopes;
 
