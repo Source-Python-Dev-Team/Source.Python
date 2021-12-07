@@ -39,6 +39,7 @@ static void export_collision_manager(scope);
 static void export_collision_rules(scope);
 static void export_collision_hash(scope);
 static void export_collision_set(scope);
+static void export_collision_map(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -50,6 +51,7 @@ DECLARE_SP_SUBMODULE(_entities, _collisions)
 	export_collision_rules(_collisions);
 	export_collision_hash(_collisions);
 	export_collision_set(_collisions);
+	export_collision_map(_collisions);
 }
 
 
@@ -169,7 +171,7 @@ void export_collision_hash(scope _collisions)
 //-----------------------------------------------------------------------------
 void export_collision_set(scope _collisions)
 {
-	class_<CCollisionSet, bases<ICollisionRules> > CollisionSet(
+	class_<CCollisionSet, boost::shared_ptr<CCollisionSet>, bases<ICollisionRules> > CollisionSet(
 		"CollisionSet",
 		"Collision rules where contained elements never collide with anything."
 	);
@@ -216,5 +218,61 @@ void export_collision_set(scope _collisions)
 		"__len__",
 		&CCollisionSet::GetSize,
 		"Returns the amount of elements contained in the set."
+	);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CCollisionMap.
+//-----------------------------------------------------------------------------
+void export_collision_map(scope _collisions)
+{
+	class_<CCollisionMap, bases<ICollisionRules> > CollisionMap(
+		"CollisionMap",
+		"Collision rules that overrides one-way collisions."
+	);
+
+	// Methods...
+	CollisionMap.def(
+		"clear",
+		&CCollisionMap::Clear,
+		"Removes all elements from the map."
+	);
+
+	// Special methods...
+	CollisionMap.def(
+		"__getitem__",
+		&CCollisionMap::Find,
+		"Returns the collision set associated with the given entity."
+	);
+
+	CollisionMap.def(
+		"__delitem__",
+		&CCollisionMap::Remove,
+		"Removes the collision set associated with the given entity."
+	);
+
+	CollisionMap.def(
+		"__bool__",
+		&CCollisionMap::HasElements,
+		"Returns whether the map is empty or not."
+	);
+
+	CollisionMap.def(
+		"__contains__",
+		&CCollisionMap::Contains,
+		"Returns whether the given element is in the map or not."
+	);
+
+	CollisionMap.def(
+		"__len__",
+		&CCollisionMap::GetSize,
+		"Returns the amount of elements contained in the map."
+	);
+
+	CollisionMap.def(
+		"__iter__",
+		&CCollisionMap::Iterate,
+		"Iterates over all elements contained in the map."
 	);
 }

@@ -110,7 +110,7 @@ struct CollisionHookData_t
 class ICollisionRules
 {
 public:
-	ICollisionRules();
+	ICollisionRules(bool bRegister = true);
 	virtual ~ICollisionRules();
 
 	virtual void OnEntityDeleted(CBaseEntity *pEntity) = 0;
@@ -153,6 +153,9 @@ private:
 class CCollisionSet : public ICollisionRules
 {
 public:
+	CCollisionSet();
+	CCollisionSet(bool bRegister);
+
 	void Add(CBaseEntityWrapper *pEntity);
 	void Remove(void *pObject);
 	void Clear(void *pObject);
@@ -168,6 +171,31 @@ public:
 
 private:
 	boost::unordered_set<void *> m_pSet;
+};
+
+
+//-----------------------------------------------------------------------------
+// CCollisionMap class.
+//-----------------------------------------------------------------------------
+class CCollisionMap: public ICollisionRules
+{
+public:
+	void OnEntityDeleted(CBaseEntity *pEntity);
+	bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther);
+
+	boost::shared_ptr<CCollisionSet> Find(CBaseEntityWrapper *pEntity);
+
+	void Remove(void *pObject);
+	void Clear();
+
+	bool Contains(void *pObject);
+	unsigned int GetSize();
+	bool HasElements();
+
+	object Iterate();
+
+private:
+	boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> > m_mapSets;
 };
 
 

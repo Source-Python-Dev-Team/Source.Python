@@ -501,8 +501,12 @@ CCollisionCache *CCollisionManager::GetCache(unsigned int uiIndex)
 //-----------------------------------------------------------------------------
 // ICollisionRules class.
 //-----------------------------------------------------------------------------
-ICollisionRules::ICollisionRules()
+ICollisionRules::ICollisionRules(bool bRegister)
 {
+	if (!bRegister) {
+		return;
+	}
+
 	static CCollisionManager *pManager = GetCollisionManager();
 	pManager->RegisterRules(this);
 }
@@ -638,6 +642,18 @@ list CCollisionHash::GetPairs(void *pObject)
 //-----------------------------------------------------------------------------
 // CCollisionSet class.
 //-----------------------------------------------------------------------------
+CCollisionSet::CCollisionSet():
+	ICollisionRules()
+{
+
+}
+
+CCollisionSet::CCollisionSet(bool bRegister):
+	ICollisionRules(bRegister)
+{
+
+}
+
 void CCollisionSet::Add(CBaseEntityWrapper *pEntity)
 {
 	if (Contains(pEntity)) {
@@ -701,6 +717,89 @@ bool CCollisionSet::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
 {
 	return !(Contains(pEntity) || Contains(pOther));
 };
+
+
+//-----------------------------------------------------------------------------
+// CCollisionMap class.
+//-----------------------------------------------------------------------------
+boost::shared_ptr<CCollisionSet> CCollisionMap::Find(CBaseEntityWrapper *pEntity)
+{
+	boost::shared_ptr<CCollisionSet> spSet;
+	spSet = m_mapSets[pEntity];
+
+	if (!get_pointer(spSet)) {
+		if (!pEntity->IsNetworked()) {
+			BOOST_RAISE_EXCEPTION(
+				PyExc_ValueError,
+				"Given entity is not networked."
+			)
+		}
+
+		spSet = boost::shared_ptr<CCollisionSet>(new CCollisionSet(false));
+		m_mapSets[pEntity] = spSet;
+	}
+
+	return spSet;
+}
+
+void CCollisionMap::Remove(void *pObject)
+{
+	m_mapSets.erase(pObject);
+}
+
+void CCollisionMap::Clear()
+{
+	m_mapSets.clear();
+}
+
+bool CCollisionMap::Contains(void *pObject)
+{
+	return m_mapSets.find(pObject) != m_mapSets.end();
+}
+
+unsigned int CCollisionMap::GetSize()
+{
+	return m_mapSets.size();
+}
+
+bool CCollisionMap::HasElements()
+{
+	return !m_mapSets.empty();
+}
+
+object CCollisionMap::Iterate()
+{
+	list oElements;
+
+	if (HasElements()) {
+		for (boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> >::const_iterator it = m_mapSets.begin();
+				it != m_mapSets.end(); it++) {
+			oElements.append(make_tuple(object(it->first), object(it->second)));
+		}
+	}
+
+	return oElements.attr("__iter__")();
+}
+
+void CCollisionMap::OnEntityDeleted(CBaseEntity *pEntity)
+{
+	for (boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> >::const_iterator it = m_mapSets.begin();
+			it != m_mapSets.end(); it++) {
+		it->second->OnEntityDeleted(pEntity);
+	}
+
+	Remove(pEntity);
+}
+
+bool CCollisionMap::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
+{
+	CCollisionSet *pSet = get_pointer(m_mapSets[pEntity]);
+	if (!pSet) {
+		return true;
+	}
+
+	return !pSet->Contains(pOther);
+}
 
 
 //-----------------------------------------------------------------------------
