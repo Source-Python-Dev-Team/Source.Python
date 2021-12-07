@@ -230,6 +230,12 @@ class Player(PlayerMixin, Entity):
         """Return whether the player is HLTV.
 
         :rtype: bool
+
+        .. note::
+
+            This property may return inaccurate results if it is done too
+            early during the connection process.
+            For more details, please see issue #168.
         """
         return self.playerinfo.is_hltv()
 
