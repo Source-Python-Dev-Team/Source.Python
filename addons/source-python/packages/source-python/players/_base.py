@@ -68,6 +68,10 @@ from players.helpers import get_client_language
 from players.helpers import playerinfo_from_index
 from players.helpers import index_from_userid
 from players.helpers import uniqueid_from_playerinfo
+from players.teams import classes_by_name
+from players.teams import classes_by_number
+from players.teams import teams_by_name
+from players.teams import teams_by_number
 from players.voice import mute_manager
 #   Weapons
 from weapons.default import NoWeaponManager
@@ -263,6 +267,32 @@ class Player(PlayerMixin, Entity):
         self.playerinfo.team = value
 
     team = property(get_team, set_team)
+
+    def get_team_name(self):
+        """Return the name of the player's team."""
+        return teams_by_number.get(self.team, 'Unknown')
+
+    def set_team_name(self, team):
+        """Set the player's team."""
+        team = teams_by_name.get(team, None)
+        if team is None:
+            raise ValueError('Invalid team name.')
+        self.team = team
+
+    team_name = property(get_team_name, set_team_name)
+
+    def get_player_class_name(self):
+        """Return the name of the player's class."""
+        return classes_by_number.get(self.player_class, 'Unknown')
+
+    def set_player_class_name(self, player_class):
+        """Set the player's class."""
+        player_class = classes_by_name.get(player_class, None)
+        if player_class is None:
+            raise ValueError('Invalid player class name.')
+        self.player_class = player_class
+
+    player_class_name = property(get_player_class_name, set_player_class_name)
 
     def get_language(self):
         """Return the player's language.
