@@ -8,16 +8,21 @@
 # Python Imports
 #   Datetime
 from datetime import date
+from datetime import datetime
 #   Logging
 from logging import CRITICAL
 from logging import DEBUG
 from logging import ERROR
 from logging import INFO
 from logging import WARNING
-from logging import FileHandler
 from logging import Formatter
 from logging import addLevelName
 from logging import getLogger
+from logging.handlers import TimedRotatingFileHandler
+
+# Site-Packages Imports
+#   Path
+from path import Path
 
 # Source.Python Imports
 #   Core
@@ -258,6 +263,12 @@ class _LogInstance(dict):
         # Print to the main SP log file?
         if SP_LOG & areas:
 
+            # Get the given extra dictionary
+            extra = kwargs.setdefault('extra', dict())
+
+            # Set the logger name
+            extra.setdefault('logger_name', self.logger.name)
+
             # Print to the SP log file
             _sp_logger.logger.log(level, msg, *args, **kwargs)
 
@@ -374,7 +385,8 @@ class LogManager(AutoUnload, _LogInstance):
                 log_path.parent.makedirs()
 
             # Create the handler an add it to the logger
-            self._handler = FileHandler(log_path, encoding=encoding)
+            self._handler = DailyRotatingFileHandler(log_path, when='D',
+                backupCount=30, encoding=encoding)
             self._handler.setFormatter(self.formatter)
             self.logger.addHandler(self._handler)
 
@@ -404,6 +416,30 @@ class LogManager(AutoUnload, _LogInstance):
             handler.close()
 
 
+class DailyRotatingFileHandler(TimedRotatingFileHandler):
+    """Source.Python's logging file handler."""
+
+    file_name_format = 'source-python.%Y-%m-%d.log'
+
+    def rotation_filename(self, default_name):
+        """Returns the name of today's log file."""
+        return date.today().strftime(self.file_name_format)
+
+    def getFilesToDelete(self):
+        """Returns the files to delete."""
+        files = list()
+        for f in Path(self.baseFilename).parent.files():
+            try:
+                delta = date.today() - datetime.strptime(
+                    f.name, self.file_name_format).date()
+                if delta.days < self.backupCount:
+                    continue
+                files.append(f)
+            except ValueError:
+                continue
+        return files
+
+
 # Set the core ConVars
 _level = ConVar(
     'sp_logging_level', '0', 'The Source.Python base logging level')
@@ -414,7 +450,7 @@ _areas = ConVar(
 _sp_logger = LogManager(
     'sp', _level, _areas,
     'source-python.{0}'.format(date.today().strftime('%Y-%m-%d')),
-    '%(asctime)s - %(name)s\t-\t%(levelname)s\t%(message)s',
+    '%(asctime)s - %(logger_name)s\t-\t%(levelname)s\t%(message)s',
     '%Y-%m-%d %H:%M:%S')
 
 # Set the parent logger level to allow all message types
