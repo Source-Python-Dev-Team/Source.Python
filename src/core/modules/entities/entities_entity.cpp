@@ -486,6 +486,11 @@ bool CBaseEntityWrapper::IsWeapon()
 	return result;
 }
 
+bool CBaseEntityWrapper::IsNetworked()
+{
+	return IServerUnknownExt::IsNetworked((IServerUnknown *)this);
+}
+
 IPhysicsObjectWrapper* CBaseEntityWrapper::GetPhysicsObject()
 {
 	return Wrap<IPhysicsObjectWrapper>(GetDatamapProperty<IPhysicsObject*>("m_pPhysicsObject"));

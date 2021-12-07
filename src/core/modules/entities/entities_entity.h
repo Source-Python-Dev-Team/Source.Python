@@ -316,6 +316,8 @@ public:
 	bool IsPlayer();
 	bool IsWeapon();
 
+	bool IsNetworked();
+
 	Vector GetOrigin();
 	void SetOrigin(Vector& vec);
 

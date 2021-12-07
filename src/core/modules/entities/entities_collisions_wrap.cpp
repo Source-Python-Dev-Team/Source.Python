@@ -38,6 +38,7 @@
 static void export_collision_manager(scope);
 static void export_collision_rules(scope);
 static void export_collision_hash(scope);
+static void export_collision_set(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -48,6 +49,7 @@ DECLARE_SP_SUBMODULE(_entities, _collisions)
 	export_collision_manager(_collisions);
 	export_collision_rules(_collisions);
 	export_collision_hash(_collisions);
+	export_collision_set(_collisions);
 }
 
 
@@ -111,7 +113,10 @@ void export_collision_rules(scope _collisions)
 //-----------------------------------------------------------------------------
 void export_collision_hash(scope _collisions)
 {
-	class_<CCollisionHash, bases<ICollisionRules> > CollisionHash("CollisionHash");
+	class_<CCollisionHash, bases<ICollisionRules> > CollisionHash(
+		"CollisionHash",
+		"Collision rules where contained pairs never collide with each other."
+	);
 
 	// Methods...
 	CollisionHash.def(
@@ -155,5 +160,61 @@ void export_collision_hash(scope _collisions)
 		"__contains__",
 		&CCollisionHash::Contains,
 		"Returns whether the given entity is in the hash."
+	);
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports CCollisionSet.
+//-----------------------------------------------------------------------------
+void export_collision_set(scope _collisions)
+{
+	class_<CCollisionSet, bases<ICollisionRules> > CollisionSet(
+		"CollisionSet",
+		"Collision rules where contained elements never collide with anything."
+	);
+
+	// Methods...
+	CollisionSet.def(
+		"add",
+		&CCollisionSet::Add,
+		"Adds the given element to the set."
+	);
+
+	CollisionSet.def(
+		"remove",
+		&CCollisionSet::Remove,
+		"Removes the given element from the set."
+	);
+
+	CollisionSet.def(
+		"clear",
+		&CCollisionSet::Clear,
+		"Removes all elements from the set."
+	);
+
+	// Special methods...
+	CollisionSet.def(
+		"__bool__",
+		&CCollisionSet::HasElements,
+		"Returns whether the set is empty or not."
+	);
+
+	CollisionSet.def(
+		"__contains__",
+		&CCollisionSet::Contains,
+		"Returns whether the given element is in the set or not."
+	);
+
+	CollisionSet.def(
+		"__iter__",
+		&CCollisionSet::Iterate,
+		"Iterates over all elements contained in the set."
+	);
+
+	CollisionSet.def(
+		"__len__",
+		&CCollisionSet::GetSize,
+		"Returns the amount of elements contained in the set."
 	);
 }

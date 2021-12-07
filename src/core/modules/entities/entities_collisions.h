@@ -113,8 +113,8 @@ public:
 	ICollisionRules();
 	virtual ~ICollisionRules();
 
-	virtual void OnEntityDeleted(void *pEntity) = 0;
-	virtual bool ShouldHitEntity(void *pEntity, void *pOther) = 0;
+	virtual void OnEntityDeleted(CBaseEntity *pEntity) = 0;
+	virtual bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther) = 0;
 
 	virtual void UnloadInstance();
 };
@@ -129,21 +129,45 @@ public:
 	CCollisionHash();
 	~CCollisionHash();
 
-	void OnEntityDeleted(void *pEntity);
-	bool ShouldHitEntity(void *pEntity, void *pOther);
+	void OnEntityDeleted(CBaseEntity *pEntity);
+	bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther);
 
-	void AddPair(void *pEntity, void *pOther);
-	void RemovePair(void *pEntity, void *pOther);
-	void RemovePairs(void *pEntity);
+	void AddPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther);
+	void RemovePair(void *pObject, void *pOther);
+	void RemovePairs(void *pObject);
 
-	bool Contains(void *pEntity);
-	bool HasPair(void *pEntity, void *pOther);
+	bool Contains(void *pObject);
+	bool HasPair(void *pObject, void *pOther);
 
-	int GetCount(void *pEntity);
-	list GetPairs(void *pEntity);
+	int GetCount(void *pObject);
+	list GetPairs(void *pObject);
 
 private:
 	IPhysicsObjectPairHash *m_pHash;
+};
+
+
+//-----------------------------------------------------------------------------
+// CCollisionSet class.
+//-----------------------------------------------------------------------------
+class CCollisionSet : public ICollisionRules
+{
+public:
+	void Add(CBaseEntityWrapper *pEntity);
+	void Remove(void *pObject);
+	void Clear(void *pObject);
+
+	bool Contains(void *pObject);
+	unsigned int GetSize();
+	bool HasElements();
+
+	object Iterate();
+
+	void OnEntityDeleted(CBaseEntity *pEntity);
+	bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther);
+
+private:
+	boost::unordered_set<void *> m_pSet;
 };
 
 
@@ -245,29 +269,9 @@ private:
 	bool m_bInitialized;
 };
 
-
-//-----------------------------------------------------------------------------
-// CEntityCollisionListenerManager class.
-//-----------------------------------------------------------------------------
-class CEntityCollisionListenerManager: public CCollisionListenerManager
-{
-
-};
-
-// Singleton accessor.
-CEntityCollisionListenerManager *GetOnEntityCollisionListenerManager();
-
-
-//-----------------------------------------------------------------------------
-// CPlayerCollisionListenerManager class.
-//-----------------------------------------------------------------------------
-class CPlayerCollisionListenerManager: public CCollisionListenerManager
-{
-
-};
-
-// Singleton accessor.
-CPlayerCollisionListenerManager *GetOnPlayerCollisionListenerManager();
+// Singleton accessors.
+CCollisionListenerManager *GetOnPlayerCollisionListenerManager();
+CCollisionListenerManager *GetOnEntityCollisionListenerManager();
 
 
 #endif // _ENTITIES_COLLISIONS_H

@@ -160,7 +160,7 @@ void CCollisionManager::OnNetworkedEntityCreated(object oEntity)
 void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
 {
 	FOR_EACH_VEC(m_vecRules, i) {
-		m_vecRules[i]->OnEntityDeleted((void *)pEntity);
+		m_vecRules[i]->OnEntityDeleted(pEntity);
 	}
 }
 
@@ -422,14 +422,14 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	}
 
 	FOR_EACH_VEC(pManager->m_vecRules, i) {
-		if (!pManager->m_vecRules[i]->ShouldHitEntity((void *)scope.m_pFilter->m_pPassEnt, (void *)pHandleEntity)) {
+		if (!pManager->m_vecRules[i]->ShouldHitEntity((CBaseEntity *)scope.m_pFilter->m_pPassEnt, (CBaseEntity *)pHandleEntity)) {
 			scope.m_pCache->SetResult(uiIndex, false);
 			return false;
 		}
 	}
 
 	if (scope.m_bIsPlayer) {
-		static CPlayerCollisionListenerManager *OnPlayerCollision = GetOnPlayerCollisionListenerManager();
+		static CCollisionListenerManager *OnPlayerCollision = GetOnPlayerCollisionListenerManager();
 		if (!OnPlayerCollision->GetCount()) {
 			scope.m_pCache->SetResult(uiIndex, true);
 			return true;
@@ -451,7 +451,7 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		return true;
 	}
 
-	static CEntityCollisionListenerManager *OnEntityCollision = GetOnEntityCollisionListenerManager();
+	static CCollisionListenerManager *OnEntityCollision = GetOnEntityCollisionListenerManager();
 	if (!OnEntityCollision->GetCount()) {
 		scope.m_pCache->SetResult(uiIndex, true);
 		return true;
@@ -563,76 +563,144 @@ CCollisionHash::~CCollisionHash()
 	physics->DestroyObjectPairHash(m_pHash);
 }
 
-void CCollisionHash::OnEntityDeleted(void *pEntity)
+void CCollisionHash::OnEntityDeleted(CBaseEntity *pEntity)
 {
 	RemovePairs(pEntity);
 }
 
-bool CCollisionHash::ShouldHitEntity(void *pEntity, void *pOther)
+bool CCollisionHash::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
 {
 	return !HasPair(pEntity, pOther);
 }
 
-void CCollisionHash::AddPair(void *pEntity, void *pOther)
+void CCollisionHash::AddPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther)
 {
-	if (!IsValidNetworkedEntityPointer(pEntity) || !IsValidNetworkedEntityPointer(pOther)) {
+	if (!pEntity->IsNetworked() || !pOther->IsNetworked()) {
 		BOOST_RAISE_EXCEPTION(
 			PyExc_ValueError,
-			"Given entity pointer invalid or not networked."
+			"Given entity is not networked."
 		)
 	}
 
 	m_pHash->AddObjectPair(pEntity, pOther);
 }
 
-void CCollisionHash::RemovePair(void *pEntity, void *pOther)
+void CCollisionHash::RemovePair(void *pObject, void *pOther)
 {
-	m_pHash->RemoveObjectPair(pEntity, pOther);
+	m_pHash->RemoveObjectPair(pObject, pOther);
 }
 
-void CCollisionHash::RemovePairs(void *pEntity)
+void CCollisionHash::RemovePairs(void *pObject)
 {
-	m_pHash->RemoveAllPairsForObject(pEntity);
+	m_pHash->RemoveAllPairsForObject(pObject);
 }
 
-bool CCollisionHash::Contains(void *pEntity)
+bool CCollisionHash::Contains(void *pObject)
 {
-	return m_pHash->IsObjectInHash(pEntity);
+	return m_pHash->IsObjectInHash(pObject);
 }
 
-bool CCollisionHash::HasPair(void *pEntity, void *pOther)
+bool CCollisionHash::HasPair(void *pObject, void *pOther)
 {
-	return m_pHash->IsObjectPairInHash(pEntity, pOther);
+	return m_pHash->IsObjectPairInHash(pObject, pOther);
 }
 
-int CCollisionHash::GetCount(void *pEntity)
+int CCollisionHash::GetCount(void *pObject)
 {
-	return m_pHash->GetPairCountForObject(pEntity);
+	return m_pHash->GetPairCountForObject(pObject);
 }
 
-list CCollisionHash::GetPairs(void *pEntity)
+list CCollisionHash::GetPairs(void *pObject)
 {
-	list oEntities;
-	int nCount = m_pHash->GetPairCountForObject(pEntity);
+	list oObjects;
+	int nCount = m_pHash->GetPairCountForObject(pObject);
 
 	if (!nCount) {
-		return oEntities;
+		return oObjects;
 	}
 
-	void **ppEntities = (void **)stackalloc(nCount * sizeof(void *));
-	m_pHash->GetPairListForObject(pEntity, nCount, ppEntities);
+	void **ppObjects = (void **)stackalloc(nCount * sizeof(void *));
+	m_pHash->GetPairListForObject(pObject, nCount, ppObjects);
 
 	for (int i = 0; i < nCount; ++i) {
-		pEntity = ppEntities[i];
-		if (!pEntity) {
+		pObject = ppObjects[i];
+		if (!pObject) {
 			continue;
 		}
 
-		oEntities.append(pEntity);
+		oObjects.append(pObject);
 	}
 
-	return oEntities;
+	return oObjects;
 }
+
+
+//-----------------------------------------------------------------------------
+// CCollisionSet class.
+//-----------------------------------------------------------------------------
+void CCollisionSet::Add(CBaseEntityWrapper *pEntity)
+{
+	if (Contains(pEntity)) {
+		return;
+	}
+
+	if (!pEntity->IsNetworked()) {
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"Given entity is not networked."
+		)
+	}
+
+	m_pSet.insert(pEntity);
+}
+
+void CCollisionSet::Remove(void *pObject)
+{
+	m_pSet.erase(pObject);
+}
+
+bool CCollisionSet::Contains(void *pObject)
+{
+	return m_pSet.find(pObject) != m_pSet.end();
+}
+
+void CCollisionSet::Clear(void *pObject)
+{
+	m_pSet.clear();
+}
+
+unsigned int CCollisionSet::GetSize()
+{
+	return m_pSet.size();
+}
+
+bool CCollisionSet::HasElements()
+{
+	return !m_pSet.empty();
+}
+
+object CCollisionSet::Iterate()
+{
+	list oElements;
+
+	if (HasElements()) {
+		for (boost::unordered_set<void *>::const_iterator it = m_pSet.begin(); it != m_pSet.end(); it++) {
+			oElements.append(*it);
+		}
+	}
+
+	return oElements.attr("__iter__")();
+}
+
+void CCollisionSet::OnEntityDeleted(CBaseEntity *pEntity)
+{
+	Remove(pEntity);
+};
+
+bool CCollisionSet::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
+{
+	return !(Contains(pEntity) || Contains(pOther));
+};
 
 
 //-----------------------------------------------------------------------------
@@ -682,20 +750,16 @@ bool CCollisionListenerManager::CallCallbacks(object oEntity, object oOther)
 
 
 //-----------------------------------------------------------------------------
-// CEntityCollisionListenerManager singleton accessor.
+// Singleton accessors.
 //-----------------------------------------------------------------------------
-static CEntityCollisionListenerManager s_OnEntityCollision;
-CEntityCollisionListenerManager *GetOnEntityCollisionListenerManager()
+static CCollisionListenerManager s_OnEntityCollision;
+CCollisionListenerManager *GetOnEntityCollisionListenerManager()
 {
 	return &s_OnEntityCollision;
 }
 
-
-//-----------------------------------------------------------------------------
-// CPlayerCollisionListenerManager singleton accessor.
-//-----------------------------------------------------------------------------
-static CPlayerCollisionListenerManager s_OnPlayerCollision;
-CPlayerCollisionListenerManager *GetOnPlayerCollisionListenerManager()
+static CCollisionListenerManager s_OnPlayerCollision;
+CCollisionListenerManager *GetOnPlayerCollisionListenerManager()
 {
 	return &s_OnPlayerCollision;
 }
