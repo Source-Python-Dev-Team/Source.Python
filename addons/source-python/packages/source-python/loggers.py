@@ -61,6 +61,9 @@ addLevelName(EXCEPTION, 'EXCEPTION')
 # Store a formatter for use with the main log
 _main_log_formatter = Formatter('- %(name)s\t-\t%(levelname)s\n\t%(message)s')
 
+# SP's logs prefix
+SP_LOG_PREFIX = '[Source.Python] '
+
 
 # =============================================================================
 # >> CLASSES
@@ -68,7 +71,7 @@ _main_log_formatter = Formatter('- %(name)s\t-\t%(levelname)s\n\t%(message)s')
 class _LogInstance(dict):
     """Base logging class used to create child logging instances."""
 
-    def __init__(self, parent=None, name=None):
+    def __init__(self, parent=None, name=None, prefix=None):
         """Store the parent and gets a child of the parent.
 
         :param _LogInstance parent:
@@ -88,13 +91,16 @@ class _LogInstance(dict):
             # Store a child logging instance
             self._logger = self.parent.logger.getChild(name)
 
+        # Store the given prefix
+        self.prefix = prefix
+
     def __missing__(self, item):
         """Add new items as logging instances.
 
         :rtype: _LogInstance
         """
         # Get the new logging instance
-        value = self[item] = _LogInstance(self, item)
+        value = self[item] = _LogInstance(self, item, prefix=self.prefix)
 
         # Return the logging instance
         return value
@@ -242,6 +248,11 @@ class _LogInstance(dict):
             # Get the message to send
             message = _main_log_formatter.format(record)
 
+            # Prepend prefix
+            prefix = self.prefix
+            if prefix is not None:
+                message = prefix + message
+
             # Print to the main log
             engine_server.log_print(message + '\n')
 
@@ -252,6 +263,12 @@ class _LogInstance(dict):
             # If <engine>.log_print is called with logging being on,
             #   the console is already echoed with the message.
             from core import echo_console
+
+            # Prepend prefix
+            prefix = self.prefix
+            if prefix is not None:
+                msg = prefix + msg
+
             echo_console(msg)
 
         # Print to the script's log file?
@@ -336,7 +353,8 @@ class LogManager(AutoUnload, _LogInstance):
 
     def __init__(
             self, name, level, areas, filepath=None,
-            log_format=None, date_format=None, encoding='utf-8'):
+            log_format=None, date_format=None, encoding='utf-8',
+            prefix=None):
         """Store the base values and creates the logger.
 
         :param str name:
@@ -354,7 +372,7 @@ class LogManager(AutoUnload, _LogInstance):
             A custom date format that defines how the date is printed.
         """
         # Initialize the dictionary
-        super().__init__()
+        super().__init__(prefix=prefix)
 
         # Store the base formatter
         self._formatter = Formatter(log_format, date_format)
@@ -451,7 +469,8 @@ _sp_logger = LogManager(
     'sp', _level, _areas,
     'source-python.{0}'.format(date.today().strftime('%Y-%m-%d')),
     '%(asctime)s - %(logger_name)s\t-\t%(levelname)s\t%(message)s',
-    '%Y-%m-%d %H:%M:%S')
+    '%Y-%m-%d %H:%M:%S',
+    prefix=SP_LOG_PREFIX)
 
 # Set the parent logger level to allow all message types
 _sp_logger.logger.parent.level = DEBUG
