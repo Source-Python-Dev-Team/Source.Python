@@ -159,11 +159,24 @@ void InitHooks(CBaseEntity* pEntity)
 //---------------------------------------------------------------------------------
 bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 {
-	GET_LISTENER_MANAGER(OnPlayerRunCommand, run_command_manager);
-	GET_LISTENER_MANAGER(OnButtonStateChanged, button_state_manager);
+	bool bUsePreRegister;
 
-	if (!run_command_manager->GetCount() && !button_state_manager->GetCount())
-		return false;
+	if (hook_type == HOOKTYPE_PRE) {
+		GET_LISTENER_MANAGER(OnPlayerRunCommand, run_command_manager);
+		GET_LISTENER_MANAGER(OnButtonStateChanged, button_state_manager);
+
+		if (!run_command_manager->GetCount() && !button_state_manager->GetCount())
+			return false;
+	}
+	else {
+		bUsePreRegister = pHook->m_bUsePreRegisters;
+		pHook->m_bUsePreRegisters = true;
+
+		GET_LISTENER_MANAGER(OnPlayerPostRunCommand, post_run_command_manager);
+
+		if (!post_run_command_manager->GetCount())
+			return false;
+	}
 
 	static object Player = import("players.entity").attr("Player");
 
@@ -181,24 +194,35 @@ bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 #endif
 
 	object player = Player(index);
-	CALL_LISTENERS(OnPlayerRunCommand, player, ptr(pCmd));
 
-	if (button_state_manager->GetCount())
-	{
-		CBaseEntityWrapper* pWrapper = (CBaseEntityWrapper*) pEntity;
-		static int offset = pWrapper->FindDatamapPropertyOffset("m_nButtons");
+	if (hook_type == HOOKTYPE_PRE) {
+		CALL_LISTENERS(OnPlayerRunCommand, player, ptr(pCmd));
 
-		int buttons = pWrapper->GetDatamapPropertyByOffset<int>(offset);
-		if (buttons != pCmd->buttons)
+		GET_LISTENER_MANAGER(OnButtonStateChanged, button_state_manager);
+		if (button_state_manager->GetCount())
 		{
-			CALL_LISTENERS(OnButtonStateChanged, player, buttons, pCmd->buttons);
+			CBaseEntityWrapper* pWrapper = (CBaseEntityWrapper*) pEntity;
+			static int offset = pWrapper->FindDatamapPropertyOffset("m_nButtons");
+
+			int buttons = pWrapper->GetDatamapPropertyByOffset<int>(offset);
+			if (buttons != pCmd->buttons)
+			{
+				CALL_LISTENERS(OnButtonStateChanged, player, buttons, pCmd->buttons);
+			}
 		}
 	}
-	
+	else {
+		CALL_LISTENERS(OnPlayerPostRunCommand, player, ptr(pCmd));
+	}
+
 #if defined(ENGINE_BRANCH_TF2)
 	CUserCmd* pRealCmd = pHook->GetArgument<CUserCmd*>(1);
 	memcpy(pRealCmd, pCmd, sizeof(CUserCmd));
 #endif
+
+	if (hook_type == HOOKTYPE_POST) {
+		pHook->m_bUsePreRegisters = bUsePreRegister;
+	}
 
 	return false;
 }

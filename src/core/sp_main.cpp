@@ -268,6 +268,11 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		(HookHandlerFn*) (void*) &PrePlayerRunCommand,
 		HOOKTYPE_PRE));
 
+	g_EntityHooks.push_back(new PlayerHook(
+		"run_command",
+		(HookHandlerFn*) (void*) &PrePlayerRunCommand,
+		HOOKTYPE_POST));
+
 	InitHooks();
 	
 	Msg(MSG_PREFIX "Loaded successfully.\n");
