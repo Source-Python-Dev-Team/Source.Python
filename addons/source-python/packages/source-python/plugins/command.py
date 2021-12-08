@@ -269,4 +269,4 @@ class SubCommandManager(AutoUnload, list):
         :param str message:
             Message to log.
         """
-        self.logger.log_message(self.prefix + message)
+        self.logger.log_message(self.prefix + message, prepend_prefix=False)

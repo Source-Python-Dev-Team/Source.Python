@@ -233,6 +233,9 @@ class _LogInstance(dict):
         # Get the areas to be used
         areas = self.areas
 
+        # Get wether we should prepend prefix
+        prepend_prefix = kwargs.pop('prepend_prefix', self.prefix is not None)
+
         # Print to main log file?
         if MAIN_LOG & areas:
 
@@ -249,8 +252,7 @@ class _LogInstance(dict):
             message = _main_log_formatter.format(record)
 
             # Prepend prefix
-            prefix = self.prefix
-            if prefix is not None:
+            if prepend_prefix:
                 message = prefix + message
 
             # Print to the main log
@@ -265,9 +267,8 @@ class _LogInstance(dict):
             from core import echo_console
 
             # Prepend prefix
-            prefix = self.prefix
-            if prefix is not None:
-                msg = prefix + msg
+            if prepend_prefix:
+                msg = self.prefix + msg
 
             echo_console(msg)
 
