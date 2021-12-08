@@ -34,7 +34,6 @@
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
 #include "modules/entities/entities_entity.h"
-#include "modules/physics/physics.h"
 #include "modules/memory/memory_hooks.h"
 
 // Boost
@@ -42,7 +41,6 @@
 #include "boost/unordered_set.hpp"
 
 // SDK
-#include "vphysics/object_hash.h"
 #include "bitvec.h"
 
 
@@ -64,7 +62,7 @@ class CCollisionCache;
 typedef boost::unordered_map<CHook *, CollisionHookData_t> CollisionHooksMap_t;
 
 typedef CBitVec<MAX_EDICTS> CollisionTable_t;
-typedef boost::unordered_map<unsigned int, boost::shared_ptr<CCollisionTable>> CollisionHashMap_t;
+typedef boost::unordered_map<unsigned int, boost::shared_ptr<CCollisionTable>> CollisionFilterMap_t;
 
 typedef CBitVec<MAX_EDICTS> CollisionCache_t;
 typedef boost::unordered_map<unsigned int, CCollisionCache *> CollisionCacheMap_t;
@@ -134,13 +132,13 @@ public:
 
 
 //-----------------------------------------------------------------------------
-// CCollisionHash class.
+// CCollisionFilter class.
 //-----------------------------------------------------------------------------
-class CCollisionHash
+class CCollisionFilter
 {
 public:
-	CCollisionHash();
-	~CCollisionHash();
+	CCollisionFilter();
+	~CCollisionFilter();
 
 	boost::shared_ptr<CCollisionTable> GetCollisionTable(CBaseEntity *pActivator);
 	boost::shared_ptr<CCollisionTable> GetCollisionTable(unsigned int uiActivatorIndex);
@@ -172,7 +170,7 @@ public:
 	void UnloadInstance();
 
 private:
-	CollisionHashMap_t m_mapHash;
+	CollisionFilterMap_t m_mapFilter;
 };
 
 
@@ -208,8 +206,8 @@ public:
 	void Initialize();
 	void Finalize();
 
-	void RegisterHash(CCollisionHash *pHash);
-	void UnregisterHash(CCollisionHash *pHash);
+	void RegisterFilter(CCollisionFilter *pFilter);
+	void UnregisterFilter(CCollisionFilter *pFilter);
 
 	void OnNetworkedEntityCreated(object oEntity);
 	void OnNetworkedEntityDeleted(CBaseEntity *pEntity);
@@ -237,7 +235,7 @@ private:
 private:
 	bool m_bInitialized;
 	unsigned int m_uiRefCount;
-	CUtlVector<CCollisionHash *> m_vecHashes;
+	CUtlVector<CCollisionFilter *> m_vecFilteres;
 	CollisionHooksMap_t m_mapHooks;
 	std::vector<CollisionScope_t> m_vecScopes;
 

@@ -40,7 +40,6 @@
 // Externals.
 //-----------------------------------------------------------------------------
 extern IEngineTrace *enginetrace;
-extern IPhysics *physics;
 extern IServerTools *servertools;
 extern CGlobalVars *gpGlobals;
 
@@ -119,22 +118,22 @@ void CCollisionManager::Finalize()
 	m_bInitialized = false;
 }
 
-void CCollisionManager::RegisterHash(CCollisionHash *pHash)
+void CCollisionManager::RegisterFilter(CCollisionFilter *pFilter)
 {
-	if (m_vecHashes.HasElement(pHash)) {
+	if (m_vecFilteres.HasElement(pFilter)) {
 		BOOST_RAISE_EXCEPTION(
 			PyExc_ValueError,
-			"The given hash is already registered."
+			"The given filter is already registered."
 		);
 	}
 
 	IncRef();
-	m_vecHashes.AddToTail(pHash);
+	m_vecFilteres.AddToTail(pFilter);
 }
 
-void CCollisionManager::UnregisterHash(CCollisionHash *pHash)
+void CCollisionManager::UnregisterFilter(CCollisionFilter *pFilter)
 {
-	if (!m_vecHashes.FindAndRemove(pHash)) {
+	if (!m_vecFilteres.FindAndRemove(pFilter)) {
 		return;
 	}
 
@@ -160,8 +159,8 @@ void CCollisionManager::OnNetworkedEntityCreated(object oEntity)
 
 void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
 {
-	FOR_EACH_VEC(m_vecHashes, i) {
-		m_vecHashes[i]->Erase(pEntity);
+	FOR_EACH_VEC(m_vecFilteres, i) {
+		m_vecFilteres[i]->Erase(pEntity);
 	}
 }
 
@@ -422,8 +421,8 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		return true;
 	}
 
-	FOR_EACH_VEC(pManager->m_vecHashes, i) {
-		if (pManager->m_vecHashes[i]->IsSet(scope.m_uiIndex, uiIndex))  {
+	FOR_EACH_VEC(pManager->m_vecFilteres, i) {
+		if (pManager->m_vecFilteres[i]->IsSet(scope.m_uiIndex, uiIndex))  {
 			scope.m_pCache->SetResult(uiIndex, false);
 			return false;
 		}
@@ -636,63 +635,63 @@ list CCollisionTable::GetDisabled()
 
 
 //-----------------------------------------------------------------------------
-// CCollisionHash class.
+// CCollisionFilter class.
 //-----------------------------------------------------------------------------
-CCollisionHash::CCollisionHash()
+CCollisionFilter::CCollisionFilter()
 {
 	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->RegisterHash(this);
+	pManager->RegisterFilter(this);
 }
 
-CCollisionHash::~CCollisionHash()
+CCollisionFilter::~CCollisionFilter()
 {
 	UnloadInstance();
 }
 
-boost::shared_ptr<CCollisionTable> CCollisionHash::GetCollisionTable(CBaseEntity *pActivator)
+boost::shared_ptr<CCollisionTable> CCollisionFilter::GetCollisionTable(CBaseEntity *pActivator)
 {
 	unsigned int uiActivatorIndex = ExcIndexFromBaseEntity(pActivator);
 
-	CollisionHashMap_t::iterator it = m_mapHash.find(uiActivatorIndex);
-	if (it != m_mapHash.end())
+	CollisionFilterMap_t::iterator it = m_mapFilter.find(uiActivatorIndex);
+	if (it != m_mapFilter.end())
 		return it->second;
 
 	boost::shared_ptr<CCollisionTable> pCollisionTable(new CCollisionTable(uiActivatorIndex, pActivator));
-	m_mapHash.insert(std::make_pair(uiActivatorIndex, pCollisionTable));
+	m_mapFilter.insert(std::make_pair(uiActivatorIndex, pCollisionTable));
 
 	return pCollisionTable;
 }
 
-boost::shared_ptr<CCollisionTable> CCollisionHash::GetCollisionTable(unsigned int uiActivatorIndex)
+boost::shared_ptr<CCollisionTable> CCollisionFilter::GetCollisionTable(unsigned int uiActivatorIndex)
 {
-	CollisionHashMap_t::iterator it = m_mapHash.find(uiActivatorIndex);
-	if (it != m_mapHash.end())
+	CollisionFilterMap_t::iterator it = m_mapFilter.find(uiActivatorIndex);
+	if (it != m_mapFilter.end())
 		return it->second;
 
 	CBaseEntity *pActivator = ExcBaseEntityFromIndex(uiActivatorIndex);
 
 	boost::shared_ptr<CCollisionTable> pCollisionTable(new CCollisionTable(uiActivatorIndex, pActivator));
-	m_mapHash.insert(std::make_pair(uiActivatorIndex, pCollisionTable));
+	m_mapFilter.insert(std::make_pair(uiActivatorIndex, pCollisionTable));
 
 	return pCollisionTable;
 }
 
-void CCollisionHash::DisableFrom(CBaseEntity *pEntity, CBaseEntity *pActivator)
+void CCollisionFilter::DisableFrom(CBaseEntity *pEntity, CBaseEntity *pActivator)
 {
 	GetCollisionTable(pActivator)->Disable(pEntity);
 }
 
-void CCollisionHash::ResetFrom(CBaseEntity *pEntity, CBaseEntity *pActivator)
+void CCollisionFilter::ResetFrom(CBaseEntity *pEntity, CBaseEntity *pActivator)
 {
 	GetCollisionTable(pActivator)->Reset(pEntity);
 }
 
-bool CCollisionHash::IsDisabledFrom(CBaseEntity *pEntity, CBaseEntity *pActivator)
+bool CCollisionFilter::IsDisabledFrom(CBaseEntity *pEntity, CBaseEntity *pActivator)
 {
 	return GetCollisionTable(pActivator)->IsDisabled(pEntity);
 }
 
-void CCollisionHash::Disable(CBaseEntity *pEntity)
+void CCollisionFilter::Disable(CBaseEntity *pEntity)
 {
 	unsigned int uiIndex = ExcIndexFromBaseEntity(pEntity);
 
@@ -702,15 +701,15 @@ void CCollisionHash::Disable(CBaseEntity *pEntity)
 		unsigned int uiActivatorIndex;
 		if (IndexFromBaseEntity(pBaseEntity, uiActivatorIndex) && uiIndex != uiActivatorIndex)
 		{
-			CollisionHashMap_t::iterator it = m_mapHash.find(uiActivatorIndex);
-			if (it != m_mapHash.end())
+			CollisionFilterMap_t::iterator it = m_mapFilter.find(uiActivatorIndex);
+			if (it != m_mapFilter.end())
 			{
 				it->second->Set((int)uiIndex, true);
 			}
 			else
 			{
 				boost::shared_ptr<CCollisionTable> pCollisionTable(new CCollisionTable(uiActivatorIndex, pBaseEntity));
-				m_mapHash.insert(std::make_pair(uiActivatorIndex, pCollisionTable));
+				m_mapFilter.insert(std::make_pair(uiActivatorIndex, pCollisionTable));
 				pCollisionTable->Set((int)uiIndex, true);
 			}
 		}
@@ -719,21 +718,21 @@ void CCollisionHash::Disable(CBaseEntity *pEntity)
 	}
 }
 
-void CCollisionHash::Reset(CBaseEntity *pEntity)
+void CCollisionFilter::Reset(CBaseEntity *pEntity)
 {
 	unsigned int uiIndex = ExcIndexFromBaseEntity(pEntity);
 
-	for (CollisionHashMap_t::iterator it = m_mapHash.begin(); it != m_mapHash.end(); ++it)
+	for (CollisionFilterMap_t::iterator it = m_mapFilter.begin(); it != m_mapFilter.end(); ++it)
 	{
 		it->second->Set((int)uiIndex, false);
 	}
 }
 
-bool CCollisionHash::IsDisabled(CBaseEntity *pEntity)
+bool CCollisionFilter::IsDisabled(CBaseEntity *pEntity)
 {
 	unsigned int uiIndex = ExcIndexFromBaseEntity(pEntity);
 
-	for (CollisionHashMap_t::iterator it = m_mapHash.begin(); it != m_mapHash.end(); ++it)
+	for (CollisionFilterMap_t::iterator it = m_mapFilter.begin(); it != m_mapFilter.end(); ++it)
 	{
 		if (it->second->IsBitSet((int)uiIndex))
 			return true;
@@ -741,12 +740,12 @@ bool CCollisionHash::IsDisabled(CBaseEntity *pEntity)
 	return false;
 }
 
-int CCollisionHash::CountDisabled(CBaseEntity *pEntity)
+int CCollisionFilter::CountDisabled(CBaseEntity *pEntity)
 {
 	unsigned int uiIndex = ExcIndexFromBaseEntity(pEntity);
 
 	int count = 0;
-	for (CollisionHashMap_t::iterator it = m_mapHash.begin(); it != m_mapHash.end(); ++it)
+	for (CollisionFilterMap_t::iterator it = m_mapFilter.begin(); it != m_mapFilter.end(); ++it)
 	{
 		if (it->second->IsBitSet((int)uiIndex))
 			++count;
@@ -754,13 +753,13 @@ int CCollisionHash::CountDisabled(CBaseEntity *pEntity)
 	return count;
 }
 
-list CCollisionHash::GetDisabledActivator(CBaseEntity *pEntity)
+list CCollisionFilter::GetDisabledActivator(CBaseEntity *pEntity)
 {
 	unsigned int uiIndex = ExcIndexFromBaseEntity(pEntity);
 
 	list oEntities;
 
-	for (CollisionHashMap_t::iterator it = m_mapHash.begin(); it != m_mapHash.end(); ++it)
+	for (CollisionFilterMap_t::iterator it = m_mapFilter.begin(); it != m_mapFilter.end(); ++it)
 	{
 		boost::shared_ptr<CCollisionTable> pCollisionTable = it->second;
 		if (pCollisionTable->IsBitSet((int)uiIndex))
@@ -770,7 +769,7 @@ list CCollisionHash::GetDisabledActivator(CBaseEntity *pEntity)
 	return oEntities;
 }
 
-void CCollisionHash::AddPair(CBaseEntity *pEntity, CBaseEntity *pOther)
+void CCollisionFilter::AddPair(CBaseEntity *pEntity, CBaseEntity *pOther)
 {
 	if (pEntity == pOther)
 		return;
@@ -782,54 +781,54 @@ void CCollisionHash::AddPair(CBaseEntity *pEntity, CBaseEntity *pOther)
 	pOtherTable->Set((int)pEntityTable->m_uiActivatorIndex, true);
 }
 
-void CCollisionHash::RemovePair(CBaseEntity *pEntity, CBaseEntity *pOther)
+void CCollisionFilter::RemovePair(CBaseEntity *pEntity, CBaseEntity *pOther)
 {
 	unsigned int uiEntityIndex = ExcIndexFromBaseEntity(pEntity);
 	unsigned int uiOtherIndex = ExcIndexFromBaseEntity(pOther);
 
-	CollisionHashMap_t::iterator it;
+	CollisionFilterMap_t::iterator it;
 
-	it = m_mapHash.find(uiEntityIndex);
-	if (it != m_mapHash.end())
+	it = m_mapFilter.find(uiEntityIndex);
+	if (it != m_mapFilter.end())
 		it->second->Set((int)uiOtherIndex, false);
 
-	it = m_mapHash.find(uiOtherIndex);
-	if (it != m_mapHash.end())
+	it = m_mapFilter.find(uiOtherIndex);
+	if (it != m_mapFilter.end())
 		it->second->Set((int)uiEntityIndex, false);
 }
 
-bool CCollisionHash::HasPair(CBaseEntity *pEntity, CBaseEntity *pOther)
+bool CCollisionFilter::HasPair(CBaseEntity *pEntity, CBaseEntity *pOther)
 {
 	unsigned int uiEntityIndex = ExcIndexFromBaseEntity(pEntity);
 	unsigned int uiOtherIndex = ExcIndexFromBaseEntity(pOther);
 
-	CollisionHashMap_t::iterator it;
+	CollisionFilterMap_t::iterator it;
 
-	it = m_mapHash.find(uiEntityIndex);
-	if (it != m_mapHash.end() && !it->second->IsBitSet((int)uiOtherIndex))
+	it = m_mapFilter.find(uiEntityIndex);
+	if (it == m_mapFilter.end() || !it->second->IsBitSet((int)uiOtherIndex))
 		return false;
 
-	it = m_mapHash.find(uiOtherIndex);
-	if (it != m_mapHash.end() && !it->second->IsBitSet((int)uiEntityIndex))
+	it = m_mapFilter.find(uiOtherIndex);
+	if (it == m_mapFilter.end() || !it->second->IsBitSet((int)uiEntityIndex))
 		return false;
 
 	return true;
 }
 
-void CCollisionHash::RemovePairs(CBaseEntity *pEntity)
+void CCollisionFilter::RemovePairs(CBaseEntity *pEntity)
 {
 	unsigned int uiEntityIndex = ExcIndexFromBaseEntity(pEntity);
 
-	CollisionHashMap_t::iterator it = m_mapHash.find(uiEntityIndex);
-	if (it != m_mapHash.end())
+	CollisionFilterMap_t::iterator it = m_mapFilter.find(uiEntityIndex);
+	if (it != m_mapFilter.end())
 	{
 		boost::shared_ptr<CCollisionTable> pEntityTable = it->second;
 
 		for (unsigned int uiOtherIndex = 0; uiOtherIndex < MAX_EDICTS; ++uiOtherIndex) {
 			if (pEntityTable->IsBitSet((int)uiOtherIndex))
 			{
-				CollisionHashMap_t::iterator it = m_mapHash.find(uiOtherIndex);
-				if (it != m_mapHash.end())
+				CollisionFilterMap_t::iterator it = m_mapFilter.find(uiOtherIndex);
+				if (it != m_mapFilter.end())
 				{
 					boost::shared_ptr<CCollisionTable> pOtherTable = it->second;
 					if (pOtherTable->IsBitSet((int)uiEntityIndex))
@@ -843,21 +842,21 @@ void CCollisionHash::RemovePairs(CBaseEntity *pEntity)
 	}
 }
 
-int CCollisionHash::CountPairs(CBaseEntity *pEntity)
+int CCollisionFilter::CountPairs(CBaseEntity *pEntity)
 {
 	unsigned int uiEntityIndex = ExcIndexFromBaseEntity(pEntity);
 
 	int count = 0;
-	CollisionHashMap_t::iterator it = m_mapHash.find(uiEntityIndex);
-	if (it != m_mapHash.end())
+	CollisionFilterMap_t::iterator it = m_mapFilter.find(uiEntityIndex);
+	if (it != m_mapFilter.end())
 	{
 		boost::shared_ptr<CCollisionTable> pEntityTable = it->second;
 
 		for (unsigned int uiOtherIndex = 0; uiOtherIndex < MAX_EDICTS; ++uiOtherIndex) {
 			if (pEntityTable->IsBitSet((int)uiOtherIndex))
 			{
-				CollisionHashMap_t::iterator it = m_mapHash.find(uiOtherIndex);
-				if (it != m_mapHash.end() && it->second->IsBitSet((int)uiEntityIndex))
+				CollisionFilterMap_t::iterator it = m_mapFilter.find(uiOtherIndex);
+				if (it != m_mapFilter.end() && it->second->IsBitSet((int)uiEntityIndex))
 					++count;
 			}
 		}
@@ -866,21 +865,21 @@ int CCollisionHash::CountPairs(CBaseEntity *pEntity)
 	return count;
 }
 
-list CCollisionHash::GetPairs(CBaseEntity *pEntity)
+list CCollisionFilter::GetPairs(CBaseEntity *pEntity)
 {
 	unsigned int uiEntityIndex = ExcIndexFromBaseEntity(pEntity);
 
 	list oEntities;
-	CollisionHashMap_t::iterator it = m_mapHash.find(uiEntityIndex);
-	if (it != m_mapHash.end())
+	CollisionFilterMap_t::iterator it = m_mapFilter.find(uiEntityIndex);
+	if (it != m_mapFilter.end())
 	{
 		boost::shared_ptr<CCollisionTable> pEntityTable = it->second;
 
 		for (unsigned int uiOtherIndex = 0; uiOtherIndex < MAX_EDICTS; ++uiOtherIndex) {
 			if (pEntityTable->IsBitSet((int)uiOtherIndex))
 			{
-				CollisionHashMap_t::iterator it = m_mapHash.find(uiOtherIndex);
-				if (it != m_mapHash.end())
+				CollisionFilterMap_t::iterator it = m_mapFilter.find(uiOtherIndex);
+				if (it != m_mapFilter.end())
 				{
 					boost::shared_ptr<CCollisionTable> pOtherTable = it->second;
 					if (pOtherTable->IsBitSet((int)uiEntityIndex))
@@ -895,38 +894,38 @@ list CCollisionHash::GetPairs(CBaseEntity *pEntity)
 	return oEntities;
 }
 
-void CCollisionHash::Clear()
+void CCollisionFilter::Clear()
 {
-	for (CollisionHashMap_t::iterator it = m_mapHash.begin(); it != m_mapHash.end(); ++it)
+	for (CollisionFilterMap_t::iterator it = m_mapFilter.begin(); it != m_mapFilter.end(); ++it)
 	{
 		it->second->ClearAll();
 	}
 }
 
-inline bool CCollisionHash::IsSet(unsigned int uiActivatorIndex, unsigned int uiOtherIndex)
+inline bool CCollisionFilter::IsSet(unsigned int uiActivatorIndex, unsigned int uiOtherIndex)
 {
-	CollisionHashMap_t::iterator it = m_mapHash.find(uiActivatorIndex);
-	if (it != m_mapHash.end() && it->second->IsBitSet((int)uiOtherIndex))
+	CollisionFilterMap_t::iterator it = m_mapFilter.find(uiActivatorIndex);
+	if (it != m_mapFilter.end() && it->second->IsBitSet((int)uiOtherIndex))
 		return true;
 
 	return false;
 }
 
-inline void CCollisionHash::Erase(CBaseEntity *pEntity)
+inline void CCollisionFilter::Erase(CBaseEntity *pEntity)
 {
 	unsigned int uiIndex = ((CBaseEntityWrapper *)pEntity)->GetIndex();
-	m_mapHash.erase(uiIndex);
+	m_mapFilter.erase(uiIndex);
 
-	for (CollisionHashMap_t::iterator it = m_mapHash.begin(); it != m_mapHash.end(); ++it)
+	for (CollisionFilterMap_t::iterator it = m_mapFilter.begin(); it != m_mapFilter.end(); ++it)
 	{
 		it->second->Set((int)uiIndex, false);
 	}
 }
 
-void CCollisionHash::UnloadInstance()
+void CCollisionFilter::UnloadInstance()
 {
 	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->UnregisterHash(this);
+	pManager->UnregisterFilter(this);
 }
 
 

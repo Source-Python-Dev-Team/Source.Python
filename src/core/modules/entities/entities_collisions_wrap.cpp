@@ -37,7 +37,7 @@
 //-----------------------------------------------------------------------------
 static void export_collision_manager(scope);
 static void export_collision_table(scope);
-static void export_collision_hash(scope);
+static void export_collision_filter(scope);
 
 
 //-----------------------------------------------------------------------------
@@ -47,12 +47,12 @@ DECLARE_SP_SUBMODULE(_entities, _collisions)
 {
 	export_collision_manager(_collisions);
 	export_collision_table(_collisions);
-	export_collision_hash(_collisions);
+	export_collision_filter(_collisions);
 }
 
 
 //-----------------------------------------------------------------------------
-// Exports ICollisionHash.
+// Exports CCollisionManager.
 //-----------------------------------------------------------------------------
 void export_collision_manager(scope _collisions)
 {
@@ -161,120 +161,120 @@ void export_collision_table(scope _collisions)
 
 
 //-----------------------------------------------------------------------------
-// Exports CCollisionHash.
+// Exports CCollisionFilter.
 //-----------------------------------------------------------------------------
-void export_collision_hash(scope _collisions)
+void export_collision_filter(scope _collisions)
 {
-	class_<CCollisionHash, boost::noncopyable> CollisionHash("CollisionHash");
+	class_<CCollisionFilter, boost::noncopyable> CollisionFilter("CollisionFilter");
 
 	// Methods...
-	CollisionHash.def(
+	CollisionFilter.def(
 		"get_collision_table",
-		GET_METHOD(boost::shared_ptr<CCollisionTable>, CCollisionHash, GetCollisionTable, CBaseEntity *),
+		GET_METHOD(boost::shared_ptr<CCollisionTable>, CCollisionFilter, GetCollisionTable, CBaseEntity *),
 		"Returns the CollisionTable for the given activator entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"disable_from",
-		&CCollisionHash::DisableFrom,
+		&CCollisionFilter::DisableFrom,
 		"Disables collision of the given entity from the activator entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"reset_from",
-		&CCollisionHash::ResetFrom,
+		&CCollisionFilter::ResetFrom,
 		"Resets collision of the given entity from the activator entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"is_disabled_from",
-		&CCollisionHash::IsDisabledFrom,
+		&CCollisionFilter::IsDisabledFrom,
 		"Returns whether collision of the given entity is disabled from the activator entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"disable",
-		&CCollisionHash::Disable,
+		&CCollisionFilter::Disable,
 		"Disables collision of the given entity in all activator entities."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"reset",
-		&CCollisionHash::Reset,
+		&CCollisionFilter::Reset,
 		"Resets collision of the given entity in all activator entities."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"is_disabled",
-		&CCollisionHash::IsDisabled,
+		&CCollisionFilter::IsDisabled,
 		"Returns whether collision of the given entity has been disabled for any activator entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"get_disabled_activator",
-		&CCollisionHash::GetDisabledActivator,
+		&CCollisionFilter::GetDisabledActivator,
 		"Returns a list of activator entities with collision disabled for the given entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"add_pair",
-		&CCollisionHash::AddPair,
-		"Adds the given entity pair to the hash."
+		&CCollisionFilter::AddPair,
+		"Adds the given entity pair to the filter."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"remove_pair",
-		&CCollisionHash::RemovePair,
-		"Removes the given pair from the hash."
+		&CCollisionFilter::RemovePair,
+		"Removes the given pair from the filter."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"has_pair",
-		&CCollisionHash::HasPair,
-		"Returns whether the given pair is in the hash."
+		&CCollisionFilter::HasPair,
+		"Returns whether the given pair is in the filter."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"remove_pairs",
-		&CCollisionHash::RemovePairs,
+		&CCollisionFilter::RemovePairs,
 		"Removes all pairs associated with the given entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"count_pairs",
-		&CCollisionHash::CountPairs,
+		&CCollisionFilter::CountPairs,
 		"Returns the amount of pairs associated with the given entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"get_pairs",
-		&CCollisionHash::GetPairs,
+		&CCollisionFilter::GetPairs,
 		"Returns a list of all entities associated with the given entity."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"clear",
-		&CCollisionHash::Clear,
+		&CCollisionFilter::Clear,
 		"Resets collision across all entities in all activator entities."
 	);
 
 	// Special methods...
-	CollisionHash.def(
+	CollisionFilter.def(
 		"__getitem__",
-		GET_METHOD(boost::shared_ptr<CCollisionTable>, CCollisionHash, GetCollisionTable, unsigned int),
+		GET_METHOD(boost::shared_ptr<CCollisionTable>, CCollisionFilter, GetCollisionTable, unsigned int),
 		"Returns the CollisionTable for the given activator entity index."
 	);
 
-	CollisionHash.def(
+	CollisionFilter.def(
 		"__contains__",
-		&CCollisionHash::IsDisabled,
+		&CCollisionFilter::IsDisabled,
 		"Returns whether collision of the given entity has been disabled for any activator entity."
 	);
 
 	// AutoUnload...
-	CollisionHash.def(
+	CollisionFilter.def(
 		"_unload_instance",
-		&CCollisionHash::UnloadInstance,
+		&CCollisionFilter::UnloadInstance,
 		"Called when an instance is being unloaded."
 	);
 }

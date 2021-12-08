@@ -19,7 +19,7 @@ from engines.trace import ContentMasks
 # =============================================================================
 # Source.Python Imports
 #   Entities
-from _entities._collisions import CollisionHash
+from _entities._collisions import CollisionFilter
 from _entities._collisions import CollisionManager
 from _entities._collisions import CollisionTable
 from _entities._collisions import collision_manager
@@ -29,7 +29,7 @@ from _entities._collisions import collision_manager
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('SOLID_MASKS',
-           'CollisionHash',
+           'CollisionFilter',
            'CollisionHook',
            'CollisionManager',
            'CollisionTable',
@@ -40,9 +40,9 @@ __all__ = ('SOLID_MASKS',
 # =============================================================================
 # >> INITIALIZATION
 # =============================================================================
-# Inject AutoUnload into CollisionHash's hierarchy.
-if not issubclass(CollisionHash, AutoUnload):
-    CollisionHash.__bases__ = (AutoUnload,) + CollisionHash.__bases__
+# Inject AutoUnload into CollisionFilter's hierarchy.
+if not issubclass(CollisionFilter, AutoUnload):
+    CollisionFilter.__bases__ = (AutoUnload,) + CollisionFilter.__bases__
 
 
 # =============================================================================
