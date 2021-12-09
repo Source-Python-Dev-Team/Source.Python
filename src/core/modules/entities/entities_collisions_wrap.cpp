@@ -157,11 +157,23 @@ void export_collision_hash(scope _collisions)
 		"Returns a list of all entities associated with the given entity."
 	);
 
+	CollisionHash.def(
+		"clear",
+		&CCollisionHash::Clear,
+		"Removes all elements from the hash."
+	);
+
 	// Special methods...
 	CollisionHash.def(
 		"__contains__",
 		&CCollisionHash::Contains,
 		"Returns whether the given entity is in the hash."
+	);
+
+	CollisionHash.def(
+		"__len__",
+		&CCollisionHash::GetSize,
+		"Returns the size of the collision hash."
 	);
 }
 

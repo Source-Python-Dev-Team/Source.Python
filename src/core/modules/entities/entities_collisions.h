@@ -34,7 +34,6 @@
 #include "sp_main.h"
 #include "modules/listeners/listeners_manager.h"
 #include "modules/entities/entities_entity.h"
-#include "modules/physics/physics.h"
 #include "modules/memory/memory_hooks.h"
 
 // Boost
@@ -65,6 +64,8 @@ typedef boost::unordered_map<CHook *, CollisionHookData_t> CollisionHooksMap_t;
 typedef CBitVec<MAX_EDICTS> CollisionCache_t;
 typedef boost::unordered_map<unsigned int, CCollisionCache *> CollisionCacheMap_t;
 
+typedef std::pair<void *, void *> CollisionPair_t;
+
 
 //-----------------------------------------------------------------------------
 // CTraceFilterSimpleWrapper class.
@@ -89,7 +90,7 @@ struct CollisionScope_t
 	CTraceFilterSimpleWrapper *m_pFilter;
 	ShouldHitFunc_t m_pExtraShouldHitCheckFunction;
 	CCollisionCache *m_pCache;
-	int m_nMask;
+	object m_oMask;
 	bool m_bSolidContents;
 };
 
@@ -121,14 +122,32 @@ public:
 
 
 //-----------------------------------------------------------------------------
+// CollisionPairs_t definition and specializations.
+//-----------------------------------------------------------------------------
+namespace boost {
+	inline std::size_t hash_value(CollisionPair_t const &p) {
+		std::size_t s = 0;
+		boost::hash_combine(s, p.first < p.second ? p.first : p.second);
+		boost::hash_combine(s, p.first < p.second ? p.second : p.first);
+		return s;
+	}
+
+	struct hash_equals {
+		inline bool operator()(const CollisionPair_t &a, const CollisionPair_t &b) const {
+			return (a.first == b.first && a.second == b.second) || (a.first == b.second && a.second == b.first); 
+		}
+	};
+}
+
+typedef boost::unordered_set<CollisionPair_t, boost::hash<CollisionPair_t>, boost::hash_equals> CollisionPairs_t;
+
+
+//-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
 class CCollisionHash : public ICollisionRules
 {
 public:
-	CCollisionHash();
-	~CCollisionHash();
-
 	void OnEntityDeleted(CBaseEntity *pEntity);
 	bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther);
 
@@ -136,14 +155,18 @@ public:
 	void RemovePair(void *pObject, void *pOther);
 	void RemovePairs(void *pObject);
 
+	void Clear();
+
 	bool Contains(void *pObject);
 	bool HasPair(void *pObject, void *pOther);
 
-	int GetCount(void *pObject);
+	unsigned int GetCount(void *pObject);
 	list GetPairs(void *pObject);
 
+	unsigned int GetSize();
+
 private:
-	IPhysicsObjectPairHash *m_pHash;
+	CollisionPairs_t m_setPairs;
 };
 
 

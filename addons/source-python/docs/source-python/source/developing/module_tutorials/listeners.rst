@@ -329,7 +329,11 @@ OnEntityCollision
 
 Called when a non-player entity is about to collide with another entity.
 
-.. note:: This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash` if you don't have dynamic conditions to test for.
+.. note::
+
+    This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash`,
+    :class:`entities.collisions.CollisionMap`, or :class:`entities.collisions.CollisionSet`
+    if you don't have dynamic conditions to test for.
 
 .. code-block:: python
 
@@ -428,7 +432,11 @@ OnPlayerCollision
 
 Called when a player is about to collide with an entity.
 
-.. note:: This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash` if you don't have dynamic conditions to test for.
+.. note::
+
+    This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash`,
+    :class:`entities.collisions.CollisionMap`, or :class:`entities.collisions.CollisionSet`
+    if you don't have dynamic conditions to test for.
 
 .. code-block:: python
 

@@ -40,7 +40,6 @@
 // Externals.
 //-----------------------------------------------------------------------------
 extern IEngineTrace *enginetrace;
-extern IPhysics *physics;
 extern CGlobalVars *gpGlobals;
 
 
@@ -323,7 +322,10 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 	}
 
 	scope.m_pFilter = pWrapper;
-	scope.m_nMask = nMask;
+
+	static object ContentFlags = import("engines").attr("trace").attr("ContentFlags");
+	scope.m_oMask = ContentFlags(nMask);
+
 	scope.m_bSolidContents = bSolidContents;
 	scope.m_uiIndex = uiIndex;
 	scope.m_bIsPlayer = ((CBaseEntityWrapper *)pWrapper->m_pPassEnt)->IsPlayer();
@@ -399,12 +401,9 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 
 		object oFilter = object(ptr((ITraceFilter *)scope.m_pFilter));
 
-		static object ContentFlags = import("engines").attr("trace").attr("ContentFlags");
-		object oMask = ContentFlags(scope.m_nMask);
-
 		FOR_EACH_VEC(pManager->m_pCollisionHooks->m_vecCallables, i) {
 			BEGIN_BOOST_PY()
-				object oResult = pManager->m_pCollisionHooks->m_vecCallables[i](oEntity, oOther, oFilter, oMask);
+				object oResult = pManager->m_pCollisionHooks->m_vecCallables[i](oEntity, oOther, oFilter, scope.m_oMask);
 				if (!oResult.is_none() && !extract<bool>(oResult)) {
 					scope.m_pCache->SetResult(uiIndex, false);
 					return false;
@@ -546,27 +545,6 @@ void CCollisionCache::SetResult(unsigned int uiIndex, bool bResult)
 //-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
-CCollisionHash::CCollisionHash()
-{
-	m_pHash = physics->CreateObjectPairHash();
-
-	if (!m_pHash) {
-		BOOST_RAISE_EXCEPTION(
-			PyExc_RuntimeError,
-			"Failed to create a collision hash."
-		)
-	}
-}
-
-CCollisionHash::~CCollisionHash()
-{
-	if (!m_pHash) {
-		return;
-	}
-
-	physics->DestroyObjectPairHash(m_pHash);
-}
-
 void CCollisionHash::OnEntityDeleted(CBaseEntity *pEntity)
 {
 	RemovePairs(pEntity);
@@ -586,56 +564,80 @@ void CCollisionHash::AddPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pO
 		)
 	}
 
-	m_pHash->AddObjectPair(pEntity, pOther);
+	m_setPairs.insert(CollisionPair_t(pEntity, pOther));
 }
 
 void CCollisionHash::RemovePair(void *pObject, void *pOther)
 {
-	m_pHash->RemoveObjectPair(pObject, pOther);
+	m_setPairs.erase(CollisionPair_t(pObject, pOther));
 }
 
 void CCollisionHash::RemovePairs(void *pObject)
 {
-	m_pHash->RemoveAllPairsForObject(pObject);
+	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ) {
+		CollisionPair_t p = *it;
+		if (p.first == pObject || p.second == pObject) {
+			m_setPairs.erase(it);
+		}
+
+		++it;
+	}
+}
+
+void CCollisionHash::Clear()
+{
+	m_setPairs.clear();
 }
 
 bool CCollisionHash::Contains(void *pObject)
 {
-	return m_pHash->IsObjectInHash(pObject);
+	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ++it) {
+		CollisionPair_t p = *it;
+		if (p.first == pObject || p.second == pObject) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 bool CCollisionHash::HasPair(void *pObject, void *pOther)
 {
-	return m_pHash->IsObjectPairInHash(pObject, pOther);
+	return m_setPairs.find(CollisionPair_t(pObject, pOther)) != m_setPairs.end();
 }
 
-int CCollisionHash::GetCount(void *pObject)
+unsigned int CCollisionHash::GetCount(void *pObject)
 {
-	return m_pHash->GetPairCountForObject(pObject);
+	unsigned int nCount = 0;
+	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ++it) {
+		CollisionPair_t p = *it;
+		if (p.first == pObject || p.second == pObject) {
+			++nCount;
+		}
+	}
+
+	return nCount;
 }
 
 list CCollisionHash::GetPairs(void *pObject)
 {
 	list oObjects;
-	int nCount = m_pHash->GetPairCountForObject(pObject);
-
-	if (!nCount) {
-		return oObjects;
-	}
-
-	void **ppObjects = (void **)stackalloc(nCount * sizeof(void *));
-	m_pHash->GetPairListForObject(pObject, nCount, ppObjects);
-
-	for (int i = 0; i < nCount; ++i) {
-		pObject = ppObjects[i];
-		if (!pObject) {
-			continue;
+	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ++it) {
+		CollisionPair_t p = *it;
+		if (p.first == pObject) {
+			oObjects.append(p.second);
 		}
-
-		oObjects.append(pObject);
+		else if (p.second == pObject) {
+			oObjects.append(p.first);
+		}
 	}
 
 	return oObjects;
+}
+
+unsigned int CCollisionHash::GetSize()
+{
+	return m_setPairs.size();
 }
 
 
