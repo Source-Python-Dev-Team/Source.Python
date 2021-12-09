@@ -253,7 +253,7 @@ class _LogInstance(dict):
 
             # Prepend prefix
             if prepend_prefix:
-                message = prefix + message
+                message = self.prefix + message
 
             # Print to the main log
             engine_server.log_print(message + '\n')

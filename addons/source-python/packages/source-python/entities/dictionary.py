@@ -8,10 +8,13 @@
 # Source.Python Imports
 #   Core
 from core import AutoUnload
+#   Filters
+from filters.entities import EntityIter
 #   Entities
 from entities.entity import Entity
 from entities.helpers import index_from_inthandle
 #   Listeners
+from listeners import on_networked_entity_created_listener_manager
 from listeners import on_networked_entity_deleted_listener_manager
 
 
@@ -19,6 +22,7 @@ from listeners import on_networked_entity_deleted_listener_manager
 # >> ALL DECLARATION
 # ============================================================================
 __all__ = ('EntityDictionary',
+           'SyncedEntityDictionary',
            )
 
 
@@ -140,3 +144,89 @@ class EntityDictionary(AutoUnload, dict):
         """Unregister our networked entity deletion listener."""
         on_networked_entity_deleted_listener_manager.unregister_listener(
             self._on_networked_entity_deleted)
+
+
+class SyncedEntityDictionary(EntityDictionary):
+    """Helper class used to keep entity instances synced with the game."""
+
+    def __init__(
+            self, factory=Entity, iterator=EntityIter(), *args, **kwargs):
+        """Initializes the dictionary.
+
+        :param callable factory:
+            Factory class or function.
+
+            Factory signature: index, *args, **kwargs
+        :param iterable iterator:
+            Iterator used to generates instances on initialization and resync.
+        :param tuple args:
+            Arguments passed to the factory class or function.
+        :param dict kwargs:
+            Keyword arguments passed to the factory class or function.
+
+        :raise ValueError:
+            If the factory is set to None.
+        """
+        if factory is None:
+            raise ValueError(
+                'Factory cannot be None for synced dictionaries.')
+
+        # Initialize the dictionary
+        super().__init__(factory, *args, **kwargs)
+
+        # Store the given iterator and resync the dictionary
+        self._iterator = iterator
+        self.resync()
+
+        # Register our networked entity creation listener
+        on_networked_entity_created_listener_manager.register_listener(
+            self._on_networked_entity_created)
+
+    def __missing__(self, index):
+        """Raises a KeyError, because creation of missing instances is not
+            allowed for synced dictionaries.
+        """
+        raise KeyError(index)
+
+    def resync(self):
+        """Resync the dictionary with the game."""
+        # Clear the dictionary
+        self.clear()
+
+        # Loop through all entities and add them to the dictionary
+        for entity in self._iterator:
+            self._on_networked_entity_created(entity)
+
+    def on_automatically_created(self, index):
+        """Called when an index is automatically added.
+
+        :param int index:
+            The index of the entity instance being added.
+        """
+
+    def _on_networked_entity_created(self, entity):
+        """Internal networked entity creation callback.
+
+        :param Entity entity:
+            The networked entity being created.
+        """
+        # Validate the entity
+        if not self._iterator._is_valid(entity):
+            return
+
+        # Get the index of the entity
+        index = entity.index
+
+        # Add the index to the dictionary
+        super().__missing__(index)
+
+        # Call the creation callback for the index
+        self.on_automatically_created(index)
+
+    def _unload_instance(self):
+        """Unregister our networked entity creation listener."""
+        on_networked_entity_created_listener_manager.unregister_listener(
+            self._on_networked_entity_created)
+
+        # Unload the dictionary
+        super()._unload_instance()
