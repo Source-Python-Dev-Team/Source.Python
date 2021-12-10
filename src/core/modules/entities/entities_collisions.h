@@ -49,6 +49,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 struct CollisionHookData_t;
+class CCollisionSet;
 class CCollisionCache;
 
 
@@ -65,6 +66,7 @@ typedef CBitVec<MAX_EDICTS> CollisionCache_t;
 typedef boost::unordered_map<unsigned int, CCollisionCache *> CollisionCacheMap_t;
 
 typedef std::pair<void *, void *> CollisionPair_t;
+typedef boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> > CollisionMap_t;
 
 
 //-----------------------------------------------------------------------------
@@ -181,7 +183,7 @@ public:
 
 	void Add(CBaseEntityWrapper *pEntity);
 	void Remove(void *pObject);
-	void Clear(void *pObject);
+	void Clear();
 
 	bool Contains(void *pObject);
 	unsigned int GetSize();
@@ -218,7 +220,7 @@ public:
 	object Iterate();
 
 private:
-	boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> > m_mapSets;
+	CollisionMap_t m_mapSets;
 };
 
 

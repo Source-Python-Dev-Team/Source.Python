@@ -682,7 +682,7 @@ bool CCollisionSet::Contains(void *pObject)
 	return m_pSet.find(pObject) != m_pSet.end();
 }
 
-void CCollisionSet::Clear(void *pObject)
+void CCollisionSet::Clear()
 {
 	m_pSet.clear();
 }
@@ -726,21 +726,13 @@ bool CCollisionSet::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
 //-----------------------------------------------------------------------------
 boost::shared_ptr<CCollisionSet> CCollisionMap::Find(CBaseEntityWrapper *pEntity)
 {
-	boost::shared_ptr<CCollisionSet> spSet;
-	spSet = m_mapSets[pEntity];
-
-	if (!get_pointer(spSet)) {
-		if (!pEntity->IsNetworked()) {
-			BOOST_RAISE_EXCEPTION(
-				PyExc_ValueError,
-				"Given entity is not networked."
-			)
-		}
-
-		spSet = boost::shared_ptr<CCollisionSet>(new CCollisionSet(false));
-		m_mapSets[pEntity] = spSet;
+	CollisionMap_t::const_iterator it = m_mapSets.find(pEntity);
+	if (it != m_mapSets.end()) {
+		return it->second;
 	}
 
+	boost::shared_ptr<CCollisionSet> spSet = boost::shared_ptr<CCollisionSet>(new CCollisionSet(false));
+	m_mapSets[pEntity] = spSet;
 	return spSet;
 }
 
@@ -774,8 +766,7 @@ object CCollisionMap::Iterate()
 	list oElements;
 
 	if (HasElements()) {
-		for (boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> >::const_iterator it = m_mapSets.begin();
-				it != m_mapSets.end(); it++) {
+		for (CollisionMap_t::const_iterator it = m_mapSets.begin(); it != m_mapSets.end(); it++) {
 			oElements.append(make_tuple(object(it->first), object(it->second)));
 		}
 	}
@@ -785,8 +776,7 @@ object CCollisionMap::Iterate()
 
 void CCollisionMap::OnEntityDeleted(CBaseEntity *pEntity)
 {
-	for (boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> >::const_iterator it = m_mapSets.begin();
-			it != m_mapSets.end(); it++) {
+	for (CollisionMap_t::const_iterator it = m_mapSets.begin(); it != m_mapSets.end(); it++) {
 		it->second->OnEntityDeleted(pEntity);
 	}
 
@@ -795,8 +785,14 @@ void CCollisionMap::OnEntityDeleted(CBaseEntity *pEntity)
 
 bool CCollisionMap::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
 {
-	CCollisionSet *pSet = get_pointer(m_mapSets[pEntity]);
+	CollisionMap_t::const_iterator it = m_mapSets.find(pEntity);
+	if (it == m_mapSets.end()) {
+		return true;
+	}
+
+	CCollisionSet *pSet = get_pointer(it->second);
 	if (!pSet) {
+		m_mapSets.erase(it);
 		return true;
 	}
 
