@@ -700,7 +700,7 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 
 	// Cleanup active collision hashes.
 	static CCollisionManager *pCollisionManager = GetCollisionManager();
-	pCollisionManager->OnNetworkedEntityDeleted(pEntity);
+	pCollisionManager->OnNetworkedEntityDeleted((CBaseEntityWrapper *)pEntity);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

@@ -36,6 +36,7 @@
 // Forward declarations.
 //-----------------------------------------------------------------------------
 static void export_collision_manager(scope);
+static void export_collision_mode(scope);
 static void export_collision_rules(scope);
 static void export_collision_hash(scope);
 static void export_collision_set(scope);
@@ -48,6 +49,7 @@ static void export_collision_map(scope);
 DECLARE_SP_SUBMODULE(_entities, _collisions)
 {
 	export_collision_manager(_collisions);
+	export_collision_mode(_collisions);
 	export_collision_rules(_collisions);
 	export_collision_hash(_collisions);
 	export_collision_set(_collisions);
@@ -88,16 +90,37 @@ void export_collision_manager(scope _collisions)
 
 
 //-----------------------------------------------------------------------------
+// Exports ECollisionMode.
+//-----------------------------------------------------------------------------
+void export_collision_mode(scope _collisions)
+{
+	enum_<ECollisionMode> CollisionMode("CollisionMode");
+
+	// Values...
+	CollisionMode.value("ALLOW", COLLISION_MODE_ALLOW);
+	CollisionMode.value("PREVENT", COLLISION_MODE_PREVENT);
+}
+
+
+//-----------------------------------------------------------------------------
 // Exports ICollisionRules.
 //-----------------------------------------------------------------------------
 void export_collision_rules(scope _collisions)
 {
 	class_<ICollisionRules, boost::noncopyable> CollisionRules("CollisionRules", no_init);
 
+	// Properties...
+	CollisionRules.add_property(
+		"mode",
+		&ICollisionRules::GetMode,
+		&ICollisionRules::SetMode,
+		"Returns the collision mode for these rules."
+	);
+
 	// Methods...
 	CollisionRules.def(
-		"should_hit_entity",
-		&ICollisionRules::ShouldHitEntity,
+		"should_collide",
+		&ICollisionRules::ShouldCollide,
 		"Returns whether the given entities should collide with each other."
 	);
 
@@ -115,9 +138,25 @@ void export_collision_rules(scope _collisions)
 //-----------------------------------------------------------------------------
 void export_collision_hash(scope _collisions)
 {
-	class_<CCollisionHash, bases<ICollisionRules> > CollisionHash(
+	class_<CCollisionHash, boost::shared_ptr<CCollisionHash>, bases<ICollisionRules> > CollisionHash(
 		"CollisionHash",
-		"Collision rules where contained pairs never collide with each other."
+		"Collision rules where contained pairs never collide with each other.",
+		no_init
+	);
+
+	// Constructor...
+	CollisionHash.def("__init__",
+		make_constructor(
+			&ICollisionRulesExt::Construct<CCollisionHash>,
+			post_constructor_policies<default_call_policies>(
+				make_function(
+					&ICollisionRulesExt::Initialize<CCollisionHash>,
+					default_call_policies(),
+					args("self", "mode")
+				)
+			),
+			(arg("mode")=COLLISION_MODE_PREVENT)
+		)
 	);
 
 	// Methods...
@@ -160,10 +199,16 @@ void export_collision_hash(scope _collisions)
 	CollisionHash.def(
 		"clear",
 		&CCollisionHash::Clear,
-		"Removes all elements from the hash."
+		"Removes all entities from the hash."
 	);
 
 	// Special methods...
+	CollisionHash.def(
+		"__bool__",
+		&CCollisionHash::HasElements,
+		"Returns whether the hash is empty or not."
+	);
+
 	CollisionHash.def(
 		"__contains__",
 		&CCollisionHash::Contains,
@@ -175,6 +220,12 @@ void export_collision_hash(scope _collisions)
 		&CCollisionHash::GetSize,
 		"Returns the size of the collision hash."
 	);
+
+	CollisionHash.def(
+		"__iter__",
+		&CCollisionHash::Iterate,
+		"Iterates over all entities contained in the hash."
+	);
 }
 
 
@@ -185,26 +236,42 @@ void export_collision_set(scope _collisions)
 {
 	class_<CCollisionSet, boost::shared_ptr<CCollisionSet>, bases<ICollisionRules> > CollisionSet(
 		"CollisionSet",
-		"Collision rules where contained elements never collide with anything."
+		"Collision rules where contained entities never collide with anything.",
+		no_init
+	);
+
+	// Constructor...
+	CollisionSet.def("__init__",
+		make_constructor(
+			&ICollisionRulesExt::Construct<CCollisionSet>,
+			post_constructor_policies<default_call_policies>(
+				make_function(
+					&ICollisionRulesExt::Initialize<CCollisionSet>,
+					default_call_policies(),
+					args("self", "mode")
+				)
+			),
+			(arg("mode")=COLLISION_MODE_PREVENT)
+		)
 	);
 
 	// Methods...
 	CollisionSet.def(
 		"add",
 		&CCollisionSet::Add,
-		"Adds the given element to the set."
+		"Adds the given entity to the set."
 	);
 
 	CollisionSet.def(
 		"remove",
 		&CCollisionSet::Remove,
-		"Removes the given element from the set."
+		"Removes the given entity from the set."
 	);
 
 	CollisionSet.def(
 		"clear",
 		&CCollisionSet::Clear,
-		"Removes all elements from the set."
+		"Removes all entities from the set."
 	);
 
 	// Special methods...
@@ -217,19 +284,19 @@ void export_collision_set(scope _collisions)
 	CollisionSet.def(
 		"__contains__",
 		&CCollisionSet::Contains,
-		"Returns whether the given element is in the set or not."
+		"Returns whether the given entity is in the set or not."
 	);
 
 	CollisionSet.def(
 		"__iter__",
 		&CCollisionSet::Iterate,
-		"Iterates over all elements contained in the set."
+		"Iterates over all entities contained in the set."
 	);
 
 	CollisionSet.def(
 		"__len__",
 		&CCollisionSet::GetSize,
-		"Returns the amount of elements contained in the set."
+		"Returns the amount of entities contained in the set."
 	);
 }
 
@@ -239,16 +306,32 @@ void export_collision_set(scope _collisions)
 //-----------------------------------------------------------------------------
 void export_collision_map(scope _collisions)
 {
-	class_<CCollisionMap, bases<ICollisionRules> > CollisionMap(
+	class_<CCollisionMap, boost::shared_ptr<CCollisionMap>, bases<ICollisionRules> > CollisionMap(
 		"CollisionMap",
-		"Collision rules that overrides one-way collisions."
+		"Collision rules that overrides one-way collisions.",
+		no_init
+	);
+
+	// Constructor...
+	CollisionMap.def("__init__",
+		make_constructor(
+			&ICollisionRulesExt::Construct<CCollisionMap>,
+			post_constructor_policies<default_call_policies>(
+				make_function(
+					&ICollisionRulesExt::Initialize<CCollisionMap>,
+					default_call_policies(),
+					args("self", "mode")
+				)
+			),
+			(args("mode")=COLLISION_MODE_PREVENT)
+		)
 	);
 
 	// Methods...
 	CollisionMap.def(
 		"clear",
 		&CCollisionMap::Clear,
-		"Removes all elements from the map."
+		"Removes all entities from the map."
 	);
 
 	// Special methods...
@@ -273,18 +356,18 @@ void export_collision_map(scope _collisions)
 	CollisionMap.def(
 		"__contains__",
 		&CCollisionMap::Contains,
-		"Returns whether the given element is in the map or not."
+		"Returns whether the given entities is in the map or not."
 	);
 
 	CollisionMap.def(
 		"__len__",
 		&CCollisionMap::GetSize,
-		"Returns the amount of elements contained in the map."
+		"Returns the amount of entities contained in the map."
 	);
 
 	CollisionMap.def(
 		"__iter__",
 		&CCollisionMap::Iterate,
-		"Iterates over all elements contained in the map."
+		"Iterates over all entities contained in the map."
 	);
 }

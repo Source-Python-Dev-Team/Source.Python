@@ -35,6 +35,9 @@
 	#include "modules/memory/memory_rtti.h"
 #endif
 
+// Boost
+#include "boost/foreach.hpp"
+
 
 //-----------------------------------------------------------------------------
 // Externals.
@@ -100,13 +103,13 @@ void CCollisionManager::Finalize()
 		return;
 	}
 
-	for (CollisionHooksMap_t::const_iterator it = m_mapHooks.begin(); it != m_mapHooks.end(); it++) {
-		it->first->RemoveCallback(
+	BOOST_FOREACH(CollisionHooksMap_t::value_type it, m_mapHooks) {
+		it.first->RemoveCallback(
 			HOOKTYPE_PRE,
 			(HookHandlerFn *)&CCollisionManager::EnterScope
 		);
 
-		it->first->RemoveCallback(
+		it.first->RemoveCallback(
 			HOOKTYPE_POST,
 			(HookHandlerFn *)&CCollisionManager::ExitScope
 		);
@@ -144,7 +147,7 @@ void CCollisionManager::OnNetworkedEntityCreated(object oEntity)
 	unsigned int uiMask;
 
 	BEGIN_BOOST_PY()
-		uiMask = extract<unsigned long>(oEntity.attr("get_solid_mask")());
+		uiMask = extract<unsigned int>(oEntity.attr("get_solid_mask")());
 	END_BOOST_PY()
 
 	if (m_setSolidMasks.find(uiMask) != m_setSolidMasks.end()) {
@@ -156,7 +159,7 @@ void CCollisionManager::OnNetworkedEntityCreated(object oEntity)
 	m_setSolidMasks.insert(uiMask | CONTENTS_TEAM2);
 }
 
-void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntity *pEntity)
+void CCollisionManager::OnNetworkedEntityDeleted(CBaseEntityWrapper *pEntity)
 {
 	FOR_EACH_VEC(m_vecRules, i) {
 		m_vecRules[i]->OnEntityDeleted(pEntity);
@@ -184,8 +187,8 @@ list CCollisionManager::GetSolidMasks()
 	}
 
 	static object ContentFlags = import("engines").attr("trace").attr("ContentFlags");
-	for (boost::unordered_set<unsigned long>::const_iterator it=m_setSolidMasks.begin(); it != m_setSolidMasks.end(); it++) {
-		oMasks.append(ContentFlags(*it));
+	BOOST_FOREACH(unsigned int uiMask, m_setSolidMasks) {
+		oMasks.append(ContentFlags(uiMask));
 	}
 
 	return oMasks;
@@ -390,14 +393,12 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 		}
 	}
 
-	static object Entity = import("entities").attr("entity").attr("Entity");
-
 	object oEntity;
 	object oOther;
 
 	if (pManager->m_pCollisionHooks->GetCount()) {
-		oEntity = Entity(scope.m_uiIndex);
-		oOther = Entity(uiIndex);
+		oEntity = GetEntityObject(scope.m_uiIndex);
+		oOther = GetEntityObject(uiIndex);
 
 		object oFilter = object(ptr((ITraceFilter *)scope.m_pFilter));
 
@@ -421,7 +422,10 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	}
 
 	FOR_EACH_VEC(pManager->m_vecRules, i) {
-		if (!pManager->m_vecRules[i]->ShouldHitEntity((CBaseEntity *)scope.m_pFilter->m_pPassEnt, (CBaseEntity *)pHandleEntity)) {
+		if (!pManager->m_vecRules[i]->ShouldCollide(
+				(CBaseEntityWrapper *)scope.m_pFilter->m_pPassEnt,
+				(CBaseEntityWrapper *)pHandleEntity)
+		) {
 			scope.m_pCache->SetResult(uiIndex, false);
 			return false;
 		}
@@ -434,11 +438,10 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 			return true;
 		}
 
-		static object Player = import("players.entity").attr("Player");
-		object oPlayer = Player(scope.m_uiIndex);
+		object oPlayer = GetEntityObject(scope.m_uiIndex);
 
 		if (oOther.is_none()) {
-			oOther = Entity(uiIndex);
+			oOther = GetEntityObject(uiIndex);
 		}
 
 		if (!OnPlayerCollision->CallCallbacks(oPlayer, oOther)) {
@@ -457,11 +460,11 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	}
 
 	if (oEntity.is_none()) {
-		oEntity = Entity(scope.m_uiIndex);
+		oEntity = GetEntityObject(scope.m_uiIndex);
 	}
 
 	if (oOther.is_none()) {
-		oOther = Entity(uiIndex);
+		oOther = GetEntityObject(uiIndex);
 	}
 
 	if (!OnEntityCollision->CallCallbacks(oEntity, oOther)) {
@@ -476,8 +479,8 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 CCollisionCache *CCollisionManager::GetCache(unsigned int uiIndex)
 {
 	if (gpGlobals->tickcount != m_nTickCount) {
-		for (CollisionCacheMap_t::const_iterator it = m_mapCache.begin(); it != m_mapCache.end(); it++) {
-			delete it->second;
+		BOOST_FOREACH(CollisionCacheMap_t::value_type it, m_mapCache) {
+			delete it.second;
 		}
 
 		m_mapCache.clear();
@@ -500,16 +503,6 @@ CCollisionCache *CCollisionManager::GetCache(unsigned int uiIndex)
 //-----------------------------------------------------------------------------
 // ICollisionRules class.
 //-----------------------------------------------------------------------------
-ICollisionRules::ICollisionRules(bool bRegister)
-{
-	if (!bRegister) {
-		return;
-	}
-
-	static CCollisionManager *pManager = GetCollisionManager();
-	pManager->RegisterRules(this);
-}
-
 ICollisionRules::~ICollisionRules()
 {
 	UnloadInstance();
@@ -519,6 +512,16 @@ void ICollisionRules::UnloadInstance()
 {
 	static CCollisionManager *pManager = GetCollisionManager();
 	pManager->UnregisterRules(this);
+}
+
+ECollisionMode ICollisionRules::GetMode()
+{
+	return m_eMode;
+}
+
+void ICollisionRules::SetMode(ECollisionMode eMode)
+{
+	m_eMode = eMode;
 }
 
 
@@ -545,14 +548,19 @@ void CCollisionCache::SetResult(unsigned int uiIndex, bool bResult)
 //-----------------------------------------------------------------------------
 // CCollisionHash class.
 //-----------------------------------------------------------------------------
-void CCollisionHash::OnEntityDeleted(CBaseEntity *pEntity)
+void CCollisionHash::OnEntityDeleted(CBaseEntityWrapper *pEntity)
 {
 	RemovePairs(pEntity);
 }
 
-bool CCollisionHash::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
+bool CCollisionHash::ShouldCollide(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther)
 {
-	return !HasPair(pEntity, pOther);
+	if (!HasElements()) {
+		return true;
+	}
+
+	bool bResult = !HasPair(pEntity, pOther);
+	return GetMode() == COLLISION_MODE_ALLOW ? !bResult : bResult;
 }
 
 void CCollisionHash::AddPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther)
@@ -567,16 +575,15 @@ void CCollisionHash::AddPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pO
 	m_setPairs.insert(CollisionPair_t(pEntity, pOther));
 }
 
-void CCollisionHash::RemovePair(void *pObject, void *pOther)
+void CCollisionHash::RemovePair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther)
 {
-	m_setPairs.erase(CollisionPair_t(pObject, pOther));
+	m_setPairs.erase(CollisionPair_t(pEntity, pOther));
 }
 
-void CCollisionHash::RemovePairs(void *pObject)
+void CCollisionHash::RemovePairs(CBaseEntityWrapper *pEntity)
 {
 	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ) {
-		CollisionPair_t p = *it;
-		if (p.first == pObject || p.second == pObject) {
+		if (it->first == pEntity || it->second == pEntity) {
 			m_setPairs.erase(it);
 		}
 
@@ -589,11 +596,10 @@ void CCollisionHash::Clear()
 	m_setPairs.clear();
 }
 
-bool CCollisionHash::Contains(void *pObject)
+bool CCollisionHash::Contains(CBaseEntityWrapper *pEntity)
 {
-	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ++it) {
-		CollisionPair_t p = *it;
-		if (p.first == pObject || p.second == pObject) {
+	BOOST_FOREACH(CollisionPair_t p, m_setPairs) {
+		if (p.first == pEntity || p.second == pEntity) {
 			return true;
 		}
 	}
@@ -601,17 +607,16 @@ bool CCollisionHash::Contains(void *pObject)
 	return false;
 }
 
-bool CCollisionHash::HasPair(void *pObject, void *pOther)
+bool CCollisionHash::HasPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther)
 {
-	return m_setPairs.find(CollisionPair_t(pObject, pOther)) != m_setPairs.end();
+	return m_setPairs.find(CollisionPair_t(pEntity, pOther)) != m_setPairs.end();
 }
 
-unsigned int CCollisionHash::GetCount(void *pObject)
+unsigned int CCollisionHash::GetCount(CBaseEntityWrapper *pEntity)
 {
 	unsigned int nCount = 0;
-	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ++it) {
-		CollisionPair_t p = *it;
-		if (p.first == pObject || p.second == pObject) {
+	BOOST_FOREACH(CollisionPair_t p, m_setPairs) {
+		if (p.first == pEntity || p.second == pEntity) {
 			++nCount;
 		}
 	}
@@ -619,16 +624,15 @@ unsigned int CCollisionHash::GetCount(void *pObject)
 	return nCount;
 }
 
-list CCollisionHash::GetPairs(void *pObject)
+list CCollisionHash::GetPairs(CBaseEntityWrapper *pEntity)
 {
 	list oObjects;
-	for (CollisionPairs_t::const_iterator it = m_setPairs.begin(); it != m_setPairs.end(); ++it) {
-		CollisionPair_t p = *it;
-		if (p.first == pObject) {
-			oObjects.append(p.second);
+	BOOST_FOREACH(CollisionPair_t p, m_setPairs) {
+		if (p.first == pEntity) {
+			oObjects.append(GetEntityObject(p.second));
 		}
-		else if (p.second == pObject) {
-			oObjects.append(p.first);
+		else if (p.second == pEntity) {
+			oObjects.append(GetEntityObject(p.first));
 		}
 	}
 
@@ -640,22 +644,28 @@ unsigned int CCollisionHash::GetSize()
 	return m_setPairs.size();
 }
 
+bool CCollisionHash::HasElements()
+{
+	return !m_setPairs.empty();
+}
+
+object CCollisionHash::Iterate()
+{
+	list oEntities;
+
+	if (HasElements()) {
+		BOOST_FOREACH(CollisionPair_t it, m_setPairs) {
+			oEntities.append(make_tuple(GetEntityObject(it.first), GetEntityObject(it.second)));
+		}
+	}
+
+	return oEntities.attr("__iter__")();
+}
+
 
 //-----------------------------------------------------------------------------
 // CCollisionSet class.
 //-----------------------------------------------------------------------------
-CCollisionSet::CCollisionSet():
-	ICollisionRules()
-{
-
-}
-
-CCollisionSet::CCollisionSet(bool bRegister):
-	ICollisionRules(bRegister)
-{
-
-}
-
 void CCollisionSet::Add(CBaseEntityWrapper *pEntity)
 {
 	if (Contains(pEntity)) {
@@ -672,14 +682,14 @@ void CCollisionSet::Add(CBaseEntityWrapper *pEntity)
 	m_pSet.insert(pEntity);
 }
 
-void CCollisionSet::Remove(void *pObject)
+void CCollisionSet::Remove(CBaseEntityWrapper *pEntity)
 {
-	m_pSet.erase(pObject);
+	m_pSet.erase(pEntity);
 }
 
-bool CCollisionSet::Contains(void *pObject)
+bool CCollisionSet::Contains(CBaseEntityWrapper *pEntity)
 {
-	return m_pSet.find(pObject) != m_pSet.end();
+	return m_pSet.find(pEntity) != m_pSet.end();
 }
 
 void CCollisionSet::Clear()
@@ -699,25 +709,30 @@ bool CCollisionSet::HasElements()
 
 object CCollisionSet::Iterate()
 {
-	list oElements;
+	list oEntities;
 
 	if (HasElements()) {
-		for (boost::unordered_set<void *>::const_iterator it = m_pSet.begin(); it != m_pSet.end(); it++) {
-			oElements.append(*it);
+		BOOST_FOREACH(CBaseEntityWrapper *pEntity, m_pSet) {
+			oEntities.append(GetEntityObject(pEntity));
 		}
 	}
 
-	return oElements.attr("__iter__")();
+	return oEntities.attr("__iter__")();
 }
 
-void CCollisionSet::OnEntityDeleted(CBaseEntity *pEntity)
+void CCollisionSet::OnEntityDeleted(CBaseEntityWrapper *pEntity)
 {
 	Remove(pEntity);
 };
 
-bool CCollisionSet::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
+bool CCollisionSet::ShouldCollide(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther)
 {
-	return !(Contains(pEntity) || Contains(pOther));
+	if (!HasElements()) {
+		return true;
+	}
+
+	bool bResult = !(Contains(pEntity) || Contains(pOther));
+	return GetMode() == COLLISION_MODE_ALLOW ? !bResult : bResult;
 };
 
 
@@ -731,14 +746,18 @@ boost::shared_ptr<CCollisionSet> CCollisionMap::Find(CBaseEntityWrapper *pEntity
 		return it->second;
 	}
 
-	boost::shared_ptr<CCollisionSet> spSet = boost::shared_ptr<CCollisionSet>(new CCollisionSet(false));
+	CCollisionSet *pSet = new CCollisionSet;
+	pSet->SetMode(GetMode());
+
+	boost::shared_ptr<CCollisionSet> spSet = boost::shared_ptr<CCollisionSet>(pSet);
 	m_mapSets[pEntity] = spSet;
+
 	return spSet;
 }
 
-void CCollisionMap::Remove(void *pObject)
+void CCollisionMap::Remove(CBaseEntityWrapper *pEntity)
 {
-	m_mapSets.erase(pObject);
+	m_mapSets.erase(pEntity);
 }
 
 void CCollisionMap::Clear()
@@ -746,9 +765,9 @@ void CCollisionMap::Clear()
 	m_mapSets.clear();
 }
 
-bool CCollisionMap::Contains(void *pObject)
+bool CCollisionMap::Contains(CBaseEntityWrapper *pEntity)
 {
-	return m_mapSets.find(pObject) != m_mapSets.end();
+	return m_mapSets.find(pEntity) != m_mapSets.end();
 }
 
 unsigned int CCollisionMap::GetSize()
@@ -763,27 +782,27 @@ bool CCollisionMap::HasElements()
 
 object CCollisionMap::Iterate()
 {
-	list oElements;
+	list oEntities;
 
 	if (HasElements()) {
-		for (CollisionMap_t::const_iterator it = m_mapSets.begin(); it != m_mapSets.end(); it++) {
-			oElements.append(make_tuple(object(it->first), object(it->second)));
+		BOOST_FOREACH(CollisionMap_t::value_type it, m_mapSets) {
+			oEntities.append(make_tuple(GetEntityObject(it.first), object(it.second)));
 		}
 	}
 
-	return oElements.attr("__iter__")();
+	return oEntities.attr("__iter__")();
 }
 
-void CCollisionMap::OnEntityDeleted(CBaseEntity *pEntity)
+void CCollisionMap::OnEntityDeleted(CBaseEntityWrapper *pEntity)
 {
-	for (CollisionMap_t::const_iterator it = m_mapSets.begin(); it != m_mapSets.end(); it++) {
-		it->second->OnEntityDeleted(pEntity);
+	BOOST_FOREACH(CollisionMap_t::value_type it, m_mapSets) {
+		it.second->OnEntityDeleted(pEntity);
 	}
 
 	Remove(pEntity);
 }
 
-bool CCollisionMap::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
+bool CCollisionMap::ShouldCollide(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther)
 {
 	CollisionMap_t::const_iterator it = m_mapSets.find(pEntity);
 	if (it == m_mapSets.end()) {
@@ -791,12 +810,12 @@ bool CCollisionMap::ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther)
 	}
 
 	CCollisionSet *pSet = get_pointer(it->second);
-	if (!pSet) {
-		m_mapSets.erase(it);
+	if (!pSet || !pSet->HasElements()) {
 		return true;
 	}
 
-	return !pSet->Contains(pOther);
+	bool bResult = !pSet->Contains(pOther);
+	return GetMode() == COLLISION_MODE_ALLOW ? !bResult : bResult;
 }
 
 

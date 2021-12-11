@@ -41,7 +41,6 @@
 #include "boost/unordered_set.hpp"
 
 // SDK
-#include "vphysics/object_hash.h"
 #include "bitvec.h"
 
 
@@ -65,8 +64,10 @@ typedef boost::unordered_map<CHook *, CollisionHookData_t> CollisionHooksMap_t;
 typedef CBitVec<MAX_EDICTS> CollisionCache_t;
 typedef boost::unordered_map<unsigned int, CCollisionCache *> CollisionCacheMap_t;
 
-typedef std::pair<void *, void *> CollisionPair_t;
-typedef boost::unordered_map<void *, boost::shared_ptr<CCollisionSet> > CollisionMap_t;
+typedef std::pair<CBaseEntityWrapper *, CBaseEntityWrapper *> CollisionPair_t;
+typedef boost::unordered_map<CBaseEntityWrapper *, boost::shared_ptr<CCollisionSet> > CollisionMap_t;
+
+typedef boost::unordered_set<CBaseEntityWrapper *> CollisionSet_t;
 
 
 //-----------------------------------------------------------------------------
@@ -108,18 +109,33 @@ struct CollisionHookData_t
 
 
 //-----------------------------------------------------------------------------
+// ECollisionMode enumeration.
+//-----------------------------------------------------------------------------
+enum ECollisionMode
+{
+	COLLISION_MODE_ALLOW,
+	COLLISION_MODE_PREVENT
+};
+
+
+//-----------------------------------------------------------------------------
 // ICollisionRules class.
 //-----------------------------------------------------------------------------
 class ICollisionRules
 {
 public:
-	ICollisionRules(bool bRegister = true);
 	virtual ~ICollisionRules();
 
-	virtual void OnEntityDeleted(CBaseEntity *pEntity) = 0;
-	virtual bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther) = 0;
+	virtual void OnEntityDeleted(CBaseEntityWrapper *pEntity) = 0;
+	virtual bool ShouldCollide(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther) = 0;
 
 	virtual void UnloadInstance();
+
+	ECollisionMode GetMode();
+	void SetMode(ECollisionMode eMode);
+
+private:
+	ECollisionMode m_eMode;
 };
 
 
@@ -136,7 +152,7 @@ namespace boost {
 
 	struct hash_equals {
 		inline bool operator()(const CollisionPair_t &a, const CollisionPair_t &b) const {
-			return (a.first == b.first && a.second == b.second) || (a.first == b.second && a.second == b.first); 
+			return (a == b) || (a.first == b.second && a.second == b.first); 
 		}
 	};
 }
@@ -150,22 +166,25 @@ typedef boost::unordered_set<CollisionPair_t, boost::hash<CollisionPair_t>, boos
 class CCollisionHash : public ICollisionRules
 {
 public:
-	void OnEntityDeleted(CBaseEntity *pEntity);
-	bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther);
+	void OnEntityDeleted(CBaseEntityWrapper *pEntity);
+	bool ShouldCollide(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther);
 
 	void AddPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther);
-	void RemovePair(void *pObject, void *pOther);
-	void RemovePairs(void *pObject);
+	void RemovePair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther);
+	void RemovePairs(CBaseEntityWrapper *pEntity);
 
 	void Clear();
 
-	bool Contains(void *pObject);
-	bool HasPair(void *pObject, void *pOther);
+	bool Contains(CBaseEntityWrapper *pEntity);
+	bool HasPair(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther);
 
-	unsigned int GetCount(void *pObject);
-	list GetPairs(void *pObject);
+	unsigned int GetCount(CBaseEntityWrapper *pEntity);
+	list GetPairs(CBaseEntityWrapper *pEntity);
 
 	unsigned int GetSize();
+	bool HasElements();
+
+	object Iterate();
 
 private:
 	CollisionPairs_t m_setPairs;
@@ -178,24 +197,21 @@ private:
 class CCollisionSet : public ICollisionRules
 {
 public:
-	CCollisionSet();
-	CCollisionSet(bool bRegister);
-
 	void Add(CBaseEntityWrapper *pEntity);
-	void Remove(void *pObject);
+	void Remove(CBaseEntityWrapper *pEntity);
 	void Clear();
 
-	bool Contains(void *pObject);
+	bool Contains(CBaseEntityWrapper *pEntity);
 	unsigned int GetSize();
 	bool HasElements();
 
 	object Iterate();
 
-	void OnEntityDeleted(CBaseEntity *pEntity);
-	bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther);
+	void OnEntityDeleted(CBaseEntityWrapper *pEntity);
+	bool ShouldCollide(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther);
 
 private:
-	boost::unordered_set<void *> m_pSet;
+	CollisionSet_t m_pSet;
 };
 
 
@@ -205,15 +221,15 @@ private:
 class CCollisionMap: public ICollisionRules
 {
 public:
-	void OnEntityDeleted(CBaseEntity *pEntity);
-	bool ShouldHitEntity(CBaseEntity *pEntity, CBaseEntity *pOther);
+	void OnEntityDeleted(CBaseEntityWrapper *pEntity);
+	bool ShouldCollide(CBaseEntityWrapper *pEntity, CBaseEntityWrapper *pOther);
 
 	boost::shared_ptr<CCollisionSet> Find(CBaseEntityWrapper *pEntity);
 
-	void Remove(void *pObject);
+	void Remove(CBaseEntityWrapper *pEntity);
 	void Clear();
 
-	bool Contains(void *pObject);
+	bool Contains(CBaseEntityWrapper *pEntity);
 	unsigned int GetSize();
 	bool HasElements();
 
@@ -260,7 +276,7 @@ public:
 	void UnregisterRules(ICollisionRules *pRules);
 
 	void OnNetworkedEntityCreated(object oEntity);
-	void OnNetworkedEntityDeleted(CBaseEntity *pEntity);
+	void OnNetworkedEntityDeleted(CBaseEntityWrapper *pEntity);
 
 	void RegisterCollisionHook(object oCallback);
 	void UnregisterCollisionHook(object oCallback);
@@ -289,7 +305,7 @@ private:
 	CollisionHooksMap_t m_mapHooks;
 	std::vector<CollisionScope_t> m_vecScopes;
 
-	boost::unordered_set<unsigned long> m_setSolidMasks;
+	boost::unordered_set<unsigned int> m_setSolidMasks;
 
 	int m_nTickCount;
 	CollisionCacheMap_t m_mapCache;
@@ -303,6 +319,37 @@ inline CCollisionManager *GetCollisionManager()
 	static CCollisionManager *s_pEntityCollisionManager = new CCollisionManager;
 	return s_pEntityCollisionManager;
 }
+
+
+//-----------------------------------------------------------------------------
+// ICollisionRules extension class.
+//-----------------------------------------------------------------------------
+class ICollisionRulesExt
+{
+public:
+	template<class T>
+	static boost::shared_ptr<T> Construct(ECollisionMode eMode = COLLISION_MODE_PREVENT)
+	{
+		return boost::shared_ptr<T>(new T, &Finalize<T>);
+	}
+
+	template<class T>
+	static void Initialize(T *pSelf, object self, ECollisionMode eMode = COLLISION_MODE_PREVENT)
+	{
+		pSelf->SetMode(eMode);
+
+		static CCollisionManager *pManager = GetCollisionManager();
+		pManager->RegisterRules(pSelf);
+	}
+
+	template<class T>
+	static void Finalize(T *pSelf)
+	{
+		static CCollisionManager *pManager = GetCollisionManager();
+		pManager->UnregisterRules(pSelf);
+		delete pSelf;
+	}
+};
 
 
 //-----------------------------------------------------------------------------

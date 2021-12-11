@@ -19,6 +19,7 @@ from core import WeakAutoUnload
 from _entities._collisions import CollisionHash
 from _entities._collisions import CollisionManager
 from _entities._collisions import CollisionMap
+from _entities._collisions import CollisionMode
 from _entities._collisions import CollisionRules
 from _entities._collisions import CollisionSet
 from _entities._collisions import collision_manager
@@ -32,6 +33,7 @@ __all__ = [
     'CollisionHook',
     'CollisionManager',
     'CollisionMap',
+    'CollisionMode',
     'CollisionRules',
     'CollisionSet',
     'collision_manager',
