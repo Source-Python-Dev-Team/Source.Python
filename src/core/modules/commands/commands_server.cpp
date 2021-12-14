@@ -99,19 +99,6 @@ CServerCommandManager* GetServerCommand(const char* szName,
 }
 
 //-----------------------------------------------------------------------------
-// Removes a CServerCommandManager instance for the given name.
-//-----------------------------------------------------------------------------
-void RemoveCServerCommandManager(const char* szName)
-{
-	ServerCommandMap::iterator iter;
-	if (find_manager<ServerCommandMap, ServerCommandMap::iterator>(g_ServerCommandMap, szName, iter))
-	{
-		delete iter->second;
-		g_ServerCommandMap.erase(iter);
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Returns a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
 CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
@@ -121,8 +108,17 @@ CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 	char* szNameCopy = strdup(szName);
 	char* szHelpTextCopy = NULL;
 
-	// FInd if the command already exists
-	ConCommandBase* pConCommand = g_pCVar->FindCommandBase(szName);
+	// Find if the command already exists
+	ConCommandBase* pBase = g_pCVar->FindCommandBase(szName);
+	if (pBase && !pBase->IsCommand()) {
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"Failed to create ConCommand(\"%s\") because a ConVar with the same name already exists.",
+			szName
+		)
+	}
+
+	ConCommand *pConCommand = static_cast<ConCommand *>(pBase);
 	if( pConCommand )
 	{
 		// Store the current command's help text and flags
@@ -147,7 +143,7 @@ CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 //-----------------------------------------------------------------------------
 // CServerCommandManager constructor.
 //-----------------------------------------------------------------------------
-CServerCommandManager::CServerCommandManager(ConCommandBase* pConCommand,
+CServerCommandManager::CServerCommandManager(ConCommand* pConCommand,
 		const char* szName, const char* szHelpText, int iFlags):
 	ConCommand(szName, (FnCommandCallback_t)NULL, szHelpText, iFlags),
 	m_pOldCommand(pConCommand)
@@ -209,10 +205,6 @@ void CServerCommandManager::RemoveCallback( PyObject* pCallable, HookType_t type
 {
 	object oCallable = object(handle<>(borrowed(pCallable)));
 	m_vecCallables[type]->UnregisterListener(pCallable);
-	if( !m_vecCallables[HOOKTYPE_PRE]->GetCount() && !m_vecCallables[HOOKTYPE_POST]->GetCount() )
-	{
-		RemoveCServerCommandManager(m_Name);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -220,6 +212,11 @@ void CServerCommandManager::RemoveCallback( PyObject* pCallable, HookType_t type
 //-----------------------------------------------------------------------------
 void CServerCommandManager::Dispatch( const CCommand& command )
 {
+	if (!m_vecCallables[HOOKTYPE_PRE]->GetCount() && !m_vecCallables[HOOKTYPE_POST]->GetCount() && !m_pOldCommand) {
+		Msg("Unknown command \"%s\"\n", m_Name);
+		return;
+	}
+
 	bool block = false;
 
 	// Pre hook callbacks
@@ -240,10 +237,7 @@ void CServerCommandManager::Dispatch( const CCommand& command )
 	if(m_pOldCommand)
 	{
 		if (m_pOldCommand->IsCommand()) {
-			static_cast<ConCommand *>(m_pOldCommand)->Dispatch(command);
-		}
-		else {
-			static_cast<ConVar *>(m_pOldCommand)->SetValue(command.ArgS());
+			m_pOldCommand->Dispatch(command);
 		}
 	}
 

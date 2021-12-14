@@ -51,10 +51,10 @@ protected:
 	void Dispatch( const CCommand& command);
 
 public:
-	CServerCommandManager(ConCommandBase* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
+	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
 	std::map< HookType_t, CListenerManager* > m_vecCallables;
 	const char* m_Name;
-	ConCommandBase* m_pOldCommand;
+	ConCommand* m_pOldCommand;
 };
 
 #endif // _COMMANDS_SERVER_H

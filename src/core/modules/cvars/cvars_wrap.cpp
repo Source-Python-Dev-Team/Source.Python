@@ -103,7 +103,7 @@ void export_cvar_interface(scope _cvars)
 		)
 
 		.def("find_var",
-			&ICVarSharedExt::FindVar,
+			GET_METHOD(ConVar*, ICvar, FindVar, const char *),
 			"Find the ConVar instance of console variable.\n\n"
 			":return: Return ``None`` if the console variable was not found.\n"
 			":rtype: ConVar",

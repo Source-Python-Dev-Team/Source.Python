@@ -464,6 +464,20 @@ Called when a player runs a command.
         pass
 
 
+OnPlayerPostRunCommand
+----------------------
+
+Called after a player ran a command.
+
+.. code-block:: python
+
+    from listeners import OnPlayerPostRunCommand
+
+    @OnPlayerPostRunCommand
+    def on_player_post_run_command(player, user_cmd):
+        pass
+
+
 OnPluginLoaded
 --------------
 

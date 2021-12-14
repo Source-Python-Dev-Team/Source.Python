@@ -47,3 +47,9 @@ if isinstance(team_managers, str):
 
 # Set the managers as a frozenset, since it should never be modified
 team_managers = frozenset(team_managers)
+
+# Store the game specific player classes by name
+classes_by_name = _team_data.get('classes', {})
+
+# Store the game specific player classes by number
+classes_by_number = {number: name for name, number in classes_by_name.items()}
