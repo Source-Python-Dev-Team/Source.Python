@@ -33,12 +33,6 @@ void export_engine_specific_steamid(scope _steam, T SteamID)
 }
 
 template<class T>
-void export_engine_specific_universe(scope _steam, T Universe)
-{
-	Universe.value("RC", k_EUniverseRC);
-}
-
-template<class T>
 void export_engine_specific_account_type(scope _steam, T AccountType)
 {
 	AccountType.value("P2P_SUPER_SEEDER", k_EAccountTypeP2PSuperSeeder);
