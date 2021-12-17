@@ -320,6 +320,8 @@ public:
 	bool IsPlayer();
 	bool IsWeapon();
 
+	bool IsNetworked();
+
 	Vector GetOrigin();
 	void SetOrigin(Vector& vec);
 
@@ -445,6 +447,45 @@ public:
 	MDLHandle_t get_model_handle();
 	studiohdr_t* get_model_header();
 };
+
+
+//-----------------------------------------------------------------------------
+// Returns an entity pointer as a Python object.
+//-----------------------------------------------------------------------------
+inline object GetEntityObject(CBaseEntityWrapper *pEntity)
+{
+	if (pEntity->IsNetworked()) {
+		if (pEntity->IsPlayer()) {
+			static object Player = import("players").attr("entity").attr("Player");
+			return Player(pEntity->GetIndex());
+		}
+
+		if (pEntity->IsWeapon()) {
+			static object Weapon = import("weapons").attr("entity").attr("Weapon");
+			return Weapon(pEntity->GetIndex());
+		}
+
+		static object Entity = import("entities").attr("entity").attr("Entity");
+		return Entity(pEntity->GetIndex());
+	}
+
+	return object(ptr(pEntity));
+}
+
+inline object GetEntityObject(CBaseEntity *pEntity)
+{
+	return GetEntityObject((CBaseEntityWrapper *)pEntity);
+}
+
+inline object GetEntityObject(unsigned int uiIndex)
+{
+	CBaseEntity *pEntity;
+	if (!BaseEntityFromIndex(uiIndex, pEntity)) {
+		return object();
+	}
+
+	return GetEntityObject((CBaseEntityWrapper *)pEntity);
+}
 
 
 #endif // _ENTITIES_ENTITY_H

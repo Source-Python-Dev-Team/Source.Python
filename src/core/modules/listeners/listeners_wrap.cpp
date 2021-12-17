@@ -30,6 +30,8 @@
 #include "export_main.h"
 #include "utilities/wrap_macros.h"
 #include "listeners_manager.h"
+#include "modules/entities/entities_collisions.h"
+#include "modules/entities/entities_transmit.h"
 
 
 //-----------------------------------------------------------------------------
@@ -178,6 +180,10 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_networked_entity_spawned_listener_manager") = object(ptr(GetOnNetworkedEntitySpawnedListenerManager()));
 	_listeners.attr("on_entity_deleted_listener_manager") = object(ptr(GetOnEntityDeletedListenerManager()));
 	_listeners.attr("on_networked_entity_deleted_listener_manager") = object(ptr(GetOnNetworkedEntityDeletedListenerManager()));
+	_listeners.attr("on_entity_collision_listener_manager") = object(ptr((CListenerManager *)GetOnEntityCollisionListenerManager()));
+	_listeners.attr("on_player_collision_listener_manager") = object(ptr((CListenerManager *)GetOnPlayerCollisionListenerManager()));
+	_listeners.attr("on_entity_transmit_listener_manager") = object(ptr((CListenerManager *)GetOnEntityTransmitListenerManager()));
+	_listeners.attr("on_player_transmit_listener_manager") = object(ptr((CListenerManager *)GetOnPlayerTransmitListenerManager()));
 
 	_listeners.attr("on_data_loaded_listener_manager") = object(ptr(GetOnDataLoadedListenerManager()));
 	_listeners.attr("on_combiner_pre_cache_listener_manager") = object(ptr(GetOnCombinerPreCacheListenerManager()));

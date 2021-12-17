@@ -310,6 +310,32 @@ struct baseentity_from_python
 	}
 };
 
+struct baseentity_index_from_python
+{
+	baseentity_index_from_python()
+	{
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<CBaseEntity>()
+		);
+
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<CBaseEntityWrapper>()
+		);
+	}
+
+	static void* convert(PyObject* obj)
+	{
+		extract<unsigned int> extractor(obj);
+		if (!extractor.check()) {
+			return NULL;
+		}
+
+		return (void *)ExcBaseEntityFromIndex(extractor());
+	}
+};
+
 // void*
 struct void_ptr_to_python
 {
@@ -364,6 +390,7 @@ void InitConverters()
 
 	baseentity_to_python();
 	baseentity_from_python();
+	baseentity_index_from_python();
 	
 	void_ptr_to_python();
 	void_ptr_from_python();

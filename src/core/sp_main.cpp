@@ -60,6 +60,8 @@
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
 #include "modules/entities/entities_entity.h"
+#include "modules/entities/entities_collisions.h"
+#include "modules/entities/entities_transmit.h"
 #include "modules/core/core.h"
 
 #ifdef _WIN32
@@ -94,6 +96,7 @@ IFileSystem*			filesystem			= NULL;
 IServerGameDLL*			servergamedll		= NULL;
 IServerGameClients*		servergameclients	= NULL;
 IServerTools*			servertools			= NULL;
+IServerGameEnts*		gameents			= NULL; // Interface to get at server entities
 IPhysics*				physics				= NULL;
 IPhysicsCollision*		physcollision		= NULL;
 IPhysicsSurfaceProps*	physprops			= NULL;
@@ -157,6 +160,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_SERVERGAMEDLL, (void **)&servergamedll},
 	{INTERFACEVERSION_SERVERGAMECLIENTS, (void **)&servergameclients},
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
+	{INTERFACEVERSION_SERVERGAMEENTS, (void **)&gameents},
 	{NULL, NULL}
 };
 
@@ -384,6 +388,14 @@ void CSourcePython::GameFrame( bool simulating )
 void CSourcePython::LevelShutdown( void ) // !!!!this can get called multiple times per map change
 {
 	CALL_LISTENERS(OnLevelShutdown);
+
+	// Cleanup active collision rules.
+	static CCollisionManager *pCollisionManager = GetCollisionManager();
+	pCollisionManager->OnLevelShutdown();
+
+	// Cleanup active transmission rules.
+	static CTransmitManager *pTransmitManager = GetTransmitManager();
+	pTransmitManager->OnLevelShutdown();
 }
 
 //-----------------------------------------------------------------------------
@@ -541,16 +553,20 @@ void CSourcePython::OnEntityCreated( CBaseEntity *pEntity )
 
 	CALL_LISTENERS(OnEntityCreated, ptr((CBaseEntityWrapper*) pEntity));
 
-	GET_LISTENER_MANAGER(OnNetworkedEntityCreated, on_networked_entity_created_manager);
-	if (!on_networked_entity_created_manager->GetCount())
-		return;
-
 	unsigned int uiIndex;
 	if (!IndexFromBaseEntity(pEntity, uiIndex))
 		return;
 
 	static object Entity = import("entities").attr("entity").attr("Entity");
-	CALL_LISTENERS_WITH_MNGR(on_networked_entity_created_manager, Entity(uiIndex));
+	object oEntity = Entity(uiIndex);
+	
+	GET_LISTENER_MANAGER(OnNetworkedEntityCreated, on_networked_entity_created_manager);
+	if (on_networked_entity_created_manager->GetCount()) {
+		CALL_LISTENERS_WITH_MNGR(on_networked_entity_created_manager, oEntity);
+	}
+
+	static CCollisionManager *pCollisionManager = GetCollisionManager();
+	pCollisionManager->OnNetworkedEntityCreated(oEntity);
 }
 
 void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
@@ -587,6 +603,14 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 	// Invalidate the internal entity cache once all callbacks have been called.
 	static object _on_networked_entity_deleted = import("entities").attr("_base").attr("_on_networked_entity_deleted");
 	_on_networked_entity_deleted(uiIndex);
+
+	// Cleanup active collision rules.
+	static CCollisionManager *pCollisionManager = GetCollisionManager();
+	pCollisionManager->OnNetworkedEntityDeleted((CBaseEntityWrapper *)pEntity);
+
+	// Cleanup active transmission rules.
+	static CTransmitManager *pTransmitManager = GetTransmitManager();
+	pTransmitManager->OnNetworkedEntityDeleted((CBaseEntityWrapper *)pEntity, uiIndex);
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
