@@ -24,6 +24,9 @@ from os import sep
 from path import Path
 #   Platform
 from platform import system
+#   RE
+from re import compile as re_compile
+from re import finditer
 #   Sys
 import sys
 #   Urllib
@@ -93,7 +96,7 @@ PLATFORM = system().lower()
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class AutoUnload(object):
+class AutoUnload:
     """Class used to auto unload specific instances.
 
     Each inheriting class must implement an _unload_instance method.
@@ -144,12 +147,6 @@ class AutoUnload(object):
 
     def _unload_instance(self):
         """Base _unload_instance implementation."""
-        raise NotImplementedError(
-            'Class "{0}" from file "{1}" does not '.format(
-                self.__class__.__name__, sys.modules[
-                    self.__class__.__module__].__file__.split(
-                    'plugins', 1)[1][1:]) +
-            'have its own implementation of an _unload_instance method.')
 
 
 class WeakAutoUnload(AutoUnload):
@@ -182,6 +179,89 @@ class GameConfigObj(ConfigObj):
 
         # Finally, parse the specific game file...
         self.merge(ConfigObj(path / GAME_NAME / name, *args, **kwargs))
+
+
+class Tokenize(list):
+    """Parses the arguments from the given string."""
+
+    _pattern = re_compile('"[^"]*"|[^ ]+')
+
+    def __init__(self, string, comment_prefix=None):
+        """Splits the arguments from the given string."""
+        # Initialize the list
+        super().__init__()
+
+        # Store the given string as is
+        self.string = string
+
+        # Loop through all tokens
+        for match in finditer(self._pattern, string):
+
+            # Get the current match as a string
+            arg = match.group()
+
+            # Strip end line comment
+            if comment_prefix is not None and arg.startswith(comment_prefix):
+                self.string = self.string[:match.start()]
+                break
+
+            # Add the current argument to the list
+            self.append(arg.strip('"'))
+
+    def __str__(self):
+        """Returns the original string (without end-line comment)."""
+        return self.string
+
+    def __hash__(self):
+        """Hashes the original string."""
+        return hash(self.string)
+
+
+class ConfigFile(list):
+    """Class used to parse a configuration file."""
+    
+    def __init__(
+        self, path, encoding='utf-8', comment_prefix='//', as_strings=False):
+        """Parses the given configuation file path.
+
+        :param Path path:
+            The path of the file to parse.
+        :param str encoding:
+            The encoding to use when opening the file.
+        :param str comment_prefix:
+            The prefix of end line comments.
+        :param bool as_strings:
+            Whether the parsed lines should be stored as strings rather than
+            argument lists.
+        """
+        # If the given path doesn't exist, search for it in the cfg directory
+        if not path.isfile():
+            path = CFG_PATH.joinpath(path)
+
+            # If no file was found, return an empty list
+            if not path.isfile():
+                return
+
+        # Import this here to fix cyclic imports
+        from translations.strings import LangStrings
+
+        # Open the given file and parse its content
+        with open(path, 'r', encoding=encoding) as f:
+
+            # Loop through all lines
+            for line in f.read().splitlines():
+
+                # Parse the argument from the current line
+                args = Tokenize(
+                    LangStrings._replace_escaped_sequences(line),
+                    comment_prefix)
+
+                # Skip empty/commented lines
+                if not args:
+                    continue
+
+                # Add the current line to the list
+                self.append(args if not as_strings else str(args))
 
 
 # =============================================================================

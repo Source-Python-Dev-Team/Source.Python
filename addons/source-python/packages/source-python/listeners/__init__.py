@@ -73,6 +73,7 @@ from _listeners import on_server_activate_listener_manager
 from _listeners import on_tick_listener_manager
 from _listeners import on_server_output_listener_manager
 from _listeners import on_player_run_command_listener_manager
+from _listeners import on_player_post_run_command_listener_manager
 from _listeners import on_button_state_changed_listener_manager
 
 
@@ -110,6 +111,7 @@ __all__ = ('ButtonStatus',
            'OnNetworkidValidated',
            'OnButtonStateChanged',
            'OnPlayerRunCommand',
+           'OnPlayerPostRunCommand',
            'OnPluginLoaded',
            'OnPluginLoading',
            'OnPluginUnloaded',
@@ -494,6 +496,10 @@ class OnPlayerRunCommand(ListenerManagerDecorator):
 
     manager = on_player_run_command_listener_manager
 
+class OnPlayerPostRunCommand(ListenerManagerDecorator):
+    """Register/unregister a post run command listener."""
+
+    manager = on_player_post_run_command_listener_manager
 
 class OnButtonStateChanged(ListenerManagerDecorator):
     """Register/unregister a button state change listener."""

@@ -27,9 +27,6 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-
 #include "utilities/call_python.h"
 
 #include "boost/unordered_map.hpp"
@@ -38,6 +35,7 @@
 
 #include "commands.h"
 #include "commands_server.h"
+#include "modules/cvars/cvars.h"
 
 //-----------------------------------------------------------------------------
 // Externs.
@@ -55,8 +53,12 @@ class CPluginConVarAccessor : public IConCommandBaseAccessor
 public:
 	virtual bool RegisterConCommandBase(ConCommandBase* pCommand)
 	{
-		g_pCVar->RegisterConCommand(pCommand);
-		return true;
+		if (!g_pCVar->FindCommandBase(pCommand->GetName())) {
+			g_pCVar->RegisterConCommand(pCommand);
+			return true;
+		}
+
+		return false;
 	}
 };
 
@@ -97,19 +99,6 @@ CServerCommandManager* GetServerCommand(const char* szName,
 }
 
 //-----------------------------------------------------------------------------
-// Removes a CServerCommandManager instance for the given name.
-//-----------------------------------------------------------------------------
-void RemoveCServerCommandManager(const char* szName)
-{
-	ServerCommandMap::iterator iter;
-	if (find_manager<ServerCommandMap, ServerCommandMap::iterator>(g_ServerCommandMap, szName, iter))
-	{
-		delete iter->second;
-		g_ServerCommandMap.erase(iter);
-	}
-}
-
-//-----------------------------------------------------------------------------
 // Returns a CServerCommandManager instance.
 //-----------------------------------------------------------------------------
 CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
@@ -119,16 +108,27 @@ CServerCommandManager* CServerCommandManager::CreateCommand(const char* szName,
 	char* szNameCopy = strdup(szName);
 	char* szHelpTextCopy = NULL;
 
-	// FInd if the command already exists
-	ConCommand* pConCommand = g_pCVar->FindCommand(szName);
+	// Find if the command already exists
+	ConCommandBase* pBase = g_pCVar->FindCommandBase(szName);
+	if (pBase && !pBase->IsCommand()) {
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"Failed to create ConCommand(\"%s\") because a ConVar with the same name already exists.",
+			szName
+		)
+	}
+
+	ConCommand *pConCommand = static_cast<ConCommand *>(pBase);
 	if( pConCommand )
 	{
 		// Store the current command's help text and flags
 		szHelpTextCopy = strdup(pConCommand->GetHelpText());
-		iFlags = pConCommand->m_nFlags;
+		iFlags = GetConCommandFlags(pConCommand);
 
 		// Unregister the old command
-		g_pCVar->UnregisterConCommand(pConCommand);
+		if (pConCommand->IsRegistered()) {
+			g_pCVar->UnregisterConCommand(pConCommand);
+		}
 	}
 	else if( szHelpText != NULL )
 	{
@@ -162,8 +162,12 @@ CServerCommandManager::~CServerCommandManager()
 	// Get the ConCommand instance
 	ConCommand* pConCommand = g_pCVar->FindCommand(m_Name);
 
-	// Unregister the ConCommand
-	g_pCVar->UnregisterConCommand(pConCommand);
+	// Make sure we only unregister ourselves
+	if (pConCommand == this)
+	{
+		// Unregister the ConCommand
+		g_pCVar->UnregisterConCommand(pConCommand);
+	}
 
 	// Was the command registered before we registered it?
 	if( m_pOldCommand )
@@ -201,10 +205,6 @@ void CServerCommandManager::RemoveCallback( PyObject* pCallable, HookType_t type
 {
 	object oCallable = object(handle<>(borrowed(pCallable)));
 	m_vecCallables[type]->UnregisterListener(pCallable);
-	if( !m_vecCallables[HOOKTYPE_PRE]->GetCount() && !m_vecCallables[HOOKTYPE_POST]->GetCount() )
-	{
-		RemoveCServerCommandManager(m_Name);
-	}
 }
 
 //-----------------------------------------------------------------------------
@@ -212,6 +212,11 @@ void CServerCommandManager::RemoveCallback( PyObject* pCallable, HookType_t type
 //-----------------------------------------------------------------------------
 void CServerCommandManager::Dispatch( const CCommand& command )
 {
+	if (!m_vecCallables[HOOKTYPE_PRE]->GetCount() && !m_vecCallables[HOOKTYPE_POST]->GetCount() && !m_pOldCommand) {
+		Msg("Unknown command \"%s\"\n", m_Name);
+		return;
+	}
+
 	bool block = false;
 
 	// Pre hook callbacks
@@ -231,7 +236,9 @@ void CServerCommandManager::Dispatch( const CCommand& command )
 	// Was the command previously registered?
 	if(m_pOldCommand)
 	{
-		m_pOldCommand->Dispatch(command);
+		if (m_pOldCommand->IsCommand()) {
+			m_pOldCommand->Dispatch(command);
+		}
 	}
 
 	// Post hook callbacks

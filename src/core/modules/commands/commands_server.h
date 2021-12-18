@@ -50,7 +50,7 @@ public:
 protected:
 	void Dispatch( const CCommand& command);
 
-private:
+public:
 	CServerCommandManager(ConCommand* pConCommand, const char* szName, const char* szHelpString = 0, int iFlags = 0);
 	std::map< HookType_t, CListenerManager* > m_vecCallables;
 	const char* m_Name;

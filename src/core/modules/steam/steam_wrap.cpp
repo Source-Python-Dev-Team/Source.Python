@@ -257,12 +257,6 @@ void export_universe(scope _steam)
 	Universe.value("INTERNAL", k_EUniverseInternal);
 	Universe.value("DEV", k_EUniverseDev);
 	Universe.value("MAX", k_EUniverseMax);
-
-	// Game/engine specific values
-	// Available in Orangebox, CS:GO, L4D2
-	NOT_IMPLEMENTED_VALUE(EUniverse, "RC");
-	
-	export_engine_specific_universe(_steam, Universe);
 }
 
 

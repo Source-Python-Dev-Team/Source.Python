@@ -27,9 +27,6 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-
 #include "utilities/wrap_macros.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
@@ -170,20 +167,20 @@ void export_concommandbase(scope _commands)
 		)
 
 		.def("add_flags",
-			&ConCommandBaseExt::AddFlags,
+			&AddConCommandFlags,
 			"Adds the given flags to the ConVar.",
 			args("flag")
 		)
 
 		.def("remove_flags",
-			&ConCommandBaseExt::RemoveFlags,
+			&RemoveConCommandFlags,
 			"Removes the given flags from the ConVar.",
 			args("flag")
 		)
 		
 		.add_property("flags",
-			&ConCommandBaseExt::GetFlags,
-			&ConCommandBaseExt::SetFlags,
+			&GetConCommandFlags,
+			&SetConCommandFlags,
 			"Returns its flags."
 		)
 		

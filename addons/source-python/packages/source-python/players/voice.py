@@ -6,18 +6,17 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python
-import collections
+# Python Imports
+from collections import defaultdict
 
-# Source.Python
+# Source.Python Imports
 #    Engines
 from engines.server import global_vars
 #    Listeners
-from listeners import OnClientDisconnect
+from listeners import on_client_disconnect_listener_manager
 #    Memory
-import memory
-
-from memory.hooks import PreHook
+from memory import get_virtual_function
+from memory.hooks import HookType
 
 
 # =============================================================================
@@ -40,8 +39,21 @@ __all__ = ('_MuteManager',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _MuteManager(collections.defaultdict):
+class _MuteManager(defaultdict):
     """A singleton that manages muting players."""
+    _set_client_listening = None
+
+    @classmethod
+    def _hook_set_client_listening(cls):
+        if cls._set_client_listening is not None:
+            return
+
+        function = get_virtual_function(voice_server, 'SetClientListening')
+        function.add_hook(HookType.PRE, _pre_set_client_listening)
+
+        cls._set_client_listening = function
+
+        on_client_disconnect_listener_manager.register_listener(_on_client_disconnect)
 
     @staticmethod
     def _get_receivers(receivers):
@@ -75,6 +87,8 @@ class _MuteManager(collections.defaultdict):
         that contains the player indexes that shouldn't hear the sender
         anymore.
         """
+        self._hook_set_client_listening()
+
         for receiver in self._get_receivers(receivers):
             self[receiver].add(sender)
 
@@ -111,7 +125,6 @@ mute_manager = _MuteManager(set)
 # =============================================================================
 # >> CALLBACKS
 # =============================================================================
-@PreHook(memory.get_virtual_function(voice_server, 'SetClientListening'))
 def _pre_set_client_listening(args):
     """Called before IVoiceServer::SetClientListening is called."""
     receiver = args[1]
@@ -122,7 +135,6 @@ def _pre_set_client_listening(args):
         args[3] = False
 
 
-@OnClientDisconnect
 def _on_client_disconnect(index):
     """Called when a player left the server."""
     # Unmute the player, so the next player who gets this index won't be muted

@@ -22,6 +22,7 @@ from core.cache import cached_property
 from entities.constants import INVALID_ENTITY_INDEX
 #   Engines
 from engines.precache import Model
+from engines.server import engine_server
 from engines.sound import Attenuation
 from engines.sound import Channel
 from engines.sound import Pitch
@@ -52,6 +53,7 @@ from listeners.tick import RepeatStatus
 #   Mathlib
 from mathlib import NULL_VECTOR
 #   Memory
+from memory import Pointer
 from memory import make_object
 from memory.helpers import MemberFunction
 #   Players
@@ -143,6 +145,24 @@ class _EntityCaching(BoostPythonClass):
         # We are done, let's return the instance
         return obj
 
+    def __setattr__(cls, attr, value):
+        """Sets an attribute to the given value and invalidate the cache.
+
+        :param str attr:
+            The name of the attribute to assign.
+        :param object value:
+            The value to assign to the attribute mathing the given name.
+        """
+        super().__setattr__(attr, value)
+
+        # Invalidate the attributes cache.
+        # We don't simply assign the value ourselves for 2 reasons:
+        #   1. We don't want to compute the attributes on class definition
+        #       and want to do so only when explicitely requested.
+        #   2. The value we currently have may have been transformed if the
+        #       assigned attribute is a descriptor defined by a subclass.
+        del cls.attributes
+
     @cached_property(unbound=True)
     def attributes(cls):
         """Returns all the attributes available for this class.
@@ -171,7 +191,7 @@ class _EntityCaching(BoostPythonClass):
         return cls._cache
 
 
-class Entity(BaseEntity, metaclass=_EntityCaching):
+class Entity(BaseEntity, Pointer, metaclass=_EntityCaching):
     """Class used to interact directly with entities.
 
     Beside the standard way of doing stuff via methods and properties this
@@ -206,7 +226,8 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
             Whether to lookup the cache for an existing instance or not.
         """
         # Initialize the object
-        super().__init__(index)
+        BaseEntity.__init__(self, index)
+        Pointer.__init__(self, self.pointer)
 
         # Set the entity's base attributes
         type(self).index.set_cached_value(self, index)
@@ -341,7 +362,7 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
         attributes = {}
         for cls, instance in self.server_classes.items():
             attributes.update(
-                {attr:(instance, getattr(cls, attr)) for attr in dir(cls)}
+                {attr:(instance, value) for attr, value in vars(cls).items()}
             )
         return attributes
 
@@ -405,17 +426,24 @@ class Entity(BaseEntity, metaclass=_EntityCaching):
 
         return Model(model_name)
 
+    @wrap_entity_mem_func
     def set_model(self, model):
         """Set the entity's model to the given model.
 
-        :param Model model:
-            The model to set.
+        :param str/Model model:
+            The model path or model to set.
         """
-        self.model_index = model.index
-        self.model_name = model.path
+        if isinstance(model, Model):
+            model = model.path
+        elif isinstance(model, str):
+            if not engine_server.is_model_precached(model):
+                raise ValueError(f'Model is not precached: {model}')
+
+        return [model]
 
     model = property(
-        get_model, set_model,
+        get_model,
+        lambda self, model: self.set_model(model),
         doc="""Property to get/set the entity's model.
 
         .. seealso:: :meth:`get_model` and :meth:`set_model`""")

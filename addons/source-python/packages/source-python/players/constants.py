@@ -16,6 +16,9 @@ from enum import IntFlag
 # =============================================================================
 # Source.Python Imports
 #   Players
+from _players._constants import FIXANGLE_NONE
+from _players._constants import FIXANGLE_ABSOLUTE
+from _players._constants import FIXANGLE_RELATIVE
 from _players._constants import FL_ONGROUND
 from _players._constants import FL_DUCKING
 from _players._constants import FL_WATERJUMP
@@ -93,7 +96,8 @@ from _players._constants import PlayerAnimation
 # =============================================================================
 # >> ALL DECLARATION
 # =============================================================================
-__all__ = ('HideHudFlags',
+__all__ = ('FixAngle',
+           'HideHudFlags',
            'HitGroup',
            'INVALID_PLAYER_USERID',
            'LifeState',
@@ -107,6 +111,14 @@ __all__ = ('HideHudFlags',
 # =============================================================================
 # >> ENUMERATORS
 # =============================================================================
+class FixAngle(IntEnum):
+    """Player fix angle enumerator."""
+
+    NONE = FIXANGLE_NONE
+    ABSOLUTE = FIXANGLE_ABSOLUTE
+    RELATIVE = FIXANGLE_RELATIVE
+
+
 class PlayerStates(IntFlag):
     """Player states wrapper enumerator."""
 

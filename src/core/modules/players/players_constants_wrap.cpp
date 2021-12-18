@@ -54,6 +54,7 @@ void export_hide_hud_flags(scope);
 void export_hit_groups(scope);
 void export_player_animation(scope);
 void export_observer_modes(scope);
+void export_fixangle(scope);
 void export_players_miscellaneous_constants(scope);
 
 
@@ -69,6 +70,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 	export_hit_groups(_constants);
 	export_player_animation(_constants);
 	export_observer_modes(_constants);
+	export_fixangle(_constants);
 	export_players_miscellaneous_constants(_constants);
 }
 
@@ -220,6 +222,17 @@ void export_observer_modes(scope _constants)
 	_constants.attr("OBS_MODE_IN_EYE") = (int)OBS_MODE_IN_EYE;
 	_constants.attr("OBS_MODE_CHASE") = (int)OBS_MODE_CHASE;
 	_constants.attr("OBS_MODE_ROAMING") = (int)OBS_MODE_ROAMING;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports fixangle constants.
+//-----------------------------------------------------------------------------
+void export_fixangle(scope _constants)
+{
+	_constants.attr("FIXANGLE_NONE") = FIXANGLE_NONE;
+	_constants.attr("FIXANGLE_ABSOLUTE") = FIXANGLE_ABSOLUTE;
+	_constants.attr("FIXANGLE_RELATIVE") = FIXANGLE_RELATIVE;
 }
 
 

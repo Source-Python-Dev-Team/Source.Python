@@ -457,7 +457,7 @@ void export_function(scope _memory)
 		.def(init<CFunction&>())
 
 		.def("__call__",
-			raw_method(&CFunction::Call),
+			very_raw_method(&CFunction::Call),
 			"Calls the function dynamically."
 		)
 
@@ -477,12 +477,12 @@ void export_function(scope _memory)
 		)
 
 		.def("call_trampoline",
-			raw_method(&CFunction::CallTrampoline),
+			very_raw_method(&CFunction::CallTrampoline),
 			"Calls the trampoline function dynamically."
 		)
 
 		.def("skip_hooks",
-			raw_method(&CFunction::SkipHooks),
+			very_raw_method(&CFunction::SkipHooks),
 			"Call the function, but skip hooks if there are any."
 		)
 

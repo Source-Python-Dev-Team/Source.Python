@@ -30,8 +30,10 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "convar.h"
+#include "icvar.h"
+#include "utilities/convar.h"
 #include "utilities/sp_util.h"
+#include "modules/commands/commands_server.h"
 
 
 //-----------------------------------------------------------------------------
@@ -63,7 +65,16 @@ public:
 			PyErr_Clear();
 		}
 
-		ConVar *pConVar = g_pCVar->FindVar(name);
+		ConCommandBase *pBase = g_pCVar->FindCommandBase(name);
+		if (pBase && pBase->IsCommand()) {
+			BOOST_RAISE_EXCEPTION(
+				PyExc_ValueError,
+				"Failed to create ConVar(\"%s\") because a ConCommand with the same name already exists.",
+				name
+			)
+		}
+
+		ConVar *pConVar = static_cast<ConVar *>(pBase);
 		if (!pConVar)
 		{
 			ConVar* pConVar = new ConVar(strdup(name), strdup(value), flags,
@@ -108,13 +119,13 @@ public:
 
 	static void MakePublic(ConVar* pConVar)
 	{
-		pConVar->m_nFlags |= FCVAR_NOTIFY;
+		AddConCommandFlags(pConVar, FCVAR_NOTIFY);
 		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
 
 	static void RemovePublic(ConVar* pConVar)
 	{
-		pConVar->m_nFlags &= ~FCVAR_NOTIFY;
+		RemoveConCommandFlags(pConVar, FCVAR_NOTIFY);
 		g_pCVar->CallGlobalChangeCallbacks(pConVar, pConVar->GetString(), pConVar->GetFloat());
 	}
 };

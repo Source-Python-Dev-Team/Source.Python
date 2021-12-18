@@ -1,7 +1,7 @@
 /**
 * =============================================================================
 * Source Python
-* Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.
+* Copyright (C) 2015 Source Python Development Team.  All rights reserved.
 * =============================================================================
 *
 * This program is free software; you can redistribute it and/or modify it under
@@ -24,83 +24,88 @@
 * Development Team grants this exception to all derivative works.
 */
 
+#ifndef _UTILITIES_CONVAR_H
+#define _UTILITIES_CONVAR_H
+
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-#include "export_main.h"
-#include "utilities/wrap_macros.h"
-#include "modules/memory/memory_tools.h"
-#include "boost/unordered_map.hpp"
-#include "commands_say.h"
-
+#ifndef CONVAR_H
+	#include "public/tier1/convar.h"
+#endif // CONVAR_H
 
 //-----------------------------------------------------------------------------
-// Externals.
+// Classes.
 //-----------------------------------------------------------------------------
-extern CSayCommandManager* GetSayCommand(const char* szName);
-
-extern void RegisterSayFilter(PyObject* pCallable);
-extern void UnregisterSayFilter(PyObject* pCallable);
-
-extern boost::unordered_map<std::string, CSayCommandManager*> g_SayCommandMap;
-COMMAND_GENERATOR(SayCommandGenerator, g_SayCommandMap)
-
-
-//-----------------------------------------------------------------------------
-// Forward declarations.
-//-----------------------------------------------------------------------------
-void export_say_command_manager(scope);
-
-
-//-----------------------------------------------------------------------------
-// Declare the _commands._say module.
-//-----------------------------------------------------------------------------
-DECLARE_SP_SUBMODULE(_commands, _say)
+class CCvar : public ConCommandBase
 {
-	export_say_command_manager(_say);
+public:
+	int GetFlags()
+	{
+		return m_nFlags;
+	}
 
-	// Helper functions...
-	def("get_say_command",
-		GetSayCommand,
-		"Returns the SayCommandDispatcher instance for the given command",
-		args("name"),
-		reference_existing_object_policy()
-	);
+	void SetFlags(int nFlags)
+	{
+		m_nFlags = nFlags;
+	}
 
-	def("register_say_filter",
-		RegisterSayFilter,
-		"Registers a callable to be called when clients use the say commands (say, say_team).",
-		args("callable")
-	);
+	void AddFlags(int nFlags)
+	{
+		m_nFlags |= nFlags;
+	}
 
-	def("unregister_say_filter",
-		UnregisterSayFilter,
-		"Unregisters a say filter.",
-		args("callable")
-	);
+	void RemoveFlags(int nFlags)
+	{
+		m_nFlags &= ~nFlags;
+	}
+};
 
-	EXPOSE_COMMAND_GENERATOR(SayCommandGenerator)
+
+//-----------------------------------------------------------------------------
+// Returns the flags of a ConVar/ConCommand.
+//-----------------------------------------------------------------------------
+inline int GetConCommandFlags(ConCommandBase *pBase)
+{
+	return reinterpret_cast<CCvar *>(pBase)->GetFlags();
 }
 
 
 //-----------------------------------------------------------------------------
-// Expose CSayCommandManager.
+// Assigns the flags of a ConVar/ConCommand.
 //-----------------------------------------------------------------------------
-void export_say_command_manager(scope _say)
+inline void SetConCommandFlags(ConCommandBase *pBase, int nFlags)
 {
-	class_<CSayCommandManager, boost::noncopyable>("SayCommandDispatcher", no_init)
-		.def("add_callback",
-			&CSayCommandManager::AddCallback,
-			"Adds a callback to the say command's list.",
-			args("callable")
-		)
-
-		.def("remove_callback",
-			&CSayCommandManager::RemoveCallback,
-			"Removes a callback from the say command's list.",
-			args("callable")
-		)
-
-		ADD_MEM_TOOLS(CSayCommandManager)
-	;
+	reinterpret_cast<CCvar *>(pBase)->SetFlags(nFlags);
 }
+
+
+//-----------------------------------------------------------------------------
+// Adds the given flags to a ConVar/ConCommand.
+//-----------------------------------------------------------------------------
+inline void AddConCommandFlags(ConCommandBase *pBase, int nFlags)
+{
+	reinterpret_cast<CCvar *>(pBase)->AddFlags(nFlags);
+}
+
+
+//-----------------------------------------------------------------------------
+// Removes the given flags to a ConVar/ConCommand.
+//-----------------------------------------------------------------------------
+inline void RemoveConCommandFlags(ConCommandBase *pBase, int nFlags)
+{
+	reinterpret_cast<CCvar *>(pBase)->RemoveFlags(nFlags);
+}
+
+
+//-----------------------------------------------------------------------------
+// Returns Source.Python's DLL identifier.
+//-----------------------------------------------------------------------------
+inline CVarDLLIdentifier_t CVarDLLIdentifier()
+{
+	static CVarDLLIdentifier_t s_nDLLIdentifier = ConCommandBase().GetDLLIdentifier();
+	return s_nDLLIdentifier;
+}
+
+
+#endif // _UTILITIES_CONVAR_H

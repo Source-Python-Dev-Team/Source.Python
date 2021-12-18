@@ -27,14 +27,11 @@
 //-----------------------------------------------------------------------------
 // Includes
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-
 #include "boost/unordered_map.hpp"
 #include "commands_client.h"
 #include "commands.h"
 #include "edict.h"
-#include "convar.h"
+#include "utilities/convar.h"
 #include "engine/iserverplugin.h"
 #include "utilities/call_python.h"
 #include "boost/python/call.hpp"

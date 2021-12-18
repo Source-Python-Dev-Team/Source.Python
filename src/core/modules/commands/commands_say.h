@@ -50,7 +50,7 @@ public:
 protected:
 	void Dispatch( const CCommand& command );
 
-private:
+public:
 	SayConCommand(ConCommand* pConCommand, const char* szName, const char* szHelpText, int iFlags);
 	const char* m_Name;
 	ConCommand* m_pOldCommand;
@@ -86,7 +86,7 @@ public:
 
 	const char* GetName();
 
-private:
+public:
 	const char* m_Name;
 	CListenerManager m_vecCallables;
 };

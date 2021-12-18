@@ -30,7 +30,7 @@
 // Includes.
 //-----------------------------------------------------------------------------
 #include "utilities/wrap_macros.h"
-#include "convar.h"
+#include "utilities/convar.h"
 #include "utilities/ipythongenerator.h"
 #include "boost/typeof/typeof.hpp" 
 
@@ -95,34 +95,6 @@ public:
 	static bool Tokenize(CCommand& command, const char* szCommand)
 	{
 		return command.Tokenize(szCommand);
-	}
-};
-
-
-//-----------------------------------------------------------------------------
-// ConCommandBase extension class.
-//-----------------------------------------------------------------------------
-class ConCommandBaseExt
-{
-public:
-	static int GetFlags(ConCommandBase* command)
-	{
-		return command->m_nFlags;
-	}
-
-	static void SetFlags(ConCommandBase* command, int flags)
-	{
-		command->m_nFlags = flags;
-	}
-
-	static void AddFlags(ConCommandBase* command, int flags)
-	{
-		command->m_nFlags |= flags;
-	}
-
-	static void RemoveFlags(ConCommandBase* command, int flags)
-	{
-		command->m_nFlags &= ~flags;
 	}
 };
 

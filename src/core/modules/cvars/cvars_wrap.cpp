@@ -27,13 +27,10 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
-// This is required for accessing m_nFlags without patching convar.h
-#define private public
-
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"
 #include "icvar.h"
-#include "convar.h"
+#include "utilities/convar.h"
 #include "cvars.h"
 
 #include ENGINE_INCLUDE_PATH(cvars.h)
@@ -63,6 +60,9 @@ DECLARE_SP_MODULE(_cvars)
 	export_convar_interface(_cvars);
 	export_convar(_cvars);
 	export_convar_flags(_cvars);
+
+	// Constants...
+	_cvars.attr("SP_CVAR_DLL_IDENTIFIER") = object(CVarDLLIdentifier());
 }
 
 
@@ -75,7 +75,7 @@ void export_cvar_interface(scope _cvars)
 		.def("register_base",
 			&ICvar::RegisterConCommand,
 			"Register a console command.",
-			arg("con_command")
+			(arg("con_command")=true)
 		)
 
 		.def("unregister_base",

@@ -88,12 +88,17 @@ protected:
 public:
 	// We need to keep the order of these methods up-to-date and maybe we need
 	// to add new methods for other games.
+#if defined(ENGINE_BMS)
+	virtual void OnNewLightSelectedFromPicker() = 0;
+	virtual void OnNewXogSelectedFromPicker() = 0;
+#endif
 	virtual ServerClass* GetServerClass() = 0;
 	virtual int YouForgotToImplementOrDeclareServerClass() = 0;
 	virtual datamap_t* GetDataDescMap() = 0;
 
 public:
 	static boost::shared_ptr<CBaseEntityWrapper> __init__(unsigned int uiEntityIndex);
+	void Initialize(object self, unsigned int uiEntityIndex);
 	static boost::shared_ptr<CBaseEntityWrapper> wrap(CBaseEntity* pEntity);
 	static CBaseEntity* create(const char* name);
 	static object create(object cls, const char* name);

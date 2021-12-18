@@ -326,7 +326,13 @@ CPointer* CPointer::PreRealloc(PyObject* self, int iSize)
  
 void CPointer::__del__(PyObject* self)
 {
-	CPointer* ptr = extract<CPointer *>(self);
+	// This can happens when a subclass fails to initialize before we properly did.
+	extract<CPointer *> extractor(self);
+	if (!extractor.check()) {
+		return;
+	}
+
+	CPointer* ptr = extractor();
 	if (ptr->m_bAutoDealloc)
 	{
 		PythonLog(4, "Automatically deallocating pointer at %u.", ptr->m_ulAddr);

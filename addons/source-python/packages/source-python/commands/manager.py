@@ -136,4 +136,8 @@ class _BaseCommandManager(object):
         :param callable callback:
             The callback that is assigned to the command.
         """
-        self._get_command(name).remove_callback(callback)
+        try:
+            self._get_command(name).remove_callback(callback)
+        except ValueError:
+            # Command was not registered
+            pass

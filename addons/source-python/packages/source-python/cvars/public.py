@@ -22,7 +22,7 @@ __all__ = ('PublicConVar',
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class PublicConVar(AutoUnload, ConVar):
+class PublicConVar(ConVar):
     """Class used to set the notify flag on load/unload."""
 
     def __init__(

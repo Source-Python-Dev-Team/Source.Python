@@ -220,6 +220,12 @@ void export_client(scope _players)
 	class_<IClient, IClient*, bases<INetChannelHandler>, boost::noncopyable> Client("Client", no_init);
 
 	Client.add_property(
+		"slot",
+		&IClient::GetPlayerSlot,
+		"Return the client's slot.(usually entity number-1)"
+	);
+
+	Client.add_property(
 		"name",
 		&IClient::GetClientName,
 		"Return the client's name."
@@ -246,6 +252,52 @@ void export_client(scope _players)
 
 	Client.def("disconnect",
 		&IClientExt::Disconnect
+	);
+
+	Client.def("is_connected",
+		&IClient::IsConnected,
+		"Return True if client has established network channels."
+	);
+
+	Client.def("is_spawned",
+		&IClient::IsSpawned,
+		"Return True if client is downloading signon data."
+	);
+
+	Client.def("is_active",
+		&IClient::IsActive,
+		"Return True if client active is ingame, receiving snapshots."
+	);
+
+	Client.def("is_fake_client",
+		&IClient::IsFakeClient,
+		"Return True if client is not a real player."
+	);
+
+	Client.def("is_hltv",
+		&IClient::IsHLTV,
+		"Return True if client is a HLTV proxy."
+	);
+
+	Client.def("is_human_player",
+#if defined(ENGINE_BLADE) || defined(ENGINE_CSGO) || defined(ENGINE_LEFT4DEAD2)
+		&IClient::IsHumanPlayer,
+#else
+		&IClientExt::IsHumanPlayer,
+#endif
+		"Return True if client is not a fake client and is not a HLTV proxy."
+	);
+
+	Client.def("is_hearing_client",
+		&IClientExt::IsHearingClient,
+		"Return True if client hears this player.",
+		args("sender")
+	);
+
+	Client.def("is_proximity_hearing_client",
+		&IClientExt::IsProximityHearingClient,
+		"Return True if client hears this player by proximity.",
+		args("sender")
 	);
 
 	// TODO: Export more
@@ -383,6 +435,16 @@ void export_player_wrapper(scope _players)
 		"Return True if the entity is a weapon.\n\n"
 		":rtype: bool"
 	);
+
+	_PlayerMixin.def(
+		"snap_to_position",
+		&PlayerMixin::SnapToPosition,
+		"Teleports the player at the given position and angles.\n\n"
+		":param Vector origin:\n"
+		"	The coordinates to teleport the player at.\n"
+		":param QAngle angles:\n"
+		"	The angles to set the player's view to.",
+		("self", arg("origin")=object(), arg("angles")=object()));
 
 	_PlayerMixin.add_property(
 		"speed",
@@ -587,10 +649,22 @@ void export_player_wrapper(scope _players)
 		"Get/set the player's view vector.\n\n"
 		":rtype: Vector");
 
+	_PlayerMixin.def(
+		"get_view_angle",
+		&PlayerMixin::GetViewAngle,
+		"Returns the player's view angle.\n\n"
+		":rtype: QAngle");
+
+	_PlayerMixin.def(
+		"set_view_angle",
+		&PlayerMixin::SetViewAngle,
+		"Sets the player's view angle.",
+		("self", "angle", arg("fixangle")=FIXANGLE_ABSOLUTE));
+
 	_PlayerMixin.add_property(
 		"view_angle",
 		&PlayerMixin::GetViewAngle,
-		&PlayerMixin::SetViewAngle,
+		_PlayerMixin.attr("set_view_angle"),
 		"Get/set the player's view angle.\n\n"
 		":rtype: QAngle");
 

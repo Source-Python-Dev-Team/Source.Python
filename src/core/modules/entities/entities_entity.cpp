@@ -36,6 +36,7 @@
 #include "modules/physics/physics.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 #include "../engines/engines.h"
+#include "modules/core/core_cache.h"
 
 // ============================================================================
 // >> External variables
@@ -57,6 +58,12 @@ boost::shared_ptr<CBaseEntityWrapper> CBaseEntityWrapper::wrap(CBaseEntity* pEnt
 		(CBaseEntityWrapper *) pEntity,
 		&NeverDeleteDeleter<CBaseEntityWrapper *>
 	);
+}
+
+void CBaseEntityWrapper::Initialize(object self, unsigned int uiEntityIndex)
+{
+	static CCachedProperty *pointer = extract<CCachedProperty *>(get_class_object<CBaseEntityWrapper>().attr("pointer"));
+	pointer->set_cached_value(self, object(GetPointer()));
 }
 
 CBaseEntity* CBaseEntityWrapper::create(const char* name)
@@ -771,13 +778,13 @@ void CBaseEntityWrapper::SetDamageFilter(const char* filter)
 
 int CBaseEntityWrapper::GetEffects()
 {
-	static int offset = FindNetworkPropertyOffset("m_fEffects");
+	static int offset = FindDatamapPropertyOffset("m_fEffects");
 	return GetNetworkPropertyByOffset<int>(offset);
 }
 
 void CBaseEntityWrapper::SetEffects(int effects)
 {
-	static int offset = FindNetworkPropertyOffset("m_fEffects");
+	static int offset = FindDatamapPropertyOffset("m_fEffects");
 	SetNetworkPropertyByOffset<int>(offset, effects);
 }
 
