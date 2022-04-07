@@ -135,8 +135,12 @@ public:
 	ECollisionMode GetMode();
 	void SetMode(ECollisionMode eMode);
 
+	bool GetSolidOnly();
+	void SetSolidOnly(bool bSolidOnly);
+
 private:
 	ECollisionMode m_eMode;
+	bool m_bSolidOnly;
 };
 
 
@@ -332,15 +336,16 @@ class ICollisionRulesExt
 {
 public:
 	template<class T>
-	static boost::shared_ptr<T> Construct(ECollisionMode eMode = COLLISION_MODE_PREVENT)
+	static boost::shared_ptr<T> Construct(ECollisionMode eMode = COLLISION_MODE_PREVENT, bool bSolidOnly = true)
 	{
 		return boost::shared_ptr<T>(new T, &Finalize<T>);
 	}
 
 	template<class T>
-	static void Initialize(T *pSelf, object self, ECollisionMode eMode = COLLISION_MODE_PREVENT)
+	static void Initialize(T *pSelf, object self, ECollisionMode eMode = COLLISION_MODE_PREVENT, bool bSolidOnly = true)
 	{
 		pSelf->SetMode(eMode);
+		pSelf->SetSolidOnly(bSolidOnly);
 
 		static CCollisionManager *pManager = GetCollisionManager();
 		pManager->RegisterRules(pSelf);

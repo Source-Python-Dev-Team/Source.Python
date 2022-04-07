@@ -120,6 +120,13 @@ void export_base_collision_rules(scope _collisions)
 		"Returns the collision mode for these rules."
 	);
 
+	BaseCollisionRules.add_property(
+		"solid_only",
+		&ICollisionRules::GetSolidOnly,
+		&ICollisionRules::SetSolidOnly,
+		"Returns whether these rules affect solid contents only."
+	);
+
 	// Methods...
 	BaseCollisionRules.def(
 		"should_collide",
@@ -158,10 +165,10 @@ void export_collision_hash(scope _collisions)
 				make_function(
 					&ICollisionRulesExt::Initialize<CCollisionHash>,
 					default_call_policies(),
-					args("self", "mode")
+					args("self", "mode", "solid_only")
 				)
 			),
-			(arg("mode")=COLLISION_MODE_PREVENT)
+			(arg("mode")=COLLISION_MODE_PREVENT, arg("solid_only")=true)
 		)
 	);
 
@@ -257,10 +264,10 @@ void export_collision_set(scope _collisions)
 				make_function(
 					&ICollisionRulesExt::Initialize<CCollisionSet>,
 					default_call_policies(),
-					args("self", "mode")
+					args("self", "mode", "solid_only")
 				)
 			),
-			(arg("mode")=COLLISION_MODE_PREVENT)
+			(arg("mode")=COLLISION_MODE_PREVENT, arg("solid_only")=true)
 		)
 	);
 
@@ -332,10 +339,10 @@ void export_collision_map(scope _collisions)
 				make_function(
 					&ICollisionRulesExt::Initialize<CCollisionMap>,
 					default_call_policies(),
-					args("self", "mode")
+					args("self", "mode", "solid_only")
 				)
 			),
-			(args("mode")=COLLISION_MODE_PREVENT)
+			(args("mode")=COLLISION_MODE_PREVENT, arg("solid_only")=true)
 		)
 	);
 

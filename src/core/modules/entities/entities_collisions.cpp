@@ -279,7 +279,7 @@ bool CCollisionManager::EnterScope(HookType_t eHookType, CHook *pHook)
 
 	bool bSolidContents = true;
 	if (pManager->m_setSolidMasks.find(nMask) == pManager->m_setSolidMasks.end()) {
-		if (!pManager->m_pCollisionHooks->GetCount()) {
+		if (!pManager->m_pCollisionHooks->GetCount() && !pManager->m_vecRules.Count()) {
 			pManager->m_vecScopes.push_back(scope);
 			return false;
 		}
@@ -426,7 +426,12 @@ bool CCollisionManager::ShouldHitEntity(IHandleEntity *pHandleEntity, int conten
 	}
 
 	FOR_EACH_VEC(pManager->m_vecRules, i) {
-		if (!pManager->m_vecRules[i]->ShouldCollide(
+		ICollisionRules *pRules = pManager->m_vecRules[i];
+		if (!scope.m_bSolidContents && pRules->GetSolidOnly()) {
+			continue;
+		}
+
+		if (!pRules->ShouldCollide(
 				(CBaseEntityWrapper *)scope.m_pFilter->m_pPassEnt,
 				(CBaseEntityWrapper *)pHandleEntity)
 		) {
@@ -530,6 +535,16 @@ ECollisionMode ICollisionRules::GetMode()
 void ICollisionRules::SetMode(ECollisionMode eMode)
 {
 	m_eMode = eMode;
+}
+
+bool ICollisionRules::GetSolidOnly()
+{
+	return m_bSolidOnly;
+}
+
+void ICollisionRules::SetSolidOnly(bool bSolidOnly)
+{
+	m_bSolidOnly = bSolidOnly;
 }
 
 
