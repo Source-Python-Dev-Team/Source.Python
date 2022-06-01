@@ -1,7 +1,7 @@
 Menus
 ======
 
-This page contains tutorials about the :mod:`menus.radio` package.
+This page contains tutorials about the :mod:`menus` package.
 
 
 Creating PagedMenu
@@ -10,6 +10,8 @@ Creating PagedMenu
 This is a simple example to create paged menu
 
 .. code-block:: python
+
+    import random
 
     from commands.say import SayCommand
 
@@ -23,23 +25,25 @@ This is a simple example to create paged menu
     @SayCommand(['menu', '/menu', '!menu'])
     def say_command(command, index, teamonly):
         # Send the menu
-        build_paged_menu(index)
+        menu.send(index)
         return False
 
-    def build_paged_menu(index):
-        # Create the Paged Menu and set title to My Menu
-        menu = PagedMenu(title='My Menu')
-        # Add options from 1 to 20
-        for i in range(1, 20):
-            menu.append(PagedOption(f'{i}', i))
-        menu.select_callback=my_select_callback
-        menu.send(index)
+    menu = PagedMenu(title='Welcome menu', description='Choose an option:', select_callback=my_select_callback)
+
+    # Add options from 1 to 20
+    for i in range(1, 20):
+        menu.append(PagedOption(f'{i}', i))
 
     def my_select_callback(menu, index, option):
-        # Create player object from index
-        player = Player(index)
-        # Print the player name who have selected a menu option
-        print(f'{player.name} have selected a menu option!')
+        '''
+        Called whenever a selection was made.
+        '''
+    
+        # Shuffle the menu : D
+        random.shuffle(menu)
+
+        # Make it sticky
+        return menu
 
 
 Creating SimpleMenu
@@ -48,6 +52,8 @@ Creating SimpleMenu
 This is a simple example to create simple menu
 
 .. code-block:: python
+
+    import time
 
     from commands.say import SayCommand
 
@@ -63,31 +69,29 @@ This is a simple example to create simple menu
     @SayCommand(['menus', '/menus', '!menus'])
     def say_menus_command(command, index, teamonly):
         # Send the menu
-        build_simple_menu(index)
+        menu.send(index)
         return False
 
-    def build_simple_menu(index):
-        # Create the SimpleMenu
-        menu = SimpleMenu
-        # Add in menu text
-        menu.append(Text('Do you accept the rules?'))
-        menu.append(Text(' '))
-        # Add in menu options
-        menu.append(SimpleOption(1, 'Yes', 'yes'))
-        menu.append(SimpleOption(2, 'No', 'no'))
-        menu.select_callback=my_menu_select_callback
-        menu.send(index)
+    
+    menu = SimpleMenu()
+    # Tell the current time
+    menu.append(Text(f"Current Time: {time.strftime('%H:%M:%S')}"))
+    # Add empty line
+    menu.append(Text(' '))
+    menu.append(Text('Do you accept the rules?'))
+    menu.append(Text(' '))
+    # Add in menu options
+    menu.append(SimpleOption(1, 'Yes', 'yes'))
+    menu.append(SimpleOption(2, 'No', 'no'))
+    menu.select_callback=my_menu_select_callback
+
 
     def my_menu_select_callback(menu, index, option):
-        choice = option.value
-        # Create player object from index
-        player = Player(index)
-        # Player did select yes option
-        if choice == 'yes':
+        if option.value == 'yes':
             SayText2('Thank you for accepting the rules!').send(index)
         # Player selected no option
         else:
-            player.kick('You have to accept the rules!')
+            Player(index).kick('You have to accept the rules!')
 
 Creating ListMenu
 --------------------------
@@ -105,12 +109,9 @@ This is a simple example to create list menu
     @SayCommand(['menus', '/menus', '!menus'])
     def say_menus_command(command, index, teamonly):
         # Send the menu
-        build_list_menu(index)
+        menu.send(index)
         return False
 
-    def build_simple_menu(index):
-        # Create the ListMenu
-        menu = ListMenu()
-        # Add in menu text
-        menu.append(Text('This is a example text'))
-        menu.send(index)
+    menu = ListMenu()
+    # Add in menu text
+    menu.append(Text('This is a example text'))
