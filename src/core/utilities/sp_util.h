@@ -97,6 +97,18 @@ inline bool CheckClassname(object obj, char* name)
 }
 
 //-----------------------------------------------------------------------------
+// Returns a Python string object.
+//-----------------------------------------------------------------------------
+inline str make_str(const char* pStr, const char* szErrors = NULL)
+{
+	if (!szErrors) {
+		return str(pStr);
+	}
+
+	return str(handle<>(PyUnicode_DecodeUTF8(pStr, strlen(pStr), szErrors)));
+}
+
+//-----------------------------------------------------------------------------
 // Returns the registered python class for T.
 //-----------------------------------------------------------------------------
 template<class T>
