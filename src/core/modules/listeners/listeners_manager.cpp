@@ -306,9 +306,11 @@ bool CServerOutputListenerManager::CallCallbacks(MessageSeverity severity, const
 {
 	bool block = false;
 	m_Mutex.Lock(); {
+		// See issue #452.
+		str msg = make_str(pMsg, "ignore");
 		FOR_EACH_VEC(m_vecCallables, i) {
 			try {
-				object return_value = m_vecCallables[i](severity, pMsg);
+				object return_value = m_vecCallables[i](severity, msg);
 
 				if (!return_value.is_none() && extract<OutputReturn>(return_value) == OUTPUT_BLOCK)
 					block = true;
