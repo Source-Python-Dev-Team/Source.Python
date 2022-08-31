@@ -59,6 +59,7 @@
 
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
+#include "modules/entities/entities.h"
 #include "modules/entities/entities_entity.h"
 #include "modules/core/core.h"
 
@@ -571,6 +572,14 @@ void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
+	// #455 - Temporarily rebind ourself to our edict if needed.
+	bool bRebound = false;
+	edict_t *pEdict;
+	if (EdictFromBaseEntity(pEntity, pEdict) && !pEdict->GetUnknown()) {
+		reinterpret_cast<CEdictWrapper *>(pEdict)->SetUnknown((IServerUnknown *)pEntity);
+		bRebound = true;
+	}
+
 	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
 
 	unsigned int uiIndex;
@@ -587,6 +596,10 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 	// Invalidate the internal entity cache once all callbacks have been called.
 	static object _on_networked_entity_deleted = import("entities").attr("_base").attr("_on_networked_entity_deleted");
 	_on_networked_entity_deleted(uiIndex);
+
+	if (bRebound) {
+		reinterpret_cast<CEdictWrapper *>(pEdict)->SetUnknown(NULL);
+	}
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )
