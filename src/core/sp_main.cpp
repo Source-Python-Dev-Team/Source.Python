@@ -59,6 +59,7 @@
 
 #include "modules/listeners/listeners_manager.h"
 #include "utilities/conversions.h"
+#include "modules/entities/entities.h"
 #include "modules/entities/entities_entity.h"
 #include "modules/entities/entities_collisions.h"
 #include "modules/entities/entities_transmit.h"
@@ -587,6 +588,14 @@ void CSourcePython::OnEntitySpawned( CBaseEntity *pEntity )
 
 void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 {
+	// #455 - Temporarily rebind ourself to our edict if needed.
+	bool bRebound = false;
+	edict_t *pEdict;
+	if (EdictFromBaseEntity(pEntity, pEdict) && !pEdict->GetUnknown()) {
+		reinterpret_cast<CEdictWrapper *>(pEdict)->SetUnknown((IServerUnknown *)pEntity);
+		bRebound = true;
+	}
+
 	CALL_LISTENERS(OnEntityDeleted, ptr((CBaseEntityWrapper*) pEntity));
 
 	unsigned int uiIndex;
@@ -611,6 +620,10 @@ void CSourcePython::OnEntityDeleted( CBaseEntity *pEntity )
 	// Cleanup active transmission rules.
 	static CTransmitManager *pTransmitManager = GetTransmitManager();
 	pTransmitManager->OnNetworkedEntityDeleted((CBaseEntityWrapper *)pEntity, uiIndex);
+
+	if (bRebound) {
+		reinterpret_cast<CEdictWrapper *>(pEdict)->SetUnknown(NULL);
+	}
 }
 
 void CSourcePython::OnDataLoaded( MDLCacheDataType_t type, MDLHandle_t handle )

@@ -135,8 +135,9 @@ class SayText2Impl(UserMessageImpl):
             index=buffer.get_int32('ent_idx'),
             chat=buffer.get_bool('chat'),
             message=buffer.get_string('msg_name'),
-            param1=buffer.get_repeated_string('params', 0),
-            param2=buffer.get_repeated_string('params', 1),
+            # See issues #27, #186 and #452.
+            param1=buffer.get_repeated_string('params', 0, 'ignore'),
+            param2=buffer.get_repeated_string('params', 1, 'ignore'),
             param3=buffer.get_repeated_string('params', 2),
             param4=buffer.get_repeated_string('params', 3))
 
@@ -156,8 +157,9 @@ class SayText2Impl(UserMessageImpl):
             index=buffer.read_byte(),
             chat=buffer.read_byte(),
             message=buffer.read_string(),
-            param1=buffer.read_string(),
-            param2=buffer.read_string(),
+            # See issues #27, #186 and #452.
+            param1=buffer.read_string('ignore'),
+            param2=buffer.read_string('ignore'),
             param3=buffer.read_string(),
             param4=buffer.read_string())
 

@@ -36,6 +36,7 @@
 #include "public/engine/iserverplugin.h"
 #include "bitbuf.h"
 
+#include "utilities/sp_util.h"
 #include "modules/memory/memory_utilities.h"
 
 #ifdef USE_PROTOBUF
@@ -165,11 +166,11 @@
 		static bool GetBool(google::protobuf::Message* pMessage, const char* field_name)
 		{ return GetField<bool>(pMessage, &google::protobuf::Reflection::GetBool, field_name); }
 
-		static std::string GetString(google::protobuf::Message* pMessage, const char* field_name)
+		static str GetString(google::protobuf::Message* pMessage, const char* field_name, const char* szErrors = NULL)
 		{
 			std::string return_value;
 			return_value = pMessage->GetReflection()->GetStringReference(*pMessage, GetFieldDescriptor(pMessage, field_name), &return_value);
-			return return_value;
+			return make_str(return_value.c_str(), szErrors);
 		}
 
 		static int GetEnum(google::protobuf::Message* pMessage, const char* field_name)
@@ -220,11 +221,11 @@
 		static bool GetRepeatedBool(google::protobuf::Message* pMessage, const char* field_name, int index)
 		{ return GetRepeatedField<bool>(pMessage, &google::protobuf::Reflection::GetRepeatedBool, field_name, index); }
 
-		static std::string GetRepeatedString(google::protobuf::Message* pMessage, const char* field_name, int index)
+		static str GetRepeatedString(google::protobuf::Message* pMessage, const char* field_name, int index, const char* szErrors = NULL)
 		{
 			std::string return_value;
 			return_value = pMessage->GetReflection()->GetRepeatedStringReference(*pMessage, GetFieldDescriptor(pMessage, field_name), index, &return_value);
-			return return_value;
+			return make_str(return_value.c_str(), szErrors);
 		}
 
 		static int GetRepeatedEnum(google::protobuf::Message* pMessage, const char* field_name, int index)
