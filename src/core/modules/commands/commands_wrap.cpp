@@ -45,6 +45,7 @@ extern void ClearAllServerCommands();
 extern void RegisterSayCommands();
 extern void UnregisterSayCommands();
 
+extern int GetCommandIndex();
 
 //-----------------------------------------------------------------------------
 // Initializes the Server and Say command modules.
@@ -92,6 +93,11 @@ DECLARE_SP_MODULE(_commands)
 	export_command_return(_commands);
 	export_concommandbase(_commands);
 	export_concommand(_commands);
+
+	def("get_command_index",
+		&GetCommandIndex,
+		"Returns the index of the player that issued the current command."
+	);
 }
 
 
