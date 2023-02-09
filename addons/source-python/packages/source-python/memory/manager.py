@@ -722,7 +722,8 @@ class TypeManager(dict):
             self.function_typedef(name, *data)
 
     def global_pointer(
-            self, cls, binary, identifier, offset=0, level=0, srv_check=True):
+            self, cls, binary, identifier, offset=0, level=0, srv_check=True,
+            accessor=False, accessor_offset=0):
         """Search for a global pointer and wrap the it."""
         manager_logger.log_debug(
             'Retrieving global pointer for {}...'.format(cls.__name__))
@@ -731,7 +732,17 @@ class TypeManager(dict):
         binary = find_binary(binary, srv_check)
 
         # Get the global pointer
-        ptr = binary.find_pointer(identifier, offset, level)
+        if accessor:
+            ptr = binary[identifier]
+            ptr = (ptr + offset + ptr.get_pointer(accessor_offset)).make_function(
+                Convention.CDECL,
+                (),
+                DataType.POINTER
+            )()
+            for _ in range(level):
+                ptr = ptr.get_pointer()
+        else:
+            ptr = binary.find_pointer(identifier, offset, level)
 
         # Raise an error if the pointer is invalid
         if not ptr:
@@ -753,6 +764,8 @@ class TypeManager(dict):
                 (Key.OFFSET, Key.as_int, 0),
                 (Key.LEVEL, Key.as_int, 0),
                 (Key.SRV_CHECK, Key.as_bool, True),
+                (Key.ACCESSOR, Key.as_bool, False),
+                (Key.ACCESSOR_OFFSET, Key.as_int, 0)
             )
         )
 

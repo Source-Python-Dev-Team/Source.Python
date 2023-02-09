@@ -184,7 +184,7 @@ class GameConfigObj(ConfigObj):
 class Tokenize(list):
     """Parses the arguments from the given string."""
 
-    _pattern = re_compile('"[^"]*"|[^ ]+')
+    _pattern = re_compile(r'"[^"]*"|[^ \t]+')
 
     def __init__(self, string, comment_prefix=None):
         """Splits the arguments from the given string."""

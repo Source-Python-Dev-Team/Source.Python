@@ -84,6 +84,8 @@ class Key(object):
 
     # Pointer keys
     LEVEL = 'level'
+    ACCESSOR = 'accessor'
+    ACCESSOR_OFFSET = 'accessor_offset'
 
     # (Virtual) function keys
     ARGS = 'arguments'
