@@ -170,9 +170,13 @@ def setup_check_signatures():
                 )
                 class_warn = True
             _sp_logger.log_warning(
-            'Invalid signature detected.\n'
-            'Name: {0}\nSignature: {1}\nFile: {2}'.format(
-                name, ' '.join("{:02X}".format(i) for i in identifier), file))
+                'Invalid signature detected.\n'
+                'Name: {0}\nSignature: {1}\nFile: {2}\n'.format(
+                    name,
+                    ' '.join("{:02X}".format(i) for i in identifier),
+                    file
+                )
+            )
 
     # check the global pointers signature
     file = SP_DATA_PATH / 'memory' / 'global_pointers.ini'
@@ -188,9 +192,13 @@ def setup_check_signatures():
             gp_warn = True
 
         _sp_logger.log_warning(
-        'Invalid signature detected.\n'
-        'Name: {0}\nSignature: {1}\nFile: {2}'.format(
-            name, ' '.join("{:02X}".format(i) for i in identifier), file))
+            'Invalid signature detected.\n'
+            'Name: {0}\nSignature: {1}\nFile: {2}\n'.format(
+                name,
+                ' '.join("{:02X}".format(i) for i in identifier),
+                file
+            )
+        )
 
 def setup_data():
     """Setup data."""
