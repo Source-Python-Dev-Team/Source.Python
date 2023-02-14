@@ -83,6 +83,7 @@ def load():
     setup_logging()
     setup_exception_hooks()
     setup_data_update()
+    setup_check_signatures()
     setup_translations()
     setup_data()
     setup_global_pointers()
@@ -135,6 +136,61 @@ def setup_data_update():
     except:
         _sp_logger.log_exception(
             'An error occured during the data update.', exc_info=True)
+
+def setup_check_signatures():
+    """Setup check signatures."""
+    _sp_logger.log_debug('Checking data signatures...')
+
+    # Python Imports
+    from warnings import warn
+    # Source.Python Imports
+    from memory.helpers import check_type_signature_from_file
+    from memory.helpers import check_pipe_signature_from_file
+    from paths import SP_DATA_PATH
+
+    # iterate over SP_DATA_PATH / 'entities' and extract all files
+    files = set(SP_DATA_PATH / 'entities' / file.name for file in
+        (SP_DATA_PATH / 'entities').walkfiles('*.ini'))
+
+    # add CBaseClient.
+    files.add(SP_DATA_PATH / 'client' / 'CBaseClient.ini')
+
+    # add CBaseEntityOutput.
+    files.add(SP_DATA_PATH / 'entity_output' / 'CBaseEntityOutput.ini')
+
+    class_warn = False
+
+    # check the class type signatures.
+    for file in files:
+        for name, identifier in check_type_signature_from_file(file):
+            if not class_warn:
+                warn(
+                    'Invalid signature detected in class data, '
+                    'specific function will not work.'
+                )
+                class_warn = True
+            _sp_logger.log_warning(
+            'Invalid signature detected.\n'
+            'Name: {0}\nSignature: {1}\nFile: {2}'.format(
+                name, ' '.join("{:02X}".format(i) for i in identifier), file))
+
+    # check the global pointers signature
+    file = SP_DATA_PATH / 'memory' / 'global_pointers.ini'
+
+    gp_warn = False
+
+    for name, identifier in check_pipe_signature_from_file(file):
+        if not gp_warn:
+            warn(
+                'Invalid signature detected in global pointers data, '
+                'may cause problems with Source.Python operation.'
+            )
+            gp_warn = True
+
+        _sp_logger.log_warning(
+        'Invalid signature detected.\n'
+        'Name: {0}\nSignature: {1}\nFile: {2}'.format(
+            name, ' '.join("{:02X}".format(i) for i in identifier), file))
 
 def setup_data():
     """Setup data."""
