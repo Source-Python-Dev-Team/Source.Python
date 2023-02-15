@@ -32,6 +32,8 @@ __all__ = ('Array',
            'MemberFunction',
            'NO_DEFAULT',
            'Type',
+           'check_pipe_signature_from_file',
+           'check_type_signature_from_file',
            'parse_data',
            )
 
