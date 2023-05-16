@@ -187,20 +187,15 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         :param slots: A set to which slots can be added.
         :type slots: :class:`set`
         """
+        buffer = ''
 
-        translated_title = _translate_text(self.title, player_index) if self.title else ''
-        page_info = '[{0}/{1}]'.format(page.index + 1, self.page_count) if self.show_pages else ''
+        if self.title:
+            buffer += _translate_text(self.title, player_index)
 
-        if translated_title and page_info:
-            buffer = '{0} {1}'.format(translated_title, page_info)
-        elif translated_title:
-            buffer = translated_title
-        elif page_info:
-            buffer = page_info
-        else:
-            buffer = ''
+        if self.show_pages:
+            buffer += f' [{page.index + 1}/{self.page_count}]'
 
-        buffer += '\n'
+        buffer = buffer.strip() + '\n'
 
         # Set description if present
         if self.description is not None:
