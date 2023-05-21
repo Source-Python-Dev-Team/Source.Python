@@ -467,7 +467,16 @@ class TypeManager(dict):
 
             # Handle native type
             else:
-                getattr(ptr, 'set_' + type_name)(value, offset)
+                # Handle string pointer type
+                if type_name == Type.STRING_POINTER:
+                    string_pointer = ptr.set_string_pointer(value, offset)
+                    string_pointer.auto_dealloc = True
+
+                    # Make sure the value will not deallocate as long as it is
+                    # part of this object
+                    ptr._pointer_values[offset] = string_pointer
+                else:
+                    getattr(ptr, 'set_' + type_name)(value, offset)
 
         return property(fget, fset, None, doc)
 
@@ -521,8 +530,17 @@ class TypeManager(dict):
                     # Set the pointer
                     ptr.set_pointer(instance_ptr, offset)
 
-                # Set the value
-                getattr(instance_ptr, 'set_' + type_name)(value)
+                # Handle string pointer type
+                if type_name == Type.STRING_POINTER:
+                    string_pointer = instance_ptr.set_string_pointer(value, offset)
+                    string_pointer.auto_dealloc = True
+
+                    # Make sure the value will not deallocate as long as it is
+                    # part of this object
+                    ptr._pointer_values[offset] = string_pointer
+                else:
+                    # Set the value
+                    getattr(instance_ptr, 'set_' + type_name)(value)
 
         return property(fget, fset, None, doc)
 
