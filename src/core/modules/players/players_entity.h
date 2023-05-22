@@ -57,6 +57,13 @@ using namespace boost::python;
 	#define PLAYER_CLASS_PROPERTY "m_iClass"
 #endif
 
+// Desired Player class property
+#if defined(ENGINE_BRANCH_DODS)
+	#define DESIRED_PLAYER_CLASS_PROPERTY "m_Shared.dodsharedlocaldata.m_iDesiredPlayerClass"
+#else
+	#define DESIRED_PLAYER_CLASS_PROPERTY "m_Shared.m_iDesiredPlayerClass"
+#endif
+
 
 //-----------------------------------------------------------------------------
 // CBaseEntity extension class for players.
