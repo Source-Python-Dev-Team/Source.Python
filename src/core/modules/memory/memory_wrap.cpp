@@ -229,7 +229,7 @@ void export_pointer(scope _memory)
 
 		.def("set_string_pointer",
 			&CPointer::SetStringPointer,
-			"Sets the value at the given memory location. This string object must be deallocated by the user. Returns the string object.",
+			"Sets the value at the given memory location. Returns the string object. This string object must be deallocated by the user.",
 			("value", arg( "offset")=0),
 			manage_new_object_policy()
 		)

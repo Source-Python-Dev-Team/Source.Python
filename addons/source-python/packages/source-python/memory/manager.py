@@ -479,7 +479,7 @@ class TypeManager(dict):
 
                 # Handle string array type
                 elif type_name == Type.STRING_ARRAY:
-                    if length and len(value) >= length:
+                    if length and len(value.encode()) >= length:
                         raise ValueError(
                             'The string length exceeds'
                             'the limit "{0}".'.format(length-1))
@@ -533,7 +533,7 @@ class TypeManager(dict):
                 if not instance_ptr:
                     # Allocate space for the value
                     if type_name == Type.STRING_ARRAY:
-                        size = length if length else len(value) + 1
+                        size = length if length else len(value.encode()) + 1
                     else:
                         size = TYPE_SIZES[type_name.upper()]
 
@@ -558,7 +558,7 @@ class TypeManager(dict):
 
                 # Handle string array type
                 elif type_name == Type.STRING_ARRAY:
-                    if length and len(value) >= length:
+                    if length and len(value.encode()) >= length:
                         raise ValueError(
                             'The string length exceeds'
                             'the limit "{0}".'.format(length-1))
