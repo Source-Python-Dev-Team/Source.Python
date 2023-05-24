@@ -471,11 +471,12 @@ class TypeManager(dict):
                 # Handle string pointer type
                 if type_name == Type.STRING_POINTER:
                     string_pointer = ptr.set_string_pointer(value, offset)
-                    string_pointer.auto_dealloc = True
+                    if string_pointer:
+                        string_pointer.auto_dealloc = True
 
-                    # Make sure the value will not deallocate as long as it is
-                    # part of this object
-                    ptr._pointer_values[offset] = string_pointer
+                        # Make sure the value will not deallocate as long as
+                        # it is part of this object
+                        ptr._pointer_values[offset] = string_pointer
 
                 # Handle string array type
                 elif type_name == Type.STRING_ARRAY:
@@ -550,11 +551,12 @@ class TypeManager(dict):
                 if type_name == Type.STRING_POINTER:
                     string_pointer = instance_ptr.set_string_pointer(
                         value, offset)
-                    string_pointer.auto_dealloc = True
+                    if string_pointer:
+                        string_pointer.auto_dealloc = True
 
-                    # Make sure the value will not deallocate as long as it is
-                    # part of this object
-                    ptr._pointer_values[offset] = string_pointer
+                        # Make sure the value will not deallocate as long as
+                        # it is part of this object
+                        ptr._pointer_values[offset] = string_pointer
 
                 # Handle string array type
                 elif type_name == Type.STRING_ARRAY:

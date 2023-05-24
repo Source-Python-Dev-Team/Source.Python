@@ -137,7 +137,7 @@ public:
 	}
 
 	const char *        GetStringPointer(int iOffset = 0);
-	CPointer*           SetStringPointer(str oString, int iOffset = 0);
+	CPointer*           SetStringPointer(char * szText, int iOffset = 0);
 
 	const char *        GetStringArray(int iOffset = 0);
 	void                SetStringArray(char* szText, int iOffset = 0);

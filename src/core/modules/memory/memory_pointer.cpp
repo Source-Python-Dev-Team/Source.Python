@@ -102,21 +102,24 @@ const char * CPointer::GetStringPointer(int iOffset /* = 0 */)
 	return result;
 }
 
-CPointer * CPointer::SetStringPointer(str oString, int iOffset /* = 0 */)
+CPointer * CPointer::SetStringPointer(char * szText, int iOffset /* = 0 */)
 {
 	Validate();
 
-	// Encode Unicode object and extract Python bytes object.
-	PyObject * pObj = PyUnicode_AsUTF8String(oString.ptr());
-	if (!pObj)
-		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Invalid UTF-8 string.");
+	char * value;
 
-	// Get string and length of bytes.
-	const char * szString = PyBytes_AS_STRING(pObj);
-	unsigned long length = PyBytes_GET_SIZE(pObj) + 1;
+	if (szText)
+	{
+		// Get length of string.
+		unsigned long length = strlen(szText) + 1;
 
-	char * value = (char *) UTIL_Alloc(length);
-	memcpy(value, szString, length);
+		value = (char *) UTIL_Alloc(length);
+		memcpy(value, szText, length);
+	}
+	else
+	{
+		value = szText;
+	}
 
 	TRY_SEGV()
 		*(const char **) (m_ulAddr + iOffset) = value;
