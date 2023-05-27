@@ -482,7 +482,7 @@ class TypeManager(dict):
                 elif type_name == Type.STRING_ARRAY:
                     if length and len(value.encode()) >= length:
                         raise ValueError(
-                            'The string length exceeds'
+                            'The string length exceeds '
                             'the limit "{0}".'.format(length-1))
 
                     ptr.set_string_array(value, offset)
@@ -562,7 +562,7 @@ class TypeManager(dict):
                 elif type_name == Type.STRING_ARRAY:
                     if length and len(value.encode()) >= length:
                         raise ValueError(
-                            'The string length exceeds'
+                            'The string length exceeds '
                             'the limit "{0}".'.format(length-1))
 
                     instance_ptr.set_string_array(value, offset)

@@ -102,6 +102,13 @@ const char * CPointer::GetStringPointer(int iOffset /* = 0 */)
 	return result;
 }
 
+void SetStringPointerHelper(unsigned long addr, const char * ptr)
+{
+	TRY_SEGV()
+		*(const char **) (addr) = ptr;
+	EXCEPT_SEGV()
+}
+
 CPointer * CPointer::SetStringPointer(char * szText, int iOffset /* = 0 */)
 {
 	Validate();
@@ -121,9 +128,7 @@ CPointer * CPointer::SetStringPointer(char * szText, int iOffset /* = 0 */)
 		value = szText;
 	}
 
-	TRY_SEGV()
-		*(const char **) (m_ulAddr + iOffset) = value;
-	EXCEPT_SEGV()
+	SetStringPointerHelper(m_ulAddr + iOffset, value);
 
 	return new CPointer((unsigned long) value, false);
 }
