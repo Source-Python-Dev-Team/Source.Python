@@ -193,9 +193,13 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             buffer += _translate_text(self.title, player_index)
 
         if self.show_pages:
-            buffer += f' [{page.index + 1}/{self.page_count}]'
+            if buffer:
+                buffer += ' '
 
-        buffer = buffer.strip() + '\n'
+            buffer += f'[{page.index + 1}/{self.page_count}]'
+
+        if buffer:
+            buffer += '\n'
 
         # Set description if present
         if self.description is not None:
