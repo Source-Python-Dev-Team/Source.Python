@@ -13,6 +13,7 @@ from menus.base import Text
 from menus.base import _BaseMenu
 from menus.base import _PagedMenuBase
 from menus.base import _BaseOption
+from menus.base import _format_paged_title
 from menus.base import _translate_text
 from menus.queue import _radio_queues
 #   Messages
@@ -187,16 +188,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         :param slots: A set to which slots can be added.
         :type slots: :class:`set`
         """
-        buffer = ''
-
-        if self.title:
-            buffer += _translate_text(self.title, player_index)
-
-        if self.show_pages:
-            if buffer:
-                buffer += ' '
-
-            buffer += f'[{page.index + 1}/{self.page_count}]'
+        buffer = _format_paged_title(self, player_index, page)
 
         if buffer:
             buffer += '\n'

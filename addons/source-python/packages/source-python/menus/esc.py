@@ -16,6 +16,7 @@ from keyvalues import KeyValues
 from menus.base import _BaseMenu
 from menus.base import _PagedMenuBase
 from menus.base import _BaseOption
+from menus.base import _format_paged_title
 from menus.base import _translate_text
 from menus.queue import ESC_SELECTION_CMD
 from menus.queue import _esc_queues
@@ -169,7 +170,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
     def __init__(
             self, data=None, select_callback=None, build_callback=None, close_callback=None,
             description=None, title=None, title_color=WHITE, fill=True,
-            parent_menu=None):
+            parent_menu=None, show_pages=True):
         """Initialize the object.
 
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
@@ -192,6 +193,7 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
             description, title, title_color)
         self.fill = fill
         self.parent_menu = parent_menu
+        self.show_pages = show_pages
 
     @staticmethod
     def _get_max_item_count():
@@ -205,16 +207,8 @@ class PagedESCMenu(SimpleESCMenu, _PagedMenuBase):
         :param _PlayerPage page: The player's current page.
         :param KeyValues data: The current menu data.
         """
-        # Create the page info string
-        info = '[{0}/{1}]'.format(page.index + 1, self.page_count)
-
-        if self.title is not None:
-            data.set_string('title', '{0} {1}'.format(
-                _translate_text(self.title, player_index), info))
-        else:
-            data.set_string('title', info)
-
-        data.set_color('color', self.title_color)
+        buffer = _format_paged_title(self, player_index, page)
+        data.set_string('title', buffer)
 
     def _format_body(self, player_index, page, data):
         """Prepare the body for the menu.
@@ -316,7 +310,7 @@ class ListESCMenu(PagedESCMenu):
     def __init__(
             self, data=None, select_callback=None, build_callback=None, close_callback=None,
             description=None, title=None, title_color=WHITE, fill=True,
-            parent_menu=None, items_per_page=5):
+            parent_menu=None, items_per_page=5, show_pages=True):
         """Initialize the object.
 
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
@@ -335,7 +329,7 @@ class ListESCMenu(PagedESCMenu):
             on a single page (5 is the maximum).
         """
         super().__init__(data, select_callback, build_callback, close_callback, description,
-            title, title_color, fill, parent_menu)
+            title, title_color, fill, parent_menu, show_pages)
         self.items_per_page = items_per_page
 
     def _get_max_item_count(self):
