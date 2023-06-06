@@ -8,6 +8,10 @@
 # Source.Python Imports
 #   Cvars
 from cvars import ConVar
+#   Weapons
+from weapons.constants import WeaponID
+from weapons.constants import WeaponSlot
+from weapons.constants import WeaponType
 
 
 # =============================================================================
@@ -31,8 +35,26 @@ class WeaponClass(object):
         # Store the weapon's base name
         self._basename = basename
 
+        # Store the weapon's id number
+        _id = properties.get('id', None)
+        try:
+            self._id = WeaponID(_id)
+        except ValueError:
+            self._id = _id
+
+        # Store the weapon's type number
+        _type = properties.get('type', None)
+        try:
+            self._type = WeaponType(_type)
+        except ValueError:
+            self._type = _type
+
         # Store the weapon's slot number
-        self._slot = properties.get('slot', None)
+        _slot = properties.get('slot', None)
+        try:
+            self._slot = WeaponSlot(_slot)
+        except ValueError:
+            self._slot = _slot
 
         # Store the weapon's max ammo amount
         self._maxammo = properties.get('maxammo', None)
@@ -45,6 +67,9 @@ class WeaponClass(object):
 
         # Store the weapon's cost
         self._cost = properties.get('cost', None)
+
+        # Store the weapon's parent_class
+        self._parent_class = properties.get('parent_class', None)
 
         # Store the weapon's item definition index
         self._item_definition_index = properties.get('item_definition_index', None)
@@ -69,10 +94,26 @@ class WeaponClass(object):
         return self._basename
 
     @property
+    def id(self):
+        """Return the id of the weapon.
+
+        :rtype: int/WeaponID
+        """
+        return self._id
+
+    @property
+    def type(self):
+        """Return the type of the weapon.
+
+        :rtype: int/WeaponType
+        """
+        return self._type
+
+    @property
     def slot(self):
         """Return the slot of the weapon.
 
-        :rtype: int
+        :rtype: int/WeaponSlot
         """
         return self._slot
 
@@ -122,6 +163,16 @@ class WeaponClass(object):
         :rtype: int
         """
         return self._cost
+
+    @property
+    def parent_class(self):
+        """Return the parent class of the weapon.
+
+        :return:
+            None if the parent class data is missing.
+        :rtype: str
+        """
+        return self._parent_class
 
     @property
     def item_definition_index(self):
