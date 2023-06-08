@@ -53,8 +53,17 @@ using namespace boost::python;
 // Player class property
 #if defined(ENGINE_BRANCH_TF2)
 	#define PLAYER_CLASS_PROPERTY "m_PlayerClass.m_iClass"
+#elif defined(ENGINE_BRANCH_DODS)
+	#define PLAYER_CLASS_PROPERTY "m_Shared.dodsharedlocaldata.m_iPlayerClass"
 #else
 	#define PLAYER_CLASS_PROPERTY "m_iClass"
+#endif
+
+// Desired Player class property
+#if defined(ENGINE_BRANCH_DODS)
+	#define DESIRED_PLAYER_CLASS_PROPERTY "m_Shared.dodsharedlocaldata.m_iDesiredPlayerClass"
+#else
+	#define DESIRED_PLAYER_CLASS_PROPERTY "m_Shared.m_iDesiredPlayerClass"
 #endif
 
 

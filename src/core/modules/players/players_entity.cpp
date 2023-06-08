@@ -745,12 +745,12 @@ void PlayerMixin::SetSuitPowerLoad(float value)
 
 unsigned char PlayerMixin::GetDesiredPlayerClass()
 {
-	static int offset = FindNetworkPropertyOffset("m_Shared.m_iDesiredPlayerClass");
+	static int offset = FindNetworkPropertyOffset(DESIRED_PLAYER_CLASS_PROPERTY);
 	return GetNetworkPropertyByOffset<unsigned char>(offset);
 }
 
 void PlayerMixin::SetDesiredPlayerClass(unsigned char value)
 {
-	static int offset = FindNetworkPropertyOffset("m_Shared.m_iDesiredPlayerClass");
+	static int offset = FindNetworkPropertyOffset(DESIRED_PLAYER_CLASS_PROPERTY);
 	SetNetworkPropertyByOffset<unsigned char>(offset, value);
 }
