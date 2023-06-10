@@ -189,7 +189,7 @@ class WeaponClass(object):
         """
         if isinstance(value, int):
             try:
-                return weapon_constants(_id)
+                return weapon_constants(value)
             except ValueError:
                 pass
         elif isinstance(value, str):
