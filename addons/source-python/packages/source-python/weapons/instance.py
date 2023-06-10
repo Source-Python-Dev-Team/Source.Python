@@ -36,25 +36,16 @@ class WeaponClass(object):
         self._basename = basename
 
         # Store the weapon's id number
-        _id = properties.get('id', None)
-        try:
-            self._id = WeaponID(_id)
-        except ValueError:
-            self._id = _id
+        self._id = self.parse_weapon_constants(
+            properties.get('id', None), WeaponID)
 
         # Store the weapon's type number
-        _type = properties.get('type', None)
-        try:
-            self._type = WeaponType(_type)
-        except ValueError:
-            self._type = _type
+        self._type = self.parse_weapon_constants(
+            properties.get('type', None), WeaponType)
 
         # Store the weapon's slot number
-        _slot = properties.get('slot', None)
-        try:
-            self._slot = WeaponSlot(_slot)
-        except ValueError:
-            self._slot = _slot
+        self._slot = self.parse_weapon_constants(
+            properties.get('slot', None), WeaponSlot)
 
         # Store the weapon's max ammo amount
         self._maxammo = properties.get('maxammo', None)
@@ -70,9 +61,6 @@ class WeaponClass(object):
 
         # Store the weapon's parent_class
         self._parent_class = properties.get('parent_class', None)
-
-        # Store the weapon's item definition index
-        self._item_definition_index = properties.get('item_definition_index', None)
 
         # Store the weapon's tags
         self._tags = properties.get('tags', 'all').split(',')
@@ -182,7 +170,7 @@ class WeaponClass(object):
             None if the item defition index data is missing.
         :rtype: int
         """
-        return self._item_definition_index
+        return int(self._id)
 
     @property
     def tags(self):
@@ -191,3 +179,23 @@ class WeaponClass(object):
         :rtype: list
         """
         return self._tags
+
+    @staticmethod
+    def parse_weapon_constants(value, weapon_constants):
+        """Parses weapon constants.
+
+        :return:
+            Returns the value as it is if weapon constants cannot be found.
+        """
+        if isinstance(value, int):
+            try:
+                return weapon_constants(_id)
+            except ValueError:
+                pass
+        elif isinstance(value, str):
+            try:
+                return getattr(weapon_constants, value)
+            except AttributeError:
+                pass
+
+        return value

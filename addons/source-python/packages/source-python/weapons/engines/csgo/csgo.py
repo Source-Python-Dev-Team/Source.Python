@@ -7,16 +7,17 @@
 # =============================================================================
 # Source.Python
 from . import Weapon as _Weapon
-from weapons.manager import weapon_manager
+#   Filters
+from filters.weapons import WeaponClassIter
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
 _item_definition_indexes = {
-    values.get('item_definition_index'): weapon_manager[weapon].name
-    for weapon, values in weapon_manager.ini['weapons'].items()
-    if values.get('item_definition_index')
+    weapon_class.item_definition_index: weapon_class.name
+    for weapon_class in WeaponClassIter('all')
+    if weapon_class.item_definition_index is not None
 }
 
 
