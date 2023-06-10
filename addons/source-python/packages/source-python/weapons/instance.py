@@ -170,7 +170,7 @@ class WeaponClass(object):
             None if the item defition index data is missing.
         :rtype: int
         """
-        return int(self._id)
+        return int(self._id) if self._id is not None else None
 
     @property
     def tags(self):
