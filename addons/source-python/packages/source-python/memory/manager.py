@@ -619,21 +619,34 @@ class TypeManager(dict):
         if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
-        def fget(ptr):
-            """Return the virtual function."""
-            # Create the virtual function
-            func = ptr.make_virtual_function(
-                index,
-                convention,
-                args,
-                return_type
-            )
+        class fget(object):
+            def __set_name__(fget_self, owner, name):
+                fget_self.name = name
 
-            # Wrap it using MemberFunction, so we don't have to pass the this
-            # pointer anymore
-            return MemberFunction(self, return_type, func, ptr)
+            def __get__(fget_self, obj, cls=None):
+                """Return the virtual function."""
+                if obj is None:
+                    return fget_self
 
-        return property(fget, None, None, doc)
+                # Create the virtual function
+                func = obj.make_virtual_function(
+                    index,
+                    convention,
+                    args,
+                    return_type
+                )
+
+                # Wrap it using MemberFunction, so we don't have to pass the this
+                # pointer anymore
+                func = MemberFunction(self, return_type, func, obj)
+                func.__doc__ = doc
+
+                # Set the MemberFunction as an attribute to the instance.
+                setattr(obj, fget_self.name, func)
+
+                return func
+
+        return fget()
 
     def function(
             self, identifier, args=(), return_type=DataType.VOID,
@@ -646,34 +659,48 @@ class TypeManager(dict):
         if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
+        # Store the function cache
+        func = None
+
         class fget(object):
+            def __set_name__(fget_self, owner, name):
+                fget_self.name = name
+
             def __get__(fget_self, obj, cls=None):
+                nonlocal func
                 if cls is None:
                     if obj is None:
                         return fget_self
                     else:
                         cls = obj.__class__
 
-                if cls._binary is None:
-                    raise ValueError('_binary was not specified.')
+                if func is None:
+                    if cls._binary is None:
+                        raise ValueError('_binary was not specified.')
 
-                # Create a binary object
-                binary = find_binary(cls._binary, cls._srv_check)
+                    # Create a binary object
+                    binary = find_binary(cls._binary, cls._srv_check)
 
-                # Create the function object
-                func = binary[identifier].make_function(
-                    convention,
-                    args,
-                    return_type
-                )
+                    # Create the function object and cache it
+                    func = binary[identifier].make_function(
+                        convention,
+                        args,
+                        return_type
+                    )
+                    func.__doc__ = doc
 
                 # Called with a this pointer?
                 if obj is not None:
-                    # Wrap the function using MemberFunction, so we don't have
-                    # to pass the this pointer anymore
-                    func = MemberFunction(self, return_type, func, obj)
+                    # Wrap the function using MemberFunction,
+                    # so we don't have to pass the this pointer anymore
+                    m_func = MemberFunction(self, return_type, func, obj)
+                    m_func.__doc__ = doc
 
-                func.__doc__ = doc
+                    # Set the MemberFunction as an attribute to the instance.
+                    setattr(obj, fget_self.name, m_func)
+
+                    return m_func
+
                 return func
 
         return fget()
