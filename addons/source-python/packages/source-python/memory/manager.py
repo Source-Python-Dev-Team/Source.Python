@@ -619,6 +619,8 @@ class TypeManager(dict):
         if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
+        funcs = {}
+
         class fget(object):
             def __set_name__(fget_self, owner, name):
                 fget_self.name = name
@@ -628,21 +630,25 @@ class TypeManager(dict):
                 if obj is None:
                     return fget_self
 
-                # Create the virtual function
-                func = obj.make_virtual_function(
-                    index,
-                    convention,
-                    args,
-                    return_type
-                )
+                # Get the vtable address
+                address = obj._ptr().get_pointer().address
+                # Search function cache by vtable address
+                func = funcs.get(address, None)
+
+                if func is None:
+                    # Create the virtual function cache it
+                    func = obj.make_virtual_function(
+                        index,
+                        convention,
+                        args,
+                        return_type
+                    )
+                    funcs[address] = func
 
                 # Wrap it using MemberFunction, so we don't have to pass the this
                 # pointer anymore
                 func = MemberFunction(self, return_type, func, obj)
                 func.__doc__ = doc
-
-                # Set the MemberFunction as an attribute to the instance.
-                setattr(obj, fget_self.name, func)
 
                 return func
 
@@ -695,9 +701,6 @@ class TypeManager(dict):
                     # so we don't have to pass the this pointer anymore
                     m_func = MemberFunction(self, return_type, func, obj)
                     m_func.__doc__ = doc
-
-                    # Set the MemberFunction as an attribute to the instance.
-                    setattr(obj, fget_self.name, m_func)
 
                     return m_func
 
