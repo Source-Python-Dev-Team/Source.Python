@@ -619,40 +619,34 @@ class TypeManager(dict):
         if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
+        # Store the function cache
         funcs = {}
 
-        class fget(object):
-            def __set_name__(fget_self, owner, name):
-                fget_self.name = name
+        def fget(ptr):
+            """Return the virtual function."""
+            # Get the vtable address
+            address = ptr._ptr().get_pointer().address
+            # Search function cache by vtable address
+            func = funcs.get(address, None)
 
-            def __get__(fget_self, obj, cls=None):
-                """Return the virtual function."""
-                if obj is None:
-                    return fget_self
+            if func is None:
+                # Create the virtual function cache it
+                func = ptr.make_virtual_function(
+                    index,
+                    convention,
+                    args,
+                    return_type
+                )
+                funcs[address] = func
 
-                # Get the vtable address
-                address = obj._ptr().get_pointer().address
-                # Search function cache by vtable address
-                func = funcs.get(address, None)
+            # Wrap it using MemberFunction, so we don't have to pass the this
+            # pointer anymore
+            m_func = MemberFunction(self, return_type, func, ptr)
+            m_func.__doc__ = doc
 
-                if func is None:
-                    # Create the virtual function cache it
-                    func = obj.make_virtual_function(
-                        index,
-                        convention,
-                        args,
-                        return_type
-                    )
-                    funcs[address] = func
+            return m_func
 
-                # Wrap it using MemberFunction, so we don't have to pass the this
-                # pointer anymore
-                func = MemberFunction(self, return_type, func, obj)
-                func.__doc__ = doc
-
-                return func
-
-        return fget()
+        return property(fget, None, None, doc)
 
     def function(
             self, identifier, args=(), return_type=DataType.VOID,
@@ -669,9 +663,6 @@ class TypeManager(dict):
         func = None
 
         class fget(object):
-            def __set_name__(fget_self, owner, name):
-                fget_self.name = name
-
             def __get__(fget_self, obj, cls=None):
                 nonlocal func
                 if cls is None:
@@ -697,8 +688,8 @@ class TypeManager(dict):
 
                 # Called with a this pointer?
                 if obj is not None:
-                    # Wrap the function using MemberFunction,
-                    # so we don't have to pass the this pointer anymore
+                    # Wrap the function using MemberFunction, so we don't have
+                    # to pass the this pointer anymore
                     m_func = MemberFunction(self, return_type, func, obj)
                     m_func.__doc__ = doc
 
