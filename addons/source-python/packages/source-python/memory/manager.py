@@ -637,6 +637,11 @@ class TypeManager(dict):
                     args,
                     return_type
                 )
+                for func_cache in funcs.values():
+                    if func_cache == func:
+                        func = func_cache
+                        break
+
                 funcs[address] = func
 
             # Wrap it using MemberFunction, so we don't have to pass the this
