@@ -625,7 +625,7 @@ class TypeManager(dict):
         def fget(ptr):
             """Return the virtual function."""
             # Get the vtable address
-            address = ptr._ptr().get_pointer().address
+            address = ptr.get_pointer().address
             # Search function cache by vtable address
             func = funcs.get(address, None)
 
