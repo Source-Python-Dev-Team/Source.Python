@@ -163,7 +163,7 @@ class _EntityCaching(BoostPythonClass):
         #       assigned attribute is a descriptor defined by a subclass.
         del cls.attributes
 
-    @cached_property(unbound=True)
+    @cached_property
     def attributes(cls):
         """Returns all the attributes available for this class.
 

@@ -31,7 +31,7 @@ from _core._cache import cached_property
 # =============================================================================
 __all__ = [
     'CachedProperty',
-    'cached_property'
+    'cached_property',
     'cached_result'
 ]
 
@@ -74,4 +74,4 @@ def cached_result(fget):
         return MethodType(wrapper, self)
 
     # Return a cached property bound to the getter function
-    return CachedProperty(getter, doc=fget.__doc__, unbound=True)
+    return CachedProperty(getter, doc=fget.__doc__)
