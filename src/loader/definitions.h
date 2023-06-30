@@ -46,6 +46,7 @@
 #	define VCRUNTIME_LIB "Python3/plat-win/vcruntime140.dll"
 #elif defined(LINUX)
 #	define PYLIB_NAME PYLIB_NAME_LINUX
+#	define ZLIB_LIB "Python3/plat-linux/libz.so.1.2.11"
 #endif
 
 #define MAX_PATH_LENGTH 1024

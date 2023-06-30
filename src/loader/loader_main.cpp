@@ -208,6 +208,13 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	if( SPLoadLibrary(engine, VCRUNTIME_LIB) == NULL ) {
 		return false;
 	}
+
+	// ------------------------------------------------------------------
+	// Load linux dependencies.
+	// ------------------------------------------------------------------
+#elif __linux__
+	// See issue #466.
+	SPLoadLibrary(engine, ZLIB_LIB);
 #endif
 
 	// ------------------------------------------------------------------
