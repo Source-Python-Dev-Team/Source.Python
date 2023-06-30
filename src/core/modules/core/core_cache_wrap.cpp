@@ -427,6 +427,4 @@ void export_cached_property(scope _cache)
 		)
 	)
 	.staticmethod("wrap_descriptor");
-
-	scope().attr("cached_property") = scope().attr("CachedProperty");
 }

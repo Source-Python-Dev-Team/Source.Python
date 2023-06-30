@@ -64,37 +64,6 @@ object CCachedProperty::_callable_check(object function, const char *szName)
 	return function;
 }
 
-object CCachedProperty::_prepare_value(object value)
-{
-	if (!PyGen_Check(value.ptr()))
-		return value;
-
-	if (getattr(value, "gi_frame").is_none())
-		BOOST_RAISE_EXCEPTION(
-			PyExc_ValueError,
-			"The given generator is exhausted."
-		);
-
-	list values;
-	while (true)
-	{
-		try
-		{
-			values.append(value.attr("__next__")());
-		}
-		catch(...)
-		{
-			if (!PyErr_ExceptionMatches(PyExc_StopIteration))
-				throw_error_already_set();
-
-			PyErr_Clear();
-			break;
-		}
-	}
-
-	return values;
-}
-
 
 object CCachedProperty::get_getter()
 {
@@ -152,10 +121,11 @@ object CCachedProperty::get_cached_value(object instance)
 		);
 
 	PyObject *pValue = NULL;
-	PyObject *pDict = *_PyObject_GetDictPtr(instance.ptr());
+	PyObject **ppDict = _PyObject_GetDictPtr(instance.ptr());
 
-	if (pDict) {
-		pValue = PyDict_GetItem(pDict, m_name.ptr());
+	
+	if (ppDict && *ppDict) {
+		pValue = PyDict_GetItem(*ppDict, m_name.ptr());
 	}
 
 	if (!pValue) {
@@ -178,25 +148,30 @@ void CCachedProperty::set_cached_value(object instance, object value)
 			"Unable to assign the value of an unbound property."
 		);
 
-	PyObject *pDict = *_PyObject_GetDictPtr(instance.ptr());
+	PyObject *pDict = PyObject_GenericGetDict(instance.ptr(), NULL);
 
 	if (!pDict) {
-		pDict = PyObject_GenericGetDict(instance.ptr(), NULL);
-		Py_DECREF(pDict);
+		const char *szOwner = extract<const char *>(m_owner.attr("__qualname__"));
+		BOOST_RAISE_EXCEPTION(
+			PyExc_AttributeError,
+			"'%s' object has no attribute '__dict__'",
+			szOwner
+		)
 	}
 
-	PyDict_SetItem(pDict, m_name.ptr(), _prepare_value(value).ptr());
+	PyDict_SetItem(pDict, m_name.ptr(), value.ptr());
+	Py_XDECREF(pDict);
 }
 
 void CCachedProperty::delete_cached_value(object instance)
 {
-	PyObject *pDict = *_PyObject_GetDictPtr(instance.ptr());
+	PyObject **ppDict = _PyObject_GetDictPtr(instance.ptr());
 
-	if (!pDict) {
+	if (!ppDict && !*ppDict) {
 		return;
 	}
 
-	PyDict_DelItem(pDict, m_name.ptr());
+	PyDict_DelItem(*ppDict, m_name.ptr());
 
 	if (PyErr_Occurred()) {
 		if (!PyErr_ExceptionMatches(PyExc_KeyError)) {

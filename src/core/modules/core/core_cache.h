@@ -46,7 +46,6 @@ public:
 	);
 
 	static object _callable_check(object function, const char *szName);
-	static object _prepare_value(object value);
 
 	object get_getter();
 	object set_getter(object fget);
