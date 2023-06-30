@@ -114,7 +114,7 @@ object CCachedProperty::get_owner()
 
 object CCachedProperty::get_cached_value(object instance)
 {
-	if (!m_name)
+	if (!m_name || m_owner.is_none())
 		BOOST_RAISE_EXCEPTION(
 			PyExc_AttributeError,
 			"Unable to retrieve the value of an unbound property."
@@ -142,11 +142,24 @@ object CCachedProperty::get_cached_value(object instance)
 
 void CCachedProperty::set_cached_value(object instance, object value)
 {
-	if (!m_name)
+	if (!m_name || m_owner.is_none())
 		BOOST_RAISE_EXCEPTION(
 			PyExc_AttributeError,
 			"Unable to assign the value of an unbound property."
 		);
+
+	if (!PyObject_IsInstance(instance.ptr(), m_owner.ptr())) {
+		const char *szOwner = extract<const char *>(m_owner.attr("__qualname__"));
+		BOOST_RAISE_EXCEPTION(
+			PyExc_TypeError,
+			"Given instance is not of type '%s'.",
+			szOwner
+		)
+	}
+
+	if (PyGen_Check(value.ptr())) {
+		return;
+	}
 
 	PyObject *pDict = PyObject_GenericGetDict(instance.ptr(), NULL);
 
@@ -186,6 +199,14 @@ void CCachedProperty::delete_cached_value(object instance)
 object CCachedProperty::bind(object self, object owner, str name)
 {
 	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
+
+	if (owner.is_none() && !name) {
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"Must provide a name and an owner."
+		)
+	}
+
 	owner.attr(name) = self;
 	pSelf.__set_name__(owner, name);
 	return self;
@@ -194,7 +215,7 @@ object CCachedProperty::bind(object self, object owner, str name)
 
 void CCachedProperty::__set_name__(object owner, str name)
 {
-	if (m_name && !m_owner.is_none())
+	if (m_name || !m_owner.is_none())
 	{
 		const char *szName = extract<const char *>(str(".").join(make_tuple(m_owner.attr("__qualname__"), m_name)));
 		BOOST_RAISE_EXCEPTION(
