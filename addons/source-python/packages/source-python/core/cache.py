@@ -1,11 +1,6 @@
 # ../core/cache.py
 
-"""Provides caching functionality.
-
-.. data:: cached_property
-    An alias of :class:`core.cache.CachedProperty`.
-"""
-
+"""Provides caching functionality."""
 
 # =============================================================================
 # >> IMPORTS
@@ -13,6 +8,8 @@
 # Python Imports
 #   FuncTools
 from functools import wraps
+#   Inspect
+from inspect import isdatadescriptor
 #   Types
 from types import MethodType
 
@@ -23,7 +20,6 @@ from types import MethodType
 # Source.Python Imports
 #   Core
 from _core._cache import CachedProperty
-from _core._cache import cached_property
 
 
 # =============================================================================
@@ -31,7 +27,7 @@ from _core._cache import cached_property
 # =============================================================================
 __all__ = [
     'CachedProperty',
-    'cached_property'
+    'cached_property',
     'cached_result'
 ]
 
@@ -39,6 +35,14 @@ __all__ = [
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
+def cached_property(fget=None, *args, **kwargs):
+    """Decorator used to register or wrap a cached property."""
+    return (CachedProperty
+        if not isdatadescriptor(fget)
+        else CachedProperty.wrap_descriptor
+    )(fget, *args, **kwargs)
+
+
 def cached_result(fget):
     """Decorator used to register a cached method.
 
@@ -74,4 +78,4 @@ def cached_result(fget):
         return MethodType(wrapper, self)
 
     # Return a cached property bound to the getter function
-    return CachedProperty(getter, doc=fget.__doc__, unbound=True)
+    return CachedProperty(getter, doc=fget.__doc__)
