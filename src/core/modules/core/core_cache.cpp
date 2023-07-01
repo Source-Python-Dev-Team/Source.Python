@@ -36,14 +36,13 @@
 //-----------------------------------------------------------------------------
 CCachedProperty::CCachedProperty(
 	object fget=object(), object fset=object(), object fdel=object(), object doc=object(),
-	bool unbound=false, boost::python::tuple args=boost::python::tuple(), object kwargs=object())
+	boost::python::tuple args=boost::python::tuple(), object kwargs=object())
 {
 	set_getter(fget);
 	set_setter(fset);
 	set_deleter(fdel);
 
 	m_doc = doc;
-	m_bUnbound = unbound;
 
 	m_args = args;
 
@@ -63,52 +62,6 @@ object CCachedProperty::_callable_check(object function, const char *szName)
 		);
 
 	return function;
-}
-
-object CCachedProperty::_prepare_value(object value)
-{
-	if (!PyGen_Check(value.ptr()))
-		return value;
-
-	if (getattr(value, "gi_frame").is_none())
-		BOOST_RAISE_EXCEPTION(
-			PyExc_ValueError,
-			"The given generator is exhausted."
-		);
-
-	list values;
-	while (true)
-	{
-		try
-		{
-			values.append(value.attr("__next__")());
-		}
-		catch(...)
-		{
-			if (!PyErr_ExceptionMatches(PyExc_StopIteration))
-				throw_error_already_set();
-
-			PyErr_Clear();
-			break;
-		}
-	}
-
-	return values;
-}
-
-void CCachedProperty::_invalidate_cache(PyObject *pRef)
-{
-	try
-	{
-		m_cache[handle<>(pRef)].del();
-	}
-	catch (...)
-	{
-		if (!PyErr_ExceptionMatches(PyExc_KeyError))
-			throw_error_already_set();
-
-		PyErr_Clear();
-	}
 }
 
 
@@ -155,81 +108,88 @@ str CCachedProperty::get_name()
 
 object CCachedProperty::get_owner()
 {
-	return m_owner();
+	return m_owner;
 }
 
 
 object CCachedProperty::get_cached_value(object instance)
 {
-	if (!m_name)
+	if (!m_name || m_owner.is_none())
 		BOOST_RAISE_EXCEPTION(
 			PyExc_AttributeError,
 			"Unable to retrieve the value of an unbound property."
 		);
 
-	object value;
+	PyObject *pValue = NULL;
+	PyObject **ppDict = _PyObject_GetDictPtr(instance.ptr());
 
-	if (m_bUnbound)
-		value = m_cache[
-			handle<>(
-				PyWeakref_NewRef(instance.ptr(), NULL)
-			)
-		];
-	else
-	{
-		dict cache = extract<dict>(instance.attr("__dict__"));
-		value = cache[m_name];
+	
+	if (ppDict && *ppDict) {
+		pValue = PyDict_GetItem(*ppDict, m_name.ptr());
 	}
 
-	return value;
+	if (!pValue) {
+		const char *szName = extract<const char *>(m_name);
+		BOOST_RAISE_EXCEPTION(
+			PyExc_KeyError,
+			"No cached value found for '%s'.",
+			szName
+		)
+	}
+
+	return object(handle<>(borrowed(pValue)));
 }
 
 void CCachedProperty::set_cached_value(object instance, object value)
 {
-	if (!m_name)
+	if (!m_name || m_owner.is_none())
 		BOOST_RAISE_EXCEPTION(
 			PyExc_AttributeError,
 			"Unable to assign the value of an unbound property."
 		);
 
-	if (m_bUnbound)
-		m_cache[handle<>(
-			PyWeakref_NewRef(
-				instance.ptr(),
-				make_function(
-					boost::bind(&CCachedProperty::_invalidate_cache, this, _1),
-					default_call_policies(),
-					boost::mpl::vector2<void, PyObject *>()
-				).ptr()
-			)
-		)] = _prepare_value(value);
-	else
-	{
-		dict cache = extract<dict>(instance.attr("__dict__"));
-		cache[m_name] = _prepare_value(value);
+	if (!PyObject_IsInstance(instance.ptr(), m_owner.ptr())) {
+		const char *szOwner = extract<const char *>(m_owner.attr("__qualname__"));
+		BOOST_RAISE_EXCEPTION(
+			PyExc_TypeError,
+			"Given instance is not of type '%s'.",
+			szOwner
+		)
 	}
+
+	if (PyGen_Check(value.ptr())) {
+		return;
+	}
+
+	PyObject *pDict = PyObject_GenericGetDict(instance.ptr(), NULL);
+
+	if (!pDict) {
+		const char *szOwner = extract<const char *>(m_owner.attr("__qualname__"));
+		BOOST_RAISE_EXCEPTION(
+			PyExc_AttributeError,
+			"'%s' object has no attribute '__dict__'",
+			szOwner
+		)
+	}
+
+	PyDict_SetItem(pDict, m_name.ptr(), value.ptr());
+	Py_XDECREF(pDict);
 }
 
 void CCachedProperty::delete_cached_value(object instance)
 {
-	try
-	{
-		if (m_bUnbound)
-			m_cache[
-				handle<>(
-					PyWeakref_NewRef(instance.ptr(), NULL)
-				)
-			].del();
-		else
-		{
-			dict cache = extract<dict>(instance.attr("__dict__"));
-			cache[m_name].del();
-		}
+	PyObject **ppDict = _PyObject_GetDictPtr(instance.ptr());
+
+	if (!ppDict && !*ppDict) {
+		return;
 	}
-	catch (...)
-	{
-		if (!PyErr_ExceptionMatches(PyExc_KeyError))
+
+	PyDict_DelItem(*ppDict, m_name.ptr());
+
+	if (PyErr_Occurred()) {
+		if (!PyErr_ExceptionMatches(PyExc_KeyError)) {
 			throw_error_already_set();
+		}
 
 		PyErr_Clear();
 	}
@@ -239,6 +199,14 @@ void CCachedProperty::delete_cached_value(object instance)
 object CCachedProperty::bind(object self, object owner, str name)
 {
 	CCachedProperty &pSelf = extract<CCachedProperty &>(self);
+
+	if (owner.is_none() && !name) {
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError,
+			"Must provide a name and an owner."
+		)
+	}
+
 	owner.attr(name) = self;
 	pSelf.__set_name__(owner, name);
 	return self;
@@ -247,9 +215,9 @@ object CCachedProperty::bind(object self, object owner, str name)
 
 void CCachedProperty::__set_name__(object owner, str name)
 {
-	if (m_name && !m_owner.is_none())
+	if (m_name || !m_owner.is_none())
 	{
-		const char *szName = extract<const char *>(str(".").join(make_tuple(m_owner().attr("__qualname__"), m_name)));
+		const char *szName = extract<const char *>(str(".").join(make_tuple(m_owner.attr("__qualname__"), m_name)));
 		BOOST_RAISE_EXCEPTION(
 			PyExc_RuntimeError,
 			"This property was already bound as \"%s\".",
@@ -258,7 +226,7 @@ void CCachedProperty::__set_name__(object owner, str name)
 	}
 
 	m_name = name;
-	m_owner = object(handle<>(PyWeakref_NewRef(owner.ptr(), NULL)));
+	m_owner = owner;
 }
 
 object CCachedProperty::__get__(object self, object instance, object owner=object())
@@ -349,11 +317,11 @@ void CCachedProperty::__setitem__(str item, object value)
 
 CCachedProperty *CCachedProperty::wrap_descriptor(
 	object descriptor, object owner, str name,
-	bool unbound, boost::python::tuple args, object kwargs)
+	boost::python::tuple args, object kwargs)
 {
 	CCachedProperty *pProperty = new CCachedProperty(
 		descriptor.attr("__get__"), descriptor.attr("__set__"), descriptor.attr("__delete__"),
-		descriptor.attr("__doc__"), unbound, args, kwargs
+		descriptor.attr("__doc__"), args, kwargs
 	);
 
 	pProperty->__set_name__(owner, name);
