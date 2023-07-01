@@ -5,10 +5,6 @@
 # =============================================================================
 # >> IMPORTS
 # =============================================================================
-# Python Imports
-#   WeakRef
-from weakref import proxy
-
 # Source.Python Imports
 #   Core
 from core.cache import CachedProperty
@@ -101,7 +97,7 @@ class EntityMemFuncWrapper(MemberFunction):
         func = wrapped_self.__getattr__(wrapper.__name__)
         super().__init__(func._manager, func._type_name, func, func._this)
         self.wrapper = wrapper
-        self.wrapped_self = proxy(wrapped_self)
+        self.wrapped_self = wrapped_self
 
     def __call__(self, *args, **kwargs):
         return super().__call__(
