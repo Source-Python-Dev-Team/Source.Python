@@ -54,13 +54,37 @@ if not issubclass(BaseTransmitRules, WeakAutoUnload):
 # >> CLASSES
 # =============================================================================
 class TransmitHook(AutoUnload):
-    """Decorator used to create transmit hooks that auto unload."""
+    """Decorator used to create transmit hooks that auto unload.
+
+    Example:
+
+    .. code:: python
+
+        from entities.transmit import TransmitHook
+
+        @TransmitHook
+        def transmit_hook(player, indexes, states):
+            # Don't transmit anything to this player except himself
+            player_index = player.index
+            for index in indexes:
+                if index == player_index:
+                    continue
+                states[index] = False
+    """
 
     def __init__(self, callback):
-        """Registers the transmit hook."""
+        """Registers the transmit hook.
+
+        :param function callback:
+            Function to register as a transmit hook callback.
+        """
         self.callback = callback
         transmit_manager.register_hook(callback)
 
     def _unload_instance(self):
-        """Unregisters the transmit hook."""
+        """Unregisters the transmit hook.
+
+        :param function callback:
+            Function to unregister as a transmit hook callback.
+        """
         transmit_manager.unregister_hook(self.callback)

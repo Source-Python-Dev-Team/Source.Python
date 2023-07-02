@@ -70,13 +70,27 @@ void export_transmit_manager(scope _transmit)
 	TransmitManager.def(
 		"register_hook",
 		&CTransmitManager::RegisterTransmitHook,
-		"Registers a transmit hook."
+		"Registers a transmit hook.\n"
+		"\n"
+		":param function callback:\n"
+		"	Function to register as a transmit hook callback.\n"
+		"\n"
+		":raises ValueError:\n"
+		"	If the given callback is already registered.",
+		args("self", "callback")
 	);
 
 	TransmitManager.def(
 		"unregister_hook",
 		&CTransmitManager::UnregisterTransmitHook,
-		"Unregisters a transmit hook."
+		"Unregisters a transmit hook.\n"
+		"\n"
+		":param function callback:\n"
+		"	Function to unregister as a transmit hook callback.\n"
+		"\n"
+		":raises ValueError:\n"
+		"	If the given callback was not registered.",
+		args("self", "callback")
 	);
 
 	// Singleton...
@@ -129,21 +143,29 @@ void export_base_transmit_rules(scope _transmit)
 		"mode",
 		&ITransmitRules::GetMode,
 		&ITransmitRules::SetMode,
-		"Returns the transmission mode for these rules."
+		"Returns the transmit mode for these rules.\n"
+		"\n"
+		":rtype:\n"
+		"	TransmitMode"
 	);
 
 	// Methods...
 	BaseTransmitRules.def(
 		"should_transmit",
 		GET_METHOD(bool, ITransmitRules, ShouldTransmit, CBaseEntityWrapper *, CBaseEntityWrapper *),
-		"Returns whether the given entity should be transmitted to the given player."
+		"Returns whether the given entity should be transmitted to the given player.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self", "player", "entity")
 	);
 
 	// AutoUnload...
 	BaseTransmitRules.def(
 		"_unload_instance",
 		&ITransmitRules::UnloadInstance,
-		"Called when an instance is being unloaded."
+		"Called when an instance is being unloaded.",
+		args("self")
 	);
 
 	// Add memory tools...
@@ -158,7 +180,29 @@ void export_transmit_hash(scope _transmit)
 {
 	class_<CTransmitHash, boost::shared_ptr<CTransmitHash>, bases<ITransmitRules> > TransmitHash(
 		"TransmitHash",
-		"Transmissions rules where contained pairs are never transmitted to each other.",
+		"Transmissions rules where contained pairs are never transmitted to each other.\n"
+		"\n"
+		"Example:\n"
+		"\n"
+		".. code:: python\n"
+		"\n"
+		"	from entities.transmit import TransmitHash\n"
+		"	from events import Event\n"
+		"	from players.entity import Player\n"
+		"\n"
+		"	h = TransmitHash()\n"
+		"\n"
+		"	@Event('player_say')\n"
+		"	def player_say(game_event):\n"
+		"	    player = Player.from_userid(game_event['userid'])\n"
+		"	    entity = player.view_entity\n"
+		"	    if entity is None:\n"
+		"	        return\n"
+		"	    # Toggle transmissions with aimed entity\n"
+		"	    if h.has_pair(player, entity):\n"
+		"	        h.remove_pair(player, entity)\n"
+		"	    else:\n"
+		"	        h.add_pair(player, entity)",
 		no_init
 	);
 
@@ -173,76 +217,115 @@ void export_transmit_hash(scope _transmit)
 					args("self", "mode")
 				)
 			),
-			(arg("mode")=TRANSMIT_MODE_PREVENT)
-		)
+			("self", arg("mode")=TRANSMIT_MODE_PREVENT)
+		),
+		"Constructs and initializes the transmit hash.\n"
+		"\n"
+		":param TransmitMode mode:\n"
+		"	The transmit mode for these rules."
 	);
 
 	// Methods...
 	TransmitHash.def(
 		"add_pair",
 		&CTransmitHash::AddPair,
-		"Adds the given entity pair to the hash."
+		"Adds the given entity pair to the hash.\n"
+		"\n"
+		":raises ValueError:\n"
+		"	If none of the given entities is a player.",
+		args("self", "entity", "other")
 	);
 
 	TransmitHash.def(
 		"remove_pair",
 		&CTransmitHash::RemovePair,
-		"Removes the given pair from the hash."
+		"Removes the given pair from the hash.",
+		args("self", "entity", "other")
 	);
 
 	TransmitHash.def(
 		"remove_pairs",
 		&CTransmitHash::RemovePairs,
-		"Removes all pairs associated with the given entity."
+		"Removes all pairs associated with the given entity.",
+		args("self", "entity")
 	);
 
 	TransmitHash.def(
 		"has_pair",
 		GET_METHOD(bool, CTransmitHash, HasPair, CBaseEntityWrapper *, CBaseEntityWrapper *),
-		"Returns whether the given pair is in the hash."
+		"Returns whether the given pair is in the hash.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self", "entity", "other")
 	);
 
 	TransmitHash.def(
 		"get_count",
 		&CTransmitHash::GetCount,
-		"Returns the amount of pairs associated with the given entity."
+		"Returns the amount of pairs associated with the given entity.\n"
+		"\n"
+		":rtype:\n"
+		"	int",
+		args("self", "entity")
 	);
 
 	TransmitHash.def(
 		"get_pairs",
 		&CTransmitHash::GetPairs,
-		"Returns a list of all entities associated with the given entity."
+		"Returns a list of all entities associated with the given entity.\n"
+		"\n"
+		":rtype:\n"
+		"	list",
+		args("self", "entity")
 	);
 
 	TransmitHash.def(
 		"clear",
 		&CTransmitHash::Clear,
-		"Removes all entities from the hash."
+		"Removes all entities from the hash.",
+		args("self")
 	);
 
 	// Special methods...
 	TransmitHash.def(
 		"__bool__",
 		&CTransmitHash::HasElements,
-		"Returns whether the hash is empty or not."
+		"Returns whether the hash is empty or not.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self")
 	);
 
 	TransmitHash.def(
 		"__contains__",
 		&CTransmitHash::Contains,
-		"Returns whether the given entity is in the hash."
+		"Returns whether the given entity is in the hash.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self", "entity")
 	);
 
 	TransmitHash.def(
 		"__len__",
 		&CTransmitHash::GetSize,
-		"Returns the size of the transmission hash."
+		"Returns the size of the transmission hash.\n"
+		"\n"
+		":rtype:\n"
+		"	int",
+		args("self")
 	);
 
 	TransmitHash.def(
 		"__iter__",
 		&CTransmitHash::Iterate,
-		"Iterates over all entities contained in the hash."
+		"Iterates over all entities contained in the hash.\n"
+		"\n"
+		":rtype:\n"
+		"	iterator",
+		args("self")
 	);
 
 	// Add memory tools...
@@ -257,7 +340,29 @@ void export_transmit_set(scope _transmit)
 {
 	class_<CTransmitSet, boost::shared_ptr<CTransmitSet>, bases<ITransmitRules> > TransmitSet(
 		"TransmitSet",
-		"Transmission rules where contained entities are never transmitted to any player.",
+		"Transmission rules where contained entities are never transmitted to any player.\n"
+		"\n"
+		"Example:\n"
+		"\n"
+		".. code:: python\n"
+		"\n"
+		"	from entities.transmit import TransmitSet\n"
+		"	from events import Event\n"
+		"	from players.entity import Player\n"
+		"\n"
+		"	s = TransmitSet()\n"
+		"\n"
+		"	@Event('player_say')\n"
+		"	def player_say(game_event):\n"
+		"	    player = Player.from_userid(game_event['userid'])\n"
+		"	    entity = player.view_entity\n"
+		"	    if entity is None:\n"
+		"	        return\n"
+		"	    # Toggle transmissions with everything\n"
+		"	    if entity in s:\n"
+		"	        s.remove(entity)\n"
+		"	    else:\n"
+		"	        s.add(entity)",
 		no_init
 	);
 
@@ -273,51 +378,77 @@ void export_transmit_set(scope _transmit)
 				)
 			),
 			(arg("mode")=TRANSMIT_MODE_PREVENT)
-		)
+		),
+		"Constructs and initializes the transmit set.\n"
+		"\n"
+		":param TransmitMode mode:\n"
+		"	The transmit mode for these rules."
 	);
 
 	// Methods...
 	TransmitSet.def(
 		"add",
 		&CTransmitSet::Add,
-		"Adds the given entity to the set."
+		"Adds the given entity to the set.\n"
+		"\n"
+		":raises ValueError:\n"
+		"	If the given entity is not networked.",
+		args("self", "entity")
 	);
 
 	TransmitSet.def(
 		"remove",
 		&CTransmitSet::Remove,
-		"Removes the given entity from the set."
+		"Removes the given entity from the set.",
+		args("self", "entity")
 	);
 
 	TransmitSet.def(
 		"clear",
 		&CTransmitSet::Clear,
-		"Removes all entities from the set."
+		"Removes all entities from the set.",
+		args("self")
 	);
 
 	// Special methods...
 	TransmitSet.def(
 		"__bool__",
 		&CTransmitSet::HasElements,
-		"Returns whether the set is empty or not."
+		"Returns whether the set is empty or not.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self")
 	);
 
 	TransmitSet.def(
 		"__contains__",
 		GET_METHOD(bool, CTransmitSet, Contains, CBaseEntityWrapper *),
-		"Returns whether the given entity is in the set or not."
+		"Returns whether the given entity is in the set or not.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self", "entity")
 	);
 
 	TransmitSet.def(
 		"__iter__",
 		&CTransmitSet::Iterate,
-		"Iterates over all entities contained in the set."
+		"Iterates over all entities contained in the set.\n"
+		"\n"
+		":rtype:\n"
+		"	iterator",
+		args("self")
 	);
 
 	TransmitSet.def(
 		"__len__",
 		&CTransmitSet::GetSize,
-		"Returns the amount of entities contained in the set."
+		"Returns the amount of entities contained in the set.\n"
+		"\n"
+		":rtype:\n"
+		"	int",
+		args("self")
 	);
 
 	// Add memory tools...
@@ -332,7 +463,30 @@ void export_transmit_map(scope _transmit)
 {
 	class_<CTransmitMap, boost::shared_ptr<CTransmitMap>, bases<ITransmitRules> > TransmitMap(
 		"TransmitMap",
-		"Transmission rules that overrides per-player transmission.",
+		"Transmission rules that overrides per-player transmission.\n"
+		"\n"
+		"Example:\n"
+		"\n"
+		".. code:: python\n"
+		"\n"
+		"	from entities.transmit import TransmitMap\n"
+		"	from events import Event\n"
+		"	from players.entity import Player\n"
+		"\n"
+		"	m = TransmitMap()\n"
+		"\n"
+		"	@Event('player_say')\n"
+		"	def player_say(game_event):\n"
+		"	    player = Player.from_userid(game_event['userid'])\n"
+		"	    entity = player.view_entity\n"
+		"	    if entity is None:\n"
+		"	        return\n"
+		"	    # Toggle one-way transmissions with aimed entity\n"
+		"	    s = m[entity]\n"
+		"	    if player in s:\n"
+		"	        s.remove(player)\n"
+		"	    else:\n"
+		"	        s.add(player)",
 		no_init
 	);
 
@@ -348,51 +502,77 @@ void export_transmit_map(scope _transmit)
 				)
 			),
 			(arg("mode")=TRANSMIT_MODE_PREVENT)
-		)
+		),
+		"Constructs and initializes the transmit map.\n"
+		"\n"
+		":param TransmitMode mode:\n"
+		"	The transmit mode for these rules."
 	);
 
 	// Methods...
 	TransmitMap.def(
 		"clear",
 		&CTransmitMap::Clear,
-		"Removes all players from the map."
+		"Removes all players from the map.",
+		args("self")
 	);
 
 	// Special methods...
 	TransmitMap.def(
 		"__getitem__",
 		GET_METHOD(boost::shared_ptr<CTransmitSet>, CTransmitMap, Find, CBaseEntityWrapper *),
-		"Returns the transmission set associated with the given player."
+		"Returns the transmission set associated with the given entity.\n"
+		"\n"
+		":rtype:\n"
+		"	TransmitSet",
+		args("self", "entity")
 	);
 
 	TransmitMap.def(
 		"__delitem__",
 		&CTransmitMap::Remove,
-		"Removes the transmission set associated with the given player."
+		"Removes the transmission set associated with the given entity.",
+		args("self", "entity")
 	);
 
 	TransmitMap.def(
 		"__bool__",
 		&CTransmitMap::HasElements,
-		"Returns whether the map is empty or not."
+		"Returns whether the map is empty or not.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self")
 	);
 
 	TransmitMap.def(
 		"__contains__",
 		GET_METHOD(bool, CTransmitMap, Contains, CBaseEntityWrapper *),
-		"Returns whether the given entities is in the map or not."
+		"Returns whether the given entity is in the map or not.\n"
+		"\n"
+		":rtype:\n"
+		"	bool",
+		args("self", "entity")
 	);
 
 	TransmitMap.def(
 		"__len__",
 		&CTransmitMap::GetSize,
-		"Returns the amount of entities contained in the map."
+		"Returns the amount of entities contained in the map.\n"
+		"\n"
+		":rtype:\n"
+		"	int",
+		args("self")
 	);
 
 	TransmitMap.def(
 		"__iter__",
 		&CTransmitMap::Iterate,
-		"Iterates over all entities contained in the map."
+		"Iterates over all entities contained in the map.\n"
+		"\n"
+		":rtype:\n"
+		"	iterator",
+		args("self")
 	);
 
 	// Add memory tools...

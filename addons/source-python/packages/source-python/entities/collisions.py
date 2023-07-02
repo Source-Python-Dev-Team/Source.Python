@@ -52,13 +52,36 @@ if not issubclass(BaseCollisionRules, WeakAutoUnload):
 # >> CLASSES
 # =============================================================================
 class CollisionHook(AutoUnload):
-    """Decorator used to create collision hooks that auto unload."""
+    """Decorator used to create collision hooks that auto unload.
+
+    Example:
+
+    .. code:: python
+
+        from engines.trace import ContentFlags
+        from entities.collisions import CollisionHook
+
+        @CollisionHook
+        def collision_hook(entity, other, trace_filter, mask):
+            # Prevent hostages from being killed by bullets
+            if not mask & ContentFlags.HITBOX:
+                return
+            return other.classname != 'hostage_entity'
+    """
 
     def __init__(self, callback):
-        """Registers the collision hook."""
+        """Registers the collision hook.
+
+        :param function callback:
+            Function to register as a collision hook callback.
+        """
         self.callback = callback
         collision_manager.register_hook(callback)
 
     def _unload_instance(self):
-        """Unregisters the collision hook."""
+        """Unregisters the collision hook.
+
+        :param function callback:
+            Function to unregister as a collision hook callback.
+        """
         collision_manager.unregister_hook(self.callback)
