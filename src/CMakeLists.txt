@@ -225,6 +225,8 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_HEADERS
     core/modules/entities/${SOURCE_ENGINE}/entities_props_wrap.h
     core/modules/entities/${SOURCE_ENGINE}/entities_constants_wrap.h
     core/modules/entities/entities_entity.h
+    core/modules/entities/entities_collisions.h
+    core/modules/entities/entities_transmit.h
 )
 
 Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
@@ -241,6 +243,10 @@ Set(SOURCEPYTHON_ENTITIES_MODULE_SOURCES
     core/modules/entities/entities_props_wrap.cpp
     core/modules/entities/entities_entity.cpp
     core/modules/entities/entities_entity_wrap.cpp
+    core/modules/entities/entities_collisions.cpp
+    core/modules/entities/entities_collisions_wrap.cpp
+    core/modules/entities/entities_transmit.cpp
+    core/modules/entities/entities_transmit_wrap.cpp
 )
 
 # ------------------------------------------------------------------
