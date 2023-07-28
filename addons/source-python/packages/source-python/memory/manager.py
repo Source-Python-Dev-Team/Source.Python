@@ -619,19 +619,37 @@ class TypeManager(dict):
         if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
+        # Store the function cache
+        funcs = {}
+
         def fget(ptr):
             """Return the virtual function."""
-            # Create the virtual function
-            func = ptr.make_virtual_function(
-                index,
-                convention,
-                args,
-                return_type
-            )
+            # Get the vtable address
+            address = ptr.get_pointer().address
+            # Search function cache by vtable address
+            func = funcs.get(address, None)
+
+            if func is None:
+                # Create the virtual function cache it
+                func = ptr.make_virtual_function(
+                    index,
+                    convention,
+                    args,
+                    return_type
+                )
+                for func_cache in funcs.values():
+                    if func_cache == func:
+                        func = func_cache
+                        break
+
+                funcs[address] = func
 
             # Wrap it using MemberFunction, so we don't have to pass the this
             # pointer anymore
-            return MemberFunction(self, return_type, func, ptr)
+            m_func = MemberFunction(self, return_type, func, ptr)
+            m_func.__doc__ = doc
+
+            return m_func
 
         return property(fget, None, None, doc)
 
@@ -646,34 +664,42 @@ class TypeManager(dict):
         if return_type not in DataType.values:
             return_type = self.create_converter(return_type)
 
+        # Store the function cache
+        func = None
+
         class fget(object):
             def __get__(fget_self, obj, cls=None):
+                nonlocal func
                 if cls is None:
                     if obj is None:
                         return fget_self
                     else:
                         cls = obj.__class__
 
-                if cls._binary is None:
-                    raise ValueError('_binary was not specified.')
+                if func is None:
+                    if cls._binary is None:
+                        raise ValueError('_binary was not specified.')
 
-                # Create a binary object
-                binary = find_binary(cls._binary, cls._srv_check)
+                    # Create a binary object
+                    binary = find_binary(cls._binary, cls._srv_check)
 
-                # Create the function object
-                func = binary[identifier].make_function(
-                    convention,
-                    args,
-                    return_type
-                )
+                    # Create the function object and cache it
+                    func = binary[identifier].make_function(
+                        convention,
+                        args,
+                        return_type
+                    )
+                    func.__doc__ = doc
 
                 # Called with a this pointer?
                 if obj is not None:
                     # Wrap the function using MemberFunction, so we don't have
                     # to pass the this pointer anymore
-                    func = MemberFunction(self, return_type, func, obj)
+                    m_func = MemberFunction(self, return_type, func, obj)
+                    m_func.__doc__ = doc
 
-                func.__doc__ = doc
+                    return m_func
+
                 return func
 
         return fget()
