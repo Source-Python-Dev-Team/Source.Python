@@ -74,10 +74,12 @@ __all__ = ('AutoUnload',
            'SOURCE_ENGINE',
            'SOURCE_ENGINE_BRANCH',
            'Tokenize',
+           'autounload_disabled',
            'check_info_output',
            'console_message',
            'create_checksum',
            'echo_console',
+           'get_calling_plugin',
            'get_core_modules',
            'get_interface',
            'get_public_ip',
@@ -94,6 +96,9 @@ GAME_NAME = GAME_PATH.namebase
 
 # Get the platform the server is on
 PLATFORM = system().lower()
+
+# Whether auto unload classes are disabled
+_autounload_disabled = False
 
 
 # =============================================================================
@@ -113,29 +118,12 @@ class AutoUnload:
         # Get the class instance
         self = super().__new__(cls)
 
-        # Get the calling frame
-        frame = currentframe().f_back
+        # Return if auto unload classes are disabled
+        if _autounload_disabled:
+            return self
 
-        # Get the calling path
-        path = frame.f_code.co_filename
-
-        # Don't keep hostage instances that will never be unloaded
-        while not path.startswith(PLUGIN_PATH):
-            frame = frame.f_back
-            if frame is None:
-                return self
-            path = frame.f_code.co_filename
-            if path.startswith('<frozen'):
-                return self
-
-        # Resolve the calling module name
-        try:
-            name = frame.f_globals['__name__']
-        except KeyError:
-            try:
-                name = getmodule(frame).__name__
-            except AttributeError:
-                name = getmodulename(path)
+        # Get the module name of the calling plugin
+        name = get_calling_plugin()
 
         # Call class-specific logic for adding the instance.
         if name is not None:
@@ -270,6 +258,59 @@ class ConfigFile(list):
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
+@contextmanager
+def autounload_disabled():
+    """Context that disables auto unload classes."""
+    global _autounload_disabled
+    prev = _autounload_disabled
+    _autounload_disabled = True
+    try:
+        yield
+    finally:
+        _autounload_disabled = prev
+
+
+def get_calling_plugin(depth=0):
+    """Resolves the name of the calling plugin.
+
+    :param int depth:
+        How many frame back to start looking for a plugin.
+
+    :rtype:
+        str
+    """
+    # Get the current frame
+    frame = currentframe()
+
+    # Go back the specificed depth
+    for _ in range(depth + 1):
+        frame = frame.f_back
+
+    # Get the calling path
+    path = frame.f_code.co_filename
+
+    # Don't keep hostage instances that will never be unloaded
+    while not path.startswith(PLUGIN_PATH):
+        frame = frame.f_back
+        if frame is None:
+            return
+        path = frame.f_code.co_filename
+        if path.startswith('<frozen'):
+            return
+
+    # Resolve the calling module name
+    try:
+        name = frame.f_globals['__name__']
+    except KeyError:
+        try:
+            name = getmodule(frame).__name__
+        except AttributeError:
+            name = getmodulename(path)
+
+    # Return the name
+    return name
+
+
 def echo_console(text):
     """Echo a message to the server's console.
 

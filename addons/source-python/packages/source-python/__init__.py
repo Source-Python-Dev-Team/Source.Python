@@ -92,6 +92,7 @@ def load():
     setup_entities_listener()
     setup_versioning()
     setup_sqlite()
+    setup_threads()
 
 
 def unload():
@@ -534,3 +535,26 @@ def setup_stdout_redirect():
         'Source.Python should continue working, but we would like to figure '
         'out in which situations sys.stdout is None to be able to fix this '
         'issue instead of applying a workaround.')
+
+
+# =============================================================================
+# >> THREADS
+# =============================================================================
+def setup_threads():
+    """Setup threads."""
+    import listeners.tick
+    from threads import GameThread
+    listeners.tick.GameThread = GameThread # Backward compatibility
+
+    from threads import ThreadYielder
+    if not ThreadYielder.is_implemented():
+        return
+
+    from core.settings import _core_settings
+    from threads import sp_thread_yielding
+
+    sp_thread_yielding.set_string(
+        _core_settings.get(
+            'THREAD_SETTINGS', {}
+        ).get('enable_thread_yielding', '0'),
+    )

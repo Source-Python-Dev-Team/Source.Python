@@ -18,8 +18,8 @@ from auth.manager import PlayerPermissions
 from auth.manager import ParentPermissions
 #   Paths
 from paths import SP_DATA_PATH
-#   Listeners
-from listeners.tick import GameThread
+#   Threads
+from threads import GameThread
 
 # Site-Packges Imports
 #   SQL Alechemy

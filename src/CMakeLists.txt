@@ -467,6 +467,19 @@ Set(SOURCEPYTHON_STUDIO_MODULE_SOURCES
 )
 
 # ------------------------------------------------------------------
+# Threads module
+# ------------------------------------------------------------------
+Set(SOURCEPYTHON_THREADS_MODULE_HEADERS
+    core/modules/threads/threads.h
+    core/modules/threads/${SOURCE_ENGINE}/threads.h
+)
+
+Set(SOURCEPYTHON_THREADS_MODULE_SOURCES
+    core/modules/threads/threads.cpp
+    core/modules/threads/threads_wrap.cpp
+)
+
+# ------------------------------------------------------------------
 # Weapons module.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_WEAPONS_MODULE_HEADERS
@@ -564,6 +577,9 @@ Set(SOURCEPYTHON_MODULE_FILES
 
     ${SOURCEPYTHON_STUDIO_MODULE_HEADERS}
     ${SOURCEPYTHON_STUDIO_MODULE_SOURCES}
+
+    ${SOURCEPYTHON_THREADS_MODULE_HEADERS}
+    ${SOURCEPYTHON_THREADS_MODULE_SOURCES}
 
     ${SOURCEPYTHON_WEAPONS_MODULE_HEADERS}
     ${SOURCEPYTHON_WEAPONS_MODULE_SOURCES}
