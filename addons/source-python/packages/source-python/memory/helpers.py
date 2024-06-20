@@ -79,7 +79,7 @@ class Key(object):
     # Attribute/array keys
     TYPE_NAME = 'type'
 
-    # Array keys
+    # Attribute(string length)/Array keys
     LENGTH = 'length'
 
     # Pointer keys

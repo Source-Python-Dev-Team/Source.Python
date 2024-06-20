@@ -359,7 +359,8 @@ class _ServerClasses(TypeManager):
             attribute = method(
                 Key.as_attribute_type(self, data['type']),
                 offset,
-                data.get('doc')
+                data.get('doc'),
+                Key.as_int(self, data.get('length', 0)),
             )
 
             # Assign the attribute to the instance
