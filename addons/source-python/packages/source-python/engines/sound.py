@@ -285,11 +285,6 @@ class _BaseSound(WeakAutoUnload):
         self._duration = value
         return value
 
-    def _unload_instance(self):
-        """Remove the sample from the downloads list."""
-        if self._downloads is not None:
-            self._downloads._unload_instance()
-
 
 class Sound(_BaseSound):
     """Class used to interact with precached sounds.
