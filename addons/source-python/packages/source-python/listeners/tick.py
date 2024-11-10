@@ -315,9 +315,9 @@ class Repeat(AutoUnload):
         :rtype: float
         """
         if self.delay_time_remaining is None:
-            return None
+            return 0
         return (
-            self.loops_remaining * self.interval +
+            (self.loops_remaining - 1) * self.interval +
             self.delay_time_remaining
         )
 
