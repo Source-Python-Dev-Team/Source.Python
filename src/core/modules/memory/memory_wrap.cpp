@@ -201,13 +201,18 @@ void export_pointer(scope _memory)
 		EXPOSE_GET_SET_TYPE(ulong_long, unsigned long long)
 		EXPOSE_GET_SET_TYPE(float, float)
 		EXPOSE_GET_SET_TYPE(double, double)
-		EXPOSE_GET_SET_TYPE(string_pointer, const char*)
 
 		.def("get_pointer",
 			&CPointer::GetPtr,
 			"Returns the value at the given memory location.",
 			(arg("offset")=0),
 			manage_new_object_policy()
+		)
+
+		.def("get_string_pointer",
+			&CPointer::GetStringPointer,
+			"Returns the value at the memory location.",
+			(arg("offset")=0)
 		)
 
 		.def("get_string_array",
@@ -222,10 +227,17 @@ void export_pointer(scope _memory)
 			("value", arg("offset")=0)
 		)
 
+		.def("set_string_pointer",
+			&CPointer::SetStringPointer,
+			"Sets the value at the given memory location. Returns the string object. This string object must be deallocated by the user.",
+			("value", arg( "offset")=0),
+			manage_new_object_policy()
+		)
+
 		.def("set_string_array",
 			&CPointer::SetStringArray,
 			"Sets the value at the given memory location.",
-			("value",arg( "offset")=0)
+			("value", arg( "offset")=0)
 		)
 
 		// Other methods
@@ -1048,6 +1060,7 @@ void export_global_variables(scope _memory)
 	ADD_NATIVE_TYPE_SIZE("DOUBLE", double)
 	ADD_NATIVE_TYPE_SIZE("POINTER", void*)
 	ADD_NATIVE_TYPE_SIZE("STRING", char*)
+	ADD_NATIVE_TYPE_SIZE("STRING_POINTER", char*)
 
 	_memory.attr("NULL") = object(CPointer());
 
