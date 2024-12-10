@@ -10,24 +10,25 @@
 from . import Entity as _Entity
 from entities import BaseEntityGenerator
 from entities.helpers import pointer_from_inthandle
-#   Weapons
-from weapons.manager import weapon_manager
+#   Filters
+from filters.weapons import WeaponClassIter
 
 
 # =============================================================================
 # >> GLOBAL VARIABLES
 # =============================================================================
-_weapon_names_for_definition = {
-    weapon_manager[weapon].name: values.get('item_definition_index')
-    for weapon, values in weapon_manager.ini.get('weapons', {}).items()
-    if values.get('item_definition_index')
+_cant_create_weapons = {
+    weapon_class.name: weapon_class
+    for weapon_class in WeaponClassIter('cant_create')
 }
-_weapon_parents = {
-    weapon_manager[weapon].name: values.get('parent_class')
-    for weapon, values in weapon_manager.ini.get('weapons', {}).items()
-    if values.get('parent_class')
+_cant_find_weapons = {
+    weapon_class.name: weapon_class
+    for weapon_class in WeaponClassIter('cant_find')
 }
-_parent_weapons = set(_weapon_parents.values())
+_parent_weapons = {
+    weapon_class.name: weapon_class.item_definition_index
+    for weapon_class in WeaponClassIter('parent')
+}
 
 
 # =============================================================================
@@ -41,35 +42,45 @@ class Entity(_Entity):
 
     @classmethod
     def create(cls, classname):
-        index = _weapon_names_for_definition.get(classname)
-        if index is not None:
-            parent_class = _weapon_parents.get(classname)
-            entity = super().create(parent_class or classname)
-            entity.item_definition_index = index
+        # Specific weapons cannot be created directly, create a parent class
+        # for the weapon and set the item_definition_index.
+        weapon_class = _cant_create_weapons.get(classname, None)
+        if weapon_class is not None:
+            entity = super().create(weapon_class.parent_class)
+            entity.item_definition_index = weapon_class.item_definition_index
         else:
             entity = super().create(classname)
         return entity
 
     @classmethod
     def find(cls, classname):
-        index = _weapon_names_for_definition.get(classname)
-        if classname in _weapon_parents and index is not None:
-            parent_classname = _weapon_parents[classname]
+        # Specific weapons cannot be found directly, instead iterate over
+        # the parent class and detect if the item_definition_index matches.
+        weapon_class = _cant_find_weapons.get(classname, None)
+        if weapon_class is not None:
+            parent_classname = weapon_class.parent_class
+            item_definition_index = weapon_class.item_definition_index
             for entity in BaseEntityGenerator(parent_classname, True):
                 if not entity.is_networked():
                     continue
                 if entity.get_network_property_int(
                     'm_AttributeManager.m_Item.m_iItemDefinitionIndex'
-                ) == index:
+                ) == item_definition_index:
                     return cls(entity.index)
-        elif classname in _parent_weapons:
+
+        # Parent weapon class is equivalent to the child class, therefore
+        # iterates over the parent class to detect if
+        # the item_definition_index matches.
+        parent_item_definition_index = _parent_weapons.get(classname, None)
+        if parent_item_definition_index is not None:
             for entity in BaseEntityGenerator(classname, True):
                 if not entity.is_networked():
                     continue
                 if entity.get_network_property_int(
                     'm_AttributeManager.m_Item.m_iItemDefinitionIndex'
-                ) in (index, 0):
+                ) in (parent_item_definition_index, 0):
                     return cls(entity.index)
+
         return super().find(classname)
 
     thrower = property(
