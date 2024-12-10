@@ -21,8 +21,6 @@ from mutagen import mp3
 from mutagen import oggvorbis
 
 # Source.Python Imports
-#   Core
-from core import WeakAutoUnload
 #   Engines
 from engines import engines_logger
 #   Entities
@@ -100,7 +98,7 @@ class Attenuation(float, Enum):
 # =============================================================================
 # >> CLASSES
 # =============================================================================
-class _BaseSound(WeakAutoUnload):
+class _BaseSound:
     """Base class for sound classes."""
 
     # Set the base _downloads attribute to know whether
@@ -284,11 +282,6 @@ class _BaseSound(WeakAutoUnload):
 
         self._duration = value
         return value
-
-    def _unload_instance(self):
-        """Remove the sample from the downloads list."""
-        if self._downloads is not None:
-            self._downloads._unload_instance()
 
 
 class Sound(_BaseSound):
