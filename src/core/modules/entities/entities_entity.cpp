@@ -180,7 +180,7 @@ CBaseEntityOutputWrapper* CBaseEntityWrapper::get_output(const char* name)
 			if (pCurrentDataDesc.externalName && strcmp(name, pCurrentDataDesc.externalName) == 0)
 			{
 				if (!(pCurrentDataDesc.flags & FTYPEDESC_OUTPUT))
-					BOOST_RAISE_EXCEPTION(PyExc_TypeError, "'%s' is not a valid output.", name);
+					continue;
 
 				return (CBaseEntityOutputWrapper *)((unsigned long)this + TypeDescriptionExt::get_offset(pCurrentDataDesc));
 			}
