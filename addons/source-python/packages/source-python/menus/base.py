@@ -421,6 +421,21 @@ def _translate_text(text, player_index):
     return text
 
 
+def _format_paged_title(menu, player_index, page):
+    buffer = ''
+
+    if menu.title:
+        buffer += _translate_text(menu.title, player_index)
+
+    if menu.show_pages:
+        if buffer:
+            buffer += ' '
+
+        buffer += f'[{page.index + 1}/{menu.page_count}]'
+
+    return buffer
+
+
 # =============================================================================
 # >> LISTENERS
 # =============================================================================
