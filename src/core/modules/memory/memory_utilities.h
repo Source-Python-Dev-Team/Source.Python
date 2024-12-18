@@ -78,6 +78,9 @@ inline unsigned long ExtractAddress(object oPtr, bool bValidate = false)
 		pPtr = extractor();
 	}
 
+	if (!pPtr)
+		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "None was passed, expected NULL or Pointer(0).")
+
 	if (bValidate)
 		pPtr->Validate();
 

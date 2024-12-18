@@ -114,7 +114,7 @@ public:
 		object self = cls();
 		object add_recipient = self.attr("add_recipient");
 
-		IRecipientFilter *pFilter = (IRecipientFilter *)ExtractAddress(oPtr);
+		IRecipientFilter *pFilter = (IRecipientFilter *)ExtractAddress(oPtr, true);
 		for (int i=0; i < pFilter->GetRecipientCount(); i++) {
 			add_recipient(pFilter->GetRecipientIndex(i));
 		}
