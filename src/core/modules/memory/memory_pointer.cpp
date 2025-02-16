@@ -92,6 +92,47 @@ CPointer::CPointer(unsigned long ulAddr /* = 0 */, bool bAutoDealloc /* false */
 	m_bAutoDealloc = bAutoDealloc;
 }
 
+const char * CPointer::GetStringPointer(int iOffset /* = 0 */)
+{
+	Validate();
+	const char * result;
+	TRY_SEGV()
+		result = *(const char **) (m_ulAddr + iOffset);
+	EXCEPT_SEGV()
+	return result;
+}
+
+void SetStringPointerHelper(unsigned long addr, const char * ptr)
+{
+	TRY_SEGV()
+		*(const char **) (addr) = ptr;
+	EXCEPT_SEGV()
+}
+
+CPointer * CPointer::SetStringPointer(char * szText, int iOffset /* = 0 */)
+{
+	Validate();
+
+	char * value;
+
+	if (szText)
+	{
+		// Get length of string.
+		unsigned long length = strlen(szText) + 1;
+
+		value = (char *) UTIL_Alloc(length);
+		memcpy(value, szText, length);
+	}
+	else
+	{
+		value = szText;
+	}
+
+	SetStringPointerHelper(m_ulAddr + iOffset, value);
+
+	return new CPointer((unsigned long) value, false);
+}
+
 const char * CPointer::GetStringArray(int iOffset /* = 0 */)
 {
 	Validate();

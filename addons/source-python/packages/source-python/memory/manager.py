@@ -368,7 +368,8 @@ class TypeManager(dict):
                 (
                     (Key.TYPE_NAME, Key.as_attribute_type, NO_DEFAULT),
                     (Key.OFFSET, Key.as_int, NO_DEFAULT),
-                    (Key.DOC, Key.as_str, None)
+                    (Key.DOC, Key.as_str, None),
+                    (Key.LENGTH, Key.as_int, 0)
                 )
             )
 
@@ -434,7 +435,7 @@ class TypeManager(dict):
         # Now create and register the type
         return self(type_name, bases, cls_dict)
 
-    def instance_attribute(self, type_name, offset, doc=None):
+    def instance_attribute(self, type_name, offset, doc=None, length=0):
         """Create a wrapper for an instance attribute.
 
         Examples:
@@ -467,11 +468,31 @@ class TypeManager(dict):
 
             # Handle native type
             else:
-                getattr(ptr, 'set_' + type_name)(value, offset)
+                # Handle string pointer type
+                if type_name == Type.STRING_POINTER:
+                    string_pointer = ptr.set_string_pointer(value, offset)
+                    if string_pointer:
+                        string_pointer.auto_dealloc = True
+
+                        # Make sure the value will not deallocate as long as
+                        # it is part of this object
+                        ptr._pointer_values[offset] = string_pointer
+
+                # Handle string array type
+                elif type_name == Type.STRING_ARRAY:
+                    if length and len(value.encode()) >= length:
+                        raise ValueError(
+                            'The string length exceeds '
+                            'the limit "{0}".'.format(length-1))
+
+                    ptr.set_string_array(value, offset)
+
+                else:
+                    getattr(ptr, 'set_' + type_name)(value, offset)
 
         return property(fget, fset, None, doc)
 
-    def pointer_attribute(self, type_name, offset, doc=None):
+    def pointer_attribute(self, type_name, offset, doc=None, length=0):
         """Create a wrapper for a pointer attribute.
 
         Examples:
@@ -512,7 +533,12 @@ class TypeManager(dict):
                 # Is there no space allocated?
                 if not instance_ptr:
                     # Allocate space for the value
-                    instance_ptr = alloc(TYPE_SIZES[type_name.upper()])
+                    if type_name == Type.STRING_ARRAY:
+                        size = length if length else len(value.encode()) + 1
+                    else:
+                        size = TYPE_SIZES[type_name.upper()]
+
+                    instance_ptr = alloc(size)
 
                     # Add the pointer to the set, so there will be a reference
                     # until the instance gets deleted
@@ -521,8 +547,29 @@ class TypeManager(dict):
                     # Set the pointer
                     ptr.set_pointer(instance_ptr, offset)
 
-                # Set the value
-                getattr(instance_ptr, 'set_' + type_name)(value)
+                # Handle string pointer type
+                if type_name == Type.STRING_POINTER:
+                    string_pointer = instance_ptr.set_string_pointer(
+                        value, offset)
+                    if string_pointer:
+                        string_pointer.auto_dealloc = True
+
+                        # Make sure the value will not deallocate as long as
+                        # it is part of this object
+                        ptr._pointer_values[offset] = string_pointer
+
+                # Handle string array type
+                elif type_name == Type.STRING_ARRAY:
+                    if length and len(value.encode()) >= length:
+                        raise ValueError(
+                            'The string length exceeds '
+                            'the limit "{0}".'.format(length-1))
+
+                    instance_ptr.set_string_array(value, offset)
+
+                else:
+                    # Set the value
+                    getattr(instance_ptr, 'set_' + type_name)(value)
 
         return property(fget, fset, None, doc)
 
