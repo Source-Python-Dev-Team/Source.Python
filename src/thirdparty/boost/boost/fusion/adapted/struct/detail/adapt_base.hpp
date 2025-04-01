@@ -34,7 +34,9 @@
 #include <boost/mpl/tag.hpp>
 #include <boost/mpl/eval_if.hpp>
 #include <boost/mpl/identity.hpp>
+#include <boost/type_traits/is_const.hpp>
 #include <boost/type_traits/add_const.hpp>
+#include <boost/type_traits/add_reference.hpp>
 
 #include <boost/typeof/typeof.hpp>
 
@@ -141,7 +143,7 @@
         I,                                                                      \
         ATTRIBUTE)
 
-#ifdef BOOST_MSVC
+#if defined(BOOST_MSVC) && (BOOST_MSVC < 1935)
 #   define BOOST_FUSION_ADAPT_STRUCT_MSVC_REDEFINE_TEMPLATE_PARAM(R,_,ELEM)     \
         typedef ELEM ELEM;
 #   define BOOST_FUSION_ADAPT_STRUCT_MSVC_REDEFINE_TEMPLATE_PARAMS_IMPL(SEQ)    \

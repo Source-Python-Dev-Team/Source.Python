@@ -32,30 +32,21 @@
 
 namespace boost{
 namespace container {
-namespace container_detail {
+namespace dtl {
 
 template <class T, unsigned V>
 struct version_type
-    : public container_detail::integral_constant<unsigned, V>
+    : public dtl::integral_constant<unsigned, V>
 {
     typedef T type;
-
-    version_type(const version_type<T, 0>&);
 };
 
 namespace impl{
 
-template <class T,
-          bool = container_detail::is_convertible<version_type<T, 0>, typename T::version>::value>
+template <class T>
 struct extract_version
 {
-   static const unsigned value = 1;
-};
-
-template <class T>
-struct extract_version<T, true>
-{
-   static const unsigned value = T::version::value;
+   typedef typename T::version type;
 };
 
 template <class T>
@@ -66,41 +57,41 @@ struct has_version
    template <class U> static two test(...);
    template <class U> static char test(const typename U::version*);
    public:
-   static const bool value = sizeof(test<T>(0)) == 1;
+   BOOST_STATIC_CONSTEXPR bool value = sizeof(test<T>(0)) == 1;
    void dummy(){}
 };
 
 template <class T, bool = has_version<T>::value>
 struct version
 {
-   static const unsigned value = 1;
+   BOOST_STATIC_CONSTEXPR unsigned value = 1;
 };
 
 template <class T>
 struct version<T, true>
 {
-   static const unsigned value = extract_version<T>::value;
+   BOOST_STATIC_CONSTEXPR unsigned value = extract_version<T>::type::value;
 };
 
 }  //namespace impl
 
 template <class T>
 struct version
-   : public container_detail::integral_constant<unsigned, impl::version<T>::value>
+   : public dtl::integral_constant<unsigned, impl::version<T>::value>
 {};
 
 template<class T, unsigned N>
 struct is_version
 {
-   static const bool value =
+   BOOST_STATIC_CONSTEXPR bool value =
       is_same< typename version<T>::type, integral_constant<unsigned, N> >::value;
 };
 
-}  //namespace container_detail {
+}  //namespace dtl {
 
-typedef container_detail::integral_constant<unsigned, 0> version_0;
-typedef container_detail::integral_constant<unsigned, 1> version_1;
-typedef container_detail::integral_constant<unsigned, 2> version_2;
+typedef dtl::integral_constant<unsigned, 0> version_0;
+typedef dtl::integral_constant<unsigned, 1> version_1;
+typedef dtl::integral_constant<unsigned, 2> version_2;
 
 }  //namespace container {
 }  //namespace boost{

@@ -15,6 +15,7 @@
 #include <boost/assert.hpp>
 #include <boost/config.hpp>
 #include <boost/intrusive_ptr.hpp>
+#include <boost/predef.h>
 
 #include <boost/fiber/detail/config.hpp>
 #include <boost/fiber/detail/disable_overload.hpp>
@@ -40,53 +41,133 @@ class BOOST_FIBERS_DECL fiber {
 private:
     friend class context;
 
-    typedef intrusive_ptr< context >  ptr_t;
+    using ptr_t = intrusive_ptr<context>;
 
     ptr_t       impl_{};
 
     void start_() noexcept;
 
 public:
-    typedef context::id    id;
+    using id = context::id;
 
     fiber() = default;
 
     template< typename Fn,
-              typename ... Args,
-              typename = detail::disable_overload< fiber, Fn >
+              typename ... Arg,
+              typename = detail::disable_overload< fiber, Fn >,
+              typename = detail::disable_overload< launch, Fn >,
+              typename = detail::disable_overload< std::allocator_arg_t, Fn >
     >
-    fiber( Fn && fn, Args && ... args) :
+#if BOOST_COMP_GNUC < 50000000
+    explicit fiber( Fn && fn, Arg && ... arg) :
+#else
+    fiber( Fn && fn, Arg ... arg) :
+#endif
         fiber{ launch::post,
                std::allocator_arg, default_stack(),
-               std::forward< Fn >( fn), std::forward< Args >( args) ... } {
+               std::forward< Fn >( fn), std::forward< Arg >( arg) ... } {
     }
 
     template< typename Fn,
-              typename ... Args,
+              typename ... Arg,
               typename = detail::disable_overload< fiber, Fn >
     >
-    fiber( launch policy, Fn && fn, Args && ... args) :
+#if BOOST_COMP_GNUC < 50000000
+    fiber( launch policy, Fn && fn, Arg && ... arg) :
+#else
+    fiber( launch policy, Fn && fn, Arg ... arg) :
+#endif
         fiber{ policy,
                std::allocator_arg, default_stack(),
-               std::forward< Fn >( fn), std::forward< Args >( args) ... } {
+               std::forward< Fn >( fn), std::forward< Arg >( arg) ... } {
     }
 
     template< typename StackAllocator,
               typename Fn,
-              typename ... Args
+              typename ... Arg
     >
-    fiber( std::allocator_arg_t, StackAllocator salloc, Fn && fn, Args && ... args) :
+#if BOOST_COMP_GNUC < 50000000
+    fiber( std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg && ... arg) :
+#else
+    fiber( std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg ... arg) :
+#endif
         fiber{ launch::post,
-               std::allocator_arg, salloc,
-               std::forward< Fn >( fn), std::forward< Args >( args) ... } {
+               std::allocator_arg, std::forward< StackAllocator >( salloc),
+               std::forward< Fn >( fn), std::forward< Arg >( arg) ... } {
     }
 
     template< typename StackAllocator,
               typename Fn,
-              typename ... Args
+              typename ... Arg
     >
-    fiber( launch policy, std::allocator_arg_t, StackAllocator salloc, Fn && fn, Args && ... args) :
-        impl_{ make_worker_context( policy, salloc, std::forward< Fn >( fn), std::forward< Args >( args) ... ) } {
+#if BOOST_COMP_GNUC < 50000000
+    fiber( launch policy, std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg && ... arg) :
+#else
+    fiber( launch policy, std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg ... arg) :
+#endif
+        fiber{ policy,
+               static_cast<fiber_properties*>(nullptr),
+               std::allocator_arg, std::forward< StackAllocator >( salloc),
+               std::forward< Fn >( fn), std::forward< Arg >( arg) ... } {
+    }
+
+    template< typename Fn,
+              typename ... Arg,
+              typename = detail::disable_overload< fiber, Fn >,
+              typename = detail::disable_overload< launch, Fn >,
+              typename = detail::disable_overload< std::allocator_arg_t, Fn >
+    >
+#if BOOST_COMP_GNUC < 50000000
+    explicit fiber( fiber_properties* properties, Fn && fn, Arg && ... arg) :
+#else
+    fiber( fiber_properties* properties, Fn && fn, Arg ... arg) :
+#endif
+        fiber{ launch::post,
+               properties,
+               std::allocator_arg, default_stack(),
+               std::forward< Fn >( fn), std::forward< Arg >( arg) ... } {
+    }
+
+    template< typename Fn,
+              typename ... Arg,
+              typename = detail::disable_overload< fiber, Fn >
+    >
+#if BOOST_COMP_GNUC < 50000000
+    fiber( launch policy, fiber_properties* properties, Fn && fn, Arg && ... arg) :
+#else
+    fiber( launch policy, fiber_properties* properties, Fn && fn, Arg ... arg) :
+#endif
+        fiber{ policy,
+               properties,
+               std::allocator_arg, default_stack(),
+               std::forward< Fn >( fn), std::forward< Arg >( arg) ... } {
+    }
+
+    template< typename StackAllocator,
+              typename Fn,
+              typename ... Arg
+    >
+#if BOOST_COMP_GNUC < 50000000
+    fiber( fiber_properties* properties, std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg && ... arg) :
+#else
+    fiber( fiber_properties* properties, std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg ... arg) :
+#endif
+        fiber{ launch::post,
+               properties,
+               std::allocator_arg, std::forward< StackAllocator >( salloc),
+               std::forward< Fn >( fn), std::forward< Arg >( arg) ... } {
+    }
+
+    template< typename StackAllocator,
+              typename Fn,
+              typename ... Arg
+    >
+#if BOOST_COMP_GNUC < 50000000
+    fiber( launch policy, fiber_properties* properties, std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg && ... arg) :
+#else
+    fiber( launch policy, fiber_properties* properties, std::allocator_arg_t, StackAllocator && salloc, Fn && fn, Arg ... arg) :
+#endif
+        impl_{ make_worker_context_with_properties( policy, properties, std::forward< StackAllocator >( salloc), std::forward< Fn >( fn), std::forward< Arg >( arg) ... ) } {
         start_();
     }
 
@@ -101,14 +182,14 @@ public:
 
     fiber( fiber && other) noexcept :
         impl_{} {
-        impl_.swap( other.impl_);
+        swap( other);
     }
 
     fiber & operator=( fiber && other) noexcept {
         if ( joinable() ) {
             std::terminate();
         }
-        if ( this == & other) {
+        if ( BOOST_UNLIKELY( this == & other) ) {
             return * this;
         }
         impl_.swap( other.impl_);

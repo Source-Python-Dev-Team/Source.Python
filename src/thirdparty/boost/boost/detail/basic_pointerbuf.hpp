@@ -18,7 +18,8 @@
 # pragma once
 #endif
 
-#include "boost/config.hpp"
+#include <boost/config.hpp>
+
 #include <streambuf>
 
 namespace boost { namespace detail {
@@ -39,25 +40,20 @@ protected:
    typedef typename base_type::off_type off_type;
 
 public:
-   basic_pointerbuf() : base_type() { setbuf(0, 0); }
+   basic_pointerbuf() : base_type() { this_type::setbuf(0, 0); }
    const charT* getnext() { return this->gptr(); }
 
-#ifndef BOOST_NO_USING_TEMPLATE
     using base_type::pptr;
     using base_type::pbase;
-#else
-    charT* pptr() const { return base_type::pptr(); }
-    charT* pbase() const { return base_type::pbase(); }
-#endif
 
 protected:
    // VC mistakenly assumes that `setbuf` and other functions are not referenced.
    // Marking those functions with `inline` suppresses the warnings.
    // There must be no harm from marking virtual functions as inline: inline virtual
    // call can be inlined ONLY when the compiler knows the "exact class".
-   inline base_type* setbuf(char_type* s, streamsize n);
-   inline typename this_type::pos_type seekpos(pos_type sp, ::std::ios_base::openmode which);
-   inline typename this_type::pos_type seekoff(off_type off, ::std::ios_base::seekdir way, ::std::ios_base::openmode which);
+   inline base_type* setbuf(char_type* s, streamsize n) BOOST_OVERRIDE;
+   inline typename this_type::pos_type seekpos(pos_type sp, ::std::ios_base::openmode which) BOOST_OVERRIDE;
+   inline typename this_type::pos_type seekoff(off_type off, ::std::ios_base::seekdir way, ::std::ios_base::openmode which) BOOST_OVERRIDE;
 
 private:
    basic_pointerbuf& operator=(const basic_pointerbuf&);
@@ -76,7 +72,7 @@ template<class charT, class BufferT>
 typename basic_pointerbuf<charT, BufferT>::pos_type
 basic_pointerbuf<charT, BufferT>::seekoff(off_type off, ::std::ios_base::seekdir way, ::std::ios_base::openmode which)
 {
-   typedef typename boost::int_t<sizeof(way) * CHAR_BIT>::least cast_type;
+   typedef ::std::ios_base::seekdir cast_type;
 
    if(which & ::std::ios_base::out)
       return pos_type(off_type(-1));
@@ -136,4 +132,3 @@ basic_pointerbuf<charT, BufferT>::seekpos(pos_type sp, ::std::ios_base::openmode
 }} // namespace boost::detail
 
 #endif // BOOST_DETAIL_BASIC_POINTERBUF_HPP
-

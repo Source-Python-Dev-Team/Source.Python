@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::Monoid`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -13,7 +13,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/config.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-concepts
     //! @defgroup group-Monoid Monoid
     //! The `Monoid` concept represents data types with an associative
@@ -96,6 +96,6 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! [2]: http://en.wikipedia.org/wiki/Monoid#Monoid_homomorphisms
     template <typename M>
     struct Monoid;
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_CONCEPT_MONOID_HPP

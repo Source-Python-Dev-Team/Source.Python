@@ -2,7 +2,7 @@
 @file
 Adapts `boost::mpl::list` for use with Hana.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -94,7 +94,7 @@ namespace boost { namespace mpl {
 #endif
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     namespace ext { namespace boost { namespace mpl {
         using list_tag = ::boost::mpl::sequence_tag< ::boost::mpl::list<>>::type;
     }}}
@@ -181,6 +181,6 @@ BOOST_HANA_NAMESPACE_BEGIN
             return typename decltype(list_type)::type{};
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_EXT_BOOST_MPL_LIST_HPP

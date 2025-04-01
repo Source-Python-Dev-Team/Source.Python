@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::basic_tuple`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -21,21 +21,18 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/fwd/core/make.hpp>
 #include <boost/hana/fwd/core/tag_of.hpp>
 #include <boost/hana/fwd/drop_front.hpp>
+#include <boost/hana/fwd/integral_constant.hpp>
 #include <boost/hana/fwd/is_empty.hpp>
+#include <boost/hana/fwd/length.hpp>
 #include <boost/hana/fwd/transform.hpp>
 #include <boost/hana/fwd/unpack.hpp>
-
-#if 0 //! @todo Until we strip down headers, this includes too much
-#include <boost/hana/fwd/integral_constant.hpp>
-#include <boost/hana/fwd/length.hpp>
-#endif
 
 #include <cstddef>
 #include <type_traits>
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     namespace detail {
         //////////////////////////////////////////////////////////////////////
         // basic_tuple_impl<n, Xn>
@@ -45,10 +42,18 @@ BOOST_HANA_NAMESPACE_BEGIN
         struct from_other { };
 
         template <typename Indices, typename ...Xn>
+#ifdef BOOST_HANA_WORKAROUND_MSVC_EMPTYBASE
+        struct __declspec(empty_bases) basic_tuple_impl;
+#else
         struct basic_tuple_impl;
+#endif
 
         template <std::size_t ...n, typename ...Xn>
+#ifdef BOOST_HANA_WORKAROUND_MSVC_EMPTYBASE
+        struct __declspec(empty_bases) basic_tuple_impl<std::index_sequence<n...>, Xn...>
+#else
         struct basic_tuple_impl<std::index_sequence<n...>, Xn...>
+#endif
             : detail::ebo<bti<n>, Xn>...
         {
             static constexpr std::size_t size_ = sizeof...(Xn);
@@ -196,7 +201,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         static constexpr auto apply(Xs&& xs, N const&) {
             constexpr std::size_t len = detail::decay<Xs>::type::size_;
             return drop_front_helper<N::value>(static_cast<Xs&&>(xs), std::make_index_sequence<
-                N::value < len ? len - N::value : 0
+                (N::value < len) ? len - N::value : 0
             >{});
         }
     };
@@ -244,7 +249,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         }
     };
 
-#if 0
     //////////////////////////////////////////////////////////////////////////
     // length
     //////////////////////////////////////////////////////////////////////////
@@ -252,10 +256,9 @@ BOOST_HANA_NAMESPACE_BEGIN
     struct length_impl<basic_tuple_tag> {
         template <typename ...Xn>
         static constexpr auto apply(basic_tuple<Xn...> const&) {
-            return hana::size_c<sizeof...(Xn)>;
+            return hana::size_t<sizeof...(Xn)>{};
         }
     };
-#endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_BASIC_TUPLE_HPP

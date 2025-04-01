@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::at` and `boost::hana::at_c`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -21,7 +21,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <cstddef>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Xs, typename N>
     constexpr decltype(auto) at_t::operator()(Xs&& xs, N const& n) const {
@@ -52,6 +52,6 @@ BOOST_HANA_NAMESPACE_BEGIN
     constexpr decltype(auto) at_c(Xs&& xs) {
         return hana::at(static_cast<Xs&&>(xs), hana::size_t<n>{});
     }
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_AT_HPP

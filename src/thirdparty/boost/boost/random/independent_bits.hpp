@@ -52,10 +52,10 @@ public:
     BOOST_STATIC_CONSTANT(bool, has_fixed_range = false);
 
     /** Returns the smallest value that the generator can produce. */
-    static result_type min BOOST_PREVENT_MACRO_SUBSTITUTION ()
+    static BOOST_CONSTEXPR result_type min BOOST_PREVENT_MACRO_SUBSTITUTION ()
     { return 0; }
     /** Returns the largest value that the generator can produce. */
-    static result_type max BOOST_PREVENT_MACRO_SUBSTITUTION ()
+    static BOOST_CONSTEXPR result_type max BOOST_PREVENT_MACRO_SUBSTITUTION ()
     { return max_imp(boost::is_integral<UIntType>()); }
 
     /**
@@ -158,6 +158,18 @@ public:
 
         BOOST_ASSERT(n0*w0 + (n - n0)*(w0 + 1) == w);
 
+        BOOST_ASSERT((n == 1) == (w0 == w));
+
+        // special case to avoid undefined behavior from shifting
+        if(n == 1) {
+            BOOST_ASSERT(n0 == 1);
+            base_unsigned u;
+            do {
+                u = detail::subtract<base_result_type>()(_base(), (_base.min)());
+            } while(u > base_unsigned(y0 - 1));
+            return u & y0_mask;
+        }
+
         result_type S = 0;
         for(std::size_t k = 0; k < n0; ++k) {
             base_unsigned u;
@@ -229,7 +241,7 @@ private:
     /// \cond show_private
     typedef typename boost::random::traits::make_unsigned<base_result_type>::type base_unsigned;
 
-    static UIntType max_imp(const boost::true_type&)
+    static BOOST_CONSTEXPR UIntType max_imp(const boost::true_type&)
     {
        return boost::low_bits_mask_t<w>::sig_bits;
     }

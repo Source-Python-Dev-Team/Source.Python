@@ -677,6 +677,7 @@ Add_Definitions(
     -DSOURCE_ENGINE=${SOURCE_ENGINE}
     -DSOURCE_ENGINE_BRANCH=${BRANCH}
     -DBOOST_PYTHON_MAX_ARITY=32
+    -DASMJIT_STATIC=1
 )
 
 # ------------------------------------------------------------------

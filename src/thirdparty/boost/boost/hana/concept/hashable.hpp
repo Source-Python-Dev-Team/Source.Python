@@ -2,8 +2,8 @@
 @file
 Defines `boost::hana::Hashable`.
 
-@copyright Louis Dionne 2016
-@copyright Jason Rice 2016
+Copyright Louis Dionne 2016
+Copyright Jason Rice 2016
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -20,13 +20,13 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/hash.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     template <typename T>
     struct Hashable
         : hana::integral_constant<bool,
             !is_default<hash_impl<typename tag_of<T>::type>>::value
         >
     { };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_CONCEPT_HASHABLE_HPP

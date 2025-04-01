@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::is_a` and `boost::hana::is_an`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -19,7 +19,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <type_traits>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //////////////////////////////////////////////////////////////////////////
     // is_a
     //////////////////////////////////////////////////////////////////////////
@@ -36,6 +36,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(T const&) const
         { return hana::is_a<DataType, T>; }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_CORE_IS_A_HPP

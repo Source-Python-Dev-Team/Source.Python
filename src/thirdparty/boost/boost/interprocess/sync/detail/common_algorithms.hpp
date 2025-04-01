@@ -23,16 +23,17 @@
 #include <boost/interprocess/detail/workaround.hpp>
 
 #include <boost/interprocess/sync/spin/wait.hpp>
+#include <boost/interprocess/timed_utils.hpp>
 
 namespace boost {
 namespace interprocess {
 namespace ipcdetail {
 
-template<class MutexType>
-bool try_based_timed_lock(MutexType &m, const boost::posix_time::ptime &abs_time)
+template<class MutexType, class TimePoint>
+bool try_based_timed_lock(MutexType &m, const TimePoint &abs_time)
 {
    //Same as lock()
-   if(abs_time == boost::posix_time::pos_infin){
+   if(is_pos_infinity(abs_time)){
       m.lock();
       return true;
    }
@@ -45,7 +46,7 @@ bool try_based_timed_lock(MutexType &m, const boost::posix_time::ptime &abs_time
    }
    else{
       spin_wait swait;
-      while(microsec_clock::universal_time() < abs_time){
+      while(microsec_clock<TimePoint>::universal_time() < abs_time){
          if(m.try_lock()){
             return true;
          }
@@ -70,6 +71,22 @@ void try_based_lock(MutexType &m)
       }
       while(1);
    }
+}
+
+template<class MutexType>
+void timeout_when_locking_aware_lock(MutexType &m)
+{
+   #ifdef BOOST_INTERPROCESS_ENABLE_TIMEOUT_WHEN_LOCKING
+      if (!m.timed_lock(microsec_clock<ustime>::universal_time()
+           + usduration_from_milliseconds(BOOST_INTERPROCESS_TIMEOUT_WHEN_LOCKING_DURATION_MS)))
+      {
+         throw interprocess_exception(timeout_when_locking_error
+                                     , "Interprocess mutex timeout when locking. Possible deadlock: "
+                                       "owner died without unlocking?");
+      }
+   #else
+      m.lock();
+   #endif
 }
 
 }  //namespace ipcdetail

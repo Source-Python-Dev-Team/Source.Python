@@ -1,7 +1,8 @@
 // Boost.Geometry
 
-// Copyright (c) 2016 Oracle and/or its affiliates.
+// Copyright (c) 2023 Adam Wulkiewicz, Lodz, Poland.
 
+// Copyright (c) 2016-2019 Oracle and/or its affiliates.
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
@@ -15,10 +16,10 @@
 #include <boost/math/constants/constants.hpp>
 
 #include <boost/geometry/core/radius.hpp>
-#include <boost/geometry/core/srs.hpp>
 
 #include <boost/geometry/util/condition.hpp>
 #include <boost/geometry/util/math.hpp>
+#include <boost/geometry/util/normalize_spheroidal_coordinates.hpp>
 
 #include <boost/geometry/formulas/flattening.hpp>
 #include <boost/geometry/formulas/spherical.hpp>
@@ -71,7 +72,7 @@ struct sjoberg_intersection_spherical_02
 
         CT const tan_lat_a2 = tan(lat_a2);
         CT const tan_lat_b2 = tan(lat_b2);
-        
+
         return apply(lon1, lon_a2, lon2, lon_b2,
                      sin_lon1, cos_lon1, sin_lat1, cos_lat1,
                      sin_lon2, cos_lon2, sin_lat2, cos_lat2,
@@ -97,10 +98,16 @@ private:
         CT const sin_dlon1 = sin(dlon1);
         CT const dlon2 = lon_b2 - lon2;
         CT const sin_dlon2 = sin(dlon2);
-        
+
+        CT const cos_dlon1 = cos(dlon1);
+        CT const cos_dlon2 = cos(dlon2);
+
+        CT const tan_alpha1_x = cos_lat1 * tan_lat_a2 - sin_lat1 * cos_dlon1;
+        CT const tan_alpha2_x = cos_lat2 * tan_lat_b2 - sin_lat2 * cos_dlon2;
+
         CT const c0 = 0;
-        bool const is_vertical1 = math::equals(sin_dlon1, c0);
-        bool const is_vertical2 = math::equals(sin_dlon2, c0);
+        bool const is_vertical1 = math::equals(sin_dlon1, c0) || math::equals(tan_alpha1_x, c0);
+        bool const is_vertical2 = math::equals(sin_dlon2, c0) || math::equals(tan_alpha2_x, c0);
 
         CT tan_alpha1 = 0;
         CT tan_alpha2 = 0;
@@ -112,30 +119,21 @@ private:
         }
         else if (is_vertical1)
         {
-            CT const cos_dlon2 = cos(dlon2);
-            CT const tan_alpha2_x = cos_lat2 * tan_lat_b2 - sin_lat2 * cos_dlon2;
             tan_alpha2 = sin_dlon2 / tan_alpha2_x;
 
             lon = lon1;
         }
         else if (is_vertical2)
         {
-            CT const cos_dlon1 = cos(dlon1);
-            CT const tan_alpha1_x = cos_lat1 * tan_lat_a2 - sin_lat1 * cos_dlon1;
             tan_alpha1 = sin_dlon1 / tan_alpha1_x;
 
             lon = lon2;
         }
         else
         {
-            CT const cos_dlon1 = cos(dlon1);
-            CT const cos_dlon2 = cos(dlon2);
-
-            CT const tan_alpha1_x = cos_lat1 * tan_lat_a2 - sin_lat1 * cos_dlon1;
-            CT const tan_alpha2_x = cos_lat2 * tan_lat_b2 - sin_lat2 * cos_dlon2;
             tan_alpha1 = sin_dlon1 / tan_alpha1_x;
             tan_alpha2 = sin_dlon2 / tan_alpha2_x;
-        
+
             CT const T1 = tan_alpha1 * cos_lat1;
             CT const T2 = tan_alpha2 * cos_lat2;
             CT const T1T2 = T1*T2;
@@ -155,12 +153,12 @@ private:
         CT const lon_dist2 = (std::max)((std::min)(math::longitude_difference<radian>(lon1, lon_2),
                                                    math::longitude_difference<radian>(lon_a2, lon_2)),
                                         (std::min)(math::longitude_difference<radian>(lon2, lon_2),
-                                                   math::longitude_difference<radian>(lon_b2, lon_2)));        
+                                                   math::longitude_difference<radian>(lon_b2, lon_2)));
         if (lon_dist2 < lon_dist1)
         {
             lon = lon_2;
         }
-        
+
         CT const sin_lon = sin(lon);
         CT const cos_lon = cos(lon);
 
@@ -180,7 +178,7 @@ private:
             CT const lat_x_2 = tan_alpha2 * cos_lat2;
             tan_lat = lat_y_2 / lat_x_2;
         }
-        
+
         return true;
     }
 };
@@ -209,19 +207,19 @@ inline CT sjoberg_d_lambda_e_sqr(CT const& sin_betaj, CT const& sin_beta,
 {
     using math::detail::bounded;
 
-    if (Order == 0)
+    if (BOOST_GEOMETRY_CONDITION(Order == 0))
     {
         return 0;
     }
 
     CT const c1 = 1;
     CT const c2 = 2;
-        
+
     CT const asin_B = asin(bounded(sin_beta / sqrt_1_Cj_sqr, -c1, c1));
     CT const asin_Bj = asin(sin_betaj / sqrt_1_Cj_sqr);
     CT const L0 = (asin_B - asin_Bj) / c2;
 
-    if (Order == 1)
+    if (BOOST_GEOMETRY_CONDITION(Order == 1))
     {
         return -Cj * e_sqr * L0;
     }
@@ -240,7 +238,7 @@ inline CT sjoberg_d_lambda_e_sqr(CT const& sin_betaj, CT const& sin_beta,
     CT const sqrt_Yj = math::sqrt(-Xj_sqr + one_minus_Cj_sqr);
     CT const L1 = (Cj_sqr_plus_one * (asin_B - asin_Bj) + X * sqrt_Y - Xj * sqrt_Yj) / c16;
 
-    if (Order == 2)
+    if (BOOST_GEOMETRY_CONDITION(Order == 2))
     {
         return -Cj * e_sqr * (L0 + e_sqr * L1);
     }
@@ -254,7 +252,7 @@ inline CT sjoberg_d_lambda_e_sqr(CT const& sin_betaj, CT const& sin_beta,
     CT const Fj = Xj * (-c2 * Xj_sqr + c3 * Cj_sqr + c5);
     CT const L2 = (E * (asin_B - asin_Bj) + F * sqrt_Y - Fj * sqrt_Yj) / c128;
 
-    if (Order == 3)
+    if (BOOST_GEOMETRY_CONDITION(Order == 3))
     {
         return -Cj * e_sqr * (L0 + e_sqr * (L1 + e_sqr * L2));
     }
@@ -408,7 +406,7 @@ public:
         {
             return false;
         }
-        
+
         // NOTE: beta may be slightly out of bounds here but d_lambda handles that
         CT const dLj = d_lambda(sin_beta);
         delta_k = sign_lon_diff * (/*asin_t_t0j*/ - asin_tj_t0j + dLj);
@@ -454,7 +452,7 @@ public:
             delta_k_behind = sign_lon_diff * pi;
             return true;
         }
-        
+
         // beta out of bounds and not close
         if (check_sin_beta
             && ! (is_sin_beta_ok(sin_beta)
@@ -462,7 +460,7 @@ public:
         {
             return false;
         }
-        
+
         // NOTE: beta may be slightly out of bounds here but d_lambda handles that
         CT const dLj = d_lambda(sin_beta);
         delta_k_before = sign_lon_diff * (/*asin_t_t0j*/ - asin_tj_t0j + dLj);
@@ -761,6 +759,15 @@ public:
             sjoberg_intersection_spherical_02<CT>::apply_alt(lon_a1, lat_a1, lon_a2, lat_a2,
                                                              lon_b1, lat_b1, lon_b2, lat_b2,
                                                              lon_sph, tan_lat_sph);
+
+            // Return for sphere
+            if (math::equals(f, c0))
+            {
+                lon = lon_sph;
+                lat = atan(tan_lat_sph);
+                return true;
+            }
+
             t = one_minus_f * tan_lat_sph; // tan(beta)
         }
 
@@ -768,9 +775,20 @@ public:
         //       instead of latitudes above, in sjoberg_intersection_spherical_02
         CT const beta = atan(t);
 
-        if (enable_02 && newton_method(geod1, geod2, beta, t, lon1_minus_lon2, lon, lat))
+        if (enable_02 && newton_method(geod1, geod2, beta, t, lon1_minus_lon2, lon_sph, lon, lat))
         {
-            return true;
+            // TODO: Newton's method may return wrong result in some specific cases
+            // Detected for sphere and nearly sphere, e.g. A=6371228, B=6371227
+            // and segments s1=(-121 -19,37 8) and s2=(-19 -15,-104 -58)
+            // It's unclear if this is a bug or a characteristic of this method
+            // so until this is investigated check if the resulting longitude is
+            // between endpoints of the segments. It should be since before calling
+            // this formula sides of endpoints WRT other segments are checked.
+            if ( is_result_longitude_ok(geod1, lon_a1, lon_a2, lon)
+              && is_result_longitude_ok(geod2, lon_b1, lon_b2, lon) )
+            {
+                return true;
+            }
         }
 
         return converge_07(geod1, geod2, beta, t, lon1_minus_lon2, lon_sph, lon, lat);
@@ -778,16 +796,23 @@ public:
 
 private:
     static inline bool newton_method(geodesic_type const& geod1, geodesic_type const& geod2, // in
-                                     CT beta, CT t, CT const& lon1_minus_lon2, // in
+                                     CT beta, CT t, CT const& lon1_minus_lon2, CT const& lon_sph, // in
                                      CT & lon, CT & lat) // out
     {
         CT const c0 = 0;
         CT const c1 = 1;
 
         CT const e_sqr = geod1.e_sqr;
-        
+
         CT lon1_diff = 0;
         CT lon2_diff = 0;
+
+        // The segment is vertical and intersection point is behind the vertex
+        // this method is unable to calculate correct result
+        if (geod1.is_Cj_zero && math::abs(geod1.lonj - lon_sph) > math::half_pi<CT>())
+            return false;
+        if (geod2.is_Cj_zero && math::abs(geod2.lonj - lon_sph) > math::half_pi<CT>())
+            return false;
 
         CT abs_dbeta_last = 0;
 
@@ -795,8 +820,14 @@ private:
         // Newton-Raphson method
         for (int i = 0; i < max_iterations_02; ++i)
         {
-            CT const sin_beta = sin(beta);
             CT const cos_beta = cos(beta);
+
+            if (math::equals(cos_beta, c0))
+            {
+                return false;
+            }
+
+            CT const sin_beta = sin(beta);
             CT const cos_beta_sqr = math::sqr(cos_beta);
             CT const G = c1 - e_sqr * cos_beta_sqr;
 
@@ -810,6 +841,10 @@ private:
                 if (is_beta_ok)
                 {
                     CT const H = cos_beta_sqr - geod1.Cj_sqr;
+                    if (math::equals(H, c0))
+                    {
+                        return false;
+                    }
                     f1 = geod1.Cj / cos_beta * math::sqrt(G / H);
                 }
                 else
@@ -825,6 +860,15 @@ private:
                 if (is_beta_ok)
                 {
                     CT const H = cos_beta_sqr - geod2.Cj_sqr;
+                    if (math::equals(H, c0))
+                    {
+                        // NOTE: This may happen for segment nearly
+                        // at the equator. Detected for (radian):
+                        // (-0.0872665 -0.0872665, -0.0872665 0.0872665)
+                        // x
+                        // (0 1.57e-07, -0.392699 1.57e-07)
+                        return false;
+                    }
                     f2 = geod2.Cj / cos_beta * math::sqrt(G / H);
                 }
                 else
@@ -840,6 +884,8 @@ private:
             //      In this case sin_beta/sqrt_1_Cj_sqr and t/t0j is not in [-1, 1]
             //   3. f1-f2 may be 0 which means that the intermediate point is on the vertex
             //      In this case it's not possible to check if this is the correct result
+            //   4. f1-f2 may also be 0 in other cases, e.g.
+            //      geodesics are symmetrical wrt equator and longitude directions are different
 
             CT const dbeta_denom = f1 - f2;
             //CT const dbeta_denom = math::abs(f1) + math::abs(f2);
@@ -847,7 +893,7 @@ private:
             if (math::equals(dbeta_denom, c0))
             {
                 return false;
-            }            
+            }
 
             // The sign of dbeta is changed WRT [Sjoberg02]
             CT const dbeta = (lon1_minus_lon2 + lon1_diff - lon2_diff) / dbeta_denom;
@@ -880,6 +926,28 @@ private:
                 : geod2.lon(lon2_diff);
 
         return true;
+    }
+
+    static inline bool is_result_longitude_ok(geodesic_type const& geod,
+                                              CT const& lon1, CT const& lon2, CT const& lon)
+    {
+        CT const c0 = 0;
+
+        if (geod.is_Cj_zero)
+            return true; // don't check vertical segment
+
+        CT dist1p = math::longitude_distance_signed<radian>(lon1, lon);
+        CT dist12 = math::longitude_distance_signed<radian>(lon1, lon2);
+
+        if (dist12 < c0)
+        {
+            dist1p = -dist1p;
+            dist12 = -dist12;
+        }
+
+        return (c0 <= dist1p && dist1p <= dist12)
+            || math::equals(dist1p, c0)
+            || math::equals(dist1p, dist12);
     }
 
     struct geodesics_type
@@ -960,7 +1028,7 @@ private:
             {
                 break;
             }
-                    
+
             bool try_t2 = false;
             converge_07_result result_curr;
             if (converge_07_step_one(CT(sin(beta1)), t1, lon1_minus_lon2, geodesics, lon_sph, result_curr))
@@ -996,7 +1064,7 @@ private:
                 }
             }
 
-            
+
             if (try_t2)
             {
                 CT t2 = t;
@@ -1089,7 +1157,7 @@ private:
     {
         using math::detail::bounded;
         CT const c1 = 1;
-        
+
         CT k_diff_before = 0;
         CT k_diff_behind = 0;
 
@@ -1126,6 +1194,7 @@ private:
                                geodesic_type const& geod1, geodesic_type const& geod2,
                                CT & t1, CT& t2)
     {
+        CT const c0 = 0;
         CT const c1 = 1;
         CT const c2 = 2;
 
@@ -1150,8 +1219,8 @@ private:
             CT const K_t01_t02 = K * geod1.t0j * geod2.t0j;
             CT const D1 = math::sqrt(A + B);
             CT const D2 = math::sqrt(A - B);
-            CT const t_new1 = K_t01_t02 / D1;
-            CT const t_new2 = K_t01_t02 / D2;
+            CT const t_new1 = math::equals(D1, c0) ? c0 : K_t01_t02 / D1;
+            CT const t_new2 = math::equals(D2, c0) ? c0 : K_t01_t02 / D2;
             CT const t_new3 = -t_new1;
             CT const t_new4 = -t_new2;
 

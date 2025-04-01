@@ -1,6 +1,6 @@
 // Copyright Kevlin Henney, 2000-2005.
 // Copyright Alexander Nasonov, 2006-2010.
-// Copyright Antony Polukhin, 2011-2014.
+// Copyright Antony Polukhin, 2011-2024.
 //
 // Distributed under the Boost Software License, Version 1.0. (See
 // accompanying file LICENSE_1_0.txt or copy at
@@ -23,16 +23,17 @@
 #   pragma once
 #endif
 
+
+#include <boost/type_traits/conditional.hpp>
+
 namespace boost { namespace detail {
 
-    template <typename TargetChar, typename SourceChar>
-    struct widest_char {
-        typedef BOOST_DEDUCED_TYPENAME boost::mpl::if_c<
-            (sizeof(TargetChar) > sizeof(SourceChar))
-            , TargetChar
-            , SourceChar
-        >::type type;
-    };
+template <typename TargetChar, typename SourceChar>
+using widest_char = boost::conditional<
+    (sizeof(TargetChar) > sizeof(SourceChar))
+    , TargetChar
+    , SourceChar
+>;
 
 }} // namespace boost::detail
 

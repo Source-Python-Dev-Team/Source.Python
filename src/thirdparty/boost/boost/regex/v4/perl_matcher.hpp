@@ -27,7 +27,16 @@
 
 #ifdef BOOST_MSVC
 #  pragma warning(push)
-#  pragma warning(disable: 4800)
+#pragma warning(disable : 4251)
+#if BOOST_MSVC < 1700
+#     pragma warning(disable : 4231)
+#endif
+#  if BOOST_MSVC < 1600
+#     pragma warning(disable : 4660)
+#  endif
+#if BOOST_MSVC < 1910
+#pragma warning(disable:4800)
+#endif
 #endif
 
 namespace boost{
@@ -36,7 +45,17 @@ namespace BOOST_REGEX_DETAIL_NS{
 //
 // error checking API:
 //
-BOOST_REGEX_DECL void BOOST_REGEX_CALL verify_options(boost::regex_constants::syntax_option_type ef, match_flag_type mf);
+inline void BOOST_REGEX_CALL verify_options(boost::regex_constants::syntax_option_type, match_flag_type mf)
+{
+   //
+   // can't mix match_extra with POSIX matching rules:
+   //
+   if ((mf & match_extra) && (mf & match_posix))
+   {
+      std::logic_error msg("Usage Error: Can't mix regular expression captures with POSIX matching rules");
+      throw_exception(msg);
+   }
+}
 //
 // function can_start:
 //
@@ -79,7 +98,7 @@ inline bool can_start(unsigned int c, const unsigned char* map, unsigned char ma
 
 //
 // Unfortunately Rogue Waves standard library appears to have a bug
-// in std::basic_string::compare that results in eroneous answers
+// in std::basic_string::compare that results in erroneous answers
 // in some cases (tested with Borland C++ 5.1, Rogue Wave lib version
 // 0x020101) the test case was:
 // {39135,0} < {0xff,0}
@@ -122,7 +141,7 @@ inline int string_compare(const Seq& s, const C* p)
    {
       ++i;
    }
-   return (i == s.size()) ? -p[i] : s[i] - p[i];
+   return (i == s.size()) ? -(int)p[i] : (int)s[i] - (int)p[i];
 }
 # define STR_COMP(s,p) string_compare(s,p)
 
@@ -339,6 +358,12 @@ enum saved_state_type
    saved_state_count = 14
 };
 
+#ifdef BOOST_MSVC
+#  pragma warning(push)
+#if BOOST_MSVC >= 1800
+#pragma warning(disable:26495)
+#endif
+#endif
 template <class Results>
 struct recursion_info
 {
@@ -350,13 +375,8 @@ struct recursion_info
    repeater_count<iterator>* repeater_stack;
    iterator location_of_start;
 };
-
 #ifdef BOOST_MSVC
-#pragma warning(push)
-#pragma warning(disable : 4251 4231)
-#  if BOOST_MSVC < 1600
-#     pragma warning(disable : 4660)
-#  endif
+#  pragma warning(pop)
 #endif
 
 template <class BidiIterator, class Allocator, class traits>
@@ -365,7 +385,7 @@ class perl_matcher
 public:
    typedef typename traits::char_type char_type;
    typedef perl_matcher<BidiIterator, Allocator, traits> self_type;
-   typedef bool (self_type::*matcher_proc_type)(void);
+   typedef bool (self_type::*matcher_proc_type)();
    typedef std::size_t traits_size_type;
    typedef typename is_byte<char_type>::width_type width_type;
    typedef typename regex_iterator_traits<BidiIterator>::difference_type difference_type;
@@ -379,6 +399,9 @@ public:
       :  m_result(what), base(first), last(end), 
          position(first), backstop(l_base), re(e), traits_inst(e.get_traits()), 
          m_independent(false), next_count(&rep_obj), rep_obj(&next_count)
+#ifdef BOOST_REGEX_NON_RECURSIVE
+      , m_recursions(0)
+#endif
    {
       construct_init(e, f);
    }
@@ -547,7 +570,7 @@ private:
    void push_repeater_count(int i, repeater_count<BidiIterator>** s);
    void push_single_repeat(std::size_t c, const re_repeat* r, BidiIterator last_position, int state_id);
    void push_non_greedy_repeat(const re_syntax_base* ps);
-   void push_recursion(int idx, const re_syntax_base* p, results_type* presults);
+   void push_recursion(int idx, const re_syntax_base* p, results_type* presults, results_type* presults2);
    void push_recursion_pop();
    void push_case_change(bool);
 
@@ -566,8 +589,16 @@ private:
    bool m_unwound_alt;
    // We are unwinding a commit - used by independent subs to determine whether to stop there or carry on unwinding:
    //bool m_unwind_commit;
+   // Recursion limit:
+   unsigned m_recursions;
 #endif
 
+#ifdef BOOST_MSVC
+#  pragma warning(push)
+#if BOOST_MSVC >= 1800
+#pragma warning(disable:26495)
+#endif
+#endif
    // these operations aren't allowed, so are declared private,
    // bodies are provided to keep explicit-instantiation requests happy:
    perl_matcher& operator=(const perl_matcher&)
@@ -576,13 +607,16 @@ private:
    }
    perl_matcher(const perl_matcher& that)
       : m_result(that.m_result), re(that.re), traits_inst(that.traits_inst), rep_obj(0) {}
+#ifdef BOOST_MSVC
+#  pragma warning(pop)
+#endif
 };
 
-#ifdef BOOST_MSVC
-#pragma warning(pop)
-#endif
-
 } // namespace BOOST_REGEX_DETAIL_NS
+
+#ifdef BOOST_MSVC
+#  pragma warning(pop)
+#endif
 
 #ifdef BOOST_MSVC
 #pragma warning(push)
@@ -597,10 +631,6 @@ private:
 
 } // namespace boost
 
-#ifdef BOOST_MSVC
-#  pragma warning(pop)
-#endif
-
 //
 // include the implementation of perl_matcher:
 //
@@ -613,4 +643,3 @@ private:
 #include <boost/regex/v4/perl_matcher_common.hpp>
 
 #endif
-

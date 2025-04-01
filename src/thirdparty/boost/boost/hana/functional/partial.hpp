@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::partial`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -18,7 +18,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-functional
     //! Partially apply a function to some arguments.
     //!
@@ -98,8 +98,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         }
     };
 
-    constexpr make_partial_t partial{};
+    BOOST_HANA_INLINE_VARIABLE constexpr make_partial_t partial{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FUNCTIONAL_PARTIAL_HPP

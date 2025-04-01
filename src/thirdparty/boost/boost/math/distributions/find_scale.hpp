@@ -13,7 +13,7 @@
 #include <boost/math/policies/policy.hpp>
 // using boost::math::policies::policy;
 #include <boost/math/tools/traits.hpp>
-#include <boost/static_assert.hpp>
+#include <boost/math/tools/assert.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
 #include <boost/math/policies/error_handling.hpp>
 // using boost::math::complement; // will be needed by users who want complement,
@@ -39,10 +39,8 @@ namespace boost
       const Policy& pol 
       )
     {
-#if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
-      BOOST_STATIC_ASSERT(::boost::math::tools::is_distribution<Dist>::value); 
-      BOOST_STATIC_ASSERT(::boost::math::tools::is_scaled_distribution<Dist>::value); 
-#endif
+      static_assert(::boost::math::tools::is_distribution<Dist>::value, "The provided distribution does not meet the conceptual requirements of a distribution."); 
+      static_assert(::boost::math::tools::is_scaled_distribution<Dist>::value, "The provided distribution does not meet the conceptual requirements of a scaled distribution."); 
       static const char* function = "boost::math::find_scale<Dist, Policy>(%1%, %1%, %1%, Policy)";
 
       if(!(boost::math::isfinite)(p) || (p < 0) || (p > 1))
@@ -82,9 +80,7 @@ namespace boost
 
       if (result <= 0)
       { // If policy isn't to throw, return the scale <= 0.
-        policies::raise_evaluation_error<typename Dist::value_type>(function,
-          "Computed scale (%1%) is <= 0!" " Was the complement intended?",
-          result, Policy());
+        policies::raise_evaluation_error<typename Dist::value_type>(function, "Computed scale (%1%) is <= 0!" " Was the complement intended?", result, Policy()); // LCOV_EXCL_LINE
       }
       return result;
     } // template <class Dist, class Policy> find_scale
@@ -111,10 +107,8 @@ namespace boost
       //  << quantile(Dist(), c.param1) //q
       //  << endl;
 
-#if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
-      BOOST_STATIC_ASSERT(::boost::math::tools::is_distribution<Dist>::value); 
-      BOOST_STATIC_ASSERT(::boost::math::tools::is_scaled_distribution<Dist>::value); 
-#endif
+      static_assert(::boost::math::tools::is_distribution<Dist>::value, "The provided distribution does not meet the conceptual requirements of a distribution."); 
+      static_assert(::boost::math::tools::is_scaled_distribution<Dist>::value, "The provided distribution does not meet the conceptual requirements of a scaled distribution."); 
       static const char* function = "boost::math::find_scale<Dist, Policy>(complement(%1%, %1%, %1%, Policy))";
 
       // Checks on arguments, as not complemented version,
@@ -144,9 +138,7 @@ namespace boost
       //     (  z    - location) / (quantile(complement(Dist(),  q)) 
       if (result <= 0)
       { // If policy isn't to throw, return the scale <= 0.
-        policies::raise_evaluation_error<typename Dist::value_type>(function,
-          "Computed scale (%1%) is <= 0!" " Was the complement intended?",
-          result, Policy());
+        policies::raise_evaluation_error<typename Dist::value_type>(function, "Computed scale (%1%) is <= 0!" " Was the complement intended?", result, Policy()); // LCOV_EXCL_LINE
       }
       return result;
     } // template <class Dist, class Policy, class Real1, class Real2, class Real3> typename Dist::value_type find_scale
@@ -165,10 +157,8 @@ namespace boost
       //  << quantile(Dist(), c.param1) //q
       //  << endl;
 
-#if !defined(BOOST_NO_SFINAE) && !BOOST_WORKAROUND(__SUNPRO_CC, BOOST_TESTED_AT(0x590))
-      BOOST_STATIC_ASSERT(::boost::math::tools::is_distribution<Dist>::value); 
-      BOOST_STATIC_ASSERT(::boost::math::tools::is_scaled_distribution<Dist>::value); 
-#endif
+      static_assert(::boost::math::tools::is_distribution<Dist>::value, "The provided distribution does not meet the conceptual requirements of a distribution."); 
+      static_assert(::boost::math::tools::is_scaled_distribution<Dist>::value, "The provided distribution does not meet the conceptual requirements of a scaled distribution.");  
       static const char* function = "boost::math::find_scale<Dist, Policy>(complement(%1%, %1%, %1%, Policy))";
 
       // Checks on arguments, as not complemented version,
@@ -198,9 +188,8 @@ namespace boost
       //     (  z    - location) / (quantile(complement(Dist(),  q)) 
       if (result <= 0)
       { // If policy isn't to throw, return the scale <= 0.
-        policies::raise_evaluation_error<typename Dist::value_type>(function,
-          "Computed scale (%1%) is <= 0!" " Was the complement intended?",
-          result, policies::policy<>()); // This is only the default policy - also Want a version with Policy here.
+        policies::raise_evaluation_error<typename Dist::value_type>(function, "Computed scale (%1%) is <= 0!" " Was the complement intended?", // LCOV_EXCL_LINE
+           result, policies::policy<>()); // This is only the default policy - also Want a version with Policy here.  LCOV_EXCL_LINE
       }
       return result;
     } // template <class Dist, class Real1, class Real2, class Real3> typename Dist::value_type find_scale

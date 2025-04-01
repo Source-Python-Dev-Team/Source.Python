@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::zip_shortest`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -20,7 +20,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/zip_shortest_with.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Xs, typename ...Ys>
     constexpr auto zip_shortest_t::operator()(Xs&& xs, Ys&& ...ys) const {
@@ -46,6 +46,6 @@ BOOST_HANA_NAMESPACE_BEGIN
                                            static_cast<Xs&&>(xs)...);
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_ZIP_SHORTEST_HPP

@@ -11,7 +11,7 @@
 #include <boost/chrono/config.hpp>
 #include <string>
 #include <boost/type_traits/is_scalar.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_signed.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/integer/common_factor_rt.hpp>
@@ -309,8 +309,7 @@ namespace boost
         t /= den;
         if (t > duration_values<common_type_t>::zero())
         {
-          Rep pt = t;
-          if ( (duration_values<Rep>::max)() < pt)
+          if ( (duration_values<Rep>::max)() < Rep(t))
           {
             // Conversion to Period overflowed
             err |= std::ios_base::failbit;
@@ -318,8 +317,7 @@ namespace boost
           }
         }
         // Success!  Store it.
-        r = Rep(t);
-        d = duration<Rep, Period> (r);
+        d = duration<Rep, Period> (Rep(t));
 
         return s;
       }

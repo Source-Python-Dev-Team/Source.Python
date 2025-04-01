@@ -1,8 +1,9 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2014, Oracle and/or its affiliates.
+// Copyright (c) 2014, 2019, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Licensed under the Boost Software License version 1.0.
 // http://www.boost.org/users/license.html
@@ -40,7 +41,7 @@ private:
     <
         typename RTreeRangeIterator,
         typename QueryRangeIterator,
-        typename Strategy,
+        typename Strategies,
         typename RTreeValueType,
         typename Distance
     >
@@ -48,12 +49,16 @@ private:
                              RTreeRangeIterator rtree_last,
                              QueryRangeIterator queries_first,
                              QueryRangeIterator queries_last,
-                             Strategy const& strategy,
+                             Strategies const& strategies,
                              RTreeValueType& rtree_min,
                              QueryRangeIterator& qit_min,
                              Distance& dist_min)
     {
-        typedef index::rtree<RTreeValueType, index::linear<8> > rtree_type;
+        typedef index::parameters
+            <
+                index::linear<8>, Strategies
+            > index_parameters_type;
+        typedef index::rtree<RTreeValueType, index_parameters_type> rtree_type;
 
         BOOST_GEOMETRY_ASSERT( rtree_first != rtree_last );
         BOOST_GEOMETRY_ASSERT( queries_first != queries_last );
@@ -62,7 +67,8 @@ private:
         dist_min = zero;
 
         // create -- packing algorithm
-        rtree_type rt(rtree_first, rtree_last);
+        rtree_type rt(rtree_first, rtree_last,
+                      index_parameters_type(index::linear<8>(), strategies));
 
         RTreeValueType t_v;
         bool first = true;
@@ -88,8 +94,8 @@ private:
                         <
                             QueryRangeIterator
                         >::value_type,
-                    Strategy
-                >::apply(t_v, *qit, strategy);
+                    Strategies
+                >::apply(t_v, *qit, strategies);
 
             if (first || dist < dist_min)
             {
@@ -144,7 +150,7 @@ public:
         apply(rtree_first, rtree_last, queries_first, queries_last,
               strategy, rtree_min, qit_min, dist_min);
 
-        return std::make_pair(rtree_min, qit_min);        
+        return std::make_pair(rtree_min, qit_min);
     }
 
 
@@ -171,14 +177,14 @@ public:
         typename strategy::distance::services::return_type
             <
                 Strategy,
-                typename point_type<rtree_value_type>::type,
-                typename point_type
+                point_type_t<rtree_value_type>,
+                point_type_t
                     <
                         typename std::iterator_traits
                             <
                                 QueryRangeIterator
                             >::value_type
-                    >::type
+                    >
             >::type dist_min;
 
         return apply(rtree_first, rtree_last, queries_first, queries_last,

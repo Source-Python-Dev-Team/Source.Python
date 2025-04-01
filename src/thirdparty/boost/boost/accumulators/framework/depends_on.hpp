@@ -266,9 +266,16 @@ namespace boost { namespace accumulators
 
         template<typename Sequence, typename Args>
         typename meta::make_acc_list<Sequence>::type
-        make_acc_list(Sequence const &seq, Args const &args)
+        make_acc_list(Sequence &seq, Args const &args)
         {
             return meta::make_acc_list<Sequence>::call(args, fusion::begin(seq), fusion::end(seq));
+        }
+
+        template<typename Sequence, typename Args>
+        typename meta::make_acc_list<Sequence>::type
+        make_acc_list(Sequence const &seq, Args const &args)
+        {
+            return meta::make_acc_list<Sequence const>::call(args, fusion::begin(seq), fusion::end(seq));
         }
 
         ///////////////////////////////////////////////////////////////////////////
@@ -312,6 +319,12 @@ namespace boost { namespace accumulators
             accumulator_wrapper(accumulator_wrapper const &that)
               : Accumulator(*static_cast<Accumulator const *>(&that))
             {
+            }
+
+            accumulator_wrapper& operator=(accumulator_wrapper const &that)
+            {
+                *static_cast<Accumulator *>(this) = *static_cast<Accumulator const *>(&that);
+                return *this;
             }
 
             template<typename Args>

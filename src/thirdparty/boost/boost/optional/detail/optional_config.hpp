@@ -1,5 +1,5 @@
 // Copyright (C) 2003, 2008 Fernando Luis Cacciola Carballal.
-// Copyright (C) 2015 Andrzej Krzemienski.
+// Copyright (C) 2015 - 2017 Andrzej Krzemienski.
 //
 // Use, modification, and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -14,9 +14,9 @@
 #define BOOST_OPTIONAL_DETAIL_OPTIONAL_CONFIG_AJK_28JAN2015_HPP
 
 #include <boost/config.hpp>
-#include <boost/detail/workaround.hpp>
+#include <boost/config/workaround.hpp>
 
-#if (defined BOOST_NO_CXX11_RVALUE_REFERENCES) || (defined BOOST_OPTIONAL_CONFIG_NO_RVALUE_REFERENCES)
+#if (defined BOOST_OPTIONAL_CONFIG_NO_RVALUE_REFERENCES)
 # define BOOST_OPTIONAL_DETAIL_NO_RVALUE_REFERENCES
 #endif
 
@@ -28,7 +28,7 @@
 # define BOOST_OPTIONAL_NO_INPLACE_FACTORY_SUPPORT
 #endif
 
-#if BOOST_WORKAROUND(__BORLANDC__, <= 0x551)
+#if BOOST_WORKAROUND(BOOST_BORLANDC, <= 0x551)
 // BCB (5.5.1) cannot parse the nested template struct in an inplace factory.
 # define BOOST_OPTIONAL_NO_INPLACE_FACTORY_SUPPORT
 #endif
@@ -44,18 +44,18 @@
 # define BOOST_OPTIONAL_WEAK_OVERLOAD_RESOLUTION
 #endif
 
-#if defined(__GNUC__) && !defined(__INTEL_COMPILER)
-// GCC since 3.3 has may_alias attribute that helps to alleviate optimizer issues with
-// regard to violation of the strict aliasing rules. The optional< T > storage type is marked
-// with this attribute in order to let the compiler know that it will alias objects of type T
-// and silence compilation warnings.
+#if !defined(BOOST_NO_MAY_ALIAS)
+// GCC since 3.3 and some other compilers have may_alias attribute that helps to alleviate
+// optimizer issues with regard to violation of the strict aliasing rules. The optional< T >
+// storage type is marked with this attribute in order to let the compiler know that it will
+// alias objects of type T and silence compilation warnings.
 # define BOOST_OPTIONAL_DETAIL_USE_ATTRIBUTE_MAY_ALIAS
 #endif
 
 #if (defined(_MSC_VER) && _MSC_VER <= 1800)
-// on MSCV 2013 and earlier an unwanted temporary is created when you assign from
+// on MSVC 2013 and earlier an unwanted temporary is created when you assign from
 // a const lvalue of integral type. Thus we bind not to the original address but
-// to a temporary. 
+// to a temporary.
 # define BOOST_OPTIONAL_CONFIG_NO_PROPER_ASSIGN_FROM_CONST_INT
 #endif
 
@@ -82,7 +82,7 @@
 
 #endif // defined(__GNUC__)
 
-#if (defined __GNUC__) && (!defined BOOST_NO_CXX11_RVALUE_REFERENCES)
+#if (defined __GNUC__)
 // On some initial rvalue reference implementations GCC does it in a strange way,
 // preferring perfect-forwarding constructor to implicit copy constructor.
 
@@ -112,5 +112,33 @@
 #elif defined BOOST_GCC_VERSION && BOOST_GCC_VERSION < 40800
 # define BOOST_OPTIONAL_DETAIL_NO_SFINAE_FRIENDLY_CONSTRUCTORS
 #endif
+
+
+// Detect support for defaulting move operations
+// (some older compilers implement rvalue references,
+// defaulted functions but move operations are not special members and cannot be defaulted)
+
+#ifdef BOOST_NO_CXX11_DEFAULTED_FUNCTIONS
+# define BOOST_OPTIONAL_DETAIL_NO_DEFAULTED_MOVE_FUNCTIONS
+#elif BOOST_WORKAROUND(BOOST_MSVC, < 1900)
+# define BOOST_OPTIONAL_DETAIL_NO_DEFAULTED_MOVE_FUNCTIONS
+#elif BOOST_WORKAROUND(BOOST_GCC_VERSION, < 40600)
+# define BOOST_OPTIONAL_DETAIL_NO_DEFAULTED_MOVE_FUNCTIONS
+#endif
+
+
+#ifdef BOOST_OPTIONAL_CONFIG_NO_DIRECT_STORAGE_SPEC
+# define BOOST_OPTIONAL_DETAIL_NO_DIRECT_STORAGE_SPEC
+#endif
+
+
+#ifdef BOOST_NO_CXX11_REF_QUALIFIERS
+# define BOOST_OPTIONAL_CONST_REF_QUAL const
+# define BOOST_OPTIONAL_REF_QUAL
+#else
+# define BOOST_OPTIONAL_CONST_REF_QUAL const&
+# define BOOST_OPTIONAL_REF_QUAL &
+#endif
+
 
 #endif // header guard

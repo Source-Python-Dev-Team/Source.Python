@@ -4,9 +4,8 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
-// This file was modified by Oracle on 2017.
-// Modifications copyright (c) 2017, Oracle and/or its affiliates.
-
+// This file was modified by Oracle on 2017-2020.
+// Modifications copyright (c) 2017-2020, Oracle and/or its affiliates.
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
@@ -19,10 +18,10 @@
 #ifndef BOOST_GEOMETRY_STRATEGIES_COVERED_BY_HPP
 #define BOOST_GEOMETRY_STRATEGIES_COVERED_BY_HPP
 
-#include <boost/mpl/assert.hpp>
 
 #include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/point_type.hpp>
+#include <boost/geometry/core/static_assert.hpp>
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
 #include <boost/geometry/core/tag_cast.hpp>
@@ -55,34 +54,32 @@ template
     typename GeometryContaining,
     typename TagContained = typename tag<GeometryContained>::type,
     typename TagContaining = typename tag<GeometryContaining>::type,
-    typename CastedTagContained = typename tag_cast
+    typename CastedTagContained = tag_cast_t
                                     <
-                                        typename tag<GeometryContained>::type,
+                                        tag_t<GeometryContained>,
                                         pointlike_tag, linear_tag, polygonal_tag, areal_tag
-                                    >::type,
-    typename CastedTagContaining = typename tag_cast
+                                    >,
+    typename CastedTagContaining = tag_cast_t
                                     <
-                                        typename tag<GeometryContaining>::type,
+                                        tag_t<GeometryContaining>,
                                         pointlike_tag, linear_tag, polygonal_tag, areal_tag
-                                    >::type,
-    typename CsTagContained = typename tag_cast
+                                    >,
+    typename CsTagContained = tag_cast_t
                                 <
-                                    typename cs_tag<typename point_type<GeometryContained>::type>::type,
+                                    cs_tag_t<point_type_t<GeometryContained>>,
                                     spherical_tag
-                                >::type,
-    typename CsTagContaining = typename tag_cast
+                                >,
+    typename CsTagContaining = tag_cast_t
                                 <
-                                    typename cs_tag<typename point_type<GeometryContaining>::type>::type,
+                                    cs_tag_t<point_type_t<GeometryContaining>>,
                                     spherical_tag
-                                >::type
+                                >
 >
 struct default_strategy
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THESE_TYPES
-            , (types<GeometryContained, GeometryContaining>)
-        );
+    BOOST_GEOMETRY_STATIC_ASSERT_FALSE(
+        "Not implemented for these types.",
+        GeometryContained, GeometryContaining);
 };
 
 

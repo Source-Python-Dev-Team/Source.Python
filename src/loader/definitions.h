@@ -29,7 +29,7 @@
 //---------------------------------------------------------------------------------
 // Definitions
 //---------------------------------------------------------------------------------
-#define PYLIB_NAME_WIN32	"Python3/plat-win/python36.dll"
+#define PYLIB_NAME_WIN32	"Python3/plat-win/python313.dll"
 #define PYLIB_NAME_LINUX	"Python3/plat-linux/libpython3.6m.so.1.0"
 
 #define CORE_NAME_WIN32		"bin/core.dll"

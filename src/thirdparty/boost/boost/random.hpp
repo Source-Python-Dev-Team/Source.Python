@@ -41,12 +41,14 @@
 #include <boost/random/linear_congruential.hpp>
 #include <boost/random/linear_feedback_shift.hpp>
 #include <boost/random/mersenne_twister.hpp>
+#include <boost/random/mixmax.hpp>
 #include <boost/random/ranlux.hpp>
 #include <boost/random/shuffle_order.hpp>
 #include <boost/random/shuffle_output.hpp>
 #include <boost/random/subtract_with_carry.hpp>
 #include <boost/random/taus88.hpp>
 #include <boost/random/xor_combine.hpp>
+#include <boost/random/splitmix64.hpp>
 
 // misc
 #include <boost/random/generate_canonical.hpp>

@@ -1,6 +1,6 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2016-2017 Oracle and/or its affiliates.
+// Copyright (c) 2016-2021 Oracle and/or its affiliates.
 // Contributed and/or modified by Vissarion Fisikopoulos, on behalf of Oracle
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
@@ -12,13 +12,14 @@
 #define BOOST_GEOMETRY_STRATEGIES_GEOGRAPHIC_AZIMUTH_HPP
 
 
-#include <boost/geometry/core/srs.hpp>
+#include <type_traits>
+
+#include <boost/geometry/srs/spheroid.hpp>
 
 #include <boost/geometry/strategies/azimuth.hpp>
 #include <boost/geometry/strategies/geographic/parameters.hpp>
 
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_void.hpp>
+#include <boost/geometry/util/select_most_precise.hpp>
 
 
 namespace boost { namespace geometry
@@ -35,7 +36,14 @@ template
 >
 class geographic
 {
-public :
+public:
+    template <typename T1, typename T2>
+    struct result_type
+        : geometry::select_most_precise
+              <
+                  T1, T2, CalculationType
+              >
+    {};
 
     typedef Spheroid model_type;
 
@@ -52,26 +60,71 @@ public :
         return m_spheroid;
     }
 
-    template <typename T>
-    inline void apply(T const& lon1_rad, T const& lat1_rad,
-                      T const& lon2_rad, T const& lat2_rad,
-                      T& a1, T& a2) const
+    template <typename T1, typename T2, typename Result>
+    inline void apply(T1 const& lon1_rad, T1 const& lat1_rad,
+                      T2 const& lon2_rad, T2 const& lat2_rad,
+                      Result& a1, Result& a2) const
     {
-        typedef typename boost::mpl::if_
-            <
-                boost::is_void<CalculationType>, T, CalculationType
-            >::type calc_t;            
+        compute<true, true>(lon1_rad, lat1_rad,
+                            lon2_rad, lat2_rad,
+                            a1, a2);
+    }
+    template <typename T1, typename T2, typename Result>
+    inline void apply(T1 const& lon1_rad, T1 const& lat1_rad,
+                      T2 const& lon2_rad, T2 const& lat2_rad,
+                      Result& a1) const
+    {
+        compute<true, false>(lon1_rad, lat1_rad,
+                             lon2_rad, lat2_rad,
+                             a1, a1);
+    }
+    template <typename T1, typename T2, typename Result>
+    inline void apply_reverse(T1 const& lon1_rad, T1 const& lat1_rad,
+                              T2 const& lon2_rad, T2 const& lat2_rad,
+                              Result& a2) const
+    {
+        compute<false, true>(lon1_rad, lat1_rad,
+                             lon2_rad, lat2_rad,
+                             a2, a2);
+    }
 
-        typedef typename FormulaPolicy::template inverse<calc_t, false, true, true, false, false> inverse_type;
+private :
+
+    template
+    <
+        bool EnableAzimuth,
+        bool EnableReverseAzimuth,
+        typename T1, typename T2, typename Result
+    >
+    inline void compute(T1 const& lon1_rad, T1 const& lat1_rad,
+                        T2 const& lon2_rad, T2 const& lat2_rad,
+                        Result& a1, Result& a2) const
+    {
+        typedef typename result_type<T1, T2>::type calc_t;
+
+        typedef typename FormulaPolicy::template inverse
+            <
+                calc_t,
+                false,
+                EnableAzimuth,
+                EnableReverseAzimuth,
+                false,
+                false
+            > inverse_type;
         typedef typename inverse_type::result_type inverse_result;
         inverse_result i_res = inverse_type::apply(calc_t(lon1_rad), calc_t(lat1_rad),
                                                    calc_t(lon2_rad), calc_t(lat2_rad),
                                                    m_spheroid);
-        a1 = i_res.azimuth;
-        a2 = i_res.reverse_azimuth;
+        if (EnableAzimuth)
+        {
+            a1 = i_res.azimuth;
+        }
+        if (EnableReverseAzimuth)
+        {
+            a2 = i_res.reverse_azimuth;
+        }
     }
 
-private :
     Spheroid m_spheroid;
 };
 
@@ -80,14 +133,13 @@ private :
 namespace services
 {
 
-template <typename CalculationType>
-struct default_strategy<geographic_tag, CalculationType>
+template <>
+struct default_strategy<geographic_tag>
 {
     typedef strategy::azimuth::geographic
         <
             strategy::andoyer,
-            srs::spheroid<double>,
-            CalculationType
+            srs::spheroid<double>
         > type;
 };
 

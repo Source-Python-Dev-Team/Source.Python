@@ -2,6 +2,12 @@
 
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 
+// This file was modified by Oracle on 2017-2023.
+// Modifications copyright (c) 2017-2023, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -13,6 +19,7 @@
 #include <cstddef>
 
 #include <boost/geometry/strategies/compare.hpp>
+#include <boost/geometry/strategies/spherical/compare.hpp>
 #include <boost/geometry/util/math.hpp>
 
 
@@ -20,171 +27,253 @@ namespace boost { namespace geometry
 {
 
 
-#ifndef DOXYGEN_NO_DETAIL
-namespace detail { namespace compare
-{
-
-
-template
-<
-    int Direction,
-    typename Point,
-    typename Strategy,
-    std::size_t Dimension,
-    std::size_t DimensionCount
->
-struct compare_loop
-{
-    typedef typename strategy::compare::detail::select_strategy
-        <
-            Strategy, Direction, Point, Dimension
-        >::type compare_type;
-
-    typedef typename geometry::coordinate_type<Point>::type coordinate_type;
-
-    static inline bool apply(Point const& left, Point const& right)
-    {
-        coordinate_type const& cleft = geometry::get<Dimension>(left);
-        coordinate_type const& cright = geometry::get<Dimension>(right);
-
-        if (geometry::math::equals(cleft, cright))
-        {
-            return compare_loop
-                <
-                    Direction, Point, Strategy,
-                    Dimension + 1, DimensionCount
-                >::apply(left, right);
-        }
-        else
-        {
-            compare_type compare;
-            return compare(cleft, cright);
-        }
-    }
-};
-
-template
-<
-    int Direction,
-    typename Point,
-    typename Strategy,
-    std::size_t DimensionCount
->
-struct compare_loop<Direction, Point, Strategy, DimensionCount, DimensionCount>
-{
-    static inline bool apply(Point const&, Point const&)
-    {
-        // On coming here, points are equal. Return true if
-        // direction = 0 (equal), false if -1/1 (greater/less)
-        return Direction == 0;
-    }
-};
-
-
-template <int Direction, typename Point, typename Strategy>
-struct compare_in_all_dimensions
-{
-    inline bool operator()(Point const& left, Point const& right) const
-    {
-        return detail::compare::compare_loop
-            <
-                Direction, Point, Strategy,
-                0, geometry::dimension<Point>::type::value
-            >::apply(left, right);
-    }
-};
-
-
-template <typename Point, typename Strategy, std::size_t Dimension>
-class compare_in_one_dimension
-{
-    Strategy compare;
-
-public :
-    inline bool operator()(Point const& left, Point const& right) const
-    {
-        typedef typename geometry::coordinate_type<Point>::type coordinate_type;
-
-        coordinate_type const& cleft = get<Dimension>(left);
-        coordinate_type const& cright = get<Dimension>(right);
-        return compare(cleft, cright);
-    }
-};
-
-}} // namespace detail::compare
-
-#endif
-
-#ifndef DOXYGEN_NO_DISPATCH
-namespace dispatch
-{
-
-template
-<
-    int Direction,
-    typename Point,
-    typename Strategy,
-    int Dimension
->
-struct compare_geometries
-    : detail::compare::compare_in_one_dimension
-        <
-            Point,
-            typename strategy::compare::detail::select_strategy
-                <
-                    Strategy, Direction, Point, Dimension
-                >::type,
-            Dimension
-        >
-{};
-
-
-// Specialization with -1: compare in all dimensions
-template <int Direction, typename Point, typename Strategy>
-struct compare_geometries<Direction, Point, Strategy, -1>
-    : detail::compare::compare_in_all_dimensions<Direction, Point, Strategy>
-{};
-
-
-
-} // namespace dispatch
-#endif // DOXYGEN_NO_DISPATCH
-
-
 /*!
 \brief Less functor, to sort points in ascending order.
 \ingroup compare
 \details This functor compares points and orders them on x,
     then on y, then on z coordinate.
-\tparam Geometry the geometry
+\tparam Point the geometry
 \tparam Dimension the dimension to sort on, defaults to -1,
     indicating ALL dimensions. That's to say, first on x,
     on equal x-es then on y, etc.
     If a dimension is specified, only that dimension is considered
-\tparam Strategy underlying coordinate comparing functor,
-    defaults to the default comparison strategies
-    related to the point coordinate system. If specified, the specified
-    strategy is used. This can e.g. be std::less<double>.
 */
+
 template
 <
-    typename Point,
+    typename Point = void,
     int Dimension = -1,
-    typename Strategy = strategy::compare::default_strategy
+    typename StrategyOrTag = void
+>
+struct less_exact
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    inline bool operator()(Point const& left, Point const& right) const
+    {
+        return StrategyOrTag::template compare_type
+            <
+                strategy::compare::less,
+                strategy::compare::equals_exact
+            >::apply(left, right);
+    }
+};
+
+template
+<
+    typename Point = void,
+    int Dimension = -1,
+    typename StrategyOrTag = void
 >
 struct less
-    : dispatch::compare_geometries
-        <
-            1, // indicates ascending
-            Point,
-            Strategy,
-            Dimension
-        >
 {
-    typedef Point first_argument_type;
-    typedef Point second_argument_type;
-    typedef bool result_type;
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    inline bool operator()(Point const& left, Point const& right) const
+    {
+        return StrategyOrTag::template compare_type
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon
+            >::apply(left, right);
+    }
 };
+
+
+template <typename Point, int Dimension>
+struct less<Point, Dimension, void>
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    inline bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension, typename Strategy>
+struct less<void, Dimension, Strategy>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    inline bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        return Strategy::template compare_type
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon
+            >::apply(left, right);
+    }
+};
+
+// for backward compatibility
+
+template <typename Point, int Dimension>
+struct less<Point, Dimension, boost::geometry::cartesian_tag>
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    inline bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension,
+                boost::geometry::cartesian_tag, boost::geometry::cartesian_tag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <typename Point, int Dimension>
+struct less<Point, Dimension, boost::geometry::spherical_tag>
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    inline bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension,
+                boost::geometry::spherical_tag, boost::geometry::spherical_tag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <typename Point, int Dimension>
+struct less<Point, Dimension, boost::geometry::geographic_tag>
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    inline bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension,
+                boost::geometry::geographic_tag, boost::geometry::geographic_tag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension>
+struct less<void, Dimension, boost::geometry::cartesian_tag>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    inline bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension,
+                boost::geometry::cartesian_tag, boost::geometry::cartesian_tag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension>
+struct less<void, Dimension, boost::geometry::spherical_tag>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    inline bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension,
+                boost::geometry::spherical_tag, boost::geometry::spherical_tag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension>
+struct less<void, Dimension, boost::geometry::geographic_tag>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    inline bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension,
+                boost::geometry::geographic_tag, boost::geometry::geographic_tag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+
+template <int Dimension>
+struct less<void, Dimension, void>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    inline bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::less,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+
 
 
 /*!
@@ -195,19 +284,92 @@ struct less
 */
 template
 <
-    typename Point,
+    typename Point = void,
     int Dimension = -1,
-    typename Strategy = strategy::compare::default_strategy
+    typename CSTag = void
 >
 struct greater
-    : dispatch::compare_geometries
-        <
-            -1,  // indicates descending
-            Point,
-            Strategy,
-            Dimension
-        >
-{};
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::greater,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension,
+                CSTag, CSTag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension, typename CSTag>
+struct greater<void, Dimension, CSTag>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::greater,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension,
+                CSTag, CSTag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <typename Point, int Dimension>
+struct greater<Point, Dimension, void>
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::greater,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension>
+struct greater<void, Dimension, void>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::greater,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
 
 
 /*!
@@ -217,23 +379,95 @@ struct greater
 \tparam Dimension the dimension to compare on, defaults to -1,
     indicating ALL dimensions.
     If a dimension is specified, only that dimension is considered
-\tparam Strategy underlying coordinate comparing functor
 */
 template
 <
     typename Point,
     int Dimension = -1,
-    typename Strategy = strategy::compare::default_strategy
+    typename CSTag = void
 >
 struct equal_to
-    : dispatch::compare_geometries
-        <
-            0,
-            Point,
-            Strategy,
-            Dimension
-        >
-{};
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::equal_to,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension,
+                CSTag, CSTag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension, typename CSTag>
+struct equal_to<void, Dimension, CSTag>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::equal_to,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension,
+                CSTag, CSTag
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <typename Point, int Dimension>
+struct equal_to<Point, Dimension, void>
+{
+    using first_argument_type = Point;
+    using second_argument_type = Point;
+    using result_type = bool;
+
+    bool operator()(Point const& left, Point const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::equal_to,
+                strategy::compare::equals_epsilon,
+                Point, Point,
+                Dimension
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
+
+template <int Dimension>
+struct equal_to<void, Dimension, void>
+{
+    using result_type = bool;
+
+    template <typename Point1, typename Point2>
+    bool operator()(Point1 const& left, Point2 const& right) const
+    {
+        using strategy_type = typename strategy::compare::services::default_strategy
+            <
+                strategy::compare::equal_to,
+                strategy::compare::equals_epsilon,
+                Point1, Point2,
+                Dimension
+            >::type;
+
+        return strategy_type::apply(left, right);
+    }
+};
 
 
 }} // namespace boost::geometry

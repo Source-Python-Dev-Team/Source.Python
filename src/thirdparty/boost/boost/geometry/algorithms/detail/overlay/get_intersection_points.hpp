@@ -2,9 +2,9 @@
 
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 
-// This file was modified by Oracle on 2017.
-// Modifications copyright (c) 2017 Oracle and/or its affiliates.
-
+// This file was modified by Oracle on 2017-2024.
+// Modifications copyright (c) 2017-2024 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
@@ -16,16 +16,14 @@
 
 
 #include <cstddef>
+#include <type_traits>
 
-#include <boost/mpl/if.hpp>
-#include <boost/range.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/algorithms/convert.hpp>
 #include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
 
 #include <boost/geometry/geometries/segment.hpp>
-
-#include <boost/geometry/policies/robustness/robust_point_type.hpp>
 
 namespace boost { namespace geometry
 {
@@ -44,49 +42,28 @@ template
 >
 struct get_turn_without_info
 {
-    template <typename Strategy, typename RobustPolicy, typename OutputIterator>
-    static inline OutputIterator apply(
-                Point1 const& pi, Point1 const& pj, Point1 const& /*pk*/,
-                Point2 const& qi, Point2 const& qj, Point2 const& /*qk*/,
-                bool /*is_p_first*/, bool /*is_p_last*/,
-                bool /*is_q_first*/, bool /*is_q_last*/,
+    template
+    <
+        typename UniqueSubRange1,
+        typename UniqueSubRange2,
+        typename Strategy,
+        typename OutputIterator
+    >
+    static inline OutputIterator apply(UniqueSubRange1 const& range_p,
+                UniqueSubRange2 const& range_q,
                 TurnInfo const& ,
                 Strategy const& strategy,
-                RobustPolicy const& robust_policy,
                 OutputIterator out)
     {
         typedef typename TurnInfo::point_type turn_point_type;
 
         typedef policies::relate::segments_intersection_points
             <
-                segment_intersection_points
-                    <
-                        turn_point_type,
-                        typename geometry::segment_ratio_type
-                            <
-                                turn_point_type, RobustPolicy
-                            >::type
-                    >
+                segment_intersection_points<turn_point_type>
             > policy_type;
 
-        typedef model::referring_segment<Point1 const> segment_type1;
-        typedef model::referring_segment<Point2 const> segment_type2;
-        segment_type1 p1(pi, pj);
-        segment_type2 q1(qi, qj);
-
-        typedef typename geometry::robust_point_type
-            <
-                Point1, RobustPolicy
-            >::type robust_point_type;
-
-        robust_point_type pi_rob, pj_rob, qi_rob, qj_rob;
-        geometry::recalculate(pi_rob, pi, robust_policy);
-        geometry::recalculate(pj_rob, pj, robust_policy);
-        geometry::recalculate(qi_rob, qi, robust_policy);
-        geometry::recalculate(qj_rob, qj, robust_policy);
-        typename policy_type::return_type result
-            = strategy.apply(p1, q1, policy_type(), robust_policy,
-                             pi_rob, pj_rob, qi_rob, qj_rob);
+        typename policy_type::return_type const result
+            = strategy.relate().apply(range_p, range_q, policy_type());
 
         for (std::size_t i = 0; i < result.count; i++)
         {
@@ -109,13 +86,11 @@ template
 <
     typename Geometry1,
     typename Geometry2,
-    typename RobustPolicy,
     typename Turns,
     typename Strategy
 >
 inline void get_intersection_points(Geometry1 const& geometry1,
             Geometry2 const& geometry2,
-            RobustPolicy const& robust_policy,
             Turns& turns,
             Strategy const& strategy)
 {
@@ -123,14 +98,14 @@ inline void get_intersection_points(Geometry1 const& geometry1,
 
     typedef detail::get_intersection_points::get_turn_without_info
                         <
-                            typename point_type<Geometry1>::type,
-                            typename point_type<Geometry2>::type,
+                            point_type_t<Geometry1>,
+                            point_type_t<Geometry2>,
                             typename boost::range_value<Turns>::type
                         > TurnPolicy;
 
     detail::get_turns::no_interrupt_policy interrupt_policy;
 
-    boost::mpl::if_c
+    std::conditional_t
         <
             reverse_dispatch<Geometry1, Geometry2>::type::value,
             dispatch::get_turns_reversed
@@ -149,12 +124,10 @@ inline void get_intersection_points(Geometry1 const& geometry1,
                 false, false,
                 TurnPolicy
             >
-        >::type::apply(
-            0, geometry1,
-            1, geometry2,
-            strategy,
-            robust_policy,
-            turns, interrupt_policy);
+        >::apply(0, geometry1,
+                 1, geometry2,
+                 strategy,
+                 turns, interrupt_policy);
 }
 
 

@@ -22,6 +22,20 @@
 #  pragma once
 #endif
 
+
+//GCC reports uninitialized values when an uninitialized pointer plus bits type
+//is asigned some bits or some pointer value, but that's ok, because we don't want
+//to default initialize parts that are not being updated.
+#if defined(BOOST_GCC)
+#  if (BOOST_GCC >= 40600)
+#     pragma GCC diagnostic push
+#     pragma GCC diagnostic ignored "-Wuninitialized"
+#     if (BOOST_GCC >= 40700)
+#        pragma GCC diagnostic ignored "-Wmaybe-uninitialized"
+#     endif
+#  endif
+#endif
+
 namespace boost {
 namespace intrusive {
 
@@ -67,19 +81,19 @@ struct pointer_plus_bits<T*, NumBits>
    static const uintptr_t Mask = uintptr_t((uintptr_t(1u) << NumBits) - 1);
    typedef T*        pointer;
 
-   BOOST_INTRUSIVE_FORCEINLINE static pointer get_pointer(pointer n)
+   BOOST_INTRUSIVE_FORCEINLINE static pointer get_pointer(pointer n) BOOST_NOEXCEPT
    {  return pointer(uintptr_t(n) & uintptr_t(~Mask));  }
 
-   BOOST_INTRUSIVE_FORCEINLINE static void set_pointer(pointer &n, pointer p)
+   BOOST_INTRUSIVE_FORCEINLINE static void set_pointer(pointer &n, pointer p) BOOST_NOEXCEPT
    {
       BOOST_INTRUSIVE_INVARIANT_ASSERT(0 == (uintptr_t(p) & Mask));
       n = pointer(uintptr_t(p) | (uintptr_t(n) & Mask));
    }
 
-   BOOST_INTRUSIVE_FORCEINLINE static std::size_t get_bits(pointer n)
+   BOOST_INTRUSIVE_FORCEINLINE static std::size_t get_bits(pointer n) BOOST_NOEXCEPT
    {  return std::size_t(uintptr_t(n) & Mask);  }
 
-   BOOST_INTRUSIVE_FORCEINLINE static void set_bits(pointer &n, std::size_t c)
+   BOOST_INTRUSIVE_FORCEINLINE static void set_bits(pointer &n, std::size_t c) BOOST_NOEXCEPT
    {
       BOOST_INTRUSIVE_INVARIANT_ASSERT(uintptr_t(c) <= Mask);
       n = pointer(uintptr_t((get_pointer)(n)) | uintptr_t(c));
@@ -88,6 +102,10 @@ struct pointer_plus_bits<T*, NumBits>
 
 } //namespace intrusive
 } //namespace boost
+
+#if defined(BOOST_GCC) && (BOOST_GCC >= 40600)
+#  pragma GCC diagnostic pop
+#endif
 
 #include <boost/intrusive/detail/config_end.hpp>
 

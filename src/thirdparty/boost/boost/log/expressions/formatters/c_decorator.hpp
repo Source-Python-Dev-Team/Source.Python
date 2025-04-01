@@ -16,9 +16,9 @@
 #define BOOST_LOG_EXPRESSIONS_FORMATTERS_C_DECORATOR_HPP_INCLUDED_
 
 #include <limits>
+#include <boost/core/snprintf.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <boost/log/detail/config.hpp>
-#include <boost/log/detail/snprintf.hpp>
 #include <boost/log/expressions/formatters/char_decorator.hpp>
 #include <boost/log/detail/header.hpp>
 
@@ -60,8 +60,8 @@ struct c_decorator_traits< char >
     template< unsigned int N >
     static std::size_t print_escaped(char (&buf)[N], char c)
     {
-        int n = boost::log::aux::snprintf(buf, N, "\\x%.2X", static_cast< unsigned int >(static_cast< uint8_t >(c)));
-        if (n < 0)
+        int n = boost::core::snprintf(buf, N, "\\x%.2X", static_cast< unsigned int >(static_cast< uint8_t >(c)));
+        if (BOOST_UNLIKELY(n < 0))
         {
             n = 0;
             buf[0] = '\0';
@@ -112,8 +112,8 @@ struct c_decorator_traits< wchar_t >
             val = static_cast< uint32_t >(c);
         }
 
-        int n = boost::log::aux::swprintf(buf, N, format, val);
-        if (n < 0)
+        int n = boost::core::swprintf(buf, N, format, val);
+        if (BOOST_UNLIKELY(n < 0))
         {
             n = 0;
             buf[0] = L'\0';
@@ -154,10 +154,10 @@ struct c_decorator_gen
  * For wide-character formatting there is the similar \c wc_decor decorator generator object.
  */
 #ifdef BOOST_LOG_USE_CHAR
-const aux::c_decorator_gen< char > c_decor = {};
+BOOST_INLINE_VARIABLE const aux::c_decorator_gen< char > c_decor = {};
 #endif
 #ifdef BOOST_LOG_USE_WCHAR_T
-const aux::c_decorator_gen< wchar_t > wc_decor = {};
+BOOST_INLINE_VARIABLE const aux::c_decorator_gen< wchar_t > wc_decor = {};
 #endif
 
 /*!
@@ -254,10 +254,10 @@ struct c_ascii_decorator_gen
  * For wide-character formatting there is the similar \c wc_ascii_decor decorator generator object.
  */
 #ifdef BOOST_LOG_USE_CHAR
-const aux::c_ascii_decorator_gen< char > c_ascii_decor = {};
+BOOST_INLINE_VARIABLE const aux::c_ascii_decorator_gen< char > c_ascii_decor = {};
 #endif
 #ifdef BOOST_LOG_USE_WCHAR_T
-const aux::c_ascii_decorator_gen< wchar_t > wc_ascii_decor = {};
+BOOST_INLINE_VARIABLE const aux::c_ascii_decorator_gen< wchar_t > wc_ascii_decor = {};
 #endif
 
 /*!

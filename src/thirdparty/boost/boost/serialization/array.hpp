@@ -8,7 +8,7 @@
 
 // for serialization of <array>. If <array> not supported by the standard
 // library - this file becomes empty.  This is to avoid breaking backward
-// compatibiliy for applications which used this header to support
+// compatibility for applications which used this header to support
 // serialization of native arrays.  Code to serialize native arrays is
 // now always include by default.  RR
 
@@ -18,10 +18,12 @@
 
 #include <iostream>
 #include <cstddef> // std::size_t
-namespace std{ 
-    using ::size_t; 
+namespace std{
+    using ::size_t;
 } // namespace std
 #endif
+
+#include <boost/serialization/array_wrapper.hpp>
 
 #ifndef BOOST_NO_CXX11_HDR_ARRAY
 
@@ -37,7 +39,7 @@ void serialize(Archive& ar, std::array<T,N>& a, const unsigned int /* version */
         "elems",
         *static_cast<T (*)[N]>(static_cast<void *>(a.data()))
     );
-    
+
 }
 } } // end namespace boost::serialization
 

@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::drop_front`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -20,7 +20,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/integral_constant.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Xs, typename N>
     constexpr auto drop_front_t::operator()(Xs&& xs, N const& n) const {
@@ -52,6 +52,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         template <typename Xs, typename N>
         static constexpr auto apply(Xs&&, N const&) = delete;
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DROP_FRONT_HPP

@@ -3,12 +3,13 @@
 // Copyright (c) 2007-2015 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2015 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2015 Mateusz Loskot, London, UK.
-// Copyright (c) 2013-2015 Adam Wulkiewicz, Lodz, Poland.
+// Copyright (c) 2013-2023 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2015.
-// Modifications copyright (c) 2015 Oracle and/or its affiliates.
-
+// This file was modified by Oracle on 2015-2024.
+// Modifications copyright (c) 2015-2024 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -18,11 +19,11 @@
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_POINT_IS_EQUAL_OR_SPIKE_HPP
 
 #include <boost/geometry/algorithms/detail/direction_code.hpp>
-#include <boost/geometry/algorithms/detail/recalculate.hpp>
-#include <boost/geometry/policies/robustness/robust_point_type.hpp>
+#include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/strategies/side.hpp>
-#include <boost/geometry/util/condition.hpp>
+#include <boost/geometry/util/constexpr.hpp>
 #include <boost/geometry/util/math.hpp>
+
 
 namespace boost { namespace geometry
 {
@@ -42,33 +43,23 @@ namespace detail
 // So specify last point first, then (a,b)
 // The segment's orientation does matter: if lp is to the right of b
 // no spike is reported
-template <typename Point1, typename Point2, typename Point3>
-static inline bool point_is_spike_or_equal(Point1 const& last_point,
-            Point2 const& segment_a,
-            Point3 const& segment_b)
+template
+<
+    typename Point1, typename Point2, typename Point3,
+    typename SideStrategy
+>
+inline bool point_is_spike_or_equal(Point1 const& last_point, // prev | back
+                                    Point2 const& segment_a,  // next | back - 2
+                                    Point3 const& segment_b,  // curr | back - 1 | spike's vertex
+                                    SideStrategy const& strategy)
 {
-    typedef typename strategy::side::services::default_strategy
-    <
-        typename cs_tag<Point1>::type
-    >::type side_strategy;
+    typedef typename SideStrategy::cs_tag cs_tag;
 
-    int const side = side_strategy::apply(last_point, segment_a, segment_b);
+    int const side = strategy.apply(segment_a, segment_b, last_point);
     if (side == 0)
     {
         // Last point is collinear w.r.t previous segment.
-        // Check if it is equal
-        int const sgn_x1 = sign_of_difference<0>(last_point, segment_b);
-        int const sgn_y1 = sign_of_difference<1>(last_point, segment_b);
-        if (sgn_x1 == 0 && sgn_y1 == 0)
-        {
-            return true;
-        }
-
-        // Check if it moves forward
-        int const sgn_x2 = sign_of_difference<0>(segment_b, segment_a);
-        int const sgn_y2 = sign_of_difference<1>(segment_b, segment_a);
-
-        return sgn_x1 != sgn_x2 || sgn_y1 != sgn_y2;
+        return direction_code<cs_tag>(segment_a, segment_b, last_point) < 1;
     }
     return false;
 }
@@ -78,41 +69,38 @@ template
     typename Point1,
     typename Point2,
     typename Point3,
-    typename RobustPolicy
+    typename SideStrategy
 >
-static inline bool point_is_spike_or_equal(Point1 const& last_point,
+inline bool point_is_collinear(Point1 const& last_point,
             Point2 const& segment_a,
             Point3 const& segment_b,
-            RobustPolicy const& robust_policy)
+            SideStrategy const& strategy)
 {
-    if (point_is_spike_or_equal(last_point, segment_a, segment_b))
+    int const side = strategy.apply(segment_a, segment_b, last_point);
+    if (side == 0)
     {
         return true;
     }
+    return false;
+}
 
-    if (BOOST_GEOMETRY_CONDITION(! RobustPolicy::enabled))
-    {
-        return false;
-    }
 
-    // Try using specified robust policy
-    typedef typename geometry::robust_point_type
-    <
-        Point1,
-        RobustPolicy
-    >::type robust_point_type;
-
-    robust_point_type last_point_rob, segment_a_rob, segment_b_rob;
-    geometry::recalculate(last_point_rob, last_point, robust_policy);
-    geometry::recalculate(segment_a_rob, segment_a, robust_policy);
-    geometry::recalculate(segment_b_rob, segment_b, robust_policy);
-
-    return point_is_spike_or_equal
-        (
-            last_point_rob,
-            segment_a_rob,
-            segment_b_rob
-        );
+//! Version with intuitive order (A, B, C). The original order was
+//! unclear (C, A, B). It was used in a different way in has_spikes.
+//! On longer term the C,A,B version can be deprecated
+template
+<
+    typename Point1,
+    typename Point2,
+    typename Point3,
+    typename SideStrategy
+>
+inline bool is_spike_or_equal(Point1 const& a,
+            Point2 const& b,
+            Point3 const& c,
+            SideStrategy const& strategy)
+{
+    return point_is_spike_or_equal(c, a, b, strategy);
 }
 
 

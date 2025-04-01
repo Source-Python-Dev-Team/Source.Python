@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::one`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -22,22 +22,22 @@ Distributed under the Boost Software License, Version 1.0.
 #include <type_traits>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
+    //! @cond
     template <typename R>
-    struct one_t {
+    constexpr decltype(auto) one_t<R>::operator()() const {
     #ifndef BOOST_HANA_CONFIG_DISABLE_CONCEPT_CHECKS
         static_assert(hana::Ring<R>::value,
         "hana::one<R>() requires 'R' to be a Ring");
     #endif
 
-        constexpr decltype(auto) operator()() const {
-            using One = BOOST_HANA_DISPATCH_IF(one_impl<R>,
-                hana::Ring<R>::value
-            );
+        using One = BOOST_HANA_DISPATCH_IF(one_impl<R>,
+            hana::Ring<R>::value
+        );
 
-            return One::apply();
-        }
-    };
+        return One::apply();
+    }
+    //! @endcond
 
     template <typename R, bool condition>
     struct one_impl<R, when<condition>> : default_ {
@@ -74,6 +74,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         static constexpr decltype(auto) apply()
         { return hana::to<C>(detail::constant_from_one<C>{}); }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_ONE_HPP

@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::type` and related utilities.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/fwd/core/make.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Base class of `hana::type`; used for pattern-matching.
     //! @relates hana::type
     //!
@@ -125,7 +125,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! Creates an object representing the C++ type `T`.
     //! @relates hana::type
     template <typename T>
-    constexpr type<T> type_c{};
+    BOOST_HANA_INLINE_VARIABLE constexpr type<T> type_c{};
 
     //! `decltype` keyword, lifted to Hana.
     //! @relates hana::type
@@ -194,7 +194,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(T&&) const;
     };
 
-    constexpr decltype_t decltype_{};
+    BOOST_HANA_INLINE_VARIABLE constexpr decltype_t decltype_{};
 #endif
 
     //! Returns a `hana::type` representing the type of a given object.
@@ -237,7 +237,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(T&&) const;
     };
 
-    constexpr typeid_t typeid_{};
+    BOOST_HANA_INLINE_VARIABLE constexpr typeid_t typeid_{};
 #endif
 
 #ifdef BOOST_HANA_DOXYGEN_INVOKED
@@ -259,7 +259,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! Example
     //! -------
     //! @include example/type/make.cpp
-    constexpr auto make_type = hana::make<type_tag>;
+    BOOST_HANA_INLINE_VARIABLE constexpr auto make_type = hana::make<type_tag>;
 
     //! `sizeof` keyword, lifted to Hana.
     //! @relates hana::type
@@ -297,7 +297,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(T&&) const;
     };
 
-    constexpr sizeof_t sizeof_{};
+    BOOST_HANA_INLINE_VARIABLE constexpr sizeof_t sizeof_{};
 #endif
 
     //! `alignof` keyword, lifted to Hana.
@@ -333,7 +333,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(T&&) const;
     };
 
-    constexpr alignof_t alignof_{};
+    BOOST_HANA_INLINE_VARIABLE constexpr alignof_t alignof_{};
 #endif
 
     //! Checks whether a SFINAE-friendly expression is valid.
@@ -380,7 +380,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(F&&, Args&&...) const;
     };
 
-    constexpr is_valid_t is_valid{};
+    BOOST_HANA_INLINE_VARIABLE constexpr is_valid_t is_valid{};
 #endif
 
     //! Lift a template to a Metafunction.
@@ -394,15 +394,13 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! @endcode
     //!
     //! @note
-    //! `template_` can't be SFINAE-friendly right now because of
-    //! [Core issue 1430][1].
+    //! In a SFINAE context, the expression `template_<f>(type_c<x>...)` is
+    //! valid whenever the expression `f<x...>` is valid.
     //!
     //!
     //! Example
     //! -------
     //! @include example/type/template.cpp
-    //!
-    //! [1]: http://www.open-std.org/jtc1/sc22/wg21/docs/cwg_active.html#1430
 #ifdef BOOST_HANA_DOXYGEN_INVOKED
     template <template <typename ...> class F>
     constexpr auto template_ = [](basic_type<T>...) {
@@ -413,7 +411,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     struct template_t;
 
     template <template <typename ...> class F>
-    constexpr template_t<F> template_{};
+    BOOST_HANA_INLINE_VARIABLE constexpr template_t<F> template_{};
 #endif
 
     //! Lift a MPL-style metafunction to a Metafunction.
@@ -425,6 +423,10 @@ BOOST_HANA_NAMESPACE_BEGIN
     //!     metafunction<f>(type_c<x>...) == type_c<f<x...>::type>
     //!     decltype(metafunction<f>)::apply<x...>::type == f<x...>::type
     //! @endcode
+    //!
+    //! @note
+    //! In a SFINAE context, the expression `metafunction<f>(type_c<x>...)` is
+    //! valid whenever the expression `f<x...>::%type` is valid.
     //!
     //!
     //! Example
@@ -440,7 +442,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     struct metafunction_t;
 
     template <template <typename ...> class f>
-    constexpr metafunction_t<f> metafunction{};
+    BOOST_HANA_INLINE_VARIABLE constexpr metafunction_t<f> metafunction{};
 #endif
 
     //! Lift a MPL-style metafunction class to a Metafunction.
@@ -453,6 +455,10 @@ BOOST_HANA_NAMESPACE_BEGIN
     //!     decltype(metafunction_class<f>)::apply<x...>::type == f::apply<x...>::type
     //! @endcode
     //!
+    //! @note
+    //! In a SFINAE context, the expression `metafunction_class<f>(type_c<x>...)`
+    //! is valid whenever the expression `f::apply<x...>::%type` is valid.
+    //!
     //!
     //! Example
     //! -------
@@ -464,12 +470,10 @@ BOOST_HANA_NAMESPACE_BEGIN
     };
 #else
     template <typename F>
-    struct metafunction_class_t
-        : metafunction_t<F::template apply>
-    { };
+    struct metafunction_class_t;
 
     template <typename F>
-    constexpr metafunction_class_t<F> metafunction_class{};
+    BOOST_HANA_INLINE_VARIABLE constexpr metafunction_class_t<F> metafunction_class{};
 #endif
 
     //! Turn a `Metafunction` into a function taking `type`s and returning a
@@ -498,6 +502,9 @@ BOOST_HANA_NAMESPACE_BEGIN
     //!   boost/hana/ext/std/integral_constant.hpp header to ensure
     //!   Hana can interoperate with the result.
     //!
+    //! - In a SFINAE context, the expression `integral(f)(t...)` is valid
+    //!   whenever the expression `decltype(f(t...))::%type` is valid.
+    //!
     //!
     //! Example
     //! -------
@@ -518,7 +525,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         { return {}; }
     };
 
-    constexpr make_integral_t integral{};
+    BOOST_HANA_INLINE_VARIABLE constexpr make_integral_t integral{};
 #endif
 
     //! Alias to `integral(metafunction<F>)`, provided for convenience.
@@ -529,7 +536,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! -------
     //! @include example/type/trait.cpp
     template <template <typename ...> class F>
-    constexpr auto trait = hana::integral(hana::metafunction<F>);
-BOOST_HANA_NAMESPACE_END
+    BOOST_HANA_INLINE_VARIABLE constexpr auto trait = hana::integral(hana::metafunction<F>);
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_TYPE_HPP

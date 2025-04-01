@@ -11,7 +11,7 @@
 #define BOOST_GEOMETRY_STRATEGIES_GEOGRAPHIC_INTERSECTION_ELLIPTIC_HPP
 
 
-#include <boost/geometry/core/srs.hpp>
+#include <boost/geometry/srs/spheroid.hpp>
 
 #include <boost/geometry/formulas/geographic.hpp>
 
@@ -167,7 +167,7 @@ struct experimental_elliptic_segments_calc_policy
 
             Point3d const v1 = normalized_vec(p1);
             Point3d const v2 = normalized_vec(p2);
-            
+
             is_forward = dot_product(normal, cross_product(v1, v2)) >= c0;
             return dot_product(v1, v2);
         }

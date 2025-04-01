@@ -1,4 +1,5 @@
 //  Copyright (c) 2015 John Maddock
+//  Copyright (c) 2024 Matt Borland
 //  Use, modification and distribution are subject to the
 //  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -10,8 +11,10 @@
 #pragma once
 #endif
 
+#include <boost/math/tools/config.hpp>
+#include <boost/math/tools/numeric_limits.hpp>
+#include <boost/math/tools/type_traits.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
-#include <boost/math/special_functions/ellint_rj.hpp>
 #include <boost/math/special_functions/ellint_rj.hpp>
 #include <boost/math/special_functions/ellint_1.hpp>
 #include <boost/math/special_functions/jacobi_zeta.hpp>
@@ -27,13 +30,13 @@ namespace detail{
 
 // Elliptic integral - Jacobi Zeta
 template <typename T, typename Policy>
-T heuman_lambda_imp(T phi, T k, const Policy& pol)
+BOOST_MATH_GPU_ENABLED T heuman_lambda_imp(T phi, T k, const Policy& pol)
 {
     BOOST_MATH_STD_USING
     using namespace boost::math::tools;
     using namespace boost::math::constants;
 
-    const char* function = "boost::math::heuman_lambda<%1%>(%1%, %1%)";
+    constexpr auto function = "boost::math::heuman_lambda<%1%>(%1%, %1%)";
 
     if(fabs(k) > 1)
        return policies::raise_domain_error<T>(function, "We require |k| <= 1 but got k = %1%", k, pol);
@@ -52,6 +55,11 @@ T heuman_lambda_imp(T phi, T k, const Policy& pol)
     }
     else
     {
+       typedef boost::math::integral_constant<int,
+          boost::math::is_floating_point<T>::value && boost::math::numeric_limits<T>::digits && (boost::math::numeric_limits<T>::digits <= 54) ? 0 :
+          boost::math::is_floating_point<T>::value && boost::math::numeric_limits<T>::digits && (boost::math::numeric_limits<T>::digits <= 64) ? 1 : 2
+       > precision_tag_type;
+
        T rkp = sqrt(kp);
        T ratio;
        if(rkp == 1)
@@ -59,8 +67,10 @@ T heuman_lambda_imp(T phi, T k, const Policy& pol)
           return policies::raise_domain_error<T>(function, "When 1-k^2 == 1 then phi must be < Pi/2, but got phi = %1%", phi, pol);
        }
        else
-          ratio = ellint_f_imp(phi, rkp, pol) / ellint_k_imp(rkp, pol);
-       result = ratio + ellint_k_imp(k, pol) * jacobi_zeta_imp(phi, rkp, pol) / constants::half_pi<T>();
+       {
+          ratio = ellint_f_imp(phi, rkp, pol, k2) / ellint_k_imp(rkp, pol, k2);
+       }
+       result = ratio + ellint_k_imp(k, pol, precision_tag_type()) * jacobi_zeta_imp(phi, rkp, pol, k2) / constants::half_pi<T>();
     }
     return result;
 }
@@ -68,7 +78,7 @@ T heuman_lambda_imp(T phi, T k, const Policy& pol)
 } // detail
 
 template <class T1, class T2, class Policy>
-inline typename tools::promote_args<T1, T2>::type heuman_lambda(T1 k, T2 phi, const Policy& pol)
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T1, T2>::type heuman_lambda(T1 k, T2 phi, const Policy& pol)
 {
    typedef typename tools::promote_args<T1, T2>::type result_type;
    typedef typename policies::evaluation<result_type, Policy>::type value_type;
@@ -76,7 +86,7 @@ inline typename tools::promote_args<T1, T2>::type heuman_lambda(T1 k, T2 phi, co
 }
 
 template <class T1, class T2>
-inline typename tools::promote_args<T1, T2>::type heuman_lambda(T1 k, T2 phi)
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T1, T2>::type heuman_lambda(T1 k, T2 phi)
 {
    return boost::math::heuman_lambda(k, phi, policies::policy<>());
 }

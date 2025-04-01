@@ -47,6 +47,13 @@ class side_straight
 {
 public :
 #ifndef DOXYGEN_SHOULD_SKIP_THIS
+
+    // Returns true if the buffer distance is always the same
+    static inline bool equidistant()
+    {
+        return true;
+    }
+
     template
     <
         typename Point,
@@ -69,8 +76,8 @@ public :
         // Generate a block along (left or right of) the segment
 
         // Simulate a vector d (dx,dy)
-        coordinate_type const dx = get<0>(input_p2) - get<0>(input_p1);
-        coordinate_type const dy = get<1>(input_p2) - get<1>(input_p1);
+        promoted_type const dx = get<0>(input_p2) - get<0>(input_p1);
+        promoted_type const dy = get<1>(input_p2) - get<1>(input_p1);
 
         // For normalization [0,1] (=dot product d.d, sqrt)
         promoted_type const length = geometry::math::sqrt(dx * dx + dy * dy);

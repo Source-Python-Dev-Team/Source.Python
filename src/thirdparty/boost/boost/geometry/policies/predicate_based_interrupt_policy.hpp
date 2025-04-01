@@ -1,8 +1,10 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2014, Oracle and/or its affiliates.
+// Copyright (c) 2014-2023, Oracle and/or its affiliates.
 
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Licensed under the Boost Software License version 1.0.
 // http://www.boost.org/users/license.html
@@ -10,9 +12,11 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_POLICIES_PREDICATE_BASED_INTERRUPT_POLICY_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_POLICIES_PREDICATE_BASED_INTERRUPT_POLICY_HPP
 
-#include <boost/range.hpp>
+#include <algorithm>
 
-#include <boost/geometry/algorithms/detail/check_iterator_range.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/empty.hpp>
+#include <boost/range/end.hpp>
 
 
 namespace boost { namespace geometry
@@ -42,12 +46,14 @@ struct stateless_predicate_based_interrupt_policy
     template <typename Range>
     inline bool apply(Range const& range)
     {
-        // if there is at least one unacceptable turn in the range, return false
-        has_intersections = !detail::check_iterator_range
-            <
-                IsAcceptableTurnPredicate,
-                AllowEmptyTurnRange
-            >::apply(boost::begin(range), boost::end(range));
+        // if there is at least one unacceptable turn in the range, return true
+        bool const has_unacceptable_turn = std::any_of(boost::begin(range), boost::end(range),
+            [](auto const& turn) {
+                return ! IsAcceptableTurnPredicate::apply(turn);
+            });
+
+        has_intersections = has_unacceptable_turn
+                && !(AllowEmptyTurnRange && boost::empty(range));
 
         return has_intersections;
     }
@@ -77,12 +83,15 @@ struct predicate_based_interrupt_policy
     template <typename Range>
     inline bool apply(Range const& range)
     {
-        // if there is at least one unacceptable turn in the range, return false
-        has_intersections = !detail::check_iterator_range
-            <
-                IsAcceptableTurnPredicate,
-                AllowEmptyTurnRange
-            >::apply(boost::begin(range), boost::end(range), m_predicate);
+        // if there is at least one unacceptable turn in the range, return true
+        bool const has_unacceptable_turn = std::any_of(boost::begin(range),
+                                                       boost::end(range),
+                                                       [&]( auto const& turn ) {
+                                                           return ! m_predicate.apply(turn);
+                                                       });
+
+        has_intersections = has_unacceptable_turn
+            && !(AllowEmptyTurnRange && boost::empty(range));
 
         return has_intersections;
     }

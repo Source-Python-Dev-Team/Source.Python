@@ -1,4 +1,4 @@
-// Copyright (c) 2009-2016 Vladimir Batov.
+// Copyright (c) 2009-2020 Vladimir Batov.
 // Use, modification and distribution are subject to the Boost Software License,
 // Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
 
@@ -7,10 +7,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace boost { namespace cnv
-{
-    struct lexical_cast;
-}}
+namespace boost { namespace cnv { struct lexical_cast; }}
 
 /// @brief boost::lexical_cast-based converter
 /// @details The purpose of the converter is to

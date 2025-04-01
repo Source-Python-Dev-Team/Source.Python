@@ -665,7 +665,8 @@ public:
 
     event exec_1d(command_queue &queue,
                   size_t global_work_offset,
-                  size_t global_work_size)
+                  size_t global_work_size,
+                  const wait_list &events = wait_list())
     {
         const context &context = queue.get_context();
 
@@ -675,14 +676,16 @@ public:
                    kernel,
                    global_work_offset,
                    global_work_size,
-                   0
+                   0,
+                   events
                );
     }
 
     event exec_1d(command_queue &queue,
                  size_t global_work_offset,
                  size_t global_work_size,
-                 size_t local_work_size)
+                 size_t local_work_size,
+                 const wait_list &events = wait_list())
     {
         const context &context = queue.get_context();
 
@@ -692,7 +695,8 @@ public:
                    kernel,
                    global_work_offset,
                    global_work_size,
-                   local_work_size
+                   local_work_size,
+                   events
                );
     }
 
@@ -1036,7 +1040,7 @@ inline meta_kernel& operator<<(meta_kernel &kernel,
 }
 
 // SVM requires OpenCL 2.0
-#if defined(CL_VERSION_2_0) || defined(BOOST_COMPUTE_DOXYGEN_INVOKED)
+#if defined(BOOST_COMPUTE_CL_VERSION_2_0) || defined(BOOST_COMPUTE_DOXYGEN_INVOKED)
 template<class T, class IndexExpr>
 inline meta_kernel& operator<<(meta_kernel &kernel,
                                const svm_ptr_index_expr<T, IndexExpr> &expr)
@@ -1072,7 +1076,7 @@ inline meta_kernel& operator<<(meta_kernel &kernel,
     BOOST_STATIC_ASSERT(N < 16);
 
     if(N < 10){
-        return kernel << expr.m_arg << ".s" << uint_(N);
+        return kernel << expr.m_arg << ".s" << int_(N);
     }
     else if(N < 16){
 #ifdef _MSC_VER

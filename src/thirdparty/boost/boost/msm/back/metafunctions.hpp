@@ -11,6 +11,8 @@
 #ifndef BOOST_MSM_BACK_METAFUNCTIONS_H
 #define BOOST_MSM_BACK_METAFUNCTIONS_H
 
+#include <algorithm>
+
 #include <boost/mpl/set.hpp>
 #include <boost/mpl/at.hpp>
 #include <boost/mpl/pair.hpp>
@@ -42,6 +44,9 @@
 #include <boost/mpl/copy_if.hpp>
 #include <boost/mpl/back_inserter.hpp>
 #include <boost/mpl/transform.hpp>
+
+#include <boost/fusion/include/as_vector.hpp>
+#include <boost/fusion/include/insert_range.hpp>
 
 #include <boost/type_traits/is_same.hpp>
 #include <boost/utility/enable_if.hpp>
@@ -634,13 +639,24 @@ struct has_exit_pseudo_states
 };
 
 // builds flags (add internal_flag_list and flag_list). internal_flag_list is used for terminate/interrupt states
+//template <class StateType>
+//struct get_flag_list
+//{
+//    typedef typename ::boost::mpl::insert_range<
+//        typename StateType::flag_list,
+//        typename ::boost::mpl::end< typename StateType::flag_list >::type,
+//        typename StateType::internal_flag_list
+//    >::type type;
+//};
 template <class StateType>
-struct get_flag_list 
+struct get_flag_list
 {
-    typedef typename ::boost::mpl::insert_range< 
-        typename StateType::flag_list, 
-        typename ::boost::mpl::end< typename StateType::flag_list >::type,
-        typename StateType::internal_flag_list
+    typedef typename ::boost::fusion::result_of::as_vector<
+        typename ::boost::fusion::result_of::insert_range<
+            typename StateType::flag_list,
+            typename ::boost::fusion::result_of::end< typename StateType::flag_list >::type,
+            typename StateType::internal_flag_list
+        >::type
     >::type type;
 };
 

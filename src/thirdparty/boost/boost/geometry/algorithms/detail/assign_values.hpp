@@ -7,6 +7,12 @@
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
+// This file was modified by Oracle on 2018-2021.
+// Modifications copyright (c) 2018-2021, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -16,25 +22,23 @@
 
 
 #include <cstddef>
+#include <type_traits>
 
 #include <boost/concept/requires.hpp>
 #include <boost/concept_check.hpp>
-#include <boost/mpl/assert.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/numeric/conversion/bounds.hpp>
-#include <boost/numeric/conversion/cast.hpp>
 
-#include <boost/geometry/arithmetic/arithmetic.hpp>
 #include <boost/geometry/algorithms/append.hpp>
 #include <boost/geometry/algorithms/clear.hpp>
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/exterior_ring.hpp>
+#include <boost/geometry/core/static_assert.hpp>
 #include <boost/geometry/core/tags.hpp>
 
 #include <boost/geometry/geometries/concepts/check.hpp>
 
-
-#include <boost/geometry/util/for_each_coordinate.hpp>
+#include <boost/geometry/util/algorithm.hpp>
+#include <boost/geometry/util/bounds.hpp>
+#include <boost/geometry/util/numeric_cast.hpp>
 
 
 namespace boost { namespace geometry
@@ -45,33 +49,18 @@ namespace detail { namespace assign
 {
 
 
-template <std::size_t Index, std::size_t Dimension, std::size_t DimensionCount>
-struct initialize
-{
-    template <typename Box>
-    static inline void apply(Box& box, typename coordinate_type<Box>::type const& value)
-    {
-        geometry::set<Index, Dimension>(box, value);
-        initialize<Index, Dimension + 1, DimensionCount>::apply(box, value);
-    }
-};
-
-
-template <std::size_t Index, std::size_t DimensionCount>
-struct initialize<Index, DimensionCount, DimensionCount>
-{
-    template <typename Box>
-    static inline void apply(Box&, typename coordinate_type<Box>::type const&)
-    {}
-};
-
-
 struct assign_zero_point
 {
     template <typename Point>
     static inline void apply(Point& point)
     {
-        geometry::assign_value(point, 0);
+        typedef typename coordinate_type<Point>::type coordinate_type;
+
+        coordinate_type const zero = 0;
+        detail::for_each_dimension<Point>([&](auto dimension)
+        {
+            set<dimension>(point, zero);
+        });
     }
 };
 
@@ -82,16 +71,17 @@ struct assign_inverse_box_or_segment
     template <typename BoxOrSegment>
     static inline void apply(BoxOrSegment& geometry)
     {
-        typedef typename point_type<BoxOrSegment>::type point_type;
-        typedef typename coordinate_type<point_type>::type bound_type;
+        typedef typename coordinate_type<BoxOrSegment>::type coordinate_type;
 
-        initialize<0, 0, dimension<BoxOrSegment>::type::value>::apply(
-            geometry, boost::numeric::bounds<bound_type>::highest()
-        );
-        initialize<1, 0, dimension<BoxOrSegment>::type::value>::apply(
-            geometry, boost::numeric::bounds<bound_type>::lowest()
-        );
+        coordinate_type const highest = util::bounds<coordinate_type>::highest();
+        coordinate_type const lowest = util::bounds<coordinate_type>::lowest();
+        detail::for_each_dimension<BoxOrSegment>([&](auto dimension)
+        {
+            set<0, dimension>(geometry, highest);
+            set<1, dimension>(geometry, lowest);
+        });
     }
+
 };
 
 
@@ -102,12 +92,12 @@ struct assign_zero_box_or_segment
     {
         typedef typename coordinate_type<BoxOrSegment>::type coordinate_type;
 
-        initialize<0, 0, dimension<BoxOrSegment>::type::value>::apply(
-            geometry, coordinate_type()
-        );
-        initialize<1, 0, dimension<BoxOrSegment>::type::value>::apply(
-            geometry, coordinate_type()
-        );
+        coordinate_type const zero = 0;
+        detail::for_each_dimension<BoxOrSegment>([&](auto dimension)
+        {
+            set<0, dimension>(geometry, zero);
+            set<1, dimension>(geometry, zero);
+        });
     }
 };
 
@@ -126,94 +116,10 @@ inline void assign_box_2d_corner(Box const& box, Point& point)
     // Copy coordinates
     typedef typename coordinate_type<Point>::type coordinate_type;
 
-    geometry::set<0>(point, boost::numeric_cast<coordinate_type>(get<Corner1, 0>(box)));
-    geometry::set<1>(point, boost::numeric_cast<coordinate_type>(get<Corner2, 1>(box)));
+    geometry::set<0>(point, util::numeric_cast<coordinate_type>(get<Corner1, 0>(box)));
+    geometry::set<1>(point, util::numeric_cast<coordinate_type>(get<Corner2, 1>(box)));
 }
 
-
-
-template
-<
-    typename Geometry, typename Point,
-    std::size_t Index,
-    std::size_t Dimension, std::size_t DimensionCount
->
-struct assign_point_to_index
-{
-
-    static inline void apply(Point const& point, Geometry& geometry)
-    {
-        geometry::set<Index, Dimension>(geometry, boost::numeric_cast
-            <
-                typename coordinate_type<Geometry>::type
-            >(geometry::get<Dimension>(point)));
-
-        assign_point_to_index
-            <
-                Geometry, Point, Index, Dimension + 1, DimensionCount
-            >::apply(point, geometry);
-    }
-};
-
-template
-<
-    typename Geometry, typename Point,
-    std::size_t Index,
-    std::size_t DimensionCount
->
-struct assign_point_to_index
-    <
-        Geometry, Point,
-        Index,
-        DimensionCount, DimensionCount
-    >
-{
-    static inline void apply(Point const& , Geometry& )
-    {
-    }
-};
-
-
-template
-<
-    typename Geometry, typename Point,
-    std::size_t Index,
-    std::size_t Dimension, std::size_t DimensionCount
->
-struct assign_point_from_index
-{
-
-    static inline void apply(Geometry const& geometry, Point& point)
-    {
-        geometry::set<Dimension>( point, boost::numeric_cast
-            <
-                typename coordinate_type<Point>::type
-            >(geometry::get<Index, Dimension>(geometry)));
-
-        assign_point_from_index
-            <
-                Geometry, Point, Index, Dimension + 1, DimensionCount
-            >::apply(geometry, point);
-    }
-};
-
-template
-<
-    typename Geometry, typename Point,
-    std::size_t Index,
-    std::size_t DimensionCount
->
-struct assign_point_from_index
-    <
-        Geometry, Point,
-        Index,
-        DimensionCount, DimensionCount
-    >
-{
-    static inline void apply(Geometry const&, Point&)
-    {
-    }
-};
 
 
 template <typename Geometry>
@@ -229,10 +135,10 @@ struct assign_2d_box_or_segment
     static inline void apply(Geometry& geometry,
                 Type const& x1, Type const& y1, Type const& x2, Type const& y2)
     {
-        geometry::set<0, 0>(geometry, boost::numeric_cast<coordinate_type>(x1));
-        geometry::set<0, 1>(geometry, boost::numeric_cast<coordinate_type>(y1));
-        geometry::set<1, 0>(geometry, boost::numeric_cast<coordinate_type>(x2));
-        geometry::set<1, 1>(geometry, boost::numeric_cast<coordinate_type>(y2));
+        geometry::set<0, 0>(geometry, util::numeric_cast<coordinate_type>(x1));
+        geometry::set<0, 1>(geometry, util::numeric_cast<coordinate_type>(y1));
+        geometry::set<1, 0>(geometry, util::numeric_cast<coordinate_type>(x2));
+        geometry::set<1, 1>(geometry, util::numeric_cast<coordinate_type>(y2));
     }
 };
 
@@ -247,11 +153,9 @@ namespace dispatch
 template <typename GeometryTag, typename Geometry, std::size_t DimensionCount>
 struct assign
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (types<Geometry>)
-        );
+    BOOST_GEOMETRY_STATIC_ASSERT_FALSE(
+        "Not or not yet implemented for this Geometry type.",
+        GeometryTag, Geometry, std::integral_constant<std::size_t, DimensionCount>);
 };
 
 template <typename Point>
@@ -262,8 +166,8 @@ struct assign<point_tag, Point, 2>
     template <typename T>
     static inline void apply(Point& point, T const& c1, T const& c2)
     {
-        set<0>(point, boost::numeric_cast<coordinate_type>(c1));
-        set<1>(point, boost::numeric_cast<coordinate_type>(c2));
+        set<0>(point, util::numeric_cast<coordinate_type>(c1));
+        set<1>(point, util::numeric_cast<coordinate_type>(c2));
     }
 };
 
@@ -275,9 +179,9 @@ struct assign<point_tag, Point, 3>
     template <typename T>
     static inline void apply(Point& point, T const& c1, T const& c2, T const& c3)
     {
-        set<0>(point, boost::numeric_cast<coordinate_type>(c1));
-        set<1>(point, boost::numeric_cast<coordinate_type>(c2));
-        set<2>(point, boost::numeric_cast<coordinate_type>(c3));
+        set<0>(point, util::numeric_cast<coordinate_type>(c1));
+        set<1>(point, util::numeric_cast<coordinate_type>(c2));
+        set<2>(point, util::numeric_cast<coordinate_type>(c3));
     }
 };
 

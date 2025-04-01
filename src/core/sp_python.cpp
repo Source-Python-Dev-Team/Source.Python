@@ -113,13 +113,32 @@ bool CPythonManager::Initialize( void )
 	wchar_t wszProgramName[MAX_PATH_LENGTH];
 	V_strtowcs(szProgramName, -1, wszProgramName, MAX_PATH_LENGTH);
 
-	// Set that as the python home directory.
- 	Py_SetPythonHome(wszPythonHome);
- 	Py_SetProgramName(wszProgramName);
-	Py_SetPath(wszPythonHome);
+	PyStatus status;
 
-	// Initialize python and its namespaces.
-	Py_Initialize();
+	PyConfig config;
+	PyConfig_InitPythonConfig(&config);
+
+	status = PyConfig_SetString(&config, &config.program_name, wszProgramName);
+	if (PyStatus_Exception(status)) {
+		Msg(MSG_PREFIX "Failed to set Python program name.\n");
+		PyConfig_Clear(&config);
+		Py_ExitStatusException(status);
+		return false;
+	}
+
+	status = PyConfig_SetString(&config, &config.home, wszPythonHome);
+	if (PyStatus_Exception(status)) {
+		Msg(MSG_PREFIX "Failed to set Python home.\n");
+		PyConfig_Clear(&config);
+		Py_ExitStatusException(status);
+		return false;
+	}
+
+	// Set that as the python home directory.
+	//Py_SetPath(wszPythonHome);
+
+	status = Py_InitializeFromConfig(&config);
+	PyConfig_Clear(&config);
 
 	// Print some information
 	DevMsg(1, MSG_PREFIX "Python version %s initialized!\n", Py_GetVersion());

@@ -16,7 +16,7 @@
 #include <boost/fiber/detail/config.hpp>
 
 #if BOOST_COMP_MSVC || BOOST_COMP_MSVC_EMULATED
-# include <Windows.h>
+# include <windows.h>
 #endif
 
 #ifdef BOOST_HAS_ABI_HEADERS
@@ -47,7 +47,7 @@ namespace detail {
 # else
 #  define cpu_relax() asm volatile ("nop" ::: "memory");
 # endif
-#elif BOOST_ARCH_MIPS
+#elif BOOST_ARCH_MIPS && (((__mips_isa_rev > 1) && defined(__mips32)) || ((__mips_isa_rev > 2)  && defined(__mips64)))
 # define cpu_relax() asm volatile ("pause" ::: "memory");
 #elif BOOST_ARCH_PPC
 // http://code.metager.de/source/xref/gnu/glibc/sysdeps/powerpc/sys/platform/ppc.h
@@ -59,7 +59,11 @@ namespace detail {
 //               processors
 // extended mnemonics (available with POWER7)
 // yield   ==   or 27, 27, 27
+# if defined(__APPLE__) // Darwin PPC
+# define cpu_relax() asm volatile ("or r27,r27,r27" ::: "memory");
+# else
 # define cpu_relax() asm volatile ("or 27,27,27" ::: "memory");
+# endif
 #elif BOOST_ARCH_X86
 # if BOOST_COMP_MSVC || BOOST_COMP_MSVC_EMULATED
 #  define cpu_relax() YieldProcessor();

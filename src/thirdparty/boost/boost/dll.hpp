@@ -1,5 +1,5 @@
 // Copyright 2014 Renato Tegon Forti, Antony Polukhin.
-// Copyright 2015-2016 Antony Polukhin.
+// Copyright Antony Polukhin, 2015-2024.
 //
 // Distributed under the Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt
@@ -12,7 +12,7 @@
 /// \file boost/dll.hpp
 /// \brief Includes all the non-experimental headers of the Boost.DLL library.
 
-#include <boost/config.hpp>
+#include <boost/dll/config.hpp>
 #include <boost/dll/shared_library.hpp>
 #include <boost/dll/alias.hpp>
 #include <boost/dll/import.hpp>

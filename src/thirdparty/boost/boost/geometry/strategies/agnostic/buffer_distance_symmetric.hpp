@@ -68,10 +68,15 @@ public :
         return negative() ? -1 : 1;
     }
 
-    //! Returns true if distance is negative
+    //! Returns true if distance is negative (aka deflate)
     inline bool negative() const
     {
         return m_distance < 0;
+    }
+
+    inline bool empty(buffer_side_selector ) const
+    {
+        return m_distance == 0;
     }
 
     //! Returns the max distance distance up to the buffer will reach

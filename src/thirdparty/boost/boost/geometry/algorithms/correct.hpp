@@ -3,7 +3,12 @@
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
-// Copyright (c) 2014 Adam Wulkiewicz, Lodz, Poland.
+// Copyright (c) 2014-2024 Adam Wulkiewicz, Lodz, Poland.
+
+// This file was modified by Oracle on 2017-2023.
+// Modifications copyright (c) 2017-2023 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -17,33 +22,31 @@
 
 
 #include <algorithm>
-#include <cstddef>
 #include <functional>
 
-#include <boost/mpl/assert.hpp>
-#include <boost/range.hpp>
-#include <boost/type_traits/remove_reference.hpp>
-
-#include <boost/variant/apply_visitor.hpp>
-#include <boost/variant/static_visitor.hpp>
-#include <boost/variant/variant_fwd.hpp>
-
-#include <boost/geometry/algorithms/detail/interior_iterator.hpp>
-
-#include <boost/geometry/core/closure.hpp>
-#include <boost/geometry/core/cs.hpp>
-#include <boost/geometry/core/exterior_ring.hpp>
-#include <boost/geometry/core/interior_rings.hpp>
-#include <boost/geometry/core/mutable_range.hpp>
-#include <boost/geometry/core/ring_type.hpp>
-#include <boost/geometry/core/tags.hpp>
-
-#include <boost/geometry/geometries/concepts/check.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
 
 #include <boost/geometry/algorithms/area.hpp>
-#include <boost/geometry/algorithms/disjoint.hpp>
+#include <boost/geometry/algorithms/correct_closure.hpp>
 #include <boost/geometry/algorithms/detail/multi_modify.hpp>
-#include <boost/geometry/util/order_as_direction.hpp>
+#include <boost/geometry/algorithms/detail/visit.hpp>
+
+#include <boost/geometry/core/exterior_ring.hpp>
+#include <boost/geometry/core/interior_rings.hpp>
+#include <boost/geometry/core/tags.hpp>
+#include <boost/geometry/core/visit.hpp>
+
+#include <boost/geometry/geometries/adapted/boost_variant.hpp> // For backward compatibility
+#include <boost/geometry/geometries/concepts/check.hpp>
+
+#include <boost/geometry/strategies/area/cartesian.hpp>
+#include <boost/geometry/strategies/area/geographic.hpp>
+#include <boost/geometry/strategies/area/spherical.hpp>
+#include <boost/geometry/strategies/detail.hpp>
+
+#include <boost/geometry/util/algorithm.hpp>
+
 
 namespace boost { namespace geometry
 {
@@ -58,110 +61,54 @@ namespace boost { namespace geometry
 namespace detail { namespace correct
 {
 
-template <typename Geometry>
 struct correct_nop
 {
-    static inline void apply(Geometry& )
+    template <typename Geometry, typename Strategy>
+    static inline void apply(Geometry& , Strategy const& )
     {}
-};
-
-
-template <typename Box, std::size_t Dimension, std::size_t DimensionCount>
-struct correct_box_loop
-{
-    typedef typename coordinate_type<Box>::type coordinate_type;
-
-    static inline void apply(Box& box)
-    {
-        if (get<min_corner, Dimension>(box) > get<max_corner, Dimension>(box))
-        {
-            // Swap the coordinates
-            coordinate_type max_value = get<min_corner, Dimension>(box);
-            coordinate_type min_value = get<max_corner, Dimension>(box);
-            set<min_corner, Dimension>(box, min_value);
-            set<max_corner, Dimension>(box, max_value);
-        }
-
-        correct_box_loop
-            <
-                Box, Dimension + 1, DimensionCount
-            >::apply(box);
-    }
-};
-
-
-
-template <typename Box, std::size_t DimensionCount>
-struct correct_box_loop<Box, DimensionCount, DimensionCount>
-{
-    static inline void apply(Box& )
-    {}
-
 };
 
 
 // Correct a box: make min/max correct
-template <typename Box>
 struct correct_box
 {
-
-    static inline void apply(Box& box)
+    template <typename Box, typename Strategy>
+    static inline void apply(Box& box, Strategy const& )
     {
         // Currently only for Cartesian coordinates
         // (or spherical without crossing dateline)
         // Future version: adapt using strategies
-        correct_box_loop
-            <
-                Box, 0, dimension<Box>::type::value
-            >::apply(box);
+        detail::for_each_dimension<Box>([&](auto dimension)
+        {
+            if (get<min_corner, dimension>(box) > get<max_corner, dimension>(box))
+            {
+                // Swap the coordinates
+                auto max_value = get<min_corner, dimension>(box);
+                auto min_value = get<max_corner, dimension>(box);
+                set<min_corner, dimension>(box, min_value);
+                set<max_corner, dimension>(box, max_value);
+            }
+        });
     }
 };
 
 
 // Close a ring, if not closed
-template <typename Ring, typename Predicate>
+template <typename Predicate = std::less<>>
 struct correct_ring
 {
-    typedef typename point_type<Ring>::type point_type;
-    typedef typename coordinate_type<Ring>::type coordinate_type;
-
-    typedef typename strategy::area::services::default_strategy
-        <
-            typename cs_tag<point_type>::type,
-            point_type
-        >::type strategy_type;
-
-    typedef detail::area::ring_area
-            <
-                order_as_direction<geometry::point_order<Ring>::value>::value,
-                geometry::closure<Ring>::value
-            > ring_area_type;
-
-
-    static inline void apply(Ring& r)
+    template <typename Ring, typename Strategy>
+    static inline void apply(Ring& r, Strategy const& strategy)
     {
-        // Check close-ness
-        if (boost::size(r) > 2)
-        {
-            // check if closed, if not, close it
-            bool const disjoint = geometry::disjoint(*boost::begin(r), *(boost::end(r) - 1));
-            closure_selector const s = geometry::closure<Ring>::value;
+        // Correct closure if necessary
+        detail::correct_closure::close_or_open_ring::apply(r);
 
-            if (disjoint && (s == closed))
-            {
-                geometry::append(r, *boost::begin(r));
-            }
-            if (! disjoint && s != closed)
-            {
-                // Open it by removing last point
-                geometry::traits::resize<Ring>::apply(r, boost::size(r) - 1);
-            }
-        }
+        // NOTE: calculate_point_order should probably be used here instead.
+
         // Check area
-        Predicate predicate;
-        typedef typename default_area_result<Ring>::type area_result_type;
-        area_result_type const zero = area_result_type();
-        if (predicate(ring_area_type::apply(r, strategy_type()), zero))
+        using area_t = typename area_result<Ring, Strategy>::type;
+        area_t const zero = 0;
+        if (Predicate()(detail::area::ring_area::apply(r, strategy), zero))
         {
             std::reverse(boost::begin(r), boost::end(r));
         }
@@ -170,30 +117,18 @@ struct correct_ring
 
 // Correct a polygon: normalizes all rings, sets outer ring clockwise, sets all
 // inner rings counter clockwise (or vice versa depending on orientation)
-template <typename Polygon>
 struct correct_polygon
 {
-    typedef typename ring_type<Polygon>::type ring_type;
-    typedef typename default_area_result<Polygon>::type area_result_type;
-
-    static inline void apply(Polygon& poly)
+    template <typename Polygon, typename Strategy>
+    static inline void apply(Polygon& poly, Strategy const& strategy)
     {
-        correct_ring
-            <
-                ring_type,
-                std::less<area_result_type>
-            >::apply(exterior_ring(poly));
+        correct_ring<std::less<>>::apply(exterior_ring(poly), strategy);
 
-        typename interior_return_type<Polygon>::type
-            rings = interior_rings(poly);
-        for (typename detail::interior_iterator<Polygon>::type
-                it = boost::begin(rings); it != boost::end(rings); ++it)
+        auto&& rings = interior_rings(poly);
+        auto const end = boost::end(rings);
+        for (auto it = boost::begin(rings); it != end; ++it)
         {
-            correct_ring
-                <
-                    ring_type,
-                    std::greater<area_result_type>
-                >::apply(*it);
+            correct_ring<std::greater<>>::apply(*it, strategy);
         }
     }
 };
@@ -207,68 +142,57 @@ struct correct_polygon
 namespace dispatch
 {
 
-template <typename Geometry, typename Tag = typename tag<Geometry>::type>
+template <typename Geometry, typename Tag = tag_t<Geometry>>
 struct correct: not_implemented<Tag>
 {};
 
 template <typename Point>
 struct correct<Point, point_tag>
-    : detail::correct::correct_nop<Point>
+    : detail::correct::correct_nop
 {};
 
 template <typename LineString>
 struct correct<LineString, linestring_tag>
-    : detail::correct::correct_nop<LineString>
+    : detail::correct::correct_nop
 {};
 
 template <typename Segment>
 struct correct<Segment, segment_tag>
-    : detail::correct::correct_nop<Segment>
+    : detail::correct::correct_nop
 {};
 
 
 template <typename Box>
 struct correct<Box, box_tag>
-    : detail::correct::correct_box<Box>
+    : detail::correct::correct_box
 {};
 
 template <typename Ring>
 struct correct<Ring, ring_tag>
-    : detail::correct::correct_ring
-        <
-            Ring,
-            std::less<typename default_area_result<Ring>::type>
-        >
+    : detail::correct::correct_ring<>
 {};
 
 template <typename Polygon>
 struct correct<Polygon, polygon_tag>
-    : detail::correct::correct_polygon<Polygon>
+    : detail::correct::correct_polygon
 {};
 
 
 template <typename MultiPoint>
 struct correct<MultiPoint, multi_point_tag>
-    : detail::correct::correct_nop<MultiPoint>
+    : detail::correct::correct_nop
 {};
 
 
 template <typename MultiLineString>
 struct correct<MultiLineString, multi_linestring_tag>
-    : detail::correct::correct_nop<MultiLineString>
+    : detail::correct::correct_nop
 {};
 
 
 template <typename Geometry>
 struct correct<Geometry, multi_polygon_tag>
-    : detail::multi_modify
-        <
-            Geometry,
-            detail::correct::correct_polygon
-                <
-                    typename boost::range_value<Geometry>::type
-                >
-        >
+    : detail::multi_modify<detail::correct::correct_polygon>
 {};
 
 
@@ -276,38 +200,96 @@ struct correct<Geometry, multi_polygon_tag>
 #endif // DOXYGEN_NO_DISPATCH
 
 
-namespace resolve_variant {
+namespace resolve_strategy
+{
 
-template <typename Geometry>
+template
+<
+    typename Strategy,
+    bool IsUmbrella = strategies::detail::is_umbrella_strategy<Strategy>::value
+>
 struct correct
 {
-    static inline void apply(Geometry& geometry)
+    template <typename Geometry>
+    static inline void apply(Geometry& geometry, Strategy const& strategy)
     {
-        concepts::check<Geometry const>();
-        dispatch::correct<Geometry>::apply(geometry);
+        dispatch::correct<Geometry>::apply(geometry, strategy);
     }
 };
 
-template <BOOST_VARIANT_ENUM_PARAMS(typename T)>
-struct correct<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
+template <typename Strategy>
+struct correct<Strategy, false>
 {
-    struct visitor: boost::static_visitor<void>
+    template <typename Geometry>
+    static inline void apply(Geometry& geometry, Strategy const& strategy)
     {
-        template <typename Geometry>
-        void operator()(Geometry& geometry) const
-        {
-            correct<Geometry>::apply(geometry);
-        }
-    };
-
-    static inline void
-    apply(boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)>& geometry)
-    {
-        boost::apply_visitor(visitor(), geometry);
+        // NOTE: calculate_point_order strategy should probably be used here instead.
+        using geometry::strategies::area::services::strategy_converter;
+        dispatch::correct<Geometry>::apply(geometry, strategy_converter<Strategy>::get(strategy));
     }
 };
 
-} // namespace resolve_variant
+template <>
+struct correct<default_strategy, false>
+{
+    template <typename Geometry>
+    static inline void apply(Geometry& geometry, default_strategy const& )
+    {
+        // NOTE: calculate_point_order strategy should probably be used here instead.
+        using strategy_type = typename strategies::area::services::default_strategy
+            <
+                Geometry
+            >::type;
+        dispatch::correct<Geometry>::apply(geometry, strategy_type());
+    }
+};
+
+} // namespace resolve_strategy
+
+
+namespace resolve_dynamic
+{
+
+template <typename Geometry, typename Tag = tag_t<Geometry>>
+struct correct
+{
+    template <typename Strategy>
+    static inline void apply(Geometry& geometry, Strategy const& strategy)
+    {
+        concepts::check<Geometry>();
+        resolve_strategy::correct<Strategy>::apply(geometry, strategy);
+    }
+};
+
+template <typename Geometry>
+struct correct<Geometry, dynamic_geometry_tag>
+{
+    template <typename Strategy>
+    static inline void apply(Geometry& geometry, Strategy const& strategy)
+    {
+        traits::visit<Geometry>::apply([&](auto & g)
+        {
+            correct<util::remove_cref_t<decltype(g)>>::apply(g, strategy);
+        }, geometry);
+    }
+};
+
+template <typename Geometry>
+struct correct<Geometry, geometry_collection_tag>
+{
+    template <typename Strategy>
+    static inline void apply(Geometry& geometry, Strategy const& strategy)
+    {
+        detail::visit_breadth_first([&](auto & g)
+        {
+            correct<util::remove_cref_t<decltype(g)>>::apply(g, strategy);
+            return true;
+        }, geometry);
+    }
+};
+
+
+} // namespace resolve_dynamic
 
 
 /*!
@@ -325,7 +307,29 @@ struct correct<boost::variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
 template <typename Geometry>
 inline void correct(Geometry& geometry)
 {
-    resolve_variant::correct<Geometry>::apply(geometry);
+    resolve_dynamic::correct<Geometry>::apply(geometry, default_strategy());
+}
+
+/*!
+\brief Corrects a geometry
+\details Corrects a geometry: all rings which are wrongly oriented with respect
+    to their expected orientation are reversed. To all rings which do not have a
+    closing point and are typed as they should have one, the first point is
+    appended. Also boxes can be corrected.
+\ingroup correct
+\tparam Geometry \tparam_geometry
+\tparam Strategy \tparam_strategy{Area}
+\param geometry \param_geometry which will be corrected if necessary
+\param strategy \param_strategy{area}
+
+\qbk{distinguish,with strategy}
+
+\qbk{[include reference/algorithms/correct.qbk]}
+*/
+template <typename Geometry, typename Strategy>
+inline void correct(Geometry& geometry, Strategy const& strategy)
+{
+    resolve_dynamic::correct<Geometry>::apply(geometry, strategy);
 }
 
 #if defined(_MSC_VER)

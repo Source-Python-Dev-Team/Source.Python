@@ -15,6 +15,7 @@
 #error "Parallel BGL files should not be included unless <boost/graph/use_mpi.hpp> has been included"
 #endif
 
+#include <boost/core/uncaught_exceptions.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/properties.hpp>
 #include <boost/graph/graph_traits.hpp>
@@ -22,6 +23,7 @@
 #include <boost/graph/distributed/concepts.hpp>
 #include <boost/iterator/transform_iterator.hpp>
 #include <boost/property_map/property_map.hpp>
+#include <boost/property_map/parallel/parallel_property_maps.hpp>
 #include <boost/graph/adjacency_iterator.hpp>
 #include <boost/property_map/parallel/distributed_property_map.hpp>
 #include <boost/property_map/parallel/local_property_map.hpp>
@@ -30,6 +32,7 @@
 #include <boost/type_traits/is_same.hpp>
 #include <boost/assert.hpp>
 #include <list>
+#include <iterator>
 #include <algorithm>
 #include <boost/limits.hpp>
 #include <boost/graph/parallel/properties.hpp>
@@ -1421,7 +1424,7 @@ namespace boost {
     /// Iterator over the neighbors of a vertex
     typedef boost::adjacency_iterator<
               adjacency_list, vertex_descriptor, out_edge_iterator,
-              typename detail::iterator_traits<base_out_edge_iterator>
+              typename std::iterator_traits<base_out_edge_iterator>
                          ::difference_type>
       adjacency_iterator;
 
@@ -2285,7 +2288,7 @@ namespace boost {
     /// If this vertex has already been created or will be created by
     /// someone else, or if someone threw an exception, we will not
     /// create the vertex now.
-    if (committed || std::uncaught_exception())
+    if (committed || boost::core::uncaught_exceptions() > 0)
       return;
 
     committed = true;
@@ -2398,7 +2401,7 @@ namespace boost {
     /// If this edge has already been created or will be created by
     /// someone else, or if someone threw an exception, we will not
     /// create the edge now.
-    if (committed || std::uncaught_exception())
+    if (committed || boost::core::uncaught_exceptions() > 0)
       return;
 
     committed = true;
@@ -2583,7 +2586,7 @@ namespace boost {
     /// If this edge has already been created or will be created by
     /// someone else, or if someone threw an exception, we will not
     /// create the edge now.
-    if (this->committed || std::uncaught_exception())
+    if (this->committed || boost::core::uncaught_exceptions() > 0)
       return;
 
     this->committed = true;

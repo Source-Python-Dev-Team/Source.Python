@@ -28,11 +28,10 @@
 #include <boost/container/detail/workaround.hpp>
 
 #include <climits>
-#include <boost/static_assert.hpp>
 
 namespace boost {
 namespace container {
-namespace container_detail {
+namespace dtl {
 
 // Greatest common divisor and least common multiple
 
@@ -94,13 +93,41 @@ inline Integer upper_power_of_2(const Integer & A)
    return power_of_2;
 }
 
+template <typename Integer, bool Loop = true>
+struct upper_power_of_2_loop_ct
+{
+
+   template <Integer I, Integer P>
+   struct apply
+   {
+      BOOST_STATIC_CONSTEXPR Integer value =
+         upper_power_of_2_loop_ct<Integer, (I > P*2)>::template apply<I, P*2>::value;
+   };
+};
+
+template <typename Integer>
+struct upper_power_of_2_loop_ct<Integer, false>
+{
+   template <Integer I, Integer P>
+   struct apply
+   {
+      BOOST_STATIC_CONSTEXPR Integer value = P;
+   };
+};
+
+template <typename Integer, Integer I>
+struct upper_power_of_2_ct
+{
+   BOOST_STATIC_CONSTEXPR Integer value = upper_power_of_2_loop_ct<Integer, (I > 1)>::template apply<I, 2>::value;
+};
+
 //This function uses binary search to discover the
 //highest set bit of the integer
 inline std::size_t floor_log2 (std::size_t x)
 {
    const std::size_t Bits = sizeof(std::size_t)*CHAR_BIT;
    const bool Size_t_Bits_Power_2= !(Bits & (Bits-1));
-   BOOST_STATIC_ASSERT(((Size_t_Bits_Power_2)== true));
+   BOOST_CONTAINER_STATIC_ASSERT(((Size_t_Bits_Power_2)== true));
 
    std::size_t n = x;
    std::size_t log2 = 0;
@@ -114,7 +141,33 @@ inline std::size_t floor_log2 (std::size_t x)
    return log2;
 }
 
-} // namespace container_detail
+template<std::size_t I1, std::size_t I2>
+struct gcd_ct
+{
+   BOOST_STATIC_CONSTEXPR std::size_t Max = I1 > I2 ? I1 : I2;
+   BOOST_STATIC_CONSTEXPR std::size_t Min = I1 < I2 ? I1 : I2;
+   BOOST_STATIC_CONSTEXPR std::size_t value = gcd_ct<Min, Max % Min>::value;
+};
+
+template<std::size_t I1>
+struct gcd_ct<I1, 0>
+{
+   BOOST_STATIC_CONSTEXPR std::size_t value = I1;
+};
+
+template<std::size_t I1>
+struct gcd_ct<0, I1>
+{
+   BOOST_STATIC_CONSTEXPR std::size_t value = I1;
+};
+
+template<std::size_t I1, std::size_t I2>
+struct lcm_ct
+{
+   BOOST_STATIC_CONSTEXPR std::size_t value = I1 * I2 / gcd_ct<I1, I2>::value;
+};
+
+} // namespace dtl
 } // namespace container
 } // namespace boost
 

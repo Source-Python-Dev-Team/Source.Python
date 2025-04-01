@@ -23,7 +23,7 @@
 
 #include <boost/intrusive/detail/workaround.hpp>
 #include <boost/intrusive/pointer_traits.hpp>
-#include <boost/intrusive/detail/to_raw_pointer.hpp>
+#include <boost/move/detail/to_raw_pointer.hpp>
 
 namespace boost {
 namespace intrusive {
@@ -40,15 +40,15 @@ struct default_header_holder : public NodeTraits::node
 
    default_header_holder() : node() {}
 
-   BOOST_INTRUSIVE_FORCEINLINE const_node_ptr get_node() const
+   inline const_node_ptr get_node() const
    { return pointer_traits< const_node_ptr >::pointer_to(*static_cast< const node* >(this)); }
 
-   BOOST_INTRUSIVE_FORCEINLINE node_ptr get_node()
+   inline node_ptr get_node()
    { return pointer_traits< node_ptr >::pointer_to(*static_cast< node* >(this)); }
 
    // (unsafe) downcast used to implement container-from-iterator
-   BOOST_INTRUSIVE_FORCEINLINE static default_header_holder* get_holder(const node_ptr &p)
-   { return static_cast< default_header_holder* >(boost::intrusive::detail::to_raw_pointer(p)); }
+   inline static default_header_holder* get_holder(node_ptr p)
+   { return static_cast< default_header_holder* >(boost::movelib::to_raw_pointer(p)); }
 };
 
 // type function producing the header node holder
