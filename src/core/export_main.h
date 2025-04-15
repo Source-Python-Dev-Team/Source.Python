@@ -56,6 +56,18 @@ typedef void (*ModuleInitFn)( scope );
 	void PyInit_##package##_##name( scope name )
 
 //---------------------------------------------------------------------------------
+// A deferred version of boost::python::dict. Thanks to spitice!
+// There was a change in Python that results in an access violation when Python is
+// not ready, yet.
+//---------------------------------------------------------------------------------
+class DeferredDict {
+private:
+	std::shared_ptr<dict> _pDict;
+public:
+	dict& get();
+};
+
+//---------------------------------------------------------------------------------
 // This is a module definition structure. The way our module system is going to
 // work is you declare a module via BOOST_PYTHON_MODULE. Then the CPythonManager
 // class will iterate over the module list and add it to the import table.
