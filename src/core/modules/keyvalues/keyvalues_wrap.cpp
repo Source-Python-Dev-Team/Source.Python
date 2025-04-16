@@ -49,18 +49,31 @@
 	friend void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src); 
 	void RecursiveCopyKeyValues( KeyValues& src );
 */
-#define RecursiveCopyKeyValues \
-	JustFinishTheDeclaration() {} \
-	friend void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src); \
-	void RecursiveCopyKeyValues
+#if defined(ENGINE_ORANGEBOX)
+	#define CopyKeyValuesFromRecursive \
+		JustFinishTheDeclaration() {} \
+		friend void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src); \
+		void CopyKeyValuesFromRecursive
+#else
+	#define RecursiveCopyKeyValues \
+		JustFinishTheDeclaration() {} \
+		friend void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src); \
+		void RecursiveCopyKeyValues
+#endif
 
 #include "tier1/KeyValues.h"
 
 // Now, remove the replacement, so the friend function can call the member function.
 #define RecursiveCopyKeyValues RecursiveCopyKeyValues
+#define CopyKeyValuesFromRecursive CopyKeyValuesFromRecursive
+
 void RecursiveCopyKeyValuesHack(KeyValues* pThis, KeyValues& src)
 {
+#if defined(ENGINE_ORANGEBOX)
+	pThis->CopyKeyValuesFromRecursive(src);
+#else
 	pThis->RecursiveCopyKeyValues(src);
+#endif
 }
 
 
@@ -191,7 +204,7 @@ void export_keyvalues(scope _keyvalues)
 
 		.add_property("next_key",
 			make_function(
-				&KeyValues::GetNextKey,
+				GET_CONST_METHOD(const KeyValues*, KeyValues, GetNextKey),
 				reference_existing_object_policy()
 			),
 			&KeyValues::SetNextKey,

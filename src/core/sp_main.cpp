@@ -219,8 +219,8 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	DevMsg(1, MSG_PREFIX "Connecting tier1 libraries...\n");
 	ConnectTier1Libraries( &interfaceFactory, 1 );
 
-	DevMsg(1, MSG_PREFIX "Connecting tier2 libraries...\n");
-	ConnectTier2Libraries( &interfaceFactory, 2 );
+	//DevMsg(1, MSG_PREFIX "Connecting tier2 libraries...\n");
+	//ConnectTier2Libraries( &interfaceFactory, 2 );
 #endif
 
 	// Get all engine interfaces.
@@ -317,8 +317,8 @@ void CSourcePython::Unload( void )
 	DevMsg(1, MSG_PREFIX "Disconnecting interfaces...\n");
 	DisconnectInterfaces();
 #else
-	DevMsg(1, MSG_PREFIX "Disconnecting tier2 libraries...\n");
-	DisconnectTier2Libraries( );
+	//DevMsg(1, MSG_PREFIX "Disconnecting tier2 libraries...\n");
+	//DisconnectTier2Libraries( );
 
 	DevMsg(1, MSG_PREFIX "Disconnecting tier1 libraries...\n");
 	DisconnectTier1Libraries( );
@@ -351,7 +351,7 @@ void CSourcePython::UnPause( void )
 //-----------------------------------------------------------------------------
 const char *CSourcePython::GetPluginDescription( void )
 {
-	return "Source.Python, (C) 2012-2021, Source.Python Team.";
+	return "Source.Python, (C) 2012-2025, Source.Python Team.";
 }
 
 //-----------------------------------------------------------------------------
@@ -507,7 +507,7 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 }
 #endif
 
-#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE) || defined(ENGINE_ORANGEBOX)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	unsigned int iEntityIndex;

@@ -102,7 +102,11 @@ public:
 	
 	void set_inflictor(unsigned int uiInflictor)
 	{
+#if defined(ENGINE_ORANGEBOX)
+		m_hInflictor = EHANDLE::UnsafeFromIndex(uiInflictor);
+#else
 		m_hInflictor = ExcBaseHandleFromIndex(uiInflictor);
+#endif
 	}
 	
 	unsigned int get_attacker()
@@ -144,7 +148,7 @@ public:
 			m_CSGOAttacker.m_iUserId = -1;
 		}
 #else
-		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
+		m_hAttacker = EHANDLE::UnsafeFromIndex(uiAttacker);
 #endif
 	}
 	
@@ -172,7 +176,11 @@ public:
 	
 	void set_weapon(unsigned int uiWeapon)
 	{
+#if defined(ENGINE_ORANGEBOX)
+		m_hWeapon = EHANDLE::UnsafeFromIndex(uiWeapon);
+#else
 		m_hWeapon = ExcBaseHandleFromIndex(uiWeapon);
+#endif
 	}
 	
 	void set_base_damage(float flBaseDamage)
