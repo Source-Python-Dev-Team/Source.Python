@@ -23,7 +23,7 @@ from paths import SP_DATA_PATH
 _STORAGE_PATH = SP_DATA_PATH / 'settings' / 'users.db'
 
 # Does the ../data/source-python/settings/ directory exist?
-if not _STORAGE_PATH.parent.isdir():
+if not _STORAGE_PATH.parent.is_dir():
 
     # Create the ../data/source-python/settings/ directory
     _STORAGE_PATH.parent.mkdir()

@@ -168,7 +168,7 @@ def _clean_update_dir():
     """Clear or create the update directory."""
     if UPDATE_PATH.exists():
         for f in UPDATE_PATH.listdir():
-            if f.isfile():
+            if f.is_file():
                 f.remove()
             else:
                 f.rmtree()
@@ -200,12 +200,12 @@ def _apply_update_stage1():
         _apply_update_stage1_linux()
 
     # Apply latest data update
-    if not DATA_ZIP_FILE.isfile():
+    if not DATA_ZIP_FILE.is_file():
         return
 
     update_logger.log_debug('Applying latest data update...')
 
-    if UPDATE_SP_DATA_PATH.isdir():
+    if UPDATE_SP_DATA_PATH.is_dir():
         update_logger.log_debug(f'Removing {UPDATE_SP_DATA_PATH} ...')
         UPDATE_SP_DATA_PATH.rmtree()
 
@@ -221,7 +221,7 @@ def _apply_update_stage1_windows():
     to point to the new loader.
     If ``source-python.vdf`` does not exist, manual action is required.
     """
-    if not VDF_FILE.isfile():
+    if not VDF_FILE.is_file():
         update_logger.log_message(
             f'Stage 1 has been applied. Please shutdown your server and move '
             f'(do not copy) {LOADER_UPDATE_FILE} to {LOADER_FILE}. After that '
@@ -272,7 +272,7 @@ def update_data(timeout=DEFAULT_TIMEOUT):
         Number of seconds that need to pass until a timeout occurs.
     """
     _download_latest_data(timeout)
-    if SP_DATA_PATH.isdir():
+    if SP_DATA_PATH.is_dir():
         update_logger.log_debug('Removing {} ...'.format(SP_DATA_PATH))
         SP_DATA_PATH.rmtree()
 
@@ -285,7 +285,7 @@ def is_new_data_available(timeout=DEFAULT_TIMEOUT):
         Number of seconds that need to pass until a timeout occurs.
     :rtype: bool
     """
-    if not DATA_ZIP_FILE.isfile():
+    if not DATA_ZIP_FILE.is_file():
         return True
 
     return DATA_ZIP_FILE.read_hexhash('md5') != get_latest_data_checksum(timeout)

@@ -77,14 +77,14 @@ class SphinxProject(object):
 
         :rtype: bool
         """
-        return self.project_dir.isdir()
+        return self.project_dir.is_dir()
 
     def package_exists(self):
         """Return True if the package exists.
 
         :rtype: bool
         """
-        return self.package_dir.isdir()
+        return self.package_dir.is_dir()
 
     def create(self, author, project_name=None, version='1'):
         """Create a new Sphinx project.
@@ -117,7 +117,7 @@ class SphinxProject(object):
         ]
 
         if project_name is None:
-            project_name = self.package_dir.namebase
+            project_name = self.package_dir.name
 
         argv.append('-p {0}'.format(project_name))
         argv.append('-a {0}'.format(author))

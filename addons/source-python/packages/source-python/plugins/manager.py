@@ -131,7 +131,7 @@ class PluginManager(OrderedDict):
         :rtype: generator
         """
         for path in self.plugins_directory.dirs():
-            plugin_name = path.namebase
+            plugin_name = path.name
             if not self.is_valid_plugin_name(plugin_name):
                 continue
 
@@ -176,7 +176,7 @@ class PluginManager(OrderedDict):
                 '"{}" is an invalid plugin name.'.format(plugin_name))
 
         plugin = self._create_plugin_instance(plugin_name)
-        if not plugin.file_path.isfile():
+        if not plugin.file_path.is_file():
             raise PluginFileNotFoundError(
                 'File {} does not exist.'.format(plugin.file_path))
 
@@ -284,7 +284,7 @@ class PluginManager(OrderedDict):
             The plugin to check.
         :rtype: bool
         """
-        return self.get_plugin_file_path(plugin_name).isfile()
+        return self.get_plugin_file_path(plugin_name).is_file()
 
     def get_plugin_instance(self, plugin_name):
         """Return a plugin's instance, if it is loaded.
@@ -357,7 +357,7 @@ class PluginManager(OrderedDict):
                 'Plugin "{}" does not exist.'.format(plugin_name))
 
         info_file = self.get_plugin_directory(plugin_name) / 'info.ini'
-        if not info_file.isfile():
+        if not info_file.is_file():
             # Just return an "empty" PluginInfo instance. We don't have more
             # information.
             return PluginInfo(plugin_name)

@@ -259,7 +259,7 @@ class ConfigManager(object):
             self._indention = 3
 
         # Do all directories to the file exist?
-        if not self.fullpath.parent.isdir():
+        if not self.fullpath.parent.is_dir():
 
             # Create the directories
             self.fullpath.parent.makedirs()
@@ -325,7 +325,7 @@ class ConfigManager(object):
     def execute(self):
         """Execute the config file."""
         # Does the file exist?
-        if not self.fullpath.isfile():
+        if not self.fullpath.is_file():
             raise FileNotFoundError(
                 'Cannot execute file "{0}", file not found'.format(
                     self.fullpath))
@@ -381,7 +381,7 @@ class ConfigManager(object):
         _old_config = defaultdict(list)
 
         # Does the file exist?
-        if not self.fullpath.isfile():
+        if not self.fullpath.is_file():
 
             # If not, simply return the empty dictionary
             return _old_config

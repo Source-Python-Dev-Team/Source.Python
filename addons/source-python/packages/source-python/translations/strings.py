@@ -61,7 +61,7 @@ class LangStrings(dict):
         self._encoding = encoding
 
         # Does the file exist?
-        if not self._mainfile.isfile():
+        if not self._mainfile.is_file():
 
             # Raise an error
             raise FileNotFoundError(
@@ -69,13 +69,13 @@ class LangStrings(dict):
 
         # Get the path to the server specific file
         self._serverfile = self._mainfile.parent / '{0}_server.ini'.format(
-            self._mainfile.namebase)
+            self._mainfile.name)
 
         # Get the strings from the main file
         main_strings = GameConfigObj(self._mainfile, encoding=encoding)
 
         # Does the server specific file exist?
-        if not self._serverfile.isfile() and not infile.startswith('_core/'):
+        if not self._serverfile.is_file() and not infile.startswith('_core/'):
 
             # Create the server specific file
             self._create_server_file()

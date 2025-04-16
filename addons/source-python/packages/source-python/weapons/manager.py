@@ -168,7 +168,7 @@ class _WeaponManager(dict):
         return self._tags
 
 # Does the current game have an ini file?
-if _gamepath.isfile():
+if _gamepath.is_file():
 
     # Get the _WeaponManager instance
     weapon_manager = _WeaponManager()
