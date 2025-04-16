@@ -147,6 +147,8 @@ public:
 			m_CSGOAttacker.m_iTeamNum = -1;
 			m_CSGOAttacker.m_iUserId = -1;
 		}
+#elif defined(ENGINE_LEFT4DEAD2)
+		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
 #else
 		m_hAttacker = EHANDLE::UnsafeFromIndex(uiAttacker);
 #endif
