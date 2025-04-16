@@ -147,10 +147,10 @@ public:
 			m_CSGOAttacker.m_iTeamNum = -1;
 			m_CSGOAttacker.m_iUserId = -1;
 		}
-#elif defined(ENGINE_LEFT4DEAD2)
-		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
-#else
+#elif defined(ENGINE_ORANGEBOX)
 		m_hAttacker = EHANDLE::UnsafeFromIndex(uiAttacker);
+#else
+		m_hAttacker = ExcBaseHandleFromIndex(uiAttacker);
 #endif
 	}
 	

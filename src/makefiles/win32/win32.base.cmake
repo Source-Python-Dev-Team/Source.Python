@@ -50,6 +50,7 @@ SET(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} /SAFESEH:NO")
 # Link libraries.
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES
+    ${SOURCEPYTHON_LINK_LIBRARIES}
     ${DYNCALLSDK_LIB}/libdyncall_s.lib
     ${DYNCALLSDK_LIB}/libdyncallback_s.lib
     ${DYNCALLSDK_LIB}/libdynload_s.lib
