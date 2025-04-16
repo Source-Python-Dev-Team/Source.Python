@@ -13,7 +13,7 @@ Linux
 
 To build Source.Python on Linux, you need the following requirements:
 
-* `CMake 2.8 or later <https://cmake.org/download/>`_
+* `CMake 3.15 or later <https://cmake.org/download/>`_
 * `Git <https://git-scm.com/downloads>`_
 * `GCC (our buildbot uses 4.8) <https://gcc.gnu.org/>`_
 
@@ -45,9 +45,9 @@ Windows
 
 To build Source.Python on Windows, you need the following requirements:
 
-* `CMake 2.8 or later <https://cmake.org/download/>`_
+* `CMake 3.15 or later <https://cmake.org/download/>`_
 * `Git <https://git-scm.com/downloads>`_
-* `Visual C++ 2010 <https://my.visualstudio.com/Downloads?q=visual%20studio%202010&wt.mc_id=o~msft~vscom~older-downloads>`_
+* `Visual C++ 2022 <https://visualstudio.microsoft.com/de/vs/>`_
 * `Microsoft Build Tools (optional, to build directly via Build.bat) <https://www.microsoft.com/en-us/download/details.aspx?id=48159>`_
 
 Once you have installed the requirements, follow these steps to build Source.Python:
