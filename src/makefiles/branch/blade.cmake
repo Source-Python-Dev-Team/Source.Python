@@ -13,3 +13,6 @@ include("makefiles/branch/${BRANCH}/usermessages.cmake")
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "blade")
 add_definitions(-DENGINE_BLADE -DUSE_PROTOBUF -DENGINE_BRANCH_BLADE)
+
+Set(SOURCEPYTHON_LINK_LIBRARIES
+    legacy_stdio_definitions.lib)
