@@ -1,7 +1,8 @@
 # ------------------------------------------------------------------
 # Set minimum required version of CMake
 # ------------------------------------------------------------------
-CMake_Minimum_Required(VERSION 2.8)
+CMake_Minimum_Required(VERSION 3.0)
+project(Source-Python)
 
 # ------------------------------------------------------------------
 # Makefile includes.
