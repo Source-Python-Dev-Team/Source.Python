@@ -59,7 +59,15 @@ Set(SOURCEPYTHON_LINK_LIBRARIES
     ${BOOSTSDK_LIB}/libboost_system-vc143-mt-s-x32-1_87.lib
 )
 
-If( SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade" OR SOURCE_ENGINE MATCHES "l4d2")
+If( SOURCE_ENGINE MATCHES "orangebox")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        ${SOURCEPYTHON_LINK_LIBRARIES}
+        ${SOURCESDK_LIB}/public/x86/tier0.lib
+        ${SOURCESDK_LIB}/public/x86/tier1.lib
+        ${SOURCESDK_LIB}/public/x86/vstdlib.lib
+        ${SOURCESDK_LIB}/public/x86/mathlib.lib
+    )
+Else()
     Set(SOURCEPYTHON_LINK_LIBRARIES
         ${SOURCEPYTHON_LINK_LIBRARIES}
         ${SOURCESDK_LIB}/public/tier0.lib
@@ -68,14 +76,6 @@ If( SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade" OR SOURCE_ENGI
         ${SOURCESDK_LIB}/public/tier3.lib
         ${SOURCESDK_LIB}/public/vstdlib.lib
         ${SOURCESDK_LIB}/public/mathlib.lib
-    )
-Else()
-    Set(SOURCEPYTHON_LINK_LIBRARIES
-        ${SOURCEPYTHON_LINK_LIBRARIES}
-        ${SOURCESDK_LIB}/public/x86/tier0.lib
-        ${SOURCESDK_LIB}/public/x86/tier1.lib
-        ${SOURCESDK_LIB}/public/x86/vstdlib.lib
-        ${SOURCESDK_LIB}/public/x86/mathlib.lib
     )
 Endif()
 
