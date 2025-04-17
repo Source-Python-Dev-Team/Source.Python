@@ -18,13 +18,13 @@
 /* #undef AIX_GENUINE_CPLUSPLUS */
 
 /* The normal alignment of `long', in bytes. */
-#define ALIGNOF_LONG 8
+#define ALIGNOF_LONG 4
 
 /* The normal alignment of `max_align_t', in bytes. */
 #define ALIGNOF_MAX_ALIGN_T 16
 
 /* The normal alignment of `size_t', in bytes. */
-#define ALIGNOF_SIZE_T 8
+#define ALIGNOF_SIZE_T 4
 
 /* Alternative SOABI used in debug build to load C extensions built in release
    mode */
@@ -438,14 +438,14 @@
 /* #undef HAVE_GCC_ASM_FOR_MC68881 */
 
 /* Define if we can use x64 gcc inline assembler */
-#define HAVE_GCC_ASM_FOR_X64 1
+/* #undef HAVE_GCC_ASM_FOR_X64 */
 
 /* Define if we can use gcc inline assembler to get and set x87 control word
    */
 #define HAVE_GCC_ASM_FOR_X87 1
 
 /* Define if your compiler provides __uint128_t */
-#define HAVE_GCC_UINT128_T 1
+/* #undef HAVE_GCC_UINT128_T */
 
 /* Define to 1 if you have the <gdbm-ndbm.h> header file. */
 #define HAVE_GDBM_DASH_NDBM_H 1
@@ -656,7 +656,7 @@
    and long long is at least as big as an off_t. You may need to add some
    flags for configuration and compilation to enable this mode. (For Solaris
    and Linux, the necessary defines are already defined.) */
-/* #undef HAVE_LARGEFILE_SUPPORT */
+#define HAVE_LARGEFILE_SUPPORT 1
 
 /* Define to 1 if you have the 'lchflags' function. */
 /* #undef HAVE_LCHFLAGS */
@@ -1605,7 +1605,7 @@
 /* #undef HAVE__GETPTY */
 
 /* Define to 1 if the system has the type `__uint128_t'. */
-#define HAVE___UINT128_T 1
+/* #undef HAVE___UINT128_T */
 
 /* Define to 1 if `major', `minor', and `makedev' are declared in <mkdev.h>.
    */
@@ -1655,7 +1655,7 @@
 #define PY_COERCE_C_LOCALE 1
 
 /* Define to 1 if you have the perf trampoline. */
-#define PY_HAVE_PERF_TRAMPOLINE 1
+//#define PY_HAVE_PERF_TRAMPOLINE 1
 
 /* Define to 1 to build the sqlite module with loadable extensions support. */
 /* #undef PY_SQLITE_ENABLE_LOAD_EXTENSION */
@@ -1720,10 +1720,10 @@
 #define SIZEOF_INT 4
 
 /* The size of `long', as computed by sizeof. */
-#define SIZEOF_LONG 8
+#define SIZEOF_LONG 4
 
 /* The size of `long double', as computed by sizeof. */
-#define SIZEOF_LONG_DOUBLE 16
+#define SIZEOF_LONG_DOUBLE 12
 
 /* The size of `long long', as computed by sizeof. */
 #define SIZEOF_LONG_LONG 8
@@ -1738,22 +1738,22 @@
 #define SIZEOF_PTHREAD_KEY_T 4
 
 /* The size of `pthread_t', as computed by sizeof. */
-#define SIZEOF_PTHREAD_T 8
+#define SIZEOF_PTHREAD_T 4
 
 /* The size of `short', as computed by sizeof. */
 #define SIZEOF_SHORT 2
 
 /* The size of `size_t', as computed by sizeof. */
-#define SIZEOF_SIZE_T 8
+#define SIZEOF_SIZE_T 4
 
 /* The size of `time_t', as computed by sizeof. */
-#define SIZEOF_TIME_T 8
+#define SIZEOF_TIME_T 4
 
 /* The size of `uintptr_t', as computed by sizeof. */
-#define SIZEOF_UINTPTR_T 8
+#define SIZEOF_UINTPTR_T 4
 
 /* The size of `void *', as computed by sizeof. */
-#define SIZEOF_VOID_P 8
+#define SIZEOF_VOID_P 4
 
 /* The size of `wchar_t', as computed by sizeof. */
 #define SIZEOF_WCHAR_T 4
@@ -1921,7 +1921,7 @@
 #endif
 
 /* Define if arithmetic is subject to x87-style double rounding issue */
-/* #undef X87_DOUBLE_ROUNDING */
+#define X87_DOUBLE_ROUNDING 1
 
 /* Define on OpenBSD to activate all library features */
 /* #undef _BSD_SOURCE */
