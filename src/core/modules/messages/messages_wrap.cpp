@@ -137,7 +137,11 @@ void export_protobuf_message(scope _messages)
 	ProtobufMessage.def("get_float", &CProtobufMessageExt::GetFloat);
 	ProtobufMessage.def("get_double", &CProtobufMessageExt::GetDouble);
 	ProtobufMessage.def("get_bool", &CProtobufMessageExt::GetBool);
-	ProtobufMessage.def("get_string", &CProtobufMessageExt::GetString);
+	ProtobufMessage.def(
+		"get_string",
+		&CProtobufMessageExt::GetString,
+		("self", "field_name", arg("errors")=object())
+	);
 	ProtobufMessage.def("get_enum", &CProtobufMessageExt::GetEnum);
 	ProtobufMessage.def("get_message", &CProtobufMessageExt::GetMessage, reference_existing_object_policy());
 	
@@ -148,7 +152,11 @@ void export_protobuf_message(scope _messages)
 	ProtobufMessage.def("get_repeated_float", &CProtobufMessageExt::GetRepeatedFloat);
 	ProtobufMessage.def("get_repeated_double", &CProtobufMessageExt::GetRepeatedDouble);
 	ProtobufMessage.def("get_repeated_bool", &CProtobufMessageExt::GetRepeatedBool);
-	ProtobufMessage.def("get_repeated_string", &CProtobufMessageExt::GetRepeatedString);
+	ProtobufMessage.def(
+		"get_repeated_string",
+		&CProtobufMessageExt::GetRepeatedString,
+		("self", "field_name", "index", arg("errors")=object())
+	);
 	ProtobufMessage.def("get_repeated_enum", &CProtobufMessageExt::GetRepeatedEnum);
 	ProtobufMessage.def("get_repeated_message", &CProtobufMessageExt::GetRepeatedMessage, reference_existing_object_policy());
 	

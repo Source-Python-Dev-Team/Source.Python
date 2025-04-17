@@ -41,13 +41,11 @@ class CCachedProperty
 {
 public:
 	CCachedProperty(
-		object fget, object fset, object fdel, object doc, bool unbound,
+		object fget, object fset, object fdel, object doc,
 		boost::python::tuple args, object kwargs
 	);
 
 	static object _callable_check(object function, const char *szName);
-	static object _prepare_value(object value);
-	void _invalidate_cache(PyObject *pRef);
 
 	object get_getter();
 	object set_getter(object fget);
@@ -77,7 +75,7 @@ public:
 
 	static CCachedProperty *wrap_descriptor(
 		object descriptor, object owner=object(), str name=str(),
-		bool unbound=false, boost::python::tuple args=boost::python::tuple(), object kwargs=object()
+		boost::python::tuple args=boost::python::tuple(), object kwargs=object()
 	);
 
 private:
@@ -87,9 +85,6 @@ private:
 
 	str m_name;
 	object m_owner;
-
-	bool m_bUnbound;
-	dict m_cache;
 
 public:
 	object m_doc;

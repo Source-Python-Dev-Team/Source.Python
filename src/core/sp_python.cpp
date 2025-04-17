@@ -56,6 +56,7 @@ CPythonManager g_PythonManager;
 // Forward declarations.
 //---------------------------------------------------------------------------------
 void InitConverters();
+void EnableDictTraversal();
 
 
 //---------------------------------------------------------------------------------
@@ -168,6 +169,9 @@ bool CPythonManager::Initialize( void )
 	// And of course, the plugins directory for script imports.
 	AddToSysPath("/plugins");
 
+	// Enable circular references traversal
+	EnableDictTraversal();
+
 	// Initialize all converters
 	InitConverters();
 
@@ -263,6 +267,39 @@ bool CPythonManager::Shutdown( void )
 
 
 //---------------------------------------------------------------------------------
+// Circular references traversal
+//---------------------------------------------------------------------------------
+struct dict_traversal
+{
+	static int is_gc(PyObject *self)
+	{
+		return !!downcast<objects::instance<> >(self)->dict;
+	}
+
+	static int traverse(PyObject *self, visitproc visit, void *arg)
+	{
+		Py_VISIT(downcast<objects::instance<> >(self)->dict);
+		return 0;
+	}
+
+	static int clear(PyObject *self)
+	{
+		Py_CLEAR(downcast<objects::instance<> >(self)->dict);
+		return 0;
+	}
+};
+
+void EnableDictTraversal()
+{
+	PyTypeObject *type = objects::class_type().get();
+	type->tp_flags |= Py_TPFLAGS_HAVE_GC;
+	type->tp_is_gc = dict_traversal::is_gc;
+	type->tp_traverse = dict_traversal::traverse;
+	type->tp_clear = dict_traversal::clear;
+}
+
+
+//---------------------------------------------------------------------------------
 // Converters
 //---------------------------------------------------------------------------------
 // string_t
@@ -307,6 +344,32 @@ struct baseentity_from_python
 	{
 		CBaseEntityWrapper* pAddr = extract<CBaseEntityWrapper*>(obj);
 		return (void *) pAddr;
+	}
+};
+
+struct baseentity_index_from_python
+{
+	baseentity_index_from_python()
+	{
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<CBaseEntity>()
+		);
+
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<CBaseEntityWrapper>()
+		);
+	}
+
+	static void* convert(PyObject* obj)
+	{
+		extract<unsigned int> extractor(obj);
+		if (!extractor.check()) {
+			return NULL;
+		}
+
+		return (void *)ExcBaseEntityFromIndex(extractor());
 	}
 };
 
@@ -364,6 +427,7 @@ void InitConverters()
 
 	baseentity_to_python();
 	baseentity_from_python();
+	baseentity_index_from_python();
 	
 	void_ptr_to_python();
 	void_ptr_from_python();

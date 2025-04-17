@@ -65,6 +65,8 @@ from _listeners import on_entity_spawned_listener_manager
 from _listeners import on_networked_entity_spawned_listener_manager
 from _listeners import on_entity_deleted_listener_manager
 from _listeners import on_networked_entity_deleted_listener_manager
+from _listeners import on_entity_collision_listener_manager
+from _listeners import on_entity_transmit_listener_manager
 from _listeners import on_data_loaded_listener_manager
 from _listeners import on_combiner_pre_cache_listener_manager
 from _listeners import on_data_unloaded_listener_manager
@@ -72,6 +74,8 @@ from _listeners import on_query_cvar_value_finished_listener_manager
 from _listeners import on_server_activate_listener_manager
 from _listeners import on_tick_listener_manager
 from _listeners import on_server_output_listener_manager
+from _listeners import on_player_collision_listener_manager
+from _listeners import on_player_transmit_listener_manager
 from _listeners import on_player_run_command_listener_manager
 from _listeners import on_player_post_run_command_listener_manager
 from _listeners import on_button_state_changed_listener_manager
@@ -99,6 +103,8 @@ __all__ = ('ButtonStatus',
            'OnNetworkedEntityCreated',
            'OnEntityDeleted',
            'OnNetworkedEntityDeleted',
+           'OnEntityCollision',
+           'OnEntityTransmit',
            'OnEntityOutput',
            'OnEntityOutputListenerManager',
            'OnEntityPreSpawned',
@@ -110,6 +116,8 @@ __all__ = ('ButtonStatus',
            'OnLevelEnd',
            'OnNetworkidValidated',
            'OnButtonStateChanged',
+           'OnPlayerCollision',
+           'OnPlayerTransmit',
            'OnPlayerRunCommand',
            'OnPlayerPostRunCommand',
            'OnPluginLoaded',
@@ -138,6 +146,8 @@ __all__ = ('ButtonStatus',
            'on_networked_entity_created_listener_manager',
            'on_entity_deleted_listener_manager',
            'on_networked_entity_deleted_listener_manager',
+           'on_entity_collision_listener_manager',
+           'on_entity_transmit_listener_manager',
            'on_entity_output_listener_manager',
            'on_entity_pre_spawned_listener_manager',
            'on_networked_entity_pre_spawned_listener_manager',
@@ -156,6 +166,8 @@ __all__ = ('ButtonStatus',
            'on_tick_listener_manager',
            'on_version_update_listener_manager',
            'on_server_output_listener_manager',
+           'on_player_collision_listener_manager',
+           'on_player_transmit_listener_manager',
            'on_player_run_command_listener_manager',
            'on_button_state_changed_listener_manager',
            )
@@ -410,6 +422,18 @@ class OnNetworkedEntityDeleted(ListenerManagerDecorator):
     manager = on_networked_entity_deleted_listener_manager
 
 
+class OnEntityCollision(ListenerManagerDecorator):
+    """Register/unregister a OnEntityCollision listener."""
+
+    manager = on_entity_collision_listener_manager
+
+
+class OnEntityTransmit(ListenerManagerDecorator):
+    """Register/unregister a OnEntityTransmit listener."""
+
+    manager = on_entity_transmit_listener_manager
+
+
 class OnDataLoaded(ListenerManagerDecorator):
     """Register/unregister a OnDataLoaded listener."""
 
@@ -489,6 +513,18 @@ class OnLevelEnd(ListenerManagerDecorator):
 
     # Guard variable to ensure this listener gets called only once per map.
     _level_initialized = False
+
+
+class OnPlayerCollision(ListenerManagerDecorator):
+    """Register/unregister a OnPlayerCollision listener."""
+
+    manager = on_player_collision_listener_manager
+
+
+class OnPlayerTransmit(ListenerManagerDecorator):
+    """Register/unregister a OnPlayerTransmit listener."""
+
+    manager = on_player_transmit_listener_manager
 
 
 class OnPlayerRunCommand(ListenerManagerDecorator):

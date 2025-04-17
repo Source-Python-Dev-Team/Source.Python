@@ -324,6 +324,48 @@ Called when a networked entity has been spawned.
         pass
 
 
+OnEntityCollision
+-----------------
+
+Called when a non-player entity is about to collide with another entity.
+
+.. note::
+
+    This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash`,
+    :class:`entities.collisions.CollisionMap`, or :class:`entities.collisions.CollisionSet`
+    if you don't have dynamic conditions to test for.
+
+.. code-block:: python
+
+    from listeners import OnEntityCollision
+
+    @OnEntityCollision
+    def on_entity_collision(entity, other):
+        # Disable weapons/projectiles collisions with everything except players
+        return not (entity.is_weapon() and not other.is_player())
+
+
+OnEntityTransmit
+----------------
+
+Called when a non-player entity is about to be transmitted to a player.
+
+.. note::
+
+    This listener can be extremely noisy. Use :class:`entities.transmit.TransmitHash`,
+    :class:`entities.transmit.TransmitMap`, or :class:`entities.transmit.TransmitSet`
+    if you don't have dynamic conditions to test for.
+
+.. code-block:: python
+
+    from listeners import OnEntityTransmit
+
+    @OnEntityTransmit
+    def on_entity_transmit(player, entity):
+        # Never transmit hostages
+        return entity.classname != 'hostage_entity'
+
+
 OnLevelInit
 -----------
 
@@ -404,6 +446,50 @@ Called when the button state of a player changed.
 
     Use :func:`listeners.get_button_combination_status` to check if a specific
     button or button combination has been pressed or released.
+
+
+OnPlayerCollision
+-----------------
+
+Called when a player is about to collide with an entity.
+
+.. note::
+
+    This listener can be extremely noisy. Use :class:`entities.collisions.CollisionHash`,
+    :class:`entities.collisions.CollisionMap`, or :class:`entities.collisions.CollisionSet`
+    if you don't have dynamic conditions to test for.
+
+.. code-block:: python
+
+    from listeners import OnPlayerCollision
+
+    @OnPlayerCollision
+    def on_player_collision(player, entity):
+        # Disable teammates collisions
+        if not entity.is_player():
+            return
+        return player.team_index != entity.team_index
+
+
+OnPlayerTransmit
+----------------
+
+Called when a player is about to be transmitted to another.
+
+.. note::
+
+    This listener can be extremely noisy. Use :class:`entities.transmit.TransmitHash`,
+    :class:`entities.transmit.TransmitMap`, or :class:`entities.transmit.TransmitSet`
+    if you don't have dynamic conditions to test for.
+
+.. code-block:: python
+
+    from listeners import OnPlayerTransmit
+
+    @OnPlayerTransmit
+    def on_player_transmit(player, other):
+        # Don't transmit teammates
+        return player.team != other.team
 
 
 OnPlayerRunCommand

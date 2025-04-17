@@ -320,7 +320,8 @@ void export_bf_read(scope _bitbuffers)
 		)
 		
 		.def("read_string",
-			&BitBufferReadExt::ReadString
+			&BitBufferReadExt::ReadString,
+			("self", arg("errors")=object())
 		)
 
 		.add_property("num_bytes_left",

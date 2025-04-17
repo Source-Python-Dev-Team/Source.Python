@@ -41,6 +41,7 @@ from configobj import ConfigObj
 # Source.Python Imports
 #   Paths
 from paths import GAME_PATH
+from paths import CFG_PATH
 from paths import PLUGIN_PATH
 
 
@@ -64,6 +65,7 @@ from _core import SOURCE_ENGINE_BRANCH
 # =============================================================================
 __all__ = ('AutoUnload',
            'BoostPythonClass',
+           'ConfigFile',
            'GameConfigObj',
            'WeakAutoUnload',
            'GAME_NAME',
@@ -71,6 +73,7 @@ __all__ = ('AutoUnload',
            'PLATFORM',
            'SOURCE_ENGINE',
            'SOURCE_ENGINE_BRANCH',
+           'Tokenize',
            'check_info_output',
            'console_message',
            'create_checksum',
@@ -184,7 +187,7 @@ class GameConfigObj(ConfigObj):
 class Tokenize(list):
     """Parses the arguments from the given string."""
 
-    _pattern = re_compile('"[^"]*"|[^ ]+')
+    _pattern = re_compile(r'"[^"]*"|[^ \t]+')
 
     def __init__(self, string, comment_prefix=None):
         """Splits the arguments from the given string."""

@@ -54,10 +54,10 @@ void export_cached_property(scope _cache)
 {
 	class_<CCachedProperty, CCachedProperty *> CachedProperty(
 		"CachedProperty",
-		init<object, object, object, object, bool, boost::python::tuple, object>(
+		init<object, object, object, object, boost::python::tuple, object>(
 			(
 				arg("self"), arg("fget")=object(), arg("fset")=object(), arg("fdel")=object(), arg("doc")=object(),
-				arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=object()
+				arg("args")=boost::python::tuple(), arg("kwargs")=object()
 			),
 			"Represents a property attribute that is only"
 			" computed once and cached.\n"
@@ -83,10 +83,6 @@ void export_cached_property(scope _cache)
 			"	Deleter signature: self, *args, **kwargs\n"
 			":param str doc:\n"
 			"	Documentation string for this property.\n"
-			":param bool unbound:\n"
-			"	Whether the cached objects should be independently maintained rather than bound to"
-			" the instance they belong to. The cache will be slightly slower to lookup, but this can"
-			" be required for instances that do not have a `__dict__` attribute.\n"
 			":param tuple args:\n"
 			"	Extra arguments passed to the getter, setter and deleter functions.\n"
 			":param dict kwargs:\n"
@@ -95,9 +91,8 @@ void export_cached_property(scope _cache)
 			":raises TypeError:\n"
 			"	If the given getter, setter or deleter is not callable.\n"
 			"\n"
-			".. warning ::\n"
-			"	If a cached object hold a strong reference of the instance it belongs to,"
-			"	this will result in a circular reference preventing their garbage collection."
+			".. note ::\n"
+			"	Generator values cannot be cached."
 			"\n"
 			"Example:\n"
 			"\n"
@@ -431,10 +426,8 @@ void export_cached_property(scope _cache)
 		"	If the getter, setter or deleter are not callable.",
 		(
 			"descriptor", arg("owner")=object(), arg("name")=str(),
-			arg("unbound")=false, arg("args")=boost::python::tuple(), arg("kwargs")=object()
+			arg("args")=boost::python::tuple(), arg("kwargs")=object()
 		)
 	)
 	.staticmethod("wrap_descriptor");
-
-	scope().attr("cached_property") = scope().attr("CachedProperty");
 }

@@ -11,6 +11,8 @@ from collections import OrderedDict
 #   Configobj
 from configobj import ConfigObj
 from configobj import Section
+#   GC
+from gc import collect
 #   Importlib
 from importlib.util import find_spec
 from importlib.util import spec_from_file_location
@@ -234,6 +236,7 @@ class PluginManager(OrderedDict):
 
         self._remove_modules(plugin_name)
         del self[plugin_name]
+        collect()
         on_plugin_unloaded_manager.notify(plugin)
 
     def reload(self, plugin_name):

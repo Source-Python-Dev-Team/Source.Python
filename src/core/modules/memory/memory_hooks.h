@@ -54,7 +54,7 @@ public:
 	{ return m_pHook->GetRegisters(); }
 
 	str	__repr__()
-	{ return str(tuple(ptr(this))); }
+	{ return str(boost::python::tuple(ptr(this))); }
 
 	void* GetReturnAddress()
 	{

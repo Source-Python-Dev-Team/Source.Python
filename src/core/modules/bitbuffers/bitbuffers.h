@@ -87,13 +87,12 @@ public:
 		return BitByte(buffer.GetNumBitsRead());
 	}
 
-	static str ReadString(bf_read& buffer)
+	static str ReadString(bf_read& buffer, const char* szErrors = NULL)
 	{
-		char* pStr = new char[buffer.m_nDataBytes];
-		buffer.ReadString(pStr, buffer.m_nDataBytes);
-
+		char* pStr = buffer.ReadAndAllocateString();
 		// Let Boost handle deallocating the string
-		str result = str((const char *) pStr);
+		str result = make_str((const char *) pStr, szErrors);
+
 		delete pStr;
 		return result;
 	}

@@ -19,6 +19,7 @@ from _commands import Command
 from _commands import CommandReturn
 from _commands import ConCommand
 from _commands import ConCommandBase
+from _commands import get_command_index
 
 
 # =============================================================================
@@ -28,6 +29,7 @@ __all__ = ('Command',
            'CommandReturn',
            'ConCommand',
            'ConCommandBase',
+           'get_command_index',
            )
 
 

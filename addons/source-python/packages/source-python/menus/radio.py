@@ -108,9 +108,12 @@ class SimpleRadioMenu(_BaseMenu):
         if choice_index == BUTTON_CLOSE:
             return self._select_close(player_index)
 
-        return super()._select(
-            player_index,
-            self._player_pages[player_index].options[choice_index])
+        try:
+            option = self._player_pages[player_index].options[choice_index]
+        except KeyError:
+            return
+
+        return super()._select(player_index, option)
 
     def _send(self, player_index):
         """Build and sends the menu to the given player via ShowMenu.

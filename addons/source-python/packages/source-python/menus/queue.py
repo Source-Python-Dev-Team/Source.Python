@@ -219,7 +219,7 @@ def _validate_selection(command, index, valid_choices):
     """
     try:
         choice = int(command[1])
-    except ValueError:
+    except (ValueError, IndexError):
         # Catch errors caused by e.g. "menuselect a"
         return (None, None)
 
