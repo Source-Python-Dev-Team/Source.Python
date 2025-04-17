@@ -15,7 +15,7 @@ To build Source.Python on Linux, you need the following requirements:
 
 * `CMake 3.15 or later <https://cmake.org/download/>`_
 * `Git <https://git-scm.com/downloads>`_
-* `GCC (our buildbot uses 4.8) <https://gcc.gnu.org/>`_
+* `GCC 8 or later <https://gcc.gnu.org/>`_
 
 Once you have installed the requirements, follow these steps to build Source.Python:
 
