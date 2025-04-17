@@ -51,6 +51,14 @@ If(SOURCE_ENGINE MATCHES "bms")
         ${SOURCESDK_LIB}/public/linux32/libtier0_srv.so
         ${SOURCESDK_LIB}/public/linux32/libvstdlib_srv.so
     )
+ElseIf(SOURCE_ENGINE MATCHES "orangebox")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+         ${SOURCESDK_LIB}/public/linux/mathlib_i486.a
+         ${SOURCESDK_LIB}/public/linux/tier1_i486.a
+         ${SOURCESDK_LIB}/public/linux/libtier0_srv.so
+         ${SOURCESDK_LIB}/public/linux/libvstdlib_srv.so
+    )
 Else()
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
@@ -62,7 +70,7 @@ EndIf()
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2" OR SOURCE_ENGINE MATCHES "gmod")
+If(SOURCE_ENGINE MATCHES "l4d2" OR SOURCE_ENGINE MATCHES "gmod")
     # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
@@ -79,12 +87,6 @@ If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
          ${SOURCESDK_LIB}/linux/interfaces_i486.a
          ${SOURCESDK_LIB}/linux/libtier0.so
          ${SOURCESDK_LIB}/linux/libvstdlib.so
-    )
-EndIf()
-
-If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
-    Set(SOURCEPYTHON_LINK_LIBRARIES
-        "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux32/release/libprotobuf.a
     )
 EndIf()
