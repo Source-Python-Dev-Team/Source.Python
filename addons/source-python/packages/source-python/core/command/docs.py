@@ -326,8 +326,8 @@ def _build_source_python_docs():
 
         # Create/update credits.rst
         with project.project_source_dir.joinpath(
-                'general', 'credits.rst').open('w') as f:
-            f.write(_get_updated_credits_wiki())
+                'general', 'credits.rst').open('wb') as f:
+            f.write(_get_updated_credits_wiki().encode())
 
         try:
             project.build()
