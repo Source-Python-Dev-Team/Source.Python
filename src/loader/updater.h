@@ -32,6 +32,7 @@
 //---------------------------------------------------------------------------------
 #define SP_UPDATE_PATH "addons/source-python/update"
 #define SP_PACKAGE_PATH "addons/source-python/packages/source-python"
+#define SITE_PACKAGE_PATH "addons/source-python/packages/site-packages"
 #define SP_DATA_PATH "addons/source-python/data/source-python"
 #define SP_DOCS_PATH "addons/source-python/docs/source-python"
 #define PYTHON3_PATH "addons/source-python/Python3"
