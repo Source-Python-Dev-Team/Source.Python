@@ -445,7 +445,7 @@ def is_source_python(package):
 def is_custom_package(package):
     """Return True if the given package name is a custom package."""
     return package in map(
-        lambda path: str(path.name), CUSTOM_PACKAGES_PATH.listdir())
+        lambda path: str(path.name), CUSTOM_PACKAGES_PATH.iterdir())
 
 
 def is_plugin(package):

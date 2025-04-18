@@ -167,7 +167,7 @@ def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
 def _clean_update_dir():
     """Clear or create the update directory."""
     if UPDATE_PATH.exists():
-        for f in UPDATE_PATH.listdir():
+        for f in UPDATE_PATH.iterdir():
             if f.is_file():
                 f.remove()
             else:

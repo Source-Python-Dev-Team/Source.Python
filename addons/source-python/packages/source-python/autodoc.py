@@ -109,38 +109,27 @@ class SphinxProject(object):
         self.validate_package()
         self.project_dir.mkdir()
 
-        from sphinx.quickstart import main
-
-        argv = [
-            '',  # Will be skipped.
-            '-q',  # Don't start the interactive mode
-        ]
+        from sphinx.cmd.quickstart import main
 
         if project_name is None:
             project_name = self.package_dir.name
 
-        argv.append('-p {0}'.format(project_name))
-        argv.append('-a {0}'.format(author))
-        argv.append('-v {0}'.format(version))
-
-        argv.extend([
-            str(self.project_dir),
-            '--sep',  # Separate source and build directory
-            '--ext-autodoc',  # Enable autodoc
+        argv = [
+            '-q',               # Don't start the interactive mode
+            f'-p {project_name}',
+            f'-a {author}',
+            f'-v {version}',
+            self.project_dir,
+            '--sep',            # Separate source and build directory
+            '--ext-autodoc',    # Enable autodoc
             '--no-makefile',
             '--no-batchfile'
-        ])
+        ]
 
-        # Hacky, but required, because sphinx is reading sys.argv even if you
-        # pass a list to main()
-        old_argv = sys.argv
-        sys.argv = argv
         try:
-            main(sys.argv)
+            main(argv)
         except:
             raise SphinxError
-        finally:
-            sys.argv = old_argv
 
     def generate_project_files(self, sub_dir=''):
         """Generate the project files (`*.rst` files).
@@ -155,25 +144,19 @@ class SphinxProject(object):
         """
         self.validate_project_and_package()
 
-        from sphinx.apidoc import main
+        from sphinx.ext.apidoc._cli import main
+        
         argv = [
-            '',  # Will be skipped.
             '-e',  # Separate pages/files for every module
             '-o',
             str(self.project_source_dir / sub_dir),
             str(self.package_dir),  # Package to document
         ]
 
-        # Hacky, but required, because sphinx is reading sys.argv even if you
-        # pass a list to main()
-        old_argv = sys.argv
-        sys.argv = argv
         try:
-            main(sys.argv)
+            main(argv)
         except:
             raise SphinxError
-        finally:
-            sys.argv = old_argv
 
     def build(self, clean=False):
         """Build the Sphinx project.
@@ -193,24 +176,18 @@ class SphinxProject(object):
         if add_to_path:
             sys.path.append(str(self.package_dir.parent))
 
-        from sphinx import main
+        from sphinx.cmd.build import main
         argv = [
-            '',  # Will be skipped.
             str(self.project_source_dir),
             str(self.project_build_dir),
         ]
 
-        # Hacky, but required, because sphinx is reading sys.argv even if you
-        # pass a list to main()
-        old_argv = sys.argv
-        sys.argv = argv
         try:
-            main(sys.argv)
+            main(argv)
         except SystemExit as e:
             if e.code != 0:
                 raise SphinxError
         finally:
-            sys.argv = old_argv
             if add_to_path:
                 sys.path.remove(str(self.package_dir.parent))
 
