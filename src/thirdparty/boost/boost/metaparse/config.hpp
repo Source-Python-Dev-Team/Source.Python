@@ -24,16 +24,47 @@
 #endif
 
 /*
+ * C++ standard to use
+ */
+
+// Allow overriding this
+#ifndef BOOST_METAPARSE_STD
+
+// special-case MSCV >= 1900 as its constexpr support is good enough for
+// Metaparse
+#  if \
+    !defined BOOST_NO_CXX11_VARIADIC_TEMPLATES \
+    && !defined BOOST_NO_VARIADIC_TEMPLATES \
+    && ( \
+      (!defined BOOST_NO_CONSTEXPR && !defined BOOST_NO_CXX11_CONSTEXPR) \
+      || (defined _MSC_VER && _MSC_VER >= 1900) \
+    ) \
+    && (!defined BOOST_GCC || BOOST_GCC >= 40700)
+
+#    if !defined BOOST_NO_CXX14_CONSTEXPR
+
+#      define BOOST_METAPARSE_STD 2014
+
+#    else
+
+#      define BOOST_METAPARSE_STD 2011
+
+#    endif
+
+#  else
+
+#    define BOOST_METAPARSE_STD 1998
+
+#  endif
+
+#endif
+
+/*
  * Metaparse config
  */
 
-#if \
-  !defined BOOST_NO_CXX11_VARIADIC_TEMPLATES \
-  && !defined BOOST_NO_VARIADIC_TEMPLATES \
-  && !defined BOOST_METAPARSE_VARIADIC_STRING
-
+#if BOOST_METAPARSE_STD >= 2011
 #  define BOOST_METAPARSE_VARIADIC_STRING
-
 #endif
 
 #endif

@@ -81,7 +81,7 @@ class ResourceFile(OrderedDict):
     def write(self):
         """Write the .res file to disk."""
         # Does the director for the .res file exist?
-        if not self.fullpath.parent.isdir():
+        if not self.fullpath.parent.is_dir():
 
             # Create the directory
             self.fullpath.parent.makedirs()

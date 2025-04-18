@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::replicate`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -24,29 +24,27 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
+    //! @cond
     template <typename M>
-    struct replicate_t {
+    template <typename X, typename N>
+    constexpr auto replicate_t<M>::operator()(X&& x, N const& n) const {
+        using Replicate = BOOST_HANA_DISPATCH_IF(replicate_impl<M>,
+            hana::MonadPlus<M>::value &&
+            hana::IntegralConstant<N>::value
+        );
+
     #ifndef BOOST_HANA_CONFIG_DISABLE_CONCEPT_CHECKS
         static_assert(hana::MonadPlus<M>::value,
         "hana::replicate<M>(x, n) requires 'M' to be a MonadPlus");
+
+        static_assert(hana::IntegralConstant<N>::value,
+        "hana::replicate<M>(x, n) requires 'n' to be an IntegralConstant");
     #endif
 
-        template <typename X, typename N>
-        constexpr auto operator()(X&& x, N const& n) const {
-            using Replicate = BOOST_HANA_DISPATCH_IF(replicate_impl<M>,
-                hana::MonadPlus<M>::value &&
-                hana::IntegralConstant<N>::value
-            );
-
-        #ifndef BOOST_HANA_CONFIG_DISABLE_CONCEPT_CHECKS
-            static_assert(hana::IntegralConstant<N>::value,
-            "hana::replicate<M>(x, n) requires 'n' to be an IntegralConstant");
-        #endif
-
-            return Replicate::apply(static_cast<X&&>(x), n);
-        }
-    };
+        return Replicate::apply(static_cast<X&&>(x), n);
+    }
+    //! @endcond
 
     template <typename M, bool condition>
     struct replicate_impl<M, when<condition>> : default_ {
@@ -69,6 +67,6 @@ BOOST_HANA_NAMESPACE_BEGIN
                                     std::make_index_sequence<n>{});
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_REPLICATE_HPP

@@ -15,6 +15,7 @@
 #ifndef BOOST_LOG_SINKS_SYNC_FRONTEND_HPP_INCLUDED_
 #define BOOST_LOG_SINKS_SYNC_FRONTEND_HPP_INCLUDED_
 
+#include <mutex>
 #include <boost/log/detail/config.hpp>
 
 #ifdef BOOST_HAS_PRAGMA_ONCE
@@ -25,12 +26,10 @@
 #error Boost.Log: Synchronous sink frontend is only supported in multithreaded environment
 #endif
 
-#include <boost/static_assert.hpp>
 #include <boost/smart_ptr/shared_ptr.hpp>
 #include <boost/smart_ptr/make_shared_object.hpp>
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
-#include <boost/thread/recursive_mutex.hpp>
 #include <boost/log/detail/locking_ptr.hpp>
 #include <boost/log/detail/parameter_tools.hpp>
 #include <boost/log/core/record_view.hpp>
@@ -46,20 +45,20 @@ namespace sinks {
 
 #ifndef BOOST_LOG_DOXYGEN_PASS
 
-#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_1(n, data)\
+#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_1(z, n, data)\
     template< typename T0 >\
     explicit synchronous_sink(T0 const& arg0, typename boost::log::aux::enable_if_named_parameters< T0, boost::log::aux::sfinae_dummy >::type = boost::log::aux::sfinae_dummy()) :\
         base_type(false),\
         m_pBackend(boost::make_shared< sink_backend_type >(arg0)) {}
 
-#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_N(n, data)\
-    template< BOOST_PP_ENUM_PARAMS(n, typename T) >\
-    explicit synchronous_sink(BOOST_PP_ENUM_BINARY_PARAMS(n, T, const& arg)) :\
+#define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_N(z, n, data)\
+    template< BOOST_PP_ENUM_PARAMS_Z(z, n, typename T) >\
+    explicit synchronous_sink(BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, T, const& arg)) :\
         base_type(false),\
-        m_pBackend(boost::make_shared< sink_backend_type >(BOOST_PP_ENUM_PARAMS(n, arg))) {}
+        m_pBackend(boost::make_shared< sink_backend_type >(BOOST_PP_ENUM_PARAMS_Z(z, n, arg))) {}
 
 #define BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL(z, n, data)\
-    BOOST_PP_IF(BOOST_PP_EQUAL(n, 1), BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_1, BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_N)(n, data)
+    BOOST_PP_IF(BOOST_PP_EQUAL(n, 1), BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_1, BOOST_LOG_SINK_CTOR_FORWARD_INTERNAL_N)(z, n, data)
 
 #endif // BOOST_LOG_DOXYGEN_PASS
 
@@ -76,13 +75,13 @@ class synchronous_sink :
 
 private:
     //! Synchronization mutex type
-    typedef boost::recursive_mutex backend_mutex_type;
+    typedef std::recursive_mutex backend_mutex_type;
 
 public:
     //! Sink implementation type
     typedef SinkBackendT sink_backend_type;
     //! \cond
-    BOOST_STATIC_ASSERT_MSG((has_requirement< typename sink_backend_type::frontend_requirements, synchronized_feeding >::value), "Synchronous sink frontend is incompatible with the specified backend: thread synchronization requirements are not met");
+    static_assert(has_requirement< typename sink_backend_type::frontend_requirements, synchronized_feeding >::value, "Synchronous sink frontend is incompatible with the specified backend: thread synchronization requirements are not met");
     //! \endcond
 
 #ifndef BOOST_LOG_DOXYGEN_PASS
@@ -148,7 +147,7 @@ public:
     /*!
      * Passes the log record to the backend
      */
-    void consume(record_view const& rec)
+    void consume(record_view const& rec) BOOST_OVERRIDE
     {
         base_type::feed_record(rec, m_BackendMutex, *m_pBackend);
     }
@@ -156,7 +155,7 @@ public:
     /*!
      * The method attempts to pass logging record to the backend
      */
-    bool try_consume(record_view const& rec)
+    bool try_consume(record_view const& rec) BOOST_OVERRIDE
     {
         return base_type::try_feed_record(rec, m_BackendMutex, *m_pBackend);
     }
@@ -166,7 +165,7 @@ public:
      * may take considerable time to complete and may block both the calling thread and threads
      * attempting to put new records into the sink while this call is in progress.
      */
-    void flush()
+    void flush() BOOST_OVERRIDE
     {
         base_type::flush_backend(m_BackendMutex, *m_pBackend);
     }

@@ -8,11 +8,9 @@
 # include <boost/python/detail/prefix.hpp>
 
 # include <boost/python/detail/target.hpp>
+# include <boost/python/detail/type_traits.hpp>
 # include <boost/python/object/iterator.hpp>
 # include <boost/python/object_core.hpp>
-
-# include <boost/type_traits/cv_traits.hpp>
-# include <boost/type_traits/transform_traits.hpp>
 
 # if defined(BOOST_MSVC) && (BOOST_MSVC == 1400) /*
 > warning C4180: qualifier applied to function type has no meaning; ignored
@@ -24,7 +22,7 @@ works correctly. */
 #  pragma warning(disable: 4180)
 # endif
 
-# include <boost/bind.hpp>
+# include <boost/bind/bind.hpp>
 # include <boost/bind/protect.hpp>
 
 namespace boost { namespace python { 
@@ -42,6 +40,7 @@ namespace detail
     , Target&(*)()
   )
   {
+      using namespace boost::placeholders;
       return objects::make_iterator_function<Target>(
           boost::protect(boost::bind(get_start, _1))
         , boost::protect(boost::bind(get_finish, _1))
@@ -80,7 +79,7 @@ namespace detail
 template <class T>
 struct iterators
     : detail::iterators_impl<
-        boost::is_const<T>::value
+        detail::is_const<T>::value
       >::template apply<T>
 {
 };

@@ -1018,16 +1018,16 @@ void export_functions(scope _memory)
 // ============================================================================
 // >> GLOBAL VARIABLES
 // ============================================================================
-dict g_oExposedClasses;
-dict g_oClassInfo;
+DeferredDict g_oExposedClasses;
+DeferredDict g_oClassInfo;
 
 #define ADD_NATIVE_TYPE_SIZE(name, type) \
 	scope().attr("TYPE_SIZES")[name] = sizeof(type);
 
 void export_global_variables(scope _memory)
 {
-	_memory.attr("EXPOSED_CLASSES") = g_oExposedClasses;
-	_memory.attr("CLASS_INFO") = g_oClassInfo;
+	_memory.attr("EXPOSED_CLASSES") = g_oExposedClasses.get();
+	_memory.attr("CLASS_INFO") = g_oClassInfo.get();
 
 	// Don't remove this! It's required for the ADD_NATIVE_TYPE_SIZE macro.
 	_memory.attr("TYPE_SIZES") = dict();

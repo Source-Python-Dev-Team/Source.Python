@@ -7,7 +7,7 @@
 Defines the `BOOST_HANA_DEFINE_STRUCT`, `BOOST_HANA_ADAPT_STRUCT`, and
 `BOOST_HANA_ADAPT_ADT` macros.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -32,7 +32,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace struct_detail {
+namespace boost { namespace hana { namespace struct_detail {
     template <typename Memptr, Memptr ptr>
     struct member_ptr {
         template <typename T>
@@ -57,7 +57,284 @@ BOOST_HANA_NAMESPACE_BEGIN namespace struct_detail {
         constexpr std::size_t len = strlen(hana::at_c<n>(Names::get()));
         return prepare_member_name_impl<n, Names>(std::make_index_sequence<len>{});
     }
-} BOOST_HANA_NAMESPACE_END
+} }} // end namespace boost::hana
+
+//////////////////////////////////////////////////////////////////////////////
+// BOOST_HANA_PP_NARG
+//////////////////////////////////////////////////////////////////////////////
+//! @ingroup group-details
+//! Macro expanding to the number of arguments it is passed.
+//!
+//! Specifically, `BOOST_HANA_PP_NARG(x1, ..., xn)` expands to `n`. It is
+//! an error to call this macro with 0 arguments.
+
+#ifdef BOOST_HANA_WORKAROUND_MSVC_PREPROCESSOR_616033
+#   define BOOST_HANA_PP_NARG(...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_NARG_IMPL(__VA_ARGS__, 55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,),)
+#else
+#   define BOOST_HANA_PP_NARG(...) \
+        BOOST_HANA_PP_NARG_IMPL(__VA_ARGS__, 55,54,53,52,51,50,49,48,47,46,45,44,43,42,41,40,39,38,37,36,35,34,33,32,31,30,29,28,27,26,25,24,23,22,21,20,19,18,17,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,)
+#endif
+
+#define BOOST_HANA_PP_NARG_IMPL(e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13,e14,e15,e16,e17,e18,e19,e20,e21,e22,e23,e24,e25,e26,e27,e28,e29,e30,e31,e32,e33,e34,e35,e36,e37,e38,e39,e40,e41,e42,e43,e44,e45,e46,e47,e48,e49,e50,e51,e52,e53,e54,e55, N, ...) N
+
+//////////////////////////////////////////////////////////////////////////////
+// BOOST_HANA_PP_BACK
+//////////////////////////////////////////////////////////////////////////////
+//! @ingroup group-details
+//! Expands to its last argument.
+#define BOOST_HANA_PP_BACK(...) \
+    BOOST_HANA_PP_BACK_IMPL(BOOST_HANA_PP_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#ifdef BOOST_HANA_WORKAROUND_MSVC_PREPROCESSOR_616033
+#   define BOOST_HANA_PP_BACK_IMPL(N, ...) BOOST_HANA_PP_BACK_IMPL_I(N, __VA_ARGS__)
+#   define BOOST_HANA_PP_BACK_IMPL_I(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_BACK_IMPL_, N)(__VA_ARGS__),)
+#else
+#   define BOOST_HANA_PP_BACK_IMPL(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_BACK_IMPL_, N)(__VA_ARGS__)
+#endif
+
+
+#define BOOST_HANA_PP_BACK_IMPL_1(e1) e1
+
+#define BOOST_HANA_PP_BACK_IMPL_2(e1, e2) e2
+
+#define BOOST_HANA_PP_BACK_IMPL_3(e1, e2, e3) e3
+
+#define BOOST_HANA_PP_BACK_IMPL_4(e1, e2, e3, e4) e4
+
+#define BOOST_HANA_PP_BACK_IMPL_5(e1, e2, e3, e4, e5) e5
+
+#define BOOST_HANA_PP_BACK_IMPL_6(e1, e2, e3, e4, e5, e6) e6
+
+#define BOOST_HANA_PP_BACK_IMPL_7(e1, e2, e3, e4, e5, e6, e7) e7
+
+#define BOOST_HANA_PP_BACK_IMPL_8(e1, e2, e3, e4, e5, e6, e7, e8) e8
+
+#define BOOST_HANA_PP_BACK_IMPL_9(e1, e2, e3, e4, e5, e6, e7, e8, e9) e9
+
+#define BOOST_HANA_PP_BACK_IMPL_10(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10) e10
+
+#define BOOST_HANA_PP_BACK_IMPL_11(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11) e11
+
+#define BOOST_HANA_PP_BACK_IMPL_12(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12) e12
+
+#define BOOST_HANA_PP_BACK_IMPL_13(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13) e13
+
+#define BOOST_HANA_PP_BACK_IMPL_14(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14) e14
+
+#define BOOST_HANA_PP_BACK_IMPL_15(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15) e15
+
+#define BOOST_HANA_PP_BACK_IMPL_16(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16) e16
+
+#define BOOST_HANA_PP_BACK_IMPL_17(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17) e17
+
+#define BOOST_HANA_PP_BACK_IMPL_18(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18) e18
+
+#define BOOST_HANA_PP_BACK_IMPL_19(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19) e19
+
+#define BOOST_HANA_PP_BACK_IMPL_20(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20) e20
+
+#define BOOST_HANA_PP_BACK_IMPL_21(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21) e21
+
+#define BOOST_HANA_PP_BACK_IMPL_22(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22) e22
+
+#define BOOST_HANA_PP_BACK_IMPL_23(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23) e23
+
+#define BOOST_HANA_PP_BACK_IMPL_24(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24) e24
+
+#define BOOST_HANA_PP_BACK_IMPL_25(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25) e25
+
+#define BOOST_HANA_PP_BACK_IMPL_26(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26) e26
+
+#define BOOST_HANA_PP_BACK_IMPL_27(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27) e27
+
+#define BOOST_HANA_PP_BACK_IMPL_28(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28) e28
+
+#define BOOST_HANA_PP_BACK_IMPL_29(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29) e29
+
+#define BOOST_HANA_PP_BACK_IMPL_30(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30) e30
+
+#define BOOST_HANA_PP_BACK_IMPL_31(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31) e31
+
+#define BOOST_HANA_PP_BACK_IMPL_32(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32) e32
+
+#define BOOST_HANA_PP_BACK_IMPL_33(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33) e33
+
+#define BOOST_HANA_PP_BACK_IMPL_34(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34) e34
+
+#define BOOST_HANA_PP_BACK_IMPL_35(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35) e35
+
+#define BOOST_HANA_PP_BACK_IMPL_36(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36) e36
+
+#define BOOST_HANA_PP_BACK_IMPL_37(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37) e37
+
+#define BOOST_HANA_PP_BACK_IMPL_38(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38) e38
+
+#define BOOST_HANA_PP_BACK_IMPL_39(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39) e39
+
+#define BOOST_HANA_PP_BACK_IMPL_40(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40) e40
+
+#define BOOST_HANA_PP_BACK_IMPL_41(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41) e41
+
+#define BOOST_HANA_PP_BACK_IMPL_42(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42) e42
+
+#define BOOST_HANA_PP_BACK_IMPL_43(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43) e43
+
+#define BOOST_HANA_PP_BACK_IMPL_44(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44) e44
+
+#define BOOST_HANA_PP_BACK_IMPL_45(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45) e45
+
+#define BOOST_HANA_PP_BACK_IMPL_46(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46) e46
+
+#define BOOST_HANA_PP_BACK_IMPL_47(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47) e47
+
+#define BOOST_HANA_PP_BACK_IMPL_48(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48) e48
+
+#define BOOST_HANA_PP_BACK_IMPL_49(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49) e49
+
+#define BOOST_HANA_PP_BACK_IMPL_50(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50) e50
+
+#define BOOST_HANA_PP_BACK_IMPL_51(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51) e51
+
+#define BOOST_HANA_PP_BACK_IMPL_52(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52) e52
+
+#define BOOST_HANA_PP_BACK_IMPL_53(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53) e53
+
+#define BOOST_HANA_PP_BACK_IMPL_54(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53, e54) e54
+
+#define BOOST_HANA_PP_BACK_IMPL_55(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53, e54, e55) e55
+
+
+//////////////////////////////////////////////////////////////////////////////
+// BOOST_HANA_PP_DROP_BACK
+//////////////////////////////////////////////////////////////////////////////
+//! @ingroup group-details
+//! Expands to all of its arguments, except for the last one.
+#define BOOST_HANA_PP_DROP_BACK(...) \
+    BOOST_HANA_PP_DROP_BACK_IMPL(BOOST_HANA_PP_NARG(__VA_ARGS__), __VA_ARGS__)
+
+#ifdef BOOST_HANA_WORKAROUND_MSVC_PREPROCESSOR_616033
+#   define BOOST_HANA_PP_DROP_BACK_IMPL(N, ...) BOOST_HANA_PP_DROP_BACK_IMPL_I(N, __VA_ARGS__)
+#   define BOOST_HANA_PP_DROP_BACK_IMPL_I(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_DROP_BACK_IMPL_, N)(__VA_ARGS__),)
+#else
+#   define BOOST_HANA_PP_DROP_BACK_IMPL(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_DROP_BACK_IMPL_, N)(__VA_ARGS__)
+#endif
+
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_1(e1)
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_2(e1, e2)e1
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_3(e1, e2, e3)e1, e2
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_4(e1, e2, e3, e4)e1, e2, e3
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_5(e1, e2, e3, e4, e5)e1, e2, e3, e4
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_6(e1, e2, e3, e4, e5, e6)e1, e2, e3, e4, e5
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_7(e1, e2, e3, e4, e5, e6, e7)e1, e2, e3, e4, e5, e6
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_8(e1, e2, e3, e4, e5, e6, e7, e8)e1, e2, e3, e4, e5, e6, e7
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_9(e1, e2, e3, e4, e5, e6, e7, e8, e9)e1, e2, e3, e4, e5, e6, e7, e8
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_10(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10)e1, e2, e3, e4, e5, e6, e7, e8, e9
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_11(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_12(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_13(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_14(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_15(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_16(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_17(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_18(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_19(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_20(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_21(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_22(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_23(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_24(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_25(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_26(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_27(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_28(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_29(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_30(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_31(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_32(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_33(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_34(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_35(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_36(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_37(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_38(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_39(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_40(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_41(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_42(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_43(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_44(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_45(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_46(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_47(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_48(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_49(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_50(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_51(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_52(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_53(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_54(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53, e54)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53
+
+#define BOOST_HANA_PP_DROP_BACK_IMPL_55(e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53, e54, e55)e1, e2, e3, e4, e5, e6, e7, e8, e9, e10, e11, e12, e13, e14, e15, e16, e17, e18, e19, e20, e21, e22, e23, e24, e25, e26, e27, e28, e29, e30, e31, e32, e33, e34, e35, e36, e37, e38, e39, e40, e41, e42, e43, e44, e45, e46, e47, e48, e49, e50, e51, e52, e53, e54
+
 
 //////////////////////////////////////////////////////////////////////////////
 // BOOST_HANA_ADAPT_STRUCT
@@ -72,8 +349,14 @@ struct BOOST_HANA_ADAPT_STRUCT_must_be_called_in_the_global_namespace;
   static_assert(true, "force the usage of a trailing semicolon")            \
 /**/
 
-#define BOOST_HANA_ADAPT_STRUCT_IMPL(N, ...) \
-  BOOST_HANA_PP_CONCAT(BOOST_HANA_ADAPT_STRUCT_IMPL_, N)(__VA_ARGS__)
+#ifdef BOOST_HANA_WORKAROUND_MSVC_PREPROCESSOR_616033
+#   define BOOST_HANA_ADAPT_STRUCT_IMPL(N, ...) BOOST_HANA_ADAPT_STRUCT_IMPL_I(N, __VA_ARGS__)
+#   define BOOST_HANA_ADAPT_STRUCT_IMPL_I(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_CONCAT(BOOST_HANA_ADAPT_STRUCT_IMPL_, N)(__VA_ARGS__),)
+#else
+#   define BOOST_HANA_ADAPT_STRUCT_IMPL(N, ...) \
+    BOOST_HANA_PP_CONCAT(BOOST_HANA_ADAPT_STRUCT_IMPL_, N)(__VA_ARGS__)
+#endif
 
 
 #define BOOST_HANA_ADAPT_STRUCT_IMPL_1(TYPE )    \
@@ -1210,8 +1493,14 @@ struct BOOST_HANA_ADAPT_ADT_must_be_called_in_the_global_namespace;
   static_assert(true, "force the usage of a trailing semicolon")            \
 /**/
 
-#define BOOST_HANA_ADAPT_ADT_IMPL(N, ...) \
-  BOOST_HANA_PP_CONCAT(BOOST_HANA_ADAPT_ADT_IMPL_, N)(__VA_ARGS__)
+#ifdef BOOST_HANA_WORKAROUND_MSVC_PREPROCESSOR_616033
+#   define BOOST_HANA_ADAPT_ADT_IMPL(N, ...) BOOST_HANA_ADAPT_ADT_IMPL_I(N, __VA_ARGS__)
+#   define BOOST_HANA_ADAPT_ADT_IMPL_I(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_CONCAT(BOOST_HANA_ADAPT_ADT_IMPL_, N)(__VA_ARGS__),)
+#else
+#   define BOOST_HANA_ADAPT_ADT_IMPL(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_ADAPT_ADT_IMPL_, N)(__VA_ARGS__)
+#endif
 
 
 #define BOOST_HANA_ADAPT_ADT_IMPL_1(TYPE )             \
@@ -2397,8 +2686,14 @@ struct BOOST_HANA_ADAPT_ADT_must_be_called_in_the_global_namespace;
 #define BOOST_HANA_DEFINE_STRUCT(...) \
     BOOST_HANA_DEFINE_STRUCT_IMPL(BOOST_HANA_PP_NARG(__VA_ARGS__), __VA_ARGS__)
 
-#define BOOST_HANA_DEFINE_STRUCT_IMPL(N, ...) \
-    BOOST_HANA_PP_CONCAT(BOOST_HANA_DEFINE_STRUCT_IMPL_, N)(__VA_ARGS__)
+#ifdef BOOST_HANA_WORKAROUND_MSVC_PREPROCESSOR_616033
+#   define BOOST_HANA_DEFINE_STRUCT_IMPL(N, ...) BOOST_HANA_DEFINE_STRUCT_IMPL_I(N, __VA_ARGS__)
+#   define BOOST_HANA_DEFINE_STRUCT_IMPL_I(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_PP_CONCAT(BOOST_HANA_DEFINE_STRUCT_IMPL_, N)(__VA_ARGS__),)
+#else
+#   define BOOST_HANA_DEFINE_STRUCT_IMPL(N, ...) \
+        BOOST_HANA_PP_CONCAT(BOOST_HANA_DEFINE_STRUCT_IMPL_, N)(__VA_ARGS__)
+#endif
 
 
 #define BOOST_HANA_DEFINE_STRUCT_IMPL_1(TYPE )       \

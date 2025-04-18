@@ -2,6 +2,10 @@
 
 // Copyright (c) 2011-2012 Barend Gehrels, Amsterdam, the Netherlands.
 
+// Copyright (c) 2023, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -13,6 +17,7 @@
 #define BOOST_GEOMETRY_STRATEGY_AGNOSTIC_POINT_IN_POLY_ORIENTED_WINDING_HPP
 
 
+#include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/point_order.hpp>
 #include <boost/geometry/util/math.hpp>
 #include <boost/geometry/util/select_calculation_type.hpp>
@@ -36,8 +41,6 @@ namespace strategy { namespace within
 \tparam PointOfSegment \tparam_segment_point
 \tparam CalculationType \tparam_calculation
 \author Barend Gehrels
-\note The implementation is inspired by terralib http://www.terralib.org (LGPL)
-\note but totally revised afterwards, especially for cases on segments
 \note Only dependant on "side", -> agnostic, suitable for spherical/latlong
 
 \qbk{
@@ -62,10 +65,10 @@ class oriented_winding
         >::type calculation_type;
 
 
-    typedef typename strategy::side::services::default_strategy
+    using strategy_side_type = typename strategy::side::services::default_strategy
         <
-            typename cs_tag<Point>::type
-        >::type strategy_side_type;
+            cs_tag_t<Point>
+        >::type;
 
 
     /*! subclass to keep state */

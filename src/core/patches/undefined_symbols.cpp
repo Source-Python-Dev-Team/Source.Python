@@ -190,3 +190,7 @@ int CBaseTempEntity::YouForgotToImplementOrDeclareServerClass()
 {
 	return 0;
 }
+
+void CServerNetworkProperty::RecomputePVSInformation()
+{
+}

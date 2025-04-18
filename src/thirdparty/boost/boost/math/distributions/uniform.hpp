@@ -1,5 +1,6 @@
 //  Copyright John Maddock 2006.
 //  Copyright Paul A. Bristow 2006.
+//  Copyright Matt Borland 2024.
 //  Use, modification and distribution are subject to the
 //  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -15,18 +16,18 @@
 // http://documents.wolfram.com/calculationcenter/v2/Functions/ListsMatrices/Statistics/UniformDistribution.html
 // http://en.wikipedia.org/wiki/Uniform_distribution_%28continuous%29
 
+#include <boost/math/tools/config.hpp>
+#include <boost/math/tools/tuple.hpp>
 #include <boost/math/distributions/fwd.hpp>
 #include <boost/math/distributions/detail/common_error_handling.hpp>
 #include <boost/math/distributions/complement.hpp>
-
-#include <utility>
 
 namespace boost{ namespace math
 {
   namespace detail
   {
     template <class RealType, class Policy>
-    inline bool check_uniform_lower(
+    BOOST_MATH_GPU_ENABLED inline bool check_uniform_lower(
       const char* function,
       RealType lower,
       RealType* result, const Policy& pol)
@@ -45,7 +46,7 @@ namespace boost{ namespace math
     } // bool check_uniform_lower(
 
     template <class RealType, class Policy>
-    inline bool check_uniform_upper(
+    BOOST_MATH_GPU_ENABLED inline bool check_uniform_upper(
       const char* function,
       RealType upper,
       RealType* result, const Policy& pol)
@@ -64,7 +65,7 @@ namespace boost{ namespace math
     } // bool check_uniform_upper(
 
     template <class RealType, class Policy>
-    inline bool check_uniform_x(
+    BOOST_MATH_GPU_ENABLED inline bool check_uniform_x(
       const char* function,
       RealType const& x,
       RealType* result, const Policy& pol)
@@ -83,7 +84,7 @@ namespace boost{ namespace math
     } // bool check_uniform_x
 
     template <class RealType, class Policy>
-    inline bool check_uniform(
+    BOOST_MATH_GPU_ENABLED inline bool check_uniform(
       const char* function,
       RealType lower,
       RealType upper,
@@ -116,19 +117,19 @@ namespace boost{ namespace math
     typedef RealType value_type;
     typedef Policy policy_type;
 
-    uniform_distribution(RealType l_lower = 0, RealType l_upper = 1) // Constructor.
+    BOOST_MATH_GPU_ENABLED uniform_distribution(RealType l_lower = 0, RealType l_upper = 1) // Constructor.
       : m_lower(l_lower), m_upper(l_upper) // Default is standard uniform distribution.
     {
       RealType result;
       detail::check_uniform("boost::math::uniform_distribution<%1%>::uniform_distribution", l_lower, l_upper, &result, Policy());
     }
     // Accessor functions.
-    RealType lower()const
+    BOOST_MATH_GPU_ENABLED RealType lower()const
     {
       return m_lower;
     }
 
-    RealType upper()const
+    BOOST_MATH_GPU_ENABLED RealType upper()const
     {
       return m_upper;
     }
@@ -140,24 +141,31 @@ namespace boost{ namespace math
 
   typedef uniform_distribution<double> uniform;
 
+  #ifdef __cpp_deduction_guides
+  template <class RealType>
+  uniform_distribution(RealType)->uniform_distribution<typename boost::math::tools::promote_args<RealType>::type>;
+  template <class RealType>
+  uniform_distribution(RealType,RealType)->uniform_distribution<typename boost::math::tools::promote_args<RealType>::type>;
+  #endif
+
   template <class RealType, class Policy>
-  inline const std::pair<RealType, RealType> range(const uniform_distribution<RealType, Policy>& /* dist */)
+  BOOST_MATH_GPU_ENABLED inline const boost::math::pair<RealType, RealType> range(const uniform_distribution<RealType, Policy>& /* dist */)
   { // Range of permissible values for random variable x.
      using boost::math::tools::max_value;
-     return std::pair<RealType, RealType>(-max_value<RealType>(), max_value<RealType>()); // - to + 'infinity'.
+     return boost::math::pair<RealType, RealType>(-max_value<RealType>(), max_value<RealType>()); // - to + 'infinity'.
      // Note RealType infinity is NOT permitted, only max_value.
   }
 
   template <class RealType, class Policy>
-  inline const std::pair<RealType, RealType> support(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline const boost::math::pair<RealType, RealType> support(const uniform_distribution<RealType, Policy>& dist)
   { // Range of supported values for random variable x.
      // This is range where cdf rises from 0 to 1, and outside it, the pdf is zero.
      using boost::math::tools::max_value;
-     return std::pair<RealType, RealType>(dist.lower(),  dist.upper());
+     return boost::math::pair<RealType, RealType>(dist.lower(),  dist.upper());
   }
 
   template <class RealType, class Policy>
-  inline RealType pdf(const uniform_distribution<RealType, Policy>& dist, const RealType& x)
+  BOOST_MATH_GPU_ENABLED inline RealType pdf(const uniform_distribution<RealType, Policy>& dist, const RealType& x)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -182,7 +190,7 @@ namespace boost{ namespace math
   } // RealType pdf(const uniform_distribution<RealType, Policy>& dist, const RealType& x)
 
   template <class RealType, class Policy>
-  inline RealType cdf(const uniform_distribution<RealType, Policy>& dist, const RealType& x)
+  BOOST_MATH_GPU_ENABLED inline RealType cdf(const uniform_distribution<RealType, Policy>& dist, const RealType& x)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -207,7 +215,7 @@ namespace boost{ namespace math
   } // RealType cdf(const uniform_distribution<RealType, Policy>& dist, const RealType& x)
 
   template <class RealType, class Policy>
-  inline RealType quantile(const uniform_distribution<RealType, Policy>& dist, const RealType& p)
+  BOOST_MATH_GPU_ENABLED inline RealType quantile(const uniform_distribution<RealType, Policy>& dist, const RealType& p)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -232,7 +240,7 @@ namespace boost{ namespace math
   } // RealType quantile(const uniform_distribution<RealType, Policy>& dist, const RealType& p)
 
   template <class RealType, class Policy>
-  inline RealType cdf(const complemented2_type<uniform_distribution<RealType, Policy>, RealType>& c)
+  BOOST_MATH_GPU_ENABLED inline RealType cdf(const complemented2_type<uniform_distribution<RealType, Policy>, RealType>& c)
   {
     RealType lower = c.dist.lower();
     RealType upper = c.dist.upper();
@@ -258,7 +266,7 @@ namespace boost{ namespace math
   } // RealType cdf(const complemented2_type<uniform_distribution<RealType, Policy>, RealType>& c)
 
   template <class RealType, class Policy>
-  inline RealType quantile(const complemented2_type<uniform_distribution<RealType, Policy>, RealType>& c)
+  BOOST_MATH_GPU_ENABLED inline RealType quantile(const complemented2_type<uniform_distribution<RealType, Policy>, RealType>& c)
   {
     RealType lower = c.dist.lower();
     RealType upper = c.dist.upper();
@@ -284,7 +292,7 @@ namespace boost{ namespace math
   } // RealType quantile(const complemented2_type<uniform_distribution<RealType, Policy>, RealType>& c)
 
   template <class RealType, class Policy>
-  inline RealType mean(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline RealType mean(const uniform_distribution<RealType, Policy>& dist)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -297,7 +305,7 @@ namespace boost{ namespace math
   } // RealType mean(const uniform_distribution<RealType, Policy>& dist)
 
   template <class RealType, class Policy>
-  inline RealType variance(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline RealType variance(const uniform_distribution<RealType, Policy>& dist)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -311,7 +319,7 @@ namespace boost{ namespace math
   } // RealType variance(const uniform_distribution<RealType, Policy>& dist)
 
   template <class RealType, class Policy>
-  inline RealType mode(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline RealType mode(const uniform_distribution<RealType, Policy>& dist)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -325,7 +333,7 @@ namespace boost{ namespace math
   }
 
   template <class RealType, class Policy>
-  inline RealType median(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline RealType median(const uniform_distribution<RealType, Policy>& dist)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -337,7 +345,7 @@ namespace boost{ namespace math
     return (lower + upper) / 2; //
   }
   template <class RealType, class Policy>
-  inline RealType skewness(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline RealType skewness(const uniform_distribution<RealType, Policy>& dist)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
@@ -350,12 +358,12 @@ namespace boost{ namespace math
   } // RealType skewness(const uniform_distribution<RealType, Policy>& dist)
 
   template <class RealType, class Policy>
-  inline RealType kurtosis_excess(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline RealType kurtosis_excess(const uniform_distribution<RealType, Policy>& dist)
   {
     RealType lower = dist.lower();
     RealType upper = dist.upper();
     RealType result = 0;  // of checks.
-    if(false == detail::check_uniform("boost::math::kurtosis_execess(const uniform_distribution<%1%>&)", lower, upper, &result, Policy()))
+    if(false == detail::check_uniform("boost::math::kurtosis_excess(const uniform_distribution<%1%>&)", lower, upper, &result, Policy()))
     {
       return result;
     }
@@ -363,9 +371,16 @@ namespace boost{ namespace math
   } // RealType kurtosis_excess(const uniform_distribution<RealType, Policy>& dist)
 
   template <class RealType, class Policy>
-  inline RealType kurtosis(const uniform_distribution<RealType, Policy>& dist)
+  BOOST_MATH_GPU_ENABLED inline RealType kurtosis(const uniform_distribution<RealType, Policy>& dist)
   {
     return kurtosis_excess(dist) + 3;
+  }
+
+  template <class RealType, class Policy>
+  BOOST_MATH_GPU_ENABLED inline RealType entropy(const uniform_distribution<RealType, Policy>& dist)
+  {
+    BOOST_MATH_STD_USING
+    return log(dist.upper() - dist.lower());
   }
 
 } // namespace math

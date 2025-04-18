@@ -13,13 +13,14 @@
 #include <vector>
 #include <iterator>     // for std::iterator_traits
 
+#include <boost/config.hpp>
 #include <boost/assert.hpp>
 #include <boost/static_assert.hpp>
 
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 
 #include <boost/algorithm/searching/detail/debugging.hpp>
@@ -155,9 +156,9 @@ namespace boost { namespace algorithm {
     
 
         void preKmp ( patIter first, patIter last ) {
-           const /*std::size_t*/ int count = std::distance ( first, last );
+           const difference_type count = std::distance ( first, last );
         
-           int i, j;
+           difference_type i, j;
         
            i = 0;
            j = skip_[0] = -1;
@@ -177,7 +178,7 @@ namespace boost { namespace algorithm {
         void init_skip_table ( patIter first, patIter last ) {
             const difference_type count = std::distance ( first, last );
     
-            int j;
+            difference_type j;
             skip_ [ 0 ] = -1;
             for ( int i = 1; i <= count; ++i ) {
                 j = skip_ [ i - 1 ];

@@ -6,15 +6,14 @@
 //
 
 #ifndef BOOST_MP_DETAIL_REBIND_HPP
-  #define BOOST_MP_DETAIL_REBIND_HPP
+#define BOOST_MP_DETAIL_REBIND_HPP
 
-  namespace boost { namespace multiprecision { namespace backends { namespace detail
-  {
-    template <class value_type, class my_allocator>
-    struct rebind
-    {
-       typedef typename my_allocator::template rebind<value_type>::other type;
-    };
-  } } } } // namespace boost::multiprecision::backends::detail
+namespace boost { namespace multiprecision { namespace backends { namespace detail {
+template <class value_type, class my_allocator>
+struct rebind
+{
+   using type = typename std::allocator_traits<my_allocator>::template rebind_alloc<value_type>;
+};
+}}}} // namespace boost::multiprecision::backends::detail
 
 #endif // BOOST_MP_DETAIL_REBIND_HPP

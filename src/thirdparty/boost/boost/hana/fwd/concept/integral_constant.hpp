@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::IntegralConstant`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -13,7 +13,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/config.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-concepts
     //! The `IntegralConstant` concept represents compile-time integral values.
     //!
@@ -68,6 +68,6 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! `hana::integral_constant`
     template <typename C>
     struct IntegralConstant;
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_CONCEPT_INTEGRAL_CONSTANT_HPP

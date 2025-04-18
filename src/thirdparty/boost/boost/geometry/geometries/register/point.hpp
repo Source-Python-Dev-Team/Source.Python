@@ -4,6 +4,10 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
+// This file was modified by Oracle on 2020.
+// Modifications copyright (c) 2020, Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -14,15 +18,21 @@
 #ifndef BOOST_GEOMETRY_GEOMETRIES_REGISTER_POINT_HPP
 #define BOOST_GEOMETRY_GEOMETRIES_REGISTER_POINT_HPP
 
+#include <boost/geometry/core/access.hpp>
+#include <boost/geometry/core/coordinate_dimension.hpp>
+#include <boost/geometry/core/coordinate_system.hpp>
+#include <boost/geometry/core/coordinate_type.hpp>
+#include <boost/geometry/core/cs.hpp>
 
 #include <cstddef>
+#include <type_traits>
 
 #ifndef DOXYGEN_NO_SPECIALIZATIONS
 
 // Starting point, specialize basic traits necessary to register a point
 #define BOOST_GEOMETRY_DETAIL_SPECIALIZE_POINT_TRAITS(Point, Dim, CoordinateType, CoordinateSystem) \
     template<> struct tag<Point> { typedef point_tag type; }; \
-    template<> struct dimension<Point> : boost::mpl::int_<Dim> {}; \
+    template<> struct dimension<Point> : std::integral_constant<std::size_t, Dim> {}; \
     template<> struct coordinate_type<Point> { typedef CoordinateType type; }; \
     template<> struct coordinate_system<Point> { typedef CoordinateSystem type; };
 
@@ -59,11 +69,12 @@
 \brief \brief_macro{2D point type}
 \ingroup register
 \details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_2D, two-dimensional point type}
+    \details_macro_lola
 \param Point \param_macro_type{Point}
 \param CoordinateType \param_macro_coortype{point}
 \param CoordinateSystem \param_macro_coorsystem
-\param Field0 \param_macro_member{\macro_x}
-\param Field1 \param_macro_member{\macro_y}
+\param Field0 \param_macro_member{\macro_x_lon}
+\param Field1 \param_macro_member{\macro_y_lat}
 
 \qbk{[include reference/geometries/register/point.qbk]}
 */
@@ -96,12 +107,14 @@ namespace boost { namespace geometry { namespace traits {  \
 /*!
 \brief \brief_macro{2D point type} \brief_macro_const
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_2D_CONST, two-dimensional point type}. \details_macro_const
+\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_2D_CONST, two-dimensional point type}
+    \details_macro_const
+    \details_macro_lola
 \param Point \param_macro_type{Point}
 \param CoordinateType \param_macro_coortype{point}
 \param CoordinateSystem \param_macro_coorsystem
-\param Field0 \param_macro_member{\macro_x}
-\param Field1 \param_macro_member{\macro_y}
+\param Field0 \param_macro_member{\macro_x_lon}
+\param Field1 \param_macro_member{\macro_y_lat}
 */
 #define BOOST_GEOMETRY_REGISTER_POINT_2D_CONST(Point, CoordinateType, CoordinateSystem, Field0, Field1) \
 namespace boost { namespace geometry { namespace traits {  \
@@ -113,7 +126,7 @@ namespace boost { namespace geometry { namespace traits {  \
 /*!
 \brief \brief_macro{3D point type} \brief_macro_const
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_3D_CONST, three-dimensional point type}. \details_macro_const
+\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_3D_CONST, three-dimensional point type} \details_macro_const
 \param Point \param_macro_type{Point}
 \param CoordinateType \param_macro_coortype{point}
 \param CoordinateSystem \param_macro_coorsystem
@@ -132,14 +145,16 @@ namespace boost { namespace geometry { namespace traits {  \
 /*!
 \brief \brief_macro{2D point type} \brief_macro_getset
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_2D_GET_SET, two-dimensional point type}. \details_macro_getset
+\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_2D_GET_SET, two-dimensional point type}
+    \details_macro_getset
+    \details_macro_lola
 \param Point \param_macro_type{Point}
 \param CoordinateType \param_macro_coortype{point}
 \param CoordinateSystem \param_macro_coorsystem
-\param Get0 \param_macro_getset{get, \macro_x}
-\param Get1 \param_macro_getset{get, \macro_y}
-\param Set0 \param_macro_getset{set, \macro_x}
-\param Set1 \param_macro_getset{set, \macro_y}
+\param Get0 \param_macro_getset{get, \macro_x_lon}
+\param Get1 \param_macro_getset{get, \macro_y_lat}
+\param Set0 \param_macro_getset{set, \macro_x_lon}
+\param Set1 \param_macro_getset{set, \macro_y_lat}
 */
 #define BOOST_GEOMETRY_REGISTER_POINT_2D_GET_SET(Point, CoordinateType, CoordinateSystem, Get0, Get1, Set0, Set1) \
 namespace boost { namespace geometry { namespace traits {  \
@@ -151,7 +166,8 @@ namespace boost { namespace geometry { namespace traits {  \
 /*!
 \brief \brief_macro{3D point type} \brief_macro_getset
 \ingroup register
-\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_3D_GET_SET, three-dimensional point type}. \details_macro_getset
+\details \details_macro{BOOST_GEOMETRY_REGISTER_POINT_3D_GET_SET, three-dimensional point type}
+    \details_macro_getset
 \param Point \param_macro_type{Point}
 \param CoordinateType \param_macro_coortype{point}
 \param CoordinateSystem \param_macro_coorsystem

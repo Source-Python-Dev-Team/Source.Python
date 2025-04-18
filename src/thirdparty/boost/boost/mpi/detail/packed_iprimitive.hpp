@@ -14,10 +14,10 @@
 #include <boost/config.hpp>
 #include <boost/mpi/datatype.hpp>
 #include <boost/mpi/exception.hpp>
-#include <boost/assert.hpp>
+#include <boost/mpi/detail/antiques.hpp>
 #include <boost/serialization/array.hpp>
-#include <boost/serialization/detail/get_data.hpp>
 #include <vector>
+#include <boost/mpi/detail/antiques.hpp>
 #include <boost/mpi/allocator.hpp>
 
 namespace boost { namespace mpi {
@@ -39,12 +39,12 @@ public:
 
     void* address ()
     {
-      return &buffer_[0];
+      return detail::c_data(buffer_);
     }
 
     void const* address () const
     {
-      return &buffer_[0];
+      return detail::c_data(buffer_);
     }
 
     const std::size_t& size() const
@@ -104,7 +104,7 @@ private:
     void load_impl(void * p, MPI_Datatype t, int l)
     {
       BOOST_MPI_CHECK_RESULT(MPI_Unpack,
-        (const_cast<char*>(boost::serialization::detail::get_data(buffer_)), buffer_.size(), &position, p, l, t, comm));
+                             (const_cast<char*>(detail::c_data(buffer_)), buffer_.size(), &position, p, l, t, comm));
     }
 
     buffer_type & buffer_;

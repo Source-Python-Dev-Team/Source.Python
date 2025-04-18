@@ -15,22 +15,22 @@
 #include <boost/ptr_container/detail/serialize_reversible_cont.hpp>
 #include <boost/ptr_container/ptr_unordered_set.hpp>
 
-namespace boost 
+namespace boost
 {
 
-namespace serialization 
+namespace serialization
 {
 
 template<class Archive, class T, class Hash, class Pred, class CloneAllocator, class Allocator>
 void serialize(Archive& ar, ptr_unordered_set<T, Hash, Pred, CloneAllocator, Allocator>& c, const unsigned int version)
 {
-   split_free(ar, c, version);
+   core::split_free(ar, c, version);
 }
 
 template<class Archive, class T, class Hash, class Pred, class CloneAllocator, class Allocator>
 void serialize(Archive& ar, ptr_unordered_multiset<T, Hash, Pred, CloneAllocator, Allocator>& c, const unsigned int version)
 {
-   split_free(ar, c, version);
+   core::split_free(ar, c, version);
 }
 
 } // namespace serialization

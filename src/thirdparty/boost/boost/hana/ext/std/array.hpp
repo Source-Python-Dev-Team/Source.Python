@@ -2,7 +2,7 @@
 @file
 Adapts `std::array` for use with Hana.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -66,7 +66,7 @@ namespace std {
 #endif
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     namespace ext { namespace std { struct array_tag; }}
 
     template <typename T, std::size_t N>
@@ -149,15 +149,23 @@ BOOST_HANA_NAMESPACE_BEGIN
     //////////////////////////////////////////////////////////////////////////
     template <>
     struct less_impl<ext::std::array_tag, ext::std::array_tag> {
-        template <typename T, typename U>
-        static constexpr auto apply(std::array<T, 0> const&, std::array<U, 0> const&)
-        { return hana::false_c; }
-
         template <typename T, std::size_t n, typename U, std::size_t m>
         static constexpr auto apply(std::array<T, n> const& xs, std::array<U, m> const& ys) {
-            return detail::lexicographical_compare(&xs[0], &xs[0] + n, &ys[0], &ys[0] + m);
+            // This logic is more complex than it needs to be because we can't
+            // use `.begin()` and `.end()`, which are not constexpr in C++14,
+            // and because `&arr[0]` is UB when the array is empty.
+            if (xs.empty()) {
+                return !ys.empty();
+            } else {
+                if (ys.empty()) {
+                    return false;
+                } else {
+                    return detail::lexicographical_compare(&xs[0], &xs[0] + n,
+                                                           &ys[0], &ys[0] + m);
+                }
+            }
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_EXT_STD_ARRAY_HPP

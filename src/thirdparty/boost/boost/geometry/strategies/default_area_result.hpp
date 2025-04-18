@@ -1,51 +1,21 @@
-// Boost.Geometry (aka GGL, Generic Geometry Library)
+// Boost.Geometry
 
-// Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
-// Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
-// Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
+// Copyright (c) 2020, Oracle and/or its affiliates.
 
-// Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
-// (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
-// Use, modification and distribution is subject to the Boost Software License,
-// Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Boost Software License version 1.0.
+// http://www.boost.org/users/license.html
 
 #ifndef BOOST_GEOMETRY_STRATEGIES_DEFAULT_AREA_RESULT_HPP
 #define BOOST_GEOMETRY_STRATEGIES_DEFAULT_AREA_RESULT_HPP
 
 
-#include <boost/geometry/core/cs.hpp>
-#include <boost/geometry/core/coordinate_type.hpp>
-#include <boost/geometry/strategies/area.hpp>
-#include <boost/geometry/util/select_most_precise.hpp>
+#include <boost/config/pragma_message.hpp>
+BOOST_PRAGMA_MESSAGE("This include file is deprecated and will be removed in Boost 1.86")
 
 
-namespace boost { namespace geometry
-{
-
-/*!
-\brief Meta-function defining return type of area function, using the default strategy
-\ingroup area
-\note The strategy defines the return-type (so this situation is different
-    from length, where distance is sqr/sqrt, but length always squared)
- */
-
-template <typename Geometry>
-struct default_area_result
-{
-    typedef typename point_type<Geometry>::type point_type;
-    typedef typename strategy::area::services::default_strategy
-        <
-            typename cs_tag<point_type>::type,
-            point_type
-        >::type strategy_type;
-
-    typedef typename strategy_type::return_type type;
-};
-
-
-}} // namespace boost::geometry
+#include <boost/geometry/algorithms/default_area_result.hpp>
 
 
 #endif // BOOST_GEOMETRY_STRATEGIES_DEFAULT_AREA_RESULT_HPP

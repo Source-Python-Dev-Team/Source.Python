@@ -2,7 +2,7 @@
 // detail/null_reactor.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2024 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,9 +17,13 @@
 
 #include <boost/asio/detail/config.hpp>
 
-#if defined(BOOST_ASIO_WINDOWS_RUNTIME)
+#if defined(BOOST_ASIO_HAS_IOCP) \
+  || defined(BOOST_ASIO_WINDOWS_RUNTIME) \
+  || defined(BOOST_ASIO_HAS_IO_URING_AS_DEFAULT)
 
-#include <boost/asio/io_service.hpp>
+#include <boost/asio/detail/scheduler_operation.hpp>
+#include <boost/asio/detail/scheduler_task.hpp>
+#include <boost/asio/execution_context.hpp>
 
 #include <boost/asio/detail/push_options.hpp>
 
@@ -28,12 +32,17 @@ namespace asio {
 namespace detail {
 
 class null_reactor
-  : public boost::asio::detail::service_base<null_reactor>
+  : public execution_context_service_base<null_reactor>,
+    public scheduler_task
 {
 public:
+  struct per_descriptor_data
+  {
+  };
+
   // Constructor.
-  null_reactor(boost::asio::io_service& io_service)
-    : boost::asio::detail::service_base<null_reactor>(io_service)
+  null_reactor(boost::asio::execution_context& ctx)
+    : execution_context_service_base<null_reactor>(ctx)
   {
   }
 
@@ -42,13 +51,18 @@ public:
   {
   }
 
+  // Initialise the task.
+  void init_task()
+  {
+  }
+
   // Destroy all user-defined handler objects owned by the service.
-  void shutdown_service()
+  void shutdown()
   {
   }
 
   // No-op because should never be called.
-  void run(bool /*block*/, op_queue<operation>& /*ops*/)
+  void run(long /*usec*/, op_queue<scheduler_operation>& /*ops*/)
   {
   }
 
@@ -64,6 +78,8 @@ public:
 
 #include <boost/asio/detail/pop_options.hpp>
 
-#endif // defined(BOOST_ASIO_WINDOWS_RUNTIME)
+#endif // defined(BOOST_ASIO_HAS_IOCP)
+       //   || defined(BOOST_ASIO_WINDOWS_RUNTIME)
+       //   || defined(BOOST_ASIO_HAS_IO_URING_AS_DEFAULT)
 
 #endif // BOOST_ASIO_DETAIL_NULL_REACTOR_HPP

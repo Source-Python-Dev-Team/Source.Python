@@ -5,11 +5,12 @@
 // Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
 // Copyright (c) 2013-2014 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2013-2017.
-// Modifications copyright (c) 2013-2017, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2013-2022.
+// Modifications copyright (c) 2013-2022, Oracle and/or its affiliates.
 
-// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -23,7 +24,9 @@
 
 #include <iterator>
 
-#include <boost/range.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/core/closure.hpp>
 #include <boost/geometry/core/point_type.hpp>
@@ -34,20 +37,21 @@
 #include <boost/geometry/core/tag_cast.hpp>
 #include <boost/geometry/core/tags.hpp>
 
-#include <boost/geometry/algorithms/covered_by.hpp>
+#include <boost/geometry/algorithms/detail/covered_by/implementation.hpp>
 #include <boost/geometry/algorithms/not_implemented.hpp>
 
 #include <boost/geometry/algorithms/detail/assign_indexed_point.hpp>
-#include <boost/geometry/algorithms/detail/check_iterator_range.hpp>
 #include <boost/geometry/algorithms/detail/point_on_border.hpp>
 
-#include <boost/geometry/algorithms/detail/disjoint/multirange_geometry.hpp>
+#include <boost/geometry/algorithms/detail/disjoint/linear_linear.hpp>
 #include <boost/geometry/algorithms/detail/disjoint/linear_segment_or_box.hpp>
+#include <boost/geometry/algorithms/detail/disjoint/multirange_geometry.hpp>
 #include <boost/geometry/algorithms/detail/disjoint/point_box.hpp>
 #include <boost/geometry/algorithms/detail/disjoint/segment_box.hpp>
 
 #include <boost/geometry/algorithms/dispatch/disjoint.hpp>
 
+#include <boost/geometry/geometries/helper_geometry.hpp>
 
 namespace boost { namespace geometry
 {
@@ -57,8 +61,8 @@ namespace detail { namespace disjoint
 {
 
 template <typename Geometry1, typename Geometry2,
-          typename Tag1 = typename tag<Geometry1>::type,
-          typename Tag1OrMulti = typename tag_cast<Tag1, multi_tag>::type>
+          typename Tag1 = tag_t<Geometry1>,
+          typename Tag1OrMulti = tag_cast_t<Tag1, multi_tag>>
 struct disjoint_no_intersections_policy
 {
     /*!
@@ -67,11 +71,10 @@ struct disjoint_no_intersections_policy
     template <typename Strategy>
     static inline bool apply(Geometry1 const& g1, Geometry2 const& g2, Strategy const& strategy)
     {
-        typedef typename point_type<Geometry1>::type point1_type;
-        point1_type p;
+        typename helper_geometry<point_type_t<Geometry1>>::type p;
         geometry::point_on_border(p, g1);
 
-        return !geometry::covered_by(p, g2, strategy);
+        return ! geometry::covered_by(p, g2, strategy);
     }
 };
 
@@ -85,12 +88,11 @@ struct disjoint_no_intersections_policy<Geometry1, Geometry2, Tag1, multi_tag>
     static inline bool apply(Geometry1 const& g1, Geometry2 const& g2, Strategy const& strategy)
     {
         // TODO: use partition or rtree on g2
-        typedef typename boost::range_iterator<Geometry1 const>::type iterator;
-        for ( iterator it = boost::begin(g1) ; it != boost::end(g1) ; ++it )
+        for (auto it = boost::begin(g1); it != boost::end(g1); ++it)
         {
             typedef typename boost::range_value<Geometry1 const>::type value_type;
-            if ( ! disjoint_no_intersections_policy<value_type const, Geometry2>
-                    ::apply(*it, g2, strategy) )
+            if (! disjoint_no_intersections_policy<value_type const, Geometry2>
+                    ::apply(*it, g2, strategy))
             {
                 return false;
             }
@@ -117,9 +119,7 @@ struct disjoint_linear_areal
             return false;
         }
 
-        return NoIntersectionsPolicy
-                ::apply(g1, g2,
-                        strategy.template get_point_in_geometry_strategy<Geometry1, Geometry2>());
+        return NoIntersectionsPolicy::apply(g1, g2, strategy);
     }
 };
 
@@ -140,31 +140,25 @@ struct disjoint_segment_areal
 template <typename Segment, typename Polygon>
 class disjoint_segment_areal<Segment, Polygon, polygon_tag>
 {
-private:
+
     template <typename InteriorRings, typename Strategy>
     static inline
     bool check_interior_rings(InteriorRings const& interior_rings,
                               Segment const& segment,
                               Strategy const& strategy)
     {
-        typedef typename boost::range_value<InteriorRings>::type ring_type;
+        using ring_type = typename boost::range_value<InteriorRings>::type;
 
-        typedef unary_disjoint_geometry_to_query_geometry
+        using unary_predicate_type = unary_disjoint_geometry_to_query_geometry
             <
                 Segment,
                 Strategy,
-                disjoint_range_segment_or_box
-                    <
-                        ring_type, closure<ring_type>::value, Segment
-                    >
-            > unary_predicate_type;
-                
-        return check_iterator_range
-            <
-                unary_predicate_type
-            >::apply(boost::begin(interior_rings),
-                     boost::end(interior_rings),
-                     unary_predicate_type(segment, strategy));
+                disjoint_range_segment_or_box<ring_type, Segment>
+            >;
+
+        return std::all_of(boost::begin(interior_rings),
+                           boost::end(interior_rings),
+                           unary_predicate_type(segment, strategy));
     }
 
 
@@ -174,26 +168,24 @@ public:
                              Polygon const& polygon,
                              IntersectionStrategy const& strategy)
     {
-        typedef typename geometry::ring_type<Polygon>::type ring;
-
-        if ( !disjoint_range_segment_or_box
-                 <
-                     ring, closure<Polygon>::value, Segment
-                 >::apply(geometry::exterior_ring(polygon), segment, strategy) )
+        if (! disjoint_range_segment_or_box
+                <
+                    typename geometry::ring_type<Polygon>::type,
+                    Segment
+                >::apply(geometry::exterior_ring(polygon), segment, strategy))
         {
             return false;
         }
 
-        if ( !check_interior_rings(geometry::interior_rings(polygon), segment, strategy) )
+        if (! check_interior_rings(geometry::interior_rings(polygon), segment, strategy))
         {
             return false;
         }
 
-        typename point_type<Segment>::type p;
+        point_type_t<Segment> p;
         detail::assign_point_from_index<0>(segment, p);
 
-        return !geometry::covered_by(p, polygon,
-                    strategy.template get_point_in_geometry_strategy<Segment, Polygon>());
+        return ! geometry::covered_by(p, polygon, strategy);
     }
 };
 
@@ -221,19 +213,15 @@ struct disjoint_segment_areal<Segment, Ring, ring_tag>
                              Ring const& ring,
                              IntersectionStrategy const& strategy)
     {
-        if ( !disjoint_range_segment_or_box
-                 <
-                     Ring, closure<Ring>::value, Segment
-                 >::apply(ring, segment, strategy) )
+        if (! disjoint_range_segment_or_box<Ring, Segment>::apply(ring, segment, strategy))
         {
             return false;
         }
 
-        typename point_type<Segment>::type p;
+        point_type_t<Segment> p;
         detail::assign_point_from_index<0>(segment, p);
 
-        return !geometry::covered_by(p, ring,
-                    strategy.template get_point_in_geometry_strategy<Segment, Ring>());
+        return ! geometry::covered_by(p, ring, strategy);
     }
 };
 

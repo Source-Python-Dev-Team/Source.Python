@@ -41,12 +41,12 @@ public:
 
     void* address ()
     {
-      return &buffer_.front();
+      return detail::c_data(buffer_);
     }
 
     void const* address () const
     {
-      return &buffer_.front();
+      return detail::c_data(buffer_);
     }
 
     const std::size_t& size() const
@@ -100,7 +100,7 @@ public:
       #endif
       s.resize(l);
       // note breaking a rule here - could be a problem on some platform
-      load_impl(const_cast<char *>(s.data()),l);
+      load_impl(const_cast<CharType *>(s.data()), l*sizeof(CharType));
     }
 
 private:

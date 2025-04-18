@@ -1,5 +1,12 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
+
 // Copyright (c) 2012-2014 Barend Gehrels, Amsterdam, the Netherlands.
+
+// This file was modified by Oracle on 2018.
+// Modifications copyright (c) 2018, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -9,12 +16,11 @@
 
 #include <cstddef>
 
-#include <boost/range.hpp>
+#include <boost/range/value_type.hpp>
 
-#include <boost/geometry/util/math.hpp>
-
+#include <boost/geometry/core/access.hpp>
 #include <boost/geometry/strategies/buffer.hpp>
-
+#include <boost/geometry/util/math.hpp>
 
 namespace boost { namespace geometry
 {
@@ -39,6 +45,7 @@ namespace strategy { namespace buffer
 [heading See also]
 \* [link geometry.reference.algorithms.buffer.buffer_7_with_strategies buffer (with strategies)]
 \* [link geometry.reference.strategies.strategy_buffer_point_circle point_circle]
+\* [link geometry.reference.strategies.strategy_buffer_geographic_point_circle geographic_point_circle]
 }
  */
 class point_square
@@ -47,12 +54,13 @@ class point_square
     <
         typename Point,
         typename DistanceType,
+        typename MultiplierType,
         typename OutputRange
     >
     inline void add_point(Point const& point,
                 DistanceType const& distance,
-                DistanceType const& x,
-                DistanceType const& y,
+                MultiplierType const& x,
+                MultiplierType const& y,
                 OutputRange& output_range) const
     {
         typename boost::range_value<OutputRange>::type p;

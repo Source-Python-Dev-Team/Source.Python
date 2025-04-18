@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::lexicographical_compare`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Short-circuiting lexicographical comparison of two `Iterable`s with
     //! an optional custom predicate, by default `hana::less`.
     //! @ingroup group-Iterable
@@ -86,8 +86,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(Xs const& xs, Ys const& ys, Pred const& pred) const;
     };
 
-    constexpr lexicographical_compare_t lexicographical_compare{};
+    BOOST_HANA_INLINE_VARIABLE constexpr lexicographical_compare_t lexicographical_compare{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_LEXICOGRAPHICAL_COMPARE_HPP

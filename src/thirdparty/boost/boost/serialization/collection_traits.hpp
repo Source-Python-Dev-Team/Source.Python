@@ -9,21 +9,20 @@
 /////////1/////////2/////////3/////////4/////////5/////////6/////////7/////////8
 // collection_traits.hpp:
 
-// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com . 
+// (C) Copyright 2002 Robert Ramey - http://www.rrsd.com .
 // Use, modification and distribution is subject to the Boost Software
 // License, Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
 //  See http://www.boost.org for updates, documentation, and revision history.
 
-// This header assigns a level implemenation trait to a collection type
+// This header assigns a level implementation trait to a collection type
 // for all primitives.  It is needed so that archives which are meant to be
 // portable don't write class information in the archive.  Since, not all
 // compiles recognize the same set of primitive types, the possibility
 // exists for archives to be non-portable if class information for primitive
 // types is included.  This is addressed by the following macros.
 #include <boost/config.hpp>
-//#include <boost/mpl/integral_c.hpp>
 #include <boost/mpl/integral_c_tag.hpp>
 
 #include <boost/cstdint.hpp>

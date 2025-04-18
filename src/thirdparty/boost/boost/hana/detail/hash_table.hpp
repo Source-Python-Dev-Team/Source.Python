@@ -2,8 +2,8 @@
 @file
 Defines `boost::hana::detail::hash_table`.
 
-@copyright Louis Dionne 2016
-@copyright Jason Rice 2016
+Copyright Louis Dionne 2016
+Copyright Jason Rice 2016
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -27,7 +27,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace detail {
+namespace boost { namespace hana { namespace detail {
     template <typename Hash, std::size_t ...i>
     struct bucket { };
 
@@ -140,6 +140,6 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail {
             bucket<typename decltype(hana::hash(std::declval<KeyAtIndex<i>>()))::type, i>...
         >;
     };
-} BOOST_HANA_NAMESPACE_END
+} }} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_HASH_TABLE_HPP

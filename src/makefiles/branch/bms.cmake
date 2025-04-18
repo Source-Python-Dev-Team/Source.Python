@@ -8,3 +8,6 @@
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "bms")
 add_definitions(-DENGINE_BMS -DENGINE_BRANCH_BMS)
+
+Set(SOURCEPYTHON_LINK_LIBRARIES
+    legacy_stdio_definitions.lib)

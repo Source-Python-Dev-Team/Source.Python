@@ -23,13 +23,14 @@
 #include <iterator>     // for std::iterator_traits
 #include <stdexcept>
 
+#include <boost/config.hpp>
 #include <boost/range/begin.hpp>
 #include <boost/range/end.hpp>
 #include <boost/exception/exception.hpp>
 #include <boost/exception/info.hpp>
 #include <boost/throw_exception.hpp>
 
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_integral.hpp>
 
 
@@ -47,9 +48,9 @@ namespace boost { namespace algorithm {
     \brief  Thrown when the input sequence unexpectedly ends
 
 */
-struct hex_decode_error : virtual boost::exception, virtual std::exception {};
-struct not_enough_input : virtual hex_decode_error {};
-struct non_hex_input    : virtual hex_decode_error {};
+struct BOOST_SYMBOL_VISIBLE hex_decode_error : virtual boost::exception, virtual std::exception {};
+struct BOOST_SYMBOL_VISIBLE not_enough_input : virtual hex_decode_error {};
+struct BOOST_SYMBOL_VISIBLE non_hex_input    : virtual hex_decode_error {};
 typedef boost::error_info<struct bad_char_,char> bad_char;
 
 namespace detail {
@@ -73,7 +74,7 @@ namespace detail {
         else if ( c >= 'A' && c <= 'F' ) retval = c - 'A' + 10;
         else if ( c >= 'a' && c <= 'f' ) retval = c - 'a' + 10;
         else BOOST_THROW_EXCEPTION (non_hex_input() << bad_char (c));
-        return retval;
+        return static_cast<char>(retval);
         }
 
 //  My own iterator_traits class.

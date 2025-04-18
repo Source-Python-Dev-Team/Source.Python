@@ -4,6 +4,10 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
+// This file was modified by Oracle on 2020-2021.
+// Modifications copyright (c) 2020-2021 Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -18,27 +22,15 @@
 
 #include <boost/concept_check.hpp>
 #include <boost/range/concepts.hpp>
-#include <boost/range/metafunctions.hpp>
+#include <boost/range/value_type.hpp>
 
-
+#include <boost/geometry/geometries/concepts/concept_type.hpp>
 #include <boost/geometry/geometries/concepts/linestring_concept.hpp>
 
 
 namespace boost { namespace geometry { namespace concepts
 {
 
-
-/*!
-\brief multi-linestring concept
-\ingroup concepts
-\par Formal definition:
-The multi linestring concept is defined as following:
-- there must be a specialization of traits::tag defining multi_linestring_tag as
-  type
-- it must behave like a Boost.Range
-- its range value must fulfil the Linestring concept
-
-*/
 template <typename Geometry>
 class MultiLinestring
 {
@@ -57,7 +49,7 @@ public :
         traits::clear<Geometry>::apply(*mls);
         traits::resize<Geometry>::apply(*mls, 0);
         linestring_type* ls = 0;
-        traits::push_back<Geometry>::apply(*mls, *ls);
+        traits::push_back<Geometry>::apply(*mls, std::move(*ls));
     }
 #endif
 };
@@ -84,6 +76,20 @@ public :
     }
 #endif
 };
+
+
+template <typename Geometry>
+struct concept_type<Geometry, multi_linestring_tag>
+{
+    using type = MultiLinestring<Geometry>;
+};
+
+template <typename Geometry>
+struct concept_type<Geometry const, multi_linestring_tag>
+{
+    using type = ConstMultiLinestring<Geometry>;
+};
+
 
 }}} // namespace boost::geometry::concepts
 

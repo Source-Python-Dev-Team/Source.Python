@@ -36,6 +36,8 @@
 #include "entities_datamaps.h"
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 
+using namespace boost::placeholders;
+
 
 // ============================================================================
 // >> TYPEDEFS

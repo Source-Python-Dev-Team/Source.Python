@@ -56,8 +56,7 @@ class adams_bashforth_moulton
 {
 
 #ifndef DOXYGEN_SKIP
-    BOOST_STATIC_ASSERT(( Steps > 0 ));
-    BOOST_STATIC_ASSERT(( Steps < 9 ));
+    static_assert(( Steps > 0 && Steps < 9 ), "Must have between 1 and 8 steps inclusive");
 #endif
 
 public :
@@ -150,6 +149,12 @@ public :
     }
 
 
+    void reset(void)
+    {
+        m_adams_bashforth.reset();
+    }
+
+
 
 private:
     
@@ -158,7 +163,7 @@ private:
     {
         if( m_adams_bashforth.is_initialized() )
         {
-            m_resizer.adjust_size( x , detail::bind( &stepper_type::template resize_impl< StateInOut > , detail::ref( *this ) , detail::_1 ) );
+            m_resizer.adjust_size(x, [this](auto&& arg) { return this->resize_impl<StateInOut>(std::forward<decltype(arg)>(arg)); });
             m_adams_bashforth.do_step( system , x , t , m_x.m_v , dt );
             m_adams_moulton.do_step( system , x , m_x.m_v , t+dt , x , dt , m_adams_bashforth.step_storage() );
         }
@@ -173,9 +178,9 @@ private:
     {
         if( m_adams_bashforth.is_initialized() )
         {
-            m_resizer.adjust_size( in , detail::bind( &stepper_type::template resize_impl< StateInOut > , detail::ref( *this ) , detail::_1 ) );        
+            m_resizer.adjust_size(in, [this](auto&& arg) { return this->resize_impl<StateIn>(std::forward<decltype(arg)>(arg)); });      
             m_adams_bashforth.do_step( system , in , t , m_x.m_v , dt );
-            m_adams_moulton.do_step( system , in , m_x.m_v , t , out , dt , m_adams_bashforth.step_storage() );
+            m_adams_moulton.do_step( system , in , m_x.m_v , t+dt , out , dt , m_adams_bashforth.step_storage() );
         }
         else
         {
@@ -291,6 +296,11 @@ private:
      * \param x The state of the ODE which should be solved. After calling do_step the result is updated in x.
      * \param t The value of the time, at which the step should be performed.
      * \param dt The step size.
+     */
+
+    /**
+     * \fn adams_bashforth_moulton::reset( void )
+     * \brief Resets the internal buffers of the stepper.
      */
 
 

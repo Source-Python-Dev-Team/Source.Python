@@ -17,7 +17,8 @@
 #include <boost/spirit/home/x3/support/unused.hpp>
 #include <boost/spirit/home/x3/support/context.hpp>
 #include <boost/spirit/home/x3/support/traits/has_attribute.hpp>
-#include <boost/spirit/home/x3/support/utility/sfinae.hpp>
+#include <boost/core/ignore_unused.hpp>
+#include <boost/assert.hpp>
 #include <string>
 
 #if !defined(BOOST_SPIRIT_X3_NO_RTTI)
@@ -43,23 +44,21 @@ namespace boost { namespace spirit { namespace x3
         static bool const is_pass_through_unary = false;
         static bool const has_action = false;
 
-        Derived const& derived() const
+        constexpr Derived const& derived() const
         {
             return *static_cast<Derived const*>(this);
         }
 
         template <typename Action>
-        action<Derived, Action>
-        operator[](Action f) const
+        constexpr action<Derived, Action> operator[](Action f) const
         {
-            return action<Derived, Action>(this->derived(), f);
+            return { this->derived(), f };
         }
 
         template <typename Handler>
-        guard<Derived, Handler>
-        on_error(Handler f) const
+        constexpr guard<Derived, Handler> on_error(Handler f) const
         {
-            return guard<Derived, Handler>(this->derived(), f);
+            return { this->derived(), f };
         }
     };
 
@@ -73,7 +72,7 @@ namespace boost { namespace spirit { namespace x3
         typedef Subject subject_type;
         static bool const has_action = Subject::has_action;
 
-        unary_parser(Subject const& subject)
+        constexpr unary_parser(Subject const& subject)
             : subject(subject) {}
 
         unary_parser const& get_unary() const { return *this; }
@@ -90,7 +89,7 @@ namespace boost { namespace spirit { namespace x3
         static bool const has_action =
             left_type::has_action || right_type::has_action;
 
-        binary_parser(Left const& left, Right const& right)
+        constexpr binary_parser(Left const& left, Right const& right)
             : left(left), right(right) {}
 
         binary_parser const& get_binary() const { return *this; }
@@ -141,7 +140,7 @@ namespace boost { namespace spirit { namespace x3
         {
             typedef unused_type type;
             typedef unused_type value_type;
-            static type call(unused_type)
+            static constexpr type call(unused_type)
             {
                 return unused;
             }
@@ -153,7 +152,7 @@ namespace boost { namespace spirit { namespace x3
         {
             typedef Derived const& type;
             typedef Derived value_type;
-            static type call(Derived const& p)
+            static constexpr type call(Derived const& p)
             {
                 return p;
             }
@@ -164,7 +163,7 @@ namespace boost { namespace spirit { namespace x3
         {
             typedef Derived const& type;
             typedef Derived value_type;
-            static type call(parser<Derived> const& p)
+            static constexpr type call(parser<Derived> const& p)
             {
                 return p.derived();
             }
@@ -172,14 +171,14 @@ namespace boost { namespace spirit { namespace x3
     }
 
     template <typename T>
-    inline typename extension::as_parser<T>::type
+    constexpr typename extension::as_parser<T>::type
     as_parser(T const& x)
     {
         return extension::as_parser<T>::call(x);
     }
 
     template <typename Derived>
-    inline Derived const&
+    constexpr Derived const&
     as_parser(parser<Derived> const& p)
     {
         return p.derived();

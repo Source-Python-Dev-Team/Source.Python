@@ -7,7 +7,7 @@
 # =============================================================================
 # Python Imports
 #   Datetime
-from datetime import datetime
+from datetime import datetime, UTC
 #   Platform
 import platform
 
@@ -133,7 +133,7 @@ def _sp_help(command_info, command=None, *server_sub_commands):
 @core_command.server_sub_command(['info'])
 def print_info(info):
     """Print information about OS, SP and installed plugins."""
-    result = '\nDate          : {}'.format(datetime.utcnow())
+    result = '\nDate          : {}'.format(datetime.now(UTC))
     result += '\nOS            : {}'.format(platform.platform())
     result += '\nGame          : {}'.format(SOURCE_ENGINE_BRANCH)
     result += '\nSP version    : {}'.format(VERSION)

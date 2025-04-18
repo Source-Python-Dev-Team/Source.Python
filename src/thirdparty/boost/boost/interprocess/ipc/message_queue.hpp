@@ -28,15 +28,16 @@
 #include <boost/interprocess/sync/interprocess_mutex.hpp>
 #include <boost/interprocess/sync/scoped_lock.hpp>
 #include <boost/interprocess/detail/utilities.hpp>
+#include <boost/interprocess/timed_utils.hpp>
 #include <boost/interprocess/offset_ptr.hpp>
 #include <boost/interprocess/creation_tags.hpp>
 #include <boost/interprocess/exceptions.hpp>
 #include <boost/interprocess/permissions.hpp>
-#include <boost/core/no_exceptions_support.hpp>
 #include <boost/interprocess/detail/type_traits.hpp>
 #include <boost/intrusive/pointer_traits.hpp>
 #include <boost/move/detail/type_traits.hpp> //make_unsigned, alignment_of
 #include <boost/intrusive/pointer_traits.hpp>
+#include <boost/move/detail/force_ptr.hpp>
 #include <boost/assert.hpp>
 #include <algorithm> //std::lower_bound
 #include <cstddef>   //std::size_t
@@ -54,7 +55,11 @@ namespace ipcdetail
 {
    template<class VoidPointer>
    class msg_queue_initialization_func_t;
+
 }
+
+//Blocking modes
+enum mqblock_types   {  blocking,   timed,   non_blocking   };
 
 //!A class that allows sending messages
 //!between processes.
@@ -62,8 +67,6 @@ template<class VoidPointer>
 class message_queue_t
 {
    #if !defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
-   //Blocking modes
-   enum block_t   {  blocking,   timed,   non_blocking   };
 
    message_queue_t();
    #endif   //#ifndef BOOST_INTERPROCESS_DOXYGEN_INVOKED
@@ -74,12 +77,12 @@ class message_queue_t
       pointer_traits<void_pointer>::template
          rebind_pointer<char>::type                                    char_ptr;
    typedef typename boost::intrusive::pointer_traits<char_ptr>::difference_type difference_type;
-   typedef typename boost::container::container_detail::make_unsigned<difference_type>::type        size_type;
+   typedef typename boost::container::dtl::make_unsigned<difference_type>::type        size_type;
 
    //!Creates a process shared message queue with name "name". For this message queue,
    //!the maximum number of messages will be "max_num_msg" and the maximum message size
    //!will be "max_msg_size". Throws on error and if the queue was previously created.
-   message_queue_t(create_only_t create_only,
+   message_queue_t(create_only_t,
                  const char *name,
                  size_type max_num_msg,
                  size_type max_msg_size,
@@ -90,7 +93,7 @@ class message_queue_t
    //!and the maximum message size will be "max_msg_size". If queue was previously
    //!created the queue will be opened and "max_num_msg" and "max_msg_size" parameters
    //!are ignored. Throws on error.
-   message_queue_t(open_or_create_t open_or_create,
+   message_queue_t(open_or_create_t,
                  const char *name,
                  size_type max_num_msg,
                  size_type max_msg_size,
@@ -99,8 +102,51 @@ class message_queue_t
    //!Opens a previously created process shared message queue with name "name".
    //!If the queue was not previously created or there are no free resources,
    //!throws an error.
-   message_queue_t(open_only_t open_only,
-                 const char *name);
+   message_queue_t(open_only_t, const char *name);
+
+   #if defined(BOOST_INTERPROCESS_WCHAR_NAMED_RESOURCES) || defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+
+   //!Creates a process shared message queue with name "name". For this message queue,
+   //!the maximum number of messages will be "max_num_msg" and the maximum message size
+   //!will be "max_msg_size". Throws on error and if the queue was previously created.
+   //! 
+   //!Note: This function is only available on operating systems with
+   //!      native wchar_t APIs (e.g. Windows).
+   message_queue_t(create_only_t,
+                 const wchar_t *name,
+                 size_type max_num_msg,
+                 size_type max_msg_size,
+                 const permissions &perm = permissions());
+
+   //!Opens or creates a process shared message queue with name "name".
+   //!If the queue is created, the maximum number of messages will be "max_num_msg"
+   //!and the maximum message size will be "max_msg_size". If queue was previously
+   //!created the queue will be opened and "max_num_msg" and "max_msg_size" parameters
+   //!are ignored. Throws on error.
+   //! 
+   //!Note: This function is only available on operating systems with
+   //!      native wchar_t APIs (e.g. Windows).
+   message_queue_t(open_or_create_t,
+                 const wchar_t *name,
+                 size_type max_num_msg,
+                 size_type max_msg_size,
+                 const permissions &perm = permissions());
+
+   //!Opens a previously created process shared message queue with name "name".
+   //!If the queue was not previously created or there are no free resources,
+   //!throws an error.
+   //! 
+   //!Note: This function is only available on operating systems with
+   //!      native wchar_t APIs (e.g. Windows).
+   message_queue_t(open_only_t, const wchar_t *name);
+
+   #endif //defined(BOOST_INTERPROCESS_WCHAR_NAMED_RESOURCES) || defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+
+   //!Creates a process shared message queue in anonymous memory. For this message queue,
+   //!the maximum number of messages will be "max_num_msg" and the maximum message size
+   //!will be "max_msg_size". Throws on error.
+   message_queue_t(size_type max_num_msg,
+                 size_type max_msg_size);
 
    //!Destroys *this and indicates that the calling process is finished using
    //!the resource. All opened message queues are still
@@ -129,8 +175,9 @@ class message_queue_t
    //!the sender retries until time "abs_time" is reached. Returns true if
    //!the message has been successfully sent. Returns false if timeout is reached.
    //!Throws interprocess_error on error.
+   template<class TimePoint>
    bool timed_send    (const void *buffer,     size_type buffer_size,
-                           unsigned int priority,  const boost::posix_time::ptime& abs_time);
+                           unsigned int priority,  const TimePoint& abs_time);
 
    //!Receives a message from the message queue. The message is stored in buffer
    //!"buffer", which has size "buffer_size". The received message has size
@@ -153,9 +200,10 @@ class message_queue_t
    //!the receiver retries until time "abs_time" is reached. Returns true if
    //!the message has been successfully sent. Returns false if timeout is reached.
    //!Throws interprocess_error on error.
+   template<class TimePoint>
    bool timed_receive (void *buffer,           size_type buffer_size,
                        size_type &recvd_size,unsigned int &priority,
-                       const boost::posix_time::ptime &abs_time);
+                       const TimePoint &abs_time);
 
    //!Returns the maximum number of messages allowed by the queue. The message
    //!queue must be opened or created previously. Otherwise, returns 0.
@@ -175,26 +223,45 @@ class message_queue_t
    //!Returns false on error. Never throws
    static bool remove(const char *name);
 
+   #if defined(BOOST_INTERPROCESS_WCHAR_NAMED_RESOURCES) || defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+
+   //!Removes the message queue from the system.
+   //!Returns false on error. Never throws
+   //! 
+   //!Note: This function is only available on operating systems with
+   //!      native wchar_t APIs (e.g. Windows).
+   static bool remove(const wchar_t *name);
+
+   #endif
+
    #if !defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
    private:
-   typedef boost::posix_time::ptime ptime;
 
    friend class ipcdetail::msg_queue_initialization_func_t<VoidPointer>;
 
-   bool do_receive(block_t block,
-                   void *buffer,         size_type buffer_size,
+   template<mqblock_types Block, class TimePoint>
+   bool do_receive(void *buffer,         size_type buffer_size,
                    size_type &recvd_size, unsigned int &priority,
-                   const ptime &abs_time);
+                   const TimePoint &abs_time);
 
-   bool do_send(block_t block,
-                const void *buffer,      size_type buffer_size,
-                unsigned int priority,   const ptime &abs_time);
+   template<mqblock_types Block, class TimePoint>
+   bool do_send(const void *buffer,      size_type buffer_size,
+                unsigned int priority,   const TimePoint &abs_time);
 
    //!Returns the needed memory size for the shared message queue.
    //!Never throws
    static size_type get_mem_size(size_type max_msg_size, size_type max_num_msg);
    typedef ipcdetail::managed_open_or_create_impl<shared_memory_object, 0, true, false> open_create_impl_t;
    open_create_impl_t m_shmem;
+
+   template<class Lock, class TimePoint>
+   static bool do_cond_wait(ipcdetail::bool_<true>, interprocess_condition &cond, Lock &lock, const TimePoint &abs_time)
+   {  return cond.timed_wait(lock, abs_time);  }
+
+   template<class Lock, class TimePoint>
+   static bool do_cond_wait(ipcdetail::bool_<false>, interprocess_condition &cond, Lock &lock, const TimePoint &)
+   {  cond.wait(lock); return true;  }
+
    #endif   //#ifndef BOOST_INTERPROCESS_DOXYGEN_INVOKED
 };
 
@@ -211,7 +278,7 @@ class msg_hdr_t
       pointer_traits<void_pointer>::template
          rebind_pointer<char>::type                                              char_ptr;
    typedef typename boost::intrusive::pointer_traits<char_ptr>::difference_type  difference_type;
-   typedef typename boost::container::container_detail::make_unsigned<difference_type>::type                  size_type;
+   typedef typename boost::container::dtl::make_unsigned<difference_type>::type                  size_type;
 
    public:
    size_type               len;     // Message length
@@ -297,7 +364,7 @@ class mq_hdr_t
    typedef typename boost::intrusive::pointer_traits
       <msg_hdr_ptr_t>::difference_type                                     difference_type;
    typedef typename boost::container::
-      container_detail::make_unsigned<difference_type>::type               size_type;
+      dtl::make_unsigned<difference_type>::type               size_type;
    typedef typename boost::intrusive::
       pointer_traits<void_pointer>::template
          rebind_pointer<msg_hdr_ptr_t>::type                              msg_hdr_ptr_ptr_t;
@@ -346,24 +413,24 @@ class mq_hdr_t
    msg_header &top_msg()
    {
       size_type pos = this->end_pos();
-      return *mp_index[pos ? --pos : m_max_num_msg - 1];
+      return *mp_index[difference_type(pos ? --pos : m_max_num_msg - 1)];
    }
 
    //!Returns the inserted message with bottom priority
    msg_header &bottom_msg()
-      {  return *mp_index[m_cur_first_msg];   }
+      {  return *mp_index[difference_type(m_cur_first_msg)];   }
 
    iterator inserted_ptr_begin() const
-   {  return &mp_index[m_cur_first_msg]; }
+   {  return &mp_index[difference_type(m_cur_first_msg)]; }
 
    iterator inserted_ptr_end() const
-      {  return &mp_index[this->end_pos()];  }
+      {  return &mp_index[difference_type(this->end_pos())];  }
 
    iterator lower_bound(const msg_hdr_ptr_t & value, priority_functor<VoidPointer> func)
    {
       iterator begin(this->inserted_ptr_begin()), end(this->inserted_ptr_end());
       if(end < begin){
-         iterator idx_end = &mp_index[m_max_num_msg];
+         iterator idx_end = &mp_index[difference_type(m_max_num_msg)];
          iterator ret = std::lower_bound(begin, idx_end, value, func);
          if(idx_end == ret){
             iterator idx_beg = &mp_index[0];
@@ -391,14 +458,14 @@ class mq_hdr_t
          m_cur_first_msg = m_cur_first_msg ? m_cur_first_msg : m_max_num_msg;
          --m_cur_first_msg;
          ++m_cur_num_msg;
-         return *mp_index[m_cur_first_msg];
+         return *mp_index[difference_type(m_cur_first_msg)];
       }
       else if(where == it_inserted_ptr_end){
          ++m_cur_num_msg;
          return **it_inserted_ptr_end;
       }
       else{
-         size_type pos  = where - &mp_index[0];
+         size_type pos  = size_type(where - &mp_index[0]);
          size_type circ_pos = pos >= m_cur_first_msg ? pos - m_cur_first_msg : pos + (m_max_num_msg - m_cur_first_msg);
          //Check if it's more efficient to move back or move front
          if(circ_pos < m_cur_num_msg/2){
@@ -406,7 +473,7 @@ class mq_hdr_t
             //indicates two step insertion
             if(!pos){
                pos   = m_max_num_msg;
-               where = &mp_index[m_max_num_msg-1];
+               where = &mp_index[difference_type(m_max_num_msg-1u)];
             }
             else{
                --where;
@@ -423,7 +490,7 @@ class mq_hdr_t
                std::copy( &mp_index[0] + second_segment_beg
                         , &mp_index[0] + second_segment_end
                         , &mp_index[0] + second_segment_beg - 1);
-               mp_index[m_max_num_msg-1] = mp_index[0];
+               mp_index[difference_type(m_max_num_msg-1u)] = mp_index[0];
             }
             std::copy( &mp_index[0] + first_segment_beg
                      , &mp_index[0] + first_segment_end
@@ -449,12 +516,12 @@ class mq_hdr_t
             if(!unique_segment){
                std::copy_backward( &mp_index[0] + second_segment_beg
                                  , &mp_index[0] + second_segment_end
-                                 , &mp_index[0] + second_segment_end + 1);
-               mp_index[0] = mp_index[m_max_num_msg-1];
+                                 , &mp_index[0] + second_segment_end + 1u);
+               mp_index[0] = mp_index[difference_type(m_max_num_msg-1u)];
             }
             std::copy_backward( &mp_index[0] + first_segment_beg
                               , &mp_index[0] + first_segment_end
-                              , &mp_index[0] + first_segment_end + 1);
+                              , &mp_index[0] + first_segment_end + 1u);
             *where = backup;
             ++m_cur_num_msg;
             return **where;
@@ -468,7 +535,7 @@ class mq_hdr_t
 
    //!Returns the inserted message with top priority
    msg_header &top_msg()
-      {  return *mp_index[m_cur_num_msg-1];   }
+      {  return *mp_index[difference_type(m_cur_num_msg-1u)];   }
 
    //!Returns the inserted message with bottom priority
    msg_header &bottom_msg()
@@ -478,7 +545,7 @@ class mq_hdr_t
    {  return &mp_index[0]; }
 
    iterator inserted_ptr_end() const
-   {  return &mp_index[m_cur_num_msg]; }
+   {  return &mp_index[difference_type(m_cur_num_msg)]; }
 
    iterator lower_bound(const msg_hdr_ptr_t & value, priority_functor<VoidPointer> func)
    {  return std::lower_bound(this->inserted_ptr_begin(), this->inserted_ptr_end(), value, func);  }
@@ -529,8 +596,8 @@ class mq_hdr_t
       (size_type max_msg_size, size_type max_num_msg)
    {
       const size_type
-       msg_hdr_align  = ::boost::container::container_detail::alignment_of<msg_header>::value,
-       index_align    = ::boost::container::container_detail::alignment_of<msg_hdr_ptr_t>::value,
+       msg_hdr_align  = ::boost::container::dtl::alignment_of<msg_header>::value,
+       index_align    = ::boost::container::dtl::alignment_of<msg_hdr_ptr_t>::value,
          r_hdr_size     = ipcdetail::ct_rounded_size<sizeof(mq_hdr_t), index_align>::value,
          r_index_size   = ipcdetail::get_rounded_size<size_type>(max_num_msg*sizeof(msg_hdr_ptr_t), msg_hdr_align),
          r_max_msg_size = ipcdetail::get_rounded_size<size_type>(max_msg_size, msg_hdr_align) + sizeof(msg_header);
@@ -543,18 +610,18 @@ class mq_hdr_t
    void initialize_memory()
    {
       const size_type
-        msg_hdr_align  = ::boost::container::container_detail::alignment_of<msg_header>::value,
-        index_align    = ::boost::container::container_detail::alignment_of<msg_hdr_ptr_t>::value,
+        msg_hdr_align  = ::boost::container::dtl::alignment_of<msg_header>::value,
+        index_align    = ::boost::container::dtl::alignment_of<msg_hdr_ptr_t>::value,
          r_hdr_size     = ipcdetail::ct_rounded_size<sizeof(mq_hdr_t), index_align>::value,
          r_index_size   = ipcdetail::get_rounded_size<size_type>(m_max_num_msg*sizeof(msg_hdr_ptr_t), msg_hdr_align),
          r_max_msg_size = ipcdetail::get_rounded_size<size_type>(m_max_msg_size, msg_hdr_align) + sizeof(msg_header);
 
       //Pointer to the index
-      msg_hdr_ptr_t *index =  reinterpret_cast<msg_hdr_ptr_t*>
+      msg_hdr_ptr_t *index =  move_detail::force_ptr<msg_hdr_ptr_t*>
                                  (reinterpret_cast<char*>(this)+r_hdr_size);
 
       //Pointer to the first message header
-      msg_header *msg_hdr   =  reinterpret_cast<msg_header*>
+      msg_header *msg_hdr   =  move_detail::force_ptr<msg_header*>
                                  (reinterpret_cast<char*>(this)+r_hdr_size+r_index_size);
 
       //Initialize the pointer to the index
@@ -563,7 +630,7 @@ class mq_hdr_t
       //Initialize the index so each slot points to a preallocated message
       for(size_type i = 0; i < m_max_num_msg; ++i){
          index[i] = msg_hdr;
-         msg_hdr  = reinterpret_cast<msg_header*>
+         msg_hdr  = move_detail::force_ptr<msg_header*>
                         (reinterpret_cast<char*>(msg_hdr)+r_max_msg_size);
       }
    }
@@ -603,7 +670,7 @@ class msg_queue_initialization_func_t
          rebind_pointer<char>::type                               char_ptr;
    typedef typename boost::intrusive::pointer_traits<char_ptr>::
       difference_type                                             difference_type;
-   typedef typename boost::container::container_detail::
+   typedef typename boost::container::dtl::
       make_unsigned<difference_type>::type                        size_type;
 
    msg_queue_initialization_func_t(size_type maxmsg = 0,
@@ -617,13 +684,12 @@ class msg_queue_initialization_func_t
       if(created){
          mptr     = reinterpret_cast<char*>(address);
          //Construct the message queue header at the beginning
-         BOOST_TRY{
+         BOOST_INTERPROCESS_TRY{
             new (mptr) mq_hdr_t<VoidPointer>(m_maxmsg, m_maxmsgsize);
          }
-         BOOST_CATCH(...){
+         BOOST_INTERPROCESS_CATCH(...){
             return false;
-         }
-         BOOST_CATCH_END
+         } BOOST_INTERPROCESS_CATCH_END
       }
       return true;
    }
@@ -694,32 +760,92 @@ inline message_queue_t<VoidPointer>::message_queue_t(open_only_t, const char *na
               ipcdetail::msg_queue_initialization_func_t<VoidPointer> ())
 {}
 
+#if defined(BOOST_INTERPROCESS_WCHAR_NAMED_RESOURCES) || defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+
+template<class VoidPointer>
+inline message_queue_t<VoidPointer>::message_queue_t(create_only_t,
+                                    const wchar_t *name,
+                                    size_type max_num_msg,
+                                    size_type max_msg_size,
+                                    const permissions &perm)
+      //Create shared memory and execute functor atomically
+   :  m_shmem(create_only,
+              name,
+              get_mem_size(max_msg_size, max_num_msg),
+              read_write,
+              static_cast<void*>(0),
+              //Prepare initialization functor
+              ipcdetail::msg_queue_initialization_func_t<VoidPointer> (max_num_msg, max_msg_size),
+              perm)
+{}
+
+template<class VoidPointer>
+inline message_queue_t<VoidPointer>::message_queue_t(open_or_create_t,
+                                    const wchar_t *name,
+                                    size_type max_num_msg,
+                                    size_type max_msg_size,
+                                    const permissions &perm)
+      //Create shared memory and execute functor atomically
+   :  m_shmem(open_or_create,
+              name,
+              get_mem_size(max_msg_size, max_num_msg),
+              read_write,
+              static_cast<void*>(0),
+              //Prepare initialization functor
+              ipcdetail::msg_queue_initialization_func_t<VoidPointer> (max_num_msg, max_msg_size),
+              perm)
+{}
+
+template<class VoidPointer>
+inline message_queue_t<VoidPointer>::message_queue_t(open_only_t, const wchar_t *name)
+   //Create shared memory and execute functor atomically
+   :  m_shmem(open_only,
+              name,
+              read_write,
+              static_cast<void*>(0),
+              //Prepare initialization functor
+              ipcdetail::msg_queue_initialization_func_t<VoidPointer> ())
+{}
+
+#endif //defined(BOOST_INTERPROCESS_WCHAR_NAMED_RESOURCES) || defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+
+template <class VoidPointer>
+inline message_queue_t<VoidPointer>::message_queue_t(size_type max_num_msg,
+                                    size_type max_msg_size)
+   :  m_shmem(get_mem_size(max_msg_size, max_num_msg),
+            static_cast<void*>(0),
+            //Prepare initialization functor
+            ipcdetail::msg_queue_initialization_func_t<VoidPointer> (max_num_msg, max_msg_size))
+{}
+
 template<class VoidPointer>
 inline void message_queue_t<VoidPointer>::send
    (const void *buffer, size_type buffer_size, unsigned int priority)
-{  this->do_send(blocking, buffer, buffer_size, priority, ptime()); }
+{  this->do_send<blocking>(buffer, buffer_size, priority, 0); }
 
 template<class VoidPointer>
 inline bool message_queue_t<VoidPointer>::try_send
    (const void *buffer, size_type buffer_size, unsigned int priority)
-{  return this->do_send(non_blocking, buffer, buffer_size, priority, ptime()); }
+{  return this->do_send<non_blocking>(buffer, buffer_size, priority, 0); }
 
 template<class VoidPointer>
+template<class TimePoint>
 inline bool message_queue_t<VoidPointer>::timed_send
    (const void *buffer, size_type buffer_size
-   ,unsigned int priority, const boost::posix_time::ptime &abs_time)
+   ,unsigned int priority, const TimePoint &abs_time)
 {
-   if(abs_time == boost::posix_time::pos_infin){
+   if(ipcdetail::is_pos_infinity(abs_time)){
       this->send(buffer, buffer_size, priority);
       return true;
    }
-   return this->do_send(timed, buffer, buffer_size, priority, abs_time);
+   return this->do_send<timed>(buffer, buffer_size, priority, abs_time);
 }
 
 template<class VoidPointer>
-inline bool message_queue_t<VoidPointer>::do_send(block_t block,
+template<mqblock_types Block, class TimePoint>
+inline bool message_queue_t<VoidPointer>::do_send(
                                 const void *buffer,      size_type buffer_size,
-                                unsigned int priority,   const boost::posix_time::ptime &abs_time)
+                                unsigned int priority,   const TimePoint &abs_time)
 {
    ipcdetail::mq_hdr_t<VoidPointer> *p_hdr = static_cast<ipcdetail::mq_hdr_t<VoidPointer>*>(m_shmem.get_user_address());
    //Check if buffer is smaller than maximum allowed
@@ -736,11 +862,11 @@ inline bool message_queue_t<VoidPointer>::do_send(block_t block,
    {
       //If the queue is full execute blocking logic
       if (p_hdr->is_full()) {
-         BOOST_TRY{
+         BOOST_INTERPROCESS_TRY{
             #ifdef BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX
             ++p_hdr->m_blocked_senders;
             #endif
-            switch(block){
+            switch(Block){
                case non_blocking :
                   #ifdef BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX
                   --p_hdr->m_blocked_senders;
@@ -750,14 +876,14 @@ inline bool message_queue_t<VoidPointer>::do_send(block_t block,
 
                case blocking :
                   do{
-                     p_hdr->m_cond_send.wait(lock);
+                     (void)do_cond_wait(ipcdetail::bool_<false>(), p_hdr->m_cond_send, lock, abs_time);
                   }
                   while (p_hdr->is_full());
                break;
 
                case timed :
                   do{
-                     if(!p_hdr->m_cond_send.timed_wait(lock, abs_time)){
+                     if(!do_cond_wait(ipcdetail::bool_<Block == timed>(), p_hdr->m_cond_send, lock, abs_time)) {
                         if(p_hdr->is_full()){
                            #ifdef BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX
                            --p_hdr->m_blocked_senders;
@@ -776,13 +902,12 @@ inline bool message_queue_t<VoidPointer>::do_send(block_t block,
             --p_hdr->m_blocked_senders;
             #endif
          }
-         BOOST_CATCH(...){
+         BOOST_INTERPROCESS_CATCH(...){
             #ifdef BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX
             --p_hdr->m_blocked_senders;
             #endif
-            BOOST_RETHROW;
-         }
-         BOOST_CATCH_END
+            BOOST_INTERPROCESS_RETHROW;
+         } BOOST_INTERPROCESS_CATCH_END
       }
 
       #if defined(BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX)
@@ -820,33 +945,35 @@ inline bool message_queue_t<VoidPointer>::do_send(block_t block,
 template<class VoidPointer>
 inline void message_queue_t<VoidPointer>::receive(void *buffer,        size_type buffer_size,
                         size_type &recvd_size,   unsigned int &priority)
-{  this->do_receive(blocking, buffer, buffer_size, recvd_size, priority, ptime()); }
+{  this->do_receive<blocking>(buffer, buffer_size, recvd_size, priority, 0); }
 
 template<class VoidPointer>
 inline bool
    message_queue_t<VoidPointer>::try_receive(void *buffer,              size_type buffer_size,
                               size_type &recvd_size,   unsigned int &priority)
-{  return this->do_receive(non_blocking, buffer, buffer_size, recvd_size, priority, ptime()); }
+{  return this->do_receive<non_blocking>(buffer, buffer_size, recvd_size, priority, 0); }
 
 template<class VoidPointer>
+template<class TimePoint>
 inline bool
    message_queue_t<VoidPointer>::timed_receive(void *buffer,            size_type buffer_size,
                                 size_type &recvd_size,   unsigned int &priority,
-                                const boost::posix_time::ptime &abs_time)
+                                const TimePoint &abs_time)
 {
-   if(abs_time == boost::posix_time::pos_infin){
+   if(ipcdetail::is_pos_infinity(abs_time)){
       this->receive(buffer, buffer_size, recvd_size, priority);
       return true;
    }
-   return this->do_receive(timed, buffer, buffer_size, recvd_size, priority, abs_time);
+   return this->do_receive<timed>(buffer, buffer_size, recvd_size, priority, abs_time);
 }
 
 template<class VoidPointer>
+template<mqblock_types Block, class TimePoint>
 inline bool
-   message_queue_t<VoidPointer>::do_receive(block_t block,
+   message_queue_t<VoidPointer>::do_receive(
                           void *buffer,            size_type buffer_size,
                           size_type &recvd_size,   unsigned int &priority,
-                          const boost::posix_time::ptime &abs_time)
+                          const TimePoint &abs_time)
 {
    ipcdetail::mq_hdr_t<VoidPointer> *p_hdr = static_cast<ipcdetail::mq_hdr_t<VoidPointer>*>(m_shmem.get_user_address());
    //Check if buffer is big enough for any message
@@ -863,11 +990,11 @@ inline bool
    {
       //If there are no messages execute blocking logic
       if (p_hdr->is_empty()) {
-         BOOST_TRY{
+         BOOST_INTERPROCESS_TRY{
             #if defined(BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX)
             ++p_hdr->m_blocked_receivers;
             #endif
-            switch(block){
+            switch(Block){
                case non_blocking :
                   #if defined(BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX)
                   --p_hdr->m_blocked_receivers;
@@ -877,14 +1004,14 @@ inline bool
 
                case blocking :
                   do{
-                     p_hdr->m_cond_recv.wait(lock);
+                     (void)do_cond_wait(ipcdetail::bool_<false>(), p_hdr->m_cond_recv, lock, abs_time);
                   }
                   while (p_hdr->is_empty());
                break;
 
                case timed :
                   do{
-                     if(!p_hdr->m_cond_recv.timed_wait(lock, abs_time)){
+                     if(!do_cond_wait(ipcdetail::bool_<Block == timed>(), p_hdr->m_cond_recv, lock, abs_time)) {
                         if(p_hdr->is_empty()){
                            #if defined(BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX)
                            --p_hdr->m_blocked_receivers;
@@ -905,13 +1032,12 @@ inline bool
             --p_hdr->m_blocked_receivers;
             #endif
          }
-         BOOST_CATCH(...){
+         BOOST_INTERPROCESS_CATCH(...){
             #if defined(BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX)
             --p_hdr->m_blocked_receivers;
             #endif
-            BOOST_RETHROW;
-         }
-         BOOST_CATCH_END
+            BOOST_INTERPROCESS_RETHROW;
+         } BOOST_INTERPROCESS_CATCH_END
       }
 
       #ifdef BOOST_INTERPROCESS_MSG_QUEUE_CIRCULAR_INDEX
@@ -980,6 +1106,14 @@ inline typename message_queue_t<VoidPointer>::size_type message_queue_t<VoidPoin
 template<class VoidPointer>
 inline bool message_queue_t<VoidPointer>::remove(const char *name)
 {  return shared_memory_object::remove(name);  }
+
+#if defined(BOOST_INTERPROCESS_WCHAR_NAMED_RESOURCES) || defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
+
+template<class VoidPointer>
+inline bool message_queue_t<VoidPointer>::remove(const wchar_t *name)
+{  return shared_memory_object::remove(name);  }
+
+#endif
 
 #else
 

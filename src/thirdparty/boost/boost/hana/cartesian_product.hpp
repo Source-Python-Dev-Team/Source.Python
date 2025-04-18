@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::cartesian_product`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -26,7 +26,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Xs>
     constexpr auto cartesian_product_t::operator()(Xs&& xs) const {
@@ -49,7 +49,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         template <std::size_t ...Lengths>
         struct cartesian_product_indices {
             static constexpr std::size_t total_length() {
-                std::size_t lengths[] = {Lengths...};
+                std::size_t lengths[sizeof...(Lengths)] = {Lengths...};
                 std::size_t r = 1;
                 for (std::size_t len: lengths)
                     r *= len;
@@ -59,7 +59,7 @@ BOOST_HANA_NAMESPACE_BEGIN
             static constexpr std::size_t length = total_length();
 
             static constexpr auto indices_of(std::size_t i) {
-                constexpr std::size_t lengths[] = {Lengths...};
+                constexpr std::size_t lengths[sizeof...(Lengths)] = {Lengths...};
                 constexpr std::size_t n = sizeof...(Lengths);
                 detail::array<std::size_t, n> result{};
                 for (std::size_t j = n; j--;) {
@@ -108,6 +108,6 @@ BOOST_HANA_NAMESPACE_BEGIN
             return hana::make<S>();
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_CARTESIAN_PRODUCT_HPP

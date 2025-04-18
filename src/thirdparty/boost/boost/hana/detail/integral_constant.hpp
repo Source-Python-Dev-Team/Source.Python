@@ -3,7 +3,7 @@
 Defines the barebones `boost::hana::integral_constant` template, but no
 operations on it.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -17,7 +17,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <type_traits>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Tag representing `hana::integral_constant`.
     //! @relates hana::integral_constant
     template <typename T>
@@ -231,7 +231,11 @@ BOOST_HANA_NAMESPACE_BEGIN
     };
 #else
     template <typename T, T v>
+#ifdef BOOST_HANA_WORKAROUND_MSVC_EMPTYBASE
+    struct __declspec(empty_bases) integral_constant
+#else
     struct integral_constant
+#endif
         : std::integral_constant<T, v>
         , detail::operators::adl<integral_constant<T, v>>
     {
@@ -240,6 +244,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         using hana_tag = integral_constant_tag<T>;
     };
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_INTEGRAL_CONSTANT_HPP

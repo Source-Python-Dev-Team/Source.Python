@@ -26,7 +26,7 @@
 #include <boost/intrusive/detail/parent_from_member.hpp>
 #include <boost/intrusive/link_mode.hpp>
 #include <boost/intrusive/detail/mpl.hpp>
-#include <boost/intrusive/detail/to_raw_pointer.hpp>
+#include <boost/move/detail/to_raw_pointer.hpp>
 #include <boost/intrusive/detail/node_holder.hpp>
 
 namespace boost {
@@ -46,8 +46,10 @@ struct bhtraits_base
       template rebind_pointer<T>::type                               pointer;
    typedef typename pointer_traits<node_ptr>::
       template rebind_pointer<const T>::type                         const_pointer;
-   //typedef typename pointer_traits<pointer>::reference               reference;
-   //typedef typename pointer_traits<const_pointer>::reference         const_reference;
+   typedef typename pointer_traits<node_ptr>::
+      template rebind_pointer<node_holder_type>::type                node_holder_ptr;
+   typedef typename pointer_traits<node_ptr>::
+      template rebind_pointer<const node_holder_type>::type          const_node_holder_ptr;
    typedef T &                                                       reference;
    typedef const T &                                                 const_reference;
    typedef node_holder_type &                                        node_holder_reference;
@@ -55,28 +57,30 @@ struct bhtraits_base
    typedef node&                                                     node_reference;
    typedef const node &                                              const_node_reference;
 
-   BOOST_INTRUSIVE_FORCEINLINE static pointer to_value_ptr(const node_ptr & n)
+   inline static pointer to_value_ptr(node_ptr n)
    {
-      return pointer_traits<pointer>::pointer_to
-         (static_cast<reference>(static_cast<node_holder_reference>(*n)));
+      return pointer_traits<pointer>::
+         static_cast_from(pointer_traits<node_holder_ptr>::static_cast_from(n));
    }
 
-   BOOST_INTRUSIVE_FORCEINLINE static const_pointer to_value_ptr(const const_node_ptr & n)
+   inline static const_pointer to_value_ptr(const_node_ptr n)
    {
-      return pointer_traits<const_pointer>::pointer_to
-         (static_cast<const_reference>(static_cast<const_node_holder_reference>(*n)));
+      return pointer_traits<const_pointer>::
+         static_cast_from(pointer_traits<const_node_holder_ptr>::static_cast_from(n));
    }
 
-   BOOST_INTRUSIVE_FORCEINLINE static node_ptr to_node_ptr(reference value)
+   inline static node_ptr to_node_ptr(reference value)
    {
-      return pointer_traits<node_ptr>::pointer_to
+      node_ptr p = pointer_traits<node_ptr>::pointer_to
          (static_cast<node_reference>(static_cast<node_holder_reference>(value)));
+      return p;
    }
 
-   BOOST_INTRUSIVE_FORCEINLINE static const_node_ptr to_node_ptr(const_reference value)
+   inline static const_node_ptr to_node_ptr(const_reference value)
    {
-      return pointer_traits<const_node_ptr>::pointer_to
+      const_node_ptr p = pointer_traits<const_node_ptr>::pointer_to
          (static_cast<const_node_reference>(static_cast<const_node_holder_reference>(value)));
+      return p;
    }
 };
 
@@ -112,30 +116,30 @@ struct mhtraits
 
    static const link_mode_type link_mode = Hook::hooktags::link_mode;
 
-   BOOST_INTRUSIVE_FORCEINLINE static node_ptr to_node_ptr(reference value)
+   inline static node_ptr to_node_ptr(reference value)
    {
       return pointer_traits<node_ptr>::pointer_to
          (static_cast<node_reference>(static_cast<hook_reference>(value.*P)));
    }
 
-   BOOST_INTRUSIVE_FORCEINLINE static const_node_ptr to_node_ptr(const_reference value)
+   inline static const_node_ptr to_node_ptr(const_reference value)
    {
       return pointer_traits<const_node_ptr>::pointer_to
          (static_cast<const_node_reference>(static_cast<const_hook_reference>(value.*P)));
    }
 
-   BOOST_INTRUSIVE_FORCEINLINE static pointer to_value_ptr(const node_ptr & n)
+   inline static pointer to_value_ptr(node_ptr n)
    {
       return pointer_traits<pointer>::pointer_to
          (*detail::parent_from_member<T, Hook>
-            (static_cast<Hook*>(boost::intrusive::detail::to_raw_pointer(n)), P));
+            (static_cast<Hook*>(boost::movelib::to_raw_pointer(n)), P));
    }
 
-   BOOST_INTRUSIVE_FORCEINLINE static const_pointer to_value_ptr(const const_node_ptr & n)
+   inline static const_pointer to_value_ptr(const_node_ptr n)
    {
       return pointer_traits<const_pointer>::pointer_to
          (*detail::parent_from_member<T, Hook>
-            (static_cast<const Hook*>(boost::intrusive::detail::to_raw_pointer(n)), P));
+            (static_cast<const Hook*>(boost::movelib::to_raw_pointer(n)), P));
    }
 };
 
@@ -160,23 +164,23 @@ struct fhtraits
    typedef const value_type &                                        const_reference;
    static const link_mode_type link_mode = hook_type::hooktags::link_mode;
 
-   static node_ptr to_node_ptr(reference value)
-   {  return static_cast<node*>(boost::intrusive::detail::to_raw_pointer(Functor::to_hook_ptr(value)));  }
+   inline static node_ptr to_node_ptr(reference value)
+   {  return static_cast<node*>(boost::movelib::to_raw_pointer(Functor::to_hook_ptr(value)));  }
 
-   static const_node_ptr to_node_ptr(const_reference value)
-   {  return static_cast<const node*>(boost::intrusive::detail::to_raw_pointer(Functor::to_hook_ptr(value)));  }
+   inline static const_node_ptr to_node_ptr(const_reference value)
+   {  return static_cast<const node*>(boost::movelib::to_raw_pointer(Functor::to_hook_ptr(value)));  }
 
-   static pointer to_value_ptr(const node_ptr & n)
+   inline static pointer to_value_ptr(node_ptr n)
    {  return Functor::to_value_ptr(to_hook_ptr(n));  }
 
-   static const_pointer to_value_ptr(const const_node_ptr & n)
+   inline static const_pointer to_value_ptr(const_node_ptr n)
    {  return Functor::to_value_ptr(to_hook_ptr(n));  }
 
    private:
-   static hook_ptr to_hook_ptr(const node_ptr & n)
+   inline static hook_ptr to_hook_ptr(node_ptr n)
    {  return hook_ptr(&*static_cast<hook_type*>(&*n));  }
 
-   static const_hook_ptr to_hook_ptr(const const_node_ptr & n)
+   inline static const_hook_ptr to_hook_ptr(const_node_ptr n)
    {  return const_hook_ptr(&*static_cast<const hook_type*>(&*n));  }
 };
 

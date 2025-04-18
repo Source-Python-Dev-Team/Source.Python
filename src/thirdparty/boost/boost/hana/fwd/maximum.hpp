@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::maximum`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -15,7 +15,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/detail/nested_by_fwd.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Return the greatest element of a non-empty structure with respect to
     //! a `predicate`, by default `less`.
     //! @ingroup group-Foldable
@@ -109,8 +109,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr decltype(auto) operator()(Xs&& xs, Predicate&& pred) const;
     };
 
-    constexpr maximum_t maximum{};
+    BOOST_HANA_INLINE_VARIABLE constexpr maximum_t maximum{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_MAXIMUM_HPP

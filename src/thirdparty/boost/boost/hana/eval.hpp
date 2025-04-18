@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::eval`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -18,7 +18,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/functional/id.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Expr>
     constexpr decltype(auto) eval_t::operator()(Expr&& expr) const {
@@ -52,6 +52,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         static constexpr decltype(auto) apply(Expr&& expr)
         { return eval_helper(static_cast<Expr&&>(expr), int{}); }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_EVAL_HPP

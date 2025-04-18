@@ -5,11 +5,12 @@
 // Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
 // Copyright (c) 2013-2014 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2013-2017.
-// Modifications copyright (c) 2013-2017, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2013-2019.
+// Modifications copyright (c) 2013-2019, Oracle and/or its affiliates.
 
-// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -22,11 +23,6 @@
 #include <cstddef>
 #include <utility>
 
-#include <boost/numeric/conversion/cast.hpp>
-
-#include <boost/geometry/util/math.hpp>
-#include <boost/geometry/util/calculation_type.hpp>
-
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/tags.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
@@ -34,8 +30,12 @@
 
 #include <boost/geometry/algorithms/detail/assign_indexed_point.hpp>
 
+#include <boost/geometry/strategies/cartesian/point_in_box.hpp>
 #include <boost/geometry/strategies/disjoint.hpp>
 
+#include <boost/geometry/util/math.hpp>
+#include <boost/geometry/util/numeric_cast.hpp>
+#include <boost/geometry/util/calculation_type.hpp>
 
 namespace boost { namespace geometry { namespace strategy { namespace disjoint
 {
@@ -60,22 +60,22 @@ struct compute_tmin_tmax_per_dim
                 SegmentPoint
             >::type point_coordinate_type;
 
-        RelativeDistance c_p0 = boost::numeric_cast
+        RelativeDistance c_p0 = util::numeric_cast
             <
                 point_coordinate_type
             >( geometry::get<I>(p0) );
 
-        RelativeDistance c_p1 = boost::numeric_cast
+        RelativeDistance c_p1 = util::numeric_cast
             <
                 point_coordinate_type
             >( geometry::get<I>(p1) );
 
-        RelativeDistance c_b_min = boost::numeric_cast
+        RelativeDistance c_b_min = util::numeric_cast
             <
                 box_coordinate_type
             >( geometry::get<geometry::min_corner, I>(box) );
 
-        RelativeDistance c_b_max = boost::numeric_cast
+        RelativeDistance c_b_max = util::numeric_cast
             <
                 box_coordinate_type
             >( geometry::get<geometry::max_corner, I>(box) );
@@ -160,7 +160,7 @@ struct disjoint_segment_box_impl
             <
                 RelativeDistance,
                 SegmentPoint,
-                Box, 
+                Box,
                 I + 1,
                 Dimension
             >::apply(p0, p1, box, t_min, t_max);
@@ -245,22 +245,11 @@ struct disjoint_segment_box_impl
 // other strategies that are used are intersection and covered_by strategies.
 struct segment_box
 {
-    template <typename Segment, typename Box>
-    struct point_in_geometry_strategy
-        : services::default_strategy
-            <
-                typename point_type<Segment>::type,
-                Box
-            >
-    {};
+    typedef covered_by::cartesian_point_box disjoint_point_box_strategy_type;
 
-    template <typename Segment, typename Box>
-    static inline typename point_in_geometry_strategy<Segment, Box>::type
-        get_point_in_geometry_strategy()
+    static inline disjoint_point_box_strategy_type get_disjoint_point_box_strategy()
     {
-        typedef typename point_in_geometry_strategy<Segment, Box>::type strategy_type;
-
-        return strategy_type();
+        return disjoint_point_box_strategy_type();
     }
 
     template <typename Segment, typename Box>
@@ -268,12 +257,12 @@ struct segment_box
     {
         assert_dimension_equal<Segment, Box>();
 
-        typedef typename util::calculation_type::geometric::binary
+        using relative_distance_type = typename util::calculation_type::geometric::binary
             <
                 Segment, Box, void
-            >::type relative_distance_type;
+            >::type;
 
-        typedef typename point_type<Segment>::type segment_point_type;
+        using segment_point_type = point_type_t<Segment>;
         segment_point_type p0, p1;
         geometry::detail::assign_point_from_index<0>(segment, p0);
         geometry::detail::assign_point_from_index<1>(segment, p1);
@@ -293,16 +282,14 @@ struct segment_box
 namespace services
 {
 
-// Currently used in all coordinate systems
-
 template <typename Linear, typename Box, typename LinearTag>
-struct default_strategy<Linear, Box, LinearTag, box_tag, 1, 2>
+struct default_strategy<Linear, Box, LinearTag, box_tag, 1, 2, cartesian_tag, cartesian_tag>
 {
     typedef disjoint::segment_box type;
 };
 
 template <typename Box, typename Linear, typename LinearTag>
-struct default_strategy<Box, Linear, box_tag, LinearTag, 2, 1>
+struct default_strategy<Box, Linear, box_tag, LinearTag, 2, 1, cartesian_tag, cartesian_tag>
 {
     typedef disjoint::segment_box type;
 };

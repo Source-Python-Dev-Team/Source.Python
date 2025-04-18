@@ -5,8 +5,8 @@
 // Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
 // Copyright (c) 2013-2014 Adam Wulkiewicz, Lodz, Poland
 
-// This file was modified by Oracle on 2013-2014.
-// Modifications copyright (c) 2013-2014, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2013-2020.
+// Modifications copyright (c) 2013-2020, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
@@ -21,12 +21,14 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_EQUALS_POINT_POINT_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_EQUALS_POINT_POINT_HPP
 
-#include <boost/geometry/algorithms/detail/disjoint/point_point.hpp>
+
+#include <type_traits>
+
+#include <boost/geometry/strategies/detail.hpp>
 
 
 namespace boost { namespace geometry
 {
-
 
 #ifndef DOXYGEN_NO_DETAIL
 namespace detail { namespace equals
@@ -36,16 +38,31 @@ namespace detail { namespace equals
     \brief Internal utility function to detect of points are disjoint
     \note To avoid circular references
  */
-template <typename Point1, typename Point2>
-inline bool equals_point_point(Point1 const& point1, Point2 const& point2)
+template
+<
+    typename Point1, typename Point2, typename Strategy,
+    std::enable_if_t<strategies::detail::is_umbrella_strategy<Strategy>::value, int> = 0
+>
+inline bool equals_point_point(Point1 const& point1, Point2 const& point2,
+                               Strategy const& strategy)
 {
-    return ! detail::disjoint::disjoint_point_point(point1, point2);
+    typedef decltype(strategy.relate(point1, point2)) strategy_type;
+    return strategy_type::apply(point1, point2);
 }
 
+template
+<
+    typename Point1, typename Point2, typename Strategy,
+    std::enable_if_t<! strategies::detail::is_umbrella_strategy<Strategy>::value, int> = 0
+>
+inline bool equals_point_point(Point1 const& point1, Point2 const& point2,
+                               Strategy const& )
+{
+    return Strategy::apply(point1, point2);
+}
 
 }} // namespace detail::equals
 #endif // DOXYGEN_NO_DETAIL
-
 
 }} // namespace boost::geometry
 

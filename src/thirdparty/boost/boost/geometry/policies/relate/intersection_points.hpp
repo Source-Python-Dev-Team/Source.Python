@@ -2,8 +2,9 @@
 
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 
-// This file was modified by Oracle on 2016.
-// Modifications copyright (c) 2016 Oracle and/or its affiliates.
+// This file was modified by Oracle on 2016, 2022.
+// Modifications copyright (c) 2016-2022 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
@@ -17,6 +18,7 @@
 #include <algorithm>
 #include <string>
 
+#include <boost/geometry/algorithms/assign.hpp>
 #include <boost/geometry/algorithms/detail/assign_indexed_point.hpp>
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/assert.hpp>
@@ -52,42 +54,24 @@ struct segments_intersection_points
     {
         return_type result;
         result.count = 1;
+        sinfo.calculate(result.intersections[0], s1, s2);
 
-        bool use_a = true;
+        // Temporary - this should go later
+        result.fractions[0].assign(sinfo);
 
-        // Prefer one segment if one is on or near an endpoint
-        bool const a_near_end = sinfo.robust_ra.near_end();
-        bool const b_near_end = sinfo.robust_rb.near_end();
-        if (a_near_end && ! b_near_end)
-        {
-            use_a = true;
-        }
-        else if (b_near_end && ! a_near_end)
-        {
-            use_a = false;
-        }
-        else
-        {
-            // Prefer shorter segment
-            typedef typename SegmentIntersectionInfo::promoted_type ptype;
-            ptype const len_a = sinfo.comparable_length_a();
-            ptype const len_b = sinfo.comparable_length_b();
-            if (len_b < len_a)
-            {
-                use_a = false;
-            }
-            // else use_a is true but was already assigned like that
-        }
+        return result;
+    }
 
-        if (use_a)
-        {
-            sinfo.assign_a(result.intersections[0], s1, s2);
-        }
-        else
-        {
-            sinfo.assign_b(result.intersections[0], s1, s2);
-        }
+    template<typename SegmentIntersectionInfo, typename Point>
+    static inline return_type
+    segments_share_common_point(side_info const&, SegmentIntersectionInfo const& sinfo,
+                                Point const& p)
+    {
+        return_type result;
+        result.count = 1;
+        boost::geometry::assign(result.intersections[0], p);
 
+        // Temporary - this should go later
         result.fractions[0].assign(sinfo);
 
         return result;
@@ -101,7 +85,7 @@ struct segments_intersection_points
         Ratio const& rb_from_wrt_a, Ratio const& rb_to_wrt_a)
     {
         return_type result;
-        unsigned int index = 0, count_a = 0, count_b = 0;
+        unsigned int index = 0;
         Ratio on_a[2];
 
         // The conditions "index < 2" are necessary for non-robust handling,
@@ -120,7 +104,6 @@ struct segments_intersection_points
             result.fractions[index].assign(Ratio::zero(), ra_from_wrt_b);
             on_a[index] = Ratio::zero();
             index++;
-            count_a++;
         }
         if (b1_wrt_a == 2 //rb_from_wrt_a.in_segment()
             && index < 2)
@@ -136,7 +119,6 @@ struct segments_intersection_points
             result.fractions[index].assign(rb_from_wrt_a, Ratio::zero());
             on_a[index] = rb_from_wrt_a;
             index++;
-            count_b++;
         }
 
         if (a2_wrt_b >= 1 && a2_wrt_b <= 3 //ra_to_wrt_b.on_segment()
@@ -149,7 +131,6 @@ struct segments_intersection_points
             result.fractions[index].assign(Ratio::one(), ra_to_wrt_b);
             on_a[index] = Ratio::one();
             index++;
-            count_a++;
         }
         if (b2_wrt_a == 2 // rb_to_wrt_a.in_segment()
             && index < 2)
@@ -158,7 +139,6 @@ struct segments_intersection_points
             result.fractions[index].assign(rb_to_wrt_a, Ratio::one());
             on_a[index] = rb_to_wrt_a;
             index++;
-            count_b++;
         }
 
         // TEMPORARY

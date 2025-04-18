@@ -881,7 +881,7 @@ static void export_iserver(scope _server)
 
 	_IServer.add_property(
 		"udp_port",
-#if defined(ENGINE_BRANCH_TF2) || defined(ENGINE_BRANCH_HL2DM)
+#if defined(ENGINE_ORANGEBOX)
 		&IServer::GetLocalUDPPort,
 #else
 		&IServer::GetUDPPort,

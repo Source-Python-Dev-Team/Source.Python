@@ -25,13 +25,11 @@
 #include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/interprocess/detail/workaround.hpp>
 
-#include <boost/checked_delete.hpp>
 #include <boost/intrusive/pointer_traits.hpp>
 #include <boost/interprocess/smart_ptr/detail/bad_weak_ptr.hpp>
 #include <boost/interprocess/smart_ptr/detail/sp_counted_impl.hpp>
 #include <boost/interprocess/detail/utilities.hpp>
 #include <boost/container/allocator_traits.hpp>
-#include <boost/core/no_exceptions_support.hpp>
 #include <boost/move/adl_move_swap.hpp>
 #include <boost/intrusive/detail/minimal_less_equal_header.hpp>   //std::less
 #include <boost/container/detail/placement_new.hpp>
@@ -47,18 +45,21 @@ template<class T, class VoidAllocator, class Deleter>
 class shared_count
 {
    public:
+
+   typedef typename boost::container::
+      allocator_traits<VoidAllocator>::pointer              void_ptr;
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
-         rebind_pointer<T>::type                         pointer;
+      pointer_traits<void_ptr>::template
+         rebind_pointer<T>::type                            pointer;
 
    private:
    typedef sp_counted_impl_pd<VoidAllocator, Deleter>       counted_impl;
 
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
+      pointer_traits<void_ptr>::template
          rebind_pointer<counted_impl>::type                         counted_impl_ptr;
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
+      pointer_traits<void_ptr>::template
          rebind_pointer<sp_counted_base>::type                       counted_base_ptr;
 
    typedef boost::container::allocator_traits<VoidAllocator>         vallocator_traits;
@@ -67,11 +68,11 @@ class shared_count
       portable_rebind_alloc<counted_impl>::type                      counted_impl_allocator;
 
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
+      pointer_traits<void_ptr>::template
          rebind_pointer<const Deleter>::type                         const_deleter_pointer;
 
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
+      pointer_traits<void_ptr>::template
          rebind_pointer<const VoidAllocator>::type                   const_allocator_pointer;
 
    pointer           m_px;
@@ -98,7 +99,7 @@ class shared_count
    shared_count(const Ptr &p, const VoidAllocator &a, Deleter d)
       :  m_px(p), m_pi(0)
    {
-      BOOST_TRY{
+      BOOST_INTERPROCESS_TRY{
          if(p){
             counted_impl_allocator alloc(a);
             m_pi = alloc.allocate(1);
@@ -112,11 +113,11 @@ class shared_count
             deallocator.release();
          }
       }
-      BOOST_CATCH (...){
+      BOOST_INTERPROCESS_CATCH (...){
          d(p); // delete p
-         BOOST_RETHROW
+         BOOST_INTERPROCESS_RETHROW
       }
-      BOOST_CATCH_END
+      BOOST_INTERPROCESS_CATCH_END
    }
 
    ~shared_count() // nothrow
@@ -229,8 +230,10 @@ template<class T, class VoidAllocator, class Deleter>
 class weak_count
 {
    public:
+   typedef typename boost::container::
+      allocator_traits<VoidAllocator>::pointer           void_ptr;
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
+      pointer_traits<void_ptr>::template
          rebind_pointer<T>::type                         pointer;
 
    private:
@@ -238,10 +241,10 @@ class weak_count
    typedef sp_counted_impl_pd<VoidAllocator, Deleter>                counted_impl;
 
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
+      pointer_traits<void_ptr>::template
          rebind_pointer<counted_impl>::type                          counted_impl_ptr;
    typedef typename boost::intrusive::
-      pointer_traits<typename VoidAllocator::pointer>::template
+      pointer_traits<void_ptr>::template
          rebind_pointer<sp_counted_base>::type                       counted_base_ptr;
 
    pointer           m_px;

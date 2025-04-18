@@ -1,7 +1,8 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2014-2017, Oracle and/or its affiliates.
+// Copyright (c) 2023 Adam Wulkiewicz, Lodz, Poland.
 
+// Copyright (c) 2014-2020, Oracle and/or its affiliates.
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
@@ -12,7 +13,7 @@
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_IS_VALID_POINTLIKE_HPP
 
 #include <boost/core/ignore_unused.hpp>
-#include <boost/range.hpp>
+#include <boost/range/empty.hpp>
 
 #include <boost/geometry/core/tags.hpp>
 
@@ -20,7 +21,7 @@
 #include <boost/geometry/algorithms/detail/is_valid/has_invalid_coordinate.hpp>
 #include <boost/geometry/algorithms/dispatch/is_valid.hpp>
 
-#include <boost/geometry/util/condition.hpp>
+#include <boost/geometry/util/constexpr.hpp>
 
 
 namespace boost { namespace geometry
@@ -63,21 +64,21 @@ struct is_valid<MultiPoint, multi_point_tag, AllowEmptyMultiGeometries>
     {
         boost::ignore_unused(multipoint, visitor);
 
-        if (BOOST_GEOMETRY_CONDITION(
-                AllowEmptyMultiGeometries || !boost::empty(multipoint)))
+        if BOOST_GEOMETRY_CONSTEXPR (! AllowEmptyMultiGeometries)
         {
-            // we allow empty multi-geometries, so an empty multipoint
-            // is considered valid
-            return ! detail::is_valid::has_invalid_coordinate
-                <
-                    MultiPoint
-                >::apply(multipoint, visitor);
+            if (boost::empty(multipoint))
+            {
+                // we do not allow an empty multipoint
+                return visitor.template apply<failure_few_points>();
+            }
         }
-        else
-        {
-            // we do not allow an empty multipoint
-            return visitor.template apply<failure_few_points>();
-        }
+
+        // if we allow empty multi-geometries, an empty multipoint
+        // is considered valid
+        return ! detail::is_valid::has_invalid_coordinate
+            <
+                MultiPoint
+            >::apply(multipoint, visitor);
     }
 };
 

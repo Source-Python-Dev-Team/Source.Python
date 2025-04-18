@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::group`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -27,7 +27,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Xs>
     constexpr auto group_t::operator()(Xs&& xs) const {
@@ -78,7 +78,7 @@ BOOST_HANA_NAMESPACE_BEGIN
 
         template <bool ...b>
         struct group_indices {
-            static constexpr bool bs[] = {b...};
+            static constexpr bool bs[sizeof...(b)] = {b...};
             static constexpr std::size_t n_groups =
                     detail::count(bs, bs + sizeof(bs), false) + 1;
 
@@ -153,6 +153,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         static constexpr auto apply(Xs&& xs)
         { return group_impl::apply(static_cast<Xs&&>(xs), hana::equal); }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_GROUP_HPP

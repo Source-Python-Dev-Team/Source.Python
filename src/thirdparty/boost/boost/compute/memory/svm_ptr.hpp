@@ -29,7 +29,7 @@ template<class T>
 class svm_ptr;
 
 // svm functions require OpenCL 2.0
-#if defined(CL_VERSION_2_0) || defined(BOOST_COMPUTE_DOXYGEN_INVOKED)
+#if defined(BOOST_COMPUTE_CL_VERSION_2_0) || defined(BOOST_COMPUTE_DOXYGEN_INVOKED)
 namespace detail {
 
 template<class T, class IndexExpr>
@@ -126,13 +126,23 @@ public:
         return m_ptr - other.m_ptr;
     }
 
-    context& get_context() const
+    const context& get_context() const
     {
         return m_context;
     }
 
+    bool operator==(const svm_ptr<T>& other) const
+    {
+        return (other.m_context == m_context) && (m_ptr == other.m_ptr);
+    }
+
+    bool operator!=(const svm_ptr<T>& other) const
+    {
+        return (other.m_context != m_context) || (m_ptr != other.m_ptr);
+    }
+
     // svm functions require OpenCL 2.0
-    #if defined(CL_VERSION_2_0) || defined(BOOST_COMPUTE_DOXYGEN_INVOKED)
+    #if defined(BOOST_COMPUTE_CL_VERSION_2_0) || defined(BOOST_COMPUTE_DOXYGEN_INVOKED)
     /// \internal_
     template<class Expr>
     detail::svm_ptr_index_expr<T, Expr>

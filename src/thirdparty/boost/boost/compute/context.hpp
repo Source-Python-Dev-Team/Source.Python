@@ -18,6 +18,7 @@
 #include <boost/compute/config.hpp>
 #include <boost/compute/device.hpp>
 #include <boost/compute/exception/opencl_error.hpp>
+#include <boost/compute/exception/set_default_queue_error.hpp>
 #include <boost/compute/detail/assert_cl_success.hpp>
 
 namespace boost {
@@ -233,11 +234,11 @@ BOOST_COMPUTE_DETAIL_DEFINE_GET_INFO_SPECIALIZATIONS(context,
     ((std::vector<cl_context_properties>, CL_CONTEXT_PROPERTIES))
 )
 
-#ifdef CL_VERSION_1_1
+#ifdef BOOST_COMPUTE_CL_VERSION_1_1
 BOOST_COMPUTE_DETAIL_DEFINE_GET_INFO_SPECIALIZATIONS(context,
     ((cl_uint, CL_CONTEXT_NUM_DEVICES))
 )
-#endif // CL_VERSION_1_1
+#endif // BOOST_COMPUTE_CL_VERSION_1_1
 
 } // end compute namespace
 } // end boost namespace

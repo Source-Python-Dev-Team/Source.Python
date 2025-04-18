@@ -10,8 +10,11 @@
 #ifndef BOOST_PROPERTY_TREE_DETAIL_INFO_PARSER_WRITE_HPP_INCLUDED
 #define BOOST_PROPERTY_TREE_DETAIL_INFO_PARSER_WRITE_HPP_INCLUDED
 
-#include "boost/property_tree/ptree.hpp"
-#include "boost/property_tree/detail/info_parser_utils.hpp"
+#include <boost/property_tree/detail/info_parser_error.hpp>
+#include <boost/property_tree/detail/info_parser_utils.hpp>
+#include <boost/property_tree/detail/info_parser_writer_settings.hpp>
+#include <boost/property_tree/ptree.hpp>
+
 #include <string>
 
 namespace boost { namespace property_tree { namespace info_parser
@@ -138,6 +141,7 @@ namespace boost { namespace property_tree { namespace info_parser
                              const info_writer_settings<typename Ptree::key_type::value_type> &settings)
     {
         write_info_helper(stream, pt, -1, settings);
+        stream.flush();
         if (!stream.good())
             BOOST_PROPERTY_TREE_THROW(info_parser_error("write error", filename, 0));
     }

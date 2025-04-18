@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::take_back`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -16,7 +16,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <cstddef>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Returns the last `n` elements of a sequence, or the whole sequence
     //! if the sequence has less than `n` elements.
     //! @ingroup group-Sequence
@@ -51,8 +51,28 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(Xs&& xs, N const& n) const;
     };
 
-    constexpr take_back_t take_back{};
+    BOOST_HANA_INLINE_VARIABLE constexpr take_back_t take_back{};
 #endif
-BOOST_HANA_NAMESPACE_END
+
+    //! Equivalent to `take_back`; provided for convenience.
+    //! @ingroup group-Sequence
+    //!
+    //!
+    //! Example
+    //! -------
+    //! @include example/take_back_c.cpp
+#ifdef BOOST_HANA_DOXYGEN_INVOKED
+    template <std::size_t n>
+    constexpr auto take_back_c = [](auto&& xs) {
+        return hana::take_back(forwarded(xs), hana::size_c<n>);
+    };
+#else
+    template <std::size_t n>
+    struct take_back_c_t;
+
+    template <std::size_t n>
+    BOOST_HANA_INLINE_VARIABLE constexpr take_back_c_t<n> take_back_c{};
+#endif
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_TAKE_BACK_HPP

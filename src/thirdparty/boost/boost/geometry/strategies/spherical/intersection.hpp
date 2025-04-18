@@ -1,6 +1,9 @@
 // Boost.Geometry
 
-// Copyright (c) 2016-2017, Oracle and/or its affiliates.
+// Copyright (c) 2017 Adam Wulkiewicz, Lodz, Poland.
+
+// Copyright (c) 2016-2024, Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
@@ -11,6 +14,7 @@
 #define BOOST_GEOMETRY_STRATEGIES_SPHERICAL_INTERSECTION_HPP
 
 #include <algorithm>
+#include <type_traits>
 
 #include <boost/geometry/core/cs.hpp>
 #include <boost/geometry/core/access.hpp>
@@ -20,7 +24,6 @@
 #include <boost/geometry/algorithms/detail/assign_values.hpp>
 #include <boost/geometry/algorithms/detail/assign_indexed_point.hpp>
 #include <boost/geometry/algorithms/detail/equals/point_point.hpp>
-#include <boost/geometry/algorithms/detail/recalculate.hpp>
 
 #include <boost/geometry/arithmetic/arithmetic.hpp>
 #include <boost/geometry/arithmetic/cross_product.hpp>
@@ -30,17 +33,25 @@
 
 #include <boost/geometry/geometries/concepts/point_concept.hpp>
 #include <boost/geometry/geometries/concepts/segment_concept.hpp>
+#include <boost/geometry/geometries/segment.hpp>
 
 #include <boost/geometry/policies/robustness/segment_ratio.hpp>
 
-#include <boost/geometry/strategies/agnostic/point_in_poly_winding.hpp>
+#include <boost/geometry/strategy/spherical/area.hpp>
+#include <boost/geometry/strategy/spherical/envelope.hpp>
+#include <boost/geometry/strategy/spherical/expand_box.hpp>
+#include <boost/geometry/strategy/spherical/expand_segment.hpp>
+
 #include <boost/geometry/strategies/covered_by.hpp>
 #include <boost/geometry/strategies/intersection.hpp>
 #include <boost/geometry/strategies/intersection_result.hpp>
 #include <boost/geometry/strategies/side.hpp>
 #include <boost/geometry/strategies/side_info.hpp>
-#include <boost/geometry/strategies/spherical/area.hpp>
+#include <boost/geometry/strategies/spherical/disjoint_box_box.hpp>
+#include <boost/geometry/strategies/spherical/disjoint_segment_box.hpp>
 #include <boost/geometry/strategies/spherical/distance_haversine.hpp>
+#include <boost/geometry/strategies/spherical/point_in_point.hpp>
+#include <boost/geometry/strategies/spherical/point_in_poly_winding.hpp>
 #include <boost/geometry/strategies/spherical/ssf.hpp>
 #include <boost/geometry/strategies/within.hpp>
 
@@ -83,69 +94,7 @@ template
 >
 struct ecef_segments
 {
-    typedef side::spherical_side_formula<CalculationType> side_strategy_type;
-
-    static inline side_strategy_type get_side_strategy()
-    {
-        return side_strategy_type();
-    }
-
-    template <typename Geometry1, typename Geometry2>
-    struct point_in_geometry_strategy
-    {
-        typedef strategy::within::winding
-            <
-                typename point_type<Geometry1>::type,
-                typename point_type<Geometry2>::type,
-                side_strategy_type,
-                CalculationType
-            > type;
-    };
-
-    template <typename Geometry1, typename Geometry2>
-    static inline typename point_in_geometry_strategy<Geometry1, Geometry2>::type
-        get_point_in_geometry_strategy()
-    {
-        typedef typename point_in_geometry_strategy
-            <
-                Geometry1, Geometry2
-            >::type strategy_type;
-        return strategy_type();
-    }
-
-    template <typename Geometry>
-    struct area_strategy
-    {
-        typedef area::spherical
-            <
-                typename point_type<Geometry>::type,
-                CalculationType
-            > type;
-    };
-
-    template <typename Geometry>
-    static inline typename area_strategy<Geometry>::type get_area_strategy()
-    {
-        typedef typename area_strategy<Geometry>::type strategy_type;
-        return strategy_type();
-    }
-
-    template <typename Geometry>
-    struct distance_strategy
-    {
-        typedef distance::haversine
-            <
-                typename coordinate_type<Geometry>::type,
-                CalculationType
-            > type;
-    };
-
-    template <typename Geometry>
-    static inline typename distance_strategy<Geometry>::type get_distance_strategy()
-    {
-        typedef typename distance_strategy<Geometry>::type strategy_type;
-        return strategy_type();
-    }
+    typedef spherical_tag cs_tag;
 
     enum intersection_point_flag { ipi_inters = 0, ipi_at_a1, ipi_at_a2, ipi_at_b1, ipi_at_b2 };
 
@@ -153,38 +102,12 @@ struct ecef_segments
     template <typename CoordinateType, typename SegmentRatio, typename Vector3d>
     struct segment_intersection_info
     {
-        typedef typename select_most_precise
-            <
-                CoordinateType, double
-            >::type promoted_type;
-
         segment_intersection_info(CalcPolicy const& calc)
             : calc_policy(calc)
         {}
 
-        promoted_type comparable_length_a() const
-        {
-            return robust_ra.denominator();
-        }
-
-        promoted_type comparable_length_b() const
-        {
-            return robust_rb.denominator();
-        }
-
         template <typename Point, typename Segment1, typename Segment2>
-        void assign_a(Point& point, Segment1 const& a, Segment2 const& b) const
-        {
-            assign(point, a, b);
-        }
-        template <typename Point, typename Segment1, typename Segment2>
-        void assign_b(Point& point, Segment1 const& a, Segment2 const& b) const
-        {
-            assign(point, a, b);
-        }
-
-        template <typename Point, typename Segment1, typename Segment2>
-        void assign(Point& point, Segment1 const& a, Segment2 const& b) const
+        void calculate(Point& point, Segment1 const& a, Segment2 const& b) const
         {
             if (ip_flag == ipi_inters)
             {
@@ -210,8 +133,8 @@ struct ecef_segments
         }
 
         Vector3d intersection_point;
-        SegmentRatio robust_ra;
-        SegmentRatio robust_rb;
+        SegmentRatio ra;
+        SegmentRatio rb;
         intersection_point_flag ip_flag;
 
         CalcPolicy const& calc_policy;
@@ -220,43 +143,13 @@ struct ecef_segments
     // Relate segments a and b
     template
     <
-        typename Segment1,
-        typename Segment2,
-        typename Policy,
-        typename RobustPolicy
+        typename UniqueSubRange1,
+        typename UniqueSubRange2,
+        typename Policy
     >
     static inline typename Policy::return_type
-        apply(Segment1 const& a, Segment2 const& b,
-              Policy const& policy, RobustPolicy const& robust_policy)
-    {
-        typedef typename point_type<Segment1>::type point1_t;
-        typedef typename point_type<Segment2>::type point2_t;
-        point1_t a1, a2;
-        point2_t b1, b2;
-
-        // TODO: use indexed_point_view if possible?
-        detail::assign_point_from_index<0>(a, a1);
-        detail::assign_point_from_index<1>(a, a2);
-        detail::assign_point_from_index<0>(b, b1);
-        detail::assign_point_from_index<1>(b, b2);
-
-        return apply(a, b, policy, robust_policy, a1, a2, b1, b2);
-    }
-
-    // Relate segments a and b
-    template
-    <
-        typename Segment1,
-        typename Segment2,
-        typename Policy,
-        typename RobustPolicy,
-        typename Point1,
-        typename Point2
-    >
-    static inline typename Policy::return_type
-        apply(Segment1 const& a, Segment2 const& b,
-              Policy const&, RobustPolicy const&,
-              Point1 const& a1, Point1 const& a2, Point2 const& b1, Point2 const& b2)
+        apply(UniqueSubRange1 const& range_p, UniqueSubRange2 const& range_q,
+              Policy const&)
     {
         // For now create it using default constructor. In the future it could
         //  be stored in strategy. However then apply() wouldn't be static and
@@ -264,11 +157,23 @@ struct ecef_segments
         // Initialize explicitly to prevent compiler errors in case of PoD type
         CalcPolicy const calc_policy = CalcPolicy();
 
-        BOOST_CONCEPT_ASSERT( (concepts::ConstSegment<Segment1>) );
-        BOOST_CONCEPT_ASSERT( (concepts::ConstSegment<Segment2>) );
+        typedef typename UniqueSubRange1::point_type point1_type;
+        typedef typename UniqueSubRange2::point_type point2_type;
+
+        BOOST_CONCEPT_ASSERT( (concepts::ConstPoint<point1_type>) );
+        BOOST_CONCEPT_ASSERT( (concepts::ConstPoint<point2_type>) );
+
+        point1_type const& a1 = range_p.at(0);
+        point1_type const& a2 = range_p.at(1);
+        point2_type const& b1 = range_q.at(0);
+        point2_type const& b2 = range_q.at(1);
+
+        typedef model::referring_segment<point1_type const> segment1_type;
+        typedef model::referring_segment<point2_type const> segment2_type;
+        segment1_type const a(a1, a2);
+        segment2_type const b(b1, b2);
 
         // TODO: check only 2 first coordinates here?
-        using geometry::detail::equals::equals_point_point;
         bool a_is_point = equals_point_point(a1, a2);
         bool b_is_point = equals_point_point(b1, b2);
 
@@ -281,7 +186,7 @@ struct ecef_segments
         }
 
         typedef typename select_calculation_type
-            <Segment1, Segment2, CalculationType>::type calc_t;
+            <segment1_type, segment2_type, CalculationType>::type calc_t;
 
         calc_t const c0 = 0;
         calc_t const c1 = 1;
@@ -292,37 +197,65 @@ struct ecef_segments
         vec3d_t const a2v = calc_policy.template to_cart3d<vec3d_t>(a2);
         vec3d_t const b1v = calc_policy.template to_cart3d<vec3d_t>(b1);
         vec3d_t const b2v = calc_policy.template to_cart3d<vec3d_t>(b2);
-        
+
+        bool degen_neq_coords = false;
         side_info sides;
 
         typename CalcPolicy::template plane<vec3d_t>
             plane2 = calc_policy.get_plane(b1v, b2v);
 
-        // not normalized normals, the same as in side strategy
-        sides.set<0>(plane2.side_value(a1v), plane2.side_value(a2v));
-        if (sides.same<0>())
+        calc_t dist_b1_b2 = 0;
+        if (! b_is_point)
         {
-            // Both points are at same side of other segment, we can leave
-            return Policy::disjoint();
+            calculate_dist(b1v, b2v, plane2, dist_b1_b2);
+            if (math::equals(dist_b1_b2, c0))
+            {
+                degen_neq_coords = true;
+                b_is_point = true;
+                dist_b1_b2 = 0;
+            }
+            else
+            {
+                // not normalized normals, the same as in side strategy
+                sides.set<0>(plane2.side_value(a1v), plane2.side_value(a2v));
+                if (sides.same<0>())
+                {
+                    // Both points are at same side of other segment, we can leave
+                    return Policy::disjoint();
+                }
+            }
         }
 
         typename CalcPolicy::template plane<vec3d_t>
             plane1 = calc_policy.get_plane(a1v, a2v);
 
-        // not normalized normals, the same as in side strategy
-        sides.set<1>(plane1.side_value(b1v), plane1.side_value(b2v));
-        if (sides.same<1>())
+        calc_t dist_a1_a2 = 0;
+        if (! a_is_point)
         {
-            // Both points are at same side of other segment, we can leave
-            return Policy::disjoint();
+            calculate_dist(a1v, a2v, plane1, dist_a1_a2);
+            if (math::equals(dist_a1_a2, c0))
+            {
+                degen_neq_coords = true;
+                a_is_point = true;
+                dist_a1_a2 = 0;
+            }
+            else
+            {
+                // not normalized normals, the same as in side strategy
+                sides.set<1>(plane1.side_value(b1v), plane1.side_value(b2v));
+                if (sides.same<1>())
+                {
+                    // Both points are at same side of other segment, we can leave
+                    return Policy::disjoint();
+                }
+            }
         }
 
         // NOTE: at this point the segments may still be disjoint
 
-        calc_t len1, len2;
-
+        calc_t len1 = 0;
         // point or opposite sides of a sphere/spheroid, assume point
-        if (! detail::vec_normalize(plane1.normal, len1))
+        if (! a_is_point && ! detail::vec_normalize(plane1.normal, len1))
         {
             a_is_point = true;
             if (sides.get<0, 0>() == 0 || sides.get<0, 1>() == 0)
@@ -331,7 +264,8 @@ struct ecef_segments
             }
         }
 
-        if (! detail::vec_normalize(plane2.normal, len2))
+        calc_t len2 = 0;
+        if (! b_is_point && ! detail::vec_normalize(plane2.normal, len2))
         {
             b_is_point = true;
             if (sides.get<1, 0>() == 0 || sides.get<1, 1>() == 0)
@@ -352,7 +286,7 @@ struct ecef_segments
         // NOTE: at this point the segments may still be disjoint
         // NOTE: at this point one of the segments may be degenerated
 
-        bool collinear = sides.collinear();       
+        bool collinear = sides.collinear();
 
         if (! collinear)
         {
@@ -390,45 +324,43 @@ struct ecef_segments
             sides.set<0>(0, 0);
             sides.set<1>(0, 0);
         }
-        
+
         if (collinear)
         {
             if (a_is_point)
             {
-                return collinear_one_degenerated<Policy, calc_t>(a, true, b1, b2, a1, a2, b1v, b2v, plane2, a1v);
+                return collinear_one_degenerated<Policy, calc_t>(a, true, b1, b2, a1, a2, b1v, b2v,
+                                                                 plane2, a1v, a2v, dist_b1_b2, degen_neq_coords);
             }
             else if (b_is_point)
             {
                 // b2 used to be consistent with (degenerated) checks above (is it needed?)
-                return collinear_one_degenerated<Policy, calc_t>(b, false, a1, a2, b1, b2, a1v, a2v, plane1, b1v);
+                return collinear_one_degenerated<Policy, calc_t>(b, false, a1, a2, b1, b2, a1v, a2v,
+                                                                 plane1, b1v, b2v, dist_a1_a2, degen_neq_coords);
             }
             else
             {
-                calc_t dist_a1_a2, dist_a1_b1, dist_a1_b2;
-                calc_t dist_b1_b2, dist_b1_a1, dist_b1_a2;
-                // use shorter segment
-                if (len1 <= len2)
-                {
-                    calculate_collinear_data(a1, a2, b1, b2, a1v, a2v, plane1, b1v, dist_a1_a2, dist_a1_b1);
-                    calculate_collinear_data(a1, a2, b1, b2, a1v, a2v, plane1, b2v, dist_a1_a2, dist_a1_b2);
-                    dist_b1_b2 = dist_a1_b2 - dist_a1_b1;
-                    dist_b1_a1 = -dist_a1_b1;
-                    dist_b1_a2 = dist_a1_a2 - dist_a1_b1;
-                }
-                else
-                {
-                    calculate_collinear_data(b1, b2, a1, a2, b1v, b2v, plane2, a1v, dist_b1_b2, dist_b1_a1);
-                    calculate_collinear_data(b1, b2, a1, a2, b1v, b2v, plane2, a2v, dist_b1_b2, dist_b1_a2);
-                    dist_a1_a2 = dist_b1_a2 - dist_b1_a1;
-                    dist_a1_b1 = -dist_b1_a1;
-                    dist_a1_b2 = dist_b1_b2 - dist_b1_a1;
-                }
+                calc_t dist_a1_b1, dist_a1_b2;
+                calc_t dist_b1_a1, dist_b1_a2;
+                calculate_collinear_data(a1, a2, b1, b2, a1v, a2v, plane1, b1v, b2v, dist_a1_a2, dist_a1_b1);
+                calculate_collinear_data(a1, a2, b2, b1, a1v, a2v, plane1, b2v, b1v, dist_a1_a2, dist_a1_b2);
+                calculate_collinear_data(b1, b2, a1, a2, b1v, b2v, plane2, a1v, a2v, dist_b1_b2, dist_b1_a1);
+                calculate_collinear_data(b1, b2, a2, a1, b1v, b2v, plane2, a2v, a1v, dist_b1_b2, dist_b1_a2);
+                // NOTE: The following optimization causes problems with consitency
+                // It may either be caused by numerical issues or the way how distance is coded:
+                //   as cosine of angle scaled and translated, see: calculate_dist()
+                /*dist_b1_b2 = dist_a1_b2 - dist_a1_b1;
+                dist_b1_a1 = -dist_a1_b1;
+                dist_b1_a2 = dist_a1_a2 - dist_a1_b1;
+                dist_a1_a2 = dist_b1_a2 - dist_b1_a1;
+                dist_a1_b1 = -dist_b1_a1;
+                dist_a1_b2 = dist_b1_b2 - dist_b1_a1;*/
 
                 segment_ratio<calc_t> ra_from(dist_b1_a1, dist_b1_b2);
                 segment_ratio<calc_t> ra_to(dist_b1_a2, dist_b1_b2);
                 segment_ratio<calc_t> rb_from(dist_a1_b1, dist_a1_a2);
                 segment_ratio<calc_t> rb_to(dist_a1_b2, dist_a1_a2);
-                
+
                 // NOTE: this is probably not needed
                 int const a1_wrt_b = position_value(c0, dist_a1_b1, dist_a1_b2);
                 int const a2_wrt_b = position_value(dist_a1_a2, dist_a1_b1, dist_a1_b2);
@@ -478,10 +410,11 @@ struct ecef_segments
 
             vec3d_t i1;
             intersection_point_flag ip_flag;
-            calc_t dist_a1_a2, dist_a1_i1, dist_b1_b2, dist_b1_i1;
+            calc_t dist_a1_i1, dist_b1_i1;
             if (calculate_ip_data(a1, a2, b1, b2, a1v, a2v, b1v, b2v,
-                                  plane1, plane2, calc_policy, sides,
-                                  i1, dist_a1_a2, dist_a1_i1, dist_b1_b2, dist_b1_i1, ip_flag))
+                                  plane1, plane2, calc_policy,
+                                  sides, dist_a1_a2, dist_b1_b2,
+                                  i1, dist_a1_i1, dist_b1_i1, ip_flag))
             {
                 // intersects
                 segment_intersection_info
@@ -491,8 +424,8 @@ struct ecef_segments
                         vec3d_t
                     > sinfo(calc_policy);
 
-                sinfo.robust_ra.assign(dist_a1_i1, dist_a1_a2);
-                sinfo.robust_rb.assign(dist_b1_i1, dist_b1_b2);
+                sinfo.ra.assign(dist_a1_i1, dist_a1_a2);
+                sinfo.rb.assign(dist_b1_i1, dist_b1_b2);
                 sinfo.intersection_point = i1;
                 sinfo.ip_flag = ip_flag;
 
@@ -511,43 +444,68 @@ private:
         collinear_one_degenerated(Segment const& segment, bool degenerated_a,
                                   Point1 const& a1, Point1 const& a2,
                                   Point2 const& b1, Point2 const& b2,
-                                  Vec3d const& v1, Vec3d const& v2,
+                                  Vec3d const& a1v, Vec3d const& a2v,
                                   Plane const& plane,
-                                  Vec3d const& vother)
+                                  Vec3d const& b1v, Vec3d const& b2v,
+                                  CalcT const& dist_1_2,
+                                  bool degen_neq_coords)
     {
-        CalcT dist_1_2, dist_1_o;
-        return ! calculate_collinear_data(a1, a2, b1, b2, v1, v2, plane, vother, dist_1_2, dist_1_o)
+        CalcT dist_1_o;
+        return ! calculate_collinear_data(a1, a2, b1, b2, a1v, a2v, plane, b1v, b2v, dist_1_2, dist_1_o, degen_neq_coords)
                 ? Policy::disjoint()
                 : Policy::one_degenerate(segment, segment_ratio<CalcT>(dist_1_o, dist_1_2), degenerated_a);
     }
 
     template <typename Point1, typename Point2, typename Vec3d, typename Plane, typename CalcT>
     static inline bool calculate_collinear_data(Point1 const& a1, Point1 const& a2, // in
-                                                Point2 const& b1, Point2 const& b2, // in
+                                                Point2 const& b1, Point2 const& /*b2*/, // in
                                                 Vec3d const& a1v,                   // in
                                                 Vec3d const& a2v,                   // in
                                                 Plane const& plane1,                // in
-                                                Vec3d const& b1v_or_b2v,            // in
-                                                CalcT& dist_a1_a2, CalcT& dist_a1_i1) // out
+                                                Vec3d const& b1v,                   // in
+                                                Vec3d const& b2v,                   // in
+                                                CalcT const& dist_a1_a2,            // in
+                                                CalcT& dist_a1_b1,                  // out
+                                                bool degen_neq_coords = false)      // in
     {
-        // calculate dist_a1_a2 and dist_a1_i1
-        calculate_dists(a1v, a2v, plane1, b1v_or_b2v, dist_a1_a2, dist_a1_i1);
+        // calculate dist_a1_b1
+        calculate_dist(a1v, a2v, plane1, b1v, dist_a1_b1);
 
-        // if i1 is close to a1 and b1 or b2 is equal to a1
-        if (is_endpoint_equal(dist_a1_i1, a1, b1, b2))
+        // if b1 is equal to a1
+        if (is_endpoint_equal(dist_a1_b1, a1, b1))
         {
-            dist_a1_i1 = 0;
+            dist_a1_b1 = 0;
             return true;
         }
-        // or i1 is close to a2 and b1 or b2 is equal to a2
-        else if (is_endpoint_equal(dist_a1_a2 - dist_a1_i1, a2, b1, b2))
+        // or b1 is equal to a2
+        else if (is_endpoint_equal(dist_a1_a2 - dist_a1_b1, a2, b1))
         {
-            dist_a1_i1 = dist_a1_a2;
+            dist_a1_b1 = dist_a1_a2;
             return true;
+        }
+
+        // check the other endpoint of degenerated segment near a pole
+        if (degen_neq_coords)
+        {
+            static CalcT const c0 = 0;
+
+            CalcT dist_a1_b2 = 0;
+            calculate_dist(a1v, a2v, plane1, b2v, dist_a1_b2);
+
+            if (math::equals(dist_a1_b2, c0))
+            {
+                dist_a1_b1 = 0;
+                return true;
+            }
+            else if (math::equals(dist_a1_a2 - dist_a1_b2, c0))
+            {
+                dist_a1_b1 = dist_a1_a2;
+                return true;
+            }
         }
 
         // or i1 is on b
-        return segment_ratio<CalcT>(dist_a1_i1, dist_a1_a2).on_segment();
+        return segment_ratio<CalcT>(dist_a1_b1, dist_a1_a2).on_segment();
     }
 
     template <typename Point1, typename Point2, typename Vec3d, typename Plane, typename CalcT>
@@ -559,15 +517,17 @@ private:
                                          Plane const& plane2,                // in
                                          CalcPolicy const& calc_policy,      // in
                                          side_info const& sides,             // in
-                                         Vec3d & ip,                           // out
-                                         CalcT& dist_a1_a2, CalcT& dist_a1_ip, // out
-                                         CalcT& dist_b1_b2, CalcT& dist_b1_ip, // out
-                                         intersection_point_flag& ip_flag)     // out
+                                         CalcT const& dist_a1_a2,            // in
+                                         CalcT const& dist_b1_b2,            // in
+                                         Vec3d & ip,                         // out
+                                         CalcT& dist_a1_ip,                  // out
+                                         CalcT& dist_b1_ip,                  // out
+                                         intersection_point_flag& ip_flag)   // out
     {
         Vec3d ip1, ip2;
         calc_policy.intersection_points(plane1, plane2, ip1, ip2);
-        
-        calculate_dists(a1v, a2v, plane1, ip1, dist_a1_a2, dist_a1_ip);
+
+        calculate_dist(a1v, a2v, plane1, ip1, dist_a1_ip);
         ip = ip1;
 
         // choose the opposite side of the globe if the distance is shorter
@@ -593,7 +553,7 @@ private:
             return false;
         }
 
-        calculate_dists(b1v, b2v, plane2, ip, dist_b1_b2, dist_b1_ip);
+        calculate_dist(b1v, b2v, plane2, ip, dist_b1_ip);
 
         bool is_on_b = false, is_near_b1 = false, is_near_b2 = false;
         if (! is_potentially_crossing(dist_b1_b2, dist_b1_ip, is_on_b, is_near_b1, is_near_b2))
@@ -602,7 +562,6 @@ private:
         }
 
         // reassign the IP if some endpoints overlap
-        using geometry::detail::equals::equals_point_point;
         if (is_near_a1)
         {
             if (is_near_b1 && equals_point_point(a1, b1))
@@ -613,7 +572,7 @@ private:
                 ip_flag = ipi_at_a1;
                 return true;
             }
-            
+
             if (is_near_b2 && equals_point_point(a1, b2))
             {
                 dist_a1_ip = 0;
@@ -652,6 +611,7 @@ private:
         {
             if (is_near_b1 && sides.template get<1, 0>() == 0) // b1 wrt a
             {
+                calculate_dist(a1v, a2v, plane1, b1v, dist_a1_ip); // for consistency
                 dist_b1_ip = 0;
                 //i1 = b1v;
                 ip_flag = ipi_at_b1;
@@ -660,6 +620,7 @@ private:
 
             if (is_near_b2 && sides.template get<1, 1>() == 0) // b2 wrt a
             {
+                calculate_dist(a1v, a2v, plane1, b2v, dist_a1_ip); // for consistency
                 dist_b1_ip = dist_b1_b2;
                 //i1 = b2v;
                 ip_flag = ipi_at_b2;
@@ -672,6 +633,7 @@ private:
             if (is_near_a1 && sides.template get<0, 0>() == 0) // a1 wrt b
             {
                 dist_a1_ip = 0;
+                calculate_dist(b1v, b2v, plane2, a1v, dist_b1_ip); // for consistency
                 //i1 = a1v;
                 ip_flag = ipi_at_a1;
                 return true;
@@ -680,6 +642,7 @@ private:
             if (is_near_a2 && sides.template get<0, 1>() == 0) // a2 wrt b
             {
                 dist_a1_ip = dist_a1_a2;
+                calculate_dist(b1v, b2v, plane2, a2v, dist_b1_ip); // for consistency
                 //i1 = a2v;
                 ip_flag = ipi_at_a2;
                 return true;
@@ -692,20 +655,26 @@ private:
     }
 
     template <typename Vec3d, typename Plane, typename CalcT>
-    static inline void calculate_dists(Vec3d const& a1v,    // in
-                                       Vec3d const& a2v,    // in
-                                       Plane const& plane1, // in
-                                       Vec3d const& i1,     // in
-                                       CalcT& dist_a1_a2, // out
-                                       CalcT& dist_a1_i1) // out
+    static inline void calculate_dist(Vec3d const& a1v,    // in
+                                      Vec3d const& a2v,    // in
+                                      Plane const& plane1, // in
+                                      CalcT& dist_a1_a2)   // out
     {
-        //CalcT const c0 = 0;
-        CalcT const c1 = 1;
-        CalcT const c2 = 2;
-        CalcT const c4 = 4;
-            
-        CalcT cos_a1_a2 = plane1.cos_angle_between(a1v, a2v);
+        static CalcT const c1 = 1;
+        CalcT const cos_a1_a2 = plane1.cos_angle_between(a1v, a2v);
         dist_a1_a2 = -cos_a1_a2 + c1; // [1, -1] -> [0, 2] representing [0, pi]
+    }
+
+    template <typename Vec3d, typename Plane, typename CalcT>
+    static inline void calculate_dist(Vec3d const& a1v,     // in
+                                      Vec3d const& /*a2v*/, // in
+                                      Plane const& plane1,  // in
+                                      Vec3d const& i1,      // in
+                                      CalcT& dist_a1_i1)    // out
+    {
+        static CalcT const c1 = 1;
+        static CalcT const c2 = 2;
+        static CalcT const c4 = 4;
 
         bool is_forward = true;
         CalcT cos_a1_i1 = plane1.cos_angle_between(a1v, i1, is_forward);
@@ -719,7 +688,19 @@ private:
             dist_a1_i1 += c4; // += 2pi
         }
     }
-
+    /*
+    template <typename Vec3d, typename Plane, typename CalcT>
+    static inline void calculate_dists(Vec3d const& a1v,    // in
+                                       Vec3d const& a2v,    // in
+                                       Plane const& plane1, // in
+                                       Vec3d const& i1,     // in
+                                       CalcT& dist_a1_a2, // out
+                                       CalcT& dist_a1_i1) // out
+    {
+        calculate_dist(a1v, a2v, plane1, dist_a1_a2);
+        calculate_dist(a1v, a2v, plane1, i1, dist_a1_i1);
+    }
+    */
     // the dist of the ip on the other side of the sphere
     template <typename CalcT>
     static inline CalcT dist_of_i2(CalcT const& dist_a1_i1)
@@ -758,16 +739,16 @@ private:
 
     template <typename CalcT, typename P1, typename P2>
     static inline bool is_endpoint_equal(CalcT const& dist,
-                                         P1 const& ai, P2 const& b1, P2 const& b2)
+                                         P1 const& ai, P2 const& b1)
     {
-        using geometry::detail::equals::equals_point_point;
-        return is_near(dist) && (equals_point_point(ai, b1) || equals_point_point(ai, b2));
+        static CalcT const c0 = 0;
+        return is_near(dist) && (math::equals(dist, c0) || equals_point_point(ai, b1));
     }
 
     template <typename CalcT>
     static inline bool is_near(CalcT const& dist)
     {
-        CalcT const small_number = CalcT(boost::is_same<CalcT, float>::value ? 0.0001 : 0.00000001);
+        CalcT const small_number = CalcT(std::is_same<CalcT, float>::value ? 0.0001 : 0.00000001);
         return math::abs(dist) <= small_number;
     }
 
@@ -787,6 +768,12 @@ private:
               : ( ca1 > cb1 ? 0
                 : ca1 < cb2 ? 4
                 : 2 );
+    }
+
+    template <typename Point1, typename Point2>
+    static inline bool equals_point_point(Point1 const& point1, Point2 const& point2)
+    {
+        return strategy::within::spherical_point_point::apply(point1, point2);
     }
 };
 
@@ -853,10 +840,12 @@ struct spherical_segments_calc_policy
         //       not checked before this function is called the length
         //       should be checked here (math::equals(len, c0))
         coord_t const len = math::sqrt(dot_product(ip1, ip1));
-        divide_value(ip1, len); // normalize i1
-
-        ip2 = ip1;
-        multiply_value(ip2, coord_t(-1));
+        geometry::detail::for_each_dimension<Point3d>([&](auto index)
+        {
+            coord_t const coord = get<index>(ip1) / len; // normalize
+            set<index>(ip1, coord);
+            set<index>(ip2, -coord);
+        });
 
         return true;
     }

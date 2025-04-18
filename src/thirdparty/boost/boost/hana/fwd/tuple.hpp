@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::tuple`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -17,7 +17,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/fwd/type.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-datatypes
     //! General purpose index-based heterogeneous sequence with a fixed length.
     //!
@@ -31,6 +31,11 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! Tuples are index-based sequences. If you need an associative
     //! sequence with a key-based access, then you should consider
     //! `hana::map` or `hana::set` instead.
+    //!
+    //! @note
+    //! When you use a container, remember not to make assumptions about its
+    //! representation, unless the documentation gives you those guarantees.
+    //! More details [in the tutorial](@ref tutorial-containers-types).
     //!
     //!
     //! Modeled concepts
@@ -174,11 +179,11 @@ BOOST_HANA_NAMESPACE_BEGIN
 
     //! Alias to `make<tuple_tag>`; provided for convenience.
     //! @relates hana::tuple
-    constexpr auto make_tuple = make<tuple_tag>;
+    BOOST_HANA_INLINE_VARIABLE constexpr auto make_tuple = make<tuple_tag>;
 
     //! Equivalent to `to<tuple_tag>`; provided for convenience.
     //! @relates hana::tuple
-    constexpr auto to_tuple = to<tuple_tag>;
+    BOOST_HANA_INLINE_VARIABLE constexpr auto to_tuple = to<tuple_tag>;
 
     //! Create a tuple specialized for holding `hana::type`s.
     //! @relates hana::tuple
@@ -197,7 +202,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     constexpr implementation_defined tuple_t{};
 #else
     template <typename ...T>
-    constexpr hana::tuple<hana::type<T>...> tuple_t{};
+    BOOST_HANA_INLINE_VARIABLE constexpr hana::tuple<hana::type<T>...> tuple_t{};
 #endif
 
     //! Create a tuple specialized for holding `hana::integral_constant`s.
@@ -217,8 +222,8 @@ BOOST_HANA_NAMESPACE_BEGIN
     constexpr implementation_defined tuple_c{};
 #else
     template <typename T, T ...v>
-    constexpr hana::tuple<hana::integral_constant<T, v>...> tuple_c{};
+    BOOST_HANA_INLINE_VARIABLE constexpr hana::tuple<hana::integral_constant<T, v>...> tuple_c{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_TUPLE_HPP

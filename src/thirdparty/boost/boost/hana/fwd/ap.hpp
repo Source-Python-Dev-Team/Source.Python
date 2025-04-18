@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::ap`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Lifted application.
     //! @ingroup group-Applicative
     //!
@@ -29,11 +29,10 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! number of `x...` must match the arity of the functions in the `f`
     //! structure. In other words, `ap(f, x1, ..., xN)` is equivalent to
     //! @code
-    //!     ((f' <ap> x1) <ap> x2) ... <ap> xN
+    //!     ((curry(f) ap x1) ap x2) ... ap xN
     //! @endcode
-    //! where `f'` is `f` but containing curried functions instead and
-    //! `x <ap> y` is just `ap(x, y)` written in infix notation to emphasize
-    //! the left associativity.
+    //! where `x ap y` is just `ap(x, y)` written in infix notation to
+    //! emphasize the left associativity.
     //!
     //!
     //! Signature
@@ -75,8 +74,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr decltype(auto) operator()(F&& f, Xs&& ...xs) const;
     };
 
-    constexpr ap_t ap{};
+    BOOST_HANA_INLINE_VARIABLE constexpr ap_t ap{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_AP_HPP

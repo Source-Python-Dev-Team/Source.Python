@@ -22,12 +22,12 @@
 #include <boost/type_traits/is_same.hpp>
 
 #include <boost/mpl/bool.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/bimap/relation/support/member_with_tag.hpp>
 
 /** \struct boost::bimaps::relation::support::is_tag_of_member_at_left
 
-\brief Metafunction to test if a user tag is refering to the left member.
+\brief Metafunction to test if a user tag is referring to the left member.
 
 \code
 
@@ -53,7 +53,7 @@ See also member_with_tag, member_at, is_tag_of_member_at_right.
 
 /** \struct boost::bimaps::relation::support::is_tag_of_member_at_right
 
-\brief Metafunction to test if a user tag is refering to the left member.
+\brief Metafunction to test if a user tag is referring to the left member.
 
 \code
 

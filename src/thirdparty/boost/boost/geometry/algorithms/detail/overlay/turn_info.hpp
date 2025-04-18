@@ -1,6 +1,7 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
+// Copyright (c) 2023 Adam Wulkiewicz, Lodz, Poland.
 
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -10,12 +11,13 @@
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TURN_INFO_HPP
 
 
-#include <boost/array.hpp>
+#include <array>
 
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/algorithms/detail/signed_size_type.hpp>
 #include <boost/geometry/algorithms/detail/overlay/segment_identifier.hpp>
 #include <boost/geometry/algorithms/detail/overlay/overlay_type.hpp>
+#include <boost/geometry/policies/robustness/segment_ratio.hpp>
 
 namespace boost { namespace geometry
 {
@@ -33,6 +35,7 @@ enum method_type
     method_touch_interior,
     method_collinear,
     method_equal,
+    method_start,
     method_error
 };
 
@@ -76,9 +79,9 @@ struct turn_operation
 template
 <
     typename Point,
-    typename SegmentRatio,
+    typename SegmentRatio = geometry::segment_ratio<typename coordinate_type<Point>::type>,
     typename Operation = turn_operation<Point, SegmentRatio>,
-    typename Container = boost::array<Operation, 2>
+    typename Container = std::array<Operation, 2>
 >
 struct turn_info
 {
@@ -89,19 +92,19 @@ struct turn_info
 
     Point point;
     method_type method;
-    signed_size_type cluster_id; // For multiple turns on same location, >= 0. Else -1
+    bool touch_only; // True in case of method touch(interior) and lines do not cross
+    signed_size_type cluster_id; // For multiple turns on same location, > 0. Else -1. 0 is unused.
     bool discarded;
-    bool colocated;
-    bool switch_source; // For u/u turns which can either switch or not
+    bool has_colocated_both; // Colocated with a uu turn (for union) or ii (other)
 
     Container operations;
 
     inline turn_info()
         : method(method_none)
+        , touch_only(false)
         , cluster_id(-1)
         , discarded(false)
-        , colocated(false)
-        , switch_source(false)
+        , has_colocated_both(false)
     {}
 
     inline bool both(operation_type type) const
@@ -132,7 +135,15 @@ struct turn_info
     {
         return has(operation_blocked);
     }
-
+    inline bool is_clustered() const
+    {
+        return cluster_id > 0;
+    }
+    inline bool is_self() const
+    {
+        return operations[0].seg_id.source_index
+                == operations[1].seg_id.source_index;
+    }
 
 private :
     inline bool has12(operation_type type1, operation_type type2) const

@@ -22,6 +22,7 @@
 #include <boost/container/new_allocator.hpp>
 #include <boost/container/pmr/memory_resource.hpp>
 #include <boost/container/pmr/global_resource.hpp>
+#include <boost/assert.hpp>
 
 #include <cstddef>
 
@@ -53,14 +54,13 @@ class polymorphic_allocator
    //! <b>Throws</b>: Nothing
    //!
    //! <b>Notes</b>: This constructor provides an implicit conversion from memory_resource*.
-   //!   Non-standard extension: if r is null m_resource is set to get_default_resource().
-   polymorphic_allocator(memory_resource* r)
-      : m_resource(r ? r : ::boost::container::pmr::get_default_resource())
-   {}
+   polymorphic_allocator(memory_resource* r) BOOST_NOEXCEPT
+      : m_resource(r)
+   {  BOOST_ASSERT(r != 0);  }
 
    //! <b>Effects</b>: Sets m_resource to
    //!   other.resource().
-   polymorphic_allocator(const polymorphic_allocator& other)
+   polymorphic_allocator(const polymorphic_allocator& other) BOOST_NOEXCEPT
       : m_resource(other.m_resource)
    {}
 
@@ -73,7 +73,7 @@ class polymorphic_allocator
 
    //! <b>Effects</b>: Sets m_resource to
    //!   other.resource().
-   polymorphic_allocator& operator=(const polymorphic_allocator& other)
+   polymorphic_allocator& operator=(const polymorphic_allocator& other) BOOST_NOEXCEPT
    {  m_resource = other.m_resource;   return *this;  }
 
    //! <b>Returns</b>: Equivalent to
@@ -87,25 +87,25 @@ class polymorphic_allocator
    //! <b>Effects</b>: Equivalent to m_resource->deallocate(p, n * sizeof(T), alignof(T)).
    //!
    //! <b>Throws</b>: Nothing.
-   void deallocate(T* p, size_t n)
+   void deallocate(T* p, size_t n) BOOST_NOEXCEPT
    {  m_resource->deallocate(p, n*sizeof(T), ::boost::move_detail::alignment_of<T>::value);  }
 
    #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) || defined(BOOST_CONTAINER_DOXYGEN_INVOKED)
    //! <b>Requires</b>: Uses-allocator construction of T with allocator
-   //!   `this->resource()` and constructor arguments `std::forward<Args>(args)...`
+   //!   `*this` and constructor arguments `std::forward<Args>(args)...`
    //!   is well-formed. [Note: uses-allocator construction is always well formed for
    //!   types that do not use allocators. - end note]
    //!
    //! <b>Effects</b>: Construct a T object at p by uses-allocator construction with allocator
-   //!   `this->resource()` and constructor arguments `std::forward<Args>(args)...`.
+   //!   `*this` and constructor arguments `std::forward<Args>(args)...`.
    //!
    //! <b>Throws</b>: Nothing unless the constructor for T throws.
    template < typename U, class ...Args>
    void construct(U* p, BOOST_FWD_REF(Args)...args)
    {
       new_allocator<U> na;
-      container_detail::dispatch_uses_allocator
-         (na, this->resource(), p, ::boost::forward<Args>(args)...);
+      dtl::dispatch_uses_allocator
+         (na, *this, p, ::boost::forward<Args>(args)...);
    }
 
    #else // #if !defined(BOOST_NO_CXX11_VARIADIC_TEMPLATES) || defined(BOOST_CONTAINER_DOXYGEN_INVOKED)
@@ -117,8 +117,8 @@ class polymorphic_allocator
    void construct(U* p BOOST_MOVE_I##N BOOST_MOVE_UREFQ##N)\
    {\
       new_allocator<U> na;\
-      container_detail::dispatch_uses_allocator\
-         (na, this->resource(), p BOOST_MOVE_I##N BOOST_MOVE_FWDQ##N);\
+      dtl::dispatch_uses_allocator\
+         (na, *this, p BOOST_MOVE_I##N BOOST_MOVE_FWDQ##N);\
    }\
    //
    BOOST_MOVE_ITERATE_0TO9(BOOST_CONTAINER_PMR_POLYMORPHIC_ALLOCATOR_CONSTRUCT_CODE)
@@ -134,12 +134,12 @@ class polymorphic_allocator
 
    //! <b>Returns</b>: Equivalent to
    //!   `polymorphic_allocator()`.
-   polymorphic_allocator select_on_container_copy_construction() const
+   polymorphic_allocator select_on_container_copy_construction() const BOOST_NOEXCEPT
    {  return polymorphic_allocator();  }
 
    //! <b>Returns</b>:
    //!   m_resource.
-   memory_resource* resource() const
+   memory_resource* resource() const BOOST_NOEXCEPT
    {  return m_resource;  }
 
    private:

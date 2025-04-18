@@ -15,12 +15,11 @@
 #ifndef BOOST_LOG_ATTRIBUTES_MUTABLE_CONSTANT_HPP_INCLUDED_
 #define BOOST_LOG_ATTRIBUTES_MUTABLE_CONSTANT_HPP_INCLUDED_
 
-#include <boost/static_assert.hpp>
 #include <boost/smart_ptr/intrusive_ptr.hpp>
-#include <boost/mpl/if.hpp>
 #include <boost/move/core.hpp>
 #include <boost/move/utility_core.hpp>
 #include <boost/type_traits/is_void.hpp>
+#include <boost/type_traits/conditional.hpp>
 #include <boost/log/detail/config.hpp>
 #include <boost/log/detail/locks.hpp>
 #include <boost/log/attributes/attribute.hpp>
@@ -60,7 +59,7 @@ template<
     typename MutexT = void,
     typename ScopedWriteLockT =
 #ifndef BOOST_LOG_NO_THREADS
-        typename mpl::if_c<
+        typename boost::conditional<
             boost::log::aux::is_exclusively_lockable< MutexT >::value,
             boost::log::aux::exclusive_lock_guard< MutexT >,
             void
@@ -70,7 +69,7 @@ template<
 #endif // BOOST_LOG_NO_THREADS
     typename ScopedReadLockT =
 #ifndef BOOST_LOG_NO_THREADS
-        typename mpl::if_c<
+        typename boost::conditional<
             boost::log::aux::is_shared_lockable< MutexT >::value,
             boost::log::aux::shared_lock_guard< MutexT >,
             ScopedWriteLockT
@@ -99,7 +98,7 @@ protected:
         typedef ScopedReadLockT scoped_read_lock;
         //! Exclusive lock type
         typedef ScopedWriteLockT scoped_write_lock;
-        BOOST_STATIC_ASSERT_MSG(!(is_void< mutex_type >::value || is_void< scoped_read_lock >::value || is_void< scoped_write_lock >::value), "Boost.Log: Mutex and both lock types either must not be void or must all be void");
+        static_assert(!(is_void< mutex_type >::value || is_void< scoped_read_lock >::value || is_void< scoped_write_lock >::value), "Boost.Log: Mutex and both lock types either must not be void or must all be void");
         //! Attribute value wrapper
         typedef attribute_value_impl< value_type > attr_value;
 

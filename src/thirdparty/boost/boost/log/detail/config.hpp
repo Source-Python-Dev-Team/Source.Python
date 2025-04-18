@@ -17,17 +17,9 @@
 #ifndef BOOST_LOG_DETAIL_CONFIG_HPP_INCLUDED_
 #define BOOST_LOG_DETAIL_CONFIG_HPP_INCLUDED_
 
-// This check must be before any system headers are included, or __MSVCRT_VERSION__ may get defined to 0x0600
-#if defined(__MINGW32__) && !defined(__MSVCRT_VERSION__)
-// Target MinGW headers to at least MSVC 7.0 runtime by default. This will enable some useful functions.
-#define __MSVCRT_VERSION__ 0x0700
-#endif
-
-#include <boost/predef/os.h>
-
 // Try including WinAPI config as soon as possible so that any other headers don't include Windows SDK headers
-#if defined(BOOST_OS_WINDOWS_AVAILABLE)
-#include <boost/detail/winapi/config.hpp>
+#if defined(_WIN32) || defined(_WIN64) || defined(__WIN32__) || defined(__TOS_WIN__) || defined(__WINDOWS__)
+#include <boost/winapi/config.hpp>
 #endif
 
 #include <limits.h> // To bring in libc macros
@@ -40,10 +32,6 @@
 
 #if defined(_MSC_VER) && _MSC_VER >= 1600
 #   define BOOST_LOG_HAS_PRAGMA_DETECT_MISMATCH
-#endif
-
-#if defined(BOOST_LOG_HAS_PRAGMA_DETECT_MISMATCH)
-#include <boost/preprocessor/stringize.hpp>
 #endif
 
 #if !defined(BOOST_WINDOWS)
@@ -104,16 +92,31 @@
 #   define BOOST_LOG_BROKEN_CONSTANT_EXPRESSIONS
 #endif
 
-#if defined(BOOST_NO_CXX11_HDR_CODECVT)
+#if (defined(BOOST_NO_CXX11_HDR_CODECVT) && BOOST_CXX_VERSION < 201703) || (defined(_MSVC_STL_VERSION) && _MSVC_STL_VERSION < 142)
     // The compiler does not support std::codecvt<char16_t> and std::codecvt<char32_t> specializations.
     // The BOOST_NO_CXX11_HDR_CODECVT means there's no usable <codecvt>, which is slightly different from this macro.
     // But in order for <codecvt> to be implemented the std::codecvt specializations have to be implemented as well.
+    // We need to check the C++ version as well, since <codecvt> is deprecated from C++17 onwards which may cause
+    // BOOST_NO_CXX11_HDR_CODECVT to be set, even though std::codecvt in <locale> is just fine.
 #   define BOOST_LOG_NO_CXX11_CODECVT_FACETS
 #endif
 
 #if defined(__CYGWIN__)
     // Boost.ASIO is broken on Cygwin
 #   define BOOST_LOG_NO_ASIO
+#endif
+
+#if defined(__VXWORKS__)
+#   define BOOST_LOG_NO_GETPGRP
+#   define BOOST_LOG_NO_GETSID
+    // for _WRS_CONFIG_USER_MANAGEMENT used below
+#   include <vsbConfig.h>
+#endif
+
+#if (!defined(__CRYSTAX__) && defined(__ANDROID__) && (__ANDROID_API__ < 21)) \
+     || (defined(__VXWORKS__) && !defined(_WRS_CONFIG_USER_MANAGEMENT))
+// Until Android API version 21 Google NDK does not provide getpwuid_r
+#    define BOOST_LOG_NO_GETPWUID_R
 #endif
 
 #if !defined(BOOST_LOG_USE_NATIVE_SYSLOG) && defined(BOOST_LOG_NO_ASIO)
@@ -134,20 +137,39 @@
 #define BOOST_LOG_NO_CXX11_ARG_PACKS_TO_NON_VARIADIC_ARGS_EXPANSION
 #endif
 
-#if defined(BOOST_NO_CXX11_CONSTEXPR) || (defined(BOOST_GCC) && ((BOOST_GCC+0) / 100) <= 406)
+#if defined(BOOST_NO_CXX11_CONSTEXPR) || (defined(BOOST_GCC) && (BOOST_GCC / 100) <= 406)
 // GCC 4.6 does not support in-class brace initializers for static constexpr array members
 #define BOOST_LOG_NO_CXX11_CONSTEXPR_DATA_MEMBER_BRACE_INITIALIZERS
 #endif
 
-#if defined(BOOST_NO_CXX11_DEFAULTED_FUNCTIONS) || (defined(BOOST_GCC) && ((BOOST_GCC+0) / 100) <= 406)
-// GCC 4.6 cannot handle a defaulted function with noexcept specifier
+#if defined(BOOST_NO_CXX11_DEFAULTED_FUNCTIONS) || (defined(BOOST_GCC) && (BOOST_GCC / 100) <= 406)
+// GCC 4.6 cannot handle defaulted functions with noexcept specifier or virtual functions
 #define BOOST_LOG_NO_CXX11_DEFAULTED_NOEXCEPT_FUNCTIONS
+#define BOOST_LOG_NO_CXX11_DEFAULTED_VIRTUAL_FUNCTIONS
+#endif
+
+#if defined(BOOST_NO_CXX11_DEFAULTED_FUNCTIONS) || (defined(BOOST_CLANG) && ((__clang_major__ == 3) && (__clang_minor__ <= 1)))
+// Clang 3.1 cannot handle a defaulted constexpr constructor in some cases (presumably, if the class contains a member with a constexpr constructor)
+#define BOOST_LOG_NO_CXX11_DEFAULTED_CONSTEXPR_CONSTRUCTORS
+#endif
+
+// The macro indicates that the compiler does not support C++20 pack expansions in lambda init-captures.
+// Early gcc, clang and MSVC versions support C++20 pack expansions in lambda init-captures,
+// but define __cpp_init_captures to a lower value.
+#if (!defined(__cpp_init_captures) || (__cpp_init_captures < 201803)) && \
+    !(\
+        BOOST_CXX_VERSION > 201703 && \
+        (\
+            (defined(BOOST_GCC) && (BOOST_GCC >= 90000)) || \
+            (defined(BOOST_CLANG) && (BOOST_CLANG_VERSION >= 90000)) || \
+            (defined(BOOST_MSVC) && (BOOST_MSVC >= 1922))\
+        )\
+    )
+#define BOOST_LOG_NO_CXX20_PACK_EXPANSION_IN_LAMBDA_INIT_CAPTURE
 #endif
 
 #if defined(_MSC_VER)
 #   define BOOST_LOG_NO_VTABLE __declspec(novtable)
-#elif defined(__GNUC__)
-#   define BOOST_LOG_NO_VTABLE
 #else
 #   define BOOST_LOG_NO_VTABLE
 #endif
@@ -155,6 +177,14 @@
 // An MS-like compilers' extension that allows to optimize away the needless code
 #if defined(_MSC_VER)
 #   define BOOST_LOG_ASSUME(expr) __assume(expr)
+#elif defined(__has_builtin)
+// Clang 3.6 adds __builtin_assume, but enabling it causes weird compilation errors, where the compiler
+// doesn't see one of attachable_sstream_buf::append overloads. It works fine with Clang 3.7 and later.
+#   if __has_builtin(__builtin_assume) && (!defined(__clang__) || (__clang_major__ * 100 + __clang_minor__) >= 307)
+#       define BOOST_LOG_ASSUME(expr) __builtin_assume(expr)
+#   else
+#       define BOOST_LOG_ASSUME(expr)
+#   endif
 #else
 #   define BOOST_LOG_ASSUME(expr)
 #endif
@@ -199,18 +229,14 @@
 #   define BOOST_LOG_NORETURN
 #endif
 
-// GCC and compatible compilers may require marking types that may alias other types
-#if defined(__GNUC__)
-#   define BOOST_LOG_MAY_ALIAS __attribute__ ((__may_alias__))
-#else
-#   define BOOST_LOG_MAY_ALIAS
-#endif
+// Some compilers may require marking types that may alias other types
+#define BOOST_LOG_MAY_ALIAS BOOST_MAY_ALIAS
 
 #if !defined(BOOST_LOG_BUILDING_THE_LIB)
 
 // Detect if we're dealing with dll
 #   if defined(BOOST_LOG_DYN_LINK) || defined(BOOST_ALL_DYN_LINK)
-#        define BOOST_LOG_DLL
+#       define BOOST_LOG_DLL
 #   endif
 
 #   if defined(BOOST_LOG_DLL)
@@ -233,15 +259,7 @@
         // other Boost libraries. We explicitly add comments here for other libraries.
         // In dynamic-library builds this is not needed.
 #       if !defined(BOOST_LOG_DLL)
-#           include <boost/system/config.hpp>
 #           include <boost/filesystem/config.hpp>
-#           if !defined(BOOST_DATE_TIME_NO_LIB) && !defined(BOOST_DATE_TIME_SOURCE)
-#               define BOOST_LIB_NAME boost_date_time
-#               if defined(BOOST_ALL_DYN_LINK) || defined(BOOST_DATE_TIME_DYN_LINK)
-#                   define BOOST_DYN_LINK
-#               endif
-#               include <boost/config/auto_link.hpp>
-#           endif
             // Boost.Thread's config is included below, if needed
 #       endif
 #   endif  // auto-linking disabled
@@ -296,7 +314,13 @@
 
 #ifndef BOOST_LOG_CPU_CACHE_LINE_SIZE
 //! The macro defines the CPU cache line size for the target architecture. This is mostly used for optimization.
+#if defined(__s390__) || defined(__s390x__)
+#define BOOST_LOG_CPU_CACHE_LINE_SIZE 256
+#elif defined(powerpc) || defined(__powerpc__) || defined(__ppc__)
+#define BOOST_LOG_CPU_CACHE_LINE_SIZE 128
+#else
 #define BOOST_LOG_CPU_CACHE_LINE_SIZE 64
+#endif
 #endif
 
 namespace boost {
@@ -310,7 +334,9 @@ namespace boost {
 #           if defined(BOOST_THREAD_PLATFORM_PTHREAD)
 #               define BOOST_LOG_VERSION_NAMESPACE v2_mt_posix
 #           elif defined(BOOST_THREAD_PLATFORM_WIN32)
-#               if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
+#               if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN8
+#                   define BOOST_LOG_VERSION_NAMESPACE v2_mt_nt62
+#               elif BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
 #                   define BOOST_LOG_VERSION_NAMESPACE v2_mt_nt6
 #               else
 #                   define BOOST_LOG_VERSION_NAMESPACE v2_mt_nt5
@@ -326,7 +352,9 @@ namespace boost {
 #           if defined(BOOST_THREAD_PLATFORM_PTHREAD)
 #               define BOOST_LOG_VERSION_NAMESPACE v2s_mt_posix
 #           elif defined(BOOST_THREAD_PLATFORM_WIN32)
-#               if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
+#               if BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN8
+#                   define BOOST_LOG_VERSION_NAMESPACE v2s_mt_nt62
+#               elif BOOST_USE_WINAPI_VERSION >= BOOST_WINAPI_VERSION_WIN6
 #                   define BOOST_LOG_VERSION_NAMESPACE v2s_mt_nt6
 #               else
 #                   define BOOST_LOG_VERSION_NAMESPACE v2s_mt_nt5
@@ -343,9 +371,16 @@ namespace log {
 #   if !defined(BOOST_NO_CXX11_INLINE_NAMESPACES)
 
 inline namespace BOOST_LOG_VERSION_NAMESPACE {}
-}
 
 #       define BOOST_LOG_OPEN_NAMESPACE namespace log { inline namespace BOOST_LOG_VERSION_NAMESPACE {
+#       define BOOST_LOG_CLOSE_NAMESPACE }}
+
+#   elif defined(BOOST_GCC) && (BOOST_GCC >= 40400)
+
+// GCC 7 deprecated strong using directives but allows inline namespaces in C++03 mode since GCC 4.4.
+__extension__ inline namespace BOOST_LOG_VERSION_NAMESPACE {}
+
+#       define BOOST_LOG_OPEN_NAMESPACE namespace log { __extension__ inline namespace BOOST_LOG_VERSION_NAMESPACE {
 #       define BOOST_LOG_CLOSE_NAMESPACE }}
 
 #   else
@@ -358,11 +393,11 @@ __attribute__((__strong__))
 #       endif
 ;
 
-}
-
 #       define BOOST_LOG_OPEN_NAMESPACE namespace log { namespace BOOST_LOG_VERSION_NAMESPACE {
 #       define BOOST_LOG_CLOSE_NAMESPACE }}
 #   endif
+
+} // namespace log
 
 #else // !defined(BOOST_LOG_DOXYGEN_PASS)
 
@@ -373,7 +408,7 @@ namespace log {}
 #endif // !defined(BOOST_LOG_DOXYGEN_PASS)
 
 #if defined(BOOST_LOG_HAS_PRAGMA_DETECT_MISMATCH)
-#pragma detect_mismatch("boost_log_abi", BOOST_PP_STRINGIZE(BOOST_LOG_VERSION_NAMESPACE))
+#pragma detect_mismatch("boost_log_abi", BOOST_STRINGIZE(BOOST_LOG_VERSION_NAMESPACE))
 #endif
 
 } // namespace boost

@@ -2,24 +2,23 @@
 
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 
-// This file was modified by Oracle on 2013, 2014.
-// Modifications copyright (c) 2013-2014, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2013-2020.
+// Modifications copyright (c) 2013-2020, Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
 
-// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
-
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_SINGLE_GEOMETRY_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_SINGLE_GEOMETRY_HPP
 
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_base_of.hpp>
+#include <type_traits>
 
 #include <boost/geometry/core/assert.hpp>
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/util/range.hpp>
+#include <boost/geometry/util/type_traits.hpp>
 
 namespace boost { namespace geometry {
 
@@ -28,12 +27,10 @@ namespace detail_dispatch {
 
 // Returns single geometry by Id
 // for single geometries returns the geometry itself
-template <typename Geometry,
-          bool IsMulti = boost::is_base_of
-                            <
-                                multi_tag,
-                                typename geometry::tag<Geometry>::type
-                            >::value
+template
+<
+    typename Geometry,
+    bool IsMulti = util::is_multi<Geometry>::value
 >
 struct single_geometry
 {

@@ -18,36 +18,45 @@
 
 #include <boost/ptr_container/indirect_fun.hpp>
 #include <boost/ptr_container/ptr_set_adapter.hpp>
+#include <boost/ptr_container/detail/ptr_container_disable_deprecated.hpp>
 #include <set>
+
+#if defined(BOOST_PTR_CONTAINER_DISABLE_DEPRECATED)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 namespace boost
 {
 
     template
-    < 
-        class Key, 
+    <
+        class Key,
         class Compare        = std::less<Key>,
         class CloneAllocator = heap_clone_allocator,
-        class Allocator      = std::allocator<void*>
+        class Allocator      = std::allocator<typename ptr_container_detail::void_ptr<Key>::type>
     >
-    class ptr_set : 
-        public ptr_set_adapter< Key, 
-                                std::set<void*,void_ptr_indirect_fun<Compare,Key>,Allocator>,
+    class ptr_set :
+        public ptr_set_adapter< Key, std::set<
+            typename ptr_container_detail::void_ptr<Key>::type,
+            void_ptr_indirect_fun<Compare,Key>,Allocator>,
                                 CloneAllocator, true >
     {
-        typedef ptr_set_adapter< Key, std::set<void*,void_ptr_indirect_fun<Compare,Key>,Allocator>,
+        typedef ptr_set_adapter< Key, std::set<
+            typename ptr_container_detail::void_ptr<Key>::type,
+            void_ptr_indirect_fun<Compare,Key>,Allocator>,
                                  CloneAllocator, true >
              base_type;
 
         typedef ptr_set<Key,Compare,CloneAllocator,Allocator> this_type;
-        
+
     public:
         ptr_set()
         { }
-        
+
         explicit ptr_set( const Compare& comp,
-                          const Allocator& a = Allocator() ) 
-         : base_type( comp, a ) 
+                          const Allocator& a = Allocator() )
+         : base_type( comp, a )
         { }
 
         template< typename InputIterator >
@@ -56,30 +65,30 @@ namespace boost
         { }
 
         template< typename InputIterator >
-        ptr_set( InputIterator first, InputIterator last, 
+        ptr_set( InputIterator first, InputIterator last,
                  const Compare& comp,
-                 const Allocator& a = Allocator() ) 
+                 const Allocator& a = Allocator() )
          : base_type( first, last, comp, a )
         { }
 
         BOOST_PTR_CONTAINER_DEFINE_RELEASE_AND_CLONE( ptr_set,
                                                       base_type,
                                                       this_type )
-        
+
         BOOST_PTR_CONTAINER_DEFINE_COPY_CONSTRUCTORS( ptr_set, base_type )
-                
+
     };
-        
-        
-        
+
+
+
     template
-    < 
-        class Key, 
+    <
+        class Key,
         class Compare        = std::less<Key>,
         class CloneAllocator = heap_clone_allocator,
         class Allocator      = std::allocator<void*>
     >
-    class ptr_multiset : 
+    class ptr_multiset :
         public ptr_multiset_adapter< Key,
                                      std::multiset<void*,void_ptr_indirect_fun<Compare,Key>,Allocator>,
                                      CloneAllocator, true >
@@ -89,14 +98,14 @@ namespace boost
                                       CloneAllocator, true >
               base_type;
         typedef ptr_multiset<Key,Compare,CloneAllocator,Allocator> this_type;
-        
+
     public:
         ptr_multiset()
         { }
-        
+
         explicit ptr_multiset( const Compare& comp,
                                const Allocator& a    = Allocator() )
-         : base_type( comp, a ) 
+         : base_type( comp, a )
         { }
 
         template< typename InputIterator >
@@ -108,15 +117,15 @@ namespace boost
         ptr_multiset( InputIterator first, InputIterator last,
                       const Compare& comp,
                       const Allocator& a  = Allocator() )
-         : base_type( first, last, comp, a ) 
+         : base_type( first, last, comp, a )
         { }
 
-        BOOST_PTR_CONTAINER_DEFINE_RELEASE_AND_CLONE( ptr_multiset, 
+        BOOST_PTR_CONTAINER_DEFINE_RELEASE_AND_CLONE( ptr_multiset,
                                                       base_type,
                                                       this_type )
-        
-        BOOST_PTR_CONTAINER_DEFINE_COPY_CONSTRUCTORS( ptr_multiset, 
-                                                      base_type )     
+
+        BOOST_PTR_CONTAINER_DEFINE_COPY_CONSTRUCTORS( ptr_multiset,
+                                                      base_type )
 
     };
 
@@ -134,7 +143,7 @@ namespace boost
     {
         return r.clone().release();
     }
-    
+
     /////////////////////////////////////////////////////////////////////////
     // swap
 
@@ -151,5 +160,9 @@ namespace boost
     }
 
 }
+
+#if defined(BOOST_PTR_CONTAINER_DISABLE_DEPRECATED)
+#pragma GCC diagnostic pop
+#endif
 
 #endif

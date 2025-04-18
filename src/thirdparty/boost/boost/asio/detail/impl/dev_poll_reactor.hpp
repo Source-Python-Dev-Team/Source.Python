@@ -2,7 +2,7 @@
 // detail/impl/dev_poll_reactor.hpp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2024 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -19,11 +19,19 @@
 
 #if defined(BOOST_ASIO_HAS_DEV_POLL)
 
+#include <boost/asio/detail/scheduler.hpp>
+
 #include <boost/asio/detail/push_options.hpp>
 
 namespace boost {
 namespace asio {
 namespace detail {
+
+inline void dev_poll_reactor::post_immediate_completion(
+    operation* op, bool is_continuation) const
+{
+  scheduler_.post_immediate_completion(op, is_continuation);
+}
 
 template <typename Time_Traits>
 void dev_poll_reactor::add_timer_queue(timer_queue<Time_Traits>& queue)
@@ -46,12 +54,12 @@ void dev_poll_reactor::schedule_timer(timer_queue<Time_Traits>& queue,
 
   if (shutdown_)
   {
-    io_service_.post_immediate_completion(op, false);
+    scheduler_.post_immediate_completion(op, false);
     return;
   }
 
   bool earliest = queue.enqueue_timer(time, timer, op);
-  io_service_.work_started();
+  scheduler_.work_started();
   if (earliest)
     interrupter_.interrupt();
 }
@@ -65,8 +73,33 @@ std::size_t dev_poll_reactor::cancel_timer(timer_queue<Time_Traits>& queue,
   op_queue<operation> ops;
   std::size_t n = queue.cancel_timer(timer, ops, max_cancelled);
   lock.unlock();
-  io_service_.post_deferred_completions(ops);
+  scheduler_.post_deferred_completions(ops);
   return n;
+}
+
+template <typename Time_Traits>
+void dev_poll_reactor::cancel_timer_by_key(timer_queue<Time_Traits>& queue,
+    typename timer_queue<Time_Traits>::per_timer_data* timer,
+    void* cancellation_key)
+{
+  boost::asio::detail::mutex::scoped_lock lock(mutex_);
+  op_queue<operation> ops;
+  queue.cancel_timer_by_key(timer, ops, cancellation_key);
+  lock.unlock();
+  scheduler_.post_deferred_completions(ops);
+}
+
+template <typename Time_Traits>
+void dev_poll_reactor::move_timer(timer_queue<Time_Traits>& queue,
+    typename timer_queue<Time_Traits>::per_timer_data& target,
+    typename timer_queue<Time_Traits>::per_timer_data& source)
+{
+  boost::asio::detail::mutex::scoped_lock lock(mutex_);
+  op_queue<operation> ops;
+  queue.cancel_timer(target, ops);
+  queue.move_timer(target, source);
+  lock.unlock();
+  scheduler_.post_deferred_completions(ops);
 }
 
 } // namespace detail

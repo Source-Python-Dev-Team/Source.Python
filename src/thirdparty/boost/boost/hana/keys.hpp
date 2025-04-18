@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::keys`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -20,7 +20,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/transform.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Map>
     constexpr auto keys_t::operator()(Map&& map) const {
@@ -43,6 +43,6 @@ BOOST_HANA_NAMESPACE_BEGIN
             return hana::transform(hana::accessors<S>(), hana::first);
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_KEYS_HPP

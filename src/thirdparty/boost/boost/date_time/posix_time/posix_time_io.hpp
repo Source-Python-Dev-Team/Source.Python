@@ -74,13 +74,13 @@ namespace posix_time {
     typename std::basic_istream<CharT, Traits>::sentry strm_sentry(is, false);
     if (strm_sentry) {
       try {
-        typedef typename date_time::time_input_facet<ptime, CharT> time_input_facet;
+        typedef typename date_time::time_input_facet<ptime, CharT> time_input_facet_local;
         std::istreambuf_iterator<CharT,Traits> sit(is), str_end;
-        if(std::has_facet<time_input_facet>(is.getloc())) {
-          std::use_facet<time_input_facet>(is.getloc()).get(sit, str_end, is, pt);
+        if(std::has_facet<time_input_facet_local>(is.getloc())) {
+          std::use_facet<time_input_facet_local>(is.getloc()).get(sit, str_end, is, pt);
         }
         else {
-          time_input_facet* f = new time_input_facet();
+          time_input_facet_local* f = new time_input_facet_local();
           std::locale l = std::locale(is.getloc(), f);
           is.imbue(l);
           f->get(sit, str_end, is, pt);
@@ -97,7 +97,7 @@ namespace posix_time {
           throw; // rethrow original exception
         }
         else {
-          // if the user want's to fail quietly, we simply set the failbit
+          // if the user wants to fail quietly, we simply set the failbit
           is.setstate(std::ios_base::failbit);
         }
       }
@@ -141,13 +141,13 @@ namespace posix_time {
     typename std::basic_istream<CharT, Traits>::sentry strm_sentry(is, false);
     if (strm_sentry) {
       try {
-        typedef typename date_time::time_input_facet<ptime, CharT> time_input_facet;
+        typedef typename date_time::time_input_facet<ptime, CharT> time_input_facet_local;
         std::istreambuf_iterator<CharT,Traits> sit(is), str_end;
-        if(std::has_facet<time_input_facet>(is.getloc())) {
-          std::use_facet<time_input_facet>(is.getloc()).get(sit, str_end, is, tp);
+        if(std::has_facet<time_input_facet_local>(is.getloc())) {
+          std::use_facet<time_input_facet_local>(is.getloc()).get(sit, str_end, is, tp);
         }
         else {
-          time_input_facet* f = new time_input_facet();
+          time_input_facet_local* f = new time_input_facet_local();
           std::locale l = std::locale(is.getloc(), f);
           is.imbue(l);
           f->get(sit, str_end, is, tp);
@@ -205,13 +205,13 @@ namespace posix_time {
     typename std::basic_istream<CharT, Traits>::sentry strm_sentry(is, false);
     if (strm_sentry) {
       try {
-        typedef typename date_time::time_input_facet<ptime, CharT> time_input_facet;
+        typedef typename date_time::time_input_facet<ptime, CharT> time_input_facet_local;
         std::istreambuf_iterator<CharT,Traits> sit(is), str_end;
-        if(std::has_facet<time_input_facet>(is.getloc())) {
-          std::use_facet<time_input_facet>(is.getloc()).get(sit, str_end, is, td);
+        if(std::has_facet<time_input_facet_local>(is.getloc())) {
+          std::use_facet<time_input_facet_local>(is.getloc()).get(sit, str_end, is, td);
         }
         else {
-          time_input_facet* f = new time_input_facet();
+          time_input_facet_local* f = new time_input_facet_local();
           std::locale l = std::locale(is.getloc(), f);
           is.imbue(l);
           f->get(sit, str_end, is, td);

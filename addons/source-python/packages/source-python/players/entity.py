@@ -31,7 +31,7 @@ __all__ = ('Player',
 # =============================================================================
 if SP_PACKAGES_PATH.joinpath(
     'players', 'engines', SOURCE_ENGINE, GAME_NAME + '.py'
-).isfile():
+).is_file():
 
     # Import the game-specific 'Player' class
     Player = players._base.Player = import_module(
@@ -43,7 +43,7 @@ if SP_PACKAGES_PATH.joinpath(
 
 elif SP_PACKAGES_PATH.joinpath(
     'players', 'engines', SOURCE_ENGINE, '__init__.py'
-).isfile():
+).is_file():
 
     # Import the engine-specific 'Player' class
     Player = players._base.Player = import_module(

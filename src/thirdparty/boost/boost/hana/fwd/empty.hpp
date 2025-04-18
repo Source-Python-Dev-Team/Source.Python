@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::empty`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Identity of the monadic combination `concat`.
     //! @ingroup group-MonadPlus
     //!
@@ -41,11 +41,13 @@ BOOST_HANA_NAMESPACE_BEGIN
     struct empty_impl : empty_impl<M, when<true>> { };
 
     template <typename M>
-    struct empty_t;
+    struct empty_t {
+        constexpr auto operator()() const;
+    };
 
     template <typename M>
-    constexpr empty_t<M> empty{};
+    BOOST_HANA_INLINE_VARIABLE constexpr empty_t<M> empty{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_EMPTY_HPP

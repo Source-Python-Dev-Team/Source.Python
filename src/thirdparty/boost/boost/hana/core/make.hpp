@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::make`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -17,7 +17,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @cond
     template <typename Datatype, typename>
     struct make_impl : make_impl<Datatype, when<true>> { };
@@ -32,7 +32,7 @@ BOOST_HANA_NAMESPACE_BEGIN
 
         template <typename ...X>
         static constexpr auto make_helper(long, X&& ...) {
-            static_assert((sizeof...(X), false),
+            static_assert(((void) sizeof...(X), false),
             "there exists no constructor for the given data type");
         }
 
@@ -40,6 +40,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         static constexpr decltype(auto) apply(X&& ...x)
         { return make_helper(int{}, static_cast<X&&>(x)...); }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_CORE_MAKE_HPP

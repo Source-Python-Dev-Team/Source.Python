@@ -26,7 +26,7 @@
 
 #include <boost/interprocess/interprocess_fwd.hpp>
 #include <boost/assert.hpp>
-#include <boost/utility/addressof.hpp>
+#include <boost/container/detail/addressof.hpp>
 #include <boost/interprocess/allocators/detail/node_pool.hpp>
 #include <boost/interprocess/containers/version_type.hpp>
 #include <boost/container/detail/multiallocation_chain.hpp>
@@ -74,7 +74,7 @@ class private_node_allocator_base
       , NodesPerBlock
       > node_pool_t;
 
-   BOOST_STATIC_ASSERT((Version <=2));
+   BOOST_INTERPROCESS_STATIC_ASSERT((Version <=2));
 
    #endif   //#ifndef BOOST_INTERPROCESS_DOXYGEN_INVOKED
 
@@ -95,7 +95,7 @@ class private_node_allocator_base
    typedef typename segment_manager::difference_type     difference_type;
    typedef boost::interprocess::version_type
       <private_node_allocator_base, Version>              version;
-   typedef boost::container::container_detail::transform_multiallocation_chain
+   typedef boost::container::dtl::transform_multiallocation_chain
       <typename SegmentManager::multiallocation_chain, T>multiallocation_chain;
 
    //!Obtains node_allocator from other node_allocator

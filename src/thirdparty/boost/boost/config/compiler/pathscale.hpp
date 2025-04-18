@@ -12,7 +12,12 @@
 #  define BOOST_COMPILER "PathScale EKOPath C++ Compiler version " __PATHSCALE__
 #endif
 
-#if __PATHCC__ >= 4
+#if __PATHCC__ >= 6 
+// PathCC is based on clang, and supports the __has_*() builtins used 
+// to detect features in clang.hpp. Since the clang toolset is much 
+// better maintained, it is more convenient to reuse its definitions. 
+#  include "boost/config/compiler/clang.hpp"
+#elif __PATHCC__ >= 4 
 #  define BOOST_MSVC6_MEMBER_TEMPLATES
 #  define BOOST_HAS_UNISTD_H
 #  define BOOST_HAS_STDINT_H
@@ -79,11 +84,14 @@
 #  define BOOST_NO_CXX11_HDR_CHRONO
 #  define BOOST_NO_CXX11_USER_DEFINED_LITERALS
 #  define BOOST_NO_CXX11_ALIGNAS
+#  define BOOST_NO_CXX11_ALIGNOF
 #  define BOOST_NO_CXX11_TRAILING_RESULT_TYPES
 #  define BOOST_NO_CXX11_INLINE_NAMESPACES
 #  define BOOST_NO_CXX11_REF_QUALIFIERS
 #  define BOOST_NO_CXX11_FINAL
+#  define BOOST_NO_CXX11_OVERRIDE
 #  define BOOST_NO_CXX11_THREAD_LOCAL
+#  define BOOST_NO_CXX11_UNRESTRICTED_UNION
 
 // C++ 14:
 #if !defined(__cpp_aggregate_nsdmi) || (__cpp_aggregate_nsdmi < 201304)
@@ -112,5 +120,22 @@
 #endif
 #if !defined(__cpp_variable_templates) || (__cpp_variable_templates < 201304)
 #  define BOOST_NO_CXX14_VARIABLE_TEMPLATES
+#endif
+
+// C++17
+#if !defined(__cpp_structured_bindings) || (__cpp_structured_bindings < 201606)
+#  define BOOST_NO_CXX17_STRUCTURED_BINDINGS
+#endif
+#if !defined(__cpp_inline_variables) || (__cpp_inline_variables < 201606)
+#  define BOOST_NO_CXX17_INLINE_VARIABLES
+#endif
+#if !defined(__cpp_fold_expressions) || (__cpp_fold_expressions < 201603)
+#  define BOOST_NO_CXX17_FOLD_EXPRESSIONS
+#endif
+#if !defined(__cpp_if_constexpr) || (__cpp_if_constexpr < 201606)
+#  define BOOST_NO_CXX17_IF_CONSTEXPR
+#endif
+#if !defined(__cpp_nontype_template_parameter_auto) || (__cpp_nontype_template_parameter_auto < 201606)
+#  define BOOST_NO_CXX17_AUTO_NONTYPE_TEMPLATE_PARAMS
 #endif
 #endif

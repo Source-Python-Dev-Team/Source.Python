@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::detail::variadic::reverse_apply_unrolled`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/functional/reverse_partial.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace detail { namespace variadic {
+namespace boost { namespace hana { namespace detail { namespace variadic {
     struct reverse_apply_unrolled_impl {
         template <typename F>
         constexpr decltype(auto) operator()(F&& f) const {
@@ -80,8 +80,7 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail { namespace variadic {
         }
     };
 
-    constexpr reverse_apply_unrolled_impl reverse_apply_unrolled{};
-
-}} BOOST_HANA_NAMESPACE_END
+    BOOST_HANA_INLINE_VARIABLE constexpr reverse_apply_unrolled_impl reverse_apply_unrolled{};
+}} }} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_VARIADIC_REVERSE_APPLY_UNROLLED_HPP
