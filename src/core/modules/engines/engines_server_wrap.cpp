@@ -787,6 +787,13 @@ static void export_server_game_dll(scope _server)
 	class_<IServerGameDLL, boost::noncopyable> ServerGameDLL("_ServerGameDLL", no_init);
 	
 	// Methods...
+	ServerGameDLL.def(
+		"is_hibernating",
+		&IServerGameDLLExt::IsHibernating,
+		"Returns whether the server is currently hibernating."
+	);
+
+	// Properties...
 	ServerGameDLL.add_property(
 		"all_server_classes",
 		make_function(
